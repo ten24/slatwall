@@ -14,13 +14,15 @@ class SWImageDetailModalLauncherController{
     //@ngInject
     constructor(
         private collectionConfigService,
+        private formService,
         private utilityService,
-        private $hibachi
+        private $hibachi,
+        private $http
     ){
         this.name = this.baseName + this.utilityService.createID(18);
         this.collectionConfig = this.collectionConfigService.newCollectionConfig("Sku"); 
         this.collectionConfig.addFilter("skuID",this.skuId,"="); 
-        this.collectionConfig.addDisplayProperty("skuID,skuCode,skuDefinition,imageFileName,imageFile,imagePath");
+        this.collectionConfig.addDisplayProperty("skuID,skuCode,skuDefinition,imageFileName,imageFile,imagePath,product.productID");
         this.collectionConfig.setAllRecords(true); 
         this.collectionConfig.getEntity().then(
             (response)=>{
@@ -36,7 +38,15 @@ class SWImageDetailModalLauncherController{
     }    
     
     public saveAction = () => {
-        
+        var data = {
+            slatAction:"admin:entity.processProduct",
+            processContext:"uploadDefaultImage", 
+            productID:this.sku.product_productID, 
+            preprocessDisplayedFlag:1,
+            sRedirectAction:"admin:entity.detailproduct",
+        };
+        console.log("form???",this.sku)
+        var savePromise = this.$http.post("/?s=1",data);
     }
 }
 

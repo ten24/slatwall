@@ -10,7 +10,7 @@
     </sw-modal-button>
     <sw-modal-content> 
         <sw-form data-object="swImageDetailModalLauncher.sku"
-                 data-name="swImageDetailModalLauncher.name">
+                 data-name="{{swImageDetailModalLauncher.name}}">
             <div class="row">
                 <!--
                 <div class="col-md-12 s-alert-message">
@@ -49,10 +49,12 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="form-group s-upload-image">
-                                <label for="" class="control-label"></label>
-                                <input type="file" name="" class="form-control">
-                            </div>    
+                            <sw-property-display
+                                data-property="imageFile"
+                                data-field-type="file"
+                                data-editing="true"
+                            >
+                            </sw-property-display>  
                         </div>
                     </div>
                 </div>
