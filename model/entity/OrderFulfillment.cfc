@@ -108,6 +108,9 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="subtotalAfterDiscountsWithTax" type="array" persistent="false" hb_formatType="currency";
 	property name="taxAmount" type="numeric" persistent="false" hb_formatType="currency";
 	property name="totalShippingWeight" type="numeric" persistent="false" hb_formatType="weight";
+	property name="hasOrderWithCorrectAmountRecieved" type="boolean" persistent="false";
+	property name="isAutoFulfillment" type="boolean" persistent="false";
+	property name="isAutoFulfillmentReadyToBeFulfilled" type="boolean" persistent="false";
 
 	// Deprecated
 	property name="discountTotal" persistent="false";
@@ -453,6 +456,30 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     	return totalShippingWeight;
     }
 
+     public boolean function hasOrderWithCorrectAmountRecieved() {
+    	return  (   !isNull(this.getOrder())
+    				&& (
+    				  	this.getOrder().getTotal() == 0
+    				  		|| (
+		    				  	!isNull(this.getFulfillmentMethod())
+		    				  	&& this.getFulfillmentMethod().setting('fulfillmentMethodAutoMinReceivedPercentage')
+		    						<= precisionEvaluate( this.getOrder().getPaymentAmountReceivedTotal() * 100 / this.getOrder().getTotal() )
+		    				)
+    				  )
+    			);
+    }
+
+    public boolean function isAutoFulfillment() {
+		return (this.getFulfillmentMethodType() == "auto" || (
+		        !isNull(this.getFulfillmentMethod()) &&
+                !isNull(this.getFulfillmentMethod().getAutoFulfillFlag()) &&
+                		this.getFulfillmentMethod().getAutoFulfillFlag()));
+    }
+
+    public boolean function isAutoFulfillmentReadyToBeFulfilled(){
+		return this.isAutoFulfillment() && this.hasOrderWithCorrectAmountRecieved() && this.hasGiftCardRecipients();
+    }
+
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================
@@ -654,13 +681,13 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     // ==================  START: Validation Methods  ======================
     public boolean function hasQuantityOfOrderFulfillmentsWithinMaxOrderQuantity() {
         var settingVal = getService("settingService").getSettingValue(settingName='globalMaximumFulfillmentsPerOrder');
-        if (!isNull(settingVal) 
-        	&& !isNull(getOrder()) 
+        if (!isNull(settingVal)
+        	&& !isNull(getOrder())
         ){
-           return (arrayLen(getOrder().getOrderFulfillments()) <= settingVal);  
+           return (arrayLen(getOrder().getOrderFulfillments()) <= settingVal);
         }
         return false;
-    } 
+    }
     // ==================  END: Validation Methods  ========================
 
 	// =================== START: ORM Event Hooks  =========================
