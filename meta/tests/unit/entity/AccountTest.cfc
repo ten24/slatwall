@@ -121,6 +121,20 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		assertFalse(account.hasGiftCard(giftCard));
 	}
+	// ================== START TESTING: Non-Persistent Property Methods ========================
+	
+	//	need to have consistent domain to host image in order to test consistently and safely
+//	public void function getAdminIconTest() {
+//		var accountData = {
+//			accountID = "001",
+//			gravatarURL = "http://7-themes.com/data_images/out/39/6902886-sakura-wallpaper.jpg"
+//			
+//		};
+//		var mockAccount = createTestEntity('Account', accountData);
+//		var resultExistingAdminIcon = mockAccount.getAdminIcon(80);
+//		request.debug(resultExistingAdminIcon);
+//		assertEquals(resultExistingAdminIcon, "see output first");
+//	}
 
 	public void function getEmailAddressTest() {
 		//Testing existed accountEmailAddress
@@ -151,6 +165,208 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(isNull(mockAccount.getEmailAddress()));
 	}
 	
+	public void function getFullNameTest() {
+		//testing existing FirstName & LastName
+		var accountData = {
+			accountID = "001",
+			firstName = "Hello",
+			lastName = "Kitty"
+		};
+		var mockAccount = createTestEntity('Account', accountData);
+		var resultFirstLastName = mockAccount.getFullName();
+		assertEquals(resultFirstLastName, "Hello Kitty");
+		//testing existing FirstName empty LastName
+		accountData = {
+			accountID = "001",
+			firstName = "Hello"
+		};
+		mockAccount = createTestEntity('Account', accountData);
+		var resultOnlyFirstName = mockAccount.getFullName();
+		assertEquals(resultOnlyFirstName, "Hello "); 
+		//testing empty FirstName existing LastName
+		accountData = {
+			accountID = "001",
+			lastName = "Kitty"
+		};
+		mockAccount = createTestEntity('Account', accountData);
+		var resultOnlyLastName = mockAccount.getFullName();
+		assertEquals(resultOnlyLastName, " Kitty");
+		//testing empty FirstName & LastName
+		accountData = {
+			accountID = "001"
+		};
+		mockAccount = createTestEntity('Account', accountData);
+		var resultNoName = mockAccount.getFullName();
+		assertEquals(resultNoName, " ");
+	}
+	public void function getAddressTest() {
+		//testing existing PrimaryAddress existing Account Address
+		var accountData = {
+			accountID = "001",
+			firstName = "Hello",
+			lastName = "Kitty",
+			primaryAddress = {
+				accountAddressID = "0001",
+				address={
+					addressID = "",
+					streetAddress = "primary address",
+					name = "ten24DSPrimaryAddressName"
+				}
+			},
+			accountAddresses = [{
+				accountAddressID = "",
+				address={
+					addressID = "034401",
+					name = "ten24DS"
+				}
+			}]
+		};
+		var mockAccount = createTestEntity('Account', accountData);
+		var resultBothAddress = mockAccount.getAddress().getName();
+		assertEquals(resultBothAddress, "ten24DSPrimaryAddressName");
+		//testing empty PrimaryAddress but existing Address
+		accountData = {
+			accountID = "001",
+			firstName = "Hello",
+			lastName = "Kitty",
+			accountAddresses = [{
+				accountAddressID = "",
+				address={
+					addressID = "001",
+					name = "ten24DS",
+					city = "worcester",
+					firstName = "Yuqing",
+					streetAddress = "12 Franklin St",
+					phoneNumber = "123"
+				}
+			}]
+		};
+		mockAccount = createTestEntity('Account', accountData);
+		var resultNoPrimaryYesAccountAddress = mockAccount.getAddress().getStreetAddress();
+		assertEquals(resultNoPrimaryYesAccountAddress, "12 Franklin St");
+		//testing existing PrimaryAddress no Account Address
+		accountData = {
+			accountID = "002",
+			firstName = "Hello",
+			lastName = "Kit",
+			primaryAddress={ 
+				accountAddressID="",
+				address={
+					addressID = "",
+					streetAddress = "primary address",
+					phoneNumber = "123"
+				}
+			}
+		};
+		mockAccount = createTestEntity('Account', accountData);
+		var resultExistPrimaryNoAccountAddress = mockAccount.getAddress().getphoneNumber();
+		assertEquals(resultExistPrimaryNoAccountAddress, "123");		
+		
+	}
+	
+	public void function getPhoneNumberTest() {
+		//Testing existing primaryPhoneNumber empty accountPhoneNumbers
+		var accountData = {
+			accountID = "001",
+			firstName = "Hello",
+			lastName = "Kitty",
+			primaryPhoneNumber = {
+				accountPhoneNumberID = "0001",
+				phoneNumber = "123"
+			}
+			
+		};
+		var mockAccount = createTestEntity('Account', accountData);
+		var resultPrimaryPhone = mockAccount.getPhoneNumber();
+		assertEquals(resultPrimaryPhone, "123");
+		//Testing existing primaryPhoneNumber existing accountPhoneNumbers
+		accountData = {
+			accountID = "001",
+			firstName = "Hello",
+			lastName = "Kitty",
+			primaryPhoneNumber = {
+				accountPhoneNumberID = "0001",
+				phoneNumber = "123"
+			},
+			accountPhoneNumbers = [{
+					accountPhoneNumberID = "10033",
+					phoneNumber = "firstphoneNumber"
+				}]
+		};
+		mockAccount = createTestEntity('Account', accountData);
+		var resultBothPhones = mockAccount.getPhoneNumber();
+		assertEquals(resultBothPhones, "123");
+		//Testing empty primaryPhoneNumber existing accountPhoneNumbers
+		accountData = {
+			accountID = "001",
+			firstName = "Hello",
+			lastName = "Kitty",
+			accountPhoneNumbers = [{
+					accountPhoneNumberID = "10033",
+					phoneNumber = "firstphoneNumber"
+			}]
+		};
+		mockAccount = createTestEntity('Account', accountData);
+		var resultEmptyPrimaryExistAccountPhone = mockAccount.getPhoneNumber();
+		assertEquals(resultEmptyPrimaryExistAccountPhone, "firstphoneNumber");
+	}
+	
+
+	
+	public void function getAdminAccountFlagTest() {
+		//testing TRUE SuperUser with PermissionGroup
+		var accountData = {
+			accountID = "001",
+			
+			permissionGroups = [{
+				permissionGroupID = "001",
+				permissionGroupName = "Permission1"
+			},{
+				permissionGroupID = "",
+				permissionGroupName = "Permission2"
+			}],
+			superUserFlag = TRUE	
+		};
+		var mockAccount = createTestEntity('Account', accountData);
+		var resultTrueSUExistPG = mockAccount.getAdminAccountFlag();
+		assertTrue(resultTrueSUExistPG);
+		//testing false SuperUser with PermissionGroup
+		accountData = {
+			accountID = "001",
+			permissionGroups = [{
+				permissionGroupID = "001",
+				permissionGroupName = "Permission1"
+			},{
+				permissionGroupID = "",
+				permissionGroupName = "Permission2"
+			}]
+		};
+		mockAccount = createTestEntity('Account', accountData);
+		var resultNoSUExistPG = mockAccount.getAdminAccountFlag();
+		assertTrue(resultNoSUExistPG);
+		//testing False SuperUser with None PermissionGroup
+		accountData = {
+			accountID = "001"	
+		};
+		mockAccount = createTestEntity('Account', accountData);
+		var resultNSUNoPG = mockAccount.getAdminAccountFlag();
+		assertFalse(resultNSUNoPG);
+	}
+	
+	public void function getGiftCardSmartListTest() {//Working on, not finished
+		
+		var accountData = {
+			accountID = "001",
+			superUserFlag = TRUE	
+		};
+		var mockAccount = createTestEntity('Account', accountData);
+		var result = mockAccount.getGiftCardSmartList();
+		request.debug(result);
+		assertFalse(resultNSUNoPG);
+	}
+	// ============  END TESTING:  Non-Persistent Property Methods =================
+	
+	// ================== START TESTING: Overridden Methods ========================
 	public void function getPrimaryEmailAddressTest() {
 		//testing existing pimaryEamilAddress
 		var accountData = {
@@ -348,41 +564,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		mockAccount = createTestEntity('Account', accountData);
 		var resultEmptySuperUserFlag = mockAccount.getSuperUserFlag();
 		assertFalse(resultEmptySuperUserFlag);
-	}
-	
-	public void function getFullNameTest() {
-		//testing existing FirstName & LastName
-		var accountData = {
-			accountID = "001",
-			firstName = "Hello",
-			lastName = "Kitty"
-		};
-		var mockAccount = createTestEntity('Account', accountData);
-		var resultFirstLastName = mockAccount.getFullName();
-		assertEquals(resultFirstLastName, "Hello Kitty");
-		//testing existing FirstName empty LastName
-		accountData = {
-			accountID = "001",
-			firstName = "Hello"
-		};
-		mockAccount = createTestEntity('Account', accountData);
-		var resultOnlyFirstName = mockAccount.getFullName();
-		assertEquals(resultOnlyFirstName, "Hello "); 
-		//testing empty FirstName existing LastName
-		accountData = {
-			accountID = "001",
-			lastName = "Kitty"
-		};
-		mockAccount = createTestEntity('Account', accountData);
-		var resultOnlyLastName = mockAccount.getFullName();
-		assertEquals(resultOnlyLastName, " Kitty");
-		//testing empty FirstName & LastName
-		accountData = {
-			accountID = "001"
-		};
-		mockAccount = createTestEntity('Account', accountData);
-		var resultNoName = mockAccount.getFullName();
-		assertEquals(resultNoName, " ");
 	}
 	
 	public void function getSimpleRepresentationTest() {
