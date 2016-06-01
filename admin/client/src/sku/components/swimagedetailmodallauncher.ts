@@ -4,20 +4,40 @@ class SWImageDetailModalLauncherController{
     
     public skuId:string; 
     public sku:any;
+    public name:string; 
+    public baseName:string = "j-image-detail"; 
+    public imageFileName:string; 
+    public imagePath:string; 
+    public customImageNameFlag:boolean;
+    public collectionConfig; 
     
     //@ngInject
     constructor(
-        private $hibachi 
+        private collectionConfigService,
+        private utilityService,
+        private $hibachi
     ){
-        $hibachi.getEntity("Sku",this.skuId).then(
+        this.name = this.baseName + this.utilityService.createID(18);
+        this.collectionConfig = this.collectionConfigService.newCollectionConfig("Sku"); 
+        this.collectionConfig.addFilter("skuID",this.skuId,"="); 
+        this.collectionConfig.addDisplayProperty("skuID,skuCode,skuDefinition,imageFileName,imageFile,imagePath");
+        this.collectionConfig.setAllRecords(true); 
+        this.collectionConfig.getEntity().then(
             (response)=>{
-                this.sku = response; 
+                this.imageFileName = response.records[0].imageFileName; 
+                this.imagePath = response.records[0].imagePath; 
+                this.sku = this.$hibachi.populateEntity("Sku",response.records[0]); 
+                console.log("imagesku",this.sku);
             },
             (reason)=>{
-                throw("SWSkuStockAdjustmentModalLauncherController");
+                
             }
-        )
+       );
     }    
+    
+    public saveAction = () => {
+        
+    }
 }
 
 class SWImageDetailModalLauncher implements ng.IDirective{

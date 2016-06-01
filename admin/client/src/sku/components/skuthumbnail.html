@@ -1,9 +1,9 @@
 <div class="thumbnail">
     <div class="s-image">
         <!-- NEED TO PUT THE SKU IMAGE HERE -->
-        <img src="//placehold.it/600x600/" class="s-responsive-image"/>
+        <img src="{{swSkuThumbnail.imagePath}}" class="s-responsive-image"/>
     </div>
-    <div class="caption">
+    <div class="caption" ng-show="!swSkuThumbnail.imageOnly">
         <h5><span ng-bind="swSkuStockAdjustmentModalLauncher.sku.skuName"></span></h5>
         <ul class="list-unstyled">
             <!-- RB KEYS -->

@@ -143,6 +143,8 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="eventConflictExistsFlag" type="boolean" persistent="false";
 	property name="eventOverbookedFlag" type="boolean" persistent="false";
 	property name="imageExistsFlag" type="boolean" persistent="false";
+	property name="imageFileName" type="string" persistent="false";
+	property name="imagePath" type="string" persistent="false";
 	property name="livePrice" type="numeric" hb_formatType="currency" persistent="false";
 	property name="locations" type="array" persistent="false";
 	property name="nextEstimatedAvailableDate" type="string" persistent="false";
@@ -312,6 +314,10 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		var ext = ".#getProduct().setting('productImageDefaultExtension')#";
 
 		return name & ext;
+	}
+
+	public string function getImageFileName() {
+		return generateImageFileName();
 	}
 
     public string function getImageExtension() {

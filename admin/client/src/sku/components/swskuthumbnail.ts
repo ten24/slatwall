@@ -2,11 +2,16 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWSkuThumbnailController{
    
-    public sku; 
+    public sku:any; 
+    public imagePath:string;
+    public imageOnly:boolean; 
    
     //@ngInject
     constructor(
     ){
+        if(angular.isDefined(this.sku.data.imagePath)){
+            this.imagePath = this.sku.data.imagePath;
+        }
         if(!angular.isDefined(this.sku)){
             throw("You must provide a sku to the SWSkuThumbnailController");
         }
@@ -21,7 +26,9 @@ class SWSkuThumbnail implements ng.IDirective{
     public restrict = 'EA';
     public scope = {}; 
     public bindToController = {
-        sku:"="
+        sku:"=",
+        imageOnly:"=?",
+        imagePath:"@?"
     };
     public controller = SWSkuThumbnailController;
     public controllerAs="swSkuThumbnail";

@@ -698,13 +698,21 @@ class SWMultiListingDisplayController{
     }
     
     //move this to the service
-    public getNGClassObjectForPageRecord = (pageRecord)=>{
+    public getNGClassObjectForPageRecordRow = (pageRecord)=>{
         var classObjectString = "{"; 
         angular.forEach(this.colorFilters, (colorFilter, index)=>{
             classObjectString = classObjectString.concat("'" + colorFilter.colorClass + "':" + this.getColorFilterConditionString(colorFilter, pageRecord));
             classObjectString = classObjectString.concat(",");
         }); 
-        classObjectString = classObjectString.concat("s-child:" + this.getPageRecordIsChild(pageRecord)); 
+        classObjectString = classObjectString.concat("'s-child':" + this.getPageRecordIsChild(pageRecord)); 
+        return classObjectString + "}"; 
+    };
+    
+    //move this to the service
+    public getNGClassObjectForPageRecordCell = (pageRecord,column)=>{
+        console.log("theprc",pageRecord,column);
+        var classObjectString = "{"; 
+            
         return classObjectString + "}"; 
     };
     

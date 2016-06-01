@@ -123,7 +123,7 @@
 
                         <tr data-ng-repeat="(pageRecordKey, pageRecord) in swMultiListingDisplay.collectionData.pageRecords"
                             data-ng-if="pageRecord.dataIsVisible !== false"
-                            data-ng-class="{{swMultiListingDisplay.getNGClassObjectForPageRecord(pageRecord)}}">
+                            data-ng-class="{{swMultiListingDisplay.getNGClassObjectForPageRecordRow(pageRecord)}}">
 
                             <!--Selectable/Multiselectable-->
                             <td ng-if="swMultiListingDisplay.selectable || swMultiListingDisplay.multiselectable"
@@ -153,7 +153,7 @@
                             <!--cell contents -->
 							<td
                                     data-ng-repeat="(key,column) in swMultiListingDisplay.columns"
-                                    class="column.tdclass"
+                                    class="{{column.tdclass}}"
                                     data-ng-cloak
                                     data-ng-if="column.isVisible"
 

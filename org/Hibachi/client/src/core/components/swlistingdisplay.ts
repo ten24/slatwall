@@ -268,7 +268,7 @@ class SWListingDisplayController{
 
 
             //attach observer so we know when a selection occurs
-            this.observerService.attach(this.updateMultiselectValues,'swSelectionToggleSelection',this.collectionObject);
+            this.observerService.attach(this.updateMultiselectValues,'swSelectionToggleSelectionListingDisplay',this.collectionObject);
 
             //attach observer so we know when a pagination change occurs
             this.observerService.attach(this.paginationPageChange,'swPaginationAction');
