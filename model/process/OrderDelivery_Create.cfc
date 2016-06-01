@@ -108,6 +108,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			//get tracking number from integration if specified
 			if(getUseShippingIntegrationForTrackingNumber()){
 				processShipmentRequest();
+			}else{
+				return "";
 			}
 		}
 		return variables.trackingNumber;
@@ -118,6 +120,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			//get tracking number from integration if specified
 			if(getUseShippingIntegrationForTrackingNumber()){
 				processShipmentRequest();
+			}else{
+				return "";
 			}
 		}
 		return variables.containerLabel;
