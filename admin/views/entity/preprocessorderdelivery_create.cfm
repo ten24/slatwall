@@ -77,18 +77,23 @@ Notes:
 				</cfif>
 				
 				<!--- Shipping - Inputs --->
+				
 				<cfif rc.processObject.getOrderFulfillment().getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">
 					<cfset hasShippingIntegration = rc.processObject.getUseShippingIntegrationForTrackingNumber()>
-					<hb:hibachidisplaytoggle selector="input[name='trackingNumber']" showValues="0" loadVisable="#hasShippingIntegration#">
-						<hb:HibachiPropertyDisplay 
-							object="#rc.processObject#" 
-							property="useShippingIntegrationForTrackingNumber" 
-							edit="true"
-						>
-					</hb:hibachiDisplayToggle>
-					<hb:hibachidisplaytoggle selector="input[name='useShippingIntegrationForTrackingNumber']" showValues="0" loadVisible="#!hasShippingIntegration#">
+					<cfif hasShippingIntegration>
+						<hb:HibachiDisplayToggle selector="input[name='trackingNumber']" showValues="0" loadVisable="#hasShippingIntegration#">
+							<hb:HibachiPropertyDisplay 
+								object="#rc.processObject#" 
+								property="useShippingIntegrationForTrackingNumber" 
+								edit="true"
+							>
+						</hb:HibachiDisplayToggle>
+						<hb:HibachiDisplayToggle selector="input[name='useShippingIntegrationForTrackingNumber']" showValues="0" loadVisible="#!hasShippingIntegration#">
+							<hb:HibachiPropertyDisplay object="#rc.processObject#" property="trackingNumber" edit="true" />
+						</hb:HibachiDisplayToggle>
+					<cfelse>
 						<hb:HibachiPropertyDisplay object="#rc.processObject#" property="trackingNumber" edit="true" />
-					</hb:hibachiDisplayToggle>
+					</cfif>
 				</cfif>
 
 				<!--- Gift Card Codes --->
