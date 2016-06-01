@@ -451,9 +451,6 @@ component output="false" accessors="true" extends="HibachiService" {
 		if(!structKeyExists(collectionConfigStruct,'isDistinct')){
 			collectionConfigStruct.isDistinct = false;
 		}
-		if(!structKeyExists(collectionConfigStruct,'hasManyRelationFilter')){
-			collectionConfigStruct.hasManyRelationFilter = false;
-		}
 		return getAPIResponseForCollection(collectionEntity,arguments.collectionOptions,arguments.enforceAuthorization);
 	}
 
@@ -472,10 +469,6 @@ component output="false" accessors="true" extends="HibachiService" {
 		if(!structKeyExists(collectionConfigStruct,'isDistinct')){
 			collectionConfigStruct.isDistinct = false;
 		}
-		if(!structKeyExists(collectionConfigStruct,'hasManyRelationFilter')){
-			collectionConfigStruct.hasManyRelationFilter = false;
-		}
-
 
 		var propertyIdentifier = '_' & lcase(arguments.entityName) & '.id';
 		var filterStruct = createFilterStruct(propertyIdentifier,'=',arguments.entityID);
@@ -577,9 +570,6 @@ component output="false" accessors="true" extends="HibachiService" {
 			}
 			if(structKeyExists(arguments.collectionOptions,'isDistict')){
 				collectionEntity.getCollectionConfigStruct().isDistinct = arguments.collectionOptions.isDistinct;
-			}
-			if(structKeyExists(arguments.collectionOptions,'hasManyRelationFilter')){
-				collectionEntity.getCollectionConfigStruct().hasManyRelationFilter = arguments.collectionOptions.hasManyRelationFilter;
 			}
 
 			var defaultPropertyIdentifiers = getPropertyIdentifierArray('collection');
