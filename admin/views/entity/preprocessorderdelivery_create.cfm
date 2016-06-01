@@ -81,16 +81,16 @@ Notes:
 				<cfif rc.processObject.getOrderFulfillment().getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">
 					<cfset hasShippingIntegration = rc.processObject.getUseShippingIntegrationForTrackingNumber()>
 					<cfif hasShippingIntegration>
-						<hb:hibachidisplaytoggle selector="input[name='trackingNumber']" showValues="0" loadVisable="#hasShippingIntegration#">
+						<hb:HibachiDisplayToggle selector="input[name='trackingNumber']" showValues="0" loadVisable="#hasShippingIntegration#">
 							<hb:HibachiPropertyDisplay 
 								object="#rc.processObject#" 
 								property="useShippingIntegrationForTrackingNumber" 
 								edit="true"
 							>
-						</hb:hibachiDisplayToggle>
-						<hb:hibachidisplaytoggle selector="input[name='useShippingIntegrationForTrackingNumber']" showValues="0" loadVisible="#!hasShippingIntegration#">
+						</hb:HibachiDisplayToggle>
+						<hb:HibachiDisplayToggle selector="input[name='useShippingIntegrationForTrackingNumber']" showValues="0" loadVisible="#!hasShippingIntegration#">
 							<hb:HibachiPropertyDisplay object="#rc.processObject#" property="trackingNumber" edit="true" />
-						</hb:hibachiDisplayToggle>
+						</hb:HibachiDisplayToggle>
 					<cfelse>
 						<hb:HibachiPropertyDisplay object="#rc.processObject#" property="trackingNumber" edit="true" />
 					</cfif>
