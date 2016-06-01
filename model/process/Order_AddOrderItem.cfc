@@ -77,7 +77,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="pickupLocationID" hb_formFieldType="select" hb_rbKey="entity.orderFulfillment.pickupLocation";
 
 	// Data Properties (Inputs)
-	property name="price";
+	property name="price" hb_formatType="currency";
 	property name="currencyCode";
 	property name="quantity";
 	property name="orderItemTypeSystemCode";
