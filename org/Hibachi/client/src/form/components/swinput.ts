@@ -12,14 +12,16 @@ class SWInput{
             $hibachi,
 			utilityService,
             rbkeyService,
-			fileService
+			fileService,
+			$parse
 		)=>new SWInput(
 			$log,
 			$compile,
             $hibachi,
 			utilityService,
             rbkeyService,
-			fileService
+			fileService,
+			$parse
 		);
 		directive.$inject = [
 			'$log',
@@ -27,7 +29,8 @@ class SWInput{
             '$hibachi',
 			'utilityService',
             'rbkeyService',
-			'fileService'
+			'fileService',
+			'$parse'
 		];
 		return directive
 	}
@@ -37,7 +40,8 @@ class SWInput{
         $hibachi,
 		utilityService,
         rbkeyService,
-		fileService
+		fileService,
+		$parse
 	){
 		var getValidationDirectives = function(propertyDisplay){
 			var spaceDelimitedList = '';
@@ -213,13 +217,21 @@ class SWInput{
 			restrict : "E",
 			//adding model and form controller
 			link : function(scope, element, attr, formController) {
-				//renders the template and compiles it
+				//special file logic
 				if(scope.propertyDisplay && scope.propertyDisplay.fieldType === 'file'){
+					 var model = $parse("propertyDisplay.object.data[propertyDisplay.rawFileTarget]"); 
+					 var modelSetter = model.assign;
 					 element.bind("change", (e)=>{
 						var fileToUpload = (e.srcElement || e.target).files[0];
-						fileService.uploadFile(fileToUpload, scope.propertyDisplay.object, scope.propertyDisplay.fileTarget);
+						//console.log("rawFile",fileToUpload);
+						fileService.uploadFile(fileToUpload, scope.propertyDisplay.object, scope.propertyDisplay.binaryFileTarget);
+						scope.$apply(()=>{
+							modelSetter(scope, fileToUpload);
+						})
+						scope.propertyDisplay.object[scope.propertyDisplay.property] = fileToUpload;
 					 });
 				}
+				//renders the template and compiles it
 				element.html(getTemplate(scope.propertyDisplay));
 				$compile(element.contents())(scope);
 			}

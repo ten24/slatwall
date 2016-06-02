@@ -39,14 +39,17 @@ class SWImageDetailModalLauncherController{
     }    
     
     public saveAction = () => {
-        var data = {
-            slatAction:"admin:entity.processProduct",
-            processContext:"uploadDefaultImage", 
-            productID:this.sku.data.product_productID, 
-            preprocessDisplayedFlag:1,
-            sRedirectAction:"admin:entity.detailproduct",
-            imageFile:this.sku.imagePath
-        };
+
+        var data = new FormData(); 
+        data.append('slatAction', "admin:entity.processProduct");
+        data.append('processContext',"uploadDefaultImage");
+        data.append('productID', this.sku.data.product_productID);
+        data.append('preprocessDisplayedFlag',1); 
+        data.append('sRedirectAction',"admin:entity.detailProduct");
+        data.append('ajaxRequest', 1); 
+        data.append('imageFile', this.imageFileName);
+        data.append('uploadFile', this.sku.data.uploadFile);
+        
         var savePromise = this.$http.post(
                 "/?s=1",
                 data,
@@ -67,7 +70,6 @@ class SWImageDetailModalLauncher implements ng.IDirective{
     };
     public controller = SWImageDetailModalLauncherController;
     public controllerAs="swImageDetailModalLauncher";
-   
    
     public static Factory(){
         var directive = (

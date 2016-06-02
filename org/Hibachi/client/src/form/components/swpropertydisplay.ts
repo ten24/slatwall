@@ -15,7 +15,8 @@ class SWPropertyDisplayController {
     public optionsArguments;
     public eagerLoadOptions:boolean;
     public noValidate:boolean;
-    public fileTarget; 
+    public binaryFileTarget; 
+    public rawFileTarget; 
     public form;
     
 
@@ -24,8 +25,8 @@ class SWPropertyDisplayController {
         public $filter
     ){
         this.errors = {};
-        if(angular.isUndefined(this.fileTarget)){
-            this.fileTarget = this.property;
+        if(angular.isUndefined(this.rawFileTarget)){
+            this.rawFileTarget = this.property;
         }
         if(angular.isUndefined(this.editing)){
             this.editing = false;
@@ -100,7 +101,8 @@ class SWPropertyDisplay implements ng.IDirective{
         isDirty:"=?",
         onChange:"=?",
         fieldType:"@?",
-        fileTarget:"@?",
+        rawFileTarget:"@?",
+        binaryFileTarget:"@?",
         noValidate:"=?"
     };
     public controller=SWPropertyDisplayController;

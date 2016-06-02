@@ -38,15 +38,15 @@
                         <div class="col-md-6">
                             <div class="form-group" ng-if="!swImageDetailModalLauncher.customImageNameFlag" id="j-standard-image-name">
                                 <label for="" class="control-label">Image Name</label>
-                                <input type="text" name="" ng-model="swImageDetailModalLauncher.imageFileName" class="form-control" disabled>
+                                <input type="text" name="imagename" ng-model="swImageDetailModalLauncher.imageFileName" class="form-control" disabled>
                             </div>  
                             <div class="form-group" ng-if="swImageDetailModalLauncher.customImageNameFlag" id="j-custom-image-name">
                                 <label for="" class="control-label">Custom Image Name</label>
-                                <input type="text" name="" ng-model="swImageDetailModalLauncher.sku.data.imageFile"  class="form-control">
+                                <input type="text" name="customimagename" ng-model="swImageDetailModalLauncher.sku.data.imageFile"  class="form-control">
                             </div>    
                             <div class="s-checkbox" id="j-toggle-image-type">
-                                <input type="checkbox" ng-model="swImageDetailModalLauncher.customImageNameFlag" id="checkbox1">
-                                <label for="checkbox1"> Overwrite default image name</label>
+                                <input type="checkbox" name="imagetoggle" ng-model="swImageDetailModalLauncher.customImageNameFlag" id="checkbox{{this.sku.data.skuCode}}">
+                                <label for="checkbox{{this.sku.data.skuCode}}"> Overwrite default image name</label>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -54,7 +54,8 @@
                                 data-object="swImageDetailModalLauncher.sku"
                                 data-property="imageFile"
                                 data-field-type="file"
-                                data-file-target="imagePath"
+                                data-binary-file-target="imagePath"
+                                data-raw-file-target="uploadFile"
                                 data-editing="true"
                                 data-editable="true"
                             >
