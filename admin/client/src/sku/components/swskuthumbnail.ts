@@ -9,14 +9,8 @@ class SWSkuThumbnailController{
     //@ngInject
     constructor(
     ){
-        if(angular.isDefined(this.sku.data.imagePath)){
-            this.imagePath = this.sku.data.imagePath;
-        }
         if(!angular.isDefined(this.sku)){
             throw("You must provide a sku to the SWSkuThumbnailController");
-        }
-        if(angular.isDefined(this.sku.data)){
-            this.sku = this.sku.data; 
         }
     }    
 }

@@ -26,13 +26,14 @@ class SWImageDetailModalLauncherController{
         this.collectionConfig.setAllRecords(true); 
         this.collectionConfig.getEntity().then(
             (response)=>{
-                this.imageFileName = response.records[0].imageFileName; 
-                this.imagePath = response.records[0].imagePath; 
-                this.sku = this.$hibachi.populateEntity("Sku",response.records[0]); 
-                console.log("imagesku",this.sku);
+                if(angular.isDefined(response.records) && angular.isDefined(response.records[0])){
+                    this.imageFileName = response.records[0].imageFileName; 
+                    this.imagePath = response.records[0].imagePath; 
+                    this.sku = this.$hibachi.populateEntity("Sku",response.records[0]); 
+                }
             },
             (reason)=>{
-                
+                //something went wrong   
             }
        );
     }    
@@ -41,12 +42,19 @@ class SWImageDetailModalLauncherController{
         var data = {
             slatAction:"admin:entity.processProduct",
             processContext:"uploadDefaultImage", 
-            productID:this.sku.product_productID, 
+            productID:this.sku.data.product_productID, 
             preprocessDisplayedFlag:1,
             sRedirectAction:"admin:entity.detailproduct",
+            imageFile:this.sku.imagePath
         };
-        console.log("form???",this.sku)
-        var savePromise = this.$http.post("/?s=1",data);
+        var savePromise = this.$http.post(
+                "/?s=1",
+                data,
+                {
+                    transformRequest: angular.identity,
+                    headers: {'Content-Type': undefined}
+                });
+        return savePromise;
     }
 }
 

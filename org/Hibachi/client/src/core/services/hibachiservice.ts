@@ -127,7 +127,7 @@ class HibachiService{
 		return entityName;
 
 	};
-	//helper method to inflate a single collection record into an object
+	//helper method to inflate a new entity with data
 	populateEntity = (entityName, data)=>{ 
 		var newEntity = this.newEntity(entityName); 
 		angular.extend(newEntity.data,data); 

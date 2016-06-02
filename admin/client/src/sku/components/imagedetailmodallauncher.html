@@ -5,11 +5,12 @@
     <sw-modal-button>
         <!-- Load Sku Image Here -->
         <span ng-if="swImageDetailModalLauncher.sku"> 
-            <img src='{{swImageDetailModalLauncher.sku.imagePath}}' class="s-responsive-image" data-toggle="popover" data-trigger="hover" data-content="OTB_DrinkingTeam-1799.jpg" />
+            <img src='{{swImageDetailModalLauncher.sku.data.imagePath}}' class="s-responsive-image" data-toggle="popover" data-trigger="hover" data-content="OTB_DrinkingTeam-1799.jpg" />
         </span> 
     </sw-modal-button>
     <sw-modal-content> 
-        <sw-form data-object="swImageDetailModalLauncher.sku"
+        <sw-form ng-if="swImageDetailModalLauncher.sku"
+                 data-object="swImageDetailModalLauncher.sku"
                  data-name="{{swImageDetailModalLauncher.name}}">
             <div class="row">
                 <!--
@@ -28,7 +29,7 @@
                 </div>
                 --> 
                 <div class="col-xs-4 s-image-edit">
-                    <sw-sku-thumbnail data-sku="swImageDetailModalLauncher.sku"
+                    <sw-sku-thumbnail data-sku="swImageDetailModalLauncher.sku.data"
                                       data-image-only="true"> 
                     </sw-sku-thumbnail> 
                 </div>
@@ -41,7 +42,7 @@
                             </div>  
                             <div class="form-group" ng-if="swImageDetailModalLauncher.customImageNameFlag" id="j-custom-image-name">
                                 <label for="" class="control-label">Custom Image Name</label>
-                                <input type="text" name="" ng-model="swImageDetailModalLauncher.sku.imageFile"  class="form-control">
+                                <input type="text" name="" ng-model="swImageDetailModalLauncher.sku.data.imageFile"  class="form-control">
                             </div>    
                             <div class="s-checkbox" id="j-toggle-image-type">
                                 <input type="checkbox" ng-model="swImageDetailModalLauncher.customImageNameFlag" id="checkbox1">
@@ -50,9 +51,12 @@
                         </div>
                         <div class="col-md-6">
                             <sw-property-display
+                                data-object="swImageDetailModalLauncher.sku"
                                 data-property="imageFile"
                                 data-field-type="file"
+                                data-file-target="imagePath"
                                 data-editing="true"
+                                data-editable="true"
                             >
                             </sw-property-display>  
                         </div>

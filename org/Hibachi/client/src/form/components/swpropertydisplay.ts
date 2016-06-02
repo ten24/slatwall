@@ -15,6 +15,7 @@ class SWPropertyDisplayController {
     public optionsArguments;
     public eagerLoadOptions:boolean;
     public noValidate:boolean;
+    public fileTarget; 
     public form;
     
 
@@ -23,7 +24,9 @@ class SWPropertyDisplayController {
         public $filter
     ){
         this.errors = {};
-
+        if(angular.isUndefined(this.fileTarget)){
+            this.fileTarget = this.property;
+        }
         if(angular.isUndefined(this.editing)){
             this.editing = false;
         }
@@ -58,7 +61,7 @@ class SWPropertyDisplayController {
             this.object = this.form.$$swFormInfo.object;
         }
         if(angular.isUndefined(this.object) || angular.isUndefined(this.object.metaData)){
-            throw("swPropertyDisplayController must be passed an object which is a jsentities instance");
+            throw("swPropertyDisplayController for property: " + this.property + " must be passed an object which is a jsentities instance");
         }
         
         if(angular.isUndefined(this.fieldType)){
@@ -97,6 +100,7 @@ class SWPropertyDisplay implements ng.IDirective{
         isDirty:"=?",
         onChange:"=?",
         fieldType:"@?",
+        fileTarget:"@?",
         noValidate:"=?"
     };
     public controller=SWPropertyDisplayController;

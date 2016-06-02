@@ -693,7 +693,6 @@ class SWMultiListingDisplayController{
     //move this to the service
     public getPageRecordIsChild = (pageRecord)=>{
         var isChild = false; 
-        console.log("this is a page record",pageRecord);
         return isChild;
     }
     
@@ -710,7 +709,7 @@ class SWMultiListingDisplayController{
     
     //move this to the service
     public getNGClassObjectForPageRecordCell = (pageRecord,column)=>{
-        console.log("theprc",pageRecord,column);
+
         var classObjectString = "{"; 
             
         return classObjectString + "}"; 

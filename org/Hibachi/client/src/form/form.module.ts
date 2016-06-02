@@ -8,9 +8,9 @@
 // import {ObserverService} from "./services/observerservice";
 // import {FormService} from "./services/formservice";
 // import {MetaDataService} from "./services/metadataservice";
+import {FileService} from "./services/fileservice"; 
 //directives
 //  components
-
 //form
 import {SWInput} from "./components/swinput";
 import {SWFFormField} from "./components/swfformfield";
@@ -38,7 +38,7 @@ var formmodule = angular.module('hibachi.form',['angularjs-datetime-picker']).co
 })
 .constant('coreFormPartialsPath','form/components/')
 
-
+.service('fileService',FileService)
 //directives
 .directive('swInput',SWInput.Factory())
 .directive('swfFormField',SWFFormField.Factory())

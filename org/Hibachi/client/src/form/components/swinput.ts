@@ -11,20 +11,23 @@ class SWInput{
 			$compile,
             $hibachi,
 			utilityService,
-            rbkeyService
+            rbkeyService,
+			fileService
 		)=>new SWInput(
 			$log,
 			$compile,
             $hibachi,
 			utilityService,
-            rbkeyService
+            rbkeyService,
+			fileService
 		);
 		directive.$inject = [
 			'$log',
 			'$compile',
             '$hibachi',
 			'utilityService',
-            'rbkeyService'
+            'rbkeyService',
+			'fileService'
 		];
 		return directive
 	}
@@ -33,7 +36,8 @@ class SWInput{
 		$compile,
         $hibachi,
 		utilityService,
-        rbkeyService
+        rbkeyService,
+		fileService
 	){
 		var getValidationDirectives = function(propertyDisplay){
 			var spaceDelimitedList = '';
@@ -212,7 +216,8 @@ class SWInput{
 				//renders the template and compiles it
 				if(scope.propertyDisplay && scope.propertyDisplay.fieldType === 'file'){
 					 element.bind("change", (e)=>{
-						scope.propertyDisplay.object.data[scope.propertyDisplay.property] = (e.srcElement || e.target).files[0];
+						var fileToUpload = (e.srcElement || e.target).files[0];
+						fileService.uploadFile(fileToUpload, scope.propertyDisplay.object, scope.propertyDisplay.fileTarget);
 					 });
 				}
 				element.html(getTemplate(scope.propertyDisplay));
