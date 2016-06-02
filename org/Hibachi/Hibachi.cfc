@@ -211,24 +211,23 @@ component extends="FW1.framework" {
 			// Verify that the session is setup
 			getHibachiScope().getService("hibachiSessionService").setProperSession();
 			
-			// If there is no account on the session, then we can look for an authToken,public key, and timestamp to setup that account for this one request.
-			if(!getHibachiScope().getLoggedInFlag() && 
-				structKeyExists(httpRequestData, "headers") && 
-				structKeyExists(httpRequestData.headers, "secretAccessKey") && 
-				len(httpRequestData.headers.secretAccessKey) && 
-				structKeyExists(httpRequestData.headers, "accessKey") && 
-				len(httpRequestData.headers.accessKey)) {
-				
-				var secretAccessKey = httpRequestData.headers.secretAccessKey;
-				var accessKey 		= httpRequestData.headers.accessKey;
-				
-				//recreate the hash from the users data to find an account by....
-				var hashedSaltedPassword = getHibachiScope().getService("AccountService").getHashedAndSaltedPassword(secretAccessKey, accessKey);
-				var authentication =  getHibachiScope().getService("AccountService").getAccountAuthenticationByAuthToken(hashedSaltedPassword);
-				
-				//now set the account on the session if this is not a super user account and the authentication exists.
-				if (!isNull(authentication)){
-					getHibachiScope().getSession().setAccount( authentication.getAccount() );
+			// If there is no account on the session, then we can look for an Access-Key, Access-Key-Secret, to setup that account for this one request.
+			if(!getHibachiScope().getLoggedInFlag() &&
+				structKeyExists(httpRequestData, "headers") &&
+				structKeyExists(httpRequestData.headers, "Access-Key") &&
+				len(httpRequestData.headers["Access-Key"]) &&
+				structKeyExists(httpRequestData.headers, "Access-Key-Secret") &&
+				len(httpRequestData.headers["Access-Key-Secret"])) {
+
+				var accessKey 		= httpRequestData.headers["Access-Key"];
+				var accessKeySecret = httpRequestData.headers["Access-Key-Secret"];
+
+				// Attempt to find an account by accessKey & accessKeySecret
+				var account = getHibachiScope().getService("AccountService").getAccountByAccessKeyAndSecret( accessKey=accessKey, accessKeySecret=accessKeySecret );
+
+				// If an account was found, then set that account in the session for this request.  This should not persist
+				if (!isNull(account)){
+					getHibachiScope().getSession().setAccount( account );
 				}
 			}
 			

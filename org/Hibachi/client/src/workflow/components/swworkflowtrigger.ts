@@ -76,12 +76,26 @@ class SWWorkflowTrigger{
                 scope.executingTrigger = false;
                 scope.executeWorkflowTrigger = function(workflowTrigger){
                     if(scope.executingTrigger) return;
+
+                    if(!workflowTrigger.data.workflow.data.workflowTasks || !workflowTrigger.data.workflow.data.workflowTasks.length) {
+                        var alert = alertService.newAlert();
+                        alert.msg =  "You don't have any  Task yet!";
+                        alert.type = "error";
+                        alert.fade = true;
+                        alertService.addAlert(alert);
+                        return;
+                    }
                     scope.executingTrigger = true;
 
                     var appConfig = $hibachi.getConfig();
                     var urlString = appConfig.baseURL+'/index.cfm/?'+appConfig.action+'=admin:workflow.executeScheduleWorkflowTrigger&workflowTriggerID='+workflowTrigger.data.workflowTriggerID;
                     $http.get(urlString).finally(()=>{
                         scope.executingTrigger = false;
+                        var alert = alertService.newAlert();
+                        alert.msg =  "Task Triggered Successfully. Check History for Status";
+                        alert.type = "success";
+                        alert.fade = true;
+                        alertService.addAlert(alert);
                     })
                 };
 

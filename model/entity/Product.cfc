@@ -549,6 +549,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 					newOption['optionName'] = option.getOptionName();
 					newOption['name'] = option.getOptionName();
 					newOption['value'] = option.getOptionID();
+					newOption['sortOrder'] = option.getSortOrder();
 					newOption['totalQATS'] = sku.getQuantity("QATS");
 					newOption['selectedQATS'] = 0;
 					if(allSelectedInSku) {
@@ -557,7 +558,9 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 					arrayAppend(skuOptionDetails[ ogCode ].options, newOption);
 				}
 			}
-
+		}
+		for(var ogCode in skuOptionDetails){
+			skuOptionDetails[ ogCode ].options = getService("HibachiUtilityService").structArraySort(skuOptionDetails[ ogCode ].options, "sortOrder");
 		}
 
 		return skuOptionDetails;

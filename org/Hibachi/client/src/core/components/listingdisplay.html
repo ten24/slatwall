@@ -1,7 +1,7 @@
 <div class="row s-detail-content-wrapper">
     <!-- The s-shrink-view class can be removed to show expanded view -->
     <div class="col-xs-12 s-results-listing">
-        <div class="s-detail-body">
+        <div class="s-detail-body"> 
             <div class="s-content-header" data-ng-if="swListingDisplay.title">
                 <h2 data-ng-bind="swListingDisplay.title"></h2>
                 <!--<span class="pull-right s-expand-icon s-detail-show-content">-->
@@ -62,13 +62,13 @@
                             <div class="btn-group btn-group-xs">
                                 <button class="btn dropdown-toggle btn-primary" data-toggle="dropdown">Action <span class="caret"></span></button>
                                 <ul class="dropdown-menu pull-right">
-                                    <li>
+                                    <li data-ng-if="swListingDisplay.collectionData">
                                         <a href data-ng-click="swListingDisplay.exportCurrentList()">Export</a>
                                     </li>
                                     <li>
                                         <a href
                                            data-ng-click="swListingDisplay.exportCurrentList(true)"
-                                           data-ng-if="swListingDisplay.multiselectable && swListingDisplay.multiselectCount > 0">
+                                           data-ng-if="swListingDisplay.collectionData && swListingDisplay.multiselectable && swListingDisplay.multiselectCount > 0">
                                             Export Selected Rows ({{swListingDisplay.multiselectCount}})
                                         </a>
                                     </li>
@@ -78,7 +78,16 @@
                     </div>
                 </div>
             </div>
-            <div class="table-responsive">
+            <div style="margin-left:5px; margin-top:10px" data-ng-if="swListingDisplay.showPagination == 'top' || swListingDisplay.showPagination == 'both'">
+                <sw-pagination-bar
+                        data-ng-if="swListingDisplay.paginator &&
+                                    !swListingDisplay.expandable &&
+                                    swListingDisplay.collectionData.recordsCount &&
+                                    swListingDisplay.collectionPromise.$$state.status !== 0"
+                        data-paginator="swListingDisplay.paginator">
+                </sw-pagination-bar>
+            </div>
+            <div class="table-responsive" sw-loading="swListingDisplay.collectionData">
                 <table class="table table-bordered s-detail-content-table">
                     <thead>
                         <tr>
@@ -107,8 +116,7 @@
                                     </svg>
                                 </a>
                             </th>
-                            <th class="s-detail-hidden-content">
-                            </th>
+                            <th class="s-detail-hidden-content" data-ng-if="swListingDisplay.administrativeCount"></th>
                         </tr>
                     </thead>
                     <tbody data-ng-if="swListingDisplay.collectionData.pageRecords">
@@ -290,13 +298,17 @@
                             </td>
 
                         </tr>
-
+                        <tr ng-if="(swListingDisplay.collectionData.pageRecords && !swListingDisplay.collectionData.pageRecords.length) || (swListingDisplay.collectionData.records && !swListingDisplay.collectionData.records.length)">
+                            <td colspan="{{swListingDisplay.collectionConfig.columns.length}}" style="text-align:center;">
+                                no records
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
         </div>
         <sw-pagination-bar
-                data-ng-if="swListingDisplay.paginator && swListingDisplay.collectionData.recordsCount && swListingDisplay.collectionPromise.$$state.status !== 0"
+                data-ng-if="swListingDisplay.paginator && !swListingDisplay.expandable && swListingDisplay.collectionData.recordsCount && swListingDisplay.collectionPromise.$$state.status !== 0"
                 data-paginator="swListingDisplay.paginator">
         </sw-pagination-bar>
     </div>

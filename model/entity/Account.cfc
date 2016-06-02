@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Account" entityname="SlatwallAccount" table="SwAccount" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="this" hb_processContexts="addAccountLoyalty,addAccountPayment,createPassword,changePassword,create,forgotPassword,lock,login,logout,resetPassword,setupInitialAdmin,unlock,updatePassword,generateAuthToken" {
+component displayname="Account" entityname="SlatwallAccount" table="SwAccount" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="this" hb_processContexts="addAccountLoyalty,addAccountPayment,createPassword,changePassword,create,forgotPassword,lock,login,logout,resetPassword,setupInitialAdmin,unlock,updatePassword,generateAPIAccessKey" {
 
 	// Persistent Properties
 	property name="accountID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -57,7 +57,6 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="loginLockExpiresDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="failedLoginAttemptCount" hb_populateEnabled="false" ormtype="integer" hb_auditable="false";
 	property name="taxExemptFlag" ormtype="boolean";
-
 	// CMS Properties
 	property name="cmsAccountID" ormtype="string" hb_populateEnabled="false" index="RI_CMSACCOUNTID";
 
@@ -232,7 +231,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 
 		return giftCardSmartList;
 	}
-	
+
 	public any function getOrdersPlacedSmartList() {
 		if(!structKeyExists(variables, "ordersPlacedSmartList")) {
 			var osl = getService("orderService").getOrderSmartList();

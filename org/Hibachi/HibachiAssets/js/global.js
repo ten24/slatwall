@@ -92,24 +92,25 @@ function initUIElements( scopeSelector ) {
 	// Wysiwyg
 	jQuery.each(jQuery( scopeSelector ).find(jQuery( '.wysiwyg' )), function(i, v){
 		// Wysiwyg custom config file located in: custom/assets/ckeditor_config.js
-		
-		var customConfigLocation = '../../../custom/assets/ckeditor_config.js';
-		
-		var config = {
-			customConfig: customConfigLocation,
+		if(typeof(CKEDITOR) != "undefined"){
+			
+			var customConfigLocation = '../../../custom/assets/ckeditor_config.js';
+			
+			var config = {
+				customConfig: customConfigLocation,
+			}
+			if($(v).attr('siteCode') && $(v).attr('appCode')){
+				var codeString = 'siteCode='+$(v).attr('siteCode')+'&appCode='+$(v).attr('appCode');
+				config.filebrowserBrowseUrl      =hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/ckfinder.html?'+codeString;
+				config.filebrowserImageBrowseUrl = hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/ckfinder.html?Type=Images&'+codeString;
+				config.filebrowserUploadUrl      = hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/core/connector/cfm/connector.cfm?command=QuickUpload&type=Files&'+codeString;
+				config.filebrowserImageUploadUrl = hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/core/connector/cfm/connector.cfm?command=QuickUpload&type=Images&'+codeString;
+			}
+			var editor = CKEDITOR.replace( v, config);
+			
+			CKFinder.setupCKEditor( editor, 'org/Hibachi/ckfinder/' );
+			//allow override via attributes
 		}
-		if($(v).attr('siteCode') && $(v).attr('appCode')){
-			var codeString = 'siteCode='+$(v).attr('siteCode')+'&appCode='+$(v).attr('appCode');
-			config.filebrowserBrowseUrl      =hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/ckfinder.html?'+codeString;
-			config.filebrowserImageBrowseUrl = hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/ckfinder.html?Type=Images&'+codeString;
-			config.filebrowserUploadUrl      = hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/core/connector/cfm/connector.cfm?command=QuickUpload&type=Files&'+codeString;
-			config.filebrowserImageUploadUrl = hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/core/connector/cfm/connector.cfm?command=QuickUpload&type=Images&'+codeString;
-		}
-		var editor = CKEDITOR.replace( v, config);
-		
-		CKFinder.setupCKEditor( editor, 'org/Hibachi/ckfinder/' );
-		//allow override via attributes
-		
 	});
 
 	// Tooltips
@@ -140,16 +141,33 @@ function initUIElements( scopeSelector ) {
 		*/
 
 		jQuery( jQuery(this).data('hibachi-selector') ).on('change', bindData, function(e) {
-			var selectedValue = jQuery(this).val() || '';
-			if(bindData.valueAttribute.length) {
+			
+            var selectedValue = jQuery(this).val() || '';
+			
+            if(bindData.valueAttribute.length) {
 				var selectedValue = jQuery(this).children(":selected").data(bindData.valueAttribute) || '';
 			}
 
-			if( jQuery( '#' + bindData.id ).hasClass('hide') && (bindData.showValues.toString().split(",").indexOf(selectedValue.toString()) > -1 || bindData.showValues === '*' && selectedValue.length) ) {
-				jQuery( '#' + bindData.id ).removeClass('hide');
-			} else if ( !jQuery( '#' + bindData.id ).hasClass('hide') && ((bindData.showValues !== '*' && bindData.showValues.toString().split(",").indexOf(selectedValue.toString()) === -1) || (bindData.showValues === '*' && !selectedValue.length)) ) {
-				jQuery( '#' + bindData.id ).addClass('hide');
-			}
+			if( jQuery( '#' + bindData.id ).hasClass('hide') 
+                && ( bindData.showValues.toString().split(",").indexOf(selectedValue.toString()) > -1 
+                     || bindData.showValues === '*' && selectedValue.length) 
+            ) {
+				
+                jQuery( '#' + bindData.id ).removeClass('hide');
+                
+                //traverse the dom enable inputs
+                $('#' + bindData.id).find('*').attr('disabled', false);
+			
+            } else if ( !jQuery( '#' + bindData.id ).hasClass('hide') 
+                        && ( (bindData.showValues !== '*' && bindData.showValues.toString().split(",").indexOf(selectedValue.toString()) === -1) 
+                            || (bindData.showValues === '*' && !selectedValue.length) ) 
+            ) {
+			
+                jQuery( '#' + bindData.id ).addClass('hide');
+                
+                //traverse the dom disable inputs
+                $('#' + bindData.id).find('*').attr('disabled', true);
+            }
 		});
 
 
@@ -160,7 +178,10 @@ function initUIElements( scopeSelector ) {
 	jQuery.each(jQuery( scopeSelector ).find(jQuery('form')), function(index, value) {
 		jQuery(value).on('submit', function(e){
 			
-			jQuery ("button[type='submit']").prop('disabled', true);
+            
+            if(jQuery("button[type='submit']").attr("value") == undefined){
+                jQuery ("button[type='submit']").prop('disabled', true);
+            }
 			
 			jQuery.each(jQuery( this ).find(jQuery('input[data-emptyvalue]')), function(i, v){
 				if(jQuery(v).val() == jQuery(v).data('emptyvalue')) {
@@ -352,7 +373,6 @@ function setupEventHandlers() {
 			url:modalLink,
 			method:'get',
 			success: function(response){
-				jQuery('#adminModal').html(response);
 				jQuery('#adminModal').modal();
 				
 				var elem = angular.element(document.getElementById('ngApp'));
@@ -360,7 +380,7 @@ function setupEventHandlers() {
 			    var $compile = injector.get('$compile'); 
 			    var $rootScope = injector.get('$rootScope'); 
 			    
-			    jQuery('#adminModal').html($compile(jQuery('#adminModal').html())($rootScope));
+			    jQuery('#adminModal').html($compile(response)($rootScope));
 				initUIElements('#adminModal');
 				
 				jQuery('#adminModal').css({
@@ -422,14 +442,16 @@ function setupEventHandlers() {
 
 	//kill all ckeditor instances on modal window close
 	jQuery('#adminModal ').on('hidden', function(){
+		if(typeof(CKEDITOR) != "undefined"){
+			for(var i in CKEDITOR.instances) {
 
-		for(var i in CKEDITOR.instances) {
-
-			if( jQuery( 'textarea[name="' + i + '"]' ).parents( '#adminModal' ).length ){
-				CKEDITOR.instances[i].destroy(true);
+				if( jQuery( 'textarea[name="' + i + '"]' ).parents( '#adminModal' ).length ){
+					CKEDITOR.instances[i].destroy(true);
+				}
+	
 			}
-
 		}
+		
 		//return to default size
 		jQuery('#adminModal .modal-body').css({
 				'height':'auto'
@@ -790,7 +812,6 @@ function setupEventHandlers() {
 				} else {
 
 					if(("preProcessView" in r)) {
-						jQuery('#adminModal').html(r.preProcessView);
 						jQuery('#adminModal').modal();
 						
 						var elem = angular.element(document.getElementById('ngApp'));
@@ -798,7 +819,7 @@ function setupEventHandlers() {
 					    var $compile = injector.get('$compile'); 
 					    var $rootScope = injector.get('$rootScope'); 
 					    
-					    jQuery('#adminModal').html($compile(jQuery('#adminModal').html())($rootScope));
+					    jQuery('#adminModal').html($compile(r.preProcessView)($rootScope));
 						initUIElements('#adminModal');
 						
 						jQuery('#adminModal').css({
