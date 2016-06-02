@@ -1,11 +1,11 @@
 class FileService {
     //@ngInject
-    constructor(FileReader){
+    constructor(private FileReader){
         
     }
     
-    uploadFile = (property:string,object:any) => {
-        this.fileReader.readAsDataUrl($scope.file, $scope)
+    uploadFile = (file:any,property:string,object:any) => {
+        this.FileReader.readAsDataUrl(file)
             .then((result)=>{
                 //$scope.imageSrc = result;
                 object.data[property] = result;
