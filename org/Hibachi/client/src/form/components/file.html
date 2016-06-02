@@ -1,10 +1,4 @@
 <div class="form-group s-upload-image">
     <label for="" class="control-label"></label>
-    <input type="file"
-           ng-model="swFormFieldFile.propertyDisplay.object.data[swFormFieldFile.propertyDisplay.property]"
-  		   ng-disabled="!swFormFieldFile.propertyDisplay.editable"
-  		   ng-show="swFormFieldFile.propertyDisplay.editing"
-  		   on-change="swFormFieldFile.propertyDisplay.onChange"
-  		   name="{{swFormFieldFilectrl.propertyDisplay.property}}"
-           class="form-control" />
+    <sw-input data-property-display="swFormFieldFile.propertyDisplay" />
 </div>

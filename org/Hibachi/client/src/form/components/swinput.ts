@@ -187,7 +187,15 @@ class SWInput{
                     validations +
                     'id="swinput'+utilityService.createID(26)+'"'+
                     ' />';
-            }
+            } else if(propertyDisplay.fieldType === 'file'){
+				template = '<input type="file"' +
+           				    'ng-model="propertyDisplay.object.data[swFormFieldFile.propertyDisplay.property]"' +
+  		   					'ng-disabled="!propertyDisplay.editable"' +
+  		   					'ng-show="propertyDisplay.editing"' +
+  		   					'on-change="propertyDisplay.onChange"' + 
+  		   					'name="propertyDisplay.property"' +
+           					'class="form-control" />';
+			}
 
 			return template;
 		};
@@ -202,6 +210,11 @@ class SWInput{
 			//adding model and form controller
 			link : function(scope, element, attr, formController) {
 				//renders the template and compiles it
+				if(scope.propertyDisplay && scope.propertyDisplay.fieldType === 'file'){
+					 element.bind("change", (e)=>{
+						scope.propertyDisplay.object.data[scope.propertyDisplay.property] = (e.srcElement || e.target).files[0];
+					 });
+				}
 				element.html(getTemplate(scope.propertyDisplay));
 				$compile(element.contents())(scope);
 			}

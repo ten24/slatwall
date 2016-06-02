@@ -57,7 +57,10 @@ class SWPropertyDisplayController {
         if(!angular.isDefined(this.object)){
             this.object = this.form.$$swFormInfo.object;
         }
-
+        if(angular.isUndefined(this.object) || angular.isUndefined(this.object.metaData)){
+            throw("swPropertyDisplayController must be passed an object which is a jsentities instance");
+        }
+        
         if(angular.isUndefined(this.fieldType)){
             this.fieldType = this.object.metaData.$$getPropertyFieldType(this.property);
         }
