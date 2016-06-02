@@ -101,24 +101,24 @@ component accessors="true" output="false" displayname="FedEx" implements="Slatwa
 	private any function getShippingProcessShipmentResponseBean(string xmlResponse){
 		var responseBean = new Slatwall.model.transient.fulfillment.ShippingProcessShipmentResponseBean();
 		responseBean.setData(arguments.xmlResponse);
-		if(structKeyExists(getData(),'Fault')) {
-			addMessage(messageName="communicationError", message="An unexpected communication error occured, please notify system administrator.");
+		if(structKeyExists(responseBean.getData(),'Fault')) {
+			responseBean.addMessage(messageName="communicationError", message="An unexpected communication error occured, please notify system administrator.");
 			// If XML fault then log error
-			addError("unknown", "An unexpected communication error occured, please notify system administrator.");
+			responseBean.addError("unknown", "An unexpected communication error occured, please notify system administrator.");
 		} else {
 			// Log all messages from FedEx into the response bean
-			for(var i=1; i<=arrayLen(getData().ProcessShipmentReply.Notifications); i++) {
-				addMessage(
-					messageName=getData().ProcessShipmentReply.Notifications[i].Code.xmltext,
-					message=getData().ProcessShipmentReply.Notifications[i].Message.xmltext
+			for(var i=1; i<=arrayLen(responseBean.getData().ProcessShipmentReply.Notifications); i++) {
+				responseBean.addMessage(
+					messageName=responseBean.getData().ProcessShipmentReply.Notifications[i].Code.xmltext,
+					message=responseBean.getData().ProcessShipmentReply.Notifications[i].Message.xmltext
 				);
-				if(FindNoCase("Error", getData().ProcessShipmentReply.Notifications[i].Severity.xmltext)) {
-					addError(getData().ProcessShipmentReply.Notifications[i].Code.xmltext, getData().ProcessShipmentReply.Notifications[i].Message.xmltext);
+				if(FindNoCase("Error", responseBean.getData().ProcessShipmentReply.Notifications[i].Severity.xmltext)) {
+					responseBean.addError(responseBean.getData().ProcessShipmentReply.Notifications[i].Code.xmltext, responseBean.getData().ProcessShipmentReply.Notifications[i].Message.xmltext);
 				}
 			}
 			//if no errors then we should convert data to properties
-			if(!hasErrors()) {
-				var completedShipmentDetail = getData().ProcessShipmentReply.CompletedShipmentDetail;
+			if(!responseBean.hasErrors()) {
+				var completedShipmentDetail = responseBean.getData().ProcessShipmentReply.CompletedShipmentDetail;
 				responseBean.setTrackingNumber(completedShipmentDetail.CompletedPackageDetails.trackingIds.trackingNumber.xmlText);
 				responseBean.setContainerLabel(completedShipmentDetail.CompletedPackageDetails.label.parts.image.xmlText);
 			}
