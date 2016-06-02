@@ -353,16 +353,131 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertFalse(resultNSUNoPG);
 	}
 	
-	public void function getGiftCardSmartListTest() {//Working on, not finished
-		
+	public void function getGiftCardSmartListTest() {//Working on, not finished	
+		var accountData1 = {
+			accountID = "",
+			giftCards = [{
+				giftCardID = "",
+				giftCardCode = "firstGiftCardCode"
+			},{
+				giftCardID = "",
+				giftCardCode = "secondGiftCardCode"
+			}]	
+		};
+		var mockAccount1 = createTestEntity("Account", accountData1);
+		var result = mockAccount1.getGiftCardSmartList();//right way to get smart list?
+		var directResult = mockAccount1.getGiftCards();
+		request.debug(directResult[1]);
+
+		var mockGiftCards = variables.entity;
+//		mockGiftCards.setGiftCards('ProductType');
+		request.debug(mockGiftCards);
+//		var mockGCSmartList = request.slatwallScope.getService("accountService").getAccountSmartList();
+//		request.debug(mockGCSmartList);
+//		assertFalse(resultNSUNoPG);
+	}
+/*	
+	public void function getPrimaryEmailAddressesNotInUseFlagTest() {
+		//testing existed primaryEmailAddressNotInUseFlag
 		var accountData = {
 			accountID = "001",
-			superUserFlag = TRUE	
+			firstName = "Hello",
+			lastName = "Kitty",
+			primaryEmailAddressNotInUseFlag = TRUE
 		};
 		var mockAccount = createTestEntity('Account', accountData);
-		var result = mockAccount.getGiftCardSmartList();
-		request.debug(result);
-		assertFalse(resultNSUNoPG);
+		var resultPrimaryEmailNotInUseFlag = mockAccount.getPrimaryEmailAddressesNotInUseFlag();
+		assertTrue(resultPrimaryEmailNotInUseFlag);
+		//test the constraint issue		
+		var pe = {
+			accountEmailAddressID = "",
+			emailAddress = "hello@clarku.edu"
+		};
+		accountData = {
+			accountID = ""		
+		};
+		mockAccount = createPersistedTestEntity('Account', accountData);
+		var accountData2 = {
+			accountID = ""		
+		};
+		var mockAccount2 = createPersistedTestEntity('Account', accountData2);
+		mockAccount.PrimaryEmailAddress = pe;
+		assertTrue(mockAccount.getPrimaryEmailAddressesNotInUseFlag());
+		mockAccount2.PrimaryEmailAddress = pe;
+		assertFalse(mockAccount2.getPrimaryEmailAddressesNotInUseFlag());	
+		//testing not been used primaryEmailAddress
+		var testEmail = "testtesttest@Address.com";
+		var accountData1 = {
+			accountID = "",
+			primaryEmailAddress = {
+				accountEmailAddressID = "",
+				emailAddress = #testEmail#				
+			}			
+		};
+		var mockAccount1 = createPersistedTestEntity('Account', accountData1);
+		var resultNoInUse = mockAccount1.getPrimaryEmailAddressesNotInUseFlag();
+		assertTrue(resultNoInUse);
+		//testing been used primaryEmail based on the previous case, use 'testEmail'
+		var accountData2 = {
+			accountID = "",
+			primaryEmailAddress = {				
+				emailAddress = #testEmail#		
+			}			
+		};
+		request.debug(accountData2);
+		var mockAccount2 = createPersistedTestEntity('Account', accountData2);
+		var result = mockAccount2.getPrimaryEmailAddressesNotInUseFlag();
+		//request.debug(mockAccount2.getPrimaryEmailAddress());
+		request.debug(result);		
+		assertFalse(result.getNewFlag());
+	}
+*/	
+	public void function getPasswordResetIDTest() {
+		var num = "1232123";
+		var accountData = {
+			accountID = "#num#",
+			firstName = "Helo",
+			accountAuthentications = {
+				accountAuthenticationID = "",
+				expirationDateTime = DateAdd("d", 2, now()),
+				password = "123"
+			} 	
+		};
+		var mockAccount = createTestEntity('Account', accountData);
+		var result = mockAccount.getPasswordResetID();
+		request.debug(mockAccount.getAccountID());	
+		assertEquals(result, num);//resetID always different from AccountID?
+		
+	}
+	public void function getSlatwallAuthenticationExistsFlagTest() {
+		
+		var accountData = {
+			accountID = "#num#",
+			accountAuthentications = {
+				accountAuthenticationID = "",
+				expirationDateTime = DateAdd("d", 2, now()),
+				password = "123"
+			} 
+		};
+		var mockAccount = createTestEntity('Account', accountData);
+		var result = mockAccount.getSlatwallAuthenticationExistsFlag();
+		
+	}
+	public void function getActiveAccountAuthenticationsTest() {
+		
+	}
+	//Cannot test, no SSH
+	public void function getGravatarURLTest() {
+		var accountData = {
+			accountID = "",
+			accountAuthentications = {
+				accountAuthenticationID = "",
+				expirationDateTime = DateAdd("d", 2, now()),
+				password = "123"
+			} 
+		};
+		var mockAccount = createTestEntity('Account', accountData);
+		request.debug(mockAccount.getGravatarURL());
 	}
 	// ============  END TESTING:  Non-Persistent Property Methods =================
 	
