@@ -108,7 +108,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="subtotalAfterDiscountsWithTax" type="array" persistent="false" hb_formatType="currency";
 	property name="taxAmount" type="numeric" persistent="false" hb_formatType="currency";
 	property name="totalShippingWeight" type="numeric" persistent="false" hb_formatType="weight";
-	property name="hasOrderWithCorrectAmountRecieved" type="boolean" persistent="false";
+	property name="hasOrderWithMinAmountRecievedRequiredForFulfillment" type="boolean" persistent="false";
 	property name="isAutoFulfillment" type="boolean" persistent="false";
 	property name="isAutoFulfillmentReadyToBeFulfilled" type="boolean" persistent="false";
 
@@ -171,7 +171,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		}
 	}
 
-	public boolean function hasGiftCardRecipients(){
+	public boolean function hasFulfillmentItemsWithAssignedRecipients(){
 		for(var item in this.getOrderFulfillmentItems()){
 			if(!item.hasAllGiftCardsAssigned()){
 				return false;
@@ -181,7 +181,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	}
 
 	public boolean function needsEmailForFulfillment(){
-		return !hasGiftCardRecipients();
+		return !hasFulfillmentItemsWithAssignedRecipients();
 	}
 
 	public any function getNumberOfNeededGiftCardCodes(){
@@ -456,7 +456,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     	return totalShippingWeight;
     }
 
-     public boolean function hasOrderWithCorrectAmountRecieved() {
+     public boolean function hasOrderWithMinAmountRecievedRequiredForFulfillment() {
     	return  (   !isNull(this.getOrder())
     				&& (
     				  	this.getOrder().getTotal() == 0
@@ -477,7 +477,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     }
 
     public boolean function isAutoFulfillmentReadyToBeFulfilled(){
-		return this.isAutoFulfillment() && this.hasOrderWithCorrectAmountRecieved() && this.hasGiftCardRecipients();
+		return this.isAutoFulfillment() && this.hasOrderWithMinAmountRecievedRequiredForFulfillment() && this.hasFulfillmentItemsWithAssignedRecipients();
     }
 
 	// ============  END:  Non-Persistent Property Methods =================
