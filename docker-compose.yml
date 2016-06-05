@@ -1,0 +1,23 @@
+version: '2'
+services:
+  slatwall:
+    build: ./meta/docker/slatwall-local-dev/
+    volumes:
+      - ./:/var/www/
+    ports:
+      - "80:80"
+      - "8888:8888"
+    links:
+      - slatwalldb
+    environment:
+      - MYSQL_ROOT_PASSWORD=LOCAL_DEV_NOT_SECURE
+      - MYSQL_HOST=slatwalldb
+      - MYSQL_PORT=3306
+      - MYSQL_DATABASE=Slatwall
+      - LUCEE_PASSWORD=LOCAL_DEV_NOT_SECURE
+      - LUCEE_JAVA_OPTS=-Xms1024m -Xmx1024m
+  slatwalldb:
+    image: mysql
+    environment:
+     MYSQL_ROOT_PASSWORD : LOCAL_DEV_NOT_SECURE
+     MYSQL_DATABASE : Slatwall
