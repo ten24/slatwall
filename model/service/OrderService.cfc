@@ -1840,22 +1840,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			) {
 				arguments.orderDelivery.setShippingMethod( arguments.processObject.getShippingMethod() );
 				arguments.orderDelivery.setShippingAddress( arguments.processObject.getShippingAddress().copyAddress( saveNewAddress=true ) );
+			
+				// Setup the tracking number if we have it
+				if(
+					!isNull(arguments.processObject.getTrackingNumber()) 
+					&& len(arguments.processObject.getTrackingNumber())
+				) {
+					arguments.orderDelivery.setTrackingNumber(arguments.processObject.getTrackingNumber());
+				}
+				
+				if(
+					!isNull(arguments.processObject.getContainerLabel())
+					&& len(arguments.processObject.getContainerLabel())
+				){
+					arguments.orderDelivery.setContainerLabel(arguments.processObject.getContainerLabel());
+				}
 			}
 			
-			// Setup the tracking number if we have it
-			if(
-				!isNull(arguments.processObject.getTrackingNumber()) 
-				&& len(arguments.processObject.getTrackingNumber())
-			) {
-				arguments.orderDelivery.setTrackingNumber(arguments.processObject.getTrackingNumber());
-			}
-			
-			if(
-				!isNull(arguments.processObject.getContainerLabel())
-				&& len(arguments.processObject.getContainerLabel())
-			){
-				arguments.orderDelivery.setContainerLabel(arguments.processObject.getContainerLabel());
-			}
 			// If the orderFulfillmentMethod is auto, and there aren't any delivery items then we can just fulfill all that are "undelivered"
 			if(
 				(
