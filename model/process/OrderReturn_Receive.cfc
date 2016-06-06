@@ -56,6 +56,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="packingSlipNumber" hb_rbKey="entity.stockReceiver.packingSlipNumber";
 	property name="boxCount" hb_rbKey="entity.stockReceiver.boxCount";
 	property name="orderReturnItems" type="array" hb_populateArray="true";
+	property name="stockLossFlag" hb_formFieldType="yesno" default="0" hb_populateEnabled="public";
 	
 	public any function getLocationIDOptions() {
 		if(!structKeyExists(variables, "locationIDOptions")) {

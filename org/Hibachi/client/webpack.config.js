@@ -78,5 +78,7 @@ appConfig
     .addVendor('angular-sanitize','angular/angular-sanitize.min.js')
     .addVendor('metismenu','metismenu/metismenu.js')
     .addVendor('angularjs-datetime-picker','angularjs-datetime-picker/angularjs-datetime-picker.js')
+    
+    
 ;
 module.exports = appConfig;
