@@ -123,6 +123,62 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(resultMissingStructure, '<div></div>,');
 	}
 	
+
+	/**
+	*function tested under Model -> Service -> HibachiUtilityService <br>
+	* 3 Tests: IsPrimaryKey, NotPrimaryKey, NotExist
+	*
+	*
+	*/
+	public void function queryToStructOfStructures_IsPrimaryKey_Test() {
+		//testing returns if PK
+		var testQuery = queryNew("id,name,sex", "Integer,Varchar,Varchar", 
+				[ 
+					[1, "One", "F"], 
+					[2, "Two", "M"] ,
+					[3, "Three", "MF"]
+				]); 
+		var expectedStructure = {
+			1 = '',
+			2 = '',
+			3 = ''
+		}; 
+		var resultStructure = variables.service.queryToStructOfStructures(testQuery, "id");
+		assertEquals(resultStructure, expectedStructure);
+	}
+	public void function queryToStructOfStructures_NotPrimaryKey_Test() {
+		//testing returns if not the PK
+		var testQuery = queryNew("id,name,sex", "Integer,Varchar,Varchar", 
+				[ 
+					[1, "One", "F"], 
+					[2, "Two", "M"] ,
+					[3, "Three", "MF"]
+				]); 
+		var expectedStructure = {
+			one = 'fdf',
+			two = '',
+			Three = ''
+		}; 
+		var resultStructure = variables.service.queryToStructOfStructures(testQuery, "Name");
+		assertEquals(resultStructure, expectedStructure);
+	}	
+	public void function queryToStructOfStructures_notExistPrimaryKey_Test() {
+		//testing return error --> Index Error
+		var testQuery = queryNew("id,name,sex", "Integer,Varchar,Varchar", 
+				[ 
+					[1, "One", "F"], 
+					[2, "Two", "M"], 
+					[3, "Three", "F"]
+				]); 
+		var expectedStructure = {
+		}; 
+		var resultStructure = variables.service.queryToStructOfStructures(testQuery, "idx");
+		assertEquals(resultStructure, expectedStructure);
+	}
+	
+	
+	
+	
 	
 	public void function lcaseStructKeys_lcases_structure_keys_at_top_level() {
 		var data = {};
