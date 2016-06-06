@@ -140,16 +140,33 @@ function initUIElements( scopeSelector ) {
 		*/
 
 		jQuery( jQuery(this).data('hibachi-selector') ).on('change', bindData, function(e) {
-			var selectedValue = jQuery(this).val() || '';
-			if(bindData.valueAttribute.length) {
+			
+            var selectedValue = jQuery(this).val() || '';
+			
+            if(bindData.valueAttribute.length) {
 				var selectedValue = jQuery(this).children(":selected").data(bindData.valueAttribute) || '';
 			}
 
-			if( jQuery( '#' + bindData.id ).hasClass('hide') && (bindData.showValues.toString().split(",").indexOf(selectedValue.toString()) > -1 || bindData.showValues === '*' && selectedValue.length) ) {
-				jQuery( '#' + bindData.id ).removeClass('hide');
-			} else if ( !jQuery( '#' + bindData.id ).hasClass('hide') && ((bindData.showValues !== '*' && bindData.showValues.toString().split(",").indexOf(selectedValue.toString()) === -1) || (bindData.showValues === '*' && !selectedValue.length)) ) {
-				jQuery( '#' + bindData.id ).addClass('hide');
-			}
+			if( jQuery( '#' + bindData.id ).hasClass('hide') 
+                && ( bindData.showValues.toString().split(",").indexOf(selectedValue.toString()) > -1 
+                     || bindData.showValues === '*' && selectedValue.length) 
+            ) {
+				
+                jQuery( '#' + bindData.id ).removeClass('hide');
+                
+                //traverse the dom enable inputs
+                $('#' + bindData.id).find('*').attr('disabled', false);
+			
+            } else if ( !jQuery( '#' + bindData.id ).hasClass('hide') 
+                        && ( (bindData.showValues !== '*' && bindData.showValues.toString().split(",").indexOf(selectedValue.toString()) === -1) 
+                            || (bindData.showValues === '*' && !selectedValue.length) ) 
+            ) {
+			
+                jQuery( '#' + bindData.id ).addClass('hide');
+                
+                //traverse the dom disable inputs
+                $('#' + bindData.id).find('*').attr('disabled', true);
+            }
 		});
 
 
@@ -355,7 +372,6 @@ function setupEventHandlers() {
 			url:modalLink,
 			method:'get',
 			success: function(response){
-				jQuery('#adminModal').html(response);
 				jQuery('#adminModal').modal();
 				
 				var elem = angular.element(document.getElementById('ngApp'));
@@ -363,7 +379,7 @@ function setupEventHandlers() {
 			    var $compile = injector.get('$compile'); 
 			    var $rootScope = injector.get('$rootScope'); 
 			    
-			    jQuery('#adminModal').html($compile(jQuery('#adminModal').html())($rootScope));
+			    jQuery('#adminModal').html($compile(response)($rootScope));
 				initUIElements('#adminModal');
 				
 				jQuery('#adminModal').css({
@@ -793,7 +809,6 @@ function setupEventHandlers() {
 				} else {
 
 					if(("preProcessView" in r)) {
-						jQuery('#adminModal').html(r.preProcessView);
 						jQuery('#adminModal').modal();
 						
 						var elem = angular.element(document.getElementById('ngApp'));
@@ -801,7 +816,7 @@ function setupEventHandlers() {
 					    var $compile = injector.get('$compile'); 
 					    var $rootScope = injector.get('$rootScope'); 
 					    
-					    jQuery('#adminModal').html($compile(jQuery('#adminModal').html())($rootScope));
+					    jQuery('#adminModal').html($compile(r.preProcessView)($rootScope));
 						initUIElements('#adminModal');
 						
 						jQuery('#adminModal').css({
