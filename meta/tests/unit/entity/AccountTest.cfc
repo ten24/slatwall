@@ -135,7 +135,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 //		request.debug(resultExistingAdminIcon);
 //		assertEquals(resultExistingAdminIcon, "see output first");
 //	}
-
+/*
 	public void function getEmailAddressTest() {
 		//Testing existed accountEmailAddress
 		var accountData = {
@@ -352,29 +352,231 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var resultNSUNoPG = mockAccount.getAdminAccountFlag();
 		assertFalse(resultNSUNoPG);
 	}
-	
-	public void function getGiftCardSmartListTest() {//Working on, not finished	
-		var accountData1 = {
+*/	
+	public void function getGiftCardSmartListTest() {
+		//testing existed GiftCard SmartList
+		var accountData = {
 			accountID = "",
-			giftCards = [{
-				giftCardID = "",
-				giftCardCode = "firstGiftCardCode"
-			},{
-				giftCardID = "",
-				giftCardCode = "secondGiftCardCode"
-			}]	
+			firstName = "hello"
+		};		
+		var mockAccount = createPersistedTestEntity("Account", accountData);		
+		var giftCard1Data = {
+			giftCardID = "",
+			giftCardCode = "firstGiftCardCode",
+			ownerAccount = {
+				accountID = mockAccount.getAccountID()
+			}
+		};		
+		var giftCard2Data = {
+			giftCardID = "",
+			giftCardCode = "secondGiftCardCode",
+			ownerAccount = {
+				accountID = mockAccount.getAccountID()
+			}
+		};	
+		var giftCard3Data = {
+			giftCardID = "",
+			giftCardCode = "thirdGiftCardCode",
+			ownerAccount = {
+				accountID = mockAccount.getAccountID()
+			}
+		};				
+		var giftCard1 = createPersistedTestEntity('GiftCard', giftcard1Data);
+		var giftCard2 = createPersistedTestEntity('GiftCard', giftcard2Data);
+		var giftCard3 = createPersistedTestEntity('GiftCard', giftcard3Data);
+		
+		
+		var resultExistSM = mockAccount.getGiftCardSmartList().getRecords();
+		assertEquals(arraylen(resultExistSM), arraylen(mockAccount.getGiftCards()));
+		//testing empty GiftCard SmartList
+		var accountData = {
+			accountID = "",
+			firstName = "hello"
+		};		
+		var mockAccount = createPersistedTestEntity("Account", accountData);
+		var resultEmptyGC = mockAccount.getGiftCardSmartList().getRecords();
+		assertEquals(arraylen(resultEmptyGC), 0);				
+	}
+	
+	public void function getOrdersPlacedSmartList_AccountIDFilter_DESCOrderByDate_Test() {
+		var accountData = {
+			accountID = "",
+			firstName = "hello"	
 		};
-		var mockAccount1 = createTestEntity("Account", accountData1);
-		var result = mockAccount1.getGiftCardSmartList();//right way to get smart list?
-		var directResult = mockAccount1.getGiftCards();
-		request.debug(directResult[1]);
-
-		var mockGiftCards = variables.entity;
-//		mockGiftCards.setGiftCards('ProductType');
-		request.debug(mockGiftCards);
-//		var mockGCSmartList = request.slatwallScope.getService("accountService").getAccountSmartList();
-//		request.debug(mockGCSmartList);
-//		assertFalse(resultNSUNoPG);
+		var accountData2 = {
+			accountID = "",
+			firstName = "Kitty"	
+		};
+		var mockAccount = createPersistedTestEntity("Account", accountData);
+		var mockAccount2 = createPersistedTestEntity("Account", accountData2);		
+		var order1Data = {
+			orderID = "",
+			orderNumber = "orderNumber001",
+			orderOpenDateTime = dateAdd('d', 1, now()),
+			orderStatusType = {
+				typeID = "444df2b5c8f9b37338229d4f7dd84ad1"
+			},
+			account = {
+				accountID = mockAccount.getAccountID()
+			}
+		};
+		var order2Data = {
+			orderID = "",
+			orderNumber = "orderNumber002",
+			orderOpenDateTime = dateAdd('d', 4, now()),
+			orderStatusType = {
+				typeID = "444df2b90f62f72711eb5b3c90848e7e"
+			},
+			account = {
+				accountID = mockAccount.getAccountID()
+			}
+		};
+		var order3Data = {
+			orderID = "",
+			orderNumber = "orderNumber003",
+			orderOpenDateTime = dateAdd('d', -2, now()),
+			orderStatusType = {
+				typeID = "444df2b6b8b5d1ccfc14a4ab38aa0a4c"
+			},
+			account = {
+				accountID = mockAccount.getAccountID()
+			}
+		};	
+		var order4Data = {
+			orderID = "",
+			orderNumber = "orderNumber004",
+			orderOpenDateTime = dateAdd('d', -2, now()),
+			orderStatusType = {
+				typeID = "444df2b6b8b5d1ccfc14a4ab38aa0a4c"
+			},
+			account = {
+				accountID = mockAccount2.getAccountID()
+			}
+		};	
+		
+		var order1 = createPersistedTestEntity('Order', order1Data);
+		var order2 = createPersistedTestEntity('Order', order2Data);
+		var order3 = createPersistedTestEntity('Order', order3Data);
+		var order4 = createPersistedTestEntity('Order', order4Data);
+		//testing to get the correct number of records in SmartList
+		var resultOrdersPlacedSM = mockAccount.getOrdersPlacedSmartList().getRecords();
+		assertEquals(arraylen(resultOrdersPlacedSM), 3);
+		//testing if the smart list is ordered by orderOpenDateTime DESC
+		assertEquals(resultOrdersPlacedSM[1].getOrderNumber(), "orderNumber002");
+		assertEquals(resultOrdersPlacedSM[2].getOrderNumber(), "orderNumber001");
+		assertEquals(resultOrdersPlacedSM[3].getOrderNumber(), "orderNumber003");
+		//testing if AccountID filter works in the SmartList
+		var resultOrdersPlacedSM2 = mockAccount2.getOrdersPlacedSmartList().getRecords();
+		assertEquals(resultOrdersPlacedSM[1].getAccount().getAccountID(),mockAccount.getAccountID());
+		assertEquals(resultOrdersPlacedSM2[1].getAccount().getAccountID(),mockAccount2.getAccountID());
+	}
+	public void function getOrdersPlacedSmartList_StatusTypeFilter_Test() {
+		var accountData = {
+			accountID = "",
+			firstName = "hello"		
+		};
+		var mockAccount = createPersistedTestEntity("Account", accountData);	
+		//StatusType is "Cancelling", normal case, should be insert into the smart list	
+		var order1Data = {
+			orderID = "",
+			orderNumber = "orderNumber001",
+			orderOpenDateTime = dateAdd('d', 1, now()),
+			orderStatusType = {
+				typeID = "444df2b90f62f72711eb5b3c90848e7e"
+			},
+			account = {
+				accountID = mockAccount.getAccountID()
+			}
+		};
+		//StatusType not existed
+		var order2Data = {
+			orderID = "",
+			orderNumber = "orderNumber002",
+			orderOpenDateTime = dateAdd('d', 4, now()),
+			account = {
+				accountID = mockAccount.getAccountID()
+			}
+		};
+		//StatusType is "Not Placed",  not one of the four
+		var order3Data = {
+			orderID = "",
+			orderNumber = "orderNumber003",
+			orderOpenDateTime = dateAdd('d', -2, now()),
+			orderStatusType = {
+				typeID = "444df2b498de93b4b33001593e96f4be",
+				typeName = "Not Placed"
+			},
+			account = {
+				accountID = mockAccount.getAccountID()
+			}
+		};
+		var order1 = createPersistedTestEntity('Order', order1Data);
+		var order2 = createPersistedTestEntity('Order', order2Data);
+		var order3 = createPersistedTestEntity('Order', order3Data);
+		var resultOrdersPlacedSM = mockAccount.getOrdersPlacedSmartList().getRecords();
+		assertEquals(arraylen(resultOrdersPlacedSM), arraylen(mockAccount.getOrders()) - 2);
+	}
+	
+	public void function getOrdersNotPlacedSmartListTest() {
+		var accountData = {
+			accountID = "",
+			firstName = "hello"
+		};
+		var mockAccount = createPersistedTestEntity("Account", accountData);
+		//Testing the normal case, StatueType is 'Not Placed'		
+		var order1Data = {
+			orderID = "",
+			orderNumber = "orderNumber001",
+			orderStatusType = {
+				typeID = "444df2b498de93b4b33001593e96f4be"
+			},
+			account = {
+				accountID = mockAccount.getAccountID()
+			}
+		};
+		var order4Data = {
+			orderID = "",
+			orderNumber = "orderNumber004",
+			ModifiedDateTime = dateAdd('h', -4, now()),
+			orderStatusType = {
+				typeID = "444df2b498de93b4b33001593e96f4be"
+			},
+			account = {
+				accountID = mockAccount.getAccountID()
+			}
+		};
+		
+		//Testing order already been placed
+		var order2Data = {
+			orderID = "",
+			orderNumber = "orderNumber002",
+			orderStatusType = {
+				typeID = "444df2b6b8b5d1ccfc14a4ab38aa0a4c"
+			},
+			account = {
+				accountID = mockAccount.getAccountID()
+			}
+		};	
+		//Testing cancelling order (been placed)
+		var order3Data = {
+			orderID = "",
+			orderNumber = "orderNumber003",
+			orderStatusType = {
+				typeID = "444df2b90f62f72711eb5b3c90848e7e"
+			},
+			account = {
+				accountID = mockAccount.getAccountID()
+			}
+		};
+		var order1 = createPersistedTestEntity('Order', order1Data);
+		var order2 = createPersistedTestEntity('Order', order2Data);
+		var order3 = createPersistedTestEntity('Order', order3Data);
+		var order4 = createPersistedTestEntity('Order', order4Data);
+		var resultOrdersNotPlacedSM = mockAccount.getOrdersNotPlacedSmartList();
+		assertEquals(arraylen(resultOrdersNotPlacedSM.getRecords()), 2);
+		//testing the DESC order of modified date	
+		assertEquals(resultOrdersNotPlacedSM.getRecords()[1].getOrderNumber(), "orderNumber004");	
+		request.debug(resultOrdersNotPlacedSM.getRecords()[1].getModifiedDateTime());
 	}
 /*	
 	public void function getPrimaryEmailAddressesNotInUseFlagTest() {
@@ -437,6 +639,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var accountData = {
 			accountID = "#num#",
 			firstName = "Helo",
+			primaryEmailAddress = {
+				accountEmailAddressID = "00010001",
+				emailAddress = "testPasswordReset@hotmail.com"
+			},
 			accountAuthentications = {
 				accountAuthenticationID = "",
 				expirationDateTime = DateAdd("d", 2, now()),
@@ -445,8 +651,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		var mockAccount = createTestEntity('Account', accountData);
 		var result = mockAccount.getPasswordResetID();
-		request.debug(mockAccount.getAccountID());	
-		assertEquals(result, num);//resetID always different from AccountID?
+		request.debug(mockAccount.getAccountID());
+		var expectedResult = mockAccount.getEmailAddress().getAccountEmailAddressID();
+		assertEquals(result, expectedResult);//running ?
 		
 	}
 	public void function getSlatwallAuthenticationExistsFlagTest() {
@@ -461,6 +668,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		var mockAccount = createTestEntity('Account', accountData);
 		var result = mockAccount.getSlatwallAuthenticationExistsFlag();
+		request.debug(result);
 		
 	}
 	public void function getActiveAccountAuthenticationsTest() {
@@ -480,7 +688,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		request.debug(mockAccount.getGravatarURL());
 	}
 	// ============  END TESTING:  Non-Persistent Property Methods =================
-	
+/*	
 	// ================== START TESTING: Overridden Methods ========================
 	public void function getPrimaryEmailAddressTest() {
 		//testing existing pimaryEamilAddress
@@ -704,7 +912,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var resultFirstLastName = mockAccount.getSimpleRepresentation();
 		assertEquals(resultFirstLastName, " ");
 	}
-	
+*/	
 }
 
 
