@@ -76,13 +76,18 @@
 			  }
 			}
 		}
-
+		
 		// @hint this method allows you to properly format a value against a formatType
 		public any function formatValue( required string value, required string formatType, struct formatDetails={} ) {
-			if(listFindNoCase("currency,date,datetime,pixels,percentage,second,time,truefalse,url,weight,yesno,urltitle,alphanumericdash", arguments.formatType)) {
+			
+			if(listFindNoCase("decimal,currency,date,datetime,pixels,percentage,second,time,truefalse,url,weight,yesno,urltitle,alphanumericdash", arguments.formatType)) {
 				return this.invokeMethod("formatValue_#arguments.formatType#", {value=arguments.value, formatDetails=arguments.formatDetails});
 			}
 			return arguments.value;
+		}
+		
+		public any function formatValue_decimal(required string value){
+			return numberFormat(arguments.value,'_.__');
 		}
 
 		public any function formatValue_second( required string value, struct formatDetails={} ) {
@@ -460,7 +465,7 @@
 
 		// helper method for downloading a file
 		public void function downloadFile(required string fileName, required string filePath, string fileType="", string contentType = 'application/unknown', boolean deleteFile = false) {
-			getHibachiTagService().cfheader(name="Content-Disposition", value="inline; filename=#arguments.fileName#.#arguments.fileType#");
+			getHibachiTagService().cfheader(name="Content-Disposition", value="attachment; filename=#arguments.fileName#.#arguments.fileType#");
 			getHibachiTagService().cfcontent(type="#arguments.contentType#", file="#arguments.filePath#", deletefile="#arguments.deleteFile#");
 		}
 
