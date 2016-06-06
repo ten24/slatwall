@@ -19,6 +19,43 @@ Documentation
 Please view the project documentation, including install instructions: http://docs.slatwallcommerce.com
 
 
+Running Repo For Development
+----------------------------
+
+The easiest way to run this repo is via Docker & Docker-Compose.  Once you have docker installed on your machine simply create a docker-compose.yml file and place it in the root directory after cloning the repo down.  The contents of the docker-compose.yml file should look something like this:
+
+```
+version: '2'
+services:
+  slatwall:
+    build: ./meta/docker/slatwall-local-dev/
+    volumes:
+      - ./:/var/www/
+    ports:
+      - "80:80"
+      - "8888:8888"
+    links:
+      - slatwalldb
+    environment:
+      - MYSQL_ROOT_PASSWORD=YOUR_LOCAL_DEV_PASSWORD
+      - MYSQL_HOST=slatwalldb
+      - MYSQL_PORT=3306
+      - MYSQL_DATABASE=Slatwall
+      - LUCEE_PASSWORD=YOUR_LOCAL_DEV_PASSWORD
+      - LUCEE_JAVA_OPTS=-Xms1024m -Xmx1024m
+  slatwalldb:
+    image: mysql
+    environment:
+     MYSQL_ROOT_PASSWORD : YOUR_LOCAL_DEV_PASSWORD
+     MYSQL_DATABASE : Slatwall
+```
+
+Once the file is there you should be able to simply run:
+
+```
+docker-compose up
+```
+
 License
 -------
 
