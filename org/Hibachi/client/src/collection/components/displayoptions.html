@@ -58,7 +58,7 @@
                         >
                     </span>
                     <div class="col-xs-3">
-                        <div class="s-button-select-group" ng-class="{'disabled' : selectedProperty == null}">
+                        <div class="s-button-select-group" ng-class="{'disabled' : selectedProperty == null || selectedProperty.cfc != undefined}">
                             <button  type="button" 
                                 class="btn btn-sm btn-primary"
                                 ng-click="addColumn(selectedProperty)">

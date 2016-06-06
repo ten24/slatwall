@@ -55,14 +55,13 @@ component  extends="HibachiService" accessors="true" {
 	public string function getSharedAssetsPath(){
 		return variables.sharedAssetsPath;
 	}
-
+	//deprecated please use hibachiscope
 	public any function getCurrentRequestSite() {
-		var domain = listFirst(cgi.HTTP_HOST,':');
-		return getDAO('siteDAO').getSiteByDomainName(domain);
+		return getHibachiScope().getCurrentRequestSite();
 	}
-
+	//deprecated please use hibachiscope
 	public any function getCurrentDomain() {
-		return listFirst(cgi.HTTP_HOST,':');
+		return getHibachiScope().getCurrentDomain();
 	}
 
 	public string function getSkeletonSitePath(){

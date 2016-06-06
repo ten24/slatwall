@@ -53,7 +53,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
         		return;
         }
         //try to get a site form the domain name
-		var domainNameSite = arguments.slatwallScope.getService('siteService').getCurrentRequestSite();
+		var domainNameSite = arguments.slatwallScope.getCurrentRequestSite();
       
        	if(!isNull(domainNameSite)){
    			//render site via apps route
@@ -143,8 +143,8 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
        		var adminDomanNamesSetting = arguments.slatwallScope.getService('SettingService').getSettingValue("globalAdminDomainNames");
        		//if a list of admin domains has been specified then check to see if the domain exists in the list. if none specified then pass through
        		if(!isNull(adminDomanNamesSetting) && len(adminDomanNamesSetting)){
-       			if(!ListFind(adminDomanNamesSetting, arguments.slatwallScope.getService('siteService').getCurrentDomain())){
-       				writeOutput('#arguments.slatwallScope.getService('siteService').getCurrentDomain()# is neither a CMS domain or an admin domain and therefore restricted.');
+       			if(!ListFind(adminDomanNamesSetting, arguments.slatwallScope.getCurrentDomain())){
+       				writeOutput('#arguments.slatwallScope.getCurrentDomain()# is neither a CMS domain or an admin domain and therefore restricted.');
        				abort;
        			}
        		}

@@ -571,7 +571,6 @@ component output="false" accessors="true" extends="HibachiService" {
 
 					if(!ArrayFind(collectionPropertyIdentifiers,piAlias)){
 						ArrayAppend(collectionPropertyIdentifiers,piAlias);
-						arrayDelete(	collectionPropertyIdentifiers, Replace(column.propertyIdentifier,collectionEntity.getCollectionConfigStruct().baseEntityAlias&'.',''));
 					}
 					//add all aggregates by alias
 					if(structKeyExists(column,'aggregate')){

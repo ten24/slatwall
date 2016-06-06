@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,41 +45,23 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+*/
+component {
 
+	// Allow For Application Config
+	try{include "../../../config/configApplication.cfm";}catch(any e){}
+	// Allow For Instance Config
+	try{include "../../../custom/config/configApplication.cfm";}catch(any e){}
 
-<cfparam name="rc.product" type="any" />
-<cfparam name="rc.processObject" type="any" />
-<cfparam name="rc.edit" type="boolean" />
+	this.sessionManagement = true;
 
-<cfset rc.addEventScheduleProcessObject = rc.processObject />
+	this.mappings[ "/Slatwall" ] = replace(replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all"), "/meta/tests/mxunit/", "");
 
-<cfoutput>
-	<hb:HibachiEntityProcessForm entity="#rc.product#" edit="#rc.edit#">
+	this.ormEnabled = true;
+	this.ormSettings.cfclocation = ["/Slatwall/model/entity","/Slatwall/integrationServices"];
+	this.ormSettings.dbcreate = "update";
+	this.ormSettings.flushAtRequestEnd = false;
+	this.ormsettings.eventhandling = true;
+	this.ormSettings.automanageSession = false;
 
-		<hb:HibachiEntityActionBar type="preprocess"
-								   object="#rc.product#"
-			                       backAction="admin:entity.detailproduct"
-					               backQueryString="productID=#rc.product.getProductID()#"
-		>
-		</hb:HibachiEntityActionBar>
-
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="skuName" edit="true">
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="true">
-
-				<cfinclude template="preprocessproduct_include/addeventschedule.cfm" />
-
-				<hr />
-
-				<cfinclude template="preprocessproduct_include/addeventschedulelocations.cfm" />
-
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-
-	</hb:HibachiEntityProcessForm>
-</cfoutput>
+}

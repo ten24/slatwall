@@ -66,7 +66,10 @@ Notes:
 		<hb:HibachiEntityActionBar type="detail" object="#rc.account#" edit="#rc.edit#">
 			<hb:HibachiProcessCaller entity="#rc.account#" action="admin:entity.preprocessaccount" processContext="createPassword" type="list" modal="true" hideDisabled="false" />
 			<hb:HibachiProcessCaller entity="#rc.account#" action="admin:entity.preprocessaccount" processContext="changePassword" type="list" modal="true" />
-			<hb:HibachiProcessCaller entity="#rc.account#" action="admin:entity.preprocessaccount" processContext="generateAuthToken" type="list" modal="true" />
+			<!--- If the logged in user is a super user, or they own this account then allow api token generation. --->
+			<cfif getHibachiScope().getAccount().getSuperUserFlag() || getHibachiScope().getAccount().getAccountID() eq arguments.account.getAccountID()>
+				<hb:HibachiProcessCaller entity="#rc.account#" action="admin:entity.preprocessaccount" processContext="generateAPIAccessKey"  type="list" modal="true" />
+			</cfif>
 			<li class="divider"></li>
 			<hb:HibachiActionCaller action="admin:entity.createaccountaddress" queryString="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount" type="list" modal=true />
 			<hb:HibachiActionCaller action="admin:entity.createaccountemailaddress" queryString="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount" type="list" modal=true />
@@ -80,7 +83,7 @@ Notes:
 			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
 			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/contactdetails" />
 			<hb:HibachiEntityDetailItem property="accountPaymentMethods" count="#rc.account.getAccountPaymentMethodsSmartList().getRecordsCount()#" />
-			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/giftcards" />
+			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/giftcards" count="#rc.account.getGiftCardsCount()#" />
 			<hb:HibachiEntityDetailItem property="priceGroups" />
 			<hb:HibachiEntityDetailItem property="orders" count="#rc.ordersPlacedSmartList.getRecordsCount()#" />
 			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/cartsandquotes" count="#rc.ordersNotPlacedSmartList.getRecordsCount()#" />

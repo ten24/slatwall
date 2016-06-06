@@ -50,7 +50,7 @@ Notes:
 component accessors="true" output="false" displayname="UPS" implements="Slatwall.integrationServices.ShippingInterface" extends="Slatwall.integrationServices.BaseShipping" {
 	
 	variables.testRateURL = "https://wwwcie.ups.com/ups.app/xml/Rate";
-	variables.liveRateURL = "https://www.ups.com/ups.app/xml/Rate";
+	variables.liveRateURL = "https://onlinetools.ups.com/ups.app/xml/Rate";
 	
 	// Variables Saved in this application scope, but not set by end user
 	variables.shippingMethods = {};
