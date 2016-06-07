@@ -12,6 +12,7 @@ class SWDefaultSkuRadioController{
     public columnId;
     public selectionId; 
     public selectionFieldName; 
+    public isDefaultSku:boolean; 
     
     public collectionConfig; 
     
@@ -32,9 +33,8 @@ class SWDefaultSkuRadioController{
         if(angular.isUndefined(this.skuId) && angular.isUndefined(this.sku)){
             throw("You must provide a skuID to SWDefaultSkuRadioController");
         }
-        if(angular.isUndefined(this.productId) && angular.isUndefined(this.productProductId)){
-            throw("You must prove a productID to SWDefaultSkuRadioController");
-        }
+        console.log("isDefault?",this.skuId, this.productDefaultSkuSkuId);
+        this.isDefaultSku = (this.skuId == this.productDefaultSkuSkuId);
         if(angular.isUndefined(this.sku)){
             this.$hibachi.getEntity("Sku",this.skuId).then(
                 (sku)=>{
@@ -61,6 +61,7 @@ class SWDefaultSkuRadio implements ng.IDirective{
         skuId:"@",
         sku:"=?",
         productProductId:"@?",
+        productDefaultSkuSkuId:"@?",
         productId:"@?",
         listingDisplayId:"@?",
         columnId:"@?"

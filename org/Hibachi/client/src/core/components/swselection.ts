@@ -23,16 +23,20 @@ class SWSelectionController{
             this.toggleValue = selectionService.hasSelection(this.selectionid,this.selection);
         }
 
-        if(angular.isDefined(this.initSelected) && this.initSelected){
-            this.toggleSelection(true, this.selectionid, this.selection);
-        }
-
         //attach observer so we know when a selection occurs
         observerService.attach(this.updateSelectValue,'swSelectionToggleSelection' + this.selectionid);
+
+        if(angular.isDefined(this.initSelected) && this.initSelected){
+            this.toggleValue = this.selection;
+            this.toggleSelection(this.toggleValue, this.selectionid, this.selection);
+        }
     }
 
     private updateSelectValue = (res)=>{
-        if(res.action == 'clear'){
+        if(this.isRadio && (res.action == 'check')){
+            this.toggleValue == this.selection;
+            console.log("selectionid", this.selection)
+        }else if(res.action == 'clear'){
             this.toggleValue = false;
         }else if(res.action == 'selectAll'){
             this.toggleValue = true;
@@ -41,9 +45,6 @@ class SWSelectionController{
         }
     };
     private toggleSelection = (toggleValue,selectionid,selection)=>{
-        console.log("ontheradio",toggleValue);
-        console.log("ontheradio",selectionid);
-        console.log("ontheradio",selection);
         if(this.isRadio){
             this.selectionService.radioSelection(selectionid,selection);
             this.toggleValue = toggleValue;
