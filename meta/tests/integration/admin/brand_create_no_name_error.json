@@ -5,7 +5,7 @@
   "steps": [
     {
       "type": "get",
-      "url": "http://docker.local:8888/?slatAction=main.login&fw1pk=3"
+      "url": "http://localhost/?slatAction=main.login&fw1pk=3"
     },
     {
       "type": "setElementText",
