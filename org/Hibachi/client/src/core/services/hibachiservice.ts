@@ -221,13 +221,11 @@ class HibachiService{
 			params.joinsConfig = options.joinsConfig || '';
 			params.orderByConfig = options.orderByConfig || '';
 			params.groupBysConfig = options.groupBysConfig || '';
-			params.isDistinct = options.isDistinct || false;
+			params.isDistinct = (options.isDistinct == undefined) ? false : options.isDistinct;
 			params.propertyIdentifiersList = options.propertyIdentifiersList || '';
 			params.allRecords = options.allRecords || '';
-			params.defaultColumns = options.defaultColumns || true;
+			params.defaultColumns = (options.defaultColumns == undefined) ? true : options.defaultColumns;
 			params.processContext = options.processContext || '';
-            console.log(this.appConfig);
-            console.log(this.appConfig);
 			var urlString = this.getUrlWithActionPrefix()+'api:main.get&entityName='+entityName;
 		}
 
