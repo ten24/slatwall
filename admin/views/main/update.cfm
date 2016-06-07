@@ -54,7 +54,11 @@ Notes:
 <cfparam name="rc.availableDevelopVersion" type="string" />
 <cfparam name="rc.availableMasterVersion" type="string" />
 
-<cfset local.updateOptions = [{name="Stable", value="master"},{name="Bleeding Edge", value="develop"}] />
+<cfset local.updateOptions = [
+	{name="Stable", value="master"},
+	{name="Bleeding Edge", value="develop"},
+	{name="Release Candidate", value="release-candidate"}
+] />
 
 <cfif rc.currentBranch eq 'master'>
 	<cfset local.currentReleaseType = $.slatwall.rbKey('define.master') />
