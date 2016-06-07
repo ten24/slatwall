@@ -15,7 +15,7 @@ var frontendmodule = angular.module('frontend', [hibachimodule.name])
 .config(['hibachiPathBuilder',(hibachiPathBuilder)=>{
                     /** set the baseURL */ 
 					hibachiPathBuilder.setBaseURL('/');
-                    hibachiPathBuilder.setBasePartialsPath('custom/assets/');
+                    hibachiPathBuilder.setBasePartialsPath(hibachiConfig.basePartialsPath);
 
 }])
 

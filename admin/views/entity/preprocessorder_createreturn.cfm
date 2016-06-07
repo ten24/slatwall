@@ -66,7 +66,9 @@ Notes:
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="location" edit="true" />
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="fulfillmentRefundAmount" edit="true" />
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="receiveItemsFlag" edit="true" />
-				
+				<hb:HibachiDisplayToggle selector="input[name='receiveItemsFlag']" showValues="1" loadVisable="#rc.processObject.getReceiveItemsFlag()#">
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="stockLossFlag" edit="true" />
+				</hb:HibachiDisplayToggle>
 				<hr />
 				
 				<!--- Items Selector --->

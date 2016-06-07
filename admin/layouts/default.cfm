@@ -365,7 +365,10 @@ Notes:
 			</span>
 		</span>
 		
-		<cfif structKeyExists(request,'isWysiwygPage') AND request.isWysiwygPage>
+		<cfif 	
+			(structKeyExists(request,'isWysiwygPage') AND request.isWysiwygPage)
+			|| (structKeyExists(rc,'edit') AND rc.edit eq true)	
+		>
 			<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckeditor/ckeditor.js"></script>
 			<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckeditor/adapters/jquery.js"></script>
 			<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckfinder/ckfinder.js"></script>

@@ -1039,10 +1039,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				returnOrder = this.processOrder(returnOrder, {}, 'placeOrder');
 
 				// If the process object was set to automatically receive these items, then we will do that
-				if(!returnOrder.hasErrors() && processObject.getReceiveItemsFlag()) {
+				if(!returnOrder.hasErrors() && (arguments.processObject.getReceiveItemsFlag() || arguments.processObject.getStockLossFlag())) {
 					var receiveData = {};
 					receiveData.locationID = orderReturn.getReturnLocation().getLocationID();
 					receiveData.orderReturnItems = [];
+					receiveData.stockLossFlag = arguments.processObject.getStockLossFlag();
 					for(var returnItem in orderReturn.getOrderReturnItems()) {
 						var thisData = {};
 						thisData.orderReturnItem.orderItemID = returnItem.getOrderItemID();
@@ -1839,22 +1840,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			) {
 				arguments.orderDelivery.setShippingMethod( arguments.processObject.getShippingMethod() );
 				arguments.orderDelivery.setShippingAddress( arguments.processObject.getShippingAddress().copyAddress( saveNewAddress=true ) );
+			
+				// Setup the tracking number if we have it
+				if(
+					!isNull(arguments.processObject.getTrackingNumber()) 
+					&& len(arguments.processObject.getTrackingNumber())
+				) {
+					arguments.orderDelivery.setTrackingNumber(arguments.processObject.getTrackingNumber());
+				}
+				
+				if(
+					!isNull(arguments.processObject.getContainerLabel())
+					&& len(arguments.processObject.getContainerLabel())
+				){
+					arguments.orderDelivery.setContainerLabel(arguments.processObject.getContainerLabel());
+				}
 			}
 			
-			// Setup the tracking number if we have it
-			if(
-				!isNull(arguments.processObject.getTrackingNumber()) 
-				&& len(arguments.processObject.getTrackingNumber())
-			) {
-				arguments.orderDelivery.setTrackingNumber(arguments.processObject.getTrackingNumber());
-			}
-			
-			if(
-				!isNull(arguments.processObject.getContainerLabel())
-				&& len(arguments.processObject.getContainerLabel())
-			){
-				arguments.orderDelivery.setContainerLabel(arguments.processObject.getContainerLabel());
-			}
 			// If the orderFulfillmentMethod is auto, and there aren't any delivery items then we can just fulfill all that are "undelivered"
 			if(
 				(
@@ -2253,10 +2255,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	// Process: Order Return
 	public any function processOrderReturn_receive(required any orderReturn, required any processObject) {
-
 		var stockReceiver = getStockService().newStockReceiver();
 		stockReceiver.setReceiverType( "order" );
 		stockReceiver.setOrder( arguments.orderReturn.getOrder() );
+		var stockAdjustments = [];
 
 		if(!isNull(processObject.getPackingSlipNumber())) {
 			stockReceiver.setPackingSlipNumber( processObject.getPackingSlipNumber() );
@@ -2282,11 +2284,39 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					stockReceiverItem.setStock( stock );
 					stockReceiverItem.setOrderItem( orderReturnItem );
 					stockReceiverItem.setStockReceiver( stockReceiver );
+					
+				}
+				//create a stock adjustment with a comment for items that were added back in
+				if(arguments.processObject.getStockLossFlag()){
+					var newStockAdjustment = getStockService().newStockAdjustment();
+					//stockadjustmentType:manual out
+					var stockAdjustmentType = getStockService().getType('444df2e7dba550b7a24a03acbb37e717');
+					newStockAdjustment.setStockAdjustmentType(stockAdjustmentType);
+					newStockAdjustment.setFromLocation(location);
+					var addStockAdjustmentItemData = {
+						skuID=orderReturnItem.getSku().getSkuID(),
+						quantity=thisRecord.quantity,
+						stockAdjustment=newStockAdjustment
+					};
+					newStockAdjustment = getStockService().processStockAdjustment(newStockAdjustment,addStockAdjustmentItemData,'addStockAdjustmentItem');
+					
+					var comment = getCommentService().newComment();
+					comment.setPublicFlag(false);
+					comment.setComment(getHibachiScope().getRbKey('define.stockloss'));
+					var commentRelationship = getCommentService().newCommentRelationship();
+					commentRelationship.setStockAdjustment(newStockAdjustment);
+					commentRelationship.setComment(comment);
+					commentRelationship.setStockAdjustment(newStockAdjustment);
+					commentRelationship = getCommentService().saveCommentRelationship(commentRelationship);
+					comment = getCommentService().saveComment(comment,{});
+					
+					newStockAdjustment = getStockService().saveStockAdjustment(newStockAdjustment);
+					arrayAppend(stockAdjustments,newStockAdjustment);
 				}
 
 			}
 		}
-
+		
 
 		// Loop over the stockReceiverItems to remove subscriptions and contentAccess
 		for(var stockReceiverItem in stockReceiver.getStockReceiverItems()) {
@@ -2310,7 +2340,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			}
 		}
-
+		
 		stockReceiver = getStockService().saveStockReceiver( stockReceiver );
 
 		for(var accountLoyalty in arguments.orderReturn.getOrder().getAccount().getAccountLoyalties()) {
@@ -2320,9 +2350,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Call the process method with 'orderItemReceived' as context
 			getAccountService().processAccountLoyalty(accountLoyalty, orderItemReceivedData, 'orderItemReceived');
 		}
-
+		
+		for(var stockAdjustment in stockAdjustments) {
+			getStockService().processStockAdjustment(stockAdjustment,{},'processAdjustment');
+		}
+		
 		// Update the orderStatus
 		this.processOrder(arguments.orderReturn.getOrder(), {updateItems=true}, 'updateStatus');
+		
+		
 
 		return arguments.orderReturn;
 	}
