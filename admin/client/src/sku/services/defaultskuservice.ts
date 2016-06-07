@@ -21,16 +21,12 @@ export class DefaultSkuService {
            angular.isDefined(this.observerKeys[response.selectionid].productID &&
            angular.isDefined(response.selection)   
         )){
-            console.log("blam")
             this.$hibachi.getEntity("Product",this.observerKeys[response.selectionid].productID).then(
                 (product)=>{
-                     console.log("kapow")
                     var product = this.$hibachi.populateEntity("Product",product); 
-                    console.log("prod", product)
                     product.$$setDefaultSku(this.$hibachi.populateEntity("Sku",{skuID:response.selection}));
                     product.$$save().then(
                         ()=>{
-                             console.log("boo")
                             //there was success
                         },
                         ()=>{
