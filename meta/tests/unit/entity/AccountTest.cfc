@@ -453,7 +453,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				accountID = mockAccount2.getAccountID()
 			}
 		};	
-		
 		var order1 = createPersistedTestEntity('Order', order1Data);
 		var order2 = createPersistedTestEntity('Order', order2Data);
 		var order3 = createPersistedTestEntity('Order', order3Data);
@@ -537,7 +536,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var order4Data = {
 			orderID = "",
 			orderNumber = "orderNumber004",
-			ModifiedDateTime = dateAdd('h', -4, now()),
 			orderStatusType = {
 				typeID = "444df2b498de93b4b33001593e96f4be"
 			},
@@ -574,11 +572,18 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var order4 = createPersistedTestEntity('Order', order4Data);
 		var resultOrdersNotPlacedSM = mockAccount.getOrdersNotPlacedSmartList();
 		assertEquals(arraylen(resultOrdersNotPlacedSM.getRecords()), 2);
-		//testing the DESC order of modified date	
-		assertEquals(resultOrdersNotPlacedSM.getRecords()[1].getOrderNumber(), "orderNumber004");	
-		request.debug(resultOrdersNotPlacedSM.getRecords()[1].getModifiedDateTime());
+		//testing the DESC order of modified date	??Yuqing only works when date changed, hours not been effected
+		request.debug("Order 1 Time is: ");
+		request.debug(order1.getModifiedDateTime());
+		request.debug("Order 4 before Modified: ");
+		request.debug(order4.getModifiedDateTime());
+		order4.setModifiedDateTime(dateAdd('d', 3, now()));
+		var resultChangedModifiedDate = mockAccount.getOrdersNotPlacedSmartList();//YUQING ？ not stable
+		request.debug("Order 4 after Modified: ");
+		request.debug(order4.getModifiedDateTime());
+		assertEquals(resultChangedModifiedDate.getRecords()[1].getOrderNumber(), "orderNumber004");	
 	}
-/*	
+	
 	public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		//testing existed primaryEmailAddressNotInUseFlag
 		var accountData = {
@@ -591,22 +596,26 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var resultPrimaryEmailNotInUseFlag = mockAccount.getPrimaryEmailAddressesNotInUseFlag();
 		assertTrue(resultPrimaryEmailNotInUseFlag);
 		//test the constraint issue		
-		var pe = {
-			accountEmailAddressID = "",
-			emailAddress = "hello@clarku.edu"
-		};
-		accountData = {
+		var accountData1 = {
 			accountID = ""		
 		};
-		mockAccount = createPersistedTestEntity('Account', accountData);
 		var accountData2 = {
 			accountID = ""		
 		};
+		var primaryEmailDate = {
+			accountEmailAddressID = "",
+			emailAddress = "hello@clarku.edu"
+		};
+		var mockAccount1 = createPersistedTestEntity('Account', accountData1);
 		var mockAccount2 = createPersistedTestEntity('Account', accountData2);
-		mockAccount.PrimaryEmailAddress = pe;
+		var mockPrimaryEmail = createPersistedTestEntity('AccountEmailAddress', primaryEmailDate);
+		
+		mockAccount1.setPrimaryEmailAddress(mockPrimaryEmail);
+		request.debug(mockAccount1.getPrimaryEmailAddress().getEmailAddress());
 		assertTrue(mockAccount.getPrimaryEmailAddressesNotInUseFlag());
-		mockAccount2.PrimaryEmailAddress = pe;
-		assertFalse(mockAccount2.getPrimaryEmailAddressesNotInUseFlag());	
+		mockAccount2.setPrimaryEmailAddress(mockPrimaryEmail);//account2 use same Primary Email
+		request.debug(mockAccount2.getPrimaryEmailAddress().getEmailAddress());
+		assertFalse(mockAccount2.getPrimaryEmailAddressesNotInUseFlag());	//Yuqing should be false
 		//testing not been used primaryEmailAddress
 		var testEmail = "testtesttest@Address.com";
 		var accountData1 = {
@@ -619,7 +628,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var mockAccount1 = createPersistedTestEntity('Account', accountData1);
 		var resultNoInUse = mockAccount1.getPrimaryEmailAddressesNotInUseFlag();
 		assertTrue(resultNoInUse);
-		//testing been used primaryEmail based on the previous case, use 'testEmail'
+		//testing been used primaryEmail based on the previous case, use 'testEmail' above
 		var accountData2 = {
 			accountID = "",
 			primaryEmailAddress = {				
@@ -629,51 +638,102 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		request.debug(accountData2);
 		var mockAccount2 = createPersistedTestEntity('Account', accountData2);
 		var result = mockAccount2.getPrimaryEmailAddressesNotInUseFlag();
-		//request.debug(mockAccount2.getPrimaryEmailAddress());
 		request.debug(result);		
 		assertFalse(result.getNewFlag());
 	}
-*/	
+	
 	public void function getPasswordResetIDTest() {
+		//testing when authentication existed
 		var num = "1232123";
 		var accountData = {
-			accountID = "#num#",
+			accountID = "",
 			firstName = "Helo",
 			primaryEmailAddress = {
 				accountEmailAddressID = "00010001",
 				emailAddress = "testPasswordReset@hotmail.com"
-			},
-			accountAuthentications = {
-				accountAuthenticationID = "",
-				expirationDateTime = DateAdd("d", 2, now()),
-				password = "123"
-			} 	
+			}
 		};
-		var mockAccount = createTestEntity('Account', accountData);
+		var mockAccount = createPersistedTestEntity('Account', accountData);
+		var accountAuthentications1Data = {
+			accountAuthenticationID = "",
+			expirationDateTime = DateAdd("d", 2, now()),
+			account = {
+				accountID = mockAccount.getAccountID()
+			}
+		};
+		var accountAuthentications2Data = {
+			accountAuthenticationID = "",
+			expirationDateTime = DateAdd("d", 4, now()),
+			account = {
+				accountID = mockAccount.getAccountID()
+			}
+		};
+		var mockAccountAuthentications1 = createPersistedTestEntity('AccountAuthentication', accountAuthentications1Data);
+		var mockAccountAuthentications2 = createPersistedTestEntity('AccountAuthentication', accountAuthentications2Data);
 		var result = mockAccount.getPasswordResetID();
-		request.debug(mockAccount.getAccountID());
-		var expectedResult = mockAccount.getEmailAddress().getAccountEmailAddressID();
-		assertEquals(result, expectedResult);//running ?
-		
+		request.debug(result);
+//		request.debug(mockAccount.getAccountID());Yuqing
+		request.debug(mockAccountAuthentications1.getAccountAuthenticationID());
+//		assertEquals (result, "noIdea");
+		//testing when authentication does not exist
+		accountData = {
+			accountID = "",
+			firstName = "Helo",
+			primaryEmailAddress = {
+				accountEmailAddressID = "00010001",
+				emailAddress = "testPasswordReset@hotmail.com"
+			}
+		};
+		mockAccount = createPersistedTestEntity('Account', accountData);
+		var result = mockAccount.getPasswordResetID();
+		request.debug(result);
+		assertEquals(result, "noIdeaWhat&Mean in Hash");
 	}
 	public void function getSlatwallAuthenticationExistsFlagTest() {
-		
-		var accountData = {
-			accountID = "#num#",
-			accountAuthentications = {
-				accountAuthenticationID = "",
-				expirationDateTime = DateAdd("d", 2, now()),
-				password = "123"
-			} 
+		var accountData1DefaultFlag = {
+			accountID = "",
+			firstName = "Hola"
 		};
-		var mockAccount = createTestEntity('Account', accountData);
-		var result = mockAccount.getSlatwallAuthenticationExistsFlag();
-		request.debug(result);
-		
+		var mockAccount1 = createPersistedTestEntity('Account', accountData1DefaultFlag);
+		var accountData2TrueFlag = {
+			accountID = "",
+			firstName = "Hola",
+			slatwallAuthenticationExistsFlag = true
+		};
+		var mockAccount2 = createPersistedTestEntity('Account', accountData2TrueFlag);
+		var authzData1Normal = {
+			accountAuthenticationID = "",
+			account = {
+				accountID = mockAccount1.getAccountID()
+			}
+		};
+		var mockAccountAuthentications1 = createPersistedTestEntity('AccountAuthentication', authzData1Normal);
+		//testing when SlatwallAuthenticationExistsFlag is True but no authentication entity existed (non-persistent property works)
+		var resultExistedFlagNoAuth = mockAccount2.getSlatwallAuthenticationExistsFlag();
+		assertTrue(resultExistedFlagNoAuth);
+		//testing if no valid properties(Password,Integration,ActiveFlag) existed in authentication,then authentication does not exist
+		var resultNotValidAuthz = mockAccount1.getSlatwallAuthenticationExistsFlag();
+		assertFalse(resultNotValidAuthz);
+		//testing existed authentications w/ existed Password
+		var authzData2HasPassword = {
+			accountAuthenticationID = "",
+			password = "123",
+			account = {
+				accountID = mockAccount1.getAccountID()
+			}
+		};
+		var mockAccountAuthentications2 = createPersistedTestEntity('AccountAuthentication', authzData2HasPassword);
+		var resultNoFlagYesAuth = mockAccount1.getSlatwallAuthenticationExistsFlag();
+		assertTrue(mockAccountAuthentications2.getActiveFlag());
+		assertFalse(resultNoFlagYesAuth);
+		//testing existed authentictions w/ Integration  YUQING
 	}
-	public void function getActiveAccountAuthenticationsTest() {
-		
-	}
+	
+//	
+//	public void function getActiveAccountAuthenticationsTest() {
+//		
+//	}
+/*		
 	//Cannot test, no SSH
 	public void function getGravatarURLTest() {
 		var accountData = {
@@ -688,7 +748,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		request.debug(mockAccount.getGravatarURL());
 	}
 	// ============  END TESTING:  Non-Persistent Property Methods =================
-/*	
+
 	// ================== START TESTING: Overridden Methods ========================
 	public void function getPrimaryEmailAddressTest() {
 		//testing existing pimaryEamilAddress
@@ -833,13 +893,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(resultPrimaryPaymentAccountPaymentMethodName, "Yuqing BOA card");
 		//testing empty PrimaryPaymentMethod but existing account paymentMethods
 		accountData = {
-			accountID = "001",
+			accountID = "002",
 			firstName = "Hello",
 			lastName = "Kitty",
 			accountPaymentMethods = [{
-				accountPaymentMethodID = "0001",
-				accountPaymentMethodName = "Yuqing BOA card",
-				nameOnCreditCard = "YuqingYang"
+				accountPaymentMethodID = "0002",
+				accountPaymentMethodName = "Kitty BOA card",
+				nameOnCreditCard = "HelloKittyAccountPaymentInfo"
 			}]
 		};
 		mockAccount = createTestEntity('Account', accountData);
@@ -854,7 +914,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		mockAccount = createTestEntity('Account', accountData);
 		var resultNonePrimaryPayment = mockAccount.getPrimaryPaymentMethod();
 		assertTrue(resultNonePrimaryPayment..getNewFlag());
-		
 	}
 	
 	public void function getSuperUserFlagTest() {

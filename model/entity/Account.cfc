@@ -245,12 +245,12 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		return variables.ordersPlacedSmartList;
 	}
 
-	public any function getOrdersNotPlacedSmartList() {
+	public any function getOrdersNotPlacedSmartList() {//this function never been used
 		if(!structKeyExists(variables, "ordersNotPlacedSmartList")) {
 			var osl = getService("orderService").getOrderSmartList();
 			osl.addFilter('account.accountID', getAccountID());
 			osl.addInFilter('orderStatusType.systemCode', 'ostNotPlaced');
-			osl.addOrder("lastModifiedDateTime|DESC");
+			osl.addOrder("modifiedDateTime|DESC");
 
 			variables.ordersNotPlacedSmartList = osl;
 		}
@@ -269,6 +269,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		if(!structKeyExists(variables, "slatwallAuthenticationExistsFlag")) {
 			variables.slatwallAuthenticationExistsFlag = false;
 			var authArray = getAccountAuthentications();
+			request.debug(getAccountAuthentications());
 			for(auth in authArray) {
 				if(isNull(auth.getIntegration()) && !isNull(auth.getPassword()) && auth.getActiveFlag() ) {
 					variables.slatwallAuthenticationExistsFlag = true;
