@@ -1,6 +1,6 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-class SWFormFieldSingleEditController {
+class SWTableFormFieldController {
     
     public property:string;
     public object:any;
@@ -39,7 +39,7 @@ class SWFormFieldSingleEditController {
         if(angular.isDefined(this.object)){
             this.singleEditedObject = angular.copy(this.object);
         } else {
-            throw("You must provide SWFormFieldSingleEditController an object!");
+            throw("You must provide SWTableFormFieldController an object!");
         }        
         if(angular.isUndefined(this.saved)){
             this.saved = false; 
@@ -82,7 +82,7 @@ class SWFormFieldSingleEditController {
 
 }
 
-class SWFormFieldSingleEdit implements ng.IDirective{
+class SWTableFormField implements ng.IDirective{
 
     public templateUrl;
     public restrict = "EA";
@@ -107,21 +107,21 @@ class SWFormFieldSingleEdit implements ng.IDirective{
         currencyCode:"@",
         disabled:"=?"
     };
-    public controller=SWFormFieldSingleEditController;
-    public controllerAs="swFormFieldSingleEdit";
+    public controller=SWTableFormFieldController;
+    public controllerAs="swTableFormField";
 
     // @ngInject
     constructor(public $compile, private coreFormPartialsPath,hibachiPathBuilder){
-        this.templateUrl = hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + "formfieldsingleedit.html";
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + "tableformfield.html";
     }
 
     public link:ng.IDirectiveLinkFn = ($scope, element: ng.IAugmentedJQuery, attrs:any, modelCtrl: ng.INgModelController) =>{
          if(angular.isDefined(attrs.propertyDisplay) && angular.isDefined($scope.propertyDisplay)){
              //populate itself with propertyDisplay's properties
-             angular.extend($scope.swFormFieldSingleEdit, $scope.propertyDisplay);
+             angular.extend($scope.swTableFormField, $scope.propertyDisplay);
          }
          if(angular.isDefined(attrs.indicatorCallback)){
-             $scope.swFormFieldSingleEdit.hasIndicatorCallback = true;    
+             $scope.swTableFormField.hasIndicatorCallback = true;    
          }
     }
 
@@ -131,7 +131,7 @@ class SWFormFieldSingleEdit implements ng.IDirective{
             ,coreFormPartialsPath
             ,hibachiPathBuilder
 
-        )=> new SWFormFieldSingleEdit(
+        )=> new SWTableFormField(
             $compile
             ,coreFormPartialsPath
             ,hibachiPathBuilder
@@ -145,6 +145,6 @@ class SWFormFieldSingleEdit implements ng.IDirective{
     }
 }
 export{
-    SWFormFieldSingleEdit,
-    SWFormFieldSingleEditController
+    SWTableFormField,
+    SWTableFormFieldController
 }
