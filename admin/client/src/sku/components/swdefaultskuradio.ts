@@ -18,7 +18,8 @@ class SWDefaultSkuRadioController{
     
     //@ngInject
     constructor(
-        private $hibachi
+        private $hibachi,
+        private observerService
     ){
         if(angular.isDefined(this.listingDisplayId) && angular.isDefined(this.columnId)){
             this.selectionId = this.listingDisplayId + this.columnId;
@@ -50,7 +51,6 @@ class SWDefaultSkuRadioController{
             )
         }
     }    
-
 }
 
 class SWDefaultSkuRadio implements ng.IDirective{

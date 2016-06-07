@@ -4,7 +4,7 @@
 //modules
 import {coremodule} from "../../../../org/Hibachi/client/src/core/core.module";
 //services
-
+import {DefaultSkuService} from "./services/defaultskuservice";
 //controllers
 
 //directives
@@ -25,7 +25,7 @@ var skumodule = angular.module('hibachi.sku',[coremodule.name]).config(()=>{
 //constants
 .constant('skuPartialsPath','sku/components/')
 //services
-
+.service('defaultSkuService', DefaultSkuService.Factory())
 //controllers
 
 //directives
