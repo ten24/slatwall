@@ -1,16 +1,14 @@
-<sw-form-field-single-edit
-        ng-if="swSkuPriceEdit.sku"
-        data-object="swSkuPriceEdit.sku"
-        data-property="price"
-        data-currency-code="{{swSkuPriceEdit.currencyCode}}"
-    >
-    
-</sw-form-field-single-edit>
-<sw-form-field-single-edit
-        ng-if="swSkuPriceEdit.skuPrice"
-        data-object="swSkuPriceEdit.skuPrice"
-        data-property="price"
-        data-currency-code="{{swSkuPriceEdit.currencyCode}}"
-    >
-    
-</sw-form-field-single-edit>
+<sw-form ng-if="swSkuPriceEdit.sku" data-object="swSkuPriceEdit.sku" data-name="swSkuPriceEdit.formName"> 
+    <sw-property-display
+            data-object="swSkuPriceEdit.sku"
+            data-property="price"
+            data-in-listing-display="true"
+            data-editing="true"
+            data-editable="true"
+        >
+        
+    </sw-property-display>
+</sw-form>
+<sw-form ng-if="swSkuPriceEdit.skuPrice" data-object="swSkuPriceEdit.skuPrice" data-name="swSkuPriceEdit.formName"> 
+
+</sw-form>

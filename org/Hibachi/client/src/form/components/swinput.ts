@@ -137,9 +137,10 @@ class SWInput{
             }
            
 			if(propertyDisplay.fieldType === 'text'){
-				template = '<input type="text" class="form-control" '+
+				template = '<input type="text" ng-class="propertyDisplay.getNgClassObjectForInput()" '+
 				    'ng-model="propertyDisplay.object.data[propertyDisplay.property]" '+
                     'ng-disabled="!propertyDisplay.editable" '+
+					'ng-change="propertyDisplay.onChange()"' + 
                     'ng-show="propertyDisplay.editing" '+
                     'name="'+propertyDisplay.property+'" ' +
                     'placeholder="'+placeholder+'" '+
@@ -147,9 +148,10 @@ class SWInput{
                     'id="swinput'+utilityService.createID(26)+'"'+
                     ' />';
 			}else if(propertyDisplay.fieldType === 'password'){
-				template = '<input type="password" class="form-control" '+
+				template = '<input type="password" ng-class="propertyDisplay.getNgClassObjectForInput()" '+
                     'ng-model="propertyDisplay.object.data[propertyDisplay.property]" '+
                     'ng-disabled="!propertyDisplay.editable" '+
+					'ng-change="propertyDisplay.onChange()"' + 
                     'ng-show="propertyDisplay.editing" '+
                     'name="'+propertyDisplay.property+'" ' +
                     'placeholder="'+placeholder+'" '+
@@ -157,9 +159,10 @@ class SWInput{
                     'id="swinput'+utilityService.createID(26)+'"'+
                     ' />';
 			} else if(propertyDisplay.fieldType === 'number'){
-                template = '<input type="number" class="form-control" '+
+                template = '<input type="number" ng-class="propertyDisplay.getNgClassObjectForInput()" '+
                     'ng-model="propertyDisplay.object.data[propertyDisplay.property]" '+
                     'ng-disabled="!propertyDisplay.editable" '+
+					'ng-change="propertyDisplay.onChange()"' + 
                     'ng-show="propertyDisplay.editing" '+
                     'name="'+propertyDisplay.property+'" ' +
                     'placeholder="'+placeholder+'" '+
@@ -167,21 +170,23 @@ class SWInput{
                     'id="swinput'+utilityService.createID(26)+'"'+
                     ' />';
             } else if(propertyDisplay.fieldType === 'time'){
-                template = '<input type="text" class="form-control" '+
+                template = '<input type="text" ng-class="propertyDisplay.getNgClassObjectForInput()" '+
                     'datetime-picker data-time-only="true" date-format="'+appConfig.timeFormat.replace('tt','a')+'" '+
                     'ng-model="propertyDisplay.object.data[propertyDisplay.property]" '+
                     'ng-disabled="!propertyDisplay.editable" '+
-                    'ng-show="propertyDisplay.editing" '+
+					'ng-change="propertyDisplay.onChange()"' + 
+                    'ng-show="propertyDisplay.editing" ' +
                     'name="'+propertyDisplay.property+'" ' +
                     'placeholder="'+placeholder+'" '+
                     validations +
                     'id="swinput'+utilityService.createID(26)+'"'+
                     ' />';
             } else if(propertyDisplay.fieldType === 'date'){
-                template = '<input type="text" class="form-control" '+
+                template = '<input type="text" ng-class="propertyDisplay.getNgClassObjectForInput()" '+
                     'datetime-picker data-date-only="true" future-only date-format="'+appConfig.dateFormat+'" '+
                     'ng-model="propertyDisplay.object.data[propertyDisplay.property]" '+
                     'ng-disabled="!propertyDisplay.editable" '+
+					'ng-change="propertyDisplay.onChange()"' + 
                     'ng-show="propertyDisplay.editing" '+
                     'name="'+propertyDisplay.property+'" ' +
                     'placeholder="'+placeholder+'" '+
@@ -189,10 +194,11 @@ class SWInput{
                     'id="swinput'+utilityService.createID(26)+'"'+
                     ' />';
             } else if(propertyDisplay.fieldType === 'dateTime'){
-                template = '<input type="text" class="form-control" '+
+                template = '<input type="text" ng-class="propertyDisplay.getNgClassObjectForInput()" '+
                     'datetime-picker '+ // date-format="MMM DD, YYYY hh:mm"
                     'ng-model="propertyDisplay.object.data[propertyDisplay.property]" '+
                     'ng-disabled="!propertyDisplay.editable" '+
+					'ng-change="propertyDisplay.onChange()"' + 
                     'ng-show="propertyDisplay.editing" '+
                     'name="'+propertyDisplay.property+'" ' +
                     'placeholder="'+placeholder+'" '+
@@ -201,12 +207,13 @@ class SWInput{
                     ' />';
             } else if(propertyDisplay.fieldType === 'file'){
 				template = '<input type="file"' +
+							'ng-class="propertyDisplay.getNgClassObjectForInput()"' +
            				    'ng-model="propertyDisplay.object.data[swFormFieldFile.propertyDisplay.property]"' +
   		   					'ng-disabled="!propertyDisplay.editable"' +
   		   					'ng-show="propertyDisplay.editing"' +
-  		   					'on-change="propertyDisplay.onChange"' + 
-  		   					'name="propertyDisplay.property"' +
-           					'class="form-control" />';
+  		   					'ng-change="propertyDisplay.onChange()"' + 
+  		   					'name="propertyDisplay.property" />';
+           					
 			}
 
 			return template;
@@ -246,6 +253,7 @@ class SWInput{
 				//renders the template and compiles it
 				element.html(getTemplate(scope.propertyDisplay));
 				$compile(element.contents())(scope);
+				scope.propertyDisplay.edited=false; 
 			}
 		};
 	}

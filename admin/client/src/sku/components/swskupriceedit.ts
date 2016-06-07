@@ -9,6 +9,7 @@ class SWSkuPriceEditController{
     public currencyCode;
     public bundledSkuSkuId; 
     public bundledSkuCurrencyCode;
+    public formName; 
    
     public sku; 
     public skuPrice;
@@ -18,8 +19,10 @@ class SWSkuPriceEditController{
     //@ngInject
     constructor(
         private collectionConfigService,
+        private utilityService, 
         private $hibachi
     ){
+        this.formName = this.utilityService.createID(32);
         if(angular.isUndefined(this.skuId) && angular.isDefined(this.bundledSkuSkuId)){
             this.skuId = this.bundledSkuSkuId;
         }

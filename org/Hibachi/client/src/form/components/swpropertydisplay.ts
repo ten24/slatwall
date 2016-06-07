@@ -4,6 +4,7 @@ class SWPropertyDisplayController {
     private applyFilter;
     private setupFormController;
     public errors;
+    public edited:boolean; 
     public editing:boolean;
     public editable:boolean;
     public isHidden:boolean;
@@ -16,8 +17,15 @@ class SWPropertyDisplayController {
     public eagerLoadOptions:boolean;
     public noValidate:boolean;
     public binaryFileTarget; 
+    public inListingDisplay:boolean; 
     public rawFileTarget; 
+    public showLabel; 
     public form;
+    public saved:boolean; 
+    public onChangeCallback; 
+    public hasOnChangeCallback:boolean; 
+    public hasSaveCallback:boolean; 
+    public initValue:any; 
     
 
     //@ngInject
@@ -25,6 +33,8 @@ class SWPropertyDisplayController {
         public $filter
     ){
         this.errors = {};
+        this.edited = false; 
+        this.initValue = this.object.data[this.property]; 
         if(angular.isUndefined(this.rawFileTarget)){
             this.rawFileTarget = this.property;
         }
@@ -43,9 +53,16 @@ class SWPropertyDisplayController {
         if(angular.isUndefined(this.noValidate)){
             this.noValidate = false;
         }
-
         if(angular.isUndefined(this.optionsArguments)){
             this.optionsArguments = {};
+        }
+        if( (this.fieldType !== 'hidden' &&
+            angular.isUndefined(this.inListingDisplay)) || 
+            (angular.isDefined(this.inListingDisplay) && !this.inListingDisplay)
+        ){
+            this.showLabel = true; 
+        } else { 
+            this.showLabel = false; 
         }
 
         this.applyFilter = function(model, filter) {
@@ -77,6 +94,31 @@ class SWPropertyDisplayController {
             this.title = this.object.metaData.$$getPropertyTitle(this.property);
         }
     };
+
+
+    public getNgClassObjectForInput = () => {
+
+    }
+
+    //these could maybe be handled by a service
+    public onChange = () =>{
+        this.edited = true; 
+        if(this.hasOnChangeCallback){
+            this.onChangeCallback();
+        } 
+    }
+
+    public clear = () =>{
+        this.edited = false; 
+        this.object.data[this.property] = this.initValue; 
+    }
+
+    public save = () =>{
+        this.object.$$save().then((response)=>{
+            this.edited = false;           
+            this.saved = true; 
+        });  
+    }
 }
 
 class SWPropertyDisplay implements ng.IDirective{
@@ -99,11 +141,13 @@ class SWPropertyDisplay implements ng.IDirective{
         optionsArguments:"=?",
         eagerLoadOptions:"=?",
         isDirty:"=?",
-        onChange:"=?",
+        onChangeCallback:"&?onChange",
+        saveCallback:"&?", 
         fieldType:"@?",
         rawFileTarget:"@?",
         binaryFileTarget:"@?",
-        noValidate:"=?"
+        noValidate:"=?",
+        inListingDisplay:"=?"
     };
     public controller=SWPropertyDisplayController;
     public controllerAs="swPropertyDisplay";
@@ -118,7 +162,19 @@ class SWPropertyDisplay implements ng.IDirective{
     }
     
     
-    public link:ng.IDirectiveLinkFn = ($scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, formController: any) =>{
+    public link:ng.IDirectiveLinkFn = ($scope, element: ng.IAugmentedJQuery, attrs, formController: any) =>{
+        
+        if(angular.isDefined(attrs.onChange)){
+            $scope.swPropertyDisplay.hasOnChangeCallback = true; 
+        } else { 
+            $scope.swPropertyDisplay.hasOnChangeCallback = false; 
+        }
+        
+        if(angular.isDefined(attrs.saveCallback)){
+            $scope.swPropertyDisplay.hasSaveCallback = true;
+        } else { 
+            $scope.swPropertyDisplay.hasSaveCallback = false;
+        }
     };
 
     public static Factory(){
