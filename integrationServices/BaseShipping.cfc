@@ -83,13 +83,13 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 		}else{
 			httpRequest.addParam(type="header",name="Content-Type",value="application/json");
 			httpRequest.addParam(type="body", value=trim(arguments.requestPacket));
-			if(!isNull(httpRequest.send().getPrefix().fileContent) && isJson(httpRequest.send().getPrefix().fileContent)){
-				return deserializeJson(httpRequest.send().getPrefix().fileContent);
+			var response = httpRequest.send().getPrefix().fileContent;
+			if(!isNull(response) && isJson(response)){
+				return deserializeJson(response);
 			}else{
 				return {};
 			}
 		}
-		
 	}
 	
 	public any function processShipmentRequestWithOrderDelivery_Create(required any processObject){
