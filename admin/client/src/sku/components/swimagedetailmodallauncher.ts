@@ -27,7 +27,7 @@ class SWImageDetailModalLauncherController{
         this.collectionConfig.getEntity().then(
             (response)=>{
                 if(angular.isDefined(response.records) && angular.isDefined(response.records[0])){
-                    this.imageFileName = response.records[0].imageFileName; 
+                    this.imageFileName = response.records[0].imageFile; 
                     this.imagePath = response.records[0].imagePath; 
                     this.sku = this.$hibachi.populateEntity("Sku",response.records[0]); 
                 }
@@ -47,7 +47,11 @@ class SWImageDetailModalLauncherController{
         data.append('preprocessDisplayedFlag',1); 
         data.append('sRedirectAction',"admin:entity.detailProduct");
         data.append('ajaxRequest', 1); 
-        data.append('imageFile', this.imageFileName);
+        if(this.customImageNameFlag){
+            data.append('imageFile', this.imageFileName);
+        } else {
+            data.append('imageFile', this.sku.data.imageFile);
+        }
         data.append('uploadFile', this.sku.data.uploadFile);
         
         var savePromise = this.$http.post(

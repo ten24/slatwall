@@ -13,7 +13,8 @@ class SWInput{
 			utilityService,
             rbkeyService,
 			fileService,
-			$parse
+			$parse,
+			$timeout
 		)=>new SWInput(
 			$log,
 			$compile,
@@ -21,7 +22,8 @@ class SWInput{
 			utilityService,
             rbkeyService,
 			fileService,
-			$parse
+			$parse,
+			$timeout
 		);
 		directive.$inject = [
 			'$log',
@@ -30,7 +32,8 @@ class SWInput{
 			'utilityService',
             'rbkeyService',
 			'fileService',
-			'$parse'
+			'$parse',
+			'$timeout'
 		];
 		return directive
 	}
@@ -41,7 +44,8 @@ class SWInput{
 		utilityService,
         rbkeyService,
 		fileService,
-		$parse
+		$parse,
+		$timeout
 	){
 		var getValidationDirectives = function(propertyDisplay){
 			var spaceDelimitedList = '';
@@ -224,11 +228,19 @@ class SWInput{
 					 element.bind("change", (e)=>{
 						var fileToUpload = (e.srcElement || e.target).files[0];
 						//console.log("rawFile",fileToUpload);
-						fileService.uploadFile(fileToUpload, scope.propertyDisplay.object, scope.propertyDisplay.binaryFileTarget);
 						scope.$apply(()=>{
 							modelSetter(scope, fileToUpload);
-						})
-						scope.propertyDisplay.object[scope.propertyDisplay.property] = fileToUpload;
+						});
+						$timeout(()=>{
+							fileService.uploadFile(fileToUpload, scope.propertyDisplay.object, scope.propertyDisplay.binaryFileTarget).then(
+								()=>{
+									scope.propertyDisplay.object[scope.propertyDisplay.property] = fileToUpload;
+								},
+								()=>{
+									//error	notify user
+								});
+						});
+						
 					 });
 				}
 				//renders the template and compiles it
