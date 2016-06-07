@@ -160,9 +160,7 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 			// If XML fault then log error
 			responseBean.addError("unknown", "An unexpected communication error occured, please notify system administrator.");
 		} else {
-			
-			
-			if(!responseBean.hasErrors()) {
+			if(!responseBean.hasErrors() && !isNull(responseBean.getData().RateResponse.RatedShipment)) {
 				for(var i=1; i<=arrayLen(responseBean.getData().RateResponse.RatedShipment); i++) {
 					responseBean.addShippingMethod(
 						shippingProviderMethod=responseBean.getData().RateResponse.RatedShipment[i].Service.code,

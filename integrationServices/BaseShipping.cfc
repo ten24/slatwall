@@ -83,7 +83,11 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 		}else{
 			httpRequest.addParam(type="header",name="Content-Type",value="application/json");
 			httpRequest.addParam(type="body", value=trim(arguments.requestPacket));
-			return deserializeJson(httpRequest.send().getPrefix().fileContent);
+			if(!isNull(httpRequest.send().getPrefix().fileContent) && isJson(httpRequest.send().getPrefix().fileContent)){
+				return deserializeJson(httpRequest.send().getPrefix().fileContent);
+			}else{
+				return {};
+			}
 		}
 		
 	}
