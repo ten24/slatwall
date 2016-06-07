@@ -59,7 +59,9 @@ Notes:
 			<cfif arguments.branch eq 'master'>
 				<cfset zipName  = 'slatwall-latest'/> 		
 			<cfelseif arguments.branch eq 'develop'>
-				<cfset zipName  = 'slatwall-be'/> 		
+				<cfset zipName  = 'slatwall-be'/> 	
+			<cfelseif arguments.branch eq 'release-candidate'>
+				<cfset zipName = 'slatwall-rc'/>	
 			</cfif>
 			<cfset var downloadURL = "https://s3.amazonaws.com/slatwall-releases/#zipName#.zip" />
 			<cfset var downloadHashURL = "https://s3.amazonaws.com/slatwall-releases/#zipName#.md5.txt" />
@@ -187,9 +189,11 @@ Notes:
 
 		<cfhttp method="get" url="https://raw.github.com/ten24/Slatwall/master/version.txt.cfm" result="masterVersion">
 		<cfhttp method="get" url="https://raw.github.com/ten24/Slatwall/develop/version.txt.cfm" result="developVersion">
+		<cfhttp method="get" url="https://raw.github.com/ten24/Slatwall/release-candidate/version.txt.cfm" result="releaseCandidateVersion">
 
 		<cfset versions.master = trim(masterVersion.filecontent) />
 		<cfset versions.develop = trim(developVersion.filecontent) />
+		<cfset versions.releaseCandidate = trim(releaseCandidateVersion.filecontent) />
 
 		<cfreturn versions />
 	</cffunction>

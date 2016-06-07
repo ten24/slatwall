@@ -50,6 +50,7 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.currentVersion" type="string" />
 <cfparam name="rc.currentBranch" type="string" />
+<cfparam name="rc.availableReleaseCandidateVersion" type="string" />
 <cfparam name="rc.availableDevelopVersion" type="string" />
 <cfparam name="rc.availableMasterVersion" type="string" />
 
@@ -83,6 +84,7 @@ Notes:
 			</cfif>
 			<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.availableStableVersion')#" value="#rc.availableMasterVersion#" />
 			<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.availableBleedingEdgeVersion')#" value="#rc.availableDevelopVersion#" />
+			<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.availableReleaseCandidateVersion')#" value="#rc.availableReleaseCandidateVersion#" />
 			<hr />
 			<form method="post" action="?s=1" class="s-update-branch">
 				<input type="hidden" name="slatAction" value="admin:main.update" />
