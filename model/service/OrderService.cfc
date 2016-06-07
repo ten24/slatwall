@@ -308,9 +308,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Check for the sku in the orderFulfillment already, so long that the order doens't have any errors
 			if(!arguments.order.hasErrors()) {
 				for(var orderItem in orderFulfillment.getOrderFulfillmentItems()){
-					// If the sku, price, attributes & stock all match then just increase the quantity
-
-					if(arguments.processObject.matchesOrderItem( orderItem )){
+					// If the sku, price, attributes & stock all match then just increase the quantity if and only if the match parent orderitem is null.
+					if(arguments.processObject.matchesOrderItem( orderItem ) && isNull(orderItem.getParentOrderItem())){
 						foundItem = true;
 						var foundOrderItem = orderItem;
 						orderItem.setQuantity(orderItem.getQuantity() + arguments.processObject.getQuantity());
