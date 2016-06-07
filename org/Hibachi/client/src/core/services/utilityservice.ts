@@ -40,7 +40,11 @@ class UtilityService extends BaseService{
 
         }
         return query_string;
-    }
+    };
+
+    public isAngularRoute = () =>{
+        return /[\?&]ng#!/.test(window.location.href);
+    };
 
     public ArrayFindByPropertyValue = (arr:any[],property:string,value:any):number =>{
         let currentIndex = -1;
@@ -283,6 +287,10 @@ class UtilityService extends BaseService{
             }
             return returnArray;
       }
+
+        public minutesOfDay = (m):number=>{
+            return m.getMinutes() + m.getHours() * 60;
+        };
 }
 export {
     UtilityService

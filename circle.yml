@@ -13,11 +13,11 @@ dependencies:
 
     # Install node modules for building JS
     - npm install -g webpack gulp
+
     - npm install gulp gulp-inject@3 gulp-chmod gulp-util run-sequence webpack force-case-sensitivity-webpack-plugin strip-loader ng-annotate-webpack-plugin tsify typescript
 
     # Install awscli so that we can push builds to S3
     - pip install awscli
-
     # Install se-interpreter (Interperates SeleniumBuilder json for SauceLabs using nodeJS)
     - cd meta/tests/integration/se-interpreter && npm install
 

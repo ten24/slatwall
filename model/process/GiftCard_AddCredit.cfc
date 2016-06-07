@@ -46,7 +46,7 @@ component output="false" accessors="true" extends="HibachiProcess"{
 	 // Injected Entity
 	 property name="giftCard";
 	 property name="orderPayments" fieldtype="many-to-one";
-	 property name="orderItems" cfc="OrderItem" fieldtype="one-to-many";
+	 property name="orderItems" cfc="OrderItem" fieldtype="one-to-many" singularname="orderItem";
 	 property name="originalOrderItem" fieldtype="one-to-one";
 
 	 property name="creditAmount";

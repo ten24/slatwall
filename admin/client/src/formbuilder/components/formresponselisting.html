@@ -1,0 +1,26 @@
+<a ng-if="swFormResponseListing.columns.length && swFormResponseListing.pageRecords.length" ng-click="swFormResponseListing.export()">
+    <span sw-rbKey="'define.export'"></span> <span sw-rbKey="'entity.formResponse'"></span>
+</a>
+<div ng-if="swFormResponseListing.columns.length && swFormResponseListing.pageRecords.length" class="table-responsive s-listing-display-table-wrapper">
+	 <table id="" class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th class="data primary" data-ng-repeat="column in swFormResponseListing.columns">	
+                    <span ng-bind="column.question"></span>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr id="{{record.formResponseID}}" data-ng-repeat="record in swFormResponseListing.pageRecords" >                
+                <td class="primary" ng-bind="record[column.questionID]" data-ng-repeat="column in swFormResponseListing.columns"></td>
+            </tr>
+        </tbody>
+	</table>
+    
+    <sw-pagination-bar data-paginator="swFormResponseListing.paginator"></sw-pagination-bar>
+</div>
+<div ng-if="!swFormResponseListing.columns.length && !swFormResponseListing.pageRecords.length">
+    <span sw-rbKey="'admin.define.nosearchresults'"></span>
+</div>
+
+									

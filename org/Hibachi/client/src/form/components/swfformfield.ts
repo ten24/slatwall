@@ -58,24 +58,24 @@ class SWFFormFieldController {
 		*/
 	public static $inject = ['$scope'];
 	constructor ( public $scope:ng.IScope ) {
-		let vm:any = this;
-        
-        if (this.propertyDisplay){
-            vm.propertyDisplay = this.propertyDisplay;   
-        }else{
-            vm.propertyDisplay =  {
-                name: vm.name,
-                class: vm.class,
-                errorClass: vm.errorClass,
-                type: vm.type,
-                object: vm.object,
-                propertyIdentifier: vm.propertyIdentifier 
-            };
-            //console.log("Built a property display");
-        }
+        //let vm:IFormFieldControllerVM = this;
+        //
+        //if (this.propertyDisplay){
+        //    vm.propertyDisplay = this.propertyDisplay;
+        //}else{
+        //    vm.propertyDisplay =  {
+        //        name: vm.name,
+        //        class: vm.class,
+        //        errorClass: vm.errorClass,
+        //        type: vm.type,
+        //        object: vm.object,
+        //        propertyIdentifier: vm.propertyIdentifier
+        //    };
+        //    //console.log("Built a property display");
+        //}
 		
 	}
-}
+} 
 
 /**
 	* This class handles configuring formFields for use in process forms on the front end.

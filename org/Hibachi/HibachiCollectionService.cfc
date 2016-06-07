@@ -673,6 +673,28 @@ component output="false" accessors="true" extends="HibachiService" {
 			getService('hibachiService').export( collectionData, headers, headers, "ExportCollection", "csv" );
 	}//<--end function
 
+	public void function collectionConfigExport(required struct data) {
+		param name="arguments.data.collectionConfig" type="string" pattern="^{.*}$";
+
+		arguments.data.collectionConfig = DeserializeJSON(arguments.data.collectionConfig);
+
+		var collectionEntity = getCollectionList(arguments.data.collectionConfig.baseEntityName);
+
+		var exportableColumns = [];
+		for(var column in arguments.data.collectionConfig.columns){
+			if(StructKeyExists(column, "isExportable") && column.isExportable == true){
+				ArrayAppend(exportableColumns, column);
+			}
+		}
+		arguments.data.collectionConfig.columns = exportableColumns;
+		arguments.data.collectionConfig["allRecords"] = true;
+		collectionEntity.setCollectionConfig(serializeJSON(arguments.data.collectionConfig));
+		var collectionData = collectionEntity.getRecords(forExport=true,formatRecords=false);
+		var headers = StructKeyList(collectionData[1]);
+		getService('hibachiService').export( collectionData, headers, headers, arguments.data.collectionConfig.baseEntityName, "csv" );
+
+	}
+
 	// =====================  END: Logical Methods ============================
 
 	// ===================== START: DAO Passthrough ===========================

@@ -107,6 +107,7 @@
 						<cfset attributes.multiselectPropertyIdentifier = "#attributes.hibachiScope.getService('hibachiService').getPrimaryIDPropertyNameByEntityName( propertyMD.cfc )#" />
 					</cfif>
 					<cfset attributes.valueOptionsSmartList = attributes.object.invokeMethod( "get#attributes.property#OptionsSmartList" ) />
+					
 				</cfif>
 			</cfif>
 			

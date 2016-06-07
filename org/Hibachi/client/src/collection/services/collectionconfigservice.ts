@@ -44,7 +44,9 @@ class Filter{
         public comparisonOperator:string,
         public logicalOperator?:string,
         public displayPropertyIdentifier?:string,
-        public displayValue?:string
+        public displayValue?:string,
+        public hidden:boolean=false,
+        public pattern?:string
     ){}
 }
 
@@ -74,8 +76,8 @@ interface IOrderBy{
 
 class OrderBy{
     constructor(
-    public propertyIdentifier:string,
-    public direction:string
+        public propertyIdentifier:string,
+        public direction:string
     ){}
 }
 
@@ -87,6 +89,7 @@ class CollectionConfig {
         private rbkeyService:any,
         private $hibachi:any,
         private utilityService,
+        public  observerService,
         public  baseEntityName?:string,
         public  baseEntityAlias?:string,
         public columns?:Column[],
@@ -121,7 +124,7 @@ class CollectionConfig {
     };
 
     public newCollectionConfig=(baseEntityName?:string,baseEntityAlias?:string):CollectionConfig=>{
-        return new CollectionConfig(this.rbkeyService, this.$hibachi, this.utilityService, baseEntityName, baseEntityAlias);
+        return new CollectionConfig(this.rbkeyService, this.$hibachi, this.utilityService, this.observerService, baseEntityName, baseEntityAlias);
     };
 
     public loadJson= (jsonCollection):any =>{
@@ -133,6 +136,7 @@ class CollectionConfig {
         this.baseEntityAlias = jsonCollection.baseEntityAlias;
         this.baseEntityName = jsonCollection.baseEntityName;
         if(angular.isDefined(jsonCollection.filterGroups)){
+            this.validateFilter(jsonCollection.filterGroups);
             this.filterGroups = jsonCollection.filterGroups;
         }
         this.columns = jsonCollection.columns;
@@ -142,21 +146,25 @@ class CollectionConfig {
         this.groupBys = jsonCollection.groupBys;
         this.pageShow = jsonCollection.pageShow;
         this.allRecords = jsonCollection.allRecords;
-        this.isDistinct = jsonCollection.isDistinct; 
+        this.isDistinct = jsonCollection.isDistinct;
+        this.currentPage = jsonCollection.currentPage || 1;
+        this.pageShow = jsonCollection.pageShow || 10;
+        this.keywords = jsonCollection.keywords;
         return this;
     };
 
-public loadFilterGroups= (filterGroupsConfig:Array<any>=[{filterGroup: []}]):CollectionConfig =>{
+    public loadFilterGroups= (filterGroupsConfig:Array<any>=[{filterGroup: []}]):CollectionConfig =>{
         this.filterGroups = filterGroupsConfig;
         return this;
     };
 
     public loadColumns= (columns:Column[]):CollectionConfig =>{
         this.columns = columns;
-        return this; 
+        return this;
     };
 
-public getCollectionConfig= ():any =>{
+    public getCollectionConfig= ():any =>{
+        this.validateFilter(this.filterGroups);
         return {
             baseEntityAlias: this.baseEntityAlias,
             baseEntityName: this.baseEntityName,
@@ -169,7 +177,8 @@ public getCollectionConfig= ():any =>{
             keywords: this.keywords,
             defaultColumns: (!this.columns || !this.columns.length),
             allRecords: this.allRecords,
-            isDistinct: this.isDistinct
+            isDistinct: this.isDistinct,
+            orderBy:this.orderBy
         };
     };
 
@@ -178,6 +187,7 @@ public getCollectionConfig= ():any =>{
     };
 
     public getOptions= (): Object =>{
+        this.validateFilter(this.filterGroups);
         var options= {
             columnsConfig: angular.toJson(this.columns),
             filterGroupsConfig: angular.toJson(this.filterGroups),
@@ -202,6 +212,10 @@ public getCollectionConfig= ():any =>{
     };
 
     private formatPropertyIdentifier= (propertyIdentifier:string, addJoin:boolean=false):string =>{
+        //if already starts with alias, strip it out
+        if(propertyIdentifier.lastIndexOf(this.baseEntityAlias, 0) === 0){
+            propertyIdentifier = propertyIdentifier.slice(this.baseEntityAlias.length+1);
+        }
         var _propertyIdentifier = this.baseEntityAlias;
         if(addJoin === true){
             _propertyIdentifier +=  this.processJoin(propertyIdentifier)
@@ -216,10 +230,10 @@ public getCollectionConfig= ():any =>{
         var _propertyIdentifier = '',
             propertyIdentifierParts = propertyIdentifier.split('.'),
             current_collection = this.collection;
-            
+
         for (var i = 0; i < propertyIdentifierParts.length; i++) {
 
-            if (current_collection.metaData[propertyIdentifierParts[i]].cfc) {
+            if (angular.isDefined(current_collection.metaData[propertyIdentifierParts[i]]) && ('cfc' in current_collection.metaData[propertyIdentifierParts[i]])) {
                 current_collection = this.$hibachi.getEntityExample(current_collection.metaData[propertyIdentifierParts[i]].cfc);
                 _propertyIdentifier += '_' + propertyIdentifierParts[i];
                 this.addJoin(new Join(
@@ -248,7 +262,7 @@ public getCollectionConfig= ():any =>{
         if(!joinFound){
             this.joins.push(join);
         }
-        
+
         return this;
     };
 
@@ -260,7 +274,7 @@ public getCollectionConfig= ():any =>{
         return propertyIdentifier;
     };
 
-public addColumn= (column: string, title: string = '', options:any = {}):CollectionConfig =>{
+    public addColumn= (column: string, title: string = '', options:any = {}):CollectionConfig =>{
         if(!this.columns || this.utilityService.ArrayFindByPropertyValue(this.columns,'propertyIdentifier',column) === -1){
             var isVisible = true,
                 isDeletable = true,
@@ -271,6 +285,10 @@ public addColumn= (column: string, title: string = '', options:any = {}):Collect
                 lastProperty=column.split('.').pop()
                 ;
             var lastEntity = this.$hibachi.getEntityExample(this.$hibachi.getLastEntityNameInPropertyIdentifier(this.baseEntityName,column));
+            if(angular.isUndefined(lastEntity)){
+                throw("You have passed an incorrect entity name to a collection config");
+            }
+            
             if(angular.isUndefined(this.columns)){
                 this.columns = [];
             }
@@ -325,19 +343,22 @@ public addColumn= (column: string, title: string = '', options:any = {}):Collect
 
             this.columns.push(columnObject);
         }
-        return this; 
+        return this;
     };
 
 
     public setDisplayProperties= (propertyIdentifier: string, title: string = '', options:any = {}):CollectionConfig =>{
         this.addDisplayProperty(propertyIdentifier, title, options);
-        return this; 
+        return this;
     };
 
-    public addDisplayAggregate=(propertyIdentifier:string,aggregateFunction:string,aggregateAlias:string,options?):CollectionConfig=>{
+    public addDisplayAggregate=(propertyIdentifier:string,aggregateFunction:string,aggregateAlias?:string,options?)=>{
+        if(angular.isUndefined(aggregateAlias)){
+            aggregateAlias = propertyIdentifier.replace(/\./g, '_')+aggregateFunction;
+        }
         var column = {
             propertyIdentifier:this.formatPropertyIdentifier(propertyIdentifier, true),
-            title : this.rbkeyService.getRBKey("entity."+this.baseEntityName+"."+propertyIdentifier),
+            title : this.rbkeyService.getRBKey("entity."+this.$hibachi.getLastEntityNameInPropertyIdentifier(this.baseEntityName,propertyIdentifier)+"."+this.utilityService.listLast(propertyIdentifier)),
             aggregate:{
                 aggregateFunction:aggregateFunction,
                 aggregateAlias:aggregateAlias
@@ -347,7 +368,7 @@ public addColumn= (column: string, title: string = '', options:any = {}):Collect
         angular.extend(column,options);
         //Add columns
         this.addColumn(column.propertyIdentifier,undefined,column);
-        return this; 
+        return this;
     };
 
     public addGroupBy = (groupByAlias):CollectionConfig=>{
@@ -355,7 +376,7 @@ public addColumn= (column: string, title: string = '', options:any = {}):Collect
             this.groupBys = '';
         }
         this.groupBys = this.utilityService.listAppend(this.groupBys,groupByAlias);
-        return this; 
+        return this;
     };
 
     public addDisplayProperty= (propertyIdentifier: string, title: string = '', options:any = {}):CollectionConfig =>{
@@ -366,14 +387,52 @@ public addColumn= (column: string, title: string = '', options:any = {}):Collect
             if(angular.isDefined(_DividedTitles[index]) && _DividedTitles[index].trim() != '') {
                 title = _DividedTitles[index].trim();
             }else {
-                title = this.rbkeyService.getRBKey("entity."+this.baseEntityName+"."+column);
+                title = this.rbkeyService.getRBKey("entity."+this.$hibachi.getLastEntityNameInPropertyIdentifier(this.baseEntityName,column)+"."+this.utilityService.listLast(column, "."));
             }
             this.addColumn(this.formatPropertyIdentifier(column),title, options);
         });
-        return this; 
+        return this;
     };
 
-    public addFilter= (propertyIdentifier: string, value: any, comparisonOperator: string = '=', logicalOperator?: string):CollectionConfig =>{
+    public addFilter= (propertyIdentifier: string, value: any, comparisonOperator: string = '=', logicalOperator?: string, hidden:boolean=false):CollectionConfig =>{
+        //create filter
+        var filter = this.createFilter(propertyIdentifier, value, comparisonOperator, logicalOperator, hidden);
+
+        this.filterGroups[0].filterGroup.push(filter);
+        return this;
+    };
+
+    public addLikeFilter= (propertyIdentifier: string, value: any, pattern: string = '%w%',  logicalOperator?: string, displayPropertyIdentifier?:string,hidden:boolean=false):CollectionConfig =>{
+
+        //if filterGroups does not exists then set a default
+        if(!this.filterGroups){
+            this.filterGroups = [{filterGroup:[]}];
+        }
+        //if filterGroups is longer than 0 then we at least need to default the logical Operator to AND
+        if(this.filterGroups[0].filterGroup.length && !logicalOperator) logicalOperator = 'AND';
+
+        var join = propertyIdentifier.split('.').length > 1;
+        if(angular.isUndefined(displayPropertyIdentifier)){
+            displayPropertyIdentifier = this.rbkeyService.getRBKey("entity."+this.$hibachi.getLastEntityNameInPropertyIdentifier(this.baseEntityName,propertyIdentifier)+"."+this.utilityService.listLast(propertyIdentifier))
+        }
+
+        //create filter group
+        var filter = new Filter(
+            this.formatPropertyIdentifier(propertyIdentifier, join),
+            value,
+            'like',
+            logicalOperator,
+            displayPropertyIdentifier,
+            value,
+            hidden,
+            pattern
+        );
+
+        this.filterGroups[0].filterGroup.push(filter);
+        return this;
+    };
+
+    public createFilter= (propertyIdentifier: string, value: any, comparisonOperator: string = '=', logicalOperator?: string, hidden:boolean=false):Filter =>{
 
         //if filterGroups does not exists then set a default
         if(!this.filterGroups){
@@ -383,11 +442,7 @@ public addColumn= (column: string, title: string = '', options:any = {}):Collect
         //if filterGroups is longer than 0 then we at least need to default the logical Operator to AND
         if(this.filterGroups[0].filterGroup.length && !logicalOperator) logicalOperator = 'AND';
 
-            if(propertyIdentifier.split('.').length < 2){
-            var join = false; 
-            } else { 
-            var join = true;
-            }
+        var join = propertyIdentifier.split('.').length > 1;
 
         //create filter group
         var filter = new Filter(
@@ -396,18 +451,36 @@ public addColumn= (column: string, title: string = '', options:any = {}):Collect
             comparisonOperator,
             logicalOperator,
             propertyIdentifier.split('.').pop(),
-            value
+            value,
+            hidden
         );
-
-        this.filterGroups[0].filterGroup.push(filter);
-        return this; 
+        return filter;
     };
-    
+
+    public addFilterGroup = (filterGroup:any):CollectionConfig =>{
+        var group = {
+            filterGroup:[]
+        };
+        for(var i =  0; i < filterGroup.length; i++){
+            var filter = this.createFilter(
+                filterGroup[i].propertyIdentifier,
+                filterGroup[i].comparisonValue,
+                filterGroup[i].comparisonOperator,
+                filterGroup[i].logicalOperator,
+                filterGroup[i].hidden
+            );
+            group.filterGroup.push(filter);
+        }
+
+        this.filterGroups[0].filterGroup.push(group);
+        return this;
+    };
+
     public removeFilter = (propertyIdentifier: string, value: any, comparisonOperator: string = '=')=>{
         this.removeFilterHelper(this.filterGroups, propertyIdentifier, value, comparisonOperator);
-        return this; 
-    }
-    
+        return this;
+    };
+
     public removeFilterHelper = (filter:any, propertyIdentifier:string, value:any, comparisonOperator:string, currentGroup?)=>{
         if(angular.isUndefined(currentGroup)){
             currentGroup = filter;
@@ -426,7 +499,7 @@ public addColumn= (column: string, title: string = '', options:any = {}):Collect
     };
 
     public addCollectionFilter= (propertyIdentifier: string, displayPropertyIdentifier:string, displayValue:string,
-                                    collectionID: string, criteria:string='One', fieldtype?:string, readOnly:boolean=false
+                                 collectionID: string, criteria:string='One', fieldtype?:string, readOnly:boolean=false
     ):CollectionConfig =>{
         this.filterGroups[0].filterGroup.push(
             new CollectionFilter(
@@ -439,7 +512,7 @@ public addColumn= (column: string, title: string = '', options:any = {}):Collect
                 readOnly
             )
         );
-        return this; 
+        return this;
     };
     //orderByList in this form: "property|direction" concrete: "skuName|ASC"
     public setOrderBy = (orderByList):CollectionConfig=>{
@@ -447,33 +520,81 @@ public addColumn= (column: string, title: string = '', options:any = {}):Collect
         angular.forEach(orderBys,(orderBy)=>{
             this.addOrderBy(orderBy);
         });
-        return this; 
+        return this;
     };
 
-    public addOrderBy = (orderByString):void=>{
+    public addOrderBy = (orderByString, formatPropertyIdentifier:boolean = true):void=>{
         if(!this.orderBy){
             this.orderBy = [];
         }
 
         var propertyIdentifier = this.utilityService.listFirst(orderByString,'|');
+        if(formatPropertyIdentifier){
+            propertyIdentifier = this.formatPropertyIdentifier(propertyIdentifier);
+        }
         var direction = this.utilityService.listLast(orderByString,'|');
 
         var orderBy = {
-            propertyIdentifier:this.formatPropertyIdentifier(propertyIdentifier),
+            propertyIdentifier:propertyIdentifier,
             direction:direction
         };
 
         this.orderBy.push(orderBy);
     };
 
+    public toggleOrderBy = (formattedPropertyIdentifier:string, singleColumn:boolean=false) => {
+        if(!this.orderBy){
+            this.orderBy = [];
+        }
+        var found = false;
+        for(var i = this.orderBy.length - 1; i >= 0; i--){
+            if(this.orderBy[i].propertyIdentifier == formattedPropertyIdentifier){
+                found = true;
+                if(this.orderBy[i].direction.toUpperCase() == "DESC" ){
+                    this.orderBy[i].direction = "ASC";
+                } else if(this.orderBy[i].direction.toUpperCase() == "ASC") {
+                    this.orderBy.splice(i,1);
+                }
+                break;
+            }
+        }
+
+        if(!found){
+            if(singleColumn){
+                this.orderBy = [];
+                for(var i =  0; i < this.columns.length; i++){
+                    if(this.columns[i]["sorting"] && this.columns[i]["sorting"]["active"]){
+                        this.columns[i]["sorting"]["active"] = false;
+                        this.columns[i]["sorting"]["sortOrder"] = 'asc';
+                    }
+                }
+            }
+            this.addOrderBy(formattedPropertyIdentifier + '|DESC', false);
+        }
+    };
+
+    public removeOrderBy = (formattedPropertyIdentifier:string) => {
+        angular.forEach(this.orderBy, (orderBy, index)=>{
+            if(orderBy.propertyIdentifier == formattedPropertyIdentifier){
+                this.orderBy.splice(index,1);
+                return true;
+            }
+        });
+        return false;
+    };
+
     public setCurrentPage= (pageNumber):CollectionConfig =>{
         this.currentPage = pageNumber;
-        return this; 
+        return this;
+    };
+
+    public getCurrentPage= () =>{
+        return this.currentPage;
     };
 
     public setPageShow= (NumberOfPages):CollectionConfig =>{
         this.pageShow = NumberOfPages;
-        return this; 
+        return this;
     };
 
     public getPageShow=():number=>{
@@ -482,21 +603,30 @@ public addColumn= (column: string, title: string = '', options:any = {}):Collect
 
     public setAllRecords= (allFlag:boolean=false):CollectionConfig =>{
         this.allRecords = allFlag;
-        return this; 
+        return this;
     };
 
-    public setKeywords= (keyword):CollectionConfig =>{
+    public setDistinct = (flag:boolean=true)=>{
+        this.isDistinct =  flag;
+        return this;
+    };
+
+    public setKeywords= (keyword) =>{
         this.keywords = keyword;
-        return this; 
+        return this;
     };
 
     private setId=(id):CollectionConfig=>{
         this.id = id;
-        return this; 
+        return this;
     };
 
     public hasFilters=():boolean=>{
         return (this.filterGroups.length && this.filterGroups[0].filterGroup.length);
+    };
+
+    public hasColumns=():boolean=>{
+        return (this.columns.length > 0);
     };
 
     public clearFilters=():CollectionConfig =>{
@@ -510,6 +640,42 @@ public addColumn= (column: string, title: string = '', options:any = {}):Collect
         }
         return this.$hibachi.getEntity(this.baseEntityName, this.getOptions());
     };
+
+    private validateFilter = (filter, currentGroup?)=>{
+        if(angular.isUndefined(currentGroup)){
+            currentGroup = filter;
+        }
+        if(angular.isArray(filter)){
+            angular.forEach(filter,(key)=>{
+                this.validateFilter(key, filter);
+            })
+        }else if(angular.isArray(filter.filterGroup)){
+            this.validateFilter(filter.filterGroup,filter.filterGroup);
+        }else{
+            if((!filter.comparisonOperator || !filter.comparisonOperator.length) && (!filter.propertyIdentifier || !filter.propertyIdentifier.length)){
+                var index = currentGroup.indexOf(filter);
+                if(index > -1) {
+                    this.observerService.notify('filterItemAction', {
+                        action: 'remove',
+                        filterItemIndex: index
+                    });
+                    currentGroup.splice(index, 1);
+                }
+            }
+        }
+    };
+
+    public getColumns=()=>{
+        if(!this.columns){
+            this.columns = [];
+        }
+        return this.columns;
+    };
+
+    public setColumns=(columns)=>{
+        this.columns = columns;
+        return this;
+    }
 
 }
 

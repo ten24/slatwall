@@ -64,6 +64,7 @@ Notes:
 		data-multiselect-id-paths="#selectedListingPageIDPaths#"
 		data-edit="#rc.edit#"
 		data-has-search="false"
+        data-has-action-bar="false"
 		data-record-edit-action="admin:entity.editcontent"
 	>
 		<sw-listing-column data-property-identifier="title" tdclass="primary" />

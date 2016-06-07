@@ -81,9 +81,9 @@ component displayname="Schedule" entityname="SlatwallSchedule" table="SwSchedule
 	
 	public array function getRecuringTypeOptions() {
 		var options = [
-			{name="Daily", value="daily"},
-			{name="Weekly", value="weekly"},
-			{name="Monthly", value="monthly"}
+			{"name"="Daily", "value"="daily"},
+			{"name"="Weekly", "value"="weekly"},
+			{"name"="Monthly", "value"="monthly"}
 		];
 		return options;
 	}
@@ -112,7 +112,7 @@ component displayname="Schedule" entityname="SlatwallSchedule" table="SwSchedule
 	public string function getNextRunDateTime(startDateTime, endDateTime){
 		var nextRun='';
 		
-		if( isNull(arguments.endDateTime) or endDateTime > now() ){
+		if( isNull(arguments.endDateTime) || endDateTime > now() ){
 			
 			switch(getRecuringType()){
 				
@@ -293,7 +293,7 @@ component displayname="Schedule" entityname="SlatwallSchedule" table="SwSchedule
 		}
 		
 		// If next run is after the end time then it will not be run again
-		if(nextRun > endDateTime){
+		if(!isNull(arguments.endDateTime) && nextRun > endDateTime){
 			nextRun='';
 		}
 		

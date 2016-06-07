@@ -1,16 +1,7 @@
-//example usage: webpack --config webpack-frontend-develop.config.js -p
-var path = require('path');
-var PATHS = {
-    app:__dirname + '/src'
-};
-
 var devConfig = require('../../org/Hibachi/client/webpack.config');
-devConfig.context=PATHS.app,
-//points to the bootstrap located in the frontend modules directory.
-devConfig.entry.app = "./bootstrap.ts";
-devConfig.output = {
-    path: PATHS.app,
-    filename: 'bundle.js'
-  };
-
-module.exports = devConfig;
+devConfig.addVendor('jquery-ui-timepicker-addon','../../HibachiAssets/js/jquery-ui-timepicker-addon-1.3.1.js')
+    .addVendor('jquery-typewatch','../../HibachiAssets/js/jquery-typewatch-2.0.js')
+    .addVendor('adminjs','../../../../assets/js/admin.js')
+    .addVendor('globaljs','../../HibachiAssets/js/global.js')
+;
+module.exports = devConfig.setupApp(__dirname);

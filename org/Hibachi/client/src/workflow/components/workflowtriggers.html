@@ -1,35 +1,35 @@
-<div ng-show="!workflowTriggers.length" class="alert alert-info" role="alert" sw-rbkey="'entity.WorkflowTrigger.norecordsfound'"><!-- Message created by rb key --></div>
+<div data-ng-show="!workflowTriggers.length" class="alert alert-info" role="alert" sw-rbkey="'entity.WorkflowTrigger.norecordsfound'"><!-- Message created by rb key --></div>
 
-<div class="s-bundle-add-items s-workflow-objs" ng-repeat="workflowTrigger in workflowTriggers">
+<div class="s-bundle-add-items s-workflow-objs" data-ng-repeat="workflowTrigger in workflowTriggers">
 	
 
 	<div class="list-unstyled s-order-item-options" > 
 		<span  		
 			sw-workflow-trigger
-			ng-if="workflowTrigger.$$isPersisted()"
+			data-ng-if="workflowTrigger.$$isPersisted()"
 			data-workflow-trigger="workflowTrigger"
 			data-workflow-triggers="workflowTriggers"
-			ng-init="workflowTrigger.$$index = $index">
+            data-ng-init="workflowTrigger.$$index = $index">
 		</span>
 		<div class="clearfix"></div>
 	</div>
 </div>
 
 <!--- Edit Filter Box --->
-<div ng-if="workflowTriggers.selectedTrigger" class="col-xs-12  s-add-filter" id="j-create-new-trigger" ng-show="!workflowTriggers.selectedTrigger.hidden">
+<div data-ng-if="workflowTriggers.selectedTrigger" class="col-xs-12  s-add-filter" id="j-create-new-trigger">
 		<sw-form name="selectedTrigger" 
 			data-object="workflowTriggers.selectedTrigger"	
 			data-context="save"
 		>
 			<div class="row">
 				<h4 class="s-heading"> 
-					<span ng-show="workflowTriggers.selectedTrigger.$$isPersisted()">Edit</span>
-					<span ng-show="!workflowTriggers.selectedTrigger.$$isPersisted()">New</span>
+					<span data-ng-show="workflowTriggers.selectedTrigger.$$isPersisted()">Edit</span>
+					<span data-ng-show="!workflowTriggers.selectedTrigger.$$isPersisted()">New</span>
 					 Trigger 
 					 <i class="fa fa-times" 
 					 	data-toggle="collapse" 
 					 	data-target="#j-create-new-trigger"
-					 	ng-click="workflowTriggers.selectedTrigger.hidden = true;"
+                        data-ng-click="closeTrigger()"
 					 ></i>
 				</h4>
 				<div class="col-xs-12">
@@ -42,25 +42,41 @@
 								<div class="form-group">
 									<div class="radio">
 										<input  type="radio" name="triggerType" id="radioEvent{{$index}}"
-												ng-model="workflowTriggers.selectedTrigger.data.triggerType"
-												ng-change="setAsEvent(workflowTriggers.selectedTrigger)"
+                                                data-ng-model="workflowTriggers.selectedTrigger.data.triggerType"
+                                                data-ng-change="setAsEvent(workflowTriggers.selectedTrigger)"
 												value="Event"
+                                                data-ng-disabled="workflowTriggers.selectedTrigger.$$isPersisted()"
 										>
 										<label for="radioEvent{{$index}}">
 											Event
 										</label>
 									</div>
-									<div class="radio" ng-show="false">
+									<div class="radio" >
 										<input  type="radio" name="triggerType" id="radioScheduled{{$index}}"
-												ng-change="setAsSchedule(workflowTriggers.selectedTrigger)"
-												ng-model="workflowTriggers.selectedTrigger.data.triggerType"
-												value="Schedule" 
+                                                data-ng-change="setAsSchedule(workflowTriggers.selectedTrigger)"
+												data-ng-model="workflowTriggers.selectedTrigger.data.triggerType"
+												value="Schedule"
+                                                data-ng-disabled="workflowTriggers.selectedTrigger.$$isPersisted()"
 										>
 										<label for="radioScheduled{{$index}}">
 											Schedule
 										</label>
 									</div>
 								</div>
+                                <span sw-property-display
+                                      data-ng-if="workflowTriggers.selectedTrigger.data.triggerType"
+                                      data-object="workflowTriggers.selectedTrigger"
+                                      data-property="startDateTime"
+                                      data-editing="true"
+                                      data-editable="true">
+                                                                </span>
+                                <span sw-property-display
+                                      data-object="workflowTriggers.selectedTrigger"
+                                      data-ng-if="workflowTriggers.selectedTrigger.data.triggerType"
+                                      data-property="endDateTime"
+                                      data-editing="true"
+                                      data-editable="true">
+                                                                </span>
 							</div>
 							<sw-property-display
 									style="display:none"
@@ -75,8 +91,16 @@
 									data-property="triggerEvent"
 									data-editing="true"
 									data-is-dirty="true"
-							></sw-property-display> 
-							<sw-property-display
+							></sw-property-display>
+                            <sw-property-display
+                                    style="display:none"
+                                    data-object="workflowTriggers.selectedTrigger"
+                                    data-property="triggerEventTitle"
+                                    data-editing="true"
+                                    data-is-dirty="true"
+                                    style="display:none"
+                                    ></sw-property-display>
+                            <sw-property-display
 									style="display:none"
 									data-object="workflowTriggers.selectedTrigger"
 									data-property="objectPropertyIdentifier"
@@ -85,7 +109,7 @@
 							></sw-property-display> 
 						</div>
 						<div class="col-xs-6 s-criteria">
-							<span ng-if="workflowTriggers.selectedTrigger.data.triggerType === 'Event'">
+							<span data-ng-if="workflowTriggers.selectedTrigger.data.triggerType === 'Event'">
 								<h4>Select Trigger Event:</h4>
 								<!--- Filter Criteria Start --->
 		
@@ -101,23 +125,23 @@
 													<div class="input-group">
 														<div class="s-input-btn">
 															<!-- Need to display the workflow event name if it exists -->
-															<input type="search" class="form-control input-sm" placeholder="Search&hellip;" ng-model="searchEvent.name" ng-focus="searchEvent.name = ''">
+															<input type="search" class="form-control" placeholder="Search&hellip;" data-ng-model="searchEvent.name">
 <!--														<!--<span class="glyphicon glyphicon-remove"></span>-->
 															<!--<i class="fa fa-refresh fa-spin"></i>--><!-- Loading Icon -->
 															
 														</div>
-														<div class="input-group-btn" ng-if="workflow.data.workflowObject">
-															<button class="btn btn-sm btn-default" ng-click="getEventOptions(workflow.data.workflowObject);"><i class="fa fa-caret-down"></i></button>
+														<div class="input-group-btn" data-ng-if="workflow.data.workflowObject">
+															<button class="btn btn-sm btn-default" data-ng-click="getEventOptions(workflow.data.workflowObject);"><i class="fa fa-caret-down"></i></button>
 														</div>
 													</div>
 												</div>
 												<!-- Dropdown wrapper --> 
-												<div class="dropdown s-search-results-wrapper" ng-show="showEventOptions">
+												<div class="dropdown s-search-results-wrapper" data-ng-show="showEventOptions">
 													<ul class="dropdown-menu">
-														<li ng-repeat="eventOption in eventOptions | filter:searchEvent.name">
-															<a ng-click="selectEvent(eventOption)">{{eventOption.name}}</a>
+														<li data-ng-repeat="eventOption in eventOptions | filter:searchEvent.name">
+															<a data-ng-click="selectEvent(eventOption)">{{eventOption.name}}</a>
 														</li>
-														<li ng-show="(eventOptions | filter:searchEvent.name).length == 0">
+														<li data-ng-show="(eventOptions | filter:searchEvent.name).length == 0">
 															<a sw-rbkey="'admin.entity.workflowtabs.triggers.norecordsfound'"><!-- Message created by rb key --></a>		
 														</li>
 													</ul>
@@ -178,7 +202,7 @@
 								</div>
 							</span>
 							<!--- //Filter Criteria End --->
-							<span ng-if="workflowTriggers.selectedTrigger.data.triggerType === 'Schedule'">
+							<span data-ng-if="workflowTriggers.selectedTrigger.data.triggerType === 'Schedule'">
 								<h4>Select Trigger Schedule:</h4>
 								<!--- Filter Criteria Start --->
 								<div class="s-filter-group-item">
@@ -186,19 +210,34 @@
 									<div class="form-group form-group-sm">
 										<!-- <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">{{workflowTriggers.selectedTrigger.data.workflow.data.workflowObject}} Collection:</label> -->
 										<div class="col-sm-12 s-no-paddings">
+
+                                            <h4>{{workflowTriggers.selectedTrigger.data.workflow.data.workflowObject}} Collection</h4>
+                                            <div class="form-group form-group-sm">
+                                                <div sw-typeahead-search
+                                                     data-collection-config="collectionCollectionConfig"
+                                                     data-property-to-show="'collectionName'"
+                                                     data-placeholder-text="Search Collection..."
+                                                     data-add-function="selectCollection"
+                                                     data-view-function="viewCollection"
+                                                     data-search-text="selectedCollection"
+                                                     data-validate-required="true">
+                                                    <span sw-typeahead-search-line-item data-property-identifier="collectionName"></span>
+                                                </div>
+                                            </div>
+
 	
 											<!--- search --->
-											<div class="s-search-filter">
-												<sw-property-display
-													data-object="workflowTriggers.selectedTrigger"
-													data-property="scheduleCollection"
-													data-field-type="search-select"
-													data-editing="true"
-													data-is-dirty="true"
-													data-title="workflowTriggers.selectedTrigger.data.workflow.data.workflowObject+' Collection'"
-												></sw-property-display>
-	
-											</div>
+											<!--<div class="s-search-filter">-->
+												<!--<sw-property-display-->
+													<!--data-object="workflowTriggers.selectedTrigger"-->
+													<!--data-property="scheduleCollection"-->
+													<!--data-field-type="search-select"-->
+													<!--data-editing="true"-->
+													<!--data-is-dirty="true"-->
+													<!--data-title="workflowTriggers.selectedTrigger.data.workflow.data.workflowObject+' Collection'"-->
+												<!--</sw-property-display>-->
+	<!-- -->
+											<!--</div>-->
 											<!--- // search --->
 	
 										</div>
@@ -210,64 +249,151 @@
 	
 											<!--- search --->
 											<div class="s-search-filter">
-												<sw-property-display
-													data-object="workflowTriggers.selectedTrigger"
-													data-property="schedule"
-													data-field-type="search-select"
-													data-editing="true"
-													data-is-dirty="true"
-													data-title="'Schedule Frequency'"
-												></sw-property-display>
-												<div class="s-add-content collapse" id="j-toggle-add-bundle-type3">
-													<div class="form-group form-group-sm">
-														<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Schedule Name:</label>
-														<div class="col-sm-12 s-no-paddings">
-															<input type="text" class="form-control" id="input">
-														</div>
-														<div class="clearfix"></div>
-													</div>
-													<div class="form-group">
-														<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Schedule Type:</label>
-														<select class="form-control input-sm">
-															<option value="-- Select">--Select--</option>
-															<option selected="" value="Daily">Daily</option>
-															<option value="Days of the Week">Days of the Week</option>
-															<option value="Days of the Month">Days of the Month</option>
-														</select>
-													</div>
-													<div class="row">
-														<div class="form-group form-group-sm col-sm-6">
-															<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Start Time:</label>
-															<div class="col-sm-12 s-no-paddings">
-																<input type="text" class="form-control" id="input">
-															</div>
-															<div class="clearfix"></div>
-														</div>
-														<div class="form-group form-group-sm col-sm-6">
-															<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">End Time:</label>
-															<div class="col-sm-12 s-no-paddings">
-																<input type="text" class="form-control" id="input">
-															</div>
-															<div class="clearfix"></div>
-														</div>
-													</div>
-													<hr/>
-													<div class="form-group s-workflow-checkbox">
-														<label class="col-sm-12 s-no-paddings" for="formGroupInputSmall">End Time:</label>
-														<div class="controls col-sm-6 s-checkbox">
-															<input type="checkbox" id="j-checkbox1" checked="checked" ><label for="j-checkbox1"> Sunday</label>
-															<input type="checkbox" id="j-checkbox2" checked="checked" ><label for="j-checkbox2"> Monday</label>
-															<input type="checkbox" id="j-checkbox3" checked="checked" ><label for="j-checkbox3"> Tuesday</label>
-															<input type="checkbox" id="j-checkbox4" checked="checked" ><label for="j-checkbox4"> Wednesday</label>
-														</div>
-														<div class="controls col-sm-6 s-checkbox">
-															<input type="checkbox" id="j-checkbox4" checked="checked" ><label for="j-checkbox4"> Thursday</label>
-															<input type="checkbox" id="j-checkbox4" checked="checked" ><label for="j-checkbox5"> Friday</label>
-															<input type="checkbox" id="j-checkbox6" checked="checked" ><label for="j-checkbox6"> Saturday</label>
-														</div>
-													</div>
-													<button name="button" class="btn btn-primary btn-xs s-width-100"> Save Schedule</button>
-												</div>
+												<!--<sw-property-display-->
+													<!--data-object="workflowTriggers.selectedTrigger"-->
+													<!--data-property="schedule"-->
+													<!--data-field-type="search-select"-->
+													<!--data-editing="true"-->
+													<!--data-is-dirty="true"-->
+													<!--data-title="'Schedule Frequency'"-->
+												<!--</sw-property-display>-->
+
+                                                <h4>Schedule Frequency {{selectedSchedule}}</h4>
+                                                <div class="form-group form-group-sm">
+                                                    <div sw-typeahead-search
+                                                         data-collection-config="scheduleCollectionConfig"
+                                                         data-property-to-show="'scheduleName'"
+                                                         data-placeholder-text="Search Schedule..."
+                                                         data-add-function="selectSchedule"
+                                                         data-search-text="schedule.selectedName"
+                                                         data-add-button-function="addNewSchedule"
+                                                         data-disabled="workflowTriggers.selectedTrigger.$$isPersisted()"
+                                                         data-validate-required="true">
+                                                    <span sw-typeahead-search-line-item data-property-identifier="scheduleName"></span>
+                                                    </div>
+                                                </div>
+
+												<div class="s-add-content" id="j-toggle-add-bundle-type3" data-ng-if="createSchedule">
+                                                    <sw-form name="scheduleForm" data-object="scheduleEntity" data-context="save">
+
+                                                        <span sw-property-display
+                                                              data-object="scheduleEntity"
+                                                              data-property="scheduleName"
+                                                              data-editing="true"
+                                                              data-editable="true">
+                                                        </span>
+
+                                                        <span sw-property-display
+                                                              data-object="scheduleEntity"
+                                                              data-property="recuringType"
+                                                              data-options-arguments="{property:'recuringType'}"
+                                                              data-editing="true"
+                                                              data-editable="true">
+                                                        </span>
+
+
+                                                    <div class="row">
+                                                        <div class="form-group form-group-sm col-sm-6">
+                                                                <span sw-property-display
+                                                                      data-object="scheduleEntity"
+                                                                      data-property="frequencyStartTime"
+                                                                      data-editing="true"
+                                                                      data-editable="true">
+                                                                </span>
+                                                        </div>
+                                                        <div class="form-group form-group-sm col-sm-6">
+                                                                <span sw-property-display
+                                                                      data-object="scheduleEntity"
+                                                                      data-property="frequencyEndTime"
+                                                                      data-editing="true"
+                                                                      data-editable="true">
+                                                                </span>
+                                                        </div>
+                                                    </div>
+                                                        <div class="row" data-ng-if="scheduleEntity.data.frequencyEndTime">
+                                                            <div class="form-group form-group-sm col-sm-6">
+                                                                <span sw-property-display
+                                                                      data-object="scheduleEntity"
+                                                                      data-property="frequencyInterval"
+                                                                      data-editing="true"
+                                                                      data-editable="true">
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    <hr/>
+                                                        <span sw-property-display
+                                                              style="display:none"
+                                                              data-object="scheduleEntity"
+                                                              data-property="daysOfWeekToRun"
+                                                              data-editing="true"
+                                                              data-is-dirty="true"
+                                                              data-field-type="text"></span>
+                                                        <span sw-property-display
+                                                              style="display:none"
+                                                              data-field-type="text"
+                                                              data-object="scheduleEntity"
+                                                              data-property="daysOfMonthToRun"
+                                                              data-editing="true"
+                                                              data-is-dirty="true"></span>
+                                                        <div class="form-group s-workflow-checkbox" data-ng-if="scheduleEntity.data.recuringType == 'weekly'">
+                                                        <label class="col-sm-12 s-no-paddings">Days of week:</label>
+                                                        <div class="controls col-sm-6 s-checkbox">
+                                                            <input type="checkbox" id="j-checkboxsunday" data-ng-model="daysOfweek[1]" data-ng-true-value="'1'"><label for="j-checkboxsunday"> Sunday</label>
+                                                            <input type="checkbox" id="j-checkboxmonday" data-ng-model="daysOfweek[2]" data-ng-true-value="'2'"><label for="j-checkboxmonday"> Monday</label>
+                                                            <input type="checkbox" id="j-checkboxtuesday" data-ng-model="daysOfweek[3]" data-ng-true-value="'3'"><label for="j-checkboxtuesday"> Tuesday</label>
+                                                            <input type="checkbox" id="j-checkboxwednrsday" data-ng-model="daysOfweek[4]" data-ng-true-value="'4'"><label for="j-checkboxwednrsday"> Wednesday</label>
+                                                        </div>
+                                                        <div class="controls col-sm-6 s-checkbox">
+                                                            <input type="checkbox" id="j-checkboxthursday" data-ng-model="daysOfweek[5]" data-ng-true-value="'5'"><label for="j-checkboxthursday"> Thursday</label>
+                                                            <input type="checkbox" id="j-checkboxfriday" data-ng-model="daysOfweek[6]" data-ng-true-value="'6'"><label for="j-checkboxfriday"> Friday</label>
+                                                            <input type="checkbox" id="j-checkboxsaturday" data-ng-model="daysOfweek[7]" data-ng-true-value="'7'"><label for="j-checkboxsaturday"> Saturday</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group s-workflow-checkbox" data-ng-if="scheduleEntity.data.recuringType == 'monthly'">
+                                                        <label class="col-sm-12 s-no-paddings">Days of Month:</label>
+                                                        <div class="controls col-sm-3 s-checkbox">
+                                                            <input type="checkbox" id="j-checkbox1" data-ng-model="daysOfMonth[1]" data-ng-true-value="'1'"><label for="j-checkbox1"> 1</label>
+                                                            <input type="checkbox" id="j-checkbox2" data-ng-model="daysOfMonth[2]" data-ng-true-value="'2'"><label for="j-checkbox2"> 2</label>
+                                                            <input type="checkbox" id="j-checkbox3" data-ng-model="daysOfMonth[3]" data-ng-true-value="'3'"><label for="j-checkbox3"> 3</label>
+                                                            <input type="checkbox" id="j-checkbox4" data-ng-model="daysOfMonth[4]" data-ng-true-value="'4'"><label for="j-checkbox4"> 4</label>
+                                                            <input type="checkbox" id="j-checkbox5" data-ng-model="daysOfMonth[5]" data-ng-true-value="'5'"><label for="j-checkbox5"> 5</label>
+                                                            <input type="checkbox" id="j-checkbox6" data-ng-model="daysOfMonth[6]" data-ng-true-value="'6'"><label for="j-checkbox6"> 6</label>
+                                                            <input type="checkbox" id="j-checkbox7" data-ng-model="daysOfMonth[7]" data-ng-true-value="'7'"><label for="j-checkbox7"> 7</label>
+                                                            <input type="checkbox" id="j-checkbox8" data-ng-model="daysOfMonth[8]" data-ng-true-value="'8'"><label for="j-checkbox8"> 8</label>
+                                                        </div>
+                                                        <div class="controls col-sm-3 s-checkbox">
+                                                            <input type="checkbox" id="j-checkbox9" data-ng-model="daysOfMonth[9]" data-ng-true-value="'9'"><label for="j-checkbox9"> 9</label>
+                                                            <input type="checkbox" id="j-checkbox10" data-ng-model="daysOfMonth[10]" data-ng-true-value="'10'"><label for="j-checkbox10"> 10</label>
+                                                            <input type="checkbox" id="j-checkbox11" data-ng-model="daysOfMonth[11]" data-ng-true-value="'11'"><label for="j-checkbox11"> 11</label>
+                                                            <input type="checkbox" id="j-checkbox12" data-ng-model="daysOfMonth[12]" data-ng-true-value="'12'"><label for="j-checkbox12"> 12</label>
+                                                            <input type="checkbox" id="j-checkbox13" data-ng-model="daysOfMonth[13]" data-ng-true-value="'13'"><label for="j-checkbox13"> 13</label>
+                                                            <input type="checkbox" id="j-checkbox14" data-ng-model="daysOfMonth[14]" data-ng-true-value="'14'"><label for="j-checkbox14"> 14</label>
+                                                            <input type="checkbox" id="j-checkbox15" data-ng-model="daysOfMonth[15]" data-ng-true-value="'15'"><label for="j-checkbox15"> 15</label>
+                                                            <input type="checkbox" id="j-checkbox16" data-ng-model="daysOfMonth[16]" data-ng-true-value="'16'"><label for="j-checkbox16"> 16</label>
+                                                        </div>
+                                                        <div class="controls col-sm-3 s-checkbox">
+                                                            <input type="checkbox" id="j-checkbox17" data-ng-model="daysOfMonth[17]" data-ng-true-value="'17'"><label for="j-checkbox17"> 17</label>
+                                                            <input type="checkbox" id="j-checkbox18" data-ng-model="daysOfMonth[18]" data-ng-true-value="'18'"><label for="j-checkbox18"> 18</label>
+                                                            <input type="checkbox" id="j-checkbox19" data-ng-model="daysOfMonth[19]" data-ng-true-value="'19'"><label for="j-checkbox19"> 19</label>
+                                                            <input type="checkbox" id="j-checkbox20" data-ng-model="daysOfMonth[20]" data-ng-true-value="'20'"><label for="j-checkbox20"> 20</label>
+                                                            <input type="checkbox" id="j-checkbox21" data-ng-model="daysOfMonth[21]" data-ng-true-value="'21'"><label for="j-checkbox21"> 21</label>
+                                                            <input type="checkbox" id="j-checkbox22" data-ng-model="daysOfMonth[22]" data-ng-true-value="'22'"><label for="j-checkbox22"> 22</label>
+                                                            <input type="checkbox" id="j-checkbox23" data-ng-model="daysOfMonth[23]" data-ng-true-value="'23'"><label for="j-checkbox23"> 23</label>
+                                                            <input type="checkbox" id="j-checkbox24" data-ng-model="daysOfMonth[24]" data-ng-true-value="'24'"><label for="j-checkbox24"> 24</label>
+                                                        </div>
+                                                        <div class="controls col-sm-3 s-checkbox">
+                                                            <input type="checkbox" id="j-checkbox25" data-ng-model="daysOfMonth[25]" data-ng-true-value="'25'"><label for="j-checkbox25"> 25</label>
+                                                            <input type="checkbox" id="j-checkbox26" data-ng-model="daysOfMonth[26]" data-ng-true-value="'26'"><label for="j-checkbox26"> 26</label>
+                                                            <input type="checkbox" id="j-checkbox27" data-ng-model="daysOfMonth[26]" data-ng-true-value="'27'"><label for="j-checkbox27"> 27</label>
+                                                            <input type="checkbox" id="j-checkbox28" data-ng-model="daysOfMonth[28]" data-ng-true-value="'28'"><label for="j-checkbox28"> 28</label>
+                                                            <input type="checkbox" id="j-checkbox29" data-ng-model="daysOfMonth[29]" data-ng-true-value="'29'"><label for="j-checkbox29"> 29</label>
+                                                            <input type="checkbox" id="j-checkbox30" data-ng-model="daysOfMonth[30]" data-ng-true-value="'30'"><label for="j-checkbox30"> 30</label>
+                                                            <input type="checkbox" id="j-checkbox31" data-ng-model="daysOfMonth[31]" data-ng-true-value="'31'"><label for="j-checkbox31"> 31</label>
+                                                        </div>
+                                                    </div>
+                                                    <button name="button" class="btn btn-primary btn-xs s-width-100 text-center" data-ng-click="saveSchedule();"> Save Schedule</button>
+                                                </sw-form>
+                                                </div>
 											</div>
 											<!--- // search --->
 										</div>
@@ -278,77 +404,21 @@
 							<!--- //Filter Criteria End --->
 						</div>
 						<div class="col-xs-3">
-							<div class="s-default-list" ng-show="workflowTriggers.selectedTrigger.data.triggerType === 'Schedule'">
-								<h4>Schedule:</h4>
-								<div class="agenda">
-							        <div class="table-responsive">
-							            <table class="table table-condensed table-bordered">
-							                <tbody>
-							                    <!-- Multiple events in a single day (note the rowspan) -->
-							                    <tr>
-							                        <td class="agenda-date active" rowspan="2">
-							                            <div class="dayofmonth">26</div>
-							                            <div class="shortdate">July, 2014</div>
-							                            <div class="dayofweek text-muted">Monday</div>
-							                        </td>
-							                        <td class="agenda-time">
-							                            9:00 AM
-							                        </td>
-							                    </tr>
-							                    <tr>
-							                        <td class="agenda-time">
-							                            5:00 PM
-							                        </td>
-							                    </tr>
-							                    <!-- //Multiple events in a single day -->
 
-							                    <!-- Multiple events in a single day (note the rowspan) -->
-							                    <tr>
-							                        <td class="agenda-date active" rowspan="2">
-							                            <div class="dayofmonth">27</div>
-							                            <div class="shortdate">July, 2014</div>
-							                            <div class="dayofweek text-muted">Tuesday</div>
-							                        </td>
-							                        <td class="agenda-time">
-							                            9:00 AM
-							                        </td>
-							                    </tr>
-							                    <tr>
-							                        <td class="agenda-time">
-							                            5:00 PM
-							                        </td>
-							                    </tr>
-							                    <!-- //Multiple events in a single day -->
-
-                                                <!-- Single events (note the rowspan) -->
-												<tr>
-													<td class="agenda-date active" rowspan="1">
-														<div class="dayofmonth">28</div>
-														<div class="shortdate">July, 2014</div>
-														<div class="dayofweek text-muted">Wednesday</div>
-													</td>
-													<td class="agenda-time">
-														9:00 AM
-													</td>
-												</tr>
-                                                <!-- //Single events -->
-							                </tbody>
-							            </table>
-							            <button class="btn btn-xs btn-default">Show More <i class="fa fa-refresh fa-spin"></i></button>
-							        </div>
-							    </div>
-
-							</div>
 	
-							<div class="s-button-select-group">
+							<div class="s-button-select-group" data-ng-if="workflowTriggers.selectedTrigger.data.triggerType">
 								<button 
 										type="button" 
 										class="btn btn-sm s-btn-ten24 s-width-100"
-										ng-click="saveWorkflowTrigger('add')">
+                                        data-ng-click="saveWorkflowTrigger('finish')">
 									Save Trigger
 								</button>
 								
 							</div>
+                            <div class="s-default-list" data-ng-if="workflowTriggers.selectedTrigger.data.triggerType === 'Schedule'">
+                                <h4>Schedule Preview:</h4>
+                                <sw-schedule-preview data-schedule="schedulePreview"></sw-schedule-preview>
+                            </div>
 						</div>
 					</div>
 				</div>
@@ -357,10 +427,11 @@
 	</div>
 	<!--- //Edit Filter Box --->
 	
-	<button  class="btn btn-xs btn-primary" 
-		data-target="#j-create-new-trigger"
-		data-toggle="collapse" 
-		ng-click="addWorkflowTrigger()">
+	<button class="btn btn-xs btn-primary"
+		    data-target="#j-create-new-trigger"
+		    data-toggle="collapse"
+            data-ng-click="addWorkflowTrigger()"
+            data-ng-if="!workflowTriggers.selectedTrigger">
 		<i class="fa fa-plus"></i> Add Trigger
 	</button>
 </div>

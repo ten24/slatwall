@@ -138,7 +138,7 @@ component  extends="HibachiService" accessors="true" {
 		var deleteOK = super.delete(arguments.attribute);
 
 		// Clear the cached value of acceptable
-		if(deleteOK && len(attributeSetObject)) {
+		if(deleteOK && !isNull(attributeSetObject)) {
 			getHibachiDAO().flushORMSession();
 
 			getHibachiCacheService().resetCachedKey("attributeService_getAttributeCodesListByAttributeSetObject_#attributeSetObject#");

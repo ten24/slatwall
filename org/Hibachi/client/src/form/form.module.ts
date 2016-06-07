@@ -23,12 +23,13 @@ import {SWFormFieldRadio} from "./components/swformfieldradio";
 import {SWFormFieldSearchSelect} from "./components/swformfieldsearchselect";
 import {SWFormFieldSelect} from "./components/swformfieldselect";
 import {SWFormFieldText} from "./components/swformfieldtext";
+import {SWFormFieldDate} from "./components/swformfielddate";
 import {SWFormRegistrar} from "./components/swformregistrar";
 import {SWFPropertyDisplay} from "./components/swfpropertydisplay";
 import {SWPropertyDisplay} from "./components/swpropertydisplay";
 
 
-var formmodule = angular.module('hibachi.form',[]).config(()=>{
+var formmodule = angular.module('hibachi.form',['angularjs-datetime-picker']).config(()=>{
 
 })
 .constant('coreFormPartialsPath','form/components/')
@@ -46,6 +47,7 @@ var formmodule = angular.module('hibachi.form',[]).config(()=>{
 .directive('swFormFieldSearchSelect',SWFormFieldSearchSelect.Factory())
 .directive('swFormFieldSelect',SWFormFieldSelect.Factory())
 .directive('swFormFieldText',SWFormFieldText.Factory())
+.directive('swFormFieldDate',SWFormFieldDate.Factory())
 .directive('swFormRegistrar',SWFormRegistrar.Factory())
 .directive('swfPropertyDisplay',SWFPropertyDisplay.Factory())
 .directive('swPropertyDisplay',SWPropertyDisplay.Factory())

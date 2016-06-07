@@ -44,7 +44,7 @@ var collectionmodule = angular.module('hibachi.collection',[coremodule.name])
 .controller('confirmationController',ConfirmationController)
 .controller('createCollection',CreateCollection)
 //services
-.factory('collectionConfigService', ['rbkeyService','$hibachi','utilityService', (rbkeyService,$hibachi: any,utilityService) => new CollectionConfig(rbkeyService,$hibachi,utilityService)])
+.factory('collectionConfigService', ['rbkeyService','$hibachi','utilityService','observerService', (rbkeyService,$hibachi: any,utilityService, observerService) => new CollectionConfig(rbkeyService,$hibachi,utilityService,observerService)])
 .service('collectionService', CollectionService)
 //directives
 .directive('swCollection',SWCollection.Factory())
