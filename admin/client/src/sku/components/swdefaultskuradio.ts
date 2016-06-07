@@ -3,7 +3,11 @@
 class SWDefaultSkuRadioController{
     
     public skuId;   
+    public productProductId;
+    public productDefaultSkuSkuId;
+    public productId; 
     public sku; 
+    public product; 
     public listingDisplayId;
     public columnId;
     public selectionId; 
@@ -28,20 +32,22 @@ class SWDefaultSkuRadioController{
         if(angular.isUndefined(this.skuId) && angular.isUndefined(this.sku)){
             throw("You must provide a skuID to SWDefaultSkuRadioController");
         }
+        if(angular.isUndefined(this.productId) && angular.isUndefined(this.productProductId)){
+            throw("You must prove a productID to SWDefaultSkuRadioController");
+        }
         if(angular.isUndefined(this.sku)){
             this.$hibachi.getEntity("Sku",this.skuId).then(
                 (sku)=>{
                     if(angular.isDefined(sku)){
-                        this.sku = this.$hibachi.newEntity('Sku');
-                        angular.extend(this.sku.data, sku);
+                        this.sku = this.$hibachi.populateEntity('Sku',sku);
                     } else { 
                         throw("There was a problem fetching the sku in SWSkuPriceSingleEditController");
                     }
                 },
                 (reason)=>{
-                   throw("SWDefaultSkuRadio had trouble loading the sku because:" + reason);
+                    throw("SWDefaultSkuRadio had trouble loading the sku because:" + reason);
                 }
-           ); 
+            )
         }
     }    
 
@@ -54,6 +60,8 @@ class SWDefaultSkuRadio implements ng.IDirective{
     public bindToController = {
         skuId:"@",
         sku:"=?",
+        productProductId:"@?",
+        productId:"@?",
         listingDisplayId:"@?",
         columnId:"@?"
     };

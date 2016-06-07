@@ -7,6 +7,7 @@ class SWSelectionController{
     private selectionid;
     private toggleValue;
     private selection;
+    private initSelected:boolean; 
     //@ngInject
     constructor(
         public selectionService,
@@ -20,6 +21,10 @@ class SWSelectionController{
             this.toggleValue = !selectionService.hasSelection(this.selectionid,this.selection);
         }else{
             this.toggleValue = selectionService.hasSelection(this.selectionid,this.selection);
+        }
+
+        if(angular.isDefined(this.initSelected) && this.initSelected){
+            this.toggleSelection(true, this.selectionid, this.selection);
         }
 
         //attach observer so we know when a selection occurs
@@ -65,7 +70,8 @@ class SWSelection  implements ng.IDirective{
         id:"=",
         isRadio:"=",
         name:"@",
-        disabled:"="
+        disabled:"=",
+        initSelected:"="
     };
     public controller = SWSelectionController;
     public controllerAs = 'swSelection';
