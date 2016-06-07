@@ -36,13 +36,15 @@ elif [[ $lastCommit == *ten24/hotfix ]]; then
   mergedFrom="hotfix"
 elif [[ $lastCommit == *ten24/develop ]]; then
   mergedFrom="develop"
+elif [[ $lastCommit == *ten24/release-candidate]]; then
+  mergedFrom="release-candidate"
 else
   mergedFrom="any-feature"
 fi
 
 # MASTER | MINOR If this is develop -> master, do a minor version update, tag & push
-if [ $mergedFrom = "develop" ] && [ $CIRCLE_BRANCH = "master" ]; then
-  echo 'develop -> master'
+if [ $mergedFrom = "release-candidate" ] && [ $CIRCLE_BRANCH = "master" ]; then
+  echo 'release-candidate -> master'
   # Increment Minor
   minor=$((minor + 1))
   newVersion=$major.$minor.000
@@ -117,6 +119,14 @@ else
       aws s3 cp slatwall-be.zip s3://slatwall-releases/slatwall-be.zip
       aws s3 cp slatwall-be.md5.txt s3://slatwall-releases/slatwall-be.md5.txt
     fi
+
+    # If this is the release candidate branch then we can push up RC Release to S3
+    if [ $CIRCLE_BRANCH = "release-candidate" ]; then
+      git archive --format=zip HEAD > slatwall-rc.zip
+      md5sum slatwall-rc.zip > slatwall-rc.md5.txt
+      aws s3 cp slatwall-rc.zip s3://slatwall-releases/slatwall-rc.zip
+      aws s3 cp slatwall-rc.md5.txt s3://slatwall-releases/slatwall-rc.md5.txt
+    fi
 fi
 
 # If this was a master branch change, we need to try and merge into develop, and then push develop
@@ -135,8 +145,15 @@ if [ $CIRCLE_BRANCH = "master" ]; then
   # Read all the conflicts of the repository
   conflicts=$(git diff --name-only --diff-filter=U)
 
+  # checkout release-candidate
+  git checkout release-candidate
+  # merge master into release-candidate
+  git merge -m "Merge branch 'master' into 'release-candidate'"  master
+  # Read all the conflicts of the repository
+  conflicts=$(git diff --name-only --diff-filter=U)
+
   # If there are no conflicts it was likely a minor release
-  if [ "$conflicts" = "" ] && [ $mergedFrom = "develop" ] && [ $CIRCLE_BRANCH = "master" ]; then
+  if [ "$conflicts" = "" ] && [ $mergedFrom = "release-candidate" ] && [ $CIRCLE_BRANCH = "master" ]; then
     echo "No Conflict, Minor Release"
 
     # Write version file with 000 build
