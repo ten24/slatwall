@@ -4,6 +4,8 @@ class SWSkuPriceEditController{
     
     public skuId;
     public skuPriceId;
+    public skuCode;
+    public price; 
     public currencyCode;
     public bundledSkuSkuId; 
     public bundledSkuCurrencyCode;
@@ -31,22 +33,19 @@ class SWSkuPriceEditController{
         ){
             throw("You must provide either a skuID or a skuPriceID or a sku or a skuPrice to SWSkuPriceSingleEditController");
         } else {
-            if(angular.isDefined(this.skuId) && angular.isUndefined(this.sku)){
-                this.$hibachi.getEntity("Sku", this.skuId).then(
-                        (sku)=>{
-                            if(angular.isDefined(sku)){
-                                this.sku = this.$hibachi.newEntity('Sku');
-                                angular.extend(this.sku.data, sku);
-                            } else { 
-                                throw("There was a problem fetching the sku in SWSkuPriceSingleEditController");
-                            }
-                        },
-                        (reason)=>{
-                            throw("SWSkuPriceEdit had trouble fetchin its sku because" + reason);
-                        }
-                ); 
-            }
             
+            if(angular.isDefined(this.skuId)){
+                var skuData = {
+                    skuID:this.skuId,
+                    skuCode:this.skuCode,
+                    currencyCode:this.currencyCode,
+                    price:this.price 
+                }
+                this.sku = this.$hibachi.populateEntity("Sku", skuData); 
+                console.log("price sku", this.sku, skuData);
+            }
+
+
             if(angular.isDefined(this.skuPriceId) && angular.isUndefined(this.skuPrice)){
                 this.$hibachi.getEntity("SkuPrice", this.skuPriceId).then(
                         (skuPrice)=>{
@@ -74,6 +73,8 @@ class SWSkuPriceEdit implements ng.IDirective{
     public bindToController = {
         skuId:"@",
         skuPriceId:"@",
+        skuCode:"@",
+        price:"@",
         bundledSkuSkuId:"@",
         bundledSkuCurrencyCode:"@",        
         currencyCode:"@",

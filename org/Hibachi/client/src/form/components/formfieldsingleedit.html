@@ -1,22 +1,25 @@
-<div class="s-input-group" ng-class="{'s-edit':swFormFieldSingleEdit.edited}"><!--- Removing s-edit will hide the edit mode. --->
-    <span ng-if="swFormFieldSingleEdit.currencyCode" class="s-title">{{swFormFieldSingleEdit.currencyCode}}</span>
-    <input type="text" 
-           sw-form-field-revert-helper 
-           data-parent-directive-controller-as="swFormFieldSingleEdit" 
-           data-parent-directive-bind-property="swFormFieldSingleEdit.ngModelValue" 
-           data-value-to-revert-to-property="swFormFieldSingleEdit.valueToRevertTo" 
-           ng-model="swFormFieldSingleEdit.ngModelValue" 
-           ng-disabled="swFormFieldSingleEdit.disabled"
-           class="form-control input-xs s-inherited"
-           >
-    <button class="btn btn-xs btn-default" ng-click="swFormFieldSingleEdit.revert()"  ng-show="swFormFieldSingleEdit.saved">
-        <i class="fa fa-refresh"></i>
-    </button>
-    <a class="s-remove-change" ng-click="swFormFieldSingleEdit.clear()" ng-if="swFormFieldSingleEdit.edited"><i class="fa fa-remove"></i></a>
-    <a class="btn btn-xs btn-success s-action-btn" ng-click="swFormFieldSingleEdit.save()" >save</a>
-    <a class="s-indicator-icon" 
-       ng-if="swFormFieldSingleEdit.hasIndicatorCallback"  
-       ng-click="swFormFieldSingleEdit.indicatorCallback()()">
-           <i class="fa fa-list" data-toggle="popover" data-content="(2) price groups"></i>
-    </a>
-</div>
+<sw-form data-object="swFormFieldSingleEdit.singleEditedObject" data-name="swFormFieldSingleEdit.formName"> 
+    <div class="s-input-group" ng-class="{'s-edit':swFormFieldSingleEdit.edited}"><!--- Removing s-edit will hide the edit mode. --->
+        <span ng-if="swFormFieldSingleEdit.currencyCode" class="s-title">{{swFormFieldSingleEdit.currencyCode}}</span>
+        <input type="text" 
+            sw-form-field-revert-helper 
+            data-parent-directive-controller-as="swFormFieldSingleEdit" 
+            data-parent-directive-bind-property="swFormFieldSingleEdit.ngModelValue" 
+            data-value-to-revert-to-property="swFormFieldSingleEdit.valueToRevertTo" 
+            name="{{swFormFieldSingleEdit.property}}"
+            ng-model="swFormFieldSingleEdit.ngModelValue" 
+            ng-disabled="swFormFieldSingleEdit.disabled"
+            class="form-control input-xs s-inherited"
+            >
+        <button class="btn btn-xs btn-default" ng-click="swFormFieldSingleEdit.revert()"  ng-show="swFormFieldSingleEdit.saved">
+            <i class="fa fa-refresh"></i>
+        </button>
+        <a class="s-remove-change" ng-click="swFormFieldSingleEdit.clear()" ng-if="swFormFieldSingleEdit.edited"><i class="fa fa-remove"></i></a>
+        <a class="btn btn-xs btn-success s-action-btn" ng-click="swFormFieldSingleEdit.save()" >save</a>
+        <a class="s-indicator-icon" 
+        ng-if="swFormFieldSingleEdit.hasIndicatorCallback"  
+        ng-click="swFormFieldSingleEdit.indicatorCallback()()">
+            <i class="fa fa-list" data-toggle="popover" data-content="(2) price groups"></i>
+        </a>
+    </div>
+</sw-form>

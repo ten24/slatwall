@@ -19,6 +19,8 @@ class SWFormFieldSingleEditController {
     public fieldType:string;
     public noValidate:boolean;
     
+    public formName:string; 
+
     public valueToRevertTo:any; 
     public ngModelValue:any; 
     
@@ -30,11 +32,12 @@ class SWFormFieldSingleEditController {
     public singleEditedObject:any; 
 
     // @ngInject
-    constructor(private $hibachi
+    constructor(private $hibachi, 
+                private utilityService
         ){
+        this.formName = utilityService.createID(32);
         if(angular.isDefined(this.object)){
             this.singleEditedObject = angular.copy(this.object);
-            console.log("singleEditedObject", this.singleEditedObject)
         } else {
             throw("You must provide SWFormFieldSingleEditController an object!");
         }        
