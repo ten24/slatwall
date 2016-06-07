@@ -19,7 +19,7 @@ class SWDefaultSkuRadioController{
     //@ngInject
     constructor(
         private $hibachi,
-        private observerService
+        private defaultSkuService
     ){
         if(angular.isDefined(this.listingDisplayId) && angular.isDefined(this.columnId)){
             this.selectionId = this.listingDisplayId + this.columnId;
@@ -28,6 +28,7 @@ class SWDefaultSkuRadioController{
         } else {
             throw("You must provide the listingDisplayId to SWDefaultSkuRadioController");
         }
+        defaultSkuService.attachObserver(this.selectionId,this.productProductId);
         if(angular.isUndefined(this.selectionFieldName)){
             this.selectionFieldName = this.selectionId + 'selection';
         }

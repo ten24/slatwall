@@ -25,7 +25,7 @@ var skumodule = angular.module('hibachi.sku',[coremodule.name]).config(()=>{
 //constants
 .constant('skuPartialsPath','sku/components/')
 //services
-.service('defaultSkuService', DefaultSkuService.Factory())
+.service('defaultSkuService', DefaultSkuService)
 //controllers
 
 //directives
