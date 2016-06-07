@@ -5,6 +5,7 @@
 import {coremodule} from "../../../../org/Hibachi/client/src/core/core.module";
 //services
 import {DefaultSkuService} from "./services/defaultskuservice";
+import {SkuImageService} from "./services/skuimageservice";
 //controllers
 
 //directives
@@ -26,6 +27,7 @@ var skumodule = angular.module('hibachi.sku',[coremodule.name]).config(()=>{
 .constant('skuPartialsPath','sku/components/')
 //services
 .service('defaultSkuService', DefaultSkuService)
+.service('skuImageService', SkuImageService)
 //controllers
 
 //directives
