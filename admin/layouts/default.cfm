@@ -130,7 +130,7 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listsubscriptionbenefit" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listcategory" type="list">
 									<cfif $.slatwall.authenticateAction(action='admin:entity.listcontent')>
-										<hb:HibachiActionCaller queryString="ng##!/entity/content" text="#$.slatwall.rbKey('admin.entity.listcontent')#" type="list">
+										<hb:HibachiActionCaller queryString="ng##!/entity/Content" text="#$.slatwall.rbKey('admin.entity.listcontent')#" type="list">
 									</cfif>
 									<!---<hb:HibachiActionCaller action="admin:entity.listcontent" type="list">--->
 									<li class="divider"></li>
@@ -188,7 +188,7 @@ Notes:
 									<li class="divider"></li>
 									<hb:HibachiActionCaller action="admin:entity.listapp" type="list">
 									<!---<cfif $.slatwall.authenticateAction(action='admin:entity.listapp')>
-										<hb:HibachiActionCaller queryString="ng##!/entity/app" text="#$.slatwall.rbKey('admin.entity.listapp')#" type="list">
+										<hb:HibachiActionCaller queryString="ng##!/entity/App" text="#$.slatwall.rbKey('admin.entity.listapp')#" type="list">
 									</cfif>--->
 									<hb:HibachiActionCaller action="admin:entity.listaddresszone" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listcollection" type="list">
@@ -196,9 +196,6 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listcurrency" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listemailtemplate" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listform" type="list">
-									<cfif $.slatwall.authenticateAction(action='admin:entity.listorderfulfillment')>
-										<hb:HibachiActionCaller queryString="ng##!/entity/order-fulfillment" text="#$.slatwall.rbKey('admin.entity.listorderfulfillment')#" type="list">
-									</cfif>
 									<hb:HibachiActionCaller action="admin:entity.listfulfillmentmethod" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listlocation" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listmeasurementunit" type="list">
@@ -209,13 +206,13 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listroundingrule" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listsite" type="list">
 									<!---<cfif $.slatwall.authenticateAction(action='admin:entity.listsite')>
-										<hb:HibachiActionCaller queryString="ng##!/entity/site" text="#$.slatwall.rbKey('admin.entity.listsite')#" type="list">
+										<hb:HibachiActionCaller queryString="ng##!/entity/Site" text="#$.slatwall.rbKey('admin.entity.listsite')#" type="list">
 									</cfif>--->
 									<hb:HibachiActionCaller action="admin:entity.listtaxcategory" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listterm" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listtype" type="list">
 									<cfif $.slatwall.authenticateAction(action='admin:entity.listworkflow')>
-										<hb:HibachiActionCaller queryString="ng##!/entity/workflow" text="#$.slatwall.rbKey('admin.entity.listworkflow')#" type="list">
+										<hb:HibachiActionCaller queryString="ng##!/entity/Workflow" text="#$.slatwall.rbKey('admin.entity.listworkflow')#" type="list">
 									</cfif>
 								</hb:HibachiDividerHider>
 							</hb:HibachiActionCallerDropdown>
