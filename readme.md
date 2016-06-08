@@ -6,8 +6,6 @@ Slatwall is an open source eCommerce platform that runs on the JVM.  Learn more 
 Requirements
 ------------
 
-Mura Version 6 or Newer
-
 Coldfusion 9.0.1 or Newer
 
 Railo 4.1 or Newer
