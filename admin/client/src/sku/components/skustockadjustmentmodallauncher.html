@@ -40,9 +40,10 @@
                         <div class="col-md-4">
                             <div class="s-modal-module">
                                 <div class="s-title">Adjustment</div>
-                                <div ng-class="{'s-positive':(swSkuStockAdjustmentModalLauncher.stockAdjustmentItem.data.quantity - swSkuStockAdjustmentModalLauncher.sku.data.calculatedQOH)>0,
-                                                's-negative':(swSkuStockAdjustmentModalLauncher.stockAdjustmentItem.data.quantity - swSkuStockAdjustmentModalLauncher.sku.data.calculatedQOH)<0}" class="s-value"><!-- s-positive class will turn green for positive number -->
-                                    <span>{{ swSkuStockAdjustmentModalLauncher.stockAdjustmentItem.data.quantity - swSkuStockAdjustmentModalLauncher.sku.data.calculatedQOH }}</span>
+                                <div ng-class="{'s-positive':swSkuStockAdjustmentModalLauncher.stockAdjustmentItem.data.quantity > 0,
+                                                's-negative':swSkuStockAdjustmentModalLauncher.stockAdjustmentItem.data.quantity < 0}" class="s-value"><!-- s-positive class will turn green for positive number -->
+                                    <span>{{ swSkuStockAdjustmentModalLauncher.stockAdjustmentItem.data.quantity }}</span>
+                                    <input type="hidden" ng-model="swSkuStockAdjustmentModalLauncher.stockAdjustmentItem.data.quantity" name="quantity" class="form-control input-xs" />
                                 </div>
                             </div>
                         </div>
@@ -50,7 +51,7 @@
                             <div class="s-modal-module">
                                 <div class="s-title">New Qty</div>
                                 <div class="s-value">
-                                    <input type="number" ng-model="swSkuStockAdjustmentModalLauncher.stockAdjustmentItem.data.quantity" class="form-control input-xs" />
+                                    <input type="text" ng-model="swSkuStockAdjustmentModalLauncher.newQuantity" ng-change="swSkuStockAdjustmentModalLauncher.updateStockAdjustmentQuantity()" class="form-control input-xs" />
                                 </div>
                              </div>
                         </div>

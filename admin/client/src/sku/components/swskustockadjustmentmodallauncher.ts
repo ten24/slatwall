@@ -17,6 +17,7 @@ class SWSkuStockAdjustmentModalLauncherController{
     public quantityDifference:number; 
     public calculatedQats:any; 
     public calculatedQoh:any; 
+    public newQuantity:number; 
     
     public stockAdjustmentTypePromise:any; 
     public stockAdjustmentStatusTypePromise:any;
@@ -46,6 +47,8 @@ class SWSkuStockAdjustmentModalLauncherController{
         this.stockAdjustmentItem.$$setToStock(this.stock);
         this.stockAdjustmentType = this.$hibachi.populateEntity("Type",{typeID:"444df2e60db81c12589c9b39346009f2"});//manual in stock adjustment type 
         this.stockAdjustmentStatusType = this.$hibachi.populateEntity("Type",{typeID:"444df2e2f66ddfaf9c60caf5c76349a6"});//new status type for stock adjusment
+        this.stockAdjustment.$$setStockAdjustmentType(this.stockAdjustmentType);
+        this.stockAdjustment.$$setStockAdjustmentStatusType(this.stockAdjustmentStatusType);
         var skudata = {
             skuID:this.skuId,
             skuCode:this.skuCode,
@@ -55,6 +58,8 @@ class SWSkuStockAdjustmentModalLauncherController{
             calculatedQOH:this.calculatedQoh || 0
         }
         this.sku = this.$hibachi.populateEntity("Sku", skudata);
+        this.stockAdjustmentItem.$$setSku(this.sku); 
+        this.newQuantity = this.calculatedQoh || 0;
     }
     
     public save = () => {
@@ -63,7 +68,11 @@ class SWSkuStockAdjustmentModalLauncherController{
             this.initData(); 
         });
         return savePromise;
-    }      
+    }    
+
+    public updateStockAdjustmentQuantity = () => {
+        this.stockAdjustmentItem.data.quantity = this.newQuantity - this.calculatedQoh;
+    }  
 }
 
 
