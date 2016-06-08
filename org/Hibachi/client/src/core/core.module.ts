@@ -20,6 +20,7 @@ import {LocalStorageService} from "./services/localstorageservice";
 import {ListingService} from "./services/listingservice"
 import {HibachiServiceDecorator} from "./services/hibachiservicedecorator";
 import {HibachiScope} from "./services/hibachiscope";
+import {ScopeService} from "./services/scopeService";
 //controllers
 import {GlobalSearchController} from "./controllers/globalsearch";
 
@@ -159,6 +160,7 @@ var coremodule = angular.module('hibachi.core',[
 .decorator('$hibachi',HibachiServiceDecorator)
 .service('hibachiInterceptor', HibachiInterceptor.Factory())
 .service('hibachiScope',HibachiScope)
+.service('scopeService',ScopeService)
 .service('localStorageService',LocalStorageService)
 //controllers
 .controller('globalSearch',GlobalSearchController)

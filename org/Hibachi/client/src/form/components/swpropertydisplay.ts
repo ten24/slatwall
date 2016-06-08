@@ -147,7 +147,8 @@ class SWPropertyDisplay implements ng.IDirective{
         rawFileTarget:"@?",
         binaryFileTarget:"@?",
         noValidate:"=?",
-        inListingDisplay:"=?"
+        inListingDisplay:"=?",
+        inModal:"="
     };
     public controller=SWPropertyDisplayController;
     public controllerAs="swPropertyDisplay";
@@ -173,6 +174,8 @@ class SWPropertyDisplay implements ng.IDirective{
         } else { 
             $scope.swPropertyDisplay.hasSaveCallback = false;
         }
+
+        
     };
 
     public static Factory(){

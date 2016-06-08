@@ -1,7 +1,7 @@
 <sw-modal-launcher data-modal-name="{{swSkuStockAdjustmentModalLauncher.name}}" 
                    data-save-action="swSkuStockAdjustmentModalLauncher.save"
                    data-title="Stock Adjustment"><!-- Change this to rb -->
-    <sw-modal-button>
+    <sw-modal-static-button>
         <!-- Load Sku Image Here -->
         <sw-form data-object="swSkuStockAdjustmentModalLauncher.sku" ng-if="swSkuStockAdjustmentModalLauncher.sku">
             <sw-property-display data-object="swSkuStockAdjustmentModalLauncher.sku"
@@ -9,10 +9,11 @@
                                  data-editable="true"
                                  data-editing="true"
                                  data-in-listing-display="true"
+                                 data-in-modal="true"
             >
             </sw-property-display>
         </sw-form> 
-    </sw-modal-button>
+    </sw-modal-static-button>
     <sw-modal-content> 
         <sw-form 
                  data-name="swSkuStockAdjustmentModalLauncher.name"

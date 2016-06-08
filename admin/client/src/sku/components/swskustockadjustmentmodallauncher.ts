@@ -34,6 +34,12 @@ class SWSkuStockAdjustmentModalLauncherController{
         } else{
             throw("SWSkuStockAdjustmentModalLauncherController was not provided with a sku id"); 
         }
+        if(angular.isDefined(this.calculatedQats)){
+            this.calculatedQats = parseInt(this.calculatedQats);
+        }
+        if(angular.isDefined(this.calculatedQoh)){
+            this.calculatedQoh = parseInt(this.calculatedQoh);
+        }
         this.initData();
     }
     
@@ -71,7 +77,9 @@ class SWSkuStockAdjustmentModalLauncherController{
     }    
 
     public updateStockAdjustmentQuantity = () => {
-        this.stockAdjustmentItem.data.quantity = this.newQuantity - this.calculatedQoh;
+        if(!isNaN(this.newQuantity)){
+            this.stockAdjustmentItem.data.quantity = this.newQuantity - this.calculatedQoh;
+        }
     }  
 }
 
