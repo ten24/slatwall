@@ -2,8 +2,9 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWTabContentController {
 
-    public active; 
-    public name; 
+    public active:boolean; 
+    public loaded:boolean;
+    public name:string; 
 
     // @ngInject
     constructor(private $scope, 
@@ -17,6 +18,9 @@ class SWTabContentController {
         ){
         if(angular.isUndefined(this.active)){
             this.active = false; 
+        }
+        if(angular.isUndefined(this.loaded)){
+            this.loaded = false; 
         }
         if(angular.isUndefined(this.name)){
             //generate a unique name
@@ -35,13 +39,14 @@ class SWTabContent implements ng.IDirective{
 
     public bindToController = {
         "active":"=?",
+        "loaded":"=?",
         "name":"@?"
     };
     public controller=SWTabContentController;
     public controllerAs="swTabContent";
 
     // @ngInject
-    constructor(public $compile, private corePartialsPath,hibachiPathBuilder){
+    constructor(public $compile, private scopeService, private corePartialsPath,hibachiPathBuilder){
         this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "tabcontent.html";
     }
 
@@ -51,21 +56,12 @@ class SWTabContent implements ng.IDirective{
                 
             },
             post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
-                var currentScope = $scope  
-                for(var tries = 0; tries < 5; tries++){
-                    currentScope = currentScope.$parent;
-                    if(angular.isDefined(currentScope)){
-                        var parentDirective = currentScope["swTabGroup"];
-                    } 
-                    if(angular.isDefined(parentDirective)){
-                        break; 
-                    }
-                }
+                var parentDirective = this.scopeService.locateParentScope($scope,"swTabGroup")["swTabGroup"];
                 if(angular.isDefined(parentDirective) && angular.isDefined(parentDirective.tabs)){
-                    console.log("white whale", $scope.swTabContent, parentDirective);
                     parentDirective.tabs.push($scope.swTabContent);
                     if(parentDirective.tabs.length == 1){
                         $scope.swTabContent.active = true; 
+                        $scope.swTabContent.loaded = true;
                     }
                 }
             }
@@ -75,16 +71,18 @@ class SWTabContent implements ng.IDirective{
     public static Factory(){
         var directive:ng.IDirectiveFactory = (
             $compile
+            ,scopeService 
             ,corePartialsPath
             ,hibachiPathBuilder
 
         )=> new SWTabContent(
             $compile
+            ,scopeService
             ,corePartialsPath
             ,hibachiPathBuilder
         );
-        directive.$inject = ["$compile","corePartialsPath",
-            'hibachiPathBuilder'];
+        directive.$inject = ["$compile","scopeService","corePartialsPath",
+            "hibachiPathBuilder"];
         return directive;
     }
 }

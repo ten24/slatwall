@@ -234,7 +234,6 @@ class SWInput{
 					 var modelSetter = model.assign;
 					 element.bind("change", (e)=>{
 						var fileToUpload = (e.srcElement || e.target).files[0];
-						//console.log("rawFile",fileToUpload);
 						scope.$apply(()=>{
 							modelSetter(scope, fileToUpload);
 						});

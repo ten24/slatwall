@@ -16,16 +16,15 @@ class SWTabGroupController {
         ){
         if(angular.isUndefined(this.tabs)){
             this.tabs = []; 
-        } else if(this.tabs.length) {
-            this.tabs[0].active = true; 
-        }
+        } 
     }
 
     public switchTab = (tabToActivate) => {
         for(var i = 0; i < this.tabs.length; i++){
             this.tabs[i].active = false; 
         }
-        tabToActivate.active = true;    
+        tabToActivate.active = true;  
+        tabToActivate.loaded = true;  
     }
 }
 
