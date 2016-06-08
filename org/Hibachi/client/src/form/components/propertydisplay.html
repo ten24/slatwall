@@ -24,7 +24,7 @@
             data-property-display="swPropertyDisplay">
         </span>
         <a class="s-remove-change" ng-click="swPropertyDisplay.clear()" ng-if="swPropertyDisplay.edited && swPropertyDisplay.editing"><i class="fa fa-remove"></i></a>
-        <a class="btn btn-xs btn-success s-action-btn" ng-if="swPropertyDisplay.inListingDisplay"" ng-click="swPropertyDisplay.save()" >save</a>
+        <a id="propertyDisplaySave" class="btn btn-xs btn-success s-action-btn" ng-if="swPropertyDisplay.inListingDisplay" ng-click="swPropertyDisplay.save()" >save</a>
         <!-- Display -->
         <p  class="form-control-static"
             data-ng-if="swPropertyDisplay.fieldType !== 'hidden' && swPropertyDisplay.fieldType !== 'select'"

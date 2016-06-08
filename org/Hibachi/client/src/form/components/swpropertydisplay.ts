@@ -26,6 +26,7 @@ class SWPropertyDisplayController {
     public hasOnChangeCallback:boolean; 
     public hasSaveCallback:boolean; 
     public initialValue:any; 
+    public inModal:boolean; 
     
 
     //@ngInject
@@ -114,16 +115,16 @@ class SWPropertyDisplayController {
     }
 
     public save = () =>{
-        this.object.$$save().then((response)=>{
-            this.edited = false;           
-            this.saved = true; 
-        });  
+        if(!this.inModal){
+            this.object.$$save().then((response)=>{
+                this.edited = false;           
+                this.saved = true; 
+            });  
+        }
     }
 }
 
 class SWPropertyDisplay implements ng.IDirective{
-
-    public static $inject = ['coreFormPartialsPath', 'hibachiPathBuilder'];
     public templateUrl;
     public require = {form:'^form'};
     public restrict = 'AE';
@@ -153,7 +154,23 @@ class SWPropertyDisplay implements ng.IDirective{
     public controller=SWPropertyDisplayController;
     public controllerAs="swPropertyDisplay";
 
+    public static Factory(){
+        var directive = (
+            scopeService, 
+            coreFormPartialsPath,
+            hibachiPathBuilder
+        )=>new SWPropertyDisplay(
+            scopeService, 
+            coreFormPartialsPath,
+            hibachiPathBuilder
+        );
+        directive.$inject = ['scopeService','coreFormPartialsPath', 'hibachiPathBuilder'];
+
+        return directive;
+    }
+
     constructor(
+        public scopeService,
         public coreFormPartialsPath,
         public hibachiPathBuilder
     ){
@@ -175,21 +192,14 @@ class SWPropertyDisplay implements ng.IDirective{
             $scope.swPropertyDisplay.hasSaveCallback = false;
         }
 
-        
+        if(angular.isDefined($scope.swPropertyDisplay.inModal) && $scope.swPropertyDisplay.inModal){
+            var modalScope = this.scopeService.locateParentScope($scope, "swModalLauncher");
+            var saveButton = element.find("#propertyDisplaySave");
+            saveButton.attr("href", "#" + modalScope.modalName);
+            saveButton.attr("data-toggle", "modal");
+            console.log("savebutton",saveButton.html());
+        }
     };
-
-    public static Factory(){
-        var directive = (
-            coreFormPartialsPath,
-            hibachiPathBuilder
-        )=>new SWPropertyDisplay(
-            coreFormPartialsPath,
-            hibachiPathBuilder
-        );
-        directive.$inject = [ 'coreFormPartialsPath', 'hibachiPathBuilder'];
-
-        return directive;
-    }
 }
 export{
     SWPropertyDisplay

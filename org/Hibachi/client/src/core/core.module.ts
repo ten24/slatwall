@@ -20,7 +20,7 @@ import {LocalStorageService} from "./services/localstorageservice";
 import {ListingService} from "./services/listingservice"
 import {HibachiServiceDecorator} from "./services/hibachiservicedecorator";
 import {HibachiScope} from "./services/hibachiscope";
-import {ScopeService} from "./services/scopeService";
+import {ScopeService} from "./services/scopeservice";
 //controllers
 import {GlobalSearchController} from "./controllers/globalsearch";
 

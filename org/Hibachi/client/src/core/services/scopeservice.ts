@@ -1,6 +1,6 @@
 import {BaseService} from "./baseservice";
 
-export class ScopeService { 
+class ScopeService { 
 
     constructor(){
 
@@ -21,5 +21,7 @@ export class ScopeService {
             throw('scopeService.locateParentScope was unabled to find: ' + targetName);
         }
     }
-
+}
+export {
+    ScopeService
 }

@@ -1,13 +1,9 @@
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
+
+//module
+import {coremodule} from "../core/core.module";
 //services
-// import {AccountService} from "./services/accountservice";
-// import {CartService} from "./services/cartservice";
-// import {UtilityService} from "./services/utilityservice";
-// import {SelectionService} from "./services/selectionservice";
-// import {ObserverService} from "./services/observerservice";
-// import {FormService} from "./services/formservice";
-// import {MetaDataService} from "./services/metadataservice";
 import {FileService} from "./services/fileservice"; 
 //directives
 //  components
@@ -32,7 +28,7 @@ import {SWFPropertyDisplay} from "./components/swfpropertydisplay";
 import {SWPropertyDisplay} from "./components/swpropertydisplay";
 
 
-var formmodule = angular.module('hibachi.form',['angularjs-datetime-picker']).config(()=>{
+var formmodule = angular.module('hibachi.form',[coremodule.name,'angularjs-datetime-picker']).config(()=>{
 
 })
 .constant('coreFormPartialsPath','form/components/')

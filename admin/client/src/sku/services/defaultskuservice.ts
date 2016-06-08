@@ -16,7 +16,6 @@ export class DefaultSkuService {
     }
 
     private saveDefaultSku = (response) =>{ 
-        response.selection; 
         if(angular.isDefined(this.observerKeys[response.selectionid]) &&
            angular.isDefined(this.observerKeys[response.selectionid].productID &&
            angular.isDefined(response.selection)   

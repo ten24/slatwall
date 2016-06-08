@@ -61,7 +61,6 @@ component displayname="Comment Relationship" entityname="SlatwallCommentRelation
 	property name="comment" cfc="Comment" fieldtype="many-to-one" fkcolumn="commentID";
 	
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
-	property name="fulfillmentBatch" cfc="fulfillmentBatch" fieldtype="many-to-one" fkcolumn="fulfillmentBatchID";
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
 	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID";
 	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID";
