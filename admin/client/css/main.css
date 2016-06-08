@@ -579,7 +579,7 @@ table th {
   pointer-events: initial;
 }
 .table-responsive tr.s-edited td {
-  background: #E1F9E1;
+  background: #fcf8e3;
 }
 .table-responsive tr.s-edited td.s-actions .btn.s-save {
   display: inline-block;
