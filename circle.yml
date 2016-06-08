@@ -28,6 +28,8 @@ dependencies:
     # Minify JS
     - cd admin/client && webpack --config webpack-production.config.js -p --display-error-details
 
+    - cd org/Hibachi/client && webpack --config webpack-frontend-production.config.js -p --display-error-details
+
     # Update docker-compose
     - curl -L https://github.com/docker/compose/releases/download/1.4.1/docker-compose-`uname -s`-`uname -m` > docker-compose
     - chmod +x docker-compose
