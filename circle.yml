@@ -23,10 +23,10 @@ dependencies:
 
     # Minify JS
      # generate typings
-    - cd org/Hibachi/client && gulp gen-ts-refs
+    - cd org/Hibachi/client && gulp gen-ts-refs && webpack --config webpack-frontend-production.config.js -p --display-error-details
     - cd admin/client && gulp gen-ts-refs
     # Minify JS
-    - cd admin/client && webpack --config webpack-production.config.js -p --display-error-details
+    - cd admin/client && webpack --config webpack-production.config.js -p --display-error-details 
 
     # Update docker-compose
     - curl -L https://github.com/docker/compose/releases/download/1.4.1/docker-compose-`uname -s`-`uname -m` > docker-compose
