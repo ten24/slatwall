@@ -32,7 +32,6 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
   formbuildermodule.name,
   giftcardmodule.name,
   optiongroupmodule.name,
-  orderfulfillmentmodule.name,
   orderitemmodule.name,
   productmodule.name,
   productbundlemodule.name,
