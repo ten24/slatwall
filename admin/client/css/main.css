@@ -567,6 +567,27 @@ table th {
   text-align: center;
   position: initial !important;
 }
+.table-responsive tr.s-edited td.s-actions {
+  position: relative !Important;
+}
+.table-responsive tr td.s-actions .btn.s-save {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  width: 100%;
+  height: 100%;
+  border-radius: 0px;
+  display: none;
+  z-index: 3;
+  pointer-events: initial;
+}
+.table-responsive tr.s-edited td {
+  background: #fcf8e3;
+}
+.table-responsive tr.s-edited td.s-actions .btn.s-save {
+  display: inline-block;
+}
 .table-responsive tr.s-inherited td.s-actions {
   position: relative;
 }
@@ -5662,11 +5683,25 @@ a.disabled > i.hibachi-ui-radio-checked {
   color: #aaa;
   display: none;
 }
+.s-input-group .s-remove-change:hover {
+  color: #E43030;
+}
 .s-input-group.s-edit .s-remove-change {
   display: inline-block;
 }
-.s-input-group .s-remove-change:hover {
+.s-input-group .s-remove-state {
+  position: absolute;
+  top: 1px;
+  right: 7px;
+  font-size: 15px;
+  color: #aaa;
+  display: none;
+}
+.s-input-group .s-remove-state:hover {
   color: #E43030;
+}
+.s-input-group.s-edit .s-remove-state {
+  display: inline-block;
 }
 .s-input-group.s-edit input {
   border-color: #5CB85C;
