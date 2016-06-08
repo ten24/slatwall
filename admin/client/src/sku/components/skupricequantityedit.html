@@ -1,7 +1,12 @@
-<sw-form-field-single-edit
-        ng-if="swSkuPriceQuantityEdit.skuPrice && swSkuPriceQuantityEdit.skuPriceId"
-        data-object="swSkuPriceQuantityEdit.skuPrice"
-        data-property="{{swSkuPriceQuantityEdit.columnPropertyIdentifier}}"
-    >
-    
-</sw-form-field-single-edit>
+<sw-form ng-if="swSkuPriceQuantityEdit.skuPrice && swSkuPriceQuantityEdit.skuPriceId"  
+         data-object="swSkuPriceQuantityEdit.skuPrice">
+    <sw-property-display
+            data-object="swSkuPriceQuantityEdit.skuPrice"
+            data-property="{{swSkuPriceQuantityEdit.columnPropertyIdentifier}}"
+            data-in-listing-display="true"
+            data-editing="true"
+            data-editable="true"
+        >
+        
+    </sw-property-display>
+</sw-form>

@@ -3,11 +3,14 @@
 class SWImageDetailModalLauncherController{
     
     public skuId:string; 
+    public skuCode:string; 
     public sku:any;
     public name:string; 
     public baseName:string = "j-image-detail"; 
     public imageFileName:string; 
     public imagePath:string; 
+    public imageFile:string; 
+    public productProductId:string; 
     public customImageNameFlag:boolean;
     public collectionConfig; 
     
@@ -20,22 +23,14 @@ class SWImageDetailModalLauncherController{
         private $http
     ){
         this.name = this.baseName + this.utilityService.createID(18);
-        this.collectionConfig = this.collectionConfigService.newCollectionConfig("Sku"); 
-        this.collectionConfig.addFilter("skuID",this.skuId,"="); 
-        this.collectionConfig.addDisplayProperty("skuID,skuCode,skuDefinition,imageFileName,imageFile,imagePath,product.productID");
-        this.collectionConfig.setAllRecords(true); 
-        this.collectionConfig.getEntity().then(
-            (response)=>{
-                if(angular.isDefined(response.records) && angular.isDefined(response.records[0])){
-                    this.imageFileName = response.records[0].imageFile; 
-                    this.imagePath = response.records[0].imagePath; 
-                    this.sku = this.$hibachi.populateEntity("Sku",response.records[0]); 
-                }
-            },
-            (reason)=>{
-                //something went wrong   
-            }
-       );
+        var skuData = { 
+            skuID:this.skuId,
+            skuCode:this.skuCode, 
+            imageFileName:this.imageFileName,
+            imagePath:this.imagePath, 
+            imageFile:this.imageFile
+        }
+        this.sku = this.$hibachi.populateEntity("Sku",skuData); 
     }    
     
     public saveAction = () => {
@@ -70,7 +65,11 @@ class SWImageDetailModalLauncher implements ng.IDirective{
     public restrict = 'EA';
     public scope = {}; 
     public bindToController = {
-        skuId:"@"
+        skuId:"@",
+        skuCode:"@",
+        imagePath:"@", 
+        imageFile:"@", 
+        imageFileName:"@"
     };
     public controller = SWImageDetailModalLauncherController;
     public controllerAs="swImageDetailModalLauncher";

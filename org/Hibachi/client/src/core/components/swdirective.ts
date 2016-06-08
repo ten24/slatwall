@@ -27,7 +27,6 @@ class SWDirective{
 			link: function(scope, element, attrs) {
 
 		        var template = '<' + scope.directiveTemplate + ' ';
-					
 		        if(angular.isDefined(scope.variables)){
 			        angular.forEach(scope.variables, (value,key)=>{
 						if(!angular.isString(value) && !angular.isNumber(value)){

@@ -16,6 +16,8 @@ class SWTabGroupController {
         ){
         if(angular.isUndefined(this.tabs)){
             this.tabs = []; 
+        } else if(this.tabs.length) {
+            this.tabs[0].active = true; 
         }
     }
 

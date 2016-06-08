@@ -4,6 +4,8 @@ class SWSkuPriceEditController{
     
     public skuId;
     public skuPriceId;
+    public minQuantity;
+    public maxQuantity;
     public skuCode;
     public price; 
     public currencyCode;
@@ -11,6 +13,8 @@ class SWSkuPriceEditController{
     public bundledSkuCurrencyCode;
     public formName; 
    
+    public currencyFilter; 
+
     public sku; 
     public skuPrice;
     
@@ -20,8 +24,10 @@ class SWSkuPriceEditController{
     constructor(
         private collectionConfigService,
         private utilityService, 
-        private $hibachi
+        private $hibachi,
+        private $filter
     ){
+        this.currencyFilter = this.$filter('swcurrency');
         this.formName = this.utilityService.createID(32);
         if(angular.isUndefined(this.skuId) && angular.isDefined(this.bundledSkuSkuId)){
             this.skuId = this.bundledSkuSkuId;
@@ -37,32 +43,24 @@ class SWSkuPriceEditController{
             throw("You must provide either a skuID or a skuPriceID or a sku or a skuPrice to SWSkuPriceSingleEditController");
         } else {
             
-            if(angular.isDefined(this.skuId)){
+            if(angular.isDefined(this.skuId) && angular.isUndefined(this.sku)){
                 var skuData = {
-                    skuID:this.skuId,
-                    skuCode:this.skuCode,
-                    currencyCode:this.currencyCode,
-                    price:this.price 
+                    skuID : this.skuId,
+                    skuCode : this.skuCode,
+                    currencyCode : this.currencyCode,
+                    price : this.currencyFilter(this.price, this.currencyCode, 2, false)
                 }
                 this.sku = this.$hibachi.populateEntity("Sku", skuData); 
-                console.log("price sku", this.sku, skuData);
             }
 
-
             if(angular.isDefined(this.skuPriceId) && angular.isUndefined(this.skuPrice)){
-                this.$hibachi.getEntity("SkuPrice", this.skuPriceId).then(
-                        (skuPrice)=>{
-                            if(angular.isDefined(skuPrice)){
-                                this.skuPrice = this.$hibachi.newEntity('Sku');
-                                angular.extend(this.skuPrice.data, skuPrice);
-                            } else { 
-                                throw("There was a problem fetching the sku in SWSkuPriceSingleEditController");
-                            }
-                        },
-                        (reason)=>{
-                            throw("SWSkuPriceEdit had trouble fetchin its sku because" + reason);
-                        }
-                ); 
+                var skuPriceData = { 
+                    skuPriceId:this.skuPriceId,
+                    minQuantity:this.minQuantity,
+                    maxQuantity:this.maxQuantity,
+                    price: this.currencyFilter(this.price, this.currencyCode, 2, false)
+                }
+                this.skuPrice = this.$hibachi.populateEntity("SkuPrice", skuPriceData); 
             }
         }
     }    

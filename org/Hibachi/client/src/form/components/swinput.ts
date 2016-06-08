@@ -253,7 +253,6 @@ class SWInput{
 				//renders the template and compiles it
 				element.html(getTemplate(scope.propertyDisplay));
 				$compile(element.contents())(scope);
-				scope.propertyDisplay.edited=false; 
 			}
 		};
 	}

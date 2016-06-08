@@ -63,7 +63,10 @@ class SWTabContent implements ng.IDirective{
                 }
                 if(angular.isDefined(parentDirective) && angular.isDefined(parentDirective.tabs)){
                     console.log("white whale", $scope.swTabContent, parentDirective);
-                    parentDirective.tabs.push($scope.swTabContent)
+                    parentDirective.tabs.push($scope.swTabContent);
+                    if(parentDirective.tabs.length == 1){
+                        $scope.swTabContent.active = true; 
+                    }
                 }
             }
         };

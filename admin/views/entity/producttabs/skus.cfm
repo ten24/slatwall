@@ -57,7 +57,7 @@ Notes:
 		<cfset local.defaultSkuID = rc.product.getDefaultSku().getSkuID() />
 	</cfif>
 
-	<!--- If there are sku bundles then we can display them seperately here --->
+	<!--- If there are sku bundles then we can display them seperately here
 	<cfif local.bundleSkusSmartList.getRecordsCount()>
 		<hb:HibachiListingDisplay smartList="#local.bundleSkusSmartList#" title="#$.slatwall.rbKey('entity.SkuBundle_plural')#"
 							   recordDetailAction="admin:entity.detailsku"
@@ -118,6 +118,7 @@ Notes:
 			</cfif>
 		</hb:HibachiListingDisplay>
 	</cfif>
+	--->
 
 	<sw-pricing-manager data-product-id="#rc.product.getProductID()#">
 

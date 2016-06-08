@@ -3,11 +3,15 @@
                    data-title="Stock Adjustment"><!-- Change this to rb -->
     <sw-modal-button>
         <!-- Load Sku Image Here -->
-        <sw-form-field-single-edit ng-if="swSkuStockAdjustmentModalLauncher.sku"
-            data-object="swSkuStockAdjustmentModalLauncher.sku"
-            data-property="calculatedQOH"
-        >
-        </sw-form-field-single-edit>
+        <sw-form data-object="swSkuStockAdjustmentModalLauncher.sku" ng-if="swSkuStockAdjustmentModalLauncher.sku">
+            <sw-property-display data-object="swSkuStockAdjustmentModalLauncher.sku"
+                                 data-property="calculatedQOH"
+                                 data-editable="true"
+                                 data-editing="true"
+                                 data-in-listing-display="true"
+            >
+            </sw-property-display>
+        </sw-form> 
     </sw-modal-button>
     <sw-modal-content> 
         <sw-form 

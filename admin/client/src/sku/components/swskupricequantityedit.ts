@@ -6,6 +6,8 @@ class SWSkuPriceQuantityEditController{
     public skuPrice; 
     public column; 
     public columnPropertyIdentifier; 
+    public minQuantity; 
+    public maxQuantity; 
     
     
     //@ngInject
@@ -14,19 +16,12 @@ class SWSkuPriceQuantityEditController{
     ){
         
         if(angular.isUndefined(this.skuPrice)){
-            this.$hibachi.getEntity("SkuPrice", this.skuPriceId).then(
-                (skuPrice)=>{
-                    if(angular.isDefined(skuPrice)){
-                        this.skuPrice = this.$hibachi.newEntity('SkuPrice');
-                        angular.extend(this.skuPrice.data, skuPrice);
-                    } else { 
-                        throw("There was a problem fetching the sku in SWSkuPriceSingleEditController");
-                    }
-                },
-                (reason)=>{
-                    throw("SWSkuPriceQuantityEdit had trouble fetchin its sku because" + reason);
-                }
-           ); 
+            var skuPriceData = {
+                skuPriceID:this.skuPriceId, 
+                minQuantity:this.minQuantity, 
+                maxQuantity:this.maxQuantity
+            }
+            this.skuPrice = this.$hibachi.populateEntity("SkuPrice",skuPriceData);
         }
     }    
 
@@ -40,7 +35,9 @@ class SWSkuPriceQuantityEdit implements ng.IDirective{
         skuPrice:"=?",
         skuPriceId:"@",
         column:"=?",
-        columnPropertyIdentifier:"@"
+        columnPropertyIdentifier:"@",
+        minQuantity:"@",
+        maxQuantity:"@"
     };
     public controller = SWSkuPriceQuantityEditController;
     public controllerAs="swSkuPriceQuantityEdit";

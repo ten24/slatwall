@@ -12,6 +12,8 @@ class SWSkuStockAdjustmentModalLauncherController{
     public toLocation:any; 
     public name:string; 
     public quantityDifference:number; 
+    public calculatedQats:any; 
+    public calculatedQoh:any; 
     
     public stockAdjustmentTypePromise:any; 
     public stockAdjustmentStatusTypePromise:any;
@@ -39,39 +41,14 @@ class SWSkuStockAdjustmentModalLauncherController{
         this.stockAdjustmentItem = this.$hibachi.newStockAdjustmentItem();
         this.stockAdjustment.$$addStockAdjustmentItem(this.stockAdjustmentItem);
         this.stockAdjustmentItem.$$setToStock(this.stock);
-        this.skuPromise = this.$hibachi.getEntity("Sku",this.skuId);
-        this.stockAdjustmentTypePromise = this.$hibachi.getEntity("Type","444df2e60db81c12589c9b39346009f2");//manual in stock adjustment type 
-        this.stockAdjustmentStatusTypePromise = this.$hibachi.getEntity("Type","444df2e2f66ddfaf9c60caf5c76349a6");//new status type for stock adjusment
-        this.skuPromise.then(
-            (sku)=>{
-                this.sku = this.$hibachi.populateEntity("Sku", sku);
-                if(!this.sku.data.calculatedQOH.length){
-                    this.sku.data.calculatedQOH = 0; 
-                }
-                this.stockAdjustmentItem.$$setSku(this.sku); 
-            },
-            (reason)=>{
-                throw("SWSkuStockAdjustmentModalLauncherController was unable to load the sku for the provided id:" + this.skuId + " with a reason of: " + reason );
-            }
-        );
-        this.stockAdjustmentStatusTypePromise.then(
-            (type)=>{
-                this.stockAdjustmentStatusType = this.$hibachi.populateEntity("Type",type); 
-                this.stockAdjustment.$$setStockAdjustmentStatusType(this.stockAdjustmentStatusType);
-            },
-            (reason)=>{
-                //error callback   
-            }
-        );
-        this.stockAdjustmentTypePromise.then(
-            (type)=>{
-                this.stockAdjustmentType = this.$hibachi.populateEntity("Type",type); 
-                this.stockAdjustment.$$setStockAdjustmentType(this.stockAdjustmentType);
-            },
-            (reason)=>{
-                //error callback   
-            }
-        );
+        this.stockAdjustmentType = this.$hibachi.populateEntity("Type",{typeID:"444df2e60db81c12589c9b39346009f2"});//manual in stock adjustment type 
+        this.stockAdjustmentStatusType = this.$hibachi.populateEntity("Type",{typeID:"444df2e2f66ddfaf9c60caf5c76349a6"});//new status type for stock adjusment
+        var skudata = {
+            skuID:this.skuId,
+            calculatedQATS:this.calculatedQats || 0,
+            calculatedQOH:this.calculatedQoh || 0
+        }
+        this.sku = this.$hibachi.populateEntity("Sku", skudata);
     }
     
     public save = () => {
@@ -89,7 +66,9 @@ class SWSkuStockAdjustmentModalLauncher implements ng.IDirective{
     public restrict = 'EA';
     public scope = {}; 
     public bindToController = {
-        skuId:"@"
+        skuId:"@",
+        calculatedQats:"@?",
+        calculatedQoh:"@?"
     };
     public controller = SWSkuStockAdjustmentModalLauncherController;
     public controllerAs="swSkuStockAdjustmentModalLauncher";

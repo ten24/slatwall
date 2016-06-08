@@ -20,7 +20,7 @@ class SWSkuPricesEditController{
         if(angular.isUndefined(this.skuId) && angular.isUndefined(this.sku)){
             throw("You must provide a skuID to SWSkuPriceSingleEditController");
         }
-        if(angular.isUndefined(this.sku)){
+        /*if(angular.isUndefined(this.sku)){
             this.collectionConfig = this.collectionConfigService.newCollectionConfig("Sku"); 
             this.collectionConfig.addFilter("skuID", this.skuId, "=");
             this.collectionConfig.setAllRecords(true);
@@ -37,7 +37,7 @@ class SWSkuPricesEditController{
                     //there was an error 
                 }
            ); 
-        }
+        }*/
     }    
 
 }

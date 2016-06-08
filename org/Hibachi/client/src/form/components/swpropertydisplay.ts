@@ -25,7 +25,7 @@ class SWPropertyDisplayController {
     public onChangeCallback; 
     public hasOnChangeCallback:boolean; 
     public hasSaveCallback:boolean; 
-    public initValue:any; 
+    public initialValue:any; 
     
 
     //@ngInject
@@ -34,7 +34,7 @@ class SWPropertyDisplayController {
     ){
         this.errors = {};
         this.edited = false; 
-        this.initValue = this.object.data[this.property]; 
+        this.initialValue = this.object.data[this.property]; 
         if(angular.isUndefined(this.rawFileTarget)){
             this.rawFileTarget = this.property;
         }
@@ -97,7 +97,7 @@ class SWPropertyDisplayController {
 
 
     public getNgClassObjectForInput = () => {
-
+        return "{'form-control':propertyDisplay.inListingDisplay}";
     }
 
     //these could maybe be handled by a service
@@ -110,7 +110,7 @@ class SWPropertyDisplayController {
 
     public clear = () =>{
         this.edited = false; 
-        this.object.data[this.property] = this.initValue; 
+        this.object.data[this.property] = this.initialValue; 
     }
 
     public save = () =>{
@@ -156,8 +156,6 @@ class SWPropertyDisplay implements ng.IDirective{
         public coreFormPartialsPath,
         public hibachiPathBuilder
     ){
-        
-        console.warn(this);
         this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.coreFormPartialsPath) + "propertydisplay.html";
     }
     

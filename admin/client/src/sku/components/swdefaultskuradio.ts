@@ -38,18 +38,10 @@ class SWDefaultSkuRadioController{
         console.log("isDefault?",this.skuId, this.productDefaultSkuSkuId);
         this.isDefaultSku = (this.skuId == this.productDefaultSkuSkuId);
         if(angular.isUndefined(this.sku)){
-            this.$hibachi.getEntity("Sku",this.skuId).then(
-                (sku)=>{
-                    if(angular.isDefined(sku)){
-                        this.sku = this.$hibachi.populateEntity('Sku',sku);
-                    } else { 
-                        throw("There was a problem fetching the sku in SWSkuPriceSingleEditController");
-                    }
-                },
-                (reason)=>{
-                    throw("SWDefaultSkuRadio had trouble loading the sku because:" + reason);
-                }
-            )
+            var skuData = {
+                skuID:this.skuId
+            }
+           this.sku = this.$hibachi.populateEntity('Sku',skuData);
         }
     }    
 }

@@ -86,17 +86,17 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
                 }
                 if(angular.isDefined(currentScope.pageRecord)){ 
                     $scope.swAddSkuPriceModalLauncher.pageRecord = currentScope.pageRecord; 
-                    if(angular.isDefined(currentScope.pageRecord.skuID)){ 
-                        $scope.swAddSkuPriceModalLauncher.skuId = currentScope.pageRecord.skuID;     
-                        this.$hibachi.getEntity('Sku', $scope.swAddSkuPriceModalLauncher.skuId).then(
-                            (sku)=>{
-                                $scope.swAddSkuPriceModalLauncher.skuPrice = this.$hibachi.newEntity('SkuPrice'); 
-                                $scope.swAddSkuPriceModalLauncher.sku = this.$hibachi.populateEntity('Sku', sku); 
-                                $scope.swAddSkuPriceModalLauncher.skuPrice.$$setSku($scope.swAddSkuPriceModalLauncher.sku);
-                            },
-                            (reason)=>{
-                                throw("swaddskupricemodallauncher could not load a sku for the following reason:" + reason);
-                            });   
+                    if(angular.isDefined(currentScope.pageRecord.skuID)){    
+                        $scope.swAddSkuPriceModalLauncher.sku = this.$hibachi.populateEntity('Sku', 
+                            {
+                                skuID:currentScope.pageRecord.skuID,
+                                imagePath:currentScope.pageRecord.imagePath,
+                                skuCode:currentScope.pageRecord.skuCode, 
+                                skuDefinition:currentScope.pageRecord.skuDefinition,
+                            }
+                        );
+                        $scope.swAddSkuPriceModalLauncher.skuPrice = this.$hibachi.newEntity('SkuPrice');
+                        $scope.swAddSkuPriceModalLauncher.skuPrice.$$setSku($scope.swAddSkuPriceModalLauncher.sku);
                     }
                 } else{ 
                     throw("swAddSkuPriceModalLauncher was unable to find the pageRecord that it needs!");
