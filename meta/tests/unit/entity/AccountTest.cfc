@@ -352,7 +352,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var resultNSUNoPG = mockAccount.getAdminAccountFlag();
 		assertFalse(resultNSUNoPG);
 	}
-*/	
+	
 	public void function getGiftCardSmartListTest() {
 		//testing existed GiftCard SmartList
 		var accountData = {
@@ -516,6 +516,72 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(arraylen(resultOrdersPlacedSM), arraylen(mockAccount.getOrders()) - 2);
 	}
 	
+public void function getPrimaryEmailAddressesNotInUseFlagTest() {
+		//testing when the email has not been used
+		var accountData = {
+			accountID = "001",
+			firstName = "Hello",
+			lastName = "Kitty",
+			primaryEmail = {
+				accountEmailAddressID = "",
+				emailAddress = "hk@happy.com"
+			},
+			accountAuthentications = {
+				accountAuthenticationID=""
+			}
+		};
+		var mockAccount = createTestEntity('Account', accountData);
+		var resultNewPrimaryEmail = mockAccount.getPrimaryEmailAddressesNotInUseFlag();
+		assertTrue(resultNewPrimaryEmail);
+		//testing when primary email is empty, default flag should be true
+		var accountDataNoPE = {
+			accountID = "002",
+			firstName = "Hello2",
+			lastName = "Kitty2",
+			accountAuthentications = {
+				accountAuthenticationID=""
+			}
+		};
+		var mockAccountNoPE = createTestEntity('Account', accountDataNoPE);
+		var resultNoPrimaryEmail = mockAccount.getPrimaryEmailAddressesNotInUseFlag();
+		assertTrue(resultNoPrimaryEmail);
+		//testing if one account use the same PrimaryEmail already belongs to another account
+		var email = createUUID()&"@test.com";
+		var emailDate = {
+			accountEmailAddressID = "",
+			emailAddress = email
+		};
+		var mockEmail = createPersistedTestEntity('AccountEmailAddress', emailDate);
+		
+		var accountData1 = {
+			accountID = "",
+			primaryEmailAddress={
+				accountEmailAddressID=mockEmail.getAccountEmailAddressID()
+			}
+		};
+		
+		var mockAccount1 = createPersistedTestEntity('Account', accountData1);
+		
+		var accountAuthenticationData = {
+			accountAuthenticationID="",
+			account={
+				accountID=mockAccount1.getAccountID()
+			}
+		};
+		accountAuthentication = createPersistedTestEntity('AccountAuthentication',accountAuthenticationData);
+		
+		var accountData2 = {
+			accountID = "",
+			primaryEmailAddress={
+				accountEmailAddressID="",
+				emailAddress=email
+			}
+		};
+		var mockAccount2 = createTestEntity('Account', accountData2);
+		
+		assertFalse(mockAccount2.getPrimaryEmailAddressesNotInUseFlag());	
+	}
+*/
 	public void function getOrdersNotPlacedSmartListTest() {
 		var accountData = {
 			accountID = "",
@@ -583,65 +649,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		request.debug(order4.getModifiedDateTime());
 		assertEquals(resultChangedModifiedDate.getRecords()[1].getOrderNumber(), "orderNumber004");	
 	}
-	
-	public void function getPrimaryEmailAddressesNotInUseFlagTest() {
-		//testing existed primaryEmailAddressNotInUseFlag
-		var accountData = {
-			accountID = "001",
-			firstName = "Hello",
-			lastName = "Kitty",
-			primaryEmailAddressNotInUseFlag = TRUE
-		};
-		var mockAccount = createTestEntity('Account', accountData);
-		var resultPrimaryEmailNotInUseFlag = mockAccount.getPrimaryEmailAddressesNotInUseFlag();
-		assertTrue(resultPrimaryEmailNotInUseFlag);
-		//test the constraint issue		
-		var accountData1 = {
-			accountID = ""		
-		};
-		var accountData2 = {
-			accountID = ""		
-		};
-		var primaryEmailDate = {
-			accountEmailAddressID = "",
-			emailAddress = "hello@clarku.edu"
-		};
-		var mockAccount1 = createPersistedTestEntity('Account', accountData1);
-		var mockAccount2 = createPersistedTestEntity('Account', accountData2);
-		var mockPrimaryEmail = createPersistedTestEntity('AccountEmailAddress', primaryEmailDate);
-		
-		mockAccount1.setPrimaryEmailAddress(mockPrimaryEmail);
-		request.debug(mockAccount1.getPrimaryEmailAddress().getEmailAddress());
-		assertTrue(mockAccount.getPrimaryEmailAddressesNotInUseFlag());
-		mockAccount2.setPrimaryEmailAddress(mockPrimaryEmail);//account2 use same Primary Email
-		request.debug(mockAccount2.getPrimaryEmailAddress().getEmailAddress());
-		assertFalse(mockAccount2.getPrimaryEmailAddressesNotInUseFlag());	//Yuqing should be false
-		//testing not been used primaryEmailAddress
-		var testEmail = "testtesttest@Address.com";
-		var accountData1 = {
-			accountID = "",
-			primaryEmailAddress = {
-				accountEmailAddressID = "",
-				emailAddress = #testEmail#				
-			}			
-		};
-		var mockAccount1 = createPersistedTestEntity('Account', accountData1);
-		var resultNoInUse = mockAccount1.getPrimaryEmailAddressesNotInUseFlag();
-		assertTrue(resultNoInUse);
-		//testing been used primaryEmail based on the previous case, use 'testEmail' above
-		var accountData2 = {
-			accountID = "",
-			primaryEmailAddress = {				
-				emailAddress = #testEmail#		
-			}			
-		};
-		request.debug(accountData2);
-		var mockAccount2 = createPersistedTestEntity('Account', accountData2);
-		var result = mockAccount2.getPrimaryEmailAddressesNotInUseFlag();
-		request.debug(result);		
-		assertFalse(result.getNewFlag());
-	}
-	
+
 	public void function getPasswordResetIDTest() {
 		//testing when authentication existed
 		var num = "1232123";
@@ -690,43 +698,166 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(result, "noIdeaWhat&Mean in Hash");
 	}
 	public void function getSlatwallAuthenticationExistsFlagTest() {
-		var accountData1DefaultFlag = {
+		//testing if no valid properties(Password,Integration,ActiveFlag) existed in authentication,then authentication does not exist
+		var accountData1 = {
 			accountID = "",
 			firstName = "Hola"
 		};
-		var mockAccount1 = createPersistedTestEntity('Account', accountData1DefaultFlag);
-		var accountData2TrueFlag = {
-			accountID = "",
-			firstName = "Hola",
-			slatwallAuthenticationExistsFlag = true
-		};
-		var mockAccount2 = createPersistedTestEntity('Account', accountData2TrueFlag);
+		var mockAccount1 = createPersistedTestEntity('Account', accountData1);
 		var authzData1Normal = {
 			accountAuthenticationID = "",
 			account = {
 				accountID = mockAccount1.getAccountID()
 			}
 		};
-		var mockAccountAuthentications1 = createPersistedTestEntity('AccountAuthentication', authzData1Normal);
-		//testing when SlatwallAuthenticationExistsFlag is True but no authentication entity existed (non-persistent property works)
-		var resultExistedFlagNoAuth = mockAccount2.getSlatwallAuthenticationExistsFlag();
-		assertTrue(resultExistedFlagNoAuth);
-		//testing if no valid properties(Password,Integration,ActiveFlag) existed in authentication,then authentication does not exist
+		var mockAccountAuthentications1 = createPersistedTestEntity('AccountAuthentication', authzData1Normal);		
 		var resultNotValidAuthz = mockAccount1.getSlatwallAuthenticationExistsFlag();
 		assertFalse(resultNotValidAuthz);
-		//testing existed authentications w/ existed Password
+		//testing if valid authz property created, (Password), authz flag should be true
+		var accountData2 = {
+			accountID = "",
+			firstName = "Hola"
+		};
+		var mockAccount2 = createPersistedTestEntity('Account', accountData2);
 		var authzData2HasPassword = {
 			accountAuthenticationID = "",
 			password = "123",
 			account = {
-				accountID = mockAccount1.getAccountID()
+				accountID = mockAccount2.getAccountID()
 			}
 		};
 		var mockAccountAuthentications2 = createPersistedTestEntity('AccountAuthentication', authzData2HasPassword);
-		var resultNoFlagYesAuth = mockAccount1.getSlatwallAuthenticationExistsFlag();
-		assertTrue(mockAccountAuthentications2.getActiveFlag());
-		assertFalse(resultNoFlagYesAuth);
+		var resultWithPassword = mockAccount2.getSlatwallAuthenticationExistsFlag();
+		assertTrue(resultWithPassword);//yuqing
 		//testing existed authentictions w/ Integration  YUQING
+	}
+	
+	public void function getTermOrderPaymentsByDueDateSmartListTest() {
+		//testing if AccountID filter works in the SmartList
+		var accountData1 = {//create Account
+			accountID = "",
+			firstName = "hellooo"
+			
+		};
+		var mockAccount1 = createPersistedTestEntity("Account", accountData1);
+
+		var order1Data = {//create Order
+			orderID = "",
+			orderNumber = "orderNumber001",
+			orderStatusType = {
+				typeID = "444df2b6b8b5d1ccfc14a4ab38aa0a4c" //processing
+			},
+			
+			account = {
+				accountID = mockAccount1.getAccountID()
+			}
+		};
+		var order1 = createPersistedTestEntity('Order', order1Data);	
+		
+		var paymentMethodData = {//create paymentMethod
+			paymentMethodID="",
+			paymentMethodType = 'termPayment'
+		};
+		var paymentMethod = createPersistedTestEntity('paymentMethod',paymentMethodData);
+				
+		var orderPaymentData = {//create OrderPayment
+				orderPaymentID = "",
+				paymentDueDate = dateAdd('d', 1, now()),
+				paymentMethod = {
+					paymentMethodID = paymentMethod.getPaymentMethodID()
+				},
+				order = {
+					orderID = order1.getOrderID()
+				}			
+		};
+		var orderPayment1 = createPersistedTestEntity('OrderPayment', orderPaymentData);
+		
+		request.debug(getMetaData(mockaccount1));
+		
+		var mockSM1 = mockAccount1.getTermOrderPaymentsByDueDateSmartList().getRecords();
+		request.debug(arraylen(mockAccount1.getTermOrderPaymentsByDueDateSmartList().getRecords()));
+		request.debug(mockSM1[1].getOrder().getOrderID());
+		assertEquals(mockSM1[1].getOrder().getAccount().getAccountID(), mockAccount1.getAccountID());
+		
+		
+		
+		
+		
+		//Other test cases
+		var order2Data = {
+			orderID = "",
+			orderNumber = "orderNumber002",
+			orderOpenDateTime = dateAdd('d', 4, now()),
+			orderStatusType = {
+				typeID = "444df2b7d7dcce8a3aa485f80264ac3a"//onhold
+			},
+			account = {
+				accountID = mockAccount1.getAccountID()
+			}
+		};
+		var order3Data = {
+			orderID = "",
+			orderNumber = "orderNumber003",
+			orderOpenDateTime = dateAdd('d', -2, now()),
+			orderStatusType = {
+				typeID = "444df2b90f62f72711eb5b3c90848e7e"//canceled
+			},
+			account = {
+				accountID = mockAccount1.getAccountID()
+			}
+		};	
+		var order4Data = {
+			orderID = "",
+			orderNumber = "orderNumber004",
+			orderOpenDateTime = dateAdd('d', -2, now()),
+			orderStatusType = {
+				typeID = "444df2b5c8f9b37338229d4f7dd84ad1"//new
+			},
+			account = {
+				accountID = mockAccount2.getAccountID()
+			}
+		};	
+		
+		var order2 = createPersistedTestEntity('Order', order2Data);
+		var order3 = createPersistedTestEntity('Order', order3Data);
+		var order4 = createPersistedTestEntity('Order', order4Data);
+		
+		//testing to get the correct number of records in SmartList
+		var resultOrdersPlacedSM = mockAccount.getTermOrderPaymentsByDueDateSmartList().getRecords();
+		assertEquals(arraylen(resultOrdersPlacedSM), 3);
+		//testing if the smart list is ordered by orderOpenDateTime DESC
+		assertEquals(resultOrdersPlacedSM[1].getOrderNumber(), "orderNumber002");
+		assertEquals(resultOrdersPlacedSM[2].getOrderNumber(), "orderNumber001");
+		assertEquals(resultOrdersPlacedSM[3].getOrderNumber(), "orderNumber003");
+		//testing if AccountID filter works in the SmartList
+		var resultOrdersPlacedSM2 = mockAccount2.getOrdersPlacedSmartList().getRecords();
+		assertEquals(resultOrdersPlacedSM[1].getAccount().getAccountID(),mockAccount.getAccountID());
+		assertEquals(resultOrdersPlacedSM2[1].getAccount().getAccountID(),mockAccount2.getAccountID());
+	}
+	
+	public void function getActiveSubscriptionUsageBenefitsSmartListTest() {
+		var accountData1 = {
+			accountID = "",
+			firstName = "subscription",
+			subscriptionUsageBenefitAccounts = [{
+				subsUsageBenefitAccountID = "",
+				endDateTime = dateAdd('d', 3, now)
+			}],
+			subscriptionUsages = [{
+				subscriptionUsageID = "",
+				expirationDate = dateAdd('d', 1, now())
+			}]
+		};
+		var mockAccount1 = createPersistedTestEntity('Account', accountData1);
+		var authzData1Normal = {
+			accountAuthenticationID = "",
+			account = {
+				accountID = mockAccount1.getAccountID()
+			}
+		};
+		var mockAccountAuthentications1 = createPersistedTestEntity('AccountAuthentication', authzData1Normal);		
+		var resultNotValidAuthz = mockAccount1.getSlatwallAuthenticationExistsFlag();
+		assertFalse(resultNotValidAuthz);
 	}
 	
 //	
