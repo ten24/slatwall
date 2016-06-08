@@ -3,6 +3,9 @@
 class SWSkuStockAdjustmentModalLauncherController{
     
     public skuId:string; 
+    public skuCode:string; 
+    public skuDescription:string; 
+    public imagePath:string;
     public sku:any; 
     public stock:any; 
     public stockAdjustment:any; 
@@ -45,6 +48,9 @@ class SWSkuStockAdjustmentModalLauncherController{
         this.stockAdjustmentStatusType = this.$hibachi.populateEntity("Type",{typeID:"444df2e2f66ddfaf9c60caf5c76349a6"});//new status type for stock adjusment
         var skudata = {
             skuID:this.skuId,
+            skuCode:this.skuCode,
+            skuDescription:this.skuDescription,
+            imagePath:this.imagePath,
             calculatedQATS:this.calculatedQats || 0,
             calculatedQOH:this.calculatedQoh || 0
         }
@@ -67,6 +73,9 @@ class SWSkuStockAdjustmentModalLauncher implements ng.IDirective{
     public scope = {}; 
     public bindToController = {
         skuId:"@",
+        skuCode:"@",
+        skuDescription:"@",
+        imagePath:"@",
         calculatedQats:"@?",
         calculatedQoh:"@?"
     };
