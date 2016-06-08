@@ -54,14 +54,14 @@ class UtilityService extends BaseService{
            }
         });
         return currentIndex;
-    }
+    };
 
     public listLast = (list:string='',delimiter:string=','):string =>{
 
         var listArray = list.split(delimiter);
 
 		return listArray[listArray.length-1];
-    }
+    };
 
     public listRest = (list:string='',delimiter:string=","):string =>{
         var listArray = list.split(delimiter);
@@ -69,16 +69,16 @@ class UtilityService extends BaseService{
             listArray.splice(0,1);
         }
         return listArray.join(delimiter);
-    }
+    };
 
     public listFirst = (list:string='',delimiter:string=','):string =>{
 
         var listArray = list.split(delimiter);
 
         return listArray[0];
-    }
+    };
 
-    public listPrepend = (list:string='', substring:string, delimiter:string=','):string =>{
+    public listPrepend = (list: string = '', substring: string = '', delimiter: string = ','): string => {
 
         var listArray = list.split(delimiter);
         if(listArray.length){
@@ -86,18 +86,25 @@ class UtilityService extends BaseService{
         }else{
             return substring
         }
-    }
+    };
 
-    public listAppend = (list:string='', substring:string, delimiter:string=','):string =>{
-
+    public listAppend = (list: string = '', substring: string = '', delimiter: string = ','): string => {
         var listArray = list.split(delimiter);
-        if(listArray.length){
+        if (list.trim() != '' && listArray.length) {
             return list + delimiter + substring;
         }else{
             return substring
         }
+    };
 
+    public listAppendUnique = (list: string = '', substring: string = '', delimiter: string = ','): string => {
+        var listArray = list.split(delimiter);
+        if (list.trim() != '' && listArray.length && listArray.indexOf(substring) == -1) {
+            return list + delimiter + substring;
+        } else {
+            return substring
     }
+    };
 
 
     public formatValue=(value,formatType,formatDetails,entityInstance)=>{
@@ -110,27 +117,32 @@ class UtilityService extends BaseService{
             this['format_'+formatType](value,formatDetails,entityInstance);
         }
         return value;
-    }
+    };
+
     public format_currency=(value,formatDetails,entityInstance)=>{
         if(angular.isUndefined){
             formatDetails = {};
         }
-    }
+    };
+
     public format_date=(value,formatDetails,entityInstance)=>{
         if(angular.isUndefined){
             formatDetails = {};
         }
-    }
+    };
+
    public format_datetime=(value,formatDetails,entityInstance)=>{
         if(angular.isUndefined){
             formatDetails = {};
         }
-    }
+    };
+
     public format_pixels=(value,formatDetails,entityInstance)=>{
         if(angular.isUndefined){
             formatDetails = {};
         }
-    }
+    };
+
    public  format_yesno=(value,formatDetails,entityInstance)=>{
         if(angular.isUndefined){
             formatDetails = {};
@@ -140,19 +152,21 @@ class UtilityService extends BaseService{
         }else if(value === false || value.trim() === 'No' || value.trim === 'NO' || value.trim() === '0'){
             return entityInstance.metaData.$$getRBKey("define.no");
         }
-    }
+    };
 
     public left = (stringItem:string,count:number):string =>{
         return stringItem.substring(0,count);
-    }
+    };
+
     public right = (stringItem:string,count:number):string =>{
         return stringItem.substring(stringItem.length-count,stringItem.length);
-    }
+    };
+
     //this.utilityService.mid(propertyIdentifier,1,propertyIdentifier.lastIndexOf('.'));
     public mid = (stringItem:string,start:number,count:number):string =>{
         var end = start + count;
         return stringItem.substring(start,end);
-    }
+    };
     
     public getPropertiesFromString = (stringItem:string):Array<string> =>{
             if(!stringItem) return;
@@ -172,7 +186,7 @@ class UtilityService extends BaseService{
                 }
             }
             return results;
-        }
+    };
 
         public replacePropertiesWithData = (stringItem:string, data)=>{
             var results = this.getPropertiesFromString(stringItem);
@@ -180,15 +194,15 @@ class UtilityService extends BaseService{
                 stringItem = stringItem.replace('${'+results[i]+'}', data[i]);
             }
             return stringItem;
-        }
+    };
 
     public replaceAll = (stringItem:string, find:string, replace:string):string => {
         return stringItem.replace(new RegExp(this.escapeRegExp(find), 'g'), replace);
-    }
+    };
 
     public escapeRegExp = (stringItem:string) =>{
         return stringItem.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
-    }
+    };
 
     public createID = (count:number):string =>{
           var count = count || 26;
@@ -200,7 +214,8 @@ class UtilityService extends BaseService{
               text += possible.charAt(Math.floor(Math.random() * possible.length));
 
           return text;
-      }
+    };
+
       //list functions
       public arrayToList = (array:Array<any>, delimiter?:string) =>{
           if(delimiter != null){
@@ -208,7 +223,7 @@ class UtilityService extends BaseService{
           } else {
               return array.join();
           }
-      }
+    };
       
       public isDescendantElement = (parent, child) => {
         var node = child.parentNode;
@@ -219,9 +234,9 @@ class UtilityService extends BaseService{
             node = node.parentNode;
         }
         return false;
-    }
+    };
 
-     public listFind = (list:string='',value:string,delimiter:string=','):number =>{
+    public listFind = (list: string = '', value: string = '', delimiter: string = ','): number => {
           var splitString = list.split(delimiter);
           var stringFound = -1;
           for (var i = 0; i < splitString.length; i++) {
@@ -231,12 +246,14 @@ class UtilityService extends BaseService{
               }
           }
          return stringFound;
-      }
+    };
+
       public listLen = (list:string='',delimiter:string=','):number =>{
 
           var splitString = list.split(delimiter);
           return splitString.length;
-      }
+    };
+
         //This will enable you to sort by two separate keys in the order they are passed in
       public arraySorter = (array:any[], keysToSortBy:string[]):any[] =>{
           var arrayOfTypes = [],
@@ -286,7 +303,7 @@ class UtilityService extends BaseService{
 
             }
             return returnArray;
-      }
+    };
 
         public minutesOfDay = (m):number=>{
             return m.getMinutes() + m.getHours() * 60;
