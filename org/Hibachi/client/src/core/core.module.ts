@@ -6,7 +6,6 @@ import {HibachiInterceptor,IHibachi,IHibachiConfig,HibachiJQueryStatic} from "./
 import {HibachiPathBuilder} from "./services/hibachipathbuilder";
 
 //services
-import {TemplateService} from "./services/templateservice";
 import {PublicService} from "./services/publicservice";
 import {UtilityService} from "./services/utilityservice";
 import {SelectionService} from "./services/selectionservice";
@@ -146,7 +145,6 @@ var coremodule = angular.module('hibachi.core',[
 .constant('hibachiPathBuilder',new HibachiPathBuilder())
 .constant('corePartialsPath','core/components/')
 //services
-.service('templateService',TemplateService)
 .service('publicService',PublicService)
 .service('utilityService',UtilityService)
 .service('selectionService',SelectionService)
