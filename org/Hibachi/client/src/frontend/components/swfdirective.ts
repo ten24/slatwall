@@ -29,7 +29,11 @@ class SWFDirective implements ng.IDirective {
     
     // @ngInject
     constructor(hibachiPathBuilder, $compile) {
-        if (hibachiConfig && hibachiConfig.customPartialsPath) {
+        if(!hibachiConfig){
+            hibachiConfig = {};    
+        }
+        
+        if (!hibachiConfig.customPartialsPath) {
             hibachiConfig.customPartialsPath = 'custom/client/src/frontend/';
         }
 
