@@ -12,13 +12,14 @@ class SWImageDetailModalLauncherController{
     public imageFile:string; 
     public productProductId:string; 
     public customImageNameFlag:boolean;
+    public imageFileUpdateEvent:string; 
     public collectionConfig; 
     
     //@ngInject
     constructor(
-        private skuImageService, 
-        private collectionConfigService,
+        private observerService, 
         private formService,
+        private collectionConfigService,
         private utilityService,
         private $hibachi,
         private $http
@@ -32,12 +33,14 @@ class SWImageDetailModalLauncherController{
             imageFile:this.imageFile
         }
         this.sku = this.$hibachi.populateEntity("Sku",skuData); 
-        this.skuImageService.attachEvent(this.imageFile,this.updateImage);
+        this.imageFileUpdateEvent = "file:"+this.imagePath;
+        this.observerService.attach(this.updateImage, this.imageFileUpdateEvent, this.skuId);
     }    
 
-    public updateImage = () => {
-        console.log("updateImageFired for", this.imageFile);
-        this.skuImageService.notify(this.imageFile);
+    public updateImage = (rawImage) => {
+        if(angular.isDefined(rawImage)){
+            this.sku.data.imagePath = rawImage;
+        }   
     }
     
     public saveAction = () => {
@@ -45,10 +48,12 @@ class SWImageDetailModalLauncherController{
         var data = new FormData(); 
         data.append('slatAction', "admin:entity.processProduct");
         data.append('processContext',"uploadDefaultImage");
-        data.append('productID', this.sku.data.product_productID);
-        data.append('preprocessDisplayedFlag',1); 
         data.append('sRedirectAction',"admin:entity.detailProduct");
+        data.append('preprocessDisplayedFlag',1); 
         data.append('ajaxRequest', 1); 
+        
+        data.append('productID', this.sku.data.product_productID);
+        
         if(this.customImageNameFlag){
             data.append('imageFile', this.imageFileName);
         } else {

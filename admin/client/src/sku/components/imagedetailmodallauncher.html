@@ -29,7 +29,7 @@
                 </div>
                 --> 
                 <div class="col-xs-4 s-image-edit">
-                    <sw-sku-thumbnail data-sku="swImageDetailModalLauncher.sku.data"
+                    <sw-sku-thumbnail data-sku-data="swImageDetailModalLauncher.sku.data"
                                       data-image-only="true"> 
                     </sw-sku-thumbnail> 
                 </div>
@@ -58,7 +58,7 @@
                                 data-raw-file-target="uploadFile"
                                 data-editing="true"
                                 data-editable="true"
-                                data-on-change="swImageDetailModalLauncher.updateImage()"
+                                data-on-change-event="{{swImageDetailModalLauncher.imageFileUpdateEvent}}"
                             >
                             </sw-property-display>  
                         </div>

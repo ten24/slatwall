@@ -10,6 +10,7 @@ class SWInput{
 			$log,
 			$compile,
             $hibachi,
+			observerService,
 			utilityService,
             rbkeyService,
 			fileService,
@@ -19,6 +20,7 @@ class SWInput{
 			$log,
 			$compile,
             $hibachi,
+			observerService,
 			utilityService,
             rbkeyService,
 			fileService,
@@ -29,6 +31,7 @@ class SWInput{
 			'$log',
 			'$compile',
             '$hibachi',
+			'observerService',
 			'utilityService',
             'rbkeyService',
 			'fileService',
@@ -41,6 +44,7 @@ class SWInput{
 		$log,
 		$compile,
         $hibachi,
+		observerService,
 		utilityService,
         rbkeyService,
 		fileService,
@@ -242,16 +246,16 @@ class SWInput{
 						});
 						$timeout(()=>{
 							fileService.uploadFile(fileToUpload, scope.propertyDisplay.object, scope.propertyDisplay.binaryFileTarget).then(
-								()=>{
-									scope.propertyDisplay.object[scope.propertyDisplay.property] = fileToUpload;
-									scope.propertyDisplay.onChange()
-								},
-								()=>{
-									//error	notify user
-								});
+									(result)=>{
+										scope.propertyDisplay.object[scope.propertyDisplay.property] = fileToUpload;
+										scope.propertyDisplay.onChange(result)
+									},
+									()=>{
+										//error	notify user
+									});
+							});
+							
 						});
-						
-					 });
 				}
 				//renders the template and compiles it
 				element.html(getTemplate(scope.propertyDisplay));

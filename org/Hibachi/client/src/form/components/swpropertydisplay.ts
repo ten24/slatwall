@@ -23,6 +23,7 @@ class SWPropertyDisplayController {
     public form;
     public saved:boolean; 
     public onChangeCallback; 
+    public onChangeEvent:string; 
     public hasOnChangeCallback:boolean; 
     public hasSaveCallback:boolean; 
     public initialValue:any; 
@@ -33,6 +34,7 @@ class SWPropertyDisplayController {
 
     //@ngInject
     constructor(
+        private observerService,
         public $filter
     ){
         this.errors = {};
@@ -108,11 +110,14 @@ class SWPropertyDisplayController {
     }
 
     //these could maybe be handled by a service
-    public onChange = () =>{
+    public onChange = (result?) =>{
         console.log("proponchange", this.hasOnChangeCallback); 
         this.edited = true; 
         if(this.hasOnChangeCallback){
             this.onChangeCallback();
+        }
+        if(angular.isDefined(this.onChangeEvent)){
+            this.observerService.notify(this.onChangeEvent,result);
         }
     }
 
@@ -152,6 +157,7 @@ class SWPropertyDisplay implements ng.IDirective{
         eagerLoadOptions:"=?",
         isDirty:"=?",
         onChangeCallback:"&?onChange",
+        onChangeEvent:"@?",
         saveCallback:"&?", 
         fieldType:"@?",
         rawFileTarget:"@?",
