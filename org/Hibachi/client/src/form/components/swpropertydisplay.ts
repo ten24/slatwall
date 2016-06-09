@@ -109,10 +109,11 @@ class SWPropertyDisplayController {
 
     //these could maybe be handled by a service
     public onChange = () =>{
+        console.log("proponchange", this.hasOnChangeCallback); 
         this.edited = true; 
         if(this.hasOnChangeCallback){
             this.onChangeCallback();
-        } 
+        }
     }
 
     public clear = () =>{

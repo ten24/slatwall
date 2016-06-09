@@ -16,6 +16,7 @@ class SWImageDetailModalLauncherController{
     
     //@ngInject
     constructor(
+        private skuImageService, 
         private collectionConfigService,
         private formService,
         private utilityService,
@@ -31,7 +32,13 @@ class SWImageDetailModalLauncherController{
             imageFile:this.imageFile
         }
         this.sku = this.$hibachi.populateEntity("Sku",skuData); 
+        this.skuImageService.attachEvent(this.imageFile,this.updateImage);
     }    
+
+    public updateImage = () => {
+        console.log("updateImageFired for", this.imageFile);
+        this.skuImageService.notify(this.imageFile);
+    }
     
     public saveAction = () => {
 
@@ -56,6 +63,7 @@ class SWImageDetailModalLauncherController{
                     transformRequest: angular.identity,
                     headers: {'Content-Type': undefined}
                 });
+    
         return savePromise;
     }
 }

@@ -209,12 +209,12 @@ class SWInput{
                     'id="swinput'+utilityService.createID(26)+'"'+
                     ' />';
             } else if(propertyDisplay.fieldType === 'file'){
+				//ng-change does not work for input type file usinging element bind change in link instead
 				template = '<input type="file"' +
 							'ng-class="propertyDisplay.getNgClassObjectForInput()"' +
            				    'ng-model="propertyDisplay.object.data[swFormFieldFile.propertyDisplay.property]"' +
   		   					'ng-disabled="!propertyDisplay.editable"' +
   		   					'ng-show="propertyDisplay.editing"' +
-  		   					'ng-change="propertyDisplay.onChange()"' + 
   		   					'name="propertyDisplay.property" />';
            					
 			}
@@ -244,6 +244,7 @@ class SWInput{
 							fileService.uploadFile(fileToUpload, scope.propertyDisplay.object, scope.propertyDisplay.binaryFileTarget).then(
 								()=>{
 									scope.propertyDisplay.object[scope.propertyDisplay.property] = fileToUpload;
+									scope.propertyDisplay.onChange()
 								},
 								()=>{
 									//error	notify user
