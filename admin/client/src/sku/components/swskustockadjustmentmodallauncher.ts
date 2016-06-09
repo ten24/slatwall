@@ -78,9 +78,10 @@ class SWSkuStockAdjustmentModalLauncherController{
     }    
 
     public updateNewQuantity = () => { 
-        if(!isNaN(this.sku.newQOH)){
-            this.newQuantity = this.sku.newQOH;
+        if(!isNaN(this.sku.data.newQOH)){
+            this.newQuantity = this.sku.data.newQOH;
         }
+        this.updateStockAdjustmentQuantity();
     }
 
     public updateStockAdjustmentQuantity = () => {
