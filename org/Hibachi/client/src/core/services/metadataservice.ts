@@ -76,15 +76,19 @@ class MetaDataService {
 					propertiesList.data[i].$$group = 'compareCollections';
 				}
 			}
+            var divider = '_';
+            if(propertiesList.data[i].$$group == 'simple'){
+                divider = '.';
+            }
 
-			propertiesList.data[i].propertyIdentifier = propertyIdentifier + '.' +propertiesList.data[i].name;
+			propertiesList.data[i].propertyIdentifier = propertyIdentifier + divider +propertiesList.data[i].name;
 		}
 		//propertiesList.data = _orderBy(propertiesList.data,['displayPropertyIdentifier'],false);
 
 		//--------------------------------Removes empty lines from dropdown.
 		var temp = [];
 		for (let i = 0; i <=propertiesList.data.length -1; i++){
-			if (propertiesList.data[i].propertyIdentifier.indexOf(".undefined") != -1){
+			if (propertiesList.data[i].propertyIdentifier.indexOf(".undefined") != -1 || propertiesList.data[i].propertyIdentifier.indexOf("_undefined") != -1){
 				this.$log.debug("removing: " + propertiesList.data[i].displayPropertyIdentifier);
 				propertiesList.data[i].displayPropertyIdentifier = "hide";
 

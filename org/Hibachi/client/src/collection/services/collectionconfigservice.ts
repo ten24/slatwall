@@ -241,7 +241,7 @@ class CollectionConfig {
                 current_collection = this.$hibachi.getEntityExample(current_collection.metaData[propertyIdentifierParts[i]].cfc);
                 _propertyIdentifier += '_' + propertyIdentifierParts[i];
                 this.addJoin(new Join(
-                    _propertyIdentifier.replace(/_/g, '.').substring(1),
+                    _propertyIdentifier.replace(/_([^_]+)$/,'.$1').substring(1),
                     this.baseEntityAlias + _propertyIdentifier
                 ));
             } else {
@@ -380,7 +380,7 @@ class CollectionConfig {
         if(!this.groupBys){
             this.groupBys = '';
         }
-        this.groupBys = this.utilityService.listAppend(this.groupBys,groupByAlias);
+        this.groupBys = this.utilityService.listAppendUnique(this.groupBys,groupByAlias);
         return this;
     };
 

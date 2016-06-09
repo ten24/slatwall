@@ -29,6 +29,7 @@
 /// <reference path="../src/collection/components/swcriteriamanytoone.ts" />
 /// <reference path="../src/collection/components/swcriterianumber.ts" />
 /// <reference path="../src/collection/components/swcriteriaonetomany.ts" />
+/// <reference path="../src/collection/components/swcriteriarelatedobject.ts" />
 /// <reference path="../src/collection/components/swcriteriastring.ts" />
 /// <reference path="../src/collection/components/swdisplayitem.ts" />
 /// <reference path="../src/collection/components/swdisplayoptions.ts" />

@@ -25,6 +25,7 @@ import {SWCriteriaManyToMany} from "./components/swcriteriamanytomany";
 import {SWCriteriaManyToOne} from "./components/swcriteriamanytoone";
 import {SWCriteriaNumber} from "./components/swcriterianumber";
 import {SWCriteriaOneToMany} from "./components/swcriteriaonetomany";
+import {SWCriteriaRelatedObject} from "./components/swcriteriarelatedobject";
 import {SWCriteriaString} from "./components/swcriteriastring";
 import {SWEditFilterItem} from "./components/sweditfilteritem";
 import {SWFilterGroups} from "./components/swfiltergroups";
@@ -61,6 +62,7 @@ var collectionmodule = angular.module('hibachi.collection',[coremodule.name])
 .directive('swCriteriaManyToOne',SWCriteriaManyToOne.Factory())
 .directive('swCriteriaNumber',SWCriteriaNumber.Factory())
 .directive('swCriteriaOneToMany',SWCriteriaOneToMany.Factory())
+.directive('swCriteriaRelatedObject',SWCriteriaRelatedObject.Factory())
 .directive('swCriteriaString',SWCriteriaString.Factory())
 .directive('swEditFilterItem',SWEditFilterItem.Factory())
 .directive('swFilterGroups',SWFilterGroups.Factory())
