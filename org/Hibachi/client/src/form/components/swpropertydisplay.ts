@@ -27,6 +27,8 @@ class SWPropertyDisplayController {
     public hasSaveCallback:boolean; 
     public initialValue:any; 
     public inModal:boolean; 
+    public modalCallback;
+    public hasModalCallback:boolean; 
     
 
     //@ngInject
@@ -120,6 +122,8 @@ class SWPropertyDisplayController {
                 this.edited = false;           
                 this.saved = true; 
             });  
+        } else if (this.hasModalCallback) { 
+            this.modalCallback(); 
         }
     }
 }
@@ -149,27 +153,32 @@ class SWPropertyDisplay implements ng.IDirective{
         binaryFileTarget:"@?",
         noValidate:"=?",
         inListingDisplay:"=?",
-        inModal:"="
+        inModal:"=",
+        modalCallback:"&?",
+        hasModalCallback:"=?"
     };
     public controller=SWPropertyDisplayController;
     public controllerAs="swPropertyDisplay";
 
     public static Factory(){
         var directive = (
+            $compile, 
             scopeService, 
             coreFormPartialsPath,
             hibachiPathBuilder
         )=>new SWPropertyDisplay(
+            $compile, 
             scopeService, 
             coreFormPartialsPath,
             hibachiPathBuilder
         );
-        directive.$inject = ['scopeService','coreFormPartialsPath', 'hibachiPathBuilder'];
+        directive.$inject = ['$compile','scopeService','coreFormPartialsPath', 'hibachiPathBuilder'];
 
         return directive;
     }
 
     constructor(
+        public $compile, 
         public scopeService,
         public coreFormPartialsPath,
         public hibachiPathBuilder
@@ -193,11 +202,14 @@ class SWPropertyDisplay implements ng.IDirective{
         }
 
         if(angular.isDefined($scope.swPropertyDisplay.inModal) && $scope.swPropertyDisplay.inModal){
+            
             var modalScope = this.scopeService.locateParentScope($scope, "swModalLauncher");
-            var saveButton = element.find("#propertyDisplaySave");
-            saveButton.attr("href", "#" + modalScope.modalName);
-            saveButton.attr("data-toggle", "modal");
-            console.log("savebutton",saveButton.html());
+            $scope.swPropertyDisplay.modalName = modalScope.swModalLauncher.modalName; 
+            
+            if(typeof modalScope.swModalLauncher.launchModal == "function"){
+                 $scope.swPropertyDisplay.modalCallback = modalScope.swModalLauncher.launchModal;
+                 $scope.swPropertyDisplay.hasModalCallback = true; 
+            }
         }
     };
 }

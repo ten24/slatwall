@@ -867,6 +867,7 @@ class SWMultiListingDisplayController{
         }
     };
 
+    //these are no longer going to work
     public clearSelection=()=>{
         this.selectionService.clearSelection(this.name);
     };
