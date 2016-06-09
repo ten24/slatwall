@@ -61,7 +61,8 @@ class SWSkuStockAdjustmentModalLauncherController{
             skuDescription:this.skuDescription,
             imagePath:this.imagePath,
             calculatedQATS:this.calculatedQats || 0,
-            calculatedQOH:this.calculatedQoh || 0
+            calculatedQOH:this.calculatedQoh || 0,
+            newQOH:this.calculatedQoh || 0
         }
         this.sku = this.$hibachi.populateEntity("Sku", skudata);
         this.stockAdjustmentItem.$$setSku(this.sku); 
@@ -75,6 +76,12 @@ class SWSkuStockAdjustmentModalLauncherController{
         });
         return savePromise;
     }    
+
+    public updateNewQuantity = () => { 
+        if(!isNaN(this.sku.newQOH)){
+            this.newQuantity = this.sku.newQOH;
+        }
+    }
 
     public updateStockAdjustmentQuantity = () => {
         if(!isNaN(this.newQuantity)){

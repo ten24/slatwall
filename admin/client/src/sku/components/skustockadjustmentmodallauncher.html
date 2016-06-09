@@ -5,11 +5,13 @@
         <!-- Load Sku Image Here -->
         <sw-form data-object="swSkuStockAdjustmentModalLauncher.sku" ng-if="swSkuStockAdjustmentModalLauncher.sku">
             <sw-property-display data-object="swSkuStockAdjustmentModalLauncher.sku"
-                                 data-property="calculatedQOH"
+                                 data-property="newQOH"
                                  data-editable="true"
                                  data-editing="true"
+                                 data-field-type="text"
                                  data-in-listing-display="true"
                                  data-in-modal="true"
+                                 data-on-change="swSkuStockAdjustmentModalLauncher.updateNewQuantity()"
             >
             </sw-property-display>
         </sw-form> 
@@ -20,16 +22,14 @@
                  data-object="swSkuStockAdjustmentModalLauncher.stockAdjustment"    
                  data-context="save"> 
             <div class="row">              
+                
                 <div class="col-sm-4">
-                    <sw-sku-thumbnail data-sku="swSkuStockAdjustmentModalLauncher.sku">
-                        
-                    </sw-sku-thumbnail> 
-               
+                    <sw-sku-thumbnail data-sku="swSkuStockAdjustmentModalLauncher.sku.data"></sw-sku-thumbnail> 
                 </div>
                 
-                <div class="col-sm-8">
-                    
+                <div class="col-sm-8">    
                     <div class="row s-modal-module-wrapper">
+                        
                         <div class="col-md-4">
                             <div class="s-modal-module s-original-value">
                                 <div class="s-title">Original Qty</div>
@@ -38,6 +38,7 @@
                                 </div>
                             </div>
                         </div>
+                        
                         <div class="col-md-4">
                             <div class="s-modal-module">
                                 <div class="s-title">Adjustment</div>
@@ -48,6 +49,7 @@
                                 </div>
                             </div>
                         </div>
+                        
                         <div class="col-md-4">
                             <div class="s-modal-module">
                                 <div class="s-title">New Qty</div>

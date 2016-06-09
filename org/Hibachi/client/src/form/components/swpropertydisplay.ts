@@ -84,17 +84,21 @@ class SWPropertyDisplayController {
         if(angular.isUndefined(this.object) || angular.isUndefined(this.object.metaData)){
             throw("swPropertyDisplayController for property: " + this.property + " must be passed an object which is a jsentities instance");
         }
-        
-        if(angular.isUndefined(this.fieldType)){
-            this.fieldType = this.object.metaData.$$getPropertyFieldType(this.property);
-        }
 
-        if(angular.isUndefined(this.hint)){
-            this.hint = this.object.metaData.$$getPropertyHint(this.property);
-        }
+        console.log("objmeta", this.object.metaData);
 
-        if(angular.isUndefined(this.title)){
-            this.title = this.object.metaData.$$getPropertyTitle(this.property);
+        if(angular.isDefined(this.object.metaData[this.property])){
+            if(angular.isUndefined(this.fieldType)){
+                this.fieldType = this.object.metaData.$$getPropertyFieldType(this.property);
+            }
+
+            if(angular.isUndefined(this.hint)){
+                this.hint = this.object.metaData.$$getPropertyHint(this.property);
+            }
+
+            if(angular.isUndefined(this.title)){
+                this.title = this.object.metaData.$$getPropertyTitle(this.property);
+            }
         }
     };
 

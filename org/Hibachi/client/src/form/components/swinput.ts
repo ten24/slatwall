@@ -121,7 +121,9 @@ class SWInput{
 			if(!propertyDisplay.noValidate){
 				validations = getValidationDirectives(propertyDisplay);
 			}
-            if(propertyDisplay.object.metaData.$$getPropertyFormatType(propertyDisplay.property) == "currency"){
+            if(angular.isDefined(propertyDisplay.object.metaData[propertyDisplay.property]) && 
+			   propertyDisplay.object.metaData.$$getPropertyFormatType(propertyDisplay.property) == "currency"
+			){
                 currency = 'sw-currency-formatter ';
                 if(angular.isDefined(propertyDisplay.object.data.currencyCode)){
                     currency = currency + 'data-currency-code="' + propertyDisplay.object.data.currencyCode + '" ';
@@ -132,7 +134,8 @@ class SWInput{
             console.log('propertyDisplay', propertyDisplay);
 
             var placeholder ='';
-            if(angular.isDefined(propertyDisplay.object.metaData[propertyDisplay.property].hb_nullrbkey)){
+            if(angular.isDefined(propertyDisplay.object.metaData[propertyDisplay.property]) &&
+			   angular.isDefined(propertyDisplay.object.metaData[propertyDisplay.property].hb_nullrbkey)){
                 placeholder = rbkeyService.getRBKey(propertyDisplay.object.metaData[propertyDisplay.property].hb_nullrbkey);
             }
            
