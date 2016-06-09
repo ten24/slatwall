@@ -89,7 +89,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 							}else{
 								message = error;
 							}
-							this.addError(errorKey,htmleditFormat(message));
+							this.addError(errorKey,hibachiHTMLeditFormat(message));
 						}
 					}
 					

@@ -53,6 +53,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		variables.service = request.slatwallScope.getService("hibachiUtilityService");
 	}
+	
+	public void function hibachiHTMLEditFormatTest(){
+		var angularTamperableString = 'this is a string where it is {{vulnerable if it has brackets}}';
+		var resultString = variables.service.hibachiHTMLEditFormat(angularTamperableString);
+		assertEquals(resultString,'this is a string where it is vulnerable if it has brackets');
+		assertFalse(ReFind(resultString,'[{}]'));
+	}
 			
 	public void function getTemplateKeysTest() {
 		var mockTemplate = '<div>${anything}</div>${anotherTemplateKey},${onemoreTemplateKey}';
