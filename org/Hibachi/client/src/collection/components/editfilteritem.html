@@ -29,8 +29,8 @@
                     <!--</div>-->
                     <div class="form-group form-group-sm s-option-group s-selected">
                         <label class="control-label">
-                            <span>Select From</span>
-                            <strong>Account</strong>:
+                            <span data-sw-rbkey="'admin.editfilteritem.selectfrom'"></span>
+                            <strong data-ng-bind="filterPropertiesList[filterItem.breadCrumbs[filterItem.breadCrumbs.length-1].propertyIdentifier].entityName | entityRBKey"></strong>:
                         </label>
                         <div class="s-option-wrapper s-right">
                             <select data-ng-model="selectedFilterProperty"
