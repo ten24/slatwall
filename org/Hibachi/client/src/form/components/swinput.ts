@@ -121,16 +121,19 @@ class SWInput{
 		var getTemplate = function(propertyDisplay){
 			var template = '';
 			var validations = '';
-            var currency = '';
+            var currencyFormatter = '';
+			var currencyCodeTitle = '';
 			if(!propertyDisplay.noValidate){
 				validations = getValidationDirectives(propertyDisplay);
 			}
             if(angular.isDefined(propertyDisplay.object.metaData[propertyDisplay.property]) && 
 			   propertyDisplay.object.metaData.$$getPropertyFormatType(propertyDisplay.property) == "currency"
 			){
-                currency = 'sw-currency-formatter ';
-                if(angular.isDefined(propertyDisplay.object.data.currencyCode)){
-                    currency = currency + 'data-currency-code="' + propertyDisplay.object.data.currencyCode + '" ';
+				
+                currencyFormatter = 'sw-currency-formatter ';
+                if(angular.isDefined(propertyDisplay.object.data.currencyCode) && propertyDisplay.object.data.currencyCode != null){
+					currencyCodeTitle = '<span class="s-title">' + propertyDisplay.object.data.currencyCode + '</span>';
+                    currencyFormatter = currencyFormatter + 'data-currency-code="' + propertyDisplay.object.data.currencyCode + '" ';
                 }
             }
 
@@ -144,14 +147,14 @@ class SWInput{
             }
            
 			if(propertyDisplay.fieldType === 'text'){
-				template = '<input type="text" ng-class="propertyDisplay.getNgClassObjectForInput()" '+
+				template =  currencyCodeTitle + '<input type="text" ng-class="propertyDisplay.getNgClassObjectForInput()" ' +
 				    'ng-model="propertyDisplay.object.data[propertyDisplay.property]" '+
                     'ng-disabled="!propertyDisplay.editable" '+
 					'ng-change="propertyDisplay.onChange()"' + 
                     'ng-show="propertyDisplay.editing" '+
                     'name="'+propertyDisplay.property+'" ' +
                     'placeholder="'+placeholder+'" '+
-                    validations + currency +
+                    validations + currencyFormatter +
                     'id="swinput'+utilityService.createID(26)+'"'+
                     ' />';
 			}else if(propertyDisplay.fieldType === 'password'){

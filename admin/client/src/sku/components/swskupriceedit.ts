@@ -2,27 +2,31 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWSkuPriceEditController{
     
-    public skuId;
-    public skuPriceId;
-    public minQuantity;
-    public maxQuantity;
-    public skuCode;
-    public price; 
-    public currencyCode;
-    public bundledSkuSkuId; 
-    public bundledSkuCurrencyCode;
-    public formName; 
+    public skuId:string;
+    public skuPriceId:string;
+    public minQuantity:string;
+    public maxQuantity:string;
+    public skuCode:string;
+    public price:string; 
+    public currencyCode:string;
+    public bundledSkuSkuId:string; 
+    public bundledSkuCurrencyCode:string;
+    public formName:string; 
    
-    public currencyFilter; 
+    public currencyFilter:any; 
 
-    public sku; 
-    public skuPrice;
+    public sku:any; 
+    public skuPrice:any;
     
-    public collectionConfig; 
+    public collectionConfig:any; 
+
+    public showSwitchTabContextButton:boolean; 
+    public switchTabContextEventName:string; 
+    public tabToSwitchTo:string; 
     
     //@ngInject
     constructor(
-        private collectionConfigService,
+        private observerService,
         private utilityService, 
         private $hibachi,
         private $filter
@@ -65,6 +69,9 @@ class SWSkuPriceEditController{
         }
     }    
 
+    public switchTabContext = () => {
+        this.observerService.notify(this.switchTabContextEventName, this.tabToSwitchTo);
+    }
 }
 
 class SWSkuPriceEdit implements ng.IDirective{
@@ -88,24 +95,44 @@ class SWSkuPriceEdit implements ng.IDirective{
    
     public static Factory(){
         var directive = (
+            scopeService,
             skuPartialsPath,
 			slatwallPathBuilder
         )=> new SWSkuPriceEdit(
+            scopeService
             skuPartialsPath,
 			slatwallPathBuilder
         );
         directive.$inject = [
+            'scopeService',
             'skuPartialsPath',
 			'slatwallPathBuilder'
         ];
         return directive;
     }
     constructor(
+        private scopeService, 
 		skuPartialsPath,
 	    slatwallPathBuilder
     ){
         this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath)+"skupriceedit.html";
     }
+
+    public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, formController:any, transcludeFn:ng.ITranscludeFunction) =>{
+        var tabGroupScope = this.scopeService.locateParentScope(scope,"swTabGroup");
+        var tabContentScope = this.scopeService.locateParentScope(scope,"swTabContent"); 
+        if(angular.isDefined(tabContentScope)){
+            console.log("tab content scope",tabContentScope);
+            if(angular.isDefined(tabGroupScope) && tabContentScope["swTabContent"].name == "Basic"){
+                scope.swSkuPriceEdit.switchTabContextEventName = tabGroupScope["swTabGroup"].switchTabEventName;
+                scope.swSkuPriceEdit.tabToSwitchTo = tabGroupScope["swTabGroup"].getTabByName("Pricing");
+                scope.swSkuPriceEdit.showSwitchTabContextButton = true; 
+            } else { 
+                scope.swSkuPriceEdit.showSwitchTabContextButton = false; 
+            }
+        }
+        
+	}
 }
 export{
     SWSkuPriceEdit,

@@ -1,30 +1,38 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWTabGroupController {
-
+    public tabGroupID:string; 
+    public switchTabEventName:string; 
     public tabs:any[]; 
 
     // @ngInject
-    constructor(private $scope, 
-                private $q,
-                private $transclude, 
-                private $hibachi, 
-                private $timeout:ng.ITimeoutService, 
-                private utilityService, 
+    constructor(private utilityService, 
                 private rbkeyService, 
-                private collectionConfigService
+                private observerService
         ){
         if(angular.isUndefined(this.tabs)){
             this.tabs = []; 
         } 
+        this.tabGroupID = "TG" + this.utilityService.createID(30);
+        this.switchTabEventName = "SwitchTab:" + this.tabGroupID;
+        this.observerService.attach(this.switchTab, this.switchTabEventName)
     }
 
     public switchTab = (tabToActivate) => {
+        console.log("switchTab called", tabToActivate)
         for(var i = 0; i < this.tabs.length; i++){
             this.tabs[i].active = false; 
         }
         tabToActivate.active = true;  
         tabToActivate.loaded = true;  
+    }
+
+    public getTabByName = (name) =>{
+        for(var i = 0; i < this.tabs.length; i++){
+            if(this.tabs[i].name == name){
+                return this.tabs[i]; 
+            }
+        }
     }
 }
 

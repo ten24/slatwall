@@ -11,16 +11,6 @@
         <div class="s-detail-body">
             <div class="s-content-header" data-ng-if="swMultiListingDisplay.title">
                 <h2 data-ng-bind="swMultiListingDisplay.title"></h2>
-                <!--<span class="pull-right s-expand-icon s-detail-show-content">-->
-                    <!--<a href="##" class="s-expand-table">-->
-                        <!--<i class="fa fa-expand"></i>-->
-                    <!--</a>-->
-                <!--</span>-->
-                <!--<span class="pull-right s-compress-icon s-detail-show-content">-->
-                    <!--<a href="##" class="s-compress-table">-->
-                        <!--<i class="fa fa-compress"></i>-->
-                    <!--</a>-->
-                <!--</span>-->
             </div>
             <sw-listing-controls
                     data-collection-config="swMultiListingDisplay.collectionConfig"
@@ -45,26 +35,6 @@
                     </div>
                     <div class="col-sm-4" style="text-align:right;">
                         <div class="btn-toolbar" style="margin:0">
-                            <!--<div class="btn-group btn-group-xs">-->
-                                <!--<button class="btn dropdown-toggle btn-primary" data-toggle="dropdown"><i class="fa fa-print"></i></button>-->
-                                <!--<ul class="dropdown-menu pull-right">-->
-                                    <!--<li>-->
-                                        <!--<a href="##" target="_self">Order Confirmation</a>-->
-                                        <!--<a href="##" target="_self">Order Status</a>-->
-                                        <!--<a href="##" target="_self">...</a>-->
-                                    <!--</li>-->
-                                <!--</ul>-->
-                            <!--</div>-->
-                            <!--<div class="btn-group btn-group-xs">-->
-                                <!--<button class="btn dropdown-toggle btn-primary" data-toggle="dropdown"><i class="fa fa-envelope"></i></button>-->
-                                <!--<ul class="dropdown-menu pull-right">-->
-                                    <!--<li>-->
-                                        <!--<a href="##" target="_self">Order Confirmation</a>-->
-                                        <!--<a href="##" target="_self">Order Status</a>-->
-                                        <!--<a href="##" target="_self">...</a>-->
-                                    <!--</li>-->
-                                <!--</ul>-->
-                            <!--</div>-->
                             <div class="btn-group btn-group-xs">
                                 <button class="btn dropdown-toggle btn-primary" data-toggle="dropdown">Action <span class="caret"></span></button>
                                 <ul class="dropdown-menu pull-right">
@@ -186,88 +156,6 @@
 
                             	</sw-listing-display-cell>
 							</td>
-
-                            <!--Expandable Check-->
-                            <!--<td
-                                    data-ng-repeat="(key,column) in swMultiListingDisplay.columns"
-                                    class="column.tdclass"
-                                    data-ng-cloak
-                                    data-ng-if="column.isVisible"
-                                    sw-expandable-record
-                                    data-action="column.action"
-                                    data-query-string="column.queryString"
-                                    data-expandable="swMultiListingDisplay.expandable && column.tdclass && column.tdclass === 'primary' "
-                                    data-auto-open="swMultiListingDisplay.expandableOpenRoot"
-                                    data-link="{{$root.buildUrl(swMultiListingDisplay.recordEditAction,swMultiListingDisplay.recordEditQueryString)+'&'+swMultiListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swMultiListingDisplay.exampleEntity.$$getIDName()]}}"
-                                    data-record-value="pageRecord[swMultiListingDisplay.getPageRecordKey(column.propertyIdentifier)]"
-                                    data-parent-id="pageRecord[swMultiListingDisplay.exampleEntity.$$getIDName()]"
-                                    data-child-count="pageRecord[swMultiListingDisplay.childPropertyName+'Count']"
-                                    data-entity="swMultiListingDisplay.exampleEntity"
-                                    data-collection-config="swMultiListingDisplay.collectionConfig"
-                                    data-records="swMultiListingDisplay.collectionData.pageRecords || swMultiListingDisplay.collectionData.records"
-                                    data-record-index="pageRecordKey"
-                                    data-record-depth="pageRecord.depth"
-                                    data-multiselect-id-paths="swMultiListingDisplay.multiselectIdPaths"
-                                    >
-
-                                <a 	ng-if="swMultiListingDisplay.expandable && column.tdclass && column.tdclass === 'primary'" class="s-contents-page-title s-no-arrow"
-                                      href="{{$root.buildUrl(swMultiListingDisplay.recordEditAction,swMultiListingDisplay.recordEditQueryString)+'&'+swMultiListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swMultiListingDisplay.exampleEntity.$$getIDName()]}}">
-                                    <span style="margin-left:{{(pageRecord.depth*40)||0}}px;padding-left: 12px;"
-                                          ng-bind="pageRecord[swMultiListingDisplay.getPageRecordKey(column.propertyIdentifier)]"
-                                          popover="{{swMultiListingDisplay.replaceStringWithProperties(column.tooltip, pageRecord)}}"
-                                          popover-trigger="mouseenter"
-                                          popover-placement="bottom"
-                                          popover-popup-delay="50"
-                                          popover-append-to-body="true"
-                                          sw-tool-tip>
-                                    </span>
-                                </a>
-
-					            <span ng-if="!swMultiListingDisplay.expandable || !column.tdclass || column.tdclass !== 'primary'">
-                                    <span ng-if="(!column.action || !column.queryString) && (!column.type || column.type==='none')"
-                                          ng-bind="pageRecord[swMultiListingDisplay.getPageRecordKey(column.propertyIdentifier)]"
-                                          popover="{{swMultiListingDisplay.replaceStringWithProperties(column.tooltip, pageRecord)}}"
-                                          popover-trigger="mouseenter"
-                                          popover-placement="bottom"
-                                          popover-popup-delay="50"
-                                          popover-append-to-body="true">
-                                    </span>
-                                    <span ng-if="(!column.action || !column.queryString) && column.type==='date'"
-                                          ng-bind="pageRecord[swMultiListingDisplay.getPageRecordKey(column.propertyIdentifier)] | swdate:'MM/dd/yyyy'"
-                                          popover="{{swMultiListingDisplay.replaceStringWithProperties(column.tooltip, pageRecord)}}"
-                                          popover-trigger="mouseenter"
-                                          popover-placement="bottom"
-                                          popover-popup-delay="50"
-                                          popover-append-to-body="true">
-                                    </span>
-                                    <span ng-if="(!column.action || !column.queryString) && column.type==='currency'"
-                                          ng-bind-html="pageRecord[swMultiListingDisplay.getPageRecordKey(column.propertyIdentifier)] | swcurrency"
-                                          popover="{{swMultiListingDisplay.replaceStringWithProperties(column.tooltip, pageRecord)}}"
-                                          popover-trigger="mouseenter"
-                                          popover-placement="bottom"
-                                          popover-popup-delay="50"
-                                          popover-append-to-body="true">
-                                    </span>-->
-                                    <!--Hardcoded to USD for phia-->
-                                    <!--<span ng-if="column.aggregate"
-                                          ng-bind="pageRecord[swMultiListingDisplay.getPageRecordKey(column.aggregate.aggregateAlias)]"
-                                          popover="{{swMultiListingDisplay.replaceStringWithProperties(column.tooltip, pageRecord)}}"
-                                          popover-trigger="mouseenter"
-                                          popover-placement="bottom"
-                                          popover-popup-delay="50"
-                                          popover-append-to-body="true">
-                                    </span>
-                                    <sw-action-caller ng-if="column.action && column.queryString"
-                                                      data-action="{{column.action}}"
-                                                      data-query-string="{{swMultiListingDisplay.replaceStringWithProperties(column.queryString,pageRecord)}}"
-                                                      data-text="{{pageRecord[swMultiListingDisplay.getPageRecordKey(column.propertyIdentifier)]}}"
-                                                      data-tooltip-text="{{swMultiListingDisplay.replaceStringWithProperties(column.tooltip, pageRecord)}}"
-
-                                    >
-                                    </sw-action-caller>
-					            </span>
-                            </td>-->
-
 
                             <td class="admin admin{{swMultiListingDisplay.administrativeCount}} s-detail-hidden-content" data-ng-if="swMultiListingDisplay.administrativeCount">
                                 <!-- Detail -->

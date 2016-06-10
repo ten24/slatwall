@@ -23,9 +23,29 @@
         <span sw-form-field data-ng-if="swPropertyDisplay.editing"
             data-property-display="swPropertyDisplay">
         </span>
-        <a class="s-remove-change" ng-click="swPropertyDisplay.clear()" ng-if="swPropertyDisplay.edited && swPropertyDisplay.editing"><i class="fa fa-remove"></i></a>
-        <a class="btn btn-xs btn-success s-action-btn" ng-if="swPropertyDisplay.inListingDisplay && !swPropertyDisplay.inModal" ng-click="swPropertyDisplay.save()" >save</a>
-        <a class="btn btn-xs btn-success s-action-btn" data-toggle="modal" href="#{{swPropertyDisplay.modalName}}" ng-if="swPropertyDisplay.inModal" ng-click="swPropertyDisplay.save()" >save</a>
+        <a class="s-remove-change" 
+           data-ng-click="swPropertyDisplay.clear()" 
+           data-ng-if="swPropertyDisplay.edited && swPropertyDisplay.editing">
+            <i class="fa fa-remove"></i>
+        </a>
+
+        <!-- Save Button -->
+        <a class="btn btn-xs btn-success s-action-btn" 
+           data-ng-show="!swPropertyDisplay.saved" 
+           data-ng-if="swPropertyDisplay.inListingDisplay && !swPropertyDisplay.inModal" 
+           data-ng-click="swPropertyDisplay.save()" > 
+           save 
+        </a>
+        <a class="btn btn-xs btn-success s-action-btn" 
+           data-ng-show="!swPropertyDisplay.saved" 
+           data-toggle="modal" 
+           href="#{{swPropertyDisplay.modalName}}" 
+           ng-if="swPropertyDisplay.inModal" 
+           ng-click="swPropertyDisplay.save()" > 
+           save 
+        </a>
+        <!-- End Save Button -->
+
         <!-- Display -->
         <p  class="form-control-static"
             data-ng-if="swPropertyDisplay.fieldType !== 'hidden' && swPropertyDisplay.fieldType !== 'select'"

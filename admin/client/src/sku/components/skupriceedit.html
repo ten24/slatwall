@@ -8,6 +8,12 @@
         >
         
     </sw-property-display>
+    <a href="##" 
+       class="s-indicator-icon" 
+       ng-click="swSkuPriceEdit.switchTabContext()"
+       ng-if="swSkuPriceEdit.showSwitchTabContextButton">
+            <i class="fa fa-list"></i>
+    </a>
 </sw-form>
 <sw-form ng-if="swSkuPriceEdit.skuPrice" data-object="swSkuPriceEdit.skuPrice" data-name="swSkuPriceEdit.formName"> 
     <sw-property-display
@@ -19,4 +25,10 @@
         >
         
     </sw-property-display>
+     <a href="##" 
+        class="s-indicator-icon" 
+        ng-click="swSkuPriceEdit.switchTabContext()"
+        ng-if="swSkuPriceEdit.showSwitchTabContextButton">
+            <i class="fa fa-list"></i>
+    </a>
 </sw-form>

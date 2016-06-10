@@ -21,7 +21,7 @@ class SWPropertyDisplayController {
     public rawFileTarget; 
     public showLabel; 
     public form;
-    public saved:boolean; 
+    public saved:boolean=false; 
     public onChangeCallback; 
     public onChangeEvent:string; 
     public hasOnChangeCallback:boolean; 
@@ -109,10 +109,11 @@ class SWPropertyDisplayController {
         return "{'form-control':propertyDisplay.inListingDisplay}";
     }
 
-    //these could maybe be handled by a service
     public onChange = (result?) =>{
-        console.log("proponchange", this.hasOnChangeCallback); 
         this.edited = true; 
+        if(this.saved){
+            this.saved = false; 
+        }
         if(this.hasOnChangeCallback){
             this.onChangeCallback();
         }
@@ -134,6 +135,8 @@ class SWPropertyDisplayController {
             });  
         } else if (this.hasModalCallback) { 
             this.modalCallback(); 
+            this.edited = false;           
+            this.saved = true; 
         }
     }
 }
