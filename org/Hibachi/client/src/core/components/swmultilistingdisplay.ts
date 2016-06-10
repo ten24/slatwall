@@ -668,6 +668,14 @@ class SWMultiListingDisplayController{
             });
         }
     };
+
+    public getKeyOfMatchedDisableRule = (pageRecord)=>{
+        return this.listingService.getKeyOfMatchedExpandableRule(this.tableID, pageRecord);
+    }
+
+    public getPageRecordMatchesDisableRule = (pageRecord)=>{
+        return this.listingService.getPageRecordMatchesDisableRule(this.tableID, pageRecord); 
+    }
     
     public getKeyOfMatchedExpandableRule = (pageRecord)=>{
         return this.listingService.getKeyOfMatchedExpandableRule(this.tableID, pageRecord);
@@ -704,6 +712,7 @@ class SWMultiListingDisplayController{
             classObjectString = classObjectString.concat(",");
         }); 
         classObjectString = classObjectString.concat("'s-child':" + this.getPageRecordIsChild(pageRecord)); 
+        classObjectString = classObjectString.concat(",'s-disabled':" + this.getPageRecordMatchesDisableRule(pageRecord)); 
         return classObjectString + "}"; 
     };
     
@@ -888,8 +897,8 @@ class SWMultiListingDisplay implements ng.IDirective{
         editAction:"?swListingEditAction", 
         columns:"swListingColumns", 
         collectionConfigs:"?swCollectionConfigs",
-        disableRules:"?swDisableRules",
-        expandableRules:"?swExpandableRules"
+        disableRules:"?swDisabledRowRules",
+        expandableRules:"?swExpandableRowRules"
     };
     public bindToController={
 

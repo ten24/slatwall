@@ -11,6 +11,7 @@ class SWSkuPriceEditController{
     public currencyCode:string;
     public bundledSkuSkuId:string; 
     public bundledSkuCurrencyCode:string;
+    public bundledSkuPrice:string;
     public formName:string; 
    
     public currencyFilter:any; 
@@ -38,6 +39,9 @@ class SWSkuPriceEditController{
         }
         if(angular.isUndefined(this.currencyCode) && angular.isDefined(this.bundledSkuCurrencyCode)){
             this.currencyCode = this.bundledSkuCurrencyCode;
+        }
+        if(angular.isUndefined(this.price) && angular.isDefined(this.bundledSkuPrice)){
+            this.price = this.bundledSkuPrice;
         }
         if(angular.isUndefined(this.skuId) 
             && angular.isUndefined(this.sku)
@@ -84,7 +88,8 @@ class SWSkuPriceEdit implements ng.IDirective{
         skuCode:"@",
         price:"@",
         bundledSkuSkuId:"@",
-        bundledSkuCurrencyCode:"@",        
+        bundledSkuCurrencyCode:"@", 
+        bundledSkuPrice:"@",       
         currencyCode:"@",
         sku:"=?",
         skuPrice:"=?"
@@ -99,7 +104,7 @@ class SWSkuPriceEdit implements ng.IDirective{
             skuPartialsPath,
 			slatwallPathBuilder
         )=> new SWSkuPriceEdit(
-            scopeService
+            scopeService,
             skuPartialsPath,
 			slatwallPathBuilder
         );
@@ -118,7 +123,7 @@ class SWSkuPriceEdit implements ng.IDirective{
         this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath)+"skupriceedit.html";
     }
 
-    public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, formController:any, transcludeFn:ng.ITranscludeFunction) =>{
+    public link:ng.IDirectiveLinkFn = (scope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, formController:any, transcludeFn:ng.ITranscludeFunction) =>{
         var tabGroupScope = this.scopeService.locateParentScope(scope,"swTabGroup");
         var tabContentScope = this.scopeService.locateParentScope(scope,"swTabContent"); 
         if(angular.isDefined(tabContentScope)){

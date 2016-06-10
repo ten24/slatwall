@@ -10,8 +10,80 @@ class ListingService{
     public setListingState = (listingID, state) =>{
         this.listingDisplays[listingID] = state; 
     }
+
+    //Disable Rule Logic
+    public getKeyOfMatchedDisableRule = (listingID, pageRecord)=>{
+        var disableRuleMatchedKey = -1; 
+        if(angular.isDefined(this.listingDisplays[listingID].disableRules)){
+            angular.forEach(this.listingDisplays[listingID].disableRules, (rule, key)=>{
+                if(angular.isDefined(pageRecord[rule.filterPropertyIdentifier])){
+                    if(angular.isString(pageRecord[rule.filterPropertyIdentifier])){
+                        var pageRecordValue = pageRecord[rule.filterPropertyIdentifier].trim(); 
+                    } else {
+                        var pageRecordValue = pageRecord[rule.filterPropertyIdentifier]; 
+                    }
+                    
+                    if(rule.filterComparisonValue == "null"){
+                        rule.filterComparisonValue = "";
+                    }
+                    switch (rule.filterComparisonOperator){
+                        case "!=":
+                            if(pageRecordValue != rule.filterComparisonValue){
+                                disableRuleMatchedKey = key; 
+                            }
+                            break; 
+                        case ">":
+                            if(pageRecordValue > rule.filterComparisonValue){
+                                disableRuleMatchedKey = key; 
+                            }
+                            break;
+                        case ">=":  
+                            if(pageRecordValue >= rule.filterComparisonValue){
+                                disableRuleMatchedKey = key; 
+                            }
+                            break;
+                        case "<":
+                            if(pageRecordValue < rule.filterComparisonValue){
+                                disableRuleMatchedKey = key; 
+                            }
+                            break; 
+                        case "<=":
+                            if(pageRecordValue <= rule.filterComparisonValue){
+                                disableRuleMatchedKey = key; 
+                            }
+                            break; 
+                        case "is":
+                            if(pageRecordValue == rule.filterComparisonValue){
+                                disableRuleMatchedKey = key; 
+                            }
+                            break;
+                        case "is not": 
+                            if(pageRecordValue != rule.filterComparisonValue){
+                                disableRuleMatchedKey = key; 
+                            }
+                            break; 
+                        default: 
+                            //= case
+                            if(pageRecordValue == rule.filterComparisonValue){
+                                disableRuleMatchedKey = key; 
+                            }
+                            break; 
+                    }
+                    if(disableRuleMatchedKey != -1){
+                        return disableRuleMatchedKey;
+                    }
+                }
+            }); 
+        }  
+        return disableRuleMatchedKey;
+    }
     
-     //this has moved into a service
+    public getPageRecordMatchesDisableRule = (listingID, pageRecord)=>{
+        var keyOfDisableRuleMet = this.getKeyOfMatchedDisableRule(listingID, pageRecord); 
+        return keyOfDisableRuleMet != -1;  
+    }
+
+    //Expandable Rule Logic
     public getKeyOfMatchedExpandableRule = (listingID, pageRecord)=>{
         var expandableRuleMatchedKey = -1; 
         if(angular.isDefined(this.listingDisplays[listingID].expandableRules)){
@@ -64,13 +136,11 @@ class ListingService{
         return expandableRuleMatchedKey;
     }
     
-    //this has moved into a service
     public getPageRecordMatchesExpandableRule = (listingID, pageRecord)=>{
         var keyOfExpandableRuleMet = this.getKeyOfMatchedExpandableRule(listingID, pageRecord); 
         return keyOfExpandableRuleMet != -1;  
     }
     
-    //this has moved into a service
     public getPageRecordChildCollectionConfigForExpandableRule = (listingID, pageRecord) => {
         var keyOfExpandableRuleMet = this.getKeyOfMatchedExpandableRule(listingID, pageRecord); 
         if(angular.isDefined(pageRecord[this.listingDisplays[listingID].exampleEntity.$$getIDName()]) 

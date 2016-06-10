@@ -75,7 +75,7 @@ class SWModalLauncher implements ng.IDirective{
 
     public compile = (element: JQuery, attrs: angular.IAttributes, transclude: any) => {
         return {
-            pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {      
+            pre: ($scope: any, element: JQuery, attrs) => {      
                 if(angular.isDefined(attrs.saveAction)){
                    $scope.swModalLauncher.hasSaveAction = true; 
                 }
