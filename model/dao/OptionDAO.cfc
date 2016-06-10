@@ -56,10 +56,10 @@ Notes:
 		<cfquery name="rs" maxrows=1>
 			SELECT
 				count(o.optionID) AS total
-			FROM SwOption AS o
-			    LEFT JOIN SwSkuOption AS so ON so.optionID = o.optionID
-			    LEFT JOIN SwSku AS s ON so.skuID = s.skuID
-			    LEFT JOIN SwProduct AS p ON s.productID = p.productID
+			FROM SwOption o
+			    LEFT JOIN SwSkuOption so ON so.optionID = o.optionID
+			    LEFT JOIN SwSku s ON so.skuID = s.skuID
+			    LEFT JOIN SwProduct p ON s.productID = p.productID
 			WHERE
 				p.productID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#productID#" />
 		</cfquery>
