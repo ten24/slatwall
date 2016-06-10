@@ -815,6 +815,31 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		return promotionCodeList;
 	}
 
+	public array function getAllAppliedPromotions() {
+		if(!structKeyExists(variables, "allAppliedPromotions")) {
+			var allAppliedPromotionCollection = getService("promotionService").newCollection().setup("PromotionApplied");
+			allAppliedPromotionCollection.addFilter('order.orderID', getOrderID(), "=");
+			allAppliedPromotionCollection.addFilter('orderItem.order.orderID', getOrderID(), "=", "OR");
+			allAppliedPromotionCollection.addFilter('orderFulfillment.order.orderID', getOrderID(), "=", "OR");
+			allAppliedPromotionCollection.setDisplayProperties("appliedType,promotionAppliedID,promotion.promotionID,promotion.promotionName");
+			var allAppliedPromotions = allAppliedPromotionCollection.getRecords();
+			// get all the promotion codes applied and attached it to applied Promotion Struct
+			var appliedPromotionCodes = getPromotionCodes();
+			for(var appliedPromotion in allAppliedPromotions) {
+				appliedPromotion["promotionCode"] = "";
+				appliedPromotion["promotionCodeID"] = "";
+				for(var appliedPromotionCode in appliedPromotionCodes) {
+					if(appliedPromotionCode.getPromotion().getPromotionID() == appliedPromotion.promotion_promotionID) {
+						appliedPromotion["promotionCode"] = appliedPromotionCode.getPromotionCode();
+						appliedPromotion["promotionCodeID"] = appliedPromotionCode.getPromotionCodeID();
+					}
+				}
+			}
+			variables.allAppliedPromotions = allAppliedPromotions;
+		}
+		return variables.allAppliedPromotions;
+	}
+
 	public numeric function getDeliveredItemsPaymentAmountUnreceived() {
 		var received = getPaymentAmountReceivedTotal();
 		var amountDelivered = 0;
