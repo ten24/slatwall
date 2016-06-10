@@ -89,7 +89,7 @@ Notes:
 		        	<hb:HibachiPropertyDisplay object="#rc.shippingMethodRate#" property="maximumShipmentWeight" edit="#rc.edit#" fieldAttributes="ng-model='shippingMethodRate.maximumShipmentWeight' ng-init=""shippingMethodRate.maximumShipmentWeight='#rc.shippingMethodRate.getMaximumShipmentWeight()#'""">
 				
 					<hb:HibachiPropertyDisplay object="#rc.shippingMethodRate#" property="minimumShipmentItemPrice" edit="#rc.edit#">
-		        	<hb:HibachiPropertyDisplay object="#rc.shippingMethodRate#" property="maximumShipmentItemPrice" edit="#rc.edit#">
+		        	<hb:HibachiPropertyDisplay object="#rc.shippingMethodRate#" property="maximumShipmentItemPrice" edit="#rc.edit#" />
 					
 					<hb:HibachiPropertyDisplay object="#rc.shippingMethodRate#" property="defaultAmount" edit="#rc.edit#" fieldAttributes="ng-model='shippingMethodRate.defaultAmount' ng-init=""shippingMethodRate.defaultAmount='#rc.shippingMethodRate.getDefaultAmount()#'""">
 					<hb:HibachiPropertyDisplay object="#rc.shippingMethodRate#" property="rateMultiplierAmount" edit="#rc.edit#" fieldAttributes="ng-model='shippingMethodRate.rateMultiplierAmount' ng-init=""shippingMethodRate.rateMultiplierAmount='#rc.shippingMethodRate.getRateMultiplierAmount()#'""">
