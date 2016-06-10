@@ -134,7 +134,10 @@
 					<cfset attributes.value = attributes.valueDefault />
 				</cfif>
 				
-				<cfif attributes.edit eq 'true' AND attributes.object.getPropertyFormatType( attributes.property ) eq 'currency'>
+				<cfif attributes.edit eq 'true' 
+						AND attributes.object.getPropertyFormatType( attributes.property ) eq 'currency'
+						AND !structKeyExists(attributes.object.getPropertyMetaData(attributes.property), "hb_nullRBKey")
+				>
 					<cfset attributes.value = attributes.object.getFormattedValue(attributes.property,'decimal') />
 				</cfif>
 				
