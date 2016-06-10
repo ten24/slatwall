@@ -246,8 +246,8 @@ class SWDisplayOptions{
                         $scope.selectedProperty = selectedProperty;
                         $scope.selectedAggregate = undefined;
                     }else{
+                        console.log('Aggregate');
                         $scope.selectedAggregate = selectedProperty;
-                        console.log('Aggregate')
                     }
 
                 };

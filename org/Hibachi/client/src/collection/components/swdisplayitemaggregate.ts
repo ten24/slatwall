@@ -56,7 +56,7 @@ class SWDisplayItemAggregate{
                         scope.selectedProperty.aggregate = aggregate;
                         scope.selectedPropertyChanged({selectedProperty:scope.selectedProperty});
                     }
-                }
+                };
 
                 scope.selectedDisplayOptionChanged = function(selectedDisplayOption){
                     selectedDisplayOption.aggregate = scope.aggegate.selectedAggregate;
@@ -77,7 +77,6 @@ class SWDisplayItemAggregate{
                             });
                         }
                         scope.showDisplayItem = true;
-
                     }
                 });
             }
