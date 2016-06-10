@@ -32,6 +32,7 @@
 	<cfparam name="attributes.modalCreateAction" type="string" default="" />			<!--- hint: This allows for a special admin action to be passed in where the saving of that action will automatically return the results to this field --->
 
 	<cfparam name="attributes.multiselectPropertyIdentifier" type="string" default="" />
+	<cfset attributes.value = request.context.fw.getHibachiScope().hibachiHtmlEditFormat(attributes.value)/>
 	<cfswitch expression="#attributes.displaytype#">
 		<!--- DL Case --->
 		<cfcase value="dl">

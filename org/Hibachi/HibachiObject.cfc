@@ -179,6 +179,10 @@ component accessors="true" output="false" persistent="false" {
 		return getHibachiScope().rbKey(arguments.key);
 	}
 	
+	public string function hibachiHTMLEditFormat(required string html){
+		return getHibachiScope().hibachiHTMLEditFormat(arguments.html);
+	}
+	
 	public string function buildURL() {
 		return getApplicationValue("application").buildURL(argumentcollection=arguments);
 	}
