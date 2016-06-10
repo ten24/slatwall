@@ -15,6 +15,7 @@ import {SWCollection} from "./components/swcollection";
 import {SWAddFilterButtons} from "./components/swaddfilterbuttons";
 import {SWDisplayOptions} from "./components/swdisplayoptions";
 import {SWDisplayItem} from "./components/swdisplayitem";
+import {SWDisplayItemAggregate} from "./components/swdisplayitemaggregate";
 import {SWCollectionTable} from "./components/swcollectiontable";
 import {SWColumnItem} from "./components/swcolumnitem";
 import {SWConditionCriteria} from "./components/swconditioncriteria";
@@ -52,6 +53,7 @@ var collectionmodule = angular.module('hibachi.collection',[coremodule.name])
 .directive('swAddFilterButtons',SWAddFilterButtons.Factory())
 .directive('swDisplayOptions',SWDisplayOptions.Factory())
 .directive('swDisplayItem',SWDisplayItem.Factory())
+.directive('swDisplayItemAggregate',SWDisplayItemAggregate.Factory())
 .directive('swCollectionTable',SWCollectionTable.Factory())
 .directive('swColumnItem',SWColumnItem.Factory())
 .directive('swConditionCriteria',SWConditionCriteria.Factory())
