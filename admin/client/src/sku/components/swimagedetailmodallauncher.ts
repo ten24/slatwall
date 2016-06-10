@@ -71,6 +71,10 @@ class SWImageDetailModalLauncherController{
     
         return savePromise;
     }
+
+    public cancelAction = () =>{
+        this.observerService.notify(this.imageFileUpdateEvent, this.imagePath);
+    }
 }
 
 class SWImageDetailModalLauncher implements ng.IDirective{

@@ -1,11 +1,14 @@
 <sw-modal-launcher data-modal-name="{{swImageDetailModalLauncher.name}}" 
                    data-title="Image Detail"
                    data-save-action="swImageDetailModalLauncher.saveAction"
+                   data-cancel-action="swImageDetailModalLauncher.cancelAction"
                    >
     <sw-modal-button>
         <!-- Load Sku Image Here -->
         <span ng-if="swImageDetailModalLauncher.sku"> 
-            <img src='{{swImageDetailModalLauncher.sku.data.imagePath}}' class="s-responsive-image" data-toggle="popover" data-trigger="hover" data-content="OTB_DrinkingTeam-1799.jpg" />
+            <img src='{{swImageDetailModalLauncher.sku.data.imagePath}}' 
+                 class="s-responsive-image" 
+                />
         </span> 
     </sw-modal-button>
     <sw-modal-content> 
