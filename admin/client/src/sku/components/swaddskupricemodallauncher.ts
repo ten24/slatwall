@@ -12,6 +12,7 @@ class SWAddSkuPriceModalLauncherController{
     //@ngInject
     constructor(
         private $hibachi,
+
         private utilityService
     ){
         this.uniqueName = this.baseName + this.utilityService.createID(16); 
@@ -52,15 +53,18 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
     public static Factory(){
         var directive = (
             $hibachi,
+            collectionConfigService,
             skuPartialsPath,
 			slatwallPathBuilder
         )=> new SWAddSkuPriceModalLauncher(
             $hibachi, 
+            collectionConfigService,
             skuPartialsPath,
 			slatwallPathBuilder
         );
         directive.$inject = [
             '$hibachi',
+            'collectionConfigService',
             'skuPartialsPath',
 			'slatwallPathBuilder'
         ];
@@ -68,6 +72,7 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
     }
     constructor(
         private $hibachi, 
+        private collectionConfigService, 
 		private skuPartialsPath,
 	    private slatwallPathBuilder
     ){
@@ -88,14 +93,13 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
                 if(angular.isDefined(currentScope.pageRecord)){ 
                     $scope.swAddSkuPriceModalLauncher.pageRecord = currentScope.pageRecord; 
                     if(angular.isDefined(currentScope.pageRecord.skuID)){    
-                        $scope.swAddSkuPriceModalLauncher.sku = this.$hibachi.populateEntity('Sku', 
-                            {
-                                skuID:currentScope.pageRecord.skuID,
-                                imagePath:currentScope.pageRecord.imagePath,
-                                skuCode:currentScope.pageRecord.skuCode, 
-                                skuDefinition:currentScope.pageRecord.skuDefinition,
-                            }
-                        );
+                        var skuCollectionConfig = this.collectionConfigService.newCollectionConfig("Sku"); 
+                        skuCollectionConfig.addDisplayProperty("imagePath,skuCode,skuDescription,eligibleCurrencyCodeList");
+                        skuCollectionConfig.addFilter("skuID", currentScope.pageRecord.skuID,"=");
+                        skuCollectionConfig.setAllRecords(true);
+                        skuCollectionConfig.getEntity().then((response)=>{
+                            $scope.swAddSkuPriceModalLauncher.sku = response.records[0];
+                        })
                         $scope.swAddSkuPriceModalLauncher.skuPrice = this.$hibachi.newEntity('SkuPrice');
                         $scope.swAddSkuPriceModalLauncher.skuPrice.$$setSku($scope.swAddSkuPriceModalLauncher.sku);
                     }

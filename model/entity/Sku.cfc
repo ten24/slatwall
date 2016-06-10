@@ -137,6 +137,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="baseProductType" persistent="false";
 	property name="currentAccountPrice" type="numeric" hb_formatType="currency" persistent="false";
 	property name="currencyDetails" type="struct" persistent="false";
+	property name="eligibleCurrencyCodeList" type="string" persistent="false";
 	property name="defaultFlag" type="boolean" persistent="false";
 	property name="eligibleFulfillmentMethods" type="array" persistent="false";
 	property name="eventConflictsSmartList" persistent="false";
@@ -646,6 +647,14 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 			}
 		return variables.currencyCode;
+	}
+
+	public string function getEligibleCurrencyCodeList(){
+		var currencyCodeList = "";
+		for(var key in this.getCurrencyDetails){
+			listAppend(currencyCodeList, key);
+		}
+		return currencyCodeList;
 	}
 
 	public struct function getCurrencyDetails() {

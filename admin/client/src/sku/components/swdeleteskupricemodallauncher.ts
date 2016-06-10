@@ -71,7 +71,7 @@ class SWDeleteSkuPriceModalLauncher implements ng.IDirective{
 		private skuPartialsPath,
 	    private slatwallPathBuilder
     ){
-        this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath)+"deleteskupricemodal.html";
+        this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath)+"deleteskupricemodallauncher.html";
     }
     
     public compile = (element: JQuery, attrs: angular.IAttributes) => {
