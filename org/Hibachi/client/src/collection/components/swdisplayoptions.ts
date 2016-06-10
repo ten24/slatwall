@@ -92,10 +92,10 @@ class SWDisplayOptions{
                         return selectedProperty.displayPropertyIdentifier;
                     }
 
-                    angular.forEach(propertyIdentifierArray,function(propertyIdentifierItem,key){
+                    angular.forEach(propertyIdentifierArray,function(propertyIdentifierItem,key:number){
                         //pass over the initial item
-                        if(key != 0 ){
-                            if(key == 1){
+                        if(key !== 0 ){
+                            if(key === 1){
                                 currentEntityInstance = $hibachi['new'+$scope.baseEntityName.replace('Slatwall','')]();
                                 currentEntity = currentEntityInstance.metaData[propertyIdentifierArray[key]];
                                 title += rbkeyService.getRBKey(prefix+baseEntityCfcName+'.'+propertyIdentifierItem);
