@@ -15,6 +15,7 @@ class SWAddSkuPriceModalLauncherController{
         private utilityService
     ){
         this.uniqueName = this.baseName + this.utilityService.createID(16); 
+        this.initData(); 
     }    
     
     public initData = () =>{

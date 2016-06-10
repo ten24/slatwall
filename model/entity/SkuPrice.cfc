@@ -77,16 +77,6 @@ component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true acces
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non-Persistent Properties
-	property name="currencyCodeOptions" persistent="false";
-
-	public any function getCurrencyCodeOptions(){
-		if(!structKeyExists(variables,"currencyCodeOptions")){
-			if(!isNull(getSku())){
-
-			}
-		}
-		return variables.currencyCodeOptions;
-	}
 
 
 }
