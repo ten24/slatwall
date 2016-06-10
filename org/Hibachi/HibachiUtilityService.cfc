@@ -260,6 +260,7 @@
 		//evaluate double brackets ${{}} and ${()}
 		public string function replaceStringEvaluateTemplate(required string template){
 			var templateKeys = reMatchNoCase("\${{[^}]+}}",arguments.template);
+			
 			var parenthesisTemplateKeys =  reMatchNoCase("\${\([^}]+\)}",arguments.template);
 
 			var replacementArray = [];
@@ -305,6 +306,7 @@
 		
 		//replace single brackets ${}
 		public string function replaceStringTemplate(required string template, required any object, boolean formatValues=false, boolean removeMissingKeys=false) {
+			
 			var templateKeys = getTemplateKeys(arguments.template);
 			var replacementArray = [];
 			var returnString = arguments.template;
@@ -472,6 +474,16 @@
 		public string function encryptValue(required string value, string salt="") {
 			var passwords = getEncryptionPasswordArray();
 			return encrypt(arguments.value, generatePasswordBasedEncryptionKey(password=passwords[1].password, salt=arguments.salt, iterationCount=passwords[1].iterationCount), getEncryptionAlgorithm(), getEncryptionEncoding());
+		}
+		
+		public string function hibachiHTMLEditFormat(required string html){
+			var sanitizedString = htmlEditFormat(arguments.html);
+			sanitizedString = sanitizeForAngular(sanitizedString);
+			return sanitizedString;
+		}
+		
+		public string function sanitizeForAngular(required string html){
+			return ReReplace(arguments.html,'{',chr(123)&chr(002),'all');
 		}
 
 		public string function decryptValue(required string value, string salt="") {

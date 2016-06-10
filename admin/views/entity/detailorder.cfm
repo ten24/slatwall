@@ -127,7 +127,7 @@ Notes:
 			</cfif>
 
 			<!--- Promotions --->
-			<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/promotions" count="#rc.order.getPromotionCodesCount()#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/promotions" count="#arrayLen(rc.order.getAllAppliedPromotions())#" />
 
 			<!--- Referencing Orders --->
 			<cfif rc.order.getReferencingOrdersCount()>

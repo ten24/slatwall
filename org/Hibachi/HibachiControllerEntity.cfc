@@ -237,7 +237,7 @@ component output="false" accessors="true" extends="HibachiController" {
 		}
 
 		// Setup the values needed for this type of layout
-		arguments.rc.pageTitle = arguments.rc[arguments.entityName].getSimpleRepresentation();
+		arguments.rc.pageTitle = hibachiHTMLEditFormat(arguments.rc[arguments.entityName].getSimpleRepresentation());
 		arguments.rc.edit = true;
 	}
 
@@ -253,7 +253,7 @@ component output="false" accessors="true" extends="HibachiController" {
 		}
 
 		// Setup the values needed for this type of layout
-		arguments.rc.pageTitle = arguments.rc[arguments.entityName].getSimpleRepresentation();
+		arguments.rc.pageTitle = hibachiHTMLEditFormat(arguments.rc[arguments.entityName].getSimpleRepresentation());
 		arguments.rc.edit = false;
 	}
 
