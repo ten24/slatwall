@@ -46,31 +46,19 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
-
-
 <cfparam name="rc.subscriptionUsage" type="any">
-<cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.subscriptionUsage#" edit="#rc.edit#" saveActionQueryString="subscriptionUsageID=#rc.subscriptionUsage.getSubscriptionUsageID()#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.subscriptionUsage#">
-			<hb:HibachiProcessCaller entity="#rc.subscriptionUsage#" action="admin:entity.preProcessSubscriptionUsage" processContext="renew" type="list" modal="true" />
-			<hb:HibachiProcessCaller entity="#rc.subscriptionUsage#" action="admin:entity.preProcessSubscriptionUsage" processContext="cancel" type="list" modal="true" />
-			<hb:HibachiProcessCaller entity="#rc.subscriptionUsage#" action="admin:entity.processSubscriptionUsage" processContext="updateStatus" type="list" />
-			<hb:HibachiProcessCaller entity="#rc.subscriptionUsage#" action="admin:entity.processSubscriptionUsage" processContext="sendRenewalReminder" type="list" />
-			<hb:HibachiProcessCaller entity="#rc.subscriptionUsage#" action="admin:entity.preprocesssubscriptionusage" processContext="addUsageBenefit" type="list" modal="true" />
-		</hb:HibachiEntityActionBar>
-		
-		<hb:HibachiEntityDetailGroup object="#rc.subscriptionUsage#">
-			<hb:HibachiEntityDetailItem view="admin:entity/subscriptionusagetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<hb:HibachiEntityDetailItem view="admin:entity/subscriptionusagetabs/usagebenifits" />
-			<hb:HibachiEntityDetailItem property="subscriptionStatus" />
-			<hb:HibachiEntityDetailItem view="admin:entity/subscriptionusagetabs/orderitems" />
-			<hb:HibachiEntityDetailItem view="admin:entity/subscriptionusagetabs/subscriptionusagesettings" />
-			<hb:HibachiEntityDetailItem view="admin:entity/subscriptionusagetabs/subscriptionusageaccounts" />
-			<hb:HibachiEntityDetailItem view="admin:entity/subscriptionusagetabs/subscriptionusageaccess" />
-		</hb:HibachiEntityDetailGroup>
-	</hb:HibachiEntityDetailForm>
+<sw-listing-display data-collection="'Access'"
+                    data-edit="false"
+                    data-show-search="true"
+                    data-has-search="false"
+                    data-has-action-bar="false">
+    <sw-listing-column data-property-identifier="accessID" ></sw-listing-column>
+    <sw-listing-column data-property-identifier="accessCode" ></sw-listing-column>
+    <sw-listing-filter data-property-identifier="subscriptionUsage.subscriptionUsageID" data-comparison-operator="=" data-comparison-value="#rc.subscriptionUsage.getSubscriptionUsageID()#" ></sw-listing-filter>
+    <sw-listing-filter data-property-identifier="subscriptionUsageBenefit.subscriptionUsage.subscriptionUsageID" data-comparison-operator="=" data-logical-operator="OR" data-comparison-value="#rc.subscriptionUsage.getSubscriptionUsageID()#" ></sw-listing-filter>
+    <sw-listing-filter data-property-identifier="subscriptionUsageBenefitAccount.subscriptionUsageBenefit.subscriptionUsage.subscriptionUsageID" data-comparison-operator="=" data-logical-operator="OR" data-comparison-value="#rc.subscriptionUsage.getSubscriptionUsageID()#" ></sw-listing-filter>
+</sw-listing-display>
 </cfoutput>
+
