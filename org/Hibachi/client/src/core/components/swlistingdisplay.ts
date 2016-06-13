@@ -343,7 +343,10 @@ class SWListingDisplayController{
             //select all owned ids
             console.log('swListingDisplay');
             console.log(this.multiselectValues);
-            angular.forEach(this.multiselectValues.split(','),(value)=>{
+            if(angular.isString(this.multiselectValues)){
+                this.multiselectValues = this.multiselectValues.split(',');    
+            }
+            angular.forEach(this.multiselectValues,(value)=>{
                 this.selectionService.addSelection(this.name,value);
             });
         }
@@ -547,6 +550,15 @@ class SWListingDisplayController{
             } else { 
                 column.type = "none";
             }
+            /* render flat until we have formatting*/
+            if(
+                column.type === 'email'
+                || column.type === 'numeric'
+                
+            ){
+                column.type='none';
+            }
+            
             if(angular.isDefined(column.tooltip)){
                
                 var parsedProperties = this.utilityService.getPropertiesFromString(column.tooltip);
@@ -669,7 +681,9 @@ class SWListingDisplayController{
             }else{
                 propertyIdentifierWithoutAlias = propertyIdentifier;
             }
-            return this.utilityService.replaceAll(propertyIdentifierWithoutAlias,'.','_')
+            console.log('pwithoutid');
+            console.log(this.utilityService.replaceAll(propertyIdentifierWithoutAlias,'.','_'));
+            return this.utilityService.replaceAll(propertyIdentifierWithoutAlias,'.','_');
         }
         return '';
     };

@@ -195,6 +195,14 @@
                                           popover-popup-delay="50"
                                           popover-append-to-body="true">
                                     </span>
+                                    <span ng-if="(!column.action || !column.queryString) && column.type === 'yesno'"
+                                          ng-bind="pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)] ? $root.rbkeyService.rbKey('yes'):$root.rbkeyService.rbKey('no')"
+                                          popover="{{swListingDisplay.replaceStringWithProperties(column.tooltip, pageRecord)}}"
+                                          popover-trigger="mouseenter"
+                                          popover-placement="bottom"
+                                          popover-popup-delay="50"
+                                          popover-append-to-body="true">
+                                    </span>
                                     <span ng-if="(!column.action || !column.queryString) && column.type==='date'"
                                           ng-bind="pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)] | swdate:'MM/dd/yyyy'"
                                           popover="{{swListingDisplay.replaceStringWithProperties(column.tooltip, pageRecord)}}"

@@ -46,34 +46,27 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.product" type="any" />
-<cfparam name="rc.edit" type="boolean" />
 
-<cfset selectedListingDisplays = rc.product.getListingPages() />
-<cfset selectedListingPageIDPaths = "" />
-<cfloop array="#selectedListingDisplays#" index="local.lp">
-	<cfset selectedListingPageIDPaths = listAppend(selectedListingPageIDPaths, replace(local.lp.getContentIDPath(),',','/','all')) />
-</cfloop>
+<cfparam name="rc.subscriptionUsageBenefitAccount" type="any">
+<cfparam name="rc.edit" type="boolean">
+
 <cfoutput>
-	<sw-listing-display
-		data-collection="'Content'"
-		data-multiselect-field-name="listingPages"
-		data-multiselect-id-paths="#selectedListingPageIDPaths#"
-		data-edit="#rc.edit#"
-		data-has-search="false"
-        data-has-action-bar="false"
-		data-record-edit-action="admin:entity.editcontent"
-		data-is-angular-route="false"
-	>
-		<sw-listing-column data-property-identifier="title" tdclass="primary" />
-		<sw-listing-column data-property-identifier="site.siteName" />
-	</sw-listing-display>
+	<hb:HibachiEntityDetailForm object="#rc.subscriptionUsageBenefitAccount#" edit="#rc.edit#"
+									sRedirectAction="admin:entity.detailsubscriptionUsage" 
+									saveActionQueryString="subscriptionUsageID=#rc.subscriptionUsageBenefitAccount.getSubscriptionUsageBenefit().getSubscriptionUsage().getsubscriptionUsageID()#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.subscriptionUsageBenefitAccount#" edit="#rc.edit#"
+									backAction="admin:entity.detailsubscriptionusage"
+								  	backQueryString="subscriptionUsageID=#rc.subscriptionUsageBenefitAccount.getSubscriptionUsageBenefit().getSubscriptionUsage().getsubscriptionUsageID()#"
+								  	cancelAction="admin:entity.detailsubscriptionUsage"
+								  	cancelQueryString="subscriptionUsageID=#rc.subscriptionUsageBenefitAccount.getSubscriptionUsageBenefit().getSubscriptionUsage().getsubscriptionUsageID()#" 
+								  	deleteQueryString="subscriptionUsageID=#rc.subscriptionUsageBenefitAccount.getSubscriptionUsageBenefit().getSubscriptionUsage().getsubscriptionUsageID()#&redirectAction=admin:entity.detailsubscriptionUsage" />
+		
+		<hb:HibachiEntityDetailGroup object="#rc.subscriptionUsageBenefitAccount#">
+			<hb:HibachiEntityDetailItem view="admin:entity/subscriptionusagebenefitaccounttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+		</hb:HibachiEntityDetailGroup>
+
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
-<!--- deprecating previous listing display --->
-<!---<hb:HibachiListingDisplay smartList="#rc.product.getListingPagesOptionsSmartList()#" multiselectFieldName="listingPages" multiselectValues="#selectedListingPageIDs#" edit="#rc.edit#">
-	<hb:HibachiListingColumn propertyIdentifier="title" tdclass="primary" />
-	<hb:HibachiListingColumn propertyIdentifier="site.siteName" />
-</hb:HibachiListingDisplay>--->

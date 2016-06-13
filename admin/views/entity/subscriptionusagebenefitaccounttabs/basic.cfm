@@ -49,31 +49,15 @@ Notes:
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.product" type="any" />
+<cfparam name="rc.subscriptionUsageBenefitAccount" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
-<cfset selectedListingDisplays = rc.product.getListingPages() />
-<cfset selectedListingPageIDPaths = "" />
-<cfloop array="#selectedListingDisplays#" index="local.lp">
-	<cfset selectedListingPageIDPaths = listAppend(selectedListingPageIDPaths, replace(local.lp.getContentIDPath(),',','/','all')) />
-</cfloop>
 <cfoutput>
-	<sw-listing-display
-		data-collection="'Content'"
-		data-multiselect-field-name="listingPages"
-		data-multiselect-id-paths="#selectedListingPageIDPaths#"
-		data-edit="#rc.edit#"
-		data-has-search="false"
-        data-has-action-bar="false"
-		data-record-edit-action="admin:entity.editcontent"
-		data-is-angular-route="false"
-	>
-		<sw-listing-column data-property-identifier="title" tdclass="primary" />
-		<sw-listing-column data-property-identifier="site.siteName" />
-	</sw-listing-display>
+	<hb:HibachiPropertyRow>
+		<hb:HibachiPropertyList divClass="col-md-6">
+			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsageBenefitAccount#" property="subscriptionUsageBenefit" edit="false">
+			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsageBenefitAccount#" property="account" edit="false">
+			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsageBenefitAccount#" property="endDateTime" edit="#rc.edit#">
+		</hb:HibachiPropertyList>
+	</hb:HibachiPropertyRow>
 </cfoutput>
-<!--- deprecating previous listing display --->
-<!---<hb:HibachiListingDisplay smartList="#rc.product.getListingPagesOptionsSmartList()#" multiselectFieldName="listingPages" multiselectValues="#selectedListingPageIDs#" edit="#rc.edit#">
-	<hb:HibachiListingColumn propertyIdentifier="title" tdclass="primary" />
-	<hb:HibachiListingColumn propertyIdentifier="site.siteName" />
-</hb:HibachiListingDisplay>--->

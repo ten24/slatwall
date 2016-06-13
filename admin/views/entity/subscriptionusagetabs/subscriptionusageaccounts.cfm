@@ -46,34 +46,20 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+<cfparam name="rc.subscriptionUsage" type="any">
 
-<cfparam name="rc.product" type="any" />
-<cfparam name="rc.edit" type="boolean" />
-
-<cfset selectedListingDisplays = rc.product.getListingPages() />
-<cfset selectedListingPageIDPaths = "" />
-<cfloop array="#selectedListingDisplays#" index="local.lp">
-	<cfset selectedListingPageIDPaths = listAppend(selectedListingPageIDPaths, replace(local.lp.getContentIDPath(),',','/','all')) />
-</cfloop>
 <cfoutput>
-	<sw-listing-display
-		data-collection="'Content'"
-		data-multiselect-field-name="listingPages"
-		data-multiselect-id-paths="#selectedListingPageIDPaths#"
-		data-edit="#rc.edit#"
-		data-has-search="false"
-        data-has-action-bar="false"
-		data-record-edit-action="admin:entity.editcontent"
-		data-is-angular-route="false"
-	>
-		<sw-listing-column data-property-identifier="title" tdclass="primary" />
-		<sw-listing-column data-property-identifier="site.siteName" />
-	</sw-listing-display>
+<sw-listing-display data-collection="'SubscriptionUsageBenefitAccount'"
+                    data-edit="false"
+                    data-show-search="true"
+                    data-has-search="false"
+                    data-has-action-bar="false"
+                    data-record-edit-action="admin:entity.editsubscriptionusagebenefitaccount">
+    <sw-listing-column data-property-identifier="subscriptionUsageBenefit.subscriptionBenefit.subscriptionBenefitName" ></sw-listing-column>
+    <sw-listing-column data-property-identifier="account.firstName" ></sw-listing-column>
+    <sw-listing-column data-property-identifier="account.lastName" ></sw-listing-column>
+    <sw-listing-column data-property-identifier="account.primaryEmailAddress.emailAddress" ></sw-listing-column>
+    <sw-listing-filter data-property-identifier="subscriptionUsageBenefit.subscriptionUsage.subscriptionUsageID" data-comparison-operator="=" data-comparison-value="#rc.subscriptionUsage.getSubscriptionUsageID()#" ></sw-listing-filter>
+</sw-listing-display>
 </cfoutput>
-<!--- deprecating previous listing display --->
-<!---<hb:HibachiListingDisplay smartList="#rc.product.getListingPagesOptionsSmartList()#" multiselectFieldName="listingPages" multiselectValues="#selectedListingPageIDs#" edit="#rc.edit#">
-	<hb:HibachiListingColumn propertyIdentifier="title" tdclass="primary" />
-	<hb:HibachiListingColumn propertyIdentifier="site.siteName" />
-</hb:HibachiListingDisplay>--->
+
