@@ -343,7 +343,10 @@ class SWListingDisplayController{
             //select all owned ids
             console.log('swListingDisplay');
             console.log(this.multiselectValues);
-            angular.forEach(this.multiselectValues.split(','),(value)=>{
+            if(angular.isString(this.multiselectValues)){
+                this.multiselectValues = this.multiselectValues.split(',');    
+            }
+            angular.forEach(this.multiselectValues,(value)=>{
                 this.selectionService.addSelection(this.name,value);
             });
         }
