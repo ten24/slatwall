@@ -64,6 +64,7 @@ class SWMultiListingDisplayController{
     public selectable:boolean = false;
     public showSearch;
     public showTopPagination;
+    public showSearchFilters = false; 
     public sortable:boolean = false;
     public sortProperty;
     public tableID:string;
@@ -988,6 +989,7 @@ class SWMultiListingDisplay implements ng.IDirective{
             showheader:"=?",
             showSearch:"=?",
             showTopPagination:"=?",
+            showSearchFilters:"=?",
 
             /* Basic Action Caller Overrides*/
             createModal:"=?",

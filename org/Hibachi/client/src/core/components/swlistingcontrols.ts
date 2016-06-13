@@ -10,6 +10,7 @@ class SWListingControlsController {
     private backupColumnsConfig;
     private displayOptionsClosed:boolean=true;
     private filtersClosed:boolean=true;
+    private showFilters:boolean; 
     private newFilterPosition;
     private itemInUse;
     private getCollection;
@@ -21,6 +22,10 @@ class SWListingControlsController {
         public collectionService,
         public observerService
     ) {
+        if(angular.isUndefined(this.showFilters)){
+            this.showFilters = false;
+        }
+
         this.backupColumnsConfig = this.collectionConfig.getColumns();
         this.filterPropertiesList = {};
 
@@ -135,7 +140,8 @@ class SWListingControls  implements ng.IDirective{
     public bindToController =  {
         collectionConfig : "=",
         paginator : "=",
-        getCollection : "&"
+        getCollection : "&",
+        showFilters : "=?"
     };
     public controller = SWListingControlsController;
     public controllerAs = 'swListingControls';
