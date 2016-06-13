@@ -114,6 +114,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 		return variables.assetsPath;
 	}
 	
+	
 	public string function getTitlePath(string delimiter){
 		var titlePath = '';
 		if(!isNull(variables.titlePath)){
@@ -472,6 +473,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	
 	
 	// ============== START: Overridden Implicet Getters ===================
+	
 	
 	public string function getContentIDPath() {
 		if(isNull(variables.contentIDPath)) {
