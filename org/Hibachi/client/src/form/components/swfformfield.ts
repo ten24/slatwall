@@ -71,7 +71,6 @@ class SWFFormFieldController {
         //        object: vm.object,
         //        propertyIdentifier: vm.propertyIdentifier
         //    };
-        //    //console.log("Built a property display");
         //}
 		
 	}

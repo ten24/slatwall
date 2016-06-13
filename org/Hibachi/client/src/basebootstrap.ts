@@ -82,7 +82,6 @@ export class BaseBootStrapper{
             }
         ).success((response:any,status,headersGetter) => {
             this._resourceBundle[locale] = response.data;
-            console.log(this._resourceBundle);
             deferred.resolve(response);
         }).error((response:any) => {
             this._resourceBundle[locale] = {};

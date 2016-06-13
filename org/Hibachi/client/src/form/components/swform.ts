@@ -95,7 +95,6 @@ interface ViewModel {
     * this class will attach any errors to the correspnding form element.
     */
     handleForm ( context, $scope ) {
-        //console.log("Context", context);
         /** local variables */
         this.processObject = this.name || "";
         

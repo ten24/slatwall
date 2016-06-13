@@ -33,7 +33,6 @@ class PublicService {
         this.$q = $q
         this.getExpirationYears();
         this.window = $window;
-        console.log("Window: ", $window);
         
     }
     
@@ -44,10 +43,8 @@ class PublicService {
         var today = baseDate.getFullYear();
         var start = today;
         for (var i = 0; i<= 5; i++){
-            console.log("I:", start + i);
             this.years.push(start + i);
         }
-        console.log("This Years", this.years);
     }
     /** accessors for account */
     public getAccount=():any =>  {
@@ -89,7 +86,6 @@ class PublicService {
             if (setter.indexOf('account') == -1 || setter.indexOf('cart') == -1){
                 if (result['account']){delete result['account'];}
                 if (result['cart']){delete result['cart'];}
-                console.log("Result Sans", result);
             }
             this[setter] = result;
             this.loading = false;
@@ -154,18 +150,15 @@ class PublicService {
                        
                         if (result.data.successfulActions[action].indexOf('public:cart.placeOrder') !== -1){
                             this.window.location.href = this.confirmationUrl;
-                            console.log(this.window);
                         }
                     }
                 }
                 if (result.data.failureActions.length){
                     this.hasErrors = true;
-                    console.log("Errors:", result.data.errors);
                 }
                 this.loading = false;
                 deferred.resolve(result);
             }).catch((response)=>{
-                console.log("There was an error making this http call", response.status, response.data);
                 this.loading = false;
                 deferred.reject(response);
             });

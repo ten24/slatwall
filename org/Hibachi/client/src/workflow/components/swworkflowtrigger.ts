@@ -45,15 +45,12 @@ class SWWorkflowTrigger{
 			},
 			templateUrl:hibachiPathBuilder.buildPartialsPath(workflowPartialsPath)+"workflowtrigger.html",
 			link: function(scope, element,attrs){
-				console.log('workflow trigger init');
 
 				/**
 				 * Selects the current workflow trigger.
 				 */
 				scope.selectWorkflowTrigger = function(workflowTrigger){
-					console.log('SelectWorkflowTriggers');
 					scope.done = false;
-					console.log(workflowTrigger);
 					scope.finished = false;
 					scope.workflowTriggers.selectedTrigger = undefined;
 
@@ -103,8 +100,6 @@ class SWWorkflowTrigger{
 				 * Overrides the delete function for the confirmation modal. Delegates to the normal delete method.
 				 */
 				scope.deleteEntity = function(entity){
-					console.log("Delete Called");
-					console.log(entity);
 					scope.deleteTrigger(entity);
 				};
 
@@ -114,7 +109,6 @@ class SWWorkflowTrigger{
 				scope.deleteTrigger = function(workflowTrigger){
 					var deleteTriggerPromise = $hibachi.saveEntity('WorkflowTrigger',workflowTrigger.data.workflowTriggerID,{},'Delete');
 					deleteTriggerPromise.then(function(value){
-						console.log('deleteTrigger');
 						scope.workflowTriggers.splice(workflowTrigger.$$index,1);
 					});
 				};
