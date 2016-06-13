@@ -642,29 +642,12 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		//testing the DESC order of modified date, failed.
 		assertEquals(resultOrdersNotPlacedSM.getRecords(refresh=true)[1].getOrderNumber(), "orderNumber004");	
 	}
-*/
-	
-	
-	public void function getSlatwallAuthenticationExistsFlagTest() {
-		//testing if no valid properties(Password,Integration,ActiveFlag) existed in authentication,then authentication does not exist
-		var accountData1 = {
-			accountID = "",
-			firstName = "Hola"
-		};
-		var mockAccount1 = createPersistedTestEntity('Account', accountData1);
-		var authzData1Normal = {
-			accountAuthenticationID = "",
-			account = {
-				accountID = mockAccount1.getAccountID()
-			}
-		};
-		var mockAccountAuthentications1 = createPersistedTestEntity('AccountAuthentication', authzData1Normal);		
-		var resultNotValidAuthz = mockAccount1.getSlatwallAuthenticationExistsFlag();
-		assertFalse(resultNotValidAuthz);
-		//testing if valid authz property created, (Password), authz flag should be true
+
+	public void function getSlatwallAuthenticationExistsFlag_WithPassword_Test() {
+		//testing the authentication w/ Password only, authz flag should be true
 		var accountData2 = {
 			accountID = "",
-			firstName = "Hola"
+			firstName = "Hol2a"
 		};
 		var mockAccount2 = createPersistedTestEntity('Account', accountData2);
 		var authzData2HasPassword = {
@@ -675,204 +658,512 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 			}
 		};
 		var mockAccountAuthentications2 = createPersistedTestEntity('AccountAuthentication', authzData2HasPassword);
-		var resultWithPassword = mockAccount2.getSlatwallAuthenticationExistsFlag();
-		assertTrue(resultWithPassword);//yuqing
-		//testing existed authentictions w/ Integration  YUQING
+		var resultWithPassword = mockAccount2.getSlatwallAuthenticationExistsFlag();		
+		assertTrue(resultWithPassword);
+	}
+	public void function getSlatwallAuthenticationExistsFlag_WithIntegration_Test() {
+		//testing the authentictions w/ Integration only, shoule be false
+		var accountData3 = {
+			accountID = "",
+			firstName = "Hola"
+		};
+		var mockAccount3 = createPersistedTestEntity('Account', accountData3);
+		var authzData3HasIntegration = {
+			accountAuthenticationID = "",
+			integration={
+				integrationID="4028288f549c11ac01549c1bb4c80000"
+			},
+			account = {
+				accountID = mockAccount3.getAccountID()
+			}
+		};
+		var mockAccountAuthentications3 = createPersistedTestEntity('AccountAuthentication', authzData3HasIntegration);
+		var resultWithIntegration = mockAccount3.getSlatwallAuthenticationExistsFlag();
+		assertFalse(resultWithIntegration);	
 	}
 	
+	public void function getSlatwallAuthenticationExistsFlag_WithPwdAndIntegration_Test() {
+		//testing tue authentication w/ Integration and w/ Passoword, should be false
+		var accountData4 = {
+			accountID = "",
+			firstName = "Hola"
+		};
+		var mockAccount4 = createPersistedTestEntity('Account', accountData4);
+		var authzData4PwdIntegration = {
+			accountAuthenticationID = "",
+			integration={
+				integrationID="4028288f549c11ac01549c1bb4c80000"
+			},
+			account = {
+				accountID = mockAccount4.getAccountID()
+			}
+		};
+		var mockAccountAuthentications4 = createPersistedTestEntity('AccountAuthentication', authzData4PwdIntegration);
+		var resultPwdIntegration = mockAccount4.getSlatwallAuthenticationExistsFlag();
+		request.debug(mockAccount4.getAccountAuthentications()[1].getActiveFlag());
+		assertFalse(resultPwdIntegration);		
+	}
 	
-	
-	
-	public void function getActiveSubscriptionUsageBenefitsSmartListTest() {
+	public void function getSlatwallAuthenticationExistsFlag_TrueActiveFlag_Test() {
+		//Under condition that if the first logical connectives returns true		
+		//testing normal case, activeFlag is true
 		var accountData1 = {
 			accountID = "",
-			firstName = "subtion",
-			subscriptionUsageBenefitAccounts = [{
-				subsUsageBenefitAccountID = "",
-				endDateTime = dateAdd('d', 3, now)
-			}],
-			subscriptionUsages = [{
-				subscriptionUsageID = "",
-				expirationDate = dateAdd('d', 1, now())
-			}]
+			firstName = "Hola"
 		};
 		var mockAccount1 = createPersistedTestEntity('Account', accountData1);
-		var authzData1Normal = {
+		var authzData1 = {
 			accountAuthenticationID = "",
+			activeFlag = TRUE,
+			password = "12345",
 			account = {
 				accountID = mockAccount1.getAccountID()
 			}
 		};
-		var mockAccountAuthentications1 = createPersistedTestEntity('AccountAuthentication', authzData1Normal);		
-		var resultNotValidAuthz = mockAccount1.getSlatwallAuthenticationExistsFlag();
-		assertFalse(resultNotValidAuthz);
+		var mockAccountAuthentications1 = createPersistedTestEntity('AccountAuthentication', authzData1);		
+		var resultTrueFlag = mockAccount1.getSlatwallAuthenticationExistsFlag();
+		assertTrue(resultTrueFlag);
+	}
+	public void function getSlatwallAuthenticationExistsFlag_FalseActiveFlag_Test() {
+		//Under condition that if the first logical connectives returns true
+		//testing when activeFlag is false
+		var accountData2 = {
+			accountID = "",
+			firstName = "Hola"
+		};
+		var mockAccount2 = createPersistedTestEntity('Account', accountData2);
+		var authzData2 = {
+			accountAuthenticationID = "",
+			activeFlag = FALSE,
+			password = "12345",
+			account = {
+				accountID = mockAccount2.getAccountID()
+			}
+		};
+		var mockAccountAuthentications2 = createPersistedTestEntity('AccountAuthentication', authzData2);		
+		var resultFalseFlag = mockAccount2.getSlatwallAuthenticationExistsFlag();
+		assertFalse(resultFalseFlag);
+	}
+	public void function getSlatwallAuthenticationExistsFlag_NullActiveFlag_Test() {
+		//Under condition that if the first logical connectives returns true
+		//testing when activeFlag is null
+		var accountData3 = {
+			accountID = "",
+			firstName = "Hola"
+		};
+		var mockAccount3 = createPersistedTestEntity('Account', accountData3);
+		var authzData3 = {
+			accountAuthenticationID = "",
+			password = "12345",
+			account = {
+				accountID = mockAccount3.getAccountID()
+			}
+		};
+		var mockAccountAuthentications3 = createPersistedTestEntity('AccountAuthentication', authzData3);
+		mockAccountAuthentications3.setActiveFlag(javaCast("null",""));		
+		try{
+			isNull(mockAccountAuthentications3.getActiveFlag());			
+		} catch (any e) {
+			throw ("The null activeFlag is undefined in this boolearn type");
+		}
+		var resultNullFlag = mockAccount3.getSlatwallAuthenticationExistsFlag();
+		assertFalse(resultNullFlag);
+		
 	}
 	
 	
-	public void function getEligibleAccountPaymentMethodsSmartListTest() {
-//		TODO:figure out how to persist settings for the test,
-//			 missing accountEligiblePaymentMethods for all mocking data, cannot test without it
-//			 the assertion only proves that filter in accountEligiblePaymentMethods works  -_-||
+	public void function getActiveSubscriptionUsageBenefitsSmartList_endDateTime_Test() {
+		var accountData1 = {
+			accountID = "",
+			firstName = "subtion"
+		};
+		var mockAccount1 = createPersistedTestEntity('Account', accountData1);
+		
+		var subscriptionUsageData = {
+			subscriptionUsageID = "",
+			expirationDate = dateAdd('d', 3, now()),
+			account = {
+				accountID = mockAccount1.getAccountID()
+			}
+		};
+		var mockSubscriptionUsage1 = createPersistedTestEntity('SubscriptionUsage', subscriptionUsageData);
+		
+		var subscriptionUsageBenefitData = {
+			subscriptionUsageBenefitID = "",
+			subscriptionUsage = {
+				subscriptionUsageID = mockSubscriptionUsage1.getSubscriptionUsageID()
+			}
+		};
+		var mockSubscriptionUsageBenefit1 = createPersistedTestEntity('SubscriptionUsageBenefit', subscriptionUsageBenefitData);
+		var subscriptionUsageBenefitData2 = {
+			subscriptionUsageBenefitID = "",
+			subscriptionUsage = {
+				subscriptionUsageID = mockSubscriptionUsage1.getSubscriptionUsageID()
+			}
+		};
+		var mockSubscriptionUsageBenefit2 = createPersistedTestEntity('SubscriptionUsageBenefit', subscriptionUsageBenefitData2);
+		var subscriptionUsageBenefitData3 = {
+			subscriptionUsageBenefitID = "",
+			subscriptionUsage = {
+				subscriptionUsageID = mockSubscriptionUsage1.getSubscriptionUsageID()
+			}
+		};
+		var mockSubscriptionUsageBenefit3 = createPersistedTestEntity('SubscriptionUsageBenefit', subscriptionUsageBenefitData3);
+		var subscriptionUsageBenefitData4 = {
+			subscriptionUsageBenefitID = "",
+			subscriptionUsage = {
+				subscriptionUsageID = mockSubscriptionUsage1.getSubscriptionUsageID()
+			}
+		};
+		var mockSubscriptionUsageBenefit4 = createPersistedTestEntity('SubscriptionUsageBenefit', subscriptionUsageBenefitData4);
+		
+		var subsUsageBenefitAccountData = {//endDateTime is null
+			subsUsageBenefitAccountID = "",
+			account = {
+				accountID = mockAccount1.getAccountID()
+			},
+			subscriptionUsageBenefit = {
+				subscriptionUsageBenefitID = mockSubscriptionUsageBenefit1.getSubscriptionUsageBenefitID()
+			}
+		};
+		var mockSubsUsageBenefitAccount1 = createPersistedTestEntity('SubscriptionUsageBenefitAccount', subsUsageBenefitAccountData);
+		var subsUsageBenefitAccountData2 = {//endDateTime is now + 2days
+			subsUsageBenefitAccountID = "",
+			endDateTime = dateAdd('d', 2, now()),
+			account = {
+				accountID = mockAccount1.getAccountID()
+			},
+			subscriptionUsageBenefit = {
+				subscriptionUsageBenefitID = mockSubscriptionUsageBenefit2.getSubscriptionUsageBenefitID()
+			}
+		};
+		var mockSubsUsageBenefitAccount2 = createPersistedTestEntity('SubscriptionUsageBenefitAccount', subsUsageBenefitAccountData2);
+		var subsUsageBenefitAccountData3 = {//endDateTime is now - 2days
+			subsUsageBenefitAccountID = "",
+			endDateTime = dateAdd('d', -2, now()),
+			account = {
+				accountID = mockAccount1.getAccountID()
+			},
+			subscriptionUsageBenefit = {
+				subscriptionUsageBenefitID = mockSubscriptionUsageBenefit3.getSubscriptionUsageBenefitID()
+			}
+		};
+		var mockSubsUsageBenefitAccount3 = createPersistedTestEntity('SubscriptionUsageBenefitAccount', subsUsageBenefitAccountData3);
+		
+		var result = mockAccount1.getActiveSubscriptionUsageBenefitsSmartList().getRecords();
+		//testing if the whereCondition of endDate time works
+		assertEquals(2, arrayLen(result));
+		assertEquals(mockSubscriptionUsageBenefit1.getSubscriptionUsageBenefitID(), result[1].getSubscriptionUsageBenefitID());
+		assertEquals(mockSubscriptionUsageBenefit2.getSubscriptionUsageBenefitID(), result[2].getSubscriptionUsageBenefitID());
+	}
+	
+	public void function getActiveSubscriptionUsageBenefitsSmartList_rangeOfExpirationDate_AccountFilter_Test() {
+		//Mocking Data: mockAccount1 -> mockSubscriptionUsage1 (expireDate now+3d)-> mockSubscriptionUsageBenefit1 -> mockSubsUsageBenefitAccount1
+		//Mocking Data: mockAccount1 -> mockSubscriptionUsage2 (expireDate now-3d)-> mockSubscriptionUsageBenefit2 -> mockSubsUsageBenefitAccount2
+		var accountData1 = {
+			accountID = "",
+			firstName = "subtion"
+		};
+		var mockAccount1 = createPersistedTestEntity('Account', accountData1);
+		
+		var subscriptionUsageData = {
+			subscriptionUsageID = "",
+			expirationDate = dateAdd('d', 3, now()),
+			account = {
+				accountID = mockAccount1.getAccountID()
+			}
+		};
+		var mockSubscriptionUsage1 = createPersistedTestEntity('SubscriptionUsage', subscriptionUsageData);
+		var subscriptionUsageData2 = {
+			subscriptionUsageID = "",
+			expirationDate = dateAdd('d', -3, now()),
+			account = {
+				accountID = mockAccount1.getAccountID()
+			}
+		};
+		var mockSubscriptionUsage2 = createPersistedTestEntity('SubscriptionUsage', subscriptionUsageData2);
+		
+		var subscriptionUsageBenefitData = {
+			subscriptionUsageBenefitID = "",
+			subscriptionUsage = {
+				subscriptionUsageID = mockSubscriptionUsage1.getSubscriptionUsageID()
+			}
+		};
+		var mockSubscriptionUsageBenefit1 = createPersistedTestEntity('SubscriptionUsageBenefit', subscriptionUsageBenefitData);
+		var subscriptionUsageBenefitData2 = {
+			subscriptionUsageBenefitID = "",
+			subscriptionUsage = {
+				subscriptionUsageID = mockSubscriptionUsage2.getSubscriptionUsageID()
+			}
+		};
+		var mockSubscriptionUsageBenefit2 = createPersistedTestEntity('SubscriptionUsageBenefit', subscriptionUsageBenefitData2);
+		
+		var subsUsageBenefitAccountData = {
+			subsUsageBenefitAccountID = "",
+			account = {
+				accountID = mockAccount1.getAccountID()
+			},
+			subscriptionUsageBenefit = {
+				subscriptionUsageBenefitID = mockSubscriptionUsageBenefit1.getSubscriptionUsageBenefitID()
+			}
+		};
+		var mockSubsUsageBenefitAccount1 = createPersistedTestEntity('SubscriptionUsageBenefitAccount', subsUsageBenefitAccountData);
+		var subsUsageBenefitAccountData2 = {
+			subsUsageBenefitAccountID = "",
+			account = {
+				accountID = mockAccount1.getAccountID()
+			},
+			subscriptionUsageBenefit = {
+				subscriptionUsageBenefitID = mockSubscriptionUsageBenefit2.getSubscriptionUsageBenefitID()
+			}
+		};
+		var mockSubsUsageBenefitAccount2 = createPersistedTestEntity('SubscriptionUsageBenefitAccount', subsUsageBenefitAccountData2);
+		
+		var result = mockAccount1.getActiveSubscriptionUsageBenefitsSmartList().getRecords();		
+		//testing range of ExpireDate
+		assertEquals(1, arrayLen(result));
+		//testing if the filter of AccountID works
+		assertEquals(mockAccount1.getAccountID(), result[1].getSubscriptionUsage().getAccount().getAccountID());
+	}
+*/
+
+	public void function getTermAccountBalanceTest() {
 		var accountData1 = {
 			accountID = "",
 			firstName = "testPaymentMethodType",
 			lastName = "pmLastName"
 		};
-		var mockAccountPMOSL = createPersistedTestEntity("Account", accountData1);
-		var pmoSLBeforeMock = mockAccountPMOSL.getEligibleAccountPaymentMethodsSmartList().getRecords();
-		var lenBeforeMock = arrayLen(pmoSLBeforeMock );
+		var mockAccount1 = createPersistedTestEntity("Account", accountData1);
 
-		var orderData1 = {
-			orderID = "",
-			orderNumber = "orderNumber00001",
-			account = {
-				accountID = mockAccountPMOSL.getAccountID()
+		var termAccountOrderPaymentsData1 = {
+			orderPaymentID = "",
+			amount = 2300.00,
+			orderPaymentType = "444df2f0fed139ff94191de8fcd1f61b",//optCharge
+			termPaymentAccount = {
+				termPaymentAccountID = mockAccount1.getAccountID()
 			}
 		};
-		var order1 = createPersistedTestEntity("Order", orderData1);
+		var termAccountOrderPayment1 = createPersistedTestEntity("OrderPayment", termAccountOrderPaymentsData1);
 		
-		var paymentMethodData1 = {//PaymentMethod1 true ActiveFlag, wrong Type
-			activeFlag = 1,
-			paymentMethodType = 'termPaymen'
+		var paymentTransactionsData = {
+			paymentTransactionID = "",
+			amountReceived = 300.00,
+			amountCredited = 100.00,
+			orderPayment = {
+				orderPaymentID = termAccountOrderPayment1.getOrderPaymentID()
+			}
 		};
-		var paymentMethod1 = createPersistedTestEntity('paymentMethod',paymentMethodData1);
-		var paymentMethodData2 = {//paymentMethod2 true ActiveFlag, correct Type
-			paymentMethodID="",
-			activeFlag = 1,
-			paymentMethodType = 'external'
-		};
-		var paymentMethod2 = createPersistedTestEntity('paymentMethod',paymentMethodData2);
-		var paymentMethodData3 = {//paymentMethod3 false ActiveFlag, correct Type
-			paymentMethodID="",
-			activeFlag = 0,
-			paymentMethodType = 'check'
-		};
-		var paymentMethod3 = createPersistedTestEntity('paymentMethod',paymentMethodData3);
-		var paymentMethodData4 = {//paymentMethod4 default ActiveFlag, empty Type
-			paymentMethodID=""
-		};
-		var paymentMethod4 = createPersistedTestEntity('paymentMethod',paymentMethodData4);
+		var paymentTransaction1 = createPersistedTestEntity("PaymentTransaction", paymentTransactionsData);
 		
-		var orderPaymentData1 = {
-				orderPaymentID = "",
-				paymentMethod = {
-					paymentMethodID = paymentMethod2.getPaymentMethodID()
-				},
-				order = {
-					orderID = order1.getOrderID()
-				}
-		};
-		var orderPayment1 = createPersistedTestEntity('OrderPayment', orderPaymentData1);
-		var orderPaymentData2 = {
-				orderPaymentID = "",
-				paymentMethod = {
-					paymentMethodID = paymentMethod2.getPaymentMethodID()
-				},
-				order = {
-					orderID = order1.getOrderID()
-				}
-		};
-		var orderPayment2 = createPersistedTestEntity('OrderPayment', orderPaymentData2);
-		var orderPaymentData3 = {
-				orderPaymentID = "",
-				paymentMethod = {
-					paymentMethodID = paymentMethod3.getPaymentMethodID()
-				},
-				order = {
-					orderID = order1.getOrderID()
-				}
-		};
-		var orderPayment3 = createPersistedTestEntity('OrderPayment', orderPaymentData3);
-		var orderPaymentData4 = {
-				orderPaymentID = "",
-				paymentMethod = {
-					paymentMethodID = paymentMethod4.getPaymentMethodID()
-				},
-				order = {
-					orderID = order1.getOrderID()
-				}
-		};
-		var orderPayment4 = createPersistedTestEntity('OrderPayment', orderPaymentData4);
+//		var accountPaymentData = {
+//			accountPaymentID = "",
+//			
+//		};
 		
-		var pmoSL = mockAccountPMOSL.getEligibleAccountPaymentMethodsSmartList().getRecords(refresh = true);
-		request.debug(lenBeforeMock);
-		assertEquals(0, arrayLen(pmoSL) - lenBeforeMock);
+		request.debug(mockAccount1.getTermAccountBalance());
+
+//		var orderPaymentData1 = {
+//				orderPaymentID = "",
+//				termPaymentAccount = ""
+//		};
+//		var orderPayment1 = createPersistedTestEntity('OrderPayment', orderPaymentData1);
+//		var orderPaymentData2 = {
+//				orderPaymentID = "",
+//				paymentMethod = {
+//					paymentMethodID = paymentMethod2.getPaymentMethodID()
+//				},
+//				order = {
+//					orderID = order1.getOrderID()
+//				}
+//		};
+//		var orderPayment2 = createPersistedTestEntity('OrderPayment', orderPaymentData2);
+//		var orderPaymentData3 = {
+//				orderPaymentID = "",
+//				paymentMethod = {
+//					paymentMethodID = paymentMethod3.getPaymentMethodID()
+//				},
+//				order = {
+//					orderID = order1.getOrderID()
+//				}
+//		};
+//		var orderPayment3 = createPersistedTestEntity('OrderPayment', orderPaymentData3);
+//		var orderPaymentData4 = {
+//				orderPaymentID = "",
+//				paymentMethod = {
+//					paymentMethodID = paymentMethod4.getPaymentMethodID()
+//				},
+//				order = {
+//					orderID = order1.getOrderID()
+//				}
+//		};
+//		var orderPayment4 = createPersistedTestEntity('OrderPayment', orderPaymentData4);
 	}
 	
-	public void function getActiveAccountAuthenticationsTest() {
-		//The Logical Operators will be TRUE if the activeFlag is TRUE
+	
+	public void function getUnenrolledAccountLoyaltyOptionsTest() {
+		
+		var accountData1 = {
+			accountID = "",
+			firstName = "LoyaltyTest"
+		};
+		var mockAccount1 = createPersistedTestEntity('Account', accountData1);
+		
+		var accountLoyaltyData1 = {
+			accountLoyaltyID = "",
+			account = {
+				accountID = mockAccount1.getAccountID()
+			}
+		};
+		var mockAccountLoyalty1 = createPersistedTestEntity("AccountLoyalty", accountLoyaltyData1);
+		
+		var loyaltyData1 = {
+			loyaltyID = "",
+			loyalName = "Loyalty1Name",
+			activeFlag = 1,
+			accountLoyalties = {
+				accountLoyaltyID = mockAccountLoyalty1.getAccountLoyaltyID()
+			}
+		};
+		var mockLoyalty1 = createPersistedTestEntity('Loyalty', loyaltyData1);
+		var result = mockAccount1.getUnenrolledAccountLoyaltyOptions();
+		request.debug(arrayLen(result));
+		request.debug(result[2].name);
+		request.debug(result[2].value);
+		request.debug(mockLoyalty1.getLoyaltyName());
+	}
+/*	
+	public void function getTermAccountAvailableCredit() {
+		//TODO: how to persist setting() need to be figured out
+	}
+	
+	public void function getGuestAccountFlagTest() {
+		//Mock Data: mockAccount1 -> mockAccountAuthentications1, mockAccountAuthentications2  Should return false
+		//Mock Data: mockAccount2 -> No Account Authentication                                 Should return true
+		var accountData1 = {
+			accountID = "",
+			firstName = "Hola"
+		};
+		var mockAccount1 = createPersistedTestEntity('Account', accountData1);
+		var accountData2 = {
+			accountID = "",
+			firstName = "Hola"
+		};
+		var mockAccount2 = createPersistedTestEntity('Account', accountData2);
+		
+		var authzData1 = {
+			accountAuthenticationID = "",
+			account = {
+				accountID = mockAccount1.getAccountID()
+			}
+		};
+		var mockAccountAuthentications1 = createPersistedTestEntity('AccountAuthentication', authzData1);
+		var authzData2 = {
+			accountAuthenticationID = "",
+			account = {
+				accountID = mockAccount1.getAccountID()
+			}
+		};
+		var mockAccountAuthentications2 = createPersistedTestEntity('AccountAuthentication', authzData2);
+
+		assertFalse(mockAccount1.getGuestAccountFlag());	
+		assertTrue(mockAccount2.getGuestAccountFlag());
+	}
+
+	public void function getActiveAccountAuthentications_ExistedAuthz_Test() {
+		//When authz existed, the IF statement of Logical Operators will be TRUE if any of the three fails
 		var accountData = {
 			accountID = "",
 			firstName = "mockActiveName"
 		};
 		var mockAccount = createPersistedTestEntity('Account', accountData);
-		var accountAuthenticationsData1 = {//!(F && T && F) -> T, add in
+		
+		//If password is empty, !isNull(authentication.getPassword()) will fail, should be added in array
+		var accountAuthenticationsData1 = {
 			accountAuthenticationID = "",
-			password = "mockPWD",
+			activeFlag = FALSE,
 			authenticationDescription = "mockAccountAuthentications1",
 			account = {
 				accountID = mockAccount.getAccountID()
 			}
 		};
 		var mockAccountAuthentications1 = createPersistedTestEntity('AccountAuthentication', accountAuthenticationsData1);
-		var accountAuthenticationsData2 = {//!(F && F && T) -> T, add in     Yuqing: Why activeFlag != False? if activeFlag
+		
+		
+		//If activeFlag is true, authentication.getActiveFlag() == false will fail, should be added in array
+		var accountAuthenticationsData2 = {
 			accountAuthenticationID = "",
 			authenticationDescription = "mockAccountAuthentications2",
+			password = "23",
+			activeFlag = TRUE,
 			account = {
 				accountID = mockAccount.getAccountID()
 			}
 		};
 		var mockAccountAuthentications2 = createPersistedTestEntity('AccountAuthentication', accountAuthenticationsData2);
-		var accountAuthenticationsData3 = {//!(T && F && F) -> T, add in
+		
+		//If integration existed, isNull(authentication.getIntegration()) fails, should be added in array
+		var accountAuthenticationsData3 = {
 			accountAuthenticationID = "",
 			authenticationDescription = "mockAccountAuthentications3",
+			password = "45",
 			integration={
 				integrationID="4028288f549c11ac01549c1bb4c80000"
 			},
+			activeFlag = FALSE,
 			account = {
 				accountID = mockAccount.getAccountID()
 			}
 		};
 		var mockAccountAuthentications3 = createPersistedTestEntity('AccountAuthentication', accountAuthenticationsData3);
-		var accountAuthenticationsData4 = {//!(F && T && F) -> T, add in
+		
+		//If all three are true, the if statement fails, should not be added in array
+		var accountAuthenticationsData4 = {
 			accountAuthenticationID = "",
 			authenticationDescription = "mockAccountAuthentications4",
 			password = "1234",
-			integration={
-				integrationID = "4028288f549c11ac01549c1bb5860004"
-			},
+			activeFlag = False,
 			account = {
 				accountID = mockAccount.getAccountID()
 			}
 		};
 		var mockAccountAuthentications4 = createPersistedTestEntity('AccountAuthentication', accountAuthenticationsData4);
-		var accountAuthenticationsData5 = {//Go into array as well!!!??? activeFlag = TRUE
+		
+		//If activeFlag is NULL, authentication.getActiveFlag() == false will fail, should be added in array
+		var accountAuthenticationsData5 = {
+			accountAuthenticationID = "",
+			authenticationDescription = "mockAccountAuthentications5",
+			activeFlag = javaCast("null",""),
+			password = "35",
 			account = {
 				accountID = mockAccount.getAccountID()
 			}
 		};
 		var mockAccountAuthentications5 = createPersistedTestEntity('AccountAuthentication', accountAuthenticationsData5);
-
-		var result = mockAccount.getActiveAccountAuthentications(refresh= true);
-		request.debug(arrayLen(result));
-		request.debug(mockAccountAuthentications1.getActiveFlag());
-		request.debug(mockAccountAuthentications2.getActiveFlag());
-		request.debug(mockAccountAuthentications3.getActiveFlag());
-		request.debug(mockAccountAuthentications4.getActiveFlag());
-
-		request.debug("                  Array:               ");
-		request.debug(result[1].getActiveFlag());
-		request.debug(result[2].getActiveFlag());
-		request.debug(result[3].getActiveFlag());
-		request.debug(result[4].getActiveFlag());
-		assertEquals(mockAccountAuthentications3.getAccountAuthenticationID(), result[3].getAccountAuthenticationID());
-		assertEquals(mockAccountAuthentications3.getAccountAuthenticationID(), result[4].getAccountAuthenticationID());
 		
+		var result = mockAccount.getActiveAccountAuthentications();
+		assertEquals(4, arrayLen(result));
+		request.debug(arraylen(result));
+		assertEquals(mockAccountAuthentications5.getAccountAuthenticationID(), result[1].getAccountAuthenticationID());
+		assertEquals(mockAccountAuthentications3.getAccountAuthenticationID(), result[2].getAccountAuthenticationID());
+		assertEquals(mockAccountAuthentications2.getAccountAuthenticationID(), result[3].getAccountAuthenticationID());
+		assertEquals(mockAccountAuthentications1.getAccountAuthenticationID(), result[4].getAccountAuthenticationID());
+
+	}
+	
+	public void function getActiveAccountAuthentications_NoAuthz_Test() {
+		//Testing if Authz does not existed, should return array length 0
+		var accountData0 = {
+			accountID = "",
+			firstName = "mockActiveName"
+		};
+		var mockAccount0 = createPersistedTestEntity('Account', accountData0);
+		var result0 = mockAccount0.getActiveAccountAuthentications();
+		assertEquals(0, arrayLen(result0));	
 	}
 
 
 
-/*		
+		
 	public void function getPaymentMethodOptionsSmartListTest() {
 		var accountData1 = {
 			accountID = "",
@@ -1335,6 +1626,98 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		var mockAccount = createTestEntity('Account', accountData);
 		request.debug(mockAccount.getGravatarURL());
 	}
+	
+	
+	public void function getEligibleAccountPaymentMethodsSmartListTest() {
+//		TODO:figure out how to persist settings for the test,
+//			 missing accountEligiblePaymentMethods for all mocking data, cannot test without it
+//			 the assertion only proves that filter in accountEligiblePaymentMethods works  -_-||
+		var accountData1 = {
+			accountID = "",
+			firstName = "testPaymentMethodType",
+			lastName = "pmLastName"
+		};
+		var mockAccountPMOSL = createPersistedTestEntity("Account", accountData1);
+		var pmoSLBeforeMock = mockAccountPMOSL.getEligibleAccountPaymentMethodsSmartList().getRecords();
+		var lenBeforeMock = arrayLen(pmoSLBeforeMock );
+
+		var orderData1 = {
+			orderID = "",
+			orderNumber = "orderNumber00001",
+			account = {
+				accountID = mockAccountPMOSL.getAccountID()
+			}
+		};
+		var order1 = createPersistedTestEntity("Order", orderData1);
+		
+		var paymentMethodData1 = {//PaymentMethod1 true ActiveFlag, wrong Type
+			activeFlag = 1,
+			paymentMethodType = 'termPaymen'
+		};
+		var paymentMethod1 = createPersistedTestEntity('paymentMethod',paymentMethodData1);
+		var paymentMethodData2 = {//paymentMethod2 true ActiveFlag, correct Type
+			paymentMethodID="",
+			activeFlag = 1,
+			paymentMethodType = 'external'
+		};
+		var paymentMethod2 = createPersistedTestEntity('paymentMethod',paymentMethodData2);
+		var paymentMethodData3 = {//paymentMethod3 false ActiveFlag, correct Type
+			paymentMethodID="",
+			activeFlag = 0,
+			paymentMethodType = 'check'
+		};
+		var paymentMethod3 = createPersistedTestEntity('paymentMethod',paymentMethodData3);
+		var paymentMethodData4 = {//paymentMethod4 default ActiveFlag, empty Type
+			paymentMethodID=""
+		};
+		var paymentMethod4 = createPersistedTestEntity('paymentMethod',paymentMethodData4);
+		
+		var orderPaymentData1 = {
+				orderPaymentID = "",
+				paymentMethod = {
+					paymentMethodID = paymentMethod2.getPaymentMethodID()
+				},
+				order = {
+					orderID = order1.getOrderID()
+				}
+		};
+		var orderPayment1 = createPersistedTestEntity('OrderPayment', orderPaymentData1);
+		var orderPaymentData2 = {
+				orderPaymentID = "",
+				paymentMethod = {
+					paymentMethodID = paymentMethod2.getPaymentMethodID()
+				},
+				order = {
+					orderID = order1.getOrderID()
+				}
+		};
+		var orderPayment2 = createPersistedTestEntity('OrderPayment', orderPaymentData2);
+		var orderPaymentData3 = {
+				orderPaymentID = "",
+				paymentMethod = {
+					paymentMethodID = paymentMethod3.getPaymentMethodID()
+				},
+				order = {
+					orderID = order1.getOrderID()
+				}
+		};
+		var orderPayment3 = createPersistedTestEntity('OrderPayment', orderPaymentData3);
+		var orderPaymentData4 = {
+				orderPaymentID = "",
+				paymentMethod = {
+					paymentMethodID = paymentMethod4.getPaymentMethodID()
+				},
+				order = {
+					orderID = order1.getOrderID()
+				}
+		};
+		var orderPayment4 = createPersistedTestEntity('OrderPayment', orderPaymentData4);
+		
+		var pmoSL = mockAccountPMOSL.getEligibleAccountPaymentMethodsSmartList().getRecords(refresh = true);
+		request.debug(lenBeforeMock);
+		assertEquals(0, arrayLen(pmoSL) - lenBeforeMock);
+	}
+	
 	// ============  END TESTING:  Non-Persistent Property Methods =================
 
 	// ================== START TESTING: Overridden Methods ========================
