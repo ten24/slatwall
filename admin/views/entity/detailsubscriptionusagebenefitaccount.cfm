@@ -50,27 +50,23 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.subscriptionUsage" type="any">
+<cfparam name="rc.subscriptionUsageBenefitAccount" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.subscriptionUsage#" edit="#rc.edit#" saveActionQueryString="subscriptionUsageID=#rc.subscriptionUsage.getSubscriptionUsageID()#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.subscriptionUsage#">
-			<hb:HibachiProcessCaller entity="#rc.subscriptionUsage#" action="admin:entity.preProcessSubscriptionUsage" processContext="renew" type="list" modal="true" />
-			<hb:HibachiProcessCaller entity="#rc.subscriptionUsage#" action="admin:entity.preProcessSubscriptionUsage" processContext="cancel" type="list" modal="true" />
-			<hb:HibachiProcessCaller entity="#rc.subscriptionUsage#" action="admin:entity.processSubscriptionUsage" processContext="updateStatus" type="list" />
-			<hb:HibachiProcessCaller entity="#rc.subscriptionUsage#" action="admin:entity.processSubscriptionUsage" processContext="sendRenewalReminder" type="list" />
-			<hb:HibachiProcessCaller entity="#rc.subscriptionUsage#" action="admin:entity.preprocesssubscriptionusage" processContext="addUsageBenefit" type="list" modal="true" />
-		</hb:HibachiEntityActionBar>
+	<hb:HibachiEntityDetailForm object="#rc.subscriptionUsageBenefitAccount#" edit="#rc.edit#"
+									sRedirectAction="admin:entity.detailsubscriptionUsage" 
+									saveActionQueryString="subscriptionUsageID=#rc.subscriptionUsageBenefitAccount.getSubscriptionUsageBenefit().getSubscriptionUsage().getsubscriptionUsageID()#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.subscriptionUsageBenefitAccount#" edit="#rc.edit#"
+									backAction="admin:entity.detailsubscriptionusage"
+								  	backQueryString="subscriptionUsageID=#rc.subscriptionUsageBenefitAccount.getSubscriptionUsageBenefit().getSubscriptionUsage().getsubscriptionUsageID()#"
+								  	cancelAction="admin:entity.detailsubscriptionUsage"
+								  	cancelQueryString="subscriptionUsageID=#rc.subscriptionUsageBenefitAccount.getSubscriptionUsageBenefit().getSubscriptionUsage().getsubscriptionUsageID()#" 
+								  	deleteQueryString="subscriptionUsageID=#rc.subscriptionUsageBenefitAccount.getSubscriptionUsageBenefit().getSubscriptionUsage().getsubscriptionUsageID()#&redirectAction=admin:entity.detailsubscriptionUsage" />
 		
-		<hb:HibachiEntityDetailGroup object="#rc.subscriptionUsage#">
-			<hb:HibachiEntityDetailItem view="admin:entity/subscriptionusagetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<hb:HibachiEntityDetailItem view="admin:entity/subscriptionusagetabs/usagebenifits" />
-			<hb:HibachiEntityDetailItem property="subscriptionStatus" />
-			<hb:HibachiEntityDetailItem view="admin:entity/subscriptionusagetabs/orderitems" />
-			<hb:HibachiEntityDetailItem view="admin:entity/subscriptionusagetabs/subscriptionusagesettings" />
-			<hb:HibachiEntityDetailItem view="admin:entity/subscriptionusagetabs/subscriptionusageaccounts" />
-			<hb:HibachiEntityDetailItem view="admin:entity/subscriptionusagetabs/subscriptionusageaccess" />
+		<hb:HibachiEntityDetailGroup object="#rc.subscriptionUsageBenefitAccount#">
+			<hb:HibachiEntityDetailItem view="admin:entity/subscriptionusagebenefitaccounttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 		</hb:HibachiEntityDetailGroup>
+
 	</hb:HibachiEntityDetailForm>
 </cfoutput>
