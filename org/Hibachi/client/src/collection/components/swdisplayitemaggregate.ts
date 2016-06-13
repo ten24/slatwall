@@ -55,11 +55,14 @@ class SWDisplayItemAggregate{
                     if(aggregate == 'count'){
                         scope.selectedProperty.aggregate = aggregate;
                         scope.selectedPropertyChanged({selectedProperty:scope.selectedProperty});
+                    }else{
+                        scope.aggegate.currentObject = scope.selectedProperty.cfc;
                     }
                 };
 
                 scope.selectedDisplayOptionChanged = function(selectedDisplayOption){
                     selectedDisplayOption.aggregate = scope.aggegate.selectedAggregate;
+                    selectedDisplayOption.aggregateObject = scope.aggegate.currentObject;
                     scope.selectedPropertyChanged({selectedProperty:selectedDisplayOption});
                 };
 

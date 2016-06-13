@@ -152,7 +152,14 @@ class SWDisplayOptions{
                                     aggregateFunction : selectedProperty.aggregate.toUpperCase(),
                                     aggregateAlias : selectedProperty.propertyIdentifier.split(/[._]+/).pop()+selectedProperty.aggregate.charAt(0).toUpperCase() + selectedProperty.aggregate.slice(1)
                                 };
-                                column['title'] = rbkeyService.getRBKey('entity.'+selectedProperty.cfc.replace('_','')+'.'+column['aggregate']['aggregateAlias']);
+                                if(selectedProperty.cfc){
+                                    column['title'] = rbkeyService.getRBKey('entity.'+selectedProperty.cfc+'.'+column['aggregate']['aggregateAlias']);
+                                }else if(selectedProperty.aggregateObject){
+                                    column['title'] = rbkeyService.getRBKey('entity.'+selectedProperty.aggregateObject+'.'+column['aggregate']['aggregateAlias']);
+                                }else{
+                                    column['title'] = rbkeyService.getRBKey('entity.'+selectedProperty.propertyIdentifier.split(/[._]+/).pop()+'.'+column['aggregate']['aggregateAlias']);
+                                }
+
                             }
                             $scope.columns.push(column);
 
