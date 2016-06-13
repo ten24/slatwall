@@ -40,7 +40,7 @@ class SWSkuCurrencySelector implements ng.IDirective{
 		skuPartialsPath,
 	    slatwallPathBuilder
     ){
-        this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath)+"swcurrencyselector.html";
+        this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath)+"skucurrencyselector.html";
     }
 
     public link:ng.IDirectiveLinkFn = (scope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, formController:any, transcludeFn:ng.ITranscludeFunction) =>{

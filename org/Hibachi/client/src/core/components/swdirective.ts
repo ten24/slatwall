@@ -3,18 +3,22 @@
 class SWDirective{
 	public static Factory(){
 		var directive = (
-			$compile
+			$compile,
+			utilityService
 		)=>new SWDirective(
-			$compile
+			$compile,
+			utilityService
 		);
 		directive.$inject = [
-			'$compile'
+			'$compile',
+			'utilityService'
 		];
 		return directive;
 	}
     //@ngInject
 	constructor(
-		$compile
+		$compile,
+		utilityService
 	){
 		return {
 			restrict: 'AE',
@@ -25,7 +29,13 @@ class SWDirective{
 			},
 			controllerAs: "swDirective",
 			link: function(scope, element, attrs) {
-
+				var tempVariables = {}; 
+				angular.forEach(scope.variables, (value,key)=>{
+               	 if(key.toString().charAt(0) != "$" && value != " "){
+                	    tempVariables[utilityService.keyToAttributeString(key)] = value;
+                	}
+            	});
+				scope.variables = tempVariables;
 		        var template = '<' + scope.directiveTemplate + ' ';
 		        if(angular.isDefined(scope.variables)){
 			        angular.forEach(scope.variables, (value,key)=>{

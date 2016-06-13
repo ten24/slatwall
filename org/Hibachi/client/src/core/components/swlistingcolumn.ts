@@ -5,6 +5,8 @@ class SWListingColumnController{
     public editable:boolean;
     public cellView:string;
     public hasCellView:boolean=false;
+    public headerView:string; 
+    public hasHeaderView:boolean=false;
     //@ngInject
     constructor(
         public $injector
@@ -22,6 +24,14 @@ class SWListingColumnController{
                 this.hasCellView = true;
             }else{
                 throw(this.cellView + ' is not an existing directive');
+            }
+        }
+        if(this.headerView){
+            if(this.$injector.has(this.headerView+'Directive')){
+                console.log('directive Found!');
+                this.hasHeaderView = true;
+            }else{
+                throw(this.hasHeaderView + ' is not an existing directive');
             }
         }
     }
@@ -45,6 +55,7 @@ class SWListingColumn implements ng.IDirective{
         editable:"=?",
         buttonGroup:"=?",
         cellView:"@?",
+        headerView:"@?",
         fallbackPropertyIdentifiers:"@?"
     };
     public controller=SWListingColumnController;
@@ -81,11 +92,16 @@ class SWListingColumn implements ng.IDirective{
             range:scope.swListingColumn.range,
             editable:scope.swListingColumn.editable,
             buttonGroup:scope.swListingColumn.buttonGroup,
+            hasCellView:scope.swListingColumn.hasCellView,
+            hasHeaderView:scope.swListingColumn.hasHeaderView, 
             isVisible:scope.swListingColumn.isVisible || true
         };
 
         if(scope.swListingColumn.hasCellView){
             column.cellView = scope.swListingColumn.cellView;
+        }
+        if(scope.swListingColumn.hasHeaderView){
+            column.headerView = this.utilityService.camelCaseToSnakeCase(scope.swListingColumn.headerView);
         }
 
         //aggregate logic

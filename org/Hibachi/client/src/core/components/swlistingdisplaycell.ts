@@ -60,19 +60,14 @@ class SWListingDisplayCellController{
             this.template = htmlCellView;
             
             //convert the page records into attrs
-            this.templateVariables = {}; 
-           angular.forEach(this.pageRecord, (value,key)=>{
-                if(key.toString().charAt(0) != "$" && value != " "){
-                    this.templateVariables[this.utilityService.keyToAttributeString(key)] = value;
-                }
-            });
+            this.templateVariables = this.pageRecord; 
             if(angular.isDefined(this.column.columnID)){
-                this.templateVariables["data-column"] = this.column.columnID;
+                this.templateVariables["column"] = this.column.columnID;
             }
             if(angular.isDefined(this.column.propertyIdentifier)){
-                this.templateVariables["data-column-property-identifier"] = this.column.propertyIdentifier;
+                this.templateVariables["columnPropertyIdentifier"] = this.column.propertyIdentifier;
             }
-            this.templateVariables["data-listing-display-id"] = this.swListingDisplay.tableID; 
+            this.templateVariables["listingDisplayID"] = this.swListingDisplay.tableID; 
         }else{
             this.templateUrl = this.getDirectiveTemplate();
         }
