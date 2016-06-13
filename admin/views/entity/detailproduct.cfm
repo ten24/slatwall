@@ -108,10 +108,10 @@ Notes:
 			<!--- Relating --->
 			<hb:HibachiEntityDetailItem property="listingPages" count="#rc.product.getListingPagesCount()#"/>
 			<hb:HibachiEntityDetailItem property="categories" />
-			<hb:HibachiEntityDetailItem property="relatedProducts" />
+			<hb:HibachiEntityDetailItem property="relatedProducts" count="#rc.product.getRelatedProductsCount()#" />
 
 			<!--- Reference --->
-			<hb:HibachiEntityDetailItem property="productReviews" />
+			<hb:HibachiEntityDetailItem property="productReviews" count="#rc.product.getProductReviewsCount()#" />
 			<hb:HibachiEntityDetailItem property="vendors" />
 
 			<!--- Settings --->
