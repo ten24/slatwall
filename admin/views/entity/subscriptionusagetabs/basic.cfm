@@ -25,7 +25,9 @@
 			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="gracePeriodTerm" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="nextBillDate" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="nextReminderEmailDate" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage.getInitialSku()#" property="skuCode" edit="false" title="#$.slatwall.getRBKey('define.initialSku')#" valuelink="#$.slatwall.buildURL(action='admin:entity.detailsku',querystring='skuID=#rc.subscriptionUsage.getInitialSku().getSkuID()#')#">
+			<cfif !isNull(rc.subscriptionUsage.getInitialSku())>
+				<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage.getInitialSku()#" property="skuCode" edit="false" title="#$.slatwall.getRBKey('define.initialSku')#" valuelink="#$.slatwall.buildURL(action='admin:entity.detailsku',querystring='skuID=#rc.subscriptionUsage.getInitialSku().getSkuID()#')#">
+			</cfif>
 			<cfif rc.edit>
 				<cfif !isNull(rc.subscriptionUsage.getRenewalSku())>
 					<cfset renewalSkuID = rc.subscriptionUsage.getRenewalSku().getSkuID() />
