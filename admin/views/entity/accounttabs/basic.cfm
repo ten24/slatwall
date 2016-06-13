@@ -30,7 +30,7 @@
 					<cfsavecontent variable="thisValue">
 						<hb:HibachiActionCaller text="#$.slatwall.rbKey('define.remove')#" action="admin:entity.deleteAccountAuthentication" queryString="accountAuthenticationID=#accountAuthentication.getAccountAuthenticationID()#&redirectAction=admin:entity.detailAccount&accountID=#rc.account.getAccountID()#" />
 					</cfsavecontent>
-					<hb:HibachiFieldDisplay title="#accountAuthentication.getSimpleRepresentation()#" value="#thisValue#" edit="false" displayType="table">	
+					<hb:HibachiFieldDisplay ignoreHTMLEditFormat="true" title="#accountAuthentication.getSimpleRepresentation()#" value="#thisValue#" edit="false" displayType="table">	
 				</cfloop>
 			</hb:HibachiPropertyTable>
 		</hb:HibachiPropertyList>
