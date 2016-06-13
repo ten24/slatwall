@@ -69,7 +69,7 @@ class SWListingControlsController {
             this.paginator.setCurrentPage(1);
             this.collectionConfig.setColumns(this.backupColumnsConfig);
         }else{
-                this.collectionConfig.setKeywords(this.searchText);
+            this.collectionConfig.setKeywords(this.searchText);
             this.paginator.setCurrentPage(1);
         }
     };

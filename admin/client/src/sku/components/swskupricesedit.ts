@@ -2,10 +2,17 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWSkuPricesEditController{
     
-    public skuId;
-    public bundledSkuSkuId; 
+    public skuId:string;
+    public skuSkuPriceId:string;
+    public skuPriceId:string;
+    public minQuantity;
+    public maxQuantity; 
+    public price; 
+    public currencyCode:string;
+    public bundledSkuSkuId:string; 
    
     public sku; 
+    public skuPrices
     
     public collectionConfig; 
     
@@ -14,30 +21,27 @@ class SWSkuPricesEditController{
         private collectionConfigService,
         private $hibachi
     ){
-        if(angular.isUndefined(this.skuId) && angular.isDefined(this.bundledSkuSkuId)){
-            this.skuId = this.bundledSkuSkuId;
+        if(angular.isUndefined(this.skuPrices)){
+            this.skuPrices = []; 
         }
-        if(angular.isUndefined(this.skuId) && angular.isUndefined(this.sku)){
-            throw("You must provide a skuID to SWSkuPriceSingleEditController");
+        if(angular.isDefined(this.skuPriceId)){
+            var skuPriceData = {
+                skuPriceID:this.skuPriceId, 
+                minQuantity:this.minQuantity,
+                maxQuantity:this.maxQuantity, 
+                currencyCode:this.currencyCode,
+                price:this.price
+            }
+            this.skuPrices.push(this.$hibachi.populateEntity("SkuPrice",skuPriceData));
         }
-        /*if(angular.isUndefined(this.sku)){
-            this.collectionConfig = this.collectionConfigService.newCollectionConfig("Sku"); 
-            this.collectionConfig.addFilter("skuID", this.skuId, "=");
-            this.collectionConfig.setAllRecords(true);
-            this.collectionConfig.getEntity().then(
-                (response)=>{
-                    if(angular.isDefined(response.records) && angular.isDefined(response.records[0])){
-                        this.sku = this.$hibachi.newEntity('Sku');
-                        angular.extend(this.sku.data, response.records[0]);
-                    } else { 
-                        throw("There was a problem fetching the sku in SWSkuPriceSingleEditController")
-                    }
-                },
-                (reason)=>{
-                    //there was an error 
-                }
-           ); 
-        }*/
+        if(angular.isDefined(this.skuId)){
+            var skuData = {
+                skuID:this.skuId,
+                currencyCode:this.currencyCode,
+                price:this.price
+            }
+            this.sku = this.$hibachi.populateEntity("Sku",skuData);
+        }
     }    
 
 }
@@ -48,12 +52,17 @@ class SWSkuPricesEdit implements ng.IDirective{
     public scope = {}; 
     public bindToController = {
         skuId:"@",
+        skuSkuPriceId:"@",
+        skuPriceId:"@",
+        minQuantity:"@",
+        maxQuantity:"@",
+        currencyCode:"@",
+        price:"@",
         bundledSkuSkuId:"@",
         sku:"=?"
     };
     public controller = SWSkuPricesEditController;
     public controllerAs="swSkuPricesEdit";
-   
    
     public static Factory(){
         var directive = (

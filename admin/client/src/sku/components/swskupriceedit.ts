@@ -43,6 +43,12 @@ class SWSkuPriceEditController{
         if(angular.isUndefined(this.price) && angular.isDefined(this.bundledSkuPrice)){
             this.price = this.bundledSkuPrice;
         }
+        if(angular.isDefined(this.sku)){
+            this.sku.data.price =  this.currencyFilter(this.sku.data.price, this.currencyCode, 2, false);
+        }
+        if(angular.isDefined(this.skuPrice)){
+            this.skuPrice.data.price =  this.currencyFilter(this.skuPrice.data.price, this.currencyCode, 2, false);
+        }
         if(angular.isUndefined(this.skuId) 
             && angular.isUndefined(this.sku)
             && angular.isUndefined(this.skuPriceId)
@@ -64,6 +70,7 @@ class SWSkuPriceEditController{
             if(angular.isDefined(this.skuPriceId) && angular.isUndefined(this.skuPrice)){
                 var skuPriceData = { 
                     skuPriceId:this.skuPriceId,
+                    currencyCode : this.currencyCode,
                     minQuantity:this.minQuantity,
                     maxQuantity:this.maxQuantity,
                     price: this.currencyFilter(this.price, this.currencyCode, 2, false)

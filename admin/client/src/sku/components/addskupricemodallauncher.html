@@ -51,8 +51,10 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="" class="control-label">Currency Code</label>
-                                    <select class="form-control">
-
+                                    <select class="form-control" 
+                                            name="currencyCode"
+                                            ng-model="swAddSkuPriceModalLauncher.skuPrice.data.currencyCode"
+                                            ng-options="item as item for item in swAddSkuPriceModalLauncher.currencyCodeOptions track by item">
                                     </select>
                                 </div>
                             </div>

@@ -652,8 +652,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public string function getEligibleCurrencyCodeList(){
 		if(!structKeyExists(variables, "eligibleCurrencyCodeList")) {
 			variables.currencyCodeList = "";
+
 			for(var key in this.getCurrencyDetails()){
-				listAppend(variables.currencyCodeList, key);
+				variables.currencyCodeList = listAppend(variables.currencyCodeList, key);
 			}
 		}
 		return variables.currencyCodeList;
