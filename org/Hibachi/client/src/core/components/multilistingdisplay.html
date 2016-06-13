@@ -74,9 +74,9 @@
                             <!-- Sortable -->
                             <th class="sort" data-ng-if="swMultiListingDisplay.sortable">&nbsp;</th>
                             <!-- TODO: CREATE FLAG IN COLUMN TO SET CLASS 's-detail-hidden-content'-->
-                            <th data-ng-repeat="column in swMultiListingDisplay.columns" class="data {{column.tdClass}}" data-ng-class="{'s-detail-hidden-content': column.CHANGE_THIS_LATER}" data-ng-if="column.isVisible" data-ng-click="swMultiListingDisplay.toggleOrderBy(column)" ng-cloak>
+                            <th data-ng-repeat="column in swMultiListingDisplay.columns" class="data {{column.tdClass}}" data-ng-class="{'s-detail-hidden-content': column.CHANGE_THIS_LATER}" data-ng-if="column.isVisible" ng-cloak>
                                 <span data-ng-bind="column.title" style="cursor: pointer"></span>
-                                <a href data-ng-if="!(column.persistent == false)" class="s-sort-arrows">
+                                <a href data-ng-if="!(column.persistent == false) && !column.hasHeaderView && !column.hasCellView" data-ng-click="swMultiListingDisplay.toggleOrderBy(column)" class="s-sort-arrows">
                                     <svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
                                         <g transform="translate(0.5, 0.5)">
                                             <polygon class="s-ascending" data-ng-class="{'s-active':swMultiListingDisplay.columnOrderBy(column) == 'DESC'}" fill="none" stroke="#cccccc" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon>
