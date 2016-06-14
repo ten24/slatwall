@@ -105,9 +105,6 @@ class CollectionConfig {
         private isDistinct:boolean = false
 
     ){
-        console.log('abc');
-        console.log(rbkeyService);
-        console.log($hibachi);
         this.$hibachi = $hibachi;
         this.rbkeyService = rbkeyService;
         if(angular.isDefined(this.baseEntityName)){

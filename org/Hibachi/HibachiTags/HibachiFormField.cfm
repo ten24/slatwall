@@ -176,7 +176,7 @@
 							<cfset thisOptionName = option />
 							<cfset thisOptionValue = option />
 						<cfelse>
-							<cfloop collection="#option#" item="local.key">
+							<cfloop collection="#option#" item="key">
 								<cfif key eq "name">
 									<cfset thisOptionName = option[ key ] />
 								<cfelseif key eq "value">

@@ -57,7 +57,32 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="stockService" type="any";
 	property name="settingService" type="any";
 	property name="typeService" type="any";
+	
+	public string function getSkuDefinitionBySkuIDAndBaseProductTypeID(required string skuID, required string baseProductTypeID){
+		var skuDefinition = "";
+		if(isNull(arguments.baseProductTypeID)){
+			arguments.baseProductTypeID = "";
+		}
+		
+		switch (arguments.baseProductTypeID)
+		{
+			//merchandist
+			case "444df2f7ea9c87e60051f3cd87b435a1":
+				skuDefinition = getSkuDao().getSkuDefinitionForMerchandiseBySkuID(arguments.skuID);
+	    		break;
+			//subscription
+	    	case "444df2f9c7deaa1582e021e894c0e299":
+				break;
+			//event
+			case "444df315a963bea00867567110d47728":
+				break;
 
+			default:
+				skuDefinition = "";
+		}
+		return skuDefinition;
+	}
+	
 	public any function processImageUpload(required any Sku, required struct imageUploadResult) {
 		var imagePath = arguments.Sku.getImagePath();
 		var imageSaved = getService("imageService").saveImageFile(uploadResult=arguments.imageUploadResult,filePath=imagePath,allowedExtensions="jpg,jpeg,png,gif");

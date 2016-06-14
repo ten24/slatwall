@@ -341,8 +341,6 @@ class SWListingDisplayController{
 
         if(this.multiselectValues && this.multiselectValues.length){
             //select all owned ids
-            console.log('swListingDisplay');
-            console.log(this.multiselectValues);
             if(angular.isString(this.multiselectValues)){
                 this.multiselectValues = this.multiselectValues.split(',');    
             }
@@ -681,8 +679,6 @@ class SWListingDisplayController{
             }else{
                 propertyIdentifierWithoutAlias = propertyIdentifier;
             }
-            console.log('pwithoutid');
-            console.log(this.utilityService.replaceAll(propertyIdentifierWithoutAlias,'.','_'));
             return this.utilityService.replaceAll(propertyIdentifierWithoutAlias,'.','_');
         }
         return '';
