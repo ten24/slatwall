@@ -171,8 +171,20 @@ Notes:
 			<cfloop array="#orderPaymentList.getRecords()#" index="orderPayment">
 				<cfset i++ />
 				<tr>
-					<td>#orderPayment.getOrder().getOrderNumber()#</td>
-					<td>#orderPayment.getPaymentTerm().getPaymentTermName()#</td>
+					<td>
+						<cfif 	!isNull(orderPayment.getOrder()) 
+								&& !isNull(orderPayment.getOrder().getOrderNumber())
+						>
+							#orderPayment.getOrder().getOrderNumber()#
+						</cfif>
+					</td>
+					<td>
+						<cfif 	!isNull(orderPayment.getPaymentTerm()) 
+								&& !isNull(orderPayment.getPaymentTerm().getPaymentTermName())
+						>
+							#orderPayment.getPaymentTerm().getPaymentTermName()#
+						</cfif>
+					</td>
 					<td>#orderPayment.getFormattedValue('paymentDueDate', 'date' )#</td>
 					<td>#orderPayment.getOrder().getFormattedValue('paymentAmountTotal')#</td>
 					<td>#orderPayment.getOrder().getFormattedValue('paymentAmountReceivedTotal')#</td>
