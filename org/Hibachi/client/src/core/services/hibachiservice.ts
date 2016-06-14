@@ -226,8 +226,6 @@ class HibachiService{
 			params.allRecords = options.allRecords || '';
 			params.defaultColumns = options.defaultColumns || true;
 			params.processContext = options.processContext || '';
-            console.log(this.appConfig);
-            console.log(this.appConfig);
 			var urlString = this.getUrlWithActionPrefix()+'api:main.get&entityName='+entityName;
 		}
 

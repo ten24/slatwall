@@ -29,8 +29,6 @@ class SWWorkflowBasic{
 			},
 			templateUrl : hibachiPathBuilder.buildPartialsPath(workflowPartialsPath) + "workflowbasic.html",
 			link : function(scope, element, attrs) {
-				console.log('workflowtest');
-				console.log(scope.workflow);
 			}
 		};
 	}

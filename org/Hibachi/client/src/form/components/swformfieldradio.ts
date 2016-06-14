@@ -24,7 +24,6 @@ class SWFormFieldRadio implements ng.IDirective {
 				propertyDisplay:"="
 			},
 			link:function(scope, element, attr, formController){
-				console.log('radio');
 				var makeRandomID = function makeid(count)
 				{
 					var text = "";
