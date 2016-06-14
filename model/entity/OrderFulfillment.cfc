@@ -110,6 +110,10 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="totalShippingWeight" type="numeric" persistent="false" hb_formatType="weight";
     property name="totalShippingQuantity" type="numeric" persistent="false" hb_formatType="weight";
     property name="shipmentItemMultiplier" type="numeric" persistent="false";
+    property name="hasOrderWithMinAmountRecievedRequiredForFulfillment" type="boolean" persistent="false";
+	property name="isAutoFulfillment" type="boolean" persistent="false";
+	property name="isAutoFulfillmentReadyToBeFulfilled" type="boolean" persistent="false";
+    
     
 	// Deprecated
 	property name="discountTotal" persistent="false";
@@ -170,7 +174,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		}
 	}
 
-	public boolean function hasGiftCardRecipients(){
+	public boolean function hasFulfillmentItemsWithAssignedRecipients(){
 		for(var item in this.getOrderFulfillmentItems()){
 			if(!item.hasAllGiftCardsAssigned()){
 				return false;
@@ -180,7 +184,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	}
 
 	public boolean function needsEmailForFulfillment(){
-		return !hasGiftCardRecipients();
+		return !hasFulfillmentItemsWithAssignedRecipients();
 	}
 
 	public any function getNumberOfNeededGiftCardCodes(){
@@ -466,6 +470,19 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     	}
 
     	return totalShippingWeight;
+    }
+    
+    public boolean function hasOrderWithMinAmountRecievedRequiredForFulfillment() {
+    	return  (   !isNull(this.getOrder())
+    				&& (
+    				  	this.getOrder().getTotal() == 0
+    				  		|| (
+		    				  	!isNull(this.getFulfillmentMethod())
+		    				  	&& this.getFulfillmentMethod().setting('fulfillmentMethodAutoMinReceivedPercentage')
+		    						<= precisionEvaluate( this.getOrder().getPaymentAmountReceivedTotal() * 100 / this.getOrder().getTotal() )
+		    				)
+    				  )
+    			);
     }
     
     
