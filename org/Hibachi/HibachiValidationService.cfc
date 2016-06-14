@@ -416,12 +416,24 @@ component output="false" accessors="true" extends="HibachiService" {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
 		if(!isNull(propertyObject)) {
 			if(arguments.constraintValue == 0){
-				propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#Count");
+				var propertyCount = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#Count");
+				if(propertyCount==0){
+					return true;
+				}
 			}else{
 				var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
 			}
 		}
-		if(isNull(propertyValue) || (isArray(propertyValue) && arrayLen(propertyValue) <= arguments.constraintValue) || (isStruct(propertyValue) && structCount(propertyValue) <= arguments.constraintValue)) {
+		if(
+			isNull(propertyValue) 
+			|| (
+				isArray(propertyValue) 
+				&& arrayLen(propertyValue) <= arguments.constraintValue
+			) || (
+				isStruct(propertyValue) 
+				&& structCount(propertyValue) <= arguments.constraintValue
+			)
+		) {
 			return true;
 		}
 		return false;
