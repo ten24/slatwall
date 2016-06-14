@@ -927,111 +927,207 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 	}
 */
 
-	public void function getTermAccountBalanceTest() {
+	public void function getTermAccountBalance_UnreceivedAndUnassigned_Test() {
+		//testing both for loops have been reached
 		var accountData1 = {
 			accountID = "",
 			firstName = "testPaymentMethodType",
 			lastName = "pmLastName"
 		};
 		var mockAccount1 = createPersistedTestEntity("Account", accountData1);
-
-		var termAccountOrderPaymentsData1 = {
-			orderPaymentID = "",
-			amount = 2300.00,
-			orderPaymentType = "444df2f0fed139ff94191de8fcd1f61b",//optCharge
-			termPaymentAccount = {
-				termPaymentAccountID = mockAccount1.getAccountID()
-			}
-		};
-		var termAccountOrderPayment1 = createPersistedTestEntity("OrderPayment", termAccountOrderPaymentsData1);
 		
-		var paymentTransactionsData = {
-			paymentTransactionID = "",
-			amountReceived = 300.00,
-			amountCredited = 100.00,
-			orderPayment = {
-				orderPaymentID = termAccountOrderPayment1.getOrderPaymentID()
-			}
-		};
-		var paymentTransaction1 = createPersistedTestEntity("PaymentTransaction", paymentTransactionsData);
-		
-//		var accountPaymentData = {
-//			accountPaymentID = "",
-//			
-//		};
-		
-		request.debug(mockAccount1.getTermAccountBalance());
-
-//		var orderPaymentData1 = {
-//				orderPaymentID = "",
-//				termPaymentAccount = ""
-//		};
-//		var orderPayment1 = createPersistedTestEntity('OrderPayment', orderPaymentData1);
-//		var orderPaymentData2 = {
-//				orderPaymentID = "",
-//				paymentMethod = {
-//					paymentMethodID = paymentMethod2.getPaymentMethodID()
-//				},
-//				order = {
-//					orderID = order1.getOrderID()
-//				}
-//		};
-//		var orderPayment2 = createPersistedTestEntity('OrderPayment', orderPaymentData2);
-//		var orderPaymentData3 = {
-//				orderPaymentID = "",
-//				paymentMethod = {
-//					paymentMethodID = paymentMethod3.getPaymentMethodID()
-//				},
-//				order = {
-//					orderID = order1.getOrderID()
-//				}
-//		};
-//		var orderPayment3 = createPersistedTestEntity('OrderPayment', orderPaymentData3);
-//		var orderPaymentData4 = {
-//				orderPaymentID = "",
-//				paymentMethod = {
-//					paymentMethodID = paymentMethod4.getPaymentMethodID()
-//				},
-//				order = {
-//					orderID = order1.getOrderID()
-//				}
-//		};
-//		var orderPayment4 = createPersistedTestEntity('OrderPayment', orderPaymentData4);
-	}
-	
-	
-	public void function getUnenrolledAccountLoyaltyOptionsTest() {
-		
-		var accountData1 = {
-			accountID = "",
-			firstName = "LoyaltyTest"
-		};
-		var mockAccount1 = createPersistedTestEntity('Account', accountData1);
-		
-		var accountLoyaltyData1 = {
-			accountLoyaltyID = "",
+		var orderData = {
+			orderID = "",
 			account = {
 				accountID = mockAccount1.getAccountID()
 			}
 		};
-		var mockAccountLoyalty1 = createPersistedTestEntity("AccountLoyalty", accountLoyaltyData1);
+		var mockOrder1 = createPersistedTestEntity("Order", orderData);
+
+		var orderPaymentsData1 = {
+			orderPaymentID = "",
+			amount = 2300,
+			orderPaymentType = "444df2f0fed139ff94191de8fcd1f61b",//optCharge
+			order = {
+				orderID = mockOrder1.getOrderID()
+			},
+			termPaymentAccount = {
+				accountID = mockAccount1.getAccountID()
+			}
+		};
+		var orderPayment1 = createPersistedTestEntity("OrderPayment", orderPaymentsData1);
+		
+		var accountPaymentData = {
+			accountPaymentID = "",
+			account = {
+				accountID = mockAccount1.getAccountID()
+			}
+		};
+		var accountPayment1 = createPersistedTestEntity("AccountPayment", accountPaymentData);
+		
+		var accountPaymentAppliedData = {
+			accountPaymentAppliedID = "",
+			amount = 10.00,
+			accountPaymentType = {
+					typeID="444df32dd2b0583d59a19f1b77869025" //aptCharge
+			},
+			accountPayment = {
+				accountPaymentID = accountPayment1.getAccountPaymentID()
+			}
+		};
+		var accountPaymentApplied1 = createPersistedTestEntity("AccountPaymentApplied", accountPaymentAppliedData);
+
+		assertEquals(2290, mockAccount1.getTermAccountBalance());
+	}
+	
+	public void function getTermAccountBalance_UnreceivedOpenOrderPayment_Test() {
+		//testing only the first loop been reached
+		var accountData1 = {
+			accountID = "",
+			firstName = "testPaymentMethodType",
+			lastName = "pmLastName"
+		};
+		var mockAccount1 = createPersistedTestEntity("Account", accountData1);
+		
+		var orderData = {
+			orderID = "",
+			account = {
+				accountID = mockAccount1.getAccountID()
+			}
+		};
+		var mockOrder1 = createPersistedTestEntity("Order", orderData);
+
+		var orderPaymentsData1 = {
+			orderPaymentID = "",
+			amount = 2300,
+			orderPaymentType = "444df2f0fed139ff94191de8fcd1f61b",//optCharge
+			order = {
+				orderID = mockOrder1.getOrderID()
+			},
+			termPaymentAccount = {
+				accountID = mockAccount1.getAccountID()
+			}
+		};
+		var orderPayment1 = createPersistedTestEntity("OrderPayment", orderPaymentsData1);
+		
+		var paymentTransactionsData = {
+			paymentTransactionID = "",
+			amountReceived = 800,
+			amountCredited = 100,
+			amountAuthorized = 1000,
+			orderPayment = {
+				orderPaymentID = orderPayment1.getOrderPaymentID()
+			}
+		};
+		var paymentTransaction1 = createPersistedTestEntity("PaymentTransaction", paymentTransactionsData);	
+
+		assertEquals(1500, mockAccount1.getTermAccountBalance());
+	}
+	
+	public void function getTermAccountBalance_UnassignedPayment_Test() {
+		//testing both for loops have been reached
+		var accountData1 = {
+			accountID = "",
+			firstName = "testPaymentMethodType",
+			lastName = "pmLastName"
+		};
+		var mockAccount1 = createPersistedTestEntity("Account", accountData1);
+		
+		var orderData = {
+			orderID = "",
+			account = {
+				accountID = mockAccount1.getAccountID()
+			}
+		};
+		var mockOrder1 = createPersistedTestEntity("Order", orderData);
+		
+		var accountPaymentData = {
+			accountPaymentID = "",
+			account = {
+				accountID = mockAccount1.getAccountID()
+			}
+		};
+		var accountPayment1 = createPersistedTestEntity("AccountPayment", accountPaymentData);
+		
+		var accountPaymentAppliedData = {
+			accountPaymentAppliedID = "",
+			amount = 10.00,
+			accountPaymentType = {
+					typeID="444df32dd2b0583d59a19f1b77869025" //aptCharge
+			},
+			accountPayment = {
+				accountPaymentID = accountPayment1.getAccountPaymentID()
+			}
+		};
+		var accountPaymentApplied1 = createPersistedTestEntity("AccountPaymentApplied", accountPaymentAppliedData);
+
+		assertEquals(-10, mockAccount1.getTermAccountBalance());
+	}
+	
+/*	
+	public void function getUnenrolledAccountLoyaltyOptionsTest() {
+		//mocking: 							<- mockAccountLoyalty1ShouldReturn -> mockLoyalty1Active (activeFlag 1)
+		//mocking: mockAccount1RunFunction  <- mockAccountLoyalty2TestAccount  -> mockLoyalty3Active (activeFlag 1)
+		//mocking:							<- mockAccountLoyalty3TestFlag     -> mockLoyalty2Inactive (activeFlag 0)
+		var accountData1 = {
+			accountID = "",
+			firstName = "Loyalty1Test"
+		};
+		var mockAccount1RunFunction = createPersistedTestEntity('Account', accountData1);
 		
 		var loyaltyData1 = {
 			loyaltyID = "",
-			loyalName = "Loyalty1Name",
-			activeFlag = 1,
-			accountLoyalties = {
-				accountLoyaltyID = mockAccountLoyalty1.getAccountLoyaltyID()
+			loyaltyName = "Loyalty1Active",
+			activeFlag = 1
+		};
+		var mockLoyalty1Active = createPersistedTestEntity('Loyalty', loyaltyData1);
+		
+		var loyaltyData2 = {
+			loyaltyID = "",
+			loyaltyName = "Loyalty2Inactive",
+			activeFlag = 0
+		};
+		var mockLoyalty2Inactive = createPersistedTestEntity('Loyalty', loyaltyData2);
+		
+		var loyaltyData3 = {
+			loyaltyID = "",
+			loyaltyName = "Loyalty3active",
+			activeFlag = 1
+		};
+		var mockLoyalty3Active = createPersistedTestEntity('Loyalty', loyaltyData3);
+		
+				
+		var accountLoyaltyData1 = {
+			accountLoyaltyID = "",
+			loyalty = {
+				loyaltyID = mockLoyalty1Active.getLoyaltyID()
 			}
 		};
-		var mockLoyalty1 = createPersistedTestEntity('Loyalty', loyaltyData1);
-		var result = mockAccount1.getUnenrolledAccountLoyaltyOptions();
-		request.debug(arrayLen(result));
-		request.debug(result[2].name);
-		request.debug(result[2].value);
-		request.debug(mockLoyalty1.getLoyaltyName());
+		var mockAccountLoyalty1ShouldReturn = createPersistedTestEntity("AccountLoyalty", accountLoyaltyData1);
+		
+		var accountLoyaltyData2 = { 
+			accountLoyaltyID = "",
+			account = {
+				accountID = mockAccount1RunFunction.getAccountID()
+			},
+			loyalty = {
+				loyaltyID = mockLoyalty3Active.getLoyaltyID()
+			}
+		};
+		var mockAccountLoyalty2TestAccount = createPersistedTestEntity("AccountLoyalty", accountLoyaltyData2);
+		var accountLoyaltyData3 = {
+			accountLoyaltyID = "",
+			loyalty = {
+				loyaltyID = mockLoyalty2Inactive.getLoyaltyID()
+			}
+		};
+		var mockAccountLoyalty3TestFlag = createPersistedTestEntity("AccountLoyalty", accountLoyaltyData3);
+		
+		var result = mockAccount1RunFunction.getUnenrolledAccountLoyaltyOptions();
+		assertEquals(mockLoyalty1Active.getLoyaltyID(), result[arrayLen(result)].value);
+
 	}
-/*	
+	
 	public void function getTermAccountAvailableCredit() {
 		//TODO: how to persist setting() need to be figured out
 	}
