@@ -262,7 +262,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	// Non-Persistent Helpers
 
 	public boolean function getAllowAddOptionGroupFlag() {
- 		return arrayLen(getSkus()) eq 1 || getOptionGroupCount() gt 0;
+ 		return this.getSkusCount() eq 1 || this.getOptionGroupCount() gt 0;
  	}
 
 	public string function getPageIDs() {
@@ -811,11 +811,14 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			return getDefaultSku().getCurrencyCode();
 		}
 	}
+	
+	
 
 	public any function getEventConflictExistsFlag() {
 		if( structKeyExists(variables, "eventConflictExistsFlag") ) {
 			return variables.eventConflictExistsFlag;
 		} else {
+			
 			variables.eventConflictExistsFlag = false;
 			for(sku in getSkus()) {
 				if(sku.getEventConflictExistsFlag()) {
