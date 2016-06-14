@@ -708,26 +708,32 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		if(!structKeyExists(variables, "defaultProductImageFiles")) {
 			variables.defaultProductImageFiles = [];
 
-			var sl = getService("skuService").getSkuSmartList();
-			sl.addFilter('product.productID', getProductID());
+			var sl = getService('skuService').getSkuSmartList();
+			sl.addSelect('skuID','skuID');
+			sl.addSelect('imageFile','imageFile');
+			sl.addSelect('product.productType.productTypeIDPath','productTypeIDPath');
+			sl.addFilter('imageFile','NOT NULL');
+			sl.addFilter('product.productID',getProductID());
 			sl.setSelectDistinctFlag( true );
-			var skus = sl.getRecords();
+			var skusStructs = sl.getRecords();
 
-			for(var sku in skus) {
-				if(!isNull(sku.getImageFile())) {
-					var imageAlreadyIncluded = false;
-					for(var image in variables.defaultProductImageFiles){
-						if(image.imageFile == sku.getImageFile()){
-							imageAlreadyIncluded = true;
-						}
+			for(var sku in skusStructs) {
+				var imageAlreadyIncluded = false;
+				for(var image in variables.defaultProductImageFiles){
+					if(image.imageFile == sku['imageFile']){
+						imageAlreadyIncluded = true;
 					}
+				}
 
-					if(!imageAlreadyIncluded){
-						var imageFileStruct = {};
-						imageFileStruct['imageFile'] = sku.getImageFile();
-						imageFileStruct['skuDefinition'] = sku.getSkuDefinition();
-						arrayAppend(variables.defaultProductImageFiles, imageFileStruct);
-					}
+				if(!imageAlreadyIncluded){
+					var imageFileStruct = {};
+					imageFileStruct['imageFile'] = sku['imageFile'];
+					
+					imageFileStruct['skuDefinition'] = getService('skuService').getSkuDefinitionBySkuIDAndBaseProductTypeID(
+						sku['skuID'],
+						listFirst(sku['productTypeIDPath'])
+					);
+					arrayAppend(variables.defaultProductImageFiles, imageFileStruct);
 				}
 			}
 		}
