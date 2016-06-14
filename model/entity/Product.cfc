@@ -262,7 +262,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	// Non-Persistent Helpers
 
 	public boolean function getAllowAddOptionGroupFlag() {
- 		return this.getSkusCount() eq 1 || this.getOptionGroupCount() gt 0;
+ 		return this.getOptionGroupCount() gt 0 || this.getSkusCount() eq 1;
  	}
 
 	public string function getPageIDs() {
