@@ -71,6 +71,9 @@ class SWMultiListingDisplayController{
     public tableclass:string;
     public tableattributes:string;
     public hasSearch:boolean;
+    public baseEntity:any; 
+    public baseEntityName:string; 
+    public baseEntityID:string;
 
     public selections;
     public multiselectCount;
@@ -93,6 +96,9 @@ class SWMultiListingDisplayController{
     ){
         //Common Setup
         this.tableID = 'LD'+this.utilityService.createID();
+        if(angular.isDefined(this.baseEntityName) && angular.isDefined(this.baseEntityID)){
+            
+        }
         if(angular.isUndefined(this.defaultSelectEvent)){
             this.defaultSelectEvent = 'swSelectionToggleSelection' + this.tableID; 
         }
@@ -918,6 +924,9 @@ class SWMultiListingDisplay implements ng.IDirective{
             /*Optional*/
             title:"@?",
             childPropertyName:"@?",
+            baseEntity:"=?",
+            baseEntityName:"@?",
+            baseEntityId:"@?",
 
             /*Admin Actions*/
             actions:"=?",

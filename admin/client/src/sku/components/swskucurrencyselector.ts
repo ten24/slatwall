@@ -2,8 +2,30 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWSkuCurrencySelectorController{
 
-    constructor(){
+    public product; 
+    public currencyCodes=[];
+    public baseEntityCollectionConfig;
+    public baseEntityName:string; 
+    public baseEntityId:string
 
+    //@ngInject
+    constructor(private collectionConfigService){
+        //this should be an rbkey
+        this.currencyCodes.push("All");
+        if(angular.isDefined(this.baseEntityName) && angular.isDefined(this.baseEntityId)){
+            this.baseEntityCollectionConfig = this.collectionConfigService.newCollectionConfig(this.baseEntityName);
+            this.baseEntityCollectionConfig.addDisplayProperty("eligibleCurrencyCodeList");
+            this.baseEntityCollectionConfig.addFilter("productID",this.baseEntityId,"=");
+            this.baseEntityCollectionConfig.getEntity().then(
+                (response)=>{
+                    this.product = response.pageRecords[0]; 
+                    this.currencyCodes = this.product.data.eligibleCurrencyCodeList.split(",");
+                },
+                (reason)=>{
+                    //error callback
+                }
+            );
+        }
     }    
 
 }
@@ -13,6 +35,8 @@ class SWSkuCurrencySelector implements ng.IDirective{
     public restrict = 'EA';
     public scope = {}; 
     public bindToController = {
+        baseEntityName:"@?",
+        baseEntityId:"@?"
     };
     public controller = SWSkuCurrencySelectorController;
     public controllerAs="swSkuPriceEdit";

@@ -4,8 +4,11 @@
         <span class="caret"></span>
     </button>
     <ul class="dropdown-menu">
-        <li><a href="#" data-currency="ALL">All</a></li>
-        <li><a href="#" data-currency="USD">USD</a></li>
-        <li><a href="#" data-currency="AUD">AUD</a></li>
+        <li ng-repeat="currencyCode in swSkuCurrencySelector.currencyCodes">
+            <a ng-click="swSkuCurrencySelector.select(currencyCode)" 
+               data-currency="{{currencyCode}}" 
+               ng-bind="currencyCode">
+            </a>
+        </li>
     </ul>
 </div>
