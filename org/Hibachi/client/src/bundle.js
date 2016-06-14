@@ -1174,7 +1174,6 @@
 	                method: "GET"
 	            }).success(function (response, status, headersGetter) {
 	                _this._resourceBundle[locale] = response.data;
-	                console.log(_this._resourceBundle);
 	                deferred.resolve(response);
 	            }).error(function (response) {
 	                _this._resourceBundle[locale] = {};
@@ -1642,10 +1641,8 @@
 	            var today = baseDate.getFullYear();
 	            var start = today;
 	            for (var i = 0; i <= 5; i++) {
-	                console.log("I:", start + i);
 	                _this.years.push(start + i);
 	            }
-	            console.log("This Years", _this.years);
 	        };
 	        /** accessors for account */
 	        this.getAccount = function () {
@@ -1690,7 +1687,6 @@
 	                    if (result['cart']) {
 	                        delete result['cart'];
 	                    }
-	                    console.log("Result Sans", result);
 	                }
 	                _this[setter] = result;
 	                _this.loading = false;
@@ -1752,18 +1748,15 @@
 	                        for (var action in result.data.successfulActions) {
 	                            if (result.data.successfulActions[action].indexOf('public:cart.placeOrder') !== -1) {
 	                                _this.window.location.href = _this.confirmationUrl;
-	                                console.log(_this.window);
 	                            }
 	                        }
 	                    }
 	                    if (result.data.failureActions.length) {
 	                        _this.hasErrors = true;
-	                        console.log("Errors:", result.data.errors);
 	                    }
 	                    _this.loading = false;
 	                    deferred.resolve(result);
 	                }).catch(function (response) {
-	                    console.log("There was an error making this http call", response.status, response.data);
 	                    _this.loading = false;
 	                    deferred.reject(response);
 	                });
@@ -1809,7 +1802,6 @@
 	        this.$q = $q;
 	        this.getExpirationYears();
 	        this.window = $window;
-	        console.log("Window: ", $window);
 	    }
 	    return PublicService;
 	}());
@@ -2302,7 +2294,6 @@
 	         * @description adds events listeners
 	         */
 	        this.attach = function (callback, event, id) {
-	            console.log('event attached:' + event);
 	            if (!id) {
 	                id = _this.utilityService.createID();
 	            }
@@ -2361,7 +2352,6 @@
 	         * @description notifies all observers of a specific event
 	         */
 	        this.notify = function (event, parameters) {
-	            console.log('event called:' + event);
 	            for (var id in _this.observers[event]) {
 	                angular.forEach(_this.observers[event][id], function (callback) {
 	                    callback(parameters);
@@ -2369,7 +2359,6 @@
 	            }
 	        };
 	        this.notifyById = function (event, eventId, parameters) {
-	            console.log('event called:' + event);
 	            for (var id in _this.observers[event]) {
 	                if (id != eventId)
 	                    continue;
@@ -2924,8 +2913,6 @@
 	                params.allRecords = options.allRecords || '';
 	                params.defaultColumns = options.defaultColumns || true;
 	                params.processContext = options.processContext || '';
-	                console.log(_this.appConfig);
-	                console.log(_this.appConfig);
 	                var urlString = _this.getUrlWithActionPrefix() + 'api:main.get&entityName=' + entityName;
 	            }
 	            var deferred = _this.$q.defer();
@@ -6459,8 +6446,6 @@
 	            }
 	            if (_this.multiselectValues && _this.multiselectValues.length) {
 	                //select all owned ids
-	                console.log('swListingDisplay');
-	                console.log(_this.multiselectValues);
 	                if (angular.isString(_this.multiselectValues)) {
 	                    _this.multiselectValues = _this.multiselectValues.split(',');
 	                }
@@ -6707,8 +6692,6 @@
 	                else {
 	                    propertyIdentifierWithoutAlias = propertyIdentifier;
 	                }
-	                console.log('pwithoutid');
-	                console.log(_this.utilityService.replaceAll(propertyIdentifierWithoutAlias, '.', '_'));
 	                return _this.utilityService.replaceAll(propertyIdentifierWithoutAlias, '.', '_');
 	            }
 	            return '';
@@ -7831,9 +7814,6 @@
 	            }
 	        };
 	        this.toggleSelection = function (toggleValue, selectionid, selection) {
-	            console.log(toggleValue);
-	            console.log(selectionid);
-	            console.log(selection);
 	            if (_this.isRadio) {
 	                _this.selectionService.radioSelection(selectionid, selection);
 	                _this.toggleValue = toggleValue;
@@ -9050,9 +9030,6 @@
 	            _this.columns = columns;
 	            return _this;
 	        };
-	        console.log('abc');
-	        console.log(rbkeyService);
-	        console.log($hibachi);
 	        this.$hibachi = $hibachi;
 	        this.rbkeyService = rbkeyService;
 	        if (angular.isDefined(this.baseEntityName)) {
@@ -10164,9 +10141,6 @@
 	                if (angular.isUndefined(scope.angularLinks)) {
 	                    scope.angularLinks = false;
 	                }
-	                console.log('here');
-	                console.log(scope.collection);
-	                console.log($hibachi);
 	                scope.collectionObject = $hibachi['new' + scope.collection.collectionObject]();
 	                var escapeRegExp = function (str) {
 	                    return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
@@ -13591,7 +13565,6 @@
 	                    if (scope.entityID === 'create') {
 	                        scope.createMode = true;
 	                        scope.entity = $hibachi['new' + propertyCasedEntityName]();
-	                        console.log('Entity', scope.entity);
 	                        setupMetaData();
 	                    }
 	                    else {
@@ -13599,7 +13572,6 @@
 	                        var entityPromise = $hibachi['get' + propertyCasedEntityName]({ id: scope.entityID });
 	                        entityPromise.promise.then(function () {
 	                            scope.entity = entityPromise.value;
-	                            console.log('Entity', scope.entity);
 	                            setupMetaData();
 	                        });
 	                    }
@@ -14064,7 +14036,6 @@
 	                }
 	            }
 	            var appConfig = $hibachi.getConfig();
-	            console.log('propertyDisplay', propertyDisplay);
 	            var placeholder = '';
 	            if (angular.isDefined(propertyDisplay.object.metaData[propertyDisplay.property].hb_nullrbkey)) {
 	                placeholder = rbkeyService.getRBKey(propertyDisplay.object.metaData[propertyDisplay.property].hb_nullrbkey);
@@ -14218,33 +14189,28 @@
 	    * Property Display Controller handles the logic for this directive.
 	    */
 	var SWFFormFieldController = (function () {
-	    function SWFFormFieldController($scope) {
-	        //let vm:IFormFieldControllerVM = this;
-	        //
-	        //if (this.propertyDisplay){
-	        //    vm.propertyDisplay = this.propertyDisplay;
-	        //}else{
-	        //    vm.propertyDisplay =  {
-	        //        name: vm.name,
-	        //        class: vm.class,
-	        //        errorClass: vm.errorClass,
-	        //        type: vm.type,
-	        //        object: vm.object,
-	        //        propertyIdentifier: vm.propertyIdentifier
-	        //    };
-	        //    //console.log("Built a property display");
-	        //}
-	        this.$scope = $scope;
+	    function SWFFormFieldController() {
+	        console.log("This is", this);
+	        if (!this.propertyDisplay) {
+	            this.propertyDisplay = {
+	                name: this.name,
+	                class: this.class,
+	                errorClass: this.errorClass,
+	                type: this.type,
+	                object: this.object,
+	                propertyIdentifier: this.propertyIdentifier
+	            };
+	        }
 	    }
 	    /**
-	        * Handles the logic for the frontend version of the property display.
-	        */
+	     * Handles the logic for the frontend version of the property display.
+	     */
 	    SWFFormFieldController.$inject = ['$scope'];
 	    return SWFFormFieldController;
 	}());
 	/**
-	    * This class handles configuring formFields for use in process forms on the front end.
-	    */
+	 * This class handles configuring formFields for use in process forms on the front end.
+	 */
 	var SWFFormField = (function () {
 	    function SWFFormField(coreFormPartialsPath, hibachiPathBuilder) {
 	        this.restrict = "E";
@@ -14260,8 +14226,7 @@
 	            errorClass: "@?",
 	            type: "@?"
 	        };
-	        this.link = function (scope, element, attrs, formController, transcludeFn) {
-	        };
+	        this.link = function (scope, element, attrs, formController, transcludeFn) { };
 	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + 'swfformfield.html';
 	    }
 	    /**
@@ -14322,7 +14287,6 @@
 	     */
 	    SWFormController.prototype.handleForm = function (context, $scope) {
 	        var _this = this;
-	        //console.log("Context", context);
 	        /** local variables */
 	        this.processObject = this.name || "";
 	        var vm = context;
@@ -14785,7 +14749,6 @@
 	                propertyDisplay: "="
 	            },
 	            link: function (scope, element, attr, formController) {
-	                console.log('radio');
 	                var makeRandomID = function makeid(count) {
 	                    var text = "";
 	                    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -16818,8 +16781,6 @@
 	            },
 	            templateUrl: hibachiPathBuilder.buildPartialsPath(workflowPartialsPath) + "workflowbasic.html",
 	            link: function (scope, element, attrs) {
-	                console.log('workflowtest');
-	                console.log(scope.workflow);
 	            }
 	        };
 	    }
@@ -17480,9 +17441,6 @@
 	                   * --------------------------------------------------------------------------------------------------------
 	                   */
 	                scope.saveWorkflowTask = function (task, context) {
-	                    console.log("Context: " + context);
-	                    console.log("saving task");
-	                    console.log(scope.workflowTasks.selectedTask);
 	                    //scope.workflowTasks.selectedTask.$$setWorkflow(scope.workflow);
 	                    scope.workflowTasks.selectedTask.$$save().then(function (res) {
 	                        scope.done = true;
@@ -17595,14 +17553,11 @@
 	            },
 	            templateUrl: hibachiPathBuilder.buildPartialsPath(workflowPartialsPath) + "workflowtrigger.html",
 	            link: function (scope, element, attrs) {
-	                console.log('workflow trigger init');
 	                /**
 	                 * Selects the current workflow trigger.
 	                 */
 	                scope.selectWorkflowTrigger = function (workflowTrigger) {
-	                    console.log('SelectWorkflowTriggers');
 	                    scope.done = false;
-	                    console.log(workflowTrigger);
 	                    scope.finished = false;
 	                    scope.workflowTriggers.selectedTrigger = undefined;
 	                    var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(scope.workflowTrigger.data.workflow.data.workflowObject);
@@ -17645,8 +17600,6 @@
 	                 * Overrides the delete function for the confirmation modal. Delegates to the normal delete method.
 	                 */
 	                scope.deleteEntity = function (entity) {
-	                    console.log("Delete Called");
-	                    console.log(entity);
 	                    scope.deleteTrigger(entity);
 	                };
 	                /**
@@ -17655,7 +17608,6 @@
 	                scope.deleteTrigger = function (workflowTrigger) {
 	                    var deleteTriggerPromise = $hibachi.saveEntity('WorkflowTrigger', workflowTrigger.data.workflowTriggerID, {}, 'Delete');
 	                    deleteTriggerPromise.then(function (value) {
-	                        console.log('deleteTrigger');
 	                        scope.workflowTriggers.splice(workflowTrigger.$$index, 1);
 	                    });
 	                };
@@ -17700,7 +17652,6 @@
 	                scope.schedule = {};
 	                scope.$watch('workflowTriggers.selectedTrigger', function (newValue, oldValue) {
 	                    if (newValue !== undefined && newValue !== oldValue) {
-	                        console.log('Ooh watch me, watch me', newValue);
 	                        if (newValue.data.triggerType == 'Schedule') {
 	                            if (angular.isDefined(newValue.data.schedule)) {
 	                                scope.schedule.selectedName = newValue.data.schedule.data.scheduleName;
@@ -17727,7 +17678,6 @@
 	                scope.scheduleCollectionConfig.setDisplayProperties("scheduleID,scheduleName,daysOfMonthToRun,daysOfWeekToRun,recuringType,frequencyStartTime,frequencyEndTime,frequencyInterval");
 	                scope.daysOfweek = [];
 	                scope.daysOfMonth = [];
-	                console.log('Workflow triggers init');
 	                scope.$id = 'swWorkflowTriggers';
 	                /**
 	                 * Retrieves the workflow triggers.
@@ -17749,16 +17699,12 @@
 	                        var workflowTriggersPromise = scope.workflow.$$getWorkflowTriggers();
 	                        workflowTriggersPromise.then(function () {
 	                            scope.workflowTriggers = scope.workflow.data.workflowTriggers;
-	                            console.log('workflowtriggers');
-	                            console.log(scope.workflowTriggers);
 	                            /* resets the workflow trigger */
 	                            if (angular.isUndefined(scope.workflow.data.workflowTriggers)) {
 	                                scope.workflow.data.workflowTriggers = [];
 	                                scope.workflowTriggers = scope.workflow.data.workflowTriggers;
 	                            }
 	                            angular.forEach(scope.workflowTriggers, function (workflowTrigger, key) {
-	                                console.log('trigger');
-	                                console.log(workflowTrigger);
 	                                if (workflowTrigger.data.triggerType === 'Schedule') {
 	                                    workflowTrigger.$$getSchedule();
 	                                    workflowTrigger.$$getScheduleCollection();
@@ -17789,9 +17735,7 @@
 	                    if (!scope.eventOptions.length) {
 	                        var eventOptionsPromise = $hibachi.getEventOptions(objectName);
 	                        eventOptionsPromise.then(function (value) {
-	                            console.log('getEventOptions');
 	                            scope.eventOptions = value.data;
-	                            console.log(scope.eventOptions.name);
 	                        });
 	                    }
 	                    scope.showEventOptions = !scope.showEventOptions;
@@ -17802,7 +17746,6 @@
 	                scope.saveWorkflowTrigger = function (context) {
 	                    if (!scope.workflowTriggers.selectedTrigger.$$isPersisted()) {
 	                        scope.workflowTriggers.selectedTrigger.$$setWorkflow(scope.workflow);
-	                        console.warn(scope.workflow);
 	                    }
 	                    var saveWorkflowTriggerPromise = scope.workflowTriggers.selectedTrigger.$$save();
 	                    saveWorkflowTriggerPromise.then(function () {
@@ -17814,7 +17757,6 @@
 	                        scope.schedulePreview = {};
 	                        //Clear the form by adding a new task action if 'save and add another' otherwise, set save and set finished
 	                        if (context == 'add') {
-	                            console.log("Save and New");
 	                            scope.addWorkflowTrigger();
 	                        }
 	                        else if (context == "finish") {
@@ -17833,8 +17775,6 @@
 	                 * Changes the selected trigger value.
 	                 */
 	                scope.selectEvent = function (eventOption) {
-	                    console.log("SelectEvent");
-	                    console.log(eventOption);
 	                    //Needs to clear old and set new.
 	                    scope.workflowTriggers.selectedTrigger.data.triggerEventTitle = eventOption.name;
 	                    scope.workflowTriggers.selectedTrigger.data.triggerEvent = eventOption.value;
@@ -17846,14 +17786,11 @@
 	                    }
 	                    scope.searchEvent.name = eventOption.name;
 	                    scope.showEventOptions = false;
-	                    console.log(eventOption);
-	                    console.log(scope.workflowTriggers);
 	                };
 	                /**
 	                 * Selects a new collection.
 	                 */
 	                scope.selectCollection = function (collection) {
-	                    console.log('selectCollection');
 	                    scope.workflowTriggers.selectedTrigger.data.scheduleCollection = collection;
 	                    scope.showCollections = false;
 	                };
@@ -17875,7 +17812,6 @@
 	                 * Adds a workflow trigger.
 	                 */
 	                scope.addWorkflowTrigger = function () {
-	                    console.log('addWorkflowTrigger', scope.schedule);
 	                    var newWorkflowTrigger = $hibachi.newWorkflowTrigger();
 	                    scope.workflowTriggers.selectedTrigger = newWorkflowTrigger;
 	                };
@@ -17896,7 +17832,6 @@
 	                        formService.resetForm(scope.scheduleEntity.forms['scheduleForm']);
 	                        scope.createSchedule = false;
 	                    }, function () {
-	                        console.log('ERROR');
 	                    });
 	                };
 	                scope.selectCollection = function (item) {

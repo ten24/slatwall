@@ -35,50 +35,41 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
-/** declare an interface so we don't get errors using vm */
-interface IFormFieldControllerVM{
-	propertyDisplay:Object,
-    name:string,
-    class:string,
-    errorClass:string,
-    type:string,
-    object:Object,
-    propertyIdentifier
-}
-
 /**
 	* Property Display Controller handles the logic for this directive.
 	*/
 class SWFFormFieldController {
 	/** declare our fields so we don't get errors using this */
 	public propertyDisplay;
-
+	private name;
+	private class;
+	private errorClass;
+	private type;
+	private object;
+	private propertyIdentifier;
 	/**
-		* Handles the logic for the frontend version of the property display.
-		*/
+	 * Handles the logic for the frontend version of the property display.
+	 */
 	public static $inject = ['$scope'];
-	constructor ( public $scope:ng.IScope ) {
-        //let vm:IFormFieldControllerVM = this;
-        //
-        //if (this.propertyDisplay){
-        //    vm.propertyDisplay = this.propertyDisplay;
-        //}else{
-        //    vm.propertyDisplay =  {
-        //        name: vm.name,
-        //        class: vm.class,
-        //        errorClass: vm.errorClass,
-        //        type: vm.type,
-        //        object: vm.object,
-        //        propertyIdentifier: vm.propertyIdentifier
-        //    };
-        //}
-		
+	constructor (  ) {
+        console.log("This is", this);
+        if (!this.propertyDisplay){
+           
+            this.propertyDisplay =  {
+                name: this.name,
+                class: this.class,
+                errorClass: this.errorClass,
+                type: this.type,
+                object: this.object,
+                propertyIdentifier: this.propertyIdentifier
+            };
+        }
 	}
 } 
 
 /**
-	* This class handles configuring formFields for use in process forms on the front end.
-	*/
+ * This class handles configuring formFields for use in process forms on the front end.
+ */
 class SWFFormField {
 	public restrict = "E";
 	public require = "^?swfPropertyDisplay";
@@ -94,9 +85,7 @@ class SWFFormField {
             errorClass: "@?",
             type: "@?"
 	};
-	public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, formController:any, transcludeFn:ng.ITranscludeFunction) =>{
-
-	}
+	public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, formController:any, transcludeFn:ng.ITranscludeFunction) =>{}
 	/**
 		* Handles injecting the partials path into this class
 		*/
