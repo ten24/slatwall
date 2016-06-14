@@ -62,7 +62,7 @@ Notes:
 			optionSmartList.setSelectDistinctFlag(true);
 			
 			for(var item in optionSmartList.getRecords()) {
-				skuDefinition = listAppend(skuDefinition, " #option['optionGroupName']#: #option['optionName']#", ",");
+				skuDefinition = listAppend(skuDefinition, " #item['optionGroupName']#: #item['optionName']#", ",");
 			}
 			
 			return skuDefinition;
