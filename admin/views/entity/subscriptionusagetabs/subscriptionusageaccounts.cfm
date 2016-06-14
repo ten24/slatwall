@@ -54,7 +54,8 @@ Notes:
                     data-show-search="true"
                     data-has-search="false"
                     data-has-action-bar="false"
-                    data-record-edit-action="admin:entity.editsubscriptionusagebenefitaccount">
+                    data-record-edit-action="admin:entity.editsubscriptionusagebenefitaccount"
+                    data-is-angular-route="false">
     <sw-listing-column data-property-identifier="subscriptionUsageBenefit.subscriptionBenefit.subscriptionBenefitName" ></sw-listing-column>
     <sw-listing-column data-property-identifier="account.firstName" ></sw-listing-column>
     <sw-listing-column data-property-identifier="account.lastName" ></sw-listing-column>
