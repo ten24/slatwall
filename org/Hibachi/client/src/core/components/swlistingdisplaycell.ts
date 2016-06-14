@@ -64,6 +64,10 @@ class SWListingDisplayCellController{
             if(angular.isDefined(this.column.columnID)){
                 this.templateVariables["column"] = this.column.columnID;
             }
+            if(angular.isDefined(this.swListingDisplay.baseEntityName) && angular.isDefined(this.swListingDisplay.baseEntityId)){
+                this.templateVariables["baseEntityId"] = this.swListingDisplay.baseEntityId; 
+                this.templateVariables["baseEntityName"] = this.swListingDisplay.baseEntityName; 
+            }
             if(angular.isDefined(this.column.propertyIdentifier)){
                 this.templateVariables["columnPropertyIdentifier"] = this.column.propertyIdentifier;
             }

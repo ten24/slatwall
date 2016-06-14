@@ -8,21 +8,21 @@ class SWSkuPriceEditController{
     public maxQuantity:string;
     public skuCode:string;
     public price:string; 
+    public currencyFilter:any; 
     public currencyCode:string;
+    public filterOnCurrencyCode:string; 
     public bundledSkuSkuId:string; 
     public bundledSkuCurrencyCode:string;
     public bundledSkuPrice:string;
     public formName:string; 
-   
-    public currencyFilter:any; 
+    public baseEntityId:string; 
 
     public sku:any; 
     public skuPrice:any;
-    
-    public collectionConfig:any; 
 
     public showSwitchTabContextButton:boolean; 
     public switchTabContextEventName:string; 
+    public selectCurrencyCodeEventName:string; 
     public tabToSwitchTo:string; 
     
     //@ngInject
@@ -34,6 +34,10 @@ class SWSkuPriceEditController{
     ){
         this.currencyFilter = this.$filter('swcurrency');
         this.formName = this.utilityService.createID(32);
+        if( angular.isDefined(this.baseEntityId) ){ 
+            this.selectCurrencyCodeEventName = "currencyCodeSelect" + this.baseEntityId; 
+            this.observerService.attach(this.updateDisplay, this.selectCurrencyCodeEventName, this.formName); 
+        }
         if(angular.isUndefined(this.skuId) && angular.isDefined(this.bundledSkuSkuId)){
             this.skuId = this.bundledSkuSkuId;
         }
@@ -80,6 +84,12 @@ class SWSkuPriceEditController{
         }
     }    
 
+    public updateDisplay = (currencyCode) =>{
+        if(angular.isDefined(currencyCode)){
+            this.filterOnCurrencyCode = currencyCode; 
+        }
+    }
+
     public switchTabContext = () => {
         this.observerService.notify(this.switchTabContextEventName, this.tabToSwitchTo);
     }
@@ -94,6 +104,8 @@ class SWSkuPriceEdit implements ng.IDirective{
         skuPriceId:"@",
         skuCode:"@",
         price:"@",
+        baseEntityId:"@",
+        baseEntityName:"@", 
         bundledSkuSkuId:"@",
         bundledSkuCurrencyCode:"@", 
         bundledSkuPrice:"@",       

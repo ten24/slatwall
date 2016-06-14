@@ -4,22 +4,35 @@ class SWSkuCurrencySelectorController{
 
     public product; 
     public currencyCodes=[];
+    public selectedCurrencyCode:String; 
     public baseEntityCollectionConfig;
-    public baseEntityName:string; 
-    public baseEntityId:string
+    public baseEntityName:string="Product"; 
+    public baseEntityId:string;
+    public selectCurrencyCodeEventName:string; 
 
     //@ngInject
-    constructor(private collectionConfigService){
+    constructor(
+        private collectionConfigService, 
+        private observerService, 
+        private $hibachi
+    ){
         //this should be an rbkey
         this.currencyCodes.push("All");
+        if( angular.isDefined(this.baseEntityId) ){ 
+            this.selectCurrencyCodeEventName = "currencyCodeSelect" + this.baseEntityId; 
+        }
+        this.selectedCurrencyCode = this.currencyCodes[0]; 
         if(angular.isDefined(this.baseEntityName) && angular.isDefined(this.baseEntityId)){
             this.baseEntityCollectionConfig = this.collectionConfigService.newCollectionConfig(this.baseEntityName);
             this.baseEntityCollectionConfig.addDisplayProperty("eligibleCurrencyCodeList");
             this.baseEntityCollectionConfig.addFilter("productID",this.baseEntityId,"=");
             this.baseEntityCollectionConfig.getEntity().then(
                 (response)=>{
-                    this.product = response.pageRecords[0]; 
-                    this.currencyCodes = this.product.data.eligibleCurrencyCodeList.split(",");
+                    this.product = this.$hibachi.populateEntity(this.baseEntityName,response.pageRecords[0]); 
+                    var tempCurrencyCodeArray =  this.product.data.eligibleCurrencyCodeList.split(",");
+                    for(var key in tempCurrencyCodeArray){
+                        this.currencyCodes.push(tempCurrencyCodeArray[key]);
+                    }
                 },
                 (reason)=>{
                     //error callback
@@ -27,6 +40,11 @@ class SWSkuCurrencySelectorController{
             );
         }
     }    
+
+    public select = (currencyCode:string) =>{
+        this.selectedCurrencyCode = currencyCode;
+        this.observerService.notify(this.selectCurrencyCodeEventName, currencyCode);
+    }
 
 }
 
@@ -39,7 +57,7 @@ class SWSkuCurrencySelector implements ng.IDirective{
         baseEntityId:"@?"
     };
     public controller = SWSkuCurrencySelectorController;
-    public controllerAs="swSkuPriceEdit";
+    public controllerAs="swSkuCurrencySelector";
    
    
     public static Factory(){
