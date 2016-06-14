@@ -67,7 +67,7 @@ Notes:
 			<hb:HibachiActionCaller action="admin:entity.createcomment" querystring="productID=#rc.product.getProductID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
 		</hb:HibachiEntityActionBar>
 
-		<cfif rc.product.getEventConflictExistsFlag()>
+		<cfif rc.product.getBaseProductType() eq 'event' && rc.product.getEventConflictExistsFlag()>
 			<div class="alert alert-error">
 				#$.slatwall.rbKey('entity.product.eventConflict')#
 			</div>

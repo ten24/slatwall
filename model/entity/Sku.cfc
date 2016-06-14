@@ -985,40 +985,43 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		}
 		return variables.stocksDeletableFlag;
 	}
+	
+	public string function getSkuDefinitionByBaseProductType(
+		string baseProductType
+	){
+		var skuDefinition = "";
+		if(isNull(arguments.baseProductType)){
+			arguments.baseProductType = "";
+		}
+
+		switch (arguments.baseProductType)
+		{
+			case "merchandise":
+				skuDefinition = getDao('skuDao').getSkuDefinitionForMerchandiseBySkuID(getSkuID());
+	    		break;
+
+	    	case "subscription":
+	    		if(!isNull(getSubscriptionTerm()) && !isNull(getSubscriptionTerm().getSubscriptionTermName())){
+	    			skuDefinition = "#rbKey('entity.subscriptionTerm')#: #getSubscriptionTerm().getSubscriptionTermName()#";
+	    		}
+				break;
+
+			case "event":
+				var configs = this.getLocationConfigurations();
+				for(config in configs){
+					skuDefinition = variables.skuDefinition & config.getlocationPathName() & " (#config.getLocationConfigurationName()#) <br>";
+				}
+				break;
+
+			default:
+				skuDefinition = "";
+		}
+		return skuDefinition;
+	}
 
 	public string function getSkuDefinition() {
 		if(!structKeyExists(variables, "skuDefinition")) {
-			variables.skuDefinition = "";
-			var baseProductType = getBaseProductType();
-			if(isNull(baseProductType)){
-				baseProductType = "";
-			}
-
-			switch (baseProductType)
-			{
-				case "merchandise":
-					for(var option in getOptions()) {
-		    			variables.skuDefinition = listAppend(variables.skuDefinition, " #option.getOptionGroup().getOptionGroupName()#: #option.getOptionName()#", ",");
-	    			}
-		    		break;
-
-		    	case "subscription":
-		    		if(!isNull(getSubscriptionTerm()) && !isNull(getSubscriptionTerm().getSubscriptionTermName())){
-		    			variables.skuDefinition = "#rbKey('entity.subscriptionTerm')#: #getSubscriptionTerm().getSubscriptionTermName()#";
-		    		}
-					break;
-
-				case "event":
-					var configs = this.getLocationConfigurations();
-					for(config in configs){
-						variables.skuDefinition = variables.skuDefinition & config.getlocationPathName() & " (#config.getLocationConfigurationName()#) <br>";
-					}
-					break;
-
-				default:
-					variables.skuDefinition = "";
-			}
-
+			variables.skuDefinition = getSkuDefinitionByBaseProductType(getBaseProductType());
 		}
 		return trim(variables.skuDefinition);
 	}

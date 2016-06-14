@@ -415,7 +415,11 @@ component output="false" accessors="true" extends="HibachiService" {
 	public boolean function validate_maxCollection(required any object, required string propertyIdentifier, required numeric constraintValue) {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
 		if(!isNull(propertyObject)) {
-			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
+			if(arguments.constraintValue == 0){
+				propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#Count");
+			}else{
+				var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
+			}
 		}
 		if(isNull(propertyValue) || (isArray(propertyValue) && arrayLen(propertyValue) <= arguments.constraintValue) || (isStruct(propertyValue) && structCount(propertyValue) <= arguments.constraintValue)) {
 			return true;
