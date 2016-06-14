@@ -16,10 +16,12 @@ class SWSkuPriceEditController{
     public bundledSkuPrice:string;
     public formName:string; 
     public baseEntityId:string; 
+    public baseEntityName:string="Product";
 
     public sku:any; 
     public skuPrice:any;
 
+    public showPriceEdit:boolean; 
     public showSwitchTabContextButton:boolean; 
     public switchTabContextEventName:string; 
     public selectCurrencyCodeEventName:string; 
@@ -30,19 +32,25 @@ class SWSkuPriceEditController{
         private observerService,
         private utilityService, 
         private $hibachi,
-        private $filter
+        private $filter,
+        private $timeout
     ){
         this.currencyFilter = this.$filter('swcurrency');
         this.formName = this.utilityService.createID(32);
-        if( angular.isDefined(this.baseEntityId) ){ 
-            this.selectCurrencyCodeEventName = "currencyCodeSelect" + this.baseEntityId; 
-            this.observerService.attach(this.updateDisplay, this.selectCurrencyCodeEventName, this.formName); 
+        if(angular.isUndefined(this.showPriceEdit)){
+            this.showPriceEdit=true; 
         }
         if(angular.isUndefined(this.skuId) && angular.isDefined(this.bundledSkuSkuId)){
             this.skuId = this.bundledSkuSkuId;
         }
-        if(angular.isUndefined(this.currencyCode) && angular.isDefined(this.bundledSkuCurrencyCode)){
+        if(angular.isDefined(this.bundledSkuCurrencyCode)){
             this.currencyCode = this.bundledSkuCurrencyCode;
+        }
+        if(angular.isUndefined(this.currencyCode) && angular.isDefined(this.sku)){
+            this.currencyCode = this.sku.data.currencyCode;    
+        }
+        if(angular.isUndefined(this.currencyCode) && angular.isDefined(this.skuPrice)){
+            this.currencyCode = this.skuPrice.data.currencyCode;  
         }
         if(angular.isUndefined(this.price) && angular.isDefined(this.bundledSkuPrice)){
             this.price = this.bundledSkuPrice;
@@ -52,6 +60,10 @@ class SWSkuPriceEditController{
         }
         if(angular.isDefined(this.skuPrice)){
             this.skuPrice.data.price =  this.currencyFilter(this.skuPrice.data.price, this.currencyCode, 2, false);
+        }
+        if( angular.isDefined(this.baseEntityId) && angular.isUndefined(this.skuId){ 
+            this.selectCurrencyCodeEventName = "currencyCodeSelect" + this.baseEntityId; 
+            this.observerService.attach(this.updateDisplay, this.selectCurrencyCodeEventName, this.formName); 
         }
         if(angular.isUndefined(this.skuId) 
             && angular.isUndefined(this.sku)
@@ -85,8 +97,16 @@ class SWSkuPriceEditController{
     }    
 
     public updateDisplay = (currencyCode) =>{
-        if(angular.isDefined(currencyCode)){
-            this.filterOnCurrencyCode = currencyCode; 
+        console.log("displayUpdated!",currencyCode)
+        if(angular.isDefined(currencyCode) && angular.isDefined(this.currencyCode)){
+            this.filterOnCurrencyCode = currencyCode;   
+            if( 
+                this.currencyCode ==  this.filterOnCurrencyCode ||  this.filterOnCurrencyCode == "All" 
+            ){
+                this.showPriceEdit = true; 
+            } else { 
+                this.showPriceEdit = false; 
+            }
         }
     }
 
@@ -100,16 +120,16 @@ class SWSkuPriceEdit implements ng.IDirective{
     public restrict = 'EA';
     public scope = {}; 
     public bindToController = {
-        skuId:"@",
-        skuPriceId:"@",
-        skuCode:"@",
-        price:"@",
-        baseEntityId:"@",
-        baseEntityName:"@", 
-        bundledSkuSkuId:"@",
-        bundledSkuCurrencyCode:"@", 
-        bundledSkuPrice:"@",       
-        currencyCode:"@",
+        skuId:"@?",
+        skuPriceId:"@?",
+        skuCode:"@?",
+        price:"@?",
+        baseEntityId:"@?",
+        baseEntityName:"@?", 
+        bundledSkuSkuId:"@?",
+        bundledSkuCurrencyCode:"@?", 
+        bundledSkuPrice:"@?",       
+        currencyCode:"@?",
         sku:"=?",
         skuPrice:"=?"
     };
@@ -146,7 +166,6 @@ class SWSkuPriceEdit implements ng.IDirective{
         var tabGroupScope = this.scopeService.locateParentScope(scope,"swTabGroup");
         var tabContentScope = this.scopeService.locateParentScope(scope,"swTabContent"); 
         if(angular.isDefined(tabContentScope)){
-            console.log("tab content scope",tabContentScope);
             if(angular.isDefined(tabGroupScope) && tabContentScope["swTabContent"].name == "Basic"){
                 scope.swSkuPriceEdit.switchTabContextEventName = tabGroupScope["swTabGroup"].switchTabEventName;
                 scope.swSkuPriceEdit.tabToSwitchTo = tabGroupScope["swTabGroup"].getTabByName("Pricing");
@@ -154,8 +173,7 @@ class SWSkuPriceEdit implements ng.IDirective{
             } else { 
                 scope.swSkuPriceEdit.showSwitchTabContextButton = false; 
             }
-        }
-        
+        }   
 	}
 }
 export{

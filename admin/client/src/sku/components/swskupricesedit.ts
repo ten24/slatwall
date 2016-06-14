@@ -2,15 +2,21 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWSkuPricesEditController{
     
+    public Id:string; 
     public skuId:string;
     public skuSkuPriceId:string;
     public skuPriceId:string;
-    public minQuantity;
-    public maxQuantity; 
-    public price; 
+    public minQuantity:string;
+    public maxQuantity:string; 
+    public price:string; 
+    public filterOnCurrencyCode:string; 
+    public baseEntityId:string; 
+    public baseEntityName:string="Product";
     public currencyCode:string;
     public bundledSkuSkuId:string; 
-   
+    public selectCurrencyCodeEventName:string;
+    public showPriceEdit:boolean; 
+
     public sku; 
     public skuPrices
     
@@ -18,9 +24,12 @@ class SWSkuPricesEditController{
     
     //@ngInject
     constructor(
+        private observerService,
         private collectionConfigService,
+        private utilityService, 
         private $hibachi
     ){
+        this.Id = this.utilityService.createID(32);
         if(angular.isUndefined(this.skuPrices)){
             this.skuPrices = []; 
         }
@@ -43,7 +52,6 @@ class SWSkuPricesEditController{
             this.sku = this.$hibachi.populateEntity("Sku",skuData);
         }
     }    
-
 }
 
 class SWSkuPricesEdit implements ng.IDirective{
@@ -59,6 +67,8 @@ class SWSkuPricesEdit implements ng.IDirective{
         currencyCode:"@",
         price:"@",
         bundledSkuSkuId:"@",
+        baseEntityName:"@?",
+        baseEntityId:"@?",
         sku:"=?"
     };
     public controller = SWSkuPricesEditController;

@@ -1,34 +1,44 @@
-<sw-form ng-if="swSkuPriceEdit.sku" data-object="swSkuPriceEdit.sku" data-name="swSkuPriceEdit.formName"> 
-    <sw-property-display
-            data-object="swSkuPriceEdit.sku"
-            data-property="price"
-            data-in-listing-display="true"
-            data-editing="true"
-            data-editable="true"
-        >
-        
-    </sw-property-display>
-    <a href="##" 
-       class="s-indicator-icon" 
-       ng-click="swSkuPriceEdit.switchTabContext()"
-       ng-if="swSkuPriceEdit.showSwitchTabContextButton">
-            <i class="fa fa-list"></i>
-    </a>
-</sw-form>
-<sw-form ng-if="swSkuPriceEdit.skuPrice" data-object="swSkuPriceEdit.skuPrice" data-name="swSkuPriceEdit.formName"> 
-    <sw-property-display
-            data-object="swSkuPriceEdit.skuPrice"
-            data-property="price"
-            data-in-listing-display="true"
-            data-editing="true"
-            data-editable="true"
-        >
-        
-    </sw-property-display>
-     <a href="##" 
+
+    <sw-form ng-if="swSkuPriceEdit.sku" 
+            data-object="swSkuPriceEdit.sku" 
+            data-name="swSkuPriceEdit.formName"> 
+        <span ng-show="swSkuPriceEdit.showPriceEdit">
+        <sw-property-display
+                data-object="swSkuPriceEdit.sku"
+                data-property="price"
+                data-in-listing-display="true"
+                data-editing="true"
+                data-editable="true"
+            >
+            
+        </sw-property-display>
+        <a href="##" 
         class="s-indicator-icon" 
         ng-click="swSkuPriceEdit.switchTabContext()"
         ng-if="swSkuPriceEdit.showSwitchTabContextButton">
-            <i class="fa fa-list"></i>
-    </a>
-</sw-form>
+                <i class="fa fa-list"></i>
+        </a>
+        </span>
+    </sw-form>
+    <sw-form ng-if="swSkuPriceEdit.skuPrice" 
+            data-object="swSkuPriceEdit.skuPrice" 
+            data-name="swSkuPriceEdit.formName"> 
+        <span ng-show="swSkuPriceEdit.showPriceEdit">
+        <sw-property-display
+                data-object="swSkuPriceEdit.skuPrice"
+                data-property="price"
+                data-in-listing-display="true"
+                data-editing="true"
+                data-editable="true"
+            >
+            
+        </sw-property-display>
+        <a href="##" 
+            class="s-indicator-icon" 
+            ng-click="swSkuPriceEdit.switchTabContext()"
+            ng-if="swSkuPriceEdit.showSwitchTabContextButton">
+                <i class="fa fa-list"></i>
+        </a>
+        </span>
+    </sw-form>
+</span>

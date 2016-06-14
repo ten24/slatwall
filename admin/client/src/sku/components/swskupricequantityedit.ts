@@ -2,12 +2,13 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWSkuPriceQuantityEditController{
     
-    public skuPriceId;
-    public skuPrice; 
-    public column; 
-    public columnPropertyIdentifier; 
-    public minQuantity; 
-    public maxQuantity; 
+    public skuPriceId:string;
+    public skuPrice:any; 
+    public column:any; 
+    public columnPropertyIdentifier:string; 
+    public filterOnCurrencyCode:string;
+    public minQuantity:string; 
+    public maxQuantity:string; 
     
     
     //@ngInject
@@ -19,11 +20,14 @@ class SWSkuPriceQuantityEditController{
             var skuPriceData = {
                 skuPriceID:this.skuPriceId, 
                 minQuantity:this.minQuantity, 
-                maxQuantity:this.maxQuantity
+                maxQuantity:this.maxQuantity,
+                currencyCode:this.currencyCode
             }
             this.skuPrice = this.$hibachi.populateEntity("SkuPrice",skuPriceData);
         }
     }    
+
+     
 
 }
 
