@@ -20,6 +20,7 @@ import {ListingService} from "./services/listingservice"
 import {HibachiServiceDecorator} from "./services/hibachiservicedecorator";
 import {HibachiScope} from "./services/hibachiscope";
 import {ScopeService} from "./services/scopeservice";
+import {HistoryService} from "./services/historyservice";
 //controllers
 import {GlobalSearchController} from "./controllers/globalsearch";
 
@@ -51,8 +52,8 @@ import {SWListingControls} from "./components/swlistingcontrols";
 import {SWListingAggregate} from "./components/swlistingaggregate";
 import {SWListingColorFilter} from "./components/swlistingcolorfilter";
 import {SWListingColumn} from "./components/swlistingcolumn";
-import {SWListingDisableRule} from "./components/swlistingdisablerule"
-import {SWListingExpandableRule} from "./components/swlistingexpandablerule"
+import {SWListingDisableRule} from "./components/swlistingdisablerule";
+import {SWListingExpandableRule} from "./components/swlistingexpandablerule";
 import {SWListingFilter} from "./components/swlistingfilter";
 import {SWListingFilterGroup} from "./components/swlistingfiltergroup";
 import {SWListingOrderBy} from "./components/swlistingorderby";
@@ -151,6 +152,7 @@ var coremodule = angular.module('hibachi.core',[
 .service('observerService',ObserverService)
 .service('expandableService',ExpandableService)
 .service('formService',FormService)
+.service('historyService',HistoryService)
 .service('metadataService',MetaDataService)
 .service('rbkeyService',RbKeyService)
 .service('listingService', ListingService)

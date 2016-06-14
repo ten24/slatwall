@@ -67,7 +67,7 @@ class SWListingDisableRule implements ng.IDirective{
         if(angular.isDefined(listingDisplayScope)){
             listingDisplayScope.disableRules.push(rule); 
         } else {
-            throw("listing display scope not available to sw-listing-expandable-rule");
+            throw("listing display scope not available to sw-listing-disable-rule");
         }
     }
 }

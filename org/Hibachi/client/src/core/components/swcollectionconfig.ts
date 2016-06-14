@@ -35,7 +35,8 @@ class SWCollectionConfig implements ng.IDirective{
     public priority=1000;
     public bindToController={
         entityName:"@",
-        allRecords:"@?",
+        allRecords:"=?",
+        distinct:"=?",
         parentDirectiveControllerAsName:"@",
         collectionConfigProperty:"@?",
         multiCollectionConfigProperty:"@?",
@@ -77,17 +78,17 @@ class SWCollectionConfig implements ng.IDirective{
             if(angular.isUndefined(scope.swCollectionConfig.entityName)){
                 throw("You must provide an entityname to swCollectionConfig");
             }
-            
             if(angular.isUndefined(scope.swCollectionConfig.parentDirectiveControllerAsName)){
                 throw("You must privde the parent directives Controller-As Name to swCollectionConfig");
             }
-            
             if(angular.isUndefined(scope.swCollectionConfig.collectionConfigProperty)){
                 scope.swCollectionConfig.collectionConfigProperty = "collectionConfig"; 
             }
-            
             if(angular.isUndefined(scope.swCollectionConfig.allRecords)){
                 scope.swCollectionConfig.allRecords=false;
+            }
+            if(angular.isUndefined(scope.swCollectionConfig.distinct)){
+                scope.swCollectionConfig.distinct=false;
             }
             
             var allCollectionConfigPromises = [];
@@ -106,7 +107,8 @@ class SWCollectionConfig implements ng.IDirective{
             }
 
             var newCollectionConfig = this.collectionConfigService.newCollectionConfig(scope.swCollectionConfig.entityName);
-            newCollectionConfig.setAllRecords(scope.swCollectionConfig.allRecords);               
+            newCollectionConfig.setAllRecords(scope.swCollectionConfig.allRecords);   
+            newCollectionConfig.setDistinct(scope.swCollectionConfig.distinct);            
             
             var parentScope = scope.$parent;
             

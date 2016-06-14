@@ -29,6 +29,7 @@ class SWSkuPriceEditController{
     
     //@ngInject
     constructor(
+        private historyService, 
         private observerService,
         private utilityService, 
         private $hibachi,
@@ -61,9 +62,12 @@ class SWSkuPriceEditController{
         if(angular.isDefined(this.skuPrice)){
             this.skuPrice.data.price =  this.currencyFilter(this.skuPrice.data.price, this.currencyCode, 2, false);
         }
-        if( angular.isDefined(this.baseEntityId) && angular.isUndefined(this.skuId){ 
+        if( angular.isDefined(this.baseEntityId) && angular.isUndefined(this.skuId)){ 
             this.selectCurrencyCodeEventName = "currencyCodeSelect" + this.baseEntityId; 
             this.observerService.attach(this.updateDisplay, this.selectCurrencyCodeEventName, this.formName); 
+            if(this.historyService.hasHistory(this.selectCurrencyCodeEventName)){
+                this.updateDisplay(this.historyService.getHistory(this.selectCurrencyCodeEventName));
+            }
         }
         if(angular.isUndefined(this.skuId) 
             && angular.isUndefined(this.sku)
@@ -97,7 +101,6 @@ class SWSkuPriceEditController{
     }    
 
     public updateDisplay = (currencyCode) =>{
-        console.log("displayUpdated!",currencyCode)
         if(angular.isDefined(currencyCode) && angular.isDefined(this.currencyCode)){
             this.filterOnCurrencyCode = currencyCode;   
             if( 

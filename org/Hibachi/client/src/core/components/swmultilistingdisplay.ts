@@ -36,6 +36,7 @@ class SWMultiListingDisplayController{
     public getCollection;
     public getChildCount;
     public hasCollectionPromise;
+    public hideRules = []; 
     public multiselectable:boolean = false;
     public multiselectFieldName;
     public multiselectIdPaths;
@@ -675,6 +676,14 @@ class SWMultiListingDisplayController{
             });
         }
     };
+
+    public getKeyOfMatchedHideRule = (pageRecord)=>{
+        return this.listingService.getKeyOfMatchedHideRule(this.tableID, pageRecord);
+    }
+
+    public getPageRecordMatchesHideRule = (pageRecord)=>{
+        return this.listingService.getPageRecordMatchesHideRule(this.tableID, pageRecord); 
+    }
 
     public getKeyOfMatchedDisableRule = (pageRecord)=>{
         return this.listingService.getKeyOfMatchedExpandableRule(this.tableID, pageRecord);

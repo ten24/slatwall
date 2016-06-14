@@ -43,7 +43,7 @@ class SWSkuCurrencySelectorController{
 
     public select = (currencyCode:string) =>{
         this.selectedCurrencyCode = currencyCode;
-        this.observerService.notify(this.selectCurrencyCodeEventName, currencyCode);
+        this.observerService.notifyAndRecord(this.selectCurrencyCodeEventName, currencyCode);
     }
 
 }

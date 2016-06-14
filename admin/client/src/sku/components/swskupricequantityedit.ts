@@ -20,8 +20,7 @@ class SWSkuPriceQuantityEditController{
             var skuPriceData = {
                 skuPriceID:this.skuPriceId, 
                 minQuantity:this.minQuantity, 
-                maxQuantity:this.maxQuantity,
-                currencyCode:this.currencyCode
+                maxQuantity:this.maxQuantity
             }
             this.skuPrice = this.$hibachi.populateEntity("SkuPrice",skuPriceData);
         }
