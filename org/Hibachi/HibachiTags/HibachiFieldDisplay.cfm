@@ -32,10 +32,12 @@
 	<cfparam name="attributes.modalCreateAction" type="string" default="" />			<!--- hint: This allows for a special admin action to be passed in where the saving of that action will automatically return the results to this field --->
 
 	<cfparam name="attributes.multiselectPropertyIdentifier" type="string" default="" />
-	<cfparam name="attributes.ignoreHTMLEditFormat" type="boolean" default="false" />	<!--- hint: use at own risk. Recommended only if value is not directly from db --->
-	
+	<cfparam name="attributes.ignoreHTMLEditFormat" type="boolean" default="false" />
+	<cfparam name="attributes.hibachiScope" type="any" default="#request.slatwallScope#" />
+	<!--- hint: use at own risk. Recommended only if value is not directly from db --->
+
 	<cfif !attributes.ignoreHTMLEditFormat>
-		<cfset attributes.value = request.context.fw.getHibachiScope().hibachiHtmlEditFormat(attributes.value)/>
+		<cfset attributes.value = attributes.hibachiScope.hibachiHtmlEditFormat(attributes.value)/>
 	</cfif>
 	<cfswitch expression="#attributes.displaytype#">
 		<!--- DL Case --->
