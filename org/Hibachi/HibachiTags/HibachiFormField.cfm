@@ -15,6 +15,7 @@
 	<cfparam name="attributes.autocompleteValueProperty" type="string" default="" />
 	<cfparam name="attributes.autocompleteSelectedValueDetails" type="struct" default="#structNew()#" />
 	<cfparam name="attributes.removeLink" type="string" default=""/>
+	<cfparam name="attributes.hibachiScope" type="any" default="#request.slatwallScope#" />
 
 	<cfparam name="attributes.multiselectPropertyIdentifier" type="string" default="" />
 	<!---
@@ -193,7 +194,7 @@
 		</cfcase>
 		<cfcase value="text">
 			<cfoutput>
-				<input type="text" name="#attributes.fieldName#" value="#request.context.fw.getHibachiScope().hibachiHTMLEditFormat(attributes.value)#" class="form-control #attributes.fieldClass#" #attributes.fieldAttributes# />
+				<input type="text" name="#attributes.fieldName#" value="#attributes.hibachiScope.hibachiHTMLEditFormat(attributes.value)#" class="form-control #attributes.fieldClass#" #attributes.fieldAttributes# />
 			</cfoutput>
 		</cfcase>
 		<cfcase value="textautocomplete">

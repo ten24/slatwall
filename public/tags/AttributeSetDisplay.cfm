@@ -62,6 +62,7 @@ Notes:
 
 	<cfloop array="#thisTag.attributeSmartList.getRecords()#" index="attribute">
 		<cfset fdAttributes = structNew() />
+		<cfset fdAttributes = attributes.hibachiScope /> 
 		<cfset fdAttributes.title = attribute.getAttributeName()  />
 		<cfset fdAttributes.hint = attribute.getAttributeHint() />
 		<cfset fdAttributes.edit = attributes.edit />
