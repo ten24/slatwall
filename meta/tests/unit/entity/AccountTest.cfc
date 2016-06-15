@@ -1400,7 +1400,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		};
 		var mockAccount3 = createPersistedTestEntity('Account', accountData3);
 		var resultNoAuthz = mockAccount3.getPasswordResetID();
-		assertTrue(mockAccount3.getAccountAuthentications()[1].getAccountAuthenticationID());
+		assertEquals(1, arrayLen(mockAccount3.getAccountAuthentications()));
 		
 	}
 	
@@ -1971,7 +1971,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		};
 		mockAccount = createTestEntity('Account', accountData);
 		var resultNoPrimaryPaymentExistingPayment = mockAccount.getPrimaryPaymentMethod().getNameOnCreditCard();
-		assertEquals(resultNoPrimaryPaymentExistingPayment, "YuqingYang");
+		assertEquals(resultNoPrimaryPaymentExistingPayment, "HelloKittyAccountPaymentInfo");
 		//testing empty PrimaryPaymentMethod
 		accountData = {
 			accountID = "001",
@@ -1980,7 +1980,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		};
 		mockAccount = createTestEntity('Account', accountData);
 		var resultNonePrimaryPayment = mockAccount.getPrimaryPaymentMethod();
-		assertTrue(resultNonePrimaryPayment..getNewFlag());
+		assertTrue(resultNonePrimaryPayment.getNewFlag());
 	}
 	
 	public void function getSuperUserFlagTest() {
@@ -2038,6 +2038,59 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		var resultFirstLastName = mockAccount.getSimpleRepresentation();
 		assertEquals(resultFirstLastName, " ");
 	}
+	
+	// ================== END TESTING: Overridden Methods ========================
+	
+	// ============= START Testing: Overridden Smart List Getters ================
+	public void function getAccountContentAccessesSmartListTest() {
+		//testing the filter on AccountID
+		var accountData = {
+			accountID = ""
+		};
+		var mockAccount1 = createPersistedTestEntity('Account', accountData);
+	
+		var orderData = {
+			orderID = ""
+		};
+		var mockOrder1 = createPersistedTestEntity('Order', orderData);
+		
+		var orderItemData = {
+			orderItemID = "",
+			order = {
+				orderID = mockOrder1.getOrderID()
+			}
+		};
+		var mockOrderItem1 = createPersistedTestEntity('OrderItem', orderItemData);
+		mockOrderItem1.setOrder(mockOrder1);
+		
+		var contentData1 = {
+			contentID = ""
+		};
+		var mockContent1 = createPersistedTestEntity('Content', contentData1);
+		
+		var accountContentAccessData = {
+			accountContentAccessID = "",
+			account = {
+				accountID = mockAccount1.getAccountID()
+			},
+			orderItem = {
+				orderItemID = mockOrderItem1.getOrderItemID()
+			},
+			accessContents=[
+				{
+					contentid=mockContent1.getContentID()
+				}
+			]
+		};
+		var accountContentAccess1 = createPersistedTestEntity('AccountContentAccess', accountContentAccessData);
+		
+		var result = mockAccount1.getAccountContentAccessesSmartList().getRecords(refresh = true);
+		assertEquals(mockAccount1.getAccountID(), result[1].getAccount().getAccountID());
+		
+		
+	}	
+	// =============  END TESTING: Overridden Smart List Getters =================
+
 
 }
 
