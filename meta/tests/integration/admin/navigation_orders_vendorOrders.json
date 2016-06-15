@@ -5,9 +5,9 @@
   "steps": [
     {
       "type": "get",
-      "url": "http://192.168.99.100:32774/"
+      "url": "http://localhost/"
     },
-	{
+	 {
       "type": "setElementText",
       "locator": {
         "type": "name",
@@ -34,19 +34,19 @@
       "type": "clickElement",
       "locator": {
         "type": "link text",
-        "value": "Products"
+        "value": "Orders"
       }
     },
     {
       "type": "clickElement",
       "locator": {
         "type": "link text",
-        "value": "Content"
+        "value": "Vendor Orders"
       }
     },
     {
       "type": "verifyTextPresent",
-      "text": "Content"
+      "text": "Vendor Orders"
     }
   ],
   "data": {
