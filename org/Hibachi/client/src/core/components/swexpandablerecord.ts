@@ -86,7 +86,6 @@ class SWExpandableRecordController{
                         this.childrenLoaded = true;
                     });
             }
-            console.log("closing the children", this);
             angular.forEach(this.children,(child)=>{
                 child.dataIsVisible=this.childrenOpen;
                 var entityPrimaryIDName = this.entity.$$getIDName();

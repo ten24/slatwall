@@ -62,13 +62,7 @@ class SWSkuPriceEditController{
         if(angular.isDefined(this.skuPrice)){
             this.skuPrice.data.price =  this.currencyFilter(this.skuPrice.data.price, this.currencyCode, 2, false);
         }
-        if( angular.isDefined(this.baseEntityId) && angular.isUndefined(this.skuId)){ 
-            this.selectCurrencyCodeEventName = "currencyCodeSelect" + this.baseEntityId; 
-            this.observerService.attach(this.updateDisplay, this.selectCurrencyCodeEventName, this.formName); 
-            if(this.historyService.hasHistory(this.selectCurrencyCodeEventName)){
-                this.updateDisplay(this.historyService.getHistory(this.selectCurrencyCodeEventName));
-            }
-        }
+        
         if(angular.isUndefined(this.skuId) 
             && angular.isUndefined(this.sku)
             && angular.isUndefined(this.skuPriceId)
@@ -85,7 +79,7 @@ class SWSkuPriceEditController{
                     price : this.currencyFilter(this.price, this.currencyCode, 2, false)
                 }
                 this.sku = this.$hibachi.populateEntity("Sku", skuData); 
-            }
+            } 
 
             if(angular.isDefined(this.skuPriceId) && angular.isUndefined(this.skuPrice)){
                 var skuPriceData = { 
@@ -96,7 +90,7 @@ class SWSkuPriceEditController{
                     price: this.currencyFilter(this.price, this.currencyCode, 2, false)
                 }
                 this.skuPrice = this.$hibachi.populateEntity("SkuPrice", skuPriceData); 
-            }
+            } 
         }
     }    
 
@@ -142,15 +136,21 @@ class SWSkuPriceEdit implements ng.IDirective{
    
     public static Factory(){
         var directive = (
+            observerService,
+            historyService,
             scopeService,
             skuPartialsPath,
 			slatwallPathBuilder
         )=> new SWSkuPriceEdit(
+            observerService,
+            historyService,
             scopeService,
             skuPartialsPath,
 			slatwallPathBuilder
         );
         directive.$inject = [
+            'observerService',
+            'historyService',
             'scopeService',
             'skuPartialsPath',
 			'slatwallPathBuilder'
@@ -158,6 +158,8 @@ class SWSkuPriceEdit implements ng.IDirective{
         return directive;
     }
     constructor(
+        private observerService,
+        private historyService,
         private scopeService, 
 		skuPartialsPath,
 	    slatwallPathBuilder
@@ -166,9 +168,21 @@ class SWSkuPriceEdit implements ng.IDirective{
     }
 
     public link:ng.IDirectiveLinkFn = (scope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, formController:any, transcludeFn:ng.ITranscludeFunction) =>{
+        var skuPricesEditScope = this.scopeService.locateParentScope(scope, "swSkuPricesEdit");
+        if(skuPricesEditScope != null){
+            scope.swSkuPriceEdit.baseEntityId = skuPricesEditScope["swSkuPricesEdit"].baseEntityId; 
+            scope.swSkuPriceEdit.baseEntityName = skuPricesEditScope["swSkuPricesEdit"].baseEntityName; 
+        }
+        if( angular.isDefined( scope.swSkuPriceEdit.baseEntityId) && angular.isUndefined( scope.swSkuPriceEdit.skuId)){ 
+             scope.swSkuPriceEdit.selectCurrencyCodeEventName = "currencyCodeSelect" +  scope.swSkuPriceEdit.baseEntityId; 
+            this.observerService.attach( scope.swSkuPriceEdit.updateDisplay,  scope.swSkuPriceEdit.selectCurrencyCodeEventName,  scope.swSkuPriceEdit.formName); 
+            if(this.historyService.hasHistory(scope.swSkuPriceEdit.selectCurrencyCodeEventName)){
+                scope.swSkuPriceEdit.updateDisplay(this.historyService.getHistory(scope.swSkuPriceEdit.selectCurrencyCodeEventName));
+            }
+        }
         var tabGroupScope = this.scopeService.locateParentScope(scope,"swTabGroup");
         var tabContentScope = this.scopeService.locateParentScope(scope,"swTabContent"); 
-        if(angular.isDefined(tabContentScope)){
+        if(tabContentScope != null){
             if(angular.isDefined(tabGroupScope) && tabContentScope["swTabContent"].name == "Basic"){
                 scope.swSkuPriceEdit.switchTabContextEventName = tabGroupScope["swTabGroup"].switchTabEventName;
                 scope.swSkuPriceEdit.tabToSwitchTo = tabGroupScope["swTabGroup"].getTabByName("Pricing");

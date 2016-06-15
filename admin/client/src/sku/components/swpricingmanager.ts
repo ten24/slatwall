@@ -3,6 +3,8 @@
 class SWPricingManagerController{
     
     public productId;
+    public product; 
+    public productCollectionConfig;
     
     //temporary var
     public singleEditTest; 
@@ -10,9 +12,19 @@ class SWPricingManagerController{
     
     //@ngInject
     constructor(
-        private $hibachi 
+        private collectionConfigService
     ){
-       console.log("priority","pricing manager constructor");
+        this.productCollectionConfig = this.collectionConfigService.newCollectionConfig("Product"); 
+        this.productCollectionConfig.addFilter("productID", this.productId, "=");
+        this.productCollectionConfig.addDisplayProperty("productID,defaultSku.currencyCode");
+        this.productCollectionConfig.getEntity().then(
+            (response)=>{
+                this.product = response.pageRecords[0]; 
+            },
+            (reason)=>{
+
+            }
+        );
     }    
 
 }

@@ -4,7 +4,7 @@ class SWSkuPricesEditController{
     
     public Id:string; 
     public skuId:string;
-    public skuSkuPriceId:string;
+    public skuSkuId:string;
     public skuPriceId:string;
     public minQuantity:string;
     public maxQuantity:string; 
@@ -16,9 +16,10 @@ class SWSkuPricesEditController{
     public bundledSkuSkuId:string; 
     public selectCurrencyCodeEventName:string;
     public showPriceEdit:boolean; 
+    public relatedSkuPriceCollectionConfig:any; 
 
     public sku; 
-    public skuPrices
+    public skuPrices;
     
     public collectionConfig; 
     
@@ -42,6 +43,22 @@ class SWSkuPricesEditController{
                 price:this.price
             }
             this.skuPrices.push(this.$hibachi.populateEntity("SkuPrice",skuPriceData));
+            this.relatedSkuPriceCollectionConfig = this.collectionConfigService.newCollectionConfig("SkuPrice"); 
+            this.relatedSkuPriceCollectionConfig.addDisplayProperty("skuPriceID,sku.skuID,minQuantity,maxQuantity,currencyCode,price");
+            this.relatedSkuPriceCollectionConfig.addFilter("minQuantity",this.minQuantity,"=");
+            this.relatedSkuPriceCollectionConfig.addFilter("maxQuantity",this.maxQuantity,"=");
+            this.relatedSkuPriceCollectionConfig.addFilter("currencyCode",this.currencyCode,"!=");
+            this.relatedSkuPriceCollectionConfig.addFilter("sku.skuID",this.skuSkuId,"=")
+            this.relatedSkuPriceCollectionConfig.setAllRecords(true);
+            this.relatedSkuPriceCollectionConfig.getEntity().then(
+                (response)=>{
+                    angular.forEach(response.records, (value,key)=>{
+                        this.skuPrices.push(this.$hibachi.populateEntity("SkuPrice", value));
+                    });  
+                },
+                (reason)=>{
+                }
+            );
         }
         if(angular.isDefined(this.skuId)){
             var skuData = {
@@ -50,7 +67,7 @@ class SWSkuPricesEditController{
                 price:this.price
             }
             this.sku = this.$hibachi.populateEntity("Sku",skuData);
-        }
+        }  
     }    
 }
 
@@ -60,7 +77,7 @@ class SWSkuPricesEdit implements ng.IDirective{
     public scope = {}; 
     public bindToController = {
         skuId:"@",
-        skuSkuPriceId:"@",
+        skuSkuId:"@",
         skuPriceId:"@",
         minQuantity:"@",
         maxQuantity:"@",

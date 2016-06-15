@@ -15,26 +15,19 @@ class SWDeleteSkuPriceModalLauncherController{
         private utilityService
     ){
         this.uniqueName = this.baseName + this.utilityService.createID(16); 
-        this.initData(); 
     }    
     
-    public initData = () =>{
-        //these are populated in the link function initially
-        this.skuPrice = this.$hibachi.newEntity('SkuPrice'); 
-        this.skuPrice.$$setSku(this.sku);
-    }
-    
-    public save = () => {
-        var savePromise = this.skuPrice.$$save();
-        savePromise.then(
+    public delete = () => {
+        var deletePromise = this.skuPrice.$$delete();
+        deletePromise.then(
             (response)=>{
-               this.initData(); 
+
             },
             (reason)=>{
                 //error callback
             }
         );
-        return savePromise; 
+        return deletePromise; 
     }
 }
 
@@ -85,7 +78,7 @@ class SWDeleteSkuPriceModalLauncher implements ng.IDirective{
                 var currentScope = this.scopeService.locateParentScope($scope, "pageRecord");
                 if(angular.isDefined(currentScope.pageRecord)){ 
                     $scope.swDeleteSkuPriceModalLauncher.pageRecord = currentScope.pageRecord; 
-                    if(angular.isDefined(currentScope.pageRecord.skuPriceID)){    
+                    if(angular.isDefined(currentScope.pageRecord.skuPriceID) && currentScope.pageRecord.skuPriceID.length){    
                         var skuPriceData = {
                             skuPriceID:currentScope.pageRecord.skuPriceID,
                         }

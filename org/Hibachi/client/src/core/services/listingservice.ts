@@ -160,7 +160,6 @@ class ListingService{
                     }    
                 });
            }); 
-           console.log("childCollectionConfig",childCollectionConfig);
            this.listingDisplays[listingID].childCollectionConfigs[pageRecord[this.listingDisplays[listingID].exampleEntity.$$getIDName()]] = childCollectionConfig; 
            return this.listingDisplays[listingID].childCollectionConfigs[pageRecord[this.listingDisplays[listingID].exampleEntity.$$getIDName()]];
         } 

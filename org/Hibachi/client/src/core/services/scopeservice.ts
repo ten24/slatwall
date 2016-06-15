@@ -8,18 +8,16 @@ class ScopeService {
 
     public locateParentScope = (scope, targetName) =>{ 
         var currentScope = scope; 
-        while(angular.isUndefined(currentScope[targetName])){
+        while(currentScope != null && angular.isUndefined(currentScope[targetName])){
             if(angular.isDefined(currentScope.$parent)){
                 currentScope = currentScope.$parent; 
             } else { 
                 break; 
             }
         }
-        if(angular.isDefined(currentScope[targetName])){
+        if(currentScope != null && angular.isDefined(currentScope[targetName])){
             return currentScope;
-        } else {
-            throw('scopeService.locateParentScope was unabled to find: ' + targetName);
-        }
+        } 
     }
 }
 export {

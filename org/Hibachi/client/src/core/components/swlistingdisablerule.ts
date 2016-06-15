@@ -50,7 +50,6 @@ class SWListingDisableRule implements ng.IDirective{
     }
 
     public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any) =>{
-        console.log("fucking link?");
         var rule = {
             filterPropertyIdentifier:scope.swListingDisableRule.filterPropertyIdentifier,
             filterComparisonOperator:scope.swListingDisableRule.filterComparisonOperator, 
@@ -63,7 +62,6 @@ class SWListingDisableRule implements ng.IDirective{
         }else if(angular.isDefined(scope.$parent.swListingDisplay)){
             var listingDisplayScope = scope.$parent.swListingDisplay;
         }
-        console.log("disable?", listingDisplayScope);
         if(angular.isDefined(listingDisplayScope)){
             listingDisplayScope.disableRules.push(rule); 
         } else {

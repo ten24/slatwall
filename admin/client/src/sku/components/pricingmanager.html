@@ -186,6 +186,7 @@
                                     >
                                         <sw-collection-columns>
                                             <sw-collection-column data-property-identifier="skuPriceID"></sw-collection-column>
+                                            <sw-collection-column data-property-identifier="sku.skuID"></sw-collection-column>
                                             <sw-collection-column data-property-identifier="sku.skuCode"></sw-collection-column>
                                             <sw-collection-column data-property-identifier="sku.skuDescription"></sw-collection-column>
                                             <sw-collection-column data-property-identifier="minQuantity"></sw-collection-column>
@@ -195,6 +196,7 @@
                                         </sw-collection-columns>
                                         <sw-collection-filters>
                                             <sw-collection-filter data-property-identifier="sku.skuID" data-comparison-operator="=" data-comparison-value="${skuID}"></sw-collection-filter>
+                                            <sw-collection-filter data-property-identifier="currencyCode" data-comparison-operator="=" data-comparison-value="{{swPricingManager.product.defaultSku_currencyCode}}"></sw-collection-filter>
                                         </sw-collection-filters>
                                     </sw-collection-config>
                                 </sw-config>
