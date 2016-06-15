@@ -135,7 +135,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 //		request.debug(resultExistingAdminIcon);
 //		assertEquals(resultExistingAdminIcon, "see output first");
 //	}
-/*
+
 	public void function getEmailAddressTest() {
 		//Testing existed accountEmailAddress
 		var accountData = {
@@ -705,11 +705,11 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 	}
 	
 	public void function getSlatwallAuthenticationExistsFlag_TrueActiveFlag_Test() {
-		//Under condition that if the first logical connectives returns true		
+		//Under condition that if the first logical connectives returns true;		
 		//testing normal case, activeFlag is true
 		var accountData1 = {
 			accountID = "",
-			firstName = "Hola"
+			firstName = "Ha"
 		};
 		var mockAccount1 = createPersistedTestEntity('Account', accountData1);
 		var authzData1 = {
@@ -725,7 +725,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		assertTrue(resultTrueFlag);
 	}
 	public void function getSlatwallAuthenticationExistsFlag_FalseActiveFlag_Test() {
-		//Under condition that if the first logical connectives returns true
+		//Under condition that if the first logical connectives returns true;
 		//testing when activeFlag is false
 		var accountData2 = {
 			accountID = "",
@@ -925,7 +925,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		//testing if the filter of AccountID works
 		assertEquals(mockAccount1.getAccountID(), result[1].getSubscriptionUsage().getAccount().getAccountID());
 	}
-*/
+
 
 	public void function getTermAccountBalance_UnreceivedAndUnassigned_Test() {
 		//testing both for loops have been reached
@@ -1064,7 +1064,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		assertEquals(-10, mockAccount1.getTermAccountBalance());
 	}
 	
-/*	
+	
 	public void function getUnenrolledAccountLoyaltyOptionsTest() {
 		//mocking: 							<- mockAccountLoyalty1ShouldReturn -> mockLoyalty1Active (activeFlag 1)
 		//mocking: mockAccount1RunFunction  <- mockAccountLoyalty2TestAccount  -> mockLoyalty3Active (activeFlag 1)
@@ -2038,7 +2038,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		var resultFirstLastName = mockAccount.getSimpleRepresentation();
 		assertEquals(resultFirstLastName, " ");
 	}
-*/	
+
 }
 
 

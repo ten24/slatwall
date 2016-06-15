@@ -271,7 +271,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 			var authArray = getAccountAuthentications();
 			request.debug(getAccountAuthentications());
 			for(auth in authArray) {
-				if(isNull(auth.getIntegration()) && !isNull(auth.getPassword()) && auth.getActiveFlag() ) {
+				if(isNull(auth.getIntegration()) && !isNull(auth.getPassword())  && !isNull(auth.getActiveFlag()) && auth.getActiveFlag() ) {
 					variables.slatwallAuthenticationExistsFlag = true;
 					break;
 				}
@@ -307,9 +307,11 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 				termAccountBalance = precisionEvaluate(termAccountBalance + termAccountOrderPayment.getAmountUnreceived());
 			}
 		}
+		request.debug("BALANCE="); request.debug(termAccountBalance);
 
-		// Now look for the unasigned payment amount
+		// Now look for the unassigned payment amount
 		for(var accountPayment in getAccountPayments()) {
+			request.debug("In second for loop");
 			termAccountBalance = precisionEvaluate(termAccountBalance - accountPayment.getAmountUnassigned());
 		}
 
@@ -333,10 +335,19 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 
 			var smartList = getService("loyaltyService").getLoyaltySmartList();
 			smartList.addFilter('activeFlag', 1);
-			smartList.addWhereCondition(" NOT EXISTS( FROM SlatwallAccountLoyalty al WHERE al.loyalty.loyaltyID = aslatwallloyalty.loyaltyID and al.account.accountID = '#getAccountID()#')");
-
+			smartList.addWhereCondition(" NOT EXISTS
+				( 
+					FROM SlatwallAccountLoyalty al 
+					WHERE al.loyalty.loyaltyID = aslatwallloyalty.loyaltyID 
+					and al.account.accountID = '#getAccountID()#'
+				)
+			");
 			for(var loyaltyPrograms in smartList.getRecords()) {
-				arrayAppend(variables.unenrolledAccountLoyaltyOptions,{name=loyaltyPrograms.getLoyaltyName(),value=loyaltyPrograms.getLoyaltyID()});
+				request.debug(loyaltyPrograms.getLoyaltyName());
+				arrayAppend(variables.unenrolledAccountLoyaltyOptions,
+								{name=loyaltyPrograms.getLoyaltyName(),
+								value=loyaltyPrograms.getLoyaltyID()}
+							);
 			}
 		}
 
