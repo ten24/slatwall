@@ -77,7 +77,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     	var processObject = formToProcess.getProcessObject("AddFormResponse");
     	processObject.populate(rc);
 
-    	formToProcess = getFormService().processForm_addFormResponse(formToProcess,processObject);
+    	formToProcess = getFormService().process(formToProcess,processObject,"addFormResponse");
 
     	getHibachiScope().addActionResult( "public:form.addFormResponse", formToProcess.hasErrors() );
 
