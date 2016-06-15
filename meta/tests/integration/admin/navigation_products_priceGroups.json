@@ -11,39 +11,7 @@
       "type": "setElementText",
       "locator": {
         "type": "name",
-        "value": "firstName"
-      },
-      "text": "QA"
-    },
-    {
-      "type": "setElementText",
-      "locator": {
-        "type": "name",
-        "value": "lastName"
-      },
-      "text": "USER"
-    },
-    {
-      "type": "setElementText",
-      "locator": {
-        "type": "name",
-        "value": "company"
-      },
-      "text": "QA COMPANY"
-    },
-    {
-      "type": "setElementText",
-      "locator": {
-        "type": "name",
         "value": "emailAddress"
-      },
-      "text": "qa@mailinator.com"
-    },
-    {
-      "type": "setElementText",
-      "locator": {
-        "type": "name",
-        "value": "emailAddressConfirm"
       },
       "text": "qa@mailinator.com"
     },
@@ -56,18 +24,10 @@
       "text": "QaPa33word"
     },
     {
-      "type": "setElementText",
-      "locator": {
-        "type": "name",
-        "value": "passwordConfirm"
-      },
-      "text": "QaPa33word"
-    },
-    {
       "type": "clickElement",
       "locator": {
         "type": "xpath",
-        "value": "//form[@id='adminCreateSuperUserForm']//button[.='Create & Login']"
+        "value": "//form[@id='j-login-wrapper']//button[.='Login']"
       }
     },
     {
