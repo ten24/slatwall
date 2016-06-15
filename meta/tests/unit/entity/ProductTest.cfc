@@ -54,7 +54,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		variables.entity = request.slatwallScope.getService("productService").newProduct();
 	}
-
+/*
 	public void function productUrlIsCorrectlyFormatted() {
 		variables.entity.setURLTitle("nike-air-jorden");
 
@@ -249,4 +249,50 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(0, product.getNumberOfUnusedProductOptionCombinations());
 		assertFalse(product.hasUnusedProductOptionCombinations());
 	}
+*/	
+	//============Start From Here
+	public void function getAvailableForPurchaseFlagTest() {
+		//testing startDate < now() < endDate
+		var productData1 = {
+			productID = '',
+			purchaseStartDateTime = dateAdd('d', -3, now()),
+			purchaseEndDateTime = dateAdd('d', 3, now())
+		};
+		var product1 = createTestEntity('Product', productData1);
+		
+		var resultBetweenTwoDates = product1.getAvailableForPurchaseFlag();
+		assertTrue(resultBetweenTwoDates);
+		
+		//testing startDate > now() < endDate
+		var productData2 = {
+			productID = '',
+			purchaseStartDateTime = dateAdd('d', 2, now()),
+			purchaseEndDateTime = dateAdd('d', 3, now())
+		};
+		var product2 = createTestEntity('Product', productData2);
+		
+		var resultBeforeTwoDates = product2.getAvailableForPurchaseFlag();
+		assertFalse(resultBeforeTwoDates);
+		
+		//testing empty startDate and endDate
+		var productData3 = {
+			productID = ''
+		};
+		var product3 = createTestEntity('Product', productData3);
+		
+		var resultEmptyTwoDates = product3.getAvailableForPurchaseFlag();
+		assertTrue(resultEmptyTwoDates);
+		
+		//testing valid startDate but empty endDate
+		var productData4 = {
+			productID = '',
+			purchaseStartDateTime = dateAdd('d', -2, now())
+		};
+		var product4 = createTestEntity('Product', productData4);
+		
+		var resultExistedStartDateEmptyEndDate = product4.getAvailableForPurchaseFlag();
+		assertTrue(resultExistedStartDateEmptyEndDate);
+	}
+	
+	
 }
