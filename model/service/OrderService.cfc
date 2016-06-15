@@ -308,9 +308,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Check for the sku in the orderFulfillment already, so long that the order doens't have any errors
 			if(!arguments.order.hasErrors()) {
 				for(var orderItem in orderFulfillment.getOrderFulfillmentItems()){
-					// If the sku, price, attributes & stock all match then just increase the quantity
-
-					if(arguments.processObject.matchesOrderItem( orderItem )){
+					// If the sku, price, attributes & stock all match then just increase the quantity if and only if the match parent orderitem is null.
+					if(arguments.processObject.matchesOrderItem( orderItem ) && isNull(orderItem.getParentOrderItem())){
 						foundItem = true;
 						var foundOrderItem = orderItem;
 						orderItem.setQuantity(orderItem.getQuantity() + arguments.processObject.getQuantity());
@@ -1428,18 +1427,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// As long as the amount received for this orderFulfillment is within the treshold of the auto fulfillment setting
 		if(
-			arguments.orderFulfillment.getFulfillmentMethodType() == "auto"
-            || (
-                !isNull(arguments.orderFulfillment.getFulfillmentMethod().getAutoFulfillFlag()) &&
-                		arguments.orderFulfillment.getFulfillmentMethod().getAutoFulfillFlag()
-            )
-			&& (
-				order.getTotal() == 0
-				|| arguments.orderFulfillment.getFulfillmentMethod().setting('fulfillmentMethodAutoMinReceivedPercentage') <= precisionEvaluate( order.getPaymentAmountReceivedTotal() * 100 / order.getTotal() )
-			)
-			&& (
-				arguments.orderFulfillment.hasGiftCardRecipients()
-			)
+			arguments.orderFulfillment.isAutoFulfillmentReadyToBeFulfilled()
 		){
 
 			// Setup the processData
@@ -1840,22 +1828,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			) {
 				arguments.orderDelivery.setShippingMethod( arguments.processObject.getShippingMethod() );
 				arguments.orderDelivery.setShippingAddress( arguments.processObject.getShippingAddress().copyAddress( saveNewAddress=true ) );
+			
+				// Setup the tracking number if we have it
+				if(
+					!isNull(arguments.processObject.getTrackingNumber()) 
+					&& len(arguments.processObject.getTrackingNumber())
+				) {
+					arguments.orderDelivery.setTrackingNumber(arguments.processObject.getTrackingNumber());
+				}
+				
+				if(
+					!isNull(arguments.processObject.getContainerLabel())
+					&& len(arguments.processObject.getContainerLabel())
+				){
+					arguments.orderDelivery.setContainerLabel(arguments.processObject.getContainerLabel());
+				}
 			}
 			
-			// Setup the tracking number if we have it
-			if(
-				!isNull(arguments.processObject.getTrackingNumber()) 
-				&& len(arguments.processObject.getTrackingNumber())
-			) {
-				arguments.orderDelivery.setTrackingNumber(arguments.processObject.getTrackingNumber());
-			}
-			
-			if(
-				!isNull(arguments.processObject.getContainerLabel())
-				&& len(arguments.processObject.getContainerLabel())
-			){
-				arguments.orderDelivery.setContainerLabel(arguments.processObject.getContainerLabel());
-			}
 			// If the orderFulfillmentMethod is auto, and there aren't any delivery items then we can just fulfill all that are "undelivered"
 			if(
 				(

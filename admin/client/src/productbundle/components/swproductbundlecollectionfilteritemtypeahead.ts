@@ -336,7 +336,6 @@ class SWProductBundleCollectionFilterItemTypeaheadController {
         this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.push(collectionFilterItem);
 
 
-        console.log("now this is bundles",this.productBundleGroup.forms, this.formName );
         this.productBundleGroup.forms[this.formName].skuCollectionConfig.$setDirty();
 
         //reload the list to correct pagination show all takes too long for this to be graceful

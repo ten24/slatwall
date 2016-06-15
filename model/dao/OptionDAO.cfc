@@ -55,11 +55,11 @@ Notes:
 
 		<cfquery name="rs" maxrows=1>
 			SELECT
-				count(o.optionID) AS total
-			FROM SwOption AS o
-			    LEFT JOIN SwSkuOption AS so ON so.optionID = o.optionID
-			    LEFT JOIN SwSku AS s ON so.skuID = s.skuID
-			    LEFT JOIN SwProduct AS p ON s.productID = p.productID
+				count(o.optionID) total
+			FROM SwOption o
+			    LEFT JOIN SwSkuOption so ON so.optionID = o.optionID
+			    LEFT JOIN SwSku s ON so.skuID = s.skuID
+			    LEFT JOIN SwProduct p ON s.productID = p.productID
 			WHERE
 				p.productID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#productID#" />
 		</cfquery>
@@ -77,8 +77,8 @@ Notes:
 
 		<cfquery name="rs" maxrows=1>
 			SELECT
-				count(o.optionID) AS total
-			FROM SwOption AS o
+				count(o.optionID) total
+			FROM SwOption o
 			WHERE
 				o.optionGroupID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#optionGroupID#" />
 		</cfquery>
@@ -95,7 +95,7 @@ Notes:
 		<cfset var rs = "" />
 
 		<cfquery name="rs">
-			SELECT DISTINCT
+			SELECT DISTINCT 
     				og.optionGroupID ogID
 			FROM SwOptionGroup og
 			    Left Join SwOption o on og.optionGroupID = o.optionGroupID
