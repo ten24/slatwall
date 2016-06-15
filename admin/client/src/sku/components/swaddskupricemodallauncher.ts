@@ -56,17 +56,20 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
     public static Factory(){
         var directive = (
             $hibachi,
+            scopeService,
             collectionConfigService,
             skuPartialsPath,
 			slatwallPathBuilder
         )=> new SWAddSkuPriceModalLauncher(
             $hibachi, 
+            scopeService,
             collectionConfigService,
             skuPartialsPath,
 			slatwallPathBuilder
         );
         directive.$inject = [
             '$hibachi',
+            'scopeService',
             'collectionConfigService',
             'skuPartialsPath',
 			'slatwallPathBuilder'
@@ -75,6 +78,7 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
     }
     constructor(
         private $hibachi, 
+        private scopeService, 
         private collectionConfigService, 
 		private skuPartialsPath,
 	    private slatwallPathBuilder
@@ -86,13 +90,7 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
         return {
             pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
                 //have to do our setup here because there is no direct way to pass the pageRecord into this transcluded directive
-                var currentScope = $scope; 
-                while(angular.isDefined(currentScope.$parent)){
-                    currentScope = currentScope.$parent; 
-                    if(angular.isDefined(currentScope.pageRecord)){
-                        break; 
-                    }
-                }
+                var currentScope = this.scopeService.locateParentScope($scope, "pageRecord");
                 if(angular.isDefined(currentScope.pageRecord)){ 
                     $scope.swAddSkuPriceModalLauncher.pageRecord = currentScope.pageRecord; 
                     if(angular.isDefined(currentScope.pageRecord.skuID)){    

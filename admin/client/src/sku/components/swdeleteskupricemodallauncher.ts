@@ -46,21 +46,24 @@ class SWDeleteSkuPriceModalLauncher implements ng.IDirective{
         pageRecord:"=?"
     };
     public controller = SWDeleteSkuPriceModalLauncherController;
-    public controllerAs="swAddSkuPriceModalLauncher";
+    public controllerAs="swDeleteSkuPriceModalLauncher";
    
    
     public static Factory(){
         var directive = (
             $hibachi,
+            scopeService, 
             skuPartialsPath,
 			slatwallPathBuilder
         )=> new SWDeleteSkuPriceModalLauncher(
             $hibachi, 
+            scopeService,
             skuPartialsPath,
 			slatwallPathBuilder
         );
         directive.$inject = [
             '$hibachi',
+            'scopeService',
             'skuPartialsPath',
 			'slatwallPathBuilder'
         ];
@@ -68,6 +71,7 @@ class SWDeleteSkuPriceModalLauncher implements ng.IDirective{
     }
     constructor(
         private $hibachi, 
+        private scopeService,
 		private skuPartialsPath,
 	    private slatwallPathBuilder
     ){
@@ -77,7 +81,19 @@ class SWDeleteSkuPriceModalLauncher implements ng.IDirective{
     public compile = (element: JQuery, attrs: angular.IAttributes) => {
         return {
             pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
-
+                //have to do our setup here because there is no direct way to pass the pageRecord into this transcluded directive
+                var currentScope = this.scopeService.locateParentScope($scope, "pageRecord");
+                if(angular.isDefined(currentScope.pageRecord)){ 
+                    $scope.swDeleteSkuPriceModalLauncher.pageRecord = currentScope.pageRecord; 
+                    if(angular.isDefined(currentScope.pageRecord.skuPriceID)){    
+                        var skuPriceData = {
+                            skuPriceID:currentScope.pageRecord.skuPriceID,
+                        }
+                        $scope.swDeleteSkuPriceModalLauncher.skuPrice = this.$hibachi.populateEntity('SkuPrice',skuPriceData);
+                    }
+                } else{ 
+                    throw("swDeleteSkuPriceModalLauncher was unable to find the pageRecord that it needs!");
+                } 
             },
             post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
 
