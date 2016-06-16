@@ -13,7 +13,7 @@
 "type": "name",
 "value": "emailAddress"
 },
-"text": "qa@mailinator.com"
+"text": "qa@mailinator"
 },
 {
 "type": "setElementText",
@@ -41,12 +41,12 @@
 "type": "clickElement",
 "locator": {
 "type": "xpath",
-"value": "//div[@id='j-mobile-nav']//a[.='Product Type']"
+"value": "//div[@id='j-mobile-nav']//a[.='Products']"
 }
 },
 {
 "type": "verifyTextPresent",
-"text": "Product Type"
+"text": "Products"
 }
 ],
 "data": {
