@@ -140,6 +140,13 @@ class ListingService{
         var keyOfExpandableRuleMet = this.getKeyOfMatchedExpandableRule(listingID, pageRecord); 
         return keyOfExpandableRuleMet != -1;  
     }
+
+    public getPageRecordRefreshChildrenEvent = (listingID, pageRecord)=>{
+        var keyOfExpandableRuleMet = this.getKeyOfMatchedExpandableRule(listingID, pageRecord); 
+        if(keyOfExpandableRuleMet != -1){
+            return this.listingDisplays[listingID].expandableRules[keyOfExpandableRuleMet].refreshChildrenEvent;
+        }
+    }
     
     public getPageRecordChildCollectionConfigForExpandableRule = (listingID, pageRecord) => {
         var keyOfExpandableRuleMet = this.getKeyOfMatchedExpandableRule(listingID, pageRecord); 

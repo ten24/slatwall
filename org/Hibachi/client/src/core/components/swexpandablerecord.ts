@@ -19,10 +19,16 @@ class SWExpandableRecordController{
     public parentId:string;
     public parentIDName:string; 
     public entity:any
+    public listingId:string; 
     public expandableRules; 
     
     //@ngInject
-    constructor(private $timeout:ng.ITimeoutService, private utilityService, private $hibachi, private collectionConfigService, private expandableService){
+    constructor(private $timeout:ng.ITimeoutService, 
+                private utilityService, 
+                private $hibachi, 
+                private collectionConfigService, 
+                private expandableService,
+                private observerService){
         this.$timeout = $timeout;
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;
@@ -55,6 +61,7 @@ class SWExpandableRecordController{
         });
         this.childCollectionConfig.groupBys = this.collectionConfig.groupBys;
 
+
     }
     
     public toggleChild = ()=>{
@@ -68,7 +75,6 @@ class SWExpandableRecordController{
                     if(angular.isFunction(this.childCollectionConfig.getEntity)){
                         this.collectionPromise = this.childCollectionConfig.getEntity();
                     } 
-                       
                     this.collectionPromise.then((data)=>{
                         this.collectionData = data;
                         this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records
@@ -127,6 +133,7 @@ class SWExpandableRecord implements ng.IDirective{
         entity:"=",
         collectionConfig:"=",
         childCollectionConfig:"=?",
+        listingId:"@?",
         records:"=",
         pageRecord:"=",
         recordIndex:"=",

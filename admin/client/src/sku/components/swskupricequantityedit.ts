@@ -11,16 +11,19 @@ class SWSkuPriceQuantityEditController{
     public filterOnCurrencyCode:string;
     public minQuantity:string; 
     public maxQuantity:string; 
-    public skuPrices; 
+    public skuPrices=[]; 
+    public isDirty:boolean;
     public relatedSkuPriceCollectionConfig;
     
     
     //@ngInject
     constructor(
+        private $q, 
         private $hibachi,
-        private collectionConfigService
-    ){
-        
+        private collectionConfigService,
+        private observerService
+    ){ 
+        this.isDirty = false; 
         if(angular.isUndefined(this.skuPrice)){
             var skuPriceData = {
                 skuPriceID:this.skuPriceId, 
@@ -29,16 +32,22 @@ class SWSkuPriceQuantityEditController{
                 currencyCode:this.currencyCode
             }
             this.skuPrice = this.$hibachi.populateEntity("SkuPrice",skuPriceData);
+            this.skuPrices.push(this.skuPrice);
         }
-
         this.relatedSkuPriceCollectionConfig = this.collectionConfigService.newCollectionConfig("SkuPrice"); 
         this.relatedSkuPriceCollectionConfig.addDisplayProperty("skuPriceID,sku.skuID,minQuantity,maxQuantity,currencyCode,price");
         this.relatedSkuPriceCollectionConfig.addFilter("minQuantity",this.minQuantity,"=");
         this.relatedSkuPriceCollectionConfig.addFilter("maxQuantity",this.maxQuantity,"=");
         this.relatedSkuPriceCollectionConfig.addFilter("currencyCode",this.currencyCode,"!=");
-        this.relatedSkuPriceCollectionConfig.addFilter("sku.skuID",this.skuSkuId,"=")
+        this.relatedSkuPriceCollectionConfig.addFilter("sku.skuID",this.skuSkuId,"=");
+        this.relatedSkuPriceCollectionConfig.addOrderBy("currencyCode|asc");
         this.relatedSkuPriceCollectionConfig.setAllRecords(true);
-        this.relatedSkuPriceCollectionConfig.getEntity().then(
+        this.refreshSkuPrices();
+        this.observerService.attach(this.refreshSkuPrices, "skuPricesUpdate");
+    }    
+
+    public refreshSkuPrices = () => {
+         this.relatedSkuPriceCollectionConfig.getEntity().then(
             (response)=>{
                 angular.forEach(response.records, (value,key)=>{
                     this.skuPrices.push(this.$hibachi.populateEntity("SkuPrice", value));
@@ -47,9 +56,38 @@ class SWSkuPriceQuantityEditController{
             (reason)=>{
             }
         );
-    }    
+    }
 
-     
+    public updateSkuPrices = () =>{ 
+        if(!this.isDirty){
+            this.isDirty = true; 
+        }
+        angular.forEach(this.skuPrices,(value,key)=>{
+            if(key > 0){
+                value.forms[value.data.skuPriceID].$setDirty(true);
+                value.forms[value.data.skuPriceID][this.columnPropertyIdentifier].$setDirty(true);
+                value.data[this.columnPropertyIdentifier] = this.skuPrice.data[this.columnPropertyIdentifier];
+            }
+        });
+    }
+
+    public saveSkuPrices = () =>{
+        var savePromises = [];
+        angular.forEach(this.skuPrices,(value,key)=>{
+            if(key > 0){
+                savePromises.push(value.$$save()); 
+            }
+        });
+        this.$q.all(savePromises).then(
+            (response)=>{
+                this.isDirty = false; 
+            },
+            (reason)=>{
+                //failure
+            }
+        );
+        console.log("skuprices",this.skuPrices);
+    }
 
 }
 

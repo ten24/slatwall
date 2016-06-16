@@ -11,6 +11,7 @@ class SWListingExpandableRuleController{
     public filterPropertyIdentifier:string;
     public filterComparisonOperator:string; 
     public filterComparisonValue:string;
+    public refreshChildrenEvent:string; 
     
     public hasChildrenCollectionConfigDeferred;
     public hasChildrenCollectionConfigPromise; 
@@ -41,7 +42,8 @@ class SWListingExpandableRule implements ng.IDirective{
         childrenCollectionConfig:"=?",
         filterPropertyIdentifier:"@",
         filterComparisonOperator:"@",
-        filterComparisonValue:"@"        
+        filterComparisonValue:"@",
+        refreshChildrenEvent:"@?"    
     };
     public controller=SWListingExpandableRuleController;
     public controllerAs="swListingExpandableRule";
@@ -67,7 +69,8 @@ class SWListingExpandableRule implements ng.IDirective{
                     filterPropertyIdentifier:scope.swListingExpandableRule.filterPropertyIdentifier,
                     filterComparisonOperator:scope.swListingExpandableRule.filterComparisonOperator, 
                     filterComparisonValue:scope.swListingExpandableRule.filterComparisonValue,
-                    childrenCollectionConfig:scope.swListingExpandableRule.childrenCollectionConfig
+                    childrenCollectionConfig:scope.swListingExpandableRule.childrenCollectionConfig,
+                    refreshChildrenEvent:scope.swListingExpandableRule.refreshChildrenEvent
                 };
                 
                 //TEMP OVERRIDES for TEMP multilisting directive

@@ -22,15 +22,15 @@ class SWPropertyDisplayController {
     public showLabel; 
     public form;
     public saved:boolean=false; 
-    public onChangeCallback; 
     public onChangeEvent:string; 
     public hasOnChangeCallback:boolean; 
+    public onChangeCallback; 
     public hasSaveCallback:boolean; 
+    public saveCallback; 
     public initialValue:any; 
     public inModal:boolean; 
-    public modalCallback;
     public hasModalCallback:boolean; 
-    
+    public modalCallback;
 
     //@ngInject
     constructor(
@@ -86,9 +86,6 @@ class SWPropertyDisplayController {
         if(angular.isUndefined(this.object) || angular.isUndefined(this.object.metaData)){
             throw("swPropertyDisplayController for property: " + this.property + " must be passed an object which is a jsentities instance");
         }
-
-        console.log("objmeta", this.object.metaData);
-
         if(angular.isDefined(this.object.metaData[this.property])){
             if(angular.isUndefined(this.fieldType)){
                 this.fieldType = this.object.metaData.$$getPropertyFieldType(this.property);
@@ -115,7 +112,7 @@ class SWPropertyDisplayController {
             this.saved = false; 
         }
         if(this.hasOnChangeCallback){
-            this.onChangeCallback();
+            this.onChangeCallback(result);
         }
         if(angular.isDefined(this.onChangeEvent)){
             this.observerService.notify(this.onChangeEvent,result);
@@ -130,6 +127,9 @@ class SWPropertyDisplayController {
     public save = () =>{
         if(!this.inModal){
             this.object.$$save().then((response)=>{
+                if(this.hasSaveCallback){
+                    this.saveCallback(response); 
+                }
                 this.edited = false;           
                 this.saved = true; 
             });  

@@ -13,6 +13,7 @@ class SWAddSkuPriceModalLauncherController{
     //@ngInject
     constructor(
         private $hibachi,
+        private observerService, 
         private utilityService
     ){
         this.uniqueName = this.baseName + this.utilityService.createID(16); 
@@ -33,6 +34,7 @@ class SWAddSkuPriceModalLauncherController{
         savePromise.then(
             (response)=>{
                this.initData(); 
+               this.observerService.notify('skuPricesUpdate');
             },
             (reason)=>{
                 //error callback
