@@ -5,7 +5,7 @@ declare var hibachiConfig:any;
 class SWFDirectiveController {
     private hibachiScope;
     //@ngInject
-    constructor(private $log, private frontendPartialsPath, public $rootScope) {
+    constructor(private $log, public $rootScope) {
         this.$rootScope = $rootScope;
         this.hibachiScope = this.$rootScope.hibachiScope;
     }
@@ -92,7 +92,6 @@ class SWFDirective implements ng.IDirective {
         );
         directive.$inject = [
             'hibachiPathBuilder',
-            'frontendPartialsPath',
             '$compile'
         ];
         return directive;
