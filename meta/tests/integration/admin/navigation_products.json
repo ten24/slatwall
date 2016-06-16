@@ -23,10 +23,10 @@
       "text": "qa@mailinator"
     },
     {
-      "type":"waitForElementPresent",
-      "locator":{
-        "type":"xpath",
-        "value":"//*[@id="j-mobile-nav"]/ul/li[2]/ul/li[3]/a"
+      "type": "waitForElementPresent",
+      "locator": {
+        "type": "xpath",
+        "value": "//*[@id=\"j-mobile-nav\"]/ul/li[2]/ul/li[3]/a"
       }
     },
     {
