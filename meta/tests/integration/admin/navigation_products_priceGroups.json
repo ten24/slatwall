@@ -31,7 +31,7 @@
       }
     },
     {
-      "type": "clickElement",
+      "type": "waitForElementPresent",
       "locator": {
         "type": "link text",
         "value": "Products"
@@ -41,8 +41,26 @@
       "type": "clickElement",
       "locator": {
         "type": "link text",
+        "value": "Products"
+      }
+    },
+    {
+      "type": "waitForElementPresent",
+      "locator": {
+        "type": "link text",
         "value": "Price Groups"
       }
+    },
+    {
+      "type": "clickElement",
+      "locator": {
+        "type": "link text",
+        "value": "Price Groups"
+      }
+    },
+    {
+      "type": "waitForTextPresent",
+      "text": "Price Groups"
     },
     {
       "type": "verifyTextPresent",
