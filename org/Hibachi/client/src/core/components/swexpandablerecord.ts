@@ -39,8 +39,7 @@ class SWExpandableRecordController{
     }
 
     public refreshChildren = () =>{
-        console.log("refresh the children");
-        this.toggleChild();
+        this.getEntity(); 
     }
     
     public setupChildCollectionConfig = () =>{
@@ -69,6 +68,25 @@ class SWExpandableRecordController{
 
 
     }
+
+    public getEntity = ()=>{
+         this.collectionPromise.then((data)=>{
+            this.collectionData = data;
+            this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records
+            if(this.collectionData.pageRecords.length){
+                angular.forEach(this.collectionData.pageRecords,(pageRecord)=>{
+                    this.expandableService.addRecord(pageRecord[this.parentIDName],true);
+                    pageRecord.dataparentID = this.recordID;
+                    pageRecord.depth = this.recordDepth || 0;
+                    pageRecord.depth++;
+                    //push the children into the listing display
+                    this.children.push(pageRecord);
+                    this.records.splice(this.recordIndex+1,0,pageRecord);
+                });
+            }
+            this.childrenLoaded = true;
+        });
+    }
     
     public toggleChild = ()=>{
         this.$timeout(()=>{
@@ -81,22 +99,7 @@ class SWExpandableRecordController{
                     if(angular.isFunction(this.childCollectionConfig.getEntity)){
                         this.collectionPromise = this.childCollectionConfig.getEntity();
                     } 
-                    this.collectionPromise.then((data)=>{
-                        this.collectionData = data;
-                        this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records
-                        if(this.collectionData.pageRecords.length){
-                            angular.forEach(this.collectionData.pageRecords,(pageRecord)=>{
-                                this.expandableService.addRecord(pageRecord[this.parentIDName],true);
-                                pageRecord.dataparentID = this.recordID;
-                                pageRecord.depth = this.recordDepth || 0;
-                                pageRecord.depth++;
-                                //push the children into the listing display
-                                this.children.push(pageRecord);
-                                this.records.splice(this.recordIndex+1,0,pageRecord);
-                            });
-                        }
-                        this.childrenLoaded = true;
-                    });
+                    this.getEntity();
             }
             angular.forEach(this.children,(child)=>{
                 child.dataIsVisible=this.childrenOpen;
