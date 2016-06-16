@@ -158,20 +158,18 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 			variables.saveablePaymentMethodsSmartList.addInFilter('paymentMethodType', 'creditCard,giftCard,external,termPayment');
 			if(len(setting('accountEligiblePaymentMethods'))) {
 				variables.saveablePaymentMethodsSmartList.addInFilter('paymentMethodID', setting('accountEligiblePaymentMethods'));
-			} else {
-				variables.saveablePaymentMethodsSmartList.addFilter('paymentMethodID', 'none');
 			}
 		}
 		return variables.saveablePaymentMethodsSmartList;
 	}
 
-	public any function getEligibleAccountPaymentMethodsSmartList() {
+	public any function getEligibleAccountPaymentMethodsSmartList() {		
 		// These are the payment methods that are allowed only when adding an account payment
 		if(!structKeyExists(variables, "eligibleAccountPaymentMethodsSmartList")) {
 			var sl = getService("paymentService").getPaymentMethodSmartList();
-
-			// Prevent 'termPayment' from displaying as account payment method option
-			sl.addInFilter('paymentMethodType', 'cash,check,creditCard,external,giftCard');
+			
+			// Prevent 'termPayment' from displaying as account payment method option			
+			sl.addInFilter('paymentMethodType', 'cash,check,creditCard,external,giftCard');			
 			sl.addInFilter('paymentMethodID', setting('accountEligiblePaymentMethods'));
 			sl.addFilter('activeFlag', 1);
 
@@ -269,7 +267,6 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		if(!structKeyExists(variables, "slatwallAuthenticationExistsFlag")) {
 			variables.slatwallAuthenticationExistsFlag = false;
 			var authArray = getAccountAuthentications();
-			request.debug(getAccountAuthentications());
 			for(auth in authArray) {
 				if(isNull(auth.getIntegration()) && !isNull(auth.getPassword())  && !isNull(auth.getActiveFlag()) && auth.getActiveFlag() ) {
 					variables.slatwallAuthenticationExistsFlag = true;
@@ -307,11 +304,9 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 				termAccountBalance = precisionEvaluate(termAccountBalance + termAccountOrderPayment.getAmountUnreceived());
 			}
 		}
-		request.debug("BALANCE="); request.debug(termAccountBalance);
 
 		// Now look for the unassigned payment amount
 		for(var accountPayment in getAccountPayments()) {
-			request.debug("In second for loop");
 			termAccountBalance = precisionEvaluate(termAccountBalance - accountPayment.getAmountUnassigned());
 		}
 
@@ -343,7 +338,6 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 				)
 			");
 			for(var loyaltyPrograms in smartList.getRecords()) {
-				request.debug(loyaltyPrograms.getLoyaltyName());
 				arrayAppend(variables.unenrolledAccountLoyaltyOptions,
 								{name=loyaltyPrograms.getLoyaltyName(),
 								value=loyaltyPrograms.getLoyaltyID()}
@@ -359,10 +353,15 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 
 		var activeAuthentications = [];
 
-		for (i = ArrayLen(authentications); i >= 1; i--){
+		for (var i = ArrayLen(authentications); i >= 1; i--){
 			var authentication = authentications[i];
 
-			if( !(isNull(authentication.getIntegration()) && !isNull(authentication.getPassword()) && authentication.getActiveFlag() == false)){
+			if( 
+                !isNull(authentication.getIntegration())
+                || isNull(authentication.getPassword())
+                || isNull(authentication.getActiveFlag())
+                || authentication.getActiveFlag() == true
+            ){
 				arrayAppend(activeAuthentications, authentication);
 			}
 		}
