@@ -154,6 +154,7 @@ class SWMultiListingDisplayController{
             //make it available to swCollectionConfig
             this.collectionConfig = null; 
         }
+        this.listingService.setListingState(this.tableID, this);
         this.setupTranscludedData(); 
         this.multipleCollectionPromise.then(()=>{
             //now do the intial setup
@@ -168,7 +169,6 @@ class SWMultiListingDisplayController{
             }
             this.paginator.getCollection = this.getCollection;
             this.getCollection();
-            this.listingService.setListingState(this.tableID, this);
         });
         this.$scope.$on('$destroy',()=>{
             this.observerService.detachById(this.$scope.collection);
@@ -709,24 +709,6 @@ class SWMultiListingDisplayController{
             //multicollection logic here
         }
         this.getCollection();
-    };
-    
-    public columnOrderBy = (column) => {
-        var isfound = false;
-        if(this.collectionConfigs.length == 0){
-            angular.forEach(this.collectionConfig.orderBy, (orderBy, index)=>{
-                if(column.propertyIdentifier == orderBy.propertyIdentifier){
-                    isfound = true;
-                    this.orderByStates[column.propertyIdentifier] = orderBy.direction;
-                }
-            });
-        } else { 
-            //multicollection logic here
-        }
-        if(!isfound){
-            this.orderByStates[column.propertyIdentifier] = '';
-        }
-        return this.orderByStates[column.propertyIdentifier];
     };
     
     public columnOrderByIndex = (column) =>{

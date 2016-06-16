@@ -232,8 +232,10 @@ class ListingService{
     
     public getPageRecordChildCollectionConfigForExpandableRule = (listingID, pageRecord) => {
         var keyOfExpandableRuleMet = this.getKeyOfMatchedExpandableRule(listingID, pageRecord); 
-        if(angular.isDefined(pageRecord[this.getListing(listingID).exampleEntity.$$getIDName()]) 
-            && angular.isDefined(this.getListing(listingID).childCollectionConfigs[pageRecord[this.getListing(listingID).exampleEntity.$$getIDName()]])
+        if(this.getListing(listingID) != null &&
+           angular.isFunction(this.getListing(listingID).exampleEntity.$$getIDName) &&
+           angular.isDefined(pageRecord[this.getListing(listingID).exampleEntity.$$getIDName()]) &&
+           angular.isDefined(this.getListing(listingID).childCollectionConfigs[pageRecord[this.getListing(listingID).exampleEntity.$$getIDName()]])
         ){
             return this.getListing(listingID).childCollectionConfigs[pageRecord[this.getListing(listingID).exampleEntity.$$getIDName()]];
         }

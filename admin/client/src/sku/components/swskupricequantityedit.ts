@@ -64,8 +64,8 @@ class SWSkuPriceQuantityEditController{
         }
         angular.forEach(this.skuPrices,(value,key)=>{
             if(key > 0){
-                value.forms[value.data.skuPriceID].$setDirty(true);
-                value.forms[value.data.skuPriceID][this.columnPropertyIdentifier].$setDirty(true);
+                value.forms["form" + value.data.skuPriceID].$setDirty(true);
+                value.forms["form" + value.data.skuPriceID][this.columnPropertyIdentifier].$setDirty(true);
                 value.data[this.columnPropertyIdentifier] = this.skuPrice.data[this.columnPropertyIdentifier];
             }
         });

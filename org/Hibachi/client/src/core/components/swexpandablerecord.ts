@@ -39,7 +39,7 @@ class SWExpandableRecordController{
     }
 
     public refreshChildren = () =>{
-        this.getEntity(); 
+        this.getEntity();
     }
     
     public setupChildCollectionConfig = () =>{
@@ -65,8 +65,6 @@ class SWExpandableRecordController{
             this.childCollectionConfig.addJoin(join);
         });
         this.childCollectionConfig.groupBys = this.collectionConfig.groupBys;
-
-
     }
 
     public getEntity = ()=>{
