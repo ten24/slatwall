@@ -23,13 +23,7 @@
       },
       "text": "QaPa33word"
     },
-    {
-      "type": "waitForElementPresent",
-      "locator": {
-        "type": "xpath",
-        "value": "//*[@id=\"j-mobile-nav\"]/ul/li[2]/ul/li[3]/a"
-      }
-    },
+
     {
       "type": "clickElement",
       "locator": {
@@ -38,8 +32,11 @@
       }
     },
     {
-      "type": "pause",
-      "waitTime": "5000"
+      "type": "waitForElementPresent",
+      "locator": {
+        "type": "xpath",
+        "value": "//*[@id=\"j-mobile-nav\"]/ul/li[2]/ul/li[3]/a"
+      }
     },
     {
       "type": "clickElement",
