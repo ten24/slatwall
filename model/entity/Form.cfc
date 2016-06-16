@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Form" entityname="SlatwallForm" table="SwForm" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="formService" {
+component displayname="Form" entityname="SlatwallForm" table="SwForm" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="formService"  hb_processContexts="addFormQuestion,addFormResponse"  {
 
 	// Persistent Properties
 	property name="formID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
