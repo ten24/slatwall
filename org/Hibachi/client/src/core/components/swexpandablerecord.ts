@@ -20,21 +20,27 @@ class SWExpandableRecordController{
     public parentIDName:string; 
     public entity:any
     public listingId:string; 
+    public refreshChildrenEvent
     public expandableRules; 
     
     //@ngInject
     constructor(private $timeout:ng.ITimeoutService, 
-                private utilityService, 
                 private $hibachi, 
+                private utilityService, 
                 private collectionConfigService, 
                 private expandableService,
+                private listingService,
                 private observerService){
-        this.$timeout = $timeout;
-        this.$hibachi = $hibachi;
-        this.utilityService = utilityService;
-        this.collectionConfigService = collectionConfigService;
         this.recordID = this.parentId; //this is what parent is initalized to in the listing display
         expandableService.addRecord(this.recordID);
+        if(angular.isDefined(this.refreshChildrenEvent) && this.refreshChildrenEvent.length){
+            this.observerService.attach(this.refreshChildren, this.refreshChildrenEvent)
+        }
+    }
+
+    public refreshChildren = () =>{
+        console.log("refresh the children");
+        this.toggleChild();
     }
     
     public setupChildCollectionConfig = () =>{
@@ -133,6 +139,7 @@ class SWExpandableRecord implements ng.IDirective{
         entity:"=",
         collectionConfig:"=",
         childCollectionConfig:"=?",
+        refreshChildrenEvent:"=?",
         listingId:"@?",
         records:"=",
         pageRecord:"=",

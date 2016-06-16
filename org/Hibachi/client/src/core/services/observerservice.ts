@@ -105,6 +105,7 @@ class ObserverService extends BaseService{
      * @description notifies all observers of a specific event
      */
     notify = (event:string, parameters:any):void => {
+      console.warn(event);
       for(var id in this.observers[event]) {
         angular.forEach(this.observers[event][id], function (callback) {
           callback(parameters);

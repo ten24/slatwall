@@ -192,7 +192,7 @@ class SWMultiListingDisplayController{
         });
 
          //add filters
-        this.setupColumns(this.collectionConfig, this.collectionObject);
+        this.listingService.setupColumns(this.tableID,this.collectionConfig, this.collectionObject);
         angular.forEach(this.filters, (filter)=>{
                 this.collectionConfig.addFilter(filter.propertyIdentifier, filter.comparisonValue, filter.comparisonOperator, filter.logicalOperator, filter.hidden);
         }); 
@@ -238,7 +238,7 @@ class SWMultiListingDisplayController{
                     this.collectionData = data;
                     this.setupDefaultCollectionInfo();
                     if(this.collectionConfig.hasColumns()){
-                        this.setupColumns(this.collectionConfig, this.collectionObject);
+                        this.listingService.setupColumns(this.tableID,this.collectionConfig, this.collectionObject);
                     }else{
                         this.collectionConfig.loadJson(data.collectionConfig);
                     }
@@ -305,7 +305,6 @@ class SWMultiListingDisplayController{
                 this.collectionConfig.getEntity().then((data)=>{
                     this.collectionData = data;
                     this.setupDefaultCollectionInfo();
-                    //this.setupColumns();
                     this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records;
                     this.paginator.setPageRecordsInfo(this.collectionData);
                 });
@@ -323,7 +322,7 @@ class SWMultiListingDisplayController{
                     this.$q.all(allGetEntityPromises).then(
                         (results)=>{
                             angular.forEach(results,(result,key)=>{
-                                this.setupColumns(this.collectionConfigs[key], this.collectionObjects[key]);
+                                this.listingService.setupColumns(this.tableID,this.collectionConfigs[key], this.collectionObjects[key]);
                                 this.collectionData.pageRecords = this.collectionData.pageRecords.concat(result.records); 
                             });
                         },
@@ -623,60 +622,6 @@ class SWMultiListingDisplayController{
     };
     //end initCollectionConfigData
 
-    public setupColumns = (collectionConfig, collectionObject)=>{
-        //assumes no alias formatting
-        for(var i=0; i < this.columns.length; i++){
-            var column = this.columns[i];
-            var lastEntity = this.$hibachi.getLastEntityNameInPropertyIdentifier(collectionConfig.baseEntityName,column.propertyIdentifier);
-
-                if(angular.isUndefined(column.title)){
-                    column.title = this.rbkeyService.getRBKey('entity.'+lastEntity.toLowerCase()+'.'+this.utilityService.listLast(column.propertyIdentifier,'.'));
-                }
-                
-                if(angular.isUndefined(column.isVisible)){
-                    column.isVisible = true;
-                }
-                var metadata = this.$hibachi.getPropertyByEntityNameAndPropertyName(lastEntity, this.utilityService.listLast(column.propertyIdentifier,'.'));
-                if(angular.isDefined(metadata) && angular.isDefined(metadata.hb_formattype)){
-                    column.type = metadata.hb_formatType;
-                } else { 
-                    column.type = "none";
-                }
-                if(angular.isDefined(column.tooltip)){
-                
-                    var parsedProperties = this.utilityService.getPropertiesFromString(column.tooltip);
-                    
-                    if(parsedProperties && parsedProperties.length){
-                        collectionConfig.addDisplayProperty(this.utilityService.arrayToList(parsedProperties), "", {isVisible:false});
-                    }
-                } else { 
-                    column.tooltip = '';
-                }
-                if(angular.isDefined(column.queryString)){
-                    var parsedProperties = this.utilityService.getPropertiesFromString(column.queryString);
-                    if(parsedProperties && parsedProperties.length){
-                        collectionConfig.addDisplayProperty(this.utilityService.arrayToList(parsedProperties), "", {isVisible:false});
-                    }
-                }
-                this.columnOrderBy(column);
-                
-                //only want to do this if it's a singleCollectionConfig
-                //collectionConfig.addDisplayProperty(column.propertyIdentifier,column.title,column);
-        }
-        //if the passed in collection has columns perform some formatting
-        if(this.hasCollectionPromise){
-            //assumes alias formatting from collectionConfig
-            angular.forEach(collectionConfig.columns, (column)=>{
-
-                var lastEntity = this.$hibachi.getLastEntityNameInPropertyIdentifier(collectionObject,this.utilityService.listRest(column.propertyIdentifier,'.'));
-                column.title = column.title || this.rbkeyService.getRBKey('entity.'+lastEntity.toLowerCase()+'.'+this.utilityService.listLast(column.propertyIdentifier,'.'));
-                if(angular.isUndefined(column.isVisible)){
-                    column.isVisible = true;
-                }
-            });
-        }
-    };
-
     public getKeyOfMatchedHideRule = (pageRecord)=>{
         return this.listingService.getKeyOfMatchedHideRule(this.tableID, pageRecord);
     }
@@ -703,6 +648,14 @@ class SWMultiListingDisplayController{
     
     public getPageRecordChildCollectionConfigForExpandableRule = (pageRecord) => {
         return this.listingService.getPageRecordChildCollectionConfigForExpandableRule(this.tableID, pageRecord);
+    }
+
+    public getPageRecordRefreshChildrenEvent = (pageRecord) => {
+        if(this.listingService.hasPageRecordRefreshChildrenEvent(this.tableID, pageRecord)){
+            return this.listingService.getPageRecordRefreshChildrenEvent(this.tableID, pageRecord); 
+        } else { 
+            return ""; 
+        }
     }
     
     //move this to the service
