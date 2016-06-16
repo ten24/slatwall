@@ -32,6 +32,7 @@
 /// <reference path="../src/collection/components/swcriteriarelatedobject.ts" />
 /// <reference path="../src/collection/components/swcriteriastring.ts" />
 /// <reference path="../src/collection/components/swdisplayitem.ts" />
+/// <reference path="../src/collection/components/swdisplayitemaggregate.ts" />
 /// <reference path="../src/collection/components/swdisplayoptions.ts" />
 /// <reference path="../src/collection/components/sweditfilteritem.ts" />
 /// <reference path="../src/collection/components/swfiltergroupitem.ts" />

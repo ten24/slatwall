@@ -19,6 +19,7 @@ class SWActionCallerController{
     public actionUrl:string;
     public queryString:string;
     public isAngularRoute:boolean;
+    public formController:any;
     //@ngInject
     constructor(
         private $scope,
@@ -45,12 +46,12 @@ class SWActionCallerController{
             this.$element.parent().append(template);
             $compile(template)($scope);
             //need to perform init after promise completes
-            this.init();
+            //this.init();
         });
     }
 
 
-    public init = ():void =>{
+    public $onInit = ():void =>{
 
         //Check if is NOT a ngRouter
         if(angular.isUndefined(this.isAngularRoute)){
@@ -74,7 +75,7 @@ class SWActionCallerController{
             if (this.type == "button"){
                 //handle submit.
                 /** in order to attach the correct controller to local vm, we need a watch to bind */
-                var unbindWatcher = this.$scope.$watch(() => { return this.$scope.frmController; }, (newValue, oldValue) => {
+                var unbindWatcher = this.$scope.$watch(() => { return this.formController; }, (newValue, oldValue) => {
                     if (newValue !== undefined){
                         this.formCtrl = newValue;
 
@@ -280,6 +281,7 @@ class SWActionCaller implements ng.IDirective{
         id:"@",
         isAngularRoute:"=?"
     };
+    public require={formController:"^?swForm"};
     public controller=SWActionCallerController;
     public controllerAs="swActionCaller";
     public templateUrl;
@@ -308,7 +310,10 @@ class SWActionCaller implements ng.IDirective{
         ){
     }
 
-    public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
+    public link:ng.IDirectiveLinkFn = (scope:any, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
+        if (angular.isDefined(scope.swActionCaller.formController)){
+             scope.formController = scope.swActionCaller.formController;    
+        }
     }
 }
 export{

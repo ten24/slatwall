@@ -52,6 +52,12 @@ interface IFormFieldControllerVM{
 class SWFFormFieldController {
 	/** declare our fields so we don't get errors using this */
 	public propertyDisplay;
+    private name;
+   private class;
+   private errorClass;
+   private type;
+   private object;
+   private propertyIdentifier;
 
 	/**
 		* Handles the logic for the frontend version of the property display.
@@ -72,6 +78,18 @@ class SWFFormFieldController {
         //        propertyIdentifier: vm.propertyIdentifier
         //    };
         //}
+        
+        if (!this.propertyDisplay){
+            
+             this.propertyDisplay =  {
+                 name: this.name,
+                 class: this.class,
+                 errorClass: this.errorClass,
+                 type: this.type,
+                 object: this.object,
+                 propertyIdentifier: this.propertyIdentifier
+             };
+         }
 		
 	}
 } 

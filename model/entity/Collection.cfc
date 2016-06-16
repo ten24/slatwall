@@ -529,7 +529,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			break;
 		}
 
-		return " #aggregateFunction#(DISTINCT #arguments.propertyIdentifier#) as #arguments.aggregate.aggregateAlias#";
+		var distinct = (aggregateFunction == 'COUNT') ? 'DISTINCT':'';
+		return " #aggregateFunction#(#distinct# #arguments.propertyIdentifier#) as #arguments.aggregate.aggregateAlias#";
+
 	}
 
 	public any function getCacheName() {
