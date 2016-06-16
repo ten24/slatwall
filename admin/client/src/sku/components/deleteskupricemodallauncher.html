@@ -1,25 +1,12 @@
-<sw-modal-launcher ng-if="swDeleteSkuPriceModalLauncher.skuPrice"
-    data-modal-name="{{swDeleteSkuPriceModalLauncher.uniqueName}}" 
-    data-title="Delete Sku Price" 
-    data-save-action="swDeleteSkuPriceModalLauncher.delete">
-    <sw-modal-button>
-        <a href="#" title="Delete Price" class="btn btn-default btn-xs" data-target="#">
-            <i class="fa fa-trash"></i>
-        </a>
-    </sw-modal-button>
-    <sw-modal-content> 
-        <sw-form 
-                name="deleteSkuPrice" 
-                data-object="swDeleteSkuPriceModalLauncher.skuPrice"    
-                data-context="delete"
-                >
-            <div class="row">
-                    <div class="col-sm-12">
-                        <div class="row">
-                            
-                        </div>
-                    </div>
-                </div>
-            </sw-form>
-    </sw-modal-content> 
-</sw-modal-launcher>
+<a sw-confirm 
+   ng-if="swDeleteSkuPriceModalLauncher.skuPrice"
+   class="btn btn-default s-remove ng-scope ng-isolate-scope" 
+   data-confirm-text="Confirm" 
+   data-message-text="Are you sure you want to delete this Sku Price?" 
+   data-callback="swDeleteSkuPriceModalLauncher.delete()" 
+   data-use-rb-key="false" 
+   data-simple="false" 
+   data-yes-text="Yes" 
+   data-no-text="No" >
+        <i class="glyphicon glyphicon-trash icon-white"></i>
+</a>

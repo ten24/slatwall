@@ -7,10 +7,12 @@ class SWModalLauncherController {
     public title:string; 
     public hasSaveAction:boolean=false;
     public hasCancelAction:boolean=false;
+    public hasDeleteAction:boolean=false; 
 
     //callbacks
     public saveAction;
     public cancelAction;
+    public deleteAction; 
     
     // @ngInject
     constructor(){
@@ -30,6 +32,22 @@ class SWModalLauncherController {
             var savePromise = this.saveAction()(); 
         }
         savePromise.then(
+            (response)=>{
+                //if the action was sucessful
+                $("#" + this.modalName).modal('hide');
+            },
+            (reason)=>{
+                //if the action failed
+            }
+        );
+    }
+
+     public deleteCallback = () =>{
+        //the passed save action must return a promise
+        if(this.hasDeleteAction){
+            var deletePromise = this.saveAction()(); 
+        }
+        deletePromise.then(
             (response)=>{
                 //if the action was sucessful
                 $("#" + this.modalName).modal('hide');
@@ -63,6 +81,7 @@ class SWModalLauncher implements ng.IDirective{
         modalName:"@", 
         title:"@",
         saveAction:"&?",
+        deleteAction:"&?",
         cancelAction:"&?"
     };
     public controller=SWModalLauncherController;
@@ -78,6 +97,9 @@ class SWModalLauncher implements ng.IDirective{
             pre: ($scope: any, element: JQuery, attrs) => {      
                 if(angular.isDefined(attrs.saveAction)){
                    $scope.swModalLauncher.hasSaveAction = true; 
+                }
+                if(angular.isDefined(attrs.deleteAction)){
+                    $scope.swModalLauncher.hasDeleteAction = true; 
                 }
                 if(angular.isDefined(attrs.cancelAction)){
                     $scope.swModalLauncher.hasCancelAction = true; 

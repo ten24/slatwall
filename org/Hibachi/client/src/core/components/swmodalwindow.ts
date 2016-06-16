@@ -31,7 +31,11 @@ class SWModalWindow implements ng.IDirective{
     public bindToController = {
         modalName:"@",
         title:"@",
+        hasSaveAction:"=?",
         saveAction:"&?",
+        hasDeleteAction:"=?",
+        deleteAction:"&?",
+        hasCancelAction:"=?",
         cancelAction:"&?"
     };
     public controller=SWModalWindowController;
@@ -45,12 +49,6 @@ class SWModalWindow implements ng.IDirective{
     public compile = (element: JQuery, attrs: angular.IAttributes, transclude: any) => {
         return {
             pre: ($scope: any, element: JQuery, attrs) => {      
-                if(angular.isDefined(attrs.saveAction)){
-                   $scope.swModalWindow.hasSaveAction = true; 
-                }
-                if(angular.isDefined(attrs.cancelAction)){
-                    $scope.swModalWindow.hasCancelAction = true; 
-                }
             },
             post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
             }
