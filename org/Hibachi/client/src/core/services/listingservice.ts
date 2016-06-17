@@ -198,7 +198,7 @@ class ListingService{
         //Detail
         if(this.getListing(listingID).recordDetailAction && this.getListing(listingID).recordDetailAction.length){
             this.getListing(listingID).administrativeCount++;
-            this.getListing(listingID).adminattributes = ththis.getListing(listingID)is.getAdminAttributesByType('detail');
+            this.getListing(listingID).adminattributes = this.getListing(listingID).getAdminAttributesByType('detail');
         }
 
         //Edit
