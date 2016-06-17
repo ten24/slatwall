@@ -807,13 +807,6 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 			}
 		};
 		var mockSubscriptionUsageBenefit3 = createPersistedTestEntity('SubscriptionUsageBenefit', subscriptionUsageBenefitData3);
-		var subscriptionUsageBenefitData4 = {
-			subscriptionUsageBenefitID = "",
-			subscriptionUsage = {
-				subscriptionUsageID = mockSubscriptionUsage1.getSubscriptionUsageID()
-			}
-		};
-		var mockSubscriptionUsageBenefit4 = createPersistedTestEntity('SubscriptionUsageBenefit', subscriptionUsageBenefitData4);
 		
 		var subsUsageBenefitAccountData = {//endDateTime is null
 			subsUsageBenefitAccountID = "",
@@ -851,8 +844,10 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		var result = mockAccount1.getActiveSubscriptionUsageBenefitsSmartList().getRecords();
 		//testing if the whereCondition of endDate time works
 		assertEquals(2, arrayLen(result));
-		assertEquals(mockSubscriptionUsageBenefit1.getSubscriptionUsageBenefitID(), result[1].getSubscriptionUsageBenefitID());
-		assertEquals(mockSubscriptionUsageBenefit2.getSubscriptionUsageBenefitID(), result[2].getSubscriptionUsageBenefitID());
+		var subscriptionUsageBenefitIDList = "";
+		subscriptionUsageBenefitIDList = listAppend(subscriptionUsageBenefitIDList,"#mockSubscriptionUsageBenefit1.getsubscriptionUsageBenefitID()#");
+		subscriptionUsageBenefitIDList = listAppend(subscriptionUsageBenefitIDList,"#mockSubscriptionUsageBenefit2.getsubscriptionUsageBenefitID()#");
+		assertTrue(listFind(subscriptionUsageBenefitIDList, "#result[1].getsubscriptionUsageBenefitID()#") > 0);
 	}
 	
 	public void function getActiveSubscriptionUsageBenefitsSmartList_rangeOfExpirationDate_AccountFilter_Test() {
@@ -1220,7 +1215,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 	}
 
 	public void function getActiveAccountAuthentications_ExistedAuthz_Test() {
-		//When authz existed, the IF statement of Logical Operators will be TRUE if any of the three is true
+		//When authz existed, the IF statement of Logical Operators will be TRUE if any of the four is true
 		var accountData = {
 			accountID = "",
 			firstName = "mockActiveName"
@@ -1272,7 +1267,6 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 			accountAuthenticationID = "",
 			authenticationDescription = "mockAccountAuthentications4",
 			password = "1234",
-			activeFlag = javaCast("null",""),
 			account = {
 				accountID = mockAccount.getAccountID()
 			}
@@ -1788,8 +1782,8 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		//testing if PaymentMethod filter works in the SmartList
 		var mockSM1 = mockAccount1.getTermOrderPaymentsByDueDateSmartList().getRecords();
 		assertEquals(arrayLen(mockSM1), 2);
-		assertEquals("orderNumber001", mockSM1[1].getOrder().getOrderNumber());
-		assertEquals(orderPayment3.getOrderPaymentID(), mockSM1[2].getOrderPaymentID());
+		assertEquals(paymentMethod1.getPaymentMethodID(), mockSM1[1].getPaymentMethodID());
+		assertEquals(paymentMethod1.getPaymentMethodID(), mockSM1[2].getPaymentMethodID());
 	}
 	
 
