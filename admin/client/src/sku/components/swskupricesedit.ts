@@ -70,8 +70,8 @@ class SWSkuPricesEditController{
             (reason)=>{
             }
         ).finally(()=>{
-            console.log("finally", this.getSkuPrices());
             this.skuPrices = this.getSkuPrices(); 
+            console.log("wheresmyprice",this.skuPrices);
         });
     } 
 

@@ -16,7 +16,8 @@ class SWAddSkuPriceModalLauncherController{
         private $hibachi,
         private observerService, 
         private utilityService,
-        private listingService
+        private listingService,
+        private skuPriceService
     ){
         this.uniqueName = this.baseName + this.utilityService.createID(16); 
         this.initData(); 
@@ -35,6 +36,7 @@ class SWAddSkuPriceModalLauncherController{
         var savePromise = this.skuPrice.$$save();
         savePromise.then(
             (response)=>{ 
+               this.skuPriceService.setSkuPrices(this.skuId,[this.skuPrice]);
                this.observerService.notify('skuPricesUpdate');
                 //temporarily overriding for USD need to get this setting accessable to client side
                 if(angular.isDefined(this.listingID) && this.skuPrice.data.currencyCode=="USD"){

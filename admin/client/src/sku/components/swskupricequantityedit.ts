@@ -53,7 +53,6 @@ class SWSkuPriceQuantityEditController{
             }
         ).finally(()=>{
             this.skuPrices = this.getSkuPrices(); 
-            console.log("quantityfinally",this.skuPrices)
         });
     }
 
