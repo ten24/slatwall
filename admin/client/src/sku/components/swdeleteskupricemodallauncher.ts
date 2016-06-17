@@ -7,6 +7,7 @@ class SWDeleteSkuPriceModalLauncherController{
     public skuId:string; 
     public skuPrice:any; 
     public baseName:string="j-delete-sku-item-"; 
+    public listingID:string; 
     public uniqueName:string; 
     
     //@ngInject
@@ -87,6 +88,10 @@ class SWDeleteSkuPriceModalLauncher implements ng.IDirective{
                 } else{ 
                     throw("swDeleteSkuPriceModalLauncher was unable to find the pageRecord that it needs!");
                 } 
+                var listingScope = this.scopeService.locateParentScope($scope, "swMultiListingDisplay");
+                if(angular.isDefined(listingScope.swMultiListingDisplay)){ 
+                    $scope.swDeleteSkuPriceModalLauncher.listingID = listingScope.swMultiListingDisplay.tableID;
+                }
             },
             post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
 

@@ -7,7 +7,8 @@ class SWAddSkuPriceModalLauncherController{
     public skuId:string; 
     public skuPrice:any; 
     public baseName:string="j-add-sku-item-"; 
-    public uniqueName:string; 
+    public uniqueName:string;
+    public listingID:string;  
     public currencyCodeOptions; 
     
     //@ngInject
@@ -110,6 +111,10 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
                 } else{ 
                     throw("swAddSkuPriceModalLauncher was unable to find the pageRecord that it needs!");
                 } 
+                var listingScope = this.scopeService.locateParentScope($scope, "swMultiListingDisplay");
+                if(angular.isDefined(listingScope.swMultiListingDisplay)){ 
+                    $scope.swAddSkuPriceModalLauncher.listingID = listingScope.swMultiListingDisplay.tableID;
+                }
             },
             post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
 
