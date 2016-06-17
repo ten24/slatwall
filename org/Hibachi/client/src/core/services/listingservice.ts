@@ -325,7 +325,48 @@ class ListingService{
                 }
             });
         }
-    }
+    };
+
+    public setupDefaultGetCollection = (listingID) =>{
+        if(this.getListing(listingID).collectionConfigs.length == 0){
+            this.getListing(listingID).collectionPromise = this.getListing(listingID).collectionConfig.getEntity();
+
+            return ()=>{
+                this.getListing(listingID).collectionConfig.setCurrentPage(this.getListing(listingID).paginator.getCurrentPage());
+                this.getListing(listingID).collectionConfig.setPageShow(this.getListing(listingID).paginator.getPageShow());
+                this.getListing(listingID).collectionConfig.getEntity().then((data)=>{
+                    this.getListing(listingID).collectionData = data;
+                    this.getListing(listingID).setupDefaultCollectionInfo();
+                    this.getListing(listingID).collectionData.pageRecords = this.getListing(listingID).collectionData.pageRecords || this.getListing(listingID).collectionData.records;
+                    this.getListing(listingID).paginator.setPageRecordsInfo(this.getListing(listingID).collectionData);
+                });
+            };
+        } else { 
+            //Multi Collection Config Info Here
+            return ()=>{
+                this.getListing(listingID).collectionData = {}; 
+                this.getListing(listingID).collectionData.pageRecords = [];
+                var allGetEntityPromises = [];
+                angular.forEach(this.getListing(listingID).collectionConfigs,(collectionConfig,key)=>{
+                    allGetEntityPromises.push(collectionConfig.getEntity());
+                });      
+                if(allGetEntityPromises.length){
+                    this.$q.all(allGetEntityPromises).then(
+                        (results)=>{
+                            angular.forEach(results,(result,key)=>{
+                                this.getListing(listingID).listingService.setupColumns(listingID,this.getListing(listingID).collectionConfigs[key], this.getListing(listingID).collectionObjects[key]);
+                                this.getListing(listingID).collectionData.pageRecords = this.getListing(listingID).collectionData.pageRecords.concat(result.records); 
+                            });
+                        },
+                        (reason)=>{
+                           //error callback to be implemented
+                        }
+                    ); 
+                } 
+                //todo pagination logic
+            }
+        }
+    };
 
     public columnOrderBy = (listingID, column) => {
         var isfound = false;

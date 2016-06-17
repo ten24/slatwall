@@ -165,7 +165,7 @@ class SWMultiListingDisplayController{
         }).finally(()=>{
             //if getCollection doesn't exist then create it
             if(angular.isUndefined(this.getCollection)){
-                this.getCollection = this.setupDefaultGetCollection();
+                this.getCollection = this.listingService.setupDefaultGetCollection(this.tableID);
             }
             this.paginator.getCollection = this.getCollection;
             this.getCollection();
@@ -184,10 +184,10 @@ class SWMultiListingDisplayController{
         angular.forEach(this.collectionConfigs,(value,key)=>{
             this.collectionObjects[key] = value.baseEntityName;
         }); 
-        this.buildCommonPropertiesList();
+        //this.buildCommonPropertiesList();
     };
     
-    private buildCommonPropertiesList = () => {
+    /*private buildCommonPropertiesList = () => {
         if(this.collectionObjects.length > 1){
             this.commonProperties = {}; 
 
@@ -209,7 +209,7 @@ class SWMultiListingDisplayController{
                 }
             }); 
         }
-    };
+    };*/
 
     private setupDefaultCollectionInfo = () =>{
         if(this.hasCollectionPromise 
@@ -223,47 +223,6 @@ class SWMultiListingDisplayController{
         this.collectionConfig.setPageShow(this.paginator.getPageShow());
         this.collectionConfig.setCurrentPage(this.paginator.getCurrentPage());
         //this.collectionConfig.setKeywords(this.paginator.keywords);
-    };
-
-    private setupDefaultGetCollection = () =>{
-        if(this.collectionConfigs.length == 0){
-            this.collectionPromise = this.collectionConfig.getEntity();
-
-            return ()=>{
-                this.collectionConfig.setCurrentPage(this.paginator.getCurrentPage());
-                this.collectionConfig.setPageShow(this.paginator.getPageShow());
-                this.collectionConfig.getEntity().then((data)=>{
-                    this.collectionData = data;
-                    this.setupDefaultCollectionInfo();
-                    this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records;
-                    this.paginator.setPageRecordsInfo(this.collectionData);
-                });
-            };
-        } else { 
-            //Multi Collection Config Info Here
-            return ()=>{
-                this.collectionData = {}; 
-                this.collectionData.pageRecords = [];
-                var allGetEntityPromises = [];
-                angular.forEach(this.collectionConfigs,(collectionConfig,key)=>{
-                    allGetEntityPromises.push(collectionConfig.getEntity());
-                });      
-                if(allGetEntityPromises.length){
-                    this.$q.all(allGetEntityPromises).then(
-                        (results)=>{
-                            angular.forEach(results,(result,key)=>{
-                                this.listingService.setupColumns(this.tableID,this.collectionConfigs[key], this.collectionObjects[key]);
-                                this.collectionData.pageRecords = this.collectionData.pageRecords.concat(result.records); 
-                            });
-                        },
-                        (reason)=>{
-                           //error callback to be implemented
-                        }
-                    ); 
-                } 
-                //todo pagination logic
-            }
-        }
     };
 
     public getKeyOfMatchedHideRule = (pageRecord)=>{
@@ -390,7 +349,6 @@ class SWMultiListingDisplayController{
                 this.isCurrentPageRecordsSelected = false;
                 break;
         }
-
     };
 
 
