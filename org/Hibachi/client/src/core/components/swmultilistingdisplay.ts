@@ -353,16 +353,7 @@ class SWMultiListingDisplayController{
 
 
     public getPageRecordKey = (propertyIdentifier)=>{
-        if(propertyIdentifier){
-            var propertyIdentifierWithoutAlias = '';
-            if(propertyIdentifier.indexOf('_') === 0){
-                propertyIdentifierWithoutAlias = propertyIdentifier.substring(propertyIdentifier.indexOf('.')+1,propertyIdentifier.length);
-            }else{
-                propertyIdentifierWithoutAlias = propertyIdentifier;
-            }
-            return this.utilityService.replaceAll(propertyIdentifierWithoutAlias,'.','_')
-        }
-        return '';
+       return this.listingService.getPageRecordKey(propertyIdentifier);
     };
 
     private getAdminAttributesByType = (type:string):void =>{
@@ -379,7 +370,7 @@ class SWMultiListingDisplayController{
     };
 
     public getExportAction = ():string =>{
-        return this.exportAction+this.collectionID;
+        return this.exportAction + this.collectionID;
     };
 
     public exportCurrentList =(selection:boolean=false)=>{
@@ -415,15 +406,7 @@ class SWMultiListingDisplayController{
     };
 
     public selectCurrentPageRecords=()=>{
-        if(!this.collectionData.pageRecords) return;
-
-        for(var i = 0; i < this.collectionData.pageRecords.length; i++){
-            if(this.isCurrentPageRecordsSelected == true){
-                this.selectionService.addSelection(this.name, this.collectionData.pageRecords[i][this.exampleEntity.$$getIDName()]);
-            }else{
-                this.selectionService.removeSelection(this.name, this.collectionData.pageRecords[i][this.exampleEntity.$$getIDName()]);
-            }
-        }
+        this.listingService.selectCurrentPageRecords(this.tableID); 
     };
 
     //these are no longer going to work

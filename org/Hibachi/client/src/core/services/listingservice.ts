@@ -8,6 +8,7 @@ class ListingService{
     constructor(private $q,
                 private utilityService, 
                 private rbkeyService, 
+                private selectionService,
                 private $hibachi
     ){
 
@@ -385,6 +386,31 @@ class ListingService{
         }
         return this.getListing(listingID).orderByStates[column.propertyIdentifier];
     };
+
+    public getPageRecordKey = (propertyIdentifier)=>{
+        if(propertyIdentifier){
+            var propertyIdentifierWithoutAlias = '';
+            if(propertyIdentifier.indexOf('_') === 0){
+                propertyIdentifierWithoutAlias = propertyIdentifier.substring(propertyIdentifier.indexOf('.')+1,propertyIdentifier.length);
+            }else{
+                propertyIdentifierWithoutAlias = propertyIdentifier;
+            }
+            return this.utilityService.replaceAll(propertyIdentifierWithoutAlias,'.','_')
+        }
+        return '';
+    };
+
+     public selectCurrentPageRecords=(listingID)=>{
+        if(!this.getListing(listingID).collectionData.pageRecords) return;
+
+        for(var i = 0; i < this.getListing(listingID).collectionData.pageRecords.length; i++){
+            if(this.getListing(listingID).isCurrentPageRecordsSelected == true){
+                this.getListing(listingID).selectionService.addSelection(this.getListing(listingID).name, this.getListing(listingID).collectionData.pageRecords[i][this.getListing(listingID).exampleEntity.$$getIDName()]);
+            }else{
+                this.selectionService.removeSelection(this.getListing(listingID).name, this.getListing(listingID).collectionData.pageRecords[i][this.getListing(listingID).exampleEntity.$$getIDName()]);
+            }
+        }
+     };
 
      private getColorFilterConditionString = (colorFilter, pageRecord)=>{
        if(angular.isDefined(colorFilter.comparisonProperty)){
