@@ -121,6 +121,68 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		assertFalse(account.hasGiftCard(giftCard));
 	}
+	
+	public void function getTermAccountAvailableCreditTest(){
+		//testing both for loops have been reached
+		var accountData1 = {
+			accountID = "",
+			firstName = "testPaymentMethodType",
+			lastName = "pmLastName"
+		};
+		var mockAccount1 = createPersistedTestEntity("Account", accountData1);
+		
+		var orderData = {
+			orderID = "",
+			account = {
+				accountID = mockAccount1.getAccountID()
+			}
+		};
+		var mockOrder1 = createPersistedTestEntity("Order", orderData);
+
+		var orderPaymentsData1 = {
+			orderPaymentID = "",
+			amount = 2300,
+			orderPaymentType = "444df2f0fed139ff94191de8fcd1f61b",//optCharge
+			order = {
+				orderID = mockOrder1.getOrderID()
+			},
+			termPaymentAccount = {
+				accountID = mockAccount1.getAccountID()
+			}
+		};
+		var orderPayment1 = createPersistedTestEntity("OrderPayment", orderPaymentsData1);
+		
+		var accountPaymentData = {
+			accountPaymentID = "",
+			account = {
+				accountID = mockAccount1.getAccountID()
+			}
+		};
+		var accountPayment1 = createPersistedTestEntity("AccountPayment", accountPaymentData);
+		
+		var accountPaymentAppliedData = {
+			accountPaymentAppliedID = "",
+			amount = 10.00,
+			accountPaymentType = {
+					typeID="444df32dd2b0583d59a19f1b77869025" //aptCharge
+			},
+			accountPayment = {
+				accountPaymentID = accountPayment1.getAccountPaymentID()
+			}
+		};
+		var accountPaymentApplied1 = createPersistedTestEntity("AccountPaymentApplied", accountPaymentAppliedData);
+		
+		//create setting
+		var settingData = {
+			settingID="",
+			settingName="accountTermCreditLimit",
+			settingValue=2220
+		};
+		var settingEntity = createPersistedTestEntity('Setting',settingData);
+		
+
+		assertEquals(-70, mockAccount1.getTermAccountAvailableCredit());
+	}
 
 }
 
