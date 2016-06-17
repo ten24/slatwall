@@ -13,6 +13,7 @@ class SWDeleteSkuPriceModalLauncherController{
     //@ngInject
     constructor(
         private $hibachi,
+        private listingService, 
         private utilityService
     ){
         this.uniqueName = this.baseName + this.utilityService.createID(16); 
@@ -22,7 +23,10 @@ class SWDeleteSkuPriceModalLauncherController{
         var deletePromise = this.skuPrice.$$delete();
         deletePromise.then(
             (response)=>{
-
+                if(angular.isDefined(this.listingID)){
+                    var pageRecords = this.listingService.getListingPageRecords(this.listingID);
+                    console.log("deletepagerecords", pageRecords);
+                }
             },
             (reason)=>{
                 //error callback

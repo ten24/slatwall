@@ -22,6 +22,10 @@ class ListingService{
         return this.listingDisplays[listingID];
     }
 
+    public getListingPageRecords = (listingID) =>{
+        return this.getListing(listingID).collectionData.pageRecords; 
+    }
+
     public setupInSingleCollectionConfigMode = (listingID, scope) =>{
         
         if (angular.isUndefined(this.getListing(listingID).collectionObject) && angular.isDefined(this.getListing(listingID).collectionConfig)){

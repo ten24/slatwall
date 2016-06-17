@@ -15,7 +15,8 @@ class SWAddSkuPriceModalLauncherController{
     constructor(
         private $hibachi,
         private observerService, 
-        private utilityService
+        private utilityService,
+        private listingService
     ){
         this.uniqueName = this.baseName + this.utilityService.createID(16); 
         this.initData(); 
@@ -33,9 +34,28 @@ class SWAddSkuPriceModalLauncherController{
     public save = () => {
         var savePromise = this.skuPrice.$$save();
         savePromise.then(
-            (response)=>{
-               this.initData(); 
+            (response)=>{ 
                this.observerService.notify('skuPricesUpdate');
+                if(angular.isDefined(this.listingID)){
+                   var pageRecords = this.listingService.getListingPageRecords(this.listingID);
+                   for(var i=0; i < pageRecords.length; i++){
+                        if( angular.isDefined(pageRecords[i].skuID) &&
+                            pageRecords[i].skuID == this.sku.data.skuID
+                        ){
+                            var index = i + 1;
+                            while(angular.isUndefined(pageRecords[index].skuID) || !pageRecords[index].skuID.length){
+                                if(pageRecords[index].minQuantity < this.skuPrice.data.minQuantity){
+                                    pageRecords.splice(index+1,0,this.skuPrice.data);
+                                    this.initData();
+                                    return savePromise;
+                                }
+                                index++;
+                            }
+                            
+                        }
+                   }
+                } 
+                this.initData(); 
             },
             (reason)=>{
                 //error callback
