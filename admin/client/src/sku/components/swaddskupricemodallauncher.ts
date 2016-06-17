@@ -7,6 +7,7 @@ class SWAddSkuPriceModalLauncherController{
     public skuId:string; 
     public skuPrice:any; 
     public baseName:string="j-add-sku-item-"; 
+    public formName:string; 
     public uniqueName:string;
     public listingID:string;  
     public currencyCodeOptions; 
@@ -14,26 +15,26 @@ class SWAddSkuPriceModalLauncherController{
     //@ngInject
     constructor(
         private $hibachi,
-        private observerService, 
-        private utilityService,
+        private formService,
         private listingService,
-        private skuPriceService
+        private observerService, 
+        private skuPriceService,
+        private utilityService
     ){
         this.uniqueName = this.baseName + this.utilityService.createID(16); 
+        this.formName = "addSkuPrice" + this.utilityService.createID(16);
+        this.skuPrice = this.$hibachi.newEntity('SkuPrice'); 
         this.initData(); 
     }    
     
     public initData = () =>{
         //these are populated in the link function initially
-        if(angular.isDefined(this.skuPrice)){
-            console.log("itshere",this.skuPrice);
-        }
-        this.skuPrice = this.$hibachi.newEntity('SkuPrice'); 
         this.skuPrice.$$setSku(this.sku);
     }
     
     public save = () => {
         var savePromise = this.skuPrice.$$save();
+        console.log("lookatthis",this.skuPrice);
         savePromise.then(
             (response)=>{ 
                this.skuPriceService.setSkuPrices(this.skuId,[this.skuPrice]);
@@ -53,7 +54,9 @@ class SWAddSkuPriceModalLauncherController{
                                    angular.isDefined(pageRecords[index+1].skuID) )
                                 ){
                                     this.skuPrice.data.skuSkuId = this.skuId;
-                                    pageRecords.splice(index+1,0,this.skuPrice.data);
+                                    var skuPriceForListing = {}; 
+                                    angular.copy(this.skuPrice.data,skuPriceForListing); 
+                                    pageRecords.splice(index+1,0,skuPriceForListing);
                                     break; 
                                 }
                                 index++; 
@@ -61,12 +64,16 @@ class SWAddSkuPriceModalLauncherController{
                         }
                    }
                 } 
-                this.initData(); 
             },
             (reason)=>{
                 //error callback
             }
-        );
+        ).finally(()=>{
+            for(var key in this.skuPrice.data){
+                this.skuPrice.data[key] = null;
+            }
+            this.initData(); 
+        });
         return savePromise; 
     }
 }
