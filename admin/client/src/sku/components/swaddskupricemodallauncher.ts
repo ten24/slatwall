@@ -36,22 +36,26 @@ class SWAddSkuPriceModalLauncherController{
         savePromise.then(
             (response)=>{ 
                this.observerService.notify('skuPricesUpdate');
-                if(angular.isDefined(this.listingID)){
+                //temporarily overriding for USD need to get this setting accessable to client side
+                if(angular.isDefined(this.listingID) && this.skuPrice.data.currencyCode=="USD"){
                    var pageRecords = this.listingService.getListingPageRecords(this.listingID);
                    for(var i=0; i < pageRecords.length; i++){
                         if( angular.isDefined(pageRecords[i].skuID) &&
                             pageRecords[i].skuID == this.sku.data.skuID
                         ){
-                            var index = i + 1;
-                            while(angular.isUndefined(pageRecords[index].skuID) || !pageRecords[index].skuID.length){
-                                if(pageRecords[index].minQuantity < this.skuPrice.data.minQuantity){
+                            var index = i + 1; 
+                            while(index < pageRecords.length && angular.isUndefined(pageRecords[index].skuID)){
+                                if(pageRecords[index].minQuantity <= this.skuPrice.data.minQuantity &&
+                                   index + 1 < pageRecords.length && (
+                                   pageRecords[index+1].minQuantity >= this.skuPrice.data.minQuantity ||
+                                   angular.isDefined(pageRecords[index+1].skuID) )
+                                ){
+                                    this.skuPrice.data.skuSkuId = this.skuId;
                                     pageRecords.splice(index+1,0,this.skuPrice.data);
-                                    this.initData();
-                                    return savePromise;
+                                    break; 
                                 }
-                                index++;
+                                index++; 
                             }
-                            
                         }
                    }
                 } 

@@ -29,6 +29,7 @@ class SWSkuPricesEditController{
         private observerService,
         private collectionConfigService,
         private utilityService, 
+        private skuPriceService, 
         private $hibachi
     ){
         this.Id = this.utilityService.createID(32);
@@ -44,14 +45,8 @@ class SWSkuPricesEditController{
                 price:this.price
             }
             this.skuPrice = this.$hibachi.populateEntity("SkuPrice",skuPriceData);
-            this.relatedSkuPriceCollectionConfig = this.collectionConfigService.newCollectionConfig("SkuPrice"); 
-            this.relatedSkuPriceCollectionConfig.addDisplayProperty("skuPriceID,sku.skuID,minQuantity,maxQuantity,currencyCode,price");
-            this.relatedSkuPriceCollectionConfig.addFilter("minQuantity",this.minQuantity,"=");
-            this.relatedSkuPriceCollectionConfig.addFilter("maxQuantity",this.maxQuantity,"=");
-            this.relatedSkuPriceCollectionConfig.addFilter("currencyCode",this.currencyCode,"!=");
-            this.relatedSkuPriceCollectionConfig.addFilter("sku.skuID",this.skuSkuId,"=");
-            this.relatedSkuPriceCollectionConfig.addOrderBy("currencyCode|asc");
-            this.relatedSkuPriceCollectionConfig.setAllRecords(true);
+            this.skuPriceService.setSkuPrices(this.skuSkuId,[this.skuPrice]);
+            this.relatedSkuPriceCollectionConfig = this.skuPriceService.getRelatedSkuPriceCollectionConfig(this.skuSkuId, this.currencyCode, this.minQuantity, this.maxQuantity);
             this.refreshSkuPrices(); 
             this.observerService.attach(this.refreshSkuPrices, "skuPricesUpdate");
         }
@@ -66,20 +61,27 @@ class SWSkuPricesEditController{
     }   
 
     public refreshSkuPrices = ()=>{
-        this.skuPrices = []; 
-        if(angular.isDefined(this.skuPrice)){
-            this.skuPrices.push(this.skuPrice);
-        }
         this.relatedSkuPriceCollectionConfig.getEntity().then(
             (response)=>{
                 angular.forEach(response.records, (value,key)=>{
-                    this.skuPrices.push(this.$hibachi.populateEntity("SkuPrice", value));
+                    this.skuPriceService.setSkuPrices(this.skuSkuId,[this.$hibachi.populateEntity("SkuPrice", value)]);
                 });  
             },
             (reason)=>{
             }
-        );
+        ).finally(()=>{
+            console.log("finally", this.getSkuPrices());
+            this.skuPrices = this.getSkuPrices(); 
+        });
     } 
+
+    public hasSkuPrices = () =>{
+        return this.skuPriceService.hasSkuPrices(this.skuSkuId);
+    }
+
+    public getSkuPrices = () =>{
+        return this.skuPriceService.getSkuPricesForQuantityRange(this.skuSkuId,this.minQuantity,this.maxQuantity);
+    }
 }
 
 class SWSkuPricesEdit implements ng.IDirective{

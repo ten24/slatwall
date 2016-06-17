@@ -1,16 +1,18 @@
-<sw-form ng-repeat="skuPrice in swSkuPriceQuantityEdit.skuPrices track by $index"  
-         ng-if="skuPrice && swSkuPriceQuantityEdit.skuPriceId"  
-         data-name="form{{skuPrice.data.skuPriceID}}"
-         data-object="skuPrice">
-    <sw-property-display ng-show="$index == 0"
-            data-object="skuPrice"
-            data-property="{{swSkuPriceQuantityEdit.columnPropertyIdentifier}}"
-            data-in-listing-display="true"
-            data-edited="swSkuPriceQuantityEdit.isDirty"
-            data-editing="true"
-            data-editable="true"
-            data-on-change="swSkuPriceQuantityEdit.updateSkuPrices()"
-            data-save-callback="swSkuPriceQuantityEdit.saveSkuPrices()"
-        >
-    </sw-property-display>
-</sw-form>
+<span ng-if="swSkuPriceQuantityEdit.skuPrices.length>0">
+    <sw-form ng-repeat="skuPrice in swSkuPriceQuantityEdit.skuPrices track by $index"  
+            data-name="form{{skuPrice.data.skuPriceID}}"
+            data-object="skuPrice">
+        <sw-property-display ng-show="$index == 0"
+                data-object="skuPrice"
+                data-property="{{swSkuPriceQuantityEdit.columnPropertyIdentifier}}"
+                data-in-listing-display="true"
+                data-edited="swSkuPriceQuantityEdit.isDirty"
+                data-editing="true"
+                data-editable="true"
+                data-on-change="swSkuPriceQuantityEdit.updateSkuPrices()"
+                data-save-callback="swSkuPriceQuantityEdit.saveSkuPrices()"
+            >
+        </sw-property-display>
+    </sw-form>
+</span>
+

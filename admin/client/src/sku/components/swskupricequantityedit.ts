@@ -11,6 +11,7 @@ class SWSkuPriceQuantityEditController{
     public filterOnCurrencyCode:string;
     public minQuantity:string; 
     public maxQuantity:string; 
+    public price:string;
     public skuPrices=[]; 
     public isDirty:boolean;
     public relatedSkuPriceCollectionConfig;
@@ -21,48 +22,46 @@ class SWSkuPriceQuantityEditController{
         private $q, 
         private $hibachi,
         private collectionConfigService,
-        private observerService
+        private observerService,
+        private skuPriceService
     ){ 
         this.isDirty = false; 
-        if(angular.isUndefined(this.skuPrice)){
+        if(angular.isDefined(this.skuSkuId) && angular.isUndefined(this.skuPrice)){
             var skuPriceData = {
                 skuPriceID:this.skuPriceId, 
                 minQuantity:this.minQuantity, 
                 maxQuantity:this.maxQuantity,
-                currencyCode:this.currencyCode
+                currencyCode:this.currencyCode,
+                price:this.price
             }
             this.skuPrice = this.$hibachi.populateEntity("SkuPrice",skuPriceData);
-            this.skuPrices.push(this.skuPrice);
+            this.skuPriceService.setSkuPrices(this.skuSkuId,[this.skuPrice]);
+            this.relatedSkuPriceCollectionConfig = this.skuPriceService.getRelatedSkuPriceCollectionConfig(this.skuSkuId,this.currencyCode,this.minQuantity,this.maxQuantity);
+            this.refreshSkuPrices();
+            this.observerService.attach(this.refreshSkuPrices, "skuPricesUpdate");
         }
-        this.relatedSkuPriceCollectionConfig = this.collectionConfigService.newCollectionConfig("SkuPrice"); 
-        this.relatedSkuPriceCollectionConfig.addDisplayProperty("skuPriceID,sku.skuID,minQuantity,maxQuantity,currencyCode,price");
-        this.relatedSkuPriceCollectionConfig.addFilter("minQuantity",this.minQuantity,"=");
-        this.relatedSkuPriceCollectionConfig.addFilter("maxQuantity",this.maxQuantity,"=");
-        this.relatedSkuPriceCollectionConfig.addFilter("currencyCode",this.currencyCode,"!=");
-        this.relatedSkuPriceCollectionConfig.addFilter("sku.skuID",this.skuSkuId,"=");
-        this.relatedSkuPriceCollectionConfig.addOrderBy("currencyCode|asc");
-        this.relatedSkuPriceCollectionConfig.setAllRecords(true);
-        this.refreshSkuPrices();
-        this.observerService.attach(this.refreshSkuPrices, "skuPricesUpdate");
     }    
 
     public refreshSkuPrices = () => {
          this.relatedSkuPriceCollectionConfig.getEntity().then(
             (response)=>{
                 angular.forEach(response.records, (value,key)=>{
-                    this.skuPrices.push(this.$hibachi.populateEntity("SkuPrice", value));
+                    this.skuPriceService.setSkuPrices(this.skuSkuId, [this.$hibachi.populateEntity("SkuPrice", value)]);
                 });  
             },
             (reason)=>{
             }
-        );
+        ).finally(()=>{
+            this.skuPrices = this.getSkuPrices(); 
+            console.log("quantityfinally",this.skuPrices)
+        });
     }
 
     public updateSkuPrices = () =>{ 
         if(!this.isDirty){
             this.isDirty = true; 
         }
-        angular.forEach(this.skuPrices,(value,key)=>{
+        angular.forEach(this.skuPriceService.getSkuPrices(this.skuSkuId),(value,key)=>{
             if(key > 0){
                 value.forms["form" + value.data.skuPriceID].$setDirty(true);
                 value.forms["form" + value.data.skuPriceID][this.columnPropertyIdentifier].$setDirty(true);
@@ -86,7 +85,10 @@ class SWSkuPriceQuantityEditController{
                 //failure
             }
         );
-        console.log("skuprices",this.skuPrices);
+    }
+
+    public getSkuPrices = () =>{
+        return this.skuPriceService.getSkuPricesForQuantityRange(this.skuSkuId,this.minQuantity,this.maxQuantity); 
     }
 
 }
@@ -103,7 +105,8 @@ class SWSkuPriceQuantityEdit implements ng.IDirective{
         column:"=?",
         columnPropertyIdentifier:"@",
         minQuantity:"@",
-        maxQuantity:"@"
+        maxQuantity:"@",
+        price:"@"
     };
     public controller = SWSkuPriceQuantityEditController;
     public controllerAs="swSkuPriceQuantityEdit";

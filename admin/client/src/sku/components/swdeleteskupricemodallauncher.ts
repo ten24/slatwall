@@ -14,6 +14,7 @@ class SWDeleteSkuPriceModalLauncherController{
     constructor(
         private $hibachi,
         private listingService, 
+        private skuPriceService, 
         private utilityService
     ){
         this.uniqueName = this.baseName + this.utilityService.createID(16); 
@@ -25,7 +26,19 @@ class SWDeleteSkuPriceModalLauncherController{
             (response)=>{
                 if(angular.isDefined(this.listingID)){
                     var pageRecords = this.listingService.getListingPageRecords(this.listingID);
-                    console.log("deletepagerecords", pageRecords);
+                    for(var i = 0; i < pageRecords.length; i++){
+                        console.log("looking to splice", pageRecords[i],angular.isDefined(pageRecords[i].skuPriceID),
+                           this.skuPrice.data.minQuantity == pageRecords[i].minQuantity,
+                           this.skuPrice.data.maxQuantity == pageRecords[i].maxQuantity);
+                        if(angular.isDefined(pageRecords[i].skuPriceID) &&
+                           this.skuPrice.data.minQuantity == pageRecords[i].minQuantity &&
+                           this.skuPrice.data.maxQuantity == pageRecords[i].maxQuantity
+                        ){
+                           console.log("deletesplice", i)
+                           pageRecords.splice(i,1);
+                           break; 
+                        }
+                    }
                 }
             },
             (reason)=>{
@@ -86,6 +99,10 @@ class SWDeleteSkuPriceModalLauncher implements ng.IDirective{
                     if(angular.isDefined(currentScope.pageRecord.skuPriceID) && currentScope.pageRecord.skuPriceID.length){    
                         var skuPriceData = {
                             skuPriceID:currentScope.pageRecord.skuPriceID,
+                            minQuantity:currentScope.pageRecord.minQuantity,
+                            maxQuantity:currentScope.pageRecord.maxQuantity,
+                            currencyCode:currentScope.pageRecord.currencyCode, 
+                            price:currentScope.pageRecord.price
                         }
                         $scope.swDeleteSkuPriceModalLauncher.skuPrice = this.$hibachi.populateEntity('SkuPrice',skuPriceData);
                     }
