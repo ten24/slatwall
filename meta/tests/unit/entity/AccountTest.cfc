@@ -1233,7 +1233,6 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		};
 		var mockAccountAuthentications1 = createPersistedTestEntity('AccountAuthentication', accountAuthenticationsData1);
 		
-		
 		//If activeFlag is true, authentication.getActiveFlag() == TRUE is TRUE, should be added in array
 		var accountAuthenticationsData2 = {
 			accountAuthenticationID = "",
@@ -1247,12 +1246,17 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		var mockAccountAuthentications2 = createPersistedTestEntity('AccountAuthentication', accountAuthenticationsData2);
 		
 		//If integration existed, !isNull(authentication.getIntegration()) is TRUE, should be added in array
+		var integrationData = {
+			integrationID="4028288f549c11ac01549c1bb5d3000a"
+		};
+		var mockIntegration = createPersistedTestEntity('Integration', integrationData);
+		
 		var accountAuthenticationsData3 = {
 			accountAuthenticationID = "",
 			authenticationDescription = "mockAccountAuthentications3",
 			password = "45",
 			integration={
-				integrationID="4028288f549c11ac01549c1bb4c80000"
+				integrationID = mockIntegration.getIntegrationID()
 			},
 			activeFlag = FALSE,
 			account = {
@@ -1260,7 +1264,6 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 			}
 		};
 		var mockAccountAuthentications3 = createPersistedTestEntity('AccountAuthentication', accountAuthenticationsData3);
-		
 		
 		//If activeFlag is NULL, isNull(authentication.getActiveFlag()) is true, should be added in array
 		var accountAuthenticationsData4 = {
@@ -1287,10 +1290,15 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		
 		var result = mockAccount.getActiveAccountAuthentications();
 		assertEquals(4, arrayLen(result));
-		assertEquals(mockAccountAuthentications4.getAccountAuthenticationID(), result[1].getAccountAuthenticationID());
-		assertEquals(mockAccountAuthentications3.getAccountAuthenticationID(), result[2].getAccountAuthenticationID());
-		assertEquals(mockAccountAuthentications2.getAccountAuthenticationID(), result[3].getAccountAuthenticationID());
-		assertEquals(mockAccountAuthentications1.getAccountAuthenticationID(), result[4].getAccountAuthenticationID());
+		var aaaListForResult = "";
+		aaaListForResult = listAppend(aaaListForResult, "#mockAccountAuthentications1.getAccountAuthenticationID()#");
+		aaaListForResult = listAppend(aaaListForResult, "#mockAccountAuthentications2.getAccountAuthenticationID()#");
+		aaaListForResult = listAppend(aaaListForResult, "#mockAccountAuthentications3.getAccountAuthenticationID()#");
+		aaaListForResult = listAppend(aaaListForResult, "#mockAccountAuthentications4.getAccountAuthenticationID()#");
+		assertTrue(ListFind(aaaListForResult, result[1].getAccountAuthenticationID()) > 0);
+		assertTrue(ListFind(aaaListForResult, result[2].getAccountAuthenticationID()) > 0);
+		assertTrue(ListFind(aaaListForResult, result[3].getAccountAuthenticationID()) > 0);
+		assertTrue(ListFind(aaaListForResult, result[4].getAccountAuthenticationID()) > 0);
 	}
 	
 	public void function getActiveAccountAuthentications_NoAuthz_Test() {
