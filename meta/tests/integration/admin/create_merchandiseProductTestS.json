@@ -5,7 +5,7 @@
   "steps": [
     {
       "type": "get",
-      "url": "http://192.168.99.100:32768/?slatAction=main.login"
+      "url": "http://localhost/"
     },
     {
       "type": "setElementText",
