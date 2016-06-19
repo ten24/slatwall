@@ -2,27 +2,27 @@
 	"conditions":{
 	},
 	"properties":{
-	    "price": [
+	    "price": [{
 	        "contexts":"save",
 	        "required":"true",
 	        "dataType":"numeric", 
 	        "minValue":"0"
-	    ],
-	    "minQuantity" : [
+	    }],
+	    "minQuantity" : [{
 	        "contexts":"save",
 	        "required":"true",
 	        "dataType":"numeric",
 	        "minValue":"0"
-        ],
-	    "maxQuantity" : [
+        }],
+	    "maxQuantity" : [{
 	        "contexts":"save",
 	        "required":"true",
 	        "dataType":"numeric",
 	        "minValue":"0"
-        ],
-        "currencyCode" : [
+        }],
+        "currencyCode" : [{
             "contexts":"save",
             "required":"true"
-        ]
+        }]
 	}
 }
