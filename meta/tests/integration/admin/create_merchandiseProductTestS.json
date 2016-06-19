@@ -5,7 +5,7 @@
   "steps": [
     {
       "type": "get",
-      "url": "http://localhost/"
+      "url": "http://192.168.99.100:32768/?slatAction=main.login"
     },
     {
       "type": "setElementText",
@@ -59,13 +59,6 @@
       }
     },
     {
-      "type": "waitForElementPresent",
-      "locator": {
-        "type": "link text",
-        "value": "Merchandise Product"
-      }
-    },
-    {
       "type": "clickElement",
       "locator": {
         "type": "link text",
@@ -78,7 +71,14 @@
         "type": "name",
         "value": "product.productName"
       },
-      "text": "kio"
+      "text": "Sunny"
+    },
+    {
+      "type": "clickElement",
+      "locator": {
+        "type": "xpath",
+        "value": "//form[@id='adminentityprocessproduct_create']/div[2]"
+      }
     },
     {
       "type": "setElementText",
@@ -86,7 +86,7 @@
         "type": "name",
         "value": "product.productCode"
       },
-      "text": "d0d0d"
+      "text": "Sahu30"
     },
     {
       "type": "setElementText",
@@ -94,7 +94,7 @@
         "type": "name",
         "value": "price"
       },
-      "text": "20"
+      "text": "90"
     },
     {
       "type": "clickElement",
@@ -105,11 +105,11 @@
     },
     {
       "type": "waitForTextPresent",
-      "text": "kio"
+      "text": "Sunny"
     },
     {
       "type": "verifyTextPresent",
-      "text": "kio"
+      "text": "Sunny"
     }
   ],
   "data": {
