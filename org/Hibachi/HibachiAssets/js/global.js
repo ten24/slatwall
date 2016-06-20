@@ -105,8 +105,8 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 				
 				var paramString = "";
 				
-				if($(v).attr('applicationKey')){
-					paramString += "applicationKey="+$(v).attr('applicationKey');
+				if($(v).attr('applicationkey')){
+					paramString += "applicationkey="+$(v).attr('applicationkey');
 				}
 				
 				if($(v).attr('siteCode') && $(v).attr('appCode')){
