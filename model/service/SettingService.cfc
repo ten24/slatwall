@@ -905,7 +905,7 @@ component extends="HibachiService" output="false" accessors="true" {
 				) || 
 				left(arguments.entity.getSettingName(),7) == 'content'
 			){
-				for(var site in arguments.entity.getSites()){
+				for(var site in getSitesSmartList().getRecords()){
 					site.resetSettingCache(true);
 				}
 			}
