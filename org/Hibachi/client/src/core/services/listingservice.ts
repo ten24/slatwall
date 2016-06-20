@@ -284,39 +284,39 @@ class ListingService{
             var column = this.getListing(listingID).columns[i];
             var lastEntity = this.$hibachi.getLastEntityNameInPropertyIdentifier(collectionConfig.baseEntityName,column.propertyIdentifier);
 
-                if(angular.isUndefined(column.title)){
-                    column.title = this.rbkeyService.getRBKey('entity.'+lastEntity.toLowerCase()+'.'+this.utilityService.listLast(column.propertyIdentifier,'.'));
-                }
+            if(angular.isUndefined(column.title)){
+                column.title = this.rbkeyService.getRBKey('entity.'+lastEntity.toLowerCase()+'.'+this.utilityService.listLast(column.propertyIdentifier,'.'));
+            }
+            
+            if(angular.isUndefined(column.isVisible)){
+                column.isVisible = true;
+            }
+            var metadata = this.$hibachi.getPropertyByEntityNameAndPropertyName(lastEntity, this.utilityService.listLast(column.propertyIdentifier,'.'));
+            if(angular.isDefined(metadata) && angular.isDefined(metadata.hb_formattype)){
+                column.type = metadata.hb_formatType;
+            } else { 
+                column.type = "none";
+            }
+            if(angular.isDefined(column.tooltip)){
+            
+                var parsedProperties = this.utilityService.getPropertiesFromString(column.tooltip);
                 
-                if(angular.isUndefined(column.isVisible)){
-                    column.isVisible = true;
+                if(parsedProperties && parsedProperties.length){
+                    collectionConfig.addDisplayProperty(this.utilityService.arrayToList(parsedProperties), "", {isVisible:false});
                 }
-                var metadata = this.$hibachi.getPropertyByEntityNameAndPropertyName(lastEntity, this.utilityService.listLast(column.propertyIdentifier,'.'));
-                if(angular.isDefined(metadata) && angular.isDefined(metadata.hb_formattype)){
-                    column.type = metadata.hb_formatType;
-                } else { 
-                    column.type = "none";
+            } else { 
+                column.tooltip = '';
+            }
+            if(angular.isDefined(column.queryString)){
+                var parsedProperties = this.utilityService.getPropertiesFromString(column.queryString);
+                if(parsedProperties && parsedProperties.length){
+                    collectionConfig.addDisplayProperty(this.utilityService.arrayToList(parsedProperties), "", {isVisible:false});
                 }
-                if(angular.isDefined(column.tooltip)){
-                
-                    var parsedProperties = this.utilityService.getPropertiesFromString(column.tooltip);
-                    
-                    if(parsedProperties && parsedProperties.length){
-                        collectionConfig.addDisplayProperty(this.utilityService.arrayToList(parsedProperties), "", {isVisible:false});
-                    }
-                } else { 
-                    column.tooltip = '';
-                }
-                if(angular.isDefined(column.queryString)){
-                    var parsedProperties = this.utilityService.getPropertiesFromString(column.queryString);
-                    if(parsedProperties && parsedProperties.length){
-                        collectionConfig.addDisplayProperty(this.utilityService.arrayToList(parsedProperties), "", {isVisible:false});
-                    }
-                }
-                this.columnOrderBy(listingID, column);
-                
-                //only want to do this if it's a singleCollectionConfig
-                //collectionConfig.addDisplayProperty(column.propertyIdentifier,column.title,column);
+            }
+            this.columnOrderBy(listingID, column);
+            
+            //only want to do this if it's a singleCollectionConfig
+            //collectionConfig.addDisplayProperty(column.propertyIdentifier,column.title,column);
         }
         //if the passed in collection has columns perform some formatting
         if(this.getListing(listingID).hasCollectionPromise){
@@ -424,12 +424,30 @@ class ListingService{
        }
     };
 
+    public getNGClassObjectForPageRecordRow = (listingID, pageRecord)=>{
+        var classObjectString = "{"; 
+        angular.forEach(this.getListing(listingID).colorFilters, (colorFilter, index)=>{
+            classObjectString = classObjectString.concat("'" + colorFilter.colorClass + "':" + this.getColorFilterConditionString(colorFilter, pageRecord));
+            classObjectString = classObjectString.concat(",");
+        }); 
+        classObjectString = classObjectString.concat("'s-child':" + this.getPageRecordIsChild(listingID, pageRecord)); 
+        classObjectString = classObjectString.concat(",'s-disabled':" + this.getPageRecordMatchesDisableRule(listingID, pageRecord));
+        classObjectString = classObjectString.concat(",'s-edited':pageRecord.edited");
+        return classObjectString + "}"; 
+    };
+
+    public getPageRecordIsChild = (listingID, pageRecord)=>{
+        var isChild = false;
+        //todo implement
+        return isChild;
+    }
+
     //Disable Rule Logic
     public getKeyOfMatchedDisableRule = (listingID, pageRecord)=>{
         var disableRuleMatchedKey = -1; 
-        if(angular.isDefined(this.getListing(listingID).disableRules)){
+        if(angular.isDefined(this.getListing(listingID).disableRules)){   
             angular.forEach(this.getListing(listingID).disableRules, (rule, key)=>{
-                if(angular.isDefined(pageRecord[rule.filterPropertyIdentifier])){
+                if(angular.isDefined(pageRecord[rule.filterPropertyIdentifier])){ 
                     if(angular.isString(pageRecord[rule.filterPropertyIdentifier])){
                         var pageRecordValue = pageRecord[rule.filterPropertyIdentifier].trim(); 
                     } else {
@@ -438,7 +456,7 @@ class ListingService{
                     
                     if(rule.filterComparisonValue == "null"){
                         rule.filterComparisonValue = "";
-                    }
+                    }   
                     switch (rule.filterComparisonOperator){
                         case "!=":
                             if(pageRecordValue != rule.filterComparisonValue){

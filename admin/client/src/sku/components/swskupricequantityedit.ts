@@ -105,26 +105,42 @@ class SWSkuPriceQuantityEdit implements ng.IDirective{
     public controller = SWSkuPriceQuantityEditController;
     public controllerAs="swSkuPriceQuantityEdit";
    
-   
     public static Factory(){
         var directive = (
+            scopeService,
             skuPartialsPath,
 			slatwallPathBuilder
         )=> new SWSkuPriceQuantityEdit(
+            scopeService,
             skuPartialsPath,
 			slatwallPathBuilder
         );
         directive.$inject = [
+            'scopeService',
             'skuPartialsPath',
 			'slatwallPathBuilder'
         ];
         return directive;
     }
+    
     constructor(
-		skuPartialsPath,
-	    slatwallPathBuilder
+        private scopeService,
+		private skuPartialsPath,
+	    private slatwallPathBuilder
     ){
         this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath)+"skupricequantityedit.html";
+    }
+
+     public compile = (element: JQuery, attrs: angular.IAttributes) => {
+        return {
+            pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
+                //have to do our setup here because there is no direct way to pass the pageRecord into this transcluded directive
+                var currentScope = this.scopeService.locateParentScope($scope, "pageRecord");
+            },
+            post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
+
+            }
+        };
     }
 }
 export{

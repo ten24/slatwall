@@ -184,32 +184,7 @@ class SWMultiListingDisplayController{
         angular.forEach(this.collectionConfigs,(value,key)=>{
             this.collectionObjects[key] = value.baseEntityName;
         }); 
-        //this.buildCommonPropertiesList();
     };
-    
-    /*private buildCommonPropertiesList = () => {
-        if(this.collectionObjects.length > 1){
-            this.commonProperties = {}; 
-
-            angular.forEach(this.collectionObjects,(objValue,objKey)=>{
-                if(objKey == 0){
-                    //first iteration only populate the commonProperties list with all properties we will then remove those that don't exists
-                    angular.forEach(objValue.metaData,(propertyMetaData,propertyName)=>{
-                        if(propertyName.charAt(0) != "$"){
-                            this.commonProperties[propertyName] = propertyMetaData; 
-                        }
-                    }); 
-                } else { 
-                    //subsequent iterations we narrow down the list
-                    angular.forEach(this.commonProperties,(propertyMetaData,propertyName)=>{
-                        if(!(propertyName in objValue.metaData)){
-                            delete this.commonProperties[propertyName];
-                        }
-                    });                  
-                }
-            }); 
-        }
-    };*/
 
     private setupDefaultCollectionInfo = () =>{
         if(this.hasCollectionPromise 
@@ -271,29 +246,13 @@ class SWMultiListingDisplayController{
     }
     
     //move this to the service
-    public getPageRecordIsChild = (pageRecord)=>{
-        var isChild = false; 
-        //TODO
-        return isChild;
-    }
-    
-    //move this to the service
     public getNGClassObjectForPageRecordRow = (pageRecord)=>{
-        var classObjectString = "{"; 
-        angular.forEach(this.colorFilters, (colorFilter, index)=>{
-            classObjectString = classObjectString.concat("'" + colorFilter.colorClass + "':" + this.getColorFilterConditionString(colorFilter, pageRecord));
-            classObjectString = classObjectString.concat(",");
-        }); 
-        classObjectString = classObjectString.concat("'s-child':" + this.getPageRecordIsChild(pageRecord)); 
-        classObjectString = classObjectString.concat(",'s-disabled':" + this.getPageRecordMatchesDisableRule(pageRecord)); 
-        return classObjectString + "}"; 
+        return this.listingService.getNGClassObjectForPageRecordRow(this.tableID, pageRecord);
     };
     
     //This is  basically td class
     public getNGClassObjectForPageRecordCell = (pageRecord,column)=>{
-
         var classObjectString = "{"; 
-            
         return classObjectString + "}"; 
     };
     
