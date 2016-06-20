@@ -892,6 +892,23 @@ component extends="HibachiService" output="false" accessors="true" {
 			if(listFindNoCase("skuAllowBackorderFlag,skuAllowPreorderFlag,skuQATSIncludesQNROROFlag,skuQATSIncludesQNROVOFlag,skuQATSIncludesQNROSAFlag,skuTrackInventoryFlag", arguments.entity.getSettingName())) {
 				updateStockCalculated();
 			}
+			//reset cache by site
+			if(
+				listFindNoCase("
+					globalURLKeyBrand,
+					globalURLKeyProduct,
+					globalURLKeyProductType,
+					productDisplayTemplate,
+					productTypeDisplayTemplate,
+					brandDisplayTemplate", 
+					arguments.entity.getSettingName()
+				) || 
+				left(arguments.entity.getSettingName(),7) == 'content'
+			){
+				for(var site in getSiteService().getSiteSmartList().getRecords()){
+					site.resetSettingCache(true);
+				}
+			}
 		}
 
 		return arguments.entity;
