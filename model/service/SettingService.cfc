@@ -894,7 +894,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			}
 			//reset cache by site
 			if(
-				listFindeNoCase("
+				listFindNoCase("
 					globalURLKeyBrand,
 					globalURLKeyProduct,
 					globalURLKeyProductType,
