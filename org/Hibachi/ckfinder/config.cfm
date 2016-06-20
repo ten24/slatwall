@@ -24,8 +24,13 @@ function CheckAuthentication()
 	//... where session.IsAuthorized is set to "true" as soon as the
 	//user logs in your system.
 	
+	
+	if(structKeyExists(url,'applicationKey')){
+		var applicationKey = url.applicationKey;
+	}else{
 	var currentArray = listToArray(replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all"),"/");
 	var applicationKey = currentArray[arrayLen(currentArray)-7];
+	}
 	
 	if(!structKeyExists(session, "#applicationKey#CKFinderAccess")) {
 		session["#applicationKey#CKFinderAccess"] = false;
