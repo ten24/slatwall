@@ -80,7 +80,7 @@ class SWSkuPriceQuantityEditController{
 
     public getSkuPrices = () =>{
         this.skuPriceService.getSkuPricesForQuantityRange(this.skuSkuId,this.minQuantity,this.maxQuantity).then((data)=>{
-            console.log("got data");
+            console.log("got data",data);
             this.skuPrices = data;
         });
     }

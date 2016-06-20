@@ -34,11 +34,10 @@ class SWAddSkuPriceModalLauncherController{
     
     public save = () => {
         var savePromise = this.skuPrice.$$save();
-        console.log("lookatthis",this.skuPrice);
         savePromise.then(
             (response)=>{ 
-               this.skuPriceService.setSkuPrices(this.skuId,[this.skuPrice]);
-               this.observerService.notify('skuPricesUpdate',{skuID:this.skuId,refresh:true});
+               this.skuPriceService.setSkuPrices(this.sku.data.skuID,[this.skuPrice]);
+               this.observerService.notify('skuPricesUpdate',{skuID:this.sku.data.skuID,refresh:true});
                 //temporarily overriding for USD need to get this setting accessable to client side
                 if(angular.isDefined(this.listingID) && this.skuPrice.data.currencyCode=="USD"){
                    var pageRecords = this.listingService.getListingPageRecords(this.listingID);

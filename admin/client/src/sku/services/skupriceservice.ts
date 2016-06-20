@@ -12,7 +12,7 @@ export class SkuPriceService {
                 public collectionConfigService, 
                 public observerService
     ){
-         this.observerService.attach(this.loadSkuPricesForSku,'skuPricesUpdate');
+         this.observerService.attach(this.updateSkuPrices,'skuPricesUpdate');
     }
 
     public getRelatedSkuPriceCollectionConfig = (skuID,currencyCode,minQuantity,maxQuantity) =>{
@@ -25,6 +25,11 @@ export class SkuPriceService {
         relatedSkuPriceCollectionConfig.addOrderBy("currencyCode|asc");
         relatedSkuPriceCollectionConfig.setAllRecords(true);
         return relatedSkuPriceCollectionConfig;
+    }
+
+    public updateSkuPrices = (args) =>{
+        console.log("updateSKuPrices",args);
+        this.loadSkuPricesForSku(args.skuID, args.refresh); 
     }
 
     public loadSkuPricesForSku = (skuID, refresh?) =>{
