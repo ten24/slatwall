@@ -60,20 +60,11 @@ class SWSkuPricesEditController{
         }  
     }   
 
-    public refreshSkuPrices = ()=>{
-        this.relatedSkuPriceCollectionConfig.getEntity().then(
-            (response)=>{
-                angular.forEach(response.records, (value,key)=>{
-                    this.skuPriceService.setSkuPrices(this.skuSkuId,[this.$hibachi.populateEntity("SkuPrice", value)]);
-                });  
-            },
-            (reason)=>{
-            }
-        ).finally(()=>{
+    public refreshSkuPrices = () => {
+         this.skuPriceService.loadSkuPricesForSku().finally(()=>{
             this.skuPrices = this.getSkuPrices(); 
-            console.log("wheresmyprice",this.skuPrices);
-        });
-    } 
+         });
+    }
 
     public hasSkuPrices = () =>{
         return this.skuPriceService.hasSkuPrices(this.skuSkuId);

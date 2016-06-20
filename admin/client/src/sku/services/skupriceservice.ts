@@ -1,6 +1,8 @@
 export class SkuPriceService { 
 
     private skuPrices = {};
+    private skuPriceCollectionConfigs = {}; 
+    private skuPricePromises = {}; 
 
     //@ngInject
     constructor(public $hibachi,
@@ -19,6 +21,31 @@ export class SkuPriceService {
         relatedSkuPriceCollectionConfig.addOrderBy("currencyCode|asc");
         relatedSkuPriceCollectionConfig.setAllRecords(true);
         return relatedSkuPriceCollectionConfig;
+    }
+
+    public loadSkuPricesForSku = (skuID, refresh?) =>{
+        if(angular.isUndefined(this.skuPriceCollectionConfigs[skuID])){
+            this.skuPriceCollectionConfigs[skuID] = this.collectionConfigService.newCollectionConfig("SkuPrice"); 
+            this.skuPriceCollectionConfigs[skuID].addDisplayProperty("skuPriceID,sku.skuID,minQuantity,maxQuantity,currencyCode,price");
+            this.skuPriceCollectionConfigs[skuID].addFilter("sku.skuID",skuID,"=");
+            this.skuPriceCollectionConfigs[skuID].addOrderBy("currencyCode|asc");
+            this.skuPriceCollectionConfigs[skuID].setAllRecords(true);
+        }
+        if(angular.isUndefined(this.skuPricePromises[skuID])){
+            this.skuPricePromises[skuID] = this.skuPriceCollectionConfigs[skuID].getEntity(); 
+            refresh=true; 
+        }
+        if(refresh){
+            this.skuPricePromises[skuID].then((response)=>{
+                angular.forEach(response.records,(value,key)=>{
+                    this.setSkuPrices(skuID, [this.$hibachi.populateEntity("SkuPrice", value)]);
+                }); 
+            },
+            (reason)=>{
+                
+            })
+        }
+        return this.skuPricePromises[skuID];
     }
 
     public setSkuPrices = (skuID, skuPrices) => { 

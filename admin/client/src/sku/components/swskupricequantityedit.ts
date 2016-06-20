@@ -43,17 +43,9 @@ class SWSkuPriceQuantityEditController{
     }    
 
     public refreshSkuPrices = () => {
-         this.relatedSkuPriceCollectionConfig.getEntity().then(
-            (response)=>{
-                angular.forEach(response.records, (value,key)=>{
-                    this.skuPriceService.setSkuPrices(this.skuSkuId, [this.$hibachi.populateEntity("SkuPrice", value)]);
-                });  
-            },
-            (reason)=>{
-            }
-        ).finally(()=>{
+         this.skuPriceService.loadSkuPricesForSku().finally(()=>{
             this.skuPrices = this.getSkuPrices(); 
-        });
+         });
     }
 
     public updateSkuPrices = () =>{ 
