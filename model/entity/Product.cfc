@@ -145,15 +145,27 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 	public any function getAvailableForPurchaseFlag() {
 		if(!structKeyExists(variables, "availableToPurchaseFlag")) {
-			// If purchase dates are null OR now() is between purchase start and end dates then this product is available for purchase
-			if(	( isNull(this.getPurchaseStartDateTime()) && isNull(this.getPurchaseStartDateTime()) )
-				|| ( !isNull(this.getPurchaseStartDateTime()) && !isNull(this.getPurchaseStartDateTime()) && dateCompare(now(),this.getPurchaseStartDateTime(),"s") == 1 && dateCompare(now(),this.getPurchaseEndDateTime(),"s") == -1 ) )
-			{
+			// If purchase start dates not existed, or before now(), the start date is valid
+			// If purchase end   date  not existed, or after  now(), the end   date is valid
+			if ( 
+					(
+						isNull(this.getPurchaseStartDateTime())
+						||
+						( !isNull(this.getPurchaseStartDateTime()) && dateCompare(now(),this.getPurchaseStartDateTime(),"s") == 1 )					 
+					)
+					&&
+					(
+						isNull(this.getPurchaseEndDateTime())
+						||
+						( !isNull(this.getPurchaseEndDateTime()) && dateCompare(now(),this.getPurchaseEndDateTime(),"s") == -1 )					 
+					) 
+			) {
 				variables.availableToPurchaseFlag = true;
 			} else {
 				variables.availableToPurchaseFlag = false;
-			}
+			}				
 		}
+
 		return variables.availableToPurchaseFlag;
 	}
 
