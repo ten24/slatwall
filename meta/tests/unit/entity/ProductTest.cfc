@@ -294,5 +294,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(resultExistedStartDateEmptyEndDate);
 	}
 	
-	
+	public void function getProductTypeOptionsTest() {
+		
+	}
 }
