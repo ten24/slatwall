@@ -105,8 +105,22 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 		var templatePath = site.getApp().getAppRootPath() & '/' & site.getSiteCode() & '/templates/';
 		var contentPath = '';
 		var templateBody = '';
-
-		arguments.slatwallScope.getService('hibachiCacheService').resetCachedKey('setting_contentTemplateFile_#arguments.slatwallScope.getContent().getContentID()#');
+		if(!isNull(site.getResetSettingCache()) && site.getResetSettingCache()){
+			arguments.slatwallScope.getService('hibachiCacheService').resetCachedByPrefix('content');	
+			var cacheList = "globalURLKeyBrand,
+				globalURLKeyProduct,
+				globalURLKeyProductType,
+				productDisplayTemplate,
+				productTypeDisplayTemplate,
+				brandDisplayTemplate"
+			;
+			var cacheArray = listToArray(cacheList);
+			for(var cacheItem in cacheArray){
+				arguments.slatwallScope.getService('hibachiCacheService').resetCachedKey(cache);
+			}
+			site.setResetSettingCache(false);
+		}
+		
 		
 		if(!isNull(arguments.entityURL)){
 			var isBrandURLKey = arguments.slatwallScope.setting('globalURLKeyBrand') == arguments.entityURL;
