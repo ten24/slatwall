@@ -38,17 +38,17 @@
       }
     },
     {
-      "type": "clickElement",
-      "locator": {
-        "type": "link text",
-        "value": "Products"
-      }
-    },
-    {
       "type": "waitForElementPresent",
       "locator": {
         "type": "xpath",
         "value": "//div[@id='j-mobile-nav']//a[.='Products']"
+      }
+    },
+    {
+      "type": "clickElement",
+      "locator": {
+        "type": "link text",
+        "value": "Products"
       }
     },
     {
@@ -95,12 +95,17 @@
       }
     },
     {
+      "type": "storeEval",
+      "script": "return 'goku'+Math.floor(Math.random() * 100000)",
+      "variable": "productCode"
+    },
+    {
       "type": "setElementText",
       "locator": {
         "type": "name",
         "value": "product.productCode"
       },
-      "text": "sahu34"
+      "text": "${productCode}"
     },
     {
       "type": "setElementText",
@@ -119,7 +124,7 @@
     },
     {
       "type": "verifyTextPresent",
-      "text": "Sunny"
+      "text": "${productCode}"
     }
   ],
   "data": {
