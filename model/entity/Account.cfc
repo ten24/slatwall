@@ -157,20 +157,18 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 			variables.saveablePaymentMethodsSmartList.addInFilter('paymentMethodType', 'creditCard,giftCard,external,termPayment');
 			if(len(setting('accountEligiblePaymentMethods'))) {
 				variables.saveablePaymentMethodsSmartList.addInFilter('paymentMethodID', setting('accountEligiblePaymentMethods'));
-			} else {
-				variables.saveablePaymentMethodsSmartList.addFilter('paymentMethodID', 'none');
 			}
 		}
 		return variables.saveablePaymentMethodsSmartList;
 	}
 
-	public any function getEligibleAccountPaymentMethodsSmartList() {
+	public any function getEligibleAccountPaymentMethodsSmartList() {		
 		// These are the payment methods that are allowed only when adding an account payment
 		if(!structKeyExists(variables, "eligibleAccountPaymentMethodsSmartList")) {
 			var sl = getService("paymentService").getPaymentMethodSmartList();
-
-			// Prevent 'termPayment' from displaying as account payment method option
-			sl.addInFilter('paymentMethodType', 'cash,check,creditCard,external,giftCard');
+			
+			// Prevent 'termPayment' from displaying as account payment method option			
+			sl.addInFilter('paymentMethodType', 'cash,check,creditCard,external,giftCard');			
 			sl.addInFilter('paymentMethodID', setting('accountEligiblePaymentMethods'));
 			sl.addFilter('activeFlag', 1);
 
@@ -244,12 +242,12 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		return variables.ordersPlacedSmartList;
 	}
 
-	public any function getOrdersNotPlacedSmartList() {
+	public any function getOrdersNotPlacedSmartList() {//this function never been used
 		if(!structKeyExists(variables, "ordersNotPlacedSmartList")) {
 			var osl = getService("orderService").getOrderSmartList();
 			osl.addFilter('account.accountID', getAccountID());
 			osl.addInFilter('orderStatusType.systemCode', 'ostNotPlaced');
-			osl.addOrder("lastModifiedDateTime|DESC");
+			osl.addOrder("modifiedDateTime|DESC");
 
 			variables.ordersNotPlacedSmartList = osl;
 		}
@@ -269,7 +267,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 			variables.slatwallAuthenticationExistsFlag = false;
 			var authArray = getAccountAuthentications();
 			for(auth in authArray) {
-				if(isNull(auth.getIntegration()) && !isNull(auth.getPassword()) && auth.getActiveFlag() ) {
+				if(isNull(auth.getIntegration()) && !isNull(auth.getPassword())  && !isNull(auth.getActiveFlag()) && auth.getActiveFlag() ) {
 					variables.slatwallAuthenticationExistsFlag = true;
 					break;
 				}
@@ -306,7 +304,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 			}
 		}
 
-		// Now look for the unasigned payment amount
+		// Now look for the unassigned payment amount
 		for(var accountPayment in getAccountPayments()) {
 			termAccountBalance = precisionEvaluate(termAccountBalance - accountPayment.getAmountUnassigned());
 		}
@@ -331,10 +329,18 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 
 			var smartList = getService("loyaltyService").getLoyaltySmartList();
 			smartList.addFilter('activeFlag', 1);
-			smartList.addWhereCondition(" NOT EXISTS( FROM SlatwallAccountLoyalty al WHERE al.loyalty.loyaltyID = aslatwallloyalty.loyaltyID and al.account.accountID = '#getAccountID()#')");
-
+			smartList.addWhereCondition(" NOT EXISTS
+				( 
+					FROM SlatwallAccountLoyalty al 
+					WHERE al.loyalty.loyaltyID = aslatwallloyalty.loyaltyID 
+					and al.account.accountID = '#getAccountID()#'
+				)
+			");
 			for(var loyaltyPrograms in smartList.getRecords()) {
-				arrayAppend(variables.unenrolledAccountLoyaltyOptions,{name=loyaltyPrograms.getLoyaltyName(),value=loyaltyPrograms.getLoyaltyID()});
+				arrayAppend(variables.unenrolledAccountLoyaltyOptions,
+								{name=loyaltyPrograms.getLoyaltyName(),
+								value=loyaltyPrograms.getLoyaltyID()}
+							);
 			}
 		}
 
@@ -346,10 +352,15 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 
 		var activeAuthentications = [];
 
-		for (i = ArrayLen(authentications); i >= 1; i--){
+		for (var i = ArrayLen(authentications); i >= 1; i--){
 			var authentication = authentications[i];
 
-			if( !(isNull(authentication.getIntegration()) && !isNull(authentication.getPassword()) && authentication.getActiveFlag() == false)){
+			if( 
+                !isNull(authentication.getIntegration())
+                || isNull(authentication.getPassword())
+                || isNull(authentication.getActiveFlag())
+                || authentication.getActiveFlag() == true
+            ){
 				arrayAppend(activeAuthentications, authentication);
 			}
 		}

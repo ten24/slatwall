@@ -1,6 +1,6 @@
 
 if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
-	console.log('test');
+	
 	var listingUpdateCache = {
 		onHold: false,
 		tableID: "",
@@ -102,13 +102,25 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 				var config = {
 					customConfig: customConfigLocation,
 				}
-				if($(v).attr('siteCode') && $(v).attr('appCode')){
-					var codeString = 'siteCode='+$(v).attr('siteCode')+'&appCode='+$(v).attr('appCode');
-					config.filebrowserBrowseUrl      =hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/ckfinder.html?'+codeString;
-					config.filebrowserImageBrowseUrl = hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/ckfinder.html?Type=Images&'+codeString;
-					config.filebrowserUploadUrl      = hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/core/connector/cfm/connector.cfm?command=QuickUpload&type=Files&'+codeString;
-					config.filebrowserImageUploadUrl = hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/core/connector/cfm/connector.cfm?command=QuickUpload&type=Images&'+codeString;
+				
+				var paramString = "";
+				
+				if($(v).attr('applicationkey')){
+					paramString += "applicationkey="+$(v).attr('applicationkey');
 				}
+				
+				if($(v).attr('siteCode') && $(v).attr('appCode')){
+					if(paramString.length){
+						paramString += '&';
+					}
+					paramString += 'siteCode='+$(v).attr('siteCode')+'&appCode='+$(v).attr('appCode');
+				}
+				
+				config.filebrowserBrowseUrl      =hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/ckfinder.html?'+paramString;
+				config.filebrowserImageBrowseUrl = hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/ckfinder.html?Type=Images&'+paramString;
+				config.filebrowserUploadUrl      = hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/core/connector/cfm/connector.cfm?command=QuickUpload&type=Files&'+paramString;
+				config.filebrowserImageUploadUrl = hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/core/connector/cfm/connector.cfm?command=QuickUpload&type=Images&'+paramString;
+				
 				var editor = CKEDITOR.replace( v, config);
 				
 				CKFinder.setupCKEditor( editor, 'org/Hibachi/ckfinder/' );
