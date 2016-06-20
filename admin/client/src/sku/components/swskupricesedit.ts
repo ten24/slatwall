@@ -45,7 +45,6 @@ class SWSkuPricesEditController{
                 price:this.price
             }
             this.skuPrice = this.$hibachi.populateEntity("SkuPrice",skuPriceData);
-            this.skuPriceService.setSkuPrices(this.skuSkuId,[this.skuPrice]);
             this.relatedSkuPriceCollectionConfig = this.skuPriceService.getRelatedSkuPriceCollectionConfig(this.skuSkuId, this.currencyCode, this.minQuantity, this.maxQuantity);
             this.refreshSkuPrices(); 
             this.observerService.attach(this.refreshSkuPrices, "skuPricesUpdate");
@@ -61,8 +60,8 @@ class SWSkuPricesEditController{
     }   
 
     public refreshSkuPrices = () => {
-         this.skuPriceService.loadSkuPricesForSku().finally(()=>{
-            this.skuPrices = this.getSkuPrices(); 
+         this.skuPriceService.loadSkuPricesForSku(this.skuId).finally(()=>{
+            this.getSkuPrices(); 
          });
     }
 
@@ -71,7 +70,9 @@ class SWSkuPricesEditController{
     }
 
     public getSkuPrices = () =>{
-        return this.skuPriceService.getSkuPricesForQuantityRange(this.skuSkuId,this.minQuantity,this.maxQuantity);
+        this.skuPriceService.getSkuPricesForQuantityRange(this.skuSkuId,this.minQuantity,this.maxQuantity).then((data)=>{
+            this.skuPrices = data;
+        });
     }
 }
 

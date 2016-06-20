@@ -2,13 +2,17 @@ export class SkuPriceService {
 
     private skuPrices = {};
     private skuPriceCollectionConfigs = {}; 
-    private skuPricePromises = {}; 
+    private skuPriceGetEntityPromises = {}; 
+    private skuPriceHasEntityDeferred = {}; 
+    private skuPriceHasEntityPromises = {}; 
 
     //@ngInject
-    constructor(public $hibachi,
+    constructor(public $q, 
+                public $hibachi,
                 public collectionConfigService, 
                 public observerService
     ){
+         this.observerService.attach(this.loadSkuPricesForSku,'skuPricesUpdate');
     }
 
     public getRelatedSkuPriceCollectionConfig = (skuID,currencyCode,minQuantity,maxQuantity) =>{
@@ -24,6 +28,8 @@ export class SkuPriceService {
     }
 
     public loadSkuPricesForSku = (skuID, refresh?) =>{
+        this.skuPriceHasEntityDeferred[skuID] = this.$q.defer();
+        this.skuPriceHasEntityPromises[skuID] = this.skuPriceHasEntityDeferred[skuID].promise;
         if(angular.isUndefined(this.skuPriceCollectionConfigs[skuID])){
             this.skuPriceCollectionConfigs[skuID] = this.collectionConfigService.newCollectionConfig("SkuPrice"); 
             this.skuPriceCollectionConfigs[skuID].addDisplayProperty("skuPriceID,sku.skuID,minQuantity,maxQuantity,currencyCode,price");
@@ -31,21 +37,24 @@ export class SkuPriceService {
             this.skuPriceCollectionConfigs[skuID].addOrderBy("currencyCode|asc");
             this.skuPriceCollectionConfigs[skuID].setAllRecords(true);
         }
-        if(angular.isUndefined(this.skuPricePromises[skuID])){
-            this.skuPricePromises[skuID] = this.skuPriceCollectionConfigs[skuID].getEntity(); 
-            refresh=true; 
+        if(angular.isUndefined(this.skuPriceGetEntityPromises[skuID]) || refresh){
+            this.skuPriceGetEntityPromises[skuID] = this.skuPriceCollectionConfigs[skuID].getEntity(); 
+            refresh = true; 
         }
         if(refresh){
-            this.skuPricePromises[skuID].then((response)=>{
+            this.skuPriceGetEntityPromises[skuID].then( (response) => {
                 angular.forEach(response.records,(value,key)=>{
                     this.setSkuPrices(skuID, [this.$hibachi.populateEntity("SkuPrice", value)]);
                 }); 
             },
-            (reason)=>{
-                
-            })
+            (reason) => {
+                this.skuPriceHasEntityPromises[skuID].reject(); 
+                throw("skupriceservice failed to get sku prices" + reason);
+            }).finally( () => {
+                this.skuPriceHasEntityPromises[skuID].resolve(); 
+            });
         }
-        return this.skuPricePromises[skuID];
+        return this.skuPriceGetEntityPromises[skuID];
     }
 
     public setSkuPrices = (skuID, skuPrices) => { 
@@ -77,18 +86,25 @@ export class SkuPriceService {
     }
 
     public getSkuPricesForQuantityRange = (skuID, minQuantity, maxQuantity) => {
+        var deferred = this.$q.defer(); 
+        var promise = deferred.promise; 
         var skuPriceSet = []; 
-        if(angular.isDefined(this.skuPrices[skuID])){
-            for(var i=0; i < this.getSkuPrices(skuID).length; i++){
-                var skuPrice = this.getSkuPrices(skuID)[i];
-                if( skuPrice.data.minQuantity == minQuantity &&
-                    skuPrice.data.maxQuantity == maxQuantity
-                ){
-                    skuPriceSet.push(skuPrice);
+        if(angular.isDefined(this.skuPriceHasEntityPromises[skuID])){
+            this.skuPriceGetEntityPromises[skuID].then(()=>{
+                var skuPrices = this.getSkuPrices(skuID);
+                for(var i=0; i < skuPrices.length; i++){
+                    var skuPrice = skuPrices[i];
+                    if( parseInt(skuPrice.data.minQuantity) == parseInt(minQuantity) &&
+                        parseInt(skuPrice.data.maxQuantity) == parseInt(maxQuantity)
+                    ){
+                        skuPriceSet.push(skuPrice);
+                    }
                 }
-            }
+            }).finally(()=>{
+                deferred.resolve(skuPriceSet); 
+            });
         }
-        return skuPriceSet; 
+        return promise; 
     }
 
     public getKeyOfSkuPriceMatch = (skuID, skuPrice) =>{
@@ -96,8 +112,8 @@ export class SkuPriceService {
             for(var i=0; i < this.getSkuPrices(skuID).length; i++){
                 var savedSkuPriceData = this.getSkuPrices(skuID)[i].data;
                 if(savedSkuPriceData.currencyCode == skuPrice.data.currencyCode &&
-                   savedSkuPriceData.minQuantity == skuPrice.data.minQuantity &&
-                   savedSkuPriceData.maxQuantity == skuPrice.data.maxQuantity
+                   parseInt(savedSkuPriceData.minQuantity) == parseInt(skuPrice.data.minQuantity) &&
+                   parseInt(savedSkuPriceData.maxQuantity) == parseInt(skuPrice.data.maxQuantity)
                 ){
                     return i; 
                 }

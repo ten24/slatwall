@@ -43,8 +43,8 @@ class SWSkuPriceQuantityEditController{
     }    
 
     public refreshSkuPrices = () => {
-         this.skuPriceService.loadSkuPricesForSku().finally(()=>{
-            this.skuPrices = this.getSkuPrices(); 
+         this.skuPriceService.loadSkuPricesForSku(this.skuSkuId).finally(()=>{
+            this.getSkuPrices(); 
          });
     }
 
@@ -79,7 +79,10 @@ class SWSkuPriceQuantityEditController{
     }
 
     public getSkuPrices = () =>{
-        return this.skuPriceService.getSkuPricesForQuantityRange(this.skuSkuId,this.minQuantity,this.maxQuantity); 
+        this.skuPriceService.getSkuPricesForQuantityRange(this.skuSkuId,this.minQuantity,this.maxQuantity).then((data)=>{
+            console.log("got data");
+            this.skuPrices = data;
+        });
     }
 
 }
