@@ -295,6 +295,130 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 	public void function getProductTypeOptionsTest() {
+		var productTypeParentData = {
+			productTypeID = "444df313ec53a08c32d8ae434af5819a" //content access
+		};
+		var mockParentProductType = createPersistedTestEntity('ProductType', productTypeParentData);
+		
+		var productTypeData = {
+			productTypeID = "50cdfabbc57f7d103538d9e0e37f61e4",//gift card
+			productTypeIDPath = "50cdfabbc57f7d103538d9e0e37f61e4",
+			parentProductType = {
+				productTypeID = mockParentProductType.getProductTypeID()
+			}
+		};
+		var mockProductType = createPersistedTestEntity('ProductType', productTypeData);
+		
+//		request.debug(mockProductType.getParentProductType().getProductTypeID());
+//		request.debug(mockProductType.getParentProductTypeID());
+		
+		//TODO: baseProductType cannot be created
+		var productData = {
+			productID = "",
+			productType = mockProductType.getProductTypeID()
+		};
+		var mockProduct = createPersistedTestEntity('Product', productData);
+		
+		var result = mockProduct.getProductTypeOptions();
+	}
+	
+	
+	
+	// ============ START: Non-Persistent Property Methods =================
+	public void function getBaseProductTypeTest() {
 		
 	}
+	
+	public void function getBundleSkusSmartListTest() {
+		var productData = {
+			productID = ""
+		};
+		var mockProduct = createPersistedTestEntity('Product', productData);
+		
+		var skuData1 = {
+			skuID = "",
+			bundleFlag = 1,
+			product = {
+				productID = mockProduct.getProductID()
+			}
+		};
+		var mockSku1 = createPersistedTestEntity('Sku', skuData1);
+		
+		var skuData1 = {
+			skuID = "",
+			bundleFlag = 0,
+			product = {
+				productID = mockProduct.getProductID()
+			}
+		};
+		var mockSku1 = createPersistedTestEntity('Sku', skuData1);
+		
+		var result = mockProduct.getBundleSkusSmartList().getRecords(refresh = true);
+		//testing the bundleFlag filter
+		assertEquals(1, arrayLen(result));
+		//testing the productID filter
+		assertEquals(mockProduct.getProductID(), result[1].getProduct().getProductID());		
+	}
+	 public void function getDefaultProductImageFilesTest() {
+	 	//TODO: Test image
+	 }
+	 
+	 public void function getDefaultProductImageFilesCountTest() {
+	 	
+	 }
+	 
+	 public void function getSalePriceDetailsForSkusTest() {
+	 	
+	 }
+	 
+	 public void function getSalePriceDetailsForSkusByCurrencyCodeTest() {
+	 	
+	 }
+	 
+	 public void function getBrandNameTest() {
+	 	//testing if both brand and brandName existed
+	 	var brandData = {
+	 		brandID = "",
+	 		brandName = "ten24 Undigital Solution"
+	 	};
+	 	var mockBrand = createPersistedTestEntity('Brand', brandData);
+	 	
+	 	var productData = {
+	 		productID = "",
+	 		brand = {
+	 			brandID = mockBrand.getBrandID()
+	 		}
+	 	};
+	 	var mockProduct = createPersistedTestEntity('Product', productData);
+	 	
+	 	var resultBoth = mockProduct.getBrandName();
+	 	assertEquals(mockBrand.getBrandName(), resultBoth);
+	 	
+	 	//testing if brandName is NULL	 	
+	 	var brandData2 = {
+	 		brandID = ""
+	 	};
+	 	var mockBrandNoName = createPersistedTestEntity('Brand', brandData2);
+	 	
+	 	var productData2 = {
+	 		productID = "",
+	 		brand = {
+	 			brandID = mockBrandNoName.getBrandID()
+	 		}
+	 	};
+	 	var mockProductNoName = createPersistedTestEntity('Product', productData2);
+	 	
+	 	assertIsEmpty(mockProductNoName.getBrandName());
+
+		//testing if brand does not exist
+		var productData3 = {
+			productID = ""
+		};
+		var mockProductNoBrand = createPersistedTestEntity('Product', productData3);
+		
+		var resultNoBrand = mockProductNoBrand.getBrandName();
+		assertIsEmpty(resultNoBrand);
+	 	
+	 }
+	
 }
