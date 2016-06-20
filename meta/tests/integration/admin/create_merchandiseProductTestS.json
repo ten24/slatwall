@@ -24,6 +24,13 @@
       "text": "QaPa33word"
     },
     {
+      "type": "waitForElementPresent",
+      "locator": {
+        "type": "xpath",
+        "value": "//form[@id='j-login-wrapper']//button[.='Login']"
+      }
+    },
+    {
       "type": "clickElement",
       "locator": {
         "type": "xpath",
@@ -31,17 +38,17 @@
       }
     },
     {
-      "type": "waitForElementPresent",
+      "type": "clickElement",
       "locator": {
         "type": "link text",
         "value": "Products"
       }
     },
     {
-      "type": "clickElement",
+      "type": "waitForElementPresent",
       "locator": {
-        "type": "link text",
-        "value": "Products"
+        "type": "xpath",
+        "value": "//div[@id='j-mobile-nav']//a[.='Products']"
       }
     },
     {
@@ -49,6 +56,13 @@
       "locator": {
         "type": "xpath",
         "value": "//div[@id='j-mobile-nav']//a[.='Products']"
+      }
+    },
+    {
+      "type": "waitForElementPresent",
+      "locator": {
+        "type": "xpath",
+        "value": "//div[@class='btn-toolbar']//button[.=' Create ']"
       }
     },
     {
@@ -76,8 +90,8 @@
     {
       "type": "clickElement",
       "locator": {
-        "type": "xpath",
-        "value": "//form[@id='adminentityprocessproduct_create']/div[2]"
+        "type": "name",
+        "value": "price"
       }
     },
     {
@@ -86,7 +100,7 @@
         "type": "name",
         "value": "product.productCode"
       },
-      "text": "Sahu30"
+      "text": "sahu34"
     },
     {
       "type": "setElementText",
@@ -94,7 +108,7 @@
         "type": "name",
         "value": "price"
       },
-      "text": "90"
+      "text": "10"
     },
     {
       "type": "clickElement",
@@ -102,10 +116,6 @@
         "type": "css selector",
         "value": "button.btn.btn-primary"
       }
-    },
-    {
-      "type": "waitForTextPresent",
-      "text": "Sunny"
     },
     {
       "type": "verifyTextPresent",
