@@ -106,6 +106,8 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 		var contentPath = '';
 		var templateBody = '';
 
+		arguments.slatwallScope.getService('hibachiCacheService').resetCachedKey('setting_contentTemplateFile_#arguments.slatwallScope.getContent().getContentID()#');
+		
 		if(!isNull(arguments.entityURL)){
 			var isBrandURLKey = arguments.slatwallScope.setting('globalURLKeyBrand') == arguments.entityURL;
 			var isProductURLKey = arguments.slatwallScope.setting('globalURLKeyProduct') == arguments.entityURL;
@@ -181,7 +183,7 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 		}
 		var $ = getApplicationScope(argumentCollection=arguments);
 		request.context.fw = arguments.slatwallScope.getApplicationValue("application");
-		savecontent variable="templateData"{
+		savecontent variable="local.templateData"{
 			include "#contentPath#";
 		}
 		templateBody = arguments.slatwallScope.getService('hibachiUtilityService').replaceStringTemplate(arguments.slatwallScope.getService('hibachiUtilityService').replaceStringEvaluateTemplate(templateData),arguments.slatwallScope.getContent());
@@ -306,7 +308,7 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 
 
 		//var firstLevelItems = arguments.content.getChildContents();
-		savecontent variable="navHTML"{
+		savecontent variable="local.navHTML"{
 			include 'templates/navtemplate.cfm';
 		};
 		return navHTML;
