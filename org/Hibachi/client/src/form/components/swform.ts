@@ -64,24 +64,21 @@ class SWFormController {
             if (this.entityName == "Order") {
                 this.entityName = "Cart"
             };
+        }
+        
+         /** find the form scope */
+        this.$scope.$on('anchor', (event, data) =>
+        {
 
-            /** find the form scope */
-            this.$scope.$on('anchor', (event, data) =>
-            {
-
-                if (data.anchorType == "form" && data.scope !== undefined) {
-                    this.formCtrl = data.scope;
-                }
-
-            });
-
-            /** make sure we have our data using new logic and $hibachi*/
-            if (this.context == undefined || this.entityName == undefined) {
-                throw ("ProcessObject Undefined Exception");
+            if (data.anchorType == "form" && data.scope !== undefined) {
+                this.formCtrl = data.scope;
             }
 
-            
-            
+        });
+        
+        /** make sure we have our data using new logic and $hibachi*/
+        if (this.context == undefined || this.entityName == undefined) {
+            throw ("ProcessObject Undefined Exception");
         }
         /* handle events
         */
