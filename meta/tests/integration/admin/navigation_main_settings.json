@@ -35,7 +35,7 @@
       "type": "waitForElementPresent",
       "locator": {
         "type": "xpath",
-        "value": "//*[@id=\"j-mobile-nav\"]/ul/li[2]/ul/li[3]/a"
+        "value": "//div[@id='accordion']/div[2]/a/div/h4"
       }
     },
     {
