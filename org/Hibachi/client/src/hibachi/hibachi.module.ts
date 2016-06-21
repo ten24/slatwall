@@ -23,7 +23,15 @@ var hibachimodule = angular.module('hibachi',[
     formmodule.name,
     validationmodule.name,
     workflowmodule.name
-])
+]).config([()=>{
+}])
+.run(['$rootScope','publicService', ($rootScope, publicService)=> {
+    $rootScope.hibachiScope = publicService;
+    $rootScope.hibachiScope.getAccount(); 
+    $rootScope.hibachiScope.getCart();
+    $rootScope.hibachiScope.getCountries();
+    $rootScope.hibachiScope.getStates(); 
+}])
 .constant('hibachiPartialsPath','hibachi/components/')
 .directive('swSaveAndFinish',SWSaveAndFinish.Factory())
 ;
