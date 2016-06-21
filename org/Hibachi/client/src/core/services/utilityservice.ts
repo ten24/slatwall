@@ -171,9 +171,9 @@ class UtilityService extends BaseService{
         }
 
         public replacePropertiesWithData = (stringItem:string, data)=>{
-            var results = this.getPropertiesFromString(stringItem);
-            for(var i=0; i < results.length; i++){ 
-                stringItem = stringItem.replace('${'+results[i]+'}', data[i]);
+            var propertiesToReplace = this.getPropertiesFromString(stringItem);
+            for(var i=0; i < propertiesToReplace.length; i++){ 
+                stringItem = stringItem.replace('${'+propertiesToReplace[i]+'}', data[propertiesToReplace[i]]);
             }
             return stringItem;
         }
