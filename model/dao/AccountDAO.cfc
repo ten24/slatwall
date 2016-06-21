@@ -209,7 +209,14 @@ Notes:
 	<cffunction name="getPasswordResetAccountAuthentication">
 		<cfargument name="accountID" type="string" required="true" />
 
-		<cfset var accountAuthentication = ormExecuteQuery("SELECT aa FROM #getApplicationKey()#AccountAuthentication aa LEFT JOIN aa.integration i WHERE aa.account.accountID = :accountID and aa.expirationDateTime >= :now and aa.password is null and i.integrationID is null ORDER BY aa.expirationDateTime desc", {accountID=arguments.accountID, now=now()}, true, {maxresults=1}) />
+		<cfset var accountAuthentication = ormExecuteQuery("
+			SELECT aa FROM #getApplicationKey()#AccountAuthentication 
+			aa LEFT JOIN aa.integration i WHERE aa.account.accountID = :accountID 
+										and aa.expirationDateTime >= :now 
+										and aa.password is null 
+										and i.integrationID is null 
+			ORDER BY aa.expirationDateTime desc
+			", {accountID=arguments.accountID, now=now()}, true, {maxresults=1}) />
 
 		<cfif !isNull(accountAuthentication)>
 			<cfreturn accountAuthentication />

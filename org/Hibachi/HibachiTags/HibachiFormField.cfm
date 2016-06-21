@@ -240,6 +240,8 @@
 			</cfoutput>
 		</cfcase>
 		<cfcase value="wysiwyg">
+			<!--- need to always have application key in ckfinder --->
+			<cfset attributes.fieldAttributes = listAppend(attributes.fieldAttributes,'applicationkey="#request.context.fw.getHibachiScope().getApplicationValue('applicationKey')#"',' ' )/>
 			
 			<cfset request.isWysiwygPage = true />
 			<cfoutput>
