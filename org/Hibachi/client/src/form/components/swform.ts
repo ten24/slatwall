@@ -33,24 +33,33 @@ class SWFormController {
         if(angular.isUndefined(this.isDirty)){
             this.isDirty = false;
         }
-
+        //object can be either an instance or a string that will become an instance
         if(angular.isString(this.object)){
-            this.entityName = this.object.split('_')[0];
-            this.context = this.object.split('_')[1];
+            var objectNameArray = this.object.split('_');
+            this.entityName = objectNameArray[0];
+            //if the object name array has two parts then we can infer that it is a process object
+            if(objectNameArray.length > 1){
+                this.context = this.context || objectNameArray[1];     
+                this.isProcessForm = true;
+            }else{
+                this.context = this.context || 'save';
+                this.isProcessForm = false;
+            }
+            //convert the string to an object 
             this.object = this.$hibachi['new'+this.object]();
         }else{
+            this.isProcessForm = this.object.metaData.isProcessObject;
             this.entityName = this.object.metaData.className.split('_')[0];
-            this.context = this.object.metaData.className.split('_')[1];    
+            if(this.isProcessForm){
+                this.context = this.context || this.object.metaData.className.split('_')[1];  
+            }else{
+                this.context = this.context || 'save';
+            }
         }
 
-        this.isProcessForm = this.object.metaData.isProcessObject;
+        //
 
         if (this.isProcessForm) {
-            //this.handleForm( this, $scope );
-
-            this.entityName = this.name.split('_')[0];
-            this.context = this.name.split('_')[1];
-
             /** Cart is an alias for an Order */
             if (this.entityName == "Order") {
                 this.entityName = "Cart"
@@ -71,16 +80,18 @@ class SWFormController {
                 throw ("ProcessObject Undefined Exception");
             }
 
-            /* handle events
-            */
-            if (this.onSuccess){
-                this.parseEventString(this.onSuccess, "onSuccess");
-                observerService.attach(this.eventsHandler, "onSuccess");
+            
+            
+        }
+        /* handle events
+        */
+        if (this.onSuccess){
+            this.parseEventString(this.onSuccess, "onSuccess");
+            observerService.attach(this.eventsHandler, "onSuccess");
 
-            }else if(this.onError){
-                this.parseEventString(this.onError, "onError");
-                observerService.attach(this.eventsHandler, "onError");//stub
-            }
+        }else if(this.onError){
+            this.parseEventString(this.onError, "onError");
+            observerService.attach(this.eventsHandler, "onError");//stub
         }
 
     }
@@ -129,18 +140,18 @@ class SWFormController {
     public parseEvents = (str, evntType)=> {
 
         if (str == undefined) return;
-        let strTokens = str.split(","); //this gives the format [hide:this, show:Account_Logout, update:Account or Cart]
+        let strTokens = str.split(","); //this gives the format [hide:this, show:Account_Logout, update:Account or Cart, event:element]
         let eventsObj = {
             "events": []
         }; //will hold events
         for (var token in strTokens){
-            let t = strTokens[token].split(":")[0].toLowerCase().replace(' ', '');
-            let u = strTokens[token].split(":")[1].toLowerCase().replace(' ', '');
-            if (t == "show" || t == "hide" || t == "refresh" || t == "update"){
-                if (u == "this") {u == this.processObject.toLowerCase();} //<--replaces the alias this with the name of this form.
-                let event = {"name" : t, "value" : u};
+            let eventName = strTokens[token].split(":")[0].toLowerCase().replace(' ', '');
+            let formName = strTokens[token].split(":")[1].toLowerCase().replace(' ', '');
+            //if (t == "show" || t == "hide" || t == "refresh" || t == "update"){
+                if (formName == "this") {formName == this.processObject.toLowerCase();} //<--replaces the alias this with the name of this form.
+                let event = {"name" : eventName, "value" : formName};
                 eventsObj.events.push(event);
-            }
+            //}
         }
         if (eventsObj.events.length){
             this.observerService.attach(this.eventsHandler, "onSuccess");
@@ -194,13 +205,12 @@ class SWFormController {
     }
 
     public eventsHandler = (params) => {
-
+        //this will call any form specific functions such as hide,show,refresh,update or whatever else you later add
         for (var e in params.events){
             if ( angular.isDefined(params.events[e].value) && params.events[e].value == this.processObject.toLowerCase()){
-                if (params.events[e].name == "hide")    {this.hide(params.events[e].value)}
-                if (params.events[e].name == "show")    {this.show(params.events[e].value)}
-                if (params.events[e].name == "update")  {this.update(params.events[e].value)}
-                if (params.events[e].name == "refresh") {this.refresh(params.events[e].value)};
+                if(params.events[e].name && this[params.events[e].name]){
+                    this[params.events[e].name](params.events[e].value);
+                }
             }
 
         }
@@ -283,7 +293,6 @@ class SWForm implements ng.IDirective {
     public link:ng.IDirectiveLinkFn = (scope, element: ng.IAugmentedJQuery,
         attrs:ng.IAttributes, controller) =>
     {
-        scope.context = scope.context || 'save';
     }
 
     /**
