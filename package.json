@@ -44,7 +44,7 @@
     "buildSlatwall:prod":"cd admin/client && webpack --config webpack-production.config.js -p",
     "buildHibachi":"cd org/Hibachi/client && webpack",
     "buildHibachi:prod":"cd org/Hibachi/client && webpack --config webpack-production.config.js -p",
-    "buildFrontend":"cd org/Hibachi/client && webpack --config webpack-frontend-development.config.js",
+    "buildFrontend":"cd org/Hibachi/client && webpack --config webpack-frontend-develop.config.js",
     "buildFrontend:prod":"cd org/Hibachi/client && webpack --config webpack-frontend-production.config.js -p"
   },
   "jshintConfig": {
