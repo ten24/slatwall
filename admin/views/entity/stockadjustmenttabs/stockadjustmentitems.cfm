@@ -90,7 +90,7 @@ Notes:
 							  recordProcessAction="admin:entity.processStockAdjustment"
 							  recordProcessContext="addStockAdjustmentItem"
 							  recordProcessEntity="#rc.stockAdjustment#"
-							  recordProcessUpdateTableID="LD#replace(SL.getSavedStateID(),'-','','all')#">
+							  recordProcessUpdateTableID="LD#replace(rc.stockAdjustment.getstockAdjustmentItemsSmartList().getSavedStateID(),'-','','all')#">
 		<cfif rc.stockAdjustment.getStockAdjustmentType().getSystemCode() eq "satLocationTransfer">
 			<hb:HibachiListingColumn propertyIdentifier="sku.skuCode" />
 			<hb:HibachiListingColumn propertyIdentifier="sku.product.productCode" />
