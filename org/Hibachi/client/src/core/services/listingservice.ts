@@ -26,6 +26,25 @@ class ListingService{
         return this.getListing(listingID).collectionData.pageRecords; 
     }
 
+    public markEdited = (listingId, pageRecordIndex, editedProperty, editedPropertyValue) => {
+        var pageRecords = this.getListingPageRecords(listingId); 
+        console.log("markedited", listingId, pageRecordIndex, editedProperty, editedPropertyValue, angular.isUndefined(pageRecords[pageRecordIndex].editedFields));
+        if(angular.isUndefined(pageRecords[pageRecordIndex].editedFields) && !angular.isObject(pageRecords[pageRecordIndex].editedFields)){
+            pageRecords[pageRecordIndex].editedFields = {}; 
+        }
+        console.log("markedited",pageRecords[pageRecordIndex].editedFields);
+        pageRecords[pageRecordIndex].editedFields[editedProperty] = editedPropertyValue; 
+        var fieldCount = 0; 
+        for(var key in pageRecords[pageRecordIndex].editedFields){
+            fieldCount++; 
+            if(fieldCount > 1){
+                console.log("blam")
+                pageRecords[pageRecordIndex].edited = true; 
+                break;
+            }
+        }
+    }
+
     public setupInSingleCollectionConfigMode = (listingID, scope) =>{
         
         if (angular.isUndefined(this.getListing(listingID).collectionObject) && angular.isDefined(this.getListing(listingID).collectionConfig)){
@@ -40,7 +59,12 @@ class ListingService{
          //add filters
         this.setupColumns(listingID,this.getListing(listingID).collectionConfig, this.getListing(listingID).collectionObject);
         angular.forEach(this.getListing(listingID).filters, (filter)=>{
-                this.getListing(listingID).collectionConfig.addFilter(filter.propertyIdentifier, filter.comparisonValue, filter.comparisonOperator, filter.logicalOperator, filter.hidden);
+                this.getListing(listingID).collectionConfig.addFilter( filter.propertyIdentifier, 
+                                                                       filter.comparisonValue, 
+                                                                       filter.comparisonOperator, 
+                                                                       filter.logicalOperator, 
+                                                                       filter.hidden
+                                                                     );
         }); 
         
         //add order bys
@@ -49,7 +73,10 @@ class ListingService{
         });
         
         angular.forEach(this.getListing(listingID).aggregates, (aggregate)=>{
-            this.getListing(listingID).collectionConfig.addDisplayAggregate(aggregate.propertyIdentifier, aggregate.aggregateFunction, aggregate.aggregateAlias);
+            this.getListing(listingID).collectionConfig.addDisplayAggregate( aggregate.propertyIdentifier, 
+                                                                             aggregate.aggregateFunction, 
+                                                                             aggregate.aggregateAlias
+                                                                           );
         });
         
         //make sure we have necessary properties to make the actions 
@@ -57,7 +84,10 @@ class ListingService{
             if(angular.isDefined(action.queryString)){
                 var parsedProperties = this.utilityService.getPropertiesFromString(action.queryString);
                 if(parsedProperties && parsedProperties.length){
-                    this.getListing(listingID).collectionConfig.addDisplayProperty(this.utilityService.arrayToList(parsedProperties), "", {isVisible:false});
+                    this.getListing(listingID).collectionConfig.addDisplayProperty( this.utilityService.arrayToList(parsedProperties), 
+                                                                                    "", 
+                                                                                    { isVisible : false }
+                                                                                  );
                 }
             }
         });
@@ -65,13 +95,20 @@ class ListingService{
         //also make sure we have necessary color filter properties
         angular.forEach(this.getListing(listingID).colorFilters,(colorFilter)=>{
             if(angular.isDefined(colorFilter.propertyToCompare)){
-                this.getListing(listingID).collectionConfig.addDisplayProperty(colorFilter.propertyToCompare, "", {isVisible:false});
+                this.getListing(listingID).collectionConfig.addDisplayProperty( colorFilter.propertyToCompare, 
+                                                                                "", 
+                                                                                { isVisible : false }
+                                                                              );
             }
         });
         
         this.getListing(listingID).exampleEntity = this.$hibachi.getEntityExample(this.getListing(listingID).collectionObject);
+        
         if(this.getListing(listingID).collectionConfig.hasColumns()){
-            this.getListing(listingID).collectionConfig.addDisplayProperty(this.getListing(listingID).exampleEntity.$$getIDName(),undefined,{isVisible:false});
+            this.getListing(listingID).collectionConfig.addDisplayProperty( this.getListing(listingID).exampleEntity.$$getIDName(),
+                                                                            undefined,
+                                                                            { isVisible : false }
+                                                                          );
         }
         
         this.initCollectionConfigData(listingID,this.getListing(listingID).collectionConfig);
@@ -88,8 +125,10 @@ class ListingService{
                     }else{
                         this.getListing(listingID).collectionConfig.loadJson(data.collectionConfig);
                     }
-                    this.getListing(listingID).collectionData.pageRecords = this.getListing(listingID).collectionData.pageRecords || this.getListing(listingID).collectionData.records;
-                    this.getListing(listingID).paginator.setPageRecordsInfo(this.getListing(listingID).collectionData);
+                    this.getListing(listingID).collectionData.pageRecords = this.getListing(listingID).collectionData.pageRecords || 
+                                                                            this.getListing(listingID).collectionData.records;
+
+                    this.getListing(listingID).paginator.setPageRecordsInfo( this.getListing(listingID).collectionData );
                     this.getListing(listingID).searching = false;
                 });
             }
@@ -440,7 +479,7 @@ class ListingService{
         var isChild = false;
         //todo implement
         return isChild;
-    }
+    };
 
     //Disable Rule Logic
     public getKeyOfMatchedDisableRule = (listingID, pageRecord)=>{
@@ -507,12 +546,12 @@ class ListingService{
             }); 
         }  
         return disableRuleMatchedKey;
-    }
+    };
     
     public getPageRecordMatchesDisableRule = (listingID, pageRecord)=>{
         var keyOfDisableRuleMet = this.getKeyOfMatchedDisableRule(listingID, pageRecord); 
         return keyOfDisableRuleMet != -1;  
-    }
+    };
 
     //Expandable Rule Logic
     public getKeyOfMatchedExpandableRule = (listingID, pageRecord)=>{
@@ -567,23 +606,23 @@ class ListingService{
             }); 
         }  
         return expandableRuleMatchedKey;
-    }
+    };
     
     public getPageRecordMatchesExpandableRule = (listingID, pageRecord)=>{
         var keyOfExpandableRuleMet = this.getKeyOfMatchedExpandableRule(listingID, pageRecord); 
         return keyOfExpandableRuleMet != -1;  
-    }
+    };
 
     public hasPageRecordRefreshChildrenEvent = (listingID, pageRecord)=>{
         return this.getPageRecordRefreshChildrenEvent(listingID,pageRecord) != null;
-    }
+    };
 
     public getPageRecordRefreshChildrenEvent = (listingID, pageRecord)=>{
         var keyOfExpandableRuleMet = this.getKeyOfMatchedExpandableRule(listingID, pageRecord); 
         if(keyOfExpandableRuleMet != -1){
             return this.getListing(listingID).expandableRules[keyOfExpandableRuleMet].refreshChildrenEvent;
         }
-    }
+    };
     
     public getPageRecordChildCollectionConfigForExpandableRule = (listingID, pageRecord) => {
         var keyOfExpandableRuleMet = this.getKeyOfMatchedExpandableRule(listingID, pageRecord); 
@@ -609,7 +648,7 @@ class ListingService{
            this.getListing(listingID).childCollectionConfigs[pageRecord[this.getListing(listingID).exampleEntity.$$getIDName()]] = childCollectionConfig; 
            return this.getListing(listingID).childCollectionConfigs[pageRecord[this.getListing(listingID).exampleEntity.$$getIDName()]];
         } 
-    }   
+    }; 
  
 }
 export{ListingService};

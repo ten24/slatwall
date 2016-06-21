@@ -7,5 +7,6 @@
     <sw-sku-price-edit ng-if="(swSkuPricesEdit.skuSkuId && swSkuPricesEdit.skuSkuId.length) || swSkuPricesEdit.skuPrice"
                     ng-repeat="skuPrice in swSkuPricesEdit.skuPrices" 
                     data-sku-price="skuPrice" 
+                    data-listing-display-id="{{swSkuPricesEdit.listingDisplayId}}"
     ></sw-sku-price-edit>
 </span>

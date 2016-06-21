@@ -3,6 +3,7 @@
 class SWSkuPricesEditController{
     
     public Id:string; 
+    public listingDisplayId:string; 
     public skuId:string;
     public skuSkuId:string;
     public skuPriceId:string;
@@ -45,7 +46,11 @@ class SWSkuPricesEditController{
                 price:this.price
             }
             this.skuPrice = this.$hibachi.populateEntity("SkuPrice",skuPriceData);
-            this.relatedSkuPriceCollectionConfig = this.skuPriceService.getRelatedSkuPriceCollectionConfig(this.skuSkuId, this.currencyCode, this.minQuantity, this.maxQuantity);
+            this.relatedSkuPriceCollectionConfig = this.skuPriceService.getRelatedSkuPriceCollectionConfig( this.skuSkuId, 
+                                                                                                            this.currencyCode, 
+                                                                                                            this.minQuantity, 
+                                                                                                            this.maxQuantity
+                                                                                                         );
             this.refreshSkuPrices(); 
             this.observerService.attach(this.refreshSkuPrices, "skuPricesUpdate");
         }
@@ -70,9 +75,16 @@ class SWSkuPricesEditController{
     }
 
     public getSkuPrices = () =>{
-        this.skuPriceService.getSkuPricesForQuantityRange(this.skuSkuId,this.minQuantity,this.maxQuantity).then((data)=>{
-            this.skuPrices = data;
-        });
+        var promise = this.skuPriceService.getSkuPricesForQuantityRange( this.skuSkuId,
+                                                                         this.minQuantity,
+                                                                         this.maxQuantity
+                                                                       );
+        promise.then(
+            (data)=>{
+                this.skuPrices = data;
+            }
+        );
+        return promise; 
     }
 }
 
@@ -91,6 +103,7 @@ class SWSkuPricesEdit implements ng.IDirective{
         bundledSkuSkuId:"@",
         baseEntityName:"@?",
         baseEntityId:"@?",
+        listingDisplayId:"@?",
         sku:"=?"
     };
     public controller = SWSkuPricesEditController;
@@ -125,8 +138,7 @@ class SWSkuPricesEdit implements ng.IDirective{
     public compile = (element: JQuery, attrs: angular.IAttributes) => {
         return {
             pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
-                //have to do our setup here because there is no direct way to pass the pageRecord into this transcluded directive
-                var currentScope = this.scopeService.locateParentScope($scope, "pageRecord");
+                
             },
             post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
 

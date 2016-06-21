@@ -57,6 +57,7 @@ import {SWListingExpandableRule} from "./components/swlistingexpandablerule";
 import {SWListingFilter} from "./components/swlistingfilter";
 import {SWListingFilterGroup} from "./components/swlistingfiltergroup";
 import {SWListingOrderBy} from "./components/swlistingorderby";
+import {SWListingRowSave} from "./components/swlistingrowsave"; 
 import {SWLogin} from "./components/swlogin";
 import {SWModalLauncher} from "./components/swmodallauncher";
 import {SWModalWindow} from "./components/swmodalwindow"; 
@@ -196,6 +197,7 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swListingFilter',SWListingFilter.Factory())
 .directive('swListingFilterGroup',SWListingFilterGroup.Factory())
 .directive('swListingOrderBy',SWListingOrderBy.Factory())
+.directive('swListingRowSave', SWListingRowSave.Factory())
 .directive('swLogin',SWLogin.Factory())
 .directive('swModalLauncher',SWModalLauncher.Factory())
 .directive('swModalWindow', SWModalWindow.Factory())

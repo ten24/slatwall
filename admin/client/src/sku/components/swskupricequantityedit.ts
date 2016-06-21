@@ -9,23 +9,27 @@ class SWSkuPriceQuantityEditController{
     public columnPropertyIdentifier:string; 
     public currencyCode:any;
     public filterOnCurrencyCode:string;
+    public listingDisplayId:string; 
     public minQuantity:string; 
     public maxQuantity:string; 
     public price:string;
     public skuPrices=[]; 
-    public isDirty:boolean;
-    public relatedSkuPriceCollectionConfig;
-    
-    
+    public pageRecord:any; 
+    public pageRecordIndex;
+    public relatedSkuPriceCollectionConfig:any;
+
     //@ngInject
     constructor(
         private $q, 
         private $hibachi,
         private collectionConfigService,
+        private listingService, 
         private observerService,
         private skuPriceService
     ){ 
-        this.isDirty = false; 
+        if(angular.isDefined(this.pageRecord)){
+            this.pageRecord.edited = false; 
+        }
         if(angular.isDefined(this.skuSkuId) && angular.isUndefined(this.skuPrice)){
             var skuPriceData = {
                 skuPriceID:this.skuPriceId, 
@@ -49,13 +53,19 @@ class SWSkuPriceQuantityEditController{
     }
 
     public updateSkuPrices = () =>{ 
-        if(!this.isDirty){
-            this.isDirty = true; 
-        }
-        angular.forEach(this.skuPriceService.getSkuPrices(this.skuSkuId),(value,key)=>{
+        this.listingService.markEdited( this.listingDisplayId, 
+                                        this.pageRecordIndex, 
+                                        this.columnPropertyIdentifier, 
+                                        this.skuPrice.data[this.columnPropertyIdentifier]
+                                      );
+        angular.forEach(this.skuPrices,(value,key)=>{
             if(key > 0){
                 value.forms["form" + value.data.skuPriceID].$setDirty(true);
-                value.forms["form" + value.data.skuPriceID][this.columnPropertyIdentifier].$setDirty(true);
+                if(angular.isDefined( value.forms["form" + value.data.skuPriceID][this.columnPropertyIdentifier] ) &&
+                   angular.isFunction( value.forms["form" + value.data.skuPriceID][this.columnPropertyIdentifier].$setDirty )
+                ){
+                    value.forms["form" + value.data.skuPriceID][this.columnPropertyIdentifier].$setDirty(true);
+                }
                 value.data[this.columnPropertyIdentifier] = this.skuPrice.data[this.columnPropertyIdentifier];
             }
         });
@@ -70,7 +80,7 @@ class SWSkuPriceQuantityEditController{
         });
         this.$q.all(savePromises).then(
             (response)=>{
-                this.isDirty = false; 
+                this.pageRecord.edited = false; 
             },
             (reason)=>{
                 //failure
@@ -79,10 +89,11 @@ class SWSkuPriceQuantityEditController{
     }
 
     public getSkuPrices = () =>{
-        this.skuPriceService.getSkuPricesForQuantityRange(this.skuSkuId,this.minQuantity,this.maxQuantity).then((data)=>{
-            console.log("got data",data);
+        var promise = this.skuPriceService.getSkuPricesForQuantityRange(this.skuSkuId,this.minQuantity,this.maxQuantity)
+        promise.then((data)=>{
             this.skuPrices = data;
         });
+        return promise;
     }
 
 }
@@ -100,7 +111,8 @@ class SWSkuPriceQuantityEdit implements ng.IDirective{
         columnPropertyIdentifier:"@",
         minQuantity:"@",
         maxQuantity:"@",
-        price:"@"
+        price:"@",
+        listingDisplayId:"@?",
     };
     public controller = SWSkuPriceQuantityEditController;
     public controllerAs="swSkuPriceQuantityEdit";
@@ -136,6 +148,10 @@ class SWSkuPriceQuantityEdit implements ng.IDirective{
             pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
                 //have to do our setup here because there is no direct way to pass the pageRecord into this transcluded directive
                 var currentScope = this.scopeService.locateParentScope($scope, "pageRecord");
+                if(angular.isDefined(currentScope["pageRecord"])){
+                    $scope.swSkuPriceQuantityEdit.pageRecord = currentScope["pageRecord"];
+                    $scope.swSkuPriceQuantityEdit.pageRecordIndex = currentScope["$index"];
+                }
             },
             post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
 

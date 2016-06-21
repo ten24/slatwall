@@ -18,7 +18,7 @@
             <i class="fa fa-question-circle"></i>
         </span>
     </label>
-    <div data-ng-class="{'s-form-input':!swPropertyDisplay.inListingDisplay,'s-input-group':swPropertyDisplay.inListingDisplay,'s-edit':swPropertyDisplay.edited}">
+    <div data-ng-class="{ 's-form-input' : !swPropertyDisplay.inListingDisplay, 's-input-group' : swPropertyDisplay.inListingDisplay, 's-edit' : swPropertyDisplay.edited }">
         <!-- Model-->
         <span sw-form-field data-ng-if="swPropertyDisplay.editing"
             data-property-display="swPropertyDisplay">
@@ -31,13 +31,13 @@
 
         <!-- Save Button -->
         <a class="btn btn-xs btn-success s-action-btn" 
-           data-ng-show="!swPropertyDisplay.saved" 
+           data-ng-show="!swPropertyDisplay.saved && swPropertyDisplay.edited" 
            data-ng-if="swPropertyDisplay.inListingDisplay && !swPropertyDisplay.inModal" 
            data-ng-click="swPropertyDisplay.save()" > 
            save 
         </a>
         <a class="btn btn-xs btn-success s-action-btn" 
-           data-ng-show="!swPropertyDisplay.saved" 
+           data-ng-show="!swPropertyDisplay.saved && swPropertyDisplay.edited" 
            data-toggle="modal" 
            href="#{{swPropertyDisplay.modalName}}" 
            ng-if="swPropertyDisplay.inModal" 

@@ -151,6 +151,7 @@ class SWPropertyDisplay implements ng.IDirective{
         property:"@",
         object:"=?",
         options:"=?",
+        edited:"=?",
         editable:"=?",
         editing:"=?",
         isHidden:"=?",

@@ -387,6 +387,7 @@ class SWMultiListingDisplay implements ng.IDirective{
         detailAction:"?swListingDetailAction", 
         deleteAction:"?swListingDeleteAction",
         editAction:"?swListingEditAction", 
+        saveAction:"?swListingSaveAction",
         columns:"swListingColumns", 
         collectionConfigs:"?swCollectionConfigs",
         disableRules:"?swDisabledRowRules",

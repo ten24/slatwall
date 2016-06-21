@@ -27,8 +27,8 @@ export class SkuPriceService {
         return relatedSkuPriceCollectionConfig;
     }
 
+    //wrapper function to split up args
     public updateSkuPrices = (args) =>{
-        console.log("updateSKuPrices",args);
         this.loadSkuPricesForSku(args.skuID, args.refresh); 
     }
 

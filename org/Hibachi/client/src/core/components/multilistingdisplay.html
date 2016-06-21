@@ -164,7 +164,11 @@
                             	</sw-listing-display-cell>
 							</td>
 
-                            <td class="admin admin{{swMultiListingDisplay.administrativeCount}} s-detail-hidden-content" data-ng-if="swMultiListingDisplay.administrativeCount">
+                            <td class="admin admin{{swMultiListingDisplay.administrativeCount}} s-detail-hidden-content s-actions" data-ng-if="swMultiListingDisplay.administrativeCount">
+                                
+                                <!-- Save -->
+                                <div ng-transclude="saveAction"></div>
+                                
                                 <!-- Detail -->
                                 <sw-action-caller
                                         ng-if="swMultiListingDisplay.recordDetailAction && swMultiListingDisplay.recordDetailAction.length && angular.isDefined(pageRecord[swMultiListingDisplay.exampleEntity.$$getIDName()])"
