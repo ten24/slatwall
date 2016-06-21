@@ -23,7 +23,7 @@
       },
       "text": "QaPa33word"
     },
-	{
+    {
       "type": "waitForElementPresent",
       "locator": {
         "type": "xpath",
@@ -35,6 +35,13 @@
       "locator": {
         "type": "xpath",
         "value": "//form[@id='j-login-wrapper']//button[.='Login']"
+      }
+    },
+    {
+      "type": "waitForElementPresent",
+      "locator": {
+        "type": "link text",
+        "value": "Products"
       }
     },
     {
@@ -67,10 +74,24 @@
       "text": "tao"
     },
     {
+      "type": "waitForElementPresent",
+      "locator": {
+        "type": "xpath",
+        "value": "//div[@class='btn-toolbar']//button[.=' Save']"
+      }
+    },
+    {
       "type": "clickElement",
       "locator": {
         "type": "xpath",
         "value": "//div[@class='btn-toolbar']//button[.=' Save']"
+      }
+    },
+    {
+      "type": "waitForElementPresent",
+      "locator": {
+        "type": "link text",
+        "value": "Products"
       }
     },
     {
