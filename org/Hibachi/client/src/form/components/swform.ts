@@ -35,9 +35,9 @@ class SWFormController {
         }
 
         if(angular.isString(this.object)){
-            this.object = this.$hibachi['new'+this.object]();
             this.entityName = this.object.split('_')[0];
             this.context = this.object.split('_')[1];
+            this.object = this.$hibachi['new'+this.object]();
         }else{
             this.entityName = this.object.metaData.className.split('_')[0];
             this.context = this.object.metaData.className.split('_')[1];    
