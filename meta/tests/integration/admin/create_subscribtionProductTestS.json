@@ -23,6 +23,13 @@
       },
       "text": "QaPa33word"
     },
+	{
+      "type": "waitForElementPresent",
+      "locator": {
+        "type": "xpath",
+        "value": "//form[@id='j-login-wrapper']//button[.='Login']"
+      }
+    },
     {
       "type": "clickElement",
       "locator": {
