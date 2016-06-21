@@ -12,14 +12,13 @@ class SWFormController {
     public entityName:string;
     public action:string;
     public actions:string;
-    public processObject:string;
     public object:any;
     public events: any;
     public name: string;
     public onSuccess:string;
     public onError:string;
     public eventsObj = [];
-
+    public processObject:string;
     public isDirty:boolean;
     public context:string;
     public formCtrl;
@@ -33,32 +32,35 @@ class SWFormController {
         if(angular.isUndefined(this.isDirty)){
             this.isDirty = false;
         }
-        //object can be either an instance or a string that will become an instance
-        if(angular.isString(this.object)){
-            var objectNameArray = this.object.split('_');
-            this.entityName = objectNameArray[0];
-            //if the object name array has two parts then we can infer that it is a process object
-            if(objectNameArray.length > 1){
-                this.context = this.context || objectNameArray[1];     
-                this.isProcessForm = true;
+        
+        if(this.object && this.object.metaData){
+            //object can be either an instance or a string that will become an instance
+            if(angular.isString(this.object)){
+                var objectNameArray = this.object.split('_');
+                this.entityName = objectNameArray[0];
+                //if the object name array has two parts then we can infer that it is a process object
+                if(objectNameArray.length > 1){
+                    this.context = this.context || objectNameArray[1];     
+                    this.isProcessForm = true;
+                }else{
+                    this.context = this.context || 'save';
+                    this.isProcessForm = false;
+                }
+                //convert the string to an object 
+                this.object = this.$hibachi['new'+this.object]();
             }else{
-                this.context = this.context || 'save';
-                this.isProcessForm = false;
-            }
-            //convert the string to an object 
-            this.object = this.$hibachi['new'+this.object]();
-        }else{
-            this.isProcessForm = this.object.metaData.isProcessObject;
-            this.entityName = this.object.metaData.className.split('_')[0];
-            if(this.isProcessForm){
-                this.context = this.context || this.object.metaData.className.split('_')[1];  
-            }else{
-                this.context = this.context || 'save';
+                this.isProcessForm = this.object.metaData.isProcessObject;
+                this.entityName = this.object.metaData.className.split('_')[0];
+                if(this.isProcessForm){
+                    this.context = this.context || this.object.metaData.className.split('_')[1];  
+                }else{
+                    this.context = this.context || 'save';
+                }
             }
         }
 
         //
-
+        this.context = this.context || this.name;
         if (this.isProcessForm) {
             /** Cart is an alias for an Order */
             if (this.entityName == "Order") {
@@ -77,9 +79,9 @@ class SWFormController {
         });
         
         /** make sure we have our data using new logic and $hibachi*/
-        if (this.context == undefined || this.entityName == undefined) {
-            throw ("ProcessObject Undefined Exception");
-        }
+//        if (this.context == undefined || this.entityName == undefined) {
+//            throw ("ProcessObject Undefined Exception");
+//        }
         /* handle events
         */
         if (this.onSuccess){
@@ -125,10 +127,10 @@ class SWFormController {
                 if (this.$rootScope.hibachiScope.hasErrors) {
                     this.parseErrors(result.data);
                         //trigger an onError event
-                    this.observerService.notify("onError", {"caller" : this.processObject, "events": this.events.events||""});
+                    this.observerService.notify("onError", {"caller" : this.context, "events": this.events.events||""});
                 } else {
                     //trigger a on success event
-                    this.observerService.notify("onSuccess", {"caller":this.processObject, "events":this.events.events||""});
+                    this.observerService.notify("onSuccess", {"caller":this.context, "events":this.events.events||""});
                 }
             }, angular.noop);
             //console.log("Leaving iterateFactory.");
@@ -145,7 +147,7 @@ class SWFormController {
             let eventName = strTokens[token].split(":")[0].toLowerCase().replace(' ', '');
             let formName = strTokens[token].split(":")[1].toLowerCase().replace(' ', '');
             //if (t == "show" || t == "hide" || t == "refresh" || t == "update"){
-                if (formName == "this") {formName == this.processObject.toLowerCase();} //<--replaces the alias this with the name of this form.
+                if (formName == "this") {formName == this.context.toLowerCase();} //<--replaces the alias this with the name of this form.
                 let event = {"name" : eventName, "value" : formName};
                 eventsObj.events.push(event);
             //}
@@ -182,8 +184,8 @@ class SWFormController {
                         //console.log("Appending");
                         primaryElement.append("<span name='" + key + "Error'>" + result.errors[key] + "</span>");
                     }, 0);
-                    //vm["formCtrl"][this.processObject][key].$setValidity(key, false);//set field invalid
-                    //vm["formCtrl"][this.processObject][key].$setPristine(key, false);
+                    //vm["formCtrl"][this.context][key].$setValidity(key, false);//set field invalid
+                    //vm["formCtrl"][this.context][key].$setPristine(key, false);
 
             }, this);
         }
@@ -196,7 +198,7 @@ class SWFormController {
         this.$timeout(()=>{
                 let errorElements = this.$element.find("[error-for]");
                 errorElements.empty();
-                //vm["formCtrl"][this.processObject].$setPristine(true);
+                //vm["formCtrl"][this.context].$setPristine(true);
         },0);
 
     }
@@ -204,23 +206,22 @@ class SWFormController {
     public eventsHandler = (params) => {
         //this will call any form specific functions such as hide,show,refresh,update or whatever else you later add
         for (var e in params.events){
-            if ( angular.isDefined(params.events[e].value) && params.events[e].value == this.processObject.toLowerCase()){
+            if ( angular.isDefined(params.events[e].value) && params.events[e].value == this.context.toLowerCase()){
                 if(params.events[e].name && this[params.events[e].name]){
                     this[params.events[e].name](params.events[e].value);
                 }
             }
-
         }
     }
     /** hides this directive on event */
     public hide = (param) => {
-        if (this.processObject.toLowerCase() == param){
+        if (this.context.toLowerCase() == param){
             this.$element.hide();
         }
     }
     /** shows this directive on event */
     public show = (param) =>{
-        if (this.processObject.toLowerCase() == param){
+        if (this.context.toLowerCase() == param){
             this.$element.show();
         }
     }
@@ -270,7 +271,6 @@ class SWForm implements ng.IDirective {
             name:"@?",
             context:"@?",
             entityName: "@?",
-            processObject: "@?",
             hiddenFields: "=?",
             action: "@?",
             actions: "@?",
