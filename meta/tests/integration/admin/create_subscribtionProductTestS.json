@@ -221,13 +221,6 @@
       "type": "clickElement",
       "locator": {
         "type": "css selector",
-        "value": "i.hibachi-ui-checkbox"
-      }
-    },
-    {
-      "type": "clickElement",
-      "locator": {
-        "type": "css selector",
         "value": "button.btn.btn-primary"
       }
     },
