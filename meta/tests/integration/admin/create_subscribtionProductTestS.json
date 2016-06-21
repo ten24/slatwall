@@ -57,7 +57,7 @@
         "type": "name",
         "value": "subscriptionTermName"
       },
-      "text": "thif"
+      "text": "tao"
     },
     {
       "type": "clickElement",
@@ -93,7 +93,7 @@
         "type": "name",
         "value": "subscriptionBenefitName"
       },
-      "text": "this"
+      "text": "tako"
     },
     {
       "type": "setElementSelected",
@@ -108,7 +108,7 @@
         "type": "name",
         "value": "maxUseCount"
       },
-      "text": "5"
+      "text": "4"
     },
     {
       "type": "clickElement",
@@ -151,7 +151,7 @@
         "type": "name",
         "value": "product.productName"
       },
-      "text": "kitw"
+      "text": "jam"
     },
     {
       "type": "storeEval",
@@ -172,21 +172,7 @@
         "type": "name",
         "value": "price"
       },
-      "text": "59"
-    },
-    {
-      "type": "clickElement",
-      "locator": {
-        "type": "css selector",
-        "value": "i.hibachi-ui-checkbox"
-      }
-    },
-    {
-      "type": "clickElement",
-      "locator": {
-        "type": "css selector",
-        "value": "i.hibachi-ui-checkbox"
-      }
+      "text": "9"
     },
     {
       "type": "clickElement",
@@ -208,7 +194,7 @@
         "type": "name",
         "value": "renewalPrice"
       },
-      "text": "31"
+      "text": "65"
     },
     {
       "type": "clickElement",
