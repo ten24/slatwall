@@ -32,11 +32,9 @@
       }
     },
     {
-      "type": "waitForElementPresent",
-      "locator": {
-        "type": "xpath",
-        "value": "//div[@id='accordion']/div[2]/a/div/h4"
-      }
+      "type": "waitForEval",
+      "script": "document.readyState",
+      "value": "complete"
     },
     {
       "type": "clickElement",
