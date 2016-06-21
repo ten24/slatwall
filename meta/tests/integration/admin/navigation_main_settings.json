@@ -33,7 +33,7 @@
     },
     {
       "type": "waitForEval",
-      "script": "document.readyState",
+      "script": "return document.readyState",
       "value": "complete"
     },
     {
