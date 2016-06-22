@@ -232,22 +232,11 @@
       }
     },
     {
-      "type": "waitForElementPresent",
-      "locator": {
-        "type": "css selector",
-        "value": "button.btn.btn-primary"
-      }
-    },
-    {
       "type": "clickElement",
       "locator": {
         "type": "xpath",
         "value": "//div[@class='btn-toolbar']//button[.='Create Product']"
       }
-    },
-    {
-      "type": "waitForTextPresent",
-      "text": "${code}"
     },
     {
       "type": "verifyTextPresent",
