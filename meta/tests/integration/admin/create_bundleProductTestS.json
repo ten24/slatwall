@@ -139,6 +139,13 @@
       "text": "${code}"
     },
     {
+      "type": "waitForElementPresent",
+      "locator": {
+        "type": "xpath",
+        "value": "//div[@id='j-inside-product-bundle-group-type']/div[2]/span/button"
+      }
+    },
+    {
       "type": "clickElement",
       "locator": {
         "type": "xpath",
@@ -149,7 +156,7 @@
       "type": "clickElement",
       "locator": {
         "type": "xpath",
-        "value": "//div[@class='tab-content']//button[.=' Save']"
+        "value": "//span/div[5]/div/div/div[2]/div/span/section/sw-product-bundle-groups/div/ul/span/sw-product-bundle-group/li/div[2]/div/div/div/div/button[1]"
       }
     },
     {
