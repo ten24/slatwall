@@ -41,7 +41,6 @@ class SWSkuPriceQuantityEditController{
             }
             this.skuPrice = this.$hibachi.populateEntity("SkuPrice",skuPriceData);
             this.skuPriceService.setSkuPrices(this.skuSkuId,[this.skuPrice]);
-            this.relatedSkuPriceCollectionConfig = this.skuPriceService.getRelatedSkuPriceCollectionConfig(this.skuSkuId,this.currencyCode,this.minQuantity,this.maxQuantity);
             this.refreshSkuPrices();
             this.observerService.attach(this.refreshSkuPrices, "skuPricesUpdate");
         }
@@ -57,13 +56,12 @@ class SWSkuPriceQuantityEditController{
         
         angular.forEach(this.skuPrices,(value,key)=>{
             if(key > 0){
-                var formName = "form" + value.data.skuPriceID;
+                var formName = this.columnPropertyIdentifier + value.data.skuPriceID;
                 value.forms[formName].$setDirty(true);
-                console.log("someshit",value.forms[formName][this.columnPropertyIdentifier]);
                 if(angular.isDefined( value.forms[formName][this.columnPropertyIdentifier] ) &&
                    angular.isFunction( value.forms[formName][this.columnPropertyIdentifier].$setDirty )
                 ){
-                    value.forms["form" + value.data.skuPriceID][this.columnPropertyIdentifier].$setDirty(true);
+                    value.forms[formName][this.columnPropertyIdentifier].$setDirty(true);
                 }
                 value.data[this.columnPropertyIdentifier] = this.skuPrice.data[this.columnPropertyIdentifier];
             }

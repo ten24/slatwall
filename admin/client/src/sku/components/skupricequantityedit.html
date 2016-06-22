@@ -1,6 +1,6 @@
 <span ng-if="swSkuPriceQuantityEdit.skuPrices.length > 0">
     <sw-form ng-repeat="skuPrice in swSkuPriceQuantityEdit.skuPrices track by $index"  
-            data-name="form{{skuPrice.data.skuPriceID}}"
+            data-name="{{swSkuPriceQuantityEdit.columnPropertyIdentifier}}{{skuPrice.data.skuPriceID}}"
             data-object="skuPrice">
         <sw-property-display ng-show="$index == 0"
                 data-object="skuPrice"
