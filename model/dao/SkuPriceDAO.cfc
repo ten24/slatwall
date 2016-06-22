@@ -86,6 +86,27 @@ component extends="HibachiDAO" accessors="true" output="false" {
 							  );
 	}
 
+	public function getSkuPricesForSkuAndQuantity(required string skuID, required numeric quantity){
+		return  ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.skuID = :skuID AND sp.minQuantity <= :quantityAND sp.maxQuantity >= :quantity",
+								{
+									skuID=arguments.skuID,
+									quantity=arguments.quantity
+								},
+								true
+							  );
+	}
+
+	public function getSkuPricesForSkuCurrencyCodeAndQuantity(required string skuID, required string currencyCode, required numeric quantity){
+		return  ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.skuID = :skuID AND sp.minQuantity <= :quantityAND sp.maxQuantity >= :quantity AND currencyCode = :currencyCode",
+								{
+									skuID=arguments.skuID,
+									currencyCode=arguments.currencyCode,
+									quantity=arguments.quantity
+								},
+								true
+							  );
+	}
+
 	public function getSkuPricesForSkuAndQuantityRange (required string skuID, required numeric minQuantity, required numeric maxQuantity ){
 		return ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.skuID = :skuID AND sp.minQuantity = :minQuantity AND sp.maxQuantity = :maxQuantity",
 								{

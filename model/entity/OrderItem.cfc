@@ -315,12 +315,12 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		if(isNull(arguments.orderItem)){
 			arguments.orderItem = this;
 		}
-		
+
 		var amountType = "skuPrice";//default
 		if (!isNull(arguments.orderItem.getProductBundleGroup())){
 			amountType = arguments.orderItem.getProductBundleGroup().getAmountType();
 		}
-		
+
 		//fixed
 		if(amountType == 'fixed'){
 			return arguments.orderItem.getProductBundleGroup().getAmount();
@@ -441,6 +441,23 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 	public numeric function getItemTotal() {
 		return precisionEvaluate(getTaxAmount() + getExtendedPriceAfterDiscount());
+	}
+
+	//SKU PRICE OVERRIDE FOR QUANTITY BASED PRICING
+	public any function getSkuPrice() {
+		skuPrices = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(this.getSku().getSkuID(), this.getCurrencyCode(), this.getQuantity);
+		if(arrayLen(skuPrices) > 0){
+			var prices = [];
+			for(var i=1; i <= arrayLen(skuPrices); i++){
+				ArrayAppend(prices, skuPrice[i].getPrice());
+			}
+			ArraySort(prices, "numeric","asc");
+			return prices[1];
+		}
+		if(structKeyExists(variables, "skuPrice")){
+			return variables.skuPrice;
+		}
+
 	}
 
 	public any function getSalePrice() {
