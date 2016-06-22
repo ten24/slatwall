@@ -58,26 +58,14 @@ class SWFFormFieldController {
    private type;
    private object;
    private propertyIdentifier;
+    public swfPropertyDisplayCtrl;
+   
 
 	/**
 		* Handles the logic for the frontend version of the property display.
 		*/
 	public static $inject = ['$scope'];
 	constructor ( public $scope:ng.IScope ) {
-        //let vm:IFormFieldControllerVM = this;
-        //
-        //if (this.propertyDisplay){
-        //    vm.propertyDisplay = this.propertyDisplay;
-        //}else{
-        //    vm.propertyDisplay =  {
-        //        name: vm.name,
-        //        class: vm.class,
-        //        errorClass: vm.errorClass,
-        //        type: vm.type,
-        //        object: vm.object,
-        //        propertyIdentifier: vm.propertyIdentifier
-        //    };
-        //}
         
         if (!this.propertyDisplay){
             
@@ -86,7 +74,7 @@ class SWFFormFieldController {
                  class: this.class,
                  errorClass: this.errorClass,
                  type: this.type,
-                 object: this.object,
+                 object: this.object || this.swfPropertyDisplayCtrl.object,
                  propertyIdentifier: this.propertyIdentifier
              };
          }
@@ -99,7 +87,7 @@ class SWFFormFieldController {
 	*/
 class SWFFormField {
 	public restrict = "E";
-	public require = "^?swfPropertyDisplay";
+	public require = {swfPropertyDisplayCtrl:"^?swfPropertyDisplay"};
 	public controller = SWFFormFieldController;
 	public templateUrl;
 	public controllerAs = "swfFormField";
