@@ -48,14 +48,15 @@ Notes:
 */
 
 component accessors="true" output="false" displayname="UPS" implements="Slatwall.integrationServices.ShippingInterface" extends="Slatwall.integrationServices.BaseShipping" {
-	
-	variables.testRateURL = "https://wwwcie.ups.com/ups.app/xml/Rate";
-	variables.liveRateURL = "https://onlinetools.ups.com/ups.app/xml/Rate";
-	
 	// Variables Saved in this application scope, but not set by end user
 	variables.shippingMethods = {};
 
 	public any function init() {
+		super.init();
+		variables.testurl = "https://wwwcie.ups.com/json/";
+		variables.productionUrl = "https://onlinetools.ups.com/json/";
+		
+		variables.trackingURL = "http://wwwapps.ups.com/WebTracking/track?loc=en_US&track.x=Track&trackNums=${trackingNumber}";
 
 		variables.shippingMethods = {
 			01="UPS Next Day Air",
@@ -75,90 +76,98 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 		return this;
 	}
 	
-	public struct function getShippingMethods() {
-		return variables.shippingMethods;
+	public any function processShipmentRequest(required any requestBean){
+		// Build Request XML
+		var jsonPacket = getProcessShipmentRequestJsonPacket(arguments.requestBean);
+        
+        var jsonResponse = getJsonResponse(jsonPacket);
+        
+        var responseBean = getShippingProcessShipmentResponseBean(jsonResponse);
+        
+        return responseBean;
 	}
-	
-	public string function getTrackingURL() {
-		return "http://wwwapps.ups.com/WebTracking/track?loc=en_US&track.x=Track&trackNums=${trackingNumber}";
-	}
+
 	
 	public any function getRates(required any requestBean) {
-		var responseBean = new Slatwall.model.transient.fulfillment.ShippingRatesResponseBean();
-		
-		// Insert Custom Logic Here
-		var totalItemsWeight = 0;
-		var totalItemsValue = 0;
-		
-		// Loop over all items to get a price and weight for shipping
-		for(var i=1; i<=arrayLen(arguments.requestBean.getShippingItemRequestBeans()); i++) {
-			if(isNumeric(arguments.requestBean.getShippingItemRequestBeans()[i].getWeight())) {
-				totalItemsWeight +=	arguments.requestBean.getShippingItemRequestBeans()[i].getWeight() * arguments.requestBean.getShippingItemRequestBeans()[i].getQuantity();
-			}
-			 
-			totalItemsValue += arguments.requestBean.getShippingItemRequestBeans()[i].getValue() * arguments.requestBean.getShippingItemRequestBeans()[i].getQuantity();
-		}
-		
-		if(totalItemsWeight < 1) {
-			totalItemsWeight = 1;
-		}
 		
 		// Build Request XML
-		var xmlPacket = "";
+		var jsonPacket = "";
 		
-		savecontent variable="xmlPacket" {
+		savecontent variable="jsonPacket" {
 			include "RatesRequestTemplate.cfm";
         }
-        
-        // Setup Request to push to UPS
-        
-        var httpRequest = new http();
-        httpRequest.setMethod("POST");
-		httpRequest.setPort("443");
-		httpRequest.setTimeout(45);
+        var JsonResponse = getJsonResponse(jsonPacket);
+        var responseBean = getShippingRatesResponseBean(JsonResponse);
 		
+		return responseBean;
+	}
+	
+	public struct function getJsonResponse(required any jsonPacket){
+		var url = "";
+		var service = "Rate";
 		if(setting('testingFlag')) {
-			httpRequest.setUrl(variables.testRateURL);
+			url = variables.testUrl & service;
 		} else {
-			httpRequest.setUrl(variables.liveRateURL);
+			url = variables.productionUrl & service;
+		}
+		return getResponse(requestPacket=arguments.jsonPacket,url=url,format="json");
+	}
+	
+	private any function getShippingProcessShipmentResponseBean(struct jsonResponse){
+		var responseBean = new Slatwall.model.transient.fulfillment.ShippingProcessShipmentResponseBean();
+		responseBean.setData(arguments.jsonResponse);
+		if(structKeyExists(responseBean.data,'Fault')) {
+			addMessage(messageName="communicationError", message="An unexpected communication error occured, please notify system administrator.");
+			// If XML fault then log error
+			addError("unknown", "An unexpected communication error occured, please notify system administrator.");
+		} else {
+			// Log all messages from UPS into the response bean
+			responseBean.addMessage(
+				messageName=responseBean.getData().ShipmentResponse.Response.ResponseStatus.code,
+				message=responseBean.getData().ShipmentResponse.Response.ResponseStatus.Description
+			);
+			if(structKeyExists(responseBean.getData().ShipmentResponse, "Error")) {
+				responseBean.addMessage(
+					messageName=responseBean.getData().ShipmentResponse.Error.Code,
+					message=responseBean.getData().ShipmentResponse.Error.Description
+				);
+				responseBean.addError(
+					responseBean.getData().ShipmentResponse.Error.Code,
+					responseBean.getData().ShipmentResponse.Error.Description
+				);
+			}
+			//if no errors then we should convert data to properties
+			if(!responseBean.hasErrors()) {
+				var PackageResults = responseBean.getData().ShipmentResponse.ShipmentResults.PackageResults;
+				responseBean.setTrackingNumber(PackageResults.trackingNumber);
+				//convert gif to pdf
+				var base64pdf = getHibachiScope().getService('hibachiUtilityService').convertBase64GIFToBase64PDF(PackageResults.ShippingLabel.GraphicImage);
+				responseBean.setContainerLabel(base64pdf);
+			}
 		}
 		
-		httpRequest.setResolveurl(false);
-		httpRequest.addParam(type="xml", name="data",value="#trim(xmlPacket)#");
-		
-		var xmlResponse = XmlParse(REReplace(httpRequest.send().getPrefix().fileContent, "^[^<]*", "", "one"));
-		
+		return responseBean;
+	}
+	
+	
+	
+	public any function getShippingRatesResponseBean(required any JsonResponse){
 		var responseBean = new Slatwall.model.transient.fulfillment.ShippingRatesResponseBean();
-		responseBean.setData(xmlResponse);
+		responseBean.setData(arguments.JsonResponse);
 		
-		if(isDefined('xmlResponse.Fault')) {
+		if(structKeyExists(responseBean.getData(),'Fault')) {
 			responseBean.addMessage(messageName="communicationError", message="An unexpected communication error occured, please notify system administrator.");
 			// If XML fault then log error
 			responseBean.addError("unknown", "An unexpected communication error occured, please notify system administrator.");
 		} else {
-			// Log all messages from FedEx into the response bean
-			for(var i=1; i<=arrayLen(xmlResponse.RatingServiceSelectionResponse.Response); i++) {
-				responseBean.addMessage(
-					messageName=xmlResponse.RatingServiceSelectionResponse.Response[i].ResponseStatusCode.xmltext,
-					message=xmlResponse.RatingServiceSelectionResponse.Response[i].ResponseStatusDescription.xmltext
-				);
-				if(structKeyExists(xmlResponse.RatingServiceSelectionResponse.Response[i], "Error")) {
-					responseBean.addMessage(
-						messageName=xmlResponse.RatingServiceSelectionResponse.Response[i].Error.ErrorCode.xmltext,
-						message=xmlResponse.RatingServiceSelectionResponse.Response[i].Error.ErrorDescription.xmltext
-					);
-					responseBean.addError(
-						xmlResponse.RatingServiceSelectionResponse.Response[i].Error.ErrorCode.xmltext,
-						xmlResponse.RatingServiceSelectionResponse.Response[i].Error.ErrorDescription.xmltext
-					);
-				}
-			}
+			
 			
 			if(!responseBean.hasErrors()) {
-				for(var i=1; i<=arrayLen(xmlResponse.RatingServiceSelectionResponse.RatedShipment); i++) {
+				
+				for(var i=1; i<=arrayLen(responseBean.getData().RateResponse.RatedShipment); i++) {
 					responseBean.addShippingMethod(
-						shippingProviderMethod=xmlResponse.RatingServiceSelectionResponse.RatedShipment[i].Service.code.xmlText,
-						totalCharge=xmlResponse.RatingServiceSelectionResponse.RatedShipment[i].TotalCharges.MonetaryValue.xmlText
+						shippingProviderMethod=responseBean.getData().RateResponse.RatedShipment[i].Service.code,
+						totalCharge=responseBean.getData().RateResponse.RatedShipment[i].TotalCharges.MonetaryValue
 					);
 				}
 			}
@@ -167,6 +176,14 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 		return responseBean;
 	}
 	
+	public any function getProcessShipmentRequestJsonPacket(required any requestBean){
+		var jsonPacket = "";
+		
+		savecontent variable="jsonPacket" {
+			include "ProcessShipmentRequestTemplate.cfm";
+        }
+        return jsonPacket;
+	}
 	
 }
 

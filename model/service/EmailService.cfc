@@ -170,6 +170,7 @@ Notes:
 
 	public any function generateAndSendFromEntityAndEmailTemplate( required any entity, required any emailTemplate ) {
 		var email = this.newEmail();
+		arguments[arguments.entity.getClassName()] = arguments.entity;
 		email = this.processEmail(email, arguments, 'createFromTemplate');
 		email = this.processEmail(email, 'addToQueue');
 		return email;
@@ -235,7 +236,6 @@ Notes:
 
 				local.email = arguments.email;
 				local[ emailTemplate.getEmailTemplateObject() ] = templateObject;
-				local.emailData = templateObject;
 				local.emailData["relatedObject"] = mid(templateObject.getEntityName(), 9, len(templateObject.getEntityName())-8);
 				local.emailData["relatedObjectID"] = templateObject.getPrimaryIDValue();
 

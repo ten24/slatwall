@@ -115,7 +115,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 			return false;
 		}
 	}
-
+	
 	public void function setFirstReminderEmailDateBasedOnNextBillDate() {
 		// Setup the next Reminder email
 		if( len(this.setting('subscriptionUsageRenewalReminderDays')) ) {
@@ -180,6 +180,8 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	public numeric function getRenewalPrice(){
 		if(!structKeyExists(variables, "renewalPrice") && !isNull(this.getRenewalSku())){
 			variables.renewalPrice = this.getRenewalSku().getRenewalPrice();
+		}else{
+			variables.renewalPrice = 0;
 		}
 		return variables.renewalPrice;
 	}
@@ -244,7 +246,11 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 		subscriptionOrderItemSmartList.setPageRecordsShow(1);
 		subscriptionOrderItemSmartList.addOrder("createdDateTime | ASC");
         var records = subscriptionOrderItemSmartList.getPageRecords();
-        if(arrayLen(records)){
+        if(
+        	arrayLen(records)
+        	&& !isNull(records[1].getOrderItem())
+        	&& !isNull(records[1].getOrderItem().getSku())
+        ){
         	return records[1].getOrderItem().getSku();
         }
         return;

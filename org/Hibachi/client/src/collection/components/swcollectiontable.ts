@@ -60,9 +60,6 @@ class SWCollectionTable{
                 if(angular.isUndefined(scope.angularLinks)){
                     scope.angularLinks = false;
                 }
-				console.log('here');
-                console.log(scope.collection);
-				console.log($hibachi);
                 scope.collectionObject = $hibachi['new'+scope.collection.collectionObject]();
 
                 var escapeRegExp = function(str) {

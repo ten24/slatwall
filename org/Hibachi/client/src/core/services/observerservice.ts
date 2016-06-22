@@ -37,7 +37,6 @@ class ObserverService extends BaseService{
      * @description adds events listeners
      */
     attach = (callback:any, event:string, id?:string):void => {
-        console.log('event attached:'+event);
         if(!id){
             id = this.utilityService.createID();
         }
@@ -103,7 +102,6 @@ class ObserverService extends BaseService{
      * @description notifies all observers of a specific event
      */
     notify = (event:string, parameters:any):void => {
-      console.log('event called:'+event);
       for(var id in this.observers[event]) {
         angular.forEach(this.observers[event][id], function (callback) {
           callback(parameters);
@@ -111,7 +109,6 @@ class ObserverService extends BaseService{
       }
     }
 	notifyById = (event:string, eventId:string ,parameters:any):void => {
-        console.log('event called:'+event);
         for(var id in this.observers[event]) {
             if(id != eventId) continue;
             angular.forEach(this.observers[event][id], function (callback) {

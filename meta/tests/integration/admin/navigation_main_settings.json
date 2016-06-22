@@ -23,12 +23,18 @@
       },
       "text": "QaPa33word"
     },
+
     {
       "type": "clickElement",
       "locator": {
         "type": "xpath",
         "value": "//form[@id='j-login-wrapper']//button[.='Login']"
       }
+    },
+    {
+      "type": "waitForEval",
+      "script": "return document.readyState",
+      "value": "complete"
     },
     {
       "type": "clickElement",

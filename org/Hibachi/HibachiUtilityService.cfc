@@ -76,13 +76,18 @@
 			  }
 			}
 		}
-
+		
 		// @hint this method allows you to properly format a value against a formatType
 		public any function formatValue( required string value, required string formatType, struct formatDetails={} ) {
-			if(listFindNoCase("currency,date,datetime,pixels,percentage,second,time,truefalse,url,weight,yesno,urltitle,alphanumericdash", arguments.formatType)) {
+			
+			if(listFindNoCase("decimal,currency,date,datetime,pixels,percentage,second,time,truefalse,url,weight,yesno,urltitle,alphanumericdash", arguments.formatType)) {
 				return this.invokeMethod("formatValue_#arguments.formatType#", {value=arguments.value, formatDetails=arguments.formatDetails});
 			}
 			return arguments.value;
+		}
+		
+		public any function formatValue_decimal(required string value){
+			return numberFormat(arguments.value,'_.__');
 		}
 
 		public any function formatValue_second( required string value, struct formatDetails={} ) {
@@ -255,6 +260,7 @@
 		//evaluate double brackets ${{}} and ${()}
 		public string function replaceStringEvaluateTemplate(required string template){
 			var templateKeys = reMatchNoCase("\${{[^}]+}}",arguments.template);
+			
 			var parenthesisTemplateKeys =  reMatchNoCase("\${\([^}]+\)}",arguments.template);
 
 			var replacementArray = [];
@@ -300,6 +306,7 @@
 		
 		//replace single brackets ${}
 		public string function replaceStringTemplate(required string template, required any object, boolean formatValues=false, boolean removeMissingKeys=false) {
+			
 			var templateKeys = getTemplateKeys(arguments.template);
 			var replacementArray = [];
 			var returnString = arguments.template;
@@ -467,6 +474,16 @@
 		public string function encryptValue(required string value, string salt="") {
 			var passwords = getEncryptionPasswordArray();
 			return encrypt(arguments.value, generatePasswordBasedEncryptionKey(password=passwords[1].password, salt=arguments.salt, iterationCount=passwords[1].iterationCount), getEncryptionAlgorithm(), getEncryptionEncoding());
+		}
+		
+		public string function hibachiHTMLEditFormat(required string html){
+			var sanitizedString = htmlEditFormat(arguments.html);
+			sanitizedString = sanitizeForAngular(sanitizedString);
+			return sanitizedString;
+		}
+		
+		public string function sanitizeForAngular(required string html){
+			return ReReplace(arguments.html,'{',chr(123)&chr(002),'all');
 		}
 
 		public string function decryptValue(required string value, string salt="") {
@@ -1081,6 +1098,19 @@
         <cfset local.currentDate = Now()>
         <cfset local.utcDate = dateConvert( "local2utc", local.currentDate )>
         <cfreturn round( local.utcDate.getTime() / 1000 )>
+    </cffunction>
+    
+    <cffunction name="convertBase64GIFToBase64PDF">
+    	<cfargument name="base64GIF" />
+    	<cfset var myImage = ImageReadBase64("data:image/gif;base64,#arguments.base64GIF#")> 
+    	<cfset var tempDirectory = getTempDirectory()&'/newimage.gif'>
+    	<cfset imageWrite(myImage,tempDirectory)>
+		<cfdocument name="newpdf" format="pdf" localUrl="yes">
+			<cfoutput>
+				<img src="file:///#tempDirectory#" />
+			</cfoutput>
+		</cfdocument>
+		<cfreturn ToBase64(newpdf) />
     </cffunction>
 
 

@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,37 +45,19 @@
 
 Notes:
 
-*/
-component displayname="Postal Code" entityname="SlatwallPostalCode" table="SwPostalCode" persistent="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="addressService" {
-	
-	// Persistent Properties
-	property name="postalCode" ormtype="string" fieldtype="id" displayname="Postal Code";
-	property name="city" ormtype="string";
-	property name="latitude" ormtype="string";
-	property name="longitude" ormtype="string";
-	
-	// Audit Properties
-	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
-	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
-	
-	// Related Object Properties
-	property name="country" cfc="Country" fieldtype="many-to-one" fkcolumn="countryCode" insert="false" update="false";
-	property name="state" cfc="State" fieldtype="many-to-one" fkcolumn="stateCode,countryCode";
-	
-	    
+--->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-	// ============ START: Non-Persistent Property Methods =================
-	
-	// ============  END:  Non-Persistent Property Methods =================
-		
-	// ============= START: Bidirectional Helper Methods ===================
-	
-	// =============  END:  Bidirectional Helper Methods ===================
-	
-	// =================== START: ORM Event Hooks  =========================
-	
-	// ===================  END:  ORM Event Hooks  =========================
-}
+<cfparam name="rc.subscriptionUsageBenefitAccount" type="any" />
+<cfparam name="rc.edit" type="boolean" />
 
+<cfoutput>
+	<hb:HibachiPropertyRow>
+		<hb:HibachiPropertyList divClass="col-md-6">
+			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsageBenefitAccount#" property="subscriptionUsageBenefit" edit="false">
+			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsageBenefitAccount#" property="account" edit="false">
+			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsageBenefitAccount#" property="endDateTime" edit="#rc.edit#">
+		</hb:HibachiPropertyList>
+	</hb:HibachiPropertyRow>
+</cfoutput>
