@@ -110,11 +110,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="totalShippingWeight" type="numeric" persistent="false" hb_formatType="weight";
     property name="totalShippingQuantity" type="numeric" persistent="false" hb_formatType="weight";
     property name="shipmentItemMultiplier" type="numeric" persistent="false";
-    property name="hasOrderWithMinAmountRecievedRequiredForFulfillment" type="boolean" persistent="false";
-	property name="isAutoFulfillment" type="boolean" persistent="false";
-	property name="isAutoFulfillmentReadyToBeFulfilled" type="boolean" persistent="false";
-    
-    
+
 	// Deprecated
 	property name="discountTotal" persistent="false";
 	property name="shippingCharge" persistent="false";
@@ -216,17 +212,17 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	// ====================  END: Logical Methods ==========================
 
 	// ============ START: Non-Persistent Property Methods =================
-	
+
 	public any function getShipmentItemMultiplier(){
-		
+
 		//weight overrides quantity
 		if(getTotalShippingWeight() > 0){
-			return ceiling(getTotalShippingWeight()); //round up.	
+			return ceiling(getTotalShippingWeight()); //round up.
 		}
 		else if (getTotalShippingQuantity() > 0){
 			return getTotalShippingQuantity();
 		}
-		
+
 		return 0;
 	}
 
@@ -471,7 +467,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
     	return totalShippingWeight;
     }
-    
+
     public boolean function hasOrderWithMinAmountRecievedRequiredForFulfillment() {
     	return  (   !isNull(this.getOrder())
     				&& (
@@ -484,8 +480,18 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     				  )
     			);
     }
-    
-    
+
+     public boolean function isAutoFulfillment() {
+		return (this.getFulfillmentMethodType() == "auto" || (
+		        !isNull(this.getFulfillmentMethod()) &&
+                !isNull(this.getFulfillmentMethod().getAutoFulfillFlag()) &&
+                		this.getFulfillmentMethod().getAutoFulfillFlag()));
+    }
+
+    public boolean function isAutoFulfillmentReadyToBeFulfilled(){
+		return this.isAutoFulfillment() && this.hasOrderWithMinAmountRecievedRequiredForFulfillment() && this.hasFulfillmentItemsWithAssignedRecipients();
+    }
+
     public numeric function getTotalShippingQuantity() {
         var totalShippingQuantity = 0;
 
@@ -697,13 +703,13 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     // ==================  START: Validation Methods  ======================
     public boolean function hasQuantityOfOrderFulfillmentsWithinMaxOrderQuantity() {
         var settingVal = getService("settingService").getSettingValue(settingName='globalMaximumFulfillmentsPerOrder');
-        if (!isNull(settingVal) 
-        	&& !isNull(getOrder()) 
+        if (!isNull(settingVal)
+        	&& !isNull(getOrder())
         ){
-           return (arrayLen(getOrder().getOrderFulfillments()) <= settingVal);  
+           return (arrayLen(getOrder().getOrderFulfillments()) <= settingVal);
         }
         return false;
-    } 
+    }
     // ==================  END: Validation Methods  ========================
 
 	// =================== START: ORM Event Hooks  =========================
