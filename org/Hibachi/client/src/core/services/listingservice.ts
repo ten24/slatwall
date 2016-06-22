@@ -26,23 +26,32 @@ class ListingService{
         return this.getListing(listingID).collectionData.pageRecords; 
     }
 
-    public markEdited = (listingId, pageRecordIndex, editedProperty, editedPropertyValue) => {
+    public markEdited = (listingId, pageRecordIndex, editedProperty, saveCallback) => {
         var pageRecords = this.getListingPageRecords(listingId); 
-        console.log("markedited", listingId, pageRecordIndex, editedProperty, editedPropertyValue, angular.isUndefined(pageRecords[pageRecordIndex].editedFields));
         if(angular.isUndefined(pageRecords[pageRecordIndex].editedFields) && !angular.isObject(pageRecords[pageRecordIndex].editedFields)){
             pageRecords[pageRecordIndex].editedFields = {}; 
         }
-        console.log("markedited",pageRecords[pageRecordIndex].editedFields);
-        pageRecords[pageRecordIndex].editedFields[editedProperty] = editedPropertyValue; 
+        pageRecords[pageRecordIndex].editedFields[editedProperty] = saveCallback; 
         var fieldCount = 0; 
         for(var key in pageRecords[pageRecordIndex].editedFields){
             fieldCount++; 
             if(fieldCount > 1){
-                console.log("blam")
                 pageRecords[pageRecordIndex].edited = true; 
-                break;
+                return true;
             }
         }
+        return false; 
+    }
+
+    public markSaved = (listingId, pageRecordIndex) => {
+        var pageRecords = this.getListingPageRecords(listingId); 
+        pageRecords[pageRecordIndex].edited = false; 
+        for(var key in pageRecords[pageRecordIndex].editedFields){
+            if(angular.isFunction(pageRecords[pageRecordIndex].editedFields[key])){
+                pageRecords[pageRecordIndex].editedFields[key]();
+            }
+        }
+        delete  pageRecords[pageRecordIndex].editedFields;
     }
 
     public setupInSingleCollectionConfigMode = (listingID, scope) =>{

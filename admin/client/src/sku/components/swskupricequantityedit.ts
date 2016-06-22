@@ -15,7 +15,8 @@ class SWSkuPriceQuantityEditController{
     public price:string;
     public skuPrices=[]; 
     public pageRecord:any; 
-    public pageRecordIndex;
+    public pageRecordIndex:number;
+    public showSave:boolean=true; 
     public relatedSkuPriceCollectionConfig:any;
 
     //@ngInject
@@ -53,16 +54,14 @@ class SWSkuPriceQuantityEditController{
     }
 
     public updateSkuPrices = () =>{ 
-        this.listingService.markEdited( this.listingDisplayId, 
-                                        this.pageRecordIndex, 
-                                        this.columnPropertyIdentifier, 
-                                        this.skuPrice.data[this.columnPropertyIdentifier]
-                                      );
+        
         angular.forEach(this.skuPrices,(value,key)=>{
             if(key > 0){
-                value.forms["form" + value.data.skuPriceID].$setDirty(true);
-                if(angular.isDefined( value.forms["form" + value.data.skuPriceID][this.columnPropertyIdentifier] ) &&
-                   angular.isFunction( value.forms["form" + value.data.skuPriceID][this.columnPropertyIdentifier].$setDirty )
+                var formName = "form" + value.data.skuPriceID;
+                value.forms[formName].$setDirty(true);
+                console.log("someshit",value.forms[formName][this.columnPropertyIdentifier]);
+                if(angular.isDefined( value.forms[formName][this.columnPropertyIdentifier] ) &&
+                   angular.isFunction( value.forms[formName][this.columnPropertyIdentifier].$setDirty )
                 ){
                     value.forms["form" + value.data.skuPriceID][this.columnPropertyIdentifier].$setDirty(true);
                 }
@@ -80,7 +79,7 @@ class SWSkuPriceQuantityEditController{
         });
         this.$q.all(savePromises).then(
             (response)=>{
-                this.pageRecord.edited = false; 
+                
             },
             (reason)=>{
                 //failure
@@ -112,7 +111,8 @@ class SWSkuPriceQuantityEdit implements ng.IDirective{
         minQuantity:"@",
         maxQuantity:"@",
         price:"@",
-        listingDisplayId:"@?",
+        showSave:"=?", 
+        listingDisplayId:"@?"
     };
     public controller = SWSkuPriceQuantityEditController;
     public controllerAs="swSkuPriceQuantityEdit";
@@ -150,7 +150,10 @@ class SWSkuPriceQuantityEdit implements ng.IDirective{
                 var currentScope = this.scopeService.locateParentScope($scope, "pageRecord");
                 if(angular.isDefined(currentScope["pageRecord"])){
                     $scope.swSkuPriceQuantityEdit.pageRecord = currentScope["pageRecord"];
-                    $scope.swSkuPriceQuantityEdit.pageRecordIndex = currentScope["$index"];
+                }
+                var currentScope = this.scopeService.locateParentScope($scope, "pageRecordKey");
+                if(angular.isDefined(currentScope["pageRecordKey"])){
+                    $scope.swSkuPriceQuantityEdit.pageRecordIndex = currentScope["pageRecordKey"];
                 }
             },
             post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {

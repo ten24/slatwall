@@ -18,6 +18,9 @@ class SWPropertyDisplayController {
     public noValidate:boolean;
     public binaryFileTarget; 
     public inListingDisplay:boolean; 
+    public pageRecord:any;
+    public pageRecordIndex:number; 
+    public listingID:string; 
     public rawFileTarget; 
     public showLabel; 
     public form;
@@ -31,15 +34,23 @@ class SWPropertyDisplayController {
     public inModal:boolean; 
     public hasModalCallback:boolean; 
     public modalCallback;
+    public showSave:boolean; 
 
     //@ngInject
     constructor(
+        private listingService,
         private observerService,
         public $filter
     ){
         this.errors = {};
         this.edited = false; 
         this.initialValue = this.object.data[this.property]; 
+        if(angular.isUndefined(this.showSave)){
+            this.showSave = true; 
+        }
+        if(angular.isUndefined(this.inListingDisplay)){
+            this.inListingDisplay = false; 
+        }
         if(angular.isUndefined(this.rawFileTarget)){
             this.rawFileTarget = this.property;
         }
@@ -68,6 +79,9 @@ class SWPropertyDisplayController {
             this.showLabel = true; 
         } else { 
             this.showLabel = false; 
+        }
+        if(angular.isDefined(this.pageRecord) && angular.isUndefined(this.pageRecord.edited)){
+            this.pageRecord.edited = false; 
         }
 
         this.applyFilter = function(model, filter) {
@@ -113,6 +127,13 @@ class SWPropertyDisplayController {
         }
         if(this.hasOnChangeCallback){
             this.onChangeCallback(result);
+        }
+        if(this.inListingDisplay){
+            this.listingService.markEdited( this.listingID, 
+                                            this.pageRecordIndex, 
+                                            this.property, 
+                                            this.save
+                                          );
         }
         if(angular.isDefined(this.onChangeEvent)){
             this.observerService.notify(this.onChangeEvent,result);
@@ -170,7 +191,8 @@ class SWPropertyDisplay implements ng.IDirective{
         inListingDisplay:"=?",
         inModal:"=",
         modalCallback:"&?",
-        hasModalCallback:"=?"
+        hasModalCallback:"=?",
+        showSave:"=?"
     };
     public controller=SWPropertyDisplayController;
     public controllerAs="swPropertyDisplay";
@@ -216,12 +238,30 @@ class SWPropertyDisplay implements ng.IDirective{
             $scope.swPropertyDisplay.hasSaveCallback = false;
         }
 
+        if(angular.isDefined($scope.swPropertyDisplay.inListingDisplay) && $scope.swPropertyDisplay.inListingDisplay){
+                
+            var currentScope = this.scopeService.locateParentScope($scope, "pageRecord");
+            if(angular.isDefined(currentScope["pageRecord"])){
+                $scope.swPropertyDisplay.pageRecord = currentScope["pageRecord"];
+            }
+            
+            var currentScope = this.scopeService.locateParentScope($scope, "pageRecordKey");
+            if(angular.isDefined(currentScope["pageRecordKey"])){
+                $scope.swPropertyDisplay.pageRecordIndex = currentScope["pageRecordKey"];
+            }
+
+            var currentScope = this.scopeService.locateParentScope($scope, "swMultiListingDisplay");
+            if(angular.isDefined(currentScope["swMultiListingDisplay"])){
+                $scope.swPropertyDisplay.listingID = currentScope["swMultiListingDisplay"].tableID;
+            }
+        }
+
         if(angular.isDefined($scope.swPropertyDisplay.inModal) && $scope.swPropertyDisplay.inModal){
             
             var modalScope = this.scopeService.locateParentScope($scope, "swModalLauncher");
             $scope.swPropertyDisplay.modalName = modalScope.swModalLauncher.modalName; 
             
-            if(typeof modalScope.swModalLauncher.launchModal == "function"){
+            if(angular.isFunction(modalScope.swModalLauncher.launchModal)){
                  $scope.swPropertyDisplay.modalCallback = modalScope.swModalLauncher.launchModal;
                  $scope.swPropertyDisplay.hasModalCallback = true; 
             }

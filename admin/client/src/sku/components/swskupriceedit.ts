@@ -15,6 +15,7 @@ class SWSkuPriceEditController{
     public bundledSkuCurrencyCode:string;
     public bundledSkuPrice:string;
     public formName:string; 
+    public showSave:boolean=true; 
     public baseEntityId:string; 
     public baseEntityName:string="Product";
     public listingDisplayId:string; 
@@ -114,14 +115,6 @@ class SWSkuPriceEditController{
         }
     }
 
-    public updateSkuPrices = () =>{
-        this.listingService.markEdited( this.listingDisplayId, 
-                                        this.pageRecordIndex, 
-                                        "price", 
-                                        this.skuPrice.data.price
-                                      );
-    }
-
     public switchTabContext = () => {
         this.observerService.notify(this.switchTabContextEventName, this.tabToSwitchTo);
     }
@@ -188,7 +181,11 @@ class SWSkuPriceEdit implements ng.IDirective{
         var currentScope = this.scopeService.locateParentScope(scope, "pageRecord");
         if(angular.isDefined(currentScope["pageRecord"])){
             scope.swSkuPriceEdit.pageRecord = currentScope["pageRecord"];
-            scope.swSkuPriceEdit.pageRecordIndex = currentScope["$index"];
+           
+        }
+        var currentScope = this.scopeService.locateParentScope(scope, "pageRecordKey");
+        if(angular.isDefined(currentScope["pageRecordKey"])){
+             scope.swSkuPriceEdit.pageRecordIndex = currentScope["pageRecordKey"];
         }
 
         var skuPricesEditScope = this.scopeService.locateParentScope(scope, "swSkuPricesEdit");

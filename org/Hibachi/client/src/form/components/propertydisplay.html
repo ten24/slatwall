@@ -30,20 +30,22 @@
         </a>
 
         <!-- Save Button -->
-        <a class="btn btn-xs btn-success s-action-btn" 
-           data-ng-show="!swPropertyDisplay.saved && swPropertyDisplay.edited" 
-           data-ng-if="swPropertyDisplay.inListingDisplay && !swPropertyDisplay.inModal" 
-           data-ng-click="swPropertyDisplay.save()" > 
-           save 
+        <a  class="btn btn-xs btn-success s-action-btn" 
+            data-ng-show="!swPropertyDisplay.saved && swPropertyDisplay.edited && swPropertyDisplay.showSave && !swPropertyDisplay.pageRecord.edited" 
+            data-ng-if="swPropertyDisplay.inListingDisplay && !swPropertyDisplay.inModal" 
+            data-ng-click="swPropertyDisplay.save()" > 
+            save 
         </a>
-        <a class="btn btn-xs btn-success s-action-btn" 
-           data-ng-show="!swPropertyDisplay.saved && swPropertyDisplay.edited" 
-           data-toggle="modal" 
-           href="#{{swPropertyDisplay.modalName}}" 
-           ng-if="swPropertyDisplay.inModal" 
-           ng-click="swPropertyDisplay.save()" > 
-           save 
+        <!-- Need a second save button for modals3 -->
+        <a  class="btn btn-xs btn-success s-action-btn" 
+            data-ng-show="!swPropertyDisplay.saved && swPropertyDisplay.edited && swPropertyDisplay.showSave && !swPropertyDisplay.pageRecord.edited" 
+            data-toggle="modal" 
+            href="#{{swPropertyDisplay.modalName}}" 
+            ng-if="swPropertyDisplay.inModal" 
+            ng-click="swPropertyDisplay.save()" > 
+            save 
         </a>
+
         <!-- End Save Button -->
 
         <!-- Display -->
