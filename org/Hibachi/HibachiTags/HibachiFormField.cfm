@@ -240,6 +240,8 @@
 			</cfoutput>
 		</cfcase>
 		<cfcase value="wysiwyg">
+			<!--- need to always have application key in ckfinder --->
+			<cfset attributes.fieldAttributes = listAppend(attributes.fieldAttributes,'applicationkey="#request.context.fw.getHibachiScope().getApplicationValue('applicationKey')#"',' ' )/>
 			<cfoutput>
 				<textarea name="#attributes.fieldName#" class="#attributes.fieldClass# wysiwyg form-control" #attributes.fieldAttributes#>#attributes.value#</textarea>
 			</cfoutput>
