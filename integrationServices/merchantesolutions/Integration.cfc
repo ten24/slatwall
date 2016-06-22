@@ -65,10 +65,11 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 		var settings = {
 			profileID = {fieldType="text"},
 			profileKey = {fieldType="text"},
+			apiUrl = {fieldType="text", defaultValue="https://api.merchante-solutions.com/mes-api/tridentApi"},
 			testModeFlag = {fieldType="yesno", defaultValue="1"},
 			testProfileID = {fieldType="text"},
 			testProfileKey = {fieldType="text"},
-			apiUrl = {fieldType="text", defaultValue="https://cert.merchante-solutions.com/mes-api/tridentApi"}
+			testApiUrl = {fieldType="text", defaultValue="https://cert.merchante-solutions.com/mes-api/tridentApi"}
 		};
 
 		return settings;
