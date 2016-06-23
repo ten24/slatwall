@@ -72,6 +72,7 @@ Notes:
 		<cfset fdAttributes.fieldClass = "" />
 		<cfif !isNull(attribute.getRequiredFlag()) && isBoolean(attribute.getRequiredFlag()) && attribute.getRequiredFlag()>
 			<cfset fdAttributes.fieldClass = listAppend(fdAttributes.fieldClass, "required", " ") />
+			<cfset fdAttributes.requiredFlag = attribute.getRequiredFlag() />
 		</cfif>
 
 		<!--- Setup Value --->
