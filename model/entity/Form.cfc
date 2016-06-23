@@ -51,6 +51,7 @@ component displayname="Form" entityname="SlatwallForm" table="SwForm" persistent
 	// Persistent Properties
 	property name="formID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="formCode" ormtype="string";
+	property name="formName" ormtype="string"; 
 	property name="emailTo" ormtype="string";
 
 
