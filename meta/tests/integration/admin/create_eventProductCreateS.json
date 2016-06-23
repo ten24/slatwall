@@ -34,101 +34,80 @@
       "type": "waitForElementPresent",
       "locator": {
         "type": "link text",
-        "value": "Products"
+        "value": "Config"
       }
     },
     {
       "type": "clickElement",
       "locator": {
         "type": "link text",
-        "value": "Products"
+        "value": "Config"
       }
     },
     {
       "type": "clickElement",
       "locator": {
         "type": "link text",
-        "value": "Subscription Terms"
+        "value": "Locations"
       }
     },
     {
       "type": "clickElement",
       "locator": {
         "type": "link text",
-        "value": "Add Subscription Term"
+        "value": "Add Location"
       }
     },
     {
       "type": "setElementText",
       "locator": {
         "type": "name",
-        "value": "subscriptionTermName"
+        "value": "locationName"
       },
-      "text": "ko"
-    },
-    {
-      "type": "clickElement",
-      "locator": {
-        "type": "xpath",
-        "value": "//div[@class='btn-toolbar']//button[.=' Save']"
-      }
-    },
-    {
-      "type": "waitForElementPresent",
-      "locator": {
-        "type": "link text",
-        "value": "Products"
-      }
-    },
-    {
-      "type": "clickElement",
-      "locator": {
-        "type": "link text",
-        "value": "Products"
-      }
-    },
-    {
-      "type": "clickElement",
-      "locator": {
-        "type": "link text",
-        "value": "Subscription Benefits"
-      }
-    },
-    {
-      "type": "clickElement",
-      "locator": {
-        "type": "link text",
-        "value": "Add Subscription Benefit"
-      }
-    },
-    {
-      "type": "setElementText",
-      "locator": {
-        "type": "name",
-        "value": "subscriptionBenefitName"
-      },
-      "text": "kio"
-    },
-    {
-      "type": "setElementSelected",
-      "locator": {
-        "type": "xpath",
-        "value": "//form[@id='adminentitysavesubscriptionbenefit']/div/div/div[2]/div/div/div/div[2]/div/select//option[2]"
-      }
-    },
-    {
-      "type": "setElementText",
-      "locator": {
-        "type": "name",
-        "value": "maxUseCount"
-      },
-      "text": "9"
+      "text": "lucknow"
     },
     {
       "type": "clickElement",
       "locator": {
         "type": "css selector",
         "value": "button.btn.btn-success"
+      }
+    },
+    {
+      "type": "clickElement",
+      "locator": {
+        "type": "xpath",
+        "value": "//div[@id='accordion']//span[.='Location Configurations']"
+      }
+    },
+    {
+      "type": "clickElement",
+      "locator": {
+        "type": "css selector",
+        "value": "a.adminentitycreatelocationconfiguration.btn"
+      }
+    },
+    {
+      "type": "setElementText",
+      "locator": {
+        "type": "name",
+        "value": "locationConfigurationName"
+      },
+      "text": "helloworld"
+    },
+    {
+      "type": "setElementText",
+      "locator": {
+        "type": "name",
+        "value": "locationConfigurationCapacity"
+      },
+      "text": "21"
+    },
+    {
+      "type": "clickElement",
+      "locator": {
+        "type": "xpath",
+        "value": "//div[@class='btn-toolbar']//button[.=' Save']"
       }
     },
     {
@@ -163,7 +142,7 @@
       "type": "clickElement",
       "locator": {
         "type": "link text",
-        "value": "Subscription Product"
+        "value": "Event Product"
       }
     },
     {
@@ -172,12 +151,12 @@
         "type": "name",
         "value": "product.productName"
       },
-      "text": "kites"
+      "text": "BihariShaddi"
     },
     {
       "type": "storeEval",
-      "script": "return 'sunny'+Math.floor(Math.random()*100000)",
-      "variable": "code"
+      "script": "return 'sunny'+Math.floor(Math.random()*1000000)",
+      "variable": "uniqueCode"
     },
     {
       "type": "setElementText",
@@ -185,7 +164,7 @@
         "type": "name",
         "value": "product.productCode"
       },
-      "text": "${code}"
+      "text": "${uniqueCode}"
     },
     {
       "type": "setElementText",
@@ -193,32 +172,38 @@
         "type": "name",
         "value": "price"
       },
-      "text": "10"
+      "text": "100"
     },
     {
       "type": "clickElement",
-      "locator": {
-        "type": "css selector",
-        "value": "i.hibachi-ui-checkbox"
-      }
-    },
-    {
-      "type": "clickElement",
-      "locator": {
-        "type": "css selector",
-        "value": "i.hibachi-ui-checkbox"
-      }
-    },
-    {
-      "type": "setElementText",
       "locator": {
         "type": "name",
-        "value": "renewalPrice"
-      },
-      "text": "21"
+        "value": "eventStartDateTime"
+      }
     },
     {
-      "type": "waitForElementPresent",
+      "type": "clickElement",
+      "locator": {
+        "type": "link text",
+        "value": "24"
+      }
+    },
+    {
+      "type": "clickElement",
+      "locator": {
+        "type": "name",
+        "value": "eventEndDateTime"
+      }
+    },
+    {
+      "type": "clickElement",
+      "locator": {
+        "type": "link text",
+        "value": "29"
+      }
+    },
+    {
+      "type": "clickElement",
       "locator": {
         "type": "css selector",
         "value": "i.hibachi-ui-checkbox"
@@ -227,20 +212,13 @@
     {
       "type": "clickElement",
       "locator": {
-        "type": "xpath",
-        "value": "//i[@class='hibachi-ui-checkbox']"
-      }
-    },
-    {
-      "type": "clickElement",
-      "locator": {
-        "type": "xpath",
-        "value": "//div[@class='btn-toolbar']//button[.='Create Product']"
+        "type": "css selector",
+        "value": "button.btn.btn-primary"
       }
     },
     {
       "type": "verifyTextPresent",
-      "text": "${code}"
+      "text": "${uniqueCode}"
     }
   ],
   "data": {
