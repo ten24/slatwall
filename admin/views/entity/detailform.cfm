@@ -55,7 +55,7 @@ Notes:
 <cfoutput>
 <hb:HibachiEntityDetailForm object="#rc.form#" edit="#rc.edit#">
 	<hb:HibachiEntityActionBar type="detail" object="#rc.form#" edit="#rc.edit#">
-		<hb:HibachiActionCaller action="admin:entity.createformquestion" queryString="" type="list" modal=true />
+		<hb:HibachiProcessCaller action="admin:entity.preprocessform" entity="#rc.form#" processContext="addFormQuestion" type="list" modal=true />
 	</hb:HibachiEntityActionBar>
 
 	<hb:HibachiEntityDetailGroup object="#rc.form#">
