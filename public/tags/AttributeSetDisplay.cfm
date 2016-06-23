@@ -50,12 +50,19 @@ Notes:
 <cfimport prefix="hb" taglib="../../org/Hibachi/HibachiTags" />
 <cfif thisTag.executionMode is "start">
 
-	<cfparam name="attributes.hibachiScope" type="any" default="#request.slatwallScope#" />
+	
 	<cfparam name="attributes.attributeSet" type="any" />
 	<cfparam name="attributes.edit" type="boolean" default=false />
 	<cfparam name="attributes.fieldNamePrefix" type="string" default="" />
 	<cfparam name="attributes.entity" type="any" default="" />
-
+	
+	<cfif !structKeyExists(attributes,'hibachiScope')>
+		<cfif !structKeyExists(request,'context')>
+			<cfset attributes.hibachiScope = request.slatwallScope/>
+		<cfelse>
+			<cfset attributes.hibachiScope = request.context.fw.getHibachiScope()/>
+		</cfif>
+	</cfif>
 	<cfset thisTag.attributeSmartList = attributes.attributeSet.getAttributesSmartList() />
 	<cfset thisTag.attributeSmartList.addFilter('activeFlag', 1) />
 	<cfset thisTag.attributeSmartList.addOrder("sortOrder|ASC") />

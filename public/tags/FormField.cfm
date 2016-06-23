@@ -60,6 +60,14 @@ Notes:
 	<cfparam name="attributes.valueOptions" type="array" default="#arrayNew(1)#" />		<!--- Used for select, checkbox group, multiselect --->
 	<cfparam name="attributes.fieldAttributes" type="string" default="" />
 	
+	<cfif !structKeyExists(attributes,'hibachiScope')>
+		<cfif !structKeyExists(request,'context')>
+			<cfset attributes.hibachiScope = request.slatwallScope/>
+		<cfelse>
+			<cfset attributes.hibachiScope = request.context.fw.getHibachiScope()/>
+		</cfif>
+	</cfif>
+	
 	<!---
 		attributes.type have the following options:
 		
@@ -173,12 +181,12 @@ Notes:
 		</cfcase>
 		<cfcase value="text">
 			<cfoutput>
-				<input type="text" name="#attributes.name#" value="##request.context.fw.getHibachiScope()#(attributes.value)#" class="#attributes.class#" #attributes.fieldAttributes# />
+				<input type="text" name="#attributes.name#" value="#attributes.hibachiScope.hibachiHTMLEditFormat(attributes.value)#" class="#attributes.class#" #attributes.fieldAttributes# />
 			</cfoutput>
 		</cfcase>
 		<cfcase value="textarea">
 			<cfoutput>
-				<textarea name="#attributes.name#" class="#attributes.class#" #attributes.fieldAttributes#>##request.context.fw.getHibachiScope()#(attributes.value)#</textarea>
+				<textarea name="#attributes.name#" class="#attributes.class#" #attributes.fieldAttributes#>#attributes.hibachiScope.hibachiHTMLEditFormat(attributes.value)#</textarea>
 			</cfoutput>
 		</cfcase>
 		<cfcase value="yesno">
