@@ -116,7 +116,7 @@ Notes:
 			<cfset fdAttributes.removeLink = removeLink/>
 		</cfif>
 
-			<hb:HibachiFieldDisplay attributeCollection="#fdAttributes#" />
+			<sw:FieldDisplay attributeCollection="#fdAttributes#" />
 
 	</cfloop>
 </cfif>
