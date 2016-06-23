@@ -6342,6 +6342,9 @@ a.disabled > i.hibachi-ui-radio-checked {
   font-size: 15px;
   display: none;
 }
+.s-page-table-wrapper .s-detail-content-wrapper .s-detail-body {
+  border: 1px solid #e7eaec;
+}
 .s-detail-content-wrapper .s-content-header .s-compress-icon {
   font-size: 17px;
   display: inline-block;
@@ -6512,6 +6515,12 @@ a.disabled > i.hibachi-ui-radio-checked {
   position: relative;
   padding: 0px;
   vertical-align: middle;
+}
+table tr td .s-loading-icon {
+  position: absolute;
+  left: -2px;
+  top: 2px;
+  background: #fff;
 }
 .s-detail-content-wrapper .s-detail-body table tr td.s-status i {
   background-color: #eee;

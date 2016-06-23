@@ -782,13 +782,13 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public string function getBrandName() {
 		if(!structKeyExists(variables, "brandName")) {
 			variables.brandName = "";
-			if( structKeyExists(variables, "brand") ) {
+			if( structKeyExists(variables, "brand") && !isNull(getBrand().getBrandName())) {
 				return getBrand().getBrandName();
 			}
 		}
 		return variables.brandName;
 	}
-
+	
 	public array function getBrandOptions() {
 		var options = getPropertyOptions( "brand" );
 		options[1]['name'] = rbKey('define.none');

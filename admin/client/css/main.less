@@ -1106,6 +1106,7 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-table-header-nav .s-table-header-search button {color:#5E5E5E;background-color:@black-5;border: 1px solid @black-20;}
 .s-table-header-nav .s-table-view-options {text-align:right;padding-right:0px;}
 .s-table-header-nav .s-table-view-options button.s-table-header-btn i {font-size: 16px;position: relative;top: 3px;width: 13px;}
+.s-table-header-nav .s-table-view-options .s-table-action {margin-top: 5px;}
 .s-select-wrapper select {-webkit-appearance: none;-moz-appearance: none;appearance: none;line-height: 15px;padding-right: 23px;font-size: 12px;}
 .s-select-wrapper {position: relative;text-align: right;display: block;}
 .s-select-wrapper:after {font-family: fontAwesome;content: "\f0dc";pointer-events: none;position: absolute;margin-top: -23px;margin-left: -16px;}
@@ -2371,6 +2372,9 @@ a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !import
     font-size: 15px;
     display: none;
 }
+.s-page-table-wrapper .s-detail-content-wrapper .s-detail-body {
+	border: 1px solid #e7eaec;
+}
 .s-detail-content-wrapper .s-content-header .s-compress-icon {
     font-size: 17px;
     display: inline-block;
@@ -2567,6 +2571,12 @@ a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !import
 	position: relative;
 	padding:0px;
 	vertical-align: middle;
+}
+table tr td .s-loading-icon {
+	position: absolute;
+	left: -2px;
+	top: 2px;
+	background: #fff;
 }
 .s-detail-content-wrapper .s-detail-body table tr td.s-status i {
 	background-color: #eee;
