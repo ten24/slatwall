@@ -55,7 +55,7 @@ Notes:
 	<cfparam name="attributes.edit" type="boolean" default=false />
 	<cfparam name="attributes.fieldNamePrefix" type="string" default="" />
 	<cfparam name="attributes.entity" type="any" default="" />
-
+	
 	<cfset thisTag.attributeSmartList = attributes.attributeSet.getAttributesSmartList() />
 	<cfset thisTag.attributeSmartList.addFilter('activeFlag', 1) />
 	<cfset thisTag.attributeSmartList.addOrder("sortOrder|ASC") />
