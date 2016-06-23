@@ -1,20 +1,23 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
+import {Cart} from "../model/entity/cart";
+import {Account} from "../model/entity/account";
+import {Request} from "../model/transient/request";
+
 class PublicService {
     public formType = {'Content-Type':"application/x-www-form-urlencoded"};
     public ajaxRequestParam:string = "?ajaxRequest=1";
-    public account:any;
-    public cart:any;
+    public account:Account;
+    public cart:Cart;
     public states:any;
     public countries:any;
     public addressOptions:any;
-    public success:boolean;
-    public hasErrors:boolean;
-    public errors:string;
+    public requests:{ [action: string]: Request; }={};
+
     public http:ng.IHttpService;
     public confirmationUrl:string;
-    public loading = false;
+    public loading:boolean = false;
     public header:any;
     public window:any;
     public finding:boolean;
@@ -25,10 +28,18 @@ class PublicService {
     public shippingAddress = "";
     public billingAddress = "";
     public paymentMethods;
+    public orderPlaced:boolean;
+    public saveShippingAsBilling:boolean;
     ///index.cfm/api/scope/
 
     //@ngInject
-    constructor(public $http:ng.IHttpService, public $q:ng.IQService, public $window:any, public $location:ng.ILocationService) {
+    constructor(
+        public $http:ng.IHttpService,
+        public $q:ng.IQService,
+        public $window:any,
+        public $location:ng.ILocationService,
+        public $hibachi:any
+    ) {
 
         this.baseActionPath = "/index.cfm/api/scope/"; //default path
         this.confirmationUrl = "/order-confirmation";
@@ -36,8 +47,16 @@ class PublicService {
         this.$location = $location;
         this.$q = $q
         this.getExpirationYears();
-        this.window = $window;
+        this.$window = $window;
+        this.$hibachi = $hibachi;
+        this.cart = new Cart();
+        this.account = new Account();
+        console.log('cart',this.cart);
+    }
 
+    public hasErrors = ()=>{
+
+        return this.errors.length;
     }
 
     /** grab the valid expiration years for credit cards  */
@@ -91,7 +110,13 @@ class PublicService {
                 if (result['account']){delete result['account'];}
                 if (result['cart']){delete result['cart'];}
             }
-            this[setter] = result;
+            if(setter == 'cart'||setter=='account'){
+
+                this[setter].populate(result)
+            }else{
+                this[setter] = result;
+            }
+
             this.loading = false;
             deferred.resolve(result);
         }).error((reason)=>{
@@ -117,12 +142,9 @@ class PublicService {
     *  @param data   {object} the params as key value pairs to pass in the post request.
     *  @return a deferred promise that resolves server response or error. also includes updated account and cart.
     */
-    public doAction=(action:string, data?:any) => {
-        this.loading = true;
-        let method = "";
-        if (!action) {throw "Action is required exception";}
+    public doAction=(action:string, data?:any, method?:any) => {
 
-        if (action != undefined && data == undefined){method = "get";}else{method = "post"}
+        if (!action) {throw "Action is required exception";}
 
         //check if the caller is defining a path to hit, otherwise use the public scope.
         if (action.indexOf("/") !== -1){
@@ -131,39 +153,38 @@ class PublicService {
             this.baseActionPath = "/index.cfm/api/scope/" + action;//public path
         }
 
-        this.hasErrors = false;
-        this.success = false;
-        this.errors = undefined;
-        this.header = {headers: this.formType};
-        var deferred = this.$q.defer();
-
         let urlBase = this.baseActionPath + this.ajaxRequestParam;
+
+        if(data){
+            data.returnJsonObjects = "cart,account";
+        }else{
+            urlBase += "&returnJsonObject=cart,account";
+        }
 
         if (method == "post"){
              data.returnJsonObjects = "cart,account";
             //post
-            let promise =  this.$http.post(urlBase, this.toFormParams(data), this.header).then((result:any)=>{
+            let request = new Request(urlBase,data,method)
+            request.promise.then((result:any)=>{
 
                 /** update the account and the cart */
-                this.account = result.data.account;
-                this.cart = result.data.cart;
+                this.account.populate(result.data.account);
+                this.cart.populate(result.data.cart);
                 //if the action that was called was successful, then success is true.
-                if (result.data.successfulActions.length){
-                    this.success = true;
-                    for (var action in result.data.successfulActions){
-
-                        if (result.data.successfulActions[action].indexOf('public:cart.placeOrder') !== -1){
-                            this.window.location.href = this.confirmationUrl;
+                if (request.isSuccess()){
+                    for (var action in request.successfulActions){
+                        if (request.successfulActions[action].indexOf('public:cart.placeOrder') !== -1){
+                            this.$window.location.href = this.confirmationUrl;
                         }
                     }
                 }
-                if (result.data.failureActions.length){
-                    this.hasErrors = true;
+                if (!request.isSuccess()){
+                    //this.hasErrors = true;
                 }
-                this.loading = false;
+
                 deferred.resolve(result);
             }).catch((response)=>{
-                this.loading = false;
+
                 deferred.reject(response);
             });
             return deferred.promise;
@@ -171,29 +192,21 @@ class PublicService {
             //get
             var url = urlBase + "&returnJsonObject=cart,account";
             var deferred = this.$q.defer();
-            this.$http.get(url).success((result:any)=>{
+            let request = new Request(url);
+            request.promise.success((result:any)=>{
               deferred.resolve(result);
             }).error((reason)=>{
               deferred.reject(reason);
             });
             return deferred.promise;
         }
-
-
-    }
-    /** used to turn data into a correct format for the post */
-    public toFormParams= (data):string => {
-        return data = $.param(data) || "";
     }
 
     /**
      * Helper methods so that everything in account and cart can be accessed using getters.
      */
     public userIsLoggedIn = ():boolean =>{
-        if (this.account !== undefined && this.account.accountID !== ''){
-            return true;
-        }
-        return false;
+       return this.account.userIsLoggedIn();
     }
     /**
      * Helper methods for getting errors from the cart
@@ -254,10 +267,8 @@ class PublicService {
 
     /** Returns true if the order requires a fulfillment */
     public orderRequiresFulfillment = ()=> {
-        if ( this.cart.requiresFulfillment ) {
-            return true;
-        }
-        return false;
+        console.log('mycart',this.cart);
+        this.cart.orderRequiresFulfillment();
     };
 
     /**
@@ -266,18 +277,12 @@ class PublicService {
      *
      */
     public orderRequiresAccount = ()=> {
-        if ( this.cart.orderRequirementsList.indexOf('account') != -1 || !this.account.accountID ) {
-            return true;
-        }
-        return false;
+        this.cart.orderRequiresAccount();
     };
 
     /** Returns true if the payment tab should be active */
     public hasShippingAddressAndMethod = () => {
-        if (this.cart.orderRequirementsList.indexOf('fulfillment') == -1) {
-             return true;
-        }
-        return false;
+        this.cart.hasShippingAddressAndMethod();
     };
 
     /**
@@ -342,13 +347,13 @@ class PublicService {
         }
         //console.log("Errors: ", newOrderPaymentErrors);
         if (Object.keys(newOrderPaymentErrors).length){
-            this.cart.orderPayments.hasErrors = true;
-            this.cart.orderPayments.errors = newOrderPaymentErrors;
+            //this.cart.orderPayments.hasErrors = true;
+            //this.cart.orderPayments.errors = newOrderPaymentErrors;
         }
     }
 
     // /** Returns true if a property on an object is undefined or empty. */
-    public isUndefinedOrEmpty = function (object, property) {
+    public isUndefinedOrEmpty = (object, property)=> {
         if (!angular.isDefined(object[property]) || object[property] == ""){
             return true;
         }
@@ -358,11 +363,8 @@ class PublicService {
     /** A simple method to return the quantity sum of all orderitems in the cart. */
     public getOrderItemQuantitySum = ()=>{
         var totalQuantity = 0;
-        if (angular.isDefined(this.cart) && angular.isDefined(this.cart.orderitems)){
-            for (var orderItem in this.cart.orderitems){
-                totalQuantity = totalQuantity + this.cart.orderitems[orderItem].quantity;
-            }
-            return totalQuantity;
+        if (angular.isDefined(this.cart)){
+            return this.cart.getOrderItemQuantitySum();
         }
         return totalQuantity;
     }
@@ -411,9 +413,9 @@ class PublicService {
     */
     public addOrderPayment = (formdata)=>{
         //reset the form errors.
-        this.cart.hasErrors=false;
-        this.cart.orderPayments.errors = {};
-        this.cart.orderPayments.hasErrors = false;
+        // this.cart.hasErrors=false;
+        // this.cart.orderPayments.errors = {};
+        // this.cart.orderPayments.hasErrors = false;
 
         //Grab all the data
         var billingAddress  = this.newBillingAddress;
@@ -438,7 +440,7 @@ class PublicService {
             'newOrderPayment.billingAddress.postalcode': billingAddress.postalcode,
             'newOrderPayment.securityCode': billingAddress.cvv,
             'newOrderPayment.creditCardNumber': billingAddress.cardNumber,
-            'newOrderPayment.saveShippingAsBilling':(this.saveShippingAsBilling == 'true'),
+            'newOrderPayment.saveShippingAsBilling':(this.saveShippingAsBilling == true),
         };
 
         //Make sure we have required fields for a newOrderPayment.
@@ -456,7 +458,7 @@ class PublicService {
             }else{
                 //console.log("An unexpected error has occurred!");
             }
-            if (serverData.cart.hasErrors || angular.isDefined(this.cart.orderPayments[''+this.cart.orderPayments.length-1]['errors']) && !this.cart.orderPayments[''+this.cart.orderPayments.length-1]['errors'].hasErrors){
+            if (serverData.cart.hasErrors || angular.isDefined(this.cart.orderPayments[this.cart.orderPayments.length-1]['errors']) && !this.cart.orderPayments[this.cart.orderPayments.length-1]['errors'].hasErrors){
                 this.cart.hasErrors = true;
                 this.readyToPlaceOrder = true;
                 this.edit = '';
@@ -470,7 +472,7 @@ class PublicService {
 
     /** Allows an easy way to calling the service addOrderPayment.
     */
-    public addGiftCardOrderPayments = function(redeemGiftCardToAccount){
+    public addGiftCardOrderPayments = (redeemGiftCardToAccount)=>{
         //console.log("Adding giftcard payment.", slatwall.account);
         //reset the form errors.
         this.cart.hasErrors=false;
@@ -508,7 +510,7 @@ class PublicService {
                     }else{
                         //console.log("An unexpected error has occurred!");
                     }
-                    if (serverData.cart.hasErrors || angular.isDefined(this.cart.orderPayments[''+this.cart.orderPayments.length-1]['errors']) && !this.cart.orderPayments[''+this.cart.orderPayments.length-1]['errors'].hasErrors){
+                    if (serverData.cart.hasErrors || angular.isDefined(this.cart.orderPayments[this.cart.orderPayments.length-1]['errors']) && !this.cart.orderPayments[''+this.cart.orderPayments.length-1]['errors'].hasErrors){
                         this.cart.hasErrors = true;
                         this.readyToPlaceOrder = true;
                         this.edit = '';
@@ -520,12 +522,6 @@ class PublicService {
         }
 
     };
-
-
-
-
-
-
 
     /** returns the index of the last selected shipping method. This is used to get rid of the delay.
     */
@@ -562,21 +558,21 @@ class PublicService {
 
     /** adds a loader to the loader list
     */
-    public addLoader = function(section){
+    //public addLoader = function(section){
 
-        if (angular.isUndefined(this.loaders)){
-            this.loaders = [];
-            this.loaders[section] = "";
-        }
-        var unloadLoader = this.$scope.$watch('this.loading', function(oldState, newState){
-            if (newState != undefined && newState == true){
-                this.loaders[section] = true;
-            }else{
-                this.loaders[section] = false;
-                unloadLoader();
-            }
-        });
-    }
+//        if (angular.isUndefined(this.loaders)){
+//            this.loaders = [];
+//            this.loaders[section] = "";
+//        }
+//        var unloadLoader = this.$scope.$watch('this.loading', function(oldState, newState){
+//            if (newState != undefined && newState == true){
+//                this.loaders[section] = true;
+//            }else{
+//                this.loaders[section] = false;
+//                unloadLoader();
+//            }
+//        });
+    //}
 
     /** Allows an easy way to calling the service addOrderPayment.
     */
@@ -609,7 +605,7 @@ class PublicService {
             'newOrderPayment.billingAddress.postalcode': billingAddress.postalcode,
             'newOrderPayment.securityCode': billingAddress.cvv,
             'newOrderPayment.creditCardNumber': billingAddress.cardNumber,
-            'newOrderPayment.saveShippingAsBilling':(this.saveShippingAsBilling == 'true'),
+            'newOrderPayment.saveShippingAsBilling':(this.saveShippingAsBilling == true),
         };
 
         //Make sure we have required fields for a newOrderPayment.
@@ -654,10 +650,6 @@ class PublicService {
         });
 
     };
-
-
-
-
 
     //Applies a giftcard from the user account onto the payment.
     public applyGiftCard = (giftCardCode)=>{
