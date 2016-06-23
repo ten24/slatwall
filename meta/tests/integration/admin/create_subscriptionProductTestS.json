@@ -1,0 +1,252 @@
+{
+  "type": "script",
+  "seleniumVersion": "2",
+  "formatVersion": 2,
+  "steps": [
+    {
+      "type": "get",
+      "url": "http://localhost/"
+    },
+    {
+      "type": "setElementText",
+      "locator": {
+        "type": "name",
+        "value": "emailAddress"
+      },
+      "text": "qa@mailinator.com"
+    },
+    {
+      "type": "setElementText",
+      "locator": {
+        "type": "name",
+        "value": "password"
+      },
+      "text": "QaPa33word"
+    },
+    {
+      "type": "clickElement",
+      "locator": {
+        "type": "xpath",
+        "value": "//form[@id='j-login-wrapper']//button[.='Login']"
+      }
+    },
+    {
+      "type": "waitForElementPresent",
+      "locator": {
+        "type": "link text",
+        "value": "Products"
+      }
+    },
+    {
+      "type": "clickElement",
+      "locator": {
+        "type": "link text",
+        "value": "Products"
+      }
+    },
+    {
+      "type": "clickElement",
+      "locator": {
+        "type": "link text",
+        "value": "Subscription Terms"
+      }
+    },
+    {
+      "type": "clickElement",
+      "locator": {
+        "type": "link text",
+        "value": "Add Subscription Term"
+      }
+    },
+    {
+      "type": "setElementText",
+      "locator": {
+        "type": "name",
+        "value": "subscriptionTermName"
+      },
+      "text": "ko"
+    },
+    {
+      "type": "clickElement",
+      "locator": {
+        "type": "xpath",
+        "value": "//div[@class='btn-toolbar']//button[.=' Save']"
+      }
+    },
+    {
+      "type": "waitForElementPresent",
+      "locator": {
+        "type": "link text",
+        "value": "Products"
+      }
+    },
+    {
+      "type": "clickElement",
+      "locator": {
+        "type": "link text",
+        "value": "Products"
+      }
+    },
+    {
+      "type": "clickElement",
+      "locator": {
+        "type": "link text",
+        "value": "Subscription Benefits"
+      }
+    },
+    {
+      "type": "clickElement",
+      "locator": {
+        "type": "link text",
+        "value": "Add Subscription Benefit"
+      }
+    },
+    {
+      "type": "setElementText",
+      "locator": {
+        "type": "name",
+        "value": "subscriptionBenefitName"
+      },
+      "text": "kio"
+    },
+    {
+      "type": "setElementSelected",
+      "locator": {
+        "type": "xpath",
+        "value": "//form[@id='adminentitysavesubscriptionbenefit']/div/div/div[2]/div/div/div/div[2]/div/select//option[2]"
+      }
+    },
+    {
+      "type": "setElementText",
+      "locator": {
+        "type": "name",
+        "value": "maxUseCount"
+      },
+      "text": "9"
+    },
+    {
+      "type": "clickElement",
+      "locator": {
+        "type": "css selector",
+        "value": "button.btn.btn-success"
+      }
+    },
+    {
+      "type": "waitForElementPresent",
+      "locator": {
+        "type": "link text",
+        "value": "Products"
+      }
+    },
+    {
+      "type": "clickElement",
+      "locator": {
+        "type": "link text",
+        "value": "Products"
+      }
+    },
+    {
+      "type": "clickElement",
+      "locator": {
+        "type": "xpath",
+        "value": "//div[@id='j-mobile-nav']//a[.='Products']"
+      }
+    },
+    {
+      "type": "clickElement",
+      "locator": {
+        "type": "xpath",
+        "value": "//div[@class='btn-toolbar']//button[.=' Create ']"
+      }
+    },
+    {
+      "type": "clickElement",
+      "locator": {
+        "type": "link text",
+        "value": "Subscription Product"
+      }
+    },
+    {
+      "type": "setElementText",
+      "locator": {
+        "type": "name",
+        "value": "product.productName"
+      },
+      "text": "kites"
+    },
+    {
+      "type": "storeEval",
+      "script": "return 'sunny'+Math.floor(Math.random()*100000)",
+      "variable": "code"
+    },
+    {
+      "type": "setElementText",
+      "locator": {
+        "type": "name",
+        "value": "product.productCode"
+      },
+      "text": "${code}"
+    },
+    {
+      "type": "setElementText",
+      "locator": {
+        "type": "name",
+        "value": "price"
+      },
+      "text": "10"
+    },
+    {
+      "type": "clickElement",
+      "locator": {
+        "type": "css selector",
+        "value": "i.hibachi-ui-checkbox"
+      }
+    },
+    {
+      "type": "clickElement",
+      "locator": {
+        "type": "css selector",
+        "value": "i.hibachi-ui-checkbox"
+      }
+    },
+    {
+      "type": "setElementText",
+      "locator": {
+        "type": "name",
+        "value": "renewalPrice"
+      },
+      "text": "21"
+    },
+    {
+      "type": "waitForElementPresent",
+      "locator": {
+        "type": "css selector",
+        "value": "i.hibachi-ui-checkbox"
+      }
+    },
+    {
+      "type": "clickElement",
+      "locator": {
+        "type": "xpath",
+        "value": "//i[@class='hibachi-ui-checkbox']"
+      }
+    },
+    {
+      "type": "clickElement",
+      "locator": {
+        "type": "xpath",
+        "value": "//div[@class='btn-toolbar']//button[.='Create Product']"
+      }
+    },
+    {
+      "type": "verifyTextPresent",
+      "text": "${code}"
+    }
+  ],
+  "data": {
+    "configs": {},
+    "source": "none"
+  },
+  "inputs": [],
+  "timeoutSeconds": 60
+}
