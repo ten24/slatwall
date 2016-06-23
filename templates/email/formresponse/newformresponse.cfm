@@ -22,3 +22,11 @@
 
     </cfoutput>
 </cfsavecontent>
+<cfsavecontent variable="emailData.emailBodyText"> 
+    =============================================
+    You have a new Form Submission!
+    ============================================
+    <cfloop index="local.value" array="#formResponse.getAttributeValues()#">
+        #value.getAttribute().getAttributeCode()# : #value.getAttributeValue()#
+    </cfloop>
+</cfsavecontent> 
