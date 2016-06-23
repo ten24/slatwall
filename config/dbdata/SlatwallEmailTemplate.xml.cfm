@@ -11,6 +11,7 @@
 	</Columns>
 	<Records>
 		<Record emailTemplateID="dbb327e506090fde08cc4855fa14448d" emailTemplateName="Order Confirmation" emailTemplateObject="Order" emailTemplateFile="confirmation.cfm" />
+		<Record emailTemplateID="4028289a5507d1dc0155521cc93c03d1" emailtemplateName="New Form Response" emailTemplateObject="FormResponse" emailTemplateFile="newformresponse.cfm" />
 		<Record emailTemplateID="dbb327e694534908c60ea354766bf0a8" emailTemplateName="Order Delivery Confirmation" emailTemplateObject="OrderDelivery" emailTemplateFile="confirmation.cfm" />
 		<Record emailTemplateID="dbb327e796334dee73fb9d8fd801df91" emailTemplateName="Forgot Password" emailTemplateObject="Account" emailTemplateFile="forgotpassword.cfm" />
 		<Record emailTemplateID="61d29dd9f6ca76d9e352caf55500b458" emailTemplateName="Verify Account Email Address" emailTemplateObject="AccountEmailAddress" emailBodyHTML="IMPORTANT NOTE: THIS LINK NEEDS TO BE POINTED TO A PAGE ON YOUR SITE WHERE YOU WANT USERS TO BE SENT WHEN THEY VERIFY THEIR EMAIL AND THIS TEXT NEEDS TO BE REMOVED - Please verify your account email address by clicking on the following link: http://www.mySlatwallSite.com/?slatAction=public:account.verifyAccountEmailAddress&accountEmailAddressID=${accountEmailAddressID}&verificationCode=${verificationCode}" />
