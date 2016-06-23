@@ -513,7 +513,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(0, arrayFind(result, mockSku2));
 		assertEquals(0, arrayFind(result, mockSku3));
 	}
-*/	
+	
 	public void function getSkus_NoArgument_Test() {
 		var skuData1 = {
 			skuID = ""
@@ -547,123 +547,202 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var mockProduct = createPersistedTestEntity('Product', productData);
 		
 		var result = mockProduct.getSkus(sorted = true);
-		request.debug(arrayLen(result));
-		assertEquals(1, arrayFind(result, mockSku1));
-		assertEquals(2, arrayFind(result, mockSku2));
-		assertEquals(3, arrayFind(result, mockSku3));
+		assertTrue(arrayFind(result, mockSku1));
+		assertTrue(arrayFind(result, mockSku2));
+		assertTrue(arrayFind(result, mockSku3));
 	}
-	
-	public void function getSkus_SortedIsTrue_Test() {
-		var expectResult = [];//build the sorted skus
+*/	
+	public void function getSkus_SortedFetchOptionBothTrue_Test() {
+		//Potential Bug: based on the function in SkuService.cfc, if we pass arguments, fetchOptions must be true, 
+		//and sorted is a required argument
+
+		var mockProductType = createMockProductType("", "444df2f7ea9c87e60051f3cd87b435a1");		
+		var mockProduct = createMockProduct(mockProductType.getProductTypeID());
 		
-		var skuData1 = {
-			skuID = createUUID()
+		var optionGroupData = {
+			optionGroupID = ""
+		};
+		var mockOptionGroup = createPersistedTestEntity('OptionGroup', optionGroupData);
+		
+		var mockOption1 = createMockOption(mockOptionGroup.getOptionGroupID());
+		var mockOption2 = createMockOption(mockOptionGroup.getOptionGroupID());
+		var mockOption3 = createMockOption(mockOptionGroup.getOptionGroupID());
+		
+		var skuData1 = {//should be added
+			skuID = "4028288f54f3979c01557df0b0b52aaaa",
+			options = [
+				{
+					optionID = mockOption1.getOptionID()
+				},
+				{
+					optionID = mockOption2.getOptionID()
+				}
+			],
+			product = {
+				productID = mockProduct.getProductID()
+			}
 		};
 		var mockSku1 = createPersistedTestEntity('Sku', skuData1);
-		arrayAppend(expectResult, mockSku1);
 		
-		var skuData2 = {
-			skuID = createUUID()
+		var skuData2 = {//should be added
+			skuID = "",
+			options = [
+				{
+					optionID = mockOption3.getOptionID()
+				}
+			],
+			product = {
+				productID = mockProduct.getProductID()
+			}
 		};
 		var mockSku2 = createPersistedTestEntity('Sku', skuData2);
-		arrayAppend(expectResult, mockSku2);
 		
-		var skuData3 = {
-			skuID = ""
+		var skuData3 = {//should not be added
+			skuID = "",
+			product = {
+				productID = mockProduct.getProductID()
+			}
 		};
 		var mockSku3 = createPersistedTestEntity('Sku', skuData3);
-		arrayAppend(expectResult, mockSku3);
-		
-		var productData = {
-			productID = "",
-			skus = [
-				{
-					skuID = mockSku1.getSkuID()
-				},
-				{
-					skuID = mockSku2.getSkuID()
-				},
-				{
-					skuID = mockSku3.getSkuID()
-				}
-			]
-		};
-		var mockProduct = createPersistedTestEntity('Product', productData);
-		
-		var result = mockProduct.getSkus(sorted = true);
-		request.debug(arrayLen(result));
-		request.debug(Len(createUUID()));
-		request.debug(mockSku1.getSkuID());
-		request.debug(mockSku2.getSkuID());
-		request.debug(mockSku3.getSkuID());
-		assertEquals(expectResult, result);
+
+		var result = mockProduct.getSkus(sorted = true, fetchOptions = true);
+		assertTrue(arrayFind(result, mockSku1));
+		assertTrue(arrayFind(result, mockSku2));
+		assertFalse(arrayFind(result, mockSku3));
+		assertEquals(2, arrayLen(result));	
 	}
 	
 	
-	
-	public void function getProductTypeOptions_baseProductTypeExists_Test() {
-		var productTypeParentData = {
-			productTypeID = 
-				"444df2f9c7deaa1582e021e894c0e299" //subscription
-				//"444df313ec53a08c32d8ae434af5819a" //content access
-		};
-		var mockParentProductType = createPersistedTestEntity('ProductType', productTypeParentData);
-		
-		var productTypeData = {
-			productTypeID = 
-				"444df2f9c7deaa1582e021e894c0e299", //subscription
-				//"50cdfabbc57f7d103538d9e0e37f61e4", //gift card
-			parentProductType = {
-				productTypeID = mockParentProductType.getProductTypeID()
+	private any function createMockOption(required string optionGroupID ) {
+		var optionData1 = {
+			optionID = "",
+			optionGroup = {
+				optionGroupID = arguments.optionGroupID
 			}
-		};
-		var mockProductType = createPersistedTestEntity('ProductType', productTypeData);
-		
-		var productData = {
-			productID = "",
-			productType = mockProductType.getProductTypeID()
-		};
-		var mockProduct = createPersistedTestEntity('Product', productData);
-		
-		var result = mockProduct.getProductTypeOptions("subscription");
-		request.debug(arrayLen(result));
-		request.debug(result[1].name);
-		request.debug(result[1].value);
+		};			
+		return createPersistedTestEntity('Option', optionData1);
 	}
-	
-	public void function getProductTypeOptions_noBaseProductType_Test() {
-		var productTypeParentData = {
-			productTypeID = "444df313ec53a08c32d8ae434af5819a" //content access
+	/**
+	* @hint "Return mocked Product entity with properites you passed in.<br>If no argument, make it "". "
+	*
+	*/
+	private any function createMockProduct(string productTypeID) {
+		var productData = {
+			productID = ""
 		};
-		var mockParentProductType = createPersistedTestEntity('ProductType', productTypeParentData);
-		
+		if(len(arguments.productTypeID)){
+			productData.productType.productTypeID = arguments.productTypeID;
+		}
+		return createPersistedTestEntity('Product', productData);
+	}
+	/**
+	* @hint "Return mocked ProductType entity with properites you passed in<br>If only pass one argument, make the other one "". "
+	*
+	*/
+	private any function createMockProductType (string productID="", string parentProductTypeID="") {
 		var productTypeData = {
-			productTypeID = "50cdfabbc57f7d103538d9e0e37f61e4", //gift card
-			parentProductType = {
-				productTypeID = mockParentProductType.getProductTypeID()
-			}
+			productTypeID = ""			
 		};
-		var mockProductType = createPersistedTestEntity('ProductType', productTypeData);
 		
-		var productData = {
-			productID = "",
-			productType = mockProductType.getProductTypeID()
-		};
-		var mockProduct = createPersistedTestEntity('Product', productData);
+		if(len(arguments.productID)){
+			productTypeData.product.productID = arguments.productID;
+		}
+		if(len(arguments.parentProductTypeID)){
+			productTypeData.parentProductType.productTypeID = arguments.parentProductTypeID;
+		}
 		
-		var result = mockProduct.getProductTypeOptions();
-		request.debug(arrayLen(result));
-		request.debug(result[1].name);
-		request.debug(result[1].value);
+		return createPersistedTestEntity('ProductType', productTypeData);
 	}
 	
+	/**
+	* @hint "This function will return mockSku with properites you passed in <br>
+	* Make the argument "" if null "
+	*
+	*/
+	private any function createMockSku(required numeric code, string idOfOption, string idOfProduct) {
+		
+	}
+
+	public void function getProductTypeOptions_noArgument_Test() {
+		//testing the function without the argument, should return child-types below the mockProduct's baseProductType
+		
+		//mock a child product type
+		var mockProductType1 = createMockProductType("", '50cdfabbc57f7d103538d9e0e37f61e4');//parentProductType: gift-card
+		var mockProductType2 = createMockProductType("", '50cdfabbc57f7d103538d9e0e37f61e4');
+		var mockProductType3 = createMockProductType("", '50cdfabbc57f7d103538d9e0e37f61e4');
+		var mockProductType4 = createMockProductType("", '444df315a963bea00867567110d47728');//parentProductType: event
+		var mockProductType5 = createMockProductType("", mockProductType2.getProductTypeID());//parentProductType: mockProductType2
+		var mockProductType6 = createMockProductType("", mockProductType2.getProductTypeID());//parentProductType: mockProductType2
+		
+		var mockProduct = createMockProduct(mockProductType3.getProductTypeID());//mockProduct <-> mockProductType2
+		
+		var resultNoArgument = mockProduct.getProductTypeOptions();
+		
+		var resultValues = [];
+		for (i = 1; i <= arrayLen(resultNoArgument); i++) {
+			ArrayAppend(resultValues, resultNoArgument[i].value);
+		}
+		request.debug(resultNoArgument);
+		assertTrue(arrayFind(resultValues, mockProductType1.getProductTypeID()));
+		assertFalse(arrayFind(resultValues, mockProductType2.getProductTypeID()));//Won't return the one with child types
+		assertTrue(arrayFind(resultValues, mockProductType3.getProductTypeID()));
+		assertFalse(arrayFind(resultValues, mockProductType4.getProductTypeID()));//Won't return child of other baseType
+		assertTrue(arrayFind(resultValues, mockProductType5.getProductTypeID()));
+		assertTrue(arrayFind(resultValues, mockProductType6.getProductTypeID()));		
+	}
 	
+	public void function getProductTypeOptions_argumentSameWithProductType_Test() {
+		//testing the argument passed in, is same with mockProduct's baseProductType
+		
+		//mock a child product type
+		var mockProductType1 = createMockProductType("", '50cdfabbc57f7d103538d9e0e37f61e4');//parentProductType: gift-card
+		var mockProductType2 = createMockProductType("", '50cdfabbc57f7d103538d9e0e37f61e4');		
+		var mockProductType3 = createMockProductType("", '50cdfabbc57f7d103538d9e0e37f61e4');
+		var mockProductType4 = createMockProductType("", '444df315a963bea00867567110d47728');//parentProductType: event
+		
+		var mockProduct = createMockProduct(mockProductType2.getProductTypeID());
+		
+		var resultWithArgument = mockProduct.getProductTypeOptions("gift-card");
+		
+		var resultValues = [];
+		for (i = 1; i <= arrayLen(resultWithArgument); i++) {
+			ArrayAppend(resultValues, resultWithArgument[i].value);
+		}
+		assertTrue(arrayFind(resultValues, mockProductType1.getProductTypeID()));
+		assertTrue(arrayFind(resultValues, mockProductType2.getProductTypeID()));
+		assertTrue(arrayFind(resultValues, mockProductType3.getProductTypeID()));
+		assertFalse(arrayFind(resultValues, mockProductType4.getProductTypeID()));
+	}
 	
+	public void function getProductTypeOptions_argumentDifferentFromProductType_Test() {
+		//testing the argument passed in, is different with mockProduct's baseProductType, 
+		//so should only return the relative-type with the argument type
+		
+		//mock a child product type
+		var mockProductType1 = createMockProductType("", '50cdfabbc57f7d103538d9e0e37f61e4');//parentProductType: gift-card
+		var mockProductType2 = createMockProductType("", '50cdfabbc57f7d103538d9e0e37f61e4');		
+		var mockProductType3 = createMockProductType("", '50cdfabbc57f7d103538d9e0e37f61e4');
+		var mockProductType4 = createMockProductType("", '444df315a963bea00867567110d47728');//parentProductType: event
+		
+		var mockProduct = createMockProduct(mockProductType2.getProductTypeID());//associate mockProduct w/ mockProdouctType2
+		
+		var result = mockProduct.getProductTypeOptions("Event");
+
+		var resultValues = [];
+		for (i = 1; i <= arrayLen(result); i++) {
+			ArrayAppend(resultValues, result[i].value);
+		}
+		assertFalse(arrayFind(resultValues, mockProductType1.getProductTypeID()));
+		assertFalse(arrayFind(resultValues, mockProductType2.getProductTypeID()));
+		assertFalse(arrayFind(resultValues, mockProductType3.getProductTypeID()));
+		assertTrue(arrayFind(resultValues, mockProductType4.getProductTypeID()));
+	}
+
 	// ============ START: Non-Persistent Property Methods =================
 	/*
 	public void function getBaseProductType_ExistedSystemCode_Test() {
 		//testing if the productType already has a systemCode
-		var productTypeData = {
+		var productTypeData = { //same name Yuqing
 			productTypeID = "",
 			systemCode = "merchandise"
 		};
@@ -764,8 +843,94 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 public void function getQuantity() {
 	 	
 	 }
-	 
-/*	 public void function getBundleSkusSmartListTest() {
+/*
+	 public void function getPlacedOrderItemsSmartListTest() {
+	 	//mockProduct1 -> (Sku) -> MockOrderItem1 -> mockOrder1: ostNew
+	 	//			   -> (Sku) -> MockOrderItem2 -> mockOrder2: ostNotPlaced
+	 	//mockProduct2 -> (Sku) -> MockOrderItem3 -> mockOrder1: ostNew
+	 	
+	 	var productData1 = {
+			productID = ""
+		};
+		var mockProduct1 = createPersistedTestEntity('Product', productData1);
+		
+		var productData2 = {
+			productID = ""
+		};
+		var mockProduct2 = createPersistedTestEntity('Product', productData2);
+				
+		var orderItemData1 = {
+	 		orderItemID = "",
+	 		sku = {
+	 			skuID = "",
+	 			product = {
+	 				productID = mockProduct1.getProductID()
+	 			}
+	 		}
+	 	};
+	 	var mockOrderItem1 = createPersistedTestEntity('OrderItem', orderItemData1);
+	 	
+	 	var orderItemData2 = {
+	 		orderItemID = "",
+	 		sku = {
+	 			skuID = "",
+	 			product = {
+	 				productID = mockProduct1.getProductID()
+	 			}
+	 		}
+	 	};
+	 	var mockOrderItem2 = createPersistedTestEntity('OrderItem', orderItemData2);
+	 	
+	 	var orderItemData3 = {
+	 		orderItemID = "",
+	 		sku = {
+	 			skuID = "",
+	 			product = {
+	 				productID = mockProduct2.getProductID()
+	 			}
+	 		}
+	 	};
+	 	var mockOrderItem3 = createPersistedTestEntity('OrderItem', orderItemData3);
+	 	
+		var orderData1 = {
+			orderID = "",
+			orderStatusType = {
+				typeID = "444df2b5c8f9b37338229d4f7dd84ad1" //ostNew
+			},
+			orderItems = [
+				{
+					orderItemID = mockOrderItem1.getOrderItemID()
+				},
+				{
+					orderItemID = mockOrderItem3.getOrderItemID()
+				}
+			]
+		};
+		var mockOrder1 = createPersistedTestEntity('Order', orderData1);
+		
+		var orderData2 = {
+			orderID = "",
+			orderStatusType = {
+				typeID = "444df2b498de93b4b33001593e96f4be" //ostNotPlaced
+			},
+			orderItems = [
+				{
+					orderItemID = mockOrderItem2.getOrderItemID()
+				}
+			]
+		};
+		var mockOrder2 = createPersistedTestEntity('Order', orderData2);
+		
+	 	var result = mockProduct1.getPlacedOrderItemsSmartList().getRecords(refresh = true);
+	 	//testing the filter of productID
+	 	assertEquals(mockProduct1.getProductID(), result[1].getSku().getProduct().getProductID());
+		//testing the filter of orderStatusType
+	 	assertEquals(1, arrayLen(result));
+	 	assertEquals("ostNew", result[1].getOrder().getOrderStatusType().getSystemCode());
+	 	
+	 	
+	 }
+	 public void function getBundleSkusSmartListTest() {
 		var productData = {
 			productID = ""
 		};
@@ -780,14 +945,14 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		var mockSku1 = createPersistedTestEntity('Sku', skuData1);
 		
-		var skuData1 = {
+		var skuData2 = {
 			skuID = "",
 			bundleFlag = 0,
 			product = {
 				productID = mockProduct.getProductID()
 			}
 		};
-		var mockSku1 = createPersistedTestEntity('Sku', skuData1);
+		var mockSku2 = createPersistedTestEntity('Sku', skuData2);
 		
 		var result = mockProduct.getBundleSkusSmartList().getRecords(refresh = true);
 		//testing the bundleFlag filter
