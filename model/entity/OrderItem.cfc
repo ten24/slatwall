@@ -446,7 +446,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	//SKU PRICE OVERRIDE FOR QUANTITY BASED PRICING
 	public any function getSkuPrice() {
 		skuPrices = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(this.getSku().getSkuID(), this.getCurrencyCode(), this.getQuantity());
-		if(arrayLen(skuPrices) > 0){
+		if(!isNull(skuPrices) && arrayLen(skuPrices) > 0){
 			var prices = [];
 			for(var i=1; i <= arrayLen(skuPrices); i++){
 				ArrayAppend(prices, skuPrice[i].getPrice());

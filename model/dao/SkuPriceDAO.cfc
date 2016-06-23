@@ -49,35 +49,35 @@ Notes:
 component extends="HibachiDAO" accessors="true" output="false" {
 
 	public function getSkuPricesForSku (required string skuID){
-		return ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.skuID = :skuID", { skuID=arguments.skuID }, true );
+		return ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.sku.skuID = :skuID", { skuID=arguments.skuID }, true );
 	}
 
 	public function getSkuPricesForSkuByCurrencyCode (required string skuID, required string currencyCode){
-		return ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.skuID = :skuID AND sp.currencyCode = :currencyCode", { skuID=arguments.skuID, currencyCode=arguments.currencyCode }, true );
+		return ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.sku.skuID = :skuID AND sp.currencyCode = :currencyCode", { skuID=arguments.skuID, currencyCode=arguments.currencyCode }, true );
 	}
 
 	public function getBaseSkuPricesForSku (required string skuID){
-		return ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.skuID = :skuID AND sp.minQuantity is null AND sp.maxQuantity is null", { skuID=arguments.skuID }, true );
+		return ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.sku.skuID = :skuID AND sp.minQuantity is null AND sp.maxQuantity is null", { skuID=arguments.skuID }, true );
 	}
 
 	public function getBaseSkuPriceForSkuByCurrencyCode (required string skuID, required string currencyCode){
-		return ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.skuID = :skuID AND sp.minQuantity is null AND sp.maxQuantity is null AND currencyCode = :currencyCode", { skuID=arguments.skuID, currencyCode=arguments.currencyCode }, true );
+		return ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.sku.skuID = :skuID AND sp.minQuantity is null AND sp.maxQuantity is null AND currencyCode = :currencyCode", { skuID=arguments.skuID, currencyCode=arguments.currencyCode }, true );
 	}
 
 	public function getSkuPricesForSkuAndQuantity(required string skuID, required numeric quantity){
-		return  ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.skuID = :skuID AND sp.minQuantity <= :quantity AND sp.maxQuantity >= :quantity", { skuID=arguments.skuID, quantity=arguments.quantity }, true );
+		return  ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.sku.skuID = :skuID AND sp.minQuantity <= :quantity AND sp.maxQuantity >= :quantity", { skuID=arguments.skuID, quantity=arguments.quantity }, true );
 	}
 
 	public function getSkuPricesForSkuCurrencyCodeAndQuantity(required string skuID, required string currencyCode, required numeric quantity){
-		return  ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.skuID = :skuID AND sp.minQuantity <= :quantity AND sp.maxQuantity >= :quantity AND currencyCode = :currencyCode", { skuID=arguments.skuID, currencyCode=arguments.currencyCode, quantity=arguments.quantity }, true );
+		return  ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.sku.skuID = :skuID AND sp.minQuantity <= :quantity AND sp.maxQuantity >= :quantity AND currencyCode = :currencyCode", { skuID=arguments.skuID, currencyCode=arguments.currencyCode, quantity=arguments.quantity }, true );
 	}
 
 	public function getSkuPricesForSkuAndQuantityRange (required string skuID, required numeric minQuantity, required numeric maxQuantity ){
-		return ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.skuID = :skuID AND sp.minQuantity = :minQuantity AND sp.maxQuantity = :maxQuantity", { skuID=arguments.skuID, minQuantity=arguments.minQuantity, maxQuantity=arguments.maxQuantity }, true );
+		return ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.sku.skuID = :skuID AND sp.minQuantity = :minQuantity AND sp.maxQuantity = :maxQuantity", { skuID=arguments.skuID, minQuantity=arguments.minQuantity, maxQuantity=arguments.maxQuantity }, true );
 	}
 
 	public function getSkuPricesForSkuAndQuantityRangeByCurrencyCode (required string skuID, required numeric minQuantity, required numeric maxQuantity, required string currencyCode){
-		return ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.skuID = :skuID AND sp.minQuantity = :minQuantity AND sp.maxQuantity = :maxQuantity AND sp.currencyCode = :currencyCode", { skuID=arguments.skuID, minQuantity=arguments.minQuantity, maxQuantity=arguments.maxQuantity, currencyCode=arguments.currencyCode }, true );
+		return ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.sku.skuID = :skuID AND sp.minQuantity = :minQuantity AND sp.maxQuantity = :maxQuantity AND sp.currencyCode = :currencyCode", { skuID=arguments.skuID, minQuantity=arguments.minQuantity, maxQuantity=arguments.maxQuantity, currencyCode=arguments.currencyCode }, true );
 	}
 
 }
