@@ -59,14 +59,7 @@ Notes:
 	<cfparam name="attributes.value" type="any" default="" />
 	<cfparam name="attributes.valueOptions" type="array" default="#arrayNew(1)#" />		<!--- Used for select, checkbox group, multiselect --->
 	<cfparam name="attributes.fieldAttributes" type="string" default="" />
-	
-	<cfif !structKeyExists(attributes,'hibachiScope')>
-		<cfif !structKeyExists(request,'context')>
-			<cfset attributes.hibachiScope = request.slatwallScope/>
-		<cfelse>
-			<cfset attributes.hibachiScope = request.context.fw.getHibachiScope()/>
-		</cfif>
-	</cfif>
+	<cfparam name="attributes.hibachiScope" type="any" default="#request.slatwallScope#" />
 	
 	<!---
 		attributes.type have the following options:
