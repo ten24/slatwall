@@ -69,6 +69,7 @@ component  extends="HibachiService" accessors="true" {
 				currentFormResponseID = row["formResponseID"];
 				responseStruct = {};
 				responseStruct["formResponseID"] = row["formResponseID"];
+				responseStruct["createdDateTime"] = row["formResponsePostedDateTime"];
 			}
 			responseStruct[row["questionID"]] = row["response"];
     	}
