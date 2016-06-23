@@ -153,7 +153,11 @@ component accessors="true" output="false" displayname="MerchanteSolutions" imple
 	private any function postRequest(required struct requestData){
 		var httpRequest = new http();
 		httpRequest.setMethod("POST");
-		httpRequest.setUrl(setting("apiUrl"));
+		if(setting('testModeFlag')) {
+			httpRequest.setUrl(setting("testApiUrl"));
+		else {
+			httpRequest.setUrl(setting("apiUrl"));
+		}
 		httpRequest.setTimeout(variables.timeout);
 		httpRequest.setResolveurl(false);
 		for(var key in requestData){
