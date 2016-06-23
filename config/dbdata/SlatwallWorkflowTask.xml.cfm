@@ -2,13 +2,13 @@
 <Table tableName="SwWorkflowTask">
 	<Columns>
 		<column name="workflowTaskID" fieldtype="id" />
-		<column name="activeFlag" />
-		<column name="taskName" />
-		<column name="taskConditionsConfig" />
-		<column name="workflowID">
+		<column name="activeFlag" update="false" />
+		<column name="taskName" update="false" />
+		<column name="taskConditionsConfig" update="false" />
+		<column name="workflowID" update="false" />
 	</Columns>
 	<Records>
-		<Record workflowTaskID="4028289a5507d1dc01557e2619fa0814" activeFlag="1" taskName="New Form Response" taskConditionsConfig="{"filterGroups":[{"filterGroup":[]}],"baseEntityAlias":"FormResponse","baseEntityName":"FormResponse"}" workflowID="4028289a5507d1dc01557e0718b30808" />
+		<Record workflowTaskID="4028289a5507d1dc01557e2619fa0814" activeFlag="1" taskName="New Form Response" taskConditionsConfig="{&quot;filterGroups&quot;:[{&quot;filterGroup&quot;:[]}],&quot;baseEntityAlias&quot;:&quot;FormResponse&quot;,&quot;baseEntityName&quot;:&quot;FormResponse&quot;}" workflowID="4028289a5507d1dc01557e0718b30808" />
 	</Records>
 </Table>
 
