@@ -183,12 +183,14 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 			// Check to see if this property has a key in the data that was passed in
 			if(
-				structKeyExists(arguments.data, currentProperty.name) && (!structKeyExists(currentProperty, "hb_populateEnabled") || currentProperty.hb_populateEnabled neq false) && (
+				structKeyExists(arguments.data, currentProperty.name) && (!structKeyExists(currentProperty, "hb_populateEnabled") || currentProperty.hb_populateEnabled neq false) && 
+				(
 					!isPersistent()
 					||
 					(getHibachiScope().getPublicPopulateFlag() && structKeyExists(currentProperty, "hb_populateEnabled") && currentProperty.hb_populateEnabled == "public")
 					||
-					getHibachiScope().authenticateEntityProperty( crudType="update", entityName=this.getClassName(), propertyName=currentProperty.name))) {
+					getHibachiScope().authenticateEntityProperty( crudType="update", entityName=this.getClassName(), propertyName=currentProperty.name))
+			) {
 
 				// ( COLUMN )
 				if( (!structKeyExists(currentProperty, "fieldType") || currentProperty.fieldType == "column") && isSimpleValue(arguments.data[ currentProperty.name ]) && !structKeyExists(currentProperty, "hb_fileUpload") ) {

@@ -14,3 +14,4 @@ logs/
 WEB-INF
 .rdsTempFiles/
 node_modules
+docker-compose.yml

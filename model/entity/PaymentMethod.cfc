@@ -207,7 +207,7 @@ component entityname="SlatwallPaymentMethod" table="SwPaymentMethod" persistent=
 					if(listFindNoCase(optionsSL.getRecords()[i].getIntegrationCFC("payment").getPaymentMethodTypes(), getPaymentMethodType())) {
 						arrayAppend(variables.paymentIntegrationOptions, {name=optionsSL.getRecords()[i].getIntegrationName(), value=optionsSL.getRecords()[i].getIntegrationID()});	
 					}
-				}	
+				}
 			}
 		}
 
