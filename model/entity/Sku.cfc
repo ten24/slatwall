@@ -706,9 +706,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 						variables.currencyDetails[ thisCurrency.getCurrencyCode() ].skuPriceID = baseSkuPriceForCurrencyCode.getSkuPriceID();
 
 					}
-					for(var i=0; i < arrayLen(skuPrices); i++){
-
-					}
 					// Use a conversion mechinism
 					if(!structKeyExists(variables.currencyDetails[ thisCurrency.getCurrencyCode() ], "price")) {
 						if(!isNull(getRenewalPrice())) {
