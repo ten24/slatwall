@@ -64,7 +64,7 @@
         "type": "name",
         "value": "locationName"
       },
-      "text": "lucknow"
+      "text": "patna"
     },
     {
       "type": "clickElement",
@@ -93,7 +93,7 @@
         "type": "name",
         "value": "locationConfigurationName"
       },
-      "text": "helloworld"
+      "text": "jiuy"
     },
     {
       "type": "setElementText",
@@ -101,7 +101,7 @@
         "type": "name",
         "value": "locationConfigurationCapacity"
       },
-      "text": "21"
+      "text": "33"
     },
     {
       "type": "clickElement",
@@ -151,12 +151,12 @@
         "type": "name",
         "value": "product.productName"
       },
-      "text": "BihariShaddi"
+      "text": "jiuyght"
     },
     {
       "type": "storeEval",
-      "script": "return 'sunny'+Math.floor(Math.random()*1000000)",
-      "variable": "uniqueCode"
+      "script": "return 'sunny'+Math.floor(Math.random()*100000)",
+      "variable": "code"
     },
     {
       "type": "setElementText",
@@ -164,7 +164,7 @@
         "type": "name",
         "value": "product.productCode"
       },
-      "text": "${uniqueCode}"
+      "text": "${code}"
     },
     {
       "type": "setElementText",
@@ -172,7 +172,7 @@
         "type": "name",
         "value": "price"
       },
-      "text": "100"
+      "text": "34"
     },
     {
       "type": "clickElement",
@@ -184,8 +184,15 @@
     {
       "type": "clickElement",
       "locator": {
-        "type": "link text",
-        "value": "24"
+        "type": "xpath",
+        "value": "//table[@class='ui-datepicker-calendar']//a[.='25']"
+      }
+    },
+    {
+      "type": "clickElement",
+      "locator": {
+        "type": "xpath",
+        "value": "//div[@id='ui-datepicker-div']//button[.='Done']"
       }
     },
     {
@@ -198,8 +205,15 @@
     {
       "type": "clickElement",
       "locator": {
-        "type": "link text",
-        "value": "29"
+        "type": "xpath",
+        "value": "//table[@class='ui-datepicker-calendar']//a[.='29']"
+      }
+    },
+    {
+      "type": "clickElement",
+      "locator": {
+        "type": "xpath",
+        "value": "//div[@id='ui-datepicker-div']//button[.='Done']"
       }
     },
     {
@@ -218,7 +232,7 @@
     },
     {
       "type": "verifyTextPresent",
-      "text": "${uniqueCode}"
+      "text": "${code}"
     }
   ],
   "data": {
