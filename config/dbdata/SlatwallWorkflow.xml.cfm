@@ -2,7 +2,7 @@
 <Table tableName="SwWorkflow">
 	<Columns>
 		<column name="workflowID" fieldtype="id" />
-		<column name="activeFlag" />
+		<column name="activeFlag" datatype="bit" />
 		<column name="workflowName" />
 		<column name="workflowObject" />
 	</Columns>

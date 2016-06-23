@@ -2,7 +2,7 @@
 <Table tableName="SwWorkflowTask">
 	<Columns>
 		<column name="workflowTaskID" fieldtype="id" />
-		<column name="activeFlag" update="false" />
+		<column name="activeFlag" update="false" datatype="bit" />
 		<column name="taskName" update="false" />
 		<column name="taskConditionsConfig" update="false" />
 		<column name="workflowID" update="false" />
