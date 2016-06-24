@@ -149,6 +149,10 @@ class CollectionConfig {
         this.keywords = jsonCollection.keywords;
         return this;
     };
+    
+    public clone= () =>{
+        return this.newCollectionConfig(this.baseEntityName, this.baseEntityAlias).loadJson(JSON.parse(JSON.stringify(this.getCollectionConfig())));
+    }
 
     public loadFilterGroups= (filterGroupsConfig:Array<any>=[{filterGroup: []}]):CollectionConfig =>{
         this.filterGroups = filterGroupsConfig;
