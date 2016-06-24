@@ -27,7 +27,6 @@ class SWDeleteSkuPriceModalLauncherController{
         skuPricesToDelete.then(
             (skuPrices)=>{  
                 for(var i = 0; i < skuPrices.length; i++){
-                    console.log("spp",skuPrices[i]);
                     deletePromises.push(skuPrices[i].$$delete());
                 }
             },
