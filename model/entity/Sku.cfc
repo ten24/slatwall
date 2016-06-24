@@ -469,14 +469,16 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 	public any function getPriceByCurrencyCode( required string currencyCode, numeric quantity ) {
 		if(structKeyExists(arguments, "quantity")){
-			skuPrices = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(this.getSku().getSkuID(), this.getCurrencyCode(), this.getQuantity());
-			if(!isNull(skuPrices) && arrayLen(skuPrices) > 0){
+			skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(this.getSkuID(), currencyCode, quantity);
+			if(!isNull(skuPriceResults) && isArray(skuPriceResults) && arrayLen(skuPriceResults) > 0){
 				var prices = [];
-				for(var i=1; i <= arrayLen(skuPrices); i++){
-					ArrayAppend(prices, skuPrice[i].getPrice());
+				for(var i=1; i <= arrayLen(skuPriceResults); i++){
+					ArrayAppend(prices, skuPriceResults[i].getPrice());
 				}
 				ArraySort(prices, "numeric","asc");
 				return prices[1];
+			} else if (!isNull(skuPriceResults) && !isNull(skuPriceResults.getPrice())){
+				return skuPriceResults.getPrice();
 			}
 		}
     	if(structKeyExists(getCurrencyDetails(), arguments.currencyCode)) {

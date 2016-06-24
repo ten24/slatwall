@@ -1691,7 +1691,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(arguments.order.getOrderStatusType().getSystemCode() == "ostNotPlaced") {
 				for(var orderItem in arguments.order.getOrderItems()){
 					var skuPrice = val(orderItem.getSkuPrice());
-					var SkuPriceByCurrencyCode = val(orderItem.getSku().getPriceByCurrencyCode(orderItem.getCurrencyCode()));
+					var SkuPriceByCurrencyCode = val(orderItem.getSku().getPriceByCurrencyCode(orderItem.getCurrencyCode(), orderItem.getQuantity()));
  					if(listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) && skuPrice != SkuPriceByCurrencyCode){
  						if(!orderItem.getSku().getUserDefinedPriceFlag()) {
  							orderItem.setPrice(SkuPriceByCurrencyCode);
