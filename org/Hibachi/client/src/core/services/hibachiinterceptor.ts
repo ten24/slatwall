@@ -174,7 +174,7 @@ class HibachiInterceptor implements IInterceptor{
 					//open dialog
 					this.dialogService.addPageDialog(this.hibachiPathBuilder.buildPartialsPath('preprocesslogin'),{} );
 				}else if(rejection.data.messages[0].message === 'invalid_token'){
-                    return $http.get(this.baseUrl+'/index.cfm/api/auth/login').then((loginResponse:IHibachiInterceptorPromise<any>)=>{
+                    return $http.get(this.baseUrl+'?slataction=api:main.login').then((loginResponse:IHibachiInterceptorPromise<any>)=>{
                         if(loginResponse.status === 200){
                         this.localStorageService.setItem('token',loginResponse.data.token);
                             rejection.config.headers = rejection.config.headers || {};

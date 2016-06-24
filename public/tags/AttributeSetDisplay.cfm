@@ -55,7 +55,7 @@ Notes:
 	<cfparam name="attributes.edit" type="boolean" default=false />
 	<cfparam name="attributes.fieldNamePrefix" type="string" default="" />
 	<cfparam name="attributes.entity" type="any" default="" />
-
+	
 	<cfset thisTag.attributeSmartList = attributes.attributeSet.getAttributesSmartList() />
 	<cfset thisTag.attributeSmartList.addFilter('activeFlag', 1) />
 	<cfset thisTag.attributeSmartList.addOrder("sortOrder|ASC") />
@@ -72,6 +72,7 @@ Notes:
 		<cfset fdAttributes.fieldClass = "" />
 		<cfif !isNull(attribute.getRequiredFlag()) && isBoolean(attribute.getRequiredFlag()) && attribute.getRequiredFlag()>
 			<cfset fdAttributes.fieldClass = listAppend(fdAttributes.fieldClass, "required", " ") />
+			<cfset fdAttributes.requiredFlag = attribute.getRequiredFlag() />
 		</cfif>
 
 		<!--- Setup Value --->
@@ -116,7 +117,7 @@ Notes:
 			<cfset fdAttributes.removeLink = removeLink/>
 		</cfif>
 
-			<hb:HibachiFieldDisplay attributeCollection="#fdAttributes#" />
+			<sw:FieldDisplay attributeCollection="#fdAttributes#" />
 
 	</cfloop>
 </cfif>
