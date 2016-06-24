@@ -432,7 +432,7 @@ class HibachiService{
 
 	login = (emailAddress,password) => {
 		var deferred = this.$q.defer();
-		var urlString = this.appConfig.baseURL+'?slataction=auth:main.login';
+		var urlString = this.appConfig.baseURL+'?slataction=api:main.login';
 		var params:any= {
 			emailAddress:emailAddress,
 			password:password
