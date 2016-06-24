@@ -10,6 +10,8 @@ import {PublicService} from "./services/publicservice";
 import {UtilityService} from "./services/utilityservice";
 import {SelectionService} from "./services/selectionservice";
 import {ObserverService} from "./services/observerservice";
+import {HistoryService} from "./services/historyservice";
+import {ScopeService} from "./services/scopeservice"; 
 import {FormService} from "./services/formservice";
 import {ExpandableService} from "./services/expandableservice";
 import {MetaDataService} from "./services/metadataservice";
@@ -134,6 +136,8 @@ var coremodule = angular.module('hibachi.core',[
 .constant('corePartialsPath','core/components/')
 //services
 .service('publicService',PublicService)
+.service('historyService',HistoryService)
+.service('scopeService',ScopeService)
 .service('utilityService',UtilityService)
 .service('selectionService',SelectionService)
 .service('observerService',ObserverService)

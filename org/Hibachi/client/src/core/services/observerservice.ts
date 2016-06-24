@@ -15,7 +15,10 @@ import {UtilityService} from "./utilityservice";
 class ObserverService extends BaseService{
     private observers;
     //@ngInject
-    constructor(private utilityService){
+    constructor(
+        private historyService, 
+        private utilityService
+    ){
         /**
          * @ngdoc property
          * @name ObserverService#observers
@@ -108,13 +111,17 @@ class ObserverService extends BaseService{
         });
       }
     }
-	notifyById = (event:string, eventId:string ,parameters:any):void => {
+    notifyById = (event:string, eventId:string,parameters:any):void => {
         for(var id in this.observers[event]) {
             if(id != eventId) continue;
             angular.forEach(this.observers[event][id], function (callback) {
                 callback(parameters);
             });
         }
+    }
+    notifyAndRecord = (event:string, parameters:any):void => { 
+      this.notify(event, parameters); 
+      this.historyService.recordHistory(event,parameters,true);
     }
 }
 export {ObserverService};

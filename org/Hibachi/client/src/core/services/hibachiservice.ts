@@ -126,7 +126,12 @@ class HibachiService{
 		return entityName;
 
 	};
-
+	//helper method to inflate a new entity with data
+	populateEntity = (entityName, data)=>{ 
+		var newEntity = this.newEntity(entityName); 
+		angular.extend(newEntity.data,data); 
+		return newEntity;
+	}
 	//service method used to transform collection data to collection objects based on a collectionconfig
 	populateCollection = (collectionData,collectionConfig) =>{
 		//create array to hold objects
@@ -190,7 +195,11 @@ class HibachiService{
 		}
 	};
 	newEntity= (entityName) =>{
-		return new this._jsEntities[entityName];
+		if(angular.isDefined(this._jsEntities[entityName])){
+			return new this._jsEntities[entityName];
+		} else {
+			throw("HibachiService could not find an entity named: " + entityName); 
+		}
 	};
 	/*basic entity getter where id is optional, returns a promise*/
 	getEntity= (entityName:string, options:any) => {
