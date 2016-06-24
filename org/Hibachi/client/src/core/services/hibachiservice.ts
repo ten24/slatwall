@@ -107,7 +107,6 @@ class HibachiService{
 		if(!entityName){
 			throw('No entity name was supplied to getLastEntityNameInPropertyIdentifier in hibachi service.');
 		}
-		console.log("white whale", propertyIdentifier);
 		//strip alias if it exists
 		if(propertyIdentifier.charAt(0) === '_'){
 			propertyIdentifier = this.utilityService.listRest(propertyIdentifier,'.');
