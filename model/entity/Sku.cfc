@@ -467,7 +467,18 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return getService("priceGroupService").getRateForSkuBasedOnPriceGroup(sku=this, priceGroup=arguments.priceGroup);
 	}
 
-	public any function getPriceByCurrencyCode( required string currencyCode ) {
+	public any function getPriceByCurrencyCode( required string currencyCode, numeric quantity ) {
+		if(structKeyExists(arguments, "quantity")){
+			skuPrices = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(this.getSku().getSkuID(), this.getCurrencyCode(), this.getQuantity());
+			if(!isNull(skuPrices) && arrayLen(skuPrices) > 0){
+				var prices = [];
+				for(var i=1; i <= arrayLen(skuPrices); i++){
+					ArrayAppend(prices, skuPrice[i].getPrice());
+				}
+				ArraySort(prices, "numeric","asc");
+				return prices[1];
+			}
+		}
     	if(structKeyExists(getCurrencyDetails(), arguments.currencyCode)) {
     		return getCurrencyDetails()[ arguments.currencyCode ].price;
     	}
@@ -1003,7 +1014,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return getPrice();
 	}
 
-	public any function getSalePriceByCurrencyCode(required string currencyCode) {
+	public any function getSalePriceByCurrencyCode(required string currencyCode, numeric quantity) {
 		if(structKeyExists(getSalePriceDetailsByCurrencyCode(arguments.currencyCode), "salePrice")) {
 			return getSalePriceDetailsByCurrencyCode(arguments.currencyCode)[ "salePrice"];
 		}

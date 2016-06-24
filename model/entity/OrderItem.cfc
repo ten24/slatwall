@@ -443,23 +443,6 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		return precisionEvaluate(getTaxAmount() + getExtendedPriceAfterDiscount());
 	}
 
-	//SKU PRICE OVERRIDE FOR QUANTITY BASED PRICING
-	public any function getSkuPrice() {
-		skuPrices = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(this.getSku().getSkuID(), this.getCurrencyCode(), this.getQuantity());
-		if(!isNull(skuPrices) && arrayLen(skuPrices) > 0){
-			var prices = [];
-			for(var i=1; i <= arrayLen(skuPrices); i++){
-				ArrayAppend(prices, skuPrice[i].getPrice());
-			}
-			ArraySort(prices, "numeric","asc");
-			return prices[1];
-		}
-		if(structKeyExists(variables, "skuPrice")){
-			return variables.skuPrice;
-		}
-
-	}
-
 	public any function getSalePrice() {
 		if(!structKeyExists(variables, "OrderItemSalePrice")) {
 			variables.OrderItemSalePrice = getService("promotionService").getSalePriceDetailsForOrderItem(orderItem=this);
