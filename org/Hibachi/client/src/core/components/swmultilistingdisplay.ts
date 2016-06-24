@@ -55,6 +55,7 @@ class SWMultiListingDisplayController{
     public processObjectProperties;
     public recordAddAction;
     public recordDetailAction;
+    public recordDetailActionProperty;
     public recordEditAction;
     public recordDeleteAction;
     public recordProcessButtonDisplayFlag;
