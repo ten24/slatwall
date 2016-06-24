@@ -68,7 +68,6 @@ Notes:
 		data-record-edit-action="admin:entity.editcontent"
 		data-is-angular-route="false"
 		data-get-child-count="true"
- 		data-paginator="true"
 	>
 		<sw-listing-column data-property-identifier="title" tdclass="primary" />
 		<sw-listing-column data-property-identifier="site.siteName" />
