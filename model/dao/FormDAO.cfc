@@ -64,6 +64,7 @@ Notes:
 				new map(
 						av.attributeValue as response,
 						av.formResponse.formResponseID as formResponseID,
+						av.formResponse.createdDateTime as formResponsePostedDateTime,
 						av.attribute.attributeID as questionID,
 						av.attribute.attributeName as question
 				)
@@ -74,10 +75,10 @@ Notes:
 			WHERE
 				av.formResponse.form.formID=:formid
 			ORDER BY
-				av.formResponse.formResponseID ASC
+				av.formResponse.createdDateTime DESC
 		" />
 		<cfif structKeyExists(arguments, "numberOfQuestions") && structKeyExists(arguments, "currentPage") && structKeyExists(arguments, "pageShow")>
-			<cfset var maxResults = arguments.pageShow * arguments.numberOfQuestions />
+			<cfset var maxResults = arguments.pageShow * (arguments.numberOfQuestions - 1) />
 			<cfset var offset = (arguments.currentPage - 1) * maxResults />
 			<cfreturn ormExecuteQuery(HQL, {formid=arguments.formID}, false, {offset=offset, maxresults=maxResults}) />
 		</cfif>
