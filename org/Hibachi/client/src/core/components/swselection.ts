@@ -35,7 +35,6 @@ class SWSelectionController{
     private updateSelectValue = (res)=>{
         if(this.isRadio && (res.action == 'check')){
             this.toggleValue == this.selection;
-            console.log("selectionid", this.selection)
         }else if(res.action == 'clear'){
             this.toggleValue = false;
         }else if(res.action == 'selectAll'){
