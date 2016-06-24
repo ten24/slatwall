@@ -53,6 +53,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		variables.service = request.slatwallScope.getService("hibachiUtilityService");
 	}
+	
+	public void function hibachiHTMLEditFormatTest(){
+		var angularTamperableString = 'this is a string where it is {{vulnerable}}';
+		var resultString = variables.service.hibachiHTMLEditFormat(angularTamperableString);
+		//adding ascii character to prevent execution of angular templates
+		assertEquals(resultString,'this is a string where it is {'&chr(002)&'{'&chr(002)&'vulnerable}}');
+	}
 			
 	public void function getTemplateKeysTest() {
 		var mockTemplate = '<div>${anything}</div>${anotherTemplateKey},${onemoreTemplateKey}';

@@ -1427,18 +1427,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// As long as the amount received for this orderFulfillment is within the treshold of the auto fulfillment setting
 		if(
-			arguments.orderFulfillment.getFulfillmentMethodType() == "auto"
-            || (
-                !isNull(arguments.orderFulfillment.getFulfillmentMethod().getAutoFulfillFlag()) &&
-                		arguments.orderFulfillment.getFulfillmentMethod().getAutoFulfillFlag()
-            )
-			&& (
-				order.getTotal() == 0
-				|| arguments.orderFulfillment.getFulfillmentMethod().setting('fulfillmentMethodAutoMinReceivedPercentage') <= precisionEvaluate( order.getPaymentAmountReceivedTotal() * 100 / order.getTotal() )
-			)
-			&& (
-				arguments.orderFulfillment.hasGiftCardRecipients()
-			)
+			arguments.orderFulfillment.isAutoFulfillmentReadyToBeFulfilled()
 		){
 
 			// Setup the processData
@@ -1727,14 +1716,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		return arguments.order;
 	}
-	
+
 	public numeric function getAmountToBeCapturedByCaptureAuthorizationPayments(required any orderDelivery, required any processObject){
 		var amountToBeCaptured = arguments.processObject.getCapturableAmount();
 		for(var orderPayment in arguments.processObject.getOrder().getOrderPayments()) {
 			if(
-				orderPayment.getStatusCode() == 'opstActive' 
-				&& orderPayment.getPaymentMethod().getPaymentMethodType() == "creditCard" 
-				&& orderPayment.getAmountUnreceived() > 0 
+				orderPayment.getStatusCode() == 'opstActive'
+				&& orderPayment.getPaymentMethod().getPaymentMethodType() == "creditCard"
+				&& orderPayment.getAmountUnreceived() > 0
 				&& amountToBeCaptured > 0
 			) {
 				var transactionData = {
@@ -1755,9 +1744,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		return amountToBeCaptured;
 	}
-	
-	
-	
+
+
+
 	public any function addOrderFulfillmentItemsToOrderDelivery(required any orderDelivery, required any processObject){
 		// Loop over delivery items from processObject and add them with stock to the orderDelivery
 		for(var i=1; i<=arrayLen(arguments.processObject.getOrderFulfillment().getOrderFulfillmentItems()); i++) {
@@ -1779,33 +1768,33 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		return arguments.orderDelivery;
 	}
-	
+
 	public any function addOrderDeliveryItemToOrderDeliveryStruct(
-		required any orderDelivery, 
+		required any orderDelivery,
 		required struct orderDeliveryItemStuct
 	){
 		// Create a new orderDeliveryItem
 		var newOrderDeliveryItem = this.newOrderDeliveryItem();
 
 		// Populate with the data
-		newOrderDeliveryItem.setOrderItem( 
-			this.getOrderItem( 
-				orderDeliveryItemStuct.orderItem.orderItemID 
-			) 
+		newOrderDeliveryItem.setOrderItem(
+			this.getOrderItem(
+				orderDeliveryItemStuct.orderItem.orderItemID
+			)
 		);
 		newOrderDeliveryItem.setQuantity( orderDeliveryItemStuct.quantity );
-		
+
 		var stock = getStockService().getStockBySkuAndLocation(
-			sku=newOrderDeliveryItem.getOrderItem().getSku(), 
+			sku=newOrderDeliveryItem.getOrderItem().getSku(),
 			location=arguments.orderDelivery.getLocation()
 		);
-		newOrderDeliveryItem.setStock( 
+		newOrderDeliveryItem.setStock(
 			stock
 		);
 		newOrderDeliveryItem.setOrderDelivery( arguments.orderDelivery );
 		return arguments.orderDelivery;
 	}
-	
+
 	public any function addOrderDeliveryItemsToOrderDelivery(required any orderDelivery, required any processObject){
 		// Loop over delivery items from processObject and add them with stock to the orderDelivery
 		for(var i=1; i<=arrayLen(arguments.processObject.getOrderDeliveryItems()); i++) {
@@ -1814,7 +1803,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		return arguments.orderDelivery;
 	}
-	
+
 	// Process: Order Delivery
 	public any function processOrderDelivery_create(required any orderDelivery, required any processObject, struct data={}) {
 
@@ -1839,15 +1828,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			) {
 				arguments.orderDelivery.setShippingMethod( arguments.processObject.getShippingMethod() );
 				arguments.orderDelivery.setShippingAddress( arguments.processObject.getShippingAddress().copyAddress( saveNewAddress=true ) );
-			
+
 				// Setup the tracking number if we have it
 				if(
-					!isNull(arguments.processObject.getTrackingNumber()) 
+					!isNull(arguments.processObject.getTrackingNumber())
 					&& len(arguments.processObject.getTrackingNumber())
 				) {
 					arguments.orderDelivery.setTrackingNumber(arguments.processObject.getTrackingNumber());
 				}
-				
+
 				if(
 					!isNull(arguments.processObject.getContainerLabel())
 					&& len(arguments.processObject.getContainerLabel())
@@ -1855,7 +1844,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					arguments.orderDelivery.setContainerLabel(arguments.processObject.getContainerLabel());
 				}
 			}
-			
+
 			// If the orderFulfillmentMethod is auto, and there aren't any delivery items then we can just fulfill all that are "undelivered"
 			if(
 				(
@@ -1864,12 +1853,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					!isNull(arguments.orderDelivery.getFulfillmentMethod().getAutoFulfillFlag())
 					&& arguments.orderDelivery.getFulfillmentMethod().getAutoFulfillFlag()
 					)
-				) 
+				)
 				&& !arrayLen(arguments.processObject.getOrderDeliveryItems())
 				&& getSettingService().getSettingValue("skuGiftCardAutoGenerateCode")
 			) {
 				addOrderFulfillmentItemsToOrderDelivery(arguments.orderDelivery,arguments.processObject);
-				
+
 			} else {
 				addOrderDeliveryItemsToOrderDelivery(arguments.orderDelivery,arguments.processObject);
 			}
@@ -2283,7 +2272,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					stockReceiverItem.setStock( stock );
 					stockReceiverItem.setOrderItem( orderReturnItem );
 					stockReceiverItem.setStockReceiver( stockReceiver );
-					
+
 				}
 				//create a stock adjustment with a comment for items that were added back in
 				if(arguments.processObject.getStockLossFlag()){
@@ -2298,7 +2287,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						stockAdjustment=newStockAdjustment
 					};
 					newStockAdjustment = getStockService().processStockAdjustment(newStockAdjustment,addStockAdjustmentItemData,'addStockAdjustmentItem');
-					
+
 					var comment = getCommentService().newComment();
 					comment.setPublicFlag(false);
 					comment.setComment(getHibachiScope().getRbKey('define.stockloss'));
@@ -2308,14 +2297,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					commentRelationship.setStockAdjustment(newStockAdjustment);
 					commentRelationship = getCommentService().saveCommentRelationship(commentRelationship);
 					comment = getCommentService().saveComment(comment,{});
-					
+
 					newStockAdjustment = getStockService().saveStockAdjustment(newStockAdjustment);
 					arrayAppend(stockAdjustments,newStockAdjustment);
 				}
 
 			}
 		}
-		
+
 
 		// Loop over the stockReceiverItems to remove subscriptions and contentAccess
 		for(var stockReceiverItem in stockReceiver.getStockReceiverItems()) {
@@ -2339,7 +2328,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			}
 		}
-		
+
 		stockReceiver = getStockService().saveStockReceiver( stockReceiver );
 
 		for(var accountLoyalty in arguments.orderReturn.getOrder().getAccount().getAccountLoyalties()) {
@@ -2349,15 +2338,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Call the process method with 'orderItemReceived' as context
 			getAccountService().processAccountLoyalty(accountLoyalty, orderItemReceivedData, 'orderItemReceived');
 		}
-		
+
 		for(var stockAdjustment in stockAdjustments) {
 			getStockService().processStockAdjustment(stockAdjustment,{},'processAdjustment');
 		}
-		
+
 		// Update the orderStatus
 		this.processOrder(arguments.orderReturn.getOrder(), {updateItems=true}, 'updateStatus');
-		
-		
+
+
 
 		return arguments.orderReturn;
 	}

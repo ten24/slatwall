@@ -95,7 +95,7 @@ Notes:
 		<cfset var rs = "" />
 
 		<cfquery name="rs">
-			SELECT DISTINCT
+			SELECT DISTINCT 
     				og.optionGroupID ogID
 			FROM SwOptionGroup og
 			    Left Join SwOption o on og.optionGroupID = o.optionGroupID

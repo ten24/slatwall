@@ -116,7 +116,7 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 	private any function getShippingProcessShipmentResponseBean(struct jsonResponse){
 		var responseBean = new Slatwall.model.transient.fulfillment.ShippingProcessShipmentResponseBean();
 		responseBean.setData(arguments.jsonResponse);
-		if(isDefined('responseBean.data.ShipmentResponse.Fault')) {
+		if(structKeyExists(responseBean.data,'Fault')) {
 			addMessage(messageName="communicationError", message="An unexpected communication error occured, please notify system administrator.");
 			// If XML fault then log error
 			addError("unknown", "An unexpected communication error occured, please notify system administrator.");
@@ -155,7 +155,7 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 		var responseBean = new Slatwall.model.transient.fulfillment.ShippingRatesResponseBean();
 		responseBean.setData(arguments.JsonResponse);
 		
-		if(isDefined('responseBean.data.RateResponse.Fault')) {
+		if(structKeyExists(responseBean.getData(),'Fault')) {
 			responseBean.addMessage(messageName="communicationError", message="An unexpected communication error occured, please notify system administrator.");
 			// If XML fault then log error
 			responseBean.addError("unknown", "An unexpected communication error occured, please notify system administrator.");
@@ -163,6 +163,7 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 			
 			
 			if(!responseBean.hasErrors()) {
+				
 				for(var i=1; i<=arrayLen(responseBean.getData().RateResponse.RatedShipment); i++) {
 					responseBean.addShippingMethod(
 						shippingProviderMethod=responseBean.getData().RateResponse.RatedShipment[i].Service.code,

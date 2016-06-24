@@ -30,6 +30,14 @@
         "value": "//form[@id='j-login-wrapper']//button[.='Login']"
       }
     },
+
+    {
+      "type": "waitForElementPresent",
+      "locator": {
+        "type": "xpath",
+        "value": "//*[@id=\"j-mobile-nav\"]/ul/li[2]/ul/li[3]/a"
+      }
+    },
     {
       "type": "verifyTextPresent",
       "text": "Dashboard"

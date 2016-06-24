@@ -738,7 +738,8 @@ input.ng-invalid.ng-touched, select.ng-invalid.ng-touched, input.error, select.e
 .table {background-color: #ffffff;margin-bottom: 5px;}
 .table .s-contents-page-title {color: #666;}
 .table .s-contents-page-title:hover {text-decoration: underline;}
-.table i.s-listing-arrow {padding: 0px 6px 0px 0px;cursor: pointer;font-size: 14px;margin-top: 2px;position: absolute;left: -5px;}
+.table i.s-listing-arrow {cursor: pointer;font-size: 15px;position: absolute;left: -9px;padding: 15px 7px 15px 7px;top: -15px;color: #999;}
+.table i.s-listing-arrow:hover {color: #000}
 .s-property-info .table>thead>tr>th,
 .table>tbody>tr>th, .table>tfoot>tr>th,
 .table>thead>tr>td, .table>tbody>tr>td,
@@ -783,7 +784,7 @@ table tr th .glyphicon {vertical-align:text-top;}
 .row .s-pannel-control .col-md-12	{text-align:right;}
 .s-pannel-control a {color:#888;font-size:11px;}
 .s-pannel-control a:hover {text-decoration:none;}
-.panel-heading h4.panel-title {font-size:14px !important;text-transform: uppercase;}
+.panel-heading h4.panel-title {font-size:14px !important;}
 .panel-heading h4.panel-title span > span {background-color: @black-20;.border-radius();margin: 0px 10px;padding: 0px 5px;height: 10px;color: @white;font-size:11px;}
 .openall {border-right:1px solid ##999;padding-right:4px;}
 .panel-heading .fa {float:right;margin-top: 3px;}
@@ -893,7 +894,6 @@ table .s-edit-elements a:hover {  background-color: #E6E6E6;border-color: #D1D1D
 .s-pannel-group .s-body-box {padding: 15px 15px;display: inline-block;width: 100%;}
 .s-pannel-group .s-body-box #tabimages {margin-top: -15px;margin-bottom: -19px;}
 .form-group label i.fa-asterisk {color: @black-60;font-size: 5px;position: relative;top: -6px;left: 3px;}
-.panel-collapse .s-table-header-nav {background: #F2F2F2;}
 
 .btn-group-vertical .btn-default.active {}
 .btn-group-vertical .btn-default:hover {background-color: @brand-ten24;color: @white;border-color: #DB771F;}
@@ -971,7 +971,8 @@ content.s-body-box .s-no-items {border: 1px solid @black-20;border-top: 0px;padd
 content.s-body-box .s-detail-notifications {border-right: 1px solid #DDD;border-left: 1px solid #DDD;}
 content.s-body-box .s-detail-notifications .dropdown {display: inline-block;}
 
-tabel .s-table-header {margin-bottom:10px;}
+table .s-table-header .table-section {background-color: #f7f7f7;font-size: 14px;color: #666;padding: 3px 10px;}
+table .s-table-header .table-section a.s-hint {float:none;margin-left:10px;}
 
 .s-no-paddings {padding:0px !important;}
 .s-no-horiz-paddings {padding-left:0px !important; padding-right:0px !important;}
@@ -1094,7 +1095,7 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-tab-layout.s-tab-layout  > .row > .s-body-box {padding-top:0px;}
 
 /* Custom Slatwall Styles */
-.s-table-header-nav {display:inline-block;width:100%;background: #fff;padding: 4px;border: 1px solid #DDD;vertical-align: bottom;border-bottom: 0px;}
+.s-table-header-nav {display:inline-block;width:100%;background: #fff;padding: 4px;border: 1px solid #e7eaec;vertical-align: bottom;border-bottom: 0px;}
 .s-table-header-nav ul {vertical-align:bottom;margin-bottom:0px;margin-top:0px;}
 .s-table-header-nav ul > li {vertical-align:top;}
 .s-table-header-nav ul > li {padding-right:0px;}
@@ -1102,15 +1103,16 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-table-header-nav .s-table-header-search button {color:#5E5E5E;background-color:@black-5;border: 1px solid @black-20;}
 .s-table-header-nav .s-table-view-options {text-align:right;padding-right:0px;}
 .s-table-header-nav .s-table-view-options button.s-table-header-btn i {font-size: 16px;position: relative;top: 3px;width: 13px;}
-.s-table-header-nav .s-table-view-options .s-table-action {margin-top: 5px;}
-.s-select-wrapper select {-webkit-appearance: none;-moz-appearance: none;appearance: none;line-height: 15px;padding-right: 23px;}
+.s-table-header-nav .s-table-view-options .s-table-action {margin-top: 1px;}
+.s-select-wrapper select {-webkit-appearance: none;-moz-appearance: none;appearance: none;line-height: 15px;padding-right: 23px;font-size: 12px;}
 .s-select-wrapper {position: relative;text-align: right;display: block;}
-.s-select-wrapper:after {font-family: fontAwesome;content: "\f0dc";pointer-events: none;position: absolute;margin-top: -22px;margin-left: -16px;}
+.s-select-wrapper:after {font-family: fontAwesome;content: "\f0dc";pointer-events: none;position: absolute;margin-top: -23px;margin-left: -16px;}
 .s-select-wrapper select::-ms-expand { /* for IE 11 */display: none;}
 
 .s-table-header-nav .s-table-view-options label {line-height: 28px;margin:0px;padding:0px;text-align:right;}
 .s-table-header-nav .s-table-header-search {max-width: 200px;position:relative;}
 .s-table-header-nav .s-table-header-search i {position: absolute;top: 6px;right: 7px;pointer-events: none;}
+.s-page-table-wrapper .s-table-header-nav .s-table-header-search i {top:10px;}
 .s-table-header-nav .s-page-show {min-width: 150px;vertical-align: middle;margin:0px;}
 .s-table-header-nav .s-select-list-wrapper {max-width:200px;position: relative;}
 .s-filter-options .selectboxit {min-width:120px;}
@@ -2361,6 +2363,9 @@ a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !import
     font-size: 15px;
     display: none;
 }
+.s-page-table-wrapper .s-detail-content-wrapper .s-detail-body {
+	border: 1px solid #e7eaec;
+}
 .s-detail-content-wrapper .s-content-header .s-compress-icon {
     font-size: 17px;
     display: inline-block;
@@ -2536,6 +2541,7 @@ a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !import
 }
 .s-detail-content-wrapper .s-detail-body table tr th {
     vertical-align: top;
+	border-color: #e7eaec;
 }
 .s-detail-content-wrapper .s-detail-body table tr th > .form-group {
     margin: 0px;
@@ -2549,6 +2555,12 @@ a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !import
 	position: relative;
 	padding:0px;
 	vertical-align: middle;
+}
+table tr td .s-loading-icon {
+	position: absolute;
+	left: -2px;
+	top: 2px;
+	background: #fff;
 }
 .s-detail-content-wrapper .s-detail-body table tr td.s-status i {
 	background-color: #eee;
@@ -2647,7 +2659,7 @@ a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !import
 .s-detail-content-wrapper .s-detail-body .s-detail-content-table {
     border: 0px;
 }
-.s-body-box .table-responsive thead {background: #f2f2f2;}
+.s-body-box .table-responsive thead {background: #f7f7f7;}
 .s-detail-content-table tbody tr {font-weight: 600;}
 .s-detail-content-table tbody tr td {position:relative;}
 .s-detail-content-table tbody tr td .s-list {padding-left: 17px;margin-top: 9px;font-weight: 500;}
