@@ -22,7 +22,6 @@
       },
       "text": "qa@mailinator"
     },
-
     {
       "type": "setElementText",
       "locator": {
@@ -65,7 +64,7 @@
       "type": "waitForElementPresent",
       "locator": {
         "type": "xpath",
-        "value": "//*[@id=\"j-mobile-nav\"]/ul/li[2]/ul/li[3]/a"
+        "value": "//div[@id='j-mobile-nav']//a[.='Products']"
       }
     },
     {

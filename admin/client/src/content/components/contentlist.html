@@ -42,22 +42,22 @@
 					<!-- s-select-list-wrapper -->
 				</li>
 			</ul>
-			
 		</div>
-		<sw-listing-display
-			ng-if="swContentList.collectionListingPromise && swContentList.collection"	
-			data-collection-promise="swContentList.collectionListingPromise"
-			data-collection="swContentList.collection"
-			data-get-collection="swContentList.getCollection"
-			data-record-edit-action="admin:entity.editcontent"
-			data-record-add-action="entity.preprocesscontent"
-			data-record-add-query-string="&processContext=create&siteID={{swContentList.selectedSite.siteID}}"
-			data-expandable-open-root="swContentList.openRoot"
-			data-expandable="!swContentList.isSearching"
-			data-has-search="false"
-            data-has-action-bar="false"
-            data-is-angular-route="false"
-		>
-		</sw-listing-display>
+	</div>
+	<sw-listing-display
+		ng-if="swContentList.collectionListingPromise && swContentList.collection"	
+		data-collection-promise="swContentList.collectionListingPromise"
+		data-collection="swContentList.collection"
+		data-get-collection="swContentList.getCollection"
+		data-record-edit-action="admin:entity.editcontent"
+		data-record-add-action="entity.preprocesscontent"
+		data-record-add-query-string="&processContext=create&siteID={{swContentList.selectedSite.siteID}}"
+		data-expandable-open-root="swContentList.openRoot"
+		data-expandable="!swContentList.isSearching"
+		data-has-search="false"
+        data-has-action-bar="false"
+        data-is-angular-route="false"
+	>
+	</sw-listing-display>
 
 </section>

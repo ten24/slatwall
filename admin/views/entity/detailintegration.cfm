@@ -56,8 +56,10 @@ Notes:
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.integration#" edit="#rc.edit#">
 		
-		<hb:HibachiEntityActionBar type="detail" object="#rc.integration#" showDelete="false" />
-
+		<hb:HibachiEntityActionBar type="detail" object="#rc.integration#" showDelete="false">
+			<hb:HibachiProcessCaller action="admin:entity.processIntegration" entity="#rc.integration#" processContext="test" type="list" hideDisabled="false" />
+		</hb:HibachiEntityActionBar>
+		
 		<hb:HibachiEntityDetailGroup object="#rc.integration#">
 			<hb:HibachiEntityDetailItem view="admin:entity/integrationtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
 			<hb:HibachiEntityDetailItem view="admin:entity/integrationtabs/settings" />
