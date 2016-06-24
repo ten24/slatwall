@@ -447,7 +447,7 @@ class ListingService{
             }else{
                 propertyIdentifierWithoutAlias = propertyIdentifier;
             }
-            return this.utilityService.replaceAll(propertyIdentifierWithoutAlias,'.','_')
+            return this.utilityService.replaceAll(propertyIdentifierWithoutAlias,'.','_');
         }
         return '';
     };
