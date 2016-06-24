@@ -7,8 +7,8 @@ class BaseTransient extends BaseObject{
 
     public errors:{ [errorName: string]: any; }={};
 
-    constructor(){
-        super();
+    constructor($injector){
+        super($injector);
     }
 
     public addError=(errorName:string,errorMessage:any)=>{

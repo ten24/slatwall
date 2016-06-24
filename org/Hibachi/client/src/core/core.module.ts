@@ -18,6 +18,7 @@ import {$Hibachi} from "./services/hibachiservice";
 import {LocalStorageService} from "./services/localstorageservice";
 import {HibachiServiceDecorator} from "./services/hibachiservicedecorator";
 import {HibachiScope} from "./services/hibachiscope";
+import {RequestService} from "./services/requestservice";
 //controllers
 import {GlobalSearchController} from "./controllers/globalsearch";
 
@@ -64,7 +65,7 @@ import {SWHref} from "./components/swhref";
 import {SWProcessCaller} from "./components/swprocesscaller";
 import {SWSortable} from "./components/swsortable";
 import {SWListingGlobalSearch} from "./components/swlistingglobalsearch";
-
+import {BaseObject} from "./model/baseobject";
 declare var $:any;
 
 var coremodule = angular.module('hibachi.core',[
@@ -146,6 +147,7 @@ var coremodule = angular.module('hibachi.core',[
 .service('hibachiInterceptor', HibachiInterceptor.Factory())
 .service('hibachiScope',HibachiScope)
 .service('localStorageService',LocalStorageService)
+.service('requestService',RequestService)
 //controllers
 .controller('globalSearch',GlobalSearchController)
 //filters

@@ -3,17 +3,17 @@
 
 import {Cart} from "../model/entity/cart";
 import {Account} from "../model/entity/account";
-import {Request} from "../model/transient/request";
+import {PublicRequest} from "../model/transient/publicrequest";
 
 class PublicService {
-    public formType = {'Content-Type':"application/x-www-form-urlencoded"};
+
     public ajaxRequestParam:string = "?ajaxRequest=1";
     public account:Account;
     public cart:Cart;
     public states:any;
     public countries:any;
     public addressOptions:any;
-    public requests:{ [action: string]: Request; }={};
+    public requests:{ [action: string]: PublicRequest; }={};
 
     public http:ng.IHttpService;
     public confirmationUrl:string;
@@ -38,14 +38,17 @@ class PublicService {
         public $q:ng.IQService,
         public $window:any,
         public $location:ng.ILocationService,
-        public $hibachi:any
+        public $hibachi:any,
+        public $injector:ng.auto.IInjectorService,
+        public requestService
     ) {
-
+        this.requestService = requestService;
         this.baseActionPath = "/index.cfm/api/scope/"; //default path
         this.confirmationUrl = "/order-confirmation";
         this.$http = $http;
         this.$location = $location;
-        this.$q = $q
+        this.$q = $q;
+        this.$injector=$injector;
         this.getExpirationYears();
         this.$window = $window;
         this.$hibachi = $hibachi;
@@ -103,8 +106,8 @@ class PublicService {
     public getData=(url, setter, param):any =>  {
         this.loading = true;
         let urlBase = url + this.ajaxRequestParam + param;
-        var deferred = this.$q.defer();
-        this.$http.get(urlBase).success((result:any)=>{
+        let request = this.requestService.newPublicRequest(urlBase);
+        request.promise.then((result:any)=>{
             //don't need account and cart for anything other than account and cart calls.
             if (setter.indexOf('account') == -1 || setter.indexOf('cart') == -1){
                 if (result['account']){delete result['account'];}
@@ -117,14 +120,11 @@ class PublicService {
                 this[setter] = result;
             }
 
-            this.loading = false;
-            deferred.resolve(result);
-        }).error((reason)=>{
-            this.loading = false;
-            deferred.reject(reason);
-        });
+        }).catch((reason)=>{
 
-        return deferred.promise;
+
+        });
+        return request.promise;
     }
 
     /** sets the current shipping address */
@@ -164,7 +164,7 @@ class PublicService {
         if (method == "post"){
              data.returnJsonObjects = "cart,account";
             //post
-            let request = new Request(urlBase,data,method)
+            let request = this.requestService.newPublicRequest(urlBase,data,method)
             request.promise.then((result:any)=>{
 
                 /** update the account and the cart */
@@ -182,23 +182,23 @@ class PublicService {
                     //this.hasErrors = true;
                 }
 
-                deferred.resolve(result);
+                request.promise(result);
             }).catch((response)=>{
 
-                deferred.reject(response);
+                request.promise(response);
             });
-            return deferred.promise;
+            return request.promise;
         }else{
             //get
             var url = urlBase + "&returnJsonObject=cart,account";
-            var deferred = this.$q.defer();
-            let request = new Request(url);
-            request.promise.success((result:any)=>{
-              deferred.resolve(result);
-            }).error((reason)=>{
-              deferred.reject(reason);
+
+            let request = new PublicRequest(url);
+            request.promise.then((result:any)=>{
+
+            }).catch((reason)=>{
+
             });
-            return deferred.promise;
+            return request.promise;
         }
     }
 

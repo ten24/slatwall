@@ -5,30 +5,31 @@ import {Request} from "./request";
 class PublicRequest extends Request{
     public failureActions:Array<any>=[];
     public successfulActions:Array<any>=[];
-    public success:boolean=false;
-
+    public messages:Array<any>=[];
     constructor(
         url:string,
         data?:any,
         method?:string,
-        headers:{[headername:string]:string;}={'Content-Type':"application/x-www-form-urlencoded"}
+        headers:{[headername:string]:string;}={'Content-Type':"application/x-www-form-urlencoded"},
+        $injector?
     ){
-        let request = super(
+        super(
             url,
             data,
             method,
-            headers
+            headers,
+            $injector
         );
 
-        this.promise.success((result:any)=>{
-            this.successfulAction = result.data.successfulActions;
-            this.failureActions = result.data.failureActions;
-            this.resolve(result);
-        }).error((response)=>{
-            this.loading = false;
-            this.reject(response);
-        });
+        this.promise.then((result:any)=>{
 
+            this.successfulActions = result.successfulActions;
+            this.failureActions = result.failureActions;
+            this.messages = result.messages;
+        }).catch((response)=>{
+
+        });
+        return this;
     }
 
     public isSuccess = ()=>{

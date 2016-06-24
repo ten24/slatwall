@@ -1,6 +1,7 @@
 /// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../../typings/tsd.d.ts' />
 import {BaseTransient} from "./basetransient";
+
 class Request extends BaseTransient {
 
     public messages:Array<any>;
@@ -17,9 +18,10 @@ class Request extends BaseTransient {
         url:string,
         data?:any,
         method?:string,
-        headers?:{[headername:string]:string;}
+        headers?:{[headername:string]:string;},
+        $injector?
     ){
-        super();
+        super($injector);
         this.headers = headers;
         this.$q = this.getService('$q');
         this.$http = this.getService('$http');
@@ -48,7 +50,7 @@ class Request extends BaseTransient {
             //post
             let promise =  this.$http.post(url, data, this.headers)
             .success((result:any)=>{
-
+                this.loading = false;
                 deferred.resolve(result);
             }).error((response)=>{
                 this.loading = false;
@@ -59,9 +61,10 @@ class Request extends BaseTransient {
             //get
             this.$http.get(url)
             .success((result:any)=>{
-
+                this.loading = false;
                 deferred.resolve(result);
             }).error((reason)=>{
+                this.loading = false;
                 deferred.reject(reason);
             });
             this.promise = deferred.promise;
@@ -73,8 +76,6 @@ class Request extends BaseTransient {
     public toFormParams= (data):string => {
         return data = $.param(data) || "";
     }
-
-
 
 }
 export {Request}

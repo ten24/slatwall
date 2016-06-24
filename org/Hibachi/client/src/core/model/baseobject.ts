@@ -1,16 +1,22 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-
+import "angular";
 declare var angular:any;
-class BaseObject{
-    constructor(){
 
+class BaseObject{
+    public $injector:ng.auto.IInjectorService;
+    //@ngInject
+    constructor($injector){
+        this.$injector = $injector;
     }
 
     public getService=(serviceName)=>{
-        if(angular.element(document.body).injector().has(serviceName)){
-            return angular.element(document.body).injector().get(serviceName);
+        //return;
+        console.log('injector',this.$injector);
+        if(this.$injector.has(serviceName)){
+            return this.$injector.get(serviceName);
         }
+
     }
 
     public getHibachiScope=()=>{

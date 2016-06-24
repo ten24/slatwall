@@ -22,6 +22,7 @@ class HibachiService{
 		private $rootScope:ng.IRootScopeService,
 		private $location:ng.ILocationService,
 		private $anchorScroll:ng.IAnchorScrollService,
+		private requestService,
 		private utilityService,
 		private formService,
         private rbkeyService,
@@ -38,6 +39,7 @@ class HibachiService{
         this.$rootScope = $rootScope;
         this.$location = $location;
         this.$anchorScroll = $anchorScroll;
+		this.requestService = requestService;
         this.utilityService = utilityService;
         this.formService = formService;
         this.rbkeyService = rbkeyService;
@@ -253,7 +255,7 @@ class HibachiService{
 			};
 		}
 
-		let request = new AdminRequest(urlString,params)
+		let request = this.requestService.newAdminRequest(urlString,params)
 
 		if(options.deferKey)  {
 			this._deferred[options.deferKey] = request;
@@ -263,20 +265,20 @@ class HibachiService{
 	};
 	getResizedImageByProfileName = (profileName, skuIDs) => {
 		var urlString = this.getUrlWithActionPrefix()+'api:main.getResizedImageByProfileName&profileName=' + profileName + '&skuIDs=' + skuIDs;
-		let request = new AdminRequest(urlString);
+		let request = this.requestService.newAdminRequest(urlString);
 
 		return request.promise;
 	}
 	getEventOptions= (entityName) => {
 		var urlString = this.getUrlWithActionPrefix()+'api:main.getEventOptionsByEntityName&entityName='+entityName;
-		let request = new AdminRequest(urlString);
+		let request = this.requestService.newAdminRequest(urlString);
 
 		return request.promise;
 	};
     getProcessOptions= (entityName) => {
 
         var urlString = this.getUrlWithActionPrefix()+'api:main.getProcessMethodOptionsByEntityName&entityName='+entityName;
-		let request = new AdminRequest(urlString)
+		let request = this.requestService.newAdminRequest(urlString)
 
         return request.promise;
     };
@@ -299,7 +301,7 @@ class HibachiService{
 		var urlString = this.getUrlWithActionPrefix()+'api:main.getPropertyDisplayData&entityName='+entityName;
 		var params:any = {};
 		params.propertyIdentifiersList = options.propertyIdentifiersList || '';
-		let request = new AdminRequest(urlString,params);
+		let request = this.requestService.newAdminRequest(urlString,params);
 
 		return request.promise;
 	};
@@ -311,7 +313,7 @@ class HibachiService{
 			params.argument1 = options.argument1;
 		}
 
-		let request = new AdminRequest(urlString,params);
+		let request = this.requestService.newAdminRequest(urlString,params);
 
 		return request.promise;
 	};
@@ -329,14 +331,14 @@ class HibachiService{
 		if(angular.isDefined(context))  {
 			params.context = context;
 		}
-		let request = new AdminRequest(urlString,params);
+		let request = this.requestService.newAdminRequest(urlString,params);
 
 		return request.promise;
 	};
 	getExistingCollectionsByBaseEntity= (entityName) => {
 
 		var urlString = this.getUrlWithActionPrefix()+'api:main.getExistingCollectionsByBaseEntity&entityName='+entityName;
-		let request = new AdminRequest(urlString);
+		let request = this.requestService.newAdminRequest(urlString);
 
 		return request.promise;
 
@@ -344,7 +346,7 @@ class HibachiService{
 	getFilterPropertiesByBaseEntityName= (entityName) => {
 
 		var urlString = this.getUrlWithActionPrefix()+'api:main.getFilterPropertiesByBaseEntityName&EntityName='+entityName;
-		let request = new AdminRequest(urlString);
+		let request = this.requestService.newAdminRequest(urlString);
 
 		return request.promise;
 	};
@@ -357,7 +359,7 @@ class HibachiService{
 			password:password
 		};
 
-		let request = new AdminRequest(urlString,params);
+		let request = this.requestService.newAdminRequest(urlString,params);
 		return request.promise;
 
 	};
@@ -372,13 +374,13 @@ class HibachiService{
 
 		var urlString = this.getUrlWithActionPrefix()+'api:main.getResourceBundle&instantiationKey='+this.appConfig.instantiationKey+'&locale='+locale;
 
-		let request = new AdminRequest(urlString);
+		let request = this.requestService.newAdminRequest(urlString);
 		return request.promise
 	};
 
 	getCurrencies = () =>{
 		var urlString = this.getUrlWithActionPrefix()+'api:main.getCurrencies&instantiationKey='+this.appConfig.instantiationKey;
-		let request = new AdminRequest(urlString);
+		let request = this.requestService.newAdminRequest(urlString);
 
 		return request.promise;
 	};
@@ -420,6 +422,7 @@ class $Hibachi implements ng.IServiceProvider{
 			'$rootScope',
 			'$location',
 			'$anchorScroll',
+			'requestService',
 			'utilityService',
 			'formService',
             'rbkeyService',
@@ -437,6 +440,7 @@ class $Hibachi implements ng.IServiceProvider{
 		$rootScope:ng.IRootScopeService,
 		$location:ng.ILocationService,
 		$anchorScroll:ng.IAnchorScrollService,
+		requestService,
 		utilityService,
 		formService,
         rbkeyService,
@@ -451,6 +455,7 @@ class $Hibachi implements ng.IServiceProvider{
 			$rootScope,
 			$location,
 			$anchorScroll,
+			requestService,
 			utilityService,
 			formService,
             rbkeyService,

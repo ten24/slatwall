@@ -3,20 +3,19 @@
 import {Request} from "./request";
 
 class AdminRequest extends Request{
-
-
     constructor(
         url:string,
         data?:any,
         method:string="post",
-        headers:{[headername:string]:string;}={'Content-Type':"application/json"}
+        headers:{[headername:string]:string;}={'Content-Type':"application/json"},
+        $injector?
     ){
-
         super(
             url,
             data,
             method,
-            headers
+            headers,
+            $injector
         );
     }
 }
