@@ -12,6 +12,7 @@ class SWDeleteSkuPriceModalLauncherController{
     
     //@ngInject
     constructor(
+        private $q,
         private $hibachi,
         private listingService, 
         private skuPriceService, 
@@ -21,27 +22,36 @@ class SWDeleteSkuPriceModalLauncherController{
     }    
     
     public delete = () => {
-        var deletePromise = this.skuPrice.$$delete();
-        deletePromise.then(
-            (response)=>{
-                if(angular.isDefined(this.listingID)){
-                    var pageRecords = this.listingService.getListingPageRecords(this.listingID);
-                    for(var i = 0; i < pageRecords.length; i++){
-                        if(angular.isDefined(pageRecords[i].skuPriceID) &&
-                           this.skuPrice.data.minQuantity == pageRecords[i].minQuantity &&
-                           this.skuPrice.data.maxQuantity == pageRecords[i].maxQuantity
-                        ){
-                           pageRecords.splice(i,1);
-                           break; 
-                        }
-                    }
+        var skuPricesToDelete = this.skuPriceService.getSkuPricesForQuantityRange(this.skuId, this.skuPrice.data.minQuantity, this.skuPrice.data.maxQuantity);
+        var deletePromises = [];
+        skuPricesToDelete.then(
+            (skuPrices)=>{  
+                for(var i = 0; i < skuPrices.length; i++){
+                    console.log("spp",skuPrices[i]);
+                    deletePromises.push(skuPrices[i].$$delete());
                 }
             },
             (reason)=>{
-                //error callback
+                //error
             }
-        );
-        return deletePromise; 
+        ).finally(()=>{
+            this.$q.all(deletePromises).then(
+                (response)=>{
+                    if(angular.isDefined(this.listingID)){
+                        var pageRecords = this.listingService.getListingPageRecords(this.listingID);
+                        for(var i = 0; i < pageRecords.length; i++){
+                            if( angular.isDefined(pageRecords[i].skuPriceID) &&
+                                this.skuPrice.data.skuPriceID == pageRecords[i].skuPriceID
+                            ){
+                                pageRecords.splice(i,1);
+                                break; 
+                            }
+                        }
+                    }
+                }
+            );
+        });
+        return this.$q.all(deletePromises); 
     }
 }
 
@@ -92,6 +102,9 @@ class SWDeleteSkuPriceModalLauncher implements ng.IDirective{
                 var currentScope = this.scopeService.locateParentScope($scope, "pageRecord");
                 if(angular.isDefined(currentScope.pageRecord)){ 
                     $scope.swDeleteSkuPriceModalLauncher.pageRecord = currentScope.pageRecord; 
+                    if(angular.isDefined(currentScope.pageRecord.sku_skuID)){
+                         $scope.swDeleteSkuPriceModalLauncher.skuId = currentScope.pageRecord.sku_skuID;
+                    }
                     if(angular.isDefined(currentScope.pageRecord.skuPriceID) && currentScope.pageRecord.skuPriceID.length){    
                         var skuPriceData = {
                             skuPriceID:currentScope.pageRecord.skuPriceID,
