@@ -6589,9 +6589,6 @@ table tr td .s-loading-icon {
 .s-body-box .table-responsive thead {
   background: #f7f7f7;
 }
-.s-detail-content-table tbody tr {
-  font-weight: 600;
-}
 .s-detail-content-table tbody tr td {
   position: relative;
 }
