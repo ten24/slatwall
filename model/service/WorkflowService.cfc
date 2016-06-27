@@ -71,16 +71,19 @@ component extends="HibachiService" accessors="true" output="false" {
 						continue;
 					}
 
-					// Create a new workflowTriggerHistory to be logged
-					var workflowTriggerHistory = this.newWorkflowTriggerHistory();
+					if(workflowTrigger.getSaveTriggerHistoryFlag() == true) {
 
-					//Attach workflowTrigger to workflowTriggerHistory
-					workflowTriggerHistory.setWorkflowTrigger(workflowTrigger);
-					workflowTriggerHistory.setStartTime(now());
+						// Create a new workflowTriggerHistory to be logged
+						var workflowTriggerHistory = this.newWorkflowTriggerHistory();
 
-					// Persist the info to the DB
-					workflowTriggerHistory = this.saveWorkflowTriggerHistory(workflowTriggerHistory);
-					getHibachiDAO().flushORMSession();
+						//Attach workflowTrigger to workflowTriggerHistory
+						workflowTriggerHistory.setWorkflowTrigger(workflowTrigger);
+						workflowTriggerHistory.setStartTime(now());
+
+						// Persist the info to the DB
+						workflowTriggerHistory = this.saveWorkflowTriggerHistory(workflowTriggerHistory);
+						getHibachiDAO().flushORMSession();
+					}
 
 					try {
 						var processData = {};
@@ -101,22 +104,27 @@ component extends="HibachiService" accessors="true" output="false" {
 
 							this.processWorkflow(workflowTrigger.getWorkflow(), processData, 'execute');
 						}
-
-						// Update the workflowTriggerHistory
-						workflowTriggerHistory.setSuccessFlag(true);
-						workflowTriggerHistory.setResponse("");
+						if (!isNull(workflowTriggerHistory)) {
+							// Update the workflowTriggerHistory
+							workflowTriggerHistory.setSuccessFlag(true);
+							workflowTriggerHistory.setResponse("");
+						}
 					} catch (any e){
-						// Update the workflowTriggerHistory
-						workflowTriggerHistory.setSuccessFlag(false);
-						workflowTriggerHistory.setResponse(e.Message);
+						if (!isNull(workflowTriggerHistory)) {
+							// Update the workflowTriggerHistory
+							workflowTriggerHistory.setSuccessFlag(false);
+							workflowTriggerHistory.setResponse(e.Message);
+						}
 					}
 
-					// Set the end for history
-					workflowTriggerHistory.setEndTime(now());
+					if (!isNull(workflowTriggerHistory)) {
+						// Set the end for history
+						workflowTriggerHistory.setEndTime(now());
 
-					// Persist the info to the DB
-					workflowTriggerHistory = this.saveWorkflowTriggerHistory(workflowTriggerHistory);
-					getHibachiDAO().flushORMSession();
+						// Persist the info to the DB
+						workflowTriggerHistory = this.saveWorkflowTriggerHistory(workflowTriggerHistory);
+						getHibachiDAO().flushORMSession();
+					}
 				}
 			//}
 		}
