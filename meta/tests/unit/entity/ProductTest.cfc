@@ -857,9 +857,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		if (len(arguments.skuImageFile)) {
 			skuData.imageFile = arguments.skuImageFile;
 		}
-		if (len(arguments.skuPrice)) {
-			skuData.price = arguments.skuPrice;
-		}
 		return createPersistedTestEntity('Sku', skuData);
 	}
 	
@@ -1003,7 +1000,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
 		
-		var result = mockProduct.getDefaultProductImageFilesCount();
+//		var result = mockProduct.getDefaultProductImageFilesCount();
+		createTestFile("/Users/ten24user/Downloads/testfilearrow.jpeg");
+		request.debug(expandPath(getHibachiScope().getBaseImageURL()) & "/custom/TestFile");
 		request.debug(result);//yuqing
 	 }
 	 
@@ -1031,7 +1030,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		var result = mockProduct.getSalePriceDetailsForSkus();
 //		request.debug(result);
-		request.debug(mockProduct.getSalePriceDetailsForSkusByCurrencyCode());
+		request.debug(mockProduct.getSalePriceDetailsForSkusByCurrencyCode("CNY"));
 	 }
 	 
 	 public void function getSalePriceDetailsForSkusByCurrencyCodeTest() {
