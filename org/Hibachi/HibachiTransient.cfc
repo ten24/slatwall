@@ -171,8 +171,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 		// Call beforePopulate
 		beforePopulate(data=arguments.data);
-		
-		
+
+
 
 		// Get an array of All the properties for this object
 		var properties = getProperties();
@@ -182,10 +182,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 			// Set the current property into variable of meta data
 			var currentProperty = properties[p];
-			
+
 			// Check to see if this property has a key in the data that was passed in
 			if(
-				structKeyExists(arguments.data, currentProperty.name) && (!structKeyExists(currentProperty, "hb_populateEnabled") || currentProperty.hb_populateEnabled neq false) && 
+				structKeyExists(arguments.data, currentProperty.name) && (!structKeyExists(currentProperty, "hb_populateEnabled") || currentProperty.hb_populateEnabled neq false) &&
 				(
 					!isPersistent()
 					||
@@ -196,8 +196,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 				// ( COLUMN )
 				if( (!structKeyExists(currentProperty, "fieldType") || currentProperty.fieldType == "column") && isSimpleValue(arguments.data[ currentProperty.name ]) && !structKeyExists(currentProperty, "hb_fileUpload") ) {
-					
-					
+
+
 					// If the value is blank, then we check to see if the property can be set to NULL.
 					if( trim(arguments.data[ currentProperty.name ]) == "" && ( !structKeyExists(currentProperty, "notNull") || !currentProperty.notNull ) ) {
 						_setProperty(currentProperty.name);
@@ -508,12 +508,15 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 				value = rawValue;
 			}
 		}
-
-		return getHibachiScope().getService('hibachiUtilityService').hibachiHTMLEditFormat(value);
+		if(isValid("string",value)){
+			return getHibachiScope().getService('hibachiUtilityService').hibachiHTMLEditFormat(value);
+		} else {
+			return value;
+		}
 	}
 
 	public any function getLastObjectByPropertyIdentifier(required string propertyIdentifier) {
-		
+
 		if(listLen(arguments.propertyIdentifier, ".") eq 1) {
 			return this;
 		}
