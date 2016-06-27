@@ -486,8 +486,7 @@ class ListingService{
     };
     
     public getPageRecordMatchesDisableRule = (listingID, pageRecord)=>{
-        var keyOfDisableRuleMet = this.getKeyOfMatchedDisableRule(listingID, pageRecord); 
-        return keyOfDisableRuleMet != -1;  
+        return this.getKeyOfMatchedDisableRule(listingID, pageRecord) != -1;  
     };
 
     //Expandable Rule Logic
@@ -516,8 +515,7 @@ class ListingService{
     };
     
     public getPageRecordMatchesExpandableRule = (listingID, pageRecord)=>{
-        var keyOfExpandableRuleMet = this.getKeyOfMatchedExpandableRule(listingID, pageRecord); 
-        return keyOfExpandableRuleMet != -1;  
+        return this.getKeyOfMatchedExpandableRule(listingID, pageRecord) != -1;  
     };
 
     public hasPageRecordRefreshChildrenEvent = (listingID, pageRecord)=>{
@@ -559,4 +557,3 @@ class ListingService{
  
 }
 export{ListingService};
-
