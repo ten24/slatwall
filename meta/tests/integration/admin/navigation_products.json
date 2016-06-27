@@ -38,6 +38,7 @@
       },
       "text": "qa@mailinator.com"
     },
+
     {
       "type": "clickElement",
       "locator": {
@@ -53,6 +54,7 @@
       },
       "text": "QaPa33word"
     },
+
     {
       "type": "clickElement",
       "locator": {
@@ -61,11 +63,9 @@
       }
     },
     {
-      "type": "waitForElementPresent",
-      "locator": {
-        "type": "xpath",
-        "value": "//div[@id='j-mobile-nav']//a[.='Products']"
-      }
+      "type": "waitForEval",
+      "script": "return document.readyState",
+      "value": "complete"
     },
     {
       "type": "clickElement",
