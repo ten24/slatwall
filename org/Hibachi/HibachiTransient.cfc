@@ -498,18 +498,18 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	public any function getValueByPropertyIdentifier(required string propertyIdentifier, boolean formatValue=false) {
 		var object = getLastObjectByPropertyIdentifier( propertyIdentifier=arguments.propertyIdentifier );
 		var propertyName = listLast(arguments.propertyIdentifier,'.');
-		
+		var value = "";
 		if(!isNull(object) && !isSimpleValue(object)) {
 			if(arguments.formatValue) {
-				return object.getFormattedValue( propertyName );
+				value = object.getFormattedValue( propertyName );
 			}
 			var rawValue = object.invokeMethod("get#propertyName#");
 			if(!isNull(rawValue)) {
-				return rawValue;
+				value = rawValue;
 			}
 		}
 
-		return "";
+		return getHibachiScope().getService('hibachiUtilityService').hibachiHTMLEditFormat(value);
 	}
 
 	public any function getLastObjectByPropertyIdentifier(required string propertyIdentifier) {
