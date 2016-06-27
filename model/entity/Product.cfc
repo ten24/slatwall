@@ -244,13 +244,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 	}
 
-	public any function getTemplateOptions() {
-		if(!isDefined("variables.templateOptions")){
-			variables.templateOptions = getService("ProductService").getProductTemplates();
-		}
-		return variables.templateOptions;
-	}
-
 	public any function getImages() {
 		return variables.productImages;
 	}
