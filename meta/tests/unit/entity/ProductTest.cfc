@@ -420,7 +420,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		//testing if the result is correct
 		var result = mockProduct.getProductBundleGroupsCount();
-		assertEquals(3, result);	 
+		assertEquals(3, result);
 	}
 	
 	public void function getProductBundleGroupsCount_NoSku_Test() {
@@ -551,7 +551,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(arrayFind(result, mockSku2));
 		assertTrue(arrayFind(result, mockSku3));
 	}
-*/	
+	
 	public void function getSkus_SortedFetchOptionBothTrue_Test() {
 		//Potential Bug: based on the function in SkuService.cfc, if we pass arguments, fetchOptions must be true, 
 		//and sorted is a required argument
@@ -613,56 +613,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 	
-	private any function createMockOption(required string optionGroupID ) {
-		var optionData1 = {
-			optionID = "",
-			optionGroup = {
-				optionGroupID = arguments.optionGroupID
-			}
-		};			
-		return createPersistedTestEntity('Option', optionData1);
-	}
-	/**
-	* @hint "Return mocked Product entity with properites you passed in.<br>If no argument, make it "". "
-	*
-	*/
-	private any function createMockProduct(string productTypeID) {
-		var productData = {
-			productID = ""
-		};
-		if(len(arguments.productTypeID)){
-			productData.productType.productTypeID = arguments.productTypeID;
-		}
-		return createPersistedTestEntity('Product', productData);
-	}
-	/**
-	* @hint "Return mocked ProductType entity with properites you passed in<br>If only pass one argument, make the other one "". "
-	*
-	*/
-	private any function createMockProductType (string productID="", string parentProductTypeID="") {
-		var productTypeData = {
-			productTypeID = ""			
-		};
-		
-		if(len(arguments.productID)){
-			productTypeData.product.productID = arguments.productID;
-		}
-		if(len(arguments.parentProductTypeID)){
-			productTypeData.parentProductType.productTypeID = arguments.parentProductTypeID;
-		}
-		
-		return createPersistedTestEntity('ProductType', productTypeData);
-	}
-	
-	/**
-	* @hint "This function will return mockSku with properites you passed in <br>
-	* Make the argument "" if null "
-	*
-	*/
-	private any function createMockSku(required numeric code, string idOfOption, string idOfProduct) {
-		
-	}
-
 	public void function getProductTypeOptions_noArgument_Test() {
 		//testing the function without the argument, should return child-types below the mockProduct's baseProductType
 		
@@ -737,7 +687,194 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertFalse(arrayFind(resultValues, mockProductType3.getProductTypeID()));
 		assertTrue(arrayFind(resultValues, mockProductType4.getProductTypeID()));
 	}
+*/
+	public void function getSkuByIDTest() {
+		var mockSku1 = createMockSku();
+		var mockSku2 = createMockSku();
+		var mockSku3 = createMockSku();
+		var mockSku4 = createMockSku();
+		
+		var productData = {
+			productID = "",
+			skus = [
+				{
+					skuID = mockSku1.getSkuID()
+				},
+				{
+					skuID = mockSku2.getSkuID()
+				},
+				{
+					skuID = mockSku3.getSkuID()
+				}
+			]
+		};
+		var mockProduct = createPersistedTestEntity('Product', productData);
+		
+		//testing the skuID belong to this product
+		var result = mockProduct.getSkuByID(mockSku2.getSkuID());
+		assertEquals(mockSku2.getSkuID(), result.getSkuID());
+		
+		//testing the skuID not belong to the product
+		var resultNoExist = mockProduct.getSkuByID(mockSku4.getSkuID());
+		assertTrue(isNull(resultNoExist));
+		
+		//testing error ID
+		var resultRandomString = mockProduct.getSkuByID("randomStringNoID");
+		assertTrue(isNull(resultRandomString));
+	}
+	
+	public void function getTemplateOptionsTest() {
+		//Todo: never been used elsewhere
+	}
+	
+	public void function getImagesTest() {
+		var mockImage1 = createMockImage();
+		var mockImage2 = createMockImage();
+		
+		//testing the product with mockImage1
+		var productData = {
+			productID = "",
+			productImages = [
+				{
+					imageID = mockImage1.getImageID()
+				}
+			]
+		};
+		var mockProduct = createPersistedTestEntity('Product', productData);
+		
+		var result = mockProduct.getImages();
+		assertEquals(1, arrayLen(result));
+		assertEquals(mockImage1.getImageID(), result[1].getImageID());
+		
+		//testing the product without Images
+		var mockProductNoImage = createMockProduct();
+		var resultNotExist = mockProductNoImage.getImages();
+		assertTrue(isDefined("resultNotExist"));
+		assertEquals(0, arrayLen(resultNotExist));
+	
+	}
+	
+	public void function getTotalImageCountTest() {
+		var mockImage1 = createMockImage();
+		var mockImage2 = createMockImage();
+		
+		//testing the product with mockImage1
+		var productData = {
+			productID = "",
+			productImages = [
+				{
+					imageID = mockImage1.getImageID()
+				},
+				{
+					imageID = mockImage2.getImageID()
+				}
+			]
+		};
+		var mockProduct = createPersistedTestEntity('Product', productData);
+		
+		assertEquals(2, mockProduct.getProductImagesCount());
+		assertEquals(2 + 0, mockProduct.getTotalImageCount());
+		request.debug(mockProduct.getDefaultProductImageFilesCount());//yuqing
+		
+		//testing the product without mockImages
+		var productData2 = {
+			productID = ""
+		};
+		var mockProductNoImages = createPersistedTestEntity('Product', productData2);
+		
+		assertEquals(0, mockProductNoImages.getProductImagesCount());
+		assertEquals(0 + 0, mockProductNoImages.getTotalImageCount());
+	}
+	
+	public void function getSkuSalePriceDetailsTest() {
+		
+	}
+	
+	public void function getSkuSalePriceDetailsByCurrencyCodeTest() {
+		
+	}
 
+	//=============== Private Helper functions ====================================
+	/**
+	* @hint "Create Mocked Otpion entity with optionGroupID"
+	*
+	*/
+	private any function createMockOption(required string optionGroupID ) {
+		var optionData1 = {
+			optionID = "",
+			optionGroup = {
+				optionGroupID = arguments.optionGroupID
+			}
+		};			
+		return createPersistedTestEntity('Option', optionData1);
+	}
+	/**
+	* @hint "Return mocked Product entity with properites you passed in.<br>If no argument, make it "". "
+	*
+	*/
+	private any function createMockProduct(string productTypeID = "") {
+		var productData = {
+			productID = ""
+		};
+		if(len(arguments.productTypeID)){
+			productData.productType.productTypeID = arguments.productTypeID;
+		}
+		return createPersistedTestEntity('Product', productData);
+	}
+	/**
+	* @hint "Return mocked ProductType entity with properites you passed in<br>If only pass one argument, make the other one "". "
+	*
+	*/
+	private any function createMockProductType (string productID="", string parentProductTypeID="") {
+		var productTypeData = {
+			productTypeID = ""			
+		};
+		
+		if(len(arguments.productID)){
+			productTypeData.product.productID = arguments.productID;
+		}
+		if(len(arguments.parentProductTypeID)){
+			productTypeData.parentProductType.productTypeID = arguments.parentProductTypeID;
+		}
+		
+		return createPersistedTestEntity('ProductType', productTypeData);
+	}
+	
+	/**
+	* @hint "This function will return mockSku with properites you passed in <br> Make the null arguments "" by the order "
+	*
+	*/
+	private any function createMockSku(string idOfProduct = "", string currencyCode = "", string skuImageFile = "") {
+		var skuData = {
+			skuID = ""
+		};
+		if (len(arguments.idOfProduct)) {
+			skuData.product.productID = arguments.idOfProduct;
+		}
+		if (len(arguments.currencyCode)) {
+			skuData.currencyCode = arguments.currencyCode;
+		}		
+		if (len(arguments.skuImageFile)) {
+			skuData.imageFile = arguments.skuImageFile;
+		}
+		if (len(arguments.skuPrice)) {
+			skuData.price = arguments.skuPrice;
+		}
+		return createPersistedTestEntity('Sku', skuData);
+	}
+	
+	private any function createMockImage(string imageDirectory = "") {
+		var imageData = {
+			imageID = ""
+		};
+		if (len(arguments.imageDirectory)) {
+			imageData.directory = arguments.imageDirectory;
+		}
+		return createPersistedTestEntity('Image', imageData);
+	}
+
+   //================== End Of Private Helper Functions =========================================
+   
 	// ============ START: Non-Persistent Property Methods =================
 	/*
 	public void function getBaseProductType_ExistedSystemCode_Test() {
@@ -813,15 +950,88 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	
 	
 	 public void function getDefaultProductImageFilesTest() {
-	 	//TODO: Test image
+	 	//testing product w/ skus
+	 	var mockSku1 = createMockSku("", "", "/mock/SomeImageFilePath", "");
+	 	var mockSku2 = createMockSku("", "", "/mockThe/Image/File2", "");
+	 	var mockSku3 = createMockSku();
+	 	var mockSku4 = createMockSku("", "",  "Mockfilefor other product entity", "");
+		
+		var productData = {
+			productID = "",
+			skus = [
+				{
+					skuID = mockSku1.getSkuID()
+				},
+				{
+					skuID = mockSku2.getSkuID()
+				},
+				{
+					skuID = mockSku3.getSkuID()
+				}
+			]
+		};
+		var mockProduct = createPersistedTestEntity('Product', productData);
+		
+		var result = mockProduct.getDefaultProductImageFiles();
+		assertEquals(2, arrayLen(result));
+		assertEquals(mockSku1.getImageFile(), result[1].imageFile);
+		
+		//testing product without skus
+		var productData2 = {
+			productID = ""
+		};
+		var mockProductNoSku = createPersistedTestEntity('Product', productData2);
+		
+		var resultNoSku = mockProductNoSku.getDefaultProductImageFiles();
+		assertEquals(0, arrayLen(resultNoSku));
 	 }
 	 
 	 public void function getDefaultProductImageFilesCountTest() {
+	 	var mockSku1 = createMockSku("", "", "mockImageFile");
+	 	var mockSku2 = createMockSku();
 	 	
+	 	var productData = {
+			productID = "",
+			skus = [
+				{
+					skuID = mockSku1.getSkuID()
+				},
+				{
+					skuID = mockSku2.getSkuID()
+				}
+			]
+		};
+		var mockProduct = createPersistedTestEntity('Product', productData);
+		
+		var result = mockProduct.getDefaultProductImageFilesCount();
+		request.debug(result);//yuqing
 	 }
 	 
 	 public void function getSalePriceDetailsForSkusTest() {
-	 	
+	 	var mockSku1 = createMockSku("", "CNY", "");
+	 	var mockSku2 = createMockSku("", "USD", "");
+	 	var mockSku3 = createMockSku("","","");
+	 	var mockSku4 = createMockSku("", "", "");
+		
+		var productData = {
+			productID = "",
+			skus = [
+				{
+					skuID = mockSku1.getSkuID()
+				},
+				{
+					skuID = mockSku2.getSkuID()
+				},
+				{
+					skuID = mockSku3.getSkuID()
+				}
+			]
+		};
+		var mockProduct = createPersistedTestEntity('Product', productData);
+		
+		var result = mockProduct.getSalePriceDetailsForSkus();
+//		request.debug(result);
+		request.debug(mockProduct.getSalePriceDetailsForSkusByCurrencyCode());
 	 }
 	 
 	 public void function getSalePriceDetailsForSkusByCurrencyCodeTest() {
