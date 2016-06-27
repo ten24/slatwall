@@ -96,35 +96,72 @@ class SWMultiListingDisplayController{
         public observerService,
         public rbkeyService
     ){
-        //Common Setup
+        this.tableID = 'LD'+this.utilityService.createID();
+        
         if(angular.isDefined(this.administrativeCount)){
             this.administrativeCount = parseInt(this.administrativeCount);
+        } else {
+	        this.administrativeCount = 0;
         }
-        this.tableID = 'LD'+this.utilityService.createID();
-        if(angular.isDefined(this.baseEntityName) && angular.isDefined(this.baseEntityID)){
-            
+
+        if(this.recordDetailAction && this.recordDetailAction.length){
+            this.administrativeCount++;
+            this.adminattributes = this.getAdminAttributesByType('detail');
         }
+
+        if(this.recordEditAction && this.recordEditAction.length){
+            this.administrativeCount++;
+            this.adminattributes = this.getAdminAttributesByType('edit');
+        }
+
+        if(this.recordDeleteAction && this.recordDeleteAction.length){
+            this.administrativeCount++;
+            this.adminattributes = this.getAdminAttributesByType('delete');
+        }
+
+        if(this.recordAddAction && this.recordAddAction.length){
+            this.administrativeCount++;
+            this.adminattributes = this.getAdminAttributesByType('add');
+        }
+        
+        //set defaults if value is not specifies
+        this.processObjectProperties = this.processObjectProperties || '';
+        this.recordProcessButtonDisplayFlag = this.recordProcessButtonDisplayFlag || true;
+        this.norecordstext = this.rbkeyService.getRBKey('entity.' + this.collectionObject + '.norecords');
+
         if(angular.isUndefined(this.defaultSelectEvent)){
             this.defaultSelectEvent = 'swSelectionToggleSelection' + this.tableID; 
         }
+
         if(angular.isUndefined(this.isAngularRoute)){
             this.isAngularRoute = true;    
         }
+
         if(angular.isUndefined(this.hasSearch)){
             this.hasSearch = true;
         }
+
         if(angular.isString(this.showSearch)){
             this.showSearch = (this.showSearch.toLowerCase() === 'true');
         }
+
         if(angular.isString(this.showTopPagination)){
             this.showTopPagination = (this.showTopPagination.toLowerCase() === 'true');
         }
+
         if(angular.isUndefined(this.name)){
             this.name = 'ListingDisplay';
         }
+
         if(angular.isUndefined(this.expandable)){
             this.expandable = false; 
         }
+
+        //setup export action
+        if(angular.isDefined(this.exportAction)){
+            this.exportAction = this.$hibachi.buildUrl('main.collectionExport')+'&collectionExportID=';
+        }
+
         this.paginator = this.paginationService.createPagination();
 
         this.hasCollectionPromise = false;

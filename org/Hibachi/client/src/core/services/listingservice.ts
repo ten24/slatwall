@@ -55,78 +55,30 @@ class ListingService{
                 pageRecords[pageRecordIndex].editedFields[key]();
             }
         }
-        delete  pageRecords[pageRecordIndex].editedFields;
+        delete pageRecords[pageRecordIndex].editedFields;
     }
 
     public setupInSingleCollectionConfigMode = (listingID, scope) =>{
         
-        if (angular.isUndefined(this.getListing(listingID).collectionObject) && angular.isDefined(this.getListing(listingID).collectionConfig)){
+        if(angular.isUndefined(this.getListing(listingID).collectionObject) && angular.isDefined(this.getListing(listingID).collectionConfig)){
             this.getListing(listingID).collectionObject = this.getListing(listingID).collectionConfig.baseEntityName; 
         }
-        
-         //add filterGroups
-        angular.forEach(this.getListing(listingID).filterGroups, (filterGroup)=>{
-            this.getListing(listingID).collectionConfig.addFilterGroup(filterGroup);
-        });
 
-         //add filters
         this.setupColumns(listingID,this.getListing(listingID).collectionConfig, this.getListing(listingID).collectionObject);
+        
         angular.forEach(this.getListing(listingID).filters, (filter)=>{
-                this.getListing(listingID).collectionConfig.addFilter( filter.propertyIdentifier, 
-                                                                       filter.comparisonValue, 
-                                                                       filter.comparisonOperator, 
-                                                                       filter.logicalOperator, 
-                                                                       filter.hidden
-                                                                     );
+                
+                this.getListing(listingID)
+                    .collectionConfig
+                    .addFilter( filter.propertyIdentifier, 
+                                filter.comparisonValue, 
+                                filter.comparisonOperator, 
+                                filter.logicalOperator, 
+                                filter.hidden
+                               );
         }); 
         
-        //add order bys
-        angular.forEach(this.getListing(listingID).orderBys, (orderBy)=>{
-            this.getListing(listingID).collectionConfig.addOrderBy(orderBy.orderBy);
-        });
-        
-        angular.forEach(this.getListing(listingID).aggregates, (aggregate)=>{
-            this.getListing(listingID).collectionConfig.addDisplayAggregate( aggregate.propertyIdentifier, 
-                                                                             aggregate.aggregateFunction, 
-                                                                             aggregate.aggregateAlias
-                                                                           );
-        });
-        
-        //make sure we have necessary properties to make the actions 
-        angular.forEach(this.getListing(listingID).actions, (action)=>{
-            if(angular.isDefined(action.queryString)){
-                var parsedProperties = this.utilityService.getPropertiesFromString(action.queryString);
-                if(parsedProperties && parsedProperties.length){
-                    this.getListing(listingID).collectionConfig.addDisplayProperty( this.utilityService.arrayToList(parsedProperties), 
-                                                                                    "", 
-                                                                                    { isVisible : false }
-                                                                                  );
-                }
-            }
-        });
-        
-        //also make sure we have necessary color filter properties
-        angular.forEach(this.getListing(listingID).colorFilters,(colorFilter)=>{
-            if(angular.isDefined(colorFilter.propertyToCompare)){
-                this.getListing(listingID).collectionConfig.addDisplayProperty( colorFilter.propertyToCompare, 
-                                                                                "", 
-                                                                                { isVisible : false }
-                                                                              );
-            }
-        });
-        
-        this.getListing(listingID).exampleEntity = this.$hibachi.getEntityExample(this.getListing(listingID).collectionObject);
-        
-        if(this.getListing(listingID).collectionConfig.hasColumns()){
-            this.getListing(listingID).collectionConfig.addDisplayProperty( this.getListing(listingID).exampleEntity.$$getIDName(),
-                                                                            undefined,
-                                                                            { isVisible : false }
-                                                                          );
-        }
-        
         this.initCollectionConfigData(listingID,this.getListing(listingID).collectionConfig);
-         
-        //this.getCollection();
         
         scope.$watch('swMultiListingDisplay.collectionPromise',(newValue,oldValue)=>{
             if(newValue){
@@ -150,34 +102,65 @@ class ListingService{
 
     public initCollectionConfigData = (listingID,collectionConfig) =>{
 
+        this.setupSelect(listingID); 
+        this.setupMultiselect(listingID);
+
+        angular.forEach(this.getListing(listingID).filterGroups, (filterGroup)=>{
+           collectionConfig.addFilterGroup(filterGroup);
+        });
+
+        angular.forEach(this.getListing(listingID).orderBys, (orderBy)=>{
+            collectionConfig.addOrderBy(orderBy.orderBy);
+        });
+
+        angular.forEach(this.getListing(listingID).aggregates, (aggregate)=>{
+            
+            collectionConfig.addDisplayAggregate( aggregate.propertyIdentifier, 
+                                                  aggregate.aggregateFunction, 
+                                                  aggregate.aggregateAlias
+                                                );
+        });
+        
+        //make sure we have necessary properties to make the actions 
+        angular.forEach(this.getListing(listingID).actions, (action)=>{
+            
+            if(angular.isDefined(action.queryString)){
+                var parsedProperties = this.utilityService.getPropertiesFromString(action.queryString);
+                if(parsedProperties && parsedProperties.length){
+                    
+                    collectionConfig.addDisplayProperty( this.utilityService.arrayToList(parsedProperties), 
+                                                         "", 
+                                                         { isVisible : false }
+                                                       );
+                }
+            }
+            
+        });
+        
+        //also make sure we have necessary color filter properties
+        angular.forEach(this.getListing(listingID).colorFilters,(colorFilter)=>{
+            if(angular.isDefined(colorFilter.propertyToCompare)){
+                
+                collectionConfig.addDisplayProperty( colorFilter.propertyToCompare, 
+                                                     "", 
+                                                     { isVisible : false }
+                                                   );
+            }
+        });
+        
+        this.getListing(listingID).exampleEntity = this.$hibachi.getEntityExample(this.getListing(listingID).collectionObject);
+        
+        if(this.getListing(listingID).collectionConfig.hasColumns()){
+            
+            collectionConfig.addDisplayProperty( this.getListing(listingID).exampleEntity.$$getIDName(),
+                                                 undefined,
+                                                 { isVisible : false }
+                                               );
+        }
+
         collectionConfig.setPageShow(this.getListing(listingID).paginator.pageShow);
         collectionConfig.setCurrentPage(this.getListing(listingID).paginator.currentPage);
 
-        //setup export action
-        if(angular.isDefined(this.getListing(listingID).exportAction)){
-            this.getListing(listingID).exportAction = this.$hibachi.buildUrl('main.collectionExport')+'&collectionExportID=';
-        }
-
-        //Setup Select
-        if(this.getListing(listingID).selectFieldName && this.getListing(listingID).selectFieldName.length){
-            this.getListing(listingID).selectable = true;
-            this.getListing(listingID).tableclass = this.utilityService.listAppend(this.getListing(listingID).tableclass,'table-select',' ');
-            this.getListing(listingID).tableattributes = this.utilityService.listAppend(this.getListing(listingID).tableattributes, 'data-selectfield="'+this.getListing(listingID).selectFieldName+'"', ' ');
-        }
-
-        //Setup MultiSelect
-        if(this.getListing(listingID).multiselectFieldName && this.getListing(listingID).multiselectFieldName.length){
-            this.getListing(listingID).multiselectable = true;
-            this.getListing(listingID).tableclass = this.utilityService.listAppend(this.getListing(listingID).tableclass, 'table-multiselect',' ');
-            this.getListing(listingID).tableattributes = this.utilityService.listAppend(this.getListing(listingID).tableattributes,'data-multiselectpropertyidentifier="'+this.getListing(listingID).multiselectPropertyIdentifier+'"',' ');
-
-
-            //attach observer so we know when a selection occurs
-            this.getListing(listingID).observerService.attach(this.getListing(listingID).updateMultiselectValues,this.getListing(listingID).defaultSelectEvent,this.getListing(listingID).collectionObject);
-
-            //attach observer so we know when a pagination change occurs
-            this.getListing(listingID).observerService.attach(this.getListing(listingID).paginationPageChange,'swPaginationAction');
-        }
         if(this.getListing(listingID).multiselectable && (!this.getListing(listingID).columns || !this.getListing(listingID).columns.length)){
             //check if it has an active flag and if so then add the active flag
             if(this.getListing(listingID).exampleEntity.metaData.activeProperty && !this.getListing(listingID).hasCollectionPromise){
@@ -229,52 +212,6 @@ class ListingService{
                 var id = this.getListing(listingID).utilityService.listLast(value,'/');
                 this.getListing(listingID).selectionService.addSelection(this.getListing(listingID).name,id);
             });
-        }
-
-        if(this.getListing(listingID).multiselectValues && this.getListing(listingID).multiselectValues.length){
-            //select all owned ids
-            angular.forEach(this.getListing(listingID).multiselectValues,(value)=>{
-                this.getListing(listingID).selectionService.addSelection(this.getListing(listingID).name,value);
-            });
-        }
-
-        //set defaults if value is not specifies
-        this.getListing(listingID).processObjectProperties = this.getListing(listingID).processObjectProperties || '';
-        this.getListing(listingID).recordProcessButtonDisplayFlag = this.getListing(listingID).recordProcessButtonDisplayFlag || true;
-        this.getListing(listingID).norecordstext = this.rbkeyService.getRBKey('entity.'+this.getListing(listingID).collectionObject+'.norecords');
-
-        //Setup Sortability
-        if(this.getListing(listingID).sortProperty && this.getListing(listingID).sortProperty.length){
-
-        }
-
-        //Setup the admin meta info
-        if(angular.isUndefined(this.getListing(listingID).administrativeCount)){
-            this.getListing(listingID).administrativeCount = 0;
-        }
-
-        //Detail
-        if(this.getListing(listingID).recordDetailAction && this.getListing(listingID).recordDetailAction.length){
-            this.getListing(listingID).administrativeCount++;
-            this.getListing(listingID).adminattributes = this.getListing(listingID).getAdminAttributesByType('detail');
-        }
-
-        //Edit
-        if(this.getListing(listingID).recordEditAction && this.getListing(listingID).recordEditAction.length){
-            this.getListing(listingID).administrativeCount++;
-            this.getListing(listingID).adminattributes = this.getListing(listingID).getAdminAttributesByType('edit');
-        }
-
-        //Delete
-        if(this.getListing(listingID).recordDeleteAction && this.getListing(listingID).recordDeleteAction.length){
-            this.getListing(listingID).administrativeCount++;
-            this.getListing(listingID).adminattributes = this.getListing(listingID).getAdminAttributesByType('delete');
-        }
-
-        //Add
-        if(this.getListing(listingID).recordAddAction && this.getListing(listingID).recordAddAction.length){
-            this.getListing(listingID).administrativeCount++;
-            this.getListing(listingID).adminattributes = this.getListing(listingID).getAdminAttributesByType('add');
         }
 
         //Setup the list of all property identifiers to be used later
@@ -331,6 +268,36 @@ class ListingService{
         this.getListing(listingID).tableclass = this.utilityService.listPrepend(this.getListing(listingID).tableclass, 'table table-bordered table-hover', ' ');
     };
     //end initCollectionConfigData
+
+    public setupSelect = (listingID) =>{
+        if(this.getListing(listingID).selectFieldName && this.getListing(listingID).selectFieldName.length){
+            this.getListing(listingID).selectable = true;
+            this.getListing(listingID).tableclass = this.utilityService.listAppend(this.getListing(listingID).tableclass,'table-select',' ');
+            this.getListing(listingID).tableattributes = this.utilityService.listAppend(this.getListing(listingID).tableattributes, 'data-selectfield="'+this.getListing(listingID).selectFieldName+'"', ' ');
+        }
+    }
+
+    public setupMultiselect = (listingID) =>{
+        if(this.getListing(listingID).multiselectFieldName && this.getListing(listingID).multiselectFieldName.length){
+            this.getListing(listingID).multiselectable = true;
+            this.getListing(listingID).tableclass = this.utilityService.listAppend(this.getListing(listingID).tableclass, 'table-multiselect',' ');
+            this.getListing(listingID).tableattributes = this.utilityService.listAppend(this.getListing(listingID).tableattributes,'data-multiselectpropertyidentifier="'+this.getListing(listingID).multiselectPropertyIdentifier+'"',' ');
+
+
+            //attach observer so we know when a selection occurs
+            this.getListing(listingID).observerService.attach(this.getListing(listingID).updateMultiselectValues,this.getListing(listingID).defaultSelectEvent,this.getListing(listingID).collectionObject);
+
+            //attach observer so we know when a pagination change occurs
+            this.getListing(listingID).observerService.attach(this.getListing(listingID).paginationPageChange,'swPaginationAction');
+        }
+
+        if(this.getListing(listingID).multiselectValues && this.getListing(listingID).multiselectValues.length){
+            //select all owned ids
+            angular.forEach(this.getListing(listingID).multiselectValues,(value)=>{
+                this.getListing(listingID).selectionService.addSelection(this.getListing(listingID).name,value);
+            });
+        }
+    }
 
     public setupColumns = (listingID, collectionConfig, collectionObject) =>{
         //assumes no alias formatting
@@ -436,9 +403,7 @@ class ListingService{
                     this.getListing(listingID).orderByStates[column.propertyIdentifier] = orderBy.direction;
                 }
             });
-        } else { 
-            //multicollection logic here
-        }
+        } 
         if(!isfound){
             this.getListing(listingID).orderByStates[column.propertyIdentifier] = '';
         }
@@ -489,12 +454,13 @@ class ListingService{
         classObjectString = classObjectString.concat(",'s-edited':pageRecord.edited");
         return classObjectString + "}"; 
     };
-
+    
     public getPageRecordIsChild = (listingID, pageRecord)=>{
         var isChild = false;
         //todo implement
         return isChild;
     };
+    
 
     //Disable Rule Logic
     public getKeyOfMatchedDisableRule = (listingID, pageRecord)=>{
