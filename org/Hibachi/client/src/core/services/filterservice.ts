@@ -6,46 +6,46 @@ class FilterService {
 
     }
 
-    public filterMatch = (valueToCompare, comparisonOperator, comparisonValue) => {
+    public filterMatch = (valueToCompareAgainst, comparisonOperator, comparisonValue) => {
         switch (comparisonOperator){
             case "!=":
-                if(valueToCompare != comparisonValue){
+                if(valueToCompareAgainst != comparisonValue){
                     return true;
                 }
                 break; 
             case ">":
-                if(valueToCompare > comparisonValue){
+                if(valueToCompareAgainst > comparisonValue){
                     return true; 
                 }
                 break;
             case ">=":  
-                if(valueToCompare >= comparisonValue){
+                if(valueToCompareAgainst >= comparisonValue){
                     return true;
                 }
                 break;
             case "<":
-                if(valueToCompare < comparisonValue){
+                if(valueToCompareAgainst < comparisonValue){
                     return true;
                 }
                 break; 
             case "<=":
-                if(valueToCompare <= comparisonValue){
+                if(valueToCompareAgainst <= comparisonValue){
                     return true;
                 }
                 break; 
             case "is":
-                if(valueToCompare == comparisonValue){
+                if(valueToCompareAgainst == comparisonValue){
                     return true;
                 }
                 break;
             case "is not": 
-                if(valueToCompare != comparisonValue){
+                if(valueToCompareAgainst != comparisonValue){
                     return true;
                 }
                 break; 
             default: 
                 //= case
-                if(valueToCompare == comparisonValue){
+                if(valueToCompareAgainst == comparisonValue){
                     return true;
                 }
                 break; 

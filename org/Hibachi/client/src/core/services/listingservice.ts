@@ -64,21 +64,11 @@ class ListingService{
             this.getListing(listingID).collectionObject = this.getListing(listingID).collectionConfig.baseEntityName; 
         }
 
-        this.setupColumns(listingID,this.getListing(listingID).collectionConfig, this.getListing(listingID).collectionObject);
+        this.setupColumns( listingID,this.getListing(listingID).collectionConfig, this.getListing(listingID).collectionObject );
         
-        angular.forEach(this.getListing(listingID).filters, (filter)=>{
-                
-                this.getListing(listingID)
-                    .collectionConfig
-                    .addFilter( filter.propertyIdentifier, 
-                                filter.comparisonValue, 
-                                filter.comparisonOperator, 
-                                filter.logicalOperator, 
-                                filter.hidden
-                               );
-        }); 
         
-        this.initCollectionConfigData(listingID,this.getListing(listingID).collectionConfig);
+        
+        this.initCollectionConfigData( listingID, this.getListing(listingID).collectionConfig );
         
         scope.$watch('swMultiListingDisplay.collectionPromise',(newValue,oldValue)=>{
             if(newValue){
@@ -164,6 +154,15 @@ class ListingService{
             collectionConfig.addFilterGroup(filterGroup);
         });
 
+        angular.forEach(this.getListing(listingID).filters, (filter)=>{
+                collectionConfig.addFilter( filter.propertyIdentifier, 
+                                            filter.comparisonValue, 
+                                            filter.comparisonOperator, 
+                                            filter.logicalOperator, 
+                                            filter.hidden
+                                          );
+        }); 
+
         angular.forEach(this.getListing(listingID).orderBys, (orderBy)=>{
             collectionConfig.addOrderBy(orderBy.orderBy);
         });
@@ -180,8 +179,7 @@ class ListingService{
             
             if(angular.isDefined(action.queryString)){
                 var parsedProperties = this.utilityService.getPropertiesFromString(action.queryString);
-                if(parsedProperties && parsedProperties.length){
-                    
+                if(parsedProperties && parsedProperties.length){    
                     collectionConfig.addDisplayProperty( this.utilityService.arrayToList(parsedProperties), 
                                                          "", 
                                                          { isVisible : false }
@@ -193,8 +191,7 @@ class ListingService{
         
         //also make sure we have necessary color filter properties
         angular.forEach(this.getListing(listingID).colorFilters,(colorFilter)=>{
-            if(angular.isDefined(colorFilter.propertyToCompare)){
-                
+            if(angular.isDefined(colorFilter.propertyToCompare)){ 
                 collectionConfig.addDisplayProperty( colorFilter.propertyToCompare, 
                                                      "", 
                                                      { isVisible : false }
@@ -202,10 +199,8 @@ class ListingService{
             }
         });
         
-        this.getListing(listingID).exampleEntity = this.$hibachi.getEntityExample(this.getListing(listingID).collectionObject);
         
         if(this.getListing(listingID).collectionConfig.hasColumns()){
-            
             collectionConfig.addDisplayProperty( this.getListing(listingID).exampleEntity.$$getIDName(),
                                                  undefined,
                                                  { isVisible : false }
@@ -222,40 +217,7 @@ class ListingService{
             }
         }
 
-            //Setup Hierachy Expandable
-        if(this.getListing(listingID).parentPropertyName && this.getListing(listingID).parentPropertyName.length && this.getListing(listingID).expandable !=false){
-            if(angular.isUndefined(this.getListing(listingID).expandable)){
-                this.getListing(listingID).expandable = true;
-            }
-
-            this.getListing(listingID).tableclass = this.utilityService.listAppend(this.getListing(listingID).tableclass,'table-expandable',' ');
-
-            //add parent property root filter
-            if(!this.getListing(listingID).hasCollectionPromise){
-                collectionConfig.addFilter(this.getListing(listingID).parentPropertyName+'.'+this.getListing(listingID).exampleEntity.$$getIDName(),'NULL','IS', undefined, true);
-            }
-            //this.collectionConfig.addDisplayProperty(this.exampleEntity.$$getIDName()+'Path',undefined,{isVisible:false});
-            //add children column
-            if(this.getListing(listingID).childPropertyName && this.getListing(listingID).childPropertyName.length) {
-                if(this.getListing(listingID).getChildCount || !this.getListing(listingID).hasCollectionPromise){
-                    collectionConfig.addDisplayAggregate(
-                        this.getListing(listingID).childPropertyName,
-                        'COUNT',
-                        this.getListing(listingID).childPropertyName+'Count'
-                    );
-                }
-            }
-
-            this.getListing(listingID).allpropertyidentifiers = this.utilityService.listAppend(this.getListing(listingID).allpropertyidentifiers,this.getListing(listingID).exampleEntity.$$getIDName()+'Path');
-            this.getListing(listingID).tableattributes = this.utilityService.listAppend(this.getListing(listingID).tableattributes, 'data-parentidproperty='+this.getListing(listingID).parentPropertyName+'.'+this.getListing(listingID).exampleEntity.$$getIDName(),' ');
-        }
-
-        if(this.getListing(listingID).multiselectIdPaths && this.getListing(listingID).multiselectIdPaths.length){
-            angular.forEach(this.getListing(listingID).multiselectIdPaths.split(','),(value)=>{
-                var id = this.getListing(listingID).utilityService.listLast(value,'/');
-                this.getListing(listingID).selectionService.addSelection(this.getListing(listingID).name,id);
-            });
-        }
+        this.setupHierarchicalExpandable(listingID, collectionConfig);
 
         //Setup the list of all property identifiers to be used later
         angular.forEach(this.getListing(listingID).columns,(column:any)=>{
@@ -264,7 +226,6 @@ class ListingService{
                 //Add to the all property identifiers
                 this.getListing(listingID).allpropertyidentifiers = this.utilityService.listAppend(this.getListing(listingID).allpropertyidentifiers,column.propertyIdentifier);
                 //Check to see if we need to setup the dynamic filters, etc
-                //<cfif not len(column.search) || not len(column.sort) || not len(column.filter) || not len(column.range)>
                 if(
                     !column.searchable || !!column.searchable.length || !column.sort || !column.sort.length
                     ){
@@ -305,10 +266,6 @@ class ListingService{
         if(this.getListing(listingID).administrativeCount){
             this.getListing(listingID).administrativeCount++;
         }
-
-        //Setup table class
-        this.getListing(listingID).tableclass = this.getListing(listingID).tableclass || '';
-        this.getListing(listingID).tableclass = this.utilityService.listPrepend(this.getListing(listingID).tableclass, 'table table-bordered table-hover', ' ');
     };
     //end initCollectionConfigData
 
@@ -340,9 +297,17 @@ class ListingService{
                 this.getListing(listingID).selectionService.addSelection(this.getListing(listingID).name,value);
             });
         }
+
+        if(this.getListing(listingID).multiselectIdPaths && this.getListing(listingID).multiselectIdPaths.length){
+            angular.forEach(this.getListing(listingID).multiselectIdPaths.split(','),(value)=>{
+                var id = this.getListing(listingID).utilityService.listLast(value,'/');
+                this.getListing(listingID).selectionService.addSelection(this.getListing(listingID).name,id);
+            });
+        }
     }
 
     public setupExampleEntity = (listingID) =>{
+        this.getListing(listingID).exampleEntity = this.$hibachi.getEntityExample(this.getListing(listingID).collectionObject);        
         //Look for Hierarchy in example entity
         if(!this.getListing(listingID).parentPropertyName || (this.getListing(listingID).parentPropertyName && !this.getListing(listingID).parentPropertyName.length) ){
             if(this.getListing(listingID).exampleEntity.metaData.hb_parentPropertyName){
@@ -353,6 +318,36 @@ class ListingService{
             if(this.getListing(listingID).exampleEntity.metaData.hb_childPropertyName){
                 this.getListing(listingID).childPropertyName = this.getListing(listingID).exampleEntity.metaData.hb_childPropertyName;
             }
+        }
+    }
+
+    public setupHierarchicalExpandable = (listingID, collectionConfig) =>{
+        //Setup Hierachy Expandable
+        if(this.getListing(listingID).parentPropertyName && this.getListing(listingID).parentPropertyName.length && this.getListing(listingID).expandable !=false){
+            if(angular.isUndefined(this.getListing(listingID).expandable)){
+                this.getListing(listingID).expandable = true;
+            }
+
+            this.getListing(listingID).tableclass = this.utilityService.listAppend(this.getListing(listingID).tableclass,'table-expandable',' ');
+
+            //add parent property root filter
+            if(!this.getListing(listingID).hasCollectionPromise){
+                collectionConfig.addFilter(this.getListing(listingID).parentPropertyName+'.'+this.getListing(listingID).exampleEntity.$$getIDName(),'NULL','IS', undefined, true);
+            }
+            //this.collectionConfig.addDisplayProperty(this.exampleEntity.$$getIDName()+'Path',undefined,{isVisible:false});
+            //add children column
+            if(this.getListing(listingID).childPropertyName && this.getListing(listingID).childPropertyName.length) {
+                if(this.getListing(listingID).getChildCount || !this.getListing(listingID).hasCollectionPromise){
+                    collectionConfig.addDisplayAggregate(
+                        this.getListing(listingID).childPropertyName,
+                        'COUNT',
+                        this.getListing(listingID).childPropertyName+'Count'
+                    );
+                }
+            }
+
+            this.getListing(listingID).allpropertyidentifiers = this.utilityService.listAppend(this.getListing(listingID).allpropertyidentifiers,this.getListing(listingID).exampleEntity.$$getIDName()+'Path');
+            this.getListing(listingID).tableattributes = this.utilityService.listAppend(this.getListing(listingID).tableattributes, 'data-parentidproperty='+this.getListing(listingID).parentPropertyName+'.'+this.getListing(listingID).exampleEntity.$$getIDName(),' ');
         }
     }
 
@@ -371,7 +366,6 @@ class ListingService{
                 });
             };
         } else { 
-            //Multi Collection Config Info Here
             return ()=>{
                 this.getListing(listingID).collectionData = {}; 
                 this.getListing(listingID).collectionData.pageRecords = [];
@@ -388,7 +382,7 @@ class ListingService{
                             });
                         },
                         (reason)=>{
-                           //error callback to be implemented
+                           throw("listing service had trouble getting collection data because: " + reason);
                         }
                     ); 
                 } 
@@ -476,15 +470,12 @@ class ListingService{
                     } else {
                         var pageRecordValue = pageRecord[rule.filterPropertyIdentifier]; 
                     }
-                    
                     if(rule.filterComparisonValue == "null"){
                         rule.filterComparisonValue = "";
-                    }   
-                    
-                    if(this.filterService.filterMatch(pageRecordValue, rule.comparisonOperatior, rule.filterComparisonValue)){
+                    } 
+                    if(this.filterService.filterMatch(pageRecordValue, rule.filterComparisonOperator, rule.filterComparisonValue)){
                         disableRuleMatchedKey = key; 
-                    }
-                        
+                    }  
                     if(disableRuleMatchedKey != -1){
                         return disableRuleMatchedKey;
                     }
@@ -512,11 +503,9 @@ class ListingService{
                     } else {
                         var pageRecordValue = pageRecord[rule.filterPropertyIdentifier]; 
                     }
-
-                    if(this.filterService.filterMatch(pageRecordValue, rule.comparisonOperatior, rule.filterComparisonValue)){
+                    if(this.filterService.filterMatch(pageRecordValue, rule.filterComparisonOperator, rule.filterComparisonValue)){
                         expandableRuleMatchedKey = key; 
                     }
-                   
                     if(expandableRuleMatchedKey != -1){
                         return expandableRuleMatchedKey;
                     }

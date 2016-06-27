@@ -178,6 +178,10 @@ class SWMultiListingDisplayController{
             this.multipleCollectionDeffered.reject(); 
         }); 
 
+        //Setup table class
+        this.tableclass = this.tableclass || '';
+        this.tableclass = this.utilityService.listPrepend(this.tableclass, 'table table-bordered table-hover', ' ');
+
         if(!this.collection || !angular.isString(this.collection)){
             //I don't know if we want to make this assumption
             this.hasCollectionPromise = true;//maybe
