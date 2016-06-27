@@ -125,6 +125,24 @@ class ListingService{
                     collectionConfig.addDisplayProperty(this.utilityService.arrayToList(parsedProperties), "", {isVisible:false});
                 }
             }
+            //If this is a standard propertyIdentifier
+            if(column.propertyIdentifier){
+                //Add to the all property identifiers
+                this.getListing(listingID).allpropertyidentifiers = this.utilityService.listAppend(this.getListing(listingID).allpropertyidentifiers,column.propertyIdentifier);
+            //Otherwise this is a processObject property
+            }else if(column.processObjectProperty){
+                column.searchable = false;
+                column.sort = false;
+                this.getListing(listingID).allprocessobjectproperties = this.utilityService.listAppend(this.getListing(listingID).allprocessobjectproperties, column.processObjectProperty);
+
+            }
+            if(column.tdclass){
+                var tdclassArray = column.tdclass.split(' ');
+                if(tdclassArray.indexOf("primary") >= 0 && this.getListing(listingID).expandable){
+                    this.getListing(listingID).tableattributes = this.utilityService.listAppend(this.getListing(listingID).tableattributes,'data-expandsortproperty='+column.propertyIdentifier, " ")
+                    column.sort = false;
+                }
+            }
             this.columnOrderBy(listingID, column);
             
             //only want to do this if it's a singleCollectionConfig
@@ -218,54 +236,7 @@ class ListingService{
         }
 
         this.setupHierarchicalExpandable(listingID, collectionConfig);
-
-        //Setup the list of all property identifiers to be used later
-        angular.forEach(this.getListing(listingID).columns,(column:any)=>{
-            //If this is a standard propertyIdentifier
-            if(column.propertyIdentifier){
-                //Add to the all property identifiers
-                this.getListing(listingID).allpropertyidentifiers = this.utilityService.listAppend(this.getListing(listingID).allpropertyidentifiers,column.propertyIdentifier);
-                //Check to see if we need to setup the dynamic filters, etc
-                if(
-                    !column.searchable || !!column.searchable.length || !column.sort || !column.sort.length
-                    ){
-                    //Get the entity object to get property metaData
-
-                    var thisEntityName = this.$hibachi.getLastEntityNameInPropertyIdentifier(this.getListing(listingID).exampleEntity.metaData.className, column.propertyIdentifier);
-                    var thisPropertyName = this.utilityService.listLast(column.propertyIdentifier,'.');
-                    var thisPropertyMeta = this.$hibachi.getPropertyByEntityNameAndPropertyName(thisEntityName,thisPropertyName);
-                }
-            //Otherwise this is a processObject property
-            }else if(column.processObjectProperty){
-                column.searchable = false;
-                column.sort = false;
-                this.getListing(listingID).allprocessobjectproperties = this.utilityService.listAppend(this.getListing(listingID).allprocessobjectproperties, column.processObjectProperty);
-
-            }
-            if(column.tdclass){
-                var tdclassArray = column.tdclass.split(' ');
-                if(tdclassArray.indexOf("primary") >= 0 && this.getListing(listingID).expandable){
-                    this.getListing(listingID).tableattributes = this.utilityService.listAppend(this.getListing(listingID).tableattributes,'data-expandsortproperty='+column.propertyIdentifier, " ")
-                    column.sort = false;
-                }
-            }
-
-        });
-        //Setup a variable for the number of columns so that the none can have a proper colspan
-        this.getListing(listingID).columnCount = (this.getListing(listingID).columns) ? this.getListing(listingID).columns.length : 0;
-
-        if(this.getListing(listingID).selectable){
-            this.getListing(listingID).columnCount++;
-        }
-        if(this.getListing(listingID).multiselectable){
-            this.getListing(listingID).columnCount++;
-        }
-        if(this.getListing(listingID).sortable){
-            this.getListing(listingID).columnCount++;
-        }
-        if(this.getListing(listingID).administrativeCount){
-            this.getListing(listingID).administrativeCount++;
-        }
+        this.updateColumnAndAdministrativeCount(listingID);
     };
     //end initCollectionConfigData
 
@@ -348,6 +319,24 @@ class ListingService{
 
             this.getListing(listingID).allpropertyidentifiers = this.utilityService.listAppend(this.getListing(listingID).allpropertyidentifiers,this.getListing(listingID).exampleEntity.$$getIDName()+'Path');
             this.getListing(listingID).tableattributes = this.utilityService.listAppend(this.getListing(listingID).tableattributes, 'data-parentidproperty='+this.getListing(listingID).parentPropertyName+'.'+this.getListing(listingID).exampleEntity.$$getIDName(),' ');
+        }
+    }
+
+    public updateColumnAndAdministrativeCount = (listingID) =>{
+        //Setup a variable for the number of columns so that the none can have a proper colspan
+        this.getListing(listingID).columnCount = (this.getListing(listingID).columns) ? this.getListing(listingID).columns.length : 0;
+
+        if(this.getListing(listingID).selectable){
+            this.getListing(listingID).columnCount++;
+        }
+        if(this.getListing(listingID).multiselectable){
+            this.getListing(listingID).columnCount++;
+        }
+        if(this.getListing(listingID).sortable){
+            this.getListing(listingID).columnCount++;
+        }
+        if(this.getListing(listingID).administrativeCount){
+            this.getListing(listingID).administrativeCount++;
         }
     }
 
