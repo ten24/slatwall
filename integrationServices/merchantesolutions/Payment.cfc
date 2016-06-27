@@ -155,7 +155,7 @@ component accessors="true" output="false" displayname="MerchanteSolutions" imple
 		httpRequest.setMethod("POST");
 		if(setting('testModeFlag')) {
 			httpRequest.setUrl(setting("testApiUrl"));
-		else {
+		} else {
 			httpRequest.setUrl(setting("apiUrl"));
 		}
 		httpRequest.setTimeout(variables.timeout);
