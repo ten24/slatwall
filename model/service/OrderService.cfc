@@ -1426,9 +1426,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// As long as the amount received for this orderFulfillment is within the treshold of the auto fulfillment setting
 		if(
-			arguments.orderFulfillment.getIsAutoFulfillmentReadyToBeFulfilled()
+		    arguments.orderFulfillment.isAutoFulfillmentReadyToBeFulfilled()
 		){
-
 			// Setup the processData
 			var newOrderDelivery = this.newOrderDelivery();
 			var processData = {};
