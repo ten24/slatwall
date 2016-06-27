@@ -444,6 +444,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			}else{
 				var comparisonOperator = getComparisonOperator(workflowCondition.comparisonOperator);
 				if(len(comparisonOperator)){
+					workflowCondition.propertyIdentifier = Replace(workflowCondition.propertyIdentifier, '_','.', 'ALL');
 					workflowConditionGroupString &= " #logicalOperator# #getHibachiValidationService().invokeMethod('validate_#comparisonOperator#',{1=arguments.entity, 2=listRest(workflowCondition.propertyIdentifier,'.'), 3=workflowCondition.value})# " ;	
 				}
 			}
