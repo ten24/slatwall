@@ -100,13 +100,68 @@ class ListingService{
         });
     };
 
+    public setupColumns = (listingID, collectionConfig, collectionObject) =>{
+        //assumes no alias formatting
+        for(var i=0; i < this.getListing(listingID).columns.length; i++){
+            var column = this.getListing(listingID).columns[i];
+            var lastEntity = this.$hibachi.getLastEntityNameInPropertyIdentifier(collectionConfig.baseEntityName,column.propertyIdentifier);
+
+            if(angular.isUndefined(column.title)){
+                column.title = this.rbkeyService.getRBKey('entity.'+lastEntity.toLowerCase()+'.'+this.utilityService.listLast(column.propertyIdentifier,'.'));
+            }
+            
+            if(angular.isUndefined(column.isVisible)){
+                column.isVisible = true;
+            }
+            var metadata = this.$hibachi.getPropertyByEntityNameAndPropertyName(lastEntity, this.utilityService.listLast(column.propertyIdentifier,'.'));
+            if(angular.isDefined(metadata) && angular.isDefined(metadata.hb_formattype)){
+                column.type = metadata.hb_formatType;
+            } else { 
+                column.type = "none";
+            }
+            if(angular.isDefined(column.tooltip)){
+            
+                var parsedProperties = this.utilityService.getPropertiesFromString(column.tooltip);
+                
+                if(parsedProperties && parsedProperties.length){
+                    collectionConfig.addDisplayProperty(this.utilityService.arrayToList(parsedProperties), "", {isVisible:false});
+                }
+            } else { 
+                column.tooltip = '';
+            }
+            if(angular.isDefined(column.queryString)){
+                var parsedProperties = this.utilityService.getPropertiesFromString(column.queryString);
+                if(parsedProperties && parsedProperties.length){
+                    collectionConfig.addDisplayProperty(this.utilityService.arrayToList(parsedProperties), "", {isVisible:false});
+                }
+            }
+            this.columnOrderBy(listingID, column);
+            
+            //only want to do this if it's a singleCollectionConfig
+            //collectionConfig.addDisplayProperty(column.propertyIdentifier,column.title,column);
+        }
+        //if the passed in collection has columns perform some formatting
+        if(this.getListing(listingID).hasCollectionPromise){
+            //assumes alias formatting from collectionConfig
+            angular.forEach(collectionConfig.columns, (column)=>{
+
+                var lastEntity = this.$hibachi.getLastEntityNameInPropertyIdentifier(collectionObject,this.utilityService.listRest(column.propertyIdentifier,'.'));
+                column.title = column.title || this.rbkeyService.getRBKey('entity.'+lastEntity.toLowerCase()+'.'+this.utilityService.listLast(column.propertyIdentifier,'.'));
+                if(angular.isUndefined(column.isVisible)){
+                    column.isVisible = true;
+                }
+            });
+        }
+    };
+
     public initCollectionConfigData = (listingID,collectionConfig) =>{
 
         this.setupSelect(listingID); 
         this.setupMultiselect(listingID);
+        this.setupExampleEntity(listingID);
 
         angular.forEach(this.getListing(listingID).filterGroups, (filterGroup)=>{
-           collectionConfig.addFilterGroup(filterGroup);
+            collectionConfig.addFilterGroup(filterGroup);
         });
 
         angular.forEach(this.getListing(listingID).orderBys, (orderBy)=>{
@@ -114,7 +169,6 @@ class ListingService{
         });
 
         angular.forEach(this.getListing(listingID).aggregates, (aggregate)=>{
-            
             collectionConfig.addDisplayAggregate( aggregate.propertyIdentifier, 
                                                   aggregate.aggregateFunction, 
                                                   aggregate.aggregateAlias
@@ -168,17 +222,6 @@ class ListingService{
             }
         }
 
-        //Look for Hierarchy in example entity
-        if(!this.getListing(listingID).parentPropertyName || (this.getListing(listingID).parentPropertyName && !this.getListing(listingID).parentPropertyName.length) ){
-            if(this.getListing(listingID).exampleEntity.metaData.hb_parentPropertyName){
-                this.getListing(listingID).parentPropertyName = this.getListing(listingID).exampleEntity.metaData.hb_parentPropertyName;
-            }
-        }
-        if(!this.getListing(listingID).childPropertyName || (this.getListing(listingID).childPropertyName && !this.getListing(listingID).childPropertyName.length) ){
-            if(this.getListing(listingID).exampleEntity.metaData.hb_childPropertyName){
-                this.getListing(listingID).childPropertyName = this.getListing(listingID).exampleEntity.metaData.hb_childPropertyName;
-            }
-        }
             //Setup Hierachy Expandable
         if(this.getListing(listingID).parentPropertyName && this.getListing(listingID).parentPropertyName.length && this.getListing(listingID).expandable !=false){
             if(angular.isUndefined(this.getListing(listingID).expandable)){
@@ -299,59 +342,19 @@ class ListingService{
         }
     }
 
-    public setupColumns = (listingID, collectionConfig, collectionObject) =>{
-        //assumes no alias formatting
-        for(var i=0; i < this.getListing(listingID).columns.length; i++){
-            var column = this.getListing(listingID).columns[i];
-            var lastEntity = this.$hibachi.getLastEntityNameInPropertyIdentifier(collectionConfig.baseEntityName,column.propertyIdentifier);
-
-            if(angular.isUndefined(column.title)){
-                column.title = this.rbkeyService.getRBKey('entity.'+lastEntity.toLowerCase()+'.'+this.utilityService.listLast(column.propertyIdentifier,'.'));
+    public setupExampleEntity = (listingID) =>{
+        //Look for Hierarchy in example entity
+        if(!this.getListing(listingID).parentPropertyName || (this.getListing(listingID).parentPropertyName && !this.getListing(listingID).parentPropertyName.length) ){
+            if(this.getListing(listingID).exampleEntity.metaData.hb_parentPropertyName){
+                this.getListing(listingID).parentPropertyName = this.getListing(listingID).exampleEntity.metaData.hb_parentPropertyName;
             }
-            
-            if(angular.isUndefined(column.isVisible)){
-                column.isVisible = true;
-            }
-            var metadata = this.$hibachi.getPropertyByEntityNameAndPropertyName(lastEntity, this.utilityService.listLast(column.propertyIdentifier,'.'));
-            if(angular.isDefined(metadata) && angular.isDefined(metadata.hb_formattype)){
-                column.type = metadata.hb_formatType;
-            } else { 
-                column.type = "none";
-            }
-            if(angular.isDefined(column.tooltip)){
-            
-                var parsedProperties = this.utilityService.getPropertiesFromString(column.tooltip);
-                
-                if(parsedProperties && parsedProperties.length){
-                    collectionConfig.addDisplayProperty(this.utilityService.arrayToList(parsedProperties), "", {isVisible:false});
-                }
-            } else { 
-                column.tooltip = '';
-            }
-            if(angular.isDefined(column.queryString)){
-                var parsedProperties = this.utilityService.getPropertiesFromString(column.queryString);
-                if(parsedProperties && parsedProperties.length){
-                    collectionConfig.addDisplayProperty(this.utilityService.arrayToList(parsedProperties), "", {isVisible:false});
-                }
-            }
-            this.columnOrderBy(listingID, column);
-            
-            //only want to do this if it's a singleCollectionConfig
-            //collectionConfig.addDisplayProperty(column.propertyIdentifier,column.title,column);
         }
-        //if the passed in collection has columns perform some formatting
-        if(this.getListing(listingID).hasCollectionPromise){
-            //assumes alias formatting from collectionConfig
-            angular.forEach(collectionConfig.columns, (column)=>{
-
-                var lastEntity = this.$hibachi.getLastEntityNameInPropertyIdentifier(collectionObject,this.utilityService.listRest(column.propertyIdentifier,'.'));
-                column.title = column.title || this.rbkeyService.getRBKey('entity.'+lastEntity.toLowerCase()+'.'+this.utilityService.listLast(column.propertyIdentifier,'.'));
-                if(angular.isUndefined(column.isVisible)){
-                    column.isVisible = true;
-                }
-            });
+        if(!this.getListing(listingID).childPropertyName || (this.getListing(listingID).childPropertyName && !this.getListing(listingID).childPropertyName.length) ){
+            if(this.getListing(listingID).exampleEntity.metaData.hb_childPropertyName){
+                this.getListing(listingID).childPropertyName = this.getListing(listingID).exampleEntity.metaData.hb_childPropertyName;
+            }
         }
-    };
+    }
 
     public setupDefaultGetCollection = (listingID) =>{
         if(this.getListing(listingID).collectionConfigs.length == 0){
