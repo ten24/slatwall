@@ -159,26 +159,13 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 					||
 					( !isNull(this.getPurchaseEndDateTime()) && dateCompare(now(),this.getPurchaseEndDateTime(),"s") == -1 )					 
 				) 
+
 			) {
 				variables.availableToPurchaseFlag = true;
 			} else {
 				variables.availableToPurchaseFlag = false;
 			}				
-//			if(	
-//				( isNull(this.getPurchaseStartDateTime()) && isNull(this.getPurchaseStartDateTime()) )
-//				|| 
-//				( 
-//					!isNull(this.getPurchaseStartDateTime()) 
-//					&& !isNull(this.getPurchaseStartDateTime()) 
-//					&& dateCompare(now(),this.getPurchaseStartDateTime(),"s") == 1 
-//					&& dateCompare(now(),this.getPurchaseEndDateTime(),"s") == -1 
-//				) 
-//			)
-//			{
-//				variables.availableToPurchaseFlag = true;
-//			} else {
-//				variables.availableToPurchaseFlag = false;
-//			}
+
 		}
 
 		return variables.availableToPurchaseFlag;
@@ -790,13 +777,13 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public string function getBrandName() {
 		if(!structKeyExists(variables, "brandName")) {
 			variables.brandName = "";
-			if( structKeyExists(variables, "brand") ) {
+			if( structKeyExists(variables, "brand") && !isNull(getBrand().getBrandName())) {
 				return getBrand().getBrandName();
 			}
 		}
 		return variables.brandName;
 	}
-
+	
 	public array function getBrandOptions() {
 		var options = getPropertyOptions( "brand" );
 		options[1]['name'] = rbKey('define.none');

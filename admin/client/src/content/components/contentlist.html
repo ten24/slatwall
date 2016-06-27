@@ -1,5 +1,5 @@
 
-<section class="content s-body-margin" id="j-main-content">
+<section class="content s-body-margin s-page-table-wrapper">
 	<div class="row s-body-nav">
 	    <nav class="navbar navbar-default" role="navigation">
 	      	<div class="col-md-6 s-header-info">
@@ -26,20 +26,17 @@
 				<!-- to implement searching-->
 				<li>
 					<div class="s-select-list-wrapper">
-						<div class="form-group">
-							<div class="input-group">
-								<div class="s-input-btn">
-									<input  type="text"
-										class="form-control input-sm general-listing-search"
-										placeholder="Search"
-										name="srch-term"
-										ng-model="swContentList.keywords"
-										ng-model-options="{ debounce: 500}"
-										ng-change="swContentList.searchCollection()"
-										/>
-									<i ng-show="swContentList.loadingCollection" class="fa fa-refresh fa-spin"></i>
-								</div>
-							</div>
+						<div class="s-input-btn">
+							<input  type="text"
+								class="form-control input-sm general-listing-search"
+								placeholder="Search"
+								name="srch-term"
+								ng-model="swContentList.keywords"
+								ng-model-options="{ debounce: 500}"
+								ng-change="swContentList.searchCollection()"
+								/>
+							<i ng-show="swContentList.loadingCollection" class="fa fa-refresh fa-spin"></i>
+							<i ng-hide="swContentList.loadingCollection" class="fa fa-search"></i>
 						</div>
 					</div>
 					<!-- s-select-list-wrapper -->
