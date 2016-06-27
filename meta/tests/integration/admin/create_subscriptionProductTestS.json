@@ -31,11 +31,9 @@
       }
     },
     {
-      "type": "waitForElementPresent",
-      "locator": {
-        "type": "link text",
-        "value": "Products"
-      }
+      "type": "waitForEval",
+      "script": "return document.readyState",
+      "value": "complete"
     },
     {
       "type": "clickElement",
@@ -74,11 +72,9 @@
       }
     },
     {
-      "type": "waitForElementPresent",
-      "locator": {
-        "type": "link text",
-        "value": "Products"
-      }
+      "type": "waitForEval",
+      "script": "return document.readyState",
+      "value": "complete"
     },
     {
       "type": "clickElement",
@@ -132,11 +128,9 @@
       }
     },
     {
-      "type": "waitForElementPresent",
-      "locator": {
-        "type": "link text",
-        "value": "Products"
-      }
+      "type": "waitForEval",
+      "script": "return document.readyState",
+      "value": "complete"
     },
     {
       "type": "clickElement",
@@ -218,11 +212,9 @@
       "text": "21"
     },
     {
-      "type": "waitForElementPresent",
-      "locator": {
-        "type": "css selector",
-        "value": "i.hibachi-ui-checkbox"
-      }
+      "type": "waitForEval",
+      "script": "return document.readyState",
+      "value": "complete"
     },
     {
       "type": "clickElement",
