@@ -97,6 +97,9 @@ class SWMultiListingDisplayController{
         public rbkeyService
     ){
         //Common Setup
+        if(angular.isDefined(this.administrativeCount)){
+            this.administrativeCount = parseInt(this.administrativeCount);
+        }
         this.tableID = 'LD'+this.utilityService.createID();
         if(angular.isDefined(this.baseEntityName) && angular.isDefined(this.baseEntityID)){
             
@@ -417,6 +420,7 @@ class SWMultiListingDisplay implements ng.IDirective{
 
             /*Admin Actions*/
             actions:"=?",
+            administrativeCount:"@?",
             recordEditAction:"@?",
             recordEditActionProperty:"@?",
             recordEditQueryString:"@?",

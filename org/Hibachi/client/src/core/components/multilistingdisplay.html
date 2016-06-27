@@ -164,7 +164,7 @@
                             	</sw-listing-display-cell>
 							</td>
 
-                            <td class="admin admin{{swMultiListingDisplay.administrativeCount}} s-detail-hidden-content s-actions" data-ng-if="swMultiListingDisplay.administrativeCount">
+                            <td class="admin admin{{swMultiListingDisplay.administrativeCount}} s-detail-hidden-content s-actions" data-ng-show="swMultiListingDisplay.administrativeCount > 0">
                                 
                                 <!-- Save -->
                                 <div ng-transclude="saveAction"></div>

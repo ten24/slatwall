@@ -18,6 +18,7 @@ class SWSkuPricesEditController{
     public selectCurrencyCodeEventName:string;
     public showPriceEdit:boolean; 
     public relatedSkuPriceCollectionConfig:any; 
+    public loadingPromise:any;
 
     public sku:any; 
     public skuPrice:any;
@@ -75,16 +76,17 @@ class SWSkuPricesEditController{
     }
 
     public getSkuPrices = () =>{
-        var promise = this.skuPriceService.getSkuPricesForQuantityRange( this.skuSkuId,
-                                                                         this.minQuantity,
-                                                                         this.maxQuantity
-                                                                       );
-        promise.then(
+        this.loadingPromise = this.skuPriceService.getSkuPricesForQuantityRange( 
+                                                                                 this.skuSkuId,
+                                                                                 this.minQuantity,
+                                                                                 this.maxQuantity
+                                                                               );
+        this.loadingPromise.then(
             (data)=>{
                 this.skuPrices = data;
             }
         );
-        return promise; 
+        return this.loadingPromise; 
     }
 }
 

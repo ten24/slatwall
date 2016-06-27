@@ -245,7 +245,9 @@ class ListingService{
         }
 
         //Setup the admin meta info
-        this.getListing(listingID).administrativeCount = 0;
+        if(angular.isUndefined(this.getListing(listingID).administrativeCount)){
+            this.getListing(listingID).administrativeCount = 0;
+        }
 
         //Detail
         if(this.getListing(listingID).recordDetailAction && this.getListing(listingID).recordDetailAction.length){
@@ -327,7 +329,7 @@ class ListingService{
     //end initCollectionConfigData
 
     public setupColumns = (listingID, collectionConfig, collectionObject) =>{
-    //assumes no alias formatting
+        //assumes no alias formatting
         for(var i=0; i < this.getListing(listingID).columns.length; i++){
             var column = this.getListing(listingID).columns[i];
             var lastEntity = this.$hibachi.getLastEntityNameInPropertyIdentifier(collectionConfig.baseEntityName,column.propertyIdentifier);

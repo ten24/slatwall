@@ -1,12 +1,12 @@
 <sw-sku-price-edit ng-if="swSkuPricesEdit.sku" 
-                   data-sku="swSkuPricesEdit.sku"
-                   data-base-entity-name="{{swSkuPricesEdit.baseEntityName}}" 
-                   data-base-entity-id="{{swSkuPricesEdit.baseEntityId}}"
+                data-sku="swSkuPricesEdit.sku"
+                data-base-entity-name="{{swSkuPricesEdit.baseEntityName}}" 
+                data-base-entity-id="{{swSkuPricesEdit.baseEntityId}}"
 ></sw-sku-price-edit>
-<span ng-if="swSkuPricesEdit.skuPrices.length>0">
+<div ng-if="swSkuPricesEdit.skuPrices.length>0" sw-loading="swSkuPricesEdit.loadingPromise">
     <sw-sku-price-edit ng-if="(swSkuPricesEdit.skuSkuId && swSkuPricesEdit.skuSkuId.length) || swSkuPricesEdit.skuPrice"
                     ng-repeat="skuPrice in swSkuPricesEdit.skuPrices" 
                     data-sku-price="skuPrice" 
                     data-listing-display-id="{{swSkuPricesEdit.listingDisplayId}}"
     ></sw-sku-price-edit>
-</span>
+</div>
