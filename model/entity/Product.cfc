@@ -148,17 +148,18 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			// If purchase start dates not existed, or before now(), the start date is valid
 			// If purchase end   date  not existed, or after  now(), the end   date is valid
 			if ( 
-				(
-					isNull(this.getPurchaseStartDateTime())
-					||
-					( !isNull(this.getPurchaseStartDateTime()) && dateCompare(now(),this.getPurchaseStartDateTime(),"s") == 1 )					 
-				)
-				&&
-				(
-					isNull(this.getPurchaseEndDateTime())
-					||
-					( !isNull(this.getPurchaseEndDateTime()) && dateCompare(now(),this.getPurchaseEndDateTime(),"s") == -1 )					 
-				) 
+
+					(
+						isNull(this.getPurchaseStartDateTime())
+						||
+						( !isNull(this.getPurchaseStartDateTime()) && dateCompare(now(),this.getPurchaseStartDateTime(),"s") == 1 )					 
+					)
+					&&
+					(
+						isNull(this.getPurchaseEndDateTime())
+						||
+						( !isNull(this.getPurchaseEndDateTime()) && dateCompare(now(),this.getPurchaseEndDateTime(),"s") == -1 )					 
+					) 
 
 			) {
 				variables.availableToPurchaseFlag = true;
