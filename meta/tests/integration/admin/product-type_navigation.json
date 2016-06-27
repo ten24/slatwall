@@ -35,7 +35,12 @@
       "script": "return document.readyState",
       "value": "complete"
     },
-
+	 {
+      "type": "waitForElementPresent",
+      "locator": {
+        "type": "xpath",
+        "value": "//*[@id=\"j-mobile-nav\"]/ul/li[2]/ul/li[3]/a"
+      }
     {
       "type": "clickElement",
       "locator": {
