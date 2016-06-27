@@ -33,13 +33,16 @@ class SWAddSkuPriceModalLauncherController{
     }
     
     public save = () => {
+        var firstSkuPriceForSku = !this.skuPriceService.hasSkuPrices(this.sku.data.skuID);
         var savePromise = this.skuPrice.$$save();
         savePromise.then(
             (response)=>{ 
                this.skuPriceService.setSkuPrices(this.sku.data.skuID,[this.skuPrice]);
                this.observerService.notify('skuPricesUpdate',{skuID:this.sku.data.skuID,refresh:true});
                 //temporarily overriding for USD need to get this setting accessable to client side
-                if(angular.isDefined(this.listingID) && this.skuPrice.data.currencyCode=="USD"){
+                if( angular.isDefined(this.listingID) && 
+                    this.skuPrice.data.currencyCode=="USD"
+                ){
                    var pageRecords = this.listingService.getListingPageRecords(this.listingID);
                    for(var i=0; i < pageRecords.length; i++){
                         if( angular.isDefined(pageRecords[i].skuID) &&
@@ -71,7 +74,10 @@ class SWAddSkuPriceModalLauncherController{
             for(var key in this.skuPrice.data){
                 this.skuPrice.data[key] = null;
             }
-            this.initData(); 
+            this.initData();
+            if(firstSkuPriceForSku){
+                this.listingService.getCollection(this.listingID); 
+            }
         });
         return savePromise; 
     }

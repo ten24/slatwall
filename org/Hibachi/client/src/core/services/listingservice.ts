@@ -6,6 +6,7 @@ class ListingService{
     
     //@ngInject
     constructor(private $q,
+                private filterService,
                 private utilityService, 
                 private rbkeyService, 
                 private selectionService,
@@ -24,6 +25,9 @@ class ListingService{
 
     public getListingPageRecords = (listingID) =>{
         return this.getListing(listingID).collectionData.pageRecords; 
+    }
+    public getCollection = (listingID) =>{
+        return this.getListing(listingID).getCollection(); 
     }
 
     public markEdited = (listingId, pageRecordIndex, editedProperty, saveCallback) => {
@@ -507,49 +511,11 @@ class ListingService{
                     if(rule.filterComparisonValue == "null"){
                         rule.filterComparisonValue = "";
                     }   
-                    switch (rule.filterComparisonOperator){
-                        case "!=":
-                            if(pageRecordValue != rule.filterComparisonValue){
-                                disableRuleMatchedKey = key; 
-                            }
-                            break; 
-                        case ">":
-                            if(pageRecordValue > rule.filterComparisonValue){
-                                disableRuleMatchedKey = key; 
-                            }
-                            break;
-                        case ">=":  
-                            if(pageRecordValue >= rule.filterComparisonValue){
-                                disableRuleMatchedKey = key; 
-                            }
-                            break;
-                        case "<":
-                            if(pageRecordValue < rule.filterComparisonValue){
-                                disableRuleMatchedKey = key; 
-                            }
-                            break; 
-                        case "<=":
-                            if(pageRecordValue <= rule.filterComparisonValue){
-                                disableRuleMatchedKey = key; 
-                            }
-                            break; 
-                        case "is":
-                            if(pageRecordValue == rule.filterComparisonValue){
-                                disableRuleMatchedKey = key; 
-                            }
-                            break;
-                        case "is not": 
-                            if(pageRecordValue != rule.filterComparisonValue){
-                                disableRuleMatchedKey = key; 
-                            }
-                            break; 
-                        default: 
-                            //= case
-                            if(pageRecordValue == rule.filterComparisonValue){
-                                disableRuleMatchedKey = key; 
-                            }
-                            break; 
+                    
+                    if(this.filterService.filterMatch(pageRecordValue, rule.comparisonOperatior, rule.filterComparisonValue)){
+                        disableRuleMatchedKey = key; 
                     }
+                        
                     if(disableRuleMatchedKey != -1){
                         return disableRuleMatchedKey;
                     }
@@ -577,39 +543,11 @@ class ListingService{
                     } else {
                         var pageRecordValue = pageRecord[rule.filterPropertyIdentifier]; 
                     }
-                    switch (rule.filterComparisonOperator){
-                        case "!=":
-                            if(pageRecordValue != rule.filterComparisonValue){
-                                expandableRuleMatchedKey = key; 
-                            }
-                            break; 
-                        case ">":
-                            if(pageRecordValue > rule.filterComparisonValue){
-                                expandableRuleMatchedKey = key; 
-                            }
-                            break;
-                        case ">=":  
-                            if(pageRecordValue >= rule.filterComparisonValue){
-                                expandableRuleMatchedKey = key; 
-                            }
-                            break;
-                        case "<":
-                            if(pageRecordValue < rule.filterComparisonValue){
-                                expandableRuleMatchedKey = key; 
-                            }
-                            break; 
-                        case "<=":
-                            if(pageRecordValue <= rule.filterComparisonValue){
-                                expandableRuleMatchedKey = key; 
-                            }
-                            break; 
-                        default: 
-                            //= case
-                            if(pageRecordValue == rule.filterComparisonValue){
-                                expandableRuleMatchedKey = key; 
-                            }
-                            break; 
+
+                    if(this.filterService.filterMatch(pageRecordValue, rule.comparisonOperatior, rule.filterComparisonValue)){
+                        expandableRuleMatchedKey = key; 
                     }
+                   
                     if(expandableRuleMatchedKey != -1){
                         return expandableRuleMatchedKey;
                     }
