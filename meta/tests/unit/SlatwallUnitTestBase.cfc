@@ -69,6 +69,7 @@ component extends="mxunit.framework.TestCase" output="false" {
 		// Setup a debugging output array
 		variables.debugArray = [];
 		variables.persistentEntities = [];
+		variables.files = [];//yuqing
 	}
 
 	// AFTER EACH TEST
@@ -84,6 +85,12 @@ component extends="mxunit.framework.TestCase" output="false" {
 			flushRequired = true;
 			entityDelete( variables.persistentEntities[i] );
 		}
+		
+		for (var i = arrayLen(variables.files); i >= 1; i--) {//yuqing
+			flushRequired = true;
+			fileDelete( variables.files[i] );
+		}
+		
 		try{
 			if(flushRequired) {
 					ormFlush();
@@ -93,6 +100,7 @@ component extends="mxunit.framework.TestCase" output="false" {
 		}
 
 		variables.persistentEntities = [];
+		variables.files = [];//yuqing
 
 		ormClearSession();
 
@@ -105,6 +113,22 @@ component extends="mxunit.framework.TestCase" output="false" {
 
 	private any function createPersistedTestEntity( required string entityName, struct data={}, boolean createRandomData=false, boolean persist=true, boolean saveWithService=false ) {
 		return createTestEntity(argumentcollection=arguments);
+	}
+	
+	private any function createTestFile (required string fileSourceLocalAbsolutePath, string fileDestination) {
+		var testFileDestinationPath = expandPath('Slatwall') & '/custom/TestFile';
+		request.debug(testFileDestinationPath);
+		if (arguments.fileDestination) {//yuqing
+			testFileDestinationPath = testFileDestinationPath & arguments.fileDestination;
+		}
+		
+		// Persist to the database
+		ormFlush();
+
+		// Add the entity to the persistentEntities
+		arrayAppend(variables.files, testFileDestinationPath);
+		
+		return fileCopy(arguments.fileSourceLocalAbsolutePath, testFileDestinationPath);
 	}
 
 	private void function addEntityForTearDown(any entity){
