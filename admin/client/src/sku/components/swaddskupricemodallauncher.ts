@@ -60,6 +60,12 @@ class SWAddSkuPriceModalLauncherController{
                                     angular.copy(this.skuPrice.data,skuPriceForListing); 
                                     pageRecords.splice(index+1,0,skuPriceForListing);
                                     break; 
+                                }  else if(index + 1 == pageRecords.length){
+                                    this.skuPrice.data.skuSkuId = this.skuId;
+                                    var skuPriceForListing = {}; 
+                                    angular.copy(this.skuPrice.data,skuPriceForListing); 
+                                    pageRecords.splice(index+1,0,skuPriceForListing);
+                                    break; 
                                 }
                                 index++; 
                             }

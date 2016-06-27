@@ -64,10 +64,7 @@ class ListingService{
             this.getListing(listingID).collectionObject = this.getListing(listingID).collectionConfig.baseEntityName; 
         }
 
-        this.setupColumns( listingID,this.getListing(listingID).collectionConfig, this.getListing(listingID).collectionObject );
-        
-        
-        
+        this.setupColumns( listingID,this.getListing(listingID).collectionConfig, this.getListing(listingID).collectionObject ); 
         this.initCollectionConfigData( listingID, this.getListing(listingID).collectionConfig );
         
         scope.$watch('swMultiListingDisplay.collectionPromise',(newValue,oldValue)=>{
@@ -93,49 +90,49 @@ class ListingService{
     public setupColumns = (listingID, collectionConfig, collectionObject) =>{
         //assumes no alias formatting
         for(var i=0; i < this.getListing(listingID).columns.length; i++){
+            
             var column = this.getListing(listingID).columns[i];
             var lastEntity = this.$hibachi.getLastEntityNameInPropertyIdentifier(collectionConfig.baseEntityName,column.propertyIdentifier);
 
             if(angular.isUndefined(column.title)){
                 column.title = this.rbkeyService.getRBKey('entity.'+lastEntity.toLowerCase()+'.'+this.utilityService.listLast(column.propertyIdentifier,'.'));
             }
-            
             if(angular.isUndefined(column.isVisible)){
                 column.isVisible = true;
             }
+
             var metadata = this.$hibachi.getPropertyByEntityNameAndPropertyName(lastEntity, this.utilityService.listLast(column.propertyIdentifier,'.'));
+            
             if(angular.isDefined(metadata) && angular.isDefined(metadata.hb_formattype)){
                 column.type = metadata.hb_formatType;
             } else { 
                 column.type = "none";
             }
-            if(angular.isDefined(column.tooltip)){
             
+            if(angular.isDefined(column.tooltip)){
                 var parsedProperties = this.utilityService.getPropertiesFromString(column.tooltip);
-                
                 if(parsedProperties && parsedProperties.length){
                     collectionConfig.addDisplayProperty(this.utilityService.arrayToList(parsedProperties), "", {isVisible:false});
                 }
             } else { 
                 column.tooltip = '';
             }
+
             if(angular.isDefined(column.queryString)){
                 var parsedProperties = this.utilityService.getPropertiesFromString(column.queryString);
                 if(parsedProperties && parsedProperties.length){
                     collectionConfig.addDisplayProperty(this.utilityService.arrayToList(parsedProperties), "", {isVisible:false});
                 }
             }
-            //If this is a standard propertyIdentifier
+
             if(column.propertyIdentifier){
-                //Add to the all property identifiers
                 this.getListing(listingID).allpropertyidentifiers = this.utilityService.listAppend(this.getListing(listingID).allpropertyidentifiers,column.propertyIdentifier);
-            //Otherwise this is a processObject property
             }else if(column.processObjectProperty){
                 column.searchable = false;
                 column.sort = false;
                 this.getListing(listingID).allprocessobjectproperties = this.utilityService.listAppend(this.getListing(listingID).allprocessobjectproperties, column.processObjectProperty);
-
             }
+
             if(column.tdclass){
                 var tdclassArray = column.tdclass.split(' ');
                 if(tdclassArray.indexOf("primary") >= 0 && this.getListing(listingID).expandable){
@@ -143,22 +140,17 @@ class ListingService{
                     column.sort = false;
                 }
             }
-            this.columnOrderBy(listingID, column);
             
-            //only want to do this if it's a singleCollectionConfig
-            //collectionConfig.addDisplayProperty(column.propertyIdentifier,column.title,column);
-        }
-        //if the passed in collection has columns perform some formatting
-        if(this.getListing(listingID).hasCollectionPromise){
-            //assumes alias formatting from collectionConfig
-            angular.forEach(collectionConfig.columns, (column)=>{
-
+            //if the passed in collection has columns perform some formatting
+            if(this.getListing(listingID).hasCollectionPromise){  
                 var lastEntity = this.$hibachi.getLastEntityNameInPropertyIdentifier(collectionObject,this.utilityService.listRest(column.propertyIdentifier,'.'));
                 column.title = column.title || this.rbkeyService.getRBKey('entity.'+lastEntity.toLowerCase()+'.'+this.utilityService.listLast(column.propertyIdentifier,'.'));
                 if(angular.isUndefined(column.isVisible)){
                     column.isVisible = true;
                 }
-            });
+            }
+
+            this.columnOrderBy(listingID, column);
         }
     };
 
@@ -193,8 +185,7 @@ class ListingService{
         });
         
         //make sure we have necessary properties to make the actions 
-        angular.forEach(this.getListing(listingID).actions, (action)=>{
-            
+        angular.forEach(this.getListing(listingID).actions, (action)=>{ 
             if(angular.isDefined(action.queryString)){
                 var parsedProperties = this.utilityService.getPropertiesFromString(action.queryString);
                 if(parsedProperties && parsedProperties.length){    
@@ -203,8 +194,7 @@ class ListingService{
                                                          { isVisible : false }
                                                        );
                 }
-            }
-            
+            }   
         });
         
         //also make sure we have necessary color filter properties
@@ -246,7 +236,7 @@ class ListingService{
             this.getListing(listingID).tableclass = this.utilityService.listAppend(this.getListing(listingID).tableclass,'table-select',' ');
             this.getListing(listingID).tableattributes = this.utilityService.listAppend(this.getListing(listingID).tableattributes, 'data-selectfield="'+this.getListing(listingID).selectFieldName+'"', ' ');
         }
-    }
+    };
 
     public setupMultiselect = (listingID) =>{
         if(this.getListing(listingID).multiselectFieldName && this.getListing(listingID).multiselectFieldName.length){
@@ -275,7 +265,7 @@ class ListingService{
                 this.getListing(listingID).selectionService.addSelection(this.getListing(listingID).name,id);
             });
         }
-    }
+    };
 
     public setupExampleEntity = (listingID) =>{
         this.getListing(listingID).exampleEntity = this.$hibachi.getEntityExample(this.getListing(listingID).collectionObject);        
@@ -290,7 +280,7 @@ class ListingService{
                 this.getListing(listingID).childPropertyName = this.getListing(listingID).exampleEntity.metaData.hb_childPropertyName;
             }
         }
-    }
+    };
 
     public setupHierarchicalExpandable = (listingID, collectionConfig) =>{
         //Setup Hierachy Expandable
@@ -320,7 +310,7 @@ class ListingService{
             this.getListing(listingID).allpropertyidentifiers = this.utilityService.listAppend(this.getListing(listingID).allpropertyidentifiers,this.getListing(listingID).exampleEntity.$$getIDName()+'Path');
             this.getListing(listingID).tableattributes = this.utilityService.listAppend(this.getListing(listingID).tableattributes, 'data-parentidproperty='+this.getListing(listingID).parentPropertyName+'.'+this.getListing(listingID).exampleEntity.$$getIDName(),' ');
         }
-    }
+    };
 
     public updateColumnAndAdministrativeCount = (listingID) =>{
         //Setup a variable for the number of columns so that the none can have a proper colspan
@@ -338,7 +328,7 @@ class ListingService{
         if(this.getListing(listingID).administrativeCount){
             this.getListing(listingID).administrativeCount++;
         }
-    }
+    };
 
     public setupDefaultGetCollection = (listingID) =>{
         if(this.getListing(listingID).collectionConfigs.length == 0){
