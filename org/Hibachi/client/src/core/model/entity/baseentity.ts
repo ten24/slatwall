@@ -7,8 +7,8 @@ declare var angular:any;
 class BaseEntity extends BaseTransient{
     public errors:any={};
     public messages:any={};
-    constructor(){
-        super();
+    constructor($injector){
+        super($injector);
     }
 
     public populate = (data)=>{

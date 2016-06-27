@@ -14,8 +14,8 @@ class Cart extends BaseEntity{
     public calculatedTotal:number;
 
 
-    constructor(){
-        super();
+    constructor($injector){
+        super($injector);
     }
 
     public hasShippingAddressAndMethod = () => {

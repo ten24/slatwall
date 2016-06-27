@@ -23,9 +23,9 @@ class Request extends BaseTransient {
     ){
         super($injector);
         this.headers = headers;
-        this.$q = this.getService('$q');
-        this.$http = this.getService('$http');
-        this.$window = this.getService('$window');
+        this.$q = this.getService<ng.IQService>('$q');
+        this.$http = this.getService<ng.IHttpService>('$http');
+        this.$window = this.getService<ng.IWindowService>('$window');
 
         if(!method){
             if (data == undefined){

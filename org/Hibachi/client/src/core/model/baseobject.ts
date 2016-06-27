@@ -10,11 +10,12 @@ class BaseObject{
         this.$injector = $injector;
     }
 
-    public getService=(serviceName)=>{
+    public getService=<service>(serviceName:string):service=>{
         //return;
-        console.log('injector',this.$injector);
+
         if(this.$injector.has(serviceName)){
-            return this.$injector.get(serviceName);
+            //returns a generic service
+            return this.$injector.get<service>(serviceName);
         }
 
     }

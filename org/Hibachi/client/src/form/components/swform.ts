@@ -32,7 +32,7 @@ class SWFormController {
         if(angular.isUndefined(this.isDirty)){
             this.isDirty = false;
         }
-        
+
         if(this.object && this.object.metaData){
             //object can be either an instance or a string that will become an instance
             if(angular.isString(this.object)){
@@ -40,19 +40,19 @@ class SWFormController {
                 this.entityName = objectNameArray[0];
                 //if the object name array has two parts then we can infer that it is a process object
                 if(objectNameArray.length > 1){
-                    this.context = this.context || objectNameArray[1];     
+                    this.context = this.context || objectNameArray[1];
                     this.isProcessForm = true;
                 }else{
                     this.context = this.context || 'save';
                     this.isProcessForm = false;
                 }
-                //convert the string to an object 
+                //convert the string to an object
                 this.object = this.$hibachi['new'+this.object]();
             }else{
                 this.isProcessForm = this.object.metaData.isProcessObject;
                 this.entityName = this.object.metaData.className.split('_')[0];
                 if(this.isProcessForm){
-                    this.context = this.context || this.object.metaData.className.split('_')[1];  
+                    this.context = this.context || this.object.metaData.className.split('_')[1];
                 }else{
                     this.context = this.context || 'save';
                 }
@@ -67,7 +67,7 @@ class SWFormController {
                 this.entityName = "Cart"
             };
         }
-        
+
          /** find the form scope */
         this.$scope.$on('anchor', (event, data) =>
         {
@@ -77,7 +77,7 @@ class SWFormController {
             }
 
         });
-        
+
         /** make sure we have our data using new logic and $hibachi*/
 //        if (this.context == undefined || this.entityName == undefined) {
 //            throw ("ProcessObject Undefined Exception");
@@ -125,7 +125,8 @@ class SWFormController {
             //console.log("Calling Final Submit");
             submitFn(submitFunction, this.formData).then( (result) =>{
                 if (this.$rootScope.hibachiScope.hasErrors) {
-                    this.parseErrors(result.data);
+
+                    this.parseErrors(result);
                         //trigger an onError event
                     this.observerService.notify("onError", {"caller" : this.context, "events": this.events.events||""});
                 } else {
@@ -242,8 +243,16 @@ class SWFormController {
     public getFormData = function()
     {
         //console.log("Form Data:", this.object);
-        angular.forEach(this.object, (val, key) => {
+        var iterable = this.object;
+        if(this.object.data){
+            iterable = this.object.data;
+        }
+
+        angular.forEach(iterable, (val, key) => {
             /** Check for form elements that have a name that doesn't start with $ */
+            console.log('formitem');
+            console.log(val);
+            console.log(key);
             if (angular.isString(val)) {
                 this.formData[key] = val;
                 //console.log("Using Form Element: ", this.formData[key]);

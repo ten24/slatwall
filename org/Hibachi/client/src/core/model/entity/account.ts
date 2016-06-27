@@ -9,8 +9,8 @@ class Account extends BaseEntity{
     public firstName:string;
     public lastName:string;
 
-    constructor(){
-        super();
+    constructor($injector){
+        super($injector);
     }
 
     public userIsLoggedIn = ():boolean =>{

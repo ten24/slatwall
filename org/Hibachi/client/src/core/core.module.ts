@@ -7,6 +7,8 @@ import {HibachiPathBuilder} from "./services/hibachipathbuilder";
 
 //services
 import {PublicService} from "./services/publicservice";
+import {AccountService} from "./services/accountservice";
+import {CartService} from "./services/cartservice";
 import {UtilityService} from "./services/utilityservice";
 import {SelectionService} from "./services/selectionservice";
 import {ObserverService} from "./services/observerservice";
@@ -148,6 +150,8 @@ var coremodule = angular.module('hibachi.core',[
 .service('hibachiScope',HibachiScope)
 .service('localStorageService',LocalStorageService)
 .service('requestService',RequestService)
+.service('accountService',AccountService)
+.service('cartService',CartService)
 //controllers
 .controller('globalSearch',GlobalSearchController)
 //filters

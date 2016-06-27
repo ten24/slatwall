@@ -40,8 +40,12 @@ class PublicService {
         public $location:ng.ILocationService,
         public $hibachi:any,
         public $injector:ng.auto.IInjectorService,
-        public requestService
+        public requestService,
+        public accountService,
+        public cartService
     ) {
+        this.cartService = cartService;
+        this.accountService = accountService;
         this.requestService = requestService;
         this.baseActionPath = "/index.cfm/api/scope/"; //default path
         this.confirmationUrl = "/order-confirmation";
@@ -52,14 +56,24 @@ class PublicService {
         this.getExpirationYears();
         this.$window = $window;
         this.$hibachi = $hibachi;
-        this.cart = new Cart();
-        this.account = new Account();
-        console.log('cart',this.cart);
+        this.cart = this.cartService.newCart();
+        this.account = this.accountService.newAccount();
+
     }
 
     public hasErrors = ()=>{
 
         return this.errors.length;
+    }
+
+    /**
+     * Helper methods for getting errors from the cart
+     */
+    public getErrors = ():{} =>{
+        if (this.errors !== undefined){
+            return this.errors;
+        }
+        return {};
     }
 
     /** grab the valid expiration years for credit cards  */
@@ -124,6 +138,7 @@ class PublicService {
 
 
         });
+        this.requests[setter]=request;
         return request.promise;
     }
 
@@ -192,7 +207,7 @@ class PublicService {
             //get
             var url = urlBase + "&returnJsonObject=cart,account";
 
-            let request = new PublicRequest(url);
+            let request = this.requestService.newPublicRequest(url);
             request.promise.then((result:any)=>{
 
             }).catch((reason)=>{
@@ -208,18 +223,12 @@ class PublicService {
     public userIsLoggedIn = ():boolean =>{
        return this.account.userIsLoggedIn();
     }
-    /**
-     * Helper methods for getting errors from the cart
-     */
-    public getErrors = ():{} =>{
-        if (this.errors !== undefined){
-            return this.errors;
-        }
-        return {};
-    }
+
 
     public getActivePaymentMethods = ()=>{
-        this.$http.get("/?slataction=admin:ajax.getActivePaymentMethods").then((result:any)=>{
+        let urlString = "/?slataction=admin:ajax.getActivePaymentMethods";
+        let request = this.requestService.newPublicRequest(urlString)
+        .then((result:any)=>{
             if (angular.isDefined(result.data.paymentMethods)){
                 this.paymentMethods = result.data.paymentMethods;
             }
@@ -712,7 +721,11 @@ class PublicService {
         var totalWeight = weight;
 
         //get the rates.
-        this.$http.get("?slataction=admin:ajax.getEstimatedShippingRates&shipFromAddress="+ JSON.stringify(shipFromAddress) +"&shipToAddress="+ JSON.stringify(shipToAddress) +"&totalWeight=" + JSON.stringify(weight)).then((result:any)=>{
+        let urlString = "?slataction=admin:ajax.getEstimatedShippingRates&shipFromAddress="+ JSON.stringify(shipFromAddress)
+        +"&shipToAddress="+ JSON.stringify(shipToAddress) +"&totalWeight=" + JSON.stringify(weight);
+
+        let request = this.requestService.newPublicRequest(urlString)
+        .then((result:any)=>{
             console.log("Results", result);
             this.rates = result.data;
         });
