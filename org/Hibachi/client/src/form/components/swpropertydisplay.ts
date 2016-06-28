@@ -34,6 +34,7 @@ class SWPropertyDisplayController {
     public initialValue:any; 
     public inModal:boolean;
     public hasModalCallback:boolean; 
+    public rowSaveEnabled:boolean; 
     public modalCallback;
     public showSave:boolean; 
 
@@ -53,6 +54,10 @@ class SWPropertyDisplayController {
         }
         if(angular.isUndefined(this.inListingDisplay)){
             this.inListingDisplay = false; 
+        }
+        console.log("rowSaveEnabled",this.rowSaveEnabled);
+        if(angular.isUndefined(this.rowSaveEnabled)){
+            this.rowSaveEnabled = this.inListingDisplay; 
         }
         if(angular.isUndefined(this.rawFileTarget)){
             this.rawFileTarget = this.property;
@@ -134,7 +139,8 @@ class SWPropertyDisplayController {
         if(this.hasOnChangeCallback){
             this.onChangeCallback(result);
         }
-        if(this.inListingDisplay){
+        console.log("row save?", this.rowSaveEnabled);
+        if(this.inListingDisplay && this.rowSaveEnabled){
             this.listingService.markEdited( this.listingID, 
                                             this.pageRecordIndex, 
                                             this.propertyDisplayID, 
@@ -203,6 +209,7 @@ class SWPropertyDisplay implements ng.IDirective{
         inModal:"=?",
         modalCallback:"&?",
         hasModalCallback:"=?",
+        rowSaveEnabled:"=?",
         showSave:"=?"
     };
     public controller=SWPropertyDisplayController;
