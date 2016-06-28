@@ -32,7 +32,7 @@ class SWPropertyDisplayController {
     public hasSaveCallback:boolean; 
     public saveCallback; 
     public initialValue:any; 
-    public inModal:boolean=false; 
+    public inModal:boolean;
     public hasModalCallback:boolean; 
     public modalCallback;
     public showSave:boolean; 
@@ -71,6 +71,9 @@ class SWPropertyDisplayController {
         }
         if(angular.isUndefined(this.noValidate)){
             this.noValidate = false;
+        }
+        if(angular.isUndefined(this.inModal)){
+            this.inModal = false;
         }
         if(angular.isUndefined(this.optionsArguments)){
             this.optionsArguments = {};
@@ -197,7 +200,7 @@ class SWPropertyDisplay implements ng.IDirective{
         binaryFileTarget:"@?",
         noValidate:"=?",
         inListingDisplay:"=?",
-        inModal:"=",
+        inModal:"=?",
         modalCallback:"&?",
         hasModalCallback:"=?",
         showSave:"=?"
