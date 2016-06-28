@@ -13,7 +13,8 @@ class SWImageDetailModalLauncherController{
     public productProductId:string; 
     public customImageNameFlag:boolean;
     public imageFileUpdateEvent:string; 
-    public collectionConfig; 
+    public otherSkusWithSameImageCollectionConfig:any; 
+    public numberOfSkusWithImageFile:number=0; 
     
     //@ngInject
     constructor(
@@ -31,13 +32,25 @@ class SWImageDetailModalLauncherController{
             imageFileName:this.imageFileName,
             imagePath:this.imagePath, 
             imageFile:this.imageFile
-        }
+        } 
         this.sku = this.$hibachi.populateEntity("Sku",skuData); 
         this.imageFileUpdateEvent = "file:"+this.imagePath;
         this.observerService.attach(this.updateImage, this.imageFileUpdateEvent, this.skuId);
     }    
 
     public updateImage = (rawImage) => {
+        this.otherSkusWithSameImageCollectionConfig = this.collectionConfigService.newCollectionConfig("Sku");
+        this.otherSkusWithSameImageCollectionConfig.addFilter("imageFile",this.imageFile,"=");
+        this.otherSkusWithSameImageCollectionConfig.setAllRecords(true);
+        this.otherSkusWithSameImageCollectionConfig.getEntity().then(
+            (data)=>{
+                this.numberOfSkusWithImageFile = data.records.length; 
+                console.log("number is", this.numberOfSkusWithImageFile);
+            },
+            (reason)=>{
+                //throw
+            }
+        );
         if(angular.isDefined(rawImage)){
             this.sku.data.imagePath = rawImage;
         }   

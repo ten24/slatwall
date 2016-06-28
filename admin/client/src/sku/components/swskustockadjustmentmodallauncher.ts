@@ -40,6 +40,16 @@ class SWSkuStockAdjustmentModalLauncherController{
         if(angular.isDefined(this.calculatedQoh)){
             this.calculatedQoh = parseInt(this.calculatedQoh);
         }
+        var skudata = {
+            skuID:this.skuId,
+            skuCode:this.skuCode,
+            skuDescription:this.skuDescription,
+            imagePath:this.imagePath,
+            calculatedQATS:this.calculatedQats || 0,
+            calculatedQOH:this.calculatedQoh || 0,
+            newQOH:this.calculatedQoh || 0
+        }
+        this.sku = this.$hibachi.populateEntity("Sku", skudata);
         this.initData();
     }
     
@@ -55,16 +65,6 @@ class SWSkuStockAdjustmentModalLauncherController{
         this.stockAdjustmentStatusType = this.$hibachi.populateEntity("Type",{typeID:"444df2e2f66ddfaf9c60caf5c76349a6"});//new status type for stock adjusment
         this.stockAdjustment.$$setStockAdjustmentType(this.stockAdjustmentType);
         this.stockAdjustment.$$setStockAdjustmentStatusType(this.stockAdjustmentStatusType);
-        var skudata = {
-            skuID:this.skuId,
-            skuCode:this.skuCode,
-            skuDescription:this.skuDescription,
-            imagePath:this.imagePath,
-            calculatedQATS:this.calculatedQats || 0,
-            calculatedQOH:this.calculatedQoh || 0,
-            newQOH:this.calculatedQoh || 0
-        }
-        this.sku = this.$hibachi.populateEntity("Sku", skudata);
         this.stockAdjustmentItem.$$setSku(this.sku); 
         this.newQuantity = this.calculatedQoh || 0;
     }
@@ -72,6 +72,8 @@ class SWSkuStockAdjustmentModalLauncherController{
     public save = () => {
         var savePromise = this.stockAdjustment.$$save(); 
         savePromise.then((response)=>{
+            this.sku.data.newQOH = this.newQuantity; 
+            this.sku.data.calculatedQOH = this.newQuantity; 
             this.initData(); 
         });
         return savePromise;
@@ -86,7 +88,7 @@ class SWSkuStockAdjustmentModalLauncherController{
 
     public updateStockAdjustmentQuantity = () => {
         if(!isNaN(this.newQuantity)){
-            this.stockAdjustmentItem.data.quantity = this.newQuantity - this.calculatedQoh;
+            this.stockAdjustmentItem.data.quantity = this.newQuantity - this.sku.data.calculatedQOH;
         }
     }  
 }

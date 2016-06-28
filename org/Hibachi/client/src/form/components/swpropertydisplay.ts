@@ -11,6 +11,7 @@ class SWPropertyDisplayController {
     public fieldType;
     public object;
     public property;
+    public propertyDisplayID:string;
     public title;
     public hint;
     public optionsArguments;
@@ -31,7 +32,7 @@ class SWPropertyDisplayController {
     public hasSaveCallback:boolean; 
     public saveCallback; 
     public initialValue:any; 
-    public inModal:boolean; 
+    public inModal:boolean=false; 
     public hasModalCallback:boolean; 
     public modalCallback;
     public showSave:boolean; 
@@ -40,11 +41,13 @@ class SWPropertyDisplayController {
     constructor(
         private listingService,
         private observerService,
+        private utilityService,
         public $filter
     ){
         this.errors = {};
         this.edited = false; 
         this.initialValue = this.object.data[this.property]; 
+        this.propertyDisplayID = this.utilityService.createID(32);
         if(angular.isUndefined(this.showSave)){
             this.showSave = true; 
         }
@@ -131,7 +134,7 @@ class SWPropertyDisplayController {
         if(this.inListingDisplay){
             this.listingService.markEdited( this.listingID, 
                                             this.pageRecordIndex, 
-                                            this.property, 
+                                            this.propertyDisplayID, 
                                             this.save
                                           );
         }
@@ -146,18 +149,23 @@ class SWPropertyDisplayController {
     }
 
     public save = () =>{
+        //do this eagerly to hide save will reverse if theres an error
+        this.edited = false;           
+        this.saved = true; 
         if(!this.inModal){
-            this.object.$$save().then((response)=>{
-                if(this.hasSaveCallback){
-                    this.saveCallback(response); 
+            this.object.$$save().then(
+                (response)=>{
+                    if(this.hasSaveCallback){
+                        this.saveCallback(response); 
+                    }
+                },
+                (reason)=>{
+                    this.edited = true;           
+                    this.saved = false; 
                 }
-                this.edited = false;           
-                this.saved = true; 
-            });  
+            );  
         } else if (this.hasModalCallback) { 
             this.modalCallback(); 
-            this.edited = false;           
-            this.saved = true; 
         }
     }
 }

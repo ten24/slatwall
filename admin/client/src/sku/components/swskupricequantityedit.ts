@@ -16,6 +16,7 @@ class SWSkuPriceQuantityEditController{
     public skuPrices=[]; 
     public pageRecord:any; 
     public pageRecordIndex:number;
+    public savePromise:any;
     public showSave:boolean=true; 
     public relatedSkuPriceCollectionConfig:any;
 
@@ -75,14 +76,16 @@ class SWSkuPriceQuantityEditController{
                 savePromises.push(value.$$save()); 
             }
         });
-        this.$q.all(savePromises).then(
+        this.savePromise = this.$q.all(savePromises)
+        this.savePromise.then(
             (response)=>{
-                
+                //success
             },
             (reason)=>{
                 //failure
             }
         );
+        return this.savePromise; 
     }
 
     public getSkuPrices = () =>{
