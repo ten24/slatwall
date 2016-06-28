@@ -70,6 +70,7 @@ component output="false" accessors="true" extends="HibachiController" {
     public void function getConfig(required struct rc){
     	var config = getService('HibachiSessionService').getConfig();
     	config[ 'modelConfig' ] = getModel(arguments.rc);
+    	config[ 'currencyRates' ] = getService("CurrencyService").getEuropeanCentralBankRates();
     	arguments.rc.apiResponse.content['data'] = config;
     }
 
