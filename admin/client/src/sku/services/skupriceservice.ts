@@ -1,5 +1,6 @@
 export class SkuPriceService { 
 
+    private currencies = {}; 
     private skuPrices = {};
     private skuPriceCollectionConfigs = {}; 
     private skuPriceGetEntityPromises = {}; 
@@ -90,7 +91,74 @@ export class SkuPriceService {
         }
     }
 
-    public getSkuPricesForQuantityRange = (skuID, minQuantity, maxQuantity) => {
+    private loadCurrencies = (currenciesToLoad) =>{
+        var currencyRates = this.$hibachi.getConfig()["currencyRates"]; 
+        var unloadedCurrencies = []; 
+        for(var i = 0; i < currenciesToLoad.length; i++){
+            if(angular.isUndefined(this.currencies[currenciesToLoad[i]])){
+                unloadedCurrencies.push(currenciesToLoad[i]);
+            }
+        }
+        if(unloadedCurrencies.length > 0){
+            var currencyRateCollectionConfig = this.collectionConfigService.newCollectionConfig("CurrencyRate"); 
+            currencyRateCollectionConfig.setAllRecords(true);
+            currencyRateCollectionConfig.addDisplayProperty("currencyRateID,conversionRate,currency.currencyCode,conversionCurrency.currencyCode");
+            for(var j = 0; j < unloadedCurrencies.length; j++){
+                currencyRateCollectionConfig.addFilter("currency.currencyCode", unloadedCurrencies[j], "=", "OR"); 
+            }
+            currencyRateCollectionConfig.getEntity().then(
+                (response)=>{
+                    angular.forEach(response.records,(value,key)=>{
+                        this.currencies[value.conversionCurrency_currencyCode] = { convertFrom : value.currency_currencyCode, rate : value.conversionRate }
+                        for(var k = 0; k < unloadedCurrencies.length; k++){
+                            if( unloadedCurrencies[k] == value.conversionCurrency_currencyCode){
+                                unloadedCurrencies.splice(k,1); 
+                                break; 
+                            }                        
+                        }
+                    });
+                },
+                (reason)=>{
+                    
+                }
+            ).finally(()=>{
+                if(unloadedCurrencies.length > 0){
+                    angular.forEach(currencyRates,(value,key)=>{
+                        if(key != "RETREIVED" && angular.isUndefined(this.currencies[key])){
+                            this.currencies[key] = { convertFrom : "EUR", rate : value }
+                        }
+                    });
+                }
+            }); 
+        }
+    }
+
+    public getBaseSkuPricesForSku = (skuID, eligibleCurrencyCodes?) =>{
+        var deferred = this.$q.defer(); 
+        var promise = deferred.promise; 
+        var skuPriceSet = [];
+        if(angular.isDefined(this.skuPriceHasEntityPromises[skuID])){
+            this.skuPriceGetEntityPromises[skuID].then(()=>{
+                var skuPrices = this.getSkuPrices(skuID);
+                for(var i=0; i < skuPrices.length; i++){
+                    var skuPrice = skuPrices[i];
+                    if( (angular.isUndefined(skuPrice.data.minQuantity) || !skuPrice.data.minQuantity.length) &&
+                        (angular.isUndefined(skuPrice.data.maxQuantity) || !skuPrice.data.maxQuantity.length)
+                    ){
+                        skuPriceSet.push(skuPrice);
+                    }
+                }
+                if(angular.isDefined(eligibleCurrencyCodes)){
+                    this.loadCurrencies(eligibleCurrencyCodes);
+                }
+            }).finally(()=>{
+                deferred.resolve(skuPriceSet); 
+            });
+        }
+        return promise; 
+    }
+
+    public getSkuPricesForQuantityRange = (skuID, minQuantity, maxQuantity, eligibleCurrencyCodes?) => {
         var deferred = this.$q.defer(); 
         var promise = deferred.promise; 
         var skuPriceSet = []; 
@@ -104,6 +172,9 @@ export class SkuPriceService {
                     ){
                         skuPriceSet.push(skuPrice);
                     }
+                }
+                if(angular.isDefined(eligibleCurrencyCodes)){
+                    this.loadCurrencies(eligibleCurrencyCodes);
                 }
             }).finally(()=>{
                 deferred.resolve(skuPriceSet); 
