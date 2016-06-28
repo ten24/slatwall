@@ -233,10 +233,16 @@ class SWWorkflowTriggers{
 				};
 
 				scope.setAsEvent = function(workflowTrigger){
+                    if(!workflowTrigger.$$isPersisted()){
+                        workflowTrigger.data.saveTriggerHistoryFlag = 0;
+                    }
 					//add event,  clear schedule
 				};
 
 				scope.setAsSchedule = function(workflowTrigger){
+                    if(!workflowTrigger.$$isPersisted()){
+                        workflowTrigger.data.saveTriggerHistoryFlag = 1;
+                    }
 				};
 
 				/**

@@ -37,7 +37,7 @@ class SWFormFieldRadio implements ng.IDirective {
 				if(scope.propertyDisplay.fieldType === 'yesno'){
 					//format value
 					scope.selectedRadioFormName = makeRandomID(26);
-					scope.propertyDisplay.object.data[scope.propertyDisplay.property] = (scope.propertyDisplay.object.data[scope.propertyDisplay.property].length && scope.propertyDisplay.object.data[scope.propertyDisplay.property].toLowerCase().trim() === 'yes') || scope.propertyDisplay.object.data[scope.propertyDisplay.property] == 1 ? 1 : 0;
+					scope.propertyDisplay.object.data[scope.propertyDisplay.property] = (scope.propertyDisplay.object.data[scope.propertyDisplay.property] && scope.propertyDisplay.object.data[scope.propertyDisplay.property].length && scope.propertyDisplay.object.data[scope.propertyDisplay.property].toLowerCase().trim() === 'yes') || scope.propertyDisplay.object.data[scope.propertyDisplay.property] == 1 ? 1 : 0;
 					scope.formFieldChanged = function(option){
 						scope.propertyDisplay.object.data[scope.propertyDisplay.property] = option.value;
 						scope.propertyDisplay.form[scope.propertyDisplay.property].$dirty = true;
