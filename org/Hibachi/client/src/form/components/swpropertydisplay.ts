@@ -21,6 +21,7 @@ class SWPropertyDisplayController {
     public inListingDisplay:boolean; 
     public pageRecord:any;
     public pageRecordIndex:number; 
+    public placeholderText:string; 
     public listingID:string; 
     public rawFileTarget; 
     public showLabel; 
