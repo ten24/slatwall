@@ -546,7 +546,7 @@ component output="false" accessors="true" extends="HibachiController" {
 
 		var formToFetch = getService('FormService').getForm(arguments.rc.formID);
 		var formQuestions = getDAO('FormDAO').getFormQuestionColumnHeaderData(arguments.rc.formID);
-		arrayAppend(formQuestions, {"question"=getHibachiScope().getRBKey("entity.define.createdDateTime"), "questionID"="createdDateTime"});
+		arrayAppend(formQuestions, {"question"=getHibachiScope().getRBKey("entity.FormResponse.createdDateTime"), "questionID"="createdDateTime"});
 		var numberOfQuestions = arrayLen(formQuestions);
 
     	var untransformedData = getDAO('FormDAO').getFormQuestionAndFormResponsesRawData(arguments.rc.formID, numberOfQuestions, arguments.rc.currentPage, arguments.rc.pageShow);

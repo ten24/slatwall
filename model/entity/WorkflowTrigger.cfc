@@ -44,7 +44,7 @@ component entityname="SlatwallWorkflowTrigger" table="SwWorkflowTrigger" persist
 	property name="objectPropertyIdentifier" ormtype="string";
 	property name="triggerEvent" ormtype="string";
 	property name="triggerEventTitle" ormtype="string";
-
+	property name="saveTriggerHistoryFlag" ormType="boolean" hb_formatType="yesno" default="true";
 	property name="runningFlag" ormtype="boolean" hb_formatType="yesno";
 	property name="nextRunDateTime" ormtype="timestamp";
 	property name="startDateTime" ormtype="timestamp";
