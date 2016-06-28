@@ -34,7 +34,6 @@ class SWExpandableRecordController{
         this.recordID = this.parentId; //this is what parent is initalized to in the listing display
         expandableService.addRecord(this.recordID);
         if(angular.isDefined(this.refreshChildrenEvent) && this.refreshChildrenEvent.length){
-            console.log("observing",this.refreshChildrenEvent);
             this.observerService.attach(this.refreshChildren, this.refreshChildrenEvent)
         }
     }

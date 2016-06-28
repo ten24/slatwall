@@ -20,7 +20,6 @@ class SWListingColumnController{
         //did a cellView get suggested, if so does it exist
         if(this.cellView){
             if(this.$injector.has(this.cellView+'Directive')){
-                console.log('directive Found!');
                 this.hasCellView = true;
             }else{
                 throw(this.cellView + ' is not an existing directive');
@@ -28,7 +27,6 @@ class SWListingColumnController{
         }
         if(this.headerView){
             if(this.$injector.has(this.headerView+'Directive')){
-                console.log('directive Found!');
                 this.hasHeaderView = true;
             }else{
                 throw(this.hasHeaderView + ' is not an existing directive');
@@ -119,7 +117,6 @@ class SWListingColumn implements ng.IDirective{
         }
         
         if(this.utilityService.ArrayFindByPropertyValue(listingDisplayScope.columns,'propertyIdentifier',column.propertyIdentifier) === -1){
-            console.log("whitewhale", scope)
             if(column.aggregate){
                 listingDisplayScope.aggregates.unshift(column.aggregate);
             }else{
