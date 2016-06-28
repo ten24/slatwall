@@ -10,6 +10,9 @@ class SWSkuPricesEditController{
     public minQuantity:string;
     public maxQuantity:string; 
     public price:string; 
+    public eligibleCurrencyCodes; 
+    public eligibleCurrencyCodeList:string; 
+    public skuEligibleCurrencyCodeList:string; 
     public filterOnCurrencyCode:string; 
     public baseEntityId:string; 
     public baseEntityName:string="Product";
@@ -35,8 +38,17 @@ class SWSkuPricesEditController{
         private $hibachi
     ){
         this.Id = this.utilityService.createID(32);
+        if(angular.isDefined(this.skuEligibleCurrencyCodeList)){
+            this.eligibleCurrencyCodeList = this.skuEligibleCurrencyCodeList;
+        }
+        if(angular.isDefined(this.eligibleCurrencyCodeList)){
+            this.eligibleCurrencyCodes = this.eligibleCurrencyCodeList.split(",");
+        }
         if(angular.isUndefined(this.skuPrices)){
             this.skuPrices = []; 
+        }
+        if(angular.isDefined(this.skuSkuId)){
+            this.skuId = this.skuSkuId; 
         }
         if(angular.isDefined(this.skuPriceId)){
             var skuPriceData = {
@@ -46,23 +58,10 @@ class SWSkuPricesEditController{
                 currencyCode:this.currencyCode,
                 price:this.price
             }
-            this.skuPrice = this.$hibachi.populateEntity("SkuPrice",skuPriceData);
-            this.relatedSkuPriceCollectionConfig = this.skuPriceService.getRelatedSkuPriceCollectionConfig( this.skuSkuId, 
-                                                                                                            this.currencyCode, 
-                                                                                                            this.minQuantity, 
-                                                                                                            this.maxQuantity
-                                                                                                         );
-            this.refreshSkuPrices(); 
-            this.observerService.attach(this.refreshSkuPrices, "skuPricesUpdate");
-        }
-        if(angular.isDefined(this.skuId)){
-            var skuData = {
-                skuID:this.skuId,
-                currencyCode:this.currencyCode,
-                price:this.price
-            }
-            this.sku = this.$hibachi.populateEntity("Sku",skuData);
+            this.skuPrice = this.$hibachi.populateEntity("SkuPrice", skuPriceData);
         }  
+        this.refreshSkuPrices(); 
+        this.observerService.attach(this.refreshSkuPrices, "skuPricesUpdate");
     }   
 
     public refreshSkuPrices = () => {
@@ -72,15 +71,21 @@ class SWSkuPricesEditController{
     }
 
     public hasSkuPrices = () =>{
-        return this.skuPriceService.hasSkuPrices(this.skuSkuId);
+        return this.skuPriceService.hasSkuPrices(this.skuId);
     }
 
     public getSkuPrices = () =>{
-        this.loadingPromise = this.skuPriceService.getSkuPricesForQuantityRange( 
-                                                                                 this.skuSkuId,
+        if(angular.isDefined(this.skuSkuId)){
+             this.loadingPromise = this.skuPriceService.getSkuPricesForQuantityRange( 
+                                                                                 this.skuId,
                                                                                  this.minQuantity,
-                                                                                 this.maxQuantity
+                                                                                 this.maxQuantity,
+                                                                                 this.eligibleCurrencyCodes
                                                                                );
+
+        } else if(angular.isDefined(this.skuId)) {
+             this.loadingPromise = this.skuPriceService.getBaseSkuPricesForSku(this.skuId,this.eligibleCurrencyCodes);
+        }
         this.loadingPromise.then(
             (data)=>{
                 this.skuPrices = data;
@@ -106,6 +111,8 @@ class SWSkuPricesEdit implements ng.IDirective{
         baseEntityName:"@?",
         baseEntityId:"@?",
         listingDisplayId:"@?",
+        eligibleCurrencyCodeList:"@?",
+        skuEligibleCurrencyCodeList:"@?",
         sku:"=?"
     };
     public controller = SWSkuPricesEditController;
