@@ -87,7 +87,8 @@ component extends="mxunit.framework.TestCase" output="false" {
 		}
 		
 		for (var i = arrayLen(variables.files); i >= 1; i--) {//yuqing
-			flushRequired = true;
+			
+			request.debug('file:'&variables.files[i]);
 			fileDelete( variables.files[i] );
 		}
 		
@@ -115,20 +116,15 @@ component extends="mxunit.framework.TestCase" output="false" {
 		return createTestEntity(argumentcollection=arguments);
 	}
 	
-	private any function createTestFile (required string fileSourceLocalAbsolutePath, string fileDestination) {
-		var testFileDestinationPath = expandPath('Slatwall') & '/custom/TestFile';
-		request.debug(testFileDestinationPath);
-		if (arguments.fileDestination) {//yuqing
-			testFileDestinationPath = testFileDestinationPath & arguments.fileDestination;
-		}
+	private void function createTestFile (required string fileSourceLocalAbsolutePath, required string fileDestinationRelativePath) {
 		
-		// Persist to the database
-		ormFlush();
+		
+		request.debug(arguments.fileSourceLocalAbsolutePath);
+		request.debug(arguments.fileDestinationRelativePath);
+		fileCopy(arguments.fileSourceLocalAbsolutePath,  expandPath('/Slatwall') & arguments.fileDestinationRelativePath);
 
-		// Add the entity to the persistentEntities
-		arrayAppend(variables.files, testFileDestinationPath);
-		
-		return fileCopy(arguments.fileSourceLocalAbsolutePath, testFileDestinationPath);
+		// Add the filePath to the files array
+		arrayAppend(variables.files, expandPath('/Slatwall') & arguments.fileDestinationRelativePath);
 	}
 
 	private void function addEntityForTearDown(any entity){

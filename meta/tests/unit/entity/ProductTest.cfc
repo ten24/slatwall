@@ -249,4 +249,96 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(0, product.getNumberOfUnusedProductOptionCombinations());
 		assertFalse(product.hasUnusedProductOptionCombinations());
 	}
+	
+	/**
+	* @hint "This function will return mockSku with properites you passed in <br> Make the null arguments "" by the order "
+	*
+	*/
+	private any function createMockSku(string idOfProduct = "", string currencyCode = "", string skuImageFile = "") {
+		var skuData = {
+			skuID = ""
+		};
+		if (len(arguments.idOfProduct)) {
+			skuData.product.productID = arguments.idOfProduct;
+		}
+		if (len(arguments.currencyCode)) {
+			skuData.currencyCode = arguments.currencyCode;
+		}		
+		if (len(arguments.skuImageFile)) {
+			skuData.imageFile = arguments.skuImageFile;
+		}
+		return createPersistedTestEntity('Sku', skuData);
+	}
+	
+	public void function getDefaultProductImageFilesCountTest() {
+		
+//		fileCopy("/Users/ten24user/Downloads/testfilearrow.jpeg", expandPath('/Slatwall') & "/custom/assets/images/product/default/testfilearrow.jpeg");
+		createTestFile ("/Users/ten24user/Sites/sandbox/testfilearrow.jpeg","/custom/assets/images/product/default/testfilearrow.jpeg");
+		
+		var mockSku1 = createMockSku("", "", "testfilearrow.jpeg");
+	 	var mockSku2 = createMockSku();
+	 	var mockSku3 = createMockSku("", "", "fakepath");
+	 	
+	 	var productData = {
+			productID = "",
+			skus = [
+				{
+					skuID = mockSku1.getSkuID()
+				},
+				{
+					skuID = mockSku2.getSkuID()
+				},
+				{
+					skuID = mockSku3.getSkuID()
+				}
+			]
+		};
+		var mockProduct = createPersistedTestEntity('Product', productData);
+		
+		var resultInForLoop = mockProduct.getDefaultProductImageFiles();
+		var result = mockProduct.getDefaultProductImageFilesCount();
+		request.debug(arrayLen(resultInForLoop));//yuqing
+		request.debug(result);//yuqing
+	}
+	
+	public void function getSalePriceDetailsForSkusTest() {
+		var skuData1 = {
+			skuID = "",
+			price = 500,
+			currencyCode = "CNY"
+		};
+		var skuData2 = {
+			skuID = "",
+			price = 300,
+			currencyCode = "CNY"
+		};
+		var skuData3 = {
+			skuID = "",
+			price = 900
+		};
+		var mockSku1 = createPersistedTestEntity('Sku', skuData1);
+	 	var mockSku2 = createPersistedTestEntity('Sku', skuData2);
+	 	var mockSku3 = createPersistedTestEntity('Sku', skuData3);
+	 	var mockSku4 = createPersistedTestEntity('Sku', skuData1);
+		
+		var productData = {
+			productID = "",
+			skus = [
+				{
+					skuID = mockSku1.getSkuID()
+				},
+				{
+					skuID = mockSku2.getSkuID()
+				},
+				{
+					skuID = mockSku3.getSkuID()
+				}
+			]
+		};
+		var mockProduct = createPersistedTestEntity('Product', productData);
+		
+		var result = mockProduct.getSalePriceDetailsForSkus();
+		request.debug(result);
+//		request.debug(mockProduct.getSalePriceDetailsForSkusByCurrencyCode());
+	}
 }
