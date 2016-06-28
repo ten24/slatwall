@@ -8,6 +8,7 @@ class SWSkuStockAdjustmentModalLauncherController{
     public imagePath:string;
     public sku:any; 
     public stock:any; 
+    public stockAdjustmentID:string; 
     public stockAdjustment:any; 
     public stockAdjustmentType:any; 
     public stockAdjustmentStatusType:any; 
@@ -26,6 +27,7 @@ class SWSkuStockAdjustmentModalLauncherController{
     
     //@ngInject
     constructor(
+        private $http, 
         private $q, 
         private $hibachi 
     ){
@@ -54,6 +56,7 @@ class SWSkuStockAdjustmentModalLauncherController{
     }
     
     public initData = () => {
+        this.stockAdjustmentID="";
         this.stock = this.$hibachi.newStock();
         this.stockAdjustment = this.$hibachi.newStockAdjustment();
         this.toLocation = this.$hibachi.newLocation(); 
@@ -71,10 +74,21 @@ class SWSkuStockAdjustmentModalLauncherController{
     
     public save = () => {
         var savePromise = this.stockAdjustment.$$save(); 
-        savePromise.then((response)=>{
-            this.sku.data.newQOH = this.newQuantity; 
-            this.sku.data.calculatedQOH = this.newQuantity; 
-            this.initData(); 
+        savePromise.then(
+            (response)=>{
+                console.log("stockadjustment response", response)
+                this.sku.data.newQOH = this.newQuantity; 
+                this.sku.data.calculatedQOH = this.newQuantity; 
+                this.stockAdjustmentID = response.stockAdjustmentID; 
+            }
+        ).finally(()=>{
+            this.$http({
+                        method:"POST", 
+                        url:this.$hibachi.getUrlWithActionPrefix()+"entity.processStockAdjustment&processContext=processAdjustment&stockAdjustmentID="+this.stockAdjustmentID
+           	}).then((response)=>{
+                this.initData(); 
+            });
+
         });
         return savePromise;
     }    
