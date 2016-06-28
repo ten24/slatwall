@@ -8,6 +8,11 @@
       "url": "http://localhost/"
     },
     {
+      "type": "setWindowSize",
+      "width": "1440",
+      "height": "902.4"
+    },
+    {
       "type": "setElementText",
       "locator": {
         "type": "name",
@@ -31,11 +36,9 @@
       }
     },
     {
-      "type": "waitForElementPresent",
-      "locator": {
-        "type": "link text",
-        "value": "Config"
-      }
+      "type": "waitForEval",
+      "script": "return document.readyState",
+      "value": "complete"
     },
     {
       "type": "clickElement",
@@ -64,7 +67,7 @@
         "type": "name",
         "value": "locationName"
       },
-      "text": "patna"
+      "text": "ghar"
     },
     {
       "type": "clickElement",
@@ -88,12 +91,17 @@
       }
     },
     {
+      "type": "waitForEval",
+      "script": "return document.readyState",
+      "value": "complete"
+    },
+    {
       "type": "setElementText",
       "locator": {
         "type": "name",
         "value": "locationConfigurationName"
       },
-      "text": "jiuy"
+      "text": "laddu"
     },
     {
       "type": "setElementText",
@@ -101,7 +109,7 @@
         "type": "name",
         "value": "locationConfigurationCapacity"
       },
-      "text": "33"
+      "text": "87"
     },
     {
       "type": "clickElement",
@@ -111,11 +119,9 @@
       }
     },
     {
-      "type": "waitForElementPresent",
-      "locator": {
-        "type": "link text",
-        "value": "Products"
-      }
+      "type": "waitForEval",
+      "script": "return document.readyState",
+      "value": "complete"
     },
     {
       "type": "clickElement",
@@ -146,16 +152,21 @@
       }
     },
     {
+      "type": "waitForEval",
+      "script": "return document.readyState",
+      "value": "complete"
+    },
+    {
       "type": "setElementText",
       "locator": {
         "type": "name",
         "value": "product.productName"
       },
-      "text": "jiuyght"
+      "text": "jungi"
     },
     {
       "type": "storeEval",
-      "script": "return 'sunny'+Math.floor(Math.random()*100000)",
+      "script": "return Math.floor(Math.random()*100000)",
       "variable": "code"
     },
     {
@@ -172,7 +183,7 @@
         "type": "name",
         "value": "price"
       },
-      "text": "34"
+      "text": "21"
     },
     {
       "type": "clickElement",
@@ -185,14 +196,7 @@
       "type": "clickElement",
       "locator": {
         "type": "xpath",
-        "value": "//table[@class='ui-datepicker-calendar']//a[.='25']"
-      }
-    },
-    {
-      "type": "clickElement",
-      "locator": {
-        "type": "xpath",
-        "value": "//div[@id='ui-datepicker-div']//button[.='Done']"
+        "value": "//table[@class='ui-datepicker-calendar']//a[.='29']"
       }
     },
     {
@@ -206,7 +210,7 @@
       "type": "clickElement",
       "locator": {
         "type": "xpath",
-        "value": "//table[@class='ui-datepicker-calendar']//a[.='29']"
+        "value": "//table[@class='ui-datepicker-calendar']//a[.='30']"
       }
     },
     {
@@ -229,6 +233,10 @@
         "type": "css selector",
         "value": "button.btn.btn-primary"
       }
+    },
+    {
+      "type": "pause",
+      "waitTime": "40"
     },
     {
       "type": "verifyTextPresent",
