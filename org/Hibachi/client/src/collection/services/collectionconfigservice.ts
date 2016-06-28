@@ -396,7 +396,10 @@ class CollectionConfig {
     };
 
     public addFilter= (propertyIdentifier: string, value: any, comparisonOperator: string = '=', logicalOperator?: string, hidden:boolean=false):CollectionConfig =>{
-        //create filter
+        if(!this.filterGroups[0].filterGroup.length){
+            logicalOperator = undefined; 
+        }
+
         var filter = this.createFilter(propertyIdentifier, value, comparisonOperator, logicalOperator, hidden);
 
         this.filterGroups[0].filterGroup.push(filter);
