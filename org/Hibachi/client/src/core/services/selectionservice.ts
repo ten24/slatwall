@@ -19,16 +19,13 @@ class SelectionService extends BaseService{
             ids: []
         };
     };
-    radioSelection=(selectionid:string,selection:any):void =>{
-        console.log("ontheradio", selectionid,selection,this._selection[selectionid]);        
+    radioSelection=(selectionid:string,selection:any):void =>{  
         this.createSelections(selectionid);
         this._selection[selectionid].ids.push(selection);
-        console.log("ontheradio2", selectionid,selection,this._selection[selectionid]); 
         this.observerService.notify('swSelectionToggleSelection' + selectionid,{action:'check',selectionid,selection});
     };
     addSelection=(selectionid:string,selection:any):void =>{
         /*if allSelected flag is true addSelection will remove selection*/
-        console.log("select", this._selection);
         if(this.isAllSelected(selectionid)){
             var index = this._selection[selectionid].ids.indexOf(selection);
             if (index > -1) {
