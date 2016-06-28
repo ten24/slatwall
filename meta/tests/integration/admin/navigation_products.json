@@ -72,7 +72,8 @@
       "locator": {
         "type": "xpath",
         "value": "//div[@id='j-mobile-nav']//a[.='Products']"
-      }
+      },
+    },
     {
       "type": "clickElement",
       "locator": {
