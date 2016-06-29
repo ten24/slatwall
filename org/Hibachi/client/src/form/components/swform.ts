@@ -15,7 +15,9 @@ class SWFormController {
     public object:any;
     public events: any;
     public name: string;
+    //onSuccessEvents
     public onSuccess:string;
+    //onErrorEvents
     public onError:string;
     public eventsObj = [];
     public processObject:string;
@@ -68,15 +70,13 @@ class SWFormController {
             };
         }
 
-         /** find the form scope */
-        this.$scope.$on('anchor', (event, data) =>
-        {
-
-            if (data.anchorType == "form" && data.scope !== undefined) {
-                this.formCtrl = data.scope;
-            }
-
-        });
+        //  /** find the form scope */
+        // this.$scope.$on('anchor', (event, data) =>
+        // {
+        //     if (data.anchorType == "form" && data.scope !== undefined) {
+        //         this.formCtrl = data.scope;
+        //     }
+        // });
 
         /** make sure we have our data using new logic and $hibachi*/
 //        if (this.context == undefined || this.entityName == undefined) {
@@ -95,49 +95,49 @@ class SWFormController {
 
     }
     /** create the generic submit function */
-    public submit = (action) =>
+    public submit = (actions) =>
     {
-        action = action || this.action;
+        actions = actions || this.action;
         this.clearErrors();
         this.formData = this.getFormData() || "";
-        this.doAction(action);
+        this.doActions(actions);
     }
 
-    public doAction = (actionObject) =>
+    //array or comma delimited
+    public doActions = (actions:string | string[]) =>
     {
-        if (angular.isArray(actionObject)) {
-            for (var submitFunction of actionObject) {
-                this.iterateFactory(submitFunction);
+        if (angular.isArray(actions)) {
+            for (var action of <string[]>actions) {
+                this.doAction(action);
             }
-        } else if (angular.isString(actionObject)) {
-            this.iterateFactory(actionObject);
+        } else if (angular.isString(actions)) {
+            this.doAction(<string>actions);
         } else {
             throw ("Unknown type of action exception");
         }
     }
     // /** iterates through the factory submitting data */
-    public iterateFactory = (submitFunction) =>
+    public doAction = (action:string) =>
     {
-        if (!submitFunction) {throw "Action not defined on form";}
+        if (!action) {throw "Action not defined on form";}
 
-            let submitFn = this.$rootScope.hibachiScope.doAction;
-            this.formData = this.formData || {};
-            //console.log("Calling Final Submit");
-            submitFn(submitFunction, this.formData).then( (result) =>{
-                if (this.$rootScope.hibachiScope.hasErrors) {
+        this.formData = this.formData || {};
+        //console.log("Calling Final Submit");
+        let request = this.$rootScope.hibachiScope.doAction(action, this.formData)
+        .then( (result) =>{
+            if (result.errors) {
+                this.parseErrors(result.errors);
+                    //trigger an onError event
+                this.observerService.notify("onError", {"caller" : this.context, "events": this.events.events||""});
+            } else {
+                //trigger a on success event
+                this.observerService.notify("onSuccess", {"caller":this.context, "events":this.events.events||""});
+            }
+        }, angular.noop);
 
-                    this.parseErrors(result);
-                        //trigger an onError event
-                    this.observerService.notify("onError", {"caller" : this.context, "events": this.events.events||""});
-                } else {
-                    //trigger a on success event
-                    this.observerService.notify("onSuccess", {"caller":this.context, "events":this.events.events||""});
-                }
-            }, angular.noop);
-            //console.log("Leaving iterateFactory.");
     }
 
-    public parseEvents = (str, evntType)=> {
+    public parseEvents = (str:string, evntType)=> {
 
         if (str == undefined) return;
         let strTokens = str.split(","); //this gives the format [hide:this, show:Account_Logout, update:Account or Cart, event:element]
@@ -147,11 +147,11 @@ class SWFormController {
         for (var token in strTokens){
             let eventName = strTokens[token].split(":")[0].toLowerCase().replace(' ', '');
             let formName = strTokens[token].split(":")[1].toLowerCase().replace(' ', '');
-            //if (t == "show" || t == "hide" || t == "refresh" || t == "update"){
-                if (formName == "this") {formName == this.context.toLowerCase();} //<--replaces the alias this with the name of this form.
-                let event = {"name" : eventName, "value" : formName};
-                eventsObj.events.push(event);
-            //}
+
+            if (formName == "this") {formName == this.context.toLowerCase();} //<--replaces the alias this with the name of this form.
+            let event = {"name" : eventName, "value" : formName};
+            eventsObj.events.push(event);
+
         }
         if (eventsObj.events.length){
             this.observerService.attach(this.eventsHandler, "onSuccess");
@@ -161,33 +161,25 @@ class SWFormController {
     }
 
      /** looks at the onSuccess, onError, and onLoading and parses the string into useful subcategories */
-    public parseEventString = function(evntStr, evntType)
+    public parseEventString = (evntStr:string, evntType)=>
     {
         this.events = this.parseEvents(evntStr, evntType); //onSuccess : [hide:this, show:someOtherForm, refresh:Account]
+        console.log('events:',this.events);
     }
 
     /****
          * Handle parsing through the server errors and injecting the error text for that field
         * If the form only has a submit, then simply call that function and set errors.
         ***/
-    public parseErrors = function(result)
+    public parseErrors = (errors)=>
     {
-        //console.log("Resultant Errors: ", result);
-        if (angular.isDefined(result.errors) && result.errors) {
-            angular.forEach(result.errors, (val, key) => {
-                //console.log("Parsing Rule: ", result.errors[key]);
-                //console.log(this.object, key, this.object[key]);
 
-                    //console.log("Yes, is defined...");
+        if (angular.isDefined(errors) && errors) {
+            angular.forEach(errors, (val, key) => {
                     let primaryElement = this.$element.find("[error-for='" + key + "']");
-                    //console.log("Primary Element: ", primaryElement);
                     this.$timeout(function() {
-                        //console.log("Appending");
-                        primaryElement.append("<span name='" + key + "Error'>" + result.errors[key] + "</span>");
+                        primaryElement.append("<span name='" + key + "Error'>" + errors[key] + "</span>");
                     }, 0);
-                    //vm["formCtrl"][this.context][key].$setValidity(key, false);//set field invalid
-                    //vm["formCtrl"][this.context][key].$setPristine(key, false);
-
             }, this);
         }
     };
@@ -240,27 +232,30 @@ class SWFormController {
     }
 
     /** returns all the data from the form by iterating the form elements */
-    public getFormData = function()
+    public getFormData = ()=>
     {
-        //console.log("Form Data:", this.object);
-        var iterable = this.object;
-        if(this.object.data){
-            iterable = this.object.data;
-        }
-
-        angular.forEach(iterable, (val, key) => {
-            /** Check for form elements that have a name that doesn't start with $ */
-            console.log('formitem');
-            console.log(val);
-            console.log(key);
-            if (angular.isString(val)) {
-                this.formData[key] = val;
-                //console.log("Using Form Element: ", this.formData[key]);
+        for(var key in this.formCtrl){
+            if(key.charAt(0) !=='$' && key !== 'name'){
+                let value = this.formCtrl[key].$viewValue;
+                this.formData[key] = value;
             }
+        }
+        console.log('formdatahere',this.formData);
 
-        });
+        return this.formData;
+        // var iterable = this.object;
+        // if(this.object.data){
+        //     iterable = this.object.data;
+        // }
 
-        return this.formData || "";
+        // angular.forEach(iterable, (val, key) => {
+        //     /** Check for form elements that have a name that doesn't start with $ */
+        //     if (angular.isString(val)) {
+        //         this.formData[key] = val;
+        //     }
+        // });
+
+        // return this.formData || "";
     }
 }
 

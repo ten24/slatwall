@@ -24,7 +24,7 @@ class RequestService{
         url:string,
         data?:any,
         method:string="post",
-        headers:{[headername:string]:string;}={'Content-Type':"application/json"},
+        headers:{[headername:string]:string;}={'Content-Type':"application/x-www-form-urlencoded"},
         $injector=this.$injector
     ):PublicRequest=>{
         return new PublicRequest(url,data,method,headers,$injector);

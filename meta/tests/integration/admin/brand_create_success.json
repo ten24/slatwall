@@ -31,6 +31,7 @@
       },
       "text": "QaPa33word"
     },
+
     {
       "type": "clickElement",
       "locator": {
@@ -39,11 +40,9 @@
       }
     },
     {
-      "type": "waitForElementPresent",
-      "locator": {
-        "type": "xpath",
-        "value": "//*[@id=\"j-mobile-nav\"]/ul/li[2]/ul/li[3]/a"
-      }
+      "type": "waitForEval",
+      "script": "return document.readyState",
+      "value": "complete"
     },
     {
       "type": "clickElement",

@@ -28,7 +28,7 @@ class SWFormRegistrar implements ng.IDirective {
 	){
 		return {
 			restrict: 'E',
-			require:"^form",
+			require:["^form","^swForm"],
             scope: {
                 object:"=",
                 context:"@",
@@ -37,13 +37,15 @@ class SWFormRegistrar implements ng.IDirective {
             },
 			link: function(scope, element, attrs, formController){
 				/*add form info at the form level*/
-                
-                
-				formController.$$swFormInfo={
+
+				formController[1].formCtrl = formController[0];
+
+				formController[0].$$swFormInfo={
 					object:scope.object,
 					context:scope.context || 'save',
 					name:scope.name
 				};
+
 				var makeRandomID = function makeid(count)
 				{
 					var text = "";
@@ -55,24 +57,24 @@ class SWFormRegistrar implements ng.IDirective {
 					return text;
 				};
                 if(scope.isDirty){
-                    formController.autoDirty = true;
+                    formController[0].autoDirty = true;
                 }
-                
-				scope.form = formController;
+
+				scope.form = formController[0];
 				/*register form with service*/
-				formController.name = scope.name;
-                formController.$setDirty();
-                
-				formService.setForm(formController);
-                
-                
+				formController[0].name = scope.name;
+                formController[0].$setDirty();
+
+				formService.setForm(formController[0]);
+
+
 
 				/*register form at object level*/
 				if(!angular.isDefined(scope.object.forms)){
 					scope.object.forms = {};
 				}
-				scope.object.forms[scope.name] = formController;
-                
+				scope.object.forms[scope.name] = formController[0];
+
 			}
 		};
 	}

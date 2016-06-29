@@ -15,7 +15,7 @@ class SWActionCallerController{
     public disabled:boolean;
     public actionItemEntityName:string;
     public hibachiPathBuilder:any;
-    public formCtrl:any;
+
     public actionUrl:string;
     public queryString:string;
     public isAngularRoute:boolean;
@@ -55,7 +55,7 @@ class SWActionCallerController{
 
         //Check if is NOT a ngRouter
         if(angular.isUndefined(this.isAngularRoute)){
-            this.isAngularRoute = this.utilityService.isAngularRoute();    
+            this.isAngularRoute = this.utilityService.isAngularRoute();
         }
         if(!this.isAngularRoute){
             this.actionUrl= this.$hibachi.buildUrl(this.action,this.queryString);
@@ -77,7 +77,7 @@ class SWActionCallerController{
                 /** in order to attach the correct controller to local vm, we need a watch to bind */
                 var unbindWatcher = this.$scope.$watch(() => { return this.formController; }, (newValue, oldValue) => {
                     if (newValue !== undefined){
-                        this.formCtrl = newValue;
+                        this.formController = newValue;
 
                     }
 
@@ -110,9 +110,10 @@ class SWActionCallerController{
     }
 
     public submit = () => {
-
-            this.formCtrl.submit(this.action);
-        }
+        console.log('submit');
+        console.log(this.formController);
+        this.formController.submit(this.action);
+    }
 
     public getAction = ():string =>{
 
@@ -312,7 +313,7 @@ class SWActionCaller implements ng.IDirective{
 
     public link:ng.IDirectiveLinkFn = (scope:any, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
         if (angular.isDefined(scope.swActionCaller.formController)){
-             scope.formController = scope.swActionCaller.formController;    
+             scope.formController = scope.swActionCaller.formController;
         }
     }
 }

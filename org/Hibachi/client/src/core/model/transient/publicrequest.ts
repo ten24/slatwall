@@ -32,10 +32,13 @@ class PublicRequest extends Request{
         return this;
     }
 
-    public isSuccess = ()=>{
-        return this.successfulActions.length;
+    public hasSuccessfulAction = ():boolean=>{
+        return this.successfulActions.length > 0;
     }
 
+    public hasFailureAction = ():boolean=>{
+        return this.failureActions.length > 0;
+    }
 }
 export{
     PublicRequest

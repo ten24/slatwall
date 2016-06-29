@@ -1638,23 +1638,27 @@
 	        this.cartService = cartService;
 	        this.ajaxRequestParam = "?ajaxRequest=1";
 	        this.requests = {};
-	        this.loading = false;
+	        this.errors = {};
 	        this.baseActionPath = "";
 	        this.months = [{ name: '01 - JAN', value: 1 }, { name: '02 - FEB', value: 2 }, { name: '03 - MAR', value: 3 }, { name: '04 - APR', value: 4 }, { name: '05 - MAY', value: 5 }, { name: '06 - JUN', value: 6 }, { name: '07 - JUL', value: 7 }, { name: '08 - AUG', value: 8 }, { name: '09 - SEP', value: 9 }, { name: '10 - OCT', value: 10 }, { name: '11 - NOV', value: 11 }, { name: '12 - DEC', value: 12 }];
 	        this.years = [];
 	        this.shippingAddress = "";
 	        this.billingAddress = "";
-	        this.hasErrors = function () {
-	            return _this.errors.length;
-	        };
+	        // public hasErrors = ()=>{
+	        //     return this.errors.length;
+	        // }
 	        /**
 	         * Helper methods for getting errors from the cart
 	         */
 	        this.getErrors = function () {
-	            if (_this.errors !== undefined) {
-	                return _this.errors;
+	            _this.errors = {};
+	            for (var key in _this.requests) {
+	                var request = _this.requests[key];
+	                if (Object.keys(request.errors).length) {
+	                    _this.errors[key] = request.errors;
+	                }
 	            }
-	            return {};
+	            return _this.errors;
 	        };
 	        /** grab the valid expiration years for credit cards  */
 	        this.getExpirationYears = function () {
@@ -1696,7 +1700,6 @@
 	        };
 	        /** accessors for states */
 	        this.getData = function (url, setter, param) {
-	            _this.loading = true;
 	            var urlBase = url + _this.ajaxRequestParam + param;
 	            var request = _this.requestService.newPublicRequest(urlBase);
 	            request.promise.then(function (result) {
@@ -1710,14 +1713,18 @@
 	                    }
 	                }
 	                if (setter == 'cart' || setter == 'account') {
+	                    //cart and account return cart and account info flat
 	                    _this[setter].populate(result);
 	                }
 	                else {
-	                    _this[setter] = result;
+	                    //other functions reutrn cart,account and then data
+	                    _this[setter] = (result);
 	                }
+	                console.log('setter');
+	                console.log(_this[setter]);
 	            }).catch(function (reason) {
 	            });
-	            _this.requests[setter] = request;
+	            _this.requests[request.getAction()] = request;
 	            return request.promise;
 	        };
 	        /** sets the current shipping address */
@@ -1746,44 +1753,65 @@
 	            }
 	            var urlBase = _this.baseActionPath + _this.ajaxRequestParam;
 	            if (data) {
+	                method = "post";
 	                data.returnJsonObjects = "cart,account";
 	            }
 	            else {
 	                urlBase += "&returnJsonObject=cart,account";
 	            }
 	            if (method == "post") {
+	                console.log('posting');
 	                data.returnJsonObjects = "cart,account";
 	                //post
 	                var request_1 = _this.requestService.newPublicRequest(urlBase, data, method);
 	                request_1.promise.then(function (result) {
-	                    /** update the account and the cart */
-	                    _this.account.populate(result.data.account);
-	                    _this.cart.populate(result.data.cart);
-	                    //if the action that was called was successful, then success is true.
-	                    if (request_1.isSuccess()) {
-	                        for (var action in request_1.successfulActions) {
-	                            if (request_1.successfulActions[action].indexOf('public:cart.placeOrder') !== -1) {
-	                                _this.$window.location.href = _this.confirmationUrl;
-	                            }
-	                        }
-	                    }
-	                    if (!request_1.isSuccess()) {
-	                    }
-	                    request_1.promise(result);
+	                    _this.processAction(result, request_1);
 	                }).catch(function (response) {
-	                    request_1.promise(response);
+	                    //request.promise(response);
 	                });
+	                _this.requests[request_1.getAction()] = request_1;
+	                ;
 	                return request_1.promise;
 	            }
 	            else {
 	                //get
+	                console.log('get');
 	                var url = urlBase + "&returnJsonObject=cart,account";
-	                var request = _this.requestService.newPublicRequest(url);
-	                request.promise.then(function (result) {
+	                var request_2 = _this.requestService.newPublicRequest(url);
+	                request_2.promise.then(function (result) {
+	                    _this.processAction(result, request_2);
 	                }).catch(function (reason) {
 	                });
-	                return request.promise;
+	                _this.requests[request_2.getAction()] = request_2;
+	                return request_2.promise;
 	            }
+	        };
+	        this.processAction = function (response, request) {
+	            /** update the account and the cart */
+	            console.log('processAction');
+	            console.log(response);
+	            _this.account.populate(response.account);
+	            _this.account.request = request;
+	            _this.cart.populate(response.cart);
+	            _this.cart.request = request;
+	            console.log(_this);
+	            //if the action that was called was successful, then success is true.
+	            if (request.hasSuccessfulAction()) {
+	                for (var action in request.successfulActions) {
+	                    if (request.successfulActions[action].indexOf('public:cart.placeOrder') !== -1) {
+	                        _this.$window.location.href = _this.confirmationUrl;
+	                    }
+	                }
+	            }
+	            if (!request.hasSuccessfulAction()) {
+	            }
+	            // request.promise(result);
+	            console.log('test');
+	            console.log(request);
+	            console.log(_this.cart);
+	        };
+	        this.getRequestByAction = function (action) {
+	            return _this.requests[action];
 	        };
 	        /**
 	         * Helper methods so that everything in account and cart can be accessed using getters.
@@ -1799,6 +1827,7 @@
 	                    _this.paymentMethods = result.data.paymentMethods;
 	                }
 	            });
+	            _this.requests[request.getAction()] = request;
 	        };
 	        /**
 	         * Given a payment method name, returns the id.
@@ -1835,7 +1864,6 @@
 	        };
 	        /** Returns true if the order requires a fulfillment */
 	        this.orderRequiresFulfillment = function () {
-	            console.log('mycart', _this.cart);
 	            _this.cart.orderRequiresFulfillment();
 	        };
 	        /**
@@ -1867,7 +1895,6 @@
 	        /** simple validation just to ensure data is present and accounted for.
 	         */
 	        this.validateNewOrderPayment = function (newOrderPayment) {
-	            //console.log("Validating: ", newOrderPayment);
 	            var newOrderPaymentErrors = {};
 	            if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.streetAddress')) {
 	                newOrderPaymentErrors['streetAddress'] = 'Required *';
@@ -1908,7 +1935,6 @@
 	            if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.securityCode')) {
 	                newOrderPaymentErrors['securityCode'] = 'Required *';
 	            }
-	            //console.log("Errors: ", newOrderPaymentErrors);
 	            if (Object.keys(newOrderPaymentErrors).length) {
 	            }
 	        };
@@ -1958,7 +1984,6 @@
 	        */
 	        this.getSelectedShippingIndex = function (index, value) {
 	            for (var i = 0; i <= this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingMethodOptions.length; i++) {
-	                //console.log(i, slatwall.cart.fulfillmentTotal, slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingMethodOptions[i].totalCharge);
 	                if (this.cart.fulfillmentTotal == this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingMethodOptions[i].totalCharge) {
 	                    return i;
 	                }
@@ -1998,16 +2023,13 @@
 	            //Make sure we have required fields for a newOrderPayment.
 	            _this.validateNewOrderPayment(data);
 	            if (_this.cart.orderPayments.hasErrors && Object.keys(_this.cart.orderPayments.errors).length) {
-	                //console.log("Errors found", slatwall.cart.orderPayments.errors);
 	                return -1;
 	            }
 	            //Post the new order payment and set errors as needed.
-	            _this.$q.all([_this.doAction('addOrderPayment', data, 'post')]).then(function (result) {
+	            _this.doAction('addOrderPayment', data, 'post').then(function (result) {
 	                var serverData;
 	                if (angular.isDefined(result['0'])) {
 	                    serverData = result['0'].data;
-	                }
-	                else {
 	                }
 	                if (serverData.cart.hasErrors || angular.isDefined(this.cart.orderPayments[this.cart.orderPayments.length - 1]['errors']) && !this.cart.orderPayments[this.cart.orderPayments.length - 1]['errors'].hasErrors) {
 	                    this.cart.hasErrors = true;
@@ -2024,14 +2046,12 @@
 	        /** Allows an easy way to calling the service addOrderPayment.
 	        */
 	        this.addGiftCardOrderPayments = function (redeemGiftCardToAccount) {
-	            //console.log("Adding giftcard payment.", slatwall.account);
 	            //reset the form errors.
 	            _this.cart.hasErrors = false;
 	            _this.cart.orderPayments.errors = {};
 	            _this.cart.orderPayments.hasErrors = false;
 	            //Grab all the data
 	            var giftCards = _this.account.giftCards;
-	            //console.log("Giftcards", giftCards);
 	            var data = {};
 	            data = {
 	                'newOrderPayment.paymentMethod.paymentMethodID': '50d8cd61009931554764385482347f3a',
@@ -2049,13 +2069,10 @@
 	                    }
 	                    data['copyFromType'] = "";
 	                    //Post the new order payment and set errors as needed.
-	                    //console.log("Data", data);
 	                    _this.$q.all([_this.doAction('addOrderPayment', data, 'post')]).then(function (result) {
 	                        var serverData;
 	                        if (angular.isDefined(result['0'])) {
 	                            serverData = result['0'].data;
-	                        }
-	                        else {
 	                        }
 	                        if (serverData.cart.hasErrors || angular.isDefined(this.cart.orderPayments[this.cart.orderPayments.length - 1]['errors']) && !this.cart.orderPayments['' + this.cart.orderPayments.length - 1]['errors'].hasErrors) {
 	                            this.cart.hasErrors = true;
@@ -2088,16 +2105,16 @@
 	        };
 	        /** returns true if the loader should be on for that item.
 	        */
-	        this.isLoading = function isLoading(section) {
-	            if (angular.isUndefined(this.loaders)) {
-	                this.loaders = [];
-	                this.loaders[section] = false;
-	            }
-	            if (this.loaders[section] == true) {
-	                return true;
-	            }
-	            return false;
-	        };
+	        // public isLoading = function isLoading(section){
+	        //     if (angular.isUndefined(this.loaders)){
+	        //         this.loaders = [];
+	        //         this.loaders[section] = false;
+	        //     }
+	        //     if (this.loaders[section] == true){
+	        //         return true;
+	        //     }
+	        //     return false;
+	        // }
 	        /** adds a loader to the loader list
 	        */
 	        //public addLoader = function(section){
@@ -2118,9 +2135,6 @@
 	        */
 	        this.addOrderPaymentAndPlaceOrder = function (formdata) {
 	            //reset the form errors.
-	            _this.cart.hasErrors = false;
-	            _this.cart.orderPayments.errors = {};
-	            _this.cart.orderPayments.hasErrors = false;
 	            _this.orderPlaced = false;
 	            //Grab all the data
 	            var billingAddress = _this.newBillingAddress;
@@ -2149,7 +2163,6 @@
 	            //Make sure we have required fields for a newOrderPayment.
 	            _this.validateNewOrderPayment(data);
 	            if (_this.cart.orderPayments.hasErrors && Object.keys(_this.cart.orderPayments.errors).length) {
-	                //console.log("Errors found", slatwall.cart.orderPayments.errors);
 	                return -1;
 	            }
 	            //Post the new order payment and set errors as needed.
@@ -2229,10 +2242,8 @@
 	        };
 	        //get estimated shipping rates given a weight, from to zips
 	        this.getEstimatedRates = function (zipcode) {
-	            console.log("Getting estimated rates for", zipcode);
 	            var weight = 0;
 	            for (var item in _this.cart.orderFulfillments) {
-	                console.log("Weight: ", _this.cart.orderFulfillments[item].totalShippingWeight);
 	                weight += _this.cart.orderFulfillments[item].totalShippingWeight;
 	            }
 	            var shipFromAddress = {
@@ -2247,7 +2258,6 @@
 	                + "&shipToAddress=" + JSON.stringify(shipToAddress) + "&totalWeight=" + JSON.stringify(weight);
 	            var request = _this.requestService.newPublicRequest(urlString)
 	                .then(function (result) {
-	                console.log("Results", result);
 	                _this.rates = result.data;
 	            });
 	        };
@@ -2346,10 +2356,18 @@
 	        _super.call(this, $injector);
 	        this.errors = {};
 	        this.messages = {};
-	        this.populate = function (data) {
+	        this.populate = function (response) {
+	            var data = response;
+	            if (response.data) {
+	                data = response.data;
+	            }
 	            for (var key in data) {
 	                var value = data[key];
 	                _this[key] = value;
+	            }
+	            if (response.errors) {
+	                _this.errors = response.errors;
+	                _this.messages = response.messages;
 	            }
 	            console.log('cartObject', _this);
 	        };
@@ -2464,6 +2482,9 @@
 	        };
 	        this.getHibachiScope = function () {
 	            return _this.getService('publicService');
+	        };
+	        this.getAppConfig = function () {
+	            return _this.getService('appConfig');
 	        };
 	        this.$injector = $injector;
 	    }
@@ -4874,7 +4895,7 @@
 	        };
 	        this.newPublicRequest = function (url, data, method, headers, $injector) {
 	            if (method === void 0) { method = "post"; }
-	            if (headers === void 0) { headers = { 'Content-Type': "application/json" }; }
+	            if (headers === void 0) { headers = { 'Content-Type': "application/x-www-form-urlencoded" }; }
 	            if ($injector === void 0) { $injector = _this.$injector; }
 	            return new publicrequest_1.PublicRequest(url, data, method, headers, $injector);
 	        };
@@ -4929,14 +4950,82 @@
 	        var _this = this;
 	        _super.call(this, $injector);
 	        this.loading = true;
+	        this.errors = {};
+	        this.processResponse = function (response) {
+	            _this.loading = false;
+	            if (response.errors) {
+	                _this.errors = response.errors;
+	            }
+	            if (response.messages) {
+	                _this.messages = response.messages;
+	            }
+	            console.log('log errors', _this.errors);
+	        };
+	        //returns hibachiAction value from url and data;
+	        this.getAction = function () {
+	            var config = _this.getAppConfig();
+	            //typically hibachiAction
+	            var actionName = config.action;
+	            var params = _this.utilityService.getQueryParamsFromUrl(_this.url);
+	            if (params[actionName]) {
+	                return params[actionName];
+	            }
+	            if (_this.data && _this.data[actionName]) {
+	                return _this.data[actionName];
+	            }
+	            if (_this.url.indexOf('api/scope/') > 0) {
+	                return _this.extractPublicAction(_this.url);
+	            }
+	        };
+	        this.extractPublicAction = function (url) {
+	            //get in between api/scope and / or ? or end of word
+	            var regex = /\api\/scope\/(.*?)(?=\/|\?|$)/;
+	            var arr = regex.exec(url);
+	            return arr[1];
+	        };
+	        this.processSuccess = function (response) {
+	            _this.processResponse(response);
+	        };
+	        this.processError = function (response) {
+	            _this.processResponse(response);
+	        };
 	        /** used to turn data into a correct format for the post */
 	        this.toFormParams = function (data) {
-	            return data = $.param(data) || "";
+	            if (data) {
+	                return $.param(data);
+	            }
+	            else {
+	                return "";
+	            }
+	            //return data = this.serializeData(data) || "";
+	        };
+	        this.serializeData = function (data) {
+	            // If this is not an object, defer to native stringification.
+	            if (!angular.isObject(data)) {
+	                return ((data == null) ? "" : data.toString());
+	            }
+	            var buffer = [];
+	            // Serialize each key in the object.
+	            for (var name in data) {
+	                if (!data.hasOwnProperty(name)) {
+	                    continue;
+	                }
+	                var value = data[name];
+	                buffer.push(encodeURIComponent(name) + "=" + encodeURIComponent((value == null) ? "" : value));
+	            }
+	            // Serialize the buffer and clean it up for transportation.
+	            var source = buffer.join("&").replace(/%20/g, "+");
+	            return (source);
 	        };
 	        this.headers = headers;
 	        this.$q = this.getService('$q');
 	        this.$http = this.getService('$http');
 	        this.$window = this.getService('$window');
+	        this.url = url;
+	        this.data = data;
+	        this.method = method;
+	        this.utilityService = this.getService('utilityService');
+	        console.log('headers', this.headers);
 	        if (!method) {
 	            if (data == undefined) {
 	                method = "get";
@@ -4945,35 +5034,32 @@
 	                method = "post";
 	            }
 	        }
-	        // if(this.headers['Content-Type']==="application/json"){
-	        //     if(!angular.isString(data)){
-	        //         data = angular.toJson(data);
-	        //     }
-	        // }
 	        var deferred = this.$q.defer();
 	        if (method == "post") {
 	            if (this.headers['Content-Type'] !== "application/json") {
 	                data = this.toFormParams(data);
 	            }
 	            //post
-	            var promise = this.$http.post(url, data, this.headers)
+	            var promise = this.$http({
+	                url: url, data: data, headers: this.headers, method: 'post'
+	            })
 	                .success(function (result) {
-	                _this.loading = false;
+	                _this.processSuccess(result);
 	                deferred.resolve(result);
 	            }).error(function (response) {
-	                _this.loading = false;
+	                _this.processError(response);
 	                deferred.reject(response);
 	            });
 	            this.promise = deferred.promise;
 	        }
 	        else {
 	            //get
-	            this.$http.get(url)
+	            this.$http({ url: url, method: 'get' })
 	                .success(function (result) {
-	                _this.loading = false;
+	                _this.processSuccess(result);
 	                deferred.resolve(result);
 	            }).error(function (reason) {
-	                _this.loading = false;
+	                _this.processError(reason);
 	                deferred.reject(reason);
 	            });
 	            this.promise = deferred.promise;
@@ -5007,8 +5093,11 @@
 	        this.failureActions = [];
 	        this.successfulActions = [];
 	        this.messages = [];
-	        this.isSuccess = function () {
-	            return _this.successfulActions.length;
+	        this.hasSuccessfulAction = function () {
+	            return _this.successfulActions.length > 0;
+	        };
+	        this.hasFailureAction = function () {
+	            return _this.failureActions.length > 0;
 	        };
 	        this.promise.then(function (result) {
 	            _this.successfulActions = result.successfulActions;
@@ -5293,7 +5382,7 @@
 	                /** in order to attach the correct controller to local vm, we need a watch to bind */
 	                var unbindWatcher = _this.$scope.$watch(function () { return _this.formController; }, function (newValue, oldValue) {
 	                    if (newValue !== undefined) {
-	                        _this.formCtrl = newValue;
+	                        _this.formController = newValue;
 	                    }
 	                    unbindWatcher();
 	                });
@@ -5321,7 +5410,9 @@
 	            */
 	        };
 	        this.submit = function () {
-	            _this.formCtrl.submit(_this.action);
+	            console.log('submit');
+	            console.log(_this.formController);
+	            _this.formController.submit(_this.action);
 	        };
 	        this.getAction = function () {
 	            return _this.action || '';
@@ -9134,6 +9225,7 @@
 	    }])
 	    .run(['$rootScope', 'publicService', function ($rootScope, publicService) {
 	        $rootScope.hibachiScope = publicService;
+	        $rootScope.hasAccount = publicService.hasAccount;
 	        $rootScope.hibachiScope.getAccount();
 	        $rootScope.hibachiScope.getCart();
 	        $rootScope.hibachiScope.getCountries();
@@ -15289,37 +15381,38 @@
 	        this.eventsObj = [];
 	        this.formData = {};
 	        /** create the generic submit function */
-	        this.submit = function (action) {
-	            action = action || _this.action;
+	        this.submit = function (actions) {
+	            actions = actions || _this.action;
 	            _this.clearErrors();
 	            _this.formData = _this.getFormData() || "";
-	            _this.doAction(action);
+	            _this.doActions(actions);
 	        };
-	        this.doAction = function (actionObject) {
-	            if (angular.isArray(actionObject)) {
-	                for (var _i = 0, actionObject_1 = actionObject; _i < actionObject_1.length; _i++) {
-	                    var submitFunction = actionObject_1[_i];
-	                    _this.iterateFactory(submitFunction);
+	        //array or comma delimited
+	        this.doActions = function (actions) {
+	            if (angular.isArray(actions)) {
+	                for (var _i = 0, _a = actions; _i < _a.length; _i++) {
+	                    var action = _a[_i];
+	                    _this.doAction(action);
 	                }
 	            }
-	            else if (angular.isString(actionObject)) {
-	                _this.iterateFactory(actionObject);
+	            else if (angular.isString(actions)) {
+	                _this.doAction(actions);
 	            }
 	            else {
 	                throw ("Unknown type of action exception");
 	            }
 	        };
 	        // /** iterates through the factory submitting data */
-	        this.iterateFactory = function (submitFunction) {
-	            if (!submitFunction) {
+	        this.doAction = function (action) {
+	            if (!action) {
 	                throw "Action not defined on form";
 	            }
-	            var submitFn = _this.$rootScope.hibachiScope.doAction;
 	            _this.formData = _this.formData || {};
 	            //console.log("Calling Final Submit");
-	            submitFn(submitFunction, _this.formData).then(function (result) {
-	                if (_this.$rootScope.hibachiScope.hasErrors) {
-	                    _this.parseErrors(result);
+	            var request = _this.$rootScope.hibachiScope.doAction(action, _this.formData)
+	                .then(function (result) {
+	                if (result.errors) {
+	                    _this.parseErrors(result.errors);
 	                    //trigger an onError event
 	                    _this.observerService.notify("onError", { "caller": _this.context, "events": _this.events.events || "" });
 	                }
@@ -15328,7 +15421,6 @@
 	                    _this.observerService.notify("onSuccess", { "caller": _this.context, "events": _this.events.events || "" });
 	                }
 	            }, angular.noop);
-	            //console.log("Leaving iterateFactory.");
 	        };
 	        this.parseEvents = function (str, evntType) {
 	            if (str == undefined)
@@ -15340,7 +15432,6 @@
 	            for (var token in strTokens) {
 	                var eventName = strTokens[token].split(":")[0].toLowerCase().replace(' ', '');
 	                var formName = strTokens[token].split(":")[1].toLowerCase().replace(' ', '');
-	                //if (t == "show" || t == "hide" || t == "refresh" || t == "update"){
 	                if (formName == "this") {
 	                    formName == _this.context.toLowerCase();
 	                } //<--replaces the alias this with the name of this form.
@@ -15354,29 +15445,21 @@
 	        };
 	        /** looks at the onSuccess, onError, and onLoading and parses the string into useful subcategories */
 	        this.parseEventString = function (evntStr, evntType) {
-	            this.events = this.parseEvents(evntStr, evntType); //onSuccess : [hide:this, show:someOtherForm, refresh:Account]
+	            _this.events = _this.parseEvents(evntStr, evntType); //onSuccess : [hide:this, show:someOtherForm, refresh:Account]
+	            console.log('events:', _this.events);
 	        };
 	        /****
 	             * Handle parsing through the server errors and injecting the error text for that field
 	            * If the form only has a submit, then simply call that function and set errors.
 	            ***/
-	        this.parseErrors = function (result) {
-	            var _this = this;
-	            //console.log("Resultant Errors: ", result);
-	            if (angular.isDefined(result.errors) && result.errors) {
-	                angular.forEach(result.errors, function (val, key) {
-	                    //console.log("Parsing Rule: ", result.errors[key]);
-	                    //console.log(this.object, key, this.object[key]);
-	                    //console.log("Yes, is defined...");
+	        this.parseErrors = function (errors) {
+	            if (angular.isDefined(errors) && errors) {
+	                angular.forEach(errors, function (val, key) {
 	                    var primaryElement = _this.$element.find("[error-for='" + key + "']");
-	                    //console.log("Primary Element: ", primaryElement);
 	                    _this.$timeout(function () {
-	                        //console.log("Appending");
-	                        primaryElement.append("<span name='" + key + "Error'>" + result.errors[key] + "</span>");
+	                        primaryElement.append("<span name='" + key + "Error'>" + errors[key] + "</span>");
 	                    }, 0);
-	                    //vm["formCtrl"][this.context][key].$setValidity(key, false);//set field invalid
-	                    //vm["formCtrl"][this.context][key].$setPristine(key, false);
-	                }, this);
+	                }, _this);
 	            }
 	        };
 	        /** find and clear all errors on form */
@@ -15424,22 +15507,25 @@
 	        };
 	        /** returns all the data from the form by iterating the form elements */
 	        this.getFormData = function () {
-	            var _this = this;
-	            //console.log("Form Data:", this.object);
-	            var iterable = this.object;
-	            if (this.object.data) {
-	                iterable = this.object.data;
-	            }
-	            angular.forEach(iterable, function (val, key) {
-	                /** Check for form elements that have a name that doesn't start with $ */
-	                console.log('formitem');
-	                console.log(val);
-	                console.log(key);
-	                if (angular.isString(val)) {
-	                    _this.formData[key] = val;
+	            for (var key in _this.formCtrl) {
+	                if (key.charAt(0) !== '$' && key !== 'name') {
+	                    var value = _this.formCtrl[key].$viewValue;
+	                    _this.formData[key] = value;
 	                }
-	            });
-	            return this.formData || "";
+	            }
+	            console.log('formdatahere', _this.formData);
+	            return _this.formData;
+	            // var iterable = this.object;
+	            // if(this.object.data){
+	            //     iterable = this.object.data;
+	            // }
+	            // angular.forEach(iterable, (val, key) => {
+	            //     /** Check for form elements that have a name that doesn't start with $ */
+	            //     if (angular.isString(val)) {
+	            //         this.formData[key] = val;
+	            //     }
+	            // });
+	            // return this.formData || "";
 	        };
 	        /** only use if the developer has specified these features with isProcessForm */
 	        if (angular.isUndefined(this.isDirty)) {
@@ -15482,12 +15568,13 @@
 	            }
 	            ;
 	        }
-	        /** find the form scope */
-	        this.$scope.$on('anchor', function (event, data) {
-	            if (data.anchorType == "form" && data.scope !== undefined) {
-	                _this.formCtrl = data.scope;
-	            }
-	        });
+	        //  /** find the form scope */
+	        // this.$scope.$on('anchor', (event, data) =>
+	        // {
+	        //     if (data.anchorType == "form" && data.scope !== undefined) {
+	        //         this.formCtrl = data.scope;
+	        //     }
+	        // });
 	        /** make sure we have our data using new logic and $hibachi*/
 	        //        if (this.context == undefined || this.entityName == undefined) {
 	        //            throw ("ProcessObject Undefined Exception");
@@ -16168,7 +16255,7 @@
 	    function SWFormRegistrar(formService, coreFormPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'E',
-	            require: "^form",
+	            require: ["^form", "^swForm"],
 	            scope: {
 	                object: "=",
 	                context: "@",
@@ -16177,7 +16264,8 @@
 	            },
 	            link: function (scope, element, attrs, formController) {
 	                /*add form info at the form level*/
-	                formController.$$swFormInfo = {
+	                formController[1].formCtrl = formController[0];
+	                formController[0].$$swFormInfo = {
 	                    object: scope.object,
 	                    context: scope.context || 'save',
 	                    name: scope.name
@@ -16190,18 +16278,18 @@
 	                    return text;
 	                };
 	                if (scope.isDirty) {
-	                    formController.autoDirty = true;
+	                    formController[0].autoDirty = true;
 	                }
-	                scope.form = formController;
+	                scope.form = formController[0];
 	                /*register form with service*/
-	                formController.name = scope.name;
-	                formController.$setDirty();
-	                formService.setForm(formController);
+	                formController[0].name = scope.name;
+	                formController[0].$setDirty();
+	                formService.setForm(formController[0]);
 	                /*register form at object level*/
 	                if (!angular.isDefined(scope.object.forms)) {
 	                    scope.object.forms = {};
 	                }
-	                scope.object.forms[scope.name] = formController;
+	                scope.object.forms[scope.name] = formController[0];
 	            }
 	        };
 	    }

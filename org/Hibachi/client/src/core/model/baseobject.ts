@@ -23,6 +23,10 @@ class BaseObject{
     public getHibachiScope=()=>{
         return this.getService('publicService');
     }
+
+    public getAppConfig=()=>{
+        return this.getService('appConfig');
+    }
 }
 export{
     BaseObject

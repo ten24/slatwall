@@ -14,10 +14,10 @@ class PublicService {
     public countries:any;
     public addressOptions:any;
     public requests:{ [action: string]: PublicRequest; }={};
+    public errors:{[key:string]:any}={};
 
     public http:ng.IHttpService;
     public confirmationUrl:string;
-    public loading:boolean = false;
     public header:any;
     public window:any;
     public finding:boolean;
@@ -58,22 +58,26 @@ class PublicService {
         this.$hibachi = $hibachi;
         this.cart = this.cartService.newCart();
         this.account = this.accountService.newAccount();
-
     }
 
-    public hasErrors = ()=>{
+    // public hasErrors = ()=>{
 
-        return this.errors.length;
-    }
+    //     return this.errors.length;
+    // }
 
     /**
      * Helper methods for getting errors from the cart
      */
     public getErrors = ():{} =>{
-        if (this.errors !== undefined){
-            return this.errors;
-        }
-        return {};
+        this.errors = {};
+        for(var key in this.requests){
+            var request = this.requests[key];
+            if(Object.keys(request.errors).length){
+                this.errors[key] = request.errors;
+            }
+         }
+
+        return this.errors;
     }
 
     /** grab the valid expiration years for credit cards  */
@@ -118,9 +122,10 @@ class PublicService {
 
     /** accessors for states */
     public getData=(url, setter, param):any =>  {
-        this.loading = true;
+
         let urlBase = url + this.ajaxRequestParam + param;
         let request = this.requestService.newPublicRequest(urlBase);
+
         request.promise.then((result:any)=>{
             //don't need account and cart for anything other than account and cart calls.
             if (setter.indexOf('account') == -1 || setter.indexOf('cart') == -1){
@@ -128,17 +133,19 @@ class PublicService {
                 if (result['cart']){delete result['cart'];}
             }
             if(setter == 'cart'||setter=='account'){
-
+                //cart and account return cart and account info flat
                 this[setter].populate(result)
             }else{
-                this[setter] = result;
+                //other functions reutrn cart,account and then data
+                this[setter]=(result);
             }
-
+            console.log('setter');
+            console.log(this[setter]);
         }).catch((reason)=>{
 
 
         });
-        this.requests[setter]=request;
+        this.requests[request.getAction()]=request;
         return request.promise;
     }
 
@@ -171,50 +178,74 @@ class PublicService {
         let urlBase = this.baseActionPath + this.ajaxRequestParam;
 
         if(data){
+            method = "post";
             data.returnJsonObjects = "cart,account";
         }else{
             urlBase += "&returnJsonObject=cart,account";
         }
 
         if (method == "post"){
+            console.log('posting');
              data.returnJsonObjects = "cart,account";
             //post
-            let request = this.requestService.newPublicRequest(urlBase,data,method)
+            let request:PublicRequest = this.requestService.newPublicRequest(urlBase,data,method)
             request.promise.then((result:any)=>{
 
-                /** update the account and the cart */
-                this.account.populate(result.data.account);
-                this.cart.populate(result.data.cart);
-                //if the action that was called was successful, then success is true.
-                if (request.isSuccess()){
-                    for (var action in request.successfulActions){
-                        if (request.successfulActions[action].indexOf('public:cart.placeOrder') !== -1){
-                            this.$window.location.href = this.confirmationUrl;
-                        }
-                    }
-                }
-                if (!request.isSuccess()){
-                    //this.hasErrors = true;
-                }
-
-                request.promise(result);
+                this.processAction(result,request);
             }).catch((response)=>{
 
-                request.promise(response);
+                //request.promise(response);
             });
+            this.requests[request.getAction()]=request;;
             return request.promise;
         }else{
             //get
+            console.log('get');
             var url = urlBase + "&returnJsonObject=cart,account";
 
             let request = this.requestService.newPublicRequest(url);
             request.promise.then((result:any)=>{
-
+                this.processAction(result,request);
             }).catch((reason)=>{
 
             });
+
+            this.requests[request.getAction()]=request;
             return request.promise;
         }
+
+    }
+
+    private processAction = (response,request:PublicRequest)=>{
+        /** update the account and the cart */
+        console.log('processAction');
+        console.log(response);
+        this.account.populate(response.account);
+        this.account.request = request;
+        this.cart.populate(response.cart);
+        this.cart.request = request;
+        console.log(this);
+        //if the action that was called was successful, then success is true.
+        if (request.hasSuccessfulAction()){
+            for (var action in request.successfulActions){
+                if (request.successfulActions[action].indexOf('public:cart.placeOrder') !== -1){
+                    this.$window.location.href = this.confirmationUrl;
+                }
+            }
+        }
+        if (!request.hasSuccessfulAction()){
+            //this.hasErrors = true;
+        }
+
+        // request.promise(result);
+        console.log('test');
+        console.log(request);
+
+        console.log(this.cart)
+    }
+
+    public getRequestByAction = (action:string)=>{
+        return this.requests[action];
     }
 
     /**
@@ -224,7 +255,6 @@ class PublicService {
        return this.account.userIsLoggedIn();
     }
 
-
     public getActivePaymentMethods = ()=>{
         let urlString = "/?slataction=admin:ajax.getActivePaymentMethods";
         let request = this.requestService.newPublicRequest(urlString)
@@ -233,6 +263,7 @@ class PublicService {
                 this.paymentMethods = result.data.paymentMethods;
             }
         });
+        this.requests[request.getAction()]=request;
     };
 
     /**
@@ -276,7 +307,7 @@ class PublicService {
 
     /** Returns true if the order requires a fulfillment */
     public orderRequiresFulfillment = ()=> {
-        console.log('mycart',this.cart);
+
         this.cart.orderRequiresFulfillment();
     };
 
@@ -313,7 +344,6 @@ class PublicService {
     /** simple validation just to ensure data is present and accounted for.
      */
     public validateNewOrderPayment =  (newOrderPayment)=> {
-        //console.log("Validating: ", newOrderPayment);
         var newOrderPaymentErrors = {};
         if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.streetAddress')){
             newOrderPaymentErrors['streetAddress'] = 'Required *';
@@ -354,7 +384,6 @@ class PublicService {
         if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.securityCode')){
             newOrderPaymentErrors['securityCode'] = 'Required *';
         }
-        //console.log("Errors: ", newOrderPaymentErrors);
         if (Object.keys(newOrderPaymentErrors).length){
             //this.cart.orderPayments.hasErrors = true;
             //this.cart.orderPayments.errors = newOrderPaymentErrors;
@@ -411,7 +440,6 @@ class PublicService {
      */
      public getSelectedShippingIndex = function(index, value){
         for (var i = 0; i <= this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingMethodOptions.length; i++){
-            //console.log(i, slatwall.cart.fulfillmentTotal, slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingMethodOptions[i].totalCharge);
             if (this.cart.fulfillmentTotal == this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingMethodOptions[i].totalCharge){
                 return i;
             }
@@ -455,18 +483,16 @@ class PublicService {
         //Make sure we have required fields for a newOrderPayment.
         this.validateNewOrderPayment( data );
         if ( this.cart.orderPayments.hasErrors && Object.keys(this.cart.orderPayments.errors).length ){
-            //console.log("Errors found", slatwall.cart.orderPayments.errors);
             return -1;
         }
 
         //Post the new order payment and set errors as needed.
-        this.$q.all([this.doAction('addOrderPayment', data, 'post')]).then(function(result){
+        this.doAction('addOrderPayment', data, 'post').then(function(result){
             var serverData
             if (angular.isDefined(result['0'])){
                 serverData = result['0'].data;
-            }else{
-                //console.log("An unexpected error has occurred!");
             }
+
             if (serverData.cart.hasErrors || angular.isDefined(this.cart.orderPayments[this.cart.orderPayments.length-1]['errors']) && !this.cart.orderPayments[this.cart.orderPayments.length-1]['errors'].hasErrors){
                 this.cart.hasErrors = true;
                 this.readyToPlaceOrder = true;
@@ -482,7 +508,6 @@ class PublicService {
     /** Allows an easy way to calling the service addOrderPayment.
     */
     public addGiftCardOrderPayments = (redeemGiftCardToAccount)=>{
-        //console.log("Adding giftcard payment.", slatwall.account);
         //reset the form errors.
         this.cart.hasErrors=false;
         this.cart.orderPayments.errors = {};
@@ -490,7 +515,6 @@ class PublicService {
 
         //Grab all the data
         var giftCards = this.account.giftCards;
-        //console.log("Giftcards", giftCards);
         var data = {};
 
         data = {
@@ -511,13 +535,10 @@ class PublicService {
                 data['copyFromType'] = "";
 
                 //Post the new order payment and set errors as needed.
-                //console.log("Data", data);
                 this.$q.all([this.doAction('addOrderPayment', data, 'post')]).then(function(result){
                     var serverData
                     if (angular.isDefined(result['0'])){
                         serverData = result['0'].data;
-                    }else{
-                        //console.log("An unexpected error has occurred!");
                     }
                     if (serverData.cart.hasErrors || angular.isDefined(this.cart.orderPayments[this.cart.orderPayments.length-1]['errors']) && !this.cart.orderPayments[''+this.cart.orderPayments.length-1]['errors'].hasErrors){
                         this.cart.hasErrors = true;
@@ -554,16 +575,16 @@ class PublicService {
 
     /** returns true if the loader should be on for that item.
     */
-    public isLoading = function isLoading(section){
-        if (angular.isUndefined(this.loaders)){
-            this.loaders = [];
-            this.loaders[section] = false;
-        }
-        if (this.loaders[section] == true){
-            return true;
-        }
-        return false;
-    }
+    // public isLoading = function isLoading(section){
+    //     if (angular.isUndefined(this.loaders)){
+    //         this.loaders = [];
+    //         this.loaders[section] = false;
+    //     }
+    //     if (this.loaders[section] == true){
+    //         return true;
+    //     }
+    //     return false;
+    // }
 
     /** adds a loader to the loader list
     */
@@ -587,9 +608,6 @@ class PublicService {
     */
     public addOrderPaymentAndPlaceOrder = (formdata)=>{
         //reset the form errors.
-        this.cart.hasErrors=false;
-        this.cart.orderPayments.errors = {};
-        this.cart.orderPayments.hasErrors = false;
         this.orderPlaced = false;
         //Grab all the data
         var billingAddress  = this.newBillingAddress;
@@ -620,7 +638,7 @@ class PublicService {
         //Make sure we have required fields for a newOrderPayment.
         this.validateNewOrderPayment( data );
         if ( this.cart.orderPayments.hasErrors && Object.keys(this.cart.orderPayments.errors).length ){
-            //console.log("Errors found", slatwall.cart.orderPayments.errors);
+
             return -1;
         }
 
@@ -630,7 +648,7 @@ class PublicService {
             if (angular.isDefined(result['0'])){
                 serverData = result['0'].data;
             }else{
-                //console.log("An unexpected error has occurred!");
+
             }//|| angular.isDefined(serverData.cart.orderPayments[serverData.cart.orderPayments.length-1]['errors']) && slatwall.cart.orderPayments[''+slatwall.cart.orderPayments.length-1]['errors'].hasErrors
             if (serverData.cart.hasErrors || (angular.isDefined(serverData.failureActions) && serverData.failureActions.length && serverData.failureActions[0] == "public:cart.addOrderPayment")){
                 if (serverData.failureActions.length){
@@ -706,10 +724,10 @@ class PublicService {
 
     //get estimated shipping rates given a weight, from to zips
     public getEstimatedRates = (zipcode)=>{
-        console.log("Getting estimated rates for", zipcode);
+
         var weight = 0;
         for (var item in this.cart.orderFulfillments){
-            console.log("Weight: ", this.cart.orderFulfillments[item].totalShippingWeight);
+
             weight += this.cart.orderFulfillments[item].totalShippingWeight;
         }
         var shipFromAddress = {
@@ -726,7 +744,7 @@ class PublicService {
 
         let request = this.requestService.newPublicRequest(urlString)
         .then((result:any)=>{
-            console.log("Results", result);
+
             this.rates = result.data;
         });
     }
