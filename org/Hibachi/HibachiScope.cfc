@@ -9,7 +9,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="persistSessionFlag" type="boolean";
 	property name="sessionFoundNPSIDCookieFlag" type="boolean";
 	property name="sessionFoundPSIDCookieFlag" type="boolean";
-	property name="sessionFoundExtendedNPSIDCookieFlag" type="boolean";
+	property name="sessionFoundExtendedPSIDCookieFlag" type="boolean";
 	property name="ormHasErrors" type="boolean" default="false";
 	property name="rbLocale";
 	property name="url" type="string";
@@ -28,7 +28,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		setPersistSessionFlag( true );
 		setSessionFoundNPSIDCookieFlag( false );
 		setSessionFoundPSIDCookieFlag( false );
-		setSessionFoundExtendedNPSIDCookieFlag( false );
+		setSessionFoundExtendedPSIDCookieFlag( false );
 		setCalledActions( [] );
 		setSuccessfulActions( [] );
 		setFailureActions( [] );

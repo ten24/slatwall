@@ -33,7 +33,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		}
 		var foundWithNPSID = false;
 		var foundWithPSID = false;
-		var foundWithExtendedNPSID = false;
+		var foundWithExtendedPSID = false;
 		
 		// Check for non-persistent cookie.
 		if( len(getHibachiScope().getSessionValue('sessionID')) ) {
@@ -77,14 +77,14 @@ component output="false" accessors="true" extends="HibachiService"  {
 				}
 				*/
 		
-		} else if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#-ExtendedNPSID")) {
-			var sessionEntity = this.getSessionByExtendedSessionCookieNPSID( cookie["#getApplicationValue('applicationKey')#-ExtendedNPSID"], true);
+		} else if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#-ExtendedPSID")) {
+			var sessionEntity = this.getSessionByExtendedSessionCookieNPSID( cookie["#getApplicationValue('applicationKey')#-ExtendedPSID"], true);
 		
 			if(sessionEntity.getNewFlag()) {
-				getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-ExtendedNPSID", value='', expires="now");
+				getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-ExtendedPSID", value='', expires="now");
 			} else {
 		
-				foundWithExtendedNPSID = true;
+				foundWithExtendedPSID = true;
 				getHibachiScope().setSessionValue('sessionID', sessionEntity.getSessionID());
 		
 			}
@@ -125,7 +125,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		// Let the hibachiScope know how we found the proper sessionID
 		getHibachiScope().setSessionFoundNPSIDCookieFlag( foundWithNPSID );
 		getHibachiScope().setSessionFoundPSIDCookieFlag( foundWithPSID );
-		getHibachiScope().setSessionFoundExtendedNPSIDCookieFlag( foundWithExtendedNPSID );
+		getHibachiScope().setSessionFoundExtendedPSIDCookieFlag( foundWithExtendedPSID );
 		
 		// Variable to store the last request dateTime of a session
 		var previousRequestDateTime = getHibachiScope().getSession().getLastRequestDateTime();
@@ -154,7 +154,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		//And we have not reached our max for logged in days for the extended session setting.
 		if( getHibachiScope().getSession().getAccount().getAdminAccountFlag() != true 
 			
-			&& foundWithExtendedNPSID == true 
+			&& foundWithExtendedPSID == true 
 			
 			&& getHibachiScope().setting("globalUseExtendedSession") == true 
 			
