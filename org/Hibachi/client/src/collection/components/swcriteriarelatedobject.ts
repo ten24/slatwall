@@ -94,11 +94,6 @@ class SWCriteriaRelatedObject{
                     }
 
                     scope.selectedCriteriaChanged = function(selectedCriteria, selectedAggregate?){
-                        console.log('changed');
-                        console.log(selectedCriteria);
-                        //update breadcrumbs as array of filterpropertylist keys
-                        $log.debug(scope.selectedFilterProperty);
-
                         var breadCrumb = {
                             entityAlias:scope.selectedFilterProperty.name,
                             cfc:scope.selectedFilterProperty.cfc,
