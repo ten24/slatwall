@@ -513,10 +513,25 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 			var comparisonOperator = getComparisonOperator(filter.comparisonOperator);
 			var predicate = getPredicate(filter);
-			aggregateFilterHQL &= " #logicalOperator# #UCase(filter.aggregate)#(#filter.propertyIdentifier#) #comparisonOperator# #predicate# ";
+			aggregateFilterHQL &= " #logicalOperator# #formatAggregateFunction(filter.aggregate)#(#filter.propertyIdentifier#) #comparisonOperator# #predicate# ";
 		}
 		return aggregateFilterHQL;
 	}
+
+	private string function formatAggregateFunction(aggregate){
+		var aggregateFunction = '';
+		switch(LCASE(aggregate)){
+			case "average":
+				aggregateFunction = 'avg';
+				break;
+			case "sum":
+			case "count":
+				aggregateFunction = LCASE(aggregate);
+				break;
+		}
+		return aggregateFunction;
+	}
+
 
 	public array function getKeywordArray(){
 		if(!arraylen(variables.keywordArray)){
@@ -1097,18 +1112,17 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				variables.recordsCount = application.entityCollection[ getCacheName() ].recordsCount;
 			} else {
 				if(!structKeyExists(variables,"records")) {
-					var HQL = getSelectionCountHQL() & getHQL(true);
-
-					var recordCount = ormExecuteQuery(HQL, getHQLParams(), false, {ignoreCase="true"});
+					var HQL = '';
+					if(len(getAggregateFilterHQL()) > 0){
+						HQL = 'SELECT count(DISTINCT id) FROM  #getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject())#  WHERE id in ( SELECT DISTINCT #getCollectionConfigStruct().baseEntityAlias#.id #getHQL(true)# )';
+					}else{
+						HQL = getSelectionCountHQL() & getHQL(true);
+					}
+					var recordCount = ormExecuteQuery(HQL, getHQLParams(), true, {ignoreCase="true"});
 					if(isNull(recordCount)){
 						recordCount = 0;
 					}
-					if(arraylen(recordCount) == 1){
-						variables.recordsCount = recordCount[1];
-					}else{
-						variables.recordsCount = arraylen(recordCount);
-					}
-
+					variables.recordsCount = recordCount;
 					if(getCacheable()) {
 						application.entityCollection[ getCacheName() ] = {};
 						application.entityCollection[ getCacheName() ].recordsCount = variables.recordsCount;

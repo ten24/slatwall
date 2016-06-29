@@ -43,11 +43,10 @@
           					    | filter:{fieldtype:'!one-to-many'}
                                 | filter:{fieldtype:'!many-to-many'}
                                 | filter:{fieldtype:'!many-to-one'}
-                                | filter : {ormtype: '!string'}
                                 track by filterProperty.propertyIdentifier
           					"
                             class="form-control input-sm"
-                            data-ng-if="aggegate.selectedAggregate == 'Sum' || aggegate.selectedAggregate == 'Average'">
+                            data-ng-if="aggegate.selectedAggregate">
                         <option value="">Select From {{selectedFilterProperty.displayPropertyIdentifier}}:</option>
                     </select>
                 </div>
