@@ -145,20 +145,22 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 		//If we are not an admin account
 		
-		//And we found the session with the extended cookie
+		//And we found the extended cookie
 		
 		//And the cookie is not expired
 		
-		//And we have not reached our max for logged in days.
+		//And we have not reached our max for logged in days for the extended session setting.
 		if( getHibachiScope().getSession().getAccount().getAdminAccountFlag() != true 
 			
 			&& foundWithExtendedNPSID == true 
 			
-			&& getHibachiScope().setting("globalUseExtendedSession") == true  
+			&& getHibachiScope().setting("globalUseExtendedSession") == true 
 			
-			&& dateDiff('d', previousRequestDateTime, Now()) <= getHibachiScope().setting('globalExtendedSessionAutoLogoutInDays')){
+			&& structKeyExists(cookie, "#getApplicationValue('applicationKey')#-ExtendedPSID")
 			
-			//handle removing all non-extended information
+			&& dateDiff('d', cookie['#getApplicationValue('applicationKey')#-ExtendedPSID'], now()) <= getHibachiScope().setting('globalExtendedSessionAutoLogoutInDays')){
+			
+			//-->handle removing all non-extended information
 			
 		}
 		
@@ -172,7 +174,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 		// If the sessions account is an admin and last request by the session was 15 min or longer ago. 
 		
-		if((getHibachiScope().setting("globalUseExtendedSession") == true  && !isNull(previousRequestDateTime) && dateDiff('d', previousRequestDateTime, Now()) >= getHibachiScope().setting('globalExtendedSessionAutoLogoutInDays'))
+		else if((getHibachiScope().setting("globalUseExtendedSession") == true  && structKeyExists(cookie, "#getApplicationValue('applicationKey')#-ExtendedPSID") && dateDiff('d', cookie["#getApplicationValue('applicationKey')#-ExtendedPSID"], Now()) >= getHibachiScope().setting('globalExtendedSessionAutoLogoutInDays'))
 		
 			|| getHibachiScope().getSessionFoundPSIDCookieFlag() && getHibachiScope().getLoggedInFlag()
 		
@@ -208,7 +210,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 			getHibachiScope().getSession().setSessionCookiePSID(cookieValue);
 			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-PSID", value=getHibachiScope().getSession().getSessionCookiePSID(), expires="never");
 		
-		//Only use the extended session for non-admin users.
+		//Only use the extended session for non-admin users and ignore for the rest.
 		if (getHibachiScope().setting("globalUseExtendedSession") == true && getHibachiScope().getSession().getAccount().getAdminAccountFlag() == false){
 			var cookieValue = getValueForCookie();
 			getHibachiScope().getSession().setSessionCookieExtendedPSID(cookieValue);
@@ -238,7 +240,8 @@ component output="false" accessors="true" extends="HibachiService"  {
 		getHibachiAuditService().logAccountActivity( "login", auditLogData );
 		getHibachiEventService().announceEvent("onSessionAccountLogin");
 		
-		//If the user is an admin and also has a extended cookie from having been logged in as another user, remove it.
+		//Being admin and having extended session are mutually exclusive. 
+		//If the user is an admin and also has a extended cookie (from having been logged in as another user for example), remove it.
 		if (getHibachiScope().getSession().getAccount().getAdminAccountFlag() && structKeyExists(cookie, "#getApplicationValue('applicationKey')#-ExtendedPSID")){
 			structDelete(cookie, "#getApplicationValue('applicationKey')#-ExtendedPSID");
 		}
