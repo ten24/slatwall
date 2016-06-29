@@ -8,8 +8,10 @@ export class SkuPriceService {
     private skuPriceHasEntityPromises = {}; 
 
     //@ngInject
-    constructor(public $q, 
+    constructor(public $http,
+                public $q, 
                 public $hibachi,
+                public cacheService,
                 public collectionConfigService, 
                 public observerService
     ){
@@ -91,49 +93,72 @@ export class SkuPriceService {
         }
     }
 
+    private fetchCurrencyRates = () => {
+        var currencyRatesDeferred = this.$q.defer(); 
+        var currencyRatesPromise = currencyRatesDeferred.promise; 
+        if(!this.cacheService.hasKey("currencyRates")){
+            var currencyRatePromise = this.$http({
+                method:"POST", 
+                url:this.$hibachi.getUrlWithActionPrefix()+"api:main.getcurrencyrates"
+            });
+            var expirationDate =  new Date(); 
+            expirationDate.setDate(expirationDate.getDate() + 1);
+            return this.cacheService.put("currencyRates", currencyRatePromise, "data", expirationDate);
+        } else {
+            currencyRatesDeferred.resolve(); 
+            return currencyRatesPromise;
+        }
+    }
+
     private loadCurrencies = (currenciesToLoad) =>{
         var currencyDeferred = this.$q.defer(); 
         var currencyPromise = currencyDeferred.promise; 
-        var currencyRates = this.$hibachi.getConfig()["currencyRates"]; 
-        var unloadedCurrencies = []; 
-        for(var i = 0; i < currenciesToLoad.length; i++){
-            if(angular.isUndefined(this.currencies[currenciesToLoad[i]])){
-                unloadedCurrencies.push(currenciesToLoad[i]);
-            }
-        }
-        if(unloadedCurrencies.length > 0){
-            var currencyRateCollectionConfig = this.collectionConfigService.newCollectionConfig("CurrencyRate"); 
-            currencyRateCollectionConfig.setAllRecords(true);
-            currencyRateCollectionConfig.addDisplayProperty("currencyRateID,conversionRate,currency.currencyCode,conversionCurrency.currencyCode");
-            for(var j = 0; j < unloadedCurrencies.length; j++){
-                currencyRateCollectionConfig.addFilter("currency.currencyCode", unloadedCurrencies[j], "=", "OR"); 
-            }
-            currencyRateCollectionConfig.getEntity().then(
-                (response)=>{
-                    angular.forEach(response.records,(value,key)=>{
-                        this.currencies[value.conversionCurrency_currencyCode] = { convertFrom : value.currency_currencyCode, rate : value.conversionRate }
-                        for(var k = 0; k < unloadedCurrencies.length; k++){
-                            if( unloadedCurrencies[k] == value.conversionCurrency_currencyCode){
-                                unloadedCurrencies.splice(k,1); 
-                                break; 
-                            }                        
-                        }
-                    });
-                },
-                (reason)=>{
-                    currencyDeferred.reject("Couldn't load currency rates"); 
+        this.fetchCurrencyRates().then(
+            ()=>{
+                var unloadedCurrencies = []; 
+                for(var i = 0; i < currenciesToLoad.length; i++){
+                    if(angular.isUndefined(this.currencies[currenciesToLoad[i]])){
+                        unloadedCurrencies.push(currenciesToLoad[i]);
+                    }
                 }
-            ).finally(()=>{
                 if(unloadedCurrencies.length > 0){
-                    angular.forEach(currencyRates,(value,key)=>{
-                        if(key != "RETREIVED" && angular.isUndefined(this.currencies[key])){
-                            this.currencies[key] = { convertFrom : "EUR", rate : value }
+                    var currencyRateCollectionConfig = this.collectionConfigService.newCollectionConfig("CurrencyRate"); 
+                    currencyRateCollectionConfig.setAllRecords(true);
+                    currencyRateCollectionConfig.addDisplayProperty("currencyRateID,conversionRate,currency.currencyCode,conversionCurrency.currencyCode");
+                    for(var j = 0; j < unloadedCurrencies.length; j++){
+                        currencyRateCollectionConfig.addFilter("currency.currencyCode", unloadedCurrencies[j], "=", "OR"); 
+                    }
+                    currencyRateCollectionConfig.getEntity().then(
+                        (response)=>{
+                            angular.forEach(response.records,(value,key)=>{
+                                this.currencies[value.conversionCurrency_currencyCode] = { convertFrom : value.currency_currencyCode, rate : value.conversionRate }
+                                for(var k = 0; k < unloadedCurrencies.length; k++){
+                                    if( unloadedCurrencies[k] == value.conversionCurrency_currencyCode){
+                                        unloadedCurrencies.splice(k,1); 
+                                        break; 
+                                    }                        
+                                }
+                            });
+                        },
+                        (reason)=>{
+                            currencyDeferred.reject("Couldn't load currency rates"); 
                         }
-                    });
+                    ).finally(()=>{
+                        if(unloadedCurrencies.length > 0){
+                            angular.forEach(this.cacheService.fetch("currencyRates"),(value,key)=>{
+                                if(key != "RETREIVED" && angular.isUndefined(this.currencies[key])){
+                                    this.currencies[key] = { convertFrom : "EUR", rate : value }
+                                }
+                            });
+                        }
+                        currencyDeferred.resolve(); 
+                    }); 
                 }
-                currencyDeferred.resolve(); 
-            }); 
-        }
+            },
+            (reason)=>{
+                //throw
+            }
+        );
         return currencyPromise; 
     }
 
@@ -149,8 +174,10 @@ export class SkuPriceService {
                 //not getting hit right now
                 console.log("need to convert from euro");
             }
-        } else {
+        } else if (sku.data.currencyCode == currencyCode) {
             nonPersistedSkuPrice.data.price = sku.data.price;
+        } else { 
+            nonPersistedSkuPrice.data.price = "N/A";
         }
         return nonPersistedSkuPrice;
     }

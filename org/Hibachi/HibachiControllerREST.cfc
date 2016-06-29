@@ -29,6 +29,7 @@ component output="false" accessors="true" extends="HibachiController" {
     this.publicMethods=listAppend(this.publicMethods, 'login');
     this.publicMethods=listAppend(this.publicMethods, 'getResourceBundle');
     this.publicMethods=listAppend(this.publicMethods, 'getCurrencies');
+    this.publicMethods=listAppend(this.publicMethods, 'getCurrencyRates');
     this.publicMethods=listAppend(this.publicMethods, 'getModel');
     this.publicMethods=listAppend(this.publicMethods, 'getConfig');
     this.publicMethods=listAppend(this.publicMethods, 'getInstantiationKey');
@@ -70,7 +71,6 @@ component output="false" accessors="true" extends="HibachiController" {
     public void function getConfig(required struct rc){
     	var config = getService('HibachiSessionService').getConfig();
     	config[ 'modelConfig' ] = getModel(arguments.rc);
-    	config[ 'currencyRates' ] = getService("CurrencyService").getEuropeanCentralBankRates();
     	arguments.rc.apiResponse.content['data'] = config;
     }
 
@@ -87,6 +87,10 @@ component output="false" accessors="true" extends="HibachiController" {
         }
 
         arguments.rc.apiResponse.content['data'] = currencyStruct;
+    }
+
+    public void function getCurrencyRates(required struct rc){
+		arguments.rc.apiResponse.content['data'] = getService("CurrencyService").getEuropeanCentralBankRates();
     }
 
     public void function login(required struct rc){
