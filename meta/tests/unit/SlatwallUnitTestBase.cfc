@@ -69,7 +69,7 @@ component extends="mxunit.framework.TestCase" output="false" {
 		// Setup a debugging output array
 		variables.debugArray = [];
 		variables.persistentEntities = [];
-		variables.files = [];//yuqing
+		variables.files = [];
 	}
 
 	// AFTER EACH TEST
@@ -99,7 +99,7 @@ component extends="mxunit.framework.TestCase" output="false" {
 		}
 
 		variables.persistentEntities = [];
-		variables.files = [];//yuqing
+		variables.files = [];
 
 		ormClearSession();
 
