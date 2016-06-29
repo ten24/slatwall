@@ -270,14 +270,22 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		return createPersistedTestEntity('Sku', skuData);
 	}
 	
-	public void function getDefaultProductImageFilesCountTest() {
+	public void function getDefaultProductImageFilesCountTest() {		
+		//testing sku w/ existed imageFile. Create the image file first
+		createTestFile (expandPath('/Slatwall') & '/assets/images/admin.logo.png', 
+						"/custom/assets/images/product/default/admin.logo.png");
+		var mockSku1 = createMockSku("", "", "admin.logo.png");
 		
-//		fileCopy("/Users/ten24user/Downloads/testfilearrow.jpeg", expandPath('/Slatwall') & "/custom/assets/images/product/default/testfilearrow.jpeg");
-		createTestFile ("/Users/ten24user/Sites/sandbox/testfilearrow.jpeg","/custom/assets/images/product/default/testfilearrow.jpeg");
-		
-		var mockSku1 = createMockSku("", "", "testfilearrow.jpeg");
+		//testing null imageFile
 	 	var mockSku2 = createMockSku();
-	 	var mockSku3 = createMockSku("", "", "fakepath");
+	 	
+	 	//testing the invalid imageFile
+	 	var mockSku3 = createMockSku("", "", "fakeFile.somefile");
+	 	
+	 	//testing the sku NOT belong to other product instead of the testing one (mockProduct)
+	 	createTestFile (expandPath('/Slatwall') & '/assets/images/favicon.png', 
+						"/custom/assets/images/product/default/favicon.png");
+	 	var mockSku4 = createMockSku("", "", "favicon.png");
 	 	
 	 	var productData = {
 			productID = "",
@@ -295,50 +303,16 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
 		
-		var resultInForLoop = mockProduct.getDefaultProductImageFiles();
-		var result = mockProduct.getDefaultProductImageFilesCount();
-		request.debug(arrayLen(resultInForLoop));//yuqing
-		request.debug(result);//yuqing
-	}
-	
-	public void function getSalePriceDetailsForSkusTest() {
-		var skuData1 = {
-			skuID = "",
-			price = 500,
-			currencyCode = "CNY"
-		};
-		var skuData2 = {
-			skuID = "",
-			price = 300,
-			currencyCode = "CNY"
-		};
-		var skuData3 = {
-			skuID = "",
-			price = 900
-		};
-		var mockSku1 = createPersistedTestEntity('Sku', skuData1);
-	 	var mockSku2 = createPersistedTestEntity('Sku', skuData2);
-	 	var mockSku3 = createPersistedTestEntity('Sku', skuData3);
-	 	var mockSku4 = createPersistedTestEntity('Sku', skuData1);
-		
-		var productData = {
+		var productData2 = {
 			productID = "",
-			skus = [
-				{
-					skuID = mockSku1.getSkuID()
-				},
-				{
-					skuID = mockSku2.getSkuID()
-				},
-				{
-					skuID = mockSku3.getSkuID()
-				}
-			]
+			sku = [{
+				skuID = mockSku4.getSkuID()
+			}]
 		};
-		var mockProduct = createPersistedTestEntity('Product', productData);
+		var mockProduct2 = createPersistedTestEntity('Product', productData2);
 		
-		var result = mockProduct.getSalePriceDetailsForSkus();
-		request.debug(result);
-//		request.debug(mockProduct.getSalePriceDetailsForSkusByCurrencyCode());
+		//Only the imageFile of mockSku1 should be counted.
+		var result = mockProduct.getDefaultProductImageFilesCount();
+		assertEquals(1, result);
 	}
 }

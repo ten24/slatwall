@@ -86,9 +86,7 @@ component extends="mxunit.framework.TestCase" output="false" {
 			entityDelete( variables.persistentEntities[i] );
 		}
 		
-		for (var i = arrayLen(variables.files); i >= 1; i--) {//yuqing
-			
-			request.debug('file:'&variables.files[i]);
+		for (var i = arrayLen(variables.files); i >= 1; i--) {
 			fileDelete( variables.files[i] );
 		}
 		
@@ -116,15 +114,20 @@ component extends="mxunit.framework.TestCase" output="false" {
 		return createTestEntity(argumentcollection=arguments);
 	}
 	
-	private void function createTestFile (required string fileSourceLocalAbsolutePath, required string fileDestinationRelativePath) {
-		
-		
-		request.debug(arguments.fileSourceLocalAbsolutePath);
-		request.debug(arguments.fileDestinationRelativePath);
-		fileCopy(arguments.fileSourceLocalAbsolutePath,  expandPath('/Slatwall') & arguments.fileDestinationRelativePath);
+	private void function createTestFile (required string fileSourceLocalAbsolutePath, required string relativeFileDestination) {
 
+		var absoluteDest = expandPath('/Slatwall') & arguments.relativeFileDestination;
+		
+		//create the destination directory if necessary
+		if (DirectoryExists(GetDirectoryFromPath(absoluteDest))) {
+			fileCopy(arguments.fileSourceLocalAbsolutePath, absoluteDest);
+		} else {
+			DirectoryCreate(GetDirectoryFromPath(absoluteDest));
+			fileCopy(arguments.fileSourceLocalAbsolutePath, absoluteDest);
+		}
+		
 		// Add the filePath to the files array
-		arrayAppend(variables.files, expandPath('/Slatwall') & arguments.fileDestinationRelativePath);
+		arrayAppend(variables.files, absoluteDest);
 	}
 
 	private void function addEntityForTearDown(any entity){
