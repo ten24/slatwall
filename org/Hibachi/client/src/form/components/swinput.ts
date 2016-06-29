@@ -88,11 +88,11 @@ class SWInput{
 				if (propertyValidations[0].contexts === formContext){
 					$log.debug("Matched");
 					for (var prop in propertyValidations[0]){
-							if (prop != "contexts" && prop !== "conditions"){
-
-								spaceDelimitedList += (" swvalidation" + prop.toLowerCase() + "='" + propertyValidations[0][prop] + "'");
-
-							}
+						if ( (prop != "contexts" && prop !== "conditions") && 
+							!(prop == "required" && propertyValidations[0][prop] == false)
+						){
+							spaceDelimitedList += (" swvalidation" + prop.toLowerCase() + "='" + propertyValidations[0][prop] + "'");
+						}
 					}
 				}
 			$log.debug(spaceDelimitedList);
