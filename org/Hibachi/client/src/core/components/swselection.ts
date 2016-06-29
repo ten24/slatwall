@@ -36,9 +36,6 @@ class SWSelectionController{
         }
     };
     private toggleSelection = (toggleValue,selectionid,selection)=>{
-        console.log(toggleValue);
-        console.log(selectionid);
-        console.log(selection);
         if(this.isRadio){
             this.selectionService.radioSelection(selectionid,selection);
             this.toggleValue = toggleValue;

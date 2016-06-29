@@ -39,7 +39,13 @@
     "update-webdriver": "webdriver-manager update",
     "preprotractor": "npm run update-webdriver",
     "protractor": "protractor test/protractor-conf.js",
-    "update-index-async": "node -e \"require('shelljs/global'); sed('-i', /\\/\\/@@NG_LOADER_START@@[\\s\\S]*\\/\\/@@NG_LOADER_END@@/, '//@@NG_LOADER_START@@\\n' + cat('app/bower_components/angular-loader/angular-loader.min.js') + '\\n//@@NG_LOADER_END@@', 'app/index-async.html');\""
+    "update-index-async": "node -e \"require('shelljs/global'); sed('-i', /\\/\\/@@NG_LOADER_START@@[\\s\\S]*\\/\\/@@NG_LOADER_END@@/, '//@@NG_LOADER_START@@\\n' + cat('app/bower_components/angular-loader/angular-loader.min.js') + '\\n//@@NG_LOADER_END@@', 'app/index-async.html');\"",
+    "buildSlatwall":"cd admin/client && webpack",
+    "buildSlatwall:prod":"cd admin/client && webpack --config webpack-production.config.js -p",
+    "buildHibachi":"cd org/Hibachi/client && webpack",
+    "buildHibachi:prod":"cd org/Hibachi/client && webpack --config webpack-production.config.js -p",
+    "buildFrontend":"cd org/Hibachi/client && webpack --config webpack-frontend-develop.config.js",
+    "buildFrontend:prod":"cd org/Hibachi/client && webpack --config webpack-frontend-production.config.js -p"
   },
   "jshintConfig": {
     "predef": [

@@ -15,6 +15,7 @@
 	<cfparam name="attributes.valueLink" type="string" default="" />					<!--- hint: if specified, will wrap property value with an achor tag using the attribute as the href value --->
 	<cfparam name="attributes.valueFormatType" type="string" default="" />				<!--- hint: This can be used to defined the format of this property wehn it is displayed --->
 
+	<cfparam name="attributes.fieldAttributes" type="string" default="" />
 	<cfparam name="attributes.fieldName" type="string" default="" />					<!--- hint: This can be used to override the default field name" --->
 	<cfparam name="attributes.fieldType" type="string" default="" />					<!--- hint: When in edit mode you can override the default type of form object to use" --->
 
@@ -32,7 +33,14 @@
 	<cfparam name="attributes.modalCreateAction" type="string" default="" />			<!--- hint: This allows for a special admin action to be passed in where the saving of that action will automatically return the results to this field --->
 
 	<cfparam name="attributes.multiselectPropertyIdentifier" type="string" default="" />
-	<cfset attributes.value = request.context.fw.getHibachiScope().hibachiHtmlEditFormat(attributes.value)/>
+	<cfparam name="attributes.ignoreHTMLEditFormat" type="boolean" default="false" />	<!--- hint: use at own risk. Recommended only if value is not directly from db --->
+
+	<cfif !attributes.ignoreHTMLEditFormat>
+		<cfset attributes.value = request.context.fw.getHibachiScope().hibachiHtmlEditFormat(attributes.value)/>
+	</cfif>
+	<cfif attributes.requiredFlag>
+		<cfset attributes.fieldAttributes = listAppend(attributes.fieldAttributes, "required", " ")>
+	</cfif>
 	<cfswitch expression="#attributes.displaytype#">
 		<!--- DL Case --->
 		<cfcase value="dl">

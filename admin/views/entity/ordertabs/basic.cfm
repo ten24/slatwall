@@ -26,6 +26,11 @@
 			<!--- Default Stock Location --->
 			<hb:HibachiPropertyDisplay object="#rc.order#" property="defaultStockLocation" edit="#rc.edit#">
 			
+			<!--- Order IP Address --->
+			<cfif !isNull(rc.order.getOrderOpenIPAddress())>
+				<hb:HibachiPropertyDisplay object="#rc.order#" property="orderOpenIPAddress" edit="false">
+			</cfif>
+
 			<!--- Referenced Order --->
 			<cfif !isNull(rc.order.getReferencedOrder())>
 				<hb:HibachiPropertyDisplay object="#rc.order#" property="referencedOrder" valuelink="?slatAction=admin:entity.detailorder&orderID=#rc.order.getReferencedOrder().getOrderID()#">
