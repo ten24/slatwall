@@ -13,7 +13,10 @@ class SWValidationLte{
             link: function(scope, element, attributes, ngModel) {
                     ngModel.$validators.swvalidationlte = 
                     function(modelValue, viewValue) {
-    
+                            //let required handle this case
+                            if(modelValue == null){
+                                return true;
+                            }
                             var constraintValue = attributes.swvalidationlte;
                             var userValue = viewValue || 0;
                             if (parseInt(viewValue) <= parseInt(constraintValue))

@@ -19,7 +19,10 @@ class SWValidationMinLength{
             link: (scope, element, attributes, ngModel) =>{
                     ngModel.$validators.swvalidationminlength = 
                     (modelValue, viewValue)=> {
-    
+                            //let required handle this case
+                            if(modelValue == null){
+                                return true;
+                            }
                             var constraintValue = attributes.swvalidationminlength;
                             var userValue = viewValue || 0;
                             if (parseInt(viewValue.length) >= parseInt(constraintValue))

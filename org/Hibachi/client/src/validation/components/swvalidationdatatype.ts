@@ -27,6 +27,7 @@ class SWValidationDataType{
                     var MY_EMAIL_REGEXP =  /^[a-zA-Z0-9_.]+@[a-zA-Z0-9_]+?\.[a-zA-Z]{2,3}$/;
                     ngModel.$validators.swvalidationdatatype = 
                     function(modelValue) {
+                        if (modelValue == null){return true;} //let required handle this case
                         if (angular.isString(modelValue) && attributes.swvalidationdatatype === "string"){return true;}
                         if (angular.isNumber(parseInt(modelValue)) && attributes.swvalidationdatatype === "numeric"){return true;}
                         if (angular.isArray(modelValue) && attributes.swvalidationdatatype === "array"){return true;}

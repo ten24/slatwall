@@ -13,6 +13,10 @@ class SWValidationGte{
             link: function(scope, element, attributes, ngModel) {
                     ngModel.$validators.swvalidationGte = 
                     function(modelValue, viewValue) {
+                        //let required handle this case
+                        if(modelValue == null){
+                            return true;
+                        }
                         var constraintValue = attributes.swvalidationGte || 0;
                         if (parseInt(modelValue) >= parseInt(constraintValue))
                         {

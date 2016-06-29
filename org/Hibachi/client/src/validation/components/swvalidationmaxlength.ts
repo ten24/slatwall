@@ -11,8 +11,10 @@ class SWValidationMaxLength{
             link: function(scope, element, attributes, ngModel) {
                     ngModel.$validators.swvalidationmaxlength =
                     function(modelValue, viewValue) {
-
-
+                            //let required handle this case
+                            if(modelValue == null){
+                                return true;
+                            }
                             var constraintValue = attributes.swvalidationmaxlength;
                             var userValue = viewValue || 0;
                             if (parseInt(viewValue.length) >= parseInt(constraintValue))
