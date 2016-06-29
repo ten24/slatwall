@@ -10,11 +10,13 @@
 	    }],
 	    "minQuantity" : [{
 	        "contexts":"save",
+	        "required":"false",
 	        "dataType":"numeric",
 	        "minValue":"0"
         }],
 	    "maxQuantity" : [{
 	        "contexts":"save",
+	        "required":"false",
 	        "dataType":"numeric",
 	        "minValue":"0"
         }],
