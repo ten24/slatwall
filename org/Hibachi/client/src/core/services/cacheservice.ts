@@ -20,7 +20,7 @@ class CacheService{
         if(this.cacheData[key].expiresTime=="forever"){
             return false; 
         }
-        return Date.now() < this.cacheData[key].expiresTime;
+        return this.cacheData[key].expiresTime < Date.now();
     }
 
     public put = (key, dataPromise, expiresTime="forever") =>{
