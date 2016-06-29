@@ -7,6 +7,13 @@ class CacheService{
     constructor(
         private localStorageService
     ){
+        if(localStorageService.hasItem("cacheData")){
+            this.cacheData = localStorageService.getItem("cacheData"); 
+        }
+    }
+
+    private saveCacheData = () =>{
+        this.localStorageService.setItem("cacheData",this.cacheData); 
     }
 
     public hasKey = (key) =>{
@@ -37,6 +44,7 @@ class CacheService{
                 delete this.cacheData[key];
             }
         );
+        this.saveCacheData(); 
         return dataPromise;
     }
 
@@ -50,19 +58,33 @@ class CacheService{
                 delete this.cacheData[key];
             }
         );
+        this.saveCacheData(); 
+        return this.cacheData[key].dataPromise; 
     }
 
     public fetch = (key) =>{
-        console.log("fetching?",this.hasKey(key),!this.dateExpired(key));
         if(this.hasKey(key) && !this.dateExpired(key)){
             if(this.localStorageService.hasItem(key)){
-                console.log("fetching", this.localStorageService.getItem(key));
                 return this.localStorageService.getItem(key);
             }     
-            this.put(key, this.cacheData[key].dataPromise, this.cacheData[key].expiresTime).finally(
+            this.put(key, this.cacheData[key].dataPromise, this.cacheData[key].dataTarget, this.cacheData[key].expiresTime).finally(
                 ()=>{
-                    console.log("fetching", this.localStorageService.getItem(key));
                     return this.localStorageService.getItem(key);
+                }
+            );
+        } 
+    }
+
+    public fetchOrReload = (key, expiresTime) =>{
+        if(angular.isDefined(this.fetch(key))){
+            return this.fetch(key); 
+        } else { 
+            this.reload(key,expiresTime).then(
+                (response)=>{
+                    return this.fetch(key);
+                },
+                (reason)=>{
+                    //throw
                 }
             );
         }

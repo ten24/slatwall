@@ -93,7 +93,7 @@ export class SkuPriceService {
         }
     }
 
-    private fetchCurrencyRates = () => {
+    private fetchCurrencyRatesFromCache = () => {
         var currencyRatesDeferred = this.$q.defer(); 
         var currencyRatesPromise = currencyRatesDeferred.promise; 
         if(!this.cacheService.hasKey("currencyRates")){
@@ -103,6 +103,7 @@ export class SkuPriceService {
             });
             var expirationDate =  new Date(); 
             expirationDate.setDate(expirationDate.getDate() + 1);
+            console.log("cache putting");
             return this.cacheService.put("currencyRates", currencyRatePromise, "data", expirationDate);
         } else {
             currencyRatesDeferred.resolve(); 
@@ -113,7 +114,7 @@ export class SkuPriceService {
     private loadCurrencies = (currenciesToLoad) =>{
         var currencyDeferred = this.$q.defer(); 
         var currencyPromise = currencyDeferred.promise; 
-        this.fetchCurrencyRates().then(
+        this.fetchCurrencyRatesFromCache().then(
             ()=>{
                 var unloadedCurrencies = []; 
                 for(var i = 0; i < currenciesToLoad.length; i++){
@@ -145,7 +146,9 @@ export class SkuPriceService {
                         }
                     ).finally(()=>{
                         if(unloadedCurrencies.length > 0){
-                            angular.forEach(this.cacheService.fetch("currencyRates"),(value,key)=>{
+                            var expirationDate =  new Date(); 
+                            expirationDate.setDate(expirationDate.getDate() + 1);
+                            angular.forEach(this.cacheService.fetchOrReload("currencyRates",expirationDate),(value,key)=>{
                                 if(key != "RETREIVED" && angular.isUndefined(this.currencies[key])){
                                     this.currencies[key] = { convertFrom : "EUR", rate : value }
                                 }
@@ -162,7 +165,7 @@ export class SkuPriceService {
         return currencyPromise; 
     }
 
-    private createInferredSkuPriceForCurrency = (sku, currencyCode) =>{
+    private createInferredSkuPriceForCurrency = (sku, currencyCode, minQuantity?, maxQuantity?) =>{
         var nonPersistedSkuPrice = this.$hibachi.newSkuPrice(); 
         nonPersistedSkuPrice.$$setSku(sku);
         nonPersistedSkuPrice.data.currencyCode = currencyCode; 
@@ -179,6 +182,13 @@ export class SkuPriceService {
         } else { 
             nonPersistedSkuPrice.data.price = "N/A";
         }
+        if(angular.isDefined(minQuantity)){
+            nonPersistedSkuPrice.data.minQuantity = minQuantity;
+        }
+        if(angular.isDefined(maxQuantity)){
+            nonPersistedSkuPrice.data.maxQuantity = maxQuantity;
+        }
+        nonPersistedSkuPrice.data.inferred = true; 
         return nonPersistedSkuPrice;
     }
 
