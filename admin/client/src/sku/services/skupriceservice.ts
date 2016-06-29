@@ -239,8 +239,7 @@ export class SkuPriceService {
                 var skuPrices = this.getSkuPrices(skuID) || [];
                 for(var i=0; i < skuPrices.length; i++){
                     var skuPrice = skuPrices[i];
-                    if( (angular.isUndefined(skuPrice.data.minQuantity)) &&
-                        (angular.isUndefined(skuPrice.data.maxQuantity))
+                    if( this.isBaseSkuPrice(skuPrice.data)
                     ){
                         skuPriceSet.push(skuPrice);
                     }
@@ -298,14 +297,21 @@ export class SkuPriceService {
         if(this.hasSkuPrices(skuID)){
             for(var i=0; i < this.getSkuPrices(skuID).length; i++){
                 var savedSkuPriceData = this.getSkuPrices(skuID)[i].data;
-                if(savedSkuPriceData.currencyCode == skuPrice.data.currencyCode &&
-                   parseInt(savedSkuPriceData.minQuantity) == parseInt(skuPrice.data.minQuantity) &&
-                   parseInt(savedSkuPriceData.maxQuantity) == parseInt(skuPrice.data.maxQuantity)
+                if( savedSkuPriceData.currencyCode == skuPrice.data.currencyCode &&
+                    ( this.isBaseSkuPrice(savedSkuPriceData) ||
+                        ( parseInt(savedSkuPriceData.minQuantity) == parseInt(skuPrice.data.minQuantity) &&
+                          parseInt(savedSkuPriceData.maxQuantity) == parseInt(skuPrice.data.maxQuantity))
+                    )
                 ){
                     return i; 
                 }
             }
         }
         return -1; 
+    }
+
+    private isBaseSkuPrice = (skuPriceData)=>{
+         return (angular.isUndefined(skuPriceData.minQuantity) || (angular.isString(skuPriceData.minQuantity) && skuPriceData.minQuantity.trim().length == 0)) &&
+                (angular.isUndefined(skuPriceData.maxQuantity) || (angular.isString(skuPriceData.maxQuantity) && skuPriceData.maxQuantity.trim().length == 0));
     }
 }

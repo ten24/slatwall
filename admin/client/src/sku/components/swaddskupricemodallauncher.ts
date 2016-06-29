@@ -37,7 +37,6 @@ class SWAddSkuPriceModalLauncherController{
         var savePromise = this.skuPrice.$$save();
         savePromise.then(
             (response)=>{ 
-               this.skuPriceService.setSkuPrices(this.sku.data.skuID,[this.skuPrice]);
                this.observerService.notify('skuPricesUpdate',{skuID:this.sku.data.skuID,refresh:true});
                 //temporarily overriding for USD need to get this setting accessable to client side
                 if( angular.isDefined(this.listingID) && 

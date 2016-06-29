@@ -23,25 +23,29 @@
     <sw-form ng-if="swSkuPriceEdit.skuPrice" 
             data-object="swSkuPriceEdit.skuPrice" 
             data-name="'{{swSkuPriceEdit.formName}}'"> 
-        <span ng-show="swSkuPriceEdit.showPriceEdit">
-        <sw-property-display
-                data-object="swSkuPriceEdit.skuPrice"
-                data-property="price"
-                data-in-listing-display="true"
-                data-show-save="swSkuPriceEdit.showSave"
-                data-on-change="swSkuPriceEdit.updateSkuPrices()"
-                data-save-callback="swSkuPriceEdit.save"
-                data-editing="true"
-                data-editable="true"
-            >
-            
-        </sw-property-display>
-        <a href="##" 
-            class="s-indicator-icon" 
-            ng-click="swSkuPriceEdit.switchTabContext()"
-            ng-if="swSkuPriceEdit.showSwitchTabContextButton">
-                <i class="fa fa-list"></i>
-        </a>
-        </span>
+            <span ng-show="swSkuPriceEdit.showPriceEdit">
+                <sw-property-display
+                        ng-if="!swSkuPriceEdit.skuPrice.data.inferred"
+                        data-object="swSkuPriceEdit.skuPrice"
+                        data-property="price"
+                        data-in-listing-display="true"
+                        data-show-save="swSkuPriceEdit.showSave"
+                        data-on-change="swSkuPriceEdit.updateSkuPrices()"
+                        data-save-callback="swSkuPriceEdit.save"
+                        data-editing="true"
+                        data-editable="true"
+                    >     
+                </sw-property-display>
+                <div class="s-input-group" ng-if="swSkuPriceEdit.skuPrice.data.inferred">
+                    <span class="s-title" data-content="" data-original-title="" title="">{{swSkuPriceEdit.skuPrice.data.currencyCode}}</span>
+                    <input readonly type="text" ng-model="swSkuPriceEdit.skuPrice.data.price" class="form-control input-xs s-inherited">
+                </div>
+                <a href="##" 
+                    class="s-indicator-icon" 
+                    ng-click="swSkuPriceEdit.switchTabContext()"
+                    ng-if="swSkuPriceEdit.showSwitchTabContextButton">
+                        <i class="fa fa-list"></i>
+                </a>
+            </span>
     </sw-form>
 </span>
