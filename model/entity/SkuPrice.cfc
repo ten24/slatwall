@@ -50,8 +50,8 @@ component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true acces
 
 	// Persistent Properties
 	property name="skuPriceID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="minQuantity" ormtype="integer";
-	property name="maxQuantity" ormtype="integer";
+	property name="minQuantity" ormtype="integer" hb_nullrbkey="entity.SkuPrice.minQuantity.null";
+	property name="maxQuantity" ormtype="integer" hb_nullrbkey="entity.SkuPrice.maxQuantity.null";
 	property name="currencyCode" ormtype="string" length="3" hb_formfieldType="select";
 	property name="price" ormtype="big_decimal";
 	property name="listPrice" ormtype="big_decimal";
