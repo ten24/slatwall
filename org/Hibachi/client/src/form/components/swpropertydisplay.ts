@@ -21,6 +21,7 @@ class SWPropertyDisplayController {
     public inListingDisplay:boolean; 
     public pageRecord:any;
     public pageRecordIndex:number; 
+    public placeholderRbKey:string; 
     public placeholderText:string; 
     public listingID:string; 
     public rawFileTarget; 
@@ -128,7 +129,7 @@ class SWPropertyDisplayController {
 
 
     public getNgClassObjectForInput = () => {
-        return "{'form-control':propertyDisplay.inListingDisplay}";
+        return "{'form-control':propertyDisplay.inListingDisplay, 'input-xs':propertyDisplay.inListingDisplay}";
     }
 
     public onChange = (result?) =>{
@@ -215,7 +216,9 @@ class SWPropertyDisplay implements ng.IDirective{
         modalCallback:"&?",
         hasModalCallback:"=?",
         rowSaveEnabled:"=?",
-        showSave:"=?"
+        showSave:"=?",
+        placeholderText:"@",
+        placeholderRbKey:"@"
     };
     public controller=SWPropertyDisplayController;
     public controllerAs="swPropertyDisplay";
