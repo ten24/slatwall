@@ -145,6 +145,8 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 		//If we are not an admin account
 		
+		//And we have a cookie
+		
 		//And we found the extended cookie
 		
 		//And the cookie is not expired
@@ -174,9 +176,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 		// If the sessions account is an admin and last request by the session was 15 min or longer ago. 
 		
-		else if((getHibachiScope().setting("globalUseExtendedSession") == true  && structKeyExists(cookie, "#getApplicationValue('applicationKey')#-ExtendedPSID") && dateDiff('d', cookie["#getApplicationValue('applicationKey')#-ExtendedPSID"], Now()) >= getHibachiScope().setting('globalExtendedSessionAutoLogoutInDays'))
-		
-			|| getHibachiScope().getSessionFoundPSIDCookieFlag() && getHibachiScope().getLoggedInFlag()
+		else if(getHibachiScope().getSessionFoundPSIDCookieFlag() && getHibachiScope().getLoggedInFlag()
 		
 			|| (!isNull(getHibachiScope().getSession().getAccountAuthentication()) && getHibachiScope().getSession().getAccountAuthentication().getForceLogoutFlag()) 
 		
