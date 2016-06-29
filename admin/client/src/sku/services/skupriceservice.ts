@@ -13,7 +13,8 @@ export class SkuPriceService {
                 public $hibachi,
                 public cacheService,
                 public collectionConfigService, 
-                public observerService
+                public observerService,
+                public utilityService
     ){
          this.observerService.attach(this.updateSkuPrices,'skuPricesUpdate');
     }
@@ -216,6 +217,7 @@ export class SkuPriceService {
                                 skuPriceSet.push(this.createInferredSkuPriceForCurrency(sku,eligibleCurrencyCodes[j]));
                             }
                         }
+                        skuPriceSet = this.sortSkuPrices(skuPriceSet);
                     },
                     (reason)=>{
                         deferred.reject(reason);
@@ -313,5 +315,16 @@ export class SkuPriceService {
     private isBaseSkuPrice = (skuPriceData)=>{
          return (angular.isUndefined(skuPriceData.minQuantity) || (angular.isString(skuPriceData.minQuantity) && skuPriceData.minQuantity.trim().length == 0)) &&
                 (angular.isUndefined(skuPriceData.maxQuantity) || (angular.isString(skuPriceData.maxQuantity) && skuPriceData.maxQuantity.trim().length == 0));
+    }
+
+    public sortSkuPrices = (skuPriceSet)=>{
+        function compareSkuPrices(a,b) {
+            if (a.data.currencyCode < b.data.currencyCode)
+                return -1;
+            if (a.data.currencyCode > b.data.currencyCode)
+                return 1;
+            return 0;
+        }
+        return skuPriceSet.sort(compareSkuPrices);
     }
 }
