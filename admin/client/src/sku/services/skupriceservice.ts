@@ -137,6 +137,64 @@ export class SkuPriceService {
         return currencyPromise; 
     }
 
+    private createInferredSkuPriceForCurrency = (sku, currencyCode) =>{
+        var nonPersistedSkuPrice = this.$hibachi.newSkuPrice(); 
+        nonPersistedSkuPrice.$$setSku(sku);
+        nonPersistedSkuPrice.data.currencyCode = currencyCode; 
+        if(angular.isDefined(this.currencies[currencyCode])){
+            var currencyData = this.currencies[currencyCode];
+            if(currencyData.convertFrom == sku.data.currencyCode){
+                nonPersistedSkuPrice.data.price = sku.data.price * (1 / currencyData.rate);
+            } else {
+                //not getting hit right now
+                console.log("need to convert from euro");
+            }
+        } else {
+            nonPersistedSkuPrice.data.price = sku.data.price;
+            console.log("couldn't find currency", this.currencies, currencyCode);
+        }
+        console.log("needs",nonPersistedSkuPrice)
+        return nonPersistedSkuPrice;
+    }
+
+    private skuPriceSetHasCurrencyCode = (skuPriceSet, currencyCode)=>{
+        for(var k=0; k < skuPriceSet.length; k++){
+            if(currencyCode == skuPriceSet[k].data.currencyCode){
+                return true;
+            }
+        }
+        return false; 
+    }
+
+    private loadInferredSkuPricesForSkuPriceSet = (skuID, skuPriceSet, eligibleCurrencyCodes) =>{
+        var deferred = this.$q.defer(); 
+        var promise = deferred.promise; 
+        this.loadCurrencies(eligibleCurrencyCodes).then(
+            ()=>{
+                this.$hibachi.getEntity("Sku", skuID).then(
+                    (response)=>{
+                        var sku = this.$hibachi.populateEntity("Sku", response)
+                        for(var j=0; j < eligibleCurrencyCodes.length; j++){
+                            if( ( skuPriceSet.length > 0 && !this.skuPriceSetHasCurrencyCode(skuPriceSet,eligibleCurrencyCodes[j]) ) ||
+                                    skuPriceSet.length == 0
+                            ){
+                                skuPriceSet.push(this.createInferredSkuPriceForCurrency(sku,eligibleCurrencyCodes[j]));
+                            }
+                        }
+                    },
+                    (reason)=>{
+                        deferred.reject(reason);
+                    }
+                ).finally(
+                    ()=>{
+                        deferred.resolve(skuPriceSet)
+                    }
+                );
+            }
+        );
+        return promise; 
+    }
+
     public getBaseSkuPricesForSku = (skuID, eligibleCurrencyCodes?) =>{
         var deferred = this.$q.defer(); 
         var promise = deferred.promise; 
@@ -146,33 +204,24 @@ export class SkuPriceService {
                 var skuPrices = this.getSkuPrices(skuID) || [];
                 for(var i=0; i < skuPrices.length; i++){
                     var skuPrice = skuPrices[i];
-                    if( (angular.isUndefined(skuPrice.data.minQuantity) || !skuPrice.data.minQuantity.length) &&
-                        (angular.isUndefined(skuPrice.data.maxQuantity) || !skuPrice.data.maxQuantity.length)
+                    if( (angular.isUndefined(skuPrice.data.minQuantity)) &&
+                        (angular.isUndefined(skuPrice.data.maxQuantity))
                     ){
                         skuPriceSet.push(skuPrice);
                     }
                 }
+            }).finally(()=>{   
                 if(angular.isDefined(eligibleCurrencyCodes)){
-                    this.loadCurrencies(eligibleCurrencyCodes).then(
-                        ()=>{
-                            for(var j=0; j < eligibleCurrencyCodes.length; j++){
-                                for(var k=0; k < skuPriceSet.length; k++){
-                                    var found = false; 
-                                    if(eligibleCurrencyCodes[j] == skuPriceSet[k].data.currencyCode){
-                                        found = true
-                                        break; 
-                                    }
-                                    if(!found){ 
-                                        //create a sku price from the data
-                                    }
-                                }
-                            }
+                    this.loadInferredSkuPricesForSkuPriceSet(skuID, skuPriceSet, eligibleCurrencyCodes).then(
+                        (data)=>{
+                            console.log("resolving base sku prices",data); 
+                            deferred.resolve(data); 
                         }
                     );
-
-                }
-            }).finally(()=>{
-                deferred.resolve(skuPriceSet); 
+                } else {
+                    console.log("resolving base sku prices",skuPriceSet); 
+                    deferred.resolve(skuPriceSet); 
+                }   
             });
         }
         return promise; 
@@ -193,11 +242,18 @@ export class SkuPriceService {
                         skuPriceSet.push(skuPrice);
                     }
                 }
-                if(angular.isDefined(eligibleCurrencyCodes)){
-                    this.loadCurrencies(eligibleCurrencyCodes);
-                }
             }).finally(()=>{
-                deferred.resolve(skuPriceSet); 
+                if(angular.isDefined(eligibleCurrencyCodes)){
+                    this.loadInferredSkuPricesForSkuPriceSet(skuID, skuPriceSet, eligibleCurrencyCodes).then(
+                        (data)=>{
+                            console.log("resolving sku prices",data); 
+                            deferred.resolve(data); 
+                        }
+                    );
+                } else {
+                    console.log("resolving sku prices",skuPriceSet); 
+                    deferred.resolve(skuPriceSet); 
+                }  
             });
         }
         return promise; 

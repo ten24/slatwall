@@ -4,7 +4,7 @@
                 data-base-entity-id="{{swSkuPricesEdit.baseEntityId}}"
 ></sw-sku-price-edit>-->
 <div ng-if="swSkuPricesEdit.skuPrices.length>0" sw-loading="swSkuPricesEdit.loadingPromise">
-    <sw-sku-price-edit ng-if="(swSkuPricesEdit.skuSkuId && swSkuPricesEdit.skuSkuId.length) || swSkuPricesEdit.skuPrice"
+    <sw-sku-price-edit 
                     ng-repeat="skuPrice in swSkuPricesEdit.skuPrices" 
                     data-sku-price="skuPrice" 
                     data-listing-display-id="{{swSkuPricesEdit.listingDisplayId}}"

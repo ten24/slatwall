@@ -50,23 +50,21 @@ class SWAddSkuPriceModalLauncherController{
                         ){
                             var index = i + 1; 
                             while(index < pageRecords.length && angular.isUndefined(pageRecords[index].skuID)){
-                                if(pageRecords[index].minQuantity <= this.skuPrice.data.minQuantity &&
-                                   index + 1 < pageRecords.length && (
-                                   pageRecords[index+1].minQuantity >= this.skuPrice.data.minQuantity ||
-                                   angular.isDefined(pageRecords[index+1].skuID) )
+                                //if there is a place in the listing to insert the new sku price lets insert it
+                                if( ( 
+                                        pageRecords[index].minQuantity <= this.skuPrice.data.minQuantity &&
+                                        index + 1 < pageRecords.length && (
+                                        pageRecords[index+1].minQuantity >= this.skuPrice.data.minQuantity ||
+                                        angular.isDefined(pageRecords[index+1].skuID) ) 
+                                    ) || 
+                                    index + 1 == pageRecords.length
                                 ){
                                     this.skuPrice.data.skuSkuId = this.skuId;
                                     var skuPriceForListing = {}; 
                                     angular.copy(this.skuPrice.data,skuPriceForListing); 
                                     pageRecords.splice(index+1,0,skuPriceForListing);
                                     break; 
-                                }  else if(index + 1 == pageRecords.length){
-                                    this.skuPrice.data.skuSkuId = this.skuId;
-                                    var skuPriceForListing = {}; 
-                                    angular.copy(this.skuPrice.data,skuPriceForListing); 
-                                    pageRecords.splice(index+1,0,skuPriceForListing);
-                                    break; 
-                                }
+                                }  
                                 index++; 
                             }
                         }
