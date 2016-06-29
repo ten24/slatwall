@@ -141,7 +141,7 @@ export class SkuPriceService {
         var nonPersistedSkuPrice = this.$hibachi.newSkuPrice(); 
         nonPersistedSkuPrice.$$setSku(sku);
         nonPersistedSkuPrice.data.currencyCode = currencyCode; 
-        if(angular.isDefined(this.currencies[currencyCode])){
+        if(angular.isDefined(this.currencies[currencyCode]) && sku.data.currencyCode != currencyCode){
             var currencyData = this.currencies[currencyCode];
             if(currencyData.convertFrom == sku.data.currencyCode){
                 nonPersistedSkuPrice.data.price = sku.data.price * (1 / currencyData.rate);
