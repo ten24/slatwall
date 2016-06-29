@@ -30,12 +30,8 @@ class ListingService{
         return this.getListing(listingID).getCollection(); 
     }
 
-    public markEdited = (listingId, pageRecordIndex, propertyDisplayID, saveCallback) => {
-        var pageRecords = this.getListingPageRecords(listingId); 
-        if(angular.isUndefined(pageRecords[pageRecordIndex].editedFields) && !angular.isObject(pageRecords[pageRecordIndex].editedFields)){
-            pageRecords[pageRecordIndex].editedFields = {}; 
-        }
-        pageRecords[pageRecordIndex].editedFields[propertyDisplayID] = saveCallback; 
+    //Row Save Functionality
+    private determineRowEdited = (pageRecords, pageRecordIndex) =>{
         var fieldCount = 0; 
         for(var key in pageRecords[pageRecordIndex].editedFields){
             fieldCount++; 
@@ -44,7 +40,25 @@ class ListingService{
                 return true;
             }
         }
+        pageRecords[pageRecordIndex].edited = false; 
         return false; 
+    }
+
+    public markUnedited = (listingId, pageRecordIndex, propertyDisplayID) => {
+        var pageRecords = this.getListingPageRecords(listingId); 
+        if(angular.isDefined(pageRecords[pageRecordIndex].editedFields[propertyDisplayID])){
+            delete pageRecords[pageRecordIndex].editedFields[propertyDisplayID];
+        }
+        return this.determineRowEdited(pageRecords,pageRecordIndex); 
+    }
+
+    public markEdited = (listingId, pageRecordIndex, propertyDisplayID, saveCallback) => {
+        var pageRecords = this.getListingPageRecords(listingId); 
+        if(angular.isUndefined(pageRecords[pageRecordIndex].editedFields) && !angular.isObject(pageRecords[pageRecordIndex].editedFields)){
+            pageRecords[pageRecordIndex].editedFields = {}; 
+        }
+        pageRecords[pageRecordIndex].editedFields[propertyDisplayID] = saveCallback; 
+        return this.determineRowEdited(pageRecords,pageRecordIndex); 
     }
 
     public markSaved = (listingId, pageRecordIndex) => {
@@ -57,6 +71,7 @@ class ListingService{
         delete pageRecords[pageRecordIndex].editedFields;
         pageRecords[pageRecordIndex].edited = false; 
     }
+    //End Row Save Functionality
 
     public setupInSingleCollectionConfigMode = (listingID, scope) =>{
         

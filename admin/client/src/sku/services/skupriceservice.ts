@@ -151,9 +151,7 @@ export class SkuPriceService {
             }
         } else {
             nonPersistedSkuPrice.data.price = sku.data.price;
-            console.log("couldn't find currency", this.currencies, currencyCode);
         }
-        console.log("needs",nonPersistedSkuPrice)
         return nonPersistedSkuPrice;
     }
 

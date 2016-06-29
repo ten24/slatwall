@@ -56,7 +56,6 @@ class SWPropertyDisplayController {
         if(angular.isUndefined(this.inListingDisplay)){
             this.inListingDisplay = false; 
         }
-        console.log("rowSaveEnabled",this.rowSaveEnabled);
         if(angular.isUndefined(this.rowSaveEnabled)){
             this.rowSaveEnabled = this.inListingDisplay; 
         }
@@ -140,7 +139,6 @@ class SWPropertyDisplayController {
         if(this.hasOnChangeCallback){
             this.onChangeCallback(result);
         }
-        console.log("row save?", this.rowSaveEnabled);
         if(this.inListingDisplay && this.rowSaveEnabled){
             this.listingService.markEdited( this.listingID, 
                                             this.pageRecordIndex, 
@@ -156,6 +154,12 @@ class SWPropertyDisplayController {
     public clear = () =>{
         this.edited = false; 
         this.object.data[this.property] = this.initialValue; 
+        if(this.inListingDisplay && this.rowSaveEnabled){
+            this.listingService.markUnedited( this.listingID, 
+                                              this.pageRecordIndex, 
+                                              this.propertyDisplayID
+                                            );
+        }
     }
 
     public save = () =>{
