@@ -99,7 +99,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="productReviews" singularname="productReview" cfc="ProductReview" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
 
 	// Related Object Properties (many-to-many - owner)
-	property name="options" singularname="option" cfc="Option" fieldtype="many-to-many" linktable="SwSkuOption" fkcolumn="skuID" inversejoincolumn="optionID";
+	property name="options" singularname="option" cfc="Option" type="array" fieldtype="many-to-many" linktable="SwSkuOption" fkcolumn="skuID" inversejoincolumn="optionID";
 	property name="accessContents" singularname="accessContent" cfc="Content" type="array" fieldtype="many-to-many" linktable="SwSkuAccessContent" fkcolumn="skuID" inversejoincolumn="contentID";
 	property name="subscriptionBenefits" singularname="subscriptionBenefit" cfc="SubscriptionBenefit" type="array" fieldtype="many-to-many" linktable="SwSkuSubsBenefit" fkcolumn="skuID" inversejoincolumn="subscriptionBenefitID";
 	property name="renewalSubscriptionBenefits" singularname="renewalSubscriptionBenefit" cfc="SubscriptionBenefit" type="array" fieldtype="many-to-many" linktable="SwSkuRenewalSubsBenefit" fkcolumn="skuID" inversejoincolumn="subscriptionBenefitID";
@@ -1034,7 +1034,27 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================
-
+	// Options (many-to-many - owner)
+	public void function addOption(required any option) {
+		if(arguments.option.isNew() or !hasOption(arguments.option)) {
+			arrayAppend(variables.options, arguments.option);
+		}
+		if(isNew() or !arguments.option.hasSku( this )) {
+			arrayAppend(arguments.option.getSkus(), this);
+		}
+	}
+	public void function removeOption(required any option) {
+		var thisIndex = arrayFind(variables.options, arguments.option);
+		if(thisIndex > 0) {
+			arrayDeleteAt(variables.options, thisIndex);
+		}
+		var thatIndex = arrayFind(arguments.option.getSkus(), this);
+		if(thatIndex > 0) {
+			arrayDeleteAt(arguments.option.getSkus(), thatIndex);
+		}
+	}
+	
+	
 	// Product (many-to-one)
 	public void function setProduct(required any product) {
 		variables.product = arguments.product;
