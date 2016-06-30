@@ -447,9 +447,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						logHibachi('An error occured with the #integration.getIntegrationName()# integration when trying to commit the transaction', true);
 						logHibachiException(e);
 
-						if(getSettingService().getSettingValue("globalDisplayIntegrationProcessingErrors")){
-							rethrow;
-						}
 					}
 
 					logHibachi('#integration.getIntegrationName()# Tax Transaction Commit  - Finished');
