@@ -55,13 +55,18 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 		
 		var taxExempt = false;
 		var taxForce = false;
+		var docType = 'SalesOrder';
+		var commitTransaction = false;
+		
 		if(len(setting('taxExemptPropertyIdentifier'))) {
 			var piValue = arguments.requestBean.getOrder().getValueByPropertyIdentifier( setting('taxExemptPropertyIdentifier') );
 			if(len(piValue) && isBoolean(piValue)) {
 				taxExempt = piValue;
 			}
 		}
-		if(len(setting('taxExemptRequiresCompanyPaymentMethodFlag'))) {
+		
+		
+		if(len(setting('taxExemptRequiresCompanyPaymentMethodFlag')) && setting('taxExemptRequiresCompanyPaymentMethodFlag')) {
 			var opSmartList = arguments.requestBean.getOrder().getOrderPaymentsSmartList();
 			opSmartList.addFilter('orderPaymentStatusType.systemCode', 'opstActive');
 			if(arrayLen(opSmartList.getRecords())) {
@@ -72,13 +77,19 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 			
 		}
 		
+		//Only commit if both integration setting and request bean are set to true
+		if(len(setting('commitTaxTransaction')) && setting('commitTaxTransaction') && arguments.requestBean.getCommitTaxTransaction()) {
+			commitTransaction = true;
+			docType = 'SalesInvoice';
+		}
+		
 		if( !taxExempt || taxForce ) {
 			
 			// Setup the request data structure
 			var requestDataStruct = {
 				DocCode = arguments.requestBean.getOrder().getShortReferenceID( true ),
 				DocDate = dateFormat(now(),'yyyy-mm-dd'),
-				DocType = 'SalesInvoice',
+				DocType = docType,
 				Addresses = [
 					{
 						AddressCode = 1,
@@ -92,6 +103,10 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 				],
 				Lines = []
 			};
+			
+			if (commitTransaction){
+				StructInsert(requestDataStruct, 'commit', true);
+			}
 			
 			if(!isNull(arguments.requestBean.getAccount())) {
 				requestDataStruct.CustomerCode = arguments.requestBean.getAccount().getShortReferenceID( true );
