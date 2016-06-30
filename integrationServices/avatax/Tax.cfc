@@ -213,6 +213,9 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 				responseBean.setData(responseData.Responseheader.Explanation);
 			}
 		}
+		
+		variables.commitDocFlag = false;
+		
 		return responseBean;
 	}
 	
