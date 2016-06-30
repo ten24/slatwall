@@ -427,7 +427,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
  				var taxRatesRequestBean = generateTaxRatesRequestBeanForIntegration(arguments.order, integration);
 				
-				taxRatesRequestBean.setCommitTransaction(true);
+				taxRatesRequestBean.setCommitTaxTransaction(true);
 					
 				// Make sure that the ratesRequestBean actually has OrderItems on it
 				if(arrayLen(taxRatesRequestBean.getTaxRateItemRequestBeans())) {
