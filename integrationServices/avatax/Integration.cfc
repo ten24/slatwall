@@ -73,7 +73,7 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 			testingFlag = {fieldType="yesno", defaultValue="1"},
 			taxExemptPropertyIdentifier = {fieldType="text"},
 			taxExemptRequiresCompanyPaymentMethodFlag = {fieldType="yesno", defaultValue="0"},
-			commitTaxTransactions = {fieldType="yesno", defaultValue="0"}
+			commitTaxTransaction = {fieldType="yesno", defaultValue="0"}
 		};
 
 		return settings;
