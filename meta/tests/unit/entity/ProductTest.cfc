@@ -252,18 +252,53 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 */
 
 //=============== Private Helper functions ====================================
+
+
+
 	/**
-	* @hint "Create Mocked Otpion entity with optionGroupID"
+	* @hint "Use '' for arguments not pass in"
 	*
 	*/
-	private any function createMockOption(required string optionGroupID, string skuID="" ) {
+	private any function createMockContent(string title = "", boolean activeFlag = "") {
+		var contentData = {
+			contentID = ""
+		};
+		if (len(arguments.title)) {
+			contentData.title = arguments.title;
+		}
+		if (len(arguments.activeFlag)) {
+			contentData.activeFlag = arguments.activeFlag;
+		}
+//		if (len(arguments.contentTemplateTypeID)) {
+//			contentData.contentTemplateTypeID = arguments.contentTemplateTypeID;
+//		}
+		return createPersistedTestEntity('Content', contentData);
+	}
+	/**
+	* @hint "return the mocked persisted Content entity with contentTemplateType (ctt)"
+	*
+	*/
+	private any function createMockContentWithContentTemplateType(required string contentTemplateTypeID) {
+		var contentData = {
+			contentID = "",
+			contentTemplateType = {
+				typeID = arguments.contentTemplateTypeID
+			}
+		};
+		return createPersistedTestEntity('Content', contentData);
+	}
+	/**
+	* @hint "Create Mocked Otpion entity with optionGroupID, make empty properties "" in order"
+	*
+	*/
+	private any function createMockOption(required string optionGroupID = "", string skuID = "" ) {
 		var optionData1 = {
 			optionID = "",
 			optionGroup = {
 				optionGroupID = arguments.optionGroupID
 			}
 		};			
-		
+
 		if(len(arguments.skuID)){
 			optionData1.skus=[
 				{
@@ -307,7 +342,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 	/**
-	* @hint "This function will return mockSku with properites you passed in <br> Make the null arguments "" by the order "
+	* @hint "This function will return mockSku with properites you passed in <br> Make the null arguments "" in order "
 	*
 	*/
 	private any function createMockSku(string idOfProduct = "", string currencyCode = "", string skuImageFile = "") {
@@ -325,7 +360,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		}
 		return createPersistedTestEntity('Sku', skuData);
 	}
-	
+	/**
+	* @hint "This function will return mockImage with properites you passed in. Make the null arguments "" in order "
+	*
+	*/
 	private any function createMockImage(string imageDirectory = "") {
 		var imageData = {
 			imageID = ""
@@ -335,7 +373,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		}
 		return createPersistedTestEntity('Image', imageData);
 	}
-
+	
    //================== End Of Private Helper Functions =========================================
 /*	
 	//============Start From Here
@@ -381,43 +419,14 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var resultExistedStartDateEmptyEndDate = product4.getAvailableForPurchaseFlag();
 		assertTrue(resultExistedStartDateEmptyEndDate);
 	}
-	
 
 	public void function getListingPagesOptionsSmartListTest() {
 		//mockContent 1-4 to test order, and 1&5 to test the activeFlag filter
-		var contentData1 = {
-			contentID = "",
-			activeFlag = 1,
-			title = "Whisper In the Willow"
-		};
-		var mockContent1 = createPersistedTestEntity('Content', contentData1);
-		
-		var contentData2 = {
-			contentID = "",
-			activeFlag = 1,
-			title = "Black Beauty"
-		};
-		var mockContent2 = createPersistedTestEntity('Content', contentData2);
-		
-		var contentData3 = {
-			contentID = "",
-			activeFlag = 1,
-			title = "Macbeth"
-		};
-		var mockContent3 = createPersistedTestEntity('Content', contentData3);
-		
-		var contentData4 = {
-			contentID = "",
-			activeFlag = 1
-		};
-		var mockContent4 = createPersistedTestEntity('Content', contentData4);
-		
-		var contentData5 = {
-			contentID = "",
-			activeFlag = 0,
-			title = "The Happy Prince"
-		};
-		var mockContent5 = createPersistedTestEntity('Content', contentData5);		
+		var mockContent1 = createMockContent("Whisper In the Willow", 1);
+		var mockContent2 = createMockContent("Black Beauty", 1);
+		var mockContent3 = createMockContent("Macbeth", 1);
+		var mockContent4 = createMockContent("", 1);
+		var mockContent5 = createMockContent("The Happy Prince", 0);
 		
 		var productData = {
 			productID = "",
@@ -869,7 +878,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 */	
 	public void function getTemplateOptionsTest() {
-		//Todo: never been used elsewhere. Check w/ Rayjay
+		//Never been used elsewhere. Skip the test.
 	}
 	
 	
@@ -884,7 +893,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	//=================Non-persisted Helpers ====================
 	
 	/**
-	* @hint "helper for getOptionsGroupsXXX() function to create mock Data. Arguments are 2 OptionGroupIDs"
+	* @hint "helper for getOptionsGroupsXXX() function to create mock Data. Arguments are 2 OptionGroup ID"
 	*
 	*/
 	private any function createMockDataForGetOptionGroupsHelper(string optionGroupId1, string optionGroupId2) {
@@ -893,20 +902,36 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
 		
+		var mockOption1 = createMockOption(arguments.optionGroupId1);
+		var mockOption2 = createMockOption(arguments.optionGroupId2);
+		
 		var skuData1 = {
 			skuID = "",
 			product = {
 				productID = mockProduct.getProductID()
-			}
+			},
+			options = [
+				{
+					optionID = mockOption1.getOptionID()
+				},
+				{
+					optionID = mockOption2.getOptionID()
+				}
+			]
 		};
 		var mockSku = createPersistedTestEntity('Sku', skuData1);
+				
+		if (!mockOption1.hasSku(mockSku)) {
+			arrayAppend(mockOption1.getSkus(), mockSku);
+		}
 		
-		var mockOption1 = createMockOption(arguments.optionGroupId1,mockSku.getSkuID());
-		var mockOption2 = createMockOption(arguments.optionGroupId2,mockSku.getSkuID());	
-		
+		if (!mockOption2.hasSku(mockSKU)) {
+			arrayAppend(mockOption2.getSkus(), mockSku);
+		}
+
 		return mockProduct;
 	}
-	
+/*	
 	public void function getOptionGroupsTest() {				
 		var optionGroupsData1 = {
 			optionGroupID = ""
@@ -923,10 +948,12 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		var indexOfMockOptionGroup1 = arrayFind(resultOptionGroups, mockOptionGroup1);
 		var indexOfMockOptionGroup2 = arrayFind(resultOptionGroups, mockOptionGroup2);
+		
 		//testing the productID filter
 		assertNotEquals(0, indexOfMockOptionGroup1);
-		assertNotEquals(0, indexOfMockOptionGroup1);
+		assertNotEquals(0, indexOfMockOptionGroup2);
 		assertEquals(mockProduct.getProductID(), resultOptionGroups[indexOfMockOptionGroup1].getOptions()[1].getSkus()[1].getProduct().getProductID());
+		
 		//testing the ascending order
 		assertEquals(mockOptionGroup1.getOptionGroupID() < mockOptionGroup2.getOptionGroupID(), indexOfMockOptionGroup1 < indexOfMockOptionGroup2);
 	}
@@ -986,10 +1013,246 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(2, mockProduct.getOptionGroupCount());
 	}
 	
-	public void function getAllowAddOptionGroupFlagTest() {
+	public void function getAllowAddOptionGroupFlag_OneSkuTwoOptionGroups_Test() {
+		//Testing the mock Data from the private helper 
+		var optionGroupsData1 = {
+			optionGroupID = ""
+		};
+		var mockOptionGroup1 = createPersistedTestEntity('OptionGroup', optionGroupsData1);
+		var optionGroupsData2 = {
+			optionGroupID = ""
+			
+		};
+		var mockOptionGroup2 = createPersistedTestEntity('OptionGroup', optionGroupsData2);
+		
+		var mockProduct = createMockDataForGetOptionGroupsHelper(mockOptionGroup1.getOptionGroupID(), mockOptionGroup2.getOptionGroupID());
+		var resultAllowFlag = mockProduct.getAllowAddOptionGroupFlag();
+		assertTrue(resultAllowFlag);
+	}
+	public void function getAllowAddOptionGroupFlag_MultipleSkus_Test() {
+		//Testing when getSkus returns more then one Sku
+		var productData = {
+			productID = ""
+		};
+		var mockProduct = createPersistedTestEntity('Product', productData);
+		
+		var optionGroupsData1 = {
+			optionGroupID = ""
+		};
+		var mockOptionGroup1 = createPersistedTestEntity('OptionGroup', optionGroupsData1);
+		
+		var mockOption1 = createMockOption(mockOptionGroup1.getOptionGroupID());
+		var mockOption2 = createMockOption(mockOptionGroup1.getOptionGroupID());
+		
+		var skuData1 = {
+			skuID = "",
+			product = {
+				productID = mockProduct.getProductID()
+			},
+			options = [
+				{
+					optionID = mockOption1.getOptionID()
+				}
+			]
+		};
+		var mockSku1 = createPersistedTestEntity('Sku', skuData1);
+		var skuData2 = {
+			skuID = "",
+			product = {
+				productID = mockProduct.getProductID()
+			},
+			options = [
+				{
+					optionID = mockOption2.getOptionID()
+				}
+			]
+		};
+		var mockSku2 = createPersistedTestEntity('Sku', skuData2);
+
+		var resultMultiSku = mockProduct.getAllowAddOptionGroupFlag();
+		assertTrue(resultMultiSku);
+	}
+	public void function getAllowAddOptionGroupFlag_NoOptionGroup_Test() {
+		//testing product with one Sku but 0 OptionGroup
+		var productData = {
+			productID = ""
+		};
+		var mockProduct = createPersistedTestEntity('Product', productData);
+		
+		var optionData = {
+			optionID = ""
+		};
+		var mockOption = createPersistedTestEntity('Option', optionData);
+		
+		var skuData = {
+			skuID = "",
+			product = {
+				productID = mockProduct.getProductID()
+			},
+			options = [
+				{
+					optionID = mockOption.getOptionID()
+				}
+			]
+		};
+		var mockSku = createPersistedTestEntity('Sku', skuData);
+		
+		var resultNoOptionGroup = mockProduct.getAllowAddOptionGroupFlag();
+		assertTrue(resultNoOptionGroup);		
+	}
+	public void function getCategoryIDsTest() {		
+		var categoryData1 = {
+			categoryID = ""
+		};
+		var mockCategory1 = createPersistedTestEntity('Category', categoryData1);
+		var categoryData2 = {
+			categoryID = ""
+		};
+		var mockCategory2 = createPersistedTestEntity('Category', categoryData2);
+		var categoryData3 = {
+			categoryID = ""
+		};
+		var mockCategory3 = createPersistedTestEntity('Category', categoryData3);
+		
+		//testing existed categories
+		var productData = {
+			productID = "",
+			categories = [
+				{
+					categoryID = mockCategory1.getCategoryID()
+				},
+				{
+					categoryID = mockCategory2.getCategoryID()
+				}
+			]
+		};
+		var mockProduct = createPersistedTestEntity('Product', productData);
+		
+		var resultExistCategories = mockProduct.getCategoryIDs();
+		assertTrue(listFind(resultExistCategories, mockCategory1.getCategoryID()) > 0);
+		assertTrue(listFind(resultExistCategories, mockCategory2.getCategoryID()) > 0);
+		assertTrue(listFind(resultExistCategories, mockCategory3.getCategoryID()) == 0);
+		
+		//testing empty category
+		var mockProductNoCategory = createMockProduct();
+		var resultNoCategory = mockProductNoCategory.getCategoryIDs();
+		assertTrue(Len(resultNoCategory) == 0);
+	}
+	
+	public void function getTemplate_ContentTemplateTypeIsCttProduct_Test() {
+		//testing product associate w/ content and ContentTemplateType is cttProduct
+		var mockContent1 = createMockContentWithContentTemplateType("444df330fc19e5beb17ff974ac03db18");//cttProduct
+		
+		var productData = {
+			productID = ""
+			,
+			listingPages = [
+				{
+					contentID = mockContent1.getContentID()
+				}
+			]
+		};
+		var mockProduct = createPersistedTestEntity('Product', productData);
+		
+		var settingData = {
+			settingID="",
+			settingName="productDisplayTemplate",
+			settingValue = "cttBarrierPage, cttProduct, cttcttProductType"
+		};
+		var settingEntity = createPersistedTestEntity('Setting',settingData);
+		
+		var result = mockProduct.getTemplate();
+		assertEquals(settingEntity.getsettingValue(), result);
 		
 	}
 	
+	public void function getTemplate_ContentTemplateTypeNotCttProduct_Test() {
+		//testing product Template with mockContent
+		var mockContent = createMockContentWithContentTemplateType("444df332f3988ad0c802b83361f99a01");//cttBrand
+		
+		var productData = {
+			productID = "",
+			listingPages = [
+				{
+					contentID = mockContent.getContentID()
+				}
+			]
+		};
+		var mockProduct = createPersistedTestEntity('Product', productData);
+		
+		var settingData = {
+			settingID="",
+			settingName="productDisplayTemplate",
+			settingValue = "cttBarrierPage, cttProduct, cttcttProductType"
+		};
+		var settingEntity = createPersistedTestEntity('Setting',settingData);
+		
+		var result = mockProduct.getTemplate();
+		//Even though the result is same, executing different code in SettingService
+		assertEquals(settingEntity.getsettingValue(), result);
+		
+	}
+	
+	public void function getTemplate_GlobalSettingNoContents_Test() {
+		//testing product Template with no mockContent
+		var productData = {
+			productID = ""
+
+		};
+		var mockProduct = createPersistedTestEntity('Product', productData);
+		
+		var settingData = {
+			settingID="",
+			settingName="productDisplayTemplate",
+			settingValue = "cttBarrierPage, cttProduct, cttcttProductType"
+		};
+		var settingEntity = createPersistedTestEntity('Setting',settingData);
+		
+		var result = mockProduct.getTemplate();
+		assertEquals(settingEntity.getsettingValue(), result);
+		
+	}
+*/
+	public void function getPageIDsTest() {
+		//mockContent 1-4 to test order, and 1&5 to test the activeFlag filter
+		var mockContent1 = createMockContent("Whisper In the Willow", 1);
+		var mockContent2 = createMockContent("Black Beauty", 1);
+		var mockContent3 = createMockContent("Macbeth", 1);
+		var mockContent4 = createMockContent("", 1);
+		var mockContent5 = createMockContent("The Happy Prince", 0);
+		
+		var productData = {
+			productID = "",
+			listingPages = [
+				{
+					contentID = mockContent1.getContentID()
+				},
+				{
+					contentID = mockContent2.getContentID()
+				},
+				{
+					contentID = mockContent3.getContentID()
+				},
+				{
+					contentID = mockContent4.getContentID()
+				},
+				{
+					contentID = mockContent5.getContentID()
+				}
+			]
+		};
+		var mockProduct = createPersistedTestEntity('Product', productData);
+		//TODO: Neven been used function
+		
+	}
+	
+	public void function getProductURLTest() {
+		//ToDo: test URL globalURLKeyProduct defaultValue = SP ???
+	}
+
+	public void function getListingProductURLTest() {
+		//TODO: "#setting('globalURLKeyProduct')#/#getURLTitle()#/";
+	}
 	//=================End Test: non-persisted Helpers===========
 
 	
