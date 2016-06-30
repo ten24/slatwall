@@ -66,7 +66,7 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 		}
 		
 		
-		if(len(setting('taxExemptRequiresCompanyPaymentMethodFlag')) && setting('taxExemptRequiresCompanyPaymentMethodFlag')) {
+		if(setting('taxExemptRequiresCompanyPaymentMethodFlag')) {
 			var opSmartList = arguments.requestBean.getOrder().getOrderPaymentsSmartList();
 			opSmartList.addFilter('orderPaymentStatusType.systemCode', 'opstActive');
 			if(arrayLen(opSmartList.getRecords())) {
@@ -78,7 +78,7 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 		}
 		
 		//Only commit if both integration setting and request bean are set to true
-		if(len(setting('commitTaxTransaction')) && setting('commitTaxTransaction') && arguments.requestBean.getCommitTaxTransaction()) {
+		if(setting('commitTaxTransaction') && arguments.requestBean.getCommitTaxTransaction()) {
 			commitTransaction = true;
 			docType = 'SalesInvoice';
 		}
