@@ -31,6 +31,7 @@ class SWFormController {
     // @ngInject
     constructor(public $scope, public $element, public $hibachi, public $http, public $timeout, public observerService, public $rootScope){
         /** only use if the developer has specified these features with isProcessForm */
+
         if(angular.isUndefined(this.isDirty)){
             this.isDirty = false;
         }
@@ -234,28 +235,20 @@ class SWFormController {
     /** returns all the data from the form by iterating the form elements */
     public getFormData = ()=>
     {
-        for(var key in this.formCtrl){
-            if(key.charAt(0) !=='$' && key !== 'name'){
-                let value = this.formCtrl[key].$viewValue;
-                this.formData[key] = value;
-            }
+
+        var iterable = this.object;
+        if(this.object.data){
+            iterable = this.object.data;
         }
-        console.log('formdatahere',this.formData);
 
-        return this.formData;
-        // var iterable = this.object;
-        // if(this.object.data){
-        //     iterable = this.object.data;
-        // }
+        angular.forEach(iterable, (val, key) => {
+            /** Check for form elements that have a name that doesn't start with $ */
+            if (angular.isString(val)) {
+                this.formData[key] = val;
+            }
+        });
 
-        // angular.forEach(iterable, (val, key) => {
-        //     /** Check for form elements that have a name that doesn't start with $ */
-        //     if (angular.isString(val)) {
-        //         this.formData[key] = val;
-        //     }
-        // });
-
-        // return this.formData || "";
+        return this.formData || "";
     }
 }
 

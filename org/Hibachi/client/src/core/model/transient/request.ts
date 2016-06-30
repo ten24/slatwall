@@ -38,7 +38,7 @@ class Request extends BaseTransient {
         this.utilityService = <UtilityService>this.getService('utilityService');
 
 
-        console.log('headers',this.headers);
+
         if(!method){
             if (data == undefined){
                 method = "get";
@@ -88,7 +88,7 @@ class Request extends BaseTransient {
         if(response.messages){
             this.messages = response.messages
         }
-        console.log('log errors',this.errors);
+
     }
 
     //returns hibachiAction value from url and data;

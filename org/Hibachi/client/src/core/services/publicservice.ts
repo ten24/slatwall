@@ -139,8 +139,7 @@ class PublicService {
                 //other functions reutrn cart,account and then data
                 this[setter]=(result);
             }
-            console.log('setter');
-            console.log(this[setter]);
+
         }).catch((reason)=>{
 
 
@@ -185,22 +184,20 @@ class PublicService {
         }
 
         if (method == "post"){
-            console.log('posting');
+
              data.returnJsonObjects = "cart,account";
             //post
             let request:PublicRequest = this.requestService.newPublicRequest(urlBase,data,method)
             request.promise.then((result:any)=>{
-
                 this.processAction(result,request);
             }).catch((response)=>{
 
-                //request.promise(response);
             });
             this.requests[request.getAction()]=request;;
             return request.promise;
         }else{
             //get
-            console.log('get');
+
             var url = urlBase + "&returnJsonObject=cart,account";
 
             let request = this.requestService.newPublicRequest(url);
@@ -306,9 +303,9 @@ class PublicService {
     }
 
     /** Returns true if the order requires a fulfillment */
-    public orderRequiresFulfillment = ()=> {
+    public orderRequiresFulfillment = ():boolean=> {
 
-        this.cart.orderRequiresFulfillment();
+        return this.cart.orderRequiresFulfillment();
     };
 
     /**
@@ -316,19 +313,19 @@ class PublicService {
      *  Either because the user is not logged in, or because they don't have one.
      *
      */
-    public orderRequiresAccount = ()=> {
-        this.cart.orderRequiresAccount();
+    public orderRequiresAccount = ():boolean=> {
+        return this.cart.orderRequiresAccount();
     };
 
     /** Returns true if the payment tab should be active */
-    public hasShippingAddressAndMethod = () => {
-        this.cart.hasShippingAddressAndMethod();
+    public hasShippingAddressAndMethod = ():boolean => {
+        return this.cart.hasShippingAddressAndMethod();
     };
 
     /**
      * Returns true if the user has an account and is logged in.
      */
-    public hasAccount = ()=>{
+    public hasAccount = ():boolean=>{
         if ( this.account.accountID ) {
             return true;
         }
@@ -339,55 +336,6 @@ class PublicService {
     */
     public redirectExact = (url:string)=>{
         this.$location.url(url);
-    }
-
-    /** simple validation just to ensure data is present and accounted for.
-     */
-    public validateNewOrderPayment =  (newOrderPayment)=> {
-        var newOrderPaymentErrors = {};
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.streetAddress')){
-            newOrderPaymentErrors['streetAddress'] = 'Required *';
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.countrycode')){
-            newOrderPaymentErrors['countrycode'] = 'Required *';
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.statecode')){
-            if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.locality')){
-                newOrderPaymentErrors['statecode'] = 'Required *';
-            }
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.city')){
-            if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.city')){
-                newOrderPaymentErrors['city'] = 'Required *';
-            }
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.locality')){
-            if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.statecode')){
-                newOrderPaymentErrors['locality'] = 'Required *';
-            }
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.postalcode')){
-            newOrderPaymentErrors['postalCode'] = 'Required *';
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.nameOnCreditCard')){
-            newOrderPaymentErrors['nameOnCreditCard']= 'Required *';
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.expirationMonth')){
-            newOrderPaymentErrors['streetAddress'] = 'Required *';
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.expirationYear')){
-            newOrderPaymentErrors['expirationYear'] = 'Required *';
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.creditCardNumber')){
-            newOrderPaymentErrors['creditCardNumber'] = 'Required *';
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.securityCode')){
-            newOrderPaymentErrors['securityCode'] = 'Required *';
-        }
-        if (Object.keys(newOrderPaymentErrors).length){
-            //this.cart.orderPayments.hasErrors = true;
-            //this.cart.orderPayments.errors = newOrderPaymentErrors;
-        }
     }
 
     // /** Returns true if a property on an object is undefined or empty. */
@@ -446,6 +394,55 @@ class PublicService {
         }
      }
 
+     /** simple validation just to ensure data is present and accounted for.
+     */
+    public validateNewOrderPayment =  (newOrderPayment)=> {
+        var newOrderPaymentErrors = {};
+        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.streetAddress')){
+            newOrderPaymentErrors['streetAddress'] = 'Required *';
+        }
+        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.countrycode')){
+            newOrderPaymentErrors['countrycode'] = 'Required *';
+        }
+        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.statecode')){
+            if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.locality')){
+                newOrderPaymentErrors['statecode'] = 'Required *';
+            }
+        }
+        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.city')){
+            if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.city')){
+                newOrderPaymentErrors['city'] = 'Required *';
+            }
+        }
+        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.locality')){
+            if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.statecode')){
+                newOrderPaymentErrors['locality'] = 'Required *';
+            }
+        }
+        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.postalcode')){
+            newOrderPaymentErrors['postalCode'] = 'Required *';
+        }
+        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.nameOnCreditCard')){
+            newOrderPaymentErrors['nameOnCreditCard']= 'Required *';
+        }
+        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.expirationMonth')){
+            newOrderPaymentErrors['streetAddress'] = 'Required *';
+        }
+        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.expirationYear')){
+            newOrderPaymentErrors['expirationYear'] = 'Required *';
+        }
+        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.creditCardNumber')){
+            newOrderPaymentErrors['creditCardNumber'] = 'Required *';
+        }
+        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.securityCode')){
+            newOrderPaymentErrors['securityCode'] = 'Required *';
+        }
+        if (Object.keys(newOrderPaymentErrors).length){
+            //this.cart.orderPayments.hasErrors = true;
+            //this.cart.orderPayments.errors = newOrderPaymentErrors;
+        }
+    }
+
     /** Allows an easy way to calling the service addOrderPayment.
     */
     public addOrderPayment = (formdata)=>{
@@ -455,31 +452,39 @@ class PublicService {
         // this.cart.orderPayments.hasErrors = false;
 
         //Grab all the data
-        var billingAddress  = this.newBillingAddress;
-        var expirationMonth = formdata.month;
-        var expirationYear  = formdata.year;
-        var country         = formdata.country;
-        var state           = formdata.state;
-        var accountFirst    = this.account.firstName;
-        var accountLast     = this.account.lastName;
+        // var billingAddress  = this.newBillingAddress;
+        // var expirationMonth = formdata.month;
+        // var expirationYear  = formdata.year;
+        // var country         = formdata.country;
+        // var state           = formdata.state;
+        // var accountFirst    = this.account.firstName;
+        // var accountLast     = this.account.lastName;
         var data = {};
 
-        data = {
-            'newOrderPayment.billingAddress.streetAddress': billingAddress.streetAddress,
-            'newOrderPayment.billingAddress.street2Address': billingAddress.street2Address,
-            'newOrderPayment.nameOnCreditCard': billingAddress.nameOnCreditCard,
-            'newOrderPayment.expirationMonth': expirationMonth,
-            'newOrderPayment.expirationYear': expirationYear,
-            'newOrderPayment.billingAddress.countrycode': country || billingAddress.countrycode,
-            'newOrderPayment.billingAddress.city': ''+billingAddress.city,
-            'newOrderPayment.billingAddress.statecode': state || billingAddress.statecode,
-            'newOrderPayment.billingAddress.locality': billingAddress.locality || '',
-            'newOrderPayment.billingAddress.postalcode': billingAddress.postalcode,
-            'newOrderPayment.securityCode': billingAddress.cvv,
-            'newOrderPayment.creditCardNumber': billingAddress.cardNumber,
-            'newOrderPayment.saveShippingAsBilling':(this.saveShippingAsBilling == true),
-        };
+        var processObject = this.$hibachi.newOrder_AddOrderPayment();
 
+        processObject.data.newBillingAddress = this.newBillingAddress;
+        processObject.data.newBillingAddress.expirationMonth = formdata.month;
+        processObject.data.newBillingAddress.expirationYear = formdata.year;
+        processObject.data.newBillingAddress.billingAddress.country = formdata.country || processObject.data.newOrderPayment.billingAddress.country;
+        processObject.data.newBillingAddress.billingAddress.statecode = formdata.state || processObject.data.newOrderPayment.billingAddress.statecode;
+        processObject.data.newBillingAddress.saveShippingAsBilling=(this.saveShippingAsBilling == true);
+        // data = {
+        //     'newOrderPayment.billingAddress.streetAddress': billingAddress.streetAddress,
+        //     'newOrderPayment.billingAddress.street2Address': billingAddress.street2Address,
+        //     'newOrderPayment.nameOnCreditCard': billingAddress.nameOnCreditCard,
+        //     'newOrderPayment.expirationMonth': expirationMonth,
+        //     'newOrderPayment.expirationYear': expirationYear,
+        //     'newOrderPayment.billingAddress.countrycode': country || billingAddress.countrycode,
+        //     'newOrderPayment.billingAddress.city': ''+billingAddress.city,
+        //     'newOrderPayment.billingAddress.statecode': state || billingAddress.statecode,
+        //     'newOrderPayment.billingAddress.locality': billingAddress.locality || '',
+        //     'newOrderPayment.billingAddress.postalcode': billingAddress.postalcode,
+        //     'newOrderPayment.securityCode': billingAddress.cvv,
+        //     'newOrderPayment.creditCardNumber': billingAddress.cardNumber,
+        //     'newOrderPayment.saveShippingAsBilling':(this.saveShippingAsBilling == true),
+        // };
+        console.log
         //Make sure we have required fields for a newOrderPayment.
         this.validateNewOrderPayment( data );
         if ( this.cart.orderPayments.hasErrors && Object.keys(this.cart.orderPayments.errors).length ){
@@ -572,37 +577,6 @@ class PublicService {
         }
         return false;
     }
-
-    /** returns true if the loader should be on for that item.
-    */
-    // public isLoading = function isLoading(section){
-    //     if (angular.isUndefined(this.loaders)){
-    //         this.loaders = [];
-    //         this.loaders[section] = false;
-    //     }
-    //     if (this.loaders[section] == true){
-    //         return true;
-    //     }
-    //     return false;
-    // }
-
-    /** adds a loader to the loader list
-    */
-    //public addLoader = function(section){
-
-//        if (angular.isUndefined(this.loaders)){
-//            this.loaders = [];
-//            this.loaders[section] = "";
-//        }
-//        var unloadLoader = this.$scope.$watch('this.loading', function(oldState, newState){
-//            if (newState != undefined && newState == true){
-//                this.loaders[section] = true;
-//            }else{
-//                this.loaders[section] = false;
-//                unloadLoader();
-//            }
-//        });
-    //}
 
     /** Allows an easy way to calling the service addOrderPayment.
     */

@@ -21,6 +21,7 @@ import {LocalStorageService} from "./services/localstorageservice";
 import {HibachiServiceDecorator} from "./services/hibachiservicedecorator";
 import {HibachiScope} from "./services/hibachiscope";
 import {RequestService} from "./services/requestservice";
+import {HibachiValidationService} from "./services/hibachivalidationservice";
 //controllers
 import {GlobalSearchController} from "./controllers/globalsearch";
 
@@ -152,6 +153,7 @@ var coremodule = angular.module('hibachi.core',[
 .service('requestService',RequestService)
 .service('accountService',AccountService)
 .service('cartService',CartService)
+.service('hibachiValidationService',HibachiValidationService)
 //controllers
 .controller('globalSearch',GlobalSearchController)
 //filters

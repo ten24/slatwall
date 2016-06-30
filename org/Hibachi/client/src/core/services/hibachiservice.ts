@@ -26,6 +26,7 @@ class HibachiService{
 		private utilityService,
 		private formService,
         private rbkeyService,
+
         private appConfig,
 		private _config:any,
 		public _jsEntities:any,
@@ -43,6 +44,7 @@ class HibachiService{
         this.utilityService = utilityService;
         this.formService = formService;
         this.rbkeyService = rbkeyService;
+
         this.appConfig = appConfig;
         this._config = _config;
         this._jsEntities = _jsEntities;
@@ -317,6 +319,40 @@ class HibachiService{
 
 		return request.promise;
 	};
+
+	public getPropertyTitle=(propertyName,metaData)=>{
+		var propertyMetaData = metaData[propertyName];
+		if(angular.isDefined(propertyMetaData['hb_rbkey'])){
+			return metaData.$$getRBKey(propertyMetaData['hb_rbkey']);
+		}else if (angular.isUndefined(propertyMetaData['persistent'])){
+			if(angular.isDefined(propertyMetaData['fieldtype'])
+			&& angular.isDefined(propertyMetaData['cfc'])
+			&& ["one-to-many","many-to-many"].indexOf(propertyMetaData.fieldtype) > -1){
+
+				return metaData.$$getRBKey("entity."+metaData.className.toLowerCase()+"."+propertyName+',entity.'+propertyMetaData.cfc+'_plural');
+			}else if(angular.isDefined(propertyMetaData.fieldtype)
+			&& angular.isDefined(propertyMetaData.cfc)
+			&& ["many-to-one"].indexOf(propertyMetaData.fieldtype) > -1){
+				return metaData.$$getRBKey("entity."+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase()+',entity.'+propertyMetaData.cfc);
+			}
+			return metaData.$$getRBKey('entity.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase());
+		}else if(metaData.isProcessObject){
+			if(angular.isDefined(propertyMetaData.fieldtype)
+				&& angular.isDefined(propertyMetaData.cfc)
+				&& ["one-to-many","many-to-many"].indexOf(propertyMetaData.fieldtype) > -1
+			){
+				return metaData.$$getRBKey('processObject.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase()+',entity.'+propertyMetaData.cfc.toLowerCase()+'_plural');
+			}else if(angular.isDefined(propertyMetaData.fieldtype)
+				&& angular.isDefined(propertyMetaData.cfc)
+			){
+				return metaData.$$getRBKey('processObject.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase()+',entity.'+propertyMetaData.cfc.toLowerCase());
+			}
+			return metaData.$$getRBKey('processObject.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase());
+
+		}
+		return metaData.$$getRBKey('object.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase());
+	}
+
 	saveEntity= (entityName,id,params,context) => {
 
 		var urlString = this.getUrlWithActionPrefix()+'api:main.post';
@@ -426,6 +462,7 @@ class $Hibachi implements ng.IServiceProvider{
 			'utilityService',
 			'formService',
             'rbkeyService',
+
             'appConfig'
 		];
 	}
@@ -444,6 +481,7 @@ class $Hibachi implements ng.IServiceProvider{
 		utilityService,
 		formService,
         rbkeyService,
+
         appConfig
 	) {
 		return new HibachiService(
@@ -459,6 +497,7 @@ class $Hibachi implements ng.IServiceProvider{
 			utilityService,
 			formService,
             rbkeyService,
+
             appConfig,
 			this._config,
 			this._jsEntities,

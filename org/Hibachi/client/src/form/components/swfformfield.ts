@@ -59,28 +59,38 @@ class SWFFormFieldController {
    private object;
    private propertyIdentifier;
     public swfPropertyDisplayCtrl;
-   
+
 
 	/**
 		* Handles the logic for the frontend version of the property display.
 		*/
 	public static $inject = ['$scope'];
 	constructor ( public $scope:ng.IScope ) {
-        
+
         if (!this.propertyDisplay){
-            
+            this.object = this.object || this.swfPropertyDisplayCtrl.object;
+
+			if(this.object.metaData){
+				console.log('isObject');
+				this.object = this.object.data;
+			}
              this.propertyDisplay =  {
                  name: this.name,
                  class: this.class,
                  errorClass: this.errorClass,
                  type: this.type,
-                 object: this.object || this.swfPropertyDisplayCtrl.object,
+                 object: this.object,
                  propertyIdentifier: this.propertyIdentifier
              };
-         }
-		
+         }else{
+			if(this.propertyDisplay.object.metaData){
+				console.log('isObject');
+				this.propertyDisplay.object = this.propertyDisplay.object.data;
+			}
+		 }
+
 	}
-} 
+}
 
 /**
 	* This class handles configuring formFields for use in process forms on the front end.
