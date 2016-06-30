@@ -3504,6 +3504,9 @@ tabel .s-table-header {
   color: #aaa;
   pointer-events: none;
 }
+.s-search-wrapper .input-group .s-search.s-add:before {
+  content: "\f067";
+}
 .s-search-wrapper .input-group .s-search input {
   padding-left: 30px !important;
   font-size: 12px !important;
