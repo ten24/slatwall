@@ -101,7 +101,11 @@ component accessors="true" output="false" displayname="FedEx" implements="Slatwa
 	private any function getShippingProcessShipmentResponseBean(string xmlResponse){
 		var responseBean = new Slatwall.model.transient.fulfillment.ShippingProcessShipmentResponseBean();
 		responseBean.setData(arguments.xmlResponse);
-		if(structKeyExists(responseBean.getData(),'Fault')) {
+		if(!structKeyExists(responseBean,'data') || 
+			(
+				structKeyExists(responseBean,'data') && structKeyExists(responseBean.data,'Fault')
+			) 
+		) {
 			responseBean.addMessage(messageName="communicationError", message="An unexpected communication error occured, please notify system administrator.");
 			// If XML fault then log error
 			responseBean.addError("unknown", "An unexpected communication error occured, please notify system administrator.");
