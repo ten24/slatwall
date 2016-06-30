@@ -78,7 +78,8 @@ component output="false" accessors="true" extends="HibachiService"  {
 				*/
 		
 		} else if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#-ExtendedPSID")) {
-			var sessionEntity = this.getSessionByExtendedSessionCookieNPSID( cookie["#getApplicationValue('applicationKey')#-ExtendedPSID"], true);
+			
+			var sessionEntity = this.getSessionBySessionCookieExtendedPSID( cookie["#getApplicationValue('applicationKey')#-ExtendedPSID"], true);
 		
 			if(sessionEntity.getNewFlag()) {
 				getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-ExtendedPSID", value='', expires="now");
@@ -143,28 +144,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		}
 		
 		
-		//If we are not an admin account
 		
-		//And we have a cookie
-		
-		//And we found the extended cookie
-		
-		//And the cookie is not expired
-		
-		//And we have not reached our max for logged in days for the extended session setting.
-		if( getHibachiScope().getSession().getAccount().getAdminAccountFlag() != true 
-			
-			&& foundWithExtendedPSID == true 
-			
-			&& getHibachiScope().setting("globalUseExtendedSession") == true 
-			
-			&& structKeyExists(cookie, "#getApplicationValue('applicationKey')#-ExtendedPSID")
-			
-			&& dateDiff('d', cookie['#getApplicationValue('applicationKey')#-ExtendedPSID'], now()) <= getHibachiScope().setting('globalExtendedSessionAutoLogoutInDays')){
-			
-			//-->handle removing all non-extended information
-			throw("This was hit.");
-		}
 		
 		// If we are using extended session and the extended session has expired, then logout.
 		
@@ -176,7 +156,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 		// If the sessions account is an admin and last request by the session was 15 min or longer ago. 
 		
-		else if(getHibachiScope().getSessionFoundPSIDCookieFlag() && getHibachiScope().getLoggedInFlag()
+		if(getHibachiScope().getSessionFoundExtendedPSIDCookieFlag() && getHibachiScope().getLoggedInFlag()
 		
 			|| (!isNull(getHibachiScope().getSession().getAccountAuthentication()) && getHibachiScope().getSession().getAccountAuthentication().getForceLogoutFlag()) 
 		
@@ -222,9 +202,11 @@ component output="false" accessors="true" extends="HibachiService"  {
 	public string function loginAccount(required any account, required any accountAuthentication) {
 	
 		var currentSession = getHibachiScope().getSession();
+		
 		currentSession.setAccount( arguments.account );
 		currentSession.setAccountAuthentication( arguments.accountAuthentication );
 	    
+	    currentSession.setLoggedInDateTime(now());
 		// Make sure that we persist the session
 		persistSession();
 	
@@ -240,12 +222,6 @@ component output="false" accessors="true" extends="HibachiService"  {
 		getHibachiAuditService().logAccountActivity( "login", auditLogData );
 		getHibachiEventService().announceEvent("onSessionAccountLogin");
 		
-		//Being admin and having extended session are mutually exclusive. 
-		//If the user is an admin and also has a extended cookie (from having been logged in as another user for example), remove it.
-		if (getHibachiScope().getSession().getAccount().getAdminAccountFlag() && structKeyExists(cookie, "#getApplicationValue('applicationKey')#-ExtendedPSID")){
-			structDelete(cookie, "#getApplicationValue('applicationKey')#-ExtendedPSID");
-		}
-		
 	}
 	
 	/** Logs out the user completely. */
@@ -257,9 +233,8 @@ component output="false" accessors="true" extends="HibachiService"  {
 			auditLogData.account = currentSession.getAccount();
 		}
 		
-		//Always remove the account and authentication because thats how a user is logged out.
-		currentSession.removeAccount();
-		currentSession.removeAccountAuthentication();
+		//No need to remove the account or authentication. We just set the state to being logged out.
+		currentSession.setLoggedOutDateTime(now());
 	
 		// Make sure that this logout is persisted
 		getHibachiDAO().flushORMSession();

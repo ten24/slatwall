@@ -52,12 +52,15 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 	property name="sessionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="shippingAddressPostalCode" ormtype="string";
 	property name="lastRequestDateTime" ormtype="timestamp";
+	property name="loggedInDateTime" ormtype="timestamp";
+	property name="loggedOutDateTime" ormtype="timestamp";
 	property name="lastRequestIPAddress" ormtype="string";
 	property name="lastPlacedOrderID" ormtype="string";
 	property name="rbLocale" ormtype="string";
 	property name="sessionCookiePSID" ormtype="string" length="64";//keeps track of cart
 	property name="sessionCookieNPSID" ormtype="string" length="64"; //keeps track of user on session.
 	property name="sessionCookieExtendedPSID" ormtype="string" length="64"; //keeps track of user during extended session period.
+	
 	property name="sessionExpirationDateTime" ormtype="timestamp";
 	property name="deviceID" ormtype="string" default="" ;
 	

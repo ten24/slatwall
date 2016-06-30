@@ -97,10 +97,30 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		setAuditsToCommitStruct({});
 	}
 	
+	/** This bases if the user is logged on on whether or not the lastRequest or has logged out.  
+	 *  This method should return as it always has. 
+	 */
 	public boolean function getLoggedInFlag() {
-		if(!getSession().getAccount().getNewFlag()) {
+		
+		//the user did a hard logout and should not be logged in.
+		if (getSession().getLoggedOutDateTime() > getSession().getLoggedInDateTime()){
+			return false;
+		}
+		
+		// If the user didn't explicitly logout, we can check if the user should be logged out based on 
+		// the difference between the last request time and now, and depending on if the user
+		// is a public or admin user.
+		
+		//handle admin account is logged in.
+		if(getAccount().getAdminAccountFlag() && !isNull( getSession().getLastRequestDateTime() ) && dateDiff("n", getSession().getLastRequestDateTime(), now()) <= getHibachiScope().setting("globalAdminAutoLogoutMinutes")) {
 			return true;
 		}
+		
+		//handle non-admin account is logged in.
+		if(!getAccount().getAdminAccountFlag() && !isNull( getSession().getLastRequestDateTime() ) && dateDiff("n", getSession().getLastRequestDateTime(), now()) <= getHibachiScope().setting("globalPublicAutoLogoutMinutes")) {
+			return true;
+		}
+		
 		return false;
 	}
 	
