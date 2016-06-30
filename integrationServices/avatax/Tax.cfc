@@ -57,10 +57,6 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 		var taxExempt = false;
 		var taxForce = false;
 		var docType = 'SalesOrder';
-<<<<<<< HEAD
-		var commitTransaction = false;
-=======
->>>>>>> branch 'develop-ck-avataxUpdate' of https://github.com/ten24/slatwall.git
 		
 		if(len(setting('taxExemptPropertyIdentifier'))) {
 			var piValue = arguments.requestBean.getOrder().getValueByPropertyIdentifier( setting('taxExemptPropertyIdentifier') );
