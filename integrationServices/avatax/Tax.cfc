@@ -47,8 +47,9 @@ Notes:
 
 */
 component accessors="true" output="false" displayname="Vertex" implements="Slatwall.integrationServices.TaxInterface" extends="Slatwall.integrationServices.BaseTax" {
-
-	public any function getTaxRates(required any requestBean, boolean commitTransaction = false) {
+	variables.commitDocFlag = false;
+	
+	public any function getTaxRates(required any requestBean) {
 
 		// Create new TaxRatesResponseBean to be populated with XML Data retrieved from Quotation Request
 		var responseBean = new Slatwall.model.transient.tax.TaxRatesResponseBean();
@@ -77,8 +78,7 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 		}
 		
 		//Only commit if both integration setting and request bean are set to true
-		if(arguments.commitTransaction) {
-			commitTransaction = true;
+		if(variables.commitDocFlag) {
 			docType = 'SalesInvoice';
 		}
 		
@@ -103,7 +103,7 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 				Lines = []
 			};
 			
-			if (commitTransaction){
+			if (variables.commitDocFlag){
 				StructInsert(requestDataStruct, 'commit', true);
 			}
 			
@@ -214,6 +214,13 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 			}
 		}
 		return responseBean;
+	}
+	
+	public void function commitTaxDocument(required any requestBean){
+		variables.commitDocFlag = true;
+		
+		getTaxRate(requestBean);
+		
 	}
 
 }
