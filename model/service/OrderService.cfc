@@ -1378,6 +1378,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 							// Update the orderPlaced
 							order.confirmOrderNumberOpenDateCloseDatePaymentAmount();
+							
+							// Commit the Tax Transaction if set
+							getTaxService().commitTaxTransaction( arguments.order );
 
 							// Save the order to the database
 							getHibachiDAO().save( arguments.order );
