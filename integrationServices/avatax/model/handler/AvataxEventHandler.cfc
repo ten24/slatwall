@@ -1,4 +1,4 @@
-component extends="Slatwall.model.handler.HibachiEventHandler" output="false"{
+component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 	
 	public void function afterOrderProcess_placeOrderSuccess(required any slatwallScope, required any order){
 		

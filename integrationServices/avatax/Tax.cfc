@@ -219,7 +219,7 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 	public void function commitTaxDocument(required any requestBean){
 		variables.commitDocFlag = true;
 		
-		getTaxRate(requestBean);
+		getTaxRates(requestBean);
 		
 	}
 

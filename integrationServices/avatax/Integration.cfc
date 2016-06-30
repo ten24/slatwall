@@ -79,4 +79,8 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 		return settings;
 	}
 	
+	public array function getEventHandlers() {
+		return ["Slatwall.integrationServices.Avatax.model.handler.AvataxEventHandler"];
+	}
+	
 }
