@@ -161,13 +161,15 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 			
 			if (IsJSON(responseData.FileContent)){
 			
-				if (responseData.resultCode == 'Error'){
-					responseBean.setData(responseData.messages);
+				var fileContent = DeserializeJSON(responseData.FileContent);
+				
+				if (fileContent.resultCode == 'Error'){
+					responseBean.setData(fileContent.messages);
 				}
 				
-				if (structKeyExists(responseData, 'TaxLines')){
+				if (structKeyExists(fileContent, 'TaxLines')){
 					// Loop over all orderItems in response
-					for(var taxLine in responseData.TaxLines) {
+					for(var taxLine in fileContent.TaxLines) {
 						
 						// Make sure that there is a taxAmount for this orderItem
 						if(taxLine.Tax > 0) {
