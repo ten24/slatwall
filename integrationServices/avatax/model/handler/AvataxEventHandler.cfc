@@ -5,7 +5,7 @@ component extends="Slatwall.model.handler.HibachiEventHandler" output="false"{
 		//First get integration and make sure the commit tax document flag is set
 		var integration = arguments.slatwallScope.getService('IntegrationService').getIntegrationByIntegrationPackage('avatax');
 				
-		if (integration.setting(commitTaxTransaction)){
+		if (integration.setting('commitTaxDocumentFlag')){
 			//Create the request scope for the account
 			var taxRatesRequestBean = arguments.slatwallScope.getService('TaxService').generateTaxRatesRequestBeanForIntegration(arguments.order, integration);
 			var integrationTaxAPI = integration.getIntegrationCFC("tax");
