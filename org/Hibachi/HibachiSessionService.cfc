@@ -101,7 +101,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 			}
 		
-		}  else if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#-PSID")) {
+		} else if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#-PSID")) {
 		
 			var sessionEntity = this.getSessionBySessionCookiePSID( cookie["#getApplicationValue('applicationKey')#-PSID"], true);
 		
@@ -163,7 +163,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 			&& dateDiff('d', cookie['#getApplicationValue('applicationKey')#-ExtendedPSID'], now()) <= getHibachiScope().setting('globalExtendedSessionAutoLogoutInDays')){
 			
 			//-->handle removing all non-extended information
-			
+			throw("This was hit.");
 		}
 		
 		// If we are using extended session and the extended session has expired, then logout.
