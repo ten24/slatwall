@@ -322,6 +322,7 @@
                                     <div class="panel-heading">
                                         <h4 class="panel-title">
                                             <span>Products</span> 
+                                            <span class="badge">3</span>
                                             <i class="fa fa-caret-left s-accordion-toggle-icon"></i>
                                         </h4>
                                     </div>
@@ -344,7 +345,7 @@
                                                     <div class="row s-table-inner-nav ">
                                                         
                                                         <div class="row">
-                                                            <div class="col-md-10">
+                                                            <div class="col-md-9">
                                                                 <div class="s-search-wrapper">
                                                                     <div class="input-group">
                                                                         <div class="input-group-btn search-panel">
@@ -364,14 +365,14 @@
                                                                             <input type="text" class="form-control input-sm" name="" placeholder="Add product..." style="padding-left: 30px;">
                                                                             <div class="dropdown s-search-results-wrapper s-selectable" style="display: none;">
                                     									        <ul class="dropdown-menu">
-                                                                                    <li><a href="##">Casio Business Casual Watch <span>Accessories</span></a></li>
+                                                                                    <li class="s-selected"><a href="##">Casio Business Casual Watch <span>Accessories</span></a></li>
                                     									            <li><a href="##">Casio Classic Black Watch <span>Accessories</span></a></li>
-                                    									            <li><a href="##">Casio Calculator Watch <span>Accessories</span></a></li>
+                                    									            <li class="s-selected"><a href="##">Casio Calculator Watch <span>Accessories</span></a></li>
                                                                                     <li class="s-selected"><a href="##">Casio Gold Player Special Watch <span>Accessories</span></a></li>
                                                                                     <li><a href="##">Casio Kids Watch <span>Accessories</span></a></li>
                                     									            <li><a href="##">Casio Training Day Watch <span>Accessories</span></a></li>
                                                                                     <li><a href="##">Casio Silver Dress Watch <span>Accessories</span></a></li>
-                                                                                    <li><a href="##">Casio Silver Player Special Watch <span>Accessories</span></a></li>
+                                                                                    <li class="s-loading"><a href="##">Casio Silver Player Special Watch <span>Accessories</span></a></li>
                                     									            <li><a href="##">Casio Surf Tide Watch <span>Accessories</span></a></li>
                                                                                     <li><a href="##">Casio Underwater Watch <span>Accessories</span></a></li>
                                     									        </ul>
@@ -381,8 +382,67 @@
                                                                 </div>
                                                                 
                                                             </div>
-                                                            <div class="col-md-2">
-                                                                <div class="s-table-setting">
+                                                            <div class="col-md-3 s-action-right">
+                                                        
+                                                            
+                                                            <style>
+                                                                .s-titled-select-wrapper.s-sort-by {
+                                                                    display: inline-block;
+                                                                    margin-right: 5px;
+                                                                }
+                                                                .s-titled-select-wrapper.s-sort-by select {
+                                                                    padding: 3px 18px 0px 58px !important;
+                                                                }
+                                                                .s-titled-select-wrapper.s-site select {
+                                                                    padding: 3px 18px 0px 44px !important;
+                                                                }
+                                                                .s-titled-select-wrapper select {
+                                                                    -webkit-appearance: none;
+                                                                    -moz-appearance: none;
+                                                                    appearance: none;
+                                                                    border-radius: 2px !important;
+                                                                    font-size: 12px !important;
+                                                                }
+                                                                .s-titled-select-wrapper span {
+                                                                    position: absolute;
+                                                                    left: 12px;
+                                                                    font-size: 12px;
+                                                                    top: 8px;
+                                                                    color: #aaa;    
+                                                                }
+                                                                .s-titled-select-wrapper.s-disabled {
+                                                                    opacity: .5;
+                                                                    pointer-events: none;
+                                                                }
+                                                                .btn-group.s-option-toggles .btn.s-selected {
+                                                                    background-color: #e6e6e6;
+                                                                    border-color: #d1d1d1;
+                                                                    color: #5E5E5E;
+                                                                    -webkit-box-shadow: inset 0 3px 5px rgba(0,0,0,.125);
+                                                                    box-shadow: inset 0 3px 5px rgba(0,0,0,.125);
+                                                                }
+                                                            </style>
+                                                                
+                                                                <div class="s-select-wrapper s-titled-select-wrapper s-sort-by">
+                                                                    <span>Sort By:</span>
+                                                                    <select class="form-control input-sm">
+                                                                        <option value="">All</option>
+                                                                        <option value="">Name</option>
+                                                                        <option value="">Code</option>
+                                                                        <option value="">Active</option>
+                                                                        <option value="">Published</option>
+                                                                        <option value="">Type</option>
+                                                                        <option value="">Price</option>
+                                                                    </select>
+                                                                </div>
+                                                                
+                                                                <div class="btn-group s-option-toggles" role="group" aria-label="...">
+                                                                    <button type="button" class="btn btn-default s-selected"><i class="fa fa-sort-alpha-asc" aria-hidden="true"></i></button>
+                                                                    <button type="button" class="btn btn-default"><i class="fa fa-sort-alpha-desc" aria-hidden="true"></i></button>
+                                                                    <button type="button" class="btn btn-default"><i class="fa fa-bars" aria-hidden="true"></i></button>
+                                                                </div>
+                                                                
+                                                                <!-- <div class="s-table-setting">
                                                                     <span class="s-title">Manual Sort</span>
                                                                     <div class="s-toggle-switch">
                                                                         <input id="sampleCheckboxToggle" name="sampleCheckboxToggle" type="checkbox" value="1" />
@@ -398,7 +458,7 @@
                                                                             </label>
                                                                         </div>
                                                                     </div>
-                                                                </div>
+                                                                </div> -->
                                                             </div>
                                                         </div>
 
@@ -413,69 +473,69 @@
                                                                     </th>
                                                                     <th>
                                                                         <span>Name</span>
-                                                                        <a href="#" class="s-sort-arrows">
+                                                                        <!-- <a href="#" class="s-sort-arrows">
                             												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
                             													<g transform="translate(0.5, 0.5)"> 
                             														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
                             														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
                             													</g>
                             												</svg>
-                            											</a>
+                            											</a> -->
                                                                     </th>
                                                                     <th>
                                                                         <span>Code</span>
-                                                                        <a href="#" class="s-sort-arrows">
+                                                                        <!-- <a href="#" class="s-sort-arrows">
                             												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
                             													<g transform="translate(0.5, 0.5)"> 
                             														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
                             														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
                             													</g>
                             												</svg>
-                            											</a>
+                            											</a> -->
                                                                     </th>
                                                                     <th>
                                                                         <span>Type</span>
-                                                                        <a href="#" class="s-sort-arrows">
+                                                                        <!-- <a href="#" class="s-sort-arrows">
                             												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
                             													<g transform="translate(0.5, 0.5)"> 
                             														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
                             														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
                             													</g>
                             												</svg>
-                            											</a>
+                            											</a> -->
                                                                     </th>
                                                                     <th>
                                                                         <span>Active</span>
-                                                                        <a href="#" class="s-sort-arrows">
+                                                                        <!-- <a href="#" class="s-sort-arrows">
                             												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
                             													<g transform="translate(0.5, 0.5)"> 
                             														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
                             														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
                             													</g>
                             												</svg>
-                            											</a>
+                            											</a> -->
                                                                     </th>
                                                                     <th>
                                                                         <span>Published</span>
-                                                                        <a href="#" class="s-sort-arrows">
+                                                                        <!-- <a href="#" class="s-sort-arrows">
                             												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
                             													<g transform="translate(0.5, 0.5)"> 
                             														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
                             														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
                             													</g>
                             												</svg>
-                            											</a>
+                            											</a> -->
                                                                     </th>
                                                                     <th>
                                                                         <span>Price</span>
-                                                                        <a href="#" class="s-sort-arrows">
+                                                                        <!-- <a href="#" class="s-sort-arrows">
                             												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
                             													<g transform="translate(0.5, 0.5)"> 
                             														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
                             														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
                             													</g>
                             												</svg>
-                            											</a>
+                            											</a> -->
                                                                     </th>
                                                                     <th class="s-actions">
                                                                         
@@ -483,6 +543,27 @@
                                                                 </tr>
                                                             </thead>
                                                             <tbody>    
+                                                                <tr>
+                                                                    <td class="s-order-table">
+                                                                        <a href="##" title="Move Order" target="_self">
+                                                                            <i class="fa fa-bars" aria-hidden="true"></i>
+                                                                        </a>
+                                                                    </td>
+                                                                    <td>Casio Business Casual Watch </td>
+                                                                    <td>6TY86TYU</td>
+                                                                    <td>Accessories</td>
+                                                                    <td>True</td>
+                                                                    <td>True</td>
+                                                                    <td>$136.99</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-remove"></i>
+                                                                        </a> 
+                                                                    </td>
+                                                                </tr>
                                                                 <tr>
                                                                     <td class="s-order-table">
                                                                         <a href="##" title="Move Order" target="_self">
@@ -497,11 +578,34 @@
                                                                     <td>$149.99</td>
                                                                     <td class="s-actions">
                                                                         <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
                                                                             <i class="fa fa-remove"></i>
                                                                         </a> 
                                                                     </td>
                                                                 </tr>
-                                                                
+                                                                 <tr>
+                                                                    <td class="s-order-table">
+                                                                        <a href="##" title="Move Order" target="_self">
+                                                                            <i class="fa fa-bars" aria-hidden="true"></i>
+                                                                        </a>
+                                                                    </td>
+                                                                    <td>Casio Calculator Watch </td>
+                                                                    <td>9YTUR876TYU</td>
+                                                                    <td>Accessories</td>
+                                                                    <td>True</td>
+                                                                    <td>True</td>
+                                                                    <td>$149.99</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-remove"></i>
+                                                                        </a> 
+                                                                    </td>
+                                                                </tr>
                                                             </tbody>
                                                         </table>
                                                     </div>
@@ -535,7 +639,8 @@
                                 <a data-toggle="collapse" href="#collapse2">
                                     <div class="panel-heading">
                                         <h4 class="panel-title">
-                                            <span>Listing Pages</span> 
+                                            <span>Listing Pages</span>
+                                            <span class="badge">3</span> 
                                             <i class="fa fa-caret-left s-accordion-toggle-icon"></i>
                                         </h4>
                                     </div>
@@ -550,7 +655,10 @@
                                                         <a href="#j-pages-basic" role="tab" data-toggle="tab" aria-controls="basic" aria-expanded="true">Assigned Pages</a>
                                                     </li> 
                                                     <li role="presentation">
-                                                        <a href="#j-page-tree-view" role="tab" data-toggle="tab" aria-controls="pricing">Page Tree</a>
+                                                        <a href="#j-page-tree-view" role="tab" data-toggle="tab" aria-controls="pricing">Site View</a>
+                                                    </li>
+                                                    <li role="presentation">
+                                                        <a href="#j-page-tree-view-search-view" role="tab" data-toggle="tab" aria-controls="pricing">Site View (search view: demo only)</a>
                                                     </li>
                                                 </ul> 
                                             </div>
@@ -559,36 +667,55 @@
                                                 <!-- First Tab -->
                                                 <div role="tabpanel" class="tab-pane active" id="j-pages-basic">
                                                     <div class="row s-table-inner-nav ">
-                                                    
-                                                        <div class="s-search-wrapper">
-                                                            <div class="input-group">
-                                                                <div class="input-group-btn search-panel">
-                                                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                                                    <span>All</span> <span class="caret"></span>
-                                                                    </button>
-                                                                    <ul class="dropdown-menu" role="menu">
-                                                                        <li><a href="#">All</a></li>
-                                                                        <li><a href="#">Page</a></li>
-                                                                        <li><a href="#">Site</a></li>
-                                                                        <li><a href="#">Position</a></li>
-                                                                    </ul>
+                                                        
+                                                        <div class="row">
+                                                            <div class="col-sm-10">
+                                                                <div class="s-search-wrapper">
+                                                                    <div class="input-group">
+                                                                        <div class="input-group-btn search-panel">
+                                                                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                                                            <span>All</span> <span class="caret"></span>
+                                                                            </button>
+                                                                            <ul class="dropdown-menu" role="menu">
+                                                                                <li><a href="#">All</a></li>
+                                                                                <li><a href="#">Page</a></li>
+                                                                                <li><a href="#">Site</a></li>
+                                                                                <li><a href="#">Position</a></li>
+                                                                            </ul>
+                                                                        </div>
+                                                                        <span class="s-search">
+                                                                            <input type="text" class="form-control input-sm" name="" placeholder="Add page..." style="padding-left: 30px;">
+                                                                            <div class="dropdown s-search-results-wrapper s-selectable" style="display: none;">
+                                                                                <ul class="dropdown-menu">
+                                                                                    <li><a href="##">Classic Watches <span>Default</span></a></li>
+                                                                                    <li><a href="##">Black Wathces <span>Default</span></a></li>
+                                                                                    <li class="s-loading"><a href="##">Silver Wathces <span>Popup Store</span></a></li>
+                                                                                    <li class="s-selected"><a href="##">Water Proof Watches <span>Popup Store</span></a></li>
+                                                                                    <li class="s-selected"><a href="##">Army Watches <span>Popup Store</span></a></li>
+                                                                                    <li><a href="##">Invisable Watches <span>Popup Store</span></a></li>
+                                                                                    <li><a href="##">007 Watches  <span>Default</span></a></li>
+                                                                                    <li class="s-selected"><a href="##">Special Edition Watches<span>Default</span></a></li>
+                                                                                </ul>
+                                                                            </div>
+                                                                        </span>
+                                                                    </div>
                                                                 </div>
-                                                                <span class="s-search">
-                                                                    <input type="text" class="form-control input-sm" name="" placeholder="Add page..." style="padding-left: 30px;">
-                                                                    <div class="dropdown s-search-results-wrapper s-selectable" style="display: none;">
-                            									        <ul class="dropdown-menu">
-                                                                            <li><a href="##">Classic Watches <span>Default</span></a></li>
-                            									            <li><a href="##">Black Wathces <span>Default</span></a></li>
-                            									            <li class="s-loading"><a href="##">Silver Wathces <span>Popup Store</span></a></li>
-                                                                            <li class="s-selected"><a href="##">Water Proof Watches <span>Popup Store</span></a></li>
-                                                                            <li><a href="##">Army Watches <span>Popup Store</span></a></li>
-                            									            <li><a href="##">Invisable Watches <span>Popup Store</span></a></li>
-                                                                            <li><a href="##">007 Watches  <span>Default</span></a></li>
-                                                                            <li><a href="##">Special Edition Watches<span>Default</span></a></li>
-                            									        </ul>
-                            									    </div>
-                                                                </span>
                                                             </div>
+                                                            
+                                                            <div class="col-sm-2">
+                                                                
+                                                                <div class="s-select-wrapper s-titled-select-wrapper s-site">
+                                                                    <span>Sites:</span>
+                                                                    <select class="form-control input-sm">
+                                                                        <option value="">All</option>
+                                                                        <option value="">Default</option>
+                                                                        <option value="">Pop Up Shop</option>
+                                                                    </select>
+                                                                </div>
+                                                                
+                                                                    
+                                                            </div>
+                                                            
                                                         </div>
                                                         
                                                     </div>
@@ -597,41 +724,60 @@
                                                         <table class="table table-bordered s-detail-content-table">
                                                             <thead>
                                                                 <tr>
-                                                                    <th class="s-order-table">
-                                                                        
-                                                                    </th>
                                                                     <th>
-                                                                        <span>Page</span>
-                                                                        <a href="#" class="s-sort-arrows">
+                                                                        <span>Content Title</span>
+                                                                        <!-- <a href="#" class="s-sort-arrows">
                             												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
                             													<g transform="translate(0.5, 0.5)"> 
                             														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
                             														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
                             													</g>
                             												</svg>
-                            											</a>
+                            											</a> -->
                                                                     </th>
                                                                     <th>
                                                                         <span>Site</span>
-                                                                        <a href="#" class="s-sort-arrows">
+                                                                        <!-- <a href="#" class="s-sort-arrows">
                             												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
                             													<g transform="translate(0.5, 0.5)"> 
                             														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
                             														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
                             													</g>
                             												</svg>
-                            											</a>
+                            											</a> -->
+                                                                    </th>
+                                                                    <th>
+                                                                        <span>Product Listing Page</span>
+                                                                        <!-- <a href="#" class="s-sort-arrows">
+                            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                            													<g transform="translate(0.5, 0.5)"> 
+                            														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                            														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                            													</g>
+                            												</svg>
+                            											</a> -->
+                                                                    </th>
+                                                                    <th>
+                                                                        <span>Active</span>
+                                                                        <!-- <a href="#" class="s-sort-arrows">
+                            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                            													<g transform="translate(0.5, 0.5)"> 
+                            														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                            														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                            													</g>
+                            												</svg>
+                            											</a> -->
                                                                     </th>
                                                                     <th>
                                                                         <span>Position</span>
-                                                                        <a href="#" class="s-sort-arrows">
+                                                                        <!-- <a href="#" class="s-sort-arrows">
                             												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
                             													<g transform="translate(0.5, 0.5)"> 
                             														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
                             														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
                             													</g>
                             												</svg>
-                            											</a>
+                            											</a> -->
                                                                     </th>
                                                                     <th class="s-actions">
                                                                         
@@ -640,15 +786,45 @@
                                                             </thead>
                                                             <tbody>    
                                                                 <tr>
-                                                                    <td class="s-order-table">
-                                                                        <a href="##" title="Move Order" target="_self">
-                                                                            <i class="fa fa-bars" aria-hidden="true"></i>
-                                                                        </a>
-                                                                    </td>
                                                                     <td>Water Proof Watches </td>
-                                                                    <td>Popup Store</td>
+                                                                    <td>Default</td>
+                                                                    <td>True </td>
+                                                                    <td>False </td>
+                                                                    <td>21/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-remove"></i>
+                                                                        </a> 
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Army Watches </td>
+                                                                    <td>Default</td>
+                                                                    <td>True </td>
+                                                                    <td>False </td>
+                                                                    <td>Auto Sort</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-remove"></i>
+                                                                        </a> 
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Special Edition Watches </td>
+                                                                    <td>Default</td>
+                                                                    <td>True </td>
+                                                                    <td>True </td>
                                                                     <td>24/50</td>
                                                                     <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
                                                                         <a href="##" title="" class="btn btn-default btn-xs" target="_self">
                                                                             <i class="fa fa-remove"></i>
                                                                         </a> 
@@ -679,27 +855,38 @@
                                                 <!-- Second Tab -->
                                                 <div role="tabpanel" class="tab-pane" id="j-page-tree-view">
                                                     <div class="row s-table-inner-nav ">
-                                                        
-                                                        <div class="s-search-wrapper">
-                                                            <div class="input-group">
-                                                                <div class="input-group-btn search-panel">
-                                                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                                                    <span>All</span> <span class="caret"></span>
-                                                                    </button>
-                                                                    <ul class="dropdown-menu" role="menu">
-                                                                        <li><a href="#">All</a></li>
-                                                                        <li><a href="#">Page</a></li>
-                                                                        <li><a href="#">Site</a></li>
-                                                                        <li><a href="#">Position</a></li>
-                                                                    </ul>
+                                                          <div class="row">
+                                                            <div class="col-sm-10">
+                                                                <div class="s-search-wrapper">
+                                                                    <div class="input-group">
+                                                                        <div class="input-group-btn search-panel">
+                                                                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                                                            <span>All</span> <span class="caret"></span>
+                                                                            </button>
+                                                                            <ul class="dropdown-menu" role="menu">
+                                                                                <li><a href="#">All</a></li>
+                                                                                <li><a href="#">Page</a></li>
+                                                                                <li><a href="#">Site</a></li>
+                                                                                <li><a href="#">Position</a></li>
+                                                                            </ul>
+                                                                        </div>
+                                                                        <span class="s-search">
+                                                                            <input type="text" class="form-control s-search input-sm" name="" placeholder="Search page...">
+                                                                            <!-- <buttom class="btn btn-xs btn-default s-add-search-param">Add this filter</buttom> -->
+                                                                        </span>
+                                                                    </div>
                                                                 </div>
-                                                                <span class="s-search">
-                                                                    <input type="text" class="form-control s-search input-sm" name="" placeholder="Search page...">
-                                                                    <!-- <buttom class="btn btn-xs btn-default s-add-search-param">Add this filter</buttom> -->
-                                                                </span>
                                                             </div>
-                                                        </div>
-                                                        
+                                                             <div class="col-sm-2">
+                                                                
+                                                                <select name="" class="form-control input-sm">
+                                                                    <option value="">-Select Site-</option>
+                                                                    <option value="" selected>Buddies Pro Shop</option>
+                                                                    <option value="">Pop Up Shop</option>
+                                                                </select>
+                                                                    
+                                                            </div>
+                                                        </div>     
                                                     </div>
                                                     <div class="s-detail-notifications">
                     									<div class="row">
@@ -719,26 +906,284 @@
                                                                             <label for="exampleID"></label>
                                                                         </div>
                                                                     </th>
-                                                                    <th>Page</th>
-                                                                    <th>Site</th>
-                                                                    <th>Position</th>
-                                                                    <th class="s-actions"></th>
+                                                                    <th>
+                                                                        <span>Content Title</span>
+                                                                        <a href="#" class="s-sort-arrows">
+                            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                            													<g transform="translate(0.5, 0.5)"> 
+                            														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                            														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                            													</g>
+                            												</svg>
+                            											</a>
+                                                                    </th>
+                                                                    <th>
+                                                                        <span>Product Listing Page</span>
+                                                                        <a href="#" class="s-sort-arrows">
+                            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                            													<g transform="translate(0.5, 0.5)"> 
+                            														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                            														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                            													</g>
+                            												</svg>
+                            											</a>
+                                                                    </th>
+                                                                    <th>
+                                                                        <span>Active</span>
+                                                                        <a href="#" class="s-sort-arrows">
+                            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                            													<g transform="translate(0.5, 0.5)"> 
+                            														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                            														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                            													</g>
+                            												</svg>
+                            											</a>
+                                                                    </th>
+                                                                    <th>
+                                                                        <span>Position</span>
+                                                                        <a href="#" class="s-sort-arrows">
+                            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                            													<g transform="translate(0.5, 0.5)"> 
+                            														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                            														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                            													</g>
+                            												</svg>
+                            											</a>
+                                                                    </th>
+                                                                    <th>
+                                                                        
+                                                                    </th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>    
                                                                 <tr>
                                                                     <td class="s-table-checkbox">
                                                                         <div class="s-checkbox">
-                                                                            <input type="checkbox" id="exampleID2" checked>
-                                                                            <label for="exampleID2"></label>
+                                                                            <input type="checkbox" id="exampleID">
+                                                                            <label for="exampleID"></label>
                                                                         </div>
                                                                     </td>
-                                                                    <td>Water Proof Watches </td>
-                                                                    <td>Popup Store</td>
+                                                                    <td>Classic Watches </td>
+                                                                    <td>True </td>
+                                                                    <td>False </td>
                                                                     <td>24/50</td>
                                                                     <td class="s-actions">
                                                                         <a href="##" title="" class="btn btn-default btn-xs" target="_self">
-                                                                            <i class="fa fa-eye"></i> 
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                        
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox">
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td class="s-levels">
+                                                                        <div class="s-levels-wrapper">
+                                                                            <i class="fa s-listing-arrow fa-caret-down"></i> 
+                                                                            <span>Classic Watches</span>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>True </td>
+                                                                    <td>False </td>
+                                                                    <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                        
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox">
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td class="s-levels" style="padding-left: 50px;">
+                                                                        <div> 
+                                                                            <span>Red Classic Watches</span>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>True </td>
+                                                                    <td>False </td>
+                                                                    <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                        
+                                                                    </td>
+                                                                </tr>
+                                                                 <tr>
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox">
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td class="s-levels" style="padding-left: 50px;">
+                                                                        <div> 
+                                                                            <span>Green Classic Watches</span>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>True </td>
+                                                                    <td>False </td>
+                                                                    <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                        
+                                                                    </td>
+                                                                </tr>
+                                                                 <tr>
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox">
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td class="s-levels" style="padding-left: 50px;">
+                                                                        <div> 
+                                                                            <span>Yellow Classic Watches</span>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>True </td>
+                                                                    <td>False </td>
+                                                                    <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                        
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox" id="exampleID">
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>Black Watches </td>
+                                                                    <td>True </td>
+                                                                    <td>False </td>
+                                                                    <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                        
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox" id="exampleID">
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>Silver Watches </td>
+                                                                    <td>True </td>
+                                                                    <td>False </td>
+                                                                    <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                    
+                                                                    </td>
+                                                                </tr>
+                                                                <tr class="s-selected-row">
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox" id="exampleID" checked>
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>Water Proof Watches </td>
+                                                                    <td>True </td>
+                                                                    <td>False </td>
+                                                                    <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                        
+                                                                    </td>
+                                                                </tr>
+                                                                <tr class="s-selected-row">
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox" id="exampleID" checked>
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>Army Watches </td>
+                                                                    <td>True </td>
+                                                                    <td>False </td>
+                                                                    <td>Auto Sort</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox" id="exampleID">
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>Invisable Watches </td>
+                                                                    <td>True </td>
+                                                                    <td>False </td>
+                                                                    <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                        
+                                                                    </td>
+                                                                </tr>
+                                                                <tr class="s-selected-row">
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox" id="exampleID" checked>
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>Special Edition Watches </td>
+                                                                    <td>True </td>
+                                                                    <td>True </td>
+                                                                    <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                        
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox" id="exampleID">
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>007 Watches </td>
+                                                                    <td>True </td>
+                                                                    <td>False </td>
+                                                                    <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
                                                                         </a> 
                                                                     </td>
                                                                 </tr>
@@ -763,6 +1208,250 @@
                                                     </div>
                                                 </div>
                                                 <!-- ///Second Tab -->
+                                                
+                                                <!-- Third Tab -->
+                                                <div role="tabpanel" class="tab-pane" id="j-page-tree-view-search-view">
+                                                    <div class="row s-table-inner-nav ">
+                                                          <div class="row">
+                                                            <div class="col-sm-10">
+                                                                <div class="s-search-wrapper">
+                                                                    <div class="input-group">
+                                                                        <div class="input-group-btn search-panel">
+                                                                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                                                            <span>All</span> <span class="caret"></span>
+                                                                            </button>
+                                                                            <ul class="dropdown-menu" role="menu">
+                                                                                <li><a href="#">All</a></li>
+                                                                                <li><a href="#">Page</a></li>
+                                                                                <li><a href="#">Site</a></li>
+                                                                                <li><a href="#">Position</a></li>
+                                                                            </ul>
+                                                                        </div>
+                                                                        <span class="s-search">
+                                                                            <input type="text" class="form-control s-search input-sm" name="" value="watches" placeholder="Search page...">
+                                                                            <!-- <buttom class="btn btn-xs btn-default s-add-search-param">Add this filter</buttom> -->
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                             <div class="col-sm-2">
+                                                                
+                                                                <select name="" class="form-control input-sm">
+                                                                    <option value="">-Select Site-</option>
+                                                                    <option value="" selected>Buddies Pro Shop</option>
+                                                                    <option value="">Pop Up Shop</option>
+                                                                </select>
+                                                                    
+                                                            </div>
+                                                        </div>     
+                                                    </div>
+                                                    <div class="s-detail-notifications">
+                    									<div class="row">
+                    										<div class="col-sm-12 s-message" style="margin-top: 6px;">
+                    											<span><b>6</b> items are selected.</span> 
+                    		                                    <a href="##">Select all <b>8</b> items</a>
+                    										</div>
+                    									</div>
+                                                    </div>
+                                                    <div class="table-responsive">
+                                                        <table class="table table-bordered s-detail-content-table">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox" id="exampleID">
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </th>
+                                                                    <th>
+                                                                        <span>Content Title Path</span>
+                                                                        <a href="#" class="s-sort-arrows">
+                            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                            													<g transform="translate(0.5, 0.5)"> 
+                            														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                            														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                            													</g>
+                            												</svg>
+                            											</a>
+                                                                    </th>
+                                                                    <th>
+                                                                        <span>Active</span>
+                                                                        <a href="#" class="s-sort-arrows">
+                            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                            													<g transform="translate(0.5, 0.5)"> 
+                            														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                            														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                            													</g>
+                            												</svg>
+                            											</a>
+                                                                    </th>
+                                                                    <th>
+                                                                        <span>Position</span>
+                                                                        <a href="#" class="s-sort-arrows">
+                            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                            													<g transform="translate(0.5, 0.5)"> 
+                            														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                            														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                            													</g>
+                            												</svg>
+                            											</a>
+                                                                    </th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>    
+                                                                <tr>
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox" id="exampleID">
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>Home > <strong>Classic Watches</strong> </td>
+                                                                    
+                                                                    <td>False </td>
+                                                                    <td>24/50</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox">
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>Home > Classic Watches > <strong>Red Classic Watches</strong></td>
+                                                                    
+                                                                    <td>False </td>
+                                                                    <td>24/50</td>
+                                                                </tr>
+                                                                 <tr>
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox">
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>Home > Classic Watches > <strong>Green Classic Watches</strong></td>
+                                                                    
+                                                                    <td>False </td>
+                                                                    <td>24/50</td>
+                                                                </tr>
+                                                                 <tr>
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox">
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>Home > Classic Watches > <strong>Yellow Classic Watches</strong></td>
+                                                                    
+                                                                    <td>False </td>
+                                                                    <td>24/50</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox" id="exampleID">
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>Home > <strong>Black Watches</strong> </td>
+                                                                    
+                                                                    <td>False </td>
+                                                                    <td>24/50</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox" id="exampleID">
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>Home > <strong>Silver Watches</strong> </td>
+                                                                    
+                                                                    <td>False </td>
+                                                                    <td>24/50</td>
+                                                                </tr>
+                                                                <tr class="s-selected-row">
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox" id="exampleID" checked>
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>Home > <strong>Water Proof Watches</strong> </td>
+                                                                    
+                                                                    <td>False </td>
+                                                                    <td>24/50</td>
+                                                                </tr>
+                                                                <tr class="s-selected-row">
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox" id="exampleID" checked>
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>Home > <strong>Army Watches</strong> </td>
+                                                                    
+                                                                    <td>False </td>
+                                                                    <td>Auto Sort</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox" id="exampleID">
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>Home > <strong>Invisable Watches</strong> </td>
+                                                                    
+                                                                    <td>False </td>
+                                                                    <td>24/50</td>
+                                                                </tr>
+                                                                <tr class="s-selected-row">
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox" id="exampleID" checked>
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>Home > <strong>Special Edition Watches</strong> </td>
+                                                                    
+                                                                    <td>True </td>
+                                                                    <td>24/50</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox" id="exampleID">
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>Home > <strong>007 Watches</strong> </td>
+                                                                    
+                                                                    <td>False </td>
+                                                                    <td>24/50</td>
+                                                                </tr>
+                                                                
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div class="j-pagination-remove-this" data-tableid="LD9D579B9FCC280BDD7D9FBA9C0B5186CF">
+                                                        <ul class="pagination paginationpages12">
+                                                            <li><a href="#" class="paging-show-toggle">Show <span class="details">(1 - 10 of 113)</span></a></li>
+                                                            <li><a href="#" class="show-option" data-show="10" style="display: none;">10</a></li>
+                                                            <li><a href="#" class="show-option" data-show="25" style="display: none;">25</a></li>
+                                                            <li><a href="#" class="show-option" data-show="50" style="display: none;">50</a></li>
+                                                            <li><a href="#" class="show-option" data-show="100" style="display: none;">100</a></li>
+                                                            <li><a href="#" class="show-option" data-show="500" style="display: none;">500</a></li>
+                                                            <li><a href="#" class="show-option" data-show="ALL" style="display: none;">ALL</a></li>
+                                                            <li class="disabled"><a href="#" class="page-option prev">«</a></li>
+                                                            <li class="active"><a href="#" class="listing-pager page-option" data-page="1">1</a></li>
+                                                            <li><a href="#" class="listing-pager page-option" data-page="2">2</a></li>
+                                                            <li><a href="#" class="listing-pager page-option" data-page="3">3</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <!-- ///Third Tab -->
                                             
                                                 
                                             </div>
@@ -878,7 +1567,21 @@
                 });
             }());
         </script>
-        
+        <script>
+            (function(){
+                $('.s-option-toggles .btn').click(function(){
+                    $(this).siblings().removeClass('s-selected');
+                    $(this).addClass('s-selected');
+                    if( $(this).find('i').hasClass('fa-bars') ){
+                        $(this).closest('.s-table-inner-nav').siblings('.table-responsive').find('.s-order-table').show();
+                        $(this).closest('.s-action-right').find('.s-titled-select-wrapper').addClass('s-disabled');
+                    }else{
+                        $(this).closest('.s-table-inner-nav').siblings('.table-responsive').find('.s-order-table').hide();
+                        $(this).closest('.s-action-right').find('.s-titled-select-wrapper').removeClass('s-disabled');
+                    }
+                });
+            }());
+        </script>
         
         
         

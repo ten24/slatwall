@@ -3430,6 +3430,9 @@ tabel .s-table-header {
   background-color: #f7f7f7;
   border: 1px solid #CCC;
 }
+.s-table-inner-nav .s-action-right {
+  text-align: right;
+}
 .s-filter-wrapper .s-edit-filters {
   display: inline-block;
   width: 100%;
