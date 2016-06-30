@@ -104,7 +104,6 @@ export class SkuPriceService {
             });
             var expirationDate =  new Date(); 
             expirationDate.setDate(expirationDate.getDate() + 1);
-            console.log("cache putting");
             return this.cacheService.put("currencyRates", currencyRatePromise, "data", expirationDate);
         } else {
             currencyRatesDeferred.resolve(); 
@@ -211,8 +210,9 @@ export class SkuPriceService {
                     (response)=>{
                         var sku = this.$hibachi.populateEntity("Sku", response)
                         for(var j=0; j < eligibleCurrencyCodes.length; j++){
-                            if( ( skuPriceSet.length > 0 && !this.skuPriceSetHasCurrencyCode(skuPriceSet,eligibleCurrencyCodes[j]) ) ||
-                                    skuPriceSet.length == 0
+                            if( ( sku.data.currencyCode != eligibleCurrencyCodes[j]) &&
+                                ( skuPriceSet.length > 0 && !this.skuPriceSetHasCurrencyCode(skuPriceSet,eligibleCurrencyCodes[j]) ) ||
+                                  skuPriceSet.length == 0
                             ){
                                 skuPriceSet.push(this.createInferredSkuPriceForCurrency(sku,eligibleCurrencyCodes[j]));
                             }
@@ -250,12 +250,10 @@ export class SkuPriceService {
                 if(angular.isDefined(eligibleCurrencyCodes)){
                     this.loadInferredSkuPricesForSkuPriceSet(skuID, skuPriceSet, eligibleCurrencyCodes).then(
                         (data)=>{
-                            console.log("resolving base sku prices",data); 
                             deferred.resolve(data); 
                         }
                     );
                 } else {
-                    console.log("resolving base sku prices",skuPriceSet); 
                     deferred.resolve(skuPriceSet); 
                 }   
             });
@@ -278,16 +276,15 @@ export class SkuPriceService {
                         skuPriceSet.push(skuPrice);
                     }
                 }
+                skuPriceSet = this.sortSkuPrices(skuPriceSet);
             }).finally(()=>{
                 if(angular.isDefined(eligibleCurrencyCodes)){
                     this.loadInferredSkuPricesForSkuPriceSet(skuID, skuPriceSet, eligibleCurrencyCodes).then(
                         (data)=>{
-                            console.log("resolving sku prices",data); 
                             deferred.resolve(data); 
                         }
                     );
                 } else {
-                    console.log("resolving sku prices",skuPriceSet); 
                     deferred.resolve(skuPriceSet); 
                 }  
             });
@@ -319,8 +316,11 @@ export class SkuPriceService {
 
     public sortSkuPrices = (skuPriceSet)=>{
         function compareSkuPrices(a,b) {
-            if (a.data.currencyCode < b.data.currencyCode)
+            //temporarily hardcoded to usd needs to be default sku value
+            if (a.data.currencyCode == "USD") 
                 return -1;
+            if (a.data.currencyCode < b.data.currencyCode)
+                return -1; 
             if (a.data.currencyCode > b.data.currencyCode)
                 return 1;
             return 0;

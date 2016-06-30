@@ -49,6 +49,9 @@ class SWSkuPricesEditController{
         }
         if(angular.isDefined(this.skuSkuId)){
             this.skuId = this.skuSkuId; 
+        } else {
+            //inflate the sku
+            this.sku = this.$hibachi.populateEntity("Sku", { skuID:this.skuId, price:this.price });
         }
         if(angular.isDefined(this.skuPriceId)){
             var skuPriceData = {
