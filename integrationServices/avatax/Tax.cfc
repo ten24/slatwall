@@ -107,10 +107,6 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 				StructInsert(requestDataStruct, 'commit', true);
 			}
 			
-			if (commitTransaction){
-				StructInsert(requestDataStruct, 'commit', true);
-			}
-			
 			if(!isNull(arguments.requestBean.getAccount())) {
 				requestDataStruct.CustomerCode = arguments.requestBean.getAccount().getShortReferenceID( true );
 			}
