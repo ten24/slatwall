@@ -1379,9 +1379,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							// Update the orderPlaced
 							order.confirmOrderNumberOpenDateCloseDatePaymentAmount();
 							
-							// Re-Calculate tax now that the new promotions and price groups have been applied
-							getTaxService().commitTaxTransaction( arguments.order );
-
 							// Save the order to the database
 							getHibachiDAO().save( arguments.order );
 

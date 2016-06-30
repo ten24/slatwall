@@ -47,7 +47,8 @@ Notes:
 
 */
 component accessors="true" output="false" displayname="Vertex" implements="Slatwall.integrationServices.TaxInterface" extends="Slatwall.integrationServices.BaseTax" {
-
+	variables.commitDocFlag = false;
+	
 	public any function getTaxRates(required any requestBean) {
 
 		// Create new TaxRatesResponseBean to be populated with XML Data retrieved from Quotation Request
@@ -56,7 +57,10 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 		var taxExempt = false;
 		var taxForce = false;
 		var docType = 'SalesOrder';
+<<<<<<< HEAD
 		var commitTransaction = false;
+=======
+>>>>>>> branch 'develop-ck-avataxUpdate' of https://github.com/ten24/slatwall.git
 		
 		if(len(setting('taxExemptPropertyIdentifier'))) {
 			var piValue = arguments.requestBean.getOrder().getValueByPropertyIdentifier( setting('taxExemptPropertyIdentifier') );
@@ -65,8 +69,8 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 			}
 		}
 		
-		
-		if(len(setting('taxExemptRequiresCompanyPaymentMethodFlag')) && setting('taxExemptRequiresCompanyPaymentMethodFlag')) {
+		if(setting('taxExemptRequiresCompanyPaymentMethodFlag')) {
+
 			var opSmartList = arguments.requestBean.getOrder().getOrderPaymentsSmartList();
 			opSmartList.addFilter('orderPaymentStatusType.systemCode', 'opstActive');
 			if(arrayLen(opSmartList.getRecords())) {
@@ -78,8 +82,7 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 		}
 		
 		//Only commit if both integration setting and request bean are set to true
-		if(len(setting('commitTaxTransaction')) && setting('commitTaxTransaction') && arguments.requestBean.getCommitTaxTransaction()) {
-			commitTransaction = true;
+		if(variables.commitDocFlag) {
 			docType = 'SalesInvoice';
 		}
 		
@@ -103,6 +106,10 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 				],
 				Lines = []
 			};
+			
+			if (variables.commitDocFlag){
+				StructInsert(requestDataStruct, 'commit', true);
+			}
 			
 			if (commitTransaction){
 				StructInsert(requestDataStruct, 'commit', true);
@@ -214,7 +221,17 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 				responseBean.setData(responseData.Responseheader.Explanation);
 			}
 		}
+		
 		return responseBean;
+	}
+	
+	public void function commitTaxDocument(required any requestBean){
+		variables.commitDocFlag = true;
+		
+		getTaxRates(requestBean);
+		
+		variables.commitDocFlag = false;
+		
 	}
 
 }

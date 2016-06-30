@@ -71,7 +71,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// Next Loop over the taxIntegrationArray to call getTaxRates on each
 		for(var integration in taxIntegrationArr) {
-
+			
 			if(integration.getActiveFlag()) {
 				var taxRatesRequestBean = generateTaxRatesRequestBeanForIntegration(arguments.order, integration);
 
@@ -407,57 +407,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return taxRatesRequestBean;
 
 	}
-	
-	public void function commitTaxTransaction(required any order) {
-		var ratesResponseBeans = {};
-		var taxAddresses = addTaxAddressesStructBillingAddressKey(arguments.order);
-		
-		// if account is tax exempt return after removing any tax previously applied to order
-		if(!isNull(arguments.order.getAccount()) && !isNull(arguments.order.getAccount().getTaxExemptFlag()) && arguments.order.getAccount().getTaxExemptFlag()) {
-			return;
-		}
-		
-		// Setup the Tax Integration Array
- 		var taxIntegrationArr = generateTaxIntegrationArray(arguments.order);
- 		
- 		// Next Loop over the taxIntegrationArray to call getTaxRates on each
-		for(var integration in taxIntegrationArr) {
-			if(integration.getActiveFlag()) {
- 				var taxRatesRequestBean = generateTaxRatesRequestBeanForIntegration(arguments.order, integration);
-				
-				taxRatesRequestBean.setCommitTransactionFlag(true);
-				writeDump(var=taxRatesRequestBean, top=2);abort;		
-				// Make sure that the ratesRequestBean actually has OrderItems on it
-				if(arrayLen(taxRatesRequestBean.getTaxRateItemRequestBeans())) {
-					logHibachi('#integration.getIntegrationName()# Tax Transaction Commit - Started');
-
-					// Inside of a try/catch call the 'getTaxRates' method of the integraion
-					try {
-
-						// Get the API we are going to call
-						var integrationTaxAPI = integration.getIntegrationCFC("tax");
-
-						// Call the API and store the responseBean by integrationID
-						ratesResponseBeans[ integration.getIntegrationID() ] = integrationTaxAPI.getTaxRates( taxRatesRequestBean );
-
-					} catch(any e) {
-
-						logHibachi('An error occured with the #integration.getIntegrationName()# integration when trying to commit the transaction', true);
-						logHibachiException(e);
-
-						if(getSettingService().getSettingValue("globalDisplayIntegrationProcessingErrors")){
-							rethrow;
-						}
-					}
-
-					logHibachi('#integration.getIntegrationName()# Tax Transaction Commit  - Finished');
-				}
-			}
-
-		}
- 			
-	}
-
 
 	// ===================== START: Logical Methods ===========================
 
