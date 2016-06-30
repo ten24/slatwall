@@ -70,7 +70,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// Next Loop over the taxIntegrationArray to call getTaxRates on each
 		for(var integration in taxIntegrationArr) {
-
+			
 			if(integration.getActiveFlag()) {
 				var taxRatesRequestBean = generateTaxRatesRequestBeanForIntegration(arguments.order, integration);
 
@@ -421,7 +421,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  		
  		// Next Loop over the taxIntegrationArray to call getTaxRates on each
 		for(var integration in taxIntegrationArr) {
-			if(integration.getActiveFlag()) {
+			
+			//Only attempt to commit the tax transaction if the setting is set and the integration is active
+			if(integration.getActiveFlag() && len(integration.setting('commitTaxTransaction')) && integration.setting('commitTaxTransaction') ) {
+				
  				var taxRatesRequestBean = generateTaxRatesRequestBeanForIntegration(arguments.order, integration);
 				
 				taxRatesRequestBean.setCommitTransactionFlag(true);
