@@ -157,39 +157,44 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 			httpRequest.addParam(type="header", name="Authorization", value="Basic #base64Auth#");
 			httpRequest.addParam(type="body", value=serializeJSON(requestDataStruct));
 			
-			var responseData = DeserializeJSON(httpRequest.send().getPrefix().fileContent);
+			var responseData = httpRequest.send().getPrefix();
 			
-			if (responseData.resultCode == 'Error'){
-				responseBean.setData(responseData.messages);
-			}
+			if (IsJSON(responseData.FileContent)){
 			
-			if (structKeyExists(responseData, 'TaxLines')){
-				// Loop over all orderItems in response
-				for(var taxLine in responseData.TaxLines) {
-					
-					// Make sure that there is a taxAmount for this orderItem
-					if(taxLine.Tax > 0) {
+				if (responseData.resultCode == 'Error'){
+					responseBean.setData(responseData.messages);
+				}
+				
+				if (structKeyExists(responseData, 'TaxLines')){
+					// Loop over all orderItems in response
+					for(var taxLine in responseData.TaxLines) {
 						
-						// Loop over the details of that taxAmount
-						for(var taxDetail in taxLine.TaxDetails) {
+						// Make sure that there is a taxAmount for this orderItem
+						if(taxLine.Tax > 0) {
 							
-							// For each detail make sure that it is applied to this item
-							if(taxDetail.Tax > 0) {
+							// Loop over the details of that taxAmount
+							for(var taxDetail in taxLine.TaxDetails) {
 								
-								// Add the details of the taxes charged
-								responseBean.addTaxRateItem(
-									orderItemId = taxLine.LineNo,
-									taxAmount = taxDetail.Tax, 
-									taxRate = taxDetail.Rate * 100,
-									taxJurisdictionName=taxDetail.JurisName,
-									taxJurisdictionType=taxDetail.JurisType,
-									taxImpositionName=taxDetail.TaxName
-								);
+								// For each detail make sure that it is applied to this item
+								if(taxDetail.Tax > 0) {
 									
+									// Add the details of the taxes charged
+									responseBean.addTaxRateItem(
+										orderItemId = taxLine.LineNo,
+										taxAmount = taxDetail.Tax, 
+										taxRate = taxDetail.Rate * 100,
+										taxJurisdictionName=taxDetail.JurisName,
+										taxJurisdictionType=taxDetail.JurisType,
+										taxImpositionName=taxDetail.TaxName
+									);
+										
+								}
 							}
 						}
 					}
 				}
+			}else{
+				responseBean.setData(responseData.Responseheader.Explanation);
 			}
 		}
 		return responseBean;
