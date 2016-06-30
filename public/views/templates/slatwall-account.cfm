@@ -242,7 +242,7 @@ Notes:
 																<div class="apn#accountPhoneNumberIndex#<cfif accountPhoneNumber.hasErrors()> hide</cfif>">
 																	<span>#accountPhoneNumber.getPhoneNumber()#</span>
 																	<span class="pull-right">
-																		<a href="##" onClick="$('.apn#accountPhoneNumberIndex#').toggle()" title="Edit Phone Number"><span class="glyphicon glyphicon-pencil"></span></a>
+																		<a href="##" onClick="editToggle('.apn#accountPhoneNumberIndex#'); return false;" title="Edit Phone Number"><span class="glyphicon glyphicon-pencil"></span></a>
 																		<a href="?slatAction=public:account.deleteAccountPhoneNumber&accountPhoneNumberID=#accountPhoneNumber.getAccountPhoneNumberID()#" title="Delete Phone Number - #accountPhoneNumber.getPhoneNumber()#"><span class="glyphicon glyphicon-trash"></span></a>
 																		<cfif accountPhoneNumber.getAccountPhoneNumberID() eq $.slatwall.getAccount().getPrimaryPhoneNumber().getAccountPhoneNumberID()>
 																			<span class="glyphicon glyphicon-asterisk" title="#accountPhoneNumber.getPhoneNumber()# is the primary phone number for this account" style="margin-right:5px;"></span>
@@ -264,7 +264,7 @@ Notes:
 																			<div class="input-group">
 																				<sw:FormField type="text" name="accountPhoneNumbers[1].phoneNumber" valueObject="#accountPhoneNumber#" valueObjectProperty="phoneNumber" class="form-control" />
 																				<span class="input-group-btn">
-																					<button type="button" class="btn" onClick="$('.apn#accountPhoneNumberIndex#').toggle()">x</button>
+																					<button type="button" class="btn" onClick="editToggle('.apn#accountPhoneNumberIndex#'); return false;"><span class="glyphicon glyphicon-remove"></span></button>
 																					<button type="submit" class="btn btn-primary">Save</button>
 																				</span>
 																			</div>
@@ -328,7 +328,7 @@ Notes:
 
 																	<!--- Admin buttons --->
 																	<span class="pull-right">
-																		<a href="##" onClick="$('.aea#accountEmailAddressIndex#').toggle()" title="Edit Email Address"><span class="glyphicon glyphicon-pencil"></span></a>
+																		<a href="##" onClick="editToggle('.aea#accountEmailAddressIndex#'); return false;" title="Edit Email Address"><span class="glyphicon glyphicon-pencil"></span></a>
 																		<cfif accountEmailAddress.getAccountEmailAddressID() neq $.slatwall.getAccount().getPrimaryEmailAddress().getAccountEmailAddressID()>
 																			<a href="?slatAction=public:account.deleteAccountEmailAddress&accountEmailAddressID=#accountEmailAddress.getAccountEmailAddressID()#" title="Delete Email Address - #accountEmailAddress.getEmailAddress()#"><span class="glyphicon glyphicon-trash"></span></a>
 																		</cfif>
@@ -354,7 +354,7 @@ Notes:
 																			<div class="input-group">
 																				<sw:FormField type="text" name="accountEmailAddresses[1].emailAddress" valueObject="#accountEmailAddress#" valueObjectProperty="emailAddress" class="form-control" />
 																				<span class="input-group-btn">
-																					<button type="button" class="btn btn-default" onClick="$('.aea#accountEmailAddressIndex#').toggle()">x</button>
+																					<button type="button" class="btn btn-default" onClick="editToggle('.aea#accountEmailAddressIndex#'); return false;"><span class="glyphicon glyphicon-remove"></span></button>
 																					<button type="submit" class="btn btn-primary">Save</button>
 																				</span>
 																			</div>
@@ -416,7 +416,7 @@ Notes:
 													<div class="aa#accountAddressIndex#<cfif accountAddress.hasErrors()> hide</cfif>">
 														<!--- Administration options --->
 														<div class="pull-right">
-															<a href="##" onClick="$('.aa#accountAddressIndex#').toggle()" title="Edit Address"><span class="glyphicon glyphicon-pencil"></span></a>
+															<a href="##" onClick="editToggle('.aa#accountAddressIndex#'); return false;" title="Edit Address"><span class="glyphicon glyphicon-pencil"></span></a>
 															<a href="?slatAction=public:account.deleteAccountAddress&accountAddressID=#accountAddress.getAccountAddressID()#" title="Delete Address"><span class="glyphicon glyphicon-trash"></span></a>
 															<!--- If this is the primary address, then just show the astricks --->
 															<cfif accountAddress.getAccountAddressID() eq $.slatwall.getAccount().getPrimaryAddress().getAccountAddressID()>
@@ -457,7 +457,7 @@ Notes:
 															<!--- Update Button --->
 															<div class="form-group">
 									      						<button type="submit" class="btn btn-primary">Save</button>
-																<button type="button" class="btn btn-default" onClick="$('.aa#accountAddressIndex#').toggle()">Cancel</button>
+																<button type="button" class="btn btn-default" onClick="editToggle('.aa#accountAddressIndex#'); return false;">Cancel</button>
 										  					</div>
 														</form>
 														<!--- End: Edit Address Form --->
@@ -548,7 +548,7 @@ Notes:
 													<div class="apm#accountPaymentMethodIndex#<cfif accountPaymentMethod.hasErrors()> hide</cfif>">
 														<!--- Administration options --->
 														<div class="pull-right">
-															<a href="##" onClick="$('.apm#accountPaymentMethodIndex#').toggle()" title="Edit Payment Method"><span class="glyphicon glyphicon-pencil"></span></a>
+															<a href="##" onClick="editToggle('.apm#accountPaymentMethodIndex#'); return false;" title="Edit Payment Method"><span class="glyphicon glyphicon-pencil"></span></a>
 															<a href="?slatAction=public:account.deleteAccountPaymentMethod&accountPaymentMethodID=#accountPaymentMethod.getAccountPaymentMethodID()#" title="Delete Payment Method"><span class="glyphicon glyphicon-trash"></span></a>
 															<!--- If this is the primary address, then just show the astricks --->
 															<cfif accountPaymentMethod.getAccountPaymentMethodID() eq $.slatwall.getAccount().getPrimaryPaymentMethod().getAccountPaymentMethodID()>
@@ -670,7 +670,7 @@ Notes:
 
 															<!--- Update Button --->
 															<div class="form-group">
-																<button type="button" class="btn btn-default" onClick="$('.apm#accountPaymentMethodIndex#').toggle()">Cancel</button>
+																<button type="button" class="btn btn-default" onClick="editToggle('.apm#accountPaymentMethodIndex#'); return false;">Cancel</button>
 									      						<button type="submit" class="btn btn-primary">Save</button>
 										  					</div>
 														</form>
