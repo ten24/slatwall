@@ -46,7 +46,7 @@
 Notes:
 
 --->
-
+<cfoutput>
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -57,9 +57,16 @@ Notes:
 
 		<!--- Bootstrap is just included for demo / example purposes.  Removing it will not stop Slatwall from working --->
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+		<!--- jQuery is only required if you would like to use the Slatwall client side object --->
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+
+		<!--- This creates a client side object for Slatwall so that $.slatwall API works from the client side --->
+		#$.slatwall.renderJSObject( subsystem="public" )#
 	</head>
 	<body>
 		<!--- This is only used by the sample app that is contained in /meta/sample --->
 		<cfif structKeyExists(request, "sampleNavigation")>
-			<cfoutput>#request.sampleNavigation#</cfoutput>
+			#request.sampleNavigation#
 		</cfif>
+</cfoutput>

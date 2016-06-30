@@ -46,14 +46,21 @@
 Notes:
 
 --->
-	<!--- jQuery is only required if you would like to use the Slatwall client side object --->
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<cfoutput>
 
-	<!--- Bootstrap is just included for demo / example purposes.  Removing it will not stop Slatwall from working --->
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-
-	<!--- This creates a client side object for Slatwall so that $.slatwall API works from the client side --->
-	<cfoutput>#$.slatwall.renderJSObject( subsystem="public" )#</cfoutput>
-
+		<!--- Bootstrap is just included for demo / example purposes.  Removing it will not stop Slatwall from working --->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+		<script>
+			function editToggle(e) {
+				$(e).each(function(i){
+					if($(this).hasClass('hidden')) {
+						$(this).removeClass('hidden');
+					} else {
+						$(this).addClass('hidden');
+					}
+				});
+			}
+		</script>
 	</body>
 </html>
+</cfoutput>
