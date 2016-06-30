@@ -57,7 +57,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	property name="billToStateCode" type="string";   
 	property name="billToPostalCode" type="string";   
 	property name="billToCountryCode" type="string";  
-	property name="commitTaxTransactions" type="boolean";  
+	property name="commitTaxTransaction" type="boolean";  
 	
 	// TaxRateItemRequestBeans
 	property name="taxRateItemRequestBeans" type="array";
