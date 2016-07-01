@@ -3,7 +3,6 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="account" type="any";
 	property name="session" type="any";
 	
-	property name="loggedInFlag" type="boolean";
 	property name="loggedInAsAdminFlag" type="boolean";
 	property name="publicPopulateFlag" type="boolean";
 	property name="persistSessionFlag" type="boolean";
@@ -25,14 +24,13 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		setORMHasErrors( false );
 		setRBLocale( "en_us" );
 		setPublicPopulateFlag( false );
-		setPersistSessionFlag( true );
+		setPersistSessionFlag( false );
 		setSessionFoundNPSIDCookieFlag( false );
 		setSessionFoundPSIDCookieFlag( false );
 		setSessionFoundExtendedPSIDCookieFlag( false );
 		setCalledActions( [] );
 		setSuccessfulActions( [] );
 		setFailureActions( [] );
-		
 		setAuditsToCommitStruct( {} );
 		setModifiedEntities( [] );
 		
@@ -101,32 +99,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	 *  This method should return as it always has. 
 	 */
 	public boolean function getLoggedInFlag() {
-		//If this is a new session, then the user is not logged in.
-		if (getSession.getNewFlag()){
-			return false;
-		}
-		
-		if (getSession().getLoggedin)
-		//If the logged out dateTime is older than the logged in datetime - the user is logged out.
-		if (isNull(getSession().getLoggedInDateTime()) && isNull(getSession().getLoggedOutDateTime() || getSession().getLoggedOutDateTime() > getSession().getLoggedInDateTime())){
-			return false;
-		}
-		
-		/* If the user didn't explicitly logout, we can check if the user should be logged out based on 
-		   the difference between the last request time and now, and depending on if the user
-		   is a public or admin user. */
-		
-		//handle admin account is logged in.
-		if(getAccount().getAdminAccountFlag() && !isNull( getSession().getLastRequestDateTime() ) && len(getSession().getLastRequestDateTime()) && dateDiff("n", getSession().getLastRequestDateTime(), now()) <= getHibachiScope().setting("globalAdminAutoLogoutMinutes")) {
-			return true;
-		}
-		
-		//handle non-admin account is logged in.
-		if(!getAccount().getAdminAccountFlag() && !isNull( getSession().getLastRequestDateTime() ) && len(getSession().getLastRequestDateTime()) && dateDiff("n", getSession().getLastRequestDateTime(), now()) <= getHibachiScope().setting("globalPublicAutoLogoutMinutes")) {
-			return true;
-		}
-		
-		return false;
+		return session.getLoggedInFlag();
 	}
 	
 	public boolean function getLoggedInAsAdminFlag() {

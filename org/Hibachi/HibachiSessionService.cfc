@@ -91,6 +91,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 			}
 			
 		} else if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#-NPSID")) {
+			
 			var sessionEntity = this.getSessionBySessionCookieNPSID( cookie["#getApplicationValue('applicationKey')#-NPSID"], true);
 		
 			if(sessionEntity.getNewFlag()) {
@@ -103,7 +104,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 			}
 		
 		} else if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#-PSID")) {
-		
+			
 			var sessionEntity = this.getSessionBySessionCookiePSID( cookie["#getApplicationValue('applicationKey')#-PSID"], true);
 		
 			if(sessionEntity.getNewFlag()) {
@@ -144,8 +145,6 @@ component output="false" accessors="true" extends="HibachiService"  {
 		}
 		
 		
-		
-		
 		// If we are using extended session and the extended session has expired, then logout.
 		
 		// If the session has an account but no authentication, then remove the account
@@ -156,7 +155,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 		// If the sessions account is an admin and last request by the session was 15 min or longer ago. 
 		
-		if(getHibachiScope().getSessionFoundExtendedPSIDCookieFlag() && getHibachiScope().getLoggedInFlag()
+		if( getHibachiScope().getSessionFoundExtendedPSIDCookieFlag() || getHibachiScope().getSessionFoundPSIDCookieFlag()  && !getHibachiScope().getSession().getLoggedInFlag()
 		
 			|| (!isNull(getHibachiScope().getSession().getAccountAuthentication()) && getHibachiScope().getSession().getAccountAuthentication().getForceLogoutFlag()) 
 		
@@ -167,11 +166,10 @@ component output="false" accessors="true" extends="HibachiService"  {
 			|| (!isNull(getHibachiScope().getSession().getAccountAuthentication()) && getHibachiScope().getSession().getAccount().getAdminAccountFlag() != true && DateDiff('n', previousRequestDateTime, Now()) >= getHibachiScope().setting('globalPublicAutoLogoutMinutes') )
 		
 		) 	{
-		
+			
 			logoutAccount();
 
 		}
-	
 	}
 	
 	public void function persistSession() {
@@ -205,11 +203,10 @@ component output="false" accessors="true" extends="HibachiService"  {
 	public string function loginAccount(required any account, required any accountAuthentication) {
 	
 		var currentSession = getHibachiScope().getSession();
-		
 		currentSession.setAccount( arguments.account );
 		currentSession.setAccountAuthentication( arguments.accountAuthentication );
 	    
-	    currentSession.setLoggedInDateTime(now());
+	    currentSession.setLoggedInDateTime(DateTimeFormat(now()));
 		// Make sure that we persist the session
 		persistSession();
 	
@@ -237,8 +234,11 @@ component output="false" accessors="true" extends="HibachiService"  {
 		}
 		
 		//No need to remove the account or authentication. We just set the state to being logged out.
-		currentSession.setLoggedOutDateTime(now());
-	
+		currentSession.setLoggedOutDateTime(DateTimeFormat(now()));
+		currentSession.setLoggedInFlag(false);
+		//refresh the slatwallScope so it does still think its logged in.
+		structDelete(request, "slatwallScope");
+		
 		// Make sure that this logout is persisted
 		getHibachiDAO().flushORMSession();
 		getHibachiAuditService().logAccountActivity("logout", auditLogData);

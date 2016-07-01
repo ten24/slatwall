@@ -54,6 +54,7 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 	property name="lastRequestDateTime" ormtype="timestamp";
 	property name="loggedInDateTime" ormtype="timestamp";
 	property name="loggedOutDateTime" ormtype="timestamp";
+	property name="loggedInFlag" ormtype="boolean";
 	property name="lastRequestIPAddress" ormtype="string";
 	property name="lastPlacedOrderID" ormtype="string";
 	property name="rbLocale" ormtype="string";
@@ -75,7 +76,46 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 	
 	// Non-Persistent Properties
 	property name="requestAccount" type="any" persistent="false"; 
-	 
+	
+	
+	public any function getLoggedInFlag(){
+		//If this is a new session, then the user is not logged in.
+		if (getNewFlag()){
+			setLoggedInFlag(false);
+			return false;
+		}
+		
+		//If the logged out dateTime is older than the logged in datetime - the user is logged out.
+		if ( dateCompare(getLoggedOutDateTime(), getLoggedInDateTime()) != -1){
+			setLoggedInFlag(false);
+			return false;
+		}
+		
+		//If the loggedin dateTime is null, then user is logged out.
+		if ( isNull(getLoggedInDateTime()) ){
+			setLoggedInFlag(false);
+			return false;
+		}
+		
+		//If the user is an admin, and we exceeded the max login for admins, the user is logged out.
+		if(getAccount().getAdminAccountFlag() && !isNull(variables.lastRequestDateTime) && len(getLastRequestDateTime()) && dateDiff("n", getLastRequestDateTime(), now()) >= getHibachiScope().setting("globalAdminAutoLogoutMinutes")) {
+			setLoggedInFlag(false);
+			return false;
+		}
+		
+		//If the user is public and has exceeded the max public inactive time, the user is logged out.
+		if(!getAccount().getAdminAccountFlag() && !isNull(variables.lastRequestDateTime) && len(getLastRequestDateTime()) && dateDiff("n", getLastRequestDateTime(), now()) >= getHibachiScope().setting("globalPublicAutoLogoutMinutes")) {
+			setLoggedInFlag(false);
+			return false;
+		}
+		
+		setLoggedInFlag(true);
+		
+		return true;
+		
+	} 
+	
+	
 	public any function getAccount() {
 		if(structKeyExists(variables, "account")) {
 			return variables.account;
