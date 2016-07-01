@@ -182,20 +182,23 @@ component output="false" accessors="true" extends="HibachiService"  {
 		// Save session ID in the session Scope & cookie scope for next request
 		getHibachiScope().setSessionValue('sessionID', getHibachiScope().getSession().getSessionID());
 		
-		//Generate new session cookies for every time the session is persisted (on every login)
+		//Generate new session cookies for every time the session is persisted (on every login);
+		
+		//This cookie is removed on browser close
 		var npCookieValue = getValueForCookie();
 			getHibachiScope().getSession().setSessionCookieNPSID(npCookieValue);
 			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-NPSID", value=getHibachiScope().getSession().getSessionCookieNPSID());
+	    
+	    //This cookie never expires.
 	    var cookieValue = getValueForCookie();
 			getHibachiScope().getSession().setSessionCookiePSID(cookieValue);
 			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-PSID", value=getHibachiScope().getSession().getSessionCookiePSID(), expires="never");
 		
-		//Only use the extended session for non-admin users and ignore for the rest.
-		if (getHibachiScope().setting("globalUseExtendedSession") == true && getHibachiScope().getSession().getAccount().getAdminAccountFlag() == false){
-			var cookieValue = getValueForCookie();
+		//This cookie expires based on the user being inactive longer than the setting value is set for in days.
+		var cookieValue = getValueForCookie();
 			getHibachiScope().getSession().setSessionCookieExtendedPSID(cookieValue);
 			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-ExtendedPSID", value=getHibachiScope().getSession().getSessionCookieExtendedPSID(), expires="#getHibachiScope().setting('globalExtendedSessionAutoLogoutInDays')#");
-		}
+		
 		
 	}
 	

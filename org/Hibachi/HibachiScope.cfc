@@ -101,23 +101,28 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	 *  This method should return as it always has. 
 	 */
 	public boolean function getLoggedInFlag() {
-		
-		//the user did a hard logout and should not be logged in.
-		if (getSession().getLoggedOutDateTime() > getSession().getLoggedInDateTime()){
+		//If this is a new session, then the user is not logged in.
+		if (getSession.getNewFlag()){
 			return false;
 		}
 		
-		// If the user didn't explicitly logout, we can check if the user should be logged out based on 
-		// the difference between the last request time and now, and depending on if the user
-		// is a public or admin user.
+		if (getSession().getLoggedin)
+		//If the logged out dateTime is older than the logged in datetime - the user is logged out.
+		if (isNull(getSession().getLoggedInDateTime()) && isNull(getSession().getLoggedOutDateTime() || getSession().getLoggedOutDateTime() > getSession().getLoggedInDateTime())){
+			return false;
+		}
+		
+		/* If the user didn't explicitly logout, we can check if the user should be logged out based on 
+		   the difference between the last request time and now, and depending on if the user
+		   is a public or admin user. */
 		
 		//handle admin account is logged in.
-		if(getAccount().getAdminAccountFlag() && !isNull( getSession().getLastRequestDateTime() ) && dateDiff("n", getSession().getLastRequestDateTime(), now()) <= getHibachiScope().setting("globalAdminAutoLogoutMinutes")) {
+		if(getAccount().getAdminAccountFlag() && !isNull( getSession().getLastRequestDateTime() ) && len(getSession().getLastRequestDateTime()) && dateDiff("n", getSession().getLastRequestDateTime(), now()) <= getHibachiScope().setting("globalAdminAutoLogoutMinutes")) {
 			return true;
 		}
 		
 		//handle non-admin account is logged in.
-		if(!getAccount().getAdminAccountFlag() && !isNull( getSession().getLastRequestDateTime() ) && dateDiff("n", getSession().getLastRequestDateTime(), now()) <= getHibachiScope().setting("globalPublicAutoLogoutMinutes")) {
+		if(!getAccount().getAdminAccountFlag() && !isNull( getSession().getLastRequestDateTime() ) && len(getSession().getLastRequestDateTime()) && dateDiff("n", getSession().getLastRequestDateTime(), now()) <= getHibachiScope().setting("globalPublicAutoLogoutMinutes")) {
 			return true;
 		}
 		
