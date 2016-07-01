@@ -51,6 +51,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="addressService" type="any";
 	property name="hibachiValidationService" type="any";
 	property name="integrationService" type="any";
+	property name="settingService" type="any";
 
 	public void function updateOrderAmountsWithTaxes(required any order) {
 
@@ -70,7 +71,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// Next Loop over the taxIntegrationArray to call getTaxRates on each
 		for(var integration in taxIntegrationArr) {
-
+			
 			if(integration.getActiveFlag()) {
 				var taxRatesRequestBean = generateTaxRatesRequestBeanForIntegration(arguments.order, integration);
 
@@ -406,7 +407,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return taxRatesRequestBean;
 
 	}
-
 
 	// ===================== START: Logical Methods ===========================
 

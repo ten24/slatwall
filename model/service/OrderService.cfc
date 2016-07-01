@@ -1378,7 +1378,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 							// Update the orderPlaced
 							order.confirmOrderNumberOpenDateCloseDatePaymentAmount();
-
+							
 							// Save the order to the database
 							getHibachiDAO().save( arguments.order );
 
