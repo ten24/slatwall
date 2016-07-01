@@ -270,14 +270,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  		return arrayLen(getSkus()) eq 1 || getOptionGroupCount() gt 0;
  	}
 
-	public string function getPageIDs() {
-		var pageIDs = "";
-		for( var i=1; i<= arrayLen(getPages()); i++ ) {
-			pageIDs = listAppend(pageIDs,getPages()[i].getPageID());
-		}
-		return pageIDs;
-	}
-
 	public string function getCategoryIDs() {
 		var categoryIDs = "";
 		for( var i=1; i<= arrayLen(getCategories()); i++ ) {
