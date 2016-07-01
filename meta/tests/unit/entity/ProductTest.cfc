@@ -269,14 +269,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		if (len(arguments.activeFlag)) {
 			contentData.activeFlag = arguments.activeFlag;
 		}
-//		if (len(arguments.contentTemplateTypeID)) {
-//			contentData.contentTemplateTypeID = arguments.contentTemplateTypeID;
-//		}
 		return createPersistedTestEntity('Content', contentData);
 	}
 	/**
 	* @hint "return the mocked persisted Content entity with contentTemplateType (ctt)"
-	*
 	*/
 	private any function createMockContentWithContentTemplateType(required string contentTemplateTypeID) {
 		var contentData = {
@@ -289,7 +285,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	/**
 	* @hint "Create Mocked Otpion entity with optionGroupID, make empty properties "" in order"
-	*
 	*/
 	private any function createMockOption(required string optionGroupID = "", string skuID = "" ) {
 		var optionData1 = {
@@ -311,7 +306,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	/**
 	* @hint "Return mocked Product entity with properites you passed in.<br>If no argument, make it "". "
-	*
 	*/
 	private any function createMockProduct(string productTypeID = "") {
 		var productData = {
@@ -324,7 +318,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	/**
 	* @hint "Return mocked ProductType entity with properites you passed in<br>If only pass one argument, make the other one "". "
-	*
 	*/
 	private any function createMockProductType (string productID="", string parentProductTypeID="") {
 		var productTypeData = {
@@ -343,7 +336,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	
 	/**
 	* @hint "This function will return mockSku with properites you passed in <br> Make the null arguments "" in order "
-	*
 	*/
 	private any function createMockSku(string idOfProduct = "", string currencyCode = "", string skuImageFile = "") {
 		var skuData = {
@@ -362,16 +354,30 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	/**
 	* @hint "This function will return mockImage with properites you passed in. Make the null arguments "" in order "
-	*
 	*/
-	private any function createMockImage(string imageDirectory = "") {
+	private any function createMockImage(string imageDirectory = "", string imageFile = "") {
 		var imageData = {
 			imageID = ""
 		};
 		if (len(arguments.imageDirectory)) {
 			imageData.directory = arguments.imageDirectory;
 		}
+		if (len(arguments.imageFile)) {
+			imageData.imageFile = arguments.imageFile;
+		}
 		return createPersistedTestEntity('Image', imageData);
+	}
+	/**
+	* @hint "This function mostly used by testing getProductRating()"
+	*/
+	private any function createMockProductReviewWithRating(numeric rating = -1) {
+		var productReviewData = {
+			productReviewID = ""			
+		};
+		if (rating != -1) {
+			productReviewData.rating = arguments.rating;
+		}
+		return createPersistedTestEntity('ProductReview', productReviewData);
 	}
 	
    //================== End Of Private Helper Functions =========================================
@@ -1212,7 +1218,123 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(settingEntity.getsettingValue(), result);
 		
 	}
-*/
+
+	public void function getAlternateImageDirectoryTest() {
+		var mockProduct = createMockProduct();
+		var result = mockProduct.getAlternateImageDirectory();
+		assertEquals("/custom/assets/images/product/", result);
+	}
+	
+
+	
+	public void function getProductRatingTest() {
+		var mockProductReview1 = createMockProductReviewWithRating(10);
+		var mockProductReview2 = createMockProductReviewWithRating(20);
+		var mockProductReview3 = createMockProductReviewWithRating(30);
+		var mockProductReview4 = createMockProductReviewWithRating();
+		//testing the average math
+		var productData1 = {
+			productID = "",
+			productReviews = [
+				{
+					productReviewID = mockProductReview1.getProductReviewID()
+				},
+				{
+					productReviewID = mockProductReview2.getProductReviewID()
+				},
+				{
+					productReviewID = mockProductReview3.getProductReviewID()
+				}
+			]
+		};
+		var mockProductOnMath = createPersistedTestEntity('Product', productData1);
+		
+		var resultOnMath = mockProductOnMath.getProductRating();
+		assertEquals(20, resultOnMath);
+		
+		//testing the productReview w/ and w/o rating
+		var productData2 = {
+			productID = "",
+			productReviews = [
+				{
+					productReviewID = mockProductReview1.getProductReviewID()
+				},
+				{
+					productReviewID = mockProductReview4.getProductReviewID()
+				}
+			]
+		};
+		var mockProductWithWithoutRating = createPersistedTestEntity('Product', productData2);
+		
+		var resultWithWithoutRating = mockProductWithWithoutRating.getProductRating();
+		assertEquals(5, resultWithWithoutRating);
+		
+		//testing the productReveiw without rating
+		var productData3 = {
+			productID = "",
+			productReviews = [
+				{
+					productReviewID = mockProductReview4.getProductReviewID()
+				}
+			]
+		};
+		var mockProductWithoutRating = createPersistedTestEntity('Product', productData3);
+		
+		var resultWithoutRating = mockProductWithoutRating.getProductRating();
+		assertEquals(0, resultWithoutRating);
+		
+		//testing the product without productReview properety
+		var mockProductWithoutProductReveiw = createMockProduct();
+		
+		var resultWithoutProductReview = mockProductWithoutProductReveiw.getProductRating();
+		assertEquals(0, resultWithoutProductReview);
+	}
+*/	
+	public void function getImageGalleryArray_StructValues_Test() {
+		//testing if the struct values works well
+		
+	}
+	public void function getImageGalleryArray_SkuImagesAssociation_Test() {
+			
+		var mockSku1 = createMockSku("", "", "admin.logo.png");
+	 	var mockSku2 = createMockSku();
+	 	var mockSku3 = createMockSku("", "", "fakeFile.somefile");
+	 	var mockSku4 = createMockSku("", "", "favicon.png");
+	 	
+		var mockImage1 = createMockImage("/fakedirectory", "admin.logo.png");
+		var mockImage2 = createMockImage();
+		
+		var productData = {
+			productID = "",
+			skus = [
+				{
+					skuID = mockSku1.getSkuID()
+				},
+				{
+					skuID = mockSku2.getSkuID()
+				},
+				{
+					skuID = mockSku3.getSkuID()
+				}
+			],
+			productImages = [
+				{
+					imageID = mockImage1.getImageID()
+				}
+			]
+		};
+		var mockProduct = createPersistedTestEntity('Product', productData);
+		
+		var result = mockProduct.getImageGalleryArray();
+//		request.debug(result[1].originalFilename);
+//		assertEquals(mockSku1.getImageFile(), result[1].imageFile);
+	}
+	
+	
+	
+
+	
+	
 	public void function getPageIDsTest() {
 		//mockContent 1-4 to test order, and 1&5 to test the activeFlag filter
 		var mockContent1 = createMockContent("Whisper In the Willow", 1);
@@ -1255,6 +1377,35 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	//=================End Test: non-persisted Helpers===========
 
+	
+	// Start Testing: Functions that delegate to the default sku
+	private any function createMockProductWithDefaultSku() {
+		var skuData = {
+			skuID = ""
+		};
+		var mockSku = createPersistedTestEntity('Sku', skuData);
+		
+		var productData = {
+			productID = "",
+			defaultSku = {
+				skuID = mockSku.getSkuID()
+			}
+		};
+		return createPersistedTestEntity('Product', productData);
+		
+	}
+	
+	public void function getImageDirectoryTest() {
+		
+	}
+	
+	
+	
+	
+	
+	
+	//End testing: functions that delegate to the default sku
+	
 	
    
 	// ============ START: Non-Persistent Property Methods =================
