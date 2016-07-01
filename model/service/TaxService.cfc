@@ -52,7 +52,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="hibachiValidationService" type="any";
 	property name="integrationService" type="any";
 	property name="settingService" type="any";
-
+	
 	public void function updateOrderAmountsWithTaxes(required any order) {
 
 		var ratesResponseBeans = {};
