@@ -220,13 +220,31 @@ class HibachiServiceDecorator{
                         }
                     }
                 };
+
                 angular.forEach(entity,function(property){
+
                     if(angular.isObject(property) && angular.isDefined(property.name)){
+                        if(property.name !== 'data' && property.name !== 'validations'){
+                            Object.defineProperty(_jsEntities[ entity.className ].prototype, property.name, {
+                                configurable:true,
+                                enumerable:false,
+
+                                get: function() {
+
+                                    return this.data[property.name];
+                                },
+                                set: function(value) {
+
+                                    this.data[property.name]=value;
+
+                                }
+                            });
+                        }
                         if(angular.isUndefined(property.persistent)){
+
+
                             if(angular.isDefined(property.fieldtype)){
                                 if(['many-to-one'].indexOf(property.fieldtype) >= 0){
-
-
 
                                     _jsEntities[ entity.className ].prototype['$$get'+property.name.charAt(0).toUpperCase()+property.name.slice(1)]=function() {
 

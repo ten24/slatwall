@@ -452,39 +452,39 @@ class PublicService {
         // this.cart.orderPayments.hasErrors = false;
 
         //Grab all the data
-        // var billingAddress  = this.newBillingAddress;
-        // var expirationMonth = formdata.month;
-        // var expirationYear  = formdata.year;
-        // var country         = formdata.country;
-        // var state           = formdata.state;
-        // var accountFirst    = this.account.firstName;
-        // var accountLast     = this.account.lastName;
+        var billingAddress  = this.newBillingAddress;
+        var expirationMonth = formdata.month;
+        var expirationYear  = formdata.year;
+        var country         = formdata.country;
+        var state           = formdata.state;
+        var accountFirst    = this.account.firstName;
+        var accountLast     = this.account.lastName;
         var data = {};
 
-        var processObject = this.$hibachi.newOrder_AddOrderPayment();
+        // var processObject = this.$hibachi.newOrder_AddOrderPayment();
 
-        processObject.data.newBillingAddress = this.newBillingAddress;
-        processObject.data.newBillingAddress.expirationMonth = formdata.month;
-        processObject.data.newBillingAddress.expirationYear = formdata.year;
-        processObject.data.newBillingAddress.billingAddress.country = formdata.country || processObject.data.newOrderPayment.billingAddress.country;
-        processObject.data.newBillingAddress.billingAddress.statecode = formdata.state || processObject.data.newOrderPayment.billingAddress.statecode;
-        processObject.data.newBillingAddress.saveShippingAsBilling=(this.saveShippingAsBilling == true);
-        // data = {
-        //     'newOrderPayment.billingAddress.streetAddress': billingAddress.streetAddress,
-        //     'newOrderPayment.billingAddress.street2Address': billingAddress.street2Address,
-        //     'newOrderPayment.nameOnCreditCard': billingAddress.nameOnCreditCard,
-        //     'newOrderPayment.expirationMonth': expirationMonth,
-        //     'newOrderPayment.expirationYear': expirationYear,
-        //     'newOrderPayment.billingAddress.countrycode': country || billingAddress.countrycode,
-        //     'newOrderPayment.billingAddress.city': ''+billingAddress.city,
-        //     'newOrderPayment.billingAddress.statecode': state || billingAddress.statecode,
-        //     'newOrderPayment.billingAddress.locality': billingAddress.locality || '',
-        //     'newOrderPayment.billingAddress.postalcode': billingAddress.postalcode,
-        //     'newOrderPayment.securityCode': billingAddress.cvv,
-        //     'newOrderPayment.creditCardNumber': billingAddress.cardNumber,
-        //     'newOrderPayment.saveShippingAsBilling':(this.saveShippingAsBilling == true),
-        // };
-        console.log
+        // processObject.data.newBillingAddress = this.newBillingAddress;
+        // processObject.data.newBillingAddress.expirationMonth = formdata.month;
+        // processObject.data.newBillingAddress.expirationYear = formdata.year;
+        // processObject.data.newBillingAddress.billingAddress.country = formdata.country || processObject.data.newOrderPayment.billingAddress.country;
+        // processObject.data.newBillingAddress.billingAddress.statecode = formdata.state || processObject.data.newOrderPayment.billingAddress.statecode;
+        // processObject.data.newBillingAddress.saveShippingAsBilling=(this.saveShippingAsBilling == true);
+        data = {
+            'newOrderPayment.billingAddress.streetAddress': billingAddress.streetAddress,
+            'newOrderPayment.billingAddress.street2Address': billingAddress.street2Address,
+            'newOrderPayment.nameOnCreditCard': billingAddress.nameOnCreditCard,
+            'newOrderPayment.expirationMonth': expirationMonth,
+            'newOrderPayment.expirationYear': expirationYear,
+            'newOrderPayment.billingAddress.countrycode': country || billingAddress.countrycode,
+            'newOrderPayment.billingAddress.city': ''+billingAddress.city,
+            'newOrderPayment.billingAddress.statecode': state || billingAddress.statecode,
+            'newOrderPayment.billingAddress.locality': billingAddress.locality || '',
+            'newOrderPayment.billingAddress.postalcode': billingAddress.postalcode,
+            'newOrderPayment.securityCode': billingAddress.cvv,
+            'newOrderPayment.creditCardNumber': billingAddress.cardNumber,
+            'newOrderPayment.saveShippingAsBilling':(this.saveShippingAsBilling == true),
+        };
+
         //Make sure we have required fields for a newOrderPayment.
         this.validateNewOrderPayment( data );
         if ( this.cart.orderPayments.hasErrors && Object.keys(this.cart.orderPayments.errors).length ){
@@ -492,11 +492,9 @@ class PublicService {
         }
 
         //Post the new order payment and set errors as needed.
-        this.doAction('addOrderPayment', data, 'post').then(function(result){
-            var serverData
-            if (angular.isDefined(result['0'])){
-                serverData = result['0'].data;
-            }
+        this.doAction('addOrderPayment', data, 'post').then((result)=>{
+            var serverData = result;
+
 
             if (serverData.cart.hasErrors || angular.isDefined(this.cart.orderPayments[this.cart.orderPayments.length-1]['errors']) && !this.cart.orderPayments[this.cart.orderPayments.length-1]['errors'].hasErrors){
                 this.cart.hasErrors = true;
@@ -594,6 +592,7 @@ class PublicService {
         var data = {};
 
         data = {
+            'orderid':this.cart.orderID,
             'newOrderPayment.billingAddress.streetAddress': billingAddress.streetAddress,
             'newOrderPayment.billingAddress.street2Address': billingAddress.street2Address,
             'newOrderPayment.nameOnCreditCard': billingAddress.nameOnCard || accountFirst + ' ' +accountLast,

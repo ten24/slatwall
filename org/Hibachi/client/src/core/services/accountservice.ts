@@ -1,15 +1,20 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-import {Account} from "../model/entity/account.ts";
-class AccountService{
+import {Account} from "../model/entity/account";
+import {BaseEntityService} from "./baseentityservice";
+class AccountService extends BaseEntityService{
+    public entity:any;
+
     //@ngInject
-    constructor(public $injector:ng.auto.IInjectorService){
-        this.$injector = $injector;
+    constructor(
+        public $injector:ng.auto.IInjectorService,
+        public $hibachi,
+        public utilityService
+    ){
+        super($injector,$hibachi,utilityService,'Account');
+
     }
 
-    public newAccount = ($injector=this.$injector):Account=>{
-        return new Account($injector);
-    }
 }
 export {
     AccountService

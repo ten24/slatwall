@@ -8,6 +8,7 @@ class Account extends BaseEntity{
     public giftCards:Array<any>=[];
     public firstName:string;
     public lastName:string;
+    public entity:any;
 
     constructor($injector){
         super($injector);

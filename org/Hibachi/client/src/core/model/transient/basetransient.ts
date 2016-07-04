@@ -3,7 +3,7 @@
 
 import {BaseObject} from "../baseobject";
 
-class BaseTransient extends BaseObject{
+abstract class BaseTransient extends BaseObject{
 
     public errors:{ [errorName: string]: any; }={};
 

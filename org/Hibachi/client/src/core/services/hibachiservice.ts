@@ -196,6 +196,9 @@ class HibachiService{
 	newEntity= (entityName) =>{
 		return new this._jsEntities[entityName];
 	};
+	getEntityDefinition= (entityName) =>{
+		return this._jsEntities[entityName];
+	};
 	/*basic entity getter where id is optional, returns a promise*/
 	getEntity= (entityName:string, options:any) => {
 		/*

@@ -3,11 +3,14 @@
 import "angular";
 declare var angular:any;
 
-class BaseObject{
+abstract class BaseObject{
+    public className:string;
     public $injector:ng.auto.IInjectorService;
     //@ngInject
     constructor($injector){
         this.$injector = $injector;
+        var constructorString: string = this.constructor.toString();
+        this.className = constructorString.match(/\w+/g)[1];
     }
 
     public getService=<service>(serviceName:string):service=>{

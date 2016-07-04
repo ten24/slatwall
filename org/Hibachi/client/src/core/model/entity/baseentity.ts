@@ -4,14 +4,18 @@
 import {BaseTransient} from "../transient/basetransient";
 
 declare var angular:any;
-class BaseEntity extends BaseTransient{
+abstract class BaseEntity extends BaseTransient{
     public errors:any={};
     public messages:any={};
     public request;
+    public entity:Object;
+    public $hibachi:any;
 
     constructor($injector){
         super($injector);
+        this.$hibachi = this.getService('$hibachi');
     }
+
 
     public populate = (response)=>{
         var data = response;
@@ -20,8 +24,14 @@ class BaseEntity extends BaseTransient{
         }
 
         for(var key in data){
-            var value = data[key];
+            let value = data[key];
             this[key] = value;
+            if(this.entity && this.entity.hasOwnProperty(key)){
+                this.entity[key] = value;
+            }else{
+                this[key] = value;
+            }
+
         }
 
         if(response.errors){
