@@ -222,28 +222,8 @@ class HibachiServiceDecorator{
                 };
 
                 angular.forEach(entity,function(property){
-
                     if(angular.isObject(property) && angular.isDefined(property.name)){
-                        if(property.name !== 'data' && property.name !== 'validations'){
-
-                            Object.defineProperty(_jsEntities[ entity.className ].prototype, property.name, {
-                                configurable:true,
-                                enumerable:false,
-
-                                get: function() {
-
-                                    return this.data[property.name];
-                                },
-                                set: function(value) {
-
-                                    this.data[property.name]=value;
-
-                                }
-                            });
-                        }
                         if(angular.isUndefined(property.persistent)){
-
-
                             if(angular.isDefined(property.fieldtype)){
                                 if(['many-to-one'].indexOf(property.fieldtype) >= 0){
 
@@ -322,9 +302,10 @@ class HibachiServiceDecorator{
                                             var childName = 'child'+this.metaData.className;
                                             manyToManyName = entityInstance.metaData.$$getManyToManyName(childName);
 
-                                        }else{
-                                            manyToManyName = entityInstance.metaData.$$getManyToManyName(metaData.className.charAt(0).toLowerCase() + metaData.className.slice(1));
                                         }
+                                        // else{
+                                        //     manyToManyName = entityInstance.metaData.$$getManyToManyName(metaData.className.charAt(0).toLowerCase() + metaData.className.slice(1));
+                                        // }
 
                                         if(angular.isUndefined(thisEntityInstance.parents)){
                                             thisEntityInstance.parents = [];
@@ -333,7 +314,7 @@ class HibachiServiceDecorator{
                                         thisEntityInstance.parents.push(thisEntityInstance.metaData[property.name]);
 
 
-                                        if(angular.isDefined(manyToManyName)){
+                                        if(angular.isDefined(manyToManyName) && manyToManyName.length){
                                             if(angular.isUndefined(entityInstance.children)){
                                                 entityInstance.children = [];
                                             }
@@ -352,6 +333,24 @@ class HibachiServiceDecorator{
 
                                         thisEntityInstance.data[property.name] = entityInstance;
                                     };
+                                    if(property.name !== 'data' && property.name !== 'validations'){
+
+                                        Object.defineProperty(_jsEntities[ entity.className ].prototype, property.name, {
+                                            configurable:true,
+                                            enumerable:false,
+
+                                            get: function() {
+
+                                                return this.data[property.name];
+                                            },
+                                            set: function(value) {
+
+                                                this['$$set'+property.name.charAt(0).toUpperCase()+property.name.slice(1)](value);
+
+                                            }
+                                        });
+                                    }
+
                                 }else if(['one-to-many','many-to-many'].indexOf(property.fieldtype) >= 0){
                                     _jsEntities[ entity.className ].prototype['$$add'+property.singularname.charAt(0).toUpperCase()+property.singularname.slice(1)]=function(entityInstance?){
 
@@ -424,7 +423,7 @@ class HibachiServiceDecorator{
 
                                                 for(var i in response.records){
 
-                                                    var entityInstance = thisEntityInstance['$$add'+thisEntityInstance.metaData[property.name].singularname.charAt(0).toUpperCase()+thisEntityInstance.metaData[property.name].singularname.slice(1)]();
+                                                    var entityInstance = thisEntityInstance['$$add'+property.singularname.charAt(0).toUpperCase()+property.singularname.slice(1)]();
                                                     entityInstance.$$init(response.records[i]);
                                                     if(angular.isUndefined(thisEntityInstance[property.name])){
                                                         thisEntityInstance[property.name] = [];
@@ -435,6 +434,32 @@ class HibachiServiceDecorator{
                                             return collectionPromise;
                                         }
                                     };
+
+                                    Object.defineProperty(_jsEntities[ entity.className ].prototype, property.name, {
+                                        configurable:true,
+                                        enumerable:false,
+
+                                        get: function() {
+
+                                            return this.data[property.name];
+                                        },
+                                        set: function(value) {
+                                            this.data[property.name]= [];
+                                            if(angular.isArray(value)){
+                                                for(var i =0;i < value.length;i++){
+                                                    var item = value[i];
+                                                    let entityInstance = $delegate.newEntity(this.metaData[property.name].cfc);
+                                                    entityInstance.$$init(item);
+                                                    this['$$add'+property.singularname.charAt(0).toUpperCase()+property.singularname.slice(1)](entityInstance);
+                                                }
+                                            }else{
+                                                let entityInstance = $delegate.newEntity(this.metaData[property.name].cfc);
+                                                    entityInstance.$$init(value);
+                                                    this['$$add'+property.singularname.charAt(0).toUpperCase()+property.singularname.slice(1)](entityInstance);
+                                            }
+                                        }
+                                    });
+
                                 }else{
 
                                     if(['id'].indexOf(property.fieldtype)>= 0){
@@ -449,11 +474,48 @@ class HibachiServiceDecorator{
                                         };
                                     }
 
+
+                                    if(property.name !== 'data' && property.name !== 'validations'){
+                                        Object.defineProperty(_jsEntities[ entity.className ].prototype, property.name, {
+                                            configurable:true,
+                                            enumerable:false,
+
+                                            get: function() {
+
+                                                return this.data[property.name];
+                                            },
+                                            set: function(value) {
+
+                                                this.data[property.name]=value;
+
+                                            }
+                                        });
+                                    }
+
+
                                     _jsEntities[ entity.className ].prototype['$$get'+property.name.charAt(0).toUpperCase()+property.name.slice(1)]=function(){
                                         return this.data[property.name];
                                     };
                                 }
                             }else{
+
+                                if(property.name !== 'data' && property.name !== 'validations'){
+                                    Object.defineProperty(_jsEntities[ entity.className ].prototype, property.name, {
+                                        configurable:true,
+                                        enumerable:false,
+
+                                        get: function() {
+
+                                            return this.data[property.name];
+                                        },
+                                        set: function(value) {
+
+                                            this.data[property.name]=value;
+
+                                        }
+                                    });
+
+                                }
                                 _jsEntities[ entity.className ].prototype['$$get'+property.name.charAt(0).toUpperCase()+property.name.slice(1)]=function() {
                                     return this.data[property.name];
                                 };

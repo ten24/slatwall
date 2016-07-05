@@ -14,10 +14,10 @@ class PublicService {
     public countries:any;
     public addressOptions:any;
     public requests:{ [action: string]: PublicRequest; }={};
-    public errors:{[key:string]:any}={};
 
     public http:ng.IHttpService;
     public confirmationUrl:string;
+    public loading:boolean = false;
     public header:any;
     public window:any;
     public finding:boolean;
@@ -42,10 +42,8 @@ class PublicService {
         public $injector:ng.auto.IInjectorService,
         public requestService,
         public accountService,
-        public cartService,
-        public orderService
+        public cartService
     ) {
-        this.orderService = orderService;
         this.cartService = cartService;
         this.accountService = accountService;
         this.requestService = requestService;
@@ -62,24 +60,18 @@ class PublicService {
         this.account = this.accountService.newAccount();
     }
 
-    // public hasErrors = ()=>{
-
-    //     return this.errors.length;
-    // }
+    public hasErrors = ()=>{
+        return this.errors.length;
+    }
 
     /**
      * Helper methods for getting errors from the cart
      */
     public getErrors = ():{} =>{
-        this.errors = {};
-        for(var key in this.requests){
-            var request = this.requests[key];
-            if(Object.keys(request.errors).length){
-                this.errors[key] = request.errors;
-            }
-         }
-
-        return this.errors;
+        if (this.errors !== undefined){
+            return this.errors;
+        }
+        return {};
     }
 
     /** grab the valid expiration years for credit cards  */
@@ -124,31 +116,27 @@ class PublicService {
 
     /** accessors for states */
     public getData=(url, setter, param):any =>  {
-
+        this.loading = true;
         let urlBase = url + this.ajaxRequestParam + param;
         let request = this.requestService.newPublicRequest(urlBase);
-
         request.promise.then((result:any)=>{
             //don't need account and cart for anything other than account and cart calls.
             if (setter.indexOf('account') == -1 || setter.indexOf('cart') == -1){
                 if (result['account']){delete result['account'];}
                 if (result['cart']){delete result['cart'];}
             }
-
             if(setter == 'cart'||setter=='account'){
-                //cart and account return cart and account info flat
-                this[setter].populate(result)
 
+                this[setter].populate(result)
             }else{
-                //other functions reutrn cart,account and then data
-                this[setter]=(result);
+                this[setter] = result;
             }
 
         }).catch((reason)=>{
 
 
         });
-        this.requests[request.getAction()]=request;
+        this.requests[setter]=request;
         return request.promise;
     }
 
@@ -181,63 +169,51 @@ class PublicService {
         let urlBase = this.baseActionPath + this.ajaxRequestParam;
 
         if(data){
-            method = "post";
             data.returnJsonObjects = "cart,account";
         }else{
             urlBase += "&returnJsonObject=cart,account";
         }
 
         if (method == "post"){
-
              data.returnJsonObjects = "cart,account";
             //post
-            let request:PublicRequest = this.requestService.newPublicRequest(urlBase,data,method)
+            let request = this.requestService.newPublicRequest(urlBase,data,method)
             request.promise.then((result:any)=>{
-                this.processAction(result,request);
+
+                /** update the account and the cart */
+                this.account.populate(result.data.account);
+                this.cart.populate(result.data.cart);
+                //if the action that was called was successful, then success is true.
+                if (request.isSuccess()){
+                    for (var action in request.successfulActions){
+                        if (request.successfulActions[action].indexOf('public:cart.placeOrder') !== -1){
+                            this.$window.location.href = this.confirmationUrl;
+                        }
+                    }
+                }
+                if (!request.isSuccess()){
+                    //this.hasErrors = true;
+                }
+
+                request.promise(result);
             }).catch((response)=>{
 
+                request.promise(response);
             });
-            this.requests[request.getAction()]=request;;
+            this.requests[action] = request;
             return request.promise;
         }else{
             //get
-
             var url = urlBase + "&returnJsonObject=cart,account";
 
             let request = this.requestService.newPublicRequest(url);
             request.promise.then((result:any)=>{
-                this.processAction(result,request);
+
             }).catch((reason)=>{
 
             });
-
-            this.requests[request.getAction()]=request;
             return request.promise;
         }
-
-    }
-
-    private processAction = (response,request:PublicRequest)=>{
-        /** update the account and the cart */
-        console.log('processAction');
-        console.log(response);
-        this.account.populate(response.account);
-        this.account.request = request;
-        this.cart.populate(response.cart);
-        this.cart.request = request;
-        console.log(this);
-        //if the action that was called was successful, then success is true.
-        if (request.hasSuccessfulAction()){
-            for (var action in request.successfulActions){
-                if (request.successfulActions[action].indexOf('public:cart.placeOrder') !== -1){
-                    this.$window.location.href = this.confirmationUrl;
-                }
-            }
-        }
-        if (!request.hasSuccessfulAction()){
-            //this.hasErrors = true;
-        }
-
     }
 
     public getRequestByAction = (action:string)=>{
@@ -251,6 +227,7 @@ class PublicService {
        return this.account.userIsLoggedIn();
     }
 
+
     public getActivePaymentMethods = ()=>{
         let urlString = "/?slataction=admin:ajax.getActivePaymentMethods";
         let request = this.requestService.newPublicRequest(urlString)
@@ -259,7 +236,6 @@ class PublicService {
                 this.paymentMethods = result.data.paymentMethods;
             }
         });
-        this.requests[request.getAction()]=request;
     };
 
     /**
@@ -302,9 +278,9 @@ class PublicService {
     }
 
     /** Returns true if the order requires a fulfillment */
-    public orderRequiresFulfillment = ():boolean=> {
+    public orderRequiresFulfillment = ()=> {
 
-        return this.cart.orderRequiresFulfillment();
+        this.cart.orderRequiresFulfillment();
     };
 
     /**
@@ -312,19 +288,19 @@ class PublicService {
      *  Either because the user is not logged in, or because they don't have one.
      *
      */
-    public orderRequiresAccount = ():boolean=> {
-        return this.cart.orderRequiresAccount();
+    public orderRequiresAccount = ()=> {
+        this.cart.orderRequiresAccount();
     };
 
     /** Returns true if the payment tab should be active */
-    public hasShippingAddressAndMethod = ():boolean => {
-        return this.cart.hasShippingAddressAndMethod();
+    public hasShippingAddressAndMethod = () => {
+        this.cart.hasShippingAddressAndMethod();
     };
 
     /**
      * Returns true if the user has an account and is logged in.
      */
-    public hasAccount = ():boolean=>{
+    public hasAccount = ()=>{
         if ( this.account.accountID ) {
             return true;
         }
@@ -335,6 +311,55 @@ class PublicService {
     */
     public redirectExact = (url:string)=>{
         this.$location.url(url);
+    }
+
+    /** simple validation just to ensure data is present and accounted for.
+     */
+    public validateNewOrderPayment =  (newOrderPayment)=> {
+        var newOrderPaymentErrors = {};
+        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.streetAddress')){
+            newOrderPaymentErrors['streetAddress'] = 'Required *';
+        }
+        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.countrycode')){
+            newOrderPaymentErrors['countrycode'] = 'Required *';
+        }
+        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.statecode')){
+            if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.locality')){
+                newOrderPaymentErrors['statecode'] = 'Required *';
+            }
+        }
+        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.city')){
+            if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.city')){
+                newOrderPaymentErrors['city'] = 'Required *';
+            }
+        }
+        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.locality')){
+            if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.statecode')){
+                newOrderPaymentErrors['locality'] = 'Required *';
+            }
+        }
+        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.postalcode')){
+            newOrderPaymentErrors['postalCode'] = 'Required *';
+        }
+        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.nameOnCreditCard')){
+            newOrderPaymentErrors['nameOnCreditCard']= 'Required *';
+        }
+        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.expirationMonth')){
+            newOrderPaymentErrors['streetAddress'] = 'Required *';
+        }
+        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.expirationYear')){
+            newOrderPaymentErrors['expirationYear'] = 'Required *';
+        }
+        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.creditCardNumber')){
+            newOrderPaymentErrors['creditCardNumber'] = 'Required *';
+        }
+        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.securityCode')){
+            newOrderPaymentErrors['securityCode'] = 'Required *';
+        }
+        if (Object.keys(newOrderPaymentErrors).length){
+            //this.cart.orderPayments.hasErrors = true;
+            //this.cart.orderPayments.errors = newOrderPaymentErrors;
+        }
     }
 
     // /** Returns true if a property on an object is undefined or empty. */
@@ -393,55 +418,6 @@ class PublicService {
         }
      }
 
-     /** simple validation just to ensure data is present and accounted for.
-     */
-    public validateNewOrderPayment =  (newOrderPayment)=> {
-        var newOrderPaymentErrors = {};
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.streetAddress')){
-            newOrderPaymentErrors['streetAddress'] = 'Required *';
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.countrycode')){
-            newOrderPaymentErrors['countrycode'] = 'Required *';
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.statecode')){
-            if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.locality')){
-                newOrderPaymentErrors['statecode'] = 'Required *';
-            }
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.city')){
-            if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.city')){
-                newOrderPaymentErrors['city'] = 'Required *';
-            }
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.locality')){
-            if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.statecode')){
-                newOrderPaymentErrors['locality'] = 'Required *';
-            }
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.postalcode')){
-            newOrderPaymentErrors['postalCode'] = 'Required *';
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.nameOnCreditCard')){
-            newOrderPaymentErrors['nameOnCreditCard']= 'Required *';
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.expirationMonth')){
-            newOrderPaymentErrors['streetAddress'] = 'Required *';
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.expirationYear')){
-            newOrderPaymentErrors['expirationYear'] = 'Required *';
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.creditCardNumber')){
-            newOrderPaymentErrors['creditCardNumber'] = 'Required *';
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.securityCode')){
-            newOrderPaymentErrors['securityCode'] = 'Required *';
-        }
-        if (Object.keys(newOrderPaymentErrors).length){
-            //this.cart.orderPayments.hasErrors = true;
-            //this.cart.orderPayments.errors = newOrderPaymentErrors;
-        }
-    }
-
     /** Allows an easy way to calling the service addOrderPayment.
     */
     public addOrderPayment = (formdata)=>{
@@ -459,16 +435,6 @@ class PublicService {
         var accountFirst    = this.account.firstName;
         var accountLast     = this.account.lastName;
         var data = {};
-
-        var processObject = this.orderService.newOrder_AddOrderPayment();
-
-        // processObject.newBillingAddress = this.newBillingAddress;
-        // processObject.newBillingAddress.expirationMonth = formdata.month;
-        // processObject.newBillingAddress.expirationYear = formdata.year;
-        // processObject.newBillingAddress.billingAddress.country = formdata.country || processObject.data.newOrderPayment.billingAddress.country;
-        // processObject.newBillingAddress.billingAddress.statecode = formdata.state || processObject.data.newOrderPayment.billingAddress.statecode;
-        // processObject.newBillingAddress.saveShippingAsBilling=(this.saveShippingAsBilling == true);
-
 
         data = {
             'newOrderPayment.billingAddress.streetAddress': billingAddress.streetAddress,
@@ -493,9 +459,11 @@ class PublicService {
         }
 
         //Post the new order payment and set errors as needed.
-        this.doAction('addOrderPayment', data, 'post').then((result)=>{
-            var serverData = result;
-
+        this.$q.all([this.doAction('addOrderPayment', data, 'post')]).then(function(result){
+            var serverData
+            if (angular.isDefined(result['0'])){
+                serverData = result['0'].data;
+            }
 
             if (serverData.cart.hasErrors || angular.isDefined(this.cart.orderPayments[this.cart.orderPayments.length-1]['errors']) && !this.cart.orderPayments[this.cart.orderPayments.length-1]['errors'].hasErrors){
                 this.cart.hasErrors = true;
@@ -577,10 +545,44 @@ class PublicService {
         return false;
     }
 
+    /** returns true if the loader should be on for that item.
+    */
+    public isLoading = function isLoading(section){
+        if (angular.isUndefined(this.loaders)){
+            this.loaders = [];
+            this.loaders[section] = false;
+        }
+        if (this.loaders[section] == true){
+            return true;
+        }
+        return false;
+    }
+
+    /** adds a loader to the loader list
+    */
+    //public addLoader = function(section){
+
+//        if (angular.isUndefined(this.loaders)){
+//            this.loaders = [];
+//            this.loaders[section] = "";
+//        }
+//        var unloadLoader = this.$scope.$watch('this.loading', function(oldState, newState){
+//            if (newState != undefined && newState == true){
+//                this.loaders[section] = true;
+//            }else{
+//                this.loaders[section] = false;
+//                unloadLoader();
+//            }
+//        });
+    //}
+
     /** Allows an easy way to calling the service addOrderPayment.
     */
     public addOrderPaymentAndPlaceOrder = (formdata)=>{
         //reset the form errors.
+        this.cart.hasErrors=false;
+        this.cart.orderPayments.errors = {};
+        this.cart.orderPayments.hasErrors = false;
         this.orderPlaced = false;
         //Grab all the data
         var billingAddress  = this.newBillingAddress;
@@ -593,7 +595,6 @@ class PublicService {
         var data = {};
 
         data = {
-            'orderid':this.cart.orderID,
             'newOrderPayment.billingAddress.streetAddress': billingAddress.streetAddress,
             'newOrderPayment.billingAddress.street2Address': billingAddress.street2Address,
             'newOrderPayment.nameOnCreditCard': billingAddress.nameOnCard || accountFirst + ' ' +accountLast,

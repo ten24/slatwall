@@ -4,8 +4,8 @@
 import {BaseTransient} from "../transient/basetransient";
 
 declare var angular:any;
-abstract class BaseEntity extends BaseTransient{
-    public request;
+abstract class BaseProcess extends BaseTransient{
+
 
     constructor($injector){
         super($injector);
@@ -14,5 +14,5 @@ abstract class BaseEntity extends BaseTransient{
 
 }
 export{
-    BaseEntity
+    BaseProcess
 }
