@@ -236,8 +236,6 @@ component output="false" accessors="true" extends="HibachiService"  {
 		//No need to remove the account or authentication. We just set the state to being logged out.
 		currentSession.setLoggedOutDateTime(DateTimeFormat(now()));
 		currentSession.setLoggedInFlag(false);
-		//refresh the slatwallScope so it does still think its logged in.
-		structDelete(request, "slatwallScope");
 		
 		// Make sure that this logout is persisted
 		getHibachiDAO().flushORMSession();

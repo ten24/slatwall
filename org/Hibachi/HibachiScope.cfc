@@ -2,7 +2,6 @@ component output="false" accessors="true" extends="HibachiTransient" {
 
 	property name="account" type="any";
 	property name="session" type="any";
-	
 	property name="loggedInAsAdminFlag" type="boolean";
 	property name="publicPopulateFlag" type="boolean";
 	property name="persistSessionFlag" type="boolean";
@@ -12,11 +11,9 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="ormHasErrors" type="boolean" default="false";
 	property name="rbLocale";
 	property name="url" type="string";
-	
 	property name="calledActions" type="array";
 	property name="failureActions" type="array";
 	property name="successfulActions" type="array";
-	
 	property name="auditsToCommitStruct" type="struct";
 	property name="modifiedEntities" type="array";
 	
@@ -24,7 +21,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		setORMHasErrors( false );
 		setRBLocale( "en_us" );
 		setPublicPopulateFlag( false );
-		setPersistSessionFlag( false );
+		setPersistSessionFlag( true );
 		setSessionFoundNPSIDCookieFlag( false );
 		setSessionFoundPSIDCookieFlag( false );
 		setSessionFoundExtendedPSIDCookieFlag( false );
@@ -95,11 +92,13 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		setAuditsToCommitStruct({});
 	}
 	
-	/** This bases if the user is logged on on whether or not the lastRequest or has logged out.  
+	/** This checks if the user is logged in by checking whether or not the user logged out or timeedOut.  
 	 *  This method should return as it always has. 
 	 */
 	public boolean function getLoggedInFlag() {
+		
 		return session.getLoggedInFlag();
+		
 	}
 	
 	public boolean function getLoggedInAsAdminFlag() {
