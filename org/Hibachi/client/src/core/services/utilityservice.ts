@@ -8,15 +8,10 @@ class UtilityService extends BaseService{
         super();
 
     }
-
-    public extend = <T, U>(first: T, second: U): T & U => {
-
-        for (let id in second) {
-            if (!first.hasOwnProperty(id)) {
-                first[id] = second[id];
-            }
-        }
-        return <T & U>first;
+    //used to do inheritance at runtime
+    public extend = (ChildClass, ParentClass)=> {
+        ChildClass.prototype = new ParentClass();
+        ChildClass.prototype.constructor = ChildClass;
     }
 
     public getQueryParamsFromUrl = (url) =>{

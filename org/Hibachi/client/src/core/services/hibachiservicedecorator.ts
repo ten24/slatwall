@@ -225,6 +225,7 @@ class HibachiServiceDecorator{
 
                     if(angular.isObject(property) && angular.isDefined(property.name)){
                         if(property.name !== 'data' && property.name !== 'validations'){
+
                             Object.defineProperty(_jsEntities[ entity.className ].prototype, property.name, {
                                 configurable:true,
                                 enumerable:false,

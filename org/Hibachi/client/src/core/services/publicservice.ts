@@ -132,9 +132,11 @@ class PublicService {
                 if (result['account']){delete result['account'];}
                 if (result['cart']){delete result['cart'];}
             }
+            console.log('account',this.account);
             if(setter == 'cart'||setter=='account'){
                 //cart and account return cart and account info flat
                 this[setter].populate(result)
+                console.log('account',this.account);
             }else{
                 //other functions reutrn cart,account and then data
                 this[setter]=(result);
@@ -234,11 +236,6 @@ class PublicService {
             //this.hasErrors = true;
         }
 
-        // request.promise(result);
-        console.log('test');
-        console.log(request);
-
-        console.log(this.cart)
     }
 
     public getRequestByAction = (action:string)=>{

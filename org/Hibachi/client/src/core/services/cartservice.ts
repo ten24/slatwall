@@ -1,16 +1,18 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 import {Cart} from "../model/entity/cart.ts";
-class CartService{
+import {BaseEntityService} from "./baseentityservice";
+class CartService extends BaseEntityService{
     //@ngInject
-    constructor(public $injector:ng.auto.IInjectorService){
-        this.$injector = $injector;
-    }
+    //@ngInject
+    constructor(
+        public $injector:ng.auto.IInjectorService,
+        public $hibachi,
+        public utilityService
+    ){
+        super($injector,$hibachi,utilityService,'Order','Cart');
 
-    public newCart = ($injector=this.$injector):Cart=>{
-        return new Cart($injector);
     }
-
 
 }
 export {

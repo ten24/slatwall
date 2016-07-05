@@ -6,9 +6,28 @@ import {BaseObject} from "../baseobject";
 abstract class BaseTransient extends BaseObject{
 
     public errors:{ [errorName: string]: any; }={};
+    public messages:any={};
 
     constructor($injector){
         super($injector);
+    }
+
+    public populate = (response)=>{
+        var data = response;
+        if(response.data){
+            data= response.data;
+        }
+
+        for(var key in data){
+            let value = data[key];
+            this[key] = value;
+        }
+
+        if(response.errors){
+            this.errors = response.errors;
+            this.messages = response.messages;
+        }
+
     }
 
     public addError=(errorName:string,errorMessage:any)=>{
