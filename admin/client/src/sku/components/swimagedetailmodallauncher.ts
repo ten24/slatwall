@@ -13,7 +13,11 @@ class SWImageDetailModalLauncherController{
     public productProductId:string; 
     public customImageNameFlag:boolean;
     public imageFileUpdateEvent:string; 
-    public otherSkusWithSameImageCollectionConfig:any; 
+    public otherSkusWithSameImageOptions:any; 
+    public otherSkusWithSameImageCollectionConfig:any;
+    public imageOptionsAttachedToSku:any; 
+    public imageOptions=[]; 
+    public skusAffectedCount:number; 
     public numberOfSkusWithImageFile:number=0; 
     
     //@ngInject
@@ -36,21 +40,39 @@ class SWImageDetailModalLauncherController{
         this.sku = this.$hibachi.populateEntity("Sku",skuData); 
         this.imageFileUpdateEvent = "file:"+this.imagePath;
         this.observerService.attach(this.updateImage, this.imageFileUpdateEvent, this.skuId);
+        this.fetchImageOptionData();
     }    
 
-    public updateImage = (rawImage) => {
+    private fetchImageOptionData = () =>{
+        this.imageOptionsAttachedToSku = this.collectionConfigService.newCollectionConfig("Option");
+        this.imageOptionsAttachedToSku.addDisplayProperty('optionGroup.optionGroupName,optionName,optionCode,optionID');
+        this.imageOptionsAttachedToSku.addFilter('skus.skuID', this.skuId, "="); 
+        this.imageOptionsAttachedToSku.addFilter('optionGroup.imageGroupFlag', true, "="); 
+        this.imageOptionsAttachedToSku.setAllRecords(true);
+        this.imageOptionsAttachedToSku.getEntity().then(
+            (data)=>{
+                angular.forEach(data.records,(value,key)=>{
+                    this.imageOptions.push(this.$hibachi.populateEntity("Option", value));
+                });
+            },
+            (reason)=>{
+                throw("Could not calculate affected skus in SWImageDetailModalLauncher because of: ", reason);
+            }
+        );
         this.otherSkusWithSameImageCollectionConfig = this.collectionConfigService.newCollectionConfig("Sku");
         this.otherSkusWithSameImageCollectionConfig.addFilter("imageFile",this.imageFile,"=");
         this.otherSkusWithSameImageCollectionConfig.setAllRecords(true);
         this.otherSkusWithSameImageCollectionConfig.getEntity().then(
             (data)=>{
-                this.numberOfSkusWithImageFile = data.records.length; 
-                console.log("number is", this.numberOfSkusWithImageFile);
+                this.skusAffectedCount = data.records.length; 
             },
             (reason)=>{
-                //throw
+                throw("Could not calculate affected skus in SWImageDetailModalLauncher because of: ", reason);
             }
         );
+    }
+
+    public updateImage = (rawImage) => {
         if(angular.isDefined(rawImage)){
             this.sku.data.imagePath = rawImage;
         }   

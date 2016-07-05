@@ -17,16 +17,23 @@
                  data-name="{{swImageDetailModalLauncher.name}}">
             <div class="row">
                 
-                <div class="col-md-12 s-alert-message" ng-show="swImageDetailModalLauncher.numberOfSkusWithImageFile > 0">
+                <!--<div class="col-md-12 s-alert-message" ng-show="swImageDetailModalLauncher.numberOfSkusWithImageFile > 0">
                     <div class="alert alert-info" id="j-multi-sku-message">
                         <strong>{{swImageDetailModalLauncher.numberOfSkusWithImageFile}} skus with the filename: {{swImageDetailModalLauncher.imageFile}}  will be effected.</strong>
                     </div>
-                    <!--
                     <div class="alert alert-info" id="j-custom-sku-message" style="display:none;">
                         You have choosen to overwrite the defualt image for sku <strong>OTB_DrinkingTeam-1826-1</strong>.  
                     </div>
-                    -->
-                </div>
+                </div>-->
+
+                <div class="alert alert-info" id="j-multi-sku-message">
+                                    <strong>( {{swImageDetailModalLauncher.skusAffectedCount}} ) skus with the same option value will be effected.</strong>
+                                    <div>
+                                        <ul>
+                                            <li ng-repeat="option in swImageDetailModalLauncher.imageOptions">{{ option.data.optionGroup_optionGroupName }} : {{ option.data.optionName }} ( {{swImageDetailModalLauncher.skusAffectedCount}} )</li>
+                                        </ul>
+                                    </div>
+                                </div>
                 
                 <div class="col-xs-4 s-image-edit">
                     <sw-sku-thumbnail data-sku-data="swImageDetailModalLauncher.sku.data"
