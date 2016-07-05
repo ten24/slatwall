@@ -357,7 +357,8 @@ body.s-login-screen .form-group {
 .no-records-found:hover > td {
   background-color: #F4F9FB !important;
 }
-.s-strong {
+.s-strong,
+strong {
   font-weight: 600;
 }
 .form-control::-webkit-input-placeholder {
@@ -2973,6 +2974,42 @@ tabel .s-table-header {
   /* for IE 11 */
   display: none;
 }
+.s-titled-select-wrapper.s-sort-by {
+  display: inline-block;
+  margin-right: 5px;
+}
+.s-titled-select-wrapper.s-sort-by select {
+  padding: 3px 18px 0px 58px !important;
+}
+.s-titled-select-wrapper.s-site select {
+  padding: 3px 18px 0px 44px !important;
+}
+.s-titled-select-wrapper select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border-radius: 2px !important;
+  font-size: 12px !important;
+}
+.s-titled-select-wrapper span {
+  position: absolute;
+  left: 12px;
+  font-size: 12px;
+  top: 8px;
+  color: #aaa;
+  pointer-events: none;
+}
+.s-titled-select-wrapper.s-disabled {
+  opacity: .5;
+  pointer-events: none;
+}
+.btn-group.s-option-toggles .btn.s-selected {
+  background-color: #e6e6e6;
+  border-color: #d1d1d1;
+  color: #5E5E5E;
+  -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+}
 .s-table-header-nav .s-table-view-options label {
   line-height: 28px;
   margin: 0px;
@@ -3436,6 +3473,16 @@ tabel .s-table-header {
 .s-filter-wrapper .s-edit-filters {
   display: inline-block;
   width: 100%;
+}
+.s-table-inner-nav .s-action-right .s-option-toggles .btn + .btn {
+  margin: 0px;
+}
+.s-table-inner-nav .s-action-right .s-option-toggles .btn {
+  border-right: 0px;
+}
+.s-table-inner-nav .s-action-right .s-option-toggles .btn:hover {
+  border-width: 1px !important;
+  border-color: #eee;
 }
 .s-page-content-wrapper {
   background: #fff;

@@ -362,7 +362,7 @@
                                                                             </ul>
                                                                         </div>
                                                                         <span class="s-search s-add">
-                                                                            <input type="text" class="form-control input-sm" name="" placeholder="Add a product..." style="padding-left: 30px;">
+                                                                            <input type="text" class="form-control input-sm" name="" placeholder="Search & assign product..." style="padding-left: 30px;">
                                                                             <div class="dropdown s-search-results-wrapper s-selectable" style="display: none;">
                                     									        <ul class="dropdown-menu">
                                                                                     <li class="s-selected"><a href="##">Casio Business Casual Watch <span>Accessories</span></a></li>
@@ -383,51 +383,13 @@
                                                                 
                                                             </div>
                                                             <div class="col-md-3 s-action-right">
-                                                        
-                                                            
-                                                            <style>
-                                                                .s-titled-select-wrapper.s-sort-by {
-                                                                    display: inline-block;
-                                                                    margin-right: 5px;
-                                                                }
-                                                                .s-titled-select-wrapper.s-sort-by select {
-                                                                    padding: 3px 18px 0px 58px !important;
-                                                                }
-                                                                .s-titled-select-wrapper.s-site select {
-                                                                    padding: 3px 18px 0px 44px !important;
-                                                                }
-                                                                .s-titled-select-wrapper select {
-                                                                    -webkit-appearance: none;
-                                                                    -moz-appearance: none;
-                                                                    appearance: none;
-                                                                    border-radius: 2px !important;
-                                                                    font-size: 12px !important;
-                                                                }
-                                                                .s-titled-select-wrapper span {
-                                                                    position: absolute;
-                                                                    left: 12px;
-                                                                    font-size: 12px;
-                                                                    top: 8px;
-                                                                    color: #aaa;    
-                                                                }
-                                                                .s-titled-select-wrapper.s-disabled {
-                                                                    opacity: .5;
-                                                                    pointer-events: none;
-                                                                }
-                                                                .btn-group.s-option-toggles .btn.s-selected {
-                                                                    background-color: #e6e6e6;
-                                                                    border-color: #d1d1d1;
-                                                                    color: #5E5E5E;
-                                                                    -webkit-box-shadow: inset 0 3px 5px rgba(0,0,0,.125);
-                                                                    box-shadow: inset 0 3px 5px rgba(0,0,0,.125);
-                                                                }
-                                                            </style>
                                                                 
                                                                 <div class="s-select-wrapper s-titled-select-wrapper s-sort-by">
                                                                     <span>Sort By:</span>
                                                                     <select class="form-control input-sm">
-                                                                        <option value="">All</option>
-                                                                        <option value="">Name</option>
+                                                                        <option value="" disabled selected>Select</option>
+                                                                        <option value="" id="for-mock-only-manual-sort">Manual</option>
+                                                                        <option value="name">Name</option>
                                                                         <option value="">Code</option>
                                                                         <option value="">Active</option>
                                                                         <option value="">Published</option>
@@ -437,9 +399,9 @@
                                                                 </div>
                                                                 
                                                                 <div class="btn-group s-option-toggles" role="group" aria-label="...">
-                                                                    <button type="button" class="btn btn-default s-selected"><i class="fa fa-sort-alpha-asc" aria-hidden="true"></i></button>
-                                                                    <button type="button" class="btn btn-default"><i class="fa fa-sort-alpha-desc" aria-hidden="true"></i></button>
-                                                                    <button type="button" class="btn btn-default"><i class="fa fa-bars" aria-hidden="true"></i></button>
+                                                                    <button type="button" class="btn btn-default s-selected" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Sort Ascending"><i class="fa fa-sort-alpha-asc" aria-hidden="true"></i></button>
+                                                                    <button type="button" class="btn btn-default" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Sort Descending"><i class="fa fa-sort-alpha-desc" aria-hidden="true"></i></button>
+                                                                    <button type="button" class="btn btn-default" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Manual Sort"><i class="fa fa-bars" aria-hidden="true"></i></button>
                                                                 </div>
                                                                 
                                                                 <!-- <div class="s-table-setting">
@@ -684,7 +646,7 @@
                                                                             </ul>
                                                                         </div>
                                                                         <span class="s-search s-add">
-                                                                            <input type="text" class="form-control input-sm" name="" placeholder="Add a page..." style="padding-left: 30px;">
+                                                                            <input type="text" class="form-control input-sm" name="" placeholder="Search & assign page..." style="padding-left: 30px;">
                                                                             <div class="dropdown s-search-results-wrapper s-selectable" style="display: none;">
                                                                                 <ul class="dropdown-menu">
                                                                                     <li><a href="##">Classic Watches <span>Default</span></a></li>
@@ -736,18 +698,10 @@
                             											</a> -->
                                                                     </th>
                                                                     <th>
-                                                                        <span>Site</span>
-                                                                        <!-- <a href="#" class="s-sort-arrows">
-                            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
-                            													<g transform="translate(0.5, 0.5)"> 
-                            														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
-                            														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
-                            													</g>
-                            												</svg>
-                            											</a> -->
+                                                                        <span>Content Title Path</span>
                                                                     </th>
                                                                     <th>
-                                                                        <span>Product Listing Page</span>
+                                                                        <span>Site</span>
                                                                         <!-- <a href="#" class="s-sort-arrows">
                             												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
                             													<g transform="translate(0.5, 0.5)"> 
@@ -787,8 +741,8 @@
                                                             <tbody>    
                                                                 <tr>
                                                                     <td>Water Proof Watches </td>
+                                                                    <td>Home > <strong>Water Proof Watches</strong></td>
                                                                     <td>Default</td>
-                                                                    <td>True </td>
                                                                     <td>False </td>
                                                                     <td>21/50</td>
                                                                     <td class="s-actions">
@@ -802,8 +756,8 @@
                                                                 </tr>
                                                                 <tr>
                                                                     <td>Army Watches </td>
+                                                                    <td>Home > <strong>Army Watches</strong></td>
                                                                     <td>Default</td>
-                                                                    <td>True </td>
                                                                     <td>False </td>
                                                                     <td>Auto Sort</td>
                                                                     <td class="s-actions">
@@ -817,8 +771,8 @@
                                                                 </tr>
                                                                 <tr>
                                                                     <td>Special Edition Watches </td>
+                                                                    <td>Home > <strong>Special Edition Watches</strong></td>
                                                                     <td>Default</td>
-                                                                    <td>True </td>
                                                                     <td>True </td>
                                                                     <td>24/50</td>
                                                                     <td class="s-actions">
@@ -921,17 +875,6 @@
                             											</a>
                                                                     </th>
                                                                     <th>
-                                                                        <span>Product Listing Page</span>
-                                                                        <a href="#" class="s-sort-arrows">
-                            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
-                            													<g transform="translate(0.5, 0.5)"> 
-                            														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
-                            														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
-                            													</g>
-                            												</svg>
-                            											</a>
-                                                                    </th>
-                                                                    <th>
                                                                         <span>Active</span>
                                                                         <a href="#" class="s-sort-arrows">
                             												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
@@ -967,7 +910,6 @@
                                                                         </div>
                                                                     </td>
                                                                     <td>Classic Watches </td>
-                                                                    <td>True </td>
                                                                     <td>False </td>
                                                                     <td>24/50</td>
                                                                     <td class="s-actions">
@@ -990,7 +932,6 @@
                                                                             <span>Classic Watches</span>
                                                                         </div>
                                                                     </td>
-                                                                    <td>True </td>
                                                                     <td>False </td>
                                                                     <td>24/50</td>
                                                                     <td class="s-actions">
@@ -1012,7 +953,6 @@
                                                                             <span>Red Classic Watches</span>
                                                                         </div>
                                                                     </td>
-                                                                    <td>True </td>
                                                                     <td>False </td>
                                                                     <td>24/50</td>
                                                                     <td class="s-actions">
@@ -1034,7 +974,6 @@
                                                                             <span>Green Classic Watches</span>
                                                                         </div>
                                                                     </td>
-                                                                    <td>True </td>
                                                                     <td>False </td>
                                                                     <td>24/50</td>
                                                                     <td class="s-actions">
@@ -1056,7 +995,6 @@
                                                                             <span>Yellow Classic Watches</span>
                                                                         </div>
                                                                     </td>
-                                                                    <td>True </td>
                                                                     <td>False </td>
                                                                     <td>24/50</td>
                                                                     <td class="s-actions">
@@ -1074,7 +1012,6 @@
                                                                         </div>
                                                                     </td>
                                                                     <td>Black Watches </td>
-                                                                    <td>True </td>
                                                                     <td>False </td>
                                                                     <td>24/50</td>
                                                                     <td class="s-actions">
@@ -1092,7 +1029,6 @@
                                                                         </div>
                                                                     </td>
                                                                     <td>Silver Watches </td>
-                                                                    <td>True </td>
                                                                     <td>False </td>
                                                                     <td>24/50</td>
                                                                     <td class="s-actions">
@@ -1110,7 +1046,6 @@
                                                                         </div>
                                                                     </td>
                                                                     <td>Water Proof Watches </td>
-                                                                    <td>True </td>
                                                                     <td>False </td>
                                                                     <td>24/50</td>
                                                                     <td class="s-actions">
@@ -1128,7 +1063,6 @@
                                                                         </div>
                                                                     </td>
                                                                     <td>Army Watches </td>
-                                                                    <td>True </td>
                                                                     <td>False </td>
                                                                     <td>Auto Sort</td>
                                                                     <td class="s-actions">
@@ -1145,7 +1079,6 @@
                                                                         </div>
                                                                     </td>
                                                                     <td>Invisable Watches </td>
-                                                                    <td>True </td>
                                                                     <td>False </td>
                                                                     <td>24/50</td>
                                                                     <td class="s-actions">
@@ -1164,7 +1097,6 @@
                                                                     </td>
                                                                     <td>Special Edition Watches </td>
                                                                     <td>True </td>
-                                                                    <td>True </td>
                                                                     <td>24/50</td>
                                                                     <td class="s-actions">
                                                                         <a href="##" title="" class="btn btn-default btn-xs" target="_self">
@@ -1181,7 +1113,6 @@
                                                                         </div>
                                                                     </td>
                                                                     <td>007 Watches </td>
-                                                                    <td>True </td>
                                                                     <td>False </td>
                                                                     <td>24/50</td>
                                                                     <td class="s-actions">
@@ -1302,6 +1233,9 @@
                             												</svg>
                             											</a>
                                                                     </th>
+                                                                    <th class="s-actions">
+                                                                        
+                                                                    </th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>    
@@ -1316,6 +1250,11 @@
                                                                     
                                                                     <td>False </td>
                                                                     <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                    </td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td class="s-table-checkbox">
@@ -1328,6 +1267,11 @@
                                                                     
                                                                     <td>False </td>
                                                                     <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                    </td>
                                                                 </tr>
                                                                  <tr>
                                                                     <td class="s-table-checkbox">
@@ -1340,6 +1284,11 @@
                                                                     
                                                                     <td>False </td>
                                                                     <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                    </td>
                                                                 </tr>
                                                                  <tr>
                                                                     <td class="s-table-checkbox">
@@ -1352,6 +1301,11 @@
                                                                     
                                                                     <td>False </td>
                                                                     <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                    </td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td class="s-table-checkbox">
@@ -1364,6 +1318,11 @@
                                                                     
                                                                     <td>False </td>
                                                                     <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                    </td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td class="s-table-checkbox">
@@ -1376,6 +1335,11 @@
                                                                     
                                                                     <td>False </td>
                                                                     <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                    </td>
                                                                 </tr>
                                                                 <tr class="s-selected-row">
                                                                     <td class="s-table-checkbox">
@@ -1388,6 +1352,11 @@
                                                                     
                                                                     <td>False </td>
                                                                     <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                    </td>
                                                                 </tr>
                                                                 <tr class="s-selected-row">
                                                                     <td class="s-table-checkbox">
@@ -1400,6 +1369,11 @@
                                                                     
                                                                     <td>False </td>
                                                                     <td>Auto Sort</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                    </td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td class="s-table-checkbox">
@@ -1412,6 +1386,11 @@
                                                                     
                                                                     <td>False </td>
                                                                     <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                    </td>
                                                                 </tr>
                                                                 <tr class="s-selected-row">
                                                                     <td class="s-table-checkbox">
@@ -1424,6 +1403,11 @@
                                                                     
                                                                     <td>True </td>
                                                                     <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                    </td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td class="s-table-checkbox">
@@ -1436,6 +1420,11 @@
                                                                     
                                                                     <td>False </td>
                                                                     <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                    </td>
                                                                 </tr>
                                                                 
                                                             </tbody>
@@ -1557,6 +1546,9 @@
                         }
                     });
                 });
+                
+                $('[data-toggle="tooltip"]').tooltip()
+
             });
         </script>
         <br/>
@@ -1581,9 +1573,14 @@
                     if( $(this).find('i').hasClass('fa-bars') ){
                         $(this).closest('.s-table-inner-nav').siblings('.table-responsive').find('.s-order-table').show();
                         $(this).closest('.s-action-right').find('.s-titled-select-wrapper').addClass('s-disabled');
+                        $('.s-sort-by select #for-mock-only-manual-sort').show();
+                        $('.s-sort-by select option#for-mock-only-manual-sort').prop('selected', true);
+                        
                     }else{
                         $(this).closest('.s-table-inner-nav').siblings('.table-responsive').find('.s-order-table').hide();
                         $(this).closest('.s-action-right').find('.s-titled-select-wrapper').removeClass('s-disabled');
+                        $('.s-sort-by select #for-mock-only-manual-sort').hide();
+                        $('.s-sort-by select option[value="name"]').prop('selected', true);
                     }
                 });
             }());
