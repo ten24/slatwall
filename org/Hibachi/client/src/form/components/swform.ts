@@ -29,29 +29,40 @@ class SWFormController {
      * This controller handles most of the logic for the swFormDirective when more complicated self inspection is needed.
      */
     // @ngInject
-    constructor(public $scope, public $element, public $hibachi, public $http, public $timeout, public observerService, public $rootScope){
+    constructor(
+        public $scope,
+        public $element,
+        public $hibachi,
+        public $http,
+        public $timeout,
+        public observerService,
+        public $rootScope
+    ){
         /** only use if the developer has specified these features with isProcessForm */
 
         if(angular.isUndefined(this.isDirty)){
             this.isDirty = false;
         }
 
-        if(this.object && this.object.metaData){
-            //object can be either an instance or a string that will become an instance
-            if(angular.isString(this.object)){
-                var objectNameArray = this.object.split('_');
-                this.entityName = objectNameArray[0];
-                //if the object name array has two parts then we can infer that it is a process object
-                if(objectNameArray.length > 1){
-                    this.context = this.context || objectNameArray[1];
-                    this.isProcessForm = true;
-                }else{
-                    this.context = this.context || 'save';
-                    this.isProcessForm = false;
-                }
-                //convert the string to an object
-                this.object = this.$hibachi['new'+this.object]();
+
+        //object can be either an instance or a string that will become an instance
+        if(angular.isString(this.object)){
+            var objectNameArray = this.object.split('_');
+            this.entityName = objectNameArray[0];
+            //if the object name array has two parts then we can infer that it is a process object
+            if(objectNameArray.length > 1){
+                this.context = this.context || objectNameArray[1];
+                this.isProcessForm = true;
             }else{
+                this.context = this.context || 'save';
+                this.isProcessForm = false;
+            }
+            //convert the string to an object
+            this.$timeout( ()=> {
+                this.object = this.$hibachi['new'+this.object]();
+            });
+        }else{
+            if(this.object && this.object.metaData){
                 this.isProcessForm = this.object.metaData.isProcessObject;
                 this.entityName = this.object.metaData.className.split('_')[0];
                 if(this.isProcessForm){
@@ -61,6 +72,7 @@ class SWFormController {
                 }
             }
         }
+
 
         //
         this.context = this.context || this.name;
@@ -95,6 +107,11 @@ class SWFormController {
         }
 
     }
+
+    public isObject=()=>{
+        return (angular.isObject(this.object));
+    }
+
     /** create the generic submit function */
     public submit = (actions) =>
     {

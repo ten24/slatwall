@@ -105,6 +105,10 @@ class SWFPropertyDisplayController {
 		*/
 	//@ngInject
 	constructor ( public $scope ) {
+		this.$scope = $scope;
+	}
+
+	public $onInit=()=>{
 		this.type                	= this.type || "text" ;
 		this.class			   	= this.class|| "formControl";
 		this.fieldAttributes     	= this.fieldAttributes || "";
@@ -112,8 +116,9 @@ class SWFPropertyDisplayController {
 		this.labelText			= this.labelText || "";
 		this.labelClass			= this.labelClass || "";
 		this.name			    	= this.name || "unnamed";
+
 		this.object				= this.object || this.swForm.object; //this is the process object
-        
+
 		/** handle options */
 		if (this.options && angular.isString(this.options)){
 			let optionsArray = [];
@@ -124,27 +129,27 @@ class SWFPropertyDisplayController {
 					name:"",
 					value:""
 				};
-				
+
                 newOption.name = o;
 				newOption.value= o;
-                
+
 				this.optionValues.push(newOption);
 			}, this);
 		}
-        
+
         if (angular.isDefined(this.valueOptions) && angular.isObject(this.valueOptions)){
-            
+
             this.optionValues = [];
             angular.forEach(this.valueOptions, function(o){
 				let newOption:any = {
 					name:"",
 					value:""
 				};
-				
+
                 if(angular.isDefined(o.name) && angular.isDefined(o.value)){
                     newOption.name = o.name;
                     newOption.value= o.value;
-                    this.optionValues.push(newOption);   
+                    this.optionValues.push(newOption);
                 }
             });
         }
@@ -201,7 +206,7 @@ class SWFPropertyDisplay {
 			options: "@?",
             valueOptions: "=?",
 			fieldAttributes: "@?",
-			object: "=",
+			object: "=?",
 			label:"@?",
 			labelText: "@?",
 			labelClass: "@?",
