@@ -182,7 +182,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									continue;
 								}
 
-
 								var newAppliedTax = this.newTaxApplied();
 								newAppliedTax.setAppliedType("orderItem");
 								newAppliedTax.setTaxRate( taxCategoryRate.getTaxRate() );
