@@ -116,7 +116,12 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 	private any function getShippingProcessShipmentResponseBean(struct jsonResponse){
 		var responseBean = new Slatwall.model.transient.fulfillment.ShippingProcessShipmentResponseBean();
 		responseBean.setData(arguments.jsonResponse);
-		if(structKeyExists(responseBean.data,'Fault')) {
+		if(
+			!structKeyExists(responseBean,'data') || 
+			(
+				structKeyExists(responseBean,'data') && structKeyExists(responseBean.data,'Fault')
+			) 
+		) {
 			addMessage(messageName="communicationError", message="An unexpected communication error occured, please notify system administrator.");
 			// If XML fault then log error
 			addError("unknown", "An unexpected communication error occured, please notify system administrator.");
@@ -155,7 +160,11 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 		var responseBean = new Slatwall.model.transient.fulfillment.ShippingRatesResponseBean();
 		responseBean.setData(arguments.JsonResponse);
 		
-		if(structKeyExists(responseBean.getData(),'Fault')) {
+		if(!structKeyExists(responseBean,'data') || 
+			(
+				structKeyExists(responseBean,'data') && structKeyExists(responseBean.data,'Fault')
+			) 
+		) {
 			responseBean.addMessage(messageName="communicationError", message="An unexpected communication error occured, please notify system administrator.");
 			// If XML fault then log error
 			responseBean.addError("unknown", "An unexpected communication error occured, please notify system administrator.");

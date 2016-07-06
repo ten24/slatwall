@@ -26,6 +26,7 @@ class SWOptionsForOptionGroupController {
         this.optionCollectionConfig = collectionConfigService.newCollectionConfig("Option");
         this.optionCollectionConfig.setDisplayProperties("optionID, optionName, optionGroup.optionGroupID");
         this.optionCollectionConfig.addFilter("optionGroup.optionGroupID", this.optionGroupId); 
+        this.optionCollectionConfig.setOrderBy('sortOrder|ASC');
         this.optionCollectionConfig.setAllRecords(true); 
         
         this.optionCollectionConfig.getEntity().then((response)=>{

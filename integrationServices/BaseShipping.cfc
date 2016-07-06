@@ -115,4 +115,14 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 		return lcase(listGetAt(getClassFullname(), listLen(getClassFullname(), '.') - 1, '.'));
 	}
 	
+	public any function testIntegration() {
+		var requestBean = new Slatwall.model.transient.fulfillment.ShippingRatesRequestBean();
+		var testAddress = getHibachiScope().getAccount().getAddress();
+		requestbean.setShipToStreetAddress(testAddress.getStreetAddress());
+		requestbean.setShipToCity(testAddress.getCity());
+		requestbean.setShipToStateCode(testAddress.getStateCode());
+		requestbean.setShipToPostalCode(testAddress.getPostalCode());
+		requestbean.setShipToCountryCode(testAddress.getCountryCode());
+		return getRates(requestBean);
+	}
 }

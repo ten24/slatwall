@@ -72,10 +72,15 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 			sourcePostalCode = {fieldType="text"},
 			testingFlag = {fieldType="yesno", defaultValue="1"},
 			taxExemptPropertyIdentifier = {fieldType="text"},
-			taxExemptRequiresCompanyPaymentMethodFlag = {fieldType="yesno", defaultValue="0"}
+			taxExemptRequiresCompanyPaymentMethodFlag = {fieldType="yesno", defaultValue="0"},
+			commitTaxDocumentFlag = {fieldType="yesno", defaultValue="0"}
 		};
 
 		return settings;
+	}
+	
+	public array function getEventHandlers() {
+		return ["Slatwall.integrationServices.Avatax.model.handler.AvataxEventHandler"];
 	}
 	
 }

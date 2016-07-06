@@ -429,7 +429,7 @@ class HibachiService{
 	};
 	getConfigValue= (key) => {
 		return this._config[key];
-	};
+	}; 
 	setConfigValue= (key,value) => {
 		this._config[key] = value;
 	};

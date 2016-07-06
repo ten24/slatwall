@@ -316,7 +316,7 @@ class SWListingDisplayController{
             }
             this.allpropertyidentifiers = this.utilityService.listAppend(this.allpropertyidentifiers,this.exampleEntity.$$getIDName()+'Path');
             this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-parentidproperty='+this.parentPropertyName+'.'+this.exampleEntity.$$getIDName(),' ');
-            this.collectionConfig.setAllRecords(true);
+            
         }
 
 //            if(

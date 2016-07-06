@@ -67,6 +67,7 @@ Notes:
         data-has-action-bar="false"
 		data-record-edit-action="admin:entity.editcontent"
 		data-is-angular-route="false"
+		data-get-child-count="true"
 	>
 		<sw-listing-column data-property-identifier="title" tdclass="primary" />
 		<sw-listing-column data-property-identifier="site.siteName" />
