@@ -993,11 +993,14 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		if(isNull(arguments.baseProductType)){
 			arguments.baseProductType = "";
 		}
-
+		
 		switch (arguments.baseProductType)
 		{
 			case "merchandise":
 				skuDefinition = getDao('skuDao').getSkuDefinitionForMerchandiseBySkuID(getSkuID());
+				if(!isNull(getSkuName())){
+					skuDefinition = listAppend(skuDefinition, getSkuName() , ",");
+				}
 	    		break;
 
 	    	case "subscription":
@@ -1007,9 +1010,13 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 				break;
 
 			case "event":
+				if(!isNull(getSkuName())){
+					skuDefinition = getSkuName();
+				}
 				var configs = this.getLocationConfigurations();
+				
 				for(config in configs){
-					skuDefinition = variables.skuDefinition & config.getlocationPathName() & " (#config.getLocationConfigurationName()#) <br>";
+					skuDefinition = listAppend(skuDefinition, "#config.getlocationPathName()# (#config.getLocationConfigurationName()#)" , ",");
 				}
 				break;
 
