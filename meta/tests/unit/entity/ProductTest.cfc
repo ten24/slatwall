@@ -1693,7 +1693,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		try { //arrayLen of getSkus() > 1
 			mockProduct2.getSkuBySelectedOptions(); 
 		} catch (any e) {
-			assertTrue(find( "You must submit a comma seperated list of selectOptions to find an indvidual sku in this product", e) != 0);
+			assertTrue(find( "You must submit a comma seperated list of selectOptions to find an indvidual sku in this product", e.message) != 0);
 		}
 		
 		//Testing results with arguments
@@ -1703,13 +1703,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		try { //arrayLen(skus) > 1
 			result = mockProduct2.getSkuBySelectedOptions(mockOption3.getOptionID());
 		} catch (any e) {
-			assertTrue(find( "More than one sku is returned when the selected options are: ", e) != 0);
+			assertTrue(find( "More than one sku is returned when the selected options are: ", e.message) != 0);
 		}
 		
 		try { //arrayLen(skus) < 1
 			mockProduct2.getSkuBySelectedOptions(mockOption1.getOptionID());
 		} catch (any e) {
-			assertTrue(find( "No Skus are found for these selected options: ", e) != 0);
+			assertTrue(find( "No Skus are found for these selected options: ", e.message) != 0);
 		}
 	}
 	public void function getSkusBySelectedOptionsTest() {
@@ -1879,15 +1879,19 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	//End testing: functions that delegate to the default sku
 	
-	private any function createMockStock() {
-		var stockData = {
-			stockID = ""
+	public any function getEstimatedReceivalDetailsTest() {
+		var locationData = {
+			locationID = ""
 		};
-		return createPersistedTestEntity('Stock', stockData);
-	}
-	
-	public void function getEstimatedReceivalDetailsTest() {
-		var mockStock = createMockStock();
+		var mockLocation = createPersistedTestEntity('Location', locationData);
+		
+		var stockData = {
+			stockID = "",
+			location = {
+				locationID = mockLocation.getLocationID()
+			}
+		};
+		var mockStock = createPersistedTestEntity('Stock', stockData);
 		
 		var mockProduct = createMockProduct();
 		
@@ -1903,19 +1907,141 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}
 		};
 		var mockSku = createPersistedTestEntity('Sku', skuData);
+				
+		if (!mockStock.hasSku(mockSku)) {
+			arrayAppend(mockStock.getSkus(), mockSku);
+		}
 		
-		
-	    //Yuqing write addStock arrayAppend
+		if (!mockSku.hasStock(mockStock)) {
+			arrayAppend(mockSku.getStocks(), mockStock);
+		}
 
+		var vendorOrderData = {
+			vendorOrderID = "",
+			estimatedReceivalDateTime = dateAdd('d', -5, now()),
+			vendorOrderType = {
+				typeID = "444df2dbfde8c38ab64bb21c724d46e0" //votPurchaseType
+			},
+			vendorORderStatusType = {
+				typeID = "6b0f53eb598e42dcb995ed333cc8464a" //vostPartiallyReceived
+			}
+		};
+		var mockVendorOrder = createPersistedTestEntity('VendorOrder', vendorOrderData);
+		
+		var vendorOrderItemData = {
+			vendorOrderItemID = "",
+			estimatedReceivalDateTime = dateAdd('d', -3, now()),
+			quantity = 1000,
+			stock = {
+				stockID = mockStock.getStockID()
+			},
+			vendorOrder = {
+				vendorOrderID = mockVendorOrder.getVendorOrderID()
+			}			
+		};
+		var mockVendorOrderItem = createPersistedTestEntity('VendorOrderItem', vendorOrderItemData);
+		
+		var result = mockProduct.getEstimatedReceivalDetails();
+		assertFalse(isNull(result.estimatedReceivals[1].estimatedReceivalDateTime));
+		assertEquals(1000, result.skus[mockSku.getSkuID()].estimatedReceivals[1].quantity);
+		return mockProduct;
 	}
 	
-	public void function getEstimatedReceivalDatesTest() {
-		
+	public void function getEstimatedReceivalDates_NoArgument_Test() {
+		//Using the mock data from getEstimatedReceivalDetailsTest()
+		var mockProduct = getEstimatedReceivalDetailsTest();
+		var result = mockProduct.getEstimatedReceivalDates();
+
+		assertFalse(isNull(result[1].estimatedReceivalDateTime));
+		assertEquals(1000, result[1].quantity);
 	}
 	
-	public void function getQuantityTest() {
+	public void function getEstimatedReceivalDates_WithArgument_Test() {
+		//Copy the mock data from getEstimatedReceivalDetailsTest()
+		var locationData = {
+			locationID = ""
+		};
+		var mockLocation = createPersistedTestEntity('Location', locationData);
 		
+		var stockData = {
+			stockID = "",
+			location = {
+				locationID = mockLocation.getLocationID()
+			}
+		};
+		var mockStock = createPersistedTestEntity('Stock', stockData);
+		
+		var mockProduct = createMockProduct();
+		
+		var skuData = {
+			skuID = "",
+			stocks = [
+				{
+					stockID = mockStock.getStockID()
+				}
+			],
+			product = {
+				productID = mockProduct.getProductID()
+			}
+		};
+		var mockSku = createPersistedTestEntity('Sku', skuData);
+				
+		if (!mockStock.hasSku(mockSku)) {
+			arrayAppend(mockStock.getSkus(), mockSku);
+		}
+		
+		if (!mockSku.hasStock(mockStock)) {
+			arrayAppend(mockSku.getStocks(), mockStock);
+		}
+
+		var vendorOrderData = {
+			vendorOrderID = "",
+			estimatedReceivalDateTime = dateAdd('d', -5, now()),
+			vendorOrderType = {
+				typeID = "444df2dbfde8c38ab64bb21c724d46e0" //votPurchaseType
+			},
+			vendorORderStatusType = {
+				typeID = "6b0f53eb598e42dcb995ed333cc8464a" //vostPartiallyReceived
+			}
+		};
+		var mockVendorOrder = createPersistedTestEntity('VendorOrder', vendorOrderData);
+		
+		var vendorOrderItemData = {
+			vendorOrderItemID = "",
+			estimatedReceivalDateTime = dateAdd('d', -3, now()),
+			quantity = 1000,
+			stock = {
+				stockID = mockStock.getStockID()
+			},
+			vendorOrder = {
+				vendorOrderID = mockVendorOrder.getVendorOrderID()
+			}			
+		};
+		var mockVendorOrderItem = createPersistedTestEntity('VendorOrderItem', vendorOrderItemData);
+		
+		//When the only argument stockID
+		var resultArguStock = mockProduct.getEstimatedReceivalDates( stockID = mockStock.getStockID() );
+		assertFalse(isNull(resultArguStock[1].estimatedReceivalDateTime));
+		assertEquals(1000, resultArguStock[1].quantity);
+		
+		//When the only argument is sku
+		var resultArguSku = mockProduct.getEstimatedReceivalDates( skuID = mockSku.getSkuID() );
+		assertEquals(1000, resultArguSku[1].quantity);
+
+		//When the only argumeis locationID
+		var resultArguLocation = mockProduct.getEstimatedReceivalDates( locationID = mockLocation.getLocationID() );
+		assertEquals(1000, resultArguLocation[1].quantity);
+		
+		//When the argumeits are skuID & locationID
+		var resultArgusSkuLocation = mockProduct.getEstimatedReceivalDates( mockSku.getSkuID(), mockLocation.getLocationID() );
+		assertFalse(isNull(resultArgusSkuLocation[1].estimatedReceivalDateTime));
+		assertEquals(1000, resultArgusSkuLocation[1].quantity);		
 	}
+	
+//	public void function getQuantityTest() {
+//		var mockProduct = createMockProduct();
+//		var result = mockProduct.getQuantity('QATS');
+//	}
    
 	// ============ START: Non-Persistent Property Methods =================
 
