@@ -995,7 +995,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		}
 		
 		if(!isNull(getSkuName())){
-			skuDefinition = getSkuName() & "<br>";
+			skuDefinition = "Name: #getSkuName()#<br>";
 		}
 		
 		switch (arguments.baseProductType)
