@@ -3514,6 +3514,11 @@ tabel .s-table-header {
   border: 1px solid #DDD;
   border-bottom: 0px;
 }
+.s-detail-notifications.s-take-action {
+  color: #8a6d3b;
+  background-color: #fcf8e3 !important;
+  border-color: #faebcc;
+}
 .s-search-wrapper .input-group .input-group-btn.s-action {
   padding-left: 5px;
 }

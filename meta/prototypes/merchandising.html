@@ -321,7 +321,7 @@
                                 <a data-toggle="collapse" href="#collapse1">
                                     <div class="panel-heading">
                                         <h4 class="panel-title">
-                                            <span>Products</span> 
+                                            <span>Assigned Products</span> 
                                             <span class="badge">3</span>
                                             <i class="fa fa-caret-left s-accordion-toggle-icon"></i>
                                         </h4>
@@ -329,268 +329,267 @@
                                 </a>
                                 <div id="collapse1" class="panel-collapse collapse in">
                                     <content class="s-body-box">
-                                        
-                                        <div class="s-tab-table">
-                                            <div class="row s-tabs">
-                                                <ul class="nav nav-tabs" role="tablist"> 
-                                                    <li role="presentation" class="active">
-                                                        <a href="#j-basic" role="tab" data-toggle="tab" aria-controls="basic" aria-expanded="true">Assigned Products</a>
-                                                    </li> 
-                                                </ul> 
-                                            </div>
-                                            <div class="tab-content">
+
+                                        <!-- First Tab -->
+                                        <div role="tabpanel" class="tab-pane active" id="j-basic">
+                                            <div class="row s-table-inner-nav ">
                                                 
-                                                <!-- First Tab -->
-                                                <div role="tabpanel" class="tab-pane active" id="j-basic">
-                                                    <div class="row s-table-inner-nav ">
-                                                        
-                                                        <div class="row">
-                                                            <div class="col-md-9">
-                                                                <div class="s-search-wrapper">
-                                                                    <div class="input-group">
-                                                                        <div class="input-group-btn search-panel">
-                                                                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                                                            <span>All</span> <span class="caret"></span>
-                                                                            </button>
-                                                                            <ul class="dropdown-menu" role="menu">
-                                                                                <li><a href="#">Name</a></li>
-                                                                                <li><a href="#">Code</a></li>
-                                                                                <li><a href="#">Type</a></li>
-                                                                                <li><a href="#">Active</a></li>
-                                                                                <li><a href="#">Published</a></li>
-                                                                                <li><a href="#">Price </a></li>
-                                                                            </ul>
-                                                                        </div>
-                                                                        <span class="s-search s-add">
-                                                                            <input type="text" class="form-control input-sm" name="" placeholder="Search & assign product..." style="padding-left: 30px;">
-                                                                            <div class="dropdown s-search-results-wrapper s-selectable" style="display: none;">
-                                    									        <ul class="dropdown-menu">
-                                                                                    <li class="s-selected"><a href="##">Casio Business Casual Watch <span>Accessories</span></a></li>
-                                    									            <li><a href="##">Casio Classic Black Watch <span>Accessories</span></a></li>
-                                    									            <li class="s-selected"><a href="##">Casio Calculator Watch <span>Accessories</span></a></li>
-                                                                                    <li class="s-selected"><a href="##">Casio Gold Player Special Watch <span>Accessories</span></a></li>
-                                                                                    <li><a href="##">Casio Kids Watch <span>Accessories</span></a></li>
-                                    									            <li><a href="##">Casio Training Day Watch <span>Accessories</span></a></li>
-                                                                                    <li><a href="##">Casio Silver Dress Watch <span>Accessories</span></a></li>
-                                                                                    <li class="s-loading"><a href="##">Casio Silver Player Special Watch <span>Accessories</span></a></li>
-                                    									            <li><a href="##">Casio Surf Tide Watch <span>Accessories</span></a></li>
-                                                                                    <li><a href="##">Casio Underwater Watch <span>Accessories</span></a></li>
-                                    									        </ul>
-                                    									    </div>
-                                                                        </span>
-                                                                    </div>
+                                                <div class="row">
+                                                    <div class="col-md-9">
+                                                        <div class="s-search-wrapper">
+                                                            <div class="input-group">
+                                                                <div class="input-group-btn search-panel">
+                                                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                                                    <span>All</span> <span class="caret"></span>
+                                                                    </button>
+                                                                    <ul class="dropdown-menu" role="menu">
+                                                                        <li><a href="#">Name</a></li>
+                                                                        <li><a href="#">Code</a></li>
+                                                                        <li><a href="#">Type</a></li>
+                                                                        <li><a href="#">Active</a></li>
+                                                                        <li><a href="#">Published</a></li>
+                                                                        <li><a href="#">Price </a></li>
+                                                                    </ul>
                                                                 </div>
-                                                                
-                                                            </div>
-                                                            <div class="col-md-3 s-action-right">
-                                                                
-                                                                <div class="s-select-wrapper s-titled-select-wrapper s-sort-by">
-                                                                    <span>Sort By:</span>
-                                                                    <select class="form-control input-sm">
-                                                                        <option value="" disabled selected>Select</option>
-                                                                        <option value="" id="for-mock-only-manual-sort">Manual</option>
-                                                                        <option value="name">Name</option>
-                                                                        <option value="">Code</option>
-                                                                        <option value="">Active</option>
-                                                                        <option value="">Published</option>
-                                                                        <option value="">Type</option>
-                                                                        <option value="">Price</option>
-                                                                    </select>
-                                                                </div>
-                                                                
-                                                                <div class="btn-group s-option-toggles" role="group" aria-label="...">
-                                                                    <button type="button" class="btn btn-default s-selected" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Ascending"><i class="fa fa-sort-alpha-asc" aria-hidden="true"></i></button>
-                                                                    <button type="button" class="btn btn-default" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Descending"><i class="fa fa-sort-alpha-desc" aria-hidden="true"></i></button>
-                                                                    <button type="button" class="btn btn-default" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Manual"><i class="fa fa-bars" aria-hidden="true"></i></button>
-                                                                </div>
-                                                                
-                                                                <!-- <div class="s-table-setting">
-                                                                    <span class="s-title">Manual Sort</span>
-                                                                    <div class="s-toggle-switch">
-                                                                        <input id="sampleCheckboxToggle" name="sampleCheckboxToggle" type="checkbox" value="1" />
-                                                                        <div class="btn">
-                                                                            <label for="sampleCheckboxToggle">
-                                                                                <div class="s-toggle-switch-on btn btn-success"> 
-                                                                                    On
-                                                                                </div>
-                                                                                <div class="s-toggle-switch-handle btn btn-default"></div>
-                                                                                <div class="s-toggle-switch-off btn btn-dgrey">
-                                                                                    Off
-                                                                                </div>
-                                                                            </label>
-                                                                        </div>
-                                                                    </div>
-                                                                </div> -->
+                                                                <span class="s-search s-add">
+                                                                    <input type="text" class="form-control input-sm" name="" placeholder="Search & assign product..." style="padding-left: 30px;">
+                                                                    <div class="dropdown s-search-results-wrapper s-selectable" style="display: none;">
+                            									        <ul class="dropdown-menu">
+                                                                            <li class="s-selected"><a href="##">Casio Business Casual Watch <span>Accessories</span></a></li>
+                            									            <li><a href="##">Casio Classic Black Watch <span>Accessories</span></a></li>
+                            									            <li class="s-selected"><a href="##">Casio Calculator Watch <span>Accessories</span></a></li>
+                                                                            <li class="s-selected"><a href="##">Casio Gold Player Special Watch <span>Accessories</span></a></li>
+                                                                            <li><a href="##">Casio Kids Watch <span>Accessories</span></a></li>
+                            									            <li><a href="##">Casio Training Day Watch <span>Accessories</span></a></li>
+                                                                            <li><a href="##">Casio Silver Dress Watch <span>Accessories</span></a></li>
+                                                                            <li class="s-loading"><a href="##">Casio Silver Player Special Watch <span>Accessories</span></a></li>
+                            									            <li><a href="##">Casio Surf Tide Watch <span>Accessories</span></a></li>
+                                                                            <li><a href="##">Casio Underwater Watch <span>Accessories</span></a></li>
+                            									        </ul>
+                            									    </div>
+                                                                </span>
                                                             </div>
                                                         </div>
-
+                                                        
                                                     </div>
-                                                    
-                                                    <div class="table-responsive">
-                                                        <table class="table table-bordered s-detail-content-table">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th class="s-order-table">
-                                                                        
-                                                                    </th>
-                                                                    <th>
-                                                                        <span>Name</span>
-                                                                        <!-- <a href="#" class="s-sort-arrows">
-                            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
-                            													<g transform="translate(0.5, 0.5)"> 
-                            														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
-                            														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
-                            													</g>
-                            												</svg>
-                            											</a> -->
-                                                                    </th>
-                                                                    <th>
-                                                                        <span>Code</span>
-                                                                        <!-- <a href="#" class="s-sort-arrows">
-                            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
-                            													<g transform="translate(0.5, 0.5)"> 
-                            														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
-                            														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
-                            													</g>
-                            												</svg>
-                            											</a> -->
-                                                                    </th>
-                                                                    <th>
-                                                                        <span>Type</span>
-                                                                        <!-- <a href="#" class="s-sort-arrows">
-                            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
-                            													<g transform="translate(0.5, 0.5)"> 
-                            														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
-                            														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
-                            													</g>
-                            												</svg>
-                            											</a> -->
-                                                                    </th>
-                                                                    <th>
-                                                                        <span>Active</span>
-                                                                        <!-- <a href="#" class="s-sort-arrows">
-                            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
-                            													<g transform="translate(0.5, 0.5)"> 
-                            														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
-                            														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
-                            													</g>
-                            												</svg>
-                            											</a> -->
-                                                                    </th>
-                                                                    <th>
-                                                                        <span>Published</span>
-                                                                        <!-- <a href="#" class="s-sort-arrows">
-                            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
-                            													<g transform="translate(0.5, 0.5)"> 
-                            														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
-                            														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
-                            													</g>
-                            												</svg>
-                            											</a> -->
-                                                                    </th>
-                                                                    <th>
-                                                                        <span>Price</span>
-                                                                        <!-- <a href="#" class="s-sort-arrows">
-                            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
-                            													<g transform="translate(0.5, 0.5)"> 
-                            														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
-                            														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
-                            													</g>
-                            												</svg>
-                            											</a> -->
-                                                                    </th>
-                                                                    <th class="s-actions">
-                                                                        
-                                                                    </th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>    
-                                                                <tr>
-                                                                    <td class="s-order-table">
-                                                                        <a href="##" title="Move Order" target="_self">
-                                                                            <i class="fa fa-bars" aria-hidden="true"></i>
-                                                                        </a>
-                                                                    </td>
-                                                                    <td>Casio Business Casual Watch </td>
-                                                                    <td>6TY86TYU</td>
-                                                                    <td>Accessories</td>
-                                                                    <td>True</td>
-                                                                    <td>True</td>
-                                                                    <td>$136.99</td>
-                                                                    <td class="s-actions">
-                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
-                                                                            <i class="fa fa-eye"></i>
-                                                                        </a> 
-                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
-                                                                            <i class="fa fa-remove"></i>
-                                                                        </a> 
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td class="s-order-table">
-                                                                        <a href="##" title="Move Order" target="_self">
-                                                                            <i class="fa fa-bars" aria-hidden="true"></i>
-                                                                        </a>
-                                                                    </td>
-                                                                    <td>Casio Gold Player Special Watch </td>
-                                                                    <td>5TYU7876TYU</td>
-                                                                    <td>Accessories</td>
-                                                                    <td>True</td>
-                                                                    <td>True</td>
-                                                                    <td>$149.99</td>
-                                                                    <td class="s-actions">
-                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
-                                                                            <i class="fa fa-eye"></i>
-                                                                        </a> 
-                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
-                                                                            <i class="fa fa-remove"></i>
-                                                                        </a> 
-                                                                    </td>
-                                                                </tr>
-                                                                 <tr>
-                                                                    <td class="s-order-table">
-                                                                        <a href="##" title="Move Order" target="_self">
-                                                                            <i class="fa fa-bars" aria-hidden="true"></i>
-                                                                        </a>
-                                                                    </td>
-                                                                    <td>Casio Calculator Watch </td>
-                                                                    <td>9YTUR876TYU</td>
-                                                                    <td>Accessories</td>
-                                                                    <td>True</td>
-                                                                    <td>True</td>
-                                                                    <td>$149.99</td>
-                                                                    <td class="s-actions">
-                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
-                                                                            <i class="fa fa-eye"></i>
-                                                                        </a> 
-                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
-                                                                            <i class="fa fa-remove"></i>
-                                                                        </a> 
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                    <div class="j-pagination-remove-this" data-tableid="LD9D579B9FCC280BDD7D9FBA9C0B5186CF">
-                                                        <ul class="pagination paginationpages12">
-                                                            <li><a href="#" class="paging-show-toggle">Show <span class="details">(1 - 10 of 113)</span></a></li>
-                                                            <li><a href="#" class="show-option" data-show="10" style="display: none;">10</a></li>
-                                                            <li><a href="#" class="show-option" data-show="25" style="display: none;">25</a></li>
-                                                            <li><a href="#" class="show-option" data-show="50" style="display: none;">50</a></li>
-                                                            <li><a href="#" class="show-option" data-show="100" style="display: none;">100</a></li>
-                                                            <li><a href="#" class="show-option" data-show="500" style="display: none;">500</a></li>
-                                                            <li><a href="#" class="show-option" data-show="ALL" style="display: none;">ALL</a></li>
-                                                            <li class="disabled"><a href="#" class="page-option prev">«</a></li>
-                                                            <li class="active"><a href="#" class="listing-pager page-option" data-page="1">1</a></li>
-                                                            <li><a href="#" class="listing-pager page-option" data-page="2">2</a></li>
-                                                            <li><a href="#" class="listing-pager page-option" data-page="3">3</a></li>
-                                                        </ul>
+                                                    <div class="col-md-3 s-action-right">
+                                                        
+                                                        <div class="s-select-wrapper s-titled-select-wrapper s-sort-by">
+                                                            <span>Sort By:</span>
+                                                            <select class="form-control input-sm">
+                                                                <option value="" disabled selected>Select</option>
+                                                                <option value="" id="for-mock-only-manual-sort">Manual</option>
+                                                                <option value="name">Name</option>
+                                                                <option value="">Code</option>
+                                                                <option value="">Active</option>
+                                                                <option value="">Published</option>
+                                                                <option value="">Type</option>
+                                                                <option value="">Price</option>
+                                                            </select>
+                                                        </div>
+                                                        
+                                                        <div class="btn-group s-option-toggles" role="group" aria-label="...">
+                                                            <button type="button" class="btn btn-default s-selected" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Ascending"><i class="fa fa-sort-alpha-asc" aria-hidden="true"></i></button>
+                                                            <button type="button" class="btn btn-default" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Descending"><i class="fa fa-sort-alpha-desc" aria-hidden="true"></i></button>
+                                                            <button type="button" class="btn btn-default" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Manual"><i class="fa fa-bars" aria-hidden="true"></i></button>
+                                                        </div>
+                                                        
+                                                        <!-- <div class="s-table-setting">
+                                                            <span class="s-title">Manual Sort</span>
+                                                            <div class="s-toggle-switch">
+                                                                <input id="sampleCheckboxToggle" name="sampleCheckboxToggle" type="checkbox" value="1" />
+                                                                <div class="btn">
+                                                                    <label for="sampleCheckboxToggle">
+                                                                        <div class="s-toggle-switch-on btn btn-success"> 
+                                                                            On
+                                                                        </div>
+                                                                        <div class="s-toggle-switch-handle btn btn-default"></div>
+                                                                        <div class="s-toggle-switch-off btn btn-dgrey">
+                                                                            Off
+                                                                        </div>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div> -->
                                                     </div>
                                                 </div>
-                                                <!-- ///First Tab -->
-                                        
+
+                                            </div>
+                                            <div class="s-detail-notifications s-take-action" style="display: block !important;">
+            									<div class="row">
+            										<div class="col-sm-8 s-message" style="margin-top: 6px;">
+                                                        <span class="s-icon">
+                                                            <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                                        </span>
+            											 <span>You have changed the sorting order.  When you're done re-ordering, click "Update."</span>
+            										</div>
+            										<div class="col-sm-4" style="text-align:right;">
+                                                        <button class="btn btn-primary" type="button">Update</button>                                                                
+            										</div>
+            									</div>
+                                            </div>
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered s-detail-content-table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="s-order-table">
+                                                                
+                                                            </th>
+                                                            <th>
+                                                                <span>Name</span>
+                                                                <!-- <a href="#" class="s-sort-arrows">
+                    												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                    													<g transform="translate(0.5, 0.5)"> 
+                    														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                    														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                    													</g>
+                    												</svg>
+                    											</a> -->
+                                                            </th>
+                                                            <th>
+                                                                <span>Code</span>
+                                                                <!-- <a href="#" class="s-sort-arrows">
+                    												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                    													<g transform="translate(0.5, 0.5)"> 
+                    														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                    														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                    													</g>
+                    												</svg>
+                    											</a> -->
+                                                            </th>
+                                                            <th>
+                                                                <span>Type</span>
+                                                                <!-- <a href="#" class="s-sort-arrows">
+                    												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                    													<g transform="translate(0.5, 0.5)"> 
+                    														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                    														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                    													</g>
+                    												</svg>
+                    											</a> -->
+                                                            </th>
+                                                            <th>
+                                                                <span>Active</span>
+                                                                <!-- <a href="#" class="s-sort-arrows">
+                    												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                    													<g transform="translate(0.5, 0.5)"> 
+                    														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                    														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                    													</g>
+                    												</svg>
+                    											</a> -->
+                                                            </th>
+                                                            <th>
+                                                                <span>Published</span>
+                                                                <!-- <a href="#" class="s-sort-arrows">
+                    												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                    													<g transform="translate(0.5, 0.5)"> 
+                    														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                    														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                    													</g>
+                    												</svg>
+                    											</a> -->
+                                                            </th>
+                                                            <th>
+                                                                <span>Price</span>
+                                                                <!-- <a href="#" class="s-sort-arrows">
+                    												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                    													<g transform="translate(0.5, 0.5)"> 
+                    														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                    														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                    													</g>
+                    												</svg>
+                    											</a> -->
+                                                            </th>
+                                                            <th class="s-actions">
+                                                                
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>    
+                                                        <tr>
+                                                            <td class="s-order-table">
+                                                                <a href="##" title="Move Order" target="_self">
+                                                                    <i class="fa fa-bars" aria-hidden="true"></i>
+                                                                </a>
+                                                            </td>
+                                                            <td>Casio Business Casual Watch </td>
+                                                            <td>6TY86TYU</td>
+                                                            <td>Accessories</td>
+                                                            <td>True</td>
+                                                            <td>True</td>
+                                                            <td>$136.99</td>
+                                                            <td class="s-actions">
+                                                                <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                    <i class="fa fa-eye"></i>
+                                                                </a> 
+                                                                <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                    <i class="fa fa-remove"></i>
+                                                                </a> 
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="s-order-table">
+                                                                <a href="##" title="Move Order" target="_self">
+                                                                    <i class="fa fa-bars" aria-hidden="true"></i>
+                                                                </a>
+                                                            </td>
+                                                            <td>Casio Gold Player Special Watch </td>
+                                                            <td>5TYU7876TYU</td>
+                                                            <td>Accessories</td>
+                                                            <td>True</td>
+                                                            <td>True</td>
+                                                            <td>$149.99</td>
+                                                            <td class="s-actions">
+                                                                <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                    <i class="fa fa-eye"></i>
+                                                                </a> 
+                                                                <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                    <i class="fa fa-remove"></i>
+                                                                </a> 
+                                                            </td>
+                                                        </tr>
+                                                         <tr>
+                                                            <td class="s-order-table">
+                                                                <a href="##" title="Move Order" target="_self">
+                                                                    <i class="fa fa-bars" aria-hidden="true"></i>
+                                                                </a>
+                                                            </td>
+                                                            <td>Casio Calculator Watch </td>
+                                                            <td>9YTUR876TYU</td>
+                                                            <td>Accessories</td>
+                                                            <td>True</td>
+                                                            <td>True</td>
+                                                            <td>$149.99</td>
+                                                            <td class="s-actions">
+                                                                <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                    <i class="fa fa-eye"></i>
+                                                                </a> 
+                                                                <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                    <i class="fa fa-remove"></i>
+                                                                </a> 
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="j-pagination-remove-this" data-tableid="LD9D579B9FCC280BDD7D9FBA9C0B5186CF">
+                                                <ul class="pagination paginationpages12">
+                                                    <li><a href="#" class="paging-show-toggle">Show <span class="details">(1 - 10 of 113)</span></a></li>
+                                                    <li><a href="#" class="show-option" data-show="10" style="display: none;">10</a></li>
+                                                    <li><a href="#" class="show-option" data-show="25" style="display: none;">25</a></li>
+                                                    <li><a href="#" class="show-option" data-show="50" style="display: none;">50</a></li>
+                                                    <li><a href="#" class="show-option" data-show="100" style="display: none;">100</a></li>
+                                                    <li><a href="#" class="show-option" data-show="500" style="display: none;">500</a></li>
+                                                    <li><a href="#" class="show-option" data-show="ALL" style="display: none;">ALL</a></li>
+                                                    <li class="disabled"><a href="#" class="page-option prev">«</a></li>
+                                                    <li class="active"><a href="#" class="listing-pager page-option" data-page="1">1</a></li>
+                                                    <li><a href="#" class="listing-pager page-option" data-page="2">2</a></li>
+                                                    <li><a href="#" class="listing-pager page-option" data-page="3">3</a></li>
+                                                </ul>
                                             </div>
                                         </div>
+                                        <!-- ///First Tab -->
                                         
                                     </content>
                                 </div>
@@ -1554,17 +1553,7 @@
         <br/>
         <br/><br/>
         
-        <script>
-            //Remove this
-            (function(){
-                $('.s-detail-notifications').hide();
-                var getCheckboxes = $('.s-body-box .s-detail-content-table input[type=checkbox]');
-                $(getCheckboxes).change(function(){
-                    $(getCheckboxes).attr('checked', 'checked');
-                    $('.s-detail-notifications').slideDown();
-                });
-            }());
-        </script>
+        
         <script>
             (function(){
                 $('.s-option-toggles .btn').click(function(){
