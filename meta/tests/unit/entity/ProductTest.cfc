@@ -1907,7 +1907,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}
 		};
 		var mockSku = createPersistedTestEntity('Sku', skuData);
-		
+
 		if (!mockSku.hasStock(mockStock)) {
 			arrayAppend(mockSku.getStocks(), mockStock);
 		}
@@ -2031,12 +2031,57 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 	public void function getQuantityTest() {
+		//testing a already calculated quantity
+		var mockProduct = createMockProduct();
+		var resultQATS = mockProduct.getQuantity('QATS');
+		assertEquals(1000, resultQATS);//setting('skuOrderMaximumQuantity') default value
 		
+		//Testing a not previously calculated quantity
+		var skuData = {
+			skuID = "",
+			product = {
+				productID = mockProduct.getProductID()
+			}
+		};
+		var mockSku = createPErsistedTestEntity('SKu', skuData);
 		
-//		
-//		var mockProduct = createMockProduct();
-//		var result = mockProduct.getQuantity('QATS');
-//		request.debug(result);
+		var locationData = {
+			locationID = "",
+			locationIDPath = "FakeLocationIDPath"
+		};
+		var mockLocation = createPersistedTestEntity('Location', locationData);
+		
+		var stockData = {
+			stockID = "",
+			location = {
+				locationID = mockLocation.getLocationID()
+			},
+			sku = {
+				skuID = mockSku.getSkuID()
+			}
+		};
+		var mockStock = createPersistedTestEntity('Stock', stockData);
+		
+		var inventoryData = {
+			inventoryID = '',
+			quantityIn = 2000,
+			quantityOut = 500,
+			stock = {
+				stockID = mockStock.getStockID()
+			}
+		};
+		var mockInventory = createPersistedTestEntity('Inventory', inventoryData);
+
+		var resultQOHNoArgu = mockProduct.getQuantity('QOH');
+		assertEquals(1500, resultQOHNoArgu);
+//		request.debug("result.locationID"& resultQOHNoArgu.locationID);
+			
+		var resultQOHWithSku = mockProduct.getQuantity('QOH', mockSku.getSkuID());	
+		assertEquals(1500, resultQOHWithSku);
+		var resultQOHWithStock = mockProduct.getQuantity(quantityType="QOH", stockID=mockStock.getStockID());
+		assertEquals(1500, resultQOHWithStock);
+		var resultQOHWithLocation = mockProduct.getQuantity(quantityType="QOH", locationID=mockLocation.getLocationID());
+		assertEquals(1500, resultQOHWithLocation);
 	}
    
 	// ============ START: Non-Persistent Property Methods =================
