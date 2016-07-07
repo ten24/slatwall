@@ -1244,7 +1244,7 @@ table .s-table-header .table-section a.s-hint {float:none;margin-left:10px;}
 .table-responsive .s-order-table > a {cursor: move;height: 100%;vertical-align: bottom;position: absolute;color: #666;text-align: center;padding-top: 10px;width: 100%;}
 
 .s-search-results-wrapper.s-selectable .dropdown-menu a {position: relative;padding-left: 30px;}
-.s-search-results-wrapper.s-selectable .dropdown-menu a > span {float: right;color: #aaa;}
+.s-search-results-wrapper.s-selectable .dropdown-menu a > .s-right-content {float: right;color: #aaa;}
 .s-search-results-wrapper.s-selectable .dropdown-menu li a:hover:before {position: absolute;top: 9px;left: 10px;content: "\f067";font-family: FontAwesome;}
 .s-search-results-wrapper.s-selectable .dropdown-menu li.s-selected a {color: #798c9c;background: #eff9fd;}
 .s-search-results-wrapper.s-selectable .dropdown-menu li.s-selected a:before  {position: absolute;top: 9px;left: 10px;content: "\f00c";font-family: FontAwesome;}
@@ -1972,20 +1972,11 @@ a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !import
 .s-search-results-wrapper .dropdown-menu li:last-child a {border-bottom:0px;}
 .s-search-results-wrapper .dropdown-menu a:hover {background-color:#fafafa;color:@black-60 !important;}
 .s-search-results-wrapper .dropdown-menu li {position: relative;}
+.s-search-results-wrapper .dropdown-menu li .s-path {color: #ccc;}
 .s-search-results-wrapper .dropdown-menu .s-index-0 a {color: #000;}
 .s-search-results-wrapper .dropdown-menu .s-index-1 a {padding-left: 27px;}
-.s-search-results-wrapper .dropdown-menu .s-index-1:before {
-    content: "-";
-    position: absolute;
-    top: 2px;
-    color: #ccc;
-    left: 15px;
-    font-size: 18px;
-    letter-spacing: 2px;
-}
-.s-search-results-wrapper .dropdown-menu .s-index-2 a {
-    padding-left: 34px;
-}
+.s-search-results-wrapper .dropdown-menu .s-index-1:before {content: "-";position: absolute;top: 2px;color: #ccc;left: 15px;font-size: 18px;letter-spacing: 2px;}
+.s-search-results-wrapper .dropdown-menu .s-index-2 a {padding-left: 34px;}
 .s-search-results-wrapper .dropdown-menu .s-index-2:before {
     content: "--";
     position: absolute;

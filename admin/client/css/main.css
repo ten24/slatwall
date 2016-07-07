@@ -3637,7 +3637,7 @@ table .s-table-header .table-section a.s-hint {
   position: relative;
   padding-left: 30px;
 }
-.s-search-results-wrapper.s-selectable .dropdown-menu a > span {
+.s-search-results-wrapper.s-selectable .dropdown-menu a > .s-right-content {
   float: right;
   color: #aaa;
 }
@@ -5689,6 +5689,9 @@ a.disabled > i.hibachi-ui-radio-checked {
 }
 .s-search-results-wrapper .dropdown-menu li {
   position: relative;
+}
+.s-search-results-wrapper .dropdown-menu li .s-path {
+  color: #ccc;
 }
 .s-search-results-wrapper .dropdown-menu .s-index-0 a {
   color: #000;
