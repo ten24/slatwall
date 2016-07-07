@@ -166,7 +166,7 @@
                                                 <!-- ngRepeat: searchResult in searchResults -->
                                                 <li ng-repeat="searchResult in searchResults" ng-show="searchResult.results.length &amp;&amp; resultsFound" class="ng-scope ng-hide">
                                                     <div class="col-md-4 s-title">
-                                                        <h2 ng-bind="searchResult.title" class="ng-binding">Accounts</h2>
+                                                        <h2 ng-bind="searchResult.title">Accounts</h2>
                                                     </div>
                                                     <div class="col-md-8 s-body">
                                                         <ul class="list-unstyled" id="j-search-results-remove-this">
@@ -177,7 +177,7 @@
                                                 <!-- end ngRepeat: searchResult in searchResults -->
                                                 <li ng-repeat="searchResult in searchResults" ng-show="searchResult.results.length &amp;&amp; resultsFound" class="ng-scope ng-hide">
                                                     <div class="col-md-4 s-title">
-                                                        <h2 ng-bind="searchResult.title" class="ng-binding"></h2>
+                                                        <h2 ng-bind="searchResult.title"></h2>
                                                     </div>
                                                     <div class="col-md-8 s-body">
                                                         <ul class="list-unstyled" id="j-search-results-remove-this">
@@ -188,7 +188,7 @@
                                                 <!-- end ngRepeat: searchResult in searchResults -->
                                                 <li ng-repeat="searchResult in searchResults" ng-show="searchResult.results.length &amp;&amp; resultsFound" class="ng-scope ng-hide">
                                                     <div class="col-md-4 s-title">
-                                                        <h2 ng-bind="searchResult.title" class="ng-binding">Products</h2>
+                                                        <h2 ng-bind="searchResult.title">Products</h2>
                                                     </div>
                                                     <div class="col-md-8 s-body">
                                                         <ul class="list-unstyled" id="j-search-results-remove-this">
@@ -199,7 +199,7 @@
                                                 <!-- end ngRepeat: searchResult in searchResults -->
                                                 <li ng-repeat="searchResult in searchResults" ng-show="searchResult.results.length &amp;&amp; resultsFound" class="ng-scope ng-hide">
                                                     <div class="col-md-4 s-title">
-                                                        <h2 ng-bind="searchResult.title" class="ng-binding">Vendors</h2>
+                                                        <h2 ng-bind="searchResult.title">Vendors</h2>
                                                     </div>
                                                     <div class="col-md-8 s-body">
                                                         <ul class="list-unstyled" id="j-search-results-remove-this">
@@ -337,6 +337,7 @@
                                                 <div class="row">
                                                     <div class="col-md-9">
                                                         <div class="s-search-wrapper">
+                                                            
                                                             <div class="input-group">
                                                                 <div class="input-group-btn search-panel">
                                                                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
@@ -355,20 +356,21 @@
                                                                     <input type="text" class="form-control input-sm" name="" placeholder="Search & assign product..." style="padding-left: 30px;">
                                                                     <div class="dropdown s-search-results-wrapper s-selectable" style="display: none;">
                             									        <ul class="dropdown-menu">
-                                                                            <li class="s-selected"><a href="##">Casio Business Casual Watch <span>Accessories</span></a></li>
-                            									            <li><a href="##">Casio Classic Black Watch <span>Accessories</span></a></li>
-                            									            <li class="s-selected"><a href="##">Casio Calculator Watch <span>Accessories</span></a></li>
-                                                                            <li class="s-selected"><a href="##">Casio Gold Player Special Watch <span>Accessories</span></a></li>
-                                                                            <li><a href="##">Casio Kids Watch <span>Accessories</span></a></li>
-                            									            <li><a href="##">Casio Training Day Watch <span>Accessories</span></a></li>
-                                                                            <li><a href="##">Casio Silver Dress Watch <span>Accessories</span></a></li>
-                                                                            <li class="s-loading"><a href="##">Casio Silver Player Special Watch <span>Accessories</span></a></li>
-                            									            <li><a href="##">Casio Surf Tide Watch <span>Accessories</span></a></li>
-                                                                            <li><a href="##">Casio Underwater Watch <span>Accessories</span></a></li>
+                                                                            <li class="s-selected"><a href="##">Casio Business Casual Watch <span>Merchandise > Accessories</span></a></li>
+                            									            <li><a href="##">Casio Classic Black Watch <span>Merchandise > Accessories</span></a></li>
+                            									            <li class="s-selected"><a href="##">Casio Calculator Watch <span>Merchandise > Accessories</span></a></li>
+                                                                            <li class="s-selected"><a href="##">Casio Gold Player Special Watch <span>Merchandise > Accessories</span></a></li>
+                                                                            <li><a href="##">Casio Kids Watch <span>Merchandise > Accessories</span></a></li>
+                            									            <li><a href="##">Casio Training Day Watch <span>Merchandise > Accessories</span></a></li>
+                                                                            <li><a href="##">Casio Silver Dress Watch <span>Merchandise > Accessories</span></a></li>
+                                                                            <li class="s-loading"><a href="##">Casio Silver Player Special Watch <span>Merchandise > Accessories</span></a></li>
+                            									            <li><a href="##">Casio Surf Tide Watch <span>Merchandise > Accessories</span></a></li>
+                                                                            <li><a href="##">Casio Underwater Watch <span>Merchandise > Accessories</span></a></li>
                             									        </ul>
                             									    </div>
                                                                 </span>
                                                             </div>
+                                                            
                                                         </div>
                                                         
                                                     </div>
@@ -388,11 +390,15 @@
                                                             </select>
                                                         </div>
                                                         
-                                                        <div class="btn-group s-option-toggles" role="group" aria-label="...">
+                                                        <div class="btn-group s-option-toggles" style="float: none;vertical-align: top;" role="group" aria-label="...">
                                                             <button type="button" class="btn btn-default s-selected" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Ascending"><i class="fa fa-sort-alpha-asc" aria-hidden="true"></i></button>
                                                             <button type="button" class="btn btn-default" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Descending"><i class="fa fa-sort-alpha-desc" aria-hidden="true"></i></button>
                                                             <button type="button" class="btn btn-default" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Manual"><i class="fa fa-bars" aria-hidden="true"></i></button>
                                                         </div>
+                                                        
+                                                        <button class="btn btn-default" style="vertical-align: top;margin-left: 5px;" type="button" data-toggle="collapse" data-target="#j-display-options">
+                                                            <i class="fa fa-th"></i>
+                                                        </button>
                                                         
                                                         <!-- <div class="s-table-setting">
                                                             <span class="s-title">Manual Sort</span>
@@ -412,7 +418,68 @@
                                                             </div>
                                                         </div> -->
                                                     </div>
+                                                    
                                                 </div>
+
+                                                <div class="s-display-options collapse" id="j-display-options">
+                                                    <a href="#" class="s-close" data-toggle="collapse" data-target="#j-display-options">
+                                                        <i class="fa fa-times"></i>
+                                                    </a>
+                                                    <!-- Dragable List group -->
+                                                    <h4>Display Options</h4>
+                                                    
+                                                    <!-- Dragable List group -->
+                                                    <ul id="displayOptionsContainer" sortable="callbacks" class="list-group s-j-draggablePanelList" style="">
+                                                        
+                                                        <li class="list-group-item ng-isolate-scope">
+                                                            <div class="row" ng-if="column">
+                                                                <div class="col-xs-5 s-pannel-name" j-column-index="3">
+                                                                    <span>4</span>
+                                                                    <i class="fa fa-arrows-v"></i>
+                                                                    <span class="s-pannel-title" title="Object">Object</span>
+                                                                    <a class="s-pannel-title-edit">edit</a>
+                                                                    <span class="s-title-edit-menu ng-hide">
+                                                                        <input type="text" class="form-control">
+                                                                        <button type="button" class="btn btn-xs btn-primary s-save-btn">Save</button>
+                                                                        <button type="button" class="btn btn-xs btn-default s-cancel-btn">Cancel</button>
+                                                                    </span>
+                                                                </div>
+                                                                <div class="col-xs-7 s-pannel-body">
+                                                                    <div class="btn-group">
+                                                                        <span class="s-sort-num">
+                                                                            <a class="s-pannel-title j-tool-tip-item j-edit-item s-active" title="Edit">0</a>
+                                                                        </span>
+                                                                        <a class="btn btn-default s-sort j-tool-tip-item" title="Sort Order">
+                                                                            <i class="fa fa-sort s-not-active fa-sort-amount-asc"></i>
+                                                                        </a>
+                                                                        <a class="btn btn-default j-tool-tip-item active" title="Visible">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a>
+                                                                        <a class="btn btn-default j-tool-tip-item active" title="Search">
+                                                                            <i class="fa fa-search"></i>
+                                                                        </a>
+                                                                        <a class="btn btn-default j-tool-tip-item active" title="Export">
+                                                                            <i class="fa fa-download"></i>
+                                                                        </a> 
+                                                                        <a ng-disabled="!column.isDeletable" class="btn btn-default s-remove j-tool-tip-item" title="Remove">
+                                                                            <i class="fa fa-times"></i>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <!-- end ngIf: column -->
+                                                        </li>
+                                                        <!-- end ngRepeat: column in swListingControls.collectionConfig.columns -->
+                                                    </ul>
+                                                    <!-- Message if no items -->
+                                                    <div class="s-none-selected" style="display:none;">There are no fields selected</div>
+                                                    <!-- Button to show create option -->
+                                                    <button type="button" class="btn btn-xs btn-primary" data-target="#j-add-display-field" data-toggle="collapse">
+                                                        Add Display Field
+                                                    </button>
+                                                
+                                                </div>
+                                                
 
                                             </div>
                                             <div class="s-detail-notifications s-take-action" style="display: block !important;">
@@ -722,7 +789,7 @@
                             											</a> -->
                                                                     </th>
                                                                     <th>
-                                                                        <span>Position</span>
+                                                                        <span data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Displays the order of the product in the listing page.">Position</span>
                                                                         <!-- <a href="#" class="s-sort-arrows">
                             												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
                             													<g transform="translate(0.5, 0.5)"> 
