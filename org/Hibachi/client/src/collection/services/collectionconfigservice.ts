@@ -105,9 +105,6 @@ class CollectionConfig {
         private isDistinct:boolean = false
 
     ){
-        console.log('abc');
-        console.log(rbkeyService);
-        console.log($hibachi);
         this.$hibachi = $hibachi;
         this.rbkeyService = rbkeyService;
         if(angular.isDefined(this.baseEntityName)){
@@ -147,6 +144,9 @@ class CollectionConfig {
         this.pageShow = jsonCollection.pageShow;
         this.allRecords = jsonCollection.allRecords;
         this.isDistinct = jsonCollection.isDistinct;
+        this.currentPage = jsonCollection.currentPage || 1;
+        this.pageShow = jsonCollection.pageShow || 10;
+        this.keywords = jsonCollection.keywords;
         return this;
     };
 
@@ -234,7 +234,7 @@ class CollectionConfig {
                 current_collection = this.$hibachi.getEntityExample(current_collection.metaData[propertyIdentifierParts[i]].cfc);
                 _propertyIdentifier += '_' + propertyIdentifierParts[i];
                 this.addJoin(new Join(
-                    _propertyIdentifier.replace(/_/g, '.').substring(1),
+                    _propertyIdentifier.replace(/_([^_]+)$/,'.$1').substring(1),
                     this.baseEntityAlias + _propertyIdentifier
                 ));
             } else {
@@ -372,7 +372,7 @@ class CollectionConfig {
         if(!this.groupBys){
             this.groupBys = '';
         }
-        this.groupBys = this.utilityService.listAppend(this.groupBys,groupByAlias);
+        this.groupBys = this.utilityService.listAppendUnique(this.groupBys,groupByAlias);
         return this;
     };
 
@@ -399,7 +399,7 @@ class CollectionConfig {
         return this;
     };
 
-    public addLikeFilter= (propertyIdentifier: string, value: any, pattern: string = '%w%',  logicalOperator?: string, hidden:boolean=false):CollectionConfig =>{
+    public addLikeFilter= (propertyIdentifier: string, value: any, pattern: string = '%w%',  logicalOperator?: string, displayPropertyIdentifier?:string,hidden:boolean=false):CollectionConfig =>{
 
         //if filterGroups does not exists then set a default
         if(!this.filterGroups){
@@ -409,6 +409,9 @@ class CollectionConfig {
         if(this.filterGroups[0].filterGroup.length && !logicalOperator) logicalOperator = 'AND';
 
         var join = propertyIdentifier.split('.').length > 1;
+        if(angular.isUndefined(displayPropertyIdentifier)){
+            displayPropertyIdentifier = this.rbkeyService.getRBKey("entity."+this.$hibachi.getLastEntityNameInPropertyIdentifier(this.baseEntityName,propertyIdentifier)+"."+this.utilityService.listLast(propertyIdentifier))
+        }
 
         //create filter group
         var filter = new Filter(
@@ -416,7 +419,7 @@ class CollectionConfig {
             value,
             'like',
             logicalOperator,
-            propertyIdentifier.split('.').pop(),
+            displayPropertyIdentifier,
             value,
             hidden,
             pattern
@@ -460,8 +463,8 @@ class CollectionConfig {
                 filterGroup[i].propertyIdentifier,
                 filterGroup[i].comparisonValue,
                 filterGroup[i].comparisonOperator,
-                filterGroup[i].hidden,
-                filterGroup[i].logicalOperator
+                filterGroup[i].logicalOperator,
+                filterGroup[i].hidden
             );
             group.filterGroup.push(filter);
         }
@@ -580,6 +583,10 @@ class CollectionConfig {
     public setCurrentPage= (pageNumber):CollectionConfig =>{
         this.currentPage = pageNumber;
         return this;
+    };
+
+    public getCurrentPage= () =>{
+        return this.currentPage;
     };
 
     public setPageShow= (NumberOfPages):CollectionConfig =>{

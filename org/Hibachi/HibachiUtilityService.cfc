@@ -30,21 +30,23 @@
 		* @author Nathan Dintenfass (nathan@changemedia.com)
 		* @version 1, December 10, 2001
 		*/
-		public function arrayOfStructsSort(aOfS,key){
-		        //by default we'll use an ascending sort
-		        var sortOrder = "asc";        
+		public array function arrayOfStructsSort(aOfS,key,sortOrder2="des"){
+		      
+		        
 		        //by default, we'll use a textnocase sort
 		        var sortType = "textnocase";
 		        //by default, use ascii character 30 as the delim
 		        var delim = ".";
 		        //make an array to hold the sort stuff
 		        var sortArray = arraynew(1);
+		        
 		        //make an array to return
 		        var returnArray = arraynew(1);
+		        
 		        //grab the number of elements in the array (used in the loops)
 		        var count = arrayLen(aOfS);
 		        //make a variable to use in the loop
-		        var ii = 1;
+		        var ii = 1; var j=1;
 		        //if there is a 3rd argument, set the sortOrder
 		        if(arraylen(arguments) GT 2)
 		            sortOrder = arguments[3];
@@ -58,7 +60,7 @@
 		        for(ii = 1; ii lte count; ii = ii + 1)
 		            sortArray[ii] = aOfS[ii][key] & delim & ii;
 		        //now sort the array
-		        arraySort(sortArray,sortType,sortOrder);
+		        arraySort(sortArray,sortType,arguments.sortOrder2);
 		        //now build the return array
 		        for(ii = 1; ii lte count; ii = ii + 1)
 		            returnArray[ii] = aOfS[listLast(sortArray[ii],delim)];
@@ -74,13 +76,18 @@
 			  }
 			}
 		}
-
+		
 		// @hint this method allows you to properly format a value against a formatType
 		public any function formatValue( required string value, required string formatType, struct formatDetails={} ) {
-			if(listFindNoCase("currency,date,datetime,pixels,percentage,second,time,truefalse,url,weight,yesno,urltitle,alphanumericdash", arguments.formatType)) {
+			
+			if(listFindNoCase("decimal,currency,date,datetime,pixels,percentage,second,time,truefalse,url,weight,yesno,urltitle,alphanumericdash", arguments.formatType)) {
 				return this.invokeMethod("formatValue_#arguments.formatType#", {value=arguments.value, formatDetails=arguments.formatDetails});
 			}
 			return arguments.value;
+		}
+		
+		public any function formatValue_decimal(required string value){
+			return numberFormat(arguments.value,'_.__');
 		}
 
 		public any function formatValue_second( required string value, struct formatDetails={} ) {
@@ -253,6 +260,7 @@
 		//evaluate double brackets ${{}} and ${()}
 		public string function replaceStringEvaluateTemplate(required string template){
 			var templateKeys = reMatchNoCase("\${{[^}]+}}",arguments.template);
+			
 			var parenthesisTemplateKeys =  reMatchNoCase("\${\([^}]+\)}",arguments.template);
 
 			var replacementArray = [];
@@ -291,9 +299,15 @@
 
 			return returnString;
 		}
+		
+		public array function getTemplateKeys(required string template){
+			return reMatchNoCase("\${[^}]+}",arguments.template);
+		}
+		
 		//replace single brackets ${}
 		public string function replaceStringTemplate(required string template, required any object, boolean formatValues=false, boolean removeMissingKeys=false) {
-			var templateKeys = reMatchNoCase("\${[^}]+}",arguments.template);
+			
+			var templateKeys = getTemplateKeys(arguments.template);
 			var replacementArray = [];
 			var returnString = arguments.template;
 			for(var i=1; i<=arrayLen(templateKeys); i++) {
@@ -305,6 +319,7 @@
 				if( isStruct(arguments.object) && structKeyExists(arguments.object, valueKey) ) {
 					replaceDetails.value = arguments.object[ valueKey ];
 				} else if (isObject(arguments.object)) {
+					//if null then is blank
 					replaceDetails.value = arguments.object.getValueByPropertyIdentifier(valueKey, arguments.formatValues);
 				} else if (arguments.removeMissingKeys) {
 					replaceDetails.value = '';
@@ -315,7 +330,10 @@
 			for(var i=1; i<=arrayLen(replacementArray); i++) {
 				returnString = replace(returnString, replacementArray[i].key, replacementArray[i].value, "all");
 			}
-			if(arraylen(reMatchNoCase("\${[^}]+}",returnString))){
+			if(
+				arguments.template != returnString
+				&& arraylen(getTemplateKeys(returnString))
+			){
 				returnString = replaceStringTemplate(returnString, arguments.object, arguments.formatValues,arguments.removeMissingKeys);
 			}
 
@@ -449,13 +467,23 @@
 
 		// helper method for downloading a file
 		public void function downloadFile(required string fileName, required string filePath, string fileType="", string contentType = 'application/unknown', boolean deleteFile = false) {
-			getHibachiTagService().cfheader(name="Content-Disposition", value="inline; filename=#arguments.fileName#.#arguments.fileType#");
+			getHibachiTagService().cfheader(name="Content-Disposition", value="attachment; filename=#arguments.fileName#.#arguments.fileType#");
 			getHibachiTagService().cfcontent(type="#arguments.contentType#", file="#arguments.filePath#", deletefile="#arguments.deleteFile#");
 		}
 
 		public string function encryptValue(required string value, string salt="") {
 			var passwords = getEncryptionPasswordArray();
 			return encrypt(arguments.value, generatePasswordBasedEncryptionKey(password=passwords[1].password, salt=arguments.salt, iterationCount=passwords[1].iterationCount), getEncryptionAlgorithm(), getEncryptionEncoding());
+		}
+		
+		public string function hibachiHTMLEditFormat(required string html){
+			var sanitizedString = htmlEditFormat(arguments.html);
+			sanitizedString = sanitizeForAngular(sanitizedString);
+			return sanitizedString;
+		}
+		
+		public string function sanitizeForAngular(required string html){
+			return ReReplace(arguments.html,'{',chr(123)&chr(002),'all');
 		}
 
 		public string function decryptValue(required string value, string salt="") {
@@ -1070,6 +1098,19 @@
         <cfset local.currentDate = Now()>
         <cfset local.utcDate = dateConvert( "local2utc", local.currentDate )>
         <cfreturn round( local.utcDate.getTime() / 1000 )>
+    </cffunction>
+    
+    <cffunction name="convertBase64GIFToBase64PDF">
+    	<cfargument name="base64GIF" />
+    	<cfset var myImage = ImageReadBase64("data:image/gif;base64,#arguments.base64GIF#")> 
+    	<cfset var tempDirectory = getTempDirectory()&'/newimage.gif'>
+    	<cfset imageWrite(myImage,tempDirectory)>
+		<cfdocument name="newpdf" format="pdf" localUrl="yes">
+			<cfoutput>
+				<img src="file:///#tempDirectory#" />
+			</cfoutput>
+		</cfdocument>
+		<cfreturn ToBase64(newpdf) />
     </cffunction>
 
 

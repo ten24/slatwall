@@ -45,15 +45,12 @@ class SWWorkflowTrigger{
 			},
 			templateUrl:hibachiPathBuilder.buildPartialsPath(workflowPartialsPath)+"workflowtrigger.html",
 			link: function(scope, element,attrs){
-				console.log('workflow trigger init');
 
 				/**
 				 * Selects the current workflow trigger.
 				 */
 				scope.selectWorkflowTrigger = function(workflowTrigger){
-					console.log('SelectWorkflowTriggers');
 					scope.done = false;
-					console.log(workflowTrigger);
 					scope.finished = false;
 					scope.workflowTriggers.selectedTrigger = undefined;
 
@@ -76,12 +73,26 @@ class SWWorkflowTrigger{
                 scope.executingTrigger = false;
                 scope.executeWorkflowTrigger = function(workflowTrigger){
                     if(scope.executingTrigger) return;
+
+                    if(!workflowTrigger.data.workflow.data.workflowTasks || !workflowTrigger.data.workflow.data.workflowTasks.length) {
+                        var alert = alertService.newAlert();
+                        alert.msg =  "You don't have any  Task yet!";
+                        alert.type = "error";
+                        alert.fade = true;
+                        alertService.addAlert(alert);
+                        return;
+                    }
                     scope.executingTrigger = true;
 
                     var appConfig = $hibachi.getConfig();
                     var urlString = appConfig.baseURL+'/index.cfm/?'+appConfig.action+'=admin:workflow.executeScheduleWorkflowTrigger&workflowTriggerID='+workflowTrigger.data.workflowTriggerID;
                     $http.get(urlString).finally(()=>{
                         scope.executingTrigger = false;
+                        var alert = alertService.newAlert();
+                        alert.msg =  "Task Triggered Successfully. Check History for Status";
+                        alert.type = "success";
+                        alert.fade = true;
+                        alertService.addAlert(alert);
                     })
                 };
 
@@ -89,8 +100,6 @@ class SWWorkflowTrigger{
 				 * Overrides the delete function for the confirmation modal. Delegates to the normal delete method.
 				 */
 				scope.deleteEntity = function(entity){
-					console.log("Delete Called");
-					console.log(entity);
 					scope.deleteTrigger(entity);
 				};
 
@@ -100,7 +109,6 @@ class SWWorkflowTrigger{
 				scope.deleteTrigger = function(workflowTrigger){
 					var deleteTriggerPromise = $hibachi.saveEntity('WorkflowTrigger',workflowTrigger.data.workflowTriggerID,{},'Delete');
 					deleteTriggerPromise.then(function(value){
-						console.log('deleteTrigger');
 						scope.workflowTriggers.splice(workflowTrigger.$$index,1);
 					});
 				};

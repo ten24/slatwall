@@ -134,6 +134,13 @@
 					<cfset attributes.value = attributes.valueDefault />
 				</cfif>
 				
+				<cfif attributes.edit eq 'true' 
+						AND attributes.object.getPropertyFormatType( attributes.property ) eq 'currency'
+						AND !structKeyExists(attributes.object.getPropertyMetaData(attributes.property), "hb_nullRBKey")
+				>
+					<cfset attributes.value = attributes.object.getFormattedValue(attributes.property,'decimal') />
+				</cfif>
+				
 				<!--- If the value was an object, typically a MANY-TO-ONE, then we get either the identifierValue or for display a simpleRepresentation --->
 				<cfif isObject(attributes.value) && attributes.object.isPersistent()>
 					<cfif attributes.edit>
@@ -183,6 +190,7 @@
 						<cfset attributes.value = "" />
 					</cfif>
 				</cfif>
+				
 			</cfif>
 			
 			<!--- Set up the property title --->

@@ -48,17 +48,54 @@ Notes:
 */
 component extends="Slatwall.org.Hibachi.HibachiObject" {
 
+	property name="testUrl" type="string";
+	property name="productionUrl" type="string";
+	property name="shippingMethods" type="struct";
+	property name="trackingURL" type="string";
+
 	public any function init() {
+		variables.shippingMethods = {};
+		variables.trackingURL = "";
 		return this;
 	}
 	
-	public string function getShippingMethods() {
-		return "";
+	public struct function getShippingMethods() {
+		return variables.shippingMethods;
 	}
 	
 	public string function getTrackingURL() {
-		return "";
+		return variables.trackingURL;
 	}
+	
+	
+	
+	private any function getResponse(required string requestPacket, required string url, required string format="xml"){
+		// Setup Request to push to FedEx
+        var httpRequest = new http();
+        httpRequest.setMethod("POST");
+		httpRequest.setPort("443");
+		httpRequest.setTimeout(45);
+		httpRequest.setUrl(arguments.url);
+		httpRequest.setResolveurl(false);
+		if(arguments.format == 'xml'){
+			httpRequest.addParam(type="XML", name="name",value=trim(arguments.requestPacket));
+			return XmlParse(REReplace(httpRequest.send().getPrefix().fileContent, "^[^<]*", "", "one"));
+		}else{
+			httpRequest.addParam(type="header",name="Content-Type",value="application/json");
+			httpRequest.addParam(type="body", value=trim(arguments.requestPacket));
+			return deserializeJson(httpRequest.send().getPrefix().fileContent);
+		}
+		
+	}
+	
+	public any function processShipmentRequestWithOrderDelivery_Create(required any processObject){
+		var processShipmentRequestBean = getTransient("ShippingProcessShipmentRequestBean");
+		processShipmentRequestBean.populateWithOrderFulfillment(arguments.processObject.getOrderFulfillment());
+		var responseBean = processShipmentRequest(processShipmentRequestBean);
+		arguments.processObject.setTrackingNumber(responseBean.getTrackingNumber());
+		arguments.processObject.setContainerLabel(responseBean.getContainerLabel());
+	}
+	
 	
 	// @hint helper function to return a Setting
 	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
@@ -76,5 +113,16 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 	// @hint helper function to return the packagename of this integration
 	public any function getPackageName() {
 		return lcase(listGetAt(getClassFullname(), listLen(getClassFullname(), '.') - 1, '.'));
+	}
+	
+	public any function testIntegration() {
+		var requestBean = new Slatwall.model.transient.fulfillment.ShippingRatesRequestBean();
+		var testAddress = getHibachiScope().getAccount().getAddress();
+		requestbean.setShipToStreetAddress(testAddress.getStreetAddress());
+		requestbean.setShipToCity(testAddress.getCity());
+		requestbean.setShipToStateCode(testAddress.getStateCode());
+		requestbean.setShipToPostalCode(testAddress.getPostalCode());
+		requestbean.setShipToCountryCode(testAddress.getCountryCode());
+		return getRates(requestBean);
 	}
 }

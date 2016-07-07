@@ -329,7 +329,7 @@
 
 			<div class="col-xs-6 s-table-view-options s-no-padding-right pull-right">
 				<ul class="list-inline list-unstyled">
-					<li>
+					<li class="s-table-action">
 						<div class="btn-group navbar-left dropdown">
 
 							<button type="button" class="btn btn-no-style dropdown-toggle"><i class="fa fa-cog"></i></button>

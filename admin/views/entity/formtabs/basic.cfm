@@ -7,6 +7,7 @@
 <cfoutput>
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
+		    <hb:HibachiPropertyDisplay object="#rc.form#" property="formName" edit="#rc.edit#" />
 			<hb:HibachiPropertyDisplay object="#rc.form#" property="formCode" edit="#rc.edit#" />
 			<hb:HibachiPropertyDisplay object="#rc.form#" property="emailTo" edit="#rc.edit#" />
 		</hb:HibachiPropertyList>

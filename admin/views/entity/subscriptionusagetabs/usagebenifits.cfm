@@ -61,7 +61,7 @@ Notes:
 			<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefit.subscriptionBenefitName" />
 		</hb:HibachiListingDisplay>
 	</div>
-	<hb:hibachidisplaytoggle selector="input[name='useRenewalSku']" showvalues="0" loadVisable="#isNull(rc.subscriptionUsage.getRenewalSku())#">
+	<hb:HibachiDisplayToggle selector="input[name='useRenewalSku']" showvalues="0" loadVisable="#isNull(rc.subscriptionUsage.getRenewalSku())#">
 		<div class="col-md-6">
 			<h4>#$.slatwall.rbKey('admin.entity.subscriptionusagetabs.usagebenefits.renewalBenefits')#</h4>
 			<hb:HibachiListingDisplay smartList="#rc.subscriptionUsage.getRenewalSubscriptionUsageBenefitsSmartList()#"

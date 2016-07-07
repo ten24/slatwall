@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y uuid-runtime
 # Install Slatwall
 RUN wget -nv https://s3.amazonaws.com/slatwall-releases/slatwall-latest.zip -O /root/slatwall.zip && \
 	unzip /root/slatwall.zip -d /root/slatwall && \
-	cp -a /root/slatwall /var/www && \
+	cp -a /root/slatwall/. /var/www && \
 	rm -rf /root/slatwall.zip && \
 	rm -rf /root/slatwall
 

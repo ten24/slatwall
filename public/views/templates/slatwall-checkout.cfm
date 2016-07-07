@@ -960,44 +960,44 @@ Notes:
 													<h6>Shipping To:</h6>
 													<!--- EMAIL --->
 													<cfif orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "email">
-														Email Address: #htmlEditFormat( orderFulfillment.getEmailAddress() )#<br />
+														Email Address: #$.slatwall.hibachihtmlEditFormat( orderFulfillment.getEmailAddress() )#<br />
 
 													<!--- PICKUP --->
 													<cfelseif orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "pickup">
-														Pickup Location: #htmlEditFormat( orderFulfillment.getPickupLocation().getLocationName() )#
+														Pickup Location: #$.slatwall.hibachihtmlEditFormat( orderFulfillment.getPickupLocation().getLocationName() )#
 
 													<!--- SHIPPING --->
 													<cfelseif orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">
 														<cfif not isNull(orderFulfillment.getAddress().getName())>
-															#htmlEditFormat( orderFulfillment.getAddress().getName() )#<br />
+															#$.slatwall.hibachihtmlEditFormat( orderFulfillment.getAddress().getName() )#<br />
 														</cfif>
 														<cfif not isNull(orderFulfillment.getAddress().getCompany())>
-															#htmlEditFormat( orderFulfillment.getAddress().getCompany() )#<br />
+															#$.slatwall.hibachihtmlEditFormat( orderFulfillment.getAddress().getCompany() )#<br />
 														</cfif>
 														<cfif not isNull(orderFulfillment.getAddress().getStreetAddress())>
-															#htmlEditFormat( orderFulfillment.getAddress().getStreetAddress() )#<br />
+															#$.slatwall.hibachihtmlEditFormat( orderFulfillment.getAddress().getStreetAddress() )#<br />
 														</cfif>
 														<cfif not isNull(orderFulfillment.getAddress().getStreet2Address())>
-															#htmlEditFormat( orderFulfillment.getAddress().getStreet2Address() )#<br />
+															#$.slatwall.hibachihtmlEditFormat( orderFulfillment.getAddress().getStreet2Address() )#<br />
 														</cfif>
 														<cfif not isNull(orderFulfillment.getAddress().getLocality())>
-															#htmlEditFormat( orderFulfillment.getAddress().getLocality() )#<br />
+															#$.slatwall.hibachihtmlEditFormat( orderFulfillment.getAddress().getLocality() )#<br />
 														</cfif>
 														<cfif not isNull(orderFulfillment.getAddress().getCity()) and not isNull(orderFulfillment.getAddress().getStateCode()) and not isNull(orderFulfillment.getAddress().getPostalCode())>
-															#htmlEditFormat( orderFulfillment.getAddress().getCity() )#, #htmlEditFormat( orderFulfillment.getAddress().getStateCode() )# #htmlEditFormat( orderFulfillment.getAddress().getPostalCode() )#<br />
+															#$.slatwall.hibachihtmlEditFormat( orderFulfillment.getAddress().getCity() )#, #$.slatwall.hibachihtmlEditFormat( orderFulfillment.getAddress().getStateCode() )# #$.slatwall.hibachihtmlEditFormat( orderFulfillment.getAddress().getPostalCode() )#<br />
 														<cfelse>
 															<cfif not isNull(orderFulfillment.getAddress().getCity())>
-																#htmlEditFormat( orderFulfillment.getAddress().getCity() )#<br />
+																#$.slatwall.hibachihtmlEditFormat( orderFulfillment.getAddress().getCity() )#<br />
 															</cfif>
 															<cfif not isNull(orderFulfillment.getAddress().getStateCode())>
-																#htmlEditFormat( orderFulfillment.getAddress().getStateCode() )#<br />
+																#$.slatwall.hibachihtmlEditFormat( orderFulfillment.getAddress().getStateCode() )#<br />
 															</cfif>
 															<cfif not isNull(orderFulfillment.getAddress().getPostalCode())>
-																#htmlEditFormat( orderFulfillment.getAddress().getPostalCode() )#<br />
+																#$.slatwall.hibachihtmlEditFormat( orderFulfillment.getAddress().getPostalCode() )#<br />
 															</cfif>
 														</cfif>
 														<cfif not isNull(orderFulfillment.getAddress().getCountryCode())>
-															#htmlEditFormat( orderFulfillment.getAddress().getCountryCode() )#<br />
+															#$.slatwall.hibachihtmlEditFormat( orderFulfillment.getAddress().getCountryCode() )#<br />
 														</cfif>
 													</cfif>
 												</div>
@@ -1034,9 +1034,9 @@ Notes:
 
 												<cfif orderPayment.getPaymentMethodType() EQ "creditcard">
 
-													Name on Card: #htmlEditFormat( orderPayment.getNameOnCreditCard() )#<br />
+													Name on Card: #$.slatwall.hibachihtmlEditFormat( orderPayment.getNameOnCreditCard() )#<br />
 													Card: #orderPayment.getCreditCardType()# ***#orderPayment.getCreditCardLastFour()#<br />
-													Expiration: #htmlEditFormat( orderPayment.getExpirationMonth() )# / #htmlEditFormat( orderPayment.getExpirationYear() )#<br />
+													Expiration: #$.slatwall.hibachihtmlEditFormat( orderPayment.getExpirationMonth() )# / #$.slatwall.hibachihtmlEditFormat( orderPayment.getExpirationYear() )#<br />
 													Payment Amount: #orderPayment.getFormattedValue('amount')#<br />
 
 													<cfif isNull(orderPayment.getProviderToken()) && !isNull(orderPayment.getSecurityCode())>
@@ -1061,17 +1061,17 @@ Notes:
 											<cfif not isNull(orderPayment.getBillingAddress())>
 												<div class="span6">
 													<h6>Billing Address:</h6>
-													#htmlEditFormat( orderPayment.getBillingAddress().getName() )#<br />
+													#$.slatwall.hibachihtmlEditFormat( orderPayment.getBillingAddress().getName() )#<br />
 													<cfif isNull(orderPayment.getBillingAddress().getCompany()) && len(orderPayment.getBillingAddress().getCompany())>
-														#htmlEditFormat( orderPayment.getBillingAddress().getCompany() )#<br />
+														#$.slatwall.hibachihtmlEditFormat( orderPayment.getBillingAddress().getCompany() )#<br />
 													</cfif>
 													<cfif !isNull(orderPayment.getBillingAddress().getPhoneNumber()) && len(orderPayment.getBillingAddress().getCompany())>
-														#htmlEditFormat( orderPayment.getBillingAddress().getPhoneNumber() )#<br />
+														#$.slatwall.hibachihtmlEditFormat( orderPayment.getBillingAddress().getPhoneNumber() )#<br />
 													</cfif>
-													#htmlEditFormat( orderPayment.getBillingAddress().getStreetAddress() )#<br />
-													<cfif not isNull(orderPayment.getBillingAddress().getStreet2Address()) && len(orderPayment.getBillingAddress().getStreet2Address())>#htmlEditFormat( orderPayment.getBillingAddress().getStreet2Address() )#<br /></cfif>
-													#htmlEditFormat( orderPayment.getBillingAddress().getCity() )#, #htmlEditFormat( orderPayment.getBillingAddress().getStateCode() )# #htmlEditFormat( orderPayment.getBillingAddress().getPostalCode() )#<br />
-													#htmlEditFormat( orderPayment.getBillingAddress().getCountryCode() )#
+													#$.slatwall.hibachihtmlEditFormat( orderPayment.getBillingAddress().getStreetAddress() )#<br />
+													<cfif not isNull(orderPayment.getBillingAddress().getStreet2Address()) && len(orderPayment.getBillingAddress().getStreet2Address())>#$.slatwall.hibachihtmlEditFormat( orderPayment.getBillingAddress().getStreet2Address() )#<br /></cfif>
+													#$.slatwall.hibachihtmlEditFormat( orderPayment.getBillingAddress().getCity() )#, #$.slatwall.hibachihtmlEditFormat( orderPayment.getBillingAddress().getStateCode() )# #$.slatwall.hibachihtmlEditFormat( orderPayment.getBillingAddress().getPostalCode() )#<br />
+													#$.slatwall.hibachihtmlEditFormat( orderPayment.getBillingAddress().getCountryCode() )#
 												</div>
 											</cfif>
 										</div>
@@ -1105,7 +1105,7 @@ Notes:
 
 						<p>
 							<!--- Name --->
-							<strong>#htmlEditFormat( $.slatwall.cart().getAccount().getFullName() )#</strong><br />
+							<strong>#$.slatwall.hibachihtmlEditFormat( $.slatwall.cart().getAccount().getFullName() )#</strong><br />
 
 							<!--- Email Address --->
 							<cfif len($.slatwall.cart().getAccount().getEmailAddress())>#$.slatwall.cart().getAccount().getEmailAddress()#<br /></cfif>
@@ -1364,7 +1364,7 @@ Notes:
 							<td>#orderItem.getSku().getProduct().getTitle()#</td>
 
 							<!--- Quantity --->
-							<td>#htmlEditFormat( orderItem.getQuantity())#</td>
+							<td>#$.slatwall.hibachihtmlEditFormat( orderItem.getQuantity())#</td>
 
 							<!--- Price --->
 							<td>

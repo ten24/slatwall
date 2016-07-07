@@ -71,8 +71,9 @@ Notes:
 			data-angular-links="false"
 			data-has-action-bar="false"
 						>
-		<sw-listing-column data-property-identifier="formCode"></sw-listing-column>
 		<sw-listing-column data-property-identifier="emailTo"></sw-listing-column>
+		<sw-listing-column data-property-identifier="formCode"></sw-listing-column>
+		<sw-listing-column data-property-identifier="formName"></sw-listing-column>
 	</sw-listing-display>
 
 </cfoutput>

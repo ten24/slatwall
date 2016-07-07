@@ -41,6 +41,8 @@ class SWDisplayOptions{
             scope:{
                 orderBy:"=",
                 columns:'=',
+                joins:"=",
+                groupBys:"=",
                 propertiesList:"=",
                 saveCollection:"&",
                 baseEntityAlias:"=?",
@@ -90,7 +92,7 @@ class SWDisplayOptions{
                         return selectedProperty.displayPropertyIdentifier;
                     }
 
-                    angular.forEach(propertyIdentifierArray,function(propertyIdentifierItem,key){
+                    angular.forEach(propertyIdentifierArray,function(propertyIdentifierItem,key:number){
                         //pass over the initial item
                         if(key !== 0 ){
                             if(key === 1){
@@ -112,13 +114,18 @@ class SWDisplayOptions{
                     return title;
                 };
 
-                $scope.addColumn = function(selectedProperty, closeDialog){
-                    $log.debug('add Column');
-                    $log.debug(selectedProperty);
-                    if(selectedProperty.$$group === 'simple' || 'attribute'){
+                $scope.addColumn = function(closeDialog){
+                    var selectedProperty = $scope.selectedProperty;
+                    if(angular.isDefined($scope.selectedAggregate)){
+                        selectedProperty = $scope.selectedAggregate;
+                    }
+
+                    console.log('add Column');
+                    console.log(selectedProperty);
+                    if(selectedProperty.$$group === 'simple' || 'attribute' || 'compareCollections'){
                         $log.debug($scope.columns);
                         if(angular.isDefined(selectedProperty)){
-                            var column = {
+                            var column:any = {
                                 title : getTitleFromProperty(selectedProperty),
                                 propertyIdentifier : selectedProperty.propertyIdentifier,
                                 isVisible : true,
@@ -134,10 +141,86 @@ class SWDisplayOptions{
                             if(angular.isDefined(selectedProperty.ormtype)){
                                 column['ormtype'] = selectedProperty.ormtype;
                             }
+                            if(selectedProperty.hb_formattype){
+                                column['type'] = selectedProperty.hb_formattype;
+                            }else{
+                                column['type'] = 'none';
+                            }
+                            if(angular.isDefined(selectedProperty.aggregate)){
+                                column['ormtype'] = 'string';
+                                column['aggregate']={
+                                    aggregateFunction : selectedProperty.aggregate.toUpperCase(),
+                                    aggregateAlias : selectedProperty.propertyIdentifier.split(/[._]+/).pop()+selectedProperty.aggregate.charAt(0).toUpperCase() + selectedProperty.aggregate.slice(1)
+                                };
+                                if(selectedProperty.cfc){
+                                    column['title'] = rbkeyService.getRBKey('entity.'+selectedProperty.cfc+'.'+column['aggregate']['aggregateAlias']);
+                                }else if(selectedProperty.aggregateObject){
+                                    column['title'] = rbkeyService.getRBKey('entity.'+selectedProperty.aggregateObject+'.'+column['aggregate']['aggregateAlias']);
+                                }else{
+                                    column['title'] = rbkeyService.getRBKey('entity.'+selectedProperty.propertyIdentifier.split(/[._]+/).pop()+'.'+column['aggregate']['aggregateAlias']);
+                                }
+
+                            }
                             $scope.columns.push(column);
+
+                            if(angular.isDefined(selectedProperty.aggregate)) {
+                                if ((selectedProperty.propertyIdentifier.match(/_/g) || []).length > 1) {
+                                    var PIlimit = selectedProperty.propertyIdentifier.length;
+                                    if (selectedProperty.propertyIdentifier.indexOf('.') != -1) {
+                                        PIlimit = selectedProperty.propertyIdentifier.indexOf('.');
+                                    }
+                                    var propertyIdentifierJoins = selectedProperty.propertyIdentifier.substring(1, PIlimit);
+                                    var propertyIdentifierParts = propertyIdentifierJoins.split('_');
+                                    console.log(propertyIdentifierParts);
+                                    console.log(propertyIdentifierParts[0].charAt(0).toUpperCase() + propertyIdentifierParts[0].slice(1));
+                                    var current_collection = $hibachi.getEntityExample(propertyIdentifierParts[0].charAt(0).toUpperCase() + propertyIdentifierParts[0].slice(1));
+                                    var _propertyIdentifier = '';
+                                    var joins = [];
+
+                                    if (angular.isDefined($scope.joins)) {
+                                        joins = $scope.joins;
+                                    }
+
+                                    for (var i = 1; i < propertyIdentifierParts.length; i++) {
+                                        if (angular.isDefined(current_collection.metaData[propertyIdentifierParts[i]]) && ('cfc' in current_collection.metaData[propertyIdentifierParts[i]])) {
+                                            current_collection = $hibachi.getEntityExample(current_collection.metaData[propertyIdentifierParts[i]].cfc);
+                                            _propertyIdentifier += '_' + propertyIdentifierParts[i];
+                                            var newJoin = {
+                                                associationName: _propertyIdentifier.replace(/_([^_]+)$/, '.$1').substring(1),
+                                                alias: '_' + propertyIdentifierParts[0] + _propertyIdentifier
+                                            };
+                                            var joinFound = false;
+                                            for (var j = 0; j < joins.length; j++) {
+                                                if (joins[j].alias === newJoin.alias) {
+                                                    joinFound = true;
+                                                    break;
+                                                }
+                                            }
+                                            if (!joinFound) {
+                                                joins.push(newJoin);
+                                            }
+                                        }
+                                    }
+                                    $scope.joins = joins;
+
+                                    if (angular.isUndefined($scope.groupBys) || $scope.groupBys.split(',').length != $scope.columns.length) {
+                                        var groupbyArray = angular.isUndefined($scope.groupBys) ? [] : $scope.groupBys.split(',');
+                                        for (var col = 0; col < $scope.columns.length; col++) {
+                                            if (groupbyArray.indexOf($scope.columns[col].propertyIdentifier) == -1) {
+                                                groupbyArray.push($scope.columns[col].propertyIdentifier);
+                                            }
+                                        }
+                                        $scope.groupBys = groupbyArray.join(',');
+                                    }
+
+                                }
+                            }
+
+
                             $scope.saveCollection();
                             if(angular.isDefined(closeDialog) && closeDialog === true){
                                 $scope.addDisplayDialog.toggleDisplayDialog();
+                                $scope.selectBreadCrumb(0);
                             }
                         }
                     }
@@ -162,11 +245,18 @@ class SWDisplayOptions{
                     }
                 });
 
-                $scope.selectedPropertyChanged = function(selectedProperty){
+                $scope.selectedPropertyChanged = function(selectedProperty, aggregate?){
                     // drill down or select field?
-                    $log.debug('selectedPropertyChanged');
-                    $log.debug(selectedProperty);
-                    $scope.selectedProperty = selectedProperty;
+                    console.log('selectedPropertyChanged', aggregate);
+                    console.log(selectedProperty);
+                    if(!aggregate){
+                        $scope.selectedProperty = selectedProperty;
+                        $scope.selectedAggregate = undefined;
+                    }else{
+                        console.log('Aggregate');
+                        $scope.selectedAggregate = selectedProperty;
+                    }
+
                 };
 
 

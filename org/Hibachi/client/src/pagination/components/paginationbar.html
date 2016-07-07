@@ -33,27 +33,27 @@
 		    <li ng-if="swPaginationBar.paginator.recordsCount > swPaginationBar.paginator.pageShow">
 		        <ul class="pagination pagination-sm" ng-show="swPaginationBar.paginator.pageShowOptions.selectedPageShowOption.value !== 'Auto'">
 		            <li ng-click="swPaginationBar.paginator.previousPage()" ng-class="{disabled:swPaginationBar.paginator.hasPrevious()}">
-		                <a>&laquo;</a>
+		                <a href="#">&laquo;</a>
 		            </li>
 		            <li ng-show="swPaginationBar.paginator.showPreviousJump()">
 		                <a ng-click="swPaginationBar.paginator.setCurrentPage(1)">1</a>
 		            </li>
 		            <li ng-show="swPaginationBar.paginator.showPreviousJump()" ng-click="swPaginationBar.paginator.previousJump()">
-		                <a>...</a>
+		                <a href="#">...</a>
 		            </li>
 		            <li ng-repeat="i in swPaginationBar.paginator.totalPagesArray" ng-class="{active:swPaginationBar.paginator.getCurrentPage() === i}" ng-click="swPaginationBar.paginator.setCurrentPage(i)" ng-if="swPaginationBar.paginator.showPageNumber(i)">
-		                <a ng-bind="i"></a>
+		                <a hreff="#" ng-bind="i"></a>
 		            </li>
 		            <li ng-show="swPaginationBar.paginator.showNextJump()" ng-click="swPaginationBar.paginator.nextJump()">
-		                <a>...</a>
+		                <a href="#">...</a>
 		            </li>
 		            <li ng-show="swPaginationBar.paginator.showNextJump()">
-		                <a ng-click="swPaginationBar.paginator.setCurrentPage(swPaginationBar.paginator.getTotalPages())" ng-bind="swPaginationBar.paginator.getTotalPages()">
+		                <a href="#" ng-click="swPaginationBar.paginator.setCurrentPage(swPaginationBar.paginator.getTotalPages())" ng-bind="swPaginationBar.paginator.getTotalPages()">
 		
 		                </a>
 		            </li>
 		            <li ng-class="{disabled:swPaginationBar.paginator.hasNext()}" ng-click="swPaginationBar.paginator.nextPage()">
-		                <a>&raquo;</a>
+		                <a href="#">&raquo;</a>
 		            </li>
 		
 		        </ul>

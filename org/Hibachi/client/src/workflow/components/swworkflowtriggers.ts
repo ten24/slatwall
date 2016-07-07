@@ -11,7 +11,8 @@ class SWWorkflowTriggers{
 			hibachiPathBuilder,
             collectionConfigService,
             scheduleService,
-            dialogService
+            dialogService,
+                $timeout
 		)=> new SWWorkflowTriggers(
 			$hibachi,
 			workflowPartialsPath,
@@ -20,7 +21,8 @@ class SWWorkflowTriggers{
 			hibachiPathBuilder,
             collectionConfigService,
             scheduleService,
-            dialogService
+            dialogService,
+            $timeout
 		);
 		directive.$inject = [
 			'$hibachi',
@@ -30,7 +32,8 @@ class SWWorkflowTriggers{
 			'hibachiPathBuilder',
             'collectionConfigService',
             'scheduleService',
-            'dialogService'
+            'dialogService',
+            '$timeout'
 		];
 		return directive;
 	}
@@ -42,7 +45,8 @@ class SWWorkflowTriggers{
         hibachiPathBuilder,
         collectionConfigService,
         scheduleService,
-        dialogService
+        dialogService,
+        $timeout
 	){
 		return {
 			restrict: 'E',
@@ -52,19 +56,20 @@ class SWWorkflowTriggers{
 			templateUrl:hibachiPathBuilder.buildPartialsPath(workflowPartialsPath)+"workflowtriggers.html",
 			link: function(scope, element,attrs,formController){
 
-                var workflowItemAdded = false;
+                scope.schedule = {};
 
                 scope.$watch('workflowTriggers.selectedTrigger', function(newValue, oldValue){
                     if(newValue !== undefined && newValue !== oldValue){
-                        console.log('Ooh watch me, watch me', newValue);
                         if(newValue.data.triggerType == 'Schedule'){
                             if(angular.isDefined(newValue.data.schedule)){
-                                scope.selectedSchedule = newValue.data.schedule.data.scheduleName;
+                                scope.schedule.selectedName = newValue.data.schedule.data.scheduleName;
                                 scope.selectSchedule(newValue.data.schedule.data);
                             }
                             if(angular.isDefined(newValue.data.scheduleCollection)){
                                 scope.selectedCollection = newValue.data.scheduleCollection.data.collectionName;
                             }
+                        }else if(newValue.data.triggerEventTitle) {
+                            scope.searchEvent.name = newValue.data.triggerEventTitle;
                         }
                     }
                 });
@@ -76,6 +81,7 @@ class SWWorkflowTriggers{
                 observerService.attach((item) =>{
                     scope.collectionCollectionConfig.clearFilters();
                     scope.collectionCollectionConfig.addFilter("collectionObject",item.value);
+                    scope.eventOptions = [];
                 },'WorkflowWorkflowObjectOnChange');
 
                 scope.scheduleCollectionConfig = collectionConfigService.newCollectionConfig("Schedule");
@@ -85,7 +91,6 @@ class SWWorkflowTriggers{
                 scope.daysOfMonth = [];
 
 
-				console.log('Workflow triggers init');
 				scope.$id = 'swWorkflowTriggers';
 				/**
 				 * Retrieves the workflow triggers.
@@ -108,8 +113,6 @@ class SWWorkflowTriggers{
 						var workflowTriggersPromise = scope.workflow.$$getWorkflowTriggers();
 						workflowTriggersPromise.then(function(){
 									scope.workflowTriggers = scope.workflow.data.workflowTriggers;
-									console.log('workflowtriggers');
-									console.log(scope.workflowTriggers);
 
 									/* resets the workflow trigger */
 									if(angular.isUndefined(scope.workflow.data.workflowTriggers)){
@@ -118,8 +121,6 @@ class SWWorkflowTriggers{
 									}
 
 								angular.forEach(scope.workflowTriggers, function(workflowTrigger,key){
-									console.log('trigger');
-									console.log(workflowTrigger);
 									if(workflowTrigger.data.triggerType === 'Schedule'){
 										workflowTrigger.$$getSchedule();
 										workflowTrigger.$$getScheduleCollection();
@@ -146,11 +147,6 @@ class SWWorkflowTriggers{
 				 */
 				scope.showEventOptions = false;
 				scope.eventOptions = [];
-				scope.$watch('searchEvent.name', function(newValue, oldValue){
-					if(newValue !== oldValue){
-						scope.getEventOptions(scope.workflow.data.workflowObject);
-					}
-				});
 
 				/**
 				 * Retrieves the event options for a workflow trigger item.
@@ -160,9 +156,7 @@ class SWWorkflowTriggers{
 						var eventOptionsPromise = $hibachi.getEventOptions(objectName);
 
 						eventOptionsPromise.then(function(value){
-							console.log('getEventOptions');
 							scope.eventOptions = value.data;
-							console.log(scope.eventOptions.name);
 
 						});
 					}
@@ -173,10 +167,8 @@ class SWWorkflowTriggers{
 				 * Saves the workflow triggers.
 				 */
 				scope.saveWorkflowTrigger = function(context){
-                    if(!scope.workflowTriggers.selectedTrigger.$$isPersisted() && !workflowItemAdded){
-
-                        workflowItemAdded = true;
-                        scope.workflow.$$addWorkflowTrigger(scope.workflowTriggers.selectedTrigger);
+                    if(!scope.workflowTriggers.selectedTrigger.$$isPersisted()){
+                        scope.workflowTriggers.selectedTrigger.$$setWorkflow(scope.workflow);
                     }
 					var saveWorkflowTriggerPromise = scope.workflowTriggers.selectedTrigger.$$save();
 					saveWorkflowTriggerPromise.then(function(){
@@ -185,17 +177,23 @@ class SWWorkflowTriggers{
                         scope.searchEvent = {
                             name:''
                         };
+                        scope.schedule.selectedName = '';
+                        scope.schedulePreview = {};
                         //Clear the form by adding a new task action if 'save and add another' otherwise, set save and set finished
                         if (context == 'add'){
-                            console.log("Save and New");
                             scope.addWorkflowTrigger();
                         }else if (context == "finish"){
+
                             scope.workflowTriggers.selectedTrigger = undefined;
                         }
 					});
 				};
 
                 scope.closeTrigger = function(){
+                    console.warn("workflow", scope.workflow);
+                    if(!scope.workflowTriggers.selectedTrigger.$$isPersisted()){
+                        scope.workflowTriggers.selectedTrigger.$$setWorkflow();
+                    }
                     scope.workflowTriggers.selectedTrigger = undefined;
                 };
 
@@ -203,27 +201,23 @@ class SWWorkflowTriggers{
 				 * Changes the selected trigger value.
 				 */
 				scope.selectEvent = function(eventOption){
-					console.log("SelectEvent");
-					console.log(eventOption);
 					//Needs to clear old and set new.
-					scope.workflowTriggers.selectedTrigger.data.triggerEvent = eventOption.value;
+					scope.workflowTriggers.selectedTrigger.data.triggerEventTitle = eventOption.name;
+                    scope.workflowTriggers.selectedTrigger.data.triggerEvent = eventOption.value;
 					if(eventOption.entityName == scope.workflow.data.workflowObject){
 						scope.workflowTriggers.selectedTrigger.data.objectPropertyIdentifier = '';
 
                     }else{
 						scope.workflowTriggers.selectedTrigger.data.objectPropertyIdentifier = eventOption.entityName;
 					}
-
 					scope.searchEvent.name = eventOption.name;
-					console.log(eventOption);
-					console.log(scope.workflowTriggers);
+                    scope.showEventOptions = false;
 				};
 
 				/**
 				 * Selects a new collection.
 				 */
 				scope.selectCollection = function(collection){
-					console.log('selectCollection');
 					scope.workflowTriggers.selectedTrigger.data.scheduleCollection = collection;
 					scope.showCollections = false;
 				};
@@ -239,17 +233,23 @@ class SWWorkflowTriggers{
 				};
 
 				scope.setAsEvent = function(workflowTrigger){
+                    if(!workflowTrigger.$$isPersisted()){
+                        workflowTrigger.data.saveTriggerHistoryFlag = 0;
+                    }
 					//add event,  clear schedule
 				};
 
 				scope.setAsSchedule = function(workflowTrigger){
+                    if(!workflowTrigger.$$isPersisted()){
+                        workflowTrigger.data.saveTriggerHistoryFlag = 1;
+                    }
 				};
 
 				/**
 				 * Adds a workflow trigger.
 				 */
 				scope.addWorkflowTrigger = function(){
-					console.log('addWorkflowTrigger');
+
 					var newWorkflowTrigger = $hibachi.newWorkflowTrigger();
 					scope.workflowTriggers.selectedTrigger = newWorkflowTrigger;
 				};
@@ -267,13 +267,12 @@ class SWWorkflowTriggers{
                         scope.scheduleEntity.data.daysOfMonthToRun = scope.daysOfMonth.filter(Number).join();
                     }
                     scope.scheduleEntity.$$save().then((res) =>{
-                        scope.selectedSchedule = angular.copy(scope.scheduleEntity.data.scheduleName);
+                        scope.schedule.selectedName = angular.copy(scope.scheduleEntity.data.scheduleName);
                         scope.selectSchedule(angular.copy(scope.scheduleEntity.data));
 
                         formService.resetForm(scope.scheduleEntity.forms['scheduleForm']);
                         scope.createSchedule = false;
                     }, ()=>{
-                        console.log('ERROR');
                     })
                 };
 

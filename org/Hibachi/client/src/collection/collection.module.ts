@@ -15,6 +15,7 @@ import {SWCollection} from "./components/swcollection";
 import {SWAddFilterButtons} from "./components/swaddfilterbuttons";
 import {SWDisplayOptions} from "./components/swdisplayoptions";
 import {SWDisplayItem} from "./components/swdisplayitem";
+import {SWDisplayItemAggregate} from "./components/swdisplayitemaggregate";
 import {SWCollectionTable} from "./components/swcollectiontable";
 import {SWColumnItem} from "./components/swcolumnitem";
 import {SWConditionCriteria} from "./components/swconditioncriteria";
@@ -25,6 +26,7 @@ import {SWCriteriaManyToMany} from "./components/swcriteriamanytomany";
 import {SWCriteriaManyToOne} from "./components/swcriteriamanytoone";
 import {SWCriteriaNumber} from "./components/swcriterianumber";
 import {SWCriteriaOneToMany} from "./components/swcriteriaonetomany";
+import {SWCriteriaRelatedObject} from "./components/swcriteriarelatedobject";
 import {SWCriteriaString} from "./components/swcriteriastring";
 import {SWEditFilterItem} from "./components/sweditfilteritem";
 import {SWFilterGroups} from "./components/swfiltergroups";
@@ -51,6 +53,7 @@ var collectionmodule = angular.module('hibachi.collection',[coremodule.name])
 .directive('swAddFilterButtons',SWAddFilterButtons.Factory())
 .directive('swDisplayOptions',SWDisplayOptions.Factory())
 .directive('swDisplayItem',SWDisplayItem.Factory())
+.directive('swDisplayItemAggregate',SWDisplayItemAggregate.Factory())
 .directive('swCollectionTable',SWCollectionTable.Factory())
 .directive('swColumnItem',SWColumnItem.Factory())
 .directive('swConditionCriteria',SWConditionCriteria.Factory())
@@ -61,6 +64,7 @@ var collectionmodule = angular.module('hibachi.collection',[coremodule.name])
 .directive('swCriteriaManyToOne',SWCriteriaManyToOne.Factory())
 .directive('swCriteriaNumber',SWCriteriaNumber.Factory())
 .directive('swCriteriaOneToMany',SWCriteriaOneToMany.Factory())
+.directive('swCriteriaRelatedObject',SWCriteriaRelatedObject.Factory())
 .directive('swCriteriaString',SWCriteriaString.Factory())
 .directive('swEditFilterItem',SWEditFilterItem.Factory())
 .directive('swFilterGroups',SWFilterGroups.Factory())

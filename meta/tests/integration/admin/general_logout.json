@@ -23,6 +23,8 @@
       },
       "text": "QaPa33word"
     },
+
+
     {
       "type": "clickElement",
       "locator": {
@@ -31,9 +33,11 @@
       }
     },
     {
-      "type": "pause",
-      "waitTime": "5000"
+      "type": "waitForEval",
+      "script": "return document.readyState",
+      "value": "complete"
     },
+
     {
       "type": "clickElement",
       "locator": {

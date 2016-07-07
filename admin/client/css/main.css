@@ -328,6 +328,10 @@ body.s-login-screen .form-group {
     padding: 0px /*Remove for responsive*/;
   }
 }
+sw-listing-display {
+  display: inline-block;
+  width: 100%;
+}
 .tooltip.top {
   font-weight: 500 !important;
 }
@@ -1422,12 +1426,16 @@ select.error {
   text-decoration: underline;
 }
 .table i.s-listing-arrow {
-  padding: 0px 6px 0px 0px;
   cursor: pointer;
-  font-size: 14px;
-  margin-top: 2px;
+  font-size: 15px;
   position: absolute;
-  left: -5px;
+  left: -9px;
+  padding: 15px 7px 15px 7px;
+  top: -15px;
+  color: #999;
+}
+.table i.s-listing-arrow:hover {
+  color: #000000;
 }
 .s-property-info .table > thead > tr > th,
 .table > tbody > tr > th,
@@ -1600,7 +1608,6 @@ table tr th .glyphicon {
 }
 .panel-heading h4.panel-title {
   font-size: 14px !important;
-  text-transform: uppercase;
 }
 .panel-heading h4.panel-title span > span {
   background-color: #cccccc;
@@ -2393,8 +2400,15 @@ content.s-body-box .s-detail-notifications {
 content.s-body-box .s-detail-notifications .dropdown {
   display: inline-block;
 }
-tabel .s-table-header {
-  margin-bottom: 10px;
+table .s-table-header .table-section {
+  background-color: #f7f7f7;
+  font-size: 14px;
+  color: #666;
+  padding: 3px 10px;
+}
+table .s-table-header .table-section a.s-hint {
+  float: none;
+  margin-left: 10px;
 }
 .s-no-paddings {
   padding: 0px !important;
@@ -2916,7 +2930,7 @@ tabel .s-table-header {
   width: 100%;
   background: #fff;
   padding: 4px;
-  border: 1px solid #DDD;
+  border: 1px solid #e7eaec;
   vertical-align: bottom;
   border-bottom: 0px;
 }
@@ -2950,12 +2964,16 @@ tabel .s-table-header {
   top: 3px;
   width: 13px;
 }
+.s-table-header-nav .s-table-view-options .s-table-action {
+  margin-top: 1px;
+}
 .s-select-wrapper select {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
   line-height: 15px;
   padding-right: 23px;
+  font-size: 12px;
 }
 .s-select-wrapper {
   position: relative;
@@ -2967,7 +2985,7 @@ tabel .s-table-header {
   content: "\f0dc";
   pointer-events: none;
   position: absolute;
-  margin-top: -22px;
+  margin-top: -23px;
   margin-left: -16px;
 }
 .s-select-wrapper select::-ms-expand {
@@ -3025,6 +3043,9 @@ tabel .s-table-header {
   top: 6px;
   right: 7px;
   pointer-events: none;
+}
+.s-page-table-wrapper .s-table-header-nav .s-table-header-search i {
+  top: 10px;
 }
 .s-table-header-nav .s-page-show {
   min-width: 150px;
@@ -5774,7 +5795,7 @@ a.disabled > i.hibachi-ui-radio-checked {
 .s-select-list-wrapper .s-input-btn span,
 .s-select-list-wrapper .s-input-btn i {
   position: absolute;
-  top: 8px;
+  top: 9px;
   right: 8px;
   height: 14px;
   margin: auto;
@@ -6497,6 +6518,9 @@ a.disabled > i.hibachi-ui-radio-checked {
   font-size: 15px;
   display: none;
 }
+.s-page-table-wrapper .s-detail-content-wrapper .s-detail-body {
+  border: 1px solid #e7eaec;
+}
 .s-detail-content-wrapper .s-content-header .s-compress-icon {
   font-size: 17px;
   display: inline-block;
@@ -6647,6 +6671,7 @@ a.disabled > i.hibachi-ui-radio-checked {
 }
 .s-detail-content-wrapper .s-detail-body table tr th {
   vertical-align: top;
+  border-color: #e7eaec;
 }
 .s-detail-content-wrapper .s-detail-body table tr th > .form-group {
   margin: 0px;
@@ -6660,6 +6685,12 @@ a.disabled > i.hibachi-ui-radio-checked {
   position: relative;
   padding: 0px;
   vertical-align: middle;
+}
+table tr td .s-loading-icon {
+  position: absolute;
+  left: -2px;
+  top: 2px;
+  background: #fff;
 }
 .s-detail-content-wrapper .s-detail-body table tr td.s-status i {
   background-color: #eee;

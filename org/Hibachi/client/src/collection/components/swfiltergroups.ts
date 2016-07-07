@@ -32,7 +32,8 @@ class SWFilterGroups{
 				saveCollection:"&",
 				filterGroup:"=?",
 				comparisonType:"=?",
-                simple:"="
+                simple:"=",
+                readOnly:"="
 			},
 			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"filtergroups.html",
 			controller: ['$scope','$element','$attrs',function($scope, $element,$attrs){

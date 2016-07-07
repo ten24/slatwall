@@ -224,6 +224,52 @@ class SWEditFilterItem{
                         return;
                     }
 
+                    if((selectedFilterProperty.propertyIdentifier.match(/_/g) || []).length > 1 ){
+                        var propertyIdentifierJoins = selectedFilterProperty.propertyIdentifier.substring((selectedFilterProperty.propertyIdentifier.charAt(0)  == '_') ? 1 : 0, selectedFilterProperty.propertyIdentifier.indexOf('.'));
+                        var propertyIdentifierParts = propertyIdentifierJoins.split('_');
+                        var  current_collection = $hibachi.getEntityExample(propertyIdentifierParts[0].charAt(0).toUpperCase() + propertyIdentifierParts[0].slice(1));
+                        var _propertyIdentifier = '';
+                        var joins = [];
+
+                        if(angular.isDefined(scope.collectionConfig.joins)){
+                            joins = scope.collectionConfig.joins;
+                        }
+
+                        for(var i = 1; i < propertyIdentifierParts.length; i++){
+                            if (angular.isDefined(current_collection.metaData[propertyIdentifierParts[i]]) && ('cfc' in current_collection.metaData[propertyIdentifierParts[i]])) {
+                                current_collection = $hibachi.getEntityExample(current_collection.metaData[propertyIdentifierParts[i]].cfc);
+                                _propertyIdentifier += '_' + propertyIdentifierParts[i];
+                                var newJoin = {
+                                    associationName: _propertyIdentifier.replace(/_([^_]+)$/,'.$1').substring(1),
+                                    alias: '_'+propertyIdentifierParts[0]+ _propertyIdentifier
+                                };
+                                var joinFound = false;
+                                for (var j = 0; j < joins.length; j++) {
+                                    if (joins[j].alias === newJoin.alias) {
+                                        joinFound = true;
+                                        break;
+                                    }
+                                }
+                                if(!joinFound){
+                                    joins.push(newJoin);
+                                }
+                            }
+                        }
+                        scope.collectionConfig.joins = joins;
+
+                        if (angular.isDefined(scope.collectionConfig.columns) && (angular.isUndefined(scope.collectionConfig.groupBys) || scope.collectionConfig.groupBys.split(',').length != scope.collectionConfig.columns.length)) {
+                            var groupbyArray = angular.isUndefined(scope.collectionConfig.groupBys) ? [] : scope.collectionConfig.groupBys.split(',');
+                            for (var column = 0; column < scope.collectionConfig.columns.length; column++) {
+                                if (groupbyArray.indexOf(scope.collectionConfig.columns[column].propertyIdentifier) == -1) {
+                                    groupbyArray.push(scope.collectionConfig.columns[column].propertyIdentifier);
+                                }
+                            }
+                            scope.collectionConfig.groupBys = groupbyArray.join(',');
+                        }
+
+
+                    }
+
                     if(angular.isDefined(selectedFilterProperty) && angular.isDefined(selectedFilterProperty.selectedCriteriaType)){
                         //populate filterItem with selectedFilterProperty values
                         filterItem.$$isNew = false;

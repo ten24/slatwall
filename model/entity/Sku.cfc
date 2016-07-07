@@ -232,29 +232,36 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	}
 
 	//returns gift card redemption amount, or 0 if incorrectly configured
-	public any function getRedemptionAmount(){
-		if(structKeyExists(variables, "redemptionAmountType")){
-			switch(variables.redemptionAmountType){
-				case "sameAsPrice":
-					return variables.price;
-					break;
-				case "fixedAmount":
-					if(structKeyExists(variables, "redemptionAmount")){
-						return variables.redemptionAmount;
-					}
-					break;
-				case "percentage":
-					if(structKeyExists(variables, "redemptionAmount")){
-						return precisionEvaluate(precisionEvaluate(variables.price * variables.redemptionAmount)/100);
-					}
-					break;
-				default:
-					return 0;
-					break;
-			}
-		}
-		return 0;
+	public any function getRedemptionAmount(numeric userDefinedPrice){
+    	var amount = variables.price;
+	    if(
+	        this.getUserDefinedPriceFlag()
+	    ){
+	        if(structKeyExists(arguments,'userDefinedPrice')){
+	            amount = arguments.userDefinedPrice;
+	        }
+	    }
+
+	    if(structKeyExists(variables, "redemptionAmountType")){
+	        switch(variables.redemptionAmountType){
+	            case "sameAsPrice":
+	                break;
+	            case "fixedAmount":
+	                if(!this.getUserDefinedPriceFlag() && structKeyExists(variables, "redemptionAmount")){
+	                    amount = variables.redemptionAmount;
+	                }
+	                break;
+	            case "percentage":
+	                amount = precisionEvaluate(precisionEvaluate(amount * variables.redemptionAmount)/100);
+	                break;
+	        }
+	    }else{
+	        amount = 0;
+	    }
+
+	    return amount;
 	}
+
 
 	public string function getFormattedRedemptionAmount(){
 
@@ -978,40 +985,43 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		}
 		return variables.stocksDeletableFlag;
 	}
+	
+	public string function getSkuDefinitionByBaseProductType(
+		string baseProductType
+	){
+		var skuDefinition = "";
+		if(isNull(arguments.baseProductType)){
+			arguments.baseProductType = "";
+		}
+
+		switch (arguments.baseProductType)
+		{
+			case "merchandise":
+				skuDefinition = getDao('skuDao').getSkuDefinitionForMerchandiseBySkuID(getSkuID());
+	    		break;
+
+	    	case "subscription":
+	    		if(!isNull(getSubscriptionTerm()) && !isNull(getSubscriptionTerm().getSubscriptionTermName())){
+	    			skuDefinition = "#rbKey('entity.subscriptionTerm')#: #getSubscriptionTerm().getSubscriptionTermName()#";
+	    		}
+				break;
+
+			case "event":
+				var configs = this.getLocationConfigurations();
+				for(config in configs){
+					skuDefinition = variables.skuDefinition & config.getlocationPathName() & " (#config.getLocationConfigurationName()#) <br>";
+				}
+				break;
+
+			default:
+				skuDefinition = "";
+		}
+		return skuDefinition;
+	}
 
 	public string function getSkuDefinition() {
 		if(!structKeyExists(variables, "skuDefinition")) {
-			variables.skuDefinition = "";
-			var baseProductType = getBaseProductType();
-			if(isNull(baseProductType)){
-				baseProductType = "";
-			}
-
-			switch (baseProductType)
-			{
-				case "merchandise":
-					for(var option in getOptions()) {
-		    			variables.skuDefinition = listAppend(variables.skuDefinition, " #option.getOptionGroup().getOptionGroupName()#: #option.getOptionName()#", ",");
-	    			}
-		    		break;
-
-		    	case "subscription":
-		    		if(!isNull(getSubscriptionTerm()) && !isNull(getSubscriptionTerm().getSubscriptionTermName())){
-		    			variables.skuDefinition = "#rbKey('entity.subscriptionTerm')#: #getSubscriptionTerm().getSubscriptionTermName()#";
-		    		}
-					break;
-
-				case "event":
-					var configs = this.getLocationConfigurations();
-					for(config in configs){
-						variables.skuDefinition = variables.skuDefinition & config.getlocationPathName() & " (#config.getLocationConfigurationName()#) <br>";
-					}
-					break;
-
-				default:
-					variables.skuDefinition = "";
-			}
-
+			variables.skuDefinition = getSkuDefinitionByBaseProductType(getBaseProductType());
 		}
 		return trim(variables.skuDefinition);
 	}

@@ -14,7 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/;.
 
     Linking this program statically or dynamically with other modules is
     making a combined work based on this program.  Thus, the terms and
@@ -43,34 +43,19 @@
     If you modify this program, you may extend this exception to your version
     of the program, but you are not obligated to do so.
 
-	Notes:
+Notes:
 
 */
 
-component accessors="true" output="false" extends="Slatwall.integrationServices.BaseIntegration" implements="Slatwall.integrationServices.IntegrationInterface" {
+component accessors="true" output="false" extends="Slatwall.model.transient.fulfillment.ShippingRequestBean" {
 
 	public any function init() {
-		return this;
+		// Set defaults
+
+
+		return super.init();
 	}
 
-	public string function getIntegrationTypes() {
-		return "payment";
-	}
 
-	public string function getDisplayName() {
-		return "Merchant e-Solutions";
-	}
 
-	public struct function getSettings() {
-		var settings = {
-			profileID = {fieldType="text"},
-			profileKey = {fieldType="text"},
-			testModeFlag = {fieldType="yesno", defaultValue="1"},
-			testProfileID = {fieldType="text"},
-			testProfileKey = {fieldType="text"},
-			apiUrl = {fieldType="text", defaultValue="https://cert.merchante-solutions.com/mes-api/tridentApi"}
-		};
-
-		return settings;
-	}
 }

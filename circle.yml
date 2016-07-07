@@ -23,10 +23,10 @@ dependencies:
 
     # Minify JS
      # generate typings
-    - cd org/Hibachi/client && gulp gen-ts-refs
+    - cd org/Hibachi/client && gulp gen-ts-refs && webpack --config webpack-frontend-production.config.js -p --display-error-details
     - cd admin/client && gulp gen-ts-refs
     # Minify JS
-    - cd admin/client && webpack --config webpack-production.config.js -p --display-error-details
+    - cd admin/client && webpack --config webpack-production.config.js -p --display-error-details 
 
     # Update docker-compose
     - curl -L https://github.com/docker/compose/releases/download/1.4.1/docker-compose-`uname -s`-`uname -m` > docker-compose
@@ -57,7 +57,7 @@ test:
     - if [[ ! -z $SAUCE_USERNAME ]] ; then node meta/tests/integration/se-interpreter/interpreter.js --parallel=1 --listener=meta/tests/integration/se-interpreter/utils/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/setup_config.json; fi
 
     # Run Sauce Labs Integration Admin Tests, 2 side by side at a time
-    - if [[ ! -z $SAUCE_USERNAME ]] ; then node meta/tests/integration/se-interpreter/interpreter.js --parallel=2 --listener=meta/tests/integration/se-interpreter/utils/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/admin_config.json; fi
+    - if [[ ! -z $SAUCE_USERNAME ]] ; then node meta/tests/integration/se-interpreter/interpreter.js --parallel=5 --listener=meta/tests/integration/se-interpreter/utils/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/admin_config.json; fi
 
     # Kill the Sauce Labs tunnel
     - if [[ ! -z $SAUCE_USERNAME ]] ; then cd sc-*-linux && kill $(cat sc.pid); fi

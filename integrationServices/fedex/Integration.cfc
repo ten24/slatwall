@@ -71,7 +71,10 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 			shipperCity = {fieldType="text"},
 			shipperStateCode = {fieldType="text"},
 			shipperPostalCode = {fieldType="text"},
-			shipperCountryCode = {fieldType="text"}
+			shipperCountryCode = {fieldType="text"},
+			contactPersonName = {fieldType="text"},
+			contactCompany = {fieldType="text"},
+			contactPhoneNumber = {fieldType="text"}
 		};
 		
 		return settings;

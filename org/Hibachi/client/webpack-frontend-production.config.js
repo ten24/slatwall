@@ -10,7 +10,7 @@ devConfig
     .addLoader({ exlude: /node_modules/,  loader: WebpackStrip.loader('$log.debug') })
     .addPlugin(new ngAnnotatePlugin({ add: true }))
 ;
-
+devConfig.watch = false;
 
 module.exports = devConfig; 
 

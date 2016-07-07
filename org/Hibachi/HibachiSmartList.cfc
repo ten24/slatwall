@@ -606,6 +606,8 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 						for(var ii=1; ii<=listLen(variables.whereGroups[i].filters[filter], variables.valueDelimiter); ii++) {
 							if(listGetAt(variables.whereGroups[i].filters[filter], ii, variables.valueDelimiter) eq "NULL") {
 								hqlWhere &= " #filter# IS NULL OR";	
+							} else if(listGetAt(variables.whereGroups[i].filters[filter], ii, variables.valueDelimiter) eq "NOT NULL"){
+								hqlWhere &= " #filter# IS NOT NULL OR";
 							} else {
 								var paramID = "F#replace(filter, ".", "", "all")##i##ii#";
 								addHQLParam(paramID, listGetAt(variables.whereGroups[i].filters[filter], ii, variables.valueDelimiter));
@@ -616,6 +618,8 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 					} else {
 						if(variables.whereGroups[i].filters[filter] == "NULL") {
 							hqlWhere &= " #filter# IS NULL AND";
+						} else if(variables.whereGroups[i].filters[filter] == "NOT NULL"){
+							hqlWhere &= " #filter# IS NOT NULL AND";
 						} else {
 							var paramID = "F#replace(filter, ".", "", "all")##i#";
 							addHQLParam(paramID, variables.whereGroups[i].filters[filter]);

@@ -11,11 +11,12 @@
                     Object: 
                     <span ng-bind="workflowTaskAction.data.workflowTask.data.workflow.data.workflowObject"></span>
                 </li>
-                <li class="j-tool-tip-item s-bundle-details">
+                <li class="j-tool-tip-item s-bundle-details" data-ng-if="workflowTaskAction.data.actionType != 'delete'">
                     Detail: 
                     <ng-switch on="workflowTaskAction.data.actionType" ng-if="workflowTaskAction.data.actionType">
                         <span data-ng-switch-when="print" data-ng-bind="workflowTaskAction.data.printTemplate.data.printTemplateName"></span>
                         <span data-ng-switch-when="email" data-ng-bind="workflowTaskAction.data.emailTemplate.data.emailTemplateName"></span>
+                        <span data-ng-switch-when="process" data-ng-bind="workflowTaskAction.data.processMethod"></span>
                     </ng-switch>
                 </li>
             </ul>
@@ -83,15 +84,13 @@
 	                            <div class="form-group form-group-sm">
                                     <div sw-typeahead-search
                                          data-collection-config="swWorkflowTaskActions.emailTemplateCollectionConfig"
-                                         data-properties="emailTemplateName"
+                                         data-property-to-show="'emailTemplateName'"
                                          data-placeholder-text="Search Email templates..."
                                          data-add-function="swWorkflowTaskActions.selectEmailTemplate"
                                          data-search-text="swWorkflowTaskActions.emailTemplateSelected">
                                         <span sw-typeahead-search-line-item
                                               data-property-identifier="emailTemplateName"
                                               ng-bind="item.emailTemplateName"></span>
-                                        <span sw-typeahead-search-line-item
-                                              data-property-identifier="emailTemplateID"></span>
                                     </div>
 	                            </div>
 	                        </div>
@@ -103,15 +102,11 @@
 	                            <div class="form-group form-group-sm">
                                     <div sw-typeahead-search
                                          data-collection-config="swWorkflowTaskActions.printTemplateCollectionConfig"
-                                         data-properties="printTemplateID"
+                                         data-property-to-show="'printTemplateID'"
                                          data-placeholder-text="Search Print templates..."
                                          data-add-function="swWorkflowTaskActions.selectPrintTemplate"
                                          data-search-text="swWorkflowTaskActions.printTemplateSelected">
-                                        <span sw-typeahead-search-line-item
-                                              data-property-identifier="printTemplateName"
-                                              ng-bind="item.printTemplateName"></span>
-                                        <span sw-typeahead-search-line-item
-                                              data-property-identifier="printTemplateID"></span>
+                                        <span sw-typeahead-search-line-item data-property-identifier="printTemplateName"></span>
                                     </div>
 	                            </div>
 	                        </div>
@@ -221,7 +216,8 @@
 	<!--<div class="clearfix"></div>-->
 		<div class="form-group">
 			<!-- This is the add button -->
-			<button class="btn btn-xs btn-primary" 
+			<button class="btn btn-xs btn-primary"
+                    data-ng-if="!swWorkflowTaskActions.workflowTaskActions.selectedTaskAction"
 					data-target="#j-add-action-b"
 					data-ng-click="swWorkflowTaskActions.addWorkflowTaskAction();"
                     >

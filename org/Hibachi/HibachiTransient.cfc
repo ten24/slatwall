@@ -172,6 +172,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 		// Call beforePopulate
 		beforePopulate(data=arguments.data);
 
+
+
 		// Get an array of All the properties for this object
 		var properties = getProperties();
 
@@ -183,15 +185,18 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 			// Check to see if this property has a key in the data that was passed in
 			if(
-				structKeyExists(arguments.data, currentProperty.name) && (!structKeyExists(currentProperty, "hb_populateEnabled") || currentProperty.hb_populateEnabled neq false) && (
+				structKeyExists(arguments.data, currentProperty.name) && (!structKeyExists(currentProperty, "hb_populateEnabled") || currentProperty.hb_populateEnabled neq false) &&
+				(
 					!isPersistent()
 					||
 					(getHibachiScope().getPublicPopulateFlag() && structKeyExists(currentProperty, "hb_populateEnabled") && currentProperty.hb_populateEnabled == "public")
 					||
-					getHibachiScope().authenticateEntityProperty( crudType="update", entityName=this.getClassName(), propertyName=currentProperty.name))) {
+					getHibachiScope().authenticateEntityProperty( crudType="update", entityName=this.getClassName(), propertyName=currentProperty.name))
+			) {
 
 				// ( COLUMN )
 				if( (!structKeyExists(currentProperty, "fieldType") || currentProperty.fieldType == "column") && isSimpleValue(arguments.data[ currentProperty.name ]) && !structKeyExists(currentProperty, "hb_fileUpload") ) {
+
 
 					// If the value is blank, then we check to see if the property can be set to NULL.
 					if( trim(arguments.data[ currentProperty.name ]) == "" && ( !structKeyExists(currentProperty, "notNull") || !currentProperty.notNull ) ) {
@@ -205,7 +210,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 						}
 						_setProperty(currentProperty.name, trim(arguments.data[ currentProperty.name ]), currentProperty.hb_formatType);
 						*/
-						_setProperty(currentProperty.name, trim(arguments.data[ currentProperty.name ]));
+						_setProperty(currentProperty.name, rereplace(trim(arguments.data[ currentProperty.name ]),chr(002),'','all'));
 
 						// if this property has a sessionDefault defined for it, then we should update that value with what was used
 						if(structKeyExists(currentProperty, "hb_sessionDefault")) {
@@ -508,7 +513,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	}
 
 	public any function getLastObjectByPropertyIdentifier(required string propertyIdentifier) {
-		
+
 		if(listLen(arguments.propertyIdentifier, ".") eq 1) {
 			return this;
 		}
