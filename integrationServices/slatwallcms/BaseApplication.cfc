@@ -106,7 +106,7 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 		var contentPath = '';
 		var templateBody = '';
 		if(!isNull(site.getResetSettingCache()) && site.getResetSettingCache()){
-			arguments.slatwallScope.getService('hibachiCacheService').resetCachedByPrefix('content');	
+			arguments.slatwallScope.getService('HibachiCacheService').resetCachedKeyByPrefix('content');	
 			var cacheList = "globalURLKeyBrand,
 				globalURLKeyProduct,
 				globalURLKeyProductType,
@@ -116,7 +116,7 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 			;
 			var cacheArray = listToArray(cacheList);
 			for(var cacheItem in cacheArray){
-				arguments.slatwallScope.getService('hibachiCacheService').resetCachedKey(cache);
+				arguments.slatwallScope.getService('HibachiCacheService').resetCachedKey(cacheItem);
 			}
 			site.setResetSettingCache(false);
 		}
