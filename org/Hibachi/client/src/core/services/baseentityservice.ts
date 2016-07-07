@@ -11,7 +11,7 @@ abstract class BaseEntityService extends BaseObject{
         public $injector,
         public $hibachi,
         public utilityService,
-        public baseObjectName:string,
+        public baseObjectName?:string,
         public objectName?:string
     ){
         super($injector);
@@ -29,14 +29,24 @@ abstract class BaseEntityService extends BaseObject{
     }
 
     public newEntity = (baseObjectName:string,objectName?:string)=>{
+        if(!objectName){
+            objectName = baseObjectName;
+        }
+
         return this.newObject('Entity',baseObjectName,objectName);
     }
 
     public newProcessObject = (baseObjectName:string,objectName?:string)=>{
+        if(!objectName){
+            objectName = baseObjectName;
+        }
         return this.newObject('Process',baseObjectName,objectName);
     }
 
     public newObject = (type:string,baseObjectName:string,objectName?:string)=>{
+        if(!objectName){
+            objectName = baseObjectName;
+        }
         var baseObject = this.$hibachi.getEntityDefinition(baseObjectName);
         var Barrell = {};
         if(type === 'Entity'){
@@ -44,9 +54,14 @@ abstract class BaseEntityService extends BaseObject{
         }else if(type === 'Process'){
             Barrell = Processes;
         }
+        if(Barrell[objectName]){
+            this.utilityService.extend(Barrell[objectName],baseObject);
+            var entity = new Barrell[this.objectName](this.$injector);
+        }else{
+            var entity = new baseObject();
+            //throw('need to add '+ objectName+' class');
+        }
 
-        this.utilityService.extend(Barrell[objectName],baseObject);
-        var entity = new Barrell[this.objectName](this.$injector);
         for(var key in entity){
             if(entity[key] === null){
                 entity[key] = undefined

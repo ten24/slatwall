@@ -2,14 +2,18 @@
 /// <reference path='../../../../typings/tsd.d.ts' />
 
 import {BaseObject} from "../baseobject";
+import {HibachiService} from "../../services/hibachiservice";
 
 abstract class BaseTransient extends BaseObject{
 
     public errors:{ [errorName: string]: any; }={};
     public messages:any={};
+    public $hibachi:HibachiService;
+    public metaData:Object;
 
     constructor($injector){
         super($injector);
+        this.$hibachi = <HibachiService>this.getService('$hibachi');
     }
 
     public populate = (response)=>{
@@ -19,8 +23,60 @@ abstract class BaseTransient extends BaseObject{
         }
 
         for(var key in data){
-            let value = data[key];
-            this[key] = value;
+
+            let propertyIdentifier = key.replace(this.className.toLowerCase()+'.','');
+			let propertyIdentifierArray = propertyIdentifier.split('.');
+			let propertyIdentifierKey = propertyIdentifier.replace(/\./g,'_');
+            let currentEntity = this;
+            console.log(propertyIdentifierArray)
+            angular.forEach(propertyIdentifierArray,(property,propertyKey)=>{
+                if(propertyKey === propertyIdentifierArray.length-1){
+                    //if we are on the last item in the array
+                    if(currentEntity.metaData[property]){
+                        if(angular.isObject(property) && currentEntity.metaData[property].fieldtype && currentEntity.metaData[property].fieldtype === 'many-to-one'){
+                            var relatedEntity = this.getService('entityService').newEntity(currentEntity.metaData[property].cfc);
+                            if(relatedEntity.populate){
+                                relatedEntity.populate(property);
+                            }else{
+                                relatedEntity.$$init(data[propertyIdentifierKey][0]);
+                                currentEntity['$$set'+currentEntity.metaData[property].name.charAt(0).toUpperCase()+currentEntity.metaData[property].name.slice(1)](relatedEntity);
+                            }
+                        }else if(angular.isArray(data[propertyIdentifierKey]) && currentEntity.metaData[property].fieldtype && (currentEntity.metaData[property].fieldtype === 'one-to-many')){
+                            angular.forEach(data[propertyIdentifierKey],(arrayItem,propertyKey)=>{
+                                var relatedEntity = this.$hibachi['new'+currentEntity.metaData[property].cfc]();
+                                if(relatedEntity.populate){
+                                    relatedEntity.populate(arrayItem)
+                                }else{
+                                    relatedEntity.$$init(arrayItem);
+                                    currentEntity['$$add'+currentEntity.metaData[property].singularname.charAt(0).toUpperCase()+currentEntity.metaData[property].singularname.slice(1)](relatedEntity);
+                                }
+                            });
+                        }else{
+                            currentEntity.data[property] = data[propertyIdentifierKey];
+                        }
+
+                    }else{
+                        this[propertyKey] = property;
+                    }
+
+                }
+                //else{
+                //     var propertyMetaData = currentEntity.metaData[property];
+                //     if(angular.isUndefined(currentEntity.data[property])){
+                //         if(propertyMetaData.fieldtype === 'one-to-many'){
+                //             relatedEntity = [];
+                //         }else{
+                //             relatedEntity = this.$hibachi['new'+propertyMetaData.cfc]();
+                //         }
+                //     }else{
+                //         relatedEntity = currentEntity.data[property];
+                //     }
+                //     currentEntity['$$set'+propertyMetaData.name.charAt(0).toUpperCase()+propertyMetaData.name.slice(1)](relatedEntity);
+                //     currentEntity = relatedEntity;
+                // }
+            });
+
+
         }
 
         if(response.errors){

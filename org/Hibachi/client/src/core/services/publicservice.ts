@@ -540,7 +540,7 @@ class PublicService {
 
                 //Post the new order payment and set errors as needed.
                 this.$q.all([this.doAction('addOrderPayment', data, 'post')]).then(function(result){
-                    var serverData
+                    var serverData;
                     if (angular.isDefined(result['0'])){
                         serverData = result['0'].data;
                     }

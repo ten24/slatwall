@@ -12,7 +12,7 @@ class Cart extends BaseEntity{
     public orderFulfillments:Array<any>=[];
     public account:any;
     public calculatedTotal:number;
-
+    public className:string="Order";
 
     constructor($injector){
         super($injector);
