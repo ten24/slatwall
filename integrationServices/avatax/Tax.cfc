@@ -86,9 +86,12 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 			
 			// Setup the request data structure
 			var requestDataStruct = {
+				Client = "a0o33000003xVEI",
 				DocCode = arguments.requestBean.getOrder().getShortReferenceID( true ),
 				DocDate = dateFormat(now(),'yyyy-mm-dd'),
 				DocType = docType,
+				//CustomerUsageType= null,
+				//ExemptionNo= null,
 				Addresses = [
 					{
 						AddressCode = 1,
@@ -174,7 +177,7 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 			var responseData = httpRequest.send().getPrefix();
 			
 			if (IsJSON(responseData.FileContent)){
-			
+				
 				var fileContent = DeserializeJSON(responseData.FileContent);
 				
 				if (fileContent.resultCode == 'Error'){
@@ -190,7 +193,6 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 							
 							// Loop over the details of that taxAmount
 							for(var taxDetail in taxLine.TaxDetails) {
-								
 								// For each detail make sure that it is applied to this item
 								if(taxDetail.Tax > 0) {
 									
