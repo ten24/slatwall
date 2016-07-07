@@ -34,19 +34,22 @@ abstract class BaseTransient extends BaseObject{
 
             angular.forEach(propertyIdentifierArray,(property,propertyKey)=>{
                 if(currentEntity.metaData[property]){
+                    console.log('hasMetaData',property);
                     //if we are on the last item in the array
                     if(propertyKey === propertyIdentifierArray.length-1){
 
-                        if(angular.isObject(property) && currentEntity.metaData[property].fieldtype && currentEntity.metaData[property].fieldtype === 'many-to-one'){
+                        if(angular.isObject(data[key]) && currentEntity.metaData[property].fieldtype && currentEntity.metaData[property].fieldtype === 'many-to-one'){
+                            console.log('isObject');
                             var relatedEntity = this.getService('entityService').newEntity(currentEntity.metaData[property].cfc);
                             if(relatedEntity.populate){
-                                relatedEntity.populate(property);
+                                relatedEntity.populate(data[key]);
                             }else{
-                                relatedEntity.$$init(data[propertyIdentifierKey][0]);
+                                relatedEntity.$$init(data[key]);
                                 currentEntity['$$set'+currentEntity.metaData[property].name.charAt(0).toUpperCase()+currentEntity.metaData[property].name.slice(1)](relatedEntity);
                             }
                         }else if(angular.isArray(data[propertyIdentifierKey]) && currentEntity.metaData[property].fieldtype && (currentEntity.metaData[property].fieldtype === 'one-to-many')){
-                            angular.forEach(data[propertyIdentifierKey],(arrayItem,propertyKey)=>{
+                            console.log('isArray');
+                            angular.forEach(data[key],(arrayItem,propertyKey)=>{
                                 var relatedEntity = this.getService('entityService').newEntity(currentEntity.metaData[property].cfc);;
                                 if(relatedEntity.populate){
                                     relatedEntity.populate(arrayItem)
@@ -56,29 +59,25 @@ abstract class BaseTransient extends BaseObject{
                                 }
                             });
                         }else{
-
-                            currentEntity[property] = data[propertyIdentifierKey];
+                            console.log('isSimple');
+                            currentEntity[property] = data[key];
                         }
 
                     }else{
-                        this[key] = data[key];
-                        if(currentEntity.metaData[property]){
-                            var propertyMetaData = currentEntity.metaData[property];
+                        var propertyMetaData = currentEntity.metaData[property];
 
-                            if(angular.isUndefined(currentEntity.data[property])){
-                                if(propertyMetaData.fieldtype === 'one-to-many'){
-                                    relatedEntity = [];
-                                }else{
-                                    relatedEntity = this.$hibachi['new'+propertyMetaData.cfc]();
-                                }
+                        if(angular.isUndefined(currentEntity.data[property]) || (currentEntity.data[property] && currentEntity.data[property] === null)){
+                            if(propertyMetaData.fieldtype === 'one-to-many'){
+                                relatedEntity = [];
                             }else{
-                                relatedEntity = currentEntity.data[property];
+                                relatedEntity = this.$hibachi['new'+propertyMetaData.cfc]();
                             }
-                            currentEntity['$$set'+propertyMetaData.name.charAt(0).toUpperCase()+propertyMetaData.name.slice(1)](relatedEntity);
-                            currentEntity = relatedEntity;
+                        }else{
+                            relatedEntity = currentEntity.data[property];
                         }
+                        currentEntity['$$set'+propertyMetaData.name.charAt(0).toUpperCase()+propertyMetaData.name.slice(1)](relatedEntity);
+                        currentEntity = relatedEntity;
                     }
-
                 }else{
                     this[key] = data[key];
                 }
