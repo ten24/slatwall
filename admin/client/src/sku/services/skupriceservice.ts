@@ -103,7 +103,6 @@ export class SkuPriceService {
         })
         currencyRatePromise.then(
             (response)=>{
-                console.log("currr",response);
                 this.currencies = response.data;
                 loadCurrenciesDeferred.resolve(this.currencies); 
             },
