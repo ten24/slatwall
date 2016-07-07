@@ -1907,10 +1907,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}
 		};
 		var mockSku = createPersistedTestEntity('Sku', skuData);
-				
-		if (!mockStock.hasSku(mockSku)) {
-			arrayAppend(mockStock.getSkus(), mockSku);
-		}
 		
 		if (!mockSku.hasStock(mockStock)) {
 			arrayAppend(mockSku.getStocks(), mockStock);
@@ -1985,10 +1981,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}
 		};
 		var mockSku = createPersistedTestEntity('Sku', skuData);
-				
-		if (!mockStock.hasSku(mockSku)) {
-			arrayAppend(mockStock.getSkus(), mockSku);
-		}
 		
 		if (!mockSku.hasStock(mockStock)) {
 			arrayAppend(mockSku.getStocks(), mockStock);
@@ -2038,10 +2030,14 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(1000, resultArgusSkuLocation[1].quantity);		
 	}
 	
-//	public void function getQuantityTest() {
+	public void function getQuantityTest() {
+		
+		
+//		
 //		var mockProduct = createMockProduct();
 //		var result = mockProduct.getQuantity('QATS');
-//	}
+//		request.debug(result);
+	}
    
 	// ============ START: Non-Persistent Property Methods =================
 
@@ -2198,51 +2194,48 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(1, result);
 	}
 	 
-	 public void function getSalePriceDetailsForSkusTest() {
-	 	//TODO: finish it in another branch
-	 	var mockSku1 = createMockSku("", "CNY", "");
-	 	var mockSku2 = createMockSku("", "USD", "");
-	 	var mockSku3 = createMockSku("","","");
-	 	var mockSku4 = createMockSku("", "", "");
-		
-		var productData = {
-			productID = "",
-			skus = [
-				{
-					skuID = mockSku1.getSkuID()
-				},
-				{
-					skuID = mockSku2.getSkuID()
-				},
-				{
-					skuID = mockSku3.getSkuID()
-				}
-			]
-		};
-		var mockProduct = createPersistedTestEntity('Product', productData);
-		
-		var result = mockProduct.getSalePriceDetailsForSkus();
-	 }
-	 
-	 public void function getSalePriceDetailsForSkusByCurrencyCodeTest() {
-	 	//Todo: Finish the above function, then this one
-	 }
-	 
-	  public void function getQATSTest() {
-	 	//Testing default QATS
-	 	var productData = {
-	 		productID = ""
-	 	};
-	 	var mockProduct = createPersistedTestEntity('Product', productData);
-	 	
-	 	var resultDefault = mockProduct.getQATS();
-	 	assertTrue(resultDefault);
-	 	//TODO: try to modifiy the QATS
-	 }
-	 
-	 public void function getQuantity() {
-	 	
-	 }
+	 //TODO: finish it in another branch
+//	 public void function getSalePriceDetailsForSkusTest() {
+//	 	
+//	 	var mockSku1 = createMockSku("", "CNY", "");
+//	 	var mockSku2 = createMockSku("", "USD", "");
+//	 	var mockSku3 = createMockSku("","","");
+//	 	var mockSku4 = createMockSku("", "", "");
+//		
+//		var productData = {
+//			productID = "",
+//			skus = [
+//				{
+//					skuID = mockSku1.getSkuID()
+//				},
+//				{
+//					skuID = mockSku2.getSkuID()
+//				},
+//				{
+//					skuID = mockSku3.getSkuID()
+//				}
+//			]
+//		};
+//		var mockProduct = createPersistedTestEntity('Product', productData);
+//		
+//		var result = mockProduct.getSalePriceDetailsForSkus();
+//	 }
+//	 
+//	 public void function getSalePriceDetailsForSkusByCurrencyCodeTest() {
+//	 	//Todo: Finish the above function, then this one
+//	 }
+//	 
+//	  public void function getQATSTest() {
+//	 	//Testing default QATS
+//	 	var productData = {
+//	 		productID = ""
+//	 	};
+//	 	var mockProduct = createPersistedTestEntity('Product', productData);
+//	 	
+//	 	var resultDefault = mockProduct.getQATS();
+//	 	assertTrue(resultDefault);
+//	 	//TODO: try to modifiy the QATS
+//	 }
 
 	 public void function getPlacedOrderItemsSmartListTest() {
 	 	//mockProduct1 -> (Sku) -> MockOrderItem1 -> mockOrder1: ostNew
