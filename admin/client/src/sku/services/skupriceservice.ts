@@ -117,9 +117,16 @@ export class SkuPriceService {
         var nonPersistedSkuPrice = this.$hibachi.newSkuPrice(); 
         nonPersistedSkuPrice.$$setSku(sku);
         nonPersistedSkuPrice.data.currencyCode = currencyCode; 
+        //if for some reason the price that came back was preformatted althought this really shouldn't be needed
+        if(angular.isString(sku.data.price)){
+            //strip currency symbol
+            sku.data.price = parseFloat(sku.data.price.substr(1,sku.data.price.length));
+        }
         if(angular.isDefined(this.currencies[currencyCode]) && sku.data.currencyCode != currencyCode){
             var currencyData = this.currencies[currencyCode];
+            console.log("converthere");
             if(currencyData.CONVERTFROM == sku.data.currencyCode){
+                console.log("convertingPrice", sku.data.price);
                 nonPersistedSkuPrice.data.price = sku.data.price * (1 / currencyData.CONVERSIONRATE);
             } else if(this.currencies["USD"].CONVERTFROM == "EUR"){
                 //not getting hit right now
