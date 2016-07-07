@@ -640,7 +640,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//assert that the discount was removed
 		assertEquals(orderItemQualifiedDiscounts[orderItem.getOrderItemID()],[]);
 		//assert discount that was calculated
-		assertEquals(orderItemQualifiedDiscounts[orderItem2.getOrderItemID()][1].discountAmount,2.22);
+		assertEquals(DecimalFormat(orderItemQualifiedDiscounts[orderItem2.getOrderItemID()][1].discountAmount),2.22);
 		assertEquals(orderItemQualifiedDiscounts[orderItem2.getOrderItemID()][1].promotionRewardID,promotionReward.getPromotionRewardID());
 	}
 
