@@ -146,6 +146,7 @@ class HibachiValidationService{
 
                     }
                 }
+				console.log('parentINstance',parentInstance);
                 modifiedData[parentObject.name][parentInstance.$$getIDName()] = parentInstance.$$getID();
             }
         }

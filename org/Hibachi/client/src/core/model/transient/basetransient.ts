@@ -3,17 +3,20 @@
 
 import {BaseObject} from "../baseobject";
 import {HibachiService} from "../../services/hibachiservice";
+import {HibachiValidationService} from "../../services/hibachivalidationservice";
 
 abstract class BaseTransient extends BaseObject{
 
     public errors:{ [errorName: string]: any; }={};
     public messages:any={};
     public $hibachi:HibachiService;
+    public hibachiValidationService:HibachiValidationService;
     public metaData:Object;
 
     constructor($injector){
         super($injector);
         this.$hibachi = <HibachiService>this.getService('$hibachi');
+        this.hibachiValidationService = <HibachiValidationService>this.getService('hibachiValidationService');
     }
 
     public populate = (response)=>{
@@ -30,9 +33,10 @@ abstract class BaseTransient extends BaseObject{
             let currentEntity = this;
 
             angular.forEach(propertyIdentifierArray,(property,propertyKey)=>{
-                if(propertyKey === propertyIdentifierArray.length-1){
+                if(currentEntity.metaData[property]){
                     //if we are on the last item in the array
-                    if(currentEntity.metaData[property]){
+                    if(propertyKey === propertyIdentifierArray.length-1){
+
                         if(angular.isObject(property) && currentEntity.metaData[property].fieldtype && currentEntity.metaData[property].fieldtype === 'many-to-one'){
                             var relatedEntity = this.getService('entityService').newEntity(currentEntity.metaData[property].cfc);
                             if(relatedEntity.populate){
@@ -43,7 +47,7 @@ abstract class BaseTransient extends BaseObject{
                             }
                         }else if(angular.isArray(data[propertyIdentifierKey]) && currentEntity.metaData[property].fieldtype && (currentEntity.metaData[property].fieldtype === 'one-to-many')){
                             angular.forEach(data[propertyIdentifierKey],(arrayItem,propertyKey)=>{
-                                var relatedEntity = this.$hibachi['new'+currentEntity.metaData[property].cfc]();
+                                var relatedEntity = this.getService('entityService').newEntity(currentEntity.metaData[property].cfc);;
                                 if(relatedEntity.populate){
                                     relatedEntity.populate(arrayItem)
                                 }else{
@@ -52,14 +56,31 @@ abstract class BaseTransient extends BaseObject{
                                 }
                             });
                         }else{
-                            console.log()
+
                             currentEntity[property] = data[propertyIdentifierKey];
                         }
 
                     }else{
                         this[key] = data[key];
+                        if(currentEntity.metaData[property]){
+                            var propertyMetaData = currentEntity.metaData[property];
+
+                            if(angular.isUndefined(currentEntity.data[property])){
+                                if(propertyMetaData.fieldtype === 'one-to-many'){
+                                    relatedEntity = [];
+                                }else{
+                                    relatedEntity = this.$hibachi['new'+propertyMetaData.cfc]();
+                                }
+                            }else{
+                                relatedEntity = currentEntity.data[property];
+                            }
+                            currentEntity['$$set'+propertyMetaData.name.charAt(0).toUpperCase()+propertyMetaData.name.slice(1)](relatedEntity);
+                            currentEntity = relatedEntity;
+                        }
                     }
 
+                }else{
+                    this[key] = data[key];
                 }
 
             });
@@ -115,6 +136,11 @@ abstract class BaseTransient extends BaseObject{
 				this.errors[key].push(message);
 			}
 		}
+    }
+
+    public isValid=():boolean=>{
+        var validationInfo = this.hibachiValidationService.validateObject(this);
+        return validationInfo.valid;
     }
 
     public getError=(errorName:string)=>{
