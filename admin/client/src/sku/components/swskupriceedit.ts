@@ -65,9 +65,11 @@ class SWSkuPriceEditController{
             this.price = this.bundledSkuPrice;
         }
         if(angular.isDefined(this.sku)){
+            console.log("SKUU", this.sku);
             this.sku.data.price =  this.currencyFilter(this.sku.data.price, this.currencyCode, 2, false);
         }
         if(angular.isDefined(this.skuPrice)){
+            console.log("SKUU", this.skuPrice);
             this.skuPrice.data.price =  this.currencyFilter(this.skuPrice.data.price, this.currencyCode, 2, false);
         }
         

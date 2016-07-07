@@ -24,12 +24,14 @@ class SWAddSkuPriceModalLauncherController{
         this.uniqueName = this.baseName + this.utilityService.createID(16); 
         this.formName = "addSkuPrice" + this.utilityService.createID(16);
         this.skuPrice = this.$hibachi.newEntity('SkuPrice'); 
-        this.initData(); 
     }    
     
     public initData = () =>{
         //these are populated in the link function initially
         this.skuPrice.$$setSku(this.sku);
+        if(angular.isDefined(this.currencyCodeOptions) && this.currencyCodeOptions.length){
+            this.skuPrice.data.currencyCode = this.currencyCodeOptions[0]; 
+        }
     }
     
     public save = () => {
@@ -156,6 +158,7 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
                 if(angular.isDefined(listingScope.swMultiListingDisplay)){ 
                     $scope.swAddSkuPriceModalLauncher.listingID = listingScope.swMultiListingDisplay.tableID;
                 }
+                 $scope.swAddSkuPriceModalLauncher.initData();
             },
             post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
 

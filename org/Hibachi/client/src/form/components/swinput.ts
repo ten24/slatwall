@@ -132,7 +132,7 @@ class SWInput{
 				
                 currencyFormatter = 'sw-currency-formatter ';
                 if(angular.isDefined(propertyDisplay.object.data.currencyCode) && propertyDisplay.object.data.currencyCode != null){
-					currencyCodeTitle = '<span class="s-title">' + propertyDisplay.object.data.currencyCode + '</span>';
+					currencyCodeTitle = '<span class="s-title" ng-bind="propertyDisplay.object.data.currencyCode"></span>';
                     currencyFormatter = currencyFormatter + 'data-currency-code="' + propertyDisplay.object.data.currencyCode + '" ';
                 }
             }

@@ -94,75 +94,24 @@ export class SkuPriceService {
         }
     }
 
-    private fetchCurrencyRatesFromCache = () => {
-        var currencyRatesDeferred = this.$q.defer(); 
-        var currencyRatesPromise = currencyRatesDeferred.promise; 
-        if(!this.cacheService.hasKey("currencyRates")){
-            var currencyRatePromise = this.$http({
+    public loadCurrencies = () =>{
+        var loadCurrenciesDeferred = this.$q.defer(); 
+        var loadCurrenciesPromise = loadCurrenciesDeferred.promise;
+        var currencyRatePromise = this.$http({
                 method:"POST", 
                 url:this.$hibachi.getUrlWithActionPrefix()+"api:main.getcurrencyrates"
-            });
-            var expirationDate =  new Date(); 
-            expirationDate.setDate(expirationDate.getDate() + 1);
-            return this.cacheService.put("currencyRates", currencyRatePromise, "data", expirationDate);
-        } else {
-            currencyRatesDeferred.resolve(); 
-            return currencyRatesPromise;
-        }
-    }
-
-    private loadCurrencies = (currenciesToLoad) =>{
-        var currencyDeferred = this.$q.defer(); 
-        var currencyPromise = currencyDeferred.promise; 
-        this.fetchCurrencyRatesFromCache().then(
-            ()=>{
-                var unloadedCurrencies = []; 
-                for(var i = 0; i < currenciesToLoad.length; i++){
-                    if(angular.isUndefined(this.currencies[currenciesToLoad[i]])){
-                        unloadedCurrencies.push(currenciesToLoad[i]);
-                    }
-                }
-                if(unloadedCurrencies.length > 0){
-                    var currencyRateCollectionConfig = this.collectionConfigService.newCollectionConfig("CurrencyRate"); 
-                    currencyRateCollectionConfig.setAllRecords(true);
-                    currencyRateCollectionConfig.addDisplayProperty("currencyRateID,conversionRate,currency.currencyCode,conversionCurrency.currencyCode");
-                    for(var j = 0; j < unloadedCurrencies.length; j++){
-                        currencyRateCollectionConfig.addFilter("currency.currencyCode", unloadedCurrencies[j], "=", "OR"); 
-                    }
-                    currencyRateCollectionConfig.getEntity().then(
-                        (response)=>{
-                            angular.forEach(response.records,(value,key)=>{
-                                this.currencies[value.conversionCurrency_currencyCode] = { convertFrom : value.currency_currencyCode, rate : value.conversionRate }
-                                for(var k = 0; k < unloadedCurrencies.length; k++){
-                                    if( unloadedCurrencies[k] == value.conversionCurrency_currencyCode){
-                                        unloadedCurrencies.splice(k,1); 
-                                        break; 
-                                    }                        
-                                }
-                            });
-                        },
-                        (reason)=>{
-                            currencyDeferred.reject("Couldn't load currency rates"); 
-                        }
-                    ).finally(()=>{
-                        if(unloadedCurrencies.length > 0){
-                            var expirationDate =  new Date(); 
-                            expirationDate.setDate(expirationDate.getDate() + 1);
-                            angular.forEach(this.cacheService.fetchOrReload("currencyRates",expirationDate),(value,key)=>{
-                                if(key != "RETREIVED" && angular.isUndefined(this.currencies[key])){
-                                    this.currencies[key] = { convertFrom : "EUR", rate : value }
-                                }
-                            });
-                        }
-                        currencyDeferred.resolve(); 
-                    }); 
-                }
+        })
+        currencyRatePromise.then(
+            (response)=>{
+                console.log("currr",response);
+                this.currencies = response.data;
+                loadCurrenciesDeferred.resolve(this.currencies); 
             },
             (reason)=>{
-                //throw
+                loadCurrenciesDeferred.reject(reason);
             }
         );
-        return currencyPromise; 
+        return loadCurrenciesPromise        
     }
 
     private createInferredSkuPriceForCurrency = (sku, currencyCode, minQuantity?, maxQuantity?) =>{
@@ -171,16 +120,17 @@ export class SkuPriceService {
         nonPersistedSkuPrice.data.currencyCode = currencyCode; 
         if(angular.isDefined(this.currencies[currencyCode]) && sku.data.currencyCode != currencyCode){
             var currencyData = this.currencies[currencyCode];
-            if(currencyData.convertFrom == sku.data.currencyCode){
-                nonPersistedSkuPrice.data.price = sku.data.price * (1 / currencyData.rate);
-            } else {
+            if(currencyData.CONVERTFROM == sku.data.currencyCode){
+                nonPersistedSkuPrice.data.price = sku.data.price * (1 / currencyData.CONVERSIONRATE);
+            } else if(this.currencies["USD"].CONVERTFROM == "EUR"){
                 //not getting hit right now
                 console.log("need to convert from euro");
+                
             }
         } else if (sku.data.currencyCode == currencyCode) {
             nonPersistedSkuPrice.data.price = sku.data.price;
         } else { 
-            nonPersistedSkuPrice.data.price = "N/A";
+            nonPersistedSkuPrice.data.price = "N/A";//will become NaN
         }
         if(angular.isDefined(minQuantity)){
             nonPersistedSkuPrice.data.minQuantity = minQuantity;
@@ -204,11 +154,11 @@ export class SkuPriceService {
     private loadInferredSkuPricesForSkuPriceSet = (skuID, skuPriceSet, eligibleCurrencyCodes) =>{
         var deferred = this.$q.defer(); 
         var promise = deferred.promise; 
-        this.loadCurrencies(eligibleCurrencyCodes).then(
+        this.loadCurrencies().then(
             ()=>{
                 this.$hibachi.getEntity("Sku", skuID).then(
                     (response)=>{
-                        var sku = this.$hibachi.populateEntity("Sku", response)
+                        var sku = this.$hibachi.populateEntity("Sku", response);
                         for(var j=0; j < eligibleCurrencyCodes.length; j++){
                             if( ( sku.data.currencyCode != eligibleCurrencyCodes[j]) &&
                                 ( skuPriceSet.length > 0 && !this.skuPriceSetHasCurrencyCode(skuPriceSet,eligibleCurrencyCodes[j]) ) ||

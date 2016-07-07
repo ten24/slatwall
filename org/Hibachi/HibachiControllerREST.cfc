@@ -90,7 +90,7 @@ component output="false" accessors="true" extends="HibachiController" {
     }
 
     public void function getCurrencyRates(required struct rc){
-		arguments.rc.apiResponse.content['data'] = getService("CurrencyService").getEuropeanCentralBankRates();
+		arguments.rc.apiResponse.content = getService("CurrencyService").getAllAvailableCurrencyRates();
     }
 
     public void function login(required struct rc){
