@@ -28,7 +28,7 @@ abstract class BaseTransient extends BaseObject{
 			let propertyIdentifierArray = propertyIdentifier.split('.');
 			let propertyIdentifierKey = propertyIdentifier.replace(/\./g,'_');
             let currentEntity = this;
-            console.log(propertyIdentifierArray)
+
             angular.forEach(propertyIdentifierArray,(property,propertyKey)=>{
                 if(propertyKey === propertyIdentifierArray.length-1){
                     //if we are on the last item in the array
@@ -52,28 +52,16 @@ abstract class BaseTransient extends BaseObject{
                                 }
                             });
                         }else{
-                            currentEntity.data[property] = data[propertyIdentifierKey];
+                            console.log()
+                            currentEntity[property] = data[propertyIdentifierKey];
                         }
 
                     }else{
-                        this[propertyKey] = property;
+                        this[key] = data[key];
                     }
 
                 }
-                //else{
-                //     var propertyMetaData = currentEntity.metaData[property];
-                //     if(angular.isUndefined(currentEntity.data[property])){
-                //         if(propertyMetaData.fieldtype === 'one-to-many'){
-                //             relatedEntity = [];
-                //         }else{
-                //             relatedEntity = this.$hibachi['new'+propertyMetaData.cfc]();
-                //         }
-                //     }else{
-                //         relatedEntity = currentEntity.data[property];
-                //     }
-                //     currentEntity['$$set'+propertyMetaData.name.charAt(0).toUpperCase()+propertyMetaData.name.slice(1)](relatedEntity);
-                //     currentEntity = relatedEntity;
-                // }
+
             });
 
 

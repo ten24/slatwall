@@ -486,6 +486,9 @@ class PublicService {
             'newOrderPayment.saveShippingAsBilling':(this.saveShippingAsBilling == true),
         };
 
+        processObject.populate(data);
+        console.log('processObject',processObject).
+
         //Make sure we have required fields for a newOrderPayment.
         this.validateNewOrderPayment( data );
         if ( this.cart.orderPayments.hasErrors && Object.keys(this.cart.orderPayments.errors).length ){
