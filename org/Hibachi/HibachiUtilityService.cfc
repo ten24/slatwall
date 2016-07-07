@@ -31,18 +31,18 @@
 		* @version 1, December 10, 2001
 		*/
 		public array function arrayOfStructsSort(aOfS,key,sortOrder2="des"){
-		      
-		        
+
+
 		        //by default, we'll use a textnocase sort
 		        var sortType = "textnocase";
 		        //by default, use ascii character 30 as the delim
 		        var delim = ".";
 		        //make an array to hold the sort stuff
 		        var sortArray = arraynew(1);
-		        
+
 		        //make an array to return
 		        var returnArray = arraynew(1);
-		        
+
 		        //grab the number of elements in the array (used in the loops)
 		        var count = arrayLen(aOfS);
 		        //make a variable to use in the loop
@@ -76,16 +76,16 @@
 			  }
 			}
 		}
-		
+
 		// @hint this method allows you to properly format a value against a formatType
 		public any function formatValue( required string value, required string formatType, struct formatDetails={} ) {
-			
+
 			if(listFindNoCase("decimal,currency,date,datetime,pixels,percentage,second,time,truefalse,url,weight,yesno,urltitle,alphanumericdash", arguments.formatType)) {
 				return this.invokeMethod("formatValue_#arguments.formatType#", {value=arguments.value, formatDetails=arguments.formatDetails});
 			}
 			return arguments.value;
 		}
-		
+
 		public any function formatValue_decimal(required string value){
 			return numberFormat(arguments.value,'_.__');
 		}
@@ -145,35 +145,35 @@
 		public any function formatValue_url( required string value, struct formatDetails={} ) {
 			return '<a href="#arguments.value#" target="_blank">' & arguments.value & '</a>';
 		}
-		
+
 		public any function formatValue_urltitle( required string value, struct formatDetails={} ) {
 			return createUniqueURLTitle(arguments.value, arguments.formatDetails.tableName);
 		}
-		
+
 		public any function formatValue_alphanumericdash( required string value, struct formatDetails={} ) {
-			return createSEOString(arguments.data.value); 
+			return createSEOString(arguments.data.value);
 		}
-		
+
 		public string function createUniqueURLTitle(required string titleString, required string tableName) {
 			return createUniqueColumn(arguments.titleString,arguments.tableName,'urlTitle');
 		}
-		
+
 		public string function createUniqueColumn(required string titleString, required string tableName, required string columnName) {
-	
+
 			var addon = 1;
-	
+
 			var urlTitle = createSEOString(arguments.titleString);
-	
+
 			var returnTitle = urlTitle;
-	
+
 			var unique = getHibachiDAO().verifyUniqueTableValue(tableName=arguments.tableName, column=arguments.columnName, value=returnTitle);
-	
+
 			while(!unique) {
 				addon++;
 				returnTitle = "#urlTitle#-#addon#";
 				unique = getHibachiDAO().verifyUniqueTableValue(tableName=arguments.tableName, column=arguments.columnName, value=returnTitle);
 			}
-	
+
 			return returnTitle;
 		}
 
@@ -258,11 +258,13 @@
 			return arguments.data;
 		}
 		//evaluate double brackets ${{}} and ${()}
-		public string function replaceStringEvaluateTemplate(required string template){
+		public string function replaceStringEvaluateTemplate(required string template, any object){
+			if(isNull(arguments.object)){
+				arguments.object = getHibachiScope();
+			}
 			var templateKeys = reMatchNoCase("\${{[^}]+}}",arguments.template);
-			
-			var parenthesisTemplateKeys =  reMatchNoCase("\${\([^}]+\)}",arguments.template);
 
+			var parenthesisTemplateKeys =  reMatchNoCase("\${\([^}]+\)}",arguments.template);
 			var replacementArray = [];
 			var returnString = arguments.template;
 
@@ -272,8 +274,11 @@
 				replaceDetails.value = templateKeys[i];
 
 				var valueKey = replace(replace(templateKeys[i], "${{", ""),"}}","");
-
-				replaceDetails.value = evaluate(valueKey);
+				try{
+					replaceDetails.value = evaluate(valueKey);
+				} catch (any e) {
+					replaceDetails.value = evaluate("arguments.object.#valueKey#");
+				}
 				arrayAppend(replacementArray, replaceDetails);
 			}
 
@@ -285,6 +290,7 @@
 				var valueKey = replace(replace(parenthesisTemplateKeys[i], "${(", ""),")}","");
 
 				replaceDetails.value = evaluate(valueKey);
+
 				arrayAppend(replacementArray, replaceDetails);
 			}
 
@@ -299,14 +305,15 @@
 
 			return returnString;
 		}
-		
+
 		public array function getTemplateKeys(required string template){
-			return reMatchNoCase("\${[^}]+}",arguments.template);
+			//matches only ${} not ${{}}
+			return templateKeysToReturn = reMatchNoCase("\${[^{}]+}",arguments.template);
 		}
-		
+
 		//replace single brackets ${}
 		public string function replaceStringTemplate(required string template, required any object, boolean formatValues=false, boolean removeMissingKeys=false) {
-			
+
 			var templateKeys = getTemplateKeys(arguments.template);
 			var replacementArray = [];
 			var returnString = arguments.template;
@@ -475,13 +482,13 @@
 			var passwords = getEncryptionPasswordArray();
 			return encrypt(arguments.value, generatePasswordBasedEncryptionKey(password=passwords[1].password, salt=arguments.salt, iterationCount=passwords[1].iterationCount), getEncryptionAlgorithm(), getEncryptionEncoding());
 		}
-		
+
 		public string function hibachiHTMLEditFormat(required string html){
 			var sanitizedString = htmlEditFormat(arguments.html);
 			sanitizedString = sanitizeForAngular(sanitizedString);
 			return sanitizedString;
 		}
-		
+
 		public string function sanitizeForAngular(required string html){
 			return ReReplace(arguments.html,'{',chr(123)&chr(002),'all');
 		}
@@ -736,10 +743,10 @@
 
 			return arguments.data;
 		}
-		
+
 		public any function getLineBreakByEnvironment(required string environmentName){
 			var linebreak = "";
-			
+
 			if ( findNoCase('windows', arguments.environmentName) ){
 				linebreak =  Chr(13) & Chr(10);
 			}else if (findNoCase('mac', arguments.environmentName) ){
@@ -749,10 +756,10 @@
 			}else {
 				linebreak = CreateObject("java", "java.lang.System").getProperty("line.separator");
 			}
-			
+
 			return linebreak;
 		}
-			
+
 	</cfscript>
 
 	<cffunction name="logException" returntype="void" access="public">
@@ -787,14 +794,14 @@
 		<cfargument name="templatePath" default="" />
 		<cfargument name="logType" default="Information" /><!--- Information  |  Error  |  Fatal  |  Warning  --->
 		<cfargument name="generalLog" type="boolean" default="false" />
-		
+
 		<cfif getHibachiScope().setting("globalLogMessages") neq "none" and (getHibachiScope().setting("globalLogMessages") eq "detail" or arguments.generalLog)>
 			<cfif generalLog>
 				<cfset var logText = "General Log" />
 			<cfelse>
 				<cfset var logText = "Detail Log" />
 			</cfif>
-			
+
 			<cfif arguments.messageType neq "" and isSimpleValue(arguments.messageType)>
 				<cfset logText &= " - #arguments.messageType#" />
 			</cfif>
@@ -807,16 +814,16 @@
 			<cfif arguments.message neq "" and isSimpleValue(arguments.message)>
 				<cfset logText &= " - #arguments.message#" />
 			</cfif>
-			
+
 			<!--- Verify that the log type was correct --->
 			<cfif not ListFind("Information,Error,Fatal,Warning", arguments.logType)>
 				<cfset logMessage(messageType="Internal Error", messageCode = "500", message="The Log type that was attempted was not valid", logType="Warning") />
 				<cfset arguments.logType = "Information" />
 			</cfif>
-			
+
 			<cflog file="#getApplicationValue('applicationKey')#" text="#logText#" type="#arguments.logType#" />
 		</cfif>
-		
+
 	</cffunction>
 
 	<cffunction name="compareLists" access="public" returntype="struct" output="false" hint="Given two versions of a list, I return a struct containing the values that were added, the values that were removed, and the values that stayed the same.">
@@ -1093,16 +1100,16 @@
 	    <!--- Return the CSV value. --->
 	    <cfreturn LOCAL.Buffer.ToString() />
 	</cffunction>
-	
+
 	<cffunction name="getCurrentUtcTime" returntype="Numeric" >
         <cfset local.currentDate = Now()>
         <cfset local.utcDate = dateConvert( "local2utc", local.currentDate )>
         <cfreturn round( local.utcDate.getTime() / 1000 )>
     </cffunction>
-    
+
     <cffunction name="convertBase64GIFToBase64PDF">
     	<cfargument name="base64GIF" />
-    	<cfset var myImage = ImageReadBase64("data:image/gif;base64,#arguments.base64GIF#")> 
+    	<cfset var myImage = ImageReadBase64("data:image/gif;base64,#arguments.base64GIF#")>
     	<cfset var tempDirectory = getTempDirectory()&'/newimage.gif'>
     	<cfset imageWrite(myImage,tempDirectory)>
 		<cfdocument name="newpdf" format="pdf" localUrl="yes">
