@@ -140,10 +140,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function getNonWaitlistedCountBySku(required any sku) {
 		var smartlist = getEventRegistrationSmartList({},false);
-		var waitlistedTypeID = getTypeService().getTypeBySystemCode('erstWaitlisted').getTypeID();
 		smartList.joinRelatedProperty("SlatwallEventRegistration", "sku", "left", true) ;
 		smartList.addInFilter('sku.skuID', '#arguments.sku.getSkuID()#');
-		smartlist.addWhereCondition("aslatwalleventregistration.eventRegistrationStatusType.typeID <> '#waitlistedTypeID#'");
+		smartlist.addWhereCondition("aslatwalleventregistration.eventRegistrationStatusType.systemCode <> 'erstWaitlisted'");
+		smartlist.addWhereCondition("aslatwalleventregistration.eventRegistrationStatusType.systemCode <> 'erstCancelled'");
+		
 		return smartlist.getRecordsCount();
 	}
 

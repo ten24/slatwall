@@ -1178,7 +1178,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		var productData = {
 			productID = "",
-			listingPages = [
+			listingPages = [ 
 				{
 					contentID = mockContent.getContentID()
 				}
