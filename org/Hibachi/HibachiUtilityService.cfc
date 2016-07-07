@@ -308,7 +308,7 @@
 
 		public array function getTemplateKeys(required string template){
 			//matches only ${} not ${{}}
-			return templateKeysToReturn = reMatchNoCase("\${[^{}]+}",arguments.template);
+			return reMatchNoCase("\${[^{}]+}",arguments.template);
 		}
 
 		//replace single brackets ${}
