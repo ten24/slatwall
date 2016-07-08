@@ -868,20 +868,36 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					groupByList = listAppend(groupByList, collectionConfig.orderBy[j].propertyIdentifier);
 				}
 			}else{
-				var baseEntityObject = getService('hibachiService').getEntityObject( getCollectionObject() );
-				//is default order by based on hb_defaultOrderProperty
-				if(structKeyExists(baseEntityObject.getThisMetaData(), "hb_defaultOrderProperty")) {
-					groupByList = listAppend(groupByList, '_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject())) & '.' & baseEntityObject.getThisMetaData()["hb_defaultOrderProperty"]);
-				//if not then does it have a createdDateTime
-				} else if ( baseEntityObject.hasProperty( "createdDateTime" ) ) {
-					groupByList = listAppend(groupByList,'_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject())) & '.' & "createdDateTime");
-				//if still not then order by primary id
-				} else {
-					groupByList = listAppend(groupByList,'_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject())) & '.' & baseEntityObject.getPrimaryIDPropertyName());
-				}
+				var orderBy = getDefaultOrderBy();
+				groupByList = listAppend(groupByList,orderBy.propertyIdentifier);
 			}
 		}
 		return ' GROUP BY ' & groupByList;
+	}
+
+	private struct function getDefaultOrderBy(){
+		var orderByStruct={};
+		var baseEntityObject = getService('hibachiService').getEntityObject( getCollectionObject() );
+		//is default order by based on hb_defaultOrderProperty
+		if(structKeyExists(baseEntityObject.getThisMetaData(), "hb_defaultOrderProperty")) {
+			orderByStruct={
+				propertyIdentifier='_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject())) & '.' & baseEntityObject.getThisMetaData()["hb_defaultOrderProperty"],
+				direction="asc"
+			};
+		//if not then does it have a createdDateTime
+		} else if ( baseEntityObject.hasProperty( "createdDateTime" ) ) {
+			var orderByStruct={
+				propertyIdentifier='_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject())) & '.' & "createdDateTime",
+				direction="desc"
+			};
+		//if still not then order by primary id
+		} else {
+			var orderByStruct={
+				propertyIdentifier='_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject())) & '.' & baseEntityObject.getPrimaryIDPropertyName(),
+				direction="asc"
+			};
+		}
+		return orderByStruct;
 	}
 
 	private string function getOrderByHQL(array orderBy=[]){
@@ -890,33 +906,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var orderByCount = arraylen(arguments.orderBy);
 		//if order by count is 0, then use the default order by
 		if(orderByCount == 0){
-			var baseEntityObject = getService('hibachiService').getEntityObject( getCollectionObject() );
-			//is default order by based on hb_defaultOrderProperty
-			if(structKeyExists(baseEntityObject.getThisMetaData(), "hb_defaultOrderProperty")) {
-				var orderByStruct={
-					propertyIdentifier='_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject())) & '.' & baseEntityObject.getThisMetaData()["hb_defaultOrderProperty"],
-					direction="asc"
-				};
-				arrayAppend(arguments.orderby,orderByStruct);
-				orderByCount++;
-			//if not then does it have a createdDateTime
-			} else if ( baseEntityObject.hasProperty( "createdDateTime" ) ) {
-				var orderByStruct={
-					propertyIdentifier='_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject())) & '.' & "createdDateTime",
-					direction="desc"
-				};
-				arrayAppend(arguments.orderby,orderByStruct);
-				orderByCount++;
-			//if still not then order by primary id
-			} else {
-				var orderByStruct={
-					propertyIdentifier='_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject())) & '.' & baseEntityObject.getPrimaryIDPropertyName(),
-					direction="asc"
-				};
-				arrayAppend(arguments.orderby,orderByStruct);
-				orderByCount++;
-			}
-
+			arrayAppend(arguments.orderby,getDefaultOrderBy());
+			orderByCount++;
 		}
 
 		for(var i = 1; i <= orderByCount; i++){
