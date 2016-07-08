@@ -12,7 +12,11 @@ class SWValidationMaxLength{
             link: function(scope, element, attributes, ngModel) {
                     ngModel.$validators.swvalidationmaxlength =
                     function(modelValue, viewValue) {
-                        return validationService.validateMaxLength(viewValue.length,attributes.swvalidationmaxlength);
+                        var length = 0
+                        if(viewValue && viewValue.length){
+                            length = viewValue.length
+                        }
+                        return validationService.validateMaxLength(length || 0,attributes.swvalidationmaxlength);
                     };
             }
         };

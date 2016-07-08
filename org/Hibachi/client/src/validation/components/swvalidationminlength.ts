@@ -20,7 +20,11 @@ class SWValidationMinLength{
             link: (scope, element, attributes, ngModel) =>{
                 ngModel.$validators.swvalidationminlength =
                 (modelValue, viewValue)=> {
-                    return validationService.validateMinLength(viewValue.length,attributes.swvalidationminlength);
+                    var length = 0
+                    if(viewValue && viewValue.length){
+                        length = viewValue.length
+                    }
+                    return validationService.validateMinLength(length || 0,attributes.swvalidationminlength);
                 };
             }
         };
