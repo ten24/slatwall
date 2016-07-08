@@ -257,7 +257,7 @@ class SWFormController {
         if(this.object.data){
             iterable = this.object.data;
         }
-
+        console.log(this.object);
         angular.forEach(iterable, (val, key) => {
             /** Check for form elements that have a name that doesn't start with $ */
             if (angular.isString(val)) {

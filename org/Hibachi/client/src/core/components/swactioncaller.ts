@@ -26,6 +26,7 @@ class SWActionCallerController{
         private $element,
         private $templateRequest:ng.ITemplateRequestService,
         private $compile:ng.ICompileService,
+        public $timeout,
         private corePartialsPath,
         private utilityService,
         private $hibachi,
@@ -34,6 +35,7 @@ class SWActionCallerController{
     ){
         this.$scope = $scope;
         this.$element = $element;
+        this.$timeout = $timeout;
         this.$templateRequest = $templateRequest;
         this.$compile = $compile;
         this.rbkeyService = rbkeyService;
@@ -107,12 +109,20 @@ class SWActionCallerController{
             <cfset attributes.class &= " disabled" />
         </cfif>
         */
+
+
     }
 
     public submit = () => {
-        console.log('submit');
-        console.log(this.formController);
-        this.formController.submit(this.action);
+        this.$timeout(()=>{
+            if(this.form.$valid){
+                this.formController.submit(this.action);
+            }
+
+
+            this.form.$submitted = true;
+            console.log(this.form.$submitted);
+        });
     }
 
     public getAction = ():string =>{
@@ -282,7 +292,7 @@ class SWActionCaller implements ng.IDirective{
         id:"@",
         isAngularRoute:"=?"
     };
-    public require={formController:"^?swForm"};
+    public require={formController:"^?swForm",form:"^?form"};
     public controller=SWActionCallerController;
     public controllerAs="swActionCaller";
     public templateUrl;

@@ -20,12 +20,12 @@
 			    data-error-class="error"
 			    data-name="Account_Login"
 			    >
-			
+
 		        <div class="col-sm-12 form-group">
 			        <swf-property-display
 			            data-name="emailAddress"
 			            data-type="email"
-			            
+
 			            data-property-identifier="emailAddress"
 			            data-label-text="Email Address"
 			            data-class="form-control"
@@ -36,8 +36,6 @@
 			        <swf-property-display
 			            data-name="password"
 			            data-type="password"
-			            
-			
 			            data-property-identifier="password"
 			            data-label-text="Password"
 			            data-class="form-control"
@@ -46,6 +44,7 @@
 					<a href="##" ng-click="slatwall.forgotPassword = true;">Forgot your password?</a>
 		        </div>
 			    <div class="col-sm-12 form-group">
+
 				    <sw-action-caller
 				        data-action="login"
 				        data-modal="false"
@@ -54,27 +53,27 @@
 				        data-error-class="error"
 				        data-text="{{(slatwall.getRequestByAction('login').loading ? 'Loading...' : 'Sign In')}}">
 				    </sw-action-caller>
-					
+
 				</div>
 			</sw-form>
 		</div>
-		
+
 		<!--- Forgot password form --->
 		<div ng-show="slatwall.forgotPassword" class="forgotPassword col-md-12">
-			
+
 			<!-- Instruction for getting the reset email-->
 		    <p ng-if="!slatwall.getRequestByAction('forgotPassword').hasErrors() && slatwall.getRequestByAction('forgotPassword').hasErrors() == undefined">Enter your e-mail address and a password reset e-mail will be sent your inbox or <a href="#" ng-click="slatwall.forgotPassword = false">login</a></p>
 			<!-- Display a message if a reset email has been sent -->
 		    <div class="msg" ng-show="slatwall.getRequestByAction('forgotPassword').hasSuccessfulAction()">
 		        An email has been sent to the address you provided with a link to reset your password so you may <a href="#" ng-click="slatwall.forgotPassword = false">login</a>
 		    </div>
-		    
+
 		    <!-- Display a message if the email address is not recognized -->
 		    <div class="msg" ng-show="slatwall.getRequestByAction('forgotPassword').errors.emailAddress['0']">
-		        <p class="error">{{slatwall.getRequestByAction('forgotPassword').errors.emailAddress['0']}}</p> 
+		        <p class="error">{{slatwall.getRequestByAction('forgotPassword').errors.emailAddress['0']}}</p>
 		    </div>
-			
-			
+
+
 		    <div >
 			    <sw-form
 			        data-is-process-form="true"
@@ -84,28 +83,28 @@
 			        data-name="Account_ForgotPassword"
 			        >
 			    	<div class="form-group" style="padding-top: 10px;">
-						<swf-property-display 
+						<swf-property-display
 								data-name="emailAddress"
 								data-type="email"
-								
-								data-property-identifier="emailAddress" 
+
+								data-property-identifier="emailAddress"
 								data-label-text="Email Address"
 								data-class="form-control"
-								data-editing="true">  
+								data-editing="true">
 						</swf-property-display>
 					</div>
 					<div class="form-group" style="padding-top: 10px;">
-						<sw-action-caller 
+						<sw-action-caller
 							data-action="forgotPassword"
-							data-modal="false" 
+							data-modal="false"
 							data-type="submit"
-							data-class="Apply btn-yellow" 
+							data-class="Apply btn-yellow"
 							data-text="Send Me Reset Email">
 						</sw-action-caller>
 					</div>
 			        <span ng-show="slatwall.getRequestByAction('forgotPassword').loading" ng-class="(slatwall.getRequestByAction('forgotPassword').loading) ? 'glyphicon glyphicon-refresh glyphicon-refresh-animate' : ''"></span>
-			
-			    </sw-form> 
+
+			    </sw-form>
 		    </div>
 		</div>
 	</div>

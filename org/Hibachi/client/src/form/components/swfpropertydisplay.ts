@@ -109,6 +109,7 @@ class SWFPropertyDisplayController {
 	}
 
 	public $onInit=()=>{
+		console.log('oniint');
 		this.type                	= this.type || "text" ;
 		this.class			   	= this.class|| "formControl";
 		this.fieldAttributes     	= this.fieldAttributes || "";
@@ -173,6 +174,7 @@ class SWFPropertyDisplayController {
 			labelText: this.labelText,
 			labelClass: this.labelClass,
 			optionValues: this.optionValues,
+			propertyIdentifier:this.propertyIdentifier,
 			edit: 	this.editting,
 			title: 	this.title,
 			value: 	this.value || "",
@@ -187,7 +189,7 @@ class SWFPropertyDisplayController {
 	*/
 class SWFPropertyDisplay {
 	public restrict = "E";
-	public require = {swForm:"?^swForm"};
+	public require = {swForm:"?^swForm",form:"?^form"};
 	public transclude = true;
 	public templateUrl = "";
 	public controller = SWFPropertyDisplayController;

@@ -64,32 +64,127 @@ class SWFFormFieldController {
 	/**
 		* Handles the logic for the frontend version of the property display.
 		*/
-	public static $inject = ['$scope'];
-	constructor ( public $scope:ng.IScope ) {
-
-        if (!this.propertyDisplay){
-            this.object = this.object || this.swfPropertyDisplayCtrl.object;
-
-			if(this.object.metaData){
-				console.log('isObject');
-				this.object = this.object.data;
-			}
-             this.propertyDisplay =  {
-                 name: this.name,
-                 class: this.class,
-                 errorClass: this.errorClass,
-                 type: this.type,
-                 object: this.object,
-                 propertyIdentifier: this.propertyIdentifier
-             };
-         }else{
-			if(this.propertyDisplay.object.metaData){
-				console.log('isObject');
-				this.propertyDisplay.object = this.propertyDisplay.object.data;
-			}
-		 }
-
+	public static $inject = ['$scope','$element','$compile','utilityService'];
+	//@ngInject
+	constructor ( public $scope:ng.IScope, public $element, public $compile,public utilityService ) {
+		this.utilityService = utilityService;
+		this.$scope = $scope;
+		this.$element = $element;
+		this.$compile = $compile;
 	}
+
+	public $onInit=()=>{
+		console.log('inithere');
+		console.log(this.propertyDisplay);
+		console.log(this.propertyIdentifier);
+		var isObject = false;
+		if (!this.propertyDisplay){
+            console.log(this.swfPropertyDisplayCtrl);
+			this.propertyDisplay =  this.swfPropertyDisplayCtrl.propertyDisplay;
+        }
+
+		this.object = this.object || this.propertyDisplay.object;
+
+	 	if(this.object.metaData){
+
+			isObject = true;
+			this.object = this.object.data;
+		}
+
+
+
+		if(this.propertyDisplay.object.metaData){
+			var validationDirectives = this.getValidationDirectives(this.propertyDisplay);
+			console.log('validationDirectives',validationDirectives);
+
+			var unbindWatch = this.$scope.$watch(()=>{
+				return angular.element(this.$element).find(':input:first').length
+			}
+			,(newValue,oldValue)=>{
+
+				if(newValue > 0){
+					for(var key in validationDirectives){
+						angular.element(this.$element).find(':input:first').attr(key,validationDirectives[key]);
+					}
+					this.$element.html(this.$compile(this.$element.html())(this.$scope));
+					unbindWatch();
+				}
+			});
+		}
+	}
+
+
+	public getValidationDirectives = (propertyDisplay,context?)=>{
+		var validationsInfo = {};
+		var name = propertyDisplay.property;
+		propertyDisplay.property = propertyDisplay.propertyIdentifier;
+		console.log('proper',propertyDisplay);
+		if(!context){
+			console.log(propertyDisplay.object.metaData.className.split('_'));
+			if(propertyDisplay.object.metaData.className.split('_').length > 1){
+				context = propertyDisplay.object.metaData.className.split('_')[1];
+			}else{
+				context= "save";
+			}
+
+		}
+		console.log('context',context);
+				console.log(propertyDisplay.object.validations.properties);
+		console.log(propertyDisplay.property);
+		if(angular.isUndefined(propertyDisplay.object.validations )
+			|| angular.isUndefined(propertyDisplay.object.validations.properties)
+			|| angular.isUndefined(propertyDisplay.object.validations.properties[propertyDisplay.property])){
+			return '';
+		}
+
+		var validations = propertyDisplay.object.validations.properties[propertyDisplay.property];
+		var validationsForContext = [];
+		console.log(validations);
+		//get the validations for the current element.
+		var propertyValidations = propertyDisplay.object.validations.properties[propertyDisplay.property];
+		/*
+		* Investigating why number inputs are not working.
+		* */
+		//check if the contexts match.
+		console.log(propertyValidations);
+		if (angular.isObject(propertyValidations)){
+			//if this is a procesobject validation then the context is implied
+			if(angular.isUndefined(propertyValidations[0].contexts) && propertyDisplay.object.metaData.isProcessObject){
+				propertyValidations[0].contexts = propertyDisplay.object.metaData.className.split('_')[1];
+			}
+			console.log(propertyValidations);
+			if (propertyValidations[0].contexts === context){
+
+				for (var prop in propertyValidations[0]){
+					if (prop != "contexts" && prop !== "conditions"){
+						validationsInfo["swvalidation" + prop.toLowerCase()] = propertyValidations[0][prop];
+						//spaceDelimitedList += (" swvalidation" + prop.toLowerCase() + "='" + propertyValidations[0][prop] + "'");
+					}
+				}
+			}
+		}
+		//loop over validations that are required and create the space delimited list
+		// angular.forEach(validations,(validation,key)=>{
+		// 	console.log(validation);
+		// 	if(!validation.contexts){
+		// 		validation.contexts = context;
+		// 	}
+		// 	console.log(validation.contexts);
+		// 	console.log(context)
+		// 	if(this.utilityService.listFind(validation.contexts.toLowerCase(),context.toLowerCase()) !== -1){
+
+		// 		validationsForContext.push(validation);
+		// 	}
+
+
+		// });
+
+		//now that we have all related validations for the specific form context that we are working with collection the directives we need
+		//getValidationDirectiveByType();
+
+
+		return validationsInfo;
+	};
 }
 
 /**
@@ -97,11 +192,11 @@ class SWFFormFieldController {
 	*/
 class SWFFormField {
 	public restrict = "E";
-	public require = {swfPropertyDisplayCtrl:"^?swfPropertyDisplay"};
+	public require = {swfPropertyDisplayCtrl:"^?swfPropertyDisplay",form:"^?form"};
 	public controller = SWFFormFieldController;
 	public templateUrl;
 	public controllerAs = "swfFormField";
-	public scope = true;
+	public scope = {};
 	public bindToController = {
 			propertyDisplay : "=?",
             propertyIdentifier: "@?",
@@ -113,6 +208,9 @@ class SWFFormField {
 	public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, formController:any, transcludeFn:ng.ITranscludeFunction) =>{
 
 	}
+
+
+
 	/**
 		* Handles injecting the partials path into this class
 		*/

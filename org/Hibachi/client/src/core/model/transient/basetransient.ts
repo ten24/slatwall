@@ -34,12 +34,12 @@ abstract class BaseTransient extends BaseObject{
 
             angular.forEach(propertyIdentifierArray,(property,propertyKey)=>{
                 if(currentEntity.metaData[property]){
-                    console.log('hasMetaData',property);
+
                     //if we are on the last item in the array
                     if(propertyKey === propertyIdentifierArray.length-1){
 
                         if(angular.isObject(data[key]) && currentEntity.metaData[property].fieldtype && currentEntity.metaData[property].fieldtype === 'many-to-one'){
-                            console.log('isObject');
+
                             var relatedEntity = this.getService('entityService').newEntity(currentEntity.metaData[property].cfc);
                             if(relatedEntity.populate){
                                 relatedEntity.populate(data[key]);
@@ -48,7 +48,7 @@ abstract class BaseTransient extends BaseObject{
                                 currentEntity['$$set'+currentEntity.metaData[property].name.charAt(0).toUpperCase()+currentEntity.metaData[property].name.slice(1)](relatedEntity);
                             }
                         }else if(angular.isArray(data[propertyIdentifierKey]) && currentEntity.metaData[property].fieldtype && (currentEntity.metaData[property].fieldtype === 'one-to-many')){
-                            console.log('isArray');
+
                             angular.forEach(data[key],(arrayItem,propertyKey)=>{
                                 var relatedEntity = this.getService('entityService').newEntity(currentEntity.metaData[property].cfc);;
                                 if(relatedEntity.populate){
@@ -59,7 +59,7 @@ abstract class BaseTransient extends BaseObject{
                                 }
                             });
                         }else{
-                            console.log('isSimple');
+
                             currentEntity[property] = data[key];
                         }
 
@@ -137,10 +137,12 @@ abstract class BaseTransient extends BaseObject{
 		}
     }
 
-    public isValid=():boolean=>{
-        var validationInfo = this.hibachiValidationService.validateObject(this);
-        return validationInfo.valid;
-    }
+    // public isValid=():boolean=>{
+    //     var validations = this.hibachiValidationService.validateObject(this);
+    //     console.log('val',validationInfo);
+    //     return validationInfo.valid;
+    // }
+
 
     public getError=(errorName:string)=>{
         return this.getErrorByErrorName(errorName);
