@@ -219,13 +219,12 @@ class PublicService {
 
     private processAction = (response,request:PublicRequest)=>{
         /** update the account and the cart */
-        console.log('processAction');
-        console.log(response);
+
         this.account.populate(response.account);
         this.account.request = request;
         this.cart.populate(response.cart);
         this.cart.request = request;
-        console.log(this);
+
         //if the action that was called was successful, then success is true.
         if (request.hasSuccessfulAction()){
             for (var action in request.successfulActions){
@@ -487,7 +486,7 @@ class PublicService {
         };
 
         processObject.populate(data);
-        console.log('processObject',processObject).
+
 
         //Make sure we have required fields for a newOrderPayment.
         this.validateNewOrderPayment( data );

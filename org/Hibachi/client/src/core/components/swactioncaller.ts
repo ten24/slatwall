@@ -121,7 +121,7 @@ class SWActionCallerController{
 
 
             this.form.$submitted = true;
-            console.log(this.form.$submitted);
+
         });
     }
 

@@ -74,12 +74,10 @@ class SWFFormFieldController {
 	}
 
 	public $onInit=()=>{
-		console.log('inithere');
-		console.log(this.propertyDisplay);
-		console.log(this.propertyIdentifier);
+
 		var isObject = false;
 		if (!this.propertyDisplay){
-            console.log(this.swfPropertyDisplayCtrl);
+
 			this.propertyDisplay =  this.swfPropertyDisplayCtrl.propertyDisplay;
         }
 
@@ -95,7 +93,7 @@ class SWFFormFieldController {
 
 		if(this.propertyDisplay.object.metaData){
 			var validationDirectives = this.getValidationDirectives(this.propertyDisplay);
-			console.log('validationDirectives',validationDirectives);
+
 
 			var unbindWatch = this.$scope.$watch(()=>{
 				return angular.element(this.$element).find(':input:first').length
@@ -118,9 +116,9 @@ class SWFFormFieldController {
 		var validationsInfo = {};
 		var name = propertyDisplay.property;
 		propertyDisplay.property = propertyDisplay.propertyIdentifier;
-		console.log('proper',propertyDisplay);
+
 		if(!context){
-			console.log(propertyDisplay.object.metaData.className.split('_'));
+
 			if(propertyDisplay.object.metaData.className.split('_').length > 1){
 				context = propertyDisplay.object.metaData.className.split('_')[1];
 			}else{
@@ -128,9 +126,7 @@ class SWFFormFieldController {
 			}
 
 		}
-		console.log('context',context);
-				console.log(propertyDisplay.object.validations.properties);
-		console.log(propertyDisplay.property);
+
 		if(angular.isUndefined(propertyDisplay.object.validations )
 			|| angular.isUndefined(propertyDisplay.object.validations.properties)
 			|| angular.isUndefined(propertyDisplay.object.validations.properties[propertyDisplay.property])){
@@ -139,20 +135,20 @@ class SWFFormFieldController {
 
 		var validations = propertyDisplay.object.validations.properties[propertyDisplay.property];
 		var validationsForContext = [];
-		console.log(validations);
+
 		//get the validations for the current element.
 		var propertyValidations = propertyDisplay.object.validations.properties[propertyDisplay.property];
 		/*
 		* Investigating why number inputs are not working.
 		* */
 		//check if the contexts match.
-		console.log(propertyValidations);
+
 		if (angular.isObject(propertyValidations)){
 			//if this is a procesobject validation then the context is implied
 			if(angular.isUndefined(propertyValidations[0].contexts) && propertyDisplay.object.metaData.isProcessObject){
 				propertyValidations[0].contexts = propertyDisplay.object.metaData.className.split('_')[1];
 			}
-			console.log(propertyValidations);
+
 			if (propertyValidations[0].contexts === context){
 
 				for (var prop in propertyValidations[0]){
@@ -163,24 +159,7 @@ class SWFFormFieldController {
 				}
 			}
 		}
-		//loop over validations that are required and create the space delimited list
-		// angular.forEach(validations,(validation,key)=>{
-		// 	console.log(validation);
-		// 	if(!validation.contexts){
-		// 		validation.contexts = context;
-		// 	}
-		// 	console.log(validation.contexts);
-		// 	console.log(context)
-		// 	if(this.utilityService.listFind(validation.contexts.toLowerCase(),context.toLowerCase()) !== -1){
 
-		// 		validationsForContext.push(validation);
-		// 	}
-
-
-		// });
-
-		//now that we have all related validations for the specific form context that we are working with collection the directives we need
-		//getValidationDirectiveByType();
 
 
 		return validationsInfo;

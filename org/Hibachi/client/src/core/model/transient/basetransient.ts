@@ -137,11 +137,6 @@ abstract class BaseTransient extends BaseObject{
 		}
     }
 
-    // public isValid=():boolean=>{
-    //     var validations = this.hibachiValidationService.validateObject(this);
-    //     console.log('val',validationInfo);
-    //     return validationInfo.valid;
-    // }
 
 
     public getError=(errorName:string)=>{
