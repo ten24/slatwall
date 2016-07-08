@@ -21,7 +21,8 @@ class SWSkuCurrencySelectorController{
         if( angular.isDefined(this.baseEntityId) ){ 
             this.selectCurrencyCodeEventName = "currencyCodeSelect" + this.baseEntityId; 
         }
-        this.selectedCurrencyCode = this.currencyCodes[0]; 
+        this.selectedCurrencyCode = "USD"; 
+        this.observerService.notifyAndRecord(this.selectCurrencyCodeEventName, this.selectedCurrencyCode);
         if(angular.isDefined(this.baseEntityName) && angular.isDefined(this.baseEntityId)){
             this.baseEntityCollectionConfig = this.collectionConfigService.newCollectionConfig(this.baseEntityName);
             this.baseEntityCollectionConfig.addDisplayProperty("eligibleCurrencyCodeList");

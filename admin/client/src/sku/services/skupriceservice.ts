@@ -1,9 +1,10 @@
 export class SkuPriceService { 
 
-    private currencies = {}; 
+    private currencies:{}; 
     private skuPrices = {};
     private skuPriceCollectionConfigs = {}; 
-    private skuPriceGetEntityPromises = {}; 
+    private skuPriceGetEntityPromises = {};
+    private skuDictionary = {};  
     private skuPriceHasEntityDeferred = {}; 
     private skuPriceHasEntityPromises = {}; 
 
@@ -97,19 +98,23 @@ export class SkuPriceService {
     public loadCurrencies = () =>{
         var loadCurrenciesDeferred = this.$q.defer(); 
         var loadCurrenciesPromise = loadCurrenciesDeferred.promise;
-        var currencyRatePromise = this.$http({
-                method:"POST", 
-                url:this.$hibachi.getUrlWithActionPrefix()+"api:main.getcurrencyrates"
-        })
-        currencyRatePromise.then(
-            (response)=>{
-                this.currencies = response.data;
-                loadCurrenciesDeferred.resolve(this.currencies); 
-            },
-            (reason)=>{
-                loadCurrenciesDeferred.reject(reason);
-            }
-        );
+        if(angular.isDefined(this.currencies)){
+            loadCurrenciesDeferred.resolve(this.currencies); 
+        } else {
+            var currencyRatePromise = this.$http({
+                    method:"POST", 
+                    url:this.$hibachi.getUrlWithActionPrefix()+"api:main.getcurrencyrates"
+            })
+            currencyRatePromise.then(
+                (response)=>{
+                    this.currencies = response.data;
+                    loadCurrenciesDeferred.resolve(this.currencies); 
+                },
+                (reason)=>{
+                    loadCurrenciesDeferred.reject(reason);
+                }
+            );
+        }
         return loadCurrenciesPromise        
     }
 
@@ -171,14 +176,33 @@ export class SkuPriceService {
         }
     }
 
+    private getSku = (skuID) =>{
+        var deferred = this.$q.defer(); 
+        var promise = deferred.promise; 
+        if(skuID in this.skuDictionary){
+            var sku = this.skuDictionary[skuID];
+            deferred.resolve(sku);
+        } else {
+            this.$hibachi.getEntity("Sku", skuID).then(
+                (response)=>{
+                    this.skuDictionary[skuID] = this.$hibachi.populateEntity("Sku", response);
+                    deferred.resolve(this.skuDictionary[skuID]);
+                },
+                (reason)=>{
+                    deferred.reject(reason);
+                }
+            );
+        }
+        return promise;
+    }
+
     private loadInferredSkuPricesForSkuPriceSet = (skuID, skuPriceSet, eligibleCurrencyCodes) =>{
         var deferred = this.$q.defer(); 
         var promise = deferred.promise; 
         this.loadCurrencies().then(
             ()=>{
-                this.$hibachi.getEntity("Sku", skuID).then(
-                    (response)=>{
-                        var sku = this.$hibachi.populateEntity("Sku", response);
+                this.getSku(skuID).then(
+                    (sku)=>{
                         for(var j=0; j < eligibleCurrencyCodes.length; j++){
                             if( ( sku.data.currencyCode != eligibleCurrencyCodes[j]) &&
                                 ( skuPriceSet.length > 0 && !this.skuPriceSetHasCurrencyCode(skuPriceSet,eligibleCurrencyCodes[j]) ) ||
@@ -190,7 +214,7 @@ export class SkuPriceService {
                         skuPriceSet = this.sortSkuPrices(skuPriceSet);
                     },
                     (reason)=>{
-                        deferred.reject(reason);
+
                     }
                 ).finally(
                     ()=>{

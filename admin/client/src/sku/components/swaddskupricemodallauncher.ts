@@ -93,6 +93,7 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
     public templateUrl;
     public restrict = 'EA';
     public scope = {}; 
+    public transclude = true; 
     public bindToController = {
         pageRecord:"=?"
     };

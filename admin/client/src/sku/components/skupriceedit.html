@@ -35,14 +35,19 @@
                     data-editable="true"
                 >
             </sw-property-display>
-            <div class="s-input-group" ng-if="swSkuPriceEdit.skuPrice.data.inferred && swSkuPriceEdit.skuPrice.data.price != 'NaN'">
-                <span class="s-title" data-content="" data-original-title="" title="">{{swSkuPriceEdit.skuPrice.data.currencyCode}}</span>
-                <input readonly type="text" ng-model="swSkuPriceEdit.skuPrice.data.price" class="form-control input-xs s-inherited">
-            </div>
-            <div class="s-input-group" ng-if="swSkuPriceEdit.skuPrice.data.inferred && swSkuPriceEdit.skuPrice.data.price == 'NaN'">
-                <span class="s-title" data-content="" data-original-title="" title="">{{swSkuPriceEdit.skuPrice.data.currencyCode}}</span>
-                <input readonly type="text" value="No Rate Available" class="form-control input-xs s-inherited">
-            </div>
+            <sw-add-sku-price-modal-launcher>
+                <div class="s-input-group" ng-if="swSkuPriceEdit.skuPrice.data.inferred && swSkuPriceEdit.skuPrice.data.price != 'NaN'">
+                    <span class="s-title" data-content="" data-original-title="" title="">{{swSkuPriceEdit.skuPrice.data.currencyCode}}</span>
+                    <input readonly type="text" ng-model="swSkuPriceEdit.skuPrice.data.price" class="form-control input-xs s-inherited">
+                </div>
+             </sw-add-sku-price-modal-launcher>
+             <sw-add-sku-price-modal-launcher>
+                <div class="s-input-group" ng-if="swSkuPriceEdit.skuPrice.data.inferred && swSkuPriceEdit.skuPrice.data.price == 'NaN'">
+                    <span class="s-title" data-content="" data-original-title="" title="">{{swSkuPriceEdit.skuPrice.data.currencyCode}}</span>
+                    <input readonly type="text" value="No Rate Available" class="form-control input-xs s-inherited">
+                </div>
+            </sw-add-sku-price-modal-launcher>
+            
             <a href="##" 
                 class="s-indicator-icon" 
                 ng-click="swSkuPriceEdit.switchTabContext()"
