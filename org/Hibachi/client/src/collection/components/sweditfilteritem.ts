@@ -225,7 +225,9 @@ class SWEditFilterItem{
                     }
 
                     if((selectedFilterProperty.propertyIdentifier.match(/_/g) || []).length > 1 ){
-                        var propertyIdentifierJoins = selectedFilterProperty.propertyIdentifier.substring((selectedFilterProperty.propertyIdentifier.charAt(0)  == '_') ? 1 : 0, selectedFilterProperty.propertyIdentifier.indexOf('.'));
+                        var propertyIdentifierStart = (selectedFilterProperty.propertyIdentifier.charAt(0)  == '_') ? 1 : 0;
+                        var propertyIdentifierEnd = (selectedFilterProperty.propertyIdentifier.indexOf('.') == -1) ? selectedFilterProperty.propertyIdentifier.length : selectedFilterProperty.propertyIdentifier.indexOf('.');
+                        var propertyIdentifierJoins = selectedFilterProperty.propertyIdentifier.substring(propertyIdentifierStart, propertyIdentifierEnd);
                         var propertyIdentifierParts = propertyIdentifierJoins.split('_');
                         var  current_collection = $hibachi.getEntityExample(propertyIdentifierParts[0].charAt(0).toUpperCase() + propertyIdentifierParts[0].slice(1));
                         var _propertyIdentifier = '';
@@ -356,6 +358,8 @@ class SWEditFilterItem{
                         }
 
                         switch(selectedFilterProperty.fieldtype){
+                            case 'one-to-many':
+                            case 'many-to-many':
                             case 'many-to-one':
                                 filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
                                 //is null, is not null
@@ -364,14 +368,14 @@ class SWEditFilterItem{
                                 }
                                 filterItem.displayValue = filterItem.value;
                                 break;
-                            case 'one-to-many':
-
-                            case 'many-to-many':
-                                filterItem.collectionID = selectedFilterProperty.selectedCollection.collectionID;
-                                filterItem.displayValue = selectedFilterProperty.selectedCollection.collectionName;
-                                filterItem.criteria = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
-
-                                break;
+                            //case 'one-to-many':
+                            //
+                            //case 'many-to-many':
+                            //    filterItem.collectionID = selectedFilterProperty.selectedCollection.collectionID;
+                            //    filterItem.displayValue = selectedFilterProperty.selectedCollection.collectionName;
+                            //    filterItem.criteria = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+                            //
+                            //    break;
                         }
 
                         if(angular.isUndefined(filterItem.displayValue)){
