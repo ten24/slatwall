@@ -61,6 +61,7 @@ class SWAddSkuPriceModalLauncherController{
                                     index + 1 == pageRecords.length
                                 ){
                                     this.skuPrice.data.skuSkuId = this.skuId;
+                                    this.skuPrice.data.eligibleCurrencyCodeList = this.currencyCodeOptions.join(",");
                                     var skuPriceForListing = {}; 
                                     angular.copy(this.skuPrice.data,skuPriceForListing); 
                                     pageRecords.splice(index+1,0,skuPriceForListing);

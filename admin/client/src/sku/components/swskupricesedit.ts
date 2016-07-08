@@ -92,6 +92,9 @@ class SWSkuPricesEditController{
         this.loadingPromise.then(
             (data)=>{
                 this.skuPrices = data;
+            },
+            (reason)=>{
+                throw("swSkuPrices was unable to fetch skuPrices because: " + reason); 
             }
         );
         return this.loadingPromise; 
