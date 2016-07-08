@@ -13,6 +13,7 @@ import {UtilityService} from "./services/utilityservice";
 import {SelectionService} from "./services/selectionservice";
 import {ObserverService} from "./services/observerservice";
 import {OrderService} from "./services/orderservice";
+import {OrderPaymentService} from "./services/orderpaymentservice";
 import {FormService} from "./services/formservice";
 import {ExpandableService} from "./services/expandableservice";
 import {MetaDataService} from "./services/metadataservice";
@@ -155,6 +156,7 @@ var coremodule = angular.module('hibachi.core',[
 .service('requestService',RequestService)
 .service('accountService',AccountService)
 .service('orderService',OrderService)
+.service('orderPaymentService',OrderPaymentService)
 .service('cartService',CartService)
 .service('hibachiValidationService',HibachiValidationService)
 .service('entityService',EntityService)

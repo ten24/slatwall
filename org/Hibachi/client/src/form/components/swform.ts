@@ -39,7 +39,7 @@ class SWFormController {
         public $rootScope
     ){
         /** only use if the developer has specified these features with isProcessForm */
-
+        this.$hibachi = $hibachi;
         if(angular.isUndefined(this.isDirty)){
             this.isDirty = false;
         }
@@ -59,6 +59,7 @@ class SWFormController {
             }
             //convert the string to an object
             this.$timeout( ()=> {
+                console.log(this.object);
                 this.object = this.$hibachi['new'+this.object]();
             });
         }else{
@@ -195,7 +196,7 @@ class SWFormController {
         if (angular.isDefined(errors) && errors) {
             angular.forEach(errors, (val, key) => {
                     let primaryElement = this.$element.find("[error-for='" + key + "']");
-                    this.$timeout(function() {
+                    this.$timeout(()=> {
                         primaryElement.append("<span name='" + key + "Error'>" + errors[key] + "</span>");
                     }, 0);
             }, this);
@@ -252,6 +253,9 @@ class SWFormController {
     /** returns all the data from the form by iterating the form elements */
     public getFormData = ()=>
     {
+        console.log('test');
+        console.log(this.object)
+        console.log(this);
 
         var iterable = this.object;
         if(this.object.data){

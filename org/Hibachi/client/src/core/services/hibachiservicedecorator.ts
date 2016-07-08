@@ -164,9 +164,10 @@ class HibachiServiceDecorator{
 
                     angular.forEach(entity,function(property){
                         if(angular.isObject(property) && angular.isDefined(property.name)){
-
                             if(angular.isDefined(defaultValues[entity.className][property.name])){
                                 jsEntity.data[property.name] = angular.copy(defaultValues[entity.className][property.name]);
+                            }else{
+                                jsEntity.data[property.name] = undefined;
                             }
                         }
                     });
@@ -302,8 +303,10 @@ class HibachiServiceDecorator{
                                             var childName = 'child'+this.metaData.className;
                                             manyToManyName = entityInstance.metaData.$$getManyToManyName(childName);
 
-                                        }else{
+                                        }else if(entityInstance.metaData){
+
                                             manyToManyName = entityInstance.metaData.$$getManyToManyName(metaData.className.charAt(0).toLowerCase() + metaData.className.slice(1));
+
                                         }
                                         // else{
                                         //     manyToManyName = entityInstance.metaData.$$getManyToManyName(metaData.className.charAt(0).toLowerCase() + metaData.className.slice(1));
@@ -455,6 +458,8 @@ class HibachiServiceDecorator{
                                                     this['$$add'+property.singularname.charAt(0).toUpperCase()+property.singularname.slice(1)](entityInstance);
                                                 }
                                             }else{
+                                                console.log('value');
+                                                console.log(value);
                                                 let entityInstance = $delegate.newEntity(this.metaData[property.name].cfc);
                                                     entityInstance.$$init(value);
                                                     this['$$add'+property.singularname.charAt(0).toUpperCase()+property.singularname.slice(1)](entityInstance);

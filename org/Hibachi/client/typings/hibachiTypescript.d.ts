@@ -93,7 +93,6 @@
 /// <reference path="../src/core/services/baseservice.ts" />
 /// <reference path="../src/core/services/cartservice.ts" />
 /// <reference path="../src/core/services/entityservice.ts" />
-/// <reference path="../src/core/services/eventservice.ts" />
 /// <reference path="../src/core/services/expandableservice.ts" />
 /// <reference path="../src/core/services/formservice.ts" />
 /// <reference path="../src/core/services/hibachiinterceptor.ts" />

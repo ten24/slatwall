@@ -612,7 +612,7 @@ class PublicService {
         };
 
         //Make sure we have required fields for a newOrderPayment.
-        this.validateNewOrderPayment( data );
+        //this.validateNewOrderPayment( data );
         if ( this.cart.orderPayments.hasErrors && Object.keys(this.cart.orderPayments.errors).length ){
 
             return -1;

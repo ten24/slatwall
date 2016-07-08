@@ -3,21 +3,14 @@
 
 import {BaseEntity} from "./baseentity";
 
-class Account extends BaseEntity{
-    public accountID:string;
-    public giftCards:Array<any>=[];
-    constructor(){
-        super();
+class Address extends BaseEntity{
+
+    constructor($injector){
+        super($injector);
     }
 
-    public userIsLoggedIn = ():boolean =>{
-        if (this.accountID !== ''){
-            return true;
-        }
-        return false;
-    }
 
 }
 export {
-    Account
+    Address
 }
