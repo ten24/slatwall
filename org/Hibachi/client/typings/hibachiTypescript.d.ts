@@ -104,6 +104,7 @@
 /// <reference path="../src/core/services/localstorageservice.ts" />
 /// <reference path="../src/core/services/metadataservice.ts" />
 /// <reference path="../src/core/services/observerservice.ts" />
+/// <reference path="../src/core/services/orderpaymentservice.ts" />
 /// <reference path="../src/core/services/orderservice.ts" />
 /// <reference path="../src/core/services/publicservice.ts" />
 /// <reference path="../src/core/services/rbkeyservice.ts" />
