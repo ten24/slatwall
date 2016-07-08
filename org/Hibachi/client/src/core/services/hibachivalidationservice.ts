@@ -15,7 +15,7 @@ class HibachiValidationService{
 
 		var entityID = entityInstance.$$getID();
 
-		angular.forEach(entityInstance.parents,function(parentObject){
+		angular.forEach(entityInstance.parents,(parentObject)=>{
 			if(angular.isDefined(entityInstance.data[parentObject.name]) && entityInstance.data[parentObject.name].$$getID() === '' && (angular.isUndefined(entityID) || !entityID.trim().length)){
 
 

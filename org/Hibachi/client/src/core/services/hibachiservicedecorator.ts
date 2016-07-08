@@ -302,6 +302,8 @@ class HibachiServiceDecorator{
                                             var childName = 'child'+this.metaData.className;
                                             manyToManyName = entityInstance.metaData.$$getManyToManyName(childName);
 
+                                        }else{
+                                            manyToManyName = entityInstance.metaData.$$getManyToManyName(metaData.className.charAt(0).toLowerCase() + metaData.className.slice(1));
                                         }
                                         // else{
                                         //     manyToManyName = entityInstance.metaData.$$getManyToManyName(metaData.className.charAt(0).toLowerCase() + metaData.className.slice(1));
