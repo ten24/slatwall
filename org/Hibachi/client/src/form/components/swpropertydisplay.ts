@@ -16,7 +16,7 @@ class SWPropertyDisplayController {
     public eagerLoadOptions:boolean;
     public noValidate:boolean;
     public form;
-    
+
 
     //@ngInject
     constructor(
@@ -103,12 +103,12 @@ class SWPropertyDisplay implements ng.IDirective{
         public coreFormPartialsPath,
         public hibachiPathBuilder
     ){
-        
-        console.warn(this);
+
+
         this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.coreFormPartialsPath) + "propertydisplay.html";
     }
-    
-    
+
+
     public link:ng.IDirectiveLinkFn = ($scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, formController: any) =>{
     };
 

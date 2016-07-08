@@ -182,7 +182,7 @@ class SWFormController {
     public parseEventString = (evntStr:string, evntType)=>
     {
         this.events = this.parseEvents(evntStr, evntType); //onSuccess : [hide:this, show:someOtherForm, refresh:Account]
-        console.log('events:',this.events);
+
     }
 
     /****
@@ -257,7 +257,7 @@ class SWFormController {
         if(this.object.data){
             iterable = this.object.data;
         }
-        console.log(this.object);
+
         angular.forEach(iterable, (val, key) => {
             /** Check for form elements that have a name that doesn't start with $ */
             if (angular.isString(val)) {

@@ -130,7 +130,7 @@ class ValidationService{
     }
 
     public validateRequired=(value):boolean=>{
-        console.log('validation!');
+
         if(value){
             return true;
         }else{

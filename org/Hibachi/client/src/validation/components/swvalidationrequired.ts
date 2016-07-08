@@ -7,15 +7,15 @@ import {ValidationService} from "../services/validationservice";
 class SWValidationRequired{
     //@ngInject
     constructor(validationService:ValidationService){
-        console.log('constructor');
+
         return {
             restrict: "A",
             require: "^ngModel",
             link: function(scope, element, attributes, ngModel) {
-                console.log('ngModel',ngModel);
+
                 ngModel.$validators.swvalidationrequired =
                 function (modelValue, viewValue) {
-                    console.log('testvalid');
+
                     var value = modelValue || viewValue;
                     return validationService.validateRequired(value);
                 };
