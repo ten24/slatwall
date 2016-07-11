@@ -14,7 +14,7 @@ dependencies:
     # Install node modules for building JS
     - npm install -g webpack gulp
 
-    - npm install gulp gulp-inject@3 gulp-chmod gulp-util run-sequence webpack force-case-sensitivity-webpack-plugin strip-loader ng-annotate-webpack-plugin tsify typescript
+    - npm install gulp gulp-inject@3 gulp-chmod gulp-util run-sequence webpack force-case-sensitivity-webpack-plugin strip-loader ng-annotate-webpack-plugin tsify typescript ts-loader
 
     # Install awscli so that we can push builds to S3
     - pip install awscli
