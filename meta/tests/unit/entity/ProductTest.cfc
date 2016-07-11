@@ -249,4 +249,70 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(0, product.getNumberOfUnusedProductOptionCombinations());
 		assertFalse(product.hasUnusedProductOptionCombinations());
 	}
+	
+	/**
+	* @hint "This function will return mockSku with properites you passed in <br> Make the null arguments "" by the order "
+	*
+	*/
+	private any function createMockSku(string idOfProduct = "", string currencyCode = "", string skuImageFile = "") {
+		var skuData = {
+			skuID = ""
+		};
+		if (len(arguments.idOfProduct)) {
+			skuData.product.productID = arguments.idOfProduct;
+		}
+		if (len(arguments.currencyCode)) {
+			skuData.currencyCode = arguments.currencyCode;
+		}		
+		if (len(arguments.skuImageFile)) {
+			skuData.imageFile = arguments.skuImageFile;
+		}
+		return createPersistedTestEntity('Sku', skuData);
+	}
+	
+	public void function getDefaultProductImageFilesCountTest() {		
+		//testing sku w/ existed imageFile. Create the image file first
+		createTestFile (expandPath('/Slatwall') & '/assets/images/admin.logo.png', 
+						"/custom/assets/images/product/default/admin.logo.png");
+		var mockSku1 = createMockSku("", "", "admin.logo.png");
+		
+		//testing null imageFile
+	 	var mockSku2 = createMockSku();
+	 	
+	 	//testing the invalid imageFile
+	 	var mockSku3 = createMockSku("", "", "fakeFile.somefile");
+	 	
+	 	//testing the sku NOT belong to other product instead of the testing one (mockProduct)
+	 	createTestFile (expandPath('/Slatwall') & '/assets/images/favicon.png', 
+						"/custom/assets/images/product/default/favicon.png");
+	 	var mockSku4 = createMockSku("", "", "favicon.png");
+	 	
+	 	var productData = {
+			productID = "",
+			skus = [
+				{
+					skuID = mockSku1.getSkuID()
+				},
+				{
+					skuID = mockSku2.getSkuID()
+				},
+				{
+					skuID = mockSku3.getSkuID()
+				}
+			]
+		};
+		var mockProduct = createPersistedTestEntity('Product', productData);
+		
+		var productData2 = {
+			productID = "",
+			sku = [{
+				skuID = mockSku4.getSkuID()
+			}]
+		};
+		var mockProduct2 = createPersistedTestEntity('Product', productData2);
+		
+		//Only the imageFile of mockSku1 should be counted.
+		var result = mockProduct.getDefaultProductImageFilesCount();
+		assertEquals(1, result);
+	}
 }
