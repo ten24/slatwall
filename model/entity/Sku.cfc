@@ -1388,6 +1388,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			var locationIDList = "";
 			for(var lc in this.getLocationConfigurations()) {
 				if( len(locationIDList) ) {
+					request.debug("Hi");
 					if( !listFind( locationIDList,lc.getLocationID() ) ) {
 						listAppend(locationIDList,lc.getLocationID(),",");
 					}
@@ -1398,6 +1399,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 			// Build smartlist that will return sku events occurring at the same time and location as this event
 			variables.eventConflictsSmartList = getService("skuService").getSkuSmartlist();
+			
 			variables.eventConflictsSmartList.joinRelatedProperty("SlatwallSku", "locationConfigurations", "left");
 			variables.eventConflictsSmartList.joinRelatedProperty("SlatwallLocationConfiguration", "location", "left");
 			variables.eventConflictsSmartList.addWhereCondition("aslatwalllocation.locationID IN (:lcIDs)",{lcIDs=locationIDList});

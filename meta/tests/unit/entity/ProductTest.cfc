@@ -2074,14 +2074,20 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		var resultQOHNoArgu = mockProduct.getQuantity('QOH');
 		assertEquals(1500, resultQOHNoArgu);
-//		request.debug("result.locationID"& resultQOHNoArgu.locationID);
-			
-		var resultQOHWithSku = mockProduct.getQuantity('QOH', mockSku.getSkuID());	
+		
+		//Testing with single not-required argument
+		var resultQOHWithSku = mockProduct.getQuantity('QOH', mockSku.getSkuID());
 		assertEquals(1500, resultQOHWithSku);
 		var resultQOHWithStock = mockProduct.getQuantity(quantityType="QOH", stockID=mockStock.getStockID());
 		assertEquals(1500, resultQOHWithStock);
 		var resultQOHWithLocation = mockProduct.getQuantity(quantityType="QOH", locationID=mockLocation.getLocationID());
 		assertEquals(1500, resultQOHWithLocation);
+		var resultQOHWithLocationSku = mockProduct.getQuantity(quantityType="QOH", skuID=mockSku.getSkuID(), locationID=mockLocation.getLocationID());
+		assertEquals(1500, resultQOHWithLocationSku);
+		
+		//testing with not matched argument
+		var resultQOHWithWrongArgu = mockProduct.getQuantity(quantityType="QOH", stockID="34334");
+		assertEquals(0, resultQOHWithWrongArgu);
 	}
    
 	// ============ START: Non-Persistent Property Methods =================
@@ -2238,15 +2244,53 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var result = mockProduct.getDefaultProductImageFilesCount();
 		assertEquals(1, result);
 	}
-	 
-	 //TODO: finish it in another branch
-//	 public void function getSalePriceDetailsForSkusTest() {
-//	 	
-//	 	var mockSku1 = createMockSku("", "CNY", "");
-//	 	var mockSku2 = createMockSku("", "USD", "");
-//	 	var mockSku3 = createMockSku("","","");
-//	 	var mockSku4 = createMockSku("", "", "");
-//		
+	
+	
+	 //TODO: see promotionserviceTest 	
+	 public void function getSalePriceDetailsForSkusTest() {
+	 	
+	 	var mockProduct = createMockProduct();
+	 	
+	 	var promotionData = {
+	 		promotionID = ""
+	 		,activeFlag = 1
+	 	};
+	 	var mockPromotion = createPersistedTestEntity('Promotion', promotionData);
+	 	
+	 	var promotionPeriodData = {
+	 		promotinoPeriodID = "",
+	 		promotion = {
+	 			promotionID = mockPromotion.getPromotionID()
+	 		}
+	 		
+	 	};
+	 	var mockPromotionPeriod = createPersistedTestEntity('PromotionPeriod', promotionPeriodData);
+	 	request.debug(mockPromotionPeriod.getPromotion().getPRomotionID());
+	 	
+	 	var promotionQualifierData = {
+	 		promotionQualifierID = "",
+	 		promotionPeriod = {
+	 			promotionPeriodID = "SomeOtherPromotionPeriod'sID'"
+	 		}
+	 	};
+	 	var mockPromotionQualifier = createPersistedTestEntity('PromotionQualifier', promotionQualifierData);
+	 	
+	 	var promotionCodeData = {
+	 		promotionCodeID = "",
+	 		promotionID = {
+	 			promotionID = "SomeOtherPromotion'sID'"
+	 		}
+	 	};
+	 	var mockPromotionCode = createPersistedTestEntity('PromotionCode', promotionCodeData);
+	 	
+	 	var skuData = {
+	 		skuID = "",
+	 		promotionQualifier = {
+	 			
+	 		}
+	 	};
+	 	var mockSku = createPersistedTestEntity('Sku', skuData);
+		
 //		var productData = {
 //			productID = "",
 //			skus = [
@@ -2262,26 +2306,163 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 //			]
 //		};
 //		var mockProduct = createPersistedTestEntity('Product', productData);
-//		
-//		var result = mockProduct.getSalePriceDetailsForSkus();
-//	 }
-//	 
-//	 public void function getSalePriceDetailsForSkusByCurrencyCodeTest() {
-//	 	//Todo: Finish the above function, then this one
-//	 }
-//	 
-//	  public void function getQATSTest() {
-//	 	//Testing default QATS
-//	 	var productData = {
-//	 		productID = ""
-//	 	};
-//	 	var mockProduct = createPersistedTestEntity('Product', productData);
-//	 	
-//	 	var resultDefault = mockProduct.getQATS();
-//	 	assertTrue(resultDefault);
-//	 	//TODO: try to modifiy the QATS
-//	 }
+		
+		var result = mockProduct.getSalePriceDetailsForSkus();
+	 }
+	 
+	 public void function getSalePriceDetailsForSkusByCurrencyCodeTest() {
+	 	//Todo: Finish the above function, then this one
+	 }
+	 
+	 public void function getBrandNameTest() {
+	 	//testing if both brand and brandName existed
+	 	var brandData = {
+	 		brandID = "",
+	 		brandName = "ten24 Undigital Solution"
+	 	};
+	 	var mockBrand = createPersistedTestEntity('Brand', brandData);
+	 	
+	 	var productData = {
+	 		productID = "",
+	 		brand = {
+	 			brandID = mockBrand.getBrandID()
+	 		}
+	 	};
+	 	var mockProduct = createPersistedTestEntity('Product', productData);
+	 	
+	 	var resultBoth = mockProduct.getBrandName();
+	 	assertEquals(mockBrand.getBrandName(), resultBoth);
+	 	
+	 	//testing if brandName is NULL	 	
+	 	var brandData2 = {
+	 		brandID = ""
+	 	};
+	 	var mockBrandNoName = createPersistedTestEntity('Brand', brandData2);
+	 	
+	 	var productData2 = {
+	 		productID = "",
+	 		brand = {
+	 			brandID = mockBrandNoName.getBrandID()
+	 		}
+	 	};
+	 	var mockProductNoName = createPersistedTestEntity('Product', productData2);
+	 	
+	 	var resultNoBrandName = mockProductNoName.getBrandName();
+	 	assertIsEmpty(resultNoBrandName);
 
+		//testing if brand does not exist
+		var productData3 = {
+			productID = ""
+		};
+		var mockProductNoBrand = createPersistedTestEntity('Product', productData3);
+		
+		var resultNoBrand = mockProductNoBrand.getBrandName();
+		assertIsEmpty(resultNoBrand);	 	
+	 }
+	 
+	 public void function getBrandOptionsTest() {
+	 	//Testing when mockBrand1 is associated with mockProduct
+	 	var brandData1 = {
+	 		brandID = ""
+	 	};
+	 	var mockBrand1 = createPersistedTestEntity('Brand', brandData1);
+	 	
+	 	var brandData2 = {
+	 		brandID = ""
+	 	};
+	 	var mockBrand2 = createPersistedTestEntity('Brand', brandData2);
+	 	
+	 	var productData = {
+	 		productID = "",
+	 		brand = {
+	 			brandID = mockBrand1.getBrandID()
+	 		}
+	 	};
+	 	var mockProduct = createPersistedTestEntity('Product', productData);
+	 	
+	 	var result = mockProduct.getBrandOptions();
+
+	 	var resultOfBrandIDList = "";
+	 	for (var i = 2; i <= arrayLen(result); i++ ) {
+	 		resultOfBrandIDList = listAppend(resultOfBrandIDList, result[i]['value']);
+	 	}
+	 	assertTrue(listFind(resultOfBrandIDList, mockBrand1.getBrandID()) > 1);
+	 	assertTrue(listFind(resultOfBrandIDList, mockBrand2.getBrandID()) > 1);
+	 	
+	 	//Testing when no brand is associated with the Product, should return at least the existing two and the NULL one
+	 	var mockProductNoBrand = createMockProduct();
+	 	var result2 = mockProductNoBrand.getBrandOptions();
+	 	assertTrue(arrayLen(result2) >= 3);
+	 }
+	 
+	 private any function createMockSkuWithSkuCode(required string skuCode) {
+	 	var skuData = {
+	 		skuID = '',
+	 		skuCode = arguments.skuCode
+	 	};
+	 	return createPersistedTestEntity('Sku', skuData);
+	 }
+	 
+	 public void function getNextSkuCodeCountTest() {	 	
+	 	var mockSku1 = createMockSKuWithSkuCode('sku');
+	 	var mockSku2 = createMockSKuWithSkuCode('sku-2');
+	 	var mockSku3 = createMockSKuWithSkuCode('sku-3');
+	 	var mockSku4 = createMockSKu();
+	 	
+		//Testing the skuCode has no hythen
+	 	var productData1 = {
+	 		productID = '',
+	 		skus = [
+	 			{
+	 				skuID = mockSku1.getSkuID()
+	 			}
+	 		]
+	 	};
+	 	var mockProductInvalidSkuCode = createPersistedTestEntity('Product', productData1);
+	
+	 	var resultInvalidSkuCode = mockProductInvalidSkuCode.getNextSkuCodeCount();
+	 	assertEquals(1, resultInvalidSkuCode);	 	
+	 	
+	 	//Testing the skuCode used numeric after '-'
+	 	var productData2 = {
+	 		productID = "",
+	 		skus = [
+	 			{
+	 				skuID = mockSku2.getSkuID()
+	 			},
+	 			{
+	 				skuID = mockSku3.getSkuID()
+	 			}
+	 		]
+	 	};
+	 	var mockProductValid = createPersistedTestEntity('Product', productData2);
+	 	
+	 	var resultValid = mockProductValid.getNextSkuCodeCount();
+	 	assertEquals(4, resultValid); 	
+	 	
+	 	//Testing the Sku that no skuCode defined, the default is '-1'
+	 	var productData3 = {
+	 		productID = '',
+	 		skus = [
+	 			{
+	 				skuID = mockSku4.getSkuID()
+	 			}
+	 		]
+	 	};
+	 	var mockProductNoSkuCode = createPersistedTestEntity('Product', productData3);
+
+	 	var resultNoSkuCode = mockProductNoSkuCode.getNextSkuCodeCount();
+	 	assertEquals(2, resultNoSkuCode);
+	 }
+
+
+	 public void function getQATSTest() {
+	 	var mockProduct = createMockProduct();
+	 	
+	 	var resultDefault = mockProduct.getQATS();
+	 	assertTrue(mockProduct.getQuantity("QATS"), resultDefault);
+	 }
+	 
 	 public void function getPlacedOrderItemsSmartListTest() {
 	 	//mockProduct1 -> (Sku) -> MockOrderItem1 -> mockOrder1: ostNew
 	 	//			   -> (Sku) -> MockOrderItem2 -> mockOrder2: ostNotPlaced
@@ -2399,67 +2580,17 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(mockProduct.getProductID(), result[1].getProduct().getProductID());		
 	}
 	
-	 public void function getBrandNameTest() {
-	 	//testing if both brand and brandName existed
-	 	var brandData = {
-	 		brandID = "",
-	 		brandName = "ten24 Undigital Solution"
-	 	};
-	 	var mockBrand = createPersistedTestEntity('Brand', brandData);
-	 	
-	 	var productData = {
-	 		productID = "",
-	 		brand = {
-	 			brandID = mockBrand.getBrandID()
-	 		}
-	 	};
-	 	var mockProduct = createPersistedTestEntity('Product', productData);
-	 	
-	 	var resultBoth = mockProduct.getBrandName();
-	 	assertEquals(mockBrand.getBrandName(), resultBoth);
-	 	
-	 	//testing if brandName is NULL	 	
-	 	var brandData2 = {
-	 		brandID = ""
-	 	};
-	 	var mockBrandNoName = createPersistedTestEntity('Brand', brandData2);
-	 	
-	 	var productData2 = {
-	 		productID = "",
-	 		brand = {
-	 			brandID = mockBrandNoName.getBrandID()
-	 		}
-	 	};
-	 	var mockProductNoName = createPersistedTestEntity('Product', productData2);
-	 	
-	 	var resultNoBrandName = mockProductNoName.getBrandName();
-	 	assertIsEmpty(resultNoBrandName);
-
-		//testing if brand does not exist
-		var productData3 = {
-			productID = ""
-		};
-		var mockProductNoBrand = createPersistedTestEntity('Product', productData3);
-		
-		var resultNoBrand = mockProductNoBrand.getBrandName();
-		assertIsEmpty(resultNoBrand);	 	
-	 }
+	 
 	 
 	 public void function getAllowBackorderFlagTest() {
 	 	//testing default setting
-	 	var productData = {
-	 		productID = ""
-	 	};
-	 	var mockProduct = createPersistedTestEntity('Product', productData);
+	 	var mockProduct = createMockProduct();
 	 	
 	 	var resultDefault = mockProduct.getAllowBackorderFlag();
 	 	assertFalse(resultDefault);
 	 	
 	 	//testing setting is override
-	 	var productData2 = {
-	 		productID = ""
-	 	};
-	 	var mockProduct2 = createPersistedTestEntity('Product', productData2);
+	 	var mockProduct2 = createMockProduct();
 	 	
 	 	var settingData = {
 	 		settingID = "",
@@ -2524,12 +2655,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 }
 	 
 	
-	 public void function getCurrencyCode() {
+	 public void function getCurrencyCodeTest() {
 	 	//testing default currency code
-		var skuData = {
-			skuID = ""
-		};
-		var mockSku = createPersistedTestEntity('Sku', skuData);
+		var mockSku = createMockSku();
 		
 	 	var productData = {
 	 		productID = "",
@@ -2542,12 +2670,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	assertEquals("USD", mockProduct.getCurrencyCode());
 
 		//testing other currency code
-		var skuData2 = {
-			skuID = "",
-			currencyCode = "CNY"
-		};
-		var mockSku2 = createPersistedTestEntity('Sku', skuData2);
-		
+		var mockSku2 = createMockSku(idOfProduct = "", currencyCode = "CNY", skuImageFile = "");
+
 	 	var productData2 = {
 	 		productID = "",
 	 		defaultSku = {
@@ -2560,6 +2684,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		//Potential bug: invalid currencyCode could also be returned; 
 		//should add validation if not select button frontend
+	 }
+	 
+	 public void function getEventConflictExistsFlagTest() {
+	 	
 	 }
 
 }
