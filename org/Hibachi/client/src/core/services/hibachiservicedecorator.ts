@@ -425,7 +425,7 @@ class HibachiServiceDecorator{
 
                                             var collectionPromise = $delegate.getEntity(property.cfc,options);
                                             collectionPromise.then(function(response){
-
+                                                var entityInstances = [];
                                                 for(var i in response.records){
 
                                                     var entityInstance = thisEntityInstance['$$add'+property.singularname.charAt(0).toUpperCase()+property.singularname.slice(1)]();
@@ -433,8 +433,9 @@ class HibachiServiceDecorator{
                                                     if(angular.isUndefined(thisEntityInstance[property.name])){
                                                         thisEntityInstance[property.name] = [];
                                                     }
-                                                    thisEntityInstance[property.name].push(entityInstance);
+                                                    entityInstances.push(entityInstance);
                                                 }
+                                                thisEntityInstance.data[property.name] = entityInstances;
                                             });
                                             return collectionPromise;
                                         }
