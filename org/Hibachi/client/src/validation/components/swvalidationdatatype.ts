@@ -26,11 +26,11 @@ class SWValidationDataType{
             require: "^ngModel",
 
             link: function(scope, element, attributes, ngModel) {
-
-                ngModel.$validators.swvalidationdatatype =
-                (modelValue):boolean=> {
+                var isValidFunction = (modelValue):boolean=> {
                     return validationService.validateDataType(modelValue,attributes.swvalidationdatatype);
                 };
+                ngModel.$validators.swvalidationdatatype = isValidFunction;
+                ngModel.$validators['swvalidation'+attributes.swvalidationdatatype] = isValidFunction;
             }
         };
     }

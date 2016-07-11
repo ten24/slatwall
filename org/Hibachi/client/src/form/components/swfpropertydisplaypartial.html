@@ -11,19 +11,21 @@
     <!-- handle errors on the property -->
     <div ng-if="!swfPropertyDisplayController.errorClass" class="error" error-for="{{swfPropertyDisplayController.name}}"></div>
     <div ng-if="swfPropertyDisplayController.errorClass"  class="{{swfPropertyDisplayController.errorClass}}" error-for="{{swfPropertyDisplayController.name}}"></div>
-    <span ng-show="swfPropertyDisplayController.form[swfPropertyDisplayController.name].$touched || swfPropertyDisplayController.form.$submitted">
-        <span ng-repeat='(key, value) in swfPropertyDisplayController.form[swfPropertyDisplayController.name].$error' >
-            <p ng-show="key === 'swvalidationrequired'" class="error help-block" sw-Rbkey="'validation.define.required'"></p>
-            <p ng-show="key === 'swvalidationunique'" class="error help-block" sw-Rbkey="'validation.define.unique'"></p>
-            <p ng-show="key === 'swvalidationuniqueornull'" class="error help-block" sw-Rbkey="'validation.define.uniqueornull'"></p>
-            <p ng-show="key === 'swvalidationnumeric'" class="error help-block" sw-Rbkey="'validation.define.numeric'"></p>
-            <p ng-show="key === 'swvalidationregex'" class="error help-block" sw-Rbkey="'validation.define.regex'"></p>
-            <p ng-show="key === 'swvalidationgte'" class="error help-block" sw-Rbkey="'validation.define.gte'"></p>
-            <p ng-show="key === 'swvalidationlte'" class="error help-block" sw-Rbkey="'validation.define.lte'"></p>
-            <p ng-show="key === 'swvalidationeq'" class="error help-block" sw-Rbkey="'validation.define.neq'"></p>
-            <p ng-show="key === 'swvalidationminvalue'" class="error help-block">The value entered is incorrect</p>
-            <p ng-show="key === 'swvalidatiomaxvalue'" class="error help-block">The value entered is incorrect</p>
-            <p ng-show="key === 'swvalidationminlength'" class="error help-block">The value entered is incorrect</p>
-            <p ng-show="key === 'swvalidationmaxlength'" class="error help-block">The value entered is incorrect</p>
-        </span>
+
+    <span   ng-repeat='(key, value) in swfPropertyDisplayController.form[swfPropertyDisplayController.name].$error'
+    		ng-show="swfPropertyDisplayController.form[swfPropertyDisplayController.name].$touched || swfPropertyDisplayController.form.$submitted"
+    >
+        <span ng-show="key === 'swvalidationrequired'" class="error help-block" sw-Rbkey="'validation.define.required'"></p>
+        <span ng-show="key === 'swvalidationemail'" class="error help-block" sw-Rbkey="'validation.define.email'"></p>
+        <span ng-show="key === 'swvalidationunique'" class="error help-block" sw-Rbkey="'validation.define.unique'"></p>
+        <span ng-show="key === 'swvalidationuniqueornull'" class="error help-block" sw-Rbkey="'validation.define.uniqueornull'"></p>
+        <span ng-show="key === 'swvalidationnumeric'" class="error help-block" sw-Rbkey="'validation.define.numeric'"></p>
+        <span ng-show="key === 'swvalidationregex'" class="error help-block" sw-Rbkey="'validation.define.regex'"></p>
+        <span ng-show="key === 'swvalidationgte'" class="error help-block" sw-Rbkey="'validation.define.gte'"></p>
+        <span ng-show="key === 'swvalidationlte'" class="error help-block" sw-Rbkey="'validation.define.lte'"></p>
+        <span ng-show="key === 'swvalidationeq'" class="error help-block" sw-Rbkey="'validation.define.neq'"></p>
+        <span ng-show="key === 'swvalidationminvalue'" class="error help-block">The value entered is incorrect</p>
+        <span ng-show="key === 'swvalidatiomaxvalue'" class="error help-block">The value entered is incorrect</p>
+        <span ng-show="key === 'swvalidationminlength'" class="error help-block">The value entered is incorrect</p>
+        <span ng-show="key === 'swvalidationmaxlength'" class="error help-block">The value entered is incorrect</p>
     </span>
