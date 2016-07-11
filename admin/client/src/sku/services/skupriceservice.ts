@@ -53,8 +53,7 @@ export class SkuPriceService {
         }
         if(refresh){
             this.skuPriceGetEntityPromises[skuID].then( (response) => {
-                angular.forEach(response.records,(value,key)=>{
-                    console.log("populatingandpushing",value,this.$hibachi.populateEntity("SkuPrice", value));
+                angular.forEach(response.records, (value, key)=>{
                     this.setSkuPrices(skuID, [this.$hibachi.populateEntity("SkuPrice", value)]);
                 }); 
             },
@@ -72,7 +71,6 @@ export class SkuPriceService {
         if(angular.isDefined(this.skuPrices[skuID])){
             for(var i=0; i < skuPrices.length; i++){
                 if(this.getKeyOfSkuPriceMatch(skuID, skuPrices[i]) != -1){
-                    console.log("found match ",this.getKeyOfSkuPriceMatch(skuID, skuPrices[i]));
                     this.getSkuPrices(skuID)[this.getKeyOfSkuPriceMatch(skuID, skuPrices[i])].data.price = skuPrices[i].data.price; 
                     skuPrices.splice(i, 1);
                     i--;
@@ -120,6 +118,27 @@ export class SkuPriceService {
         return loadCurrenciesPromise        
     }
 
+    //logic for inferred currency prices
+    public getInferredSkuPrice = (sku, basePrice, currencyCode) =>{
+         if(angular.isDefined(this.currencies[currencyCode]) && sku.data.currencyCode != currencyCode){
+            
+            var currencyData = this.currencies[currencyCode];
+            if(currencyData.CONVERTFROM == sku.data.currencyCode){
+                return basePrice * (1 / currencyData.CONVERSIONRATE);
+            } else if(currencyData.CONVERTFROM == "EUR" && this.currencies[sku.data.currencyCode].CONVERTFROM == "EUR") {
+                //Convert using euro
+                var tempPrice =  basePrice * (1 / currencyData.CONVERSIONRATE);
+                return tempPrice * (1/ this.currencies[sku.data.currencyCode].CONVERSIONRATE); 
+            } else {
+                return "N/A";//will become NaN
+            }
+
+        } else if (sku.data.currencyCode == currencyCode) {
+            return basePrice;
+        } 
+        return "N/A";//will become NaN
+    }
+
     private createInferredSkuPriceForCurrency = (sku, skuPrice, currencyCode) =>{
         var nonPersistedSkuPrice = this.$hibachi.newSkuPrice(); 
         nonPersistedSkuPrice.$$setSku(sku);
@@ -136,20 +155,8 @@ export class SkuPriceService {
             basePrice = sku.data.price; 
         }
 
-        if(angular.isDefined(this.currencies[currencyCode]) && sku.data.currencyCode != currencyCode){
-            var currencyData = this.currencies[currencyCode];
-            if(currencyData.CONVERTFROM == sku.data.currencyCode){
-                nonPersistedSkuPrice.data.price = basePrice * (1 / currencyData.CONVERSIONRATE);
-            } else if(this.currencies["USD"].CONVERTFROM == "EUR"){
-                //not getting hit right now
-                console.log("need to convert from euro");
-                
-            }
-        } else if (sku.data.currencyCode == currencyCode) {
-            nonPersistedSkuPrice.data.price = basePrice;
-        } else { 
-            nonPersistedSkuPrice.data.price = "N/A";//will become NaN
-        }
+        nonPersistedSkuPrice.data.price = this.getInferredSkuPrice(sku,basePrice,currencyCode); 
+       
         if(angular.isDefined(skuPrice) && angular.isDefined(skuPrice.data.minQuantity) && !isNaN(skuPrice.data.minQuantity)){
             nonPersistedSkuPrice.data.minQuantity = skuPrice.data.minQuantity;
         }
@@ -235,7 +242,6 @@ export class SkuPriceService {
         if(angular.isDefined(this.skuPriceHasEntityPromises[skuID])){
             this.skuPriceGetEntityPromises[skuID].then(()=>{
                 var skuPrices = this.getSkuPrices(skuID) || [];
-                console.log("skuPrices",skuPrices);
                 for(var i=0; i < skuPrices.length; i++){
                     var skuPrice = skuPrices[i];
                     if( this.isBaseSkuPrice(skuPrice.data)
@@ -267,8 +273,8 @@ export class SkuPriceService {
                 var skuPrices = this.getSkuPrices(skuID);
                 for(var i=0; i < skuPrices.length; i++){
                     var skuPrice = skuPrices[i];
-                    if( parseInt(skuPrice.data.minQuantity) == parseInt(minQuantity) &&
-                        parseInt(skuPrice.data.maxQuantity) == parseInt(maxQuantity)
+                    if( 
+                        this.isQuantityRangeSkuPrice(skuPrice.data, minQuantity, maxQuantity)
                     ){
                         skuPriceSet.push(skuPrice);
                     }
@@ -293,12 +299,11 @@ export class SkuPriceService {
             for(var i=0; i < this.getSkuPrices(skuID).length; i++){
                 var savedSkuPriceData = this.getSkuPrices(skuID)[i].data; 
                 if( savedSkuPriceData.currencyCode == skuPrice.data.currencyCode &&
-                    ( this.isBaseSkuPrice(savedSkuPriceData) == this.isBaseSkuPrice(skuPrice.data) ||
-                        ( parseInt(savedSkuPriceData.minQuantity) == parseInt(skuPrice.data.minQuantity) &&
-                          parseInt(savedSkuPriceData.maxQuantity) == parseInt(skuPrice.data.maxQuantity))
+                    ( ( this.isBaseSkuPrice(savedSkuPriceData) &&
+                        this.isBaseSkuPrice(savedSkuPriceData) == this.isBaseSkuPrice(skuPrice.data) 
+                      ) || this.isQuantityRangeSkuPrice(savedSkuPriceData, skuPrice.data.minQuantity, skuPrice.data.maxQuantity)
                     )
                 ){
-                    console.log("comparing", savedSkuPriceData, skuPrice.data);
                     return i; 
                 }
             }
@@ -307,7 +312,12 @@ export class SkuPriceService {
     }
 
     private isBaseSkuPrice = (skuPriceData)=>{
-         return isNaN(parseInt(skuPriceData.minQuantity)) && isNaN(parseInt(skuPriceData.maxQuantity));
+        return isNaN(parseInt(skuPriceData.minQuantity)) && isNaN(parseInt(skuPriceData.maxQuantity));
+    }
+
+    private isQuantityRangeSkuPrice = (skuPriceData, minQuantity, maxQuantity) =>{
+        return ( parseInt(skuPriceData.minQuantity) == parseInt(minQuantity) &&
+                 parseInt(skuPriceData.maxQuantity) == parseInt(maxQuantity))
     }
 
     public sortSkuPrices = (skuPriceSet)=>{

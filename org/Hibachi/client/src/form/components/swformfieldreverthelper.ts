@@ -2,9 +2,9 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWFormFieldRevertHelperController {
     
-    public parentDirectiveControllerAs;
-    public parentDirectiveBindProperty; 
-    public valueToRevertTo;
+    public parentDirectiveControllerAs:string;
+    public parentDirectiveBindProperty:string; 
+    public valueToRevertTo:any;
 
     // @ngInject
     constructor(private $hibachi

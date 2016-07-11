@@ -11,6 +11,7 @@ class SWAddSkuPriceModalLauncherController{
     public minQuantity:string; 
     public maxQuantity:string; 
     public currencyCode:string;
+    public defaultCurrencyOnly:boolean;
     public eligibleCurrencyCodeList:string; 
     public uniqueName:string;
     public listingID:string;  
@@ -37,6 +38,9 @@ class SWAddSkuPriceModalLauncherController{
         if(angular.isUndefined(this.disableAllFieldsButPrice)){
             this.disableAllFieldsButPrice = false; 
         }
+        if(angular.isUndefined(this.defaultCurrencyOnly)){
+            this.defaultCurrencyOnly = false; 
+        }
         if(angular.isDefined(this.minQuantity) && !isNaN(parseInt(this.minQuantity))){
             this.skuPrice.data.minQuantity = parseInt(this.minQuantity);
         }
@@ -46,7 +50,9 @@ class SWAddSkuPriceModalLauncherController{
         if(angular.isUndefined(this.currencyCodeOptions) && angular.isDefined(this.eligibleCurrencyCodeList)){
             this.currencyCodeOptions = this.eligibleCurrencyCodeList.split(",");
         }
-        if(angular.isDefined(this.currencyCode)){
+        if(this.defaultCurrencyOnly){
+            this.skuPrice.data.currencyCode = "USD" //temporarily hardcoded
+        } else if(angular.isDefined(this.currencyCode)){
             this.skuPrice.data.currencyCode = this.currencyCode; 
         } else if(angular.isDefined(this.currencyCodeOptions) && this.currencyCodeOptions.length){
             this.skuPrice.data.currencyCode = this.currencyCodeOptions[0]; 
@@ -121,6 +127,7 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
         maxQuantity:"@?",
         currencyCode:"@?",
         eligibleCurrencyCodeList:"@?",
+        defaultCurrencyOnly:"=?",
         disableAllFieldsButPrice:"=?"
     };
     public controller = SWAddSkuPriceModalLauncherController;
@@ -166,7 +173,7 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
                 //have to do our setup here because there is no direct way to pass the pageRecord into this transcluded directive
                 var currentScope = this.scopeService.locateParentScope($scope, "pageRecord");
                 if(angular.isDefined(currentScope.pageRecord)){ 
-                    $scope.swAddSkuPriceModalLauncher.pageRecord = currentScope.pageRecord; 
+                    $scope.swAddSkuPriceModalLauncher.pageRecord = currentScope.pageRecord;
                     //sku record case
                     if(angular.isDefined(currentScope.pageRecord.skuID)){    
                         var skuData = {

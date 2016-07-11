@@ -37,6 +37,7 @@ class SWPropertyDisplayController {
     public inModal:boolean;
     public hasModalCallback:boolean; 
     public rowSaveEnabled:boolean; 
+    public revertToValue:any; 
     public modalCallback;
     public showSave:boolean; 
 
@@ -216,6 +217,7 @@ class SWPropertyDisplay implements ng.IDirective{
         modalCallback:"&?",
         hasModalCallback:"=?",
         rowSaveEnabled:"=?",
+        revertToValue:"@?",
         showSave:"=?",
         placeholderText:"@",
         placeholderRbKey:"@"

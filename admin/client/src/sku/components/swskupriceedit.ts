@@ -20,6 +20,8 @@ class SWSkuPriceEditController{
     public baseEntityId:string; 
     public baseEntityName:string="Product";
     public listingDisplayId:string; 
+    public masterPriceObject:any; 
+    public revertToValue:any; 
 
     public sku:any; 
     public skuPrice:any;
@@ -37,6 +39,7 @@ class SWSkuPriceEditController{
         private historyService, 
         private listingService, 
         private observerService,
+        private skuPriceService, 
         private utilityService, 
         private $hibachi,
         private $filter,
@@ -66,12 +69,10 @@ class SWSkuPriceEditController{
             this.price = this.bundledSkuPrice;
         }
         if(angular.isDefined(this.sku)){
-            console.log("SKUU", this.sku);
             this.sku.data.price =  this.currencyFilter(this.sku.data.price, this.currencyCode, 2, false);
         }
         if(angular.isDefined(this.skuPrice)){
-            console.log("SKUU", this.skuPrice);
-            this.skuPrice.data.price =  this.currencyFilter(this.skuPrice.data.price, this.currencyCode, 2, false);
+            this.skuPrice.data.price = this.currencyFilter(this.skuPrice.data.price, this.currencyCode, 2, false);
         }
         
         if(angular.isUndefined(this.skuId) 
@@ -102,6 +103,9 @@ class SWSkuPriceEditController{
                 }
                 this.skuPrice = this.$hibachi.populateEntity("SkuPrice", skuPriceData); 
             } 
+        }
+        if(angular.isDefined(this.sku)){
+            this.revertToValue = this.skuPriceService.getInferredSkuPrice(this.sku, this.masterPriceObject.data.price, this.currencyCode)
         }
     }    
 
@@ -140,6 +144,8 @@ class SWSkuPriceEdit implements ng.IDirective{
         eligibleCurrencyCodeList:"@?",      
         listingDisplayId:"@?",
         currencyCode:"@?",
+        masterPriceObject:"=?",
+        revertToValue:"=?", 
         sku:"=?",
         skuPrice:"=?"
     };

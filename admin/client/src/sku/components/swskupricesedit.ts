@@ -22,6 +22,7 @@ class SWSkuPricesEditController{
     public showPriceEdit:boolean; 
     public relatedSkuPriceCollectionConfig:any; 
     public loadingPromise:any;
+    public masterPriceObject:any; 
 
     public sku:any; 
     public skuPrice:any;
@@ -63,6 +64,11 @@ class SWSkuPricesEditController{
             }
             this.skuPrice = this.$hibachi.populateEntity("SkuPrice", skuPriceData);
         }  
+        if(angular.isDefined(this.skuSkuId)){
+            this.masterPriceObject = this.skuPrice; 
+        } else {
+            this.masterPriceObject = this.sku; 
+        }
         this.refreshSkuPrices(); 
         this.observerService.attach(this.refreshSkuPrices, "skuPricesUpdate");
     }   
@@ -87,7 +93,10 @@ class SWSkuPricesEditController{
                                                                                );
 
         } else if(angular.isDefined(this.skuId)) {
-             this.loadingPromise = this.skuPriceService.getBaseSkuPricesForSku(this.skuId,this.eligibleCurrencyCodes);
+             this.loadingPromise = this.skuPriceService.getBaseSkuPricesForSku(
+                                                                                this.skuId,
+                                                                                this.eligibleCurrencyCodes
+                                                                              );
         }
         this.loadingPromise.then(
             (data)=>{
