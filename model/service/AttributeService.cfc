@@ -147,6 +147,16 @@ component  extends="HibachiService" accessors="true" {
 		return deleteOK;
 	}
 
+	public boolean function deleteAttributeValue(required any attributeValue) {
+		var filePath = ExpandPath(arguments.attributeValue.getAttributeValueFileURL());
+		var isFile = arguments.attributeValue.getAttribute().getAttributeInputType() == 'file';
+		var deleteOK = super.delete(arguments.attributeValue);
+		if(deleteOK && isFile && FileExists(filePath)){
+			FileDelete(filePath);
+		}
+		return deleteOK;
+	}
+
 	public boolean function deleteAttributeOption(required any attributeOption) {
 		if(arguments.attributeOption.isDeletable()) {
 			getAttributeDAO().removeAttributeOptionFromAllAttributeValues( arguments.attributeOption.getAttributeOptionID() );
