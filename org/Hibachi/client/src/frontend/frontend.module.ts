@@ -24,7 +24,7 @@ var frontendmodule = angular.module('frontend', [hibachimodule.name])
 
 .run(['$rootScope', '$hibachi','publicService','hibachiPathBuilder','entityService', function($rootScope, $hibachi, publicService,hibachiPathBuilder,entityService) {
 	$rootScope.slatwall = $rootScope.hibachiScope;
-    $rootScope.slatwall.getProcessObject = entityService.newProcess;
+    $rootScope.slatwall.getProcessObject = entityService.newProcessObject;
 }])
 
 //controllers

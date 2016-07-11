@@ -36,7 +36,8 @@ class SWFormController {
         public $http,
         public $timeout,
         public observerService,
-        public $rootScope
+        public $rootScope,
+        public entityService
     ){
         /** only use if the developer has specified these features with isProcessForm */
         this.$hibachi = $hibachi;
