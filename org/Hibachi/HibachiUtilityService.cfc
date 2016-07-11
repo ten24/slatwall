@@ -274,11 +274,12 @@
 				replaceDetails.value = templateKeys[i];
 
 				var valueKey = replace(replace(templateKeys[i], "${{", ""),"}}","");
-				try{
-					replaceDetails.value = evaluate(valueKey);
-				} catch (any e) {
+				//check to see if a function exists on the object
+			    if(structKeyExists(arguments.object, ListFirst(valueKey,"("))){
 					replaceDetails.value = evaluate("arguments.object.#valueKey#");
-				}
+			    } else {
+                    replaceDetails.value = evaluate(valueKey);
+                }
 				arrayAppend(replacementArray, replaceDetails);
 			}
 
