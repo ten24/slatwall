@@ -57,6 +57,8 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 		var taxExempt = false;
 		var taxForce = false;
 		var docType = 'SalesOrder';
+		var usageType = '';
+		var ExemptionNo ='';
 		
 		if(len(setting('taxExemptPropertyIdentifier'))) {
 			var piValue = arguments.requestBean.getOrder().getValueByPropertyIdentifier( setting('taxExemptPropertyIdentifier') );
@@ -77,6 +79,14 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 			
 		}
 		
+		if(len(setting('customerUsageTypePropertyIdentifier'))) {
+			usageType = arguments.requestBean.getAccount().getValueByPropertyIdentifier( setting('customerUsageTypePropertyIdentifier') );
+		}
+		
+		if(len(setting('taxExemptNumberPropertyIdentifier'))) {
+			exemptionNo = arguments.requestBean.getAccount().getValueByPropertyIdentifier( setting('taxExemptNumberPropertyIdentifier') );
+		}
+		
 		//Only commit if both integration setting and request bean are set to true
 		if(variables.commitDocFlag) {
 			docType = 'SalesInvoice';
@@ -87,11 +97,12 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 			// Setup the request data structure
 			var requestDataStruct = {
 				Client = "a0o33000003xVEI",
+				companyCode = setting('taxExemptNumberPropertyIdentifier'),
 				DocCode = arguments.requestBean.getOrder().getShortReferenceID( true ),
 				DocDate = dateFormat(now(),'yyyy-mm-dd'),
 				DocType = docType,
-				//CustomerUsageType= null,
-				//ExemptionNo= null,
+				CustomerUsageType= usageType ,
+				ExemptionNo= exemptionNo,
 				Addresses = [
 					{
 						AddressCode = 1,
