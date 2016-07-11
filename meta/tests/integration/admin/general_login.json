@@ -36,6 +36,7 @@
       "script": "return document.readyState",
       "value": "complete"
     },
+
     {
       "type": "verifyTextPresent",
       "text": "Dashboard"
