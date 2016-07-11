@@ -6,7 +6,7 @@ class SWPropertyDisplayController {
     public errors;
     public edited:boolean; 
     public editing:boolean;
-    public editable:boolean;
+    public editable:boolean;//disabled
     public isHidden:boolean;
     public fieldType;
     public object;
@@ -196,7 +196,7 @@ class SWPropertyDisplay implements ng.IDirective{
         object:"=?",
         options:"=?",
         edited:"=?",
-        editable:"=?",
+        editable:"=?",//disabled
         editing:"=?",
         isHidden:"=?",
         title:"=?",

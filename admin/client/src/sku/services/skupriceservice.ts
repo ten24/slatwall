@@ -42,7 +42,7 @@ export class SkuPriceService {
         this.skuPriceHasEntityPromises[skuID] = this.skuPriceHasEntityDeferred[skuID].promise;
         if(angular.isUndefined(this.skuPriceCollectionConfigs[skuID])){
             this.skuPriceCollectionConfigs[skuID] = this.collectionConfigService.newCollectionConfig("SkuPrice"); 
-            this.skuPriceCollectionConfigs[skuID].addDisplayProperty("skuPriceID,sku.skuID,minQuantity,maxQuantity,currencyCode,price");
+            this.skuPriceCollectionConfigs[skuID].addDisplayProperty("skuPriceID,minQuantity,maxQuantity,currencyCode,price,sku.skuID");
             this.skuPriceCollectionConfigs[skuID].addFilter("sku.skuID",skuID,"=");
             this.skuPriceCollectionConfigs[skuID].addOrderBy("currencyCode|asc");
             this.skuPriceCollectionConfigs[skuID].setAllRecords(true);
@@ -54,6 +54,7 @@ export class SkuPriceService {
         if(refresh){
             this.skuPriceGetEntityPromises[skuID].then( (response) => {
                 angular.forEach(response.records,(value,key)=>{
+                    console.log("populatingandpushing",value,this.$hibachi.populateEntity("SkuPrice", value));
                     this.setSkuPrices(skuID, [this.$hibachi.populateEntity("SkuPrice", value)]);
                 }); 
             },
@@ -71,6 +72,7 @@ export class SkuPriceService {
         if(angular.isDefined(this.skuPrices[skuID])){
             for(var i=0; i < skuPrices.length; i++){
                 if(this.getKeyOfSkuPriceMatch(skuID, skuPrices[i]) != -1){
+                    console.log("found match ",this.getKeyOfSkuPriceMatch(skuID, skuPrices[i]));
                     this.getSkuPrices(skuID)[this.getKeyOfSkuPriceMatch(skuID, skuPrices[i])].data.price = skuPrices[i].data.price; 
                     skuPrices.splice(i, 1);
                     i--;
@@ -233,6 +235,7 @@ export class SkuPriceService {
         if(angular.isDefined(this.skuPriceHasEntityPromises[skuID])){
             this.skuPriceGetEntityPromises[skuID].then(()=>{
                 var skuPrices = this.getSkuPrices(skuID) || [];
+                console.log("skuPrices",skuPrices);
                 for(var i=0; i < skuPrices.length; i++){
                     var skuPrice = skuPrices[i];
                     if( this.isBaseSkuPrice(skuPrice.data)
@@ -288,13 +291,14 @@ export class SkuPriceService {
     public getKeyOfSkuPriceMatch = (skuID, skuPrice) =>{
         if(this.hasSkuPrices(skuID)){
             for(var i=0; i < this.getSkuPrices(skuID).length; i++){
-                var savedSkuPriceData = this.getSkuPrices(skuID)[i].data;
+                var savedSkuPriceData = this.getSkuPrices(skuID)[i].data; 
                 if( savedSkuPriceData.currencyCode == skuPrice.data.currencyCode &&
-                    ( this.isBaseSkuPrice(savedSkuPriceData) ||
+                    ( this.isBaseSkuPrice(savedSkuPriceData) == this.isBaseSkuPrice(skuPrice.data) ||
                         ( parseInt(savedSkuPriceData.minQuantity) == parseInt(skuPrice.data.minQuantity) &&
                           parseInt(savedSkuPriceData.maxQuantity) == parseInt(skuPrice.data.maxQuantity))
                     )
                 ){
+                    console.log("comparing", savedSkuPriceData, skuPrice.data);
                     return i; 
                 }
             }
@@ -303,8 +307,7 @@ export class SkuPriceService {
     }
 
     private isBaseSkuPrice = (skuPriceData)=>{
-         return (angular.isUndefined(skuPriceData.minQuantity) || (angular.isString(skuPriceData.minQuantity) && skuPriceData.minQuantity.trim().length == 0)) &&
-                (angular.isUndefined(skuPriceData.maxQuantity) || (angular.isString(skuPriceData.maxQuantity) && skuPriceData.maxQuantity.trim().length == 0));
+         return isNaN(parseInt(skuPriceData.minQuantity)) && isNaN(parseInt(skuPriceData.maxQuantity));
     }
 
     public sortSkuPrices = (skuPriceSet)=>{

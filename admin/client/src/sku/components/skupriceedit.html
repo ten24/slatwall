@@ -35,13 +35,27 @@
                     data-editable="true"
                 >
             </sw-property-display>
-            <sw-add-sku-price-modal-launcher>
+            <sw-add-sku-price-modal-launcher
+                    data-sku="swSkuPriceEdit.skuPrice.data.sku"
+                    data-min-quantity="{{swSkuPriceEdit.skuPrice.data.minQuantity}}"
+                    data-max-quantity="{{swSkuPriceEdit.skuPrice.data.maxQuantity}}"
+                    data-currency-code="{{swSkuPriceEdit.skuPrice.data.currencyCode}}"
+                    data-eligible-currency-code-list="{{swSkuPriceEdit.eligibleCurrencyCodeList}}"
+                    data-disable-all-fields-but-price="true"
+                >
                 <div class="s-input-group" ng-if="swSkuPriceEdit.skuPrice.data.inferred && swSkuPriceEdit.skuPrice.data.price != 'NaN'">
                     <span class="s-title" data-content="" data-original-title="" title="">{{swSkuPriceEdit.skuPrice.data.currencyCode}}</span>
                     <input readonly type="text" ng-model="swSkuPriceEdit.skuPrice.data.price" class="form-control input-xs s-inherited">
                 </div>
              </sw-add-sku-price-modal-launcher>
-             <sw-add-sku-price-modal-launcher>
+             <sw-add-sku-price-modal-launcher 
+                data-sku="swSkuPriceEdit.skuPrice.data.sku"
+                data-min-quantity="{{swSkuPriceEdit.skuPrice.data.minQuantity}}"
+                data-max-quantity="{{swSkuPriceEdit.skuPrice.data.maxQuantity}}"
+                data-currency-code="{{swSkuPriceEdit.skuPrice.data.currencyCode}}"
+                data-eligible-currency-code-list="{{swSkuPriceEdit.eligibleCurrencyCodeList}}"
+                data-disable-all-fields-but-price="true"
+                >
                 <div class="s-input-group" ng-if="swSkuPriceEdit.skuPrice.data.inferred && swSkuPriceEdit.skuPrice.data.price == 'NaN'">
                     <span class="s-title" data-content="" data-original-title="" title="">{{swSkuPriceEdit.skuPrice.data.currencyCode}}</span>
                     <input readonly type="text" value="No Rate Available" class="form-control input-xs s-inherited">

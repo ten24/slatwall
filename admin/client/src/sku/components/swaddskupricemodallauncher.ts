@@ -8,8 +8,13 @@ class SWAddSkuPriceModalLauncherController{
     public skuPrice:any; 
     public baseName:string="j-add-sku-item-"; 
     public formName:string; 
+    public minQuantity:string; 
+    public maxQuantity:string; 
+    public currencyCode:string;
+    public eligibleCurrencyCodeList:string; 
     public uniqueName:string;
     public listingID:string;  
+    public disableAllFieldsButPrice:boolean;
     public currencyCodeOptions; 
     
     //@ngInject
@@ -29,9 +34,24 @@ class SWAddSkuPriceModalLauncherController{
     public initData = () =>{
         //these are populated in the link function initially
         this.skuPrice.$$setSku(this.sku);
-        if(angular.isDefined(this.currencyCodeOptions) && this.currencyCodeOptions.length){
+        if(angular.isUndefined(this.disableAllFieldsButPrice)){
+            this.disableAllFieldsButPrice = false; 
+        }
+        if(angular.isDefined(this.minQuantity) && !isNaN(parseInt(this.minQuantity))){
+            this.skuPrice.data.minQuantity = parseInt(this.minQuantity);
+        }
+        if(angular.isDefined(this.maxQuantity) && !isNaN(parseInt(this.minQuantity))){
+            this.skuPrice.data.maxQuantity = parseInt(this.maxQuantity); 
+        }
+        if(angular.isUndefined(this.currencyCodeOptions) && angular.isDefined(this.eligibleCurrencyCodeList)){
+            this.currencyCodeOptions = this.eligibleCurrencyCodeList.split(",");
+        }
+        if(angular.isDefined(this.currencyCode)){
+            this.skuPrice.data.currencyCode = this.currencyCode; 
+        } else if(angular.isDefined(this.currencyCodeOptions) && this.currencyCodeOptions.length){
             this.skuPrice.data.currencyCode = this.currencyCodeOptions[0]; 
         }
+        console.log("thissku",this.sku);
     }
     
     public save = () => {
@@ -95,7 +115,13 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
     public scope = {}; 
     public transclude = true; 
     public bindToController = {
-        pageRecord:"=?"
+        sku:"=?",
+        pageRecord:"=?",
+        minQuantity:"@?",
+        maxQuantity:"@?",
+        currencyCode:"@?",
+        eligibleCurrencyCodeList:"@?",
+        disableAllFieldsButPrice:"=?"
     };
     public controller = SWAddSkuPriceModalLauncherController;
     public controllerAs="swAddSkuPriceModalLauncher";
@@ -141,6 +167,7 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
                 var currentScope = this.scopeService.locateParentScope($scope, "pageRecord");
                 if(angular.isDefined(currentScope.pageRecord)){ 
                     $scope.swAddSkuPriceModalLauncher.pageRecord = currentScope.pageRecord; 
+                    //sku record case
                     if(angular.isDefined(currentScope.pageRecord.skuID)){    
                         var skuData = {
                             skuID:currentScope.pageRecord.skuID,

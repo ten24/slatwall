@@ -10,6 +10,7 @@ class SWSkuPriceEditController{
     public price:string; 
     public currencyFilter:any; 
     public currencyCode:string;
+    public eligibleCurrencyCodeList:string; 
     public filterOnCurrencyCode:string; 
     public bundledSkuSkuId:string; 
     public bundledSkuCurrencyCode:string;
@@ -135,7 +136,8 @@ class SWSkuPriceEdit implements ng.IDirective{
         baseEntityName:"@?", 
         bundledSkuSkuId:"@?",
         bundledSkuCurrencyCode:"@?", 
-        bundledSkuPrice:"@?",       
+        bundledSkuPrice:"@?", 
+        eligibleCurrencyCodeList:"@?",      
         listingDisplayId:"@?",
         currencyCode:"@?",
         sku:"=?",

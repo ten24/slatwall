@@ -6,6 +6,7 @@
 <div ng-if="swSkuPricesEdit.skuPrices.length>0" sw-loading="swSkuPricesEdit.loadingPromise">
     <sw-sku-price-edit 
                     ng-repeat="skuPrice in swSkuPricesEdit.skuPrices" 
+                    data-eligible-currency-code-list="{{swSkuPricesEdit.eligibleCurrencyCodeList}}"
                     data-sku-price="skuPrice" 
                     data-listing-display-id="{{swSkuPricesEdit.listingDisplayId}}"
     ></sw-sku-price-edit>
