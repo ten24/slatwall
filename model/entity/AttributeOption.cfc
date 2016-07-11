@@ -89,7 +89,7 @@ component displayname="Attribute Option" entityname="SlatwallAttributeOption" ta
 	public string function getAttributeOptionLabel() {
 		if(structkeyExists(variables,"attributeOptionLabel")) {
 			return variables["attributeOptionLabel"];
-		} else if( isDefined(getAttributeOptionValue()) ) {
+		} else if( !isNull(getAttributeOptionValue()) ) {
 			return hibachiHTMLEditFormat( getAttributeOptionValue() );
 		}else{
 			return "";
