@@ -38,7 +38,10 @@ class SWPropertyDisplayController {
     public hasModalCallback:boolean; 
     public rowSaveEnabled:boolean; 
     public revertToValue:any; 
+    public revertText:string; 
+    public reverted:boolean; 
     public modalCallback;
+    public showRevert:boolean; 
     public showSave:boolean; 
 
     //@ngInject
@@ -60,6 +63,15 @@ class SWPropertyDisplayController {
         }
         if(angular.isUndefined(this.rowSaveEnabled)){
             this.rowSaveEnabled = this.inListingDisplay; 
+        }
+        if(angular.isDefined(this.revertToValue) && angular.isUndefined(this.showRevert)){
+            this.showRevert = true; 
+        }
+        if(angular.isDefined(this.revertToValue) && angular.isUndefined(this.revertText)){
+            this.revertText = this.revertToValue;
+        }
+        if(angular.isUndefined(this.showRevert)){
+            this.showRevert = false; 
         }
         if(angular.isUndefined(this.rawFileTarget)){
             this.rawFileTarget = this.property;
@@ -154,6 +166,10 @@ class SWPropertyDisplayController {
     }
 
     public clear = () =>{
+        if(this.reverted){
+            this.reverted = false; 
+            this.showRevert = true; 
+        }
         this.edited = false; 
         this.object.data[this.property] = this.initialValue; 
         if(this.inListingDisplay && this.rowSaveEnabled){
@@ -166,7 +182,7 @@ class SWPropertyDisplayController {
 
     public save = () =>{
         //do this eagerly to hide save will reverse if theres an error
-        this.edited = false;           
+        this.edited = false;          
         this.saved = true; 
         if(!this.inModal){
             this.object.$$save().then(
@@ -183,6 +199,13 @@ class SWPropertyDisplayController {
         } else if (this.hasModalCallback) { 
             this.modalCallback(); 
         }
+    }
+
+    public revert = () =>{
+        this.showRevert = false; 
+        this.reverted = true; 
+        this.object.data[this.property] = this.revertToValue; 
+        this.onChange(); 
     }
 }
 
@@ -217,7 +240,9 @@ class SWPropertyDisplay implements ng.IDirective{
         modalCallback:"&?",
         hasModalCallback:"=?",
         rowSaveEnabled:"=?",
-        revertToValue:"@?",
+        revertToValue:"=?",
+        revertText:"@?",
+        showRevert:"=?",
         showSave:"=?",
         placeholderText:"@",
         placeholderRbKey:"@"

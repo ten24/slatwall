@@ -104,9 +104,15 @@ class SWSkuPriceEditController{
                 this.skuPrice = this.$hibachi.populateEntity("SkuPrice", skuPriceData); 
             } 
         }
-        if(angular.isDefined(this.sku)){
-            this.revertToValue = this.skuPriceService.getInferredSkuPrice(this.sku, this.masterPriceObject.data.price, this.currencyCode)
+        if(angular.isDefined(this.masterPriceObject)){
+            if(angular.isDefined(this.masterPriceObject.data.sku)){
+                var sku = this.masterPriceObject.data.sku;
+            } else {
+                var sku = this.masterPriceObject;
+            }
+            this.revertToValue =  this.currencyFilter(this.skuPriceService.getInferredSkuPrice(sku, this.masterPriceObject.data.price, this.currencyCode),this.currencyCode,2,false);
         }
+        console.log("revert",this.revertToValue);
     }    
 
     public updateDisplay = (currencyCode) =>{

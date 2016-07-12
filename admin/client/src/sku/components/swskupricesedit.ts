@@ -64,9 +64,9 @@ class SWSkuPricesEditController{
             }
             this.skuPrice = this.$hibachi.populateEntity("SkuPrice", skuPriceData);
         }  
-        if(angular.isDefined(this.skuSkuId)){
+        if(angular.isDefined(this.skuSkuId) && angular.isDefined(this.skuPrice)){
             this.masterPriceObject = this.skuPrice; 
-        } else {
+        } else if(angular.isDefined(this.sku)) {
             this.masterPriceObject = this.sku; 
         }
         this.refreshSkuPrices(); 
