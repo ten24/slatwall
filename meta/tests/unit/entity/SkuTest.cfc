@@ -525,7 +525,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		var result = mockSku.getLivePrice();
 //		assertEquals(100, result);
-		request.debug(result);
+//		request.(result);
 	}
 }
 

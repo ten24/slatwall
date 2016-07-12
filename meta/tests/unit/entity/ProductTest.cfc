@@ -2270,7 +2270,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 		
 	 	};
 	 	var mockPromotionPeriod = createPersistedTestEntity('PromotionPeriod', promotionPeriodData);
-	 	request.debug(mockPromotionPeriod.getPromotion().getPRomotionID());
+//	 	request.debug(mockPromotionPeriod.getPromotion().getPRomotionID());
 	 	
 	 	var promotionQualifierData = {
 	 		promotionQualifierID = "",
