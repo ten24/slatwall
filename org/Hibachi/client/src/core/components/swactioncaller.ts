@@ -20,6 +20,7 @@ class SWActionCallerController{
     public queryString:string;
     public isAngularRoute:boolean;
     public formController:any;
+    public form:ng.IFormController;
     //@ngInject
     constructor(
         private $scope,
