@@ -73,6 +73,10 @@ class UtilityService extends BaseService{
         });
         return this.replacePropertiesWithData(stringItem, data);
 
+    //used to do inheritance at runtime
+    public extend = (ChildClass, ParentClass)=> {
+        ChildClass.prototype = new ParentClass();
+        ChildClass.prototype.constructor = ChildClass;
     }
 
     public getQueryParamsFromUrl = (url) =>{
@@ -233,7 +237,7 @@ class UtilityService extends BaseService{
         var end = start + count;
         return stringItem.substring(start,end);
     };
-    
+
     public getPropertiesFromString = (stringItem:string):Array<string> =>{
         if(!stringItem) return;
         var capture = false;
@@ -256,7 +260,7 @@ class UtilityService extends BaseService{
 
         public replacePropertiesWithData = (stringItem:string, data)=>{
             var results = this.getPropertiesFromString(stringItem);
-            for(var i=0; i < results.length; i++){ 
+            for(var i=0; i < results.length; i++){
                 stringItem = stringItem.replace('${'+results[i]+'}', data[i]);
             }
             return stringItem;
@@ -290,7 +294,7 @@ class UtilityService extends BaseService{
               return array.join();
           }
     };
-      
+
       public isDescendantElement = (parent, child) => {
         var node = child.parentNode;
         while (node != null) {

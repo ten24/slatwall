@@ -55,7 +55,14 @@ component output="false" accessors="true" extends="HibachiController" {
         if(isnull(arguments.rc.apiResponse.content)){
             arguments.rc.apiResponse.content = {};
         }
-
+		
+		if(
+			structKeyExists(GetHttpRequestData(),'headers')
+			&& structKeyExists(GetHttpRequestData().headers,'Content-Type')
+			&& FindNoCase('application/json',GetHttpRequestData().headers['Content-Type'])
+		){
+			structAppend(arguments.rc,deserializeJson(ToString(GetHttpRequestData().content)));
+		}
         if(!isNull(arguments.rc.context) && arguments.rc.context == 'GET'
             && structKEyExists(arguments.rc, 'serializedJSONData')
             && isSimpleValue(arguments.rc.serializedJSONData)

@@ -5,33 +5,23 @@
  * @usage <input type='number' swvalidationlte='5000' /> will validate false if the user enters
  * value greater than OR equal to 5,000.
  */
+import {ValidationService} from "../services/validationservice";
 class SWValidationLte{
-    constructor(){
+    constructor(validationService:ValidationService){
         return {
             restrict: "A",
             require: "^ngModel",
             link: function(scope, element, attributes, ngModel) {
-                    ngModel.$validators.swvalidationlte = 
+                    ngModel.$validators.swvalidationlte =
                     function(modelValue, viewValue) {
-                            //let required handle this case
-                            if(modelValue == null){
-                                return true;
-                            }
-                            var constraintValue = attributes.swvalidationlte;
-                            var userValue = viewValue || 0;
-                            if (parseInt(viewValue) <= parseInt(constraintValue))
-                            {
-                                return true;
-                            }
-                        return false;
-                        
+                        return validationService.validateLte(modelValue,attributes.swvalidationlte);
                     };
             }
         };
     }
     public static Factory(){
-        var directive = ()=>new SWValidationLte();
-        directive.$inject = [];
+        var directive = (validationService)=>new SWValidationLte(validationService);
+        directive.$inject = ['validationService'];
         return directive;
     }
 }

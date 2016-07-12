@@ -397,7 +397,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 				}
 				thisImage.description = "";
 				if(!isNull(getImages()[i].getImageDescription())) {
-					thisImage.name = getImages()[i].getImageDescription();
+					thisImage.description = getImages()[i].getImageDescription();
 				}
 				thisImage.resizedImagePaths = [];
 				for(var s=1; s<=arrayLen(arguments.resizeSizes); s++) {

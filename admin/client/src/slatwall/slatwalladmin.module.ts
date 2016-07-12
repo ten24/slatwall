@@ -69,17 +69,10 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
             dialogService.removePageDialog( index );
         };
 
-        // $rootScope.loadedResourceBundle = false;
-        // $rootScope.loadedResourceBundle = $hibachi.hasResourceBundle();
         $rootScope.createID = utilityService.createID;
 
-        // var rbListener = $rootScope.$watch('loadedResourceBundle',function(newValue,oldValue){
-        //     if(newValue !== oldValue){
-        //         $rootScope.$broadcast('hasResourceBundle');
-        //         rbListener();
-        //     }
-        // });
-
+        $rootScope.slatwall = $rootScope.hibachiScope;
+        $rootScope.slatwall.getProcessObject = $hibachi.newEntity;
     }])
  //services
 //directives

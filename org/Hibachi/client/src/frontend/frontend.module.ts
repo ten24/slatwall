@@ -22,18 +22,9 @@ var frontendmodule = angular.module('frontend', [hibachimodule.name])
     }
 }])
 
-.run(['$rootScope', '$hibachi','publicService','hibachiPathBuilder', function($rootScope, $hibachi, publicService,hibachiPathBuilder) {
-
-
-    $rootScope.hibachiScope = publicService;
-	$rootScope.hibachiScope.getAccount(); 
-	$rootScope.hibachiScope.getCart();
-    $rootScope.hibachiScope.getCountries();
-    $rootScope.hibachiScope.getStates(); 
+.run(['$rootScope', '$hibachi','publicService','hibachiPathBuilder','entityService', function($rootScope, $hibachi, publicService,hibachiPathBuilder,entityService) {
 	$rootScope.slatwall = $rootScope.hibachiScope;
-    $rootScope.slatwall.getProcessObject = $hibachi.newEntity;
-    
-    
+    $rootScope.slatwall.getProcessObject = entityService.newProcessObject;
 }])
 
 //controllers

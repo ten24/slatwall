@@ -69,6 +69,7 @@ component extends="mxunit.framework.TestCase" output="false" {
 		// Setup a debugging output array
 		variables.debugArray = [];
 		variables.persistentEntities = [];
+		variables.files = [];
 	}
 
 	// AFTER EACH TEST
@@ -84,6 +85,11 @@ component extends="mxunit.framework.TestCase" output="false" {
 			flushRequired = true;
 			entityDelete( variables.persistentEntities[i] );
 		}
+		
+		for (var i = arrayLen(variables.files); i >= 1; i--) {
+			fileDelete( variables.files[i] );
+		}
+		
 		try{
 			if(flushRequired) {
 					ormFlush();
@@ -93,6 +99,7 @@ component extends="mxunit.framework.TestCase" output="false" {
 		}
 
 		variables.persistentEntities = [];
+		variables.files = [];
 
 		ormClearSession();
 
@@ -105,6 +112,22 @@ component extends="mxunit.framework.TestCase" output="false" {
 
 	private any function createPersistedTestEntity( required string entityName, struct data={}, boolean createRandomData=false, boolean persist=true, boolean saveWithService=false ) {
 		return createTestEntity(argumentcollection=arguments);
+	}
+	
+	private void function createTestFile (required string fileSourceLocalAbsolutePath, required string relativeFileDestination) {
+
+		var absoluteDest = expandPath('/Slatwall') & arguments.relativeFileDestination;
+		
+		//create the destination directory if necessary
+		if (DirectoryExists(GetDirectoryFromPath(absoluteDest))) {
+			fileCopy(arguments.fileSourceLocalAbsolutePath, absoluteDest);
+		} else {
+			DirectoryCreate(GetDirectoryFromPath(absoluteDest));
+			fileCopy(arguments.fileSourceLocalAbsolutePath, absoluteDest);
+		}
+		
+		// Add the filePath to the files array
+		arrayAppend(variables.files, absoluteDest);
 	}
 
 	private void function addEntityForTearDown(any entity){

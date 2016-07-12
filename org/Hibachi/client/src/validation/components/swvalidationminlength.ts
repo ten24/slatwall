@@ -6,34 +6,26 @@
 /**
  * Returns true if the user value is greater than the minimum value.
  */
+import {ValidationService} from "../services/validationservice";
 class SWValidationMinLength{
     public static Factory(){
-        var directive = ($log)=> new SWValidationMinLength($log);
-        directive.$inject = ['$log'];
+        var directive = ($log,validationService)=> new SWValidationMinLength($log,validationService);
+        directive.$inject = ['$log','validationService'];
         return directive;
     }
-    constructor($log){
+    constructor($log,validationService:ValidationService){
         return {
             restrict: "A",
             require: "^ngModel",
             link: (scope, element, attributes, ngModel) =>{
-                    ngModel.$validators.swvalidationminlength = 
-                    (modelValue, viewValue)=> {
-                            //let required handle this case
-                            if(modelValue == null){
-                                return true;
-                            }
-                            var constraintValue = attributes.swvalidationminlength;
-                            var userValue = viewValue || 0;
-                            if (parseInt(viewValue.length) >= parseInt(constraintValue))
-                            {
-                                
-                                return true;
-                            }
-                            $log.debug('invalid min length');
-                        return false;
-                        
-                    };
+                ngModel.$validators.swvalidationminlength =
+                (modelValue, viewValue)=> {
+                    var length = 0
+                    if(viewValue && viewValue.length){
+                        length = viewValue.length
+                    }
+                    return validationService.validateMinLength(length || 0,attributes.swvalidationminlength);
+                };
             }
         };
     }

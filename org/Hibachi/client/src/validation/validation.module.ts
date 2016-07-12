@@ -1,6 +1,7 @@
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 
+//components
 import {SWValidate} from "./components/swvalidate";
 import {SWValidationMinLength} from "./components/swvalidationminlength";
 import {SWValidationDataType} from "./components/swvalidationdatatype";
@@ -16,8 +17,10 @@ import {SWValidationRegex} from "./components/swvalidationregex";
 import {SWValidationRequired} from "./components/swvalidationrequired";
 import {SWValidationUnique} from "./components/swvalidationunique";
 import {SWValidationUniqueOrNull} from "./components/swvalidationuniqueornull";
-
-var validationmodule = angular.module('hibachi.validation', [])
+//services
+import {ValidationService} from "./services/validationservice";
+import {coremodule} from "../core/core.module";
+var validationmodule = angular.module('hibachi.validation', [coremodule.name])
 .run([function() {
 }])
 //directives
@@ -36,7 +39,9 @@ var validationmodule = angular.module('hibachi.validation', [])
 .directive("swvalidationrequired",SWValidationRequired.Factory())
 .directive("swvalidationunique",SWValidationUnique.Factory())
 .directive("swvalidationuniqueornull",SWValidationUniqueOrNull.Factory())
-
+//services
+.service("validationService",ValidationService)
+;
 
 export{
 	validationmodule

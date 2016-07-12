@@ -2,7 +2,7 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 
 declare var escape;
-
+import {AdminRequest} from "../model/transient/adminrequest";
 // interface ISlatwallRootScopeService extends ng.IRootScopeService{
 //     loadedResourceBundle:boolean;
 // 	loadingResourceBundle:boolean;
@@ -22,9 +22,11 @@ class HibachiService{
 		private $rootScope:ng.IRootScopeService,
 		private $location:ng.ILocationService,
 		private $anchorScroll:ng.IAnchorScrollService,
+		private requestService,
 		private utilityService,
 		private formService,
         private rbkeyService,
+
         private appConfig,
 		private _config:any,
 		public _jsEntities:any,
@@ -38,9 +40,11 @@ class HibachiService{
         this.$rootScope = $rootScope;
         this.$location = $location;
         this.$anchorScroll = $anchorScroll;
+		this.requestService = requestService;
         this.utilityService = utilityService;
         this.formService = formService;
         this.rbkeyService = rbkeyService;
+
         this.appConfig = appConfig;
         this._config = _config;
         this._jsEntities = _jsEntities;
@@ -60,7 +64,7 @@ class HibachiService{
 		}
 		return baseUrl + '?' + actionName + '=' + action + queryString;
 	};
-    
+
     public getUrlWithActionPrefix = () => {
         return this.appConfig.baseURL+'/index.cfm/?'+this.appConfig.action+"=";
     }
@@ -201,6 +205,9 @@ class HibachiService{
 			throw("HibachiService could not find an entity named: " + entityName); 
 		}
 	};
+	getEntityDefinition= (entityName) =>{
+		return this._jsEntities[entityName];
+	};
 	/*basic entity getter where id is optional, returns a promise*/
 	getEntity= (entityName:string, options:any) => {
 		/*
@@ -237,20 +244,10 @@ class HibachiService{
 			params.processContext = options.processContext || '';
 			var urlString = this.getUrlWithActionPrefix()+'api:main.get&entityName='+entityName;
 		}
-
-		var deferred = this.$q.defer();
 		if(angular.isDefined(options.id)) {
 			urlString += '&entityId='+options.id;
 		}
 
-		/*var transformRequest = (data) => {
-
-			return data;
-		};
-		//check if we are using a service to transform the request
-		if(angular.isDefined(options.transformRequest)) => {
-			transformRequest=options.transformRequest;
-		}*/
 		var transformResponse = (data) => {
 			if(angular.isString(data)){
 				data = JSON.parse(data);
@@ -258,6 +255,7 @@ class HibachiService{
 
 			return data;
 		};
+
 		//check if we are using a service to transform the response
 		if(angular.isDefined(options.transformResponse)) {
 			transformResponse=(data) => {
@@ -271,60 +269,32 @@ class HibachiService{
 			};
 		}
 
-		this.$http.get(urlString,
-			{
-				params:params,
-				timeout:deferred.promise,
-				//transformRequest:transformRequest,
-				transformResponse:transformResponse
-			}
-		)
-		.success((data) => {
-			deferred.resolve(data);
-		}).error((reason) => {
-			deferred.reject(reason);
-		});
+		let request = this.requestService.newAdminRequest(urlString,params)
 
 		if(options.deferKey)  {
-			this._deferred[options.deferKey] = deferred;
+			this._deferred[options.deferKey] = request;
 		}
-		return deferred.promise;
+		return request.promise;
 
 	};
 	getResizedImageByProfileName = (profileName, skuIDs) => {
-		var deferred = this.$q.defer();
-		return this.$http.get(this.getUrlWithActionPrefix()+'api:main.getResizedImageByProfileName&profileName=' + profileName + '&skuIDs=' + skuIDs)
-		.success((data) => {
-			deferred.resolve(data);
-		}).error((reason) => {
-			deferred.reject(reason);
-		});
+		var urlString = this.getUrlWithActionPrefix()+'api:main.getResizedImageByProfileName&profileName=' + profileName + '&skuIDs=' + skuIDs;
+		let request = this.requestService.newAdminRequest(urlString);
+
+		return request.promise;
 	}
 	getEventOptions= (entityName) => {
-		var deferred = this.$q.defer();
 		var urlString = this.getUrlWithActionPrefix()+'api:main.getEventOptionsByEntityName&entityName='+entityName;
+		let request = this.requestService.newAdminRequest(urlString);
 
-		this.$http.get(urlString)
-		.success((data) => {
-			deferred.resolve(data);
-		}).error((reason) => {
-			deferred.reject(reason);
-		});
-
-		return deferred.promise;
+		return request.promise;
 	};
     getProcessOptions= (entityName) => {
-        var deferred = this.$q.defer();
+
         var urlString = this.getUrlWithActionPrefix()+'api:main.getProcessMethodOptionsByEntityName&entityName='+entityName;
+		let request = this.requestService.newAdminRequest(urlString)
 
-        this.$http.get(urlString)
-            .success((data) => {
-                deferred.resolve(data);
-            }).error((reason) => {
-                deferred.reject(reason);
-            });
-
-        return deferred.promise;
+        return request.promise;
     };
 	checkUniqueOrNullValue = (object, property, value) => {
 		return this.$http.get(this.getUrlWithActionPrefix()+'api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property +
@@ -341,21 +311,15 @@ class HibachiService{
 		});
 	};
 	getPropertyDisplayData = (entityName,options) => {
-		var deferred = this.$q.defer();
+
 		var urlString = this.getUrlWithActionPrefix()+'api:main.getPropertyDisplayData&entityName='+entityName;
 		var params:any = {};
 		params.propertyIdentifiersList = options.propertyIdentifiersList || '';
-		this.$http.get(urlString,{params:params})
-		.success((data) => {
-			deferred.resolve(data);
-		}).error((reason) => {
-			deferred.reject(reason);
-		});
+		let request = this.requestService.newAdminRequest(urlString,params);
 
-		return deferred.promise;
+		return request.promise;
 	};
 	getPropertyDisplayOptions = (entityName,options) => {
-		var deferred = this.$q.defer();
 		var urlString = this.getUrlWithActionPrefix()+'api:main.getPropertyDisplayOptions&entityName='+entityName;
 		var params:any = {};
 		params.property = options.property || '';
@@ -363,19 +327,45 @@ class HibachiService{
 			params.argument1 = options.argument1;
 		}
 
-		this.$http.get(urlString,{params:params})
-		.success((data) => {
-			deferred.resolve(data);
-		}).error((reason) => {
-			deferred.reject(reason);
-		});
+		let request = this.requestService.newAdminRequest(urlString,params);
 
-		return deferred.promise;
+		return request.promise;
 	};
-	saveEntity= (entityName,id,params,context) => {
 
-		//$log.debug('save'+ entityName);
-		var deferred = this.$q.defer();
+	public getPropertyTitle=(propertyName,metaData)=>{
+		var propertyMetaData = metaData[propertyName];
+		if(angular.isDefined(propertyMetaData['hb_rbkey'])){
+			return metaData.$$getRBKey(propertyMetaData['hb_rbkey']);
+		}else if (angular.isUndefined(propertyMetaData['persistent'])){
+			if(angular.isDefined(propertyMetaData['fieldtype'])
+			&& angular.isDefined(propertyMetaData['cfc'])
+			&& ["one-to-many","many-to-many"].indexOf(propertyMetaData.fieldtype) > -1){
+
+				return metaData.$$getRBKey("entity."+metaData.className.toLowerCase()+"."+propertyName+',entity.'+propertyMetaData.cfc+'_plural');
+			}else if(angular.isDefined(propertyMetaData.fieldtype)
+			&& angular.isDefined(propertyMetaData.cfc)
+			&& ["many-to-one"].indexOf(propertyMetaData.fieldtype) > -1){
+				return metaData.$$getRBKey("entity."+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase()+',entity.'+propertyMetaData.cfc);
+			}
+			return metaData.$$getRBKey('entity.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase());
+		}else if(metaData.isProcessObject){
+			if(angular.isDefined(propertyMetaData.fieldtype)
+				&& angular.isDefined(propertyMetaData.cfc)
+				&& ["one-to-many","many-to-many"].indexOf(propertyMetaData.fieldtype) > -1
+			){
+				return metaData.$$getRBKey('processObject.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase()+',entity.'+propertyMetaData.cfc.toLowerCase()+'_plural');
+			}else if(angular.isDefined(propertyMetaData.fieldtype)
+				&& angular.isDefined(propertyMetaData.cfc)
+			){
+				return metaData.$$getRBKey('processObject.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase()+',entity.'+propertyMetaData.cfc.toLowerCase());
+			}
+			return metaData.$$getRBKey('processObject.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase());
+
+		}
+		return metaData.$$getRBKey('object.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase());
+	}
+
+	saveEntity= (entityName,id,params,context) => {
 
 		var urlString = this.getUrlWithActionPrefix()+'api:main.post';
 
@@ -389,63 +379,41 @@ class HibachiService{
 		if(angular.isDefined(context))  {
 			params.context = context;
 		}
+		let request = this.requestService.newAdminRequest(urlString,params);
 
-		this.$http({
-			url:urlString,
-			method:'POST',
-			data: $.param(params),
-			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-		})
-		.success((data) => {
-			deferred.resolve(data);
-
-		}).error((reason) => {
-			deferred.reject(reason);
-		});
-		return deferred.promise;
+		return request.promise;
 	};
 	getExistingCollectionsByBaseEntity= (entityName) => {
-		var deferred = this.$q.defer();
-		var urlString = this.getUrlWithActionPrefix()+'api:main.getExistingCollectionsByBaseEntity&entityName='+entityName;
 
-		this.$http.get(urlString)
-		.success((data) => {
-			deferred.resolve(data);
-		}).error((reason) => {
-			deferred.reject(reason);
-		});
-		return deferred.promise;
+		var urlString = this.getUrlWithActionPrefix()+'api:main.getExistingCollectionsByBaseEntity&entityName='+entityName;
+		let request = this.requestService.newAdminRequest(urlString);
+
+		return request.promise;
 
 	};
 	getFilterPropertiesByBaseEntityName= (entityName) => {
-		var deferred = this.$q.defer();
-		var urlString = this.getUrlWithActionPrefix()+'api:main.getFilterPropertiesByBaseEntityName&EntityName='+entityName;
 
-		this.$http.get(urlString)
-		.success((data) => {
-			deferred.resolve(data);
-		}).error((reason) => {
-			deferred.reject(reason);
-		});
-		return deferred.promise;
+		var urlString = this.getUrlWithActionPrefix()+'api:main.getFilterPropertiesByBaseEntityName&EntityName='+entityName;
+		let request = this.requestService.newAdminRequest(urlString);
+
+		return request.promise;
 	};
 
 	login = (emailAddress,password) => {
-		var deferred = this.$q.defer();
-		var urlString = this.appConfig.baseURL+'?slataction=api:main.login';
+
+		var urlString = this.appConfig.baseURL+'/index.cfm/api/auth/login';
 		var params:any= {
 			emailAddress:emailAddress,
 			password:password
 		};
-		return this.$http.get(urlString,{params:params}).success((response) => {
-			deferred.resolve(response);
-		}).error((response) => {
-			deferred.reject(response);
-		});
+
+		let request = this.requestService.newAdminRequest(urlString,params);
+		return request.promise;
+
 	};
 
 	getResourceBundle= (locale) => {
-		var deferred = this.$q.defer();
+
 		var locale = locale || this.appConfig.rbLocale;
 
 		if(this._resourceBundle[locale]) {
@@ -454,40 +422,23 @@ class HibachiService{
 
 		var urlString = this.getUrlWithActionPrefix()+'api:main.getResourceBundle&instantiationKey='+this.appConfig.instantiationKey+'&locale='+locale;
 
-		this.$http(
-			{
-				url:urlString,
-				method:"GET"
-			}
-		).success((response:any,status,headersGetter) => {
-			this._resourceBundle[locale] = response.data;
-			deferred.resolve(response);
-		}).error((response:any) => {
-			this._resourceBundle[locale] = {};
-			deferred.reject(response);
-		});
-		return deferred.promise
+		let request = this.requestService.newAdminRequest(urlString);
+		return request.promise
 	};
 
 	getCurrencies = () =>{
-		var deferred = this.$q.defer();
-
 		var urlString = this.getUrlWithActionPrefix()+'api:main.getCurrencies&instantiationKey='+this.appConfig.instantiationKey;
-		this.$http.get(urlString).success((response) => {
-			deferred.resolve(response);
-		}).error((response) => {
-			deferred.reject(response);
-		});
-		return deferred.promise;
-	};
+		let request = this.requestService.newAdminRequest(urlString);
 
+		return request.promise;
+	};
 
     getConfig= () => {
 		return this._config;
 	};
 	getConfigValue= (key) => {
 		return this._config[key];
-	};
+	}; 
 	setConfigValue= (key,value) => {
 		this._config[key] = value;
 	};
@@ -519,9 +470,11 @@ class $Hibachi implements ng.IServiceProvider{
 			'$rootScope',
 			'$location',
 			'$anchorScroll',
+			'requestService',
 			'utilityService',
 			'formService',
             'rbkeyService',
+
             'appConfig'
 		];
 	}
@@ -536,9 +489,11 @@ class $Hibachi implements ng.IServiceProvider{
 		$rootScope:ng.IRootScopeService,
 		$location:ng.ILocationService,
 		$anchorScroll:ng.IAnchorScrollService,
+		requestService,
 		utilityService,
 		formService,
         rbkeyService,
+
         appConfig
 	) {
 		return new HibachiService(
@@ -550,9 +505,11 @@ class $Hibachi implements ng.IServiceProvider{
 			$rootScope,
 			$location,
 			$anchorScroll,
+			requestService,
 			utilityService,
 			formService,
             rbkeyService,
+
             appConfig,
 			this._config,
 			this._jsEntities,
