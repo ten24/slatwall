@@ -22,7 +22,7 @@ var productmodule = angular.module('hibachi.product',[coremodule.name]).config((
 //filters
 
 //directives
-.directive('swProductListingPages', SWProductListingPages.Factory)
+.directive('swProductListingPages', SWProductListingPages.Factory())
 
 ;
 export{

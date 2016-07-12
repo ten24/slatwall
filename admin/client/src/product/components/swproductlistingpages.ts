@@ -2,6 +2,9 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 
 class SWProductListingPagesController {
+
+    public edit:boolean; 
+    public selectedListingPageIdPaths:string; 
     
     //@ngInject
     constructor(
@@ -18,30 +21,32 @@ class SWProductListingPages implements ng.IDirective{
     public scope = {};  
     
     public bindToController = {
+        edit:"=?",
+        selectedListingPageIdPaths:"@?"
     };
     
     public controller=SWProductListingPagesController;
-    public controllerAs="swProductListingPage";
+    public controllerAs="swProductListingPages";
     
 	public static Factory():ng.IDirectiveFactory{
         var directive:ng.IDirectiveFactory = (
             $http,
             $hibachi,
             paginationService,
-		    formBuilderPartialsPath,
+		    productPartialsPath,
 			slatwallPathBuilder
         ) => new SWProductListingPages(
             $http,
             $hibachi,
             paginationService,
-			formBuilderPartialsPath,
+			productPartialsPath,
 			slatwallPathBuilder
         );
         directive.$inject = [
             '$http',
             '$hibachi',
             'paginationService',
-			'formBuilderPartialsPath',
+			'productPartialsPath',
 			'slatwallPathBuilder'
         ];
         return directive;
@@ -52,10 +57,10 @@ class SWProductListingPages implements ng.IDirective{
 		private $http,
         private $hibachi,
         private paginationService,
-	    private formBuilderPartialsPath,
+	    private productPartialsPath,
 		private slatwallPathBuilder
 	){
-		this.templateUrl = slatwallPathBuilder.buildPartialsPath(formBuilderPartialsPath) + "/productlistingpages.html";
+		this.templateUrl = slatwallPathBuilder.buildPartialsPath(productPartialsPath) + "/productlistingpages.html";
     }
 
     public link:ng.IDirectiveLinkFn = ($scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
