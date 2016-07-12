@@ -6,12 +6,15 @@ import {BaseEntity} from "./baseentity";
 class Cart extends BaseEntity{
     public requiresFulfillment:boolean=false;
     public orderRequirementsList:string="";
-    public orderPayments:Array<any>=[];
+    public orderPayments:any=[];
     public orderitems:Array<any>=[];
     public fulfillmentTotal;
     public orderFulfillments:Array<any>=[];
     public account:any;
     public calculatedTotal:number;
+    public orderID;
+    //deprecated
+
 
 
     constructor($injector){
