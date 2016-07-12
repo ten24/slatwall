@@ -1,0 +1,14 @@
+<div sw-typeahead-search 
+        data-placeholder-rb-key="{{swTypeaheadMultiselect.placeholderRbKey}}"
+        data-add-function="swTypeaheadMultiselect.addSelection"
+        data-view-function="swTypeaheadMultiselect.viewFunction"
+        data-add-button-function="swTypeaheadMultiselect.addButtonFunction"
+        data-show-add-button="swTypeaheadMultiselect.hasAddButtonFunction"
+        data-show-view-button="swTypeaheadMultiselect.hasViewFunction"
+        data-validate-required="false"
+        >
+        <ng-transclude></ng-transclude>
+</div>
+<div class="s-selected-list">
+    <!-- Populated by directives link function -->
+</div>

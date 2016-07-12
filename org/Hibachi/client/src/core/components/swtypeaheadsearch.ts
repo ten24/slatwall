@@ -3,7 +3,7 @@
 
 class SWTypeaheadSearchController {
 
-	public collectionConfig; 
+	public collectionConfig:any; 
 	public entity:string;
 	public properties:string;
 	public propertiesToDisplay:string;
@@ -11,24 +11,26 @@ class SWTypeaheadSearchController {
 	public allRecords:boolean;
 	public maxRecords; 
 	public searchText:string;
-	public results;
-	public addFunction;
+	public results:any[];
     public validateRequired:boolean; 
     public columns = [];
     public filters = [];
+    public addFunction;
 	public addButtonFunction;
     public viewFunction;
 	public hideSearch:boolean;
     public resultsPromise;
     public resultsDeferred;
-    public showAddButton;
-	public propertyToShow; 
+    public showAddButton:boolean;
+    public showViewButton:boolean;
+	public propertyToShow:string; 
     public placeholderText:string;
     public placeholderRbKey:string;
+    public initialEntityId:string;
+    public initialEntityCollectionConfig:any; 
 
 	private _timeoutPromise;
-    public showViewButton;
-
+    
     // @ngInject
 	constructor(private $scope, 
                 private $q,
@@ -48,6 +50,8 @@ class SWTypeaheadSearchController {
 
         if(angular.isUndefined(this.searchText) || this.searchText == null){
             this.searchText = "";
+        } else {
+            this.search(this.searchText);
         }
 
         if(angular.isUndefined(this.results)){
@@ -75,15 +79,6 @@ class SWTypeaheadSearchController {
             this.placeholderText = this.rbkeyService.getRBKey('define.search');
         }
 
-        if(angular.isDefined(this.addButtonFunction)){
-			console.warn("there is an add button function")
-            this.showAddButton = true;
-        }
-
-        if(angular.isDefined(this.viewFunction)){
-            this.showViewButton = true;
-        }
-
         //init timeoutPromise for link
         this._timeoutPromise = this.$timeout(()=>{},500);
 
@@ -92,22 +87,38 @@ class SWTypeaheadSearchController {
         }
         
         angular.forEach(this.columns, (column)=>{
-                this.collectionConfig.addDisplayProperty(column.propertyIdentifier, '', column);
+            this.collectionConfig.addDisplayProperty(column.propertyIdentifier, '', column);
         });
         
         angular.forEach(this.filters, (filter)=>{
-                this.collectionConfig.addFilter(filter.propertyIdentifier, filter.comparisonValue, filter.comparisonOperator, filter.logicalOperator, filter.hidden);
+            this.collectionConfig.addFilter(filter.propertyIdentifier, filter.comparisonValue, filter.comparisonOperator, filter.logicalOperator, filter.hidden);
         }); 
 
-        if(angular.isDefined(this.allRecords)){
-			this.collectionConfig.setAllRecords(this.allRecords);
-		} else {
-			this.collectionConfig.setAllRecords(true);
+        if(angular.isUndefined(this.allRecords)){
+			this.allRecords = this.collectionConfig.allRecords;
 		}
+
+        this.collectionConfig.setAllRecords(this.allRecords);
 		
 		if(angular.isDefined(this.maxRecords)){
 			this.collectionConfig.setPageShow(this.maxRecords);
 		}
+        
+        if(angular.isDefined(this.initialEntityId) && this.initialEntityId.length){
+            this.initialEntityCollectionConfig = collectionConfigService.newCollectionConfig(this.collectionConfig.baseEntityName);
+            this.initialEntityCollectionConfig.loadColumns(this.collectionConfig.columns);
+            var primaryIDProperty = $hibachi.getPrimaryIDPropertyNameByEntityName(this.initialEntityCollectionConfig.baseEntityName);
+            this.initialEntityCollectionConfig.addFilter(primaryIDProperty,this.initialEntityId,"=");
+           
+            var promise = this.initialEntityCollectionConfig.getEntity();
+            promise.then( (response) =>{
+                this.results = response.pageRecords;
+                if(this.results.length){
+                    this.addItem(this.results[0]); 
+                }
+            });
+            
+        }
 	}
 
     public clearSearch = () =>{
@@ -121,9 +132,9 @@ class SWTypeaheadSearchController {
     public toggleOptions = () =>{
         if(this.hideSearch && !this.searchText.length){
             this.search(this.searchText);
-        } else {
-            this.hideSearch = !this.hideSearch;
         }
+        this.hideSearch = !this.hideSearch;
+        
     };
 
 	public search = (search:string)=>{
@@ -145,7 +156,7 @@ class SWTypeaheadSearchController {
             var promise = this.collectionConfig.getEntity();
 
             promise.then( (response) =>{
-                if(angular.isDefined(this.allRecords) && this.allRecords == false){
+                if(angular.isDefined(response.pageRecords)){
                     this.results = response.pageRecords;
                 } else {
                     this.results = response.records;
@@ -226,51 +237,51 @@ class SWTypeaheadSearch implements ng.IDirective{
 		addFunction:"&?",
 		addButtonFunction:"&?",
         viewFunction:"&?",
+        showAddButton:"=?",
+        showViewButton:"=?",
         validateRequired:"=?",
         clickOutsideArguments:"=?",
 		propertyToShow:"=?",
 		hideSearch:"=?",
 		allRecords:"=?",
 		maxRecords:"=?",
-        disabled:"=?"
+        disabled:"=?",
+        initialEntityId:"@"
 	};
 	public controller=SWTypeaheadSearchController;
 	public controllerAs="swTypeaheadSearch";
     
     // @ngInject
-	constructor(public $compile, private corePartialsPath,hibachiPathBuilder){
+	constructor(public $compile, public typeaheadService, private corePartialsPath,hibachiPathBuilder){
 		this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "typeaheadsearch.html";
 	}
     
     public compile = (element: JQuery, attrs: angular.IAttributes, transclude: any) => {
         return {
-            pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {},
+            pre: ($scope: any, element: JQuery, attrs: any) => {
+                console.log("WILLY WOnK", attrs);
+                if(angular.isDefined(attrs.addButtonFunction) && angular.isUndefined(attrs.showAddButton)){
+                    console.log("wilbam");
+                    $scope.swTypeaheadSearch.showAddButton = true;  
+                } else if(angular.isUndefined(attrs.showAddButton)) {
+                    console.log("wilboom")
+                    $scope.swTypeaheadSearch.showAddButton = false; 
+                }
+                
+                if(angular.isDefined(attrs.viewFunction) && angular.isUndefined(attrs.showViewButton)){
+                    $scope.swTypeaheadSearch.showViewButton = true;  
+                } else if(angular.isUndefined(attrs.showViewButton)) {
+                    $scope.swTypeaheadSearch.showViewButton = false; 
+                }   
+                console.log("WIL",$scope);
+            },
             post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
                 
 				var target = element.find(".dropdown-menu");
                 var listItemTemplate = angular.element('<li ng-repeat="item in swTypeaheadSearch.results"></li>');
                 var actionTemplate = angular.element('<a ng-click="swTypeaheadSearch.addItem(item)" ></a>');
-                var transcludeContent = transclude($scope,()=>{});
-                
-				//strip out the ng-transclude if this typeahead exists inside typeaheadinputfield directive (causes infinite compilation error)
-				for(var i=0; i < transcludeContent.length; i++){
-					if(angular.isDefined(transcludeContent[i].localName) && 
-					transcludeContent[i].localName == 'ng-transclude'
-					){
-						transcludeContent = transcludeContent.children();
-					}
-				}
-				
-				//prevent collection config from being recompiled  (also causes infinite compilation error)
-				for(var i=0; i < transcludeContent.length; i++){
-					if(angular.isDefined(transcludeContent[i].localName) && 
-					transcludeContent[i].localName == 'sw-collection-config'
-					){
-						transcludeContent.splice(i,1);
-					}
-				}
-                
-                actionTemplate.append(transcludeContent); 
+               
+                actionTemplate.append(this.typeaheadService.stripTranscludedContent(transclude($scope,()=>{}))); 
                 listItemTemplate.append(actionTemplate); 
                 $scope.swTypeaheadSearch.resultsPromise.then(()=>{
                     target.append(this.$compile(listItemTemplate)($scope));
@@ -283,15 +294,17 @@ class SWTypeaheadSearch implements ng.IDirective{
 	public static Factory(){
 		var directive:ng.IDirectiveFactory = (
             $compile
+            ,typeaheadService
 			,corePartialsPath
             ,hibachiPathBuilder
 
 		)=> new SWTypeaheadSearch(
             $compile
+            ,typeaheadService
 			,corePartialsPath
             ,hibachiPathBuilder
 		);
-		directive.$inject = ["$compile","corePartialsPath",
+		directive.$inject = ["$compile","typeaheadService","corePartialsPath",
 			'hibachiPathBuilder'];
 		return directive;
 	}
