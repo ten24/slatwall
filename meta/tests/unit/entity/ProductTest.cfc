@@ -2031,12 +2031,15 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 	public void function getQuantityTest() {
-		//testing a already calculated quantity
+		//TODO: See inventoryServiceTest.cfc
+		//@Suppress the tests of different quantity types.
+		
+		//testing a already calculated quantity (take QATS for example)
 		var mockProduct = createMockProduct();
 		var resultQATS = mockProduct.getQuantity('QATS');
 		assertEquals(1000, resultQATS);//setting('skuOrderMaximumQuantity') default value
 		
-		//Testing a not previously calculated quantity
+		//Testing arguments of a not previously calculated quantity (Take QOH for instance)
 		var skuData = {
 			skuID = "",
 			product = {
@@ -2246,12 +2249,14 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 	
-	 //TODO: see promotionserviceTest 	
+	 
 	 public void function getSalePriceDetailsForSkusTest() {
-	 	
+	 	//TODO: see PromotionServiceTest 
+	 	//@Suppress to getSalePriceDetailsForProductSkus() function in PromotionService.cfc
+	 
 	 	var mockProduct = createMockProduct();
 	 	
-	 	var promotionData = {
+	 	var promotionData = {//Yuqing move to other file
 	 		promotionID = ""
 	 		,activeFlag = 1
 	 	};
@@ -2311,7 +2316,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 }
 	 
 	 public void function getSalePriceDetailsForSkusByCurrencyCodeTest() {
-	 	//Todo: Finish the above function, then this one
+	 	//TODO: see promotionserviceTest 
+	 	//@Suppress to getSalePriceDetailsForProductSkus() function in PromotionService.cfc
 	 }
 	 
 	 public void function getBrandNameTest() {
@@ -2687,7 +2693,135 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 }
 	 
 	 public void function getEventConflictExistsFlagTest() {
-	 	
+	 	//@Suppress to Sku.cfc getEventConflictExistsFlag()
 	 }
-
+	 
+	 public void function getPriceTest() {
+	 	var skuData = {
+	 		skuID = "",
+	 		price = 100
+	 	};
+	 	var mockSku = createPersistedTestEntity('Sku', skuData);
+	 	
+	 	//Testing product with Sku
+	 	var productData = {
+	 		productID = "",
+	 		defaultSku = {
+	 			skuID = mockSku.getSkuID()
+	 		}
+	 	};
+	 	var mockProductWithSku = createPersistedTestEntity('Product', productData);
+	 	
+	 	var result = mockProductWithSku.getPrice();
+	 	assertEquals(100, result);
+	 	
+	 	//Testing the product without Sku
+	 	var productData2 = {
+	 		productID = ""
+	 	};
+	 	var mockProductNoSku = createPersistedTestEntity('Product', productData2);
+	 	
+	 	var resultNoSku = mockProductNoSku.getPrice();
+	 	assertEquals(0, resultNoSku);
+	 	
+	 	//Testing the product with SKU but has no price
+	 	var mockSkuNoPrice = createMockSku();
+	 	
+	 	var productData3 = {
+	 		productID = '',
+	 		defaultSku = {
+	 			skuID = mockSkuNoPrice.getSkuID()
+	 		}
+	 	};
+	 	var mockProductWithSkuNoPrice = createPersistedTestEntity('Product', productData3);
+	 	
+	 	var resultWithSkuNoPrice = mockProductWithSkuNoPrice.getPrice();
+	 	assertEquals(0, resultWithSkuNoPrice);
+	 }
+	 
+	 public void function getRenewalPriceTest() {
+	 	var skuData = {
+	 		skuID = "",
+	 		renewalPrice = 100
+	 	};
+	 	var mockSku = createPersistedTestEntity('Sku', skuData);
+	 	
+	 	//Testing product with Sku
+	 	var productData = {
+	 		productID = "",
+	 		defaultSku = {
+	 			skuID = mockSku.getSkuID()
+	 		}
+	 	};
+	 	var mockProductWithSku = createPersistedTestEntity('Product', productData);
+	 	
+	 	var result = mockProductWithSku.getRenewalPrice();
+	 	assertEquals(100, result);
+	 	
+	 	//Skip testing the product without Sku
+	 	
+	 	//Testing the product with SKU but has no price
+	 	var mockSkuNoPrice = createMockSku();
+	 	
+	 	var productData3 = {
+	 		productID = '',
+	 		defaultSku = {
+	 			skuID = mockSkuNoPrice.getSkuID()
+	 		}
+	 	};
+	 	var mockProductWithSkuNoPrice = createPersistedTestEntity('Product', productData3);
+	 	
+	 	var resultWithSkuNoPrice = mockProductWithSkuNoPrice.getRenewalPrice();
+	 	assertEquals(0, resultWithSkuNoPrice);
+	 }
+	 
+	 public void function getListPriceTest() {
+	 	var skuData = {
+	 		skuID = "",
+	 		listPrice = 100
+	 	};
+	 	var mockSku = createPersistedTestEntity('Sku', skuData);
+	 	
+	 	//Testing product with Sku
+	 	var productData = {
+	 		productID = "",
+	 		defaultSku = {
+	 			skuID = mockSku.getSkuID()
+	 		}
+	 	};
+	 	var mockProductWithSku = createPersistedTestEntity('Product', productData);
+	 	
+	 	var result = mockProductWithSku.getListPrice();
+	 	assertEquals(100, result);
+	 	
+	 	//Skip testing the product without Sku
+	 	
+	 	//Testing the product with SKU but has no price
+	 	var mockSkuNoPrice = createMockSku();
+	 	
+	 	var productData3 = {
+	 		productID = '',
+	 		defaultSku = {
+	 			skuID = mockSkuNoPrice.getSkuID()
+	 		}
+	 	};
+	 	var mockProductWithSkuNoPrice = createPersistedTestEntity('Product', productData3);
+	 	
+	 	var resultWithSkuNoPrice = mockProductWithSkuNoPrice.getListPrice();
+	 	assertEquals(0, resultWithSkuNoPrice);
+	 }
+	 
+	 //@Suppress getLivePriceTest() to the getLivePriceTest() function in SKUTest.cfc
+	 
+	 //@Suppress getPriceByCurrencyCodeTest() to getPriceByCurrencyCodeTest() function in SkuTest.cfc
+	 
+	 //@Suppress getListPriceByCurrencyCodeTest() to getListPriceByCurrencyCodeTest() function in SkuTest.cfc
+	 
+	 //@Suppress getRenewalPriceByCurrencyCodeTest() to getRenewalPriceByCurrencyCodeTest() in SkuTest.cfc
+	 
+	 //@Suppress getLivePriceByCurrencyCodeTest() to getLivePriceByCurrencyCodeTest() in SkuTest.cfc
+	 
+	 //@Suppress getCurrentAccountPriceTest() to getCurrentAccountPriceTest() function in SkuTest.cfc
+	 
+	 
 }

@@ -147,6 +147,386 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	public void function validate_as_save_for_a_new_instance_doesnt_pass() {
 	}
+	
+	private any function createMockLocation() {
+		var locationData = {
+			locationID = ""
+		};
+		return createPersistedTestEntity('Location', locationData);
+	}
+	public void function getEventConflictsSmartList_SkuValidation_Test() {
+		var mockLocation = createMockLocation();
+		
+		var skuData = {
+			skuID = "",
+			eventStartDateTime = dateAdd('d', -2, now()),
+			eventEndDateTime = dateAdd('d', 2, now())
+		};
+		
+		var mockSkuLocationConfiged = createPersistedTestEntity('Sku', skuData);
+		
+		var locationConfigurationData = {
+			locationConfigurationID = "",
+			location = {
+				locationID = mockLocation.getLocationID()
+			},
+			skus = [
+				{
+					skuID = mockSkuLocationConfiged.getSkuID()
+				}
+			]
+		};
+		var mockLocationConfiguration = createPersistedTestEntity('LocationConfiguration', locationConfigurationData);
+		
+		//Use the same SKU to test the conflict with itself
+		var result = mockSkuLocationConfiged.getEventConflictsSmartList().getRecords(refresh = true);
+		assertEquals(0, arrayLen(result));
+	}
+	public void function getEventConflictsSmartList_LocationConflict_Test() {//Yuqing
+		//Testing the validation of the location
+		var mockLocationAssociated = createMockLocation();
+		var mockLocation2 = createMockLocation();
+		
+		var skuData = {
+			skuID = "",
+			eventStartDateTime = dateAdd('d', -2, now()),
+			eventEndDateTime = dateAdd('d', 2, now())
+		};
+		
+		var mockSkuLocationConfiged = createPersistedTestEntity('Sku', skuData);
+		
+		var locationConfigurationData = {
+			locationConfigurationID = "",
+			location = {
+				locationID = mockLocationAssociated.getLocationID()
+			},
+			skus = [
+				{
+					skuID = mockSkuLocationConfiged.getSkuID()
+				}
+			]
+		};
+		var mockLocationConfiguration = createPersistedTestEntity('LocationConfiguration', locationConfigurationData);
+		
+		var skuData2 = {
+			skuID = "",
+			eventStartDateTime = dateAdd('d', -1, now()),
+			eventEndDateTime = dateAdd('d', 1, now()),
+			locationConfigurations = [
+				{
+					locationConfigurationID = mockLocationConfiguration.getLocationConfigurationID()
+				}
+			]
+		};
+		
+		var mockSkuRunFunction = createPersistedTestEntity('Sku', skuData2);
+			
+		var result = mockSkuRunFunction.getEventConflictsSmartList().getRecords(refresh = true);
+		assertEquals(0, arrayLen(result));
+	}
+	
+	public void function getEventConflictsSmartList_DateTimeConflictAndOrder_Test() {
+		var mockLocation = createMockLocation();
+		
+		var skuData1 = {//Happened during the event of mockSkuRunFunction (this)
+			skuID = "",
+			eventStartDateTime = dateAdd('d', -1, now()),
+			eventEndDateTime = dateAdd('d', 1, now())
+		};
+		
+		var mockSku1 = createPersistedTestEntity('Sku', skuData1);
+		
+		var skuData2 = {//Already start when mockSkuRunFunction (this) didn't end
+			skuID = "",
+			eventStartDateTime = dateAdd('d', 1, now()),
+			eventEndDateTime = dateAdd('d', 5, now())
+		};
+		
+		var mockSku2 = createPersistedTestEntity('Sku', skuData1);
+		
+		var skuData3 = {//Didn't end when mockSkuRunFunction (this) start
+			skuID = "",
+			eventStartDateTime = dateAdd('d', -3, now()),
+			eventEndDateTime = dateAdd('d', -1, now())
+		};
+		
+		var mockSku3 = createPersistedTestEntity('Sku', skuData3);
+		
+		var skuData4 = {//Start and end before mockSKuRunFunction(this), no conflict
+			skuID = "",
+			eventStartDateTime = dateAdd('d', -5, now()),
+			eventEndDateTime = dateAdd('d', -3, now())
+		};
+		
+		var mockSku4 = createPersistedTestEntity('Sku', skuData4);
+		
+		var skuData5 = {//Start and end after mockSKuRunFunction(this), no conflict
+			skuID = "",
+			eventStartDateTime = dateAdd('d', 3, now()),
+			eventEndDateTime = dateAdd('d', 5, now())
+		};
+		
+		var mockSku5 = createPersistedTestEntity('Sku', skuData5);
+		
+		var locationConfigurationData = {
+			locationConfigurationID = "",
+			location = {
+				locationID = mockLocation.getLocationID()
+			},
+			skus = [
+				{
+					skuID = mockSku1.getSkuID()
+				},
+				{
+					skuID = mockSku2.getSkuID()
+				},
+				{
+					skuID = mockSku3.getSkuID()
+				},
+				{
+					skuID = mockSku4.getSkuID()
+				},
+				{
+					skuID = mockSku5.getSkuID()
+				}
+			]
+		};
+		var mockLocationConfiguration = createPersistedTestEntity('LocationConfiguration', locationConfigurationData);	
+		
+			
+		var skuData = {
+			skuID = "",
+			eventStartDateTime = dateAdd('d', -2, now()),
+			eventEndDateTime = dateAdd('d', 2, now()),
+			locationConfigurations = [
+				{
+					locationConfigurationID = mockLocationConfiguration.getLocationConfigurationID()
+				}
+			]
+		};
+		
+		var mockSkuRunFunction = createPersistedTestEntity('Sku', skuData);
+		
+		var result = mockSkuRunFunction.getEventConflictsSmartList().getRecords(refresh = true);
+		
+		//Testing the validation of the time conflicts
+		assertEquals(3, arrayLen(result));
+		
+		//Testing the order of the result
+		assertEquals(mockSku3.getSKuID(), result[1].getSkuID());
+		assertEquals(mockSku1.getSKuID(), result[2].getSkuID());
+		assertEquals(mockSku2.getSKuID(), result[3].getSkuID());
+		
+	}
+
+	public void function getEventConflictsSmartList_normal_Test() {
+		//Testing the normal condition that meet all requirements
+		var mockLocation = createMockLocation();
+		
+		var skuData1 = {
+			skuID = ""
+			,
+			eventStartDateTime = dateAdd('d', -5, now()),
+			eventEndDateTime = dateAdd('d', -3, now())
+		};
+		
+		var mockSkuLinkedLocationConfig = createPersistedTestEntity('Sku', skuData1);
+		
+		var locationConfigurationData = {
+			locationConfigurationID = "",
+			location = {
+				locationID = mockLocation.getLocationID()
+			},
+			skus = [
+				{
+					skuID = mockSkuLinkedLocationConfig.getSkuID()
+				}
+			]
+		};
+		var mockLocationConfiguration = createPersistedTestEntity('LocationConfiguration', locationConfigurationData);
+		
+		var skuData2 = {
+			skuID = "",
+			eventStartDateTime = dateAdd('d', -4, now()),
+			eventEndDateTime = dateAdd('d', 3, now()),
+			locationConfigurations = [
+				{
+					locationConfigurationID = mockLocationConfiguration.getLocationConfigurationID()
+				}
+			]
+		};
+		
+		var mockSkuRunFunction = createPersistedTestEntity('Sku', skuData2);	
+		
+		var result = mockSkuRunFunction.getEventConflictsSmartList().getRecords(refresh = true);
+		assertEquals(1, arrayLen(result));
+		assertEquals(mockSkuLinkedLocationConfig.getSkuID(), result[1].getSkuID());
+	}
+	
+	public void function getEventConflictExistsFlagTest() {
+		//Testing the normal condition that meet all requirements
+		var mockLocation = createMockLocation();
+		
+		var skuData1 = {
+			skuID = ""
+			,
+			eventStartDateTime = dateAdd('d', -3, now()),
+			eventEndDateTime = dateAdd('d', 3, now())
+		};
+		
+		var mockSkuLinkedLocationConfig = createPersistedTestEntity('Sku', skuData1);
+		
+		var locationConfigurationData = {
+			locationConfigurationID = "",
+			location = {
+				locationID = mockLocation.getLocationID()
+			},
+			skus = [
+				{
+					skuID = mockSkuLinkedLocationConfig.getSkuID()
+				}
+			]
+		};
+		var mockLocationConfiguration = createPersistedTestEntity('LocationConfiguration', locationConfigurationData);
+		
+		//Testing when conflict existed
+		var skuData2 = {
+			skuID = "",
+			eventStartDateTime = dateAdd('d', -2, now()),
+			eventEndDateTime = dateAdd('d', 2, now()),
+			locationConfigurations = [
+				{
+					locationConfigurationID = mockLocationConfiguration.getLocationConfigurationID()
+				}
+			]
+		};
+		
+		var mockSkuHasConflict = createPersistedTestEntity('Sku', skuData2);	
+
+		var resultHasConflict = mockSkuHasConflict.getEventConflictExistsFlag();
+		assertTrue(resultHasConflict);
+		
+		//Testing when conflict does not existed
+		var skuData3 = {
+			skuID = "",
+			eventStartDateTime = dateAdd('d', 3, now()),
+			eventEndDateTime = dateAdd('d', 5, now()),
+			locationConfigurations = [
+				{
+					locationConfigurationID = mockLocationConfiguration.getLocationConfigurationID()
+				}
+			]
+		};
+		
+		var mockSkuNoConflict = createPersistedTestEntity('Sku', skuData3);	
+
+		var resultNoConflict = mockSkuNoConflict.getEventConflictExistsFlag();
+		assertFalse(resultNoConflict);
+	}
+	
+	public void function getPriceByCurrencyCodeTest() {
+		//Testing the default currencyCode in SKU
+		var skuData = {
+			skuID = "",
+			price = 100
+		};
+		var mockSku = createPersistedTestEntity('Sku', skuData);
+		
+		var result = mockSku.getPriceByCurrencyCode('USD');
+		assertEquals(100, result);
+		
+		//Testing the sku without price
+		var skuData2 = {
+			skuID = ""
+		};
+		var mockSkuNoPrice = createPersistedTestEntity('Sku', skuData2);
+		
+		var resultNoPrice = mockSkuNoPrice.getPriceByCurrencyCode('USD');
+		assertEquals(0, resultNoPrice);
+		
+		//@Suppress See other currencyCode types tests in getCurrencyDetailsTest()
+	}
+	
+	public void function getListPriceByCurrencyCodeTest() {
+		//Testing the default currencyCode in SKU
+		var skuData = {
+			skuID = "",
+			listPrice = 100
+		};
+		var mockSku = createPersistedTestEntity('Sku', skuData);
+		
+		var result = mockSku.getListPriceByCurrencyCode('USD');
+		assertEquals(100, result);
+		
+		//Testing the sku without price
+		var skuData2 = {
+			skuID = ""
+		};
+		var mockSkuNoPrice = createPersistedTestEntity('Sku', skuData2);
+		
+		var resultNoPrice = mockSkuNoPrice.getListPriceByCurrencyCode('USD');
+		assertEquals(0, resultNoPrice);
+		
+		//@Suppress See other currencyCode types tests in getCurrencyDetailsTest()
+	}
+	
+	public void function getRenewalPriceByCurrencyCodeTest() {
+		//Testing the default currencyCode in SKU
+		var skuData = {
+			skuID = "",
+			renewalPrice = 100
+		};
+		var mockSku = createPersistedTestEntity('Sku', skuData);
+		
+		var result = mockSku.getRenewalPriceByCurrencyCode('USD');
+		assertEquals(100, result);
+		
+		//Testing the sku without price
+		var skuData2 = {
+			skuID = ""
+		};
+		var mockSkuNoPrice = createPersistedTestEntity('Sku', skuData2);
+		
+		var resultNoPrice = mockSkuNoPrice.getRenewalPriceByCurrencyCode('USD');
+		assertEquals(0, resultNoPrice);
+		
+		//@Suppress See the test on other currencyCode types in getCurrencyDetailsTest()
+	}
+	
+	public void function getCurrencyDetailsTest() {
+		//Testing the normal circumstances
+		var skuData = {
+			skuID = "",
+			price = 100,
+			listPrice = 120,
+			renewalPrice = 99
+		};
+		var mockSku = createPersistedTestEntity('Sku', skuData);
+		
+		var result = mockSku.getCurrencyDetails();
+		assertEquals(100, result['USD'].price);
+		assertEquals('$120.00', result['USD'].ListPriceFormatted);
+		
+		//As the result of filter setting('skuEligibleCurrencies') is USD only, mock the settings here
+		
+		//Testing the Sku definition
+		
+		//Testing the conversion mechinism
+	}
+	
+	//@Suppress getCurrentAccountPriceTest() in calculateSkuPriceBasedOnCurrentAccount() function of priceGroupService
+	
+	public void function getLivePriceTest() {
+		var skuData = {
+			skuID = "",
+			price = 200
+		};
+		var mockSku = createPersistedTestEntity('Sku', skuData);
+		
+		var result = mockSku.getLivePrice();
+//		assertEquals(100, result);
+		request.debug(result);
+	}
 }
 
 

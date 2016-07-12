@@ -1388,7 +1388,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			var locationIDList = "";
 			for(var lc in this.getLocationConfigurations()) {
 				if( len(locationIDList) ) {
-					request.debug("Hi");
 					if( !listFind( locationIDList,lc.getLocationID() ) ) {
 						listAppend(locationIDList,lc.getLocationID(),",");
 					}
