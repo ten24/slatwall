@@ -16,6 +16,7 @@ class SWTypeaheadSearchController {
     public columns = [];
     public filters = [];
     public addFunction;
+    public removeFunction;
 	public addButtonFunction;
     public viewFunction;
 	public hideSearch:boolean;
@@ -50,6 +51,10 @@ class SWTypeaheadSearchController {
 
         this.resultsDeferred = $q.defer();
         this.resultsPromise = this.resultsDeferred.promise;
+
+        if(angular.isUndefined(this.multiselectMode)){
+            this.multiselectMode = false; 
+        }
 
         if(angular.isUndefined(this.searchText) || this.searchText == null){
             this.searchText = "";
@@ -120,7 +125,7 @@ class SWTypeaheadSearchController {
             promise.then( (response) =>{
                 this.results = response.pageRecords;
                 if(this.results.length){
-                    this.addItem(this.results[0]); 
+                    this.addOrRemoveItem(this.results[0]); 
                 }
             });
         }
@@ -179,24 +184,36 @@ class SWTypeaheadSearchController {
         }, 500);
 	};
 
-	public addItem = (item)=>{
+	public addOrRemoveItem = (item)=>{
+
+        if(item.selected){
+            var remove = true;
+        } else {
+            var remove = false; 
+        }
 
 		if(!this.hideSearch){
 			this.hideSearch = true;
 		}
 
-		if(angular.isDefined(this.propertyToShow)){
-			this.searchText = item[this.propertyToShow];
-		} else if(angular.isDefined(this.columns) && 
-           this.columns.length && 
-           angular.isDefined(this.columns[0].propertyIdentifier)
-        ){
-			this.searchText = item[this.columns[0].propertyIdentifier];
-		} 
+        if(this.multiselectMode){
+            if( angular.isDefined(this.propertyToShow) ){
+                this.searchText = item[this.propertyToShow];
+            } else if( angular.isDefined(this.columns) && 
+                       this.columns.length && 
+                       angular.isDefined(this.columns[0].propertyIdentifier)
+            ){
+                this.searchText = item[this.columns[0].propertyIdentifier];
+            } 
+        }
 
-		if(angular.isDefined(this.addFunction)){
+		if(!remove && angular.isDefined(this.addFunction)){
 			this.addFunction()(item);
 		}
+
+        if(remove && angular.isDefined(this.removeFunction)){
+            this.removeFunction()(item); 
+        }
 	};
 
 	public addButtonItem = ()=>{
@@ -246,6 +263,7 @@ class SWTypeaheadSearch implements ng.IDirective{
 		searchText:"=?",
 		results:"=?",
 		addFunction:"&?",
+        removeFunction:"&?",
 		addButtonFunction:"&?",
         viewFunction:"&?",
         showAddButton:"=?",
@@ -292,7 +310,7 @@ class SWTypeaheadSearch implements ng.IDirective{
                 `;
                 
                 var listItemTemplate = angular.element(listItemTemplateString);
-                var actionTemplate = angular.element('<a ng-click="swTypeaheadSearch.addItem(item)"></a>');
+                var actionTemplate = angular.element('<a ng-click="swTypeaheadSearch.addOrRemoveItem(item)"></a>');
                
                 actionTemplate.append(this.typeaheadService.stripTranscludedContent(transclude($scope,()=>{}))); 
                 listItemTemplate.append(actionTemplate); 
