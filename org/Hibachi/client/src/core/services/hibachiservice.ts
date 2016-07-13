@@ -94,7 +94,7 @@ class HibachiService{
 	};
 
 	getPrimaryIDPropertyNameByEntityName = (entityName)=>{
-		return this.getEntityMetaData(entityName).$$getIDName();
+		return this.getEntityExample(entityName).$$getIDName();
 	};
 
 	getEntityHasPropertyByEntityName = (entityName,propertyName):boolean=>{
