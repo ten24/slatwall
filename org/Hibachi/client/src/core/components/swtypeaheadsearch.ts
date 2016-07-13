@@ -13,8 +13,8 @@ class SWTypeaheadSearchController {
 	public searchText:string;
 	public results:any[];
     public validateRequired:boolean; 
-    public columns = [];
-    public filters = [];
+    public columns:any[] = [];
+    public filters:any[] = [];
     public addFunction;
     public removeFunction;
 	public addButtonFunction;
@@ -23,6 +23,9 @@ class SWTypeaheadSearchController {
     public resultsPromise;
     public resultsDeferred;
     public multiselectMode:boolean; 
+    public searchableColumns:any[] = []; 
+    public initialSearchableColumnsState:any[] = []; 
+    public searchableColumnSelection:string='All';
     public showAddButton:boolean;
     public showViewButton:boolean;
     public typeaheadDataKey:string; 
@@ -119,7 +122,7 @@ class SWTypeaheadSearchController {
 		if(angular.isDefined(this.maxRecords)){
 			this.collectionConfig.setPageShow(this.maxRecords);
 		}
-        
+
         if(angular.isDefined(this.initialEntityId) && this.initialEntityId.length){
             this.initialEntityCollectionConfig = collectionConfigService.newCollectionConfig(this.collectionConfig.baseEntityName);
             this.initialEntityCollectionConfig.loadColumns(this.collectionConfig.columns);
@@ -134,6 +137,15 @@ class SWTypeaheadSearchController {
                 }
             });
         }
+
+        angular.forEach(this.collectionConfig.columns,(value,key)=>{
+            if(value.isSearchable){
+                this.searchableColumns.push(value);
+            }
+        }); 
+
+        angular.copy(this.searchableColumns,this.initialSearchableColumnsState);
+
 	}
 
     public clearSearch = () =>{
@@ -181,7 +193,6 @@ class SWTypeaheadSearchController {
 	};
 
     public updateSelections = () =>{
-        console.log("multiselect",this.getSelections(), this.results);
         if(angular.isDefined(this.getSelections()) && this.getSelections().length){
             for(var j = 0; j < this.results.length; j++){
                 for(var i = 0; i < this.getSelections().length; i++){
@@ -194,12 +205,24 @@ class SWTypeaheadSearchController {
         }
     }
 
+    public updateSearchableProperties = (column) =>{
+        if(angular.isString(column) && column == 'all'){
+            angular.copy(this.initialSearchableColumnsState, this.searchableColumns);
+            this.searchableColumnSelection = 'All';
+        } else {
+            angular.forEach(this.searchableColumns, (value,key) => {
+                value.isSearchable = false; 
+            }); 
+            column.isSearchable = true; 
+            this.searchableColumnSelection = column.title; 
+        }
+    }
+
 	public addOrRemoveItem = (item)=>{
 
         var remove = item.selected || false; 
-        console.log("remove?",remove);
 
-		if(!this.hideSearch){
+		if(!this.hideSearch && !this.multiselectMode){
 			this.hideSearch = true;
 		}
 

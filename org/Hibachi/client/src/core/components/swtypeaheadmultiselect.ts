@@ -42,7 +42,6 @@ class SWTypeaheadMultiselectController {
         if(angular.isUndefined(this.hasViewFunction)){
             this.hasViewFunction = false; 
         }
-        console.log("multitypeaheadkey", this.typeaheadDataKey);
     }
     
     //do these need to be passed in? 

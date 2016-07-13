@@ -10,11 +10,11 @@ class SWCollectionColumn implements ng.IDirective{
     public scope=true;
     public bindToController={
         propertyIdentifier:"@",
-        isVisible:"@?",
-        isSearchable:"@?",
-        isDeletable:"@?",
-        isExportable:"@?",
-        hidden:"@?"
+        isVisible:"=?",
+        isSearchable:"=?",
+        isDeletable:"=?",
+        isExportable:"=?",
+        hidden:"=?"
     };
     public controller=SWCollectionColumn;
     public controllerAs="swCollectionColumn";

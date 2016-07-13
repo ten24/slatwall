@@ -9,10 +9,10 @@
         data-validate-required="false"
         data-collection-config="swTypeaheadMultiselect.collectionConfig"
         data-multiselect-mode="swTypeaheadMultiselect.multiselectMode"
-        data-typeahead-data-key="swTypeaheadMultiselect.typeaheadDataKey"
+        data-typeahead-data-key="{{swTypeaheadMultiselect.typeaheadDataKey}}"
         >
         <ng-transclude></ng-transclude>
 </div>
-<div class="s-selected-list" ng-show="swTypeaheadMultiselect.showSelections">
+<div class="s-selected-list" ng-show="!swTypeaheadMultiselect.showSelections">
     <!-- Populated by directives link function -->
 </div>

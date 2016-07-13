@@ -2,14 +2,24 @@
     <div class="form-group">
         <div class="input-group">
              <div class="input-group-btn search-panel">
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                <span>All</span> <span class="caret"></span>
+                <button type="button" 
+                        class="btn btn-default dropdown-toggle" 
+                        data-toggle="dropdown" 
+                        aria-expanded="false">
+                        <span>{{swTypeaheadSearch.searchableColumnSelection}}</span> <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
-                    <li></li>
+                    <li>
+                        <a ng-click="swTypeaheadSearch.updateSearchableProperties('all')">
+                            <span sw-rbkey="'define.all'"></span>
+                        </a>
+                    </li>
+                    <li ng-repeat="column in swTypeaheadSearch.searchableColumns">
+                        <a ng-click="swTypeaheadSearch.updateSearchableProperties(column)">{{column.title}}</a>
+                    </li>
                 </ul>
             </div>
-            <div class="s-input-btn" ng-class="{'s-add':swTypeaheadSearch.multiselectMode,'s-search':!swTypeaheadSearch.multiselectMode}">
+            <div class="s-input-btn" ng-class="{ 's-add' : swTypeaheadSearch.multiselectMode, 's-search' : !swTypeaheadSearch.multiselectMode}">
                 <input  ng-if="swTypeaheadSearch.placeholderText"
                         id="searchinput"
                         placeholder="{{swTypeaheadSearch.placeholderText}}"
