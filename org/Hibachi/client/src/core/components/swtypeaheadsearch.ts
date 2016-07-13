@@ -259,12 +259,9 @@ class SWTypeaheadSearch implements ng.IDirective{
     public compile = (element: JQuery, attrs: angular.IAttributes, transclude: any) => {
         return {
             pre: ($scope: any, element: JQuery, attrs: any) => {
-                console.log("WILLY WOnK", attrs);
                 if(angular.isDefined(attrs.addButtonFunction) && angular.isUndefined(attrs.showAddButton)){
-                    console.log("wilbam");
                     $scope.swTypeaheadSearch.showAddButton = true;  
                 } else if(angular.isUndefined(attrs.showAddButton)) {
-                    console.log("wilboom")
                     $scope.swTypeaheadSearch.showAddButton = false; 
                 }
                 
@@ -273,7 +270,6 @@ class SWTypeaheadSearch implements ng.IDirective{
                 } else if(angular.isUndefined(attrs.showViewButton)) {
                     $scope.swTypeaheadSearch.showViewButton = false; 
                 }   
-                console.log("WIL",$scope);
             },
             post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
                 

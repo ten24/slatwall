@@ -6,6 +6,8 @@ class SWTypeaheadMultiselectController {
       
     public selections:any[];
     public singleSelection:any;
+    public dataTarget:any; 
+    public dataTargetIndex:number; 
     public placeholderRbKey:string;
     public typeaheadDataKey:string; 
     public multiselectModeOn:boolean;
@@ -70,6 +72,8 @@ class SWTypeaheadMultiselect implements ng.IDirective{
         placeholderRbKey:"@"
         ,typeaheadDataKey:"@?"
         ,multiselectModeOn:"=?"
+        ,dataTarget:"=?"
+        ,dataTargetIndex:"=?"
         ,addButtonFunction:"&?" 
         ,viewFunction:"&?"
 	};

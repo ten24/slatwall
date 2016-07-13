@@ -63,6 +63,7 @@ import {SWListingOrderBy} from "./components/swlistingorderby";
 import {SWLogin} from "./components/swlogin";
 import {SWNumbersOnly} from "./components/swnumbersonly";
 import {SWLoading} from "./components/swloading";
+import {SWOrderByControls} from "./components/sworderbycontrols";
 import {SWScrollTrigger} from "./components/swscrolltrigger";
 import {SWTabGroup} from "./components/swtabgroup";
 import {SWTabContent} from "./components/swtabcontent";
@@ -205,6 +206,7 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swScrollTrigger',SWScrollTrigger.Factory())
 .directive('swRbkey',SWRbKey.Factory())
 .directive('swOptions',SWOptions.Factory())
+.directive('swOrderByControls', SWOrderByControls.Factory())
 .directive('swSelection',SWSelection.Factory())
 .directive('swTabGroup', SWTabGroup.Factory())
 .directive('swTabContent', SWTabContent.Factory())
