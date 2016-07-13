@@ -9,12 +9,13 @@ class PublicService {
 
     public ajaxRequestParam:string = "?ajaxRequest=1";
     public account:Account;
-    public cart:Cart;
+    public cart:any;
     public states:any;
     public countries:any;
     public addressOptions:any;
     public requests:{ [action: string]: PublicRequest; }={};
     public errors:{[key:string]:any}={};
+    public newBillingAddress:any;
 
     public http:ng.IHttpService;
     public confirmationUrl:string;
@@ -30,6 +31,9 @@ class PublicService {
     public paymentMethods;
     public orderPlaced:boolean;
     public saveShippingAsBilling:boolean;
+    public readyToPlaceOrder:boolean;
+    public edit:String;
+    public editPayment:boolean;
     ///index.cfm/api/scope/
 
     //@ngInject
@@ -546,7 +550,7 @@ class PublicService {
                     if (angular.isDefined(result['0'])){
                         serverData = result['0'].data;
                     }
-                    if (serverData.cart.hasErrors || angular.isDefined(this.cart.orderPayments[this.cart.orderPayments.length-1]['errors']) && !this.cart.orderPayments[''+this.cart.orderPayments.length-1]['errors'].hasErrors){
+                    if (serverData.cart.hasErrors || angular.isDefined(this.cart.orderPayments[this.cart.orderPayments.length-1]['errors']) && !this.cart.orderPayments[''+(this.cart.orderPayments.length-1)]['errors'].hasErrors){
                         this.cart.hasErrors = true;
                         this.readyToPlaceOrder = true;
                         this.edit = '';

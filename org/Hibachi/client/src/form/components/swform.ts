@@ -219,7 +219,7 @@ class SWFormController {
     public eventsHandler = (params) => {
         //this will call any form specific functions such as hide,show,refresh,update or whatever else you later add
         for (var e in params.events){
-            if ( angular.isDefined(params.events[e].value) && params.events[e].value == this.context.toLowerCase()){
+            if ( angular.isDefined(params.events[e].value) && params.events[e].value == this.name.toLowerCase()){
                 if(params.events[e].name && this[params.events[e].name]){
                     this[params.events[e].name](params.events[e].value);
                 }
@@ -228,13 +228,13 @@ class SWFormController {
     }
     /** hides this directive on event */
     public hide = (param) => {
-        if (this.context.toLowerCase() == param){
+        if (this.name.toLowerCase() == param){
             this.$element.hide();
         }
     }
     /** shows this directive on event */
     public show = (param) =>{
-        if (this.context.toLowerCase() == param){
+        if (this.name.toLowerCase() == param){
             this.$element.show();
         }
     }
