@@ -23,9 +23,9 @@ class SWTypeaheadSearchController {
     public resultsPromise;
     public resultsDeferred;
     public multiselectMode:boolean; 
-    public multiselectSelections:any[];
     public showAddButton:boolean;
     public showViewButton:boolean;
+    public typeaheadDataKey:string; 
     public primaryIDPropertyName:string;
 	public propertyToShow:string; 
     public placeholderText:string;
@@ -43,7 +43,8 @@ class SWTypeaheadSearchController {
                 private $timeout:ng.ITimeoutService, 
                 private utilityService, 
                 private rbkeyService, 
-                private collectionConfigService
+                private collectionConfigService,
+                private typeaheadService
      ){
        
         //populates all needed variables
@@ -51,6 +52,10 @@ class SWTypeaheadSearchController {
 
         this.resultsDeferred = $q.defer();
         this.resultsPromise = this.resultsDeferred.promise;
+
+        if(angular.isUndefined(this.typeaheadDataKey)){
+            this.typeaheadDataKey = this.utilityService.createID(32); 
+        }
 
         if(angular.isUndefined(this.multiselectMode)){
             this.multiselectMode = false; 
@@ -166,17 +171,8 @@ class SWTypeaheadSearchController {
             var promise = this.collectionConfig.getEntity();
 
             promise.then( (response) =>{
-                this.results = response.pageRecords || response.records;
-                //check to see if we have any selections
-                if(angular.isDefined(this.multiselectSelections) && this.multiselectSelections.length){
-                    for(var j = 0; j < this.results.length; j++){
-                        for(var i = 0; i < this.multiselectSelections.length; i++){
-                            if(this.multiselectSelections[i][this.primaryIDPropertyName] == this.results[j][this.primaryIDPropertyName]){
-                                this.results[j].selected = true;
-                            }
-                        }
-                    }
-                }
+                this.results = response.pageRecords || response.records; 
+                this.updateSelections();               
             }).finally(()=>{
                 this.resultsDeferred.resolve();
                 this.hideSearch = (this.results.length == 0);
@@ -184,21 +180,33 @@ class SWTypeaheadSearchController {
         }, 500);
 	};
 
+    public updateSelections = () =>{
+        console.log("multiselect",this.getSelections(), this.results);
+        if(angular.isDefined(this.getSelections()) && this.getSelections().length){
+            for(var j = 0; j < this.results.length; j++){
+                for(var i = 0; i < this.getSelections().length; i++){
+                    if(this.getSelections()[i][this.primaryIDPropertyName] == this.results[j][this.primaryIDPropertyName]){
+                        this.results[j].selected = true;
+                        this.results[j].selectedIndex = i; 
+                    }
+                }
+            }
+        }
+    }
+
 	public addOrRemoveItem = (item)=>{
 
-        if(item.selected){
-            var remove = true;
-        } else {
-            var remove = false; 
-        }
+        var remove = item.selected || false; 
+        console.log("remove?",remove);
 
 		if(!this.hideSearch){
 			this.hideSearch = true;
 		}
 
-        if(this.multiselectMode){
+        if(!this.multiselectMode){
             if( angular.isDefined(this.propertyToShow) ){
                 this.searchText = item[this.propertyToShow];
+            
             } else if( angular.isDefined(this.columns) && 
                        this.columns.length && 
                        angular.isDefined(this.columns[0].propertyIdentifier)
@@ -212,8 +220,12 @@ class SWTypeaheadSearchController {
 		}
 
         if(remove && angular.isDefined(this.removeFunction)){
-            this.removeFunction()(item); 
+            this.removeFunction()(item.selectedIndex); 
+            item.selected = false; 
+            item.selectedIndex = undefined;
         }
+
+        this.updateSelections();
 	};
 
 	public addButtonItem = ()=>{
@@ -242,6 +254,10 @@ class SWTypeaheadSearchController {
 		}
 
 	};
+
+    public getSelections = () =>{
+        return this.typeaheadService.getData(this.typeaheadDataKey);
+    }
 
 }
 
@@ -277,7 +293,7 @@ class SWTypeaheadSearch implements ng.IDirective{
         disabled:"=?",
         initialEntityId:"@",
         multiselectMode:"=?",
-        multiselectSelections:"=?"
+        typeaheadDataKey:"@?"
 	};
 	public controller=SWTypeaheadSearchController;
 	public controllerAs="swTypeaheadSearch";

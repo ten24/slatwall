@@ -26,7 +26,6 @@ class SWTypeaheadMultiselectController {
                 private utilityService, 
                 private collectionConfigService
     ){
-        this.selections = [];
         //supporting the original selection view
         if(angular.isUndefined(this.showSelections)){
             this.showSelections = false; 
@@ -43,26 +42,20 @@ class SWTypeaheadMultiselectController {
         if(angular.isUndefined(this.hasViewFunction)){
             this.hasViewFunction = false; 
         }
-        this.typeaheadService.addRecord(this.typeaheadDataKey,[]);
+        console.log("multitypeaheadkey", this.typeaheadDataKey);
     }
     
+    //do these need to be passed in? 
     public addSelection = (item) => {
-        if(!this.multiselectMode){
-            this.getSelections().length = 0; 
-        } 
-        this.getSelections().push(item);
+        this.typeaheadService.addSelection(this.typeaheadDataKey, item);
     }
     
     public removeSelection = (index) => {
-        if(this.multiselectMode){
-            this.getSelections().splice(index,1);
-        } else {
-            this.getSelections().length = 0; 
-        }
+        this.typeaheadService.removeSelection(this.typeaheadDataKey, index);
     }
     
     public getSelections = () =>{
-        return this.typeaheadService.getData(this.typeaheadDataKey)
+        return this.typeaheadService.getData(this.typeaheadDataKey);
     }
 }
 

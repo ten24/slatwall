@@ -11,15 +11,21 @@ class TypeaheadService{
         
     }
     
-    addRecord = (key:string, data:any) => {
-        this.typeaheadData[key] = data; 
+    addSelection = (key:string, data:any) => {
+        if(angular.isUndefined(this.typeaheadData[key])){
+            this.typeaheadData[key] = [];
+        }
+        this.typeaheadData[key].push(data); 
     } 
+
+    removeSelection = (key:string, index:number) => {
+        if(angular.isDefined(this.typeaheadData[key])){
+            this.typeaheadData[key].splice(index,1);
+        }
+    }
     
     getData = (key:string) => {
-        var dataToReturn = this.typeaheadData[key];
-        if(angular.isDefined(dataToReturn)){
-            return dataToReturn;
-        }
+        return this.typeaheadData[key] || [];
     }
     
     //strips out dangerous directives that cause infinite compile errors

@@ -1,6 +1,7 @@
 <div sw-typeahead-search 
         data-placeholder-rb-key="{{swTypeaheadMultiselect.placeholderRbKey}}"
         data-add-function="swTypeaheadMultiselect.addSelection"
+        data-remove-function="swTypeaheadMultiselect.removeSelection"
         data-view-function="swTypeaheadMultiselect.viewFunction"
         data-add-button-function="swTypeaheadMultiselect.addButtonFunction"
         data-show-add-button="swTypeaheadMultiselect.hasAddButtonFunction"
@@ -8,10 +9,10 @@
         data-validate-required="false"
         data-collection-config="swTypeaheadMultiselect.collectionConfig"
         data-multiselect-mode="swTypeaheadMultiselect.multiselectMode"
-        data-multiselect-selections="swTypeaheadMultiselect.selections"
+        data-typeahead-data-key="swTypeaheadMultiselect.typeaheadDataKey"
         >
         <ng-transclude></ng-transclude>
 </div>
-<div class="s-selected-list">
+<div class="s-selected-list" ng-show="swTypeaheadMultiselect.showSelections">
     <!-- Populated by directives link function -->
 </div>
