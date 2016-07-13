@@ -21,8 +21,11 @@ class SWTypeaheadSearchController {
 	public hideSearch:boolean;
     public resultsPromise;
     public resultsDeferred;
+    public multiselectMode:boolean; 
+    public multiselectSelections:any[];
     public showAddButton:boolean;
     public showViewButton:boolean;
+    public primaryIDPropertyName:string;
 	public propertyToShow:string; 
     public placeholderText:string;
     public placeholderRbKey:string;
@@ -72,6 +75,9 @@ class SWTypeaheadSearchController {
                 throw("You did not pass the correct collection config data to swTypeaheadSearch");
             }
         }
+        if(angular.isDefined(this.collectionConfig)){
+            this.primaryIDPropertyName = $hibachi.getPrimaryIDPropertyNameByEntityName(this.collectionConfig.baseEntityName);
+        }
         
         if(angular.isDefined(this.placeholderRbKey)){
             this.placeholderText = this.rbkeyService.getRBKey(this.placeholderRbKey);
@@ -117,7 +123,6 @@ class SWTypeaheadSearchController {
                     this.addItem(this.results[0]); 
                 }
             });
-            
         }
 	}
 
@@ -156,10 +161,16 @@ class SWTypeaheadSearchController {
             var promise = this.collectionConfig.getEntity();
 
             promise.then( (response) =>{
-                if(angular.isDefined(response.pageRecords)){
-                    this.results = response.pageRecords;
-                } else {
-                    this.results = response.records;
+                this.results = response.pageRecords || response.records;
+                //check to see if we have any selections
+                if(angular.isDefined(this.multiselectSelections) && this.multiselectSelections.length){
+                    for(var j = 0; j < this.results.length; j++){
+                        for(var i = 0; i < this.multiselectSelections.length; i++){
+                            if(this.multiselectSelections[i][this.primaryIDPropertyName] == this.results[j][this.primaryIDPropertyName]){
+                                this.results[j].selected = true;
+                            }
+                        }
+                    }
                 }
             }).finally(()=>{
                 this.resultsDeferred.resolve();
@@ -246,7 +257,9 @@ class SWTypeaheadSearch implements ng.IDirective{
 		allRecords:"=?",
 		maxRecords:"=?",
         disabled:"=?",
-        initialEntityId:"@"
+        initialEntityId:"@",
+        multiselectMode:"=?",
+        multiselectSelections:"=?"
 	};
 	public controller=SWTypeaheadSearchController;
 	public controllerAs="swTypeaheadSearch";
@@ -274,8 +287,12 @@ class SWTypeaheadSearch implements ng.IDirective{
             post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
                 
 				var target = element.find(".dropdown-menu");
-                var listItemTemplate = angular.element('<li ng-repeat="item in swTypeaheadSearch.results"></li>');
-                var actionTemplate = angular.element('<a ng-click="swTypeaheadSearch.addItem(item)" ></a>');
+                var listItemTemplateString = `
+                    <li ng-repeat="item in swTypeaheadSearch.results" ng-class="{'s-selected':item.selected}"></li>
+                `;
+                
+                var listItemTemplate = angular.element(listItemTemplateString);
+                var actionTemplate = angular.element('<a ng-click="swTypeaheadSearch.addItem(item)"></a>');
                
                 actionTemplate.append(this.typeaheadService.stripTranscludedContent(transclude($scope,()=>{}))); 
                 listItemTemplate.append(actionTemplate); 

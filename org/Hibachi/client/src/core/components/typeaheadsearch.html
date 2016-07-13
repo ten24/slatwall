@@ -1,7 +1,15 @@
-<div class="s-select-list-wrapper s-search" sw-click-outside="swTypeaheadSearch.closeThis(swTypeaheadSearch.clickOutsideArguments)" >
+<div class="s-select-list-wrapper s-search-wrapper" sw-click-outside="swTypeaheadSearch.closeThis(swTypeaheadSearch.clickOutsideArguments)" >
     <div class="form-group">
         <div class="input-group">
-            <div class="s-input-btn">
+             <div class="input-group-btn search-panel">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                <span>All</span> <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li></li>
+                </ul>
+            </div>
+            <div class="s-input-btn" ng-class="{'s-add':swTypeaheadSearch.multiselectMode,'s-search':!swTypeaheadSearch.multiselectMode}">
                 <input  ng-if="swTypeaheadSearch.placeholderText"
                         id="searchinput"
                         placeholder="{{swTypeaheadSearch.placeholderText}}"
@@ -25,7 +33,7 @@
             </div>
         </div>
     </div>
-    <div class="dropdown s-search-results-wrapper"> 
+    <div class="dropdown s-search-results-wrapper" ng-class="{'s-selectable':swTypeaheadSearch.multiselectMode}"> 
         <ul ng-show="!swTypeaheadSearch.hideSearch" class="dropdown-menu">
             <!-- populated by the directives link function -->
         </ul>

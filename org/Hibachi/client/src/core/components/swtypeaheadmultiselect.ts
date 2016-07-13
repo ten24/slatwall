@@ -5,12 +5,13 @@
 class SWTypeaheadMultiselectController {
       
     public selections:any[];
+    public showSelections:boolean; 
     public singleSelection:any;
     public dataTarget:any; 
     public dataTargetIndex:number; 
     public placeholderRbKey:string;
     public typeaheadDataKey:string; 
-    public multiselectModeOn:boolean;
+    public multiselectMode:boolean;
     public collectionConfig:any; 
     public addButtonFunction; 
     public hasAddButtonFunction:boolean;
@@ -26,8 +27,12 @@ class SWTypeaheadMultiselectController {
                 private collectionConfigService
     ){
         this.selections = [];
-        if(angular.isUndefined(this.multiselectModeOn)){
-            this.multiselectModeOn = true; 
+        //supporting the original selection view
+        if(angular.isUndefined(this.showSelections)){
+            this.showSelections = false; 
+        }
+        if(angular.isUndefined(this.multiselectMode)){
+            this.multiselectMode = true; 
         }
         if(angular.isUndefined(this.typeaheadDataKey)){
             this.typeaheadDataKey = this.utilityService.createID(32); 
@@ -42,14 +47,14 @@ class SWTypeaheadMultiselectController {
     }
     
     public addSelection = (item) => {
-        if(!this.multiselectModeOn){
+        if(!this.multiselectMode){
             this.getSelections().length = 0; 
         } 
         this.getSelections().push(item);
     }
     
     public removeSelection = (index) => {
-        if(this.multiselectModeOn){
+        if(this.multiselectMode){
             this.getSelections().splice(index,1);
         } else {
             this.getSelections().length = 0; 
@@ -71,7 +76,8 @@ class SWTypeaheadMultiselect implements ng.IDirective{
 	public bindToController = {
         placeholderRbKey:"@"
         ,typeaheadDataKey:"@?"
-        ,multiselectModeOn:"=?"
+        ,multiselectModeOn:"=?multiselectMode"
+        ,showSelections:"=?"
         ,dataTarget:"=?"
         ,dataTargetIndex:"=?"
         ,addButtonFunction:"&?" 
