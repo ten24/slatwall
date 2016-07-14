@@ -2,10 +2,24 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWOrderByControlsController {
 
+    public collectionConfig; 
+
     // @ngInject
     constructor(
         ){
 
+    }
+
+    public sortAscending = () =>{
+
+    }
+
+    public sortDescending = () =>{
+
+    }
+
+    public manualSort = () =>{
+        
     }
 }
 
@@ -17,7 +31,7 @@ class SWOrderByControls implements ng.IDirective{
     public scope = {};
 
     public bindToController = {
-
+        collectionConfig:"=?"
     };
     public controller=SWOrderByControlsController;
     public controllerAs="swOrderByControls";

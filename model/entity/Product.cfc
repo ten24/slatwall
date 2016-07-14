@@ -78,9 +78,11 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	property name="productReviews" singularname="productReview" cfc="ProductReview" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	property name="productSchedules" singularName="productSchedule" cfc="ProductSchedule" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
+	property name="listingPages" singularName="listingPage" cfc="ProductListingPage" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 
 	// Related Object Properties (many-to-many - owner)
-	property name="listingPages" singularname="listingPage" cfc="Content" fieldtype="many-to-many" linktable="SwProductListingPage" fkcolumn="productID" inversejoincolumn="contentID";
+	//deprecating
+	//property name="listingPages" singularname="listingPage" cfc="Content" fieldtype="many-to-many" linktable="SwProductListingPage" fkcolumn="productID" inversejoincolumn="contentID";
 	property name="categories" singularname="category" cfc="Category" fieldtype="many-to-many" linktable="SwProductCategory" fkcolumn="productID" inversejoincolumn="categoryID";
 	property name="relatedProducts" singularname="relatedProduct" cfc="Product" type="array" fieldtype="many-to-many" linktable="SwRelatedProduct" fkcolumn="productID" inversejoincolumn="relatedProductID";
 
@@ -147,23 +149,23 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		if(!structKeyExists(variables, "availableToPurchaseFlag")) {
 			// If purchase start dates not existed, or before now(), the start date is valid
 			// If purchase end   date  not existed, or after  now(), the end   date is valid
-			if ( 
+			if (
 					(
 						isNull(this.getPurchaseStartDateTime())
 						||
-						( !isNull(this.getPurchaseStartDateTime()) && dateCompare(now(),this.getPurchaseStartDateTime(),"s") == 1 )					 
+						( !isNull(this.getPurchaseStartDateTime()) && dateCompare(now(),this.getPurchaseStartDateTime(),"s") == 1 )
 					)
 					&&
 					(
 						isNull(this.getPurchaseEndDateTime())
 						||
-						( !isNull(this.getPurchaseEndDateTime()) && dateCompare(now(),this.getPurchaseEndDateTime(),"s") == -1 )					 
-					) 
+						( !isNull(this.getPurchaseEndDateTime()) && dateCompare(now(),this.getPurchaseEndDateTime(),"s") == -1 )
+					)
 			) {
 				variables.availableToPurchaseFlag = true;
 			} else {
 				variables.availableToPurchaseFlag = false;
-			}				
+			}
 		}
 
 		return variables.availableToPurchaseFlag;
@@ -740,7 +742,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 				if(!imageAlreadyIncluded){
 					var imageFileStruct = {};
 					imageFileStruct['imageFile'] = sku['imageFile'];
-					
+
 					imageFileStruct['skuDefinition'] = getService('skuService').getSkuDefinitionBySkuIDAndBaseProductTypeID(
 						sku['skuID'],
 						listFirst(sku['productTypeIDPath'])
@@ -787,7 +789,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 		return variables.brandName;
 	}
-	
+
 	public array function getBrandOptions() {
 		var options = getPropertyOptions( "brand" );
 		options[1]['name'] = rbKey('define.none');
@@ -829,14 +831,14 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			return getDefaultSku().getCurrencyCode();
 		}
 	}
-	
-	
+
+
 
 	public any function getEventConflictExistsFlag() {
 		if( structKeyExists(variables, "eventConflictExistsFlag") ) {
 			return variables.eventConflictExistsFlag;
 		} else {
-			
+
 			variables.eventConflictExistsFlag = false;
 			for(sku in getSkus()) {
 				if(sku.getEventConflictExistsFlag()) {
