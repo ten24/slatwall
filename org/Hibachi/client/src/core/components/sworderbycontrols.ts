@@ -1,26 +1,45 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+
 class SWOrderByControlsController {
 
-    public collectionConfig; 
+    public collectionConfig:any; 
+    public selectedOrderByColumnIndex:any; 
+    public sortCode:string = "ASC";
+    public columns:any[]; 
 
     // @ngInject
     constructor(
         ){
-
+            this.columns = this.collectionConfig.columns; 
     }
 
-    public sortAscending = () =>{
-
+    public changeSortProperty = ():void =>{
+        switch(this.sortCode){
+            case "ASC":
+                this.collectionConfig.toggleOrderBy(this.columns[this.selectedOrderByColumnIndex].propertyIdentifier,true);//single column mode true
+                break; 
+            case "DESC":
+                this.collectionConfig.toggleOrderBy(this.columns[this.selectedOrderByColumnIndex].propertyIdentifier,true);//single column mode true
+                break; 
+            case "MANUAL":
+                //flip listing
+                break; 
+        }
     }
 
-    public sortDescending = () =>{
-
+    public sortAscending = ():void =>{
+        this.sortCode = 'ASC'; 
     }
 
-    public manualSort = () =>{
-        
+    public sortDescending = ():void =>{
+        this.sortCode = 'DESC'; 
     }
+
+    public manualSort = ():void =>{
+        this.sortCode = 'MANUAL'
+    }
+
 }
 
 class SWOrderByControls implements ng.IDirective{
@@ -31,7 +50,8 @@ class SWOrderByControls implements ng.IDirective{
     public scope = {};
 
     public bindToController = {
-        collectionConfig:"=?"
+        collectionConfig:"=?",
+        selectedOrderByColumn:"=?"
     };
     public controller=SWOrderByControlsController;
     public controllerAs="swOrderByControls";

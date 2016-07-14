@@ -1,14 +1,13 @@
 <div class="s-select-wrapper s-titled-select-wrapper s-sort-by s-disabled">
     <span>Sort By:</span>
-    <select class="form-control input-sm">
-        <option value="" disabled="" selected="">Select</option>
-        <option value="" id="for-mock-only-manual-sort">Manual</option>
-        <option value="name">Name</option>
-        <option value="">Code</option>
-        <option value="">Active</option>
-        <option value="">Published</option>
-        <option value="">Type</option>
-        <option value="">Price</option>
+    <select class="form-control input-sm" 
+            name="needed"
+            ng-model="swOrderByControls.selectedOrderByColumnIndex"
+            ng-change="swOrderByControls.updateSortOrderProperty()" >
+
+        <option value="" disabled="" selected="" sw-rbkey="'define.select'">Select</option>
+        
+        <option value="$index" ng-repeat="column in swOrderByControls.collectionConfig.columns track by $index"><spann ng-bind="column.title"></span></option>
     </select>
 </div>
 
