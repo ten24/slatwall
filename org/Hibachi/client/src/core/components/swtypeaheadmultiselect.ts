@@ -67,6 +67,7 @@ class SWTypeaheadMultiselect implements ng.IDirective{
 
 	public bindToController = {
         placeholderRbKey:"@"
+        ,collectionConfig:"=?"
         ,typeaheadDataKey:"@?"
         ,multiselectModeOn:"=?multiselectMode"
         ,showSelections:"=?"

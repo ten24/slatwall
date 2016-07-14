@@ -2,12 +2,15 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 
 class SWAssignedProductsController {
+
+    public collectionConfig; 
     
     //@ngInject
     constructor(
-
+        collectionConfigService
     ){
-        
+        this.collectionConfig = collectionConfigService.newCollectionConfig("Product"); 
+        this.collectionConfig.addDisplayProperty("productID,productName,productDescription");
     }
 }
 
@@ -21,7 +24,7 @@ class SWAssignedProducts implements ng.IDirective{
     };
     
     public controller=SWAssignedProductsController;
-    public controllerAs="swProductListingPage";
+    public controllerAs="swAssignedProducts";
     
 	public static Factory():ng.IDirectiveFactory{
         var directive:ng.IDirectiveFactory = (

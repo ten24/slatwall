@@ -144,6 +144,7 @@ class SWTypeaheadSearchController {
             }
         }); 
 
+        //need to insure that these changes are actually on the collectionconfig
         angular.copy(this.searchableColumns,this.initialSearchableColumnsState);
 
 	}
@@ -207,7 +208,7 @@ class SWTypeaheadSearchController {
 
     public updateSearchableProperties = (column) =>{
         if(angular.isString(column) && column == 'all'){
-            angular.copy(this.initialSearchableColumnsState, this.searchableColumns);
+            angular.copy(this.initialSearchableColumnsState, this.searchableColumns);//need to insure that these changes are actually on the collectionconfig
             this.searchableColumnSelection = 'All';
         } else {
             angular.forEach(this.searchableColumns, (value,key) => {
@@ -216,6 +217,7 @@ class SWTypeaheadSearchController {
             column.isSearchable = true; 
             this.searchableColumnSelection = column.title; 
         }
+        //probably need to refetch the collection
     }
 
 	public addOrRemoveItem = (item)=>{
@@ -316,7 +318,8 @@ class SWTypeaheadSearch implements ng.IDirective{
         disabled:"=?",
         initialEntityId:"@",
         multiselectMode:"=?",
-        typeaheadDataKey:"@?"
+        typeaheadDataKey:"@?",
+        rightContentPropertyIdentifier:"@?"
 	};
 	public controller=SWTypeaheadSearchController;
 	public controllerAs="swTypeaheadSearch";
@@ -347,12 +350,24 @@ class SWTypeaheadSearch implements ng.IDirective{
                 var listItemTemplateString = `
                     <li ng-repeat="item in swTypeaheadSearch.results" ng-class="{'s-selected':item.selected}"></li>
                 `;
+
+                var anchorTemplateString = `
+                    <a ng-click="swTypeaheadSearch.addOrRemoveItem(item)">
+                `
+                
+                if(angular.isDefined($scope.swTypeaheadSearch.rightContentPropertyIdentifier)){
+                    var rightContentTemplateString = `<span class="s-right-content" ng-bind="item[swTypeaheadSearch.rightContentPropertyIdentifier]"></span></a>`
+                } else {
+                    var rightContentTemplateString = "</a>";
+                }
+
+                anchorTemplateString = anchorTemplateString + rightContentTemplateString; 
                 
                 var listItemTemplate = angular.element(listItemTemplateString);
-                var actionTemplate = angular.element('<a ng-click="swTypeaheadSearch.addOrRemoveItem(item)"></a>');
+                var anchorTemplate = angular.element(anchorTemplateString);
                
-                actionTemplate.append(this.typeaheadService.stripTranscludedContent(transclude($scope,()=>{}))); 
-                listItemTemplate.append(actionTemplate); 
+                anchorTemplate.append(this.typeaheadService.stripTranscludedContent(transclude($scope,()=>{}))); 
+                listItemTemplate.append(anchorTemplate); 
                 $scope.swTypeaheadSearch.resultsPromise.then(()=>{
                     target.append(this.$compile(listItemTemplate)($scope));
                 });
