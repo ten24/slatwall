@@ -1,12 +1,9 @@
 <div class="row">
     <div class="col-md-9">
-        <sw-typeahead-multiselect>
-            <sw-collection-config 
-                    data-entity-name="Product" 
-                    data-parent-directive-controller-as-name="swTypeaheadMultiselect"
-                    data-collection-config-property="collectionConfig"
-                >
-            </sw-collection-config>
+        <sw-typeahead-multiselect 
+                    data-placeholder-rb-key="define.searchandassignproducts"
+                    data-collection-config="swAssignedProducts.collectionConfig">
+            <sw-typeahead-search-line-item data-property-identifier="productName"></sw-typeahead-search-line-item>
         </sw-typeahead-multiselect>
         
 
@@ -48,8 +45,8 @@
         
     </div>
     <div class="col-md-3 s-action-right">
-        <sw-order-by-controls>
-            
+        <sw-order-by-controls 
+                   data-collection-config="swAssignedProducts.collectionConfig">
         </sw-order-by-controls> 
         
         <!-- <div class="s-table-setting">
