@@ -41,9 +41,21 @@ class SWCollectionFilter implements ng.IDirective{
                 logicalOperator:scope.SWCollectionFilter.logicalOperator,
                 hidden:scope.SWCollectionFilter.hidden
         };
+        
+        var currentScope = scope; 
+        //get the right parent scope
+        while(angular.isDefined(currentScope.$parent)){
+            if(angular.isDefined(currentScope.swCollectionConfig)){ 
+                break; 
+            }
+            currentScope = currentScope.$parent; 
+        }
        
-        if(angular.isDefined(scope.swCollectionConfig)){ 
-            scope.swCollectionConfig.filters.push(filter); 
+        if(angular.isDefined(currentScope.swCollectionConfig)){ 
+            currentScope.swCollectionConfig.filters.push(filter); 
+            currentScope.swCollectionConfig.filtersDeferred.resolve(); 
+        } else { 
+            throw("could not find swCollectionConfig in the parent scope from swcollectionfilter");
         }
     }
 }

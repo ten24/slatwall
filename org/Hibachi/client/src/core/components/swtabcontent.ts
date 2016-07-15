@@ -38,9 +38,9 @@ class SWTabContent implements ng.IDirective{
     public scope = {};
 
     public bindToController = {
-        active:"=?",
-        loaded:"=?",
-        name:"@?"
+        "active":"=?",
+        "loaded":"=?",
+        "name":"@?"
     };
     public controller=SWTabContentController;
     public controllerAs="swTabContent";

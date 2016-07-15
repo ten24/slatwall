@@ -6,6 +6,7 @@ import {HibachiInterceptor,IHibachi,IHibachiConfig,HibachiJQueryStatic} from "./
 import {HibachiPathBuilder} from "./services/hibachipathbuilder";
 
 //services
+import {CacheService} from "./services/cacheservice"; 
 import {PublicService} from "./services/publicservice";
 import {AccountService} from "./services/accountservice";
 import {CartService} from "./services/cartservice";
@@ -16,14 +17,18 @@ import {OrderService} from "./services/orderservice";
 import {OrderPaymentService} from "./services/orderpaymentservice";
 import {FormService} from "./services/formservice";
 import {TypeaheadService} from "./services/typeaheadservice";
+import {FilterService} from "./services/filterservice"; 
 import {ExpandableService} from "./services/expandableservice";
 import {MetaDataService} from "./services/metadataservice";
 import {RbKeyService} from "./services/rbkeyservice";
 import {ScopeService} from "./services/scopeservice";
 import {$Hibachi} from "./services/hibachiservice";
 import {LocalStorageService} from "./services/localstorageservice";
+import {ListingService} from "./services/listingservice"
 import {HibachiServiceDecorator} from "./services/hibachiservicedecorator";
 import {HibachiScope} from "./services/hibachiscope";
+import {ScopeService} from "./services/scopeservice";
+import {HistoryService} from "./services/historyservice";
 import {RequestService} from "./services/requestservice";
 import {HibachiValidationService} from "./services/hibachivalidationservice";
 import {EntityService} from "./services/entityservice";
@@ -57,10 +62,15 @@ import {SWListingControls} from "./components/swlistingcontrols";
 import {SWListingAggregate} from "./components/swlistingaggregate";
 import {SWListingColorFilter} from "./components/swlistingcolorfilter";
 import {SWListingColumn} from "./components/swlistingcolumn";
+import {SWListingDisableRule} from "./components/swlistingdisablerule";
+import {SWListingExpandableRule} from "./components/swlistingexpandablerule";
 import {SWListingFilter} from "./components/swlistingfilter";
 import {SWListingFilterGroup} from "./components/swlistingfiltergroup";
 import {SWListingOrderBy} from "./components/swlistingorderby";
+import {SWListingRowSave} from "./components/swlistingrowsave"; 
 import {SWLogin} from "./components/swlogin";
+import {SWModalLauncher} from "./components/swmodallauncher";
+import {SWModalWindow} from "./components/swmodalwindow"; 
 import {SWNumbersOnly} from "./components/swnumbersonly";
 import {SWLoading} from "./components/swloading";
 import {SWOrderByControls} from "./components/sworderbycontrols";
@@ -77,7 +87,10 @@ import {SWExportAction} from "./components/swexportaction";
 import {SWHref} from "./components/swhref";
 import {SWProcessCaller} from "./components/swprocesscaller";
 import {SWSortable} from "./components/swsortable";
+import {SWTabGroup} from "./components/swtabgroup";
 import {SWListingGlobalSearch} from "./components/swlistingglobalsearch";
+import {SWListingDisplayCell} from "./components/swlistingdisplaycell";
+
 import {BaseObject} from "./model/baseobject";
 declare var $:any;
 
@@ -147,20 +160,28 @@ var coremodule = angular.module('hibachi.core',[
 .constant('hibachiPathBuilder',new HibachiPathBuilder())
 .constant('corePartialsPath','core/components/')
 //services
+.service('cacheService', CacheService)
 .service('publicService',PublicService)
 .service('utilityService',UtilityService)
 .service('selectionService',SelectionService)
 .service('observerService',ObserverService)
 .service('expandableService',ExpandableService)
+.service('filterService',FilterService)
 .service('formService',FormService)
 .service('typeaheadService', TypeaheadService)
 .service('metadataService',MetaDataService)
 .service('rbkeyService',RbKeyService)
 .service('scopeService',ScopeService)
+.service('historyService',HistoryService)
+.service('metadataService',MetaDataService)
+.service('rbkeyService',RbKeyService)
+.service('listingService', ListingService)
+>>>>>>> origin/develop-jb-listing-display-changes-from-pricing-manager
 .provider('$hibachi',$Hibachi)
 .decorator('$hibachi',HibachiServiceDecorator)
 .service('hibachiInterceptor', HibachiInterceptor.Factory())
 .service('hibachiScope',HibachiScope)
+.service('scopeService',ScopeService)
 .service('localStorageService',LocalStorageService)
 .service('requestService',RequestService)
 .service('accountService',AccountService)
@@ -176,6 +197,7 @@ var coremodule = angular.module('hibachi.core',[
 .filter('percentage',[PercentageFilter.Factory])
 .filter('trim', [SWTrim.Factory])
 .filter('entityRBKey',['rbkeyService',EntityRBKey.Factory])
+.filter('swdate',['$log','$filter',DateFilter.Factory])
 //directives
 .directive('swCollectionConfig',SWCollectionConfig.Factory())
 .directive('swCollectionColumn',SWCollectionColumn.Factory())
@@ -197,10 +219,15 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swListingAggregate',SWListingAggregate.Factory())
 .directive('swListingColorFilter',SWListingColorFilter.Factory())
 .directive('swListingColumn',SWListingColumn.Factory())
+.directive('swListingDisableRule', SWListingDisableRule.Factory())
+.directive('swListingExpandableRule', SWListingExpandableRule.Factory())
 .directive('swListingFilter',SWListingFilter.Factory())
 .directive('swListingFilterGroup',SWListingFilterGroup.Factory())
 .directive('swListingOrderBy',SWListingOrderBy.Factory())
+.directive('swListingRowSave', SWListingRowSave.Factory())
 .directive('swLogin',SWLogin.Factory())
+.directive('swModalLauncher',SWModalLauncher.Factory())
+.directive('swModalWindow', SWModalWindow.Factory())
 .directive('swNumbersOnly',SWNumbersOnly.Factory())
 .directive('swLoading',SWLoading.Factory())
 .directive('swScrollTrigger',SWScrollTrigger.Factory())
@@ -217,7 +244,10 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swHref',SWHref.Factory())
 .directive('swProcessCaller',SWProcessCaller.Factory())
 .directive('sw:sortable',SWSortable.Factory())
+.directive('swTabGroup', SWTabGroup.Factory())
+.directive('swTabContent', SWTabContent.Factory())
 .directive('swListingGlobalSearch',SWListingGlobalSearch.Factory())
+.directive('swListingDisplayCell',SWListingDisplayCell.Factory())
 ;
 export{
 	coremodule
