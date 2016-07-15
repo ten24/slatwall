@@ -1,46 +1,46 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWProductBundleGroupsController{
-    
+
     public sku;
-    public productBundleGroups; 
-    
+    public productBundleGroups;
+
     //@ngInject
-    constructor(public $scope, 
-                public $element, 
-                public $attrs, 
-                public $log, 
-                public productBundleService, 
+    constructor(public $scope,
+                public $element,
+                public $attrs,
+                public $log,
+                public productBundleService,
                 public $hibachi
     ){
         $scope.editing = $scope.editing || true;
-        
+
         angular.forEach(this.productBundleGroups,(obj)=>{
             productBundleService.decorateProductBundleGroup(obj);
             obj.data.$$editing = false;
         });
-    }    
-    
+    }
+
     public removeProductBundleGroup = (index)=>{
-        if(angular.isDefined(this.productBundleGroups[index]) && this.productBundleGroups[index].$$isPersisted()){ 
+        if(angular.isDefined(this.productBundleGroups[index]) && this.productBundleGroups[index].$$isPersisted()){
             this.productBundleGroups[index].$$delete().then((data)=>{
-                //no more logic to run     
+                //no more logic to run
             });
-        } 
+        }
         this.productBundleGroups.splice(index,1);
     }
- 
+
     public addProductBundleGroup = () =>{
         var productBundleGroup = this.$hibachi.newProductBundleGroup();
-        
-        console.log("Adding PBG", productBundleGroup);
-        
+
+
+
         productBundleGroup.$$setProductBundleSku(this.sku);
 
         productBundleGroup = this.productBundleService.decorateProductBundleGroup(productBundleGroup);
-        
+
     }
-    
+
 }
 
 
@@ -57,8 +57,8 @@ class SWProductBundleGroups implements ng.IDirective{
     };
     public controller = SWProductBundleGroupsController;
     public controllerAs="swProductBundleGroups";
-   
-   
+
+
     public static Factory(){
         var directive = (
             $http,

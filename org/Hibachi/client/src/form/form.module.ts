@@ -25,9 +25,11 @@ import {SWFormFieldSelect} from "./components/swformfieldselect";
 import {SWFormFieldText} from "./components/swformfieldtext";
 import {SWFormFieldDate} from "./components/swformfielddate";
 import {SWFormRegistrar} from "./components/swformregistrar";
-import {SWFPropertyDisplay} from "./components/swfpropertydisplay";
-import {SWPropertyDisplay} from "./components/swpropertydisplay";
+import {SWErrorDisplay} from "./components/swerrordisplay";
 
+import {SWPropertyDisplay} from "./components/swpropertydisplay";
+import {SWFPropertyDisplay} from "./components/swfpropertydisplay";
+import {SWFormSubscriber} from "./components/swformsubscriber";
 
 var formmodule = angular.module('hibachi.form',['angularjs-datetime-picker']).config(()=>{
 
@@ -49,8 +51,10 @@ var formmodule = angular.module('hibachi.form',['angularjs-datetime-picker']).co
 .directive('swFormFieldText',SWFormFieldText.Factory())
 .directive('swFormFieldDate',SWFormFieldDate.Factory())
 .directive('swFormRegistrar',SWFormRegistrar.Factory())
-.directive('swfPropertyDisplay',SWFPropertyDisplay.Factory())
-.directive('swPropertyDisplay',SWPropertyDisplay.Factory())
+.directive('swfPropertyDisplay',SWFPropertyDisplay.Factory(SWFPropertyDisplay,"swfpropertydisplay.html"))
+.directive('swPropertyDisplay',SWPropertyDisplay.Factory(SWPropertyDisplay,"propertydisplay.html"))
+.directive('swErrorDisplay',SWErrorDisplay.Factory())
+.directive('swFormSubscriber',SWFormSubscriber.Factory())
 
 ;
 export{
