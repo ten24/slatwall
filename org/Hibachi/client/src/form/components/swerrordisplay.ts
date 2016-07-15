@@ -14,6 +14,7 @@ class SWErrorDisplayController {
     public swForm:SWFormController;
     public property:string;
     public propertyIdentifier:string;
+    public name:string;
     //@ngInject
    constructor(public $injector){
        this.$injector = $injector;
@@ -21,7 +22,7 @@ class SWErrorDisplayController {
    public $onInit(){
        var bindToControllerProps = this.$injector.get('swErrorDisplayDirective')[0].bindToController;
 		for(var i in bindToControllerProps){
-			if(!this[i]){
+			if(!this[i] && i !== 'name'){
 				if(!this[i] && this.swPropertyDisplay && this.swPropertyDisplay[i]){
 					this[i] = this.swPropertyDisplay[i]
 				}else if(!this[i] && this.swfPropertyDisplay && this.swfPropertyDisplay[i]){
@@ -31,9 +32,12 @@ class SWErrorDisplayController {
 				}
 			}
 		}
+
         this.property = this.property || this.propertyIdentifier;
         this.propertyIdentifier = this.propertyIdentifier || this.property;
-
+        if(!this.name){
+            this.name = this.property;
+        }
    }
 }
 
