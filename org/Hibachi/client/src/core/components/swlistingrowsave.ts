@@ -69,9 +69,9 @@ class SWListingRowSave implements ng.IDirective{
                 $scope.swListingRowSave.pageRecordIndex = currentScope["pageRecordKey"];
             }
 
-            var currentScope = this.scopeService.locateParentScope($scope, "swMultiListingDisplay");
-            if(angular.isDefined(currentScope["swMultiListingDisplay"])){
-                $scope.swListingRowSave.listingID = currentScope["swMultiListingDisplay"].tableID;
+            var currentScope = this.scopeService.locateParentScope($scope, "swListingDisplay");
+            if(angular.isDefined(currentScope["swListingDisplay"])){
+                $scope.swListingRowSave.listingID = currentScope["swListingDisplay"].tableID;
             }
     }
 }

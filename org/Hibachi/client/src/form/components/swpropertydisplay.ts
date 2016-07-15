@@ -303,9 +303,9 @@ class SWPropertyDisplay implements ng.IDirective{
                 $scope.swPropertyDisplay.pageRecordIndex = currentScope["pageRecordKey"];
             }
 
-            var currentScope = this.scopeService.locateParentScope($scope, "swMultiListingDisplay");
-            if(angular.isDefined(currentScope["swMultiListingDisplay"])){
-                $scope.swPropertyDisplay.listingID = currentScope["swMultiListingDisplay"].tableID;
+            var currentScope = this.scopeService.locateParentScope($scope, "swListingDisplay");
+            if(angular.isDefined(currentScope["swListingDisplay"])){
+                $scope.swPropertyDisplay.listingID = currentScope["swListingDisplay"].tableID;
             }
         }
 

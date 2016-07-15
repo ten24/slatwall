@@ -117,9 +117,9 @@ class SWDeleteSkuPriceModalLauncher implements ng.IDirective{
                 } else{ 
                     throw("swDeleteSkuPriceModalLauncher was unable to find the pageRecord that it needs!");
                 } 
-                var listingScope = this.scopeService.locateParentScope($scope, "swMultiListingDisplay");
-                if(angular.isDefined(listingScope.swMultiListingDisplay)){ 
-                    $scope.swDeleteSkuPriceModalLauncher.listingID = listingScope.swMultiListingDisplay.tableID;
+                var listingScope = this.scopeService.locateParentScope($scope, "swListingDisplay");
+                if(angular.isDefined(listingScope.swListingDisplay)){ 
+                    $scope.swDeleteSkuPriceModalLauncher.listingID = listingScope.swListingDisplay.tableID;
                 }
             },
             post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {

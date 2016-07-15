@@ -62,16 +62,19 @@ class SWListingColumn implements ng.IDirective{
 
     public static Factory(){
         var directive:ng.IDirectiveFactory=(
+            scopeService,
             utilityService
         )=>new SWListingColumn(
+            scopeService,
             utilityService
         );
         directive.$inject = [
+            'scopeService',
             'utilityService'
         ];
         return directive;
     }
-    constructor(private utilityService){
+    constructor(private scopeService, private utilityService){
 
     }
 
@@ -107,11 +110,10 @@ class SWListingColumn implements ng.IDirective{
             column.aggregate = scope.swListingColumn.aggregate;
             column.aggregate.propertyIdentifier = scope.swListingColumn.propertyIdentifier;
         }
-        //TEMP OVERRIDES for TEMP multilisting directive
-        if(angular.isDefined(scope.$parent.$parent.swMultiListingDisplay)){
-             var listingDisplayScope = scope.$parent.$parent.swMultiListingDisplay;
-        }else if(angular.isDefined(scope.$parent.swListingDisplay)){
-             var listingDisplayScope = scope.$parent.swListingDisplay;
+        
+        var listingDisplayScope = this.scopeService.locateParentScope("swListingDisplay");
+        if(angular.isDefined(listingDisplayScope.swListingDisplay)){
+            listingDisplayScope = listingDisplayScope.swListingDisplay;
         }else {
             throw("listing display scope not available to sw-listing-column")
         }

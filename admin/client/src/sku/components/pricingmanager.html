@@ -5,7 +5,8 @@
            <!-- RB support here -->
            <sw-tab-content data-name="Basic">               
                 <!-- Attempting to incorporate needs into existing listing -->
-                <sw-multi-listing-display
+                <sw-listing-display
+                        data-multi-slot="true"
                         data-edit="true"
                         data-has-search="true"
                         data-is-angular-route="false"
@@ -52,7 +53,7 @@
                         <sw-collection-configs>
                             <sw-collection-config 
                                 data-entity-name="Sku"
-                                data-parent-directive-controller-as-name="swMultiListingDisplay"
+                                data-parent-directive-controller-as-name="swListingDisplay"
                                 data-parent-deferred-property="singleCollectionDeferred"
                                 data-collection-config-property="collectionConfig"
                             >
@@ -111,11 +112,12 @@
                                                       data-filter-comparison-value="null">
                             </sw-listing-disable-rule>
                         </sw-disabled-row-rules> 
-                </sw-multi-listing-display>
+                </sw-listing-display>
            </sw-tab-content>
            <sw-tab-content data-name="Pricing">  
                <!-- Attempting to incorporate needs into existing listing -->
-                <sw-multi-listing-display
+                <sw-listing-display
+                        data-multi-slot="true"
                         data-edit="true"
                         data-has-search="true"
                         data-is-angular-route="false"
@@ -151,7 +153,7 @@
                         <sw-collection-configs>
                             <sw-collection-config 
                                 data-entity-name="Sku"
-                                data-parent-directive-controller-as-name="swMultiListingDisplay"
+                                data-parent-directive-controller-as-name="swListingDisplay"
                                 data-parent-deferred-property="singleCollectionDeferred"
                                 data-collection-config-property="collectionConfig"
                             >
@@ -219,7 +221,7 @@
                             <sw-delete-sku-price-modal-launcher>
                             </sw-delete-sku-price-modal-launcher>
                         </sw-listing-delete-action>  
-                </sw-multi-listing-display>
+                </sw-listing-display>
            </sw-tab-content>
        </sw-tab-group>
     </div>

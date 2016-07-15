@@ -549,7 +549,7 @@ class SWListingDisplay implements ng.IDirective{
             multiSlot:"=?"
     };
     public controller:any=SWListingDisplayController;
-    public controllerAs="swMultiListingDisplay";
+    public controllerAs="swListingDisplay";
     public templateUrl;
     
     public static Factory(){

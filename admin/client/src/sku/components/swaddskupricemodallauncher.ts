@@ -190,9 +190,9 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
                 } else{ 
                     throw("swAddSkuPriceModalLauncher was unable to find the pageRecord that it needs!");
                 } 
-                var listingScope = this.scopeService.locateParentScope($scope, "swMultiListingDisplay");
-                if(angular.isDefined(listingScope.swMultiListingDisplay)){ 
-                    $scope.swAddSkuPriceModalLauncher.listingID = listingScope.swMultiListingDisplay.tableID;
+                var listingScope = this.scopeService.locateParentScope($scope, "swListingDisplay");
+                if(angular.isDefined(listingScope.swListingDisplay)){ 
+                    $scope.swAddSkuPriceModalLauncher.listingID = listingScope.swListingDisplay.tableID;
                 }
                  $scope.swAddSkuPriceModalLauncher.initData();
             },

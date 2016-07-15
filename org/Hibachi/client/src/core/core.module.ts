@@ -55,8 +55,6 @@ import {SWEntityActionBarButtonGroup} from "./components/swentityactionbarbutton
 import {SWExpandableRecord} from "./components/swexpandablerecord";
 import {SWGravatar} from "./components/swgravatar";
 import {SWListingDisplay} from "./components/swlistingdisplay";
-//TEMP directive to prevent conflicts with ongoing listing display work
-import {SWMultiListingDisplay} from "./components/swmultilistingdisplay"; 
 import {SWListingControls} from "./components/swlistingcontrols";
 import {SWListingAggregate} from "./components/swlistingaggregate";
 import {SWListingColorFilter} from "./components/swlistingcolorfilter";
@@ -206,8 +204,6 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swExpandableRecord',SWExpandableRecord.Factory())
 .directive('swGravatar', SWGravatar.Factory())
 .directive('swListingDisplay',SWListingDisplay.Factory())
-//TEMP directive to prevent conflicts with ongoing listing display work
-.directive('swMultiListingDisplay', SWMultiListingDisplay.Factory())
 .directive('swListingControls',SWListingControls.Factory())
 .directive('swListingAggregate',SWListingAggregate.Factory())
 .directive('swListingColorFilter',SWListingColorFilter.Factory())

@@ -82,7 +82,7 @@ class ListingService{
         this.setupColumns( listingID,this.getListing(listingID).collectionConfig, this.getListing(listingID).collectionObject ); 
         this.initCollectionConfigData( listingID, this.getListing(listingID).collectionConfig );
         
-        scope.$watch('swMultiListingDisplay.collectionPromise',(newValue,oldValue)=>{
+        scope.$watch('swListingDisplay.collectionPromise',(newValue,oldValue)=>{
             if(newValue){
                 this.$q.when(this.getListing(listingID).collectionPromise).then((data)=>{
                     this.getListing(listingID).collectionData = data;

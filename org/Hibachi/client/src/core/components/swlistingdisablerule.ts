@@ -36,16 +36,19 @@ class SWListingDisableRule implements ng.IDirective{
 
     public static Factory(){
         var directive:ng.IDirectiveFactory=(
+            scopeService,
             $q
         )=>new SWListingDisableRule(
+            scopeService,
             $q
         );
         directive.$inject = [
+            'scopeService',
             '$q'
         ];
         return directive;
     }
-    constructor(private $q){
+    constructor(private scopeService, private $q){
 
     }
 
@@ -56,17 +59,14 @@ class SWListingDisableRule implements ng.IDirective{
             filterComparisonValue:scope.swListingDisableRule.filterComparisonValue
         };
         
-        //TEMP OVERRIDES for TEMP multilisting directive
-        if(angular.isDefined(scope.$parent.$parent.swMultiListingDisplay)){
-            var listingDisplayScope = scope.$parent.$parent.swMultiListingDisplay;
-        }else if(angular.isDefined(scope.$parent.swListingDisplay)){
-            var listingDisplayScope = scope.$parent.swListingDisplay;
-        }
-        if(angular.isDefined(listingDisplayScope)){
-            listingDisplayScope.disableRules.push(rule); 
-        } else {
+        var listingDisplayScope = this.scopeService.locateParentScope("swListingDisplay");
+        if(angular.isDefined(listingDisplayScope.swListingDisplay)){
+            listingDisplayScope = listingDisplayScope.swListingDisplay;
+        }else {
             throw("listing display scope not available to sw-listing-disable-rule");
         }
+        
+        listingDisplayScope.disableRules.push(rule); 
     }
 }
 export{
