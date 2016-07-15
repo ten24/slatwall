@@ -39,7 +39,7 @@ class SWCollectionConfig implements ng.IDirective{
         distinct:"=?",
         parentDirectiveControllerAsName:"@",
         collectionConfigProperty:"@?",
-        pageShow:"@?"
+        pageShow:"@?",
         multiCollectionConfigProperty:"@?",
         parentDeferredProperty:"@?"
     };

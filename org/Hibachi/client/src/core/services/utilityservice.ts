@@ -72,6 +72,7 @@ class UtilityService extends BaseService{
             data.push(parseFunction(context));
         });
         return this.replacePropertiesWithData(stringItem, data);
+    }
 
     //used to do inheritance at runtime
     public extend = (ChildClass, ParentClass)=> {
