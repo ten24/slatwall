@@ -230,7 +230,7 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 		return nullReplace(this.getOwnerFirstName(),"") & ' '
 			 & nullReplace(this.getOwnerLastName(),"")
 			 & ' - ' & nullReplace(this.getEmailAddress(),"")
-			 & ' ( ' & formatValue(nullReplace(this.getBalanceAmount(),""),"currency") & ' ) ';
+			 & ' ( ' & formatValue(nullReplace(this.getBalanceAmount(),0),"currency") & ' ) ';
  	}
 
 	// ==================  END:  Overridden Methods ========================
