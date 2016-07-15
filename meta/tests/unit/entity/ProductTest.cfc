@@ -85,7 +85,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(productRating,3.3333);
 	}
 
-	public void function getUnusedProductOptionsTestCaseHasUnusedOptions(){
+	public void function getUnusedProductOptionsTest_CaseHasUnusedOptions(){
 
 		var optionGroup1 = createUUID();
 		var optionG11 = createUUID();
@@ -471,7 +471,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 
 
-	public void function getProductBundleGroupsCount_CorrectCount_Test() {
+	public void function getProductBundleGroupsCountTest_CorrectCount() {
 		//Mocking data: mockProduct -> mockSku1 -> mockProductBundleGroup1 & mockProductBundleGroup2
 		//Mocking data: mockProduct -> mockSku2 -> mockProductBundleGroup3
 		var productBundleGroupData1 = {
@@ -530,7 +530,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(3, result);
 	}
 	
-	public void function getProductBundleGroupsCount_NoSku_Test() {
+	public void function getProductBundleGroupsCountTest_NoSku() {
 		//testing if no SKU entity created
 		var skuData = {
 			skuID = ""
@@ -551,7 +551,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(0, result);	 
 	}
 	
-	public void function getProductBundleGroupsCount_NoProductBundleGroup_Test() {
+	public void function getProductBundleGroupsCountTest_NoProductBundleGroup() {
 		//testing if no ProductBundleGroups entity created in SKU 
 		var productData = {
 			productID = ""
@@ -621,7 +621,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(0, arrayFind(result, mockSku3));
 	}
 	
-	public void function getSkus_NoArgument_Test() {
+	public void function getSkusTest_NoArgument() {
 		var skuData1 = {
 			skuID = ""
 		};
@@ -659,7 +659,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(arrayFind(result, mockSku3));
 	}
 	
-	public void function getSkus_SortedFetchOptionBothTrue_Test() {
+	public void function getSkusTest_SortedFetchOptionBothTrue() {
 		//Potential Bug: based on the function in SkuService.cfc, if we pass arguments, fetchOptions must be true, 
 		//and sorted is a required argument
 
@@ -720,7 +720,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 	
-	public void function getProductTypeOptions_noArgument_Test() {
+	public void function getProductTypeOptionsTest_noArgument() {
 		//testing the function without the argument, should return child-types below the mockProduct's baseProductType
 		
 		//mock a child product type
@@ -747,7 +747,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(arrayFind(resultValues, mockProductType6.getProductTypeID()));		
 	}
 	
-	public void function getProductTypeOptions_argumentSameWithProductType_Test() {
+	public void function getProductTypeOptionsTest_argumentSameWithProductType() {
 		//testing the argument passed in, is same with mockProduct's baseProductType
 		
 		//mock a child product type
@@ -770,7 +770,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertFalse(arrayFind(resultValues, mockProductType4.getProductTypeID()));
 	}
 	
-	public void function getProductTypeOptions_argumentDifferentFromProductType_Test() {
+	public void function getProductTypeOptionsTest_argumentDifferentFromProductType() {
 		//testing the argument passed in, is different with mockProduct's baseProductType, 
 		//so should only return the relative-type with the argument type
 		
@@ -888,14 +888,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	
 	public void function getTemplateOptionsTest() {
 		//Never been used elsewhere. Skip the test.
-	}
-		
-	public void function getSkuSalePriceDetailsTest() {
-		
-	}
-	
-	public void function getSkuSalePriceDetailsByCurrencyCodeTest() {
-		
 	}
 	
 	//=================Non-persisted Helpers ====================
@@ -1021,7 +1013,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(2, mockProduct.getOptionGroupCount());
 	}
 	
-	public void function getAllowAddOptionGroupFlag_OneSkuTwoOptionGroups_Test() {
+	public void function getAllowAddOptionGroupFlagTest_OneSkuTwoOptionGroups() {
 		//Testing the mock Data from the private helper 
 		var optionGroupsData1 = {
 			optionGroupID = ""
@@ -1037,7 +1029,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var resultAllowFlag = mockProduct.getAllowAddOptionGroupFlag();
 		assertTrue(resultAllowFlag);
 	}
-	public void function getAllowAddOptionGroupFlag_MultipleSkus_Test() {
+	public void function getAllowAddOptionGroupFlagTest_MultipleSkus() {
 		//Testing when getSkus returns more then one Sku
 		var productData = {
 			productID = ""
@@ -1080,7 +1072,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var resultMultiSku = mockProduct.getAllowAddOptionGroupFlag();
 		assertTrue(resultMultiSku);
 	}
-	public void function getAllowAddOptionGroupFlag_NoOptionGroup_Test() {
+	public void function getAllowAddOptionGroupFlagTest_NoOptionGroup() {
 		//testing product with one Sku but 0 OptionGroup
 		var productData = {
 			productID = ""
@@ -1147,7 +1139,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(Len(resultNoCategory) == 0);
 	}
 	
-	public void function getTemplate_ContentTemplateTypeIsCttProduct_Test() {
+	public void function getTemplateTest_ContentTemplateTypeIsCttProduct() {
 		//testing product associate w/ content and ContentTemplateType is cttProduct
 		var mockContent1 = createMockContentWithContentTemplateType("444df330fc19e5beb17ff974ac03db18");//cttProduct
 		
@@ -1174,7 +1166,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 	}
 	
-	public void function getTemplate_ContentTemplateTypeNotCttProduct_Test() {
+	public void function getTemplateTest_ContentTemplateTypeNotCttProduct() {
 		//testing product Template with mockContent
 		var mockContent = createMockContentWithContentTemplateType("444df332f3988ad0c802b83361f99a01");//cttBrand
 		
@@ -1201,7 +1193,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 	}
 	
-	public void function getTemplate_GlobalSettingNoContents_Test() {
+	public void function getTemplateTest_GlobalSettingNoContents() {
 		//testing product Template with no mockContent
 		var productData = {
 			productID = ""
@@ -1302,7 +1294,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(0, resultWithoutProductReview);
 	}
 	
-	public void function getImageGalleryArray_StructValues_Test() {
+	public void function getImageGalleryArrayTest_StructValues() {
 		//testing if the struct values works well		 	
 		var mockSku = createMockSku("", "", "admin.logo.png");
 	 				
@@ -1357,7 +1349,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(!isNull(resultImageGalleryArray[2].resizedImagePaths[2]));
 		assertTrue(!isNull(resultImageGalleryArray[2].resizedImagePaths[3]));		
 	}
-	public void function getImageGalleryArray_SkuImagesAssociation_Test() {
+	public void function getImageGalleryArrayTest_SkuImagesAssociation() {
 		//Testing the associatino
 		var mockSku1 = createMockSku("", "", "admin.logo.png");
 	 	var mockSku2 = createMockSku();//Does not have images, should not be added
@@ -1943,7 +1935,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		return mockProduct;
 	}
 	
-	public void function getEstimatedReceivalDates_NoArgument_Test() {
+	public void function getEstimatedReceivalDatesTest_NoArgument() {
 		//Using the mock data from getEstimatedReceivalDetailsTest()
 		var mockProduct = getEstimatedReceivalDetailsTest();
 		var result = mockProduct.getEstimatedReceivalDates();
@@ -1952,7 +1944,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(1000, result[1].quantity);
 	}
 	
-	public void function getEstimatedReceivalDates_WithArgument_Test() {
+	public void function getEstimatedReceivalDatesTest_WithArgument() {
 		//Copy the mock data from getEstimatedReceivalDetailsTest()
 		var locationData = {
 			locationID = ""
@@ -2031,7 +2023,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 	public void function getQuantityTest() {
-		//TODO: See inventoryServiceTest.cfc
 		//@Suppress the tests of different quantity types.
 		
 		//testing a already calculated quantity (take QATS for example)
@@ -2095,7 +2086,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
    
 	// ============ START: Non-Persistent Property Methods =================
 
-	public void function getBaseProductType_ExistedSystemCode_Test() {
+	public void function getBaseProductTypeTest_ExistedSystemCode() {
 		//testing if the productType already has a systemCode
 		var productTypeData = {
 			productTypeID = "",
@@ -2124,7 +2115,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals('Hellokitty', result);	
 	}
 
-	public void function getBaseProductType_NoSystemCodeButHasParentProductType_Test() {
+	public void function getBaseProductTypeTest_NoSystemCodeButHasParentProductType() {
 		//testing if the productType has no systemCode, but parentProductType has one
 		var productTypeData = {
 			productTypeID = "",
@@ -2152,7 +2143,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals('merchandise', result);			
 	}
 	
-	public void function getBaseProductType_NullProductType_Test() {
+	public void function getBaseProductTypeTest_NullProductType() {
 		//testing if ProductType is undefined
 		var productData = {
 			productID = ""
@@ -2249,77 +2240,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 	
-	 
-	 public void function getSalePriceDetailsForSkusTest() {
-	 	//TODO: see PromotionServiceTest 
-	 	//@Suppress to getSalePriceDetailsForProductSkus() function in PromotionService.cfc
-	 
-	 	var mockProduct = createMockProduct();
-	 	
-	 	var promotionData = {//Yuqing move to other file
-	 		promotionID = ""
-	 		,activeFlag = 1
-	 	};
-	 	var mockPromotion = createPersistedTestEntity('Promotion', promotionData);
-	 	
-	 	var promotionPeriodData = {
-	 		promotinoPeriodID = "",
-	 		promotion = {
-	 			promotionID = mockPromotion.getPromotionID()
-	 		}
-	 		
-	 	};
-	 	var mockPromotionPeriod = createPersistedTestEntity('PromotionPeriod', promotionPeriodData);
-//	 	request.debug(mockPromotionPeriod.getPromotion().getPRomotionID());
-	 	
-	 	var promotionQualifierData = {
-	 		promotionQualifierID = "",
-	 		promotionPeriod = {
-	 			promotionPeriodID = "SomeOtherPromotionPeriod'sID'"
-	 		}
-	 	};
-	 	var mockPromotionQualifier = createPersistedTestEntity('PromotionQualifier', promotionQualifierData);
-	 	
-	 	var promotionCodeData = {
-	 		promotionCodeID = "",
-	 		promotionID = {
-	 			promotionID = "SomeOtherPromotion'sID'"
-	 		}
-	 	};
-	 	var mockPromotionCode = createPersistedTestEntity('PromotionCode', promotionCodeData);
-	 	
-	 	var skuData = {
-	 		skuID = "",
-	 		promotionQualifier = {
-	 			
-	 		}
-	 	};
-	 	var mockSku = createPersistedTestEntity('Sku', skuData);
-		
-//		var productData = {
-//			productID = "",
-//			skus = [
-//				{
-//					skuID = mockSku1.getSkuID()
-//				},
-//				{
-//					skuID = mockSku2.getSkuID()
-//				},
-//				{
-//					skuID = mockSku3.getSkuID()
-//				}
-//			]
-//		};
-//		var mockProduct = createPersistedTestEntity('Product', productData);
-		
-		var result = mockProduct.getSalePriceDetailsForSkus();
-	 }
-	 
-	 public void function getSalePriceDetailsForSkusByCurrencyCodeTest() {
-	 	//TODO: see promotionserviceTest 
-	 	//@Suppress to getSalePriceDetailsForProductSkus() function in PromotionService.cfc
-	 }
-	 
 	 public void function getBrandNameTest() {
 	 	//testing if both brand and brandName existed
 	 	var brandData = {
@@ -2688,11 +2608,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	
 	 	assertEquals("CNY", mockProduct2.getCurrencyCode());
 		
-		//Potential bug: invalid currencyCode could also be returned; 
-		//should add validation if not select button frontend
+		//Potential bug: invalid currencyCode could also be returned; should add validation if not select button frontend
 	 }
 	 
 	 public void function getEventConflictExistsFlagTest() {
+	 	//TODO: Wait for Chris' new verstion of the function to test
 	 	//@Suppress to Sku.cfc getEventConflictExistsFlag()
 	 }
 	 
@@ -2811,17 +2731,260 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	assertEquals(0, resultWithSkuNoPrice);
 	 }
 	 
-	 //@Suppress getLivePriceTest() to the getLivePriceTest() function in SKUTest.cfc
+	 private any function createMockProductAboutSalePrice() {
+	 	var productData = {
+			productid = '',
+			skus = [
+				{
+					skuid = '',
+					price = 10
+				}
+			]
+		};
+		var mockProduct = createPersistedTestEntity('product',productData);
+
+		var promotionData = {
+			promotionid = '',
+			promotionPeriods = [
+				{
+					promotionPeriodid = '',
+					promotionRewards = [
+						{
+							promotionRewardID = '',
+							amount = 3,
+							amountType = 'amountOff'
+						}
+					]
+				}
+
+			]
+		};
+		var promotion = createPersistedTestEntity('promotion',promotionData);
+		var sku = mockProduct.getSkus()[1];
+		var promotionPeriod = promotion.getPromotionPeriods()[1];
+		var promotionReward = promotionPeriod.getPromotionRewards()[1];
+		sku.addPromotionReward(promotionReward);
+		ormflush();
+		
+		return mockProduct;
+	 }
 	 
-	 //@Suppress getPriceByCurrencyCodeTest() to getPriceByCurrencyCodeTest() function in SkuTest.cfc
+	 public void function getSalePriceTest() {	
+		var mockProduct = createMockProductAboutSalePrice();
+		
+		//Testing the calculation with SKU
+		var resultSalePrice = mockProduct.getSalePrice();
+		assertEquals(7, resultSalePrice);
+		
+		//Testing the situation with no sku
+		var mockProductNoSku = createMockProduct();
+		var resultNoSku = mockProductNoSku.getSalePrice();
+		assertEquals(0, resultNoSku);
+	 }
+	
+	 public void function getSalePriceByCurrencyCodeTest_DefaultCurrencyCode() {				
+		var mockProduct = createMockProductAboutSalePrice();
+		var resultDefaultCode = mockProduct.getSalePriceByCurrencyCode('USD');
+		assertEquals(7, resultDefaultCode);
+	}
+	
+	public void function getSalePriceByCurrencyCodeTest_ResetCurrencyCode() {
+		var productData = {
+		productid = '',
+		skus = [
+			{
+				skuid = '',
+				price = 10
+			}
+		]
+		};
+		var mockProduct = createPersistedTestEntity('product',productData);
+
+		var promotionData = {
+			promotionid = '',
+			promotionPeriods = [
+				{
+					promotionPeriodid = '',
+					promotionRewards = [
+						{
+							promotionRewardID = '',
+							amount = 3,
+							amountType = 'amountOff'
+						}
+					]
+				}
+
+			]
+		};
+		var promotion = createPersistedTestEntity('promotion',promotionData);
+		var sku = mockProduct.getSkus()[1];
+		var promotionPeriod = promotion.getPromotionPeriods()[1];
+		var promotionReward = promotionPeriod.getPromotionRewards()[1];
+		sku.addPromotionReward(promotionReward);
+		ormflush();
+		
+		//reset setting
+		var settingData = {
+			settingID = "",
+			settingName="skuCurrency",
+			settingValue = "AAA"
+		};
+		var settingEntity = createPersistedTestEntity('Setting',settingData);
+		
+		var resultResetCode = mockProduct.getSalePriceByCurrencyCode('AAA');
+		assertEquals(7, resultResetCode);
+		
+	}
+
+	public void function getSalePriceDiscountTypeTest() {
+		//TODO: Too much data to mock, skip it
+	}
+	
+	public void function getSalePriceExpirationDateTime() {
+		
+	}
+	
+	public void function getTransactionExistsFlagTest() {
+		
+	}
+	
+	public void function getProductOptionsByGroupTest() {
+	 	
+	}
 	 
-	 //@Suppress getListPriceByCurrencyCodeTest() to getListPriceByCurrencyCodeTest() function in SkuTest.cfc
+	 private any function createMockSkuWithProductAndTwoOptions(required string productID, required string OptionID1, required string OptionID2) {
+		var skuData1 = {
+			skuID = "",
+			product = {
+				productID = arguments.productID
+			},
+			options = [
+				{
+					optionID = arguments.optionID1
+				},
+				{
+					optionID = arguments.optionID2
+				}
+			]
+		};
+		return createPersistedTestEntity(entityName='Sku', data=skuData1);
+	 }
 	 
-	 //@Suppress getRenewalPriceByCurrencyCodeTest() to getRenewalPriceByCurrencyCodeTest() in SkuTest.cfc
+	 public void function getNumberOfUnusedProductOptionCombinationsTest() {
+		var mockProduct = createMockProduct();
+		
+		var mockOptionGroup1 = createMockOptionGroup();
+		var mockOptionGroup2 = createMockOptionGroup();
+		
+		var mockOptionArray = [];
+		
+		var mockOptionArray[1] = createMockOption(mockOptionGroup1.getOptionGroupID());
+		var mockOptionArray[2] = createMockOption(mockOptionGroup1.getOptionGroupID());
+		var mockOptionArray[3] = createMockOption(mockOptionGroup1.getOptionGroupID());
+		var mockOptionArray[4] = createMockOption(mockOptionGroup1.getOptionGroupID());
+		var mockOptionArray[5] = createMockOption(mockOptionGroup1.getOptionGroupID());
+		var mockOptionArray[6] = createMockOption(mockOptionGroup1.getOptionGroupID());
+		var mockOptionArray[7] = createMockOption(mockOptionGroup1.getOptionGroupID());
+		var mockOptionArray[8] = createMockOption(mockOptionGroup2.getOptionGroupID());
+		var mockOptionArray[9] = createMockOption(mockOptionGroup2.getOptionGroupID());
+		var mockOptionArray[10] = createMockOption(mockOptionGroup2.getOptionGroupID());
+
+		var mockSku2 = createMockSkuWithProductAndTwoOptions(mockProduct.getProductID(), mockOptionArray[1].getOptionID(), mockOptionArray[9].getOptionID());
+		var mockSku2 = createMockSkuWithProductAndTwoOptions(mockProduct.getProductID(), mockOptionArray[3].getOptionID(), mockOptionArray[10].getOptionID());
+		
+		var result = mockProduct.getNumberOfUnusedProductOptionCombinations();
+		assertEquals(21-2, result);
+	 }
 	 
-	 //@Suppress getLivePriceByCurrencyCodeTest() to getLivePriceByCurrencyCodeTest() in SkuTest.cfc
+	 public void function getUnusedProductSubscriptionTermsTest() {
+	 	var mockProduct = createMockProduct();
+		
+		var mockSku = createMockSku(mockProduct.getProductID());
+
+		var subscriptionTermDataWithSKU = {
+			subscriptionTermID = "",
+			subscriptionTermName = "MockSTNameUsed",
+			skus = [
+				{
+					skuID = mockSku.getSkuID()
+				}
+			]
+		};
+		var mockSubscriptionTermUsed = createPersistedTestEntity('SubscriptionTerm', subscriptionTermDataWithSKU);
+
+		var subscriptionTermData = {
+			subscriptionTermID = "",
+			subscriptionTermName = "MockSTNameUnused"
+		};
+		var mockSubscriptionTerm = createPersistedTestEntity('SubscriptionTerm', subscriptionTermData);
+
+
+		var ExpectStructUnused = {//struct of the unused mockSubscriptionTerm
+			name = mockSubscriptionTerm.getSubscriptionTermName(),
+			value = mockSubscriptionTerm.getSubscriptionTermID()
+		};
+		var ExpectStructUsedByMockProduct = {//struct of the used one
+			name = mockSubscriptionTermUsed.getSubscriptionTermName(),
+			value = mockSubscriptionTermUsed.getSubscriptionTermID()
+		};
+
+		var resultSkuFilter = mockSubscriptionTerm.getService('subscriptionService').getUnusedProductSubscriptionTerms( mockProduct.getProductID() );
+		assertTrue(arrayFind(resultSkuFilter, ExpectStructUsedByMockProduct) == 0);
+		assertTrue(arrayFind(resultSkuFilter, ExpectStructUnused) != 0);
+		
+		//@Suppress other test cases in SubscriptionDAO.cfc getUnusedProductSubscriptionTermsTest() function
+	 }
+	
+	 private any function createMockEventRegistration(string skuID='s') {
+	 	var eventRegistrationData = {
+	 		eventRegistrationID = ""
+	 	};
+	 	if (len(arguments.skuID)) {
+	 		eventRegistrationData.sku = {
+	 			skuID = arguments.skuID
+	 		};
+	 	}
+	 	return createPersistedTestEntity('EventRegistration', eventRegistrationData);
+	 }
 	 
-	 //@Suppress getCurrentAccountPriceTest() to getCurrentAccountPriceTest() function in SkuTest.cfc
+	 public void function getEventRegistrationsSmartListTest() {
+	 	var mockProduct = createMockProduct();
+
+	 	var mockSku = createMockSku(mockProduct.getProductID(), "", "");
+	 	
+	 	var mockEventRegistration1 = createMockEventRegistration(mockSku.getSkuID());
+	 	var mockEventRegistration2 = createMockEventRegistration();
+		
+	 	var result = mockProduct.getEventRegistrationsSmartList().getRecords(refresh = true);
+	 	assertEquals(1, arrayLen(result));
+	 	assertEquals(mockEventRegistration1.getEventRegistrationID(), result[1].getEventRegistrationID());
+	 }
 	 
+	 // ================== START TEST: Overridden Methods ========================
+	 public void function getAssignedAttributeSetSmartListTest() {
+//	 	var attributeData = {
+//	 		attributeID = "",
+//	 		activeFlag = 1,
+//	 		
+//	 	}
+	 }
 	 
+	 public void function getSimpleRepresentationPropertyNameTest() {
+	 	var mockProduct = createMockProduct();
+	 	var result = mockProduct.getSimpleRepresentationPropertyName();
+	 	assertEquals('ProductName', result);
+	 } 
+	 // ==================  END TEST:  Overridden Methods ========================
+	 
+	 // ================== START: Deprecated Methods ========================
+
+	public array function getAttributeSetsTest(){
+		var smartList = getAssignedAttributeSetSmartList();
+		if(arrayFind(arguments.attributeSetTypeCode, "astProductCustomization") || arrayFind(arguments.attributeSetTypeCode, "astOrderItem")) {
+			smartList.addFilter('attributeSetObject', 'OrderItem');
+		}
+		return smartList.getRecords();
+	}
+
+	// ==================  END:  Deprecated Methods ========================
 }
