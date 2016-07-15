@@ -154,16 +154,21 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		return createPersistedTestEntity('Location', locationData);
 	}
-	public void function getEventConflictsSmartList_SkuValidation_Test() {
-		var mockLocation = createMockLocation();
-		
+	
+	private any function createMockSkuWithEventTime(required numeric startDateFromNow, required numeric endDateFromNow) {
 		var skuData = {
 			skuID = "",
-			eventStartDateTime = dateAdd('d', -2, now()),
-			eventEndDateTime = dateAdd('d', 2, now())
-		};
+			eventStartDateTime = dateAdd('h', arguments.startDateFromNow, now()),
+			eventEndDateTime = dateAdd('h', arguments.endDateFromNow, now())
+		}; 
 		
-		var mockSkuLocationConfiged = createPersistedTestEntity('Sku', skuData);
+		return createPersistedTestEntity('Sku', skuData);
+	}
+//  TODO:  Wait to test the new version of this function from Chris		
+/*	public void function getEventConflictsSmartList_SkuValidation_Test() {
+		var mockLocation = createMockLocation();
+
+		var mockSkuLocationConfiged = createMockSkuWithEventTime(-2,  2);
 		
 		var locationConfigurationData = {
 			locationConfigurationID = "",
@@ -182,91 +187,89 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var result = mockSkuLocationConfiged.getEventConflictsSmartList().getRecords(refresh = true);
 		assertEquals(0, arrayLen(result));
 	}
-	public void function getEventConflictsSmartList_LocationConflict_Test() {//Yuqing
+
+	public void function getEventConflictsSmartList_LocationConflict_Test() {
 		//Testing the validation of the location
-		var mockLocationAssociated = createMockLocation();
+		var mockLocation1 = createMockLocation();
 		var mockLocation2 = createMockLocation();
+		var mockLocation3 = createMockLocation();
 		
-		var skuData = {
-			skuID = "",
-			eventStartDateTime = dateAdd('d', -2, now()),
-			eventEndDateTime = dateAdd('d', 2, now())
-		};
-		
-		var mockSkuLocationConfiged = createPersistedTestEntity('Sku', skuData);
-		
+		var mockSku1 = createMockSkuWithEventTime(-2, 2);
+		var mockSku2 = createMockSkuWithEventTime(-5, 0);
+		var mockSku3 = createMockSkuWithEventTime(1, 2);
+		var mockSku4 = createMockSkuWithEventTime(3, 5);
+
+		//Mock Data:
+		// Sku1 (timeConflict) -> LocationConlig1 <- This.Sku
+		// Sku2 (timeConflict) -> LocationConfig2 <- This.Sku
+		// Sku3 (timeConflict) ->
+		// Sku4 (No  conflict) -> LocationConfig3 <- This.Sku
 		var locationConfigurationData = {
 			locationConfigurationID = "",
 			location = {
-				locationID = mockLocationAssociated.getLocationID()
+				locationID = mockLocation1.getLocationID()
 			},
 			skus = [
 				{
-					skuID = mockSkuLocationConfiged.getSkuID()
+					skuID = mockSku1.getSkuID()
 				}
 			]
 		};
-		var mockLocationConfiguration = createPersistedTestEntity('LocationConfiguration', locationConfigurationData);
+		var mockLocationConfig1 = createPersistedTestEntity('LocationConfiguration', locationConfigurationData);
 		
-		var skuData2 = {
+		var locationConfigurationData2 = {
+			locationConfigurationID = "",
+			location = {
+				locationID = mockLocation2.getLocationID()
+			},
+			skus = [
+				{
+					skuID = mockSku2.getSkuID()
+				},
+				{
+					skuID = mockSku3.getSkuID()
+				}
+			]
+		};
+		var mockLocationConfig2 = createPersistedTestEntity('LocationConfiguration', locationConfigurationData2);
+
+		var locationConfigurationData3 = {
+			locationConfigurationID = "",
+			location = {
+				locationID = mockLocation3.getLocationID()
+			}
+		};
+		var mockLocationConfig3 = createPersistedTestEntity('LocationConfiguration', locationConfigurationData3);
+		
+		var skuDataRunFunction = {
 			skuID = "",
-			eventStartDateTime = dateAdd('d', -1, now()),
-			eventEndDateTime = dateAdd('d', 1, now()),
+			eventStartDateTime = dateAdd('d', -2, now()),
+			eventEndDateTime = dateAdd('d', 2, now()),
 			locationConfigurations = [
 				{
-					locationConfigurationID = mockLocationConfiguration.getLocationConfigurationID()
+					locationConfigurationID = mockLocationConfig2.getLocationConfigurationID()
+				},
+				{
+					locationConfigurationID = mockLocationConfig1.getLocationConfigurationID()
 				}
 			]
 		};
 		
-		var mockSkuRunFunction = createPersistedTestEntity('Sku', skuData2);
+		var mockSkuRunFunction = createPersistedTestEntity('Sku', skuDataRunFunction);
 			
 		var result = mockSkuRunFunction.getEventConflictsSmartList().getRecords(refresh = true);
-		assertEquals(0, arrayLen(result));
+		assertEquals(3, arrayLen(result));
+		
 	}
 	
 	public void function getEventConflictsSmartList_DateTimeConflictAndOrder_Test() {
 		var mockLocation = createMockLocation();
 		
-		var skuData1 = {//Happened during the event of mockSkuRunFunction (this)
-			skuID = "",
-			eventStartDateTime = dateAdd('d', -1, now()),
-			eventEndDateTime = dateAdd('d', 1, now())
-		};
-		
-		var mockSku1 = createPersistedTestEntity('Sku', skuData1);
-		
-		var skuData2 = {//Already start when mockSkuRunFunction (this) didn't end
-			skuID = "",
-			eventStartDateTime = dateAdd('d', 1, now()),
-			eventEndDateTime = dateAdd('d', 5, now())
-		};
-		
-		var mockSku2 = createPersistedTestEntity('Sku', skuData1);
-		
-		var skuData3 = {//Didn't end when mockSkuRunFunction (this) start
-			skuID = "",
-			eventStartDateTime = dateAdd('d', -3, now()),
-			eventEndDateTime = dateAdd('d', -1, now())
-		};
-		
-		var mockSku3 = createPersistedTestEntity('Sku', skuData3);
-		
-		var skuData4 = {//Start and end before mockSKuRunFunction(this), no conflict
-			skuID = "",
-			eventStartDateTime = dateAdd('d', -5, now()),
-			eventEndDateTime = dateAdd('d', -3, now())
-		};
-		
-		var mockSku4 = createPersistedTestEntity('Sku', skuData4);
-		
-		var skuData5 = {//Start and end after mockSKuRunFunction(this), no conflict
-			skuID = "",
-			eventStartDateTime = dateAdd('d', 3, now()),
-			eventEndDateTime = dateAdd('d', 5, now())
-		};
-		
-		var mockSku5 = createPersistedTestEntity('Sku', skuData5);
+		var mockSku1 = createMockSkuWithEventTime(-1,  1);//Happened during the event of mockSkuRunFunction (this)		
+		var mockSku2 = createMockSkuWithEventTime( 1,  3);//Already start when mockSkuRunFunction (this) didn't end		
+		var mockSku3 = createMockSkuWithEventTime(-3, -1);//Didn't end when mockSkuRunFunction (this) start
+		var mockSku4 = createMockSkuWithEventTime(-5,  5);//Covers duration of mockSKuRunFunction(this)
+		var mockSku5 = createMockSkuWithEventTime(-5, -3);//Start and end before mockSKuRunFunction(this), no conflict
 		
 		var locationConfigurationData = {
 			locationConfigurationID = "",
@@ -310,27 +313,20 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var result = mockSkuRunFunction.getEventConflictsSmartList().getRecords(refresh = true);
 		
 		//Testing the validation of the time conflicts
-		assertEquals(3, arrayLen(result));
+		assertEquals(4, arrayLen(result));
 		
 		//Testing the order of the result
-		assertEquals(mockSku3.getSKuID(), result[1].getSkuID());
-		assertEquals(mockSku1.getSKuID(), result[2].getSkuID());
-		assertEquals(mockSku2.getSKuID(), result[3].getSkuID());
-		
+		assertEquals(mockSku4.getSKuID(), result[1].getSkuID());
+		assertEquals(mockSku3.getSKuID(), result[2].getSkuID());
+		assertEquals(mockSku1.getSKuID(), result[3].getSkuID());
+		assertEquals(mockSku2.getSKuID(), result[4].getSkuID());
 	}
 
 	public void function getEventConflictsSmartList_normal_Test() {
 		//Testing the normal condition that meet all requirements
 		var mockLocation = createMockLocation();
 		
-		var skuData1 = {
-			skuID = ""
-			,
-			eventStartDateTime = dateAdd('d', -5, now()),
-			eventEndDateTime = dateAdd('d', -3, now())
-		};
-		
-		var mockSkuLinkedLocationConfig = createPersistedTestEntity('Sku', skuData1);
+		var mockSkuLinkedLocationConfig = createMockSkuWithEventTime(-1,  1);
 		
 		var locationConfigurationData = {
 			locationConfigurationID = "",
@@ -362,19 +358,12 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(1, arrayLen(result));
 		assertEquals(mockSkuLinkedLocationConfig.getSkuID(), result[1].getSkuID());
 	}
-	
+*/	
 	public void function getEventConflictExistsFlagTest() {
 		//Testing the normal condition that meet all requirements
 		var mockLocation = createMockLocation();
-		
-		var skuData1 = {
-			skuID = ""
-			,
-			eventStartDateTime = dateAdd('d', -3, now()),
-			eventEndDateTime = dateAdd('d', 3, now())
-		};
-		
-		var mockSkuLinkedLocationConfig = createPersistedTestEntity('Sku', skuData1);
+
+		var mockSkuLinkedLocationConfig = createMockSkuWithEventTime(-3, 3);
 		
 		var locationConfigurationData = {
 			locationConfigurationID = "",
@@ -524,9 +513,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var mockSku = createPersistedTestEntity('Sku', skuData);
 		
 		var result = mockSku.getLivePrice();
-//		assertEquals(100, result);
-//		request.(result);
 	}
+	
+	//@suppress getSalePriceDetailsTest(), please check getSkuSalePriceDetailsTest() in ProductTest.cfc
+	
+	//@suppress getCurrentAccountPriceTest(), please check calculateSkuPriceBasedOnCurrentAccountTest() in PriceGroupService.cfc
 }
 
 
