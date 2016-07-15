@@ -39,7 +39,7 @@
 /// <reference path="../src/productbundle/components/swproductbundlegrouptype.ts" />
 /// <reference path="../src/productbundle/controllers/create-bundle-controller.ts" />
 /// <reference path="../src/productbundle/services/productbundleservice.ts" />
-/// <reference path="../src/slatwall/filters/swcurrency.ts" />
 /// <reference path="../src/slatwall/components/swcurrencyformatter.ts" />
+/// <reference path="../src/slatwall/filters/swcurrency.ts" />
 /// <reference path="../src/slatwall/services/slatwallpathbuilder.ts" />
 //}
