@@ -63,8 +63,6 @@ class SWFormFieldSelect implements ng.IDirective {
 					}
 
 					scope.formFieldChanged = function(option){
-						$log.debug('formfieldchanged');
-						$log.debug(option);
 						if(scope.selectType === 'object' && typeof scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName == "function" ){
 							scope.propertyDisplay.object.data[scope.propertyDisplay.property]['data'][scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()] = option.value;
 							if(angular.isDefined(scope.propertyDisplay.form[scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()])){
@@ -95,8 +93,6 @@ class SWFormFieldSelect implements ng.IDirective {
 									}
 
 									if(scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getID() === ''){
-										$log.debug('no ID');
-										$log.debug(scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName());
 										scope.propertyDisplay.object.data['selected'+scope.propertyDisplay.property] = scope.propertyDisplay.options[0];
 										scope.propertyDisplay.object.data[scope.propertyDisplay.property] = $hibachi['new'+propertyMetaData.cfc]();
 										scope.propertyDisplay.object.data[scope.propertyDisplay.property]['data'][scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()] = scope.propertyDisplay.options[0].value;
@@ -104,8 +100,6 @@ class SWFormFieldSelect implements ng.IDirective {
 										var found = false;
 										for(var i in scope.propertyDisplay.options){
 											if(angular.isObject(scope.propertyDisplay.options[i].value)){
-												$log.debug('isObject');
-												$log.debug(scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName());
 												if(scope.propertyDisplay.options[i].value === scope.propertyDisplay.object.data[scope.propertyDisplay.property]){
 													scope.propertyDisplay.object.data['selected'+scope.propertyDisplay.property] = scope.propertyDisplay.options[i];
 													scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.options[i].value;
@@ -113,8 +107,6 @@ class SWFormFieldSelect implements ng.IDirective {
 													break;
 												}
 											}else{
-												$log.debug('notisObject');
-												$log.debug(scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName());
 												if(scope.propertyDisplay.options[i].value === scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getID()){
 													scope.propertyDisplay.object.data['selected'+scope.propertyDisplay.property] = scope.propertyDisplay.options[i];
 													scope.propertyDisplay.object.data[scope.propertyDisplay.property]['data'][scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()] = scope.propertyDisplay.options[i].value;
