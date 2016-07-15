@@ -61,7 +61,7 @@ class SWFormSubscriberController{
 
 
 		this.inputAttributes = this.inputAttributes || "";
-		console.log('swFormSubscriberDirective',this);
+
 
 
 	}

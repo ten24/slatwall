@@ -256,20 +256,20 @@ class SWFormController {
     public getFormData = ()=>
     {
         var iterable = this.object;
-        console.log(this.object);
+
         if(this.object.data){
             iterable = this.object.data;
         }
-        console.log('objecthere',this.object);
+
 
 
         angular.forEach(iterable, (val, key) => {
             if(this.object.forms && this.object.forms[this.name][key] && this.object.forms[this.name][key].$modelValue){
-                console.log('objectforms',this.object.forms[this.name][key]);
+
                 val = this.object.forms[this.name][key].$modelValue;
             }
-            console.log('val',val);
-            console.log('objecthere',key);
+
+
 
 
             /** Check for form elements that have a name that doesn't start with $ */
