@@ -12,6 +12,8 @@ class SWErrorDisplayController {
     public swPropertyDisplay:SWPropertyDisplayController;
     public swfPropertyDisplay:SWFPropertyDisplayController;
     public swForm:SWFormController;
+    public property:string;
+    public propertyIdentifier:string;
     //@ngInject
    constructor(public $injector){
        this.$injector = $injector;
@@ -29,6 +31,9 @@ class SWErrorDisplayController {
 				}
 			}
 		}
+        this.property = this.property || this.propertyIdentifier;
+        this.propertyIdentifier = this.propertyIdentifier || this.property;
+
    }
 }
 
@@ -46,7 +51,9 @@ class SWErrorDisplay implements ng.IDirective {
     public scop = {};
     public bindToController={
         form:"=?",
-        name:"@?"
+        name:"@?",
+        property:"@?",
+        propertyIdentifier:"@?"
     }
 
     // @ngInject
