@@ -62,6 +62,7 @@ class ValidationService{
     }
 
     public validateDataType=(value,type):boolean=>{
+        if(value == null){return true;}//let required validate this
         if (angular.isString(value) && type === "string"){return true;}
         if (angular.isNumber(parseInt(value)) && type === "numeric"){return true;}
         if (angular.isArray(value) && type === "array"){return true;}
@@ -134,7 +135,7 @@ class ValidationService{
         if(value){
             return true;
         }else{
-            return false;
+            return true;
         }
     }
 
