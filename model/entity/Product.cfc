@@ -930,8 +930,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return 0;
 	}
 
-
-	public any function getSalePriceByCurrencyCode() {
+	public any function getSalePriceByCurrencyCode(required string currencyCode) {
 		if( structKeyExists(variables,"defaultSku") ) {
 			return getDefaultSku().getSalePriceByCurrencyCode(arguments.currencyCode);
 		} else if (arrayLen(getSkus())) {
