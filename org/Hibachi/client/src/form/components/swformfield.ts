@@ -102,7 +102,13 @@ class SWFormField{
 		errorText: "@?",
 		fieldType: "@?",
 		property:"@?",
-		inputAttributes:"@?"
+		inputAttributes:"@?",
+		options:"=?",
+        optionsArguments:"=?",
+        eagerLoadOptions:"=?",
+        isDirty:"=?",
+        onChange:"=?",
+		editable:"=?"
 	};
 
 	//@ngInject

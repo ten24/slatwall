@@ -75,7 +75,7 @@ class SWFormFieldSelect implements ng.IDirective {
 
 
 					scope.getOptions = function(){
-
+						console.log('getOptions',scope.propertyDisplay);
 						if(angular.isUndefined(scope.propertyDisplay.options)){
 
 							var optionsPromise = $hibachi.getPropertyDisplayOptions(scope.propertyDisplay.object.metaData.className,

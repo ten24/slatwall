@@ -114,7 +114,7 @@ class SWPropertyDisplayController {
         //swfproperty logic
 
 		this.type                	= this.type || "text" ;
-		this.class			   	= this.class|| "formControl";
+		this.class			   	= this.class|| "form-control";
 		this.fieldAttributes     	= this.fieldAttributes || "";
 		this.label			    = this.label || "true";
 		this.labelText			= this.labelText || "";
@@ -211,12 +211,12 @@ class SWPropertyDisplay implements ng.IDirective{
 
         property:"@?",
         object:"=?",
-        options:"=?",
         editable:"=?",
         editing:"=?",
         isHidden:"=?",
         title:"=?",
         hint:"@?",
+        options:"=?",
         optionsArguments:"=?",
         eagerLoadOptions:"=?",
         isDirty:"=?",
