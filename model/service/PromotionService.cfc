@@ -1048,7 +1048,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public struct function getSalePriceDetailsForProductSkus(required string productID, string currencyCode='') {
 		var priceDetails = getHibachiUtilityService().queryToStructOfStructures(getPromotionDAO().getSalePricePromotionRewardsQuery(productID = arguments.productID,currencyCode = arguments.currencyCode), "skuID");
-		request.debug(priceDetails);
+
 		for(var key in priceDetails) {
 			if(priceDetails[key].roundingRuleID != "") {
 				priceDetails[key].salePrice = getRoundingRuleService().roundValueByRoundingRuleID(value=priceDetails[key].salePrice, roundingRuleID=priceDetails[key].roundingRuleID);
