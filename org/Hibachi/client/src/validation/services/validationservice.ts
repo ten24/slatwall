@@ -61,6 +61,10 @@ class ValidationService{
         return deferred.promise;
     }
 
+    public validateEmail=(value):boolean=>{
+        return this.validateDataType(value,'email')
+    }
+
     public validateDataType=(value,type):boolean=>{
         if (angular.isString(value) && type === "string"){return true;}
         if (angular.isNumber(parseInt(value)) && type === "numeric"){return true;}

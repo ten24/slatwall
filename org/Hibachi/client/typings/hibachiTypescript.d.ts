@@ -131,7 +131,6 @@
 /// <reference path="../src/form/components/swformfieldselect.ts" />
 /// <reference path="../src/form/components/swformfieldtext.ts" />
 /// <reference path="../src/form/components/swformregistrar.ts" />
-/// <reference path="../src/form/components/swfpropertydisplay.ts" />
 /// <reference path="../src/form/components/swinput.ts" />
 /// <reference path="../src/form/components/swpropertydisplay.ts" />
 /// <reference path="../src/frontend/components/swfcreateaccount.ts" />

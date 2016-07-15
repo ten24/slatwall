@@ -73,97 +73,97 @@ class SWFFormFieldController {
 		this.$compile = $compile;
 	}
 
-	public $onInit=()=>{
+	// public $onInit=()=>{
 
-		var isObject = false;
-		if (!this.propertyDisplay){
+	// 	var isObject = false;
+	// 	if (!this.propertyDisplay){
 
-			this.propertyDisplay =  this.swfPropertyDisplayCtrl.propertyDisplay;
-        }
+	// 		this.propertyDisplay =  this.swfPropertyDisplayCtrl.propertyDisplay;
+    //     }
 
-		this.object = this.object || this.propertyDisplay.object;
+	// 	this.object = this.object || this.propertyDisplay.object;
 
-	 	if(this.object.metaData){
+	//  	if(this.object.metaData){
 
-			isObject = true;
-			this.object = this.object.data;
-		}
-
-
-
-		if(this.propertyDisplay.object.metaData){
-			var validationDirectives = this.getValidationDirectives(this.propertyDisplay);
-
-
-			var unbindWatch = this.$scope.$watch(()=>{
-				return angular.element(this.$element).find(':input:first').length
-			}
-			,(newValue,oldValue)=>{
-
-				if(newValue > 0){
-					for(var key in validationDirectives){
-						angular.element(this.$element).find(':input:first').attr(key,validationDirectives[key]);
-					}
-					this.$element.html(this.$compile(this.$element.html())(this.$scope));
-					unbindWatch();
-				}
-			});
-		}
-	}
-
-
-	public getValidationDirectives = (propertyDisplay,context?)=>{
-		var validationsInfo = {};
-		var name = propertyDisplay.property;
-		propertyDisplay.property = propertyDisplay.propertyIdentifier;
-
-		if(!context){
-
-			if(propertyDisplay.object.metaData.className.split('_').length > 1){
-				context = propertyDisplay.object.metaData.className.split('_')[1];
-			}else{
-				context= "save";
-			}
-
-		}
-
-		if(angular.isUndefined(propertyDisplay.object.validations )
-			|| angular.isUndefined(propertyDisplay.object.validations.properties)
-			|| angular.isUndefined(propertyDisplay.object.validations.properties[propertyDisplay.property])){
-			return '';
-		}
-
-		var validations = propertyDisplay.object.validations.properties[propertyDisplay.property];
-		var validationsForContext = [];
-
-		//get the validations for the current element.
-		var propertyValidations = propertyDisplay.object.validations.properties[propertyDisplay.property];
-		/*
-		* Investigating why number inputs are not working.
-		* */
-		//check if the contexts match.
-
-		if (angular.isObject(propertyValidations)){
-			//if this is a procesobject validation then the context is implied
-			if(angular.isUndefined(propertyValidations[0].contexts) && propertyDisplay.object.metaData.isProcessObject){
-				propertyValidations[0].contexts = propertyDisplay.object.metaData.className.split('_')[1];
-			}
-
-			if (propertyValidations[0].contexts === context){
-
-				for (var prop in propertyValidations[0]){
-					if (prop != "contexts" && prop !== "conditions"){
-						validationsInfo["swvalidation" + prop.toLowerCase()] = propertyValidations[0][prop];
-						//spaceDelimitedList += (" swvalidation" + prop.toLowerCase() + "='" + propertyValidations[0][prop] + "'");
-					}
-				}
-			}
-		}
+	// 		isObject = true;
+	// 		this.object = this.object.data;
+	// 	}
 
 
 
-		return validationsInfo;
-	};
+	// 	if(this.propertyDisplay.object.metaData){
+	// 		var validationDirectives = this.getValidationDirectives(this.propertyDisplay);
+
+
+	// 		var unbindWatch = this.$scope.$watch(()=>{
+	// 			return angular.element(this.$element).find(':input:first').length
+	// 		}
+	// 		,(newValue,oldValue)=>{
+
+	// 			if(newValue > 0){
+	// 				for(var key in validationDirectives){
+	// 					angular.element(this.$element).find(':input:first').attr(key,validationDirectives[key]);
+	// 				}
+	// 				this.$element.html(this.$compile(this.$element.html())(this.$scope));
+	// 				unbindWatch();
+	// 			}
+	// 		});
+	// 	}
+	// }
+
+
+	// public getValidationDirectives = (propertyDisplay,context?)=>{
+	// 	var validationsInfo = {};
+	// 	var name = propertyDisplay.property;
+	// 	propertyDisplay.property = propertyDisplay.propertyIdentifier;
+
+	// 	if(!context){
+
+	// 		if(propertyDisplay.object.metaData.className.split('_').length > 1){
+	// 			context = propertyDisplay.object.metaData.className.split('_')[1];
+	// 		}else{
+	// 			context= "save";
+	// 		}
+
+	// 	}
+
+	// 	if(angular.isUndefined(propertyDisplay.object.validations )
+	// 		|| angular.isUndefined(propertyDisplay.object.validations.properties)
+	// 		|| angular.isUndefined(propertyDisplay.object.validations.properties[propertyDisplay.property])){
+	// 		return '';
+	// 	}
+
+	// 	var validations = propertyDisplay.object.validations.properties[propertyDisplay.property];
+	// 	var validationsForContext = [];
+
+	// 	//get the validations for the current element.
+	// 	var propertyValidations = propertyDisplay.object.validations.properties[propertyDisplay.property];
+	// 	/*
+	// 	* Investigating why number inputs are not working.
+	// 	* */
+	// 	//check if the contexts match.
+
+	// 	if (angular.isObject(propertyValidations)){
+	// 		//if this is a procesobject validation then the context is implied
+	// 		if(angular.isUndefined(propertyValidations[0].contexts) && propertyDisplay.object.metaData.isProcessObject){
+	// 			propertyValidations[0].contexts = propertyDisplay.object.metaData.className.split('_')[1];
+	// 		}
+
+	// 		if (propertyValidations[0].contexts === context){
+
+	// 			for (var prop in propertyValidations[0]){
+	// 				if (prop != "contexts" && prop !== "conditions"){
+	// 					validationsInfo["swvalidation" + prop.toLowerCase()] = propertyValidations[0][prop];
+	// 					//spaceDelimitedList += (" swvalidation" + prop.toLowerCase() + "='" + propertyValidations[0][prop] + "'");
+	// 				}
+	// 			}
+	// 		}
+	// 	}
+
+
+
+	// 	return validationsInfo;
+	// };
 }
 
 /**
