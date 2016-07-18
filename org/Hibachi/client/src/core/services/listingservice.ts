@@ -75,11 +75,11 @@ class ListingService{
 
     public setupInSingleCollectionConfigMode = (listingID, scope) =>{
         
-        if(angular.isUndefined(this.getListing(listingID).collectionObject) && angular.isDefined(this.getListing(listingID).collectionConfig)){
+        if(this.getListing(listingID).collectionObject != null){
             this.getListing(listingID).collectionObject = this.getListing(listingID).collectionConfig.baseEntityName; 
         }
 
-        this.setupColumns( listingID,this.getListing(listingID).collectionConfig, this.getListing(listingID).collectionObject ); 
+        this.setupColumns( listingID, this.getListing(listingID).collectionConfig, this.getListing(listingID).collectionObject ); 
         this.initCollectionConfigData( listingID, this.getListing(listingID).collectionConfig );
         
         scope.$watch('swListingDisplay.collectionPromise',(newValue,oldValue)=>{
@@ -87,7 +87,7 @@ class ListingService{
                 this.$q.when(this.getListing(listingID).collectionPromise).then((data)=>{
                     this.getListing(listingID).collectionData = data;
                     this.getListing(listingID).setupDefaultCollectionInfo();
-                    if(this.getListing(listingID).collectionConfig.hasColumns()){
+                    if(this.getListing(listingID).collectionConfig != null && this.getListing(listingID).collectionConfig.hasColumns()){
                         this.setupColumns(listingID,this.getListing(listingID).collectionConfig, this.getListing(listingID).collectionObject);
                     }else{
                         this.getListing(listingID).collectionConfig.loadJson(data.collectionConfig);
@@ -175,72 +175,75 @@ class ListingService{
         this.setupMultiselect(listingID);
         this.setupExampleEntity(listingID);
 
-        angular.forEach(this.getListing(listingID).filterGroups, (filterGroup)=>{
-            collectionConfig.addFilterGroup(filterGroup);
-        });
+        if(collectionConfig != null){
+            angular.forEach(this.getListing(listingID).filterGroups, (filterGroup)=>{
+                collectionConfig.addFilterGroup(filterGroup);
+            });
 
-        angular.forEach(this.getListing(listingID).filters, (filter)=>{
-                collectionConfig.addFilter( filter.propertyIdentifier, 
-                                            filter.comparisonValue, 
-                                            filter.comparisonOperator, 
-                                            filter.logicalOperator, 
-                                            filter.hidden
-                                          );
-        }); 
+            angular.forEach(this.getListing(listingID).filters, (filter)=>{
+                    collectionConfig.addFilter( filter.propertyIdentifier, 
+                                                filter.comparisonValue, 
+                                                filter.comparisonOperator, 
+                                                filter.logicalOperator, 
+                                                filter.hidden
+                                            );
+            }); 
 
-        angular.forEach(this.getListing(listingID).orderBys, (orderBy)=>{
-            collectionConfig.addOrderBy(orderBy.orderBy);
-        });
+            angular.forEach(this.getListing(listingID).orderBys, (orderBy)=>{
+                collectionConfig.addOrderBy(orderBy.orderBy);
+            });
 
-        angular.forEach(this.getListing(listingID).aggregates, (aggregate)=>{
-            collectionConfig.addDisplayAggregate( aggregate.propertyIdentifier, 
-                                                  aggregate.aggregateFunction, 
-                                                  aggregate.aggregateAlias
-                                                );
-        });
-        
-        //make sure we have necessary properties to make the actions 
-        angular.forEach(this.getListing(listingID).actions, (action)=>{ 
-            if(angular.isDefined(action.queryString)){
-                var parsedProperties = this.utilityService.getPropertiesFromString(action.queryString);
-                if(parsedProperties && parsedProperties.length){    
-                    collectionConfig.addDisplayProperty( this.utilityService.arrayToList(parsedProperties), 
-                                                         "", 
-                                                         { isVisible : false }
-                                                       );
+            angular.forEach(this.getListing(listingID).aggregates, (aggregate)=>{
+                collectionConfig.addDisplayAggregate( aggregate.propertyIdentifier, 
+                                                    aggregate.aggregateFunction, 
+                                                    aggregate.aggregateAlias
+                                                    );
+            });
+            
+            //make sure we have necessary properties to make the actions 
+            angular.forEach(this.getListing(listingID).actions, (action)=>{ 
+                if(angular.isDefined(action.queryString)){
+                    var parsedProperties = this.utilityService.getPropertiesFromString(action.queryString);
+                    if(parsedProperties && parsedProperties.length){    
+                        collectionConfig.addDisplayProperty( this.utilityService.arrayToList(parsedProperties), 
+                                                            "", 
+                                                            { isVisible : false }
+                                                        );
+                    }
+                }   
+            });
+            
+            //also make sure we have necessary color filter properties
+            angular.forEach(this.getListing(listingID).colorFilters,(colorFilter)=>{
+                if(angular.isDefined(colorFilter.propertyToCompare)){ 
+                    collectionConfig.addDisplayProperty( colorFilter.propertyToCompare, 
+                                                        "", 
+                                                        { isVisible : false }
+                                                    );
                 }
-            }   
-        });
-        
-        //also make sure we have necessary color filter properties
-        angular.forEach(this.getListing(listingID).colorFilters,(colorFilter)=>{
-            if(angular.isDefined(colorFilter.propertyToCompare)){ 
-                collectionConfig.addDisplayProperty( colorFilter.propertyToCompare, 
-                                                     "", 
-                                                     { isVisible : false }
-                                                   );
+            });
+            
+            
+            if(this.getListing(listingID).collectionConfig != null && this.getListing(listingID).collectionConfig.hasColumns()){
+                collectionConfig.addDisplayProperty( this.getListing(listingID).exampleEntity.$$getIDName(),
+                                                    undefined,
+                                                    { isVisible : false }
+                                                );
             }
-        });
-        
-        
-        if(this.getListing(listingID).collectionConfig.hasColumns()){
-            collectionConfig.addDisplayProperty( this.getListing(listingID).exampleEntity.$$getIDName(),
-                                                 undefined,
-                                                 { isVisible : false }
-                                               );
-        }
 
-        collectionConfig.setPageShow(this.getListing(listingID).paginator.pageShow);
-        collectionConfig.setCurrentPage(this.getListing(listingID).paginator.currentPage);
+            collectionConfig.setPageShow(this.getListing(listingID).paginator.pageShow);
+            collectionConfig.setCurrentPage(this.getListing(listingID).paginator.currentPage);
 
-        if(this.getListing(listingID).multiselectable && (!this.getListing(listingID).columns || !this.getListing(listingID).columns.length)){
-            //check if it has an active flag and if so then add the active flag
-            if(this.getListing(listingID).exampleEntity.metaData.activeProperty && !this.getListing(listingID).hasCollectionPromise){
-                collectionConfig.addFilter('activeFlag',1,'=',undefined,true);
+            if(this.getListing(listingID).multiselectable && (!this.getListing(listingID).columns || !this.getListing(listingID).columns.length)){
+                //check if it has an active flag and if so then add the active flag
+                if(this.getListing(listingID).exampleEntity.metaData.activeProperty && !this.getListing(listingID).hasCollectionPromise){
+                    collectionConfig.addFilter('activeFlag',1,'=',undefined,true);
+                }
             }
-        }
 
-        this.setupHierarchicalExpandable(listingID, collectionConfig);
+            this.setupHierarchicalExpandable(listingID, collectionConfig);
+        }
+        
         this.updateColumnAndAdministrativeCount(listingID);
     };
     //end initCollectionConfigData
@@ -283,16 +286,18 @@ class ListingService{
     };
 
     public setupExampleEntity = (listingID) =>{
-        this.getListing(listingID).exampleEntity = this.$hibachi.getEntityExample(this.getListing(listingID).collectionObject);        
-        //Look for Hierarchy in example entity
-        if(!this.getListing(listingID).parentPropertyName || (this.getListing(listingID).parentPropertyName && !this.getListing(listingID).parentPropertyName.length) ){
-            if(this.getListing(listingID).exampleEntity.metaData.hb_parentPropertyName){
-                this.getListing(listingID).parentPropertyName = this.getListing(listingID).exampleEntity.metaData.hb_parentPropertyName;
+        this.getListing(listingID).exampleEntity = this.$hibachi.getEntityExample(this.getListing(listingID).collectionObject); 
+        if(this.getListing(listingID).exampleEntity != null){      
+            //Look for Hierarchy in example entity
+            if(!this.getListing(listingID).parentPropertyName || (this.getListing(listingID).parentPropertyName && !this.getListing(listingID).parentPropertyName.length) ){
+                if(this.getListing(listingID).exampleEntity.metaData.hb_parentPropertyName){
+                    this.getListing(listingID).parentPropertyName = this.getListing(listingID).exampleEntity.metaData.hb_parentPropertyName;
+                }
             }
-        }
-        if(!this.getListing(listingID).childPropertyName || (this.getListing(listingID).childPropertyName && !this.getListing(listingID).childPropertyName.length) ){
-            if(this.getListing(listingID).exampleEntity.metaData.hb_childPropertyName){
-                this.getListing(listingID).childPropertyName = this.getListing(listingID).exampleEntity.metaData.hb_childPropertyName;
+            if(!this.getListing(listingID).childPropertyName || (this.getListing(listingID).childPropertyName && !this.getListing(listingID).childPropertyName.length) ){
+                if(this.getListing(listingID).exampleEntity.metaData.hb_childPropertyName){
+                    this.getListing(listingID).childPropertyName = this.getListing(listingID).exampleEntity.metaData.hb_childPropertyName;
+                }
             }
         }
     };

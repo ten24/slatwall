@@ -188,9 +188,8 @@ class SWListingDisplayController{
         this.tableclass = this.utilityService.listPrepend(this.tableclass, 'table table-bordered table-hover', ' ');
 
         if(!this.collection || !angular.isString(this.collection)){
-            //I don't know if we want to make this assumption
-            this.hasCollectionPromise = true;//maybe
-            //this.multipleCollectionDeffered.reject();
+            this.hasCollectionPromise = true;
+            this.multipleCollectionDeffered.reject();
         } else if(angular.isDefined(this.collection) && angular.isString(this.collection)){
             this.collectionObject = this.collection;
             this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
