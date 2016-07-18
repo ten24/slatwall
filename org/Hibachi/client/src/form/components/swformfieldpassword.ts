@@ -3,16 +3,24 @@
 
 class swFormFieldPasswordController implements ng.IDirective {
     public propertyDisplay:any;
+    public form:ng.IFormController;
     //@ngInject
 	public constructor () {
-		this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
+
+
 	}
+
+    public $onInit=()=>{
+        if(this.propertyDisplay.isDirty){
+            this.form.$dirty = this.propertyDisplay.isDirty || this.propertyDisplay.form.$dirty;
+        }
+    }
 }
 
 class SWFormFieldPassword implements ng.IDirective {
     public templateUrl;
     public restrict = 'E';
-    public require = "^form";
+    public require = {form:"^form"};
     public scope = true;
     public bindToController = {
         propertyDisplay: "=?"

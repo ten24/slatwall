@@ -129,7 +129,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// check to make sure that this rate applies to the current orderFulfillment
 				if(!isNull(shippingMethodRate.getShippingIntegration()) && shippingMethodRate.getShippingIntegration().getActiveFlag()){
 					var shippingIntegration = getIntegrationByOrderFulfillmentAndShippingMethodRate(arguments.orderFulfillment,shippingMethodRate);
-					if(!arrayFind(integrations, shippingIntegration)){
+					if(!isNull(shippingINtegration) && !arrayFind(integrations, shippingIntegration)){
 						arrayAppend(integrations,shippingIntegration);
 					}
 				} 
@@ -183,6 +183,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 				var shippingIntegration = getIntegrationByOrderFulfillmentAndShippingMethodRate(arguments.orderFulfillment,shippingMethodRate);
 				if (
+					!isNull(shippingIntegration) &&
 					structKeyExists(arguments.shippingMethodRatesResponseBeans, shippingIntegration.getIntegrationID())
 				) {
 					var thisResponseBean = arguments.shippingMethodRatesResponseBeans[ shippingIntegration.getIntegrationID() ];

@@ -120,8 +120,8 @@ class SWDisplayOptions{
                         selectedProperty = $scope.selectedAggregate;
                     }
 
-                    console.log('add Column');
-                    console.log(selectedProperty);
+
+
                     if(selectedProperty.$$group === 'simple' || 'attribute' || 'compareCollections'){
                         $log.debug($scope.columns);
                         if(angular.isDefined(selectedProperty)){
@@ -171,8 +171,8 @@ class SWDisplayOptions{
                                     }
                                     var propertyIdentifierJoins = selectedProperty.propertyIdentifier.substring(1, PIlimit);
                                     var propertyIdentifierParts = propertyIdentifierJoins.split('_');
-                                    console.log(propertyIdentifierParts);
-                                    console.log(propertyIdentifierParts[0].charAt(0).toUpperCase() + propertyIdentifierParts[0].slice(1));
+
+
                                     var current_collection = $hibachi.getEntityExample(propertyIdentifierParts[0].charAt(0).toUpperCase() + propertyIdentifierParts[0].slice(1));
                                     var _propertyIdentifier = '';
                                     var joins = [];
@@ -247,13 +247,13 @@ class SWDisplayOptions{
 
                 $scope.selectedPropertyChanged = function(selectedProperty, aggregate?){
                     // drill down or select field?
-                    console.log('selectedPropertyChanged', aggregate);
-                    console.log(selectedProperty);
+
+
                     if(!aggregate){
                         $scope.selectedProperty = selectedProperty;
                         $scope.selectedAggregate = undefined;
                     }else{
-                        console.log('Aggregate');
+
                         $scope.selectedAggregate = selectedProperty;
                     }
 

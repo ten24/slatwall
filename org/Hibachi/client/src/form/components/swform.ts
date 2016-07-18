@@ -1,338 +1,286 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
+/**
+* Form Controller handles the logic for this directive.
+*/
+class SWFormController {
 
-/** eliminated many of the unknown type errors in this class */
-interface ViewModel {
-
-        //************************** Fields
-        hiddenFields: any,
-        entityName:string,
-        name:string,
-        processObject:string,
-        action:string,
-        actionFn:Function,
-        actions:any,
-        $timeout:any,
-        $scope:ng.IScope,
-        postOnly:boolean,
-        eventsObj:Array<Object>,
-        //************************** Functions
-        getFormData:Function,
-        parseErrors:Function,
-        clearErrors:Function,
-        setFactoryIterator:Function,
-        doAction:Function,
-        toFormParams:Function,
-        iterateFactory:Function,
-        factoryIterator:Function,
-        parseProcessObjectResponse:Function,
-        $http:ng.IHttpService,
-        submit:Function,
-        getProcessObject:Function,
-        parseEventString: Function,
-        splitIntoEvents: Function,
-        splitIntoActors: Function,
-        //************************** Objects
-        formType:Object,
-        formData:Object,
-        processEntity:Object,
-        hibachiScope:{doAction:any, hasErrors:boolean},
-        events:any,
-        //************************** Events
-        identity: Function,
-        hide:Function,
-        show:Function,
-        refresh:Function,
-        update:Function,
-        clear:Function,
-        broadcast:Function,
-        parseEvents:Function,
-        eventsHandler:Function
-}
-
-   /**
-    * Form Controller handles the logic for this directive.
-    */
-    class SWFormController {
-
-        //************************** Fields
-        public isProcessForm:boolean|string;
-        public hiddenFields:string;
-        public entityName:string;
-        public action:string;
-        public actions:string;
-        public processObject:string;
-        public postOnly:boolean;
-        public object:any;
-        public events: any;
-        public name: string;
-        public onSuccess:string;
-        public onError:string;
-        public submit:Function;
-        public isDirty:boolean;
-        /**
-         * This controller handles most of the logic for the swFormDirective when more complicated self inspection is needed.
-         */
-        // @ngInject
-        constructor(public $scope, public $element, public $hibachi, public $http, public $timeout, public observerService, public $rootScope){
-            /** only use if the developer has specified these features with isProcessForm */
-            if(angular.isUndefined(this.isDirty)){
-                this.isDirty = false;    
-            } 
-            this.isProcessForm = this.isProcessForm || "false";
-            
-            if (this.isProcessForm == "true") {
-                this.handleForm( this, $scope );
-            }
-            
+    //************************** Fields
+    public isProcessForm:boolean|string;
+    public hiddenFields:string;
+    public entityName:string;
+    public action:string;
+    public actions:string;
+    public object:any;
+    public events: any;
+    public name: string;
+    //onSuccessEvents
+    public onSuccess:string;
+    //onErrorEvents
+    public onError:string;
+    public eventsObj = [];
+    public processObject:string;
+    public isDirty:boolean;
+    public context:string;
+    public formCtrl;
+    public formData = {};
+    public inputAttributes:string;
+    /**
+     * This controller handles most of the logic for the swFormDirective when more complicated self inspection is needed.
+     */
+    // @ngInject
+    constructor(
+        public $scope,
+        public $element,
+        public $hibachi,
+        public $http,
+        public $timeout,
+        public observerService,
+        public $rootScope,
+        public entityService
+    ){
+        /** only use if the developer has specified these features with isProcessForm */
+        this.$hibachi = $hibachi;
+        if(angular.isUndefined(this.isDirty)){
+            this.isDirty = false;
         }
-    
-   /**
-    * Iterates through the form elements and checks if the names of any of them match
-    * the meta data that comes back from the processObject call. Supplies a generic submit
-    * method that can be called by any subclasses that inject formCtrl. On submit,
-    * this class will attach any errors to the correspnding form element.
-    */
-    handleForm ( context, $scope ) {
-        /** local variables */
-        this.processObject = this.name || "";
-        
-        let vm: ViewModel       = context;
-            vm.hiddenFields     = this.hiddenFields;
-            vm.entityName       = this.entityName;
-            vm.processObject    = this.processObject;
-            vm.action           = this.action;
-            vm.actions          = this.actions;
-            vm.$timeout         = this.$timeout;
-            vm.postOnly         = false;
-            vm.hibachiScope     = this.$rootScope.hibachiScope;
-            
-            
-            let observerService = this.observerService;
-            /** parse the name */
-            vm.entityName      = this.processObject.split("_")[0];
-            let processObject   = this.processObject.split("_")[1];
-            
-            /** try to grab the meta data from the process entity in slatwall in a process exists
-             *  otherwise, just use the service method to access it.
-             */
 
-            /** Cart is an alias for an Order */
-            if (vm.entityName == "Order") {
-                vm.entityName = "Cart"
-            };
 
-            /** find the form scope */
-            this.$scope.$on('anchor', (event, data) =>
-            {
-
-                if (data.anchorType == "form" && data.scope !== undefined) {
-                    vm["formCtrl"] = data.scope;
-                }
-
-            });
-
-            /** make sure we have our data using new logic and $hibachi*/
-            if (this.processObject == undefined || vm.entityName == undefined) {
-                throw ("ProcessObject Undefined Exception");
-            }
-
-            if (angular.isDefined(this.object) && this.object.name) {
-                vm.actionFn = this.object;
+        //object can be either an instance or a string that will become an instance
+        if(angular.isString(this.object)){
+            var objectNameArray = this.object.split('_');
+            this.entityName = objectNameArray[0];
+            //if the object name array has two parts then we can infer that it is a process object
+            if(objectNameArray.length > 1){
+                this.context = this.context || objectNameArray[1];
+                this.isProcessForm = true;
             }else{
-                vm.postOnly = true;
+                this.context = this.context || 'save';
+                this.isProcessForm = false;
             }
+            //convert the string to an object
+            this.$timeout( ()=> {
 
-            /** We use these for our models */
-            vm.formData = {};
-
-            /** returns all the data from the form by iterating the form elements */
-            vm.getFormData = function()
-            {
-                //console.log("Form Data:", this.object);
-                angular.forEach(this.object, (val, key) => {
-                    /** Check for form elements that have a name that doesn't start with $ */
-                    if (angular.isString(val)) {
-                        this.formData[key] = val;
-                        //console.log("Using Form Element: ", this.formData[key]);
-                    }
-                    
-                });
-
-                return vm.formData || "";
-            }
-           
-            /****
-              * Handle parsing through the server errors and injecting the error text for that field
-              * If the form only has a submit, then simply call that function and set errors.
-              ***/
-            vm.parseErrors = function(result)
-            {
-                //console.log("Resultant Errors: ", result);
-                if (angular.isDefined(result.errors) && result.errors) {
-                    angular.forEach(result.errors, (val, key) => {
-                        //console.log("Parsing Rule: ", result.errors[key]);
-                        //console.log(this.object, key, this.object[key]);
-                        
-                            //console.log("Yes, is defined...");
-                            let primaryElement = this.$element.find("[error-for='" + key + "']");
-                            //console.log("Primary Element: ", primaryElement);
-                            vm.$timeout(function() {
-                                //console.log("Appending");
-                                primaryElement.append("<span name='" + key + "Error'>" + result.errors[key] + "</span>");
-                            }, 0);
-                            //vm["formCtrl"][vm.processObject][key].$setValidity(key, false);//set field invalid
-                            //vm["formCtrl"][vm.processObject][key].$setPristine(key, false);
-                        
-                    }, this);
+                this.object = this.$hibachi['new'+this.object]();
+            });
+        }else{
+            if(this.object && this.object.metaData){
+                this.isProcessForm = this.object.metaData.isProcessObject;
+                this.entityName = this.object.metaData.className.split('_')[0];
+                if(this.isProcessForm){
+                    this.context = this.context || this.object.metaData.className.split('_')[1];
+                }else{
+                    this.context = this.context || 'save';
                 }
+            }
+        }
+
+
+        //
+        this.context = this.context || this.name;
+        if (this.isProcessForm) {
+            /** Cart is an alias for an Order */
+            if (this.entityName == "Order") {
+                this.entityName = "Cart"
             };
+        }
 
-            vm.eventsObj = [];
-            /** looks at the onSuccess, onError, and onLoading and parses the string into useful subcategories */
-            vm.parseEventString = function(evntStr, evntType)
-            {
-                vm.events = vm.parseEvents(evntStr, evntType); //onSuccess : [hide:this, show:someOtherForm, refresh:Account]
+        //  /** find the form scope */
+        // this.$scope.$on('anchor', (event, data) =>
+        // {
+        //     if (data.anchorType == "form" && data.scope !== undefined) {
+        //         this.formCtrl = data.scope;
+        //     }
+        // });
+
+        /** make sure we have our data using new logic and $hibachi*/
+//        if (this.context == undefined || this.entityName == undefined) {
+//            throw ("ProcessObject Undefined Exception");
+//        }
+        /* handle events
+        */
+        if (this.onSuccess){
+            this.parseEventString(this.onSuccess, "onSuccess");
+            observerService.attach(this.eventsHandler, "onSuccess");
+
+        }else if(this.onError){
+            this.parseEventString(this.onError, "onError");
+            observerService.attach(this.eventsHandler, "onError");//stub
+        }
+
+    }
+
+    public isObject=()=>{
+        return (angular.isObject(this.object));
+    }
+
+    /** create the generic submit function */
+    public submit = (actions) =>
+    {
+        actions = actions || this.action;
+        this.clearErrors();
+        this.formData = this.getFormData() || "";
+        this.doActions(actions);
+    }
+
+    //array or comma delimited
+    public doActions = (actions:string | string[]) =>
+    {
+        if (angular.isArray(actions)) {
+            for (var action of <string[]>actions) {
+                this.doAction(action);
             }
+        } else if (angular.isString(actions)) {
+            this.doAction(<string>actions);
+        } else {
+            throw ("Unknown type of action exception");
+        }
+    }
+    // /** iterates through the factory submitting data */
+    public doAction = (action:string) =>
+    {
+        if (!action) {throw "Action not defined on form";}
 
-            vm.eventsHandler = (params) => {
+        this.formData = this.formData || {};
+        //
+        let request = this.$rootScope.hibachiScope.doAction(action, this.formData)
+        .then( (result) =>{
+            if (result.errors) {
+                this.parseErrors(result.errors);
+                    //trigger an onError event
+                this.observerService.notify("onError", {"caller" : this.context, "events": this.events.events||""});
+            } else {
+                //trigger a on success event
+                this.observerService.notify("onSuccess", {"caller":this.context, "events":this.events.events||""});
+            }
+        }, angular.noop);
 
-                for (var e in params.events){
-                    if ( angular.isDefined(params.events[e].value) && params.events[e].value == vm.processObject.toLowerCase()){
-                        if (params.events[e].name == "hide")    {vm.hide(params.events[e].value)}
-                        if (params.events[e].name == "show")    {vm.show(params.events[e].value)}
-                        if (params.events[e].name == "update")  {vm.update(params.events[e].value)}
-                        if (params.events[e].name == "refresh") {vm.refresh(params.events[e].value)};
-                    }
+    }
 
+    public parseEvents = (str:string, evntType)=> {
+
+        if (str == undefined) return;
+        let strTokens = str.split(","); //this gives the format [hide:this, show:Account_Logout, update:Account or Cart, event:element]
+        let eventsObj = {
+            "events": []
+        }; //will hold events
+        for (var token in strTokens){
+            let eventName = strTokens[token].split(":")[0].toLowerCase().replace(' ', '');
+            let formName = strTokens[token].split(":")[1].toLowerCase().replace(' ', '');
+
+            if (formName == "this") {formName == this.context.toLowerCase();} //<--replaces the alias this with the name of this form.
+            let event = {"name" : eventName, "value" : formName};
+            eventsObj.events.push(event);
+
+        }
+        if (eventsObj.events.length){
+            this.observerService.attach(this.eventsHandler, "onSuccess");
+        }
+
+        return eventsObj;
+    }
+
+     /** looks at the onSuccess, onError, and onLoading and parses the string into useful subcategories */
+    public parseEventString = (evntStr:string, evntType)=>
+    {
+        this.events = this.parseEvents(evntStr, evntType); //onSuccess : [hide:this, show:someOtherForm, refresh:Account]
+
+    }
+
+    /****
+         * Handle parsing through the server errors and injecting the error text for that field
+        * If the form only has a submit, then simply call that function and set errors.
+        ***/
+    public parseErrors = (errors)=>
+    {
+
+        if (angular.isDefined(errors) && errors) {
+            angular.forEach(errors, (val, key) => {
+                    let primaryElement = this.$element.find("[error-for='" + key + "']");
+                    this.$timeout(()=> {
+                        primaryElement.append("<span name='" + key + "Error'>" + errors[key] + "</span>");
+                    }, 0);
+            }, this);
+        }
+    };
+
+    /** find and clear all errors on form */
+    public clearErrors = () =>
+    {
+        /** clear all form errors on submit. */
+        this.$timeout(()=>{
+                let errorElements = this.$element.find("[error-for]");
+                errorElements.empty();
+                //vm["formCtrl"][this.context].$setPristine(true);
+        },0);
+
+    }
+
+    public eventsHandler = (params) => {
+        //this will call any form specific functions such as hide,show,refresh,update or whatever else you later add
+        for (var e in params.events){
+            if ( angular.isDefined(params.events[e].value) && params.events[e].value == this.name.toLowerCase()){
+                if(params.events[e].name && this[params.events[e].name]){
+                    this[params.events[e].name](params.events[e].value);
                 }
-            }
-            /** hides this directive on event */
-            vm.hide = (param) => {
-                if (vm.processObject.toLowerCase() == param){
-                    this.$element.hide();
-                }
-            }
-            /** shows this directive on event */
-            vm.show = (param) =>{
-                if (vm.processObject.toLowerCase() == param){
-                    this.$element.show();
-                }
-            }
-            /** refreshes this directive on event */
-            vm.refresh  = (params) =>{
-               //stub
-            }
-            /** updates this directive on event */
-            vm.update  = (params) =>{
-               //stub
-            }
-            /** clears this directive on event */
-            vm.clear  = (params) =>{
-               //stub
-            }
-            
-            vm.parseEvents = function(str, evntType) {
-                
-                if (str == undefined) return;
-                let strTokens = str.split(","); //this gives the format [hide:this, show:Account_Logout, update:Account or Cart]
-                let eventsObj = {
-                    "events": []
-                }; //will hold events
-                for (var token in strTokens){
-                    let t = strTokens[token].split(":")[0].toLowerCase().replace(' ', '');
-                    let u = strTokens[token].split(":")[1].toLowerCase().replace(' ', '');
-                    if (t == "show" || t == "hide" || t == "refresh" || t == "update"){
-                        if (u == "this") {u == vm.processObject.toLowerCase();} //<--replaces the alias this with the name of this form.
-                        let event = {"name" : t, "value" : u};
-                        eventsObj.events.push(event);
-                    }
-                }
-                if (eventsObj.events.length){
-                    observerService.attach(vm.eventsHandler, "onSuccess");
-                }
-
-                return eventsObj;
-            }
-
-            /** find and clear all errors on form */
-            vm.clearErrors = () =>
-            {
-               /** clear all form errors on submit. */
-                this.$timeout(()=>{
-                     let errorElements = this.$element.find("[error-for]");
-                     errorElements.empty();
-                     //vm["formCtrl"][vm.processObject].$setPristine(true);
-                },0);
-
-            }
-
-            /** iterates through the factory submitting data */
-            vm.iterateFactory = (submitFunction) =>
-            {
-                if (!submitFunction) {throw "Action not defined on form";}
-                    
-                    let submitFn = vm.hibachiScope.doAction;
-                    vm.formData = vm.formData || {};
-                    //console.log("Calling Final Submit");
-                    submitFn(submitFunction, vm.formData).then( (result) =>{
-                        if (vm.hibachiScope.hasErrors) {
-                            vm.parseErrors(result.data);
-                             //trigger an onError event
-                            observerService.notify("onError", {"caller" : this.processObject, "events": vm.events.events||""});
-                        } else {
-                            //trigger a on success event
-                            observerService.notify("onSuccess", {"caller":this.processObject, "events":vm.events.events||""});
-                        }
-                    }, angular.noop);
-                    //console.log("Leaving iterateFactory.");
-            }
-
-            /** does either a single or multiple actions */
-            vm.doAction = (actionObject) =>
-            {
-                if (angular.isArray(actionObject)) {
-                    for (var submitFunction of actionObject) {
-                        vm.iterateFactory(submitFunction);
-                    }
-                } else if (angular.isString(actionObject)) {
-                    vm.iterateFactory(actionObject);
-                } else {
-                    throw ("Unknown type of action exception");
-                }
-            }
-
-            /** create the generic submit function */
-            vm.submit = (Action) =>
-            {
-                
-                let action = Action || this.action;
-                vm.clearErrors();
-                vm.formData = vm.getFormData() || "";
-                vm.doAction(action);
-            }
-            
-            this.submit =  vm.submit;
-            /* give children access to the process
-            */
-            vm.getProcessObject = () =>
-            {
-                return vm.processEntity;
-            }
-
-            /* handle events
-            */
-            if (this.onSuccess){
-                vm.parseEventString(this.onSuccess, "onSuccess");
-                observerService.attach(vm.eventsHandler, "onSuccess");
-
-            }else if(this.onError){
-                vm.parseEventString(this.onError, "onError");
-                observerService.attach(vm.eventsHandler, "onError");//stub
             }
         }
     }
+    /** hides this directive on event */
+    public hide = (param) => {
+        if (this.name.toLowerCase() == param){
+            this.$element.hide();
+        }
+    }
+    /** shows this directive on event */
+    public show = (param) =>{
+        if (this.name.toLowerCase() == param){
+            this.$element.show();
+        }
+    }
+    /** refreshes this directive on event */
+    public refresh  = (params) =>{
+       //stub
+    }
+    /** updates this directive on event */
+    public update  = (params) =>{
+       //stub
+    }
+    /** clears this directive on event */
+    public clear  = (params) =>{
+       //stub
+    }
+
+    /** returns all the data from the form by iterating the form elements */
+    public getFormData = ()=>
+    {
+        var iterable = this.object;
+
+        if(this.object.data){
+            iterable = this.object.data;
+        }
+
+
+
+        angular.forEach(iterable, (val, key) => {
+            if(this.object.forms && this.object.forms[this.name][key] && this.object.forms[this.name][key].$modelValue){
+
+                val = this.object.forms[this.name][key].$modelValue;
+            }
+
+
+
+
+            /** Check for form elements that have a name that doesn't start with $ */
+            if (angular.isString(val)) {
+                this.formData[key] = val;
+            }
+        });
+
+        return this.formData || "";
+    }
+}
 
 class SWForm implements ng.IDirective {
 
@@ -350,7 +298,6 @@ class SWForm implements ng.IDirective {
             name:"@?",
             context:"@?",
             entityName: "@?",
-            processObject: "@?",
             hiddenFields: "=?",
             action: "@?",
             actions: "@?",
@@ -360,8 +307,8 @@ class SWForm implements ng.IDirective {
             onSuccess: "@?",
             onError: "@?",
             hideUntil: "@?",
-            isProcessForm: "@?",
-            isDirty:"=?"
+            isDirty:"=?",
+            inputAttributes:"@?"
     };
 
     /**
@@ -370,7 +317,6 @@ class SWForm implements ng.IDirective {
     public link:ng.IDirectiveLinkFn = (scope, element: ng.IAugmentedJQuery,
         attrs:ng.IAttributes, controller) =>
     {
-        scope.context = scope.context || 'save';
     }
 
     /**
@@ -389,9 +335,10 @@ class SWForm implements ng.IDirective {
     }
     // @ngInject
     constructor( public coreFormPartialsPath, public hibachiPathBuilder) {
-        this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.coreFormPartialsPath) + "formPartial.html";
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.coreFormPartialsPath) + "form.html";
     }
 }
 export{
-    SWForm
+    SWForm,
+    SWFormController
 }

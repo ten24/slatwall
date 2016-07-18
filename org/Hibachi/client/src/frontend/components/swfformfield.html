@@ -6,33 +6,33 @@
     	<input type="file" ng-switch-when="file" ng-model="swfFormField.propertyDisplay.object"  class="{{swfFormField.propertyDisplay.class}}" name="{{swfFormField.propertyDisplay.name}}"></input>
     	<textarea ng-switch-when="textarea" class="{{swfFormField.propertyDisplay.class}}"  id="{{swfFormField.propertyDisplay.name}}TextArea" ng-model="swfFormField.propertyDisplay.value" name="{{swfFormField.propertyDisplay.name}}"></textarea>
     	<input type="checkbox" ng-switch-when="checkbox" value="{{swfFormField.propertyDisplay.value}}" class="{{swfFormField.propertyDisplay.class}}" name="{{swfFormField.propertyDisplay.name}}"></input>
-    	
+
     	<select ng-switch-when="multiselect" class="{{swfFormField.propertyDisplay.class}}" name="{{swfFormField.propertyDisplay.name}}" multiple="true">
               <option value="{{option.value}}" ng-repeat="option in swfFormField.propertyDisplay.optionValues" ng-if="option.selected" selected>{{option.name}}</option>
               <option value="{{option.value}}" ng-repeat="option in swfFormField.propertyDisplay.optionValues" ng-if="!option.selected">{{option.name}}</option>
         </select>
-        
+
         <select ng-switch-when="select" class="{{swfFormField.propertyDisplay.class}}" name="{{swfFormField.propertyDisplay.name}}" >
               <option value="{{option.value}}" ng-repeat="option in optionValues">{{option.name}}</option>
         </select>
-        
+
         <div ng-switch-when="radiogroup" name="{{swfFormField.propertyDisplay.name}}">
         	<div ng-repeat="option in optionValues" class="{{swfFormField.propertyDisplay.class}}">
               <input type="radio" id="{{option.name}}_{{option.value}}" name="{{swfFormField.propertyDisplay.name}}" class="radio"/>
             </div>
         </div>
-        
+
         <div ng-switch-when="checkboxgroup" name="{{swfFormField.propertyDisplay.name}}">
             <div ng-repeat="option in optionValues" class="{{swfFormField.propertyDisplay.class}}">
               <input type="checkbox" id="{{option.name}}_{{option.value}}" name="{{swfFormField.propertyDisplay.name}}"/>
             </div>
         </div>
-        
+
         <div ng-switch-when="yesno" name="{{swfFormField.propertyDisplay.name}}">
     	    <label ng-bind="swfFormField.propertyDisplay.name"></label>
             <label class="radio-inline"><input type="radio" name="{{swfFormField.propertyDisplay.name}}" value="1" text="Yes"/>Yes</label>
             <label class="radio-inline"><input type="radio" name="{{swfFormField.propertyDisplay.name}}" value="0" text="No" checked="true"/>No</label>
         </div>
-        
+
     </ng-switch>
 
