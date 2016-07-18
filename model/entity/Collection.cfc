@@ -113,7 +113,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		required string propertyIdentifier,
 		required any value,
 		string comparisonOperator="=",
-		string logicalOperator="AND"
+		string logicalOperator="AND",
+	    string aggregate=""
 	){
 		var collectionConfig = this.getCollectionConfigStruct();
 		var alias = collectionConfig.baseEntityAlias;
@@ -149,6 +150,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			"comparisonOperator" = arguments.comparisonOperator,
 			"value" = arguments.value
 		};
+		if(len(aggregate)){
+			filterGroup["aggregate"] = aggregate;
+		}
 
 
 		//if we already have a filter group then we need a logicalOperator
@@ -518,12 +522,19 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return aggregateFilterHQL;
 	}
 
+	private boolean function hasAggregateFilter(){
+		return (arraylen(getAggregateFilters()) > 0);
+	}
+
 	private string function formatAggregateFunction(aggregate){
 		var aggregateFunction = '';
 		switch(LCASE(aggregate)){
 			case "average":
 				aggregateFunction = 'avg';
 				break;
+			case "min":
+			case "max":
+			case "avg":
 			case "sum":
 			case "count":
 				aggregateFunction = LCASE(aggregate);
@@ -678,18 +689,19 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	private string function getFilterGroupHQL(required array filterGroup){
 		var filterGroupHQL = '';
+		var isFirstFilter = true;
 		for(var filter in arguments.filterGroup){
 			//add propertyKey and value to HQLParams
 			//if using a like parameter we need to add % to the value using angular
 			var logicalOperator = '';
-			if(structKeyExists(filter,"logicalOperator")){
+			if(structKeyExists(filter,"logicalOperator") && !isFirstFilter){
 				logicalOperator = filter.logicalOperator;
 			}
 			if(!isnull(filter.collectionID) || !isNull(filter.collection)){
 				filterGroupHQL &=  " #logicalOperator# #getHQLForCollectionFilter(filter)# ";;
 			}else {
 
-//check filter is a nested filterGroup or a filter itself
+				//check filter is a nested filterGroup or a filter itself
 				if (structKeyExists(filter, "filterGroup")) {
 
 					filterGroupHQL &= getFilterGroupsHQL([filter]);
@@ -699,9 +711,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 					if (structKeyExists(filter, 'aggregate') && isnull(filter.attributeID)){
 						addAggregateFilter(filter);
-					}else if(isnull(filter.attributeID)){
-/*TODO: FIX THIS*/
-						var predicate = getPredicate(filter);
+						continue;
+					}
+
+					var predicate = getPredicate(filter);
+					if(isnull(filter.attributeID)){
 						filterGroupHQL &= " #logicalOperator# #filter.propertyIdentifier# #comparisonOperator# #predicate# ";
 					}else{
 						var attributeHQL = getFilterAttributeHQL(filter);
@@ -710,6 +724,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 
 			}
+			isFirstFilter = false;
 		}
 
 		return filterGroupHQL;
@@ -1117,7 +1132,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			} else {
 				if(!structKeyExists(variables,"records")) {
 					var HQL = '';
-					if(len(getAggregateFilterHQL()) > 0){
+					if(hasAggregateFilter()){
 						HQL = 'SELECT count(DISTINCT id) FROM  #getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject())#  WHERE id in ( SELECT DISTINCT #getCollectionConfigStruct().baseEntityAlias#.id #getHQL(true)# )';
 					}else{
 						HQL = getSelectionCountHQL() & getHQL(true);
@@ -1455,7 +1470,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			if(len(aggregateFilters) > 0){
 				aggregateFilters =  ' HAVING #aggregateFilters#';
 				if(arguments.excludeSelectAndOrderBy == true){
-					groupByHQL = getGroupByHQL("_#lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject()))#.id");
+					groupByHQL = "GROUP BY _#lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject()))#.id";
 				}
 			}
 
