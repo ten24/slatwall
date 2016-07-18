@@ -15,8 +15,10 @@
 	<span ng-show="key === 'swvalidatiomaxvalue'" class="error help-block">The value entered is incorrect</span><br ng-show="key === 'swvalidatiomaxvalue'">
 	<span ng-show="key === 'swvalidationminlength'" class="error help-block">The value entered is incorrect</span><br ng-show="key === 'swvalidationminlength'">
 	<span ng-show="key === 'swvalidationmaxlength'" class="error help-block">The value entered is incorrect</span><br ng-show="key === 'swvalidationmaxlength'">
+
 </span>
 
 <!-- handle errors on the property -->
+
 <div ng-if="!swErrorDisplay.errorClass" class="error" error-for="{{swErrorDisplay.name}}"></div>
 <div ng-if="swErrorDisplay.errorClass"  class="{{swErrorDisplay.errorClass}}" error-for="{{swErrorDisplay.name}}"></div>

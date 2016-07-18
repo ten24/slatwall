@@ -269,9 +269,6 @@ class SWFormController {
                 val = this.object.forms[this.name][key].$modelValue;
             }
 
-
-
-
             /** Check for form elements that have a name that doesn't start with $ */
             if (angular.isString(val)) {
                 this.formData[key] = val;

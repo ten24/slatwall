@@ -26,6 +26,7 @@ class SWInputController{
 	public type:string;
 	public edit:boolean;
 	public editing:boolean;
+	public name:string;
 
 	//@ngInject
 	constructor(
@@ -117,6 +118,7 @@ class SWInputController{
 		var template = '';
 		var validations = '';
 		var currency = '';
+		var style = "";
 
 		if(!this.class){
 			this.class = "form-control";
@@ -139,7 +141,13 @@ class SWInputController{
 		if(this.object.metaData && this.object.metaData[this.property] && this.object.metaData[this.property].hb_nullrbkey){
 			placeholder = this.rbkeyService.getRBKey(this.object.metaData[this.property].hb_nullrbkey);
 		}
-		var acceptedFieldTypes = ['email','text','password','number','time','date','dateTime'];
+
+		if(this.fieldType.toLowerCase() === 'json'){
+			style = style += 'display:none';
+		}
+
+		var acceptedFieldTypes = ['email','text','password','number','time','date','datetime','json'];
+
 		if(acceptedFieldTypes.indexOf(this.fieldType.toLowerCase()) >= 0){
 			template = '<input type="'+this.fieldType+'" class="'+this.class+'" '+
 				'ng-model="swInput.object.data[swInput.property]" '+
@@ -148,9 +156,10 @@ class SWInputController{
 				'name="'+this.property+'" ' +
 				'placeholder="'+placeholder+'" '+
 				validations + currency +
-				'id="swinput'+this.utilityService.createID(26)+'" '+
-				this.inputAttributes+
-				
+				'id="swinput'+this.swForm.name+this.name+'" '+
+				'style="'+style+'"'+
+				this.inputAttributes;
+
 		}
 		var dateFieldTypes = ['date','datetime','time'];
 		if(dateFieldTypes.indexOf(this.fieldType.toLowerCase()) >= 0){
@@ -162,7 +171,7 @@ class SWInputController{
 		if(this.fieldType === 'date'){
 			template = template + 'data-date-only="true" future-only date-format="'+appConfig.dateFormat+'" ';
 		}
-		
+
 		if(template.length){
 			template = template + ' />';
 		}
