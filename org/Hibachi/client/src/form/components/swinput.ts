@@ -139,9 +139,9 @@ class SWInputController{
 		if(this.object.metaData && this.object.metaData[this.property] && this.object.metaData[this.property].hb_nullrbkey){
 			placeholder = this.rbkeyService.getRBKey(this.object.metaData[this.property].hb_nullrbkey);
 		}
-
-		if(this.fieldType === 'text' || this.fieldType === 'email'){
-			template = '<input type="text" class="'+this.class+'" '+
+		var acceptedFieldTypes = ['email','text','password','number','time','date','dateTime'];
+		if(acceptedFieldTypes.indexOf(this.fieldType.toLowerCase()) >= 0){
+			template = '<input type="'+this.fieldType+'" class="'+this.class+'" '+
 				'ng-model="swInput.object.data[swInput.property]" '+
 				'ng-disabled="swInput.editable === false" '+
 				'ng-show="swInput.editing" '+
@@ -150,66 +150,23 @@ class SWInputController{
 				validations + currency +
 				'id="swinput'+this.utilityService.createID(26)+'" '+
 				this.inputAttributes+
-				' />';
-		}else if(this.fieldType === 'password'){
-			template = '<input type="password" class="'+this.class+'" '+
-				'ng-model="swInput.object.data[swInput.property]" '+
-				'ng-disabled="swInput.editable === false" '+
-				'ng-show="swInput.editing" '+
-				'name="'+this.property+'" ' +
-				'placeholder="'+placeholder+'" '+
-				validations +
-				'id="swinput'+this.utilityService.createID(26)+'" '+
-				this.inputAttributes+
-				' />';
-		} else if(this.fieldType === 'number'){
-			template = '<input type="number" class="'+this.class+'" '+
-				'ng-model="swInput.object.data[swInput.property]" '+
-				'ng-disabled="swInput.editable === false" '+
-				'ng-show="swInput.editing" '+
-				'name="'+this.property+'" ' +
-				'placeholder="'+placeholder+'" '+
-				validations +
-				'id="swinput'+this.utilityService.createID(26)+'" '+
-				this.inputAttributes+
-				' />';
-		} else if(this.fieldType === 'time'){
-			template = '<input type="text" class="'+this.class+'" '+
-				'datetime-picker data-time-only="true" date-format="'+appConfig.timeFormat.replace('tt','a')+'" '+
-				'ng-model="swInput.object.data[swInput.property]" '+
-				'ng-disabled="swInput.editable === false" '+
-				'ng-show="swInput.editing" '+
-				'name="'+this.property+'" ' +
-				'placeholder="'+placeholder+'" '+
-				validations +
-				'id="swinput'+this.utilityService.createID(26)+'" '+
-				this.inputAttributes+
-				' />';
-		} else if(this.fieldType === 'date'){
-			template = '<input type="text" class="'+this.class+'" '+
-				'datetime-picker data-date-only="true" future-only date-format="'+appConfig.dateFormat+'" '+
-				'ng-model="swInput.object.data[swInput.property]" '+
-				'ng-disabled="swInput.editable === false" '+
-				'ng-show="swInput.editing" '+
-				'name="'+this.property+'" ' +
-				'placeholder="'+placeholder+'" '+
-				validations +
-				'id="swinput'+this.utilityService.createID(26)+'" '+
-				this.inputAttributes+
-				' />';
-		} else if(this.fieldType === 'dateTime'){
-			template = '<input type="text" class="'+this.class+'" '+
-				'datetime-picker '+ // date-format="MMM DD, YYYY hh:mm"
-				'ng-model="swInput.object.data[swInput.property]" '+
-				'ng-disabled="swInput.editable === false" '+
-				'ng-show="swInput.editing" '+
-				'name="'+this.property+'" ' +
-				'placeholder="'+placeholder+'" '+
-				validations +
-				'id="swinput'+this.utilityService.createID(26)+'" '+
-				this.inputAttributes+
-				' />';
+				
 		}
+		var dateFieldTypes = ['date','datetime','time'];
+		if(dateFieldTypes.indexOf(this.fieldType.toLowerCase()) >= 0){
+			template = template + 'datetime-picker ';
+		}
+		if(this.fieldType === 'time'){
+			template = template + 'data-time-only="true" date-format="'+appConfig.timeFormat.replace('tt','a')+'" ';
+		}
+		if(this.fieldType === 'date'){
+			template = template + 'data-date-only="true" future-only date-format="'+appConfig.dateFormat+'" ';
+		}
+		
+		if(template.length){
+			template = template + ' />';
+		}
+
 
 		return template;
 	};

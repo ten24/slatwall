@@ -35,7 +35,7 @@ class SWErrorDisplayController {
 
         this.property = this.property || this.propertyIdentifier;
         this.propertyIdentifier = this.propertyIdentifier || this.property;
-        if(!this.name){
+        if(!this.name && this.property){
             this.name = this.property;
         }
    }

@@ -1,24 +1,13 @@
 <span ng-init="labelText = swFormField.labelText.replace(':','')" ></span>
 <!--drive formfield by fieldtype-->
-<span ng-init="['text','password','yesno','number','time','date','dateTime']"
-<sw-input ng-if="swFormField.fieldType" data-property-display="swFormField.propertyDisplay"></sw-input>
+<span ng-init="fieldTypes = ['email','text','password','number','time','date','dateTime']"></span>
+<sw-input ng-if="fieldTypes.indexOf(swFormField.fieldType.toLowerCase()) >= 0" data-property-display="swFormField"></sw-input>
 
 <ng-switch on="swFormField.fieldType" >
-	<sw-input ng-switch-when="text" data-property-display="swFormField.propertyDisplay"></sw-input>
-	<!--<sw-form-field-text data-property-display="swFormField" ng-switch-when="text"></sw-form-field-text>-->
-
-	<sw-form-field-password data-property-display="swFormField" ng-switch-when="password"></sw-form-field-password>
-	<sw-form-field-select data-property-display="swFormField" ng-switch-when="select"></sw-form-field-select>
-	<sw-form-field-radio data-property-display="swFormField" ng-switch-when="yesno"></sw-form-field-radio>
-	<sw-form-field-number data-property-display="swFormField" ng-switch-when="number"></sw-form-field-number>
 	<sw-form-field-json data-property-display="swFormField" ng-switch-when="json"></sw-form-field-json>
+	<sw-form-field-radio data-property-display="swFormField" ng-switch-when="yesno"></sw-form-field-radio>
+	<sw-form-field-select data-property-display="swFormField" ng-switch-when="select"></sw-form-field-select>
 	<sw-form-field-search-select data-property-display="swFormField" ng-switch-when="search-select"></sw-form-field-search-select>
-    <sw-form-field-date data-property-display="swFormField" ng-switch-when="time"></sw-form-field-date>
-    <sw-form-field-date data-property-display="swFormField" ng-switch-when="date"></sw-form-field-date>
-    <sw-form-field-date data-property-display="swFormField" ng-switch-when="dateTime"></sw-form-field-date>
-
-	<!--from swFormField-->
-	<sw-form-field-text data-property-display="swFormField" ng-switch-when="email"></sw-form-field-text>
 
 	<input type="file" ng-switch-when="file" ng-model="swFormField.object[swFormField.name]"  class="{{swFormField.class}}" name="{{swFormField.name}}"></input>
 	<textarea ng-switch-when="textarea" class="{{swFormField.class}}"  id="{{swFormField.name}}TextArea" ng-model="swFormField.object[swFormField.name]" name="{{swFormField.name}}"></textarea>
@@ -43,19 +32,11 @@
 		</div>
 	</div>
 
-
 	<!--- needs to be replaced with an action caller --->
 	<div ng-switch-when="submit" name="submit">
 		<input type="submit" class="btn" name="submit" text="{{swFormField.name}}" value="{{swFormField.name}}" ng-click="swfPropertyDisplayController.submit();"></input>
 	</div>
-	<!--<sw-form-field-email data-property-display="swFormField" ng-switch-when="email"></sw-form-field-email>
-	<sw-form-field-multi-select data-property-display="swFormField" ng-switch-when="multiselect"></sw-form-field-multi-select>
-	<sw-form-field-file data-property-display="swFormField" ng-switch-when="file"></sw-form-field-file>
-	<sw-form-field-hidden data-property-display="swFormField" ng-switch-when="hidden"></sw-form-field-hidden>
-	<sw-form-field-checkbox data-property-display="swFormField" ng-switch-when="checkbox"></sw-form-field-hidden>
-	<sw-form-field-radio-group data-property-display="swFormField" ng-switch-when="radiogroup"></sw-form-field-radio-group>
-	<sw-form-field-checkbox-group data-property-display="swFormField" ng-switch-when="radiogroup"></sw-form-field-checkbox-group>
-	<sw-form-field-submit data-property-display="swFormField" ng-switch-when="submit"></sw-form-field-checkbox-group>-->
+
 </ng-switch>
 
 
