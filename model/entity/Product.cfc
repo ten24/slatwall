@@ -953,21 +953,18 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		if(!structKeyExists(variables, "salePriceExpirationDateTime")) {
 			variables.salePriceExpirationDateTime = now();
 			if( structKeyExists(variables,"defaultSku") ) {
-				variables.salePriceExpirationDateTime = getDefaultSku().getSalePricExpirationDateTime();
+				variables.salePriceExpirationDateTime = getDefaultSku().getSalePriceExpirationDateTime();
 			}
 		}
 		return variables.salePriceExpirationDateTime;
 	}
-
+	
+	//@SuppressCodeCoverage
 	public boolean function getTransactionExistsFlag() {
 		if(!structKeyExists(variables, "transactionExistsFlag")) {
 			variables.transactionExistsFlag = getService("skuService").getTransactionExistsFlag( productID=this.getProductID() );
 		}
 		return variables.transactionExistsFlag;
-	}
-
-	public array function getProductOptionsByGroup(){
-		return getService('productService').getProductOptionsByGroup( this );
 	}
 
 	public boolean function hasUnusedProductOptionCombinations(){
