@@ -303,6 +303,23 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		return createPersistedTestEntity('Option', optionData1);
 	}
+	
+	/**
+	* @hint "This function will return mockOptionGroup with properites you passed in. Make the null arguments "" in order "
+	*/
+	private any function createMockOptionGroup(string optionGroupName = "", string optionGroupCode = "") {
+		var optionGroupData = {
+			optionGroupID = ""
+		};
+		if (len(arguments.optionGroupName)) {
+			optionGroupData.optionGroupName = arguments.optionGroupName;
+		}
+		if (len(arguments.optionGroupCode)) {
+			optionGroupData.optionGroupCode = arguments.optionGroupCode;
+		}
+		return createPersistedTestEntity('OptionGroup', optionGroupData);
+	}
+	
 	/**
 	* @hint "Return mocked Product entity with properites you passed in.<br>If no argument, make it "". "
 	*/
@@ -368,21 +385,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		return createPersistedTestEntity('Image', imageData);
 	}
 	
-	/**
-	* @hint "This function will return mockOptionGroup with properites you passed in. Make the null arguments "" in order "
-	*/
-	private any function createMockOptionGroup(string optionGroupName = "", string optionGroupCode = "") {
-		var optionGroupData = {
-			optionGroupID = ""
-		};
-		if (len(arguments.optionGroupName)) {
-			optionGroupData.optionGroupName = arguments.optionGroupName;
-		}
-		if (len(arguments.optionGroupCode)) {
-			optionGroupData.optionGroupCode = arguments.optionGroupCode;
-		}
-		return createPersistedTestEntity('OptionGroup', optionGroupData);
-	}
 	
    //================== End Of Private Helper Functions =========================================
 	
@@ -2789,6 +2791,14 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 	public void function getSalePriceByCurrencyCodeTest_ResetCurrencyCode() {
+		//reset setting skuCurrency
+		var settingData = {
+			settingID = "",
+			settingName="skuCurrency",
+			settingValue = "AAA"
+		};
+		var settingEntity = createPersistedTestEntity('Setting',settingData);
+		//Mocking data exactly same with the private helper createMockProductAboutSalePrice()
 		var productData = {
 		productid = '',
 		skus = [
@@ -2823,13 +2833,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		sku.addPromotionReward(promotionReward);
 		ormflush();
 		
-		//reset setting
-		var settingData = {
-			settingID = "",
-			settingName="skuCurrency",
-			settingValue = "AAA"
-		};
-		var settingEntity = createPersistedTestEntity('Setting',settingData);
 		
 		var resultResetCode = mockProduct.getSalePriceByCurrencyCode('AAA');
 		assertEquals(7, resultResetCode);
@@ -2837,19 +2840,15 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 
 	public void function getSalePriceDiscountTypeTest() {
-		//TODO: Too much data to mock, skip it
+		//Too much data to mock, skip it
 	}
 	
-	public void function getSalePriceExpirationDateTime() {
-		
-	}
-	
-	public void function getTransactionExistsFlagTest() {
-		
-	}
-	
-	public void function getProductOptionsByGroupTest() {
-	 	
+	public void function getSalePriceExpirationDateTimeTest() {
+		//Test the circumstance without defaultSku defined
+		var mockProduct = createMockProduct();
+
+		var result = mockProduct.getSalePriceExpirationDateTime();
+		assertEquals(now(), result);		
 	}
 	 
 	 private any function createMockSkuWithProductAndTwoOptions(required string productID, required string OptionID1, required string OptionID2) {
@@ -2961,14 +2960,138 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 }
 	 
 	 // ================== START TEST: Overridden Methods ========================
-	 public void function getAssignedAttributeSetSmartListTest() {
-//	 	var attributeData = {
-//	 		attributeID = "",
-//	 		activeFlag = 1,
-//	 		
-//	 	}
+	 private any function createMockAttributeSet(required boolean activeFlag, required string attributeSetObject, string attributeSetCode="") {
+	 	var attributeSetData = {
+	 		attributeSetID = "",
+	 		activeFlag = arguments.activeFlag,
+	 		attributeSetObject = arguments.attributeSetObject
+	 	};
+	 	return createPersistedTestEntity('attributeSet', attributeSetData);
 	 }
 	 
+	 public void function getAssignedAttributeSetSmartListTest_TwoFilters() {
+		var mockAttributeSet1 = createMockAttributeSet(1,"Product");
+		var mockAttributeSet2 = createMockAttributeSet(0,"Product");
+		var mockAttributeSet3 = createMockAttributeSet(1,"Sku");
+		
+		var productTypeData = {
+			productTypeID = "",
+			attributeSets = [
+				{
+					attributeSetID = mockAttributeSet1.getAttributeSetID()
+				},
+				{
+					attributeSetID = mockAttributeSet2.getAttributeSetID()
+				},
+				{
+					attributeSetID = mockAttributeSet3.getAttributeSetID()
+				}
+				
+			]
+		};
+		var mockProductType = createPersistedTestEntity('ProductType', productTypeData);
+		
+		var brandData = {
+			brandID = ""
+		};
+		var mockBrand = createPersistedTestEntity('Brand', brandData);
+		
+		var productData = {
+			productID = "",
+			brand = {
+				brandID = mockBrand.getBrandID()
+			}
+		};
+		var mockProduct = createPersistedTestEntity('Product', productData);
+		
+		var result = mockProduct.getAssignedAttributeSetSmartList().getRecords(refresh = true);
+		//Testing the two filters on the smartList
+		assertTrue(arrayFind(result, mockAttributeSet1) != 0);
+		assertTrue(arrayFind(result, mockAttributeSet2) == 0);
+		assertTrue(arrayFind(result, mockAttributeSet3) == 0);		
+	 }
+	 
+	 private any function createMockAttributeSetWithFalseGlobalFlag(string productTypeID="", string productID="", string brandID="") {
+	 	var attributeSetData = {
+	 		attributeSetID = "",
+	 		activeFlag = 1,
+	 		attributeSetObject = 'Product',
+	 		globalFlag = 0
+	 	};
+	 	if(len(arguments.productTypeID)) {
+	 		attributeSetData.productTypes = [{
+	 			productTypeID = arguments.productTypeID
+	 		}];
+	 	}
+	 	if(len(arguments.productID)) {
+	 		attributeSetData.products = [{
+	 			productID = arguments.productID
+	 		}];
+	 	}
+	 	if(len(arguments.brandID)) {
+	 		attributeSetData.brands = [{
+	 			brandID = arguments.brandID
+	 		}];
+	 	}
+	 	return createPersistedTestEntity('attributeSet', attributeSetData);
+	 }
+/*	 
+	 public void function getAssignedAttributeSetSmartListTest_WhereCondition() {
+	 	
+	 	var attributeSetData = {
+	 		attributeSetID = "",
+	 		activeFlag = 1,
+	 		attributeSetObject = 'Product'
+//	 		products = [{
+//	 			productID = mockProduct.getProductID()
+//	 		}]
+	 	};
+	 	
+		var mockAttributeSet1 = createPersistedTestEntity('AttributeSet', attributeSetData);
+		
+		
+		var brandData = {
+			brandID = ""
+		};
+		var mockBrand = createPersistedTestEntity('Brand', brandData);
+		
+		
+		var productData = {
+			productID = ""
+//			brand = {
+//				brandID = mockBrand.getBrandID()
+//			}
+//			productType = {
+//				productTypeID = mockProductType.getProductTypeID()
+//			}
+		};
+		var mockProduct = createPersistedTestEntity('Product', productData);
+		
+		request.debug("3");
+	 	var productTypeData = {
+	 		productTypeID = "",
+	 		products = [{
+	 			productID = mockPRoduct.getPRoductID()
+	 		}],
+	 		attributeSets = [
+	 			{
+	 				attributeSetID = mockAttributeSet1.getAttributeSetID()
+	 			}
+	 		]
+	 		
+	 	};
+		var mockProductType = createPersistedTestEntity('ProductType', productTypeData);		
+
+		request.debug(mockProduct.getNewFlag());
+		
+		var result = mockProduct.getAssignedAttributeSetSmartList().getRecords(refresh = true);
+		request.debug(arrayLen(result));
+		request.debug(mockAttributeSet1.getAttributeSetID());
+		request.debug(result[1].getAttributeSetID());
+		request.debug(result[2].getAttributeSetID());
+		request.debug(result[3].getAttributeSetID());
+	 }
+*/	 
 	 public void function getSimpleRepresentationPropertyNameTest() {
 	 	var mockProduct = createMockProduct();
 	 	var result = mockProduct.getSimpleRepresentationPropertyName();
@@ -2978,12 +3101,49 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 
 	 // ================== START: Deprecated Methods ========================
 
-	public array function getAttributeSetsTest(){
-		var smartList = getAssignedAttributeSetSmartList();
-		if(arrayFind(arguments.attributeSetTypeCode, "astProductCustomization") || arrayFind(arguments.attributeSetTypeCode, "astOrderItem")) {
-			smartList.addFilter('attributeSetObject', 'OrderItem');
-		}
-		return smartList.getRecords();
+	public void function getAttributeSetsTest_NoArgu(){
+		var mockAttributeSet1 = createMockAttributeSet(1,"Product");
+		var mockAttributeSet2 = createMockAttributeSet(1,"Product");
+		var mockAttributeSet3 = createMockAttributeSet(1,"Sku");
+		
+		var productTypeData = {
+			productTypeID = "",
+			attributeSets = [
+				{
+					attributeSetID = mockAttributeSet1.getAttributeSetID()
+				},
+				{
+					attributeSetID = mockAttributeSet2.getAttributeSetID()
+				},
+				{
+					attributeSetID = mockAttributeSet3.getAttributeSetID()
+				}
+				
+			]
+		};
+		var mockProductType = createPersistedTestEntity('ProductType', productTypeData);
+		
+		var brandData = {
+			brandID = ""
+		};
+		var mockBrand = createPersistedTestEntity('Brand', brandData);
+		
+		var productData = {
+			productID = "",
+			brand = {
+				brandID = mockBrand.getBrandID()
+			}
+		};
+		var mockProduct = createPersistedTEstEntity('Product', productData);
+		
+		var result = mockProduct.getAttributeSets();
+		assertTrue(arrayFind(result, mockAttributeSet1) != 0);
+		assertTrue(arrayFind(result, mockAttributeSet2) != 0);
+		assertTrue(arrayFind(result, mockAttributeSet3) == 0);
+	}
+	
+	public void function getAttributeSetsTest_WithArgu(){
+		
 	}
 
 	// ==================  END:  Deprecated Methods ========================
