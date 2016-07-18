@@ -750,7 +750,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	private string function getFilterHQL(required array filterGroups){
 		//make the item without a logical operator first
-		filterHQL = '';
+		var filterHQL = '';
 
 		var filterGroupsHQL = getFilterGroupsHQL(arguments.filterGroups);
 		if(len(filterGroupsHQL)){
@@ -781,7 +781,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.HQLParams = {};
 		variables.postFilterGroups = [];
 		variables.postOrderBys = [];
-		HQL = createHQLFromCollectionObject(this, arguments.excludeSelectAndOrderBy, arguments.forExport);
+		var HQL = createHQLFromCollectionObject(this, arguments.excludeSelectAndOrderBy, arguments.forExport);
 		return HQL;
 	}
 
