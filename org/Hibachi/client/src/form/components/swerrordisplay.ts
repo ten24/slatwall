@@ -57,7 +57,8 @@ class SWErrorDisplay implements ng.IDirective {
         form:"=?",
         name:"@?",
         property:"@?",
-        propertyIdentifier:"@?"
+        propertyIdentifier:"@?",
+        errorClass:"@?"
     }
 
     // @ngInject
