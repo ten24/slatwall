@@ -15,17 +15,19 @@ class SWActionCallerController{
     public disabled:boolean;
     public actionItemEntityName:string;
     public hibachiPathBuilder:any;
-    public formCtrl:any;
+
     public actionUrl:string;
     public queryString:string;
     public isAngularRoute:boolean;
     public formController:any;
+    public form:ng.IFormController;
     //@ngInject
     constructor(
         private $scope,
         private $element,
         private $templateRequest:ng.ITemplateRequestService,
         private $compile:ng.ICompileService,
+        public $timeout,
         private corePartialsPath,
         private utilityService,
         private $hibachi,
@@ -34,6 +36,7 @@ class SWActionCallerController{
     ){
         this.$scope = $scope;
         this.$element = $element;
+        this.$timeout = $timeout;
         this.$templateRequest = $templateRequest;
         this.$compile = $compile;
         this.rbkeyService = rbkeyService;
@@ -55,7 +58,7 @@ class SWActionCallerController{
 
         //Check if is NOT a ngRouter
         if(angular.isUndefined(this.isAngularRoute)){
-            this.isAngularRoute = this.utilityService.isAngularRoute();    
+            this.isAngularRoute = this.utilityService.isAngularRoute();
         }
         if(!this.isAngularRoute){
             this.actionUrl= this.$hibachi.buildUrl(this.action,this.queryString);
@@ -77,7 +80,7 @@ class SWActionCallerController{
                 /** in order to attach the correct controller to local vm, we need a watch to bind */
                 var unbindWatcher = this.$scope.$watch(() => { return this.formController; }, (newValue, oldValue) => {
                     if (newValue !== undefined){
-                        this.formCtrl = newValue;
+                        this.formController = newValue;
 
                     }
 
@@ -107,12 +110,21 @@ class SWActionCallerController{
             <cfset attributes.class &= " disabled" />
         </cfif>
         */
+
+
     }
 
     public submit = () => {
+        this.$timeout(()=>{
+            if(this.form.$valid){
+                this.formController.submit(this.action);
+            }
 
-            this.formCtrl.submit(this.action);
-        }
+
+            this.form.$submitted = true;
+
+        });
+    }
 
     public getAction = ():string =>{
 
@@ -281,7 +293,7 @@ class SWActionCaller implements ng.IDirective{
         id:"@",
         isAngularRoute:"=?"
     };
-    public require={formController:"^?swForm"};
+    public require={formController:"^?swForm",form:"^?form"};
     public controller=SWActionCallerController;
     public controllerAs="swActionCaller";
     public templateUrl;
@@ -312,7 +324,7 @@ class SWActionCaller implements ng.IDirective{
 
     public link:ng.IDirectiveLinkFn = (scope:any, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
         if (angular.isDefined(scope.swActionCaller.formController)){
-             scope.formController = scope.swActionCaller.formController;    
+             scope.formController = scope.swActionCaller.formController;
         }
     }
 }

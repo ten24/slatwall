@@ -73,4 +73,19 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 	public any function getPackageName() {
 		return lcase(listGetAt(getClassFullname(), listLen(getClassFullname(), '.') - 1, '.'));
 	}
+	
+	public any function testIntegration() {
+ 		var requestBean = new Slatwall.model.transient.tax.TaxRatesRequestBean();
+ 		requestBean.setAccount(getHibachiScope().getAccount());
+ 		requestBean.setOrder(getHibachiScope().getCart());
+ 		
+ 		var testAddress = getHibachiScope().getAccount().getAddress();
+ 		requestbean.setBillToStreetAddress(testAddress.getStreetAddress());
+ 		requestbean.setBillToCity(testAddress.getCity());
+ 		requestbean.setBillToStateCode(testAddress.getStateCode());
+ 		requestbean.setBillToPostalCode(testAddress.getPostalCode());
+ 		requestbean.setBillToCountryCode(testAddress.getCountryCode());
+ 		
+ 		return getTaxRates(requestBean);
+ 	}
 }

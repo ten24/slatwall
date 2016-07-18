@@ -7,13 +7,17 @@ class SWFormResponseListingController {
     private columns; 
     private pageRecords; 
     private paginator; 
+    private dateFilter; 
     
     //@ngInject
     constructor(
+        private $filter,
         private $http,
         private $hibachi,
         private paginationService
     ){
+        
+        this.dateFilter = $filter("dateFilter");
         this.init();
     }
     
@@ -21,6 +25,7 @@ class SWFormResponseListingController {
         if(angular.isUndefined(this.formId)){
             throw("Form ID is required for swFormResponseListing");
         }
+
         
         this.paginator = this.paginationService.createPagination();
         this.paginator.getCollection = this.updateFormResponses;
@@ -59,6 +64,11 @@ class SWFormResponseListingController {
             this.paginator.totalPages = response.data.totalPages;
             this.paginator.pageStart = response.data.pageRecordsStart; 
             this.paginator.pageEnd = response.data.pageRecordsEnd;
+            for(var i = 0; i < this.pageRecords.length; i++){
+                if(angular.isDefined(this.pageRecords[i].createdDateTime)){
+                    this.pageRecords[i].createdDateTime = this.dateFilter(this.pageRecords[i].createdDateTime,"MMM dd, yyyy - h:m a");
+                }
+            }
         }, (response)=>{
             throw("There was a problem collecting the form responses");
         });

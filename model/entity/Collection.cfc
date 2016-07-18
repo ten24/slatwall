@@ -893,22 +893,53 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	private string function getGroupByHQL(string groupBys=""){
-		var groupByHQL = '';
+		var groupByList = '';
 		var groupBysArray = listToArray(arguments.groupBys);
 		var groupByCount = arrayLen(groupBysArray);
 		if(groupByCount){
-			groupByHQL = ' GROUP BY ';
-			for(var i = 1; i <= groupByCount; i++){
-				var groupBy = groupBysArray[i];
-				groupByHQL &= ' #groupBy# ';
-
-				//check whether a comma is needed
-				if(i != groupByCount){
-					groupByHQL &= ',';
+			var collectionConfig = getCollectionConfigStruct();
+			if(structKeyExists(collectionConfig, 'columns') && arraylen(collectionConfig.columns) > 0) {
+				for (var i = 1; i <= arraylen(collectionConfig.columns); i++) {
+					if (structKeyExists(collectionConfig.columns[i], 'aggregate') || ListFindNoCase(groupByList, collectionConfig.columns[i].propertyIdentifier) > 0) continue;
+					groupByList = listAppend(groupByList, collectionConfig.columns[i].propertyIdentifier);
 				}
 			}
+			if(structKeyExists(collectionConfig, 'orderBy') && arraylen(collectionConfig.orderBy) > 0){
+				for (var j = 1; j <= arraylen(collectionConfig.orderBy); j++) {
+					if (ListFindNoCase(groupByList, collectionConfig.orderBy[j].propertyIdentifier) > 0) continue;
+					groupByList = listAppend(groupByList, collectionConfig.orderBy[j].propertyIdentifier);
+				}
+			}else{
+				var orderBy = getDefaultOrderBy();
+				groupByList = listAppend(groupByList,orderBy.propertyIdentifier);
+			}
 		}
-		return groupByHQL;
+		return ' GROUP BY ' & groupByList;
+	}
+
+	private struct function getDefaultOrderBy(){
+		var orderByStruct={};
+		var baseEntityObject = getService('hibachiService').getEntityObject( getCollectionObject() );
+		//is default order by based on hb_defaultOrderProperty
+		if(structKeyExists(baseEntityObject.getThisMetaData(), "hb_defaultOrderProperty")) {
+			orderByStruct={
+				propertyIdentifier='_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject())) & '.' & baseEntityObject.getThisMetaData()["hb_defaultOrderProperty"],
+				direction="asc"
+			};
+		//if not then does it have a createdDateTime
+		} else if ( baseEntityObject.hasProperty( "createdDateTime" ) ) {
+			var orderByStruct={
+				propertyIdentifier='_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject())) & '.' & "createdDateTime",
+				direction="desc"
+			};
+		//if still not then order by primary id
+		} else {
+			var orderByStruct={
+				propertyIdentifier='_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject())) & '.' & baseEntityObject.getPrimaryIDPropertyName(),
+				direction="asc"
+			};
+		}
+		return orderByStruct;
 	}
 
 	private string function getOrderByHQL(array orderBy=[]){
@@ -917,33 +948,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var orderByCount = arraylen(arguments.orderBy);
 		//if order by count is 0, then use the default order by
 		if(orderByCount == 0){
-			var baseEntityObject = getService('hibachiService').getEntityObject( getCollectionObject() );
-			//is default order by based on hb_defaultOrderProperty
-			if(structKeyExists(baseEntityObject.getThisMetaData(), "hb_defaultOrderProperty")) {
-				var orderByStruct={
-					propertyIdentifier='_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject())) & '.' & baseEntityObject.getThisMetaData()["hb_defaultOrderProperty"],
-					direction="asc"
-				};
-				arrayAppend(arguments.orderby,orderByStruct);
-				orderByCount++;
-			//if not then does it have a createdDateTime
-			} else if ( baseEntityObject.hasProperty( "createdDateTime" ) ) {
-				var orderByStruct={
-					propertyIdentifier='_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject())) & '.' & "createdDateTime",
-					direction="desc"
-				};
-				arrayAppend(arguments.orderby,orderByStruct);
-				orderByCount++;
-			//if still not then order by primary id
-			} else {
-				var orderByStruct={
-					propertyIdentifier='_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject())) & '.' & baseEntityObject.getPrimaryIDPropertyName(),
-					direction="asc"
-				};
-				arrayAppend(arguments.orderby,orderByStruct);
-				orderByCount++;
-			}
-
+			arrayAppend(arguments.orderby,getDefaultOrderBy());
+			orderByCount++;
 		}
 
 		for(var i = 1; i <= orderByCount; i++){
