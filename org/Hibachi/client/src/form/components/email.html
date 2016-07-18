@@ -1,0 +1,25 @@
+<div class="radio" class="display:inline-block;" ng-repeat="propertyDisplayOption in propertyDisplay.options track by propertyDisplayOption.value" ng-if="selectedRadioFormName">
+	<input type="radio" name="{{'selected'+ propertyDisplay.object.metaData.className + propertyDisplay.property+selectedRadioFormName}}" id="{{propertyDisplay.object.metaData.className+'.'+ propertyDisplay.property+ selectedRadioFormName + $index}}"
+    		ng-model="selected"
+    		ng-show="propertyDisplay.editing"
+			ng-value="propertyDisplayOption"
+			ng-click="formFieldChanged(selected)"
+	>
+	<label for="{{propertyDisplay.object.metaData.className+'.'+ propertyDisplay.property + selectedRadioFormName + $index}}">
+		<span ng-bind="propertyDisplayOption.name"></span>
+	</label>
+</div>
+
+<input style="display:none"	type="text" ng-if="selectedRadioFormName && propertyDisplay.property"
+		ng-model="propertyDisplay.object.data[propertyDisplay.property]"
+		name="{{propertyDisplay.property}}"
+/>
+
+<!-- Error Messages -->
+    
+<span style="color:red"
+	ng-repeat="(key,value) in propertyDisplay.errors"
+	ng-show="(propertyDisplay.form.$submitted && propertyDisplay.form[propertyDisplay.property].$invalid) || (propertyDisplay.form[propertyDisplay.property].$invalid && propertyDisplay.form[propertyDisplay.property].$dirty)"
+>
+  <span  ng-show="key === 'required'">{{propertyDisplay.title}} is a required field<br></span>
+</span>

@@ -633,18 +633,18 @@ class PublicService {
             if (serverData.cart.hasErrors || (angular.isDefined(serverData.failureActions) && serverData.failureActions.length && serverData.failureActions[0] == "public:cart.addOrderPayment")){
                 if (serverData.failureActions.length){
                     for (var action in serverData.failureActions){
-                        //console.log("Failure Action:", serverData.failureActions[action]);
+                        //
                     }
                 }
                 this.edit = '';
                 return true;
             } else if (serverData.successfulActions.length) {
-                //console.log("Checking Successful Actions: ");
+                //
                 this.cart.hasErrors = false;
                 this.editPayment = false;
                 this.edit = '';
                 for (var action in serverData.successfulActions){
-                    //console.log("Checking Action: ", serverData.successfulActions[action]);
+                    //
                     if (serverData.successfulActions[action].indexOf("placeOrder") != -1){
                         //if there are no errors then redirect.
                         this.orderPlaced = true;
@@ -686,7 +686,7 @@ class PublicService {
 
     //returns the amount total of giftcards added to this account.
     public getAppliedGiftCardTotals = ()=>{
-        //console.log("Finding totals.");
+        //
         var total = 0;
         for (var payment in this.cart.orderPayments){
             if (this.cart.orderPayments[payment].giftCardNumber != ""){

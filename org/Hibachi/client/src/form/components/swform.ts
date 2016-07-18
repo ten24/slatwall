@@ -25,6 +25,7 @@ class SWFormController {
     public context:string;
     public formCtrl;
     public formData = {};
+    public inputAttributes:string;
     /**
      * This controller handles most of the logic for the swFormDirective when more complicated self inspection is needed.
      */
@@ -60,7 +61,7 @@ class SWFormController {
             }
             //convert the string to an object
             this.$timeout( ()=> {
-                console.log(this.object);
+
                 this.object = this.$hibachi['new'+this.object]();
             });
         }else{
@@ -142,7 +143,7 @@ class SWFormController {
         if (!action) {throw "Action not defined on form";}
 
         this.formData = this.formData || {};
-        //console.log("Calling Final Submit");
+        //
         let request = this.$rootScope.hibachiScope.doAction(action, this.formData)
         .then( (result) =>{
             if (result.errors) {
@@ -254,16 +255,23 @@ class SWFormController {
     /** returns all the data from the form by iterating the form elements */
     public getFormData = ()=>
     {
-        console.log('test');
-        console.log(this.object)
-        console.log(this);
-
         var iterable = this.object;
+
         if(this.object.data){
             iterable = this.object.data;
         }
 
+
+
         angular.forEach(iterable, (val, key) => {
+            if(this.object.forms && this.object.forms[this.name][key] && this.object.forms[this.name][key].$modelValue){
+
+                val = this.object.forms[this.name][key].$modelValue;
+            }
+
+
+
+
             /** Check for form elements that have a name that doesn't start with $ */
             if (angular.isString(val)) {
                 this.formData[key] = val;
@@ -299,8 +307,8 @@ class SWForm implements ng.IDirective {
             onSuccess: "@?",
             onError: "@?",
             hideUntil: "@?",
-            isProcessForm: "@?",
-            isDirty:"=?"
+            isDirty:"=?",
+            inputAttributes:"@?"
     };
 
     /**
@@ -327,9 +335,10 @@ class SWForm implements ng.IDirective {
     }
     // @ngInject
     constructor( public coreFormPartialsPath, public hibachiPathBuilder) {
-        this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.coreFormPartialsPath) + "formPartial.html";
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.coreFormPartialsPath) + "form.html";
     }
 }
 export{
-    SWForm
+    SWForm,
+    SWFormController
 }

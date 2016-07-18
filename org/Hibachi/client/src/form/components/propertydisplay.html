@@ -1,6 +1,6 @@
-<div data-ng-if="swPropertyDisplay.object" class="form-group">
+<div ng-if="swPropertyDisplay.object" class="form-group">
 
-    <label class="control-label" data-ng-if="swPropertyDisplay.fieldType !== 'hidden'">
+    <label class="control-label" ng-if="swPropertyDisplay.fieldType !== 'hidden'">
 
     	<!-- <span ng-if="propertyDisplay.object.metaData.isProcessObject && !propertyDisplay.title"
             sw-rbkey="'processObject.'+object.metaData.className+'.'+property" >
@@ -9,33 +9,38 @@
             sw-rbkey="'entity.'+object.metaData.className+'.'+property" >
         </span> -->
         <span data-ng-bind="swPropertyDisplay.title"></span>:
-        <span data-ng-if="swPropertyDisplay.object.validations.properties[swPropertyDisplay.property][0].required && swPropertyDisplay.fieldType === 'text'">*</span>
+        <span ng-if="swPropertyDisplay.object.validations.properties[swPropertyDisplay.property][0].required && swPropertyDisplay.fieldType === 'text'">*</span>
         <span sw-tooltip class="j-tool-tip-item"
-              data-ng-if="swPropertyDisplay.hint"
+              ng-if="swPropertyDisplay.hint"
               data-text="{{swPropertyDisplay.hint}}"
               data-position="right"
                 >
             <i class="fa fa-question-circle"></i>
         </span>
     </label>
+
     <div class="s-form-input">
         <!-- Model-->
-        <span sw-form-field data-ng-if="swPropertyDisplay.editing"
+
+        <span sw-form-field ng-if="swPropertyDisplay.editing"
             data-property-display="swPropertyDisplay">
         </span>
         <!-- Display -->
         <p  class="form-control-static"
-            data-ng-if="swPropertyDisplay.fieldType !== 'hidden' && swPropertyDisplay.fieldType !== 'select'"
+            ng-if="swPropertyDisplay.fieldType !== 'hidden' && swPropertyDisplay.fieldType !== 'select'"
             data-ng-bind="swPropertyDisplay.applyFilter(swPropertyDisplay.object.data[swPropertyDisplay.property], swPropertyDisplay.object.metaData[swPropertyDisplay.property].hb_formattype)"
             data-ng-show="!swPropertyDisplay.editing">
             <!-- property value -->
         </p>
         <p  class="form-control-static"
-            data-ng-if="swPropertyDisplay.fieldType === 'select'"
+            ng-if="swPropertyDisplay.fieldType === 'select'"
             data-ng-bind="swPropertyDisplay.object.data[swPropertyDisplay.property].data[swPropertyDisplay.property+'Name']"
             data-ng-show="!swPropertyDisplay.editing"
             >
             <!-- property value -->
         </p>
     </div>
+    <sw-error-display
+    >
+    </sw-error-display>
 </div>
