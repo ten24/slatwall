@@ -13,9 +13,9 @@ class SWListingDisplayController{
     public childCollectionConfigs = {}; 
     public collectionID;
     public collectionPromise;
-    public collectionData;
-    public collectionObject;
-    public collectionConfig;
+    public collectionData:any;
+    public collectionObject:any;
+    public collectionConfig:any;
     public collectionConfigs = [];
     public collectionObjects = [];
     public collection;
@@ -51,22 +51,22 @@ class SWListingDisplayController{
     public orderBys = [];
     public orderByStates = {};
     public orderByIndices = {};
-    public paginator;
-    public parentPropertyName;
+    public paginator:any;
+    public parentPropertyName:string;
     public processObjectProperties;
     public recordAddAction;
     public recordDetailAction;
     public recordDetailActionProperty;
     public recordEditAction;
     public recordDeleteAction;
-    public recordProcessButtonDisplayFlag;
+    public recordProcessButtonDisplayFlag:boolean;
     public searching:boolean = false;
     public searchText;
 
     public selectFieldName;
     public selectable:boolean = false;
-    public showSearch;
-    public showTopPagination;
+    public showSearch:boolean;
+    public showTopPagination:boolean;
     public showSearchFilters = false; 
     public sortable:boolean = false;
     public sortProperty;
@@ -128,7 +128,21 @@ class SWListingDisplayController{
             this.administrativeCount++;
             this.adminattributes = this.getAdminAttributesByType('add');
         }
+
+        if( angular.isUndefined(this.collectionConfig) && 
+            angular.isDefined(this.collection) && 
+            angular.isDefined(this.collection.collectionConfig)
+        ){
+            this.collectionConfig = this.collection.collectionConfig; 
+        }
         
+        if( angular.isUndefined(this.collectionObject) && 
+            angular.isDefined(this.collection) && 
+            angular.isDefined(this.collection.collectionObject)
+        ){
+            this.collectionObject = this.collection.collectionObject; 
+        }
+
         //set defaults if value is not specifies
         this.processObjectProperties = this.processObjectProperties || '';
         this.recordProcessButtonDisplayFlag = this.recordProcessButtonDisplayFlag || true;
@@ -144,14 +158,6 @@ class SWListingDisplayController{
 
         if(angular.isUndefined(this.hasSearch)){
             this.hasSearch = true;
-        }
-
-        if(angular.isString(this.showSearch)){
-            this.showSearch = (this.showSearch.toLowerCase() === 'true');
-        }
-
-        if(angular.isString(this.showTopPagination)){
-            this.showTopPagination = (this.showTopPagination.toLowerCase() === 'true');
         }
 
         if(angular.isUndefined(this.name)){

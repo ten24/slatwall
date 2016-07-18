@@ -243,7 +243,7 @@ class ListingService{
 
             this.setupHierarchicalExpandable(listingID, collectionConfig);
         }
-        
+
         this.updateColumnAndAdministrativeCount(listingID);
     };
     //end initCollectionConfigData
