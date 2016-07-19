@@ -20,18 +20,21 @@ class SWCollectionFilter implements ng.IDirective{
 
     public static Factory(){
         var directive:ng.IDirectiveFactory=(
+            scopeService, 
             utilityService
         )=>new SWCollectionFilter(
+            scopeService, 
             utilityService
         );
         directive.$inject = [
+            'scopeService',
             'utilityService'
         ];
         return directive;
     }
     
     //@ngInject
-    constructor(private utilityService){}
+    constructor(private scopeService, private utilityService){}
 
     public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any) =>{
         var filter = {
@@ -42,14 +45,7 @@ class SWCollectionFilter implements ng.IDirective{
                 hidden:scope.SWCollectionFilter.hidden
         };
         
-        var currentScope = scope; 
-        //get the right parent scope
-        while(angular.isDefined(currentScope.$parent)){
-            if(angular.isDefined(currentScope.swCollectionConfig)){ 
-                break; 
-            }
-            currentScope = currentScope.$parent; 
-        }
+        var currentScope = this.scopeService.locateParentScope(scope, "swCollectionConfig");
        
         if(angular.isDefined(currentScope.swCollectionConfig)){ 
             currentScope.swCollectionConfig.filters.push(filter); 

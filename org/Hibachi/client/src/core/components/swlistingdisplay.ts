@@ -98,6 +98,11 @@ class SWListingDisplayController{
         public rbkeyService
     ){
         this.tableID = 'LD'+this.utilityService.createID();
+
+        if (angular.isUndefined(this.collectionConfig)){
+            //make it available to swCollectionConfig
+            this.collectionConfig = null; 
+        }
         
         if(angular.isUndefined(this.multiSlot)){
             this.multiSlot = false; 
@@ -129,7 +134,7 @@ class SWListingDisplayController{
             this.adminattributes = this.getAdminAttributesByType('add');
         }
 
-        if( angular.isUndefined(this.collectionConfig) && 
+        if( this.collectionConfig != null && 
             angular.isDefined(this.collection) && 
             angular.isDefined(this.collection.collectionConfig)
         ){
@@ -179,9 +184,11 @@ class SWListingDisplayController{
         if(angular.isUndefined(this.getChildCount)){
             this.getChildCount = false;
         }
+        
         //This multiple collection logic could probably be in link too
         this.multipleCollectionDeffered = $q.defer();
         this.multipleCollectionPromise = this.multipleCollectionDeffered.promise;
+        
         //Helps force single collection config mode 
         this.singleCollectionDeferred = $q.defer();
         this.singleCollectionPromise = this.singleCollectionDeferred.promise;
@@ -201,22 +208,25 @@ class SWListingDisplayController{
             this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
             this.multipleCollectionDeffered.reject();
         }
-        if( angular.isDefined(this.collectionConfig) 
+        
+        if( this.collectionConfig != null
             && angular.isUndefined(this.collectionConfig.columns)
         ){
             this.collectionConfig.columns = [];
-        } else if (angular.isUndefined(this.collectionConfig)){
-            //make it available to swCollectionConfig
-            this.collectionConfig = null; 
         }
-        this.listingService.setListingState(this.tableID, this);
+        
         this.setupTranscludedData(); 
+        console.log("scopeposttransclude", this);
+        this.listingService.setListingState(this.tableID, this);
+        
         this.multipleCollectionPromise.then(()=>{
             //now do the intial setup
             this.setupInMultiCollectionConfigMode(); 
+        
         }).catch(()=>{
             //do the initial setup for single collection mode
             this.listingService.setupInSingleCollectionConfigMode(this.tableID,this.$scope); 
+        
         }).finally(()=>{
             //if getCollection doesn't exist then create it
             if(angular.isUndefined(this.getCollection)){
@@ -241,6 +251,7 @@ class SWListingDisplayController{
         }); 
     };
 
+    //move this to the service
     private setupDefaultCollectionInfo = () =>{
         if(this.hasCollectionPromise 
             && angular.isDefined(this.collection) 

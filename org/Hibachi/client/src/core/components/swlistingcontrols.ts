@@ -25,8 +25,8 @@ class SWListingControlsController {
         if(angular.isUndefined(this.showFilters)){
             this.showFilters = false;
         }
-
         this.backupColumnsConfig = this.collectionConfig.getColumns();
+    
         this.filterPropertiesList = {};
 
         $hibachi.getFilterPropertiesByBaseEntityName(this.collectionConfig.baseEntityAlias).then((value)=> {

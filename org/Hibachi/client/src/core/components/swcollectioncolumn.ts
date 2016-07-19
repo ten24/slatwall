@@ -23,18 +23,21 @@ class SWCollectionColumn implements ng.IDirective{
 
     public static Factory(){
         var directive:ng.IDirectiveFactory=(
+            scopeService, 
             utilityService
         )=>new SWCollectionColumn(
+            scopeService, 
             utilityService
         );
         directive.$inject = [
+            'scopeService',
             'utilityService'
         ];
         return directive;
     }
     
     //@ngInject
-    constructor(private utilityService){}
+    constructor(private scopeService, private utilityService){}
 
     public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any) =>{
         
@@ -47,14 +50,7 @@ class SWCollectionColumn implements ng.IDirective{
                 hidden:scope.swCollectionColumn.hidden
         };
         
-        var currentScope = scope; 
-        //get the right parent scope
-        while(angular.isDefined(currentScope.$parent)){
-            if(angular.isDefined(currentScope.swCollectionConfig)){ 
-                break; 
-            }
-            currentScope = currentScope.$parent; 
-        }
+        var currentScope = this.scopeService.locateParentScope(scope,"swCollectionConfig"); 
         
         if(angular.isDefined(currentScope.swCollectionConfig)){ 
             currentScope.swCollectionConfig.columns.push(column); 

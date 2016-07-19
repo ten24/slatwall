@@ -15,13 +15,12 @@
             <div class="s-content-header" data-ng-if="swListingDisplay.title">
                 <h2 data-ng-bind="swListingDisplay.title"></h2>
             </div>
-            <sw-listing-controls
+            <sw-listing-controls data-ng-if="swListingDisplay.hasSearch !== false && swListingDisplay.collectionConfig != null"
                     data-collection-config="swListingDisplay.collectionConfig"
                     data-get-collection="swListingDisplay.getCollection"
                     data-paginator="swListingDisplay.paginator"
                     data-show-filters="swListingDisplay.showSearchFilters"
-                    data-ng-if="swListingDisplay.hasSearch !== false">
-
+                   >
             </sw-listing-controls>
             <div class="s-detail-notifications s-detail-hidden-content" data-ng-if="swListingDisplay.hasActionBar !== false">
                 <div class="row">

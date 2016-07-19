@@ -104,7 +104,7 @@ class ListingService{
 
     public setupColumns = (listingID, collectionConfig, collectionObject) =>{
         //assumes no alias formatting
-        if(this.getListing(listingID).columns.length == 0){
+        if(this.getListing(listingID).columns.length == 0 && collectionConfig != null){
             this.getListing(listingID).columns = collectionConfig.columns;
         }
         for(var i=0; i < this.getListing(listingID).columns.length; i++){
