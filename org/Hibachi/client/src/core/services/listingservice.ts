@@ -6,6 +6,7 @@ class ListingService{
     
     //@ngInject
     constructor(private $q,
+                private collectionConfigService,
                 private filterService,
                 private utilityService, 
                 private rbkeyService, 
@@ -75,7 +76,9 @@ class ListingService{
 
     public setupInSingleCollectionConfigMode = (listingID, scope) =>{
         
-        if(this.getListing(listingID).collectionObject != null){
+        if( this.getListing(listingID).collectionObject != null && 
+            this.getListing(listingID).collectionConfig != null
+        ){
             this.getListing(listingID).collectionObject = this.getListing(listingID).collectionConfig.baseEntityName; 
         }
 
@@ -86,7 +89,7 @@ class ListingService{
             if(newValue){
                 this.$q.when(this.getListing(listingID).collectionPromise).then((data)=>{
                     this.getListing(listingID).collectionData = data;
-                    this.getListing(listingID).setupDefaultCollectionInfo();
+                    this.setupDefaultCollectionInfo(listingID);
                     if(this.getListing(listingID).collectionConfig != null && this.getListing(listingID).collectionConfig.hasColumns()){
                         this.setupColumns(listingID,this.getListing(listingID).collectionConfig, this.getListing(listingID).collectionObject);
                     }else{
@@ -100,6 +103,23 @@ class ListingService{
                 });
             }
         });
+    };
+
+     private setupDefaultCollectionInfo = (listingID) =>{
+        if(this.getListing(listingID).hasCollectionPromise 
+            && angular.isDefined(this.getListing(listingID).collection) 
+            && this.getListing(listingID).collectionConfig == null
+        ){
+            this.getListing(listingID).collectionObject = this.getListing(listingID).collection.collectionObject;
+            this.getListing(listingID).collectionConfig = this.collectionConfigService.newCollectionConfig(this.getListing(listingID).collectionObject);
+            this.getListing(listingID).collectionConfig.loadJson(this.getListing(listingID).collection.collectionConfig);
+        }
+        if(this.getListing(listingID).paginator != null 
+            && this.getListing(listingID).collectionConfig != null
+        ){
+            this.getListing(listingID).collectionConfig.setPageShow(this.getListing(listingID).paginator.getPageShow());
+            this.getListing(listingID).collectionConfig.setCurrentPage(this.getListing(listingID).paginator.getCurrentPage());
+        }
     };
 
     public setupColumns = (listingID, collectionConfig, collectionObject) =>{
@@ -360,12 +380,17 @@ class ListingService{
             return ()=>{
                 this.getListing(listingID).collectionConfig.setCurrentPage(this.getListing(listingID).paginator.getCurrentPage());
                 this.getListing(listingID).collectionConfig.setPageShow(this.getListing(listingID).paginator.getPageShow());
-                this.getListing(listingID).collectionConfig.getEntity().then((data)=>{
-                    this.getListing(listingID).collectionData = data;
-                    this.getListing(listingID).setupDefaultCollectionInfo();
-                    this.getListing(listingID).collectionData.pageRecords = this.getListing(listingID).collectionData.pageRecords || this.getListing(listingID).collectionData.records;
-                    this.getListing(listingID).paginator.setPageRecordsInfo(this.getListing(listingID).collectionData);
-                });
+                this.getListing(listingID).collectionConfig.getEntity().then(
+                    (data)=>{
+                        this.getListing(listingID).collectionData = data;
+                        this.setupDefaultCollectionInfo(listingID);
+                        this.getListing(listingID).collectionData.pageRecords = data.pageRecords || data.records;
+                        this.getListing(listingID).paginator.setPageRecordsInfo(this.getListing(listingID).collectionData);
+                    },
+                    (reason)=>{
+                        throw("Listing Service encounter a problem when trying to get collection. Reason: " + reason);
+                    }
+                );
             };
         } else { 
             return ()=>{

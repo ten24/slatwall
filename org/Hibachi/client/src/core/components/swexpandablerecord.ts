@@ -91,9 +91,9 @@ class SWExpandableRecordController{
             this.childrenOpen = !this.childrenOpen;
             this.expandableService.updateState(this.recordID,{isOpen:this.childrenOpen});
             if(!this.childrenLoaded){
-                    if(angular.isUndefined(this.childCollectionConfig)){
+                    if(this.childCollectionConfig == null){
                         this.setupChildCollectionConfig(); 
-                    } 
+                    }
                     if(angular.isFunction(this.childCollectionConfig.getEntity)){
                         this.collectionPromise = this.childCollectionConfig.getEntity();
                     } 
@@ -135,10 +135,10 @@ class SWExpandableRecord implements ng.IDirective{
     public bindToController={
         recordValue:"=",
         link:"@",
-        expandable:"=",
+        expandable:"=?",
         parentId:"=",
         entity:"=",
-        collectionConfig:"=",
+        collectionConfig:"=?",
         childCollectionConfig:"=?",
         refreshChildrenEvent:"=?",
         listingId:"@?",

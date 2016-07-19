@@ -251,21 +251,6 @@ class SWListingDisplayController{
         }); 
     };
 
-    //move this to the service
-    private setupDefaultCollectionInfo = () =>{
-        if(this.hasCollectionPromise 
-            && angular.isDefined(this.collection) 
-            && angular.isUndefined(this.collectionConfig)
-        ){
-            this.collectionObject = this.collection.collectionObject;
-            this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
-            this.collectionConfig.loadJson(this.collection.collectionConfig);
-        }
-        this.collectionConfig.setPageShow(this.paginator.getPageShow());
-        this.collectionConfig.setCurrentPage(this.paginator.getCurrentPage());
-        //this.collectionConfig.setKeywords(this.paginator.keywords);
-    };
-
     public getKeyOfMatchedHideRule = (pageRecord)=>{
         return this.listingService.getKeyOfMatchedHideRule(this.tableID, pageRecord);
     }
