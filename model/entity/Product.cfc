@@ -1244,7 +1244,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	// ================== START: Deprecated Methods ========================
 
 	public array function getAttributeSets(array attributeSetTypeCode=[]){
-		var smartList = getAssignedAttributeSetSmartList();
+		var smartList = getAssignedAttributeSetSmartList(true);
 		if(arrayFind(arguments.attributeSetTypeCode, "astProductCustomization") || arrayFind(arguments.attributeSetTypeCode, "astOrderItem")) {
 			smartList.addFilter('attributeSetObject', 'OrderItem');
 		}
