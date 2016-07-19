@@ -3035,19 +3035,17 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	}
 	 	return createPersistedTestEntity('attributeSet', attributeSetData);
 	 }
-/*	 
+	 
 	 public void function getAssignedAttributeSetSmartListTest_WhereCondition() {
 	 	
 	 	var attributeSetData = {
 	 		attributeSetID = "",
 	 		activeFlag = 1,
-	 		attributeSetObject = 'Product'
-//	 		products = [{
-//	 			productID = mockProduct.getProductID()
-//	 		}]
+	 		attributeSetObject = 'Product',
+	 		globalFlag = 0
 	 	};
 	 	
-		var mockAttributeSet1 = createPersistedTestEntity('AttributeSet', attributeSetData);
+		var mockAttributeSet1 = createPersistedTestEntity('AttributeSet', attributeSetData);	
 		
 		
 		var brandData = {
@@ -3055,24 +3053,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		var mockBrand = createPersistedTestEntity('Brand', brandData);
 		
-		
-		var productData = {
-			productID = ""
-//			brand = {
-//				brandID = mockBrand.getBrandID()
-//			}
-//			productType = {
-//				productTypeID = mockProductType.getProductTypeID()
-//			}
-		};
-		var mockProduct = createPersistedTestEntity('Product', productData);
-		
-		request.debug("3");
-	 	var productTypeData = {
+		var productTypeData = {
 	 		productTypeID = "",
-	 		products = [{
-	 			productID = mockPRoduct.getPRoductID()
-	 		}],
+//	 		products = [{
+//	 			productID = mockPRoduct.getProductID()
+//	 		}],
 	 		attributeSets = [
 	 			{
 	 				attributeSetID = mockAttributeSet1.getAttributeSetID()
@@ -3080,18 +3065,32 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 		]
 	 		
 	 	};
-		var mockProductType = createPersistedTestEntity('ProductType', productTypeData);		
-
-		request.debug(mockProduct.getNewFlag());
+		var mockProductType = createPersistedTestEntity('ProductType', productTypeData);	
 		
-		var result = mockProduct.getAssignedAttributeSetSmartList().getRecords(refresh = true);
-		request.debug(arrayLen(result));
-		request.debug(mockAttributeSet1.getAttributeSetID());
-		request.debug(result[1].getAttributeSetID());
-		request.debug(result[2].getAttributeSetID());
-		request.debug(result[3].getAttributeSetID());
+		var productData = {
+			productID = '',
+			brand = {
+				brandID = mockBrand.getBrandID()
+			},
+			productType = {
+				productTypeID = mockProductType.getProductTypeID()
+			}
+		};
+		var mockProduct = createPersistedTestEntity('Product', productData);
+		
+	 	
+		
+		
+
+//		request.debug(mockProduct.getNewFlag());
+		var result = mockProduct.getAssignedAttributeSetSmartList(true).getRecords(refresh = true);
+//		request.debug(arrayLen(result));
+//		request.debug(mockAttributeSet1.getAttributeSetID());
+//		request.debug(result[1].getAttributeSetID());
+//		request.debug(result[2].getAttributeSetID());
+//		request.debug(result[3].getAttributeSetID());
 	 }
-*/	 
+	 
 	 public void function getSimpleRepresentationPropertyNameTest() {
 	 	var mockProduct = createMockProduct();
 	 	var result = mockProduct.getSimpleRepresentationPropertyName();
