@@ -103,15 +103,15 @@ class SWListingDisplayController{
 
         this.initializeState(); 
         
-        //This multiple collection logic could probably be in link too
+        //promises to determine which set of logic will run
         this.multipleCollectionDeffered = $q.defer();
         this.multipleCollectionPromise = this.multipleCollectionDeffered.promise;
-        
-        //Helps force single collection config mode 
         this.singleCollectionDeferred = $q.defer();
         this.singleCollectionPromise = this.singleCollectionDeferred.promise;
 
         if(angular.isDefined(this.collection) && angular.isString(this.collection)){
+            //not sure why we have two properties for this
+            this.baseEntityName = this.collection; 
             this.collectionObject = this.collection;
             this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
             this.multipleCollectionDeffered.reject();
@@ -129,7 +129,6 @@ class SWListingDisplayController{
         this.listingService.setListingState(this.tableID, this); 
 
         this.singleCollectionPromise.then(()=>{
-            console.log("rejecting multiple collectionConfig")
             this.multipleCollectionDeffered.reject(); 
         });     
         
@@ -141,7 +140,6 @@ class SWListingDisplayController{
         ).catch(
             ()=>{
                 //do the initial setup for single collection mode
-                console.log("setting up in single collection config mode");
                 this.listingService.setupInSingleCollectionConfigMode(this.tableID,this.$scope); 
             }
         ).finally(
