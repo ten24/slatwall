@@ -1,19 +1,23 @@
-<div class="s-select-wrapper s-titled-select-wrapper s-sort-by s-disabled">
+<div class="s-select-wrapper s-titled-select-wrapper s-sort-by" 
+     ng-class="{'s-disabled':swOrderByControls.disabled}" >
     <span>Sort By:</span>
     <select class="form-control input-sm" 
             name="needed"
             ng-model="swOrderByControls.selectedOrderByColumnIndex"
             ng-change="swOrderByControls.updateSortOrderProperty()" >
 
-        <option value="" disabled="" selected="" sw-rbkey="'define.select'">Select</option>
+        <option value="" selected="" sw-rbkey="'define.select'">Select</option>
         
-        <option value="$index" ng-repeat="column in swOrderByControls.collectionConfig.columns track by $index"><spann ng-bind="column.title"></span></option>
+        <option value="{{column.propertyIdentifier}}" ng-repeat="column in swOrderByControls.collectionConfig.columns track by $index">
+            {{column.title}}
+        </option>
     </select>
 </div>
 
 <div class="btn-group s-option-toggles" style="float: none;vertical-align: top;" role="group" aria-label="...">
     <button type="button" 
             class="btn btn-default" 
+            ng-class="{'s-selected':swOrderByControls.sortCode=='ASC'}"
             ng-click="swOrderByControls.sortAscending()"
             data-toggle="popover" 
             data-trigger="hover" 
@@ -24,6 +28,7 @@
     </button>
     <button type="button" 
             class="btn btn-default" 
+            ng-class="{'s-selected':swOrderByControls.sortCode=='DESC'}"
             ng-click="swOrderByControls.sortDescending()"
             data-toggle="popover" 
             data-trigger="hover" 
@@ -34,7 +39,8 @@
             <i class="fa fa-sort-alpha-desc" aria-hidden="true"></i>
     </button>
     <button type="button" 
-            class="btn btn-default s-selected" 
+            class="btn btn-default" 
+            ng-class="{'s-selected':swOrderByControls.sortCode=='MANUAL'}"
             ng-click="swOrderByControls.manualSort()"
             data-toggle="popover" 
             data-trigger="hover" 

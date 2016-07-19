@@ -88,6 +88,7 @@ class SWListingDisplayController{
     constructor(
         public $scope,
         public $transclude,
+        public $timeout,
         public $q,
         public $hibachi,
         public utilityService,
@@ -149,7 +150,11 @@ class SWListingDisplayController{
                     this.getCollection = this.listingService.setupDefaultGetCollection(this.tableID);
                 }
                 this.paginator.getCollection = this.getCollection;
-                this.getCollection();
+                this.$timeout(
+                    ()=>{
+                        this.getCollection();
+                    }
+                );
             }
         );
         this.$scope.$on('$destroy',()=>{

@@ -7,23 +7,28 @@ class SWOrderByControlsController {
     public selectedOrderByColumnIndex:any; 
     public sortCode:string = "ASC";
     public columns:any[]; 
+    public disabled:boolean; 
 
     // @ngInject
     constructor(
         ){
             this.columns = this.collectionConfig.columns; 
+            console.log("orderbycolumns", this.columns)
     }
 
     public changeSortProperty = ():void =>{
         switch(this.sortCode){
             case "ASC":
+                this.disabled = false; 
                 this.collectionConfig.toggleOrderBy(this.columns[this.selectedOrderByColumnIndex].propertyIdentifier,true);//single column mode true
                 break; 
             case "DESC":
+                this.disabled = false; 
                 this.collectionConfig.toggleOrderBy(this.columns[this.selectedOrderByColumnIndex].propertyIdentifier,true);//single column mode true
                 break; 
             case "MANUAL":
                 //flip listing
+                this.disabled = true; 
                 break; 
         }
     }
