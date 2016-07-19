@@ -22,7 +22,9 @@ class SWErrorDisplayController {
    public $onInit(){
        var bindToControllerProps = this.$injector.get('swErrorDisplayDirective')[0].bindToController;
 		for(var i in bindToControllerProps){
+
 			if(!this[i] && i !== 'name'){
+                
 				if(!this[i] && this.swPropertyDisplay && this.swPropertyDisplay[i]){
 					this[i] = this.swPropertyDisplay[i]
 				}else if(!this[i] && this.swfPropertyDisplay && this.swfPropertyDisplay[i]){
@@ -35,7 +37,7 @@ class SWErrorDisplayController {
 
         this.property = this.property || this.propertyIdentifier;
         this.propertyIdentifier = this.propertyIdentifier || this.property;
-        if(!this.name){
+        if(!this.name && this.property){
             this.name = this.property;
         }
    }
@@ -52,12 +54,13 @@ class SWErrorDisplay implements ng.IDirective {
     public restrict="E";
     public controller = SWErrorDisplayController;
     public controllerAs = "swErrorDisplay";
-    public scop = {};
+    public scope = {};
     public bindToController={
         form:"=?",
         name:"@?",
         property:"@?",
-        propertyIdentifier:"@?"
+        propertyIdentifier:"@?",
+        errorClass:"@?"
     }
 
     // @ngInject
