@@ -3036,7 +3036,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 }
 	 
 	 public void function getAssignedAttributeSetSmartListTest_WhereCondition() {
-	 	
+	 	//Testing generally if the where conditions work when globalFlag equals to 0
 	 	var attributeSetData = {
 	 		attributeSetID = "",
 	 		activeFlag = 1,
@@ -3044,8 +3044,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 		globalFlag = 0
 	 	};
 	 	
-		var mockAttributeSet1 = createPersistedTestEntity('AttributeSet', attributeSetData);	
-		
+		var mockAttributeSet1 = createPersistedTestEntity('AttributeSet', attributeSetData);
 		
 		var brandData = {
 			brandID = ""
@@ -3054,15 +3053,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		var productTypeData = {
 	 		productTypeID = "",
-//	 		products = [{
-//	 			productID = mockPRoduct.getProductID()
-//	 		}],
 	 		attributeSets = [
 	 			{
 	 				attributeSetID = mockAttributeSet1.getAttributeSetID()
 	 			}
-	 		]
-	 		
+	 		]	 		
 	 	};
 		var mockProductType = createPersistedTestEntity('ProductType', productTypeData);	
 		
@@ -3076,18 +3071,35 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
-		
-	 	
-		
-		
 
-//		request.debug(mockProduct.getNewFlag());
 		var result = mockProduct.getAssignedAttributeSetSmartList(true).getRecords(refresh = true);
-//		request.debug(arrayLen(result));
-		request.debug(mockAttributeSet1.getAttributeSetID());
-//		request.debug(result[1].getAttributeSetID());
-//		request.debug(result[2].getAttributeSetID());
-		request.debug(result[3].getAttributeSetID());
+		assertTrue(arrayFind(result, mockAttributeSet1) != 0);
+	}
+	public void function getAssignedAttributeSetSmartListTest_NoBrand() {		
+		//Testing if no brandID involved
+		var mockAttributeSet2 = createMockAttributeSetWithFalseGlobalFlag();
+		
+		var productTypeData2 = {
+	 		productTypeID = "",
+	 		attributeSets = [
+	 			{
+	 				attributeSetID = mockAttributeSet2.getAttributeSetID()
+	 			}
+	 		]
+	 		
+	 	};
+		var mockProductType2 = createPersistedTestEntity('ProductType', productTypeData2);	
+		
+		var productData2 = {
+			productID = '',
+			productType = {
+				productTypeID = mockProductType2.getProductTypeID()
+			}
+		};
+		var mockProductNoBrand = createPersistedTestEntity('Product', productData2);
+		
+		var resultNoBrand = mockProductNoBrand.getAssignedAttributeSetSmartList(true).getRecords(refresh = true);
+		assertTrue(arrayFind(resultNoBrand, mockAttributeSet2) != 0);
 	 }
 	 
 	 public void function getSimpleRepresentationPropertyNameTest() {
@@ -3141,8 +3153,55 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 	public void function getAttributeSetsTest_WithArgu(){
+		var mockAttributeSet1 = createMockAttributeSet(1,"Product");
+		var mockAttributeSet2 = createMockAttributeSet(1,"OrderItem");
+		var mockAttributeSet3 = createMockAttributeSet(1,"Sku");
 		
+		var productTypeData = {
+			productTypeID = "",
+			attributeSets = [
+				{
+					attributeSetID = mockAttributeSet1.getAttributeSetID()
+				},
+				{
+					attributeSetID = mockAttributeSet2.getAttributeSetID()
+				},
+				{
+					attributeSetID = mockAttributeSet3.getAttributeSetID()
+				}
+				
+			]
+		};
+		var mockProductType = createPersistedTestEntity('ProductType', productTypeData);
+		
+		var brandData = {
+			brandID = ""
+		};
+		var mockBrand = createPersistedTestEntity('Brand', brandData);
+		
+		var productData = {
+			productID = "",
+			brand = {
+				brandID = mockBrand.getBrandID()
+			}
+		};
+		var mockProduct = createPersistedTEstEntity('Product', productData);
+		
+		//Testing if the type code works
+		var resultWithValidArgu = mockProduct.getAttributeSets(["astProductCustomization", "astOrderItem"]);
+		assertTrue(arrayFind(resultWithValidArgu, mockAttributeSet1) == 0);
+		assertTrue(arrayFind(resultWithValidArgu, mockAttributeSet2) != 0);
+		assertTrue(arrayFind(resultWithValidArgu, mockAttributeSet3) == 0);
+		//Testing if the single argument works well
+		var resultWithOneValidArgu = mockProduct.getAttributeSets(["astProductCustomization"]);
+		assertTrue(arrayFind(resultWithOneValidArgu, mockAttributeSet1) == 0);
+		assertTrue(arrayFind(resultWithOneValidArgu, mockAttributeSet2) != 0);
+		assertTrue(arrayFind(resultWithOneValidArgu, mockAttributeSet3) == 0);
+		//Testing the invalid argument result
+		var resultInValidArgu = mockProduct.getAttributeSets(["Invalid"]);
+		assertTrue(arrayFind(resultInValidArgu, mockAttributeSet1) != 0);
+		assertTrue(arrayFind(resultInValidArgu, mockAttributeSet2) == 0);
+		assertTrue(arrayFind(resultInValidArgu, mockAttributeSet3) == 0);
 	}
-
 	// ==================  END:  Deprecated Methods ========================
 }
