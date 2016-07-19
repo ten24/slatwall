@@ -62,19 +62,25 @@ class SWListingColumn implements ng.IDirective{
 
     public static Factory(){
         var directive:ng.IDirectiveFactory=(
+            listingService, 
             scopeService,
             utilityService
         )=>new SWListingColumn(
+            listingService, 
             scopeService,
             utilityService
         );
         directive.$inject = [
+            'listingService', 
             'scopeService',
             'utilityService'
         ];
         return directive;
     }
-    constructor(private scopeService, private utilityService){
+    constructor( private listingService, 
+                 private scopeService, 
+                 private utilityService
+    ){
 
     }
 
@@ -112,19 +118,16 @@ class SWListingColumn implements ng.IDirective{
         }
         
         var listingDisplayScope = this.scopeService.locateParentScope(scope,"swListingDisplay");
-        if(angular.isDefined(listingDisplayScope)){
-            listingDisplayScope = listingDisplayScope.swListingDisplay;
+        if(angular.isDefined(listingDisplayScope) 
+            && angular.isDefined(listingDisplayScope.swListingDisplay)
+            && angular.isDefined(listingDisplayScope.swListingDisplay.tableID)
+            && listingDisplayScope.swListingDisplay.tableID.length
+        ){
+            var listingDisplayID = listingDisplayScope.swListingDisplay.tableID;
+            this.listingService.addColumn(listingDisplayID, column);
         }else {
-            throw("listing display scope not available to sw-listing-column")
-        }
-        
-        if(this.utilityService.ArrayFindByPropertyValue(listingDisplayScope.columns,'propertyIdentifier',column.propertyIdentifier) === -1){
-            if(column.aggregate){
-                listingDisplayScope.aggregates.unshift(column.aggregate);
-            }else{
-                listingDisplayScope.columns.unshift(column);
-            }
-        }
+            throw("listing display scope not available to sw-listing-column or there is no table id")
+        }   
     }
 }
 export{

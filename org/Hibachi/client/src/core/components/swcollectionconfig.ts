@@ -56,15 +56,18 @@ class SWCollectionConfig implements ng.IDirective{
     public static Factory(){
         var directive:ng.IDirectiveFactory=(
             collectionConfigService,
+            listingService, 
             scopeService,
             $q
         )=>new SWCollectionConfig(
             collectionConfigService,
+            listingService, 
             scopeService,
             $q
         );
         directive.$inject = [
             'collectionConfigService',
+            'listingService',
             'scopeService',
             '$q'
         ];
@@ -74,6 +77,7 @@ class SWCollectionConfig implements ng.IDirective{
     // @ngInject
     constructor( 
         public collectionConfigService,
+        public listingService, 
         public scopeService,
         public $q
     ){
@@ -82,7 +86,10 @@ class SWCollectionConfig implements ng.IDirective{
 
     public link = (scope: any, element: JQuery, attrs: angular.IAttributes) => {
             //some automatic configuration for listing display
-            if(angular.isDefined(scope.swCollectionConfig.inListingDisplay) && scope.swCollectionConfig.inListingDisplay){
+            if( angular.isUndefined(scope.swCollectionConfig.inListingDisplay)){
+                scope.swCollectionConfig.inListingDisplay = false; 
+            }
+            if( scope.swCollectionConfig.inListingDisplay ){
                 scope.swCollectionConfig.parentDirectiveControllerAsName = "swListingDisplay";
                 scope.swCollectionConfig.parentDeferredProperty = "singleCollectionDeferred";
             }   
@@ -147,7 +154,6 @@ class SWCollectionConfig implements ng.IDirective{
 
             this.$q.all(allCollectionConfigPromises).then(  
                 ()=>{
-                    console.log("looking")
                     if(angular.isDefined(parentDirective)){
                         if(angular.isDefined(scope.swCollectionConfig.multiCollectionConfigProperty) 
                             && angular.isDefined(parentDirective[scope.swCollectionConfig.multiCollectionConfigProperty])

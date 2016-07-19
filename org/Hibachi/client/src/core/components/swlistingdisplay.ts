@@ -98,6 +98,9 @@ class SWListingDisplayController{
         public rbkeyService
     ){
         this.tableID = 'LD'+this.utilityService.createID();
+        
+        //this is performed early to populate columns and multiple collectionConfigs if present
+        this.$transclude(this.$scope,()=>{});
 
         if (angular.isUndefined(this.collectionConfig)){
             //make it available to swCollectionConfig
@@ -214,42 +217,34 @@ class SWListingDisplayController{
         ){
             this.collectionConfig.columns = [];
         }
+    
+        this.listingService.setListingState(this.tableID, this);     
         
-        this.setupTranscludedData(); 
-        console.log("scopeposttransclude", this);
-        this.listingService.setListingState(this.tableID, this);
-        
-        this.multipleCollectionPromise.then(()=>{
-            //now do the intial setup
-            this.setupInMultiCollectionConfigMode(); 
-        
-        }).catch(()=>{
-            //do the initial setup for single collection mode
-            this.listingService.setupInSingleCollectionConfigMode(this.tableID,this.$scope); 
-        
-        }).finally(()=>{
-            //if getCollection doesn't exist then create it
-            if(angular.isUndefined(this.getCollection)){
-                this.getCollection = this.listingService.setupDefaultGetCollection(this.tableID);
+        this.multipleCollectionPromise.then(
+            ()=>{
+                //now do the intial setup
+                this.listingService.setupInMultiCollectionConfigMode(this.tableID); 
             }
-            this.paginator.getCollection = this.getCollection;
-            this.getCollection();
-        });
+        ).catch(
+            ()=>{
+                //do the initial setup for single collection mode
+                console.log("setting up in single collection config mode");
+                this.listingService.setupInSingleCollectionConfigMode(this.tableID,this.$scope); 
+            }
+        ).finally(
+            ()=>{
+                //if getCollection doesn't exist then create it
+                if(angular.isUndefined(this.getCollection)){
+                    this.getCollection = this.listingService.setupDefaultGetCollection(this.tableID);
+                }
+                this.paginator.getCollection = this.getCollection;
+                this.getCollection();
+            }
+        );
         this.$scope.$on('$destroy',()=>{
             this.observerService.detachById(this.$scope.collection);
         });
     }
-    
-    private setupTranscludedData = () => {
-        //this is performed early to populate columns and multiple collectionConfigs if present
-        this.$transclude(this.$scope,()=>{});
-    }
-    
-    private setupInMultiCollectionConfigMode = () => {
-        angular.forEach(this.collectionConfigs,(value,key)=>{
-            this.collectionObjects[key] = value.baseEntityName;
-        }); 
-    };
 
     public getKeyOfMatchedHideRule = (pageRecord)=>{
         return this.listingService.getKeyOfMatchedHideRule(this.tableID, pageRecord);

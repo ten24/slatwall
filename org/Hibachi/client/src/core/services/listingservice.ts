@@ -105,7 +105,15 @@ class ListingService{
         });
     };
 
-     private setupDefaultCollectionInfo = (listingID) =>{
+    public setupInMultiCollectionConfigMode = (listingID) => {
+        angular.forEach(this.getListing(listingID).collectionConfigs,(value,key)=>{
+            this.getListing(listingID).collectionObjects[key] = value.baseEntityName;
+        }); 
+
+        //todo define the get entity
+    };
+
+    private setupDefaultCollectionInfo = (listingID) =>{
         if(this.getListing(listingID).hasCollectionPromise 
             && angular.isDefined(this.getListing(listingID).collection) 
             && this.getListing(listingID).collectionConfig == null
@@ -122,15 +130,11 @@ class ListingService{
         }
     };
 
-    public setupColumns = (listingID, collectionConfig, collectionObject) =>{
-        //assumes no alias formatting
-        if(this.getListing(listingID).columns.length == 0 && collectionConfig != null){
-            this.getListing(listingID).columns = collectionConfig.columns;
-        }
-        for(var i=0; i < this.getListing(listingID).columns.length; i++){
-            
-            var column = this.getListing(listingID).columns[i];
-            var lastEntity = this.$hibachi.getLastEntityNameInPropertyIdentifier(collectionConfig.baseEntityName,column.propertyIdentifier);
+    public addColumn = (listingID, column) =>{
+        if(this.utilityService.ArrayFindByPropertyValue(this.getListing(listingID).columns,'propertyIdentifier',column.propertyIdentifier) === -1){
+            var baseEntityName =  this.getListing(listingID).baseEntityName || this.getListing(listingID).collectionConfig.baseEntityName;
+
+            var lastEntity = this.$hibachi.getLastEntityNameInPropertyIdentifier(baseEntityName,column.propertyIdentifier);
 
             if(angular.isUndefined(column.title)){
                 column.title = this.rbkeyService.getRBKey('entity.'+lastEntity.toLowerCase()+'.'+this.utilityService.listLast(column.propertyIdentifier,'.'));
@@ -147,6 +151,40 @@ class ListingService{
                 column.type = "none";
             }
             
+            if(column.propertyIdentifier){
+                this.getListing(listingID).allpropertyidentifiers = this.utilityService.listAppend(this.getListing(listingID).allpropertyidentifiers,column.propertyIdentifier);
+            }else if(column.processObjectProperty){
+                column.searchable = false;
+                column.sort = false;
+                this.getListing(listingID).allprocessobjectproperties = this.utilityService.listAppend(this.getListing(listingID).allprocessobjectproperties, column.processObjectProperty);
+            }
+
+            if(column.tdclass){
+                var tdclassArray = column.tdclass.split(' ');
+                if(tdclassArray.indexOf("primary") >= 0 && this.getListing(listingID).expandable){
+                    this.getListing(listingID).tableattributes = this.utilityService.listAppend(this.getListing(listingID).tableattributes,'data-expandsortproperty='+column.propertyIdentifier, " ")
+                    column.sort = false;
+                }
+            }
+
+            if(column.aggregate){
+                this.getListing(listingID).aggregates.push(column.aggregate);
+            }else{
+                this.getListing(listingID).columns.push(column);
+            }
+       }
+    }
+
+    public setupColumns = (listingID, collectionConfig, collectionObject) =>{
+        //assumes no alias formatting
+        console.log("setup columns",this.getListing(listingID).columns, collectionConfig);
+        if(this.getListing(listingID).columns.length == 0 && collectionConfig != null){
+            this.getListing(listingID).columns = collectionConfig.columns;
+        }
+        for(var i=0; i < this.getListing(listingID).columns.length; i++){
+            
+            var column = this.getListing(listingID).columns[i]; 
+
             if(angular.isDefined(column.tooltip)){
                 var parsedProperties = this.utilityService.getPropertiesFromString(column.tooltip);
                 if(parsedProperties && parsedProperties.length){
@@ -163,22 +201,6 @@ class ListingService{
                 }
             }
 
-            if(column.propertyIdentifier){
-                this.getListing(listingID).allpropertyidentifiers = this.utilityService.listAppend(this.getListing(listingID).allpropertyidentifiers,column.propertyIdentifier);
-            }else if(column.processObjectProperty){
-                column.searchable = false;
-                column.sort = false;
-                this.getListing(listingID).allprocessobjectproperties = this.utilityService.listAppend(this.getListing(listingID).allprocessobjectproperties, column.processObjectProperty);
-            }
-
-            if(column.tdclass){
-                var tdclassArray = column.tdclass.split(' ');
-                if(tdclassArray.indexOf("primary") >= 0 && this.getListing(listingID).expandable){
-                    this.getListing(listingID).tableattributes = this.utilityService.listAppend(this.getListing(listingID).tableattributes,'data-expandsortproperty='+column.propertyIdentifier, " ")
-                    column.sort = false;
-                }
-            }
-            
             //if the passed in collection has columns perform some formatting
             if(this.getListing(listingID).hasCollectionPromise){  
                 var lastEntity = this.$hibachi.getLastEntityNameInPropertyIdentifier(collectionObject,this.utilityService.listRest(column.propertyIdentifier,'.'));
