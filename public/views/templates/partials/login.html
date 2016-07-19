@@ -1,4 +1,4 @@
-<div ng-show="slatwall.getRequestByAction('login').loading">my icon</div>
+<div ng-show="slatwall.getRequestByAction('login').loading">Loading</div>
 	<div ng-init="slatwall.forgotPassword = false "></div>
 	<div class="col-md-12" style="margin-top:0px" ng-if="slatwall.userIsLoggedIn() === true">
 		<!--- sign in --->
@@ -21,7 +21,7 @@
 			    data-name="Account_Login"
 			    >
 
-		        <div class="col-sm-12 form-group">
+		       <!--<div class="col-sm-12 form-group">
 			        <swf-property-display
 			            data-name="emailAddress"
 			            data-type="email"
@@ -42,7 +42,42 @@
 			            data-editing="true">
 			        </swf-property-display>
 					<a href="##" ng-click="slatwall.forgotPassword = true;">Forgot your password?</a>
-		        </div>
+		        </div>-->
+				<!--<sw-form-field
+					data-type="text"
+					data-name="emailAddress"
+					data-type="email"
+					data-property="emailAddress"
+					data-label-text="emailAddress"
+					data-class="form-control"
+					data-editing="true"
+				></sw-form-field>
+				<sw-error-display
+					data-name="emailAddress">
+				</sw-error-display>
+				<sw-form-field
+					data-type="password"
+					data-name="password"
+					data-type="password"
+					data-property="password"
+					data-label-text="Password"
+					data-class="form-control"
+					data-editing="true"
+				></sw-form-field>
+				<sw-error-display
+					data-name="password">
+				</sw-error-display>-->
+
+				<input type="text" name="emailAddress" sw-form-subscriber ng-model="swFormSubscriber.object.emailAddress"/>
+				<sw-error-display
+					data-name="emailAddress">
+				</sw-error-display>
+
+				<input type="text" name="password" sw-form-subscriber ng-model="swFormSubscriber.object.password"/>
+				<sw-error-display
+					data-name="password">
+				</sw-error-display>
+
 			    <div class="col-sm-12 form-group">
 
 				    <sw-action-caller

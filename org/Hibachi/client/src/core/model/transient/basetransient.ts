@@ -41,31 +41,38 @@ abstract class BaseTransient extends BaseObject{
 
                     //if we are on the last item in the array
                     if(propertyKey === propertyIdentifierArray.length-1){
+                        //if is json
+                        //if(currentEntity.metaData[key]){
 
-                        if(angular.isObject(data[key]) && currentEntity.metaData[property].fieldtype && currentEntity.metaData[property].fieldtype === 'many-to-one'){
 
-                            var relatedEntity = this.entityService.newEntity(currentEntity.metaData[property].cfc);
-                            if(relatedEntity.populate){
-                                relatedEntity.populate(data[key]);
-                            }else{
-                                relatedEntity.$$init(data[key]);
-                                currentEntity['$$set'+currentEntity.metaData[property].name.charAt(0).toUpperCase()+currentEntity.metaData[property].name.slice(1)](relatedEntity);
-                            }
-                        }else if(angular.isArray(data[propertyIdentifierKey]) && currentEntity.metaData[property].fieldtype && (currentEntity.metaData[property].fieldtype === 'one-to-many')){
+                        //if propertyidentifier
+                       // }else{
+                            if(angular.isObject(data[key]) && currentEntity.metaData[property].fieldtype && currentEntity.metaData[property].fieldtype === 'many-to-one'){
 
-                            angular.forEach(data[key],(arrayItem,propertyKey)=>{
-                                var relatedEntity = this.entityService.newEntity(currentEntity.metaData[property].cfc);;
+                                var relatedEntity = this.entityService.newEntity(currentEntity.metaData[property].cfc);
                                 if(relatedEntity.populate){
-                                    relatedEntity.populate(arrayItem)
+                                    relatedEntity.populate(data[key]);
                                 }else{
-                                    relatedEntity.$$init(arrayItem);
-                                    currentEntity['$$add'+currentEntity.metaData[property].singularname.charAt(0).toUpperCase()+currentEntity.metaData[property].singularname.slice(1)](relatedEntity);
+                                    relatedEntity.$$init(data[key]);
+                                    currentEntity['$$set'+currentEntity.metaData[property].name.charAt(0).toUpperCase()+currentEntity.metaData[property].name.slice(1)](relatedEntity);
                                 }
-                            });
-                        }else{
+                            }else if(angular.isArray(data[propertyIdentifierKey]) && currentEntity.metaData[property].fieldtype && (currentEntity.metaData[property].fieldtype === 'one-to-many')){
 
-                            currentEntity[property] = data[key];
-                        }
+                                angular.forEach(data[key],(arrayItem,propertyKey)=>{
+                                    var relatedEntity = this.entityService.newEntity(currentEntity.metaData[property].cfc);;
+                                    if(relatedEntity.populate){
+                                        relatedEntity.populate(arrayItem)
+                                    }else{
+                                        relatedEntity.$$init(arrayItem);
+                                        currentEntity['$$add'+currentEntity.metaData[property].singularname.charAt(0).toUpperCase()+currentEntity.metaData[property].singularname.slice(1)](relatedEntity);
+                                    }
+                                });
+                            }else{
+
+                                currentEntity[property] = data[key];
+                            }
+                        //}
+
 
                     }else{
                         var propertyMetaData = currentEntity.metaData[property];
