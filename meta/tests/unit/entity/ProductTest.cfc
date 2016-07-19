@@ -2786,7 +2786,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	
 	 public void function getSalePriceByCurrencyCodeTest_DefaultCurrencyCode() {				
 		var mockProduct = createMockProductAboutSalePrice();
-		var resultDefaultCode = mockProduct.getSalePriceByCurrencyCode('AAA');
+		var resultDefaultCode = mockProduct.getSalePriceByCurrencyCode('USD');
 		assertEquals(7, resultDefaultCode);
 	}
 	
