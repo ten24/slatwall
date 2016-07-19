@@ -198,6 +198,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-ExtendedPSID", value=getHibachiScope().getSession().getSessionCookieExtendedPSID(), expires="#getHibachiScope().setting('globalExtendedSessionAutoLogoutInDays')#");
 		
 		
+		
 	}
 	
 	public string function loginAccount(required any account, required any accountAuthentication) {
@@ -205,8 +206,8 @@ component output="false" accessors="true" extends="HibachiService"  {
 		var currentSession = getHibachiScope().getSession();
 		currentSession.setAccount( arguments.account );
 		currentSession.setAccountAuthentication( arguments.accountAuthentication );
-	    
 	    currentSession.setLoggedInDateTime(DateTimeFormat(now()));
+		
 		// Make sure that we persist the session
 		persistSession();
 	
@@ -241,12 +242,15 @@ component output="false" accessors="true" extends="HibachiService"  {
 		if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#-NPSID")){
 			structDelete(cookie, "#getApplicationValue('applicationKey')#-NPSID");
 		}
+		
 		if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#-PSID")){
 			structDelete(cookie, "#getApplicationValue('applicationKey')#-PSID");
 		}
+		
 		if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#-ExtendedNPSID")){
 			structDelete(cookie, "#getApplicationValue('applicationKey')#-ExtendedNPSID");
 		}
+		
 		// Make sure that this logout is persisted
 		getHibachiDAO().flushORMSession();
 		getHibachiAuditService().logAccountActivity("logout", auditLogData);
