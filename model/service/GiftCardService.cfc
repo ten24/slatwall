@@ -142,7 +142,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!giftCardDebitTransaction.hasErrors()){
 			arguments.giftCard = this.saveGiftCard(arguments.giftCard);
 		} else {
-			arguments.giftCard.addErrors(giftCardCreditTransaction.getErrors());
+			arguments.giftCard.addErrors(giftCardDebitTransaction.getErrors());
 		}
 
 		return arguments.giftCard;
