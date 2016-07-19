@@ -503,8 +503,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//Testing the conversion mechinism
 	}
 	
-	//@Suppress getCurrentAccountPriceTest() in calculateSkuPriceBasedOnCurrentAccount() function of priceGroupService
-	
 	public void function getLivePriceTest() {
 		var skuData = {
 			skuID = "",
@@ -514,10 +512,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		var result = mockSku.getLivePrice();
 	}
-	
-	//@suppress getSalePriceDetailsTest(), please check getSkuSalePriceDetailsTest() in ProductTest.cfc
-	
-	//@suppress getCurrentAccountPriceTest(), please check calculateSkuPriceBasedOnCurrentAccountTest() in PriceGroupService.cfc
 }
 
 
