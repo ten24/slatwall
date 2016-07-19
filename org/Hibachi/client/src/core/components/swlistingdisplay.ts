@@ -24,6 +24,7 @@ class SWListingDisplayController{
     public columns = [];
     public columnCount;
     public commonProperties;
+    public customListingControls:boolean; 
     public defaultSelectEvent;
     public disableRules = [];
     public expandable:boolean;
@@ -54,11 +55,11 @@ class SWListingDisplayController{
     public paginator:any;
     public parentPropertyName:string;
     public processObjectProperties;
-    public recordAddAction;
-    public recordDetailAction;
-    public recordDetailActionProperty;
-    public recordEditAction;
-    public recordDeleteAction;
+    public recordAddAction:string;
+    public recordDetailAction:string;
+    public recordDetailActionProperty:string;
+    public recordEditAction:string;
+    public recordDeleteAction:string;
     public recordProcessButtonDisplayFlag:boolean;
     public searching:boolean = false;
     public searchText;
@@ -110,23 +111,21 @@ class SWListingDisplayController{
         this.singleCollectionDeferred = $q.defer();
         this.singleCollectionPromise = this.singleCollectionDeferred.promise;
 
-        if(!this.multiSlot){
-            if(!this.collection || !angular.isString(this.collection)){
-                this.hasCollectionPromise = true;
-                this.multipleCollectionDeffered.reject();
-            } else if(angular.isDefined(this.collection) && angular.isString(this.collection)){
-                this.collectionObject = this.collection;
-                this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
-                this.multipleCollectionDeffered.reject();
-            }
+        if(angular.isDefined(this.collection) && angular.isString(this.collection)){
+            this.collectionObject = this.collection;
+            this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
+            this.multipleCollectionDeffered.reject();
+        }
+
+        if(angular.isDefined(this.collectionPromise)){
+             this.hasCollectionPromise = true;
+             this.multipleCollectionDeffered.reject();
         }
         
-        if( this.collectionConfig != null
-            && angular.isUndefined(this.collectionConfig.columns)
-        ){
-            this.collectionConfig.columns = [];
+        if(this.collectionConfig != null){
+            this.multipleCollectionDeffered.reject();
         }
-    
+     
         this.listingService.setListingState(this.tableID, this); 
 
         this.singleCollectionPromise.then(()=>{
@@ -211,6 +210,9 @@ class SWListingDisplayController{
         }
         if(angular.isUndefined(this.isAngularRoute)){
             this.isAngularRoute = true;    
+        }
+        if(angular.isUndefined(this.customListingControls)){
+            this.customListingControls = false; 
         }
         if(angular.isUndefined(this.hasSearch)){
             this.hasSearch = true;
@@ -426,7 +428,8 @@ class SWListingDisplay implements ng.IDirective{
         columns:"?swListingColumns", 
         collectionConfigs:"?swCollectionConfigs",
         disableRules:"?swDisabledRowRules",
-        expandableRules:"?swExpandableRowRules"
+        expandableRules:"?swExpandableRowRules",
+        customListingControls:"?swCustomListingControls"
     }; 
     public bindToController={
 
@@ -531,7 +534,8 @@ class SWListingDisplay implements ng.IDirective{
             getChildCount:"=?",
             hasSearch:"=?",
             hasActionBar:"=?",
-            multiSlot:"=?"
+            multiSlot:"=?",
+            customListingControls:"=?"
     };
     public controller:any=SWListingDisplayController;
     public controllerAs="swListingDisplay";

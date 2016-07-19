@@ -1,9 +1,12 @@
 <sw-listing-display data-multi-slot="true"
+                    data-custom-listing-controls="true"
                     data-edit="true"
                     data-has-search="true"
                     data-is-angular-route="false"
                     data-angular-links="false"
-                    data-has-action-bar="false">
+                    data-has-action-bar="false"
+                    data-collection-config="swAssignedProducts.collectionConfig"
+                    >
 
     <sw-listing-columns>
         <sw-listing-column data-property-identifier="productName"></sw-listing-column> 
@@ -13,33 +16,31 @@
         <sw-listing-column data-property-identifier="publishedFlag"></sw-listing-column> 
     </sw-listing-columns>
 
-    <sw-collection-configs>
-        <sw-collection-config data-entity-name="Product" 
-                              data-in-listing-display="true"
-                              data-filter-flag="false">
-            <sw-collection-columns>
-                <sw-collection-column data-property-identifier="productName"></sw-collection-column>
-                <sw-collection-column data-property-identifier="productDescription"></sw-collection-column>
-                <sw-collection-column data-property-identifier="productType.productTypeName"></sw-collection-column>
-                <sw-collection-column data-property-identifier="activeFlag"></sw-collection-column>
-                <sw-collection-column data-property-identifier="publishedFlag"></sw-collection-column>
-            </sw-collection-columns>
-            <sw-collection-filters>
-
-            </sw-collection-filters>
-        </sw-collection-config>
-    </sw-collection-configs>
+    <sw-custom-listing-controls>
+        <div class="row">
+             <div class="col-md-9">
+                <sw-typeahead-multiselect 
+                            data-placeholder-rb-key="define.searchandassignproducts"
+                            data-collection-config="swAssignedProducts.collectionConfig"
+                            >
+                    <sw-typeahead-search-line-item data-property-identifier="productName"></sw-typeahead-search-line-item>
+                </sw-typeahead-multiselect>
+            </div> 
+            <div class="col-md-3">
+                <sw-order-by-controls 
+                            data-collection-config="swAssignedProducts.collectionConfig"
+                            >
+                </sw-order-by-controls> 
+            </div>
+        </div>
+    </sw-custom-listing-controls>
 
 </sw-listing-display>
 
 
 <div class="row">
     <div class="col-md-9">
-        <sw-typeahead-multiselect 
-                    data-placeholder-rb-key="define.searchandassignproducts"
-                    data-collection-config="swAssignedProducts.collectionConfig">
-            <sw-typeahead-search-line-item data-property-identifier="productName"></sw-typeahead-search-line-item>
-        </sw-typeahead-multiselect>
+        
         
 
         <div class="s-search-wrapper">
@@ -80,9 +81,7 @@
         
     </div>
     <div class="col-md-3 s-action-right">
-        <sw-order-by-controls 
-                   data-collection-config="swAssignedProducts.collectionConfig">
-        </sw-order-by-controls> 
+        
         
         <!-- <div class="s-table-setting">
             <span class="s-title">Manual Sort</span>
