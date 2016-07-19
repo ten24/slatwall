@@ -237,6 +237,16 @@ component output="false" accessors="true" extends="HibachiService"  {
 		currentSession.setLoggedOutDateTime(DateTimeFormat(now()));
 		currentSession.setLoggedInFlag(false);
 		
+		//Remove the cookies.
+		if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#-NPSID")){
+			structDelete(cookie, "#getApplicationValue('applicationKey')#-NPSID");
+		}
+		if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#-PSID")){
+			structDelete(cookie, "#getApplicationValue('applicationKey')#-PSID");
+		}
+		if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#-ExtendedNPSID")){
+			structDelete(cookie, "#getApplicationValue('applicationKey')#-ExtendedNPSID");
+		}
 		// Make sure that this logout is persisted
 		getHibachiDAO().flushORMSession();
 		getHibachiAuditService().logAccountActivity("logout", auditLogData);

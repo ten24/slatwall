@@ -100,7 +100,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	}
 	
 	public boolean function getLoggedInAsAdminFlag() {
-		if(getAccount().getAdminAccountFlag()) {
+		if(getSession().getLoggedInFlag() && getAccount().getAdminAccountFlag()) {
 			return true;
 		}
 		return false;
