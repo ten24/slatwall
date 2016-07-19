@@ -129,6 +129,12 @@ class ListingService{
     };
 
     public addColumn = (listingID, column) =>{
+        if(this.getListing(listingID).collectionConfig != null && this.getListing(listingID).collectionConfig.baseEntityAlias != null){
+            column.propertyIdentifier = this.getListing(listingID).collectionConfig.baseEntityAlias + "." + column.propertyIdentifier;
+        }
+        if(this.getListing(listingID).collectionConfig != null){
+            this.getListing(listingID).collectionConfig.addColumn(column.propertyIdentifier,undefined,column);
+        }
         if(this.utilityService.ArrayFindByPropertyValue(this.getListing(listingID).columns,'propertyIdentifier',column.propertyIdentifier) === -1){
             if(column.aggregate){
                 this.getListing(listingID).aggregates.push(column.aggregate);
