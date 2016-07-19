@@ -522,6 +522,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var mockSku = createPersistedTestEntity('Sku', skuData);
 		
 		var result = mockSku.getLivePrice();
+		assertEquals(200, result);
 	}
 }
 
