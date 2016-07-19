@@ -32,7 +32,6 @@ class SWCollectionConfig implements ng.IDirective{
         columns:"?swCollectionColumns",
         filters:"?swCollectionFilters"
     };
-    public priority=1000;
     public bindToController={
         allRecords:"=?",
         collectionConfigProperty:"@?",
@@ -166,6 +165,7 @@ class SWCollectionConfig implements ng.IDirective{
                             throw("swCollectionConfig could not locate a collection config property to bind it's collection to");
                         } 
                         if(angular.isDefined(parentDirective[scope.swCollectionConfig.parentDeferredProperty])){
+                            console.log("resolving collection config")
                             parentDirective[scope.swCollectionConfig.parentDeferredProperty].resolve();
                         } else {
                             throw("SWCollectionConfig cannot resolve rule");

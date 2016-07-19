@@ -96,97 +96,11 @@ class SWListingDisplayController{
         public selectionService,
         public observerService,
         public rbkeyService
-    ){
-        this.tableID = 'LD'+this.utilityService.createID();
-        
+    ){  
         //this is performed early to populate columns and multiple collectionConfigs if present
         this.$transclude(this.$scope,()=>{});
 
-        if (angular.isUndefined(this.collectionConfig)){
-            //make it available to swCollectionConfig
-            this.collectionConfig = null; 
-        }
-        
-        if(angular.isUndefined(this.multiSlot)){
-            this.multiSlot = false; 
-        }
-        
-        if(angular.isDefined(this.administrativeCount)){
-            this.administrativeCount = parseInt(this.administrativeCount);
-        } else {
-	        this.administrativeCount = 0;
-        }
-
-        if(this.recordDetailAction && this.recordDetailAction.length){
-            this.administrativeCount++;
-            this.adminattributes = this.getAdminAttributesByType('detail');
-        }
-
-        if(this.recordEditAction && this.recordEditAction.length){
-            this.administrativeCount++;
-            this.adminattributes = this.getAdminAttributesByType('edit');
-        }
-
-        if(this.recordDeleteAction && this.recordDeleteAction.length){
-            this.administrativeCount++;
-            this.adminattributes = this.getAdminAttributesByType('delete');
-        }
-
-        if(this.recordAddAction && this.recordAddAction.length){
-            this.administrativeCount++;
-            this.adminattributes = this.getAdminAttributesByType('add');
-        }
-
-        if( this.collectionConfig != null && 
-            angular.isDefined(this.collection) && 
-            angular.isDefined(this.collection.collectionConfig)
-        ){
-            this.collectionConfig = this.collection.collectionConfig; 
-        }
-        
-        if( angular.isUndefined(this.collectionObject) && 
-            angular.isDefined(this.collection) && 
-            angular.isDefined(this.collection.collectionObject)
-        ){
-            this.collectionObject = this.collection.collectionObject; 
-        }
-
-        //set defaults if value is not specifies
-        this.processObjectProperties = this.processObjectProperties || '';
-        this.recordProcessButtonDisplayFlag = this.recordProcessButtonDisplayFlag || true;
-        this.norecordstext = this.rbkeyService.getRBKey('entity.' + this.collectionObject + '.norecords');
-
-        if(angular.isUndefined(this.defaultSelectEvent)){
-            this.defaultSelectEvent = 'swSelectionToggleSelection' + this.tableID; 
-        }
-
-        if(angular.isUndefined(this.isAngularRoute)){
-            this.isAngularRoute = true;    
-        }
-
-        if(angular.isUndefined(this.hasSearch)){
-            this.hasSearch = true;
-        }
-
-        if(angular.isUndefined(this.name)){
-            this.name = 'ListingDisplay';
-        }
-
-        if(angular.isUndefined(this.expandable)){
-            this.expandable = false; 
-        }
-
-        //setup export action
-        if(angular.isDefined(this.exportAction)){
-            this.exportAction = this.$hibachi.buildUrl('main.collectionExport')+'&collectionExportID=';
-        }
-
-        this.paginator = this.paginationService.createPagination();
-
-        this.hasCollectionPromise = false;
-        if(angular.isUndefined(this.getChildCount)){
-            this.getChildCount = false;
-        }
+        this.initializeState(); 
         
         //This multiple collection logic could probably be in link too
         this.multipleCollectionDeffered = $q.defer();
@@ -195,21 +109,16 @@ class SWListingDisplayController{
         //Helps force single collection config mode 
         this.singleCollectionDeferred = $q.defer();
         this.singleCollectionPromise = this.singleCollectionDeferred.promise;
-        this.singleCollectionPromise.then(()=>{
-            this.multipleCollectionDeffered.reject(); 
-        }); 
 
-        //Setup table class
-        this.tableclass = this.tableclass || '';
-        this.tableclass = this.utilityService.listPrepend(this.tableclass, 'table table-bordered table-hover', ' ');
-
-        if(!this.collection || !angular.isString(this.collection)){
-            this.hasCollectionPromise = true;
-            this.multipleCollectionDeffered.reject();
-        } else if(angular.isDefined(this.collection) && angular.isString(this.collection)){
-            this.collectionObject = this.collection;
-            this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
-            this.multipleCollectionDeffered.reject();
+        if(!this.multiSlot){
+            if(!this.collection || !angular.isString(this.collection)){
+                this.hasCollectionPromise = true;
+                this.multipleCollectionDeffered.reject();
+            } else if(angular.isDefined(this.collection) && angular.isString(this.collection)){
+                this.collectionObject = this.collection;
+                this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
+                this.multipleCollectionDeffered.reject();
+            }
         }
         
         if( this.collectionConfig != null
@@ -218,7 +127,12 @@ class SWListingDisplayController{
             this.collectionConfig.columns = [];
         }
     
-        this.listingService.setListingState(this.tableID, this);     
+        this.listingService.setListingState(this.tableID, this); 
+
+        this.singleCollectionPromise.then(()=>{
+            console.log("rejecting multiple collectionConfig")
+            this.multipleCollectionDeffered.reject(); 
+        });     
         
         this.multipleCollectionPromise.then(
             ()=>{
@@ -244,6 +158,81 @@ class SWListingDisplayController{
         this.$scope.$on('$destroy',()=>{
             this.observerService.detachById(this.$scope.collection);
         });
+    }
+
+    private initializeState = () =>{
+        this.tableID = 'LD'+this.utilityService.createID();
+        if (angular.isUndefined(this.collectionConfig)){
+            //make it available to swCollectionConfig
+            this.collectionConfig = null; 
+        }
+        if(angular.isUndefined(this.multiSlot)){
+            this.multiSlot = false; 
+        }
+        if(angular.isDefined(this.administrativeCount)){
+            this.administrativeCount = parseInt(this.administrativeCount);
+        } else {
+	        this.administrativeCount = 0;
+        }
+        if(this.recordDetailAction && this.recordDetailAction.length){
+            this.administrativeCount++;
+            this.adminattributes = this.getAdminAttributesByType('detail');
+        }
+        if(this.recordEditAction && this.recordEditAction.length){
+            this.administrativeCount++;
+            this.adminattributes = this.getAdminAttributesByType('edit');
+        }
+        if(this.recordDeleteAction && this.recordDeleteAction.length){
+            this.administrativeCount++;
+            this.adminattributes = this.getAdminAttributesByType('delete');
+        }
+        if(this.recordAddAction && this.recordAddAction.length){
+            this.administrativeCount++;
+            this.adminattributes = this.getAdminAttributesByType('add');
+        }
+        if( this.collectionConfig != null && 
+            angular.isDefined(this.collection) && 
+            angular.isDefined(this.collection.collectionConfig)
+        ){
+            this.collectionConfig = this.collection.collectionConfig; 
+        }
+        if( angular.isUndefined(this.collectionObject) && 
+            angular.isDefined(this.collection) && 
+            angular.isDefined(this.collection.collectionObject)
+        ){
+            this.collectionObject = this.collection.collectionObject; 
+        }
+        //set defaults if value is not specifies
+        this.processObjectProperties = this.processObjectProperties || '';
+        this.recordProcessButtonDisplayFlag = this.recordProcessButtonDisplayFlag || true;
+        this.norecordstext = this.rbkeyService.getRBKey('entity.' + this.collectionObject + '.norecords');
+        if(angular.isUndefined(this.defaultSelectEvent)){
+            this.defaultSelectEvent = 'swSelectionToggleSelection' + this.tableID; 
+        }
+        if(angular.isUndefined(this.isAngularRoute)){
+            this.isAngularRoute = true;    
+        }
+        if(angular.isUndefined(this.hasSearch)){
+            this.hasSearch = true;
+        }
+        if(angular.isUndefined(this.name)){
+            this.name = 'ListingDisplay';
+        }
+        if(angular.isUndefined(this.expandable)){
+            this.expandable = false; 
+        }
+        //setup export action
+        if(angular.isDefined(this.exportAction)){
+            this.exportAction = this.$hibachi.buildUrl('main.collectionExport')+'&collectionExportID=';
+        }
+        this.paginator = this.paginationService.createPagination();
+        this.hasCollectionPromise = false;
+        if(angular.isUndefined(this.getChildCount)){
+            this.getChildCount = false;
+        }
+        //Setup table class
+        this.tableclass = this.tableclass || '';
+        this.tableclass = this.utilityService.listPrepend(this.tableclass, 'table table-bordered table-hover', ' ');
     }
 
     public getKeyOfMatchedHideRule = (pageRecord)=>{
