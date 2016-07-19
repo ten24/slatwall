@@ -56,7 +56,7 @@ abstract class BaseEntityService extends BaseObject{
         }
         if(Barrell[objectName]){
             this.utilityService.extend(Barrell[objectName],baseObject);
-            var entity = new Barrell[this.objectName](this.$injector);
+            var entity = new Barrell[objectName](this.$injector);
         }else{
             var entity = new baseObject();
             //throw('need to add '+ objectName+' class');

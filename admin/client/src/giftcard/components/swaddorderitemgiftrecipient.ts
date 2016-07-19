@@ -40,6 +40,7 @@ class SWAddOrderItemRecipientController {
         }
         
         this.typeaheadCollectionConfig = collectionConfigService.newCollectionConfig('Account');
+        this.typeaheadCollectionConfig.addDisplayProperty("accountID,firstName,lastName,primaryEmailAddress.emailAddress");
         this.typeaheadCollectionConfig.addFilter("primaryEmailAddress","null","is not");
     }
     
@@ -129,7 +130,7 @@ class SWAddOrderItemRecipientController {
     }
 
     getMessageCharactersLeft = ():number =>{                
-        if(angular.isDefined(this.currentGiftRecipient.giftMessage)){ 
+        if(this.currentGiftRecipient.giftMessage != null){ 
             return 250 - this.currentGiftRecipient.giftMessage.length;
         } else { 
             return 250; 

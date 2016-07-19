@@ -63,7 +63,7 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
     property name="calculatedBalanceAmount" ormtype="big_decimal";
 
     //non-persistent properties
-    property name="balanceAmount" persistent="false";
+    property name="balanceAmount" persistent="false" hb_formatType="currency";
 
 	// Related Object Properties (many-to-one)
 	property name="originalOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="originalOrderItemID" cascade="all";
@@ -224,6 +224,14 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 	// ==============  END: Overridden Implicet Getters ====================
 
 	// ================== START: Overridden Methods ========================
+
+	public string function getSimpleRepresentation()
+	{
+		return nullReplace(this.getOwnerFirstName(),"") & ' '
+			 & nullReplace(this.getOwnerLastName(),"")
+			 & ' - ' & nullReplace(this.getEmailAddress(),"")
+			 & ' ( ' & formatValue(nullReplace(this.getBalanceAmount(),0),"currency") & ' ) ';
+ 	}
 
 	// ==================  END:  Overridden Methods ========================
 
