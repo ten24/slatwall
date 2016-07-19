@@ -15,11 +15,3 @@
 		name="{{propertyDisplay.property}}"
 />
 
-<!-- Error Messages -->
-    
-<span style="color:red"
-	ng-repeat="(key,value) in propertyDisplay.errors"
-	ng-show="(propertyDisplay.form.$submitted && propertyDisplay.form[propertyDisplay.property].$invalid) || (propertyDisplay.form[propertyDisplay.property].$invalid && propertyDisplay.form[propertyDisplay.property].$dirty)"
->
-  <span  ng-show="key === 'required'">{{propertyDisplay.title}} is a required field<br></span>
-</span>
