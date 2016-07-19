@@ -92,13 +92,11 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		setAuditsToCommitStruct({});
 	}
 	
-	/** This checks if the user is logged in by checking whether or not the user logged out or timeedOut.  
+	/** This checks if the user is logged in by checking whether or not the user logged out or timedOut.  
 	 *  This method should return as it always has. 
 	 */
 	public boolean function getLoggedInFlag() {
-		
-		return session.getLoggedInFlag();
-		
+		return getSession().getLoggedInFlag();
 	}
 	
 	public boolean function getLoggedInAsAdminFlag() {

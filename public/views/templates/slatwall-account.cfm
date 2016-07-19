@@ -93,13 +93,15 @@ Notes:
 <cfoutput>
 	<div class="container">
 		SessionID: #$.slatwall.getSession().getSessionID()#<br>
-		Logged In (on $.slatwall): #$.slatwall.getLoggedInFlag()# <br/>
-		Logged In (on session): #$.slatwall.getSession().getLoggedInFlag()# <br/>
-		Logged In (request.slatwallScope): #request.slatwallScope.getLoggedInFlag()# <br>
+		Logged In (on $.slatwall.getLoggedInFlag()): #$.slatwall.getLoggedInFlag()# <br/>
+		Logged In (on session): #$.slatwall.getSession().getLoggedInFlag()# (This is working.)<br/>
+		
 		Logged In Datetime: #$.slatwall.getSession().getLoggedInDateTime()#<br/>
 		Logged Out Datetime: #$.slatwall.getSession().getLoggedOutDateTime()#<br/>
+		
 		Compare (in, out): #dateCompare($.slatwall.getSession().getLoggedInDateTime(), $.slatwall.getSession().getLoggedOutDateTime())#<br/>
 		Compare (out, in): #dateCompare($.slatwall.getSession().getLoggedOutDateTime(), $.slatwall.getSession().getLoggedInDateTime())#<br/>
+		
 		Admin User: #$.slatwall.getAccount().getAdminAccountFlag()# <br/>
 		Account Info: #$.slatwall.getAccount().getAccountID()#, #$.slatwall.getAccount().getFirstName()# - #$.slatwall.getAccount().getLastName()#
 		

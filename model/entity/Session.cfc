@@ -78,6 +78,9 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 	property name="requestAccount" type="any" persistent="false"; 
 	
 	
+	/**
+	 * Handles all of the cases on the session that the user is not logged in.
+	 */
 	public any function getLoggedInFlag(){
 		//If this is a new session, then the user is not logged in.
 		if (getNewFlag()){
