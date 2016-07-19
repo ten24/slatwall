@@ -2786,18 +2786,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	
 	 public void function getSalePriceByCurrencyCodeTest_DefaultCurrencyCode() {				
 		var mockProduct = createMockProductAboutSalePrice();
-		var resultDefaultCode = mockProduct.getSalePriceByCurrencyCode('USD');
+		var resultDefaultCode = mockProduct.getSalePriceByCurrencyCode('AAA');
 		assertEquals(7, resultDefaultCode);
 	}
 	
-	public void function getSalePriceByCurrencyCodeTest_ResetCurrencyCode() {
-		//reset setting skuCurrency
-		var settingData = {
-			settingID = "",
-			settingName="skuCurrency",
-			settingValue = "AAA"
-		};
-		var settingEntity = createPersistedTestEntity('Setting',settingData);
+	public void function getSalePriceByCurrencyCodeTest_ResetCurrencyCode() {		
 		//Mocking data exactly same with the private helper createMockProductAboutSalePrice()
 		var productData = {
 		productid = '',
@@ -2832,7 +2825,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var promotionReward = promotionPeriod.getPromotionRewards()[1];
 		sku.addPromotionReward(promotionReward);
 		ormflush();
-		
+		//reset setting skuCurrency
+		var settingData = {
+			settingID = "",
+			settingName="skuCurrency",
+			settingValue = "AAA"
+		};
+		var settingEntity = createPersistedTestEntity('Setting',settingData);
 		
 		var resultResetCode = mockProduct.getSalePriceByCurrencyCode('AAA');
 		assertEquals(7, resultResetCode);
@@ -3085,10 +3084,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 //		request.debug(mockProduct.getNewFlag());
 		var result = mockProduct.getAssignedAttributeSetSmartList(true).getRecords(refresh = true);
 //		request.debug(arrayLen(result));
-//		request.debug(mockAttributeSet1.getAttributeSetID());
+		request.debug(mockAttributeSet1.getAttributeSetID());
 //		request.debug(result[1].getAttributeSetID());
 //		request.debug(result[2].getAttributeSetID());
-//		request.debug(result[3].getAttributeSetID());
+		request.debug(result[3].getAttributeSetID());
 	 }
 	 
 	 public void function getSimpleRepresentationPropertyNameTest() {

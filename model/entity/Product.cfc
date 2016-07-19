@@ -1206,7 +1206,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 	public any function getAssignedAttributeSetSmartList(boolean refresh=false){
 		if(!structKeyExists(variables, "assignedAttributeSetSmartList") || arguments.refresh == true) {
-writeoutput("Hahaha");
+
 			variables.assignedAttributeSetSmartList = getService("attributeService").getAttributeSetSmartList();
 
 			variables.assignedAttributeSetSmartList.addFilter('activeFlag', 1);
@@ -1228,7 +1228,7 @@ writeoutput("Hahaha");
 				wc &= " OR aslatwallbrand.brandID = '#getBrand().getBrandID()#'";
 			}
 			wc &= ")";
-writeOutput("#wc# <br>");
+
 			variables.assignedAttributeSetSmartList.addWhereCondition( wc );
 		}
 
@@ -1244,7 +1244,6 @@ writeOutput("#wc# <br>");
 	// ================== START: Deprecated Methods ========================
 
 	public array function getAttributeSets(array attributeSetTypeCode=[]){
-		Request.debug("GetAttributeSets function Called");
 		var smartList = getAssignedAttributeSetSmartList();
 		if(arrayFind(arguments.attributeSetTypeCode, "astProductCustomization") || arrayFind(arguments.attributeSetTypeCode, "astOrderItem")) {
 			smartList.addFilter('attributeSetObject', 'OrderItem');
