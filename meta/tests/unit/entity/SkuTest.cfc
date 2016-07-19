@@ -503,10 +503,21 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//Testing the conversion mechinism
 	}
 	
+	private any function createMockProduct() {
+		var productData = {
+			productID = ""
+		};
+		return createPersistedTestEntity('Product', productData);
+	}
+	
 	public void function getLivePriceTest() {
+		var mockProduct = createMockProduct();
 		var skuData = {
 			skuID = "",
-			price = 200
+			price = 200,
+			product = {
+				productID = mockProduct.getProductID()
+			}
 		};
 		var mockSku = createPersistedTestEntity('Sku', skuData);
 		
