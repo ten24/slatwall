@@ -15,6 +15,7 @@ class SWCollectionColumn implements ng.IDirective{
         isSearchable:"=?",
         isDeletable:"=?",
         isExportable:"=?",
+        tdclass:"@?",
         hidden:"=?"
     };
     public controller=SWCollectionColumn;
@@ -47,7 +48,8 @@ class SWCollectionColumn implements ng.IDirective{
                 isSearchable:scope.swCollectionColumn.isSearchable,
                 isDeletable:scope.swCollectionColumn.isDeletable, 
                 isExportable:scope.swCollectionColumn.isExportable,
-                hidden:scope.swCollectionColumn.hidden
+                hidden:scope.swCollectionColumn.hidden,
+                tdclass:scope.swCollectionColumn.tdclass
         };
         
         var currentScope = this.scopeService.locateParentScope(scope,"swCollectionConfig"); 

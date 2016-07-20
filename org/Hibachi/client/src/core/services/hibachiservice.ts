@@ -219,6 +219,7 @@ class HibachiService{
 		if(angular.isUndefined(options)){
 			options = {};
 		}
+		console.log("get entity options", options);
 
 		if(angular.isDefined(options.deferKey)) {
 			this.cancelPromise(options.deferKey);
@@ -239,7 +240,7 @@ class HibachiService{
 			params.groupBysConfig = options.groupBysConfig || '';
 			params.isDistinct = options.isDistinct || false;
 			params.propertyIdentifiersList = options.propertyIdentifiersList || '';
-			params.allRecords = options.allRecords || '';
+			params.allRecords = options.allRecords || false;
 			params.defaultColumns = options.defaultColumns || true;
 			params.processContext = options.processContext || '';
 			var urlString = this.getUrlWithActionPrefix()+'api:main.get&entityName='+entityName;

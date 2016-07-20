@@ -96,7 +96,7 @@ class SWCollectionConfig implements ng.IDirective{
                 throw("You must provide an entityname to swCollectionConfig");
             }
             if(angular.isUndefined(scope.swCollectionConfig.parentDirectiveControllerAsName) && !scope.swCollectionConfig.inListingDisplay){
-                throw("You must privde the parent directives Controller-As Name to swCollectionConfig");
+                throw("You must provide the parent directives Controller-As Name to swCollectionConfig");
             }
             if(angular.isUndefined(scope.swCollectionConfig.collectionConfigProperty)){
                 scope.swCollectionConfig.collectionConfigProperty = "collectionConfig"; 
@@ -153,6 +153,7 @@ class SWCollectionConfig implements ng.IDirective{
 
             this.$q.all(allCollectionConfigPromises).then(  
                 ()=>{
+                    console.log("collection config scope",newCollectionConfig);
                     if(angular.isDefined(parentDirective)){
                         if(angular.isDefined(scope.swCollectionConfig.multiCollectionConfigProperty) 
                             && angular.isDefined(parentDirective[scope.swCollectionConfig.multiCollectionConfigProperty])

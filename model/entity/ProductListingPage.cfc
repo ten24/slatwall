@@ -56,7 +56,7 @@ component entityname="SlatwallProductListingPage" table="SwProductListingPage" p
 	// Calculated Properties
 
 	// Related Object Properties (many-to-one)
-	property name="products" cfc="Product" fieldtype="many-to-one" fkcolumn="productID";
+	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID";
 	property name="content" cfc="Content" fieldtype="many-to-one" fkcolumn="contentID";
 
 	// Related Object Properties (one-to-many)
@@ -72,6 +72,11 @@ component entityname="SlatwallProductListingPage" table="SwProductListingPage" p
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
+
+	// Helper Accessors
+	public string function getContentIDPath(){
+		return this.getContent().getContentIDPath();
+	}
 
 	// Non-Persistent Properties
 	// Deprecated Properties

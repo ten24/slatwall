@@ -200,6 +200,15 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return variables.productTypeOptions;
 	}
 
+	public boolean function hasContent(required string contentID)
+	{
+		for(var listingPage in this.getListingPages()){
+			if(listingPage.getContent().getContentID() == contentID){
+				return true;
+			}
+		}
+		return false;
+	}
 
     public any function getListingPagesOptionsSmartList() {
 		if(!structKeyExists(variables, "listingPagesOptionsSmartList")) {
@@ -1095,6 +1104,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	}
 
 	// Listing Pages (many-to-many - owner)
+	/*
 	public void function addListingPage(required any listingPage) {
 		if(isNew() or !hasListingPage(arguments.listingPage)) {
 			arrayAppend(variables.listingPages, arguments.listingPage);
@@ -1112,7 +1122,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		if(thatIndex > 0) {
 			arrayDeleteAt(arguments.listingPage.getListingProducts(), thatIndex);
 		}
-	}
+	}*/
 
 	// Promotion Rewards (many-to-many - inverse)
 	public void function addPromotionReward(required any promotionReward) {

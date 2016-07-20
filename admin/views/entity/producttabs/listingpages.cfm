@@ -52,9 +52,8 @@ Notes:
 <cfparam name="rc.product" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
-<cfset selectedListingDisplays = rc.product.getListingPages() />
 <cfset selectedListingPageIDPaths = "" />
-<cfloop array="#selectedListingDisplays#" index="local.lp">
+<cfloop array="#rc.product.getListingPages()#" index="local.lp">
 	<cfset selectedListingPageIDPaths = listAppend(selectedListingPageIDPaths, replace(local.lp.getContentIDPath(),',','/','all')) />
 </cfloop>
 <cfoutput>

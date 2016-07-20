@@ -5,19 +5,38 @@
 
     <sw-tab-content name="Site View"> 
         <sw-listing-display
-            data-collection="'Content'"
             data-multiselect-field-name="listingPages"
-            data-multiselect-id-paths="swProductListingPages.selectedListingPageIdPaths"
+            data-multiselect-id-paths="{{swProductListingPages.selectedListingPageIdPaths}}"
             data-edit="swProductListingPages.edit"
+            data-expandable="true"
+            data-expandable-open-root="true"
             data-has-search="false"
             data-has-action-bar="false"
             data-record-edit-action="admin:entity.editcontent"
             data-is-angular-route="false"
             data-get-child-count="true"
+            data-multi-slot="true"
         >
-            <sw-listing-column data-property-identifier="title" tdclass="primary" />
-            <sw-listing-column data-property-identifier="site.siteName" />
+            <sw-collection-configs>
+                <sw-collection-config data-entity-name="Content" data-in-listing-display="true" data-filter-flag="false" data-all-records="false">
+                    <sw-collection-columns>
+                        <sw-collection-column data-property-identifier="contentID" data-is-visible="false"></sw-collection-column>
+                        <sw-collection-column data-property-identifier="parentContent.contentID" data-is-visible="false"></sw-collection-column>
+                        <sw-collection-column data-property-identifier="title" data-is-visible="true" data-tdclass="primary"></sw-collection-column>
+                        <sw-collection-column data-property-identifier="site.siteName" data-is-visible="true"></sw-collection-column>
+                    </sw-collection-columns>
+                </sw-collection-config>
+            </sw-collection-configs>
         </sw-listing-display>
     </sw-tab-content>
 
 </sw-tab-group>
+
+<!-- 
+
+<sw-listing-columns> 
+                <sw-listing-column data-property-identifier="site.siteName" />
+                <sw-listing-column data-property-identifier="title" tdclass="primary" />
+            </sw-listing-columns>
+
+-->

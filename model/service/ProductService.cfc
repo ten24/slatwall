@@ -1004,7 +1004,26 @@ component extends="HibachiService" accessors="true" {
 				data.urlTitle = getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.product.getProductName(), tableName="SwProduct");
 			}
 		}
-
+		if(structKeyExists(data, "listingPagesselection")){
+			var listingPagesSelection = ListToArray(data["listingPagesselection"]);
+			var currentProductListingPages = product.getListingPages();
+			//purge existing listing pages not in the selection
+			for(var page in currentProductListingPages){
+				if(!ListContains(data["listingPagesselection"], page.getContent().getContentID())){
+					this.deleteProductListingPage(page);
+				}
+			}
+			//add new listing pages
+			for(var contentID in listingPagesSelection){
+				var content = this.getContent(contentID);
+				if(!product.hasContent(contentID)){
+					var newProductListingPage = this.newProductListingPage();
+					newProductListingPage.setContent(content);
+					newProductListingPage.setProduct(arguments.product);
+					newProductListingPage = this.saveProductListingPage(newProductListingPage);
+				}
+			}
+		}
 		arguments.product = super.save(arguments.product, arguments.data);
 		// Set default sku if no default sku was set
 		if(isNull(arguments.product.getDefaultSku()) && arrayLen(arguments.product.getSkus())){

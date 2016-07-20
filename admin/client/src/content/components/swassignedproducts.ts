@@ -10,7 +10,7 @@ class SWAssignedProductsController {
         collectionConfigService
     ){
         this.collectionConfig = collectionConfigService.newCollectionConfig("Product"); 
-        this.collectionConfig.addDisplayProperty("productID,productName,productDescription");
+        this.collectionConfig.addDisplayProperty("productName,productDescription");
     }
 }
 
