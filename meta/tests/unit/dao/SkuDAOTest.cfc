@@ -72,56 +72,111 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 	}
 	
-	public void function getTransactionExistsFlagTest() {
+	public void function getTransactionExistsFlagTest_Arguments() {
+		//Testing the flag without any where-exists in hql
 		var mockSku1 = createMockSku();
+		var mockSku2 = createMockSku();
+		
 		var productData = {
 			productID = "",
-			skus = [{
-				skuID = mockSku1.getSkuID()
-			}]
+			skus = [
+				{
+					skuID = mockSku1.getSkuID()
+				}, {
+					skuID = mockSku2.getSkuID()
+				}
+				
+			]
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
 		
-		//Testing the flag without any exists in hql
-		var resultFalseFlag = variables.dao.getTransactionExistsFlag(mockSku1.getSkuID(), mockProduct.getProductID());
-		assertTrue(resultFalseFlag);
+		var resultBothArgus = variables.dao.getTransactionExistsFlag(mockProduct.getProductID(), mockSku1.getSkuID());
+		assertFalse(resultBothArgus);
+
+		var resultProductArgu = variables.dao.getTransactionExistsFlag(mockProduct.getProductID());
+		assertFalse(resultProductArgu);
 		
+		var resultSkuArgu = variables.dao.getTransactionExistsFlag("", mockSku1.getSkuID());
+		assertFalse(resultSkuArgu);
+	}
+	
+	public void function getTransactionExistsFlagTest_OrderItem() {
 		//Testing then the orderItem exists
+		var mockSku = createMockSku();
+		
 		var orderItemData = {
-			orderItem = ""
+			orderItem = "",
+			sku = {
+				skuID = mockSku.getSkuID()
+			}
 		};
 		var mockOrderItem = createPersistedTestEntity('OrderItem', orderItemData);
-		
-		var productData = {
-			productID = ""
-		};
-		var mockProduct1 = createPersistedTestEntity('Product', productData);
-		
-		
-		var skuData = {
-			skuID = "",
-			orderItems = [{
-				orderItemID = mockOrderItem.getOrderItemID()
-			}]
-		};
-		var mockSku = createPersistedTestEntity('Sku', skuData);
-		
-//		if (!mockOrderItem.hasSku(mockSku)) {
-//			request.debug("HI");
-// 			arrayAppend(mockOrderItem.getSku(), mockSku);
-// 		}
-// 		
-// 		if (!mockOption2.hasSku(mockSKU)) {
-// 			arrayAppend(mockOption2.getSkus(), mockSku);
-// 		}
-		
-		request.debug(mockSku.getOrderItems()[1].getOrderItemID());
-		
-		var resultOrderItem = variables.dao.getTransactionExistsFlag(mockSku.getSkuID(), mockProduct.getProductID());
+
+		var resultOrderItem = variables.dao.getTransactionExistsFlag("", mockSku.getSkuID());
 		assertTrue(resultOrderItem);
-		//		<cfset request.debug(getHQL()) />
+	}
+	
+	private any function createMockStock(string skuID='') {
+		var stockData = {
+			stockID = ""
+		};
+		if(len(arguments.skuID)) {
+			stockData.sku = {
+				skuID = arguments.skuID
+			};
+		}
+		return createPersistedTestEntity('Stock', stockData);
+	}
+	
+	public void function getTransactionExistsFlagTest_InventoryID() {
+		var mockSku = createMockSKu();
+		var mockStock = createMockStock(mockSku.getSkuID());
+
+		var inventoryData = {
+			inventoryID = "",
+			stock = {
+				stockID = mockStock.getStockID()
+			}
+		};
+		var mockInventory = createPersistedTestEntity('Inventory', inventoryData);
 		
-		//Testing the 
+		var resultInventory = variables.dao.getTransactionExistsFlag("", mockSku.getSkuID());
+		assertTrue(resultInventory);	
+	}
+	
+	public void function getTransactionExistsFlagTest_PhysicalCountItemID() {
+		var mockSku = createMockSKu();
+		var mockStock = createMockStock(mockSku.getSkuID());
 		
+		var physicalCountItemData = {
+			physicalCountItemID = "",
+			stock = {
+				stockID = mockStock.getStockID()
+			}
+		};
+		var mockPhysicalCountItem= createPersistedTestEntity('PhysicalCountItem', PhysicalCountItemData);
+
+		var resultPhysicalCountItem = variables.dao.getTransactionExistsFlag("", mockSku.getSkuID());
+		assertTrue(resultPhysicalCountItem);
+	}
+	
+	public void function getTransactionExistsFlagTest_StockAdjustmentItem() {
+		var mockSku = createMockSKu();
+		var mockStock1 = createMockStock(mockSku.getSkuID());
+		var mockStock2 = createMockStock(mockSku.getSkuID());
+		
+		var StockAdjustmentItemData = {
+			physicalCountItemID = "",
+			fromStock = {
+				stockID = mockStock1.getStockID()
+			},
+			toStock = {
+				stockID = mockStock2.getStockID()
+			}
+		};
+		var mockStockAdjustmentItem= createPersistedTestEntity('StockAdjustmentItem', StockAdjustmentItemData);
+
+		var resultStockAdjustmentItem = variables.dao.getTransactionExistsFlag("", mockSku.getSkuID());
+		assertTrue(resultStockAdjustmentItem);
 	}
 }
