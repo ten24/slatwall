@@ -2797,8 +2797,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			skus = [
 				{
 					skuid = '',
-					price = 10,
-					currencyCode = "CNY"
+					price = 10
+//					currencyCode = "CNY"
 				}
 			]
 		};
