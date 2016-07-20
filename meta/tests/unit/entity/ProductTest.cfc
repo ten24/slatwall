@@ -2314,8 +2314,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	for (var i = 2; i <= arrayLen(result); i++ ) {
 	 		resultOfBrandIDList = listAppend(resultOfBrandIDList, result[i]['value']);
 	 	}
-	 	assertTrue(listFind(resultOfBrandIDList, mockBrand1.getBrandID()) > 1);
-	 	assertTrue(listFind(resultOfBrandIDList, mockBrand2.getBrandID()) > 1);
+	 	assertTrue(listFind(resultOfBrandIDList, mockBrand1.getBrandID()) > 0);
+	 	assertTrue(listFind(resultOfBrandIDList, mockBrand2.getBrandID()) > 0);
 	 	
 	 	//Testing when no brand is associated with the Product, should return at least the existing two and the NULL one
 	 	var mockProductNoBrand = createMockProduct();
@@ -2791,15 +2791,16 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 	public void function getSalePriceByCurrencyCodeTest_ResetCurrencyCode() {		
-		//Mocking data exactly same with the private helper createMockProductAboutSalePrice()
+		//Mocking data similar with the private helper createMockProductAboutSalePrice()
 		var productData = {
-		productid = '',
-		skus = [
-			{
-				skuid = '',
-				price = 10
-			}
-		]
+			productid = '',
+			skus = [
+				{
+					skuid = '',
+					price = 10,
+					currencyCode = "AAA"
+				}
+			]
 		};
 		var mockProduct = createPersistedTestEntity('product',productData);
 
@@ -2825,17 +2826,17 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var promotionReward = promotionPeriod.getPromotionRewards()[1];
 		sku.addPromotionReward(promotionReward);
 		ormflush();
-		//reset setting skuCurrency
+		
+		//reset setting skuCurrency		
 		var settingData = {
 			settingID = "",
-			settingName="skuCurrency",
+			settingName="SkuCurrency",
 			settingValue = "AAA"
 		};
 		var settingEntity = createPersistedTestEntity('Setting',settingData);
 		
 		var resultResetCode = mockProduct.getSalePriceByCurrencyCode('AAA');
-		assertEquals(7, resultResetCode);
-		
+		assertEquals(7, resultResetCode);		
 	}
 
 	public void function getSalePriceDiscountTypeTest() {
