@@ -4,6 +4,7 @@
             data-multi-slot="true"
             data-edit="swProductListingPages.edit"
             data-custom-listing-controls="true"
+            data-administrative-count="1"
         >   
             <sw-collection-configs>
                 <sw-collection-config data-entity-name="ProductListingPage" data-in-listing-display="true" data-all-records="false">
@@ -25,6 +26,8 @@
                                     data-placeholder-rb-key="define.searchandassignproducts"
                                     data-collection-config="swProductListingPages.collectionConfig"
                                     data-show-selections="true"
+                                    data-in-listing-display="true"
+                                    data-typeahead-data-key="{{swProductListingPages.typeaheadDataKey}}"
                                     >
                             <sw-typeahead-search-line-item data-property-identifier="title"></sw-typeahead-search-line-item>
                         </sw-typeahead-multiselect>
@@ -37,6 +40,10 @@
                     </div>
                 </div>
             </sw-custom-listing-controls>
+
+             <sw-listing-delete-action>
+                <sw-typeahead-remove-selection data-typeahead-data-key="{{swProductListingPages.typeaheadDataKey}}"></sw-typeahead-remove-selection>
+            </sw-listing-delete-action>
         </sw-listing-display>
     </sw-tab-content>
 

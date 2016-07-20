@@ -7,13 +7,16 @@ class SWProductListingPagesController {
     public selectedListingPageIdPaths:string; 
     public productID:string;
     public collectionConfig:any;
+    public typeaheadDataKey:string; 
     
     //@ngInject
     constructor(
-        private collectionConfigService 
+        private collectionConfigService,
+        private utilityService
     ){
         this.collectionConfig = collectionConfigService.newCollectionConfig("Content"); 
         this.collectionConfig.addDisplayProperty("contentID, title, activeFlag, site.siteName");
+        this.typeaheadDataKey = utilityService.createID(32); 
     }
 }
 

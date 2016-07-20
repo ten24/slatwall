@@ -46,6 +46,7 @@ import {SWTypeaheadSearch} from "./components/swtypeaheadsearch";
 import {SWTypeaheadInputField} from "./components/swtypeaheadinputfield";
 import {SWTypeaheadMultiselect} from "./components/swtypeaheadmultiselect"; 
 import {SWTypeaheadSearchLineItem} from "./components/swtypeaheadsearchlineitem";
+import {SWTypeaheadRemoveSelection} from "./components/swtypeaheadremoveselection";
 import {SWCollectionConfig} from "./components/swcollectionconfig";
 import {SWCollectionFilter} from "./components/swcollectionfilter";
 import {SWCollectionColumn} from "./components/swcollectioncolumn";
@@ -202,6 +203,7 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swTypeaheadInputField',SWTypeaheadInputField.Factory())
 .directive('swTypeaheadMultiselect', SWTypeaheadMultiselect.Factory())
 .directive('swTypeaheadSearchLineItem', SWTypeaheadSearchLineItem.Factory())
+.directive('swTypeaheadRemoveSelection', SWTypeaheadRemoveSelection.Factory())
 .directive('swActionCaller',SWActionCaller.Factory())
 .directive('swActionCallerDropdown',SWActionCallerDropdown.Factory())
 .directive('swColumnSorter',SWColumnSorter.Factory())

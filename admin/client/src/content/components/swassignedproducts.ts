@@ -4,13 +4,17 @@
 class SWAssignedProductsController {
 
     public collectionConfig; 
+    public contentId:string; 
+    public typeaheadDataKey:string; 
     
     //@ngInject
     constructor(
-        collectionConfigService
+        private collectionConfigService,
+        private utilityService
     ){
         this.collectionConfig = collectionConfigService.newCollectionConfig("Product"); 
-        this.collectionConfig.addDisplayProperty("productName,productDescription");
+        this.collectionConfig.addDisplayProperty("productID,productName,productDescription");
+        this.typeaheadDataKey = utilityService.createID(32); 
     }
 }
 
@@ -21,6 +25,7 @@ class SWAssignedProducts implements ng.IDirective{
     public scope = {};  
     
     public bindToController = {
+        contentId:"@?"
     };
     
     public controller=SWAssignedProductsController;
