@@ -2798,7 +2798,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				{
 					skuid = '',
 					price = 10,
-					currencyCode = "AAA"
+					currencyCode = "CNY"
 				}
 			]
 		};
@@ -2831,11 +2831,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var settingData = {
 			settingID = "",
 			settingName="SkuCurrency",
-			settingValue = "AAA"
+			settingValue = "CNY"
 		};
 		var settingEntity = createPersistedTestEntity('Setting',settingData);
 		
-		var resultResetCode = mockProduct.getSalePriceByCurrencyCode('AAA');
+		var resultResetCode = mockProduct.getSalePriceByCurrencyCode('CNY');
 		assertEquals(7, resultResetCode);		
 	}
 
