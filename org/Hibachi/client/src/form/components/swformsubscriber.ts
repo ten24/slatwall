@@ -61,9 +61,6 @@ class SWFormSubscriberController{
 
 
 		this.inputAttributes = this.inputAttributes || "";
-
-
-
 	}
 }
 

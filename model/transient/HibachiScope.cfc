@@ -229,12 +229,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	
 	// =================== JS helper methods  ===========================
 
+	public any function getAvailableAccountPropertyList() {
+		return "accountID,firstName,lastName,company,remoteID,primaryPhoneNumber.accountPhoneNumberID,primaryPhoneNumber.phoneNumber,primaryEmailAddress.accountEmailAddressID,primaryEmailAddress.emailAddress,
+			primaryAddress.accountAddressID,
+			accountAddresses.accountAddressName,accountAddresses.accountAddressID,
+			accountAddresses.address.addressID,accountAddresses.address.streetAddress,accountAddresses.address.street2Address,accountAddresses.address.city,accountAddresses.address.statecode,accountAddresses.address.postalcode,accountAddresses.address.countrycode";
+	}
+	
 	public any function getAccountData(string propertyList) {
 		
-		var availablePropertyList = "accountID,firstName,lastName,company,remoteID,primaryPhoneNumber.accountPhoneNumberID,primaryPhoneNumber.phoneNumber,primaryEmailAddress.accountEmailAddressID,primaryEmailAddress.emailAddress,
-							primaryAddress.accountAddressID,
-							accountAddresses.accountAddressName,accountAddresses.accountAddressID,
-							accountAddresses.address.addressID,accountAddresses.address.streetAddress,accountAddresses.address.street2Address,accountAddresses.address.city,accountAddresses.address.statecode,accountAddresses.address.postalcode,accountAddresses.address.countrycode";
+		var availablePropertyList = getAvailableAccountPropertyList();
 
 		availablePropertyList = ReReplace(availablePropertyList,"[[:space:]]","","all");
 
@@ -259,25 +263,29 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		return data;
 	}
 
+	public any function getAvailableCartPropertyList() {
+		return "orderID,orderOpenDateTime,calculatedTotal,subtotal,taxTotal,fulfillmentTotal,fulfillmentChargeAfterDiscountTotal,promotionCodeList,discountTotal,
+			orderitems.orderItemID,orderitems.price,orderitems.skuPrice,orderitems.currencyCode,orderitems.quantity,orderitems.extendedPrice,orderitems.extendedPriceAfterDiscount,orderitems.taxAmount,orderItems.taxLiabilityAmount,orderItems.parentOrderItemID,orderItems.productBundleGroupID,
+			orderitems.orderFulfillment.orderFulfillmentID,
+			orderitems.sku.skuID,orderitems.sku.skuCode,orderItems.sku.imagePath,orderItems.sku.imageFile,
+			orderitems.sku.product.productID,orderitems.sku.product.productName,orderitems.sku.product.productCode,orderitems.sku.product.urltitle,orderitems.sku.product.baseProductType,
+			orderitems.sku.product.brand.brandName,
+			orderitems.sku.product.productType.productTypeName,
+			orderFulfillments.orderFulfillmentID,orderFulfillments.fulfillmentCharge,orderFulfillments.currencyCode,
+			orderFulfillments.fulfillmentMethod.fulfillmentMethodID,orderFulfillments.fulfillmentMethod.fulfillmentMethodName,
+			orderFulfillments.shippingMethod.shippingMethodID,orderFulfillments.shippingMethod.shippingMethodName,
+			orderFulfillments.shippingAddress.addressID,orderFulfillments.shippingAddress.streetAddress,orderFulfillments.shippingAddress.street2Address,orderFulfillments.shippingAddress.city,orderFulfillments.shippingAddress.statecode,orderFulfillments.shippingAddress.postalcode,orderFulfillments.shippingAddress.countrycode,
+			orderFulfillments.shippingMethodOptions,orderFulfillments.shippingMethodRate.shippingMethodRateID,
+			orderFulfillments.totalShippingWeight,orderFulfillments.taxAmount,
+			orderPayments.orderPaymentID,orderPayments.amount,orderPayments.currencyCode,orderPayments.creditCardType,orderPayments.expirationMonth,orderPayments.expirationYear,orderPayments.nameOnCreditCard,
+			orderPayments.billingAddress.addressID,orderPayments.billingAddress.streetAddress,orderPayments.billingAddress.street2Address,orderPayments.billingAddress.city,orderPayments.billingAddress.statecode,orderPayments.billingAddress.postalcode,orderPayments.billingAddress.countrycode,
+			orderPayments.paymentMethod.paymentMethodID,orderPayments.paymentMethod.paymentMethodName,
+			promotionCodes.promotionCode";
+	}
+	
 	public any function getCartData(string propertyList) {
 		
-		var availablePropertyList = "orderID,orderOpenDateTime,calculatedTotal,subtotal,taxTotal,fulfillmentTotal,fulfillmentChargeAfterDiscountTotal,promotionCodeList,discountTotal,
-							orderitems.orderItemID,orderitems.price,orderitems.skuPrice,orderitems.currencyCode,orderitems.quantity,orderitems.extendedPrice,orderitems.extendedPriceAfterDiscount,orderitems.taxAmount,orderItems.taxLiabilityAmount,orderItems.parentOrderItemID,orderItems.productBundleGroupID,
-							orderitems.orderFulfillment.orderFulfillmentID,
-							orderitems.sku.skuID,orderitems.sku.skuCode,orderItems.sku.imagePath,orderItems.sku.imageFile,
-							orderitems.sku.product.productID,orderitems.sku.product.productName,orderitems.sku.product.productCode,orderitems.sku.product.urltitle,orderitems.sku.product.baseProductType,
-							orderitems.sku.product.brand.brandName,
-							orderitems.sku.product.productType.productTypeName,
-							orderFulfillments.orderFulfillmentID,orderFulfillments.fulfillmentCharge,orderFulfillments.currencyCode,
-							orderFulfillments.fulfillmentMethod.fulfillmentMethodID,orderFulfillments.fulfillmentMethod.fulfillmentMethodName,
-							orderFulfillments.shippingMethod.shippingMethodID,orderFulfillments.shippingMethod.shippingMethodName,
-							orderFulfillments.shippingAddress.addressID,orderFulfillments.shippingAddress.streetAddress,orderFulfillments.shippingAddress.street2Address,orderFulfillments.shippingAddress.city,orderFulfillments.shippingAddress.statecode,orderFulfillments.shippingAddress.postalcode,orderFulfillments.shippingAddress.countrycode,
-							orderFulfillments.shippingMethodOptions,orderFulfillments.shippingMethodRate.shippingMethodRateID,
-							orderFulfillments.totalShippingWeight,orderFulfillments.taxAmount,
-							orderPayments.orderPaymentID,orderPayments.amount,orderPayments.currencyCode,orderPayments.creditCardType,orderPayments.expirationMonth,orderPayments.expirationYear,orderPayments.nameOnCreditCard,
-							orderPayments.billingAddress.addressID,orderPayments.billingAddress.streetAddress,orderPayments.billingAddress.street2Address,orderPayments.billingAddress.city,orderPayments.billingAddress.statecode,orderPayments.billingAddress.postalcode,orderPayments.billingAddress.countrycode,
-							orderPayments.paymentMethod.paymentMethodID,orderPayments.paymentMethod.paymentMethodName,
-							promotionCodes.promotionCode";
+		var availablePropertyList = getAvailableCartPropertyList();
 		
 		availablePropertyList = ReReplace(availablePropertyList,"[[:space:]]","","all");
 		

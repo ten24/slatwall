@@ -2,12 +2,6 @@
 
     <label class="control-label" ng-if="swPropertyDisplay.fieldType !== 'hidden'">
 
-    	<!-- <span ng-if="propertyDisplay.object.metaData.isProcessObject && !propertyDisplay.title"
-            sw-rbkey="'processObject.'+object.metaData.className+'.'+property" >
-        </span>
-        <span ng-if="!propertyDisplay.object.metaData.isProcessObject && !propertyDisplay.title"
-            sw-rbkey="'entity.'+object.metaData.className+'.'+property" >
-        </span> -->
         <span data-ng-bind="swPropertyDisplay.title"></span>:
         <span ng-if="swPropertyDisplay.object.validations.properties[swPropertyDisplay.property][0].required && swPropertyDisplay.fieldType === 'text'">*</span>
         <span sw-tooltip class="j-tool-tip-item"

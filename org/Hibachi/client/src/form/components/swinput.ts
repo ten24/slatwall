@@ -26,6 +26,8 @@ class SWInputController{
 	public type:string;
 	public edit:boolean;
 	public editing:boolean;
+	public name:string;
+	public value:any;
 
 	//@ngInject
 	constructor(
@@ -41,6 +43,8 @@ class SWInputController{
 		this.rbkeyService = rbkeyService;
 		this.$log = $log;
 		this.$injector = $injector;
+
+
 	}
 
 	public getValidationDirectives = ()=>{
@@ -113,10 +117,12 @@ class SWInputController{
 		return spaceDelimitedList;
 	};
 
+
 	public getTemplate = ()=>{
 		var template = '';
 		var validations = '';
 		var currency = '';
+		var style = "";
 
 		if(!this.class){
 			this.class = "form-control";
@@ -140,76 +146,40 @@ class SWInputController{
 			placeholder = this.rbkeyService.getRBKey(this.object.metaData[this.property].hb_nullrbkey);
 		}
 
-		if(this.fieldType === 'text' || this.fieldType === 'email'){
-			template = '<input type="text" class="'+this.class+'" '+
-				'ng-model="swInput.object.data[swInput.property]" '+
+		if(this.fieldType.toLowerCase() === 'json'){
+			style = style += 'display:none';
+		}
+
+		var acceptedFieldTypes = ['email','text','password','number','time','date','datetime','json'];
+
+		if(acceptedFieldTypes.indexOf(this.fieldType.toLowerCase()) >= 0){
+			template = '<input type="'+this.fieldType+'" class="'+this.class+'" '+
+				'ng-model="swInput.value" '+
 				'ng-disabled="swInput.editable === false" '+
 				'ng-show="swInput.editing" '+
 				'name="'+this.property+'" ' +
 				'placeholder="'+placeholder+'" '+
 				validations + currency +
-				'id="swinput'+this.utilityService.createID(26)+'" '+
-				this.inputAttributes+
-				' />';
-		}else if(this.fieldType === 'password'){
-			template = '<input type="password" class="'+this.class+'" '+
-				'ng-model="swInput.object.data[swInput.property]" '+
-				'ng-disabled="swInput.editable === false" '+
-				'ng-show="swInput.editing" '+
-				'name="'+this.property+'" ' +
-				'placeholder="'+placeholder+'" '+
-				validations +
-				'id="swinput'+this.utilityService.createID(26)+'" '+
-				this.inputAttributes+
-				' />';
-		} else if(this.fieldType === 'number'){
-			template = '<input type="number" class="'+this.class+'" '+
-				'ng-model="swInput.object.data[swInput.property]" '+
-				'ng-disabled="swInput.editable === false" '+
-				'ng-show="swInput.editing" '+
-				'name="'+this.property+'" ' +
-				'placeholder="'+placeholder+'" '+
-				validations +
-				'id="swinput'+this.utilityService.createID(26)+'" '+
-				this.inputAttributes+
-				' />';
-		} else if(this.fieldType === 'time'){
-			template = '<input type="text" class="'+this.class+'" '+
-				'datetime-picker data-time-only="true" date-format="'+appConfig.timeFormat.replace('tt','a')+'" '+
-				'ng-model="swInput.object.data[swInput.property]" '+
-				'ng-disabled="swInput.editable === false" '+
-				'ng-show="swInput.editing" '+
-				'name="'+this.property+'" ' +
-				'placeholder="'+placeholder+'" '+
-				validations +
-				'id="swinput'+this.utilityService.createID(26)+'" '+
-				this.inputAttributes+
-				' />';
-		} else if(this.fieldType === 'date'){
-			template = '<input type="text" class="'+this.class+'" '+
-				'datetime-picker data-date-only="true" future-only date-format="'+appConfig.dateFormat+'" '+
-				'ng-model="swInput.object.data[swInput.property]" '+
-				'ng-disabled="swInput.editable === false" '+
-				'ng-show="swInput.editing" '+
-				'name="'+this.property+'" ' +
-				'placeholder="'+placeholder+'" '+
-				validations +
-				'id="swinput'+this.utilityService.createID(26)+'" '+
-				this.inputAttributes+
-				' />';
-		} else if(this.fieldType === 'dateTime'){
-			template = '<input type="text" class="'+this.class+'" '+
-				'datetime-picker '+ // date-format="MMM DD, YYYY hh:mm"
-				'ng-model="swInput.object.data[swInput.property]" '+
-				'ng-disabled="swInput.editable === false" '+
-				'ng-show="swInput.editing" '+
-				'name="'+this.property+'" ' +
-				'placeholder="'+placeholder+'" '+
-				validations +
-				'id="swinput'+this.utilityService.createID(26)+'" '+
-				this.inputAttributes+
-				' />';
+				'id="swinput'+this.swForm.name+this.name+'" '+
+				'style="'+style+'"'+
+				this.inputAttributes;
+
 		}
+		var dateFieldTypes = ['date','datetime','time'];
+		if(dateFieldTypes.indexOf(this.fieldType.toLowerCase()) >= 0){
+			template = template + 'datetime-picker ';
+		}
+		if(this.fieldType === 'time'){
+			template = template + 'data-time-only="true" date-format="'+appConfig.timeFormat.replace('tt','a')+'" ';
+		}
+		if(this.fieldType === 'date'){
+			template = template + 'data-date-only="true" future-only date-format="'+appConfig.dateFormat+'" ';
+		}
+
+		if(template.length){
+			template = template + ' />';
+		}
+
 
 		return template;
 	};
@@ -246,6 +216,7 @@ class SWInputController{
 		this.inputAttributes = this.inputAttributes || "";
 
 		this.inputAttributes = this.utilityService.replaceAll(this.inputAttributes,"'",'"');
+		this.value = this.utilityService.getPropertyValue(this.object,this.property);
 	}
 }
 

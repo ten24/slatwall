@@ -29,18 +29,56 @@ class SWFormFieldController {
 	public fieldType;
 	public property;
 	public editing:boolean;
-
+	public selectedRadioFormName;
+	public form:ng.IFormController;
+	public options:any;
+	public selected:any;
+	public isDirty:boolean;
+	public selectType:string;
+	public eagerLoadOptions:boolean;
+	public optionsArguments:any;
+	public valueOptions:any;
 
 	//@ngInject
 	constructor(
-		public $injector
+		public $injector,
+		public $timeout,
+		public $log,
+		public $hibachi,
+		public observerService,
+		public utilityService
 	){
 		this.$injector = $injector;
+		this.$timeout = $timeout;
+		this.$log = $log;
+		this.$hibachi = $hibachi;
+		this.observerService = observerService;
+		this.utilityService = utilityService;
 	}
 
+	public formFieldChanged = (option)=>{
+		if(this.fieldType === 'yesno'){
+			this.object.data[this.property] = option.value;
+			this.form[this.property].$dirty = true;
+			this.form['selected'+this.object.metaData.className+this.property+this.selectedRadioFormName].$dirty = false;
+		}else if(this.fieldType === 'select'){
+			this.$log.debug('formfieldchanged');
+			this.$log.debug(option);
+			if(this.selectType === 'object' && typeof this.object.data[this.property].$$getIDName == "function" ){
+				this.object.data[this.property]['data'][this.object.data[this.property].$$getIDName()] = option.value;
+				if(angular.isDefined(this.form[this.object.data[this.property].$$getIDName()])){
+					this.form[this.object.data[this.property].$$getIDName()].$dirty = true;
+				}
+			}else if(this.selectType === 'string'){
+				this.object.data[this.property] = option.value;
+				this.form[this.property].$dirty = true;
+			}
+			this.observerService.notify(this.object.metaData.className+this.property.charAt(0).toUpperCase()+this.property.slice(1)+'OnChange', option);
+		}
+
+	};
+
 	public $onInit = ()=>{
-
-
 		var bindToControllerProps = this.$injector.get('swFormFieldDirective')[0].bindToController;
 		for(var i in bindToControllerProps){
 			if(!this[i]){
@@ -67,6 +105,142 @@ class SWFormFieldController {
 		this.fieldType = this.fieldType || "text";
 
 
+
+		if(this.fieldType === 'yesno'){
+			this.yesnoStrategy();
+		}
+
+		if(this.fieldType === 'select'){
+			this.selectStrategy();
+		}
+
+	}
+
+	public selectStrategy = ()=>{
+		//this is specific to the admin because it implies loading of options via api
+
+		if(this.swPropertyDisplay){
+			if(angular.isDefined(this.object.metaData[this.property].fieldtype)){
+				this.selectType = 'object';
+				this.$log.debug('selectType:object');
+			}else{
+				this.selectType = 'string';
+				this.$log.debug('selectType:string');
+			}
+
+			if(this.eagerLoadOptions == true){
+				this.getOptions();
+			}
+		}
+	}
+
+	public getOptions = ()=>{
+
+
+		if(angular.isUndefined(this.options)){
+
+			var optionsPromise = this.$hibachi.getPropertyDisplayOptions(this.object.metaData.className,
+				this.optionsArguments
+			);
+			optionsPromise.then((value)=>{
+				this.options = value.data;
+
+				if(this.selectType === 'object'
+				){
+					if(angular.isUndefined(this.object.data[this.property])){
+						this.object.data[this.property] = this.$hibachi['new'+this.object.metaData[this.property].cfc]();
+					}
+
+					if(this.object.data[this.property].$$getID() === ''){
+						this.$log.debug('no ID');
+						this.$log.debug(this.object.data[this.property].$$getIDName());
+						this.object.data['selected'+this.property] = this.options[0];
+						this.object.data[this.property] = this.$hibachi['new'+this.object.metaData[this.property].cfc]();
+						this.object.data[this.property]['data'][this.object.data[this.property].$$getIDName()] = this.options[0].value;
+					}else{
+						var found = false;
+						for(var i in this.options){
+							if(angular.isObject(this.options[i].value)){
+								this.$log.debug('isObject');
+								this.$log.debug(this.object.data[this.property].$$getIDName());
+								if(this.options[i].value === this.object.data[this.property]){
+									this.object.data['selected'+this.property] = this.options[i];
+									this.object.data[this.property] = this.options[i].value;
+									found = true;
+									break;
+								}
+							}else{
+								this.$log.debug('notisObject');
+								this.$log.debug(this.object.data[this.property].$$getIDName());
+								if(this.options[i].value === this.object.data[this.property].$$getID()){
+									this.object.data['selected'+this.property] = this.options[i];
+									this.object.data[this.property]['data'][this.object.data[this.property].$$getIDName()] = this.options[i].value;
+									found = true;
+									break;
+								}
+							}
+							if(!found){
+								this.object.data['selected'+this.property] = this.options[0];
+							}
+						}
+
+					}
+				}else if(this.selectType === 'string'){
+					if(this.object.data[this.property] !== null){
+						for(var i in this.options){
+							if(this.options[i].value === this.object.data[this.property]){
+								this.object.data['selected'+this.property] = this.options[i];
+								this.object.data[this.property] = this.options[i].value;
+							}
+						}
+					}else{
+
+						this.object.data['selected'+this.property] = this.options[0];
+						this.object.data[this.property] = this.options[0].value;
+					}
+
+				}
+
+			});
+		}
+	}
+
+	public yesnoStrategy = ()=>{
+		//format value
+		this.selectedRadioFormName = this.utilityService.createID(26);
+		this.object.data[this.property] = (
+			this.object.data[this.property]
+			&& this.object.data[this.property].length
+			&& this.object.data[this.property].toLowerCase().trim() === 'yes'
+		) || this.object.data[this.property] == 1 ? 1 : 0;
+
+		this.options = [
+			{
+				name:'Yes',
+				value:1
+			},
+			{
+				name:'No',
+				value:0
+			}
+		];
+
+		if(angular.isDefined(this.object.data[this.property])){
+
+			for(var i in this.options){
+				if(this.options[i].value === this.object.data[this.property]){
+					this.selected = this.options[i];
+					this.object.data[this.property] = this.options[i].value;
+				}
+			}
+		}else{
+			this.selected = this.options[0];
+			this.object.data[this.property] = this.options[0].value;
+		}
+
+		this.$timeout(()=>{
+			this.form[this.property].$dirty = this.isDirty;
+		});
 	}
 }
 
@@ -108,7 +282,8 @@ class SWFormField{
         eagerLoadOptions:"=?",
         isDirty:"=?",
         onChange:"=?",
-		editable:"=?"
+		editable:"=?",
+
 	};
 
 	//@ngInject
@@ -128,20 +303,6 @@ class SWFormField{
 	public link= (scope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes) =>{
 
 
-		// if(scope.swFormField.swPropertyDisplay){
-		// 	scope.swFormField.propertyDisplay = scope.swFormField.swPropertyDisplay;
-		// }else if(scope.swFormField.swfPropertyDisplay){
-		// 	scope.swFormField = scope.swFormField.swfPropertyDisplay;
-		// }
-
-		// if(angular.isUndefined(scope.propertyDisplay.object.$$getID) || scope.propertyDisplay.object.$$getID() === ''){
-		// 	scope.propertyDisplay.isDirty = true;
-		// }
-
-		// if(angular.isDefined(scope.swFormField.form[scope.propertyDisplay.property])){
-		// 	scope.propertyDisplay.errors = scope.swFormField.form[scope.propertyDisplay.property].$error;
-		// 	scope.swFormField.form[scope.propertyDisplay.property].formType = scope.propertyDisplay.fieldType;
-		// }
 	}
 
 	public static Factory(){
@@ -178,5 +339,5 @@ export{
 	SWFormField,
 	SWFormFieldController
 }
-//	angular.module('slatwalladmin').directive('swFormField',['$log','$templateCache', '$window', '$hibachi', 'formService', 'coreFormPartialsPath',($log, $templateCache, $window, $hibachi, formService, coreFormPartialsPath) => new swFormField($log, $templateCache, $window, $hibachi, formService, coreFormPartialsPath)]);
+
 
