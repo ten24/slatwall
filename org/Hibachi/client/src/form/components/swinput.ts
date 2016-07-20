@@ -27,6 +27,7 @@ class SWInputController{
 	public edit:boolean;
 	public editing:boolean;
 	public name:string;
+	public value:any;
 
 	//@ngInject
 	constructor(
@@ -42,6 +43,8 @@ class SWInputController{
 		this.rbkeyService = rbkeyService;
 		this.$log = $log;
 		this.$injector = $injector;
+
+
 	}
 
 	public getValidationDirectives = ()=>{
@@ -114,6 +117,7 @@ class SWInputController{
 		return spaceDelimitedList;
 	};
 
+
 	public getTemplate = ()=>{
 		var template = '';
 		var validations = '';
@@ -150,7 +154,7 @@ class SWInputController{
 
 		if(acceptedFieldTypes.indexOf(this.fieldType.toLowerCase()) >= 0){
 			template = '<input type="'+this.fieldType+'" class="'+this.class+'" '+
-				'ng-model="swInput.object.data[swInput.property]" '+
+				'ng-model="swInput.value" '+
 				'ng-disabled="swInput.editable === false" '+
 				'ng-show="swInput.editing" '+
 				'name="'+this.property+'" ' +
@@ -212,6 +216,7 @@ class SWInputController{
 		this.inputAttributes = this.inputAttributes || "";
 
 		this.inputAttributes = this.utilityService.replaceAll(this.inputAttributes,"'",'"');
+		this.value = this.utilityService.getPropertyValue(this.object,this.property);
 	}
 }
 

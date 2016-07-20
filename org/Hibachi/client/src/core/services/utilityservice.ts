@@ -230,6 +230,18 @@ class UtilityService extends BaseService{
           }
     };
 
+    public getPropertyValue=(object, propertyIdentifier)=> {
+        var pidArray = propertyIdentifier.split('.');
+        for(var i in pidArray){
+            var key = pidArray[i];
+            object = object[key];
+            console.log(key);
+            console.log('object',object);
+        }
+
+        return object;
+    }
+
       public isDescendantElement = (parent, child) => {
         var node = child.parentNode;
         while (node != null) {
