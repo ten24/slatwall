@@ -108,7 +108,10 @@ Notes:
 		
 		Admin User: #$.slatwall.getAccount().getAdminAccountFlag()# <br/>
 		Account Info: #$.slatwall.getAccount().getAccountID()#, #$.slatwall.getAccount().getFirstName()# - #$.slatwall.getAccount().getLastName()#
-		
+		<cfset myTestDiv ="Male"" onclick='alert(""script executed on click"")'">
+		<input value="#myTestDiv# "/>
+		<cfset dataStruct = {}>
+			
 		<!--- USER MY-ACCOUNT SECTION IF LOGGED IN --->
 		<cfif $.slatwall.getLoggedInFlag()>
 			<div class="row">

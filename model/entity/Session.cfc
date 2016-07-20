@@ -88,14 +88,14 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 			return false;
 		}
 		
-		//If the logged out dateTime is older than the logged in datetime - the user is logged out.
-		if ( dateCompare(getLoggedOutDateTime(), getLoggedInDateTime()) != -1){
+		//If the loggedin dateTime is null, then user is logged out.
+		if ( isNull(getLoggedInDateTime()) ){
 			setLoggedInFlag(false);
 			return false;
 		}
 		
-		//If the loggedin dateTime is null, then user is logged out.
-		if ( isNull(getLoggedInDateTime()) ){
+		//If the logged out dateTime is older than the logged in datetime - the user is logged out.
+		if ( !isNull(getLoggedOutDateTime()) && !isNull(getLoggedInDateTime()) && dateCompare(getLoggedOutDateTime(), getLoggedInDateTime()) != -1){
 			setLoggedInFlag(false);
 			return false;
 		}
