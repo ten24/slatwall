@@ -92,13 +92,16 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		setAuditsToCommitStruct({});
 	}
 	
-	/** This checks if the user is logged in by checking whether or not the user logged out or timedOut.  
+	/** This checks if the user is logged in by checking whether or not the user has manually logged out or has timed out.  
 	 *  This method should return as it always has. 
 	 */
 	public boolean function getLoggedInFlag() {
 		return getSession().getLoggedInFlag();
 	}
-	
+	/**
+	 * Because we are not removing the account from the session, logged in flag needs to
+	 * be checked before checking if they are an admin account.
+	 */
 	public boolean function getLoggedInAsAdminFlag() {
 		if(getSession().getLoggedInFlag() && getSession().getAccount().getAdminAccountFlag()) {
 			return true;
