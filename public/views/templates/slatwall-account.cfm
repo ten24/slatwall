@@ -92,8 +92,7 @@ Notes:
 
 <cfoutput>
 	<div class="container">
-
-
+		
 		<!--- USER MY-ACCOUNT SECTION IF LOGGED IN --->
 		<cfif $.slatwall.getLoggedInFlag()>
 			<div class="row">

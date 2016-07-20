@@ -2,22 +2,18 @@ component output="false" accessors="true" extends="HibachiTransient" {
 
 	property name="account" type="any";
 	property name="session" type="any";
-	
-	property name="loggedInFlag" type="boolean";
 	property name="loggedInAsAdminFlag" type="boolean";
 	property name="publicPopulateFlag" type="boolean";
 	property name="persistSessionFlag" type="boolean";
 	property name="sessionFoundNPSIDCookieFlag" type="boolean";
 	property name="sessionFoundPSIDCookieFlag" type="boolean";
-	
+	property name="sessionFoundExtendedPSIDCookieFlag" type="boolean";
 	property name="ormHasErrors" type="boolean" default="false";
 	property name="rbLocale";
 	property name="url" type="string";
-	
 	property name="calledActions" type="array";
 	property name="failureActions" type="array";
 	property name="successfulActions" type="array";
-	
 	property name="auditsToCommitStruct" type="struct";
 	property name="modifiedEntities" type="array";
 	
@@ -28,11 +24,10 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		setPersistSessionFlag( true );
 		setSessionFoundNPSIDCookieFlag( false );
 		setSessionFoundPSIDCookieFlag( false );
-		
+		setSessionFoundExtendedPSIDCookieFlag( false );
 		setCalledActions( [] );
 		setSuccessfulActions( [] );
 		setFailureActions( [] );
-		
 		setAuditsToCommitStruct( {} );
 		setModifiedEntities( [] );
 		
@@ -97,15 +92,18 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		setAuditsToCommitStruct({});
 	}
 	
+	/** This checks if the user is logged in by checking whether or not the user has manually logged out or has timed out.  
+	 *  This method should return as it always has. 
+	 */
 	public boolean function getLoggedInFlag() {
-		if(!getSession().getAccount().getNewFlag()) {
-			return true;
-		}
-		return false;
+		return getSession().getLoggedInFlag();
 	}
-	
+	/**
+	 * Because we are not removing the account from the session, logged in flag needs to
+	 * be checked before checking if they are an admin account.
+	 */
 	public boolean function getLoggedInAsAdminFlag() {
-		if(getAccount().getAdminAccountFlag()) {
+		if(getSession().getLoggedInFlag() && getSession().getAccount().getAdminAccountFlag()) {
 			return true;
 		}
 		return false;

@@ -1,5 +1,0 @@
-<cfinterface>
-
-
-
-</cfinterface>
