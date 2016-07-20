@@ -17,13 +17,7 @@ import {SWFFormField} from "./components/swfformfield";
 import {SWForm} from "./components/swform";
 import {SWFormField} from "./components/swformfield";
 import {SWFormFieldJson} from "./components/swformfieldjson";
-import {SWFormFieldNumber} from "./components/swformfieldnumber";
-import {SWFormFieldPassword} from "./components/swformfieldpassword";
-import {SWFormFieldRadio} from "./components/swformfieldradio";
 import {SWFormFieldSearchSelect} from "./components/swformfieldsearchselect";
-import {SWFormFieldSelect} from "./components/swformfieldselect";
-import {SWFormFieldText} from "./components/swformfieldtext";
-import {SWFormFieldDate} from "./components/swformfielddate";
 import {SWFormRegistrar} from "./components/swformregistrar";
 import {SWErrorDisplay} from "./components/swerrordisplay";
 
@@ -43,13 +37,7 @@ var formmodule = angular.module('hibachi.form',['angularjs-datetime-picker']).co
 .directive('swForm',SWForm.Factory())
 .directive('swFormField',SWFormField.Factory())
 .directive('swFormFieldJson',SWFormFieldJson.Factory())
-.directive('swFormFieldNumber',SWFormFieldNumber.Factory())
-.directive('swFormFieldPassword',SWFormFieldPassword.Factory())
-.directive('swFormFieldRadio',SWFormFieldRadio.Factory())
 .directive('swFormFieldSearchSelect',SWFormFieldSearchSelect.Factory())
-.directive('swFormFieldSelect',SWFormFieldSelect.Factory())
-.directive('swFormFieldText',SWFormFieldText.Factory())
-.directive('swFormFieldDate',SWFormFieldDate.Factory())
 .directive('swFormRegistrar',SWFormRegistrar.Factory())
 .directive('swfPropertyDisplay',SWFPropertyDisplay.Factory(SWFPropertyDisplay,"swfpropertydisplay.html"))
 .directive('swPropertyDisplay',SWPropertyDisplay.Factory(SWPropertyDisplay,"propertydisplay.html"))

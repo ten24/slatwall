@@ -125,6 +125,7 @@ class HibachiServiceDecorator{
 
                     this.metaData.$$getPropertyFormatType = function(propertyName){
 
+                        if(this[propertyName])
                         return _getPropertyFormatType(propertyName,this);
                     };
 
@@ -616,7 +617,7 @@ class HibachiServiceDecorator{
                 var propertyMetaData = metaData[propertyName];
 
 
-                if(angular.isDefined(propertyMetaData['hb_formattype'])){
+                if(propertyMetaData['hb_formattype']){
                     return propertyMetaData['hb_formattype'];
                 }else if(angular.isUndefined(propertyMetaData.fieldtype) || propertyMetaData.fieldtype === 'column'){
                     var dataType = "";
