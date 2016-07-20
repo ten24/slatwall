@@ -46,9 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallProductListingPage" table="SwProductListingPage" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="productService" hb_permission="" {
-
-
+component displayname="ProductListingPage" entityname="SlatwallProductListingPage" table="SwProductListingPage" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="productService" hb_permission="this" {
 
 	// Persistent Properties
 	property name="productListingPageID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

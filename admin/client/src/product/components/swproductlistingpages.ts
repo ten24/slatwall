@@ -5,12 +5,15 @@ class SWProductListingPagesController {
 
     public edit:boolean; 
     public selectedListingPageIdPaths:string; 
+    public productID:string;
+    public collectionConfig:any;
     
     //@ngInject
     constructor(
-
+        private collectionConfigService 
     ){
-        
+        this.collectionConfig = collectionConfigService.newCollectionConfig("Content"); 
+        this.collectionConfig.addDisplayProperty("contentID, title, activeFlag, site.siteName");
     }
 }
 
@@ -22,7 +25,8 @@ class SWProductListingPages implements ng.IDirective{
     
     public bindToController = {
         edit:"=?",
-        selectedListingPageIdPaths:"@?"
+        selectedListingPageIdPaths:"@?",
+        productId:"@?"
     };
     
     public controller=SWProductListingPagesController;

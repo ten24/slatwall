@@ -60,6 +60,7 @@ Notes:
 	<sw-product-listing-pages
 			data-edit="#rc.edit#"
 			data-selected-listing-page-id-paths="#selectedListingPageIDPaths#"
+			data-product-id="#rc.product.getProductID()#"
 		>
 	</sw-product-listing-pages>
 </cfoutput>

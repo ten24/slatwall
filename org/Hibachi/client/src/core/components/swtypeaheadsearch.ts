@@ -221,7 +221,7 @@ class SWTypeaheadSearchController {
     }
 
 	public addOrRemoveItem = (item)=>{
-
+        console.log("item", item);
         var remove = item.selected || false; 
 
 		if(!this.hideSearch && !this.multiselectMode){
