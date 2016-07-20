@@ -701,7 +701,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		// If we have a locationID
 		if( structKeyExists( arguments, "locationID") ) {
 			if( structKeyExists(variables[ arguments.quantityType ].locations, arguments.locationID) ) {
-				variables[ arguments.quantityType ].locations[ arguments.locationID ];
+				return variables[ arguments.quantityType ].locations[ arguments.locationID ];
 			}
 			return 0;
 		}

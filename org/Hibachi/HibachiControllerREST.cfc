@@ -5,7 +5,6 @@ component output="false" accessors="true" extends="HibachiController" {
     property name="hibachiService" type="any";
     property name="hibachiUtilityService" type="any";
 
-    this.publicMethods='';
     this.restController = true;
 
     this.anyAdminMethods='';
@@ -21,9 +20,10 @@ component output="false" accessors="true" extends="HibachiController" {
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getEventOptionsByEntityName');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'put');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'delete');
+    this.anyAdminMethods=listAppend(this.anyAdminMethods, 'log');
 
+    this.publicMethods='';
     this.publicMethods=listAppend(this.publicMethods, 'getResizedImageByProfileName');
-    this.publicMethods=listAppend(this.publicMethods, 'log');
     this.publicMethods=listAppend(this.publicMethods, 'getDetailTabs');
     this.publicMethods=listAppend(this.publicMethods, 'noaccess');
     this.publicMethods=listAppend(this.publicMethods, 'login');
@@ -32,10 +32,10 @@ component output="false" accessors="true" extends="HibachiController" {
     this.publicMethods=listAppend(this.publicMethods, 'getModel');
     this.publicMethods=listAppend(this.publicMethods, 'getConfig');
     this.publicMethods=listAppend(this.publicMethods, 'getInstantiationKey');
-    this.publicMethods=listAppend(this.publicMethods, 'getFormResponses');
-    this.publicMethods=listAppend(this.publicMethods, 'exportFormResponses');
 
     this.secureMethods='';
+    this.secureMethods=listAppend(this.secureMethods, 'getFormResponses');
+    this.secureMethods=listAppend(this.secureMethods, 'exportFormResponses');
     this.secureMethods=listAppend(this.secureMethods, 'get');
     this.secureMethods=listAppend(this.secureMethods, 'post');
 
