@@ -146,13 +146,16 @@ class SWFormController {
         //
         let request = this.$rootScope.hibachiScope.doAction(action, this.formData)
         .then( (result) =>{
-            if (result.errors) {
-                this.parseErrors(result.errors);
-                    //trigger an onError event
-                this.observerService.notify("onError", {"caller" : this.context, "events": this.events.events||""});
-            } else {
-                //trigger a on success event
-                this.observerService.notify("onSuccess", {"caller":this.context, "events":this.events.events||""});
+            if(this.events && this.events.events){
+                if (result.errors) {
+                    this.parseErrors(result.errors);
+                        //trigger an onError event
+
+                    this.observerService.notify("onError", {"caller" : this.context, "events": this.events.events||""});
+                } else {
+                    //trigger a on success event
+                    this.observerService.notify("onSuccess", {"caller":this.context, "events":this.events.events||""});
+                }
             }
         }, angular.noop);
 
@@ -305,7 +308,8 @@ class SWForm implements ng.IDirective {
             onError: "@?",
             hideUntil: "@?",
             isDirty:"=?",
-            inputAttributes:"@?"
+            inputAttributes:"@?",
+            eventHandlers:"@?"
     };
 
     /**

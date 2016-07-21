@@ -59,136 +59,788 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	}
 
-//	tests need default data inserted before asserting
-//	public void function addFilterTest(){
-//		var myCollection = variables.entityService.getProductCollectionList();
-//
-//		myCollection.addFilter('asdf','tester444');
-//		myCollection.addFilter('productName','tester444');
-//		myCollection.addFilter('activeFlag','YES');
-//		var pageRecords = myCollection.getPageRecords();
-//		addToDebug(myCollection.getHQL());
-//	}
-//
-//	public void function displayPropertyTest(){
-//		var myCollection = variables.entityService.getProductCollectionList();
-//		myCollection.setDisplayProperties('productCode,activeFlag');
-//		myCollection.addDisplayProperty('asdf');
-//		var pageRecords = myCollection.getPageRecords();
-//		addToDebug(myCollection.getHQL());
-//	}
 
-//	public void function addOrderByTest(){
-//		var myCollection = variables.entityService.getProductCollectionList();
-//		myCollection.setOrderBy('activeFlag|asc,productCode|desc');
-//		//myCollection.addOrderBy('productCode|desc');
-//		addToDebug(myCollection.getCollectionConfigStruct());
-//		var pageRecords = myCollection.getPageRecords();
-//		addToDebug(pageRecords);
-//	}
+	public void function addFilterTest(){
+
+		var uniqueNumberForDescription = createUUID();
+
+		var productActiveData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productDescription = uniqueNumberForDescription
+		};
+		//By default Active flag is true.
+		var product = createPersistedTestEntity('product', productActiveData);
+
+		var productNotActiveData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productDescription = uniqueNumberForDescription,
+			activeFlag = 'false'
+		};
+		var product = createPersistedTestEntity('product', productNotActiveData);
+
+		var myProductCollection = variables.entityService.getProductCollectionList();
+		myProductCollection.setDisplayProperties('productName,productDescription');
+		myProductCollection.addFilter('productName','ProductUnitTest');
+		myProductCollection.addFilter('productDescription',uniqueNumberForDescription);
+		var pageRecords = myProductCollection.getPageRecords();
+
+		assertTrue(arrayLen(pageRecords) == 2, "Wrong amount of products returned! Expecting 2 records but returned #arrayLen(pageRecords)#");
+
+		var myProductActiveCollection = variables.entityService.getProductCollectionList();
+		myProductActiveCollection.setDisplayProperties('productName,productDescription');
+		myProductActiveCollection.addFilter('productName','ProductUnitTest');
+		myProductActiveCollection.addFilter('productDescription',uniqueNumberForDescription);
+		myProductActiveCollection.addFilter('activeFlag','YES');
+		var pageRecords = myProductActiveCollection.getPageRecords();
+
+		assertTrue(arrayLen(pageRecords) == 1, "Wrong amount of products returned! Expecting 1 record but returned #arrayLen(pageRecords)#");
+
+	}
+
+	public void function addFilterOneToManyTest(){
+
+		var uniqueNumberForDescription = createUUID();
+
+		var productWithoutActiveSkusData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productDescription = uniqueNumberForDescription,
+			skus = [
+				{
+					skuID = '',
+					skuCode= createUUID(),
+					activeFlag = 'false'
+				},
+				{
+					skuID = '',
+					skuCode= createUUID(),
+					activeFlag = 'false'
+				}
+			]
+		};
+		var productWithoutActiveSkus = createPersistedTestEntity('product', productWithoutActiveSkusData);
+
+
+		var productWithActiveSkusData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productDescription = uniqueNumberForDescription,
+			skus = [
+				{
+					skuID = '',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					skuCode= createUUID(),
+					activeFlag = 'false'
+				}
+			]
+		};
+		//By default Active flag is true.
+		var SkusInActiveProducts = createPersistedTestEntity('product', productWithActiveSkusData);
 
 
 
-//	public void function addDisplayAggregateTest(){
-//
-//
-//
-//		var myCollection = variables.entityService.getSkuCollectionList();
-//		myCollection.setDisplayProperties('product.productName,price');
-//		myCollection.addFilter('skuID','402828904e79c0a5014e8dc30190060c');
-//		myCollection.addDisplayAggregate('product','count','productCount');
-//		var aggregateHQL = myCollection.getHQL();
-//		//debug(aggregateHQL);
-//		var pageRecords = myCollection.getPageRecords();
-//		//debug(pageRecords);
-//		assertEquals(1,pageRecords[1]['productCount']);
-//	}
+		var myProductCollection = variables.entityService.getProductCollectionList();
+		myProductCollection.setDisplayProperties('productName,productDescription');
+		myProductCollection.addFilter('productName','ProductUnitTest');
+		myProductCollection.addFilter('productDescription',uniqueNumberForDescription);
+		myProductCollection.addFilter('skus.activeFlag','YES');
+		var pageRecords = myProductCollection.getPageRecords();
 
-//	public void function addDisplayAggregate_one_to_manyTest(){
-//		var myCollection = variables.entityService.getProductCollectionList();
-//		myCollection.setDisplayProperties('productName');
-//		myCollection.addDisplayAggregate('skus','count','skuCount');
-//		myCollection.addDisplayAggregate('attributeValues','count','attributeValuesCount');
-//		var aggregateHQL = myCollection.getHQL();
-//		debug(aggregateHQL);
-//		var pageRecords = myCollection.getPageRecords();
-//		debug(pageRecords);
-//		//assertEquals(1,pageRecords[1]['skuCount']);
-//
-//	}
+		assertTrue(arrayLen(pageRecords) == 1, "Wrong amount of products returned! Expecting 1 record but returned #arrayLen(pageRecords)#");
 
-	/*public void function addDisplayAggregateSUMTest(){
-		var myCollection = variables.entityService.getSkuCollectionList();
-		myCollection.setDisplayProperties('skuID,price');
-		myCollection.addFilter('skuID','402828904e79c0a5014e8dc3016c060a,402828904e79c0a5014e8dc30190060c','IN');
-		myCollection.addDisplayAggregate('price','SUM','productPriceTotal');
-		var aggregateHQL = myCollection.getHQL();
+	}
+
+
+	public void function addFilterManyToOneTest(){
+
+		var uniqueNumberForDescription = createUUID();
+
+		//Inactive product with 2 active skulls
+		var productWithoutActiveSkusData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productDescription = uniqueNumberForDescription,
+			activeFlag='false',
+			skus = [
+				{
+					skuID = '',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					skuCode= createUUID()
+				}
+			]
+		};
+		var productWithoutActiveSkus = createPersistedTestEntity('product', productWithoutActiveSkusData);
+
+		//Active product with 4 active skuls
+		var productWithActiveSkusData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productDescription = uniqueNumberForDescription,
+			skus = [
+				{
+					skuID = '',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					skuCode= createUUID(),
+					activeFlag = 'false'
+				}
+			]
+		};
+
+		var productWithActiveSkus = createPersistedTestEntity('product', productWithActiveSkusData);
+
+		//Get Active Skulls from Active Products
+
+		var mySkuCollection = variables.entityService.getSkuCollectionList();
+		mySkuCollection.setDisplayProperties('skuID');
+		mySkuCollection.addFilter('activeFlag','YES');
+		mySkuCollection.addFilter('product.activeFlag','YES');
+		mySkuCollection.addFilter('product.productDescription',uniqueNumberForDescription);
+		var pageRecords = mySkuCollection.getPageRecords();
+
+		assertTrue(arrayLen(pageRecords) == 4, "Wrong amount of products returned! Expecting 1 record but returned #arrayLen(pageRecords)#");
+
+	}
+
+	public void function displayPropertyTest(){
+
+		var uniqueNumberForDescription = createUUID();
+
+		var productData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productDescription = uniqueNumberForDescription
+		};
+
+		var product = createPersistedTestEntity('product', productData);
+
+		var myProductCollection = variables.entityService.getProductCollectionList();
+		myProductCollection.setDisplayProperties('productID,productName');
+		myProductCollection.addFilter('productDescription',uniqueNumberForDescription);
+		var pageRecords = myProductCollection.getPageRecords();
+
+
+		assertTrue(arraylen(pageRecords) == 1,  "Wrong amount of products returned! Expecting 1 record but returned #arrayLen(pageRecords)#");
+
+		assertTrue(structKeyExists(pageRecords[1], 'productDescription'), "The collection didn't return productDescription property");
+
+		assertTrue(len(trim(pageRecords[1]['productDescription'])) == 0, "The collection returned value for non requested property");
+
+	}
+
+
+	public void function displayPropertyManyToOneTest(){
+
+		var uniqueNumberForDescription = createUUID();
+
+		var productWithSkusData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productDescription = uniqueNumberForDescription,
+			skus = [
+				{
+					skuID = '',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					skuCode= createUUID(),
+					activeFlag = 'false'
+				}
+			]
+		};
+		var productWithSkus = createPersistedTestEntity('product', productWithSkusData);
+
+		var mySkuCollection = variables.entityService.getSkuCollectionList();
+		mySkuCollection.setDisplayProperties('skuID,skuCode,product.productName');
+		mySkuCollection.addFilter('product.productDescription',uniqueNumberForDescription);
+		var pageRecords = mySkuCollection.getPageRecords();
+
+		assertTrue(arraylen(pageRecords) == 2,  "Wrong amount of products returned! Expecting 2 records but returned #arrayLen(pageRecords)#");
+
+		assertTrue(structKeyExists(pageRecords[1], 'product_productName'), "The collection didn't requested property");
+
+		assertFalse(structKeyExists(pageRecords[1], 'product_productDescription'), "The collection returned not requested related property");
+
+		assertTrue(len(trim(pageRecords[1]['product_productName'])) > 0, "The collection didn't returned value for requested property");
+
+	}
+
+	public void function addOrderByTest(){
+
+		var uniqueNumberForDescription = createUUID();
+
+		var productData1 = {
+			productID = '',
+			productName = 'dProduct',
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData1);
+
+		var productData2 = {
+			productID = '',
+			productName = 'cProduct',
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData2);
+
+		var productData3 = {
+			productID = '',
+			productName = 'bProduct',
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData3);
+
+		var productData4 = {
+			productID = '',
+			productName = 'aProduct',
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData4);
+
+
+		var myCollection = variables.entityService.getProductCollectionList();
+		myCollection.setDisplayProperties('productName');
+		myCollection.addFilter('productDescription',uniqueNumberForDescription);
+		myCollection.setOrderBy('productName|asc');
+
 		var pageRecords = myCollection.getPageRecords();
 
-		assertEquals(30.00,pageRecords[1]['productPriceTotal']);
+		assertTrue(arraylen(pageRecords) == 4,  "Wrong amount of products returned! Expecting 4 records but returned #arrayLen(pageRecords)#");
+
+		assertTrue(pageRecords[1]['productName'] == 'aProduct', "'aProduct' was expected in the 1st record");
+		assertTrue(pageRecords[2]['productName'] == 'bProduct', "'bProduct' was expected in the 2nd record");
+		assertTrue(pageRecords[3]['productName'] == 'cProduct', "'cProduct' was expected in the 3rd record");
+		assertTrue(pageRecords[4]['productName'] == 'dProduct', "'dProduct' was expected in the 4rt record");
+
+	}
+
+
+
+	public void function addDisplayAggregateCOUNTTest(){
+		var uniqueNumberForDescription = createUUID();
+
+		var productWithSkusData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productDescription = uniqueNumberForDescription,
+			skus = [
+				{
+					skuID = '',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					skuCode= createUUID()
+				}
+			]
+		};
+		var productWithSkus = createPersistedTestEntity('product', productWithSkusData);
+
+		var myCollection = variables.entityService.getProductCollectionList();
+		myCollection.setDisplayProperties('productName');
+		myCollection.addDisplayAggregate('skus','count','skuCount');
+		myCollection.addFilter('productDescription',uniqueNumberForDescription);
+
+		var pageRecords = myCollection.getPageRecords();
+		assertTrue(pageRecords[1]['skuCount'] == 2);
+	}
+
+
+	public void function addDisplayAggregateSUMTest(){
+		var uniqueNumberForDescription = createUUID();
+
+		var productWithSkusData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productDescription = uniqueNumberForDescription,
+			skus = [
+				{
+					skuID = '',
+					price = '10',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '20',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '30',
+					skuCode= createUUID()
+				}
+			]
+		};
+		var productWithSkus = createPersistedTestEntity('product', productWithSkusData);
+
+		var myCollection = variables.entityService.getProductCollectionList();
+		myCollection.setDisplayProperties('productName');
+		myCollection.addDisplayAggregate('skus.price','SUM','skuPriceSum');
+		myCollection.addFilter('productDescription',uniqueNumberForDescription);
+
+		var pageRecords = myCollection.getPageRecords();
+		assertTrue(pageRecords[1]['skuPriceSum'] == '60');
 	}
 
 	public void function addDisplayAggregateAVGTest(){
-		var myCollection = variables.entityService.getSkuCollectionList();
-		myCollection.addFilter('skuID','402828904e79c0a5014e8dc3016c060a,402828904e79c0a5014e8dc30190060c','IN');
-		myCollection.addDisplayAggregate('price','avg','productMinPrice');
+		var uniqueNumberForDescription = createUUID();
+
+		var productWithSkusData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productDescription = uniqueNumberForDescription,
+			skus = [
+				{
+					skuID = '',
+					price = '10',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '20',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '30',
+					skuCode= createUUID()
+				}
+			]
+		};
+		var productWithSkus = createPersistedTestEntity('product', productWithSkusData);
+
+		var myCollection = variables.entityService.getProductCollectionList();
+		myCollection.setDisplayProperties('productName');
+		myCollection.addDisplayAggregate('skus.price','AVG','skuPriceAvg');
+		myCollection.addFilter('productDescription',uniqueNumberForDescription);
 
 		var pageRecords = myCollection.getPageRecords();
-		addToDebug(pageRecords);
-		assertEquals(15.00,pageRecords[1]['productMinPrice']);
+		assertTrue(pageRecords[1]['skuPriceAvg'] == '20');
 	}
 
-
 	public void function addDisplayAggregateMINTest(){
-		var myCollection = variables.entityService.getSkuCollectionList();
-		myCollection.addFilter('skuID','402828904e79c0a5014e8dc3016c060a,402828904e79c0a5014e8dc30190060c','IN');
-		myCollection.addDisplayAggregate('price','min','productMaxPrice');
+		var uniqueNumberForDescription = createUUID();
+
+		var productWithSkusData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productDescription = uniqueNumberForDescription,
+			skus = [
+				{
+					skuID = '',
+					price = '10',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '20',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '30',
+					skuCode= createUUID()
+				}
+			]
+		};
+		var productWithSkus = createPersistedTestEntity('product', productWithSkusData);
+
+		var myCollection = variables.entityService.getProductCollectionList();
+		myCollection.setDisplayProperties('productName');
+		myCollection.addDisplayAggregate('skus.price','MIN','skuPriceMin');
+		myCollection.addFilter('productDescription',uniqueNumberForDescription);
 
 		var pageRecords = myCollection.getPageRecords();
-
-		assertEquals(10.00,pageRecords[1]['productMaxPrice']);
+		assertTrue(pageRecords[1]['skuPriceMin'] == '10');
 	}
 
 	public void function addDisplayAggregateMAXTest(){
-		var myCollection = variables.entityService.getSkuCollectionList();
-		myCollection.addFilter('skuID','402828904e79c0a5014e8dc3016c060a,402828904e79c0a5014e8dc30190060c','IN');
-		myCollection.addDisplayAggregate('price','max','productPriceTotal');
+		var uniqueNumberForDescription = createUUID();
+
+		var productWithSkusData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productDescription = uniqueNumberForDescription,
+			skus = [
+			{
+				skuID = '',
+				price = '10',
+				skuCode= createUUID()
+			},
+			{
+				skuID = '',
+				price = '20',
+				skuCode= createUUID()
+			},
+			{
+				skuID = '',
+				price = '30',
+				skuCode= createUUID()
+			}
+				]
+		};
+		var productWithSkus = createPersistedTestEntity('product', productWithSkusData);
+
+		var myCollection = variables.entityService.getProductCollectionList();
+		myCollection.setDisplayProperties('productName');
+		myCollection.addDisplayAggregate('skus.price','MAX','skuPriceMax');
+		myCollection.addFilter('productDescription',uniqueNumberForDescription);
 
 		var pageRecords = myCollection.getPageRecords();
-
-		assertEquals(20.00,pageRecords[1]['productPriceTotal']);
+		assertTrue(pageRecords[1]['skuPriceMax'] == '30');
 	}
 
-	public void function addDisplayAggregateCOUNTTest(){
-		var myCollection = variables.entityService.getSkuCollectionList();
-		myCollection.addFilter('skuID','402828904e79c0a5014e8dc3016c060a,402828904e79c0a5014e8dc30190060c','IN');
-		myCollection.addDisplayAggregate('product','count','productCountTotal');
-
-		var pageRecords = myCollection.getPageRecords();
-		assertEquals(2,pageRecords[1]['productCountTotal']);
-
-		myCollection = variables.entityService.getContentCollectionList();
-		myCollection.setDisplayProperties('site.siteName,title');
-		myCollection.addFilter('parentContent','NULL','IS');
-		myCollection.addDisplayAggregate('childContents','count','childContentsCountTotal');
-
-		pageRecords = myCollection.getPageRecords();
-
-	}*/
 
 
+	public void function addFilterSUMAggregateTest(){
 
-//
-//	public void function loopOverCollectionTest(){
-//		var myCollection = variables.entityService.getProductCollectionList();
-//
-//		myCollection.addFilter('productCode','tester444');
-//		myCollection.setDisplayProperties('productName,productCode,activeFlag');
-//
-//		myCollection.setOrderBy('activeFlag|desc,productCode|asc');
-//		var pageRecords = myCollection.getPageRecords();
-//		addToDebug(pageRecords);
-//	}
+	var uniqueNumberForDescription = createUUID();
+
+
+	var productWithSkusData1 = {
+		productID = '',
+		productName = 'ProductUnitTest1',
+		productDescription = uniqueNumberForDescription,
+		skus = [
+		{
+			skuID = '',
+			price = '10',
+			skuCode= createUUID()
+		},
+		{
+			skuID = '',
+			price = '20',
+			skuCode= createUUID()
+		}
+			]
+	};
+	createPersistedTestEntity('product', productWithSkusData1);
+
+
+	var productWithSkusData2 = {
+		productID = '',
+		productName = 'ProductUnitTest2',
+		productDescription = uniqueNumberForDescription,
+		skus = [
+		{
+			skuID = '',
+			price = '10',
+			skuCode= createUUID()
+		},
+		{
+			skuID = '',
+			price = '20',
+			skuCode= createUUID()
+		},
+		{
+			skuID = '',
+			price = '30',
+			skuCode= createUUID()
+		},
+		{
+			skuID = '',
+			price = '40',
+			skuCode= createUUID()
+		}
+			]
+	};
+
+	createPersistedTestEntity('product', productWithSkusData2);
+
+	var myProductCollection = variables.entityService.getProductCollectionList();
+	myProductCollection.setDisplayProperties('productName');
+	myProductCollection.addFilter('skus.price','30', '=', 'AND', 'SUM');
+	myProductCollection.addFilter('productDescription',uniqueNumberForDescription);
+	var pageRecords = myProductCollection.getPageRecords();
+
+	assert(arraylen(pageRecords) == 1 && pageRecords[1]['productName'] == 'ProductUnitTest1');
+}
+
+	public void function addFilterAVGAggregateTest(){
+
+		var uniqueNumberForDescription = createUUID();
+
+
+		var productWithSkusData1 = {
+			productID = '',
+			productName = 'ProductUnitTest1',
+			productDescription = uniqueNumberForDescription,
+			skus = [
+				{
+					skuID = '',
+					price = '10',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '20',
+					skuCode= createUUID()
+				}
+			]
+		};
+		createPersistedTestEntity('product', productWithSkusData1);
+
+
+		var productWithSkusData2 = {
+			productID = '',
+			productName = 'ProductUnitTest2',
+			productDescription = uniqueNumberForDescription,
+			skus = [
+				{
+					skuID = '',
+					price = '10',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '20',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '30',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '40',
+					skuCode= createUUID()
+				}
+			]
+		};
+
+		createPersistedTestEntity('product', productWithSkusData2);
+
+		var myProductCollection = variables.entityService.getProductCollectionList();
+		myProductCollection.setDisplayProperties('productName');
+		myProductCollection.addFilter('skus.price','25', '=', 'AND', 'AVG');
+		myProductCollection.addFilter('productDescription',uniqueNumberForDescription);
+		var pageRecords = myProductCollection.getPageRecords();
+		assert(arraylen(pageRecords) == 1 && pageRecords[1]['productName'] == 'ProductUnitTest2');
+	}
+
+	public void function addFilterMINAggregateTest(){
+
+		var uniqueNumberForDescription = createUUID();
+
+
+		var productWithSkusData1 = {
+			productID = '',
+			productName = 'ProductUnitTest1',
+			productDescription = uniqueNumberForDescription,
+			skus = [
+				{
+					skuID = '',
+					price = '10',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '20',
+					skuCode= createUUID()
+				}
+			]
+		};
+		createPersistedTestEntity('product', productWithSkusData1);
+
+
+		var productWithSkusData2 = {
+			productID = '',
+			productName = 'ProductUnitTest2',
+			productDescription = uniqueNumberForDescription,
+			skus = [
+				{
+					skuID = '',
+					price = '5',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '10',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '15',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '20',
+					skuCode= createUUID()
+				}
+			]
+		};
+
+		createPersistedTestEntity('product', productWithSkusData2);
+
+		var myProductCollection = variables.entityService.getProductCollectionList();
+		myProductCollection.setDisplayProperties('productName');
+		myProductCollection.addFilter('skus.price','5', '=', 'AND', 'MIN');
+		myProductCollection.addFilter('productDescription',uniqueNumberForDescription);
+		var pageRecords = myProductCollection.getPageRecords();
+		assert(arraylen(pageRecords) == 1 && pageRecords[1]['productName'] == 'ProductUnitTest2');
+	}
+
+
+	public void function addFilterMAXAggregateTest(){
+
+		var uniqueNumberForDescription = createUUID();
+
+
+		var productWithSkusData1 = {
+			productID = '',
+			productName = 'ProductUnitTest1',
+			productDescription = uniqueNumberForDescription,
+			skus = [
+				{
+					skuID = '',
+					price = '10',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '20',
+					skuCode= createUUID()
+				}
+			]
+		};
+		createPersistedTestEntity('product', productWithSkusData1);
+
+
+		var productWithSkusData2 = {
+			productID = '',
+			productName = 'ProductUnitTest2',
+			productDescription = uniqueNumberForDescription,
+			skus = [
+				{
+					skuID = '',
+					price = '5',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '10',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '15',
+					skuCode= createUUID()
+				}
+			]
+		};
+
+		createPersistedTestEntity('product', productWithSkusData2);
+
+		var myProductCollection = variables.entityService.getProductCollectionList();
+		myProductCollection.setDisplayProperties('productName');
+		myProductCollection.addFilter('skus.price','20', '=', 'AND', 'MAX');
+		myProductCollection.addFilter('productDescription',uniqueNumberForDescription);
+		var pageRecords = myProductCollection.getPageRecords();
+		assert(arraylen(pageRecords) == 1 && pageRecords[1]['productName'] == 'ProductUnitTest1');
+	}
+
+
+	public void function addFilterCOUNTAggregateTest(){
+
+		var uniqueNumberForDescription = createUUID();
+
+
+		var productWithSkusData1 = {
+			productID = '',
+			productName = 'ProductUnitTest1',
+			productDescription = uniqueNumberForDescription,
+			skus = [
+				{
+					skuID = '',
+					price = '10',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '20',
+					skuCode= createUUID()
+				}
+			]
+		};
+		createPersistedTestEntity('product', productWithSkusData1);
+
+
+		var productWithSkusData2 = {
+			productID = '',
+			productName = 'ProductUnitTest2',
+			productDescription = uniqueNumberForDescription,
+			skus = [
+				{
+					skuID = '',
+					price = '10',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '20',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '30',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '40',
+					skuCode= createUUID()
+				}
+			]
+		};
+
+		createPersistedTestEntity('product', productWithSkusData2);
+
+		var myProductCollection = variables.entityService.getProductCollectionList();
+		myProductCollection.setDisplayProperties('productName');
+		myProductCollection.addFilter('skus','4', '=', 'AND', 'COUNT');
+		myProductCollection.addFilter('productDescription',uniqueNumberForDescription);
+		var pageRecords = myProductCollection.getPageRecords();
+
+		assert(arraylen(pageRecords) == 1 && pageRecords[1]['productName'] == 'ProductUnitTest2');
+	}
+
 
 
 
@@ -261,50 +913,152 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 
 
-	/* TODO:write complete test data to verify getRecords and getRecordsCount methods*/
-	/*
+
+
 	public void function getRecordsCountTest(){
-		var collectionEntityData = {
-			collectionid = '',
-			collectionCode = 'RyansAccountOrders',
-			collectionName = 'RyansAccountOrders',
-			collectionConfig = '{
-				"baseEntityName":"SlatwallAccount",
-				"baseEntityAlias":"Account"
-			}
-			',
-			baseEntityName = "SlatwallAccount"
+		var uniqueNumberForDescription = createUUID();
 
+		var productData1 = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productDescription = uniqueNumberForDescription
 		};
-		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		createPersistedTestEntity('product', productData1);
 
-		var recordsCount = collectionEntity.getRecordsCount();
+		var productData2 = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData2);
 
-		//addToDebug(recordsCount);
-		//addToDebug(collectionEntity.getHQL());
+
+		var myCollection = variables.entityService.getProductCollectionList();
+		myCollection.setDisplayProperties('productName');
+		myCollection.addFilter('productDescription',uniqueNumberForDescription);
+		myCollection.setOrderBy('productName|asc');
+
+		var recordsCount = myCollection.getRecordsCount();
+
+		assertTrue(recordsCount == 2,  "Wrong amount of products returned! Expecting 2 records but returned #recordsCount#");
 
 	}
 
-	public void function getRecords(){
-		var collectionEntityData = {
-			collectionid = '',
-			collectionCode = 'RyansAccountOrders',
-			collectionName = 'RyansAccountOrders',
-			collectionConfig = '{
-				"baseEntityName":"SlatwallAccount",
-					"baseEntityAlias":"Account"
+
+	public void function getRecordsCountWithAggregateTest(){
+
+		var uniqueNumberForDescription = createUUID();
+
+
+		var productWithSkusData1 = {
+			productID = '',
+			productName = 'ProductUnitTest1',
+			productDescription = uniqueNumberForDescription,
+			skus = [
+			{
+				skuID = '',
+				price = '10',
+				skuCode= createUUID()
+			},
+			{
+				skuID = '',
+				price = '20',
+				skuCode= createUUID()
 			}
-			',
-			baseEntityName = "SlatwallAccount"
-
+				]
 		};
-		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		createPersistedTestEntity('product', productWithSkusData1);
 
-		var records = collectionEntity.getRecords();
+
+		var productWithSkusData2 = {
+			productID = '',
+			productName = 'ProductUnitTest2',
+			productDescription = uniqueNumberForDescription,
+			skus = [
+				{
+					skuID = '',
+					price = '10',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '20',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '30',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '40',
+					skuCode= createUUID()
+				}
+			]
+		};
+
+		var productWithSkusData3 = {
+			productID = '',
+			productName = 'ProductUnitTest3',
+			productDescription = uniqueNumberForDescription,
+			skus = [
+				{
+					skuID = '',
+					price = '10',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '20',
+					skuCode= createUUID()
+				}
+			]
+		};
+
+		createPersistedTestEntity('product', productWithSkusData3);
+
+		var myProductCollection = variables.entityService.getProductCollectionList();
+		myProductCollection.setDisplayProperties('productName');
+		myProductCollection.addFilter('skus.price','20', '=', 'AND', 'MAX');
+		myProductCollection.addFilter('productDescription',uniqueNumberForDescription);
+		var pageRecords = myProductCollection.getPageRecords();
+		var recordsCount = myProductCollection.getRecordsCount();
+
+		assert(recordsCount == 2, "Wrong amount of products returned! Expecting 2 records but returned #recordsCount#");
+	}
+
+
+	public void function getRecordsTest(){
+		var uniqueNumberForDescription = createUUID();
+
+		var productData1 = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData1);
+
+		var productData2 = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData2);
+
+
+		var myCollection = variables.entityService.getProductCollectionList();
+		myCollection.setDisplayProperties('productName');
+		myCollection.addFilter('productDescription',uniqueNumberForDescription);
+		myCollection.setOrderBy('productName|asc');
+
+		var pageRecords = myCollection.getRecords();
+
+		assertTrue(arraylen(pageRecords) == 2,  "Wrong amount of products returned! Expecting 2 records but returned #arrayLen(pageRecords)#");
 
 		//addToDebug(records);
 	}
-	*/
+
 
 	public void function deserializeCollectionConfigTest(){
 		makePublic(variables.entity,'deserializeCollectionConfig');

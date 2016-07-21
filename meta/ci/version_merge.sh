@@ -81,7 +81,7 @@ changedFiles=$(git diff --name-only)
 if [ "$changedFiles" = "" ]; then
     # no changes
     echo "No Changes To Push"
-else
+elif [ $CIRCLE_BRANCH = "master" ] || [ $CIRCLE_BRANCH = "develop" ] || [ $CIRCLE_BRANCH = "hotfix" ]; then
     # changes
     echo "Build/Version Changes Found"
     git commit -a -m "CI build passed, auto-built files commit - $CIRCLE_BUILD_URL [ci skip]"

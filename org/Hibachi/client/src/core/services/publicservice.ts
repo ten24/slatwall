@@ -47,7 +47,8 @@ class PublicService {
         public requestService,
         public accountService,
         public cartService,
-        public orderService
+        public orderService,
+        public observerService
     ) {
         this.orderService = orderService;
         this.cartService = cartService;
@@ -64,6 +65,7 @@ class PublicService {
         this.$hibachi = $hibachi;
         this.cart = this.cartService.newCart();
         this.account = this.accountService.newAccount();
+        this.observerService = observerService;
     }
 
     // public hasErrors = ()=>{

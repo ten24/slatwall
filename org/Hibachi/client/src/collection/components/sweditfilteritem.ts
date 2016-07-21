@@ -352,6 +352,9 @@ class SWEditFilterItem{
                                         filterItem.value = decimalValueString;
                                     }
                                 }
+                                if(angular.isDefined(selectedFilterProperty.aggregate)){
+                                    filterItem.aggregate = selectedFilterProperty.aggregate;
+                                }
                                 filterItem.displayValue = filterItem.value;
                                 break;
 
