@@ -48,19 +48,26 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.subscriptionTermSmartList" type="any" />
-
+<cfif getHibachiScope().getService('subscriptionService').hasAnySubscriptionWithAutoPayWithoutOrderPaymentWithAccountPaymentMethod() >
+	<cfset request.slatwallScope.showMessageKey('entity.order.process.placeOrder.hasSubscriptionWithAutoPayFlagWithoutOrderPaymentWithAccountPaymentMethod_info') />
+</cfif>
 <cfoutput>
-
-	<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.subscriptionTermSmartList#"
+	
+	<hb:HibachiEntityActionBar type="listing" object="#rc.subscriptionTermSmartList#" showCreate="false">
+			
+		<!--- Create ---> 
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCaller action="admin:entity.createsubscriptionterm" entity="subscriptionterm" class="btn btn-primary" icon="plus icon-white" />
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
+	
+	<hb:HibachiListingDisplay smartList="#rc.subscriptionTermSmartList#"
 							recordDetailAction="admin:entity.detailsubscriptionterm"
 							recordEditAction="admin:entity.editsubscriptionterm">
-							
-		<!--- Create ---> 
-		<hb:HibachiListingDisplayButtonGroup >
-			<hb:HibachiActionCaller action="admin:entity.createsubscriptionterm" entity="subscriptionterm" class="btn btn-primary" icon="plus icon-white" />
-		</hb:HibachiListingDisplayButtonGroup>	
-							
+
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="subscriptionTermName" />
 	</hb:HibachiListingDisplay>
 

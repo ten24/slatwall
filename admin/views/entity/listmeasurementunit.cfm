@@ -48,11 +48,15 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.measurementUnitSmartList" type="any" />
 
 <cfoutput>
 
-<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.measurementUnitSmartList#" recordDetailAction="admin:entity.detailmeasurementunit" recordDetailModal="true">
+<hb:HibachiEntityActionBar type="listing" object="#rc.measurementUnitSmartList#" showCreate="false" />
+
+<hb:HibachiListingDisplay smartList="#rc.measurementUnitSmartList#" recordDetailAction="admin:entity.detailmeasurementunit" recordDetailModal="true">
 	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="unitName" />
 	<hb:HibachiListingColumn propertyIdentifier="unitCode" />
 	<hb:HibachiListingColumn propertyIdentifier="measurementType" />

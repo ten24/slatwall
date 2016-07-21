@@ -48,27 +48,34 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.productTypeSmartList" type="any" />
 
 <cfset rc.productTypeSmartList.addOrder("productTypeName|ASC") />
 
 <cfoutput>
 	
-	<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.productTypeSmartList#" 
-								recordEditAction="admin:entity.editproducttype"
-								recordDetailAction="admin:entity.detailproducttype">
-								
-		<!--- Create --->
-		<hb:HibachiListingDisplayButtonGroup>
+	<hb:HibachiEntityActionBar type="listing" object="#rc.productTypeSmartList#" showCreate="false">
+			
+		<!--- Create ---> 
+		<hb:HibachiEntityActionBarButtonGroup>
 			<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('define.create')#" icon="plus" dropdownClass="pull-right">
+				<hb:HibachiActionCaller action="admin:entity.createproducttype" text="#rc.$.slatwall.rbKey('define.bundle')# #rc.$.slatwall.rbKey('entity.producttype')#" querystring="baseProductType=productBundle" type="list" /> 
 				<hb:HibachiActionCaller action="admin:entity.createproducttype" text="#rc.$.slatwall.rbKey('define.contentAccess')# #rc.$.slatwall.rbKey('entity.producttype')#" querystring="baseProductType=contentAccess" type="list" />
+				<hb:HibachiActionCaller action="admin:entity.createproducttype" text="#rc.$.slatwall.rbKey('define.event')# #rc.$.slatwall.rbKey('entity.producttype')#" querystring="baseProductType=event" type="list" />
+				<hb:HibachiActionCaller action="admin:entity.createproducttype" text="#rc.$.slatwall.rbKey('define.giftCard')# #rc.$.slatwall.rbKey('entity.producttype')#" querystring="baseProductType=gift-card" type="list" /> 
 				<hb:HibachiActionCaller action="admin:entity.createproducttype" text="#rc.$.slatwall.rbKey('define.merchandise')# #rc.$.slatwall.rbKey('entity.producttype')#" querystring="baseProductType=merchandise" type="list" />
 				<hb:HibachiActionCaller action="admin:entity.createproducttype" text="#rc.$.slatwall.rbKey('define.subscription')# #rc.$.slatwall.rbKey('entity.producttype')#" querystring="baseProductType=subscription" type="list" />
 			</hb:HibachiActionCallerDropdown>
-		</hb:HibachiListingDisplayButtonGroup>
-		
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
+	
+	<hb:HibachiListingDisplay smartList="#rc.productTypeSmartList#" 
+								recordEditAction="admin:entity.editproducttype"
+								recordDetailAction="admin:entity.detailproducttype">
+	
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="productTypeName" sort="false" />
 		<hb:HibachiListingColumn propertyIdentifier="activeFlag" sort="false" />
-	
 	</hb:HibachiListingDisplay>
 </cfoutput>

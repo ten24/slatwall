@@ -55,15 +55,13 @@ Notes:
 	      <div class="col-md-4 s-header-info">
 
 				<!--- Page Title --->
-				<ul class="list-unstyled list-inline">
-				</ul>
 				<h1 class="actionbar-title">#$.slatwall.rbKey('admin.main.encryptionreencryptdata')#</h1>
 			</div>
 		 </div>
 	   </nav>
 	 </div>
 	<hb:HibachiPropertyList divClass="span12">
-		<form method="post" action="?s=1" class="form-horizontal">
+		<form method="post" action="?s=1" class="">
 			<input type="hidden" name="slatAction" value="admin:main.encryptionReencryptData" />
 			<input type="hidden" name="process" value="1" />
 			<cfset batchSizeLimitAttributes = '' />

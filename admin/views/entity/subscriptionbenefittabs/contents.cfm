@@ -48,6 +48,7 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.subscriptionBenefit" type="any">
 <cfparam name="rc.edit" type="boolean">
 
@@ -64,14 +65,14 @@ Notes:
 </cfloop>
 
 <cfoutput>
-	<div class="span6">
+	<div class="col-md-6">
 		<h5>#$.slatwall.rbKey('entity.subscriptionBenefit.contents')#</h5>
 		<hb:HibachiListingDisplay smartList="#rc.subscriptionBenefit.getContentsOptionsSmartList()#" multiselectFieldName="contents" multiselectValues="#selectedContentIDs#" edit="#rc.edit#">
 			<hb:HibachiListingColumn propertyIdentifier="title" tdclass="primary" />
 			<hb:HibachiListingColumn propertyIdentifier="site.siteName" />
 		</hb:HibachiListingDisplay>
 	</div>
-	<div class="span6">
+	<div class="col-md-6">
 		<h5>#$.slatwall.rbKey('entity.subscriptionBenefit.excludedcontents')#</h5>
 		<hb:HibachiListingDisplay smartList="#rc.subscriptionBenefit.getExcludedContentsOptionsSmartList()#" multiselectFieldName="excludedContents" multiselectValues="#selectedExcludedContentIDs#" edit="#rc.edit#">
 			<hb:HibachiListingColumn propertyIdentifier="title" tdclass="primary" />

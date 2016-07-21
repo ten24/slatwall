@@ -2,12 +2,16 @@
 	"conditions":{
 		"attributeInputTypeRequiresObject":{
 			"attributeInputType":{"inList":"relatedObjectSelect,relatedObjectMultiselect"}
-		}  
+		},
+		"attributeInputTypeRequiresTypeSet":{
+			"attributeInputType":{"inList":"typeSelect"}
+		}
 	},
 	"properties":{
-		"attributeName":			[{"contexts":"save","required":true}],
-		"attributeCode":			[{"contexts":"save","required":true,"unique":true}],
-		"attributeInputType":		[{"contexts":"save","required":true}],
-		"relatedObject":			[{"contexts":"save","conditions":"attributeInputTypeRequiresObject","required":true}]
+		"attributeName":		[{"contexts":"save","required":true}],
+		"attributeCode":		[{"contexts":"save","required":true,"unique":true,"regex":"^[a-zA-Z][a-zA-Z0-9_]*$"}],
+		"attributeType":		[{"contexts":"save","required":true}],
+		"relatedObject":		[{"contexts":"save","conditions":"attributeInputTypeRequiresObject","required":true}],
+		"typeSet":				[{"contexts":"save","conditions":"attributeInputTypeRequiresTypeSet","required":true}]
 	}
 }

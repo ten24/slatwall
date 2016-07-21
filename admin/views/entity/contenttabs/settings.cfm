@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.content" type="any" />
 
 <cfoutput>
@@ -60,5 +62,6 @@ Notes:
 		<swa:SlatwallSetting settingName="contentHTMLTitleString" settingObject="#rc.content#" />
 		<swa:SlatwallSetting settingName="contentMetaDescriptionString" settingObject="#rc.content#" />
 		<swa:SlatwallSetting settingName="contentMetaKeywordsString" settingObject="#rc.content#" />
+		<swa:SlatwallSetting settingName="contentTemplateFile" settingObject="#rc.content#" />
 	</swa:SlatwallSettingTable>
 </cfoutput>

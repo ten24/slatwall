@@ -64,7 +64,7 @@ Notes:
 					<tr>
 						<td>#local.order.getOrderNumber()#</td>
 						<td>#local.order.getFormattedValue('orderOpenDateTime', 'date')#</td>
-						<td>#local.order.getOrderStatusType().getType()#</td>
+						<td>#local.order.getOrderStatusType().getTypeName()#</td>
 						<td>#local.order.getFormattedValue('total', 'currency')#</td>
 						<td><a href="#$.createHREF(filename='order-status', queryString='orderID=#local.order.getOrderID()#')#">View Details</a></td>
 					</tr>

@@ -48,20 +48,29 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.siteSmartList" type="any" />
 
 <cfoutput>
 	
-	<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.siteSmartList#"
+	<hb:HibachiEntityActionBar type="listing" object="#rc.siteSmartList#" showCreate="false">
+			
+		<!--- Create ---> 
+		<hb:HibachiEntityActionBarButtonGroup>			
+			<hb:HibachiProcessCaller action="admin:entity.preprocesssite" entity="site" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.create')# #$.slatwall.rbKey('entity.site')#" modal="true" />			
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
+	
+	<hb:HibachiListingDisplay smartList="#rc.siteSmartList#"
 							   recordEditAction="admin:entity.editSite"
 							   recordDetailAction="admin:entity.detailSite">
 		
-		<!--- Create ---> 
-		<hb:HibachiListingDisplayButtonGroup >
-			<hb:HibachiActionCaller action="admin:entity.createsite" entity="site" class="btn btn-primary" icon="plus icon-white" modal="true" />
-		</hb:HibachiListingDisplayButtonGroup>
-		
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="siteName" />
+		<hb:HibachiListingColumn propertyIdentifier="siteCode" />
+		<hb:HibachiListingColumn propertyIdentifier="domainNames" />
+		<hb:HibachiListingColumn propertyIdentifier="app.appName" />
+		<hb:HibachiListingColumn propertyIdentifier="allowAdminAccessFlag" />
 	</hb:HibachiListingDisplay>
 	
 </cfoutput>

@@ -4,10 +4,12 @@
 		    "paymentMethodType":{"eq":"creditCard"},
 		    "providerToken":{"null":true}
 		},
-		"paymentTypeCreditCardNoTokenAndNew": {
+		"paymentTypeCreditCardNoTokenAndNewAndNotCopied": {
 			"paymentMethodType":{"eq":"creditCard"},
 			"newFlag":{"eq":true},
-			"providerToken":{"null":true}
+			"providerToken":{"null":true},
+			"accountPaymentMethod":{"null":true},
+			"referencedOrderPayment":{"null":true}
 		},
 	    "paymentTypeCreditCard":{
 	        "paymentMethodType":{"eq":"creditCard"}
@@ -20,14 +22,19 @@
 	    }
 	},
 	"properties":{
-	    "amount":				[{"contexts":"save","dataType":"numeric","minValue":0},{"contexts":"save","conditions":"peerNullValueAlreadyExists","required":true}],
+	    "amount":				[
+	    	{"contexts":"save","dataType":"numeric","minValue":0},
+	    	{"contexts":"save","conditions":"peerNullValueAlreadyExists","required":true},
+	    	{"contexts":"save","conditions":"paymentTypeTermPayment","lteProperty":"termPaymentAccount.termAccountAvailableCredit"},
+	    	{"contexts":"save","lteProperty":"maximumPaymentMethodPaymentAmount"}
+	    ],
 	    "paymentMethod":		[{"contexts":"save","required":true}],
 		"paymentTransactions":	[{"contexts":"delete","maxCollection":0}],
 		"expirationMonth":		[{"contexts":"save","conditions":"paymentTypeCreditCard","required":true}],
 		"expirationYear":		[{"contexts":"save","conditions":"paymentTypeCreditCard","required":true}],
 		"nameOnCreditCard":		[{"contexts":"save","conditions":"paymentTypeCreditCard","required":true}],
 		"creditCardNumber":		[{"contexts":"save","conditions":"creditCardWithoutToken","required":true,"dataType":"creditCard"}],
-		"securityCode":			[{"contexts":"save","conditions":"paymentTypeCreditCardNoTokenAndNew","required":true}],
+		"securityCode":			[{"contexts":"save","conditions":"paymentTypeCreditCardNoTokenAndNewAndNotCopied","required":true}],
 		"orderStatusCode":		[
 		    {"contexts":"createTransaction","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"},
 			{"contexts":"edit","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"}

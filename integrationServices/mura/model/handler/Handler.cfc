@@ -46,7 +46,7 @@
 	Notes:
 	
 --->
-<cfcomponent>
+<cfcomponent  extends="Slatwall.org.Hibachi.HibachiEventHandler">
 	
 	<!--- ======================= Helper Methods ================================ --->
 		

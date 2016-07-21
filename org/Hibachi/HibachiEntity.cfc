@@ -13,7 +13,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	// Audit Properties
 	property name="createdByAccount" persistent="false";
 	property name="modifiedByAccount" persistent="false";
-	
+	   
 	// @hint global constructor arguments.  All Extended entities should call super.init() so that this gets called
 	public any function init() {
 		variables.processObjects = {};
@@ -34,32 +34,32 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		
 		return super.init();
 	}
-	
-	public void function updateCalculatedProperties() {
-		if(!structKeyExists(variables, "calculatedUpdateRunFlag")) {
-			// Set calculated to true so that this only runs 1 time per request
-			variables.calculatedUpdateRunFlag = true;
-			
-			// Loop over all properties
-			for(var property in getProperties()) {
-			
-				// Look for any that start with the calculatedXXX naming convention
-				if(left(property.name, 10) == "calculated") {
-					
-					var value = this.invokeMethod("get#right(property.name, len(property.name)-10)#");
-					if(!isNull(value)) {
-						variables[ property.name ] = value;	
-					}
 
-				} else if (structKeyExists(property, "hb_cascadeCalculate") && property.hb_cascadeCalculate && structKeyExists(variables, property.name) && isObject( variables[ property.name ] ) ) {
-					
-					variables[ property.name ].updateCalculatedProperties();
-					
-				}
-			}
-		}
-	}
-	
+	/** runs a update calculated properties only once per request unless explicitly set to false before calling. */
+	public void function updateCalculatedProperties(any runAgain=false) {
+        if(!structKeyExists(variables, "calculatedUpdateRunFlag") || runAgain) {
+            // Set calculated to true so that this only runs 1 time per request unless explicitly told to run again.
+            variables.calculatedUpdateRunFlag = true;
+            // Loop over all properties
+            for(var property in getProperties()) {
+                
+                // Look for any that start with the calculatedXXX naming convention
+                if(left(property.name, 10) == "calculated" && (!structKeyExists(property, "persistent") || property.persistent == "true")) {
+                    
+                    var value = this.invokeMethod("get#right(property.name, len(property.name)-10)#");
+                    if(!isNull(value)) {
+                        variables[ property.name ] = value; 
+                    }
+
+                } else if (structKeyExists(property, "hb_cascadeCalculate") && property.hb_cascadeCalculate && structKeyExists(variables, property.name) && isObject( variables[ property.name ] ) ) {
+                    
+                    variables[ property.name ].updateCalculatedProperties();
+                    
+                }
+            }
+            
+        }
+    }	
 	// @hint return a simple representation of this entity
 	public string function getSimpleRepresentation() {
 		
@@ -382,10 +382,13 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		var cacheKey = "#arguments.propertyName#AssignedIDList";
 			
 		if(!structKeyExists(variables, cacheKey)) {
-			variables[ cacheKey ] = "";
-			var arr = this.invokeMethod("get#arguments.propertyName#");
-			for(var i=1; i<=arrayLen(arr); i++) {
-				variables[ cacheKey ] = listAppend(arr[i].getPrimaryIDValue(), arr[i].getPrimaryIDValue());
+			variables[ cacheKey ] = '';
+			var smartList = this.getPropertySmartList(arguments.propertyName);
+			smartList.addSelect(propertyIdentifier=getService("hibachiService").getPrimaryIDPropertyNameByEntityName(listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.')), alias="value");
+			//Set array to string
+			for(var i=1; i<=arrayLen(smartList.getRecords()); i++) {
+				
+				variables[ cacheKey ] = listAppend(variables[ cacheKey ], smartList.getRecords()[i]['value'] );
 			}
 		}
 		return variables[ cacheKey ];
@@ -435,7 +438,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			
 			// If this is a many-to-one related property, then add a 'select' to the top of the list
 			if(getPropertyMetaData( propertyName ).fieldType == "many-to-one" && structKeyExists(getPropertyMetaData( propertyName ), "hb_optionsNullRBKey")) {
-				arrayPrepend(variables[ cacheKey ], {value="", name=rbKey(getPropertyMetaData( propertyName ).hb_optionsNullRBKey)});
+				var recordsStruct = {};
+				recordsStruct['value'] = "";
+				recordsStruct['name'] = rbKey(getPropertyMetaData( propertyName ).hb_optionsNullRBKey);
+				arrayPrepend(variables[ cacheKey ], recordsStruct);
 			}
 		}
 		
@@ -490,8 +496,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 				
 			// Otherwise add a where clause for many to many
 			} else if (getPropertyMetaData( arguments.propertyName ).fieldtype == "many-to-many") {
-				
-				smartList.addWhereCondition("EXISTS (SELECT r FROM #getEntityName()# t INNER JOIN t.#getPropertyMetaData( arguments.propertyName ).name# r WHERE r.#exampleEntity.getPrimaryIDPropertyName()# = a#lcase(exampleEntity.getEntityName())#.#exampleEntity.getPrimaryIDPropertyName()# AND t.#getPrimaryIDPropertyName()# = '#getPrimaryIDValue()#')");
+
+				smartList.addWhereCondition("EXISTS (SELECT r FROM #getEntityName()# t INNER JOIN t.#getPropertyMetaData( arguments.propertyName ).name# r WHERE r.id = a#lcase(exampleEntity.getEntityName())#.id AND t.id = '#getPrimaryIDValue()#')");
 				
 			}
 			
@@ -521,13 +527,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	
 	// @hint returns the count of a given property
 	public numeric function getPropertyCount( required string propertyName ) {
-		var cacheKey = "#arguments.propertyName#Count";
-			
-		if(!structKeyExists(variables, cacheKey)) {
-			variables[ cacheKey ] = arrayLen(variables[ arguments.propertyName ]);
-		}
-		
-		return variables[ cacheKey ];
+		var propertySmartList = this.invokeMethod('get#propertyName#SmartList');
+		return propertySmartList.getRecordsCount();
 	}
 	
 	// @hint handles encrypting a property based on conventions
@@ -648,11 +649,6 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			
 			return getPropertyAssignedIDList( propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-17) );
 		
-		// getXXXID()		Where XXX is a many-to-one property that we want to get the primaryIDValue of that property 		
-		} else if ( left(arguments.missingMethodName, 3) == "get" && right(arguments.missingMethodName, 2) == "ID") {
-			
-			return getPropertyPrimaryID( propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-5) );
-			
 		// getXXXOptions()		Where XXX is a one-to-many or many-to-many property that we need an array of valid options returned 		
 		} else if ( left(arguments.missingMethodName, 3) == "get" && right(arguments.missingMethodName, 7) == "Options") {
 			
@@ -679,11 +675,16 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			return getPropertyCount( propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-8) );
 			
 		// getXXX() 			Where XXX is either and attributeID or attributeCode
-		} else if (left(arguments.missingMethodName, 3) == "get" && structKeyExists(variables, "getAttributeValue") && hasProperty("attributeValues")) {
+		} else if (left(arguments.missingMethodName, 3) == "get" && structKeyExists(variables, "getAttributeValue") && hasProperty("attributeValues") && hasAttributeCode(right(arguments.missingMethodName, len(arguments.missingMethodName)-3)) ) {
 			
 			return getAttributeValue(right(arguments.missingMethodName, len(arguments.missingMethodName)-3));	
 			
 		}
+		// getXXXID()		Where XXX is a many-to-one property that we want to get the primaryIDValue of that property 		
+		 else if ( left(arguments.missingMethodName, 3) == "get" && right(arguments.missingMethodName, 2) == "ID") {
+			
+			return getPropertyPrimaryID( propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-5) );
+		}	
 		
 		throw('You have called a method #arguments.missingMethodName#() which does not exists in the #getClassName()# entity.');
 	}
@@ -849,8 +850,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 				setModifiedByAccount(getHibachiScope().getAccount().getAccountID());
 			}
 			
-			// Log audit only if admin user
-			if(!getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ) {
+			// Log audit only if admin user or there are prevous audit recods
+			if(getService("hibachiAuditService").getAuditSmartListForEntity(entity=this).getRecordsCount() != 0 || !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ) {
 			
 				getService("hibachiAuditService").logEntityModify(entity=this, oldData=arguments.oldData);
 			}
@@ -860,6 +861,39 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		}
 		
 	}
+	
+	//can be overridden at the entity level in case we need to always return a relationship entity otherwise the default is only non-relationship and non-persistent
+	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID,remoteEmployeeID,remoteCustomerID,remoteContactID,cmsAccountID,cmsContentID,cmsSiteID"){
+		var properties = getProperties();
+		
+		var defaultProperties = [];
+		for(var p=1; p<=arrayLen(properties); p++) {
+			if(len(arguments.excludesList) && ListFind(arguments.excludesList,properties[p].name)){
+				
+			}else{
+				if((len(arguments.includesList) && ListFind(arguments.includesList,properties[p].name)) || 
+				!structKeyExists(properties[p],'FKColumn') && (!structKeyExists(properties[p], "persistent") || 
+				properties[p].persistent)){
+					arrayAppend(defaultProperties,properties[p]);	
+				}
+			}
+		}
+		return defaultProperties;
+	}
+	
+	public any function getFilterProperties(string includesList = "", string excludesList = ""){
+		var properties = getProperties();
+		var defaultProperties = [];
+		for(var p=1; p<=arrayLen(properties); p++) {
+			if((len(includesList) && ListFind(arguments.includesList,properties[p].name) && !ListFind(arguments.excludesList,properties[p].name)) 
+			|| (!structKeyExists(properties[p], "persistent") || properties[p].persistent)){
+				properties[p]['displayPropertyIdentifier'] = getPropertyTitle(properties[p].name);
+				arrayAppend(defaultProperties,properties[p]);	
+			}
+		}
+		return defaultProperties;
+	}
+	
 	
 	/*
 	public void function preDelete(any entity){

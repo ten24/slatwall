@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.edit" default="false" />
 <cfparam name="rc.attributeSet" type="any" />
 
@@ -58,48 +60,29 @@ Notes:
 		<hb:HibachiActionCaller action="admin:entity.createattribute" queryString="attributesetid=#rc.attributeset.getAttributeSetID()#" type="list" modal=true />
 	</hb:HibachiEntityActionBar>
 	
-	<hb:HibachiPropertyRow>
-		<hb:HibachiPropertyList divclass="span6">
-			<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="attributeSetObject" edit="#rc.attributeSet.isNew()#">
-			<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="activeFlag" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="attributeSetName" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="attributeSetCode" edit="#rc.edit#">
-			<cfif rc.attributeSet.isNew()>
-				<hb:HibachiDisplayToggle selector="select[name='attributeSetObject']" showValues="OrderItem,Product,ProductType,Sku" loadVisable="#listFindNoCase('OrderItem,Product,ProductType,Sku', rc.attributeSet.getAttributeSetObject())#">
-					<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="globalFlag" edit="#rc.edit#">
-				</hb:HibachiDisplayToggle>
-			</cfif>
-		</hb:HibachiPropertyList>
-		
-		<cfif !rc.attributeSet.isNew()>
-			<hb:HibachiPropertyList divclass="span6">
-				<cfset local.canEditGlobal = listFindNoCase( "OrderItem,Product", rc.attributeSet.getAttributeSetObject() ) && rc.edit />
-				<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="globalFlag" edit="#local.canEditGlobal#">
-				<cfif listFind( "OrderItem", rc.attributeSet.getAttributeSetObject() )>
-					<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="requiredFlag" edit="#rc.edit#">
-					<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="accountSaveFlag" edit="#rc.edit#">
-					<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="additionalCharge" edit="#rc.edit#">
-				</cfif>
-			</hb:HibachiPropertyList>
-		</cfif>
-	</hb:HibachiPropertyRow>
-	
-	<hb:HibachiTabGroup object="#rc.attributeSet#">
-		<hb:HibachiTab view="admin:entity/attributesettabs/attributes" />
-		<hb:HibachiTab view="admin:entity/attributesettabs/description" />
+	<hb:HibachiEntityDetailGroup object="#rc.attributeSet#">
+		<hb:HibachiEntityDetailItem view="admin:entity/attributesettabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+		<hb:HibachiEntityDetailItem view="admin:entity/attributesettabs/attributes" />
+		<hb:HibachiEntityDetailItem view="admin:entity/attributesettabs/description" />
 		<cfif not rc.attributeSet.getGlobalFlag()>
 			<cfif listFindNoCase("OrderItem,ProductType,Product,Sku", rc.attributeSet.getAttributeSetObject()) and not rc.attributeSet.getGlobalFlag()>
-				<hb:HibachiTab property="producttypes" />
+				<hb:HibachiEntityDetailItem property="producttypes" />
 			</cfif>
 			<cfif listFindNoCase("OrderItem,Product,Sku", rc.attributeSet.getAttributeSetObject()) and not rc.attributeSet.getGlobalFlag()>
-				<hb:HibachiTab property="products" />
-				<hb:HibachiTab property="brands" />
+				<hb:HibachiEntityDetailItem property="products" />
+				<hb:HibachiEntityDetailItem property="brands" />
 			</cfif>
 			<cfif listFindNoCase("OrderItem,Sku", rc.attributeSet.getAttributeSetObject()) and not rc.attributeSet.getGlobalFlag()>
-				<hb:HibachiTab property="skus" />
+				<hb:HibachiEntityDetailItem property="skus" />
+			</cfif>
+			<cfif listFindNoCase("Type", rc.attributeSet.getAttributeSetObject()) and not rc.attributeSet.getGlobalFlag()>
+				<hb:HibachiEntityDetailItem property="types" />
+			</cfif>
+			<cfif listFindNoCase("Content", rc.attributeSet.getAttributeSetObject()) and not rc.attributeSet.getGlobalFlag()>
+				<hb:HibachiEntityDetailItem property="contents" />
 			</cfif>
 		</cfif>
-	</hb:HibachiTabGroup>
+	</hb:HibachiEntityDetailGroup>
 	
 </hb:HibachiEntityDetailForm>
 

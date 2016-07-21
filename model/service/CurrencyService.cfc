@@ -68,6 +68,17 @@ component  extends="HibachiService" accessors="true" {
 		return returnList;
 	}
 	
+	public string function getCurrencyRatesByCurrencyCodeSmartlist(required string currencyCode){
+		var rates=this.getCurrencySmartList();
+		rates.addFilter('activeFlag',1);
+		rates.addFilter('currencyCode',arguments.currencyCode);
+		return rates;
+	}
+
+	public any function getCurrencyByCurrencyCode(required string currencyCode){
+		return getCurrencyDAO().getCurrencyByCurrencyCode(arguments.currencyCode);
+	}
+	
 	public array function getCurrencyOptions() {
 		var csl = this.getCurrencySmartList();
 		
@@ -79,7 +90,7 @@ component  extends="HibachiService" accessors="true" {
 	}
 	
 	public numeric function convertCurrency(required numeric amount, required originalCurrencyCode, required convertToCurrencyCode, conversionDateTime=now()) {
-		return precisionEvaluate(arguments.amount * getCurrencyConversionRate(originalCurrencyCode=originalCurrencyCode, convertToCurrencyCode=convertToCurrencyCode, conversionDateTime=arguments.conversionDateTime));
+		return round(precisionEvaluate(arguments.amount * getCurrencyConversionRate(originalCurrencyCode=originalCurrencyCode, convertToCurrencyCode=convertToCurrencyCode, conversionDateTime=arguments.conversionDateTime))*100)/100;
 	}
 	
 	public numeric function getCurrencyConversionRate(required originalCurrencyCode, required convertToCurrencyCode, conversionDateTime=now()) {

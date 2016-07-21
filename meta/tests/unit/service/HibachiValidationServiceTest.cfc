@@ -82,6 +82,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertFalse( variables.service.validate_dataType(orderPayment, 'creditCardNumber', 'creditCardNumber') );
 	}
 	
+	public void function getValidationStructTest(){
+		var order = request.slatwallScope.newEntity('Order');
+		var validation = variables.service.getValidationStruct(order);
+		addToDebug(validation);
+	}
+	
 }
 
 

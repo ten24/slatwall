@@ -62,7 +62,7 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 	// Related Object Properties (many-to-one)
 	property name="shippingIntegration" cfc="Integration" fieldtype="many-to-one" fkcolumn="shippingIntegrationID";
 	property name="shippingMethod" cfc="ShippingMethod" fieldtype="many-to-one" fkcolumn="shippingMethodID";
-	property name="addressZone" cfc="AddressZone" fieldtype="many-to-one" fkcolumn="addressZoneID";
+	property name="addressZone" cfc="AddressZone" fieldtype="many-to-one" fkcolumn="addressZoneID" hb_nullRBKey="define.all";
 	
 	// Related Object Properties (one-to-many)
 	property name="shippingMethodOptions" singularname="shippingMethodOption" cfc="ShippingMethodOption" type="array" fieldtype="one-to-many" fkcolumn="shippingMethodRateID" cascade="delete-orphan" inverse="true" lazy="extra";
@@ -221,6 +221,10 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 	// ===============  END: Custom Formatting Methods =====================
 	
 	// ================== START: Overridden Methods ========================
+	
+	public any function getSimpleRepresentation() {
+		return '#getShippingMethod().getShippingMethodName()# - #getShippingMethodRateName()# #rbKey("define.rate")#';	
+	}
 	
 	// ==================  END:  Overridden Methods ========================
 	

@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.report" type="any">
 <cfparam name="rc.edit" type="boolean">
 <cfparam name="rc.reportName" type="any" default="#rc.report.getReportName()#">
@@ -62,11 +64,14 @@ Notes:
 		<hb:HibachiEntityActionBar type="detail" object="#rc.report#" edit="#rc.edit#" />
 		
 		<input type="hidden" name="reportName" value="#rc.reportName#" />
+		<input type="hidden" name="reportType" value="#rc.reportType#" />
 		<input type="hidden" name="reportDateTime" value="#rc.reportDateTime#" />
 		<input type="hidden" name="reportDateTimeGroupBy" value="#rc.reportDateTimeGroupBy#" />
 		<input type="hidden" name="reportCompareFlag" value="#rc.reportCompareFlag#" />
 		<input type="hidden" name="dimensions" value="#rc.dimensions#" />
 		<input type="hidden" name="metrics" value="#rc.metrics#" />
+		<input type="hidden" name="limitResults" value="#rc.limitResults#" />
+		<input type="hidden" name="showReport" value="#rc.showReport#" /> 
 		
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>

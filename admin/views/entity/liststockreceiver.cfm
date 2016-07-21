@@ -48,11 +48,14 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.stockReceiverSmartList" type="any" />
 
 <cfoutput>
+<hb:HibachiEntityActionBar type="listing" object="#rc.stockReceiverSmartList#" showCreate="false" />
 
-<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.stockReceiverSmartList#"
+<hb:HibachiListingDisplay smartList="#rc.stockReceiverSmartList#"
 						   recordDetailAction="admin:entity.detailstockreceiver"
 						   recordEditAction="admin:entity.editstockreceiver">
 	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="packingSlipNumber" />

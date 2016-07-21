@@ -54,7 +54,7 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 	
 	// @hint leverages the getEntityHasAttributeByEntityName() by traverses a propertyIdentifier first using getLastEntityNameInPropertyIdentifier()
 	public boolean function getHasAttributeByEntityNameAndPropertyIdentifier( required string entityName, required string propertyIdentifier ) {
-		return getEntityHasAttributeByEntityName( entityName=getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier), attributeCode=listLast(arguments.propertyIdentifier, "._") );
+		return getEntityHasAttributeByEntityName( entityName=getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier), attributeCode=listLast(arguments.propertyIdentifier, ".") );
 	}
 	
 	// @hint returns true or false based on an entityName, and checks if that entity has an extended attribute with that attributeCode
@@ -68,10 +68,14 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 	
 	public boolean function delete(required any entity){
 		
-		var deleteOK = super.delete(argumentcollection=arguments);
+		// Setup delete variable
+		var deleteOK = false;
+		
+		// Do delete validation
+		arguments.entity.validate(context="delete");
 			
 		// If the entity Passes validation
-		if(deleteOK) {
+		if(!arguments.entity.hasErrors()) {
 			
 			// Remove all of the entity settings
 			getService("settingService").removeAllEntityRelatedSettings( entity=arguments.entity );
@@ -81,6 +85,8 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 			
 			// Remove all of the entity files
 			getService("fileService").removeAllEntityRelatedFiles( entity=arguments.entity );
+			
+			deleteOK = super.delete(argumentcollection=arguments);
 		}
 
 		return deleteOK;
@@ -102,5 +108,48 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 	
 		return arguments.entity;
 	}
-
+	
+	
+	
+	public string function getAttributeCodeListByEntityName(required string entityName){
+		if( hasApplicationValue("classAttributeCodeListByEntityNameCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#") ) {
+			return getApplicationValue("classAttributeCodeListByEntityNameCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#");
+		}
+		
+		return getEntityObject( arguments.entityName ).getAttributesCodeList();
+	}
+	
+	public array function getAttributesArrayByEntityName(required string entityName){
+		if( hasApplicationValue("classAttributesArrayByEntityNameCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#") ) {
+			return getApplicationValue("classAttributesArrayByEntityNameCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#");
+		}
+		
+		return getEntityObject( arguments.entityName ).getAttributesArray();
+	}
+	
+	public any function getAttributesPropertiesByEntityName(required string entityName){
+		if( hasApplicationValue("classAttributesPropertiesByEntityNameCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#") ) {
+			return getApplicationValue("classAttributesPropertiesByEntityNameCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#");
+		}
+		
+		return getEntityObject( arguments.entityName ).getAttributesProperties();
+	}
+	
+	public any function getPropertiesWithAttributesByEntityName(required string entityName){
+		var entityObject = getEntityObject( arguments.entityName );
+		var properties = entityObject.getFilterProperties();
+		
+		return properties;
+	}
+	
+	public any function getFilterPropertiesByEntityName(required string entityName){
+		// First Check the application cache
+		if( hasApplicationValue("classDefaultFilterablePropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#") ) {
+			return getApplicationValue("classDefaultFilterablePropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#");
+		}
+		
+		// Pull the meta data from the object (which in turn will cache it in the application for the next time)
+		return getEntityObject( arguments.entityName ).getFilterProperties();
+	}
+	
 }

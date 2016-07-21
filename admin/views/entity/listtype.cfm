@@ -48,15 +48,27 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.typeSmartList" type="any" />
 
 <cfoutput>
-	<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.typeSmartList#"
-							   recordDetailModal=true
+	
+	<hb:HibachiEntityActionBar type="listing" object="#rc.typeSmartList#" showCreate="false">
+			
+		<!--- Create ---> 
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCaller action="admin:entity.createtype" class="btn btn-primary" icon="plus icon-white" />
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
+	
+	<hb:HibachiListingDisplay smartList="#rc.typeSmartList#"
 							   recordDetailAction="admin:entity.detailtype"
-							   recordEditModal=true
 							   recordEditAction="admin:entity.edittype"
 							   parentPropertyName="parentType">
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="type" />
+		
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="typeName" />
+		<hb:HibachiListingColumn propertyIdentifier="typeCode" />
+		<hb:HibachiListingColumn propertyIdentifier="systemCode" />
 	</hb:HibachiListingDisplay>
 </cfoutput>

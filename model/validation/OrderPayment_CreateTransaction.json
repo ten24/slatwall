@@ -13,11 +13,15 @@
 	    ,
 	    "transactionTypeChargePreAuthorization":{
 	        "transactionType":{"eq":"chargePreAuthorization"}
+	    },
+	    "transactionTypeGiftCard":{
+	    	"transactionType":{"eq":"giftCard"}
 	    }
 	},
 	"properties":{
 		"amount":				[
-			{"required":true,"minValue":0,"dataType":"numeric"},
+			{"required":true,"dataType":"numeric"},
+			{"conditions":"transactionTypeAuthorize,transactionTypeAuthorizeAndCharge,transactionTypeCredit,transactionTypeChargePreAuthorization", "minValue":0},
 			{"conditions":"transactionTypeAuthorize","lteProperty":"orderPayment.amountUnAuthorized"},
 			{"conditions":"transactionTypeAuthorizeAndCharge","lteProperty":"orderPayment.amountUnreceived"},
 			{"conditions":"transactionTypeCredit","lteProperty":"orderPayment.amountUncredited"},

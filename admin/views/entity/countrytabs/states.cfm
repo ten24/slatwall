@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.country" type="any" />
 
 <cfoutput>
@@ -62,6 +64,6 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="stateName" />
 	</hb:HibachiListingDisplay>
 	
-	<hb:HibachiActionCaller action="admin:entity.createstate" class="btn" icon="plus" querystring="countryCode=#rc.country.getCountryCode()#" modal=true />
+	<hb:HibachiActionCaller action="admin:entity.createstate" class="btn btn-default" icon="plus" querystring="countryCode=#rc.country.getCountryCode()#" modal=true />
 </cfoutput>
 

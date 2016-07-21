@@ -81,6 +81,7 @@ component accessors="true" output="false" displayname="UPS" extends="Slatwall.in
 				{name="(20) Air Service Center", value="20"}
 			]},
 			customerClassificationCode = {fieldType="select", defaultValue="04", valueOptions=[
+				{name="(00) Negotiated (rates associated with shipper number)", value="00"},
 				{name="(01) Wholesale (default for daily pickups)", value="01"},
 				{name="(03) Occasional (default for other pickups)", value="03"},
 				{name="(04) Retail (default for customer counter pickups)", value="04"}

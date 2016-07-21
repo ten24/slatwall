@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.comment" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
@@ -69,7 +71,7 @@ Notes:
 		<hb:HibachiEntityActionBar type="detail" object="#rc.comment#" />
 		
 		<!--- Only Runs if new --->
-		<Cfif rc.comment.isNew()>#local.hiddenKeyFields#</cfif>
+		<cfif rc.comment.isNew()>#local.hiddenKeyFields#</cfif>
 		
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>
@@ -79,7 +81,7 @@ Notes:
 					<hb:HibachiPropertyDisplay object="#rc.comment#" property="createdByAccount">
 				</cfif>
 				<hr />
-				<hb:HibachiPropertyDisplay object="#rc.comment#" property="comment" displaytype="plain" edit="#rc.comment.isNew()#">
+				<hb:HibachiPropertyDisplay object="#rc.comment#" property="comment" displaytype="plain" fieldClass="col-md-12" edit="#rc.comment.isNew()#">
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 		

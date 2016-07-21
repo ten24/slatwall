@@ -48,11 +48,53 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
+
 	public void function setUp() {
 		super.setup();
 		variables.dao = request.slatwallScope.getDAO("promotionDAO");
+		variables.currencyService=request.slatwallScope.getBean("currencyService");
 	}
-	 
+	
+	private void function setupTestCurrencies(){
+		variables.currency1 = request.slatwallScope.newEntity( "currency");
+		variables.currency2 = request.slatwallScope.newEntity( "currency");
+
+		//Set up currencies for tests
+		currency1.setCurrencyCode("AAA");
+		currency1.setCurrencyName("Test Currency A");
+		
+		currency2.setCurrencyCode("BBB");
+		currency2.setCurrencyName("Test Currency B");
+		
+		entitySave(currency1);
+		entitySave(currency2);	
+
+		ormFlush();
+		arrayAppend(variables.persistentEntities, currency1);
+		arrayAppend(variables.persistentEntities, currency2);
+
+		var currency1RateData={
+			currencyRateID='',
+			currency={currencyCode=variables.currency1.getCurrencyCode()},
+			conversionCurrency={currencyCode=variables.currency2.getCurrencyCode()},
+			conversionRate="1.25",
+			effectiveStartDateTime=dateadd('h',-1,now())
+		};
+
+		var currency2RateData={
+			currencyRateID='',
+			currency={currencyCode=variables.currency2.getCurrencyCode()},
+			conversionCurrency={currencyCode=variables.currency1.getCurrencyCode()},
+			conversionRate=".8",
+			effectiveStartDateTime=dateadd('h',-1,now())
+		};
+
+		var currency1Rate = createPersistedTestEntity('CurrencyRate', currency1RateData);
+		var currency2Rate = createPersistedTestEntity('CurrencyRate', currency2RateData);
+
+		ormflush();	
+	}
+
 	public void function getSalePricePromotionRewardsQueryTest(){
 		var productData = {
 			productID = '',
@@ -116,6 +158,229 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 	}
 	
+
+	public void function getSalePricePromotionRewardsQueryTest_with_explicit_currency_conversion_on_reward(){
+
+		setupTestCurrencies();
+		//Setup a test product with currency defined on the sku
+		var productData = {
+			productID = '',
+			productName = 'Test Product Name',
+			productCode = #getTickCount()#,
+			skus = [
+				{
+					skuID = '',
+					price = 10,
+					currencyCode='AAA'
+				}
+			]
+		};
+		
+		var product = createPersistedTestEntity('Product', productData);
+		var sku = product.getSkus()[1];
+		
+		//Test promotion with currency defined on the reward only
+		var promotionData = {
+			promotionPeriods = [
+				{
+					promotionPeriodID = '',
+					promotionRewards = [
+						{
+							promotionRewardID='',
+							amount = 3,
+							amountType = 'amountOff',
+							skus = sku.getSkuID(),
+							currencyCode='AAA'
+						}
+					]
+				}
+			]
+		};
+		
+		var promotion = createPersistedTestEntity( 'Promotion' , promotionData);
+
+		var promotionRewardCurrencyData= 
+			{
+				promotionRewardCurrencyID='',
+				promotionReward={promotionRewardID=promotion.getPromotionPeriods()[1].getPromotionRewards()[1].getPromotionRewardID()},
+				currency={currencyCode='BBB'},
+				amount=5
+			};
+							
+		var promotionRewardCurrency =  createPersistedTestEntity( 'PromotionRewardCurrency' , promotionRewardCurrencyData);
+		var promotionPeriod = promotion.getPromotionPeriods()[1];
+		var promotionReward = promotionPeriod.getPromotionRewards()[1];
+		var salePricePromotionRewardsQuery = variables.dao.getSalePricePromotionRewardsQuery( product.getProductID(),'BBB' );
+		
+		//assert amount off Price: sku price $10 (AAA) convert to (BBB) by defined currencyRate * 1.25 = $12.5 (BBB) - discount $5 (BBB) = $7.5 (BBB)
+		assertEquals(salePricePromotionRewardsQuery.SalePrice, 7.5);
+
+		
+		var salePricePromotionRewardsQuery = variables.dao.getSalePricePromotionRewardsQuery( product.getProductID(),'AAA' );
+		//assert amount off Price: sku price $10 (AAA) no conversion - 3 (AAA) no conversion = 7 (AAA)
+		assertEquals(salePricePromotionRewardsQuery.SalePrice, 7);
+		
+		//Test promotion with currency defined on the reward and sku
+		//Add currency to sku
+		var skuCurrencyData = {
+			sku={skuID=sku.getSkuID()},
+			currency={currencyCode='BBB'},
+			price=15
+		};
+		var skuCurrency = createPersistedTestEntity( 'SkuCurrency' , skuCurrencyData);
+
+		var salePricePromotionRewardsQuery = variables.dao.getSalePricePromotionRewardsQuery( product.getProductID(),'BBB' );
+		
+		//assert amount off Price: sku price $15 (BBB) from defined skuCurrency - discount $5 (BBB) = $10 (BBB)
+		assertEquals(salePricePromotionRewardsQuery.SalePrice, 10);
+
+		
+		var salePricePromotionRewardsQuery = variables.dao.getSalePricePromotionRewardsQuery( product.getProductID(),'AAA' );
+		//assert amount off Price: sku price $10 (AAA) no conversion - 3 (AAA) no conversion = 7 (AAA)
+		assertEquals(salePricePromotionRewardsQuery.SalePrice, 7);
+
+		//Test reward type percentage
+		promotionReward.setAmountType('percentageOff');
+		promotionReward.setAmount(80);
+		
+		ormflush();
+		
+		var salePricePromotionRewardsQuery = variables.dao.getSalePricePromotionRewardsQuery(product.getProductID(),'AAA');
+		
+		//assert amount off price by percentage: sku price: $10 (AAA) - $10 (AAA)*.8= $2 (AAA)
+		assertEquals(salePricePromotionRewardsQuery.SalePrice,2.00);
+
+		var salePricePromotionRewardsQuery = variables.dao.getSalePricePromotionRewardsQuery(product.getProductID(),'BBB');
+		//assert amount off price by percentage: sku price: $15 (BBB) - $15 (BBB)*.8= $3 (BBB)
+		assertEquals(salePricePromotionRewardsQuery.SalePrice,3.00);
+		
+		//Test reward type amount
+		promotionReward.setAmountType('amount');
+		promotionReward.setAmount(5.55); //Set for default currency AAA
+		promotionReward.getPromotionRewardCurrencies()[1].setAmount(10.55); //Set for defined currency BBB
+		
+		ormflush();
+		
+		salePricePromotionRewardsQuery = variables.dao.getSalePricePromotionRewardsQuery(product.getProductID(),'AAA');
+		//sku price $5.55 (AAA) - default currency for promotion reward
+		assertEquals(salePricePromotionRewardsQuery.SalePrice,5.55);
+
+		salePricePromotionRewardsQuery = variables.dao.getSalePricePromotionRewardsQuery(product.getProductID(),'BBB');
+		//sku price $10.55 (BBB) - defined currency for promotion reward
+		assertEquals(salePricePromotionRewardsQuery.SalePrice,10.55);
+
+	}
+
+	public void function getSalePricePromotionRewardsQueryTest_without_explicit_currency_conversion_on_reward(){
+
+		setupTestCurrencies();
+		//Setup a test product with currency defined on the sku
+		var productData = {
+			productID = '',
+			productName = 'Test Product Name',
+			productCode = #getTickCount()#,
+			skus = [
+				{
+					skuID = '',
+					price = 10,
+					currencyCode='AAA'
+				}
+			]
+		};
+		
+		var product = createPersistedTestEntity('Product', productData);
+		var sku = product.getSkus()[1];
+		
+		//Test promotion with currency defined on the reward only
+		var promotionData = {
+			promotionPeriods = [
+				{
+					promotionPeriodID = '',
+					promotionRewards = [
+						{
+							promotionRewardID='',
+							amount = 3,
+							amountType = 'amountOff',
+							skus = sku.getSkuID(),
+							currencyCode='AAA'
+						}
+					]
+				}
+			]
+		};
+		
+		var promotion = createPersistedTestEntity( 'Promotion' , promotionData);
+
+		
+							
+		var promotionPeriod = promotion.getPromotionPeriods()[1];
+		var promotionReward = promotionPeriod.getPromotionRewards()[1];
+		var salePricePromotionRewardsQuery = variables.dao.getSalePricePromotionRewardsQuery( product.getProductID(),'BBB' );
+		
+		/*assert amount off Price: sku price ($10 (AAA) convert to (BBB) by defined currencyRate * 1.25 = $12.5 (BBB) - discount $3 (AAA) 
+		converted to (BBB) by defined currency rate * 1.25 = $3.75 (BBB)) = $8.57 (BBB)
+		*/
+		assertEquals(salePricePromotionRewardsQuery.SalePrice, 8.75);
+
+		
+		var salePricePromotionRewardsQuery = variables.dao.getSalePricePromotionRewardsQuery( product.getProductID(),'AAA' );
+		//assert amount off Price: sku price $10 (AAA) no conversion - 3 (AAA) no conversion = 7 (AAA)
+		assertEquals(salePricePromotionRewardsQuery.SalePrice, 7);
+		
+		//Test promotion with currency defined on the reward and sku
+		//Add currency to sku
+		var skuCurrencyData = {
+			sku={skuID=sku.getSkuID()},
+			currency={currencyCode='BBB'},
+			price=15
+		};
+		
+		var skuCurrency = createPersistedTestEntity( 'SkuCurrency' , skuCurrencyData);
+
+		var salePricePromotionRewardsQuery = variables.dao.getSalePricePromotionRewardsQuery( product.getProductID(),'BBB' );
+		
+		/* assert amount off Price: sku price ($15 (BBB) from defined skuCurrency - discount $3 (AAA) converted to (BBB) 
+		by defined currency rate * 1.25 = $3.75 (BBB)) = $11.25
+		*/
+		assertEquals(salePricePromotionRewardsQuery.SalePrice, 11.25);
+
+		
+		var salePricePromotionRewardsQuery = variables.dao.getSalePricePromotionRewardsQuery( product.getProductID(),'AAA' );
+		//assert amount off Price: sku price $10 (AAA) no conversion - 3 (AAA) no conversion = 7 (AAA)
+		assertEquals(salePricePromotionRewardsQuery.SalePrice, 7);
+
+		//Test reward type percentage
+		promotionReward.setAmountType('percentageOff');
+		promotionReward.setAmount(80);
+		
+		ormflush();
+		
+		var salePricePromotionRewardsQuery = variables.dao.getSalePricePromotionRewardsQuery(product.getProductID(),'AAA');
+		
+		//assert amount off price by percentage: sku price: $10 (AAA) - $10 (AAA)*.8= $2 (AAA)
+		assertEquals(salePricePromotionRewardsQuery.SalePrice,2.00);
+
+		var salePricePromotionRewardsQuery = variables.dao.getSalePricePromotionRewardsQuery(product.getProductID(),'BBB');
+		//assert amount off price by percentage: sku price: $15 (BBB) - $15 (BBB)*.8= $3 (BBB)
+		assertEquals(salePricePromotionRewardsQuery.SalePrice,3.00);
+		
+		//Test reward type amount
+		promotionReward.setAmountType('amount');
+		promotionReward.setAmount(5.55); //Set for default currency AAA
+		
+		ormflush();
+		
+		salePricePromotionRewardsQuery = variables.dao.getSalePricePromotionRewardsQuery(product.getProductID(),'AAA');
+		//sku price $5.55 (AAA) - default currency for promotion reward
+		assertEquals(salePricePromotionRewardsQuery.SalePrice,5.55);
+
+		salePricePromotionRewardsQuery = variables.dao.getSalePricePromotionRewardsQuery(product.getProductID(),'BBB');
+		//sku price $5.55 (AAA) converted to (BBB) by defined currency rate * 1.25 = $6.94
+		assertEquals(javacast("bigdecimal",salePricePromotionRewardsQuery.SalePrice),javacast("bigdecimal",6.94)); //Needed javacast otherwise it was failing
+
+	}
+
+
 	//This test is dependent on no pre-exisitng promotionReward data. All promotionReward data is generated for this test
 	public void function getActivePromotionRewardsTest(){
 		

@@ -47,7 +47,8 @@ Notes:
 
 */
 component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiController" {
-
+	this.secureMethods=listAppend(this.secureMethods, 'default');
+	
 	public void function default(required struct rc) {
 		request.layout = false;
 	}

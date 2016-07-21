@@ -48,15 +48,20 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.contentSmartList" type="any" />
 
 <cfoutput>
-<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.contentSmartList#"
+
+<hb:HibachiEntityActionBar type="listing" object="#rc.contentSmartList#" showCreate="false" />
+
+<hb:HibachiListingDisplay smartList="#rc.contentSmartList#"
 						   recordDetailAction="admin:entity.detailcontent"
 						   recordEditAction="admin:entity.editcontent">
 	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="title" />
 	<hb:HibachiListingColumn propertyIdentifier="site.siteName" />
-	<hb:HibachiListingColumn propertyIdentifier="contentTemplateType.type" />
+	<hb:HibachiListingColumn propertyIdentifier="contentTemplateType.typeName" />
 	<hb:HibachiListingColumn propertyIdentifier="allowPurchaseFlag" />
 	<hb:HibachiListingColumn propertyIdentifier="productListingPageFlag" />
 	<hb:HibachiListingColumn propertyIdentifier="activeFlag" />

@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.brand" type="any">
 <cfparam name="rc.edit" type="boolean">
 
@@ -55,27 +57,17 @@ Notes:
 	<hb:HibachiEntityDetailForm object="#rc.brand#" edit="#rc.edit#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.brand#" edit="#rc.edit#" />
 		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.Brand#" property="activeFlag" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.Brand#" property="brandName" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.Brand#" property="brandWebsite" edit="#rc.edit#">
-				<cfif not rc.brand.isNew()>
-					<hb:HibachiPropertyDisplay object="#rc.Brand#" property="urlTitle" edit="#rc.edit#">
-				</cfif>
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-		
-		<hb:HibachiTabGroup object="#rc.brand#">
-			<hb:HibachiTab property="products" text="#$.slatwall.rbkey('entity.brand.products')#" />
-			<hb:HibachiTab property="vendors" />
-			<hb:HibachiTab view="admin:entity/brandtabs/brandsettings" />
+		<hb:HibachiEntityDetailGroup object="#rc.brand#">
+			<hb:HibachiEntityDetailItem view="admin:entity/brandtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<hb:HibachiEntityDetailItem property="products" text="#$.slatwall.rbkey('entity.brand.products')#" />
+			<hb:HibachiEntityDetailItem property="vendors" />
+			<hb:HibachiEntityDetailItem view="admin:entity/brandtabs/brandsettings" />
 			
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.brand.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 				<swa:SlatwallAdminTabCustomAttributes object="#rc.brand#" attributeSet="#attributeSet#" />
 			</cfloop>
-		</hb:HibachiTabGroup>
+		</hb:HibachiEntityDetailGroup>
 		
 	</hb:HibachiEntityDetailForm>
 </cfoutput>

@@ -48,9 +48,14 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.auditSmartList" type="any" />
 
 <cfset rc.auditSmartList.addOrder('auditDateTime|DESC') />
+
+<hb:HibachiEntityActionBar type="listing" object="#rc.auditSmartList#" showCreate="false">
+</hb:HibachiEntityActionBar>
 
 <hb:HibachiListingDisplay smartList="#rc.auditSmartList#"
 						   recordDetailAction="admin:entity.preprocessaudit"

@@ -1,0 +1,15 @@
+<div>
+	<p class="text-center loader {{swfPropertyDisplayController.class}}" ng-if="swfPropertyDisplayController.loader"><i class="fa fa-spinner fa-spin" ng-if="swfPropertyDisplayController.loader"></i></p>
+    
+    <!-- Check if a label should be defined for this property -->
+    <label ng-if="swfPropertyDisplayController.name && swfPropertyDisplayController.type !== 'yesno' && swfPropertyDisplayController.type !== 'submit' && swfPropertyDisplayController.labelText && !swfPropertyDisplayController.labelClass " class="form-control" for="{{swfPropertyDisplayController.name}}" ng-bind="swfPropertyDisplayController.labelText"></label>
+    <label ng-if="swfPropertyDisplayController.name && swfPropertyDisplayController.type !== 'yesno' && swfPropertyDisplayController.type !== 'submit' && swfPropertyDisplayController.labelText && swfPropertyDisplayController.labelClass "  class="{{swfPropertyDisplayController.labelClass}}" for="{{swfPropertyDisplayController.name}}" ng-bind="swfPropertyDisplayController.labelText"></label>
+    
+    <!--- Using the property displat as a configuration, figure out which text of element to display  --->
+    <swf-form-field data-property-display="swfPropertyDisplayController.propertyDisplay"></swf-form-field>
+    
+    <!-- handle errors on the property -->
+    <div ng-if="!swfPropertyDisplayController.errorClass" class="error" error-for="{{swfPropertyDisplayController.name}}"></div>
+    <div ng-if="swfPropertyDisplayController.errorClass"  class="{{swfPropertyDisplayController.errorClass}}" error-for="{{swfPropertyDisplayController.name}}"></div>
+    
+</div>

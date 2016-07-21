@@ -64,7 +64,7 @@ component displayname="Account Phone Number" entityname="SlatwallAccountPhoneNum
 	
 	
 	public string function getPhoneType() {
-		return getAccountPhoneType().getType();
+		return getAccountPhoneType().getTypeName();
 	}
 
 	// ============ START: Non-Persistent Property Methods =================

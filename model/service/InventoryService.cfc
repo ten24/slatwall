@@ -49,28 +49,63 @@ Notes:
 component extends="HibachiService" accessors="true" output="false" {
 
 	property name="inventoryDAO" type="any";
+	property name="skuService" type="any";
 	
 	// entity will be one of StockReceiverItem, StockPhysicalItem, StrockAdjustmentDeliveryItem, VendorOrderDeliveryItem, OrderDeliveryItem
 	public void function createInventory(required any entity) {
 		
-		switch(entity.getEntityName()) {
+		switch(arguments.entity.getEntityName()) {
 			case "SlatwallStockReceiverItem": {
+
 				if(arguments.entity.getStock().getSku().setting("skuTrackInventoryFlag")) {
+					
+					// Dynamically do a breakupBundledSkus call, if this is an order return, a bundle sku, the setting is enabled to do this dynamically
+					if(arguments.entity.getStockReceiver().getReceiverType() eq 'orderItem' 
+						&& ( !isNull(arguments.entity.getStock().getSku().getBundleFlag()) && arguments.entity.getStock().getSku().getBundleFlag() )
+						&& arguments.entity.getStock().getSku().setting("skuBundleAutoBreakupInventoryOnReturnFlag")) {
+
+						var processData = {
+							locationID=arguments.entity.getStock().getLocation().getLocationID(),
+							quantity=arguments.entity.getQuantity()
+						};
+						
+						getSkuService().processSku(arguments.entity.getStock().getSku(), processData, 'breakupBundledSkus');
+						
+					}
+
 					var inventory = this.newInventory();
 					inventory.setQuantityIn(arguments.entity.getQuantity());
 					inventory.setStock(arguments.entity.getStock());
 					inventory.setStockReceiverItem(arguments.entity);
-					getHibachiDAO().save(inventory);
+					getHibachiDAO().save( inventory );
+					
 				}
+				
 				break;
 			}
 			case "SlatwallOrderDeliveryItem": {
 				if(arguments.entity.getStock().getSku().setting("skuTrackInventoryFlag")) {
+
+					// Dynamically do a makeupBundledSkus call, if this is a bundle sku, the setting is enabled to do this dynamically, and we have QOH < whats needed
+					if(!isNull(arguments.entity.getStock().getSku().getBundleFlag())
+						&& ( !isNull(arguments.entity.getStock().getSku().getBundleFlag()) && arguments.entity.getStock().getSku().getBundleFlag() )
+						&& arguments.entity.getStock().getSku().setting("skuBundleAutoMakeupInventoryOnSaleFlag") 
+						&& arguments.entity.getStock().getQuantity("QOH") - arguments.entity.getQuantity() < 0) {
+							
+						var processData = {
+							locationID=arguments.entity.getStock().getLocation().getLocationID(),
+							quantity=arguments.entity.getStock().getQuantity("QOH") - arguments.entity.getQuantity()
+						};
+						
+						getSkuService().processSku(arguments.entity.getStock().getSku(), processData, 'makeupBundledSkus');
+					}
+					
 					var inventory = this.newInventory();
-					inventory.setQuantityOut(arguments.entity.getQuantity());
-					inventory.setStock(arguments.entity.getStock());
-					inventory.setOrderDeliveryItem(arguments.entity);
-					getHibachiDAO().save(inventory);
+					inventory.setQuantityOut( arguments.entity.getQuantity() );
+					inventory.setStock( arguments.entity.getStock() );
+					inventory.setOrderDeliveryItem( arguments.entity );
+					getHibachiDAO().save( inventory );	
+					
 				}
 				break;
 			}
@@ -80,7 +115,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					inventory.setQuantityOut(arguments.entity.getQuantity());
 					inventory.setStock(arguments.entity.getStock());
 					inventory.setVendorOrderDeliveryItem(arguments.entity);
-					getHibachiDAO().save(inventory);
+					getHibachiDAO().save( inventory );
 				}
 				break;
 			}
@@ -90,7 +125,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					inventory.setQuantityOut(arguments.entity.getQuantity());
 					inventory.setStock(arguments.entity.getStock());
 					inventory.setStockAdjustmentDeliveryItem(arguments.entity);
-					getHibachiDAO().save(inventory);
+					getHibachiDAO().save( inventory );
 				}
 				break;
 			}
@@ -249,15 +284,17 @@ component extends="HibachiService" accessors="true" output="false" {
 			returnStruct[ arguments.inventoryType ] += arguments.inventoryArray[i][ arguments.inventoryType ];
 			
 			// Setup the location
-			if( structKeyExists(arguments.inventoryArray[i], "locationID") ) {
-				var locationID = arguments.inventoryArray[i]["locationID"];
+			if( structKeyExists(arguments.inventoryArray[i], "locationIDPath") ) {
+				for(var l=1; l<=listLen(arguments.inventoryArray[i]["locationIDPath"]); l++) {
+					locationID = listGetAt(arguments.inventoryArray[i]["locationIDPath"], l);
 					
-				if( !structKeyExists(returnStruct.locations, locationID) ) {
-					returnStruct.locations[ locationID ] = 0;
+					if( !structKeyExists(returnStruct.locations, locationID) ) {
+						returnStruct.locations[ locationID ] = 0;
+					}
+					
+					// Increment Location
+					returnStruct.locations[ locationID ] += arguments.inventoryArray[i][ arguments.inventoryType ];	
 				}
-				
-				// Increment Location
-				returnStruct.locations[ locationID ] += arguments.inventoryArray[i][ arguments.inventoryType ];	
 			}
 			
 			// Setup the stock
@@ -279,9 +316,17 @@ component extends="HibachiService" accessors="true" output="false" {
 				returnStruct.skus[ skuID ][ arguments.inventoryType ] += arguments.inventoryArray[i][ arguments.inventoryType ];
 				
 				// Add location to sku if it exists
-				if(len(locationID)) {
-					returnStruct.skus[ skuID ].locations[ locationID ] = arguments.inventoryArray[i][ arguments.inventoryType ];
+				if(structKeyExists(arguments.inventoryArray[i],'locationIDPath')){
+					for(var l=1; l<=listLen(arguments.inventoryArray[i]["locationIDPath"]); l++) {
+						locationID = listGetAt(arguments.inventoryArray[i]["locationIDPath"], l);
+					
+						if(!structKeyExists(returnStruct.skus[ skuID ].locations, locationID)) {
+							returnStruct.skus[ skuID ].locations[ locationID ] = 0;
+						}
+						returnStruct.skus[ skuID ].locations[ locationID ] += arguments.inventoryArray[i][ arguments.inventoryType ];
+					}
 				}
+				
 
 			}
 			

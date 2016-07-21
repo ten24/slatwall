@@ -48,16 +48,21 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.vendorSmartList" type="any" />
 
-<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.vendorSmartList#"
+<hb:HibachiEntityActionBar type="listing" object="#rc.vendorSmartList#" showCreate="false">
+		
+	<!--- Create ---> 
+	<hb:HibachiEntityActionBarButtonGroup>
+		<hb:HibachiActionCaller action="admin:entity.createvendor" entity="vendor" class="btn btn-primary" icon="plus icon-white" />
+	</hb:HibachiEntityActionBarButtonGroup>
+</hb:HibachiEntityActionBar>
+
+<hb:HibachiListingDisplay smartList="#rc.vendorSmartList#"
 						   recordEditAction="admin:entity.editvendor"
 						   recordDetailAction="admin:entity.detailvendor">
-						      
-	<!--- Create ---> 
-	<hb:HibachiListingDisplayButtonGroup >
-		<hb:HibachiActionCaller action="admin:entity.createvendor" entity="vendor" class="btn btn-primary" icon="plus icon-white" />
-	</hb:HibachiListingDisplayButtonGroup>
 	
 	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="vendorName" search="true" />
 	<hb:HibachiListingColumn propertyIdentifier="accountNumber" search="true" />

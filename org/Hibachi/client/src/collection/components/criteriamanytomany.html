@@ -1,0 +1,64 @@
+<form action="index.html" method="post" ng-if="collectionOptions && selectedFilterProperty">
+    <div class="s-filter-group-item" sw-loading="collectionOptions">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label s-no-paddings" for="formGroupInputSmall">Select From Existing Collections:</label>
+
+                    <!-- Start -->
+                    <div class="s-search-filter">
+                        <div class="input-group">
+                            <input type="text"
+                                   placeholder="{{(selectedFilterProperty.selectedCollection) ? '' : 'Search or Create Collection'}}"
+                                   class="form-control input-xs"
+                                   ng-model="data.collectionName"
+                                   ng-blur="toggleCollectionOptions(false)"
+                                   ng-focus="toggleCollectionOptions(true)"
+                                    >
+                            <span class="s-current-selection-item" title="remove" ng-show="selectedFilterProperty.selectedCollection">
+                                <span>{{selectedFilterProperty.selectedCollection.collectionName}}</span>
+                                <!--<a href="##" class="s-edit-options" title="View" ng-click="viewSelectedCollection()"> <i class="fa fa-eye"></i></a>-->
+                                <a href="##" class="s-edit-options s-remove" title="remove" ng-click="cleanSelection()">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </span>
+                            <ul class="dropdown-menu" ng-show="collectionOptionsOpen" >
+                                <!-- Item-->
+                                <li ng-repeat="opt in collectionOptions | filter:{ collectionName : data.collectionName}">
+                                    <a ng-mousedown="selectCollection(opt)">
+                                        <div class="row">
+                                            <div class="col-xs-12 s-info">{{opt.collectionName}}</div>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-sm btn-default" ng-click="toggleCollectionOptions()">
+                                    <span class="fa" ng-class="collectionOptionsOpen ? 'fa-caret-up' : 'fa-caret-down'"></span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="addDropdown" ng-show="collectionOptionsOpen">
+                            <!-- Only show if there is text -->
+                            <button type="button" class="btn btn-primary" ng-mousedown="addNewCollection()">
+                                <i class="fa fa-plus"></i> Add {{(data.collectionName) ? '"'+ data.collectionName +'"' : 'new collection'}}
+                            </button>
+                        </div>
+                    </div>
+                    <!-- //End -->
+                </div>
+
+                <div class="form-group" ng-show="selectedFilterProperty.selectedCollection">
+                    <label class="col-sm-2 control-label s-no-paddings" for="formGroupInputSmall">Select Condition:</label>
+                    <select id="u52_input" class="form-control input-sm j-custom-select" style="-webkit-appearance: menulist-button; border-color: rgb(153, 153, 153);"
+                            ng-model="selectedFilterProperty.selectedCriteriaType"
+                            ng-options="manyToManyOption as manyToManyOption.display for manyToManyOption in manyToManyOptions"
+                            >
+                        <option selected="selected" value="">Select Condition</option>
+                    </select>
+                </div>
+
+            </div>
+        </div>
+
+    </div>

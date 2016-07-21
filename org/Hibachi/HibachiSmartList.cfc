@@ -31,7 +31,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	property name="pageRecords" type="array";
 	
 	// Delimiter Settings
-	variables.subEntityDelimiters = "._";
+	variables.subEntityDelimiters = ".";
 	variables.valueDelimiter = ",";
 	variables.orderDirectionDelimiter = "|";
 	variables.orderPropertyDelimiter = ",";
@@ -167,7 +167,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 			}
 		}
 	}
-	
+	//name value pair string to struct. Separates url string by & ampersand
 	private struct function convertNVPStringToStruct( required string data ) {
 		var returnStruct = {};
 		var ampArray = listToArray(arguments.data, "&");
@@ -526,7 +526,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 			if(getSelectDistinctFlag()) {
 					hqlSelect &= "distinct ";
 			}
-			hqlSelect &= "#variables.entities[getBaseEntityName()].entityAlias#.#getService('hibachiService').getPrimaryIDPropertyNameByEntityName(getBaseEntityName())#)";
+			hqlSelect &= "#getBaseEntityPrimaryAliase()#)";
 		} else {
 			if(structCount(variables.selects)) {
 				hqlSelect = "SELECT";
@@ -716,7 +716,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 				for(var attributeProperty in variables.attributeKeywordProperties) {
 					var idProperty = listLast(listFirst(attributeProperty,':'), '.');
 					var fullIDMap = left(idProperty, len(idProperty)-2) & '.' & idProperty;
-					hqlWhere &= " EXISTS(SELECT sav.attributeValue FROM SlatwallAttributeValue as sav WHERE sav.#fullIDMap# = #listFirst(attributeProperty, ":")# AND sav.attribute.attributeCode = '#listLast(attributeProperty,':')#' AND sav.attributeValue LIKE :#paramID# ) OR";
+					hqlWhere &= " EXISTS(SELECT sav.attributeValue FROM #getDao('HibachiDao').getApplicationKey()#AttributeValue as sav WHERE sav.#fullIDMap# = #listFirst(attributeProperty, ":")# AND sav.attribute.attributeCode = '#listLast(attributeProperty,':')#' AND sav.attributeValue LIKE :#paramID# ) OR";
 				}
 				
 				hqlWhere = left(hqlWhere, len(hqlWhere)-3 );
@@ -744,7 +744,11 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	}
 	
 	public string function getBaseEntityPrimaryAliase() {
-		return "#variables.entities[ getBaseEntityName() ].entityAlias#.#getService("hibachiService").getPrimaryIDPropertyNameByEntityName(getBaseEntityName())#";
+		var idColumnNames = getService("hibachiService").getEntityORMMetaDataObject( getBaseEntityName() ).getIdentifierColumnNames();
+		if( arrayLen(idColumnNames) > 1) {
+			return getAliasedProperty( getService("hibachiService").getPrimaryIDPropertyNameByEntityName( getBaseEntityName() ) );
+		}
+		return "#variables.entities[ getBaseEntityName() ].entityAlias#.id";
 	}
 	
 	public string function getHQLOrder(boolean supressOrderBy=false) {
@@ -1031,8 +1035,8 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	
 	public void function loadSavedState(required string savedStateID) {
 		var savedStates = [];
-		if(hasSessionValue('smartListSavedState')) {
-			savedStates = getSessionValue('smartListSavedState');	
+		if(getHibachiScope().hasSessionValue('smartListSavedState')) {
+			savedStates = getHibachiScope().getSessionValue('smartListSavedState');	
 		}
 		for(var s=1; s<=arrayLen(savedStates); s++) {
 			if(savedStates[s].savedStateID eq arguments.savedStateID) {
@@ -1045,8 +1049,8 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	
 	private void function saveState() {
 		// Make sure that the saved states structure and array exists
-		if(!hasSessionValue('smartListSavedState')) {
-			setSessionValue('smartListSavedState', []);
+		if(!getHibachiScope().hasSessionValue('smartListSavedState')) {
+			getHibachiScope().setSessionValue('smartListSavedState', []);
 		}
 		
 		var sessionKey = "";
@@ -1062,7 +1066,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		lock name="#sessionKey#_#getHibachiInstanceApplicationScopeKey()#_smartListSavedStateUpdateLogic" timeout="10" {
 		
 			// Get the saved state struct
-			var states = getSessionValue('smartListSavedState');
+			var states = getHibachiScope().getSessionValue('smartListSavedState');
 			
 			// Setup the state
 			var state = getStateStruct();
@@ -1082,7 +1086,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 				arrayDeleteAt(states, s);
 			}
 			
-			setSessionValue('smartListSavedState', states);
+			getHibachiScope().setSessionValue('smartListSavedState', states);
 		}
 	}
 	

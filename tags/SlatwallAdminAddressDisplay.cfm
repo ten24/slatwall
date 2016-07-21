@@ -52,6 +52,8 @@ Notes:
 <cfparam name="attributes.edit" type="boolean" default="true" />
 <cfparam name="attributes.fieldNamePrefix" type="string" default="" />
 <cfparam name="attributes.showCountry" type="boolean" default="true" />
+<cfparam name="attributes.showPhoneNumber" type="boolean" default="false" />
+<cfparam name="attributes.showEmailAddress" type="boolean" default="false" />
 <cfparam name="attributes.showName" type="boolean" default="true" />
 <cfparam name="attributes.showCompany" type="boolean" default="true" />
 <cfparam name="attributes.showStreetAddress" type="boolean" default="true" />
@@ -77,6 +79,12 @@ Notes:
 			</cfif>
 			<cfif attributes.showCompany>
 				<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#company" property="company" edit="#attributes.edit#" fieldClass="slatwall-address-company"  />
+			</cfif>
+			<cfif attributes.showPhoneNumber>
+				<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#phoneNumber" property="phoneNumber" edit="#attributes.edit#" fieldClass="slatwall-address-phoneNumber"  />
+			</cfif>
+			<cfif attributes.showEmailAddress>
+				<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#emailAddress" property="emailAddress" edit="#attributes.edit#" fieldClass="slatwall-address-emailAddress"  />
 			</cfif>
 			<cfif (isNull(attributes.address.getCountry()) || attributes.address.getCountry().getStreetAddressShowFlag()) and attributes.showStreetAddress>
 				<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#streetAddress" property="streetAddress" edit="#attributes.edit#" fieldClass="slatwall-address-streetAddress" />	

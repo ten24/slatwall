@@ -52,7 +52,7 @@
 							<input type="hidden" name="permissions[#request.context.permissionFormIndex#].accessType" value="entity" />
 							<input type="hidden" name="permissions[#request.context.permissionFormIndex#].entityClassName" value="#entityName#" />
 							
-							<td class="primary" onClick="$('.permission#lcase(entityName)#').toggle();"><strong>#attributes.hibachiScope.rbKey('entity.#entityName#')#</strong></td>
+							<td class="primary" onClick="$('.permission#lcase(entityName)#').toggleClass('hide');"><strong>#attributes.hibachiScope.rbKey('entity.#entityName#')#</strong></td>
 							<td><input type="hidden" name="permissions[#request.context.permissionFormIndex#].allowCreateFlag" value=""><input type="checkbox" name="permissions[#request.context.permissionFormIndex#].allowCreateFlag" class="hibachi-permission-checkbox" data-hibachi-parentcheckbox="permissions[#topPermissionFormIndex#].allowCreateFlag" value="1" <cfif not isNull(thisPermission.getAllowCreateFlag()) and thisPermission.getAllowCreateFlag()>checked="checked"</cfif>> Create</td>
 							<td><input type="hidden" name="permissions[#request.context.permissionFormIndex#].allowReadFlag" value=""><input type="checkbox" name="permissions[#request.context.permissionFormIndex#].allowReadFlag" class="hibachi-permission-checkbox" data-hibachi-parentcheckbox="permissions[#topPermissionFormIndex#].allowReadFlag" value="1" <cfif not isNull(thisPermission.getAllowReadFlag()) and thisPermission.getAllowReadFlag()>checked="checked"</cfif>> Read</td>
 							<td><input type="hidden" name="permissions[#request.context.permissionFormIndex#].allowUpdateFlag" value=""><input type="checkbox" name="permissions[#request.context.permissionFormIndex#].allowUpdateFlag" class="hibachi-permission-checkbox" data-hibachi-parentcheckbox="permissions[#topPermissionFormIndex#].allowUpdateFlag" value="1" <cfif not isNull(thisPermission.getAllowUpdateFlag()) and thisPermission.getAllowUpdateFlag()>checked="checked"</cfif>> Update</td>
@@ -61,21 +61,21 @@
 							<td>
 								<cfif not attributes.edit>
 									<cfif attributes.editEntityName eq entityName>
-										<hb:HibachiActionCaller action="admin:entity.detailPermissionGroup" queryString="permissionGroupID=#attributes.permissionGroup.getPermissionGroupID()#" class="btn btn-mini" iconOnly="true" icon="remove">
+										<hb:HibachiActionCaller action="admin:entity.detailPermissionGroup" queryString="permissionGroupID=#attributes.permissionGroup.getPermissionGroupID()#" class="btn btn-xs" iconOnly="true" icon="remove">
 									<cfelse>
-										<hb:HibachiActionCaller action="admin:entity.editPermissionGroup" queryString="permissionGroupID=#attributes.permissionGroup.getPermissionGroupID()#&editEntityName=#entityName#" class="btn btn-mini" iconOnly="true" icon="pencil">	
+										<hb:HibachiActionCaller action="admin:entity.editPermissionGroup" queryString="permissionGroupID=#attributes.permissionGroup.getPermissionGroupID()#&editEntityName=#entityName#" class="btn btn-xs" iconOnly="true" icon="pencil">	
 									</cfif>
 								</cfif>
 							</td>
 						<cfelse>
-							<td class="primary" onClick="$('.permission#lcase(entityName)#').toggle();"><strong>#attributes.hibachiScope.rbKey('entity.#entityName#')#</strong></td>
+							<td class="primary" onClick="$('.permission#lcase(entityName)#').toggleClass('hide');"><strong>#attributes.hibachiScope.rbKey('entity.#entityName#')#</strong></td>
 							<td>#attributes.hibachiScope.formatValue(attributes.hibachiScope.getService("hibachiAuthenticationService").authenticateEntityByPermissionGroup('create', entityName, attributes.permissionGroup), "yesno")#</td>
 							<td>#attributes.hibachiScope.formatValue(attributes.hibachiScope.getService("hibachiAuthenticationService").authenticateEntityByPermissionGroup('read', entityName, attributes.permissionGroup), "yesno")#</td>
 							<td>#attributes.hibachiScope.formatValue(attributes.hibachiScope.getService("hibachiAuthenticationService").authenticateEntityByPermissionGroup('update', entityName, attributes.permissionGroup), "yesno")#</td>
 							<td>#attributes.hibachiScope.formatValue(attributes.hibachiScope.getService("hibachiAuthenticationService").authenticateEntityByPermissionGroup('delete', entityName, attributes.permissionGroup), "yesno")#</td>
 							<td>#attributes.hibachiScope.formatValue(attributes.hibachiScope.getService("hibachiAuthenticationService").authenticateEntityByPermissionGroup('process', entityName, attributes.permissionGroup), "yesno")#</td>
 							<td>
-								<cfif not attributes.edit><hb:HibachiActionCaller action="admin:entity.editPermissionGroup" queryString="permissionGroupID=#attributes.permissionGroup.getPermissionGroupID()#&editEntityName=#entityName#" class="btn btn-mini" iconOnly="true" icon="pencil"></cfif>
+								<cfif not attributes.edit><hb:HibachiActionCaller action="admin:entity.editPermissionGroup" queryString="permissionGroupID=#attributes.permissionGroup.getPermissionGroupID()#&editEntityName=#entityName#" class="btn btn-xs" iconOnly="true" icon="pencil"></cfif>
 							</td>
 						</cfif>
 					</tr>

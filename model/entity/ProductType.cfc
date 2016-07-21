@@ -78,6 +78,7 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 	property name="priceGroupRates" singularname="priceGroupRate" cfc="PriceGroupRate" fieldtype="many-to-many" linktable="SwPriceGroupRateProductType" fkcolumn="productTypeID" inversejoincolumn="priceGroupRateID" inverse="true";
 	property name="priceGroupRateExclusions" singularname="priceGroupRateExclusion" cfc="PriceGroupRate" fieldtype="many-to-many" linktable="SwPriceGrpRateExclProductType" fkcolumn="productTypeID" inversejoincolumn="priceGroupRateID" inverse="true";
 	property name="attributeSets" singularname="attributeSet" cfc="AttributeSet" type="array" fieldtype="many-to-many" linktable="SwAttributeSetProductType" fkcolumn="productTypeID" inversejoincolumn="attributeSetID" inverse="true";
+	property name="optionGroups" singularname="optionGroup" cfc="OptionGroup" type="array" fieldtype="many-to-many" linktable="SwOptionGroupProductType" fkcolumn="productTypeID" inversejoincolumn="optionGroupID" inverse="true";
 	property name="physicals" singularname="physical" cfc="Physical" type="array" fieldtype="many-to-many" linktable="SwPhysicalProductType" fkcolumn="productTypeID" inversejoincolumn="physicalID" inverse="true";
 	
 	// Remote properties
@@ -110,7 +111,7 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 		}
 	}
 	
-	//get merchandisetype 
+	//get merchandise type 
 	public any function getBaseProductType() {
 		if(isNull(getSystemCode()) || getSystemCode() == ""){
 			return getService("ProductService").getProductType(listFirst(getProductTypeIDPath())).getSystemCode();
@@ -168,11 +169,11 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 	}
 	
 	// Child Product Types (one-to-many)
-	public void function addchildProductType(required any ChildProductType) {
-		arguments.ChildProductType.setParentProductType( this );
+	public void function addchildProductType(required any childProductType) {
+		arguments.childProductType.setParentProductType( this );
 	}
-	public void function removechildProductType(required any ChildProductType) {
-		arguments.ChildProductType.removeParentProductType( this );
+	public void function removechildProductType(required any childProductType) {
+		arguments.childProductType.removeParentProductType( this );
 	}
 	
 	// Promotion Rewards (many-to-many - inverse)
@@ -229,6 +230,14 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 	}
 	public void function removeAttributeSet(required any attributeSet) {
 		arguments.attributeSet.removeProductType( this );
+	}
+	
+	// Attribute Sets (many-to-many - inverse)
+	public void function addOptionGroup(required any optionGroup) {
+		arguments.optionGroup.addProductType( this );
+	}
+	public void function removeOptionGroup(required any attributeSet) {
+		arguments.optionGroup.removeProductType( this );
 	}
 	
 	// Attribute Values (one-to-many)
@@ -308,7 +317,7 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 	
 	public string function getSimpleRepresentation() {
 		if(!isNull(getParentProductType())) {
-			return getParentProductType().getSimpleRepresentation() & " &raquo; " & getProductTypeName();
+			return getParentProductType().getSimpleRepresentation() & " | " & getProductTypeName();
 		}
 		return getProductTypeName();
 	}

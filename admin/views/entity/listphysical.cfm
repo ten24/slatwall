@@ -48,21 +48,26 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.physicalSmartList" type="any"/>
 
 <cfoutput>
 	
-	<hb:HibachiListingDisplay title="#rc.pageTitle#" smartlist="#rc.physicalSmartList#" 
+	<hb:HibachiEntityActionBar type="listing" object="#rc.physicalSmartList#" showCreate="false">
+			
+		<!--- Create ---> 
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCaller action="admin:entity.createphysical" entity="physical" class="btn btn-primary" icon="plus icon-white" modal="true" />
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
+	
+	<hb:HibachiListingDisplay smartlist="#rc.physicalSmartList#" 
 	                          recordeditaction="admin:entity.editphysical"
 							  recorddetailaction="admin:entity.detailphysical">
-		
-		<!--- Create ---> 
-		<hb:HibachiListingDisplayButtonGroup >
-			<hb:HibachiActionCaller action="admin:entity.createphysical" entity="physical" class="btn btn-primary" icon="plus icon-white" modal="true" />
-		</hb:HibachiListingDisplayButtonGroup>
-		
+	
 		<hb:HibachiListingColumn tdclass="primary" propertyidentifier="physicalName" />	
-		<hb:HibachiListingColumn propertyidentifier="physicalStatusType.type" title="#$.slatwall.rbKey('entity.physical.physicalStatusType')#" />					    
+		<hb:HibachiListingColumn propertyidentifier="physicalStatusType.typeName" title="#$.slatwall.rbKey('entity.physical.physicalStatusType')#" />					    
 		<hb:HibachiListingColumn propertyidentifier="createdDateTime" />
 	</hb:HibachiListingDisplay>
 

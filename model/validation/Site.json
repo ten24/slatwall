@@ -1,5 +1,17 @@
 {
+	"conditions":{
+	    "notSlatwallCMS":{
+	        "app.integration.integrationPackage":{"neq":"slatwallcms"}
+	    },
+	    "isSlatwallCMS":{
+	        "app.integration.integrationPackage":{"eq":"slatwallcms"}
+	    }
+	},
 	"properties":{
-		"contents":				[{"contexts":"delete","maxCollection":0}]
+		"siteID":				[{"contexts":"save","required":true,"conditions":"notSlatwallCMS"}],
+		"contents":				[{"contexts":"delete","maxCollection":0}],
+		"app":				[{"contexts":"save","required":true,"conditions":"isSlatwallCMS"}],
+		"siteCode":			[{"contexts":"save","required":true,"conditions":"isSlatwallCMS"}],
+		"domainNames":		[{"contexts":"save","required":true,"conditions":"isSlatwallCMS"}]
 	}
-}
+} 

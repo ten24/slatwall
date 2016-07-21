@@ -48,6 +48,7 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.promotion" type="any">
 <cfparam name="rc.edit" type="boolean">
 
@@ -62,6 +63,6 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="currentFlag" />
 	</hb:HibachiListingDisplay>
 	
-	<hb:HibachiActionCaller action="admin:entity.createpromotionperiod" class="btn" icon="plus" queryString="redirectAction=admin:entity.detailpromotion&promotionID=#rc.promotion.getPromotionID()#" modal="true"  />
+	<hb:HibachiActionCaller action="admin:entity.createpromotionperiod" class="btn btn-default" icon="plus" queryString="redirectAction=admin:entity.detailpromotion&promotionID=#rc.promotion.getPromotionID()#" modal="true"  />
 </cfoutput>
 

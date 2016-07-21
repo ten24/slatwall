@@ -48,9 +48,12 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.promotionReward" type="any">
 <cfparam name="rc.promotionPeriod" type="any" default="#rc.promotionReward.getPromotionPeriod()#">
 <cfparam name="rc.rewardType" type="string" default="#rc.promotionReward.getRewardType()#">
+<cfparam name="rc.amountType" type="string" default="percentage">
 <cfparam name="rc.edit" type="boolean">
 
 <!--- prevent editing promotion reward if its promotion period has expired --->
@@ -62,6 +65,19 @@ Notes:
 	<cfset rc.promotionReward.setRewardType(rc.rewardType) />
 </cfif>
 
+
+
+<!--- Show a message if the user has not yet selected a product type, sku, etc...when reward type is merchandise --->
+<cfif not rc.promotionperiod.isExpired() and not rc.edit and rc.promotionReward.getRewardType() eq "merchandise">
+	<cfif not arrayLen(rc.promotionReward.getSkus()) and not arrayLen(rc.promotionReward.getProducts()) and not arrayLen(rc.promotionReward.getProductTypes())>
+		<cfset rc.$.slatwall.showMessageKey('admin.pricing.promotionperiod.productortypeorskunotdefined_info') />
+	</cfif>
+</cfif>
+
+<cfif not isnull(rc.promotionReward.getAmountType())>
+	<cfset rc.amountType=rc.promotionReward.getAmountType()>
+</cfif>
+
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.promotionreward#" edit="#rc.edit#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.promotionreward#" edit="#rc.edit#" 
@@ -70,44 +86,26 @@ Notes:
 							  backAction="admin:entity.detailpromotionperiod" 
 							  backQueryString="promotionPeriodID=#rc.promotionPeriod.getPromotionPeriodID()###tabPromotionRewards" 
 							  deleteQueryString="redirectAction=admin:entity.detailpromotionperiod&promotionPeriodID=#rc.promotionPeriod.getPromotionPeriodID()#" />
-							  
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<input type="hidden" name="rewardType" value="#rc.rewardType#" />
-				<input type="hidden" name="promotionperiod.promotionperiodID" value="#rc.promotionperiod.getPromotionperiodID()#" />
-				<input type="hidden" name="promotionperiodID" value="#rc.promotionperiod.getPromotionperiodID()#" />
-				
-				<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="amountType" fieldType="select" edit="#rc.edit#" />
-				<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="amount" edit="#rc.edit#" />
-				<hb:HibachiDisplayToggle selector="select[name=amountType]" showValues="percentageOff" loadVisable="#rc.promotionReward.getNewFlag() || rc.promotionReward.getValueByPropertyIdentifier('amountType') eq 'percentageOff'#">
-					<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="roundingRule" edit="#rc.edit#" />
-				</hb:HibachiDisplayToggle>
-				<cfif listFindNoCase("merchandise,subscription,contentaccess", rc.rewardType)>
-					<cfif rc.rewardType eq "subscription">
-						<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="applicableTerm" edit="#rc.edit#" />
-					</cfif>
-					<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="maximumUsePerOrder" edit="#rc.edit#" />
-					<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="maximumUsePerItem" edit="#rc.edit#" />
-					<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="maximumUsePerQualification" edit="#rc.edit#" />
-				</cfif>
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
 		
-		<hb:HibachiTabGroup object="#rc.promotionreward#">
+		<hb:HibachiEntityDetailGroup object="#rc.promotionreward#">
+			<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<cfif rc.amountType neq 'percentage'>
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/currencies"/>
+			</cfif>
 			<cfif listFindNoCase("merchandise,subscription,contentaccess", rc.rewardType)>
-				<hb:HibachiTab view="admin:entity/promotionrewardtabs/producttypes" />
-				<hb:HibachiTab view="admin:entity/promotionrewardtabs/products" />
-				<hb:HibachiTab view="admin:entity/promotionrewardtabs/skus" />
-				<hb:HibachiTab view="admin:entity/promotionrewardtabs/brands" />
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/producttypes" />
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/products" />
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/skus" />
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/brands" />
 				<cfif rc.rewardType eq "merchandise">
-					<hb:HibachiTab view="admin:entity/promotionrewardtabs/options" />
+					<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/options" />
 				</cfif>
 			<cfelseif rc.rewardType eq "fulfillment">
-				<hb:HibachiTab view="admin:entity/promotionrewardtabs/fulfillmentMethods" />
-				<hb:HibachiTab view="admin:entity/promotionrewardtabs/shippingMethods" />
-				<hb:HibachiTab view="admin:entity/promotionrewardtabs/shippingAddressZones" />
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/fulfillmentMethods" />
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/shippingMethods" />
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/shippingAddressZones" />
 			</cfif>
-		</hb:HibachiTabGroup>
+		</hb:HibachiEntityDetailGroup>
 
 	</hb:HibachiEntityDetailForm>
 </cfoutput>

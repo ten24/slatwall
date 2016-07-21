@@ -1,0 +1,21 @@
+slatwallweb:
+  build: .
+  ports:
+   - "80:8888"
+  volumes:
+   - ../../../:/var/www
+   - $CIRCLE_TEST_REPORTS:/var/www/meta/tests/testresults/xml
+  links:
+   - slatwalldb
+  environment:
+   MYSQL_ROOT_PASSWORD : CiPassword
+   MYSQL_HOST : slatwalldb
+   MYSQL_PORT : 3306
+   MYSQL_DATABASE : Slatwall
+   LUCEE_PASSWORD: CiPassword
+   LUCEE_JAVA_OPTS: -Xms1024m -Xmx1024m
+slatwalldb:
+  image: mysql
+  environment:
+   MYSQL_ROOT_PASSWORD : CiPassword
+   MYSQL_DATABASE : Slatwall

@@ -73,7 +73,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	public string function getOrderTypeID() {
 		if(!structKeyExists(variables, "orderTypeID")) {
-			variables.orderTypeID = getService("settingService").getTypeBySystemCode("otSalesOrder").getTypeID();
+			variables.orderTypeID = getService("typeService").getTypeBySystemCode("otSalesOrder").getTypeID();
 		}
 		return variables.orderTypeID;
 	}

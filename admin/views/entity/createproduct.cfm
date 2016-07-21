@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.product" type="any" />
 <cfparam name="rc.baseProductType" type="string" />
 <cfparam name="rc.edit" type="boolean" default="true" />
@@ -74,7 +76,7 @@ Notes:
 		</hb:HibachiPropertyRow>
 		<hr />
 		<cfif rc.baseProductType eq "merchandise">
-			<div class="row-fluid">
+			<div class="row">
 				<cfset optionsSmartList = $.slatwall.getService("optionService").getOptionSmartList() />
 				<cfset optionsSmartList.addOrder("optionGroup.sortOrder|ASC") />
 				<cfif optionsSmartList.getRecordsCount()>
@@ -85,8 +87,8 @@ Notes:
 				</cfif>
 			</div>
 		<cfelseif rc.baseProductType eq "subscription">
-			<div class="row-fluid">
-				<div class="span6">
+			<div class="row">
+				<div class="col-md-6">
 					<h5>#$.slatwall.rbKey('admin.entity.createproduct.selectsubscriptionbenefits')#</h5>
 					<br />
 					<swa:SlatwallErrorDisplay object="#rc.product#" errorName="subscriptionBenefits" />
@@ -100,7 +102,7 @@ Notes:
 						<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefitName" tdclass="primary" />
 					</hb:HibachiListingDisplay>
 				</div>
-				<div class="span6">
+				<div class="col-md-6">
 					<h5>#$.slatwall.rbKey('admin.entity.createproduct.selectsubscriptionterms')#</h5>
 					<br />
 					<swa:SlatwallErrorDisplay object="#rc.product#" errorName="subscriptionTerms" />

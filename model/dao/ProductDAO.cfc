@@ -49,6 +49,15 @@ Notes:
 <cfcomponent accessors="true" extends="HibachiDAO">
 	
 	<cfscript>
+		public numeric function getProductRating(required any product){
+			return OrmExecuteQuery('
+				SELECT avg(pr.rating) 
+				FROM SlatwallProductReview pr 
+				where pr.product = :product
+				',{product=arguments.product},true
+			);
+		}
+		
 		public void function loadDataFromFile(required string fileURL, string textQualifier = ""){
 			var fileType = listLast(arguments.fileURL,".");
 			var delimiter = "";
@@ -431,5 +440,15 @@ Notes:
 		</cfquery>
 	</cffunction>
 	 
+	<cffunction name="updateProductProductType" hint="Moves all products from one product type to another">
+		<cfargument name="fromProductTypeID" type="string" required="true" >
+		<cfargument name="toProductTypeID" type="string" required="true" >
+		<cfquery name="updateProduct" >
+			UPDATE SwProduct 
+			SET productTypeID = <cfqueryparam value="#arguments.toProductTypeID#" cfsqltype="cf_sql_varchar" >
+			WHERE productTypeID = <cfqueryparam value="#arguments.fromProductTypeID#" cfsqltype="cf_sql_varchar" >
+		</cfquery>
+	</cffunction>
+	
 </cfcomponent>
 

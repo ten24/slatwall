@@ -48,11 +48,14 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.categorySmartList" type="any" />
 
 <cfoutput>
-	
-<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.categorySmartList#"
+<hb:HibachiEntityActionBar type="listing" object="#rc.categorySmartList#" showCreate="false">
+</hb:HibachiEntityActionBar>
+<hb:HibachiListingDisplay smartList="#rc.categorySmartList#"
 						   recordDetailAction="admin:entity.detailcategory"
 						   recordDetailModal="true"
 						   recordEditAction="admin:entity.editcategory"

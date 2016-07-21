@@ -1,9 +1,11 @@
 {
 	"properties":{
+		"orderItemGiftRecipients":   [{"contexts":"addRecipientsToOrderItem","method":"hasUnassignedGiftCards"}],
 		"orderItemType":			[{"contexts":"save","required":true}],
 		"orderItemStatusType":		[{"contexts":"save","required":true}],
 		"orderStatusCode":			[{"contexts":"edit,delete","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"}],
 		"sku":						[{"contexts":"save","required":true}],
-		"quantity":					[{"contexts":"save","dataType":"numeric","method":"hasQuantityWithinMaxOrderQuantity"},{"contexts":"save","method":"hasQuantityWithinMinOrderQuantity"}]
+		"quantity":					[{"contexts":"save","dataType":"numeric","method":"hasQuantityWithinMaxOrderQuantity"},{"contexts":"save","method":"hasQuantityWithinMinOrderQuantity"}],
+		"quantityDelivered":		[{"contexts":"delete", "eq":0}]
 	}
 }

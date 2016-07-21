@@ -1,0 +1,27 @@
+<ng-switch on="propertyDisplay.fieldType" ng-if="propertyDisplay">
+	<sw-form-field-text data-property-display="propertyDisplay" ng-switch-when="text"></sw-form-field-text>
+	<sw-form-field-password data-property-display="propertyDisplay" ng-switch-when="password"></sw-form-field-password>
+	<sw-form-field-select data-property-display="propertyDisplay" ng-switch-when="select"></sw-form-field-select>
+	<sw-form-field-radio data-property-display="propertyDisplay" ng-switch-when="yesno"></sw-form-field-radio>
+	<sw-form-field-number data-property-display="propertyDisplay" ng-switch-when="number"></sw-form-field-number>
+	<sw-form-field-json data-property-display="propertyDisplay" ng-switch-when="json"></sw-form-field-json>
+	<sw-form-field-search-select data-property-display="propertyDisplay" ng-switch-when="search-select"></sw-form-field-search-select>
+</ng-switch>
+<span ng-show="propertyDisplay.form[propertyDisplay.property].$touched || propertyDisplay.form.$submitted">
+	<span ng-repeat='(key, value) in propertyDisplay.form[propertyDisplay.property].$error' >
+		<p ng-show="key === 'swvalidationrequired'" class="error help-block" sw-Rbkey="'validation.define.required'"></p>
+		<p ng-show="key === 'swvalidationunique'" class="error help-block" sw-Rbkey="'validation.define.unique'"></p>
+		<p ng-show="key === 'swvalidationuniqueornull'" class="error help-block" sw-Rbkey="'validation.define.uniqueornull'"></p>
+		<p ng-show="key === 'swvalidationnumeric'" class="error help-block" sw-Rbkey="'validation.define.numeric'"></p>
+		<p ng-show="key === 'swvalidationregex'" class="error help-block" sw-Rbkey="'validation.define.regex'"></p>
+		<p ng-show="key === 'swvalidationgte'" class="error help-block" sw-Rbkey="'validation.define.gte'"></p>
+		<p ng-show="key === 'swvalidationlte'" class="error help-block" sw-Rbkey="'validation.define.lte'"></p>
+		<p ng-show="key === 'swvalidationeq'" class="error help-block" sw-Rbkey="'validation.define.neq'"></p>
+		<p ng-show="key === 'swvalidationminvalue'" class="error help-block">The value entered is incorrect</p>
+		<p ng-show="key === 'swvalidatiomaxvalue'" class="error help-block">The value entered is incorrect</p>
+		<p ng-show="key === 'swvalidationminlength'" class="error help-block">The value entered is incorrect</p>
+		<p ng-show="key === 'swvalidationmaxlength'" class="error help-block">The value entered is incorrect</p>
+	</span>
+</span>
+
+

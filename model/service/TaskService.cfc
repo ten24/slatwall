@@ -50,6 +50,7 @@ component extends="HibachiService" output="false" accessors="true"{
 
 	property name="emailService" type="any";
 	property name="subscriptionService" type="any";
+	property name="skuService" type="any";
 	
 	property name="taskDAO" type="any";
 	
@@ -132,15 +133,15 @@ component extends="HibachiService" output="false" accessors="true"{
 			
 			// Get the task from the DB
 			var task = this.getTask(attributes.threadData.taskID);
-			
 			// Setup the task as running
 			getTaskDAO().updateTaskRunning( taskID=attributes.threadData.taskID, runningFlag=true );
 			
 			// Initiate the taskHistory data
 			taskHistory.setTask( task );
 			taskHistory.setStartTime( now() );
-			
+
 			// Persist the info to the DB
+			taskHistory = this.saveTaskHistory( taskHistory );
 			getHibachiDAO().flushORMSession();
 			
 			// Run the task inside of a try/catch so that errors are logged
@@ -174,6 +175,7 @@ component extends="HibachiService" output="false" accessors="true"{
 			taskHistory.setEndTime( now() );
 			
 			// Persist the info to the DB
+			taskHistory = this.saveTaskHistory( taskHistory );
 			getHibachiDAO().flushORMSession();
 			
 			// If there was a taskSchedule, then we can update it
@@ -188,7 +190,7 @@ component extends="HibachiService" output="false" accessors="true"{
 			
 			// Call save on the task history
 			taskHistory = this.saveTaskHistory( taskHistory );
-			
+
 			// Create success or failure email, and also log results
 			if(taskHistory.getSuccessFlag()) {
 				getEmailService().generateAndSendFromEntityAndEmailTemplateID(entity=task,emailTemplateID=task.setting('taskSuccessEmailTemplate'));
@@ -257,6 +259,18 @@ component extends="HibachiService" output="false" accessors="true"{
 			setupData["f:sku.activeFlag"] = 1;
 			setupData["f:sku.product.activeFlag"] = 1;
 			updateEntityCalculatedProperties("Stock", setupData);
+		}
+		
+		return arguments.task;
+	}
+	
+	// @hint Moves expired waitlisted registrants to end of waitlist and changes status of next in line to 'pending confirmation'
+	public any function processTask_updateEventWaitlists(required any task) {
+		var smartlist = getService("SkuService").getFutureWaitlistEventsSmartlist();
+		if(arraylen(smartlist.getRecords())) {
+			for(var event in smartlist.getRecords()) {
+				getService("SkuService").processSku(event, {}, 'notifyWaitlistOpenings');
+			}
 		}
 		
 		return arguments.task;

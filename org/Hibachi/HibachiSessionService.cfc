@@ -7,22 +7,76 @@ component output="false" accessors="true" extends="HibachiService"  {
 	property name="hibachiUtilityService" type="any";
 
 	// ===================== START: Logical Methods ===========================
-
-	public void function setPropperSession() {
-	
-		// Check to see if a session value doesn't exist, then we can check for a cookie... or just set it to blank
-		if(!hasSessionValue("sessionID")) {
-			setSessionValue('sessionID', '');
+	public struct function getConfig(){
+		var config = {};
+		config[ 'applicationKey' ] = getApplicationValue('applicationKey');
+		config[ 'baseURL' ] = getApplicationValue('baseURL');
+		config[ 'action' ] = getApplicationValue('action');
+		config[ 'dateFormat' ] = 'mmm dd, yyyy';
+		config[ 'timeFormat' ] = 'hh:mm tt';
+		var rbLocale = 'en_us';
+		if(!isNull(getHibachiScope().getSession().getRBLocale())){
+			rbLocale = '#getHibachiScope().getSession().getRBLocale()#';
 		}
+		config[ 'rbLocale' ] = rbLocale;
+		config[ 'debugFlag' ] = getApplicationValue('debugFlag');
+		config[ 'instantiationKey' ] = '#getApplicationValue('instantiationKey')#';
+		return config;
+	}
+	
+	public void function setProperSession() {
+		var requestHeaders = getHTTPRequestData();
 		
+		// Check to see if a session value doesn't exist, then we can check for a cookie... or just set it to blank
+		if(!getHibachiScope().hasSessionValue("sessionID")) {
+			getHibachiScope().setSessionValue('sessionID', '');
+		}
 		var foundWithNPSID = false;
 		var foundWithPSID = false;
 		
 		// Check for non-persistent cookie.
+		if( len(getHibachiScope().getSessionValue('sessionID')) ) {
+			var sessionEntity = this.getSession( getHibachiScope().getSessionValue('sessionID'), true);
 		
-		if( len(getSessionValue('sessionID')) ) {
-			var sessionEntity = this.getSession( getSessionValue('sessionID'), true);
-		} else if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#-NPSID")) {
+		} else if( (StructKeyExists(request,'context') && StructKeyExists(request.context, "jsonRequest") && request.context.jsonRequest && StructKeyExists(request.context.deserializedJsonData, "request_token") ) || StructKeyExists(requestHeaders.headers, "request_token") ){
+				//If the API 'cookie' and deviceID were passed directly to the API, we can use that for setting the session if the request token matches
+				//the token we already have.
+				
+				//Find the request token in the json or in the headers if it exists.
+				var rt = "";
+				if (StructKeyExists(request.context, "jsonRequest") && request.context.jsonRequest){
+					rt = request.context.deserializedJsonData["request_token"];
+				}
+				if (StructKeyExists(requestHeaders.headers, "request_token")){
+					rt = requestHeaders.headers["request_token"];
+				}
+								
+				//set the session
+				var NPSID = rt;
+				var sessionEntity = this.getSessionBySessionCookieNPSID( NPSID, true );
+				foundWithNPSID = true;
+				getHibachiScope().setSessionValue('sessionID', sessionEntity.getSessionID());
+				request.context["foundWithRequestToken"] = true;
+				
+				/*
+				if ( StructKeyExists(request.context, "deviceID") && !Len(sessionEntity.getDeviceID())){
+					//If the device doesn't yet exist, add it.'
+					sessionEntity.setDeviceID("#request.context.deviceID#");
+					foundWithNPSID = true;
+					getHibachiScope().setSessionValue('sessionID', sessionEntity.getSessionID());
+				}else if (( StructKeyExists(requestHeaders.headers, "deviceID") && Len(sessionEntity.getDeviceID()) )){
+					//If the device already exists, check against that device to the new device id.
+					if (requestHeaders.headers.deviceID == sessionEntity.getDeviceID()){
+						foundWithNPSID = true;
+						getHibachiScope().setSessionValue('sessionID', sessionEntity.getSessionID()); //We have the correct device for this session.
+					}else{
+						//we don't have the correct device for this session so dont set the session
+						foundWithNPSID = false;
+					}
+				}
+				*/
+			
+		}else if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#-NPSID")) {
 			var sessionEntity = this.getSessionBySessionCookieNPSID( cookie["#getApplicationValue('applicationKey')#-NPSID"], true);
 		
 			if(sessionEntity.getNewFlag()) {
@@ -30,7 +84,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 			} else {
 		
 				foundWithNPSID = true;
-				setSessionValue('sessionID', sessionEntity.getSessionID());
+				getHibachiScope().setSessionValue('sessionID', sessionEntity.getSessionID());
 		
 			}
 		
@@ -43,17 +97,18 @@ component output="false" accessors="true" extends="HibachiService"  {
 				getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-PSID", value='', expires="now");
 			} else {
 				foundWithPSID = true;
-				setSessionValue('sessionID', sessionEntity.getSessionID());
+				getHibachiScope().setSessionValue('sessionID', sessionEntity.getSessionID());
 			}
 		
-		// Last option is to just create a new session record
+		
 		} else {
+			
 			var sessionEntity = this.newSession();
+		
 		}
 		
 		// Populate the hibachi scope with the session
 		getHibachiScope().setSession( sessionEntity );
-		
 		// Let the hibachiScope know how we found the proper sessionID
 		getHibachiScope().setSessionFoundNPSIDCookieFlag( foundWithNPSID );
 		getHibachiScope().setSessionFoundPSIDCookieFlag( foundWithPSID );
@@ -62,7 +117,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		var previousRequestDateTime = getHibachiScope().getSession().getLastRequestDateTime();
 		
 		// update the sessionScope with the ID for the next request
-		setSessionValue('sessionID', getHibachiScope().getSession().getSessionID());
+		getHibachiScope().setSessionValue('sessionID', getHibachiScope().getSession().getSessionID());
 		
 		// Update the last request datetime, and IP Address
 		getHibachiScope().getSession().setLastRequestDateTime( now() );
@@ -105,7 +160,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		getHibachiDAO().save( getHibachiScope().getSession() );
 		
 		// Save session ID in the session Scope & cookie scope for next request
-		setSessionValue('sessionID', getHibachiScope().getSession().getSessionID());
+		getHibachiScope().setSessionValue('sessionID', getHibachiScope().getSession().getSessionID());
 		
 		//Generate new session cookies for every time the session is persisted (on every login)
 		var npCookieValue = getValueForCookie();
@@ -222,23 +277,25 @@ component output="false" accessors="true" extends="HibachiService"  {
 	* @deprecated getSessionIDEncryptedCookie
 	*/
 	private any function getSessionIDEncryptedCookie( required any sessionID, required string cookieType ) {
-		return getHibachiUtilityService().encryptValue(value=arguments.sessionID, salt="valid-#arguments.cookieType#-SlatwallSessionIDCookie");
+		return getHibachiUtilityService().encryptValue(value=arguments.sessionID, salt="valid-#arguments.cookieType#-#getApplicationKey()#SessionIDCookie");
 	} 
 	
 	/*
 	* @deprecated getSessionIDFromEncryptedCookie
 	*/
 	private any function getSessionIDFromEncryptedCookie( required any cookieData, required string cookieType ) {
-		return getHibachiUtilityService().decryptValue(value=arguments.cookieData, salt="valid-#arguments.cookieType#-SlatwallSessionIDCookie");
+		return getHibachiUtilityService().decryptValue(value=arguments.cookieData, salt="valid-#arguments.cookieType#-#getApplicationKey()#SessionIDCookie");
 	}
 	
 	/**
 	 * Generate new cookie value
 	 */
 	private any function getValueForCookie(){
-		var id = getHibachiScope().getSession().getSessionID() & "#DateTimeFormat(Now())#" & RandRange(1, 100);
-		var hashedID = hash(id, "sha-1");
-		return hashedID;
+		var id = getHibachiScope().getSession().getSessionID();
+		var hashedID = hash(id, "md5");
+		var uuid = replace(createUUID(),'-','','all');
+		var final = hashedID & uuid;
+		return final;
 	}
 	// ==================  END:  Private Helper Functions =====================
 	

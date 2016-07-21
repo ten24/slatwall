@@ -53,6 +53,7 @@ Notes:
 	<swa:SlatwallSettingTable showInheritance="false">
 		<swa:SlatwallSetting settingName="siteForgotPasswordEmailTemplate" />
 		<swa:SlatwallSetting settingName="siteVerifyAccountEmailAddressEmailTemplate" />
+		<swa:SlatwallSetting settingName="siteOrderOrigin" />
 	</swa:SlatwallSettingTable>
 </cfoutput>
 

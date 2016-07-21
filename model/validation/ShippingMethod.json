@@ -1,6 +1,7 @@
 {
 	"properties":{
 		"shippingMethodName":			[{"contexts":"save","required":true}],
+		"shippingMethodCode":			[{"contexts":"save","uniqueOrNull":true,"regex":"^[a-zA-Z0-9-_.|:~^]+$"}],
 		"orderFulfillments":			[{"contexts":"delete","maxCollection":0}]
 	}
 }

@@ -46,16 +46,18 @@
 Notes:
 
 */
-component entityname="SlatwallType" table="SwType" persistent="true" accessors="true" output="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="settingService" hb_permission="this" hb_parentPropertyName="parentType" {
+component entityname="SlatwallType" table="SwType" persistent="true" accessors="true" output="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="typeService" hb_permission="this" hb_parentPropertyName="parentType" {
 	
 	// Persistent Properties
 	property name="typeID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="typeIDPath" ormtype="string" length="4000";
-	property name="type" ormtype="string";
+	property name="typeName" ormtype="string";
 	property name="typeCode" ormtype="string";
 	property name="typeDescription" ormtype="string" length="4000";
+	property name="sortOrder" ormtype="integer" sortContext="parentType";
 	property name="systemCode" ormtype="string" index="PI_SYSTEMCODE";
-
+	property name="childRequiresSystemCodeFlag" ormtype="boolean";
+	
 	// Calculated Properties
 
 	// Related Object Properties (many-to-one)
@@ -81,9 +83,18 @@ component entityname="SlatwallType" table="SwType" persistent="true" accessors="
 	// Non-Persistent Properties
 	
 	// Deprecated Properties
+	property name="type" type="string" persistent="false";
 
 
 	// ==================== START: Logical Methods =========================
+	
+	public boolean function hasPeerTypeWithMatchingSystemCode() {
+		if(isNull(getSystemCode())) {
+			return true;
+		} else {
+			return getService('typeService').getSystemCodeTypeCount( getSystemCode() ) > 1;
+		}
+	}
 	
 	// ====================  END: Logical Methods ==========================
 	
@@ -113,14 +124,6 @@ component entityname="SlatwallType" table="SwType" persistent="true" accessors="
 	
 	// ============== START: Overridden Implicit Getters ===================
 	
-	// This overrides the build in system code getter to look up to the parent if a system code doesn't exist for this type.
-	public string function getSystemCode() {
-		if(isNull(variables.systemCode)) {
-			return getParentType().getSystemCode();
-		}
-		return variables.systemCode;
-	}
-	
 	public string function getTypeIDPath() {
 		if(isNull(variables.typeIDPath)) {
 			variables.typeIDPath = buildIDPathList( "parentType" );
@@ -135,11 +138,30 @@ component entityname="SlatwallType" table="SwType" persistent="true" accessors="
 	// =============  END: Overridden Smart List Getters ===================
 
 	// ================== START: Overridden Methods ========================
-
-	public string function getSimpleRepresentationPropertyName() {
-    	return "type";
-    }
 	
+	public any function getAssignedAttributeSetSmartList(){
+		if(!structKeyExists(variables, "assignedAttributeSetSmartList")) {
+			
+			variables.assignedAttributeSetSmartList = getService("attributeService").getAttributeSetSmartList();
+			
+			variables.assignedAttributeSetSmartList.addFilter('activeFlag', 1);
+			variables.assignedAttributeSetSmartList.addFilter('attributeSetObject', 'Type');
+			
+			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "types", "left");
+			
+			variables.assignedAttributeSetSmartList.setSelectDistinctFlag(true);
+			
+			var wc = "(";
+			wc &= " aslatwallattributeset.globalFlag = 1";
+			wc &= " OR aslatwalltype.typeID IN ('#replace(getTypeIDPath(),",","','","all")#')";	
+			wc &= ")";
+			
+			variables.assignedAttributeSetSmartList.addWhereCondition( wc );
+		}
+		
+		return variables.assignedAttributeSetSmartList;
+	}
+
 	// ==================  END:  Overridden Methods ========================
 	
 	// =================== START: ORM Event Hooks  =========================
@@ -157,6 +179,10 @@ component entityname="SlatwallType" table="SwType" persistent="true" accessors="
 	// ===================  END:  ORM Event Hooks  =========================
 	
 	// ================== START: Deprecated Methods ========================
+	
+	public string function getType() {
+		return getTypeName();
+	}
 	
 	// ==================  END:  Deprecated Methods ========================
 

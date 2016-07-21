@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.accountPayment" type="any" />
 <cfparam name="rc.account" type="any" default="#rc.accountPayment.getAccount()#">
 <cfparam name="rc.edit" type="boolean" />
@@ -61,28 +63,13 @@ Notes:
 		
 		<input type="hidden" name="account.accountID" value="#rc.account.getAccountID()#" />
 		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList divClass="span6">
-				<cfif rc.accountPayment.getPaymentMethodType() eq "creditCard">
-					<hb:HibachiPropertyDisplay object="#rc.accountPayment#" property="nameOnCreditCard" edit="#rc.edit#" />
-					<hb:HibachiPropertyDisplay object="#rc.accountPayment#" property="creditCardType" />
-					<hb:HibachiPropertyDisplay object="#rc.accountPayment#" property="expirationMonth" edit="#rc.edit#" />
-					<hb:HibachiPropertyDisplay object="#rc.accountPayment#" property="expirationYear" edit="#rc.edit#" />
-				</cfif>
-			</hb:HibachiPropertyList>
-			<hb:HibachiPropertyList divClass="span6">
-				<hb:HibachiPropertyDisplay object="#rc.accountPayment#" property="amount" />
-				<hb:HibachiPropertyDisplay object="#rc.accountPayment#" property="amountReceived" />
-				<hb:HibachiPropertyDisplay object="#rc.accountPayment#" property="amountCredited" />
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-		
-		<hb:HibachiTabGroup object="#rc.accountPayment#">
+		<hb:HibachiEntityDetailGroup object="#rc.accountPayment#">
+			<hb:HibachiEntityDetailItem view="admin:entity/accountpaymenttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.accountPayment.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 				<swa:SlatwallAdminTabCustomAttributes object="#rc.accountPayment#" attributeSet="#attributeSet#" />
 			</cfloop>
-		</hb:HibachiTabGroup>
+		</hb:HibachiEntityDetailGroup>
 		
 	</hb:HibachiEntityDetailForm>
 </cfoutput>

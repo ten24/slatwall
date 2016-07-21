@@ -79,5 +79,10 @@ Notes:
 			<cfreturn results[1] />
 		</cfif>
 	</cffunction>
+
+	<cffunction name="getCurrencyByCurrencyCode" output="false" access="public">
+		<cfargument name="currencyCode" type="string" required="true" >
+		<cfreturn ormExecuteQuery("SELECT acurrency FROM SlatwallCurrency acurrency WHERE acurrency.currencyCode = ? ", [arguments.currencyCode], true, {maxResults=1}) />
+	</cffunction>
 	
 </cfcomponent>

@@ -48,6 +48,7 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.optionGroup" type="any"/>
 
 <cfoutput>
@@ -65,5 +66,5 @@ Notes:
 
 	<hb:HibachiActionCaller action="admin:entity.createoption" 
 	                         querystring="optionGroupID=#rc.optionGroup.getOptionGroupID()#&sRedirectAction=admin:entity.detailOptionGroup" 
-	                         class="btn" icon="plus" modal=true />
+	                         class="btn btn-default" icon="plus" modal=true />
 </cfoutput>

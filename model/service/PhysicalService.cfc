@@ -54,6 +54,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	property name="skuService" type="any";
 	property name="stockService" type="any";
 	property name="settingService" type="any";
+	property name="typeService" type="any";
 	
 	// ===================== START: Logical Methods ===========================
 	
@@ -86,8 +87,8 @@ component extends="HibachiService" accessors="true" output="false" {
 				locationAdjustments[ location.getLocationID() ] = getStockService().newStockAdjustment();
 				locationAdjustments[ location.getLocationID() ].setToLocation( location );
 				locationAdjustments[ location.getLocationID() ].setFromLocation( location );
-				locationAdjustments[ location.getLocationID() ].setStockAdjustmentType( getSettingService().getTypeBySystemCode("satPhysicalCount") );
-				locationAdjustments[ location.getLocationID() ].setStockAdjustmentStatusType( getSettingService().getTypeBySystemCode("sastNew") );
+				locationAdjustments[ location.getLocationID() ].setStockAdjustmentType( getTypeService().getTypeBySystemCode("satPhysicalCount") );
+				locationAdjustments[ location.getLocationID() ].setStockAdjustmentStatusType( getTypeService().getTypeBySystemCode("sastNew") );
 				locationAdjustments[ location.getLocationID() ].setPhysical( arguments.physical );
 			}
 			
@@ -119,7 +120,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		
 		//set physical status to closed
-		arguments.physical.setPhysicalStatusType( getSettingService().getTypeBySystemCode('pstClosed') );
+		arguments.physical.setPhysicalStatusType( getTypeService().getTypeBySystemCode('pstClosed') );
 		
 		return arguments.physical;
 	}

@@ -1,0 +1,44 @@
+<div class="s-md-content-block-inner">
+	<div class="s-title">
+		Order Info
+		<div class="dropdown s-action">
+			<a href="##" class="dropdown-toggle" id="dropdownMenu" data-toggle="dropdown">
+				<i class="fa fa-ellipsis-h" title="actions"></i>
+			</a>
+			<ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu1">
+				<li><a href="?slataction=admin:entity.detailorder&orderID={{swGiftCardOrderInfo.order.orderID}}">View Order</a></li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="s-body">
+		<ul class="list-unstyled">
+			<li>
+				<div class="row s-line-item">
+					<div class="col-xs-5 s-title">Customer Name:</div>
+					<div class="col-xs-7 s-value"><span ng-bind="swGiftCardOrderInfo.order.account_firstName"></span> <span ng-bind="swGiftCardOrderInfo.order.account_lastName"></span></div>
+				</div>
+			</li>
+	
+			<li>
+				<div class="row s-line-item">
+					<div class="col-xs-5 s-title">Order Number:</div>
+					<div class="col-xs-7 s-value"><a href="?slataction=admin:entity.detailorder&orderID={{swGiftCardOrderInfo.order.orderID}}"><span ng-bind="swGiftCardOrderInfo.order.orderNumber"></span></a></div>
+				</div>
+			</li>
+			<li>
+				<div class="row s-line-item">
+					<div class="col-xs-5 s-title">Order Date:</div>
+					<div class="col-xs-7 s-value" ng-bind="swGiftCardOrderInfo.order.orderOpenDateTime"></div>
+				</div>
+			</li>
+	
+			<li>
+				<div class="row s-line-item">
+					<div class="col-xs-5 s-title">Product:</div>
+					<div class="col-xs-7 s-value"><a href="?slataction=admin:entity.detailproduct&productID={{swGiftCardOrderInfo.giftCard.originalOrderItem_sku_product_productID}}"><span ng-bind="swGiftCardOrderInfo.giftCard.originalOrderItem_sku_product_productName"></span></a></div>
+				</div>
+			</li>
+		</ul>
+	</div>
+</div>

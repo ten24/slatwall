@@ -49,20 +49,24 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
+
+
 <cfparam name="rc.orderPaymentSmartList" type="any" />
 
 <cfset rc.orderPaymentSmartList.addOrder("createdDateTime|DESC") />
 <cfset rc.orderPaymentSmartList.addInFilter("order.orderStatusType.systemCode", "ostNew,ostProcessing,ostOnHold,ostClosed,ostCanceld") />
 
 <cfoutput>
-	<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.orderPaymentSmartList#"
+	<hb:HibachiEntityActionBar type="listing" object="#rc.orderPaymentSmartList#" showCreate="false" />
+
+	<hb:HibachiListingDisplay smartList="#rc.orderPaymentSmartList#"
 							   recorddetailaction="admin:entity.detailorderpayment">
 		<hb:HibachiListingColumn propertyIdentifier="order.orderNumber" />
 		<hb:HibachiListingColumn propertyIdentifier="order.account.firstName" />
 		<hb:HibachiListingColumn propertyIdentifier="order.account.lastName" />
 		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="paymentMethod.paymentMethodName" />
-		<hb:HibachiListingColumn propertyIdentifier="orderPaymentType.type" />
+		<hb:HibachiListingColumn propertyIdentifier="orderPaymentType.typeName" />
 		<hb:HibachiListingColumn propertyIdentifier="amount" />
 		<hb:HibachiListingColumn propertyIdentifier="amountReceived" />
 		<hb:HibachiListingColumn propertyIdentifier="amountCredited" />

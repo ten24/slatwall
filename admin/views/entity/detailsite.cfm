@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.site" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
@@ -55,15 +57,15 @@ Notes:
 	<hb:HibachiEntityDetailForm object="#rc.site#" edit="#rc.edit#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.site#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
 		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.site#" property="siteName" edit="#rc.edit#">
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-		
-		<hb:HibachiTabGroup object="#rc.site#">
-			<hb:HibachiTab view="admin:entity/sitetabs/sitesettings" />
-		</hb:HibachiTabGroup>
+		<hb:HibachiEntityDetailGroup object="#rc.site#">
+			<hb:HibachiEntityDetailItem view="admin:entity/sitetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<hb:HibachiEntityDetailItem view="admin:entity/sitetabs/sitesettings" />
+
+			<!--- Custom Attributes --->
+			<cfloop array="#rc.site.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
+				<swa:SlatwallAdminTabCustomAttributes object="#rc.site#" attributeSet="#attributeSet#" />
+			</cfloop>
+		</hb:HibachiEntityDetailGroup>
 		
 	</hb:HibachiEntityDetailForm>
 </cfoutput>

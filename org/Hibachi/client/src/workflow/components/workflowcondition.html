@@ -1,0 +1,79 @@
+<li >
+
+	<!--- Filter display --->
+	<div class="s-filter-item" ng-show="workflowCondition.propertyIdentifier.length">
+		<div ng-if="workflowCondition.logicalOperator" class="btn-group-vertical btn-toggle">
+	      <button class="btn btn-xs " 
+	      			ng-click="logicalOperatorChanged('AND')" 
+	      			ng-class="{'btn\-default':workflowCondition.logicalOperator !== 'AND'}"
+	      			>
+	      			AND
+	      </button>
+	      <button class="btn btn-xs " 
+	      			ng-class="{'btn\-default':workflowCondition.logicalOperator !== 'OR'}"
+	      			ng-click="logicalOperatorChanged('OR')"
+	      			>
+	      			OR
+	      </button>
+	    </div>
+		<div class="panel panel-default">
+			<div class="panel-heading" ng-bind="workflowCondition.propertyIdentifier"><a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
+			<div data-toggle="collapse" data-target="#j-edit-filter-b" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
+				<span ng-bind="workflowCondition.comparisonOperator + ' ' + workflowCondition.value"></span> <a href="##"><i class="fa fa-pencil-square-o"></i></a>
+			</div>
+		</div>
+	</div>
+	<!--- //Filter display --->
+
+	<!--- Edit Filter Box --->
+	<div class="col-xs-12  s-add-filter" id="j-edit-filter-b">
+		<div class="row">
+			<h4> Define Filters: <span <span ng-repeat="breadCrumb in workflowCondition.breadCrumbs">
+					<span ng-show="workflowCondition.breadCrumbs.length - 1 !== $index" ng-click="selectBreadCrumb($index)">{{breadCrumb.entityAlias}}<span ng-if="$index !== workflowCondition.breadCrumbs.length - 2"> > </span></span>
+				</span>
+				<i class="fa fa-times" ng-click="cancelWorkflowCondition()"></i>
+			</h4>
+			<div class="col-xs-12">
+
+				<div class="row">
+					<div class="col-xs-2">
+						<div class="form-group form-group-sm">
+							<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Select From <span ng-bind="filterPropertiesList[workflowCondition.breadCrumbs[workflowCondition.breadCrumbs.length-1].propertyIdentifier].entityName | entityRBKey"></span></label>
+							<div class="col-sm-12 s-no-paddings">
+								<select class="form-control input-sm"
+										ng-model="selectedFilterProperty"
+										ng-change="selectedFilterPropertyChanged(selectedFilterProperty)"
+										ng-options="filterProperty as filterProperty.displayPropertyIdentifier 
+													for filterProperty in filterPropertiesList[workflowCondition.breadCrumbs[workflowCondition.breadCrumbs.length-1].propertyIdentifier].data"
+								>
+									<option value="" selected="selected">Select From {{filterPropertiesList[workflowCondition.breadCrumbs[workflowCondition.breadCrumbs.length-1].propertyIdentifier].entityName | entityRBKey}}</option>
+								</select>
+							</div>
+							<div class="clearfix"></div>
+						</div>
+					</div>
+						<span	sw-condition-criteria
+				       			ng-if="selectedFilterProperty !== null"
+				       			data-workflow-condition="workflowCondition"
+				       			data-selected-filter-property="selectedFilterProperty"
+				       			data-filter-properties-list="filterPropertiesList"
+				       			data-selected-filter-property-changed="selectedFilterPropertyChanged(selectedFilterProperty)"
+				       	></span>
+					
+					<div class="col-xs-3">
+						<div class="s-button-select-group">
+							<button type="button" class="btn btn-sm s-btn-ten24" ng-click="workflow.data.workflowTasks.selectedTask.$$save()">Save & Add Another Button</button>
+							<div class="s-or-box">OR-</div>
+							<button type="button" class="btn btn-sm s-btn-ten24" ng-click="workflow.data.workflowTasks.selectedTask.$$save()">Save & Finish</button>
+						</div>
+						<div class="form-group">
+							<div class="s-checkbox"><input type="checkbox" id="j-checkbox21"><label for="j-checkbox21"> Add To New Group</label></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--- //Edit Filter Box --->
+
+</li>

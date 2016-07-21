@@ -1,33 +1,33 @@
 {
-	"conditions":{
-	    "streetAddressRequired":{
-	        "country.streetAddressRequiredFlag":{"eq":true}
-	    },
-	    "street2AddressRequired":{
-	        "country.street2AddressRequiredFlag":{"eq":true}
-	    },
-	    "localityRequired":{
-	        "country.localityRequiredFlag":{"eq":true}
-	    },
-	    "cityRequired":{
-	        "country.cityRequiredFlag":{"eq":true}
-	    },
-	    "stateCodeRequired":{
-	        "country.stateCodeRequiredFlag":{"eq":true}
-	    },
-	    "postalCodeRequired":{
-	        "country.postalCodeRequiredFlag":{"eq":true}
-	    }
-	},
-	"properties":{
-		"country":			[{"contexts":"save,full","required":true}],
-		"name":				[{"contexts":"full","required":true}],
-		"streetAddress":	[{"contexts":"full,location","conditions":"streetAddressRequired","required":true}],
-		"street2Address":	[{"contexts":"full,location","conditions":"street2AddressRequired","required":true}],
-		"locality":			[{"contexts":"full,location","conditions":"localityRequired","required":true}],
-		"city":				[{"contexts":"full,location","conditions":"cityRequired","required":true}],
-		"stateCode":		[{"contexts":"full,location","conditions":"stateCodeRequired","required":true}],
-		"postalCode":		[{"contexts":"full,location","conditions":"postalCodeRequired","required":true}],
-		"emailAddress":		[{"contexts":"save","dataType":"email"}]
-	}
-}
+    "conditions":{
+        "streetAddressRequired":{
+            "country.streetAddressRequiredFlag":{"eq":true}
+        },
+        "street2AddressRequired":{
+            "country.street2AddressRequiredFlag":{"eq":true}
+        },
+        "localityRequired":{
+            "country.localityRequiredFlag":{"eq":true}
+        },
+        "cityRequired":{
+            "country.cityRequiredFlag":{"eq":true}
+        },
+        "stateCodeRequired":{
+            "country.stateCodeRequiredFlag":{"eq":true}
+        },
+        "postalCodeRequired":{
+            "country.postalCodeRequiredFlag":{"eq":true}
+        }
+    },
+    "properties":{
+        "country":          [{"contexts":"save,billing,full","required":true}],
+        "name":             [{"contexts":"billing,full","required":true}],
+        "streetAddress":        [{"contexts":"billing,full,location","conditions":"streetAddressRequired","required":true}],
+        "street2Address":   [{"contexts":"billing,full,location","conditions":"street2AddressRequired","required":true}],
+        "locality":         [{"contexts":"billing,full,location","conditions":"localityRequired","required":true}],
+        "city":             [{"contexts":"billing,full,location","conditions":"cityRequired","required":true}],
+        "stateCode":        [{"contexts":"billing,full,location","conditions":"stateCodeRequired","required":true}],
+        "postalCode":       [{"contexts":"billing,full,location","conditions":"postalCodeRequired","required":true}],
+        "emailAddress":     [{"contexts":"save","dataType":"email"}]
+    }
+} 

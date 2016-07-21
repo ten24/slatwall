@@ -48,6 +48,7 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.product" type="any" />
 
 <hb:HibachiListingDisplay smartList="#rc.product.getProductReviewsSmartList()#"
@@ -56,6 +57,8 @@ Notes:
 						   recordeditaction="admin:entity.editproductreview"
 						   recordeditmodal="true">
 	<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
+	<hb:HibachiListingColumn propertyIdentifier="reviewTitle" />
+	<hb:HibachiListingColumn propertyIdentifier="rating" />
 	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="review" />
 	<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
 </hb:HibachiListingDisplay>

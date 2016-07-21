@@ -1,0 +1,17 @@
+<span style="margin-left:{{swExpandableRecord.recordDepth*40||0}}px;position:relative;padding-left: 12px;">
+	<i
+		ng-show="swExpandableRecord.collectionPromise.$$state.status !== 0"
+		class="fa fa-caret-{{swExpandableRecord.childrenOpen ? 'down' : 'right'}} {{swExpandableRecord.edit ? '' : 'disabled'}} s-listing-arrow"
+		
+	>
+
+	</i>
+	<i ng-show="swExpandableRecord.collectionPromise.$$state.status === 0"
+		class="fa fa-refresh fa-spin s-loading-icon"
+	>
+	</i>
+	<a ng-if="swExpandableRecord.link" ng-href="{{swExpandableRecord.link}}" class="s-contents-page-title">
+		<span ng-bind="swExpandableRecord.recordValue"></span>
+	</a>
+	<span ng-if="!swExpandableRecord.link" ng-bind="swExpandableRecord.recordValue"></span>
+</span>

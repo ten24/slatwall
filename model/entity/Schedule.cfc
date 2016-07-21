@@ -112,7 +112,7 @@ component displayname="Schedule" entityname="SlatwallSchedule" table="SwSchedule
 	public string function getNextRunDateTime(startDateTime, endDateTime){
 		var nextRun='';
 		
-		if( endDateTime > now() ){
+		if( isNull(arguments.endDateTime) or endDateTime > now() ){
 			
 			switch(getRecuringType()){
 				
@@ -271,7 +271,7 @@ component displayname="Schedule" entityname="SlatwallSchedule" table="SwSchedule
 						nextDay='';
 						
 						for(i=1; i <= listLen(getDaysOfMonthToRun()); i++){
-							if(listgetAt(getDaysOfMonthToRun(),i) > day(now)){
+							if(listgetAt(getDaysOfMonthToRun(),i) > day(now())){
 								nextDay=listGetAt(getDaysOfMonthToRun(),i);
 							}
 						}

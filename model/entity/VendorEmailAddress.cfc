@@ -61,6 +61,8 @@ component entityname="SlatwallVendorEmailAddress" table="SwVendorEmailAddress" p
 	// Related Object Properties
 	property name="vendor" cfc="Vendor" fieldtype="many-to-one" fkcolumn="vendorID";
 	
+	// Remote properties
+	property name="remoteID" ormtype="string";
 	
 	// ============ START: Non-Persistent Property Methods =================
 	

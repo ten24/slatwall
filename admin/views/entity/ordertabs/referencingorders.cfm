@@ -48,6 +48,7 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.order" type="any" />
 <cfparam name="rc.edit" type="boolean" /> 
 
@@ -56,7 +57,7 @@ Notes:
 			recordDetailAction="admin:entity.detailorder">
 		<hb:HibachiListingColumn tdClass="primary" propertyIdentifier="orderNumber" />
 		<hb:HibachiListingColumn propertyIdentifier="account.fullName" sort="false" />
-		<hb:HibachiListingColumn propertyIdentifier="orderType.type" />
+		<hb:HibachiListingColumn propertyIdentifier="orderType.typeName" />
 		<hb:HibachiListingColumn propertyIdentifier="calculatedTotal" />
 	</hb:HibachiListingDisplay>
 </cfoutput>

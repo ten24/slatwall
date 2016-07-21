@@ -48,12 +48,15 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.orderDeliverySmartList" type="any" />
 
 <cfoutput>
-	
-	<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.orderDeliverySmartList#"
-			recorddetailaction="admin:entity.detailorderdelivery">
+	<hb:HibachiEntityActionBar type="listing" object="#rc.orderDeliverySmartList#" showCreate="false" />
+	<hb:HibachiListingDisplay smartList="#rc.orderDeliverySmartList#"
+				recorddetailaction="admin:entity.detailorderdelivery"
+				recordEditAction="admin:entity.editorderdelivery">
 		<hb:HibachiListingColumn propertyIdentifier="order.orderNumber" />
 		<hb:HibachiListingColumn propertyIdentifier="order.orderOpenDateTime" />
 		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />	

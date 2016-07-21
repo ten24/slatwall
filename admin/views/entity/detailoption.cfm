@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.option" type="any" />
 <cfparam name="rc.optiongroup" type="any" default="#rc.option.getOptionGroup()#" />
 <cfparam name="rc.edit" default="false" />
@@ -62,18 +64,12 @@ Notes:
 					deleteQueryString="redirectAction=admin:entity.detailoptiongroup&optionGroupID=#rc.optionGroup.getOptionGroupID()#" />
 					
 		<input type="hidden" name="optionGroup.optionGroupID" value="#rc.optionGroup.getOptionGroupID()#" />
-		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.option#" property="optionName" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.option#" property="optionCode" edit="#rc.edit#">
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-		
-		<hb:HibachiTabGroup object="#rc.option#">
+
+		<hb:HibachiEntityDetailGroup object="#rc.option#">
+			<hb:HibachiEntityDetailItem view="admin:entity/optiontabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<!--- Images --->
 			<swa:SlatwallAdminTabImages object="#rc.option#" />
-		</hb:HibachiTabGroup>
+		</hb:HibachiEntityDetailGroup>
 		
 	</hb:HibachiEntityDetailForm>
 	

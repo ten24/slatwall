@@ -53,6 +53,7 @@ component extends="org.Hibachi.Hibachi" output="false" {
 	// @hint this method always fires one time, even if the request is coming from an outside application.
 	public void function onEveryRequest() {
 		
+		
 	}
 	
 	// @hint this will fire 1 time if you are running the application.  If the application is bootstraped then it won't run
@@ -64,7 +65,7 @@ component extends="org.Hibachi.Hibachi" output="false" {
 	
 	public void function onFirstRequest() {
 		// Version
-		var versionFile = getDirectoryFromPath(getCurrentTemplatePath()) & "version.txt";
+		var versionFile = getDirectoryFromPath(getCurrentTemplatePath()) & "version.txt.cfm";
 		if( fileExists( versionFile ) ) {
 			request.slatwallScope.setApplicationValue("version", trim(fileRead(versionFile)));
 		} else {
@@ -89,12 +90,16 @@ component extends="org.Hibachi.Hibachi" output="false" {
 	
 	public void function onUpdateRequest() {
 		// Setup Default Data... Not called on soft reloads.
-		getBeanFactory().getBean("dataService").loadDataFromXMLDirectory(xmlDirectory = ExpandPath("/Slatwall/config/dbdata"));
+		getBeanFactory().getBean("hibachiDataService").loadDataFromXMLDirectory(xmlDirectory = ExpandPath("/Slatwall/config/dbdata"));
 		writeLog(file="Slatwall", text="General Log - Default Data Has Been Confirmed");
 		
 		// Clear the setting cache so that it can be reloaded
 		getBeanFactory().getBean("hibachiCacheService").resetCachedKeyByPrefix('setting_');
 		writeLog(file="Slatwall", text="General Log - Setting Cache has been cleared because of updated request");
+		
+		// Clear the setting meta cache so that it can be reloaded
+        	getBeanFactory().getBean("hibachiCacheService").resetCachedKeyByPrefix('settingService_');
+        	writeLog(file="Slatwall", text="General Log - Setting Meta cache has been cleared because of updated request");
 		
 		// Run Scripts
 		getBeanFactory().getBean("updateService").runScripts();
@@ -134,7 +139,7 @@ component extends="org.Hibachi.Hibachi" output="false" {
 		if ( arguments.subsystem eq '' ) {
 			return '';
 		}
-		if ( !listFindNoCase('admin,frontend,public', arguments.subsystem) ) {
+		if ( !listFindNoCase('admin,api,frontend,public', arguments.subsystem) ) {
 			return 'integrationServices/' & arguments.subsystem & '/';
 		}
 		return arguments.subsystem & '/';

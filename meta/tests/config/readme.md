@@ -1,1 +1,0 @@
-This directory is designed to hold config information so that functional test can run against the correct settings.
