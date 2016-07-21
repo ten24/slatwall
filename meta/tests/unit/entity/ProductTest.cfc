@@ -2825,7 +2825,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var promotionPeriod = promotion.getPromotionPeriods()[1];
 		var promotionReward = promotionPeriod.getPromotionRewards()[1];
 		sku.addPromotionReward(promotionReward);
-		ormflush();
+		
 		
 		//reset setting skuCurrency		
 		var settingData = {
@@ -2834,6 +2834,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			settingValue = "CNY"
 		};
 		var settingEntity = createPersistedTestEntity('Setting',settingData);
+		
+		ormflush();
 		
 		var resultResetCode = mockProduct.getSalePriceByCurrencyCode('CNY');
 		assertEquals(7, resultResetCode);		
