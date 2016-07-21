@@ -97,6 +97,7 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 			include "RatesRequestTemplate.cfm";
         }
         var JsonResponse = getJsonResponse(jsonPacket);
+        
         var responseBean = getShippingRatesResponseBean(JsonResponse);
 		
 		return responseBean;
@@ -114,12 +115,12 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 	}
 	
 	private any function getShippingProcessShipmentResponseBean(struct jsonResponse){
-		var responseBean = new Slatwall.model.transient.fulfillment.ShippingProcessShipmentResponseBean();
+		var responseBean = getTransient('ShippingProcessShipmentResponseBean');
 		responseBean.setData(arguments.jsonResponse);
 		if(
-			!structKeyExists(responseBean,'data') || 
+			isNull(responseBean.getData()) || 
 			(
-				structKeyExists(responseBean,'data') && structKeyExists(responseBean.data,'Fault')
+				!isNull(responseBean.getData()) && structKeyExists(responseBean.getData(),'Fault')
 			) 
 		) {
 			responseBean.addMessage(messageName="communicationError", message="An unexpected communication error occured, please notify system administrator.");
@@ -157,22 +158,20 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 	
 	
 	public any function getShippingRatesResponseBean(required any JsonResponse){
-		var responseBean = new Slatwall.model.transient.fulfillment.ShippingRatesResponseBean();
+		var responseBean = getTransient('ShippingRatesResponseBean');
 		responseBean.setData(arguments.JsonResponse);
-		
-		if(!structKeyExists(responseBean,'data') || 
+			
+		if(isNull(responseBean.getData()) || 
 			(
-				structKeyExists(responseBean,'data') && structKeyExists(responseBean.data,'Fault')
+				!isNull(responseBean.getData()) && structKeyExists(responseBean.getData(),'Fault')
 			) 
 		) {
+			
 			responseBean.addMessage(messageName="communicationError", message="An unexpected communication error occured, please notify system administrator.");
 			// If XML fault then log error
 			responseBean.addError("unknown", "An unexpected communication error occured, please notify system administrator.");
 		} else {
-			
-			
 			if(!responseBean.hasErrors()) {
-				
 				for(var i=1; i<=arrayLen(responseBean.getData().RateResponse.RatedShipment); i++) {
 					responseBean.addShippingMethod(
 						shippingProviderMethod=responseBean.getData().RateResponse.RatedShipment[i].Service.code,
@@ -181,6 +180,7 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 				}
 			}
 		}
+		
 
 		return responseBean;
 	}
