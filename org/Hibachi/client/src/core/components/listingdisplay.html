@@ -60,7 +60,15 @@
                     </div>
                 </div>
             </div>
-            <div class="table-responsive">
+            <div style="margin-left:5px; margin-top:10px" data-ng-if="swListingDisplay.showPagination == 'top' || swListingDisplay.showPagination == 'both'">
+                <sw-pagination-bar
+                        data-ng-if="swListingDisplay.paginator &&
+                                    swListingDisplay.collectionData.recordsCount &&
+                                    swListingDisplay.collectionPromise.$$state.status !== 0"
+                        data-paginator="swListingDisplay.paginator">
+                </sw-pagination-bar>
+            </div>
+            <div class="table-responsive" sw-loading="swListingDisplay.collectionData">
                 <table class="table table-bordered s-detail-content-table">
                     <thead>
                         <tr>
