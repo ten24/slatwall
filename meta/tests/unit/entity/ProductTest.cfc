@@ -2825,7 +2825,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var promotionPeriod = promotion.getPromotionPeriods()[1];
 		var promotionReward = promotionPeriod.getPromotionRewards()[1];
 		sku.addPromotionReward(promotionReward);
-		
+		ormFlush();
 		
 		//reset setting skuCurrency		
 		var settingData = {
