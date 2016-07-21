@@ -62,7 +62,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" outpu
 
 		var url ='http://' & integration.setting('companyName');
 
-		// remove starting slash if it exists to prevent double slashs
+		// remove starting slash if it exists to prevent double slashes
 		endpoint = REReplace(endpoint, "^\/", "");
 		if(integration.setting('testingFlag')){
 			url = url & '.send24dev.com/index.cfm/api/' & endpoint & '?apiKey=' & integration.setting('apikeyDev') &  '&throw=1';
