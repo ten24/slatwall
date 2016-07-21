@@ -24,9 +24,42 @@ class ListingService{
         return this.listingDisplays[listingID];
     }
 
+    public getListingPrimaryEntityName = (listingID) =>{
+        return this.getListing(listingID).baseEntityName || this.getListing(listingID).collectionObject; 
+    }
+
+    public getListingEntityPrimaryIDPropertyName = (listingID) =>{
+        return this.$hibachi.getPrimaryIDPropertyNameByEntityName(this.getListingPrimaryEntityName(listingID)); 
+    }
+
+    public getListingPageRecordIndexByPageRecord = (listingID, pageRecordToCompare) =>{
+        var pageRecords = this.getListingPageRecords(listingID); 
+        var primaryIDPropertyName = this.getListingEntityPrimaryIDPropertyName(listingID); 
+        for(var j = 0; j<pageRecords.length; j++){
+            var pageRecord = pageRecords[j]; 
+            if( pageRecord[primaryIDPropertyName] == pageRecordToCompare[primaryIDPropertyName] ){
+                return j; 
+            }
+        }
+        return -1; 
+    }
+
     public getListingPageRecords = (listingID) =>{
         return this.getListing(listingID).collectionData.pageRecords; 
     }
+
+    //needs a consideration of strategy for doing this for other use cases
+    public insertListingPageRecord = (listingID, pageRecord) =>{
+        this.getListingPageRecords(listingID).push(pageRecord); 
+    }
+
+    public removeListingPageRecord = (listingID, pageRecord) =>{
+        var pageRecords = this.getListingPageRecords(listingID); 
+        if(this.getListingPageRecordIndexByPageRecord(listingID, pageRecord) != -1){
+            return pageRecords.splice(this.getListingPageRecordIndexByPageRecord(listingID, pageRecord), 1)[0];//this will always be an array of one element 
+        }
+    }
+
     public getCollection = (listingID) =>{
         return this.getListing(listingID).getCollection(); 
     }

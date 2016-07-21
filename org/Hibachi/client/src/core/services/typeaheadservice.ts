@@ -20,7 +20,7 @@ class TypeaheadService{
 
     removeSelection = (key:string, index:number) => {
         if(angular.isDefined(this.typeaheadData[key])){
-            this.typeaheadData[key].splice(index,1);
+            return this.typeaheadData[key].splice(index,1)[0];//this will always be an array of 1 element
         }
     }
     
@@ -28,7 +28,8 @@ class TypeaheadService{
         return this.typeaheadData[key] || [];
     }
     
-    //strips out dangerous directives that cause infinite compile errors
+    //strips out dangerous directives that cause infinite compile errors 
+    // - this probably belongs in a different service but is used for typeahead only at the moment
     stripTranscludedContent = (transcludedContent) => {
         for(var i=0; i < transcludedContent.length; i++){
             if(angular.isDefined(transcludedContent[i].localName) && 

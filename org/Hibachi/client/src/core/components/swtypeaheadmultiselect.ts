@@ -17,11 +17,14 @@ class SWTypeaheadMultiselectController {
     public hasAddButtonFunction:boolean;
     public viewFunction;
     public hasViewFunction:boolean;
+    public inListingDisplay:boolean; 
+    public listingId:string; 
       
     // @ngInject
 	constructor(private $scope, 
                 private $transclude, 
                 private $hibachi, 
+                private listingService, 
                 private typeaheadService,
                 private utilityService, 
                 private collectionConfigService
@@ -47,10 +50,17 @@ class SWTypeaheadMultiselectController {
     //do these need to be passed in? 
     public addSelection = (item) => {
         this.typeaheadService.addSelection(this.typeaheadDataKey, item);
+        if(this.inListingDisplay){
+            this.listingService.insertListingPageRecord(this.listingId, item);
+        }
     }
     
     public removeSelection = (index) => {
-        this.typeaheadService.removeSelection(this.typeaheadDataKey, index);
+        var itemRemoved = this.typeaheadService.removeSelection(this.typeaheadDataKey, index);
+        console.log("itemRemoved", itemRemoved)
+        if(this.inListingDisplay){
+            this.listingService.removeListingPageRecord(this.listingId, itemRemoved); 
+        }
     }
     
     public getSelections = () =>{
@@ -75,30 +85,34 @@ class SWTypeaheadMultiselect implements ng.IDirective{
         ,dataTargetIndex:"=?"
         ,addButtonFunction:"&?" 
         ,viewFunction:"&?"
+        ,inListingDisplay:"=?"
+        ,listingId:"@?"
 	};
     
 	public controller=SWTypeaheadMultiselectController;
 	public controllerAs="swTypeaheadMultiselect";
 
     // @ngInject
-	constructor(public $compile, public typeaheadService, private corePartialsPath,hibachiPathBuilder){
+	constructor(public $compile, public scopeService, public typeaheadService, private corePartialsPath,hibachiPathBuilder){
 		this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "typeaheadmultiselect.html";
 	}
 
 	public static Factory(){
 		var directive:ng.IDirectiveFactory = (
             $compile
+            ,scopeService
             ,typeaheadService
 			,corePartialsPath
             ,hibachiPathBuilder
 
 		)=> new SWTypeaheadMultiselect(
             $compile
+            ,scopeService
             ,typeaheadService
             ,corePartialsPath
             ,hibachiPathBuilder
 		);
-		directive.$inject = ["$compile","typeaheadService","corePartialsPath",'hibachiPathBuilder'];
+		directive.$inject = ["$compile","scopeService","typeaheadService","corePartialsPath",'hibachiPathBuilder'];
 		return directive;
 	}
     
@@ -116,6 +130,12 @@ class SWTypeaheadMultiselect implements ng.IDirective{
                     $scope.swTypeaheadMultiselect.viewFunction = true;  
                 } else {
                     $scope.swTypeaheadMultiselect.viewFunction = false; 
+                }
+                if(angular.isUndefined( $scope.swTypeaheadMultiselect.inListingDisplay)){
+                    $scope.swTypeaheadMultiselect.inListingDisplay = false; 
+                }
+                if($scope.swTypeaheadMultiselect.inListingDisplay && this.scopeService.hasParentScope($scope, "swListingDisplay")) {
+                    $scope.swTypeaheadMultiselect.listingId = this.scopeService.locateParentScope( $scope, "swListingDisplay").tableID;
                 }
             },
             post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
