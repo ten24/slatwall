@@ -308,7 +308,8 @@ class SWForm implements ng.IDirective {
             onError: "@?",
             hideUntil: "@?",
             isDirty:"=?",
-            inputAttributes:"@?"
+            inputAttributes:"@?",
+            eventHandlers:"@?"
     };
 
     /**
