@@ -71,16 +71,19 @@ component extends="HibachiService" accessors="true" output="false" {
 						continue;
 					}
 
-					// Create a new workflowTriggerHistory to be logged
-					var workflowTriggerHistory = this.newWorkflowTriggerHistory();
+					if(workflowTrigger.getSaveTriggerHistoryFlag() == true) {
 
-					//Attach workflowTrigger to workflowTriggerHistory
-					workflowTriggerHistory.setWorkflowTrigger(workflowTrigger);
-					workflowTriggerHistory.setStartTime(now());
+						// Create a new workflowTriggerHistory to be logged
+						var workflowTriggerHistory = this.newWorkflowTriggerHistory();
 
-					// Persist the info to the DB
-					workflowTriggerHistory = this.saveWorkflowTriggerHistory(workflowTriggerHistory);
-					getHibachiDAO().flushORMSession();
+						//Attach workflowTrigger to workflowTriggerHistory
+						workflowTriggerHistory.setWorkflowTrigger(workflowTrigger);
+						workflowTriggerHistory.setStartTime(now());
+
+						// Persist the info to the DB
+						workflowTriggerHistory = this.saveWorkflowTriggerHistory(workflowTriggerHistory);
+						getHibachiDAO().flushORMSession();
+					}
 
 					try {
 						var processData = {};
@@ -101,22 +104,27 @@ component extends="HibachiService" accessors="true" output="false" {
 
 							this.processWorkflow(workflowTrigger.getWorkflow(), processData, 'execute');
 						}
-
-						// Update the workflowTriggerHistory
-						workflowTriggerHistory.setSuccessFlag(true);
-						workflowTriggerHistory.setResponse("");
+						if (!isNull(workflowTriggerHistory)) {
+							// Update the workflowTriggerHistory
+							workflowTriggerHistory.setSuccessFlag(true);
+							workflowTriggerHistory.setResponse("");
+						}
 					} catch (any e){
-						// Update the workflowTriggerHistory
-						workflowTriggerHistory.setSuccessFlag(false);
-						workflowTriggerHistory.setResponse(e.Message);
+						if (!isNull(workflowTriggerHistory)) {
+							// Update the workflowTriggerHistory
+							workflowTriggerHistory.setSuccessFlag(false);
+							workflowTriggerHistory.setResponse(e.Message);
+						}
 					}
 
-					// Set the end for history
-					workflowTriggerHistory.setEndTime(now());
+					if (!isNull(workflowTriggerHistory)) {
+						// Set the end for history
+						workflowTriggerHistory.setEndTime(now());
 
-					// Persist the info to the DB
-					workflowTriggerHistory = this.saveWorkflowTriggerHistory(workflowTriggerHistory);
-					getHibachiDAO().flushORMSession();
+						// Persist the info to the DB
+						workflowTriggerHistory = this.saveWorkflowTriggerHistory(workflowTriggerHistory);
+						getHibachiDAO().flushORMSession();
+					}
 				}
 			//}
 		}
@@ -135,22 +143,23 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 
 	public any function runWorkflowsByScheduleTrigger(required any workflowTrigger) {
-		// Create a new workflowTriggerHistory to be logged
-
-		var workflowTriggerHistory = this.newWorkflowTriggerHistory();
-
-
 
 		//Change WorkflowTrigger runningFlag to TRUE
 		getWorkflowDAO().updateWorkflowTriggerRunning(workflowTriggerID=arguments.workflowTrigger.getWorkflowTriggerID(), runningFlag=true);
 
-		//Attach workflowTrigger to workflowTriggerHistory
-		workflowTriggerHistory.setWorkflowTrigger(arguments.workflowTrigger);
-		workflowTriggerHistory.setStartTime(now());
+		if(workflowTrigger.getSaveTriggerHistoryFlag() == true){
+			// Create a new workflowTriggerHistory to be logged
+			var workflowTriggerHistory = this.newWorkflowTriggerHistory();
+			//Attach workflowTrigger to workflowTriggerHistory
+			workflowTriggerHistory.setWorkflowTrigger(arguments.workflowTrigger);
+			workflowTriggerHistory.setStartTime(now());
 
-		// Persist the info to the DB
-		workflowTriggerHistory = this.saveWorkflowTriggerHistory(workflowTriggerHistory);
-		getHibachiDAO().flushORMSession();
+			// Persist the info to the DB
+			workflowTriggerHistory = this.saveWorkflowTriggerHistory(workflowTriggerHistory);
+			getHibachiDAO().flushORMSession();
+		}
+
+
 
 		try{
 
@@ -198,25 +207,29 @@ component extends="HibachiService" accessors="true" output="false" {
 				}
 			}
 
-
-			// Update the workflowTriggerHistory
-			workflowTriggerHistory.setSuccessFlag( true );
-			workflowTriggerHistory.setResponse( "" );
+			if(!isNull(workflowTriggerHistory)){
+				// Update the workflowTriggerHistory
+				workflowTriggerHistory.setSuccessFlag( true );
+				workflowTriggerHistory.setResponse( "" );
+			}
 
 		} catch(any e){
-			// Update the workflowTriggerHistory
-			workflowTriggerHistory.setSuccessFlag( false );
-			workflowTriggerHistory.setResponse( e.Message );
+			if(!isNull(workflowTriggerHistory)) {
+				// Update the workflowTriggerHistory
+				workflowTriggerHistory.setSuccessFlag(false);
+				workflowTriggerHistory.setResponse(e.Message);
+			}
 		}
 
 		//Change WorkflowTrigger runningFlag to FALSE
 		getWorkflowDAO().updateWorkflowTriggerRunning(workflowTriggerID=arguments.workflowTrigger.getWorkflowTriggerID(), runningFlag=false);
 
-		// Set the end for history
-		workflowTriggerHistory.setEndTime(now());
-
-		// Persist the info to the DB
-		workflowTriggerHistory = this.saveWorkflowTriggerHistory(workflowTriggerHistory);
+		if(!isNull(workflowTriggerHistory)) {
+			// Set the end for history
+			workflowTriggerHistory.setEndTime(now());
+			// Persist the info to the DB
+			workflowTriggerHistory = this.saveWorkflowTriggerHistory(workflowTriggerHistory);
+		}
 
 		// Update the taskSechedules nextRunDateTime
 		workflowTrigger.setNextRunDateTime( arguments.workflowTrigger.getSchedule().getNextRunDateTime(arguments.workflowTrigger.getStartDateTime(), arguments.workflowTrigger.getEndDateTime() ) );
@@ -444,6 +457,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			}else{
 				var comparisonOperator = getComparisonOperator(workflowCondition.comparisonOperator);
 				if(len(comparisonOperator)){
+					workflowCondition.propertyIdentifier = Replace(workflowCondition.propertyIdentifier, '_','.', 'ALL');
 					workflowConditionGroupString &= " #logicalOperator# #getHibachiValidationService().invokeMethod('validate_#comparisonOperator#',{1=arguments.entity, 2=listRest(workflowCondition.propertyIdentifier,'.'), 3=workflowCondition.value})# " ;	
 				}
 			}

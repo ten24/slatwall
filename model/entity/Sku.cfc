@@ -1,4 +1,4 @@
-/*
+ /*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -993,11 +993,15 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		if(isNull(arguments.baseProductType)){
 			arguments.baseProductType = "";
 		}
-
+		
+		if(!isNull(getSkuName())){
+			skuDefinition = "Name: #getSkuName()#<br>";
+		}
+		
 		switch (arguments.baseProductType)
 		{
 			case "merchandise":
-				skuDefinition = getDao('skuDao').getSkuDefinitionForMerchandiseBySkuID(getSkuID());
+				skuDefinition = skuDefinition & getDao('skuDao').getSkuDefinitionForMerchandiseBySkuID(getSkuID());
 	    		break;
 
 	    	case "subscription":
@@ -1009,7 +1013,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			case "event":
 				var configs = this.getLocationConfigurations();
 				for(config in configs){
-					skuDefinition = variables.skuDefinition & config.getlocationPathName() & " (#config.getLocationConfigurationName()#) <br>";
+					skuDefinition = skuDefinition & config.getlocationPathName() & " (#config.getLocationConfigurationName()#) <br>";
 				}
 				break;
 

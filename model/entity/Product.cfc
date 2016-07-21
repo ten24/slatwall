@@ -396,7 +396,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 				}
 				thisImage.description = "";
 				if(!isNull(getImages()[i].getImageDescription())) {
-					thisImage.name = getImages()[i].getImageDescription();
+					thisImage.description = getImages()[i].getImageDescription();
 				}
 				thisImage.resizedImagePaths = [];
 				for(var s=1; s<=arrayLen(arguments.resizeSizes); s++) {
@@ -690,7 +690,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		// If we have a locationID
 		if( structKeyExists( arguments, "locationID") ) {
 			if( structKeyExists(variables[ arguments.quantityType ].locations, arguments.locationID) ) {
-				variables[ arguments.quantityType ].locations[ arguments.locationID ];
+				return variables[ arguments.quantityType ].locations[ arguments.locationID ];
 			}
 			return 0;
 		}

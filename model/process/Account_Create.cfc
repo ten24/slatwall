@@ -61,6 +61,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="createAuthenticationFlag" hb_sessionDefault="1";
 	property name="password";
 	property name="passwordConfirm";
+	property name="accessID";
 	
 	public boolean function getCreateAuthenticationFlag() {
 		if(!structKeyExists(variables, "createAuthenticationFlag")) {

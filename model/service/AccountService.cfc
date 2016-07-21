@@ -276,6 +276,16 @@ component extends="HibachiService" accessors="true" output="false" {
 
 			arguments.account.setPrimaryEmailAddress( accountEmailAddress );
 		}
+		
+		if(!arguments.account.hasErrors() && !isNull(processObject.getAccessID())) {
+			var subscriptionUsageBenefitAccountCreated = false;
+			var access = getService("accessService").getAccess(processObject.getAccessID());
+		
+			if(isNull(access)) {
+				//return access code error
+				arguments.account.addError("accessID", rbKey('validate.account.accessID'));
+			}
+		}
 
 		// Save & Populate the account so that custom attributes get set
 		arguments.account = this.saveAccount(arguments.account, arguments.data);
@@ -294,6 +304,11 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		// Call save on the account now that it is all setup
 		arguments.account = this.saveAccount(arguments.account);
+		
+		// if all validation passed and setup accounts subscription benefits based on access 
+		if(!arguments.account.hasErrors() && !isNull(access)) {
+			subscriptionUsageBenefitAccountCreated = getService("subscriptionService").createSubscriptionUsageBenefitAccountByAccess(access, arguments.account);
+		}
 
 		return arguments.account;
 	}

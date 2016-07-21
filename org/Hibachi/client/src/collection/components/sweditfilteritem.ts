@@ -225,7 +225,9 @@ class SWEditFilterItem{
                     }
 
                     if((selectedFilterProperty.propertyIdentifier.match(/_/g) || []).length > 1 ){
-                        var propertyIdentifierJoins = selectedFilterProperty.propertyIdentifier.substring(1, selectedFilterProperty.propertyIdentifier.indexOf('.'));
+                        var propertyIdentifierStart = (selectedFilterProperty.propertyIdentifier.charAt(0)  == '_') ? 1 : 0;
+                        var propertyIdentifierEnd = (selectedFilterProperty.propertyIdentifier.indexOf('.') == -1) ? selectedFilterProperty.propertyIdentifier.length : selectedFilterProperty.propertyIdentifier.indexOf('.');
+                        var propertyIdentifierJoins = selectedFilterProperty.propertyIdentifier.substring(propertyIdentifierStart, propertyIdentifierEnd);
                         var propertyIdentifierParts = propertyIdentifierJoins.split('_');
                         var  current_collection = $hibachi.getEntityExample(propertyIdentifierParts[0].charAt(0).toUpperCase() + propertyIdentifierParts[0].slice(1));
                         var _propertyIdentifier = '';
@@ -257,15 +259,16 @@ class SWEditFilterItem{
                         }
                         scope.collectionConfig.joins = joins;
 
-                        if(angular.isUndefined(scope.collectionConfig.groupBys) || scope.collectionConfig.groupBys.split(',').length != scope.collectionConfig.columns.length){
+                        if (angular.isDefined(scope.collectionConfig.columns) && (angular.isUndefined(scope.collectionConfig.groupBys) || scope.collectionConfig.groupBys.split(',').length != scope.collectionConfig.columns.length)) {
                             var groupbyArray = angular.isUndefined(scope.collectionConfig.groupBys) ? [] : scope.collectionConfig.groupBys.split(',');
-                            for(var column = 0; column < scope.collectionConfig.columns.length; column++){
-                                if(groupbyArray.indexOf(scope.collectionConfig.columns[column].propertyIdentifier) == -1){
+                            for (var column = 0; column < scope.collectionConfig.columns.length; column++) {
+                                if (groupbyArray.indexOf(scope.collectionConfig.columns[column].propertyIdentifier) == -1) {
                                     groupbyArray.push(scope.collectionConfig.columns[column].propertyIdentifier);
                                 }
                             }
-                            scope.collectionConfig.groupBys =  groupbyArray.join(',');
+                            scope.collectionConfig.groupBys = groupbyArray.join(',');
                         }
+
 
                     }
 
@@ -349,12 +352,17 @@ class SWEditFilterItem{
                                         filterItem.value = decimalValueString;
                                     }
                                 }
+                                if(angular.isDefined(selectedFilterProperty.aggregate)){
+                                    filterItem.aggregate = selectedFilterProperty.aggregate;
+                                }
                                 filterItem.displayValue = filterItem.value;
                                 break;
 
                         }
 
                         switch(selectedFilterProperty.fieldtype){
+                            case 'one-to-many':
+                            case 'many-to-many':
                             case 'many-to-one':
                                 filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
                                 //is null, is not null
@@ -363,14 +371,14 @@ class SWEditFilterItem{
                                 }
                                 filterItem.displayValue = filterItem.value;
                                 break;
-                            case 'one-to-many':
-
-                            case 'many-to-many':
-                                filterItem.collectionID = selectedFilterProperty.selectedCollection.collectionID;
-                                filterItem.displayValue = selectedFilterProperty.selectedCollection.collectionName;
-                                filterItem.criteria = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
-
-                                break;
+                            //case 'one-to-many':
+                            //
+                            //case 'many-to-many':
+                            //    filterItem.collectionID = selectedFilterProperty.selectedCollection.collectionID;
+                            //    filterItem.displayValue = selectedFilterProperty.selectedCollection.collectionName;
+                            //    filterItem.criteria = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+                            //
+                            //    break;
                         }
 
                         if(angular.isUndefined(filterItem.displayValue)){
