@@ -98,6 +98,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	public boolean function getLoggedInFlag() {
 		return getSession().getLoggedInFlag();
 	}
+	
 	/**
 	 * Because we are not removing the account from the session, logged in flag needs to
 	 * be checked before checking if they are an admin account.

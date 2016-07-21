@@ -238,17 +238,17 @@ component output="false" accessors="true" extends="HibachiService"  {
 		currentSession.setLoggedOutDateTime(DateTimeFormat(now()));
 		currentSession.setLoggedInFlag(false);
 		
-		//Remove the cookies.
+		//Remove the cookies. Forgets the user if they intentionally click logout (on public computer for example)
 		if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#-NPSID")){
-			structDelete(cookie, "#getApplicationValue('applicationKey')#-NPSID");
+			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-NPSID", value='', expires="#now()#");
 		}
 		
 		if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#-PSID")){
-			structDelete(cookie, "#getApplicationValue('applicationKey')#-PSID");
+			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-PSID", value='', expires="#now()#");
 		}
 		
 		if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#-ExtendedNPSID")){
-			structDelete(cookie, "#getApplicationValue('applicationKey')#-ExtendedNPSID");
+			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-ExtendedPSID", value='', expires="#now()#");
 		}
 		
 		// Make sure that this logout is persisted

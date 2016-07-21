@@ -232,7 +232,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	public void function authorizeLogin(required struct rc) {
 		getAccountService().processAccount(rc.$.slatwall.getAccount(), rc, "login");
-
+		
 		if(getHibachiScope().getLoggedInFlag()) {
 			if(structKeyExists(rc, "sRedirectURL")) {
 				getFW().redirectExact(rc.sRedirectURL);
