@@ -122,9 +122,9 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 				structKeyExists(responseBean,'data') && structKeyExists(responseBean.data,'Fault')
 			) 
 		) {
-			addMessage(messageName="communicationError", message="An unexpected communication error occured, please notify system administrator.");
+			responseBean.addMessage(messageName="communicationError", message="An unexpected communication error occured, please notify system administrator.");
 			// If XML fault then log error
-			addError("unknown", "An unexpected communication error occured, please notify system administrator.");
+			responseBean.addError("unknown", "An unexpected communication error occured, please notify system administrator.");
 		} else {
 			// Log all messages from UPS into the response bean
 			responseBean.addMessage(
