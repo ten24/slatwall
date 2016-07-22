@@ -66,7 +66,7 @@ class SWFormResponseListingController {
             this.paginator.pageEnd = response.data.pageRecordsEnd;
             for(var i = 0; i < this.pageRecords.length; i++){
                 if(angular.isDefined(this.pageRecords[i].createdDateTime)){
-                    this.pageRecords[i].createdDateTime = this.dateFilter(this.pageRecords[i].createdDateTime,"MMM dd, yyyy - h:m a");
+                    this.pageRecords[i].createdDateTime = this.dateFilter(this.pageRecords[i].createdDateTime,"MMM dd, yyyy - hh:mm a");
                 }
             }
         }, (response)=>{
