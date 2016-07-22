@@ -253,7 +253,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			variables.templateOptions = getService("ProductService").getProductTemplates();
 		}
 		return variables.templateOptions;
-	}
+	} 
 
 	public any function getImages() {
 		return variables.productImages;
