@@ -119,7 +119,7 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 			if (isBrandURLKey) {
 				var brand = arguments.slatwallScope.getService("brandService").getBrandByURLTitle(arguments.contenturlTitlePath, true);
 				if(isNull(brand)){
-					content = render404(arguments.slatwallScope,site);
+					var content = render404(arguments.slatwallScope,site);
 				}
 				arguments.slatwallScope.setBrand( brand );
 				entityName = 'brand';
@@ -129,7 +129,7 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 			if(isProductURLKey) {
 				var product = arguments.slatwallScope.getService("productService").getProductByURLTitle(arguments.contenturlTitlePath, true);
 				if(isNull(product)){
-					content = render404(arguments.slatwallScope,site);
+					var content = render404(arguments.slatwallScope,site);
 				}
 				arguments.slatwallScope.setProduct( product );	
 				entityName = 'product';
@@ -139,7 +139,7 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 			if (isProductTypeURLKey) {
 				var productType = arguments.slatwallScope.getService("productService").getProductTypeByURLTitle(arguments.contenturlTitle, true);
 				if(isNull(productType)){
-					content = render404(arguments.slatwallScope,site);
+					var content = render404(arguments.slatwallScope,site);
 				}
 				arguments.slatwallScope.setProductType( productType );
 				entityName = 'productType';
