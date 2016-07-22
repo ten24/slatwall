@@ -130,6 +130,46 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(resultMissingStructure, '<div></div>,');
 	}
 	
+	/**
+	*function tested under Model -> Service -> HibachiUtilityService <br>
+	* 3 Tests: IsPrimaryKey, NotPrimaryKey, NotExist
+	*
+	*
+	*/
+	public void function queryToStructOfStructuresTest_IsPrimaryKey() {
+		//testing returns if PK
+		var testQuery = queryNew("id,name,sex", "Integer,Varchar,Varchar", 
+				[ 
+					[1, "One", "F"], 
+					[2, "Two", "M"] ,
+					[3, "Three", "MF"]
+				]); 
+		var expectedStructure = {
+			1 = '',
+			2 = '',
+			3 = ''
+		}; 
+		var resultStructure = variables.service.queryToStructOfStructures(testQuery, "id");
+		assertEquals(resultStructure, expectedStructure);
+	}
+	public void function queryToStructOfStructuresTest_NotPrimaryKey() {
+		//testing returns if not the PK
+		var testQuery = queryNew("id,name,sex", "Integer,Varchar,Varchar", 
+				[ 
+					[1, "One", "F"], 
+					[2, "Two", "M"] ,
+					[3, "Three", "MF"]
+				]); 
+		var expectedStructure = {
+			one = 'fdf',
+			two = '',
+			Three = ''
+		}; 
+		var resultStructure = variables.service.queryToStructOfStructures(testQuery, "Name");
+
+		assertEquals(expectedStructure, resultStructure);
+		//Skip testing the non-existed attribute 
+	}	
 	
 	public void function lcaseStructKeys_lcases_structure_keys_at_top_level() {
 		var data = {};
