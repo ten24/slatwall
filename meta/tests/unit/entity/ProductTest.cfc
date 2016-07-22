@@ -2844,7 +2844,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				}]
 		};
 		var promotion = createPersistedTestEntity('promotion',promotionData);
-		
+
 		//reset setting skuCurrency
 		//TODO: try to change the default currencyCode, but fails	
 		var settingData = {
@@ -2853,7 +2853,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			settingValue = "CNY"
 		};
 		var settingEntity = createPersistedTestEntity('Setting',settingData);
-		
+
 		try {
 			resultResetCode = mockProduct.getSalePriceByCurrencyCode('CNY');
 		} catch (any e) {
