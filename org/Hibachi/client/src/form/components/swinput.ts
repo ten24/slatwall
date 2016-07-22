@@ -8,7 +8,24 @@ import {SWFormController} from "./swForm";
 import {SWPropertyDisplayController} from "./swpropertydisplay";
 import {SWFPropertyDisplayController} from "./swfpropertydisplay";
 import {SWFormFieldController} from "./swformfield";
-
+//defines possible eventoptions
+type EventHandler = "blur" |
+	"change" |
+	"click" |
+	"copy" |
+	"cut" |
+	"dblclick" |
+	"focus" |
+	"keydown" |
+	"keypress" |
+	"keyup" |
+	"mousedown" |
+	"mouseenter" |
+	"mouseleave" |
+	"mousemove" |
+	"mouseover" |
+	"mouseup" |
+	"paste";
 class SWInputController{
 	public propertyDisplay:any;
 	public form:ng.IFormController;
@@ -27,21 +44,28 @@ class SWInputController{
 	public edit:boolean;
 	public editing:boolean;
 	public name:string;
+	public value:any;
+
+	public eventHandlers:string="";
+	public eventHandlersArray:Array<EventHandler>;
+	public eventHandlerTemplate:string;
 
 	//@ngInject
 	constructor(
 		public $log,
 		public $compile,
         public $hibachi,
+		public $injector,
 		public utilityService,
         public rbkeyService,
-		public $injector
+		public observerService
 	){
 		this.utilityService = utilityService;
 		this.$hibachi = $hibachi;
 		this.rbkeyService = rbkeyService;
 		this.$log = $log;
 		this.$injector = $injector;
+		this.observerService = observerService;
 	}
 
 	public getValidationDirectives = ()=>{
@@ -107,12 +131,21 @@ class SWInputController{
 			}
 		});
 
-		//now that we have all related validations for the specific form context that we are working with collection the directives we need
-		//getValidationDirectiveByType();
-
-
 		return spaceDelimitedList;
 	};
+
+	public onEvent = (event:Event,eventName:string):void=>{
+		let customEventName = this.swForm.name+this.name+eventName;
+		let data = {
+			event:event,
+			eventName:eventName,
+			form:this.form,
+			swForm:this.swForm,
+			swInput:this,
+			inputElement:$('input').first()[0]
+		};
+		this.observerService.notify(customEventName,data);
+	}
 
 	public getTemplate = ()=>{
 		var template = '';
@@ -150,7 +183,7 @@ class SWInputController{
 
 		if(acceptedFieldTypes.indexOf(this.fieldType.toLowerCase()) >= 0){
 			template = '<input type="'+this.fieldType+'" class="'+this.class+'" '+
-				'ng-model="swInput.object.data[swInput.property]" '+
+				'ng-model="swInput.value" '+
 				'ng-disabled="swInput.editable === false" '+
 				'ng-show="swInput.editing" '+
 				'name="'+this.property+'" ' +
@@ -158,9 +191,10 @@ class SWInputController{
 				validations + currency +
 				'id="swinput'+this.swForm.name+this.name+'" '+
 				'style="'+style+'"'+
-				this.inputAttributes;
-
+				this.inputAttributes+
+				this.eventHandlerTemplate;
 		}
+
 		var dateFieldTypes = ['date','datetime','time'];
 		if(dateFieldTypes.indexOf(this.fieldType.toLowerCase()) >= 0){
 			template = template + 'datetime-picker ';
@@ -208,10 +242,18 @@ class SWInputController{
 		this.editing = this.editing || true;
 		this.fieldType = this.fieldType || "text";
 
-
 		this.inputAttributes = this.inputAttributes || "";
 
 		this.inputAttributes = this.utilityService.replaceAll(this.inputAttributes,"'",'"');
+		this.value = this.utilityService.getPropertyValue(this.object,this.property);
+
+		this.eventHandlersArray = <Array<EventHandler>>this.eventHandlers.split(',');
+
+		this.eventHandlerTemplate = "";
+		for(var i in this.eventHandlersArray){
+			var eventName = this.eventHandlersArray[i];
+			this.eventHandlerTemplate += ` ng-`+eventName+`=swInput.onEvent($event,'`+eventName+`')`;
+		}
 	}
 }
 
@@ -249,7 +291,8 @@ class SWInput{
 		property:"@?",
 		inputAttributes:"@?",
 		type:"@?",
-		editing:"=?"
+		editing:"=?",
+		eventHandlers:"@?"
 	}
 	public controller=SWInputController;
 	public controllerAs = "swInput";

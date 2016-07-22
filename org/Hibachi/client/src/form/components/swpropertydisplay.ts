@@ -94,7 +94,7 @@ class SWPropertyDisplayController {
             this.optionsArguments = {};
         }
 
-        this.applyFilter = function(model, filter) {
+        this.applyFilter = (model, filter)=> {
             try{
                 return this.$filter(filter)(model)
             }catch (e){
@@ -128,7 +128,7 @@ class SWPropertyDisplayController {
 			let optionsArray = [];
 			optionsArray = this.options.toString().split(",");
 
-			angular.forEach(optionsArray, function(o){
+			angular.forEach(optionsArray, (o)=>{
 				let newOption:any = {
 					name:"",
 					value:""
@@ -138,25 +138,10 @@ class SWPropertyDisplayController {
 				newOption.value= o;
 
 				this.optionValues.push(newOption);
-			}, this);
+			});
 		}
 
-        if (angular.isDefined(this.valueOptions) && angular.isObject(this.valueOptions)){
 
-            this.optionValues = [];
-            angular.forEach(this.valueOptions, function(o){
-				let newOption:any = {
-					name:"",
-					value:""
-				};
-
-                if(angular.isDefined(o.name) && angular.isDefined(o.value)){
-                    newOption.name = o.name;
-                    newOption.value= o.value;
-                    this.optionValues.push(newOption);
-                }
-            });
-        }
 
 		/** handle turning the options into an array of objects */
 		/** handle setting the default value for the yes / no element  */
@@ -223,7 +208,9 @@ class SWPropertyDisplay implements ng.IDirective{
         onChange:"=?",
         fieldType:"@?",
         noValidate:"=?",
-        inputAttributes:"@?"
+        inputAttributes:"@?",
+        optionValues:"=?",
+        eventHandlers:"@?"
     };
     public controller=SWPropertyDisplayController;
     public controllerAs="swPropertyDisplay";
