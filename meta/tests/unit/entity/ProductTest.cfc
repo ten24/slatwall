@@ -2733,41 +2733,50 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	assertEquals(0, resultWithSkuNoPrice);
 	 }
 	 
-	 private any function createMockProductAboutSalePrice() {
+	 private any function createMockProductAboutSalePrice() {	 	
+		var promotionRewardData = {
+			promotionRewardID = '',
+			amount = 3,
+			amountType = 'amountOff'
+		};
+		var mockPromotionReward = createPersistedTestEntity('PromotionReward', promotionRewardData);
+		
+	 	var skuData = {
+	 		skuID = '',
+	 		price = 10,
+	 		promotionRewards = [{
+	 			promotionRewardID = mockPromotionReward.getPromotionRewardID()
+	 		}]
+	 	};
+	 	var mockSku = createPersistedTestEntity('Sku', skuData);
+	 	
 	 	var productData = {
 			productid = '',
 			skus = [
 				{
-					skuid = '',
-					price = 10
+					skuID = mockSku.getSkuID()
 				}
 			]
 		};
 		var mockProduct = createPersistedTestEntity('product',productData);
-
+		
+		
+		var promotionPeriodData = {
+			promotionPeriodID = '',
+			promotionRewards = [{
+				promotionRewardID = mockPromotionReward.getPromotionRewardID()
+			}]
+		};
+		var mockPromotionPeriod = createPersistedTestEntity('PromotionPeriod', promotionPeriodData);
+		
 		var promotionData = {
 			promotionid = '',
-			promotionPeriods = [
-				{
-					promotionPeriodid = '',
-					promotionRewards = [
-						{
-							promotionRewardID = '',
-							amount = 3,
-							amountType = 'amountOff'
-						}
-					]
-				}
-
-			]
+			promotionPeriods = [{
+					promotionPeriodID = mockPromotionPeriod.getPRomotionPeriodID()
+				}]
 		};
 		var promotion = createPersistedTestEntity('promotion',promotionData);
-		var sku = mockProduct.getSkus()[1];
-		var promotionPeriod = promotion.getPromotionPeriods()[1];
-		var promotionReward = promotionPeriod.getPromotionRewards()[1];
-		sku.addPromotionReward(promotionReward);
-		ormflush();
-		
+
 		return mockProduct;
 	 }
 	 
@@ -2792,40 +2801,49 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	
 	public void function getSalePriceByCurrencyCodeTest_ResetCurrencyCode() {		
 		//Mocking data similar with the private helper createMockProductAboutSalePrice()
-		var productData = {
+		var promotionRewardData = {
+			promotionRewardID = '',
+			amount = 3,
+			amountType = 'amountOff'
+		};
+		var mockPromotionReward = createPersistedTestEntity('PromotionReward', promotionRewardData);
+		
+	 	var skuData = {
+	 		skuID = '',
+	 		price = 10,
+	 		currencyCode = 'CNY',
+	 		promotionRewards = [{
+	 			promotionRewardID = mockPromotionReward.getPromotionRewardID()
+	 		}]
+	 	};
+	 	var mockSku = createPersistedTestEntity('Sku', skuData);
+	 	
+	 	var productData = {
 			productid = '',
 			skus = [
 				{
-					skuid = '',
-					price = 10,
-					currencyCode = "CNY"
+					skuID = mockSku.getSkuID()
 				}
 			]
 		};
 		var mockProduct = createPersistedTestEntity('product',productData);
-
+		
+		
+		var promotionPeriodData = {
+			promotionPeriodID = '',
+			promotionRewards = [{
+				promotionRewardID = mockPromotionReward.getPromotionRewardID()
+			}]
+		};
+		var mockPromotionPeriod = createPersistedTestEntity('PromotionPeriod', promotionPeriodData);
+		
 		var promotionData = {
 			promotionid = '',
-			promotionPeriods = [
-				{
-					promotionPeriodid = '',
-					promotionRewards = [
-						{
-							promotionRewardID = '',
-							amount = 3,
-							amountType = 'amountOff'
-						}
-					]
-				}
-
-			]
+			promotionPeriods = [{
+					promotionPeriodID = mockPromotionPeriod.getPRomotionPeriodID()
+				}]
 		};
 		var promotion = createPersistedTestEntity('promotion',promotionData);
-		var sku = mockProduct.getSkus()[1];
-		var promotionPeriod = promotion.getPromotionPeriods()[1];
-		var promotionReward = promotionPeriod.getPromotionRewards()[1];
-		sku.addPromotionReward(promotionReward);
-		ormFlush();
 		
 		//reset setting skuCurrency
 		//TODO: try to change the default currencyCode, but fails	
@@ -2836,14 +2854,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		var settingEntity = createPersistedTestEntity('Setting',settingData);
 		
-		ormflush();
-		
 		try {
 			resultResetCode = mockProduct.getSalePriceByCurrencyCode('CNY');
 		} catch (any e) {
 			assertTrue(resultResetCode.getNewFlag());
-		}
-				
+		}			
 	}
 
 	public void function getSalePriceDiscountTypeTest() {
