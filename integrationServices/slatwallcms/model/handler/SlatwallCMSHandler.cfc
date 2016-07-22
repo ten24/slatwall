@@ -33,8 +33,8 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 			var cgiScriptName = replace( CGI.SCRIPT_NAME, getContextRoot(), '' );
 			var cgiPathInfo = replace( CGI.PATH_INFO, getContextRoot(), '' );
 		} else {
-			cgiScriptName = CGI.SCRIPT_NAME;
-			cgiPathInfo = CGI.PATH_INFO;
+			var cgiScriptName = CGI.SCRIPT_NAME;
+			var cgiPathInfo = CGI.PATH_INFO;
 		}
 		var pathInfo = cgiPathInfo;
 		 if ( len( pathInfo ) > len( cgiScriptName ) && left( pathInfo, len( cgiScriptName ) ) == cgiScriptName ) {
