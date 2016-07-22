@@ -8,6 +8,11 @@
       "url": "http://localhost/?slatAction=main.login&fw1pk=1"
     },
     {
+      "script":"return document.readyState",
+      "type":"waitForEval",
+      "value":"complete"
+    },
+    {
       "type": "setElementText",
       "locator": {
         "type": "name",
