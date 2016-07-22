@@ -286,6 +286,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals( '123 Main Street', variables.entity.getShippingAddress().getStreetAddress() );
 
 	}
+	
 	private any function createMockOrder(string orderTypeID='', string orderStatusTypeID='') {
 		var orderData = {
 			orderID = ""
@@ -314,6 +315,25 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		}
 		return createPersistedTestEntity('OrderItem', orderItemData);
 	}
+	
+	private any function createMockOrderWithOrderItems(required array orderItemArray, string orderTypeID='') {
+		var orderData = {
+			orderID = "",
+			orderItems = []
+		};
+		for (var i = 1; i <= arrayLen(orderItemArray); i++) {
+			orderData.orderItems[i] = {
+				orderItemID = orderItemArray[i]
+			};
+		}
+		if(len(arguments.orderTypeID)){
+			orderData.orderType = {
+				typeID = arguments.orderTypeID
+			};
+		}
+		return createPersistedTestEntity('Order', orderData);
+	}
+	
 	
 	public void function getOrderTypeTest() {
 		var mockOrder = createMockOrder();
@@ -359,23 +379,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals('otSalesOrder', result);
 	}
 	
-	private any function createMockOrderWithOrderItems(required array orderItemArray, string orderTypeID='') {
-		var orderData = {
-			orderID = "",
-			orderItems = []
-		};
-		for (var i = 1; i <= arrayLen(orderItemArray); i++) {
-			orderData.orderItems[i] = {
-				orderItemID = orderItemArray[i]
-			};
-		}
-		if(len(arguments.orderTypeID)){
-			orderData.orderType = {
-				typeID = arguments.orderTypeID
-			};
-		}
-		return createPersistedTestEntity('Order', orderData);
-	}
 	
 	public void function getSaleItemSmartListTest() {
 		var mockOrderItem1 = createMockOrderItem('444df2e9a6622ad1614ea75cd5b982ce');//oitSale
