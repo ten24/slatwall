@@ -18,6 +18,8 @@ class SWTypeaheadMultiselectController {
     public hasAddButtonFunction:boolean;
     public viewFunction;
     public hasViewFunction:boolean;
+    public propertyToCompare:string;
+    public fallbackPropertiesToCompare:string; 
     public inListingDisplay:boolean; 
     public listingId:string; 
       
@@ -90,6 +92,8 @@ class SWTypeaheadMultiselect implements ng.IDirective{
         ,viewFunction:"&?"
         ,inListingDisplay:"=?"
         ,listingId:"@?"
+        ,propertyToCompare:"@?"
+        ,fallbackPropertiesToCompare:"@?"
 	};
     
 	public controller=SWTypeaheadMultiselectController;

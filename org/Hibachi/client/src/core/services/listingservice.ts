@@ -190,7 +190,6 @@ class ListingService{
         if(this.getListing(listingID).columns.length == 0 && collectionConfig != null){
             this.getListing(listingID).columns = collectionConfig.columns;
         }
-        console.log("setup column",this.getListing(listingID).columns);
         for(var i=0; i < this.getListing(listingID).columns.length; i++){
             
             var column = this.getListing(listingID).columns[i];

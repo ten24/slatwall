@@ -31,6 +31,9 @@ class SWTypeaheadSearchController {
     public typeaheadDataKey:string; 
     public primaryIDPropertyName:string;
 	public propertyToShow:string; 
+    public propertyToCompare:string; 
+    public fallbackPropertiesToCompare:string; 
+    public fallbackPropertyArray;
     public placeholderText:string;
     public placeholderRbKey:string;
     public initialEntityId:string;
@@ -56,43 +59,51 @@ class SWTypeaheadSearchController {
         this.resultsDeferred = $q.defer();
         this.resultsPromise = this.resultsDeferred.promise;
 
-        if(angular.isUndefined(this.typeaheadDataKey)){
+        if( angular.isUndefined(this.typeaheadDataKey)){
             this.typeaheadDataKey = this.utilityService.createID(32); 
         }
 
-        if(angular.isUndefined(this.multiselectMode)){
+        if( angular.isUndefined(this.multiselectMode)){
             this.multiselectMode = false; 
         }
 
-        if(angular.isUndefined(this.searchText) || this.searchText == null){
+        if( angular.isUndefined(this.searchText) || this.searchText == null){
             this.searchText = "";
         } else {
             this.search(this.searchText);
         }
 
-        if(angular.isUndefined(this.results)){
+        if( angular.isUndefined(this.results)){
             this.results = [];
         }
 
-        if(angular.isUndefined(this.validateRequired)){
+        if( angular.isUndefined(this.validateRequired)){
             this.validateRequired = false;
         }
-        if(angular.isUndefined(this.hideSearch)){
+        if( angular.isUndefined(this.hideSearch)){
             this.hideSearch = true;
         }
 
-        if(angular.isUndefined(this.collectionConfig)){
+        if( angular.isUndefined(this.collectionConfig)){
             if(angular.isDefined(this.entity)){
                 this.collectionConfig = collectionConfigService.newCollectionConfig(this.entity);
             } else {
                 throw("You did not pass the correct collection config data to swTypeaheadSearch");
             }
         }
-        if(angular.isDefined(this.collectionConfig)){
+        if( angular.isDefined(this.collectionConfig)){
             this.primaryIDPropertyName = $hibachi.getPrimaryIDPropertyNameByEntityName(this.collectionConfig.baseEntityName);
         }
-        
-        if(angular.isDefined(this.placeholderRbKey)){
+
+        if( angular.isDefined(this.fallbackPropertiesToCompare) &&
+            this.fallbackPropertiesToCompare.length
+        ){
+            this.fallbackPropertyArray = this.fallbackPropertiesToCompare.split(",")
+        } else {
+            this.fallbackPropertyArray = [];
+        }
+
+        if( angular.isDefined(this.placeholderRbKey)){
             this.placeholderText = this.rbkeyService.getRBKey(this.placeholderRbKey);
         } else if (angular.isUndefined(this.placeholderText)){
             this.placeholderText = this.rbkeyService.getRBKey('define.search');
@@ -101,7 +112,7 @@ class SWTypeaheadSearchController {
         //init timeoutPromise for link
         this._timeoutPromise = this.$timeout(()=>{},500);
 
-        if(angular.isDefined(this.propertiesToDisplay)){
+        if( angular.isDefined(this.propertiesToDisplay)){
             this.collectionConfig.addDisplayProperty(this.propertiesToDisplay.split(","));
         }
         
@@ -113,17 +124,17 @@ class SWTypeaheadSearchController {
             this.collectionConfig.addFilter(filter.propertyIdentifier, filter.comparisonValue, filter.comparisonOperator, filter.logicalOperator, filter.hidden);
         }); 
 
-        if(angular.isUndefined(this.allRecords)){
+        if( angular.isUndefined(this.allRecords)){
 			this.allRecords = this.collectionConfig.allRecords;
 		}
 
         this.collectionConfig.setAllRecords(this.allRecords);
 		
-		if(angular.isDefined(this.maxRecords)){
+		if( angular.isDefined(this.maxRecords)){
 			this.collectionConfig.setPageShow(this.maxRecords);
 		}
 
-        if(angular.isDefined(this.initialEntityId) && this.initialEntityId.length){
+        if( angular.isDefined(this.initialEntityId) && this.initialEntityId.length){
             this.initialEntityCollectionConfig = collectionConfigService.newCollectionConfig(this.collectionConfig.baseEntityName);
             this.initialEntityCollectionConfig.loadColumns(this.collectionConfig.columns);
             var primaryIDProperty = $hibachi.getPrimaryIDPropertyNameByEntityName(this.initialEntityCollectionConfig.baseEntityName);
@@ -197,9 +208,28 @@ class SWTypeaheadSearchController {
         if(angular.isDefined(this.getSelections()) && this.getSelections().length){
             for(var j = 0; j < this.results.length; j++){
                 for(var i = 0; i < this.getSelections().length; i++){
-                    if(this.getSelections()[i][this.primaryIDPropertyName] == this.results[j][this.primaryIDPropertyName]){
+                    if( this.getSelections()[i][this.primaryIDPropertyName] == this.results[j][this.primaryIDPropertyName] ){
                         this.results[j].selected = true;
                         this.results[j].selectedIndex = i; 
+                        continue; 
+                    }
+                    if( angular.isDefined(this.propertyToCompare) && 
+                        this.propertyToCompare.length && 
+                        this.getSelections()[i][this.propertyToCompare] == this.results[j][this.propertyToCompare]
+                    ){
+                        this.results[j].selected = true;
+                        this.results[j].selectedIndex = i; 
+                        continue; 
+                    }
+                    if( this.fallbackPropertyArray.length > 0 ){
+                        for(var j=0; j < this.fallbackPropertyArray.length; j++){
+                            var property = this.fallbackPropertyArray[j]; 
+                            if(this.getSelections()[i][property] == this.results[j][property]){
+                                this.results[j].selected = true;
+                                this.results[j].selectedIndex = i;
+                                break; 
+                            }
+                        }
                     }
                 }
             }
@@ -301,6 +331,8 @@ class SWTypeaheadSearch implements ng.IDirective{
 		filterGroupsConfig:"@?",
 		placeholderText:"@?",
         placeholderRbKey:"@?",
+        propertyToCompare:"@?",
+        fallbackPropertiesToCompare:"@?",
 		searchText:"=?",
 		results:"=?",
 		addFunction:"&?",

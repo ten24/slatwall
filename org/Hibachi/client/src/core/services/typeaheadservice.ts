@@ -31,7 +31,7 @@ class TypeaheadService{
                 angular.forEach(data.records,(value,key)=>{
                     console.log("initialize", value);
                     this.addSelection(key, value); 
-                })
+                });
             },
             (reason)=>{
                 throw("Typeaheadservice had trouble intializing selections for " + key + " because " + reason); 
