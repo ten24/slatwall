@@ -31,7 +31,7 @@
         }
       ],
       "scripts": [
-        "meta/tests/integration/admin/*"
+        "meta/tests/integration/admin_rannable/*"
       ]
     }
   ]
