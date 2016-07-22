@@ -345,7 +345,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// =====================  END: Logical Methods ============================
 
 	// ===================== START: DAO Passthrough ===========================
-
+	
+	/**
+	* @Suppress
+	*/
 	public array function getUnusedProductSubscriptionTerms( required string productID ){
 		return getSubscriptionDAO().getUnusedProductSubscriptionTerms( argumentCollection=arguments );
 	}

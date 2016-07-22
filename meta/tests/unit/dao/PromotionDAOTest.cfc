@@ -318,7 +318,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var salePricePromotionRewardsQuery = variables.dao.getSalePricePromotionRewardsQuery( product.getProductID(),'BBB' );
 		
 		/*assert amount off Price: sku price ($10 (AAA) convert to (BBB) by defined currencyRate * 1.25 = $12.5 (BBB) - discount $3 (AAA) 
-		converted to (BBB) by defined currency rate * 1.25 = $3.75 (BBB)) = $8.57 (BBB)
+		converted to (BBB) by defined currency rate * 1.25 equals to $3.75 (BBB) = $8.75 (BBB)
 		*/
 		assertEquals(salePricePromotionRewardsQuery.SalePrice, 8.75);
 
