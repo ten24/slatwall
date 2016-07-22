@@ -704,7 +704,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		}
 		return variables.currencyDetails;
 	}
-
+	//@SuppressCodeCoverage
 	public any function getCurrentAccountPrice() {
 		if(!structKeyExists(variables, "currentAccountPrice")) {
 			variables.currentAccountPrice = getService("priceGroupService").calculateSkuPriceBasedOnCurrentAccount(sku=this);
@@ -937,13 +937,14 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return getQuantity("QATS");
 	}
 
+	//@Suppress
 	public any function getSalePriceDetails() {
 		if(!structKeyExists(variables, "salePriceDetails")) {
 			variables.salePriceDetails = getProduct().getSkuSalePriceDetails(skuID=getSkuID());
 		}
 		return variables.salePriceDetails;
 	}
-
+	//@Suppress
 	public any function getSalePriceDetailsByCurrencyCode(required string currencyCode) {
 		if(!structKeyExists(variables, "salePriceDetailsByCurrencyCode_#currencyCode#")) {
 			variables["salePriceDetails_#currencyCode#"] = getProduct().getSkuSalePriceDetailsByCurrencyCode(skuID=getSkuID(),currencyCode=arguments.currencyCode);
@@ -1398,6 +1399,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 			// Build smartlist that will return sku events occurring at the same time and location as this event
 			variables.eventConflictsSmartList = getService("skuService").getSkuSmartlist();
+			
 			variables.eventConflictsSmartList.joinRelatedProperty("SlatwallSku", "locationConfigurations", "left");
 			variables.eventConflictsSmartList.joinRelatedProperty("SlatwallLocationConfiguration", "location", "left");
 			variables.eventConflictsSmartList.addWhereCondition("aslatwalllocation.locationID IN (:lcIDs)",{lcIDs=locationIDList});
