@@ -71,6 +71,11 @@
       }
     },
     {
+      "script":"return document.readyState",
+      "type":"waitForEval",
+      "value":"complete"
+    },
+    {
       "type": "verifyTextPresent",
       "text": "Dashboard"
     }
