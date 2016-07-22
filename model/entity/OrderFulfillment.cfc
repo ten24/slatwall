@@ -390,7 +390,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     		}
 
     		if(!arrayLen(optionsArray)) {
-    			arrayPrepend(optionsArray, {name=rbKey('define.none'), value=''});
+    			arrayPrepend(optionsArray, {name=rbKey('define.select'), value=''});
     		}
 
     		variables.shippingMethodOptions = optionsArray;
