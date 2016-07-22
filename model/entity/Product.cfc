@@ -244,13 +244,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 	}
 
-	public any function getTemplateOptions() {
-		if(!isDefined("variables.templateOptions")){
-			variables.templateOptions = getService("ProductService").getProductTemplates();
-		}
-		return variables.templateOptions;
-	}
-
 	public any function getImages() {
 		return variables.productImages;
 	}
@@ -276,14 +269,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public boolean function getAllowAddOptionGroupFlag() {
  		return arrayLen(getSkus()) eq 1 || getOptionGroupCount() gt 0;
  	}
-
-	public string function getPageIDs() {
-		var pageIDs = "";
-		for( var i=1; i<= arrayLen(getPages()); i++ ) {
-			pageIDs = listAppend(pageIDs,getPages()[i].getPageID());
-		}
-		return pageIDs;
-	}
 
 	public string function getCategoryIDs() {
 		var categoryIDs = "";
