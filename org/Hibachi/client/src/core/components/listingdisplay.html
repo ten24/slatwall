@@ -212,6 +212,7 @@
                                           popover-append-to-body="true">
                                     </span>
                                     <span ng-if="(!column.action || !column.queryString) && column.type==='currency'"
+                                          class="s-number"
                                           ng-bind-html="pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)] | swcurrency"
                                           popover="{{swListingDisplay.replaceStringWithProperties(column.tooltip, pageRecord)}}"
                                           popover-trigger="mouseenter"

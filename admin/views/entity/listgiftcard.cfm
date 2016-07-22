@@ -61,15 +61,21 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<hb:HibachiListingDisplay smartList="#rc.giftCardSmartList#"
-							  recordDetailAction="admin:entity.detailgiftcard"
-							  recordEditAction="admin:entity.editgiftcard">
+	<sw-listing-display
+			data-collection="'GiftCard'"
+			data-edit="false"
+			data-has-search="true"
+			data-record-detail-action="admin:entity.detailgiftcard"
+			data-is-angular-route="false"
+			data-angular-links="false"
+			data-has-action-bar="false"
+						>
+		<sw-listing-column data-property-identifier="activeFlag"></sw-listing-column>
+		<sw-listing-column data-property-identifier="calculatedBalanceAmount"></sw-listing-column>
+		<sw-listing-column data-property-identifier="createdDateTime"></sw-listing-column>
+		<sw-listing-column data-property-identifier="ownerEmailAddress"></sw-listing-column>
+		<sw-listing-column data-property-identifier="ownerLastName"></sw-listing-column>
+		<sw-listing-column data-property-identifier="ownerFirstName"></sw-listing-column>
+	</sw-listing-display>
 
-	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="ownerFirstName" search="true" />
-        <hb:HibachiListingColumn tdclass="primary" propertyIdentifier="ownerLastName" search="true" />
-        <hb:HibachiListingColumn tdclass="primary" propertyIdentifier="ownerEmailAddress" search="true" />
-		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
-		<hb:HibachiListingColumn propertyIdentifier="balanceAmount" />
-		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
-	</hb:HibachiListingDisplay>
 </cfoutput>
