@@ -25,7 +25,9 @@ class ListingService{
     }
 
     public getListingPrimaryEntityName = (listingID) =>{
-        return this.getListing(listingID).baseEntityName || this.getListing(listingID).collectionObject; 
+        return this.getListing(listingID).baseEntityName || 
+               this.getListing(listingID).collectionObject || 
+               this.getListing(listingID).collectionConfig.baseEntityName; 
     }
 
     public getListingEntityPrimaryIDPropertyName = (listingID) =>{
@@ -45,12 +47,19 @@ class ListingService{
     }
 
     public getListingPageRecords = (listingID) =>{
-        return this.getListing(listingID).collectionData.pageRecords; 
+        if( angular.isDefined(this.getListing(listingID)) &&
+            angular.isDefined(this.getListing(listingID).collectionData) && 
+            angular.isDefined(this.getListing(listingID).collectionData.pageRecords)
+        ){
+            return this.getListing(listingID).collectionData.pageRecords; 
+        }
     }
 
     //needs a consideration of strategy for doing this for other use cases
     public insertListingPageRecord = (listingID, pageRecord) =>{
-        this.getListingPageRecords(listingID).push(pageRecord); 
+        if( angular.isDefined(this.getListingPageRecords(listingID))){
+            this.getListingPageRecords(listingID).push(pageRecord); 
+        }
     }
 
     public removeListingPageRecord = (listingID, pageRecord) =>{
@@ -164,12 +173,13 @@ class ListingService{
     public addColumn = (listingID, column) =>{
         if(this.getListing(listingID).collectionConfig != null && this.getListing(listingID).collectionConfig.baseEntityAlias != null){
             column.propertyIdentifier = this.getListing(listingID).collectionConfig.baseEntityAlias + "." + column.propertyIdentifier;
+        } else if (this.getListingBaseEntityName(listingID) != null) {
+            column.propertyIdentifier = this.$hibachi.getBaseEntityAliasFromName(this.getListingBaseEntityName(listingID));
         }
         if(this.utilityService.ArrayFindByPropertyValue(this.getListing(listingID).columns,'propertyIdentifier',column.propertyIdentifier) === -1){
             if(column.aggregate){
                 this.getListing(listingID).aggregates.push(column.aggregate);
-            }else{
-                console.log("adding column");
+            } else {
                 this.getListing(listingID).columns.push(column);
             }
         }
@@ -384,6 +394,9 @@ class ListingService{
         var baseEntityName = this.getListing(listingID).baseEntityName || this.getListing(listingID).collectionObject
         if(baseEntityName == null &&  this.getListing(listingID).collectionConfig != null){
             baseEntityName = this.getListing(listingID).collectionConfig.baseEntityName;
+        }
+        if(baseEntityName == null && this.getListing(listingID).collectionData != null){
+            baseEntityName = this.getListing(listingID).collectionData.collectionObject; 
         }
         return baseEntityName;
     }

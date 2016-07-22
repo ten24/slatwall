@@ -101,6 +101,10 @@ class HibachiService{
 		return angular.isDefined(this.getEntityMetaData(entityName)[propertyName]);
 	};
 
+	getBaseEntityAliasFromName = (entityName)=>{
+		return '_' + entityName;
+	}
+
 	getPropertyIsObjectByEntityNameAndPropertyIdentifier = (entityName:string,propertyIdentifier:string):boolean=>{
 		var lastEntity = this.getLastEntityNameInPropertyIdentifier(entityName,propertyIdentifier);
 		var entityMetaData = this.getEntityMetaData(lastEntity);

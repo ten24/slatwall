@@ -29,7 +29,7 @@ class SWListingDisplayCellController{
         this.corePartialsPath = corePartialsPath;
         this.$scope = $scope;
         this.value = this.pageRecord[this.swListingDisplay.getPageRecordKey(this.column.propertyIdentifier)];
-        //If there is no value for this column, we can see if other substitute property identifiers were defined
+        //If there is no value for this column, we can see if other substitute property identifiers were defineds
         if(angular.isUndefined(this.value) && angular.isDefined(this.column.fallbackPropertyIdentifiers)){
             var fallbackPropertyArray = this.column.fallbackPropertyIdentifiers.split(",");
             for(var i=0; i<fallbackPropertyArray.length; i++){

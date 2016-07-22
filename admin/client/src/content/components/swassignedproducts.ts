@@ -3,7 +3,8 @@
 
 class SWAssignedProductsController {
 
-    public collectionConfig; 
+    public collectionConfig:any; 
+    public alreadySelectedProductsCollectionConfig:any; 
     public contentId:string; 
     public typeaheadDataKey:string; 
     
@@ -13,7 +14,10 @@ class SWAssignedProductsController {
         private utilityService
     ){
         this.collectionConfig = collectionConfigService.newCollectionConfig("Product"); 
-        this.collectionConfig.addDisplayProperty("productID,productName,productDescription");
+        this.collectionConfig.addDisplayProperty("productID,productName,productDescription,activeFlag,publishedFlag");
+        this.alreadySelectedProductsCollectionConfig = collectionConfigService.newCollectionConfig("ProductListingPage"); 
+        this.alreadySelectedProductsCollectionConfig.addDisplayProperty("productListingPageID,product.productName,product.productDescription,product.activeFlag,product.publishedFlag");
+        this.alreadySelectedProductsCollectionConfig.addFilter("content.contentID", this.contentId, "=");
         this.typeaheadDataKey = utilityService.createID(32); 
     }
 }

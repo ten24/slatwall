@@ -23,6 +23,21 @@ class TypeaheadService{
             return this.typeaheadData[key].splice(index,1)[0];//this will always be an array of 1 element
         }
     }
+
+    initializeSelections = (key:string, selectedCollectionConfig) => {
+        selectedCollectionConfig.setAllRecords(true);
+        selectedCollectionConfig.getEntity().then(
+            (data)=>{
+                angular.forEach(data.records,(value,key)=>{
+                    console.log("initialize", value);
+                    this.addSelection(key, value); 
+                })
+            },
+            (reason)=>{
+                throw("Typeaheadservice had trouble intializing selections for " + key + " because " + reason); 
+            }
+        );
+    }
     
     getData = (key:string) => {
         return this.typeaheadData[key] || [];

@@ -13,6 +13,7 @@ class SWTypeaheadMultiselectController {
     public typeaheadDataKey:string; 
     public multiselectMode:boolean;
     public collectionConfig:any; 
+    public selectedCollectionConfig:any; 
     public addButtonFunction; 
     public hasAddButtonFunction:boolean;
     public viewFunction;
@@ -29,21 +30,23 @@ class SWTypeaheadMultiselectController {
                 private utilityService, 
                 private collectionConfigService
     ){
-        //supporting the original selection view
+        if(angular.isUndefined(this.typeaheadDataKey)){
+            this.typeaheadDataKey = this.utilityService.createID(32); 
+        }
         if(angular.isUndefined(this.showSelections)){
             this.showSelections = false; 
         }
         if(angular.isUndefined(this.multiselectMode)){
             this.multiselectMode = true; 
         }
-        if(angular.isUndefined(this.typeaheadDataKey)){
-            this.typeaheadDataKey = this.utilityService.createID(32); 
-        }
         if(angular.isUndefined(this.hasAddButtonFunction)){
             this.hasAddButtonFunction = false; 
         }
         if(angular.isUndefined(this.hasViewFunction)){
             this.hasViewFunction = false; 
+        }
+        if(angular.isDefined(this.selectedCollectionConfig)){
+            this.typeaheadService.initializeSelections(this.listingId, this.selectedCollectionConfig);
         }
     }
     
@@ -57,7 +60,6 @@ class SWTypeaheadMultiselectController {
     
     public removeSelection = (index) => {
         var itemRemoved = this.typeaheadService.removeSelection(this.typeaheadDataKey, index);
-        console.log("itemRemoved", itemRemoved)
         if(this.inListingDisplay){
             this.listingService.removeListingPageRecord(this.listingId, itemRemoved); 
         }
@@ -78,6 +80,7 @@ class SWTypeaheadMultiselect implements ng.IDirective{
 	public bindToController = {
         placeholderRbKey:"@"
         ,collectionConfig:"=?"
+        ,selectedCollectionConfig:"=?"
         ,typeaheadDataKey:"@?"
         ,multiselectModeOn:"=?multiselectMode"
         ,showSelections:"=?"
@@ -135,7 +138,9 @@ class SWTypeaheadMultiselect implements ng.IDirective{
                     $scope.swTypeaheadMultiselect.inListingDisplay = false; 
                 }
                 if($scope.swTypeaheadMultiselect.inListingDisplay && this.scopeService.hasParentScope($scope, "swListingDisplay")) {
-                    $scope.swTypeaheadMultiselect.listingId = this.scopeService.locateParentScope( $scope, "swListingDisplay").tableID;
+                    var listingDisplayScope = this.scopeService.locateParentScope( $scope, "swListingDisplay")["swListingDisplay"]
+                    $scope.swTypeaheadMultiselect.listingId = listingDisplayScope.tableID;
+                    listingDisplayScope.typeaheadDataKey = $scope.swTypeaheadMultiselect.typeaheadDataKey;
                 }
             },
             post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {

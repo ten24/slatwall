@@ -74,6 +74,7 @@ class SWListingDisplayController{
     public tableID:string;
     public tableclass:string;
     public tableattributes:string;
+    public typeaheadDataKey:string; 
     public hasSearch:boolean;
     public baseEntity:any; 
     public baseEntityName:string; 
@@ -521,6 +522,7 @@ class SWListingDisplay implements ng.IDirective{
             /*Helper / Additional / Custom*/
             tableattributes:"@?",
             tableclass:"@?",
+            typeaheadDataKey:"@?",
             adminattributes:"@?",
 
             /* Settings */

@@ -153,20 +153,17 @@ class SWCollectionConfig implements ng.IDirective{
 
             this.$q.all(allCollectionConfigPromises).then(  
                 ()=>{
-                    console.log("collection config scope",newCollectionConfig);
                     if(angular.isDefined(parentDirective)){
                         if(angular.isDefined(scope.swCollectionConfig.multiCollectionConfigProperty) 
                             && angular.isDefined(parentDirective[scope.swCollectionConfig.multiCollectionConfigProperty])
                         ){
                             parentDirective[scope.swCollectionConfig.multiCollectionConfigProperty].push(newCollectionConfig); 
                         } else if(angular.isDefined(parentDirective[scope.swCollectionConfig.collectionConfigProperty])) {
-                            console.log("attaching the collection config")
                             parentDirective[scope.swCollectionConfig.collectionConfigProperty] = newCollectionConfig;
                         } else { 
                             throw("swCollectionConfig could not locate a collection config property to bind it's collection to");
                         } 
                         if(angular.isDefined(parentDirective[scope.swCollectionConfig.parentDeferredProperty])){
-                            console.log("resolving collection config")
                             parentDirective[scope.swCollectionConfig.parentDeferredProperty].resolve();
                         } else {
                             throw("SWCollectionConfig cannot resolve rule");

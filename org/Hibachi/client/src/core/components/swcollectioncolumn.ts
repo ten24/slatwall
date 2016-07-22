@@ -11,6 +11,7 @@ class SWCollectionColumn implements ng.IDirective{
     public priority=1000; 
     public bindToController={
         propertyIdentifier:"@",
+        fallbackPropertyIdentifiers:"@?",
         isVisible:"=?",
         isSearchable:"=?",
         isDeletable:"=?",
@@ -44,6 +45,7 @@ class SWCollectionColumn implements ng.IDirective{
         
         var column = {
                 propertyIdentifier:scope.swCollectionColumn.propertyIdentifier,
+                fallbackPropertyIdentifiers:scope.swCollectionColumn.fallbackPropertyIdentifiers,
                 isVisible:scope.swCollectionColumn.isVisible,
                 isSearchable:scope.swCollectionColumn.isSearchable,
                 isDeletable:scope.swCollectionColumn.isDeletable, 

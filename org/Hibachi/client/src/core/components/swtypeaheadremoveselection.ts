@@ -5,6 +5,7 @@
 class SWTypeaheadRemoveSelectionController {
 
     public index;
+    public tableID:string; 
     public typeaheadDataKey:string; 
 
     constructor(
@@ -56,7 +57,11 @@ class SWTypeaheadRemoveSelection implements ng.IDirective{
 	}
 
      public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any) =>{
-        
+        if(this.scopeService.hasParentScope(scope, "swListingDisplay")) {
+            var listingDisplayScope = this.scopeService.locateParentScope( scope, "swListingDisplay")["swListingDisplay"];
+            scope.swTypeaheadRemoveSelection.typeaheadDataKey = listingDisplayScope.typeaheadDataKey;
+            scope.swTypeaheadRemoveSelection.listingId = listingDisplayScope.tableID; 
+        }
      }
 }
 export{
