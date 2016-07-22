@@ -148,6 +148,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			// If purchase start dates not existed, or before now(), the start date is valid
 			// If purchase end   date  not existed, or after  now(), the end   date is valid
 			if ( 
+
 					(
 						isNull(this.getPurchaseStartDateTime())
 						||
@@ -159,11 +160,13 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 						||
 						( !isNull(this.getPurchaseEndDateTime()) && dateCompare(now(),this.getPurchaseEndDateTime(),"s") == -1 )					 
 					) 
+
 			) {
 				variables.availableToPurchaseFlag = true;
 			} else {
 				variables.availableToPurchaseFlag = false;
 			}				
+
 		}
 
 		return variables.availableToPurchaseFlag;
@@ -243,13 +246,14 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			}
 		}
 	}
-
+	
+	//TODO: unused function
 	public any function getTemplateOptions() {
 		if(!isDefined("variables.templateOptions")){
 			variables.templateOptions = getService("ProductService").getProductTemplates();
 		}
 		return variables.templateOptions;
-	}
+	} 
 
 	public any function getImages() {
 		return variables.productImages;
@@ -258,13 +262,16 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public numeric function getTotalImageCount(){
 		return this.getProductImagesCount() + this.getDefaultProductImageFilesCount();
 	}
-
+	
+	//@SuppressCodeCoverage
 	public struct function getSkuSalePriceDetails( required any skuID) {
 		if(structKeyExists(getSalePriceDetailsForSkus(), arguments.skuID)) {
 			return getSalePriceDetailsForSkus()[ arguments.skuID ];
 		}
 		return {};
 	}
+	
+	//@SuppressCodeCoverage
 	public struct function getSkuSalePriceDetailsByCurrencyCode( required any skuID, string currencyCode='') {
 		if(structKeyExists(getSalePriceDetailsForSkusByCurrencyCode(currencyCode=arguments.currencyCode), arguments.skuID)) {
 			return getSalePriceDetailsForSkusByCurrencyCode(currencyCode=arguments.currencyCode)[ arguments.skuID ];
@@ -277,6 +284,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  		return arrayLen(getSkus()) eq 1 || getOptionGroupCount() gt 0;
  	}
 
+	//TODO: Unused function
 	public string function getPageIDs() {
 		var pageIDs = "";
 		for( var i=1; i<= arrayLen(getPages()); i++ ) {
@@ -757,14 +765,14 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 		return variables.defaultProductImageFilesCount;
 	}
-
+	//@SuppressCodeCoverage
 	public struct function getSalePriceDetailsForSkus() {
 		if(!structKeyExists(variables, "salePriceDetailsForSkus")) {
 			variables.salePriceDetailsForSkus = getService("promotionService").getSalePriceDetailsForProductSkus(productID=getProductID());
 		}
 		return variables.salePriceDetailsForSkus;
 	}
-
+	//@SuppressCodeCoverage
 	public struct function getSalePriceDetailsForSkusByCurrencyCode(required string currencyCode) {
 		if(!structKeyExists(variables, "getSalePriceDetailsForSkusByCurrencyCode_#arguments.currencyCode#")) {
 			variables["getSalePriceDetailsForSkusByCurrencyCode_#arguments.currencyCode#"] = getService("promotionService").getSalePriceDetailsForProductSkus(productID=getProductID(),currencyCode=arguments.currencyCode);
@@ -849,7 +857,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		// Product without a sku
 		return 0;
 	}
-
+	
+	//@SuppressCodeCoverage
 	public any function getPriceByCurrencyCode(required string currencyCode) {
 		if( structKeyExists(variables, "defaultSku") ) {
 			return getDefaultSku().getPriceByCurrencyCode(arguments.currencyCode);
@@ -864,41 +873,48 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 	}
 
+	//@SuppressCodeCoverage
 	public any function getRenewalPriceByCurrencyCode(required string currencyCode) {
 		if( structKeyExists(variables, "defaultSku") ) {
 			return getDefaultSku().getRenewalPriceByCurrencyCode(arguments.currencyCode);
 		}
 	}
-
+	
 	public any function getListPrice() {
 		if( structKeyExists(variables,"defaultSku") ) {
 			return getDefaultSku().getListPrice();
 		}
 	}
-
+	
+	//@SuppressCodeCoverage
 	public any function getListPriceByCurrencyCode(required string currencyCode) {
 		if( structKeyExists(variables,"defaultSku") ) {
 			return getDefaultSku().getListPriceByCurrencyCode(arguments.currencyCode);
 		}
 	}
-
+	
+	//@SuppressCodeCoverage
 	public any function getLivePrice() {
 		if( structKeyExists(variables,"defaultSku") ) {
 			return getDefaultSku().getLivePrice();
 		}
 	}
+	
+	//@SuppressCodeCoverage
 	public any function getLivePriceByCurrencyCode(required string currencyCode){
 		if( structKeyExists(variables,"defaultSku") ) {
 			return getDefaultSku().getLivePriceByCurrencyCode(arguments.currencyCode);
 	 	}
 	}
-
+	
+	//@SuppressCodeCoverage
 	public any function getCurrentAccountPrice() {
 		if( structKeyExists(variables,"defaultSku") ) {
 			return getDefaultSku().getCurrentAccountPrice();
 		}
 	}
-
+	
+	//@SuppressCodeCoverage
 	public any function getCurrentAccountPriceByCurrencyCode(required string currencyCode) {
 		if( structKeyExists(variables,"defaultSku") ) {
 			return getDefaultSku().getCurrentAccountPriceByCurrencyCode(arguments.currencyCode);
@@ -909,17 +925,16 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		if( structKeyExists(variables,"defaultSku") ) {
 			return getDefaultSku().getSalePrice();
 		} else if (arrayLen(getSkus())) {
-			getSkus()[1].getSalePrice();
+			return getSkus()[1].getSalePrice();
 		}
 		return 0;
 	}
 
-
-	public any function getSalePriceByCurrencyCode() {
+	public any function getSalePriceByCurrencyCode(required string currencyCode) {
 		if( structKeyExists(variables,"defaultSku") ) {
 			return getDefaultSku().getSalePriceByCurrencyCode(arguments.currencyCode);
 		} else if (arrayLen(getSkus())) {
-			getSkus()[1].getSalePriceByCurrencyCode(arguments.currencyCode);
+			return getSkus()[1].getSalePriceByCurrencyCode(arguments.currencyCode);
 		}
 		return 0;
 	}
@@ -938,12 +953,13 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		if(!structKeyExists(variables, "salePriceExpirationDateTime")) {
 			variables.salePriceExpirationDateTime = now();
 			if( structKeyExists(variables,"defaultSku") ) {
-				variables.salePriceExpirationDateTime = getDefaultSku().getSalePricExpirationDateTime();
+				variables.salePriceExpirationDateTime = getDefaultSku().getSalePriceExpirationDateTime();
 			}
 		}
 		return variables.salePriceExpirationDateTime;
 	}
-
+	
+	//@SuppressCodeCoverage
 	public boolean function getTransactionExistsFlag() {
 		if(!structKeyExists(variables, "transactionExistsFlag")) {
 			variables.transactionExistsFlag = getService("skuService").getTransactionExistsFlag( productID=this.getProductID() );
@@ -951,27 +967,15 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return variables.transactionExistsFlag;
 	}
 
-	public array function getProductOptionsByGroup(){
-		return getService('productService').getProductOptionsByGroup( this );
-	}
-
 	public boolean function hasUnusedProductOptionCombinations(){
-
-		var optionGroups = [];
-		var usedOptions = [];
-
 		return this.getNumberOfUnusedProductOptionCombinations() > 0;
 	}
-
+	
 	public any function getNumberOfUnusedProductOptionCombinations(){
-
-		var optionGroups = [];
-		var unusedOptions = [];
-		var first = true;
-
 		var optionGroupIDs = getDAO("OptionDAO").getAllUsedProductOptionGroupIDs(this.getProductID());
+		
 		var numberOfUsedProductOptions = getDAO("OptionDAO").getNumberOfUsedProductOptions(this.getProductID());
-
+		
 		if(ArrayLen(optionGroupIDs) > 0){
 			var usedCombinations = numberOfUsedProductOptions / ArrayLen(optionGroupIDs);
 		} else {
@@ -982,12 +986,12 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 		for(var optionGroupID in optionGroupIDs){
 			possibilities = possibilities * getDAO("OptionDAO").getNumberOfOptionsForOptionGroup(OptionGroupID);
-
 		}
 
 		return possibilities - usedCombinations;
 	}
 
+	//@SuppressCodeCoverage
 	public array function getUnusedProductOptionGroups() {
 		if( !structKeyExists(variables, "unusedProductOptionGroups") ) {
 			variables.unusedProductOptionGroups = getService('optionService').getUnusedProductOptionGroups( getProductType().getProductTypeID(), structKeyList(getOptionGroupsStruct()) );
@@ -1200,8 +1204,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return "productName";
 	}
 
-	public any function getAssignedAttributeSetSmartList(){
-		if(!structKeyExists(variables, "assignedAttributeSetSmartList")) {
+	public any function getAssignedAttributeSetSmartList(boolean refresh=false){
+		if(!structKeyExists(variables, "assignedAttributeSetSmartList") || arguments.refresh == true) {
 
 			variables.assignedAttributeSetSmartList = getService("attributeService").getAttributeSetSmartList();
 
@@ -1240,7 +1244,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	// ================== START: Deprecated Methods ========================
 
 	public array function getAttributeSets(array attributeSetTypeCode=[]){
-		var smartList = getAssignedAttributeSetSmartList();
+		var smartList = getAssignedAttributeSetSmartList(true);
 		if(arrayFind(arguments.attributeSetTypeCode, "astProductCustomization") || arrayFind(arguments.attributeSetTypeCode, "astOrderItem")) {
 			smartList.addFilter('attributeSetObject', 'OrderItem');
 		}
