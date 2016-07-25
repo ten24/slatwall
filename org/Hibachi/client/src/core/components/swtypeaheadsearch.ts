@@ -9,7 +9,7 @@ class SWTypeaheadSearchController {
 	public propertiesToDisplay:string;
 	public filterGroupsConfig:any;
 	public allRecords:boolean;
-	public maxRecords; 
+	public maxRecords:number; 
 	public searchText:string;
 	public results:any[];
     public validateRequired:boolean; 
@@ -33,7 +33,7 @@ class SWTypeaheadSearchController {
 	public propertyToShow:string; 
     public propertyToCompare:string; 
     public fallbackPropertiesToCompare:string; 
-    public fallbackPropertyArray;
+    public fallbackPropertyArray:any[] = [];
     public placeholderText:string;
     public placeholderRbKey:string;
     public initialEntityId:string;
@@ -99,8 +99,6 @@ class SWTypeaheadSearchController {
             this.fallbackPropertiesToCompare.length
         ){
             this.fallbackPropertyArray = this.fallbackPropertiesToCompare.split(",")
-        } else {
-            this.fallbackPropertyArray = [];
         }
 
         if( angular.isDefined(this.placeholderRbKey)){
@@ -213,24 +211,35 @@ class SWTypeaheadSearchController {
                         this.results[j].selectedIndex = i; 
                         continue; 
                     }
-                    if( angular.isDefined(this.propertyToCompare) && 
-                        this.propertyToCompare.length && 
-                        this.getSelections()[i][this.propertyToCompare] == this.results[j][this.propertyToCompare]
-                    ){
-                        this.results[j].selected = true;
-                        this.results[j].selectedIndex = i; 
-                        continue; 
-                    }
-                    if( this.fallbackPropertyArray.length > 0 ){
-                        for(var j=0; j < this.fallbackPropertyArray.length; j++){
-                            var property = this.fallbackPropertyArray[j]; 
-                            if(this.getSelections()[i][property] == this.results[j][property]){
-                                this.results[j].selected = true;
-                                this.results[j].selectedIndex = i;
-                                break; 
-                            }
-                        }
-                    }
+                    console.log("selections", this.getSelections());
+                    this.checkAgainstFallbackProperties(this.getSelections()[i], this.results[j], this.results[j][this.primaryIDPropertyName], i);
+                }
+            }
+        }
+    }
+
+    private checkAgainstFallbackProperties = (selection, result, valueToCompare, index) =>{
+        console.log("check", this.propertyToCompare, this.fallbackPropertyArray, selection, result);
+        if( angular.isDefined(this.propertyToCompare) && 
+            this.propertyToCompare.length && 
+            selection[this.propertyToCompare] == valueToCompare ||
+            selection[this.propertyToCompare] == result[this.propertyToCompare]
+        ){
+            console.log("matchfound1")
+            result.selected = true;
+            result.selectedIndex = index; 
+            return; 
+        }
+        if( this.fallbackPropertyArray.length > 0 ){
+            for(var j=0; j < this.fallbackPropertyArray.length; j++){
+                var property = this.fallbackPropertyArray[j]; 
+                if( selection[property] == valueToCompare ||
+                    selection[property] == result[property]
+                ){
+                    console.log("matchfound2")
+                    result.selected = true;
+                    result.selectedIndex = index;
+                    return; 
                 }
             }
         }
@@ -251,7 +260,6 @@ class SWTypeaheadSearchController {
     }
 
 	public addOrRemoveItem = (item)=>{
-        console.log("item", item);
         var remove = item.selected || false; 
 
 		if(!this.hideSearch && !this.multiselectMode){
