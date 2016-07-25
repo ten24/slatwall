@@ -443,6 +443,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 						)
 						&& !structKeyExists(property, "cfc") 
 						&& structKeyExists(property, "type") 
+						&& property.type != 'any'
 				   ) {
 					criminalsMessage &= "entityName=#entityName# propertyName=#property.name# #property.type#, <br>"&chr(10)&chr(13);
 				}
