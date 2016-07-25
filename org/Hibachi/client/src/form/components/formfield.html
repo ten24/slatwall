@@ -2,7 +2,7 @@
 <!--drive formfield by fieldtype-->
 <span ng-init="fieldTypes = ['email','text','password','number','time','date','datetime','json']"></span>
 <sw-input ng-if="fieldTypes.indexOf(swFormField.fieldType.toLowerCase()) >= 0" data-property-display="swFormField"></sw-input>
-
+{{swFormField.fieldType}}
 <ng-switch on="swFormField.fieldType" >
 
 	<sw-form-field-search-select data-property-display="swFormField" ng-switch-when="search-select"></sw-form-field-search-select>
@@ -17,16 +17,17 @@
 
 		>
 		</select>
+
 		<input style="display:none"
 				type="text"
 				name="{{swFormField.object.data[swFormField.property].$$getIDName()}}"
-				ng-if="selectType === 'object'"
+				ng-if="swFormField.selectType === 'object'"
 				ng-model="swFormField.object.data[swFormField.property].data[swFormField.object.data[swFormField.property].$$getIDName()]"
 		/>
 		<input style="display:none"
 				type="text"
 				name="{{swFormField.property}}"
-				ng-if="selectType === 'string'"
+				ng-if="swFormField.selectType === 'string'"
 				ng-model="swFormField.object.data[swFormField.property]"
 		/>
 

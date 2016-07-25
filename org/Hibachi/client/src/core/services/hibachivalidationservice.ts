@@ -5,9 +5,9 @@
 class HibachiValidationService{
     //@ngInject
     constructor(
-
+		public $log
     ){
-
+		this.$log = $log;
 
     }
     public getObjectSaveLevel = (entityInstance)=>{
@@ -34,10 +34,10 @@ class HibachiValidationService{
 		var modifiedData:any = {};
 
 		var objectSaveLevel = this.getObjectSaveLevel(entityInstance);
-		//$log.debug('objectSaveLevel : ' + objectSaveLevel );
+		this.$log.debug('objectSaveLevel : ' + objectSaveLevel );
 		var valueStruct = this.validateObject(objectSaveLevel);
-		//$log.debug('validateObject data');
-		//$log.debug(valueStruct.value);
+		this.$log.debug('validateObject data');
+		this.$log.debug(valueStruct.value);
 
 		modifiedData = {
 			objectLevel:objectSaveLevel,
@@ -70,13 +70,13 @@ class HibachiValidationService{
         var valid = true;
 
         var forms = entityInstance.forms;
-        //$log.debug('process base level data');
+        this.$log.debug('process base level data');
         for(var f in forms){
             var form = forms[f];
             form.$setSubmitted();   //Sets the form to submitted for the validation errors to pop up.
             if(form.$dirty && form.$valid){
                 for(var key in form){
-                    //$log.debug('key:'+key);
+                    this.$log.debug('key:'+key);
                     if(key.charAt(0) !== '$' && angular.isObject(form[key])){
                         var inputField = form[key];
 
@@ -104,11 +104,11 @@ class HibachiValidationService{
             }
         }
         modifiedData[entityInstance.$$getIDName()] = entityInstance.$$getID();
-        //$log.debug(modifiedData);
+        this.$log.debug(modifiedData);
 
 
 
-        //$log.debug('process parent data');
+        this.$log.debug('process parent data');
         if(angular.isDefined(entityInstance.parents)){
             for(var p in entityInstance.parents){
                 var parentObject = entityInstance.parents[p];
@@ -150,13 +150,13 @@ class HibachiValidationService{
                 modifiedData[parentObject.name][parentInstance.$$getIDName()] = parentInstance.$$getID();
             }
         }
-        //$log.debug(modifiedData);
+        this.$log.debug(modifiedData);
 
 
-        //$log.debug('begin child data');
+        this.$log.debug('begin child data');
         var childrenData = this.validateChildren(entityInstance);
-        //$log.debug('child Data');
-        //$log.debug(childrenData);
+        this.$log.debug('child Data');
+        this.$log.debug(childrenData);
         angular.extend(modifiedData,childrenData);
         return {
             valid:valid,
@@ -192,7 +192,7 @@ class HibachiValidationService{
 	}
 
 	public processForm = (form,entityInstance)=>{
-		//$log.debug('begin process form');
+		this.$log.debug('begin process form');
 		var data = {};
 		form.$setSubmitted();
 		for(var key in form){
@@ -213,8 +213,8 @@ class HibachiValidationService{
 			}
 		}
 		data[entityInstance.$$getIDName()] = entityInstance.$$getID();
-		//$log.debug('process form data');
-		//$log.debug(data);
+		this.$log.debug('process form data');
+		this.$log.debug(data);
 		return data;
 	}
 
@@ -224,8 +224,8 @@ class HibachiValidationService{
 			data[entityInstance.$$getIDName()] = entityInstance.$$getID();
 		}
 
-		//$log.debug('processParent');
-		//$log.debug(entityInstance);
+		this.$log.debug('processParent');
+		this.$log.debug(entityInstance);
 		var forms = entityInstance.forms;
 
 		for(var f in forms){
@@ -275,8 +275,8 @@ class HibachiValidationService{
 						data[parentMetaData.name] = {};
 					}
 					var parentData = this.processParent(parent);
-					//$log.debug('parentData:'+parentMetaData.name);
-					//$log.debug(parentData);
+					this.$log.debug('parentData:'+parentMetaData.name);
+					this.$log.debug(parentData);
 					angular.extend(data[parentMetaData.name],parentData);
 				}else{
 
@@ -291,22 +291,22 @@ class HibachiValidationService{
 	public getDataFromChildren = (entityInstance)=>{
 		var data = {};
 
-		//$log.debug('childrenFound');
-		//$log.debug(entityInstance.children);
+		this.$log.debug('childrenFound');
+		this.$log.debug(entityInstance.children);
 		for(var c in entityInstance.children){
 			var childMetaData = entityInstance.children[c];
 			var children = entityInstance.data[childMetaData.name];
-			//$log.debug(childMetaData);
-			//$log.debug(children);
+			this.$log.debug(childMetaData);
+			this.$log.debug(children);
 			if(angular.isArray(entityInstance.data[childMetaData.name])){
 				if(angular.isUndefined(data[childMetaData.name])){
 					data[childMetaData.name] = [];
 				}
 				angular.forEach(entityInstance.data[childMetaData.name],(child,key)=>{
-					//$log.debug('process child array item')
+					this.$log.debug('process child array item')
 					var childData = this.processChild(child,entityInstance);
-					//$log.debug('process child return');
-					//$log.debug(childData);
+					this.$log.debug('process child return');
+					this.$log.debug(childData);
 					data[childMetaData.name].push(childData);
 				});
 			}else{
@@ -314,16 +314,16 @@ class HibachiValidationService{
 					data[childMetaData.name] = {};
 				}
 				var child = entityInstance.data[childMetaData.name];
-				//$log.debug('begin process child');
+				this.$log.debug('begin process child');
 				var childData = this.processChild(child,entityInstance);
-				//$log.debug('process child return');
-				//$log.debug(childData);
+				this.$log.debug('process child return');
+				this.$log.debug(childData);
 				angular.extend(data,childData);
 			}
 
 		}
-		//$log.debug('returning child data');
-		//$log.debug(data);
+		this.$log.debug('returning child data');
+		this.$log.debug(data);
 
 		return data;
 	}
