@@ -227,4 +227,217 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertFalse(orderItem.hasGiftCard(giftCard)); 
 		 
 	}
+	/**
+	* @hint 'hi'
+	*/
+	private any function createMockOrderItem(string orderItemTypeID='', numeric quantity, string skuID='') {
+		var orderItemData = {
+			orderItemID = ""
+		};
+		if(len(arguments.orderItemTypeID)){
+			orderItemData.orderItemType = {
+				typeID = arguments.orderItemTypeID
+			};
+		}
+		if(!isNull(arguments.quantity)) {
+			orderItemData.quantity = arguments.quantity;
+		}
+		if(len(arguments.skuID)){
+			orderItemData.sku = {
+				skuID = arguments.skuID
+			};
+		}
+		return createPersistedTestEntity('OrderItem', orderItemData);
+	}
+	/**
+	* Put the orderItemID string in array, the entity will associated with all of them
+	*/
+	private any function createMockOrderWithOrderItems(required array orderItemIDArray, string orderTypeID='') {
+		var orderData = {
+			orderID = "",
+			orderItems = []
+		};
+		for (var i = 1; i <= arrayLen(arguments.orderItemIDArray); i++) {
+			orderData.orderItems[i] = {
+				orderItemID = arguments.orderItemIDArray[i]
+			};
+		}
+		if(len(arguments.orderTypeID)){
+			orderData.orderType = {
+				typeID = arguments.orderTypeID
+			};
+		}
+		return createPersistedTestEntity('Order', orderData);
+	}
+	
+	private any function createMockSku() {
+		var skuData = {
+			skuID = ''
+		};
+		return createPersistedTestEntity('Sku', skuData);
+	}
+	
+	public void function hasQuantityWithinMaxOrderQuantityTest_OrderItemType() {
+		var mockSku = createMockSku();
+		
+		var productData = {
+			productID = '',
+			skus = [{
+				skuID = mockSku.getSkuID()
+			}]
+		};
+		var mockProduct = createPersistedTestEntity('Product', productData);
+		
+		var mockOrderItemOITSale = createMockOrderItem('444df2e9a6622ad1614ea75cd5b982ce', 100, mockSku.getSkuID()); 
+		var mockOrderItemOITReturn = createMockOrderItem('444df2eac18fa589af0f054442e12733', 100, mockSku.getSkuID()); 
+		
+		var mockOrder1 = createMockOrderWithOrderItems([mockOrderItemOITSale.getOrderItemID()]);
+
+		var resultOITSale = mockOrderITemOITSale.hasQuantityWithinmaxOrderQuantity();
+		assertTrue(resultOITSale, 'oitSale should go into the if statements and do calculation');
+		
+		var resultOITReturn = mockOrderItemOITReturn.hasQuantityWithinmaxOrderQuantity();
+		assertTrue(resultOITReturn, 'For orderITem types other than oitSale, should return the TRUE after the if statements');
+	}
+	
+	public void function hasQuantityWithinMaxOrderQuantityTest_QuantityComparision() {
+		var mockSku = createMockSku();
+		
+		var productData = {
+			productID = '',
+			skus = [{
+				skuID = mockSku.getSkuID()
+			}]
+		};
+		var mockProduct = createPersistedTestEntity('Product', productData);
+		
+		var mockOrderItemSale1 = createMockOrderItem('444df2e9a6622ad1614ea75cd5b982ce', 100, mockSku.getSkuID()); 
+		var mockOrderItemSale2 = createMockOrderItem('444df2e9a6622ad1614ea75cd5b982ce', 1000, mockSku.getSkuID()); 
+		var mockOrderItem1 = createMockOrderItem(quantity = 10, skuID = mockSku.getSkuID());
+		var mockOrderItem2 = createMockOrderItem(quantity = 20, skuID = mockSku.getSkuID());
+		var mockOrderItem3 = createMockOrderItem(quantity = 40, skuID = mockSku.getSkuID());
+		
+		var mockOrder1 = createMockOrderWithOrderItems([mockOrderItem1.getOrderItemID(), 
+														mockOrderItem2.getOrderItemID(),
+														mockOrderItemSale1.getOrderItemID()]);
+		var mockOrder2 = createMockOrderWithOrderItems([mockOrderItem3.getOrderItemID(),
+														mockOrderItemSale2.getOrderItemID()]);
+														
+		var resultSale1 = mockOrderItemSale1.hasQuantityWithinmaxOrderQuantity();
+		assertTrue(resultSale1, 'The quantity of mockOrder1 should be 130 in total, which is less than getMaximumOrderQuantity()');
+		
+		var resultSale2 = mockOrderItemSale2.hasQuantityWithinmaxOrderQuantity();
+		assertFalse(resultSale2, 'The quantity of mockOrder2 should be 1040 in total, which is more than getMaximumOrderQuantity(), should return false');
+	}
+	
+	public void function hasQuantityWithinMaxOrderQuantityTest_getSkuIsNull() {
+		var mockSku = createMockSku();
+		
+		var productData = {
+			productID = '',
+			skus = [{
+				skuID = mockSku.getSkuID()
+			}]
+		};
+		var mockProduct = createPersistedTestEntity('Product', productData);
+		
+		var mockOrderItemRunFunction1 = createMockOrderItem('444df2e9a6622ad1614ea75cd5b982ce', 1000, mockSku.getSkuID()); 
+		var mockOrderItemRunFunction2 = createMockOrderItem('444df2e9a6622ad1614ea75cd5b982ce', 1000, mockSku.getSkuID());
+		var mockOrderItemNoSku 		  = createMockOrderItem(quantity = 10);
+		
+		var mockOrderHasSku 	  = createMockOrderWithOrderItems([mockOrderItemRunFunction1.getOrderItemID()]);
+		var mockOrderOneSkuOneNot = createMockOrderWithOrderItems([mockOrderItemRunFunction2.getOrderItemID(),
+															 	   mockOrderItemNoSku.getOrderItemID()]);
+																
+		var resultOrderHasSku = mockOrderItemRunFunction1.hasQuantityWithinmaxOrderQuantity();
+		assertTrue(resultOrderHasSku, '1000 <= getMaximumOrderQuantity()');
+		
+		var resultOrderOneSkuOneNot = mockOrderItemRunFunction2.hasQuantityWithinmaxOrderQuantity();
+		assertTrue(resultOrderOneSkuOneNot, 'quantity should still be 1000, the mockOrderItemNoSku should not be added in quantity formula');	
+	}
+	
+	public void function hasQuantityWithinMinOrderQuantityTest_OrderItemType() {
+		var mockSku = createMockSku();
+		
+		var productData = {
+			productID = '',
+			skus = [{
+				skuID = mockSku.getSkuID()
+			}]
+		};
+		var mockProduct = createPersistedTestEntity('Product', productData);
+		
+		var mockOrderItemOITSale = createMockOrderItem('444df2e9a6622ad1614ea75cd5b982ce', 100, mockSku.getSkuID()); 
+		var mockOrderItemOITReturn = createMockOrderItem('444df2eac18fa589af0f054442e12733', 100, mockSku.getSkuID()); 
+		
+		var mockOrder1 = createMockOrderWithOrderItems([mockOrderItemOITSale.getOrderItemID()]);
+
+		var resultOITSale = mockOrderITemOITSale.hasQuantityWithinMinOrderQuantity();
+		assertTrue(resultOITSale, 'oitSale should go into the if statements and do calculation');
+		
+		var resultOITReturn = mockOrderItemOITReturn.hasQuantityWithinMinOrderQuantity();
+		assertTrue(resultOITReturn, 'For orderITem types other than oitSale, should return the TRUE after the if statements');
+		
+	}
+	
+	public void function hasQuantityWithinMinOrderQuantityTest_QuantityComparision() {
+		var mockSku = createMockSku();
+		
+		var productData = {
+			productID = '',
+			skus = [{
+				skuID = mockSku.getSkuID()
+			}]
+		};
+		var mockProduct = createPersistedTestEntity('Product', productData);
+	
+		var mockOrderItem1 = createMockOrderItem(quantity = 10, skuID = mockSku.getSkuID());
+		var mockOrderItem2 = createMockOrderItem(quantity = 20, skuID = mockSku.getSkuID());
+		var mockOrderItemSale1 = createMockOrderItem('444df2e9a6622ad1614ea75cd5b982ce', 0, mockSku.getSkuID());
+		
+		
+		var mockOrderItem3 = createMockOrderItem(quantity = -100, skuID = mockSku.getSkuID());
+		var mockOrderItemSale2 = createMockOrderItem('444df2e9a6622ad1614ea75cd5b982ce', 0, mockSku.getSkuID()); 
+		
+		
+		
+		var mockOrder1 = createMockOrderWithOrderItems([mockOrderItem1.getOrderItemID(), 
+														mockOrderItem2.getOrderItemID(),
+														mockOrderItemSale1.getOrderItemID()]);
+															
+		var mockOrder2 = createMockOrderWithOrderItems([mockOrderItem3.getOrderItemID(),
+														mockOrderItemSale2.getOrderItemID()]);
+														
+		var resultSale1 = mockOrderItemSale1.hasQuantityWithinMinOrderQuantity();
+		assertTrue(resultSale1, 'The quantity of mockOrder1 should be 30 in total, which is more than 1');
+		
+		var resultSale2 = mockOrderItemSale2.hasQuantityWithinMinOrderQuantity();
+		assertFalse(resultSale2, 'The quantity of mockOrder2 should be 0 in total, which is less than min, should return false');
+	}
+	
+	public void function hasQuantityWithinMinOrderQuantityTest_getSkuIsNull() {
+		var mockSku = createMockSku();
+		
+		var productData = {
+			productID = '',
+			skus = [{
+				skuID = mockSku.getSkuID()
+			}]
+		};
+		var mockProduct = createPersistedTestEntity('Product', productData);
+		
+		var mockOrderItemRunFunction1 = createMockOrderItem('444df2e9a6622ad1614ea75cd5b982ce', 0, mockSku.getSkuID()); 
+		var mockOrderItemRunFunction2 = createMockOrderItem('444df2e9a6622ad1614ea75cd5b982ce', 0, mockSku.getSkuID());
+		var mockOrderItemNoSku 		  = createMockOrderItem(quantity = 10);
+		
+		var mockOrderHasSku 	  = createMockOrderWithOrderItems([mockOrderItemRunFunction1.getOrderItemID()]);
+		var mockOrderOneSkuOneNot = createMockOrderWithOrderItems([mockOrderItemRunFunction2.getOrderItemID(),
+															 	   mockOrderItemNoSku.getOrderItemID()]);
+																
+		var resultOrderHasSku = mockOrderItemRunFunction1.hasQuantityWithinMinOrderQuantity();
+		assertFalse(resultOrderHasSku, '0 < defaultMin 1, should return false');
+		
+		var resultOrderOneSkuOneNot = mockOrderItemRunFunction2.hasQuantityWithinMinOrderQuantity();
+		assertFalse(resultOrderOneSkuOneNot, 'quantity should still be 0, the mockOrderItemNoSku should not be added in quantity formula');	
+	}
 }

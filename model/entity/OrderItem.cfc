@@ -146,7 +146,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 	public numeric function getMaximumOrderQuantity() {
 		var maxQTY = 0;
-
+//		request.debug(getSku().getActiveFlag());
 		if(getSku().getActiveFlag() && getSku().getProduct().getActiveFlag()) {
 			maxQTY = getSku().setting('skuOrderMaximumQuantity');
 
@@ -173,7 +173,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
         if(getOrderItemType().getSystemCode() == 'oitSale') {
         	var quantity = 0;
         	for (var orderItem in getOrder().getOrderItems()){
-	            if (!isNull(orderItem.getSku()) && orderItem.getSku().getSkuID() == getSku().getSkuID()) {
+	            if (!isNull(orderItem.getSku()) && orderItem.getSku().getSkuID() == getSku().getSkuID() && !isNull(orderItem.getQuantity())) {
 	                quantity += orderItem.getQuantity();
 	            }
 	        }
@@ -183,11 +183,12 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
     }
 
     public boolean function hasQuantityWithinMinOrderQuantity() {
+    	
         if(getOrderItemType().getSystemCode() == 'oitSale') {
         	var quantity = 0;
-        	for (var orderItem in getOrder().getOrderItems()){
+    		for (var orderItem in getOrder().getOrderItems()){
 	            if (!isNull(orderItem.getSku()) && orderItem.getSku().getSkuID() == getSku().getSkuID()) {
-	                quantity += orderItem.getQuantity();
+	           		quantity += orderItem.getQuantity();
 	            }
 	        }
             return quantity >= getSku().setting('skuOrderMinimumQuantity');
