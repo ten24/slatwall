@@ -182,7 +182,7 @@ class SWInputController{
 		var acceptedFieldTypes = ['email','text','password','number','time','date','datetime','json'];
 
 		if(acceptedFieldTypes.indexOf(this.fieldType.toLowerCase()) >= 0){
-			template = '<input type="'+this.fieldType+'" class="'+this.class+'" '+
+			template = '<input type="'+this.fieldType.toLowerCase()+'" class="'+this.class+'" '+
 				'ng-model="swInput.value" '+
 				'ng-disabled="swInput.editable === false" '+
 				'ng-show="swInput.editing" '+
@@ -252,7 +252,9 @@ class SWInputController{
 		this.eventHandlerTemplate = "";
 		for(var i in this.eventHandlersArray){
 			var eventName = this.eventHandlersArray[i];
-			this.eventHandlerTemplate += ` ng-`+eventName+`=swInput.onEvent($event,'`+eventName+`')`;
+            if(eventName.length){
+                this.eventHandlerTemplate += ` ng-`+eventName+`="swInput.onEvent($event,'`+eventName+`')"`;
+            }
 		}
 	}
 }

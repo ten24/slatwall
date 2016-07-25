@@ -264,12 +264,14 @@ class SWFormController {
             iterable = this.object.data;
         }
 
-
-
         angular.forEach(iterable, (val, key) => {
-            if(this.object.forms && this.object.forms[this.name][key] && this.object.forms[this.name][key].$modelValue){
+            if(this.object.forms && this.object.forms[this.name][key]){
+                if(this.object.forms[this.name][key].$modelValue){
+                    val = this.object.forms[this.name][key].$modelValue;
+                }else if(this.object.forms[this.name][key].$viewValue){
+                    val = this.object.forms[this.name][key].$viewValue;
+                }
 
-                val = this.object.forms[this.name][key].$modelValue;
             }
 
             /** Check for form elements that have a name that doesn't start with $ */

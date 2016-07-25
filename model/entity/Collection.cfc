@@ -1736,7 +1736,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				variables.configStructure = deserializeJSON(getCollectionConfig());
 			} else {
 				variables.configStructure = {};
-				variables.configStructure['baseEntitytName'] = getCollectionObject();
+				variables.configStructure['baseEntityName'] = getCollectionObject();
 			}
 		}
 		return variables.configStructure;

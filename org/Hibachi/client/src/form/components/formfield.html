@@ -17,16 +17,17 @@
 
 		>
 		</select>
+
 		<input style="display:none"
 				type="text"
 				name="{{swFormField.object.data[swFormField.property].$$getIDName()}}"
-				ng-if="selectType === 'object'"
+				ng-if="swFormField.selectType === 'object'"
 				ng-model="swFormField.object.data[swFormField.property].data[swFormField.object.data[swFormField.property].$$getIDName()]"
 		/>
 		<input style="display:none"
 				type="text"
 				name="{{swFormField.property}}"
-				ng-if="selectType === 'string'"
+				ng-if="swFormField.selectType === 'string'"
 				ng-model="swFormField.object.data[swFormField.property]"
 		/>
 
