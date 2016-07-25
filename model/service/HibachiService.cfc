@@ -62,14 +62,14 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 	
 	private struct function getAttributeSetMetaData(required attributeSet){
 		var attributeSetMetaData = {};
-		attributeSetMetaData['attributeSetName'] = attributeSet.getAttributeSetCodeName();
+		attributeSetMetaData['attributeSetName'] = attributeSet.getAttributeSetName();
 		attributeSetMetaData['attributeSetCode'] = attributeSet.getAttributeSetCode();
 		attributeSetMetaData['attributeSetDescription'] = attributeSet.getAttributeSetDescription();
 		
 		attributeSetMetaData['attributes'] = {};
 		var attributes = attributeSet.getAttributes();
 		for(var attribute in attributes){
-			attributeSetMetaData['attributes'][attribute.getAttributeName()] = getAttributeMetaData(attribute);
+			attributeSetMetaData['attributes'][attribute.getAttributeCode()] = getAttributeMetaData(attribute);
 		}
 		return attributeSetMetaData;
 	}
@@ -81,31 +81,23 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
             var entitiesListArray = listToArray(structKeyList(getHibachiScope().getService('hibachiService').getEntitiesMetaData()));
 
 
-            model[entity.getClassName()] = {};
+            
             
             for(var entityName in entitiesListArray) {
                 var entity = getHibachiScope().getService('hibachiService').getEntityObject(entityName);
+                
+                
 				var assignedAttributes = entity.getAssignedAttributeSetSmartList().getRecords();
-				//model[entity.getClassName()] = assignedAttributesSmartSetlist.getRecords();
-				for(var attributeSet in assignedAttributes){
-					
-					var attributeSetMeta = getAttributeSetMetaData(attributeSet);
-					
-					model[entity.getClassName()][attributeSet.getAttributeSetCode()]={};
-					
+				if(arrayLen(assignedAttributes)){
+					model[entity.getClassName()] = {};
+					for(var attributeSet in assignedAttributes){
+						
+						var attributeSetMeta = getAttributeSetMetaData(attributeSet);
+						
+						model[entity.getClassName()][attributeSet.getAttributeSetCode()]=attributeSetMeta;
+						
+					}
 				}
-//                formatEntity(entity,model);
-//                //add process objects to the entites array
-//                if(structKeyExists(processContextsStruct,entityName)){
-//                    var processContexts = processContextsStruct[entityName];
-//                    for(var processContext in processContexts){
-//                        if(entity.hasProcessObject(processContext)){
-//
-//                            formatEntity(entity.getProcessObject(processContext),model);
-//                        }
-//
-//                    }
-//                }
             }
 
             ORMClearSession();

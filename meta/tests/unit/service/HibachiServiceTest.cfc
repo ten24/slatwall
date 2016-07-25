@@ -54,9 +54,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.service = request.slatwallScope.getService("hibachiService");
 	}
 	
-	public void function getAttributeMetaDataTest(){
-		var attributeMetaData = variables.service.getAttributeMetaData();
-		request.debug(AttributeMetaData.Account[1].getClassName());
+	public void function getAttributeModelTest(){
+		var attributeMetaData = variables.service.getAttributeModel();
+		request.debug(AttributeMetaData);
 	}
 	
 	// getProperlyCasedShortEntityName()
