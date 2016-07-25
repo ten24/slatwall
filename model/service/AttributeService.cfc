@@ -120,6 +120,7 @@ component  extends="HibachiService" accessors="true" {
 			getHibachiDAO().flushORMSession();
 
 			getHibachiCacheService().resetCachedKey("attributeService_getAttributeCodesListByAttributeSetObject_#arguments.attribute.getAttributeSet().getAttributeSetObject()#");
+			getHibachiCacheService().resetCachedKey("hibachiService_getAttributeModel");
 		}
 
 		return arguments.attribute;

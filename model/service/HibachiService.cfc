@@ -76,17 +76,11 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 	
 	public any function getAttributeModel(){
 		var model = {};
-        if(!getHibachiScope().hasApplicationValue('attributeModel')){
+        if(!getHibachiScope().hasApplicationValue('hibachiService_getAttributeModel')){
             var entities = [];
             var entitiesListArray = listToArray(structKeyList(getHibachiScope().getService('hibachiService').getEntitiesMetaData()));
-
-
-            
-            
             for(var entityName in entitiesListArray) {
                 var entity = getHibachiScope().getService('hibachiService').getEntityObject(entityName);
-                
-                
 				var assignedAttributes = entity.getAssignedAttributeSetSmartList().getRecords();
 				if(arrayLen(assignedAttributes)){
 					model[entity.getClassName()] = {};
@@ -101,9 +95,9 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
             }
 
             ORMClearSession();
-            getHibachiScope().setApplicationValue('attributeModel',model);
+            getHibachiScope().setApplicationValue('hibachiService_getAttributeModel',model);
         }
-        model = getHibachiScope().getApplicationValue('attributeModel');
+        model = getHibachiScope().getApplicationValue('hibachiService_getAttributeModel');
         return model;
 	}
 	

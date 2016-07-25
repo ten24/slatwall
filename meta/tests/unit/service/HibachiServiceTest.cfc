@@ -55,7 +55,49 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	public void function getAttributeModelTest(){
+		var attributeSetData = {
+			attributeSetID="",
+			attributeSetName="unitTestAttributeSet",
+			attributeSetCode="unitTestAttributeSetCode",
+			attributeSetObject="Account"
+		};
+		var attributeSet = createPersistedTestEntity('attributeSet',attributeSetData);
+		
+		var attributeData = {
+			attributeID="",
+			attributeName="unitTestAttribute",
+			attributeCode="unitTestAttributeCode",
+			attributeSet={
+				attributeSetID=attributeSet.getAttributeSetID()
+			}
+		};
+		var attribute = createPersistedTestEntity('attribute',attributeData);
+		
 		var attributeMetaData = variables.service.getAttributeModel();
+		assert(structKeyExists(attributeMetaData,'Account'),'no entity');
+		if(structKeyExists(attributeMetaData,'Account')){
+			assert(structKeyExists(attributeMetaData['Account'],attributeSet.getAttributeSetCode()),'no attribute set');
+		}
+		if(structKeyExists(attributeMetaData['Account'],attributeSet.getAttributeSetCode())){
+			assert(attributeMetaData['Account'][attributeSet.getAttributeSetCode()]['attributeSetName'] == 'unitTestAttributeSet','no attribute set name');
+			assert(structKeyExists(attributeMetaData['Account'][attributeSet.getAttributeSetCode()],'attributes'),'no attributes');
+			if(structKeyExists(attributeMetaData['Account'][attributeSet.getAttributeSetCode()],'attributes')){
+				assert(
+					structKeyExists(
+						attributeMetaData['Account'][attributeSet.getAttributeSetCode()]['attributes'],
+						attribute.getAttributeCode()
+					),'no attribute code'
+				);
+				if(
+					structKeyExists(
+						attributeMetaData['Account'][attributeSet.getAttributeSetCode()]['attributes'],
+						attribute.getAttributeCode()
+					)
+				){
+					assert(attributeMetaData['Account'][attributeSet.getAttributeSetCode()]['attributes'][attribute.getAttributeCode()]['attributeName']=='unitTestAttribute','no attribute name');
+				}
+			}
+		}
 		request.debug(AttributeMetaData);
 	}
 	
