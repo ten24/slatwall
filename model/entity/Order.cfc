@@ -189,8 +189,9 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 
 		for(var orderItem in this.getOrderItems()) {
+			request.debug("For");
 			var salePriceDetails = orderItem.getSku().getSalePriceDetails();
-
+			
 			if(structKeyExists(salePriceDetails, "salePrice") && salePriceDetails.salePrice < orderItem.getSku().getPrice()) {
 
 				var discountAmount = precisionEvaluate((orderItem.getSku().getPrice() * orderItem.getQuantity()) - (salePriceDetails.salePrice * orderItem.getQuantity()));

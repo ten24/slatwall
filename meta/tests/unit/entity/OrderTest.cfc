@@ -304,13 +304,25 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		return createPersistedTestEntity('Order', orderData);
 	}
 	
-	private any function createMockOrderItem(string orderItemTypeID='') {
+	
+	/**
+	* This function is exactly same with the one in OrderItemTest.cfc
+	*/
+	private any function createMockOrderItem(string orderItemTypeID='', numeric quantity, string skuID='') {
 		var orderItemData = {
 			orderItemID = ""
 		};
 		if(len(arguments.orderItemTypeID)){
 			orderItemData.orderItemType = {
 				typeID = arguments.orderItemTypeID
+			};
+		}
+		if(!isNull(arguments.quantity)) {
+			orderItemData.quantity = arguments.quantity;
+		}
+		if(len(arguments.skuID)){
+			orderItemData.sku = {
+				skuID = arguments.skuID
 			};
 		}
 		return createPersistedTestEntity('OrderItem', orderItemData);
@@ -537,4 +549,91 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(arrayFind(resultOrder3, ReturnStruct) != 0);
 		assertTrue(arrayFind(resultOrder3, ExchangeStruct) != 0);
 	}
+	
+	public void function hasItemsQuantityWithinMaxOrderQuantityTest() {
+		var skuData = {
+			skuID = ''
+		};
+		var mockSku = createPersistedTestEntity('Sku', skuData);
+		
+		var productData = {
+			productID = '',
+			skus = [{
+				skuID = mockSku.getSkuID()
+			}]
+		};
+		var mockProduct = createPersistedTestEntity('Product', productData);
+		
+		//Testing the oitSale type with more than maximum quantity
+		var mockOrderItemWithSaleType = createMockOrderItem('444df2e9a6622ad1614ea75cd5b982ce', 1500, mockSku.getSkuID()); 
+		var mockOrderWithSaleType = createMockOrderWithOrderItems([mockOrderItemWithSaleType.getOrderItemID()]);
+											
+		var resultWithType = mockOrderWithSaleType.hasItemsQuantityWithinMaxOrderQuantity();
+		assertFalse(resultWithType, 'The quantity of this order is 1500, more than maximum');
+		
+		//Testing when no type defined
+		var mockOrderItemNoType = createMockOrderItem(quantity=10, skuID=mockSku.getSkuID());
+		var mockOrderNoType = createMockOrderWithOrderItems([mockOrderItemNoType.getOrderItemID()]);
+		
+		var resultNoType = mockOrderNoType.hasItemsQuantityWithinMaxOrderQuantity();
+		assertTrue(resultNoType, 'The types except oitSale should return true');
+		
+		//Testing the type oitReturn
+		var mockOrder = createMockOrder();
+		
+		var resultNoOrderItem = mockOrder.hasItemsQuantityWithinMaxOrderQuantity();
+		assertTrue(resultNoOrderItem, 'If no OrderItem involved with the order, shoulds return true');
+	}
+	
+	private any function createMockSkuAboutSalePrice() {	 	
+		var promotionRewardData = {
+			promotionRewardID = '',
+			amount = 3,
+			amountType = 'amountOff'
+		};
+		var mockPromotionReward = createPersistedTestEntity('PromotionReward', promotionRewardData);
+		
+	 	var skuData = {
+	 		skuID = '',
+	 		price = 10,
+	 		promotionRewards = [{
+	 			promotionRewardID = mockPromotionReward.getPromotionRewardID()
+	 		}]
+	 	};
+	 	var mockSku = createPersistedTestEntity('Sku', skuData);
+		
+		var promotionPeriodData = {
+			promotionPeriodID = '',
+			promotionRewards = [{
+				promotionRewardID = mockPromotionReward.getPromotionRewardID()
+			}]
+		};
+		var mockPromotionPeriod = createPersistedTestEntity('PromotionPeriod', promotionPeriodData);
+		
+		var promotionData = {
+			promotionid = '',
+			promotionPeriods = [{
+					promotionPeriodID = mockPromotionPeriod.getPRomotionPeriodID()
+				}]
+		};
+		var promotion = createPersistedTestEntity('promotion',promotionData);
+
+		return mockSku;
+	 }
+	 
+	 public void function getOrderItemQualifiedDiscountsTest() {
+	 	var mockSku = createMockSkuAboutSalePrice();
+	 	
+	 	var mockOrderItem1 = createMockOrderItem(skuID = mockSku.getSkuID());
+	 	var mockOrderItem2 = createMockOrderItem(skuID = mockSku.getSkuID());
+	 	var mockOrderItem3 = createMockOrderItem(skuID = mockSku.getSkuID());
+		
+		var mockOrder1 = createMockOrderWithOrderItems([mockOrderItem1.getOrderItemID(), 
+														mockOrderItem2.getOrderItemID(),
+														mockOrderItem3.getOrderItemID()]);
+		request.debug("HI");					
+		var result = mockOrder1.getOrderItemQualifiedDiscounts();
+		request.debug(result);
+	 }
+	
 }
