@@ -434,17 +434,17 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
 			for(var property in properties) {
 				if (
-						(
+						/*(
 							!structKeyExists(property,'persistent')
 							 ||(
 							 	structKeyExists(property,'persistent') 
-							 	&& lcase(property.persistent) eq "true"
+							 	&& property.persistent
 							   )
 						)
-						&&!structKeyExists(property, "cfc") 
+						&&*/ !structKeyExists(property, "cfc") 
 						&& structKeyExists(property, "type") 
 				   ) {
-					criminalsMessage &= "entityName=#entityName# propertyName=#property.name#, <br>";
+					criminalsMessage &= "entityName=#entityName# propertyName=#property.name#, <br>"&chr(10)&chr(13);
 				}
 			}			
 		}
