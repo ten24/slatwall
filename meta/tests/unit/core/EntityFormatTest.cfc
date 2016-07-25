@@ -424,8 +424,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 	}
 	
-	//This function checks if the type instead of ormtype are used in properties that related with cfc entity
-	public void function check_cfc_related_properties_that_uses_type() {
+	//This function checks if a persistant property (not cfc) uses type instead of ormtype to define the datatype
+	public void function check_persistant_nonCFC_properties_that_use_type() {
 		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
 		
 		var criminalsMessage = "";
