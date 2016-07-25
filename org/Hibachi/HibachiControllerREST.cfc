@@ -475,6 +475,10 @@ component output="false" accessors="true" extends="HibachiController" {
             }
         }
     }
+    
+    public any function getAttributeModel(required struct rc){
+    	return getService('hibachiService').getAttributeModel();
+    }
 
     private any function getModel(required struct rc){
         var model = {};

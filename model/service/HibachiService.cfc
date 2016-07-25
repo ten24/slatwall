@@ -52,6 +52,69 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 		return getHibachiScope();
 	} 
 	
+	private struct function getAttributeMetaData(required any attribute){
+		var attributeMetaData = {};
+		attributeMetaData['attributeName'] = arguments.attribute.getAttributeName();
+		attributeMetaData['attributeCode'] = arguments.attribute.getAttributeCode();
+		attributeMetaData['attributeDescription'] = arguments.attribute.getAttributeDescription();
+		return attributeMetaData;
+	}
+	
+	private struct function getAttributeSetMetaData(required attributeSet){
+		var attributeSetMetaData = {};
+		attributeSetMetaData['attributeSetName'] = attributeSet.getAttributeSetCodeName();
+		attributeSetMetaData['attributeSetCode'] = attributeSet.getAttributeSetCode();
+		attributeSetMetaData['attributeSetDescription'] = attributeSet.getAttributeSetDescription();
+		
+		attributeSetMetaData['attributes'] = {};
+		var attributes = attributeSet.getAttributes();
+		for(var attribute in attributes){
+			attributeSetMetaData['attributes'][attribute.getAttributeName()] = getAttributeMetaData(attribute);
+		}
+		return attributeSetMetaData;
+	}
+	
+	public any function getAttributeModel(){
+		var model = {};
+        if(!getHibachiScope().hasApplicationValue('attributeModel')){
+            var entities = [];
+            var entitiesListArray = listToArray(structKeyList(getHibachiScope().getService('hibachiService').getEntitiesMetaData()));
+
+
+            model[entity.getClassName()] = {};
+            
+            for(var entityName in entitiesListArray) {
+                var entity = getHibachiScope().getService('hibachiService').getEntityObject(entityName);
+				var assignedAttributes = entity.getAssignedAttributeSetSmartList().getRecords();
+				//model[entity.getClassName()] = assignedAttributesSmartSetlist.getRecords();
+				for(var attributeSet in assignedAttributes){
+					
+					var attributeSetMeta = getAttributeSetMetaData(attributeSet);
+					
+					model[entity.getClassName()][attributeSet.getAttributeSetCode()]={};
+					
+				}
+//                formatEntity(entity,model);
+//                //add process objects to the entites array
+//                if(structKeyExists(processContextsStruct,entityName)){
+//                    var processContexts = processContextsStruct[entityName];
+//                    for(var processContext in processContexts){
+//                        if(entity.hasProcessObject(processContext)){
+//
+//                            formatEntity(entity.getProcessObject(processContext),model);
+//                        }
+//
+//                    }
+//                }
+            }
+
+            ORMClearSession();
+            getHibachiScope().setApplicationValue('attributeModel',model);
+        }
+        model = getHibachiScope().getApplicationValue('attributeModel');
+        return model;
+	}
+	
 	// @hint leverages the getEntityHasAttributeByEntityName() by traverses a propertyIdentifier first using getLastEntityNameInPropertyIdentifier()
 	public boolean function getHasAttributeByEntityNameAndPropertyIdentifier( required string entityName, required string propertyIdentifier ) {
 		return getEntityHasAttributeByEntityName( entityName=getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier), attributeCode=listLast(arguments.propertyIdentifier, ".") );
