@@ -35,25 +35,32 @@ class SWOrderByControlsController {
     }
 
     public updateOrderBy = () =>{
+        if(this.columns[this.selectedOrderByColumnIndex] != null){
+            var propertyIdentifier = this.columns[this.selectedOrderByColumnIndex].propertyIdentifier;
+        }
          switch(this.sortCode){
             case "ASC":
-                this.disabled = false; 
-                if(angular.isDefined(this.collectionConfig)){
-                    this.collectionConfig.toggleOrderBy(this.columns[this.selectedOrderByColumnIndex].propertyIdentifier,true);//single column mode true
-                }
-                if(this.inListingDisplay){
-                    this.listingService.setSingleColumnOrderBy(this.listingId,this.columns[this.selectedOrderByColumnIndex].propertyIdentifier,"ASC");
-                    this.listingService.setManualSort(this.listingId, false); 
+                if(propertyIdentifier !=null){
+                    this.disabled = false; 
+                    if(angular.isDefined(this.collectionConfig)){
+                        this.collectionConfig.toggleOrderBy(propertyIdentifier,true);//single column mode true
+                    }
+                    if(this.inListingDisplay){
+                        this.listingService.setSingleColumnOrderBy(this.listingId, propertyIdentifier, "ASC");
+                        this.listingService.setManualSort(this.listingId, false); 
+                    }
                 }
                 break; 
             case "DESC":
-                this.disabled = false; 
-                if(angular.isDefined(this.collectionConfig)){
-                    this.collectionConfig.toggleOrderBy(this.columns[this.selectedOrderByColumnIndex].propertyIdentifier,true);//single column mode true
-                }
-                if(this.inListingDisplay){
-                    this.listingService.setSingleColumnOrderBy(this.listingId,this.columns[this.selectedOrderByColumnIndex].propertyIdentifier,"DESC");
-                    this.listingService.setManualSort(this.listingId, false); 
+                if(propertyIdentifier !=null){
+                    this.disabled = false; 
+                    if(angular.isDefined(this.collectionConfig)){
+                        this.collectionConfig.toggleOrderBy(propertyIdentifier,true);//single column mode true
+                    }
+                    if(this.inListingDisplay){
+                        this.listingService.setSingleColumnOrderBy(this.listingId, propertyIdentifier, "DESC");
+                        this.listingService.setManualSort(this.listingId, false); 
+                    }
                 }
                 break; 
             case "MANUAL":

@@ -3,7 +3,7 @@
 class ListingService{
     
     private listingDisplays = {};
-    
+
     //@ngInject
     constructor(private $q,
                 private collectionConfigService,
@@ -16,15 +16,7 @@ class ListingService{
     ){
 
     }
-    
-    //core getters and setters
-    public setListingState = (listingID:string, state) =>{
-        this.listingDisplays[listingID] = state; 
-    }
 
-    public getListing = (listingID:string) => {
-        return this.listingDisplays[listingID];
-    }
 
     //Event Functions
     public getListingPageRecordsUpdateEventString = (listingID:string) => {
@@ -39,35 +31,57 @@ class ListingService{
         this.observerService.notify(this.getListingPageRecordsUpdateEventString(listingID));
     }
 
-    public attachToListingPageRecordsUpdate = (listingID:string, callback, id) =>{
+    public attachToListingPageRecordsUpdate = (listingID:string, callback, id:string) =>{
         this.observerService.attach(callback, this.getListingPageRecordsUpdateEventString(listingID), id);
     }
 
-    public attachToOrderByChangedUpdate = (listingID:string, callback, id) =>{
+    public attachToOrderByChangedUpdate = (listingID:string, callback, id:string) =>{
         this.observerService.attach(callback, this.getListingOrderByChangedEventString(listingID), id);
     }
     //End Event Functions
 
+    //core getters and setters
+    public setListingState = (listingID:string, state) =>{
+        this.listingDisplays[listingID] = state; 
+    }
+
+    public getListing = (listingID:string) => {
+        return this.listingDisplays[listingID];
+    }
+
+    public getListingExampleEntity = (listingID:string) =>{
+        if(this.getListing(listingID).exampleEntity != null){
+            return this.getListing(listingID).exampleEntity;
+        } else {
+            this.setupExampleEntity(listingID);
+        }
+    }
+
+    public getListingBaseEntityName = (listingID:string) =>{
+        var baseEntityName = this.getListing(listingID).baseEntityName || this.getListing(listingID).collectionObject
+        if(baseEntityName == null &&  this.getListing(listingID).collectionConfig != null){
+            baseEntityName = this.getListing(listingID).collectionConfig.baseEntityName;
+        }
+        if(baseEntityName == null && this.getListing(listingID).collectionData != null){
+            baseEntityName = this.getListing(listingID).collectionData.collectionObject; 
+        }
+        return baseEntityName;
+    }  
+
+    public getListingBaseEntityPrimaryIDPropertyName = (listingID:string) =>{
+        if(this.getListingExampleEntity(listingID) != null){
+            return this.getListingExampleEntity(listingID).$$getIDName();
+        }
+    }
+
     public getListingPrimaryEntityName = (listingID:string) =>{
         return this.getListing(listingID).baseEntityName || 
-               this.getListing(listingID).collectionObject || 
-               this.getListing(listingID).collectionConfig.baseEntityName; 
+                this.getListing(listingID).collectionObject || 
+                this.getListing(listingID).collectionConfig.baseEntityName; 
     }
 
     public getListingEntityPrimaryIDPropertyName = (listingID:string) =>{
         return this.$hibachi.getPrimaryIDPropertyNameByEntityName(this.getListingPrimaryEntityName(listingID)); 
-    }
-
-    public getListingPageRecordIndexByPageRecord = (listingID:string, pageRecordToCompare) =>{
-        var pageRecords = this.getListingPageRecords(listingID); 
-        var primaryIDPropertyName = this.getListingEntityPrimaryIDPropertyName(listingID); 
-        for(var j = 0; j<pageRecords.length; j++){
-            var pageRecord = pageRecords[j]; 
-            if( pageRecord[primaryIDPropertyName] == pageRecordToCompare[primaryIDPropertyName] ){
-                return j; 
-            }
-        }
-        return -1; 
     }
 
     public getListingPageRecords = (listingID:string) =>{
@@ -85,11 +99,24 @@ class ListingService{
 
     //Begin Listing Page Record Functions
     //needs a consideration of strategy for doing this for other use cases
-    public insertListingPageRecord = (listingID:string, pageRecord) =>{
+    public getListingPageRecordIndexByPageRecord = (listingID:string, pageRecordToCompare:any) =>{
+        var pageRecords = this.getListingPageRecords(listingID); 
+        var primaryIDPropertyName = this.getListingEntityPrimaryIDPropertyName(listingID); 
+        for(var j = 0; j<pageRecords.length; j++){
+            var pageRecord = pageRecords[j]; 
+            if( pageRecord[primaryIDPropertyName] == pageRecordToCompare[primaryIDPropertyName] ){
+                return j; 
+            }
+        }
+        return -1; 
+    }
+
+    public insertListingPageRecord = (listingID:string, pageRecord:any) =>{
         pageRecord.newFlag = true; 
+        console.log("pageRecord", pageRecord)
         if( angular.isDefined(this.getListingPageRecords(listingID))){
             this.notifyListingPageRecordsUpdate(listingID); 
-            this.getListingPageRecords(listingID).push(pageRecord);
+            this.getListingPageRecords(listingID).unshift(pageRecord);//insert at beginning be default
         }
     }
 
@@ -114,17 +141,37 @@ class ListingService{
         return '';
     };
 
-     public selectCurrentPageRecords=(listingID)=>{
+    public selectCurrentPageRecords=(listingID)=>{
         if(!this.getListing(listingID).collectionData.pageRecords) return;
 
         for(var i = 0; i < this.getListing(listingID).collectionData.pageRecords.length; i++){
-            if(this.getListing(listingID).isCurrentPageRecordsSelected == true){
-                this.getListing(listingID).selectionService.addSelection(this.getListing(listingID).name, this.getListing(listingID).collectionData.pageRecords[i][this.getListing(listingID).exampleEntity.$$getIDName()]);
-            }else{
-                this.selectionService.removeSelection(this.getListing(listingID).name, this.getListing(listingID).collectionData.pageRecords[i][this.getListing(listingID).exampleEntity.$$getIDName()]);
+            if( this.getListing(listingID).isCurrentPageRecordsSelected == true ){
+                this.getListing(listingID).selectionService.addSelection(this.getListing(listingID).name, 
+                                                                         this.getListingPageRecords(listingID)[i][this.getListingBaseEntityPrimaryIDPropertyName(listingID)]);
+            } else {
+                this.selectionService.removeSelection(this.getListing(listingID).name,  this.getListingPageRecords(listingID)[i][this.getListingBaseEntityPrimaryIDPropertyName(listingID)]);
             }
         }
-     };
+    };
+
+    public getNGClassObjectForPageRecordRow = (listingID:string, pageRecord)=>{
+        var classObjectString = "{"; 
+        angular.forEach(this.getListing(listingID).colorFilters, (colorFilter, index)=>{
+            classObjectString = classObjectString.concat("'" + colorFilter.colorClass + "':" + this.getColorFilterConditionString(colorFilter, pageRecord));
+            classObjectString = classObjectString.concat(",");
+        }); 
+        classObjectString = classObjectString.concat(" 's-child':" + (this.getPageRecordIsChild(listingID, pageRecord) || pageRecord.newFlag)); 
+        classObjectString = classObjectString.concat(",'s-disabled':" + this.getPageRecordMatchesDisableRule(listingID, pageRecord));
+        classObjectString = classObjectString.concat(",'s-edited':pageRecord.edited");
+        return classObjectString + "}"; 
+    };
+    
+    public getPageRecordIsChild = (listingID:string, pageRecord)=>{
+        var isChild = false;
+        //todo implement
+        return isChild;
+    };
+    
     //End Listing Page Record Functions
 
     //Row Save Functionality
@@ -638,25 +685,7 @@ class ListingService{
     };
     //End Order By Functions
 
-    //Helper Functions
-    public getListingExampleEntity = (listingID:string) =>{
-        if(this.getListing(listingID).exampleEntity != null){
-            return this.getListing(listingID).exampleEntity;
-        } else {
-            this.setupExampleEntity(listingID);
-        }
-    }
 
-    public getListingBaseEntityName = (listingID:string) =>{
-        var baseEntityName = this.getListing(listingID).baseEntityName || this.getListing(listingID).collectionObject
-        if(baseEntityName == null &&  this.getListing(listingID).collectionConfig != null){
-            baseEntityName = this.getListing(listingID).collectionConfig.baseEntityName;
-        }
-        if(baseEntityName == null && this.getListing(listingID).collectionData != null){
-            baseEntityName = this.getListing(listingID).collectionData.collectionObject; 
-        }
-        return baseEntityName;
-    }  
 
      private getColorFilterConditionString = (colorFilter, pageRecord)=>{
        if(angular.isDefined(colorFilter.comparisonProperty)){
@@ -665,25 +694,6 @@ class ListingService{
             return pageRecord[colorFilter.propertyToCompare.replace('.','_')] + colorFilter.comparisonOperator + colorFilter.comparisonValue;
        }
     };
-
-    public getNGClassObjectForPageRecordRow = (listingID:string, pageRecord)=>{
-        var classObjectString = "{"; 
-        angular.forEach(this.getListing(listingID).colorFilters, (colorFilter, index)=>{
-            classObjectString = classObjectString.concat("'" + colorFilter.colorClass + "':" + this.getColorFilterConditionString(colorFilter, pageRecord));
-            classObjectString = classObjectString.concat(",");
-        }); 
-        classObjectString = classObjectString.concat("'s-child':" + this.getPageRecordIsChild(listingID, pageRecord)); 
-        classObjectString = classObjectString.concat(",'s-disabled':" + this.getPageRecordMatchesDisableRule(listingID, pageRecord));
-        classObjectString = classObjectString.concat(",'s-edited':pageRecord.edited");
-        return classObjectString + "}"; 
-    };
-    
-    public getPageRecordIsChild = (listingID:string, pageRecord)=>{
-        var isChild = false;
-        //todo implement
-        return isChild;
-    };
-    
 
     //Disable Row Functions
     public getKeyOfMatchedDisableRule = (listingID:string, pageRecord)=>{
