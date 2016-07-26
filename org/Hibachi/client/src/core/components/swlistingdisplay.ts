@@ -110,7 +110,6 @@ class SWListingDisplayController{
 
         if(angular.isDefined(this.collection) && angular.isString(this.collection)){
             //not sure why we have two properties for this
-            console.log("collection is string");
             this.baseEntityName = this.collection; 
             this.collectionObject = this.collection;
             this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
@@ -280,14 +279,9 @@ class SWListingDisplayController{
     
     //move this to the service
     public getExampleEntityForExpandableRecord = (pageRecord) =>{
-        var childCollectionConfig = this.getPageRecordChildCollectionConfigForExpandableRule(pageRecord);
-        if(angular.isDefined(childCollectionConfig)){
-            return this.$hibachi.getEntityExample(this.getPageRecordChildCollectionConfigForExpandableRule(pageRecord).baseEntityName);
-        }
-        return this.exampleEntity; 
+        return this.listingService.getExampleEntityForExpandableRecord(this.tableID, pageRecord); 
     }
     
-    //move this to the service
     public getNGClassObjectForPageRecordRow = (pageRecord)=>{
         return this.listingService.getNGClassObjectForPageRecordRow(this.tableID, pageRecord);
     };
@@ -308,26 +302,11 @@ class SWListingDisplayController{
     }
     
     public toggleOrderBy = (column) => {
-        if(this.hasSingleCollectionConfig()){
-            this.collectionConfig.toggleOrderBy(column.propertyIdentifier, true);
-        } 
-        this.getCollection();
+        this.listingService.toggleOrderBy(this.tableID, column);
     };
     
     public columnOrderByIndex = (column) =>{
-        var isfound = false;
-        if(this.hasSingleCollectionConfig()){
-            angular.forEach(this.collectionConfig.orderBy, (orderBy, index)=>{
-                if(column.propertyIdentifier == orderBy.propertyIdentifier){
-                    isfound = true;
-                    this.orderByIndices[column.propertyIdentifier] = index + 1;
-                }
-            });
-        } 
-        if(!isfound){
-            this.orderByIndices[column.propertyIdentifier] = '';
-        }
-        return this.orderByIndices[column.propertyIdentifier];
+        return this.listingService.columnOrderByIndex(this.tableID, column);
     };
 
     public updateMultiselectValues = (res)=>{
@@ -583,5 +562,3 @@ class SWListingDisplay implements ng.IDirective{
 export{
     SWListingDisplay
 }
-
-

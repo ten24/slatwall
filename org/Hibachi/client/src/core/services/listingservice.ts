@@ -565,6 +565,28 @@ class ListingService{
         return this.getListing(listingID).orderByStates[column.propertyIdentifier];
     };
 
+     public toggleOrderBy = (listingID, column) => {
+        if(this.getListing(listingID).hasSingleCollectionConfig()){
+            this.getListing(listingID).collectionConfig.toggleOrderBy(column.propertyIdentifier, true);
+        } 
+        this.getCollection(listingID);
+    };
+    
+    public columnOrderByIndex = (listingID, column) =>{
+        var isfound = false;
+        if(this.getListing(listingID).collectionConfig != null){
+            angular.forEach(this.getListing(listingID).collectionConfig.orderBy, (orderBy, index)=>{
+                if(column.propertyIdentifier == orderBy.propertyIdentifier){
+                    isfound = true;
+                    this.getListing(listingID).orderByIndices[column.propertyIdentifier] = index + 1;
+                }
+            });
+        } 
+        if(!isfound){
+            this.getListing(listingID).orderByIndices[column.propertyIdentifier] = '';
+        }
+        return this.getListing(listingID).orderByIndices[column.propertyIdentifier];
+    };
     //End Order By Functions
 
     //Helper Functions
@@ -669,6 +691,15 @@ class ListingService{
         }  
         return expandableRuleMatchedKey;
     };
+
+    //move this to the service
+    public getExampleEntityForExpandableRecord = (listingID, pageRecord) =>{
+        var childCollectionConfig = this.getListing(listingID).getPageRecordChildCollectionConfigForExpandableRule(pageRecord);
+        if(angular.isDefined(childCollectionConfig)){
+            return this.$hibachi.getEntityExample(this.getListing(listingID).getPageRecordChildCollectionConfigForExpandableRule(pageRecord).baseEntityName);
+        }
+        return this.getListing(listingID).exampleEntity; 
+    }
     
     public getPageRecordMatchesExpandableRule = (listingID, pageRecord)=>{
         return this.getKeyOfMatchedExpandableRule(listingID, pageRecord) != -1;  
