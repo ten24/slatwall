@@ -64,7 +64,9 @@ component extends="HibachiService" accessors="true" output="false" {
 		return getTypeDAO().getSystemCodeTypeCount(argumentCollection=arguments);
 	}
 	
-	//@Suppress
+	/**
+	* @Suppress
+	*/
 	public any function getTypeBySystemCode( required string systemCode ) {
 		return getTypeDAO().getTypeBySystemCode(argumentCollection=arguments);
 	}
