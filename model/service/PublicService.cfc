@@ -995,11 +995,14 @@ component extends="HibachiService"  accessors="true" output="false"
     }
     
     public any function addErrors( required struct data , errors){
-        if (!structKeyExists(arguments.data.ajaxResponse, "errors")){
-            arguments.data.ajaxResponse["errors"] = {};
-        }
-        arguments.data.ajaxResponse["errors"] = errors;
-    } 
+    if (!structKeyExists(data, "ajaxResponse")){
+		arguments.data['ajaxResponse'] = {};
+    }
+    if (!structKeyExists(arguments.data.ajaxResponse, "errors")){
+        arguments.data['ajaxResponse']["errors"] = {};
+    }
+    arguments.data.ajaxResponse["errors"] = errors;
+    }
     
     /** returns a list of state code options either for us (default) or by the passed in countryCode */
     public void function getStateCodeOptionsByCountryCode( required struct data ) {
