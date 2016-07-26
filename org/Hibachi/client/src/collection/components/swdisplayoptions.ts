@@ -83,7 +83,7 @@ class SWDisplayOptions{
                     var baseEntityCfcName = $scope.baseEntityName.replace('Slatwall','').charAt(0).toLowerCase()+$scope.baseEntityName.replace('Slatwall','').slice(1);
                     var propertyIdentifier = selectedProperty.propertyIdentifier;
                     var title = '';
-                    var propertyIdentifierArray = propertyIdentifier.split('.');
+                    var propertyIdentifierArray = propertyIdentifier.replace(/^_/,'').split(/[._]+/);
                     var currentEntity;
                     var currentEntityInstance;
                     var prefix = 'entity.';
