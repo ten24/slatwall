@@ -66,9 +66,10 @@ class SWListingDisplayController{
 
     public selectFieldName;
     public selectable:boolean = false;
+    public showOrderBy:boolean; 
     public showSearch:boolean;
-    public showTopPagination:boolean;
     public showSearchFilters = false; 
+    public showTopPagination:boolean;
     public sortable:boolean = false;
     public sortProperty;
     public tableID:string;
@@ -220,6 +221,10 @@ class SWListingDisplayController{
         }
         if(angular.isUndefined(this.hasSearch)){
             this.hasSearch = true;
+            this.showSearch = true;
+        }
+        if(angular.isUndefined(this.showOrderBy)){
+            this.showOrderBy = true; 
         }
         if(angular.isUndefined(this.name)){
             this.name = 'ListingDisplay';
@@ -506,8 +511,9 @@ class SWListingDisplay implements ng.IDirective{
 
             /* Settings */
             showheader:"=?",
-            showSearch:"=?",
+            showOrderBy:"=?",
             showTopPagination:"=?",
+            showSearch:"=?",
             showSearchFilters:"=?",
 
             /* Basic Action Caller Overrides*/

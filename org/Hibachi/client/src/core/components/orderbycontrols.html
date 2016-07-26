@@ -1,24 +1,31 @@
 <div class="s-select-wrapper s-titled-select-wrapper s-sort-by" 
-     ng-class="{'s-disabled':swOrderByControls.disabled}" >
+     data-ng-class="{'s-disabled':swOrderByControls.disabled}" 
+     >
     <span>Sort By:</span>
     <select class="form-control input-sm" 
             name="needed"
-            ng-model="swOrderByControls.selectedOrderByColumnIndex"
-            ng-change="swOrderByControls.updateSortOrderProperty()" >
+            data-ng-model="swOrderByControls.selectedOrderByColumnIndex"
+            data-ng-change="swOrderByControls.updateSortOrderProperty()" 
+            data-ng-disabled="swOrderByControls.disabled"
+            >
 
         <option value="" selected="" sw-rbkey="'define.select'">Select</option>
         
-        <option value="{{column.propertyIdentifier}}" ng-repeat="column in swOrderByControls.collectionConfig.columns track by $index">
+        <option value="{{column.propertyIdentifier}}" data-ng-repeat="column in swOrderByControls.collectionConfig.columns track by $index">
             {{column.title}}
         </option>
     </select>
 </div>
 
-<div class="btn-group s-option-toggles" style="float: none;vertical-align: top;" role="group" aria-label="...">
+<div class="btn-group s-option-toggles" 
+     style="float: none; vertical-align: top;" 
+     role="group" 
+     aria-label="...">
     <button type="button" 
             class="btn btn-default" 
-            ng-class="{'s-selected':swOrderByControls.sortCode=='ASC'}"
-            ng-click="swOrderByControls.sortAscending()"
+            data-ng-class="{'s-selected':swOrderByControls.sortCode=='ASC'}"
+            data-ng-click="swOrderByControls.sortAscending()"
+            data-ng-disabled="swOrderByControls.propertyNotChosen"
             data-toggle="popover" 
             data-trigger="hover" 
             data-placement="top" 
@@ -28,8 +35,9 @@
     </button>
     <button type="button" 
             class="btn btn-default" 
-            ng-class="{'s-selected':swOrderByControls.sortCode=='DESC'}"
-            ng-click="swOrderByControls.sortDescending()"
+            data-ng-class="{'s-selected':swOrderByControls.sortCode=='DESC'}"
+            data-ng-click="swOrderByControls.sortDescending()"
+            data-ng-disabled="swOrderByControls.propertyNotChosen"
             data-toggle="popover" 
             data-trigger="hover" 
             data-placement="top" 
@@ -40,8 +48,9 @@
     </button>
     <button type="button" 
             class="btn btn-default" 
-            ng-class="{'s-selected':swOrderByControls.sortCode=='MANUAL'}"
-            ng-click="swOrderByControls.manualSort()"
+            data-ng-class="{'s-selected':swOrderByControls.sortCode=='MANUAL'}"
+            data-ng-click="swOrderByControls.manualSort()"
+            data-ng-disabled="swOrderByControls.propertyNotChosen"
             data-toggle="popover" 
             data-trigger="hover" 
             data-placement="top" 

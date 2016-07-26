@@ -3,6 +3,9 @@
 
 class SWOrderByControlsController {
 
+    public id:string;
+    public eventString:string; 
+
     public collectionConfig:any;//used for getting the properties
     public selectedOrderByColumnIndex:any; 
     public sortCode:string = "ASC";
@@ -11,15 +14,28 @@ class SWOrderByControlsController {
     public inListingDisplay:boolean; 
     public listingId:string;
     public toggleCollectionConfig:boolean; 
+    public propertyNotChosen:boolean;
 
     // @ngInject
-    constructor( private listingService ){
+    constructor( private listingService, private observerService, private utilityService ){
             this.columns = this.collectionConfig.columns; 
             console.log("orderbycolumns", this.columns)
+            this.id = this.utilityService.createID(32); 
+            this.eventString = this.id + "swOrderByControlsUpdateOrderBy";
     }
 
     public changeSortProperty = ():void =>{
-        switch(this.sortCode){
+        console.log("changeSortProperty", this.sortCode, this.selectedOrderByColumnIndex);
+        if(this.selectedOrderByColumnIndex !== ''){
+            this.propertyNotChosen=false; 
+        } else {
+            this.propertyNotChosen=true; 
+        }
+        this.updateOrderBy(); 
+    }
+
+    public updateOrderBy = () =>{
+         switch(this.sortCode){
             case "ASC":
                 this.disabled = false; 
                 if(angular.isDefined(this.collectionConfig)){
@@ -52,14 +68,17 @@ class SWOrderByControlsController {
 
     public sortAscending = ():void =>{
         this.sortCode = 'ASC'; 
+        this.updateOrderBy();
     }
 
     public sortDescending = ():void =>{
         this.sortCode = 'DESC'; 
+        this.updateOrderBy();
     }
 
     public manualSort = ():void =>{
         this.sortCode = 'MANUAL'
+        this.updateOrderBy();
     }
 
 }
