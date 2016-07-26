@@ -492,7 +492,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		
 		var resultOrder2 = mockOrder2.getOrderTypeOptions();
-		request.debug(resultOrder2);
 		assertTrue(arrayFind(resultOrder2, saleStruct) != 0);
 		assertTrue(arrayFind(resultOrder2, ReturnStruct) != 0);
 		assertTrue(arrayFind(resultOrder2, ExchangeStruct) != 0);
@@ -596,6 +595,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	var skuData = {
 	 		skuID = '',
 	 		price = 10,
+	 		saleprice = 100,
 	 		promotionRewards = [{
 	 			promotionRewardID = mockPromotionReward.getPromotionRewardID()
 	 		}]
@@ -621,6 +621,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		return mockSku;
 	 }
 	 
+	 //TODO: too much mock data
 	 public void function getOrderItemQualifiedDiscountsTest() {
 	 	var mockSku = createMockSkuAboutSalePrice();
 	 	
@@ -630,10 +631,235 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		var mockOrder1 = createMockOrderWithOrderItems([mockOrderItem1.getOrderItemID(), 
 														mockOrderItem2.getOrderItemID(),
-														mockOrderItem3.getOrderItemID()]);
-		request.debug("HI");					
+														mockOrderItem3.getOrderItemID()]);				
 		var result = mockOrder1.getOrderItemQualifiedDiscounts();
-		request.debug(result);
+	 }
+	 
+	 private any function createMockOrderPayment(string orderID='', string orderPaymentTypeID='', numeric amount, string orderPaymentMethodID='') {
+	 	var orderPaymentData = {
+	 		orderPaymentID = ''
+	 	};
+	 	if(len(arguments.orderID)) {
+	 		orderPaymentData.order = {
+	 			orderID = arguments.orderID
+	 		};
+	 	}
+	 	if(len(arguments.orderPaymentTypeID)) {
+	 		orderPaymentData.orderPaymentType = {
+	 			typeID = arguments.orderPaymentTypeID
+	 		};
+	 	}
+	 	if(!isNull(arguments.amount)) {
+	 		orderPaymentData.amount = arguments.amount;
+	 	}
+	 	if(len(arguments.orderPaymentMethodID)) {
+	 		orderPaymentData.orderPaymentMethod = {
+	 			orderPaymentMethodID = arguments.orderPaymentMethodID
+	 		};
+	 	}
+	 	return createPersistedTestEntity('OrderPayment', orderPaymentData);
+	 }
+	 
+	 public void function getDynamicChargeOrderPaymentTest() {
+	 	//Testing the systemCode
+	 	var mockOrderPayment2 = createMockOrderPayment(orderPaymentTypeID='444df2f1cc40d0ea8a2de6f542ab4f1d'); //optCredit
+	 	
+	 	var orderData = {
+	 		orderID = '',
+	 		orderPayments = [{
+	 			orderPaymentID = mockOrderPayment2.getOrderPaymentID()
+	 		}]
+	 	};
+	 	var mockOrderSystemCode = createPersistedTestEntity('Order', orderData);
+	 	
+	 	var resultSystemCode = mockOrderSystemCode.getDynamicChargeOrderPayment();
+	 	assertTrue(isNull(resultSystemCode), 'The orderPaymentTYpe.systemCode fails ');
+	 	
+	 	//Testing the getDynamicAmountFlag()
+	 	var mockOrderPayment3 = createMockOrderPayment(orderPaymentTypeID='444df2f0fed139ff94191de8fcd1f61b', amount = 500); //optCharge
+	 	
+	 	var orderData = {
+	 		orderID = '',
+	 		orderPayments = [{
+	 			orderPaymentID = mockOrderPayment3.getOrderPaymentID()
+	 		}]
+	 	};
+	 	var mockOrderFlag = createPersistedTestEntity('Order', orderData);
+	 	
+	 	var resultFlag = mockOrderFlag.getDynamicChargeOrderPayment();
+	 	assertTrue(isNull(resultFlag), 'The orderPayment.getDynamicAmountFlag() fails ');
+	 	
+	 	//Testing the condition statements
+	 	var mockOrderPayment1 = createMockOrderPayment(orderPaymentTypeID='444df2f0fed139ff94191de8fcd1f61b'); //optCharge
+	 	
+	 	var orderData = {
+	 		orderID = '',
+	 		orderPayments = [{
+	 			orderPaymentID = mockOrderPayment1.getOrderPaymentID()
+	 		}]
+	 	};
+	 	var mockOrderOnePayment = createPersistedTestEntity('Order', orderData);
+	 	
+	 	var resultGeneral = mockOrderOnePayment.getDynamicChargeOrderPayment();
+	 	assertEquals(mockOrderPayment1.getOrderPaymentID(), resultGeneral.getOrderPaymentID(), 'General test did not pass, one of the conditions fails');
+	 	
+	 	//Testing on two orderPayments isNull(returnOrderPayment)
+	 	var mockOrderPayment4 = createMockOrderPayment(orderPaymentTypeID='444df2f0fed139ff94191de8fcd1f61b'); //optCharge
+	 	
+	 	var orderData = {
+	 		orderID = '',
+	 		orderPayments = [
+		 		{
+		 			orderPaymentID = mockOrderPayment1.getOrderPaymentID()
+		 		},
+		 		{
+		 			orderPaymentID = mockOrderPayment4.getOrderPaymentID()
+		 		}
+	 		]
+	 	};
+	 	var mockOrderTwoPayments = createPersistedTestEntity('Order', orderData);
+	 	
+	 	var resultTwoPayments = mockOrderTwoPayments.getDynamicChargeOrderPayment();
+	 	assertEquals(mockOrderPayment4.getOrderPaymentID(), resultTwoPayments.getOrderPaymentID(), 'When two orderPayments involved, the second should be returned');
+	 	
+	 	//Testing on the order without orderPayment
+	 	var mockOrderNoPayment = createMockOrder();
+	 	
+	 	var resultNoOrderPayment = 	mockOrderNoPayment.getDynamicChargeOrderPayment();
+	 	assertTrue(isNULL(resultNoOrderPayment),'The mockOrder without orderPayment should return nulls');
+	 }
+	 
+	 public void function getDynamicCreditOrderPaymentTest() {
+	 	//Testing the systemCode
+	 	var mockOrderPayment2 = createMockOrderPayment(orderPaymentTypeID='444df2f0fed139ff94191de8fcd1f61b'); //optCharge
+	 	
+	 	var orderData = {
+	 		orderID = '',
+	 		orderPayments = [{
+	 			orderPaymentID = mockOrderPayment2.getOrderPaymentID()
+	 		}]
+	 	};
+	 	var mockOrderSystemCode = createPersistedTestEntity('Order', orderData);
+	 	
+	 	var resultSystemCode = mockOrderSystemCode.getDynamicCreditOrderPayment();
+	 	assertTrue(isNull(resultSystemCode), 'The orderPaymentTYpe.systemCode fails ');
+	 	
+	 	//Testing the getDynamicAmountFlag()
+	 	var mockOrderPayment3 = createMockOrderPayment(orderPaymentTypeID='444df2f1cc40d0ea8a2de6f542ab4f1d', amount = 500); //optCredit
+	 	
+	 	var orderData = {
+	 		orderID = '',
+	 		orderPayments = [{
+	 			orderPaymentID = mockOrderPayment3.getOrderPaymentID()
+	 		}]
+	 	};
+	 	var mockOrderFlag = createPersistedTestEntity('Order', orderData);
+	 	
+	 	var resultFlag = mockOrderFlag.getDynamicCreditOrderPayment();
+	 	assertTrue(isNull(resultFlag), 'The orderPayment.getDynamicAmountFlag() should return False ');
+	 	
+	 	//Testing the condition statements
+	 	var mockOrderPayment1 = createMockOrderPayment(orderPaymentTypeID='444df2f1cc40d0ea8a2de6f542ab4f1d'); //optCredit
+	 	
+	 	var orderData = {
+	 		orderID = '',
+	 		orderPayments = [{
+	 			orderPaymentID = mockOrderPayment1.getOrderPaymentID()
+	 		}]
+	 	};
+	 	var mockOrderOnePayment = createPersistedTestEntity('Order', orderData);
+	 	
+	 	var resultGeneral = mockOrderOnePayment.getDynamicCreditOrderPayment();
+	 	assertEquals(mockOrderPayment1.getOrderPaymentID(), resultGeneral.getOrderPaymentID(), 'General test did not pass, one of the conditions fails');
+	 	
+	 	//Testing on two orderPayments isNull(returnOrderPayment)
+	 	var mockOrderPayment4 = createMockOrderPayment(orderPaymentTypeID='444df2f1cc40d0ea8a2de6f542ab4f1d'); //optCredit
+	 	
+	 	var orderData = {
+	 		orderID = '',
+	 		orderPayments = [
+		 		{
+		 			orderPaymentID = mockOrderPayment1.getOrderPaymentID()
+		 		},
+		 		{
+		 			orderPaymentID = mockOrderPayment4.getOrderPaymentID()
+		 		}
+	 		]
+	 	};
+	 	var mockOrderTwoPayments = createPersistedTestEntity('Order', orderData);
+	 	
+	 	var resultTwoPayments = mockOrderTwoPayments.getDynamicCreditOrderPayment();
+	 	assertEquals(mockOrderPayment4.getOrderPaymentID(), resultTwoPayments.getOrderPaymentID(), 'When two orderPayments involved, the second should be returned');
+	 	
+	 	//Testing on the order without orderPayment
+	 	var mockOrderNoPayment = createMockOrder();
+	 	
+	 	var resultNoOrderPayment = 	mockOrderNoPayment.getDynamicCreditOrderPayment();
+	 	assertTrue(isNULL(resultNoOrderPayment),'The mockOrder without orderPayment should return nulls');
+	 }
+	 
+	 public void function getPaymentMethodOptionsSmartListTest_DefaultPaymentMethods() {
+	 	var mockOrderPayment = createMockOrderPayment();
+	 	
+	 	var orderData = {
+	 		orderID = '',
+	 		orderPayments=[
+	 			{
+	 				orderPaymentID = mockOrderPayment.getOrderPaymentID()
+	 			}
+	 		]
+	 	};
+	 	var mockOrder = createPersistedTestEntity('Order', orderData);
+	 	
+	 	var resultSL = mockOrder.getPaymentMethodOptionsSmartList();
+	 	assertTrue(resultSL.getRecordsCount() == 2);
+	 	var resultSLRecords = mockOrder.getPaymentMethodOptionsSmartList().getRecords(refresh = true);
+	 	assertEquals('Credit Card', resultSLRecords[1].getPaymentMethodName(),'The first default paymentMethod should be Credit Card');
+	 	assertEquals('Gift Card', resultSLRecords[2].getPaymentMethodName(),'The second default paymentMethod should be Gift Card');
+	 }
+	 
+	 public void function getPaymentMethodOptionsSmartListTest_AddPaymentMethods() {
+	 	var paymentMethodData1 = {
+	 		paymentMethodID = '',
+	 		paymentMethodname = 'MyPaymentMethod1',
+	 		activeFlag = 1
+	 	};
+	 	var mockPaymentMethodFlagTrue = createPersistedTestEntity('PaymentMethod', paymentMethodData1);
+	 	
+	 	var paymentMethodData2 = {
+	 		paymentMethodID = '',
+	 		paymentMethodname = 'MyPaymentMethod2',
+	 		activeFlag = 0
+	 	};
+	 	var mockPaymentMethodFlagFalse = createPersistedTestEntity('PaymentMethod', paymentMethodData2);
+	 	
+	 	var mockOrderPaymentTrueFlag = createMockOrderPayment(orderPaymentMethodID = mockPaymentMethodFlagTrue.getPaymentMethodID());
+	 	var mockOrderPaymentFalseFlag = createMockOrderPayment(orderPaymentMethodID = mockPaymentMethodFlagFalse.getPaymentMethodID());
+	 	
+	 	var orderData = {
+	 		orderID = '',
+	 		orderPayments=[
+	 			{
+	 				orderPaymentID = mockOrderPaymentTrueFlag.getOrderPaymentID()
+	 			},
+	 			{
+	 				orderPaymentID = mockOrderPaymentFalseFlag.getOrderPaymentID()
+	 			}
+	 		]
+	 	};
+	 	var mockOrder = createPersistedTestEntity('Order', orderData);
+	 	
+	 	//Testing the activeFlag filter at the same time
+	 	var resultSL = mockOrder.getPaymentMethodOptionsSmartList(refresh = true);
+	 	assertTrue(resultSL.getRecordsCount() == 3);
+	 	
+	 	var resultSLRecords = mockOrder.getPaymentMethodOptionsSmartList().getRecords(refresh = true);
+	 	var resultPaymentNameList = '';
+	 	for (payment in resultSLRecords) {
+	 		resultPaymentNameList = listAppend(resultPaymentNameList, payment.getPaymentMethodName());
+	 	}
+	 	assertTrue(listFind(resultPaymentNameList, 'MyPaymentMethod1') != 0,'The added mockPaymentMethodFlagTrue should be in the smartlist');
+	 	assertTrue(listFind(resultPaymentNameList, 'MyPaymentMethod2') == 0,'The added mockPaymentMethodFlagFalse should not be in the smartlist');
 	 }
 	
 }
