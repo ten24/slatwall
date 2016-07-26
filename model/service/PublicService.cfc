@@ -476,19 +476,14 @@ component extends="HibachiService"  accessors="true" output="false"
                 }
                 
                 if (structKeyExists(data, "saveAsAccountAddressFlag") && data.saveAsAccountAddressFlag){
-                    var accountAddresses = getHibachiScope().account().getAccountAddresses();
-                     if (!isNull(accountAddress) && len(accountAddress.getAccountAddressID())){
-                          data.accountAddressID = accountAddress.getAccountAddressID();
-                          addShippingAddressUsingAccountAddress(data);
-                     }else{
-                     	var accountAddress = getService("AccountService").newAccountAddress();
-                     	accountAddress.setAddress(getService("AddressService").copyAddress(shippingAddress, true));
-                     	accountAddress.setAccount(getHibachiScope().getAccount());
-                     	var savedAccountAddress = getService("AccountService").saveAccountAddress(accountAddress);
-                     	if (!savedAddress.hasErrors()){
-                     		ormFlush();
-                     	}
-                     }
+                   
+                 	var accountAddress = getService("AccountService").newAccountAddress();
+                 	accountAddress.setAddress(shippingAddress);
+                 	accountAddress.setAccount(getHibachiScope().getAccount());
+                 	var savedAccountAddress = getService("AccountService").saveAccountAddress(accountAddress);
+                 	if (!savedAddress.hasErrors()){
+                 		ormFlush();
+                 	}
                   
                 }
                 
@@ -506,11 +501,13 @@ component extends="HibachiService"  accessors="true" output="false"
     public void function addShippingAddressUsingAccountAddress(required data){
         var accountAddressId = data.accountAddressID;
         if (isNull(accountAddressID)){
-            return;
+            this.addErrors(arguments.data, "Could not add account address. address id empty."); //add the basic errors
+            getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", true);
+       		return;
         }
         var accountAddress = getService('AddressService').getAccountAddress(accountAddressID);
         
-        if (isObject(accountAddress) && !accountAddress.hasErrors()){
+        if (!isNull(accountAddress) && !accountAddress.hasErrors()){
             //save the address at the order level.
             var order = getHibachiScope().cart();
             order.setShippingAddress(accountAddress.getAddress());
