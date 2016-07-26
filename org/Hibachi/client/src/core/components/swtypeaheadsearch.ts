@@ -11,7 +11,7 @@ class SWTypeaheadSearchController {
 	public allRecords:boolean;
 	public maxRecords:number; 
 	public searchText:string;
-	public results:any[];
+	public results:any[] = [];
     public validateRequired:boolean; 
     public columns:any[] = [];
     public filters:any[] = [];
@@ -71,10 +71,6 @@ class SWTypeaheadSearchController {
             this.searchText = "";
         } else {
             this.search(this.searchText);
-        }
-
-        if( angular.isUndefined(this.results)){
-            this.results = [];
         }
 
         if( angular.isUndefined(this.validateRequired)){
@@ -156,6 +152,7 @@ class SWTypeaheadSearchController {
         //need to insure that these changes are actually on the collectionconfig
         angular.copy(this.searchableColumns,this.initialSearchableColumnsState);
 
+        this.typeaheadService.setTypeaheadState(this.typeaheadDataKey, this);
 	}
 
     public clearSearch = () =>{
@@ -199,51 +196,13 @@ class SWTypeaheadSearchController {
                 this.resultsDeferred.resolve();
                 this.hideSearch = (this.results.length == 0);
             });
+
         }, 500);
 	};
 
-    public updateSelections = () =>{
-        if(angular.isDefined(this.getSelections()) && this.getSelections().length){
-            for(var j = 0; j < this.results.length; j++){
-                for(var i = 0; i < this.getSelections().length; i++){
-                    if( this.getSelections()[i][this.primaryIDPropertyName] == this.results[j][this.primaryIDPropertyName] ){
-                        this.results[j].selected = true;
-                        this.results[j].selectedIndex = i; 
-                        continue; 
-                    }
-                    console.log("selections", this.getSelections());
-                    this.checkAgainstFallbackProperties(this.getSelections()[i], this.results[j], this.results[j][this.primaryIDPropertyName], i);
-                }
-            }
-        }
-    }
-
-    private checkAgainstFallbackProperties = (selection, result, valueToCompare, index) =>{
-        console.log("check", this.propertyToCompare, this.fallbackPropertyArray, selection, result);
-        if( angular.isDefined(this.propertyToCompare) && 
-            this.propertyToCompare.length && 
-            selection[this.propertyToCompare] == valueToCompare ||
-            selection[this.propertyToCompare] == result[this.propertyToCompare]
-        ){
-            console.log("matchfound1")
-            result.selected = true;
-            result.selectedIndex = index; 
-            return; 
-        }
-        if( this.fallbackPropertyArray.length > 0 ){
-            for(var j=0; j < this.fallbackPropertyArray.length; j++){
-                var property = this.fallbackPropertyArray[j]; 
-                if( selection[property] == valueToCompare ||
-                    selection[property] == result[property]
-                ){
-                    console.log("matchfound2")
-                    result.selected = true;
-                    result.selectedIndex = index;
-                    return; 
-                }
-            }
-        }
-    }
+   public updateSelections = () =>{
+       this.typeaheadService.updateSelections(this.typeaheadDataKey);
+   }
 
     public updateSearchableProperties = (column) =>{
         if(angular.isString(column) && column == 'all'){

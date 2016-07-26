@@ -35,6 +35,7 @@ class SWTypeaheadMultiselectController {
         if(angular.isUndefined(this.typeaheadDataKey)){
             this.typeaheadDataKey = this.utilityService.createID(32); 
         }
+        console.log("typeaheadDataKey", this.typeaheadDataKey);
         if(angular.isUndefined(this.showSelections)){
             this.showSelections = false; 
         }
@@ -48,7 +49,7 @@ class SWTypeaheadMultiselectController {
             this.hasViewFunction = false; 
         }
         if(angular.isDefined(this.selectedCollectionConfig)){
-            this.typeaheadService.initializeSelections(this.listingId, this.selectedCollectionConfig);
+            this.typeaheadService.initializeSelections(this.typeaheadDataKey, this.selectedCollectionConfig);
         }
     }
     

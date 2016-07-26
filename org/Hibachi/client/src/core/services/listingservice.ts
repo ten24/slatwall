@@ -8,9 +8,10 @@ class ListingService{
     constructor(private $q,
                 private collectionConfigService,
                 private filterService,
-                private utilityService, 
+                private observerService,
                 private rbkeyService, 
                 private selectionService,
+                private utilityService, 
                 private $hibachi
     ){
 
@@ -22,6 +23,18 @@ class ListingService{
 
     public getListing = (listingID) => {
         return this.listingDisplays[listingID];
+    }
+
+    public getListingPageRecordsUpdateEventString = (listingID) => {
+        return listingID + "pageRecordsUpdated"; 
+    }
+
+    public notifyListingPageRecordsUpdate = (listingID) =>{
+        this.observerService.notify(this.getListingPageRecordsUpdateEventString(listingID));
+    }
+
+    public attachToListingPageRecordsUpdate = (listingID, callback, id) =>{
+        this.observerService.attach(callback, this.getListingPageRecordsUpdateEventString(listingID), id);
     }
 
     public getListingPrimaryEntityName = (listingID) =>{
@@ -58,13 +71,15 @@ class ListingService{
     //needs a consideration of strategy for doing this for other use cases
     public insertListingPageRecord = (listingID, pageRecord) =>{
         if( angular.isDefined(this.getListingPageRecords(listingID))){
-            this.getListingPageRecords(listingID).push(pageRecord); 
+            this.notifyListingPageRecordsUpdate(listingID); 
+            this.getListingPageRecords(listingID).push(pageRecord);
         }
     }
 
     public removeListingPageRecord = (listingID, pageRecord) =>{
         var pageRecords = this.getListingPageRecords(listingID); 
         if(this.getListingPageRecordIndexByPageRecord(listingID, pageRecord) != -1){
+            this.notifyListingPageRecordsUpdate(listingID); 
             return pageRecords.splice(this.getListingPageRecordIndexByPageRecord(listingID, pageRecord), 1)[0];//this will always be an array of one element 
         }
     }
@@ -125,7 +140,7 @@ class ListingService{
         }
         
         this.initCollectionConfigData( listingID, this.getListing(listingID).collectionConfig );
-        this.setupColumns( listingID, this.getListing(listingID).collectionConfig, this.getListing(listingID).collectionObject ); 
+        //this.setupColumns( listingID, this.getListing(listingID).collectionConfig, this.getListing(listingID).collectionObject ); 
         
         listingDisplayScope.$watch('swListingDisplay.collectionPromise',(newValue,oldValue)=>{
             if(newValue){
@@ -133,10 +148,11 @@ class ListingService{
                     this.getListing(listingID).collectionData = data;
                     this.setupDefaultCollectionInfo(listingID);
                     if(this.getListing(listingID).collectionConfig != null && this.getListing(listingID).collectionConfig.hasColumns()){
-                        this.setupColumns(listingID,this.getListing(listingID).collectionConfig, this.getListing(listingID).collectionObject);
+                        this.setupColumns(listingID, this.getListing(listingID).collectionConfig, this.getListing(listingID).collectionObject);
                     }else{
                         this.getListing(listingID).collectionConfig.loadJson(data.collectionConfig);
                     }
+                    this.notifyListingPageRecordsUpdate(listingID);
                     this.getListing(listingID).collectionData.pageRecords = this.getListing(listingID).collectionData.pageRecords || 
                                                                             this.getListing(listingID).collectionData.records;
 
@@ -187,9 +203,19 @@ class ListingService{
 
     public setupColumns = (listingID, collectionConfig, collectionObject) =>{
         //assumes no alias formatting
-        if(this.getListing(listingID).columns.length == 0 && collectionConfig != null){
-            this.getListing(listingID).columns = collectionConfig.columns;
+        if( this.getListing(listingID).columns.length == 0 && 
+            collectionConfig != null && 
+            collectionConfig.columns != null
+        ){
+            console.log("Pulling Collection Config", collectionConfig.columns);
+            for(var j=0; j < collectionConfig.columns.length; j++){
+                var column = collectionConfig.columns[j]; 
+                if(column.isVisible){
+                    this.getListing(listingID).columns.push(column);
+                }
+            }
         }
+
         for(var i=0; i < this.getListing(listingID).columns.length; i++){
             
             var column = this.getListing(listingID).columns[i];

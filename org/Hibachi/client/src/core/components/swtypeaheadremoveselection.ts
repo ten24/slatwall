@@ -4,18 +4,36 @@
 
 class SWTypeaheadRemoveSelectionController {
 
-    public index;
-    public tableID:string; 
+    public listingId:string; 
+    public pageRecord:any; 
     public typeaheadDataKey:string; 
 
     constructor(
-        public typeaheadService
+        public $scope,
+        public listingService,
+        public scopeService, 
+        public typeaheadService,
+        public utilityService
     ){
+        this.listingService.attachToListingPageRecordsUpdate(this.listingId, this.updatePageRecord, this.utilityService.createID(32));
+    }
+
+    public updatePageRecord = () =>{
         
+        if(this.scopeService.hasParentScope(this.$scope, "pageRecord")) {
+            var pageRecordScope = this.scopeService.locateParentScope( this.$scope, "pageRecord")["pageRecord"];
+            this.pageRecord = pageRecordScope;
+        }
     }
 
     public removeSelection = () =>{
-        this.typeaheadService.removeSelection(this.typeaheadDataKey,this.index);
+        console.log("removing page record", this.pageRecord);
+        this.typeaheadService.removeSelection( this.typeaheadDataKey,
+                                               undefined,
+                                               this.pageRecord
+                                             );
+                                
+        this.listingService.removeListingPageRecord(this.listingId,this.pageRecord)
     }
 }
 
@@ -61,6 +79,10 @@ class SWTypeaheadRemoveSelection implements ng.IDirective{
             var listingDisplayScope = this.scopeService.locateParentScope( scope, "swListingDisplay")["swListingDisplay"];
             scope.swTypeaheadRemoveSelection.typeaheadDataKey = listingDisplayScope.typeaheadDataKey;
             scope.swTypeaheadRemoveSelection.listingId = listingDisplayScope.tableID; 
+        }
+        if(this.scopeService.hasParentScope(scope, "pageRecord")) {
+            var pageRecordScope = this.scopeService.locateParentScope( scope, "pageRecord")["pageRecord"];
+            scope.swTypeaheadRemoveSelection.pageRecord = pageRecordScope;
         }
      }
 }

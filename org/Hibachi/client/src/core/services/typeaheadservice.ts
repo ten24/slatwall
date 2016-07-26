@@ -4,43 +4,164 @@
 class TypeaheadService{
     
     public typeaheadData = {};
+    public typeaheadPromises = {};
+    public typeaheadStates = {}; 
     
     constructor(
         
     ){
         
     }
+
+    public setTypeaheadState = (key:string, state:any) =>{
+        this.typeaheadStates[key] = state;
+    }
+
+    public getTypeaheadState = (key:string) =>{
+        return this.typeaheadStates[key];
+    }
+
+    public getTypeaheadPrimaryIDPropertyName = (key:string) =>{
+        return this.getTypeaheadState(key).primaryIDPropertyName;
+    }
     
-    addSelection = (key:string, data:any) => {
+    public addSelection = (key:string, data:any) => {
         if(angular.isUndefined(this.typeaheadData[key])){
             this.typeaheadData[key] = [];
         }
         this.typeaheadData[key].push(data); 
     } 
 
-    removeSelection = (key:string, index:number) => {
-        if(angular.isDefined(this.typeaheadData[key])){
+    public getIndexOfSelection = (key:string, data:any) =>{
+        for(var j = 0; j < this.getData(key).length; j++){
+            if( angular.isDefined(data[this.getTypeaheadPrimaryIDPropertyName(key)]) &&
+                data[this.getTypeaheadPrimaryIDPropertyName(key)] == this.getData(key)[j][this.getTypeaheadPrimaryIDPropertyName(key)]
+            ){
+                return j;
+            } else if ( this.checkAgainstFallbackProperties(key, this.getData(key)[j], data) ){
+                return j;
+            }
+        }
+        return -1; 
+    }
+
+    public removeSelection = (key:string, index:number, data?:any) => {
+        if( angular.isUndefined(index) &&
+            angular.isDefined(data)
+        ){
+            index = this.getIndexOfSelection(key, data);
+        }
+        console.log("removing", key, index, data);
+        if( angular.isDefined(index) && 
+            angular.isDefined(this.typeaheadData[key]) && 
+            index != -1
+        ){
+            this.updateSelections(key);
             return this.typeaheadData[key].splice(index,1)[0];//this will always be an array of 1 element
         }
     }
 
-    initializeSelections = (key:string, selectedCollectionConfig) => {
+    public initializeSelections = (key:string, selectedCollectionConfig) => {
         selectedCollectionConfig.setAllRecords(true);
-        selectedCollectionConfig.getEntity().then(
+        this.typeaheadPromises[key] = selectedCollectionConfig.getEntity();
+        this.typeaheadPromises[key].then(
             (data)=>{
-                angular.forEach(data.records,(value,key)=>{
-                    console.log("initialize", value);
-                    this.addSelection(key, value); 
-                });
+                for(var j=0; j< data.records.length; j++){
+                    this.addSelection(key, data.records[j]); 
+                }
             },
             (reason)=>{
-                throw("Typeaheadservice had trouble intializing selections for " + key + " because " + reason); 
+                throw("typeaheadservice had trouble intializing selections for " + key + " because " + reason); 
             }
         );
     }
+
+     public updateSelections = (key:string) =>{
+        if(angular.isDefined(this.getData(key)) && this.getData(key).length){
+            for(var j = 0; j < this.getTypeaheadState(key).results.length; j++){
+                for(var i = 0; i < this.getData(key).length; i++){
+                    if( this.getData(key)[i][this.getTypeaheadPrimaryIDPropertyName(key)] == this.getTypeaheadState(key).results[j][this.getTypeaheadPrimaryIDPropertyName(key)] ){
+                        this.markResultSelected(this.getTypeaheadState(key).results[j],i);
+                        break; 
+                    }
+                    var found = this.checkAgainstFallbackProperties( key,
+                                                                     this.getData(key)[i], 
+                                                                     this.getTypeaheadState(key).results[j], 
+                                                                     i
+                                                                   );
+                    if(found){
+                        break; 
+                    }
+                }
+            }
+        }
+    }
+
+    private markResultSelected = (result, index) => {
+        result.selected = true;
+        result.selectedIndex = index; 
+    }   
+
+    private checkAgainstFallbackProperties = (key:string, selection:any, result:any, selectionIndex?:number) =>{
+        var resultPrimaryID = result[this.getTypeaheadPrimaryIDPropertyName(key)];
+        //is there a singular property to compare against
+        if(angular.isDefined(this.getTypeaheadState(key).propertyToCompare) && 
+            this.getTypeaheadState(key).propertyToCompare.length
+        ){
+            if( angular.isDefined(selection[this.getTypeaheadState(key).propertyToCompare]) &&
+                selection[this.getTypeaheadState(key).propertyToCompare] == resultPrimaryID
+            ){
+                if(angular.isDefined(selectionIndex)){
+                    this.markResultSelected(result, selectionIndex); 
+                }
+                return true; 
+            }
+
+            if( angular.isDefined(selection[this.getTypeaheadState(key).propertyToCompare]) &&
+                angular.isDefined(result[this.getTypeaheadState(key).propertyToCompare]) &&
+                selection[this.getTypeaheadState(key).propertyToCompare] == result[this.getTypeaheadState(key).propertyToCompare]
+            ){
+                if(angular.isDefined(selectionIndex)){
+                    this.markResultSelected(result, selectionIndex); 
+                }
+                return true; 
+            }
+        }
+        //check the defined fallback properties to see if theres a match
+        if( this.getTypeaheadState(key).fallbackPropertyArray.length > 0 ){
+            for(var j=0; j < this.getTypeaheadState(key).fallbackPropertyArray.length; j++){
+                var property = this.getTypeaheadState(key).fallbackPropertyArray[j]; 
+                if( angular.isDefined(selection[property]) ){
+                    if( selection[property] == resultPrimaryID ){
+                        if(angular.isDefined(selectionIndex)){
+                            this.markResultSelected(result, selectionIndex); 
+                        }
+                        return true; 
+                    }
+                    if( angular.isDefined(result[property]) &&
+                        selection[property] == result[property]
+                    ){
+                        if(angular.isDefined(selectionIndex)){
+                       	    this.markResultSelected(result, selectionIndex); 
+                        }
+                        return true; 
+                    }
+                }
+            }
+        }
+        return false; 
+    }
     
     getData = (key:string) => {
-        return this.typeaheadData[key] || [];
+        if(key in this.typeaheadPromises){
+            //wait until it's been intialized
+            this.typeaheadPromises[key].then().finally(()=>{
+                return this.typeaheadData[key] || [];
+            }); 
+            delete this.typeaheadPromises[key];
+        } else {
+            return this.typeaheadData[key] || [];
+        }
     }
     
     //strips out dangerous directives that cause infinite compile errors 
