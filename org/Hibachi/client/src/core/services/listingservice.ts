@@ -17,6 +17,7 @@ class ListingService{
 
     }
     
+    //core getters and setters
     public setListingState = (listingID, state) =>{
         this.listingDisplays[listingID] = state; 
     }
@@ -68,6 +69,11 @@ class ListingService{
         }
     }
 
+    public getCollection = (listingID) =>{
+        return this.getListing(listingID).getCollection(); 
+    }
+
+    //Begin Listing Page Record Functions
     //needs a consideration of strategy for doing this for other use cases
     public insertListingPageRecord = (listingID, pageRecord) =>{
         if( angular.isDefined(this.getListingPageRecords(listingID))){
@@ -84,9 +90,31 @@ class ListingService{
         }
     }
 
-    public getCollection = (listingID) =>{
-        return this.getListing(listingID).getCollection(); 
-    }
+    public getPageRecordKey = (propertyIdentifier)=>{
+        if(propertyIdentifier){
+            var propertyIdentifierWithoutAlias = '';
+            if(propertyIdentifier.indexOf('_') === 0){
+                propertyIdentifierWithoutAlias = propertyIdentifier.substring(propertyIdentifier.indexOf('.')+1,propertyIdentifier.length);
+            }else{
+                propertyIdentifierWithoutAlias = propertyIdentifier;
+            }
+            return this.utilityService.replaceAll(propertyIdentifierWithoutAlias,'.','_');
+        }
+        return '';
+    };
+
+     public selectCurrentPageRecords=(listingID)=>{
+        if(!this.getListing(listingID).collectionData.pageRecords) return;
+
+        for(var i = 0; i < this.getListing(listingID).collectionData.pageRecords.length; i++){
+            if(this.getListing(listingID).isCurrentPageRecordsSelected == true){
+                this.getListing(listingID).selectionService.addSelection(this.getListing(listingID).name, this.getListing(listingID).collectionData.pageRecords[i][this.getListing(listingID).exampleEntity.$$getIDName()]);
+            }else{
+                this.selectionService.removeSelection(this.getListing(listingID).name, this.getListing(listingID).collectionData.pageRecords[i][this.getListing(listingID).exampleEntity.$$getIDName()]);
+            }
+        }
+     };
+    //End Listing Page Record Functions
 
     //Row Save Functionality
     private determineRowEdited = (pageRecords, pageRecordIndex) =>{
@@ -131,6 +159,7 @@ class ListingService{
     }
     //End Row Save Functionality
 
+    //Setup Functions
     public setupInSingleCollectionConfigMode = (listingID, listingDisplayScope) =>{
         
         if( this.getListing(listingID).collectionObject != null && 
@@ -368,7 +397,6 @@ class ListingService{
 
         this.updateColumnAndAdministrativeCount(listingID);
     };
-    //end initCollectionConfigData
 
     public setupSelect = (listingID) =>{
         if(this.getListing(listingID).selectFieldName && this.getListing(listingID).selectFieldName.length){
@@ -406,25 +434,6 @@ class ListingService{
             });
         }
     };
-
-    public getListingExampleEntity = (listingID) =>{
-        if(this.getListing(listingID).exampleEntity != null){
-            return this.getListing(listingID).exampleEntity;
-        } else {
-            this.setupExampleEntity = (listingID);
-        }
-    }
-
-    public getListingBaseEntityName = (listingID) =>{
-        var baseEntityName = this.getListing(listingID).baseEntityName || this.getListing(listingID).collectionObject
-        if(baseEntityName == null &&  this.getListing(listingID).collectionConfig != null){
-            baseEntityName = this.getListing(listingID).collectionConfig.baseEntityName;
-        }
-        if(baseEntityName == null && this.getListing(listingID).collectionData != null){
-            baseEntityName = this.getListing(listingID).collectionData.collectionObject; 
-        }
-        return baseEntityName;
-    }
 
     public setupExampleEntity = (listingID) =>{
         this.getListing(listingID).exampleEntity = this.$hibachi.getEntityExample(this.getListingBaseEntityName(listingID)); 
@@ -537,7 +546,9 @@ class ListingService{
             }
         }
     };
+    //End Setup Functions
 
+    //Order By Functions
     public columnOrderBy = (listingID, column) => {
         var isfound = false;
         if(this.getListing(listingID).collectionConfigs.length == 0){
@@ -554,30 +565,27 @@ class ListingService{
         return this.getListing(listingID).orderByStates[column.propertyIdentifier];
     };
 
-    public getPageRecordKey = (propertyIdentifier)=>{
-        if(propertyIdentifier){
-            var propertyIdentifierWithoutAlias = '';
-            if(propertyIdentifier.indexOf('_') === 0){
-                propertyIdentifierWithoutAlias = propertyIdentifier.substring(propertyIdentifier.indexOf('.')+1,propertyIdentifier.length);
-            }else{
-                propertyIdentifierWithoutAlias = propertyIdentifier;
-            }
-            return this.utilityService.replaceAll(propertyIdentifierWithoutAlias,'.','_');
-        }
-        return '';
-    };
+    //End Order By Functions
 
-     public selectCurrentPageRecords=(listingID)=>{
-        if(!this.getListing(listingID).collectionData.pageRecords) return;
-
-        for(var i = 0; i < this.getListing(listingID).collectionData.pageRecords.length; i++){
-            if(this.getListing(listingID).isCurrentPageRecordsSelected == true){
-                this.getListing(listingID).selectionService.addSelection(this.getListing(listingID).name, this.getListing(listingID).collectionData.pageRecords[i][this.getListing(listingID).exampleEntity.$$getIDName()]);
-            }else{
-                this.selectionService.removeSelection(this.getListing(listingID).name, this.getListing(listingID).collectionData.pageRecords[i][this.getListing(listingID).exampleEntity.$$getIDName()]);
-            }
+    //Helper Functions
+    public getListingExampleEntity = (listingID) =>{
+        if(this.getListing(listingID).exampleEntity != null){
+            return this.getListing(listingID).exampleEntity;
+        } else {
+            this.setupExampleEntity = (listingID);
         }
-     };
+    }
+
+    public getListingBaseEntityName = (listingID) =>{
+        var baseEntityName = this.getListing(listingID).baseEntityName || this.getListing(listingID).collectionObject
+        if(baseEntityName == null &&  this.getListing(listingID).collectionConfig != null){
+            baseEntityName = this.getListing(listingID).collectionConfig.baseEntityName;
+        }
+        if(baseEntityName == null && this.getListing(listingID).collectionData != null){
+            baseEntityName = this.getListing(listingID).collectionData.collectionObject; 
+        }
+        return baseEntityName;
+    }  
 
      private getColorFilterConditionString = (colorFilter, pageRecord)=>{
        if(angular.isDefined(colorFilter.comparisonProperty)){
@@ -606,7 +614,7 @@ class ListingService{
     };
     
 
-    //Disable Rule Logic
+    //Disable Row Functions
     public getKeyOfMatchedDisableRule = (listingID, pageRecord)=>{
         var disableRuleMatchedKey = -1; 
         if(angular.isDefined(this.getListing(listingID).disableRules)){   
@@ -634,9 +642,10 @@ class ListingService{
     
     public getPageRecordMatchesDisableRule = (listingID, pageRecord)=>{
         return this.getKeyOfMatchedDisableRule(listingID, pageRecord) != -1;  
-    };
+    }; 
+    //End disable rule functions
 
-    //Expandable Rule Logic
+    //Expandable Functions
     public getKeyOfMatchedExpandableRule = (listingID, pageRecord)=>{
         var expandableRuleMatchedKey = -1; 
         if(angular.isDefined(this.getListing(listingID)) &&
@@ -701,6 +710,7 @@ class ListingService{
            return this.getListing(listingID).childCollectionConfigs[pageRecord[this.getListing(listingID).exampleEntity.$$getIDName()]];
         } 
     }; 
+    //End Expandable Functions
  
 }
 export{ListingService};
