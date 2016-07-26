@@ -479,7 +479,7 @@ component extends="HibachiService"  accessors="true" output="false"
                     var accountAddresses = getHibachiScope().account().getAccountAddresses();
                      if (!isNull(accountAddress) && len(accountAddress.getAccountAddressID())){
                           data.accountAddressID = accountAddress.getAccountAddressID();
-                          addShippingAddressUsingAccountAddress();
+                          addShippingAddressUsingAccountAddress(data);
                      }else{
                      	var accountAddress = getService("AccountService").newAccountAddress();
                      	accountAddress.setAddress(getService("AddressService").copyAddress(shippingAddress, true));
@@ -942,7 +942,7 @@ component extends="HibachiService"  accessors="true" output="false"
             }
         }
         
-        if (!data.newOrderPayment.saveShippingAsBilling){
+        if (data.newOrderPayment.saveShippingAsBilling){
             //use this billing information
             this.addBillingAddress(data.newOrderPayment.billingAddress, "billing");
         }
