@@ -21,7 +21,8 @@ class SWCollectionConfig implements ng.IDirective{
         entityName:"@",
         allRecords:"@?",
         parentDirectiveControllerAsName:"@",
-        collectionConfigProperty:"@?"
+        collectionConfigProperty:"@?",
+        pageShow:"@?"
     };
     public controller=SWCollectionConfigController;
     public controllerAs="swCollectionConfig";
@@ -65,19 +66,21 @@ class SWCollectionConfig implements ng.IDirective{
                 var newCollectionConfig = this.collectionConfigService.newCollectionConfig(scope.swCollectionConfig.entityName);
                 newCollectionConfig.setAllRecords(scope.swCollectionConfig.allRecords);               
                 
-                var parentScope = scope.$parent;
+                if(angular.isDefined(scope.swCollectionConfig.pageShow)){
+                    newCollectionConfig.setPageShow(scope.swCollectionConfig.pageShow); 
+                }           
                 
-                for(var tries = 0; tries < 3; tries++){
-                    if(tries > 0){
-                        var parentScope = parentScope.$parent;
-                    }   
-                    if(angular.isDefined(parentScope)){
-                        var parentDirective = parentScope[scope.swCollectionConfig.parentDirectiveControllerAsName];
+                var currentScope = scope
+                 
+                while(angular.isDefined(currentScope){
+                    currentScope = currentScope.$parent;
+                    if(angular.isDefined(currentScope)){
+                        var parentDirective = currentScope[scope.swCollectionConfig.parentDirectiveControllerAsName];
                     } 
                     if(angular.isDefined(parentDirective)){
                         break; 
                     }
-                }   
+                }
                
                 //populate the columns and the filters
                 transclude(scope,()=>{});

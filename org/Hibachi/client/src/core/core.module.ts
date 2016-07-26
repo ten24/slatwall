@@ -15,6 +15,7 @@ import {ObserverService} from "./services/observerservice";
 import {OrderService} from "./services/orderservice";
 import {OrderPaymentService} from "./services/orderpaymentservice";
 import {FormService} from "./services/formservice";
+import {TypeaheadService} from "./services/typeaheadservice";
 import {ExpandableService} from "./services/expandableservice";
 import {MetaDataService} from "./services/metadataservice";
 import {RbKeyService} from "./services/rbkeyservice";
@@ -38,6 +39,7 @@ import {DateFilter} from "./filters/datefilter";
 import {SWActionCaller} from "./components/swactioncaller";
 import {SWTypeaheadSearch} from "./components/swtypeaheadsearch";
 import {SWTypeaheadInputField} from "./components/swtypeaheadinputfield";
+import {SWTypeaheadMultiselect} from "./components/swtypeaheadmultiselect"; 
 import {SWTypeaheadSearchLineItem} from "./components/swtypeaheadsearchlineitem";
 import {SWCollectionConfig} from "./components/swcollectionconfig";
 import {SWCollectionFilter} from "./components/swcollectionfilter";
@@ -147,6 +149,7 @@ var coremodule = angular.module('hibachi.core',[
 .service('observerService',ObserverService)
 .service('expandableService',ExpandableService)
 .service('formService',FormService)
+.service('typeaheadService', TypeaheadService)
 .service('metadataService',MetaDataService)
 .service('rbkeyService',RbKeyService)
 .provider('$hibachi',$Hibachi)
@@ -174,6 +177,7 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swCollectionFilter',SWCollectionFilter.Factory())
 .directive('swTypeaheadSearch',SWTypeaheadSearch.Factory())
 .directive('swTypeaheadInputField',SWTypeaheadInputField.Factory())
+.directive('swTypeaheadMultiselect', SWTypeaheadMultiselect.Factory())
 .directive('swTypeaheadSearchLineItem', SWTypeaheadSearchLineItem.Factory())
 .directive('swActionCaller',SWActionCaller.Factory())
 .directive('swActionCallerDropdown',SWActionCallerDropdown.Factory())
