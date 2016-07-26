@@ -401,7 +401,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var criminalsMessage = "";
 
 		for(var entityName in allEntities) {
-
 			var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
 			for(var property in properties) {
 				
@@ -411,11 +410,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 					&& structKeyExists(property, "cascade") 
 					&& findNoCase('delete', property.cascade)
 					&& !structKeyExists(property,'allowcascade')
-				) {
-					criminalsMessage &= "entityName=#entityName# propertyName=#property.name#, ";
-				}
-								
-			}
+				   ) {
+					criminalsMessage &= "entityName=#entityName# propertyName=#property.name#, <br>";
+				}	
+							
+			}			
 		}
 		
 		assert(
@@ -423,6 +422,37 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			criminalsMessage
 		);
 		
+	}
+	
+	//This function checks if a persistant property (not cfc) uses type instead of ormtype to define the datatype
+	public void function check_persistant_nonCFC_properties_that_use_type() {
+		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
+		
+		var criminalsMessage = "";
+
+		for(var entityName in allEntities) {
+			var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
+			for(var property in properties) {
+				if (
+						(
+							!structKeyExists(property,'persistent')
+							 ||(
+							 	structKeyExists(property,'persistent') 
+							 	&& property.persistent
+							   )
+						)
+						&& !structKeyExists(property, "cfc") 
+						&& structKeyExists(property, "type") 
+						&& property.type != 'any'
+				   ) {
+					criminalsMessage &= "entityName=#entityName# propertyName=#property.name# #property.type#, <br>"&chr(10)&chr(13);
+				}
+			}			
+		}
+		assert(
+			len(criminalsMessage) == 0,
+			criminalsMessage
+		);
 	}
 
 }
