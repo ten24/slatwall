@@ -90,6 +90,10 @@
 				<cfset attributes.fieldType = attributes.object.getPropertyFieldType( attributes.property ) />
 			</cfif>
 			
+			<cfif attributes.fieldType eq 'wysiwyg'>
+				<cfset attributes.ignoreHTMLEditFormat = true/>
+			</cfif>
+			
 			<!--- If this is in edit mode then get the pertinent field info --->
 			<cfif attributes.edit or attributes.fieldType eq "listingMultiselect">
 				<cfset attributes.fieldClass = listAppend(attributes.fieldClass, attributes.object.getPropertyValidationClass( attributes.property ), " ") />
