@@ -522,6 +522,10 @@ component extends="HibachiService"  accessors="true" output="false"
     /** Sets the shipping method to an order shippingMethodID */
     public void function addShippingMethodUsingShippingMethodID(required data){
         var shippingMethodId = data.shippingMethodID;
+        var orderFulfillmentWithShippingMethodOptions = 1;
+        if (!isNull(data.orderFulfillmentWithShippingMethodOptions)){
+        	orderFulfillmentWithShippingMethodOptions = data.orderFulfillmentWithShippingMethodOptions + 1; //from js to cf
+        }
         if (isNull(shippingMethodId)){
             return;
         }
@@ -529,13 +533,15 @@ component extends="HibachiService"  accessors="true" output="false"
         
         if (isObject(shippingMethod) && !shippingMethod.hasErrors()){
             var order = getHibachiScope().cart();
-            var orderFulfillment = order.getOrderFulfillments()[1];
+            var orderFulfillment = order.getOrderFulfillments()[orderFulfillmentWithShippingMethodOptions];
             orderFulfillment.setShippingMethod(shippingMethod);
-            getOrderService().saveOrder(order);            
+            getOrderService().saveOrder(order); 
+            ormFlush();           
         }else{
             this.addErrors(arguments.data, shippingMethod.getErrors()); //add the basic errors
             getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", shippingMethod.hasErrors());
         }
+        
     }
     
     /** adds a billing address to an order. 
