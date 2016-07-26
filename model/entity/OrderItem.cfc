@@ -146,7 +146,6 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 	public numeric function getMaximumOrderQuantity() {
 		var maxQTY = 0;
-//		request.debug(getSku().getActiveFlag());
 		if(getSku().getActiveFlag() && getSku().getProduct().getActiveFlag()) {
 			maxQTY = getSku().setting('skuOrderMaximumQuantity');
 
