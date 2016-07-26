@@ -455,7 +455,7 @@ component extends="HibachiService"  accessors="true" output="false"
     }
     
     public any function addOrderShippingAddress(required data){
-        param name="data.saveAsAccountAddressFlag" default="1";
+        param name="data.saveAsAccountAddressFlag" default="0";
         param name="data.saveShippingAsBilling" default="1";
         
         /** add a shipping address */
@@ -477,16 +477,19 @@ component extends="HibachiService"  accessors="true" output="false"
                 
                 if (structKeyExists(data, "saveAsAccountAddressFlag") && data.saveAsAccountAddressFlag){
                     var accountAddresses = getHibachiScope().account().getAccountAddresses();
-                    if (!isNull(accountAddresses) && arrayLen(accountAddresses)){
-                        var accountAddress = getService('AddressService').getAccountAddress(accountAddresses[1].getAccountAddressID());
-                    }else{
-                        var accountAddress = getService("AccountService").newAccountAddress();
-                    }
-                    
-                    if (len(accountAddress.getAccountAddressID())){
-                        data.accountAddressID = accountAddress.getAccountAddressID();
-                        addShippingAddressUsingAccountAddress();
-                    }
+                     if (!isNull(accountAddress) && len(accountAddress.getAccountAddressID())){
+                          data.accountAddressID = accountAddress.getAccountAddressID();
+                          addShippingAddressUsingAccountAddress();
+                     }else{
+                     	var accountAddress = getService("AccountService").newAccountAddress();
+                     	accountAddress.setAddress(getService("AddressService").copyAddress(shippingAddress, true));
+                     	accountAddress.setAccount(getHibachiScope().getAccount());
+                     	var savedAccountAddress = getService("AccountService").saveAccountAddress(accountAddress);
+                     	if (!savedAddress.hasErrors()){
+                     		ormFlush();
+                     	}
+                     }
+                  
                 }
                 
                 getOrderService().saveOrder(order);
@@ -939,7 +942,7 @@ component extends="HibachiService"  accessors="true" output="false"
             }
         }
         
-        if (data.newOrderPayment.saveShippingAsBilling){
+        if (!data.newOrderPayment.saveShippingAsBilling){
             //use this billing information
             this.addBillingAddress(data.newOrderPayment.billingAddress, "billing");
         }
