@@ -186,7 +186,7 @@ component  extends="HibachiService" accessors="true" {
 			//attributeModelCache
 			getHibachiCacheService().resetCachedKey("attributeService_getAttributeModel");
 			getHibachiCacheService().resetCachedKey("attributeService_getAttributeModel_#arguments.attribute.getAttributeSet().getAttributeSetObject()#");
-			getHibachiCacheService().resetCachedKey("attributeService_getAttributeModel_#arguments.attribute.getAttributeSet().getAttributeSetObject()#_#arguments.attribute.getAttributeSet().getAttributeSetObject()#");
+			getHibachiCacheService().resetCachedKey("attribtueService_getAttributeModel_#arguments.attribute.getAttributeSet().getAttributeSetObject()#_#arguments.attribute.getAttributeSet().getAttributeSetCode()#");
 		}
 
 		return arguments.attribute;
