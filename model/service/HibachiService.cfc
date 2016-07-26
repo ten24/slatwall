@@ -52,55 +52,6 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 		return getHibachiScope();
 	} 
 	
-	private struct function getAttributeMetaData(required any attribute){
-		var attributeMetaData = {};
-		attributeMetaData['attributeName'] = arguments.attribute.getAttributeName();
-		attributeMetaData['attributeCode'] = arguments.attribute.getAttributeCode();
-		attributeMetaData['attributeDescription'] = arguments.attribute.getAttributeDescription();
-		return attributeMetaData;
-	}
-	
-	private struct function getAttributeSetMetaData(required attributeSet){
-		var attributeSetMetaData = {};
-		attributeSetMetaData['attributeSetName'] = attributeSet.getAttributeSetName();
-		attributeSetMetaData['attributeSetCode'] = attributeSet.getAttributeSetCode();
-		attributeSetMetaData['attributeSetDescription'] = attributeSet.getAttributeSetDescription();
-		
-		attributeSetMetaData['attributes'] = {};
-		var attributes = attributeSet.getAttributes();
-		for(var attribute in attributes){
-			attributeSetMetaData['attributes'][attribute.getAttributeCode()] = getAttributeMetaData(attribute);
-		}
-		return attributeSetMetaData;
-	}
-	
-	public any function getAttributeModel(){
-		var model = {};
-        if(!getHibachiScope().hasApplicationValue('hibachiService_getAttributeModel')){
-            var entities = [];
-            var entitiesListArray = listToArray(structKeyList(getHibachiScope().getService('hibachiService').getEntitiesMetaData()));
-            for(var entityName in entitiesListArray) {
-                var entity = getHibachiScope().getService('hibachiService').getEntityObject(entityName);
-				var assignedAttributes = entity.getAssignedAttributeSetSmartList().getRecords();
-				if(arrayLen(assignedAttributes)){
-					model[entity.getClassName()] = {};
-					for(var attributeSet in assignedAttributes){
-						
-						var attributeSetMeta = getAttributeSetMetaData(attributeSet);
-						
-						model[entity.getClassName()][attributeSet.getAttributeSetCode()]=attributeSetMeta;
-						
-					}
-				}
-            }
-
-            ORMClearSession();
-            getHibachiScope().setApplicationValue('hibachiService_getAttributeModel',model);
-        }
-        model = getHibachiScope().getApplicationValue('hibachiService_getAttributeModel');
-        return model;
-	}
-	
 	// @hint leverages the getEntityHasAttributeByEntityName() by traverses a propertyIdentifier first using getLastEntityNameInPropertyIdentifier()
 	public boolean function getHasAttributeByEntityNameAndPropertyIdentifier( required string entityName, required string propertyIdentifier ) {
 		return getEntityHasAttributeByEntityName( entityName=getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier), attributeCode=listLast(arguments.propertyIdentifier, ".") );

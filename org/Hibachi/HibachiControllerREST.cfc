@@ -478,7 +478,7 @@ component output="false" accessors="true" extends="HibachiController" {
     }
     
     public void function getAttributeModel(required struct rc){
-    	arguments.rc.apiResponse.content['data'] = getService('hibachiService').getAttributeModel();
+    	arguments.rc.apiResponse.content['data'] = getService('attributeService').getAttributeModel();
     }
 
     private any function getModel(required struct rc){
