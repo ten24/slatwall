@@ -861,5 +861,27 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	assertTrue(listFind(resultPaymentNameList, 'MyPaymentMethod1') != 0,'The added mockPaymentMethodFlagTrue should be in the smartlist');
 	 	assertTrue(listFind(resultPaymentNameList, 'MyPaymentMethod2') == 0,'The added mockPaymentMethodFlagFalse should not be in the smartlist');
 	 }
+	 
+	 public void function removeAllOrderItemsTest() {
+	 	var mockOrderItem1 = createMockOrderItem();
+	 	var mockOrderItem2 = createMockOrderItem();
+	 	
+	 	var orderData = {
+	 		orderID = '',
+	 		orderItems=[
+	 			{
+	 				orderItemID = mockOrderItem1.getOrderItemID()
+	 			},
+	 			{
+	 				orderItemID = mockOrderItem2.getOrderItemID()
+	 			}
+	 		]
+	 	};
+	 	var mockOrder = createPersistedTestEntity('Order', orderData);
+
+	 	var result = mockOrder.removeAllOrderItems();
+	 	assertTrue(isNull(mockOrderItem1.getOrder()));
+	 	assertTrue(isNull(mockOrderItem2.getOrder()));
+	 }
 	
 }
