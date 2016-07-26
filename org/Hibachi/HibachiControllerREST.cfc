@@ -82,7 +82,11 @@ component output="false" accessors="true" extends="HibachiController" {
     }
 
     public void function getInstantiationKey(required struct rc){
-    	arguments.rc.apiResponse.content['data'] = '#getApplicationValue('instantiationKey')#';
+    	var data = {};
+    	data['instantiationKey'] = '#getApplicationValue('instantiationKey')#';
+    	data['attributeCacheKey'] = getService('attributeService').getAttributeModel();
+    	
+    	arguments.rc.apiResponse.content['data']=data;
     }
 
     public void function getCurrencies(required struct rc){

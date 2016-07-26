@@ -56,19 +56,26 @@ component  extends="HibachiService" accessors="true" {
 	
 	
 	private struct function getAttributeSetMetaData(required attributeSet){
-		
+		var attributeSetMetaDataCacheKey = "attribtueService_getAttributeModel_#arguments.attributeSet.getAttributeSetObject()#_#arguments.attributeSet.getAttributeSetCode()#";
 		var attributeSetMetaData = {};
-		attributeSetMetaData['attributeSetName'] = attributeSet.getAttributeSetName();
-		attributeSetMetaData['attributeSetCode'] = attributeSet.getAttributeSetCode();
-		attributeSetMetaData['attributeSetDescription'] = attributeSet.getAttributeSetDescription();
-		
-		attributeSetMetaData['attributes'] = {};
-		var attributesCollectionList = attributeSet.getAttributesCollectionList();
-		var displayPropertiesList = 'attributeCode,attributeDescription,attributeHint,attributeInputType,attributeName,defaultValue,relatedObject,requiredFlag,sortOrder,validationMessage,validationRegex';
-		attributesCollectionList.setDisplayProperties(displayPropertiesList);
-		var attributes = attributeSet.getAttributesCollectionList().getRecords();
-		for(var attribute in attributes){
-			attributeSetMetaData['attributes'][attribute['attributeCode']] = attribute;
+		if(getService('HibachiCacheService').hasCachedValue(attributeSetMetaDataCacheKey)){
+			attributeSetMetaData = getService('HibachiCacheService').getCachedValue(attributeSetMetaDataCacheKey);	
+		}else{
+			attributeSetMetaData['attributeSetName'] = attributeSet.getAttributeSetName();
+			attributeSetMetaData['attributeSetCode'] = attributeSet.getAttributeSetCode();
+			attributeSetMetaData['attributeSetDescription'] = attributeSet.getAttributeSetDescription();
+			
+			attributeSetMetaData['attributes'] = {};
+			
+			var attributesCollectionList = attributeSet.getAttributesCollectionList();
+			var displayPropertiesList = 'attributeCode,attributeDescription,attributeHint,attributeInputType,attributeName,defaultValue,relatedObject,requiredFlag,sortOrder,validationMessage,validationRegex';
+			attributesCollectionList.setDisplayProperties(displayPropertiesList);
+			var attributes = attributeSet.getAttributesCollectionList().getRecords(true);
+			for(var attribute in attributes){
+				
+				attributeSetMetaData['attributes'][attribute['attributeCode']] = attribute;
+			}
+			getService('HibachiCacheService').setCachedValue(attributeSetMetaDataCacheKey,attributeSetMetaData);
 		}
 		
 		return attributeSetMetaData;
@@ -76,31 +83,35 @@ component  extends="HibachiService" accessors="true" {
 	
 	public any function getAttributeModel(){
 		var model = {};
-        var entitiesListArray = listToArray(structKeyList(getHibachiScope().getService('hibachiService').getEntitiesMetaData()));
-        for(var entityName in entitiesListArray) {
-        	var attributeSetMetaDataStruct = {};
-        	if(entityName == 'Account')
-            if(getHibachiCacheService().hasCachedValue('attributeService_getAttributeModel_#entityName#')){
-	            attributeSetMetaDataStruct = getHibachiCacheService().getCachedValue('attributeService_getAttributeModel_#entityName#');
-			}else{
-				var entity = getHibachiScope().getService('hibachiService').getEntityObject(entityName);
-				var assignedAttributes = entity.getAssignedAttributeSetSmartList().getRecords(true);
-				if(arrayLen(assignedAttributes)){
-					for(var attributeSet in assignedAttributes){
-						var attributeSetMeta = getAttributeSetMetaData(attributeSet);
-						attributeSetMetaDataStruct[attributeSet.getAttributeSetCode()]=attributeSetMeta;
+		var modelCacheKey = "attributeService_getAttributeModel";
+		if(getHibachiCacheService().hasCachedValue(modelCacheKey)){
+			model = getHibachiCacheService().getCachedValue(modelCacheKey);
+		}else{
+	        var entitiesListArray = listToArray(structKeyList(getHibachiScope().getService('hibachiService').getEntitiesMetaData()));
+	        for(var entityName in entitiesListArray) {
+	        	var attributeSetMetaDataStruct = {};
+	        	var attributeSetMetaDataStructCacheKey = 'attributeService_getAttributeModel_#entityName#';
+	            if(getHibachiCacheService().hasCachedValue(attributeSetMetaDataStructCacheKey)){
+		            attributeSetMetaDataStruct = getHibachiCacheService().getCachedValue(attributeSetMetaDataStructCacheKey);
+				}else{
+					var entity = getHibachiScope().getService('hibachiService').getEntityObject(entityName);
+					var assignedAttributes = entity.getAssignedAttributeSetSmartList().getRecords(true);
+					if(arrayLen(assignedAttributes)){
+						for(var attributeSet in assignedAttributes){
+							var attributeSetMeta = getAttributeSetMetaData(attributeSet);
+							attributeSetMetaDataStruct[attributeSet.getAttributeSetCode()]=attributeSetMeta;
+						}
+						getHibachiCacheService().setCachedValue(attributeSetMetaDataStructCacheKey,attributeSetMetaDataStruct);
 					}
-					getHibachiCacheService().setCachedValue('attributeService_getAttributeModel_#entityName#',attributeSetMetaDataStruct);
 				}
-			}
-			
-			if(structCount(attributeSetMetaDataStruct)){
-				model[entityName] = attributeSetMetaDataStruct;	
-			}
-			
-			
-        }
-
+				
+				if(structCount(attributeSetMetaDataStruct)){
+					model[entityName] = attributeSetMetaDataStruct;	
+				}
+	        }
+	        getHibachiCacheService().setCachedValue(modelCacheKey,model);
+		}
+		
         return model;
 	}
 
@@ -171,7 +182,11 @@ component  extends="HibachiService" accessors="true" {
 			getHibachiDAO().flushORMSession();
 
 			getHibachiCacheService().resetCachedKey("attributeService_getAttributeCodesListByAttributeSetObject_#arguments.attribute.getAttributeSet().getAttributeSetObject()#");
+			
+			//attributeModelCache
+			getHibachiCacheService().resetCachedKey("attributeService_getAttributeModel");
 			getHibachiCacheService().resetCachedKey("attributeService_getAttributeModel_#arguments.attribute.getAttributeSet().getAttributeSetObject()#");
+			getHibachiCacheService().resetCachedKey("attributeService_getAttributeModel_#arguments.attribute.getAttributeSet().getAttributeSetObject()#_#arguments.attribute.getAttributeSet().getAttributeSetObject()#");
 		}
 
 		return arguments.attribute;

@@ -29,7 +29,7 @@ export class BaseBootStrapper{
 
                 .then( (resp)=> {
                     var appConfig = JSON.parse(localStorage.getItem('appConfig'));
-                    if(resp.data.data === appConfig.instantiationKey){
+                    if(resp.data.data.instantiationKey === appConfig.instantiationKey){
                         coremodule.constant('appConfig',appConfig)
                         .constant('resourceBundles',JSON.parse(localStorage.getItem('resourceBundles')));
                     }else{

@@ -147,12 +147,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		//assert the cache is populated
 		assert(request.slatwallScope.getService('hibachiCacheService').hasCachedValue('attributeService_getAttributeModel_Account'));
-		
 		var cachedTickBegin = GetTickCount();
 		attributeMetaData = variables.service.getAttributeModel();
 		var cachedTickEnd = getTickCount();
 		var cachedTime = cachedTickEnd - cachedTickBegin;
-		
+		addToDebug(notCachedTime);
+		addToDebug(cachedTime);
 		assert(cachedTime < notCachedTime);
 		
 	}
