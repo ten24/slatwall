@@ -549,9 +549,10 @@ class ListingService{
     //End Setup Functions
 
     //Order By Functions
+    //for multi order by
     public columnOrderBy = (listingID, column) => {
         var isfound = false;
-        if(this.getListing(listingID).collectionConfigs.length == 0){
+        if(this.getListing(listingID).collectionConfigs != null){
             angular.forEach(this.getListing(listingID).collectionConfig.orderBy, (orderBy, index)=>{
                 if(column.propertyIdentifier == orderBy.propertyIdentifier){
                     isfound = true;
@@ -565,13 +566,7 @@ class ListingService{
         return this.getListing(listingID).orderByStates[column.propertyIdentifier];
     };
 
-     public toggleOrderBy = (listingID, column) => {
-        if(this.getListing(listingID).hasSingleCollectionConfig()){
-            this.getListing(listingID).collectionConfig.toggleOrderBy(column.propertyIdentifier, true);
-        } 
-        this.getCollection(listingID);
-    };
-    
+    //for multi order by
     public columnOrderByIndex = (listingID, column) =>{
         var isfound = false;
         if(this.getListing(listingID).collectionConfig != null){
@@ -586,6 +581,39 @@ class ListingService{
             this.getListing(listingID).orderByIndices[column.propertyIdentifier] = '';
         }
         return this.getListing(listingID).orderByIndices[column.propertyIdentifier];
+    };
+
+    //for single column order by
+    public setSingleColumnOrderBy = (listingID:string, propertyIdentifier:string, direction:string) =>{
+        if(direction.toUpperCase() === "ASC"){
+            var oppositeDirection = "DESC"; 
+        } else {
+            var oppositeDirection = "ASC";
+        }
+        if(this.getListing(listingID).collectionConfigs != null){
+            angular.forEach(this.getListing(listingID).collectionConfig.orderBy, (orderBy, index)=>{
+                if(propertyIdentifier == orderBy.propertyIdentifier){
+                    orderBy.direction = direction; 
+                } else {
+                    orderBy.direction = oppositeDirection; 
+                }
+            });
+            this.getCollection(listingID);
+        }
+    }
+
+    //for manual sort
+    public setManualSort = (listingID:string, toggle:boolean) =>{
+        this.getListing(listingID).sortable = toggle; 
+        //probably need to do something here with collection config 
+    }
+
+    //for single column order by
+    public toggleOrderBy = (listingID, column) => {
+        if(this.getListing(listingID).hasSingleCollectionConfig()){
+            this.getListing(listingID).collectionConfig.toggleOrderBy(column.propertyIdentifier, true);
+        } 
+        this.getCollection(listingID);
     };
     //End Order By Functions
 
