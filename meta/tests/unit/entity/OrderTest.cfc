@@ -622,18 +622,18 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 }
 	 
 	 //TODO: too much mock data
-	 public void function getOrderItemQualifiedDiscountsTest() {
-	 	var mockSku = createMockSkuAboutSalePrice();
-	 	
-	 	var mockOrderItem1 = createMockOrderItem(skuID = mockSku.getSkuID());
-	 	var mockOrderItem2 = createMockOrderItem(skuID = mockSku.getSkuID());
-	 	var mockOrderItem3 = createMockOrderItem(skuID = mockSku.getSkuID());
-		
-		var mockOrder1 = createMockOrderWithOrderItems([mockOrderItem1.getOrderItemID(), 
-														mockOrderItem2.getOrderItemID(),
-														mockOrderItem3.getOrderItemID()]);				
-		var result = mockOrder1.getOrderItemQualifiedDiscounts();
-	 }
+//	 public void function getOrderItemQualifiedDiscountsTest() {
+//	 	var mockSku = createMockSkuAboutSalePrice();
+//	 	
+//	 	var mockOrderItem1 = createMockOrderItem(skuID = mockSku.getSkuID());
+//	 	var mockOrderItem2 = createMockOrderItem(skuID = mockSku.getSkuID());
+//	 	var mockOrderItem3 = createMockOrderItem(skuID = mockSku.getSkuID());
+//		
+//		var mockOrder1 = createMockOrderWithOrderItems([mockOrderItem1.getOrderItemID(), 
+//														mockOrderItem2.getOrderItemID(),
+//														mockOrderItem3.getOrderItemID()]);				
+//		var result = mockOrder1.getOrderItemQualifiedDiscounts();
+//	 }
 	 
 	 private any function createMockOrderPayment(string orderID='', string orderPaymentTypeID='', numeric amount, string orderPaymentMethodID='') {
 	 	var orderPaymentData = {
