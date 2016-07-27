@@ -53,6 +53,7 @@ import {SWCollectionColumn} from "./components/swcollectioncolumn";
 import {SWActionCallerDropdown} from "./components/swactioncallerdropdown";
 import {SWColumnSorter} from "./components/swcolumnsorter";
 import {SWConfirm} from "./components/swconfirm";
+import {SWDraggable} from "./components/swdraggable";
 import {SWEntityActionBar} from "./components/swentityactionbar";
 import {SWEntityActionBarButtonGroup} from "./components/swentityactionbarbuttongroup";
 import {SWExpandableRecord} from "./components/swexpandablerecord";
@@ -212,6 +213,7 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swEntityActionBarButtonGroup',SWEntityActionBarButtonGroup.Factory())
 .directive('swExpandableRecord',SWExpandableRecord.Factory())
 .directive('swGravatar', SWGravatar.Factory())
+.directive('swDraggable',SWDraggable.Factory())
 .directive('swListingDisplay',SWListingDisplay.Factory())
 .directive('swListingControls',SWListingControls.Factory())
 .directive('swListingAggregate',SWListingAggregate.Factory())
