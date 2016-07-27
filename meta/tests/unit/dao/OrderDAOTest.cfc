@@ -50,10 +50,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		super.setup();
 
 		variables.dao = request.slatwallScope.getDAO("orderDAO");
-
+		variables.mockOrderService = new Slatwall.meta.tests.unit.mockOrderService();
 	}
 
 	public void function inst_ok() {
+		request.debug(variables.mockOrderService);
+		variables.mockOrderService.getOrder();
 		assert(isObject(variables.dao));
 	}
 
