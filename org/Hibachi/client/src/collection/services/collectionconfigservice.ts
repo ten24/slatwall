@@ -289,22 +289,30 @@ class CollectionConfig {
             if(angular.isUndefined(this.columns)){
                 this.columns = [];
             }
-            if(!angular.isUndefined(options['isVisible'])){
+            console.log("determining", options, column, column.substring(column.length - 2));
+            //hide id columns
+            if(angular.isDefined(options['isVisible'])){
                 isVisible = options['isVisible'];
             }
-            if(!angular.isUndefined(options['isDeletable'])){
+            if( angular.isUndefined(options.isVisible) && 
+                column.substring(column.length - 2) === "ID"
+            ){
+                console.log("hiding", column);
+                isVisible = false;
+            }
+            if(angular.isDefined(options['isDeletable'])){
                 isDeletable = options['isDeletable'];
             }
-            if(!angular.isUndefined(options['isSearchable'])){
+            if(angular.isDefined(options['isSearchable'])){
                 isSearchable = options['isSearchable'];
             }
-            if(!angular.isUndefined(options['isExportable'])){
+            if(angular.isDefined(options['isExportable'])){
                 isExportable = options['isExportable'];
             }
             if(angular.isUndefined(options['isExportable']) && !isVisible){
                 isExportable = false;
             }
-            if(!angular.isUndefined(options['ormtype'])){
+            if(angular.isDefined(options['ormtype'])){
                 ormtype = options['ormtype'];
             }else if(lastEntity.metaData[lastProperty] && lastEntity.metaData[lastProperty].ormtype){
                 ormtype = lastEntity.metaData[lastProperty].ormtype;
@@ -376,7 +384,7 @@ class CollectionConfig {
         return this;
     };
 
-    public addDisplayProperty= (propertyIdentifier: string, title: string = '', options:any = {}):CollectionConfig =>{
+    public addDisplayProperty= (propertyIdentifier: string, title: string = '', options:any = {}):CollectionConfig =>{  
         var _DividedColumns = propertyIdentifier.trim().split(',');
         var _DividedTitles = title.trim().split(',');
         _DividedColumns.forEach((column:string, index)  => {

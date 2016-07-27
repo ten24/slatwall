@@ -649,7 +649,7 @@ class ListingService{
         } else {
             var oppositeDirection = "ASC";
         }
-        if(this.getListing(listingID).collectionConfigs != null){
+        if(this.getListing(listingID).collectionConfig != null){
             var found = false; 
             angular.forEach(this.getListing(listingID).collectionConfig.orderBy, (orderBy, index)=>{
                 if(propertyIdentifier == orderBy.propertyIdentifier){

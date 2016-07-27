@@ -7,7 +7,7 @@ class SWOrderByControlsController {
     public eventString:string; 
 
     public collectionConfig:any;//used for getting the properties
-    public selectedOrderByColumnIndex:any; 
+    public selectedPropertyIdentifier:any; 
     public sortCode:string = "ASC";
     public columns:any[]; 
     public disabled:boolean; 
@@ -18,15 +18,15 @@ class SWOrderByControlsController {
 
     // @ngInject
     constructor( private listingService, private observerService, private utilityService ){
-            this.columns = this.collectionConfig.columns; 
-            console.log("orderbycolumns", this.columns)
+            if(angular.isDefined(this.collectionConfig)){
+                 this.columns = this.collectionConfig.columns; 
+            } 
             this.id = this.utilityService.createID(32); 
             this.eventString = this.id + "swOrderByControlsUpdateOrderBy";
     }
 
-    public changeSortProperty = ():void =>{
-        console.log("changeSortProperty", this.sortCode, this.selectedOrderByColumnIndex);
-        if(this.selectedOrderByColumnIndex !== ''){
+    public updateSortOrderProperty = ():void =>{
+        if(angular.isDefined(this.selectedPropertyIdentifier)){
             this.propertyNotChosen=false; 
         } else {
             this.propertyNotChosen=true; 
@@ -35,12 +35,12 @@ class SWOrderByControlsController {
     }
 
     public updateOrderBy = () =>{
-        if(this.columns[this.selectedOrderByColumnIndex] != null){
-            var propertyIdentifier = this.columns[this.selectedOrderByColumnIndex].propertyIdentifier;
+        if(angular.isDefined(this.selectedPropertyIdentifier) && this.selectedPropertyIdentifier.length > 0){
+            var propertyIdentifier = this.selectedPropertyIdentifier;
         }
-         switch(this.sortCode){
+        switch(this.sortCode){
             case "ASC":
-                if(propertyIdentifier !=null){
+                if(propertyIdentifier != null){
                     this.disabled = false; 
                     if(angular.isDefined(this.collectionConfig)){
                         this.collectionConfig.toggleOrderBy(propertyIdentifier,true);//single column mode true
@@ -84,6 +84,7 @@ class SWOrderByControlsController {
     }
 
     public manualSort = ():void =>{
+        console.log("sortMANUAL");
         this.sortCode = 'MANUAL'
         this.updateOrderBy();
     }
@@ -119,10 +120,15 @@ class SWOrderByControls implements ng.IDirective{
         return {
             pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
                 if( $scope.swOrderByControls.inListingDisplay && 
-                    this.scopeService.hasParentScope("swListingDisplay")
+                    this.scopeService.hasParentScope($scope,"swListingDisplay")
                 ){
-                    var listingDisplayScope = this.scopeService.locateParentScope("swListingDisplay")["swListingDisplay"];
+                    var listingDisplayScope = this.scopeService.locateParentScope($scope,"swListingDisplay")["swListingDisplay"];
                     $scope.swOrderByControls.listingId = listingDisplayScope.tableID; 
+                    if( $scope.swOrderByControls.collectionConfig == null && 
+                        listingDisplayScope.collectionConfig != null
+                    ){
+                        $scope.swOrderByControls.collectionConfig = listingDisplayScope.collectionConfig;
+                    }
                 }
             },
             post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {

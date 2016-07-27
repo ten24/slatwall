@@ -4,14 +4,14 @@
     <span>Sort By:</span>
     <select class="form-control input-sm" 
             name="needed"
-            data-ng-model="swOrderByControls.selectedOrderByColumnIndex"
+            data-ng-model="swOrderByControls.selectedPropertyIdentifier"
             data-ng-change="swOrderByControls.updateSortOrderProperty()" 
             data-ng-disabled="swOrderByControls.disabled"
             >
 
-        <option value="" selected="" sw-rbkey="'define.select'">Select</option>
+        <option value="" selected="" sw-rbkey="'define.select'"></option>
         
-        <option value="{{column.propertyIdentifier}}" data-ng-repeat="column in swOrderByControls.collectionConfig.columns track by $index">
+        <option value="{{column.propertyIdentifier}}" data-ng-show="column.isVisible" data-ng-repeat="column in swOrderByControls.collectionConfig.columns track by $index">
             {{column.title}}
         </option>
     </select>
@@ -23,7 +23,7 @@
      aria-label="...">
     <button type="button" 
             class="btn btn-default" 
-            data-ng-class="{'s-selected':swOrderByControls.sortCode=='ASC'}"
+            data-ng-class="{'s-selected' : swOrderByControls.sortCode=='ASC'}"
             data-ng-click="swOrderByControls.sortAscending()"
             data-ng-disabled="swOrderByControls.propertyNotChosen"
             data-toggle="popover" 
@@ -35,7 +35,7 @@
     </button>
     <button type="button" 
             class="btn btn-default" 
-            data-ng-class="{'s-selected':swOrderByControls.sortCode=='DESC'}"
+            data-ng-class="{'s-selected' : swOrderByControls.sortCode=='DESC'}"
             data-ng-click="swOrderByControls.sortDescending()"
             data-ng-disabled="swOrderByControls.propertyNotChosen"
             data-toggle="popover" 
@@ -48,7 +48,7 @@
     </button>
     <button type="button" 
             class="btn btn-default" 
-            data-ng-class="{'s-selected':swOrderByControls.sortCode=='MANUAL'}"
+            data-ng-class="{'s-selected' : swOrderByControls.sortCode=='MANUAL'}"
             data-ng-click="swOrderByControls.manualSort()"
             data-ng-disabled="swOrderByControls.propertyNotChosen"
             data-toggle="popover" 
