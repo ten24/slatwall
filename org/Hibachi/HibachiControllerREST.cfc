@@ -84,7 +84,14 @@ component output="false" accessors="true" extends="HibachiController" {
     public void function getInstantiationKey(required struct rc){
     	var data = {};
     	data['instantiationKey'] = '#getApplicationValue('instantiationKey')#';
-    	data['attributeCacheKey'] = getService('attributeService').getAttributeModel();
+    	var modelCacheKey = "attributeService_getAttributeModel_CacheKey";
+    	if(getService('HibachiCacheService').hasCachedValue(modelCacheKey)){
+    		data['attributeCacheKey'] = getService('HibachiCacheService').getCachedValue(modelCacheKey);
+    	}else{
+    		var attributeMetaData = getService('attributeService').getAttributeModel();
+    		data['attributeCacheKey'] = hash(serializeJson(attributeMetaData),'MD5');
+    		getService('HibachiCacheService').setCachedValue(modelCacheKey,data['attributeCacheKey']);
+    	}
     	
     	arguments.rc.apiResponse.content['data']=data;
     }

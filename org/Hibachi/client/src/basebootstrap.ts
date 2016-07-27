@@ -3,7 +3,7 @@
 import {coremodule} from "./core/core.module";
 declare var angular:any;
 declare var hibachiConfig:any;
-
+var md5 = require('md5');
 //generic bootstrapper
 export class BaseBootStrapper{
     public myApplication:any;
@@ -11,6 +11,7 @@ export class BaseBootStrapper{
     public $http:ng.IHttpService;
     public $q:ng.IQService;
     public appConfig:any;
+    public attributeMetaData:any;
 
     constructor(myApplication){
       this.myApplication = myApplication;
@@ -19,25 +20,53 @@ export class BaseBootStrapper{
             this.$http = $http;
             this.$q = $q;
 
+            var cacheState = {
+                instantiationKey:false,
+                attributeCacheKey:false
+            }
+
             if(
                 localStorage.getItem('appConfig')
                 && localStorage.getItem('appConfig') !== 'undefined'
                 && localStorage.getItem('resourceBundles')
                 && localStorage.getItem('resourceBundles') !== 'undefined'
+                && localStorage.getItem('attributeMetaData')
+                && localStorage.getItem('attributeMetaData') !== 'undefined'
             ){
                  return $http.get(hibachiConfig.baseURL+'?'+hibachiConfig.action+'=api:main.getInstantiationKey')
 
                 .then( (resp)=> {
                     var appConfig = JSON.parse(localStorage.getItem('appConfig'));
-                    if(resp.data.data.instantiationKey === appConfig.instantiationKey){
-                        coremodule.constant('appConfig',appConfig)
-                        .constant('resourceBundles',JSON.parse(localStorage.getItem('resourceBundles')));
-                    }else{
-                        return this.getData();
+                    var attributeMetaData = JSON.parse(localStorage.getItem('attributeMetaData'));
+
+                    var invalidCache = [];
+                    for(var key in resp.data.data){
+                        if(key==='attributeCacheKey'){
+                            var hashedData = md5(localStorage.getItem('attributeMetaData'));
+                            if(resp.data.data[key] === hashedData.toUpperCase()){
+                                coremodule.constant('attributeMetaData',JSON.parse(localStorage.getItem('attributeMetaData')));
+                            }else{
+                                invalidCache.push(key);
+                            }
+                        }else if (key === 'instantiationKey'){
+                            if(resp.data.data[key] === appConfig[key]){
+                                coremodule.constant('appConfig',appConfig)
+                                .constant('resourceBundles',JSON.parse(localStorage.getItem('resourceBundles')));
+                            }else{
+                                invalidCache.push(key);
+                            }
+                        }
                     }
+
+
+                    if( invalidCache.length > 0 ){
+                        return this.getData(invalidCache);
+                    }
+
                 });
             }else{
-                return this.getData();
+                var invalidCache = Object.keys(cacheState);
+                return this.getData(invalidCache);
             }
         }])
         .loading(function(){
@@ -52,17 +81,48 @@ export class BaseBootStrapper{
 
     }
 
-    getData=()=>{
+    getData=(invalidCache:string[])=>{
+        var promises:{[id:string]:ng.IPromise<any>} ={};
+        for(var i in invalidCache){
+            var invalidCacheName = invalidCache[i];
+            var functionName = invalidCacheName.charAt(0).toUpperCase()+invalidCacheName.slice(1);
+            promises[invalidCacheName] = this['get'+functionName+'Data']();
+
+        }
+
+        return this.$q.all(promises).then((data)=>{
+            console.log('finish');
+            console.log(data);
+
+        });
+    }
+
+    getAttributeCacheKeyData = ()=>{
+
+        return this.$http.get(hibachiConfig.baseURL+'?'+hibachiConfig.action+'=api:main.getAttributeModel')
+        .then( (resp:any)=> {
+            coremodule.constant('attributeMetaData',resp.data.data);
+            localStorage.setItem('attributeMetaData',JSON.stringify(resp.data.data));
+            this.attributeMetaData = resp.data.data;
+        },(response:any) => {
+
+        });
+
+    }
+
+    getInstantiationKeyData = ()=>{
 
         return this.$http.get(hibachiConfig.baseURL+'?'+hibachiConfig.action+'=api:main.getConfig')
-
         .then( (resp:any)=> {
             coremodule.constant('appConfig',resp.data.data);
             localStorage.setItem('appConfig',JSON.stringify(resp.data.data));
             this.appConfig = resp.data.data;
             return this.getResourceBundles();
 
+        },(response:any) => {
+
         });
+
     }
 
     getResourceBundle= (locale) => {

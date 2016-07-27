@@ -158,6 +158,17 @@ component  extends="HibachiService" accessors="true" {
 	// =====================  END: Process Methods ============================
 
 	// ====================== START: Save Overrides ===========================
+	
+	public any function saveAttributeSet(required any attributeSet, struct data={}){
+		arguments.attributeSet = super.save(arguments.attributeSet, arguments.data);
+		if(!arguments.attributeSet.hasErrors()) {
+		
+			//attributeModelCache
+			
+			clearAttributeMetatDataCache(arguments.attributeSet);
+		}
+		return attributeSet;
+	}
 
 	public any function saveAttribute(required any attribute, struct data={}) {
 
@@ -184,17 +195,34 @@ component  extends="HibachiService" accessors="true" {
 			getHibachiCacheService().resetCachedKey("attributeService_getAttributeCodesListByAttributeSetObject_#arguments.attribute.getAttributeSet().getAttributeSetObject()#");
 			
 			//attributeModelCache
-			getHibachiCacheService().resetCachedKey("attributeService_getAttributeModel");
-			getHibachiCacheService().resetCachedKey("attributeService_getAttributeModel_#arguments.attribute.getAttributeSet().getAttributeSetObject()#");
-			getHibachiCacheService().resetCachedKey("attribtueService_getAttributeModel_#arguments.attribute.getAttributeSet().getAttributeSetObject()#_#arguments.attribute.getAttributeSet().getAttributeSetCode()#");
+			clearAttributeMetatDataCache(arguments.attribute.getAttributeSet());
 		}
 
 		return arguments.attribute;
+	}
+	
+	public void function clearAttributeMetatDataCache(required any attributeSet){
+		getHibachiCacheService().resetCachedKey("attributeService_getAttributeModel");
+		getHibachiCacheService().resetCachedKey("attributeService_getAttributeModel_CacheKey");
+		getHibachiCacheService().resetCachedKey("attributeService_getAttributeModel_#arguments.attributeSet.getAttributeSetObject()#");
+		getHibachiCacheService().resetCachedKey("attribtueService_getAttributeModel_#arguments.attributeSet.getAttributeSetObject()#_#arguments.attributeSet.getAttributeSetCode()#");
 	}
 
 	// ======================  END: Save Overrides ============================
 
 	// ====================== START: Delete Overrides =========================
+	
+	public boolean function deleteAttributeSet(required any attributeSet) {
+
+		var deleteOK = super.delete(arguments.attributeSet);
+
+		// Clear the cached value of acceptable
+		if(deleteOK) {
+			clearAttributeMetatDataCache(arguments.attributeSet);
+		}
+
+		return deleteOK;
+	}
 
 	public boolean function deleteAttribute(required any attribute) {
 
@@ -209,6 +237,7 @@ component  extends="HibachiService" accessors="true" {
 			getHibachiDAO().flushORMSession();
 
 			getHibachiCacheService().resetCachedKey("attributeService_getAttributeCodesListByAttributeSetObject_#attributeSetObject#");
+			clearAttributeMetatDataCache(arguments.attribute.getAttributeSet());
 		}
 
 		return deleteOK;
@@ -233,6 +262,7 @@ component  extends="HibachiService" accessors="true" {
 
 		return false;
 	}
+	
 
 	// ======================  END: Delete Overrides ==========================
 
