@@ -488,6 +488,7 @@ class SWListingDisplay implements ng.IDirective{
             searchText:"=?",
 
             /*Sorting*/
+            sortable:"=?",
             sortProperty:"@?",
             sortContextIDColumn:"@?",
             sortContextIDValue:"@?",

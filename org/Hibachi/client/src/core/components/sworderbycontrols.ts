@@ -40,27 +40,27 @@ class SWOrderByControlsController {
         }
         switch(this.sortCode){
             case "ASC":
+                this.disabled = false; 
                 if(propertyIdentifier != null){
-                    this.disabled = false; 
                     if(angular.isDefined(this.collectionConfig)){
                         this.collectionConfig.toggleOrderBy(propertyIdentifier,true);//single column mode true
                     }
                     if(this.inListingDisplay){
                         this.listingService.setSingleColumnOrderBy(this.listingId, propertyIdentifier, "ASC");
-                        this.listingService.setManualSort(this.listingId, false); 
                     }
                 }
+                if(this.inListingDisplay) this.listingService.setManualSort(this.listingId, false); 
                 break; 
             case "DESC":
-                if(propertyIdentifier !=null){
-                    this.disabled = false; 
+                this.disabled = false; 
+                if(propertyIdentifier != null){
                     if(angular.isDefined(this.collectionConfig)){
                         this.collectionConfig.toggleOrderBy(propertyIdentifier,true);//single column mode true
                     }
                     if(this.inListingDisplay){
                         this.listingService.setSingleColumnOrderBy(this.listingId, propertyIdentifier, "DESC");
-                        this.listingService.setManualSort(this.listingId, false); 
                     }
+                    if(this.inListingDisplay) this.listingService.setManualSort(this.listingId, false); 
                 }
                 break; 
             case "MANUAL":

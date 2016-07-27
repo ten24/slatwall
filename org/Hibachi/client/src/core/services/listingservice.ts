@@ -672,6 +672,7 @@ class ListingService{
 
     //for manual sort
     public setManualSort = (listingID:string, toggle:boolean) =>{
+        console.log("sortable set");
         this.getListing(listingID).sortable = toggle; 
         //probably need to do something here with collection config 
     }

@@ -104,9 +104,10 @@
                             </th>
                         </tr>
                     </thead>
-                    <tbody data-ng-if="swListingDisplay.collectionData.pageRecords">
+                    <tbody data-ng-if="swListingDisplay.collectionData.pageRecords" sw-draggable-container>
 
                         <tr sw-draggable
+                            data-draggable="swListingDisplay.sortable"
                             data-ng-repeat="(pageRecordKey, pageRecord) in swListingDisplay.collectionData.pageRecords"
                             data-ng-if="pageRecord.dataIsVisible !== false"
                             data-ng-class="{{swListingDisplay.getNGClassObjectForPageRecordRow(pageRecord)}}">

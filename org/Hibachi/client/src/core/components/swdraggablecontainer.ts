@@ -1,7 +1,7 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
-class SWDraggableController{
+class SWDraggableContainerController{
     
     public draggable:boolean; 
 
@@ -14,7 +14,7 @@ class SWDraggableController{
 
 }
 
-class SWDraggable implements ng.IDirective{
+class SWDraggableContainer implements ng.IDirective{
     public restrict:string = 'EA';
     public scope={};
     public bindToController={
@@ -27,7 +27,7 @@ class SWDraggable implements ng.IDirective{
             utilityService,
             expandableService,
 			hibachiPathBuilder
-        ) => new SWDraggable(
+        ) => new SWDraggableContainer(
             corePartialsPath,
             utilityService,
             expandableService,
@@ -42,8 +42,8 @@ class SWDraggable implements ng.IDirective{
         return directive;
     }
 
-    public controller=SWDraggableController;
-    public controllerAs="swDraggable";
+    public controller=SWDraggableContainerController;
+    public controllerAs="swDraggableContainer";
     //@ngInject
     constructor(
         public corePartialsPath,
@@ -60,53 +60,10 @@ class SWDraggable implements ng.IDirective{
         if (!id) {
             id = this.utilityService.createID(32);  
         } 
-        element.bind("dragstart", function(e) {
-            console.log(
-                "ondragstart",
-                scope.swDraggable.draggable,
-                e
-            );
-            if(!scope.swDraggable.draggable) return false; 
-        });
-        element.bind("dragend", function(e) {
-            console.log(
-                "ondragend",
-                scope.swDraggable.draggable,
-                e
-            );
-            
-        });
-
-        element.on('dragenter', function (e) {
-            console.log(
-                "dragenter",
-                e
-            );
-        });
-
-        element.on('dragover', function(e) {
-            console.log(
-                "dragover",
-                e
-            );
-        }); 
-
-        element.on('drop', function(e) {
-            console.log(
-                "drop",
-                e
-            );
-        }); 
-
-        element.on('dragleave', function(e) {
-            console.log(
-                "dragleave",
-                e
-            );
-        }); 
+ 
     }
 }
 export{
-    SWDraggable
+    SWDraggableContainer
 }
 
