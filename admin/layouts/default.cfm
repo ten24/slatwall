@@ -177,6 +177,11 @@ Notes:
 								<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.integrations_nav')#" icon="random icon-white" type="nav">
 									<cfloop array="#local.integrationSubsystems#" index="local.intsys">
 										<hb:HibachiActionCaller action="#local.intsys['subsystem']#:main.default" text="#local.intsys['name']#" type="list">
+										<cfset local.integration = $.slatwall.getService('integrationService').getIntegrationByIntegrationName(local.intsys['name']) />
+										<cfset local.integrationCFC = $.slatwall.getService('integrationService').getIntegrationCFC(local.integration) />
+										<cfloop array="#local.integrationCFC.getMenuItems()#" index="local.menuitem">
+											<hb:HibachiActionCaller action="#local.menuitem['action']#" text="#local.menuitem['text']#" type="list">
+										</cfloop>
 									</cfloop>
 								</hb:HibachiActionCallerDropdown>
 							</cfif>

@@ -57,8 +57,10 @@ class SWFormFieldController {
 	}
 
 	public formFieldChanged = (option)=>{
+
 		if(this.fieldType === 'yesno'){
 			this.object.data[this.property] = option.value;
+
 			this.form[this.property].$dirty = true;
 			this.form['selected'+this.object.metaData.className+this.property+this.selectedRadioFormName].$dirty = false;
 		}else if(this.fieldType === 'select'){
@@ -70,10 +72,16 @@ class SWFormFieldController {
 					this.form[this.object.data[this.property].$$getIDName()].$dirty = true;
 				}
 			}else if(this.selectType === 'string'){
+
 				this.object.data[this.property] = option.value;
 				this.form[this.property].$dirty = true;
 			}
 			this.observerService.notify(this.object.metaData.className+this.property.charAt(0).toUpperCase()+this.property.slice(1)+'OnChange', option);
+		}else{
+			this.object.data[this.property] = option.value;
+
+			this.form[this.property].$dirty = true;
+			this.form['selected'+this.object.metaData.className+this.property+this.selectedRadioFormName].$dirty = false;
 		}
 
 	};
@@ -111,6 +119,7 @@ class SWFormFieldController {
 		}
 
 		if(this.fieldType === 'select'){
+
 			this.selectStrategy();
 		}
 
