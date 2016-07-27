@@ -55,7 +55,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 	public void function inst_ok() {
 //		request.debug(variables.mockOrderService);
-		variables.mockOrderService.getOrder();
+		variables.mockOrderService.getMockData();
 		assert(isObject(variables.dao));
 	}
 
