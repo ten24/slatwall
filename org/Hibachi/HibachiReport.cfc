@@ -1225,7 +1225,7 @@
 			<!--- Add Totals border --->
 			<cfset spreadsheetFormatCellRange (spreadsheet, {topborder='thin'}, spreadsheetrowcount, 1, spreadsheetrowcount, totalColumns) />
 
-			<cfset spreadsheetWrite( spreadsheet, fullFilename ) />
+			<cfset spreadsheetWrite( spreadsheet, fullFilename, true ) />
 			<cfset getService("hibachiUtilityService").downloadFile( filename, fullFilename, "application/msexcel", true ) />
 			<cfcatch>
 				<cfif (structKeyExists(server, "railo") or structKeyExists(server, "lucee")) and cfcatch.message eq "No matching function [SPREADSHEETADDROW] found">
