@@ -2248,7 +2248,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 //		var result = mockProduct.getDefaultProductImageFilesCount();
 //		assertEquals(1, result);
 //	}
-}
+//}
 	
 	
 	 public void function getBrandNameTest() {
