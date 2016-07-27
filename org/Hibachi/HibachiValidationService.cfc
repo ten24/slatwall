@@ -167,9 +167,11 @@ component output="false" accessors="true" extends="HibachiService" {
 				for(var conditionPropertyIdentifier in validationStruct.conditions[ conditionName ]) {
 
 					// Loop over each constraint for the property identifier to validate the constraint
-					for(var constraint in validationStruct.conditions[ conditionName ][ conditionPropertyIdentifier ]) {
-						if(structKeyExists(variables, "validate_#constraint#") && !invokeMethod("validate_#constraint#", {object=arguments.object, propertyIdentifier=conditionPropertyIdentifier, constraintValue=validationStruct.conditions[ conditionName ][ conditionPropertyIdentifier ][ constraint ]})) {
-							allConditionConstraintsMeet = false;
+					if (!isBoolean(validationStruct.conditions[ conditionName ][ conditionPropertyIdentifier ])) {
+						for(var constraint in validationStruct.conditions[ conditionName ][ conditionPropertyIdentifier ]) {
+							if(structKeyExists(variables, "validate_#constraint#") && !invokeMethod("validate_#constraint#", {object=arguments.object, propertyIdentifier=conditionPropertyIdentifier, constraintValue=validationStruct.conditions[ conditionName ][ conditionPropertyIdentifier ][ constraint ]})) {
+								allConditionConstraintsMeet = false;
+							}
 						}
 					}
 				}
