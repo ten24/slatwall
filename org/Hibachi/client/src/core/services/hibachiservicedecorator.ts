@@ -19,7 +19,8 @@ class HibachiServiceDecorator{
         rbkeyService,
         appConfig,
         observerService,
-        hibachiValidationService:HibachiValidationService
+        hibachiValidationService:HibachiValidationService,
+        attributeMetaData
     ){
             var _deferred = {};
             var _config = appConfig;
@@ -31,6 +32,9 @@ class HibachiServiceDecorator{
                 defaultValues = appConfig.modelConfig.defaultValues;
 
             angular.forEach(entities,function(entity){
+                if(attributeMetaData[entity.className]){
+                    var relatedAttributes = attributeMetaData[entity.className];
+                }
 
                 $delegate['get'+entity.className] = function(options){
                     var entityInstance = $delegate.newEntity(entity.className);
@@ -88,6 +92,19 @@ class HibachiServiceDecorator{
 
                     this.metaData = entity;
                     this.metaData.className = entity.className;
+                    if(relatedAttributes){
+                        this.attributeMetaData = relatedAttributes;
+                    }
+
+                    // for(var attributeSetKey in relatedAttributes){
+                    //     let attributes = relatedAttributes[attributeSetKey];
+                    //     for(var attributeKey in attributes){
+                    //         let attribute = attributes[attributeKey];
+                    //         this.metaData.
+
+                    //     }
+                    // }
+
                     if(entity.hb_parentPropertyName){
                         this.metaData.hb_parentPropertyName = entity.hb_parentPropertyName;
                     }

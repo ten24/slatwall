@@ -91,9 +91,6 @@ export class BaseBootStrapper{
         }
 
         return this.$q.all(promises).then((data)=>{
-            console.log('finish');
-            console.log(data);
-
         });
     }
 
