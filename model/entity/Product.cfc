@@ -735,25 +735,25 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			var skusStructs = sl.getRecords();
 
 			for(var sku in skusStructs) {
-				if(!isNull(sku.getImageFile())) {
-				var imageAlreadyIncluded = false;
-				for(var image in variables.defaultProductImageFiles){
-					if(image.imageFile == sku['imageFile']){
-						imageAlreadyIncluded = true;
+				
+					var imageAlreadyIncluded = false;
+					for(var image in variables.defaultProductImageFiles){
+						if(image.imageFile == sku['imageFile']){
+							imageAlreadyIncluded = true;
+						}
 					}
-				}
-
-				if(!imageAlreadyIncluded){
-					var imageFileStruct = {};
-					imageFileStruct['imageFile'] = sku['imageFile'];
-					
-					imageFileStruct['skuDefinition'] = getService('skuService').getSkuDefinitionBySkuIDAndBaseProductTypeID(
-						sku['skuID'],
-						listFirst(sku['productTypeIDPath'])
-					);
-					arrayAppend(variables.defaultProductImageFiles, imageFileStruct);
-				}
-				}
+	
+					if(!imageAlreadyIncluded){
+						var imageFileStruct = {};
+						imageFileStruct['imageFile'] = sku['imageFile'];
+						
+						imageFileStruct['skuDefinition'] = getService('skuService').getSkuDefinitionBySkuIDAndBaseProductTypeID(
+							sku['skuID'],
+							listFirst(sku['productTypeIDPath'])
+						);
+						arrayAppend(variables.defaultProductImageFiles, imageFileStruct);
+					}
+				
 			}
 		}
 		return variables.defaultProductImageFiles;
