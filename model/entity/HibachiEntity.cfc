@@ -257,15 +257,24 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 			
 			//Check if a custom property exists
 			if (getService("hibachiService").getEntityHasPropertyByEntityName(getClassName(),attributeEntity.getAttributeCode())){
-				invokeMethod("set#attributeEntity.getAttributeCode()#", {1=arguments.value});
+				if(arguments.value != "") {
+					invokeMethod("set#attributeEntity.getAttributeCode()#", {1=arguments.value});
+				} else {
+					var thisMethod = this["set" & attributeEntity.getAttributeCode()];
+					thisMethod(javacast('null',''));
+				}
 				return '';
 			}
 		}else{
 			//Check if a custom property exists
 			if (getService("hibachiService").getEntityHasPropertyByEntityName(getClassName(),arguments.attribute)){
-				invokeMethod("set#arguments.attribute#", {1=arguments.value});
+				if(arguments.value != "") {
+					invokeMethod("set#arguments.attribute#", {1=arguments.value});
+				} else {
+					var thisMethod = this["set" & arguments.attribute];
+					thisMethod(javacast('null',''));
+				}
 				return '';
-				
 			}
 		}
 		
