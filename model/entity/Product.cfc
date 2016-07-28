@@ -811,7 +811,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			for(var i=1; i<=arrayLen(records); i++) {
 				var recordStruct = {};
 				recordStruct['name'] = records[i].getSimpleRepresentation();
-				recordStruct['value']=records[i].getBrandID();
+				recordStruct['value'] = records[i].getBrandID();
 				arrayAppend(variables.brandOptions, recordStruct);
 			}
 		}
