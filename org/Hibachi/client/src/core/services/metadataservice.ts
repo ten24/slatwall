@@ -77,7 +77,7 @@ class MetaDataService {
 				}
 			}
             var divider = '_';
-            if(propertiesList.data[i].$$group == 'simple'){
+            if(propertiesList.data[i].$$group == 'simple' || propertiesList.data[i].$$group == 'attribute'){
                 divider = '.';
             }
 
