@@ -805,7 +805,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 			variables.brandOptions = smartList.getRecords();
 
-			arrayAppend(variables.brandOptions, {name=rbKey('define.none'),value=""});
+			arrayPrepend(variables.brandOptions, {name=rbKey('define.none'),value=""});
 
 		}
 
