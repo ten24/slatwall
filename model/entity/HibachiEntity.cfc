@@ -447,7 +447,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	public any function getFilterProperties(string includesList = "", string excludesList = ""){
 		var properties = super.getFilterProperties(argumentCollection=arguments);
 		var attributeProperties = getAttributesProperties(properties);
-		return getService('hibachiUtilityService').arrayConcat(properties,attributeProperties);;
+		return getService('hibachiUtilityService').arrayConcat(properties,attributeProperties);
 	}
 	
 	public any function getAttributesProperties(array properties=[]){
