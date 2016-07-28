@@ -2157,42 +2157,42 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 	
-	 public void function getDefaultProductImageFilesTest() {
-	 	//testing product w/ skus
-	 	var mockSku1 = createMockSku("", "", "/mock/SomeImageFilePath");
-	 	var mockSku2 = createMockSku("", "", "/mockThe/Image/File2");
-	 	var mockSku3 = createMockSku();
-	 	var mockSku4 = createMockSku("", "",  "Mockfilefor other product entity");
-		
-		var productData = {
-			productID = "",
-			skus = [
-				{
-					skuID = mockSku1.getSkuID()
-				},
-				{
-					skuID = mockSku2.getSkuID()
-				},
-				{
-					skuID = mockSku3.getSkuID()
-				}
-			]
-		};
-		var mockProduct = createPersistedTestEntity('Product', productData);
-		
-		var result = mockProduct.getDefaultProductImageFiles();
-		assertEquals(2, arrayLen(result));
-		assertEquals(mockSku1.getImageFile(), result[1].imageFile);
-		
-		//testing product without skus
-		var productData2 = {
-			productID = ""
-		};
-		var mockProductNoSku = createPersistedTestEntity('Product', productData2);
-		
-		var resultNoSku = mockProductNoSku.getDefaultProductImageFiles();
-		assertEquals(0, arrayLen(resultNoSku));
-	 }
+//	 public void function getDefaultProductImageFilesTest() {
+//	 	//testing product w/ skus
+//	 	var mockSku1 = createMockSku("", "", "/mock/SomeImageFilePath");
+//	 	var mockSku2 = createMockSku("", "", "/mockThe/Image/File2");
+//	 	var mockSku3 = createMockSku();
+//	 	var mockSku4 = createMockSku("", "",  "Mockfilefor other product entity");
+//		
+//		var productData = {
+//			productID = "",
+//			skus = [
+//				{
+//					skuID = mockSku1.getSkuID()
+//				},
+//				{
+//					skuID = mockSku2.getSkuID()
+//				},
+//				{
+//					skuID = mockSku3.getSkuID()
+//				}
+//			]
+//		};
+//		var mockProduct = createPersistedTestEntity('Product', productData);
+//		
+//		var result = mockProduct.getDefaultProductImageFiles();
+//		assertEquals(2, arrayLen(result));
+//		assertEquals(mockSku1.getImageFile(), result[1].imageFile);
+//		
+//		//testing product without skus
+//		var productData2 = {
+//			productID = ""
+//		};
+//		var mockProductNoSku = createPersistedTestEntity('Product', productData2);
+//		
+//		var resultNoSku = mockProductNoSku.getDefaultProductImageFiles();
+//		assertEquals(0, arrayLen(resultNoSku));
+//	 }
 	 
 	 
 	//	public void function getDefaultProductImageFilesCountTest() {		

@@ -205,6 +205,7 @@ class SWDisplayOptions{
                                 if (angular.isUndefined($scope.groupBys) || $scope.groupBys.split(',').length != $scope.columns.length) {
                                     var groupbyArray = angular.isUndefined($scope.groupBys) ? [] : $scope.groupBys.split(',');
                                     for (var col = 0; col < $scope.columns.length; col++) {
+                                        if('attributeID' in $scope.columns[col]) continue;
                                         if (groupbyArray.indexOf($scope.columns[col].propertyIdentifier) == -1) {
                                             groupbyArray.push($scope.columns[col].propertyIdentifier);
                                         }

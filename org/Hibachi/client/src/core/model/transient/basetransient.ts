@@ -59,7 +59,7 @@ abstract class BaseTransient extends BaseObject{
                             }else if(angular.isArray(data[propertyIdentifierKey]) && currentEntity.metaData[property].fieldtype && (currentEntity.metaData[property].fieldtype === 'one-to-many')){
 
                                 angular.forEach(data[key],(arrayItem,propertyKey)=>{
-                                    var relatedEntity = this.entityService.newEntity(currentEntity.metaData[property].cfc);;
+                                    var relatedEntity = this.entityService.newEntity(currentEntity.metaData[property].cfc);
                                     if(relatedEntity.populate){
                                         relatedEntity.populate(arrayItem)
                                     }else{

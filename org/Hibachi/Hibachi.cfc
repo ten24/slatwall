@@ -390,7 +390,7 @@ component extends="FW1.framework" {
 					context.getResponse().setStatus(status, "#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#");
 					message['message'] = 'timeout';
 				}else if(structKeyExists(authorizationDetails,'invalidToken') && authorizationDetails.invalidToken == true){
-					status = getHibachiScope().getService("hibachiAuthenticationService").getInvalidCredentialsStatusCode();;
+					status = getHibachiScope().getService("hibachiAuthenticationService").getInvalidCredentialsStatusCode();
 					context.getResponse().setStatus(status, "#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#");
 					message['message'] = 'invalid_token';
 				}
