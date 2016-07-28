@@ -6,7 +6,7 @@ class SWDraggableContainerController{
     public draggable:boolean; 
 
     //@ngInject
-    constructor(){
+    constructor(public draggableService){
         if(angular.isUndefined(this.draggable)){
             this.draggable = false; 
         }
@@ -18,25 +18,26 @@ class SWDraggableContainer implements ng.IDirective{
     public restrict:string = 'EA';
     public scope={};
     public bindToController={
-        draggable:"=?"
+        draggable:"=?",
+        draggableRecords:"=?"
     };
 
     public static Factory(){
         var directive:ng.IDirectiveFactory=(
             corePartialsPath,
             utilityService,
-            expandableService,
+            draggableService,
 			hibachiPathBuilder
         ) => new SWDraggableContainer(
             corePartialsPath,
             utilityService,
-            expandableService,
+            draggableService,
 			hibachiPathBuilder
         );
         directive.$inject = [
             'corePartialsPath',
             'utilityService',
-            'expandableService',
+            'draggableService',
 			'hibachiPathBuilder'
         ];
         return directive;
@@ -48,20 +49,64 @@ class SWDraggableContainer implements ng.IDirective{
     constructor(
         public corePartialsPath,
         public utilityService,
-        public expandableService,
+        public draggableService,
 		public hibachiPathBuilder
      ){
     }
 
     public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any) =>{
+        
         angular.element(element).attr("draggable", "true");
-        console.log("draggable link");
+
+        var placeholderElement = angular.element("<tr class='s-placeholder'><td></td><td></td><td></td><td></td><td></td></tr>");//temporarirly hardcoding tds so it will show up
+        
         var id = angular.element(element).attr("id");
         if (!id) {
             id = this.utilityService.createID(32);  
         } 
+
+        var listNode = element[0];
+        var placeholderNode = placeholderElement[0]; 
+        placeholderElement.remove();
+
+        element.on('drop', (e)=>{
+            e = e.originalEvent || e;
+            if(!this.draggableService.isDropAllowed(e)) return true; 
+
+            e.preventDefault();
+
+            //need to update the data here
+
+            return false;
+        });
+
+        element.on('dragover', (e)=>{
+            e = e.originalEvent || e;
+            e.stopPropagation(); 
+            if(placeholderNode.parentNode != listNode) {
+                console.log("appending placeholder");
+                element.append(placeholderElement);
+            }
+
+            if(e.target !== listNode) {
+                var listItemNode = e.target;
+                while (listItemNode.parentNode !== listNode && listItemNode.parentNode) {
+                    listItemNode = listItemNode.parentNode;
+                }
+
+                if (listItemNode.parentNode === listNode && listItemNode !== placeholderNode) {
+                    if (this.draggableService.isMouseInFirstHalf(e, listItemNode)) {
+                        listNode.insertBefore(placeholderNode, listItemNode);
+                    } else {
+                        listNode.insertBefore(placeholderNode, listItemNode.nextSibling);
+                    }
+                }
+            }
+
+            return false; 
+        }); 
  
-    }
+    }   
 }
 export{
     SWDraggableContainer

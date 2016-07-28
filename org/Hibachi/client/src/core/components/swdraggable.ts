@@ -18,25 +18,27 @@ class SWDraggable implements ng.IDirective{
     public restrict:string = 'EA';
     public scope={};
     public bindToController={
-        draggable:"=?"
+        draggable:"=?",
+        draggableRecord:"=?",
+        draggableKey:"=?"
     };
 
     public static Factory(){
         var directive:ng.IDirectiveFactory=(
             corePartialsPath,
             utilityService,
-            expandableService,
+            draggableService,
 			hibachiPathBuilder
         ) => new SWDraggable(
             corePartialsPath,
             utilityService,
-            expandableService,
+            draggableService,
 			hibachiPathBuilder
         );
         directive.$inject = [
             'corePartialsPath',
             'utilityService',
-            'expandableService',
+            'draggableService',
 			'hibachiPathBuilder'
         ];
         return directive;
@@ -48,7 +50,7 @@ class SWDraggable implements ng.IDirective{
     constructor(
         public corePartialsPath,
         public utilityService,
-        public expandableService,
+        public draggableService,
 		public hibachiPathBuilder
      ){
     }
@@ -61,49 +63,42 @@ class SWDraggable implements ng.IDirective{
             id = this.utilityService.createID(32);  
         } 
         element.bind("dragstart", function(e) {
-            console.log(
-                "ondragstart",
-                scope.swDraggable.draggable,
-                e
-            );
+            e = e.originalEvent || e;
+            e.stopPropagation(); 
             if(!scope.swDraggable.draggable) return false; 
+            element.addClass("s-dragging");
+            //set the drag data
+            e.dataTransfer.setData("application/json", scope.swDraggable.draggableRecord);
+            e.dataTransfer.effectAllowed = "move";
+            e.dataTransfer.setDragImage(element[0], 0, 0);
         });
+        
         element.bind("dragend", function(e) {
-            console.log(
-                "ondragend",
-                scope.swDraggable.draggable,
-                e
-            );
+            e = e.originalEvent || e;
+            e.stopPropagation(); 
+            element.removeClass("s-dragging");
             
         });
 
-        element.on('dragenter', function (e) {
-            console.log(
-                "dragenter",
-                e
-            );
+        /*element.on('dragenter', function (e) {
+            e = e.originalEvent || e;
+            e.stopPropagation(); 
         });
 
         element.on('dragover', function(e) {
-            console.log(
-                "dragover",
-                e
-            );
-        }); 
+            e = e.originalEvent || e;
+            e.stopPropagation(); 
+        });
 
         element.on('drop', function(e) {
-            console.log(
-                "drop",
-                e
-            );
+            e = e.originalEvent || e;
+            e.stopPropagation(); 
         }); 
 
         element.on('dragleave', function(e) {
-            console.log(
-                "dragleave",
-                e
-            );
-        }); 
+            e = e.originalEvent || e;
+            e.stopPropagation(); 
+        });*/
     }
 }
 export{

@@ -104,13 +104,19 @@
                             </th>
                         </tr>
                     </thead>
-                    <tbody data-ng-if="swListingDisplay.collectionData.pageRecords" sw-draggable-container>
+                    <tbody data-ng-if="swListingDisplay.collectionData.pageRecords" 
+                           sw-draggable-container 
+                           data-draggable="swListingDisplay.sortable" 
+                           data-draggable-records="swListingDisplay.collectionData.pageRecords">
 
-                        <tr sw-draggable
-                            data-draggable="swListingDisplay.sortable"
-                            data-ng-repeat="(pageRecordKey, pageRecord) in swListingDisplay.collectionData.pageRecords"
+                        <tr data-ng-repeat="(pageRecordKey, pageRecord) in swListingDisplay.collectionData.pageRecords"
                             data-ng-if="pageRecord.dataIsVisible !== false"
-                            data-ng-class="{{swListingDisplay.getNGClassObjectForPageRecordRow(pageRecord)}}">
+                            data-ng-class="{{swListingDisplay.getNGClassObjectForPageRecordRow(pageRecord)}}"
+                            sw-draggable
+                            data-draggable="swListingDisplay.sortable"
+                            data-draggable-record="pageRecord"
+                            data-draggable-key="pageRecordKey"
+                            >
 
                             <!--Selectable/Multiselectable-->
                             <td ng-if="swListingDisplay.selectable || swListingDisplay.multiselectable"
