@@ -203,7 +203,7 @@ class PublicService {
             }).catch((response)=>{
 
             });
-            this.requests[request.getAction()]=request;;
+            this.requests[request.getAction()]=request;
             return request.promise;
         }else{
             //get

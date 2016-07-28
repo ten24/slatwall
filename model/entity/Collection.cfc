@@ -698,7 +698,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				logicalOperator = filter.logicalOperator;
 			}
 			if(!isnull(filter.collectionID) || !isNull(filter.collection)){
-				filterGroupHQL &=  " #logicalOperator# #getHQLForCollectionFilter(filter)# ";;
+				filterGroupHQL &=  " #logicalOperator# #getHQLForCollectionFilter(filter)# ";
 			}else {
 
 				//check filter is a nested filterGroup or a filter itself
