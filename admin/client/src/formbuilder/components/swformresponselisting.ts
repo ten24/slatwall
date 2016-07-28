@@ -34,14 +34,21 @@ class SWFormResponseListingController {
     }
     
     export = () => {
-        $('body').append('<form action="' 
-              + this.$hibachi.getUrlWithActionPrefix() 
-              + 'api:main.exportformresponses&formID=' + this.formId  
-              + '" method="post" id="formExport"></form>');
-              
-        $('#formExport')
-            .submit()
-            .remove();
+
+        var exportFormResponsesPromise = this.$http({
+            method: 'GET',
+            url: this.$hibachi.getUrlWithActionPrefix() 
+              + 'api:main.exportformresponses&formID=' + this.formId,
+        });
+
+        exportFormResponsesPromise.then((response)=>{
+            var anchor = angular.element('<a/>');
+            anchor.attr({
+                href: 'data:attachment/csv;charset=utf-8,' + encodeURI(response.data),
+                target: '_blank',
+                download: 'formresponses' + this.formId + '.csv'
+            })[0].click();
+        });
     }
     
     updateFormResponses = () => {
