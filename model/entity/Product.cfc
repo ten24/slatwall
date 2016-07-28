@@ -800,20 +800,13 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 			var smartList = getPropertyOptionsSmartList( "brand" );
 			smartList.addOrder("brandName|asc");
-			var records = smartList.getRecords();
+			smartList.addSelect("brandID", "value");
+			smartList.addSelect("brandName", "name");
 
-			variables.brandOptions = [];
+			variables.brandOptions = smartList.getRecords();
 
-			if(arrayLen(records) > 1){
-				arrayAppend(variables.brandOptions, {name=rbKey('define.none'),value=""});
-			}
+			arrayAppend(variables.brandOptions, {name=rbKey('define.none'),value=""});
 
-			for(var i=1; i<=arrayLen(records); i++) {
-				var recordStruct = {};
-				recordStruct['name'] = records[i].getSimpleRepresentation();
-				recordStruct['value'] = records[i].getBrandID();
-				arrayAppend(variables.brandOptions, recordStruct);
-			}
 		}
 
 		return variables.brandOptions;
