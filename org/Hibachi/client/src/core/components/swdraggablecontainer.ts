@@ -75,7 +75,15 @@ class SWDraggableContainer implements ng.IDirective{
 
             e.preventDefault();
 
-            //need to update the data here
+            var data = e.dataTransfer.getData("Text") || e.dataTransfer.getData("text/plain");
+            var record = JSON.parse(data);
+        
+            // Invoke the callback, which can transform the transferredObject and even abort the drop.
+            var index =  Array.prototype.indexOf.call(listNode.children, placeholderNode);
+
+            scope.swDraggableContainer.draggableRecords.splice(index, 0, record);
+
+            placeholderElement.remove();
 
             return false;
         });
@@ -105,6 +113,8 @@ class SWDraggableContainer implements ng.IDirective{
 
             return false; 
         }); 
+
+        
  
     }   
 }
