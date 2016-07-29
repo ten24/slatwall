@@ -35,12 +35,6 @@ class SWFormResponseListingController {
     }
     
     export = () => {
-        /*
-        var exportFormResponsesPromise = this.$http({
-            method: 'GET',
-            url: this.$hibachi.getUrlWithActionPrefix() 
-              + 'api:main.exportformresponses&formID=' + this.formId,
-        });*/
         var exportFormResponseRequest = this.requestService.newAdminRequest(
             this.$hibachi.getUrlWithActionPrefix() + 'api:main.exportformresponses&formID=' + this.formId,
             {},
