@@ -61,6 +61,34 @@
 		<echoproperties />
 	</target>
 
+	<target name="buildDocsAndTests" depends="init">
+
+		<!-- Setup test output directory -->
+		<delete dir="${slatwall.test.output.xml}/build" failonerror="false"/>
+		<mkdir dir="${slatwall.test.output.xml}/build" />
+		<delete dir="${slatwall.test.output.html}/build" failonerror="false"/>
+		<mkdir dir="${slatwall.test.output.html}/build" />
+
+		<!-- Run the tests -->
+		<runTestDirectory directoryName="build" excludes=""/>
+
+		<!-- Update test reports -->
+		<junitreport todir="${slatwall.test.output.html}/build">
+		  <fileset dir="${slatwall.test.output.xml}/build">
+		    <include name="*.xml"/>
+		  </fileset>
+		  <report format="frames" todir="${slatwall.test.output.html}/build"/>
+		</junitreport>
+
+		<!-- Fail Build if not all unit tests pass -->
+		<fail message="Not All Unit Tests Passed">
+			<condition>
+				<istrue value="${tests.bombed}"/>
+			</condition>
+		</fail>
+
+	</target>
+
 	<target name="runUnitTests" depends="init">
 
 		<!-- Setup test output directory -->
