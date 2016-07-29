@@ -34,7 +34,17 @@ class HibachiServiceDecorator{
             angular.forEach(entities,function(entity){
                 if(attributeMetaData[entity.className]){
                     var relatedAttributes = attributeMetaData[entity.className];
+                    for(var attributeSetCode in relatedAttributes){
+                        var attributeSet = relatedAttributes[attributeSetCode];
+                        for(var attributeCode in attributeSet.attributes){
+                            var attribute = attributeSet.attributes[attributeCode];
+                            attribute.attributeSet = attributeSet;
+                            attribute.isAttribute = true;
+                            entity[attributeCode] = attribute;
+                        }
+                    }
                 }
+
 
                 $delegate['get'+entity.className] = function(options){
                     var entityInstance = $delegate.newEntity(entity.className);
@@ -96,15 +106,6 @@ class HibachiServiceDecorator{
                         this.attributeMetaData = relatedAttributes;
                     }
 
-                    // for(var attributeSetKey in relatedAttributes){
-                    //     let attributes = relatedAttributes[attributeSetKey];
-                    //     for(var attributeKey in attributes){
-                    //         let attribute = attributes[attributeKey];
-                    //         this.metaData.
-
-                    //     }
-                    // }
-
                     if(entity.hb_parentPropertyName){
                         this.metaData.hb_parentPropertyName = entity.hb_parentPropertyName;
                     }
@@ -115,7 +116,6 @@ class HibachiServiceDecorator{
                     this.metaData.$$getRBKey = function(rbKey,replaceStringData){
                         return rbkeyService.rbKey(rbKey,replaceStringData);
                     };
-
 
                     this.metaData.$$getPropertyTitle = function(propertyName){
                         return _getPropertyTitle(propertyName,this);

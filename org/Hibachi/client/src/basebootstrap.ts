@@ -38,16 +38,17 @@ export class BaseBootStrapper{
                 .then( (resp)=> {
                     var appConfig = JSON.parse(localStorage.getItem('appConfig'));
                     var attributeMetaData = JSON.parse(localStorage.getItem('attributeMetaData'));
-
                     var invalidCache = [];
                     for(var key in resp.data.data){
                         if(key==='attributeCacheKey'){
+
                             var hashedData = md5(localStorage.getItem('attributeMetaData'));
                             if(resp.data.data[key] === hashedData.toUpperCase()){
                                 coremodule.constant('attributeMetaData',JSON.parse(localStorage.getItem('attributeMetaData')));
                             }else{
                                 invalidCache.push(key);
                             }
+
                         }else if (key === 'instantiationKey'){
                             if(resp.data.data[key] === appConfig[key]){
                                 coremodule.constant('appConfig',appConfig)
@@ -57,7 +58,6 @@ export class BaseBootStrapper{
                             }
                         }
                     }
-
 
                     if( invalidCache.length > 0 ){
                         return this.getData(invalidCache);

@@ -95,7 +95,10 @@ component  extends="HibachiService" accessors="true" {
 		            attributeSetMetaDataStruct = getHibachiCacheService().getCachedValue(attributeSetMetaDataStructCacheKey);
 				}else{
 					var entity = getHibachiScope().getService('hibachiService').getEntityObject(entityName);
-					var assignedAttributes = entity.getAssignedAttributeSetSmartList().getRecords(true);
+					var assignedAttributesSmartlist = entity.getAssignedAttributeSetSmartList();
+					assignedAttributesSmartlist.removeFilter('globalFlag');
+					var assignedAttributes = assignedAttributesSmartlist.getRecords(true);
+					
 					if(arrayLen(assignedAttributes)){
 						for(var attributeSet in assignedAttributes){
 							var attributeSetMeta = getAttributeSetMetaData(attributeSet);
