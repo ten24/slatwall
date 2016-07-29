@@ -24,17 +24,20 @@ class SWDraggableContainer implements ng.IDirective{
 
     public static Factory(){
         var directive:ng.IDirectiveFactory=(
+            $timeout, 
             corePartialsPath,
             utilityService,
             draggableService,
 			hibachiPathBuilder
         ) => new SWDraggableContainer(
+            $timeout, 
             corePartialsPath,
             utilityService,
             draggableService,
 			hibachiPathBuilder
         );
         directive.$inject = [
+            '$timeout',
             'corePartialsPath',
             'utilityService',
             'draggableService',
@@ -47,6 +50,7 @@ class SWDraggableContainer implements ng.IDirective{
     public controllerAs="swDraggableContainer";
     //@ngInject
     constructor(
+        public $timeout, 
         public corePartialsPath,
         public utilityService,
         public draggableService,
@@ -71,28 +75,45 @@ class SWDraggableContainer implements ng.IDirective{
 
         element.on('drop', (e)=>{
             e = e.originalEvent || e;
-            if(!this.draggableService.isDropAllowed(e)) return true; 
+            
+            var index =  Array.prototype.indexOf.call(listNode.children, placeholderNode);
+            placeholderElement.remove();
+            
+            if(!this.draggableService.isDropAllowed(e)) return true;  
 
             e.preventDefault();
 
-            var data = e.dataTransfer.getData("Text") || e.dataTransfer.getData("text/plain");
-            var record = JSON.parse(data);
-        
-            // Invoke the callback, which can transform the transferredObject and even abort the drop.
-            var index =  Array.prototype.indexOf.call(listNode.children, placeholderNode);
+            var record = e.dataTransfer.getData("application/json") || e.dataTransfer.getData("text/plain");
+
+            console.log("record", record);
+            console.log("index", index);
+            console.log("listnode", listNode.children, placeholderNode);
 
             scope.swDraggableContainer.draggableRecords.splice(index, 0, record);
-
-            placeholderElement.remove();
+            console.log("draggableRecords", scope.swDraggableContainer.draggableRecords);
 
             return false;
         });
 
+        element.on('dragenter', (e)=>{
+            e = e.originalEvent || e;
+            if (!this.draggableService.isDropAllowed(e)) return true;
+            e.preventDefault();
+        });
+        
+        element.on('dragleave', (e)=>{
+            e = e.originalEvent || e;
+            this.$timeout(()=>{
+                placeholderElement.remove();
+            },100); 
+                
+            return false; 
+        }); 
+        
         element.on('dragover', (e)=>{
             e = e.originalEvent || e;
             e.stopPropagation(); 
             if(placeholderNode.parentNode != listNode) {
-                console.log("appending placeholder");
                 element.append(placeholderElement);
             }
 

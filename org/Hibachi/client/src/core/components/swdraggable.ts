@@ -68,7 +68,7 @@ class SWDraggable implements ng.IDirective{
             if(!scope.swDraggable.draggable) return false; 
             element.addClass("s-dragging");
             //set the drag data
-            e.dataTransfer.setData("application/json", scope.swDraggable.draggableRecord);
+            e.dataTransfer.setData("application/json", angular.toJson(scope.swDraggable.draggableRecord));
             e.dataTransfer.effectAllowed = "move";
             e.dataTransfer.setDragImage(element[0], 0, 0);
         });
