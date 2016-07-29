@@ -5,7 +5,7 @@
   "steps": [
     {
       "type": "get",
-      "url": "https://cf10.localhost/"
+      "url": "http://localhost/"
     },
     {
       "type": "setWindowSize",
