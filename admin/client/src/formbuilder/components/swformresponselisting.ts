@@ -14,7 +14,8 @@ class SWFormResponseListingController {
         private $filter,
         private $http,
         private $hibachi,
-        private paginationService
+        private paginationService,
+        private requestService
     ){
         
         this.dateFilter = $filter("dateFilter");
@@ -34,14 +35,20 @@ class SWFormResponseListingController {
     }
     
     export = () => {
-        $('body').append('<form action="' 
-              + this.$hibachi.getUrlWithActionPrefix() 
-              + 'api:main.exportformresponses&formID=' + this.formId  
-              + '" method="post" id="formExport"></form>');
-              
-        $('#formExport')
-            .submit()
-            .remove();
+        var exportFormResponseRequest = this.requestService.newAdminRequest(
+            this.$hibachi.getUrlWithActionPrefix() + 'api:main.exportformresponses&formID=' + this.formId,
+            {},
+            'GET'
+        ); 
+
+        exportFormResponseRequest.promise.then((response)=>{
+            var anchor = angular.element('<a/>');
+            anchor.attr({
+                href: 'data:attachment/csv;charset=utf-8,' + encodeURI(response),
+                target: '_blank',
+                download: 'formresponses' + this.formId + '.csv'
+            })[0].click();
+        });
     }
     
     updateFormResponses = () => {

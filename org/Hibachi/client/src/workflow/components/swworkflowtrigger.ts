@@ -4,37 +4,42 @@
 class SWWorkflowTrigger{
 	public static Factory(){
 		var directive = (
+            $http,
 			$hibachi,
             alertService,
 			metadataService,
 			workflowPartialsPath,
 			hibachiPathBuilder,
-            $http
+            utilityService
 		)=> new SWWorkflowTrigger(
+            $http,
 			$hibachi,
             alertService,
 			metadataService,
 			workflowPartialsPath,
 			hibachiPathBuilder,
-            $http
+            utilityService
 		);
 		directive.$inject = [
+			'$http',
 			'$hibachi',
             'alertService',
 			'metadataService',
 			'workflowPartialsPath',
 			'hibachiPathBuilder',
-            '$http'
+            'utilityService'
 		];
 		return directive;
 	}
 	constructor(
+		$http,
 		$hibachi,
         alertService,
 		metadataService,
 		workflowPartialsPath,
         hibachiPathBuilder,
-        $http
+        utilityService
+        
 	){
 		return {
 			restrict: 'A',
@@ -85,7 +90,7 @@ class SWWorkflowTrigger{
                     scope.executingTrigger = true;
 
                     var appConfig = $hibachi.getConfig();
-                    var urlString = appConfig.baseURL+'/index.cfm/?'+appConfig.action+'=admin:workflow.executeScheduleWorkflowTrigger&workflowTriggerID='+workflowTrigger.data.workflowTriggerID;
+                    var urlString = appConfig.baseURL+'/index.cfm/?'+appConfig.action+'=api:workflow.executeScheduleWorkflowTrigger&workflowTriggerID='+workflowTrigger.data.workflowTriggerID+'&x='+utilityService.createID();
                     $http.get(urlString).finally(()=>{
                         scope.executingTrigger = false;
                         var alert = alertService.newAlert();
