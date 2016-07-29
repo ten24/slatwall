@@ -13,7 +13,8 @@ dependencies:
 
     # Install node modules for building JS
     - npm install -g webpack gulp
-    - npm install gulp gulp-inject@3 gulp-chmod gulp-util run-sequence webpack force-case-sensitivity-webpack-plugin strip-loader ng-annotate-webpack-plugin tsify typescript
+
+    - npm install gulp gulp-inject@3 gulp-chmod gulp-util run-sequence webpack force-case-sensitivity-webpack-plugin strip-loader ng-annotate-webpack-plugin tsify typescript ts-loader md5 blueimp-md5
 
     # Install awscli so that we can push builds to S3
     - pip install awscli
@@ -23,7 +24,7 @@ dependencies:
 
     # Minify JS
      # generate typings
-    - cd org/Hibachi/client && gulp gen-ts-refs
+    - cd org/Hibachi/client && gulp gen-ts-refs && webpack --config webpack-frontend-production.config.js -p --display-error-details
     - cd admin/client && gulp gen-ts-refs
     # Minify JS
     - cd admin/client && webpack --config webpack-production.config.js -p --display-error-details
