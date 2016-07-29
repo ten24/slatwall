@@ -53,19 +53,21 @@ test:
 
     # Wait for Saucelabs connection
     - if [[ ! -z $SAUCE_USERNAME ]] ; then while [ ! -e ~/sauce_is_ready ]; do sleep 1; done; fi
-  override:
+
     # Run Sauce Labs Integration Setup Tests
     - if [[ ! -z $SAUCE_USERNAME ]] ; then node meta/tests/integration/se-interpreter/interpreter.js --parallel=1 --listener=meta/tests/integration/se-interpreter/utils/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/setup_config.json --silent; fi
 
+    # Run Build
+    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwallweb_1)" -- ant -f /var/www/meta/tests/build.xml buildDocsAndTests
+  override:
     # Run Sauce Labs Integration Admin Tests, 2 side by side at a time
     - if [[ ! -z $SAUCE_USERNAME ]] ; then node meta/tests/integration/se-interpreter/interpreter.js --parallel=5 --listener=meta/tests/integration/se-interpreter/utils/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/admin_config.json --silent; fi
 
-    # Kill the Sauce Labs tunnel
-    - if [[ ! -z $SAUCE_USERNAME ]] ; then cd sc-*-linux && kill $(cat sc.pid); fi
-
     # Run Unit Tests
     - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwallweb_1)" -- ant -f /var/www/meta/tests/build.xml runUnitTests
-
+  post:
+    # Kill the Sauce Labs tunnel
+    - if [[ ! -z $SAUCE_USERNAME ]] ; then cd sc-*-linux && kill $(cat sc.pid); fi
 deployment:
 
   # As long as this build passed, we can commit JS builds, Version #, and do downstream merging when necessary
