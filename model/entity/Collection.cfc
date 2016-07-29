@@ -698,7 +698,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				logicalOperator = filter.logicalOperator;
 			}
 			if(!isnull(filter.collectionID) || !isNull(filter.collection)){
-				filterGroupHQL &=  " #logicalOperator# #getHQLForCollectionFilter(filter)# ";;
+				filterGroupHQL &=  " #logicalOperator# #getHQLForCollectionFilter(filter)# ";
 			}else {
 
 				//check filter is a nested filterGroup or a filter itself
@@ -915,7 +915,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			var collectionConfig = getCollectionConfigStruct();
 			if(structKeyExists(collectionConfig, 'columns') && arraylen(collectionConfig.columns) > 0) {
 				for (var i = 1; i <= arraylen(collectionConfig.columns); i++) {
-					if (structKeyExists(collectionConfig.columns[i], 'aggregate') || ListFindNoCase(groupByList, collectionConfig.columns[i].propertyIdentifier) > 0) continue;
+					if (structKeyExists(collectionConfig.columns[i], 'aggregate')
+						|| structKeyExists(collectionConfig.columns[i], 'attributeID')
+						|| ListFindNoCase(groupByList, collectionConfig.columns[i].propertyIdentifier) > 0
+					) continue;
+
 					groupByList = listAppend(groupByList, collectionConfig.columns[i].propertyIdentifier);
 				}
 			}

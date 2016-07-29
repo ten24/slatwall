@@ -147,23 +147,23 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		if(!structKeyExists(variables, "availableToPurchaseFlag")) {
 			// If purchase start dates not existed, or before now(), the start date is valid
 			// If purchase end   date  not existed, or after  now(), the end   date is valid
-			if ( 
+			if (
 					(
 						isNull(this.getPurchaseStartDateTime())
 						||
-						( !isNull(this.getPurchaseStartDateTime()) && dateCompare(now(),this.getPurchaseStartDateTime(),"s") == 1 )					 
+						( !isNull(this.getPurchaseStartDateTime()) && dateCompare(now(),this.getPurchaseStartDateTime(),"s") == 1 )
 					)
 					&&
 					(
 						isNull(this.getPurchaseEndDateTime())
 						||
-						( !isNull(this.getPurchaseEndDateTime()) && dateCompare(now(),this.getPurchaseEndDateTime(),"s") == -1 )					 
-					) 
+						( !isNull(this.getPurchaseEndDateTime()) && dateCompare(now(),this.getPurchaseEndDateTime(),"s") == -1 )
+					)
 			) {
 				variables.availableToPurchaseFlag = true;
 			} else {
 				variables.availableToPurchaseFlag = false;
-			}				
+			}
 		}
 
 		return variables.availableToPurchaseFlag;
@@ -267,7 +267,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 		return {};
 	}
-	
+
 	//@SuppressCodeCoverage
 	public struct function getSkuSalePriceDetailsByCurrencyCode( required any skuID, string currencyCode='') {
 		if(structKeyExists(getSalePriceDetailsForSkusByCurrencyCode(currencyCode=arguments.currencyCode), arguments.skuID)) {
@@ -735,25 +735,25 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			var skusStructs = sl.getRecords();
 
 			for(var sku in skusStructs) {
-				
+
 					var imageAlreadyIncluded = false;
 					for(var image in variables.defaultProductImageFiles){
 						if(image.imageFile == sku['imageFile']){
 							imageAlreadyIncluded = true;
 						}
 					}
-	
+
 					if(!imageAlreadyIncluded){
 						var imageFileStruct = {};
 						imageFileStruct['imageFile'] = sku['imageFile'];
-						
+
 						imageFileStruct['skuDefinition'] = getService('skuService').getSkuDefinitionBySkuIDAndBaseProductTypeID(
 							sku['skuID'],
 							listFirst(sku['productTypeIDPath'])
 						);
 						arrayAppend(variables.defaultProductImageFiles, imageFileStruct);
 					}
-				
+
 			}
 		}
 		return variables.defaultProductImageFiles;
@@ -794,11 +794,22 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 		return variables.brandName;
 	}
-	
+
 	public array function getBrandOptions() {
-		var options = getPropertyOptions( "brand" );
-		options[1]['name'] = rbKey('define.none');
-		return options;
+		if(!structKeyExists(variables, "brandOptions")) {
+
+			var smartList = getPropertyOptionsSmartList( "brand" );
+			smartList.addOrder("brandName|asc");
+			smartList.addSelect("brandID", "value");
+			smartList.addSelect("brandName", "name");
+
+			variables.brandOptions = smartList.getRecords();
+
+			arrayPrepend(variables.brandOptions, {name=rbKey('define.none'),value=""});
+
+		}
+
+		return variables.brandOptions;
 	}
 
 	public string function getNextSkuCodeCount() {
@@ -836,14 +847,14 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			return getDefaultSku().getCurrencyCode();
 		}
 	}
-	
-	
+
+
 
 	public any function getEventConflictExistsFlag() {
 		if( structKeyExists(variables, "eventConflictExistsFlag") ) {
 			return variables.eventConflictExistsFlag;
 		} else {
-			
+
 			variables.eventConflictExistsFlag = false;
 			for(sku in getSkus()) {
 				if(sku.getEventConflictExistsFlag()) {
@@ -907,7 +918,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			return getDefaultSku().getLivePrice();
 		}
 	}
-	
+
 	//@SuppressCodeCoverage
 	public any function getLivePriceByCurrencyCode(required string currencyCode){
 		if( structKeyExists(variables,"defaultSku") ) {

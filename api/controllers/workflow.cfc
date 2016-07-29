@@ -58,15 +58,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods='';
 
 	public void function executeScheduledWorkflows() {
-			getWorkflowService().runAllWorkflowsByScheduleTrigger();
-		abort;
+		getWorkflowService().runAllWorkflowsByScheduleTrigger();
+		getFW().setView("public:main.blank");
 	}
 
 	public void function executeScheduleWorkflowTrigger(required any rc){
 		if(structKeyExists(arguments.rc, 'workflowTriggerID')){
 			getWorkflowService().runWorkflowTriggerById(arguments.rc.workflowTriggerID);
 		}
-		abort;
+		getFW().setView("public:main.blank");
 	}
 
 }

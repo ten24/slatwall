@@ -353,7 +353,7 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 	}
 	
 	public void function preUpdate(struct oldData){
-		setProductTypeIDPath( buildIDPathList( "parentProductType" ) );;
+		setProductTypeIDPath( buildIDPathList( "parentProductType" ) );
 		super.preUpdate(argumentcollection=arguments);
 	}
 	

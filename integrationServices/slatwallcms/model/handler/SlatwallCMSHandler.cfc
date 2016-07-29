@@ -5,10 +5,6 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 	
 	public any function getSlatwallAdminApplication() {
 		return  createObject("component", "Slatwall.Application");
-		if(!structKeyExists(variables.slatwallApplications,'slatwallAdmin')){
-			variables.slatwallApplications['slatwallAdmin'] = createObject("component", "Slatwall.Application");
-		}
-		return variables.slatwallApplications["slatwallAdmin"];
 	}
 	
 	public any function getSlatwallCMSApplication(required any site) {

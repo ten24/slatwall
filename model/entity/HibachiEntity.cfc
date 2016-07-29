@@ -447,14 +447,13 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	public any function getFilterProperties(string includesList = "", string excludesList = ""){
 		var properties = super.getFilterProperties(argumentCollection=arguments);
 		var attributeProperties = getAttributesProperties(properties);
-		getService('hibachiUtilityService').arrayConcat(properties,attributeProperties);
-		return properties;
+		return getService('hibachiUtilityService').arrayConcat(properties,attributeProperties);
 	}
 	
 	public any function getAttributesProperties(array properties=[]){
 		var attributesProperties = [];
 		var attributesArray = getAttributesArray();
-		for(var i = arrayLen(attributesArray); i > 1 ;i=i-1){
+		for(var i = arrayLen(attributesArray); i > 0 ;i--){
 			var attribute = attributesArray[i];
 			if(!structKeyExists(this,'get#attribute.getAttributeCode()#')){
 				var attributeProperty = {};

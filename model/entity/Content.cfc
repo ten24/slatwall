@@ -109,7 +109,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	// ============ START: Non-Persistent Property Methods =================
 	public string function getAssetsPath(){
 		if(!structKeyExists(variables,'assetsPath')){
-			variables.assetsPath = getSite().getAssetsPath();;
+			variables.assetsPath = getSite().getAssetsPath();
 		}
 		return variables.assetsPath;
 	}
