@@ -76,22 +76,21 @@ class SWDraggableContainer implements ng.IDirective{
         element.on('drop', (e)=>{
             e = e.originalEvent || e;
             
-            var index =  Array.prototype.indexOf.call(listNode.children, placeholderNode);
-            placeholderElement.remove();
-            
             if(!this.draggableService.isDropAllowed(e)) return true;  
 
             e.preventDefault();
 
             var record = e.dataTransfer.getData("application/json") || e.dataTransfer.getData("text/plain");
+            var parsedRecord = JSON.parse(record); 
 
-            console.log("record", record);
-            console.log("index", index);
-            console.log("listnode", listNode.children, placeholderNode);
+            if(angular.isDefined(parsedRecord.draggableStartKey)){
+                scope.swDraggableContainer.draggableRecords.splice(parsedRecord.draggableStartKey, 1);
+            }
+            var index =  Array.prototype.indexOf.call(listNode.children, placeholderNode);
+            scope.swDraggableContainer.draggableRecords.splice(index, 0, parsedRecord);
+            console.log("draggableRecords", index, scope.swDraggableContainer.draggableRecords);
 
-            scope.swDraggableContainer.draggableRecords.splice(index, 0, record);
-            console.log("draggableRecords", scope.swDraggableContainer.draggableRecords);
-
+            placeholderElement.remove();
             return false;
         });
 
