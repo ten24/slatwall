@@ -59,7 +59,6 @@ gulp.task('runwebpack',function(){
 gulp.task('default', function(){
   runSequence(
 		'gen-ts-refs',
-    'runwebpack',
-    'watch'
+    'runwebpack'
   );
 });
