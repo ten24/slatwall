@@ -57,6 +57,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 
 	public void function accountCanBeDeleted() {
+		
 		var accountService = request.slatwallScope.getService("accountService");
 
 		var accountData = {
