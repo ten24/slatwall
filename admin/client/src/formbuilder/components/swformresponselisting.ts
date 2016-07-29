@@ -50,7 +50,7 @@ class SWFormResponseListingController {
         exportFormResponseRequest.promise.then((response)=>{
             var anchor = angular.element('<a/>');
             anchor.attr({
-                href: 'data:attachment/csv;charset=utf-8,' + encodeURI(response.data),
+                href: 'data:attachment/csv;charset=utf-8,' + encodeURI(response),
                 target: '_blank',
                 download: 'formresponses' + this.formId + '.csv'
             })[0].click();
