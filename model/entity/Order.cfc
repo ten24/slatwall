@@ -187,10 +187,9 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public struct function getOrderItemQualifiedDiscounts(){
 		var orderItemQualifiedDiscounts = {};
 
-
 		for(var orderItem in this.getOrderItems()) {
 			var salePriceDetails = orderItem.getSku().getSalePriceDetails();
-
+			
 			if(structKeyExists(salePriceDetails, "salePrice") && salePriceDetails.salePrice < orderItem.getSku().getPrice()) {
 
 				var discountAmount = precisionEvaluate((orderItem.getSku().getPrice() * orderItem.getQuantity()) - (salePriceDetails.salePrice * orderItem.getQuantity()));
@@ -280,7 +279,9 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 			setOrderCloseDateTime( now() );
 		}
 	}
-
+	/**
+	* @Suppress
+	*/
 	public numeric function getPreviouslyReturnedFulfillmentTotal() {
 		return getService("OrderService").getPreviouslyReturnedFulfillmentTotal(getOrderId());
 	}
