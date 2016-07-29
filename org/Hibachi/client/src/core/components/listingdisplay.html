@@ -72,6 +72,8 @@
                 <table class="table table-bordered s-detail-content-table">
                     <thead>
                         <tr>
+                            <!-- Sortable -->
+                            <th class="s-order-table" data-ng-if="swListingDisplay.sortable" style="display: table-cell;">&nbsp;</th>
                             <!-- Selectable -->
                             <input data-ng-if-start="swListingDisplay.selectable" type="hidden" data-ng-attr-name="{{swListingDisplay.selectFieldName}}" data-ng-value="swListingDisplay.selectValue" />
                             <th data-ng-if-end class="select" data-ng-class="{'disabled':!swListingDisplay.edit}" data-ng-bind="swListingDisplay.selectTitle"></th>
@@ -83,8 +85,6 @@
                                     <label for="exampleID"></label>
                                 </div>
                             </th>
-                            <!-- Sortable -->
-                            <th class="sort" data-ng-if="swListingDisplay.sortable">&nbsp;</th>
                             <!-- TODO: CREATE FLAG IN COLUMN TO SET CLASS 's-detail-hidden-content'-->
                             <th data-ng-repeat="column in swListingDisplay.columns" class="data {{column.tdClass}}" data-ng-class="{'s-detail-hidden-content': column.CHANGE_THIS_LATER}" data-ng-if="column.isVisible" ng-cloak>
                                 <span data-ng-bind="column.title" style="cursor: pointer"></span>
@@ -117,6 +117,11 @@
                             data-draggable-record="pageRecord"
                             data-draggable-key="pageRecordKey"
                             >
+
+                            <!-- Sortable -->
+                            <td class="sort" data-ng-if="swListingDisplay.sortable" class="s-order-table" style="display: table-cell;">
+                                <i class="fa fa-bars" aria-hidden="true"></i>
+                            </td><!-- Need to put the form here -->
 
                             <!--Selectable/Multiselectable-->
                             <td ng-if="swListingDisplay.selectable || swListingDisplay.multiselectable"

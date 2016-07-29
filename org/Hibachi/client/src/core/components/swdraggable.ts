@@ -18,9 +18,10 @@ class SWDraggable implements ng.IDirective{
     public restrict:string = 'EA';
     public scope={};
     public bindToController={
-        draggable:"=?",
-        draggableRecord:"=?",
-        draggableKey:"=?"
+        //all fields required
+        draggable:"=",
+        draggableRecord:"=",
+        draggableKey:"="
     };
 
     public static Factory(){
@@ -77,7 +78,6 @@ class SWDraggable implements ng.IDirective{
             e = e.originalEvent || e;
             e.stopPropagation(); 
             element.removeClass("s-dragging");
-            
         });
 
         /*element.on('dragenter', function (e) {

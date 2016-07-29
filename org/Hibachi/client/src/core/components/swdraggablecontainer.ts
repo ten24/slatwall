@@ -15,6 +15,7 @@ class SWDraggableContainerController{
 }
 
 class SWDraggableContainer implements ng.IDirective{
+    public _timeoutPromise; 
     public restrict:string = 'EA';
     public scope={};
     public bindToController={
@@ -62,7 +63,7 @@ class SWDraggableContainer implements ng.IDirective{
         
         angular.element(element).attr("draggable", "true");
 
-        var placeholderElement = angular.element("<tr class='s-placeholder'><td></td><td></td><td></td><td></td><td></td></tr>");//temporarirly hardcoding tds so it will show up
+        var placeholderElement = angular.element("<tr class='s-placeholder'><td></td><td>placeholder</td><td>placeholder</td><td>placeholder</td><td>placeholder</td><td>placeholder</td></tr>");//temporarirly hardcoding tds so it will show up
         
         var id = angular.element(element).attr("id");
         if (!id) {
@@ -75,22 +76,30 @@ class SWDraggableContainer implements ng.IDirective{
 
         element.on('drop', (e)=>{
             e = e.originalEvent || e;
+            e.preventDefault();
             
             if(!this.draggableService.isDropAllowed(e)) return true;  
 
-            e.preventDefault();
-
             var record = e.dataTransfer.getData("application/json") || e.dataTransfer.getData("text/plain");
             var parsedRecord = JSON.parse(record); 
-
-            if(angular.isDefined(parsedRecord.draggableStartKey)){
-                scope.swDraggableContainer.draggableRecords.splice(parsedRecord.draggableStartKey, 1);
-            }
+            
             var index =  Array.prototype.indexOf.call(listNode.children, placeholderNode);
-            scope.swDraggableContainer.draggableRecords.splice(index, 0, parsedRecord);
-            console.log("draggableRecords", index, scope.swDraggableContainer.draggableRecords);
 
+            if(index <= parsedRecord.draggableStartKey){
+                parsedRecord.draggableStartKey++;
+            } else if(parsedRecord.draggableStartKey != 0) {
+                parsedRecord.draggableStartKey--; 
+            }
+
+            this.$timeout(
+                ()=>{
+                    scope.swDraggableContainer.draggableRecords.splice(index, 0, parsedRecord);
+                    scope.swDraggableContainer.draggableRecords.splice(parsedRecord.draggableStartKey, 1);
+                }, 0
+            );
+                
             placeholderElement.remove();
+            e.stopPropagation(); 
             return false;
         });
 
@@ -102,9 +111,10 @@ class SWDraggableContainer implements ng.IDirective{
         
         element.on('dragleave', (e)=>{
             e = e.originalEvent || e;
-            this.$timeout(()=>{
-                placeholderElement.remove();
-            },100); 
+            
+            if (e.pageX != 0 || e.pageY != 0) {
+                return false;
+            } 
                 
             return false; 
         }); 
@@ -112,6 +122,9 @@ class SWDraggableContainer implements ng.IDirective{
         element.on('dragover', (e)=>{
             e = e.originalEvent || e;
             e.stopPropagation(); 
+
+            console.log("e", e);
+
             if(placeholderNode.parentNode != listNode) {
                 element.append(placeholderElement);
             }
@@ -125,12 +138,15 @@ class SWDraggableContainer implements ng.IDirective{
                 if (listItemNode.parentNode === listNode && listItemNode !== placeholderNode) {
                     if (this.draggableService.isMouseInFirstHalf(e, listItemNode)) {
                         listNode.insertBefore(placeholderNode, listItemNode);
+                        console.log("insertBefore");
                     } else {
                         listNode.insertBefore(placeholderNode, listItemNode.nextSibling);
+                        console.log("insertAfter");
                     }
                 }
             }
 
+            element.addClass("s-dragged-over");
             return false; 
         }); 
 

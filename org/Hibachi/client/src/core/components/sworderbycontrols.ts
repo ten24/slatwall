@@ -84,7 +84,6 @@ class SWOrderByControlsController {
     }
 
     public manualSort = ():void =>{
-        console.log("sortMANUAL");
         this.sortCode = 'MANUAL'
         this.updateOrderBy();
     }
