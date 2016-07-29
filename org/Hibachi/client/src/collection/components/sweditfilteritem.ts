@@ -229,7 +229,7 @@ class SWEditFilterItem{
                         var propertyIdentifierEnd = (selectedFilterProperty.propertyIdentifier.indexOf('.') == -1) ? selectedFilterProperty.propertyIdentifier.length : selectedFilterProperty.propertyIdentifier.indexOf('.');
                         var propertyIdentifierJoins = selectedFilterProperty.propertyIdentifier.substring(propertyIdentifierStart, propertyIdentifierEnd);
                         var propertyIdentifierParts = propertyIdentifierJoins.split('_');
-                        var  current_collection = $hibachi.getEntityExample(propertyIdentifierParts[0].charAt(0).toUpperCase() + propertyIdentifierParts[0].slice(1));
+                        var  current_collection = $hibachi.getEntityExample(scope.collectionConfig.baseEntityName);
                         var _propertyIdentifier = '';
                         var joins = [];
 
