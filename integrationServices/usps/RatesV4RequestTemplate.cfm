@@ -48,7 +48,7 @@
 --->
 <cfsilent>
 	<cfset local.pounds = 0 />
-	<!--- minimun 2 ounce shipping weight required to ship --->
+	<!--- minimum 2 ounce shipping weight required to ship --->
 	<cfset local.ounces = max(round(arguments.requestBean.getTotalWeight( unitCode="oz" )),2)>
 	<cfif local.ounces gt 16>
 		<cfset local.pounds = round(local.ounces / 16) />
