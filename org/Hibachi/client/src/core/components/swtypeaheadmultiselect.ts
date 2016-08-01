@@ -53,6 +53,7 @@ class SWTypeaheadMultiselectController {
         if(angular.isDefined(this.selectedCollectionConfig)){
             this.typeaheadService.initializeSelections(this.typeaheadDataKey, this.selectedCollectionConfig);
         }
+        this.typeaheadService.attachTypeaheadSelectionUpdateEvent(this.typeaheadDataKey, this.updateSelectionList);
     }
     
     public addSelection = (item) => {
@@ -60,7 +61,6 @@ class SWTypeaheadMultiselectController {
         if(this.inListingDisplay){
             this.listingService.insertListingPageRecord(this.listingId, item);
         }
-        this.updateSelectionList(); 
     }
     
     public removeSelection = (index) => {
@@ -68,22 +68,14 @@ class SWTypeaheadMultiselectController {
         if(this.inListingDisplay){
             this.listingService.removeListingPageRecord(this.listingId, itemRemoved); 
         }
-        this.updateSelectionList(); 
     }
     
     public getSelections = () =>{
         return this.typeaheadService.getData(this.typeaheadDataKey);
     }
 
-    public updateSelectionList = ()=>{
-        var selectionIDArray = [];
-        for(var j = 0; j < this.getSelections().length; j++){
-            var primaryID = this.getSelections()[j][this.typeaheadService.getTypeaheadPrimaryIDPropertyName(this.typeaheadDataKey)];
-            if(angular.isDefined(primaryID)){
-                selectionIDArray.push(primaryID);
-            }
-        }
-        this.selectionList = selectionIDArray.join(",");
+    public updateSelectionList = () =>{
+        this.selectionList = this.typeaheadService.updateSelectionList(this.typeaheadDataKey); 
     }
 }
 

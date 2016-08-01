@@ -110,15 +110,43 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function saveContent(required any content, struct data={}){
 		arguments.content = super.save(arguments.content, arguments.data);
 
+		if(structKeyExists(data, "assignedProductIDList")){
+			var contentExistingListingPages = arguments.content.getListingPages();
+			var pagesToDelete = [];
+			for(var page in contentExistingListingPages){
+				if(listFind(data.assignedProductIDList, page.getProduct().getProductID()) == 0){
+					ArrayAppend(pagesToDelete, page);
+				}
+			}
+
+			for(var page in pagesToDelete){
+				page.getProduct().removeListingPage(page);
+				arguments.content.removeListingPage(page);
+				this.getProductService().deleteProductListingPage(page);
+			}
+
+			var assignedProductIDArray = ListToArray(data.assignedProductIDList);
+
+			for(var productID in assignedProductIDArray){
+				if(!this.getContentDAO().getContentHasProduct(arguments.content.getContentID(),productID)){
+					var newListingPage = this.getProductService().newProductListingPage();
+					if(structKeyExists(data, "productListingPageSortOrder") && structKeyExists(deserializeJSON(data.productListingPageSortOrder),productID)){
+						newListingPage.setSortOrder = deserializeJSON(data.productListingPageSortOrder)[productID];
+					}
+					newListingPage.setContent(arguments.content);
+					newListingPage.setProduct(this.getProductService().getProduct(productID));
+					this.getProductService().saveProductListingPage(newListingPage);
+				}
+			}
+		}
+
 		if(structKeyExists(data, "productListingPageSortOrder")){
 			var productListingPageSortOrderStruct = deserializeJSON(data.productListingPageSortOrder);
 			for(var key in productListingPageSortOrderStruct){
-				var productListingPage = this.getProductListingPage(key);
+				var productListingPage = this.getProductService().getProductListingPage(key);
 				if(!isNull(productListingPage)){
 					productListingPage.setSortOrder(productListingPageSortOrderStruct[key]);
-					this.saveProductListingPage(productListingPage);
-				} else {
-					//it's a product and a new product listing page record
+					this.getProductService().saveProductListingPage(productListingPage);
 				}
 			}
 		}

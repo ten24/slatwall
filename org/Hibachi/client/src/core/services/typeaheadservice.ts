@@ -8,9 +8,22 @@ class TypeaheadService{
     public typeaheadStates = {}; 
     
     constructor(
-        
+        public $timeout, 
+        public observerService
     ){
         
+    }
+
+    public getTypeaheadSelectionUpdateEvent = (key:string) =>{
+        return "typeaheadSelectionUpdated" + key; 
+    }
+
+    public attachTypeaheadSelectionUpdateEvent = (key:string, callback) =>{
+        this.observerService.attach(callback, this.getTypeaheadSelectionUpdateEvent(key));
+    }
+
+    public notifyTypeaheadSelectionUpdateEvent = (key:string) =>{
+        this.observerService.notify(this.getTypeaheadSelectionUpdateEvent(key)); 
     }
 
     public setTypeaheadState = (key:string, state:any) =>{
@@ -24,13 +37,6 @@ class TypeaheadService{
     public getTypeaheadPrimaryIDPropertyName = (key:string) =>{
         return this.getTypeaheadState(key).primaryIDPropertyName;
     }
-    
-    public addSelection = (key:string, data:any) => {
-        if(angular.isUndefined(this.typeaheadData[key])){
-            this.typeaheadData[key] = [];
-        }
-        this.typeaheadData[key].push(data); 
-    } 
 
     public getIndexOfSelection = (key:string, data:any) =>{
         for(var j = 0; j < this.getData(key).length; j++){
@@ -44,6 +50,14 @@ class TypeaheadService{
         }
         return -1; 
     }
+    
+    public addSelection = (key:string, data:any) => {
+        if(angular.isUndefined(this.typeaheadData[key])){
+            this.typeaheadData[key] = [];
+        }
+        this.typeaheadData[key].push(data); 
+        this.notifyTypeaheadSelectionUpdateEvent(key); 
+    } 
 
     public removeSelection = (key:string, index:number, data?:any) => {
         if( angular.isUndefined(index) &&
@@ -51,13 +65,14 @@ class TypeaheadService{
         ){
             index = this.getIndexOfSelection(key, data);
         }
-        console.log("removing", key, index, data);
         if( angular.isDefined(index) && 
             angular.isDefined(this.typeaheadData[key]) && 
             index != -1
         ){
             this.updateSelections(key);
-            return this.typeaheadData[key].splice(index,1)[0];//this will always be an array of 1 element
+            var removedItem = this.typeaheadData[key].splice(index,1)[0];//this will always be an array of 1 element
+            this.notifyTypeaheadSelectionUpdateEvent(key); 
+            return removedItem; 
         }
     }
 
@@ -150,6 +165,34 @@ class TypeaheadService{
             }
         }
         return false; 
+    }
+
+    public updateSelectionList = (key:string)=>{
+        var selectionIDArray = [];
+
+        if(angular.isDefined(this.getData(key))){
+            for(var j = 0; j < this.getData(key).length; j++){
+                var selection = this.getData(key)[j]; 
+                var primaryID = selection[this.getTypeaheadPrimaryIDPropertyName(key)];
+                if( angular.isDefined(primaryID) ){
+                    selectionIDArray.push(primaryID);
+                } else if( angular.isDefined(this.getTypeaheadState(key).propertyToCompare) &&
+                        angular.isDefined(selection[this.getTypeaheadState(key).propertyToCompare])
+                ){
+                    selectionIDArray.push(selection[this.getTypeaheadState(key).propertyToCompare]);
+                } else if( angular.isDefined(this.getTypeaheadState(key).fallbackPropertyArray)){
+                    var fallbackPropertyArray = this.getTypeaheadState(key).fallbackPropertyArray;
+                    for(var i=0; i < fallbackPropertyArray.length; i++){
+                        var fallbackProperty = fallbackPropertyArray[i]; 
+                        if(angular.isDefined(selection[fallbackProperty])){
+                            selectionIDArray.push(selection[fallbackProperty]);
+                            break; 
+                        }
+                    }
+                } 
+            }
+        }
+        return selectionIDArray.join(",");
     }
     
     getData = (key:string) => {

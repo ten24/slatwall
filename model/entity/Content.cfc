@@ -446,14 +446,6 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 		arguments.sku.removeAccessContent( this );
 	}
 
-	// Listing Products (many-to-many - inverse)
-	public void function addListingProduct(required any listingProduct) {
-		arguments.listingProduct.addListingPage( this );
-	}
-	public void function removeListingProduct(required any listingProduct) {
-		arguments.listingProduct.removeListingPage( this );
-	}
-
 	// Attribute Sets (many-to-many - inverse)
 	public void function addAttributeSet(required any attributeSet) {
 		arguments.attributeSet.addProductType( this );
