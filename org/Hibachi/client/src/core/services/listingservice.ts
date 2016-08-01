@@ -66,7 +66,6 @@ class ListingService{
     }
 
     public getColumnIndexByPropertyIdentifier = (listingID:string, propertyIdentifier) =>{
-        console.log("columns",this.getListingCollectionConfigColumns(listingID)); 
         return this.utilityService.ArrayFindByPropertyValue(this.getListingCollectionConfigColumns(listingID),'propertyIdentifier',propertyIdentifier);
     }
 

@@ -14,6 +14,8 @@ class SWTypeaheadMultiselectController {
     public multiselectMode:boolean;
     public collectionConfig:any; 
     public selectedCollectionConfig:any; 
+    public selectionFieldName:string; 
+    public selectionList:string; 
     public addButtonFunction; 
     public hasAddButtonFunction:boolean;
     public viewFunction;
@@ -53,12 +55,12 @@ class SWTypeaheadMultiselectController {
         }
     }
     
-    //do these need to be passed in? 
     public addSelection = (item) => {
         this.typeaheadService.addSelection(this.typeaheadDataKey, item);
         if(this.inListingDisplay){
             this.listingService.insertListingPageRecord(this.listingId, item);
         }
+        this.updateSelectionList(); 
     }
     
     public removeSelection = (index) => {
@@ -66,10 +68,22 @@ class SWTypeaheadMultiselectController {
         if(this.inListingDisplay){
             this.listingService.removeListingPageRecord(this.listingId, itemRemoved); 
         }
+        this.updateSelectionList(); 
     }
     
     public getSelections = () =>{
         return this.typeaheadService.getData(this.typeaheadDataKey);
+    }
+
+    public updateSelectionList = ()=>{
+        var selectionIDArray = [];
+        for(var j = 0; j < this.getSelections().length; j++){
+            var primaryID = this.getSelections()[j][this.typeaheadService.getTypeaheadPrimaryIDPropertyName(this.typeaheadDataKey)];
+            if(angular.isDefined(primaryID)){
+                selectionIDArray.push(primaryID);
+            }
+        }
+        this.selectionList = selectionIDArray.join(",");
     }
 }
 
@@ -95,6 +109,7 @@ class SWTypeaheadMultiselect implements ng.IDirective{
         ,listingId:"@?"
         ,propertyToCompare:"@?"
         ,fallbackPropertiesToCompare:"@?"
+        ,selectionFieldName:"@?"
 	};
     
 	public controller=SWTypeaheadMultiselectController;
