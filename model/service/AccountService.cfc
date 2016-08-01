@@ -1302,6 +1302,16 @@ component extends="HibachiService" accessors="true" output="false" {
 				arguments.accountAddress.getAccount().setPrimaryAddress(javaCast("null",""));
 					arguments.accountAddress.removeAccount();
 			}
+			// If the primary address is this address then set the primary to null
+			if(!isNull(arguments.accountAddress.getAccount()) && !isNull(arguments.accountAddress.getAccount().getPrimaryShippingAddress())&&!isNull(arguments.accountAddress.getAccount().getPrimaryShippingAddress().getAccountAddressID()) && arguments.accountAddress.getAccount().getPrimaryShippingAddress().getAccountAddressID() eq arguments.accountAddress.getAccountAddressID()) {
+				arguments.accountAddress.getAccount().setPrimaryShippingAddress(javaCast("null",""));
+					arguments.accountAddress.removeAccount();
+			}
+			// If the primary address is this address then set the primary to null
+			if(!isNull(arguments.accountAddress.getAccount()) && !isNull(arguments.accountAddress.getAccount().getPrimaryBillingAddress()) &&!isNull(arguments.accountAddress.getAccount().getPrimaryBillingAddress().getAccountAddressID()) && arguments.accountAddress.getAccount().getPrimaryBillingAddress().getAccountAddressID() eq arguments.accountAddress.getAccountAddressID()) {
+				arguments.accountAddress.getAccount().setPrimaryBillingAddress(javaCast("null",""));
+					arguments.accountAddress.removeAccount();
+			}
 
 			// Remove from any order objects
 			getAccountDAO().removeAccountAddressFromOrderFulfillments( accountAddressID = arguments.accountAddress.getAccountAddressID() );
