@@ -20,7 +20,9 @@ class SWDraggableContainer implements ng.IDirective{
     public scope={};
     public bindToController={
         draggable:"=?",
-        draggableRecords:"=?"
+        draggableRecords:"=?",
+        dropEventName:"@?", 
+        listingId:"@?"
     };
 
     public static Factory(){
@@ -28,12 +30,16 @@ class SWDraggableContainer implements ng.IDirective{
             $timeout, 
             corePartialsPath,
             utilityService,
+            listingService, 
+            observerService,
             draggableService,
 			hibachiPathBuilder
         ) => new SWDraggableContainer(
             $timeout, 
             corePartialsPath,
             utilityService,
+            listingService, 
+            observerService,
             draggableService,
 			hibachiPathBuilder
         );
@@ -41,6 +47,8 @@ class SWDraggableContainer implements ng.IDirective{
             '$timeout',
             'corePartialsPath',
             'utilityService',
+            'listingService', 
+            'observerService',
             'draggableService',
 			'hibachiPathBuilder'
         ];
@@ -54,6 +62,8 @@ class SWDraggableContainer implements ng.IDirective{
         public $timeout, 
         public corePartialsPath,
         public utilityService,
+        public listingService,
+        public observerService,
         public draggableService,
 		public hibachiPathBuilder
      ){
@@ -85,9 +95,9 @@ class SWDraggableContainer implements ng.IDirective{
             
             var index =  Array.prototype.indexOf.call(listNode.children, placeholderNode);
 
-            if(index <= parsedRecord.draggableStartKey){
+            if (index <= parsedRecord.draggableStartKey){
                 parsedRecord.draggableStartKey++;
-            } else if(parsedRecord.draggableStartKey != 0) {
+            } else if (parsedRecord.draggableStartKey != 0) {
                 parsedRecord.draggableStartKey--; 
             }
 
@@ -97,6 +107,12 @@ class SWDraggableContainer implements ng.IDirective{
                     scope.swDraggableContainer.draggableRecords.splice(parsedRecord.draggableStartKey, 1);
                 }, 0
             );
+
+            if (angular.isDefined(scope.swDraggableContainer.listingId)){
+                this.listingService.notifyListingPageRecordsUpdate(scope.swDraggableContainer.listingId);
+            } else if (angular.isDefined(scope.swDraggableContainer.dropEventName)){
+                this.observerService.notify(scope.swDraggableContainer.dropEventName);
+            }
                 
             placeholderElement.remove();
             e.stopPropagation(); 
@@ -123,8 +139,6 @@ class SWDraggableContainer implements ng.IDirective{
             e = e.originalEvent || e;
             e.stopPropagation(); 
 
-            console.log("e", e);
-
             if(placeholderNode.parentNode != listNode) {
                 element.append(placeholderElement);
             }
@@ -138,10 +152,8 @@ class SWDraggableContainer implements ng.IDirective{
                 if (listItemNode.parentNode === listNode && listItemNode !== placeholderNode) {
                     if (this.draggableService.isMouseInFirstHalf(e, listItemNode)) {
                         listNode.insertBefore(placeholderNode, listItemNode);
-                        console.log("insertBefore");
                     } else {
                         listNode.insertBefore(placeholderNode, listItemNode.nextSibling);
-                        console.log("insertAfter");
                     }
                 }
             }

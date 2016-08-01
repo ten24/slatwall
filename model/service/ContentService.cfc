@@ -109,6 +109,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function saveContent(required any content, struct data={}){
 		arguments.content = super.save(arguments.content, arguments.data);
+
+		if(structKeyExists(data, "productListingPageSortOrder")){
+			var productListingPageSortOrderStruct = deserializeJSON(data.productListingPageSortOrder);
+			for(var key in productListingPageSortOrderStruct){
+				var productListingPage = this.getProductListingPage(key);
+				if(!isNull(productListingPage)){
+					productListingPage.setSortOrder(productListingPageSortOrderStruct[key]);
+					this.saveProductListingPage(productListingPage);
+				} else {
+					//it's a product and a new product listing page record
+				}
+			}
+		}
 		if(!arguments.content.hasErrors()){
 			if(structKeyExists(arguments.data,'urlTitle')){
 				arguments.data.urlTitle = getService("HibachiUtilityService").createSEOString(arguments.data.urlTitle);
@@ -153,9 +166,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function getCategoryByCMSCategoryIDAndCMSSiteID( required string cmsCategoryID, required string cmsSiteID ) {
 		return getContentDAO().getCategoryByCMSCategoryIDAndCMSSiteID( argumentCollection=arguments );
 	}
-	
+
 	// ===================== END: DAO Passthrough ===========================
-	
+
 
 	// ===================== START: Process Methods ===========================
 

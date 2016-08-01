@@ -53,7 +53,7 @@ Notes:
 <cfparam name="rc.content" type="any" />
 
 <cfoutput>
-	<sw-assigned-products data-content-id="#rc.content.getContentID()#">
+	<sw-assigned-products data-content-id="#rc.content.getContentID()#" data-edit="#rc.edit#">
 
 	</sw-assigned-products>
 	<!---

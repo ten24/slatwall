@@ -73,7 +73,8 @@
                     <thead>
                         <tr>
                             <!-- Sortable -->
-                            <th class="s-order-table" data-ng-if="swListingDisplay.sortable" style="display: table-cell;">&nbsp;</th>
+                            <input data-ng-if="swListingDisplay.sortable" type="hidden" data-ng-attr-name="{{swListingDisplay.sortableFieldName}}" data-ng-value="swListingDisplay.pageRecordsWithManualSortOrder" />
+                            <th data-ng-if="swListingDisplay.sortable" class="s-order-table" style="display: table-cell;">&nbsp;</th>
                             <!-- Selectable -->
                             <input data-ng-if-start="swListingDisplay.selectable" type="hidden" data-ng-attr-name="{{swListingDisplay.selectFieldName}}" data-ng-value="swListingDisplay.selectValue" />
                             <th data-ng-if-end class="select" data-ng-class="{'disabled':!swListingDisplay.edit}" data-ng-bind="swListingDisplay.selectTitle"></th>
@@ -107,7 +108,9 @@
                     <tbody data-ng-if="swListingDisplay.collectionData.pageRecords" 
                            sw-draggable-container 
                            data-draggable="swListingDisplay.sortable" 
-                           data-draggable-records="swListingDisplay.collectionData.pageRecords">
+                           data-draggable-records="swListingDisplay.collectionData.pageRecords"
+                           data-listing-id="{{swListingDisplay.tableID}}"
+                           >
 
                         <tr data-ng-repeat="(pageRecordKey, pageRecord) in swListingDisplay.collectionData.pageRecords"
                             data-ng-if="pageRecord.dataIsVisible !== false"
@@ -128,10 +131,10 @@
                             	ng-class="{'s-table-select':swListingDisplay.selectable,'s-table-checkbox':swListingDisplay.multiselectable}"
                             >
                             	<!--selectable-->
-                            	<a href="#"
+                            	<a  href="#"
                             		ng-if="swListingDisplay.selectable"
-                                   data-ng-class="(!swListingDisplay.edit) ? 'table-action-selectdisabled':'table-action-select'"
-                                   data-idvalue="pageRecord[swListingDisplay.exampleEntity.$$getIDName()]">
+                                    data-ng-class="(!swListingDisplay.edit) ? 'table-action-selectdisabled':'table-action-select'"
+                                    data-idvalue="pageRecord[swListingDisplay.exampleEntity.$$getIDName()]">
 
                                     <i class="hibachi-ui-radio"></i>
                                 </a>

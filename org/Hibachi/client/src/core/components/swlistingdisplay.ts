@@ -53,6 +53,7 @@ class SWListingDisplayController{
     public orderByStates = {};
     public orderByIndices = {};
     public paginator:any;
+    public pageRecordsWithManualSortOrder = {};
     public parentPropertyName:string;
     public processObjectProperties;
     public recordAddAction:string;
@@ -71,6 +72,7 @@ class SWListingDisplayController{
     public showSearchFilters = false; 
     public showTopPagination:boolean;
     public sortable:boolean = false;
+    public sortableFieldName:string; 
     public sortProperty;
     public tableID:string;
     public tableclass:string;
@@ -244,6 +246,13 @@ class SWListingDisplayController{
         //Setup table class
         this.tableclass = this.tableclass || '';
         this.tableclass = this.utilityService.listPrepend(this.tableclass, 'table table-bordered table-hover', ' ');
+        if(angular.isDefined(this.sortableFieldName)){
+            this.sortableFieldName = "sorting" + this.tableID;
+        }
+    }
+
+    public getListingPageRecordsUpdateEventString = () =>{
+        return this.listingService.getListingPageRecordsUpdateEventString(this.tableID);
     }
 
     public getKeyOfMatchedHideRule = (pageRecord)=>{
@@ -282,7 +291,6 @@ class SWListingDisplayController{
         }
     }
     
-    //move this to the service
     public getExampleEntityForExpandableRecord = (pageRecord) =>{
         return this.listingService.getExampleEntityForExpandableRecord(this.tableID, pageRecord); 
     }
@@ -291,13 +299,11 @@ class SWListingDisplayController{
         return this.listingService.getNGClassObjectForPageRecordRow(this.tableID, pageRecord);
     };
     
-    //This is  basically td class
     public getNGClassObjectForPageRecordCell = (pageRecord,column)=>{
         var classObjectString = "{"; 
         return classObjectString + "}"; 
     };
     
-    //move this to the service
     private getColorFilterConditionString = (colorFilter, pageRecord)=>{
        return this.listingService.getColorFilterConditionString(colorFilter, pageRecord);
     };
@@ -489,6 +495,7 @@ class SWListingDisplay implements ng.IDirective{
 
             /*Sorting*/
             sortable:"=?",
+            sortableFieldName:"@?",
             sortProperty:"@?",
             sortContextIDColumn:"@?",
             sortContextIDValue:"@?",

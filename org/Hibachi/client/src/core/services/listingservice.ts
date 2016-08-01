@@ -5,7 +5,8 @@ class ListingService{
     private listingDisplays = {};
 
     //@ngInject
-    constructor(private $q,
+    constructor(private $timeout,
+                private $q,
                 private collectionConfigService,
                 private filterService,
                 private observerService,
@@ -17,7 +18,6 @@ class ListingService{
 
     }
 
-
     //Event Functions
     public getListingPageRecordsUpdateEventString = (listingID:string) => {
         return listingID + "pageRecordsUpdated"; 
@@ -28,7 +28,7 @@ class ListingService{
     }
 
     public notifyListingPageRecordsUpdate = (listingID:string) =>{
-        this.observerService.notify(this.getListingPageRecordsUpdateEventString(listingID));
+        this.observerService.notify(this.getListingPageRecordsUpdateEventString(listingID), listingID);
     }
 
     public attachToListingPageRecordsUpdate = (listingID:string, callback, id:string) =>{
@@ -97,12 +97,38 @@ class ListingService{
         return this.getListing(listingID).getCollection(); 
     }
 
+    public getPageRecordsWithManualSortOrder = (listingID:string) =>{
+        if(angular.isDefined(this.getListing(listingID))){
+            var pageRecords = this.getListingPageRecords(listingID); 
+            var primaryIDPropertyName = this.getListingEntityPrimaryIDPropertyName(listingID);
+            var pageRecordsWithManualSortOrder = {}; 
+            this.$timeout(
+                ()=>{
+                    for(var j=0; j < pageRecords.length; j++){
+                        var primaryID = pageRecords[j][primaryIDPropertyName];
+                        //may need fallback property logic
+                        console.log("setting",pageRecords[j].product_productName,primaryID, j);
+                        if(angular.isDefined(primaryID)){
+                            pageRecordsWithManualSortOrder[primaryID] = j + 1;
+                        }
+                    }
+                    this.getListing(listingID).pageRecordsWithManualSortOrder = angular.toJson(pageRecordsWithManualSortOrder);
+                    return this.getListing(listingID).pageRecordsWithManualSortOrders;
+                }, 
+                0
+            )
+            
+        } else { 
+            return angular.toJson({});
+        }
+    }
+
     //Begin Listing Page Record Functions
     //needs a consideration of strategy for doing this for other use cases
     public getListingPageRecordIndexByPageRecord = (listingID:string, pageRecordToCompare:any) =>{
         var pageRecords = this.getListingPageRecords(listingID); 
         var primaryIDPropertyName = this.getListingEntityPrimaryIDPropertyName(listingID); 
-        for(var j = 0; j<pageRecords.length; j++){
+        for(var j = 0; j < pageRecords.length; j++){
             var pageRecord = pageRecords[j]; 
             if( pageRecord[primaryIDPropertyName] == pageRecordToCompare[primaryIDPropertyName] ){
                 return j; 
@@ -171,7 +197,6 @@ class ListingService{
         //todo implement
         return isChild;
     };
-    
     //End Listing Page Record Functions
 
     //Row Save Functionality
@@ -379,7 +404,7 @@ class ListingService{
     };
 
     public initCollectionConfigData = (listingID:string,collectionConfig) =>{
-
+        //kick off other essential setup 
         this.setupSelect(listingID); 
         this.setupMultiselect(listingID);
         this.setupExampleEntity(listingID);
@@ -452,9 +477,14 @@ class ListingService{
 
             this.setupHierarchicalExpandable(listingID, collectionConfig);
         }
-
+        
+        this.setupSortable(listingID);
         this.updateColumnAndAdministrativeCount(listingID);
     };
+
+    public setupSortable = (listingID:string) =>{
+        this.attachToListingPageRecordsUpdate(listingID, this.getPageRecordsWithManualSortOrder, this.utilityService.createID(32));
+    }
 
     public setupSelect = (listingID:string) =>{
         if(this.getListing(listingID).selectFieldName && this.getListing(listingID).selectFieldName.length){
@@ -688,7 +718,7 @@ class ListingService{
 
 
 
-     private getColorFilterConditionString = (colorFilter, pageRecord)=>{
+    private getColorFilterConditionString = (colorFilter, pageRecord)=>{
        if(angular.isDefined(colorFilter.comparisonProperty)){
             return pageRecord[colorFilter.propertyToCompare.replace('.','_')] + colorFilter.comparisonOperator + pageRecord[colorFilter.comparisonProperty.replace('.','_')];
        } else { 
@@ -752,7 +782,6 @@ class ListingService{
         return expandableRuleMatchedKey;
     };
 
-    //move this to the service
     public getExampleEntityForExpandableRecord = (listingID:string, pageRecord) =>{
         var childCollectionConfig = this.getListing(listingID).getPageRecordChildCollectionConfigForExpandableRule(pageRecord);
         if(angular.isDefined(childCollectionConfig)){

@@ -7,6 +7,7 @@ class SWAssignedProductsController {
     public alreadySelectedProductsCollectionConfig:any; 
     public contentId:string; 
     public typeaheadDataKey:string; 
+    public edit:boolean; 
     
     //@ngInject
     constructor(
@@ -16,7 +17,7 @@ class SWAssignedProductsController {
         this.collectionConfig = collectionConfigService.newCollectionConfig("Product"); 
         this.collectionConfig.addDisplayProperty("productID,productName,productDescription,activeFlag,publishedFlag");
         this.alreadySelectedProductsCollectionConfig = collectionConfigService.newCollectionConfig("ProductListingPage"); 
-        this.alreadySelectedProductsCollectionConfig.addDisplayProperty("productListingPageID,product.productID,product.productName,product.productDescription,product.activeFlag,product.publishedFlag");
+        this.alreadySelectedProductsCollectionConfig.addDisplayProperty("productListingPageID,sortOrder,product.productID,product.productName,product.productDescription,product.activeFlag,product.publishedFlag");
         console.log(this.alreadySelectedProductsCollectionConfig);
         this.alreadySelectedProductsCollectionConfig.addFilter("content.contentID", this.contentId, "=");
         this.typeaheadDataKey = utilityService.createID(32); 
@@ -30,7 +31,8 @@ class SWAssignedProducts implements ng.IDirective{
     public scope = {};  
     
     public bindToController = {
-        contentId:"@?"
+        contentId:"@?",
+        edit:"=?"
     };
     
     public controller=SWAssignedProductsController;

@@ -1,12 +1,13 @@
 <sw-listing-display data-multi-slot="true"
                     data-custom-listing-controls="true"
-                    data-edit="true"
+                    data-edit="swAssignedProducts.edit"
                     data-has-search="true"
                     data-is-angular-route="false"
                     data-angular-links="false"
                     data-has-action-bar="false"
                     data-show-order-by="false"
                     data-administrative-count="1"
+                    data-sortable-field-name="productListingPageSortOrder"
                     >
                     <sw-collection-configs>
                         <sw-collection-config data-entity-name="ProductListingPage" 
@@ -14,6 +15,10 @@
                                               data-in-listing-display="true">
                             <sw-collection-columns>
                                 <sw-collection-column data-property-identifier="productListingPageID" 
+                                                      data-fallback-property-identifiers="productID"
+                                                      data-is-visible="false">
+                                </sw-collection-column>
+                                <sw-collection-column data-property-identifier="sortOrder" 
                                                       data-is-visible="false">
                                 </sw-collection-column>
                                 <sw-collection-column data-property-identifier="product.productName" 
@@ -36,6 +41,7 @@
                                                       data-is-visible="false">
                                 </sw-collection-column>
                                 <sw-collection-column data-property-identifier="product.productID" 
+                                                      data-fallback-property-identifiers="productID"
                                                       data-is-visible="false" >
                                 </sw-collection-column>
                             </sw-collection-columns>

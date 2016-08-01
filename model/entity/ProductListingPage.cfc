@@ -50,6 +50,7 @@ component displayname="ProductListingPage" entityname="SlatwallProductListingPag
 
 	// Persistent Properties
 	property name="productListingPageID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="sortOrder" ormtype="integer";
 
 	// Calculated Properties
 
