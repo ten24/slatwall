@@ -210,7 +210,8 @@ class SWPropertyDisplay implements ng.IDirective{
         noValidate:"=?",
         inputAttributes:"@?",
         optionValues:"=?",
-        eventHandlers:"@?"
+        eventHandlers:"@?",
+        context:"@?"
     };
     public controller=SWPropertyDisplayController;
     public controllerAs="swPropertyDisplay";

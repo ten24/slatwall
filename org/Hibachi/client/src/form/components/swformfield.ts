@@ -292,7 +292,8 @@ class SWFormField{
         isDirty:"=?",
         onChange:"=?",
 		editable:"=?",
-		eventHandlers:"@?"
+		eventHandlers:"@?",
+		context:"@?"
 	};
 
 	//@ngInject

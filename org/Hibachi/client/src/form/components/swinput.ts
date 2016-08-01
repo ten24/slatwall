@@ -8,6 +8,7 @@ import {SWFormController} from "./swForm";
 import {SWPropertyDisplayController} from "./swpropertydisplay";
 import {SWFPropertyDisplayController} from "./swfpropertydisplay";
 import {SWFormFieldController} from "./swformfield";
+import {ObserverService} from "../../core/services/observerService";
 //defines possible eventoptions
 type EventHandler = "blur" |
 	"change" |
@@ -45,6 +46,8 @@ class SWInputController{
 	public editing:boolean;
 	public name:string;
 	public value:any;
+	public context:string;
+	public eventNameForObjectSuccess:string;
 
 	public eventHandlers:string="";
 	public eventHandlersArray:Array<EventHandler>;
@@ -52,20 +55,27 @@ class SWInputController{
 
 	//@ngInject
 	constructor(
+        public $scope,
 		public $log,
 		public $compile,
         public $hibachi,
 		public $injector,
 		public utilityService,
         public rbkeyService,
-		public observerService
+		public observerService:ObserverService
 	){
+        this.$scope = $scope;
 		this.utilityService = utilityService;
 		this.$hibachi = $hibachi;
 		this.rbkeyService = rbkeyService;
 		this.$log = $log;
 		this.$injector = $injector;
 		this.observerService = observerService;
+
+	}
+
+	public onSuccess = ()=>{
+		console.log('swinpusuccess');
 	}
 
 	public getValidationDirectives = ()=>{
@@ -256,6 +266,18 @@ class SWInputController{
                 this.eventHandlerTemplate += ` ng-`+eventName+`="swInput.onEvent($event,'`+eventName+`')"`;
             }
 		}
+
+		//attach a successObserver
+		console.log('swinputobject',this.object);
+		if(this.object){
+			this.eventNameForObjectSuccess = this.object.metaData.className.split('_')[0]+this.context+'Success';
+			console.log(this.eventNameForObjectSuccess);
+			this.observerService.attach(this.onSuccess,this.eventNameForObjectSuccess,this.eventNameForObjectSuccess+this.property);
+		}
+
+		this.$scope.$on("$destroy",()=>{
+			this.observerService.detachById(this.eventNameForObjectSuccess+this.property);
+		})
 	}
 }
 
@@ -294,7 +316,8 @@ class SWInput{
 		inputAttributes:"@?",
 		type:"@?",
 		editing:"=?",
-		eventHandlers:"@?"
+		eventHandlers:"@?",
+		context:"@?"
 	}
 	public controller=SWInputController;
 	public controllerAs = "swInput";
