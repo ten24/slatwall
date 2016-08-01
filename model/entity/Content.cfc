@@ -56,6 +56,9 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	property name="titlePath" ormtype="string" length="4000";
 	property name="allowPurchaseFlag" ormtype="boolean";
 	property name="productListingPageFlag" ormtype="boolean";
+	property name="productSortProperty" ormtype="string";
+	property name="productSortDefaultDirection" ormtype="string";
+	//property name="productSortableProperties";nonpersistent?
 	property name="urlTitle" ormtype="string" length="4000";
 	property name="urlTitlePath" ormtype="string" length="8000";
 	property name="contentBody" ormtype="string" length="8000" ;

@@ -53,7 +53,11 @@ Notes:
 <cfparam name="rc.content" type="any" />
 
 <cfoutput>
-	<sw-assigned-products data-content-id="#rc.content.getContentID()#" data-edit="#rc.edit#">
+	<sw-assigned-products data-content-id="#rc.content.getContentID()#"
+						  data-edit="#rc.edit#"
+						  data-product-sort-property"#rc.content.getProductSortProperty()#"
+						  data-product-sort-default-direction="#rc.content.getProductSortDefaultDirection()#"
+						  >
 
 	</sw-assigned-products>
 	<!---

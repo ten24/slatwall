@@ -13,6 +13,8 @@ class SWOrderByControlsController {
     public disabled:boolean; 
     public inListingDisplay:boolean; 
     public listingId:string;
+    public sortPropertyFieldName:string; 
+    public sortDefaultDirectionFieldName:string; 
     public toggleCollectionConfig:boolean; 
     public propertyNotChosen:boolean;
 
@@ -101,7 +103,9 @@ class SWOrderByControls implements ng.IDirective{
         collectionConfig:"=?",
         selectedOrderByColumn:"=?",
         inListingDisplay:"=?",
-        toggleCollectionConfig:"=?"
+        toggleCollectionConfig:"=?",
+        sortPropertyFieldName:"@?",
+        sortDefaultDirectionFieldName:"@?"
     };
     public controller=SWOrderByControlsController;
     public controllerAs="swOrderByControls";

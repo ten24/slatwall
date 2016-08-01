@@ -3,11 +3,13 @@
 
 class SWAssignedProductsController {
 
-    public collectionConfig:any; 
     public alreadySelectedProductsCollectionConfig:any; 
+    public collectionConfig:any; 
     public contentId:string; 
     public typeaheadDataKey:string; 
     public edit:boolean; 
+    public productSortProperty:string; 
+    public productSortDefaultDirection:string;
     
     //@ngInject
     constructor(
@@ -31,7 +33,9 @@ class SWAssignedProducts implements ng.IDirective{
     
     public bindToController = {
         contentId:"@?",
-        edit:"=?"
+        edit:"=?",
+        productSortProperty:"@?", 
+        productSortDefaultDirection:"@?"
     };
     
     public controller=SWAssignedProductsController;
