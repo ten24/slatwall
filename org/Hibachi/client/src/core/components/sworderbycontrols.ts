@@ -11,6 +11,8 @@ class SWOrderByControlsController {
     public sortCode:string = "ASC";
     public columns:any[]; 
     public disabled:boolean; 
+    public initialSortProperty:string; 
+    public initialSortDefaultDirection:string; 
     public inListingDisplay:boolean; 
     public listingId:string;
     public sortPropertyFieldName:string; 
@@ -23,8 +25,13 @@ class SWOrderByControlsController {
             if(angular.isDefined(this.collectionConfig)){
                  this.columns = this.collectionConfig.columns; 
             } 
+            if(angular.isDefined(this.initialSortDefaultDirection)){
+                this.sortCode = this.initialSortDefaultDirection; 
+            }
+            if(angular.isDefined(this.initialSortProperty)){
+                this.selectedPropertyIdentifier = this.initialSortProperty;
+            }
             this.id = this.utilityService.createID(32); 
-            this.eventString = this.id + "swOrderByControlsUpdateOrderBy";
     }
 
     public updateSortOrderProperty = ():void =>{
@@ -104,6 +111,8 @@ class SWOrderByControls implements ng.IDirective{
         selectedOrderByColumn:"=?",
         inListingDisplay:"=?",
         toggleCollectionConfig:"=?",
+        initialSortProperty:"@?",
+        initialSortDefaultDirection:"@?",
         sortPropertyFieldName:"@?",
         sortDefaultDirectionFieldName:"@?"
     };
