@@ -49,12 +49,25 @@ class ListingService{
         return this.listingDisplays[listingID];
     }
 
+    public getListingColumns = (listingID:string) =>{
+        return this.getListing(listingID).columns || this.getListingCollectionConfigColumns(listingID);
+    }
+
+    public getListingCollectionConfigColumns = (listingID:string) =>{
+        return this.getListing(listingID).collectionConfig.columns;
+    }
+
     public getListingExampleEntity = (listingID:string) =>{
         if(this.getListing(listingID).exampleEntity != null){
             return this.getListing(listingID).exampleEntity;
         } else {
             this.setupExampleEntity(listingID);
         }
+    }
+
+    public getColumnIndexByPropertyIdentifier = (listingID:string, propertyIdentifier) =>{
+        console.log("columns",this.getListingCollectionConfigColumns(listingID)); 
+        return this.utilityService.ArrayFindByPropertyValue(this.getListingCollectionConfigColumns(listingID),'propertyIdentifier',propertyIdentifier);
     }
 
     public getListingBaseEntityName = (listingID:string) =>{
@@ -101,15 +114,27 @@ class ListingService{
         if(angular.isDefined(this.getListing(listingID))){
             var pageRecords = this.getListingPageRecords(listingID); 
             var primaryIDPropertyName = this.getListingEntityPrimaryIDPropertyName(listingID);
+            var primaryIDWithBaseAlias = this.getListing(listingID).collectionConfig.baseEntityAlias + '.' + primaryIDPropertyName;
             var pageRecordsWithManualSortOrder = {}; 
             this.$timeout(
                 ()=>{
-                    for(var j=0; j < pageRecords.length; j++){
+                    for(var j = 0; j < pageRecords.length; j++){
+                        var pageRecord = pageRecords[j];
                         var primaryID = pageRecords[j][primaryIDPropertyName];
-                        //may need fallback property logic
-                        console.log("setting",pageRecords[j].product_productName,primaryID, j);
+                        var sortOrder =  j + 1; 
+                        var primaryIDColumnIndex = this.getColumnIndexByPropertyIdentifier(listingID, primaryIDWithBaseAlias);
                         if(angular.isDefined(primaryID)){
-                            pageRecordsWithManualSortOrder[primaryID] = j + 1;
+                            pageRecordsWithManualSortOrder[primaryID] = sortOrder;
+                        } else if(primaryIDColumnIndex !== -1){
+                            var column = this.getListingCollectionConfigColumns(listingID)[primaryIDColumnIndex];
+                            if(angular.isDefined(column.fallbackPropertyIdentifiers)){
+                                var fallbackPropertyArray = column.fallbackPropertyIdentifiers.split(",");
+                                for(var i = 0; i < fallbackPropertyArray.length; i++ ){
+                                    if(angular.isDefined(pageRecord[fallbackPropertyArray[i]])){
+                                        pageRecordsWithManualSortOrder[pageRecord[fallbackPropertyArray[i]]] = sortOrder; 
+                                    }
+                                }
+                            }
                         }
                     }
                     this.getListing(listingID).pageRecordsWithManualSortOrder = angular.toJson(pageRecordsWithManualSortOrder);
@@ -304,7 +329,7 @@ class ListingService{
         } else if (this.getListingBaseEntityName(listingID) != null) {
             column.propertyIdentifier = this.$hibachi.getBaseEntityAliasFromName(this.getListingBaseEntityName(listingID));
         }
-        if(this.utilityService.ArrayFindByPropertyValue(this.getListing(listingID).columns,'propertyIdentifier',column.propertyIdentifier) === -1){
+        if(this.getColumnIndexByPropertyIdentifier(listingID, column.propertyIdentifier) === -1){
             if(column.aggregate){
                 this.getListing(listingID).aggregates.push(column.aggregate);
             } else {

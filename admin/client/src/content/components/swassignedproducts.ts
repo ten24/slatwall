@@ -18,7 +18,6 @@ class SWAssignedProductsController {
         this.collectionConfig.addDisplayProperty("productID,productName,productDescription,activeFlag,publishedFlag");
         this.alreadySelectedProductsCollectionConfig = collectionConfigService.newCollectionConfig("ProductListingPage"); 
         this.alreadySelectedProductsCollectionConfig.addDisplayProperty("productListingPageID,sortOrder,product.productID,product.productName,product.productDescription,product.activeFlag,product.publishedFlag");
-        console.log(this.alreadySelectedProductsCollectionConfig);
         this.alreadySelectedProductsCollectionConfig.addFilter("content.contentID", this.contentId, "=");
         this.typeaheadDataKey = utilityService.createID(32); 
     }
