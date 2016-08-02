@@ -84,7 +84,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	public boolean function getUseShippingIntegrationForTrackingNumber(){
 		return (
-			!isNull(getorderfulfillment().getSelectedShippingMethodOption().getShippingMethodRate())
+			!isNull(getorderfulfillment().getSelectedShippingMethodOption())
+			&& !isNull(getorderfulfillment().getSelectedShippingMethodOption().getShippingMethodRate())
 			&& !isNull(getorderfulfillment().getSelectedShippingMethodOption().getShippingMethodRate().getShippingIntegration())
 		);
 	}
