@@ -89,8 +89,8 @@ class SWListingSearch  implements ng.IDirective{
     public scope = {};
 
     public bindToController =  {
-        collectionConfig : "=",
-        paginator : "=",
+        collectionConfig : "=?",
+        paginator : "=?",
         getCollection : "&",
         toggleFilters : "&?",
         toggleDisplayOptions : "&?",
@@ -124,10 +124,13 @@ class SWListingSearch  implements ng.IDirective{
     }
 
     public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any) =>{
-        if(!angular.isDefined(scope.swListingSearch.collectionConfig) && this.scopeService.hasParentScope(scope, "swListingDisplay")){
+        if(angular.isUndefined(scope.swListingSearch.collectionConfig) && this.scopeService.hasParentScope(scope, "swListingDisplay")){
             var listingDisplayScope = this.scopeService.locateParentScope(scope, "swListingDisplay")["swListingDisplay"];
             if(listingDisplayScope.collectionConfig != null){
                 scope.swListingSearch.collectionConfig = listingDisplayScope.collectionConfig; 
+            }
+            if(listingDisplayScope.paginator != null){
+                scope.swListingSearch.paginator = listingDisplayScope.paginator; 
             }
         }
         scope.swListingSearch.backupColumnsConfig =  scope.swListingSearch.collectionConfig.getColumns();
