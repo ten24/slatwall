@@ -165,6 +165,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var shippingMethodRate = shippingMethodRates[r];
 			// If this rate is a manual one, then use the default amount
 			if(isNull(shippingMethodRate.getShippingIntegration())) {
+				
 				var shipmentItemMultiplier = 0;
 				if(!isNull(shippingMethodRate.getRateMultiplierAmount())){
 					shipmentItemMultiplier = arguments.orderFulfillment.getShipmentItemMultiplier();
@@ -175,13 +176,28 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					shipmentItemMultiplier,
 					nullReplace(shippingMethodRate.getRateMultiplierAmount(),0)
 				);
+				//make sure the manual rate is usable
+				var priceGroups = [];
+				if(!isNull(arguments.orderFulfillment.getOrder().getAccount())){
+					priceGroups = arguments.orderFulfillment.getOrder().getAccount().getPriceGroups();
+				}
+				if (isShippingMethodRateUsable(
+						shippingMethodRate,
+						arguments.orderFulfillment.getShippingAddress(), 
+						arguments.orderFulfillment.getTotalShippingWeight(), 
+						arguments.orderFulfillment.getSubtotalAfterDiscounts(), 
+						arguments.orderFulfillment.getTotalShippingQuantity(), 
+						priceGroups)){
+							
+							var qualifiedRateOption = newQualifiedRateOption(shippingMethodRate, chargeAmount);
+							arrayAppend(qualifiedRateOptions, qualifiedRateOption);
+				}
 				
-				var qualifiedRateOption = newQualifiedRateOption(shippingMethodRate,chargeAmount);
-				arrayAppend(qualifiedRateOptions, qualifiedRateOption);
 			// If we got a response bean from the shipping integration then find those details inside the response
 			}else{
 				
 				var shippingIntegration = getIntegrationByOrderFulfillmentAndShippingMethodRate(arguments.orderFulfillment,shippingMethodRate);
+				
 				if (
 					!isNull(shippingIntegration) &&
 					structKeyExists(arguments.shippingMethodRatesResponseBeans, shippingIntegration.getIntegrationID())
@@ -191,7 +207,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					for(var b=1; b<=shippingMethodResponseBeansCount; b++) {
 
 						var methodResponse = thisResponseBean.getShippingMethodResponseBeans()[b];
-
+						
 						if(methodResponse.getShippingProviderMethod() == shippingMethodRate.getShippingIntegrationMethod()) {
 							var qualifiedRateOption = newQualifiedRateOption(
 								shippingMethodRate,
@@ -202,17 +218,33 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							break;
 						}
 					}
-				// If we should have gotten a response bean from the shipping integration but didn't then use the default amount
+				// If we should have gotten a response bean from the shipping integration but didn't then use the default amount if and only if
+				// we should be using this in the first place.
 				} else if (!isNull(shippingMethodRate.getDefaultAmount())) {
-					var qualifiedRateOption = newQualifiedRateOption(
+					
+					var priceGroups = [];
+					if(!isNull(arguments.orderFulfillment.getOrder().getAccount())){
+						priceGroups = arguments.orderFulfillment.getOrder().getAccount().getPriceGroups();
+					}
+					// check to make sure that this rate applies to the current orderFulfillment
+					if (isShippingMethodRateUsable(
 						shippingMethodRate,
-						nullReplace(shippingMethodRate.getDefaultAmount(), 0),
-						true
-					);
-					arrayAppend(qualifiedRateOptions, qualifiedRateOption);
+						arguments.orderFulfillment.getShippingAddress(), 
+						arguments.orderFulfillment.getTotalShippingWeight(), 
+						arguments.orderFulfillment.getSubtotalAfterDiscounts(), 
+						arguments.orderFulfillment.getTotalShippingQuantity(), 
+						priceGroups)){
+							
+							var qualifiedRateOption = newQualifiedRateOption(
+							shippingMethodRate,
+							nullReplace(shippingMethodRate.getDefaultAmount(), 0),
+							true);
+							arrayAppend(qualifiedRateOptions, qualifiedRateOption);
+					}
 				}
 			} 
 		}
+		
 		return qualifiedRateOptions;
 	}
 
@@ -345,8 +377,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 
-		// Now if there is no method yet selected, and only one shippingMethod as an option, we can automatically just select it.
-		if(isNull(arguments.orderFulfillment.getShippingMethod()) && arrayLen(arguments.orderFulfillment.getFulfillmentShippingMethodOptions()) == 1) {
+		// Now if there is no method yet selected, and at least one shippingMethod as an option, we can automatically just select it.
+		if(isNull(arguments.orderFulfillment.getShippingMethod()) && arrayLen(arguments.orderFulfillment.getFulfillmentShippingMethodOptions()) >= 1) {
 
 			// Set the method
 			arguments.orderFulfillment.setShippingMethod( arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[1].getShippingMethodRate().getShippingMethod() );
@@ -451,10 +483,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         		return false;
         	}
         }
+        
         // Make sure that the address is in the address zone
 		if(!isNull(arguments.shippingMethodRate.getAddressZone()) && !getAddressService().isAddressInZone(arguments.shipToAddress, arguments.shippingMethodRate.getAddressZone())) {
 			return false;
 		}
+		
 		// If we have not returned false by now, then return true
 		return true;
 	}
