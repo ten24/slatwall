@@ -48,9 +48,6 @@ Notes:
 */
 
 component accessors="true" output="false" displayname="USPS" implements="Slatwall.integrationServices.ShippingInterface" extends="Slatwall.integrationServices.BaseShipping" {
-
-	variables.testingURL = "https://secure.shippingapis.com/ShippingAPITest.dll";
-	variables.liveURL = "https://secure.shippingapis.com/ShippingAPI.dll";
 	
 	public any function init() {
 		// Insert Custom Logic Here 
@@ -94,17 +91,9 @@ component accessors="true" output="false" displayname="USPS" implements="Slatwal
         var requestURL = "";
         
         if(setting('testingFlag')) {
-        	if(setting('useSSLFlag')) {
-	        	requestURL = "https://secure.shippingapis.com/ShippingAPITest.dll?API=";
-	        } else {
-	        	requestURL = "http://testing.shippingapis.com/ShippingAPITest.dll?API=";
-	        }	
+        	requestURL = setting("testAPIEndPointURL");
         } else {
-        	if(setting('useSSLFlag')) {
-	        	requestURL = "https://secure.shippingapis.com/ShippingAPI.dll?API=";
-	        } else {
-	        	requestURL = "http://production.shippingapis.com/ShippingAPI.dll?API=";
-	        }	
+        	requestURL = setting("liveAPIEndPointURL");
         }        
         
         if(arguments.requestBean.getShipToCountryCode() == "US") {
@@ -112,30 +101,29 @@ component accessors="true" output="false" displayname="USPS" implements="Slatwal
 			savecontent variable="xmlPacket" {
 				include "RatesV4RequestTemplate.cfm";
 	        }
-        	requestURL &= "RateV4&XML=#trim(xmlPacket)#";
+        	requestURL &= "?API=RateV4&XML=#trim(xmlPacket)#";
         } else {
-        	var xmlPacket = "";
-			savecontent variable="xmlPacket" {
-				include "InternationalRatesV2RequestTemplate.cfm";
-	        }
-        	requestURL &= "IntlRateV2&XML=#trim(xmlPacket)#";
+			var ratesResponseBean = new Slatwall.model.transient.fulfillment.ShippingRatesResponseBean();
+			ratesResponseBean.setData("International Rate not implemented for this integration.");
+			ratesResponseBean.addError("IntegrationError", "International Rate not implemented for this integration.");
+        	return ratesResponseBean;
         }
         
         // Setup Request to push to FedEx
         var httpRequest = new http();
         httpRequest.setMethod("GET");
-        if(setting('useSSLFlag')) {
-			httpRequest.setPort("443");
-		}else{
-			httpRequest.setPort("80");
-		}
+        if(findNoCase("https://",requestURL)){
+			httpRequest.setPort(443);
+        } else {
+			httpRequest.setPort(80);
+        }
 		httpRequest.setTimeout(45);
 		httpRequest.setURL(requestURL);
 		httpRequest.setResolveurl(false);
 		
 		
 		var xmlResponse = XmlParse(REReplace(httpRequest.send().getPrefix().fileContent, "^[^<]*", "", "one"));
-		
+
 		var ratesResponseBean = new Slatwall.model.transient.fulfillment.ShippingRatesResponseBean();
 		ratesResponseBean.setData(xmlResponse);
 		
