@@ -163,7 +163,6 @@ class ListingService{
 
     public insertListingPageRecord = (listingID:string, pageRecord:any) =>{
         pageRecord.newFlag = true; 
-        console.log("pageRecord", pageRecord)
         if( angular.isDefined(this.getListingPageRecords(listingID))){
             this.notifyListingPageRecordsUpdate(listingID); 
             this.getListingPageRecords(listingID).unshift(pageRecord);//insert at beginning be default
@@ -210,7 +209,8 @@ class ListingService{
             classObjectString = classObjectString.concat("'" + colorFilter.colorClass + "':" + this.getColorFilterConditionString(colorFilter, pageRecord));
             classObjectString = classObjectString.concat(",");
         }); 
-        classObjectString = classObjectString.concat(" 's-child':" + (this.getPageRecordIsChild(listingID, pageRecord) || pageRecord.newFlag)); 
+        classObjectString = classObjectString.concat(" 's-child':" + this.getPageRecordIsChild(listingID, pageRecord)); 
+        classObjectString = classObjectString.concat(",'s-selected-row':" + pageRecord.newFlag);
         classObjectString = classObjectString.concat(",'s-disabled':" + this.getPageRecordMatchesDisableRule(listingID, pageRecord));
         classObjectString = classObjectString.concat(",'s-edited':pageRecord.edited");
         return classObjectString + "}"; 
@@ -343,7 +343,6 @@ class ListingService{
             collectionConfig != null && 
             collectionConfig.columns != null
         ){
-            console.log("Pulling Collection Config", collectionConfig.columns);
             for(var j=0; j < collectionConfig.columns.length; j++){
                 var column = collectionConfig.columns[j]; 
                 if(column.isVisible){
@@ -585,7 +584,7 @@ class ListingService{
                         this.getListing(listingID).childPropertyName,
                         'COUNT',
                         this.getListing(listingID).childPropertyName+'Count',
-                        {isVisible:false}
+                        {isVisible:false, isSearchable:false}
                     );
                 }
             }
@@ -697,7 +696,6 @@ class ListingService{
 
     //for single column order by
     public setSingleColumnOrderBy = (listingID:string, propertyIdentifier:string, direction:string, notify=true) =>{
-        console.log("setSingleColumnOrderBy", propertyIdentifier, direction)
         if(direction.toUpperCase() === "ASC"){
             var oppositeDirection = "DESC"; 
         } else {
@@ -714,7 +712,6 @@ class ListingService{
                 }
             });
             if(!found){
-                console.log("not found adding order by")
                 this.getListing(listingID).collectionConfig.addOrderBy(propertyIdentifier + "|" + direction);
             }
             if(notify){
@@ -726,7 +723,6 @@ class ListingService{
 
     //for manual sort
     public setManualSort = (listingID:string, toggle:boolean) =>{
-        console.log("sortable set");
         this.getListing(listingID).sortable = toggle; 
         //probably need to do something here with collection config 
     }

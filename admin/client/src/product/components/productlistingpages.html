@@ -75,7 +75,7 @@
             data-multiselect-id-paths="{{swProductListingPages.selectedListingPageIdPaths}}"
             data-edit="swProductListingPages.edit"
             data-expandable="true"
-            data-has-search="false"
+            data-has-search="true"
             data-has-action-bar="false"
             data-record-edit-action="admin:entity.editcontent"
             data-is-angular-route="false"
@@ -83,12 +83,28 @@
             data-multi-slot="true"
         >
             <sw-collection-configs>
-                <sw-collection-config data-entity-name="Content" data-in-listing-display="true" data-filter-flag="false" data-all-records="false">
+                <sw-collection-config data-entity-name="Content" 
+                                      data-in-listing-display="true" 
+                                      data-filter-flag="false" 
+                                      data-all-records="false">
                     <sw-collection-columns>
-                        <sw-collection-column data-property-identifier="contentID" data-is-visible="false"></sw-collection-column>
-                        <sw-collection-column data-property-identifier="parentContent.contentID" data-is-visible="false"></sw-collection-column>
-                        <sw-collection-column data-property-identifier="title" data-is-visible="true" data-tdclass="primary"></sw-collection-column>
-                        <sw-collection-column data-property-identifier="site.siteName" data-is-visible="true"></sw-collection-column>
+                        <sw-collection-column data-property-identifier="contentID" 
+                                              data-is-visible="false"
+                                              data-is-searchable="false"
+                        ></sw-collection-column>
+                        <sw-collection-column data-property-identifier="parentContent.contentID" 
+                                              data-is-visible="false"
+                                              data-is-searchable="false"
+                        ></sw-collection-column>
+                        <sw-collection-column data-tdclass="primary"
+                                              data-property-identifier="title" 
+                                              data-is-visible="true" 
+                                              data-is-searchable="true"
+                        ></sw-collection-column>
+                        <sw-collection-column data-property-identifier="site.siteName" 
+                                              data-is-visible="true"
+                                              data-is-searchable="true"
+                        ></sw-collection-column>
                     </sw-collection-columns>
                 </sw-collection-config>
             </sw-collection-configs>
