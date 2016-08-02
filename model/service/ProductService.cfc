@@ -1004,7 +1004,6 @@ component extends="HibachiService" accessors="true" {
 				data.urlTitle = getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.product.getProductName(), tableName="SwProduct");
 			}
 		}
-		writedump(var=arguments, top=2,abort=true);
 
 		if(structKeyExists(data, "assignedContentIDList")){
 			var listingPagesSelection = ListToArray(data["assignedContentIDList"]);

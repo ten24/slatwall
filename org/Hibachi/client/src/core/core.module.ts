@@ -62,6 +62,7 @@ import {SWExpandableRecord} from "./components/swexpandablerecord";
 import {SWGravatar} from "./components/swgravatar";
 import {SWListingDisplay} from "./components/swlistingdisplay";
 import {SWListingControls} from "./components/swlistingcontrols";
+import {SWListingSearch} from "./components/swlistingsearch";
 import {SWListingAggregate} from "./components/swlistingaggregate";
 import {SWListingColorFilter} from "./components/swlistingcolorfilter";
 import {SWListingColumn} from "./components/swlistingcolumn";
@@ -220,6 +221,7 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swDraggableContainer', SWDraggableContainer.Factory())
 .directive('swListingDisplay',SWListingDisplay.Factory())
 .directive('swListingControls',SWListingControls.Factory())
+.directive('swListingSearch', SWListingSearch.Factory())
 .directive('swListingAggregate',SWListingAggregate.Factory())
 .directive('swListingColorFilter',SWListingColorFilter.Factory())
 .directive('swListingColumn',SWListingColumn.Factory())
