@@ -1,8 +1,18 @@
 <div class="s-select-wrapper s-titled-select-wrapper s-site">
     <span>Sites:</span>
-    <select class="form-control input-sm">
-        <option value="">All</option>
-        <option value="" selected="">Default</option>
-        <option value="">Pop Up Shop</option>
+    <select class="form-control input-sm" 
+            ng-model="swSiteSelector.selectedSite" 
+            ng-change="swSiteSelector.selectSite()">
+        <option value="all" 
+                sw-rbkey="'define.all'">
+        </option>
+        <option ng-if="swSiteSelector.defaultEstablished"
+                value="default" 
+                sw-rbkey="'define.default'">
+        </option>
+        <option value="{{site.siteID}}" 
+                ng-repeat="site in swSiteSelector.sites">
+                {{site.siteName}}
+        </option>
     </select>
 </div>

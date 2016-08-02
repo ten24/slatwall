@@ -27,24 +27,6 @@ class SWProductListingPagesController {
         this.alreadySelectedContentCollectionConfig = collectionConfigService.newCollectionConfig("ProductListingPage"); 
         this.alreadySelectedContentCollectionConfig.addDisplayProperty("productListingPageID, product.productID, content.contentID, content.title, content.site.siteName, content.activeFlag");
         this.alreadySelectedContentCollectionConfig.addFilter("product.productID", this.productId, "=");
-
-        this.sitesCollectionConfig = collectionConfigService.newCollectionConfig("Site"); 
-        this.sitesCollectionConfig.addDisplayProperty("siteID, siteName, siteCode");
-        this.sitesCollectionConfig.setAllRecords(true); 
-        this.sitesCollectionConfig.getEntity().then(
-            (data)=>{
-                this.sites = data.records; 
-            },
-            (reason)=>{
-                throw("SWProductListingPages had trouble fetching sites because of " + reason);
-            }
-        );
-
-        this.selectedSite = "default";
-    }
-
-    public updateListingDisplayFilters = () =>{
-        console.log("updating listing filters")
     }
 }
 

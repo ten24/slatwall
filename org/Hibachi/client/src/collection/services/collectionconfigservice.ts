@@ -484,6 +484,19 @@ class CollectionConfig {
         return this;
     };
 
+    public removeFilterByDisplayPropertyIdentifier = (displayPropertyIdentifier){
+        for( var j = 0; j < this.filterGroups.length; j++){
+            var filterGroup = this.filterGroups[j].filterGroup; 
+            for( var i = 0; i < filterGroup.length; i++){
+                var filter = filterGroup[i]; 
+                if(filter.displayPropertyIdentifier == displayPropertyIdentifier){
+                    filterGroup.splice(i, 1);
+                    i--;
+                }
+            }
+        }
+    }
+
     public removeFilterHelper = (filter:any, propertyIdentifier:string, value:any, comparisonOperator:string, currentGroup?)=>{
         if(angular.isUndefined(currentGroup)){
             currentGroup = filter;
