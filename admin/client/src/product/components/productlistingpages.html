@@ -78,6 +78,7 @@
             data-has-search="true"
             data-has-action-bar="false"
             data-record-edit-action="admin:entity.editcontent"
+            data-custom-listing-controls="true"
             data-is-angular-route="false"
             data-get-child-count="true"
             data-multi-slot="true"
@@ -107,7 +108,30 @@
                         ></sw-collection-column>
                     </sw-collection-columns>
                 </sw-collection-config>
-            </sw-collection-configs>
+            </sw-collection-configs> 
+            <sw-custom-listing-controls>
+                <div class="row s-table-inner-nav ">  
+                    <div class="row">
+                        <div class="col-sm-10">
+                            <sw-listing-search data-show-toggle-filters="false" 
+                                            data-show-toggle-display-options="false"> 
+                            </sw-listing-search>
+                        </div>
+                            <div class="col-sm-2">
+                            
+                                <div class="s-select-wrapper s-titled-select-wrapper s-site">
+                                    <span>Sites:</span>
+                                    <select class="form-control input-sm">
+                                        <option value="">All</option>
+                                        <option value="" selected="">Default</option>
+                                        <option value="">Pop Up Shop</option>
+                                    </select>
+                                </div>
+                                
+                        </div>
+                    </div>
+                </div>
+            </sw-custom-listing-controls>
         </sw-listing-display>
     </sw-tab-content>
 </sw-tab-group>

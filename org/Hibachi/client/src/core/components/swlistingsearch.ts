@@ -29,16 +29,6 @@ class SWListingSearchController {
         if(angular.isUndefined(this.showToggleDisplayOptions)){
             this.showToggleDisplayOptions = true; 
         }
-
-        this.backupColumnsConfig = this.collectionConfig.getColumns();
-    
-        this.filterPropertiesList = {};
-
-        $hibachi.getFilterPropertiesByBaseEntityName(this.collectionConfig.baseEntityAlias).then((value)=> {
-            metadataService.setPropertiesList(value, this.collectionConfig.baseEntityAlias);
-            this.filterPropertiesList[this.collectionConfig.baseEntityAlias] = metadataService.getPropertiesListByBaseEntityAlias(this.collectionConfig.baseEntityAlias);
-            metadataService.formatPropertiesList(this.filterPropertiesList[this.collectionConfig.baseEntityAlias], this.collectionConfig.baseEntityAlias);
-        });
     }
 
     public selectSearchColumn = (column?)=>{
@@ -112,6 +102,7 @@ class SWListingSearch  implements ng.IDirective{
 
     //@ngInject
     constructor(
+        public scopeService, 
         public collectionPartialsPath,
         public hibachiPathBuilder
     ){
@@ -120,14 +111,26 @@ class SWListingSearch  implements ng.IDirective{
 
     public static Factory(){
         var directive = (
+            scopeService,
             corePartialsPath,
             hibachiPathBuilder
         )=> new SWListingSearch(
+            scopeService, 
             corePartialsPath,
             hibachiPathBuilder
         );
-        directive.$inject = [ 'corePartialsPath', 'hibachiPathBuilder'];
+        directive.$inject = [ 'scopeService', 'corePartialsPath', 'hibachiPathBuilder'];
         return directive;
+    }
+
+    public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any) =>{
+        if(!angular.isDefined(scope.swListingSearch.collectionConfig) && this.scopeService.hasParentScope(scope, "swListingDisplay")){
+            var listingDisplayScope = this.scopeService.locateParentScope(scope, "swListingDisplay")["swListingDisplay"];
+            if(listingDisplayScope.collectionConfig != null){
+                scope.swListingSearch.collectionConfig = listingDisplayScope.collectionConfig; 
+            }
+        }
+        scope.swListingSearch.backupColumnsConfig =  scope.swListingSearch.collectionConfig.getColumns();
     }
 }
 
