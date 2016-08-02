@@ -55,7 +55,7 @@ Notes:
 <cfoutput>
 	<sw-assigned-products data-content-id="#rc.content.getContentID()#"
 						  data-edit="#rc.edit#"
-						  data-product-sort-property"#rc.content.nullReplace(rc.content.getProductSortProperty(),"")#"
+						  data-product-sort-property="#rc.content.nullReplace(rc.content.getProductSortProperty(),"")#"
 						  data-product-sort-default-direction="#rc.content.nullReplace(rc.content.getProductSortDefaultDirection(),"")#"
 						  >
 

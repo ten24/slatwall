@@ -10,10 +10,18 @@
             <sw-collection-configs>
                 <sw-collection-config data-entity-name="ProductListingPage" data-in-listing-display="true" data-all-records="false">
                     <sw-collection-columns>
-                        <sw-collection-column data-property-identifier="productListingPageID" data-is-visible="false"></sw-collection-column>
-                        <sw-collection-column data-property-identifier="content.title"></sw-collection-column>
-                        <sw-collection-column data-property-identifier="content.site.siteName"></sw-collection-column>
-                        <sw-collection-column data-property-identifier="content.activeFlag"></sw-collection-column>
+                        <sw-collection-column data-property-identifier="productListingPageID" 
+                                              data-is-visible="false"
+                        ></sw-collection-column>
+                        <sw-collection-column data-property-identifier="content.title"
+                                              data-fallback-property-identifiers="title"
+                        ></sw-collection-column>
+                        <sw-collection-column data-property-identifier="content.site.siteName"
+                                              data-fallback-property-identifiers="site_siteName"
+                        ></sw-collection-column>
+                        <sw-collection-column data-property-identifier="content.activeFlag"
+                                              data-fallback-property-identifiers="activeFlag"
+                        ></sw-collection-column>
                     </sw-collection-columns>
                     <sw-collection-filters>
                         <sw-collection-filter data-property-identifier="product.productID" data-comparison-operator="=" data-comparison-value="{{swProductListingPages.productId}}"></sw-collection-filter>
@@ -22,22 +30,27 @@
             </sw-collection-configs>
             <sw-custom-listing-controls>
                 <div class="row s-table-inner-nav">
-                    <div class="col-md-9">
+                    <div class="col-sm-10">
                         <sw-typeahead-multiselect 
                                     data-placeholder-rb-key="define.searchandassignproducts"
                                     data-collection-config="swProductListingPages.collectionConfig"
-                                    data-show-selections="true"
+                                    data-selected-collection-config="swProductListingPages.alreadySelectedContentCollectionConfig"
                                     data-in-listing-display="true"
                                     data-typeahead-data-key="{{swProductListingPages.typeaheadDataKey}}"
+                                    data-fallback-properties-to-compare="content_contentID"
                                     >
                             <sw-typeahead-search-line-item data-property-identifier="title"></sw-typeahead-search-line-item>
                         </sw-typeahead-multiselect>
                     </div> 
-                    <div class="col-md-3 s-action-right">
-                        <sw-order-by-controls 
-
-                                    >
-                        </sw-order-by-controls> 
+                    <div class="col-sm-2 s-action-right">
+                        <div class="s-select-wrapper s-titled-select-wrapper s-site">
+                            <span>Sites:</span>
+                            <select class="form-control input-sm" ng-change="swProductListingPages.updateListingDisplayFilters()" ng-model="swProductListingPages.selectedSite">
+                                <option value="all">All</option>
+                                <option value="default" selected="">Default</option>
+                                <option value="site.siteID" ng-repeat="site in swProductListingPages.sites">{{site.siteName}}</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </sw-custom-listing-controls>

@@ -5,18 +5,46 @@ class SWProductListingPagesController {
 
     public edit:boolean; 
     public selectedListingPageIdPaths:string; 
-    public productID:string;
+    public productId:string;
     public collectionConfig:any;
+    public alreadySelectedContentCollectionConfig:any; 
+    public sitesCollectionConfig:any; 
     public typeaheadDataKey:string; 
+    public selectedSite:string; 
+    public sites:any[]; 
     
     //@ngInject
     constructor(
         private collectionConfigService,
+        private listingService, 
         private utilityService
     ){
         this.collectionConfig = collectionConfigService.newCollectionConfig("Content"); 
         this.collectionConfig.addDisplayProperty("contentID, title, activeFlag, site.siteName");
+        
         this.typeaheadDataKey = utilityService.createID(32); 
+        
+        this.alreadySelectedContentCollectionConfig = collectionConfigService.newCollectionConfig("ProductListingPage"); 
+        this.alreadySelectedContentCollectionConfig.addDisplayProperty("productListingPageID, product.productID, content.contentID, content.title, content.site.siteName, content.activeFlag");
+        this.alreadySelectedContentCollectionConfig.addFilter("product.productID", this.productId, "=");
+
+        this.sitesCollectionConfig = collectionConfigService.newCollectionConfig("Site"); 
+        this.sitesCollectionConfig.addDisplayProperty("siteID, siteName, siteCode");
+        this.sitesCollectionConfig.setAllRecords(true); 
+        this.sitesCollectionConfig.getEntity().then(
+            (data)=>{
+                this.sites = data.records; 
+            },
+            (reason)=>{
+                throw("SWProductListingPages had trouble fetching sites because of " + reason);
+            }
+        );
+
+        this.selectedSite = "default";
+    }
+
+    public updateListingDisplayFilters = () =>{
+        console.log("updating listing filters")
     }
 }
 

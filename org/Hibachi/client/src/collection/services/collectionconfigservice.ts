@@ -289,7 +289,6 @@ class CollectionConfig {
             if(angular.isUndefined(this.columns)){
                 this.columns = [];
             }
-            console.log("determining", options, column, column.substring(column.length - 2));
             //hide id columns
             if(angular.isDefined(options['isVisible'])){
                 isVisible = options['isVisible'];
@@ -297,7 +296,6 @@ class CollectionConfig {
             if( angular.isUndefined(options.isVisible) && 
                 column.substring(column.length - 2) === "ID"
             ){
-                console.log("hiding", column);
                 isVisible = false;
             }
             if(angular.isDefined(options['isDeletable'])){

@@ -25,10 +25,11 @@ class SWOrderByControlsController {
             if(angular.isDefined(this.collectionConfig)){
                  this.columns = this.collectionConfig.columns; 
             } 
-            if(angular.isDefined(this.initialSortDefaultDirection)){
+            if(angular.isDefined(this.initialSortDefaultDirection) && this.initialSortDefaultDirection.length > 0){
                 this.sortCode = this.initialSortDefaultDirection; 
             }
-            if(angular.isDefined(this.initialSortProperty)){
+            if(angular.isDefined(this.initialSortProperty) && this.initialSortProperty.length > 0){
+                console.log("setting initialSortProperty", this.initialSortProperty)
                 this.selectedPropertyIdentifier = this.initialSortProperty;
             }
             this.id = this.utilityService.createID(32); 
