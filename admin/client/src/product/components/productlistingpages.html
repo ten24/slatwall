@@ -22,6 +22,10 @@
                         <sw-collection-column data-property-identifier="content.activeFlag"
                                               data-fallback-property-identifiers="activeFlag"
                         ></sw-collection-column>
+                        <sw-collection-column data-property-identifier="content.contentID" 
+                                              data-fallback-property-identifiers="contentID"
+                                              data-is-visible="false" >
+                        </sw-collection-column>
                     </sw-collection-columns>
                     <sw-collection-filters>
                         <sw-collection-filter data-property-identifier="product.productID" data-comparison-operator="=" data-comparison-value="{{swProductListingPages.productId}}"></sw-collection-filter>
@@ -36,6 +40,7 @@
                                     data-collection-config="swProductListingPages.collectionConfig"
                                     data-selected-collection-config="swProductListingPages.alreadySelectedContentCollectionConfig"
                                     data-in-listing-display="true"
+                                    data-selection-field-name="assignedContentIDList"
                                     data-typeahead-data-key="{{swProductListingPages.typeaheadDataKey}}"
                                     data-fallback-properties-to-compare="content_contentID"
                                     >
@@ -63,7 +68,7 @@
 
     <sw-tab-content name="Site View"> 
         <sw-listing-display
-            data-multiselect-field-name="listingPages"
+            data-multiselect-field-name="assignedContentIDList"
             data-multiselect-id-paths="{{swProductListingPages.selectedListingPageIdPaths}}"
             data-edit="swProductListingPages.edit"
             data-expandable="true"

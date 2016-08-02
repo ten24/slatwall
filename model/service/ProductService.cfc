@@ -1004,12 +1004,14 @@ component extends="HibachiService" accessors="true" {
 				data.urlTitle = getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.product.getProductName(), tableName="SwProduct");
 			}
 		}
-		if(structKeyExists(data, "listingPagesselection")){
-			var listingPagesSelection = ListToArray(data["listingPagesselection"]);
+		writedump(var=arguments, top=2,abort=true);
+
+		if(structKeyExists(data, "assignedContentIDList")){
+			var listingPagesSelection = ListToArray(data["assignedContentIDList"]);
 			var currentProductListingPages = product.getListingPages();
 			//purge existing listing pages not in the selection
 			for(var page in currentProductListingPages){
-				if(!ListContains(data["listingPagesselection"], page.getContent().getContentID())){
+				if(!ListContains(data["assignedContentIDList"], page.getContent().getContentID())){
 					this.deleteProductListingPage(page);
 				}
 			}
