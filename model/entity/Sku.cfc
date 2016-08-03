@@ -715,7 +715,11 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public any function getCurrentAccountPriceByCurrencyCode(required string currencyCode) {
 		if(!structKeyExists(variables, "currentAccountPrice_#arguments.currencyCode#")) {
 			variables["currentAccountPrice_#arguments.currencyCode#"] = getService("priceGroupService").calculateSkuPriceBasedOnCurrentAccountAndCurrencyCode(sku=this,currencyCode=arguments.currencyCode);
+			if(!structKeyExists(variables, "currentAccountPrice_#arguments.currencyCode#")) {
+				return;	
+			}
 		}
+		
 		return variables["currentAccountPrice_#arguments.currencyCode#"];
 	}
 
@@ -859,17 +863,34 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public any function getLivePriceByCurrencyCode(required string currencyCode) {
 		if(!structKeyExists(variables, "livePrice_#arguments.currencyCode#")) {
 			// Create a prices array, and add the
-			var prices = [getPriceByCurrencyCode(arguments.currencyCode)];
+			var price = getPriceByCurrencyCode(arguments.currencyCode);
+			var prices = [];
+			if(!isNull(price)){
+				arrayAppend(prices,price);
+			}
 
 			// Add the current account price, and sale price
-			arrayAppend(prices, getSalePriceByCurrencyCode(currencyCode=arguments.currencyCode));
-			arrayAppend(prices, getCurrentAccountPriceByCurrencyCode(currencyCode=arguments.currencyCode));
+			var salePrice = getSalePriceByCurrencyCode(currencyCode=arguments.currencyCode);
+			if(!isNull(salePrice)){
+				arrayAppend(prices,salePrice);
+			}
+			
+			var currentAccountPrice = getCurrentAccountPriceByCurrencyCode(currencyCode=arguments.currencyCode);
+			if(!isNull(currentAccountPrice)){
+				arrayAppend(prices, currentAccountPrice);	
+			}
+
+			if(!arraylen(prices)){
+				return;
+			}
 
 			// Sort by best price
 			arraySort(prices, "numeric", "asc");
-
+			
 			// set that in the variables scope
 			variables["livePrice_#arguments.currencyCode#"]= prices[1];
+		
+			
 		}
 		return variables["livePrice_#arguments.currencyCode#"];
 	}
