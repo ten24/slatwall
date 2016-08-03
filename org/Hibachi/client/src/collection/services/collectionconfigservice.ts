@@ -484,7 +484,7 @@ class CollectionConfig {
         return this;
     };
 
-    public removeFilterByDisplayPropertyIdentifier = (displayPropertyIdentifier){
+    public removeFilterByDisplayPropertyIdentifier = (displayPropertyIdentifier) =>{
         for( var j = 0; j < this.filterGroups.length; j++){
             var filterGroup = this.filterGroups[j].filterGroup; 
             for( var i = 0; i < filterGroup.length; i++){

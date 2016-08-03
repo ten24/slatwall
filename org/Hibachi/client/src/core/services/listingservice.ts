@@ -65,8 +65,10 @@ class ListingService{
         }
     }
 
+    //need to figure out a more concrete preference order for columns
     public getColumnIndexByPropertyIdentifier = (listingID:string, propertyIdentifier) =>{
-        return this.utilityService.ArrayFindByPropertyValue(this.getListingCollectionConfigColumns(listingID),'propertyIdentifier',propertyIdentifier);
+        var columns = this.getListingCollectionConfigColumns(listingID) || this.getListingColumns(listingID); 
+        return this.utilityService.ArrayFindByPropertyValue(columns,'propertyIdentifier',propertyIdentifier);
     }
 
     public getListingBaseEntityName = (listingID:string) =>{

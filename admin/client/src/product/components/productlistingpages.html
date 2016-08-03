@@ -53,7 +53,10 @@
                     </div> 
                     <div class="col-sm-2 s-action-right">
                         <sw-site-selector data-collection-config-to-filter="swProductListingPages.collectionConfig"
+                                          data-filter-property-identifier="site.siteID"
                                           data-in-listing-display="false"
+                                          data-with-typeahead="true"
+                                          data-typeahead-data-key="{{swProductListingPages.typeaheadDataKey}}"
                         ></sw-site-selector>  
                     </div>
                 </div>
@@ -114,8 +117,7 @@
                         </sw-listing-search>
                     </div>
                     <div class="col-sm-2">
-                        <sw-site-selector 
-
+                        <sw-site-selector data-filter-property-identifier="site.siteID"
                         ></sw-site-selector>    
                     </div>
                 </div>

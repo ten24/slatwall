@@ -6,21 +6,26 @@ class SWSiteSelectorController {
     public sites:any[];
     public sitesCollectionConfig:any; 
     public filterPropertyIdentifier:string; 
+    public simpleFilterPropertyIdentifier:string; 
     public collectionConfigToFilter:any; 
     public selectedSite:string; 
     public defaultSiteID:string; 
     public defaultEstablished:boolean; 
     public inListingDisplay:boolean; 
+    public withTypeahead:boolean; 
+    public typeaheadDataKey:string; 
+    public listingID:string; 
 
     //@ngInject
     constructor(
         private collectionConfigService,
         private listingService, 
         private localStorageService,
+        private typeaheadService, 
         private utilityService
     ){
-        if(angular.isUndefined(this.filterPropertyIdentifier)){
-            this.filterPropertyIdentifier = "siteID";
+        if(angular.isUndefined(this.simpleFilterPropertyIdentifier)){
+            this.simpleFilterPropertyIdentifier = "siteID";
         }
         this.sitesCollectionConfig = collectionConfigService.newCollectionConfig("Site"); 
         this.sitesCollectionConfig.addDisplayProperty("siteID, siteName, siteCode");
@@ -41,7 +46,7 @@ class SWSiteSelectorController {
     }
 
     public selectSite = () =>{
-        this.collectionConfigToFilter.removeFilterByDisplayPropertyIdentifier(this.filterPropertyIdentifier);  
+        this.collectionConfigToFilter.removeFilterByDisplayPropertyIdentifier(this.simpleFilterPropertyIdentifier);  
         switch(this.selectedSite){
             case "all":
                 //do nothing
@@ -49,13 +54,19 @@ class SWSiteSelectorController {
             case "default":
                 this.updateDefaultSiteID(); 
                 if(this.defaultEstablished){
-                    this.collectionConfigToFilter.addFilter("site.siteID", this.defaultSiteID, "=");
+                    this.collectionConfigToFilter.addFilter(this.filterPropertyIdentifier, this.defaultSiteID, "=");
                 }
                 break; 
             default: 
                 this.localStorageService.setItem("defaultSiteID", this.selectedSite);
-                this.collectionConfigToFilter.addFilter("site.siteID",this.selectedSite, "="); 
+                this.collectionConfigToFilter.addFilter(this.filterPropertyIdentifier, this.selectedSite, "="); 
                 break; 
+        }
+        if(this.withTypeahead && this.typeaheadDataKey != null){
+            this.typeaheadService.getData(this.typeaheadDataKey);
+        }
+        if(this.inListingDisplay && this.listingID != null){
+            this.listingService.getCollection(this.listingID);
         }
     }
 
@@ -78,7 +89,10 @@ class SWSiteSelector implements ng.IDirective{
     
     public bindToController = {
         inListingDisplay:"=?",
-        collectionConfigToFilter:"=?"
+        filterPropertyIdentifier:"@?",
+        collectionConfigToFilter:"=?",
+        withTypeahead:"=?", 
+        typeaheadDataKey:"@?"
     };
     
     public controller=SWSiteSelectorController;
@@ -120,12 +134,21 @@ class SWSiteSelector implements ng.IDirective{
     }
 
     public link:ng.IDirectiveLinkFn = ($scope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
-        if(!$scope.swSiteSelector.inListingDisplay && this.scopeService.hasParentScope($scope, "swListingDisplay")){
+        if($scope.swSiteSelector.withTypeahead == null){
+            $scope.swSiteSelector.withTypeahead = false; 
+        }
+        if($scope.swSiteSelector.inListingDisplay == null){
+            $scope.swSiteSelector.inListingDisplay = !$scope.swSiteSelector.withTypeahead; 
+        }
+        if($scope.swSiteSelector.inListingDisplay == true && this.scopeService.hasParentScope($scope, "swListingDisplay")){
             var listingDisplayScope = this.scopeService.locateParentScope($scope, "swListingDisplay")["swListingDisplay"]; 
+            console.log("looking for collection config", listingDisplayScope.collectionConfig)
             if(listingDisplayScope.collectionConfig != null){
                 $scope.swSiteSelector.collectionConfigToFilter = listingDisplayScope.collectionConfig;
+                $scope.swSiteSelector.listingID = listingDisplayScope.tableID; 
             }
         }
+        $scope.swSiteSelector.selectSite(); 
     }
 }
 
