@@ -87,7 +87,12 @@
 		}
 
 		public any function formatValue_decimal(required string value){
-			return numberFormat(arguments.value,'_.__');
+			if(isNumeric(arguments.value)){
+				return numberFormat(arguments.value,'_.__');	
+			}else{
+				//used in cases such as string "N/A"
+				return arguments.value;				
+			}
 		}
 
 		public any function formatValue_second( required string value, struct formatDetails={} ) {
