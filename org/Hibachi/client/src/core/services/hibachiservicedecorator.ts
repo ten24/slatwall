@@ -58,31 +58,15 @@ class HibachiServiceDecorator{
                             processObjectInstance.data[entity.className.charAt(0).toLowerCase()+entity.className.slice(1)] = entityInstance;
                             entityInstance.processObject = processObjectInstance;
                         }else{
-                            entityInstance.$$init(response);
+                            if(entityInstance.populate){
+
+                                entityInstance.populate(response);
+                                console.log('entityInstance',entityInstance);
+                            }else{
+                                entityInstance.$$init(response);
+                            }
                         }
 
-                    });
-                    return {
-                        promise:entityDataPromise,
-                        value:entityInstance
-                    }
-                };
-
-
-                $delegate['get'+entity.className] = function(options){
-                    var entityInstance = $delegate.newEntity(entity.className);
-                    var entityDataPromise = $delegate.getEntity(entity.className,options);
-                    entityDataPromise.then(function(response){
-
-                        if(angular.isDefined(response.processData)){
-                            entityInstance.$$init(response.data);
-                            var processObjectInstance = $delegate['new'+entity.className+options.processContext.charAt(0).toUpperCase()+options.processContext.slice(1)]();
-                            processObjectInstance.$$init(response.processData);
-                            processObjectInstance.data[entity.className.charAt(0).toLowerCase()+entity.className.slice(1)] = entityInstance;
-                            entityInstance.processObject = processObjectInstance;
-                        }else{
-                            entityInstance.$$init(response);
-                        }
                     });
                     return {
                         promise:entityDataPromise,
@@ -91,6 +75,17 @@ class HibachiServiceDecorator{
                 };
 
                 $delegate['new'+entity.className] = function(){
+                    //if we have the service then get the new instance from that
+
+                    var entityName = entity.className;
+                    var serviceName = entityName.charAt(0).toLowerCase()+entityName.slice(1)+'Service';
+
+                    if(angular.element(document.body).injector().has(serviceName)){
+                        var entityService = angular.element(document.body).injector().get(serviceName);
+
+                        return entityService['new'+entity.className]();
+                    }
+
                     return $delegate.newEntity(entity.className);
                 };
 
@@ -781,6 +776,7 @@ class HibachiServiceDecorator{
                     //timeoutPromise.valid = modifiedData.valid;
                     if(modifiedData.valid){
                         var params:any = {};
+
                         params.serializedJsonData = angular.toJson(modifiedData.value);
                         //if we have a process object then the context is different from the standard save
                         var entityName = '';

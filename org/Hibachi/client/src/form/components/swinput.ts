@@ -55,6 +55,7 @@ class SWInputController{
 
 	//@ngInject
 	constructor(
+		public $timeout,
         public $scope,
 		public $log,
 		public $compile,
@@ -64,6 +65,7 @@ class SWInputController{
         public rbkeyService,
 		public observerService:ObserverService
 	){
+		this.$timeout = $timeout;
         this.$scope = $scope;
 		this.utilityService = utilityService;
 		this.$hibachi = $hibachi;
@@ -76,6 +78,18 @@ class SWInputController{
 
 	public onSuccess = ()=>{
 		console.log('swinpusuccess');
+		this.$timeout(()=>{
+			this.utilityService.setPropertyValue(this.swForm.object,this.property,this.value);
+			if(this.swPropertyDisplay){
+				this.utilityService.setPropertyValue(this.swPropertyDisplay.object,this.property,this.value);
+			}
+			if(this.swfPropertyDisplay){
+				this.utilityService.setPropertyValue(this.swfPropertyDisplay.object,this.property,this.value);
+				this.swfPropertyDisplay.editing = false;
+			}
+			this.utilityService.setPropertyValue(this.swFormField.object,this.property,this.value);
+
+		});
 	}
 
 	public getValidationDirectives = ()=>{
@@ -268,10 +282,8 @@ class SWInputController{
 		}
 
 		//attach a successObserver
-		console.log('swinputobject',this.object);
 		if(this.object){
 			this.eventNameForObjectSuccess = this.object.metaData.className.split('_')[0]+this.context+'Success';
-			console.log(this.eventNameForObjectSuccess);
 			this.observerService.attach(this.onSuccess,this.eventNameForObjectSuccess,this.eventNameForObjectSuccess+this.property);
 		}
 

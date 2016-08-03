@@ -5,6 +5,7 @@ import {BaseObject} from "../baseobject";
 import {HibachiService} from "../../services/hibachiservice";
 import {HibachiValidationService} from "../../services/hibachivalidationservice";
 import {EntityService} from "../../services/entityService";
+import {UtilityService} from "../../services/utilityService";
 
 abstract class BaseTransient extends BaseObject{
 
@@ -15,11 +16,13 @@ abstract class BaseTransient extends BaseObject{
     public entityService:EntityService;
     public metaData:Object;
     public data:any;
+    public utilityService:UtilityService;
 
     constructor($injector){
         super($injector);
         this.$hibachi = <HibachiService>this.getService('$hibachi');
         this.hibachiValidationService = <HibachiValidationService>this.getService('hibachiValidationService');
+        this.utilityService = <UtilityService>this.getService('utilityService');
         this.entityService = <EntityService>this.getService('entityService');
     }
 
@@ -28,10 +31,13 @@ abstract class BaseTransient extends BaseObject{
         if(response.data){
             data= response.data;
         }
+        console.log('databefore',data);
+        data = this.utilityService.nvpToObject(data);
+        console.log('dataafter',data);
 
         for(var key in data){
-
             let propertyIdentifier = key.replace(this.className.toLowerCase()+'.','');
+            console.log('pid',propertyIdentifier);
 			let propertyIdentifierArray = propertyIdentifier.split('.');
 			let propertyIdentifierKey = propertyIdentifier.replace(/\./g,'_');
             let currentEntity = this;
@@ -43,8 +49,6 @@ abstract class BaseTransient extends BaseObject{
                     if(propertyKey === propertyIdentifierArray.length-1){
                         //if is json
                         //if(currentEntity.metaData[key]){
-
-
                         //if propertyidentifier
                        // }else{
                             if(angular.isObject(data[key]) && currentEntity.metaData[property].fieldtype && currentEntity.metaData[property].fieldtype === 'many-to-one'){
@@ -147,8 +151,6 @@ abstract class BaseTransient extends BaseObject{
 			}
 		}
     }
-
-
 
     public getError=(errorName:string)=>{
         return this.getErrorByErrorName(errorName);

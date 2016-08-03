@@ -38,10 +38,12 @@ class SWFormController {
         public $timeout,
         public observerService,
         public $rootScope,
-        public entityService
+        public entityService,
+        public utilityService
     ){
         /** only use if the developer has specified these features with isProcessForm */
         this.$hibachi = $hibachi;
+        this.utilityService = utilityService;
         if(angular.isUndefined(this.isDirty)){
             this.isDirty = false;
         }
@@ -276,10 +278,10 @@ class SWFormController {
 
             /** Check for form elements that have a name that doesn't start with $ */
             if (angular.isString(val)) {
-                this.formData[key] = val;
+                this.utilityService.setPropertyValue(this.formData,key,val);
             }
         });
-
+		console.log('formData',this.formData);
         return this.formData || "";
     }
 }
