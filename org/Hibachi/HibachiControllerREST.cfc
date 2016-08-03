@@ -75,9 +75,24 @@ component output="false" accessors="true" extends="HibachiController" {
     }
 
     public void function getConfig(required struct rc){
-    	var config = getService('HibachiSessionService').getConfig();
-    	config[ 'modelConfig' ] = getModel(arguments.rc);
-    	arguments.rc.apiResponse.content['data'] = config;
+    	var responseValue = {};
+    	if(!getService('HibachiCacheService').hasCachedValue('HibachiControllerRest_getConfig')){
+    		var config = {};
+    		config = getService('HibachiSessionService').getConfig();
+    		config[ 'modelConfig' ] = getModel(arguments.rc);
+    		responseValue['data'] = config;
+    		responseValue = serializeJson(responseValue);
+    		getService('HibachiCacheService').setCachedValue('HibachiControllerRest_getConfig',responseValue);
+    	}else{
+    		responseValue = getService('HibachiCacheService').getCachedValue('HibachiControllerRest_getConfig');
+    	}
+    	var context = getPageContext();
+		context.getOut().clearBuffer();
+		var response = context.getResponse();
+    	
+    	response.setHeader('Content-Type',"application/json");
+    	
+    	writeOutput(responseValue);abort;
     }
 
     public void function getInstantiationKey(required struct rc){
@@ -478,7 +493,7 @@ component output="false" accessors="true" extends="HibachiController" {
 
     private any function getModel(required struct rc){
         var model = {};
-        if(!getHibachiScope().hasApplicationValue('objectModel')){
+        if(!getService('HibachiCacheService').hasCachedValue('objectModel')){
             var entities = [];
             var processContextsStruct = rc.$[#getDao('hibachiDao').getApplicationKey()#].getService('hibachiService').getEntitiesProcessContexts();
             var entitiesListArray = listToArray(structKeyList(rc.$[#getDao('hibachiDao').getApplicationKey()#].getService('hibachiService').getEntitiesMetaData()));
@@ -506,9 +521,11 @@ component output="false" accessors="true" extends="HibachiController" {
             }
 
             ORMClearSession();
-            getHibachiScope().setApplicationValue('objectModel',model);
+            getService('HibachiCacheService').setCachedValue('objectModel',model);
+        }else{
+        	model = getService('HibachiCacheService').getCachedValue('objectModel');
         }
-        model = getHibachiScope().getApplicationValue('objectModel');
+        
         return model;
     }
 
