@@ -73,7 +73,7 @@ class SWDraggableContainer implements ng.IDirective{
         
         angular.element(element).attr("draggable", "true");
 
-        var placeholderElement = angular.element("<tr class='s-placeholder'><td></td><td>placeholder</td><td>placeholder</td><td>placeholder</td><td>placeholder</td><td>placeholder</td></tr>");//temporarirly hardcoding tds so it will show up
+        var placeholderElement = angular.element("<tr class='s-placeholder'><td>placeholder</td><td>placeholder</td><td>placeholder</td><td>placeholder</td></tr>");//temporarirly hardcoding tds so it will show up
         
         var id = angular.element(element).attr("id");
         if (!id) {

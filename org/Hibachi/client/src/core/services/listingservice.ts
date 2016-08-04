@@ -9,6 +9,7 @@ class ListingService{
                 private $q,
                 private collectionConfigService,
                 private filterService,
+                private historyService,
                 private observerService,
                 private rbkeyService, 
                 private selectionService,
@@ -27,6 +28,10 @@ class ListingService{
         return listingID + "orderByChanged"; 
     }
 
+    public getListingInitiatedEventString = (listingID:string) =>{
+        return listingID + "initiated"; 
+    }
+
     public notifyListingPageRecordsUpdate = (listingID:string) =>{
         this.observerService.notify(this.getListingPageRecordsUpdateEventString(listingID), listingID);
     }
@@ -38,11 +43,19 @@ class ListingService{
     public attachToOrderByChangedUpdate = (listingID:string, callback, id:string) =>{
         this.observerService.attach(callback, this.getListingOrderByChangedEventString(listingID), id);
     }
+
+    public attachToListingInitiated = (listingID:string, callback) =>{
+        this.observerService.attach(callback, this.getListingInitiatedEventString(listingID));  
+        if(this.historyService.hasHistory(this.getListingInitiatedEventString(listingID))){
+            callback();
+        }
+    }
     //End Event Functions
 
     //core getters and setters
     public setListingState = (listingID:string, state) =>{
         this.listingDisplays[listingID] = state; 
+        this.observerService.notifyAndRecord(this.getListingInitiatedEventString(listingID)); 
     }
 
     public getListing = (listingID:string) => {
@@ -725,8 +738,11 @@ class ListingService{
 
     //for manual sort
     public setManualSort = (listingID:string, toggle:boolean) =>{
+        console.log("set manual sort")
         this.getListing(listingID).sortable = toggle; 
-        //probably need to do something here with collection config 
+        if(toggle){
+            this.setSingleColumnOrderBy(listingID, "sortOrder", "ASC");  
+        }
     }
 
     //for single column order by

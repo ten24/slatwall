@@ -22,17 +22,16 @@ class SWOrderByControlsController {
 
     // @ngInject
     constructor( private listingService, private observerService, private utilityService ){
-            if(angular.isDefined(this.collectionConfig)){
+            if( angular.isDefined(this.collectionConfig) ){
                  this.columns = this.collectionConfig.columns; 
             } 
-            if(angular.isDefined(this.initialSortDefaultDirection) && this.initialSortDefaultDirection.length > 0){
+            if( angular.isDefined(this.initialSortDefaultDirection) && this.initialSortDefaultDirection.length > 0){
                 this.sortCode = this.initialSortDefaultDirection; 
             }
-            if(angular.isDefined(this.initialSortProperty) && this.initialSortProperty.length > 0){
-                console.log("setting initialSortProperty", this.initialSortProperty)
+            if( angular.isDefined(this.initialSortProperty) && this.initialSortProperty.length > 0){
                 this.selectedPropertyIdentifier = this.initialSortProperty;
             }
-            this.id = this.utilityService.createID(32); 
+            this.id = this.utilityService.createID(32);  
     }
 
     public updateSortOrderProperty = ():void =>{
@@ -123,6 +122,7 @@ class SWOrderByControls implements ng.IDirective{
     // @ngInject
     constructor( public $compile, 
                  private scopeService, 
+                 private listingService,
                  private corePartialsPath,
                  hibachiPathBuilder
     ){
@@ -137,6 +137,7 @@ class SWOrderByControls implements ng.IDirective{
                 ){
                     var listingDisplayScope = this.scopeService.locateParentScope($scope,"swListingDisplay")["swListingDisplay"];
                     $scope.swOrderByControls.listingId = listingDisplayScope.tableID; 
+                     this.listingService.attachToListingInitiated($scope.swOrderByControls.listingId, $scope.swOrderByControls.updateOrderBy); 
                     if( $scope.swOrderByControls.collectionConfig == null && 
                         listingDisplayScope.collectionConfig != null
                     ){
@@ -154,16 +155,18 @@ class SWOrderByControls implements ng.IDirective{
         var directive:ng.IDirectiveFactory = (
             $compile
             ,scopeService 
+            ,listingService
             ,corePartialsPath
             ,hibachiPathBuilder
 
         )=> new SWOrderByControls(
             $compile
             ,scopeService
+            ,listingService
             ,corePartialsPath
             ,hibachiPathBuilder
         );
-        directive.$inject = ["$compile","scopeService","corePartialsPath",
+        directive.$inject = ["$compile","scopeService","listingService","corePartialsPath",
             "hibachiPathBuilder"];
         return directive;
     }
