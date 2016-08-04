@@ -1,7 +1,7 @@
-@import url("../../../org/Hibachi/client/lib/selectBoxIt/selectBoxIt.css");
 /*Import plugins*/
+@import url("../../../org/Hibachi/client/lib/selectBoxIt/selectBoxIt.css");
 .btn-ten24 {
-  background-color: #f58620;
+  background-color: #F58620;
   border-color: #f1790b;
   color: #ffffff;
 }
@@ -25,7 +25,7 @@ fieldset[disabled] .btn-ten24:hover,
 fieldset[disabled] .btn-ten24:focus,
 fieldset[disabled] .btn-ten24:active,
 fieldset[disabled] .btn-ten24.active {
-  background-color: #f58620;
+  background-color: #F58620;
 }
 .btn-default {
   background-color: #f2f2f2;
@@ -303,7 +303,7 @@ input[type="file"] {
 }
 /*Global*/
 body {
-  background-color: #f7f7f7;
+  background-color: #F7F7F7;
   font-family: 'Open Sans', sans-serif;
   color: #666666;
   padding-top: 60px;
@@ -736,7 +736,7 @@ label {
 }
 label.error {
   font-family: "open_sansregular", Helvetica, Arial, sans-serif;
-  color: #da5757;
+  color: #DA5757;
 }
 input[type="file"] {
   display: block;
@@ -830,7 +830,7 @@ input[type="file"] {
   border-color: #e6e6e6;
 }
 .agenda button:hover {
-  border-color: #f58620;
+  border-color: #F58620;
 }
 .agenda .agenda-date {
   width: 170px;
@@ -855,10 +855,10 @@ input.ng-invalid.ng-touched,
 select.ng-invalid.ng-touched,
 input.error,
 select.error {
-  border-color: #da5757 !important;
+  border-color: #DA5757 !important;
 }
 .error.help-block {
-  color: #da5757 !important;
+  color: #DA5757 !important;
 }
 /* Login */
 #j-forgot-password-wrapper {
@@ -1241,7 +1241,7 @@ select.error {
   color: #999;
 }
 .table i.s-listing-arrow:hover {
-  color: #000000;
+  color: #000;
 }
 .s-property-info .table > thead > tr > th,
 .table > tbody > tr > th,
@@ -1569,7 +1569,7 @@ select:focus {
 .navbar-inverse .navbar-nav > .open > a,
 .navbar-inverse .navbar-nav > .open > a:hover,
 .navbar-inverse .navbar-nav > .open > a:focus {
-  background-color: #1b1e24;
+  background-color: #1B1E24;
 }
 #slatwall-navbar {
   min-height: 60px;
@@ -1687,7 +1687,7 @@ select:focus {
 .dropdown-menu > .active > a,
 .dropdown-menu > .active > a:hover,
 .dropdown-menu > .active > a:focus {
-  background-color: #f58620;
+  background-color: #F58620;
 }
 .s-filter-content {
   padding-right: 0px;
@@ -1775,12 +1775,12 @@ table .s-edit-elements a:hover {
 .dropdown-menu li.active > a:hover,
 .dropdown-menu li > a:hover {
   background-color: #FC770D;
-  background-image: -moz-linear-gradient(top, #f58620, #f58620);
-  background-image: -ms-linear-gradient(top, #f58620, #f58620);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f58620), to(#f58620));
-  background-image: -webkit-linear-gradient(top, #f58620, #f58620);
-  background-image: -o-linear-gradient(top, #f58620, #f58620);
-  background-image: linear-gradient(top, #f58620, #f58620);
+  background-image: -moz-linear-gradient(top, #F58620, #F58620);
+  background-image: -ms-linear-gradient(top, #F58620, #F58620);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#F58620), to(#F58620));
+  background-image: -webkit-linear-gradient(top, #F58620, #F58620);
+  background-image: -o-linear-gradient(top, #F58620, #F58620);
+  background-image: linear-gradient(top, #F58620, #F58620);
   color: #ffffff !important;
 }
 .nav-tabs {
@@ -1862,7 +1862,7 @@ table .s-edit-elements a:hover {
   background: #F2F2F2;
 }
 .btn-group-vertical .btn-default:hover {
-  background-color: #f58620;
+  background-color: #F58620;
   color: #ffffff;
   border-color: #DB771F;
 }
@@ -2035,7 +2035,7 @@ table .s-edit-elements a:hover {
   z-index: 2000;
 }
 .s-add-filter-secondary-layout > .s-close:hover {
-  color: #da5757;
+  color: #DA5757;
 }
 .s-add-filter-secondary-layout.s-add-filter .s-option-group {
   opacity: .4;
@@ -2885,7 +2885,7 @@ tabel .s-table-header {
   border: none !important;
 }
 .s-j-draggablePanelList .s-remove.active {
-  background-color: #da5757 !important;
+  background-color: #DA5757 !important;
   color: #ffffff !important;
 }
 .s-j-draggablePanelList .s-sort-num {
@@ -3147,7 +3147,7 @@ tabel .s-table-header {
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  background-color: #da5757;
+  background-color: #DA5757;
   color: #ffffff !important;
 }
 .s-body-nav {
@@ -3950,7 +3950,7 @@ tabel .s-table-header {
   background-color: #f2f2f2;
 }
 .s-order-item-table .s-actions .s-remove-btn:hover {
-  background-color: #da5757;
+  background-color: #DA5757;
   color: #ffffff;
 }
 .s-order-item-table a.s-edit-link,
@@ -4270,7 +4270,7 @@ a[data-toggle="collapse"] {
 .navbar-s-navbar-ten24 li.s-total {
   height: 40px;
   font-size: 16px;
-  background-color: #5cb85c;
+  background-color: #5CB85C;
   font-family: "open_sanssemibold", Helvetica, Arial, sans-serif;
   color: #FFF;
   padding: 9px;
@@ -4299,7 +4299,7 @@ a[data-toggle="collapse"] {
   background: none !important;
 }
 .dropdown-menu li a.btn-disabled:hover {
-  color: #cccccc !important;
+  color: #CCC !important;
 }
 .navbar-s-navbar-ten24 {
   background-image: none;
@@ -4309,7 +4309,7 @@ a[data-toggle="collapse"] {
   background-image: none;
 }
 .navbar-s-navbar-ten24 {
-  border-: #f58620;
+  border-: #F58620;
 }
 .dropdown-menu > li > a {
   color: #000000;
@@ -4319,16 +4319,16 @@ a[data-toggle="collapse"] {
   color: #ffffff;
 }
 .navbar-s-navbar-ten24 .navbar-nav > .dropdown > a .caret {
-  border-top-color: #f58620;
+  border-top-color: #F58620;
 }
 .navbar-s-navbar-ten24 .navbar-nav > .dropdown > a:hover .caret {
-  border-top-color: #f58620;
+  border-top-color: #F58620;
 }
 .navbar-s-navbar-ten24 .navbar-nav > .dropdown > a .caret {
-  border-bottom-color: #f58620;
+  border-bottom-color: #F58620;
 }
 .navbar-s-navbar-ten24 .navbar-nav > .dropdown > a:hover .caret {
-  border-bottom-color: #f58620;
+  border-bottom-color: #F58620;
 }
 .s-no-padding-left {
   padding-left: 0px;
@@ -4341,7 +4341,7 @@ a[data-toggle="collapse"] {
   margin-bottom: 36px;
   display: inline-block;
   width: 100%;
-  background-color: #f7f7f7;
+  background-color: #F7F7F7;
   padding-bottom: 20px;
 }
 .s-create-window .s-pannel-group {
@@ -4958,7 +4958,7 @@ a.disabled > i.hibachi-ui-radio-checked {
   height: 100%;
   width: 100%;
   z-index: 3001;
-  background-color: #f7f7f7 !important;
+  background-color: #F7F7F7 !important;
 }
 .s-dialog-container > .s-swipe-background {
   position: fixed;
@@ -4984,7 +4984,7 @@ a.disabled > i.hibachi-ui-radio-checked {
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
   border: none;
-  box-shadow: 0px -2px 9px #888888;
+  box-shadow: 0px -2px 9px #888;
 }
 .s-dialog-container .s-dialog-footer {
   position: fixed;
@@ -5000,7 +5000,7 @@ a.disabled > i.hibachi-ui-radio-checked {
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
   z-index: 3000;
-  box-shadow: -3px 2px 9px #888888;
+  box-shadow: -3px 2px 9px #888;
   border: 0px;
 }
 .s-dialog-container .s-create-window-footer {
@@ -5051,7 +5051,7 @@ a.disabled > i.hibachi-ui-radio-checked {
   color: #666666;
 }
 .s-dialog-header .navbar-nav li a:hover {
-  background-color: #da5757;
+  background-color: #DA5757;
   color: #ffffff;
   border-radius: 0px;
 }
@@ -5403,7 +5403,7 @@ a.disabled > i.hibachi-ui-radio-checked {
   right: 68px;
 }
 .s-select-list-wrapper .s-input-btn span:hover {
-  color: #da5757;
+  color: #DA5757;
 }
 .s-select-list-wrapper .input-group-btn button.btn-default {
   border-top: 1px solid #cccccc;
@@ -6044,7 +6044,7 @@ a.disabled > i.hibachi-ui-radio-checked {
   height: 0;
   border-style: solid;
   border-width: 24px 0 24px 6px;
-  border-color: rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) #cbdcea;
+  border-color: rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) #CBDCEA;
   position: absolute;
   right: -7px;
   z-index: 2;
@@ -6056,7 +6056,7 @@ a.disabled > i.hibachi-ui-radio-checked {
   height: 0;
   border-style: solid;
   border-width: 24px 0 24px 6px;
-  border-color: rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) #cbdcea;
+  border-color: rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) #CBDCEA;
   position: absolute;
   right: -7px;
   z-index: 2;
@@ -6578,7 +6578,7 @@ table.s-detail-content-table tbody tr.s-done {
     color: #000000;
   }
   #slatwall-primary-nav .dropdown-menu a:hover {
-    background-color: #f58620;
+    background-color: #F58620;
     color: #ffffff;
   }
 }

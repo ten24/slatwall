@@ -627,9 +627,12 @@
 				<li><a href="##" class="show-option" data-show="25">25</a></li>
 				<li><a href="##" class="show-option" data-show="50">50</a></li>
 				<li><a href="##" class="show-option" data-show="100">100</a></li>
-				<li><a href="##" class="show-option" data-show="500">500</a></li>
-				<li><a href="##" class="show-option" data-show="ALL">ALL</a></li>
-
+				<li><a href="##" class="show-option" data-show="250">250</a></li>
+				<cfif attributes.hibachiScope.setting('globalSmartListGetAllRecordsLimit') eq 0 
+					|| attributes.hibachiScope.setting('globalSmartListGetAllRecordsLimit') gte attributes.smartList.getRecordsCount()
+				>
+					<li><a href="##" class="show-option" data-show="ALL">ALL</a></li>
+				</cfif>
 				<cfif attributes.smartList.getCurrentPage() gt 1>
 					<li><a href="##" class="listing-pager page-option prev" data-page="#attributes.smartList.getCurrentPage() - 1#">&laquo;</a></li>
 				<cfelse>

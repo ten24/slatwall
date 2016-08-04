@@ -201,6 +201,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalAdminDomainNames = {fieldtype="text"},
 			globalClientSecret = {fieldtype="text",defaultValue="#createUUID()#"},
 			globalDisplayIntegrationProcessingErrors = {fieldtype="yesno", defaultValue=1},
+			globalSmartListGetAllRecordsLimit = {fieldType="text",defaultValue=250},
 
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
