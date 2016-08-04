@@ -28,16 +28,17 @@ abstract class BaseTransient extends BaseObject{
 
     public populate = (response)=>{
         var data = response;
+
         if(response.data){
             data= response.data;
         }
-        console.log('databefore',data);
+
         data = this.utilityService.nvpToObject(data);
-        console.log('dataafter',data);
+
 
         for(var key in data){
             let propertyIdentifier = key.replace(this.className.toLowerCase()+'.','');
-            console.log('pid',propertyIdentifier);
+
 			let propertyIdentifierArray = propertyIdentifier.split('.');
 			let propertyIdentifierKey = propertyIdentifier.replace(/\./g,'_');
             let currentEntity = this;

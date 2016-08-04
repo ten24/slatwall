@@ -77,7 +77,7 @@ class SWInputController{
 	}
 
 	public onSuccess = ()=>{
-		console.log('swinpusuccess');
+
 		this.$timeout(()=>{
 			this.utilityService.setPropertyValue(this.swForm.object,this.property,this.value);
 			if(this.swPropertyDisplay){

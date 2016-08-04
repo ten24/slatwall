@@ -31,7 +31,7 @@ class PublicRequest extends Request{
 
             for(var i in this.successfulActions){
                 let successfulAction:string = this.successfulActions[i];
-                console.log('successfulAction',successfulAction);
+
 
                 this.observerService.notify(successfulAction.split('.')[1]+'Success',result.data);
             }

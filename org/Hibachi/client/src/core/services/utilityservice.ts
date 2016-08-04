@@ -244,19 +244,19 @@ class UtilityService extends BaseService{
     public setPropertyValue=(object, propertyIdentifier,value):void=> {
 
         var keys = propertyIdentifier.split('.'), obj = object, keyPart;
-        console.log('keys',keys);
+
 
         while ((keyPart = keys.shift()) && keys.length) {
             if(!obj[keyPart]){
                 obj[keyPart] = {};
             }
             obj = obj[keyPart];
-            console.log('obj',obj);
+
         }
         obj[keyPart] = value;
-        console.log('keyPart',keyPart);
-        console.log('setProper',obj);
-        console.log('setprop',object);
+
+
+
     };
 
     public nvpToObject=(NVPData):{}=>{
@@ -266,7 +266,7 @@ class UtilityService extends BaseService{
             var propertyIdentitifer = key.replace(/\_/g,'.');
             this.setPropertyValue(object,propertyIdentitifer,value);
 
-            console.log('value',value);
+
         }
         return object;
     };

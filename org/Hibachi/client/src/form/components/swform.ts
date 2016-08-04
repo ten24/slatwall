@@ -260,28 +260,29 @@ class SWFormController {
     /** returns all the data from the form by iterating the form elements */
     public getFormData = ()=>
     {
-        var iterable = this.object;
+        var iterable = this.formCtrl;
 
-        if(this.object.data){
-            iterable = this.object.data;
-        }
 
         angular.forEach(iterable, (val, key) => {
-            if(this.object.forms && this.object.forms[this.name][key]){
+
+            if(typeof val === 'object' && val.hasOwnProperty('$modelValue')){
                 if(this.object.forms[this.name][key].$modelValue){
                     val = this.object.forms[this.name][key].$modelValue;
                 }else if(this.object.forms[this.name][key].$viewValue){
                     val = this.object.forms[this.name][key].$viewValue;
                 }
-
-            }
-
-            /** Check for form elements that have a name that doesn't start with $ */
-            if (angular.isString(val)) {
-                this.utilityService.setPropertyValue(this.formData,key,val);
+                /** Check for form elements that have a name that doesn't start with $ */
+                if (angular.isString(val)) {
+                    this.formData[key] = val;
+                }
+                if(val.$modelValue){
+                    this.formData[key] = val.$modelValue;
+                }else if(val.$viewValue){
+                    this.formData[key] = val.$viewValue;
+                }
             }
         });
-		console.log('formData',this.formData);
+
         return this.formData || "";
     }
 }

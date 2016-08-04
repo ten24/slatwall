@@ -61,7 +61,7 @@ class HibachiServiceDecorator{
                             if(entityInstance.populate){
 
                                 entityInstance.populate(response);
-                                console.log('entityInstance',entityInstance);
+
                             }else{
                                 entityInstance.$$init(response);
                             }

@@ -118,7 +118,7 @@ class PublicService {
     public getStates=(countryCode:string):any =>  {
        if (!angular.isDefined(countryCode)) countryCode = "US";
        let urlBase = '/index.cfm/api/scope/getStateCodeOptionsByCountryCode/';
-       return this.getData(urlBase, "states", "&countryCode="+countryCode);
+       return this.getData(urlBase, "states", "?countryCode="+countryCode);
     }
 
     /** accessors for states */

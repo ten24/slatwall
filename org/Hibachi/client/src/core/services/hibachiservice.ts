@@ -195,8 +195,8 @@ class HibachiService{
 	};
 	newEntity= (entityName) =>{
 		var entityServiceName = entityName.charAt(0).toLowerCase()+entityName.slice(1)+'Service';
-		console.log('entityName',entityName);
-		console.log(angular.element(document.body).injector().has(entityServiceName));
+
+
 		if(angular.element(document.body).injector().has(entityServiceName)){
 			var entityService = angular.element(document.body).injector().get(entityServiceName);
 
