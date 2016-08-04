@@ -44,7 +44,7 @@
 	<cfparam name="attributes.autocompleteSelectedValueDetails" type="struct" default="#structNew()#" />
 	
 	<cfparam name="attributes.fieldAttributes" type="string" default="" />					<!--- hint: This is used to pass specific additional fieldAttributes when in edit mode --->
-	
+	<cfparam name="attributes.ignoreHTMLEditFormat" type="boolean" default="false" />
 	<!---
 		attributes.fieldType have the following options:
 		
