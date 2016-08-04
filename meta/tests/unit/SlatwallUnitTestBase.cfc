@@ -261,7 +261,7 @@ component extends="mxunit.framework.TestCase" output="false" {
 	private string function generateRandomString(minLength, maxLength) {
 		var chars = "abcdefghijklmnopqrstuvwxyz -_";
 		chars &= ucase(chars);
-		var upper = minLength + round(rand()*(maxLength - minLength));
+		var upper = arguments.minLength + round(rand()*(arguments.maxLength - arguments.minLength));
 
 		var returnString = "";
 		for(var i=1; i<=upper; i++ ) {
@@ -274,7 +274,30 @@ component extends="mxunit.framework.TestCase" output="false" {
 	}
 
 	private string function generateRandomInteger(minVal, maxVal) {
-		return 1;
+		if(arguments.maxVal == arguments.minVal) {
+			return arguments.minVal;
+		}
+		//Deal with invalid range
+		if(
+		   (arguments.maxVal - arguments.minVal < 0 ) 
+		   || (
+		   		arguments.maxVal - arguments.minVal < 1
+		   		&& arguments.minVal*arguments.maxVal >= 0 
+		   		&& fix(arguments.minVal) == fix(arguments.maxVal)
+		   	  )
+		  ) {
+			throw ('There is no integer between #arguments.minVal# and #arguments.maxVal#');
+		}
+		
+		var randomInteger = round(arguments.minVal+rand()*(arguments.maxVal - arguments.minVal));
+		
+		//Deal with rounded number go beyond the range
+		if(randomInteger > arguments.maxVal) {
+			return randomInteger - 1;
+		} else if(randomInteger < arguments.minVal) {
+			return randomInteger + 1;
+		}
+		return randomInteger;
 	}
 
 	private string function generateRandomDate() {
