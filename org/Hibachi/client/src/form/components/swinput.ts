@@ -9,6 +9,7 @@ import {SWPropertyDisplayController} from "./swpropertydisplay";
 import {SWFPropertyDisplayController} from "./swfpropertydisplay";
 import {SWFormFieldController} from "./swformfield";
 import {ObserverService} from "../../core/services/observerService";
+import {MetaDataService} from "../../core/services/metadataService";
 //defines possible eventoptions
 type EventHandler = "blur" |
 	"change" |
@@ -63,7 +64,8 @@ class SWInputController{
 		public $injector,
 		public utilityService,
         public rbkeyService,
-		public observerService:ObserverService
+		public observerService:ObserverService,
+		public metadataService:MetaDataService
 	){
 		this.$timeout = $timeout;
         this.$scope = $scope;
@@ -73,7 +75,7 @@ class SWInputController{
 		this.$log = $log;
 		this.$injector = $injector;
 		this.observerService = observerService;
-
+		this.metadataService = metadataService;
 	}
 
 	public onSuccess = ()=>{
@@ -97,12 +99,29 @@ class SWInputController{
 		var name = this.property;
 		var form = this.form;
 		this.$log.debug("Name is:" + name + " and form is: " + form);
+
+		if(this.metadataService.isAttributePropertyByEntityAndPropertyIdentifier(this.object,this.propertyIdentifier)){
+			this.object.validations.properties[name] = [];
+			if(this.object.metaData[this.property].requiredFlag && this.object.metaData[this.property].requiredFlag.trim().toLowerCase()=="yes"){
+				this.object.validations.properties[name].push({
+					contexts:"save",
+					required:true
+				});
+			}
+			if(this.object.metaData[this.property].validationRegex){
+				this.object.validations.properties[name].push({
+					contexts:"save",regex:this.object.metaData[this.property].validationRegex
+				});
+			}
+		}
+
 		if(angular.isUndefined(this.object.validations )
 			|| angular.isUndefined(this.object.validations.properties)
 			|| angular.isUndefined(this.object.validations.properties[this.property])){
 			return '';
 		}
 		var validations = this.object.validations.properties[this.property];
+
 		this.$log.debug("Validations: ", validations);
 		this.$log.debug(this.form);
 		var validationsForContext = [];
@@ -118,6 +137,7 @@ class SWInputController{
 		this.$log.debug(formName);
 		//get the validations for the current element.
 		var propertyValidations = this.object.validations.properties[name];
+
 		/*
 		* Investigating why number inputs are not working.
 		* */

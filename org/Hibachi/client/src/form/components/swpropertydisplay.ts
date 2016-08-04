@@ -1,5 +1,6 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+import {MetaDataService} from "../../core/services/metadataservice";
 
 class SWPropertyDisplayController {
     private applyFilter;
@@ -34,8 +35,6 @@ class SWPropertyDisplayController {
 	public propertyDisplay;
     public edit:boolean;
 
-
-
 	public value;
 	public submit;
 	public labelText;
@@ -48,16 +47,17 @@ class SWPropertyDisplayController {
     public swForm;
     public selected;
 
-
     //@ngInject
     constructor(
         public $filter,
         public utilityService,
-        public $injector
+        public $injector,
+        public metadataService:MetaDataService
     ){
         this.$filter = $filter;
         this.utilityService = utilityService;
         this.$injector = $injector;
+        this.metadataService = metadataService;
 
     }
 
@@ -112,6 +112,19 @@ class SWPropertyDisplayController {
         this.editing = this.editing || this.edit;
 
         //swfproperty logic
+         if(angular.isUndefined(this.type) && this.object && this.object.metaData){
+            this.type = this.metadataService.getPropertyFieldType(this.object,this.propertyIdentifier);
+        }
+
+        if(angular.isUndefined(this.hint) && this.object && this.object.metaData){
+            this.hint = this.metadataService.getPropertyHintByObjectAndPropertyIdentifier(this.object,this.propertyIdentifier);
+        }
+
+        if(angular.isUndefined(this.title) && this.object && this.object.metaData){
+            this.labelText = this.metadataService.getPropertyTitle(this.object,this.propertyIdentifier);
+        }
+
+        console.log(this.object.metaData.className,this.title);
 
 		this.type                	= this.type || "text" ;
 		this.class			   	= this.class|| "form-control";
@@ -143,23 +156,11 @@ class SWPropertyDisplayController {
 
 
 
-		/** handle turning the options into an array of objects */
+        /** handle turning the options into an array of objects */
 		/** handle setting the default value for the yes / no element  */
 		if (this.type=="yesno" && (this.value && angular.isString(this.value))){
 			this.selected == this.value;
 		}
-
-        if(angular.isUndefined(this.fieldType) && this.object && this.object.metaData && this.object.metaData[this.property]){
-            this.fieldType = this.object.metaData.$$getPropertyFieldType(this.propertyIdentifier);
-        }
-
-        if(angular.isUndefined(this.hint) && this.object && this.object.metaData && this.object.metaData[this.property]){
-            this.hint = this.object.metaData.$$getPropertyHint(this.propertyIdentifier);
-        }
-
-        if(angular.isUndefined(this.title) && this.object && this.object.metaData && this.object.metaData[this.property]){
-            this.title = this.object.metaData.$$getPropertyTitle(this.propertyIdentifier);
-        }
 
     };
 }
