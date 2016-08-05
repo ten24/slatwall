@@ -106,6 +106,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="productBundlePrice" persistent="false" hb_formatType="currency";
 	property name="productBundleGroupPrice" persistent="false" hb_formatType="currency";
 	property name="salePrice" type="struct" persistent="false";
+	property name="isRootOrderItem" persistent="false";
 
 
 	public numeric function getNumberOfUnassignedGiftCards(){
@@ -191,6 +192,10 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
             return quantity >= getSku().setting('skuOrderMinimumQuantity');
         }
         return true;
+    }
+
+    public boolean function isRootOrderItem(){
+    	return isNull(this.getParentOrderItem());
     }
 
 	public string function getOrderStatusCode(){
@@ -315,12 +320,12 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		if(isNull(arguments.orderItem)){
 			arguments.orderItem = this;
 		}
-		
+
 		var amountType = "skuPrice";//default
 		if (!isNull(arguments.orderItem.getProductBundleGroup())){
 			amountType = arguments.orderItem.getProductBundleGroup().getAmountType();
 		}
-		
+
 		//fixed
 		if(amountType == 'fixed'){
 			return arguments.orderItem.getProductBundleGroup().getAmount();
