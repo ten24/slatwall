@@ -98,12 +98,25 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertFalse(variables.dao.getPeerOrderPaymentNullAmountExistsFlag(order2.getOrderId(), order2.getOrderPayments()[1].getOrderPaymentID()));
 	}
 	
+	public any function createOrderReturn(numeric fulfillAmount) {
+		var orderReturnData = {
+			orderReturnID = ''
+		};
+		if(!isNull(arguments.fulfillAmount)) {
+			orderReturnData.fulfillmentRefundAmount = arguments.fulfillAmount;
+		}
+		return createPersistedTestEntity('OrderReturn', orderReturnData);
+	}
+	
 	public void function getPreviouslyReturnedFulfillmentTotalTest() {
-		var mockOrderReturn1 = variables.orderMockService.createOrderReturn(100);
-		var mockOrderReturn2 = variables.orderMockService.createOrderReturn(10);
-		var mockOrderReturn3 = variables.orderMockService.createOrderReturn();
+		var mockOrderReturn1 = createOrderReturn(100);
+		var mockOrderReturn2 = createOrderReturn(10);
+		var mockOrderReturn3 = createOrderReturn();
 		
-		var mockParentOrder = variables.mockService.createMockMissingEntity('Order');
+		var orderData = {
+			orderID = ''
+		};
+		var mockParentOrder = createPersistedTestEntity('Order', orderData);
 		
 		var orderData = {
 			orderID = '',
