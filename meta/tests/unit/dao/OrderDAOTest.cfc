@@ -98,7 +98,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertFalse(variables.dao.getPeerOrderPaymentNullAmountExistsFlag(order2.getOrderId(), order2.getOrderPayments()[1].getOrderPaymentID()));
 	}
 	
-	public any function createOrderReturn(numeric fulfillAmount) {
+	private any function createOrderReturn(numeric fulfillAmount) {
 		var orderReturnData = {
 			orderReturnID = ''
 		};
