@@ -97,6 +97,43 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertTrue(variables.dao.getPeerOrderPaymentNullAmountExistsFlag(order1.getOrderId()));
 		assertFalse(variables.dao.getPeerOrderPaymentNullAmountExistsFlag(order2.getOrderId(), order2.getOrderPayments()[1].getOrderPaymentID()));
 	}
+	
+	public void function getPreviouslyReturnedFulfillmentTotalTest() {
+		var mockOrderReturn1 = variables.orderMockService.createOrderReturn(100);
+		var mockOrderReturn2 = variables.orderMockService.createOrderReturn(10);
+		var mockOrderReturn3 = variables.orderMockService.createOrderReturn();
+		
+		var mockParentOrder = variables.mockService.createMockMissingEntity('Order');
+		
+		var orderData = {
+			orderID = '',
+			referencedOrder = {
+				orderID = mockParentOrder.getOrderID()
+			},
+			orderReturns = [
+				{
+					orderReturnID = mockOrderReturn1.getOrderReturnID()
+				},
+				{
+					orderReturnID = mockOrderReturn2.getOrderReturnID()
+				},
+				{
+					orderReturnID = mockOrderReturn3.getOrderReturnID()
+				}
+			]
+		};
+		var mockOrder = createPersistedTestEntity('Order', orderData);
+		
+		//Testing the orderReturn without fulfillmentReturnAmount
+		var result = variables.dao.getPreviouslyReturnedFulfillmentTotal(mockParentOrder.getOrderID());
+		assertEquals(110, result);
+		
+		//Testing the argument
+		var resultInvalidArgu = variables.dao.getPreviouslyReturnedFulfillmentTotal('SomeFakeParentORdrID');
+		assertEquals(0, resultInvalidArgu);
+		
+		
+	}
 
 
 }
