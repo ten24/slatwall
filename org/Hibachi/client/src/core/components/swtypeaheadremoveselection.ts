@@ -7,6 +7,7 @@ class SWTypeaheadRemoveSelectionController {
     public listingId:string; 
     public pageRecord:any; 
     public typeaheadDataKey:string; 
+    public disabled:boolean; 
 
     constructor(
         public $scope,
@@ -16,6 +17,9 @@ class SWTypeaheadRemoveSelectionController {
         public utilityService
     ){
         this.listingService.attachToListingPageRecordsUpdate(this.listingId, this.updatePageRecord, this.utilityService.createID(32));
+        if(angular.isUndefined(this.disabled)){
+            this.disabled = false; 
+        }
     }
 
     public updatePageRecord = () =>{
@@ -27,13 +31,14 @@ class SWTypeaheadRemoveSelectionController {
     }
 
     public removeSelection = () =>{
-        console.log("removing page record", this.pageRecord);
-        this.typeaheadService.removeSelection( this.typeaheadDataKey,
+        if(!this.disabled){
+            this.typeaheadService.removeSelection( this.typeaheadDataKey,
                                                undefined,
                                                this.pageRecord
                                              );
                                 
-        this.listingService.removeListingPageRecord(this.listingId,this.pageRecord)
+            this.listingService.removeListingPageRecord(this.listingId,this.pageRecord)
+        } 
     }
 }
 
@@ -46,7 +51,8 @@ class SWTypeaheadRemoveSelection implements ng.IDirective{
 
 	public bindToController = {
         typeaheadDataKey:"@?",
-        index:"@?"
+        index:"@?", 
+        disabled:"=?"
 	};
 	public controller=SWTypeaheadRemoveSelectionController;
 	public controllerAs="swTypeaheadRemoveSelection";

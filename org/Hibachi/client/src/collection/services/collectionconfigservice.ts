@@ -93,6 +93,7 @@ class CollectionConfig {
         public  baseEntityName?:string,
         public  baseEntityAlias?:string,
         public columns?:Column[],
+        public keywordColumns?:Column[],
         private filterGroups:Array<any>=[{filterGroup: []}],
         private joins?:Join[],
         private orderBy?:OrderBy[],
@@ -185,8 +186,13 @@ class CollectionConfig {
 
     public getOptions= (): Object =>{
         this.validateFilter(this.filterGroups);
+        if(this.keywords.length){
+            var columns = this.keywordColumns;
+        } else {
+            var columns = this.columns; 
+        }
         var options= {
-            columnsConfig: angular.toJson(this.columns),
+            columnsConfig: angular.toJson(columns),
             filterGroupsConfig: angular.toJson(this.filterGroups),
             joinsConfig: angular.toJson(this.joins),
             orderByConfig:angular.toJson(this.orderBy),
@@ -271,7 +277,7 @@ class CollectionConfig {
         return propertyIdentifier;
     };
 
-    public addColumn= (column: string, title: string = '', options:any = {}):CollectionConfig =>{
+    public addColumn= (column: string, title: string = '', options:any = {}, keywordColumn=false):CollectionConfig =>{
         if(!this.columns || this.utilityService.ArrayFindByPropertyValue(this.columns,'propertyIdentifier',column) === -1){
             var isVisible = true,
                 isDeletable = true,
@@ -345,6 +351,9 @@ class CollectionConfig {
 
 
             this.columns.push(columnObject);
+            if(keywordColumn){
+                this.keywordColumns.push(columnObject);
+            }
         }
         return this;
     };
