@@ -94,11 +94,13 @@
                                               data-is-visible="false"
                                               data-is-searchable="false"
                                               data-is-keyword-column="true"
+                                              data-is-only-keyword-column="false"
                         ></sw-collection-column>
                         <sw-collection-column data-property-identifier="parentContent.contentID" 
                                               data-is-visible="false"
                                               data-is-searchable="false"
                                               data-is-keyword-column="true"
+                                              data-is-only-keyword-column="false"
                         ></sw-collection-column>
                         <sw-collection-column data-tdclass="primary"
                                               data-property-identifier="title" 
@@ -106,15 +108,24 @@
                                               data-is-searchable="true"
                                               data-is-keyword-column="false"
                         ></sw-collection-column>
+                        <sw-collection-column data-property-identifier="content.titlePath"
+                                              data-fallback-property-identifiers="titlePath"
+                                              data-is-visible="true" 
+                                              data-is-searchable="true"
+                                              data-is-keyword-column="false"
+                                              data-is-only-keyword-column="true"
+                        ></sw-collection-column>
                         <sw-collection-column data-property-identifier="site.siteName" 
                                               data-is-visible="true"
                                               data-is-searchable="true"
                                               data-is-keyword-column="true"
+                                              data-is-only-keyword-column="false"
                         ></sw-collection-column>
                         <sw-collection-column data-property-identifier="activeFlag" 
                                               data-is-visible="true"
                                               data-is-searchable="false"
                                               data-is-keyword-column="true"
+                                              data-is-only-keyword-column="false"
                         ></sw-collection-column>
                     </sw-collection-columns>
                 </sw-collection-config>
