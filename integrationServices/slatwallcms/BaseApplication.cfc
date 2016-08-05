@@ -186,7 +186,7 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 			}
 
 			if(isNull(content)){
-				content = render404(arguments.slatwallScope,site);
+				var content = render404(arguments.slatwallScope,site);
 				//throw('content does not exists for #arguments.contenturlTitlePath#');
 			}
 			//now that we have the content, get the file name so that we can retrieve it form the site's template directory
