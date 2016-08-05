@@ -16,6 +16,8 @@ class SWCollectionColumn implements ng.IDirective{
         isSearchable:"=?",
         isDeletable:"=?",
         isExportable:"=?",
+        isKeywordColumn:"=?",
+        isOnlyKeywordColumn:"=?",
         tdclass:"@?",
         hidden:"=?"
     };
@@ -43,6 +45,13 @@ class SWCollectionColumn implements ng.IDirective{
 
     public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any) =>{
         
+        if(angular.isUndefined(scope.swCollectionColumn.isKeywordColumn)){
+            scope.swCollectionColumn.isKeywordColumn = false;
+        }
+        if(angular.isUndefined(scope.swCollectionColumn.isOnlyKeywordColumn)){
+            scope.swCollectionColumn.isOnlyKeywordColumn = scope.swCollectionColumn.isKeywordColumn;
+        }
+        
         var column = {
                 propertyIdentifier:scope.swCollectionColumn.propertyIdentifier,
                 fallbackPropertyIdentifiers:scope.swCollectionColumn.fallbackPropertyIdentifiers,
@@ -57,7 +66,13 @@ class SWCollectionColumn implements ng.IDirective{
         var currentScope = this.scopeService.locateParentScope(scope,"swCollectionConfig"); 
         
         if(angular.isDefined(currentScope.swCollectionConfig)){ 
-            currentScope.swCollectionConfig.columns.push(column); 
+            //push directly here because we've already built the column object
+            if(!scope.swCollectionColumn.isOnlyKeywordColumn){
+                currentScope.swCollectionConfig.columns.push(column); 
+            }
+            if(scope.swCollectionColumn.isKeywordColumn){
+                currentScope.swCollectionConfig.keywordColumns.push(column);
+            }
             currentScope.swCollectionConfig.columnsDeferred.resolve(); 
         } else {
             throw("Could not find swCollectionConfig in the parent scope from swcollectioncolumn");

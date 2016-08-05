@@ -19,7 +19,6 @@ class SWProductListingPagesController {
         private listingService, 
         private utilityService
     ){
-        console.log("looking for edit", this.edit);
         this.collectionConfig = collectionConfigService.newCollectionConfig("Content"); 
         this.collectionConfig.addDisplayProperty("contentID, title, activeFlag, site.siteName");
         
