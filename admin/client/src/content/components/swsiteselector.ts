@@ -15,6 +15,7 @@ class SWSiteSelectorController {
     public withTypeahead:boolean; 
     public typeaheadDataKey:string; 
     public listingID:string; 
+    public disabled:boolean; 
 
     //@ngInject
     constructor(
@@ -24,6 +25,9 @@ class SWSiteSelectorController {
         private typeaheadService, 
         private utilityService
     ){
+        if(angular.isUndefined(this.disabled)){
+            this.disabled = false; 
+        }
         if(angular.isUndefined(this.simpleFilterPropertyIdentifier)){
             this.simpleFilterPropertyIdentifier = "siteID";
         }
@@ -40,23 +44,29 @@ class SWSiteSelectorController {
             (reason)=>{
                 throw("SWProductListingPages had trouble fetching sites because of " + reason);
             }
-        );
-        
-        this.updateDefaultSiteID(); 
+        ).finally(()=>{
+            this.selectSite();
+        });   
     }
 
     public selectSite = () =>{
         this.collectionConfigToFilter.removeFilterByDisplayPropertyIdentifier(this.simpleFilterPropertyIdentifier);  
+        console.log("selectSite", this.selectedSite)
         switch(this.selectedSite){
             case "all":
                 //do nothing
+                console.log("donothing")
                 break; 
             case "default":
                 this.updateDefaultSiteID(); 
                 if(this.defaultEstablished){
+                    console.log("adding filter", this.defaultSiteID)
                     this.collectionConfigToFilter.addFilter(this.filterPropertyIdentifier, this.defaultSiteID, "=");
                 }
                 break; 
+            case undefined:
+                //do nothing
+                break;
             default: 
                 this.localStorageService.setItem("defaultSiteID", this.selectedSite);
                 this.collectionConfigToFilter.addFilter(this.filterPropertyIdentifier, this.selectedSite, "="); 
@@ -71,10 +81,13 @@ class SWSiteSelectorController {
     }
 
     private updateDefaultSiteID = () =>{
+        console.log("updating default established")
         if(this.localStorageService.hasItem("defaultSiteID")){
             this.defaultEstablished = true;
-            this.defaultSiteID = this.localStorageService.getItem("defaultSiteID")
+            console.log("defaultSiteID from localStorageService",this.localStorageService.getItem("defaultSiteID"));
+            this.defaultSiteID = this.localStorageService.getItem("defaultSiteID");
         } else { 
+            console.log("default established false")
             this.defaultEstablished = false;
         }
     }
@@ -92,7 +105,8 @@ class SWSiteSelector implements ng.IDirective{
         filterPropertyIdentifier:"@?",
         collectionConfigToFilter:"=?",
         withTypeahead:"=?", 
-        typeaheadDataKey:"@?"
+        typeaheadDataKey:"@?",
+        disabled:"=?"
     };
     
     public controller=SWSiteSelectorController;
@@ -102,12 +116,14 @@ class SWSiteSelector implements ng.IDirective{
         var directive:ng.IDirectiveFactory = (
             $http,
             $hibachi,
+            listingService,
             scopeService,
 		    contentPartialsPath,
 			slatwallPathBuilder
         ) => new SWSiteSelector(
             $http,
             $hibachi,
+            listingService,
             scopeService,
 			contentPartialsPath,
 			slatwallPathBuilder
@@ -115,6 +131,7 @@ class SWSiteSelector implements ng.IDirective{
         directive.$inject = [
             '$http',
             '$hibachi',
+            'listingService',
             'scopeService',
 			'contentPartialsPath',
 			'slatwallPathBuilder'
@@ -126,6 +143,7 @@ class SWSiteSelector implements ng.IDirective{
 	constructor(
 		private $http,
         private $hibachi,
+        private listingService,
         private scopeService,
 	    private contentPartialsPath,
 		private slatwallPathBuilder
@@ -142,13 +160,15 @@ class SWSiteSelector implements ng.IDirective{
         }
         if($scope.swSiteSelector.inListingDisplay == true && this.scopeService.hasParentScope($scope, "swListingDisplay")){
             var listingDisplayScope = this.scopeService.locateParentScope($scope, "swListingDisplay")["swListingDisplay"]; 
-            console.log("looking for collection config", listingDisplayScope.collectionConfig)
+            $scope.swSiteSelector.listingID = listingDisplayScope.tableID; 
             if(listingDisplayScope.collectionConfig != null){
                 $scope.swSiteSelector.collectionConfigToFilter = listingDisplayScope.collectionConfig;
-                $scope.swSiteSelector.listingID = listingDisplayScope.tableID; 
             }
+            this.listingService.attachToListingInitiated($scope.swSiteSelector.listingID, $scope.swSiteSelector.selectSite); 
+        } else {
+            $scope.swSiteSelector.selectSite(); 
         }
-        $scope.swSiteSelector.selectSite(); 
+        
     }
 }
 
