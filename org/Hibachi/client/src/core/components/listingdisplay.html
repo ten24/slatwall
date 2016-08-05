@@ -73,8 +73,8 @@
                     <thead>
                         <tr>
                             <!-- Sortable -->
-                            <input data-ng-if="swListingDisplay.sortable" type="hidden" data-ng-attr-name="{{swListingDisplay.sortableFieldName}}" data-ng-value="swListingDisplay.pageRecordsWithManualSortOrder" />
-                            <th data-ng-if="swListingDisplay.sortable" class="s-order-table" style="display: table-cell;">&nbsp;</th>
+                            <input data-ng-if="swListingDisplay.sortable && swListingDisplay.edit" type="hidden" data-ng-attr-name="{{swListingDisplay.sortableFieldName}}" data-ng-value="swListingDisplay.pageRecordsWithManualSortOrder" />
+                            <th data-ng-if="swListingDisplay.sortable && swListingDisplay.edit" class="s-order-table" style="display: table-cell;">&nbsp;</th>
                             <!-- Selectable -->
                             <input data-ng-if-start="swListingDisplay.selectable" type="hidden" data-ng-attr-name="{{swListingDisplay.selectFieldName}}" data-ng-value="swListingDisplay.selectValue" />
                             <th data-ng-if-end class="select" data-ng-class="{'disabled':!swListingDisplay.edit}" data-ng-bind="swListingDisplay.selectTitle"></th>
@@ -116,13 +116,13 @@
                             data-ng-if="pageRecord.dataIsVisible !== false"
                             data-ng-class="{{swListingDisplay.getNGClassObjectForPageRecordRow(pageRecord)}}"
                             sw-draggable
-                            data-draggable="swListingDisplay.sortable"
+                            data-draggable="swListingDisplay.sortable && swListingDisplay.edit"
                             data-draggable-record="pageRecord"
                             data-draggable-key="pageRecordKey"
                             >
 
                             <!-- Sortable -->
-                            <td class="sort" data-ng-if="swListingDisplay.sortable" class="s-order-table" style="display: table-cell;">
+                            <td class="sort" data-ng-if="swListingDisplay.sortable && swListingDisplay.edit" class="s-order-table" style="display: table-cell;">
                                 <i class="fa fa-bars" aria-hidden="true"></i>
                             </td><!-- Need to put the form here -->
 

@@ -19,9 +19,15 @@ class SWOrderByControlsController {
     public sortDefaultDirectionFieldName:string; 
     public toggleCollectionConfig:boolean; 
     public propertyNotChosen:boolean;
+    public edit:boolean; 
 
     // @ngInject
-    constructor( private listingService, private observerService, private utilityService ){
+    constructor( private listingService, 
+                 private observerService, 
+                 private utilityService ){
+            if( angular.isUndefined(this.edit)){
+                this.edit = true; 
+            }
             if( angular.isDefined(this.collectionConfig) ){
                  this.columns = this.collectionConfig.columns; 
             } 
@@ -114,7 +120,8 @@ class SWOrderByControls implements ng.IDirective{
         initialSortProperty:"@?",
         initialSortDefaultDirection:"@?",
         sortPropertyFieldName:"@?",
-        sortDefaultDirectionFieldName:"@?"
+        sortDefaultDirectionFieldName:"@?",
+        edit:"=?"
     };
     public controller=SWOrderByControlsController;
     public controllerAs="swOrderByControls";

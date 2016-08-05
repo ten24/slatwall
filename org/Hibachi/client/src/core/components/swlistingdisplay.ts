@@ -27,6 +27,7 @@ class SWListingDisplayController{
     public customListingControls:boolean; 
     public defaultSelectEvent;
     public disableRules = [];
+    public edit:boolean;
     public expandable:boolean;
     public expandableRules = []; 
     public exampleEntity:any = "";

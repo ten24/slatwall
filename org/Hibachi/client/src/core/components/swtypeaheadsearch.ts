@@ -4,6 +4,7 @@
 class SWTypeaheadSearchController {
 
 	public collectionConfig:any; 
+    public disabled:boolean; 
 	public entity:string;
 	public properties:string;
 	public propertiesToDisplay:string;
@@ -61,6 +62,10 @@ class SWTypeaheadSearchController {
 
         if( angular.isUndefined(this.typeaheadDataKey)){
             this.typeaheadDataKey = this.utilityService.createID(32); 
+        }
+
+        if( angular.isUndefined(this.disabled)){
+            this.disabled = false; 
         }
 
         if( angular.isUndefined(this.multiselectMode)){

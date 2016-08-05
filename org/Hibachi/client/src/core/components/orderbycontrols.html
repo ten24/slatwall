@@ -7,7 +7,7 @@
             name="{{swOrderByControls.sortPropertyFieldName}}"
             data-ng-model="swOrderByControls.selectedPropertyIdentifier"
             data-ng-change="swOrderByControls.updateSortOrderProperty()" 
-            data-ng-disabled="swOrderByControls.disabled"
+            data-ng-disabled="swOrderByControls.disabled || !this.edit"
             >
 
         <option value="" selected="" sw-rbkey="'define.select'"></option>
@@ -26,7 +26,7 @@
             class="btn btn-default" 
             data-ng-class="{'s-selected' : swOrderByControls.sortCode=='ASC'}"
             data-ng-click="swOrderByControls.sortAscending()"
-            data-ng-disabled="swOrderByControls.propertyNotChosen"
+            data-ng-disabled="swOrderByControls.propertyNotChosen || !this.edit"
             data-toggle="popover" 
             data-trigger="hover" 
             data-placement="top" 
@@ -38,7 +38,7 @@
             class="btn btn-default" 
             data-ng-class="{'s-selected' : swOrderByControls.sortCode=='DESC'}"
             data-ng-click="swOrderByControls.sortDescending()"
-            data-ng-disabled="swOrderByControls.propertyNotChosen"
+            data-ng-disabled="swOrderByControls.propertyNotChosen || !this.edit"
             data-toggle="popover" 
             data-trigger="hover" 
             data-placement="top" 
@@ -50,7 +50,7 @@
             class="btn btn-default" 
             data-ng-class="{'s-selected' : swOrderByControls.sortCode=='MANUAL'}"
             data-ng-click="swOrderByControls.manualSort()"
-            data-ng-disabled="swOrderByControls.propertyNotChosen"
+            data-ng-disabled="swOrderByControls.propertyNotChosen || !this.edit"
             data-toggle="popover" 
             data-trigger="hover" 
             data-placement="top" 

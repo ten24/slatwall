@@ -24,6 +24,7 @@ class SWTypeaheadMultiselectController {
     public fallbackPropertiesToCompare:string; 
     public inListingDisplay:boolean; 
     public listingId:string; 
+    public disabled:boolean; 
       
     // @ngInject
 	constructor(private $scope, 
@@ -37,7 +38,9 @@ class SWTypeaheadMultiselectController {
         if(angular.isUndefined(this.typeaheadDataKey)){
             this.typeaheadDataKey = this.utilityService.createID(32); 
         }
-        console.log("typeaheadDataKey", this.typeaheadDataKey);
+        if(angular.isUndefined(this.disabled)){
+            this.disabled = false; 
+        }
         if(angular.isUndefined(this.showSelections)){
             this.showSelections = false; 
         }
@@ -102,6 +105,7 @@ class SWTypeaheadMultiselect implements ng.IDirective{
         ,propertyToCompare:"@?"
         ,fallbackPropertiesToCompare:"@?"
         ,selectionFieldName:"@?"
+        ,disabled:"=?"
 	};
     
 	public controller=SWTypeaheadMultiselectController;

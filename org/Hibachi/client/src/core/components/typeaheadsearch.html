@@ -4,6 +4,7 @@
              <div class="input-group-btn search-panel">
                 <button type="button" 
                         class="btn btn-default dropdown-toggle" 
+                        data-ng-disabled="swTypeaheadSearch.disabled"
                         data-toggle="dropdown" 
                         aria-expanded="false">
                         <span>{{swTypeaheadSearch.searchableColumnSelection}}</span> <span class="caret"></span>
@@ -20,11 +21,11 @@
                 </ul>
             </div>
             <div class="s-input-btn" ng-class="{ 's-add' : swTypeaheadSearch.multiselectMode, 's-search' : !swTypeaheadSearch.multiselectMode}">
-                <input  ng-if="swTypeaheadSearch.placeholderText"
+                <input  data-ng-if="swTypeaheadSearch.placeholderText"
                         id="searchinput"
                         placeholder="{{swTypeaheadSearch.placeholderText}}"
-                        ng-model="swTypeaheadSearch.searchText"
-                        ng-change="swTypeaheadSearch.search(swTypeaheadSearch.searchText)"
+                        data-ng-model="swTypeaheadSearch.searchText"
+                        data-ng-change="swTypeaheadSearch.search(swTypeaheadSearch.searchText)"
                         type="search"
                         class="form-control input-sm"
                         autocomplete="off"
