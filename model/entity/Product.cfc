@@ -402,7 +402,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 		// Add all alternate image paths
 		var productImagesCollection = this.getProductImagesCollectionList();
-		productImagesCollection.setDisplayProperties('imageID,imageFile,imageName,imageDescription');
+		productImagesCollection.setDisplayProperties('imageID,imageFile,imageName,imageDescription,directory');
 		
 		var productImagesRecords = productImagesCollectionList.getRecords();
 
@@ -413,7 +413,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 				
 				var thisImage = {};
 				thisImage.originalFilename = productImageData['imageFile'];
-				thisImage.originalPath = getService('imageService').getImageImagePathByImageFile(productImageData['imageFile']);
+				thisImage.originalPath = getService('imageService').getImagePathByImageFileAndDirectory(productImageData['imageFile'],productImageData['directory']);
 				thisImage.type = "productAlternateImage";
 				thisImage.skuID = "";
 				thisImage.productID = getProductID();

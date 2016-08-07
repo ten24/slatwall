@@ -119,8 +119,8 @@ component persistent="false" extends="HibachiService" output="false" accessors="
    	 	return "#getHibachiScope().getBaseImageURL()#/product/default/#arguments.imageFile#";
     }
     
-    public string function getImageImagePathByImageFile(required string imageFile){
-		return "#getHibachiScope().getBaseImageURL()#/#getDirectory()#/#arguments.imageFile#";
+    public string function getImagePathByImageFileAndDirectory(required string imageFile, required string directory){
+		return "#getHibachiScope().getBaseImageURL()#/#arguments.directory#/#arguments.imageFile#";
 	}
 
 	// Image File Methods
