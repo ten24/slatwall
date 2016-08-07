@@ -413,7 +413,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 				
 				var thisImage = {};
 				thisImage.originalFilename = productImageData['imageFile'];
-				thisImage.originalPath = getService('imageService').getProductImagePathByImageFile(productImageData['imageFile']);
+				thisImage.originalPath = getService('imageService').getImageImagePathByImageFile(productImageData['imageFile']);
 				thisImage.type = "productAlternateImage";
 				thisImage.skuID = "";
 				thisImage.productID = getProductID();

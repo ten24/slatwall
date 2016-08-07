@@ -116,8 +116,12 @@ component persistent="false" extends="HibachiService" output="false" accessors="
     }
     
     public string function getProductImagePathByImageFile(required string imageFile) {
-   	 	return "#getHibachiScope().getBaseImageURL()#/product/default/#imageFile#";
+   	 	return "#getHibachiScope().getBaseImageURL()#/product/default/#arguments.imageFile#";
     }
+    
+    public string function getImageImagePathByImageFile(required string imageFile){
+		return "#getHibachiScope().getBaseImageURL()#/#getDirectory()#/#arguments.imageFile#";
+	}
 
 	// Image File Methods
 	public string function getResizedImagePath(required string imagePath, numeric width, numeric height, string resizeMethod="scale", string cropLocation="center", numeric cropX, numeric cropY, numeric scaleWidth, numeric scaleHeight, string missingImagePath, string canvasColor="") {
