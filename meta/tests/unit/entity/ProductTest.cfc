@@ -1363,6 +1363,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		var productData = {
 			productID = "",
+			productName=createUUID(),
 			skus = [
 				{
 					skuID = mockSku1.getSkuID()
@@ -1386,6 +1387,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var mockProduct = createPersistedTestEntity('Product', productData);
 		
 		var resultImageGalleryArray = mockProduct.getImageGalleryArray();
+		
 		assertEquals(5, arrayLen(resultImageGalleryArray));
 	}	
 	
