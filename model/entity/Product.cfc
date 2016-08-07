@@ -365,47 +365,77 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public array function getImageGalleryArray(array resizeSizes=[{size='s'},{size='m'},{size='l'}]) {
 		var imageGalleryArray = [];
 		var filenames = "";
-
+		var skuCollection = this.getSkusCollectionList();
+		skuCollection.setDisplayProperties('skuID,imageFile');
+		var skuCollectionRecords = skuCollection.getRecords();
+		
 		// Add all skus's default images
-		for(var i=1; i<=arrayLen(getSkus()); i++) {
-			if( !listFind(filenames, getSkus()[i].getImageFile()) ) {
-				filenames = listAppend(filenames, getSkus()[i].getImageFile());
+		var missingImagePath = setting('imageMissingImagePath');
+		for(var i=1; i<=arrayLen(skuCollectionRecords); i++) {
+			var skuData = skuCollectionRecords[i];
+			if( !listFind(filenames, skuData['imageFile']) ) {
+				filenames = listAppend(filenames, skuData['imageFile']);
+				
 				var thisImage = {};
-				thisImage.originalFilename = getSkus()[i].getImageFile();
-				thisImage.originalPath = getSkus()[i].getImagePath();
+				thisImage.originalFilename = skuData['imageFile'];
+				thisImage.originalPath = getService('imageService').getProductImagePathByImageFile(skuData['imageFile']);
 				thisImage.type = "skuDefaultImage";
 				thisImage.productID = getProductID();
 				thisImage.name = getTitle();
 				thisImage.description = getProductDescription();
 				thisImage.resizedImagePaths = [];
 				for(var s=1; s<=arrayLen(arguments.resizeSizes); s++) {
-					arrayAppend(thisImage.resizedImagePaths, getSkus()[i].getResizedImagePath(argumentCollection = arguments.resizeSizes[s]));
+					
+					var resizeImageData={
+						imagePath=skuData['imageFile'],
+						size=arguments.resizeSizes[s].size
+					};
+					
+					arrayAppend(
+						thisImage.resizedImagePaths, 
+						getService("imageService").getResizedImagePath(argumentCollection=resizeImageData)
+					);
 				}
 				arrayAppend(imageGalleryArray, thisImage);
 			}
 		}
 
 		// Add all alternate image paths
-		for(var i=1; i<=arrayLen(getImages()); i++) {
-			if( !listFind(filenames, getImages()[i].getImageID()) ) {
-				filenames = listAppend(filenames, getImages()[i].getImageID());
+		var productImagesCollection = this.getProductImagesCollectionList();
+		productImagesCollection.setDisplayProperties('imageID,imageFile,imageName,imageDescription,directory');
+		
+		var productImagesRecords = productImagesCollectionList.getRecords();
+
+		for(var i=1; i<=arrayLen(productImagesRecords); i++) {
+			var productImageData = productImagesRecords[i];
+			if( !listFind(filenames, productImageData['imageID']) ) {
+				filenames = listAppend(filenames, productImageData['imageID']);
+				
 				var thisImage = {};
-				thisImage.originalFilename = getImages()[i].getImageFile();
-				thisImage.originalPath = getImages()[i].getImagePath();
+				thisImage.originalFilename = productImageData['imageFile'];
+				thisImage.originalPath = getService('imageService').getImagePathByImageFileAndDirectory(productImageData['imageFile'],productImageData['directory']);
 				thisImage.type = "productAlternateImage";
 				thisImage.skuID = "";
 				thisImage.productID = getProductID();
 				thisImage.name = "";
-				if(!isNull(getImages()[i].getImageName())) {
-					thisImage.name = getImages()[i].getImageName();
+				if(structKeyExists(productImageData,'imageName') && productImageData['imageName'] != '') {
+					thisImage.name = productImageData['imageName'];
 				}
 				thisImage.description = "";
-				if(!isNull(getImages()[i].getImageDescription())) {
-					thisImage.description = getImages()[i].getImageDescription();
+				if(structKeyExists(productImageData,'imageDescription') && productImageData['imageDescription'] != '') {
+					thisImage.description = productImageData['imageDescription'];
 				}
 				thisImage.resizedImagePaths = [];
 				for(var s=1; s<=arrayLen(arguments.resizeSizes); s++) {
-					arrayAppend(thisImage.resizedImagePaths, getImages()[i].getResizedImagePath(argumentCollection = arguments.resizeSizes[s]));
+					var resizeImageData={
+						imagePath=productImageData['imageFile'],
+						size=arguments.resizeSizes[s].size
+					};
+					arrayAppend(
+						thisImage.resizedImagePaths,
+						getService("imageService").getResizedImagePath(argumentCollection=resizeImageData) 
+					);
+						
 				}
 				arrayAppend(imageGalleryArray, thisImage);
 			}
