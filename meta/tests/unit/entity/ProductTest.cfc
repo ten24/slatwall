@@ -1332,7 +1332,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		//testing values on sku default image
 		assertEquals("admin.logo.png", resultImageGalleryArray[1].originalFileName);
-		assertEquals("/custom/assets/images/product/default/admin.logo.png", resultImageGalleryArray[1].originalPath);
+		assertEquals("/custom/assets/images/product/default/admin.logo.png", trim(resultImageGalleryArray[1].originalPath));
 		assertEquals("skuDefaultImage", resultImageGalleryArray[1].type);
 		assertEquals(mockProduct.getProductID(), resultImageGalleryArray[1].productID);
 		assertEquals("MockProductName", resultImageGalleryArray[1].name);
@@ -1342,7 +1342,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(!isNull(resultImageGalleryArray[1].resizedImagePaths[3]));
 		
 		//testing the values on productImage
-		assertEquals("/custom/assets/images/mockDirectory/", resultImageGalleryArray[2].originalPath);
+		assertEquals("/custom/assets/images/mockDirectory/", trim(resultImageGalleryArray[2].originalPath));
 		assertEquals("productAlternateImage", resultImageGalleryArray[2].type);
 		assertEquals(mockProduct.getProductID(), resultImageGalleryArray[2].productID);
 		assertEquals("Favicon Image Name", resultImageGalleryArray[2].name);
