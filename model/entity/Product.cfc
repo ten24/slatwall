@@ -366,8 +366,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		var imageGalleryArray = [];
 		var filenames = "";
 		var skuCollection = this.getSkusCollectionList();
-		skuCollection.setDisplayProperties('imageFile');
-		skuCollection.setDistinct(true);
+		skuCollection.setDisplayProperties('skuID,imageFile');
 		var skuCollectionRecords = skuCollection.getRecords();
 		
 		// Add all skus's default images
@@ -403,15 +402,14 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 		// Add all alternate image paths
 		var productImagesCollection = this.getProductImagesCollectionList();
-		productImagesCollection.setDisplayProperties('imageFile,imageName,imageDescription');
-		productImagesCollection.setDistinct(true);
+		productImagesCollection.setDisplayProperties('imageID,imageFile,imageName,imageDescription');
 		
 		var productImagesRecords = productImagesCollectionList.getRecords();
 
 		for(var i=1; i<=arrayLen(productImagesRecords); i++) {
 			var productImageData = productImagesRecords[i];
-			if( !listFind(filenames, productImageData['imageFile']) ) {
-				filenames = listAppend(filenames, productImageData['imageFile']);
+			if( !listFind(filenames, productImageData['imageID']) ) {
+				filenames = listAppend(filenames, productImageData['imageID']);
 				
 				var thisImage = {};
 				thisImage.originalFilename = productImageData['imageFile'];
