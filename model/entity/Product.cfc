@@ -519,97 +519,104 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return getService("productService").getProductSkusBySelectedOptions(arguments.selectedOptions,this.getProductID());
 	}
 
-	public any function getSkuOptionDetails(string selectedOptionIDList="") {
+	public any function getSkuOptionDetails(string selectedOptionIDList="", boolean activeFlag=true, boolean publishedFlag=true) {
 
 		// Setup return structure
 		var skuOptionDetails = {};
 
-		// Get all the skus for this product with options fetched
-		var skus = getService("skuService").getProductSkus(product=this, sorted=false, fetchOptions=true);
-
-
 		// Get the selected options by optionGroup
 		var selectedOptionGroupsByOptionID = {};
 
+		var optionCollection = getService('optionService').getOptionCollectionList();
+		optionCollection.setDisplayProperties('
+			optionID,
+			optionName,
+			optionCode,
+			optionDescription,
+			sortOrder,
+			optionGroup.optionGroupName,
+			optionGroup.optionGroupCode,
+			optionGroup.optionGroupID,
+			optionGroup.sortOrder,
+			skus.calculatedQATS,
+			skus.skuID
+		');
+		optionCollection.addFilter('skus.product.productID',this.getProductID());
+		optionCollection.addFilter('skus.calculatedQATS',0,'>');
+		var optionRecords = optionCollection.getRecords();
 		// Create an array of the selectOptions
 		if(listLen(arguments.selectedOptionIDList)) {
-			for(var sku in skus) {
-				for(var option in sku.getOptions()) {
-					if(listFindNoCase(arguments.selectedOptionIDList, option.getOptionID())) {
-						selectedOptionGroupsByOptionID[ option.getOptionID() ] = option.getOptionGroup().getOptionGroupID();
-					}
+			for(var optionData in optionRecords) {
+				if(listFindNoCase(arguments.selectedOptionIDList, optionData['optionID'])) {
+					selectedOptionGroupsByOptionID[ optionData['optionID'] ] = optionData['optionGroup_optionGroupID'];
 				}
-				if(structCount(selectedOptionGroupsByOptionID) == listLen(arguments.selectedOptionIDList)) {
-					break;
-				}
+			}
+			if(structCount(selectedOptionGroupsByOptionID) == listLen(arguments.selectedOptionIDList)) {
+				break;
 			}
 		}
 
-		// Loop over the skus
-		for(var sku in skus) {
+		var skuOptionIDArray = [];
+		for(var optionData in optionRecords) {
+			arrayAppend(skuOptionIDArray, optionData['optionID']);
+		}
 
-			var skuOptionIDArray = [];
-			for(var option in sku.getOptions()) {
-				arrayAppend(skuOptionIDArray, option.getOptionID());
+		// Loop over the options for this sku
+		for(var optionData in optionRecords) {
+
+			var allSelectedInSku = true;
+			var selectedOptionIDArray = listToArray(arguments.selectedOptionIDList);
+			for(var selected in selectedOptionIDArray) {
+				if(selectedOptionGroupsByOptionID[ selected ] != optionData['optionGroup_optionGroupID'] && !arrayFindNoCase(skuOptionIDArray, selected)) {
+					allSelectedInSku = false;
+					break;
+				}
 			}
 
-			// Loop over the options for this sku
-			for(var option in sku.getOptions()) {
+			// Created Shortended Variables
+			var ogCode = optionData['optionGroup_optionGroupCode'];
 
-				var allSelectedInSku = true;
-				for(var selected in listToArray(arguments.selectedOptionIDList)) {
-					if(selectedOptionGroupsByOptionID[ selected ] != option.getOptionGroup().getOptionGroupID() && !arrayFindNoCase(skuOptionIDArray, selected)) {
-						allSelectedInSku = false;
-						break;
-					}
-				}
+			// Create a struct for this optionGroup if it doesn't exist
+			if(!structKeyExists(skuOptionDetails, trim(ogCode))) {
+				skuOptionDetails[ ogCode ] = {};
+				skuOptionDetails[ ogCode ][ "options" ] = [];
+				skuOptionDetails[ ogCode ][ "optionGroupName" ] = optionData['optionGroup_optionGroupName'];
+				skuOptionDetails[ ogCode ][ "optionGroupCode" ] = optionData['optionGroup_optionGroupCode'];
+				skuOptionDetails[ ogCode ][ "optionGroupID" ] = optionData['optionGroup_optionGroupID'];
+				skuOptionDetails[ ogCode ][ "sortOrder" ] = optionData['optionGroup_sortOrder'];
+			}
 
-				// Created Shortended Variables
-				var ogCode = option.getOptionGroup().getOptionGroupCode();
-
-				// Create a struct for this optionGroup if it doesn't exist
-				if(!structKeyExists(skuOptionDetails, ogCode)) {
-					skuOptionDetails[ ogCode ] = {};
-					skuOptionDetails[ ogCode ][ "options" ] = [];
-					skuOptionDetails[ ogCode ][ "optionGroupName" ] = option.getOptionGroup().getOptionGroupName();
-					skuOptionDetails[ ogCode ][ "optionGroupCode" ] = option.getOptionGroup().getOptionGroupCode();
-					skuOptionDetails[ ogCode ][ "optionGroupID" ] = option.getOptionGroup().getOptionGroupID();
-					skuOptionDetails[ ogCode ][ "sortOrder" ] = option.getOptionGroup().getSortOrder();
-				}
-
-				// Create a struct for this option if one doesn't exist
-				var existingOptionFound = false;
-				for(var existingOption in skuOptionDetails[ ogCode ][ "options" ]) {
-					if( existingOption.optionID == option.getOptionID() ) {
-						existingOption['totalQATS'] += sku.getQuantity("QATS");
-						if(allSelectedInSku) {
-							existingOption['selectedQATS'] += sku.getQuantity("QATS");
-						}
-						existingOptionFound = true;
-						break;
-					}
-				}
-				if(!existingOptionFound) {
-					var newOption = {};
-					newOption['optionID'] = option.getOptionID();
-					newOption['optionCode'] = option.getOptionCode();
-					newOption['optionName'] = option.getOptionName();
-					newOption['name'] = option.getOptionName();
-					newOption['value'] = option.getOptionID();
-					newOption['sortOrder'] = option.getSortOrder();
-					newOption['totalQATS'] = sku.getQuantity("QATS");
-					newOption['selectedQATS'] = 0;
+			// Create a struct for this option if one doesn't exist
+			var existingOptionFound = false;
+			for(var existingOption in skuOptionDetails[ ogCode ][ "options" ]) {
+				if( existingOption['optionID'] == optionData['optionID'] ) {
+					existingOption['totalQATS'] += optionData['skus_calculatedQATS'];
 					if(allSelectedInSku) {
-						newOption['selectedQATS'] = sku.getQuantity("QATS");
+						existingOption['selectedQATS'] += optionData['skus_calculatedQATS'];
 					}
-					arrayAppend(skuOptionDetails[ ogCode ].options, newOption);
+					existingOptionFound = true;
+					break;
 				}
+			}
+			if(!existingOptionFound) {
+				var newOption = {};
+				newOption['optionID'] = optionData['optionID'];
+				newOption['optionCode'] = optionData['optionCode'];
+				newOption['optionName'] = optionData['optionName'];
+				newOption['name'] = optionData['optionName'];
+				newOption['value'] = optionData['optionID'];
+				newOption['sortOrder'] = optionData['sortOrder'];
+				newOption['totalQATS'] = optionData['skus_calculatedQATS'];
+				newOption['selectedQATS'] = 0;
+				if(allSelectedInSku) {
+					newOption['selectedQATS'] = optionData['skus_calculatedQATS'];
+				}
+				arrayAppend(skuOptionDetails[ ogCode ].options, newOption);
 			}
 		}
 		for(var ogCode in skuOptionDetails){
 			skuOptionDetails[ ogCode ].options = getService("HibachiUtilityService").structArraySort(skuOptionDetails[ ogCode ].options, "sortOrder");
 		}
-
 		return skuOptionDetails;
 	}
 
