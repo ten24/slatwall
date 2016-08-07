@@ -365,50 +365,74 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public array function getImageGalleryArray(array resizeSizes=[{size='s'},{size='m'},{size='l'}]) {
 		var imageGalleryArray = [];
 		var filenames = "";
-
+		var skuCollection = this.getSkusCollectionList();
+		skuCollection.setDisplayProperties('imageFile');
+		skuCollection.setDistinct(true);
+		var skuCollectionRecords = skuCollection.getRecords();
+		
 		// Add all skus's default images
-		for(var i=1; i<=arrayLen(getSkus()); i++) {
-			if( !listFind(filenames, getSkus()[i].getImageFile()) ) {
-				filenames = listAppend(filenames, getSkus()[i].getImageFile());
-				var thisImage = {};
-				thisImage.originalFilename = getSkus()[i].getImageFile();
-				thisImage.originalPath = getSkus()[i].getImagePath();
-				thisImage.type = "skuDefaultImage";
-				thisImage.productID = getProductID();
-				thisImage.name = getTitle();
-				thisImage.description = getProductDescription();
-				thisImage.resizedImagePaths = [];
-				for(var s=1; s<=arrayLen(arguments.resizeSizes); s++) {
-					arrayAppend(thisImage.resizedImagePaths, getSkus()[i].getResizedImagePath(argumentCollection = arguments.resizeSizes[s]));
-				}
-				arrayAppend(imageGalleryArray, thisImage);
+		var missingImagePath = setting('imageMissingImagePath');
+		for(var i=1; i<=arrayLen(skuCollectionRecords); i++) {
+			var skuData = skuCollectionRecords[i];
+			var thisImage = {};
+			thisImage.originalFilename = skuData['imageFile'];
+			thisImage.originalPath = getService('imageService').getProductImagePathByImageFile(skuData['imageFile']);
+			thisImage.type = "skuDefaultImage";
+			thisImage.productID = getProductID();
+			thisImage.name = getTitle();
+			thisImage.description = getProductDescription();
+			thisImage.resizedImagePaths = [];
+			for(var s=1; s<=arrayLen(arguments.resizeSizes); s++) {
+				
+				var resizeImageData={
+					imagePath=skuData['imageFile'],
+					size=arguments.resizeSizes[s].size
+				};
+				
+				arrayAppend(
+					thisImage.resizedImagePaths, 
+					getService("imageService").getResizedImagePath(argumentCollection=resizeImageData)
+				);
 			}
+			arrayAppend(imageGalleryArray, thisImage);
 		}
 
 		// Add all alternate image paths
-		for(var i=1; i<=arrayLen(getImages()); i++) {
-			if( !listFind(filenames, getImages()[i].getImageID()) ) {
-				filenames = listAppend(filenames, getImages()[i].getImageID());
-				var thisImage = {};
-				thisImage.originalFilename = getImages()[i].getImageFile();
-				thisImage.originalPath = getImages()[i].getImagePath();
-				thisImage.type = "productAlternateImage";
-				thisImage.skuID = "";
-				thisImage.productID = getProductID();
-				thisImage.name = "";
-				if(!isNull(getImages()[i].getImageName())) {
-					thisImage.name = getImages()[i].getImageName();
-				}
-				thisImage.description = "";
-				if(!isNull(getImages()[i].getImageDescription())) {
-					thisImage.description = getImages()[i].getImageDescription();
-				}
-				thisImage.resizedImagePaths = [];
-				for(var s=1; s<=arrayLen(arguments.resizeSizes); s++) {
-					arrayAppend(thisImage.resizedImagePaths, getImages()[i].getResizedImagePath(argumentCollection = arguments.resizeSizes[s]));
-				}
-				arrayAppend(imageGalleryArray, thisImage);
+		var productImagesCollection = this.getProductImagesCollectionList();
+		productImagesCollection.setDisplayProperties('imageFile,imageName,imageDescription');
+		productImagesCollection.setDistinct(true);
+		
+		var productImagesRecords = productImagesCollectionList.getRecords();
+
+		for(var i=1; i<=arrayLen(productImagesRecords); i++) {
+			var productImageData = productImagesRecords[i];
+			var thisImage = {};
+			thisImage.originalFilename = productImageData['imageFile'];
+			thisImage.originalPath = getService('imageService').getProductImagePathByImageFile(productImageData['imageFile']);
+			thisImage.type = "productAlternateImage";
+			thisImage.skuID = "";
+			thisImage.productID = getProductID();
+			thisImage.name = "";
+			if(structKeyExists(productImageData,'imageName') && productImageData['imageName'] != '') {
+				thisImage.name = productImageData['imageName'];
 			}
+			thisImage.description = "";
+			if(structKeyExists(productImageData,'imageDescription') && productImageData['imageDescription'] != '') {
+				thisImage.description = productImageData['imageDescription'];
+			}
+			thisImage.resizedImagePaths = [];
+			for(var s=1; s<=arrayLen(arguments.resizeSizes); s++) {
+				var resizeImageData={
+					imagePath=productImageData['imageFile'],
+					size=arguments.resizeSizes[s].size
+				};
+				arrayAppend(
+					thisImage.resizedImagePaths,
+					getService("imageService").getResizedImagePath(argumentCollection=resizeImageData) 
+				);
+					
+			}
+			arrayAppend(imageGalleryArray, thisImage);
 		}
 
 		return imageGalleryArray;
