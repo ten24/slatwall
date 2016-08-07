@@ -1809,7 +1809,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			],
 			product = {
 				productID = mockProduct1.getProductID()
-			}
+			},
+			calculatedQATS=2
 		};
 		var mockSku1 = createPersistedTestEntity('Sku', skuData1);
 		
@@ -1819,7 +1820,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				{
 					optionID = mockOption4.getOptionID()
 				}
-			]
+			],
+			calculatedQATS=2
 		};
 		var mockSku2 = createPersistedTestEntity('Sku', skuData2);
 		
