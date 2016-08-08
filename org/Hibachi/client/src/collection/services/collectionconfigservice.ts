@@ -92,9 +92,10 @@ class CollectionConfig {
         public  observerService,
         public  baseEntityName?:string,
         public  baseEntityAlias?:string,
-        public columns?:Column[],
-        public keywordColumns?:Column[],
+        public  columns?:Column[],
+        public  keywordColumns:Column[]=[],
         private filterGroups:Array<any>=[{filterGroup: []}],
+        private keywordFilterGroups:Array<any>=[{filterGroup: []}],
         private joins?:Join[],
         private orderBy?:OrderBy[],
         private groupBys?:string,
@@ -167,6 +168,7 @@ class CollectionConfig {
             baseEntityAlias: this.baseEntityAlias,
             baseEntityName: this.baseEntityName,
             columns: this.columns,
+            keywordColumns: this.keywordColumns,
             filterGroups: this.filterGroups,
             joins: this.joins,
             groupBys: this.groupBys,
@@ -186,14 +188,19 @@ class CollectionConfig {
 
     public getOptions= (): Object =>{
         this.validateFilter(this.filterGroups);
-        if(this.keywords.length){
+        if(this.keywords.length && this.keywordColumns.length > 0){
             var columns = this.keywordColumns;
         } else {
             var columns = this.columns; 
         }
+        if(this.keywords.length && this.keywordFilterGroups[0].filterGroup.length > 0){
+            var filters = this.keywordFilterGroups; 
+        } else { 
+            var filters = this.filterGroups
+        }
         var options= {
             columnsConfig: angular.toJson(columns),
-            filterGroupsConfig: angular.toJson(this.filterGroups),
+            filterGroupsConfig: angular.toJson(filters),
             joinsConfig: angular.toJson(this.joins),
             orderByConfig:angular.toJson(this.orderBy),
             groupBysConfig: angular.toJson(this.groupBys),
@@ -277,7 +284,7 @@ class CollectionConfig {
         return propertyIdentifier;
     };
 
-    public addColumn= (column: string, title: string = '', options:any = {}, keywordColumn=false):CollectionConfig =>{
+    public addColumn= (column: string, title: string = '', options:any = {}):CollectionConfig =>{
         if(!this.columns || this.utilityService.ArrayFindByPropertyValue(this.columns,'propertyIdentifier',column) === -1){
             var isVisible = true,
                 isDeletable = true,
@@ -348,10 +355,13 @@ class CollectionConfig {
                     columnObject[key] = options[key];
                 }
             }
-
-
-            this.columns.push(columnObject);
-            if(keywordColumn){
+            
+            var isKeywordColumn = options.isKeywordColumn || false; 
+            var isOnlyKeywordColumn = options.isOnlyKeywordColumn || false;
+            if(!isOnlyKeywordColumn){
+                this.columns.push(columnObject);
+            }
+            if(isKeywordColumn){
                 this.keywordColumns.push(columnObject);
             }
         }
@@ -406,11 +416,16 @@ class CollectionConfig {
         return this;
     };
 
-    public addFilter= (propertyIdentifier: string, value: any, comparisonOperator: string = '=', logicalOperator?: string, hidden:boolean=false):CollectionConfig =>{
+    public addFilter= (propertyIdentifier: string, value: any, comparisonOperator: string = '=', logicalOperator?: string, hidden:boolean=false, isKeywordFilter=false, isOnlyKeywordFilter=false):CollectionConfig =>{
         //create filter
         var filter = this.createFilter(propertyIdentifier, value, comparisonOperator, logicalOperator, hidden);
 
-        this.filterGroups[0].filterGroup.push(filter);
+        if(!isOnlyKeywordFilter){
+            this.filterGroups[0].filterGroup.push(filter);
+        }
+        if(isKeywordFilter){
+            this.keywordFilterGroups[0].filterGroup.push(filter);
+        }   
         return this;
     };
 

@@ -3,6 +3,7 @@
 class SWCollectionConfigController{
     public filters = []; 
     public columns = []; 
+    public keywordColumns = []; 
     public collectionConfig:any;
     public collectionConfigProperty:string;
     public multiCollectionConfigProperty:string;

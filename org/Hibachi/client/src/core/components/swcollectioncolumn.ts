@@ -60,7 +60,9 @@ class SWCollectionColumn implements ng.IDirective{
                 isDeletable:scope.swCollectionColumn.isDeletable, 
                 isExportable:scope.swCollectionColumn.isExportable,
                 hidden:scope.swCollectionColumn.hidden,
-                tdclass:scope.swCollectionColumn.tdclass
+                tdclass:scope.swCollectionColumn.tdclass,
+                isKeywordColumn:scope.swCollectionColumn.isKeywordColumn, 
+                isOnlyKeywordColumn:scope.swCollectionColumn.isOnlyKeywordColumn
         };
         
         var currentScope = this.scopeService.locateParentScope(scope,"swCollectionConfig"); 
@@ -69,9 +71,6 @@ class SWCollectionColumn implements ng.IDirective{
             //push directly here because we've already built the column object
             if(!scope.swCollectionColumn.isOnlyKeywordColumn){
                 currentScope.swCollectionConfig.columns.push(column); 
-            }
-            if(scope.swCollectionColumn.isKeywordColumn){
-                currentScope.swCollectionConfig.keywordColumns.push(column);
             }
             currentScope.swCollectionConfig.columnsDeferred.resolve(); 
         } else {
