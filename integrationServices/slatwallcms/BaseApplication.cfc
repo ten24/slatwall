@@ -206,6 +206,58 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 		abort;
 	}
 
+	function checkForRewrite(required any slatwallScope, required any site){
+		//overrride is intended to handle IIS redirects
+		var rewriteConfigPath = arguments.site.getSitePath() &'config/rewritemaps.json';
+		if(fileExists(rewriteConfigPath)){
+			
+			if ( len( getContextRoot() ) ) {
+				var cgiScriptName = replace( CGI.SCRIPT_NAME, getContextRoot(), '' );
+				var cgiPathInfo = replace( CGI.PATH_INFO, getContextRoot(), '' );
+			} else {
+				var cgiScriptName = CGI.SCRIPT_NAME;
+				var cgiPathInfo = CGI.PATH_INFO;
+			}
+			var pathInfo = cgiPathInfo;
+			 if ( len( pathInfo ) > len( cgiScriptName ) && left( pathInfo, len( cgiScriptName ) ) == cgiScriptName ) {
+	            // canonicalize for IIS:
+	            pathInfo = right( pathInfo, len( pathInfo ) - len( cgiScriptName ) );
+	        } else if ( len( pathInfo ) > 0 && pathInfo == left( cgiScriptName, len( pathInfo ) ) ) {
+	            // pathInfo is bogus so ignore it:
+	            pathInfo = '';
+	        }
+	        //take path and  parse it
+	        var pathArray = listToArray(pathInfo,'/');
+	        var pathArrayLen = arrayLen(pathArray);
+	
+	        var urlTitlePathStartPosition = 1;
+    		
+    		arguments.contenturlTitlePath = '';
+    		for(var i = 1;i <= arraylen(pathArray);i++){
+    			if(i == arrayLen(pathArray)){
+    				arguments.contenturlTitlePath &= pathArray[i];
+    			}else{
+    				arguments.contenturlTitlePath &= pathArray[i] & '/';
+    			}
+    		}
+			
+			var rewriteFileContent = fileRead(rewriteConfigPath);
+			var redirectableList = {};
+			if(isJSON(rewriteFileContent)){
+				redirectableList = deserializeJson(rewriteFileContent);	
+			}else{
+				throw('file must be json');
+			}
+			var key = '/'&arguments.contenturlTitlePath;
+			if(structKeyExists(redirectableList,'/'&arguments.contenturlTitlePath)){
+				
+				location(redirectableList[key],false,302);
+				
+			}
+			
+		}
+	}
+	
 	function render404(required any slatwallScope, required any site){
 		var context = getPageContext();
 		context.getOut().clearBuffer();
