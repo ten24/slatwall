@@ -112,7 +112,7 @@ class SWPropertyDisplayController {
         this.editing = this.editing || this.edit;
 
         //swfproperty logic
-         if(angular.isUndefined(this.type) && this.object && this.object.metaData){
+        if(angular.isUndefined(this.type) && this.object && this.object.metaData){
             this.type = this.metadataService.getPropertyFieldType(this.object,this.propertyIdentifier);
         }
 
@@ -121,10 +121,13 @@ class SWPropertyDisplayController {
         }
 
         if(angular.isUndefined(this.title) && this.object && this.object.metaData){
+            console.log('test',this.metadataService);
             this.labelText = this.metadataService.getPropertyTitle(this.object,this.propertyIdentifier);
+            console.log('labelText',this.labelText);
         }
 
-        console.log(this.object.metaData.className,this.title);
+        this.labelText = this.labelText || this.title;
+        this.title = this.title || this.labelText;
 
 		this.type                	= this.type || "text" ;
 		this.class			   	= this.class|| "form-control";
@@ -133,6 +136,7 @@ class SWPropertyDisplayController {
 		this.labelText			= this.labelText || "";
 		this.labelClass			= this.labelClass || "";
 		this.name			    	= this.name || "unnamed";
+
 
 		this.object				= this.object || this.swForm.object; //this is the process object
 

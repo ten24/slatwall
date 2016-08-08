@@ -147,7 +147,12 @@ class SWFormFieldController {
 
 
 		if(angular.isUndefined(this.options)){
-
+			if(!this.optionsArguments || !this.optionsArguments.hasOwnProperty('property')){
+				this.optionsArguments={
+					'property':this.propertyIdentifier || this.property
+				};
+			}
+			console.log('test',this.optionsArguments);
 			var optionsPromise = this.$hibachi.getPropertyDisplayOptions(this.object.metaData.className,
 				this.optionsArguments
 			);
