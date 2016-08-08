@@ -259,6 +259,9 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 	}
 	
 	function render404(required any slatwallScope, required any site){
+		
+		checkForRewrite(argumentCollection=arguments);
+		
 		var context = getPageContext();
 		context.getOut().clearBuffer();
 		var response = context.getResponse();
