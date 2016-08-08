@@ -64,14 +64,14 @@ class SWCollectionColumn implements ng.IDirective{
                 isKeywordColumn:scope.swCollectionColumn.isKeywordColumn, 
                 isOnlyKeywordColumn:scope.swCollectionColumn.isOnlyKeywordColumn
         };
+
+        console.log("column",column)
         
         var currentScope = this.scopeService.locateParentScope(scope,"swCollectionConfig"); 
         
         if(angular.isDefined(currentScope.swCollectionConfig)){ 
             //push directly here because we've already built the column object
-            if(!scope.swCollectionColumn.isOnlyKeywordColumn){
-                currentScope.swCollectionConfig.columns.push(column); 
-            }
+            currentScope.swCollectionConfig.columns.push(column); 
             currentScope.swCollectionConfig.columnsDeferred.resolve(); 
         } else {
             throw("Could not find swCollectionConfig in the parent scope from swcollectioncolumn");

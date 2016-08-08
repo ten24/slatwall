@@ -264,6 +264,10 @@ class SWListingDisplayController{
         return this.listingService.getPageRecordMatchesHideRule(this.tableID, pageRecord); 
     }
 
+    public getPageRecordValueByColumn = (pageRecord, column)=>{
+        return this.listingService.getPageRecordValueByColumn(pageRecord, column);
+    }
+
     public getKeyOfMatchedDisableRule = (pageRecord)=>{
         return this.listingService.getKeyOfMatchedExpandableRule(this.tableID, pageRecord);
     }

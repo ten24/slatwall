@@ -205,6 +205,23 @@ class ListingService{
         return '';
     };
 
+    public getPageRecordValueByColumn = (pageRecord, column) =>{
+        var pageRecordValue = pageRecord[this.getPageRecordKey(column.propertyIdentifier)];
+        if( ( angular.isUndefined(pageRecordValue) || 
+            ( angular.isString(pageRecordValue) && pageRecordValue.trim().length == 0) ) && 
+              angular.isDefined(column.fallbackPropertyIdentifiers)
+        ){
+            var fallbackPropertyArray = column.fallbackPropertyIdentifiers.split(",");
+            for(var i=0; i<fallbackPropertyArray.length; i++){
+                if(angular.isDefined(pageRecord[this.getPageRecordKey(fallbackPropertyArray[i])])){
+                    pageRecordValue = pageRecord[this.getPageRecordKey(fallbackPropertyArray[i])];
+                    break;
+                }
+            }
+        }
+        return pageRecordValue; 
+    }
+
     public selectCurrentPageRecords=(listingID)=>{
         if(!this.getListing(listingID).collectionData.pageRecords) return;
 
@@ -589,7 +606,7 @@ class ListingService{
 
             //add parent property root filter
             if(!this.getListing(listingID).hasCollectionPromise){
-                collectionConfig.addFilter(this.getListing(listingID).parentPropertyName+'.'+this.getListing(listingID).exampleEntity.$$getIDName(),'NULL','IS', undefined, true);
+                collectionConfig.addFilter(this.getListing(listingID).parentPropertyName+'.'+this.getListing(listingID).exampleEntity.$$getIDName(),'NULL','IS', undefined, true, false, false);
             }
             //this.collectionConfig.addDisplayProperty(this.exampleEntity.$$getIDName()+'Path',undefined,{isVisible:false});
             //add children column
@@ -738,7 +755,6 @@ class ListingService{
 
     //for manual sort
     public setManualSort = (listingID:string, toggle:boolean) =>{
-        console.log("set manual sort")
         this.getListing(listingID).sortable = toggle; 
         if(toggle){
             this.setSingleColumnOrderBy(listingID, "sortOrder", "ASC");  
@@ -796,6 +812,12 @@ class ListingService{
     //End disable rule functions
 
     //Expandable Functions
+    public setExpandable = (listingID:string, value:boolean)=>{
+        if(angular.isDefined( this.getListing(listingID) )){
+            this.getListing(listingID).expandable = value; 
+        }
+    }
+    
     public getKeyOfMatchedExpandableRule = (listingID:string, pageRecord)=>{
         var expandableRuleMatchedKey = -1; 
         if(angular.isDefined(this.getListing(listingID)) &&

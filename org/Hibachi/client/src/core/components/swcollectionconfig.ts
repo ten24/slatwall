@@ -143,6 +143,7 @@ class SWCollectionConfig implements ng.IDirective{
 
             scope.swCollectionConfig.columnsPromise.then(()=>{
                 angular.forEach(scope.swCollectionConfig.columns, (column)=>{
+                    console.log("adding column again", column);
                     newCollectionConfig.addDisplayProperty(column.propertyIdentifier, '', column);
                 });
             }); 

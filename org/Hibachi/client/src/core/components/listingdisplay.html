@@ -117,7 +117,7 @@
                            >
 
                         <tr data-ng-repeat="(pageRecordKey, pageRecord) in swListingDisplay.collectionData.pageRecords"
-                            data-ng-if="pageRecord.dataIsVisible !== false"
+                            data-ng-show="pageRecord.dataIsVisible !== false"
                             data-ng-class="{{swListingDisplay.getNGClassObjectForPageRecordRow(pageRecord)}}"
                             sw-draggable
                             data-draggable="swListingDisplay.sortable && swListingDisplay.edit"
@@ -169,7 +169,7 @@
                                     data-expandable="(swListingDisplay.getPageRecordMatchesExpandableRule(pageRecord) || swListingDisplay.expandable) && (column.tdclass && column.tdclass === 'primary')"
                                     data-auto-open="swListingDisplay.expandableOpenRoot"
                                     data-link="{{$root.buildUrl(swListingDisplay.recordEditAction,swListingDisplay.recordEditQueryString)+'&'+swListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]}}"
-                                    data-record-value="pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"
+                                    data-record-value="swListingDisplay.getPageRecordValueByColumn(pageRecord,column)"
                                     data-parent-id="pageRecord[swListingDisplay.exampleEntity.$$getIDName()]"
                                     data-listing-id="swListingDisplay.tableID"
                                     data-child-count="pageRecord[swListingDisplay.childPropertyName+'Count']"

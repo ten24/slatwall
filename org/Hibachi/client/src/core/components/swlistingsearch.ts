@@ -15,11 +15,13 @@ class SWListingSearchController {
     private newFilterPosition;
     private itemInUse;
     private getCollection;
+    private listingId; 
 
     //@ngInject
     constructor(
         public $hibachi,
         public metadataService,
+        public listingService, 
         public collectionService,
         public observerService
     ) {
@@ -43,6 +45,11 @@ class SWListingSearchController {
     };
 
     private search =()=>{
+        if(this.searchText.length > 0 ){
+            this.listingService.setExpandable(this.listingId, false);
+        } else {
+            this.listingService.setExpandable(this.listingId, true);
+        }
         if(angular.isDefined(this.selectedSearchColumn)){
             this.backupColumnsConfig = angular.copy(this.collectionConfig.getColumns());
             var collectionColumns = this.collectionConfig.getColumns();
@@ -95,7 +102,8 @@ class SWListingSearch  implements ng.IDirective{
         toggleFilters : "&?",
         toggleDisplayOptions : "&?",
         showToggleFilters : "=?",
-        showToggleDisplayOptions : "=?"
+        showToggleDisplayOptions : "=?",
+        listingId : "@?"
     };
     public controller = SWListingSearchController;
     public controllerAs = 'swListingSearch';
@@ -132,6 +140,7 @@ class SWListingSearch  implements ng.IDirective{
             if(listingDisplayScope.paginator != null){
                 scope.swListingSearch.paginator = listingDisplayScope.paginator; 
             }
+            scope.swListingSearch.listingId = listingDisplayScope.tableID; 
         }
         scope.swListingSearch.backupColumnsConfig =  scope.swListingSearch.collectionConfig.getColumns();
     }

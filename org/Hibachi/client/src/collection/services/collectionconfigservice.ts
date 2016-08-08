@@ -119,6 +119,7 @@ class CollectionConfig {
 
     public clearFilterGroups=():CollectionConfig=>{
         this.filterGroups = [{filterGroup: []}];
+        this.keywordFilterGroups = [{filterGroup: []}];
         return this;
     };
 
@@ -189,6 +190,7 @@ class CollectionConfig {
     public getOptions= (): Object =>{
         this.validateFilter(this.filterGroups);
         if(this.keywords.length && this.keywordColumns.length > 0){
+            console.log("using Keyword Columns", this.keywordColumns);
             var columns = this.keywordColumns;
         } else {
             var columns = this.columns; 
@@ -292,7 +294,9 @@ class CollectionConfig {
                 isExportable = true,
                 persistent ,
                 ormtype = 'string',
-                lastProperty=column.split('.').pop()
+                lastProperty=column.split('.').pop(),
+                isKeywordColumn=true,
+                isOnlyKeywordColumn=false
                 ;
             var lastEntity = this.$hibachi.getEntityExample(this.$hibachi.getLastEntityNameInPropertyIdentifier(this.baseEntityName,column));
             if(angular.isUndefined(lastEntity)){
@@ -328,6 +332,12 @@ class CollectionConfig {
             }else if(lastEntity.metaData[lastProperty] && lastEntity.metaData[lastProperty].ormtype){
                 ormtype = lastEntity.metaData[lastProperty].ormtype;
             }
+            if(angular.isDefined(options['isKeywordColumn'])){
+                isKeywordColumn = options['isKeywordColumn']
+            }
+             if(angular.isDefined(options['isOnlyKeywordColumn'])){
+                isOnlyKeywordColumn = options['isOnlyKeywordColumn']
+            }
 
             if(angular.isDefined(lastEntity.metaData[lastProperty])){
                 persistent = lastEntity.metaData[lastProperty].persistent;
@@ -355,9 +365,7 @@ class CollectionConfig {
                     columnObject[key] = options[key];
                 }
             }
-            
-            var isKeywordColumn = options.isKeywordColumn || false; 
-            var isOnlyKeywordColumn = options.isOnlyKeywordColumn || false;
+            console.log("looking to add", columnObject, isOnlyKeywordColumn, isKeywordColumn);
             if(!isOnlyKeywordColumn){
                 this.columns.push(columnObject);
             }
@@ -416,7 +424,7 @@ class CollectionConfig {
         return this;
     };
 
-    public addFilter= (propertyIdentifier: string, value: any, comparisonOperator: string = '=', logicalOperator?: string, hidden:boolean=false, isKeywordFilter=false, isOnlyKeywordFilter=false):CollectionConfig =>{
+    public addFilter= (propertyIdentifier: string, value: any, comparisonOperator: string = '=', logicalOperator?: string, hidden:boolean=false, isKeywordFilter=true, isOnlyKeywordFilter=false):CollectionConfig =>{
         //create filter
         var filter = this.createFilter(propertyIdentifier, value, comparisonOperator, logicalOperator, hidden);
 
@@ -509,8 +517,13 @@ class CollectionConfig {
     };
 
     public removeFilterByDisplayPropertyIdentifier = (displayPropertyIdentifier) =>{
-        for( var j = 0; j < this.filterGroups.length; j++){
-            var filterGroup = this.filterGroups[j].filterGroup; 
+        this.removeFromFilterGroupsByPropertyIdentifier(this.filterGroups, displayPropertyIdentifier); 
+        this.removeFromFilterGroupsByPropertyIdentifier(this.keywordFilterGroups, displayPropertyIdentifier); 
+    }
+
+    private removeFromFilterGroupsByPropertyIdentifier = (filterGroups, displayPropertyIdentifier) =>{
+        for( var j = 0; j < filterGroups.length; j++){
+            var filterGroup = filterGroups[j].filterGroup; 
             for( var i = 0; i < filterGroup.length; i++){
                 var filter = filterGroup[i]; 
                 if(filter.displayPropertyIdentifier == displayPropertyIdentifier){
