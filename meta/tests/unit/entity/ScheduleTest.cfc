@@ -103,5 +103,16 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals("Monday", result[2].name);
 		assertEquals("3", result[3].value);	
 	}
+	public void function isBetweenHoursTest(){
+		var scheduleData={
+			scheduleID=''
+		};
+		var schedule= createPersistedTestEntity('Schedule', scheduleData);
+		makePublic(schedule,'isBetweenHours');
+		var result= schedule.isBetweenHours("03-02-1998 02:34:00","23-01-2016 12:49:21","09-3-2000 09:32:09");
+		assertTrue(result);
+		var newResult= schedule.isBetweenHours("09-8-2002 09:21:09", "08-01-1991 09:21:08", "01-12-2000 09:32:09");
+		assertFalse(newResult);
+	}
 	
 }
