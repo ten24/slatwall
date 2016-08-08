@@ -147,6 +147,25 @@ Notes:
 		
 		<cfreturn result />
 	</cffunction>
-
+	<cfscript>
+		public void function addOptionGroupByOptionGroupIDAndProductID(required string optionGroupID,required string productID){
+			var optionID = ORMExecuteQuery('
+				SELECT o.optionID
+				FROM SlatwallOptionGroup op
+				LEFT JOIN op.options o
+				where op.optionGroupID = :optionGroupID',
+				{optionGroupID=arguments.optionGroupID},
+				true,
+				{maxResults=1}
+			);
+			var queryService = new query();
+			var sql = "INSERT INTO SwSkuOption (skuID,optionID)
+				SELECT s.skuID,'#optionID#' as optionID
+				FROM swSku s where s.productID = :productID
+			";
+			queryService.addParam(name='productID',value=arguments.productID,CFSQLTYPE="CF_SQL_STRING");
+			queryService.execute(sql=sql);
+		}
+	</cfscript>
 </cfcomponent>
 
