@@ -286,4 +286,29 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals( '123 Main Street', variables.entity.getShippingAddress().getStreetAddress() );
 
 	}
+//	
+//	private numeric function getOrderPaymentNonNullAmountTotal(){
+//		request.debug("HI");
+//		return 300;
+//	}
+
+	public void function getOrderPaymentAmountNeededTest() {
+		var orderData = {
+			orderID = ''
+		};
+		var mockOrder = createPersistedTestEntity('Order', orderData);
+		
+		//fakeorderservice
+//		var OrderService = mock();
+//		OrderService.getOrderPaymentNonNullAmountTotal().returns(300);
+//		var mockOrderObject = createObject('component', 'Slatwall.model.entity.order').init(OrderService);
+//		writeDump(mockOrderObject);
+		
+		var mockOrderService = new Slatwall.model.service.orderService();
+//		mockOrderService.getOrderPaymentNonNullAmountTotal = getOrderPaymentNonNullAmountTotal();
+		mockOrderService.getOrderPaymentNonNullAmountTotal = 10;
+		
+		var result = mockOrder.getOrderPaymentAmountNeeded();
+		request.debug(result);
+	}
 }
