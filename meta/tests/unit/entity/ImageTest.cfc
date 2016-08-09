@@ -43,5 +43,20 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
   	    assertNotEquals(fakeOutput,result);	
   	    
 	  	}
+	  	
+	  	
+	  	public void function getImageExtensionTest()
+	  	{
+	  	var imageData= {
+	  		imageID=''
+	  	};
+	  	var mockImage= createTestEntity('Image', imageData);	
+	  	mockImage.setImageFile("sunny.jpg");
+	  	var result= mockImage.getImageExtension();
+	  	expectedResult= "jpg";
+	  	assertEquals(expectedResult, result );
+	  	
+	  	assertNotEquals("abc",result);
+	  	}
   }
 	
