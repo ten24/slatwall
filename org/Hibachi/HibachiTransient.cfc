@@ -377,7 +377,19 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 			currentProperty = properties[p];
 
 			// Check to see if we should upload this property
-			if( structKeyExists(arguments.data, currentProperty.name) && (!structKeyExists(currentProperty, "fieldType") || currentProperty.fieldType == "column") && isSimpleValue(arguments.data[ currentProperty.name ]) && structKeyExists(currentProperty, "hb_fileUpload") && currentProperty.hb_fileUpload && structKeyExists(currentProperty, "hb_fileAcceptMIMEType") && len(arguments.data[ currentProperty.name ]) && structKeyExists(form, currentProperty.name) ) {
+			if( 
+				structKeyExists(arguments.data, currentProperty.name) 
+				&& (
+					!structKeyExists(currentProperty, "fieldType") 
+					|| currentProperty.fieldType == "column"
+				) && isSimpleValue(arguments.data[ currentProperty.name ]) 
+				&& structKeyExists(currentProperty, "hb_fileUpload") 
+				&& currentProperty.hb_fileUpload 
+				&& structKeyExists(currentProperty, "hb_fileAcceptMIMEType") 
+				&& len(arguments.data[ currentProperty.name ]) 
+				&& !isNull(form)
+				&& structKeyExists(form, currentProperty.name) 
+			) {
 
 				// Wrap in try/catch to add validation error based on fileAcceptMIMEType
 				try {
