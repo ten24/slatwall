@@ -94,7 +94,7 @@ Notes:
 									<hb:HibachiPropertyDisplay object="#orderFulfillment#" property="shippingMethod" fieldName="orderFulfillments[#ofIndex#].shippingMethod.shippingMethodID" fieldClass="required" edit="#rc.edit#" />
 								</cfif>
 								<cfif structKeyExists(thisErrorBean.getErrors(), "shippingAddress") || structKeyExists(thisErrorBean.getErrors(), "requiredShippingInfoExistsFlag")>
-									<swa:SlatwallAdminAddressDisplay address="#orderFulfillment.getAddress()#" fieldNamePrefix="orderFulfillments[#ofIndex#].shippingAddress" edit="#rc.edit#" />
+									<swa:SlatwallAdminAddressDisplay address="#orderFulfillment.getAddress()#" fieldNamePrefix="orderFulfillments[#ofIndex#].shippingAddress." edit="#rc.edit#" />
 								</cfif>
 							</cfif>
 							<hr />
