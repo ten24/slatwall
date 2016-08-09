@@ -16,7 +16,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		              
 	var mockImage = createTestEntity('Image',imageData);
 		var result= mockImage.getResizedImage();
-		// request.debug(result);            
+		request.debug(result);            
 	  }
 	  
 	  public void function getImagePathTest()
@@ -57,6 +57,17 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	  	assertEquals(expectedResult, result );
 	  	
 	  	assertNotEquals("abc",result);
+	  	}
+	  	public void function getResizedImagePathTest(){
+	  		
+		var imageData={
+		   	imageID=''
+		              };
+		              
+	var mockImage = createTestEntity('Image',imageData);
+		var result= mockImage.getResizedImagePath();
+		     request.debug(result); 
+	  		
 	  	}
   }
 	
