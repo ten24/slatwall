@@ -70,7 +70,6 @@ component displayname="Comment" entityname="SlatwallComment" table="SwComment" p
 	// Non-Persistent Properties
 	property name="primaryRelationship" persistent="false";
 	property name="commentWithLinks" persistent="false";
-	property name="canEdit" persistent="false";
 	
 	
 	
