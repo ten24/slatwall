@@ -94,6 +94,9 @@ class SWOrderItemDetailStamp{
 					}
 
 				};
+				if(angular.isUndefined(scope.orderItem.details)){
+                    scope.orderItem.details = [];
+				}
 				if (angular.isDefined(scope.orderItem.details)){
 					switch (scope.systemCode){
 						case "merchandise":
