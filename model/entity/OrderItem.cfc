@@ -106,7 +106,6 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="productBundlePrice" persistent="false" hb_formatType="currency";
 	property name="productBundleGroupPrice" persistent="false" hb_formatType="currency";
 	property name="salePrice" type="struct" persistent="false";
-	property name="isRootOrderItem" persistent="false";
 
 
 	public numeric function getNumberOfUnassignedGiftCards(){

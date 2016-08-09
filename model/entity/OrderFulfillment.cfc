@@ -433,7 +433,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
   		if( !structKeyExists(variables,"subtotal") ) {
 	    	variables.subtotal = 0;
 	    	for( var i=1; i<=arrayLen(getOrderFulfillmentItems()); i++ ) {
-	    	    if(isNull(getOrderFulfillmentItems()[i].isRootOrderItem())){
+	    	    if(getOrderFulfillmentItems()[i].isRootOrderItem()){
 	    		    variables.subtotal = precisionEvaluate(variables.subtotal + getOrderFulfillmentItems()[i].getExtendedPrice());
 	    		}
 	    	}
