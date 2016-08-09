@@ -81,7 +81,7 @@ Notes:
 					<hb:HibachiPropertyDisplay object="#rc.comment#" property="createdByAccount">
 				</cfif>
 				<hr />
-				<hb:HibachiPropertyDisplay object="#rc.comment#" property="comment" displaytype="plain" fieldClass="col-md-12" edit="#rc.comment.isNew()#">
+				<hb:HibachiPropertyDisplay object="#rc.comment#" property="comment" displaytype="plain" fieldClass="col-md-12" edit="#rc.comment.canEdit()#">
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 		
