@@ -286,29 +286,66 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals( '123 Main Street', variables.entity.getShippingAddress().getStreetAddress() );
 
 	}
-//	
 //	private numeric function getOrderPaymentNonNullAmountTotal(){
-//		request.debug("HI");
-//		return 300;
+//		return 10;
+//	} 
+//	private numeric function getTotalThis() {
+//		return 100;
 //	}
-
+/*
 	public void function getOrderPaymentAmountNeededTest() {
 		var orderData = {
 			orderID = ''
 		};
-		var mockOrder = createPersistedTestEntity('Order', orderData);
+		var mockOrder = createObject('component', 'Slatwall.model.entity.Order');
 		
 		//fakeorderservice
-//		var OrderService = mock();
-//		OrderService.getOrderPaymentNonNullAmountTotal().returns(300);
-//		var mockOrderObject = createObject('component', 'Slatwall.model.entity.order').init(OrderService);
-//		writeDump(mockOrderObject);
+		var myMightyMock = mock('Slatwall.model.service.OrderService');
+		myMightyMock.getOrderPaymentNonNullAmountTotal(orderID='test').returns(30);
+//		var OrderService = createObject('component', 'Slatwall.model.service.OrderService');
+		mockOrder.setOrderService(myMightyMock);
 		
-		var mockOrderService = new Slatwall.model.service.orderService();
-//		mockOrderService.getOrderPaymentNonNullAmountTotal = getOrderPaymentNonNullAmountTotal();
-		mockOrderService.getOrderPaymentNonNullAmountTotal = 10;
+//		InjectProperty(mockOrder,'orderService',myMightyMock);
+		
+//		request.debug(mockOrder.getOrderServiceID());
+//		request.debug(myMightyMock.getOrderPaymentNonNullAmountTotal());
+		
+		
+//		var mockOrderService = new Slatwall.model.service.orderService();
+//		mockOrderService.getOrderPaymentNonNullAmountTotal = getOrderPaymentNonNullAmountTotal;
+//		mockOrder.setOrderService(mockOrderService);
+		//Try the injectionMethod
+//		injectMethod(variables.entity, this, 'getTotalThis', 'getTotal');
+		
+		//Deal with getTotal() function
+//		var myMock = mock('Slatwall.model.entity.Order', 'typeSafe');
+//		myMock.getTotal().returns(100);
+//		mockOrder.getTotal(myMock);
+//		
+		
+//		var myOrder2 = new Slatwall.model.entity.order();
+//		var myOrder2 = createObject('component', 'Slatwall.model.entity.Order').getTotal(myMock);
+//		request.debug(myOrder2.getORderID());
+//		mockOrder.getTotal(myMock);
+//		request.debug(mockOrder2.getTotal());
 		
 		var result = mockOrder.getOrderPaymentAmountNeeded();
-		request.debug(result);
+	}
+*/	
+	private numeric function getPreviouslyReturnedFulfillmentTotal() {
+		return 30;
+	}
+	
+	public void function getPreviouslyReturnedFulfillmentTotalTest() {
+		var orderData = {
+			orderID = ''
+		};
+		var mockOrder = createTestEntity('Order', orderData);
+		
+		var mockOrderService = new Slatwall.model.service.orderService();
+		mockOrderService.getPreviouslyReturnedFulfillmentTotal = getPreviouslyReturnedFulfillmentTotal;
+		mockOrder.setOrderService(mockOrderService);
+		
+		var result = mockOrder.getPreviouslyReturnedFulfillmentTotal();
 	}
 }

@@ -157,6 +157,23 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="totalQuantity" persistent="false";
 	property name="totalSaleQuantity" persistent="false";
 	property name="totalReturnQuantity" persistent="false";
+	
+//======= Mocking Injection ======	
+	property name="orderService" persistent="false" type="any";
+
+	public void function init(any argus){
+		setOrderService(getService('orderService'));
+		super.init();
+	}
+	
+	public void function setOrderService(required any orderService){
+		variables.orderService = arguments.orderService;
+	}
+	public void function setTotal(required any argu) {
+		variables.total = arguments.argu;
+	}
+
+//======= End of Mocking Injection ========
 
 	public string function getStatus() {
 		return getOrderStatusType().getTypeName();
@@ -282,7 +299,8 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 
 	public numeric function getPreviouslyReturnedFulfillmentTotal() {
-		return getService("OrderService").getPreviouslyReturnedFulfillmentTotal(getOrderId());
+		return getOrderService().getPreviouslyReturnedFulfillmentTotal(getOrderId());
+		//return getService("OrderService").getPreviouslyReturnedFulfillmentTotal(getOrderId());
 	}
 
 	// A helper to loop over all deliveries, and grab all of the items of each and put them into a single array
@@ -571,7 +589,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 	public numeric function getOrderPaymentAmountNeeded() {
 
-		var nonNullPayments = getService("orderService").getOrderPaymentNonNullAmountTotal(orderID=getOrderID());
+		var nonNullPayments = getOrderService().getOrderPaymentNonNullAmountTotal(orderID=getOrderID());
 		var orderPaymentAmountNeeded = precisionEvaluate(getTotal() - nonNullPayments);
 
 		if(orderPaymentAmountNeeded gt 0 && isNull(getDynamicChargeOrderPayment())) {
