@@ -16,7 +16,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		              
 	var mockImage = createTestEntity('Image',imageData);
 		var result= mockImage.getResizedImage();
-		request.debug(result);            
+		request.debug(result);
+		var missingCase= '<img src="/slatwall/assets/images/missingimage.jpg" />';
+		assertEquals(missingCase, result);           
 	  }
 	  
 	  public void function getImagePathTest()
@@ -45,7 +47,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	  	}
 	  	
 	  	
-	  	public void function getImageExtensionTest()
+	 public void function getImageExtensionTest()
 	  	{
 	  	var imageData= {
 	  		imageID=''
@@ -57,17 +59,27 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	  	assertEquals(expectedResult, result );
 	  	
 	  	assertNotEquals("abc",result);
+	    }
+	  	
+	  	
+	  	public void function getImageFileUploadDirectoryTest(){
+	  		var imageData={
+	  			imageID='', directory="sampleDirectoryForSunny"
+	  			};
+	  			
+  		var settingData={
+  			settingID='', settingName='globalAssetsImageFolderPath', settingValue='sunny/letsCheckThis'
+		                };
+  			    var mockSetting= createPersistedTestEntity('Setting', settingData);
+  			   
+	  			var mockImage= createPersistedTestEntity('Image',imageData);
+	  			var result= mockImage.getImageFileUploadDirectory();
+	  			var expectedOutput= "sunny/letsCheckThis/sampleDirectoryForSunny";
+	  			
+	  			assertEquals(expectedOutput, result);
+	  			
+	  			assertNotEquals("sunny/iDontWannaGoHere/sampleDirectoryForSunny", result);
+	  		}
 	  	}
-	  	public void function getResizedImagePathTest(){
-	  		
-		var imageData={
-		   	imageID=''
-		              };
-		              
-	var mockImage = createTestEntity('Image',imageData);
-		var result= mockImage.getResizedImagePath();
-		     request.debug(result); 
-	  		
-	  	}
-  }
+  
 	
