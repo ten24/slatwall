@@ -1577,7 +1577,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					&& column.ormtype neq 'big_decimal')
 				) continue;
 
-				var formatter = (column.ormtype eq 'big_decimal' || column.ormtype eq 'integer') ? 'STR' : 'LOWER';
+				var formatter = (column.ormtype eq 'big_decimal' || column.ormtype eq 'integer') ? 'STR' : '';
+				if(formatter == '' && getHibachiScope().getApplicationValue('databaseType')=="Oracle10g"){
+					formatter = "LOWER";
+				}
 				//Create a propertyIdentifier for DefaultColumns
 				var propertyIdentifier = (!defaultColumns)? column.propertyIdentifier : arguments.collectionConfig.baseEntityAlias&'.'&column.name;
 				//If is Attributes

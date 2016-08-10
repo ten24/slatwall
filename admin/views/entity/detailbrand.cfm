@@ -59,7 +59,7 @@ Notes:
 		
 		<hb:HibachiEntityDetailGroup object="#rc.brand#">
 			<hb:HibachiEntityDetailItem view="admin:entity/brandtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<hb:HibachiEntityDetailItem property="products" text="#$.slatwall.rbkey('entity.brand.products')#" />
+			<hb:HibachiEntityDetailItem property="products" text="#$.slatwall.rbkey('entity.brand.products')#" count="#rc.brand.getProductsCount()#"/>
 			<hb:HibachiEntityDetailItem property="vendors" />
 			<hb:HibachiEntityDetailItem view="admin:entity/brandtabs/brandsettings" />
 			
