@@ -126,6 +126,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var giftCardCreditTransaction = createCreditGiftCardTransaction(arguments.giftCard, arguments.processObject.getOrderPayments(), arguments.processObject.getCreditAmount());
 
 		if(!giftCardCreditTransaction.hasErrors()){
+			arguments.giftCard.updateCalculatedProperties();
 			arguments.giftCard = this.saveGiftCard(arguments.giftCard);
 		} else {
 			arguments.giftCard.addErrors(giftCardCreditTransaction.getErrors());
@@ -140,6 +141,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var giftCardDebitTransaction = createDebitGiftCardTransaction(arguments.giftCard, arguments.processObject.getOrderPayments(), arguments.processObject.getOrderItems(), arguments.processObject.getDebitAmount());
 
 		if(!giftCardDebitTransaction.hasErrors()){
+			arguments.giftCard.updateCalculatedProperties();
 			arguments.giftCard = this.saveGiftCard(arguments.giftCard);
 		} else {
 			arguments.giftCard.addErrors(giftCardDebitTransaction.getErrors());
