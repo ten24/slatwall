@@ -386,18 +386,27 @@ component output="false" accessors="true" extends="HibachiController" {
             argumentsCollection
         */
         var data = [];
-        if(isNull(arguments.rc.argument1)){
-            data = getService('hibachiService').invokeMethod('new#arguments.rc.entityName#').invokeMethod('get#arguments.rc.property#Options');
+        var entity = getService('hibachiService').invokeMethod('new#arguments.rc.entityName#');
+        
+        if(entity.hasAttributeCode(arguments.rc.property)){
+        	var attribute = getService('attributeService').getAttributeByAttributeCode(arguments.rc.property);
+        	
+        	data = attribute.getAttributeOptionsOptions();
         }else{
-            data = getService('hibachiService').invokeMethod('new#arguments.rc.entityName#').invokeMethod('get#arguments.rc.property#Options',{1=arguments.rc.argument1});
+        	if(isNull(arguments.rc.argument1)){
+	            data = entity.invokeMethod('get#arguments.rc.property#Options');
+	        }else{
+	            data = entity.invokeMethod('get#arguments.rc.property#Options',{1=arguments.rc.argument1});
+	        }
         }
+        
 
         //if it contains an empty value make it the first item
         var emptyValue = javacast('null','');
         var dataCount = arrayLen(data);
         var emptyValueIndex = 0;
         for(var i = 1; i <= dataCount; i++){
-            if(structKeyExists(data[i],'VALUE') && data[i].VALUE == ''){
+            if(structKeyExists(data[i],'VALUE') && data[i]['value'] == ''){
                 emptyValue = data[i];
                 emptyValueIndex = i;
             }

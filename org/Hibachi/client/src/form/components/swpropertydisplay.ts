@@ -83,9 +83,7 @@ class SWPropertyDisplayController {
         if(angular.isUndefined(this.isHidden)){
             this.isHidden = false;
         }
-        if(angular.isUndefined(this.eagerLoadOptions)){
-            this.eagerLoadOptions = true;
-        }
+
         if(angular.isUndefined(this.noValidate)){
             this.noValidate = false;
         }

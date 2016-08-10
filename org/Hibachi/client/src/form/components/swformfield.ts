@@ -42,6 +42,7 @@ class SWFormFieldController {
 	//@ngInject
 	constructor(
 		public $injector,
+		public $scope,
 		public $timeout,
 		public $log,
 		public $hibachi,
@@ -49,6 +50,7 @@ class SWFormFieldController {
 		public utilityService
 	){
 		this.$injector = $injector;
+		this.$scope= $scope;
 		this.$timeout = $timeout;
 		this.$log = $log;
 		this.$hibachi = $hibachi;
@@ -76,6 +78,7 @@ class SWFormFieldController {
 				this.object.data[this.property] = option.value;
 				this.form[this.property].$dirty = true;
 			}
+
 			this.observerService.notify(this.object.metaData.className+this.property.charAt(0).toUpperCase()+this.property.slice(1)+'OnChange', option);
 		}else{
 			this.object.data[this.property] = option.value;
@@ -128,19 +131,14 @@ class SWFormFieldController {
 	public selectStrategy = ()=>{
 		//this is specific to the admin because it implies loading of options via api
 
-		if(this.swPropertyDisplay){
-			if(angular.isDefined(this.object.metaData[this.property].fieldtype)){
-				this.selectType = 'object';
-				this.$log.debug('selectType:object');
-			}else{
-				this.selectType = 'string';
-				this.$log.debug('selectType:string');
-			}
-
-			if(this.eagerLoadOptions == true){
-				this.getOptions();
-			}
-		}
+        if(angular.isDefined(this.object.metaData[this.property].fieldtype)){
+            this.selectType = 'object';
+            this.$log.debug('selectType:object');
+        }else{
+            this.selectType = 'string';
+            this.$log.debug('selectType:string');
+        }
+		this.getOptions();
 	}
 
 	public getOptions = ()=>{
@@ -161,6 +159,7 @@ class SWFormFieldController {
 
 				if(this.selectType === 'object'
 				){
+					console.log('Object!');
 					if(angular.isUndefined(this.object.data[this.property])){
 						this.object.data[this.property] = this.$hibachi['new'+this.object.metaData[this.property].cfc]();
 					}
@@ -200,13 +199,18 @@ class SWFormFieldController {
 
 					}
 				}else if(this.selectType === 'string'){
+
 					if(this.object.data[this.property] !== null){
 						for(var i in this.options){
+							console.log('stringvalue',this.options[i].value);
+							console.log(this.object.data[this.property]);
+							console.log(this.object);
 							if(this.options[i].value === this.object.data[this.property]){
 								this.object.data['selected'+this.property] = this.options[i];
 								this.object.data[this.property] = this.options[i].value;
 							}
 						}
+
 					}else{
 
 						this.object.data['selected'+this.property] = this.options[0];

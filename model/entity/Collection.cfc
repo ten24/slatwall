@@ -734,10 +734,17 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	private string function getFilterAttributeHQL(required any filter){
 		var attributeIdentifier = listDeleteAt(filter.propertyIdentifier,ListLen(filter.propertyIdentifier,'.'),'.');
 
-		var HQL = "(SELECT attributeValue
-					FROM #getDao('hibachiDAO').getApplicationKey()#AttributeValue
-					WHERE attributeID = '#filter.attributeID#'
-					AND #filter.attributeSetObject#.#filter.attributeSetObject#ID = #attributeIdentifier#.#filter.attributeSetObject#ID)";
+		var HQL = "COALESCE(
+						(SELECT attributeValue
+						FROM #getDao('hibachiDAO').getApplicationKey()#AttributeValue
+						WHERE attributeID = '#filter.attributeID#'
+						AND #filter.attributeSetObject#.#filter.attributeSetObject#ID = #attributeIdentifier#.#filter.attributeSetObject#ID
+						),(
+							SELECT defaultValue 
+							FROM #getDao('hibachiDAO').getApplicationKey()#Attribute 
+							WHERE attributeID = '"& filter.attributeID &"'
+						)
+					)";
 		return HQL;
 	}
 
@@ -1282,11 +1289,20 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	private any function getColumnAttributeHQL(required struct column){
 		
 		var attributeIdentifier = getCollectionConfigStruct().baseEntityAlias;
-		var HQL	=  "(SELECT attributeValue
-					FROM #getDao('hibachiDAO').getApplicationKey()#AttributeValue
-					WHERE attribute.attributeID = '"
-					& column.attributeID &
-					"' AND #column.attributeSetObject#.#column.attributeSetObject#ID = #attributeIdentifier#.#column.attributeSetObject#ID) as #listLast(column.propertyIdentifier,'.')#";
+		var HQL	=  "COALESCE(
+						(SELECT 
+							attributeValue
+						
+						FROM #getDao('hibachiDAO').getApplicationKey()#AttributeValue
+						WHERE attribute.attributeID = '"
+						& column.attributeID &
+						"' AND #column.attributeSetObject#.#column.attributeSetObject#ID = #attributeIdentifier#.#column.attributeSetObject#ID)
+						,(
+							SELECT defaultValue 
+							FROM #getDao('hibachiDAO').getApplicationKey()#Attribute 
+							WHERE attributeID = '"& column.attributeID &"'
+						)
+					) as #listLast(column.propertyIdentifier,'.')#";
 		return HQL;
 	}
 
