@@ -28,10 +28,10 @@ class AdminRequest extends Request{
                 var eventNameBase = data.entityName+data.context;
                 if(result.errors){
                     this.observerService.notify(eventNameBase+'Failure',result.data);
-                    console.log('objectEvent',result.data)
+
                 }else{
                     this.observerService.notify(eventNameBase+'Success',result.data);
-                    console.log('objectEvent',result.data)
+
                 }
             }
 

@@ -150,7 +150,7 @@ class SWFormFieldController {
 					'property':this.propertyIdentifier || this.property
 				};
 			}
-			console.log('test',this.optionsArguments);
+
 			var optionsPromise = this.$hibachi.getPropertyDisplayOptions(this.object.metaData.className,
 				this.optionsArguments
 			);
@@ -159,7 +159,7 @@ class SWFormFieldController {
 
 				if(this.selectType === 'object'
 				){
-					console.log('Object!');
+
 					if(angular.isUndefined(this.object.data[this.property])){
 						this.object.data[this.property] = this.$hibachi['new'+this.object.metaData[this.property].cfc]();
 					}
@@ -202,9 +202,6 @@ class SWFormFieldController {
 
 					if(this.object.data[this.property] !== null){
 						for(var i in this.options){
-							console.log('stringvalue',this.options[i].value);
-							console.log(this.object.data[this.property]);
-							console.log(this.object);
 							if(this.options[i].value === this.object.data[this.property]){
 								this.object.data['selected'+this.property] = this.options[i];
 								this.object.data[this.property] = this.options[i].value;

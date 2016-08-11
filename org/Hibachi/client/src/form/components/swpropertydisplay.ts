@@ -119,9 +119,9 @@ class SWPropertyDisplayController {
         }
 
         if(angular.isUndefined(this.title) && this.object && this.object.metaData){
-            console.log('test',this.metadataService);
+
             this.labelText = this.metadataService.getPropertyTitle(this.object,this.propertyIdentifier);
-            console.log('labelText',this.labelText);
+
         }
 
         this.labelText = this.labelText || this.title;
