@@ -330,7 +330,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			//getDynamicAmountFlag() returns TRUE 
 			// getStatusCode() set to 'opstActive' by default
 		};
-		var mockOrderPayment = createPersistedTestEntity('OrderPayment', orderPaymentData);
+		var mockOrderPayment= request.slatwallScope.newEntity('OrderPayment');
+		mockOrderPayment.populate(orderPaymentData);
 		return mockOrderPayment;
 	}
 	
@@ -345,7 +346,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 
 		return createPersistedTestEntity('OrderPayment', orderPaymentData);
-
+		//TODO: This scope should throw error CREATEPERSISTEDTESTENTITY undefined, but didn't
+		//TODO: Need to deal with persisted test entity in Inject scope
 	}
 	
 	
@@ -423,6 +425,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		injectMethod(mockOrder, this, 'returnSevenHundred', 'getTotal'); 
 		
 		injectMethod(mockOrder, this, 'getDynamicChargeOrderPaymentNotNull', 'getDynamicChargeOrderPayment'); //returns OrderPayment entity
+		
 		
 		var resultZero = mockOrder.getOrderPaymentAmountNeeded();
 	}
