@@ -6,7 +6,6 @@ class ProductCreateController{
 
         //@ngInject
         constructor(
-                private $q, 
                 private $scope,
                 private $element, private $log:ng.ILogService,
                 private $hibachi,
@@ -20,56 +19,20 @@ class ProductCreateController{
                     this.$scope.preprocessproduct_createCtrl.getCollection();
                     this.selectionService.clearSelection('ListingDisplay');
             }  
-
-            this.$scope.productTypeIDPaths = {}; 
             
             this.$scope.preprocessproduct_createCtrl.getCollection = ()=>{
-                var productTypeDeffered = this.$q.defer(); 
-                var productTypePromise = productTypeDeffered.promise; 
-                
-                if(angular.isUndefined(this.$scope.productTypeIDPaths[this.$scope.preprocessproduct_createCtrl.selectedOption.value])){
-                        var productTypeCollectionConfig = this.collectionConfigService.newCollectionConfig('ProductType');
-                        productTypeCollectionConfig.addDisplayProperty('productTypeID, productTypeIDPath');
-                        productTypeCollectionConfig.addFilter('productTypeID', this.$scope.preprocessproduct_createCtrl.selectedOption.value, "="); 
-                        productTypeCollectionConfig.getEntity().then(
-                                (result)=>{
-                                      if(angular.isDefined(result.pageRecords[0])){
-                                                this.$scope.productTypeIDPaths[result.pageRecords[0].productTypeID] = result.pageRecords[0].productTypeIDPath; 
-                                      }
-                                      productTypeDeffered.resolve(); 
-                                },
-                                (reason)=>{
-                                      productTypeDeffered.reject(); 
-                                      throw("ProductCreateController was unable to retrieve the product type ID Path.");
-                                }
-                        ); 
-                } else {
-                        productTypeDeffered.resolve(); 
-                }
-
-                productTypePromise.then(
-                        ()=>{
-                                var collectionConfig = this.collectionConfigService.newCollectionConfig('Option');
-                                collectionConfig.setDisplayProperties('optionGroup.optionGroupName,optionName',undefined,{isVisible:true});
-                                collectionConfig.setDisplayProperties('optionID',undefined,{isVisible:false});
-                                //this.collectionConfig.addFilter('optionGroup.optionGroupID',$('input[name="currentOptionGroups"]').val(),'NOT IN')
-                                collectionConfig.addFilter('optionGroup.globalFlag',1,'=');
-                                var productTypeIDArray = this.$scope.productTypeIDPaths[this.$scope.preprocessproduct_createCtrl.selectedOption.value].split(","); 
-                                for(var j = 0 ; j < productTypeIDArray.length; j++){
-                                        collectionConfig.addFilter('optionGroup.productTypes.productTypeID',productTypeIDArray[j],'=','OR');
-                                }
-                                collectionConfig.setOrderBy('optionGroup.sortOrder|ASC,sortOrder|ASC');
-                                this.$scope.preprocessproduct_createCtrl.collectionListingPromise = collectionConfig.getEntity();
-                                this.$scope.preprocessproduct_createCtrl.collectionListingPromise.then((data)=>{
-                                        this.$scope.preprocessproduct_createCtrl.collection = data;    
-                                        this.$scope.preprocessproduct_createCtrl.collection.collectionConfig = collectionConfig;
-                                });
-                        },
-                        ()=>{
-                                throw("ProductCreateController was unable to resolve the product type.");
-                        }
-                )
-                
+                var collectionConfig = this.collectionConfigService.newCollectionConfig('Option');
+                collectionConfig.setDisplayProperties('optionGroup.optionGroupName,optionName',undefined,{isVisible:true});
+                collectionConfig.setDisplayProperties('optionID',undefined,{isVisible:false});
+                //this.collectionConfig.addFilter('optionGroup.optionGroupID',$('input[name="currentOptionGroups"]').val(),'NOT IN')
+                collectionConfig.addFilter('optionGroup.globalFlag',1,'=');
+                collectionConfig.addFilter('optionGroup.productTypes.productTypeID',this.$scope.preprocessproduct_createCtrl.selectedOption.value,'=','OR');
+                collectionConfig.setOrderBy('optionGroup.sortOrder|ASC,sortOrder|ASC');
+                this.$scope.preprocessproduct_createCtrl.collectionListingPromise = collectionConfig.getEntity();
+                this.$scope.preprocessproduct_createCtrl.collectionListingPromise.then((data)=>{
+                    this.$scope.preprocessproduct_createCtrl.collection = data;    
+                    this.$scope.preprocessproduct_createCtrl.collection.collectionConfig = collectionConfig;
+                })
             }
             
             var renewalMethodOptions = $("select[name='renewalMethod']")[0];
