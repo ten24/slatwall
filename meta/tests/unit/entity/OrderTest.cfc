@@ -408,7 +408,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		injectMethod(mockOrder, this, 'getDynamicCreditOrderPaymentNotNull', 'getDynamicCreditOrderPayment'); //returns OrderPayment entity
 		
 		var resultZero = mockOrder.getOrderPaymentAmountNeeded();
-		request.debug(resultZero);
 	}
 	
 	public void function getORderPaymentAmountNeededTest_DynamicChargeOrderPaymentNotNull() {
@@ -426,7 +425,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		injectMethod(mockOrder, this, 'getDynamicChargeOrderPaymentNotNull', 'getDynamicChargeOrderPayment'); //returns OrderPayment entity
 		
 		var resultZero = mockOrder.getOrderPaymentAmountNeeded();
-		request.debug(resultZero);
 	}
 	
 	public void function getOrderPaymentAmountNeededTest() {
