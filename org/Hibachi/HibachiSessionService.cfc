@@ -155,7 +155,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 		// If the sessions account is an admin and last request by the session was 15 min or longer ago. 
 		
-		if( getHibachiScope().getSessionFoundExtendedPSIDCookieFlag() || getHibachiScope().getSessionFoundPSIDCookieFlag()  && !getHibachiScope().getSession().getLoggedInFlag()
+		if( (getHibachiScope().getSessionFoundExtendedPSIDCookieFlag() || getHibachiScope().getSessionFoundPSIDCookieFlag())  && !getHibachiScope().getSession().getLoggedInFlag()
 		
 			|| (!isNull(getHibachiScope().getSession().getAccountAuthentication()) && getHibachiScope().getSession().getAccountAuthentication().getForceLogoutFlag()) 
 		
@@ -196,7 +196,6 @@ component output="false" accessors="true" extends="HibachiService"  {
 		var cookieValue = getValueForCookie();
 			getHibachiScope().getSession().setSessionCookieExtendedPSID(cookieValue);
 			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-ExtendedPSID", value=getHibachiScope().getSession().getSessionCookieExtendedPSID(), expires="#getHibachiScope().setting('globalExtendedSessionAutoLogoutInDays')#");
-		
 		
 		
 	}

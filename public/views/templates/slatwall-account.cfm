@@ -92,21 +92,16 @@ Notes:
 
 <cfoutput>
 	<div class="container">
-		SessionID: #$.slatwall.getSession().getSessionID()#<br>
-		
-		Logged In (on session): #$.slatwall.getSession().getLoggedInFlag()#<br/>
-		Logged In Datetime: #$.slatwall.getSession().getLoggedInDateTime()#<br/>
-		Logged Out Datetime: #$.slatwall.getSession().getLoggedOutDateTime()#<br/>
-		Logged in as admin: #$.slatwall.getLoggedInAsAdminFlag()#<br>
-		Is Admin User? #$.slatwall.getAccount().getAdminAccountFlag()# <br/>
-		Compare (in, out): #dateCompare($.slatwall.getSession().getLoggedInDateTime(), $.slatwall.getSession().getLoggedOutDateTime())#<br/>
-		Compare (out, in): #dateCompare($.slatwall.getSession().getLoggedOutDateTime(), $.slatwall.getSession().getLoggedInDateTime())#<br/>
-		
-		Account Info: #$.slatwall.getAccount().getAccountID()#, #$.slatwall.getAccount().getFirstName()# - #$.slatwall.getAccount().getLastName()#
-		
 			
 		<!--- USER MY-ACCOUNT SECTION IF LOGGED IN --->
+		#$.slatwall.getLoggedInFlag()# <br>
+		#$.slatwall.getLoggedInAsAdminFlag()# <br>
+		#$.slatwall.getAccount().getFullName()# <br>
+		#$.slatwall.getSession().getLoggedInDateTime()#<br>
+		#$.slatwall.getSession().getLoggedOutDateTime()#<br>
 		<cfif $.slatwall.getLoggedInFlag()>
+		
+		
 			<div class="row">
 				<div class="span12">
 

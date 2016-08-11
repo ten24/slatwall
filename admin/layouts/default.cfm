@@ -101,7 +101,7 @@ Notes:
 	</head>
 
 	<!--- Start old navbar --->
-	<body <cfif !$.slatwall.getLoggedInAsAdminFlag() && !structKeyExists(url,'ng')>class="s-login-screen"</cfif>>
+	<body <cfif !$.slatwall.getLoggedInFlag() || !$.slatwall.getLoggedInAsAdminFlag() && !structKeyExists(url,'ng')>class="s-login-screen"</cfif>>
 		<span>
 			
 		<cfif $.slatwall.getLoggedInAsAdminFlag()>
@@ -305,7 +305,9 @@ Notes:
 					<cfif structKeyExists(url, 'ng')>
 						<ng-view></ng-view>
 					<cfelse>
-						#body#
+						
+							#body#
+						
 					</cfif>
 				</div>
 

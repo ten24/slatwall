@@ -118,7 +118,6 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 		
 	} 
 	
-	
 	public any function getAccount() {
 		if(structKeyExists(variables, "account")) {
 			return variables.account;
