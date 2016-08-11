@@ -1,0 +1,22 @@
+{
+  "type": "script",
+  "seleniumVersion": "2",
+  "formatVersion": 1,
+  "steps": [
+    {
+      "type": "get",
+      "url": "http://sebuilder.github.com/se-builder/"
+    },
+    {
+      "type": "clickElement",
+      "locator": {
+        "type": "link text",
+        "value": "Plugins"
+      }
+    },
+    {
+      "type": "verifyTextPresent",
+      "text": "Plugins"
+    }
+  ]
+}
