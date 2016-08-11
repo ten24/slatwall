@@ -94,11 +94,11 @@ Notes:
 	<div class="container">
 			
 		<!--- USER MY-ACCOUNT SECTION IF LOGGED IN --->
-		#$.slatwall.getLoggedInFlag()# <br>
-		#$.slatwall.getLoggedInAsAdminFlag()# <br>
-		#$.slatwall.getAccount().getFullName()# <br>
-		#$.slatwall.getSession().getLoggedInDateTime()#<br>
-		#$.slatwall.getSession().getLoggedOutDateTime()#<br>
+		Loggedin: #$.slatwall.getLoggedInFlag()# <br>
+		Is Admin: #$.slatwall.getLoggedInAsAdminFlag()# <br>
+		Basic Info: #$.slatwall.getAccount().getFullName()# <br>
+		Logged In: #$.slatwall.getSession().getLoggedInDateTime()#<br>
+		Last Logout: #$.slatwall.getSession().getLoggedOutDateTime()#<br>
 		<cfif $.slatwall.getLoggedInFlag()>
 		
 		
