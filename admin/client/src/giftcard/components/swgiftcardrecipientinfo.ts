@@ -1,64 +1,53 @@
-<div class="s-md-content-block-inner">
-	<div class="s-title">
-		Recipient Info
-		<div class="dropdown s-action">
-			<a href="##" class="dropdown-toggle hide" id="dropdownMenu" data-toggle="dropdown">
-				<i class="fa fa-ellipsis-h" title="actions"></i>
-			</a>
-			<ul class="dropdown-menu pull-right hide" aria-labelledby="dropdownMenu1">
-				<li><a href="#">Change/Edit Recipient</a></li>
-			</ul>
-		</div>
-	</div>
-	
-	<div class="s-body">
-		<ul class="list-unstyled">
-			<li>
-				<div class="row s-line-item">
-					<div class="col-xs-4 s-title">First Name:</div>
-					<div class="col-xs-8 s-value" ng-bind="swGiftCardRecipientInfo.giftCard.orderItemGiftRecipient_firstName"></div>
-				</div>
-			</li>
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+class SWGiftCardRecipientInfoController {
 
-			<li>
-				<div class="row s-line-item">
-					<div class="col-xs-4 s-title">Last Name:</div>
-					<div class="col-xs-8 s-value" ng-bind="swGiftCardRecipientInfo.giftCard.orderItemGiftRecipient_lastName"></div>
-				</div>
-			</li>
+	public giftCard;
+	public detailAccountLink; 
 
-			<li>
-				<div class="row s-line-item">
-					<div class="col-xs-4 s-title">Email:</div>
-					<div class="col-xs-8 s-value" ng-bind="swGiftCardRecipientInfo.giftCard.orderItemGiftRecipient_emailAddress"></div>
-				</div>
-			</li>
+	//@ngInject
+	constructor(public $hibachi){
+		if(angular.isDefined(this.giftCard.ownerAccount_accountID)){
+			this.detailAccountLink = $hibachi.buildUrl('admin:entity.detailaccount', 'accountID=' + this.giftCard.ownerAccount_accountID);
+		}
+	}
+}
 
-			<li>
-				<div class="row s-line-item">
-					<div class="col-xs-4 s-title">Account:</div>
-					<div class="col-xs-8 s-value">
-						<a href="{{swGiftCardRecipientInfo.detailAccountLink}}">	
-							<span ng-bind="swGiftCardRecipientInfo.giftCard.ownerAccount_firstName"></span>
-							<span ng-bind="swGiftCardRecipientInfo.giftCard.ownerAccount_lastName"></span>
-						</a>
-					</div>
-				</div>
-			</li>
+class SWGiftCardRecipientInfo implements ng.IDirective {
 
-			<li>
-				<div class="row s-line-item">
-					<div class="col-xs-4 s-title">Message:</div>
-					<div class="col-xs-8 s-value">
-						<a href="##" data-toggle="collapse" data-target="#j-recipient-message" aria-expanded="false" aria-controls="collapseExample">View Message</a>
-					</div>
-				</div>
-				<div>
-					<div class="collapse" id="j-recipient-message">
-						<textarea class="form-control s-recipient-message" ng-bind="swGiftCardRecipientInfo.giftCard.orderItemGiftRecipient_giftMessage" disabled></textarea>
-					</div>
-				</div>
-			</li>
-		</ul>
-	</div>
-</div>
+	public restrict:string;
+	public templateUrl:string;
+	public scope = {};
+	public bindToController = {
+		giftCard:"=?"
+	};
+	public controller = SWGiftCardRecipientInfoController;
+	public controllerAs = "swGiftCardRecipientInfo";
+
+	public static Factory():ng.IDirectiveFactory{
+		var directive:ng.IDirectiveFactory = (
+			giftCardPartialsPath,
+			slatwallPathBuilder
+		) => new SWGiftCardRecipientInfo(
+			giftCardPartialsPath,
+			slatwallPathBuilder
+		);
+		directive.$inject = [
+			'giftCardPartialsPath',
+			'slatwallPathBuilder'
+		];
+		return directive;
+	}
+
+	constructor(private giftCardPartialsPath, private slatwallPathBuilder){
+		this.templateUrl = slatwallPathBuilder.buildPartialsPath(giftCardPartialsPath) + "/recipientinfo.html";
+		this.restrict = "EA";
+	}
+
+}
+
+export{
+	SWGiftCardRecipientInfoController,
+	SWGiftCardRecipientInfo
+}
+

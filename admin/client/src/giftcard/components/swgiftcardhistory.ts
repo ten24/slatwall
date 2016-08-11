@@ -1,167 +1,159 @@
-<div class="col-xs-12">
-	<div class="s-detail-body">
-		<h2>History & Orders</h2>
-		<div class="row">
-			<div class="col-xs-3 s-detail-info">
-				<p>This timeline provides details on all actions that have taken place on this gift card.</p>
-			</div>
-			<div class="col-xs-9 s-detail-header-table">
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+class SWGiftCardHistoryController{
+	public transactions;
+    public bouncedEmails; 
+    public giftCard; 
+    public emails; 
+    public order; 
+    
+    //@ngInject
+    constructor( public collectionConfigService, 
+                 public $hibachi        
+    ){
+        
+        var initialBalance:number = 0;
+        var totalDebit:number = 0; 
+        
+        var transactionConfig = this.collectionConfigService.newCollectionConfig('GiftCardTransaction');
+        
+        transactionConfig.setDisplayProperties("giftCardTransactionID, creditAmount, debitAmount, createdDateTime, giftCard.giftCardID, orderPayment.order.orderID, orderPayment.order.orderNumber, orderPayment.order.orderOpenDateTime", "id,credit,debit,created,giftcardID,ordernumber,orderdatetime");
+        transactionConfig.addFilter('giftCard.giftCardID', this.giftCard.giftCardID);
+        transactionConfig.setAllRecords(true);
+        transactionConfig.setOrderBy("createdDateTime|DESC");
+        
+        var emailBounceConfig = this.collectionConfigService.newCollectionConfig('EmailBounce');
+        emailBounceConfig.setDisplayProperties("emailBounceID, rejectedEmailTo, rejectedEmailSendTime, relatedObject, relatedObjectID");
+        emailBounceConfig.addFilter('relatedObjectID', this.giftCard.giftCardID);
+        emailBounceConfig.setAllRecords(true);
+        emailBounceConfig.setOrderBy("rejectedEmailSendTime|DESC");
+        
+        var emailConfig = this.collectionConfigService.newCollectionConfig('Email'); 
+        emailConfig.setDisplayProperties('emailID, emailTo, relatedObject, relatedObjectID, createdDateTime');
+        emailConfig.addFilter('relatedObjectID', this.giftCard.giftCardID);
+        emailConfig.setAllRecords(true); 
+        emailConfig.setOrderBy("createdDateTime|DESC");
+        
+        emailConfig.getEntity().then((response)=>{
+            this.emails = response.records; 
+        
+            emailBounceConfig.getEntity().then((response)=>{
+                this.bouncedEmails = response.records; 
 
-				<div class="responsive-table">
-					<table ng-class="{'s-more-results': swGiftCardHistory.transactions.length > 10}" class="table">
-						<thead>
-							<tr>
-								<th></th>
-								<th>Type <i class="fa fa-sort"></i></th>
-								<th>Date <i class="fa fa-sort"></i></th>
-								<th>Info</th>
-								<th>Transaction</th>
-								<th>Balance</th>
-							</tr>
-						</thead>
-						<tbody class="s-status-table">
-							<tr ng-class="{'s-purchase':transaction.debit, 's-success':transaction.activated, 's-error':transaction.bouncedEmail}" ng-repeat="transaction in swGiftCardHistory.transactions">
-								<!-- Initial Transactions -->
-								<td ng-if-start="$index==swGiftCardHistory.transactions.length-1" class="s-status"><i class="fa fa-plus"></i></td>
-								<td>Card Purchased </td>
-								<td ng-bind="swGiftCardHistory.order.orderOpenDateTime"></td>
-								<td>Customer: <a href="?slatAction=admin:entity.detailAccount&accountID={{swGiftCardHistory.order.account_accountID}}"><span ng-bind="swGiftCardHistory.order.account_firstName"></span> <span ng-bind="swGiftCardHistory.order.account_lastName"></span> (<span ng-bind="swGiftCardHistory.order.account_primaryEmailAddress_emailAddress"></span>)</a></td>
-								<td>
-									+ <span class="s-bold" ng-bind-html="transaction.creditAmount | swcurrency:swGiftCardHistory.giftCard.currencyCode"></span>
-								</td>
-								<td ng-if-end>
-									<span class="s-bold" ng-bind-html="transaction.creditAmount | swcurrency:swGiftCardHistory.giftCard.currencyCode"></span>
-								</td>
-								
-								<!-- Notification Email -->
-								<td ng-if-start="transaction.bouncedEmail" class="s-status"><i class="fa fa-envelope"></i></td>
-								<td>Recipient Email Failure </td>
-								<td ng-bind="transaction.rejectedEmailSendTime"></td>
-								<td>Recipient: 
-									<span ng-bind="swGiftCardHistory.giftCard.orderItemGiftRecipient_firstName"></span> <span ng-bind="swGiftCardHistory.giftCard.orderItemGiftRecipient_lastName"></span> ( <span ng-bind="swGiftCardHistory.giftCard.orderItemGiftRecipient_emailAddress"></span> )
-								</td>
-								<td>--</td>
-								<td class="s-bold" ng-if-end ng-bind-html="transaction.balance | swcurrency:swGiftCardHistory.giftCard.currencyCode"></td>
-								
-								<!-- Notification Email -->
-								<td ng-if-start="transaction.emailSent" class="s-status"><i class="fa fa-envelope"></i></td>
-								<td>Recipient notification sent </td>
-								<td ng-bind="transaction.sentAt"></td>
-								<td>Recipient: 
-									<span ng-bind="swGiftCardHistory.giftCard.orderItemGiftRecipient_firstName"></span> ( <span ng-bind="transaction.emailTo"></span> )
-								</td>
-								<td>--</td>
-								<td class="s-bold" ng-if-end ng-bind-html="transaction.balance | swcurrency:swGiftCardHistory.giftCard.currencyCode"></td>
-								
-								<!-- Activated -->
-								<td ng-if-start="transaction.activated" class="s-status"><i class="fa fa-check"></i></td>
-								<td>Card Activated</td>
-								<td ng-bind="transaction.activeAt"></td>
-								<td></td>
-								<td>--</td>
-								<td class="s-bold" ng-if-end ng-bind-html="transaction.balance | swcurrency:swGiftCardHistory.giftCard.currencyCode"></td>
-							
-								<!-- All Other Transactions -->
-								<td ng-if-start="$index!=swGiftCardHistory.transactions.length-1 && !transaction.emailSent && !transaction.activated && !transaction.bouncedEmail" class="s-status"><i class="fa fa-shopping-cart"></i></td>
-								<td ng-if-end>
-									<span ng-if="transaction.debit">Purchase Applied</span>
-									<span ng-if="!transaction.debit">Return Applied</span> 
-								</td>
-								<td ng-if-start="$index!=swGiftCardHistory.transactions.length-1 && !transaction.emailSent && !transaction.activated  && !transaction.bouncedEmail" ng-bind="transaction.orderPayment_order_orderOpenDateTime"></td>
-								<td>Order: 
-									<a href="{{transaction.detailOrderLink}}">
-										<span ng-bind="transaction.orderPayment_order_orderNumber"></span>
-									</a>
-								</td>
-								<td>
-									<span class="s-bold" ng-if-start="!transaction.debit && !transaction.emailSent && !transaction.activated  && !transaction.bouncedEmail">+</span>
-									<span class="s-bold" ng-if-end ng-bind-html="transaction.creditAmount | swcurrency:swGiftCardHistory.giftCard.currencyCode"></span>
-									<span class="s-bold" ng-if-start="transaction.debit && !transaction.emailSent && !transaction.activated  && !transaction.bouncedEmail">-</span>
-									<span class="s-bold" ng-if-end ng-bind-html="transaction.debitAmount | swcurrency:swGiftCardHistory.giftCard.currencyCode"></span>
-								</td>
-								<td class="s-bold" ng-if-end ng-bind-html="transaction.balance | swcurrency:swGiftCardHistory.giftCard.currencyCode"></td>
-							</tr>
-							<!--
-							<tr class="s-purchase">
-								<td><i class="fa fa-shopping-cart"></i></td>
-								<td>Purchase Applied </td>
-								<td>July 8, 2015 - 11:43 am</td>
-								<td>Order: <a href="##">263546</a></td>
-								<td>-$51.03</td>
-								<td>$248.97</td>
-							</tr>
-							<tr class="s-success">
-								<td><i class="fa fa-check"></i></td>
-								<td>Card Activated</td>
-								<td>July 8, 2015 - 11:43 am</td>
-								<td></td>
-								<td>--</td>
-								<td>$300.00</td>
-							</tr>
-							<tr class="s-notify">
-								<td><i class="fa fa-times"></i></td>
-								<td>Card Deactivated </td>
-								<td>July 8, 2015 - 11:43 am</td>
-								<td></td>
-								<td>--</td>
-								<td>$300.00</td>
-							</tr>
-							<tr>
-								<td><i class="fa fa-user-plus"></i></td>
-								<td>Card Assigned</td>
-								<td>July 8, 2015 - 11:43 am</td>
-								<td></td>
-								<td>--</td>
-								<td>$300.00</td>
-							</tr>
-							<tr>
-								<td><i class="fa fa-envelope"></i></td>
-								<td>Recipient Email Opened</td>
-								<td>July 8, 2015 - 11:43 am</td>
-								<td>Recipient: Bob Smith (bobsmith@gmail.com)</td>
-								<td>--</td>
-								<td>$300.00</td>
-							</tr>
-							<tr class="s-error">
-								<td><i class="fa fa-envelope"></i></td>
-								<td>Recipient Email Failure </td>
-								<td>July 8, 2015 - 11:43 am</td>
-								<td>Recipient: John Smith (johnsmith@gmail.com)</td>
-								<td>--</td>
-								<td>$300.00</td>
-							</tr>
-							<tr>
-								<td><i class="fa fa-envelope"></i></td>
-								<td>Recipient email updated </td>
-								<td>July 8, 2015 - 11:43 am</td>
-								<td>Recipient: John Smith (johnsmith@gmail.com)</td>
-								<td>--</td>
-								<td>$300.00</td>
-							</tr>
-							<tr>
-								<td><i class="fa fa-envelope"></i></td>
-								<td>Recipient notification resent </td>
-								<td>July 8, 2015 - 11:43 am</td>
-								<td>Recipient: John Smith (johnsmith@gmail.com)</td>
-								<td>--</td>
-								<td>$300.00</td>
-							</tr>
-							<tr>
-								<td><i class="fa fa-plus"></i></td>
-								<td>Card Purchased </td>
-								<td>July 8, 2015 - 11:43 am</td>
-								<td>Customer: <a href="##">John Smith (johnsmith@gmail.com)</a></td>
-								<td>+$300.00</td>
-								<td>$300.00</td>
-							</tr>
-							-->
-						</tbody>
-					</table>
-					<div class="s-load-more-wrapper" ng-hide="swGiftCardHistory.transactions.length < 10">
-						<button type="button" name="button" class="btn btn-default btn-sm s-load-more">Load More <span>(showing 10 of <span ng-bind="swGiftCardHistory.transactions.length"></span>)</span></button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
+                transactionConfig.getEntity().then((response)=>{
+                    this.transactions = response.records; 
+                    var initialCreditIndex = this.transactions.length-1;
+                    var initialBalance = this.transactions[initialCreditIndex].creditAmount; 
+                    var currentBalance = initialBalance; 
+                    
+                    for(var i = initialCreditIndex; i >= 0; i--){
+                        var transaction = this.transactions[i];
+                        if(typeof transaction.debitAmount !== "string"){
+                            transaction.debit = true;
+                            totalDebit += transaction.debitAmount; 
+                        } else if(typeof transaction.creditAmount !== "string") { 
+                            if(i != initialCreditIndex){
+                                currentBalance += transaction.creditAmount; 
+                            }
+                            transaction.debit = false;
+                        }
+
+                        transaction.detailOrderLink = $hibachi.buildUrl('admin:entity.detailOrder', 'orderID=' + transaction.orderPayment_order_orderID)
+                        
+                        var tempCurrentBalance = currentBalance - totalDebit; 
+                    
+                        transaction.balance = tempCurrentBalance;
+                        
+                        if(i == initialCreditIndex){            
+                            
+                            var activeCard = {
+                                activated: true, 
+                                debit:false,
+                                activeAt: transaction.orderPayment_order_orderOpenDateTime,
+                                balance: initialBalance
+                            }
+                            
+                            this.transactions.splice(i, 0, activeCard);  
+                            
+                            if(angular.isDefined(this.bouncedEmails)){
+                                angular.forEach(this.bouncedEmails, (email, bouncedEmailIndex)=>{
+                                    email.bouncedEmail = true; 
+                                    email.balance = initialBalance; 
+                                    this.transactions.splice(i, 0, email);
+                                }); 
+                            }
+                            if(angular.isDefined(this.emails)){
+                                angular.forEach(this.emails, (email)=>{
+                                    email.emailSent = true; 
+                                    email.debit = false;
+                                    email.sentAt = email.createdDateTime;
+                                    email.balance = initialBalance;
+                                    this.transactions.splice(i, 0, email);
+                                });
+                            }
+                        }       
+                    }
+                    
+                });
+            }); 
+        }); 
+        
+        var orderConfig = this.collectionConfigService.newCollectionConfig('Order');
+        orderConfig.setDisplayProperties("orderID,orderNumber,orderOpenDateTime,account.firstName,account.lastName,account.accountID,account.primaryEmailAddress.emailAddress");
+        orderConfig.addFilter('orderID', this.giftCard.originalOrderItem_order_orderID);
+        orderConfig.setAllRecords(true);
+    
+        orderConfig.getEntity().then((response)=>{
+            this.order = response.records[0];
+        }); 
+    }
+}
+
+class SWGiftCardHistory implements ng.IDirective {
+
+	public restrict:string;
+	public templateUrl:string;
+	public scope = {};
+	public bindToController = {
+		giftCard:"=?",
+		transactions:"=?",
+		bouncedEmails:"=?",
+		order:"=?"
+	};
+	public controller=SWGiftCardHistoryController;
+	public controllerAs="swGiftCardHistory";
+
+	public static Factory():ng.IDirectiveFactory{
+		var directive:ng.IDirectiveFactory = (
+			collectionConfigService,
+			giftCardPartialsPath,
+			slatwallPathBuilder
+		) => new SWGiftCardHistory(
+			collectionConfigService,
+			giftCardPartialsPath,
+			slatwallPathBuilder
+		);
+		directive.$inject = [
+			'collectionConfigService',
+			'giftCardPartialsPath',
+			'slatwallPathBuilder'
+		];
+		return directive;
+	}
+
+    //@ngInject
+	constructor(private collectionConfigService, private giftCardPartialsPath, private slatwallPathBuilder){
+		this.templateUrl = slatwallPathBuilder.buildPartialsPath(giftCardPartialsPath) + "/history.html";
+		this.restrict = "EA";
+	}
+
+	public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
+
+	}
+
+}
+
+export {
+	SWGiftCardHistoryController,
+	SWGiftCardHistory
+}
