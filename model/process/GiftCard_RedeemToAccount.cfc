@@ -45,22 +45,8 @@ component output="false" accessors="true" extends="HibachiProcess"{
 
 	 // Injected Entity
 	 property name="giftCard";
-	 property name="account";
 
 	 //Property
+	 property name="account";
 
-	 property name="accountID";
-
-	 public any function getAccountSmartList() {
-	 	return getService("accountService").getAccountSmartList();
-	 }
-
-	 public any function getAccount() {
-	 	if(!structKeyExists(variables, "account") && !isNull(this.getAccountID())){
-			variables.account = getService("accountService").getAccount(this.getAccountID());
-	 	}
-	 	if(structKeyExists(variables, "account")){
-	 		return variables.account;
-	 	}
-	 }
 }

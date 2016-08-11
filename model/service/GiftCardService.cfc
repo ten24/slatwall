@@ -185,15 +185,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function processGiftCard_redeemToAccount(required any giftCard, required any processObject){
 
-		if(!isNull(arguments.processObject.getAccount())){
-			arguments.giftCard.setOwnerAccount(arguments.processObject.getAccount());
-		} else {
-			arguments.giftCard.addError("ownerAccount", rbKey('admin.entity.processgiftcard.redeemToAccount_failure'));
-		}
+		arguments.giftCard.setOwnerAccount(arguments.processObject.getAccount());
 
-		if(!arguments.giftCard.hasErrors()){
-			arguments.giftCard = this.saveGiftCard(arguments.giftCard);
-		}
+		arguments.giftCard = this.saveGiftCard(arguments.giftCard);
 
 		return arguments.giftCard;
 

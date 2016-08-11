@@ -54,12 +54,9 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.giftCard#" edit="false">
-	    <hb:HibachiEntityActionBar type="detail" object="#rc.giftCard#" showEdit="false">
-			<hb:HibachiProcessCaller action="admin:entity.preprocessGiftCard" entity="#rc.giftCard#" processContext="updateEmailAddress" type="list" modal="true" />
-			<hb:HibachiProcessCaller action="admin:entity.preprocessGiftCard" entity="#rc.giftCard#" processContext="redeemToAccount" type="list" modal="true" />
-	    </hb:HibachiEntityActionBar>
-	</hb:HibachiEntityDetailForm>
+	<hb:HibachiEntityActionBar type="detail" object="#rc.giftCard#" showEdit="false">
+			<hb:HibachiProcessCaller action="admin:entity.preProcessGiftCard" entity="#rc.giftCard#" processContext="updateEmailAddress" type="list" modal="true" />
+	</hb:HibachiEntityActionBar>
 
 	<sw-gift-card-detail gift-card-id="#rc.giftCardID#"></sw-gift-card-detail>
 </cfoutput>

@@ -76,7 +76,6 @@ Notes:
 		<sw-listing-column data-property-identifier="ownerEmailAddress"></sw-listing-column>
 		<sw-listing-column data-property-identifier="ownerLastName"></sw-listing-column>
 		<sw-listing-column data-property-identifier="ownerFirstName"></sw-listing-column>
-		<sw-listing-column data-property-identifier="giftCardCode"></sw-listing-column>
 	</sw-listing-display>
 
 </cfoutput>

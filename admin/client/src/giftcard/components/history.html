@@ -68,11 +68,7 @@
 									<span ng-if="!transaction.debit">Return Applied</span> 
 								</td>
 								<td ng-if-start="$index!=swGiftCardHistory.transactions.length-1 && !transaction.emailSent && !transaction.activated  && !transaction.bouncedEmail" ng-bind="transaction.orderPayment_order_orderOpenDateTime"></td>
-								<td>Order: 
-									<a href="{{transaction.detailOrderLink}}">
-										<span ng-bind="transaction.orderPayment_order_orderNumber"></span>
-									</a>
-								</td>
+								<td>Order: <span ng-bind="transaction.orderPayment_order_orderNumber"></span></td>
 								<td>
 									<span class="s-bold" ng-if-start="!transaction.debit && !transaction.emailSent && !transaction.activated  && !transaction.bouncedEmail">+</span>
 									<span class="s-bold" ng-if-end ng-bind-html="transaction.creditAmount | swcurrency:swGiftCardHistory.giftCard.currencyCode"></span>
