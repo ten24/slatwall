@@ -197,13 +197,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var skusquery = new Query();
 		skusquery.addParam(name="productID",value=product.getProductID(),cfsqltype="cf_sql_varchar");
 		var skus = skusquery.execute(
-			sql='select s.activeFlag,s.publishedFlag from SwSku s where s.productID=:productID'
+			sql='select s.activeFlag from SwSku s where s.productID=:productID'
 		).getResult();
 		
 		
 		for(var sku in skus){
 			assertFalse(sku.activeFlag);
-			assertFalse(sku.publishedFlag);
 		}
 	}
 }

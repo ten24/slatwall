@@ -57,7 +57,7 @@ Notes:
 			var updateQuery = new Query();
 			var sql = '
 				UPDATE SwSku s
-				SET s.activeFlag=0,publishedFlag=0
+				SET s.activeFlag=0
 				WHERE s.productID = :productID
 			';
 			updateQuery.addParam(name="productID",value=arguments.productID,cfsqltype="cf_sql_varchar");
