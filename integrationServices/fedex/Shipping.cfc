@@ -95,7 +95,7 @@ component accessors="true" output="false" displayname="FedEx" implements="Slatwa
 		} else {
 			url = variables.productionUrl;
 		}
-		return getResponse(requestPacket=xmlPacket,url=url);
+		return getResponse(requestPacket=xmlPacket,urlString=url);
 	}
 	
 	private any function getShippingProcessShipmentResponseBean(string xmlResponse){
