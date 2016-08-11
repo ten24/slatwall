@@ -559,6 +559,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ====================== START: Save Overrides ===========================
 
 	public any function saveSku(required any sku, required struct data={}){
+		var previousActiveState = arguments.sku.getActiveFlag();
 		if(arguments.sku.getProduct().getBaseProductType() == "subscription"){
 			if(structKeyExists(arguments.data,"renewalMethod")){
 				if(arguments.data.renewalMethod == "renewalsku"){
@@ -573,7 +574,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 		}
-		return super.save(entity=arguments.sku, data=arguments.data);
+		arguments.sku = super.save(entity=arguments.sku, data=arguments.data);
+		
+		if(!sku.hasErrors()){
+			if(!arguments.sku.isNew() && previousActiveState == 1 && arguments.sku.getActiveFlag() == 0){
+				sku.setPublishedFlag(false);
+			}
+		}
+		
+		return arguments.sku;
 	}
 
 	// ======================  END: Save Overrides ============================
