@@ -158,19 +158,18 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="totalSaleQuantity" persistent="false";
 	property name="totalReturnQuantity" persistent="false";
 	
-//======= Mocking Injection ======	
+    //======= Mocking Injection for Unit Test ======	
 	property name="orderService" persistent="false" type="any";
+	property name='orderDAO' persistent="false" type="any";
 
-	public void function init(any argus){
+	public void function init(){
 		setOrderService(getService('orderService'));
+		setOrderDao(getDAO('OrderDAO'));
 		super.init();
 	}
 	
 	public void function setOrderService(required any orderService){
 		variables.orderService = arguments.orderService;
-	}
-	public void function setTotal(required any argu) {
-		variables.total = arguments.argu;
 	}
 
 //======= End of Mocking Injection ========
@@ -300,7 +299,6 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 	public numeric function getPreviouslyReturnedFulfillmentTotal() {
 		return getOrderService().getPreviouslyReturnedFulfillmentTotal(getOrderId());
-		//return getService("OrderService").getPreviouslyReturnedFulfillmentTotal(getOrderId());
 	}
 
 	// A helper to loop over all deliveries, and grab all of the items of each and put them into a single array
@@ -320,8 +318,8 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 
 	public boolean function hasGiftCardOrderPaymentAmount(){
-
-		var amount = getDAO("OrderDAO").getGiftCardOrderPaymentAmount(this.getOrderID());
+		
+		var amount = getOrderDAO().getGiftCardOrderPaymentAmount(this.getOrderID());
 
 		if(amount gt 0){
 			return true;
@@ -591,7 +589,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 		var nonNullPayments = getOrderService().getOrderPaymentNonNullAmountTotal(orderID=getOrderID());
 		var orderPaymentAmountNeeded = precisionEvaluate(getTotal() - nonNullPayments);
-
+	
 		if(orderPaymentAmountNeeded gt 0 && isNull(getDynamicChargeOrderPayment())) {
 			return orderPaymentAmountNeeded;
 		} else if (orderPaymentAmountNeeded lt 0 && isNull(getDynamicCreditOrderPayment())) {
@@ -647,7 +645,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 
 	public any function getDynamicChargeOrderPaymentAmount() {
-		var nonNullPayments = getService("orderService").getOrderPaymentNonNullAmountTotal(orderID=getOrderID());
+		var nonNullPayments = getOrderService().getOrderPaymentNonNullAmountTotal(orderID=getOrderID());
 		var orderPaymentAmountNeeded = precisionEvaluate(getTotal() - nonNullPayments);
 
 		if(orderPaymentAmountNeeded gt 0) {
@@ -658,7 +656,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 
 	public any function getDynamicCreditOrderPaymentAmount() {
-		var nonNullPayments = getService("orderService").getOrderPaymentNonNullAmountTotal(orderID=getOrderID());
+		var nonNullPayments = getOrderService().getOrderPaymentNonNullAmountTotal(orderID=getOrderID());
 		var orderPaymentAmountNeeded = precisionEvaluate(getTotal() - nonNullPayments);
 
 		if(orderPaymentAmountNeeded lt 0) {

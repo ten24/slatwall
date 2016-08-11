@@ -51,7 +51,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	// @hint put things in here that you want to run befor EACH test
 	public void function setUp() {
 		super.setup();
-
 		variables.entity = request.slatwallScope.newEntity( 'Order' );
 	}
 
@@ -286,37 +285,175 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals( '123 Main Street', variables.entity.getShippingAddress().getStreetAddress() );
 
 	}
-//	private numeric function getOrderPaymentNonNullAmountTotal(){
-//		return 10;
-//	} 
-//	private numeric function getTotalThis() {
-//		return 100;
-//	}
-/*
+	//===================== Injected Functions: General ==============================
+	private numeric function returnSevenHundred() {
+		return 700;
+	}
+	private numeric function returnTen() {
+		return 10;
+	}
+	private numeric function returnZero() {
+		return 0;
+	}
+	private numeric function returnMinusTen() {
+		return -10;
+	}
+	private boolean function returnTrue() {
+		return TRUE;
+	}
+	
+	
+	//====================== Injected Functions in OrderService.cfc ===================
+	private numeric function getOrderPaymentNonNullAmountTotal(){
+		return 70;
+	} 
+	private numeric function getPreviouslyReturnedFulfillmentTotal() {
+		return 30;
+	}
+	
+	//====================== Injected Functions in Order.cfc ==========================
+	
+	
+	//====================== Injected Functions in OrderPayment.cfc ==========================
+	private string function returnOpstInvalid() {
+		return 'opstInvalid';
+	}
+	
+	
+	
+	private any function getDynamicChargeOrderPaymentNotNull() {
+		var orderPaymentData = { 
+			orderPaymentID = '',
+			orderPaymentType = {
+				typeID = '444df2f0fed139ff94191de8fcd1f61b'//optCharge
+			}
+			//getDynamicAmountFlag() returns TRUE 
+			// getStatusCode() set to 'opstActive' by default
+		};
+		var mockOrderPayment = createPersistedTestEntity('OrderPayment', orderPaymentData);
+		return mockOrderPayment;
+	}
+	
+	private any function getDynamicCreditOrderPaymentNotNull() {
+		var orderPaymentData = { 
+			orderPaymentID = '',
+			orderPaymentType = {
+				typeID = '444df2f1cc40d0ea8a2de6f542ab4f1d'//optCredit
+			}
+			//getDynamicAmountFlag() returns TRUE 
+			// getStatusCode() set to 'opstActive' by default
+		};
+
+		return createPersistedTestEntity('OrderPayment', orderPaymentData);
+
+	}
+	
+	
+	
+	
+	
+	public void function getPreviouslyReturnedFulfillmentTotalTest() {
+		var orderData = {
+			orderID = ''
+		};
+		var mockOrder = createTestEntity('Order', orderData);
+		
+		var mockOrderService = new Slatwall.model.service.orderService();
+		mockOrderService.getPreviouslyReturnedFulfillmentTotal = getPreviouslyReturnedFulfillmentTotal;//returns 30
+		mockOrder.setOrderService(mockOrderService);
+		
+		var result = mockOrder.getPreviouslyReturnedFulfillmentTotal();
+		assertEquals(30, result, 'The dependency function result is not returned properly.');
+	}
+	
+	public void function hasGiftCardOrderPaymentAmountTest() {
+		var mockOrder = createSimpleMockEntityByEntityName('Order');
+		
+		var orderDAO = new Slatwall.model.dao.OrderDAO();
+		
+		//Testing when amount > 0
+		injectMethod(orderDAO, this, 'returnSevenHundred', 'getGiftCardOrderPaymentAmount');
+		mockOrder.setOrderDAO(orderDAO);
+		
+		var resultGreatThanZero = mockOrder.hasGiftCardOrderPaymentAmount();
+		assertTrue(resultGreatThanZero, 'The condition that amount get from orderDAO > 0 fails');
+		
+		//Testing when amount == 0
+		injectMethod(orderDAO, this, 'returnZero', 'getGiftCardOrderPaymentAmount');
+		mockOrder.setOrderDAO(orderDAO);
+		
+		var resultEqualsZero = mockOrder.hasGiftCardOrderPaymentAmount();
+		assertFalse(resultEqualsZero, 'The condition that amount get from orderDAO == 0 fails');
+		
+		//Testing when amount < 0
+		injectMethod(orderDAO, this, 'returnMinusTen', 'getGiftCardOrderPaymentAmount');
+		mockOrder.setOrderDAO(orderDAO);
+		
+		var resultLessThanZero = mockOrder.hasGiftCardOrderPaymentAmount();
+		assertFalse(resultLessThanZero, 'The condition that amount get from orderDAO < 0 fails');
+	}
+	
+	public void function getORderPaymentAmountNeededTest_DynamicCreditOrderPaymentNotNull() {
+		var orderData = {
+			orderID = ''
+		};
+		var mockOrder = createTestEntity('Order',orderData);
+		
+		var orderService = new Slatwall.model.service.OrderService();
+		injectMethod(orderService, this, 'returnTen','getOrderPaymentNonNullAmountTotal');
+		mockOrder.setOrderService(orderService);
+		
+		injectMethod(mockOrder, this, 'returnSevenHundred', 'getTotal'); 
+		
+		injectMethod(mockOrder, this, 'getDynamicCreditOrderPaymentNotNull', 'getDynamicCreditOrderPayment'); //returns OrderPayment entity
+		
+		var resultZero = mockOrder.getOrderPaymentAmountNeeded();
+		request.debug(resultZero);
+	}
+	
+	public void function getORderPaymentAmountNeededTest_DynamicChargeOrderPaymentNotNull() {
+		var orderData = {
+			orderID = ''
+		};
+		var mockOrder = createTestEntity('Order',orderData);
+		
+		var orderService = new Slatwall.model.service.OrderService();
+		injectMethod(orderService, this, 'returnTen','getOrderPaymentNonNullAmountTotal');
+		mockOrder.setOrderService(orderService);
+		
+		injectMethod(mockOrder, this, 'returnSevenHundred', 'getTotal'); 
+		
+		injectMethod(mockOrder, this, 'getDynamicChargeOrderPaymentNotNull', 'getDynamicChargeOrderPayment'); //returns OrderPayment entity
+		
+		var resultZero = mockOrder.getOrderPaymentAmountNeeded();
+		request.debug(resultZero);
+	}
+	
 	public void function getOrderPaymentAmountNeededTest() {
 		var orderData = {
 			orderID = ''
 		};
-		var mockOrder = createObject('component', 'Slatwall.model.entity.Order');
+		var mockOrder = createTestEntity('Order',orderData);
 		
-		//fakeorderservice
-		var myMightyMock = mock('Slatwall.model.service.OrderService');
-		myMightyMock.getOrderPaymentNonNullAmountTotal(orderID='test').returns(30);
-//		var OrderService = createObject('component', 'Slatwall.model.service.OrderService');
-		mockOrder.setOrderService(myMightyMock);
+		var orderService = new Slatwall.model.service.OrderService();
+		injectMethod(orderService,this,'returnTen','getOrderPaymentNonNullAmountTotal');
+		mockOrder.setOrderService(orderService);
 		
-//		InjectProperty(mockOrder,'orderService',myMightyMock);
+		injectMethod(mockOrder, this, 'returnSevenHundred', 'getTotal');
 		
-//		request.debug(mockOrder.getOrderServiceID());
-//		request.debug(myMightyMock.getOrderPaymentNonNullAmountTotal());
-		
-		
+		var result = mockOrder.getOrderPaymentAmountNeeded();
+		assertEquals(690, result, 'Calculation of the default order fails');
+	
+		// This way also works:
 //		var mockOrderService = new Slatwall.model.service.orderService();
-//		mockOrderService.getOrderPaymentNonNullAmountTotal = getOrderPaymentNonNullAmountTotal;
+//		mockOrderService.getOrderPaymentNonNullAmountTotal = returnTen;
 //		mockOrder.setOrderService(mockOrderService);
-		//Try the injectionMethod
-//		injectMethod(variables.entity, this, 'getTotalThis', 'getTotal');
-		
+
+
+	
+		//InjectProperty() example, receiver is as follows
+//		InjectProperty(mockOrder,'orderService',myMightyMock);
+			
 		//Deal with getTotal() function
 //		var myMock = mock('Slatwall.model.entity.Order', 'typeSafe');
 //		myMock.getTotal().returns(100);
@@ -328,24 +465,299 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 //		request.debug(myOrder2.getORderID());
 //		mockOrder.getTotal(myMock);
 //		request.debug(mockOrder2.getTotal());
-		
-		var result = mockOrder.getOrderPaymentAmountNeeded();
-	}
-*/	
-	private numeric function getPreviouslyReturnedFulfillmentTotal() {
-		return 30;
 	}
 	
-	public void function getPreviouslyReturnedFulfillmentTotalTest() {
+	
+	public void function getDynamicChargeOrderPaymentAmountTest() {
 		var orderData = {
 			orderID = ''
 		};
 		var mockOrder = createTestEntity('Order', orderData);
+
+		var orderService = new Slatwall.model.service.OrderService();
 		
-		var mockOrderService = new Slatwall.model.service.orderService();
-		mockOrderService.getPreviouslyReturnedFulfillmentTotal = getPreviouslyReturnedFulfillmentTotal;
-		mockOrder.setOrderService(mockOrderService);
+		//Testing when orderPaymenAmountNeeded > 0
+		injectMethod(orderService, this, 'returnTen','getOrderPaymentNonNullAmountTotal');
+		mockOrder.setOrderService(orderService);
 		
-		var result = mockOrder.getPreviouslyReturnedFulfillmentTotal();
+		injectMethod(mockOrder, this, 'returnSevenHundred', 'getTotal');
+		
+		var result = mockOrder.getDynamicChargeOrderPaymentAmount();
+		assertEquals(690, result, 'The circumstance of orderPaymentAmountNeeded > 0 fails');
+		
+		//Testing when orderPaymentAmountNeeded <= 0
+		injectMethod(orderService, this, 'returnSevenHundred','getOrderPaymentNonNullAmountTotal');
+		mockOrder.setOrderService(orderService);
+		
+		injectMethod(mockOrder, this, 'returnTen', 'getTotal');
+		
+		var resultNegativeNumber = mockOrder.getDynamicChargeOrderPaymentAmount();
+		assertEquals(0, resultNegativeNumber, 'The case when orderPaymentAmountNeeded is -690 fails');
 	}
+	
+	public void function getDynamicCreditOrderPaymentAmountTest() {
+		var orderData = {
+			orderID = ''
+		};
+		var mockOrder = createTestEntity('Order', orderData);
+
+		var orderService = new Slatwall.model.service.OrderService();
+		
+		//Testing when orderPaymentAmountNeeded >= 0
+		injectMethod(orderService, this, 'returnTen','getOrderPaymentNonNullAmountTotal');
+		mockOrder.setOrderService(orderService);
+		
+		injectMethod(mockOrder, this, 'returnSevenHundred', 'getTotal');
+		
+		var result = mockOrder.getDynamicCreditOrderPaymentAmount();
+		assertEquals(0, result, 'The circumstance of orderPaymentAmountNeeded is 690 fails');
+		
+		//Testing when orderPaymentAmountNeeded < 0
+		injectMethod(orderService, this, 'returnSevenHundred','getOrderPaymentNonNullAmountTotal');
+		mockOrder.setOrderService(orderService);
+		
+		injectMethod(mockOrder, this, 'returnTen', 'getTotal');
+		
+		var resultNegativeNumber = mockOrder.getDynamicCreditOrderPaymentAmount();
+		assertEquals(690, resultNegativeNumber, 'The case when orderPaymentAmountNeeded is -690 fails');
+	}
+	
+	public void function getDynamicChargeOrderPaymentTest_ifsInForLoop() {
+		// These mock entities, getStatusCode() is set to 'opstActive' by default
+		var orderPaymentData1 = {
+			orderPaymentID = '',
+			orderPaymentType = {
+				typeID = '444df2f0fed139ff94191de8fcd1f61b'//optCharge
+			},
+			amount = 100 //getDynamicAmountFlag() FALSE
+		};
+		var MockOrderPayment1 = createPersistedTestEntity('OrderPayment', orderPaymentData1); //testing dynamicAmountFlag
+		
+		var orderPaymentData2 = {
+			orderPaymentID = '',
+			orderPaymentType = {
+				typeID = '444df2f0fed139ff94191de8fcd1f61b'//optCharge
+			}
+			//getDynamicAmountFlag() TRUE
+		};
+		var MockOrderPayment2 = createPersistedTestEntity('OrderPayment', orderPaymentData2); //testing normal case
+		
+		var orderPaymentData3 = {
+			orderPaymentID = '',
+			orderPaymentType = {
+				typeID = '444df2f1cc40d0ea8a2de6f542ab4f1d'//optCredit
+			}
+			//getDynamicAmountFlag() TRUE
+		};
+		var MockOrderPayment3 = createPersistedTestEntity('OrderPayment', orderPaymentData3); //Testing orderPaymentType
+		
+		var orderData = {
+			orderID = '',
+			orderPayments = [
+				{
+					orderPaymentID = mockOrderPayment1.getOrderPaymentID()
+				},
+				{
+					orderPaymentID = mockOrderPayment2.getOrderPaymentID()
+				},
+				{
+					orderPaymentID = mockOrderPayment3.getOrderPaymentID()
+				}
+			]
+		};
+		var mockOrder = createPersistedTestEntity('Order', orderData);
+		
+		var result = mockOrder.getDynamicChargeOrderPayment();
+		assertFalse(isNull(result));
+		assertEquals(mockOrderPayment2.getOrderPaymentID(), result.getOrderPaymentID(), 'The filter of orderPayments fails');
+		
+	}
+	
+	public void function getDynamicChargeOrderPaymentTest_emptyReturn() {
+		var orderPaymentData = {
+			orderPaymentID = '',
+			orderPaymentType = {
+				typeID = '444df2f0fed139ff94191de8fcd1f61b'//optCharge
+			}
+			//getDynamicAmountFlag() TRUE
+		};
+		var MockOrderPayment = createPersistedTestEntity('OrderPayment', orderPaymentData);
+		
+		var orderData = {
+			orderID = '',
+			orderPayments = [
+				{
+					orderPaymentID = mockOrderPayment.getOrderPaymentID()
+				}
+			]
+		};
+		var mockOrder = createPersistedTestEntity('Order', orderData);
+		
+		//inject the getStatusCode() method
+		injectMethod(mockOrderPayment, this, 'returnOpstInvalid', 'getStatusCode');
+		
+		var result = mockOrder.getDynamicChargeOrderPayment();
+		assertTrue(isNull(result));
+	}
+	
+	public void function getDynamicCreditOrderPaymentTest_ifsInForLoop() {
+		// These mock entities, getStatusCode() is set to 'opstActive' by default
+		var orderPaymentData1 = {
+			orderPaymentID = '',
+			orderPaymentType = {
+				typeID = '444df2f1cc40d0ea8a2de6f542ab4f1d'//optCredit
+			},
+			amount = 100 //getDynamicAmountFlag() FALSE
+		};
+		var MockOrderPayment1 = createPersistedTestEntity('OrderPayment', orderPaymentData1); //testing dynamicAmountFlag
+		
+		var orderPaymentData2 = {
+			orderPaymentID = '',
+			orderPaymentType = {
+				typeID = '444df2f1cc40d0ea8a2de6f542ab4f1d'//optCredit
+			}
+			//getDynamicAmountFlag() TRUE
+		};
+		var MockOrderPayment2 = createPersistedTestEntity('OrderPayment', orderPaymentData2); //testing normal case
+		
+		var orderPaymentData3 = {
+			orderPaymentID = '',
+			orderPaymentType = {
+				typeID = '444df2f0fed139ff94191de8fcd1f61b'//optCharge
+			}
+			//getDynamicAmountFlag() TRUE
+		};
+		var MockOrderPayment3 = createPersistedTestEntity('OrderPayment', orderPaymentData3); //Testing orderPaymentType
+		
+		var orderData = {
+			orderID = '',
+			orderPayments = [
+				{
+					orderPaymentID = mockOrderPayment1.getOrderPaymentID()
+				},
+				{
+					orderPaymentID = mockOrderPayment2.getOrderPaymentID()
+				},
+				{
+					orderPaymentID = mockOrderPayment3.getOrderPaymentID()
+				}
+			]
+		};
+		var mockOrder = createPersistedTestEntity('Order', orderData);
+		
+		var result = mockOrder.getDynamicCreditOrderPayment();
+		assertFalse(isNull(result));
+		assertEquals(mockOrderPayment2.getOrderPaymentID(), result.getOrderPaymentID(), 'The filter of orderPayments fails');
+		
+	}
+	
+	public void function getDynamicCreditOrderPaymentTest_emptyReturn() {
+		var orderPaymentData = {
+			orderPaymentID = '',
+			orderPaymentType = {
+				typeID = '444df2f1cc40d0ea8a2de6f542ab4f1d'//optCredit
+			}
+			//getDynamicAmountFlag() TRUE
+		};
+		var MockOrderPayment = createPersistedTestEntity('OrderPayment', orderPaymentData);
+		
+		var orderData = {
+			orderID = '',
+			orderPayments = [
+				{
+					orderPaymentID = mockOrderPayment.getOrderPaymentID()
+				}
+			]
+		};
+		var mockOrder = createPersistedTestEntity('Order', orderData);
+		
+		//inject the getStatusCode() method
+		injectMethod(mockOrderPayment, this, 'returnOpstInvalid', 'getStatusCode');
+		
+		var result = mockOrder.getDynamicCreditOrderPayment();
+		assertTrue(isNull(result));
+	}
+	
+	public void function getPaymentAmountTotalTest() {
+		// These mock entities, getStatusCode() == 'opstActive' by default
+		var orderPaymentData1 = {
+			orderPaymentID = '',
+			orderPaymentType = {
+				typeID = '444df2f0fed139ff94191de8fcd1f61b'//optCharge
+			},
+			amount = 10 
+		};
+		var MockOrderPayment1 = createPersistedTestEntity('OrderPayment', orderPaymentData1);
+		
+		var orderPaymentData2 = {
+			orderPaymentID = '',
+			orderPaymentType = {
+				typeID = '444df2f1cc40d0ea8a2de6f542ab4f1d'//optCredit
+			},
+			amount = 0.5 
+		};
+		var MockOrderPayment2 = createPersistedTestEntity('OrderPayment', orderPaymentData2); 
+		
+		var orderPaymentData3 = {
+			orderPaymentID = '',
+			orderPaymentType = {
+				typeID = '444df2f0fed139ff94191de8fcd1f61b'//optCharge
+			},
+			amount = 4 
+		};
+		var MockOrderPayment3 = createPersistedTestEntity('OrderPayment', orderPaymentData3); 
+		
+		injectMethod(mockOrderPayment3, this, 'returnTrue', 'hasErrors');
+		
+		
+		var orderData = {
+			orderID = '',
+			orderPayments = [
+				{
+					orderPaymentID = mockOrderPayment1.getOrderPaymentID()
+				},
+				{
+					orderPaymentID = mockOrderPayment2.getOrderPaymentID()
+				},
+				{
+					orderPaymentID = mockOrderPayment3.getOrderPaymentID()
+				}
+			]
+		};
+		var mockOrder = createPersistedTestEntity('Order', orderData);
+		
+		var result = mockOrder.getPaymentAmountTotal(); 
+		assertEquals(9.5, result, 'The result should be 10 - 0.5 = 9.5');
+	}
+	
+	public void function getPaymentAmountDueTest() {
+		var orderData1 = {
+			orderID = '',
+			orderStatusType = {
+				typeID = '444df2b90f62f72711eb5b3c90848e7e' //ostCanceled
+			}
+		};
+		var mockOrder1 = createPersistedTestEntity('Order', orderData1);
+		
+		var resultZero = mockOrder1.getPaymentAmountDue();
+		assertEquals(0, resultZero, 'THe ostCanceled type fails');
+		
+		var orderData2 = {
+			orderID = '',
+			orderStatusType = {
+				typeID = '444df2b6b8b5d1ccfc14a4ab38aa0a4c'//ostProcessing
+			}
+		};
+		var mockOrder2 = createPersistedTestEntity('Order', orderData2);
+		
+		injectMethod(mockOrder2, this, 'returnSevenHundred', 'getTotal');
+		injectMethod(mockOrder2, this, 'returnTen', 'getPaymentAmountReceivedTotal');
+		injectMethod(mockOrder2, this, 'returnMinusTen', 'getPaymentAmountCreditedTotal');
+		
+		var resultNotCanceled = mockOrder2.getPaymentAmountDue();
+		assertEquals(680, resultNotCanceled, 'Calculation of not ostCanceled types fails');
+		
+	}
+	
+	
 }
