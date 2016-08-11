@@ -990,7 +990,9 @@ component extends="HibachiService" accessors="true" {
 	// ====================== START: Save Overrides ===========================
 
 	public any function saveProduct(required any product, struct data={}){
-
+		
+		var previousActiveFlag = arguments.product.getActiveFlag();
+		
 		if( (isNull(arguments.product.getURLTitle()) || !len(arguments.product.getURLTitle())) && (!structKeyExists(arguments.data, "urlTitle") || !len(arguments.data.urlTitle)) ) {
 			if(structKeyExists(arguments.data, "productName") && len(arguments.data.productName)) {
 				data.urlTitle = getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.data.productName, tableName="SwProduct");
@@ -1011,6 +1013,14 @@ component extends="HibachiService" accessors="true" {
 		if(!isNull(arguments.product.getDefaultSku()) && isNull(arguments.product.getDefaultSku().getImageFile())){
 			arguments.product.getDefaultSku().setImageFile( arguments.product.getDefaultSku().generateImageFileName() );
 		}
+		if(!arguments.product.hasErrors()){
+			//if we just set an active product from active to inactive them make all skus inactive
+			if(!arguments.product.isNew() && previousActiveFlag == 1 && arguments.product.getActiveFlag() == 0){
+				getDao('productDao').setSkusAsInactiveByProduct(arguments.product);
+				arguments.product.setPublishedFlag(false);
+			}
+		}
+		
 		return arguments.product;
 	}
 
@@ -1033,7 +1043,8 @@ component extends="HibachiService" accessors="true" {
 
 		return arguments.productType;
 	}
-
+	
+	
 	// ======================  END: Save Overrides ============================
 
 	// ====================== START: Delete Overrides =========================
