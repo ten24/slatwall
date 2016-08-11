@@ -16,7 +16,7 @@ import {SWSaveAndFinish} from "./components/swsaveandfinish";
 
 var hibachimodule = angular.module('hibachi',[
     alertmodule.name,
-    coremodule.name,
+
     collectionmodule.name,
     entitymodule.name,
     dialogmodule.name,

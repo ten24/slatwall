@@ -230,19 +230,48 @@ class UtilityService extends BaseService{
           }
     };
 
-    public getPropertyValue=(object, propertyIdentifier)=> {
-        var pidArray = propertyIdentifier.split('.');
-        for(var i in pidArray){
-            var key = pidArray[i];
-            object = object[key];
-            console.log(key);
-            console.log('object',object);
-        }
 
-        return object;
+    public getPropertyValue=(object, propertyIdentifier):void=> {
+
+        var keys = propertyIdentifier.split('.'), obj = object, keyPart;
+        while ((keyPart = keys.shift()) && keys.length) {
+            obj = obj[keyPart];
+        }
+        return obj[keyPart];
+
     }
 
-      public isDescendantElement = (parent, child) => {
+    public setPropertyValue=(object, propertyIdentifier,value):void=> {
+
+        var keys = propertyIdentifier.split('.'), obj = object, keyPart;
+
+
+        while ((keyPart = keys.shift()) && keys.length) {
+            if(!obj[keyPart]){
+                obj[keyPart] = {};
+            }
+            obj = obj[keyPart];
+
+        }
+        obj[keyPart] = value;
+
+
+
+    };
+
+    public nvpToObject=(NVPData):{}=>{
+        var object = {};
+        for(var key in NVPData){
+            var value = NVPData[key];
+            var propertyIdentitifer = key.replace(/\_/g,'.');
+            this.setPropertyValue(object,propertyIdentitifer,value);
+
+
+        }
+        return object;
+    };
+
+    public isDescendantElement = (parent, child) => {
         var node = child.parentNode;
         while (node != null) {
             if (node == parent) {

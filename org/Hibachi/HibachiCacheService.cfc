@@ -125,6 +125,7 @@ component accessors="true" output="false" extends="HibachiService" {
 		}
 	}
 	
+	
 	public any function getOrCacheFunctionValue(required string key, required any fallbackObject, required any fallbackFunction, struct fallbackArguments={}) {
 		// Check to see if this cache key already exists, and if so just return the cached value
 		if(hasCachedValue(arguments.key)) {

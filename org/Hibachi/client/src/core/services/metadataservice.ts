@@ -11,12 +11,58 @@ class MetaDataService {
 	constructor(
 		private $filter:ng.IFilterService,
 		private $log:ng.ILogService
+
 	){
 
 		this.$filter = $filter;
 		this.$log = $log;
 		this._propertiesList = {};
 		this._orderBy = $filter('orderBy');
+
+	}
+
+	getPropertyHintByObjectAndPropertyIdentifier=(object:any,propertyIdentifier:string)=>{
+		var hint = "";
+		if(this.hasPropertyByEntityNameAndPropertyIdentifier(object,propertyIdentifier)){
+			if(this.isAttributePropertyByEntityAndPropertyIdentifier(object,propertyIdentifier)){
+				hint = object.metaData && object.metaData[propertyIdentifier].attributeHint;
+			}else{
+				hint = object.metaData.$$getPropertyHint(propertyIdentifier);
+			}
+		}
+		return hint;
+	}
+
+	getPropertyTitle=(object,propertyIdentifier)=>{
+		var title = "";
+		if(this.hasPropertyByEntityNameAndPropertyIdentifier(object,propertyIdentifier)){
+			if(this.isAttributePropertyByEntityAndPropertyIdentifier(object,propertyIdentifier)){
+				title = object.metaData && object.metaData[propertyIdentifier].attributeName;
+			}else{
+				title = object.metaData.$$getPropertyTitle(propertyIdentifier);
+			}
+		}
+		return title;
+	}
+
+	getPropertyFieldType=(object,propertyIdentifier)=>{
+		var fieldType = "";
+		if(this.hasPropertyByEntityNameAndPropertyIdentifier(object,propertyIdentifier)){
+			if(this.isAttributePropertyByEntityAndPropertyIdentifier(object,propertyIdentifier)){
+				fieldType = object.metaData && object.metaData[propertyIdentifier].attributeInputType;
+			}else{
+				fieldType = object.metaData.$$getPropertyFieldType(propertyIdentifier);
+			}
+		}
+		return fieldType;
+	}
+
+	isAttributePropertyByEntityAndPropertyIdentifier = (object,propertyIdentifier)=>{
+		return object.metaData && object.metaData[propertyIdentifier] && object.metaData[propertyIdentifier].attributeCode == propertyIdentifier;
+	}
+
+	hasPropertyByEntityNameAndPropertyIdentifier = (object,propertyIdentifier)=>{
+		return object.metaData && object.metaData[propertyIdentifier]
 	}
 
 	getPropertiesList = () =>{
