@@ -216,7 +216,7 @@ Notes:
 								data-multiselect-field-name="options"
 								data-edit="true"
 							    data-show-search="true"
-							     data-has-action-bar="false"
+							    data-has-action-bar="false"
 							>
 							</sw-listing-display>
 

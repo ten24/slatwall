@@ -7,21 +7,17 @@ class SWGiftCardHistoryController{
     public emails; 
     public order; 
     
-    public static $inject = ["collectionConfigService"];
-    
-    
-    constructor(private collectionConfigService){
-        this.init();
-    }
-    
-    private init = () => {
+    //@ngInject
+    constructor( public collectionConfigService, 
+                 public $hibachi        
+    ){
         
         var initialBalance:number = 0;
         var totalDebit:number = 0; 
         
         var transactionConfig = this.collectionConfigService.newCollectionConfig('GiftCardTransaction');
         
-        transactionConfig.setDisplayProperties("giftCardTransactionID, creditAmount, debitAmount, createdDateTime, giftCard.giftCardID, orderPayment.order.orderNumber, orderPayment.order.orderOpenDateTime", "id,credit,debit,created,giftcardID,ordernumber,orderdatetime");
+        transactionConfig.setDisplayProperties("giftCardTransactionID, creditAmount, debitAmount, createdDateTime, giftCard.giftCardID, orderPayment.order.orderID, orderPayment.order.orderNumber, orderPayment.order.orderOpenDateTime", "id,credit,debit,created,giftcardID,ordernumber,orderdatetime");
         transactionConfig.addFilter('giftCard.giftCardID', this.giftCard.giftCardID);
         transactionConfig.setAllRecords(true);
         transactionConfig.setOrderBy("createdDateTime|DESC");
@@ -50,7 +46,7 @@ class SWGiftCardHistoryController{
                     var initialBalance = this.transactions[initialCreditIndex].creditAmount; 
                     var currentBalance = initialBalance; 
                     
-                    for(var i = initialCreditIndex; i>=0; i--){
+                    for(var i = initialCreditIndex; i >= 0; i--){
                         var transaction = this.transactions[i];
                         if(typeof transaction.debitAmount !== "string"){
                             transaction.debit = true;
@@ -61,6 +57,8 @@ class SWGiftCardHistoryController{
                             }
                             transaction.debit = false;
                         }
+
+                        transaction.detailOrderLink = $hibachi.buildUrl('admin:entity.detailOrder', 'orderID=' + transaction.orderPayment_order_orderID)
                         
                         var tempCurrentBalance = currentBalance - totalDebit; 
                     
@@ -143,6 +141,7 @@ class SWGiftCardHistory implements ng.IDirective {
 		return directive;
 	}
 
+    //@ngInject
 	constructor(private collectionConfigService, private giftCardPartialsPath, private slatwallPathBuilder){
 		this.templateUrl = slatwallPathBuilder.buildPartialsPath(giftCardPartialsPath) + "/history.html";
 		this.restrict = "EA";
