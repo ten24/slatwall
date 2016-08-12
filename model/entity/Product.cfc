@@ -376,7 +376,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		var skuCollectionRecordsCount = arrayLen(skuCollectionRecords);
 		for(var i=1; i<=skuCollectionRecordsCount; i++) {
 			var skuData = skuCollectionRecords[i];
-			if(arraylen(filenames) && ArrayFind(filenames, skuData['imageFile']) ==0) {
+			if(ArrayFind(filenames, skuData['imageFile']) ==0) {
 				ArrayAppend(filenames, skuData['imageFile']);
 				
 				var thisImage = {};
@@ -412,7 +412,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		var productImagesRecordsCount = arrayLen(productImagesRecords);
 		for(var i=1; i<=productImagesRecordsCount; i++) {
 			var productImageData = productImagesRecords[i];
-			if( arraylen(filenames) && ArrayFind(filenames, productImageData['imageID'])==0 ) {
+			if( ArrayFind(filenames, productImageData['imageID'])==0 ) {
 				ArrayAppend(filenames, productImageData['imageID']);
 				
 				var thisImage = {};
@@ -436,7 +436,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 					var resizeImageData={
 						alt=imageAltString,
 						missingImagePath=missingImagePath,
-						imagePath=getService('imageService').getImagePathByImageFileAndDirectory(productImageData['imageFile']),
+						imagePath=getService('imageService').getImagePathByImageFileAndDirectory(productImageData['imageFile'],productImageData['directory']),
 						size=arguments.resizeSizes[s].size
 					};
 					arrayAppend(

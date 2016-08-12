@@ -52,6 +52,71 @@ component  extends="HibachiService" accessors="true" {
 	property name="attributeDAO";
 
 	// ===================== START: Logical Methods ===========================
+	
+	
+	
+	private struct function getAttributeSetMetaData(required attributeSet){
+		var attributeSetMetaDataCacheKey = "attribtueService_getAttributeModel_#arguments.attributeSet.getAttributeSetObject()#_#arguments.attributeSet.getAttributeSetCode()#";
+		var attributeSetMetaData = {};
+		if(getService('HibachiCacheService').hasCachedValue(attributeSetMetaDataCacheKey)){
+			attributeSetMetaData = getService('HibachiCacheService').getCachedValue(attributeSetMetaDataCacheKey);	
+		}else{
+			attributeSetMetaData['attributeSetName'] = attributeSet.getAttributeSetName();
+			attributeSetMetaData['attributeSetCode'] = attributeSet.getAttributeSetCode();
+			attributeSetMetaData['attributeSetDescription'] = attributeSet.getAttributeSetDescription();
+			
+			attributeSetMetaData['attributes'] = {};
+			
+			var attributesCollectionList = attributeSet.getAttributesCollectionList();
+			var displayPropertiesList = 'attributeCode,attributeDescription,attributeHint,attributeInputType,attributeName,defaultValue,relatedObject,requiredFlag,sortOrder,validationMessage,validationRegex';
+			attributesCollectionList.setDisplayProperties(displayPropertiesList);
+			var attributes = attributeSet.getAttributesCollectionList().getRecords(true);
+			for(var attribute in attributes){
+				
+				attributeSetMetaData['attributes'][attribute['attributeCode']] = attribute;
+			}
+			getService('HibachiCacheService').setCachedValue(attributeSetMetaDataCacheKey,attributeSetMetaData);
+		}
+		
+		return attributeSetMetaData;
+	}
+	
+	public any function getAttributeModel(){
+		var model = {};
+		var modelCacheKey = "attributeService_getAttributeModel";
+		if(getHibachiCacheService().hasCachedValue(modelCacheKey)){
+			model = getHibachiCacheService().getCachedValue(modelCacheKey);
+		}else{
+	        var entitiesListArray = listToArray(structKeyList(getHibachiScope().getService('hibachiService').getEntitiesMetaData()));
+	        for(var entityName in entitiesListArray) {
+	        	var attributeSetMetaDataStruct = {};
+	        	var attributeSetMetaDataStructCacheKey = 'attributeService_getAttributeModel_#entityName#';
+	            if(getHibachiCacheService().hasCachedValue(attributeSetMetaDataStructCacheKey)){
+		            attributeSetMetaDataStruct = getHibachiCacheService().getCachedValue(attributeSetMetaDataStructCacheKey);
+				}else{
+					var entity = getHibachiScope().getService('hibachiService').getEntityObject(entityName);
+					var assignedAttributesSmartlist = entity.getAssignedAttributeSetSmartList();
+					assignedAttributesSmartlist.removeFilter('globalFlag');
+					var assignedAttributes = assignedAttributesSmartlist.getRecords(true);
+					
+					if(arrayLen(assignedAttributes)){
+						for(var attributeSet in assignedAttributes){
+							var attributeSetMeta = getAttributeSetMetaData(attributeSet);
+							attributeSetMetaDataStruct[attributeSet.getAttributeSetCode()]=attributeSetMeta;
+						}
+						getHibachiCacheService().setCachedValue(attributeSetMetaDataStructCacheKey,attributeSetMetaDataStruct);
+					}
+				}
+				
+				if(structCount(attributeSetMetaDataStruct)){
+					model[entityName] = attributeSetMetaDataStruct;	
+				}
+	        }
+	        getHibachiCacheService().setCachedValue(modelCacheKey,model);
+		}
+		
+        return model;
+	}
 
 	public string function getAttributeCodesListByAttributeSetObject( required string attributeSetObject ) {
 		var attributeCodeList = "";
@@ -96,6 +161,17 @@ component  extends="HibachiService" accessors="true" {
 	// =====================  END: Process Methods ============================
 
 	// ====================== START: Save Overrides ===========================
+	
+	public any function saveAttributeSet(required any attributeSet, struct data={}){
+		arguments.attributeSet = super.save(arguments.attributeSet, arguments.data);
+		if(!arguments.attributeSet.hasErrors()) {
+		
+			//attributeModelCache
+			
+			clearAttributeMetatDataCache(arguments.attributeSet);
+		}
+		return attributeSet;
+	}
 
 	public any function saveAttribute(required any attribute, struct data={}) {
 
@@ -120,14 +196,36 @@ component  extends="HibachiService" accessors="true" {
 			getHibachiDAO().flushORMSession();
 
 			getHibachiCacheService().resetCachedKey("attributeService_getAttributeCodesListByAttributeSetObject_#arguments.attribute.getAttributeSet().getAttributeSetObject()#");
+			
+			//attributeModelCache
+			clearAttributeMetatDataCache(arguments.attribute.getAttributeSet());
 		}
 
 		return arguments.attribute;
+	}
+	
+	public void function clearAttributeMetatDataCache(required any attributeSet){
+		getHibachiCacheService().resetCachedKey("attributeService_getAttributeModel");
+		getHibachiCacheService().resetCachedKey("attributeService_getAttributeModel_CacheKey");
+		getHibachiCacheService().resetCachedKey("attributeService_getAttributeModel_#arguments.attributeSet.getAttributeSetObject()#");
+		getHibachiCacheService().resetCachedKey("attribtueService_getAttributeModel_#arguments.attributeSet.getAttributeSetObject()#_#arguments.attributeSet.getAttributeSetCode()#");
 	}
 
 	// ======================  END: Save Overrides ============================
 
 	// ====================== START: Delete Overrides =========================
+	
+	public boolean function deleteAttributeSet(required any attributeSet) {
+
+		var deleteOK = super.delete(arguments.attributeSet);
+
+		// Clear the cached value of acceptable
+		if(deleteOK) {
+			clearAttributeMetatDataCache(arguments.attributeSet);
+		}
+
+		return deleteOK;
+	}
 
 	public boolean function deleteAttribute(required any attribute) {
 
@@ -142,6 +240,7 @@ component  extends="HibachiService" accessors="true" {
 			getHibachiDAO().flushORMSession();
 
 			getHibachiCacheService().resetCachedKey("attributeService_getAttributeCodesListByAttributeSetObject_#attributeSetObject#");
+			clearAttributeMetatDataCache(arguments.attribute.getAttributeSet());
 		}
 
 		return deleteOK;
@@ -166,6 +265,7 @@ component  extends="HibachiService" accessors="true" {
 
 		return false;
 	}
+	
 
 	// ======================  END: Delete Overrides ==========================
 

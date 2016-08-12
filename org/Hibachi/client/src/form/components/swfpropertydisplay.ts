@@ -7,9 +7,10 @@ class SWFPropertyDisplayController extends SWPropertyDisplayController {
     constructor(
         public $filter,
         public utilityService,
-        public $injector
+        public $injector,
+        public metadataService
     ){
-        super($filter,utilityService,$injector);
+        super($filter,utilityService,$injector,metadataService);
 
         this.editing = true;
     }

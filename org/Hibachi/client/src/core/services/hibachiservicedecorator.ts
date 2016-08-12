@@ -19,7 +19,8 @@ class HibachiServiceDecorator{
         rbkeyService,
         appConfig,
         observerService,
-        hibachiValidationService:HibachiValidationService
+        hibachiValidationService:HibachiValidationService,
+        attributeMetaData
     ){
             var _deferred = {};
             var _config = appConfig;
@@ -31,6 +32,19 @@ class HibachiServiceDecorator{
                 defaultValues = appConfig.modelConfig.defaultValues;
 
             angular.forEach(entities,function(entity){
+                if(attributeMetaData[entity.className]){
+                    var relatedAttributes = attributeMetaData[entity.className];
+                    for(var attributeSetCode in relatedAttributes){
+                        var attributeSet = relatedAttributes[attributeSetCode];
+                        for(var attributeCode in attributeSet.attributes){
+                            var attribute = attributeSet.attributes[attributeCode];
+                            attribute.attributeSet = attributeSet;
+                            attribute.isAttribute = true;
+                            entity[attributeCode] = attribute;
+                        }
+                    }
+                }
+
 
                 $delegate['get'+entity.className] = function(options){
                     var entityInstance = $delegate.newEntity(entity.className);
@@ -44,31 +58,15 @@ class HibachiServiceDecorator{
                             processObjectInstance.data[entity.className.charAt(0).toLowerCase()+entity.className.slice(1)] = entityInstance;
                             entityInstance.processObject = processObjectInstance;
                         }else{
-                            entityInstance.$$init(response);
+                            if(entityInstance.populate){
+
+                                entityInstance.populate(response);
+
+                            }else{
+                                entityInstance.$$init(response);
+                            }
                         }
 
-                    });
-                    return {
-                        promise:entityDataPromise,
-                        value:entityInstance
-                    }
-                };
-
-
-                $delegate['get'+entity.className] = function(options){
-                    var entityInstance = $delegate.newEntity(entity.className);
-                    var entityDataPromise = $delegate.getEntity(entity.className,options);
-                    entityDataPromise.then(function(response){
-
-                        if(angular.isDefined(response.processData)){
-                            entityInstance.$$init(response.data);
-                            var processObjectInstance = $delegate['new'+entity.className+options.processContext.charAt(0).toUpperCase()+options.processContext.slice(1)]();
-                            processObjectInstance.$$init(response.processData);
-                            processObjectInstance.data[entity.className.charAt(0).toLowerCase()+entity.className.slice(1)] = entityInstance;
-                            entityInstance.processObject = processObjectInstance;
-                        }else{
-                            entityInstance.$$init(response);
-                        }
                     });
                     return {
                         promise:entityDataPromise,
@@ -77,6 +75,17 @@ class HibachiServiceDecorator{
                 };
 
                 $delegate['new'+entity.className] = function(){
+                    //if we have the service then get the new instance from that
+
+                    var entityName = entity.className;
+                    var serviceName = entityName.charAt(0).toLowerCase()+entityName.slice(1)+'Service';
+
+                    if(angular.element(document.body).injector().has(serviceName)){
+                        var entityService = angular.element(document.body).injector().get(serviceName);
+
+                        return entityService['new'+entity.className]();
+                    }
+
                     return $delegate.newEntity(entity.className);
                 };
 
@@ -88,6 +97,10 @@ class HibachiServiceDecorator{
 
                     this.metaData = entity;
                     this.metaData.className = entity.className;
+                    if(relatedAttributes){
+                        this.attributeMetaData = relatedAttributes;
+                    }
+
                     if(entity.hb_parentPropertyName){
                         this.metaData.hb_parentPropertyName = entity.hb_parentPropertyName;
                     }
@@ -98,7 +111,6 @@ class HibachiServiceDecorator{
                     this.metaData.$$getRBKey = function(rbKey,replaceStringData){
                         return rbkeyService.rbKey(rbKey,replaceStringData);
                     };
-
 
                     this.metaData.$$getPropertyTitle = function(propertyName){
                         return _getPropertyTitle(propertyName,this);
@@ -223,6 +235,21 @@ class HibachiServiceDecorator{
                         }
                     }
                 };
+
+                angular.forEach(relatedAttributes,function(attributeSet){
+                    angular.forEach(attributeSet.attributes,function(attribute){
+                        Object.defineProperty(_jsEntities[ entity.className ].prototype, attribute.attributeCode, {
+                            configurable:true,
+                            enumerable:false,
+                            get: function() {
+                                return this.data[attribute.attributeCode];
+                            },
+                            set: function(value) {
+                                this.data[attribute.attributeCode]=value;
+                            }
+                        });
+                    });
+                });
 
                 angular.forEach(entity,function(property){
                     if(angular.isObject(property) && angular.isDefined(property.name)){
@@ -764,6 +791,7 @@ class HibachiServiceDecorator{
                     //timeoutPromise.valid = modifiedData.valid;
                     if(modifiedData.valid){
                         var params:any = {};
+
                         params.serializedJsonData = angular.toJson(modifiedData.value);
                         //if we have a process object then the context is different from the standard save
                         var entityName = '';

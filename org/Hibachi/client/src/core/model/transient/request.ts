@@ -37,8 +37,6 @@ class Request extends BaseTransient {
         this.method=method;
         this.utilityService = <UtilityService>this.getService('utilityService');
 
-
-
         if(!method){
             if (data == undefined){
                 method = "get";
@@ -82,6 +80,7 @@ class Request extends BaseTransient {
 
     public processResponse=(response)=>{
         this.loading = false;
+
         if(response.errors){
             this.errors = response.errors;
         }
