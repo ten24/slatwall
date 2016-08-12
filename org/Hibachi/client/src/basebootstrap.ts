@@ -11,6 +11,7 @@ export class BaseBootStrapper{
     public $http:ng.IHttpService;
     public $q:ng.IQService;
     public appConfig:any;
+    public instantiationKey:string;
 
     constructor(myApplication){
       this.myApplication = myApplication;
@@ -29,7 +30,9 @@ export class BaseBootStrapper{
 
                 .then( (resp)=> {
                     var appConfig = JSON.parse(localStorage.getItem('appConfig'));
-                    if(resp.data.data === appConfig.instantiationKey){
+                    console.log('test',resp);
+                    this.instantiationKey = resp.data.instantiationKey;
+                    if(this.instantiationKey === appConfig.instantiationKey){
                         coremodule.constant('appConfig',appConfig)
                         .constant('resourceBundles',JSON.parse(localStorage.getItem('resourceBundles')));
                     }else{
@@ -54,7 +57,7 @@ export class BaseBootStrapper{
 
     getData=()=>{
 
-        return this.$http.get(hibachiConfig.baseURL+'?'+hibachiConfig.action+'=api:main.getConfig')
+        return this.$http.get(hibachiConfig.baseURL+'/custom/config/config.json?instantiationKey='+this.instantiationKey)
 
         .then( (resp:any)=> {
             coremodule.constant('appConfig',resp.data.data);
