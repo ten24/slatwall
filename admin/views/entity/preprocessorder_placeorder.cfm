@@ -70,7 +70,7 @@ Notes:
 				<cfif listFindNoCase(rc.order.getOrderRequirementsList(), 'fulfillment')>
 					<cfset ofIndex=0 />
 
-					<cfloop array="#rc.order.getOrderFulfillments()#" index="local.orderFulfillment">
+					<cfloop array="#rc.order.getOrderFulfillments()#" index="orderFulfillment">
 						<cfset thisErrorBean = $.slatwall.getService("HibachiValidationService").validate(object=orderFulfillment, context='placeOrder', setErrors=false) />
 						<cfif thisErrorBean.hasErrors()>
 
