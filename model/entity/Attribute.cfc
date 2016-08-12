@@ -207,6 +207,10 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	public array function getAttributeOptionsOptions() {
 		if(!structKeyExists(variables, "attributeOptionsOptions")) {
 			variables.attributeOptionsOptions = [];
+			
+			var unselectedValue = {};
+			unselectedValue['name'] = rbKey('define.select');
+			unselectedValue['value'] = '';
 
 			if(listFindNoCase('checkBoxGroup,multiselect,radioGroup,select', getAttributeInputType())) {
 
@@ -217,7 +221,7 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 				variables.attributeOptionsOptions = smartList.getRecords();
 
 				if(getAttributeInputType() == 'select') {
-					arrayPrepend(variables.attributeOptionsOptions, {name=rbKey('define.select'), value=''});
+					arrayPrepend(variables.attributeOptionsOptions, unselectedValue);
 				}
 
 			} else if(listFindNoCase('relatedObjectSelect', getAttributeInputType()) && !isNull(getRelatedObject())) {
@@ -230,8 +234,8 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 				smartList.addSelect(propertyIdentifier=getService( "hibachiService" ).getPrimaryIDPropertyNameByEntityName( getRelatedObject() ), alias="value");
 
 				variables.attributeOptionsOptions = smartList.getRecords();
-
-				arrayPrepend(variables.attributeOptionsOptions, {name=rbKey('define.select'), value=''});
+				
+				arrayPrepend(variables.attributeOptionsOptions, unselectedValue);
 
 			} else if(listFindNoCase('typeSelect', getAttributeInputType()) && !isNull(getTypeSet())) {
 
@@ -241,8 +245,7 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 				smartList.addFilter(propertyIdentifier='parentType.typeID', value=getTypeSet().getTypeID());
 
 				variables.attributeOptionsOptions = smartList.getRecords();
-
-				arrayPrepend(variables.attributeOptionsOptions, {name=rbKey('define.select'), value=''});
+				arrayPrepend(variables.attributeOptionsOptions,unselectedValue);
 			}
 
 		}

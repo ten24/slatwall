@@ -225,6 +225,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				entityName=getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),
 				propertyIdentifier=arguments.displayProperty
 			);
+			
 		}else{
 			column['propertyIdentifier'] = collectionConfig.baseEntityAlias & '.' & arguments.displayProperty;
 		}
@@ -733,10 +734,17 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	private string function getFilterAttributeHQL(required any filter){
 		var attributeIdentifier = listDeleteAt(filter.propertyIdentifier,ListLen(filter.propertyIdentifier,'.'),'.');
 
-		var HQL = "(SELECT attributeValue
-					FROM #getDao('hibachiDAO').getApplicationKey()#AttributeValue
-					WHERE attributeID = '#filter.attributeID#'
-					AND #filter.attributeSetObject#.#filter.attributeSetObject#ID = #attributeIdentifier#.#filter.attributeSetObject#ID)";
+		var HQL = "COALESCE(
+						(SELECT attributeValue
+						FROM #getDao('hibachiDAO').getApplicationKey()#AttributeValue
+						WHERE attributeID = '#filter.attributeID#'
+						AND #filter.attributeSetObject#.#filter.attributeSetObject#ID = #attributeIdentifier#.#filter.attributeSetObject#ID
+						),(
+							SELECT defaultValue 
+							FROM #getDao('hibachiDAO').getApplicationKey()#Attribute 
+							WHERE attributeID = '"& filter.attributeID &"'
+						)
+					)";
 		return HQL;
 	}
 
@@ -1279,15 +1287,22 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	private any function getColumnAttributeHQL(required struct column){
-
-		var attributeIdentifier = listDeleteAt(column.propertyIdentifier,ListLen(column.propertyIdentifier,'.'),'.');
-
-		var HQL	=  "(SELECT attributeValue
-					FROM #getDao('hibachiDAO').getApplicationKey()#AttributeValue
-					WHERE attribute.attributeID = '"
-					& column.attributeID &
-					"' AND #column.attributeSetObject#.#column.attributeSetObject#ID = #attributeIdentifier#.#column.attributeSetObject#ID) as #listLast(column.propertyIdentifier,'.')#";
-
+		
+		var attributeIdentifier = getCollectionConfigStruct().baseEntityAlias;
+		var HQL	=  "COALESCE(
+						(SELECT 
+							attributeValue
+						
+						FROM #getDao('hibachiDAO').getApplicationKey()#AttributeValue
+						WHERE attribute.attributeID = '"
+						& column.attributeID &
+						"' AND #column.attributeSetObject#.#column.attributeSetObject#ID = #attributeIdentifier#.#column.attributeSetObject#ID)
+						,(
+							SELECT defaultValue 
+							FROM #getDao('hibachiDAO').getApplicationKey()#Attribute 
+							WHERE attributeID = '"& column.attributeID &"'
+						)
+					) as #listLast(column.propertyIdentifier,'.')#";
 		return HQL;
 	}
 
@@ -1324,62 +1339,62 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var startMapHQL = ' new Map(';
 		var columnsHQL = '';
 			for(var i = 1; i <= columnCount; i++){
-					var column = arguments.columns[i];
-					if(!arguments.forExport || (arguments.forExport && structKeyExists(column,'isExportable') && column.isExportable)){
-						var currentAlias = '';
-						var currentAliasStepped = '';
-						var columnPropertyIdentiferArray = listToArray(column.propertyIdentifier,'.');
-						var columnPropertyIdentiferArrayCount = arrayLen(columnPropertyIdentiferArray);
+				var column = arguments.columns[i];
+				if(!arguments.forExport || (arguments.forExport && structKeyExists(column,'isExportable') && column.isExportable)){
+					var currentAlias = '';
+					var currentAliasStepped = '';
+					var columnPropertyIdentiferArray = listToArray(column.propertyIdentifier,'.');
+					var columnPropertyIdentiferArrayCount = arrayLen(columnPropertyIdentiferArray);
 
-						for(var j = 1; j <= columnPropertyIdentiferArrayCount;j++){
-							if(columnPropertyIdentiferArrayCount > 2){
-								if(j != 1 && j != columnPropertyIdentiferArrayCount){
-									var dotNeeded = '';
-									if(j >= 3){
-										dotNeeded = '.';
-									}
-
-									var join = {
-											associationName=currentAliasStepped&dotNeeded&columnPropertyIdentiferArray[j],
-											alias=currentAlias&'_'&columnPropertyIdentiferArray[j]
-									};
-
-
-									currentAlias = currentAlias&'_'&columnPropertyIdentiferArray[j];
-									currentAliasStepped = currentAliasStepped &dotNeeded& columnPropertyIdentiferArray[j];
-
-									addJoin(join);
-
+					for(var j = 1; j <= columnPropertyIdentiferArrayCount;j++){
+						if(columnPropertyIdentiferArrayCount > 2){
+							if(j != 1 && j != columnPropertyIdentiferArrayCount){
+								var dotNeeded = '';
+								if(j >= 3){
+									dotNeeded = '.';
 								}
-								if(j == columnPropertyIdentiferArrayCount){
-									column.propertyIdentifier = currentAlias&'.'&columnPropertyIdentiferArray[j];
 
-								}
+								var join = {
+										associationName=currentAliasStepped&dotNeeded&columnPropertyIdentiferArray[j],
+										alias=currentAlias&'_'&columnPropertyIdentiferArray[j]
+								};
+
+
+								currentAlias = currentAlias&'_'&columnPropertyIdentiferArray[j];
+								currentAliasStepped = currentAliasStepped &dotNeeded& columnPropertyIdentiferArray[j];
+
+								addJoin(join);
+
 							}
-							if(!len(currentAlias)){
-								currentAlias = columnPropertyIdentiferArray[1];
+							if(j == columnPropertyIdentiferArrayCount){
+								column.propertyIdentifier = currentAlias&'.'&columnPropertyIdentiferArray[j];
+
 							}
 						}
-						if(structKeyExists(column,'attributeID')){
-							columnsHQL &= getColumnAttributeHQL(column);
+						if(!len(currentAlias)){
+							currentAlias = columnPropertyIdentiferArray[1];
+						}
+					}
+					if(structKeyExists(column,'attributeID')){
+						columnsHQL &= getColumnAttributeHQL(column);
+					}else{
+						//check if we have an aggregate
+						if(!isnull(column.aggregate))
+						{
+							//if we have an aggregate then put wrap the identifier
+							columnsHQL &= getAggregateHQL(column.aggregate,column.propertyIdentifier);
+
 						}else{
-							//check if we have an aggregate
-							if(!isnull(column.aggregate))
-							{
-								//if we have an aggregate then put wrap the identifier
-								columnsHQL &= getAggregateHQL(column.aggregate,column.propertyIdentifier);
-
-							}else{
-								var columnAlias = Replace(Replace(column.propertyIdentifier,'.','_','all'),'_'&lcase(Replace(getCollectionObject(),'#getDao('hibachiDAO').getApplicationKey()#',''))&'_','');
-								columnsHQL &= ' #column.propertyIdentifier# as #columnAlias#';
-							}
+							var columnAlias = Replace(Replace(column.propertyIdentifier,'.','_','all'),'_'&lcase(Replace(getCollectionObject(),'#getDao('hibachiDAO').getApplicationKey()#',''))&'_','');
+							columnsHQL &= ' #column.propertyIdentifier# as #columnAlias#';
 						}
+					}
 
-						//check whether a comma is needed
-						if(i != columnCount){
-							columnsHQL &= ',';
-						}//<--end if
-					}//<--end exportable
+					//check whether a comma is needed
+					if(i != columnCount){
+						columnsHQL &= ',';
+					}//<--end if
+				}//<--end exportable
 			}//<--end for loop
 
 		if(right(columnsHQL,1) == ','){
@@ -1562,7 +1577,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					&& column.ormtype neq 'big_decimal')
 				) continue;
 
-				var formatter = (column.ormtype eq 'big_decimal' || column.ormtype eq 'integer') ? 'STR' : 'LOWER';
+				var formatter = (column.ormtype eq 'big_decimal' || column.ormtype eq 'integer') ? 'STR' : '';
+				if(formatter == '' && getHibachiScope().getApplicationValue('databaseType')=="Oracle10g"){
+					formatter = "LOWER";
+				}
 				//Create a propertyIdentifier for DefaultColumns
 				var propertyIdentifier = (!defaultColumns)? column.propertyIdentifier : arguments.collectionConfig.baseEntityAlias&'.'&column.name;
 				//If is Attributes

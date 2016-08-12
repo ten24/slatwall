@@ -111,7 +111,7 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 		} else {
 			url = variables.productionUrl & service;
 		}
-		return getResponse(requestPacket=arguments.jsonPacket,url=url,format="json");
+		return getResponse(requestPacket=arguments.jsonPacket,urlString=url,format="json");
 	}
 	
 	private any function getShippingProcessShipmentResponseBean(struct jsonResponse){

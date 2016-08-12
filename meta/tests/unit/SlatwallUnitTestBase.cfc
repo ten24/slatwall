@@ -258,7 +258,7 @@ component extends="mxunit.framework.TestCase" output="false" {
 		return false;
 	}
 
-	private string function generateRandomString(minLength, maxLength) {
+	private string function generateRandomString(minLength=0, maxLength=26) {
 		var chars = "abcdefghijklmnopqrstuvwxyz -_";
 		chars &= ucase(chars);
 		var upper = minLength + round(rand()*maxLength);
@@ -273,8 +273,8 @@ component extends="mxunit.framework.TestCase" output="false" {
 		return returnString;
 	}
 
-	private string function generateRandomInteger(minVal, maxVal) {
-		return 1;
+	private string function generateRandomInteger(minVal=0, maxVal=1000000) {
+		return randRange(minVal,maxVal);
 	}
 
 	private string function generateRandomDate() {

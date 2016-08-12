@@ -46,21 +46,33 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
+
+<cfparam name="rc.giftCard" type="any" />
+<cfparam name="rc.processObject" type="any" />
+<cfparam name="rc.edit" type="boolean" />
+<cfparam name="rc.ownerAccountID" default="">
+<cfif !isNull(rc.giftCard.getOwnerAccount())>
+	<cfset rc.ownerAccountID = rc.giftCard.getOwnerAccount().getAccountID() />
+</cfif>
 <cfoutput>
-	<swa:SlatwallSettingTable showInheritance="false">
-		<swa:SlatwallSetting settingName="emailFromAddress" />
-		<swa:SlatwallSetting settingName="emailToAddress" />
-		<swa:SlatwallSetting settingName="emailCCAddress" />
-		<swa:SlatwallSetting settingName="emailBCCAddress" />
-		<swa:SlatwallSetting settingName="emailFailToAddress" />
-		<swa:SlatwallSetting settingName="emailReplyToAddress" />
-		<swa:SlatwallSetting settingName="emailSubject" />
-		<swa:SlatwallSetting settingName="emailIMAPServer" />
-		<swa:SlatwallSetting settingName="emailIMAPServerPort" />
-		<swa:SlatwallSetting settingName="emailIMAPServerUsername" />
-		<swa:SlatwallSetting settingName="emailIMAPServerPassword">
-	</swa:SlatwallSettingTable>
+	<hb:HibachiEntityProcessForm entity="#rc.giftCard#" edit="#rc.edit#" sRedirectAction="admin:entity.detailgiftcard">
+
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.giftCard#" backAction="admin:entity.detailgiftcard" backQueryString="giftCardID=#rc.giftCard.getGiftCardID()#">
+		</hb:HibachiEntityActionBar>
+
+		<hb:HibachiListingDisplay smartList="#rc.processObject.getAccountSmartList()#"
+								   edit="#rc.edit#"
+								   selectFieldName="accountID"
+								   selectValue="#rc.ownerAccountID#"
+								   selectTitle="#$.slatwall.rbKey('entity.account')#">
+
+			<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="primaryEmailAddress.emailAddress" />
+			<hb:HibachiListingColumn propertyIdentifier="firstName" />
+			<hb:HibachiListingColumn propertyIdentifier="lastName" />
+		</hb:HibachiListingDisplay>
+
+	</hb:HibachiEntityProcessForm>
 </cfoutput>

@@ -778,7 +778,8 @@
 		
 		// @hint returns a property of a given entity
 		public any function getPropertyByEntityNameAndPropertyName( required string entityName, required string propertyName ) {
-			if(!getHasAttributeByEntityNameAndPropertyIdentifier(arguments.entityName, arguments.propertyName)){
+			var hasAttributeByEntityNameAndPropertyIdentifier = getHasAttributeByEntityNameAndPropertyIdentifier(arguments.entityName, arguments.propertyName);
+			if(!hasAttributeByEntityNameAndPropertyIdentifier){
 				return getPropertiesStructByEntityName( entityName=arguments.entityName )[ arguments.propertyName ];
 			} else {
 				var key = 'attributeService_getAttributeNameByAttributeCode_#arguments.propertyName#';
@@ -863,7 +864,9 @@
 		}
 		
 		public boolean function getPropertyIsObjectByEntityNameAndPropertyIdentifier(required string entityName, required string propertyIdentifier){
-			if(!getHasAttributeByEntityNameAndPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier)){
+			var hasAttributeByEntityNameAndPropertyIdentifier=getHasAttributeByEntityNameAndPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier);
+			
+			if(!hasAttributeByEntityNameAndPropertyIdentifier){
 				return structKeyExists(getPropertiesStructByEntityName(getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier))[listLast(arguments.propertyIdentifier, ".")],'cfc');
 			} else {
 				return false;
@@ -906,12 +909,16 @@
 		
 		// @hint leverages the getEntityHasAttributeByEntityName() by traverses a propertyIdentifier first using getLastEntityNameInPropertyIdentifier()
 		public boolean function getHasAttributeByEntityNameAndPropertyIdentifier( required string entityName, required string propertyIdentifier ) {
-			return getEntityHasAttributeByEntityName( entityName=getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier), attributeCode=listLast(arguments.propertyIdentifier, "._") );
+			return getEntityHasAttributeByEntityName( 
+				entityName=getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier), 
+				attributeCode=listLast(arguments.propertyIdentifier, "._") 
+			);
 		}
 		
 		// @hint returns true or false based on an entityName, and checks if that entity has an extended attribute with that attributeCode
 		public boolean function getEntityHasAttributeByEntityName( required string entityName, required string attributeCode ) {
 			var attributeCodesList = getHibachiCacheService().getOrCacheFunctionValue("attributeService_getAttributeCodesListByAttributeSetType_ast#getProperlyCasedShortEntityName(arguments.entityName)#", "attributeService", "getAttributeCodesListByAttributeSetType", {1="ast#getProperlyCasedShortEntityName(arguments.entityName)#"});
+			
 			if(listFindNoCase(attributeCodesList, arguments.attributeCode)) {
 				return true;
 			}
