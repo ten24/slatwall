@@ -12,6 +12,7 @@ export class BaseBootStrapper{
     public $q:ng.IQService;
     public appConfig:any;
     public attributeMetaData:any;
+    public instantiationKey:string;
 
     constructor(myApplication){
       this.myApplication = myApplication;
@@ -36,6 +37,7 @@ export class BaseBootStrapper{
                  return $http.get(hibachiConfig.baseURL+'?'+hibachiConfig.action+'=api:main.getInstantiationKey')
 
                 .then( (resp)=> {
+
                     var appConfig = JSON.parse(localStorage.getItem('appConfig'));
                     var attributeMetaData = JSON.parse(localStorage.getItem('attributeMetaData'));
                     var invalidCache = [];
@@ -50,6 +52,7 @@ export class BaseBootStrapper{
                             }
 
                         }else if (key === 'instantiationKey'){
+                            this.instantiationKey = resp.data.data[key];
                             if(resp.data.data[key] === appConfig[key]){
                                 coremodule.constant('appConfig',appConfig)
                                 .constant('resourceBundles',JSON.parse(localStorage.getItem('resourceBundles')));
@@ -109,7 +112,7 @@ export class BaseBootStrapper{
 
     getInstantiationKeyData = ()=>{
 
-        return this.$http.get(hibachiConfig.baseURL+'?'+hibachiConfig.action+'=api:main.getConfig')
+        return this.$http.get(hibachiConfig.baseURL+'/custom/config/config.json?instantiationKey='+this.instantiationKey)
         .then( (resp:any)=> {
             coremodule.constant('appConfig',resp.data.data);
             localStorage.setItem('appConfig',JSON.stringify(resp.data.data));
@@ -130,7 +133,7 @@ export class BaseBootStrapper{
             return this._resourceBundle[locale];
         }
 
-        var urlString = this.appConfig.baseURL+'/index.cfm/?'+this.appConfig.action+'=api:main.getResourceBundle&instantiationKey='+this.appConfig.instantiationKey+'&locale='+locale;
+        var urlString = this.appConfig.baseURL+'/custom/config/resourceBundles/'+locale+'.json?instantiationKey='+this.appConfig.instantiationKey;
 
         this.$http(
             {
@@ -170,7 +173,11 @@ export class BaseBootStrapper{
         var resourceBundlePromises = this.$q.all(rbPromises).then((data) => {
             coremodule.constant('resourceBundles',this._resourceBundle);
             localStorage.setItem('resourceBundles',JSON.stringify(this._resourceBundle));
+            
         },(error) =>{
+            //can enterhere due to 404
+            coremodule.constant('resourceBundles',this._resourceBundle);
+            localStorage.setItem('resourceBundles',JSON.stringify(this._resourceBundle));
         });
         return resourceBundlePromises;
 

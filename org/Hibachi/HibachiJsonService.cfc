@@ -92,6 +92,43 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         return model;
     }
     
+    public void function createJson(){
+    	createConfigJson();
+    	createRBJson();
+    }
+    
+    public void function createRBJson(){
+    	var rbpath = expandPath('/Slatwall') & "/config/resourceBundles";
+    	var directorylisting = [];
+    	if(DirectoryExists(rbpath)){
+    		directorylisting = directorylist(rbpath,false,"name","*.properties");
+    	}
+    	var customrbpath = expandPath('/Slatwall') & "/custom/config/resourceBundles";
+    	if(DirectoryExists(customrbpath)){
+    		var customDirectoryListing = directorylist(customrbpath,false,"name","*.properties");
+    		for(var item in customDirectoryListing){
+    			if(!ArrayFind(directoryListing,item)){
+    				arrayAppend(directoryListing,item);
+    			}
+    		}
+    	}
+    	
+    	for(var rb in directoryListing){
+    		var locale = listFirst(rb,'.');
+    		var resourceBundle = getService('HibachiRBService').getResourceBundle(locale);
+	        var data = {};
+	        //cache RB for 1 day or until a reload
+	        //lcase all the resourceBundle keys so we can have consistent casing for the js
+	        for(var key in resourceBundle){
+	            data[lcase(key)] = resourceBundle[key];
+	        }
+	        var json = serializeJson(data);
+			var filePath = expandPath('/Slatwall') & '/custom/config/resourceBundles/#locale#.json';	        
+	        fileWrite(filePath,json);
+    	}
+        
+    }
+    
     private void function formatEntity(required any entity, required any model){
 
         model.entities[entity.getClassName()] = entity.getPropertiesStruct();

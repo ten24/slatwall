@@ -657,7 +657,7 @@ component extends="FW1.framework" {
 					
 					//==================== START: JSON BUILD SETUP ========================
 					
-					getBeanFactory().getBean('hibachiJsonService').createConfigJson();
+					getBeanFactory().getBean('hibachiJsonService').createJson();
 					
 					//===================== END: JSON BUILD SETUP =========================
 					
