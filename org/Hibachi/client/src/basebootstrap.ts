@@ -52,6 +52,7 @@ export class BaseBootStrapper{
                             }
 
                         }else if (key === 'instantiationKey'){
+
                             this.instantiationKey = resp.data.data[key];
                             if(resp.data.data[key] === appConfig[key]){
                                 coremodule.constant('appConfig',appConfig)
@@ -111,6 +112,11 @@ export class BaseBootStrapper{
     }
 
     getInstantiationKeyData = ()=>{
+        if(!this.instantiationKey){
+            var d = new Date();
+            var n = d.getTime();
+            this.instantiationKey = n.toString();
+        }
 
         return this.$http.get(hibachiConfig.baseURL+'/custom/config/config.json?instantiationKey='+this.instantiationKey)
         .then( (resp:any)=> {
@@ -141,11 +147,18 @@ export class BaseBootStrapper{
                 method:"GET"
             }
         ).success((response:any,status,headersGetter) => {
-            this._resourceBundle[locale] = response.data;
+            this._resourceBundle[locale] = response;
+            
             deferred.resolve(response);
-        }).error((response:any) => {
-            this._resourceBundle[locale] = {};
-            deferred.reject(response);
+        }).error((response:any,status) => {
+            if(status === 404){
+                this._resourceBundle[locale] = {};
+
+                deferred.resolve(response);
+            }else{
+                deferred.reject(response);
+            }
+
         });
         return deferred.promise
     }
@@ -173,7 +186,7 @@ export class BaseBootStrapper{
         var resourceBundlePromises = this.$q.all(rbPromises).then((data) => {
             coremodule.constant('resourceBundles',this._resourceBundle);
             localStorage.setItem('resourceBundles',JSON.stringify(this._resourceBundle));
-            
+
         },(error) =>{
             //can enterhere due to 404
             coremodule.constant('resourceBundles',this._resourceBundle);
