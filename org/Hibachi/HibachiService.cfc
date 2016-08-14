@@ -792,10 +792,10 @@
 		public any function getPropertyByEntityNameAndSingularName( required string entityName, required string singularName ) {
 			var propertiesStruct = getPropertiesStructByEntityName( entityName=arguments.entityName );
 			for(var key in propertiesStruct){
-				var property = propertiesStruct[key];
+				var propertyStruct = propertiesStruct[key];
 				
-				if(structKeyExists(property,'singularname') && structKeyExists(arguments,'singularname') && lcase(property.singularname) == lcase(arguments.singularName)){
-					return property;
+				if(isStruct(propertyStruct) && structKeyExists(propertyStruct,'singularname') && structKeyExists(arguments,'singularname') && lcase(propertyStruct.singularname) == lcase(arguments.singularName)){
+					return propertyStruct;
 				}
 			}
 		}
