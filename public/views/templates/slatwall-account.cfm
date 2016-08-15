@@ -92,13 +92,6 @@ Notes:
 
 <cfoutput>
 	<div class="container">
-			
-		<!--- We can display basic user data even if the user is not logged in if they have previously logged in. --->
-		<cfif !$.slatwall.getLoggedInFlag()>
-			<cfif !isNull($.slatwall.getAccount().getFullName())> Welcome back #$.slatwall.getAccount().getFullName()#</cfif> - 
-			<cfif !isNull($.slatwall.getAccount().getPrimaryEmailAddress().getEmailAddress())> <small>#$.slatwall.getAccount().getPrimaryEmailAddress().getEmailAddress()#</small></cfif><br>
-			<small><b>your last visit was: #$.slatwall.getSession().getLoggedInDateTime()#</b></small><br>
-		</cfif>
 		
 		<!--- USER MY-ACCOUNT SECTION IF LOGGED IN --->
 		<cfif $.slatwall.getLoggedInFlag()>
