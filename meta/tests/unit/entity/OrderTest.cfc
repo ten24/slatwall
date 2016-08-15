@@ -760,5 +760,35 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 	}
 	
+	public void function getPaymentAmountAuthorizedTotalTest() {
+		var mockOrderPayment = createSimpleMockEntityByEntityName('OrderPayment');
+		injectMethod(mockOrderPayment, this, 'returnTen', 'getAmountAuthorized');
+		
+		var orderData = {
+			orderID = '',
+			orderPayments = [{
+				orderPaymentID = mockOrderPayment.getOrderPaymentID()
+			}]
+		};
+		var mockOrder = createPersistedTestEntity('Order', orderData);
+		
+		var result = mockOrder.getPaymentAmountAuthorizedTotal();
+		assertEquals(10, result, 'Condition default type opstActive should do calculation');
+		
+		var mockOrderPayment2 = createSimpleMockEntityByEntityName('OrderPayment');
+		injectMethod(mockOrderPayment2, this, 'returnTen', 'getAmountAuthorized');
+		injectMethod(mockOrderPayment2, this, 'returnOpstInvalid', 'getStatusCode');
+		
+		var orderData2 = {
+			orderID = '',
+			orderPayments = [{
+				orderPaymentID = mockOrderPayment2.getOrderPaymentID()
+			}]
+		};
+		var mockOrder2 = createPersistedTestEntity('Order', orderData2);
+		
+		var result = mockOrder2.getPaymentAmountAuthorizedTotal();
+		assertEquals(0, result, 'When status type not opstActive, should return 0');
+	}
 	
 }

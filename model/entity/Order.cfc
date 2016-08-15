@@ -171,8 +171,13 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public void function setOrderService(required any orderService){
 		variables.orderService = arguments.orderService;
 	}
+	
+//	public void function setOrderDAO(required any orderDAO) {
+//		//TODO: check if necessary using setORderDAO()
+//	}
+	
 
-//======= End of Mocking Injection ========
+	//======= End of Mocking Injection ========
 
 	public string function getStatus() {
 		return getOrderStatusType().getTypeName();
