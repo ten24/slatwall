@@ -704,7 +704,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		}
 		return variables.currencyDetails;
 	}
-	//@SuppressCodeCoverage
+	/**
+	* @Suppress
+	*/
 	public any function getCurrentAccountPrice() {
 		if(!structKeyExists(variables, "currentAccountPrice")) {
 			variables.currentAccountPrice = getService("priceGroupService").calculateSkuPriceBasedOnCurrentAccount(sku=this);
@@ -896,7 +898,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	}
 
 
-	// @hint Returns an array of locations associated with this sku.
+	/**
+	* Returns an array of locations associated with this sku.
+	*/
 	public any function getLocations() {
 		if(!structKeyExists(variables,"locations")) {
 			variables.locations = [];
@@ -958,14 +962,18 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return getQuantity("QATS");
 	}
 
-	//@Suppress
+	/**
+	* @Suppress
+	*/
 	public any function getSalePriceDetails() {
 		if(!structKeyExists(variables, "salePriceDetails")) {
 			variables.salePriceDetails = getProduct().getSkuSalePriceDetails(skuID=getSkuID());
 		}
 		return variables.salePriceDetails;
 	}
-	//@Suppress
+	/**
+	* @Suppress
+	*/
 	public any function getSalePriceDetailsByCurrencyCode(required string currencyCode) {
 		if(!structKeyExists(variables, "salePriceDetailsByCurrencyCode_#currencyCode#")) {
 			variables["salePriceDetails_#currencyCode#"] = getProduct().getSkuSalePriceDetailsByCurrencyCode(skuID=getSkuID(),currencyCode=arguments.currencyCode);
