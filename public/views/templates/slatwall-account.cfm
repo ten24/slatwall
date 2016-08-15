@@ -93,17 +93,15 @@ Notes:
 <cfoutput>
 	<div class="container">
 			
+		<!--- We can display basic user data even if the user is not logged in if they have previously logged in. --->
+		<cfif !$.slatwall.getLoggedInFlag()>
+			<cfif !isNull($.slatwall.getAccount().getFullName())> Welcome back #$.slatwall.getAccount().getFullName()#</cfif> - 
+			<cfif !isNull($.slatwall.getAccount().getPrimaryEmailAddress().getEmailAddress())> <small>#$.slatwall.getAccount().getPrimaryEmailAddress().getEmailAddress()#</small></cfif><br>
+			<small><b>your last visit was: #$.slatwall.getSession().getLoggedInDateTime()#</b></small><br>
+		</cfif>
+		
 		<!--- USER MY-ACCOUNT SECTION IF LOGGED IN --->
-		Loggedin: #$.slatwall.getLoggedInFlag()# <br>
-		Is Admin: #$.slatwall.getLoggedInAsAdminFlag()# <br>
-		Basic Info: #$.slatwall.getAccount().getFullName()# <br>
-		Logged In: #$.slatwall.getSession().getLoggedInDateTime()#<br>
-		Last Logout: #$.slatwall.getSession().getLoggedOutDateTime()#<br>
-		Last Request Datetime: #$.slatwall.getSession().getLastRequestDateTime()#<br>
-		Auto Logout in Minutes: #$.slatwall.setting("globalPublicAutoLogoutMinutes")#
-		
 		<cfif $.slatwall.getLoggedInFlag()>
-		
 		
 			<div class="row">
 				<div class="span12">
