@@ -49,12 +49,13 @@ Notes:
 component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	
-	public void function setUp() {
+	public void function setUp() 
+	{
 		super.setup();
 
 		variables.entityService = "ScheduleService";
 	variables.entity = request.slatwallScope.getService( variables.entityService ).newAccount();
-	}
+    }
 
 	public void function getRecuringTypeOptionsTest()
 	{
@@ -68,9 +69,12 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		    
 		var mockSchedule = createTestEntity('Schedule',scheduleData);
 		var result= mockSchedule.getRecuringTypeOptions();
+		
+		
 	for (var i=1; i<= arrayLen(result); i++)
 	{
-		if(result[i].name=="Daily"){
+		if(result[i].name=="Daily")
+		{
 			testVariable= result[i].name;
 		}
 	}
@@ -81,7 +85,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 
 	
-	public void function getDaysOfMonthToRunOptionsTest(){
+	public void function getDaysOfMonthToRunOptionsTest()
+	{
 		
 		var scheduleData={
 			scheduleID=''
@@ -90,13 +95,16 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var testArray=[1,2,3,4,5,6,7,8,9,10];
 		var schedule= createTestEntity('Schedule',scheduleData);
 		var result= schedule.getDaysOfMonthToRunOptions();
+		
 		assertFalse(testArray.equals(result));
 		assertEquals("2",result[2]);
-		}
+		
+	}
 		
 	
 	
-	public void function getNextTimeSlotTest(){
+	public void function getNextTimeSlotTest()
+	{
 		var scheduleData={
 			scheduleID=''
 		};
@@ -104,13 +112,18 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var schedule= createPersistedTestEntity('Schedule', scheduleData);
 		makePublic(schedule,'getNextTimeSlot');
 		var result =schedule.getNextTimeSlot("23-01-2016 12:49:21",2,"03-02-1998 02:34:00");
+		
 		assertEquals(expectedOutput, result);
 		
 		var resultForElse=schedule.getNextTimeSlot("23-01-2016 01:49:21",500,"03-02-1998 02:34:00");
 		var expectedOutputAfterAddingInterval= createDateTime(1998,03,02,10,09,21);
+		
 		assertEquals(expectedOutputAfterAddingInterval, resultForElse );
 	}
-	public void function getDaysOfWeekToRunOptionsTest(){
+	
+	
+	public void function getDaysOfWeekToRunOptionsTest()
+	{
 		
 	var scheduleData={
 		scheduleID=''
@@ -121,7 +134,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals("Monday", result[2].name);
 		assertEquals("3", result[3].value);	
 	}
-	public void function isBetweenHoursTest(){
+	
+	
+	public void function isBetweenHoursTest()
+	{
 		var scheduleData={
 			scheduleID=''
 		};
