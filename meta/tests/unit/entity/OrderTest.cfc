@@ -346,6 +346,31 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		return createPersistedTestEntity('Order', orderData);
 	}
 	
+	private any function createMockOrderPayment(string orderID='', string orderPaymentTypeID='', numeric amount, string orderPaymentMethodID='') {
+	 	var orderPaymentData = {
+	 		orderPaymentID = ''
+	 	};
+	 	if(len(arguments.orderID)) {
+	 		orderPaymentData.order = {
+	 			orderID = arguments.orderID
+	 		};
+	 	}
+	 	if(len(arguments.orderPaymentTypeID)) {
+	 		orderPaymentData.orderPaymentType = {
+	 			typeID = arguments.orderPaymentTypeID
+	 		};
+	 	}
+	 	if(!isNull(arguments.amount)) {
+	 		orderPaymentData.amount = arguments.amount;
+	 	}
+	 	if(len(arguments.orderPaymentMethodID)) {
+	 		orderPaymentData.orderPaymentMethod = {
+	 			orderPaymentMethodID = arguments.orderPaymentMethodID
+	 		};
+	 	}
+	 	return createPersistedTestEntity('OrderPayment', orderPaymentData);
+	 }
+	 
 	
 	public void function getOrderTypeTest() {
 		var mockOrder = createMockOrder();
@@ -594,7 +619,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 	 	var skuData = {
 	 		skuID = '',
-	 		price = 10,
+	 		price = 200,
 	 		saleprice = 100,
 	 		promotionRewards = [{
 	 			promotionRewardID = mockPromotionReward.getPromotionRewardID()
@@ -616,51 +641,52 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					promotionPeriodID = mockPromotionPeriod.getPRomotionPeriodID()
 				}]
 		};
-		var promotion = createPersistedTestEntity('promotion',promotionData);
+		var promotion = createPersistedTestEntity('promotion', promotionData);
 
 		return mockSku;
 	 }
 	 
-	 //TODO: too much mock data
-//	 public void function getOrderItemQualifiedDiscountsTest() {
-//	 	var mockSku = createMockSkuAboutSalePrice();
-//	 	
-//	 	var mockOrderItem1 = createMockOrderItem(skuID = mockSku.getSkuID());
-//	 	var mockOrderItem2 = createMockOrderItem(skuID = mockSku.getSkuID());
-//	 	var mockOrderItem3 = createMockOrderItem(skuID = mockSku.getSkuID());
-//		
-//		var mockOrder1 = createMockOrderWithOrderItems([mockOrderItem1.getOrderItemID(), 
-//														mockOrderItem2.getOrderItemID(),
-//														mockOrderItem3.getOrderItemID()]);				
-//		var result = mockOrder1.getOrderItemQualifiedDiscounts();
-//	 }
 	 
-	 private any function createMockOrderPayment(string orderID='', string orderPaymentTypeID='', numeric amount, string orderPaymentMethodID='') {
-	 	var orderPaymentData = {
-	 		orderPaymentID = ''
+	 public void function getOrderItemQualifiedDiscountsTest_bypassIf() {
+	 	var mockSku = createMockSkuAboutSalePrice();
+	 	var mockOrderItem1 = createMockOrderItem(skuID = mockSku.getSkuID());
+	 	
+	 	var orderData = {
+	 		orderID = '',
+	 		orderItems = [{
+	 			orderItemID = mockOrderItem1.getOrderItemID()
+	 		}]
 	 	};
-	 	if(len(arguments.orderID)) {
-	 		orderPaymentData.order = {
-	 			orderID = arguments.orderID
-	 		};
-	 	}
-	 	if(len(arguments.orderPaymentTypeID)) {
-	 		orderPaymentData.orderPaymentType = {
-	 			typeID = arguments.orderPaymentTypeID
-	 		};
-	 	}
-	 	if(!isNull(arguments.amount)) {
-	 		orderPaymentData.amount = arguments.amount;
-	 	}
-	 	if(len(arguments.orderPaymentMethodID)) {
-	 		orderPaymentData.orderPaymentMethod = {
-	 			orderPaymentMethodID = arguments.orderPaymentMethodID
-	 		};
-	 	}
-	 	return createPersistedTestEntity('OrderPayment', orderPaymentData);
+	 	var mockOrder = createPersistedTestEntity('Order', orderData);
+	 	
+	 	
+	 	injectMethod(mockSku, this, 'getSalePriceDetails_salePriceReturnFiveHundred', 'getSalePriceDetails');
+	 	
+	 	var result = mockOrder.getOrderItemQualifiedDiscounts();
+	 	assertTrue(structIsEmpty(result), 'if salePrice > sku.getPrice(), should return an empty structure');
+	 	
 	 }
 	 
-	 public void function getDynamicChargeOrderPaymentTest() {
+	 public void function getOrderItemQualifiedDiscountsTest_goIntoIf() {
+	 	var mockSku = createMockSkuAboutSalePrice();
+	 	
+	 	var mockOrderItem1 = createMockOrderItem(skuID = mockSku.getSkuID());
+	 	
+	 	var orderData = {
+	 		orderID = '',
+	 		orderItems = [{
+	 			orderItemID = mockOrderItem1.getOrderItemID()
+	 		}]
+	 	};
+	 	var mockOrder = createPersistedTestEntity('Order', orderData);
+	 	
+	 	injectMethod(mockSku, this, 'getSalePriceDetails_salePriceReturnSeventy', 'getSalePriceDetails');
+	 	injectMethod(mockSku, this, 'returnTen', 'getQuantity');
+	 	//TODO: Cannot pass the skuID into getSalePriceDetails_salePriceReturnSeventy. Reset the scope to orderTest.cfc maybe work. But how?
+	 	
+	 }
+	 
+	 public void function getDynamicChargeOrderPaymentTest_general() {
 	 	//Testing the systemCode
 	 	var mockOrderPayment2 = createMockOrderPayment(orderPaymentTypeID='444df2f1cc40d0ea8a2de6f542ab4f1d'); //optCredit
 	 	
@@ -729,7 +755,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	assertTrue(isNULL(resultNoOrderPayment),'The mockOrder without orderPayment should return nulls');
 	 }
 	 
-	 public void function getDynamicCreditOrderPaymentTest() {
+	 public void function getDynamicCreditOrderPaymentTest_general() {
 	 	//Testing the systemCode
 	 	var mockOrderPayment2 = createMockOrderPayment(orderPaymentTypeID='444df2f0fed139ff94191de8fcd1f61b'); //optCharge
 	 	
@@ -949,8 +975,25 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//TODO: Need to deal with persisted test entity in Inject scope
 	}
 	
-	
-	
+	//====================== Injected Functions in Sku.cfc ==========================
+	private struct function getSalePriceDetails_salePriceReturnFiveHundred() {
+	 	return {
+	 		salePrice = 500 
+	 	};
+	 }
+	 
+	 
+	 private struct function getSalePriceDetails_salePriceReturnSeventy() {
+	 	//TODO: not been used by getOrderItemQualifiedDiscountsTest_goIntoIf
+	 	var privateSkuID = createMockSkuAboutSalePrice().getSkuID();
+	 	return {
+	 		skuID = privateSkuID,
+	 		salePrice = 70
+//	 		promotionID = arguments.promotionID
+	 	};
+	 }
+	 
+	 
 	
 	
 	public void function getPreviouslyReturnedFulfillmentTotalTest() {
@@ -1062,9 +1105,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 //		var myOrder2 = new Slatwall.model.entity.order();
 //		var myOrder2 = createObject('component', 'Slatwall.model.entity.Order').getTotal(myMock);
-//		request.debug(myOrder2.getORderID());
 //		mockOrder.getTotal(myMock);
-//		request.debug(mockOrder2.getTotal());
 	}
 	
 	
