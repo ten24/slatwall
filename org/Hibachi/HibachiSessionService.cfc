@@ -135,10 +135,6 @@ component output="false" accessors="true" extends="HibachiService"  {
 		// update the sessionScope with the ID for the next request
 		getHibachiScope().setSessionValue('sessionID', getHibachiScope().getSession().getSessionID());
 		
-		// Update the last request datetime, and IP Address
-		getHibachiScope().getSession().setLastRequestDateTime( now() );
-		getHibachiScope().getSession().setLastRequestIPAddress( CGI.REMOTE_ADDR );
-		
 		if(!isNull(getHibachiScope().getSession().getRBLocale())) {
 			getHibachiScope().setRBLocale( getHibachiScope().getSession().getRBLocale() );
 		
@@ -170,6 +166,11 @@ component output="false" accessors="true" extends="HibachiService"  {
 			logoutAccount();
 
 		}
+		
+		// Update the last request datetime, and IP Address now that all other checks have completed.
+		getHibachiScope().getSession().setLastRequestDateTime( now() );
+		getHibachiScope().getSession().setLastRequestIPAddress( CGI.REMOTE_ADDR );
+		
 	}
 	
 	public void function persistSession() {
@@ -193,10 +194,12 @@ component output="false" accessors="true" extends="HibachiService"  {
 			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-PSID", value=getHibachiScope().getSession().getSessionCookiePSID(), expires="never");
 		
 		//This cookie expires based on the user being inactive longer than the setting value is set for in days.
-		var cookieValue = getValueForCookie();
+		//only set this if the use is not an admin user.
+		if (!getHibachiScope().getAccount().getAdminAccountFlag()){
+			var cookieValue = getValueForCookie();
 			getHibachiScope().getSession().setSessionCookieExtendedPSID(cookieValue);
 			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-ExtendedPSID", value=getHibachiScope().getSession().getSessionCookieExtendedPSID(), expires="#getHibachiScope().setting('globalExtendedSessionAutoLogoutInDays')#");
-		
+		}
 		
 	}
 	
@@ -236,18 +239,23 @@ component output="false" accessors="true" extends="HibachiService"  {
 		//No need to remove the account or authentication. We just set the state to being logged out.
 		currentSession.setLoggedOutDateTime(DateTimeFormat(now()));
 		currentSession.setLoggedInFlag(false);
-		
+		// Update the last request datetime, and IP Address now that all other checks have completed.
+		currentSession.setLastRequestDateTime( now() );
+		currentSession.setLastRequestIPAddress( CGI.REMOTE_ADDR );
 		//Remove the cookies. Forgets the user if they intentionally click logout (on public computer for example)
 		if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#-NPSID")){
 			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-NPSID", value='', expires="#now()#");
+			structDelete(cookie,"#getApplicationValue('applicationKey')#-NPSID", true);
 		}
 		
 		if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#-PSID")){
 			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-PSID", value='', expires="#now()#");
+			structDelete(cookie,"#getApplicationValue('applicationKey')#-PPSID", true);
 		}
 		
 		if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#-ExtendedNPSID")){
 			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-ExtendedPSID", value='', expires="#now()#");
+			structDelete(cookie,"#getApplicationValue('applicationKey')#-ExtendedNPSID", true);
 		}
 		
 		// Make sure that this logout is persisted

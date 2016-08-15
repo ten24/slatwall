@@ -104,10 +104,10 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	 * be checked before checking if they are an admin account.
 	 */
 	public boolean function getLoggedInAsAdminFlag() {
-		if(!isNull(getSession()) && 
-			!isNull(getSession().getAccount()) && 
-			!isNull(getSession().getAccount().getAdminAccountFlag()) && 
+		if(!isNull(getSession()) &&
 			getSession().getLoggedInFlag() && 
+		   !isNull(getSession().getAccount()) && 
+		   !isNull(getSession().getAccount().getAdminAccountFlag()) &&  
 			getSession().getAccount().getAdminAccountFlag()) {
 				
 			return true;

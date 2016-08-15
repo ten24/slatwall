@@ -101,10 +101,10 @@ Notes:
 	</head>
 
 	<!--- Start old navbar --->
-	<body <cfif !$.slatwall.getLoggedInFlag() || !$.slatwall.getLoggedInAsAdminFlag() && !structKeyExists(url,'ng')>class="s-login-screen"</cfif>>
+	<body <cfif (!$.slatwall.getLoggedInFlag() || !$.slatwall.getLoggedInAsAdminFlag()) && !structKeyExists(url,'ng')>class="s-login-screen"</cfif>>
 		<span>
 			
-		<cfif $.slatwall.getLoggedInAsAdminFlag()>
+		<cfif $.slatwall.getSession().getLoggedInFlag()>
 			<div class="navbar navbar-fixed-top navbar-inverse" role="navigation" id="slatwall-navbar">
 				<div class="container-fluid" style="text-align:left;">
 
@@ -118,6 +118,7 @@ Notes:
 					<div class="pull-right s-right-nav-content" id="j-mobile-nav">
 						<ul class="nav navbar-nav">
 							<li class="divider-vertical"></li>
+							<cfif $.slatwall.getLoggedInAsAdminFlag()>
 							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.products_nav')#" icon="tags icon-white" type="nav">
 								<hb:HibachiDividerHider>
 									<hb:HibachiActionCaller action="admin:entity.listproduct" type="list">
@@ -206,9 +207,7 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listprinttemplate" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listroundingrule" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listsite" type="list">
-									<!---<cfif $.slatwall.authenticateAction(action='admin:entity.listsite')>
-										<hb:HibachiActionCaller queryString="ng##!/entity/Site" text="#$.slatwall.rbKey('admin.entity.listsite')#" type="list">
-									</cfif>--->
+									
 									<hb:HibachiActionCaller action="admin:entity.listtaxcategory" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listterm" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listtype" type="list">
@@ -238,7 +237,7 @@ Notes:
 									</cfif>
 								</hb:HibachiDividerHider>
 							</hb:HibachiActionCallerDropdown>
-
+						</cfif><!--- End user is logged in --->
 						</ul>
 						<div class="pull-right s-temp-nav">
 							<ul class="nav navbar-nav">
@@ -305,9 +304,7 @@ Notes:
 					<cfif structKeyExists(url, 'ng')>
 						<ng-view></ng-view>
 					<cfelse>
-						
 							#body#
-						
 					</cfif>
 				</div>
 

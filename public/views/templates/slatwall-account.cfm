@@ -100,7 +100,6 @@ Notes:
 		Logged In: #$.slatwall.getSession().getLoggedInDateTime()#<br>
 		Last Logout: #$.slatwall.getSession().getLoggedOutDateTime()#<br>
 		Last Request Datetime: #$.slatwall.getSession().getLastRequestDateTime()#<br>
-		Date Diff Last Request: #dateDiff("n", $.slatwall.getSession().getLastRequestDateTime(), now())# in minutes.
 		Auto Logout in Minutes: #$.slatwall.setting("globalPublicAutoLogoutMinutes")#
 		
 		<cfif $.slatwall.getLoggedInFlag()>
