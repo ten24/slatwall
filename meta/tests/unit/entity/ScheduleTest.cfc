@@ -71,11 +71,12 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	for (var i=1; i<= arrayLen(result); i++)
 	{
 		if(result[i].name=="Daily"){
-			testVarible= result[i].name;
+			testVariable= result[i].name;
 		}
 	}
+	
 	    assertTrue(testVariable=="Daily");
-		assertEquals("Daily", result[1].name);
+	
 	}
 
 
