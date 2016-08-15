@@ -263,7 +263,9 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return this.getProductImagesCount() + this.getDefaultProductImageFilesCount();
 	}
 	
-	//@SuppressCodeCoverage
+	/**
+	* @Suppress
+	*/
 	public struct function getSkuSalePriceDetails( required any skuID) {
 		if(structKeyExists(getSalePriceDetailsForSkus(), arguments.skuID)) {
 			return getSalePriceDetailsForSkus()[ arguments.skuID ];
@@ -271,7 +273,9 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return {};
 	}
 	
-	//@SuppressCodeCoverage
+	/**
+	* @Suppress
+	*/
 	public struct function getSkuSalePriceDetailsByCurrencyCode( required any skuID, string currencyCode='') {
 		if(structKeyExists(getSalePriceDetailsForSkusByCurrencyCode(currencyCode=arguments.currencyCode), arguments.skuID)) {
 			return getSalePriceDetailsForSkusByCurrencyCode(currencyCode=arguments.currencyCode)[ arguments.skuID ];
@@ -765,14 +769,18 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 		return variables.defaultProductImageFilesCount;
 	}
-	//@SuppressCodeCoverage
+	/**
+	* @Suppress
+	*/
 	public struct function getSalePriceDetailsForSkus() {
 		if(!structKeyExists(variables, "salePriceDetailsForSkus")) {
 			variables.salePriceDetailsForSkus = getService("promotionService").getSalePriceDetailsForProductSkus(productID=getProductID());
 		}
 		return variables.salePriceDetailsForSkus;
 	}
-	//@SuppressCodeCoverage
+	/**
+	* @Suppress
+	*/
 	public struct function getSalePriceDetailsForSkusByCurrencyCode(required string currencyCode) {
 		if(!structKeyExists(variables, "getSalePriceDetailsForSkusByCurrencyCode_#arguments.currencyCode#")) {
 			variables["getSalePriceDetailsForSkusByCurrencyCode_#arguments.currencyCode#"] = getService("promotionService").getSalePriceDetailsForProductSkus(productID=getProductID(),currencyCode=arguments.currencyCode);
@@ -858,7 +866,9 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return 0;
 	}
 	
-	//@SuppressCodeCoverage
+	/**
+	* @Suppress
+	*/
 	public any function getPriceByCurrencyCode(required string currencyCode) {
 		if( structKeyExists(variables, "defaultSku") ) {
 			return getDefaultSku().getPriceByCurrencyCode(arguments.currencyCode);
@@ -873,7 +883,9 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 	}
 
-	//@SuppressCodeCoverage
+	/**
+	* @Suppress
+	*/
 	public any function getRenewalPriceByCurrencyCode(required string currencyCode) {
 		if( structKeyExists(variables, "defaultSku") ) {
 			return getDefaultSku().getRenewalPriceByCurrencyCode(arguments.currencyCode);
@@ -886,35 +898,45 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 	}
 	
-	//@SuppressCodeCoverage
+	/**
+	* @Suppress
+	*/
 	public any function getListPriceByCurrencyCode(required string currencyCode) {
 		if( structKeyExists(variables,"defaultSku") ) {
 			return getDefaultSku().getListPriceByCurrencyCode(arguments.currencyCode);
 		}
 	}
 	
-	//@SuppressCodeCoverage
+	/**
+	* @Suppress
+	*/
 	public any function getLivePrice() {
 		if( structKeyExists(variables,"defaultSku") ) {
 			return getDefaultSku().getLivePrice();
 		}
 	}
 	
-	//@SuppressCodeCoverage
+	/**
+	* @Suppress
+	*/
 	public any function getLivePriceByCurrencyCode(required string currencyCode){
 		if( structKeyExists(variables,"defaultSku") ) {
 			return getDefaultSku().getLivePriceByCurrencyCode(arguments.currencyCode);
 	 	}
 	}
 	
-	//@SuppressCodeCoverage
+	/**
+	* @Suppress
+	*/
 	public any function getCurrentAccountPrice() {
 		if( structKeyExists(variables,"defaultSku") ) {
 			return getDefaultSku().getCurrentAccountPrice();
 		}
 	}
 	
-	//@SuppressCodeCoverage
+	/**
+	* @Suppress
+	*/
 	public any function getCurrentAccountPriceByCurrencyCode(required string currencyCode) {
 		if( structKeyExists(variables,"defaultSku") ) {
 			return getDefaultSku().getCurrentAccountPriceByCurrencyCode(arguments.currencyCode);
@@ -959,7 +981,9 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return variables.salePriceExpirationDateTime;
 	}
 	
-	//@SuppressCodeCoverage
+	/**
+	* @Suppress
+	*/
 	public boolean function getTransactionExistsFlag() {
 		if(!structKeyExists(variables, "transactionExistsFlag")) {
 			variables.transactionExistsFlag = getService("skuService").getTransactionExistsFlag( productID=this.getProductID() );
@@ -991,7 +1015,9 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return possibilities - usedCombinations;
 	}
 
-	//@SuppressCodeCoverage
+	/**
+	* @Suppress
+	*/
 	public array function getUnusedProductOptionGroups() {
 		if( !structKeyExists(variables, "unusedProductOptionGroups") ) {
 			variables.unusedProductOptionGroups = getService('optionService').getUnusedProductOptionGroups( getProductType().getProductTypeID(), structKeyList(getOptionGroupsStruct()) );
