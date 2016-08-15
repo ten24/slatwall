@@ -273,18 +273,19 @@ component extends="mxunit.framework.TestCase" output="false" {
 		return returnString;
 	}
 
-	private string function generateRandomInteger(minVal, maxVal) {
+	private string function generateRandomInteger(minVal=0, maxVal=1000000) {
 		if(arguments.maxVal == arguments.minVal) {
 			return arguments.minVal;
 		}
 		//Deal with invalid range
 		if(
-		   (arguments.maxVal - arguments.minVal < 0 ) 
-		   || (
-		   		arguments.maxVal - arguments.minVal < 1
+			   (arguments.maxVal - arguments.minVal < 0 ) 
+			   ||
+			   (
+			   	arguments.maxVal - arguments.minVal < 1
 		   		&& arguments.minVal*arguments.maxVal >= 0 
 		   		&& fix(arguments.minVal) == fix(arguments.maxVal)
-		   	  )
+			   )
 		  ) {
 			throw ('There is no integer between #arguments.minVal# and #arguments.maxVal#');
 		}
