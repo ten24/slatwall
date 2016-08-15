@@ -761,6 +761,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 	public void function getPaymentAmountAuthorizedTotalTest() {
+		//Testing when the statusCode == opstActive
 		var mockOrderPayment = createSimpleMockEntityByEntityName('OrderPayment');
 		injectMethod(mockOrderPayment, this, 'returnTen', 'getAmountAuthorized');
 		
@@ -775,6 +776,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var result = mockOrder.getPaymentAmountAuthorizedTotal();
 		assertEquals(10, result, 'Condition default type opstActive should do calculation');
 		
+		//Testing the statusCode <> active
 		var mockOrderPayment2 = createSimpleMockEntityByEntityName('OrderPayment');
 		injectMethod(mockOrderPayment2, this, 'returnTen', 'getAmountAuthorized');
 		injectMethod(mockOrderPayment2, this, 'returnOpstInvalid', 'getStatusCode');
@@ -789,6 +791,105 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		var result = mockOrder2.getPaymentAmountAuthorizedTotal();
 		assertEquals(0, result, 'When status type not opstActive, should return 0');
+	}
+	
+	public void function getPaymentAmountReceivedTotalTest() {
+		//Testing when the statusCode == opstActive
+		var mockOrderPayment = createSimpleMockEntityByEntityName('OrderPayment');
+		injectMethod(mockOrderPayment, this, 'returnTen', 'getAmountReceived');
+		
+		var orderData = {
+			orderID = '',
+			orderPayments = [{
+				orderPaymentID = mockOrderPayment.getOrderPaymentID()
+			}]
+		};
+		var mockOrder = createPersistedTestEntity('Order', orderData);
+		
+		var result = mockOrder.getPaymentAmountReceivedTotal();
+		assertEquals(10, result, 'Condition default type opstActive should do calculation');
+		
+		//Testing the statusCode <> active
+		var mockOrderPayment2 = createSimpleMockEntityByEntityName('OrderPayment');
+		injectMethod(mockOrderPayment2, this, 'returnTen', 'getAmountReceived');
+		injectMethod(mockOrderPayment2, this, 'returnOpstInvalid', 'getStatusCode');
+		
+		var orderData2 = {
+			orderID = '',
+			orderPayments = [{
+				orderPaymentID = mockOrderPayment2.getOrderPaymentID()
+			}]
+		};
+		var mockOrder2 = createPersistedTestEntity('Order', orderData2);
+		
+		var result = mockOrder2.getPaymentAmountReceivedTotal();
+		assertEquals(0, result, 'When status type not opstActive, should return 0');
+	}
+	
+	public void function getPaymentAmountTotalByPaymentMethodTest_StatusCodeActive() {
+		var paymentMethodData = {
+			paymentMethodID = ''
+		};
+		var mockPaymentMethod = createPersistedTestEntity('PaymentMethod', paymentMethodData);
+		
+		// These mock entities, getStatusCode() == 'opstActive' by default
+		var orderPaymentData1 = {
+			orderPaymentID = '',
+			paymentMethod = {
+				paymentMethodID = mockPaymentMethod.getPaymentMethodID()
+			},
+			orderPaymentType = {
+				typeID = '444df2f0fed139ff94191de8fcd1f61b'//optCharge
+			},
+			amount = 10 
+		};
+		var MockOrderPayment1 = createPersistedTestEntity('OrderPayment', orderPaymentData1);
+		
+		var orderPaymentData2 = {
+			orderPaymentID = '',
+			paymentMethod = {
+				paymentMethodID = mockPaymentMethod.getPaymentMethodID()
+			},
+			orderPaymentType = {
+				typeID = '444df2f1cc40d0ea8a2de6f542ab4f1d'//optCredit
+			},
+			amount = 0.5 
+		};
+		var MockOrderPayment2 = createPersistedTestEntity('OrderPayment', orderPaymentData2); 
+		
+		var orderPaymentData3 = {
+			orderPaymentID = '',
+			paymentMethod = {
+				paymentMethodID = mockPaymentMethod.getPaymentMethodID()
+			},
+			orderPaymentType = {
+				typeID = '444df2f0fed139ff94191de8fcd1f61b'//optCharge
+			},
+			amount = 4 
+		};
+		var MockOrderPayment3 = createPersistedTestEntity('OrderPayment', orderPaymentData3); 
+		
+		injectMethod(mockOrderPayment3, this, 'returnTrue', 'hasErrors');
+		
+		
+		var orderData = {
+			orderID = '',
+			orderPayments = [
+				{
+					orderPaymentID = mockOrderPayment1.getOrderPaymentID()
+				},
+				{
+					orderPaymentID = mockOrderPayment2.getOrderPaymentID()
+				},
+				{
+					orderPaymentID = mockOrderPayment3.getOrderPaymentID()
+				}
+			]
+		};
+		var mockOrder = createPersistedTestEntity('Order', orderData);
+		
+		var result = mockOrder.getPaymentAmountTotalByPaymentMethod(mockOrderPayment1.getOrderPaymentID(), mockOrderPayment2.getOrderPaymentID()); 
+		assertEquals(10, result, 'The result should be 10');
 	}
 	
 }
