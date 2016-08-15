@@ -99,8 +99,9 @@ component accessors="true" output="false" extends="HibachiService" {
 	
 	public any function resetCachedKeyByPrefix( required string keyPrefix ) {
 		// Because there could be lots of keys potentially we do this in a thread
-		thread name="hibachiCacheService_resetCachedKeyByPrefix_#createUUID()#" keyPrefix=arguments.keyPrefix {
-			
+		var threadName="hibachiCacheService_resetCachedKeyByPrefix_#replace(createUUID(),'-','','ALL')#";
+		thread name="#threadName#" keyPrefix=arguments.keyPrefix {
+			sleep(5000);
 			if(getInternalCacheFlag()) {
 				
 				var allKeysArray = listToArray(structKeyList(getCache()));
@@ -123,6 +124,7 @@ component accessors="true" output="false" extends="HibachiService" {
 			}
 			
 		}
+		return evaluate(threadName);
 	}
 	
 	
