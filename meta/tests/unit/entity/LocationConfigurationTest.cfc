@@ -75,5 +75,20 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
     	assertEquals("sunny", result);
     
     }
+     public any function getLocationPathNameTest2() {
+    	
+    	var locationConfigurationData={
+    		
+    		locationConfigurationID=""	, 
+    		locationPathName="I am the path name"
+    		
+    	};
+    	
+    	var mockLocationConfiguration = createTestEntity('LocationConfiguration',locationConfigurationData);
+		var result= mockLocationConfiguration.getLocationPathName();
+	
+    	assertEquals("I am the path name", result);
+    
+}
     
 }
