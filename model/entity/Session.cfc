@@ -52,11 +52,15 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 	property name="sessionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="shippingAddressPostalCode" ormtype="string";
 	property name="lastRequestDateTime" ormtype="timestamp";
+	property name="loggedInDateTime" ormtype="timestamp";
+	property name="loggedOutDateTime" ormtype="timestamp";
+	property name="loggedInFlag" ormtype="boolean";
 	property name="lastRequestIPAddress" ormtype="string";
 	property name="lastPlacedOrderID" ormtype="string";
 	property name="rbLocale" ormtype="string";
-	property name="sessionCookiePSID" ormtype="string" length="64";
-	property name="sessionCookieNPSID" ormtype="string" length="64"; 
+	property name="sessionCookiePSID" ormtype="string" length="64";//keeps track of cart
+	property name="sessionCookieNPSID" ormtype="string" length="64"; //keeps track of user on session.
+	property name="sessionCookieExtendedPSID" ormtype="string" length="64"; //keeps track of user during extended session period.	
 	property name="sessionExpirationDateTime" ormtype="timestamp";
 	property name="deviceID" ormtype="string" default="" ;
 	
@@ -71,14 +75,73 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 	
 	// Non-Persistent Properties
 	property name="requestAccount" type="any" persistent="false"; 
-	 
-	public any function getAccount() {
-		if(structKeyExists(variables, "account")) {
-			return variables.account;
-		} else if (!structKeyExists(variables, "requestAccount")) {
-			variables.requestAccount = getService("accountService").newAccount();
+	
+	
+	/**
+	 * Handles all of the cases on the session that the user is not logged in.
+	 */
+	public any function getLoggedInFlag(){
+		//If this is a new session, then the user is not logged in.
+		if (getNewFlag()){
+			setLoggedInFlag(false);
+			return false;
 		}
+		
+		//If the loggedin dateTime is null, then user is logged out.
+		if ( isNull(getLoggedInDateTime()) ){
+			setLoggedInFlag(false);
+			return false;
+		}
+		
+		//If the logged out dateTime is older than the logged in datetime - the user is logged out.
+		if ( !isNull(getLoggedOutDateTime()) && !isNull(getLoggedInDateTime()) && dateCompare(getLoggedOutDateTime(), getLoggedInDateTime()) != -1){
+			setLoggedInFlag(false);
+			return false;
+		}
+		
+		//If the user is an admin, and we exceeded the max login for admins, the user is logged out.
+		if(structKeyExists(variables, "account") && variables.account.getAdminAccountFlag() && !isNull(variables.lastRequestDateTime) && len(getLastRequestDateTime()) && dateDiff("n", getLastRequestDateTime(), now()) >= getHibachiScope().setting("globalAdminAutoLogoutMinutes")) {
+			return false;
+		}
+		
+		//If the user is public and has exceeded the max public inactive time, the user is logged out.
+		if(structKeyExists(variables, "account") && !variables.account.getAdminAccountFlag() && !isNull(variables.lastRequestDateTime) && len(getLastRequestDateTime()) && dateDiff("n", getLastRequestDateTime(), now()) >= getHibachiScope().setting("globalPublicAutoLogoutMinutes")) {
+			setLoggedInFlag(false);
+			return false;
+		}
+		
+		setLoggedInFlag(true);
+		
+		return true;
+		
+	} 
+	
+	/** Because we are never removing the account from the session - 
+	    it becomes important that if we are returning this data, we only do that 
+	    if the user is not an admin user that is not logged in, or for a public user
+	    only if they are in the extended session period or earlier. 
+	*/
+	public any function getAccount() {
+			
+		if(structKeyExists(variables, "account")) {
+			//if this is a admin account that is logged in or is a public account that within the extended period - then return the data.
+			if (!isNull(variables.account.getAdminAccountFlag()) && 
+				variables.account.getAdminAccountFlag() && getLoggedInFlag()  ||
+			   !variables.account.getAdminAccountFlag() && !isNull(variables.lastRequestDateTime) && 
+			   len(getLastRequestDateTime()) && 
+			   dateDiff("n", getLastRequestDateTime(), now()) <= getHibachiScope().setting("globalPublicAutoLogoutMinutes")){
+				
+				//return the account data.	
+				return variables.account;
+			
+			}
+		} 
+			
+		variables.requestAccount = getService("accountService").newAccount();
+			
+		
 		return variables.requestAccount;
+	
 	}
 	
 	public any function getOrder() {
