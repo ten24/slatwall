@@ -97,7 +97,7 @@ component accessors="true" output="false" extends="HibachiService" {
 		}
 	}
 	
-	public any function resetCachedKeyByPrefix( required string keyPrefix ) {
+	public any function resetCachedKeyByPrefix( required string keyPrefix, boolean waitForThread=false ) {
 		// Because there could be lots of keys potentially we do this in a thread
 		var threadName="hibachiCacheService_resetCachedKeyByPrefix_#replace(createUUID(),'-','','ALL')#";
 		thread name="#threadName#" keyPrefix=arguments.keyPrefix {
@@ -123,6 +123,10 @@ component accessors="true" output="false" extends="HibachiService" {
 			}
 			
 		}
+		if(arguments.waitForThreadComplete){
+			threadJoin(threadName);	
+		}
+		
 		return evaluate(threadName);
 	}
 	
