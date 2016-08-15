@@ -105,6 +105,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		makePublic(schedule,'getNextTimeSlot');
 		var result =schedule.getNextTimeSlot("23-01-2016 12:49:21",2,"03-02-1998 02:34:00");
 		assertEquals(expectedOutput, result);
+		
+		var resultForElse=schedule.getNextTimeSlot("23-01-2016 01:49:21",500,"03-02-1998 02:34:00");
+		var expectedOutputAfterAddingInterval= createDateTime(1998,03,02,10,09,21);
+		assertEquals(expectedOutputAfterAddingInterval, resultForElse );
 	}
 	public void function getDaysOfWeekToRunOptionsTest(){
 		
