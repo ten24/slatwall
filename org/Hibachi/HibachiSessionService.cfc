@@ -140,7 +140,6 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 		}
 		
-		
 		// If we are using extended session and the extended session has expired, then logout.
 		
 		// If the session has an account but no authentication, then remove the account
@@ -151,7 +150,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 		// If the sessions account is an admin and last request by the session was 15 min or longer ago. 
 		
-		if( (getHibachiScope().getSessionFoundExtendedPSIDCookieFlag() || getHibachiScope().getSessionFoundPSIDCookieFlag())  && !getHibachiScope().getLoggedInFlag()
+		if((getHibachiScope().getSessionFoundExtendedPSIDCookieFlag() || getHibachiScope().getSessionFoundPSIDCookieFlag())  && !getHibachiScope().getLoggedInFlag()
 		
 			|| (!isNull(getHibachiScope().getSession().getAccountAuthentication()) && getHibachiScope().getSession().getAccountAuthentication().getForceLogoutFlag()) 
 		

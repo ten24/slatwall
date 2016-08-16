@@ -124,12 +124,13 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 	public any function getAccount() {
 			
 		if(structKeyExists(variables, "account")) {
-			//if this is a admin account that is logged in or is a public account that within the extended period - then return the data.
-			if (!isNull(variables.account.getAdminAccountFlag()) && 
-				variables.account.getAdminAccountFlag() && getLoggedInFlag()  ||
-			   !variables.account.getAdminAccountFlag() && !isNull(variables.lastRequestDateTime) && 
-			   len(getLastRequestDateTime()) && 
-			   dateDiff("n", getLastRequestDateTime(), now()) <= getHibachiScope().setting("globalPublicAutoLogoutMinutes")){
+			//if the user is logged in then return the account. 
+			//if this is a public account and within the extended period - then return the data.
+			if (getLoggedInFlag()  ||
+			   (structKeyExists(cookie,"#getApplicationValue('applicationKey')#-ExtendedPSID") && 
+			   !isNull(variables.lastRequestDateTime) && 
+			   !isNull(getHibachiScope().setting("globalPublicAutoLogoutMinutes")) &&
+			   (dateDiff("n", getLastRequestDateTime(), now()) <= getHibachiScope().setting("globalPublicAutoLogoutMinutes")))){
 				
 				//return the account data.	
 				return variables.account;
