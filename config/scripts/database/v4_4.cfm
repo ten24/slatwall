@@ -92,6 +92,7 @@ Notes:
 	<cfcatch>
 		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update Product Type Add ProductTypeNamePath">
 		<cfset local.scriptHasErrors = true />
+		<cfrethrow>
 	</cfcatch>
 
 
