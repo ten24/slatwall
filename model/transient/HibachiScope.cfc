@@ -107,7 +107,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	}
 	
 	public boolean function getLoggedInFlag() {
-		return getSession().getLoggedInFlag();
+		
+		if (!isNull(getSession()) && 
+			!isNull(getSession().getLoggedInFlag()) && 
+			getSession().getLoggedInFlag() && 
+			!isNull(getSession().getAccount()) &&
+			!getSession().getAccount().getGuestAccountFlag()){
+				return getSession().getLoggedInFlag();
+		}
+		return false;
 	}
 	
 	
