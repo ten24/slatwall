@@ -53,19 +53,29 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		super.setup();
 
 		variables.entityService = "ScheduleService";
-	variables.entity = request.slatwallScope.getService( variables.entityService ).newAccount();
+		variables.entity = request.slatwallScope.getService( variables.entityService ).newAccount();
 	}
 
 	public void function getRecuringTypeOptionsTest()
 	{
-		   var scheduleData={
+		var scheduleData={
 		   	scheduleID=''
-		                    };
+        };
 		    
 		var mockSchedule = createTestEntity('Schedule',scheduleData);
 		var result= mockSchedule.getRecuringTypeOptions();
 	
-		assertEquals("Daily", result[1].name);
+		
+		for (var i=1; i<= arrayLen(result); i++)   //loop to search for name in array received as result
+		{
+			if(result[i].name=="Daily")            // looking for 'Daily'
+			{
+				testVariable= result[i].name;      //making it equal to a test variable.
+			}
+		}
+	
+	    assertTrue(testVariable=="Daily");      // asserting the result
+	
 	}
 	public void function getDaysOfMonthToRunOptionsTest(){
 		
@@ -78,26 +88,42 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var result= schedule.getDaysOfMonthToRunOptions();
 		assertFalse(testArray.equals(result));
 		assertEquals("2",result[2]);
-		}
+	}
 		
 	
 	
-	public void function getNextTimeSlotTest(){
+	public void function getNextTimeSlotTest()
+	{
 		var scheduleData={
 			scheduleID=''
 		};
-		var expectedOutput= createDateTime(1998,03,02,12,49,21);
+		var expectedOutput= createDateTime(1998,03,02,12,49,21);  //creating variable to compare result in date time format
+		var schedule= createPersistedTestEntity('Schedule', scheduleData);
+		makePublic(schedule,'getNextTimeSlot');          //making the private function public for test
+		var result =schedule.getNextTimeSlot("23-01-2016 12:49:21",2,"03-02-1998 02:34:00");
+		
+		assertEquals(expectedOutput, result);      // asserting the if case
+	}
+		
+		
+	public void function getNextTimeSlotTest2()
+	    {
+		var scheduleData={
+			scheduleID=''
+		};
 		var schedule= createPersistedTestEntity('Schedule', scheduleData);
 		makePublic(schedule,'getNextTimeSlot');
-		var result =schedule.getNextTimeSlot("23-01-2016 12:49:21",2,"03-02-1998 02:34:00");
-		assertEquals(expectedOutput, result);
+		var resultForElse=schedule.getNextTimeSlot(createDateTime(2016,01,23,01,49,21),1,createDateTime(1998,02,03,02,34,00)); //giving the argument so that else case is true 
+		var expectedOutputAfterAddingInterval= createDateTime(1998,02,03,02,34,21);
+		
+		assertEquals(expectedOutputAfterAddingInterval, resultForElse ); //assert the rsult for else
 	}
 	public void function getDaysOfWeekToRunOptionsTest(){
 		
-	var scheduleData={
-		scheduleID=''
+		var scheduleData={
+			scheduleID=''
 		};
-	var mockSchedule = createTestEntity('Schedule',scheduleData);
+		var mockSchedule = createTestEntity('Schedule',scheduleData);
 		var result= mockSchedule.getDaysOfWeekToRunOptions();
 	
 		assertEquals("Monday", result[2].name);
