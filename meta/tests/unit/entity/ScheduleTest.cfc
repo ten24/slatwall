@@ -114,9 +114,18 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var result =schedule.getNextTimeSlot("23-01-2016 12:49:21",2,"03-02-1998 02:34:00");
 		
 		assertEquals(expectedOutput, result);      // asserting the if case
+		}
 		
-		var resultForElse=schedule.getNextTimeSlot("23-01-2016 01:49:21",500,"03-02-1998 02:34:00"); //giving the argument so that else case is true 
-		var expectedOutputAfterAddingInterval= createDateTime(1998,03,02,10,09,21);
+		
+		public void function getNextTimeSlotTest2()
+	    {
+		var scheduleData={
+			scheduleID=''
+		};
+		var schedule= createPersistedTestEntity('Schedule', scheduleData);
+		makePublic(schedule,'getNextTimeSlot'); 
+		var resultForElse=schedule.getNextTimeSlot(createDateTime(2016,01,23,01,49,21),1,createDateTime(1998,02,03,02,34,00)); //giving the argument so that else case is true 
+		var expectedOutputAfterAddingInterval= createDateTime(1998,02,03,02,34,21);
 		
 		assertEquals(expectedOutputAfterAddingInterval, resultForElse ); //assert the rsult for else
 	}

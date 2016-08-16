@@ -311,17 +311,18 @@ component displayname="Schedule" entityname="SlatwallSchedule" table="SwSchedule
 		
 		return response;
 	}	
-	
+	//@hint make sure to use CreateDateTime and not a string when passing date. Otherwise you may experience odd behaviour	
 	private function getNextTimeSlot(required startTime, required numeric interval, required targetTime){
 		var found = false;
 		var processingTime=createDateTime(year(targetTime),month(targetTime),day(targetTime),hour(startTime),minute(startTime),second(startTime));
-		
+		var count=0;
 		while(!found){
 			
 			if(processingTime gt targetTime){
 				found = true;
 			}else{
 				processingTime=dateAdd("n",interval,processingTime);
+				
 			}
 		}
 		return processingTime;
