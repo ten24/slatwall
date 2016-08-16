@@ -118,6 +118,10 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 		return variables.locationPathName;
 	}
 	
+	public any function getLocationOptions(){
+		return getService("locationService").getLocationOptions(this.getLocationID());
+	}
+	
 	// ============  END:  Non-Persistent Property Methods =================
 	
 	// ============= START: Bidirectional Helper Methods ===================

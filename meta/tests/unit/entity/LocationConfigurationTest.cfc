@@ -90,5 +90,38 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
     	assertEquals("I am the path name", result);
     
 }
+public any function getLocationTreeTest(){
+	
+	var parentLocationData={
+		locationID="",
+		locationName="parentLocation"
+	};
+	var parentLocation = createPersistedTestEntity('location',parentLocationData);
+	
+	var locationData={
+		locationID="",
+		locationName="locationName",
+		parentLocation={
+			locationID=parentLocation.getLocationID()
+		}
+	};
+	var mockLocation=createPersistedTestEntity('location',locationData);
+   	
+   	var locationConfigurationData={
+   		locationConfigurationID="",
+   		location={
+   			locationID=mockLocation.getLocationID()
+   		}
+   	};
+   	
+   	 var mockLocationConfiguration= createPersistedTestEntity('LocationConfiguration', locationConfigurationData);
+
+	
+   	 
+   	var result= mockLocationConfiguration.getLocationTree();
+   	request.debug(result);
+   	
+   	
+   } 
     
 }
