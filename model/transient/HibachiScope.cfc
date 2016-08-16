@@ -113,7 +113,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			getSession().getLoggedInFlag() && 
 			!isNull(getSession().getAccount()) &&
 			!getSession().getAccount().getGuestAccountFlag()){
-				return getSession().getLoggedInFlag();
+				return true;
 		}
 		return false;
 	}
