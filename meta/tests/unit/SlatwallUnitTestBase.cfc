@@ -63,8 +63,13 @@ component extends="mxunit.framework.TestCase" output="false" {
 	// BEFORE EACH TEST
 	public void function setUp() {
 		variables.slatwallFW1Application.bootstrap();
-
-		request.slatwallScope.getAccount().setSuperUserFlag(1);
+		
+		request.slatwallScope.getSession().getAccount(true);
+		request.slatwallScope.getSession().getAccount(true).setSuperUserFlag(1);
+		
+		request.slatwallScope.getSession().setSessionID(generateRandomString(32,32));
+		request.slatwallScope.getSession().setLoggedInDateTime(now());
+		request.slatwallScope.getSession().setLastRequestDateTime(dateAdd('n',-3,now()));
 
 		// Setup a debugging output array
 		variables.debugArray = [];

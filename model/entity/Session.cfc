@@ -114,17 +114,20 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 	    if the user is not an admin user that is not logged in, or for a public user
 	    only if they are in the extended session period or earlier. 
 	*/
-	public any function getAccount() {
-			
+	public any function getAccount(boolean testAccount=false) {
+		
+		if(!structKeyExists(variables, "account") && arguments.testAccount){
+			variables.account = getService('accountService').newAccount();
+		}
+		
 		if(structKeyExists(variables, "account")) {
 			//if the user is logged in then return the account. 
 			//if this is a public account and within the extended period - then return the data.
-			if (getLoggedInFlag()  ||
+			if (arguments.testAccount || getLoggedInFlag()  ||
 			   (structKeyExists(cookie,"#getApplicationValue('applicationKey')#-ExtendedPSID") && 
 			   !isNull(variables.lastRequestDateTime) && 
 			   !isNull(getHibachiScope().setting("globalPublicAutoLogoutMinutes")) &&
 			   (dateDiff("n", getLastRequestDateTime(), now()) <= getHibachiScope().setting("globalPublicAutoLogoutMinutes")))){
-				
 				//return the account data.	
 				return variables.account;
 			
