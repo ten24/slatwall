@@ -73,7 +73,7 @@ class SWDraggableContainer implements ng.IDirective{
         
         angular.element(element).attr("draggable", "true");
 
-        var placeholderElement = angular.element("<tr class='s-placeholder'><td>placeholder</td><td>placeholder</td><td>placeholder</td><td>placeholder</td></tr>");//temporarirly hardcoding tds so it will show up
+        var placeholderElement = angular.element("<tr class='s-placeholder'><td>placeholder</td><td>placeholder</td><td>placeholder</td><td>placeholder</td><td>placeholder</td><td></td></tr>");//temporarirly hardcoding tds so it will show up
         
         var id = angular.element(element).attr("id");
         if (!id) {
@@ -94,11 +94,8 @@ class SWDraggableContainer implements ng.IDirective{
             var parsedRecord = JSON.parse(record); 
             
             var index =  Array.prototype.indexOf.call(listNode.children, placeholderNode);
-
-            if (index <= parsedRecord.draggableStartKey){
+            if(index < parsedRecord.draggableStartKey){
                 parsedRecord.draggableStartKey++;
-            } else if (parsedRecord.draggableStartKey != 0) {
-                parsedRecord.draggableStartKey--; 
             }
 
             this.$timeout(

@@ -28,6 +28,7 @@ class SWOrderByControlsController {
             if( angular.isUndefined(this.edit)){
                 this.edit = true; 
             }
+            console.log("orderbycontrols edit mode:", this.edit);
             if( angular.isDefined(this.collectionConfig) ){
                  this.columns = this.collectionConfig.columns; 
             } 
