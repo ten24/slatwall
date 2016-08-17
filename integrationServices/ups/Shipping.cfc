@@ -59,18 +59,18 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 		variables.trackingURL = "http://wwwapps.ups.com/WebTracking/track?loc=en_US&track.x=Track&trackNums=${trackingNumber}";
 
 		variables.shippingMethods = {
-			01="UPS Next Day Air",
-			02="UPS 2nd Day Air",
-			03="UPS Ground",
-			07="UPS Worldwide Express",
-			08="UPS Worldwide Express Expedited",
-			11="UPS Standard",
-			12="UPS 3 Day Select",
-			13="UPS Next Day Air Saver",
-			14="UPS Next Day Air Early A.M.",
-			54="UPS Worldwide Express Plus",
-			59="UPS 2nd Day Air A.M.",
-			65="UPS Saver"
+			01="Next Day Air",
+			02="2nd Day Air",
+			03="Ground",
+			07="Worldwide Express",
+			08="Worldwide Express Expedited",
+			11="Standard",
+			12="3 Day Select",
+			13="Next Day Air Saver",
+			14="Next Day Air Early A.M.",
+			54="Worldwide Express Plus",
+			59="2nd Day Air A.M.",
+			65="Saver"
 		};
 		
 		return this;
