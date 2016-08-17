@@ -582,7 +582,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		var hqlWhere = "";
 		variables.hqlParams = {};
 						
- // Add formatter based on dbtype
+		// Add formatter based on dbtype
  		var formatter = '';
  		if(getHibachiScope().getApplicationValue("databaseType")=="Oracle10g"){
  			formatter = "LOWER";
