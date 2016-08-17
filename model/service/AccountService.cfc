@@ -52,6 +52,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 	property name="emailService" type="any";
 	property name="eventRegistrationService" type="any";
+	property name="giftCardService" type="any";
 	property name="hibachiAuditService" type="any";
 	property name="loyaltyService" type="any";
 	property name="orderService" type="any";
@@ -242,6 +243,19 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.account;
 	}
 
+	public any function processAccount_redeemGiftCard( required any account, required any processObject) {
+
+		if(processObject.hasGiftCard()){
+			var redeemToAccountProcessObject = processObject.getGiftCardRedeemToAccountProcessObject();
+			redeemToAccountProcessObject.setAccount(arguments.account);
+			var giftCard = this.getGiftCardService().process(processObject.getGiftCard(), redeemToAccountProcessObject, "redeemToAccount");
+		} else {
+			arguments.account.addError("giftCard", rbKey('admin.entity.processaccount.redeemGiftCard_failure'));
+		}
+
+		return arguments.account;
+	}
+
 	public any function processAccount_changePassword(required any account, required any processObject) {
 		//change password and create password functions should be combined at some point. Work needed to do this still needs to be scoped out.
 		//For now they are just calling this function that handles the actual work.
@@ -276,11 +290,11 @@ component extends="HibachiService" accessors="true" output="false" {
 
 			arguments.account.setPrimaryEmailAddress( accountEmailAddress );
 		}
-		
+
 		if(!arguments.account.hasErrors() && !isNull(processObject.getAccessID())) {
 			var subscriptionUsageBenefitAccountCreated = false;
 			var access = getService("accessService").getAccess(processObject.getAccessID());
-		
+
 			if(isNull(access)) {
 				//return access code error
 				arguments.account.addError("accessID", rbKey('validate.account.accessID'));
@@ -304,8 +318,8 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		// Call save on the account now that it is all setup
 		arguments.account = this.saveAccount(arguments.account);
-		
-		// if all validation passed and setup accounts subscription benefits based on access 
+
+		// if all validation passed and setup accounts subscription benefits based on access
 		if(!arguments.account.hasErrors() && !isNull(access)) {
 			subscriptionUsageBenefitAccountCreated = getService("subscriptionService").createSubscriptionUsageBenefitAccountByAccess(access, arguments.account);
 		}
@@ -1297,26 +1311,33 @@ component extends="HibachiService" accessors="true" output="false" {
 		// Check delete validation
 		if(arguments.accountAddress.isDeletable()) {
 
-			// If the primary address is this address then set the primary to null
-			if(arguments.accountAddress.getAccount().getPrimaryAddress().getAccountAddressID() eq arguments.accountAddress.getAccountAddressID()) {
-				arguments.accountAddress.getAccount().setPrimaryAddress(javaCast("null",""));
-					arguments.accountAddress.removeAccount();
-			}
-			// If the primary address is this address then set the primary to null
-			if(!isNull(arguments.accountAddress.getAccount()) && !isNull(arguments.accountAddress.getAccount().getPrimaryShippingAddress())&&!isNull(arguments.accountAddress.getAccount().getPrimaryShippingAddress().getAccountAddressID()) && arguments.accountAddress.getAccount().getPrimaryShippingAddress().getAccountAddressID() eq arguments.accountAddress.getAccountAddressID()) {
-				arguments.accountAddress.getAccount().setPrimaryShippingAddress(javaCast("null",""));
-					arguments.accountAddress.removeAccount();
-			}
-			// If the primary address is this address then set the primary to null
-			if(!isNull(arguments.accountAddress.getAccount()) && !isNull(arguments.accountAddress.getAccount().getPrimaryBillingAddress()) &&!isNull(arguments.accountAddress.getAccount().getPrimaryBillingAddress().getAccountAddressID()) && arguments.accountAddress.getAccount().getPrimaryBillingAddress().getAccountAddressID() eq arguments.accountAddress.getAccountAddressID()) {
-				arguments.accountAddress.getAccount().setPrimaryBillingAddress(javaCast("null",""));
-					arguments.accountAddress.removeAccount();
-			}
 
+			// If the primary address is this address then set the primary to null
+			if( !isNull(arguments.accountAddress.getAccount().getPrimaryAddress()) &&
+			    arguments.accountAddress.getAccount().getPrimaryAddress().getAccountAddressID() == arguments.accountAddress.getAccountAddressID()) {
+				arguments.accountAddress.getAccount().setPrimaryAddress(javaCast("null",""));
+			}
+			// If the primary address is this address then set the primary to null
+			if( !isNull(arguments.accountAddress.getAccount().getPrimaryShippingAddress()) &&
+			    !isNull(arguments.accountAddress.getAccount().getPrimaryShippingAddress().getAccountAddressID()) &&
+			    arguments.accountAddress.getAccount().getPrimaryShippingAddress().getAccountAddressID() == arguments.accountAddress.getAccountAddressID()
+			) {
+				arguments.accountAddress.getAccount().setPrimaryShippingAddress(javaCast("null",""));
+			}
+			// If the primary address is this address then set the primary to null
+			if( !isNull(arguments.accountAddress.getAccount().getPrimaryBillingAddress()) &&
+			    !isNull(arguments.accountAddress.getAccount().getPrimaryBillingAddress().getAccountAddressID()) &&
+			    arguments.accountAddress.getAccount().getPrimaryBillingAddress().getAccountAddressID() == arguments.accountAddress.getAccountAddressID()
+			) {
+				arguments.accountAddress.getAccount().setPrimaryBillingAddress(javaCast("null",""));
+			}
 			// Remove from any order objects
 			getAccountDAO().removeAccountAddressFromOrderFulfillments( accountAddressID = arguments.accountAddress.getAccountAddressID() );
 			getAccountDAO().removeAccountAddressFromOrderPayments( accountAddressID = arguments.accountAddress.getAccountAddressID() );
 			getAccountDAO().removeAccountAddressFromOrders( accountAddressID = arguments.accountAddress.getAccountAddressID() );
+
+			arguments.accountAddress.removeAccount();
+			arguments.accountAddress.setAddress(javaCast("null",""));
 
 		}
 
