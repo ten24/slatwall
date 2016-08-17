@@ -2882,7 +2882,42 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return false;
 	}
+	public any function deleteShippingAddress( required any shippingAddress ) {
 
+		// Check delete validation
+		if(arguments.shippingAddress.isDeletable()) {
+
+			// Remove the primary fields so that we can delete this entity
+			var order = arguments.shippingAddress.getOrder();
+
+			order.removeShippingAddress( arguments.shippingAddress );
+
+			// Actually delete the entity
+			getHibachiDAO().delete( arguments.shippingAddress );
+
+			return true;
+		}
+
+		return false;
+	}
+	public any function deleteBillingAddress( required any billingAddress ) {
+
+		// Check delete validation
+		if(arguments.billingAddress.isDeletable()) {
+
+			// Remove the primary fields so that we can delete this entity
+			var order = arguments.billingAddress.getOrder();
+
+			order.removeBillingAddress( arguments.billingAddress );
+
+			// Actually delete the entity
+			getHibachiDAO().delete( arguments.billingAddress );
+
+			return true;
+		}
+
+		return false;
+	}
 
 	// =====================  END: Delete Overrides ===========================
 
