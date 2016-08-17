@@ -457,12 +457,20 @@ component extends="HibachiService"  accessors="true" output="false"
     public any function addOrderShippingAddress(required data){
         param name="data.saveAsAccountAddressFlag" default="0";
         param name="data.saveShippingAsBilling" default="1";
+        param name="data.countrycode" default="US";
         
         /** add a shipping address */
         var shippingAddress = {};
         if (!isNull(data)){
             //if we have that data and don't have any suggestions to make, than try to populate the address
-            shippingAddress = getService('AddressService').newAddress();    
+            if (data.addressID != ""){
+            	shippingAddress = getService('AddressService').getAddress(data.addressID); 
+            }else{
+            	shippingAddress = getService('AddressService').newAddress();	
+            }
+                
+            
+            
             //get a new address populated with the data.
             var savedAddress = getService('AddressService').saveAddress(shippingAddress, data, "full");
             
@@ -495,6 +503,24 @@ component extends="HibachiService"  accessors="true" output="false"
                     getHibachiScope().addActionResult( "public:cart.AddShippingAddress", savedAddress.hasErrors());
             }
         }
+    }
+    
+    /** Endpoint to add a new account address */
+    public void function addNewAccountAddress(required data){
+    	param name="data.countrycode" default="US";
+    	
+    	var accountAddress = getService("AccountService").newAccountAddress();
+    	var newAddress = getService("AddressService").newAddress();
+    	newAddress = getService("AddressService").saveAddress(newAddress, data, "full");
+     	
+     	if (!newAddress.hasErrors()){
+     		accountAddress.setAddress(newAddress);
+     		accountAddress.setAccount(getHibachiScope().getAccount());	
+     		var savedAccountAddress = getService("AccountService").saveAccountAddress(accountAddress);
+	     	if (!savedAccountAddress.hasErrors()){
+	     		ormFlush();
+	     	}
+     	}
     }
     
     /** Adds a shipping address to an order using an account address */
