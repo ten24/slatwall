@@ -114,14 +114,46 @@ public any function getLocationTreeTest(){
    		}
    	};
    	
+	
    	 var mockLocationConfiguration= createPersistedTestEntity('LocationConfiguration', locationConfigurationData);
 
-	
+	var valueAfterAppendIsDone= "parentLocation &raquo; locationName";
    	 
    	var result= mockLocationConfiguration.getLocationTree();
-   	request.debug(result);
+   
+   	assertEquals(valueAfterAppendIsDone, result);
    	
    	
    } 
-    
-}
+   
+   public any function getLocationPathNameTest3(){
+	
+	var parentLocationData={
+		locationID="",
+		locationName="mumbai"
+	};
+	var mockParentLocation = createPersistedTestEntity('location',parentLocationData);
+	
+	var locationData={
+		locationID="",
+		locationName="locationName",
+		parentLocation={
+			locationID=mockParentLocation.getLocationID()
+		}
+	};
+	var mockLocation=createPersistedTestEntity('location',locationData);
+   	
+   	var locationConfigurationData={
+   		locationConfigurationID="",
+   		location={
+   			locationID=mockLocation.getLocationID()
+   		}
+   	};
+   	
+	
+   	 var mockLocationConfiguration= createPersistedTestEntity('LocationConfiguration', locationConfigurationData);
+     
+    	var result= mockLocationConfiguration.getLocationPathName();
+    	var finalValueReturned= "mumbai &raquo; locationName";
+    	assertEquals(finalValueReturned, result);
+}}
