@@ -167,15 +167,16 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		setOrderDao(getDAO('OrderDAO'));
 		super.init();
 	}
-	
-	public void function setOrderService(required any orderService){
-		variables.orderService = arguments.orderService;
-	}
+//	
+//	public void function setOrderService(required any orderService){
+//		variables.orderService = arguments.orderService;
+//	}
 	
 //	public void function setOrderDAO(required any orderDAO) {
 //		//TODO: check if necessary using setORderDAO()
+//		variables.orderDAO = arguments.orderDAO
 //	}
-	
+
 
 	//======= End of Mocking Injection ========
 
@@ -205,36 +206,12 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		return true;
 	}
 
-	public struct function getOrderItemQualifiedDiscounts(){
-		var orderItemQualifiedDiscounts = {};
-
-
-		for(var orderItem in this.getOrderItems()) {
-			var salePriceDetails = orderItem.getSku().getSalePriceDetails();
-
-			if(structKeyExists(salePriceDetails, "salePrice") && salePriceDetails.salePrice < orderItem.getSku().getPrice()) {
-
-				var discountAmount = precisionEvaluate((orderItem.getSku().getPrice() * orderItem.getQuantity()) - (salePriceDetails.salePrice * orderItem.getQuantity()));
-
-				orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ] = [];
-
-				// Insert this value into the potential discounts array
-				arrayAppend(orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ], {
-					promotionRewardID = "",
-					promotion = this.getPromotion(salePriceDetails.promotionID),
-					discountAmount = discountAmount
-				});
-
-			}
-		}
-		return orderItemQualifiedDiscounts;
-	}
-
 
 	public struct function getAddPaymentRequirementDetails() {
 		if(!structKeyExists(variables, "addPaymentRequirementDetails")) {
 			variables.addPaymentRequirementDetails = {};
 			var requiredAmount = precisionEvaluate(getTotal() - getPaymentAmountTotal());
+
 			if(requiredAmount > 0) {
 				variables.addPaymentRequirementDetails.amount = requiredAmount;
 				variables.addPaymentRequirementDetails.orderPaymentType = getService("typeService").getTypeBySystemCode("optCharge");
@@ -272,11 +249,11 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 	// @hint: This is called from the ORM Event to setup an OrderNumber when an order is placed
 	public void function confirmOrderNumberOpenDateCloseDatePaymentAmount() {
-
+	
 		// If the order is open, and has no open dateTime
 		if((isNull(variables.orderNumber) || variables.orderNumber == "") && !isNUll(getOrderStatusType()) && !isNull(getOrderStatusType().getSystemCode()) && getOrderStatusType().getSystemCode() != "ostNotPlaced") {
 			if(setting('globalOrderNumberGeneration') == "Internal" || setting('globalOrderNumberGeneration') == "") {
-				var maxOrderNumber = getService("orderService").getMaxOrderNumber();
+				var maxOrderNumber = getOrderService().getMaxOrderNumber();
 				if( arrayIsDefined(maxOrderNumber,1) ){
 					setOrderNumber(maxOrderNumber[1] + 1);
 				} else {
@@ -333,7 +310,9 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		return false;
 
 	}
-
+	/**
+	* @Suppress
+	*/
 	public numeric function getGiftCardOrderPaymentAmount(){
 		return getDAO("OrderDAO").getGiftCardOrderPaymentAmount(this.getOrderID());
 	}

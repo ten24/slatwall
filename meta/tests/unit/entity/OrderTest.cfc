@@ -47,7 +47,7 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
-
+	
 	// @hint put things in here that you want to run befor EACH test
 	public void function setUp() {
 		super.setup();
@@ -609,80 +609,117 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(resultNoOrderItem, 'If no OrderItem involved with the order, shoulds return true');
 	}
 	
-	private any function createMockSkuAboutSalePrice() {	 	
-		var promotionRewardData = {
-			promotionRewardID = '',
-			amount = 3,
-			amountType = 'amountOff'
-		};
-		var mockPromotionReward = createPersistedTestEntity('PromotionReward', promotionRewardData);
-		
-	 	var skuData = {
-	 		skuID = '',
-	 		price = 200,
-	 		saleprice = 100,
-	 		promotionRewards = [{
-	 			promotionRewardID = mockPromotionReward.getPromotionRewardID()
-	 		}]
+	 public void function getAddPaymentRequirementDetailsTest_ChargeAmount() {
+	 	var mockOrder = createSimpleMockEntityByEntityName('Order');
+	 	
+	 	injectMethod(mockOrder, this, 'returnSevenHundred', 'getTotal');
+	 	injectMethod(mockOrder, this, 'returnTen', 'getPaymentAmountTotal');
+	 	
+	 	var resultCharge = mockOrder.getAddPaymentRequirementDetails();
+	 	assertEquals('optCharge', resultCharge.orderPaymentType.getSystemCode(), 'The requiredAmount > 0 logic returns wrong type');
+	 	assertEquals(690, resultCharge.amount, 'The requiredAmount > 0 logic returns incorrect amount');
+	 	
+	 	restoreMethod(mockOrder, 'getTotal');
+	 	restoreMethod(mockOrder, 'getPaymentAmountTotal');	 	
+	 }
+	 
+	 public void function getAddPaymentRequirementDetailsTest_CreditAmount() {
+	 	var mockOrder = createSimpleMockEntityByEntityName('Order');
+	 	
+	 	injectMethod(mockOrder, this, 'returnTen', 'getTotal');
+	 	injectMethod(mockOrder, this, 'returnSevenHundred', 'getPaymentAmountTotal');
+	 	
+	 	var resultCredit = mockOrder.getAddPaymentRequirementDetails();
+	 	assertEquals(690, resultCredit.amount, 'The requiredAmount < 0 logic returns incorrect amount');
+	 	assertEquals('optCredit', resultCredit.orderPaymentType.getSystemCode(), 'The requiredAmount < 0 logic returns wrong type');
+	 	
+	 }
+	 public void function getAddPaymentRequirementDetailsTest_AmountZero() {
+	 	var mockOrder = createSimpleMockEntityByEntityName('Order');
+	 	
+	 	//This function is called when order.getPaymentAmountTotal() NEQ order.getTotal() in preprocessorder_placeorder.cfm
+	 	var result = mockOrder.getAddPaymentRequirementDetails();
+	 	assertEquals({}, result, 'When requiredAmount == 0 should return an empty struct');
+	 }
+	 
+//	 public void function confirmOrderNumberOpenDateCloseDatePaymentAmountTest() {
+//	 	var orderData = {
+//	 		orderID = '',
+//	 		orderStatusType = {
+//	 			typeID = '444df2b6b8b5d1ccfc14a4ab38aa0a4c'//ostProcessing
+//	 		}
+//	 	};
+//	 	var mockOrder = createPersistedTestEntity('Order', orderData);
+//	 	
+//	 	mockOrder.confirmOrderNumberOpenDateCloseDatePaymentAmount();
+//		request.debug(mockOrder.getOrderStatusType().getTypeName());//Yuqing
+//	 	
+//	 }
+	 
+	 public void function isPaidTest() {
+	 	var mockOrder = createSimpleMockEntityByEntityName('Order');
+	 	
+	 	injectMethod(mockOrder, this, 'returnTen', 'getPaymentAmountReceivedTotal');
+	 	var resultPaid = mockOrder.isPaid();
+	 	assertTrue(resultPaid, '10 > getTotal() should return TRUE');
+	 	
+	 	injectMethod(mockOrder, this, 'returnSevenHundred', 'getTotal');
+	 	var resultUnpaid = mockOrder.isPaid();
+	 	assertFalse(resultUnpaid, '10 < 700 should return FALSE');
+	 }
+	 
+	 private any function createOrderDelivery(array orderDeliveryItemArray) {
+	 	var orderDeliveryData = {
+	 		orderDeliveryID = ''
 	 	};
-	 	var mockSku = createPersistedTestEntity('Sku', skuData);
-		
-		var promotionPeriodData = {
-			promotionPeriodID = '',
-			promotionRewards = [{
-				promotionRewardID = mockPromotionReward.getPromotionRewardID()
-			}]
-		};
-		var mockPromotionPeriod = createPersistedTestEntity('PromotionPeriod', promotionPeriodData);
-		
-		var promotionData = {
-			promotionid = '',
-			promotionPeriods = [{
-					promotionPeriodID = mockPromotionPeriod.getPRomotionPeriodID()
-				}]
-		};
-		var promotion = createPersistedTestEntity('promotion', promotionData);
-
-		return mockSku;
+	 	if(len(arguments.orderDeliveryItemArray)) {
+	 		for (deliveryItem in orderDeliveryItemArray) {
+	 			orderDeliveryData.orderDeliveries[1] = deliveryItem;
+	 		}
+	 	}
+	 	return createPersistedTestEntity('OrderDelivery', orderDeliveryData);
+	 }
+	 
+	 private any function returnOneOrderDeliveryItemEntity() {
+	 	var mockOrderDeliveryItem1 = createObject('component', 'orderDeliveryItem');
+	 	populate(mockOrderDeliveryItem1);
+	 	
+	 	return mockOrderDeliveryItem1;
+	 }
+	 
+	 public void function getDeliveredOrderItemsTest() {
+	 	var mockOrder 		   = createSimpleMockEntityByEntityName('Order', FALSE);
+	 	var orderDelivery 	   = createSimpleMockEntityByEntityName('orderDelivery', False);
+	 	var orderDeliveryItem1 = createSimpleMockEntityByEntityName('orderDeliveryItem', False);
+	 	var orderDeliveryItem2 = createSimpleMockEntityByEntityName('orderDeliveryItem', False);
+	 	
+	 	var orderItemData={
+	 		orderItemID="",
+	 		price=5
+	 	};
+	 	var orderItem = createTestEntity('orderItem',orderItemData);
+	 	
+	 	mockOrder.addOrderDelivery(orderDelivery); 	
+	 	orderDelivery.addOrderDeliveryItem(orderDeliveryItem1);	
+	 	orderDelivery.addOrderDeliveryItem(orderDeliveryItem2);	
+	 	orderDeliveryItem1.setOrderItem(orderItem);
+	 	orderDeliveryItem2.setOrderItem(orderItem);
+	 	
+	 	var result = mockOrder.getDeliveredOrderItems();
+	 	assertEquals(orderItem.getPrice(), result[1].getPrice());
+	 	assertEquals(orderItem.getPrice(), result[2].getPrice());
+	 }
+	 
+	 private boolean function returnFalse(){
+	 	return false;
 	 }
 	 
 	 
-	 public void function getOrderItemQualifiedDiscountsTest_bypassIf() {
-	 	var mockSku = createMockSkuAboutSalePrice();
-	 	var mockOrderItem1 = createMockOrderItem(skuID = mockSku.getSkuID());
-	 	
-	 	var orderData = {
-	 		orderID = '',
-	 		orderItems = [{
-	 			orderItemID = mockOrderItem1.getOrderItemID()
-	 		}]
-	 	};
-	 	var mockOrder = createPersistedTestEntity('Order', orderData);
-	 	
-	 	
-	 	injectMethod(mockSku, this, 'getSalePriceDetails_salePriceReturnFiveHundred', 'getSalePriceDetails');
-	 	
-	 	var result = mockOrder.getOrderItemQualifiedDiscounts();
-	 	assertTrue(structIsEmpty(result), 'if salePrice > sku.getPrice(), should return an empty structure');
+	 public void function canCancelTest() {
 	 	
 	 }
 	 
-	 public void function getOrderItemQualifiedDiscountsTest_goIntoIf() {
-	 	var mockSku = createMockSkuAboutSalePrice();
-	 	
-	 	var mockOrderItem1 = createMockOrderItem(skuID = mockSku.getSkuID());
-	 	
-	 	var orderData = {
-	 		orderID = '',
-	 		orderItems = [{
-	 			orderItemID = mockOrderItem1.getOrderItemID()
-	 		}]
-	 	};
-	 	var mockOrder = createPersistedTestEntity('Order', orderData);
-	 	
-	 	injectMethod(mockSku, this, 'getSalePriceDetails_salePriceReturnSeventy', 'getSalePriceDetails');
-	 	injectMethod(mockSku, this, 'returnTen', 'getQuantity');
-	 	//TODO: Cannot pass the skuID into getSalePriceDetails_salePriceReturnSeventy. Reset the scope to orderTest.cfc maybe work. But how?
+	 public void function hasGiftCardOrderItemsTest() {
 	 	
 	 }
 	 
@@ -956,6 +993,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			// getStatusCode() set to 'opstActive' by default
 		};
 		var mockOrderPayment= request.slatwallScope.newEntity('OrderPayment');
+		
 		mockOrderPayment.populate(orderPaymentData);
 		return mockOrderPayment;
 	}
@@ -972,26 +1010,12 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		return createPersistedTestEntity('OrderPayment', orderPaymentData);
 		//TODO: This scope should throw error CREATEPERSISTEDTESTENTITY undefined, but didn't
-		//TODO: Need to deal with persisted test entity in Inject scope
 	}
 	
 	//====================== Injected Functions in Sku.cfc ==========================
-	private struct function getSalePriceDetails_salePriceReturnFiveHundred() {
-	 	return {
-	 		salePrice = 500 
-	 	};
-	 }
+	
 	 
 	 
-	 private struct function getSalePriceDetails_salePriceReturnSeventy() {
-	 	//TODO: not been used by getOrderItemQualifiedDiscountsTest_goIntoIf
-	 	var privateSkuID = createMockSkuAboutSalePrice().getSkuID();
-	 	return {
-	 		skuID = privateSkuID,
-	 		salePrice = 70
-//	 		promotionID = arguments.promotionID
-	 	};
-	 }
 	 
 	 
 	

@@ -313,7 +313,7 @@ component extends="mxunit.framework.TestCase" output="false" {
 		return 3.45;
 	}
 	
-	private any function createSimpleMockEntityByEntityName(required string entityName) {
+	private any function createSimpleMockEntityByEntityName(required string entityName, boolean persisted = TRUE) {
 		var primaryIDPropertyName = request.slatwallScope.getService('hibachiservice').getPrimaryIDPropertyNameByEntityName(arguments.entityName);
 		if(arguments.entityName == 'State'){
 			//TODO: Combination Primary ID may throw errors. 
@@ -321,7 +321,11 @@ component extends="mxunit.framework.TestCase" output="false" {
 		var data = {};
 		data[primaryIDPropertyName] = "";
 		
-		var resultEntity = createPersistedTestEntity(arguments.entityName, data);
+		if(arguments.persisted) {
+			var resultEntity = createPersistedTestEntity(arguments.entityName, data);
+		} else {
+			var resultEntity = createTestEntity(arguments.entityName, data);
+		}
 		return resultEntity;
 	}
 	
