@@ -136,12 +136,12 @@ Notes:
 		<cfargument name="referencedOrderID" required="true">
 
 		<cfquery name="local.giftCardOrderPayment">
-			SELECT SUM(gct.debitAmount) AS amount FROM SwGiftCardTransaction AS gct
-			    LEFT JOIN SwOrderPayment AS op on gct.orderPaymentID=op.orderPaymentID
+			SELECT SUM(SwGiftCardTransaction.debitAmount) AS amount FROM SwGiftCardTransaction
+			    LEFT JOIN SwOrderPayment on SwGiftCardTransaction.orderPaymentID=SwOrderPayment.orderPaymentID
 			WHERE
-				op.paymentMethodID=<cfqueryparam cfsqltype="cf_sql_varchar" value="50d8cd61009931554764385482347f3a" />
+				SwOrderPayment.paymentMethodID=<cfqueryparam cfsqltype="cf_sql_varchar" value="50d8cd61009931554764385482347f3a" />
 			AND
-				op.orderID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.referencedOrderID#" />
+				SwOrderPayment.orderID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.referencedOrderID#" />
 		</cfquery>
 		<cfif local.giftCardOrderPayment.amount[1] eq "">
 			<cfreturn 0 />
@@ -189,11 +189,11 @@ Notes:
 		<cfset var rs = "" />
 
 		<cfquery name="rs">
-			SELECT oi.orderItemID, oi.quantity, s.giftCardExpirationTermID FROM SwOrderItem AS oi
-    		LEFT JOIN SwSku AS s ON s.skuID = oi.skuID
-    		LEFT JOIN SwProduct AS p ON s.productID = p.productID
-    		WHERE p.productTypeID = <cfqueryparam cfsqltype="cf_sql_varchar" value="50cdfabbc57f7d103538d9e0e37f61e4" />
-    		AND oi.orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
+			SELECT SwOrderItem.orderItemID, SwOrderItem.quantity, SwSku.giftCardExpirationTermID FROM SwOrderItem
+    		LEFT JOIN SwSku ON swSku.skuID = SwOrderItem.skuID
+    		LEFT JOIN SwProduct ON SwSku.productID = SwProduct.productID
+    		WHERE SwProduct.productTypeID = <cfqueryparam cfsqltype="cf_sql_varchar" value="50cdfabbc57f7d103538d9e0e37f61e4" />
+    		AND SwOrderItem.orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
 		</cfquery>
 
 
