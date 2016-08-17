@@ -54,7 +54,7 @@ component displayname="Brand" entityname="SlatwallBrand" table="SwBrand" persist
 	property name="publishedFlag" ormtype="boolean";
 	property name="urlTitle" ormtype="string" unique="true" hint="This is the name that is used in the URL string";
 	property name="brandName" ormtype="string" hint="This is the common name that the brand goes by.";
-	property name="brandWebsite" ormtype="string" hb_formatType="url" hint="This is the Website of the brand";
+	property name="brandWebsite" ormtype="string" hint="This is the Website of the brand";
 	
 	// Related Object Properties (one-to-many)
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="brandID" cascade="all-delete-orphan" inverse="true";
