@@ -118,7 +118,7 @@ export class BaseBootStrapper{
             this.instantiationKey = n.toString();
         }
 
-        return this.$http.get(hibachiConfig.baseURL+'/custom/config/config.json?instantiationKey='+this.instantiationKey)
+        return this.$http.get(hibachiConfig.baseURL+'custom/config/config.json?instantiationKey='+this.instantiationKey)
         .then( (resp:any)=> {
             coremodule.constant('appConfig',resp.data.data);
             localStorage.setItem('appConfig',JSON.stringify(resp.data.data));
