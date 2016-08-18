@@ -82,7 +82,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		var product = createPersistedTestEntity('product',productData);
 		var productRating = product.getProductRating();
-		assertEquals(productRating,3.3333);
+		assertEquals(productRating, 3.3333, 'Calculation result is wrong');
 	}
 
 	public void function getUnusedProductOptionsTest_CaseHasUnusedOptions(){
@@ -255,8 +255,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 
 	/**
-	* @hint "Use '' for arguments not pass in"
-	*
+	* Use '' for arguments not pass in
 	*/
 	private any function createMockContent(string title = "", boolean activeFlag = "") {
 		var contentData = {
@@ -271,7 +270,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		return createPersistedTestEntity('Content', contentData);
 	}
 	/**
-	* @hint "return the mocked persisted Content entity with contentTemplateType (ctt)"
+	* return the mocked persisted Content entity with contentTemplateType (ctt)
 	*/
 	private any function createMockContentWithContentTemplateType(required string contentTemplateTypeID) {
 		var contentData = {
@@ -283,7 +282,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		return createPersistedTestEntity('Content', contentData);
 	}
 	/**
-	* @hint "Create Mocked Otpion entity with optionGroupID, make empty properties "" in order"
+	* Create Mocked Otpion entity with optionGroupID, make empty properties "" in order
 	*/
 	private any function createMockOption(required string optionGroupID = "", string skuID = "" ) {
 		var optionData1 = {
@@ -305,7 +304,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 	/**
-	* @hint "This function will return mockOptionGroup with properites you passed in. Make the null arguments "" in order "
+	* This function will return mockOptionGroup with properites you passed in. Make the null arguments "" in order
 	*/
 	private any function createMockOptionGroup(string optionGroupName = "", string optionGroupCode = "") {
 		var optionGroupData = {
@@ -321,7 +320,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 	/**
-	* @hint "Return mocked Product entity with properites you passed in.<br>If no argument, make it "". "
+	* Return mocked Product entity with properites you passed in.<br>If no argument, make it "". 
 	*/
 	private any function createMockProduct(string productTypeID = "") {
 		var productData = {
@@ -333,7 +332,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		return createPersistedTestEntity('Product', productData);
 	}
 	/**
-	* @hint "Return mocked ProductType entity with properites you passed in<br>If only pass one argument, make the other one "". "
+	* "Return mocked ProductType entity with properites you passed in<br>If only pass one argument, make the other one "".
 	*/
 	private any function createMockProductType (string productID="", string parentProductTypeID="") {
 		var productTypeData = {
@@ -351,7 +350,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 	/**
-	* @hint "This function will return mockSku with properites you passed in <br> Make the null arguments "" in order "
+	* This function will return mockSku with properites you passed in <br> Make the null arguments "" in order 
 	*/
 	private any function createMockSku(string idOfProduct = "", string currencyCode = "", string skuImageFile = "") {
 		var skuData = {
@@ -370,7 +369,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 	/**
-	* @hint "This function will return mockImage with properites you passed in. Make the null arguments "" in order "
+	* This function will return mockImage with properites you passed in. Make the null arguments "" in order 
 	*/
 	private any function createMockImage(string imageDirectory = "", string imageFile = "") {
 		var imageData = {
@@ -410,7 +409,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var product2 = createTestEntity('Product', productData2);
 		
 		var resultBeforeTwoDates = product2.getAvailableForPurchaseFlag();
-		assertFalse(resultBeforeTwoDates);
+		assertFalse(resultBeforeTwoDates, 'startDate > now() < endDate should not be available');
 		
 		//testing empty startDate and endDate
 		var productData3 = {
@@ -419,7 +418,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var product3 = createTestEntity('Product', productData3);
 		
 		var resultEmptyTwoDates = product3.getAvailableForPurchaseFlag();
-		assertTrue(resultEmptyTwoDates);
+		assertTrue(resultEmptyTwoDates, 'Empty PurchaseStart/EndDateTime give errors');
 		
 		//testing valid startDate but empty endDate
 		var productData4 = {
@@ -464,12 +463,12 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		var result = mockProduct.getListingPagesOptionsSmartList().getRecords(refresh = true);
 		//testing the activeFlag filter
-		assertEquals(4, arrayLen(result));
+		assertEquals(4, arrayLen(result), 'testing the activeFlag filter');
 		//testing the order on TITLE
 		assertEquals(mockContent4.getContentID(), result[1].getContentID());
-		assertEquals("Black Beauty", result[2].getTitle());
-		assertEquals("Macbeth", result[3].getTitle());
-		assertEquals("Whisper In the Willow", result[4].getTitle());
+		assertEquals("Black Beauty", result[2].getTitle(), 'The order of options is wrong');
+		assertEquals("Macbeth", result[3].getTitle(), 'The order of options is wrong');
+		assertEquals("Whisper In the Willow", result[4].getTitle(), 'The order of options is wrong');
 	}
 
 
@@ -1460,7 +1459,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 	/**
-	* @hint "Helper of functions delegate to the default sku. This returns the PRODUCT entity without the default SKU"
+	* Helper of functions delegate to the default sku. This returns the PRODUCT entity without the default SKU
 	*/
 	private any function createMockDataWithoutDefaultSku() {
 		var productData = {
