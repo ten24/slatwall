@@ -68,7 +68,7 @@ Notes:
 				<hb:HibachiListingColumn propertyIdentifier="skuName" />
 			</cfif>
 			<hb:HibachiListingColumn propertyIdentifier="skuCode" />
-			<hb:HibachiListingColumn propertyIdentifier="skuDefinition" />
+			<hb:HibachiListingColumn propertyIdentifier="calculatedSkuDefinition" title="#getHibachiScope().rbKey('entity.sku.skuDefinition')#" />
 			<hb:HibachiListingColumn propertyIdentifier="imageFile" />
 			<hb:HibachiListingColumn propertyIdentifier="listPrice" />
 			<hb:HibachiListingColumn propertyIdentifier="price" />
@@ -99,7 +99,7 @@ Notes:
 				<hb:HibachiListingColumn propertyIdentifier="skuName" />
 			</cfif>
 			<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="skuCode" />
-			<hb:HibachiListingColumn propertyIdentifier="skuDefinition" />
+			<hb:HibachiListingColumn propertyIdentifier="calculatedSkuDefinition" title="#getHibachiScope().rbKey('entity.sku.skuDefinition')#" />
 			<cfif rc.product.getBaseProductType() eq "event">
 				<hb:HibachiListingColumn propertyIdentifier="eventStartDateTime" />
 				<hb:HibachiListingColumn propertyIdentifier="eventEndDateTime" />
