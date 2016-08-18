@@ -817,6 +817,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 	public array function getAllAppliedPromotions() {
 		if(!structKeyExists(variables, "allAppliedPromotions")) {
+			variables.allAppliedPromotions = []; 
 			var allAppliedPromotionCollection = getService("promotionService").newCollection().setup("PromotionApplied");
 			allAppliedPromotionCollection.addFilter('order.orderID', getOrderID(), "=");
 			allAppliedPromotionCollection.addFilter('orderItem.order.orderID', getOrderID(), "=", "OR");
@@ -825,17 +826,24 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 			var allAppliedPromotions = allAppliedPromotionCollection.getRecords();
 			// get all the promotion codes applied and attached it to applied Promotion Struct
 			var appliedPromotionCodes = getPromotionCodes();
-			for(var appliedPromotion in allAppliedPromotions) {
-				appliedPromotion["promotionCode"] = "";
-				appliedPromotion["promotionCodeID"] = "";
-				for(var appliedPromotionCode in appliedPromotionCodes) {
+			for(var appliedPromotionCode in appliedPromotionCodes) {
+				promotionToAdd = {}; 
+				promotionToAdd["qualified"] = false; 
+				for(var appliedPromotion in allAppliedPromotions) {
 					if(appliedPromotionCode.getPromotion().getPromotionID() == appliedPromotion.promotion_promotionID) {
-						appliedPromotion["promotionCode"] = appliedPromotionCode.getPromotionCode();
-						appliedPromotion["promotionCodeID"] = appliedPromotionCode.getPromotionCodeID();
-					}
+					    promotionToAdd = appliedPromotion; 
+					    promotionToAdd["qualified"] = true; 
+					    break; 
+					}   
 				}
+				promotionToAdd["promotionCodeID"] = appliedPromotionCode.getPromotionCodeID();
+				promotionToAdd["promotionCode"] = appliedPromotionCode.getPromotionCode();
+		        if(!structKeyExists(promotionToAdd, "promotion_promotionName")){
+                    promotionToAdd["promotion_promotionName"] = appliedPromotionCode.getPromotion().getPromotionName();  
+		            promotionToAdd["promotion_promotionID"] = appliedPromotionCode.getPromotion().getPromotionID();
+		        }
+		        arrayAppend(variables.allAppliedPromotions, promotionToAdd); 	    
 			}
-			variables.allAppliedPromotions = allAppliedPromotions;
 		}
 		return variables.allAppliedPromotions;
 	}
