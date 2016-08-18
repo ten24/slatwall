@@ -304,7 +304,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getPaymentAmountDueAfterGiftCards(){
 		var paymentAmountDue = this.getPaymentAmountDue();
 		if(paymentAmountDue > 0 && this.hasGiftCardOrderPaymentAmount()){
-			paymentAmountDue = paymentAmountDue - this.getGiftCardOrderPaymentAmount();
+			paymentAmountDue = paymentAmountDue - this.getGiftCardOrderPaymentAmountNotReceived();
 		}
 		return paymentAmountDue;
 	}
@@ -324,6 +324,14 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 	public numeric function getGiftCardOrderPaymentAmount(){
 		return getDAO("OrderDAO").getGiftCardOrderPaymentAmount(this.getOrderID());
+	}
+
+	public numeric function getGiftCardOrderPaymentAmountReceived(){
+        return getDAO("OrderDAO").getGiftCardOrderPaymentAmountReceived(this.getOrderID());
+	}
+
+	public numeric function getGiftCardOrderPaymentAmountNotReceived(){
+	    return this.getGiftCardOrderPaymentAmount() - this.getGiftCardOrderPaymentAmountReceived(); 
 	}
 
 
@@ -353,10 +361,6 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 	public array function getGiftCardOrderItems() {
 		return getDAO('OrderDAO').getGiftCardOrderItems(this.getOrderID());
-	}
-
-	public numeric function getGiftCardPaymentAmount(){
-		return getDAO('OrderDAO').getGiftCardOrderPaymentAmount(this.getOrderID());
 	}
 
     public any function getAllOrderItemGiftRecipientsSmartList(){
