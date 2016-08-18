@@ -304,27 +304,32 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	// ===================== START: Helper Methods =========================
 
+	public boolean function hasGiftCard(){
+        return !isNull(this.getGiftCard()); 
+	}
+
 	public boolean function canRedeemGiftCardToAccount(){
-
-		if(!isNull(this.getGiftCard())){
-
+		if(!this.hasGiftCard()){
 			if(isNull(this.getGiftCard().getOwnerAccount())){
 				return true;
 			} else if (this.getGiftCard().getOwnerAccount().getAccountID() EQ this.getOrder().getAccount().getAccountID()) {
 				return true;
 			}
-
 		}
 
 		return false;
 	}
 
 	public boolean function canPurchaseWithGiftCard(){
-		return !this.getGiftCard().isExpired() && this.getGiftCard().getActiveFlag();
+	    if(this.hasGiftCard()){
+		    return !this.getGiftCard().isExpired() && this.getGiftCard().getActiveFlag();
+		} 
+        
+        return false; 	
 	}
 
 	public boolean function giftCardCurrencyMatches(){
-		if(!isNull(this.getGiftCard())){
+		if(this.hasGiftCard()){
 			return variables.order.getCurrencyCode() EQ this.getGiftCard().getCurrencyCode();
 		} else {
 			return false;

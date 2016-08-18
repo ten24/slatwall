@@ -161,6 +161,9 @@ Notes:
             AND
                 o.orderID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#">
         </cfquery>
+        <cfif local.giftCardOrderPayment.amountReceived[1] eq "">
+            <cfreturn 0 />
+        </cfif> 
         <cfreturn local.giftCardOrderPaymentAmountReceived.amountReceived[1] /> 
 
 	</cffunction>
