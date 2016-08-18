@@ -58,6 +58,7 @@ Notes:
 	    <hb:HibachiEntityActionBar type="detail" object="#rc.giftCard#" showEdit="false">
 			<hb:HibachiProcessCaller action="admin:entity.preprocessGiftCard" entity="#rc.giftCard#" processContext="updateEmailAddress" type="list" modal="true" />
 			<hb:HibachiProcessCaller action="admin:entity.preprocessGiftCard" entity="#rc.giftCard#" processContext="redeemToAccount" type="list" modal="true" />
+			<hb:HibachiProcessCaller action="admin:entity.preprocessGiftCard" entity="#rc.giftCard#" processContext="toggleActive" type="list" modal="true" />
 	    </hb:HibachiEntityActionBar>
 	</hb:HibachiEntityDetailForm>
 
