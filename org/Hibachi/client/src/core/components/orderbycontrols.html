@@ -1,6 +1,6 @@
 <input type="hidden" name="{{swOrderByControls.sortDefaultDirectionFieldName}}" ng-value="swOrderByControls.sortCode" />
 <div class="s-select-wrapper s-titled-select-wrapper s-sort-by" 
-     data-ng-class="{'s-disabled':!swOrderByControls.edit}" 
+     data-ng-class="{'s-disabled':swOrderByControls.disabled || !swOrderByControls.edit}" 
      >
     <span>Sort By:</span>
     <select class="form-control input-sm" 
