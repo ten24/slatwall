@@ -289,7 +289,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	// ============ START: Non-Persistent Property Methods =================
 
 	public boolean function getDynamicAmountFlag() {
-		if(isNull(variables.amount)) {
+		if(isNull(variables.amount) && !this.hasGiftCard()) {
 			return true;
 		}
 		return false;
@@ -400,6 +400,13 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 			arrayAppend(yearOptions,{name=thisYear, value=right(thisYear,2)});
 		}
 		return yearOptions;
+	}
+
+	public boolean function hasGiftCard(){
+		if(!isNull(this.getGiftCard())){
+			return true;
+		}
+		return false;
 	}
 
 	public any function getGiftCard(){
