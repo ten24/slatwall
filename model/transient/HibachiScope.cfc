@@ -108,16 +108,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	
 	public boolean function getLoggedInFlag() {
 		
-		if (!isNull(getSession()) && 
-			!isNull(getSession().getLoggedInFlag()) && 
-			getSession().getLoggedInFlag() && 
-			!isNull(getSession().getAccount()) &&
+		if (super.getLoggedInFlag() &&
 			!getSession().getAccount().getGuestAccountFlag()){
 				return true;
 		}
 		return false;
 	}
-	
 	
 	// ================= Entity Helper Methods =====================
 	
