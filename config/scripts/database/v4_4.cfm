@@ -51,7 +51,6 @@ Notes:
 
 <!--- Update SwProductType create materialized paths for title called titlePath based on existing title --->
 <cftry>
-
 	<cffunction name="getTitleFromParent">
 		<cfargument name="titlePath">
 		<cfargument name="productTypeQuery">
@@ -61,47 +60,44 @@ Notes:
 			SELECT * FROM arguments.productTypeQuery where productTypeID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productTypeRecord.parentProductTypeID#">
 		</cfquery>
 
-		<cfif !isnull(arguments.productTypeRecord.parentProductTypeID) && len(arguments.productTypeRecord.parentProductTypeID)>
+		<cfif !isNull(arguments.productTypeRecord.parentProductTypeID) && len(arguments.productTypeRecord.parentProductTypeID)>
 			<cfset arguments.titlePath = local.parentProductTypeRecord.productTypeName & ' > ' & arguments.titlePath />
-			<cfset arguments.titlePath = getTitleFromParent(arguments.titlePath,arguments.productTypeQuery,local.parentProductTypeRecord)>
+			<cfset arguments.titlePath = getTitleFromParent(arguments.titlePath,arguments.productTypeQuery,local.parentProductTypeRecord) />
 		</cfif>
 
 		<cfreturn arguments.titlePath />
 	</cffunction>
 
 	<cfquery name="local.getProductType">
-		SELECT productTypeName,parentProductTypeID,productTypeID FROM swProductType
+		SELECT productTypeName,parentProductTypeID,productTypeID FROM SwProductType
 	</cfquery>
 
 	<cfloop query="local.getProductType">
-		<cfif !isnull(local.getProductType.parentProductTypeID) && len(local.getProductType.parentProductTypeID)>
+		<cfset local.titlePath = local.getProductType.productTypeName /> 
+		<cfif !isNull(local.getProductType.parentProductTypeID) && len(local.getProductType.parentProductTypeID)>
 
 			<cfset local.record = {
 				parentProductTypeID = local.getProductType.parentProductTypeID,
 				productTypeID = local.getProductType.productTypeID,
 				productTypeName = local.getProductType.productTypeName
-			}>
-			<cfset local.titlePath = getTitleFromParent(local.titlePath,local.getProductType,local.record)>
-
+			} />
+			<cfset local.titlePath = getTitleFromParent(local.titlePath, local.getProductType, local.record) />
 		</cfif>
 		<cfquery name="local.updateProductType">
 			UPDATE SwProductType SET productTypeNamePath = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.titlePath#"> WHERE productTypeID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getProductType.productTypeID#">
 		</cfquery>
 	</cfloop>
-
 	<cfcatch>
 		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update Product Type Add ProductTypeNamePath">
 		<cfset local.scriptHasErrors = true />
 		<cfrethrow>
 	</cfcatch>
-
-
 </cftry>
 
 
+
 <cfif local.scriptHasErrors>
-	<cflog file="Slatwall" text="General Log - Part of Script v4_4 had errors when running">
-	<cfthrow detail="Part of Script v4_1 had errors when running">
+	<cflog file="SlatwallUPDATE" text="General Log - Part of Script v4_4 had errors when running">
 <cfelse>
 	<cflog file="Slatwall" text="General Log - Script v4_4 has run with no errors">
 </cfif>
