@@ -12,7 +12,7 @@ dependencies:
     - git config --global push.default current
 
     # Install node modules for building JS
-    - npm install -g webpack gulp
+    - npm install -g webpack gulp less
 
     - npm install gulp gulp-inject@3 gulp-chmod gulp-util run-sequence webpack force-case-sensitivity-webpack-plugin strip-loader ng-annotate-webpack-plugin tsify typescript ts-loader md5 blueimp-md5
 
@@ -27,7 +27,8 @@ dependencies:
     - cd admin/client && gulp gen-ts-refs
     # Minify JS
     - cd admin/client && webpack --config webpack-production.config.js -p --display-error-details 
-
+    # Minify 
+    - cd admin/client/css && lessc main.less main.css
     # Update docker-compose
     - curl -L https://github.com/docker/compose/releases/download/1.4.1/docker-compose-`uname -s`-`uname -m` > docker-compose
     - chmod +x docker-compose

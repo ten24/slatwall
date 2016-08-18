@@ -93,7 +93,11 @@ component displayname="Comment" entityname="SlatwallComment" table="SwComment" p
 		}
 		return variables.commentWithLinks;
 	}
-	
+
+    public boolean function canEdit(){
+        return this.isNew() || this.getCreatedByAccount().getAccountID() == getHibachiScope().getAccount().getAccountID();
+    }
+
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================
@@ -117,12 +121,6 @@ component displayname="Comment" entityname="SlatwallComment" table="SwComment" p
 	// ==================  END:  Overridden Methods ========================
 	
 	// =================== START: ORM Event Hooks  =========================
-	
-	public void function preUpdate(struct oldData) {
-		if(oldData.comment != variables.comment) {
-			throw("You cannot update a comment because this would display a fundamental flaw in comment management.");	
-		}
-	}
 	
 	// ===================  END:  ORM Event Hooks  =========================
 }

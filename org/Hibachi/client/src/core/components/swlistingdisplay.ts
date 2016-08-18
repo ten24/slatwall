@@ -72,6 +72,7 @@ class SWListingDisplayController{
     public showSearch:boolean;
     public showSearchFilters = false; 
     public showTopPagination:boolean;
+    public showFilters:boolean; 
     public sortable:boolean = false;
     public sortableFieldName:string; 
     public sortProperty;

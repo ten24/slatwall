@@ -468,6 +468,21 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.account;
 	}
 
+    public any function processAccount_redeemGiftCard( required any account, required any processObject) {
+
+        if(processObject.hasGiftCard()){
+            var redeemToAccountProcessObject = processObject.getGiftCardRedeemToAccountProcessObject();
+            redeemToAccountProcessObject.setAccount(arguments.account);
+            var giftCard = this.getGiftCardService().process(processObject.getGiftCard(), redeemToAccountProcessObject, "redeemToAccount");
+        } else {
+            arguments.account.addError("giftCard", rbKey('admin.entity.processaccount.redeemGiftCard_failure'));
+        }
+
+        return arguments.account;
+    }
+
+
+
 	public any function processAccount_resetPassword( required any account, required any processObject ) {
 
 		// If there are no errors
@@ -1300,23 +1315,23 @@ component extends="HibachiService" accessors="true" output="false" {
 			// If the primary address is this address then set the primary to null
 			if(arguments.accountAddress.getAccount().getPrimaryAddress().getAccountAddressID() eq arguments.accountAddress.getAccountAddressID()) {
 				arguments.accountAddress.getAccount().setPrimaryAddress(javaCast("null",""));
-					arguments.accountAddress.removeAccount();
 			}
 			// If the primary address is this address then set the primary to null
 			if(!isNull(arguments.accountAddress.getAccount()) && !isNull(arguments.accountAddress.getAccount().getPrimaryShippingAddress())&&!isNull(arguments.accountAddress.getAccount().getPrimaryShippingAddress().getAccountAddressID()) && arguments.accountAddress.getAccount().getPrimaryShippingAddress().getAccountAddressID() eq arguments.accountAddress.getAccountAddressID()) {
 				arguments.accountAddress.getAccount().setPrimaryShippingAddress(javaCast("null",""));
-					arguments.accountAddress.removeAccount();
 			}
 			// If the primary address is this address then set the primary to null
 			if(!isNull(arguments.accountAddress.getAccount()) && !isNull(arguments.accountAddress.getAccount().getPrimaryBillingAddress()) &&!isNull(arguments.accountAddress.getAccount().getPrimaryBillingAddress().getAccountAddressID()) && arguments.accountAddress.getAccount().getPrimaryBillingAddress().getAccountAddressID() eq arguments.accountAddress.getAccountAddressID()) {
 				arguments.accountAddress.getAccount().setPrimaryBillingAddress(javaCast("null",""));
-					arguments.accountAddress.removeAccount();
 			}
 
 			// Remove from any order objects
 			getAccountDAO().removeAccountAddressFromOrderFulfillments( accountAddressID = arguments.accountAddress.getAccountAddressID() );
 			getAccountDAO().removeAccountAddressFromOrderPayments( accountAddressID = arguments.accountAddress.getAccountAddressID() );
 			getAccountDAO().removeAccountAddressFromOrders( accountAddressID = arguments.accountAddress.getAccountAddressID() );
+
+		    arguments.accountAddress.removeAccount();
+            arguments.accountAddress.setAddress(javaCast("null","")); 
 
 		}
 

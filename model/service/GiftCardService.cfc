@@ -126,6 +126,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var giftCardCreditTransaction = createCreditGiftCardTransaction(arguments.giftCard, arguments.processObject.getOrderPayments(), arguments.processObject.getCreditAmount());
 
 		if(!giftCardCreditTransaction.hasErrors()){
+			arguments.giftCard.updateCalculatedProperties();
 			arguments.giftCard = this.saveGiftCard(arguments.giftCard);
 		} else {
 			arguments.giftCard.addErrors(giftCardCreditTransaction.getErrors());
@@ -140,6 +141,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var giftCardDebitTransaction = createDebitGiftCardTransaction(arguments.giftCard, arguments.processObject.getOrderPayments(), arguments.processObject.getOrderItems(), arguments.processObject.getDebitAmount());
 
 		if(!giftCardDebitTransaction.hasErrors()){
+			arguments.giftCard.updateCalculatedProperties();
 			arguments.giftCard = this.saveGiftCard(arguments.giftCard);
 		} else {
 			arguments.giftCard.addErrors(giftCardDebitTransaction.getErrors());
@@ -185,11 +187,25 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function processGiftCard_redeemToAccount(required any giftCard, required any processObject){
 
-		arguments.giftCard.setOwnerAccount(arguments.processObject.getAccount());
+		if(!isNull(arguments.processObject.getAccount())){
+			arguments.giftCard.setOwnerAccount(arguments.processObject.getAccount());
+		} else {
+			arguments.giftCard.addError("ownerAccount", rbKey('admin.entity.processgiftcard.redeemToAccount_failure'));
+		}
 
-		arguments.giftCard = this.saveGiftCard(arguments.giftCard);
+		if(!arguments.giftCard.hasErrors()){
+			arguments.giftCard = this.saveGiftCard(arguments.giftCard);
+		}
 
 		return arguments.giftCard;
+
+	}
+
+	public any function processGiftCard_toggleActive(required any giftCard, required any processObject){
+
+		arguments.giftCard.setActiveFlag(processObject.getActiveFlag());
+
+		return this.saveGiftCard(arguments.giftCard);
 
 	}
 

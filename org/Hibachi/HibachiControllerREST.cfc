@@ -30,6 +30,7 @@ component output="false" accessors="true" extends="HibachiController" {
     this.publicMethods=listAppend(this.publicMethods, 'getResourceBundle');
     this.publicMethods=listAppend(this.publicMethods, 'getCurrencies');
     this.publicMethods=listAppend(this.publicMethods, 'getModel');
+    this.publicMethods=listAppend(this.publicMethods, 'getAttributeModel');
     this.publicMethods=listAppend(this.publicMethods, 'getConfig');
     this.publicMethods=listAppend(this.publicMethods, 'getInstantiationKey');
 
@@ -96,7 +97,18 @@ component output="false" accessors="true" extends="HibachiController" {
     }
 
     public void function getInstantiationKey(required struct rc){
-    	arguments.rc.apiResponse.content['data'] = '#getApplicationValue('instantiationKey')#';
+    	var data = {};
+    	data['instantiationKey'] = '#getApplicationValue('instantiationKey')#';
+    	var modelCacheKey = "attributeService_getAttributeModel_CacheKey";
+    	if(getService('HibachiCacheService').hasCachedValue(modelCacheKey)){
+    		data['attributeCacheKey'] = getService('HibachiCacheService').getCachedValue(modelCacheKey);
+    	}else{
+    		var attributeMetaData = getService('attributeService').getAttributeModel();
+    		data['attributeCacheKey'] = hash(serializeJson(attributeMetaData),'MD5');
+    		getService('HibachiCacheService').setCachedValue(modelCacheKey,data['attributeCacheKey']);
+    	}
+    	
+    	arguments.rc.apiResponse.content['data']=data;
     }
 
     public void function getCurrencies(required struct rc){
@@ -374,18 +386,27 @@ component output="false" accessors="true" extends="HibachiController" {
             argumentsCollection
         */
         var data = [];
-        if(isNull(arguments.rc.argument1)){
-            data = getService('hibachiService').invokeMethod('new#arguments.rc.entityName#').invokeMethod('get#arguments.rc.property#Options');
+        var entity = getService('hibachiService').invokeMethod('new#arguments.rc.entityName#');
+        
+        if(entity.hasAttributeCode(arguments.rc.property)){
+        	var attribute = getService('attributeService').getAttributeByAttributeCode(arguments.rc.property);
+        	
+        	data = attribute.getAttributeOptionsOptions();
         }else{
-            data = getService('hibachiService').invokeMethod('new#arguments.rc.entityName#').invokeMethod('get#arguments.rc.property#Options',{1=arguments.rc.argument1});
+        	if(isNull(arguments.rc.argument1)){
+	            data = entity.invokeMethod('get#arguments.rc.property#Options');
+	        }else{
+	            data = entity.invokeMethod('get#arguments.rc.property#Options',{1=arguments.rc.argument1});
+	        }
         }
+        
 
         //if it contains an empty value make it the first item
         var emptyValue = javacast('null','');
         var dataCount = arrayLen(data);
         var emptyValueIndex = 0;
         for(var i = 1; i <= dataCount; i++){
-            if(structKeyExists(data[i],'VALUE') && data[i].VALUE == ''){
+            if(structKeyExists(data[i],'VALUE') && data[i]['value'] == ''){
                 emptyValue = data[i];
                 emptyValueIndex = i;
             }
@@ -489,6 +510,10 @@ component output="false" accessors="true" extends="HibachiController" {
                 }
             }
         }
+    }
+    
+    public void function getAttributeModel(required struct rc){
+    	arguments.rc.apiResponse.content['data'] = getService('attributeService').getAttributeModel();
     }
 
     private any function getModel(required struct rc){

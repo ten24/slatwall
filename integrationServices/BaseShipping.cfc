@@ -69,13 +69,13 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 	
 	
 	
-	private any function getResponse(required string requestPacket, required string url, required string format="xml"){
+	private any function getResponse(required string requestPacket, required string urlString, required string format="xml"){
 		// Setup Request to push to FedEx
         var httpRequest = new http();
         httpRequest.setMethod("POST");
 		httpRequest.setPort("443");
 		httpRequest.setTimeout(45);
-		httpRequest.setUrl(arguments.url);
+		httpRequest.setUrl(arguments.urlString);
 		httpRequest.setResolveurl(false);
 		if(arguments.format == 'xml'){
 			httpRequest.addParam(type="XML", name="name",value=trim(arguments.requestPacket));

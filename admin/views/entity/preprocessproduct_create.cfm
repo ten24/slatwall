@@ -170,6 +170,7 @@ Notes:
 						<swa:SlatwallErrorDisplay object="#rc.processObject#" errorName="contents" />
 						<hb:HibachiListingDisplay smartList="#contentSmartList#" multiselectFieldName="contents" edit="true">
 							<hb:HibachiListingColumn propertyIdentifier="title"  tdClass="primary" />
+							<hb:HibachiListingColumn propertyIdentifier="site.siteName"  />
 						</hb:HibachiListingDisplay>
 
 					</hb:HibachiPropertyList>
@@ -215,7 +216,7 @@ Notes:
 								data-multiselect-field-name="options"
 								data-edit="true"
 							    data-show-search="true"
-							     data-has-action-bar="false"
+							    data-has-action-bar="false"
 							>
 							</sw-listing-display>
 

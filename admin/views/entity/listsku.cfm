@@ -80,7 +80,9 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="listPrice" />
 		<hb:HibachiListingColumn propertyIdentifier="price" />
 		<hb:HibachiListingColumn propertyIdentifier="renewalPrice" />
+		<hb:HibachiListingColumn propertyIdentifier="calculatedSkuDefinition" />
 		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
+		<hb:HibachiListingColumn propertyIdentifier="publishedFlag" />
 		<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" />
 	</hb:HibachiListingDisplay>
 

@@ -149,6 +149,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			emailCCAddress = {fieldType="text"},
 			emailBCCAddress = {fieldType="text"},
 			emailFailToAddress = {fieldType="text", defaultValue="email@youremaildomain.com"},
+			emailReplyToAddress = {fieldType="text", defaultValue="email@youremaildomain.com"},
 			emailSubject = {fieldType="text", defaultValue="Notification From Slatwall"},
 			emailIMAPServer = {fieldType="text"},
 			emailIMAPServerPort = {fieldType="text"},
@@ -887,8 +888,9 @@ component extends="HibachiService" output="false" accessors="true" {
 
 			getHibachiDAO().flushORMSession();
 
-			getHibachiCacheService().resetCachedKeyByPrefix('setting_#arguments.entity.getSettingName()#');
-
+			//wait for thread to finish because admin depends on getting the savedID
+			getHibachiCacheService().resetCachedKeyByPrefix('setting_#arguments.entity.getSettingName()#',true);
+			
 			// If calculation is needed, then we should do it
 			if(listFindNoCase("skuAllowBackorderFlag,skuAllowPreorderFlag,skuQATSIncludesQNROROFlag,skuQATSIncludesQNROVOFlag,skuQATSIncludesQNROSAFlag,skuTrackInventoryFlag", arguments.entity.getSettingName())) {
 				updateStockCalculated();
