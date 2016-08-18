@@ -77,10 +77,9 @@ Notes:
 				</cfif>
 				
 				<!--- Shipping - Inputs --->
-				
 				<cfif rc.processObject.getOrderFulfillment().getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">
 					<cfset hasShippingIntegration = rc.processObject.getUseShippingIntegrationForTrackingNumber()>
-					<cfif hasShippingIntegration && getHibachiScope().getService('settingService').setting('globalUseShippingIntegrationForTrackingNumberOption')>
+					<cfif hasShippingIntegration && getHibachiScope().setting('globalUseShippingIntegrationForTrackingNumberOption')>
 						<hb:HibachiDisplayToggle selector="input[name='trackingNumber']" showValues="0" loadVisable="#hasShippingIntegration#">
 							<hb:HibachiPropertyDisplay 
 								object="#rc.processObject#" 
