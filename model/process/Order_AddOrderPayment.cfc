@@ -59,6 +59,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Data Properties (ID's)
 	property name="copyFromType" ormtype="string" hb_rbKey="entity.copyFromType" hb_formFieldType="select";
 	property name="accountPaymentMethodID" hb_rbKey="entity.accountPaymentMethod" hb_formFieldType="select";
+	property name="giftCardID" hb_rbKey="entity.giftCard" hb_formFieldType="select";
 	property name="accountAddressID" hb_rbKey="entity.accountAddress" hb_formFieldType="select";
 	property name="previousOrderPaymentID" hb_rbKey="entity.previousOrderPayment" hb_formFieldType="select";
 
@@ -87,9 +88,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	public boolean function getSaveGiftCardToAccountFlag(){
 
 	    if (structKeyExists(variables, "saveGiftCardToAccountFlag") && !isNull(newOrderPayment.getGiftCardNumber())){
-
 	    	return variables.saveGiftCardToAccountFlag;
-
 	    }
 
     	return false;
@@ -130,10 +129,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 
 	public any function getGiftCard(){
-		if(!isNull(getNewOrderPayment().getGiftCardNumber())){
-			return getService("HibachiService").getGiftCard(getDAO("GiftCardDAO").getIDByCode(newOrderPayment.getGiftCardNumber()));
-		} else {
-			return;
+		if(!isNull(getNewOrderPayment().getGiftCardNumber()) && len(getNewOrderPayment().getGiftCardNumber())){
+			return getService("GiftCardService").getGiftCard(getDAO("GiftCardDAO").getIDByCode(newOrderPayment.getGiftCardNumber()));
+		} else if(!isNull(getGiftCardID())){
+			return getService("GiftCardService").getGiftCard(getGiftCardID());
 		}
 	}
 
@@ -207,10 +206,26 @@ component output="false" accessors="true" extends="HibachiProcess" {
  			orderPaymentsSmartList.addOrder('sortOrder|ASC');
 			var orderPaymentsArray = orderPaymentsSmartList.getRecords();
 			for(var i=1; i<=arrayLen(orderPaymentsArray); i++) {
-				arrayAppend(previousOrderPaymentIDOptions, {name= orderPaymentsArray[i].getCreditCardType() & ' - *' & orderPaymentsArray[i].getCreditCardLastFour(), value=orderPaymentsArray[i].getOrderPaymentID()});
+				arrayAppend(variables.previousOrderPaymentIDOptions, {name= orderPaymentsArray[i].getCreditCardType() & ' - *' & orderPaymentsArray[i].getCreditCardLastFour(), value=orderPaymentsArray[i].getOrderPaymentID()});
 			}
 		}
 		return variables.previousOrderPaymentIDOptions;
+	}
+
+	public array function getGiftCardIDOptions() {
+		if(!structKeyExists(variables,"giftCardIDOptions")){
+			variables.giftCardIDOptions = [];
+			if(!isNull(getOrder().getAccount())){
+			    var giftCardSmartList = getOrder().getAccount().getGiftCardsSmartList();
+			    var giftCardArray = giftCardSmartList.getRecords();
+			    for(var i=1; i<=arrayLen(giftCardArray); i++){
+				    var optionName = giftCardArray[i].getGiftCardCode() & ' - ' & giftCardArray[i].formatValue(nullReplace(giftCardArray[i].getBalanceAmount(),0),"currency");
+				    arrayAppend(variables.giftCardIDOptions, {name=optionName, value=giftCardArray[i].getGiftCardID()});
+			    }
+			}
+			arrayPrepend(variables.giftCardIDOptions, {name=rbKey('define.none'), value=""}); 
+		}
+		return variables.giftCardIDOptions;
 	}
 
 	public array function getAccountAddressIDOptions() {
@@ -291,7 +306,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	public boolean function canRedeemGiftCardToAccount(){
 
-		if(this.getGiftCard() != false){
+		if(!isNull(this.getGiftCard())){
 
 			if(isNull(this.getGiftCard().getOwnerAccount())){
 				return true;
@@ -309,7 +324,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 
 	public boolean function giftCardCurrencyMatches(){
-		if(this.getGiftCard() != false){
+		if(!isNull(this.getGiftCard())){
 			return variables.order.getCurrencyCode() EQ this.getGiftCard().getCurrencyCode();
 		} else {
 			return false;

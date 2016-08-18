@@ -134,6 +134,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="paymentAmountReceivedTotal" persistent="false" hb_formatType="currency";
 	property name="paymentAmountCreditedTotal" persistent="false" hb_formatType="currency";
 	property name="paymentAmountDue" persistent="false" hb_formatType="currency";
+	property name="paymentAmountDueAfterGiftCards" persistent="false" hb_formatType="currency";
 	property name="paymentMethodOptionsSmartList" persistent="false";
 	property name="promotionCodeList" persistent="false";
 	property name="quantityDelivered" persistent="false";
@@ -298,6 +299,14 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		}
 
 		return arr;
+	}
+
+	public numeric function getPaymentAmountDueAfterGiftCards(){
+		var paymentAmountDue = this.getPaymentAmountDue();
+		if(paymentAmountDue > 0 && this.hasGiftCardOrderPaymentAmount()){
+			paymentAmountDue = paymentAmountDue - this.getGiftCardOrderPaymentAmount();
+		}
+		return paymentAmountDue;
 	}
 
 
