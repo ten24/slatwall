@@ -57,12 +57,14 @@ Notes:
 			<tr>
 				<th>#$.slatwall.rbKey('entity.promotionCode')#</th>
 				<th>#$.slatwall.rbKey('entity.promotion')#</th>
+				<th>#$.slatwall.rbKey('define.qualified')#</th>
 				<th></th>
 			</tr>
 			<cfloop array="#rc.order.getAllAppliedPromotions()#" index="appliedPromotion">
 				<tr>
 					<td class="primary">#appliedPromotion.promotionCode#</td>
 					<td class="primary">#appliedPromotion.promotion_promotionName#</td>
+					<td>#appliedPromotion.qualified#</td>
 					<td class="admin admin2">
 						<hb:HibachiActionCaller action="admin:entity.detailPromotion" queryString="promotionID=#appliedPromotion.promotion_promotionID#" class="btn btn-default btn-xs" icon="eye-open" iconOnly="true"  />
 						<cfif len(appliedPromotion.promotionCodeID)>
