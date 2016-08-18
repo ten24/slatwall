@@ -82,7 +82,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 			var sessionEntity = this.getSessionBySessionCookieExtendedPSID( cookie["#getApplicationValue('applicationKey')#-ExtendedPSID"], true);
 		
 			if(sessionEntity.getNewFlag()) {
-				getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-ExtendedPSID", value='', expires="now");
+				getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-ExtendedPSID", value='', expires="#getHibachiScope().setting('globalExtendedSessionAutoLogoutInDays')#");
 			} else {
 		
 				foundWithExtendedPSID = true;
@@ -95,7 +95,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 			var sessionEntity = this.getSessionBySessionCookieNPSID( cookie["#getApplicationValue('applicationKey')#-NPSID"], true);
 		
 			if(sessionEntity.getNewFlag()) {
-				getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-NPSID", value='', expires="now");
+				getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-NPSID", value='', expires="#now()#");
 			} else {
 		
 				foundWithNPSID = true;
@@ -108,7 +108,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 			var sessionEntity = this.getSessionBySessionCookiePSID( cookie["#getApplicationValue('applicationKey')#-PSID"], true);
 		
 			if(sessionEntity.getNewFlag()) {
-				getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-PSID", value='', expires="now");
+				getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-PSID", value='', expires="#now()#");
 			} else {
 				foundWithPSID = true;
 				getHibachiScope().setSessionValue('sessionID', sessionEntity.getSessionID());
@@ -140,7 +140,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 		}
 		
-		// If we are using extended session and the extended session has expired, then logout.
+		// If we are an admin and we are not using an extended session. and one of the following, then logout. . .
 		
 		// If the session has an account but no authentication, then remove the account
 		
@@ -150,7 +150,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 		// If the sessions account is an admin and last request by the session was 15 min or longer ago. 
 		
-		if((getHibachiScope().getSessionFoundExtendedPSIDCookieFlag() || getHibachiScope().getSessionFoundPSIDCookieFlag())  && !getHibachiScope().getLoggedInFlag()
+		if((getHibachiScope().getSessionFoundPSIDCookieFlag()||getHibachiScope().getSessionFoundExtendedPSIDCookieFlag()||getHibachiScope().getSessionFoundNPSIDCookieFlag() && !getHibachiScope().getLoggedInFlag())
 		
 			|| (!isNull(getHibachiScope().getSession().getAccountAuthentication()) && getHibachiScope().getSession().getAccountAuthentication().getForceLogoutFlag()) 
 		
@@ -161,9 +161,19 @@ component output="false" accessors="true" extends="HibachiService"  {
 			|| (!isNull(getHibachiScope().getSession().getAccountAuthentication()) && getHibachiScope().getSession().getAccount().getAdminAccountFlag() != true && DateDiff('n', previousRequestDateTime, Now()) >= getHibachiScope().setting('globalPublicAutoLogoutMinutes') )
 		
 		) 	{
+			//check fo soft logout. 
+			//has the extended cookie and if not an admin and we are using those extended cookies via the setting then soft logout instead of hard. . .
+			if ( structKeyExists(cookie, "#getApplicationValue('applicationKey')#-ExtendedPSID") &&
+				!getHibachiScope().getSession().getAccount().getAdminAccountFlag() && 
+				 getHibachiScope().setting('globalUseExtendedSession')==1){
+				
+				logoutAccount(softLogout=true);	
+			} else{
+				
+				logoutAccount(softLogout=false);	
+			}
 			
-			logoutAccount();
-
+		
 		}
 		
 		// Update the last request datetime, and IP Address now that all other checks have completed.
@@ -212,8 +222,8 @@ component output="false" accessors="true" extends="HibachiService"  {
 			getHibachiScope().getSession().setSessionCookiePSID(cookieValue);
 			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-PSID", value=getHibachiScope().getSession().getSessionCookiePSID(), expires="never");
 		
-		//only set this if the use is not an admin user.
-		if (!getHibachiScope().getAccount().getAdminAccountFlag()){
+		//only set this if the use is not an admin user and we are using extended sessions.
+		if (!getHibachiScope().getAccount().getAdminAccountFlag() && getHibachiScope().setting('globalExtendedSessionAutoLogoutInDays') && getHibachiScope().setting('globalUseExtendedSession')){
 			var cookieValue = getValueForCookie();
 			getHibachiScope().getSession().setSessionCookieExtendedPSID(cookieValue);
 			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-ExtendedPSID", value=getHibachiScope().getSession().getSessionCookieExtendedPSID(), expires="#getHibachiScope().setting('globalExtendedSessionAutoLogoutInDays')#");
@@ -225,7 +235,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 	}
 	
 	/** Logs out the user completely. */
-	public void function logoutAccount() {
+	public void function logoutAccount(softLogout=false) {
 		var currentSession = getHibachiScope().getSession();
 		var auditLogData = {};
 	
@@ -251,7 +261,8 @@ component output="false" accessors="true" extends="HibachiService"  {
 			structDelete(cookie,"#getApplicationValue('applicationKey')#-PPSID", true);
 		}
 		
-		if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#-ExtendedPSID")){
+		//only delete this extended session cookie if this is a hard logout instead of soft.
+		if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#-ExtendedPSID") && !arguments.softLogout){
 			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-ExtendedPSID", value='', expires="#now()#");
 			structDelete(cookie,"#getApplicationValue('applicationKey')#-ExtendedPSID", true);
 		}
