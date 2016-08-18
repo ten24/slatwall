@@ -80,7 +80,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="listPrice" />
 		<hb:HibachiListingColumn propertyIdentifier="price" />
 		<hb:HibachiListingColumn propertyIdentifier="renewalPrice" />
-		<hb:HibachiListingColumn propertyIdentifier="calculatedSkuDefinition" title="#getHibachiScope().rbKey('entity.sku.skuDefinition')#" />
+		<hb:HibachiListingColumn propertyIdentifier="calculatedSkuDefinition" />
 		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
 		<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" />
 	</hb:HibachiListingDisplay>

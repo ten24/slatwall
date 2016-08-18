@@ -68,7 +68,7 @@ Notes:
 				<hb:HibachiListingColumn propertyIdentifier="skuName" />
 			</cfif>
 			<hb:HibachiListingColumn propertyIdentifier="skuCode" />
-			<hb:HibachiListingColumn propertyIdentifier="calculatedSkuDefinition" title="#getHibachiScope().rbKey('entity.sku.skuDefinition')#" />
+			<hb:HibachiListingColumn propertyIdentifier="calculatedSkuDefinition" />
 			<hb:HibachiListingColumn propertyIdentifier="imageFile" />
 			<hb:HibachiListingColumn propertyIdentifier="listPrice" />
 			<hb:HibachiListingColumn propertyIdentifier="price" />

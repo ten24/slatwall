@@ -67,7 +67,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="product.brand.brandName" />
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="product.productName" />
 		<hb:HibachiListingColumn propertyIdentifier="product.productType.productTypeName" />
-		<hb:HibachiListingColumn propertyIdentifier="calculatedSkuDefinition" title="#getHibachiScope().rbKey('entity.sku.skuDefinition')#" />
+		<hb:HibachiListingColumn propertyIdentifier="calculatedSkuDefinition" />
 		<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" />
 		<hb:HibachiListingColumn processObjectProperty="orderFulfillmentID" title="#$.slatwall.rbKey('entity.orderFulfillment')#" fieldClass="span2" />
 		<hb:HibachiListingColumn processObjectProperty="price" title="#$.slatwall.rbKey('define.price')#" fieldClass="span1" />
