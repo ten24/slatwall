@@ -371,6 +371,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	return createPersistedTestEntity('OrderPayment', orderPaymentData);
 	 }
 	 
+	 private any function createMockOrderItemWithOrder(string orderID='', boolean persisted=TRUE) {
+	 	
+	 }
+	 
 	
 	public void function getOrderTypeTest() {
 		var mockOrder = createMockOrder();
@@ -642,19 +646,55 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	assertEquals({}, result, 'When requiredAmount == 0 should return an empty struct');
 	 }
 	 
-//	 public void function confirmOrderNumberOpenDateCloseDatePaymentAmountTest() {
-//	 	var orderData = {
-//	 		orderID = '',
-//	 		orderStatusType = {
-//	 			typeID = '444df2b6b8b5d1ccfc14a4ab38aa0a4c'//ostProcessing
-//	 		}
-//	 	};
-//	 	var mockOrder = createPersistedTestEntity('Order', orderData);
-//	 	
-//	 	mockOrder.confirmOrderNumberOpenDateCloseDatePaymentAmount();
-//		request.debug(mockOrder.getOrderStatusType().getTypeName());//Yuqing
-//	 	
-//	 }
+	 public void function confirmOrderNumberOpenDateCloseDatePaymentAmountTest_ProcessingAndInternal_testAllSetters() {
+	 	var mockOrderPayment1 = createMockOrderPayment(amount = 1);
+	 	var mockOrderPayment2 = createMockOrderPayment(amount = 2);
+	 	
+	 	injectMethod(mockOrderPayment2, this, 'returnTen', 'getAmount');
+	 	
+	 	var orderData = {
+	 		orderID = '',
+	 		orderStatusType = {
+	 			typeID = '444df2b6b8b5d1ccfc14a4ab38aa0a4c'//ostProcessing
+	 		},
+	 		orderPayments = [
+	 			{
+	 				orderPaymentID = mockOrderPayment1.getOrderPaymentID()
+	 			}, {
+	 				orderPaymentID = mockOrderPayment2.getOrderPaymentID()
+	 			}
+	 		]
+	 	};
+	 	var mockOrder = createTestEntity('Order', orderData);
+		
+	 	var orderService = new Slatwall.model.service.OrderService();
+	 	injectMethod(orderService, this, 'getMaxOrderNumberTen', 'getMaxOrderNumber');
+	 	mockOrder.setOrderService(orderService);
+	 	
+	 	mockOrder.confirmOrderNumberOpenDateCloseDatePaymentAmount();
+		assertEquals(11, mockOrder.getOrderNumber(), 'The OrderNumber should be 10 + 1 = 11, the test fails');
+	 	assertEquals(now(), mockOrder.getOrderOpenDateTime(), 'OpenDateTime should be now()');
+	 	assertEquals(CGI.REMOTE_ADDR, mockOrder.getOrderOpenIPAddress(), 'The address should be 127.0.0.1');
+	 	
+	 	assertEquals(1, mockOrder.getOrderPayments()[1].getAmount(), 'The orderPayment.setAmount() return an incorrect amount');
+	 	assertEquals(10, mockOrder.getOrderPayments()[2].getAmount(), 'The orderPayment.setAmount() should return 10 same with the injected function returns');
+	 	assertTrue(!isDefined(mockORder.getOrderCloseDateTime()), 'The ostProcessing status type should not have OrderCloseDateTime()');
+	 }
+	 
+	 public void function confirmOrderNumberOpenDateCloseDatePaymentAmountTest_ostClosed() {
+	 	var orderData = {
+	 		orderID = '',
+	 		orderStatusType = {
+	 			typeID = '444df2b8b98441f8e8fc6b5b4266548c'//ostClosed
+	 		}
+	 	};
+	 	var mockOrder = createTestEntity('Order', orderData);
+	 	
+	 
+	 	
+	 	mockOrder.confirmOrderNumberOpenDateCloseDatePaymentAmount();
+		assertEquals(now(), mockORder.getOrderCloseDateTime(), 'The ostClosed status type should have OrderCloseDateTime()');
+	 }
 	 
 	 public void function isPaidTest() {
 	 	var mockOrder = createSimpleMockEntityByEntityName('Order');
@@ -667,26 +707,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	var resultUnpaid = mockOrder.isPaid();
 	 	assertFalse(resultUnpaid, '10 < 700 should return FALSE');
 	 }
-	 
-	 private any function createOrderDelivery(array orderDeliveryItemArray) {
-	 	var orderDeliveryData = {
-	 		orderDeliveryID = ''
-	 	};
-	 	if(len(arguments.orderDeliveryItemArray)) {
-	 		for (deliveryItem in orderDeliveryItemArray) {
-	 			orderDeliveryData.orderDeliveries[1] = deliveryItem;
-	 		}
-	 	}
-	 	return createPersistedTestEntity('OrderDelivery', orderDeliveryData);
-	 }
-	 
-	 private any function returnOneOrderDeliveryItemEntity() {
-	 	var mockOrderDeliveryItem1 = createObject('component', 'orderDeliveryItem');
-	 	populate(mockOrderDeliveryItem1);
-	 	
-	 	return mockOrderDeliveryItem1;
-	 }
-	 
+
 	 public void function getDeliveredOrderItemsTest() {
 	 	var mockOrder 		   = createSimpleMockEntityByEntityName('Order', FALSE);
 	 	var orderDelivery 	   = createSimpleMockEntityByEntityName('orderDelivery', False);
@@ -710,17 +731,178 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	assertEquals(orderItem.getPrice(), result[2].getPrice());
 	 }
 	 
-	 private boolean function returnFalse(){
-	 	return false;
-	 }
-	 
-	 
 	 public void function canCancelTest() {
+	 	var mockOrder = createSimpleMockEntityByEntityName('Order');
+	 	injectMethod(mockOrder, this, 'returnTrue', 'hasGiftCardOrderItems');
+	 	assertFalse(mockOrder.canCancel(), 'when hasGiftCardorderItems == TRUE, should return false');
+	 	
+	 	injectMethod(mockOrder, this, 'returnFalse', 'hasGiftCardOrderItems');
+	 	assertTRUE(mockOrder.canCancel(), 'when hasGiftCardorderItems == FALSE, should return true');
+	 }
+	 
+	 private array function returnOrderItems() {
+	 	var mockOrderItem1 = createObejct('component', Slatwall.model.entity.OrderItem);
+	 	populate(mockOrderItem1);
+	 	return [mockOrderItem1];
+	 }
+	 
+	 private array function returnNonPersistedOrderItems() {
+	 	var mockOrderItem1 = createObejct('component', Slatwall.model.entity.OrderItem);
+	 	populate(mockOrderItem1);
+	 	var mockOrderItem2 = createObejct('component', Slatwall.model.entity.OrderItem);
+	 	populate(mockOrderItem2);
+	 	
+	 	return [mockOrderItem1, mockOrderItem2];
+	 }
+	 
+	 public void function hasGiftCardOrderItemsTest_WithArgu() {
+	 	//Mocking data is same with the orderDAO.cfc getGiftCardOrderItemsTest() function
+	 	var productData = {
+			productID = '',
+			productType = {
+				productTypeID = '50cdfabbc57f7d103538d9e0e37f61e4'//giftcard
+			}
+		};
+		var mockProduct = createPersistedTestEntity('Product', productData);
+		
+		var mockTerm = createSimpleMockEntityByEntityName('Term');
+		
+		var skuData = {
+			skuID = '',
+			product = {
+				productID = mockProduct.getProductID()
+			},
+			giftCardExpirationTerm = {
+				termID = mockTerm.getTermID()
+			}
+			
+		};
+		var mockSku = createPersistedTestEntity('Sku', skuData);
+		
+		var orderItemData = {
+			orderItem = '',
+			sku = {
+				skuID = mockSku.getSkuID()
+			},
+			quantity = 50
+			
+		};
+		var mockOrderItem = createPersistedTestEntity('OrderItem', orderItemData);
+		
+		var orderData = {
+			orderID = '',
+			orderItems=[
+				{
+					orderItemID=mockOrderItem.getOrderItemID()
+				}
+			]
+		};
+		var mockOrder = createPersistedTestEntity('Order', orderData);
+	 	
+	 	var result = mockOrder.hasGiftCardOrderItems(mockOrderItem.getOrderItemID());
+	 	assertTrue(result, 'The function should return TRUE for the oi accordence with the argument');
+	 	
+	 	var resultFakeOIid = mockOrder.hasGiftCardOrderItems('somefakeOrderitemID');
+	 	assertFalse(resultFakeOIid, 'If the giftCardOrderItem is not same with the arguments, should return False');
 	 	
 	 }
 	 
-	 public void function hasGiftCardOrderItemsTest() {
+	 public void function hasGiftCardOrderItemsTest_NoArgu() {
+	 	//Mocking data is same with the orderDAO.cfc getGiftCardOrderItemsTest() function
+	 	var productData = {
+			productID = '',
+			productType = {
+				productTypeID = '50cdfabbc57f7d103538d9e0e37f61e4'//giftcard
+			}
+		};
+		var mockProduct = createPersistedTestEntity('Product', productData);
+		
+		var mockTerm = createSimpleMockEntityByEntityName('Term');
+		
+		var skuData = {
+			skuID = '',
+			product = {
+				productID = mockProduct.getProductID()
+			},
+			giftCardExpirationTerm = {
+				termID = mockTerm.getTermID()
+			}
+			
+		};
+		var mockSku = createPersistedTestEntity('Sku', skuData);
+		
+		var orderItemData = {
+			orderItem = '',
+			sku = {
+				skuID = mockSku.getSkuID()
+			},
+			quantity = 50
+			
+		};
+		var mockOrderItem = createPersistedTestEntity('OrderItem', orderItemData);
+		
+		var orderData = {
+			orderID = '',
+			orderItems=[
+				{
+					orderItemID=mockOrderItem.getOrderItemID()
+				}
+			]
+		};
+		var mockOrderWithOrderItem = createPersistedTestEntity('Order', orderData);
+		
+	 	var result = mockOrderWithOrderItem.hasGiftCardOrderItems();
+	 	assertTrue(result, 'If exist giftCardOrderItem, should return true');
 	 	
+	 	var orderData = {
+			orderID = ''
+		};
+		var mockOrderWithNoOrderItem = createPersistedTestEntity('Order', orderData);
+		
+	 	var resultNoGiftCardOI = mockOrderWithNoOrderItem.hasGiftCardOrderItems();
+	 	assertFalse(resultNoGiftCardOI, 'If there is no giftCardOrderItem returns, should return false');
+	 	
+	 	
+	 }
+	 
+	 public void function getAllOrderItemGiftRecipientsSmartListTest() {
+	 	var mockOrder = createSimpleMockEntityByEntityName('Order');
+	 	
+	 	var mockOrderItem1 = createSimpleMockEntityByEntityName('OrderItem');
+	 	var mockOrderItem2 = createSimpleMockEntityByEntityName('OrderItem');
+	 	mockOrderItem1.setOrder(mockOrder);
+	 	
+	 	var orderItemGiftRecipientData1 = {
+	 		orderItemGiftRecipientID = '',
+	 		orderItem = {
+	 			orderItemID = mockOrderItem1.getOrderItemID()
+	 		}
+	 	};
+	 	var mockOrderItemGiftRecepient1 = createPersistedTestEntity('OrderItemGiftRecipient', OrderItemGiftRecipientData1);
+	 	
+	 	var orderItemGiftRecipientData2 = {
+	 		orderItemGiftRecipientID = '',
+	 		orderItem = {
+	 			orderItemID = mockOrderItem1.getOrderItemID()
+	 		}
+	 	};
+	 	var mockOrderItemGiftRecepient2 = createPersistedTestEntity('OrderItemGiftRecipient', OrderItemGiftRecipientData2);
+	 	
+	 	var orderItemGiftRecipientData3 = {
+	 		orderItemGiftRecipientID = '',
+	 		orderItem = {
+	 			orderItemID = mockOrderItem2.getOrderItemID()
+	 		}
+	 	};
+	 	var mockOrderItemGiftRecepient3 = createPersistedTestEntity('OrderItemGiftRecipient', OrderItemGiftRecipientData3);
+	 	
+	 	var mockOrderItemGiftRecepient4 = createSimpleMockEntityByEntityName('OrderItemGiftRecipient');
+	 	
+	 	var result = mockOrder.getAllOrderItemGiftRecipientsSmartList().getRecords(refresh = true);
+	 	assertFalse(arrayContains(result, mockOrderItemGiftRecepient4), 'The left join with orderItem fails');
+	 	assertFalse(arrayContains(result, mockOrderItemGiftRecepient3), 'The where condition of orderID fails');
+	 	assertTrue(arrayContains(result, mockOrderItemGiftRecepient1), 'The object should be added in the smartlist but fails');
+	 	assertTrue(arrayContains(result, mockOrderItemGiftRecepient2), 'The object should be added in the smartlist but fails');
 	 }
 	 
 	 public void function getDynamicChargeOrderPaymentTest_general() {
@@ -963,6 +1145,12 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	private boolean function returnTrue() {
 		return TRUE;
 	}
+	private boolean function returnFalse() {
+		return FALSE;
+	}
+	private string function returnOneString() {
+		return 'OneString';
+	}
 	
 	
 	//====================== Injected Functions in OrderService.cfc ===================
@@ -971,6 +1159,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	} 
 	private numeric function getPreviouslyReturnedFulfillmentTotal() {
 		return 30;
+	}
+	private array function getMaxOrderNumberTen() {
+		return [10];
 	}
 	
 	//====================== Injected Functions in Order.cfc ==========================
@@ -1061,7 +1252,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertFalse(resultLessThanZero, 'The condition that amount get from orderDAO < 0 fails');
 	}
 	
-	public void function getORderPaymentAmountNeededTest_DynamicCreditOrderPaymentNotNull() {
+	public void function getOrderPaymentAmountNeededTest_DynamicCreditOrderPaymentNotNull() {
 		var orderData = {
 			orderID = ''
 		};
@@ -1647,6 +1838,167 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		var result = mockOrder.getPaymentAmountTotalByPaymentMethod(mockPaymentMethod1, MockOrderPayment2); 
 		assertEquals(9, result, 'The result should be 1 + 8 = 9');
+	}
+	
+	public void function checkNewBillingAccountAddressSaveTest_SkipSecondIf() {
+		//Mocking data is same with checkNewBillingAccountAddressSaveTest_SecondIf()
+		var mockAccountAuthentication = createSimpleMockEntityByEntityName('accountAuthentication');
+		
+		var accountData = {
+			accountID = '',
+			accountAuthentications = [{
+				accountAuthenticationID = mockAccountAuthentication.getAccountAuthenticationID()
+			}],
+			GuestAccountFlag = TRUE
+		};
+		var mockAccount = createPersistedTestEntity('Account', accountData);
+		
+		
+		var addressData = {
+			addressID = '',
+			name = 'checkNewBillingAccountAddressSaveTest'
+		};
+		var mockAddress = createPersistedTestEntity('address', addressData);
+		
+		var orderData = {
+			orderID = '',
+			account = {
+				accountID = mockAccount.getAccountID()
+			},
+			billingAddress = {
+				addressID = mockAddress.getAddressID()
+			}
+		};
+		var mockOrder = createPersistedTestEntity('Order', orderData);
+		
+		injectMethod(mockOrder, this, 'returnTrue', 'getSaveBillingAccountAddressFlag');
+		
+		mockOrder.checkNewBillingAccountAddressSave();
+		var resultAddressID = mockOrder.getBillingAccountAddress().getAddress().getName();
+		assertEquals(mockAddress.getName(), resultAddressID, 'The address Name should be same eventhough the ID is not');
+		var resultAccountID = mockOrder.getBillingAccountAddress().getAccount().getAccountID();
+		assertEquals(mockAccount.getAccountID(), resultAccountID, 'The account should be the same account');
+	}
+	
+	public void function checkNewBillingAccountAddressSaveTest_secondIf() {
+		//Mocking data is same with checkNewBillingAccountAddressSaveTest_SkipSecondIf()
+		var mockAccountAuthentication = createSimpleMockEntityByEntityName('accountAuthentication');
+		
+		var accountData = {
+			accountID = '',
+			accountAuthentications = [{
+				accountAuthenticationID = mockAccountAuthentication.getAccountAuthenticationID()
+			}],
+			GuestAccountFlag = TRUE
+		};
+		var mockAccount = createPersistedTestEntity('Account', accountData);
+		
+		
+		var addressData = {
+			addressID = '',
+			name = 'checkNewBillingAccountAddressSaveTest'
+		};
+		var mockAddress = createPersistedTestEntity('address', addressData);
+		
+		var orderData = {
+			orderID = '',
+			account = {
+				accountID = mockAccount.getAccountID()
+			},
+			billingAddress = {
+				addressID = mockAddress.getAddressID()
+			}
+		};
+		var mockOrder = createPersistedTestEntity('Order', orderData);
+		
+		injectMethod(mockOrder, this, 'returnTrue', 'getSaveBillingAccountAddressFlag');
+		injectMethod(mockOrder, this, 'returnOneString', 'getSaveBillingAccountAddressName');
+		
+		mockOrder.checkNewBillingAccountAddressSave();
+		var resultAddressName = mockOrder.getBillingAccountAddress().getAccountAddressName();
+		assertEquals('OneString', resultAddressName, 'when getSaveBillingAccountAddressName() exists, should return the addressName');
+	}
+	
+	public void function checkNewShippingAccountAddressSaveTest_SkipSecondIf() {
+		//Mocking data is same with checkNewShippingAccountAddressSaveTest_SkipSecondIf()
+		var mockAccountAuthentication = createSimpleMockEntityByEntityName('accountAuthentication');
+		
+		var accountData = {
+			accountID = '',
+			accountAuthentications = [{
+				accountAuthenticationID = mockAccountAuthentication.getAccountAuthenticationID()
+			}],
+			GuestAccountFlag = TRUE
+		};
+		var mockAccount = createPersistedTestEntity('Account', accountData);
+		
+		
+		var addressData = {
+			addressID = '',
+			name = 'checkNewShippingAccountAddressSaveTest'
+		};
+		var mockAddress = createPersistedTestEntity('address', addressData);
+		
+		var orderData = {
+			orderID = '',
+			account = {
+				accountID = mockAccount.getAccountID()
+			},
+			shippingAddress = {
+				addressID = mockAddress.getAddressID()
+			}
+		};
+		var mockOrder = createPersistedTestEntity('Order', orderData);
+		injectMethod(mockOrder, this, 'returnTrue', 'getSaveShippingAccountAddressFlag');
+		
+		var result = mockOrder.checkNewShippingAccountAddressSave();
+		
+		var resultAddressID = mockOrder.getShippingAccountAddress().getAddress().getName();
+		assertEquals(mockAddress.getName(), resultAddressID, 'The address Name should be same eventhough the ID is not');
+		var resultAccountID = mockOrder.getShippingAccountAddress().getAccount().getAccountID();
+		assertEquals(mockAccount.getAccountID(), resultAccountID, 'The account should be the same account');
+	}
+	
+	public function checkNewShippingAccountAddressSaveTest_SecondIf() {
+		//Mocking data is same with checkNewShippingAccountAddressSaveTest_SecondIf()
+		var mockAccountAuthentication = createSimpleMockEntityByEntityName('accountAuthentication');
+		
+		var accountData = {
+			accountID = '',
+			accountAuthentications = [{
+				accountAuthenticationID = mockAccountAuthentication.getAccountAuthenticationID()
+			}],
+			GuestAccountFlag = TRUE
+		};
+		var mockAccount = createPersistedTestEntity('Account', accountData);
+		
+		var addressData = {
+			addressID = '',
+			name = 'checkNewShippingAccountAddressSaveTest'
+		};
+		var mockAddress = createPersistedTestEntity('address', addressData);
+		
+		var orderData = {
+			orderID = '',
+			account = {
+				accountID = mockAccount.getAccountID()
+			},
+			shippingAddress = {
+				addressID = mockAddress.getAddressID()
+			}
+		};
+		var mockOrder = createPersistedTestEntity('Order', orderData);
+		
+		injectMethod(mockOrder, this, 'returnTrue', 'getSaveShippingAccountAddressFlag');
+		injectMethod(mockOrder, this, 'returnOneString', 'getSaveShippingAccountAddressName');
+		
+		mockOrder.checkNewShippingAccountAddressSave();
+		var resultAddressName = mockOrder.getShippingAccountAddress().getAccountAddressName();
+		assertEquals('OneString', resultAddressName, 'when getSaveShippingAccountAddressName() exists, should return the addressName');
+	}
+	
+	public void function getAddOrderItemSkuOptionsSmartListTest() {
+		
 	}
 	
 }

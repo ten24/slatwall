@@ -325,11 +325,11 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 	public boolean function hasGiftCardOrderItems(orderItemID=""){
 
-		var giftCardOrderItems = getDAO("OrderDAO").getGiftCardOrderItems(this.getOrderID());
+		var giftCardOrderItems = getOrderDAO().getGiftCardOrderItems(this.getOrderID());
 
-		if(orderItemID EQ "" AND ArrayLen(giftCardOrderItems) GT 0){
+		if(arguments.orderItemID EQ "" AND ArrayLen(giftCardOrderItems) GT 0){
 			return true;
-		} else if (orderItemID NEQ ""){
+		} else if (arguments.orderItemID NEQ ""){
 
 			for(var item in giftCardOrderItems){
 				if(item.getOrderItemID() EQ arguments.orderItemID){
@@ -365,7 +365,14 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 	public void function checkNewBillingAccountAddressSave() {
 		// If this isn't a guest, there isn't an accountAddress, save is on - copy over an account address
-    	if(!isNull(getSaveBillingAccountAddressFlag()) && getSaveBillingAccountAddressFlag() && !isNull(getAccount()) && !getAccount().getGuestAccountFlag() && isNull(getBillingAccountAddress()) && !isNull(getBillingAddress()) && !getBillingAddress().hasErrors()) {
+    	if(!isNull(getSaveBillingAccountAddressFlag()) 
+    		&& getSaveBillingAccountAddressFlag() 
+    		&& !isNull(getAccount()) 
+    		&& !getAccount().getGuestAccountFlag() 
+    		&& isNull(getBillingAccountAddress()) 
+    		&& !isNull(getBillingAddress()) 
+    		&& !getBillingAddress().hasErrors()
+    	  ) {
 
     		// Create a New Account Address, Copy over Shipping Address, and save
     		var accountAddress = getService('accountService').newAccountAddress();
@@ -382,9 +389,15 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 
 	public void function checkNewShippingAccountAddressSave() {
-
 		// If this isn't a guest, there isn't an accountAddress, save is on - copy over an account address
-    	if(!isNull(getSaveShippingAccountAddressFlag()) && getSaveShippingAccountAddressFlag() && !isNull(getAccount()) && !getAccount().getGuestAccountFlag() && isNull(getShippingAccountAddress()) && !isNull(getShippingAddress()) && !getShippingAddress().hasErrors()) {
+    	if( !isNull(getSaveShippingAccountAddressFlag()) 
+    		&& getSaveShippingAccountAddressFlag() 
+    		&& !isNull(getAccount()) 
+    		&& !getAccount().getGuestAccountFlag() 
+    		&& isNull(getShippingAccountAddress()) 
+    		&& !isNull(getShippingAddress()) && 
+    		!getShippingAddress().hasErrors()
+    	  ) {
 
     		// Create a New Account Address, Copy over Shipping Address, and save
     		var accountAddress = getService('accountService').newAccountAddress();
