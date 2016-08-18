@@ -158,6 +158,14 @@ loadvisable="#len(rc.addOrderPaymentProcessObject.getAccountPaymentMethodID())#"
                           fieldname="newOrderPayment.giftCardNumber" property="giftCardNumber"
                           edit="#rc.edit#">
 
+#$.slatwall.rbKey('define.or')#
+
+<hb:HibachiPropertyDisplay object="#rc.addOrderPaymentProcessObject#"
+                               fieldname="giftCardID"
+							   property="giftCardID"
+							   valueOptions="#rc.addOrderPaymentProcessObject.getGiftCardIDOptions()#"
+							   edit="#rc.edit#">
+
 <hb:hibachipropertydisplay object="#rc.addOrderPaymentProcessObject#"
                           fieldname="saveGiftCardToAccountFlag" property="saveGiftCardToAccountFlag"
 						  value="yes"

@@ -91,7 +91,7 @@ Notes:
 			var hibachiConfig = $.slatwall.getConfig();
 		</script>
 
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/assets/js/admin.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/assets/js/admin.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#"></script>
 		<!--- Trigger Print Window --->
 		<cfif arrayLen($.slatwall.getPrintQueue()) and request.context.slatAction neq "admin:print.default">
 			<script type="text/javascript">
@@ -377,8 +377,8 @@ Notes:
 			<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckeditor/adapters/jquery.js"></script>
 			<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckfinder/ckfinder.js"></script>
 		</cfif>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/src/bundle.js?instantiationKey=#$.slatwall.getApplicationValue('version')#" charset="utf-8"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/global.js?instantiationKey=#$.slatwall.getApplicationValue('version')#"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/src/bundle.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" charset="utf-8"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/global.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#"></script>
 	</body>
 </html>
 </cfoutput>

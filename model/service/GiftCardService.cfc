@@ -201,6 +201,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	}
 
+	public any function processGiftCard_toggleActive(required any giftCard, required any processObject){
+
+		arguments.giftCard.setActiveFlag(processObject.getActiveFlag());
+
+		return this.saveGiftCard(arguments.giftCard);
+
+	}
+
 	public any function processOrder_failedGiftRecipient(required any giftCard, required any processObject){
 
 		//Set the gift card to the orderer's email temporarily
