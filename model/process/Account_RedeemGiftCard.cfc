@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,22 +45,38 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
 
+	// Injected Property
+	property name="account";
 
-<cfparam name="rc.account" type="any" />
+	// Data Properties
+	property name="giftCard";
+	property name="giftCardCode";
 
-<hb:HibachiListingDisplay smartList="#rc.account.getGiftCardSmartList()#"
-						  recordDetailAction="admin:entity.detailgiftcard"
-						  recordEditAction="admin:entity.editgiftcard">
+	public boolean function hasGiftCard(){
+		return !isNull(this.getGiftCard());
+	}
 
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="ownerFirstName" search="true" />
-        <hb:HibachiListingColumn tdclass="primary" propertyIdentifier="ownerLastName" search="true" />
-        <hb:HibachiListingColumn tdclass="primary" propertyIdentifier="ownerEmailAddress" search="true" />
-		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
-		<hb:HibachiListingColumn propertyIdentifier="balanceAmount" />
-		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
-</hb:HibachiListingDisplay>
-<hb:HibachiProcessCaller action="admin:entity.preprocessaccount" processContext="redeemGiftCard" entity="account" class="btn btn-default" icon="plus" querystring="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#" modal=true />
+	public any function getGiftCard() {
+		if(!structKeyExists(variables, "giftCard")){
+			var giftCardID = getDAO("GiftCardDAO").getIDbyCode(this.getGiftCardCode());
+			if (!isNull(giftCardID) && len(giftCardID) && !isNull(getService("GiftCardService").getGiftCard(giftCardID))){
+				variables.giftCard = getService("GiftCardService").getGiftCard(giftCardID);
+				return variables.giftCard;
+			}
+		}else {
+			return variables.giftCard;
+		}
+	}
+
+	public any function getGiftCardRedeemToAccountProcessObject() {
+		if(this.hasGiftCard()){
+			var processObject = this.getGiftCard().getProcessObject("redeemToAccount");
+			processObject.setGiftCard(this.getGiftCard());
+			return processObject;
+		}
+	}
+
+}

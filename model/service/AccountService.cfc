@@ -468,6 +468,21 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.account;
 	}
 
+    public any function processAccount_redeemGiftCard( required any account, required any processObject) {
+
+        if(processObject.hasGiftCard()){
+            var redeemToAccountProcessObject = processObject.getGiftCardRedeemToAccountProcessObject();
+            redeemToAccountProcessObject.setAccount(arguments.account);
+            var giftCard = this.getGiftCardService().process(processObject.getGiftCard(), redeemToAccountProcessObject, "redeemToAccount");
+        } else {
+            arguments.account.addError("giftCard", rbKey('admin.entity.processaccount.redeemGiftCard_failure'));
+        }
+
+        return arguments.account;
+    }
+
+
+
 	public any function processAccount_resetPassword( required any account, required any processObject ) {
 
 		// If there are no errors
