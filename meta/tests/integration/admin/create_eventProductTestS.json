@@ -195,8 +195,23 @@
     {
       "type": "clickElement",
       "locator": {
-        "type": "xpath",
-        "value": "//table[@class='ui-datepicker-calendar']//a[.='29']"
+        "type": "link text",
+        "value": "29"
+      }
+    },
+    {
+      "type": "setElementText",
+      "locator": {
+        "type": "name",
+        "value": "eventStartDateTime"
+      },
+      "text": "Jul 29, 3016 12:00 AM"
+    },
+    {
+      "type": "clickElement",
+      "locator": {
+        "type": "link text",
+        "value": "29"
       }
     },
     {
@@ -216,15 +231,23 @@
     {
       "type": "clickElement",
       "locator": {
-        "type": "xpath",
-        "value": "//table[@class='ui-datepicker-calendar']//a[.='30']"
+        "type": "link text",
+        "value": "30"
       }
+    },
+    {
+      "type": "setElementText",
+      "locator": {
+        "type": "name",
+        "value": "eventEndDateTime"
+      },
+      "text": "Jul 30, 3016 12:00 AM"
     },
     {
       "type": "clickElement",
       "locator": {
-        "type": "xpath",
-        "value": "//div[@id='ui-datepicker-div']//button[.='Done']"
+        "type": "link text",
+        "value": "30"
       }
     },
     {
