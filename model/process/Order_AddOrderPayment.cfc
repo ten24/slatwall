@@ -87,15 +87,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// ======================== START: Defaults ============================
 	public boolean function getSaveGiftCardToAccountFlag(){
 
-		if(!structKeyExists(variables, "saveGiftCardToAccountFlag")) {
-			variables.saveGiftCardToAccountFlag = 0;
-		}
-
 	    if (structKeyExists(variables, "saveGiftCardToAccountFlag") && !isNull(newOrderPayment.getGiftCardNumber())){
 	    	return variables.saveGiftCardToAccountFlag;
 	    }
 
-    	return 0;
+    	return false;
 
     }
 
@@ -227,7 +223,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 				    arrayAppend(variables.giftCardIDOptions, {name=optionName, value=giftCardArray[i].getGiftCardID()});
 			    }
 			}
-			arrayPrepend(variables.giftCardIDOptions, {name=rbKey('define.none'), value=""});
+			arrayPrepend(variables.giftCardIDOptions, {name=rbKey('define.none'), value=""}); 
 		}
 		return variables.giftCardIDOptions;
 	}
@@ -308,27 +304,32 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	// ===================== START: Helper Methods =========================
 
+	public boolean function hasGiftCard(){
+        return !isNull(this.getGiftCard()); 
+	}
+
 	public boolean function canRedeemGiftCardToAccount(){
-
-		if(!isNull(this.getGiftCard())){
-
+		if(!this.hasGiftCard()){
 			if(isNull(this.getGiftCard().getOwnerAccount())){
 				return true;
 			} else if (this.getGiftCard().getOwnerAccount().getAccountID() EQ this.getOrder().getAccount().getAccountID()) {
 				return true;
 			}
-
 		}
 
 		return false;
 	}
 
 	public boolean function canPurchaseWithGiftCard(){
-		return !this.getGiftCard().isExpired() && this.getGiftCard().getActiveFlag();
+	    if(this.hasGiftCard()){
+		    return !this.getGiftCard().isExpired() && this.getGiftCard().getActiveFlag();
+		} 
+        
+        return false; 	
 	}
 
 	public boolean function giftCardCurrencyMatches(){
-		if(!isNull(this.getGiftCard())){
+		if(this.hasGiftCard()){
 			return variables.order.getCurrencyCode() EQ this.getGiftCard().getCurrencyCode();
 		} else {
 			return false;
