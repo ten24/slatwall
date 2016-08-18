@@ -178,6 +178,14 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 			}
 		}
 		
+		// add a line item for discount
+		if(arguments.order.getDiscountTotal() > 0){
+			httpRequest.addParam(type="formfield", name="L_PAYMENTREQUEST_0_NAME#i#", value="Discount");
+			httpRequest.addParam(type="formfield", name="L_PAYMENTREQUEST_0_NUMBER#i#", value="DISCOUNT");
+			httpRequest.addParam(type="formfield", name="L_PAYMENTREQUEST_0_AMT#i#", value="-#arguments.order.getDiscountTotal()#");
+			httpRequest.addParam(type="formfield", name="L_PAYMENTREQUEST_0_QTY#i#", value="1");
+		}
+		
 		// cart totals
 		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_PAYMENTACTION", value="SALE");
 		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_ITEMAMT", value="#arguments.order.getSubTotalAfterItemDiscounts()#");
