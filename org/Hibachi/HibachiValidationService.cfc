@@ -419,6 +419,8 @@ component output="false" accessors="true" extends="HibachiService" {
 				var propertyCount = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#Count");
 				if(propertyCount==0){
 					return true;
+				}else{
+					return false;
 				}
 			}else{
 				var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");

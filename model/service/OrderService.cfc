@@ -695,20 +695,29 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
         // If this was a giftCard payment
         if(!isNull(newOrderPayment.getPaymentMethod()) && newOrderPayment.getPaymentMethod().getPaymentMethodType() eq 'giftCard'){
-            if(!len(arguments.processObject.getCopyFromType()) && !isNull(arguments.processObject.getGiftCard())){
+            if((!len(arguments.processObject.getCopyFromType()) || arguments.processObject.getCopyFromType()=="accountGiftCard")
+            	&& !isNull(arguments.processObject.getGiftCard())
+            ){
 	            var giftCard = arguments.processObject.getGiftCard();
             } else if(len(arguments.processObject.getAccountPaymentMethodID()) && getAccountService().getAccountPaymentMethod(arguments.processObject.getAccountPaymentMethodID()).isGiftCardAccountPaymentMethod()) {
             	var giftCard = getAccountService().getAccountPaymentMethod(arguments.processObject.getAccountPaymentMethodID()).getGiftCard();
             }
   			if(!isNull(giftCard)){
             	newOrderPayment.setGiftCardNumberEncrypted(giftCard.getGiftCardCode());
+            	if( arguments.order.getPaymentAmountDueAfterGiftCards() > giftCard.getBalanceAmount() ){
+					newOrderPayment.setAmount(giftCard.getBalanceAmount());
+				} else {
+					newOrderPayment.setAmount(arguments.order.getPaymentAmountDueAfterGiftCards());
+				}
             } else {
             	newOrderPayment.addError('giftCard', rbKey('validate.giftCardCode.invalid'));
-            }
+  			}
         }
 
 		// We need to call updateOrderAmounts so that if the tax is updated from the billingAddress that change is put in place.
 		arguments.order = this.processOrder( arguments.order, 'updateOrderAmounts');
+
+
 
 		// Save the newOrderPayment
 		newOrderPayment = this.saveOrderPayment( newOrderPayment );
@@ -1378,7 +1387,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 							// Update the orderPlaced
 							order.confirmOrderNumberOpenDateCloseDatePaymentAmount();
-							
+
 							// Save the order to the database
 							getHibachiDAO().save( arguments.order );
 
@@ -2918,7 +2927,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return false;
 	}
-
 	// =====================  END: Delete Overrides ===========================
 
 	// ================== START: Private Helper Functions =====================

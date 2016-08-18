@@ -46,21 +46,26 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
 <cfparam name="rc.account" type="any" />
+<cfparam name="rc.processObject" type="any" />
+<cfparam name="rc.edit" type="boolean" />
 
-<hb:HibachiListingDisplay smartList="#rc.account.getGiftCardSmartList()#"
-						  recordDetailAction="admin:entity.detailgiftcard"
-						  recordEditAction="admin:entity.editgiftcard">
+<cfoutput>
+	<hb:HibachiEntityProcessForm entity="#rc.account#" edit="#rc.edit#" sRedirectAction="admin:entity.detailaccount" forceSSLFlag="#$.slatwall.setting('globalForceCreditCardOverSSL')#">
 
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="ownerFirstName" search="true" />
-        <hb:HibachiListingColumn tdclass="primary" propertyIdentifier="ownerLastName" search="true" />
-        <hb:HibachiListingColumn tdclass="primary" propertyIdentifier="ownerEmailAddress" search="true" />
-		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
-		<hb:HibachiListingColumn propertyIdentifier="balanceAmount" />
-		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
-</hb:HibachiListingDisplay>
-<hb:HibachiProcessCaller action="admin:entity.preprocessaccount" processContext="redeemGiftCard" entity="account" class="btn btn-default" icon="plus" querystring="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#" modal=true />
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.account#" backAction="entity.detailaccount" backQueryString="accountID=#rc.account.getAccountID()#">
+		</hb:HibachiEntityActionBar>
+
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+					<!--- New Payment Type --->
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="giftCardCode" fieldName="giftCardCode" edit="#rc.edit#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
+	</hb:HibachiEntityProcessForm>
+</cfoutput>
+
