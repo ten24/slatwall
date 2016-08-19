@@ -15,7 +15,7 @@ import {UtilityService} from "./utilityservice";
 class ObserverService extends BaseService{
     private observers;
     //@ngInject
-    constructor(private utilityService){
+    constructor(public $timeout,private utilityService){
         /**
          * @ngdoc property
          * @name ObserverService#observers
@@ -102,19 +102,23 @@ class ObserverService extends BaseService{
      * @description notifies all observers of a specific event
      */
     notify = (event:string, parameters:any):void => {
-      for(var id in this.observers[event]) {
-        angular.forEach(this.observers[event][id], function (callback) {
-          callback(parameters);
-        });
-      }
+      return this.$timeout(()=>{
+        for(var id in this.observers[event]) {
+          for(var callback of this.observers[event][id]) {
+            callback(parameters);
+          };
+        }
+      });
     }
 	notifyById = (event:string, eventId:string ,parameters:any):void => {
-        for(var id in this.observers[event]) {
-            if(id != eventId) continue;
-            angular.forEach(this.observers[event][id], function (callback) {
-                callback(parameters);
-            });
-        }
+        return this.$timeout(()=>{
+          for(var id in this.observers[event]) {
+              if(id != eventId) continue;
+              angular.forEach(this.observers[event][id], function (callback) {
+                  callback(parameters);
+              });
+          }
+        });
     }
 }
 export {ObserverService};
