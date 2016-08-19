@@ -117,13 +117,8 @@ export class BaseBootStrapper{
             var n = d.getTime();
             this.instantiationKey = n.toString();
         }
-        if(!hibachiConfig){
-            hibachiConfig = {};
-        }
-        if(!hibachiConfig.baseURL){
-            hibachiConfig.baseURL = '/';
-        }
-        return this.$http.get(hibachiConfig.baseURL+'custom/config/config.json?instantiationKey='+this.instantiationKey)
+        
+        return this.$http.get(hibachiConfig.baseURL+'/custom/config/config.json?instantiationKey='+this.instantiationKey)
         .then( (resp:any)=> {
             coremodule.constant('appConfig',resp.data.data);
             localStorage.setItem('appConfig',JSON.stringify(resp.data.data));
