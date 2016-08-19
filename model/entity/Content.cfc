@@ -265,7 +265,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 		return TitlePathString;
 	}
 
-	public string function setTitle(required string title){
+	public void function setTitle(required string title){
 		//look up all children via lineage
 		var previousTitlePath = '';
 		if(!isNull(this.getTitlePath())){

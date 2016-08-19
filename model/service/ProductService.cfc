@@ -1052,6 +1052,11 @@ component extends="HibachiService" accessors="true" {
 				data.urlTitle = getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.productType.getProductTypeName(), tableName="SwProductType");
 			}
 		}
+        
+        //Do this premptively when new so the product name path will calculate
+        if(arguments.productType.getNewFlag() && structKeyExists(data, "parentProductType") && structKeyExists(data.parentProductType,"productTypeID")){
+            arguments.productType.setParentProductType(this.getProductType(data.parentProductType.productTypeID));
+        }
 
 		arguments.productType = super.save(arguments.productType, arguments.data);
 

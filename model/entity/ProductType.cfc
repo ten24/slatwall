@@ -300,6 +300,41 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 		return variables.productTypeIDPath;
 	}
 
+	public void function setProductTypeName(required string newProductTypeName) { 
+        var oldProductTypeNamePath = '';
+        if(!isNull(variables.productTypeNamePath)){
+            oldProductTypeNamePath = variables.productTypeNamePath; 
+        }
+        var children = this.getDAO('ProductDAO').getChildrenProductTypeIDs(this); 
+        variables.productTypeName = arguments.newProductTypeName;    
+        var newProductTypeNamePath = this.createProductTypeNamePath();
+        if(newProductTypeNamePath != oldProductTypeNamePath && arrayLen(children)){
+            this.getDAO('ProductDAO').updateChildrenProductTypeNamePaths(children, oldProductTypeNamePath, newProductTypeNamePath);     
+        } 
+    } 
+
+    public string function createProductTypeNamePath(){
+       var productTypeName = '';
+       if(!isNull(variables.productTypeName)){
+            productTypeName = variables.productTypeName; 
+       }
+       var parentProductTypeNamePath = ''; 
+       if(!isNull(this.getParentProductType())){
+            parentProductTypeNamePath = this.getParentProductType().getProductTypeNamePath(); 
+            if(isNull(parentProductTypeNamePath)){
+                parentProductTypeNamePath = ''; 
+            }
+       }
+       var productTypeNamePath = ''; 
+       if(len(parentProductTypeNamePath)){
+            productTypeNamePath = parentProductTypeNamePath & ' > ' & productTypeName; 
+       } else {
+            productTypeNamePath = productTypeName; 
+       }
+       this.setProductTypeNamePath(productTypeNamePath); 
+       return productTypeNamePath; 
+    }
+
 	// ==============  END: Overridden Implicet Getters ====================
 
 	// ============= START: Overridden Smart List Getters ==================
