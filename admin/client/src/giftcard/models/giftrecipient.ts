@@ -23,14 +23,14 @@ class GiftRecipient {
         this.account = false;
     }
 
-    // public reset = () =>{
-    //     this.firstName = null;
-    //     this.lastName = null;
-    //     this.emailAddress = null;
-    //     this.account = null;
-    //     this.editing = false;
-    //     this.quantity = 1;
-    // }
+    public reset = () =>{
+        this.firstName = null;
+        this.lastName = null;
+        this.emailAddress = null;
+        this.account = null;
+        this.editing = false;
+        this.quantity = 1;
+    }
 }
 export{
     GiftRecipient

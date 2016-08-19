@@ -32,7 +32,7 @@ class SWAddOrderItemRecipientController {
         }
         var count = 1;
         this.currentGiftRecipient = this.entityService.newEntity("OrderItemGiftRecipient");
-        console.log('currentGiftRecipient',this.currentGiftRecipient);
+
         if(angular.isUndefined( this.orderItemGiftRecipients)){
             this.orderItemGiftRecipients = [];
         }
@@ -46,7 +46,7 @@ class SWAddOrderItemRecipientController {
     }
 
     addGiftRecipientFromAccountList = (account:any):void =>{
-        console.log('account',account);
+
         var giftRecipient = new GiftRecipient();
         giftRecipient.firstName = account.firstName;
         giftRecipient.lastName = account.lastName;
@@ -91,33 +91,20 @@ class SWAddOrderItemRecipientController {
     }
 
     addGiftRecipient = ():void =>{
+        if(this.currentGiftRecipient.forms.createRecipient.$valid){
             this.observerService.notify('updateBindings').then(()=>{
+                this.showInvalidAddFormMessage = true;
+                this.adding = false;
 
-                console.log('currentGiftRecipient',this.currentGiftRecipient);
-                if(this.currentGiftRecipient.forms.createRecipient.$valid){
-                    this.showInvalidAddFormMessage = true;
-                    this.adding = false;
-
-                    var giftRecipient = new GiftRecipient();
-                    // giftRecipient.firstName = this.currentGiftRecipient.firstName;
-                    // giftRecipient.lastName = this.currentGiftRecipient.lastName;
-                    // giftRecipient.emailAddress = this.currentGiftRecipient.emailAddress;
-                    // giftRecipient.quantity = this.currentGiftRecipient.quantity;
-                    // giftRecipient.giftMessage = this.currentGiftRecipient.giftMessage;
-                    // console.log(this.currentGiftRecipient.data.giftMessage);
-                    // console.log(giftRecipient.giftMessage);
-                    // console.log(this.currentGiftRecipient.giftMessage);
-                    angular.extend(giftRecipient,this.currentGiftRecipient.data);
-                    this.orderItemGiftRecipients.push(giftRecipient);
-                    this.searchText = "";
-                    this.currentGiftRecipient = this.entityService.newEntity("OrderItemGiftRecipient");
-                    console.log('currentGiftRecipient',this.orderItemGiftRecipients);
-                    console.log('currentGiftRecipient',this.currentGiftRecipient);
-                } else {
-                    this.showInvalidAddFormMessage = true;
-                }
+                var giftRecipient = new GiftRecipient();
+                angular.extend(giftRecipient,this.currentGiftRecipient.data);
+                this.orderItemGiftRecipients.push(giftRecipient);
+                this.searchText = "";
+                this.currentGiftRecipient = this.entityService.newEntity("OrderItemGiftRecipient");
             });
-
+        } else {
+            this.showInvalidAddFormMessage = true;
+        }
     }
 
     cancelAddRecipient = ():void =>{

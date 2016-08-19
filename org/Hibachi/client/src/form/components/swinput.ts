@@ -79,8 +79,6 @@ class SWInputController{
 	}
 
 	public onSuccess = ()=>{
-		console.log('swInput OnSuccess');
-
 		this.utilityService.setPropertyValue(this.swForm.object,this.property,this.value);
 		if(this.swPropertyDisplay){
 			this.utilityService.setPropertyValue(this.swPropertyDisplay.object,this.property,this.value);
@@ -90,8 +88,6 @@ class SWInputController{
 			this.swfPropertyDisplay.editing = false;
 		}
 		this.utilityService.setPropertyValue(this.swFormField.object,this.property,this.value);
-
-
 	}
 
 	public getValidationDirectives = ()=>{
@@ -310,8 +306,6 @@ class SWInputController{
 		//attach a successObserver
 		if(this.object){
 			//update bindings on save success
-			;
-			console.log('eventName',this.eventNameForObjectSuccess);
 			this.observerService.attach(this.onSuccess,this.eventNameForObjectSuccess,eventNameForObjectSuccessID);
 
 			//update bindings manually
