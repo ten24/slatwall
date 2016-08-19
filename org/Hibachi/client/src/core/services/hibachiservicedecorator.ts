@@ -242,6 +242,9 @@ class HibachiServiceDecorator{
                             configurable:true,
                             enumerable:false,
                             get: function() {
+                                if(this.data[attribute.attributeCode] == null){
+                                    return undefined;
+                                }
                                 return this.data[attribute.attributeCode];
                             },
                             set: function(value) {
@@ -374,6 +377,9 @@ class HibachiServiceDecorator{
                                             enumerable:false,
 
                                             get: function() {
+                                                if(this.data[attribute.attributeCode] == null){
+                                                    return undefined;
+                                                }
 
                                                 return this.data[property.name];
                                             },
@@ -475,7 +481,9 @@ class HibachiServiceDecorator{
                                         enumerable:false,
 
                                         get: function() {
-
+                                            if(this.data[attribute.attributeCode] == null){
+                                                return undefined;
+                                            }
                                             return this.data[property.name];
                                         },
                                         set: function(value) {
@@ -518,7 +526,9 @@ class HibachiServiceDecorator{
                                             enumerable:false,
 
                                             get: function() {
-
+                                                if(this.data[attribute.attributeCode] == null){
+                                                    return undefined;
+                                                }
                                                 return this.data[property.name];
                                             },
                                             set: function(value) {
@@ -542,7 +552,9 @@ class HibachiServiceDecorator{
                                         enumerable:false,
 
                                         get: function() {
-
+                                            if(this.data[property.name] == null){
+                                                return undefined;
+                                            }
                                             return this.data[property.name];
                                         },
                                         set: function(value) {

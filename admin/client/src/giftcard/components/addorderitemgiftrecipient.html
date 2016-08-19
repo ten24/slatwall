@@ -1,12 +1,13 @@
 <!-- Process Add Order Item Gift Recipient -->
 <h5>Assign Gift Cards</h5>
+
 <input name="quantity" ng-model="addGiftRecipientControl.quantity" sw-numbers-only min-number="giftRecipientControl.getAssignedCount()" class="hide" readonly>
 <input type="hidden" name="assignedGiftRecipientQuantity" ng-value="addGiftRecipientControl.getAssignedCount()" />
 <div class="table-responsive s-gift-card-table">
 	<div ng-show="addGiftRecipientControl.showInvalidRowMessage" class="alert alert-error" role="alert" sw-rbkey="'admin.entity.addorderitemgiftrecipient.invalid'"></div>
 	<div ng-show="addGiftRecipientControl.getUnassignedCount()" class="alert alert-info" role="alert">
 	<span sw-rbkey="'admin.entity.addorderitemgiftrecipient.hint'"></span>
-	</br><strong><span sw-rbkey="'define.youhave'"></span> ({{addGiftRecipientControl.getUnassignedCount()}}) 
+	</br><strong><span sw-rbkey="'define.youhave'"></span> ({{addGiftRecipientControl.getUnassignedCount()}})
 	<span sw-rbkey="'entity.GiftCard_plural'"></span> <span sw-rbkey="'define.toAssign'"></span>.</strong></div>
 	<div ng-show="addGiftRecipientControl.getUnassignedCount() != addGiftRecipientControl.quantity">
 		<table class="table table-bordered table-hover">
@@ -39,8 +40,8 @@
 <div ng-if="addGiftRecipientControl.getUnassignedCount() > 0">
 	<div class="s-search-filter">
 
-		<div sw-typeahead-search 
-            data-collection-config="addGiftRecipientControl.typeaheadCollectionConfig"            
+		<div sw-typeahead-search
+            data-collection-config="addGiftRecipientControl.typeaheadCollectionConfig"
             data-placeholder-text="Search or Add Recipient..."
             data-add-function="addGiftRecipientControl.addGiftRecipientFromAccountList"
             data-add-button-function="addGiftRecipientControl.startFormWithName">
@@ -57,18 +58,19 @@
                 </div>
             </div>
 		</div>
-        
+
 		<sw-form data-object="addGiftRecipientControl.currentGiftRecipient" name="createRecipient" class="s-add-info-dropdown" ng-hide="!addGiftRecipientControl.adding">
 			<div class="s-add-info-dropdown-inner">
 					<h5 sw-rbkey="'admin.entity.addorderitemgiftrecipient.createRecipient'"></h5>
-					<sw-property-display data-object="addGiftRecipientControl.currentGiftRecipient" data-property="firstName" data-editing="true" ></sw-property-display>
-					<sw-property-display data-object="addGiftRecipientControl.currentGiftRecipient" data-property="lastName" data-editing="true"></sw-property-display>
-					<sw-property-display data-object="addGiftRecipientControl.currentGiftRecipient" data-property="emailAddress" data-editing="true"></sw-property-display>
-					<sw-property-display data-object="addGiftRecipientControl.currentGiftRecipient" data-property="giftMessage" data-editing="true"></sw-property-display>
+					<sw-property-display  data-property="firstName" data-editing="true" ></sw-property-display>
+					<sw-property-display  data-property="lastName" data-editing="true"></sw-property-display>
+					<sw-property-display  data-property="emailAddress" data-editing="true"></sw-property-display>
+					{{addGiftRecipientControl.currentGiftRecipient.giftMessage}}
+					<sw-property-display  data-property="giftMessage" data-editing="true"></sw-property-display>
 					<div class="s-character-count">
 						<span sw-rbkey="'define.remainingcharacters'"></span>: <strong><span ng-bind="addGiftRecipientControl.getMessageCharactersLeft()"></span></strong>
 					</div>
-					<sw-property-display data-object="addGiftRecipientControl.currentGiftRecipient" data-property="quantity" data-editing="true" data-field-type="select" data-options="addGiftRecipientControl.getUnassignedCountArray()"></sw-property-display>
+					<sw-property-display  data-property="quantity" data-editing="true" data-field-type="select" data-options="addGiftRecipientControl.getUnassignedCountArray()"></sw-property-display>
 				<div class="alert alert-error" ng-show="addGiftRecipientControl.showInvalidAddFormMessage" sw-rbkey="'admin.entity.addorderitemgiftrecipient.invalid'"></div>
 				<div>
 					<button type="button" class="btn btn-sm btn-primary" ng-click="addGiftRecipientControl.addGiftRecipient(addGiftRecipientControl.addGiftRecipientForm.$valid)" sw-rbkey="'define.add'"></button>

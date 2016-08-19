@@ -62,11 +62,13 @@ abstract class BaseEntityService extends BaseObject{
             //throw('need to add '+ objectName+' class');
         }
 
-        for(var key in entity){
-            if(entity[key] === null){
-                entity[key] = undefined
-            }
-        }
+        // for(var key in entity){
+        //     console.log('set undefined',entity[key] === null);
+        //     if(entity[key] == null){
+        //         entity[key] = undefined
+
+        //     }
+        // }
         return entity;
     }
 

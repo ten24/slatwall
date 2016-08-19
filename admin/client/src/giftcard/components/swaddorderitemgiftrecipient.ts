@@ -4,13 +4,13 @@ import {GiftRecipient} from "../models/giftrecipient";
 
 class SWAddOrderItemRecipientController {
 
-	public adding:boolean; 
+	public adding:boolean;
     public assignedCount:number;
     public unassignedCount:number;
-    public orderItemGiftRecipients; 
+    public orderItemGiftRecipients;
     public quantity:number;
-    public searchText:string; 
-    public collection;  
+    public searchText:string;
+    public collection;
     public currentGiftRecipient;
     public showInvalidRowMessage;
     public unassignedCountArray = [];
@@ -18,68 +18,70 @@ class SWAddOrderItemRecipientController {
     public tableForm;
     public showInvalidAddFormMessage:boolean;
     public typeaheadCollectionConfig
-    
+
     //@ngInject
-    constructor(private $hibachi, private collectionConfigService){
+    constructor(private $hibachi, private collectionConfigService, public entityService, public observerService){
         if(angular.isUndefined(this.adding)){
-            this.adding = false; 
+            this.adding = false;
         }
         if(angular.isUndefined(this.assignedCount)){
-            this.assignedCount = 0; 
+            this.assignedCount = 0;
         }
         if(angular.isUndefined(this.searchText)){
-            this.searchText = ""; 
+            this.searchText = "";
         }
         var count = 1;
-        this.currentGiftRecipient = $hibachi.newEntity("OrderItemGiftRecipient");
+        this.currentGiftRecipient = this.entityService.newEntity("OrderItemGiftRecipient");
+        console.log('currentGiftRecipient',this.currentGiftRecipient);
         if(angular.isUndefined( this.orderItemGiftRecipients)){
             this.orderItemGiftRecipients = [];
         }
         if(angular.isUndefined(this.showInvalidAddFormMessage)){
             this.showInvalidAddFormMessage = false;
         }
-        
+
         this.typeaheadCollectionConfig = collectionConfigService.newCollectionConfig('Account');
         this.typeaheadCollectionConfig.addDisplayProperty("accountID,firstName,lastName,primaryEmailAddress.emailAddress");
         this.typeaheadCollectionConfig.addFilter("primaryEmailAddress","null","is not");
     }
-    
+
     addGiftRecipientFromAccountList = (account:any):void =>{
+        console.log('account',account);
         var giftRecipient = new GiftRecipient();
-        giftRecipient.firstName = account.firstName; 
-        giftRecipient.lastName = account.lastName; 
+        giftRecipient.firstName = account.firstName;
+        giftRecipient.lastName = account.lastName;
         giftRecipient.emailAddress = account.primaryEmailAddress_emailAddress;
-        giftRecipient.account = true; 
-        this.orderItemGiftRecipients.push(giftRecipient); 
-        this.searchText = "";   
+        giftRecipient.account = true;
+        this.orderItemGiftRecipients.push(giftRecipient);
+        this.searchText = "";
     }
-    
-    getUnassignedCountArray = ():number[] =>{   
+
+    getUnassignedCountArray = ():number[] =>{
         if(this.getUnassignedCount() < this.unassignedCountArray.length){
-            this.unassignedCountArray.splice(this.getUnassignedCount(), this.unassignedCountArray.length);  
-        }  
-        if (this.getUnassignedCount() > this.unassignedCountArray.length) {     
+            this.unassignedCountArray.splice(this.getUnassignedCount(), this.unassignedCountArray.length);
+        }
+        if (this.getUnassignedCount() > this.unassignedCountArray.length) {
             for(var i = this.unassignedCountArray.length+1; i <= this.getUnassignedCount(); i++ ){
                 this.unassignedCountArray.push({name:i,value:i});
             }
         }
-        return this.unassignedCountArray; 
+        return this.unassignedCountArray;
     }
-    
+
     getAssignedCount = ():number =>{
-    
-        this.assignedCount = 0; 
-        
+
+        this.assignedCount = 0;
+
         angular.forEach(this.orderItemGiftRecipients,(orderItemGiftRecipient)=>{
                 this.assignedCount += orderItemGiftRecipient.quantity;
         });
-        
-        return this.assignedCount; 
+
+        return this.assignedCount;
 
     }
 
     getUnassignedCount = ():number =>{
-        this.unassignedCount = this.quantity; 
+        this.unassignedCount = this.quantity;
 
         angular.forEach(this.orderItemGiftRecipients,(orderItemGiftRecipient)=>{
                 this.unassignedCount -= orderItemGiftRecipient.quantity;
@@ -89,34 +91,50 @@ class SWAddOrderItemRecipientController {
     }
 
     addGiftRecipient = ():void =>{
-            if(this.currentGiftRecipient.forms.createRecipient.$valid){
-                this.showInvalidAddFormMessage = true;
-                this.adding = false; 
-                var giftRecipient = new GiftRecipient();
-                angular.extend(giftRecipient,this.currentGiftRecipient.data);
-                this.orderItemGiftRecipients.push(giftRecipient);
-                this.searchText = ""; 
-                this.currentGiftRecipient = this.$hibachi.newEntity("OrderItemGiftRecipient"); 
-            } else { 
-                this.showInvalidAddFormMessage = true;
-            }
+            this.observerService.notify('updateBindings').then(()=>{
+
+                console.log('currentGiftRecipient',this.currentGiftRecipient);
+                if(this.currentGiftRecipient.forms.createRecipient.$valid){
+                    this.showInvalidAddFormMessage = true;
+                    this.adding = false;
+
+                    var giftRecipient = new GiftRecipient();
+                    // giftRecipient.firstName = this.currentGiftRecipient.firstName;
+                    // giftRecipient.lastName = this.currentGiftRecipient.lastName;
+                    // giftRecipient.emailAddress = this.currentGiftRecipient.emailAddress;
+                    // giftRecipient.quantity = this.currentGiftRecipient.quantity;
+                    // giftRecipient.giftMessage = this.currentGiftRecipient.giftMessage;
+                    // console.log(this.currentGiftRecipient.data.giftMessage);
+                    // console.log(giftRecipient.giftMessage);
+                    // console.log(this.currentGiftRecipient.giftMessage);
+                    angular.extend(giftRecipient,this.currentGiftRecipient.data);
+                    this.orderItemGiftRecipients.push(giftRecipient);
+                    this.searchText = "";
+                    this.currentGiftRecipient = this.entityService.newEntity("OrderItemGiftRecipient");
+                    console.log('currentGiftRecipient',this.orderItemGiftRecipients);
+                    console.log('currentGiftRecipient',this.currentGiftRecipient);
+                } else {
+                    this.showInvalidAddFormMessage = true;
+                }
+            });
+
     }
-    
+
     cancelAddRecipient = ():void =>{
-        this.adding = false; 
+        this.adding = false;
         this.currentGiftRecipient.reset();
-        this.searchText = ""; 
+        this.searchText = "";
         this.showInvalidAddFormMessage = false;
     }
 
     startFormWithName = (searchString = this.searchText):void =>{
-        this.adding = !this.adding; 
+        this.adding = !this.adding;
         if(this.adding){
             this.currentGiftRecipient.forms.createRecipient.$setUntouched();
             this.currentGiftRecipient.forms.createRecipient.$setPristine();
             if(searchString != ""){
-                this.currentGiftRecipient.firstName = searchString; 
-                this.searchText = ""; 
+                this.currentGiftRecipient.firstName = searchString;
+                this.searchText = "";
             }
         }
     }
@@ -129,11 +147,11 @@ class SWAddOrderItemRecipientController {
         return totalQuantity;
     }
 
-    getMessageCharactersLeft = ():number =>{                
-        if(this.currentGiftRecipient.giftMessage != null){ 
+    getMessageCharactersLeft = ():number =>{
+        if(this.currentGiftRecipient.giftMessage && this.currentGiftRecipient.giftMessage != null){
             return 250 - this.currentGiftRecipient.giftMessage.length;
-        } else { 
-            return 250; 
+        } else {
+            return 250;
         }
     }
 
@@ -142,27 +160,27 @@ class SWAddOrderItemRecipientController {
 class SWAddOrderItemGiftRecipient implements ng.IDirective{
 
 	public static $inject=["$hibachi"];
-    public templateUrl; 
+    public templateUrl;
     public require = "^form";
     public restrict = "EA";
-    public transclude = true; 
-    public scope = {};  
-    
+    public transclude = true;
+    public scope = {};
+
     public bindToController = {
-        "quantity":"=?", 
-        "orderItemGiftRecipients":"=?", 
-        "adding":"=?", 
-        "searchText":"=?", 
+        "quantity":"=?",
+        "orderItemGiftRecipients":"=?",
+        "adding":"=?",
+        "searchText":"=?",
         "currentgiftRecipient":"=?",
         "showInvalidAddFormMessage":"=?",
         "showInvalidRowMessage":"=?",
         "tableForm":"=?",
         "recipientAddForm":"=?"
     };
-    
+
     public controller=SWAddOrderItemRecipientController;
     public controllerAs="addGiftRecipientControl";
-    
+
 	public static Factory():ng.IDirectiveFactory{
         var directive:ng.IDirectiveFactory = (
             $hibachi,
@@ -180,7 +198,7 @@ class SWAddOrderItemGiftRecipient implements ng.IDirective{
         ];
         return directive;
     }
-    
+
 	constructor(
 		private $hibachi,
 	    private giftCardPartialsPath,
