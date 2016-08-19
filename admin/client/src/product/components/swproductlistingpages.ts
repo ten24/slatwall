@@ -20,7 +20,7 @@ class SWProductListingPagesController {
         private utilityService
     ){
         this.collectionConfig = collectionConfigService.newCollectionConfig("Content"); 
-        this.collectionConfig.addDisplayProperty("contentID, title, activeFlag, site.siteName");
+        this.collectionConfig.addDisplayProperty("contentID, title, activeFlag, site.siteName, titlePath");
         
         this.typeaheadDataKey = utilityService.createID(32); 
         

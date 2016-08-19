@@ -19,7 +19,7 @@ class SWAssignedProductsController {
         console.log("edit", this.edit);
         console.log("sort prop", this.productSortProperty);
         this.collectionConfig = collectionConfigService.newCollectionConfig("Product"); 
-        this.collectionConfig.addDisplayProperty("productID,productName,productDescription,activeFlag,publishedFlag");
+        this.collectionConfig.addDisplayProperty("productID,productName,productDescription,activeFlag,publishedFlag,productType.productTypeNamePath");
         this.alreadySelectedProductsCollectionConfig = collectionConfigService.newCollectionConfig("ProductListingPage"); 
         this.alreadySelectedProductsCollectionConfig.addDisplayProperty("productListingPageID,sortOrder,product.productID,product.productName,product.productDescription,product.activeFlag,product.publishedFlag");
         this.alreadySelectedProductsCollectionConfig.addFilter("content.contentID", this.contentId, "=");

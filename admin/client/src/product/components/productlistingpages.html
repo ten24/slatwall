@@ -48,6 +48,7 @@
                                     data-selection-field-name="assignedContentIDList"
                                     data-typeahead-data-key="{{swProductListingPages.typeaheadDataKey}}"
                                     data-fallback-properties-to-compare="content_contentID"
+                                    data-right-content-property-identifier="titlePath"
                                     >
                             <sw-typeahead-search-line-item data-property-identifier="title"></sw-typeahead-search-line-item>
                         </sw-typeahead-multiselect>
@@ -65,7 +66,7 @@
             </sw-custom-listing-controls>
 
              <sw-listing-delete-action>
-                <sw-typeahead-remove-selection data-disabled="!swAssignedProducts.edit" data-typeahead-data-key="{{swProductListingPages.typeaheadDataKey}}"></sw-typeahead-remove-selection>
+                <sw-typeahead-remove-selection data-disabled="!swProductListingPages.edit" data-typeahead-data-key="{{swProductListingPages.typeaheadDataKey}}"></sw-typeahead-remove-selection>
             </sw-listing-delete-action>
         </sw-listing-display>
     </sw-tab-content>
