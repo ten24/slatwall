@@ -51,7 +51,7 @@ component entityname="SlatwallFileRelationship" table="SwFileRelationship" persi
 	// Persistent Properties
 	property name="fileRelationshipID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="baseObject" ormType="string";
-	property name="baseID" ormType="string";
+	property name="baseID" ormType="string" index="PI_BASEID";
 	// Calculated Properties
 
 	// Related Object Properties (many-to-one)
