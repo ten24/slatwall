@@ -117,7 +117,12 @@ export class BaseBootStrapper{
             var n = d.getTime();
             this.instantiationKey = n.toString();
         }
-
+        if(!hibachiConfig){
+            hibachiConfig = {};
+        }
+        if(!hibachiConfig.baseURL){
+            hibachiConfig.baseURL = '/';
+        }
         return this.$http.get(hibachiConfig.baseURL+'custom/config/config.json?instantiationKey='+this.instantiationKey)
         .then( (resp:any)=> {
             coremodule.constant('appConfig',resp.data.data);
@@ -148,7 +153,7 @@ export class BaseBootStrapper{
             }
         ).success((response:any,status,headersGetter) => {
             this._resourceBundle[locale] = response;
-            
+
             deferred.resolve(response);
         }).error((response:any,status) => {
             if(status === 404){
