@@ -2,7 +2,11 @@
 <cfparam name="this.datasource.name" />
 <cfparam name="this.datasource.username" default="" />
 <cfparam name="this.datasource.password" default="" />
-
+<!--- Just in case the it picks up on the entity first --->
+<cfquery name="local.updateSwProductListingPageAddColumn" datasource="#this.datasource.name#">
+    ALTER TABLE SwProductListingPage
+    DROP Column productListingPageID
+</cfquery>
 <cfquery name="local.updateSwProductListingPageAddColumn" datasource="#this.datasource.name#">
     ALTER TABLE SwProductListingPage
     ADD productListingPageID VARCHAR(32)
