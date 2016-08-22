@@ -77,36 +77,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		    assertTrue(result);
 	}
 	
-	public any function getPrimaryAddressTest()
-	{
-		primaryAddressData={
-				
-				locationAddressID="",
-				locationAddressName=""
-				
-			               };
-		
-		 var mockPrimaryAddress= create persistedTestEntity('Location', primaryAddressData);
-		  
-		locationData= {
-			locationID="",
-			locationName="",
-			primaryAddress=mockPrimaryAddress.locationAddressID()
-			};
-			             
-			               
-//			 locationAddress=[
-//			 {
-//				locationAddressID="hd",
-//				locationAddressName="name"
-//			 }
-//			 ]
-
-
-			var mockLocation = createPersistedTestEntity('Location',locationData);
-	        var result= mockLocation.getPrimaryAddress();
-			//request.debug(result);
-	}
+	
 	
 	public any function getBaseLocationTest()
 	{
@@ -173,7 +144,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		locationID="",
 		locationName="illinois"
 	};
-	var mockParentLocation = createPersistedTestEntity('location',parentLocationData);
+	var mockParentLocation = createPersistedTestEntity('Location',parentLocationData);
 	
 	var locationData={
 		locationID="s",
@@ -232,5 +203,37 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		assertEquals(1, test);
 	}
+	
+/*	public any function getPrimaryAddressTest()
+	{
+		primaryAddressData={
+				
+				locationAddressID="ya",
+				locationAddressName=""
+				
+			               };
+		
+   var mockPrimaryAddress = createPersistedTestEntity('Location',primaryAddressData);
+		
+		locationData= {
+			locationID="",
+			locationName="",
+			primaryAddress=mockPrimaryAddress.getLocationAddressID()
+			};
+			             
+			               
+			 locationAddress=[
+			 {
+				locationAddressID="hd",
+				locationAddressName="name"
+			 }
+			 ]
+
+
+			var mockLocation = createPersistedTestEntity('Location',locationData);
+	        var result= mockLocation.getPrimaryAddress();
+			request.debug(result);
+	}
+	*/
 	}
 	
