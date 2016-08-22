@@ -77,30 +77,36 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		    assertTrue(result);
 	}
 	
-//	public any function getPrimaryAddressTest()
-//	{
-//		locationData= {
-//			locationID="wq",
-//			locationName="delhi",
-//			primaryAddress={
-//				
-//				locationAddressID="dw",
-//				locationAddressName="MyName"
-//				
-//			               }
-//			               
-////			 locationAddress=[
-////			 {
-////				locationAddressID="hd",
-////				locationAddressName="name"
-////			 }
-////			 ]
-//			           };
-//		
-//			var mockLocation = createTestEntity('Location',locationData);
-//	        var result= mockLocation.getPrimaryAddress();
-//			//request.debug(result);
-//	}
+	public any function getPrimaryAddressTest()
+	{
+		primaryAddressData={
+				
+				locationAddressID="",
+				locationAddressName=""
+				
+			               };
+		
+		 var mockPrimaryAddress= create persistedTestEntity('Location', primaryAddressData);
+		  
+		locationData= {
+			locationID="",
+			locationName="",
+			primaryAddress=mockPrimaryAddress.locationAddressID()
+			};
+			             
+			               
+//			 locationAddress=[
+//			 {
+//				locationAddressID="hd",
+//				locationAddressName="name"
+//			 }
+//			 ]
+
+
+			var mockLocation = createPersistedTestEntity('Location',locationData);
+	        var result= mockLocation.getPrimaryAddress();
+			//request.debug(result);
+	}
 	
 	public any function getBaseLocationTest()
 	{
@@ -184,7 +190,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(result, "illinois &raquo; Sunny");
 	}	
 
-   public string function getLocationIDPathTest() 
+   public void function getLocationIDPathTest() 
    {
 	var locationData={
 		locationID="",
@@ -192,9 +198,39 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	
   };
   
-	var mockLocation= createTestEntity('Location', locationData);
+	    var mockLocation= createTestEntity('Location', locationData);
 		var result= mockLocation.getLocationIDPath();
+	
 		assertEquals("IAmThePath",result);
+	}
+	
+   public void function getLocationIDPathTest2()
+   {
+   	parentLocationData={
+			locationID="",
+			locationIDPath="Sunny"
+		};
+	 mockParentLocation=createPersistedTestEntity('Location', parentLocationData);
+  
+	var locationData={
+		locationID="",
+		parentLocation={
+			locationID= mockParentLocation.getLocationID()
+		}
+		};
+		
+		
+  
+	var mockLocation= createPersistedTestEntity('Location', locationData);
+		var result= mockLocation.getLocationIDPath();
+		request.debug(result);
+		var test=0;
+		if(!isNull(result))
+		{
+			test=1;
+		}
+		
+		assertEquals(1, test);
 	}
 	}
 	
