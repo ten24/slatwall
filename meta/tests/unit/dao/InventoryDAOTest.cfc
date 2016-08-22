@@ -97,7 +97,65 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals([],variables.dao.getQNROSA(productID="1", productRemoteID="1"));
 	}	
 	
+	public any function getQOHTest() {
+		var mockProduct = createMockProduct();
+		var mockLocation = createMockLocation();
+		var mockSku = createMockSku(mockProduct.getProductID());
+		
+		var stockData = {
+			stockID = '',
+			sku = {
+				skuID = mockSku.getSkuID()
+			},
+			location = {
+				locationID = mockLocation.getLocationID()
+			}
+		};
+		var mockStock = createPersistedTestEntity('Stock', stockData);
+		
+		var inventoryData = {
+			inventoryID = '',
+			stock =  {
+				stockID = mockStock.getStockID()
+			},
+			quantityIn = 100,
+			quantityOut = 30
+		};
+		var mockInventory = createPersistedTestEntity('Inventory', inventoryData);
+		
+		var result = variables.dao.getQOH(mockProduct.getProductID());
+		assertEquals(70, result[1].QOH, 'It should be 100-30 = 70');
+//		assertEquals(mockLocation.getLocationID(), result[1].locationID, 'The locationID should be same with the mockLocationID');
+	}
+	//============ START: Helpers to mock the data ============
+	private any function createMockProduct() {
+		var productData = {
+			productID = ''
+		};
+		return createPersistedTestEntity('Product', productData);
+	}
+	private any function createMockLocation() {
+		var locationData = {
+			locationID = '',
+			locationIDPath = 'a/bb'
+		};
+		return createPersistedTestEntity('Location', locationData);
+	}
 	
+	private function createMockSku(string productID='') {
+		var skuData = {
+			skuID = ''
+		};
+		if(len(arguments.productID)) {
+			skuData.product = {
+				productID = arguments.productID
+			};
+		}
+		return createPErsistedTestEntity('Sku', skuData);
+	}
+	
+	
+	//============ END: Helpers to mock the data ==============
 }
 
 
