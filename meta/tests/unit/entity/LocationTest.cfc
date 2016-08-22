@@ -159,6 +159,32 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		request.debug(result);
 	}
 	
+	public void function getLocationPathNameTest2()
+	{
+		
+		
+	var parentLocationData={
+		locationID="",
+		locationName="illinois"
+	};
+	var mockParentLocation = createPersistedTestEntity('location',parentLocationData);
+	
+	var locationData={
+		locationID="s",
+		locationIDPath="",
+		locationName="Sunny",
+		parentLocation={
+			locationID=mockParentLocation.getLocationID()
+		               }
+	};
+	
+	
+		var mockLocation= createPersistedTestEntity('Location', locationData);
+		var result= mockLocation.getLocationPathName();
+		assertEquals(result, "illinois &raquo; Sunny");
+	}	
+
+	
 	}
 	
 	
