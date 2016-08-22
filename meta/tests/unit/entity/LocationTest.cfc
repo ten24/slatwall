@@ -184,7 +184,17 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(result, "illinois &raquo; Sunny");
 	}	
 
+   public string function getLocationIDPathTest() 
+   {
+	var locationData={
+		locationID="",
+		locationIDPath="IAmThePath"
 	
+  };
+  
+	var mockLocation= createTestEntity('Location', locationData);
+		var result= mockLocation.getLocationIDPath();
+		assertEquals("IAmThePath",result);
 	}
-	
+	}
 	
