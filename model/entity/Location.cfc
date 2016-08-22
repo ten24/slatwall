@@ -194,11 +194,17 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	}
 	
 	public string function getSimpleRepresentation() {
+		
 		if(!isNull(getParentLocation())) {
 			return getParentLocation().getSimpleRepresentation() & " &raquo; " & getLocationName();
 		}
-		return getLocationName();
+		
+		if(!isNull(getLocationName())){
+			return getLocationName();	
+		}
+		return '';
 	}
+	
 	
 	// ==================  END:  Overridden Methods ========================
 		

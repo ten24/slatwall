@@ -52,9 +52,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	public void function setUp() 
 	{
 		super.setup();
-variables.entity = request.slatwallScope.getService("LocationService").newLocation();
-		//variables.entityService = "LocationService";
-	// variables.entity = request.slatwallScope.getService( variables.entityService ).newAccount();
+    variables.entity = request.slatwallScope.getService("LocationService").newLocation();
+		
     }
     
     
@@ -113,6 +112,7 @@ variables.entity = request.slatwallScope.getService("LocationService").newLocati
 	var mockLocation=createPersistedTestEntity('location',locationData);
    	
    	var locationConfigurationData={
+   		
    		locationConfigurationID="",
    		location={
    			locationID=mockLocation.getLocationID()
