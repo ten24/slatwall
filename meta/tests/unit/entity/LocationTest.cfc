@@ -76,18 +76,25 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	     
 		    assertTrue(result);
 	}
-//	
+	
 //	public any function getPrimaryAddressTest()
 //	{
 //		locationData= {
-//			locationID="",
-//			locationName="",
+//			locationID="wq",
+//			locationName="delhi",
 //			primaryAddress={
 //				
-//				locationAddressID="",
+//				locationAddressID="dw",
 //				locationAddressName="MyName"
 //				
 //			               }
+//			               
+////			 locationAddress=[
+////			 {
+////				locationAddressID="hd",
+////				locationAddressName="name"
+////			 }
+////			 ]
 //			           };
 //		
 //			var mockLocation = createTestEntity('Location',locationData);
@@ -108,4 +115,38 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	    var outputExpected= "sunny";
 	    assertEquals(outputExpected, result);
 	}
-}
+	
+	public void function isDeletableTest()
+	{
+		locationData= {
+			locationID="",
+			childLocations=[
+							 {
+								locationID=""
+							 },
+							 {
+								locationID=""
+							 }
+			
+			               ]
+			           };
+	
+	var mockLocation = createPersistedTestEntity('Location',locationData);
+	    var result= mockLocation.isDeletable();
+	assertTrue(result);
+	}
+	
+	
+	public void function isDeletableTest2()
+	{
+		locationData2= {
+			locationID=""
+			};
+	
+	var mockLocation = createPersistedTestEntity('Location',locationData2);
+	    var result= mockLocation.isDeletable();
+	request.debug(2,result);
+	}
+	}
+	
+	
