@@ -156,7 +156,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		var mockLocation= createPersistedTestEntity('Location', locationData);
 		var result= mockLocation.getLocationPathName();
-		request.debug(result);
+		assertEquals("stark",result);
 	}
 	
 	public void function getLocationPathNameTest2()
