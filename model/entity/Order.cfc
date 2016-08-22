@@ -395,8 +395,8 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
     		&& !isNull(getAccount()) 
     		&& !getAccount().getGuestAccountFlag() 
     		&& isNull(getShippingAccountAddress()) 
-    		&& !isNull(getShippingAddress()) && 
-    		!getShippingAddress().hasErrors()
+    		&& !isNull(getShippingAddress()) 
+    		&& !getShippingAddress().hasErrors()
     	  ) {
 
     		// Create a New Account Address, Copy over Shipping Address, and save
