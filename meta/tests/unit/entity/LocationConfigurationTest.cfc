@@ -52,22 +52,24 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	public void function setUp() 
 	{
 		super.setup();
-
-		variables.entityService = "LocationService";
-	variables.entity = request.slatwallScope.getService( variables.entityService ).newAccount();
+variables.entity = request.slatwallScope.getService("LocationService").newLocation();
+		//variables.entityService = "LocationService";
+	// variables.entity = request.slatwallScope.getService( variables.entityService ).newAccount();
     }
     
     
-    public any function getLocationPathNameTest() {
+    public any function getLocationPathNameTest() 
+    
+    {
     	
     	var locationConfigurationData={
     		
     		locationConfigurationID=""	, 
     		location={
     			locationID="sahu",
-    			locationPathName="sunny"
-    		}
-    	};
+    			locationPathName="sunny" //gets this location name
+    		         }
+    	     };
     	
     	var mockLocationConfiguration = createTestEntity('LocationConfiguration',locationConfigurationData);
 		var result= mockLocationConfiguration.getLocationPathName();
@@ -89,35 +91,38 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	
     	assertEquals("I am the path name", result);
     
-}
-public any function getLocationTreeTest(){
+    }
+    public any function getLocationTreeTest(){
 	
 	var parentLocationData={
 		locationID="",
 		locationName="parentLocation"
 	};
+	
 	var parentLocation = createPersistedTestEntity('location',parentLocationData);
 	
 	var locationData={
-		locationID="",
-		locationName="locationName",
-		parentLocation={
+		 locationID="",
+		 locationName="locationName",
+		
+		 parentLocation={
 			locationID=parentLocation.getLocationID()
-		}
+		               }
 	};
+	
 	var mockLocation=createPersistedTestEntity('location',locationData);
    	
    	var locationConfigurationData={
    		locationConfigurationID="",
    		location={
    			locationID=mockLocation.getLocationID()
-   		}
+   		         }
    	};
    	
 	
-   	 var mockLocationConfiguration= createPersistedTestEntity('LocationConfiguration', locationConfigurationData);
+   	var mockLocationConfiguration= createPersistedTestEntity('LocationConfiguration', locationConfigurationData);
 
-	var valueAfterAppendIsDone= "parentLocation &raquo; locationName";
+	var valueAfterAppendIsDone= "parentLocation &raquo; locationName"; //valuse after append operation done
    	 
    	var result= mockLocationConfiguration.getLocationTree();
    
@@ -126,7 +131,7 @@ public any function getLocationTreeTest(){
    	
    } 
    
-   public any function getLocationPathNameTest3(){
+    public any function getLocationPathNameTest3(){
 	
 	var parentLocationData={
 		locationID="",
@@ -139,8 +144,9 @@ public any function getLocationTreeTest(){
 		locationName="locationName",
 		parentLocation={
 			locationID=mockParentLocation.getLocationID()
-		}
+		               }
 	};
+	
 	var mockLocation=createPersistedTestEntity('location',locationData);
    	
    	var locationConfigurationData={
@@ -156,4 +162,6 @@ public any function getLocationTreeTest(){
     	var result= mockLocationConfiguration.getLocationPathName();
     	var finalValueReturned= "mumbai &raquo; locationName";
     	assertEquals(finalValueReturned, result);
-}}
+  
+   }
+}
