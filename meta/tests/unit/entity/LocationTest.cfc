@@ -99,9 +99,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 //		
 //			var mockLocation = createTestEntity('Location',locationData);
 //	        var result= mockLocation.getPrimaryAddress();
-//			request.debug(result);
+//			//request.debug(result);
 //	}
-//	
+	
 	public any function getBaseLocationTest()
 	{
 		
@@ -144,9 +144,21 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			};
 	
 	var mockLocation = createPersistedTestEntity('Location',locationData2);
-	    var result= mockLocation.isDeletable();
+	   var result= mockLocation.isDeletable();
 	request.debug(2,result);
+	 }
+	
+	public void function getLocationPathNameTest()
+	{
+		locationData={
+			locationID="",
+			locationPathName="stark"
+		};
+		var mockLocation= createPersistedTestEntity('Location', locationData);
+		var result= mockLocation.getLocationPathName();
+		request.debug(result);
 	}
+	
 	}
 	
 	
