@@ -21,14 +21,7 @@
 
 			<cfif ( listFindNoCase("creditCard,termPayment", rc.orderPayment.getPaymentMethodType()) or not isNull(rc.orderPayment.getBillingAddress()) ) and rc.orderPayment.getPaymentMethodType() neq "giftCard">
 				<hr />
-				<hb:HibachiPropertyDisplay object="#rc.orderPayment.getBillingAddress()#" property="name" edit="#rc.edit#" title="Address nickname"/>
-				<hb:HibachiPropertyDisplay object="#rc.orderPayment.getBillingAddress()#" property="company" edit="#rc.edit#" />
-				<hb:HibachiPropertyDisplay object="#rc.orderPayment.getBillingAddress()#" property="streetAddress" edit="#rc.edit#" />
-				<hb:HibachiPropertyDisplay object="#rc.orderPayment.getBillingAddress()#" property="street2Address" edit="#rc.edit#" />
-				<hb:HibachiPropertyDisplay object="#rc.orderPayment.getBillingAddress()#" property="city" edit="#rc.edit#" />
-				<hb:HibachiPropertyDisplay object="#rc.orderPayment.getBillingAddress()#" property="stateCode" edit="#rc.edit#" />
-				<hb:HibachiPropertyDisplay object="#rc.orderPayment.getBillingAddress()#" property="postalCode" edit="#rc.edit#" />
-				<hb:HibachiPropertyDisplay object="#rc.orderPayment.getBillingAddress()#" property="countryCode" edit="#rc.edit#" />
+				<swa:SlatwallAdminAddressDisplay address="#rc.orderPayment.getBillingAddress()#" fieldnameprefix="billingAddress." edit="#rc.edit#">
 			</cfif>
 		</hb:HibachiPropertyList>
 		<hb:HibachiPropertyList divClass="col-md-6">

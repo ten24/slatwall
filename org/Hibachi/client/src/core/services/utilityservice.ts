@@ -8,6 +8,11 @@ class UtilityService extends BaseService{
         super();
 
     }
+    //used to do inheritance at runtime
+    public extend = (ChildClass, ParentClass)=> {
+        ChildClass.prototype = new ParentClass();
+        ChildClass.prototype.constructor = ChildClass;
+    }
 
     public getQueryParamsFromUrl = (url) =>{
       // This function is anonymous, is executed immediately and
@@ -167,7 +172,7 @@ class UtilityService extends BaseService{
         var end = start + count;
         return stringItem.substring(start,end);
     };
-    
+
     public getPropertiesFromString = (stringItem:string):Array<string> =>{
             if(!stringItem) return;
             var capture = false;
@@ -190,7 +195,7 @@ class UtilityService extends BaseService{
 
         public replacePropertiesWithData = (stringItem:string, data)=>{
             var results = this.getPropertiesFromString(stringItem);
-            for(var i=0; i < results.length; i++){ 
+            for(var i=0; i < results.length; i++){
                 stringItem = stringItem.replace('${'+results[i]+'}', data[i]);
             }
             return stringItem;
@@ -224,8 +229,49 @@ class UtilityService extends BaseService{
               return array.join();
           }
     };
-      
-      public isDescendantElement = (parent, child) => {
+
+
+    public getPropertyValue=(object, propertyIdentifier):void=> {
+
+        var keys = propertyIdentifier.split('.'), obj = object, keyPart;
+        while ((keyPart = keys.shift()) && keys.length) {
+            obj = obj[keyPart];
+        }
+        return obj[keyPart];
+
+    }
+
+    public setPropertyValue=(object, propertyIdentifier,value):void=> {
+
+        var keys = propertyIdentifier.split('.'), obj = object, keyPart;
+
+
+        while ((keyPart = keys.shift()) && keys.length) {
+            if(!obj[keyPart]){
+                obj[keyPart] = {};
+            }
+            obj = obj[keyPart];
+
+        }
+        obj[keyPart] = value;
+
+
+
+    };
+
+    public nvpToObject=(NVPData):{}=>{
+        var object = {};
+        for(var key in NVPData){
+            var value = NVPData[key];
+            var propertyIdentitifer = key.replace(/\_/g,'.');
+            this.setPropertyValue(object,propertyIdentitifer,value);
+
+
+        }
+        return object;
+    };
+
+    public isDescendantElement = (parent, child) => {
         var node = child.parentNode;
         while (node != null) {
             if (node == parent) {

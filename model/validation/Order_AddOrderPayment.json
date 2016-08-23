@@ -20,10 +20,10 @@
     	}
 	},
 	"properties":{
+        "giftCardID": [{"conditions":"redeemGiftCardToAccount", "method":"canRedeemGiftCardToAccount"},
+				       {"conditions":"giftCardPayment,redeemGiftCardToAccount", "method":"canPurchaseWithGiftCard"}],
 		"newOrderPayment.dynamicAmountFlag":	[{"conditions":"noPaymentAmountNeeded","eq":false}],
 		"newOrderPayment.paymentMethodID": [{"conditions":"giftCardOrderTypeReturn", "eq":"50d8cd61009931554764385482347f3a"}],
-		"newOrderPayment.giftCardNumberEncrypted": [{"conditions":"redeemGiftCardToAccount", "method":"canRedeemGiftCardToAccount"},
-													{"conditions":"giftCardPayment,redeemGiftCardToAccount", "method":"canPurchaseWithGiftCard"}],
 		"newOrderPayment.currencyCode": [{"conditions":"giftCardPayment,redeemGiftCardToAccount,giftCardOrderTypeReturn", "method":"giftCardCurrencyMatches"}]
 	},
 	"populatedPropertyValidation":{

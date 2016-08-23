@@ -66,6 +66,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Data Properties (ID's)
 	property name="stockID";
 	property name="skuID";
+	property name="skuCode";
 	property name="productID";
 	property name="locationID" hb_formFieldType="select" hb_rbKey="entity.location";
 	property name="returnLocationID" hb_formFieldType="select" hb_rbKey="entity.orderReturn.returnLocation";
@@ -295,6 +296,12 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		if(!structKeyExists(variables, "sku") && !isNull(getSkuID())) {
 			variables.sku = getService("skuService").getSku( getSkuID() );
 		}
+		
+		// Now we look for a skuCode
+		if(!structKeyExists(variables, "sku") && !isNull(getSkuCode())) {
+			variables.sku = getService("skuService").getSkuBySkuCode( getSkuCode() );
+		}
+
 
 		// Then we look for a product & potentiall selected options
 		if(!structKeyExists(variables, "sku") && !isNull(getProduct())) {
@@ -332,6 +339,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		// Now check for a skuID
 		if(!structKeyExists(variables, "product") && !isNull(getSkuID())) {
 			var sku = getService("skuService").getSku( getSkuID() );
+			if(!isNull(sku)) {
+				variables.product = sku.getProduct();
+			}
+		}
+		
+		// Now we look for a skuCode
+		if(!structKeyExists(variables, "product") && !isNull(getSkuCode())) {
+			var sku = getService("skuService").getSkuBySkuCode( getSkuCode() );
 			if(!isNull(sku)) {
 				variables.product = sku.getProduct();
 			}

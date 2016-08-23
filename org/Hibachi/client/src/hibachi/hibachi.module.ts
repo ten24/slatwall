@@ -10,12 +10,13 @@ import {paginationmodule} from "../pagination/pagination.module";
 import {formmodule} from "../form/form.module";
 import {validationmodule} from "../validation/validation.module";
 import {workflowmodule} from "../workflow/workflow.module";
+
 //directives
 import {SWSaveAndFinish} from "./components/swsaveandfinish";
 
 var hibachimodule = angular.module('hibachi',[
     alertmodule.name,
-    coremodule.name,
+
     collectionmodule.name,
     entitymodule.name,
     dialogmodule.name,
@@ -23,7 +24,16 @@ var hibachimodule = angular.module('hibachi',[
     formmodule.name,
     validationmodule.name,
     workflowmodule.name
-])
+]).config([()=>{
+}])
+.run(['$rootScope','publicService', ($rootScope, publicService)=> {
+    $rootScope.hibachiScope = publicService;
+    $rootScope.hasAccount = publicService.hasAccount;
+    $rootScope.hibachiScope.getAccount();
+    $rootScope.hibachiScope.getCart();
+    $rootScope.hibachiScope.getCountries();
+    $rootScope.hibachiScope.getStates();
+}])
 .constant('hibachiPartialsPath','hibachi/components/')
 .directive('swSaveAndFinish',SWSaveAndFinish.Factory())
 ;

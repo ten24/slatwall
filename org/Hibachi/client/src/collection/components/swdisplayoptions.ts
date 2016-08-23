@@ -83,7 +83,7 @@ class SWDisplayOptions{
                     var baseEntityCfcName = $scope.baseEntityName.replace('Slatwall','').charAt(0).toLowerCase()+$scope.baseEntityName.replace('Slatwall','').slice(1);
                     var propertyIdentifier = selectedProperty.propertyIdentifier;
                     var title = '';
-                    var propertyIdentifierArray = propertyIdentifier.split('.');
+                    var propertyIdentifierArray = propertyIdentifier.replace(/^_/,'').split(/[._]+/);
                     var currentEntity;
                     var currentEntityInstance;
                     var prefix = 'entity.';
@@ -120,8 +120,8 @@ class SWDisplayOptions{
                         selectedProperty = $scope.selectedAggregate;
                     }
 
-                    console.log('add Column');
-                    console.log(selectedProperty);
+
+
                     if(selectedProperty.$$group === 'simple' || 'attribute' || 'compareCollections'){
                         $log.debug($scope.columns);
                         if(angular.isDefined(selectedProperty)){
@@ -163,58 +163,58 @@ class SWDisplayOptions{
                             }
                             $scope.columns.push(column);
 
-                            if(angular.isDefined(selectedProperty.aggregate)) {
-                                if ((selectedProperty.propertyIdentifier.match(/_/g) || []).length > 1) {
-                                    var PIlimit = selectedProperty.propertyIdentifier.length;
-                                    if (selectedProperty.propertyIdentifier.indexOf('.') != -1) {
-                                        PIlimit = selectedProperty.propertyIdentifier.indexOf('.');
-                                    }
-                                    var propertyIdentifierJoins = selectedProperty.propertyIdentifier.substring(1, PIlimit);
-                                    var propertyIdentifierParts = propertyIdentifierJoins.split('_');
-                                    console.log(propertyIdentifierParts);
-                                    console.log(propertyIdentifierParts[0].charAt(0).toUpperCase() + propertyIdentifierParts[0].slice(1));
-                                    var current_collection = $hibachi.getEntityExample(propertyIdentifierParts[0].charAt(0).toUpperCase() + propertyIdentifierParts[0].slice(1));
-                                    var _propertyIdentifier = '';
-                                    var joins = [];
-
-                                    if (angular.isDefined($scope.joins)) {
-                                        joins = $scope.joins;
-                                    }
-
-                                    for (var i = 1; i < propertyIdentifierParts.length; i++) {
-                                        if (angular.isDefined(current_collection.metaData[propertyIdentifierParts[i]]) && ('cfc' in current_collection.metaData[propertyIdentifierParts[i]])) {
-                                            current_collection = $hibachi.getEntityExample(current_collection.metaData[propertyIdentifierParts[i]].cfc);
-                                            _propertyIdentifier += '_' + propertyIdentifierParts[i];
-                                            var newJoin = {
-                                                associationName: _propertyIdentifier.replace(/_([^_]+)$/, '.$1').substring(1),
-                                                alias: '_' + propertyIdentifierParts[0] + _propertyIdentifier
-                                            };
-                                            var joinFound = false;
-                                            for (var j = 0; j < joins.length; j++) {
-                                                if (joins[j].alias === newJoin.alias) {
-                                                    joinFound = true;
-                                                    break;
-                                                }
-                                            }
-                                            if (!joinFound) {
-                                                joins.push(newJoin);
-                                            }
-                                        }
-                                    }
-                                    $scope.joins = joins;
-
-                                    if (angular.isUndefined($scope.groupBys) || $scope.groupBys.split(',').length != $scope.columns.length) {
-                                        var groupbyArray = angular.isUndefined($scope.groupBys) ? [] : $scope.groupBys.split(',');
-                                        for (var col = 0; col < $scope.columns.length; col++) {
-                                            if (groupbyArray.indexOf($scope.columns[col].propertyIdentifier) == -1) {
-                                                groupbyArray.push($scope.columns[col].propertyIdentifier);
-                                            }
-                                        }
-                                        $scope.groupBys = groupbyArray.join(',');
-                                    }
-
+                            if ((selectedProperty.propertyIdentifier.match(/_/g) || []).length > 1) {
+                                var PIlimit = selectedProperty.propertyIdentifier.length;
+                                if (selectedProperty.propertyIdentifier.indexOf('.') != -1) {
+                                    PIlimit = selectedProperty.propertyIdentifier.indexOf('.');
                                 }
+                                var propertyIdentifierJoins = selectedProperty.propertyIdentifier.substring(1, PIlimit);
+                                var propertyIdentifierParts = propertyIdentifierJoins.split('_');
+
+
+                                var current_collection = $hibachi.getEntityExample(propertyIdentifierParts[0].charAt(0).toUpperCase() + propertyIdentifierParts[0].slice(1));
+                                var _propertyIdentifier = '';
+                                var joins = [];
+
+                                if (angular.isDefined($scope.joins)) {
+                                    joins = $scope.joins;
+                                }
+
+                                for (var i = 1; i < propertyIdentifierParts.length; i++) {
+                                    if (angular.isDefined(current_collection.metaData[propertyIdentifierParts[i]]) && ('cfc' in current_collection.metaData[propertyIdentifierParts[i]])) {
+                                        current_collection = $hibachi.getEntityExample(current_collection.metaData[propertyIdentifierParts[i]].cfc);
+                                        _propertyIdentifier += '_' + propertyIdentifierParts[i];
+                                        var newJoin = {
+                                            associationName: _propertyIdentifier.replace(/_([^_]+)$/, '.$1').substring(1),
+                                            alias: '_' + propertyIdentifierParts[0] + _propertyIdentifier
+                                        };
+                                        var joinFound = false;
+                                        for (var j = 0; j < joins.length; j++) {
+                                            if (joins[j].alias === newJoin.alias) {
+                                                joinFound = true;
+                                                break;
+                                            }
+                                        }
+                                        if (!joinFound) {
+                                            joins.push(newJoin);
+                                        }
+                                    }
+                                }
+                                $scope.joins = joins;
+
+                                if (angular.isUndefined($scope.groupBys) || $scope.groupBys.split(',').length != $scope.columns.length) {
+                                    var groupbyArray = angular.isUndefined($scope.groupBys) ? [] : $scope.groupBys.split(',');
+                                    for (var col = 0; col < $scope.columns.length; col++) {
+                                        if('attributeID' in $scope.columns[col]) continue;
+                                        if (groupbyArray.indexOf($scope.columns[col].propertyIdentifier) == -1) {
+                                            groupbyArray.push($scope.columns[col].propertyIdentifier);
+                                        }
+                                    }
+                                    $scope.groupBys = groupbyArray.join(',');
+                                }
+
                             }
+
 
 
                             $scope.saveCollection();
@@ -247,13 +247,13 @@ class SWDisplayOptions{
 
                 $scope.selectedPropertyChanged = function(selectedProperty, aggregate?){
                     // drill down or select field?
-                    console.log('selectedPropertyChanged', aggregate);
-                    console.log(selectedProperty);
+
+
                     if(!aggregate){
                         $scope.selectedProperty = selectedProperty;
                         $scope.selectedAggregate = undefined;
                     }else{
-                        console.log('Aggregate');
+
                         $scope.selectedAggregate = selectedProperty;
                     }
 

@@ -59,6 +59,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	public void function before() {
 		getFW().setView("public:main.blank");
+		arguments.rc.ajaxRequest = true;
 	}
 
 	public void function account( struct rc ) {

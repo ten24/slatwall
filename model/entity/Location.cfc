@@ -206,7 +206,7 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	}
 	
 	public void function preUpdate(struct oldData){
-		setLocationIDPath( buildIDPathList( "parentLocation" ) );;
+		setLocationIDPath( buildIDPathList( "parentLocation" ) );
 		super.preUpdate(argumentcollection=arguments);
 	}
 	

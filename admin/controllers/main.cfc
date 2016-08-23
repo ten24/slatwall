@@ -109,7 +109,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			rc.$.slatwall.showMessageKey( 'admin.metaexists_error' );
 		}
 	}
-
+	//TODO: deprecate ,  getImageDirectory()
 	public void function saveImage(required struct rc){
 
 		var image = getImageService().getImage(rc.imageID, true);

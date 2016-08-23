@@ -4,18 +4,12 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 	variables.slatwallApplications = {};
 	
 	public any function getSlatwallAdminApplication() {
-		if(!structKeyExists(variables.slatwallApplications,'slatwallAdmin')){
-			variables.slatwallApplications['slatwallAdmin'] = createObject("component", "Slatwall.Application");
-		}
-		return variables.slatwallApplications["slatwallAdmin"];
+		return  createObject("component", "Slatwall.Application");
 	}
 	
 	public any function getSlatwallCMSApplication(required any site) {
-		if(!structKeyExists(variables.slatwallApplications,arguments.site.getApp().getAppID())){
-			var applicationDotPath = rereplace(arguments.site.getApp().getAppRootPath(),'/','.','all');
-			variables.slatwallApplications[arguments.site.getApp().getAppID()] = createObject("component", "Slatwall" & applicationDotPath & '.Application');
-		}
-		return variables.slatwallApplications[arguments.site.getApp().getAppID()];
+		var applicationDotPath = rereplace(arguments.site.getApp().getAppRootPath(),'/','.','all');
+		return createObject("component", "Slatwall" & applicationDotPath & '.Application');
 	}
 	
 	public any function getFullSitePath(required any site){
@@ -30,17 +24,17 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 	// This event handler will always get called
 	public void function setupGlobalRequestComplete() {
 		if ( len( getContextRoot() ) ) {
-			variables.cgiScriptName = replace( CGI.SCRIPT_NAME, getContextRoot(), '' );
-			variables.cgiPathInfo = replace( CGI.PATH_INFO, getContextRoot(), '' );
+			var cgiScriptName = replace( CGI.SCRIPT_NAME, getContextRoot(), '' );
+			var cgiPathInfo = replace( CGI.PATH_INFO, getContextRoot(), '' );
 		} else {
-			variables.cgiScriptName = CGI.SCRIPT_NAME;
-			variables.cgiPathInfo = CGI.PATH_INFO;
+			var cgiScriptName = CGI.SCRIPT_NAME;
+			var cgiPathInfo = CGI.PATH_INFO;
 		}
-		var pathInfo = variables.cgiPathInfo;
-		 if ( len( pathInfo ) > len( variables.cgiScriptName ) && left( pathInfo, len( variables.cgiScriptName ) ) == variables.cgiScriptName ) {
+		var pathInfo = cgiPathInfo;
+		 if ( len( pathInfo ) > len( cgiScriptName ) && left( pathInfo, len( cgiScriptName ) ) == cgiScriptName ) {
             // canonicalize for IIS:
-            pathInfo = right( pathInfo, len( pathInfo ) - len( variables.cgiScriptName ) );
-        } else if ( len( pathInfo ) > 0 && pathInfo == left( variables.cgiScriptName, len( pathInfo ) ) ) {
+            pathInfo = right( pathInfo, len( pathInfo ) - len( cgiScriptName ) );
+        } else if ( len( pathInfo ) > 0 && pathInfo == left( cgiScriptName, len( pathInfo ) ) ) {
             // pathInfo is bogus so ignore it:
             pathInfo = '';
         }

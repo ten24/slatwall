@@ -229,7 +229,7 @@ component displayname="Price Group" entityname="SlatwallPriceGroup" table="SwPri
 	}
 	
 	public void function preUpdate(struct oldData){
-		setPriceGroupIDPath( buildIDPathList( "parentPriceGroup" ) );;
+		setPriceGroupIDPath( buildIDPathList( "parentPriceGroup" ) );
 		super.preUpdate(argumentcollection=arguments);
 	}
 	

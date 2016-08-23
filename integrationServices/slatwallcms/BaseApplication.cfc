@@ -132,7 +132,7 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 			if (isBrandURLKey) {
 				var brand = arguments.slatwallScope.getService("brandService").getBrandByURLTitle(arguments.contenturlTitlePath, true);
 				if(isNull(brand)){
-					content = render404(arguments.slatwallScope,site);
+					var content = render404(arguments.slatwallScope,site);
 				}
 				arguments.slatwallScope.setBrand( brand );
 				entityName = 'brand';
@@ -142,7 +142,7 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 			if(isProductURLKey) {
 				var product = arguments.slatwallScope.getService("productService").getProductByURLTitle(arguments.contenturlTitlePath, true);
 				if(isNull(product)){
-					content = render404(arguments.slatwallScope,site);
+					var content = render404(arguments.slatwallScope,site);
 				}
 				arguments.slatwallScope.setProduct( product );
 				entityName = 'product';
@@ -152,13 +152,13 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 			if (isProductTypeURLKey) {
 				var productType = arguments.slatwallScope.getService("productService").getProductTypeByURLTitle(arguments.contenturlTitle, true);
 				if(isNull(productType)){
-					content = render404(arguments.slatwallScope,site);
+					var content = render404(arguments.slatwallScope,site);
 				}
 				arguments.slatwallScope.setProductType( productType );
 				entityName = 'productType';
 			}
 			var entityDisplayTemplateSetting = arguments.slatwallScope.invokeMethod('get#entityName#').setting('#entityName#DisplayTemplate', [site]);
-			var entityTemplateContent = arguments.slatwallScope.getService("contentService").getContent( entityDisplayTemplateSetting );;
+			var entityTemplateContent = arguments.slatwallScope.getService("contentService").getContent( entityDisplayTemplateSetting );
 			if(!isnull(entityTemplateContent)){
 				arguments.slatwallScope.setContent( entityTemplateContent );
 				var contentTemplateFile = entityTemplateContent.setting('contentTemplateFile',[entityTemplateContent]);
@@ -186,7 +186,7 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 			}
 
 			if(isNull(content)){
-				content = render404(arguments.slatwallScope,site);
+				var content = render404(arguments.slatwallScope,site);
 				//throw('content does not exists for #arguments.contenturlTitlePath#');
 			}
 			//now that we have the content, get the file name so that we can retrieve it form the site's template directory
@@ -206,7 +206,62 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 		abort;
 	}
 
+	function checkForRewrite(required any slatwallScope, required any site){
+		//overrride is intended to handle IIS redirects
+		var rewriteConfigPath = arguments.site.getSitePath() &'config/rewritemaps.json';
+		if(fileExists(rewriteConfigPath)){
+			
+			if ( len( getContextRoot() ) ) {
+				var cgiScriptName = replace( CGI.SCRIPT_NAME, getContextRoot(), '' );
+				var cgiPathInfo = replace( CGI.PATH_INFO, getContextRoot(), '' );
+			} else {
+				var cgiScriptName = CGI.SCRIPT_NAME;
+				var cgiPathInfo = CGI.PATH_INFO;
+			}
+			var pathInfo = cgiPathInfo;
+			 if ( len( pathInfo ) > len( cgiScriptName ) && left( pathInfo, len( cgiScriptName ) ) == cgiScriptName ) {
+	            // canonicalize for IIS:
+	            pathInfo = right( pathInfo, len( pathInfo ) - len( cgiScriptName ) );
+	        } else if ( len( pathInfo ) > 0 && pathInfo == left( cgiScriptName, len( pathInfo ) ) ) {
+	            // pathInfo is bogus so ignore it:
+	            pathInfo = '';
+	        }
+	        //take path and  parse it
+	        var pathArray = listToArray(pathInfo,'/');
+	        var pathArrayLen = arrayLen(pathArray);
+	
+	        var urlTitlePathStartPosition = 1;
+    		
+    		arguments.contenturlTitlePath = '';
+    		for(var i = 1;i <= arraylen(pathArray);i++){
+    			if(i == arrayLen(pathArray)){
+    				arguments.contenturlTitlePath &= pathArray[i];
+    			}else{
+    				arguments.contenturlTitlePath &= pathArray[i] & '/';
+    			}
+    		}
+			
+			var rewriteFileContent = fileRead(rewriteConfigPath);
+			var redirectableList = {};
+			if(isJSON(rewriteFileContent)){
+				redirectableList = deserializeJson(rewriteFileContent);	
+			}else{
+				throw('file must be json');
+			}
+			var key = '/'&arguments.contenturlTitlePath;
+			if(structKeyExists(redirectableList,'/'&arguments.contenturlTitlePath)){
+				
+				location(redirectableList[key],false,302);
+				
+			}
+			
+		}
+	}
+	
 	function render404(required any slatwallScope, required any site){
+		
+		checkForRewrite(argumentCollection=arguments);
+		
 		var context = getPageContext();
 		context.getOut().clearBuffer();
 		var response = context.getResponse();

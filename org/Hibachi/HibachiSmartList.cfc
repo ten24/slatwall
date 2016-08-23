@@ -581,8 +581,13 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	public string function getHQLWhere(boolean suppressWhere=false, searchOrder=false) {
 		var hqlWhere = "";
 		variables.hqlParams = {};
-		
-		
+						
+		// Add formatter based on dbtype
+ 		var formatter = '';
+ 		if(getHibachiScope().getApplicationValue("databaseType")=="Oracle10g"){
+ 			formatter = "LOWER";
+ 		}
+ 
 		// Loop over where groups
 		for(var i=1; i<=arrayLen(variables.whereGroups); i++) {
 			if( structCount(variables.whereGroups[i].filters) || structCount(variables.whereGroups[i].likeFilters) || structCount(variables.whereGroups[i].inFilters) || structCount(variables.whereGroups[i].ranges) ) {
@@ -635,13 +640,13 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 						for(var ii=1; ii<=listLen(variables.whereGroups[i].likeFilters[likeFilter], variables.valueDelimiter); ii++) {
 							var paramID = "LF#replace(likeFilter, ".", "", "all")##i##ii#";
 							addHQLParam(paramID, lcase(listGetAt(variables.whereGroups[i].likeFilters[likeFilter], ii, variables.valueDelimiter)));
-							hqlWhere &= " LOWER(#likeFilter#) LIKE :#paramID# OR";
+							hqlWhere &= " #formatter#(#likeFilter#) LIKE :#paramID# OR";
 						}
 						hqlWhere = left(hqlWhere, len(hqlWhere)-2) & ") AND";
 					} else {
 						var paramID = "LF#replace(likeFilter, ".", "", "all")##i#";
 						addHQLParam(paramID, lcase(variables.whereGroups[i].likeFilters[likeFilter]));
-						hqlWhere &= " LOWER(#likeFilter#) LIKE :#paramID# AND";
+						hqlWhere &= " #formatter#(#likeFilter#) LIKE :#paramID# AND";
 					}
 				}
 				
@@ -713,7 +718,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 				hqlWhere &= " (";
 				for(var keywordProperty in variables.keywordProperties) {
 					
-					hqlWhere &= " LOWER(#keywordProperty#) LIKE :#paramID# OR";
+					hqlWhere &= " #formatter#(#keywordProperty#) LIKE :#paramID# OR";
 				}
 				
 				//Loop over all attributes and find any matches

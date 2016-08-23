@@ -19,6 +19,7 @@
                     data-collection-config="swListingDisplay.collectionConfig"
                     data-get-collection="swListingDisplay.getCollection"
                     data-paginator="swListingDisplay.paginator"
+                    data-show-filters="swListingDisplay.showFilters"
                     data-ng-if="swListingDisplay.hasSearch !== false">
 
             </sw-listing-controls>
@@ -81,7 +82,6 @@
             <div style="margin-left:5px; margin-top:10px" data-ng-if="swListingDisplay.showPagination == 'top' || swListingDisplay.showPagination == 'both'">
                 <sw-pagination-bar
                         data-ng-if="swListingDisplay.paginator &&
-                                    !swListingDisplay.expandable &&
                                     swListingDisplay.collectionData.recordsCount &&
                                     swListingDisplay.collectionPromise.$$state.status !== 0"
                         data-paginator="swListingDisplay.paginator">
@@ -212,6 +212,7 @@
                                           popover-append-to-body="true">
                                     </span>
                                     <span ng-if="(!column.action || !column.queryString) && column.type==='currency'"
+                                          class="s-number"
                                           ng-bind-html="pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)] | swcurrency"
                                           popover="{{swListingDisplay.replaceStringWithProperties(column.tooltip, pageRecord)}}"
                                           popover-trigger="mouseenter"
@@ -316,7 +317,7 @@
             </div>
         </div>
         <sw-pagination-bar
-                data-ng-if="swListingDisplay.paginator && !swListingDisplay.expandable && swListingDisplay.collectionData.recordsCount && swListingDisplay.collectionPromise.$$state.status !== 0"
+                data-ng-if="swListingDisplay.paginator && swListingDisplay.collectionData.recordsCount && swListingDisplay.collectionPromise.$$state.status !== 0"
                 data-paginator="swListingDisplay.paginator">
         </sw-pagination-bar>
     </div>

@@ -39,7 +39,7 @@
 <cffunction name="setUp">
   <cfscript>
     c = createObject("component","mxunit.tests.bugs.fixture.93sample");
-    webinf = createObject("component","any");;
+    webinf = createObject("component","any");
   </cfscript>
 </cffunction>
 

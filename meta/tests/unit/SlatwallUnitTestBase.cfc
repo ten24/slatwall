@@ -69,6 +69,7 @@ component extends="mxunit.framework.TestCase" output="false" {
 		// Setup a debugging output array
 		variables.debugArray = [];
 		variables.persistentEntities = [];
+		variables.files = [];
 	}
 
 	// AFTER EACH TEST
@@ -84,6 +85,11 @@ component extends="mxunit.framework.TestCase" output="false" {
 			flushRequired = true;
 			entityDelete( variables.persistentEntities[i] );
 		}
+		
+		for (var i = arrayLen(variables.files); i >= 1; i--) {
+			fileDelete( variables.files[i] );
+		}
+		
 		try{
 			if(flushRequired) {
 					ormFlush();
@@ -93,6 +99,7 @@ component extends="mxunit.framework.TestCase" output="false" {
 		}
 
 		variables.persistentEntities = [];
+		variables.files = [];
 
 		ormClearSession();
 
@@ -105,6 +112,22 @@ component extends="mxunit.framework.TestCase" output="false" {
 
 	private any function createPersistedTestEntity( required string entityName, struct data={}, boolean createRandomData=false, boolean persist=true, boolean saveWithService=false ) {
 		return createTestEntity(argumentcollection=arguments);
+	}
+	
+	private void function createTestFile (required string fileSourceLocalAbsolutePath, required string relativeFileDestination) {
+
+		var absoluteDest = expandPath('/Slatwall') & arguments.relativeFileDestination;
+		
+		//create the destination directory if necessary
+		if (DirectoryExists(GetDirectoryFromPath(absoluteDest))) {
+			fileCopy(arguments.fileSourceLocalAbsolutePath, absoluteDest);
+		} else {
+			DirectoryCreate(GetDirectoryFromPath(absoluteDest));
+			fileCopy(arguments.fileSourceLocalAbsolutePath, absoluteDest);
+		}
+		
+		// Add the filePath to the files array
+		arrayAppend(variables.files, absoluteDest);
 	}
 
 	private void function addEntityForTearDown(any entity){
@@ -235,10 +258,10 @@ component extends="mxunit.framework.TestCase" output="false" {
 		return false;
 	}
 
-	private string function generateRandomString(minLength, maxLength) {
+	private string function generateRandomString(minLength=0, maxLength=26) {
 		var chars = "abcdefghijklmnopqrstuvwxyz -_";
 		chars &= ucase(chars);
-		var upper = minLength + round(rand()*maxLength);
+		var upper = arguments.minLength + round(rand()*(arguments.maxLength - arguments.minLength));
 
 		var returnString = "";
 		for(var i=1; i<=upper; i++ ) {
@@ -250,8 +273,32 @@ component extends="mxunit.framework.TestCase" output="false" {
 		return returnString;
 	}
 
-	private string function generateRandomInteger(minVal, maxVal) {
-		return 1;
+	private string function generateRandomInteger(minVal=0, maxVal=1000000) {
+		if(arguments.maxVal == arguments.minVal) {
+			return arguments.minVal;
+		}
+		//Deal with invalid range
+		if(
+			   (arguments.maxVal - arguments.minVal < 0 ) 
+			   ||
+			   (
+			   	arguments.maxVal - arguments.minVal < 1
+		   		&& arguments.minVal*arguments.maxVal >= 0 
+		   		&& fix(arguments.minVal) == fix(arguments.maxVal)
+			   )
+		  ) {
+			throw ('There is no integer between #arguments.minVal# and #arguments.maxVal#');
+		}
+		
+		var randomInteger = round(arguments.minVal+rand()*(arguments.maxVal - arguments.minVal));
+		
+		//Deal with rounded number go beyond the range
+		if(randomInteger > arguments.maxVal) {
+			return randomInteger - 1;
+		} else if(randomInteger < arguments.minVal) {
+			return randomInteger + 1;
+		}
+		return randomInteger;
 	}
 
 	private string function generateRandomDate() {

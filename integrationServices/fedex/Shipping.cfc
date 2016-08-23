@@ -95,15 +95,15 @@ component accessors="true" output="false" displayname="FedEx" implements="Slatwa
 		} else {
 			url = variables.productionUrl;
 		}
-		return getResponse(requestPacket=xmlPacket,url=url);
+		return getResponse(requestPacket=xmlPacket,urlString=url);
 	}
 	
 	private any function getShippingProcessShipmentResponseBean(string xmlResponse){
 		var responseBean = new Slatwall.model.transient.fulfillment.ShippingProcessShipmentResponseBean();
 		responseBean.setData(arguments.xmlResponse);
-		if(!structKeyExists(responseBean,'data') || 
+		if(isNull(responseBean.getData()) || 
 			(
-				structKeyExists(responseBean,'data') && structKeyExists(responseBean.data,'Fault')
+				!isNull(responseBean.getData()) && structKeyExists(responseBean.getData(),'Fault')
 			) 
 		) {
 			responseBean.addMessage(messageName="communicationError", message="An unexpected communication error occured, please notify system administrator.");

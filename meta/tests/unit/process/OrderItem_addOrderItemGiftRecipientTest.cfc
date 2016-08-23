@@ -69,7 +69,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		var accountData = { 
 			accountID=""
-		}
+		};
 		var account = createPersistedTestEntity("Account", accountData);
 
 		var processObject = orderItem.getProcessObject("addOrderItemGiftRecipient"); 

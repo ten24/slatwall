@@ -114,6 +114,14 @@ component persistent="false" extends="HibachiService" output="false" accessors="
         }
         return resizedImagePaths;
     }
+    
+    public string function getProductImagePathByImageFile(required string imageFile) {
+   	 	return "#getHibachiScope().getBaseImageURL()#/product/default/#arguments.imageFile#";
+    }
+    
+    public string function getImagePathByImageFileAndDirectory(required string imageFile, required string directory){
+		return "#getHibachiScope().getBaseImageURL()#/#arguments.directory#/#arguments.imageFile#";
+	}
 
 	// Image File Methods
 	public string function getResizedImagePath(required string imagePath, numeric width, numeric height, string resizeMethod="scale", string cropLocation="center", numeric cropX, numeric cropY, numeric scaleWidth, numeric scaleHeight, string missingImagePath, string canvasColor="") {
