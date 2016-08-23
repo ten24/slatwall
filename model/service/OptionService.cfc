@@ -73,6 +73,10 @@ component extends="HibachiService" accessors="true" output="false" {
 		return getOptionDAO().getUnusedProductOptionGroups(argumentCollection=arguments);
 	}
 
+	public void function addOptionGroupByOptionGroupIDAndProductID(required any optionGroupID,required any productID){
+		getOptionDAO().addOptionGroupByOptionGroupIDAndProductID(arguments.optionGroupID,arguments.productID);
+	}
+
 	// ===================== START: DAO Passthrough ===========================
 
 	// ===================== START: Process Methods ===========================

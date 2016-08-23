@@ -306,7 +306,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		param name="arguments.rc.rbLocale" default="";
 		param name="arguments.rc.redirectURL" default="";
 
-		arguments.rc.$.slatwall.getSession().setRBLocale(htmlEditFormat(arguments.rc.rbLocale));
+		arguments.rc.$.slatwall.getSession().setRBLocale(hibachiHTMLEditFormat(arguments.rc.rbLocale));
 		arguments.rc.$.slatwall.setPersistSessionFlag( true );
 
 		getFW().redirectExact( rc.redirectURL );

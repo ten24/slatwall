@@ -1,6 +1,6 @@
 /*
 
-    Slatwall - An Open Source eCommerce Platform
+    Slatwall - An Open Source eCommerce Platform 
     Copyright (C) ten24, LLC
 	
     This program is free software: you can redistribute it and/or modify

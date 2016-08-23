@@ -10,17 +10,20 @@ class SWOrderItemDetailStamp{
 		var directive = (
 			$log,
 			$hibachi,
+			collectionConfigService,
 			orderItemPartialsPath,
 			slatwallPathBuilder
 		) => new SWOrderItemDetailStamp(
 			$log,
 			$hibachi,
+			collectionConfigService,
 			orderItemPartialsPath,
 			slatwallPathBuilder
 		);
 		directive.$inject = [
 			'$log',
 			'$hibachi',
+			'collectionConfigService',
 			'orderItemPartialsPath',
 			'slatwallPathBuilder'
 		]
@@ -29,6 +32,7 @@ class SWOrderItemDetailStamp{
 	constructor(
 		$log,
 		$hibachi,
+		collectionConfigService,
 		orderItemPartialsPath,
 		slatwallPathBuilder
 	){
@@ -61,8 +65,20 @@ class SWOrderItemDetailStamp{
 				var getMerchandiseDetails = function(orderItem){
 					//Get option and option groups
 					for (var i = 0; i <=  orderItem.data.sku.data.options.length - 1; i++){
-						orderItem.details.push(orderItem.data.sku.data.options[i].optionCode);
-						orderItem.details.push(orderItem.data.sku.data.options[i].optionName);
+						var optionGroupCollectionConfig = collectionConfigService.newCollectionConfig("Option");
+						optionGroupCollectionConfig.addDisplayProperty("optionID,optionName, optionGroup.optionGroupName");
+						optionGroupCollectionConfig.addFilter("optionID", orderItem.data.sku.data.options[i].optionID, "=");
+						optionGroupCollectionConfig.getEntity().then(
+							(results)=>{
+								if(angular.isDefined(results.pageRecords[0])){
+									orderItem.detailsName.push(results.pageRecords[0].optionGroup_optionGroupName);
+									orderItem.details.push(results.pageRecords[0].optionName);
+								}
+							},
+							(reason)=>{
+								throw("SWOrderItemDetailStamp had trouble retrieving the option group for option");
+							}
+						);
 					}
 
 				};
@@ -94,20 +110,22 @@ class SWOrderItemDetailStamp{
 					}
 
 				};
+				if (angular.isUndefined(scope.orderItem.details)){
+					scope.orderItem.details = [];
+				}
 				if (angular.isDefined(scope.orderItem.details)){
+					
 					switch (scope.systemCode){
 						case "merchandise":
-							results = getMerchandiseDetails(scope.orderItem);
+							getMerchandiseDetails(scope.orderItem);
 							break;
 						case "subscription":
-							results = getSubscriptionDetails(scope.orderItem);
+							getSubscriptionDetails(scope.orderItem);
 							break;
 						case "event":
-							results = getEventDetails(scope.orderItem);
+							getEventDetails(scope.orderItem);
 							break;
-				}
-
-					scope.orderItem.details.push(results);
+					}
 				}
 			}
 		};

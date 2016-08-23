@@ -61,7 +61,7 @@ component displayname="EmailTemplate" entityname="SlatwallEmailTemplate" table="
 
 	// Related Object Properties (one-to-many)
 	property name="eventTriggers" singularname="eventTrigger" cfc="EventTrigger" fieldtype="one-to-many" fkcolumn="emailTemplateID" cascade="all" inverse="true" lazy="extra";
-
+	property name="forms" singularname="form" cfc="Form" fieldtype="one-to-many" fkcolumn="emailTemplateID" cascade="all";
 	// Related Object Properties (many-to-many)
 
 	// Remote Properties
@@ -104,6 +104,14 @@ component displayname="EmailTemplate" entityname="SlatwallEmailTemplate" table="
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================
+
+	// Attributes (one-to-many)
+	public void function addForm(required any form) {
+		arguments.form.setEmailTemplate( this );
+	}
+	public void function removeForm(required any form) {
+		arguments.form.removeEmailTemplate( this );
+	}
 
 	// =============  END:  Bidirectional Helper Methods ===================
 

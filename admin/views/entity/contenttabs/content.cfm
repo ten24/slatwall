@@ -5,7 +5,7 @@
 <cfparam name="rc.edit" type="boolean" default="false"/>
 
 <cfoutput>
-	<hb:HibachiPropertyDisplay object="#rc.content#" edit="#rc.edit#" property="contentBody" fieldType="wysiwyg" displaytype="plain" fieldAttributes="siteCode='#rc.content.getSite().getSiteCode()#' appCode='#rc.content.getSite().getApp().getAppCode()#'"
+	<hb:HibachiPropertyDisplay object="#rc.content#" edit="#rc.edit#" property="contentBody" displaytype="plain" fieldAttributes="siteCode='#rc.content.getSite().getSiteCode()#' appCode='#rc.content.getSite().getApp().getAppCode()#'"
 		ignoreHTMLEditFormat="true" 
 	/>
 </cfoutput>
