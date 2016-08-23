@@ -226,7 +226,6 @@ Notes:
 							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.tools_nav')#" icon="magnet icon-white" type="nav">
 								<hb:HibachiDividerHider>
 									<hb:HibachiActionCaller action="admin:report" type="list">
-									<hb:HibachiActionCaller action="admin:entity.listeventtrigger" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listschedule" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listsession" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listtask" type="list">
@@ -368,10 +367,10 @@ Notes:
 				</span>
 			</span>
 		</span>
-		
-		<cfif 	
+
+		<cfif
 			(structKeyExists(request,'isWysiwygPage') AND request.isWysiwygPage)
-			|| (structKeyExists(rc,'edit'))	
+			|| (structKeyExists(rc,'edit'))
 		>
 			<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckeditor/ckeditor.js"></script>
 			<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckeditor/adapters/jquery.js"></script>
