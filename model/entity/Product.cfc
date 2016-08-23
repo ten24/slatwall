@@ -147,23 +147,23 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		if(!structKeyExists(variables, "availableToPurchaseFlag")) {
 			// If purchase start dates not existed, or before now(), the start date is valid
 			// If purchase end   date  not existed, or after  now(), the end   date is valid
-			if (
+			if ( 
 					(
 						isNull(this.getPurchaseStartDateTime())
 						||
-						( !isNull(this.getPurchaseStartDateTime()) && dateCompare(now(),this.getPurchaseStartDateTime(),"s") == 1 )
+						( !isNull(this.getPurchaseStartDateTime()) && dateCompare(now(),this.getPurchaseStartDateTime(),"s") == 1 )					 
 					)
 					&&
 					(
 						isNull(this.getPurchaseEndDateTime())
 						||
-						( !isNull(this.getPurchaseEndDateTime()) && dateCompare(now(),this.getPurchaseEndDateTime(),"s") == -1 )
-					)
+						( !isNull(this.getPurchaseEndDateTime()) && dateCompare(now(),this.getPurchaseEndDateTime(),"s") == -1 )					 
+					) 
 			) {
 				variables.availableToPurchaseFlag = true;
 			} else {
 				variables.availableToPurchaseFlag = false;
-			}
+			}				
 		}
 
 		return variables.availableToPurchaseFlag;
@@ -184,7 +184,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			variables.productTypeOptions = [];
 
 			if(arrayLen(records) > 1){
-				arrayAppend(variables.productTypeOptions, {name=getHibachiScope().getRbKey('processObject.Product_Create.selectProductType'),value=""});
+				arrayAppend(variables.productTypeOptions, {name=getHibachiScope().RBKey('processObject.Product_Create.selectProductType'),value=""});
 			}
 
 			for(var i=1; i<=arrayLen(records); i++) {
@@ -245,13 +245,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	}
 
 	//TODO: unused function
-	public any function getTemplateOptions() {
-		if(!isDefined("variables.templateOptions")){
-			variables.templateOptions = getService("ProductService").getProductTemplates();
-		}
-		return variables.templateOptions;
-	}
-
 	public any function getImages() {
 		return variables.productImages;
 	}
@@ -286,14 +279,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  	}
 
 	//TODO: Unused function
-	public string function getPageIDs() {
-		var pageIDs = "";
-		for( var i=1; i<= arrayLen(getPages()); i++ ) {
-			pageIDs = listAppend(pageIDs,getPages()[i].getPageID());
-		}
-		return pageIDs;
-	}
-
 	public string function getCategoryIDs() {
 		var categoryIDs = "";
 		for( var i=1; i<= arrayLen(getCategories()); i++ ) {
@@ -375,7 +360,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			skuCollection.addFilter("skuID",getDefaultSku().getSkuID());
 		}
 		var skuCollectionRecords = skuCollection.getRecords();
-		
+
 		// Add all skus's default images
 		var missingImagePath = setting('imageMissingImagePath');
 		var imageAltString = stringReplace(setting('imageAltString'));
@@ -565,57 +550,57 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			for(var optionData in optionRecords) {
 				if(listFindNoCase(arguments.selectedOptionIDList, optionData['optionID'])) {
 					selectedOptionGroupsByOptionID[ optionData['optionID'] ] = optionData['optionGroup_optionGroupID'];
+					}
 				}
-			}
-			if(structCount(selectedOptionGroupsByOptionID) == listLen(arguments.selectedOptionIDList)) {
-				break;
-			}
-		}
-
-		var skuOptionIDArray = [];
-		for(var optionData in optionRecords) {
-			arrayAppend(skuOptionIDArray, optionData['optionID']);
-		}
-
-		// Loop over the options for this sku
-		for(var optionData in optionRecords) {
-
-			var allSelectedInSku = true;
-			var selectedOptionIDArray = listToArray(arguments.selectedOptionIDList);
-			for(var selected in selectedOptionIDArray) {
-				if(selectedOptionGroupsByOptionID[ selected ] != optionData['optionGroup_optionGroupID'] && !arrayFindNoCase(skuOptionIDArray, selected)) {
-					allSelectedInSku = false;
+				if(structCount(selectedOptionGroupsByOptionID) == listLen(arguments.selectedOptionIDList)) {
 					break;
 				}
 			}
 
-			// Created Shortended Variables
+			var skuOptionIDArray = [];
+		for(var optionData in optionRecords) {
+			arrayAppend(skuOptionIDArray, optionData['optionID']);
+			}
+
+			// Loop over the options for this sku
+		for(var optionData in optionRecords) {
+
+				var allSelectedInSku = true;
+			var selectedOptionIDArray = listToArray(arguments.selectedOptionIDList);
+			for(var selected in selectedOptionIDArray) {
+				if(selectedOptionGroupsByOptionID[ selected ] != optionData['optionGroup_optionGroupID'] && !arrayFindNoCase(skuOptionIDArray, selected)) {
+						allSelectedInSku = false;
+						break;
+					}
+				}
+
+				// Created Shortended Variables
 			var ogCode = optionData['optionGroup_optionGroupCode'];
 
-			// Create a struct for this optionGroup if it doesn't exist
+				// Create a struct for this optionGroup if it doesn't exist
 			if(!structKeyExists(skuOptionDetails, trim(ogCode))) {
-				skuOptionDetails[ ogCode ] = {};
-				skuOptionDetails[ ogCode ][ "options" ] = [];
+					skuOptionDetails[ ogCode ] = {};
+					skuOptionDetails[ ogCode ][ "options" ] = [];
 				skuOptionDetails[ ogCode ][ "optionGroupName" ] = optionData['optionGroup_optionGroupName'];
 				skuOptionDetails[ ogCode ][ "optionGroupCode" ] = optionData['optionGroup_optionGroupCode'];
 				skuOptionDetails[ ogCode ][ "optionGroupID" ] = optionData['optionGroup_optionGroupID'];
 				skuOptionDetails[ ogCode ][ "sortOrder" ] = optionData['optionGroup_sortOrder'];
-			}
+				}
 
-			// Create a struct for this option if one doesn't exist
-			var existingOptionFound = false;
-			for(var existingOption in skuOptionDetails[ ogCode ][ "options" ]) {
+				// Create a struct for this option if one doesn't exist
+				var existingOptionFound = false;
+				for(var existingOption in skuOptionDetails[ ogCode ][ "options" ]) {
 				if( existingOption['optionID'] == optionData['optionID'] ) {
 					existingOption['totalQATS'] += optionData['skus_calculatedQATS'];
-					if(allSelectedInSku) {
+						if(allSelectedInSku) {
 						existingOption['selectedQATS'] += optionData['skus_calculatedQATS'];
+						}
+						existingOptionFound = true;
+						break;
 					}
-					existingOptionFound = true;
-					break;
 				}
-			}
-			if(!existingOptionFound) {
-				var newOption = {};
+				if(!existingOptionFound) {
+					var newOption = {};
 				newOption['optionID'] = optionData['optionID'];
 				newOption['optionCode'] = optionData['optionCode'];
 				newOption['optionName'] = optionData['optionName'];
@@ -623,16 +608,17 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 				newOption['value'] = optionData['optionID'];
 				newOption['sortOrder'] = optionData['sortOrder'];
 				newOption['totalQATS'] = optionData['skus_calculatedQATS'];
-				newOption['selectedQATS'] = 0;
-				if(allSelectedInSku) {
+					newOption['selectedQATS'] = 0;
+					if(allSelectedInSku) {
 					newOption['selectedQATS'] = optionData['skus_calculatedQATS'];
+					}
+					arrayAppend(skuOptionDetails[ ogCode ].options, newOption);
 				}
-				arrayAppend(skuOptionDetails[ ogCode ].options, newOption);
 			}
-		}
 		for(var ogCode in skuOptionDetails){
 			skuOptionDetails[ ogCode ].options = getService("HibachiUtilityService").structArraySort(skuOptionDetails[ ogCode ].options, "sortOrder");
 		}
+
 		return skuOptionDetails;
 	}
 
@@ -783,7 +769,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			sl.addSelect('imageFile','imageFile');
 			sl.addSelect('product.productType.productTypeIDPath','productTypeIDPath');
 			sl.addFilter('imageFile','NOT NULL');
-			sl.addFilter('product.productID',getProductID());
+			sl.addFilter('product.productID', getProductID());
 			sl.setSelectDistinctFlag( true );
 			var skusStructs = sl.getRecords();
 
@@ -806,9 +792,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 						);
 						arrayAppend(variables.defaultProductImageFiles, imageFileStruct);
 					}
-
+				}
 			}
-		}
 		return variables.defaultProductImageFiles;
 	}
 
@@ -851,7 +836,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 		return variables.brandName;
 	}
-
+	
 	public array function getBrandOptions() {
 		if(!structKeyExists(variables, "brandOptions")) {
 
@@ -905,13 +890,10 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 	}
 
-
-
 	public any function getEventConflictExistsFlag() {
 		if( structKeyExists(variables, "eventConflictExistsFlag") ) {
 			return variables.eventConflictExistsFlag;
 		} else {
-
 			variables.eventConflictExistsFlag = false;
 			for(sku in getSkus()) {
 				if(sku.getEventConflictExistsFlag()) {
