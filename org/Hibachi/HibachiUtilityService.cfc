@@ -331,7 +331,11 @@
 				var valueKey = replace(replace(templateKeys[i], "${", ""),"}","");
 				if( isStruct(arguments.object) && structKeyExists(arguments.object, valueKey) ) {
 					replaceDetails.value = arguments.object[ valueKey ];
-				} else if (isObject(arguments.object)) {
+				} else if (isObject(arguments.object) && (
+					(arguments.object.isPersistent() && getHasPropertiyByEntityNameAndPropertyIdentifier(arguments.object.getEntityName(), valueKey))
+						||
+					(!arguments.object.isPersistent() && arguments.object.hasProperty(valueKey))	
+					)) {
 					//if null then is blank
 					replaceDetails.value = arguments.object.getValueByPropertyIdentifier(valueKey, arguments.formatValues);
 				} else if (arguments.removeMissingKeys) {
