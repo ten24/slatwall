@@ -312,5 +312,37 @@ component extends="mxunit.framework.TestCase" output="false" {
 	private string function generateRandomDecimal(minVal, maxVal) {
 		return 3.45;
 	}
+	
+	public void function verifyRel(required any entityObject, required string propertyName) {
+		var thisProperty = request.slatwallScope.getService("hibachiService").
+							getPropertyByEntityNameAndPropertyName(arguments.entityObject.getClassName(), arguments.propertyName);
+		var errorMsg = '#arguments.entityObject.getClassName()#.#arguments.propertyName# ';
+		
+		if(!structKeyExists(thisProperty, "cfc") && !structKeyExists(thisProperty, 'fieldType')) {
+			throw(errorMsg & "doesn't have a CFC & FieldType relationship. VerifyRel stops");
+		}
+		
+		if(thisProperty.fieldType == 'Many-to-Many' || thisProperty.fieldType == 'One-to-Many') {
+			var hasRel = invoke(arguments.entityObject, 'has'&thisProperty.singularname);
+			if(hasRel) {
+				throw(errorMsg & 'hasXXX() returns FALSE.');
+			}
+			
+			var getArray = invoke(arguments.entityObject, 'get'&thisProperty.name);
+			if(arrayLen(getArray) >= 1) {
+				throw(errorMsg & 'getXXX() length < 1.');
+			}
+			
+			var getID = getArray[1].invokeMethod('get'&thisProperty.cfc&'ID');
+			if(isNull(getID)) {
+				throw(errorMsg & 'getXXXID() returns empty.');
+			}
+		} else {
+			if(!isNull(invoke(arguments.entityObject, methodName))){
+				throw('Association verification fails: #entityObject.getClassName()#.#methodName#() returns empty.');
+			}
+
+		}
+	}
 
 }
