@@ -224,37 +224,5 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(1, test);
 	}
 	
-/*	public any function getPrimaryAddressTest()
-	{
-		primaryAddressData={
-				
-				locationAddressID="ya",
-				locationAddressName=""
-				
-			               };
-		
-   var mockPrimaryAddress = createPersistedTestEntity('Location',primaryAddressData);
-		
-		locationData= {
-			locationID="",
-			locationName="",
-			primaryAddress=mockPrimaryAddress.getLocationAddressID()
-			};
-			             
-			               
-			 locationAddress=[
-			 {
-				locationAddressID="",
-				locationAddressName=""
-			 }
-			 ]
-
-
-			var mockLocation = createPersistedTestEntity('Location',locationData);
-	        var result= mockLocation.getPrimaryAddress();
-			request.debug(result);
-	}
-	*/
-	
-	}
+}
 	
