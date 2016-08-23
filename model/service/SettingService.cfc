@@ -149,6 +149,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			emailCCAddress = {fieldType="text"},
 			emailBCCAddress = {fieldType="text"},
 			emailFailToAddress = {fieldType="text", defaultValue="email@youremaildomain.com"},
+			emailReplyToAddress = {fieldType="text", defaultValue="email@youremaildomain.com"},
 			emailSubject = {fieldType="text", defaultValue="Notification From Slatwall"},
 			emailIMAPServer = {fieldType="text"},
 			emailIMAPServerPort = {fieldType="text"},
@@ -201,7 +202,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalAdminDomainNames = {fieldtype="text"},
 			globalClientSecret = {fieldtype="text",defaultValue="#createUUID()#"},
 			globalDisplayIntegrationProcessingErrors = {fieldtype="yesno", defaultValue=1},
-
+			globalUseShippingIntegrationForTrackingNumberOption = {fieldtype="yesno", defaultValue=0},
+			globalSmartListGetAllRecordsLimit = {fieldType="text",defaultValue=250},
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
 			imageMissingImagePath = {fieldType="text",defaultValue="/assets/images/missingimage.jpg"},
@@ -238,7 +240,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			siteForgotPasswordEmailTemplate = {fieldType="select", defaultValue="dbb327e796334dee73fb9d8fd801df91"},
 			siteVerifyAccountEmailAddressEmailTemplate = {fieldType="select", defaultValue="61d29dd9f6ca76d9e352caf55500b458"},
 			siteOrderOrigin = {fieldType="select"},
-
+            siteMissingImagePath = {fieldType="text", defaultValue="/assets/images/missingimage.jpg"},
+			
 			// Shipping Method
 			shippingMethodQualifiedRateSelection = {fieldType="select", defaultValue="lowest"},
 
@@ -279,6 +282,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuShippingWeightUnitCode = {fieldType="select", defaultValue="lb"},
 			skuTaxCategory = {fieldType="select", defaultValue="444df2c8cce9f1417627bd164a65f133"},
 			skuTrackInventoryFlag = {fieldType="yesno", defaultValue=0},
+			skuShippingCostExempt = {fieldType="yesno", defaultValue=0},
 
 			// Subscription Term
 			subscriptionUsageAutoRetryPaymentDays = {fieldType="text", defaultValue=""},
@@ -884,11 +888,29 @@ component extends="HibachiService" output="false" accessors="true" {
 
 			getHibachiDAO().flushORMSession();
 
-			getHibachiCacheService().resetCachedKeyByPrefix('setting_#arguments.entity.getSettingName()#');
-
+			//wait for thread to finish because admin depends on getting the savedID
+			getHibachiCacheService().resetCachedKeyByPrefix('setting_#arguments.entity.getSettingName()#',true);
+			
 			// If calculation is needed, then we should do it
 			if(listFindNoCase("skuAllowBackorderFlag,skuAllowPreorderFlag,skuQATSIncludesQNROROFlag,skuQATSIncludesQNROVOFlag,skuQATSIncludesQNROSAFlag,skuTrackInventoryFlag", arguments.entity.getSettingName())) {
 				updateStockCalculated();
+			}
+			//reset cache by site
+			if(
+				listFindNoCase("
+					globalURLKeyBrand,
+					globalURLKeyProduct,
+					globalURLKeyProductType,
+					productDisplayTemplate,
+					productTypeDisplayTemplate,
+					brandDisplayTemplate", 
+					arguments.entity.getSettingName()
+				) || 
+				left(arguments.entity.getSettingName(),7) == 'content'
+			){
+				for(var site in getSiteService().getSiteSmartList().getRecords()){
+					site.setResetSettingCache(true);
+				}
 			}
 		}
 

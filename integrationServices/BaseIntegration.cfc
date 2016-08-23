@@ -68,6 +68,10 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 		return [];
 	} 
 	
+	public array function getMenuItems() {
+		return [];
+	}
+	
 	public string function getAdminNavbarHTML() {
 		return '';
 	}

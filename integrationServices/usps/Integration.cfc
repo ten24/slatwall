@@ -65,7 +65,8 @@ component accessors="true" output="false" displayname="USPS" extends="Slatwall.i
 			userID = {fieldType="text"},
 			shipFromPostalCode = {fieldType="text"},
 			testingFlag = {fieldType="yesno", defaultValue="1"},
-			useSSLFlag = {fieldType="yesno", defaultValue="1"}
+			liveAPIEndpointURL = {fieldType="text", defaultValue="https://production.shippingapis.com/ShippingAPI.dll"},
+			testAPIEndpointURL = {fieldType="text", defaultValue="http://stg-production.shippingapis.com/ShippingAPI.dll"}
 		};
 		
 		return settings;

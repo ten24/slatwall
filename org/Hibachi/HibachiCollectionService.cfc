@@ -538,6 +538,25 @@ component output="false" accessors="true" extends="HibachiService" {
 
 			if(structKeyExists(arguments.collectionOptions,'joinsConfig') && len(arguments.collectionOptions.joinsConfig)){
 				collectionEntity.getCollectionConfigStruct().joins = deserializeJson(arguments.collectionOptions.joinsConfig);
+
+				for(var currentJoin = 1; currentJoin <= arraylen(collectionEntity.getCollectionConfigStruct().joins); currentJoin++){
+
+					var currentJoinParts = ListToArray(collectionEntity.getCollectionConfigStruct().joins[currentJoin]['associationName'], '.');
+					var current_object = getService('hibachiService').getPropertiesStructByEntityName(arguments.collectionEntity.getCollectionObject());
+
+					for (var i = 1; i <= arraylen(currentJoinParts); i++) {
+						if(structKeyExists(current_object, currentJoinParts[i]) && structKeyExists(current_object[currentJoinParts[i]], 'cfc')){
+							if(structKeyExists(current_object[currentJoinParts[i]], 'singularname')){
+								collectionEntity.setHasManyRelationFilter(true);
+								break;
+							}
+							current_object = getService('hibachiService').getPropertiesStructByEntityName(current_object[currentJoinParts[i]]['cfc']);
+						}
+					}
+					if(collectionEntity.getHasManyRelationFilter()){
+						break;
+					}
+				}
 			}
 
 			if(structKeyExists(arguments.collectionOptions,'orderByConfig') && len(arguments.collectionOptions.orderByConfig)){
@@ -651,7 +670,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			param name="data.collectionExportID" default="" type="string"; 											//<--The collection to export ID
 			var collectionEntity = this.getCollectionByCollectionID("#arguments.data.collectionExportID#");
 
-			if(structKeyExists(arguments.data,'ids') && !isNull(arguments.data.ids) && arguments.data.ids != 'undefined'){
+			if(structKeyExists(arguments.data,'ids') && !isNull(arguments.data.ids) && arguments.data.ids != 'undefined' && arguments.data.ids != ''){
 				var propertyIdentifier = '_' & getService('hibachiCollectionService').getCollectionObjectByCasing(collectionEntity,'camel') & '.' & getService('hibachiService').getPrimaryIDPropertyNameByEntityName(collectionEntity.getCollectionObject());
 				var filterGroup = {
 					propertyIdentifier = propertyIdentifier,
@@ -672,6 +691,28 @@ component output="false" accessors="true" extends="HibachiService" {
 			var headers = StructKeyList(collectionData[1]);
 			getService('hibachiService').export( collectionData, headers, headers, "ExportCollection", "csv" );
 	}//<--end function
+
+	public void function collectionConfigExport(required struct data) {
+		param name="arguments.data.collectionConfig" type="string" pattern="^{.*}$";
+
+		arguments.data.collectionConfig = DeserializeJSON(arguments.data.collectionConfig);
+
+		var collectionEntity = getCollectionList(arguments.data.collectionConfig.baseEntityName);
+
+		var exportableColumns = [];
+		for(var column in arguments.data.collectionConfig.columns){
+			if(StructKeyExists(column, "isExportable") && column.isExportable == true){
+				ArrayAppend(exportableColumns, column);
+			}
+		}
+		arguments.data.collectionConfig.columns = exportableColumns;
+		arguments.data.collectionConfig["allRecords"] = true;
+		collectionEntity.setCollectionConfig(serializeJSON(arguments.data.collectionConfig));
+		var collectionData = collectionEntity.getRecords(forExport=true,formatRecords=false);
+		var headers = StructKeyList(collectionData[1]);
+		getService('hibachiService').export( collectionData, headers, headers, arguments.data.collectionConfig.baseEntityName, "csv" );
+
+	}
 
 	// =====================  END: Logical Methods ============================
 

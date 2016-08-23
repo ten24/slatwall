@@ -331,13 +331,13 @@ Notes:
 			<cfif len(arguments.linkColumn)>
 				<!--- set if current link is the home page, set empty link (to go to site root) --->
                 <cfif (Q[arguments.linkColumn][Q.CurrentRow] neq arguments.homelink)>
-                    <cfset thislink = "/" & arguments.linkPrefix & HTMLEditFormat(Q[arguments.linkColumn][Q.CurrentRow]) & arguments.linkSuffix />
+                    <cfset thislink = "/" & arguments.linkPrefix & hibachiHTMLEditFormat(Q[arguments.linkColumn][Q.CurrentRow]) & arguments.linkSuffix />
                 <cfelse>
                     <cfset thislink = arguments.baseURL />
                 </cfif>
-				<cfset Ret = Ret & itemTag & '<a href="' &  thislink & '">' & innerTagOpen & HTMLEditFormat(Q[arguments.displayColumn][Q.CurrentRow]) & innerTagClose & '</a>' /><!--- item will be closed in later loop iteration --->
+				<cfset Ret = Ret & itemTag & '<a href="' &  thislink & '">' & innerTagOpen & hibachiHTMLEditFormat(Q[arguments.displayColumn][Q.CurrentRow]) & innerTagClose & '</a>' /><!--- item will be closed in later loop iteration --->
 			<cfelse>
-				<cfset Ret = Ret & itemTag & innerTagOpen & HTMLEditFormat(Q[arguments.displayColumn][Q.CurrentRow]) & innerTagClose /><!--- item will be closed in later loop iteration --->
+				<cfset Ret = Ret & itemTag & innerTagOpen & hibachiHTMLEditFormat(Q[arguments.displayColumn][Q.CurrentRow]) & innerTagClose /><!--- item will be closed in later loop iteration --->
 			</cfif>
 			<cfset LastDepth = ThisDepth />
 		</cfloop>
@@ -509,26 +509,28 @@ Notes:
 	        return sortedArray;
 	}
 
-
-
-	public struct function queryToStructOfStructures(theQuery, primaryKey){
+	// remove primary key from cols listing 
+	public struct function queryToStructOfStructures(required query theQuery, 
+													required string primaryKey, boolean retainSort=false){
        var theStructure  = structnew();
-       /* remove primary key from cols listing */
-       var cols          = ListToArray(ListDeleteAt(theQuery.columnlist, ListFindNoCase(theQuery.columnlist, primaryKey)));
+       var indexToDelete = ListFindNoCase(arguments.theQuery.columnlist, arguments.primaryKey);
+	   var newList = ListDeleteAt(arguments.theQuery.columnlist, indexToDelete);		
+       var cols = ListToArray(newList);
        var row           = 1;
        var thisRow       = "";
        var col           = 1;
-       var retainSort = false;
-       if(arrayLen(arguments) GT 2) retainSort = arguments[3];
-       if(retainSort){
+       
+       if(!isNull(arguments.retainSort)){
                theStructure = CreateObject("java", "java.util.LinkedHashMap").init();
        }
-       for(row = 1; row LTE theQuery.recordcount; row = row + 1){
+       
+       for(row = 1; row <= arguments.theQuery.recordcount; row = row + 1){
                thisRow = structnew();
-               for(col = 1; col LTE arraylen(cols); col = col + 1){
-                       thisRow[cols[col]] = theQuery[cols[col]][row];
+               for(col = 1; col <= arraylen(cols); col = col + 1){
+                       thisRow[cols[col]] = arguments.theQuery[cols[col]][row];
                }
-               theStructure[theQuery[primaryKey][row]] = duplicate(thisRow);
+              
+               theStructure[arguments.theQuery[arguments.primaryKey][row]] = duplicate(thisRow);
        }
        return(theStructure);
 	}

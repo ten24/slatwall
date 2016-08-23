@@ -207,6 +207,40 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		assertFalse(orderPayment.hasGiftCardTransaction(giftCardTransaction)); 
 	}
+	
+	private any function createMockOrderPayment(string orderID='', string orderTypeID='', numeric amount) {
+	 	var orderPaymentData = {
+	 		orderPaymentID = ''
+	 	};
+	 	if(len(arguments.orderID)) {
+	 		orderPaymentData.order = {
+	 			orderID = arguments.orderID
+	 		};
+	 	}
+	 	if(len(arguments.orderTypeID)) {
+	 		orderPaymentType = {
+	 			typeID = arguments.orderTypeID
+	 		};
+	 	}
+	 	if(!isNull(arguments.amount)) {
+	 		orderPaymentData.amount = arguments.amount;
+	 	}
+	 	return createPersistedTestEntity('OrderPayment', orderPaymentData);
+	 }
+	 
+	public void function getDynamicAmountFlagTest() {
+		//Testing the true
+		var mockOrderPayment = createMockOrderPayment(amount = 100);
+		
+		var resultAmountFlag1 = mockOrderPayment.getDynamicAmountFlag();
+		assertFalse(resultAmountFlag1);
+		
+		//Testing the false
+		var mockOrderPayment2 = createMockOrderPayment();
+		
+		var resultAmountFlag2 = mockorderPayment2.getDynamicAmountFlag();
+		assertTrue(resultAmountFlag2);
+	}
 }
 
 

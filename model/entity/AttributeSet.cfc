@@ -122,6 +122,7 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 			{value="ProductBundleGroup", name=rbKey("entity.ProductBundleGroup")},
 			{value="ProductType", name=rbKey("entity.ProductType")},
 			{value="ProductReview", name=rbKey("entity.ProductReview")},
+			{value="Promotion", name=rbKey("entity.Promotion")},
 			{value="Sku", name=rbKey("entity.Sku")},
 			{value="Site", name=rbKey("entity.Site")},
 			{value="SubscriptionBenefit", name=rbKey("entity.SubscriptionBenefit")},

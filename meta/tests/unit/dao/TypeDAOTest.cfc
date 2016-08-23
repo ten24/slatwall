@@ -68,5 +68,14 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		assertEquals(0, variables.dao.getSystemCodeTypeCount( systemCode="my-fake-system-code" ));
 	}
+
+	public void function getTypeBySystemCodeTest() {
+		
+		var result = variables.dao.getTypeBySystemCode('otSalesOrder');
+		assertEquals('444df2df9f923d6c6fd0942a466e84cc', result.gettypeID());
+		assertEquals('444df2deab6476cb2c429946d6538436,444df2df9f923d6c6fd0942a466e84cc', result.getTypeIDPath());
+		assertEquals('Sales Order', result.getTypeName());
+		assertEquals('otSalesOrder', result.getSystemCode());
+	}
 	
 }
