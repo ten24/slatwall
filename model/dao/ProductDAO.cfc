@@ -49,6 +49,21 @@ Notes:
 <cfcomponent accessors="true" extends="HibachiDAO">
 	
 	<cfscript>
+		public void function setSkusAsInactiveByProduct(required any product){
+			setSkusAsInactiveByProductID(arguments.product.getProductID());
+		}
+		
+		public void function setSkusAsInactiveByProductID(required string productID){
+			var updateQuery = new Query();
+			var sql = '
+				UPDATE SwSku s
+				SET s.activeFlag=0,publishedFlag=0
+				WHERE s.productID = :productID
+			';
+			updateQuery.addParam(name="productID",value=arguments.productID,cfsqltype="cf_sql_varchar");
+			updateQuery.execute(sql=sql);
+		}
+		
 		public numeric function getProductRating(required any product){
 			return OrmExecuteQuery('
 				SELECT avg(pr.rating) 

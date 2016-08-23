@@ -2,7 +2,7 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 
 
-class BaseService{
+abstract class BaseService{
     constructor(){
     }
 }

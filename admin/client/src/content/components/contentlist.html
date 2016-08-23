@@ -42,11 +42,8 @@
 					<!-- s-select-list-wrapper -->
 				</li>
 			</ul>
-			
 		</div>
-
 	</div>
-	
 	<sw-listing-display
 		ng-if="swContentList.collectionListingPromise && swContentList.collection"	
 		data-collection-promise="swContentList.collectionListingPromise"
@@ -58,7 +55,9 @@
 		data-expandable-open-root="swContentList.openRoot"
 		data-expandable="!swContentList.isSearching"
 		data-has-search="false"
+        data-has-action-bar="false"
+        data-is-angular-route="false"
 	>
 	</sw-listing-display>
-	
+
 </section>

@@ -43,7 +43,8 @@ class SWAddFilterButtons{
           restrict: 'E',
           templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"addfilterbuttons.html",
           scope:{
-              itemInUse:"="
+              itemInUse:"=",
+              readOnly:"="
           },
           link: function(scope, element,attrs,filterGroupsController){
               scope.filterGroupItem = filterGroupsController.getFilterGroupItem();
