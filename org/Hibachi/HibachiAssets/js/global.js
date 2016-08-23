@@ -1,6 +1,6 @@
 
 if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
-
+	
 	var listingUpdateCache = {
 		onHold: false,
 		tableID: "",
@@ -1392,7 +1392,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		
 						// Update the paging nav
 		
-						jQuery('div[class="j-pagination"][data-tableid="' + tableID + '"]').html(buildPagingNav(r["currentPage"], r["totalPages"], r["pageRecordsStart"], r["pageRecordsEnd"], r["recordsCount"]));
+						jQuery('div[class="j-pagination"][data-tableid="' + tableID + '"]').html(buildPagingNav(r["currentPage"], r["totalPages"], r["pageRecordsStart"], r["pageRecordsEnd"], r["recordsCount"], r["globalSmartListGetAllRecordsLimit"]));
 						pagingShowToggleDefaultHidden();
 						// Update the saved state ID of the table
 						jQuery('#' + tableID).data('savedstateid', r["savedStateID"]);
@@ -1445,7 +1445,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	}
 	
 	
-	function buildPagingNav(currentPage, totalPages, pageRecordStart, pageRecordEnd, recordsCount) {
+	function buildPagingNav(currentPage, totalPages, pageRecordStart, pageRecordEnd, recordsCount, globalSmartListGetAllRecordsLimit) {
 		var nav = '';
 	
 		currentPage = parseInt(currentPage);
@@ -1453,6 +1453,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		pageRecordStart = parseInt(pageRecordStart);
 		pageRecordEnd = parseInt(pageRecordEnd);
 		recordsCount = parseInt(recordsCount);
+		globalSmartListGetAllRecordsLimit = parseInt(globalSmartListGetAllRecordsLimit);
 	
 		if(totalPages > 1){
 			nav = '<ul class="pagination">';
@@ -1475,10 +1476,15 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 			nav += '<li><a href="##" class="show-option" data-show="10">10</a></li>';
 			nav += '<li><a href="##" class="show-option" data-show="25">25</a></li>';
 			nav += '<li><a href="##" class="show-option" data-show="50">50</a></li>';
-			nav += '<li><a href="##" class="show-option" data-show="100">100</a></li>';
-			nav += '<li><a href="##" class="show-option" data-show="500">500</a></li>';
-			nav += '<li><a href="##" class="show-option" data-show="ALL">ALL</a></li>';
-		
+			if(globalSmartListGetAllRecordsLimit >= 100 || globalSmartListGetAllRecordsLimit === 0){
+				nav += '<li><a href="##" class="show-option" data-show="100">100</a></li>';	
+			}
+			if(globalSmartListGetAllRecordsLimit >= 250 || globalSmartListGetAllRecordsLimit === 0){
+				nav += '<li><a href="##" class="show-option" data-show="250">250</a></li>';
+			}
+			if(globalSmartListGetAllRecordsLimit >= recordsCount || globalSmartListGetAllRecordsLimit === 0){
+				nav += '<li><a href="##" class="show-option" data-show="ALL">ALL</a></li>';
+			}
 			if(currentPage > 1) {
 				nav += '<li><a href="#" class="listing-pager page-option prev" data-page="' + (currentPage - 1) + '">&laquo;</a></li>';
 			} else {

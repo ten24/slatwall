@@ -507,6 +507,34 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return variables[ cacheKey ];
 	}
 	
+	// @hint returns a collection list of the current values for a given one-to-many or many-to-many property
+	public any function getPropertyCollectionList( required string propertyName ) {
+		var cacheKey = "#arguments.propertyName#CollectionList";
+		
+		if(!structKeyExists(variables, cacheKey)) {
+			
+			var entityService = getService("hibachiService").getServiceByEntityName( listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.') );
+			var collectionList = entityService.invokeMethod("get#listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.')#CollectionList");
+			
+			// Create an example entity so that we can read the meta data
+			var exampleEntity = entityNew("#getApplicationValue('applicationKey')##listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.')#");
+			
+			// If its a one-to-many, then add filter
+			if(getPropertyMetaData( arguments.propertyName ).fieldtype == "one-to-many") {
+				// Loop over the properties in the example entity to 
+				for(var i=1; i<=arrayLen(exampleEntity.getProperties()); i++) {
+					if( structKeyExists(exampleEntity.getProperties()[i], "fkcolumn") && exampleEntity.getProperties()[i].fkcolumn == getPropertyMetaData( arguments.propertyName ).fkcolumn ) {
+						collectionList.addFilter("#exampleEntity.getProperties()[i].name#.#getPrimaryIDPropertyName()#", getPrimaryIDValue());
+					}
+				}
+			} 
+			
+			variables[ cacheKey ] = collectionList;
+		}
+		
+		return variables[ cacheKey ];
+	}
+	
 	// @hint returns a struct of the current entities in a given property.  The struck is key'd based on the primaryID of the entities
 	public struct function getPropertyStruct( required string propertyName ) {
 		var cacheKey = "#arguments.propertyName#Struct";
@@ -663,6 +691,11 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		} else if ( left(arguments.missingMethodName, 3) == "get" && right(arguments.missingMethodName, 9) == "SmartList") {
 			
 			return getPropertySmartList( propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-12) );
+			
+		// getXXXStruct()		Where XXX is a one-to-many or many-to-many property where we want a key delimited struct
+		} else if ( left(arguments.missingMethodName, 3) == "get" && right(arguments.missingMethodName, 14) == "CollectionList") {
+			
+			return getPropertyCollectionList( propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-17) );
 			
 		// getXXXStruct()		Where XXX is a one-to-many or many-to-many property where we want a key delimited struct
 		} else if ( left(arguments.missingMethodName, 3) == "get" && right(arguments.missingMethodName, 6) == "Struct") {

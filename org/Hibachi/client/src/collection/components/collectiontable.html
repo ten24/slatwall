@@ -17,8 +17,10 @@
 	            		data-selectionid="collectionSelection"
 	            		data-selection="pageRecord[collectionObject.$$getIDName()]"
 	            	></sw-selection>
+	            	
 	            </td>
-	            <td ng-repeat="(key,column) in collectionConfig.columns" ng-bind="pageRecord[replaceAll(column.propertyIdentifier.substring(column.propertyIdentifier.indexOf('.')+1,column.propertyIdentifier.length),'.','_')]"  ng-show="column.isVisible"></td>
+	            <td data-ng-if="!column.aggregate" ng-repeat="(key,column) in collectionConfig.columns" ng-bind="column.propertyIdentifier.replace(collectionConfig.baseEntityAlias,'').charAt(0) == '.' ? pageRecord[column.propertyIdentifier.replace(collectionConfig.baseEntityAlias+'.','')] : pageRecord[replaceAll(column.propertyIdentifier.replace(collectionConfig.baseEntityAlias+'_',''),'.','_')]"  ng-show="column.isVisible"></td>
+	            <td data-ng-if="column.aggregate" ng-repeat="(key,column) in collectionConfig.columns" ng-bind="pageRecord[column.aggregate.aggregateAlias]"  ng-show="column.isVisible"></td>
 	            <td class="s-edit-elements" ng-if="angularLinks === true">
 	            	<a sw-href="{{'/entity/'+collection.collectionObject+'/'+pageRecord[collectionObject.$$getIDName()]}}" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-eye-open"></i></a>
 			        <a sw-href="{{'/entity/'+collection.collectionObject+'/'+pageRecord[collectionObject.$$getIDName()]}}" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-pencil"></i></a>

@@ -75,6 +75,10 @@ Notes:
 			<hb:HibachiEntityDetailItem view="admin:entity/promotiontabs/promotioncodes" count="#rc.promotion.getPromotionCodesCount()#"/>
 			<hb:HibachiEntityDetailItem view="admin:entity/promotiontabs/promotionsummary" />
 			<hb:HibachiEntityDetailItem view="admin:entity/promotiontabs/promotiondescription" />
+			<!--- Custom Attributes --->
+ 			<cfloop array="#rc.promotion.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
+ 				<swa:SlatwallAdminTabCustomAttributes object="#rc.promotion#" attributeSet="#attributeSet#" />
+ 			</cfloop>
 		</hb:HibachiEntityDetailGroup>
 
 	</hb:HibachiEntityDetailForm>

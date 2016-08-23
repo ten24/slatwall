@@ -18,7 +18,6 @@ dependencies:
 
     # Install awscli so that we can push builds to S3
     - pip install awscli
-
     # Install se-interpreter (Interperates SeleniumBuilder json for SauceLabs using nodeJS)
     - cd meta/tests/integration/se-interpreter && npm install
 
@@ -27,7 +26,7 @@ dependencies:
     - cd org/Hibachi/client && gulp gen-ts-refs && webpack --config webpack-frontend-production.config.js -p --display-error-details
     - cd admin/client && gulp gen-ts-refs
     # Minify JS
-    - cd admin/client && webpack --config webpack-production.config.js -p --display-error-details
+    - cd admin/client && webpack --config webpack-production.config.js -p --display-error-details 
     # Minify 
     - cd admin/client/css && lessc main.less main.css
     # Update docker-compose

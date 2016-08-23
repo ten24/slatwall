@@ -1,74 +1,89 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
-class SWSelection{
+class SWSelectionController{
+    private isRadio;
+    private name;
+    private selectionid;
+    private toggleValue;
+    private selection;
+    //@ngInject
+    constructor(
+        public selectionService,
+        public observerService
+    ){
+        if(angular.isUndefined(this.name)){
+            this.name = 'selection';
+        }
+
+        if(selectionService.isAllSelected(this.selectionid)){
+            this.toggleValue = !selectionService.hasSelection(this.selectionid,this.selection);
+        }else{
+            this.toggleValue = selectionService.hasSelection(this.selectionid,this.selection);
+        }
+
+        //attach observer so we know when a selection occurs
+        observerService.attach(this.updateSelectValue,'swSelectionToggleSelection');
+    }
+
+    private updateSelectValue = (res)=>{
+        if(res.action == 'clear'){
+            this.toggleValue = false;
+        }else if(res.action == 'selectAll'){
+            this.toggleValue = true;
+        }else if(res.selection== this.selection){
+            this.toggleValue = (res.action == 'check');
+        }
+    };
+    private toggleSelection = (toggleValue,selectionid,selection)=>{
+        if(this.isRadio){
+            this.selectionService.radioSelection(selectionid,selection);
+            this.toggleValue = toggleValue;
+        }else{
+            if(toggleValue){
+                this.selectionService.addSelection(selectionid,selection);
+            }else{
+                this.selectionService.removeSelection(selectionid,selection);
+            }
+        }
+    }
+}
+
+class SWSelection  implements ng.IDirective{
+
+    public static $inject = ['corePartialsPath', 'hibachiPathBuilder'];
+    public templateUrl;
+    public restrict = 'E';
+    public scope = {};
+
+    public bindToController =  {
+        selection:"=",
+        selectionid:"@",
+        id:"=",
+        isRadio:"=",
+        name:"@",
+        disabled:"="
+    };
+    public controller = SWSelectionController;
+    public controllerAs = 'swSelection';
+
+    constructor(
+        public collectionPartialsPath,
+        public hibachiPathBuilder
+    ){
+        this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.collectionPartialsPath) + "selection.html";
+    }
+
     public static Factory(){
         var directive = (
-            $log,
-            selectionService,
-            observerService,
             corePartialsPath,
             hibachiPathBuilder
-        )=>new SWSelection(
-            $log,
-            selectionService,
-            observerService,
+        )=> new SWSelection(
             corePartialsPath,
             hibachiPathBuilder
         );
-        directive.$inject = [
-            '$log',
-            'selectionService',
-            'observerService',
-            'corePartialsPath',
-            'hibachiPathBuilder'
-        ];
+        directive.$inject = [ 'corePartialsPath', 'hibachiPathBuilder'];
         return directive;
-    }
-    constructor(
-        $log,
-        selectionService,
-        observerService,
-        corePartialsPath,
-        hibachiPathBuilder
-    ){
-        return {
-			restrict: 'E',
-			templateUrl:hibachiPathBuilder.buildPartialsPath(corePartialsPath)+"selection.html",
-            scope:{
-                selection:"=",
-                selectionid:"@",
-                id:"=",
-                isRadio:"=",
-                name:"@",
-                disabled:"="
-            },
-			link: function(scope,$element,$attrs){
-                if(!scope.name){
-                    scope.name = 'selection';    
-                }
-                if(selectionService.hasSelection(scope.selectionid,scope.selection)){
-                    scope.toggleValue = true;    
-                }
-                
-				scope.toggleSelection = function(toggleValue,selectionid,selection){
-                    console.log('selected!');
-                    console.log(toggleValue);
-                    console.log(selectionid);
-                    console.log(selection);
-                    if(scope.isRadio){
-                        selectionService.radioSelection(selectionid,selection);
-                    }else{
-                        if(toggleValue){
-                            selectionService.addSelection(selectionid,selection);
-                        }else{
-                            selectionService.removeSelection(selectionid,selection);
-                        }
-                    }
-                    observerService.notify('swSelectionToggleSelection',{selectionid,selection});
-                }
-			}
-		};
     }
 }
 export{

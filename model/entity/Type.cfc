@@ -172,7 +172,7 @@ component entityname="SlatwallType" table="SwType" persistent="true" accessors="
 	}
 	
 	public void function preUpdate(struct oldData){
-		setTypeIDPath( buildIDPathList( "parentType" ) );;
+		setTypeIDPath( buildIDPathList( "parentType" ) );
 		super.preUpdate(argumentcollection=arguments);
 	}
 	

@@ -331,13 +331,13 @@ Notes:
 			<cfif len(arguments.linkColumn)>
 				<!--- set if current link is the home page, set empty link (to go to site root) --->
                 <cfif (Q[arguments.linkColumn][Q.CurrentRow] neq arguments.homelink)>
-                    <cfset thislink = "/" & arguments.linkPrefix & HTMLEditFormat(Q[arguments.linkColumn][Q.CurrentRow]) & arguments.linkSuffix />
+                    <cfset thislink = "/" & arguments.linkPrefix & hibachiHTMLEditFormat(Q[arguments.linkColumn][Q.CurrentRow]) & arguments.linkSuffix />
                 <cfelse>
                     <cfset thislink = arguments.baseURL />
                 </cfif>
-				<cfset Ret = Ret & itemTag & '<a href="' &  thislink & '">' & innerTagOpen & HTMLEditFormat(Q[arguments.displayColumn][Q.CurrentRow]) & innerTagClose & '</a>' /><!--- item will be closed in later loop iteration --->
+				<cfset Ret = Ret & itemTag & '<a href="' &  thislink & '">' & innerTagOpen & hibachiHTMLEditFormat(Q[arguments.displayColumn][Q.CurrentRow]) & innerTagClose & '</a>' /><!--- item will be closed in later loop iteration --->
 			<cfelse>
-				<cfset Ret = Ret & itemTag & innerTagOpen & HTMLEditFormat(Q[arguments.displayColumn][Q.CurrentRow]) & innerTagClose /><!--- item will be closed in later loop iteration --->
+				<cfset Ret = Ret & itemTag & innerTagOpen & hibachiHTMLEditFormat(Q[arguments.displayColumn][Q.CurrentRow]) & innerTagClose /><!--- item will be closed in later loop iteration --->
 			</cfif>
 			<cfset LastDepth = ThisDepth />
 		</cfloop>
@@ -529,11 +529,11 @@ Notes:
                for(col = 1; col <= arraylen(cols); col = col + 1){
                        thisRow[cols[col]] = arguments.theQuery[cols[col]][row];
                }
+              
                theStructure[arguments.theQuery[arguments.primaryKey][row]] = duplicate(thisRow);
        }
        return(theStructure);
 	}
-
 
 	// Helper method to combine xml documents
 	public any function xmlImport(required xml parentDocument, required any nodes) {

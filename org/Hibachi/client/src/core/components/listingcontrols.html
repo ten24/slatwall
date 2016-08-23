@@ -1,0 +1,108 @@
+<div class="s-table-inner-nav s-detail-hidden-content">
+    <div class="s-search-wrapper">
+        <div class="input-group">
+            <div class="input-group-btn search-panel">
+                <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">
+                    <span data-ng-bind="swListingControls.getSelectedSearchColumnName()"></span> <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href data-ng-click="swListingControls.selectSearchColumn()">All</a></li>
+                    <li data-ng-repeat="column in swListingControls.collectionConfig.columns | orderBy:'title'"
+                        data-ng-if="column.isSearchable   && (column.ormtype == 'string' || column.ormtype == 'integer' || column.ormtype == 'big_decimal')">
+                        <a href data-ng-click="swListingControls.selectSearchColumn(column)" data-ng-bind="column.title"></a>
+                    </li>
+                </ul>
+            </div>
+
+            <span class="s-search">
+                <input type="text" class="form-control s-search" name="" placeholder="Search results..."
+                       data-ng-model="swListingControls.searchText"
+                       data-ng-model-options='{ debounce: 500 }'
+                       data-ng-change="swListingControls.search()">
+                <buttom class="btn btn-xs btn-default s-add-search-param"
+                        data-ng-if="swListingControls.selectedSearchColumn && swListingControls.searchText"
+                        data-ng-disabled="!swListingControls.selectedSearchColumn"
+                        data-ng-click="swListingControls.addSearchFilter()">
+                        <i class="glyphicon glyphicon-plus"></i>
+                </buttom>
+            </span>
+            <span class="input-group-btn s-action">
+                <button class="btn btn-sm btn-default" type="button" data-ng-click="swListingControls.toggleFilters()">
+                    <i class="fa fa-filter"></i>
+                </button>
+            </span>
+            <span class="input-group-btn s-action">
+                <button class="btn btn-sm btn-default" type="button" data-ng-click="swListingControls.toggleDisplayOptions()">
+                    <i class="fa fa-th"></i>
+                </button>
+            </span>
+        </div>
+        <!-- DISPLAY OPTIONS -->
+        <div data-collapse="swListingControls.displayOptionsClosed" id="j-display-options">
+            <div class="s-display-options">
+                <a href class="s-close" data-ng-click="swListingControls.toggleDisplayOptions(true)">
+                    <i class="fa fa-times"></i>
+                </a>
+                <!-- Dragable List group -->
+                <h4>Display Options</h4>
+                <sw-display-options
+                        data-columns="swListingControls.collectionConfig.columns"
+                        data-properties-list="swListingControls.filterPropertiesList"
+                        data-save-collection="swListingControls.saveCollection()"
+                        data-base-entity-alias="swListingControls.collectionConfig.baseEntityAlias"
+                        data-base-entity-name="swListingControls.collectionConfig.baseEntityName">
+                    <li class="list-group-item"
+                        ng-repeat="column in swListingControls.collectionConfig.columns"
+                        sw-column-item
+                        data-column="column"
+                        data-columns="swListingControls.collectionConfig.columns"
+                        data-column-index="$index"
+                        data-save-collection="swListingControls.saveCollection()"
+                        data-properties-list="swListingControls.filterPropertiesList"
+                        data-order-by="swListingControls.collectionConfig.orderBy">
+                    </li>
+                </sw-display-options >
+            </div>
+        </div>
+        <!-- //DISPLAY OPTIONS -->
+        <!-- ADD FILTER -->
+        <div data-collapse="swListingControls.filtersClosed" id="j-advanced-filter">
+            <span>&nbsp;</span>
+            <div
+                sw-filter-groups
+                data-collection-config="swListingControls.collectionConfig"
+                data-filter-group="swListingControls.collectionConfig.filterGroups[0]"
+                data-filter-group-item="swListingControls.collectionConfig.filterGroups[0].filterGroup"
+                data-filter-properties-list="swListingControls.filterPropertiesList"
+                data-save-collection="swListingControls.saveCollection()"
+                data-simple="true">
+            </div>
+        </div>
+        <!--  //ADD FILTER -->
+    </div>
+    <div class="s-filter-wrapper"  ng-show="swListingControls.showFilters">
+        <div class="s-filters">
+            <!-- Filter -->
+            <div class="btn-group"
+                 data-ng-repeat="filter in swListingControls.collectionConfig.filterGroups[0].filterGroup"
+                 data-ng-if="filter.hasOwnProperty('filterGroup') == false && filter.propertyIdentifier && !filter.hidden">
+
+                <button
+                        class="btn btn-primary btn-sm"
+                        data-ng-click="swListingControls.selectFilterItem(filter)"
+                        data-ng-disabled="!filter.conditionDisplay"
+                        >
+                    {{filter.displayPropertyIdentifier}} {{filter.comparisonOperator}} {{filter.displayValue | truncate: 20}}
+                </button>
+                <!-- TODO: HARD CODING MARGIN, ASK RAYJAY TO FIX IT -->
+                <button type="button"
+                        style="margin-right:3px"
+                        class="btn btn-sm btn-primary s-remove"
+                        data-ng-click="swListingControls.removeFilter(swListingControls.collectionConfig.filterGroups[0].filterGroup, $index)">
+                    <i class="fa fa-trash"></i>
+                </button>
+            </div>
+            <!-- //Filter -->
+        </div>
+    </div>
+</div>

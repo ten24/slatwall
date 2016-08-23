@@ -4,33 +4,42 @@
 class SWWorkflowTrigger{
 	public static Factory(){
 		var directive = (
-			$log,
+            $http,
 			$hibachi,
+            alertService,
 			metadataService,
 			workflowPartialsPath,
-			hibachiPathBuilder
+			hibachiPathBuilder,
+            utilityService
 		)=> new SWWorkflowTrigger(
-			$log,
+            $http,
 			$hibachi,
+            alertService,
 			metadataService,
 			workflowPartialsPath,
-			hibachiPathBuilder
+			hibachiPathBuilder,
+            utilityService
 		);
 		directive.$inject = [
-			'$log',
+			'$http',
 			'$hibachi',
+            'alertService',
 			'metadataService',
 			'workflowPartialsPath',
-			'hibachiPathBuilder'
+			'hibachiPathBuilder',
+            'utilityService'
 		];
 		return directive;
 	}
 	constructor(
-		$log,
+		$http,
 		$hibachi,
+        alertService,
 		metadataService,
 		workflowPartialsPath,
-			hibachiPathBuilder
+        hibachiPathBuilder,
+        utilityService
+        
 	){
 		return {
 			restrict: 'A',
@@ -41,37 +50,61 @@ class SWWorkflowTrigger{
 			},
 			templateUrl:hibachiPathBuilder.buildPartialsPath(workflowPartialsPath)+"workflowtrigger.html",
 			link: function(scope, element,attrs){
-				$log.debug('workflow trigger init');
 
 				/**
 				 * Selects the current workflow trigger.
 				 */
 				scope.selectWorkflowTrigger = function(workflowTrigger){
-					$log.debug('SelectWorkflowTriggers');
 					scope.done = false;
-					$log.debug(workflowTrigger);
 					scope.finished = false;
 					scope.workflowTriggers.selectedTrigger = undefined;
 
-					var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(scope.workflowTrigger.data.workflow.data.workflowObject);
+                    var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(scope.workflowTrigger.data.workflow.data.workflowObject);
 					filterPropertiesPromise.then(function(value){
 						scope.filterPropertiesList = {
 							baseEntityName:		scope.workflowTrigger.data.workflow.data.workflowObject,
 							baseEntityAlias:"_"+ scope.workflowTrigger.data.workflow.data.workflowObject
 						};
+
+
 						metadataService.setPropertiesList(value, scope.workflowTrigger.data.workflow.data.workflowObject);
 						scope.filterPropertiesList[scope.workflowTrigger.data.workflow.data.workflowObject] = metadataService.getPropertiesListByBaseEntityAlias(scope.workflowTrigger.data.workflow.data.workflowObject);
 						metadataService.formatPropertiesList(scope.filterPropertiesList[scope.workflowTrigger.data.workflow.data.workflowObject], scope.workflowTrigger.data.workflow.data.workflowObject);
 						scope.workflowTriggers.selectedTrigger = workflowTrigger;
-					});
+
+                    });
 				};
+
+                scope.executingTrigger = false;
+                scope.executeWorkflowTrigger = function(workflowTrigger){
+                    if(scope.executingTrigger) return;
+
+                    if(!workflowTrigger.data.workflow.data.workflowTasks || !workflowTrigger.data.workflow.data.workflowTasks.length) {
+                        var alert = alertService.newAlert();
+                        alert.msg =  "You don't have any  Task yet!";
+                        alert.type = "error";
+                        alert.fade = true;
+                        alertService.addAlert(alert);
+                        return;
+                    }
+                    scope.executingTrigger = true;
+
+                    var appConfig = $hibachi.getConfig();
+                    var urlString = appConfig.baseURL+'/index.cfm/?'+appConfig.action+'=api:workflow.executeScheduleWorkflowTrigger&workflowTriggerID='+workflowTrigger.data.workflowTriggerID+'&x='+utilityService.createID();
+                    $http.get(urlString).finally(()=>{
+                        scope.executingTrigger = false;
+                        var alert = alertService.newAlert();
+                        alert.msg =  "Task Triggered Successfully. Check History for Status";
+                        alert.type = "success";
+                        alert.fade = true;
+                        alertService.addAlert(alert);
+                    })
+                };
 
 				/**
 				 * Overrides the delete function for the confirmation modal. Delegates to the normal delete method.
 				 */
 				scope.deleteEntity = function(entity){
-					$log.debug("Delete Called");
-					$log.debug(entity);
 					scope.deleteTrigger(entity);
 				};
 
@@ -81,23 +114,9 @@ class SWWorkflowTrigger{
 				scope.deleteTrigger = function(workflowTrigger){
 					var deleteTriggerPromise = $hibachi.saveEntity('WorkflowTrigger',workflowTrigger.data.workflowTriggerID,{},'Delete');
 					deleteTriggerPromise.then(function(value){
-						$log.debug('deleteTrigger');
 						scope.workflowTriggers.splice(workflowTrigger.$$index,1);
 					});
 				};
-
-				/**
-				 * Sets the editing state to show/hide the edit screen.
-				 */
-				scope.setHidden = function(trigger){
-					if(!angular.isObject(trigger) || angular.isUndefined(trigger.hidden)){
-						trigger.hidden=false;
-					}else{
-						$log.debug("setHidden()", "Setting Hide Value To " + !trigger.hidden);
-						trigger.hidden = !trigger.hidden;
-					}
-				};
-
 
 			}
 		};

@@ -69,6 +69,9 @@ Notes:
 					<cfmailparam name="Related-Object" value="#arguments.email.getRelatedObject()#">
 					<cfmailparam name="Related-Object-ID" value="#arguments.email.getRelatedObjectID()#">
 				</cfif>
+				<cfif !isNull(arguments.email.getEmailReplyTo())>
+					<cfmailparam name="Reply-To" value="#arguments.email.getEmailReplyTo()#">
+				</cfif>
 				<cfmailpart type="text/plain">
 					<cfoutput>#arguments.email.getEmailBodyText()#</cfoutput>
 				</cfmailpart>
@@ -90,6 +93,9 @@ Notes:
 					<cfmailparam name="Related-Object" value="#arguments.email.getRelatedObject()#">
 					<cfmailparam name="Related-Object-ID" value="#arguments.email.getRelatedObjectID()#">
 				</cfif>
+				<cfif !isNull(arguments.email.getEmailReplyTo())>
+					<cfmailparam name="Reply-To" value="#arguments.email.getEmailReplyTo()#">
+				</cfif>
 				<cfoutput>#arguments.email.getEmailBodyHTML()#</cfoutput>
 			</cfmail>
 		<!--- Send Text Only E-mail --->
@@ -105,6 +111,9 @@ Notes:
 				<cfif !isNull(arguments.email.getRelatedObject())>
 					<cfmailparam name="Related-Object" value="#arguments.email.getRelatedObject()#">
 					<cfmailparam name="Related-Object-ID" value="#arguments.email.getRelatedObjectID()#">
+				</cfif>
+				<cfif !isNull(arguments.email.getEmailReplyTo())>
+					<cfmailparam name="Reply-To" value="#arguments.email.getEmailReplyTo()#">
 				</cfif>
 				<cfoutput>#arguments.email.getEmailBodyText()#</cfoutput>
 			</cfmail>
@@ -170,6 +179,7 @@ Notes:
 
 	public any function generateAndSendFromEntityAndEmailTemplate( required any entity, required any emailTemplate ) {
 		var email = this.newEmail();
+		arguments[arguments.entity.getClassName()] = arguments.entity;
 		email = this.processEmail(email, arguments, 'createFromTemplate');
 		email = this.processEmail(email, 'addToQueue');
 		return email;
@@ -225,6 +235,7 @@ Notes:
 				arguments.email.setEmailFrom( templateObject.stringReplace( emailTemplate.setting('emailFromAddress'), false, true ) );
 				arguments.email.setEmailCC( templateObject.stringReplace( emailTemplate.setting('emailCCAddress'), false, true ) );
 				arguments.email.setEmailBCC( templateObject.stringReplace( emailTemplate.setting('emailBCCAddress'), false, true ) );
+				arguments.email.setEmailReplyTo( templateObject.stringReplace( emailTemplate.setting('emailReplyToAddress'), false, true ) );
 				arguments.email.setEmailSubject( templateObject.stringReplace( emailTemplate.setting('emailSubject'), false, true ) );
 				arguments.email.setEmailBodyHTML( templateObject.stringReplace( emailTemplate.getEmailBodyHTML() ) );
 				arguments.email.setEmailBodyText( templateObject.stringReplace( emailTemplate.getEmailBodyText() ) );
@@ -235,7 +246,6 @@ Notes:
 
 				local.email = arguments.email;
 				local[ emailTemplate.getEmailTemplateObject() ] = templateObject;
-				local.emailData = templateObject;
 				local.emailData["relatedObject"] = mid(templateObject.getEntityName(), 9, len(templateObject.getEntityName())-8);
 				local.emailData["relatedObjectID"] = templateObject.getPrimaryIDValue();
 
@@ -256,6 +266,7 @@ Notes:
 				arguments.email.setEmailFrom( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailFrom(), object=emailData) );
 				arguments.email.setEmailCC( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailCC(), object=emailData) );
 				arguments.email.setEmailBCC( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailBCC(), object=emailData) );
+				arguments.email.setEmailReplyTo( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailReplyTo(), object=emailData) );
 				arguments.email.setEmailSubject( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailSubject(), object=emailData) );
 				arguments.email.setEmailBodyHTML( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailBodyHTML(), object=emailData) );
 				arguments.email.setEmailBodyText( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailBodyText(), object=emailData) );
@@ -311,4 +322,3 @@ Notes:
 	<!--- ======================  END: Get Overrides ============================= --->
 
 </cfcomponent>
-
