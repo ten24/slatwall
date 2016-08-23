@@ -71,10 +71,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			               ]
 			           };
 			
-			var mockLocation = createTestEntity('Location',locationData);
-	        var result= mockLocation.hasChildren();
+		var mockLocation = createTestEntity('Location',locationData);
+	    var result= mockLocation.hasChildren();
 	     
-		    assertTrue(result);
+	    assertTrue(result);
 	}
 	
 	
@@ -86,10 +86,14 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			locationID="",
 			locationIDPath="ss",
 			locationName="sunny"
-	};
-	 var mockLocation = createPersistedTestEntity('Location',locationData);
+	                  };
+	                  
+	    var mockLocation = createPersistedTestEntity('Location',locationData);
+	    
 	    var result= mockLocation.getBaseLocation();
+	    
 	    var outputExpected= "sunny";
+	    
 	    assertEquals(outputExpected, result);
 	}
 	
@@ -108,31 +112,26 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			               ]
 			           };
 	
-	var mockLocation = createPersistedTestEntity('Location',locationData);
+	    var mockLocation = createPersistedTestEntity('Location',locationData);
+	    
 	    var result= mockLocation.isDeletable();
-	assertTrue(result);
+	    
+	    assertTrue(result);
 	}
 	
 	
-	public void function isDeletableTest2()
-	{
-		locationData2= {
-			locationID=""
-			};
-	
-	var mockLocation = createPersistedTestEntity('Location',locationData2);
-	   var result= mockLocation.isDeletable();
-	request.debug(2,result);
-	 }
-	
 	public void function getLocationPathNameTest()
 	{
+		
 		locationData={
 			locationID="",
 			locationPathName="stark"
-		};
+		             };
+		             
 		var mockLocation= createPersistedTestEntity('Location', locationData);
+		
 		var result= mockLocation.getLocationPathName();
+		
 		assertEquals("stark",result);
 	}
 	
@@ -140,62 +139,83 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	{
 		
 		
-	var parentLocationData={
-		locationID="",
-		locationName="illinois"
-	};
-	var mockParentLocation = createPersistedTestEntity('Location',parentLocationData);
+	    var parentLocationData={
+		    locationID="",
+		    locationName="illinois"
+	                           };
+	    var mockParentLocation = createPersistedTestEntity('Location',parentLocationData);
 	
-	var locationData={
-		locationID="s",
-		locationIDPath="",
-		locationName="Sunny",
-		parentLocation={
-			locationID=mockParentLocation.getLocationID()
-		               }
-	};
+	    var locationData={
+		    locationID="s",
+		    locationIDPath="",
+		    locationName="Sunny",
+		    parentLocation={
+			     locationID=mockParentLocation.getLocationID()
+		                    }
+	                  };
 	
 	
 		var mockLocation= createPersistedTestEntity('Location', locationData);
+		
 		var result= mockLocation.getLocationPathName();
+		
 		assertEquals(result, "illinois &raquo; Sunny");
-	}	
+	}
+		
 
    public void function getLocationIDPathTest() 
    {
-	var locationData={
-		locationID="",
-		locationIDPath="IAmThePath"
+	     var locationData={
+		    locationID="",
+		    locationIDPath="IAmThePath"
 	
-  };
+                          };
   
-	    var mockLocation= createTestEntity('Location', locationData);
-		var result= mockLocation.getLocationIDPath();
+	     var mockLocation= createTestEntity('Location', locationData);
+	    
+		 var result= mockLocation.getLocationIDPath();
 	
-		assertEquals("IAmThePath",result);
+		 assertEquals("IAmThePath",result);
 	}
 	
    public void function getLocationIDPathTest2()
    {
-   	parentLocationData={
+   	
+         var parentLocationData={
 			locationID="",
 			locationIDPath="Sunny"
-		};
+		                     };
+		                     
 	 mockParentLocation=createPersistedTestEntity('Location', parentLocationData);
   
-	var locationData={
-		locationID="",
-		parentLocation={
-			locationID= mockParentLocation.getLocationID()
-		}
-		};
+	     var locationData={
+		        locationID="",
+		        parentLocation={
+			       locationID= mockParentLocation.getLocationID()
+		                       }
+		                  };
 		
-		
-  
-	var mockLocation= createPersistedTestEntity('Location', locationData);
+	    var mockLocation= createPersistedTestEntity('Location', locationData);
+	
+	    var i=0; var j=0; var brokenValue=''; 
 		var result= mockLocation.getLocationIDPath();
-		request.debug(result);
+		var expectedValue=locationData.parentLocation.locationID;
+	
+		for(i=0; i<=result.length();i++)
+		{
+			
+			var test= result.charAt(i);
+			if(test==","){
+				break;
+			             }
+
+			 brokenValue= insert(test, brokenValue,i);
+		}
+		
+		assertEquals(brokenValue, expectedValue);
+        
 		var test=0;
+		
 		if(!isNull(result))
 		{
 			test=1;
@@ -224,8 +244,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			               
 			 locationAddress=[
 			 {
-				locationAddressID="hd",
-				locationAddressName="name"
+				locationAddressID="",
+				locationAddressName=""
 			 }
 			 ]
 
@@ -235,5 +255,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			request.debug(result);
 	}
 	*/
+	
 	}
 	
