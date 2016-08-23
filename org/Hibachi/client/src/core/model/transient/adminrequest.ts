@@ -25,7 +25,7 @@ class AdminRequest extends Request{
 
             //identify that it is an object save
             if(url.indexOf('api:main.post') != -1 && data.entityName){
-                var eventNameBase = data.entityName+data.context;
+                var eventNameBase = data.entityName+data.context.charAt(0).toUpperCase()+data.context.slice(0);
                 if(result.errors){
                     this.observerService.notify(eventNameBase+'Failure',result.data);
 

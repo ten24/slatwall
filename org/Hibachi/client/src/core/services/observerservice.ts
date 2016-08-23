@@ -16,6 +16,7 @@ class ObserverService extends BaseService{
     private observers;
     //@ngInject
     constructor(
+        public  $timeout, 
         private historyService, 
         private utilityService
     ){
@@ -105,24 +106,30 @@ class ObserverService extends BaseService{
      * @description notifies all observers of a specific event
      */
     notify = (event:string, parameters:any):void => {
-      console.warn(event);
-      for(var id in this.observers[event]) {
-        angular.forEach(this.observers[event][id], function (callback) {
-          callback(parameters);
-        });
-      }
-    }
-    notifyById = (event:string, eventId:string,parameters:any):void => {
+      return this.$timeout(()=>{
         for(var id in this.observers[event]) {
-            if(id != eventId) continue;
-            angular.forEach(this.observers[event][id], function (callback) {
-                callback(parameters);
-            });
+          for(var callback of this.observers[event][id]) {
+            callback(parameters);
+          };
         }
+      });
+    }
+	notifyById = (event:string, eventId:string ,parameters:any):void => {
+        return this.$timeout(()=>{
+          for(var id in this.observers[event]) {
+              if(id != eventId) continue;
+              angular.forEach(this.observers[event][id], function (callback) {
+                  callback(parameters);
+              });
+          }
+        });
     }
     notifyAndRecord = (event:string, parameters:any):void => { 
-      this.notify(event, parameters); 
-      this.historyService.recordHistory(event,parameters,true);
+      this.notify(event, parameters).then(
+        ()=>{
+            this.historyService.recordHistory(event,parameters,true);
+        }
+      ); 
     }
 }
 export {ObserverService};

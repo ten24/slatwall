@@ -62,11 +62,6 @@ abstract class BaseEntityService extends BaseObject{
             //throw('need to add '+ objectName+' class');
         }
 
-        for(var key in entity){
-            if(entity[key] === null){
-                entity[key] = undefined
-            }
-        }
         return entity;
     }
 

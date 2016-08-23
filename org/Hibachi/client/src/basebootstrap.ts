@@ -117,8 +117,22 @@ export class BaseBootStrapper{
             var n = d.getTime();
             this.instantiationKey = n.toString();
         }
-
-        return this.$http.get(hibachiConfig.baseURL+'custom/config/config.json?instantiationKey='+this.instantiationKey)
+        
+        var urlString = "";
+        
+        if(!hibachiConfig){
+            hibachiConfig = {};    
+        }
+        
+        if(!hibachiConfig.baseURL){
+            hibachiConfig.baseURL = '';
+        }
+        urlString += hibachiConfig.baseURL;
+        if(hibachiConfig.baseURL.length && hibachiConfig.baseURL.charAt(hibachiConfig.baseURL.length-1) != '/'){
+            urlString+='/';
+        }
+        
+        return this.$http.get(urlString+'custom/config/config.json?instantiationKey='+this.instantiationKey)
         .then( (resp:any)=> {
             coremodule.constant('appConfig',resp.data.data);
             localStorage.setItem('appConfig',JSON.stringify(resp.data.data));
@@ -148,7 +162,7 @@ export class BaseBootStrapper{
             }
         ).success((response:any,status,headersGetter) => {
             this._resourceBundle[locale] = response;
-            
+
             deferred.resolve(response);
         }).error((response:any,status) => {
             if(status === 404){

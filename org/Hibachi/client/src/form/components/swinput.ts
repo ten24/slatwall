@@ -79,19 +79,15 @@ class SWInputController{
 	}
 
 	public onSuccess = ()=>{
-
-		this.$timeout(()=>{
-			this.utilityService.setPropertyValue(this.swForm.object,this.property,this.value);
-			if(this.swPropertyDisplay){
-				this.utilityService.setPropertyValue(this.swPropertyDisplay.object,this.property,this.value);
-			}
-			if(this.swfPropertyDisplay){
-				this.utilityService.setPropertyValue(this.swfPropertyDisplay.object,this.property,this.value);
-				this.swfPropertyDisplay.editing = false;
-			}
-			this.utilityService.setPropertyValue(this.swFormField.object,this.property,this.value);
-
-		});
+		this.utilityService.setPropertyValue(this.swForm.object,this.property,this.value);
+		if(this.swPropertyDisplay){
+			this.utilityService.setPropertyValue(this.swPropertyDisplay.object,this.property,this.value);
+		}
+		if(this.swfPropertyDisplay){
+			this.utilityService.setPropertyValue(this.swfPropertyDisplay.object,this.property,this.value);
+			this.swfPropertyDisplay.editing = false;
+		}
+		this.utilityService.setPropertyValue(this.swFormField.object,this.property,this.value);
 	}
 
 	public getValidationDirectives = ()=>{
@@ -301,14 +297,25 @@ class SWInputController{
             }
 		}
 
+		this.eventNameForObjectSuccess = this.object.metaData.className.split('_')[0]+this.context.charAt(0).toUpperCase()+this.context.slice(1)+'Success'
+		var eventNameForObjectSuccessID = this.eventNameForObjectSuccess+this.property;
+
+		var eventNameForUpdateBindings = 'updateBindings';
+		var eventNameForUpdateBindingsID = this.object.metaData.className.split('_')[0]+'updateBindings';
+
 		//attach a successObserver
 		if(this.object){
-			this.eventNameForObjectSuccess = this.object.metaData.className.split('_')[0]+this.context+'Success';
-			this.observerService.attach(this.onSuccess,this.eventNameForObjectSuccess,this.eventNameForObjectSuccess+this.property);
+			//update bindings on save success
+			this.observerService.attach(this.onSuccess,this.eventNameForObjectSuccess,eventNameForObjectSuccessID);
+
+			//update bindings manually
+			this.observerService.attach(this.onSuccess,'updateBindings',this.object.metaData.className.split('_')[0]+'updateBindings');
+
 		}
 
 		this.$scope.$on("$destroy",()=>{
-			this.observerService.detachById(this.eventNameForObjectSuccess+this.property);
+			this.observerService.detachById(eventNameForUpdateBindings);
+			this.observerService.detachById(eventNameForUpdateBindingsID )
 		})
 	}
 }

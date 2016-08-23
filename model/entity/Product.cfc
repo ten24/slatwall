@@ -78,11 +78,9 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	property name="productReviews" singularname="productReview" cfc="ProductReview" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	property name="productSchedules" singularName="productSchedule" cfc="ProductSchedule" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
-	property name="listingPages" singularName="listingPage" cfc="ProductListingPage" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 
 	// Related Object Properties (many-to-many - owner)
-	//deprecating
-	//property name="listingPages" singularname="listingPage" cfc="Content" fieldtype="many-to-many" linktable="SwProductListingPage" fkcolumn="productID" inversejoincolumn="contentID";
+	property name="listingPages" singularName="listingPage" cfc="ProductListingPage" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	property name="categories" singularname="category" cfc="Category" fieldtype="many-to-many" linktable="SwProductCategory" fkcolumn="productID" inversejoincolumn="categoryID";
 	property name="relatedProducts" singularname="relatedProduct" cfc="Product" type="array" fieldtype="many-to-many" linktable="SwRelatedProduct" fkcolumn="productID" inversejoincolumn="relatedProductID";
 
@@ -200,15 +198,15 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return variables.productTypeOptions;
 	}
 
-	public boolean function hasContent(required string contentID)
-	{
-		for(var listingPage in this.getListingPages()){
-			if(listingPage.getContent().getContentID() == contentID){
-				return true;
-			}
-		}
-		return false;
-	}
+    public boolean function hasContent(required string contentID){
+        for(var listingPage in this.getListingPages()){
+            if(listingPage.getContent().getContentID() == contentID){
+                   return true;
+            }
+        }
+        return false;
+    } 
+
 
     public any function getListingPagesOptionsSmartList() {
 		if(!structKeyExists(variables, "listingPagesOptionsSmartList")) {
@@ -377,11 +375,14 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return arrayLen(getOptionGroups());
 	}
 
-	public array function getImageGalleryArray(array resizeSizes=[{size='s'},{size='m'},{size='l'}]) {
+	public array function getImageGalleryArray(array resizeSizes=[{size='s'},{size='m'},{size='l'}],boolean defaultSkuOnlyFlag=false) {
 		var imageGalleryArray = [];
 		var filenames = [];
 		var skuCollection = this.getSkusCollectionList();
 		skuCollection.setDisplayProperties('skuID,imageFile');
+		if(arguments.defaultSkuOnlyFlag) {
+			skuCollection.addFilter("skuID",getDefaultSku().getSkuID());
+		}
 		var skuCollectionRecords = skuCollection.getRecords();
 		
 		// Add all skus's default images
@@ -566,6 +567,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		');
 		optionCollection.addFilter('skus.product.productID',this.getProductID());
 		optionCollection.addFilter('skus.calculatedQATS',0,'>');
+		optionCollection.addFilter('skus.activeFlag',1);
 		var optionRecords = optionCollection.getRecords();
 		// Create an array of the selectOptions
 		if(listLen(arguments.selectedOptionIDList)) {
@@ -813,6 +815,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 						);
 						arrayAppend(variables.defaultProductImageFiles, imageFileStruct);
 					}
+
 			}
 		}
 		return variables.defaultProductImageFiles;
@@ -1188,8 +1191,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		arguments.productReview.removeProduct( this );
 	}
 
-	// Listing Pages (many-to-many - owner)
-	/*
+	/* Listing Pages (many-to-many - owner)
 	public void function addListingPage(required any listingPage) {
 		if(isNew() or !hasListingPage(arguments.listingPage)) {
 			arrayAppend(variables.listingPages, arguments.listingPage);

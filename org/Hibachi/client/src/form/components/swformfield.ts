@@ -73,7 +73,7 @@ class SWFormFieldController {
 				if(angular.isDefined(this.form[this.object.data[this.property].$$getIDName()])){
 					this.form[this.object.data[this.property].$$getIDName()].$dirty = true;
 				}
-			}else if(this.selectType === 'string'){
+			}else if(this.selectType === 'string' && option && option.value != null){
 
 				this.object.data[this.property] = option.value;
 				this.form[this.property].$dirty = true;
