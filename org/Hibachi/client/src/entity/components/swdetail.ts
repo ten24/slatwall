@@ -61,10 +61,12 @@ class SWDetail{
 
 	        	scope.getEntity = function(){
 
-	        		if(scope.entityID === 'null'){
+	        		if(scope.entityID === 'create'){
+                        scope.createMode = true;
 	        			scope.entity = $hibachi['new'+propertyCasedEntityName]();
 	        			setupMetaData();
 	        		}else{
+                        scope.createMode = false;
 	        			var entityPromise = $hibachi['get'+propertyCasedEntityName]({id:scope.entityID});
 	        			entityPromise.promise.then(function(){
 	        				scope.entity = entityPromise.value;

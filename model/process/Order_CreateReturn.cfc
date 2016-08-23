@@ -58,6 +58,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="fulfillmentRefundAmount";
 	property name="refundOrderPaymentID" hb_formFieldType="select";
 	property name="receiveItemsFlag" hb_formFieldType="yesno" hb_sessionDefault="0";
+	property name="stockLossFlag" hb_formFieldType="yesno";
 	property name="orderTypeCode" hb_formFieldType="select" hb_rbKey="entity.order.orderType";
 	
 

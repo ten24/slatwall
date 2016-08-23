@@ -1,0 +1,169 @@
+<!-- Search for product -->
+<div class="row s-bundle-group-items">
+    <div class="col-xs-12 s-title">
+        <h4 class="s-clear-fix">
+            Bundle Items
+            <button type="button" ng-click="swProductBundleCollectionFilteritemTypeahead.openCloseAndRefresh() " class="pull-right btn-no-style"> 
+                <span ng-show="!swProductBundleCollectionFilteritemTypeahead.showAdvanced">Advanced</span> 
+                <span ng-show="swProductBundleCollectionFilteritemTypeahead.showAdvanced">Basic</span> 
+                View
+            </button>  
+        </h4>
+    </div>
+    <div ng-show="!swProductBundleCollectionFilteritemTypeahead.showAdvanced">
+        <div class="col-xs-12 col-md-6 s-selected-items">
+            <!-- Selected filters -->
+            <div class="s-bundle-add-items s-workflow-objs">
+                <div class="well well-sm"  ng-show="!swProductBundleCollectionFilteritemTypeahead.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.length">
+                    <ul class="list-unstyled">
+                        <li sw-rbkey="'admin.define.no_items_selected'">
+                            <!-- #$.slatwall.rbKey('admin.define.no_items_selected')# -->
+                        </li>
+                        <li sw-rbkey="'entity.ProductBundleBuildItem.selectBundleGroup'">
+                            <!-- #$.slatwall.rbKey('entity.ProductBundleBuildItem.selectBundleGroup')# -->
+                        </li>
+                    </ul>
+                </div>
+                <ul class="list-unstyled s-order-item-options" ng-show="swProductBundleCollectionFilteritemTypeahead.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.length">
+                    <li class="s-bundle-add-obj" ng-repeat="productBundleGroupFilter in swProductBundleCollectionFilteritemTypeahead.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup">
+                        <ul class="list-unstyled list-inline">
+                            <!-- You can change the s-include to s-exclude for stye diff -->
+                            <li class="s-item-type s-tooltip" 
+                                data-toggle="tooltip" 
+                                data-placement="right" title="Tooltip example"
+                                ng-class="{'s-include':productBundleGroupFilter.comparisonOperator==='=','s-exclude':productBundleGroupFilter.comparisonOperator==='!='} "  
+                                >
+                                <i 	class="fa"
+                                    ng-class="{'fa-plus-square-o':productBundleGroupFilter.comparisonOperator==='=','fa-minus-square-o':productBundleGroupFilter.comparisonOperator==='!='} "  
+                                    ></i>
+                            </li>
+                        </ul>
+                        <ul class="list-unstyled list-inline s-middle">
+                            <li class="s-bundle-details" ng-show="productBundleGroupFilter.type">
+                                <span ng-bind="productBundleGroupFilter.type"></span>:<span ng-bind="productBundleGroupFilter.name | trim:50"></span>
+                            </li>
+                            <li class="s-bundle-details" ng-show="!productBundleGroupFilter.type">
+                                <span ng-bind="productBundleGroupFilter.displayPropertyIdentifier"></span>:<span ng-bind="productBundleGroupFilter.value"></span>
+                            </li>
+                        </ul>
+                        <ul class="list-unstyled list-inline s-last">
+                            <li class="col-xs-1 s-bundle-details-add">
+                                <!-- Confirmation Dialog -->
+                                <a class="btn btn-lgrey s-remove" 
+                                    sw-confirm 
+                                    data-confirm-text="Confirm"
+                                    data-message-text="Are you sure you want to delete this product bundle group filter?" 
+                                    data-callback="swProductBundleCollectionFilteritemTypeahead.deleteEntity($index);"
+                                    data-use-rb-key="false"
+                                    data-simple=false
+                                    data-yes-text="Yes"
+                                    data-no-text="No">
+                                <i class="fa fa-trash"></i>
+                                </a><!-- End confirmation dialog -->
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </li>
+                </ul>
+            </div>
+            <!-- //Selected filters -->
+        </div>
+        <div class="col-sm-12 col-md-6 s-select-item">
+            <div class="input-group">
+                <div class="dropdown input-group-btn search-panel">
+                    <button class="btn btn-sm btn-dgrey dropdown-toggle" type="button" id="dropdownMenu1">
+                    <span ng-bind="swProductBundleCollectionFilteritemTypeahead.searchOptions.selected.name" id="j-search-concept">Any</span>
+                    <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                        <li ng-repeat="searchOption in swProductBundleCollectionFilteritemTypeahead.searchOptions.options">
+                            <a 	
+                                ng-bind="searchOption.name"
+                                ng-click="swProductBundleCollectionFilteritemTypeahead.searchOptions.setSelected(searchOption); swProductBundleCollectionFilteritemTypeahead.resetCurrentCount()"
+                                ></a>
+                        </li>
+                    </ul>
+                </div>
+                <input class="form-control s-search-input"
+                    placeholder="Search {{swProductBundleCollectionFilteritemTypeahead.searchOptions.selected.name}} ..."
+                    type="text"
+                    ng-model="swProductBundleCollectionFilteritemTypeahead.productBundleGroupFilters.keyword"
+                    ng-change="swProductBundleCollectionFilteritemTypeahead.getFiltersByTerm(swProductBundleCollectionFilteritemTypeahead.productBundleGroupFilters.keyword,swProductBundleCollectionFilteritemTypeahead.searchOptions.selected); swProductBundleCollectionFilteritemTypeahead.resetCurrentCount();"
+                    >
+            </div>
+            <!-- Options items -->
+            <div class="s-bundle-add-items" ng-show="swProductBundleCollectionFilteritemTypeahead.productBundleGroupFilters.keyword.length">
+                <div class="col-xs-12 s-bundle-add-items-inner">
+                    <h4  class="s-no-items"
+                        ng-if="!swProductBundleCollectionFilteritemTypeahead.productBundleGroupFilters.value.length"
+                        >
+                        There are no items selected
+                    </h4>
+                    <!-- Selected filters -->
+                    <div class="s-bundle-add-items s-workflow-objs">
+                        <ul class="list-unstyled s-order-item-options s-negative-obj"
+                            ng-show="swProductBundleCollectionFilteritemTypeahead.productBundleGroupFilters.value.length">
+                            <li class="s-bundle-add-obj" ng-repeat="filterItem in swProductBundleCollectionFilteritemTypeahead.productBundleGroupFilters.value track by $index">
+                                <ul class="list-unstyled list-inline s-middle">
+                                    <li class="j-tool-tip-item s-bundle-details" ng-bind="filterItem.type"></li>
+                                    <li class="j-tool-tip-item s-bundle-details" ng-bind="filterItem.name|trim:34"></li>
+                                </ul>
+                                <ul class="list-unstyled list-inline s-last">
+                                    <li class="col-xs-1 s-bundle-details-add">
+                                        <a class="btn btn-default" ng-click="swProductBundleCollectionFilteritemTypeahead.addFilterToProductBundle(filterItem,false,$index)"><i class="fa fa-minus-square-o"></i> <span class="s-action-text">Exclude</span></a>
+                                    </li>
+                                    <li class="col-xs-1 s-bundle-details-add">
+                                        <a class="btn btn-primary" ng-click="swProductBundleCollectionFilteritemTypeahead.addFilterToProductBundle(filterItem,true,$index)"><i class="fa fa-plus-square-o"></i> <span class="s-action-text">Include</span></a>
+                                    </li>
+                                </ul>
+                                <div class="clearfix"></div>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- //Selected filters -->
+                    <!-- Load more button NOTE: the disabled class should be added when the button is loading and removed when it's not-->
+                    <div class="s-load-more" ng-hide="swProductBundleCollectionFilteritemTypeahead.recordsCount <= swProductBundleCollectionFilteritemTypeahead.recordsPerPage" ng-click="swProductBundleCollectionFilteritemTypeahead.increaseCurrentCount(); swProductBundleCollectionFilteritemTypeahead.getFiltersByTerm(swProductBundleCollectionFilteritemTypeahead.productBundleGroupFilters.keyword,swProductBundleCollectionFilteritemTypeahead.searchOptions.selected);">
+                        <button class="{'btn btn-dgrey btn-sm disabled' : swProductBundleCollectionFilteritemTypeahead.loading === true, 'btn btn-dgrey btn-sm' : swProductBundleCollectionFilteritemTypeahead.loading}">
+                            Load More <i class="fa fa-refresh fa-spin" ng-show="swProductBundleCollectionFilteritemTypeahead.loading"></i>
+                            <span ng-if="!swProductBundleCollectionFilteritemTypeahead.showAll">(Showing {{swProductBundleCollectionFilteritemTypeahead.pageRecordsStart}} to {{swProductBundleCollectionFilteritemTypeahead.pageRecordsEnd}} of {{swProductBundleCollectionFilteritemTypeahead.recordsCount}})</span>
+                        </button>
+                    </div>
+                    <!-- //Load more button -->
+                </div>
+            </div>
+            <!-- //Options items -->
+            <div class="clearfix"></div>
+        </div>
+    </div>
+    <div ng-show="swProductBundleCollectionFilteritemTypeahead.showAdvanced" class="col-md-12">
+        <div class="s-setting-options">
+            <div class="row s-setting-options-body">
+                <!-- Start Filter Group -->
+                <div class="col-xs-12 s-filters-selected">
+                    <div class="row">
+                        <!--filterGroups gets taken apart here -->
+                        <ul class="col-xs-12 list-unstyled"
+                            ng-if="swProductBundleCollectionFilteritemTypeahead.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup"
+                            sw-filter-groups
+                            data-collection-config="swProductBundleCollectionFilteritemTypeahead.productBundleGroup.data.skuCollectionConfig"
+                            data-filter-group="swProductBundleCollectionFilteritemTypeahead.productBundleGroup.data.skuCollectionConfig.filterGroups[0]"
+                            data-filter-group-item="swProductBundleCollectionFilteritemTypeahead.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup"
+                            data-filter-properties-list="swProductBundleCollectionFilteritemTypeahead.filterPropertiesList"
+                            data-save-collection="swProductBundleCollectionFilteritemTypeahead.productBundleGroup.$$save(); swProductBundleCollectionFilteritemTypeahead.getCollection();"
+                            >
+                        </ul>
+                    </div>
+                    <!-- //New Filter Panel -->
+                </div>
+                <!-- //End Filter Group -->
+            </div>
+        </div>
+        <sw-collection-table
+            data-collection="swProductBundleCollectionFilteritemTypeahead.collection"
+            data-collection-config="swProductBundleCollectionFilteritemTypeahead.productBundleGroup.data.skuCollectionConfig"
+            ng-if="swProductBundleCollectionFilteritemTypeahead.collection"
+            >
+        </sw-collection-table>
+    </div>
+</div>
+

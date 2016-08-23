@@ -26,6 +26,7 @@ if (isDefined('URL.langCode') and Refind("^[a-z-]+$", URL.langCode)) {
 </cfscript>
 <cfinclude template="../#REQUEST.constants.CKFINDER_CONNECTOR_LANG_PATH#/#langCode#.cfm">
 <cfif number>
+	
 <cfparam name="CKFLang.Errors[#number#]" default="">
 <cfif Len(CKFLang.Errors[number])>
 	<cfset errorMessage = Replace(CKFLang.Errors[number], "%1", arg)>

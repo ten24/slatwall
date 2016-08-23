@@ -58,7 +58,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	property name="productListingPageFlag" ormtype="boolean";
 	property name="urlTitle" ormtype="string" length="4000";
 	property name="urlTitlePath" ormtype="string" length="8000";
-	property name="contentBody" ormtype="string" length="8000" ;
+	property name="contentBody" ormtype="string" length="8000" hb_formFieldType="wysiwyg";
 	property name="displayInNavigation" ormtype="boolean";
 	property name="excludeFromSearch" ormtype="boolean";
 	property name="sortOrder" ormtype="integer";
@@ -109,10 +109,11 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	// ============ START: Non-Persistent Property Methods =================
 	public string function getAssetsPath(){
 		if(!structKeyExists(variables,'assetsPath')){
-			variables.assetsPath = getSite().getAssetsPath();;
+			variables.assetsPath = getSite().getAssetsPath();
 		}
 		return variables.assetsPath;
 	}
+	
 	
 	public string function getTitlePath(string delimiter){
 		var titlePath = '';
@@ -472,6 +473,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	
 	
 	// ============== START: Overridden Implicet Getters ===================
+	
 	
 	public string function getContentIDPath() {
 		if(isNull(variables.contentIDPath)) {

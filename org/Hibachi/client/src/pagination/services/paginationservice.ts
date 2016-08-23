@@ -26,6 +26,7 @@ class Pagination{
 
     //@ngInject
     constructor(
+        public observerService,
         private uuid:string
     ){
         this.uuid = uuid;
@@ -39,7 +40,6 @@ class Pagination{
     public pageShowOptionChanged = (pageShowOption) => {
         this.setPageShow(pageShowOption.value);
         this.setCurrentPage(1);
-        this.getCollection();
     };
 
     public getTotalPages=():number =>{
@@ -84,6 +84,7 @@ class Pagination{
     public setCurrentPage=(currentPage:number):void =>{
         this.currentPage = currentPage;
         this.getCollection();
+        this.observerService.notify('swPaginationAction',{action:'pageChange', currentPage});
     };
     public previousPage=():void =>{
         if(this.getCurrentPage() == 1) return;
@@ -91,8 +92,7 @@ class Pagination{
     };
     public nextPage=():void =>{
         if(this.getCurrentPage() < this.getTotalPages()){
-            this.currentPage = this.getCurrentPage() + 1;
-            this.getCollection();
+            this.setCurrentPage(this.getCurrentPage() + 1);
         }
     };
     public hasPrevious=():boolean =>{
@@ -171,14 +171,15 @@ class PaginationService implements IPaginationService{
     private paginations = {};
     //@ngInject
     constructor(
-        private utilityService
+        private utilityService,
+        public observerService
     ){
 
     }
 
     public createPagination = ():Pagination =>{
         var uuid= this.utilityService.createID(10);
-        this.paginations[uuid] = new Pagination(uuid);
+        this.paginations[uuid] = new Pagination(this.observerService,uuid);
         return this.paginations[uuid];
     };
 

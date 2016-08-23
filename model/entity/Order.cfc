@@ -134,6 +134,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="paymentAmountReceivedTotal" persistent="false" hb_formatType="currency";
 	property name="paymentAmountCreditedTotal" persistent="false" hb_formatType="currency";
 	property name="paymentAmountDue" persistent="false" hb_formatType="currency";
+	property name="paymentAmountDueAfterGiftCards" persistent="false" hb_formatType="currency";
 	property name="paymentMethodOptionsSmartList" persistent="false";
 	property name="promotionCodeList" persistent="false";
 	property name="quantityDelivered" persistent="false";
@@ -300,6 +301,14 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		return arr;
 	}
 
+	public numeric function getPaymentAmountDueAfterGiftCards(){
+		var paymentAmountDue = this.getPaymentAmountDue();
+		if(paymentAmountDue > 0 && this.hasGiftCardOrderPaymentAmount()){
+			paymentAmountDue = paymentAmountDue - this.getGiftCardOrderPaymentAmountNotReceived();
+		}
+		return paymentAmountDue;
+	}
+
 
 	public boolean function hasGiftCardOrderPaymentAmount(){
 
@@ -315,6 +324,14 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 	public numeric function getGiftCardOrderPaymentAmount(){
 		return getDAO("OrderDAO").getGiftCardOrderPaymentAmount(this.getOrderID());
+	}
+
+	public numeric function getGiftCardOrderPaymentAmountReceived(){
+        return getDAO("OrderDAO").getGiftCardOrderPaymentAmountReceived(this.getOrderID());
+	}
+
+	public numeric function getGiftCardOrderPaymentAmountNotReceived(){
+	    return this.getGiftCardOrderPaymentAmount() - this.getGiftCardOrderPaymentAmountReceived(); 
 	}
 
 
@@ -344,10 +361,6 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 	public array function getGiftCardOrderItems() {
 		return getDAO('OrderDAO').getGiftCardOrderItems(this.getOrderID());
-	}
-
-	public numeric function getGiftCardPaymentAmount(){
-		return getDAO('OrderDAO').getGiftCardOrderPaymentAmount(this.getOrderID());
 	}
 
     public any function getAllOrderItemGiftRecipientsSmartList(){
@@ -813,6 +826,39 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		}
 
 		return promotionCodeList;
+	}
+
+	public array function getAllAppliedPromotions() {
+		if(!structKeyExists(variables, "allAppliedPromotions")) {
+			variables.allAppliedPromotions = []; 
+			var allAppliedPromotionCollection = getService("promotionService").newCollection().setup("PromotionApplied");
+			allAppliedPromotionCollection.addFilter('order.orderID', getOrderID(), "=");
+			allAppliedPromotionCollection.addFilter('orderItem.order.orderID', getOrderID(), "=", "OR");
+			allAppliedPromotionCollection.addFilter('orderFulfillment.order.orderID', getOrderID(), "=", "OR");
+			allAppliedPromotionCollection.setDisplayProperties("appliedType,promotionAppliedID,promotion.promotionID,promotion.promotionName");
+			var allAppliedPromotions = allAppliedPromotionCollection.getRecords();
+			// get all the promotion codes applied and attached it to applied Promotion Struct
+			var appliedPromotionCodes = getPromotionCodes();
+			for(var appliedPromotionCode in appliedPromotionCodes) {
+				promotionToAdd = {}; 
+				promotionToAdd["qualified"] = false; 
+				for(var appliedPromotion in allAppliedPromotions) {
+					if(appliedPromotionCode.getPromotion().getPromotionID() == appliedPromotion.promotion_promotionID) {
+					    promotionToAdd = appliedPromotion; 
+					    promotionToAdd["qualified"] = true; 
+					    break; 
+					}   
+				}
+				promotionToAdd["promotionCodeID"] = appliedPromotionCode.getPromotionCodeID();
+				promotionToAdd["promotionCode"] = appliedPromotionCode.getPromotionCode();
+		        if(!structKeyExists(promotionToAdd, "promotion_promotionName")){
+                    promotionToAdd["promotion_promotionName"] = appliedPromotionCode.getPromotion().getPromotionName();  
+		            promotionToAdd["promotion_promotionID"] = appliedPromotionCode.getPromotion().getPromotionID();
+		        }
+		        arrayAppend(variables.allAppliedPromotions, promotionToAdd); 	    
+			}
+		}
+		return variables.allAppliedPromotions;
 	}
 
 	public numeric function getDeliveredItemsPaymentAmountUnreceived() {

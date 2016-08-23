@@ -55,7 +55,7 @@ Notes:
 
 		<cfquery name="rs" maxrows=1>
 			SELECT
-				count(o.optionID) AS total
+				count(o.optionID) total
 			FROM SwOption o
 			    LEFT JOIN SwSkuOption so ON so.optionID = o.optionID
 			    LEFT JOIN SwSku s ON so.skuID = s.skuID
@@ -77,8 +77,8 @@ Notes:
 
 		<cfquery name="rs" maxrows=1>
 			SELECT
-				count(o.optionID) AS total
-			FROM SwOption AS o
+				count(o.optionID) total
+			FROM SwOption o
 			WHERE
 				o.optionGroupID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#optionGroupID#" />
 		</cfquery>
@@ -95,13 +95,13 @@ Notes:
 		<cfset var rs = "" />
 
 		<cfquery name="rs">
-			SELECT DISTINCT
-            	og.optionGroupID as ogID
-			FROM SwOptionGroup as og
-			    Left Join SwOption as o on og.optionGroupID = o.optionGroupID
-			    Left Join SwSkuOption as so on so.optionID = o.optionID
-			    Left Join SwSku as s on so.skuID = s.skuID
-			    Left Join SwProduct as p on s.productID = p.productID
+			SELECT DISTINCT 
+    				og.optionGroupID ogID
+			FROM SwOptionGroup og
+			    Left Join SwOption o on og.optionGroupID = o.optionGroupID
+			    Left Join SwSkuOption so on so.optionID = o.optionID
+			    Left Join SwSku s on so.skuID = s.skuID
+			    Left Join SwProduct p on s.productID = p.productID
 			WHERE
 				p.productID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#productID#" />
 		</cfquery>
@@ -147,6 +147,25 @@ Notes:
 		
 		<cfreturn result />
 	</cffunction>
-
+	<cfscript>
+		public void function addOptionGroupByOptionGroupIDAndProductID(required string optionGroupID,required string productID){
+			var optionID = ORMExecuteQuery('
+				SELECT o.optionID
+				FROM SlatwallOptionGroup op
+				LEFT JOIN op.options o
+				where op.optionGroupID = :optionGroupID',
+				{optionGroupID=arguments.optionGroupID},
+				true,
+				{maxResults=1}
+			);
+			var queryService = new query();
+			var sql = "INSERT INTO SwSkuOption (skuID,optionID)
+				SELECT s.skuID,'#optionID#' as optionID
+				FROM swSku s where s.productID = :productID
+			";
+			queryService.addParam(name='productID',value=arguments.productID,CFSQLTYPE="CF_SQL_STRING");
+			queryService.execute(sql=sql);
+		}
+	</cfscript>
 </cfcomponent>
 

@@ -46,25 +46,25 @@
 Notes:
 
 */
-component displayname="Product" entityname="SlatwallProduct" table="SwProduct" persistent="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="productService" hb_permission="this" hb_processContexts="addOptionGroup,addOption,addSubscriptionSku,deleteDefaultImage,updateDefaultImageFileNames,updateSkus,addProductReview" {
+component displayname="Product" entityname="SlatwallProduct" table="SwProduct" persistent="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="productService" hb_permission="this" hb_processContexts="addOptionGroup,addOption,addSubscriptionSku,deleteDefaultImage,updateDefaultImageFileNames,updateSkus,addProductReview" description="All top level information about a product and serves as the grouping for skus where price and inventory is managed" {
 
 	// Persistent Properties
 	property name="productID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean";
-	property name="urlTitle" ormtype="string" unique="true";
-	property name="productName" ormtype="string";
-	property name="productCode" ormtype="string" unique="true" index="PI_PRODUCTCODE";
-	property name="productDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg";
-	property name="publishedFlag" ormtype="boolean" default="false";
-	property name="sortOrder" ormtype="integer";
-	property name="purchaseStartDateTime" ormtype="timestamp";
-	property name="purchaseEndDateTime" ormtype="timestamp";
+	property name="urlTitle" ormtype="string" unique="true" description="URL Title defines the string in a URL that Slatwall will use to identify this product.  For Example: http://www.myslatwallsite.com/sp/my-url-title/ where sp is the global product url key, and my-url-title is the urlTitle of this product";
+	property name="productName" ormtype="string" description="Defines the name of the product.  This can also be set at sku level with the skuName property.";
+	property name="productCode" ormtype="string" unique="true" index="PI_PRODUCTCODE" description="A unique value that identifies this product and only this product.  This could also be though of as a 'Model Number' but should not be confused with skuCode which identifies the actual unit being sold.";
+	property name="productDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg" description="General marketing description of the product.";
+	property name="publishedFlag" ormtype="boolean" default="false" description="This flag is used to determine if the product should be available for sale as published on the frontend of a website.";
+	property name="sortOrder" ormtype="integer" description="The sort order value can be used to manually organize all of the products in your catalog.";
+	property name="purchaseStartDateTime" ormtype="timestamp" description="This field can be set to restrict the begining of a time periord when this product can be sold.";
+	property name="purchaseEndDateTime" ormtype="timestamp" description="This field can be set to restrict the end of a time periord when this product can be sold.";
 
 	// Calculated Properties
-	property name="calculatedSalePrice" ormtype="big_decimal";
-	property name="calculatedQATS" ormtype="integer";
-	property name="calculatedAllowBackorderFlag" ormtype="boolean";
-	property name="calculatedTitle" ormtype="string";
+	property name="calculatedSalePrice" ormtype="big_decimal" description="Stores the latest calculation of the dynamic 'salePrice' property which in turn calculates from the defaultSku's dynamic salePrice property.";
+	property name="calculatedQATS" ormtype="integer" description="Stores the latest calculation of the dynamic 'qats' property which in turn calculates from the defaultSku's dynamic qats property.";
+	property name="calculatedAllowBackorderFlag" ormtype="boolean" description="Stores the value of the 'Allow Backorder' setting.  This is commonly used to drive dynamic product lists on the frontend where availability is important." deprecated="true" deprecatedDescription="Because the calculatedQATS propert takes into account if a product is able to be backordered, this property is no longer needed and will be removed in a future release for performance reasons.";
+	property name="calculatedTitle" ormtype="string" description="Stores the latest calculation of the products marketing 'Title' which is generated based on a dynamic string template in the products settings.";
 
 	// Related Object Properties (many-to-one)
 	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID" hb_optionsNullRBKey="define.none" fetch="join";
@@ -147,26 +147,23 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		if(!structKeyExists(variables, "availableToPurchaseFlag")) {
 			// If purchase start dates not existed, or before now(), the start date is valid
 			// If purchase end   date  not existed, or after  now(), the end   date is valid
-			if ( 
-
+			if (
 					(
 						isNull(this.getPurchaseStartDateTime())
 						||
-						( !isNull(this.getPurchaseStartDateTime()) && dateCompare(now(),this.getPurchaseStartDateTime(),"s") == 1 )					 
+						( !isNull(this.getPurchaseStartDateTime()) && dateCompare(now(),this.getPurchaseStartDateTime(),"s") == 1 )
 					)
 					&&
 					(
 						isNull(this.getPurchaseEndDateTime())
 						||
-						( !isNull(this.getPurchaseEndDateTime()) && dateCompare(now(),this.getPurchaseEndDateTime(),"s") == -1 )					 
-					) 
-
+						( !isNull(this.getPurchaseEndDateTime()) && dateCompare(now(),this.getPurchaseEndDateTime(),"s") == -1 )
+					)
 			) {
 				variables.availableToPurchaseFlag = true;
 			} else {
 				variables.availableToPurchaseFlag = false;
-			}				
-
+			}
 		}
 
 		return variables.availableToPurchaseFlag;
@@ -246,14 +243,14 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			}
 		}
 	}
-	
+
 	//TODO: unused function
 	public any function getTemplateOptions() {
 		if(!isDefined("variables.templateOptions")){
 			variables.templateOptions = getService("ProductService").getProductTemplates();
 		}
 		return variables.templateOptions;
-	} 
+	}
 
 	public any function getImages() {
 		return variables.productImages;
@@ -262,7 +259,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public numeric function getTotalImageCount(){
 		return this.getProductImagesCount() + this.getDefaultProductImageFilesCount();
 	}
-	
+
 	/**
 	* @Suppress
 	*/
@@ -272,7 +269,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 		return {};
 	}
-	
+
 	/**
 	* @Suppress
 	*/
@@ -285,7 +282,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	// Non-Persistent Helpers
 
 	public boolean function getAllowAddOptionGroupFlag() {
- 		return arrayLen(getSkus()) eq 1 || getOptionGroupCount() gt 0;
+ 		return this.getOptionGroupCount() gt 0 || this.getSkusCount() eq 1;
  	}
 
 	//TODO: Unused function
@@ -369,50 +366,91 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return arrayLen(getOptionGroups());
 	}
 
-	public array function getImageGalleryArray(array resizeSizes=[{size='s'},{size='m'},{size='l'}]) {
+	public array function getImageGalleryArray(array resizeSizes=[{size='s'},{size='m'},{size='l'}],boolean defaultSkuOnlyFlag=false) {
 		var imageGalleryArray = [];
-		var filenames = "";
-
+		var filenames = [];
+		var skuCollection = this.getSkusCollectionList();
+		skuCollection.setDisplayProperties('skuID,imageFile');
+		if(arguments.defaultSkuOnlyFlag) {
+			skuCollection.addFilter("skuID",getDefaultSku().getSkuID());
+		}
+		var skuCollectionRecords = skuCollection.getRecords();
+		
 		// Add all skus's default images
-		for(var i=1; i<=arrayLen(getSkus()); i++) {
-			if( !listFind(filenames, getSkus()[i].getImageFile()) ) {
-				filenames = listAppend(filenames, getSkus()[i].getImageFile());
+		var missingImagePath = setting('imageMissingImagePath');
+		var imageAltString = stringReplace(setting('imageAltString'));
+		
+		var skuCollectionRecordsCount = arrayLen(skuCollectionRecords);
+		for(var i=1; i<=skuCollectionRecordsCount; i++) {
+			var skuData = skuCollectionRecords[i];
+			if(ArrayFind(filenames, skuData['imageFile']) ==0) {
+				ArrayAppend(filenames, skuData['imageFile']);
+				
 				var thisImage = {};
-				thisImage.originalFilename = getSkus()[i].getImageFile();
-				thisImage.originalPath = getSkus()[i].getImagePath();
+				thisImage.originalFilename = skuData['imageFile'];
+				thisImage.originalPath = getService('imageService').getProductImagePathByImageFile(skuData['imageFile']);
 				thisImage.type = "skuDefaultImage";
 				thisImage.productID = getProductID();
 				thisImage.name = getTitle();
 				thisImage.description = getProductDescription();
 				thisImage.resizedImagePaths = [];
-				for(var s=1; s<=arrayLen(arguments.resizeSizes); s++) {
-					arrayAppend(thisImage.resizedImagePaths, getSkus()[i].getResizedImagePath(argumentCollection = arguments.resizeSizes[s]));
+				var resizeSizesCount = arrayLen(arguments.resizeSizes);
+				for(var s=1; s<=resizeSizesCount; s++) {
+					
+					var resizeImageData={
+						imagePath=getService('imageService').getProductImagePathByImageFile(skuData['imageFile']),
+						size=arguments.resizeSizes[s].size
+					};
+					
+					arrayAppend(
+						thisImage.resizedImagePaths, 
+						getService("imageService").getResizedImagePath(argumentCollection=resizeImageData)
+					);
 				}
 				arrayAppend(imageGalleryArray, thisImage);
 			}
 		}
 
 		// Add all alternate image paths
-		for(var i=1; i<=arrayLen(getImages()); i++) {
-			if( !listFind(filenames, getImages()[i].getImageID()) ) {
-				filenames = listAppend(filenames, getImages()[i].getImageID());
+		var productImagesCollection = this.getProductImagesCollectionList();
+		productImagesCollection.setDisplayProperties('imageID,imageFile,imageName,imageDescription,directory');
+		
+		var productImagesRecords = productImagesCollectionList.getRecords();
+		var productImagesRecordsCount = arrayLen(productImagesRecords);
+		for(var i=1; i<=productImagesRecordsCount; i++) {
+			var productImageData = productImagesRecords[i];
+			if( ArrayFind(filenames, productImageData['imageID'])==0 ) {
+				ArrayAppend(filenames, productImageData['imageID']);
+				
 				var thisImage = {};
-				thisImage.originalFilename = getImages()[i].getImageFile();
-				thisImage.originalPath = getImages()[i].getImagePath();
+				thisImage.originalFilename = productImageData['imageFile'];
+				thisImage.originalPath = getService('imageService').getImagePathByImageFileAndDirectory(productImageData['imageFile'],productImageData['directory']);
 				thisImage.type = "productAlternateImage";
 				thisImage.skuID = "";
 				thisImage.productID = getProductID();
 				thisImage.name = "";
-				if(!isNull(getImages()[i].getImageName())) {
-					thisImage.name = getImages()[i].getImageName();
+				if(structKeyExists(productImageData,'imageName') && productImageData['imageName'] != '') {
+					thisImage.name = productImageData['imageName'];
 				}
 				thisImage.description = "";
-				if(!isNull(getImages()[i].getImageDescription())) {
-					thisImage.description = getImages()[i].getImageDescription();
+				if(structKeyExists(productImageData,'imageDescription') && productImageData['imageDescription'] != '') {
+					thisImage.description = productImageData['imageDescription'];
 				}
 				thisImage.resizedImagePaths = [];
-				for(var s=1; s<=arrayLen(arguments.resizeSizes); s++) {
-					arrayAppend(thisImage.resizedImagePaths, getImages()[i].getResizedImagePath(argumentCollection = arguments.resizeSizes[s]));
+		
+				var resizesCount = arrayLen(arguments.resizeSizes);
+				for(var s=1; s<=resizesCount; s++) {
+					var resizeImageData={
+						alt=imageAltString,
+						missingImagePath=missingImagePath,
+						imagePath=getService('imageService').getImagePathByImageFileAndDirectory(productImageData['imageFile'],productImageData['directory']),
+						size=arguments.resizeSizes[s].size
+					};
+					arrayAppend(
+						thisImage.resizedImagePaths,
+						getService("imageService").getResizedImagePath(argumentCollection=resizeImageData) 
+					);
+						
 				}
 				arrayAppend(imageGalleryArray, thisImage);
 			}
@@ -496,97 +534,105 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return getService("productService").getProductSkusBySelectedOptions(arguments.selectedOptions,this.getProductID());
 	}
 
-	public any function getSkuOptionDetails(string selectedOptionIDList="") {
+	public any function getSkuOptionDetails(string selectedOptionIDList="", boolean activeFlag=true, boolean publishedFlag=true) {
 
 		// Setup return structure
 		var skuOptionDetails = {};
 
-		// Get all the skus for this product with options fetched
-		var skus = getService("skuService").getProductSkus(product=this, sorted=false, fetchOptions=true);
-
-
 		// Get the selected options by optionGroup
 		var selectedOptionGroupsByOptionID = {};
 
+		var optionCollection = getService('optionService').getOptionCollectionList();
+		optionCollection.setDisplayProperties('
+			optionID,
+			optionName,
+			optionCode,
+			optionDescription,
+			sortOrder,
+			optionGroup.optionGroupName,
+			optionGroup.optionGroupCode,
+			optionGroup.optionGroupID,
+			optionGroup.sortOrder,
+			skus.calculatedQATS,
+			skus.skuID
+		');
+		optionCollection.addFilter('skus.product.productID',this.getProductID());
+		optionCollection.addFilter('skus.calculatedQATS',0,'>');
+		optionCollection.addFilter('skus.activeFlag',1);
+		var optionRecords = optionCollection.getRecords();
 		// Create an array of the selectOptions
 		if(listLen(arguments.selectedOptionIDList)) {
-			for(var sku in skus) {
-				for(var option in sku.getOptions()) {
-					if(listFindNoCase(arguments.selectedOptionIDList, option.getOptionID())) {
-						selectedOptionGroupsByOptionID[ option.getOptionID() ] = option.getOptionGroup().getOptionGroupID();
-					}
+			for(var optionData in optionRecords) {
+				if(listFindNoCase(arguments.selectedOptionIDList, optionData['optionID'])) {
+					selectedOptionGroupsByOptionID[ optionData['optionID'] ] = optionData['optionGroup_optionGroupID'];
 				}
-				if(structCount(selectedOptionGroupsByOptionID) == listLen(arguments.selectedOptionIDList)) {
-					break;
-				}
+			}
+			if(structCount(selectedOptionGroupsByOptionID) == listLen(arguments.selectedOptionIDList)) {
+				break;
 			}
 		}
 
-		// Loop over the skus
-		for(var sku in skus) {
+		var skuOptionIDArray = [];
+		for(var optionData in optionRecords) {
+			arrayAppend(skuOptionIDArray, optionData['optionID']);
+		}
 
-			var skuOptionIDArray = [];
-			for(var option in sku.getOptions()) {
-				arrayAppend(skuOptionIDArray, option.getOptionID());
+		// Loop over the options for this sku
+		for(var optionData in optionRecords) {
+
+			var allSelectedInSku = true;
+			var selectedOptionIDArray = listToArray(arguments.selectedOptionIDList);
+			for(var selected in selectedOptionIDArray) {
+				if(selectedOptionGroupsByOptionID[ selected ] != optionData['optionGroup_optionGroupID'] && !arrayFindNoCase(skuOptionIDArray, selected)) {
+					allSelectedInSku = false;
+					break;
+				}
 			}
 
-			// Loop over the options for this sku
-			for(var option in sku.getOptions()) {
+			// Created Shortended Variables
+			var ogCode = optionData['optionGroup_optionGroupCode'];
 
-				var allSelectedInSku = true;
-				for(var selected in listToArray(arguments.selectedOptionIDList)) {
-					if(selectedOptionGroupsByOptionID[ selected ] != option.getOptionGroup().getOptionGroupID() && !arrayFindNoCase(skuOptionIDArray, selected)) {
-						allSelectedInSku = false;
-						break;
-					}
-				}
+			// Create a struct for this optionGroup if it doesn't exist
+			if(!structKeyExists(skuOptionDetails, trim(ogCode))) {
+				skuOptionDetails[ ogCode ] = {};
+				skuOptionDetails[ ogCode ][ "options" ] = [];
+				skuOptionDetails[ ogCode ][ "optionGroupName" ] = optionData['optionGroup_optionGroupName'];
+				skuOptionDetails[ ogCode ][ "optionGroupCode" ] = optionData['optionGroup_optionGroupCode'];
+				skuOptionDetails[ ogCode ][ "optionGroupID" ] = optionData['optionGroup_optionGroupID'];
+				skuOptionDetails[ ogCode ][ "sortOrder" ] = optionData['optionGroup_sortOrder'];
+			}
 
-				// Created Shortended Variables
-				var ogCode = option.getOptionGroup().getOptionGroupCode();
-
-				// Create a struct for this optionGroup if it doesn't exist
-				if(!structKeyExists(skuOptionDetails, ogCode)) {
-					skuOptionDetails[ ogCode ] = {};
-					skuOptionDetails[ ogCode ][ "options" ] = [];
-					skuOptionDetails[ ogCode ][ "optionGroupName" ] = option.getOptionGroup().getOptionGroupName();
-					skuOptionDetails[ ogCode ][ "optionGroupCode" ] = option.getOptionGroup().getOptionGroupCode();
-					skuOptionDetails[ ogCode ][ "optionGroupID" ] = option.getOptionGroup().getOptionGroupID();
-					skuOptionDetails[ ogCode ][ "sortOrder" ] = option.getOptionGroup().getSortOrder();
-				}
-
-				// Create a struct for this option if one doesn't exist
-				var existingOptionFound = false;
-				for(var existingOption in skuOptionDetails[ ogCode ][ "options" ]) {
-					if( existingOption.optionID == option.getOptionID() ) {
-						existingOption['totalQATS'] += sku.getQuantity("QATS");
-						if(allSelectedInSku) {
-							existingOption['selectedQATS'] += sku.getQuantity("QATS");
-						}
-						existingOptionFound = true;
-						break;
-					}
-				}
-				if(!existingOptionFound) {
-					var newOption = {};
-					newOption['optionID'] = option.getOptionID();
-					newOption['optionCode'] = option.getOptionCode();
-					newOption['optionName'] = option.getOptionName();
-					newOption['name'] = option.getOptionName();
-					newOption['value'] = option.getOptionID();
-					newOption['sortOrder'] = option.getSortOrder();
-					newOption['totalQATS'] = sku.getQuantity("QATS");
-					newOption['selectedQATS'] = 0;
+			// Create a struct for this option if one doesn't exist
+			var existingOptionFound = false;
+			for(var existingOption in skuOptionDetails[ ogCode ][ "options" ]) {
+				if( existingOption['optionID'] == optionData['optionID'] ) {
+					existingOption['totalQATS'] += optionData['skus_calculatedQATS'];
 					if(allSelectedInSku) {
-						newOption['selectedQATS'] = sku.getQuantity("QATS");
+						existingOption['selectedQATS'] += optionData['skus_calculatedQATS'];
 					}
-					arrayAppend(skuOptionDetails[ ogCode ].options, newOption);
+					existingOptionFound = true;
+					break;
 				}
+			}
+			if(!existingOptionFound) {
+				var newOption = {};
+				newOption['optionID'] = optionData['optionID'];
+				newOption['optionCode'] = optionData['optionCode'];
+				newOption['optionName'] = optionData['optionName'];
+				newOption['name'] = optionData['optionName'];
+				newOption['value'] = optionData['optionID'];
+				newOption['sortOrder'] = optionData['sortOrder'];
+				newOption['totalQATS'] = optionData['skus_calculatedQATS'];
+				newOption['selectedQATS'] = 0;
+				if(allSelectedInSku) {
+					newOption['selectedQATS'] = optionData['skus_calculatedQATS'];
+				}
+				arrayAppend(skuOptionDetails[ ogCode ].options, newOption);
 			}
 		}
 		for(var ogCode in skuOptionDetails){
 			skuOptionDetails[ ogCode ].options = getService("HibachiUtilityService").structArraySort(skuOptionDetails[ ogCode ].options, "sortOrder");
 		}
-
 		return skuOptionDetails;
 	}
 
@@ -732,27 +778,35 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		if(!structKeyExists(variables, "defaultProductImageFiles")) {
 			variables.defaultProductImageFiles = [];
 
-			var sl = getService("skuService").getSkuSmartList();
-			sl.addFilter('product.productID', getProductID());
+			var sl = getService('skuService').getSkuSmartList();
+			sl.addSelect('skuID','skuID');
+			sl.addSelect('imageFile','imageFile');
+			sl.addSelect('product.productType.productTypeIDPath','productTypeIDPath');
+			sl.addFilter('imageFile','NOT NULL');
+			sl.addFilter('product.productID',getProductID());
 			sl.setSelectDistinctFlag( true );
-			var skus = sl.getRecords();
+			var skusStructs = sl.getRecords();
 
-			for(var sku in skus) {
-				if(!isNull(sku.getImageFile())) {
+			for(var sku in skusStructs) {
+
 					var imageAlreadyIncluded = false;
 					for(var image in variables.defaultProductImageFiles){
-						if(image.imageFile == sku.getImageFile()){
+						if(image.imageFile == sku['imageFile']){
 							imageAlreadyIncluded = true;
 						}
 					}
 
 					if(!imageAlreadyIncluded){
 						var imageFileStruct = {};
-						imageFileStruct['imageFile'] = sku.getImageFile();
-						imageFileStruct['skuDefinition'] = sku.getSkuDefinition();
+						imageFileStruct['imageFile'] = sku['imageFile'];
+
+						imageFileStruct['skuDefinition'] = getService('skuService').getSkuDefinitionBySkuIDAndBaseProductTypeID(
+							sku['skuID'],
+							listFirst(sku['productTypeIDPath'])
+						);
 						arrayAppend(variables.defaultProductImageFiles, imageFileStruct);
 					}
-				}
+
 			}
 		}
 		return variables.defaultProductImageFiles;
@@ -797,11 +851,22 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 		return variables.brandName;
 	}
-	
+
 	public array function getBrandOptions() {
-		var options = getPropertyOptions( "brand" );
-		options[1]['name'] = rbKey('define.none');
-		return options;
+		if(!structKeyExists(variables, "brandOptions")) {
+
+			var smartList = getPropertyOptionsSmartList( "brand" );
+			smartList.addOrder("brandName|asc");
+			smartList.addSelect("brandID", "value");
+			smartList.addSelect("brandName", "name");
+
+			variables.brandOptions = smartList.getRecords();
+
+			arrayPrepend(variables.brandOptions, {name=rbKey('define.none'),value=""});
+
+		}
+
+		return variables.brandOptions;
 	}
 
 	public string function getNextSkuCodeCount() {
@@ -840,10 +905,13 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 	}
 
+
+
 	public any function getEventConflictExistsFlag() {
 		if( structKeyExists(variables, "eventConflictExistsFlag") ) {
 			return variables.eventConflictExistsFlag;
 		} else {
+
 			variables.eventConflictExistsFlag = false;
 			for(sku in getSkus()) {
 				if(sku.getEventConflictExistsFlag()) {
@@ -865,7 +933,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		// Product without a sku
 		return 0;
 	}
-	
+
 	/**
 	* @Suppress
 	*/
@@ -891,13 +959,13 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			return getDefaultSku().getRenewalPriceByCurrencyCode(arguments.currencyCode);
 		}
 	}
-	
+
 	public any function getListPrice() {
 		if( structKeyExists(variables,"defaultSku") ) {
 			return getDefaultSku().getListPrice();
 		}
 	}
-	
+
 	/**
 	* @Suppress
 	*/
@@ -906,7 +974,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			return getDefaultSku().getListPriceByCurrencyCode(arguments.currencyCode);
 		}
 	}
-	
+
 	/**
 	* @Suppress
 	*/
@@ -915,7 +983,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			return getDefaultSku().getLivePrice();
 		}
 	}
-	
+
 	/**
 	* @Suppress
 	*/
@@ -924,7 +992,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			return getDefaultSku().getLivePriceByCurrencyCode(arguments.currencyCode);
 	 	}
 	}
-	
+
 	/**
 	* @Suppress
 	*/
@@ -933,7 +1001,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			return getDefaultSku().getCurrentAccountPrice();
 		}
 	}
-	
+
 	/**
 	* @Suppress
 	*/
@@ -980,7 +1048,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 		return variables.salePriceExpirationDateTime;
 	}
-	
+
 	/**
 	* @Suppress
 	*/
@@ -994,12 +1062,12 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public boolean function hasUnusedProductOptionCombinations(){
 		return this.getNumberOfUnusedProductOptionCombinations() > 0;
 	}
-	
+
 	public any function getNumberOfUnusedProductOptionCombinations(){
 		var optionGroupIDs = getDAO("OptionDAO").getAllUsedProductOptionGroupIDs(this.getProductID());
-		
+
 		var numberOfUsedProductOptions = getDAO("OptionDAO").getNumberOfUsedProductOptions(this.getProductID());
-		
+
 		if(ArrayLen(optionGroupIDs) > 0){
 			var usedCombinations = numberOfUsedProductOptions / ArrayLen(optionGroupIDs);
 		} else {
@@ -1010,6 +1078,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 		for(var optionGroupID in optionGroupIDs){
 			possibilities = possibilities * getDAO("OptionDAO").getNumberOfOptionsForOptionGroup(OptionGroupID);
+
 		}
 
 		return possibilities - usedCombinations;

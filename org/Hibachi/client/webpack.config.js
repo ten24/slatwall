@@ -1,4 +1,4 @@
-var webpack = require('webpack');  
+var webpack = require('webpack');
 var ForceCaseSensitivityPlugin = require('force-case-sensitivity-webpack-plugin');
 
 var path = require('path');
@@ -8,30 +8,28 @@ var PATHS = {
 };
 
 var appConfig = {
-  context:PATHS.app,
-  entry: {
+    context:PATHS.app,
+    entry: {
         app:['./bootstrap.ts']
-  },
-  watch:true,
-  output: {
-    path: PATHS.app,
-    filename: 'bundle.js'
-  },
-  // Turn on sourcemaps
-  //devtool: 'source-map',
-  resolve: {
-    extensions: ['', '.webpack.js', '.web.js', '.ts', '.js'],
+    },
+    watch:true,
+    output: {
+        path: PATHS.app,
+        filename: 'bundle.js'
+    },
+    // Turn on sourcemaps
+    //devtool: 'source-map',
+    resolve: {
+        extensions: ['', '.webpack.js', '.web.js', '.ts', '.js'],
         alias:{}
-  },
-  
-  
-  module: {
-    noParse: [ /bower_components/ ],
-    loaders: [
-      { 
-      	test: /\.ts$/, loader: 'ts-loader',
-      	exclude: /node_modules/ 
-      }
+    },
+    module: {
+        noParse: [ /bower_components/ ],
+        loaders: [
+            {
+                test: /\.ts$/, loader: 'ts-loader',
+                exclude: /node_modules/
+            }
         ]
     },
     plugins: [
@@ -44,7 +42,7 @@ var appConfig = {
         };
         if(typeof bootstrap !== 'undefined'){
             this.entry.app[this.entry.app.length - 1] = bootstrap;
-  }
+        }
         this.output.path = PATHS.app;
         this.context = PATHS.app;
         return this;
@@ -65,7 +63,8 @@ var appConfig = {
     addLoader: function(loader){
         this.module.loaders.push(loader);
         return this;
-}
+    }
+
 };
 appConfig
     .addVendor('date','date/date.min.js')
@@ -81,5 +80,5 @@ appConfig
     .addVendor('angularjs-datetime-picker','angularjs-datetime-picker/angularjs-datetime-picker.js')
     
     
-;
+; 
 module.exports = appConfig;

@@ -29,52 +29,47 @@ class AlertService implements IAlertService{
 
     newAlert = ():Alert =>{
         return new Alert();
-    }
+    };
 
     get = ():Alert[] =>{
         return this.alerts || [];
-    }
+    };
 
     addAlert = (alert:any):void =>{
         this.alerts.push(alert);
-        this.$timeout((alert)=> {
+        this.$timeout(()=> {
             this.removeAlert(alert);
         }, 3500);
-    }
+    };
 
     addAlerts = (alerts:Alert[]):void =>{
         angular.forEach(alerts,(alert) => {
             this.addAlert(alert);
         });
-    }
+    };
 
     removeAlert = (alert:Alert):void =>{
         var index:number = this.alerts.indexOf(alert, 0);
         if (index != undefined) {
             this.alerts.splice(index, 1);
         }
-    }
+    };
 
     getAlerts = ():Alert[] =>{
         return this.alerts;
-    }
+    };
 
     formatMessagesToAlerts = (messages):Alert[] =>{
         var alerts = [];
-        if(messages){
+        if(messages && messages.length){
             for(var message in messages){
-                var alert = new Alert();
-                alert.msg=messages[message].message;
-                alert.type=messages[message].messageType;
-
+                var alert = new Alert(messages[message].message, messages[message].messageType);
                 alerts.push(alert);
                 if(alert.type === 'success' || alert.type === 'error'){
-                        this.$timeout(function() {
+                    this.$timeout(()=> {
                         alert.fade = true;
                     }, 3500);
-
                     alert.dismissable = false;
-
                 }else{
                     alert.fade = false;
                     alert.dismissable = true;
@@ -82,7 +77,7 @@ class AlertService implements IAlertService{
             }
         }
         return alerts;
-    }
+    };
 
     removeOldestAlert = ():void =>{
         this.alerts.splice(0,1);

@@ -186,6 +186,17 @@ class CollectionController{
 				var collection = $scope.collection;
 				$log.debug($scope.collectionConfig);
 				if(isFormValid($scope.collectionForm)){
+                    if(angular.isDefined($scope.collectionConfig)
+                        && angular.isDefined($scope.collectionConfig.groupBys)
+                        && $scope.collectionConfig.groupBys.split(',').length != $scope.collectionConfig.columns.length) {
+                        var groupbyArray = $scope.collectionConfig.groupBys.split(',');
+                        for (var column = 0; column < $scope.collectionConfig.columns.length; column++) {
+                            if (groupbyArray.indexOf($scope.collectionConfig.columns[column].propertyIdentifier) == -1) {
+                                groupbyArray.push($scope.collectionConfig.columns[column].propertyIdentifier);
+                            }
+                        }
+                        $scope.collectionConfig.groupBys = groupbyArray.join(',');
+                    }
 					var collectionConfigString = collectionService.stringifyJSON($scope.collectionConfig);
 					$log.debug(collectionConfigString);
 					var data = angular.copy(collection);
