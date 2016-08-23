@@ -133,7 +133,7 @@ Notes:
   </cfloop>
 
 	<cfcatch>
-		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update AltImageTypes">
+		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update EventTriggers to be Workflows">
 		<cfset local.scriptHasErrors = true />
 	</cfcatch>
 
@@ -142,8 +142,8 @@ Notes:
 
 
 <cfif local.scriptHasErrors>
-	<cflog file="Slatwall" text="General Log - Part of Script v4_3 had errors when running">
-	<cfthrow detail="Part of Script v4_3 had errors when running">
+	<cflog file="Slatwall" text="General Log - Part of Script v4_5 had errors when running">
+	<cfthrow detail="Part of Script v4_5 had errors when running">
 <cfelse>
-	<cflog file="Slatwall" text="General Log - Script v4_3 has run with no errors">
+	<cflog file="Slatwall" text="General Log - Script v4_5 has run with no errors">
 </cfif>
