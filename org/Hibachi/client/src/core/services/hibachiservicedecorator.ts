@@ -188,6 +188,23 @@ class HibachiServiceDecorator{
 
                 };
                 _jsEntities[ entity.className ].prototype = {
+                    $$getPropertyValue:function(propertyIdentifier){
+                        var keys = propertyIdentifier.split('.'), obj = this, keyPart;
+                        while ((keyPart = keys.shift()) && keys.length) {
+                            obj = obj[keyPart];
+                        }
+                        return obj[keyPart];
+                    },
+                    $$setPropertyValue:function(propertyIdentifier,value) {
+                        var keys = propertyIdentifier.split('.'), obj = this, keyPart;
+                        while ((keyPart = keys.shift()) && keys.length) {
+                            if (!obj[keyPart]) {
+                                obj[keyPart] = {};
+                            }
+                            obj = obj[keyPart];
+                        }
+                        obj[keyPart] = value;
+                    },
                     $$getPropertyByName:function(propertyName){
                         return this['$$get'+propertyName.charAt(0).toUpperCase() + propertyName.slice(1)]();
                     },
