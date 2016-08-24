@@ -162,6 +162,38 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(70, result[1].QNDOSA, 'Should be 100 - (10 + 20) = 70');
 
 	}
+	//============ START: Helpers to mock the data ============
+	private any function createMockProduct() {
+		var productData = {
+			productID = ''
+		};
+		return createPersistedTestEntity('Product', productData);
+	}
+	private any function createMockLocation() {
+		var locationData = {
+			locationID = '',
+			locationIDPath = 'a/bb'
+		};
+		return createPersistedTestEntity('Location', locationData);
+	}
+	
+	private any function createMockSku(string productID='') {
+		var skuData = {
+			skuID = ''
+		};
+		if(len(arguments.productID)) {
+			skuData.product = {
+				productID = arguments.productID
+			};
+		}
+		return createPErsistedTestEntity('Sku', skuData);
+	}
+	public void function returnVoid() {
+		
+	}
+	
+	
+	//============ END: Helpers to mock the data ==============
 	
 }
 
