@@ -77,7 +77,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 
 		var orderPayment = createPersistedTestEntity("OrderPayment", orderPaymentData);
-		processGiftCard.setOrderPayments([orderPayment]);
+		processGiftCard.setOrderPayment(orderPayment);
 
 		var debitTransactionData = {
 			giftCardTransaction=""
@@ -89,16 +89,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		assertEquals("10.50", debitTransaction.getDebitAmount());
 
-		for(var payment in processGiftCard.getOrderPayments()){
-			assertTrue(orderPayment.getOrderPaymentID() == payment.getOrderPaymentID());
-			debitTransaction.setOrderPayment(payment);
-		}
+		assertTrue(orderPayment.getOrderPaymentID() == payment.getOrderPaymentID());
+		debitTransaction.setOrderPayment(payment);
 
 		for(var item in processGiftCard.getOrderItems()){
 			assertTrue(orderItem.getOrderItemID() == item.getOrderItemID());
 			debitTransaction.addOrderItem(item);
 		}
-
-
 	}
 }
