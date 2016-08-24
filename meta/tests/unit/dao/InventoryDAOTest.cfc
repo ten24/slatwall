@@ -159,7 +159,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		mockStockAdjustmentItem.addStockAdjustmentDeliveryItem(mockstockAdjustmentDeliveryItem2);
 		
 		var result = variables.dao.getQNDOSA(mockProduct.getProductID());
-		request.debug(result);
 		assertEquals(70, result[1].QNDOSA, 'Should be 100 - (10 + 20) = 70');
 
 	}
