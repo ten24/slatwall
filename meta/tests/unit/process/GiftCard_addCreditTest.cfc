@@ -97,9 +97,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		var creditTransaction = createPersistedTestEntity('giftCardTransaction', creditTransactionData);
 
-		creditTransaction.setOrderPayment(payment);
-		assertTrue(payment.getOrderPaymentID() == orderPayment.getOrderPaymentID());
-		
+		creditTransaction.setOrderPayment(orderPayment);
+		assertTrue(creditTransaction.getOrderPayment().getOrderPaymentID() == orderPayment.getOrderPaymentID());
 
 		creditTransaction.setCreditAmount(processGiftCard.getCreditAmount());
 
