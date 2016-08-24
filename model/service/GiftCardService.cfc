@@ -155,6 +155,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	}
 
+	public any function processGiftCard_offlineTransaction(required any giftCard, required any processObject){
+       if(processObject.getTransactionType() == 'credit'){
+            var creditProcessObject = arguments.giftCard.getProcessObject('addCredit');
+            creditProcessObject.setCreditAmount(processObject.getAmount()); 
+            return this.processGiftCard_addCredit(arguments.giftCard, creditprocessObject); 
+       } else if (processObject.getTransactionType() == 'debit'){
+            var debitProcessObject = arguments.giftcard.getProcessObject('addDebit'); 
+            debitProcessObject.setDebitAmount(processObject.getAmount()); 
+            return this.processGiftCard_addDebit(arguments.giftCard, debitProcessObject); 
+       }
+       return arguments.giftCard; 
+	} 
+
 	public any function processGiftCard_changeExpirationDate(required any giftCard, required any processObject){
 
 		arguments.giftCard.setExpirationDate(arguments.processObject.getNewExpirationDate());

@@ -58,4 +58,19 @@ component output="false" accessors="true" extends="HibachiProcess"{
 	 		return variables.creditAmount;
 	 	}
 	 }
+
+    public any function getOrderPayments(){
+        if(structKeyExists(variables, "orderPayments")){
+            return variables.orderPayments; 
+        }
+        return []; 
+    }
+
+    public any function getOrderItems(){
+        if(structKeyExists(variables, "orderItems")){
+            return variables.orderItems; 
+        }
+        return []; 
+    }
 }
+

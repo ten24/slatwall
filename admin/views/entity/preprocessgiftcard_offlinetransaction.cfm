@@ -50,18 +50,18 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.giftCard" type="any">
-<cfparam name="rc.edit" type="boolean">
-
+<cfparam name="rc.giftCard" type="any" />
+<cfparam name="rc.processObject" type="any" />
+<cfparam name="rc.edit" type="boolean" />
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.giftCard#" edit="false">
-	    <hb:HibachiEntityActionBar type="detail" object="#rc.giftCard#" showEdit="false">
-			<hb:HibachiProcessCaller action="admin:entity.preprocessGiftCard" entity="#rc.giftCard#" processContext="updateEmailAddress" type="list" modal="true" />
-			<hb:HibachiProcessCaller action="admin:entity.preprocessGiftCard" entity="#rc.giftCard#" processContext="redeemToAccount" type="list" modal="true" />
-			<hb:HibachiProcessCaller action="admin:entity.preprocessGiftCard" entity="#rc.giftCard#" processContext="offlineTransaction" type="list" modal="true" /> 
-			<hb:HibachiProcessCaller action="admin:entity.preprocessGiftCard" entity="#rc.giftCard#" processContext="toggleActive" type="list" modal="true" />
-	    </hb:HibachiEntityActionBar>
-	</hb:HibachiEntityDetailForm>
+	<hb:HibachiEntityProcessForm entity="#rc.giftCard#" edit="#rc.edit#" sRedirectAction="admin:entity.detailgiftcard">
 
-	<sw-gift-card-detail gift-card-id="#rc.giftCardID#"></sw-gift-card-detail>
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.giftCard#" backAction="admin:entity.detailgiftcard" backQueryString="giftCardID=#rc.giftCard.getGiftCardID()#">
+		</hb:HibachiEntityActionBar>
+
+        <hb:HibachiPropertyDisplay object="#rc.processObject#" property="transactionType" valueOptions="#rc.processObject.getTransactionTypeOptions()#" edit="#rc.edit#"> 
+        <hb:HibachiPropertyDisplay object="#rc.processObject#" property="amount" edit="#rc.edit#">
+
+	</hb:HibachiEntityProcessForm>
 </cfoutput>
+
