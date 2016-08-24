@@ -126,10 +126,6 @@ Notes:
       </cfif>
     </cfif>
 
-    <!--- Delete the EventTrigger --->
-		<cfquery name="local.insert">
-			DELETE FROM SwEventTrigger WHERE eventTriggerID = local.eventTriggers.eventTriggerID
-		</cfquery>
   </cfloop>
 
 	<cfcatch>
