@@ -205,36 +205,46 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 	}
 	
-	public void function isDeletableTest2()
+	public void function isDeletableTest_hasPhysical()
 	{
-		var locationData={
-	        locationID=""
-	       
-        };
-			
-	    var mockLocation = createPersistedTestEntity('Location',locationData);
-	    
-	    var physicalData={
-	    	physicalID="fy",
-	    	physicalName="frs",
-	    	location=[
-	    	            {
-	    		          locationID=mockLocation.getLocationID()
-	    	            }
-	    	         ]
-	          }; 
-		
+		var physicalData={
+			physicalID=""
+		};
 		var mockPhysical= createPersistedTestEntity('Physical', physicalData);
-		                     
-	//var mockLocationConfiguration=createPersistedTestEntity('LocationConfiguration', locationConfigurationData);
-  
-	 
-	    
-	    var result= mockLocation.isDeletable();
-	    request.debug(result);
-	   // assertTrue(result);
+		var locationData= {
+			locationID="",
+			physicals=[{
+			
+				physicalID=mockPhysical.getPhysicalID() 
+			}]
+		};
+		var mockLocation= createPersistedTestEntity('Location', locationData);
+		
+		
+		var result= mockLocation.isdeletable();
+		assertFalse(result);
 	}
 	
+	public void function isDeletableTest_hasStock()
+	{
+		var stockData={
+			stockID=""
+		};
+		var mockStock= createPersistedTestEntity('Stock', stockData);
+		var locationData= {
+			locationID="",
+			stocks=[{
+			
+				stockID=mockStock.getStockID() 
+			}]
+		};
+		var mockLocation= createPersistedTestEntity('Location', locationData);
+		
+		
+		var result= mockLocation.isdeletable();
+		
+		assertFalse(result);
+	}
 
 }
 	

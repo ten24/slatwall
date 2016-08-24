@@ -85,7 +85,14 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	
 	
 	public boolean function isDeletable() {
-		return !(getService("LocationService").isLocationBeingUsed(this) || getService("LocationService").getLocationCount() == 1);
+		return (
+			//is Deletable
+			super.isDeletable()
+			//not being used 
+			&& !getService("LocationService").isLocationBeingUsed(this)
+			//location count is not equal to 1
+			&&  getService("LocationService").getLocationCount() != 1
+		);
 	}
 	
 	public boolean function hasChildren() {
