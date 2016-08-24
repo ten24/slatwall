@@ -18,8 +18,8 @@
 		<Record updateScriptID="0a8ac088cf2b43afa24061031e002e59" scriptPath="database/v3_5.cfm" loadOrder="12" maxExecutionCount="1" />
 		<Record updateScriptID="9cddcb19287f431b841e23685e259c65" scriptPath="database/v4_0.cfm" loadOrder="13" maxExecutionCount="1" />
 		<Record updateScriptID="b91716b8b9dbd166f056cc7b2fbb4f2b" scriptPath="database/v4_1.cfm" loadOrder="14" maxExecutionCount="1" />
-	  <Record updateScriptID="e88d25f3dd5313217f3b770e6e606bf5" scriptPath="database/v4_2.cfm" loadOrder="15" maxExecutionCount="1" />
-	  <Record updateScriptID="b834dfeabc18118481069c9b882d9d44" scriptPath="database/v4_3.cfm" loadOrder="16" maxExecutionCount="1" />
-		<Record updateScriptID="89298ae4b57242d680bbbb80b7a226bc" scriptPath="database/v4_5.cfm" loadOrder="17" maxExecutionCount="1" />
+	    <Record updateScriptID="e88d25f3dd5313217f3b770e6e606bf5" scriptPath="database/v4_2.cfm" loadOrder="15" maxExecutionCount="1" />
+	    <Record updateScriptID="b834dfeabc18118481069c9b882d9d44" scriptPath="database/v4_3.cfm" loadOrder="16" maxExecutionCount="1" />
+		<Record updateScriptID="89298ae4b57242d680bbbb80b7a226bc" scriptPath="database/v4_6.cfm" loadOrder="17" maxExecutionCount="1" />
 	</Records>
 </Table>
