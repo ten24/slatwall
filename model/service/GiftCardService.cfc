@@ -123,7 +123,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function processGiftCard_addCredit(required any giftCard, required any processObject){
 
-		var giftCardCreditTransaction = createCreditGiftCardTransaction(arguments.giftCard, arguments.processObject.getOrderPayments(), arguments.processObject.getCreditAmount());
+		var giftCardCreditTransaction = createCreditGiftCardTransaction(arguments.giftCard, arguments.processObject.getOrderPayment(), arguments.processObject.getCreditAmount());
 
 		if(!giftCardCreditTransaction.hasErrors()){
 			arguments.giftCard.updateCalculatedProperties();
@@ -138,7 +138,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function processGiftCard_addDebit(required any giftCard, required any processObject){
 
-		var giftCardDebitTransaction = createDebitGiftCardTransaction(arguments.giftCard, arguments.processObject.getOrderPayments(), arguments.processObject.getOrderItems(), arguments.processObject.getDebitAmount());
+		var giftCardDebitTransaction = createDebitGiftCardTransaction(arguments.giftCard, arguments.processObject.getOrderPayment(), arguments.processObject.getOrderItems(), arguments.processObject.getDebitAmount());
 
 		if(!giftCardDebitTransaction.hasErrors()){
 			if(arguments.giftCard.getBalanceAmount() == 0){
@@ -237,17 +237,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	}
 
-	private any function createDebitGiftCardTransaction(required any giftCard, required any orderPayments, required any orderItems, required any amountToDebit){
+	private any function createDebitGiftCardTransaction(required any giftCard, required any orderPayment, required any orderItems, required any amountToDebit){
 
 		var debitGiftTransaction = this.newGiftCardTransaction();
+
+        if(arguments.amountToDebit > arguments.giftCard.getBalanceAmount()){
+            arguments.amountToDebit = arguments.giftcard.getBalanceAmount(); 
+        }
 
 		debitGiftTransaction.setDebitAmount(arguments.amountToDebit);
 		debitGiftTransaction.setGiftCard(arguments.giftCard);
 		debitGiftTransaction.setCurrencyCode(arguments.giftCard.getCurrencyCode());
-
-		for(var payment in arguments.orderPayments){
-			debitGiftTransaction.setOrderPayment(payment);
-		}
+		debitGiftTransaction.setOrderPayment(payment);
 
 		for(var item in arguments.orderItems){
 			debitGiftTransaction.addOrderItem(item);
@@ -257,17 +258,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	}
 
-	private any function createCreditGiftCardTransaction(required any giftCard, required any orderPayments, required any amountToCredit){
+	private any function createCreditGiftCardTransaction(required any giftCard, required any orderPayment, required any amountToCredit){
 
 		var creditGiftTransaction = this.newGiftCardTransaction();
 
 		creditGiftTransaction.setCreditAmount(arguments.amountToCredit);
 		creditGiftTransaction.setGiftCard(arguments.giftCard);
 		creditGiftTransaction.setCurrencyCode(arguments.giftCard.getCurrencyCode());
-
-		for(var payment in arguments.orderPayments){
-			creditGiftTransaction.setOrderPayment(payment);
-		}
+        creditGiftTransaction.setOrderPayment(payment);
 
 		return this.saveGiftCardTransaction(creditGiftTransaction);
 	}

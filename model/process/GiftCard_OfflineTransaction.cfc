@@ -48,7 +48,8 @@ component output="false" accessors="true" extends="HibachiProcess"{
 
 	 property name="transactionType" hb_formFieldType="select"; 
 	 property name="transactionTypeOptions";
-     property name="amount"; 
+     property name="amount";
+     property name="giftCardBalanceAmount"; 
 
 	 public any function getTransactionTypeOptions(){
         if(!structKeyExists(variables, "transactionTypeOptions")){
@@ -58,5 +59,9 @@ component output="false" accessors="true" extends="HibachiProcess"{
         }
         return variables.transactionTypeOptions; 
 	 }
+
+	 public any function getGiftCardBalanceAmount(){
+        return this.getGiftCard().getBalanceAmount(); 
+	 } 
 
 }
