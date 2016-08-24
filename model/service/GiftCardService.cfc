@@ -105,7 +105,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		//is it time to credit the card
 		if(arguments.processObject.getCreditGiftCardFlag()){
 		    var amountToRedeem = arguments.giftCard.getOriginalOrderItem().getSku().getRedemptionAmount(userDefinedPrice=arguments.giftCard.getOriginalOrderItem().getPrice());
-			var giftCardCreditTransaction = createCreditGiftCardTransaction(arguments.giftCard, arguments.processObject.getOrderPayments(), amountToRedeem);
+			var giftCardCreditTransaction = createCreditGiftCardTransaction(arguments.giftCard, amountToRedeem, arguments.processObject.getOrderPayments()[1]);
 		}
 
 		arguments.giftCard.setIssuedDate(now());
@@ -123,7 +123,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function processGiftCard_addCredit(required any giftCard, required any processObject){
 
-		var giftCardCreditTransaction = createCreditGiftCardTransaction(arguments.giftCard, arguments.processObject.getOrderPayment(), arguments.processObject.getCreditAmount());
+		var giftCardCreditTransaction = createCreditGiftCardTransaction(arguments.giftCard, arguments.processObject.getCreditAmount(), arguments.processObject.getOrderPayment());
 
 		if(!giftCardCreditTransaction.hasErrors()){
 			arguments.giftCard.updateCalculatedProperties();
@@ -138,7 +138,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function processGiftCard_addDebit(required any giftCard, required any processObject){
 
-		var giftCardDebitTransaction = createDebitGiftCardTransaction(arguments.giftCard, arguments.processObject.getOrderPayment(), arguments.processObject.getOrderItems(), arguments.processObject.getDebitAmount());
+		var giftCardDebitTransaction = createDebitGiftCardTransaction(arguments.giftCard, arguments.processObject.getOrderItems(), arguments.processObject.getDebitAmount(), arguments.processObject.getOrderPayment());
 
 		if(!giftCardDebitTransaction.hasErrors()){
 			if(arguments.giftCard.getBalanceAmount() == 0){
@@ -237,7 +237,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	}
 
-	private any function createDebitGiftCardTransaction(required any giftCard, required any orderPayment, required any orderItems, required any amountToDebit){
+	private any function createDebitGiftCardTransaction(required any giftCard, required any orderItems, required any amountToDebit, any orderPayment){
 
 		var debitGiftTransaction = this.newGiftCardTransaction();
 
@@ -248,7 +248,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		debitGiftTransaction.setDebitAmount(arguments.amountToDebit);
 		debitGiftTransaction.setGiftCard(arguments.giftCard);
 		debitGiftTransaction.setCurrencyCode(arguments.giftCard.getCurrencyCode());
-		debitGiftTransaction.setOrderPayment(payment);
+		
+		if(structKeyExists(arguments, "orderPayment") && !isNull(arguments.orderPayment)){
+		    debitGiftTransaction.setOrderPayment(arguments.orderPayment);
+        }
 
 		for(var item in arguments.orderItems){
 			debitGiftTransaction.addOrderItem(item);
@@ -258,14 +261,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	}
 
-	private any function createCreditGiftCardTransaction(required any giftCard, required any orderPayment, required any amountToCredit){
+	private any function createCreditGiftCardTransaction(required any giftCard, required any amountToCredit, any orderPayment){
 
 		var creditGiftTransaction = this.newGiftCardTransaction();
 
 		creditGiftTransaction.setCreditAmount(arguments.amountToCredit);
 		creditGiftTransaction.setGiftCard(arguments.giftCard);
 		creditGiftTransaction.setCurrencyCode(arguments.giftCard.getCurrencyCode());
-        creditGiftTransaction.setOrderPayment(payment);
+
+		if(structKeyExists(arguments, "orderPayment") && !isNull(arguments.orderPayment)){
+            creditGiftTransaction.setOrderPayment(arguments.orderPayment);
+        }
 
 		return this.saveGiftCardTransaction(creditGiftTransaction);
 	}

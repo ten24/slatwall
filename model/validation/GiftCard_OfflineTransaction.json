@@ -1,7 +1,7 @@
 {
     "conditions":{
         "debit" : {
-            "transactionType" : [{"eq":"debit"}]
+            "transactionType" : {"eq":"debit"}
         }
     },
     "properties":{
