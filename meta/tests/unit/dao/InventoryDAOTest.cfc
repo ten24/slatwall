@@ -266,16 +266,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		mockStockAdjustmentItem.addStockAdjustmentDeliveryItem(mockstockAdjustmentDeliveryItem1);
 		mockStockAdjustmentItem.addStockAdjustmentDeliveryItem(mockstockAdjustmentDeliveryItem2);
 		
-		request.debug(mockstockAdjustmentDeliveryItem1.getStockAdjustmentDeliveryItemID());
-		request.debug(mockStockAdjustmentItem.getStockAdjustmentDeliveryItems()[1].getStockAdjustmentDeliveryItemID());
-		request.debug(mockStockAdjustmentItem.getStockAdjustmentDeliveryItems()[1].getQuantity());
-		request.debug(mockStockAdjustmentItem.getFromStock().getSku().getProduct().getProductID());
-		request.debug('mockStock.getLocation().getLocationID()='&mockStock.getLocation().getLocationID());
-		request.debug('IDPath='&mockStock.getLocation().getLocationIDPath());
-		
-		var result = variables.dao.getQNDOSA(mockProduct.getProductID);
-//		request.debug(result);
-		assertEquals(100, result[1].QNDOSA, 'Should be 100 - (10 + 20) = 70');
+		var result = variables.dao.getQNDOSA(mockProduct.getProductID());
+		request.debug(result);
+		assertEquals(70, result[1].QNDOSA, 'Should be 100 - (10 + 20) = 70');
 
 	}
 	
