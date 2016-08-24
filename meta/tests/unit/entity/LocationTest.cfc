@@ -178,7 +178,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		 assertEquals("IAmThePath",result);
 	}
 	
-   public void function getLocationIDPathTest2()
+   public void function getLocationIDPathTest_describtewhatyouaretesting()
    {
    	
          var parentLocationData={
@@ -197,32 +197,44 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 	    var mockLocation= createPersistedTestEntity('Location', locationData);
 	
-	    var i=0; var j=0; var brokenValue=''; 
-		var result= mockLocation.getLocationIDPath();
-		var expectedValue=locationData.parentLocation.locationID;
+	    var result = mockLocation.getLocationIDPath();
+		var expectedValue=locationData.parentLocation.locationID&','&locationData.locationID;
 	
-		for(i=0; i<=result.length();i++)
-		{
-			
-			var test= result.charAt(i);
-			if(test==","){
-				break;
-			             }
-
-			 brokenValue= insert(test, brokenValue,i);
-		}
-		
-		assertEquals(brokenValue, expectedValue);
+		assertEquals(expectedValue, result);
         
-		var test=0;
 		
-		if(!isNull(result))
-		{
-			test=1;
-		}
-		
-		assertEquals(1, test);
 	}
 	
+	public void function isDeletableTest2()
+	{
+		var locationData={
+	        locationID=""
+	       
+        };
+			
+	    var mockLocation = createPersistedTestEntity('Location',locationData);
+	    
+	    var physicalData={
+	    	physicalID="fy",
+	    	physicalName="frs",
+	    	location=[
+	    	            {
+	    		          locationID=mockLocation.getLocationID()
+	    	            }
+	    	         ]
+	          }; 
+		
+		var mockPhysical= createPersistedTestEntity('Physical', physicalData);
+		                     
+	//var mockLocationConfiguration=createPersistedTestEntity('LocationConfiguration', locationConfigurationData);
+  
+	 
+	    
+	    var result= mockLocation.isDeletable();
+	    request.debug(result);
+	   // assertTrue(result);
+	}
+	
+
 }
 	
