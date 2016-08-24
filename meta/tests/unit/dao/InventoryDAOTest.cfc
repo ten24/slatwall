@@ -195,13 +195,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 					OrderDeliveryItemID = mockOrderDeliveryItem2.getOrderDeliveryItemID()
 			}]
 		};
-		var mockOrderItem = createPersistedTestEntity('OrderItem', orderItemData);
+		var mockOrderItem = createTestEntity('OrderItem', orderItemData);
 		injectMethod(mockOrderItem, this, 'returnVoid', 'preUpdate');
 		persistTestEntity(mockOrderItem, orderItemData);
 		
-		var result = variables.dao.getQNDOO(mockProduct.getProductID);
+		var result = variables.dao.getQNDOO(mockProduct.getProductID());
 		request.debug(result);
-		assertEquals(100, result[1].QNDOO, 'Should be 100 - (1 + 2) = 97');
+		assertEquals(97, result[1].QNDOO, 'Should be 100 - (1 + 2) = 97');
 	}
 	
 	public void function getQNDOSATest() {
@@ -298,8 +298,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			}
 		};
 		var mockVendorOrder = createPersistedTestEntity('VendorOrder', vendorOrderData);
-		
-		var vendorOrderItemData = {
+		//Mocking Data: 
+		//mockVendorOrderItem1 (100) <- mockStockReceiverItem1 (10)
+		//							 <- mockStockReceiverItem2 (20)
+		//mockVendorOrderItem2 (200) <- mockStockReceiverItem3 (40)
+		var vendorOrderItemData1 = {
 			vendorOrderItemID = '',
 			quantity = 100,
 			vendorOrder = {
@@ -309,24 +312,62 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				stockID = mockStock.getStockID()
 			}
 		};
-		var mockVendorOrderItem = createPersistedTestEntity('VendorOrderItem', vendorOrderItemData);
+		var mockVendorOrderItem1 = createPersistedTestEntity('VendorOrderItem', vendorOrderItemData1);
 		
-		var stockReceiverItemData = {
+		var vendorOrderItemData2 = {
+			vendorOrderItemID = '',
+			quantity = 200,
+			vendorOrder = {
+				vendorOrderID = mockVendorOrder.getVendorOrderID()
+			},
+			stock = {
+				stockID = mockStock.getStockID()
+			}
+		};
+		var mockVendorOrderItem2 = createPersistedTestEntity('VendorOrderItem', vendorOrderItemData2);
+		
+		var stockReceiverItemData1 = {
 			stockReceiverItemID = '',
 			quantity = 10,
 			vendorOrderItem = {
-				vendorOrderItemID = mockVendorOrderItem.getVendorOrderItemID()
+				vendorOrderItemID = mockVendorOrderItem1.getVendorOrderItemID()
 			}
 		};
-		var mockStockReceiverItem = createTestEntity('StockReceiverItem', stockReceiverItemData);
-		//Bypass preInsert() and create persisted entity
-		injectMethod(mockStockReceiverItem, this, 'returnVoid', 'preInsert');
-		persistTestEntity(mockStockReceiverItem, stockReceiverItemData);
-
-		mockVendorOrderItem.addStockReceiverItem(mockStockReceiverItem);
+		var mockStockReceiverItem1 = createTestEntity('StockReceiverItem', stockReceiverItemData1);
+		
+		injectMethod(mockStockReceiverItem1, this, 'returnVoid', 'preInsert');
+		persistTestEntity(mockStockReceiverItem1, stockReceiverItemData1);
+		
+		var stockReceiverItemData2 = {
+			stockReceiverItemID = '',
+			quantity = 20,
+			vendorOrderItem = {
+				vendorOrderItemID = mockVendorOrderItem1.getVendorOrderItemID()
+			}
+		};
+		var mockStockReceiverItem2 = createTestEntity('StockReceiverItem', stockReceiverItemData2);
+		
+		injectMethod(mockStockReceiverItem2, this, 'returnVoid', 'preInsert');
+		persistTestEntity(mockStockReceiverItem2, stockReceiverItemData2);
+		
+		var stockReceiverItemData3 = {
+			stockReceiverItemID = '',
+			quantity = 40,
+			vendorOrderItem = {
+				vendorOrderItemID = mockVendorOrderItem2.getVendorOrderItemID()
+			}
+		};
+		var mockStockReceiverItem3 = createTestEntity('StockReceiverItem', stockReceiverItemData3);
+		
+		injectMethod(mockStockReceiverItem3, this, 'returnVoid', 'preInsert');
+		persistTestEntity(mockStockReceiverItem3, stockReceiverItemData3);
+		
+		mockVendorOrderItem1.addStockReceiverItem(mockStockReceiverItem1);
+		mockVendorOrderItem1.addStockReceiverItem(mockStockReceiverItem2);
+		mockVendorOrderItem2.addStockReceiverItem(mockStockReceiverItem3);
 		
 		var result = variables.dao.getQNROVO(mockProduct.getProductID());
-		assertEquals(90, result[1].QNROVO, 'QNROVO should be 100 - 10 = 90');
+		assertEquals(230, result[1].QNROVO, 'QNROVO should be (100+200) - (10+20+40) = 230');
 	}
 	
 	public void function getQNROSATest() {
