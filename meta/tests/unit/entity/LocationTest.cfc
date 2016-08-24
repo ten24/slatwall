@@ -178,7 +178,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		 assertEquals("IAmThePath",result);
 	}
 	
-   public void function getLocationIDPathTest_describtewhatyouaretesting()
+   public void function getLocationIDPathTest_assertOutputValue()
    {
    	
          var parentLocationData={
@@ -198,7 +198,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	    var mockLocation= createPersistedTestEntity('Location', locationData);
 	
 	    var result = mockLocation.getLocationIDPath();
-		var expectedValue=locationData.parentLocation.locationID&','&locationData.locationID;
+		var expectedValue=locationData.parentLocation.locationID&','&mockLocation.getLocationID();
 	
 		assertEquals(expectedValue, result);
         
