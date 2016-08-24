@@ -122,7 +122,7 @@ Notes:
 		// Quantity not delivered on stock adjustment
 		public array function getQNDOSA(required string productID, string productRemoteID) {
 			
-			var params = [ arguments.productID ];
+			var params = { productID = arguments.productID };
 			var hql = "SELECT NEW MAP(
 					coalesce( 
 						(
