@@ -107,8 +107,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 							 },
 							 {
 								locationID=""
-							 }
-			
+							 }			
 			               ]
 			           };
 	
@@ -146,13 +145,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	    var mockParentLocation = createPersistedTestEntity('Location',parentLocationData);
 	
 	    var locationData={
-		    locationID="s",
-		    locationIDPath="",
-		    locationName="Sunny",
-		    parentLocation={
+		      locationID="s",
+		      locationIDPath="",
+		      locationName="Sunny",
+		      parentLocation={
 			     locationID=mockParentLocation.getLocationID()
-		                    }
-	                  };
+		                     }
+	                     };
 	
 	
 		var mockLocation= createPersistedTestEntity('Location', locationData);
@@ -166,8 +165,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
    public void function getLocationIDPathTest() 
    {
 	     var locationData={
-		    locationID="",
-		    locationIDPath="IAmThePath"
+		         locationID="",
+		         locationIDPath="IAmThePath"
 	
                           };
   
@@ -182,11 +181,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
    {
    	
          var parentLocationData={
-			locationID="",
-			locationIDPath="Sunny"
-		                     };
+			       locationID="",
+			       locationIDPath="Sunny"
+		                        };
 		                     
-	 mockParentLocation=createPersistedTestEntity('Location', parentLocationData);
+	     mockParentLocation=createPersistedTestEntity('Location', parentLocationData);
   
 	     var locationData={
 		        locationID="",
@@ -198,7 +197,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	    var mockLocation= createPersistedTestEntity('Location', locationData);
 	
 	    var result = mockLocation.getLocationIDPath();
-		var expectedValue=locationData.parentLocation.locationID&','&mockLocation.getLocationID();
+	    
+		var expectedValue=locationData.parentLocation.locationID&','& mockLocation.getLocationID();
 	
 		assertEquals(expectedValue, result);
         
@@ -208,38 +208,43 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	public void function isDeletableTest_hasPhysical()
 	{
 		var physicalData={
-			physicalID=""
-		};
+			  physicalID=""
+		                 };
+		                 
 		var mockPhysical= createPersistedTestEntity('Physical', physicalData);
+		
 		var locationData= {
-			locationID="",
-			physicals=[{
+			    locationID="",
+			      physicals=[{
 			
-				physicalID=mockPhysical.getPhysicalID() 
-			}]
-		};
+				   physicalID=mockPhysical.getPhysicalID() 
+				   
+			                }]
+		                  };
 		var mockLocation= createPersistedTestEntity('Location', locationData);
-		
-		
+			
 		var result= mockLocation.isdeletable();
+		
 		assertFalse(result);
 	}
 	
 	public void function isDeletableTest_hasStock()
 	{
 		var stockData={
-			stockID=""
-		};
+			  stockID=""
+		              };
+		              
 		var mockStock= createPersistedTestEntity('Stock', stockData);
-		var locationData= {
-			locationID="",
-			stocks=[{
-			
-				stockID=mockStock.getStockID() 
-			}]
-		};
-		var mockLocation= createPersistedTestEntity('Location', locationData);
 		
+		var locationData= {
+			    locationID="",
+			        stocks=[{
+			
+				      stockID=mockStock.getStockID() 
+			               }]
+	          	          };
+	          	          
+		var mockLocation= createPersistedTestEntity('Location', locationData);
 		
 		var result= mockLocation.isdeletable();
 		
