@@ -133,6 +133,28 @@ component extends="mxunit.framework.TestCase" output="false" {
 	private void function addEntityForTearDown(any entity){
 		arrayAppend(variables.persistentEntities, entity);
 	}
+	
+	private any function persistTestEntity(required any testEntity, required any data, boolean saveWithService=false){
+		// Save with Service
+		if(arguments.saveWithService) {
+
+			request.slatwallScope.saveEntity( arguments.testEntity, arguments.data );
+
+		// Save manually
+		} else {
+			// Populate the data
+			arguments.testEntity.populate( arguments.data );
+
+			// Save the entity
+			entitySave(arguments.testEntity);
+		}
+
+		// Persist to the database
+		ormFlush();
+
+		// Add the entity to the persistentEntities
+		arrayAppend(variables.persistentEntities, arguments.testEntity);
+	}
 
 	private any function createTestEntity( required string entityName, struct data={}, boolean createRandomData=false, boolean persist=false, boolean saveWithService=false ) {
 		// Create the new Entity
@@ -143,25 +165,7 @@ component extends="mxunit.framework.TestCase" output="false" {
 		// Check to see if it needs to be persisted
 		if(arguments.persist) {
 
-			// Save with Service
-			if(arguments.saveWithService) {
-
-				request.slatwallScope.saveEntity( newEntity, arguments.data );
-
-			// Save manually
-			} else {
-				// Populate the data
-				newEntity.populate( data );
-
-				// Save the entity
-				entitySave(newEntity);
-			}
-
-			// Persist to the database
-			ormFlush();
-
-			// Add the entity to the persistentEntities
-			arrayAppend(variables.persistentEntities, newEntity);
+			persistTestEntity(newEntity, data, arguments.saveWithService);
 
 		} else {
 
@@ -313,7 +317,7 @@ component extends="mxunit.framework.TestCase" output="false" {
 		return 3.45;
 	}
 	
-	public void function verifyRel(required any entityObject, required string propertyName) {
+	private void function verifyRel(required any entityObject, required string propertyName) {
 		var thisProperty = request.slatwallScope.getService("hibachiService").
 							getPropertyByEntityNameAndPropertyName(arguments.entityObject.getClassName(), arguments.propertyName);
 		var errorMsg = '#arguments.entityObject.getClassName()#.#arguments.propertyName# ';
@@ -343,6 +347,22 @@ component extends="mxunit.framework.TestCase" output="false" {
 			}
 
 		}
+	}
+
+	private any function createSimpleMockEntityByEntityName(required string entityName, boolean persisted = TRUE) {
+		var primaryIDPropertyName = request.slatwallScope.getService('hibachiservice').getPrimaryIDPropertyNameByEntityName(arguments.entityName);
+		if(arguments.entityName == 'State'){
+			//TODO: Combination Primary ID may throw errors. 
+		}
+		var data = {};
+		data[primaryIDPropertyName] = "";
+		
+		if(arguments.persisted) {
+			var resultEntity = createPersistedTestEntity(arguments.entityName, data);
+		} else {
+			var resultEntity = createTestEntity(arguments.entityName, data);
+		}
+		return resultEntity;
 	}
 
 }

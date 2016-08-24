@@ -68,7 +68,6 @@ Notes:
 							inventory.stock.stockID,
 							inventory.stock.location.locationID,
 							inventory.stock.location.locationIDPath";
-						
 			
 			return ormExecuteQuery(hql, params);
 		}
@@ -82,8 +81,6 @@ Notes:
 		// Quantity Not Delivered on Order 
 		public array function getQNDOO(required string productID, string productRemoteID) {
 			var params = [ arguments.productID ];
-			
-			
 			
 			var hql = "SELECT NEW MAP(coalesce( sum(orderItem.quantity), 0 ) - coalesce( sum(orderDeliveryItem.quantity), 0 ) as QNDOO, 
 							orderItem.sku.skuID as skuID, 
@@ -109,8 +106,7 @@ Notes:
 							stock.stockID,
 							location.locationID,
 							location.locationIDPath";
-			return ormExecuteQuery(hql, params);
-			
+			return ormExecuteQuery(hql, params);	
 		}
 		
 		// Quantity not delivered on return vendor order 
