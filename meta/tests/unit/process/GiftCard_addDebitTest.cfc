@@ -89,7 +89,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		assertEquals("10.50", debitTransaction.getDebitAmount());
 
-		debitTransaction.setOrderPayment(payment);
+		debitTransaction.setOrderPayment(orderPayment);
 
 		assertTrue(debitTransaction.getOrderPayment().getOrderPaymentID() == orderPayment.getOrderPaymentID());
 		
