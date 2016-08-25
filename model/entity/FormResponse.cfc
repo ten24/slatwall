@@ -73,7 +73,7 @@ component displayname="FormResponse" entityname="SlatwallFormResponse" table="Sw
 	// ============ START: Non-Persistent Property Methods =================
 
 	public any function getAttributes() {
-        if(!structKeyExists(variables, attributes)){
+        if(!structKeyExists(variables, "attributes")){
             variables.attributes = this.getForm().getFormQuestions(); 
         }
         return variables.attributes;
