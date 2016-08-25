@@ -61,79 +61,35 @@ Notes:
 
     <!--- If old default order confirmation trigger --->
     <cfif local.eventTriggers.eventTriggerID eq "7d4a464cb2e95da8421c15da9bd6f5e8">
-
-      <!--- If they changed the event, update that change --->
-      <cfif local.eventTriggers.eventName neq "afterOrderProcess_placeOrderSuccess">
-        <cfquery name="local.update">
-          UPDATE SwWorkflowTrigger SET eventName = local.eventTriggers.eventName WHERE workflowTriggerID = 'f80aaac73fc84ee7a7d53962c641f653'
-        </cfquery>
-      </cfif>
-
-      <!--- If they changed the emailTemplateID, update that change --->
-      <cfif local.eventTriggers.emailTemplateID neq "dbb327e506090fde08cc4855fa14448d">
-        <cfquery name="local.update">
-          UPDATE SwWorkflowTaskAction SET emailTemplateID = local.eventTriggers.emailTemplateID WHERE workflowTaskActionID = '2f9bfc37806f40149d477661213f84bf'
-        </cfquery>
-      </cfif>
+      
       <!--- Set Send Order Confirmation When Placed to inactive because we migrated one. This will not happen on fresh installs---> 
-      <cfquery name="local.update">
-          UPDATE SwWorkflow SET activeFlag = 0 WHERE workflowID = 'c74704ef385a4ad1949b554086fcd80b'
+      <cfquery name='local.update'>
+          UPDATE SwWorkflow 
+          SET activeFlag = 0,
+          workflowName = CONCAT(workflowName,'- replaced by migrated event trigger')
+          WHERE workflowID = 'c74704ef385a4ad1949b554086fcd80b'
       </cfquery>
 
     <!--- If old default order delivery confirmation trigger --->
-    <cfelseif local.eventTriggers.eventTriggerID eq "7d4a464dcd702f7fb37ef7d4b3356c3e">
+    <cfelseif local.eventTriggers.eventTriggerID eq '7d4a464dcd702f7fb37ef7d4b3356c3e'>
 
-      <!--- If they changed the event, update that change --->
-      <cfif local.eventTriggers.eventName neq "afterOrderDeliveryProcess_createSuccess">
-        <cfquery name="local.update">
-          UPDATE SwWorkflowTrigger SET eventName = local.eventTriggers.eventName WHERE workflowTriggerID = '3130ad06932948d38bf37e7a5c27a435'
-        </cfquery>
-      </cfif>
-
-      <!--- If they changed the emailTemplateID, update that change --->
-      <cfif local.eventTriggers.emailTemplateID neq "dbb327e506090fde08cc4855fa14448d">
-        <cfquery name="local.update">
-          UPDATE SwWorkflowTaskAction SET emailTemplateID = local.eventTriggers.emailTemplateID WHERE workflowTaskActionID = 'ca61224520de4a6ca1a0090a35a3184c'
-        </cfquery>
-      </cfif>
       
       <!--- Set Send Order Confirmation When Placed to inactive because we migrated one. This will not happen on fresh installs---> 
-      <cfquery name="local.update">
-          UPDATE SwWorkflow SET activeFlag = 0 WHERE workflowID = '46d8e458b7dd4aa9876ce62b33e9e43f'
+      <cfquery name='local.update'>
+          UPDATE SwWorkflow 
+          SET activeFlag = 0,
+          workflowName = CONCAT(workflowName,'- replaced by migrated event trigger')
+          WHERE workflowID = '46d8e458b7dd4aa9876ce62b33e9e43f'
       </cfquery>
-    <cfelse>
-      <cfset local.workflowID = replace(lcase(createUUID()), "-", "", "all") />
-      <cfset local.workflowTriggerID = replace(lcase(createUUID()), "-", "", "all") />
-      <cfset local.workflowTaskID = replace(lcase(createUUID()), "-", "", "all") />
-      <cfset local.workflowTaskActionID = replace(lcase(createUUID()), "-", "", "all") />
-
-      <!--- Create Workflow --->
-      <cfquery name="local.insert">
-        INSERT INTO SwWorkflow (workflowID, activeFlag, workflowName, workflowObject) VALUES (local.workflowID, 1, "Event Trigger - #local.eventTriggers.eventTriggerName#", local.eventTriggers.eventTriggerObject)
-      </cfquery>
-
-      <!--- Create Workflow Trigger --->
-      <cfquery name="local.insert">
-        INSERT INTO SwWorkflowTrigger (workflowTriggerID, triggerType, triggerEvent, startDateTime, workflowID) VALUES (local.workflowTriggerID, "Event", local.eventTriggers.eventName, "2016-01-01 12:00:00", local.workflowID)
-      </cfquery>
-
-      <!--- Create Workflow Task --->
-      <cfquery name="local.insert">
-        INSERT INTO SwWorkflowTask (workflowTaskID, activeFlag, taskName, taskConditionsConfig, workflowID) VALUES (local.workflowTaskID, 1, local.eventTriggers.eventTriggerName, "{&quot;filterGroups&quot;:[{&quot;filterGroup&quot;:[]}],&quot;baseEntityAlias&quot;:&quot;#local.eventTriggers.eventTriggerObject#&quot;,&quot;baseEntityName&quot;:&quot;#local.eventTriggers.eventTriggerObject#&quot;}", local.workflowID)
-      </cfquery>
-
-      <!--- Create Workflow Action --->
-      <cfif local.eventTriggers.eventTriggerType eq "email">
-        <cfquery name="local.insert">
-          INSERT INTO SwWorkflowTaskAction (workflowTaskActionID, actionType, updateData, emailTemplateID, workflowTaskID) VALUES (local.workflowTaskActionID, "Email", "{&quot;staticData&quot;:{},&quot;dynamicData&quot;:{}}", local.eventTriggers.emailTemplateID, local.workflowID)
-        </cfquery>
-      <cfelseif local.eventTriggers.eventTriggerType eq "print">
-        <cfquery name="local.insert">
-          INSERT INTO SwWorkflowTaskAction (workflowTaskActionID, actionType, updateData, printTemplateID, workflowTaskID) VALUES (local.workflowTaskActionID, "Print", "{&quot;staticData&quot;:{},&quot;dynamicData&quot;:{}}", local.eventTriggers.printTemplateID, local.workflowID)
-        </cfquery>
-      </cfif>
-    </cfif>
-
+	</cfif>
+	<cfset insertWorkflowByEventTrigger(
+      	local.eventTriggers.eventTriggerName,
+      	local.eventTriggers.eventTriggerObject,
+      	local.eventTriggers.eventName,
+      	local.eventTriggers.emailTemplateID,
+      	local.eventTriggers.printTemplateID,
+      	local.eventTriggers.eventTriggerType
+      )/>
   </cfloop>
 
 	<cfcatch>
@@ -144,7 +100,44 @@ Notes:
 
 </cftry>
 
-
+<cffunction name="insertWorkflowByEventTrigger">
+	<cfargument name="eventTriggerName"/>
+	<cfargument name="eventTriggerObject"/>
+	<cfargument name="eventName"/>
+	<cfargument name="emailTemplateID"/>
+	<cfargument name="printTemplateID"/>
+	<cfargument name="eventTriggerType"/>
+	  <cfset local.workflowID = replace(lcase(createUUID()), '-', '', 'all') />
+	  <cfset local.workflowTriggerID = replace(lcase(createUUID()), '-', '', 'all') />
+	  <cfset local.workflowTaskID = replace(lcase(createUUID()), '-', '', 'all') />
+	  <cfset local.workflowTaskActionID = replace(lcase(createUUID()), '-', '', 'all') />
+	
+	  <!--- Create Workflow --->
+	  <cfquery name='local.insert'>
+	    INSERT INTO SwWorkflow (workflowID, activeFlag, workflowName, workflowObject) VALUES ('#local.workflowID#', 1, 'Event Trigger - #arguments.eventTriggerName#', '#arguments.eventTriggerObject#')
+	  </cfquery>
+	
+	  <!--- Create Workflow Trigger --->
+	  <cfquery name='local.insert'>
+	    INSERT INTO SwWorkflowTrigger (workflowTriggerID, triggerType, triggerEvent, startDateTime, workflowID) VALUES ('#local.workflowTriggerID#', 'Event', '#arguments.eventName#', '2016-01-01 12:00:00', '#local.workflowID#')
+	  </cfquery>
+	
+	  <!--- Create Workflow Task --->
+	  <cfquery name='local.insert'>
+	    INSERT INTO SwWorkflowTask (workflowTaskID, activeFlag, taskName, taskConditionsConfig, workflowID) VALUES ('#local.workflowTaskID#', 1, '#arguments.eventTriggerName#', '{&quot;filterGroups&quot;:[{&quot;filterGroup&quot;:[]}],&quot;baseEntityAlias&quot;:&quot;#arguments.eventTriggerObject#&quot;,&quot;baseEntityName&quot;:&quot;#arguments.eventTriggerObject#&quot;}', '#local.workflowID#')
+	  </cfquery>
+	
+	  <!--- Create Workflow Action --->
+	  <cfif arguments.eventTriggerType eq 'email'>
+	    <cfquery name='local.insert'>
+	      INSERT INTO SwWorkflowTaskAction (workflowTaskActionID, actionType, updateData, emailTemplateID, workflowTaskID) VALUES ('#local.workflowTaskActionID#', 'Email', '{&quot;staticData&quot;:{},&quot;dynamicData&quot;:{}}', '#arguments.emailTemplateID#', '#local.workflowTaskID#')
+	    </cfquery>
+	  <cfelseif arguments.eventTriggerType eq 'print'>
+	    <cfquery name='local.insert'>
+	      INSERT INTO SwWorkflowTaskAction (workflowTaskActionID, actionType, updateData, printTemplateID, workflowTaskID) VALUES ('#local.workflowTaskActionID#', 'Print', '{&quot;staticData&quot;:{},&quot;dynamicData&quot;:{}}', '#arguments.printTemplateID#', '#local.workflowTaskID#')
+	    </cfquery>
+	  </cfif>
+</cffunction>
 <cfif local.scriptHasErrors>
 	<cflog file="Slatwall" text="General Log - Part of Script v4_6 had errors when running">
 	<cfthrow detail="Part of Script v4_6 had errors when running">
