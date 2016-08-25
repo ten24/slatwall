@@ -309,7 +309,7 @@ class SWInputController{
 			this.observerService.attach(this.onSuccess,this.eventNameForObjectSuccess,eventNameForObjectSuccessID);
 
 			//update bindings manually
-			this.observerService.attach(this.onSuccess,'updateBindings',this.object.metaData.className.split('_')[0]+'updateBindings');
+			this.observerService.attach(this.onSuccess,eventNameForUpdateBindings,eventNameForUpdateBindingsID);
 
 		}
 
