@@ -245,13 +245,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	}
 
 	//TODO: unused function
-	public any function getTemplateOptions() {
-		if(!isDefined("variables.templateOptions")){
-			variables.templateOptions = getService("ProductService").getProductTemplates();
-		}
-		return variables.templateOptions;
-	}
-
 	public any function getImages() {
 		return variables.productImages;
 	}
@@ -286,14 +279,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  	}
 
 	//TODO: Unused function
-	public string function getPageIDs() {
-		var pageIDs = "";
-		for( var i=1; i<= arrayLen(getPages()); i++ ) {
-			pageIDs = listAppend(pageIDs,getPages()[i].getPageID());
-		}
-		return pageIDs;
-	}
-
 	public string function getCategoryIDs() {
 		var categoryIDs = "";
 		for( var i=1; i<= arrayLen(getCategories()); i++ ) {
