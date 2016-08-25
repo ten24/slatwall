@@ -77,7 +77,7 @@ Notes:
       </cfif>
       <!--- Set Send Order Confirmation When Placed to inactive because we migrated one. This will not happen on fresh installs---> 
       <cfquery name="local.update">
-          UPDATE SwWorkflowTrigger SET activeFlage = 0 WHERE workflowTriggerID = 'c74704ef385a4ad1949b554086fcd80b'
+          UPDATE SwWorkflowTrigger SET activeFlag = 0 WHERE workflowTriggerID = 'c74704ef385a4ad1949b554086fcd80b'
       </cfquery>
 
     <!--- If old default order delivery confirmation trigger --->
@@ -99,7 +99,7 @@ Notes:
       
       <!--- Set Send Order Confirmation When Placed to inactive because we migrated one. This will not happen on fresh installs---> 
       <cfquery name="local.update">
-          UPDATE SwWorkflowTrigger SET activeFlage = 0 WHERE workflowTriggerID = '46d8e458b7dd4aa9876ce62b33e9e43f'
+          UPDATE SwWorkflowTrigger SET activeFlag = 0 WHERE workflowTriggerID = '46d8e458b7dd4aa9876ce62b33e9e43f'
       </cfquery>
     <cfelse>
       <cfset local.workflowID = replace(lcase(createUUID()), "-", "", "all") />
