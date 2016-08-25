@@ -55,7 +55,7 @@ Notes:
 	<cfquery name="local.eventTriggers">
 		SELECT * FROM SwEventTrigger
 	</cfquery>
-
+	
   <!--- Loop over the existing Event Triggers --->
   <cfloop query="local.eventTriggers">
 
@@ -75,6 +75,10 @@ Notes:
           UPDATE SwWorkflowTaskAction SET emailTemplateID = local.eventTriggers.emailTemplateID WHERE workflowTaskActionID = '2f9bfc37806f40149d477661213f84bf'
         </cfquery>
       </cfif>
+      <!--- Set Send Order Confirmation When Placed to inactive because we migrated one. This will not happen on fresh installs---> 
+      <cfquery name="local.update">
+          UPDATE SwWorkflowTrigger SET activeFlage = 0 WHERE workflowTriggerID = 'c74704ef385a4ad1949b554086fcd80b'
+      </cfquery>
 
     <!--- If old default order delivery confirmation trigger --->
     <cfelseif local.eventTriggers.eventTriggerID eq "7d4a464dcd702f7fb37ef7d4b3356c3e">
@@ -92,7 +96,11 @@ Notes:
           UPDATE SwWorkflowTaskAction SET emailTemplateID = local.eventTriggers.emailTemplateID WHERE workflowTaskActionID = 'ca61224520de4a6ca1a0090a35a3184c'
         </cfquery>
       </cfif>
-
+      
+      <!--- Set Send Order Confirmation When Placed to inactive because we migrated one. This will not happen on fresh installs---> 
+      <cfquery name="local.update">
+          UPDATE SwWorkflowTrigger SET activeFlage = 0 WHERE workflowTriggerID = '46d8e458b7dd4aa9876ce62b33e9e43f'
+      </cfquery>
     <cfelse>
       <cfset local.workflowID = replace(lcase(createUUID()), "-", "", "all") />
       <cfset local.workflowTriggerID = replace(lcase(createUUID()), "-", "", "all") />
@@ -138,8 +146,8 @@ Notes:
 
 
 <cfif local.scriptHasErrors>
-	<cflog file="Slatwall" text="General Log - Part of Script v4_5 had errors when running">
-	<cfthrow detail="Part of Script v4_5 had errors when running">
+	<cflog file="Slatwall" text="General Log - Part of Script v4_6 had errors when running">
+	<cfthrow detail="Part of Script v4_6 had errors when running">
 <cfelse>
-	<cflog file="Slatwall" text="General Log - Script v4_5 has run with no errors">
+	<cflog file="Slatwall" text="General Log - Script v4_6 has run with no errors">
 </cfif>
