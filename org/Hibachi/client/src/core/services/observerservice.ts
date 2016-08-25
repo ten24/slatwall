@@ -37,10 +37,11 @@ class ObserverService extends BaseService{
      * @description adds events listeners
      */
     attach = (callback:any, event:string, id?:string):void => {
-        event = event.toLowerCase();
         if(!id){
             id = this.utilityService.createID();
         }
+        event = event.toLowerCase();
+        id = id.toLowerCase();
         if (!this.observers[event]) {
             this.observers[event] = {};
         }
@@ -59,6 +60,7 @@ class ObserverService extends BaseService{
      * @description removes all events for a specific id from the observers object
      */
     detachById = (id:string):void => {
+        id = id.toLowerCase();
         for(var event in this.observers) {
             this.detachByEventAndId(event, id);
         }
@@ -88,6 +90,7 @@ class ObserverService extends BaseService{
      */
     detachByEventAndId = (event:string, id:string):void => {
         event = event.toLowerCase();
+        id = id.toLowerCase();
         if(event in this.observers) {
             if(id in this.observers[event]) {
                 delete this.observers[event][id];
@@ -125,6 +128,7 @@ class ObserverService extends BaseService{
      */
     notifyById = (event:string, eventId:string ,parameters:any):void => {
         event = event.toLowerCase();
+        eventId = eventId.toLowerCase();
         return this.$timeout(()=>{
             for(var id in this.observers[event]) {
                 if(id != eventId) continue;
