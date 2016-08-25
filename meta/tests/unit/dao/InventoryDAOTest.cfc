@@ -96,7 +96,104 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public any function getQNROSA_runs_without_error() {
 		assertEquals([],variables.dao.getQNROSA(productID="1", productRemoteID="1"));
 	}	
+	public void function getQNDOSATest() {
+		var mockProduct = createMockProduct();
+		var mockLocation = createMockLocation();
+		var mockSku = createMockSku(mockProduct.getProductID());
+
+		var stockAdjustmentData = {
+			stockAdjustmentID = '',
+			stockAdjustmentStatusType = {
+				typeID = '444df2e2f66ddfaf9c60caf5c76349a6'//sastNew
+			}
+		};
+		var mockStockAdjustment = createPersistedTestEntity('StockAdjustment', stockAdjustmentData);
+		
+		var stockData = {
+			stockID = '',
+			sku = {
+				skuID = mockSku.getSkuID()
+			},
+			location = {
+				locationID = mockLocation.getLocationID()
+			}
+		};
+		var mockStock = createPersistedTestEntity('Stock', stockData);
+		
+		var stockAdjustmentItemData = {
+			stockAdjustmentItemID = '',
+			quantity = 100,
+			fromStock = {
+				stockID = mockStock.getStockID()
+			},
+			stockAdjustment = {
+				stockAdjustmentID = mockStockAdjustment.getStockAdjustmentID()
+			}
+		};
+		var mockStockAdjustmentItem = createPersistedTestEntity('StockAdjustmentItem', stockAdjustmentItemData);
+		
+		var stockAdjustmentDeliveryItemData1 = {
+			stockAdjustmentDeliveryItemID = '',
+			quantity = 10,
+			stockAdjustmentItem = {
+				stockAdjustmentItemID = mockStockAdjustmentItem.getStockAdjustmentItemID()
+			}
+		};
+		var mockstockAdjustmentDeliveryItem1 = createTestEntity('stockAdjustmentDeliveryItem', stockAdjustmentDeliveryItemData1);
+		
+		var stockAdjustmentDeliveryItemData2 = {
+			stockAdjustmentDeliveryItemID = '',
+			quantity = 20,
+			stockAdjustmentItem = {
+				stockAdjustmentItemID = mockStockAdjustmentItem.getStockAdjustmentItemID()
+			}
+		};
+		var mockstockAdjustmentDeliveryItem2 = createTestEntity('stockAdjustmentDeliveryItem', stockAdjustmentDeliveryItemData2);
+		
+		injectMethod(mockstockAdjustmentDeliveryItem1, this, 'returnVoid', 'preInsert');
+		injectMethod(mockstockAdjustmentDeliveryItem2, this, 'returnVoid', 'preInsert');
+		persistTestEntity(mockstockAdjustmentDeliveryItem1, stockAdjustmentDeliveryItemData1);
+		persistTestEntity(mockstockAdjustmentDeliveryItem2, stockAdjustmentDeliveryItemData2);
+		
+		mockStockAdjustmentItem.addStockAdjustmentDeliveryItem(mockstockAdjustmentDeliveryItem1);
+		mockStockAdjustmentItem.addStockAdjustmentDeliveryItem(mockstockAdjustmentDeliveryItem2);
+		
+		var result = variables.dao.getQNDOSA(mockProduct.getProductID());
+		assertEquals(70, result[1].QNDOSA, 'Should be 100 - (10 + 20) = 70');
+
+	}
+	//============ START: Helpers to mock the data ============
+	private any function createMockProduct() {
+		var productData = {
+			productID = ''
+		};
+		return createPersistedTestEntity('Product', productData);
+	}
+	private any function createMockLocation() {
+		var locationData = {
+			locationID = '',
+			locationIDPath = 'a/bb'
+		};
+		return createPersistedTestEntity('Location', locationData);
+	}
 	
+	private any function createMockSku(string productID='') {
+		var skuData = {
+			skuID = ''
+		};
+		if(len(arguments.productID)) {
+			skuData.product = {
+				productID = arguments.productID
+			};
+		}
+		return createPErsistedTestEntity('Sku', skuData);
+	}
+	public void function returnVoid() {
+		
+	}
+	
+	
+	//============ END: Helpers to mock the data ==============
 	
 }
 
