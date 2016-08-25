@@ -190,7 +190,6 @@ class CollectionConfig {
     public getOptions= (): Object =>{
         this.validateFilter(this.filterGroups);
         if(this.keywords.length && this.keywordColumns.length > 0){
-            console.log("using Keyword Columns", this.keywordColumns);
             var columns = this.keywordColumns;
         } else {
             var columns = this.columns; 
@@ -365,7 +364,6 @@ class CollectionConfig {
                     columnObject[key] = options[key];
                 }
             }
-            console.log("looking to add", columnObject, isOnlyKeywordColumn, isKeywordColumn);
             if(!isOnlyKeywordColumn){
                 this.columns.push(columnObject);
             }
