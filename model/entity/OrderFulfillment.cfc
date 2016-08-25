@@ -351,7 +351,8 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     public any function getShippingMethodOptions() {
     	if( !structKeyExists(variables, "shippingMethodOptions")) {
 
-    		getService("shippingService").updateOrderFulfillmentShippingMethodOptions( this );
+			//update the shipping method options with the shipping service to insure qualifiers are re-evaluated    		
+			getService("shippingService").updateOrderFulfillmentShippingMethodOptions( this );
 
     		// At this point they have either been populated just before, or there were already options
     		var optionsArray = [];
