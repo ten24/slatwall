@@ -229,7 +229,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     public any function getAccountAddressOptions() {
     	if( !structKeyExists(variables, "accountAddressOptions")) {
     		variables.accountAddressOptions = [];
-			if(!isNull(getOrder().getAccount()){
+			if(!isNull(getOrder().getAccount())){
 				var s = getService("accountService").getAccountAddressSmartList();
 				s.addFilter(propertyIdentifier="account.accountID",value=getOrder().getAccount().getAccountID(),fetch="false");
 				s.addOrder("accountAddressName|ASC");
