@@ -4,18 +4,12 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 	variables.slatwallApplications = {};
 	
 	public any function getSlatwallAdminApplication() {
-		if(!structKeyExists(variables.slatwallApplications,'slatwallAdmin')){
-			variables.slatwallApplications['slatwallAdmin'] = createObject("component", "Slatwall.Application");
-		}
-		return variables.slatwallApplications["slatwallAdmin"];
+		return  createObject("component", "Slatwall.Application");
 	}
 	
 	public any function getSlatwallCMSApplication(required any site) {
-		if(!structKeyExists(variables.slatwallApplications,arguments.site.getApp().getAppID())){
-			var applicationDotPath = rereplace(arguments.site.getApp().getAppRootPath(),'/','.','all');
-			variables.slatwallApplications[arguments.site.getApp().getAppID()] = createObject("component", "Slatwall" & applicationDotPath & '.Application');
-		}
-		return variables.slatwallApplications[arguments.site.getApp().getAppID()];
+		var applicationDotPath = rereplace(arguments.site.getApp().getAppRootPath(),'/','.','all');
+		return createObject("component", "Slatwall" & applicationDotPath & '.Application');
 	}
 	
 	public any function getFullSitePath(required any site){

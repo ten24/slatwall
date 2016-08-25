@@ -22,6 +22,7 @@ class SWListingFilter implements ng.IDirective{
         comparisonOperator:"@",
         comparisonValue:"@",
         logicalOperator:"@",
+        hidden:"@?"
     };
     public controller=SWListingFilterController;
     public controllerAs="swListingFilter";
@@ -48,9 +49,17 @@ class SWListingFilter implements ng.IDirective{
             comparisonOperator:scope.swListingFilter.comparisonOperator,
             comparisonValue:scope.swListingFilter.comparisonValue,
             logicalOperator:scope.swListingFilter.logicalOperator,
+                hidden: false
         };
 
-        scope.$parent.swListingDisplay.filters.push(filter);
+        if(angular.isDefined(scope.swListingFilter.hidden)){
+            filter['hidden'] = scope.swListingFilter.hidden;
+        }
+        if(angular.isDefined(scope.$parent.swListingFilterGroup)){
+            scope.$parent.swListingFilterGroup.filters.push(filter);
+        }else{
+            scope.$parent.swListingDisplay.filters.push(filter);
+        }
 
     }
 }

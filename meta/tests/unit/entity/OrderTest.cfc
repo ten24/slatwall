@@ -371,9 +371,78 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	return createPersistedTestEntity('OrderPayment', orderPaymentData);
 	 }
 	 
-	 private any function createMockOrderItemWithOrder(string orderID='', boolean persisted=TRUE) {
-	 	
-	 }
+	 //===================== START: Injected Functions: General ===============================
+	private numeric function returnSevenHundred() {
+		return 700;
+	}
+	private numeric function returnTen() {
+		return 10;
+	}
+	private numeric function returnZero() {
+		return 0;
+	}
+	private numeric function returnMinusTen() {
+		return -10;
+	}
+	private boolean function returnTrue() {
+		return TRUE;
+	}
+	private boolean function returnFalse() {
+		return FALSE;
+	}
+	private string function returnOneString() {
+		return 'OneString';
+	}
+	//===================== END: Injected Functions: General =================================
+	
+	//====================== START: Injected Functions in OrderService.cfc ===================
+	private numeric function getOrderPaymentNonNullAmountTotal(){
+		return 70;
+	} 
+	private numeric function getPreviouslyReturnedFulfillmentTotal() {
+		return 30;
+	}
+	private array function getMaxOrderNumberTen() {
+		return [10];
+	}
+	//====================== END: Injected Functions in OrderService.cfc =====================
+	
+	//====================== START: Injected Functions in OrderPayment.cfc ===================
+	private string function returnOpstInvalid() {
+		return 'opstInvalid';
+	}
+	
+	private any function getDynamicChargeOrderPaymentNotNull() {
+		var orderPaymentData = { 
+			orderPaymentID = '',
+			orderPaymentType = {
+				typeID = '444df2f0fed139ff94191de8fcd1f61b'//optCharge
+			}
+			//getDynamicAmountFlag() returns TRUE 
+			// getStatusCode() set to 'opstActive' by default
+		};
+		var mockOrderPayment= request.slatwallScope.newEntity('OrderPayment');
+		
+		mockOrderPayment.populate(orderPaymentData);
+		return mockOrderPayment;
+	}
+	
+	private any function getDynamicCreditOrderPaymentNotNull() {
+		var orderPaymentData = { 
+			orderPaymentID = '',
+			orderPaymentType = {
+				typeID = '444df2f1cc40d0ea8a2de6f542ab4f1d'//optCredit
+			}
+			//getDynamicAmountFlag() returns TRUE 
+			// getStatusCode() set to 'opstActive' by default
+		};
+
+		return createPersistedTestEntity('OrderPayment', orderPaymentData);
+		//TODO: This scope should throw error CREATEPERSISTEDTESTENTITY undefined, but didn't
+	}
+	//====================== END: Injected Functions in OrderPayment.cfc =================== 
+
+	
 	 
 	
 	public void function getOrderTypeTest() {
@@ -1129,87 +1198,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	assertTrue(isNull(mockOrderItem2.getOrder()));
 	 }
 	
-	//===================== Injected Functions: General ==============================
-	private numeric function returnSevenHundred() {
-		return 700;
-	}
-	private numeric function returnTen() {
-		return 10;
-	}
-	private numeric function returnZero() {
-		return 0;
-	}
-	private numeric function returnMinusTen() {
-		return -10;
-	}
-	private boolean function returnTrue() {
-		return TRUE;
-	}
-	private boolean function returnFalse() {
-		return FALSE;
-	}
-	private string function returnOneString() {
-		return 'OneString';
-	}
-	
-	
-	//====================== Injected Functions in OrderService.cfc ===================
-	private numeric function getOrderPaymentNonNullAmountTotal(){
-		return 70;
-	} 
-	private numeric function getPreviouslyReturnedFulfillmentTotal() {
-		return 30;
-	}
-	private array function getMaxOrderNumberTen() {
-		return [10];
-	}
-	
-	//====================== Injected Functions in Order.cfc ==========================
-	
-	
-	//====================== Injected Functions in OrderPayment.cfc ==========================
-	private string function returnOpstInvalid() {
-		return 'opstInvalid';
-	}
-	
-	
-	
-	private any function getDynamicChargeOrderPaymentNotNull() {
-		var orderPaymentData = { 
-			orderPaymentID = '',
-			orderPaymentType = {
-				typeID = '444df2f0fed139ff94191de8fcd1f61b'//optCharge
-			}
-			//getDynamicAmountFlag() returns TRUE 
-			// getStatusCode() set to 'opstActive' by default
-		};
-		var mockOrderPayment= request.slatwallScope.newEntity('OrderPayment');
-		
-		mockOrderPayment.populate(orderPaymentData);
-		return mockOrderPayment;
-	}
-	
-	private any function getDynamicCreditOrderPaymentNotNull() {
-		var orderPaymentData = { 
-			orderPaymentID = '',
-			orderPaymentType = {
-				typeID = '444df2f1cc40d0ea8a2de6f542ab4f1d'//optCredit
-			}
-			//getDynamicAmountFlag() returns TRUE 
-			// getStatusCode() set to 'opstActive' by default
-		};
-
-		return createPersistedTestEntity('OrderPayment', orderPaymentData);
-		//TODO: This scope should throw error CREATEPERSISTEDTESTENTITY undefined, but didn't
-	}
-	
-	//====================== Injected Functions in Sku.cfc ==========================
-	
-	 
-	 
-	 
-	 
-	
 	
 	public void function getPreviouslyReturnedFulfillmentTotalTest() {
 		var orderData = {
@@ -1302,7 +1290,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var result = mockOrder.getOrderPaymentAmountNeeded();
 		assertEquals(690, result, 'Calculation of the default order fails');
 	
-		// This way also works:
+		// This way also works (example of injectMethod):
 //		var mockOrderService = new Slatwall.model.service.orderService();
 //		mockOrderService.getOrderPaymentNonNullAmountTotal = returnTen;
 //		mockOrder.setOrderService(mockOrderService);

@@ -3,40 +3,24 @@
 class SWColumnItem{
 	public static Factory(){
 		var directive:ng.IDirectiveFactory = (
-			$compile,
-			$templateCache,
 			$log,
-			$timeout,
 			hibachiPathBuilder,
-			collectionService,
 			collectionPartialsPath
 		) => new SWColumnItem(
-			$compile,
-			$templateCache,
 			$log,
-			$timeout,
 			hibachiPathBuilder,
-			collectionService,
 			collectionPartialsPath
 		);
 		directive.$inject = [
-			'$compile',
-			'$templateCache',
 			'$log',
-			'$timeout',
 			'hibachiPathBuilder',
-			'collectionService',
 			'collectionPartialsPath'
 		];
 		return directive;
 	}
 	constructor(
-		$compile,
-		$templateCache,
 		$log,
-		$timeout,
 		hibachiPathBuilder,
-		collectionService,
 		collectionPartialsPath
 	){
 
@@ -56,23 +40,20 @@ class SWColumnItem{
                 scope.editingDisplayTitle=false;
 
                 scope.editDisplayTitle = function(){
-                    if(angular.isUndefined(scope.column.displayTitle)){
-                        scope.column.displayTitle = scope.column.title;
-                    }
-                    if(!scope.column.displayTitle.length){
+                    if(angular.isUndefined(scope.column.displayTitle) || !scope.column.displayTitle.length){
                         scope.column.displayTitle = scope.column.title;
                     }
                     scope.previousDisplayTitle=scope.column.displayTitle;
                     scope.editingDisplayTitle = true;
-                }
+                };
                 scope.saveDisplayTitle = function(){
-                    var savePromise = scope.saveCollection();
+                    scope.saveCollection();
                     scope.editingDisplayTitle = false;
-                }
+                };
                 scope.cancelDisplayTitle = function(){
                     scope.column.displayTitle = scope.previousDisplayTitle;
                     scope.editingDisplayTitle = false;
-                }
+                };
 
 				$log.debug('displayOptionsController');
 				if(angular.isUndefined(scope.column.sorting)){

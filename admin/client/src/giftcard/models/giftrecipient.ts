@@ -12,7 +12,7 @@ class GiftRecipient {
     constructor(
         firstName?: string,
         lastName?: string,
-        emailAddress?: string, 
+        emailAddress?: string,
         giftMessage?: string,
         quantity?:number,
         account?:boolean,
@@ -26,7 +26,7 @@ class GiftRecipient {
     public reset = () =>{
         this.firstName = null;
         this.lastName = null;
-        this.emailAddress = null; 
+        this.emailAddress = null;
         this.account = null;
         this.editing = false;
         this.quantity = 1;

@@ -67,8 +67,8 @@ Notes:
 		<swa:SlatwallSetting settingName="globalDisplayIntegrationProcessingErrors" />
 		<swa:SlatwallSetting settingName="globalFileTypeWhiteList" />
 		<swa:SlatwallSetting settingName="globalMIMETypeWhiteList" />
+		<swa:SlatwallSetting settingName="globalUseShippingIntegrationForTrackingNumberOption" />
 		<swa:SlatwallSetting settingName="globalSmartListGetAllRecordsLimit" />
-		
 	</swa:SlatwallSettingTable>
 </cfoutput>
 

@@ -258,7 +258,7 @@ component extends="mxunit.framework.TestCase" output="false" {
 		return false;
 	}
 
-	private string function generateRandomString(minLength, maxLength) {
+	private string function generateRandomString(minLength=0, maxLength=26) {
 		var chars = "abcdefghijklmnopqrstuvwxyz -_";
 		chars &= ucase(chars);
 		var upper = arguments.minLength + round(rand()*(arguments.maxLength - arguments.minLength));

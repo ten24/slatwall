@@ -84,6 +84,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function resetCachedKey_makes_getCacheValue_return_value() {
 		variables.service.setCachedValue("test-cache-key-set", "valid-value");
 		variables.service.resetCachedKey('test-cache-key-set');
+		assertFalse(variables.service.hasCachedValue('test-cache-key-set'));
 		assert( variables.service.getCachedValue('test-cache-key-set') eq "valid-value" );
 	}
 	

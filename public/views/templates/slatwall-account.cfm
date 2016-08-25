@@ -99,7 +99,7 @@ Notes:
 			<div class="row">
 				<div class="span12">
 
-					<h2>#htmlEditFormat( $.slatwall.getAccount().getFullName() )# - My Account <span class="pull-right" style="font-size:14px;"><a href="?slatAction=public:account.logout">logout</a></span></h2>
+					<h2>#$.slatwall.hibachihtmlEditFormat( $.slatwall.getAccount().getFullName() )# - My Account <span class="pull-right" style="font-size:14px;"><a href="?slatAction=public:account.logout">logout</a></span></h2>
 
 					<!--- PRIMARY TAB NAV --->
 					<div class="tabable">
@@ -509,7 +509,7 @@ Notes:
 
 															<!--- Address Nickname if it exists --->
 															<cfif not isNull(accountAddress.getAccountAddressName())>
-																<strong>#htmlEditFormat( accountAddress.getAccountAddressName() )#</strong>
+																<strong>#$.slatwall.hibachihtmlEditFormat( accountAddress.getAccountAddressName() )#</strong>
 															</cfif>
 
 															<!--- Actual Address Details --->
@@ -689,8 +689,8 @@ Notes:
 															<!--- Credit Card Display --->
 															<cfif accountPaymentMethod.getPaymentMethod().getPaymentMethodType() eq "creditCard">
 																#accountPaymentMethod.getCreditCardType()# - #accountPaymentMethod.getCreditCardLastFour()#<br />
-																#htmlEditFormat( accountPaymentMethod.getNameOnCreditCard() )#<br />
-																#htmlEditFormat( accountPaymentMethod.getExpirationMonth() )# / #htmlEditFormat( accountPaymentMethod.getExpirationYear() )#<br />
+																#$.slatwall.hibachihtmlEditFormat( accountPaymentMethod.getNameOnCreditCard() )#<br />
+																#$.slatwall.hibachihtmlEditFormat( accountPaymentMethod.getExpirationMonth() )# / #$.slatwall.hibachihtmlEditFormat( accountPaymentMethod.getExpirationYear() )#<br />
 																#accountPaymentMethod.getBillingAddress().getSimpleRepresentation()#
 
 															<!--- External Display --->
@@ -1141,7 +1141,7 @@ Notes:
 																	<td>#orderItem.getSku().getProduct().getTitle()#</td>
 
 																	<!--- Quantity --->
-																	<td>#htmlEditFormat( orderItem.getQuantity() )#</td>
+																	<td>#$.slatwall.hibachihtmlEditFormat( orderItem.getQuantity() )#</td>
 
 																	<!--- Price --->
 																	<td>
@@ -1381,7 +1381,7 @@ Notes:
 																	<td>#orderItem.getSku().getProduct().getTitle()#</td>
 
 																	<!--- Quantity --->
-																	<td>#htmlEditFormat( orderItem.getQuantity() )#</td>
+																	<td>#$.slatwall.hibachihtmlEditFormat( orderItem.getQuantity() )#</td>
 
 																	<!--- Price --->
 																	<td>

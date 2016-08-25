@@ -59,6 +59,7 @@ Notes:
 	<cfparam name="attributes.value" type="any" default="" />
 	<cfparam name="attributes.valueOptions" type="array" default="#arrayNew(1)#" />		<!--- Used for select, checkbox group, multiselect --->
 	<cfparam name="attributes.fieldAttributes" type="string" default="" />
+	<cfparam name="attributes.hibachiScope" type="any" default="#request.slatwallScope#" />
 	
 	<!---
 		attributes.type have the following options:
@@ -173,12 +174,12 @@ Notes:
 		</cfcase>
 		<cfcase value="text">
 			<cfoutput>
-				<input type="text" name="#attributes.name#" value="#htmlEditFormat(attributes.value)#" class="#attributes.class#" #attributes.fieldAttributes# />
+				<input type="text" name="#attributes.name#" value="#attributes.value#" class="#attributes.class#" #attributes.fieldAttributes# />
 			</cfoutput>
 		</cfcase>
 		<cfcase value="textarea">
 			<cfoutput>
-				<textarea name="#attributes.name#" class="#attributes.class#" #attributes.fieldAttributes#>#htmlEditFormat(attributes.value)#</textarea>
+				<textarea name="#attributes.name#" class="#attributes.class#" #attributes.fieldAttributes#>#attributes.value#</textarea>
 			</cfoutput>
 		</cfcase>
 		<cfcase value="yesno">

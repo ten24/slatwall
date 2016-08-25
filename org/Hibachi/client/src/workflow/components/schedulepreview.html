@@ -1,0 +1,19 @@
+<div class="agenda">
+    <div class="table-responsive">
+        <table class="table table-condensed table-bordered">
+            <tbody data-ng-repeat="scheduleDay in swSchedulePreview.schedule">
+            <tr>
+                <td class="agenda-date active" rowspan="{{scheduleDay.times.length + 1}}" >
+                    <div class="dayofmonth" data-ng-bind="scheduleDay.day"></div>
+                    <div class="shortdate">{{scheduleDay.month}}, {{scheduleDay.year}}</div>
+                    <div class="dayofweek text-muted" data-ng-bind="scheduleDay.weekday"></div>
+                </td>
+            </tr>
+            <tr data-ng-repeat="test in scheduleDay.times">
+                <td class="agenda-time" data-ng-bind="test"></td>
+            </tr>
+            </tbody>
+        </table>
+        <!--<button class="btn btn-xs btn-default">Show More <i class="fa fa-refresh fa-spin"></i></button>-->
+    </div>
+</div>

@@ -170,6 +170,7 @@ Notes:
 						<swa:SlatwallErrorDisplay object="#rc.processObject#" errorName="contents" />
 						<hb:HibachiListingDisplay smartList="#contentSmartList#" multiselectFieldName="contents" edit="true">
 							<hb:HibachiListingColumn propertyIdentifier="title"  tdClass="primary" />
+							<hb:HibachiListingColumn propertyIdentifier="site.siteName"  />
 						</hb:HibachiListingDisplay>
 
 					</hb:HibachiPropertyList>
@@ -212,9 +213,11 @@ Notes:
 								ng-if="preprocessproduct_createCtrl.collectionListingPromise && preprocessproduct_createCtrl.collection"
 								data-collection-promise="preprocessproduct_createCtrl.collectionListingPromise"
 								data-collection="preprocessproduct_createCtrl.collection"
+								data-collection-config="preprocessproduct_createCtrl.collection.collectionConfig"
 								data-multiselect-field-name="options"
 								data-edit="true"
 							    data-show-search="true"
+							    data-has-action-bar="false"
 							>
 							</sw-listing-display>
 

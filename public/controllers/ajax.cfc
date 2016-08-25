@@ -46,7 +46,7 @@
 Notes:
 
 */
-component output="false" accessors="true" {
+component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 
 	property name="fw" type="any";
 
@@ -65,13 +65,13 @@ component output="false" accessors="true" {
 	public void function account( struct rc ) {
 		param name="rc.propertyList" default="";
 
-		rc.ajaxResponse["account"] = rc.$.slatwall.getAccountData( rc.propertyList );
+		rc.ajaxResponse["account"] = getHibachiScope().getAccountData( rc.propertyList );
 	}
 
 	public void function cart( struct rc  ) {
 		param name="rc.propertyList" default="";
 
-		rc.ajaxResponse["cart"] = rc.$.slatwall.getCartData( rc.propertyList );
+		rc.ajaxResponse["cart"] = getHibachiScope().getCartData( rc.propertyList );
 	}
 
 	public void function country( required struct rc ) {

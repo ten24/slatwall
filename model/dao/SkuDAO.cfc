@@ -50,6 +50,25 @@ Notes:
 	
 	<cfproperty name="hibachiCacheService" type="any" />
 	
+	<cffunction name="getSkuDefinitionForMerchandiseBySkuID">
+		<cfargument name="skuID" required="true"/>
+		
+		<cfscript>
+			var skuDefinition = "";
+			var optionSmartList = getService('optionService').getOptionSmartList();
+			optionSmartList.addSelect('optionGroup.optionGroupName','optionGroupName');
+			optionSmartList.addSelect('optionName','optionName');
+			optionSmartList.addFilter('skus.skuID',arguments.skuID);
+			optionSmartList.setSelectDistinctFlag(true);
+			
+			for(var item in optionSmartList.getRecords()) {
+				skuDefinition = listAppend(skuDefinition, " #item['optionGroupName']#: #item['optionName']#", ",");
+			}
+			
+			return skuDefinition;
+		</cfscript>
+	</cffunction>
+	
 	<cffunction name="getTransactionExistsFlag" returntype="boolean" output="false">
 		<cfargument name="productID" />
 		<cfargument name="skuID" />
