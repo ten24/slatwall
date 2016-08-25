@@ -80,9 +80,21 @@ Notes:
 		
 		// Quantity Not Delivered on Order 
 		public array function getQNDOO(required string productID, string productRemoteID) {
-			var params = [ arguments.productID ];
+			var params = { productID = arguments.productID };
 			
-			var hql = "SELECT NEW MAP(coalesce( sum(orderItem.quantity), 0 ) - coalesce( sum(orderDeliveryItem.quantity), 0 ) as QNDOO, 
+			var hql = "SELECT NEW MAP(
+								coalesce( 
+								(	
+									SELECT sum(orderItem.quantity)
+									FROM SlatwallOrderItem orderItem
+									WHERE
+										orderItem.order.orderStatusType.systemCode NOT IN ('ostNotPlaced','ostClosed','ostCanceled')
+						  			AND
+						  				orderItem.orderItemType.systemCode = 'oitSale'
+						  			AND 
+										orderItem.sku.product.productID = :productID
+								), 0 ) 
+								- coalesce( sum(orderDeliveryItem.quantity), 0 ) as QNDOO, 
 							orderItem.sku.skuID as skuID, 
 							stock.stockID as stockID, 
 							location.locationID as locationID, 
@@ -100,7 +112,7 @@ Notes:
 						  AND
 						  	orderItem.orderItemType.systemCode = 'oitSale'
 						  AND 
-							orderItem.sku.product.productID = ?
+							orderItem.sku.product.productID = :productID
 						GROUP BY
 							orderItem.sku.skuID,
 							stock.stockID,
@@ -161,8 +173,20 @@ Notes:
 		// Quantity not received on return order
 		public array function getQNRORO(required string productID, string productRemoteID) {
 			
-			var params = [ arguments.productID ];
-			var hql = "SELECT NEW MAP(coalesce( sum(orderItem.quantity), 0 ) - coalesce( sum(stockReceiverItem.quantity), 0 ) as QNRORO, 
+			var params = { productID=arguments.productID };
+			var hql = "SELECT NEW MAP(
+								coalesce( 
+								(
+									SELECT sum(orderItem.quantity)
+									FROM SlatwallOrderItem orderItem
+									WHERE
+										orderItem.order.orderStatusType.systemCode NOT IN ('ostNotPlaced','ostClosed','ostCanceled')
+					 				 AND
+					  					orderItem.orderItemType.systemCode = 'oitReturn'
+					  				 AND
+										orderItem.sku.product.productID = :productID
+								), 0 ) 
+								- coalesce( sum(stockReceiverItem.quantity), 0 ) as QNRORO, 
 							orderItem.sku.skuID as skuID, 
 							stock.stockID as stockID, 
 							location.locationID as locationID, 
@@ -180,7 +204,7 @@ Notes:
 						  AND
 						  	orderItem.orderItemType.systemCode = 'oitReturn'
 						  AND
-							orderItem.sku.product.productID = ?
+							orderItem.sku.product.productID = :productID
 						GROUP BY
 							orderItem.sku.skuID,
 							stock.stockID,
