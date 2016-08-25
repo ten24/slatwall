@@ -541,7 +541,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		}
 		return createPErsistedTestEntity('Sku', skuData);
 	}
-	public void function returnVoid() {
+	private  void function returnVoid() {
 		
 	}
 	
