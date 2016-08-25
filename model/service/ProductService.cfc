@@ -90,7 +90,7 @@ component extends="HibachiService" accessors="true" {
 	}
 
 	// @help Generates an event sku stub. Used to replace repetitive code.
-	private void function createEventSkuOrSkus(required processObject, required startDateTime, required endDateTime, any productSchedule) {
+	private any function createEventSkuOrSkus(required processObject, required startDateTime, required endDateTime, any productSchedule) {
 
 		// Bundled location configuration
 		if(arguments.processObject.getBundleLocationConfigurationFlag()) {
@@ -156,7 +156,9 @@ component extends="HibachiService" accessors="true" {
 			}
 
 			newSku.generateAndSetAttendanceCode();
-
+			
+			this.saveSku(newSku);
+			
 		// Single location configuration
 		} else {
 
@@ -206,41 +208,55 @@ component extends="HibachiService" accessors="true" {
 				}
 
 				newSku.generateAndSetAttendanceCode();
-
+				
+				this.saveSku(newSku);
+				
+				if( newSku.hasErrors() ){
+					break;
+				}
 			}
 		}
-
+		
+		return newSku;
 	}
 
 	// @help Utilized by scheduled sku creation processes to create daily skus
-	private void function createDailyScheduledSkus(required product, required processObject, required productSchedule) {
+	private any function createDailyScheduledSkus(required product, required processObject, required productSchedule) {
 
 		// Set initial values for first iteration
-		newSkuStartDateTime = arguments.processObject.getEventStartDateTime();
-		newSkuEndDateTime = arguments.processObject.getEventEndDateTime();
+		var newSkuStartDateTime = arguments.processObject.getEventStartDateTime();
+		var newSkuEndDateTime = arguments.processObject.getEventEndDateTime();
+		var latestSKu = '';
 
 		// Create sku for every day from start date to end date
 		do {
 
-			createEventSkuOrSkus( arguments.processObject, newSkuStartDateTime, newSkuEndDateTime, arguments.productSchedule);
+			latestSku = createEventSkuOrSkus( arguments.processObject, newSkuStartDateTime, newSkuEndDateTime, arguments.productSchedule);
 
 			// Increment Start/End date time based on recurring time unit
 			newSkuStartDateTime = dateAdd("d", 1, newSkuStartDateTime);
 			newSkuEndDateTime = dateAdd("d", 1, newSkuEndDateTime);
 
-		} while ( newSkuStartDateTime < arguments.productSchedule.getScheduleEndDate() );
+		} while ( !latestSku.hasErrors() && newSkuStartDateTime < arguments.productSchedule.getScheduleEndDate() );
+	
+		if (latestSku.hasErrors()) {
+			arguments.product.addErrors(latestSku.getErrors());
+		}
+			
+		return arguments.product;
 	}
 
 	// @help Utilized by scheduled sku creation processes to create weekly skus
-	private void function createWeeklyScheduledSkus(required product, required processObject, required productSchedule) {
+	private any function createWeeklyScheduledSkus(required product, required processObject, required productSchedule) {
 
 		// Make sure days are in order
 		arguments.processObject.setWeeklyRepeatDays(listSort(arguments.processObject.getWeeklyRepeatDays(),"numeric" ));
 		arguments.productSchedule.setWeeklyRepeatDays( arguments.processObject.getWeeklyRepeatDays() );
 
 		// Set initial values for first iteration
-		newSkuStartDateTime = arguments.processObject.getEventStartDateTime();
-		newSkuEndDateTime = arguments.processObject.getEventEndDateTime();
+		var newSkuStartDateTime = arguments.processObject.getEventStartDateTime();
+		var newSkuEndDateTime = arguments.processObject.getEventEndDateTime();
+		var latestSku = '';
 
 		var scheduleStartDay = dayOfWeek(arguments.processObject.getEventStartDateTime());
 		var actualScheduleStartDay = scheduleStartDay;
@@ -277,7 +293,7 @@ component extends="HibachiService" accessors="true" {
 
 		do {
 
-			createEventSkuOrSkus( arguments.processObject, newSkuStartDateTime, newSkuEndDateTime, arguments.productSchedule );
+			latestSku = createEventSkuOrSkus( arguments.processObject, newSkuStartDateTime, newSkuEndDateTime, arguments.productSchedule );
 
 			// Increment Start/End date time based on recurring time unit
 			newSkuStartDateTime = nextScheduleDate(arguments.processObject.getWeeklyRepeatDays(),newSkuStartDateTime,cursorPosition);
@@ -289,19 +305,25 @@ component extends="HibachiService" accessors="true" {
 				cursorPosition++;
 			}
 
-		} while ( newSkuStartDateTime < arguments.productSchedule.getScheduleEndDate() );
-
+		} while ( !latestSku.hasErrors() && newSkuStartDateTime < arguments.productSchedule.getScheduleEndDate() );
+		
+		if (latestSku.hasErrors()) {
+			arguments.product.addErrors(latestSku.getErrors());
+		}
+			
+		return arguments.product;
 	}
 
 	// @help Utilized by scheduled sku creation processes to create monthly skus
-	private void function createMonthlyScheduledSkus(required product, required processObject, required productSchedule) {
+	private any function createMonthlyScheduledSkus(required product, required processObject, required productSchedule) {
 
 		arguments.productSchedule.setMonthlyRepeatByType( arguments.processObject.getMonthlyRepeatByType() );
 
 		// Set initial values for first iteration
-		newSkuStartDateTime = arguments.processObject.getEventStartDateTime();
-		newSkuEndDateTime = arguments.processObject.getEventEndDateTime();
-
+		var newSkuStartDateTime = arguments.processObject.getEventStartDateTime();
+		var newSkuEndDateTime = arguments.processObject.getEventEndDateTime();
+		var latestSku = '';
+		
 		var nextMonth = month(arguments.processObject.getEventStartDateTime());
 		var nextYear = year(arguments.processObject.getEventStartDateTime());
 		var monthDay = 0;
@@ -319,7 +341,7 @@ component extends="HibachiService" accessors="true" {
 
 		do {
 
-			createEventSkuOrSkus( arguments.processObject, newSkuStartDateTime, newSkuEndDateTime, arguments.productSchedule );
+			latestSku = createEventSkuOrSkus( arguments.processObject, newSkuStartDateTime, newSkuEndDateTime, arguments.productSchedule );
 
 			// Increment Start/End date time based on monthly repeatBy value
 			if(arguments.processObject.getMonthlyRepeatByType() == "dayOfWeek") {
@@ -343,13 +365,17 @@ component extends="HibachiService" accessors="true" {
 				newSkuEndDateTime = dateAdd("m",1,newSkuEndDateTime);
 			}
 
-		} while ( newSkuStartDateTime < productSchedule.getscheduleEndDate() );
+		} while ( !latestSku.hasErrors() && newSkuStartDateTime < productSchedule.getscheduleEndDate() );
 
-
+		if (latestSku.hasErrors()) {
+			arguments.product.addErrors(latestSku.getErrors());
+		}
+			
+		return arguments.product;
 	}
 
 	// @help Utilized by scheduled sku creation processes to create yearly skus
-	private void function createYearlyScheduledSkus(required product, required processObject, required productSchedule) {
+	private any function createYearlyScheduledSkus(required product, required processObject, required productSchedule) {
 
 		// Set initial values for first iteration
 		var newSkuStartDateTime = arguments.processObject.getEventStartDateTime();
@@ -359,13 +385,18 @@ component extends="HibachiService" accessors="true" {
 
 		do {
 
-			createEventSkuOrSkus( arguments.processObject, newSkuStartDateTime, newSkuEndDateTime, arguments.productSchedule );
+			latestSku = createEventSkuOrSkus( arguments.processObject, newSkuStartDateTime, newSkuEndDateTime, arguments.productSchedule );
 
 			newSkuStartDateTime = dateAdd("yyyy",1,newSkuStartDateTime);
 			newSkuEndDateTime = dateAdd("yyyy",1,newSkuEndDateTime);
 
-		} while ( newSkuStartDateTime < productSchedule.getscheduleEndDate() );
-
+		} while ( !latestSku.hasErrors() && newSkuStartDateTime < productSchedule.getscheduleEndDate() );
+		
+		if (latestSku.hasErrors()) {
+			arguments.product.addErrors(latestSku.getErrors());
+		}
+			
+ 		return arguments.product;
 	}
 
 	// Create new incremented datetime based on recurring type (daily, weekly, monthly, etc.)
@@ -492,43 +523,46 @@ component extends="HibachiService" accessors="true" {
 
 			// DAILY
 			if( arguments.processObject.getRecurringTimeUnit() == "Daily" ) {
-				createDailyScheduledSkus(arguments.product, arguments.processObject, newProductSchedule);
+				arguments.product = createDailyScheduledSkus(arguments.product, arguments.processObject, newProductSchedule);
 
 			// WEEKLY
 			} else if( arguments.processObject.getRecurringTimeUnit() == "Weekly" ) {
-				createWeeklyScheduledSkus(arguments.product, arguments.processObject, newProductSchedule);
+				arguments.product = createWeeklyScheduledSkus(arguments.product, arguments.processObject, newProductSchedule);
 
 			// MONTHLY
 			} else if( arguments.processObject.getRecurringTimeUnit() == "Monthly" ) {
-				createMonthlyScheduledSkus(arguments.product, arguments.processObject, newProductSchedule);
+				arguments.product = createMonthlyScheduledSkus(arguments.product, arguments.processObject, newProductSchedule);
 
 			// YEARLY
 			} else if( arguments.processObject.getrecurringTimeUnit() == "Yearly" ) {
-				createYearlyScheduledSkus(arguments.product, arguments.processObject, newProductSchedule);
+				arguments.product = createYearlyScheduledSkus(arguments.product, arguments.processObject, newProductSchedule);
 			}
+			
+			if (!arguments.product.hasErrors()){
 
-			// Persist new product schedule
-			newProductSchedule = getProductScheduleService().saveProductSchedule( newProductSchedule );
-
-			// Create a sku bundle for all the skus in the schedule based on response to createBundleFlag
-			if( arguments.processObject.getCreateBundleFlag() ) {
-				var skus = "";
-
-				for(var sku in product.getSkus()) {
-					if(!sku.getBundleFlag() && !listFindNoCase(existingSkuIDList,sku.getSkuID())){
-						skus = listAppend(skus, sku.getSkuID());
+				// Persist new product schedule
+				newProductSchedule = getProductScheduleService().saveProductSchedule( newProductSchedule );
+	
+				// Create a sku bundle for all the skus in the schedule based on response to createBundleFlag
+				if( arguments.processObject.getCreateBundleFlag() ) {
+					var skus = "";
+	
+					for(var sku in product.getSkus()) {
+						if(!sku.getBundleFlag() && !listFindNoCase(existingSkuIDList,sku.getSkuID())){
+							skus = listAppend(skus, sku.getSkuID());
+						}
 					}
+	
+					// Set up new bundle data
+					var newBundleData = {
+						skuCode = "#product.getProductCode()#-#product.getNextSkuCodeCount()#",
+						price = 0,
+						skus = skus
+					};
+	
+					// Bundle newly created skus
+					product = this.processProduct( product, newBundleData, 'addSkuBundle' );
 				}
-
-				// Set up new bundle data
-				var newBundleData = {
-					skuCode = "#product.getProductCode()#-#product.getNextSkuCodeCount()#",
-					price = 0,
-					skus = skus
-				};
-
-				// Bundle newly created skus
-				product = this.processProduct( product, newBundleData, 'addSkuBundle' );
 			}
 		}
 
