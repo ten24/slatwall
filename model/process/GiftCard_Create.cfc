@@ -71,7 +71,6 @@ component output="false" accessors="true" extends="HibachiProcess"{
 		}
 	}
 
-
 	public string function getGiftCardPin(){
 		if(isNull(variables.giftCardPin)){
 			return RandRange(100, 999);
