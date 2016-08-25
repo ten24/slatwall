@@ -45,18 +45,23 @@ component output="false" accessors="true" extends="HibachiProcess"{
 
 	 // Injected Entity
 	 property name="giftCard";
-	 property name="orderPayment" cfc="OrderPayment" fieldtype="many-to-one";
-	 property name="orderItems" cfc="OrderItem" fieldtype="one-to-many" singularname="orderItem";
-	 property name="originalOrderItem" cfc="OrderItem" fieldtype="many-to-one";
 
-	 property name="creditAmount";
+	 property name="transactionType" hb_formFieldType="select"; 
+	 property name="transactionTypeOptions";
+     property name="amount";
+     property name="giftCardBalanceAmount"; 
 
-	 public any function getCreditAmount(){
-	 	if(isNull(variables.creditAmount)){
-	 		return variables.giftCard.getOriginalOrderItem().getSku().getRedemptionAmount();
-	 	} else {
-	 		return variables.creditAmount;
-	 	}
+	 public any function getTransactionTypeOptions(){
+        if(!structKeyExists(variables, "transactionTypeOptions")){
+            variables.transactionTypeOptions = []; 
+            arrayAppend(variables.transactionTypeOptions, {name=getHibachiScope().rbKey('define.credit'), value="credit"}); 
+            arrayAppend(variables.transactionTypeOptions, {name=getHibachiScope().rbKey('define.charge'), value="debit"}); 
+        }
+        return variables.transactionTypeOptions; 
 	 }
-}
 
+	 public any function getGiftCardBalanceAmount(){
+        return this.getGiftCard().getBalanceAmount(); 
+	 } 
+
+}
