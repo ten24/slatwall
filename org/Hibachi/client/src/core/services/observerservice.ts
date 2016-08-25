@@ -59,8 +59,7 @@ class ObserverService extends BaseService{
      * @description removes all events for a specific id from the observers object
      */
     detachById = (id:string):void => {
-        for(var event in this.observers)
-        {
+        for(var event in this.observers) {
             this.detachByEventAndId(event, id);
         }
     };
