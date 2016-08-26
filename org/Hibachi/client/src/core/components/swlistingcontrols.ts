@@ -24,9 +24,6 @@ class SWListingControlsController {
         public collectionService,
         public observerService
     ) {
-        console.log(
-            "listing controls collection config", this.collectionConfig
-        );
         if(angular.isUndefined(this.showToggleFilters)){
             this.showToggleFilters = true; 
         }
