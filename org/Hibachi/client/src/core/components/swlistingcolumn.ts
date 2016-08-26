@@ -119,7 +119,7 @@ class SWListingColumn implements ng.IDirective{
             column.aggregate.propertyIdentifier = scope.swListingColumn.propertyIdentifier;
         }
         
-        var listingDisplayScope = this.scopeService.locateParentScope(scope,"swListingDisplay");
+        var listingDisplayScope = this.scopeService.getRootParentScope(scope,"swListingDisplay");
 
         if(angular.isDefined(listingDisplayScope) 
             && angular.isDefined(listingDisplayScope.swListingDisplay)

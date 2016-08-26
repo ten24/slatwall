@@ -133,7 +133,7 @@ class SWListingSearch  implements ng.IDirective{
 
     public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any) =>{
         if(angular.isUndefined(scope.swListingSearch.collectionConfig) && this.scopeService.hasParentScope(scope, "swListingDisplay")){
-            var listingDisplayScope = this.scopeService.locateParentScope(scope, "swListingDisplay")["swListingDisplay"];
+            var listingDisplayScope = this.scopeService.getRootParentScope(scope, "swListingDisplay")["swListingDisplay"];
             if(listingDisplayScope.collectionConfig != null){
                 scope.swListingSearch.collectionConfig = listingDisplayScope.collectionConfig; 
             }

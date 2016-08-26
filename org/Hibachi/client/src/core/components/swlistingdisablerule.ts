@@ -59,7 +59,7 @@ class SWListingDisableRule implements ng.IDirective{
             filterComparisonValue:scope.swListingDisableRule.filterComparisonValue
         };
         
-        var listingDisplayScope = this.scopeService.locateParentScope(scope, "swListingDisplay");
+        var listingDisplayScope = this.scopeService.getRootParentScope(scope, "swListingDisplay");
         if(angular.isDefined(listingDisplayScope.swListingDisplay)){
             listingDisplayScope = listingDisplayScope.swListingDisplay;
         }else {
