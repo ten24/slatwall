@@ -15,11 +15,13 @@ import {ObserverService} from "./services/observerservice";
 import {OrderService} from "./services/orderservice";
 import {OrderPaymentService} from "./services/orderpaymentservice";
 import {FormService} from "./services/formservice";
+import {FilterService} from "./services/filterservice"; 
 import {ExpandableService} from "./services/expandableservice";
 import {MetaDataService} from "./services/metadataservice";
 import {RbKeyService} from "./services/rbkeyservice";
 import {ScopeService} from "./services/scopeservice";
 import {$Hibachi} from "./services/hibachiservice";
+import {HistoryService} from "./services/historyservice"; 
 import {ListingService} from "./services/listingservice"
 import {LocalStorageService} from "./services/localstorageservice";
 import {HibachiServiceDecorator} from "./services/hibachiservicedecorator";
@@ -155,6 +157,7 @@ var coremodule = angular.module('hibachi.core',[
 .service('selectionService',SelectionService)
 .service('observerService',ObserverService)
 .service('expandableService',ExpandableService)
+.service('filterService',FilterService)
 .service('formService',FormService)
 .service('metadataService',MetaDataService)
 .service('rbkeyService',RbKeyService)
@@ -163,6 +166,7 @@ var coremodule = angular.module('hibachi.core',[
 .decorator('$hibachi',HibachiServiceDecorator)
 .service('hibachiInterceptor', HibachiInterceptor.Factory())
 .service('hibachiScope',HibachiScope)
+.service('historyService',HistoryService)
 .service('listingService', ListingService)
 .service('localStorageService',LocalStorageService)
 .service('requestService',RequestService)
