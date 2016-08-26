@@ -6,7 +6,7 @@ class ScopeService {
 
     }
 
-    public locateParentScope = (scope, targetScopeName) =>{ 
+    public getRootParentScope = (scope, targetName) =>{ 
         var currentScope = scope; 
         while(currentScope != null && angular.isUndefined(currentScope[targetScopeName])){
             if(angular.isDefined(currentScope.$parent)){
