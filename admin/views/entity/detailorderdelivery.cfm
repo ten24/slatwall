@@ -55,7 +55,7 @@ Notes:
 
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.orderDelivery#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.orderDelivery#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
+		<hb:HibachiEntityActionBar type="detail" object="#rc.orderDelivery#" edit="#rc.edit#" backAction="admin:entity.detailorder" backQueryString="orderID=#rc.orderDelivery.getOrder().getOrderID()#"></hb:HibachiEntityActionBar>
 
 		<hb:HibachiEntityDetailGroup object="#rc.orderDelivery#">
 			<hb:HibachiEntityDetailItem view="admin:entity/orderdeliverytabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
