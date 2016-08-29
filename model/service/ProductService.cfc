@@ -1015,13 +1015,6 @@ component extends="HibachiService" accessors="true" {
 				data.urlTitle = getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.product.getProductName(), tableName="SwProduct");
 			}
 		}
-		if(!arguments.product.hasErrors()){
-			//if we just set an active product from active to inactive them make all skus inactive
-			if(!arguments.product.isNew() && previousActiveFlag == 1 && arguments.product.getActiveFlag() == 0){
-				getDao('productDao').setSkusAsInactiveByProduct(arguments.product);
-				arguments.product.setPublishedFlag(false);
-			}
-		}
 
 		arguments.product = super.save(arguments.product, arguments.data);
 		// Set default sku if no default sku was set
@@ -1034,6 +1027,13 @@ component extends="HibachiService" accessors="true" {
 		// Generate Image Files
 		if(!isNull(arguments.product.getDefaultSku()) && isNull(arguments.product.getDefaultSku().getImageFile())){
 			arguments.product.getDefaultSku().setImageFile( arguments.product.getDefaultSku().generateImageFileName() );
+		}
+		if(!arguments.product.hasErrors()){
+			//if we just set an active product from active to inactive them make all skus inactive
+			if(!arguments.product.isNew() && previousActiveFlag == 1 && arguments.product.getActiveFlag() == 0){
+				getDao('productDao').setSkusAsInactiveByProduct(arguments.product);
+				arguments.product.setPublishedFlag(false);
+			}
 		}
 		return arguments.product;
 	}
