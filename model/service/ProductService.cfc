@@ -659,11 +659,11 @@ component extends="HibachiService" accessors="true" {
     private void function setListPriceOnSkuByProductAndProcessObject(required any sku, required any product, required any processObject){
 		var listPrice = arguments.processObject.getListPrice(); 
 
-        if(!isNumeric(listPrice) || listPrice == 0){
+        if(!isNull(listPrice) && !isNumeric(listPrice) || listPrice == 0){
             listPrice = arguments.product.getListPrice(); 
         }
 
-		if(isNumeric(listPrice) && listPrice > 0) {
+		if(!isNull(listPrice) && isNumeric(listPrice) && listPrice > 0) {
 			arguments.sku.setListPrice(listPrice);
 		}
 	} 
