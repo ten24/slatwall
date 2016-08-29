@@ -1006,11 +1006,20 @@ component extends="HibachiService" accessors="true" {
 
 	public any function saveProduct(required any product, struct data={}){
 
+		var previousActiveFlag = arguments.product.getActiveFlag();
+
 		if( (isNull(arguments.product.getURLTitle()) || !len(arguments.product.getURLTitle())) && (!structKeyExists(arguments.data, "urlTitle") || !len(arguments.data.urlTitle)) ) {
 			if(structKeyExists(arguments.data, "productName") && len(arguments.data.productName)) {
 				data.urlTitle = getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.data.productName, tableName="SwProduct");
 			} else if (!isNull(arguments.product.getProductName()) && len(arguments.product.getProductName())) {
 				data.urlTitle = getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.product.getProductName(), tableName="SwProduct");
+			}
+		}
+		if(!arguments.product.hasErrors()){
+			//if we just set an active product from active to inactive them make all skus inactive
+			if(!arguments.product.isNew() && previousActiveFlag == 1 && arguments.product.getActiveFlag() == 0){
+				getDao('productDao').setSkusAsInactiveByProduct(arguments.product);
+				arguments.product.setPublishedFlag(false);
 			}
 		}
 

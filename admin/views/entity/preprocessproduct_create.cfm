@@ -171,6 +171,7 @@ Notes:
 						<swa:SlatwallErrorDisplay object="#rc.processObject#" errorName="contents" />
 						<hb:HibachiListingDisplay smartList="#contentSmartList#" multiselectFieldName="contents" edit="true">
 							<hb:HibachiListingColumn propertyIdentifier="title"  tdClass="primary" />
+							<hb:HibachiListingColumn propertyIdentifier="site.siteName"  />
 						</hb:HibachiListingDisplay>
 
 					</hb:HibachiPropertyList>
