@@ -85,6 +85,7 @@ Notes:
 					<hb:HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productCode" fieldName="product.productCode" edit="true" title="#$.slatwall.rbKey('entity.product.#rc.processObject.getBaseProductType()#.productCode')#">
 
 					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="true">
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="listPrice" edit="true">
 
 				</hb:HibachiPropertyList>
 
@@ -170,7 +171,6 @@ Notes:
 						<swa:SlatwallErrorDisplay object="#rc.processObject#" errorName="contents" />
 						<hb:HibachiListingDisplay smartList="#contentSmartList#" multiselectFieldName="contents" edit="true">
 							<hb:HibachiListingColumn propertyIdentifier="title"  tdClass="primary" />
-							<hb:HibachiListingColumn propertyIdentifier="site.siteName"  />
 						</hb:HibachiListingDisplay>
 
 					</hb:HibachiPropertyList>

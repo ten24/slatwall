@@ -422,8 +422,14 @@ component extends="HibachiService" accessors="true" {
 
 	// Process: Product
 	public any function processProduct_addOptionGroup(required any product, required any processObject) {
+		var skus = 	arguments.product.getSkus();
+		var options = getOptionService().getOptionGroup(arguments.processObject.getOptionGroup()).getOptions();
 
-		getOptionService().addOptionGroupByOptionGroupIDAndProductID(arguments.processObject.getOptionGroup(),arguments.product.getProductID());
+		if(arrayLen(options)){
+			for(i=1; i <= arrayLen(skus); i++){
+				skus[i].addOption(options[1]);
+			}
+		}
 
 		return arguments.product;
 	}
@@ -657,6 +663,18 @@ component extends="HibachiService" accessors="true" {
 		return arguments.product;
 	}
 
+    private void function setListPriceOnSkuByProductAndProcessObject(required any sku, required any product, required any processObject){
+		var listPrice = arguments.processObject.getListPrice(); 
+
+        if(!isNumeric(listPrice) || listPrice == 0){
+            listPrice = arguments.product.getListPrice(); 
+        }
+
+		if(isNumeric(listPrice) && listPrice > 0) {
+			arguments.sku.setListPrice(listPrice);
+		}
+	} 
+
 	public any function createSingleSku(required any product, required any processObject){
 
 		var thisSku = this.newSku();
@@ -665,9 +683,7 @@ component extends="HibachiService" accessors="true" {
 		thisSku.setPrice(arguments.processObject.getPrice());
 		thisSku.setImageFile(thisSku.generateImageFileName());
 
-		if(isNumeric(arguments.product.getlistPrice()) && arguments.product.getlistPrice() > 0) {
-			thisSku.setListPrice(arguments.product.getlistPrice());
-		}
+        setListPriceOnSkuByProductAndProcessObject(thisSku, arguments.product, arguments.processObject);
 
 		thisSku.setSkuCode(arguments.product.getProductCode() & "-1");
 		arguments.product.setDefaultSku( thisSku );
@@ -711,6 +727,7 @@ component extends="HibachiService" accessors="true" {
 				for(var c=1; c<=listLen(arguments.processObject.getContents()); c++) {
 					var newSku = this.newSku();
 					newSku.setPrice(arguments.processObject.getPrice());
+					newSku.setListPrice(arguments.processObject.getListPrice()); 
 					newSku.setSkuCode(arguments.product.getProductCode() & "-#c#");
 					newSku.setProduct(arguments.product);
 					newSku.setImageFile(newSku.generateImageFileName());
@@ -763,9 +780,7 @@ component extends="HibachiService" accessors="true" {
 					// Setup the New Sku
 					var newSku = this.newSku();
 					newSku.setPrice(arguments.processObject.getPrice());
-					if(isNumeric(arguments.product.getlistPrice()) && arguments.product.getlistPrice() > 0) {
-						newSku.setListPrice(arguments.product.getlistPrice());
-					}
+                    setListPriceOnSkuByProductAndProcessObject(newSku, arguments.product, arguments.processObject);
 					newSku.setSkuCode(product.getProductCode() & "-#arrayLen(product.getSkus()) + 1#");
 
 					// Add the Sku to the product, and if the product doesn't have a default, then also set as default
@@ -990,9 +1005,7 @@ component extends="HibachiService" accessors="true" {
 	// ====================== START: Save Overrides ===========================
 
 	public any function saveProduct(required any product, struct data={}){
-		
-		var previousActiveFlag = arguments.product.getActiveFlag();
-		
+
 		if( (isNull(arguments.product.getURLTitle()) || !len(arguments.product.getURLTitle())) && (!structKeyExists(arguments.data, "urlTitle") || !len(arguments.data.urlTitle)) ) {
 			if(structKeyExists(arguments.data, "productName") && len(arguments.data.productName)) {
 				data.urlTitle = getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.data.productName, tableName="SwProduct");
@@ -1013,14 +1026,6 @@ component extends="HibachiService" accessors="true" {
 		if(!isNull(arguments.product.getDefaultSku()) && isNull(arguments.product.getDefaultSku().getImageFile())){
 			arguments.product.getDefaultSku().setImageFile( arguments.product.getDefaultSku().generateImageFileName() );
 		}
-		if(!arguments.product.hasErrors()){
-			//if we just set an active product from active to inactive them make all skus inactive
-			if(!arguments.product.isNew() && previousActiveFlag == 1 && arguments.product.getActiveFlag() == 0){
-				getDao('productDao').setSkusAsInactiveByProduct(arguments.product);
-				arguments.product.setPublishedFlag(false);
-			}
-		}
-		
 		return arguments.product;
 	}
 
@@ -1043,8 +1048,7 @@ component extends="HibachiService" accessors="true" {
 
 		return arguments.productType;
 	}
-	
-	
+
 	// ======================  END: Save Overrides ============================
 
 	// ====================== START: Delete Overrides =========================
