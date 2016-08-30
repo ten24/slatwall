@@ -66,7 +66,8 @@ component entityname="SlatwallEventRegistration" table="SwEventRegistration" per
 	property name="eventRegistrationStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="eventRegistrationStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=eventRegistrationStatusType";
 
 	// Related Object Properties (one-to-many)
-
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="eventRegistrationID" inverse="true" cascade="all-delete-orphan";
+	
 	// Related Object Properties (many-to-many)
 
 	// Remote Properties
@@ -175,6 +176,14 @@ component entityname="SlatwallEventRegistration" table="SwEventRegistration" per
   		}
   		structDelete(variables, "account");
   	}
+  	
+  	// Attribute Values (one-to-many)
+ 	public void function addAttributeValue(required any attributeValue) {
+ 		arguments.attributeValue.setEventRegistration( this );
+ 	}
+ 	public void function removeAttributeValue(required any attributeValue) {
+ 		arguments.attributeValue.removeEventRegistration( this );
+ 	}
 
 
 	// =============  END:  Bidirectional Helper Methods ===================
