@@ -19,6 +19,7 @@
 	<cfparam name="attributes.modal" type="boolean" default="false" />
 	<cfparam name="attributes.modalFullWidth" type="boolean" default="false" />
 	<cfparam name="attributes.id" type="string" default="" />
+	<cfparam name="attributes.ignoreHTMLEditFormat" type="boolean" default="false"/>
 	
 	
 	
@@ -108,10 +109,10 @@
 	<cfif not attributes.hibachiScope.authenticateAction(action=attributes.action)>
 		<cfset attributes.class &= " disabled" />
 	</cfif>
-	
-	<cfset attributes.text = attributes.hibachiScope.hibachiHTMLEditFormat(attributes.text)/>
-	<cfset attribtues.title = attributes.hibachiScope.hibachiHTMLEditFormat(attributes.title)/>
-
+	<cfif !attributes.ignoreHTMLEditFormat>
+		<cfset attributes.text = attributes.hibachiScope.hibachiHTMLEditFormat(attributes.text)/>
+		<cfset attribtues.title = attributes.hibachiScope.hibachiHTMLEditFormat(attributes.title)/>
+	</cfif>
 
 	<cfif attributes.hibachiScope.authenticateAction(action=attributes.action) || (attributes.type eq "link" && attributes.iconOnly)>
 		<cfif attributes.type eq "link">
