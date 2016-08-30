@@ -1159,14 +1159,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		arguments.skuCurrency.removeSku( this );    
 	}
 
-	// Sku Currencies (one-to-many)
-	public void function addSkuCurrency(required any skuCurrency) {
-		arguments.skuCurrency.setSku( this );
-	}
-	public void function removeSkuCurrency(required any skuCurrency) {
-		arguments.skuCurrency.removeSku( this );
-	}
-
 	// Stocks (one-to-many)
 	public void function addStock(required any stock) {
 		arguments.stock.setSku( this );
