@@ -167,6 +167,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="redemptionAmountTypeOptions" persistent="false";
 	property name="giftCardExpirationTermOptions" persistent="false";
 	property name="formattedRedemptionAmount" persistent="false";
+	property name="allowWaitlistedRegistrations" persistent="false";
 	// Deprecated Properties
 
 
@@ -1066,6 +1067,15 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			variables.transactionExistsFlag = getService("skuService").getTransactionExistsFlag( skuID=this.getSkuID() );
 		}
 		return variables.transactionExistsFlag;
+	}
+	
+	public boolean function allowWaitlistedRegistrations() {
+ 		if (this.getAvailableSeatCount() <= 0 ){
+			if(this.getAllowEventWaitlistingFlag() == 0){
+				return false;
+			}
+		}
+		return true;
 	}
 
 

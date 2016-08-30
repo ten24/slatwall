@@ -1359,6 +1359,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						if(arguments.order.getPaymentAmountDue() > 0 && arguments.order.hasGiftCardOrderPaymentAmount()){
 							arguments.order.addMessage('paymentProcessedMessage', rbKey('entity.order.process.placeOrder.paymentProcessedMessage'));
 						}
+						
+						// Loop over the orderItems looking for any skus that are 'event' skus, and setting their registration value 
+						for(var orderitem in arguments.order.getOrderItems()) {
+							if(orderitem.getSku().getBaseProductType() == "event") {
+								if(!orderItem.getSku().getAvailableForPurchaseFlag() OR !orderItem.getSku().allowWaitlistedRegistrations() ){
+									arguments.order.addError('payment','Event: #orderItem.getSku().getProduct().getProductName()# is unavailable for registration. The registration period has closed.');
+								}
+							}
+						}
 
 						// After all of the processing, double check that the order does not have errors.  If one of the payments didn't go through, then an error would have been set on the order.
 						if((!arguments.order.hasErrors() || amountAuthorizeCreditReceive gt 0) && arguments.order.getOrderPaymentAmountNeeded() == 0) {
