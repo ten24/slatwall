@@ -576,6 +576,7 @@ component extends="HibachiService" accessors="true" {
 
 		// Setup the sku
 		newSku.setProduct( arguments.product );
+		newSku.setSkuName( arguments.processObject.getSkuName() );
 		newSku.setSkuCode( arguments.processObject.getSkuCode() );
 		newSku.setPrice( arguments.processObject.getPrice() );
 		newSku.setBundleFlag( true );
@@ -616,7 +617,8 @@ component extends="HibachiService" accessors="true" {
 				if(isNumeric(postEventRegistrationMinutes) && postEventRegistrationMinutes gt 0) {
 					endResDateTime = dateAdd("m", postEventRegistrationMinutes, endResDateTime);
 				}
-
+				
+				newSku.setSkuName( arguments.processObject.getSkuName() );
 				newSku.setStartReservationDateTime( startResDateTime );
 				newSku.setEndReservationDateTime( endResDateTime );
 				newSku.setEventStartDateTime( getSkuService().getSku( skuArray[1] ).getEventStartDateTime() );
