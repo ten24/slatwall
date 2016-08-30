@@ -2169,10 +2169,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function processOrderItem_updateEventRegistrationQuantity(required any orderItem,struct data={}) {
 
 		// We need LESS event registrations due to order adjustment before order has been placed
-		if( arrayLen(orderItem.getActiveEventRegistrations()) > orderItem.getQuantity() && arguments.orderItem.getOrder().getStatusCode() == "ostNotPlaced" ) {
+		if( orderItem.getActiveEventRegistrations().getRecordsCount() > orderItem.getQuantity() && arguments.orderItem.getOrder().getStatusCode() == "ostNotPlaced" ) {
 
 			var removableEvents = [];
-			var numberToRemove = arrayLen(orderItem.getEventRegistrations()) - orderItem.getQuantity();
+			var numberToRemove = orderItem.getActiveEventRegistrations().getRecordsCount() - orderItem.getQuantity();
 
 			// Create an array of registrations we can safely remove, i.e. not associated with an account
 			for(var eventRegistration in orderItem.getEventRegistrations()) {
@@ -2195,13 +2195,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// We need less event registration, but couldn't do it... add error
-		if(arrayLen(orderItem.getEventRegistrations()) > orderItem.getQuantity()) {
+		if(orderItem.getActiveEventRegistrations().getRecordsCount() > orderItem.getQuantity()) {
 			orderItem.addError('updateRegistrationQuantity', rbKey('validate.orderItem.quantity.tooManyEventRegistrations'));
 		}
 
 		// We need MORE event registrations due to order adjustment before order has been placed
-		if(arrayLen(orderItem.getEventRegistrations()) < orderItem.getQuantity()) {
-			for(var i=1; i <= orderItem.getQuantity() - arrayLen(orderItem.getEventRegistrations()); i++ ) {
+		if(orderItem.getActiveEventRegistrations().getRecordsCount() < orderItem.getQuantity()) {
+			for(var i=1; i <= orderItem.getQuantity() - orderItem.getActiveEventRegistrations().getRecordsCount(); i++ ) {
 				var eventRegistration = this.newEventRegistration();
 				eventRegistration.setOrderItem(orderitem);
 				eventRegistration.seteventRegistrationStatusType( getTypeService().getTypeBySystemCode("erstNotPlaced") );
