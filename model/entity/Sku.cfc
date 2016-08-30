@@ -94,7 +94,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="skuCurrencies" singularname="skuCurrency" cfc="SkuCurrency" type="array" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
 	property name="stocks" singularname="stock" fieldtype="one-to-many" fkcolumn="skuID" cfc="Stock" inverse="true" hb_cascadeCalculate="true" cascade="all-delete-orphan";
 	property name="bundledSkus" singularname="bundledSku" fieldtype="one-to-many" fkcolumn="skuID" cfc="SkuBundle" inverse="true" cascade="all-delete-orphan";
-	property name="eventRegistrations" singularname="eventRegistration" fieldtype="one-to-many" fkcolumn="skuID" cfc="EventRegistration" inverse="true" cascade="all-delete-orphan" lazy="extra";
+	property name="eventRegistrations" singularname="eventRegistration" fieldtype="one-to-many" fkcolumn="skuID" cfc="EventRegistration" inverse="true" cascade="all-delete-orphan";
 	property name="assignedSkuBundles" singularname="assignedSkuBundle" fieldtype="one-to-many" fkcolumn="bundledSkuID" cfc="SkuBundle" inverse="true" cascade="all-delete-orphan" lazy="extra"; // No Bi-Directional
 	property name="productBundleGroups" type="array" cfc="ProductBundleGroup" singularname="productBundleGroup"  fieldtype="one-to-many" fkcolumn="productBundleSkuID" cascade="all-delete-orphan" inverse="true";
 	property name="productReviews" singularname="productReview" cfc="ProductReview" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
@@ -1141,6 +1141,22 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	}
 	public void function removeAttributeValue(required any attributeValue) {
 		arguments.attributeValue.removeSku( this );
+	}
+	
+	// Event Registrations (one-to-many)    
+	public void function addEventRegistrations(required any eventRegistration) {    
+		arguments.eventRegistration.setSku( this );    
+	}    
+	public void function removeEventRegistration(required any eventRegistration) {    
+		arguments.eventRegistration.removeSku( this );    
+	}
+	
+	// Sku Currencies (one-to-many)    
+	public void function addSkuCurrency(required any skuCurrency) {    
+		arguments.skuCurrency.setSku( this );    
+	}    
+	public void function removeSkuCurrency(required any skuCurrency) {    
+		arguments.skuCurrency.removeSku( this );    
 	}
 
 	// Sku Currencies (one-to-many)
