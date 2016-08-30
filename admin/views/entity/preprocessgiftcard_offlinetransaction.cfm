@@ -50,22 +50,18 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.orderDelivery" type="any" />
+<cfparam name="rc.giftCard" type="any" />
+<cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
-
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.orderDelivery#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.orderDelivery#" edit="#rc.edit#" backAction="admin:entity.detailorder" backQueryString="orderID=#rc.orderDelivery.getOrder().getOrderID()#"></hb:HibachiEntityActionBar>
+	<hb:HibachiEntityProcessForm entity="#rc.giftCard#" edit="#rc.edit#" sRedirectAction="admin:entity.detailgiftcard">
 
-		<hb:HibachiEntityDetailGroup object="#rc.orderDelivery#">
-			<hb:HibachiEntityDetailItem view="admin:entity/orderdeliverytabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
-			<hb:HibachiEntityDetailItem view="admin:entity/orderdeliverytabs/orderdeliveryitems">
-			<!--- Custom Attributes --->
-			<cfloop array="#rc.orderDelivery.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<swa:SlatwallAdminTabCustomAttributes object="#rc.orderDelivery#" attributeSet="#attributeSet#" />
-			</cfloop>
-		</hb:HibachiEntityDetailGroup >
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.giftCard#" backAction="admin:entity.detailgiftcard" backQueryString="giftCardID=#rc.giftCard.getGiftCardID()#">
+		</hb:HibachiEntityActionBar>
 
+        <hb:HibachiPropertyDisplay object="#rc.processObject#" property="transactionType" valueOptions="#rc.processObject.getTransactionTypeOptions()#" edit="#rc.edit#"> 
+        <hb:HibachiPropertyDisplay object="#rc.processObject#" property="amount" edit="#rc.edit#">
 
-	</hb:HibachiEntityDetailForm>
+	</hb:HibachiEntityProcessForm>
 </cfoutput>
+

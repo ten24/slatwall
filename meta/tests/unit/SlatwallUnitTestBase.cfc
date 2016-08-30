@@ -312,5 +312,33 @@ component extends="mxunit.framework.TestCase" output="false" {
 	private string function generateRandomDecimal(minVal, maxVal) {
 		return 3.45;
 	}
+	
+	private any function createSimpleMockEntityByEntityName(required string entityName, boolean persisted = TRUE) {
+		var primaryIDPropertyName = request.slatwallScope.getService('hibachiservice').getPrimaryIDPropertyNameByEntityName(arguments.entityName);
+		if(arguments.entityName == 'State'){
+			//TODO: Combination Primary ID may throw errors. 
+		}
+		var data = {};
+		data[primaryIDPropertyName] = "";
+		
+		if(arguments.persisted) {
+			var resultEntity = createPersistedTestEntity(arguments.entityName, data);
+		} else {
+			var resultEntity = createTestEntity(arguments.entityName, data);
+		}
+		return resultEntity;
+	}
+	
+	private any function returnTypeBySystemCode(required any entityObject, required string propertyName, required string sysCode) {
+		var typeList = entityObject.getPropertyOptionsSmartList(arguments.propertyName).getRecords(refresh = true);
+		
+		for (var type in typeList) {
+			if (type.getSystemCode == arguments.sysCode) {
+				return type;
+			} else {
+				throw("The systemCode cannot be found in the type options");
+			}
+		}
+	}
 
 }

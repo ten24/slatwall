@@ -1,5 +1,4 @@
-<!---
-
+/*
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 
@@ -26,7 +25,6 @@
     custom code, regardless of the license terms of these independent
     modules, and to copy and distribute the resulting program under terms
     of your choice, provided that you follow these specific guidelines:
-
 	- You also meet the terms and conditions of the license of each
 	  independent module
 	- You must not alter the default display of the Slatwall name or logo from
@@ -34,7 +32,6 @@
 	- Your custom code must not alter or create any files inside Slatwall,
 	  except in the following directories:
 		/integrationServices/
-
 	You may copy and distribute the modified version of this program that meets
 	the above guidelines as a combined work under the terms of GPL for this program,
 	provided that you include the source code of that other code when and as the
@@ -42,30 +39,29 @@
 
     If you modify this program, you may extend this exception to your version
     of the program, but you are not obligated to do so.
-
 Notes:
+*/
+component output="false" accessors="true" extends="HibachiProcess"{
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+	 // Injected Entity
+	 property name="giftCard";
 
+	 property name="transactionType" hb_formFieldType="select"; 
+	 property name="transactionTypeOptions";
+     property name="amount";
+     property name="giftCardBalanceAmount"; 
 
-<cfparam name="rc.orderDelivery" type="any" />
-<cfparam name="rc.edit" type="boolean" />
+	 public any function getTransactionTypeOptions(){
+        if(!structKeyExists(variables, "transactionTypeOptions")){
+            variables.transactionTypeOptions = []; 
+            arrayAppend(variables.transactionTypeOptions, {name=getHibachiScope().rbKey('define.credit'), value="credit"}); 
+            arrayAppend(variables.transactionTypeOptions, {name=getHibachiScope().rbKey('define.charge'), value="debit"}); 
+        }
+        return variables.transactionTypeOptions; 
+	 }
 
-<cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.orderDelivery#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.orderDelivery#" edit="#rc.edit#" backAction="admin:entity.detailorder" backQueryString="orderID=#rc.orderDelivery.getOrder().getOrderID()#"></hb:HibachiEntityActionBar>
+	 public any function getGiftCardBalanceAmount(){
+        return this.getGiftCard().getBalanceAmount(); 
+	 } 
 
-		<hb:HibachiEntityDetailGroup object="#rc.orderDelivery#">
-			<hb:HibachiEntityDetailItem view="admin:entity/orderdeliverytabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
-			<hb:HibachiEntityDetailItem view="admin:entity/orderdeliverytabs/orderdeliveryitems">
-			<!--- Custom Attributes --->
-			<cfloop array="#rc.orderDelivery.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<swa:SlatwallAdminTabCustomAttributes object="#rc.orderDelivery#" attributeSet="#attributeSet#" />
-			</cfloop>
-		</hb:HibachiEntityDetailGroup >
-
-
-	</hb:HibachiEntityDetailForm>
-</cfoutput>
+}
