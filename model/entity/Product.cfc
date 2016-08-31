@@ -217,6 +217,13 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return count;
 	}
 
+	public any function getSkusSmartList(){
+		if(!structKeyExists(variables, "skusSmartList")){
+			variables.skusSmartList = this.getPropertySmartList('skus');
+			variables.skusSmartList.addOrder('skuCode|ASC');
+		}
+		return variables.skusSmartList;
+	}
 
     public any function getSubscriptionSkuSmartList(){
     	if(!structKeyExists(variables, "subscriptionSkuSmartList")){
