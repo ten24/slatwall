@@ -196,10 +196,47 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 
 	public void function getProductBundlePrice_package_quantity() { 
+		var productData = {
+			productName="productBundleName",
+			productCode="#createUUID()#",
+			productid="",
+			activeflag=1,
+			price=1,
+			currencycode="USD",
+			skus=[
+				{
+					currencycode="USD",
+					skuid="",
+					price=0,
+					activeflag=1,
+					skuCode = '#createUUID()#',
+					productBundleGroups=[
+						{
+							productBundleGroupid:"",
+							amount=0,
+							amountType="skuPrice"
+						},
+						{
+							productBundleGroupid:"",
+							amount=0,
+							amountType="skuPrice"
+						}
+					]
+				}
+			],
+			//product Bundle type from SlatwallProductType.xml
+			productType:{
+				productTypeid:"ad9bb5c8f60546e0adb428b7be17673e"
+			}
+		}; 
+
+		var orderItem = createPersistedTestEntity('product', productData); 
+
 		var	orderItemData = {
 			orderItemID='', 
 			price=0, 
 			skuPrice=0, 
+			sku=product.getSkus()[1],
 			quantity=2,
 			childOrderItems=[
 				{
