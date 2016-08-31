@@ -257,6 +257,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			]
 		} 
 		var orderItem = createPersistedTestEntity('orderItem', orderItemData); 
+		orderItem.getChildOrderItems()[1].setProductBundleGroup(product.getSkus()[1].getProductBundleGroups()[1]);
+		orderItem.getChildOrderItems()[2].setProductBundleGroup(product.getSkus()[1].getProductBundleGroups()[1]);
+		orderItem.getChildOrderItems()[3].setProductBundleGroup(product.getSkus()[1].getProductBundleGroups()[1]);
+		
 		assertEquals(190, orderItem.getExtendedPrice()); 
 		orderItem.setQuantity(1); 
 		assertEquals(95, orderItem.getExtendedPrice()); 
