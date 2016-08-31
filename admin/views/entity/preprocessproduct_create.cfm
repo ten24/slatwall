@@ -85,6 +85,7 @@ Notes:
 					<hb:HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productCode" fieldName="product.productCode" edit="true" title="#$.slatwall.rbKey('entity.product.#rc.processObject.getBaseProductType()#.productCode')#">
 
 					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="true">
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="listPrice" edit="true">
 
 				</hb:HibachiPropertyList>
 
