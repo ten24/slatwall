@@ -416,6 +416,18 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		return taxLiabilityAmount;
 	}
 
+	public numeric function getQuantity() {
+		if(this.isRootOrderItem()){
+			return variables.quantity; 
+		}
+		if(!isNull(this.getPackageQuantity())){
+			var packageQuantity = this.getPackageQuantity(); 	
+		} else {
+			var packageQuantity = variables.quantity; 
+		}	
+		return precisionEvaluate(getParentOrderItem().getQuantity() * packageQuantity); 
+	}
+
 	public numeric function getQuantityDelivered() {
 		var quantityDelivered = 0;
 
