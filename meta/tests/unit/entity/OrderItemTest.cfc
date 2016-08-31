@@ -2,45 +2,45 @@
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
-	
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-	
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-	
+
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
+
     Linking this program statically or dynamically with other modules is
     making a combined work based on this program.  Thus, the terms and
     conditions of the GNU General Public License cover the whole
     combination.
-	
-    As a special exception, the copyright holders of this program give you
-    permission to combine this program with independent modules and your 
-    custom code, regardless of the license terms of these independent
-    modules, and to copy and distribute the resulting program under terms 
-    of your choice, provided that you follow these specific guidelines: 
 
-	- You also meet the terms and conditions of the license of each 
-	  independent module 
-	- You must not alter the default display of the Slatwall name or logo from  
-	  any part of the application 
-	- Your custom code must not alter or create any files inside Slatwall, 
+    As a special exception, the copyright holders of this program give you
+    permission to combine this program with independent modules and your
+    custom code, regardless of the license terms of these independent
+    modules, and to copy and distribute the resulting program under terms
+    of your choice, provided that you follow these specific guidelines:
+
+	- You also meet the terms and conditions of the license of each
+	  independent module
+	- You must not alter the default display of the Slatwall name or logo from
+	  any part of the application
+	- Your custom code must not alter or create any files inside Slatwall,
 	  except in the following directories:
 		/integrationServices/
 
-	You may copy and distribute the modified version of this program that meets 
-	the above guidelines as a combined work under the terms of GPL for this program, 
-	provided that you include the source code of that other code when and as the 
+	You may copy and distribute the modified version of this program that meets
+	the above guidelines as a combined work under the terms of GPL for this program,
+	provided that you include the source code of that other code when and as the
 	GNU GPL requires distribution of source code.
-    
-    If you modify this program, you may extend this exception to your version 
+
+    If you modify this program, you may extend this exception to your version
     of the program, but you are not obligated to do so.
 
 Notes:
@@ -51,10 +51,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	// @hint put things in here that you want to run befor EACH test
 	public void function setUp() {
 		super.setup();
-		
+
 		variables.entity = request.slatwallScope.newEntity( 'OrderItem' );
 	}
-	
+
 	public void function getProductBundlePrice_fixed_none(){
 		var productData = {
 			productName="productBundleName",
@@ -90,9 +90,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}
 		};
 		var product = createPersistedTestEntity('product',productData);
-		
+
 		////addToDebug(product.getSkus()[1].getProductBundleGroups()[1].getAmount());
-		
+
 		var orderItemData = {
 			orderitemid='',
 			skuPrice=5,
@@ -103,7 +103,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					orderItemid='',
 					skuPrice=4.25,
 					quantity=1
-					
+
 				},
 				{
 					orderItemid='',
@@ -117,7 +117,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		orderItem.getChildOrderItems()[2].setProductBundleGroup(product.getSkus()[1].getProductBundleGroups()[2]);
 		assertEquals(orderItem.getProductBundlePrice(),9.25);
 	}
-	
+
 	public void function getProductBundlePrice_increase_decrease_skuPrice(){
 		var productData = {
 			productName="productBundleName",
@@ -158,9 +158,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}
 		};
 		var product = createPersistedTestEntity('product',productData);
-		
+
 		////addToDebug(product.getSkus()[1].getProductBundleGroups()[1].getAmount());
-		
+
 		var orderItemData = {
 			orderitemid='',
 			price=5,
@@ -192,10 +192,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//5 + 110 + 150 + 30
 		assertEquals(orderItem.getProductBundlePrice(),295);
 		//addToDebug(orderItem.getProductBundlePrice());
-		
+
 	}
 
-	public void function getProductBundlePrice_package_quantity() { 
+	public void function getProductBundlePrice_package_quantity() {
 		var productData = {
 			productName="productBundleName",
 			productCode="#createUUID()#",
@@ -213,12 +213,17 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					productBundleGroups=[
 						{
 							productBundleGroupid:"",
-							amount=0,
+							amount=5,
 							amountType="skuPrice"
 						},
 						{
 							productBundleGroupid:"",
-							amount=0,
+							amount=10,
+							amountType="skuPrice"
+						},
+						{
+							productBundleGroupid:"",
+							amount=15,
 							amountType="skuPrice"
 						}
 					]
@@ -228,14 +233,14 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			productType:{
 				productTypeid:"ad9bb5c8f60546e0adb428b7be17673e"
 			}
-		}; 
+		};
 
-		var product = createPersistedTestEntity('product', productData); 
+		var product = createPersistedTestEntity('product', productData);
 
 		var	orderItemData = {
-			orderItemID='', 
-			price=0, 
-			skuPrice=0, 
+			orderItemID='',
+			price=0,
+			skuPrice=0,
 			sku=product.getSkus()[1],
 			quantity=2,
 			childOrderItems=[
@@ -243,8 +248,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					orderItemID='',
 					packageQuantity=3,
 					skuPrice=5
-				}, 
-				{ 
+				},
+				{
 					orderItemID='',
 					packageQuantity=2,
 					skuPrice=10
@@ -255,64 +260,64 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					skuPrice=15
 				}
 			]
-		} 
-		var orderItem = createPersistedTestEntity('orderItem', orderItemData); 
+		}
+		var orderItem = createPersistedTestEntity('orderItem', orderItemData);
 		orderItem.getChildOrderItems()[1].setProductBundleGroup(product.getSkus()[1].getProductBundleGroups()[1]);
-		orderItem.getChildOrderItems()[2].setProductBundleGroup(product.getSkus()[1].getProductBundleGroups()[1]);
-		orderItem.getChildOrderItems()[3].setProductBundleGroup(product.getSkus()[1].getProductBundleGroups()[1]);
-		
-		assertEquals(190, orderItem.getExtendedPrice()); 
-		orderItem.setQuantity(1); 
-		assertEquals(95, orderItem.getExtendedPrice()); 
-		orderItem.setQuantity(4); 
-		assertEquals(380, orderItem.getExtendedPrice()); 
-	
-		//test ignore child order item quantity
-		orderItem.getChildOrderItems()[1].setQuantity(5); 
-		orderItem.getChildOrderItems()[2].setQuantity(4); 
-		orderItem.getChildOrderItems()[3].setQuantity(3); 
+		orderItem.getChildOrderItems()[2].setProductBundleGroup(product.getSkus()[1].getProductBundleGroups()[2]);
+		orderItem.getChildOrderItems()[3].setProductBundleGroup(product.getSkus()[1].getProductBundleGroups()[3]);
 
-		orderItem.setQuantity(2); 
-		assertEquals(190, orderItem.getExtendedPrice()); 
-		orderItem.setQuantity(1); 
-		assertEquals(95, orderItem.getExtendedPrice()); 
-		orderItem.setQuantity(4); 
-		assertEquals(380, orderItem.getExtendedPrice()); 
+		assertEquals(190, orderItem.getExtendedPrice());
+		orderItem.setQuantity(1);
+		assertEquals(95, orderItem.getExtendedPrice());
+		orderItem.setQuantity(4);
+		assertEquals(380, orderItem.getExtendedPrice());
+
+		//test ignore child order item quantity
+		orderItem.getChildOrderItems()[1].setQuantity(5);
+		orderItem.getChildOrderItems()[2].setQuantity(4);
+		orderItem.getChildOrderItems()[3].setQuantity(3);
+
+		orderItem.setQuantity(2);
+		assertEquals(190, orderItem.getExtendedPrice());
+		orderItem.setQuantity(1);
+		assertEquals(95, orderItem.getExtendedPrice());
+		orderItem.setQuantity(4);
+		assertEquals(380, orderItem.getExtendedPrice());
 	}
-	
+
 	public void function validate_as_save_for_a_new_instance_doesnt_pass() {
-	
+
 	}
-	
-	
+
+
 	public void function getSimpleRepresentation_exists_and_is_simple() {
-	
+
 	}
-	
-	public void function test_set_and_remove_gift_card() { 
-		
-		var orderItemData = { 
-			orderItemID='', 
+
+	public void function test_set_and_remove_gift_card() {
+
+		var orderItemData = {
+			orderItemID='',
 			price='5'
 		};
 		var orderItem = createPersistedTestEntity('orderItem',orderItemData);
-		
-		var giftCardData = { 
-			giftCardID='', 
+
+		var giftCardData = {
+			giftCardID='',
 			giftCardPin='1111'
-		}; 
+		};
 		var giftCard = createPersistedTestEntity('giftCard', giftCardData);
-		
-		orderItem.addGiftCard(giftCard); 
-		
-		assertTrue(orderItem.hasGiftCard(giftCard)); 
-		 
-		orderItem.removeGiftCard(giftCard); 
-		
-		assertFalse(orderItem.hasGiftCard(giftCard)); 
-		 
+
+		orderItem.addGiftCard(giftCard);
+
+		assertTrue(orderItem.hasGiftCard(giftCard));
+
+		orderItem.removeGiftCard(giftCard);
+
+		assertFalse(orderItem.hasGiftCard(giftCard));
+
 	}
-	
+
 
 	private any function createMockOrderItem(string orderItemTypeID='', numeric quantity, string skuID='') {
 		var orderItemData = {
@@ -333,7 +338,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		}
 		return createPersistedTestEntity('OrderItem', orderItemData);
 	}
-	
+
 	/**
 	* Put the orderItemID string in array, the entity will associated with all of them
 	*/
@@ -354,17 +359,17 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		}
 		return createPersistedTestEntity('Order', orderData);
 	}
-	
+
 	private any function createMockSku() {
 		var skuData = {
 			skuID = ''
 		};
 		return createPersistedTestEntity('Sku', skuData);
 	}
-	
+
 	public void function hasQuantityWithinMaxOrderQuantityTest_OrderItemType() {
 		var mockSku = createMockSku();
-		
+
 		var productData = {
 			productID = '',
 			skus = [{
@@ -372,22 +377,22 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}]
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
-		
-		var mockOrderItemOITSale = createMockOrderItem('444df2e9a6622ad1614ea75cd5b982ce', 100, mockSku.getSkuID()); 
-		var mockOrderItemOITReturn = createMockOrderItem('444df2eac18fa589af0f054442e12733', 100, mockSku.getSkuID()); 
-		
+
+		var mockOrderItemOITSale = createMockOrderItem('444df2e9a6622ad1614ea75cd5b982ce', 100, mockSku.getSkuID());
+		var mockOrderItemOITReturn = createMockOrderItem('444df2eac18fa589af0f054442e12733', 100, mockSku.getSkuID());
+
 		var mockOrder1 = createMockOrderWithOrderItems([mockOrderItemOITSale.getOrderItemID()]);
 
 		var resultOITSale = mockOrderITemOITSale.hasQuantityWithinmaxOrderQuantity();
 		assertTrue(resultOITSale, 'oitSale should go into the if statements and do calculation');
-		
+
 		var resultOITReturn = mockOrderItemOITReturn.hasQuantityWithinmaxOrderQuantity();
 		assertTrue(resultOITReturn, 'For orderITem types other than oitSale, should return the TRUE after the if statements');
 	}
-	
+
 	public void function hasQuantityWithinMaxOrderQuantityTest_QuantityComparision() {
 		var mockSku = createMockSku();
-		
+
 		var productData = {
 			productID = '',
 			skus = [{
@@ -395,29 +400,29 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}]
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
-		
-		var mockOrderItemSale1 = createMockOrderItem('444df2e9a6622ad1614ea75cd5b982ce', 100, mockSku.getSkuID()); 
-		var mockOrderItemSale2 = createMockOrderItem('444df2e9a6622ad1614ea75cd5b982ce', 1000, mockSku.getSkuID()); 
+
+		var mockOrderItemSale1 = createMockOrderItem('444df2e9a6622ad1614ea75cd5b982ce', 100, mockSku.getSkuID());
+		var mockOrderItemSale2 = createMockOrderItem('444df2e9a6622ad1614ea75cd5b982ce', 1000, mockSku.getSkuID());
 		var mockOrderItem1 = createMockOrderItem(quantity = 10, skuID = mockSku.getSkuID());
 		var mockOrderItem2 = createMockOrderItem(quantity = 20, skuID = mockSku.getSkuID());
 		var mockOrderItem3 = createMockOrderItem(quantity = 40, skuID = mockSku.getSkuID());
-		
-		var mockOrder1 = createMockOrderWithOrderItems([mockOrderItem1.getOrderItemID(), 
+
+		var mockOrder1 = createMockOrderWithOrderItems([mockOrderItem1.getOrderItemID(),
 														mockOrderItem2.getOrderItemID(),
 														mockOrderItemSale1.getOrderItemID()]);
 		var mockOrder2 = createMockOrderWithOrderItems([mockOrderItem3.getOrderItemID(),
 														mockOrderItemSale2.getOrderItemID()]);
-														
+
 		var resultSale1 = mockOrderItemSale1.hasQuantityWithinmaxOrderQuantity();
 		assertTrue(resultSale1, 'The quantity of mockOrder1 should be 130 in total, which is less than getMaximumOrderQuantity()');
-		
+
 		var resultSale2 = mockOrderItemSale2.hasQuantityWithinmaxOrderQuantity();
 		assertFalse(resultSale2, 'The quantity of mockOrder2 should be 1040 in total, which is more than getMaximumOrderQuantity(), should return false');
 	}
-	
+
 	public void function hasQuantityWithinMaxOrderQuantityTest_getSkuIsNull() {
 		var mockSku = createMockSku();
-		
+
 		var productData = {
 			productID = '',
 			skus = [{
@@ -425,25 +430,25 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}]
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
-		
-		var mockOrderItemRunFunction1 = createMockOrderItem('444df2e9a6622ad1614ea75cd5b982ce', 1000, mockSku.getSkuID()); 
+
+		var mockOrderItemRunFunction1 = createMockOrderItem('444df2e9a6622ad1614ea75cd5b982ce', 1000, mockSku.getSkuID());
 		var mockOrderItemRunFunction2 = createMockOrderItem('444df2e9a6622ad1614ea75cd5b982ce', 1000, mockSku.getSkuID());
 		var mockOrderItemNoSku 		  = createMockOrderItem(quantity = 10);
-		
+
 		var mockOrderHasSku 	  = createMockOrderWithOrderItems([mockOrderItemRunFunction1.getOrderItemID()]);
 		var mockOrderOneSkuOneNot = createMockOrderWithOrderItems([mockOrderItemRunFunction2.getOrderItemID(),
 															 	   mockOrderItemNoSku.getOrderItemID()]);
-																
+
 		var resultOrderHasSku = mockOrderItemRunFunction1.hasQuantityWithinmaxOrderQuantity();
 		assertTrue(resultOrderHasSku, '1000 <= getMaximumOrderQuantity()');
-		
+
 		var resultOrderOneSkuOneNot = mockOrderItemRunFunction2.hasQuantityWithinmaxOrderQuantity();
-		assertTrue(resultOrderOneSkuOneNot, 'quantity should still be 1000, the mockOrderItemNoSku should not be added in quantity formula');	
+		assertTrue(resultOrderOneSkuOneNot, 'quantity should still be 1000, the mockOrderItemNoSku should not be added in quantity formula');
 	}
-	
+
 	public void function hasQuantityWithinMinOrderQuantityTest_OrderItemType() {
 		var mockSku = createMockSku();
-		
+
 		var productData = {
 			productID = '',
 			skus = [{
@@ -451,23 +456,23 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}]
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
-		
-		var mockOrderItemOITSale = createMockOrderItem('444df2e9a6622ad1614ea75cd5b982ce', 100, mockSku.getSkuID()); 
-		var mockOrderItemOITReturn = createMockOrderItem('444df2eac18fa589af0f054442e12733', 100, mockSku.getSkuID()); 
-		
+
+		var mockOrderItemOITSale = createMockOrderItem('444df2e9a6622ad1614ea75cd5b982ce', 100, mockSku.getSkuID());
+		var mockOrderItemOITReturn = createMockOrderItem('444df2eac18fa589af0f054442e12733', 100, mockSku.getSkuID());
+
 		var mockOrder1 = createMockOrderWithOrderItems([mockOrderItemOITSale.getOrderItemID()]);
 
 		var resultOITSale = mockOrderITemOITSale.hasQuantityWithinMinOrderQuantity();
 		assertTrue(resultOITSale, 'oitSale should go into the if statements and do calculation');
-		
+
 		var resultOITReturn = mockOrderItemOITReturn.hasQuantityWithinMinOrderQuantity();
 		assertTrue(resultOITReturn, 'For orderITem types other than oitSale, should return the TRUE after the if statements');
-		
+
 	}
-	
+
 	public void function hasQuantityWithinMinOrderQuantityTest_QuantityComparision() {
 		var mockSku = createMockSku();
-		
+
 		var productData = {
 			productID = '',
 			skus = [{
@@ -475,34 +480,34 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}]
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
-	
+
 		var mockOrderItem1 = createMockOrderItem(quantity = 10, skuID = mockSku.getSkuID());
 		var mockOrderItem2 = createMockOrderItem(quantity = 20, skuID = mockSku.getSkuID());
 		var mockOrderItemSale1 = createMockOrderItem('444df2e9a6622ad1614ea75cd5b982ce', 0, mockSku.getSkuID());
-		
-		
+
+
 		var mockOrderItem3 = createMockOrderItem(quantity = -100, skuID = mockSku.getSkuID());
-		var mockOrderItemSale2 = createMockOrderItem('444df2e9a6622ad1614ea75cd5b982ce', 0, mockSku.getSkuID()); 
-		
-		
-		
-		var mockOrder1 = createMockOrderWithOrderItems([mockOrderItem1.getOrderItemID(), 
+		var mockOrderItemSale2 = createMockOrderItem('444df2e9a6622ad1614ea75cd5b982ce', 0, mockSku.getSkuID());
+
+
+
+		var mockOrder1 = createMockOrderWithOrderItems([mockOrderItem1.getOrderItemID(),
 														mockOrderItem2.getOrderItemID(),
 														mockOrderItemSale1.getOrderItemID()]);
-															
+
 		var mockOrder2 = createMockOrderWithOrderItems([mockOrderItem3.getOrderItemID(),
 														mockOrderItemSale2.getOrderItemID()]);
-														
+
 		var resultSale1 = mockOrderItemSale1.hasQuantityWithinMinOrderQuantity();
 		assertTrue(resultSale1, 'The quantity of mockOrder1 should be 30 in total, which is more than 1');
-		
+
 		var resultSale2 = mockOrderItemSale2.hasQuantityWithinMinOrderQuantity();
 		assertFalse(resultSale2, 'The quantity of mockOrder2 should be 0 in total, which is less than min, should return false');
 	}
-	
+
 	public void function hasQuantityWithinMinOrderQuantityTest_getSkuIsNull() {
 		var mockSku = createMockSku();
-		
+
 		var productData = {
 			productID = '',
 			skus = [{
@@ -510,19 +515,19 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}]
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
-		
-		var mockOrderItemRunFunction1 = createMockOrderItem('444df2e9a6622ad1614ea75cd5b982ce', 0, mockSku.getSkuID()); 
+
+		var mockOrderItemRunFunction1 = createMockOrderItem('444df2e9a6622ad1614ea75cd5b982ce', 0, mockSku.getSkuID());
 		var mockOrderItemRunFunction2 = createMockOrderItem('444df2e9a6622ad1614ea75cd5b982ce', 0, mockSku.getSkuID());
 		var mockOrderItemNoSku 		  = createMockOrderItem(quantity = 10);
-		
+
 		var mockOrderHasSku 	  = createMockOrderWithOrderItems([mockOrderItemRunFunction1.getOrderItemID()]);
 		var mockOrderOneSkuOneNot = createMockOrderWithOrderItems([mockOrderItemRunFunction2.getOrderItemID(),
 															 	   mockOrderItemNoSku.getOrderItemID()]);
-																
+
 		var resultOrderHasSku = mockOrderItemRunFunction1.hasQuantityWithinMinOrderQuantity();
 		assertFalse(resultOrderHasSku, '0 < defaultMin 1, should return false');
-		
+
 		var resultOrderOneSkuOneNot = mockOrderItemRunFunction2.hasQuantityWithinMinOrderQuantity();
-		assertFalse(resultOrderOneSkuOneNot, 'quantity should still be 0, the mockOrderItemNoSku should not be added in quantity formula');	
+		assertFalse(resultOrderOneSkuOneNot, 'quantity should still be 0, the mockOrderItemNoSku should not be added in quantity formula');
 	}
 }
