@@ -230,7 +230,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}
 		}; 
 
-		var orderItem = createPersistedTestEntity('product', productData); 
+		var product = createPersistedTestEntity('product', productData); 
 
 		var	orderItemData = {
 			orderItemID='', 
