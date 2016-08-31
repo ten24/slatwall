@@ -133,6 +133,28 @@ component extends="mxunit.framework.TestCase" output="false" {
 	private void function addEntityForTearDown(any entity){
 		arrayAppend(variables.persistentEntities, entity);
 	}
+	
+	private any function persistTestEntity(required any testEntity, required any data, boolean saveWithService=false){
+		// Save with Service
+		if(arguments.saveWithService) {
+
+			request.slatwallScope.saveEntity( arguments.testEntity, arguments.data );
+
+		// Save manually
+		} else {
+			// Populate the data
+			arguments.testEntity.populate( arguments.data );
+
+			// Save the entity
+			entitySave(arguments.testEntity);
+		}
+
+		// Persist to the database
+		ormFlush();
+
+		// Add the entity to the persistentEntities
+		arrayAppend(variables.persistentEntities, arguments.testEntity);
+	}
 
 	private any function createTestEntity( required string entityName, struct data={}, boolean createRandomData=false, boolean persist=false, boolean saveWithService=false ) {
 		// Create the new Entity
@@ -143,25 +165,7 @@ component extends="mxunit.framework.TestCase" output="false" {
 		// Check to see if it needs to be persisted
 		if(arguments.persist) {
 
-			// Save with Service
-			if(arguments.saveWithService) {
-
-				request.slatwallScope.saveEntity( newEntity, arguments.data );
-
-			// Save manually
-			} else {
-				// Populate the data
-				newEntity.populate( data );
-
-				// Save the entity
-				entitySave(newEntity);
-			}
-
-			// Persist to the database
-			ormFlush();
-
-			// Add the entity to the persistentEntities
-			arrayAppend(variables.persistentEntities, newEntity);
+			persistTestEntity(newEntity, data, arguments.saveWithService);
 
 		} else {
 
@@ -339,6 +343,54 @@ component extends="mxunit.framework.TestCase" output="false" {
 				throw("The systemCode cannot be found in the type options");
 			}
 		}
+	}
+	
+	private void function verifyRel(required any entityObject, required string propertyName) {
+		var thisProperty = request.slatwallScope.getService("hibachiService").
+							getPropertyByEntityNameAndPropertyName(arguments.entityObject.getClassName(), arguments.propertyName);
+		var errorMsg = '#arguments.entityObject.getClassName()#.#arguments.propertyName# ';
+		
+		if(!structKeyExists(thisProperty, "cfc") && !structKeyExists(thisProperty, 'fieldType')) {
+			throw(errorMsg & "doesn't have a CFC & FieldType relationship. VerifyRel stops");
+		}
+		
+		if(thisProperty.fieldType == 'Many-to-Many' || thisProperty.fieldType == 'One-to-Many') {
+			var hasRel = invoke(arguments.entityObject, 'has'&thisProperty.singularname);
+			if(hasRel) {
+				throw(errorMsg & 'hasXXX() returns FALSE.');
+			}
+			
+			var getArray = invoke(arguments.entityObject, 'get'&thisProperty.name);
+			if(arrayLen(getArray) >= 1) {
+				throw(errorMsg & 'getXXX() length < 1.');
+			}
+			
+			var getID = getArray[1].invokeMethod('get'&thisProperty.cfc&'ID');
+			if(isNull(getID)) {
+				throw(errorMsg & 'getXXXID() returns empty.');
+			}
+		} else {
+			if(!isNull(invoke(arguments.entityObject, methodName))){
+				throw('Association verification fails: #entityObject.getClassName()#.#methodName#() returns empty.');
+			}
+
+		}
+	}
+
+	private any function createSimpleMockEntityByEntityName(required string entityName, boolean persisted = TRUE) {
+		var primaryIDPropertyName = request.slatwallScope.getService('hibachiservice').getPrimaryIDPropertyNameByEntityName(arguments.entityName);
+		if(arguments.entityName == 'State'){
+			//TODO: Combination Primary ID may throw errors. 
+		}
+		var data = {};
+		data[primaryIDPropertyName] = "";
+		
+		if(arguments.persisted) {
+			var resultEntity = createPersistedTestEntity(arguments.entityName, data);
+		} else {
+			var resultEntity = createTestEntity(arguments.entityName, data);
+		}
+		return resultEntity;
 	}
 
 }
