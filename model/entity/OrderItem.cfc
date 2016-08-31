@@ -311,7 +311,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			var childProductBundleGroupPrice = getProductBundleGroupPrice(childOrderItem);
 			var childQuantity = childOrderItem.getQuantity();			
 			//if we have a package quantity use that instead
-			if(isNull(childOrderItem.getPackageQuantity())){
+			if(!isNull(childOrderItem.getPackageQuantity())){
 				childQuantity = childOrderItem.getPackageQuantity(); 
 			}
 			productBundlePrice += precisionEvaluate(childProductBundleGroupPrice * childQuantity);
