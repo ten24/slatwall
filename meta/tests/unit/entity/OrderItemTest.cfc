@@ -194,6 +194,50 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//addToDebug(orderItem.getProductBundlePrice());
 		
 	}
+
+	public void function getProductBundlePrice_package_quantity() { 
+		var	orderItemData = {
+			orderItemID='', 
+			price=0, 
+			skuPrice=0, 
+			quantity=2,
+			childOrderItems=[
+				{
+					orderItemID='',
+					packageQuantity=3,
+					skuPrice=5
+				}, 
+				{ 
+					orderItemID='',
+					packageQuantity=2,
+					skuPrice=10
+				},
+				{
+					orderItemID='',
+					packageQuantity=4,
+					skuPrice=15
+				}
+			]
+		} 
+		var orderItem = createPersistedTestEntity('orderItem', orderItemData); 
+		assertEquals(orderItem.getExtendedPrice(), 190); 
+		orderItem.setQuantity(1); 
+		assertEquals(orderItem.getExtendedPrice(), 95); 
+		orderItem.setQuantity(4); 
+		assertEquals(orderItem.getExtendedPrice(), 380); 
+	
+		//test ignore child order item quantity
+		orderItem.getChildOrderItems()[1].setQuantity(5); 
+		orderItem.getChildOrderItems()[2].setQuantity(4); 
+		orderItem.getChildOrderItems()[3].setQuantity(3); 
+
+		orderItem.setQuantity(2); 
+		assertEquals(orderItem.getExtendedPrice(), 190); 
+		orderItem.setQuantity(1); 
+		assertEquals(orderItem.getExtendedPrice(), 95); 
+		orderItem.setQuantity(4); 
+		assertEquals(orderItem.getExtendedPrice(), 380); 
+	}
 	
 	public void function validate_as_save_for_a_new_instance_doesnt_pass() {
 	
