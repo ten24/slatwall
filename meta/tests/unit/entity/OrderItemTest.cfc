@@ -69,7 +69,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					skuid="",
 					price=1,
 					activeflag=1,
-					skuCode = '#createUUID()#',
+					skuCode = createUUID(),
 					productBundleGroups=[
 						{
 							productBundleGroupid:"",
@@ -132,7 +132,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					skuid="",
 					price=1,
 					activeflag=1,
-					skuCode = '#createUUID()#',
+					skuCode = createUUID(),
 					productBundleGroups=[
 						{
 							productBundleGroupid:"",
@@ -209,21 +209,21 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					skuid="",
 					price=0,
 					activeflag=1,
-					skuCode = '#createUUID()#',
+					skuCode = createUUID(),
 					productBundleGroups=[
 						{
 							productBundleGroupid:"",
-							amount=5,
+							amount=0,
 							amountType="skuPrice"
 						},
 						{
 							productBundleGroupid:"",
-							amount=10,
+							amount=0,
 							amountType="skuPrice"
 						},
 						{
 							productBundleGroupid:"",
-							amount=15,
+							amount=0,
 							amountType="skuPrice"
 						}
 					]
@@ -238,33 +238,42 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var product = createPersistedTestEntity('product', productData);
 
 		var	orderItemData = {
-			orderItemID='',
+			orderItemid='',
 			price=0,
 			skuPrice=0,
-			sku=product.getSkus()[1],
 			quantity=2,
 			childOrderItems=[
 				{
-					orderItemID='',
+					orderItemid='',
 					packageQuantity=3,
 					skuPrice=5
 				},
 				{
-					orderItemID='',
+					orderItemid='',
 					packageQuantity=2,
 					skuPrice=10
 				},
 				{
-					orderItemID='',
+					orderItemid='',
 					packageQuantity=4,
 					skuPrice=15
 				}
 			]
-		}
+		};
+
 		var orderItem = createPersistedTestEntity('orderItem', orderItemData);
+
+		orderItem.setSku(product.getSkus()[1]);
+
 		orderItem.getChildOrderItems()[1].setProductBundleGroup(product.getSkus()[1].getProductBundleGroups()[1]);
 		orderItem.getChildOrderItems()[2].setProductBundleGroup(product.getSkus()[1].getProductBundleGroups()[2]);
 		orderItem.getChildOrderItems()[3].setProductBundleGroup(product.getSkus()[1].getProductBundleGroups()[3]);
+
+		assertEquals(5, orderItem.getProductBundleGroupPrice(orderItem.getChildOrderItems()[1]));
+		assertEquals(10, orderItem.getProductBundleGroupPrice(orderItem.getChildOrderItems()[2]));
+		assertEquals(15, orderItem.getProductBundleGroupPrice(orderItem.getChildOrderItems()[3]));
+
+		assertEquals('productBundle', orderItem.getSku().getProduct().getProductType().getSystemCode());
 
 		assertEquals(190, orderItem.getExtendedPrice());
 		orderItem.setQuantity(1);
@@ -362,7 +371,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	private any function createMockSku() {
 		var skuData = {
-			skuID = ''
+			skuID = '',
+			skuCode = createUUID()
 		};
 		return createPersistedTestEntity('Sku', skuData);
 	}
@@ -373,7 +383,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var productData = {
 			productID = '',
 			skus = [{
-				skuID = mockSku.getSkuID()
+				skuID = mockSku.getSkuID(),
+				skuCode = createUUID()
 			}]
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
@@ -396,7 +407,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var productData = {
 			productID = '',
 			skus = [{
-				skuID = mockSku.getSkuID()
+				skuID = mockSku.getSkuID(),
+				skuCode = createUUID()
 			}]
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
@@ -426,7 +438,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var productData = {
 			productID = '',
 			skus = [{
-				skuID = mockSku.getSkuID()
+				skuID = mockSku.getSkuID(),
+				skuCode = createUUID()
 			}]
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
@@ -452,7 +465,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var productData = {
 			productID = '',
 			skus = [{
-				skuID = mockSku.getSkuID()
+				skuID = mockSku.getSkuID(),
+				skuCode = createUUID()
 			}]
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
@@ -476,7 +490,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var productData = {
 			productID = '',
 			skus = [{
-				skuID = mockSku.getSkuID()
+				skuID = mockSku.getSkuID(),
+				skuCode = createUUID()
 			}]
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
@@ -511,7 +526,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var productData = {
 			productID = '',
 			skus = [{
-				skuID = mockSku.getSkuID()
+				skuID = mockSku.getSkuID(),
+				skuCode = createUUID()
 			}]
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
