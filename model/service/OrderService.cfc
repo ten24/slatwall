@@ -2070,6 +2070,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Set quantity if needed
 			if(isNull(arguments.childOrderItem.getQuantity())) {
 				arguments.childOrderItem.setQuantity( 1 );
+			}	
+			if(isNull(arguments.childOrderItem.getPackageQuantity())){
+				arguments.childOrderItem.setPackageQuantity(arguments.childOrderItem.getQuantity());
 			}
 			// Set orderFulfillment if needed
 			if(isNull(arguments.childOrderItem.getOrderFulfillment())) {

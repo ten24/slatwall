@@ -49,6 +49,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="skuPrice" ormtype="big_decimal";
 	property name="currencyCode" ormtype="string" length="3";
 	property name="quantity" hb_populateEnabled="public" ormtype="integer";
+	property name="packageQuantity" hb_populateEnabled="public" ormtype="integer";
 	property name="estimatedDeliveryDateTime" ormtype="timestamp";
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
 
@@ -308,7 +309,11 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		//then get the price of it's componenets and add them
 		for(var childOrderItem in this.getChildOrderItems()){
 			var childProductBundleGroupPrice = getProductBundleGroupPrice(childOrderItem);
-			var childQuantity = childOrderItem.getQuantity();
+			var childQuantity = childOrderItem.getQuantity();			
+			//if we have a package quantity use that instead
+			if(isNull(childOrderItem.getPackageQuantity())){
+				childQuantity = childOrderItem.getPackageQuantity(); 
+			}
 			productBundlePrice += precisionEvaluate(childProductBundleGroupPrice * childQuantity);
 		}
 
