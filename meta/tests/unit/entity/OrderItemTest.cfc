@@ -58,7 +58,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	public void function getProductBundlePrice_fixed_none(){
 		var productData = {
 			productName="productBundleName",
-			productCode="#createUUID()#",
+			productCode=createUUID(),
 			productid="",
 			activeflag=1,
 			price=1,
