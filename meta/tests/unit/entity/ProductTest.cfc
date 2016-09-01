@@ -2382,8 +2382,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	 public void function getNextSkuCodeCountTest() {
 	 	var mockSku1 = createMockSKuWithSkuCode(createUUID());
-	 	var mockSku2 = createMockSKuWithSkuCode('sku-2');
-	 	var mockSku3 = createMockSKuWithSkuCode('sku-3');
+	 	var mockSku2 = createMockSKuWithSkuCode('sku-' & createUUID());
+	 	var mockSku3 = createMockSKuWithSkuCode('sku-' & createUUID());
 	 	var mockSku4 = createMockSKu();
 
 		//Testing the skuCode has no hythen
