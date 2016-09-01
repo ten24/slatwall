@@ -89,13 +89,13 @@ component accessors="true" output="false" displayname="FedEx" implements="Slatwa
 	}
 	
 	private string function getXMLResponse(string xmlPacket){
-		var url = "";
+		var urlString = "";
 		if(setting('testingFlag')) {
-			url = variables.testUrl;
+			urlString = variables.testUrl;
 		} else {
-			url = variables.productionUrl;
+			urlString = variables.productionUrl;
 		}
-		return getResponse(requestPacket=xmlPacket,urlString=url);
+		return getResponse(requestPacket=xmlPacket,urlString=urlString);
 	}
 	
 	private any function getShippingProcessShipmentResponseBean(string xmlResponse){

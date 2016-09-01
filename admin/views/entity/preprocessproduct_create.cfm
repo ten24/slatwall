@@ -85,6 +85,7 @@ Notes:
 					<hb:HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productCode" fieldName="product.productCode" edit="true" title="#$.slatwall.rbKey('entity.product.#rc.processObject.getBaseProductType()#.productCode')#">
 
 					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="true">
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="listPrice" edit="true">
 
 				</hb:HibachiPropertyList>
 
@@ -213,6 +214,7 @@ Notes:
 								ng-if="preprocessproduct_createCtrl.collectionListingPromise && preprocessproduct_createCtrl.collection"
 								data-collection-promise="preprocessproduct_createCtrl.collectionListingPromise"
 								data-collection="preprocessproduct_createCtrl.collection"
+								data-collection-config="preprocessproduct_createCtrl.collection.collectionConfig"
 								data-multiselect-field-name="options"
 								data-edit="true"
 							    data-show-search="true"
