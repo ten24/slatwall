@@ -182,34 +182,8 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 	}
 	
+	/** Updates the database and the cookies related to the database. */
 	public void function persistSession() {
-	
-		// Save the session
-		getHibachiDAO().save( getHibachiScope().getSession() );
-		
-		// Save session ID in the session Scope & cookie scope for next request
-		getHibachiScope().setSessionValue('sessionID', getHibachiScope().getSession().getSessionID());
-		
-	}
-	
-	public string function loginAccount(required any account, required any accountAuthentication) {
-	
-		var currentSession = getHibachiScope().getSession();
-		currentSession.setAccount( arguments.account );
-		currentSession.setAccountAuthentication( arguments.accountAuthentication );
-	    currentSession.setLoggedInDateTime(DateTimeFormat(now()));
-		
-		// Make sure that we persist the session
-		persistSession();
-	
-		// Make sure that this login is persisted
-		getHibachiDAO().flushORMSession();
-	
-		var auditLogData = {
-	
-			account = arguments.account
-	
-		};
 		
 		//Generate new session cookies for every time the session is persisted (on every login);
 		//This cookie is removed on browser close
@@ -228,6 +202,33 @@ component output="false" accessors="true" extends="HibachiService"  {
 			getHibachiScope().getSession().setSessionCookieExtendedPSID(cookieValue);
 			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-ExtendedPSID", value=getHibachiScope().getSession().getSessionCookieExtendedPSID(), expires="#getHibachiScope().setting('globalExtendedSessionAutoLogoutInDays')#");
 		}
+		
+		// Save the session
+		getHibachiDAO().save( getHibachiScope().getSession() );
+		
+		// Make sure that this login is persisted
+		getHibachiDAO().flushORMSession();
+		
+		// Save session ID in the session Scope & cookie scope for next request
+		getHibachiScope().setSessionValue('sessionID', getHibachiScope().getSession().getSessionID());
+		
+	}
+	
+	public string function loginAccount(required any account, required any accountAuthentication) {
+	
+		var currentSession = getHibachiScope().getSession();
+		currentSession.setAccount( arguments.account );
+		currentSession.setAccountAuthentication( arguments.accountAuthentication );
+	    currentSession.setLoggedInDateTime(DateTimeFormat(now()));
+		
+		// Make sure that we persist the session (sets cookies and flushes)
+		persistSession();
+	
+		var auditLogData = {
+	
+			account = arguments.account
+	
+		};
 		
 		getHibachiAuditService().logAccountActivity( "login", auditLogData );
 		getHibachiEventService().announceEvent("onSessionAccountLogin");
