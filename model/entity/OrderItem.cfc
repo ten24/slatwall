@@ -417,14 +417,16 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	}
 
 	public numeric function getQuantity() {
-		if(this.isRootOrderItem()){
+		if(this.isRootOrderItem() && structKeyExists(variables, "quantity")){
 			return variables.quantity; 
 		}
 		if(!isNull(this.getPackageQuantity())){
 			var packageQuantity = this.getPackageQuantity(); 	
-		} else {
+		} else if(structKeyExists(variables, "quantity") {
 			var packageQuantity = variables.quantity; 
-		}	
+		} else {
+			var packageQuantity = 1; 
+		}
 		return precisionEvaluate(getParentOrderItem().getQuantity() * packageQuantity); 
 	}
 
