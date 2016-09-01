@@ -311,16 +311,19 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			childOrderItems=[
 				{
 					orderItemid='',
+					quantity=6,
 					bundleItemQuantity=3,
 					skuPrice=5
 				},
 				{
 					orderItemid='',
+					quantity=4,
 					bundleItemQuantity=2,
 					skuPrice=10
 				},
 				{
 					orderItemid='',
+					quantity=8,
 					bundleItemQuantity=4,
 					skuPrice=15
 				}
@@ -328,9 +331,20 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		var orderItem = createPersistedTestEntity('orderItem', orderItemData);
 
-		assertEquals(6, orderItem.getChildOrderItems()[1].getQuantity());
-		assertEquals(4, orderItem.getChildOrderItems()[2].getQuantity());
-		assertEquals(8, orderItem.getChildOrderItems()[3].getQuantity());
+		orderItem.getChildOrderItems()[1].setBundleItemQuantity(4);
+		assertEquals(8, orderItem.getChildOrderItems()[1].getQuantity());
+		orderItem.getChildOrderItems()[2].setBundleItemQuantity(1);
+		assertEquals(2, orderItem.getChildOrderItems()[2].getQuantity());
+		orderItem.getChildOrderItems()[3].setBundleItemQuantity(10);
+		assertEquals(20, orderItem.getChildOrderItems()[3].getQuantity());
+		orderItem.setQuantity(3);
+		assertEquals(12, orderItem.getChildOrderItems()[1].getQuantity());
+		assertEquals(3, orderItem.getChildOrderItems()[2].getQuantity());
+		assertEquals(30, orderItem.getChildOrderItems()[3].getQuantity());
+		orderItem.setQuantity(1);
+		assertEquals(4, orderItem.getChildOrderItems()[1].getQuantity());
+		assertEquals(1, orderItem.getChildOrderItems()[2].getQuantity());
+		assertEquals(10, orderItem.getChildOrderItems()[3].getQuantity());
 	}
 
 
