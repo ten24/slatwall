@@ -48,21 +48,49 @@ Notes:
 --->
 
 <cfset local.scriptHasErrors = false />
+<cfparam name="this.ormSettings.dialect" />
 
 <cftry>
-
-	<cfquery name="local.updatechildorderitemquantity">
-		update SwOrderItem set SwOrderItem.bundleItemQuantity = SwOrderItem.quantity where parentOrderItemID is not null	
+	<cfquery name="local.setbundleitemquantity">
+		update SwOrderItem set SwOrderItem.bundleItemQuantity = SwOrderItem.quantity where parentOrderItemID is not null
 	</cfquery>
+	
+	<cfif this.ormSettings.dialect eq 'MicrosoftSQLServer'>
+		<cfquery name="local.updatechildorderitemquantity">
+			update SwOrderItem
+			set SwOrderItem.quantity = p.quantity * SwOrderItem.bundleItemQuantity
+			from SwOrderItem
+				inner join SwOrderItem p on
+				SwOrderItem.parentOrderItemID = p.orderItemID
+			where SwOrderItem.parentOrderItemID is not null
+		</cfquery>
+	<cfelseif ListFind(this.ormSettings.dialect, 'MySQL')>
+		<cfquery name="local.updatechildorderitemquantity">
+			update SwOrderItem
+			inner join SwOrderItem p on
+				SwOrderItem.parentOrderItemID = p.orderItemID
+			set SwOrderItem.quantity = p.quantity * SwOrderItem.bundleItemQuantity
+			where SwOrderItem.parentOrderItemID = p.orderItemID
+		</cfquery> 	
+	<cfelseif this.ormSettings.dialect eq 'Oracle10g'>
+		<cfquery name="local.updatechildorderitemquantity">
+			update
+				(select
+					SwOrderItem.quantity as oldQuantity,
+					p.quantity * SwOrderItem.bundleItemQuantity as newQuantity
+				from SwOrderItem 
+					inner join SwOrderItem p on
+						SwOrderItem.parentOrderItemID = p.orderItemID
+				where SwOrderItem.parentOrderItemID is not null) orderItem
+			set orderItem.oldQuantity = orderItem.newQuantity
+		</cfquery> 	
+	</cfif>
 
 	<cfcatch>
 		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update Child Order Item Quantity">
 		<cfset local.scriptHasErrors = true />
 	</cfcatch>
-
-
 </cftry>
-
 
 <cfif local.scriptHasErrors>
 	<cflog file="Slatwall" text="General Log - Part of Script v4_5 had errors when running">
