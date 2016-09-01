@@ -864,6 +864,12 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//testing the product with mockImage1
 		var productData = {
 			productID = "",
+			skus = [
+				{
+					skuID='',
+					skuCode=createUUID()		
+				}
+			], 
 			productImages = [
 				{
 					imageID = mockImage1.getImageID()
