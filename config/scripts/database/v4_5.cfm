@@ -52,7 +52,7 @@ Notes:
 <cftry>
 
 	<cfquery name="local.updatechildorderitemquantity">
-		update SwOrderItem oi set oi.bundleItemQuantity = oi.quantity where oi.parentOrderItemID is not null
+		update SwOrderItem set SwOrderItem.bundleItemQuantity = SwOrderItem.quantity where parentOrderItemID is not null	
 	</cfquery>
 
 	<cfcatch>
