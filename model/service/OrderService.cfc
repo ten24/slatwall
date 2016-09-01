@@ -1192,7 +1192,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!isNull(arguments.orderItem.getBundleItemQuantity())){
 			newOrderItem.setBundleItemQuantity(arguments.orderItem.getBundleItemQuantity()); 
 		}
-		newOrderItem.setQuantity(arguments.orderItem.getQuantity() );
+		newOrderItem.setQuantity(arguments.orderItem.getQuantity());
 		newOrderItem.setOrderItemType( arguments.orderItem.getOrderItemType() );
 		newOrderItem.setOrderItemStatusType( arguments.orderItem.getOrderItemStatusType() );
 		newOrderItem.setSku( arguments.orderItem.getSku() );
