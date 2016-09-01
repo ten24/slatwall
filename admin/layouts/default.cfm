@@ -100,7 +100,7 @@ Notes:
 		</cfif>
 	</head>
 
-	<body <cfif (!$.slatwall.getLoggedInFlag() && !$.slatwall.getLoggedInAsAdminFlag()) && !structKeyExists(url,'ng')>class="s-login-screen"</cfif>>
+	<body <cfif (!$.slatwall.getLoggedInAsAdminFlag()) && !structKeyExists(url,'ng')>class="s-login-screen"</cfif>>
 		<span>
 			
 		<cfif $.slatwall.getSession().getLoggedInFlag()>
