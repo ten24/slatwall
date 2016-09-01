@@ -422,7 +422,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		}
 		if(!isNull(this.getPackageQuantity())){
 			var packageQuantity = this.getPackageQuantity(); 	
-		} else if(structKeyExists(variables, "quantity") {
+		} else if(structKeyExists(variables, "quantity")) {
 			var packageQuantity = variables.quantity; 
 		} else {
 			var packageQuantity = 1; 
