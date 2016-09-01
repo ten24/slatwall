@@ -1189,6 +1189,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrderItem.setPrice( arguments.orderItem.getPrice() );
 		newOrderItem.setSkuPrice( arguments.orderItem.getSkuPrice() );
 		newOrderItem.setCurrencyCode( arguments.orderItem.getCurrencyCode() );
+		if(!isNull(arguments.orderItem.getPackageQuantity()){
+			newOrderItem.setPackageQuantity(arguments.orderItem.getPackageQuantity()); 
+		}
 		newOrderItem.setQuantity(arguments.orderItem.getQuantity() );
 		newOrderItem.setOrderItemType( arguments.orderItem.getOrderItemType() );
 		newOrderItem.setOrderItemStatusType( arguments.orderItem.getOrderItemStatusType() );
