@@ -416,19 +416,22 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		return taxLiabilityAmount;
 	}
 
-	public numeric function getQuantity() {
-		if(this.isRootOrderItem() && structKeyExists(variables, "quantity")){
-			return variables.quantity; 
-		}
-		if(!isNull(this.getPackageQuantity())){
-			var packageQuantity = this.getPackageQuantity(); 	
-		} else if(structKeyExists(variables, "quantity")) {
-			var packageQuantity = variables.quantity; 
-		} else {
-			var packageQuantity = 1; 
-		}
-		return precisionEvaluate(getParentOrderItem().getQuantity() * packageQuantity); 
-	}
+	public void function setQuantity(required numeric quantity){ 
+		variables.quantity = arguments.quantity;
+		if(this.isRootOrderItem()){
+			for(var childOrderItem in this.getChildOrderItems()){
+				var newQuantity = PrecisionEvaluate(childOrderItem.getPackageQuantity() * variables.quantity))
+				childOrderItem.setQuantity(newQuantity); 
+			}
+		}	
+	}	
+
+	public void function setPackageQuantity(required numeric packageQuantity){
+		if(!this.isRootOrderItem()){
+			variables.packageQuantity = arguments.packageQuantity; 
+			variables.quantity = PrecisionEvaluate(getParentOrderItem().getQuantity() * variables.packageQuantity); 
+		} 
+	} 
 
 	public numeric function getQuantityDelivered() {
 		var quantityDelivered = 0;
