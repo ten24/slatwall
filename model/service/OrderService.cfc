@@ -1189,8 +1189,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrderItem.setPrice( arguments.orderItem.getPrice() );
 		newOrderItem.setSkuPrice( arguments.orderItem.getSkuPrice() );
 		newOrderItem.setCurrencyCode( arguments.orderItem.getCurrencyCode() );
-		if(!isNull(arguments.orderItem.getPackageQuantity())){
-			newOrderItem.setPackageQuantity(arguments.orderItem.getPackageQuantity()); 
+		if(!isNull(arguments.orderItem.getBundleItemQuantity())){
+			newOrderItem.setBundleItemQuantity(arguments.orderItem.getBundleItemQuantity()); 
 		}
 		newOrderItem.setQuantity(arguments.orderItem.getQuantity() );
 		newOrderItem.setOrderItemType( arguments.orderItem.getOrderItemType() );
@@ -2074,8 +2074,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(isNull(arguments.childOrderItem.getQuantity())) {
 				arguments.childOrderItem.setQuantity( 1 );
 			}	
-			if(isNull(arguments.childOrderItem.getPackageQuantity())){
-				arguments.childOrderItem.setPackageQuantity(arguments.childOrderItem.getQuantity());
+			if(isNull(arguments.childOrderItem.getBundleItemQuantity())){
+				arguments.childOrderItem.setBundleItemQuantity(arguments.childOrderItem.getQuantity());
 			}
 			// Set orderFulfillment if needed
 			if(isNull(arguments.childOrderItem.getOrderFulfillment())) {

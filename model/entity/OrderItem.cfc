@@ -49,7 +49,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="skuPrice" ormtype="big_decimal";
 	property name="currencyCode" ormtype="string" length="3";
 	property name="quantity" hb_populateEnabled="public" ormtype="integer";
-	property name="packageQuantity" hb_populateEnabled="public" ormtype="integer";
+	property name="bundleItemQuantity" hb_populateEnabled="public" ormtype="integer";
 	property name="estimatedDeliveryDateTime" ormtype="timestamp";
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
 
@@ -311,8 +311,8 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			var childProductBundleGroupPrice = getProductBundleGroupPrice(childOrderItem);
 			var childQuantity = childOrderItem.getQuantity();			
 			//if we have a package quantity use that instead
-			if(!isNull(childOrderItem.getPackageQuantity())){
-				childQuantity = childOrderItem.getPackageQuantity(); 
+			if(!isNull(childOrderItem.getBundleItemQuantity())){
+				childQuantity = childOrderItem.getBundleItemQuantity(); 
 			}
 			productBundlePrice += precisionEvaluate(childProductBundleGroupPrice * childQuantity);
 		}
@@ -420,16 +420,16 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		variables.quantity = arguments.quantity;
 		if(this.isRootOrderItem()){
 			for(var childOrderItem in this.getChildOrderItems()){
-				var newQuantity = PrecisionEvaluate(childOrderItem.getPackageQuantity() * variables.quantity);
+				var newQuantity = PrecisionEvaluate(childOrderItem.getBundleItemQuantity() * variables.quantity);
 				childOrderItem.setQuantity(newQuantity); 
 			}
 		}	
 	}	
 
-	public void function setPackageQuantity(required numeric packageQuantity){
+	public void function setBundleItemQuantity(required numeric bundleItemQuantity){
 		if(!this.isRootOrderItem()){
-			variables.packageQuantity = arguments.packageQuantity; 
-			variables.quantity = PrecisionEvaluate(getParentOrderItem().getQuantity() * variables.packageQuantity); 
+			variables.bundleItemQuantity = arguments.bundleItemQuantity; 
+			variables.quantity = PrecisionEvaluate(getParentOrderItem().getQuantity() * variables.bundleItemQuantity); 
 		} 
 	} 
 

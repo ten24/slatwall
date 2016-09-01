@@ -102,13 +102,15 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				{
 					orderItemid='',
 					skuPrice=4.25,
-					quantity=1
+					quantity=1,
+					bundleItemQuantity=1
 
 				},
 				{
 					orderItemid='',
 					skuPrice=2.12,
-					quantity=1
+					quantity=1,
+					bundleItemQuantity=1
 				}
 			]
 		};
@@ -171,16 +173,19 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				{
 					orderItemid='',
 					quantity=1,
+					bundleItemQuantity=1,
 					skuPrice=100
 				},
 				{
 					orderItemid='',
 					quantity=1,
+					bundleItemQuantity=1,
 					skuPrice=200
 				},
 				{
 					orderItemid='',
 					quantity=1,
+					bundleItemQuantity=1,
 					skuPrice=30
 				}
 			]
@@ -245,17 +250,20 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			childOrderItems=[
 				{
 					orderItemid='',
-					packageQuantity=3,
+					quantity=6,
+					bundleItemQuantity=3,
 					skuPrice=5
 				},
 				{
 					orderItemid='',
-					packageQuantity=2,
+					quantity=4,
+					bundleItemQuantity=2,
 					skuPrice=10
 				},
 				{
 					orderItemid='',
-					packageQuantity=4,
+					quantity=8,
+					bundleItemQuantity=4,
 					skuPrice=15
 				}
 			]
@@ -294,7 +302,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(380, orderItem.getExtendedPrice());
 	}
 
-	public void function test_quantity_and_packageQuantity() {
+	public void function test_quantity_and_bundleItemQuantity() {
 		var	orderItemData = {
 			orderItemid='',
 			price=0,
@@ -303,17 +311,17 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			childOrderItems=[
 				{
 					orderItemid='',
-					packageQuantity=3,
+					bundleItemQuantity=3,
 					skuPrice=5
 				},
 				{
 					orderItemid='',
-					packageQuantity=2,
+					bundleItemQuantity=2,
 					skuPrice=10
 				},
 				{
 					orderItemid='',
-					packageQuantity=4,
+					bundleItemQuantity=4,
 					skuPrice=15
 				}
 			]
