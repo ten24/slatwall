@@ -152,7 +152,7 @@ class SWDisplayOptions{
                                     aggregateFunction : selectedProperty.aggregate.toUpperCase(),
                                     aggregateAlias : selectedProperty.propertyIdentifier.split(/[._]+/).pop()+selectedProperty.aggregate.charAt(0).toUpperCase() + selectedProperty.aggregate.slice(1)
                                 };
-                                column['title'] +=  ' '+ rbkeyService.getRBKey('define.'+column['aggregate']['aggregateFunction'].toUpperCase());
+                                column['title'] +=  ' '+ rbkeyService.getRBKey('define.'+column['aggregate']['aggregateFunction']);
                             }
                             $scope.columns.push(column);
 
