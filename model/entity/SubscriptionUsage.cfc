@@ -223,27 +223,6 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 		return false;
 	}
 
-	public any function getInitialSubscriptionOrderItems(){
-		if( hasSubscriptionOrderItems() ){
-			var subscriptionSmartList = getService('SubscriptionService').getSubscriptionOrderItemSmartList();
-			subscriptionSmartList.addFilter("subscriptionOrderItemType.systemCode", "soitInitial");
-			subscriptionSmartList.addFilter("subscriptionUsage.subscriptionUsageID", this.getSubscriptionUsageID());
-			return subscriptionSmartList.getRecords();
-		}
-	}
-
-	public any function getInitialOrderItem(){
-
-		if( hasSubscriptionOrderItems() ){
-			var initialSubscriptionOrderItems = getInitialSubscriptionOrderItems();
-
-			if(!isNull(initialSubscriptionOrderItem)){
-				var orderitem = initialSubscriptionOrderItems[1].getOrderItem();
-				return orderitem;
-			}
-		}
-	}
-
 	public any function getInitialSku(){
 		var subscriptionOrderItemSmartList = getService("subscriptionService").getSubscriptionOrderItemSmartList();
 		subscriptionOrderItemSmartList.addFilter('subscriptionUsage.subscriptionUsageID', this.getSubscriptionUsageID());
