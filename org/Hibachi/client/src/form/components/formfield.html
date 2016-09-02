@@ -53,32 +53,32 @@
 		/>
 	</span>
 
-	<input type="file" ng-switch-when="file" ng-model="swFormField.object[swFormField.name]"  class="{{swFormField.class}}" name="{{swFormField.name}}"></input>
-	<textarea ng-switch-when="textarea" class="{{swFormField.class}}"  id="{{swFormField.name}}TextArea" ng-model="swFormField.object[swFormField.name]" name="{{swFormField.name}}"></textarea>
-	<input type="checkbox" ng-switch-when="checkbox" value="{{swFormField.value}}" class="{{swFormField.class}}" name="{{swFormField.name}}"><span></span></input>
+	<input type="file" ng-switch-when="file" ng-model="swFormField.object[swFormField.property]"  class="{{swFormField.class}}" name="{{swFormField.property}}" />
+	<textarea ng-switch-when="textarea" class="{{swFormField.class}}"  id="{{swFormField.property}}TextArea" ng-model="swFormField.object[swFormField.property]" name="{{swFormField.property}}"></textarea>
+	<input type="checkbox" ng-switch-when="checkbox" value="{{swFormField.value}}" class="{{swFormField.class}}" name="{{swFormField.property}}"><span></span></input>
 
-	<select ng-switch-when="multiselect" class="{{swFormField.class}}" name="{{swFormField.name}}" multiple="true">
+	<select ng-switch-when="multiselect" class="{{swFormField.class}}" name="{{swFormField.property}}" multiple="true">
 			<option value="{{option.value}}" ng-repeat="option in swFormField.optionValues" ng-if="option.selected" selected>{{option.name}}</option>
 			<option value="{{option.value}}" ng-repeat="option in swFormField.optionValues" ng-if="!option.selected">{{option.name}}</option>
 	</select>
 
-	<div ng-switch-when="radiogroup" name="{{swFormField.name}}">
+	<div ng-switch-when="radiogroup" name="{{swFormField.property}}">
 		<div ng-repeat="option in optionValues" class="{{swFormField.class}}">
 			<label ng-bind="option.name" ng-if="option.name" class="control-label"></label>
-			<input type="radio" id="{{option.name}}_{{option.value}}" name="{{swFormField.name}}" class="radio"/>
+			<input type="radio" id="{{option.name}}_{{option.value}}" name="{{swFormField.property}}" class="radio"/>
 		</div>
 	</div>
 
-	<div ng-switch-when="checkboxgroup" name="{{swFormField.name}}">
+	<div ng-switch-when="checkboxgroup" name="{{swFormField.property}}">
 		<div ng-repeat="option in optionValues" class="{{swFormField.class}}">
 			<label ng-bind="option.name" ng-if="option.name" class="{{swFormField.class}}"></label>
-			<input type="checkbox" id="{{option.name}}_{{option.value}}" name="{{swFormField.name}}"/>
+			<input type="checkbox" id="{{option.name}}_{{option.value}}" name="{{swFormField.property}}"/>
 		</div>
 	</div>
 
 	<!--- needs to be replaced with an action caller --->
 	<div ng-switch-when="submit" name="submit">
-		<input type="submit" class="btn" name="submit" text="{{swFormField.name}}" value="{{swFormField.name}}" ng-click="swfPropertyDisplayController.submit();"></input>
+		<input type="submit" class="btn" name="submit" text="{{swFormField.property}}" value="{{swFormField.property}}" ng-click="swfPropertyDisplayController.submit();" />
 	</div>
 
 </ng-switch>
