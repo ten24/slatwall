@@ -70,7 +70,7 @@ Notes:
 			<hb:HibachiListingColumn propertyIdentifier="orderNumber" />
 			<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="account.fullName" />
 			<hb:HibachiListingColumn propertyIdentifier="orderOpenDateTime" />
-			<hb:HibachiListingColumn propertyIdentifier="orderStatusType.typeName" title="#$.slatwall.rbKey('define.status')#" />
+			<hb:HibachiListingColumn propertyIdentifier="orderStatusType.typeName" title="#$.slatwall.rbKey('define.status')#" filter="true"/>
 			<hb:HibachiListingColumn propertyIdentifier="calculatedTotal" />
 		</hb:HibachiListingDisplay>
 		<br />

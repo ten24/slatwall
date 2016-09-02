@@ -64,14 +64,18 @@
 								<!-- All Other Transactions -->
 								<td ng-if-start="$index!=swGiftCardHistory.transactions.length-1 && !transaction.emailSent && !transaction.activated && !transaction.bouncedEmail" class="s-status"><i class="fa fa-shopping-cart"></i></td>
 								<td ng-if-end>
-									<span ng-if="transaction.debit">Purchase Applied</span>
-									<span ng-if="!transaction.debit">Return Applied</span> 
+									<span ng-if="transaction.debit">Charge Applied</span>
+									<span ng-if="!transaction.debit">Credit Applied</span> 
 								</td>
-								<td ng-if-start="$index!=swGiftCardHistory.transactions.length-1 && !transaction.emailSent && !transaction.activated  && !transaction.bouncedEmail" ng-bind="transaction.orderPayment_order_orderOpenDateTime"></td>
-								<td>Order: 
-									<a href="{{transaction.detailOrderLink}}">
-										<span ng-bind="transaction.orderPayment_order_orderNumber"></span>
-									</a>
+								<td ng-if-start="$index!=swGiftCardHistory.transactions.length-1 && !transaction.emailSent && !transaction.activated  && !transaction.bouncedEmail">
+								    <span ng-if="transaction.orderPayment_order_orderOpenDateTime.trim().length"  ng-bind="transaction.orderPayment_order_orderOpenDateTime"></span>
+								    <span ng-if="!transaction.orderPayment_order_orderOpenDateTime.trim().length" ng-bind="transaction.createdDateTime"></span> 
+								</td>
+								<td><span ng-if="angular.isDefined(transaction.orderPayment_order_orderNumber)">Order: 
+									    <a href="{{transaction.detailOrderLink}}">
+										    <span ng-bind="transaction.orderPayment_order_orderNumber"></span>
+									    </a>
+									</span>
 								</td>
 								<td>
 									<span class="s-bold" ng-if-start="!transaction.debit && !transaction.emailSent && !transaction.activated  && !transaction.bouncedEmail">+</span>

@@ -104,14 +104,14 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 	}
 	
 	public struct function getJsonResponse(required any jsonPacket){
-		var url = "";
+		var urlString = "";
 		var service = "Rate";
 		if(setting('testingFlag')) {
-			url = variables.testUrl & service;
+			urlString = variables.testUrl & service;
 		} else {
-			url = variables.productionUrl & service;
+			urlString = variables.productionUrl & service;
 		}
-		return getResponse(requestPacket=arguments.jsonPacket,urlString=url,format="json");
+		return getResponse(requestPacket=arguments.jsonPacket,urlString=urlString,format="json");
 	}
 	
 	private any function getShippingProcessShipmentResponseBean(struct jsonResponse){

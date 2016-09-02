@@ -155,7 +155,7 @@ Notes:
 							<cfif IsNumeric(recordData.quantity) && thisQuantity gt 0>
 								<td>#thisQuantity#</td>
 							<cfelse>
-								<td style="color:##cc0000;">#$.slatwall.rbKey('define.quantitymustbegreaterthanzero')#</td>
+								<td style="color:##cc0000;">#$.slatwall.rbKey('entity.orderDelivery.process.create.cannotfulfillitem')#</td>
 							</cfif>
 
 							<input type="hidden" name="orderDeliveryItems[#orderItemIndex#].orderItem.orderItemID" value="#recordData.orderItem.orderItemID#" />
