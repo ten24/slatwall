@@ -103,7 +103,7 @@ Notes:
 	<body <cfif !$.slatwall.getLoggedInAsAdminFlag() && !structKeyExists(url,'ng')>class="s-login-screen"</cfif>>
 		<span>
 			
-		<cfif $.slatwall.getLoggedInAsAdminFlag()>
+		<cfif $.slatwall.getLoggedInAsAdminFlag() || structKeyExists(url,'ng')>
 			<div class="navbar navbar-fixed-top navbar-inverse" role="navigation" id="slatwall-navbar">
 				<div class="container-fluid" style="text-align:left;">
 
