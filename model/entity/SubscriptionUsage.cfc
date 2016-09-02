@@ -100,7 +100,6 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	property name="currentStatusCode" persistent="false";
 	property name="currentStatusType" persistent="false";
 	property name="subscriptionOrderItemName" persistent="false";
-	property name="initialSubscriptionOrderItems" persistent="false";
 	property name="initialOrder" persistent="false";
 	property name="initialSku" persistent="false";
 	property name="initialProduct" persistent="false";
