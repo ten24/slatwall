@@ -65,6 +65,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	property name="accountPaymentMethod" cfc="AccountPaymentMethod" fieldtype="many-to-one" fkcolumn="accountPaymentMethodID";
 	property name="gracePeriodTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="gracePeriodTermID";
 	property name="initialTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="initialTermID";
+	property name="initialOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="initialOrderItemID"; 
 	property name="renewalSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="renewalSkuID";
 	property name="renewalTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="renewalTermID";
 	property name="subscriptionTerm" cfc="SubscriptionTerm" fieldtype="many-to-one" fkcolumn="subscriptionTermID";
@@ -99,7 +100,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	property name="currentStatusCode" persistent="false";
 	property name="currentStatusType" persistent="false";
 	property name="subscriptionOrderItemName" persistent="false";
-	property name="initialSubscriptionOrderItem" persistent="false";
+	property name="initialSubscriptionOrderItems" persistent="false";
 	property name="initialOrderItem" persistent="false";
 	property name="initialOrder" persistent="false";
 	property name="initialSku" persistent="false";
@@ -223,10 +224,11 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 		return false;
 	}
 
-	public any function getInitialSubscriptionOrderItem(){
+	public any function getInitialSubscriptionOrderItems(){
 		if( hasSubscriptionOrderItems() ){
 			var subscriptionSmartList = getService('SubscriptionService').getSubscriptionOrderItemSmartList();
 			subscriptionSmartList.addFilter("subscriptionOrderItemType.systemCode", "soitInitial");
+			subscriptionSmartList.addFilter("subscriptionUsage.subscriptionUsageID", this.getSubscriptionUsageID());
 			return subscriptionSmartList.getRecords();
 		}
 	}
@@ -234,10 +236,10 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	public any function getInitialOrderItem(){
 
 		if( hasSubscriptionOrderItems() ){
-			var initialSubscriptionOrderItem = getInitialSubscriptionOrderItem();
+			var initialSubscriptionOrderItems = getInitialSubscriptionOrderItems();
 
 			if(!isNull(initialSubscriptionOrderItem)){
-				var orderitem = initialSubscriptionOrderItem[1].getOrderItem();
+				var orderitem = initialSubscriptionOrderItems[1].getOrderItem();
 				return orderitem;
 			}
 		}
