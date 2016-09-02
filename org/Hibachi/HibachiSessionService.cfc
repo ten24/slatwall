@@ -182,36 +182,36 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 	}
 	
-	/** Updates the database and the cookies related to the database. */
-	public void function persistSession() {
-		
-		//Generate new session cookies for every time the session is persisted (on every login);
-		//This cookie is removed on browser close
-		var npCookieValue = getValueForCookie();
-			getHibachiScope().getSession().setSessionCookieNPSID(npCookieValue);
-			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-NPSID", value=getHibachiScope().getSession().getSessionCookieNPSID());
-	    
-	    //This cookie never expires.
-	    var cookieValue = getValueForCookie();
-			getHibachiScope().getSession().setSessionCookiePSID(cookieValue);
-			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-PSID", value=getHibachiScope().getSession().getSessionCookiePSID(), expires="never");
-		
-		//only set this if the use is not an admin user and we are using extended sessions.
-		if (!getHibachiScope().getAccount().getAdminAccountFlag() && getHibachiScope().setting('globalExtendedSessionAutoLogoutInDays') && getHibachiScope().setting('globalUseExtendedSession')){
-			var cookieValue = getValueForCookie();
-			getHibachiScope().getSession().setSessionCookieExtendedPSID(cookieValue);
-			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-ExtendedPSID", value=getHibachiScope().getSession().getSessionCookieExtendedPSID(), expires="#getHibachiScope().setting('globalExtendedSessionAutoLogoutInDays')#");
-		}
-		
+	public void function persistSession(updateLoginCookies=false) {
+	
 		// Save the session
 		getHibachiDAO().save( getHibachiScope().getSession() );
-		
-		// Make sure that this login is persisted
-		getHibachiDAO().flushORMSession();
 		
 		// Save session ID in the session Scope & cookie scope for next request
 		getHibachiScope().setSessionValue('sessionID', getHibachiScope().getSession().getSessionID());
 		
+		if (arguments.updateLoginCookies == true){
+			//Generate new session cookies for every time the session is persisted (on every login);
+			//This cookie is removed on browser close
+			var npCookieValue = getValueForCookie();
+				getHibachiScope().getSession().setSessionCookieNPSID(npCookieValue);
+				getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-NPSID", value=getHibachiScope().getSession().getSessionCookieNPSID());
+		    
+		    //This cookie never expires.
+		    var cookieValue = getValueForCookie();
+				getHibachiScope().getSession().setSessionCookiePSID(cookieValue);
+				getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-PSID", value=getHibachiScope().getSession().getSessionCookiePSID(), expires="never");
+			
+			//only set this if the use is not an admin user and we are using extended sessions.
+			if (!getHibachiScope().getAccount().getAdminAccountFlag() && getHibachiScope().setting('globalExtendedSessionAutoLogoutInDays') && getHibachiScope().setting('globalUseExtendedSession')){
+				var cookieValue = getValueForCookie();
+				getHibachiScope().getSession().setSessionCookieExtendedPSID(cookieValue);
+				getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-ExtendedPSID", value=getHibachiScope().getSession().getSessionCookieExtendedPSID(), expires="#getHibachiScope().setting('globalExtendedSessionAutoLogoutInDays')#");
+			}
+			
+			// Make sure that this login is persisted
+			getHibachiDAO().flushORMSession();
+		}
 	}
 	
 	public string function loginAccount(required any account, required any accountAuthentication) {
@@ -221,8 +221,8 @@ component output="false" accessors="true" extends="HibachiService"  {
 		currentSession.setAccountAuthentication( arguments.accountAuthentication );
 	    currentSession.setLoggedInDateTime(DateTimeFormat(now()));
 		
-		// Make sure that we persist the session (sets cookies and flushes)
-		persistSession();
+		// Make sure that we persist the session
+		persistSession(updateLoginCookies=true);
 	
 		var auditLogData = {
 	
