@@ -172,7 +172,7 @@ class SWDisplayOptions{
                                 var propertyIdentifierParts = propertyIdentifierJoins.split('_');
 
 
-                                var current_collection = $hibachi.getEntityExample(propertyIdentifierParts[0].charAt(0).toUpperCase() + propertyIdentifierParts[0].slice(1));
+                                var  current_collection = $hibachi.getEntityExample($scope.baseEntityName);
                                 var _propertyIdentifier = '';
                                 var joins = [];
 
