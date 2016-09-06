@@ -98,11 +98,17 @@ Notes:
 
 	<cfloop query="local.getsubscriptionusages">
 		<cfquery name="local.getsubscriptionusageorderitems">
-			select * from SwSubscriptionOrderItem where subscriptUsageID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getsubscriptionusages.subscriptionUsageID#" />
+			select * from SwSubscriptionOrderItem oi
+			where 
+				oi.subscriptionUsageID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getsubscriptionusages.subscriptionUsageID#" />
+			and 
+				oi.subscriptionOrderItemTypeID = '444df311d7615e7cf56b836f515aebd4'
 		</cfquery> 		
 		<cfloop query="local.getsubscriptionusageorderitems">
 			<cfquery name="local.updateSubscriptionUsage"> 
-				update SwSubscriptionUsage set initialOrderItemID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getsubsscriptionusageorderitems.orderItemID#" where subscriptionUsageID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getsubscriptionusages.subscriptionUsageID#" />
+				update SwSubscriptionUsage 
+				set initialOrderItemID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getsubsscriptionusageorderitems.orderItemID#" />
+				where subscriptionUsageID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getsubscriptionusages.subscriptionUsageID#" />
 			</cfquery> 	
 			<cfbreak> 	
 		</cfloop> 
