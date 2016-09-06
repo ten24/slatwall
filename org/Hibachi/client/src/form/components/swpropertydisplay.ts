@@ -364,6 +364,8 @@ class SWPropertyDisplay implements ng.IDirective{
     
 	//@ngInject
     constructor(
+        public $compile,
+		public scopeService,
         public coreFormPartialsPath,
         public hibachiPathBuilder,
         public swpropertyPartialPath
@@ -372,27 +374,21 @@ class SWPropertyDisplay implements ng.IDirective{
         this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.coreFormPartialsPath) + swpropertyPartialPath;
     }
 
-
-    public link:ng.IDirectiveLinkFn = (scope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, formController: any) =>{
-        scope.frmController = formController;
-        scope.swfPropertyDisplay = scope.swPropertyDisplay;
-    };
-
-
     public static Factory(swpropertyClass,swpropertyPartialPath?:string){
         var directive = (
             $compile, 
             scopeService, 
             coreFormPartialsPath,
-            hibachiPathBuilder
+            hibachiPathBuilder,
+            swpropertyPartialPath
         )=>new swpropertyClass(
             $compile,
-			scopeService
+			scopeService,
 			coreFormPartialsPath,
             hibachiPathBuilder,
             swpropertyPartialPath
         );
-        directive.$inject = ['$compile','scopeService','coreFormPartialsPath', 'hibachiPathBuilder'];
+        directive.$inject = ['$compile','scopeService','coreFormPartialsPath', 'hibachiPathBuilder', 'swpropertyPartialPath'];
 
         return directive;
     }
@@ -400,6 +396,9 @@ class SWPropertyDisplay implements ng.IDirective{
     
     public link:ng.IDirectiveLinkFn = ($scope, element: ng.IAugmentedJQuery, attrs, formController: any) =>{
         
+        $scope.frmController = formController;
+        $scope.swfPropertyDisplay = $scope.swPropertyDisplay;
+
         if(angular.isDefined(attrs.onChange)){
             $scope.swPropertyDisplay.hasOnChangeCallback = true; 
         } else { 

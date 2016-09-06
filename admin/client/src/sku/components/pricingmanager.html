@@ -124,23 +124,18 @@
                         data-angular-links="false"
                         data-has-action-bar="false"
                         data-child-property-name="bundledSkus"
-                        data-base-entity-name="Product"
-                        data-base-entity-id="{{swPricingManager.productId}}"
+                        data-base-entity-name="Sku"
                         data-administrative-count="1"
                                     >
                         <sw-listing-columns>
-                            <sw-listing-column
-                                data-property-identifier="price"
-                                data-is-visible="true"
-                                data-cell-view="swSkuPricesEdit"
-                                data-header-view="swSkuCurrencySelector"
-                            >
+                            <sw-listing-column 
+                                data-property-identifier="skuCode" 
+                                data-fallback-property-identifiers="skuCode,sku_skuCode" 
+                                tdclass="primary">
                             </sw-listing-column>
                             <sw-listing-column 
-                                data-property-identifier="maxQuantity" 
-                                data-title="Maximum Quantity"
-                                data-cell-view="swSkuPriceQuantityEdit"
-                            >
+                                data-property-identifier="skuDescription" 
+                                data-fallback-property-identifiers="skuDefinition,sku_skuDefinition">
                             </sw-listing-column>
                             <sw-listing-column 
                                 data-property-identifier="minQuantity" 
@@ -148,13 +143,17 @@
                                 data-cell-view="swSkuPriceQuantityEdit"
                             ></sw-listing-column>
                             <sw-listing-column 
-                                data-property-identifier="skuDescription" 
-                                data-fallback-property-identifiers="skuDefinition,sku_skuDefinition">
+                                data-property-identifier="maxQuantity" 
+                                data-title="Maximum Quantity"
+                                data-cell-view="swSkuPriceQuantityEdit"
+                            >
                             </sw-listing-column>
-                            <sw-listing-column 
-                                data-property-identifier="skuCode" 
-                                data-fallback-property-identifiers="skuCode,sku_skuCode" 
-                                tdclass="primary">
+                            <sw-listing-column
+                                data-property-identifier="price"
+                                data-is-visible="true"
+                                data-cell-view="swSkuPricesEdit"
+                                data-header-view="swSkuCurrencySelector"
+                            >
                             </sw-listing-column>
                         </sw-listing-columns>
                         
