@@ -24,6 +24,8 @@ import {MetaDataService} from "./services/metadataservice";
 import {RbKeyService} from "./services/rbkeyservice";
 import {ScopeService} from "./services/scopeservice";
 import {$Hibachi} from "./services/hibachiservice";
+import {HistoryService} from "./services/historyservice"; 
+import {ListingService} from "./services/listingservice"
 import {LocalStorageService} from "./services/localstorageservice";
 import {ListingService} from "./services/listingservice"
 import {HibachiServiceDecorator} from "./services/hibachiservicedecorator";
@@ -61,6 +63,7 @@ import {SWEntityActionBarButtonGroup} from "./components/swentityactionbarbutton
 import {SWExpandableRecord} from "./components/swexpandablerecord";
 import {SWGravatar} from "./components/swgravatar";
 import {SWListingDisplay} from "./components/swlistingdisplay";
+import {SWListingDisplayCell} from "./components/swlistingdisplaycell";
 import {SWListingControls} from "./components/swlistingcontrols";
 import {SWListingSearch} from "./components/swlistingsearch";
 import {SWListingAggregate} from "./components/swlistingaggregate";
@@ -72,6 +75,7 @@ import {SWListingFilter} from "./components/swlistingfilter";
 import {SWListingFilterGroup} from "./components/swlistingfiltergroup";
 import {SWListingOrderBy} from "./components/swlistingorderby";
 import {SWListingRowSave} from "./components/swlistingrowsave"; 
+import {SWListingSearch} from "./components/swlistingsearch";
 import {SWLogin} from "./components/swlogin";
 import {SWModalLauncher} from "./components/swmodallauncher";
 import {SWModalWindow} from "./components/swmodalwindow"; 
@@ -184,6 +188,8 @@ var coremodule = angular.module('hibachi.core',[
 .service('hibachiInterceptor', HibachiInterceptor.Factory())
 .service('hibachiScope',HibachiScope)
 .service('scopeService',ScopeService)
+.service('historyService',HistoryService)
+.service('listingService', ListingService)
 .service('localStorageService',LocalStorageService)
 .service('requestService',RequestService)
 .service('accountService',AccountService)
@@ -227,10 +233,12 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swListingColumn',SWListingColumn.Factory())
 .directive('swListingDisableRule', SWListingDisableRule.Factory())
 .directive('swListingExpandableRule', SWListingExpandableRule.Factory())
+.directive('swListingDisplayCell',SWListingDisplayCell.Factory())
 .directive('swListingFilter',SWListingFilter.Factory())
 .directive('swListingFilterGroup',SWListingFilterGroup.Factory())
 .directive('swListingOrderBy',SWListingOrderBy.Factory())
 .directive('swListingRowSave', SWListingRowSave.Factory())
+.directive('swListingSearch', SWListingSearch.Factory())
 .directive('swLogin',SWLogin.Factory())
 .directive('swModalLauncher',SWModalLauncher.Factory())
 .directive('swModalWindow', SWModalWindow.Factory())

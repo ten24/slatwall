@@ -144,8 +144,53 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//Testing the argument
 		var resultInvalidArgu = variables.dao.getPreviouslyReturnedFulfillmentTotal('SomeFakeParentORdrID');
 		assertEquals(0, resultInvalidArgu);
+	}
+	
+	public void function getGiftCardOrderItemsTest() {
+		var productData = {
+			productID = '',
+			productType = {
+				productTypeID = '50cdfabbc57f7d103538d9e0e37f61e4'//giftcard
+			}
+		};
+		var mockProduct = createPersistedTestEntity('Product', productData);
 		
+		var mockTerm = createSimpleMockEntityByEntityName('Term');
 		
+		var skuData = {
+			skuID = '',
+			product = {
+				productID = mockProduct.getProductID()
+			},
+			giftCardExpirationTerm = {
+				termID = mockTerm.getTermID()
+			}
+			
+		};
+		var mockSku = createPersistedTestEntity('Sku', skuData);
+		
+		var orderItemData = {
+			orderItem = '',
+			sku = {
+				skuID = mockSku.getSkuID()
+			},
+			quantity = 50
+			
+		};
+		var mockOrderItem = createPersistedTestEntity('OrderItem', orderItemData);
+		
+		var orderData = {
+			orderID = '',
+			orderItems=[
+				{
+					orderItemID=mockOrderItem.getOrderItemID()
+				}
+			]
+		};
+		var mockOrder = createPersistedTestEntity('Order', orderData);
+		
+		var resultOrderItems = variables.dao.getGiftCardOrderItems(mockOrder.getOrderID());
+		assertEquals(mockOrderItem.getOrderItemID(), resultOrderItems[1].getOrderItemID());
 	}
 
 

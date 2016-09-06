@@ -76,7 +76,11 @@ class SWListingExpandableRule implements ng.IDirective{
                     refreshChildrenEvent:scope.swListingExpandableRule.refreshChildrenEvent
                 };
                 
+<<<<<<< HEAD
                 var listingDisplayScope = this.scopeService.locateParentScope(scope,"swListingDisplay");
+=======
+                var listingDisplayScope = this.scopeService.getRootParentScope(scope,"swListingDisplay");
+>>>>>>> 8752089deaa3a8bd5071e97f8e60c1e1b7ff9486
                 if(angular.isDefined(listingDisplayScope.swListingDisplay)){
                     listingDisplayScope = listingDisplayScope.swListingDisplay;
                 }else {

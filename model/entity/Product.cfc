@@ -73,6 +73,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="renewalSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="renewalSkuID" cascade="delete" fetch="join";
 
 	// Related Object Properties (one-to-many)
+	property name="listingPages" singularname="listingPage" cfc="ProductListingPage" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	property name="skus" type="array" cfc="Sku" singularname="sku" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	property name="productImages" type="array" cfc="Image" singularname="productImage" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
@@ -80,7 +81,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="productSchedules" singularName="productSchedule" cfc="ProductSchedule" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 
 	// Related Object Properties (many-to-many - owner)
-	property name="listingPages" singularName="listingPage" cfc="ProductListingPage" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	property name="categories" singularname="category" cfc="Category" fieldtype="many-to-many" linktable="SwProductCategory" fkcolumn="productID" inversejoincolumn="categoryID";
 	property name="relatedProducts" singularname="relatedProduct" cfc="Product" type="array" fieldtype="many-to-many" linktable="SwRelatedProduct" fkcolumn="productID" inversejoincolumn="relatedProductID";
 
@@ -198,7 +198,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return variables.productTypeOptions;
 	}
 
-    public boolean function hasContent(required string contentID){
+	public boolean function hasContent(required string contentID){
         for(var listingPage in this.getListingPages()){
             if(listingPage.getContent().getContentID() == contentID){
                    return true;
@@ -206,7 +206,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
         }
         return false;
     } 
-
 
     public any function getListingPagesOptionsSmartList() {
 		if(!structKeyExists(variables, "listingPagesOptionsSmartList")) {
@@ -1175,26 +1174,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public void function removeProductReview(required any productReview) {
 		arguments.productReview.removeProduct( this );
 	}
-
-	/* Listing Pages (many-to-many - owner)
-	public void function addListingPage(required any listingPage) {
-		if(isNew() or !hasListingPage(arguments.listingPage)) {
-			arrayAppend(variables.listingPages, arguments.listingPage);
-		}
-		if(arguments.listingPage.isNew() or !arguments.listingPage.hasListingProduct( this )) {
-			arrayAppend(arguments.listingPage.getListingProducts(), this);
-		}
-	}
-	public void function removeListingPage(required any listingPage) {
-		var thisIndex = arrayFind(variables.listingPages, arguments.listingPage);
-		if(thisIndex > 0) {
-			arrayDeleteAt(variables.listingPages, thisIndex);
-		}
-		var thatIndex = arrayFind(arguments.listingPage.getListingProducts(), this);
-		if(thatIndex > 0) {
-			arrayDeleteAt(arguments.listingPage.getListingProducts(), thatIndex);
-		}
-	}*/
 
 	// Promotion Rewards (many-to-many - inverse)
 	public void function addPromotionReward(required any promotionReward) {

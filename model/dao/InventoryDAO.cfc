@@ -68,7 +68,6 @@ Notes:
 							inventory.stock.stockID,
 							inventory.stock.location.locationID,
 							inventory.stock.location.locationIDPath";
-						
 			
 			return ormExecuteQuery(hql, params);
 		}
@@ -81,11 +80,21 @@ Notes:
 		
 		// Quantity Not Delivered on Order 
 		public array function getQNDOO(required string productID, string productRemoteID) {
-			var params = [ arguments.productID ];
+			var params = { productID = arguments.productID };
 			
-			
-			
-			var hql = "SELECT NEW MAP(coalesce( sum(orderItem.quantity), 0 ) - coalesce( sum(orderDeliveryItem.quantity), 0 ) as QNDOO, 
+			var hql = "SELECT NEW MAP(
+								coalesce( 
+								(	
+									SELECT sum(orderItem.quantity)
+									FROM SlatwallOrderItem orderItem
+									WHERE
+										orderItem.order.orderStatusType.systemCode NOT IN ('ostNotPlaced','ostClosed','ostCanceled')
+						  			AND
+						  				orderItem.orderItemType.systemCode = 'oitSale'
+						  			AND 
+										orderItem.sku.product.productID = :productID
+								), 0 ) 
+								- coalesce( sum(orderDeliveryItem.quantity), 0 ) as QNDOO, 
 							orderItem.sku.skuID as skuID, 
 							stock.stockID as stockID, 
 							location.locationID as locationID, 
@@ -103,14 +112,13 @@ Notes:
 						  AND
 						  	orderItem.orderItemType.systemCode = 'oitSale'
 						  AND 
-							orderItem.sku.product.productID = ?
+							orderItem.sku.product.productID = :productID
 						GROUP BY
 							orderItem.sku.skuID,
 							stock.stockID,
 							location.locationID,
 							location.locationIDPath";
-			return ormExecuteQuery(hql, params);
-			
+			return ormExecuteQuery(hql, params);	
 		}
 		
 		// Quantity not delivered on return vendor order 
@@ -122,29 +130,42 @@ Notes:
 		// Quantity not delivered on stock adjustment
 		public array function getQNDOSA(required string productID, string productRemoteID) {
 			
-			var params = [ arguments.productID ];
-			var hql = "SELECT NEW MAP(coalesce( sum(stockAdjustmentItem.quantity), 0 ) - coalesce( sum(stockAdjustmentDeliveryItem.quantity), 0 ) as QNDOSA, 
-							fromStock.sku.skuID as skuID, 
-							fromStock.stockID as stockID, 
-							location.locationID as locationID, 
-							location.locationIDPath as locationIDPath)
-						FROM
-							SlatwallStockAdjustmentItem stockAdjustmentItem
-						  LEFT JOIN
-						  	stockAdjustmentItem.stockAdjustmentDeliveryItems stockAdjustmentDeliveryItem
-						  LEFT JOIN
-						  	stockAdjustmentItem.fromStock fromStock
-						  LEFT JOIN
-						  	fromStock.location location
-						WHERE
-							stockAdjustmentItem.stockAdjustment.stockAdjustmentStatusType.systemCode != 'sastClosed'
-						  AND
-							fromStock.sku.product.productID = ?
-						GROUP BY
-							fromStock.sku.skuID,
-							fromStock.stockID,
-							location.locationID,
-							location.locationIDPath";
+			var params = {productID=arguments.productID};
+			var hql = "SELECT NEW MAP(
+					coalesce( 
+						(
+							SELECT sum(stockAdjustmentItem.quantity)
+							FROM SlatwallStockAdjustmentItem stockAdjustmentItem
+								LEFT JOIN
+								stockAdjustmentItem.fromStock fromStock
+							WHERE
+								stockAdjustmentItem.stockAdjustment.stockAdjustmentStatusType.systemCode != 'sastClosed'
+							  AND
+								fromStock.sku.product.productID = :productID
+						), 0 
+					) 
+					- coalesce( sum(stockAdjustmentDeliveryItem.quantity), 0 ) as QNDOSA, 
+						fromStock.sku.skuID as skuID, 
+						fromStock.stockID as stockID, 
+						location.locationID as locationID, 
+						location.locationIDPath as locationIDPath)
+					FROM
+						SlatwallStockAdjustmentItem stockAdjustmentItem
+					  LEFT JOIN
+					  	stockAdjustmentItem.stockAdjustmentDeliveryItems stockAdjustmentDeliveryItem
+					  LEFT JOIN
+					  	stockAdjustmentItem.fromStock fromStock
+					  LEFT JOIN
+					  	fromStock.location location
+					WHERE
+						stockAdjustmentItem.stockAdjustment.stockAdjustmentStatusType.systemCode != 'sastClosed'
+					  AND
+						fromStock.sku.product.productID = :productID
+					GROUP BY
+						fromStock.sku.skuID,
+						fromStock.stockID,
+						location.locationID,
+						location.locationIDPath";
 			
 			return ormExecuteQuery(hql, params);
 		}
@@ -152,8 +173,20 @@ Notes:
 		// Quantity not received on return order
 		public array function getQNRORO(required string productID, string productRemoteID) {
 			
-			var params = [ arguments.productID ];
-			var hql = "SELECT NEW MAP(coalesce( sum(orderItem.quantity), 0 ) - coalesce( sum(stockReceiverItem.quantity), 0 ) as QNRORO, 
+			var params = { productID=arguments.productID };
+			var hql = "SELECT NEW MAP(
+								coalesce( 
+								(
+									SELECT sum(orderItem.quantity)
+									FROM SlatwallOrderItem orderItem
+									WHERE
+										orderItem.order.orderStatusType.systemCode NOT IN ('ostNotPlaced','ostClosed','ostCanceled')
+					 				 AND
+					  					orderItem.orderItemType.systemCode = 'oitReturn'
+					  				 AND
+										orderItem.sku.product.productID = :productID
+								), 0 ) 
+								- coalesce( sum(stockReceiverItem.quantity), 0 ) as QNRORO, 
 							orderItem.sku.skuID as skuID, 
 							stock.stockID as stockID, 
 							location.locationID as locationID, 
@@ -171,7 +204,7 @@ Notes:
 						  AND
 						  	orderItem.orderItemType.systemCode = 'oitReturn'
 						  AND
-							orderItem.sku.product.productID = ?
+							orderItem.sku.product.productID = :productID
 						GROUP BY
 							orderItem.sku.skuID,
 							stock.stockID,
@@ -183,12 +216,25 @@ Notes:
 		// Quantity not received on vendor order
 		public array function getQNROVO(required string productID, string productRemoteID) {
 			
-			var params = [ arguments.productID ];
-			var hql = "SELECT NEW MAP(coalesce( sum(vendorOrderItem.quantity), 0 ) - coalesce( sum(stockReceiverItem.quantity), 0 ) as QNROVO, 
+			var params = {productID=arguments.productID};
+			var hql = "SELECT NEW MAP(
+							coalesce( 
+							(	SELECT sum(vendorOrderItem.quantity)
+								FROM SlatwallVendorOrderItem vendorOrderItem
+								WHERE
+									vendorOrderItem.vendorOrder.vendorOrderStatusType.systemCode != 'ostClosed'
+						 			AND
+						  			vendorOrderItem.vendorOrder.vendorOrderType.systemCode = 'votPurchaseOrder'
+						  			AND
+									vendorOrderItem.stock.sku.product.productID = :productID
+								
+							), 0 ) 
+							- coalesce( sum(stockReceiverItem.quantity), 0 ) as QNROVO, 
 							stock.sku.skuID as skuID, 
 							stock.stockID as stockID, 
 							location.locationID as locationID, 
-							location.locationIDPath as locationIDPath)
+							location.locationIDPath as locationIDPath
+						)
 						FROM
 							SlatwallVendorOrderItem vendorOrderItem
 						  LEFT JOIN
@@ -202,7 +248,7 @@ Notes:
 						  AND
 						  	vendorOrderItem.vendorOrder.vendorOrderType.systemCode = 'votPurchaseOrder'
 						  AND
-							vendorOrderItem.stock.sku.product.productID = ?
+							vendorOrderItem.stock.sku.product.productID = :productID
 						GROUP BY
 							stock.sku.skuID,
 							stock.stockID,
@@ -215,8 +261,21 @@ Notes:
 		// Quantity not received on stock adjustment
 		public array function getQNROSA(required string productID, string productRemoteID) {
 			
-			var params = [ arguments.productID ];
-			var hql = "SELECT NEW MAP(coalesce( sum(stockAdjustmentItem.quantity), 0 ) - coalesce( sum(stockReceiverItem.quantity), 0 ) as QNROSA, 
+			var params = {productID = arguments.productID };
+			var hql = "SELECT NEW MAP(
+							coalesce( 
+								(
+									SELECT sum(stockAdjustmentItem.quantity)
+									FROM 
+										SlatwallStockAdjustmentItem stockAdjustmentItem
+									  LEFT JOIN
+										stockAdjustmentItem.toStock toStock
+									WHERE
+										stockAdjustmentItem.stockAdjustment.stockAdjustmentStatusType.systemCode != 'sastClosed'
+						  			  AND 
+										toStock.sku.product.productID = :productID
+								), 0 ) 
+							- coalesce( sum(stockReceiverItem.quantity), 0 ) as QNROSA, 
 							toStock.sku.skuID as skuID, 
 							toStock.stockID as stockID, 
 							location.locationID as locationID, 
@@ -232,7 +291,7 @@ Notes:
 						WHERE
 							stockAdjustmentItem.stockAdjustment.stockAdjustmentStatusType.systemCode != 'sastClosed'
 						  AND 
-							toStock.sku.product.productID = ?
+							toStock.sku.product.productID = :productID
 						GROUP BY
 							toStock.sku.skuID,
 							toStock.stockID,

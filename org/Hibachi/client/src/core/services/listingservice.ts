@@ -78,7 +78,10 @@ class ListingService{
         }
     }
 
+<<<<<<< HEAD
     //need to figure out a more concrete preference order for columns
+=======
+>>>>>>> 8752089deaa3a8bd5071e97f8e60c1e1b7ff9486
     public getColumnIndexByPropertyIdentifier = (listingID:string, propertyIdentifier) =>{
         var columns = this.getListingCollectionConfigColumns(listingID) || this.getListingColumns(listingID); 
         return this.utilityService.ArrayFindByPropertyValue(columns,'propertyIdentifier',propertyIdentifier);
@@ -163,7 +166,10 @@ class ListingService{
     }
 
     //Begin Listing Page Record Functions
+<<<<<<< HEAD
     //needs a consideration of strategy for doing this for other use cases
+=======
+>>>>>>> 8752089deaa3a8bd5071e97f8e60c1e1b7ff9486
     public getListingPageRecordIndexByPageRecord = (listingID:string, pageRecordToCompare:any) =>{
         var pageRecords = this.getListingPageRecords(listingID); 
         var primaryIDPropertyName = this.getListingEntityPrimaryIDPropertyName(listingID); 
@@ -308,7 +314,12 @@ class ListingService{
         }
         
         this.initCollectionConfigData( listingID, this.getListing(listingID).collectionConfig );
+<<<<<<< HEAD
         //this.setupColumns( listingID, this.getListing(listingID).collectionConfig, this.getListing(listingID).collectionObject ); 
+=======
+        
+        this.setupColumns( listingID, this.getListing(listingID).collectionConfig, this.getListing(listingID).collectionObject ); 
+>>>>>>> 8752089deaa3a8bd5071e97f8e60c1e1b7ff9486
         
         listingDisplayScope.$watch('swListingDisplay.collectionPromise',(newValue,oldValue)=>{
             if(newValue){
@@ -346,7 +357,11 @@ class ListingService{
             this.getListing(listingID).collectionConfig = this.collectionConfigService.newCollectionConfig(this.getListing(listingID).collectionObject);
             this.getListing(listingID).collectionConfig.loadJson(this.getListing(listingID).collection.collectionConfig);
         }
+<<<<<<< HEAD
         if(this.getListing(listingID).paginator != null 
+=======
+        if( this.getListing(listingID).paginator != null 
+>>>>>>> 8752089deaa3a8bd5071e97f8e60c1e1b7ff9486
             && this.getListing(listingID).collectionConfig != null
         ){
             this.getListing(listingID).collectionConfig.setPageShow(this.getListing(listingID).paginator.getPageShow());
@@ -371,6 +386,7 @@ class ListingService{
 
     public setupColumns = (listingID:string, collectionConfig, collectionObject) =>{
         //assumes no alias formatting
+<<<<<<< HEAD
         if( this.getListing(listingID).columns.length == 0 && 
             collectionConfig != null && 
             collectionConfig.columns != null
@@ -381,6 +397,35 @@ class ListingService{
                     this.getListing(listingID).columns.push(column);
                 }
             }
+=======
+        
+        if( this.getListing(listingID).columns.length == 0 && 
+            collectionConfig != null
+        ){
+            if(collectionConfig.columns == null){
+                collectionConfig.getEntity().then(
+                    ()=>{
+                        for(var j=0; j < collectionConfig.columns.length; j++){
+                            var column = collectionConfig.columns[j]; 
+                            if(column.isVisible){
+                                this.getListing(listingID).columns.push(column);
+                            }
+                        }
+                    }, 
+                    ()=>{
+                        throw("listing display couldn't initiate no columns");
+                    }
+                ); 
+            } else { 
+                for(var j=0; j < collectionConfig.columns.length; j++){
+                    var column = collectionConfig.columns[j]; 
+                    if(column.isVisible){
+                        this.getListing(listingID).columns.push(column);
+                    }
+                }
+            }
+            
+>>>>>>> 8752089deaa3a8bd5071e97f8e60c1e1b7ff9486
         }
 
         for(var i=0; i < this.getListing(listingID).columns.length; i++){
