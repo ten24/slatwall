@@ -171,7 +171,7 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
         return {
             pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
                 //have to do our setup here because there is no direct way to pass the pageRecord into this transcluded directive
-                var currentScope = this.scopeService.locateParentScope($scope, "pageRecord");
+                var currentScope = this.scopeService.getRootParentScope($scope, "pageRecord");
                 if(angular.isDefined(currentScope.pageRecord)){ 
                     $scope.swAddSkuPriceModalLauncher.pageRecord = currentScope.pageRecord;
                     //sku record case
@@ -190,7 +190,7 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
                 } else{ 
                     throw("swAddSkuPriceModalLauncher was unable to find the pageRecord that it needs!");
                 } 
-                var listingScope = this.scopeService.locateParentScope($scope, "swListingDisplay");
+                var listingScope = this.scopeService.getRootParentScope($scope, "swListingDisplay");
                 if(angular.isDefined(listingScope.swListingDisplay)){ 
                     $scope.swAddSkuPriceModalLauncher.listingID = listingScope.swListingDisplay.tableID;
                 }

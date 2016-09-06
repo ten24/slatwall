@@ -1,4 +1,3 @@
-<!-- Start of content that you should care about in this mock (-:)-->
 <div class="s-detail-content-wrapper">
     <div id="collapse2" class="panel-collapse collapse in">
        <sw-tab-group>
@@ -14,9 +13,7 @@
                         data-has-action-bar="false"
                         data-child-property-name="bundledSkus"
                         data-record-detail-action="admin:entity.detailsku"
-                        data-base-entity-name="Product"
-                        data-base-entity-id="{{swPricingManager.productId}}"
-                                    >
+                        data-base-entity-name="Sku">
                         <sw-listing-columns>
                             <sw-listing-column
                                 data-property-identifier="defaultSku"
@@ -36,18 +33,22 @@
                                 data-is-visible="true"
                                 data-cell-view="swSkuStockAdjustmentModalLauncher">
                             </sw-listing-column>
-                            <sw-listing-column data-property-identifier="calculatedQATS">
+                            <sw-listing-column 
+                                data-property-identifier="calculatedQATS">
                             </sw-listing-column>
-                            <sw-listing-column data-property-identifier="price"
-                                               data-is-visible="true"
-                                               data-cell-view="swSkuPriceEdit">
+                            <sw-listing-column 
+                                data-property-identifier="price"
+                                data-is-visible="true"
+                                data-cell-view="swSkuPriceEdit">
                             </sw-listing-column>
-                            <sw-listing-column data-property-identifier="skuDescription" 
-                                               data-fallback-property-identifiers="skuDescription,bundledSku_skuDefinition">
+                            <sw-listing-column 
+                                data-property-identifier="skuDescription" 
+                                data-fallback-property-identifiers="skuDescription,bundledSku_skuDefinition">
                             </sw-listing-column>
-                            <sw-listing-column data-property-identifier="skuCode" 
-                                               data-fallback-property-identifiers="skuCode,bundledSku_skuCode" 
-                                               tdclass="primary">
+                            <sw-listing-column 
+                                data-property-identifier="skuCode" 
+                                data-fallback-property-identifiers="skuCode,bundledSku_skuCode" 
+                                tdclass="primary">
                             </sw-listing-column>
                         </sw-listing-columns>
                         
@@ -56,8 +57,7 @@
                                 data-entity-name="Sku"
                                 data-parent-directive-controller-as-name="swListingDisplay"
                                 data-parent-deferred-property="singleCollectionDeferred"
-                                data-collection-config-property="collectionConfig"
-                            >
+                                data-collection-config-property="collectionConfig">
                                 <sw-collection-columns>
                                     <sw-collection-column data-property-identifier="skuID"></sw-collection-column>
                                     <sw-collection-column data-property-identifier="bundleFlag" data-is-searchable="true"></sw-collection-column>
@@ -83,15 +83,14 @@
                         <sw-expandable-row-rules>
                             <sw-listing-expandable-rule data-filter-property-identifier="bundleFlag" 
                                                         data-filter-comparison-operator="=" 
-                                                        data-filter-comparison-value="Yes" > 
+                                                        data-filter-comparison-value="Yes"> 
                                 <sw-config>
                                     <sw-collection-config 
                                         data-entity-name="SkuBundle"
                                         data-parent-directive-controller-as-name="swListingExpandableRule"
                                         data-parent-deferred-property="hasChildrenCollectionConfigDeferred"
                                         data-collection-config-property="childrenCollectionConfig"
-                                        data-all-records="true"
-                                    >
+                                        data-all-records="true">
                                         <sw-collection-columns>
                                             <sw-collection-column data-property-identifier="skuBundleID"></sw-collection-column>
                                             <sw-collection-column data-property-identifier="bundledSku.skuID"></sw-collection-column>
@@ -137,18 +136,26 @@
                                 data-header-view="swSkuCurrencySelector"
                             >
                             </sw-listing-column>
-                            <sw-listing-column data-property-identifier="maxQuantity" 
-                                               data-title="Maximum Quantity"
-                                               data-cell-view="swSkuPriceQuantityEdit"
+                            <sw-listing-column 
+                                data-property-identifier="maxQuantity" 
+                                data-title="Maximum Quantity"
+                                data-cell-view="swSkuPriceQuantityEdit"
                             >
                             </sw-listing-column>
-                            <sw-listing-column data-property-identifier="minQuantity" 
-                                               data-title="Minimum Quantity"
-                                               data-cell-view="swSkuPriceQuantityEdit"
+                            <sw-listing-column 
+                                data-property-identifier="minQuantity" 
+                                data-title="Minimum Quantity"
+                                data-cell-view="swSkuPriceQuantityEdit"
                             ></sw-listing-column>
-                            <sw-listing-column data-property-identifier="skuDescription" data-fallback-property-identifiers="skuDefinition,sku_skuDefinition"></sw-listing-column>
-                            <sw-listing-column data-property-identifier="skuCode" data-fallback-property-identifiers="skuCode,sku_skuCode" tdclass="primary"></sw-listing-column>
-                            
+                            <sw-listing-column 
+                                data-property-identifier="skuDescription" 
+                                data-fallback-property-identifiers="skuDefinition,sku_skuDefinition">
+                            </sw-listing-column>
+                            <sw-listing-column 
+                                data-property-identifier="skuCode" 
+                                data-fallback-property-identifiers="skuCode,sku_skuCode" 
+                                tdclass="primary">
+                            </sw-listing-column>
                         </sw-listing-columns>
                         
                         <sw-collection-configs>

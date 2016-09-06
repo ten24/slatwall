@@ -194,17 +194,17 @@ class SWSkuPriceEdit implements ng.IDirective{
 
     public link:ng.IDirectiveLinkFn = (scope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, formController:any, transcludeFn:ng.ITranscludeFunction) =>{
         
-        var currentScope = this.scopeService.locateParentScope(scope, "pageRecord");
+        var currentScope = this.scopeService.getRootParentScope(scope, "pageRecord");
         if(angular.isDefined(currentScope["pageRecord"])){
             scope.swSkuPriceEdit.pageRecord = currentScope["pageRecord"];
            
         }
-        var currentScope = this.scopeService.locateParentScope(scope, "pageRecordKey");
+        var currentScope = this.scopeService.getRootParentScope(scope, "pageRecordKey");
         if(angular.isDefined(currentScope["pageRecordKey"])){
              scope.swSkuPriceEdit.pageRecordIndex = currentScope["pageRecordKey"];
         }
 
-        var skuPricesEditScope = this.scopeService.locateParentScope(scope, "swSkuPricesEdit");
+        var skuPricesEditScope = this.scopeService.getRootParentScope(scope, "swSkuPricesEdit");
         if(skuPricesEditScope != null){
             scope.swSkuPriceEdit.baseEntityId = skuPricesEditScope["swSkuPricesEdit"].baseEntityId; 
             scope.swSkuPriceEdit.baseEntityName = skuPricesEditScope["swSkuPricesEdit"].baseEntityName; 
@@ -217,8 +217,8 @@ class SWSkuPriceEdit implements ng.IDirective{
             }
         }
 
-        var tabGroupScope = this.scopeService.locateParentScope(scope,"swTabGroup");
-        var tabContentScope = this.scopeService.locateParentScope(scope,"swTabContent"); 
+        var tabGroupScope = this.scopeService.getRootParentScope(scope,"swTabGroup");
+        var tabContentScope = this.scopeService.getRootParentScope(scope,"swTabContent"); 
         if(tabContentScope != null){
             if(angular.isDefined(tabGroupScope) && tabContentScope["swTabContent"].name == "Basic"){
                 scope.swSkuPriceEdit.switchTabContextEventName = tabGroupScope["swTabGroup"].switchTabEventName;

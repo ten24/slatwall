@@ -366,7 +366,6 @@ class ListingService{
         } else if (this.getListingBaseEntityName(listingID) != null) {
             column.propertyIdentifier = '_' + this.getListingBaseEntityName(listingID) + '.' + column.propertyIdentifier;
         }
-        console.log("will addcolumn", this.getListingColumnIndexByPropertyIdentifier(listingID, column.propertyIdentifier), column);
         if(this.getListingColumnIndexByPropertyIdentifier(listingID, column.propertyIdentifier) === -1){
             if(column.aggregate){
                 this.getListing(listingID).aggregates.push(column.aggregate);

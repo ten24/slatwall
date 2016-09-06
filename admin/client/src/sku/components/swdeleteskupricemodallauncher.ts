@@ -98,7 +98,7 @@ class SWDeleteSkuPriceModalLauncher implements ng.IDirective{
         return {
             pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
                 //have to do our setup here because there is no direct way to pass the pageRecord into this transcluded directive
-                var currentScope = this.scopeService.locateParentScope($scope, "pageRecord");
+                var currentScope = this.scopeService.getRootParentScope($scope, "pageRecord");
                 if(angular.isDefined(currentScope.pageRecord)){ 
                     $scope.swDeleteSkuPriceModalLauncher.pageRecord = currentScope.pageRecord; 
                     if(angular.isDefined(currentScope.pageRecord.sku_skuID)){
@@ -117,7 +117,7 @@ class SWDeleteSkuPriceModalLauncher implements ng.IDirective{
                 } else{ 
                     throw("swDeleteSkuPriceModalLauncher was unable to find the pageRecord that it needs!");
                 } 
-                var listingScope = this.scopeService.locateParentScope($scope, "swListingDisplay");
+                var listingScope = this.scopeService.getRootParentScope($scope, "swListingDisplay");
                 if(angular.isDefined(listingScope.swListingDisplay)){ 
                     $scope.swDeleteSkuPriceModalLauncher.listingID = listingScope.swListingDisplay.tableID;
                 }

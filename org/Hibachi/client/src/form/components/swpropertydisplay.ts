@@ -414,17 +414,17 @@ class SWPropertyDisplay implements ng.IDirective{
 
         if(angular.isDefined($scope.swPropertyDisplay.inListingDisplay) && $scope.swPropertyDisplay.inListingDisplay){
                 
-            var currentScope = this.scopeService.locateParentScope($scope, "pageRecord");
+            var currentScope = this.scopeService.getRootParentScope($scope, "pageRecord");
             if(angular.isDefined(currentScope["pageRecord"])){
                 $scope.swPropertyDisplay.pageRecord = currentScope["pageRecord"];
             }
             
-            var currentScope = this.scopeService.locateParentScope($scope, "pageRecordKey");
+            var currentScope = this.scopeService.getRootParentScope($scope, "pageRecordKey");
             if(angular.isDefined(currentScope["pageRecordKey"])){
                 $scope.swPropertyDisplay.pageRecordIndex = currentScope["pageRecordKey"];
             }
 
-            var currentScope = this.scopeService.locateParentScope($scope, "swListingDisplay");
+            var currentScope = this.scopeService.getRootParentScope($scope, "swListingDisplay");
             if(angular.isDefined(currentScope["swListingDisplay"])){
                 $scope.swPropertyDisplay.listingID = currentScope["swListingDisplay"].tableID;
             }
@@ -432,7 +432,7 @@ class SWPropertyDisplay implements ng.IDirective{
 
         if(angular.isDefined($scope.swPropertyDisplay.inModal) && $scope.swPropertyDisplay.inModal){
             
-            var modalScope = this.scopeService.locateParentScope($scope, "swModalLauncher");
+            var modalScope = this.scopeService.getRootParentScope($scope, "swModalLauncher");
             $scope.swPropertyDisplay.modalName = modalScope.swModalLauncher.modalName; 
             
             if(angular.isFunction(modalScope.swModalLauncher.launchModal)){
