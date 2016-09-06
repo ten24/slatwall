@@ -110,7 +110,7 @@ class ObserverService extends BaseService{
      * @param {string|object|Array|number} parameters pass whatever your listener is expecting
      * @description notifies all observers of a specific event
      */
-    notify = (event:string, parameters:any):void => {
+    notify = (event:string, parameters:any):any => {
         event = event.toLowerCase();
         return this.$timeout(()=>{
             for(var id in this.observers[event]) {
@@ -130,7 +130,7 @@ class ObserverService extends BaseService{
      * @param {string|object|Array|number} parameters pass whatever your listener is expecting
      * @description notifies observers of a specific event by id
      */
-    notifyById = (event:string, eventId:string ,parameters:any):void => {
+    notifyById = (event:string, eventId:string ,parameters:any):any => {
         event = event.toLowerCase();
         eventId = eventId.toLowerCase();
         return this.$timeout(()=>{
@@ -141,13 +141,6 @@ class ObserverService extends BaseService{
                 });
             }
         });
-    }
-    notifyAndRecord = (event:string, parameters:any):void => { 
-      this.notify(event, parameters).then(
-        ()=>{
-            this.historyService.recordHistory(event,parameters,true);
-        }
-      ); 
     }
     notifyAndRecord = (event:string, parameters:any):void => { 
       this.notify(event, parameters).then(
