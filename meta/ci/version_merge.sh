@@ -2,14 +2,20 @@
 
 # Functions for increasing the version number
 function format3Digit( ) {
-  if [ ${#micro} = 1 ]
+  if [ ${#micro} = 0 ]
+    then
+      micro=000
+  elif [ ${#micro} = 1 ]
     then
       micro=00$micro
   elif [ ${#micro} = 2 ]
     then
       micro=0$micro
   fi
-  if [ ${#build} = 1 ]
+  if [ ${#build} = 0 ]
+    then
+      build=000
+  elif [ ${#build} = 1 ]
     then
       build=00$build
   elif [ ${#build} = 2 ]
@@ -81,7 +87,7 @@ changedFiles=$(git diff --name-only)
 if [ "$changedFiles" = "" ]; then
     # no changes
     echo "No Changes To Push"
-else
+elif [ $CIRCLE_BRANCH = "master" ] || [ $CIRCLE_BRANCH = "develop" ] || [ $CIRCLE_BRANCH = "hotfix" ]; then
     # changes
     echo "Build/Version Changes Found"
     git commit -a -m "CI build passed, auto-built files commit - $CIRCLE_BUILD_URL [ci skip]"

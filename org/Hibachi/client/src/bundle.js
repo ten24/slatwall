@@ -756,7 +756,7 @@
 /***/ function(module, exports) {
 
 	(function() {
-	    'use strict';
+	    'use strict'; 
 
 	    angular.module('angularjs-datetime-picker', []);
 
@@ -1126,8 +1126,8 @@
 	/// <reference path='../typings/tsd.d.ts' />
 	/*jshint browser:true */
 	var basebootstrap_1 = __webpack_require__(13);
-	var hibachi_module_1 = __webpack_require__(75);
-	var logger_module_1 = __webpack_require__(166);
+	var hibachi_module_1 = __webpack_require__(98);
+	var logger_module_1 = __webpack_require__(187);
 	//custom bootstrapper
 	var bootstrapper = (function (_super) {
 	    __extends(bootstrapper, _super);
@@ -1148,18 +1148,44 @@
 	/// <reference path='../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../typings/tsd.d.ts' />
 	var core_module_1 = __webpack_require__(14);
+	var md5 = __webpack_require__(71);
 	//generic bootstrapper
 	var BaseBootStrapper = (function () {
 	    function BaseBootStrapper(myApplication) {
 	        var _this = this;
 	        this._resourceBundle = {};
-	        this.getData = function () {
-	            return _this.$http.get(hibachiConfig.baseURL + '?' + hibachiConfig.action + '=api:main.getConfig')
+	        this.getData = function (invalidCache) {
+	            var promises = {};
+	            for (var i in invalidCache) {
+	                var invalidCacheName = invalidCache[i];
+	                var functionName = invalidCacheName.charAt(0).toUpperCase() + invalidCacheName.slice(1);
+	                promises[invalidCacheName] = _this['get' + functionName + 'Data']();
+	            }
+	            return _this.$q.all(promises).then(function (data) {
+	            });
+	        };
+	        this.getAttributeCacheKeyData = function () {
+	            return _this.$http.get(hibachiConfig.baseURL + '?' + hibachiConfig.action + '=api:main.getAttributeModel')
+	                .then(function (resp) {
+	                core_module_1.coremodule.constant('attributeMetaData', resp.data.data);
+	                localStorage.setItem('attributeMetaData', JSON.stringify(resp.data.data));
+	                _this.attributeMetaData = resp.data.data;
+	            }, function (response) {
+	            });
+	        };
+	        this.getInstantiationKeyData = function () {
+	            if (!_this.instantiationKey) {
+	                var d = new Date();
+	                var n = d.getTime();
+	                _this.instantiationKey = n.toString();
+	            }
+	            return _this.$http.get(hibachiConfig.baseURL + '/custom/config/config.json?instantiationKey=' + _this.instantiationKey)
 	                .then(function (resp) {
 	                core_module_1.coremodule.constant('appConfig', resp.data.data);
 	                localStorage.setItem('appConfig', JSON.stringify(resp.data.data));
 	                _this.appConfig = resp.data.data;
 	                return _this.getResourceBundles();
+	            }, function (response) {
 	            });
 	        };
 	        this.getResourceBundle = function (locale) {
@@ -1168,17 +1194,21 @@
 	            if (_this._resourceBundle[locale]) {
 	                return _this._resourceBundle[locale];
 	            }
-	            var urlString = _this.appConfig.baseURL + '/index.cfm/?' + _this.appConfig.action + '=api:main.getResourceBundle&instantiationKey=' + _this.appConfig.instantiationKey + '&locale=' + locale;
+	            var urlString = _this.appConfig.baseURL + '/custom/config/resourceBundles/' + locale + '.json?instantiationKey=' + _this.appConfig.instantiationKey;
 	            _this.$http({
 	                url: urlString,
 	                method: "GET"
 	            }).success(function (response, status, headersGetter) {
-	                _this._resourceBundle[locale] = response.data;
-	                console.log(_this._resourceBundle);
+	                _this._resourceBundle[locale] = response;
 	                deferred.resolve(response);
-	            }).error(function (response) {
-	                _this._resourceBundle[locale] = {};
-	                deferred.reject(response);
+	            }).error(function (response, status) {
+	                if (status === 404) {
+	                    _this._resourceBundle[locale] = {};
+	                    deferred.resolve(response);
+	                }
+	                else {
+	                    deferred.reject(response);
+	                }
 	            });
 	            return deferred.promise;
 	        };
@@ -1206,6 +1236,9 @@
 	                core_module_1.coremodule.constant('resourceBundles', _this._resourceBundle);
 	                localStorage.setItem('resourceBundles', JSON.stringify(_this._resourceBundle));
 	            }, function (error) {
+	                //can enterhere due to 404
+	                core_module_1.coremodule.constant('resourceBundles', _this._resourceBundle);
+	                localStorage.setItem('resourceBundles', JSON.stringify(_this._resourceBundle));
 	            });
 	            return resourceBundlePromises;
 	        };
@@ -1214,24 +1247,50 @@
 	            .resolve(['$http', '$q', '$timeout', function ($http, $q, $timeout) {
 	                _this.$http = $http;
 	                _this.$q = $q;
+	                var cacheState = {
+	                    instantiationKey: false,
+	                    attributeCacheKey: false
+	                };
 	                if (localStorage.getItem('appConfig')
 	                    && localStorage.getItem('appConfig') !== 'undefined'
 	                    && localStorage.getItem('resourceBundles')
-	                    && localStorage.getItem('resourceBundles') !== 'undefined') {
+	                    && localStorage.getItem('resourceBundles') !== 'undefined'
+	                    && localStorage.getItem('attributeMetaData')
+	                    && localStorage.getItem('attributeMetaData') !== 'undefined') {
 	                    return $http.get(hibachiConfig.baseURL + '?' + hibachiConfig.action + '=api:main.getInstantiationKey')
 	                        .then(function (resp) {
 	                        var appConfig = JSON.parse(localStorage.getItem('appConfig'));
-	                        if (resp.data.data === appConfig.instantiationKey) {
-	                            core_module_1.coremodule.constant('appConfig', appConfig)
-	                                .constant('resourceBundles', JSON.parse(localStorage.getItem('resourceBundles')));
+	                        var attributeMetaData = JSON.parse(localStorage.getItem('attributeMetaData'));
+	                        var invalidCache = [];
+	                        for (var key in resp.data.data) {
+	                            if (key === 'attributeCacheKey') {
+	                                var hashedData = md5(localStorage.getItem('attributeMetaData'));
+	                                if (resp.data.data[key] === hashedData.toUpperCase()) {
+	                                    core_module_1.coremodule.constant('attributeMetaData', JSON.parse(localStorage.getItem('attributeMetaData')));
+	                                }
+	                                else {
+	                                    invalidCache.push(key);
+	                                }
+	                            }
+	                            else if (key === 'instantiationKey') {
+	                                _this.instantiationKey = resp.data.data[key];
+	                                if (resp.data.data[key] === appConfig[key]) {
+	                                    core_module_1.coremodule.constant('appConfig', appConfig)
+	                                        .constant('resourceBundles', JSON.parse(localStorage.getItem('resourceBundles')));
+	                                }
+	                                else {
+	                                    invalidCache.push(key);
+	                                }
+	                            }
 	                        }
-	                        else {
-	                            return _this.getData();
+	                        if (invalidCache.length > 0) {
+	                            return _this.getData(invalidCache);
 	                        }
 	                    });
 	                }
 	                else {
-	                    return _this.getData();
+	                    var invalidCache = Object.keys(cacheState);
+	                    return _this.getData(invalidCache);
 	                }
 	            }])
 	            .loading(function () {
@@ -1261,62 +1320,70 @@
 	var hibachipathbuilder_1 = __webpack_require__(16);
 	//services
 	var publicservice_1 = __webpack_require__(17);
-	var utilityservice_1 = __webpack_require__(18);
-	var selectionservice_1 = __webpack_require__(20);
-	var observerservice_1 = __webpack_require__(21);
-	var formservice_1 = __webpack_require__(22);
-	var expandableservice_1 = __webpack_require__(23);
-	var metadataservice_1 = __webpack_require__(24);
-	var rbkeyservice_1 = __webpack_require__(25);
-	var hibachiservice_1 = __webpack_require__(26);
-	var localstorageservice_1 = __webpack_require__(27);
-	var hibachiservicedecorator_1 = __webpack_require__(28);
-	var hibachiscope_1 = __webpack_require__(29);
+	var accountservice_1 = __webpack_require__(18);
+	var cartservice_1 = __webpack_require__(31);
+	var utilityservice_1 = __webpack_require__(32);
+	var selectionservice_1 = __webpack_require__(34);
+	var observerservice_1 = __webpack_require__(35);
+	var orderservice_1 = __webpack_require__(36);
+	var orderpaymentservice_1 = __webpack_require__(37);
+	var formservice_1 = __webpack_require__(38);
+	var expandableservice_1 = __webpack_require__(39);
+	var metadataservice_1 = __webpack_require__(40);
+	var rbkeyservice_1 = __webpack_require__(41);
+	var hibachiservice_1 = __webpack_require__(42);
+	var localstorageservice_1 = __webpack_require__(43);
+	var hibachiservicedecorator_1 = __webpack_require__(44);
+	var hibachiscope_1 = __webpack_require__(45);
+	var requestservice_1 = __webpack_require__(46);
+	var hibachivalidationservice_1 = __webpack_require__(50);
+	var entityservice_1 = __webpack_require__(51);
 	//controllers
-	var globalsearch_1 = __webpack_require__(30);
+	var globalsearch_1 = __webpack_require__(52);
 	//filters
-	var percentage_1 = __webpack_require__(31);
-	var entityrbkey_1 = __webpack_require__(32);
-	var swtrim_1 = __webpack_require__(33);
+	var percentage_1 = __webpack_require__(53);
+	var entityrbkey_1 = __webpack_require__(54);
+	var swtrim_1 = __webpack_require__(55);
+	var datefilter_1 = __webpack_require__(56);
 	//directives
 	//  components
-	var swactioncaller_1 = __webpack_require__(34);
-	var swtypeaheadsearch_1 = __webpack_require__(35);
-	var swtypeaheadinputfield_1 = __webpack_require__(36);
-	var swtypeaheadsearchlineitem_1 = __webpack_require__(37);
-	var swcollectionconfig_1 = __webpack_require__(38);
-	var swcollectionfilter_1 = __webpack_require__(39);
-	var swcollectioncolumn_1 = __webpack_require__(40);
-	var swactioncallerdropdown_1 = __webpack_require__(41);
-	var swcolumnsorter_1 = __webpack_require__(42);
-	var swconfirm_1 = __webpack_require__(43);
-	var swentityactionbar_1 = __webpack_require__(44);
-	var swentityactionbarbuttongroup_1 = __webpack_require__(45);
-	var swexpandablerecord_1 = __webpack_require__(46);
-	var swgravatar_1 = __webpack_require__(47);
-	var swlistingdisplay_1 = __webpack_require__(52);
-	var swlistingcontrols_1 = __webpack_require__(53);
-	var swlistingaggregate_1 = __webpack_require__(54);
-	var swlistingcolorfilter_1 = __webpack_require__(55);
-	var swlistingcolumn_1 = __webpack_require__(56);
-	var swlistingfilter_1 = __webpack_require__(57);
-	var swlistingfiltergroup_1 = __webpack_require__(58);
-	var swlistingorderby_1 = __webpack_require__(59);
-	var swlogin_1 = __webpack_require__(60);
-	var swnumbersonly_1 = __webpack_require__(61);
-	var swloading_1 = __webpack_require__(62);
-	var swscrolltrigger_1 = __webpack_require__(63);
-	var swtooltip_1 = __webpack_require__(64);
-	var swrbkey_1 = __webpack_require__(65);
-	var swoptions_1 = __webpack_require__(66);
-	var swselection_1 = __webpack_require__(67);
-	var swclickoutside_1 = __webpack_require__(68);
-	var swdirective_1 = __webpack_require__(69);
-	var swexportaction_1 = __webpack_require__(70);
-	var swhref_1 = __webpack_require__(71);
-	var swprocesscaller_1 = __webpack_require__(72);
-	var swsortable_1 = __webpack_require__(73);
-	var swlistingglobalsearch_1 = __webpack_require__(74);
+	var swactioncaller_1 = __webpack_require__(57);
+	var swtypeaheadsearch_1 = __webpack_require__(58);
+	var swtypeaheadinputfield_1 = __webpack_require__(59);
+	var swtypeaheadsearchlineitem_1 = __webpack_require__(60);
+	var swcollectionconfig_1 = __webpack_require__(61);
+	var swcollectionfilter_1 = __webpack_require__(62);
+	var swcollectioncolumn_1 = __webpack_require__(63);
+	var swactioncallerdropdown_1 = __webpack_require__(64);
+	var swcolumnsorter_1 = __webpack_require__(65);
+	var swconfirm_1 = __webpack_require__(66);
+	var swentityactionbar_1 = __webpack_require__(67);
+	var swentityactionbarbuttongroup_1 = __webpack_require__(68);
+	var swexpandablerecord_1 = __webpack_require__(69);
+	var swgravatar_1 = __webpack_require__(70);
+	var swlistingdisplay_1 = __webpack_require__(75);
+	var swlistingcontrols_1 = __webpack_require__(76);
+	var swlistingaggregate_1 = __webpack_require__(77);
+	var swlistingcolorfilter_1 = __webpack_require__(78);
+	var swlistingcolumn_1 = __webpack_require__(79);
+	var swlistingfilter_1 = __webpack_require__(80);
+	var swlistingfiltergroup_1 = __webpack_require__(81);
+	var swlistingorderby_1 = __webpack_require__(82);
+	var swlogin_1 = __webpack_require__(83);
+	var swnumbersonly_1 = __webpack_require__(84);
+	var swloading_1 = __webpack_require__(85);
+	var swscrolltrigger_1 = __webpack_require__(86);
+	var swtooltip_1 = __webpack_require__(87);
+	var swrbkey_1 = __webpack_require__(88);
+	var swoptions_1 = __webpack_require__(89);
+	var swselection_1 = __webpack_require__(90);
+	var swclickoutside_1 = __webpack_require__(91);
+	var swdirective_1 = __webpack_require__(92);
+	var swexportaction_1 = __webpack_require__(93);
+	var swhref_1 = __webpack_require__(94);
+	var swprocesscaller_1 = __webpack_require__(95);
+	var swsortable_1 = __webpack_require__(96);
+	var swlistingglobalsearch_1 = __webpack_require__(97);
 	var coremodule = angular.module('hibachi.core', [
 	    //Angular Modules
 	    'ngAnimate',
@@ -1393,7 +1460,15 @@
 	    .service('hibachiInterceptor', hibachiinterceptor_1.HibachiInterceptor.Factory())
 	    .service('hibachiScope', hibachiscope_1.HibachiScope)
 	    .service('localStorageService', localstorageservice_1.LocalStorageService)
+	    .service('requestService', requestservice_1.RequestService)
+	    .service('accountService', accountservice_1.AccountService)
+	    .service('orderService', orderservice_1.OrderService)
+	    .service('orderPaymentService', orderpaymentservice_1.OrderPaymentService)
+	    .service('cartService', cartservice_1.CartService)
+	    .service('hibachiValidationService', hibachivalidationservice_1.HibachiValidationService)
+	    .service('entityService', entityservice_1.EntityService)
 	    .controller('globalSearch', globalsearch_1.GlobalSearchController)
+	    .filter('dateFilter', ['$filter', datefilter_1.DateFilter.Factory])
 	    .filter('percentage', [percentage_1.PercentageFilter.Factory])
 	    .filter('trim', [swtrim_1.SWTrim.Factory])
 	    .filter('entityRBKey', ['rbkeyService', entityrbkey_1.EntityRBKey.Factory])
@@ -1529,7 +1604,7 @@
 	                        _this.dialogService.addPageDialog(_this.hibachiPathBuilder.buildPartialsPath('preprocesslogin'), {});
 	                    }
 	                    else if (rejection.data.messages[0].message === 'invalid_token') {
-	                        return $http.get(_this.baseUrl + '/index.cfm/api/auth/login').then(function (loginResponse) {
+	                        return $http.get(_this.baseUrl + '?slataction=api:main.login').then(function (loginResponse) {
 	                            if (loginResponse.status === 200) {
 	                                _this.localStorageService.setItem('token', loginResponse.data.token);
 	                                rejection.config.headers = rejection.config.headers || {};
@@ -1623,29 +1698,50 @@
 	var PublicService = (function () {
 	    ///index.cfm/api/scope/
 	    //@ngInject
-	    function PublicService($http, $q, $window) {
+	    function PublicService($http, $q, $window, $location, $hibachi, $injector, requestService, accountService, cartService, orderService, observerService) {
 	        var _this = this;
 	        this.$http = $http;
 	        this.$q = $q;
 	        this.$window = $window;
-	        this.formType = { 'Content-Type': "application/x-www-form-urlencoded" };
-	        this.ajaxRequestParam = "?ajaxRequest=1";
-	        this.loading = false;
+	        this.$location = $location;
+	        this.$hibachi = $hibachi;
+	        this.$injector = $injector;
+	        this.requestService = requestService;
+	        this.accountService = accountService;
+	        this.cartService = cartService;
+	        this.orderService = orderService;
+	        this.observerService = observerService;
+	        this.requests = {};
+	        this.errors = {};
 	        this.baseActionPath = "";
 	        this.months = [{ name: '01 - JAN', value: 1 }, { name: '02 - FEB', value: 2 }, { name: '03 - MAR', value: 3 }, { name: '04 - APR', value: 4 }, { name: '05 - MAY', value: 5 }, { name: '06 - JUN', value: 6 }, { name: '07 - JUL', value: 7 }, { name: '08 - AUG', value: 8 }, { name: '09 - SEP', value: 9 }, { name: '10 - OCT', value: 10 }, { name: '11 - NOV', value: 11 }, { name: '12 - DEC', value: 12 }];
 	        this.years = [];
 	        this.shippingAddress = "";
 	        this.billingAddress = "";
+	        // public hasErrors = ()=>{
+	        //     return this.errors.length;
+	        // }
+	        /**
+	         * Helper methods for getting errors from the cart
+	         */
+	        this.getErrors = function () {
+	            _this.errors = {};
+	            for (var key in _this.requests) {
+	                var request = _this.requests[key];
+	                if (Object.keys(request.errors).length) {
+	                    _this.errors[key] = request.errors;
+	                }
+	            }
+	            return _this.errors;
+	        };
 	        /** grab the valid expiration years for credit cards  */
 	        this.getExpirationYears = function () {
 	            var baseDate = new Date();
 	            var today = baseDate.getFullYear();
 	            var start = today;
 	            for (var i = 0; i <= 5; i++) {
-	                console.log("I:", start + i);
 	                _this.years.push(start + i);
 	            }
-	            console.log("This Years", _this.years);
 	        };
 	        /** accessors for account */
 	        this.getAccount = function () {
@@ -1667,7 +1763,7 @@
 	            if (!angular.isDefined(countryCode))
 	                countryCode = "US";
 	            var urlBase = '/index.cfm/api/scope/getStateCodeOptionsByCountryCode/';
-	            return _this.getData(urlBase, "states", "&countryCode=" + countryCode);
+	            return _this.getData(urlBase, "states", "?countryCode=" + countryCode);
 	        };
 	        /** accessors for states */
 	        this.getAddressOptions = function (countryCode) {
@@ -1678,10 +1774,9 @@
 	        };
 	        /** accessors for states */
 	        this.getData = function (url, setter, param) {
-	            _this.loading = true;
-	            var urlBase = url + _this.ajaxRequestParam + param;
-	            var deferred = _this.$q.defer();
-	            _this.$http.get(urlBase).success(function (result) {
+	            var urlBase = url + param;
+	            var request = _this.requestService.newPublicRequest(urlBase);
+	            request.promise.then(function (result) {
 	                //don't need account and cart for anything other than account and cart calls.
 	                if (setter.indexOf('account') == -1 || setter.indexOf('cart') == -1) {
 	                    if (result['account']) {
@@ -1690,16 +1785,19 @@
 	                    if (result['cart']) {
 	                        delete result['cart'];
 	                    }
-	                    console.log("Result Sans", result);
 	                }
-	                _this[setter] = result;
-	                _this.loading = false;
-	                deferred.resolve(result);
-	            }).error(function (reason) {
-	                _this.loading = false;
-	                deferred.reject(reason);
+	                if (setter == 'cart' || setter == 'account') {
+	                    //cart and account return cart and account info flat
+	                    _this[setter].populate(result);
+	                }
+	                else {
+	                    //other functions reutrn cart,account and then data
+	                    _this[setter] = (result);
+	                }
+	            }).catch(function (reason) {
 	            });
-	            return deferred.promise;
+	            _this.requests[request.getAction()] = request;
+	            return request.promise;
 	        };
 	        /** sets the current shipping address */
 	        this.setShippingAddress = function (shippingAddress) {
@@ -1714,102 +1812,510 @@
 	        *  @param data   {object} the params as key value pairs to pass in the post request.
 	        *  @return a deferred promise that resolves server response or error. also includes updated account and cart.
 	        */
-	        this.doAction = function (action, data) {
-	            _this.loading = true;
-	            var method = "";
+	        this.doAction = function (action, data, method) {
 	            if (!action) {
 	                throw "Action is required exception";
 	            }
-	            if (action != undefined && data == undefined) {
-	                method = "get";
-	            }
-	            else {
-	                method = "post";
-	            }
 	            //check if the caller is defining a path to hit, otherwise use the public scope.
-	            if (action.indexOf("/") !== -1) {
+	            if (action.indexOf(":") !== -1) {
 	                _this.baseActionPath = action; //any path
 	            }
 	            else {
 	                _this.baseActionPath = "/index.cfm/api/scope/" + action; //public path
 	            }
-	            _this.hasErrors = false;
-	            _this.success = false;
-	            _this.errors = undefined;
-	            _this.header = { headers: _this.formType };
-	            var deferred = _this.$q.defer();
-	            var urlBase = _this.baseActionPath + _this.ajaxRequestParam;
+	            var urlBase = _this.baseActionPath;
+	            if (data) {
+	                method = "post";
+	                data.returnJsonObjects = "cart,account";
+	            }
+	            else {
+	                urlBase += "&returnJsonObject=cart,account";
+	            }
 	            if (method == "post") {
 	                data.returnJsonObjects = "cart,account";
 	                //post
-	                var promise = _this.$http.post(urlBase, _this.toFormParams(data), _this.header).then(function (result) {
-	                    /** update the account and the cart */
-	                    _this.account = result.data.account;
-	                    _this.cart = result.data.cart;
-	                    //if the action that was called was successful, then success is true.
-	                    if (result.data.successfulActions.length) {
-	                        _this.success = true;
-	                        for (var action in result.data.successfulActions) {
-	                            if (result.data.successfulActions[action].indexOf('public:cart.placeOrder') !== -1) {
-	                                _this.window.location.href = _this.confirmationUrl;
-	                                console.log(_this.window);
-	                            }
-	                        }
-	                    }
-	                    if (result.data.failureActions.length) {
-	                        _this.hasErrors = true;
-	                        console.log("Errors:", result.data.errors);
-	                    }
-	                    _this.loading = false;
-	                    deferred.resolve(result);
+	                var request_1 = _this.requestService.newPublicRequest(urlBase, data, method);
+	                request_1.promise.then(function (result) {
+	                    _this.processAction(result, request_1);
 	                }).catch(function (response) {
-	                    console.log("There was an error making this http call", response.status, response.data);
-	                    _this.loading = false;
-	                    deferred.reject(response);
 	                });
-	                return deferred.promise;
+	                _this.requests[request_1.getAction()] = request_1;
+	                return request_1.promise;
 	            }
 	            else {
 	                //get
 	                var url = urlBase + "&returnJsonObject=cart,account";
-	                var deferred = _this.$q.defer();
-	                _this.$http.get(url).success(function (result) {
-	                    deferred.resolve(result);
-	                }).error(function (reason) {
-	                    deferred.reject(reason);
+	                var request_2 = _this.requestService.newPublicRequest(url);
+	                request_2.promise.then(function (result) {
+	                    _this.processAction(result, request_2);
+	                }).catch(function (reason) {
 	                });
-	                return deferred.promise;
+	                _this.requests[request_2.getAction()] = request_2;
+	                return request_2.promise;
 	            }
 	        };
-	        /** used to turn data into a correct format for the post */
-	        this.toFormParams = function (data) {
-	            return data = $.param(data) || "";
+	        this.processAction = function (response, request) {
+	            /** update the account and the cart */
+	            _this.account.populate(response.account);
+	            _this.account.request = request;
+	            _this.cart.populate(response.cart);
+	            _this.cart.request = request;
+	            //if the action that was called was successful, then success is true.
+	            if (request.hasSuccessfulAction()) {
+	                for (var action in request.successfulActions) {
+	                    if (request.successfulActions[action].indexOf('public:cart.placeOrder') !== -1) {
+	                        _this.$window.location.href = _this.confirmationUrl;
+	                    }
+	                }
+	            }
+	            if (!request.hasSuccessfulAction()) {
+	            }
+	        };
+	        this.getRequestByAction = function (action) {
+	            return _this.requests[action];
 	        };
 	        /**
 	         * Helper methods so that everything in account and cart can be accessed using getters.
 	         */
 	        this.userIsLoggedIn = function () {
-	            if (_this.account !== undefined && _this.account.accountID !== '') {
+	            return _this.account.userIsLoggedIn();
+	        };
+	        this.getActivePaymentMethods = function () {
+	            var urlString = "/?slataction=admin:ajax.getActivePaymentMethods";
+	            var request = _this.requestService.newPublicRequest(urlString)
+	                .then(function (result) {
+	                if (angular.isDefined(result.data.paymentMethods)) {
+	                    _this.paymentMethods = result.data.paymentMethods;
+	                }
+	            });
+	            _this.requests[request.getAction()] = request;
+	        };
+	        /**
+	         * Given a payment method name, returns the id.
+	         */
+	        this.getPaymentMethodID = function (name) {
+	            for (var method in _this.paymentMethods) {
+	                if (_this.paymentMethods[method].paymentMethodName == name && _this.paymentMethods[method].activeFlag == "Yes ") {
+	                    return _this.paymentMethods[method].paymentMethodID;
+	                }
+	            }
+	        };
+	        this.hasPaymentMethod = function (paymentMethodName) {
+	            for (var method in _this.paymentMethods) {
+	                if (_this.paymentMethods[method].paymentMethodName == paymentMethodName && _this.paymentMethods[method].activeFlag == "Yes ") {
+	                    return true;
+	                }
+	            }
+	            return false;
+	        };
+	        this.hasCreditCardPaymentMethod = function () {
+	            return _this.hasPaymentMethod("Credit Card");
+	        };
+	        this.hasPaypalPaymentMethod = function () {
+	            return _this.hasPaymentMethod("PayPal Express");
+	        };
+	        this.hasGiftCardPaymentMethod = function () {
+	            return _this.hasPaymentMethod("Gift Card");
+	        };
+	        this.hasMoneyOrderPaymentMethod = function () {
+	            return _this.hasPaymentMethod("Money Order");
+	        };
+	        this.hasCashPaymentMethod = function () {
+	            return _this.hasPaymentMethod("Cash");
+	        };
+	        /** Returns true if the order requires a fulfillment */
+	        this.orderRequiresFulfillment = function () {
+	            return _this.cart.orderRequiresFulfillment();
+	        };
+	        /**
+	         *  Returns true if the order requires a account
+	         *  Either because the user is not logged in, or because they don't have one.
+	         *
+	         */
+	        this.orderRequiresAccount = function () {
+	            return _this.cart.orderRequiresAccount();
+	        };
+	        /** Returns true if the payment tab should be active */
+	        this.hasShippingAddressAndMethod = function () {
+	            return _this.cart.hasShippingAddressAndMethod();
+	        };
+	        /**
+	         * Returns true if the user has an account and is logged in.
+	         */
+	        this.hasAccount = function () {
+	            if (_this.account.accountID) {
 	                return true;
 	            }
 	            return false;
 	        };
-	        /**
-	         * Helper methods for getting errors from the cart
-	         */
-	        this.getErrors = function () {
-	            if (_this.errors !== undefined) {
-	                return _this.errors;
-	            }
-	            return {};
+	        /** Redirects to the order confirmation page if the order placed successfully
+	        */
+	        this.redirectExact = function (url) {
+	            _this.$location.url(url);
 	        };
+	        // /** Returns true if a property on an object is undefined or empty. */
+	        this.isUndefinedOrEmpty = function (object, property) {
+	            if (!angular.isDefined(object[property]) || object[property] == "") {
+	                return true;
+	            }
+	            return false;
+	        };
+	        /** A simple method to return the quantity sum of all orderitems in the cart. */
+	        this.getOrderItemQuantitySum = function () {
+	            var totalQuantity = 0;
+	            if (angular.isDefined(_this.cart)) {
+	                return _this.cart.getOrderItemQuantitySum();
+	            }
+	            return totalQuantity;
+	        };
+	        /** Returns the index of the state from the list of states */
+	        this.getSelectedStateIndexFromStateCode = function (stateCode, states) {
+	            for (var state in states) {
+	                if (states[state].value == stateCode) {
+	                    return state;
+	                }
+	            }
+	        };
+	        /**
+	         * Returns true if on a mobile device. This is important for placeholders.
+	         */
+	        this.isMobile = function () {
+	            if (this.$window.innerWidth <= 800 && this.$window.innerHeight <= 600) {
+	                return true;
+	            }
+	            return false;
+	        };
+	        /** returns true if the shipping method is the selected shipping method
+	        */
+	        this.isSelectedShippingMethod = function (index, value) {
+	            if (this.cart.fulfillmentTotal &&
+	                value == this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingMethod.shippingMethodID ||
+	                this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingMethodOptions.length == 1) {
+	                return true;
+	            }
+	            return false;
+	        };
+	        /** returns the index of the selected shipping method.
+	        */
+	        this.getSelectedShippingIndex = function (index, value) {
+	            for (var i = 0; i <= this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingMethodOptions.length; i++) {
+	                if (this.cart.fulfillmentTotal == this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingMethodOptions[i].totalCharge) {
+	                    return i;
+	                }
+	            }
+	        };
+	        /** simple validation just to ensure data is present and accounted for.
+	        */
+	        this.validateNewOrderPayment = function (newOrderPayment) {
+	            var newOrderPaymentErrors = {};
+	            if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.streetAddress')) {
+	                newOrderPaymentErrors['streetAddress'] = 'Required *';
+	            }
+	            if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.countrycode')) {
+	                newOrderPaymentErrors['countrycode'] = 'Required *';
+	            }
+	            if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.statecode')) {
+	                if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.locality')) {
+	                    newOrderPaymentErrors['statecode'] = 'Required *';
+	                }
+	            }
+	            if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.city')) {
+	                if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.city')) {
+	                    newOrderPaymentErrors['city'] = 'Required *';
+	                }
+	            }
+	            if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.locality')) {
+	                if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.statecode')) {
+	                    newOrderPaymentErrors['locality'] = 'Required *';
+	                }
+	            }
+	            if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.postalcode')) {
+	                newOrderPaymentErrors['postalCode'] = 'Required *';
+	            }
+	            if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.nameOnCreditCard')) {
+	                newOrderPaymentErrors['nameOnCreditCard'] = 'Required *';
+	            }
+	            if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.expirationMonth')) {
+	                newOrderPaymentErrors['streetAddress'] = 'Required *';
+	            }
+	            if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.expirationYear')) {
+	                newOrderPaymentErrors['expirationYear'] = 'Required *';
+	            }
+	            if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.creditCardNumber')) {
+	                newOrderPaymentErrors['creditCardNumber'] = 'Required *';
+	            }
+	            if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.securityCode')) {
+	                newOrderPaymentErrors['securityCode'] = 'Required *';
+	            }
+	            if (Object.keys(newOrderPaymentErrors).length) {
+	            }
+	        };
+	        /** Allows an easy way to calling the service addOrderPayment.
+	        */
+	        this.addOrderPayment = function (formdata) {
+	            //reset the form errors.
+	            // this.cart.hasErrors=false;
+	            // this.cart.orderPayments.errors = {};
+	            // this.cart.orderPayments.hasErrors = false;
+	            //Grab all the data
+	            var billingAddress = _this.newBillingAddress;
+	            var expirationMonth = formdata.month;
+	            var expirationYear = formdata.year;
+	            var country = formdata.country;
+	            var state = formdata.state;
+	            var accountFirst = _this.account.firstName;
+	            var accountLast = _this.account.lastName;
+	            var data = {};
+	            var processObject = _this.orderService.newOrder_AddOrderPayment();
+	            // processObject.newBillingAddress = this.newBillingAddress;
+	            // processObject.newBillingAddress.expirationMonth = formdata.month;
+	            // processObject.newBillingAddress.expirationYear = formdata.year;
+	            // processObject.newBillingAddress.billingAddress.country = formdata.country || processObject.data.newOrderPayment.billingAddress.country;
+	            // processObject.newBillingAddress.billingAddress.statecode = formdata.state || processObject.data.newOrderPayment.billingAddress.statecode;
+	            // processObject.newBillingAddress.saveShippingAsBilling=(this.saveShippingAsBilling == true);
+	            data = {
+	                'newOrderPayment.billingAddress.streetAddress': billingAddress.streetAddress,
+	                'newOrderPayment.billingAddress.street2Address': billingAddress.street2Address,
+	                'newOrderPayment.nameOnCreditCard': billingAddress.nameOnCreditCard,
+	                'newOrderPayment.expirationMonth': expirationMonth,
+	                'newOrderPayment.expirationYear': expirationYear,
+	                'newOrderPayment.billingAddress.countrycode': country || billingAddress.countrycode,
+	                'newOrderPayment.billingAddress.city': '' + billingAddress.city,
+	                'newOrderPayment.billingAddress.statecode': state || billingAddress.statecode,
+	                'newOrderPayment.billingAddress.locality': billingAddress.locality || '',
+	                'newOrderPayment.billingAddress.postalcode': billingAddress.postalcode,
+	                'newOrderPayment.securityCode': billingAddress.cvv,
+	                'newOrderPayment.creditCardNumber': billingAddress.cardNumber,
+	                'newOrderPayment.saveShippingAsBilling': (_this.saveShippingAsBilling == true),
+	            };
+	            processObject.populate(data);
+	            //Make sure we have required fields for a newOrderPayment.
+	            _this.validateNewOrderPayment(data);
+	            if (_this.cart.orderPayments.hasErrors && Object.keys(_this.cart.orderPayments.errors).length) {
+	                return -1;
+	            }
+	            //Post the new order payment and set errors as needed.
+	            _this.doAction('addOrderPayment', data, 'post').then(function (result) {
+	                var serverData = result;
+	                if (serverData.cart.hasErrors || angular.isDefined(_this.cart.orderPayments[_this.cart.orderPayments.length - 1]['errors']) && !_this.cart.orderPayments[_this.cart.orderPayments.length - 1]['errors'].hasErrors) {
+	                    _this.cart.hasErrors = true;
+	                    _this.readyToPlaceOrder = true;
+	                    _this.edit = '';
+	                }
+	                else {
+	                    _this.editPayment = false;
+	                    _this.readyToPlaceOrder = true;
+	                    _this.edit = '';
+	                }
+	            });
+	        };
+	        /** Allows an easy way to calling the service addOrderPayment.
+	        */
+	        this.addGiftCardOrderPayments = function (redeemGiftCardToAccount) {
+	            //reset the form errors.
+	            _this.cart.hasErrors = false;
+	            _this.cart.orderPayments.errors = {};
+	            _this.cart.orderPayments.hasErrors = false;
+	            //Grab all the data
+	            var giftCards = _this.account.giftCards;
+	            var data = {};
+	            data = {
+	                'newOrderPayment.paymentMethod.paymentMethodID': '50d8cd61009931554764385482347f3a',
+	                'newOrderPayment.redeemGiftCardToAccount': redeemGiftCardToAccount,
+	            };
+	            //add the amounts from the gift cards
+	            for (var card in giftCards) {
+	                if (giftCards[card].applied == true) {
+	                    data['newOrderPayment.giftCardNumber'] = giftCards[card].giftCardCode;
+	                    if (giftCards[card].calculatedTotal < _this.cart.calculatedTotal) {
+	                        data['newOrderPayment.amount'] = giftCards[card].calculatedBalanceAmount; //will use once we have amount implemented.
+	                    }
+	                    else {
+	                        data['newOrderPayment.amount'] = _this.cart.calculatedTotal; //this is so it doesn't throw the 100% error
+	                    }
+	                    data['copyFromType'] = "";
+	                    //Post the new order payment and set errors as needed.
+	                    _this.$q.all([_this.doAction('addOrderPayment', data, 'post')]).then(function (result) {
+	                        var serverData;
+	                        if (angular.isDefined(result['0'])) {
+	                            serverData = result['0'].data;
+	                        }
+	                        if (serverData.cart.hasErrors || angular.isDefined(this.cart.orderPayments[this.cart.orderPayments.length - 1]['errors']) && !this.cart.orderPayments['' + (this.cart.orderPayments.length - 1)]['errors'].hasErrors) {
+	                            this.cart.hasErrors = true;
+	                            this.readyToPlaceOrder = true;
+	                            this.edit = '';
+	                        }
+	                        else {
+	                        }
+	                    });
+	                }
+	            }
+	        };
+	        /** returns the index of the last selected shipping method. This is used to get rid of the delay.
+	        */
+	        this.selectShippingMethod = function (index) {
+	            for (var method in this.lastSelectedShippingMethod) {
+	                if (method != index) {
+	                    this.lastSelectedShippingMethod[method] = 'false';
+	                }
+	            }
+	            this.lastSelectedShippingMethod[index] = 'true';
+	        };
+	        /** returns true if this was the last selected method
+	        */
+	        this.isLastSelectedShippingMethod = function (index) {
+	            if (this.lastSelectedShippingMethod[index] === 'true') {
+	                return true;
+	            }
+	            return false;
+	        };
+	        /** Allows an easy way to calling the service addOrderPayment.
+	        */
+	        this.addOrderPaymentAndPlaceOrder = function (formdata) {
+	            //reset the form errors.
+	            _this.orderPlaced = false;
+	            //Grab all the data
+	            var billingAddress = _this.newBillingAddress;
+	            var expirationMonth = formdata.month;
+	            var expirationYear = formdata.year;
+	            var country = formdata.country;
+	            var state = formdata.state;
+	            var accountFirst = _this.account.firstName;
+	            var accountLast = _this.account.lastName;
+	            var data = {};
+	            data = {
+	                'orderid': _this.cart.orderID,
+	                'newOrderPayment.billingAddress.streetAddress': billingAddress.streetAddress,
+	                'newOrderPayment.billingAddress.street2Address': billingAddress.street2Address,
+	                'newOrderPayment.nameOnCreditCard': billingAddress.nameOnCard || accountFirst + ' ' + accountLast,
+	                'newOrderPayment.expirationMonth': expirationMonth,
+	                'newOrderPayment.expirationYear': expirationYear,
+	                'newOrderPayment.billingAddress.countrycode': country || billingAddress.countrycode,
+	                'newOrderPayment.billingAddress.city': '' + billingAddress.city,
+	                'newOrderPayment.billingAddress.statecode': state || billingAddress.statecode,
+	                'newOrderPayment.billingAddress.locality': billingAddress.locality || '',
+	                'newOrderPayment.billingAddress.postalcode': billingAddress.postalcode,
+	                'newOrderPayment.securityCode': billingAddress.cvv,
+	                'newOrderPayment.creditCardNumber': billingAddress.cardNumber,
+	                'newOrderPayment.saveShippingAsBilling': (_this.saveShippingAsBilling == true),
+	            };
+	            //Make sure we have required fields for a newOrderPayment.
+	            //this.validateNewOrderPayment( data );
+	            if (_this.cart.orderPayments.hasErrors && Object.keys(_this.cart.orderPayments.errors).length) {
+	                return -1;
+	            }
+	            //Post the new order payment and set errors as needed.
+	            _this.$q.all([_this.doAction('addOrderPayment,placeOrder', data, 'post')]).then(function (result) {
+	                var serverData;
+	                if (angular.isDefined(result['0'])) {
+	                    serverData = result['0'].data;
+	                }
+	                else {
+	                } //|| angular.isDefined(serverData.cart.orderPayments[serverData.cart.orderPayments.length-1]['errors']) && slatwall.cart.orderPayments[''+slatwall.cart.orderPayments.length-1]['errors'].hasErrors
+	                if (serverData.cart.hasErrors || (angular.isDefined(serverData.failureActions) && serverData.failureActions.length && serverData.failureActions[0] == "public:cart.addOrderPayment")) {
+	                    if (serverData.failureActions.length) {
+	                        for (var action in serverData.failureActions) {
+	                        }
+	                    }
+	                    this.edit = '';
+	                    return true;
+	                }
+	                else if (serverData.successfulActions.length) {
+	                    //
+	                    this.cart.hasErrors = false;
+	                    this.editPayment = false;
+	                    this.edit = '';
+	                    for (var action in serverData.successfulActions) {
+	                        //
+	                        if (serverData.successfulActions[action].indexOf("placeOrder") != -1) {
+	                            //if there are no errors then redirect.
+	                            this.orderPlaced = true;
+	                            this.redirectExact('/order-confirmation/');
+	                        }
+	                    }
+	                }
+	                else {
+	                    this.edit = '';
+	                }
+	            });
+	        };
+	        //Applies a giftcard from the user account onto the payment.
+	        this.applyGiftCard = function (giftCardCode) {
+	            _this.finding = true;
+	            //find the code already on the account.
+	            var found = false;
+	            for (var giftCard in _this.account.giftCards) {
+	                if (_this.account.giftCards[giftCard].balanceAmount == 0) {
+	                    _this.account.giftCards[giftCard]['error'] = "The balance is $0.00 for this card.";
+	                    found = false;
+	                }
+	                if (_this.account.giftCards[giftCard].giftCardCode == giftCardCode) {
+	                    _this.account.giftCards[giftCard].applied = true;
+	                    found = true;
+	                }
+	            }
+	            if (found) {
+	                _this.finding = false;
+	                _this.addGiftCardOrderPayments(false);
+	            }
+	            else {
+	                _this.finding = false;
+	                _this.addGiftCardOrderPayments(true);
+	            }
+	        };
+	        //returns the amount total of giftcards added to this account.
+	        this.getAppliedGiftCardTotals = function () {
+	            //
+	            var total = 0;
+	            for (var payment in _this.cart.orderPayments) {
+	                if (_this.cart.orderPayments[payment].giftCardNumber != "") {
+	                    total = total + parseInt(_this.cart.orderPayments[payment]['amount']);
+	                }
+	            }
+	            return total;
+	        };
+	        //gets the calcuated total minus the applied gift cards.
+	        this.getTotalMinusGiftCards = function () {
+	            var total = _this.getAppliedGiftCardTotals();
+	            return _this.cart.calculatedTotal - total;
+	        };
+	        //get estimated shipping rates given a weight, from to zips
+	        this.getEstimatedRates = function (zipcode) {
+	            var weight = 0;
+	            for (var item in _this.cart.orderFulfillments) {
+	                weight += _this.cart.orderFulfillments[item].totalShippingWeight;
+	            }
+	            var shipFromAddress = {
+	                "postalcode": ""
+	            };
+	            var shipToAddress = {
+	                "postalcode": zipcode
+	            };
+	            var totalWeight = weight;
+	            //get the rates.
+	            var urlString = "?slataction=admin:ajax.getEstimatedShippingRates&shipFromAddress=" + JSON.stringify(shipFromAddress)
+	                + "&shipToAddress=" + JSON.stringify(shipToAddress) + "&totalWeight=" + JSON.stringify(weight);
+	            var request = _this.requestService.newPublicRequest(urlString)
+	                .then(function (result) {
+	                _this.rates = result.data;
+	            });
+	        };
+	        this.orderService = orderService;
+	        this.cartService = cartService;
+	        this.accountService = accountService;
+	        this.requestService = requestService;
 	        this.baseActionPath = "/index.cfm/api/scope/"; //default path
 	        this.confirmationUrl = "/order-confirmation";
 	        this.$http = $http;
+	        this.$location = $location;
 	        this.$q = $q;
+	        this.$injector = $injector;
 	        this.getExpirationYears();
-	        this.window = $window;
-	        console.log("Window: ", $window);
+	        this.$window = $window;
+	        this.$hibachi = $hibachi;
+	        this.cart = this.cartService.newCart();
+	        this.account = this.accountService.newAccount();
+	        this.observerService = observerService;
 	    }
 	    return PublicService;
 	}());
@@ -1826,15 +2332,570 @@
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
+	var baseentityservice_1 = __webpack_require__(19);
+	var AccountService = (function (_super) {
+	    __extends(AccountService, _super);
+	    //@ngInject
+	    function AccountService($injector, $hibachi, utilityService) {
+	        _super.call(this, $injector, $hibachi, utilityService, 'Account');
+	        this.$injector = $injector;
+	        this.$hibachi = $hibachi;
+	        this.utilityService = utilityService;
+	    }
+	    return AccountService;
+	}(baseentityservice_1.BaseEntityService));
+	exports.AccountService = AccountService;
+
+
+/***/ },
+/* 19 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var baseobject_1 = __webpack_require__(20);
+	var Entities = __webpack_require__(21);
+	var Processes = __webpack_require__(28);
+	var BaseEntityService = (function (_super) {
+	    __extends(BaseEntityService, _super);
+	    //@ngInject
+	    function BaseEntityService($injector, $hibachi, utilityService, baseObjectName, objectName) {
+	        var _this = this;
+	        _super.call(this, $injector);
+	        this.$injector = $injector;
+	        this.$hibachi = $hibachi;
+	        this.utilityService = utilityService;
+	        this.baseObjectName = baseObjectName;
+	        this.objectName = objectName;
+	        this.newEntity = function (baseObjectName, objectName) {
+	            if (!objectName) {
+	                objectName = baseObjectName;
+	            }
+	            return _this.newObject('Entity', baseObjectName, objectName);
+	        };
+	        this.newProcessObject = function (baseObjectName, objectName) {
+	            if (!objectName) {
+	                objectName = baseObjectName;
+	            }
+	            return _this.newObject('Process', baseObjectName, objectName);
+	        };
+	        this.newObject = function (type, baseObjectName, objectName) {
+	            if (!objectName) {
+	                objectName = baseObjectName;
+	            }
+	            var baseObject = _this.$hibachi.getEntityDefinition(baseObjectName);
+	            var Barrell = {};
+	            if (type === 'Entity') {
+	                Barrell = Entities;
+	            }
+	            else if (type === 'Process') {
+	                Barrell = Processes;
+	            }
+	            if (Barrell[objectName]) {
+	                _this.utilityService.extend(Barrell[objectName], baseObject);
+	                var entity = new Barrell[objectName](_this.$injector);
+	            }
+	            else {
+	                var entity = new baseObject();
+	            }
+	            for (var key in entity) {
+	                if (entity[key] === null) {
+	                    entity[key] = undefined;
+	                }
+	            }
+	            return entity;
+	        };
+	        this.utilityService = utilityService;
+	        this.$hibachi = $hibachi;
+	        this.$injector = $injector;
+	        if (!this.objectName) {
+	            this.objectName = this.baseObjectName;
+	        }
+	        this['new' + this.objectName] = function () {
+	            return _this.newEntity(_this.baseObjectName, _this.objectName);
+	        };
+	    }
+	    return BaseEntityService;
+	}(baseobject_1.BaseObject));
+	exports.BaseEntityService = BaseEntityService;
+
+
+/***/ },
+/* 20 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	__webpack_require__(2);
+	var BaseObject = (function () {
+	    //@ngInject
+	    function BaseObject($injector) {
+	        var _this = this;
+	        this.getService = function (serviceName) {
+	            //return;
+	            if (_this.$injector.has(serviceName)) {
+	                //returns a generic service
+	                return _this.$injector.get(serviceName);
+	            }
+	        };
+	        this.getHibachiScope = function () {
+	            return _this.getService('publicService');
+	        };
+	        this.getAppConfig = function () {
+	            return _this.getService('appConfig');
+	        };
+	        this.$injector = $injector;
+	        var constructorString = this.constructor.toString();
+	        this.className = constructorString.match(/\w+/g)[1];
+	    }
+	    return BaseObject;
+	}());
+	exports.BaseObject = BaseObject;
+
+
+/***/ },
+/* 21 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path='../../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	"use strict";
+	var account_1 = __webpack_require__(22);
+	exports.Account = account_1.Account;
+	var address_1 = __webpack_require__(25);
+	exports.Address = address_1.Address;
+	var cart_1 = __webpack_require__(26);
+	exports.Cart = cart_1.Cart;
+	var orderpayment_1 = __webpack_require__(27);
+	exports.OrderPayment = orderpayment_1.OrderPayment;
+
+
+/***/ },
+/* 22 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path='../../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var baseentity_1 = __webpack_require__(23);
+	var Account = (function (_super) {
+	    __extends(Account, _super);
+	    function Account($injector) {
+	        var _this = this;
+	        _super.call(this, $injector);
+	        this.giftCards = [];
+	        this.userIsLoggedIn = function () {
+	            if (_this.accountID !== '') {
+	                return true;
+	            }
+	            return false;
+	        };
+	    }
+	    return Account;
+	}(baseentity_1.BaseEntity));
+	exports.Account = Account;
+
+
+/***/ },
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path='../../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var basetransient_1 = __webpack_require__(24);
+	var BaseEntity = (function (_super) {
+	    __extends(BaseEntity, _super);
+	    function BaseEntity($injector) {
+	        _super.call(this, $injector);
+	    }
+	    return BaseEntity;
+	}(basetransient_1.BaseTransient));
+	exports.BaseEntity = BaseEntity;
+
+
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path='../../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var baseobject_1 = __webpack_require__(20);
+	var BaseTransient = (function (_super) {
+	    __extends(BaseTransient, _super);
+	    function BaseTransient($injector) {
+	        var _this = this;
+	        _super.call(this, $injector);
+	        this.errors = {};
+	        this.messages = {};
+	        this.populate = function (response) {
+	            var data = response;
+	            if (response.data) {
+	                data = response.data;
+	            }
+	            data = _this.utilityService.nvpToObject(data);
+	            var _loop_1 = function() {
+	                var propertyIdentifier = key.replace(_this.className.toLowerCase() + '.', '');
+	                var propertyIdentifierArray = propertyIdentifier.split('.');
+	                var propertyIdentifierKey = propertyIdentifier.replace(/\./g, '_');
+	                var currentEntity = _this;
+	                angular.forEach(propertyIdentifierArray, function (property, propertyKey) {
+	                    if (currentEntity.metaData[property]) {
+	                        //if we are on the last item in the array
+	                        if (propertyKey === propertyIdentifierArray.length - 1) {
+	                            //if is json
+	                            //if(currentEntity.metaData[key]){
+	                            //if propertyidentifier
+	                            // }else{
+	                            if (angular.isObject(data[key]) && currentEntity.metaData[property].fieldtype && currentEntity.metaData[property].fieldtype === 'many-to-one') {
+	                                var relatedEntity = _this.entityService.newEntity(currentEntity.metaData[property].cfc);
+	                                if (relatedEntity.populate) {
+	                                    relatedEntity.populate(data[key]);
+	                                }
+	                                else {
+	                                    relatedEntity.$$init(data[key]);
+	                                    currentEntity['$$set' + currentEntity.metaData[property].name.charAt(0).toUpperCase() + currentEntity.metaData[property].name.slice(1)](relatedEntity);
+	                                }
+	                            }
+	                            else if (angular.isArray(data[propertyIdentifierKey]) && currentEntity.metaData[property].fieldtype && (currentEntity.metaData[property].fieldtype === 'one-to-many')) {
+	                                angular.forEach(data[key], function (arrayItem, propertyKey) {
+	                                    var relatedEntity = _this.entityService.newEntity(currentEntity.metaData[property].cfc);
+	                                    if (relatedEntity.populate) {
+	                                        relatedEntity.populate(arrayItem);
+	                                    }
+	                                    else {
+	                                        relatedEntity.$$init(arrayItem);
+	                                        currentEntity['$$add' + currentEntity.metaData[property].singularname.charAt(0).toUpperCase() + currentEntity.metaData[property].singularname.slice(1)](relatedEntity);
+	                                    }
+	                                });
+	                            }
+	                            else {
+	                                currentEntity[property] = data[key];
+	                            }
+	                        }
+	                        else {
+	                            var propertyMetaData = currentEntity.metaData[property];
+	                            if (angular.isUndefined(currentEntity.data[property]) || (currentEntity.data[property] && currentEntity.data[property] === null)) {
+	                                if (propertyMetaData.fieldtype === 'one-to-many') {
+	                                    relatedEntity = [];
+	                                }
+	                                else {
+	                                    relatedEntity = _this.$hibachi['new' + propertyMetaData.cfc]();
+	                                }
+	                            }
+	                            else {
+	                                relatedEntity = currentEntity.data[property];
+	                            }
+	                            currentEntity['$$set' + propertyMetaData.name.charAt(0).toUpperCase() + propertyMetaData.name.slice(1)](relatedEntity);
+	                            currentEntity = relatedEntity;
+	                        }
+	                    }
+	                    else {
+	                        _this[key] = data[key];
+	                    }
+	                });
+	            };
+	            for (var key in data) {
+	                _loop_1();
+	            }
+	            if (response.errors) {
+	                _this.errors = response.errors;
+	                _this.messages = response.messages;
+	            }
+	        };
+	        this.addError = function (errorName, errorMessage) {
+	            if (!_this.errors[errorName]) {
+	                _this.errors[errorName] = [];
+	            }
+	            if (angular.isArray(errorMessage)) {
+	                _this.addErrorsByArray(errorName, errorMessage);
+	            }
+	            else if (angular.isObject(errorMessage)) {
+	                _this.addErrorsByObject(errorName, errorMessage);
+	            }
+	            else {
+	                _this.errors[errorName].push(errorMessage);
+	            }
+	        };
+	        this.addErrorsByArray = function (errorName, errorMessages) {
+	            for (var i = 0; i < errorMessages.length; i++) {
+	                var message = errorMessages[i];
+	                _this.errors[errorName].push(message);
+	            }
+	        };
+	        this.addErrorsByObject = function (errorName, errorMessage) {
+	            if (!_this.errors[errorName]) {
+	                _this.errors[errorName] = [];
+	            }
+	            for (var key in errorMessage) {
+	                for (var i = 0; i < errorMessage[key].length; i++) {
+	                    var message = errorMessage[i];
+	                    _this.errors[errorName].push(message);
+	                }
+	            }
+	        };
+	        this.addErrors = function (errors) {
+	            for (var key in errors) {
+	                if (!_this.errors[key]) {
+	                    _this.errors[key] = [];
+	                }
+	                for (var message in errors[key]) {
+	                    _this.errors[key].push(message);
+	                }
+	            }
+	        };
+	        this.getError = function (errorName) {
+	            return _this.getErrorByErrorName(errorName);
+	        };
+	        this.getErrorByErrorName = function (errorName) {
+	            return _this.errors[errorName];
+	        };
+	        this.hasError = function (errorName) {
+	            return _this.hasErrorByErrorName(errorName);
+	        };
+	        this.hasErrorByErrorName = function (errorName) {
+	            return angular.isDefined(_this.errors[errorName]);
+	        };
+	        this.hasErrors = function () {
+	            return Object.keys(_this.errors).length;
+	        };
+	        this.hasSuccessfulAction = function (action) {
+	            return;
+	        };
+	        this.$hibachi = this.getService('$hibachi');
+	        this.hibachiValidationService = this.getService('hibachiValidationService');
+	        this.utilityService = this.getService('utilityService');
+	        this.entityService = this.getService('entityService');
+	    }
+	    return BaseTransient;
+	}(baseobject_1.BaseObject));
+	exports.BaseTransient = BaseTransient;
+
+
+/***/ },
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path='../../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var baseentity_1 = __webpack_require__(23);
+	var Address = (function (_super) {
+	    __extends(Address, _super);
+	    function Address($injector) {
+	        _super.call(this, $injector);
+	    }
+	    return Address;
+	}(baseentity_1.BaseEntity));
+	exports.Address = Address;
+
+
+/***/ },
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path='../../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var baseentity_1 = __webpack_require__(23);
+	var Cart = (function (_super) {
+	    __extends(Cart, _super);
+	    //deprecated
+	    function Cart($injector) {
+	        var _this = this;
+	        _super.call(this, $injector);
+	        this.requiresFulfillment = false;
+	        this.orderRequirementsList = "";
+	        this.orderPayments = [];
+	        this.orderitems = [];
+	        this.orderFulfillments = [];
+	        this.hasShippingAddressAndMethod = function () {
+	            if (_this.orderRequirementsList.indexOf('fulfillment') == -1) {
+	                return true;
+	            }
+	            return false;
+	        };
+	        this.orderRequiresAccount = function () {
+	            if (_this.orderRequirementsList.indexOf('account') != -1 || !_this.account.accountID) {
+	                return true;
+	            }
+	            return false;
+	        };
+	        this.orderRequiresFulfillment = function () {
+	            return _this.requiresFulfillment;
+	        };
+	        this.getOrderItemQuantitySum = function () {
+	            var totalQuantity = 0;
+	            if (angular.isDefined(_this.orderitems)) {
+	                for (var orderItem in _this.orderitems) {
+	                    totalQuantity = totalQuantity + _this.orderitems[orderItem].quantity;
+	                }
+	                return totalQuantity;
+	            }
+	            return totalQuantity;
+	        };
+	    }
+	    return Cart;
+	}(baseentity_1.BaseEntity));
+	exports.Cart = Cart;
+
+
+/***/ },
+/* 27 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	"use strict";
+	var OrderPayment = (function () {
+	    function OrderPayment() {
+	    }
+	    return OrderPayment;
+	}());
+	exports.OrderPayment = OrderPayment;
+
+
+/***/ },
+/* 28 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path='../../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	"use strict";
+	var order_addorderpayment_1 = __webpack_require__(29);
+	exports.Order_AddOrderPayment = order_addorderpayment_1.Order_AddOrderPayment;
+
+
+/***/ },
+/* 29 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path='../../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var baseprocess_1 = __webpack_require__(30);
+	var Order_AddOrderPayment = (function (_super) {
+	    __extends(Order_AddOrderPayment, _super);
+	    function Order_AddOrderPayment($injector) {
+	        _super.call(this, $injector);
+	        this.$injector = $injector;
+	    }
+	    return Order_AddOrderPayment;
+	}(baseprocess_1.BaseProcess));
+	exports.Order_AddOrderPayment = Order_AddOrderPayment;
+
+
+/***/ },
+/* 30 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path='../../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var basetransient_1 = __webpack_require__(24);
+	var BaseProcess = (function (_super) {
+	    __extends(BaseProcess, _super);
+	    function BaseProcess($injector) {
+	        _super.call(this, $injector);
+	    }
+	    return BaseProcess;
+	}(basetransient_1.BaseTransient));
+	exports.BaseProcess = BaseProcess;
+
+
+/***/ },
+/* 31 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var baseentityservice_1 = __webpack_require__(19);
+	var CartService = (function (_super) {
+	    __extends(CartService, _super);
+	    //@ngInject
+	    //@ngInject
+	    function CartService($injector, $hibachi, utilityService) {
+	        _super.call(this, $injector, $hibachi, utilityService, 'Order', 'Cart');
+	        this.$injector = $injector;
+	        this.$hibachi = $hibachi;
+	        this.utilityService = utilityService;
+	    }
+	    return CartService;
+	}(baseentityservice_1.BaseEntityService));
+	exports.CartService = CartService;
+
+
+/***/ },
+/* 32 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	/*services return promises which can be handled uniquely based on success or failure by the controller*/
-	var baseservice_1 = __webpack_require__(19);
+	var baseservice_1 = __webpack_require__(33);
 	var UtilityService = (function (_super) {
 	    __extends(UtilityService, _super);
 	    function UtilityService() {
 	        var _this = this;
 	        _super.call(this);
+	        //used to do inheritance at runtime
+	        this.extend = function (ChildClass, ParentClass) {
+	            ChildClass.prototype = new ParentClass();
+	            ChildClass.prototype.constructor = ChildClass;
+	        };
 	        this.getQueryParamsFromUrl = function (url) {
 	            // This function is anonymous, is executed immediately and
 	            // the return value is assigned to QueryString!
@@ -2039,6 +3100,32 @@
 	                return array.join();
 	            }
 	        };
+	        this.getPropertyValue = function (object, propertyIdentifier) {
+	            var keys = propertyIdentifier.split('.'), obj = object, keyPart;
+	            while ((keyPart = keys.shift()) && keys.length) {
+	                obj = obj[keyPart];
+	            }
+	            return obj[keyPart];
+	        };
+	        this.setPropertyValue = function (object, propertyIdentifier, value) {
+	            var keys = propertyIdentifier.split('.'), obj = object, keyPart;
+	            while ((keyPart = keys.shift()) && keys.length) {
+	                if (!obj[keyPart]) {
+	                    obj[keyPart] = {};
+	                }
+	                obj = obj[keyPart];
+	            }
+	            obj[keyPart] = value;
+	        };
+	        this.nvpToObject = function (NVPData) {
+	            var object = {};
+	            for (var key in NVPData) {
+	                var value = NVPData[key];
+	                var propertyIdentitifer = key.replace(/\_/g, '.');
+	                _this.setPropertyValue(object, propertyIdentitifer, value);
+	            }
+	            return object;
+	        };
 	        this.isDescendantElement = function (parent, child) {
 	            var node = child.parentNode;
 	            while (node != null) {
@@ -2127,7 +3214,7 @@
 
 
 /***/ },
-/* 19 */
+/* 33 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -2142,7 +3229,7 @@
 
 
 /***/ },
-/* 20 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -2154,7 +3241,7 @@
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var baseservice_1 = __webpack_require__(19);
+	var baseservice_1 = __webpack_require__(33);
 	var SelectionService = (function (_super) {
 	    __extends(SelectionService, _super);
 	    //@ngInject
@@ -2257,7 +3344,7 @@
 
 
 /***/ },
-/* 21 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -2276,7 +3363,7 @@
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var baseservice_1 = __webpack_require__(19);
+	var baseservice_1 = __webpack_require__(33);
 	var ObserverService = (function (_super) {
 	    __extends(ObserverService, _super);
 	    //@ngInject
@@ -2302,7 +3389,6 @@
 	         * @description adds events listeners
 	         */
 	        this.attach = function (callback, event, id) {
-	            console.log('event attached:' + event);
 	            if (!id) {
 	                id = _this.utilityService.createID();
 	            }
@@ -2361,7 +3447,6 @@
 	         * @description notifies all observers of a specific event
 	         */
 	        this.notify = function (event, parameters) {
-	            console.log('event called:' + event);
 	            for (var id in _this.observers[event]) {
 	                angular.forEach(_this.observers[event][id], function (callback) {
 	                    callback(parameters);
@@ -2369,7 +3454,6 @@
 	            }
 	        };
 	        this.notifyById = function (event, eventId, parameters) {
-	            console.log('event called:' + event);
 	            for (var id in _this.observers[event]) {
 	                if (id != eventId)
 	                    continue;
@@ -2386,7 +3470,65 @@
 
 
 /***/ },
-/* 22 */
+/* 36 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var baseentityservice_1 = __webpack_require__(19);
+	var OrderService = (function (_super) {
+	    __extends(OrderService, _super);
+	    //@ngInject
+	    function OrderService($injector, $hibachi, utilityService) {
+	        var _this = this;
+	        _super.call(this, $injector, $hibachi, utilityService, 'Order');
+	        this.$injector = $injector;
+	        this.$hibachi = $hibachi;
+	        this.utilityService = utilityService;
+	        this.newOrder_AddOrderPayment = function () {
+	            return _this.newProcessObject('newOrder_AddOrderPayment');
+	        };
+	    }
+	    return OrderService;
+	}(baseentityservice_1.BaseEntityService));
+	exports.OrderService = OrderService;
+
+
+/***/ },
+/* 37 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var baseentityservice_1 = __webpack_require__(19);
+	var OrderPaymentService = (function (_super) {
+	    __extends(OrderPaymentService, _super);
+	    //@ngInject
+	    function OrderPaymentService($injector, $hibachi, utilityService) {
+	        _super.call(this, $injector, $hibachi, utilityService, 'OrderPayment');
+	        this.$injector = $injector;
+	        this.$hibachi = $hibachi;
+	        this.utilityService = utilityService;
+	    }
+	    return OrderPaymentService;
+	}(baseentityservice_1.BaseEntityService));
+	exports.OrderPaymentService = OrderPaymentService;
+
+
+/***/ },
+/* 38 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -2477,7 +3619,7 @@
 
 
 /***/ },
-/* 23 */
+/* 39 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -2515,7 +3657,7 @@
 
 
 /***/ },
-/* 24 */
+/* 40 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2527,6 +3669,48 @@
 	        var _this = this;
 	        this.$filter = $filter;
 	        this.$log = $log;
+	        this.getPropertyHintByObjectAndPropertyIdentifier = function (object, propertyIdentifier) {
+	            var hint = "";
+	            if (_this.hasPropertyByEntityNameAndPropertyIdentifier(object, propertyIdentifier)) {
+	                if (_this.isAttributePropertyByEntityAndPropertyIdentifier(object, propertyIdentifier)) {
+	                    hint = object.metaData && object.metaData[propertyIdentifier].attributeHint;
+	                }
+	                else {
+	                    hint = object.metaData.$$getPropertyHint(propertyIdentifier);
+	                }
+	            }
+	            return hint;
+	        };
+	        this.getPropertyTitle = function (object, propertyIdentifier) {
+	            var title = "";
+	            if (_this.hasPropertyByEntityNameAndPropertyIdentifier(object, propertyIdentifier)) {
+	                if (_this.isAttributePropertyByEntityAndPropertyIdentifier(object, propertyIdentifier)) {
+	                    title = object.metaData && object.metaData[propertyIdentifier].attributeName;
+	                }
+	                else {
+	                    title = object.metaData.$$getPropertyTitle(propertyIdentifier);
+	                }
+	            }
+	            return title;
+	        };
+	        this.getPropertyFieldType = function (object, propertyIdentifier) {
+	            var fieldType = "";
+	            if (_this.hasPropertyByEntityNameAndPropertyIdentifier(object, propertyIdentifier)) {
+	                if (_this.isAttributePropertyByEntityAndPropertyIdentifier(object, propertyIdentifier)) {
+	                    fieldType = object.metaData && object.metaData[propertyIdentifier].attributeInputType;
+	                }
+	                else {
+	                    fieldType = object.metaData.$$getPropertyFieldType(propertyIdentifier);
+	                }
+	            }
+	            return fieldType;
+	        };
+	        this.isAttributePropertyByEntityAndPropertyIdentifier = function (object, propertyIdentifier) {
+	            return object.metaData && object.metaData[propertyIdentifier] && object.metaData[propertyIdentifier].attributeCode == propertyIdentifier;
+	        };
+	        this.hasPropertyByEntityNameAndPropertyIdentifier = function (object, propertyIdentifier) {
+	            return object.metaData && object.metaData[propertyIdentifier];
+	        };
 	        this.getPropertiesList = function () {
 	            return _this._propertiesList;
 	        };
@@ -2574,7 +3758,7 @@
 	                    }
 	                }
 	                var divider = '_';
-	                if (propertiesList.data[i].$$group == 'simple') {
+	                if (propertiesList.data[i].$$group == 'simple' || propertiesList.data[i].$$group == 'attribute') {
 	                    divider = '.';
 	                }
 	                propertiesList.data[i].propertyIdentifier = propertyIdentifier + divider + propertiesList.data[i].name;
@@ -2616,7 +3800,7 @@
 
 
 /***/ },
-/* 25 */
+/* 41 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -2724,7 +3908,7 @@
 
 
 /***/ },
-/* 26 */
+/* 42 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -2736,7 +3920,7 @@
 	// }
 	var HibachiService = (function () {
 	    //@ngInject
-	    function HibachiService($window, $q, $http, $timeout, $log, $rootScope, $location, $anchorScroll, utilityService, formService, rbkeyService, appConfig, _config, _jsEntities, _jsEntityInstances) {
+	    function HibachiService($window, $q, $http, $timeout, $log, $rootScope, $location, $anchorScroll, requestService, utilityService, formService, rbkeyService, appConfig, _config, _jsEntities, _jsEntityInstances) {
 	        var _this = this;
 	        this.$window = $window;
 	        this.$q = $q;
@@ -2746,6 +3930,7 @@
 	        this.$rootScope = $rootScope;
 	        this.$location = $location;
 	        this.$anchorScroll = $anchorScroll;
+	        this.requestService = requestService;
 	        this.utilityService = utilityService;
 	        this.formService = formService;
 	        this.rbkeyService = rbkeyService;
@@ -2792,7 +3977,7 @@
 	            return _this.getEntityMetaData(entityName)[propertyName];
 	        };
 	        this.getPrimaryIDPropertyNameByEntityName = function (entityName) {
-	            return _this.getEntityMetaData(entityName).$$getIDName();
+	            return _this.getEntityExample(entityName).$$getIDName();
 	        };
 	        this.getEntityHasPropertyByEntityName = function (entityName, propertyName) {
 	            return angular.isDefined(_this.getEntityMetaData(entityName)[propertyName]);
@@ -2890,7 +4075,15 @@
 	            }
 	        };
 	        this.newEntity = function (entityName) {
+	            var entityServiceName = entityName.charAt(0).toLowerCase() + entityName.slice(1) + 'Service';
+	            if (angular.element(document.body).injector().has(entityServiceName)) {
+	                var entityService = angular.element(document.body).injector().get(entityServiceName);
+	                return entityService['new' + entityName]();
+	            }
 	            return new _this._jsEntities[entityName];
+	        };
+	        this.getEntityDefinition = function (entityName) {
+	            return _this._jsEntities[entityName];
 	        };
 	        /*basic entity getter where id is optional, returns a promise*/
 	        this.getEntity = function (entityName, options) {
@@ -2924,22 +4117,11 @@
 	                params.allRecords = options.allRecords || '';
 	                params.defaultColumns = options.defaultColumns || true;
 	                params.processContext = options.processContext || '';
-	                console.log(_this.appConfig);
-	                console.log(_this.appConfig);
 	                var urlString = _this.getUrlWithActionPrefix() + 'api:main.get&entityName=' + entityName;
 	            }
-	            var deferred = _this.$q.defer();
 	            if (angular.isDefined(options.id)) {
 	                urlString += '&entityId=' + options.id;
 	            }
-	            /*var transformRequest = (data) => {
-	    
-	                return data;
-	            };
-	            //check if we are using a service to transform the request
-	            if(angular.isDefined(options.transformRequest)) => {
-	                transformRequest=options.transformRequest;
-	            }*/
 	            var transformResponse = function (data) {
 	                if (angular.isString(data)) {
 	                    data = JSON.parse(data);
@@ -2956,52 +4138,26 @@
 	                    return data;
 	                };
 	            }
-	            _this.$http.get(urlString, {
-	                params: params,
-	                timeout: deferred.promise,
-	                //transformRequest:transformRequest,
-	                transformResponse: transformResponse
-	            })
-	                .success(function (data) {
-	                deferred.resolve(data);
-	            }).error(function (reason) {
-	                deferred.reject(reason);
-	            });
+	            var request = _this.requestService.newAdminRequest(urlString, params);
 	            if (options.deferKey) {
-	                _this._deferred[options.deferKey] = deferred;
+	                _this._deferred[options.deferKey] = request;
 	            }
-	            return deferred.promise;
+	            return request.promise;
 	        };
 	        this.getResizedImageByProfileName = function (profileName, skuIDs) {
-	            var deferred = _this.$q.defer();
-	            return _this.$http.get(_this.getUrlWithActionPrefix() + 'api:main.getResizedImageByProfileName&profileName=' + profileName + '&skuIDs=' + skuIDs)
-	                .success(function (data) {
-	                deferred.resolve(data);
-	            }).error(function (reason) {
-	                deferred.reject(reason);
-	            });
+	            var urlString = _this.getUrlWithActionPrefix() + 'api:main.getResizedImageByProfileName&profileName=' + profileName + '&skuIDs=' + skuIDs;
+	            var request = _this.requestService.newAdminRequest(urlString);
+	            return request.promise;
 	        };
 	        this.getEventOptions = function (entityName) {
-	            var deferred = _this.$q.defer();
 	            var urlString = _this.getUrlWithActionPrefix() + 'api:main.getEventOptionsByEntityName&entityName=' + entityName;
-	            _this.$http.get(urlString)
-	                .success(function (data) {
-	                deferred.resolve(data);
-	            }).error(function (reason) {
-	                deferred.reject(reason);
-	            });
-	            return deferred.promise;
+	            var request = _this.requestService.newAdminRequest(urlString);
+	            return request.promise;
 	        };
 	        this.getProcessOptions = function (entityName) {
-	            var deferred = _this.$q.defer();
 	            var urlString = _this.getUrlWithActionPrefix() + 'api:main.getProcessMethodOptionsByEntityName&entityName=' + entityName;
-	            _this.$http.get(urlString)
-	                .success(function (data) {
-	                deferred.resolve(data);
-	            }).error(function (reason) {
-	                deferred.reject(reason);
-	            });
-	            return deferred.promise;
+	            var request = _this.requestService.newAdminRequest(urlString);
+	            return request.promise;
 	        };
 	        this.checkUniqueOrNullValue = function (object, property, value) {
 	            return _this.$http.get(_this.getUrlWithActionPrefix() + 'api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property +
@@ -3016,37 +4172,55 @@
 	            });
 	        };
 	        this.getPropertyDisplayData = function (entityName, options) {
-	            var deferred = _this.$q.defer();
 	            var urlString = _this.getUrlWithActionPrefix() + 'api:main.getPropertyDisplayData&entityName=' + entityName;
 	            var params = {};
 	            params.propertyIdentifiersList = options.propertyIdentifiersList || '';
-	            _this.$http.get(urlString, { params: params })
-	                .success(function (data) {
-	                deferred.resolve(data);
-	            }).error(function (reason) {
-	                deferred.reject(reason);
-	            });
-	            return deferred.promise;
+	            var request = _this.requestService.newAdminRequest(urlString, params);
+	            return request.promise;
 	        };
 	        this.getPropertyDisplayOptions = function (entityName, options) {
-	            var deferred = _this.$q.defer();
 	            var urlString = _this.getUrlWithActionPrefix() + 'api:main.getPropertyDisplayOptions&entityName=' + entityName;
 	            var params = {};
 	            params.property = options.property || '';
 	            if (angular.isDefined(options.argument1)) {
 	                params.argument1 = options.argument1;
 	            }
-	            _this.$http.get(urlString, { params: params })
-	                .success(function (data) {
-	                deferred.resolve(data);
-	            }).error(function (reason) {
-	                deferred.reject(reason);
-	            });
-	            return deferred.promise;
+	            var request = _this.requestService.newAdminRequest(urlString, params);
+	            return request.promise;
+	        };
+	        this.getPropertyTitle = function (propertyName, metaData) {
+	            var propertyMetaData = metaData[propertyName];
+	            if (angular.isDefined(propertyMetaData['hb_rbkey'])) {
+	                return metaData.$$getRBKey(propertyMetaData['hb_rbkey']);
+	            }
+	            else if (angular.isUndefined(propertyMetaData['persistent'])) {
+	                if (angular.isDefined(propertyMetaData['fieldtype'])
+	                    && angular.isDefined(propertyMetaData['cfc'])
+	                    && ["one-to-many", "many-to-many"].indexOf(propertyMetaData.fieldtype) > -1) {
+	                    return metaData.$$getRBKey("entity." + metaData.className.toLowerCase() + "." + propertyName + ',entity.' + propertyMetaData.cfc + '_plural');
+	                }
+	                else if (angular.isDefined(propertyMetaData.fieldtype)
+	                    && angular.isDefined(propertyMetaData.cfc)
+	                    && ["many-to-one"].indexOf(propertyMetaData.fieldtype) > -1) {
+	                    return metaData.$$getRBKey("entity." + metaData.className.toLowerCase() + '.' + propertyName.toLowerCase() + ',entity.' + propertyMetaData.cfc);
+	                }
+	                return metaData.$$getRBKey('entity.' + metaData.className.toLowerCase() + '.' + propertyName.toLowerCase());
+	            }
+	            else if (metaData.isProcessObject) {
+	                if (angular.isDefined(propertyMetaData.fieldtype)
+	                    && angular.isDefined(propertyMetaData.cfc)
+	                    && ["one-to-many", "many-to-many"].indexOf(propertyMetaData.fieldtype) > -1) {
+	                    return metaData.$$getRBKey('processObject.' + metaData.className.toLowerCase() + '.' + propertyName.toLowerCase() + ',entity.' + propertyMetaData.cfc.toLowerCase() + '_plural');
+	                }
+	                else if (angular.isDefined(propertyMetaData.fieldtype)
+	                    && angular.isDefined(propertyMetaData.cfc)) {
+	                    return metaData.$$getRBKey('processObject.' + metaData.className.toLowerCase() + '.' + propertyName.toLowerCase() + ',entity.' + propertyMetaData.cfc.toLowerCase());
+	                }
+	                return metaData.$$getRBKey('processObject.' + metaData.className.toLowerCase() + '.' + propertyName.toLowerCase());
+	            }
+	            return metaData.$$getRBKey('object.' + metaData.className.toLowerCase() + '.' + propertyName.toLowerCase());
 	        };
 	        this.saveEntity = function (entityName, id, params, context) {
-	            //$log.debug('save'+ entityName);
-	            var deferred = _this.$q.defer();
 	            var urlString = _this.getUrlWithActionPrefix() + 'api:main.post';
 	            if (angular.isDefined(entityName)) {
 	                params.entityName = entityName;
@@ -3057,82 +4231,41 @@
 	            if (angular.isDefined(context)) {
 	                params.context = context;
 	            }
-	            _this.$http({
-	                url: urlString,
-	                method: 'POST',
-	                data: $.param(params),
-	                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-	            })
-	                .success(function (data) {
-	                deferred.resolve(data);
-	            }).error(function (reason) {
-	                deferred.reject(reason);
-	            });
-	            return deferred.promise;
+	            var request = _this.requestService.newAdminRequest(urlString, params);
+	            return request.promise;
 	        };
 	        this.getExistingCollectionsByBaseEntity = function (entityName) {
-	            var deferred = _this.$q.defer();
 	            var urlString = _this.getUrlWithActionPrefix() + 'api:main.getExistingCollectionsByBaseEntity&entityName=' + entityName;
-	            _this.$http.get(urlString)
-	                .success(function (data) {
-	                deferred.resolve(data);
-	            }).error(function (reason) {
-	                deferred.reject(reason);
-	            });
-	            return deferred.promise;
+	            var request = _this.requestService.newAdminRequest(urlString);
+	            return request.promise;
 	        };
 	        this.getFilterPropertiesByBaseEntityName = function (entityName) {
-	            var deferred = _this.$q.defer();
 	            var urlString = _this.getUrlWithActionPrefix() + 'api:main.getFilterPropertiesByBaseEntityName&EntityName=' + entityName;
-	            _this.$http.get(urlString)
-	                .success(function (data) {
-	                deferred.resolve(data);
-	            }).error(function (reason) {
-	                deferred.reject(reason);
-	            });
-	            return deferred.promise;
+	            var request = _this.requestService.newAdminRequest(urlString);
+	            return request.promise;
 	        };
 	        this.login = function (emailAddress, password) {
-	            var deferred = _this.$q.defer();
 	            var urlString = _this.appConfig.baseURL + '/index.cfm/api/auth/login';
 	            var params = {
 	                emailAddress: emailAddress,
 	                password: password
 	            };
-	            return _this.$http.get(urlString, { params: params }).success(function (response) {
-	                deferred.resolve(response);
-	            }).error(function (response) {
-	                deferred.reject(response);
-	            });
+	            var request = _this.requestService.newAdminRequest(urlString, params);
+	            return request.promise;
 	        };
 	        this.getResourceBundle = function (locale) {
-	            var deferred = _this.$q.defer();
 	            var locale = locale || _this.appConfig.rbLocale;
 	            if (_this._resourceBundle[locale]) {
 	                return _this._resourceBundle[locale];
 	            }
 	            var urlString = _this.getUrlWithActionPrefix() + 'api:main.getResourceBundle&instantiationKey=' + _this.appConfig.instantiationKey + '&locale=' + locale;
-	            _this.$http({
-	                url: urlString,
-	                method: "GET"
-	            }).success(function (response, status, headersGetter) {
-	                _this._resourceBundle[locale] = response.data;
-	                deferred.resolve(response);
-	            }).error(function (response) {
-	                _this._resourceBundle[locale] = {};
-	                deferred.reject(response);
-	            });
-	            return deferred.promise;
+	            var request = _this.requestService.newAdminRequest(urlString);
+	            return request.promise;
 	        };
 	        this.getCurrencies = function () {
-	            var deferred = _this.$q.defer();
 	            var urlString = _this.getUrlWithActionPrefix() + 'api:main.getCurrencies&instantiationKey=' + _this.appConfig.instantiationKey;
-	            _this.$http.get(urlString).success(function (response) {
-	                deferred.resolve(response);
-	            }).error(function (response) {
-	                deferred.reject(response);
-	            });
-	            return deferred.promise;
+	            var request = _this.requestService.newAdminRequest(urlString);
+	            return request.promise;
 	        };
 	        this.getConfig = function () {
 	            return _this._config;
@@ -3154,6 +4287,7 @@
 	        this.$rootScope = $rootScope;
 	        this.$location = $location;
 	        this.$anchorScroll = $anchorScroll;
+	        this.requestService = requestService;
 	        this.utilityService = utilityService;
 	        this.formService = formService;
 	        this.rbkeyService = rbkeyService;
@@ -3196,14 +4330,15 @@
 	            '$rootScope',
 	            '$location',
 	            '$anchorScroll',
+	            'requestService',
 	            'utilityService',
 	            'formService',
 	            'rbkeyService',
 	            'appConfig'
 	        ];
 	    }
-	    $Hibachi.prototype.$get = function ($window, $q, $http, $timeout, $log, $rootScope, $location, $anchorScroll, utilityService, formService, rbkeyService, appConfig) {
-	        return new HibachiService($window, $q, $http, $timeout, $log, $rootScope, $location, $anchorScroll, utilityService, formService, rbkeyService, appConfig, this._config, this._jsEntities, this._jsEntityInstances);
+	    $Hibachi.prototype.$get = function ($window, $q, $http, $timeout, $log, $rootScope, $location, $anchorScroll, requestService, utilityService, formService, rbkeyService, appConfig) {
+	        return new HibachiService($window, $q, $http, $timeout, $log, $rootScope, $location, $anchorScroll, requestService, utilityService, formService, rbkeyService, appConfig, this._config, this._jsEntities, this._jsEntityInstances);
 	    };
 	    return $Hibachi;
 	}());
@@ -3211,7 +4346,7 @@
 
 
 /***/ },
-/* 27 */
+/* 43 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -3248,7 +4383,7 @@
 
 
 /***/ },
-/* 28 */
+/* 44 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -3256,13 +4391,25 @@
 	"use strict";
 	var HibachiServiceDecorator = (function () {
 	    //@ngInject
-	    function HibachiServiceDecorator($delegate, $http, $timeout, $log, $rootScope, $location, $anchorScroll, $q, utilityService, formService, rbkeyService, appConfig, observerService) {
+	    function HibachiServiceDecorator($delegate, $http, $timeout, $log, $rootScope, $location, $anchorScroll, $q, utilityService, formService, rbkeyService, appConfig, observerService, hibachiValidationService, attributeMetaData) {
 	        var _deferred = {};
 	        var _config = appConfig;
 	        var _jsEntities = {};
 	        var _jsEntityInstances = {};
 	        var entities = appConfig.modelConfig.entities, validations = appConfig.modelConfig.validations, defaultValues = appConfig.modelConfig.defaultValues;
 	        angular.forEach(entities, function (entity) {
+	            if (attributeMetaData[entity.className]) {
+	                var relatedAttributes = attributeMetaData[entity.className];
+	                for (var attributeSetCode in relatedAttributes) {
+	                    var attributeSet = relatedAttributes[attributeSetCode];
+	                    for (var attributeCode in attributeSet.attributes) {
+	                        var attribute = attributeSet.attributes[attributeCode];
+	                        attribute.attributeSet = attributeSet;
+	                        attribute.isAttribute = true;
+	                        entity[attributeCode] = attribute;
+	                    }
+	                }
+	            }
 	            $delegate['get' + entity.className] = function (options) {
 	                var entityInstance = $delegate.newEntity(entity.className);
 	                var entityDataPromise = $delegate.getEntity(entity.className, options);
@@ -3275,27 +4422,12 @@
 	                        entityInstance.processObject = processObjectInstance;
 	                    }
 	                    else {
-	                        entityInstance.$$init(response);
-	                    }
-	                });
-	                return {
-	                    promise: entityDataPromise,
-	                    value: entityInstance
-	                };
-	            };
-	            $delegate['get' + entity.className] = function (options) {
-	                var entityInstance = $delegate.newEntity(entity.className);
-	                var entityDataPromise = $delegate.getEntity(entity.className, options);
-	                entityDataPromise.then(function (response) {
-	                    if (angular.isDefined(response.processData)) {
-	                        entityInstance.$$init(response.data);
-	                        var processObjectInstance = $delegate['new' + entity.className + options.processContext.charAt(0).toUpperCase() + options.processContext.slice(1)]();
-	                        processObjectInstance.$$init(response.processData);
-	                        processObjectInstance.data[entity.className.charAt(0).toLowerCase() + entity.className.slice(1)] = entityInstance;
-	                        entityInstance.processObject = processObjectInstance;
-	                    }
-	                    else {
-	                        entityInstance.$$init(response);
+	                        if (entityInstance.populate) {
+	                            entityInstance.populate(response);
+	                        }
+	                        else {
+	                            entityInstance.$$init(response);
+	                        }
 	                    }
 	                });
 	                return {
@@ -3304,6 +4436,13 @@
 	                };
 	            };
 	            $delegate['new' + entity.className] = function () {
+	                //if we have the service then get the new instance from that
+	                var entityName = entity.className;
+	                var serviceName = entityName.charAt(0).toLowerCase() + entityName.slice(1) + 'Service';
+	                if (angular.element(document.body).injector().has(serviceName)) {
+	                    var entityService = angular.element(document.body).injector().get(serviceName);
+	                    return entityService['new' + entity.className]();
+	                }
 	                return $delegate.newEntity(entity.className);
 	            };
 	            entity.isProcessObject = entity.className.indexOf('_') >= 0;
@@ -3311,6 +4450,9 @@
 	                this.validations = validations[entity.className];
 	                this.metaData = entity;
 	                this.metaData.className = entity.className;
+	                if (relatedAttributes) {
+	                    this.attributeMetaData = relatedAttributes;
+	                }
 	                if (entity.hb_parentPropertyName) {
 	                    this.metaData.hb_parentPropertyName = entity.hb_parentPropertyName;
 	                }
@@ -3338,7 +4480,8 @@
 	                    return _getPropertyFieldType(propertyName, this);
 	                };
 	                this.metaData.$$getPropertyFormatType = function (propertyName) {
-	                    return _getPropertyFormatType(propertyName, this);
+	                    if (this[propertyName])
+	                        return _getPropertyFormatType(propertyName, this);
 	                };
 	                this.metaData.$$getDetailTabs = function () {
 	                    var deferred = $q.defer();
@@ -3375,6 +4518,9 @@
 	                    if (angular.isObject(property) && angular.isDefined(property.name)) {
 	                        if (angular.isDefined(defaultValues[entity.className][property.name])) {
 	                            jsEntity.data[property.name] = angular.copy(defaultValues[entity.className][property.name]);
+	                        }
+	                        else {
+	                            jsEntity.data[property.name] = undefined;
 	                        }
 	                    }
 	                });
@@ -3425,6 +4571,20 @@
 	                    }
 	                }
 	            };
+	            angular.forEach(relatedAttributes, function (attributeSet) {
+	                angular.forEach(attributeSet.attributes, function (attribute) {
+	                    Object.defineProperty(_jsEntities[entity.className].prototype, attribute.attributeCode, {
+	                        configurable: true,
+	                        enumerable: false,
+	                        get: function () {
+	                            return this.data[attribute.attributeCode];
+	                        },
+	                        set: function (value) {
+	                            this.data[attribute.attributeCode] = value;
+	                        }
+	                    });
+	                });
+	            });
 	            angular.forEach(entity, function (property) {
 	                if (angular.isObject(property) && angular.isDefined(property.name)) {
 	                    if (angular.isUndefined(property.persistent)) {
@@ -3497,14 +4657,17 @@
 	                                        var childName = 'child' + this.metaData.className;
 	                                        manyToManyName = entityInstance.metaData.$$getManyToManyName(childName);
 	                                    }
-	                                    else {
+	                                    else if (entityInstance.metaData) {
 	                                        manyToManyName = entityInstance.metaData.$$getManyToManyName(metaData.className.charAt(0).toLowerCase() + metaData.className.slice(1));
 	                                    }
+	                                    // else{
+	                                    //     manyToManyName = entityInstance.metaData.$$getManyToManyName(metaData.className.charAt(0).toLowerCase() + metaData.className.slice(1));
+	                                    // }
 	                                    if (angular.isUndefined(thisEntityInstance.parents)) {
 	                                        thisEntityInstance.parents = [];
 	                                    }
 	                                    thisEntityInstance.parents.push(thisEntityInstance.metaData[property.name]);
-	                                    if (angular.isDefined(manyToManyName)) {
+	                                    if (angular.isDefined(manyToManyName) && manyToManyName.length) {
 	                                        if (angular.isUndefined(entityInstance.children)) {
 	                                            entityInstance.children = [];
 	                                        }
@@ -3519,6 +4682,18 @@
 	                                    }
 	                                    thisEntityInstance.data[property.name] = entityInstance;
 	                                };
+	                                if (property.name !== 'data' && property.name !== 'validations') {
+	                                    Object.defineProperty(_jsEntities[entity.className].prototype, property.name, {
+	                                        configurable: true,
+	                                        enumerable: false,
+	                                        get: function () {
+	                                            return this.data[property.name];
+	                                        },
+	                                        set: function (value) {
+	                                            this['$$set' + property.name.charAt(0).toUpperCase() + property.name.slice(1)](value);
+	                                        }
+	                                    });
+	                                }
 	                            }
 	                            else if (['one-to-many', 'many-to-many'].indexOf(property.fieldtype) >= 0) {
 	                                _jsEntities[entity.className].prototype['$$add' + property.singularname.charAt(0).toUpperCase() + property.singularname.slice(1)] = function (entityInstance) {
@@ -3574,18 +4749,43 @@
 	                                        };
 	                                        var collectionPromise = $delegate.getEntity(property.cfc, options);
 	                                        collectionPromise.then(function (response) {
+	                                            var entityInstances = [];
 	                                            for (var i in response.records) {
-	                                                var entityInstance = thisEntityInstance['$$add' + thisEntityInstance.metaData[property.name].singularname.charAt(0).toUpperCase() + thisEntityInstance.metaData[property.name].singularname.slice(1)]();
+	                                                var entityInstance = thisEntityInstance['$$add' + property.singularname.charAt(0).toUpperCase() + property.singularname.slice(1)]();
 	                                                entityInstance.$$init(response.records[i]);
 	                                                if (angular.isUndefined(thisEntityInstance[property.name])) {
 	                                                    thisEntityInstance[property.name] = [];
 	                                                }
-	                                                thisEntityInstance[property.name].push(entityInstance);
+	                                                entityInstances.push(entityInstance);
 	                                            }
+	                                            thisEntityInstance.data[property.name] = entityInstances;
 	                                        });
 	                                        return collectionPromise;
 	                                    }
 	                                };
+	                                Object.defineProperty(_jsEntities[entity.className].prototype, property.name, {
+	                                    configurable: true,
+	                                    enumerable: false,
+	                                    get: function () {
+	                                        return this.data[property.name];
+	                                    },
+	                                    set: function (value) {
+	                                        this.data[property.name] = [];
+	                                        if (angular.isArray(value)) {
+	                                            for (var i = 0; i < value.length; i++) {
+	                                                var item = value[i];
+	                                                var entityInstance = $delegate.newEntity(this.metaData[property.name].cfc);
+	                                                entityInstance.$$init(item);
+	                                                this['$$add' + property.singularname.charAt(0).toUpperCase() + property.singularname.slice(1)](entityInstance);
+	                                            }
+	                                        }
+	                                        else {
+	                                            var entityInstance = $delegate.newEntity(this.metaData[property.name].cfc);
+	                                            entityInstance.$$init(value);
+	                                            this['$$add' + property.singularname.charAt(0).toUpperCase() + property.singularname.slice(1)](entityInstance);
+	                                        }
+	                                    }
+	                                });
 	                            }
 	                            else {
 	                                if (['id'].indexOf(property.fieldtype) >= 0) {
@@ -3598,12 +4798,36 @@
 	                                        return IDNameString;
 	                                    };
 	                                }
+	                                if (property.name !== 'data' && property.name !== 'validations') {
+	                                    Object.defineProperty(_jsEntities[entity.className].prototype, property.name, {
+	                                        configurable: true,
+	                                        enumerable: false,
+	                                        get: function () {
+	                                            return this.data[property.name];
+	                                        },
+	                                        set: function (value) {
+	                                            this.data[property.name] = value;
+	                                        }
+	                                    });
+	                                }
 	                                _jsEntities[entity.className].prototype['$$get' + property.name.charAt(0).toUpperCase() + property.name.slice(1)] = function () {
 	                                    return this.data[property.name];
 	                                };
 	                            }
 	                        }
 	                        else {
+	                            if (property.name !== 'data' && property.name !== 'validations') {
+	                                Object.defineProperty(_jsEntities[entity.className].prototype, property.name, {
+	                                    configurable: true,
+	                                    enumerable: false,
+	                                    get: function () {
+	                                        return this.data[property.name];
+	                                    },
+	                                    set: function (value) {
+	                                        this.data[property.name] = value;
+	                                    }
+	                                });
+	                            }
 	                            _jsEntities[entity.className].prototype['$$get' + property.name.charAt(0).toUpperCase() + property.name.slice(1)] = function () {
 	                                return this.data[property.name];
 	                            };
@@ -3619,51 +4843,10 @@
 	        });
 	        $delegate.setJsEntityInstances(_jsEntityInstances);
 	        var _init = function (entityInstance, data) {
-	            for (var key in data) {
-	                if (key.charAt(0) !== '$' && angular.isDefined(entityInstance.metaData[key])) {
-	                    var propertyMetaData = entityInstance.metaData[key];
-	                    if (angular.isDefined(propertyMetaData) && angular.isDefined(propertyMetaData.hb_formfieldtype) && propertyMetaData.hb_formfieldtype === 'json') {
-	                        if (data[key].trim() !== '') {
-	                            entityInstance.data[key] = angular.fromJson(data[key]);
-	                        }
-	                    }
-	                    else {
-	                        entityInstance.data[key] = data[key];
-	                    }
-	                }
-	            }
+	            hibachiValidationService.init(entityInstance, data);
 	        };
 	        var _getPropertyTitle = function (propertyName, metaData) {
-	            var propertyMetaData = metaData[propertyName];
-	            if (angular.isDefined(propertyMetaData['hb_rbkey'])) {
-	                return metaData.$$getRBKey(propertyMetaData['hb_rbkey']);
-	            }
-	            else if (angular.isUndefined(propertyMetaData['persistent'])) {
-	                if (angular.isDefined(propertyMetaData['fieldtype'])
-	                    && angular.isDefined(propertyMetaData['cfc'])
-	                    && ["one-to-many", "many-to-many"].indexOf(propertyMetaData.fieldtype) > -1) {
-	                    return metaData.$$getRBKey("entity." + metaData.className.toLowerCase() + "." + propertyName + ',entity.' + propertyMetaData.cfc + '_plural');
-	                }
-	                else if (angular.isDefined(propertyMetaData.fieldtype)
-	                    && angular.isDefined(propertyMetaData.cfc)
-	                    && ["many-to-one"].indexOf(propertyMetaData.fieldtype) > -1) {
-	                    return metaData.$$getRBKey("entity." + metaData.className.toLowerCase() + '.' + propertyName.toLowerCase() + ',entity.' + propertyMetaData.cfc);
-	                }
-	                return metaData.$$getRBKey('entity.' + metaData.className.toLowerCase() + '.' + propertyName.toLowerCase());
-	            }
-	            else if (metaData.isProcessObject) {
-	                if (angular.isDefined(propertyMetaData.fieldtype)
-	                    && angular.isDefined(propertyMetaData.cfc)
-	                    && ["one-to-many", "many-to-many"].indexOf(propertyMetaData.fieldtype) > -1) {
-	                    return metaData.$$getRBKey('processObject.' + metaData.className.toLowerCase() + '.' + propertyName.toLowerCase() + ',entity.' + propertyMetaData.cfc.toLowerCase() + '_plural');
-	                }
-	                else if (angular.isDefined(propertyMetaData.fieldtype)
-	                    && angular.isDefined(propertyMetaData.cfc)) {
-	                    return metaData.$$getRBKey('processObject.' + metaData.className.toLowerCase() + '.' + propertyName.toLowerCase() + ',entity.' + propertyMetaData.cfc.toLowerCase());
-	                }
-	                return metaData.$$getRBKey('processObject.' + metaData.className.toLowerCase() + '.' + propertyName.toLowerCase());
-	            }
-	            return metaData.$$getRBKey('object.' + metaData.className.toLowerCase() + '.' + propertyName.toLowerCase());
+	            return $delegate.getPropertyTitle(propertyName, metaData);
 	        };
 	        var _getPropertyHint = function (propertyName, metaData) {
 	            var propertyMetaData = metaData[propertyName];
@@ -3723,8 +4906,11 @@
 	            return "text";
 	        };
 	        var _getPropertyFormatType = function (propertyName, metaData) {
+	            if (!propertyName || !metaData) {
+	                return 'none';
+	            }
 	            var propertyMetaData = metaData[propertyName];
-	            if (angular.isDefined(propertyMetaData['hb_formattype'])) {
+	            if (propertyMetaData['hb_formattype']) {
 	                return propertyMetaData['hb_formattype'];
 	            }
 	            else if (angular.isUndefined(propertyMetaData.fieldtype) || propertyMetaData.fieldtype === 'column') {
@@ -3907,9 +5093,6 @@
 	            return deferred.promise;
 	            /*
 
-
-
-
 	            */
 	        };
 	        var _getModifiedData = function (entityInstance) {
@@ -3918,6 +5101,357 @@
 	            return modifiedData;
 	        };
 	        var getObjectSaveLevel = function (entityInstance) {
+	            return hibachiValidationService.getObjectSaveLevel(entityInstance);
+	        };
+	        var validateObject = function (entityInstance) {
+	            return hibachiValidationService.validateObject;
+	        };
+	        var validateChildren = function (entityInstance) {
+	            return hibachiValidationService.validateChildren(entityInstance);
+	        };
+	        var processChild = function (entityInstance, entityInstanceParent) {
+	            return hibachiValidationService.processChild(entityInstance, entityInstanceParent);
+	        };
+	        var processParent = function (entityInstance) {
+	            return hibachiValidationService.processParent(entityInstance);
+	        };
+	        var processForm = function (form, entityInstance) {
+	            return hibachiValidationService.processForm(form, entityInstance);
+	        };
+	        var getDataFromParents = function (entityInstance, entityInstanceParents) {
+	            return hibachiValidationService.getDataFromParents(entityInstance, entityInstanceParents);
+	        };
+	        var getDataFromChildren = function (entityInstance) {
+	            return hibachiValidationService.getDataFromChildren(entityInstance);
+	        };
+	        var getModifiedDataByInstance = function (entityInstance) {
+	            return hibachiValidationService.getModifiedDataByInstance(entityInstance);
+	        };
+	        var _getValidationsByProperty = function (entityInstance, property) {
+	            return hibachiValidationService.getValidationsByProperty(entityInstance, property);
+	        };
+	        var _getValidationByPropertyAndContext = function (entityInstance, property, context) {
+	            return hibachiValidationService.getValidationByPropertyAndContext(entityInstance, property, context);
+	        };
+	        return $delegate;
+	    }
+	    return HibachiServiceDecorator;
+	}());
+	exports.HibachiServiceDecorator = HibachiServiceDecorator;
+
+
+/***/ },
+/* 45 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	"use strict";
+	var HibachiScope = (function () {
+	    //@ngInject
+	    function HibachiScope(appConfig) {
+	        var _this = this;
+	        this.loginDisplayed = false;
+	        this.isValidToken = true;
+	        this.setToken = function (token) {
+	            _this.token = token;
+	            var stringArray = token.split('.');
+	            try {
+	                _this.jwtInfo = angular.fromJson(window.atob(stringArray[0]).trim());
+	                _this.session = angular.fromJson(window.atob(stringArray[1]).trim());
+	            }
+	            catch (err) {
+	                _this.isValidToken = false;
+	            }
+	        };
+	        this.config = appConfig;
+	    }
+	    return HibachiScope;
+	}());
+	exports.HibachiScope = HibachiScope;
+
+
+/***/ },
+/* 46 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	"use strict";
+	var adminrequest_1 = __webpack_require__(47);
+	var publicrequest_1 = __webpack_require__(49);
+	var RequestService = (function () {
+	    //@ngInject
+	    function RequestService($injector, observerService) {
+	        var _this = this;
+	        this.$injector = $injector;
+	        this.observerService = observerService;
+	        this.newAdminRequest = function (url, data, method, headers, $injector, observerService) {
+	            if (method === void 0) { method = "post"; }
+	            if (headers === void 0) { headers = { 'Content-Type': "application/json" }; }
+	            if ($injector === void 0) { $injector = _this.$injector; }
+	            if (observerService === void 0) { observerService = _this.observerService; }
+	            return new adminrequest_1.AdminRequest(url, data, method, headers, $injector, observerService);
+	        };
+	        this.newPublicRequest = function (url, data, method, headers, $injector, observerService) {
+	            if (method === void 0) { method = "post"; }
+	            if (headers === void 0) { headers = { 'Content-Type': "application/x-www-form-urlencoded" }; }
+	            if ($injector === void 0) { $injector = _this.$injector; }
+	            if (observerService === void 0) { observerService = _this.observerService; }
+	            return new publicrequest_1.PublicRequest(url, data, method, headers, $injector, observerService);
+	        };
+	        this.$injector = $injector;
+	        this.observerService = observerService;
+	    }
+	    return RequestService;
+	}());
+	exports.RequestService = RequestService;
+
+
+/***/ },
+/* 47 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	/// <reference path='../../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var request_1 = __webpack_require__(48);
+	var AdminRequest = (function (_super) {
+	    __extends(AdminRequest, _super);
+	    function AdminRequest(url, data, method, headers, $injector, observerService) {
+	        var _this = this;
+	        if (method === void 0) { method = "post"; }
+	        if (headers === void 0) { headers = { 'Content-Type': "application/json" }; }
+	        _super.call(this, url, data, method, headers, $injector);
+	        this.observerService = observerService;
+	        this.observerService = observerService;
+	        this.promise.then(function (result) {
+	            //identify that it is an object save
+	            if (url.indexOf('api:main.post') != -1 && data.entityName) {
+	                var eventNameBase = data.entityName + data.context;
+	                if (result.errors) {
+	                    _this.observerService.notify(eventNameBase + 'Failure', result.data);
+	                }
+	                else {
+	                    _this.observerService.notify(eventNameBase + 'Success', result.data);
+	                }
+	            }
+	            _this.messages = result.messages;
+	        }).catch(function (response) {
+	        });
+	    }
+	    return AdminRequest;
+	}(request_1.Request));
+	exports.AdminRequest = AdminRequest;
+
+
+/***/ },
+/* 48 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	/// <reference path='../../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var basetransient_1 = __webpack_require__(24);
+	var Request = (function (_super) {
+	    __extends(Request, _super);
+	    function Request(url, data, method, headers, $injector) {
+	        var _this = this;
+	        _super.call(this, $injector);
+	        this.loading = true;
+	        this.errors = {};
+	        this.processResponse = function (response) {
+	            _this.loading = false;
+	            if (response.errors) {
+	                _this.errors = response.errors;
+	            }
+	            if (response.messages) {
+	                _this.messages = response.messages;
+	            }
+	        };
+	        //returns hibachiAction value from url and data;
+	        this.getAction = function () {
+	            var config = _this.getAppConfig();
+	            //typically hibachiAction
+	            var actionName = config.action;
+	            var params = _this.utilityService.getQueryParamsFromUrl(_this.url);
+	            if (params[actionName]) {
+	                return params[actionName];
+	            }
+	            if (_this.data && _this.data[actionName]) {
+	                return _this.data[actionName];
+	            }
+	            if (_this.url.indexOf('api/scope/') > 0) {
+	                return _this.extractPublicAction(_this.url);
+	            }
+	        };
+	        this.extractPublicAction = function (url) {
+	            //get in between api/scope and / or ? or end of word
+	            var regex = /\api\/scope\/(.*?)(?=\/|\?|$)/;
+	            var arr = regex.exec(url);
+	            return arr[1];
+	        };
+	        this.processSuccess = function (response) {
+	            _this.processResponse(response);
+	        };
+	        this.processError = function (response) {
+	            _this.processResponse(response);
+	        };
+	        /** used to turn data into a correct format for the post */
+	        this.toFormParams = function (data) {
+	            if (data) {
+	                return $.param(data);
+	            }
+	            else {
+	                return "";
+	            }
+	            //return data = this.serializeData(data) || "";
+	        };
+	        this.serializeData = function (data) {
+	            // If this is not an object, defer to native stringification.
+	            if (!angular.isObject(data)) {
+	                return ((data == null) ? "" : data.toString());
+	            }
+	            var buffer = [];
+	            // Serialize each key in the object.
+	            for (var name in data) {
+	                if (!data.hasOwnProperty(name)) {
+	                    continue;
+	                }
+	                var value = data[name];
+	                buffer.push(encodeURIComponent(name) + "=" + encodeURIComponent((value == null) ? "" : value));
+	            }
+	            // Serialize the buffer and clean it up for transportation.
+	            var source = buffer.join("&").replace(/%20/g, "+");
+	            return (source);
+	        };
+	        this.headers = headers;
+	        this.$q = this.getService('$q');
+	        this.$http = this.getService('$http');
+	        this.$window = this.getService('$window');
+	        this.url = url;
+	        this.data = data;
+	        this.method = method;
+	        this.utilityService = this.getService('utilityService');
+	        if (!method) {
+	            if (data == undefined) {
+	                method = "get";
+	            }
+	            else {
+	                method = "post";
+	            }
+	        }
+	        var deferred = this.$q.defer();
+	        if (method == "post") {
+	            if (this.headers['Content-Type'] !== "application/json") {
+	                data = this.toFormParams(data);
+	            }
+	            //post
+	            var promise = this.$http({
+	                url: url, data: data, headers: this.headers, method: 'post'
+	            })
+	                .success(function (result) {
+	                _this.processSuccess(result);
+	                deferred.resolve(result);
+	            }).error(function (response) {
+	                _this.processError(response);
+	                deferred.reject(response);
+	            });
+	            this.promise = deferred.promise;
+	        }
+	        else {
+	            //get
+	            this.$http({ url: url, method: 'get' })
+	                .success(function (result) {
+	                _this.processSuccess(result);
+	                deferred.resolve(result);
+	            }).error(function (reason) {
+	                _this.processError(reason);
+	                deferred.reject(reason);
+	            });
+	            this.promise = deferred.promise;
+	        }
+	        return this;
+	    }
+	    return Request;
+	}(basetransient_1.BaseTransient));
+	exports.Request = Request;
+
+
+/***/ },
+/* 49 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	/// <reference path='../../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var request_1 = __webpack_require__(48);
+	var PublicRequest = (function (_super) {
+	    __extends(PublicRequest, _super);
+	    function PublicRequest(url, data, method, headers, $injector, observerService) {
+	        var _this = this;
+	        if (headers === void 0) { headers = { 'Content-Type': "application/x-www-form-urlencoded" }; }
+	        _super.call(this, url, data, method, headers, $injector);
+	        this.observerService = observerService;
+	        this.failureActions = [];
+	        this.successfulActions = [];
+	        this.messages = [];
+	        this.hasSuccessfulAction = function () {
+	            return _this.successfulActions.length > 0;
+	        };
+	        this.hasFailureAction = function () {
+	            return _this.failureActions.length > 0;
+	        };
+	        this.observerService = observerService;
+	        this.promise.then(function (result) {
+	            _this.successfulActions = result.successfulActions;
+	            for (var i in _this.successfulActions) {
+	                var successfulAction = _this.successfulActions[i];
+	                _this.observerService.notify(successfulAction.split('.')[1] + 'Success', result.data);
+	            }
+	            _this.failureActions = result.failureActions;
+	            for (var i in _this.failureActions) {
+	                var failureAction = _this.failureActions[i];
+	                _this.observerService.notify(failureAction.split('.')[1] + 'Failure', result.data);
+	            }
+	            _this.messages = result.messages;
+	        }).catch(function (response) {
+	        });
+	        return this;
+	    }
+	    return PublicRequest;
+	}(request_1.Request));
+	exports.PublicRequest = PublicRequest;
+
+
+/***/ },
+/* 50 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	"use strict";
+	var HibachiValidationService = (function () {
+	    //@ngInject
+	    function HibachiValidationService($log) {
+	        var _this = this;
+	        this.$log = $log;
+	        this.getObjectSaveLevel = function (entityInstance) {
 	            var objectLevel = entityInstance;
 	            var entityID = entityInstance.$$getID();
 	            angular.forEach(entityInstance.parents, function (parentObject) {
@@ -3925,23 +5459,51 @@
 	                    var parentEntityInstance = entityInstance.data[parentObject.name];
 	                    var parentEntityID = parentEntityInstance.$$getID();
 	                    if (parentEntityID === '' && parentEntityInstance.forms) {
-	                        objectLevel = getObjectSaveLevel(parentEntityInstance);
+	                        objectLevel = _this.getObjectSaveLevel(parentEntityInstance);
 	                    }
 	                }
 	            });
 	            return objectLevel;
 	        };
-	        var validateObject = function (entityInstance) {
+	        this.getModifiedDataByInstance = function (entityInstance) {
+	            var modifiedData = {};
+	            var objectSaveLevel = _this.getObjectSaveLevel(entityInstance);
+	            _this.$log.debug('objectSaveLevel : ' + objectSaveLevel);
+	            var valueStruct = _this.validateObject(objectSaveLevel);
+	            _this.$log.debug('validateObject data');
+	            _this.$log.debug(valueStruct.value);
+	            modifiedData = {
+	                objectLevel: objectSaveLevel,
+	                value: valueStruct.value,
+	                valid: valueStruct.valid
+	            };
+	            return modifiedData;
+	        };
+	        this.getValidationByPropertyAndContext = function (entityInstance, property, context) {
+	            var validations = _this.getValidationsByProperty(entityInstance, property);
+	            for (var i in validations) {
+	                var contexts = validations[i].contexts.split(',');
+	                for (var j in contexts) {
+	                    if (contexts[j] === context) {
+	                        return validations[i];
+	                    }
+	                }
+	            }
+	        };
+	        this.getValidationsByProperty = function (entityInstance, property) {
+	            return entityInstance.validations.properties[property];
+	        };
+	        this.validateObject = function (entityInstance) {
 	            var modifiedData = {};
 	            var valid = true;
 	            var forms = entityInstance.forms;
-	            //$log.debug('process base level data');
+	            _this.$log.debug('process base level data');
 	            for (var f in forms) {
 	                var form = forms[f];
 	                form.$setSubmitted(); //Sets the form to submitted for the validation errors to pop up.
 	                if (form.$dirty && form.$valid) {
 	                    for (var key in form) {
-	                        //$log.debug('key:'+key);
+	                        _this.$log.debug('key:' + key);
 	                        if (key.charAt(0) !== '$' && angular.isObject(form[key])) {
 	                            var inputField = form[key];
 	                            if (inputField.$modelValue) {
@@ -3967,8 +5529,8 @@
 	                }
 	            }
 	            modifiedData[entityInstance.$$getIDName()] = entityInstance.$$getID();
-	            //$log.debug(modifiedData);
-	            //$log.debug('process parent data');
+	            _this.$log.debug(modifiedData);
+	            _this.$log.debug('process parent data');
 	            if (angular.isDefined(entityInstance.parents)) {
 	                for (var p in entityInstance.parents) {
 	                    var parentObject = entityInstance.parents[p];
@@ -4009,57 +5571,41 @@
 	                    modifiedData[parentObject.name][parentInstance.$$getIDName()] = parentInstance.$$getID();
 	                }
 	            }
-	            //$log.debug(modifiedData);
-	            //$log.debug('begin child data');
-	            var childrenData = validateChildren(entityInstance);
-	            //$log.debug('child Data');
-	            //$log.debug(childrenData);
+	            _this.$log.debug(modifiedData);
+	            _this.$log.debug('begin child data');
+	            var childrenData = _this.validateChildren(entityInstance);
+	            _this.$log.debug('child Data');
+	            _this.$log.debug(childrenData);
 	            angular.extend(modifiedData, childrenData);
 	            return {
 	                valid: valid,
 	                value: modifiedData
 	            };
 	        };
-	        var validateChildren = function (entityInstance) {
+	        this.validateChildren = function (entityInstance) {
 	            var data = {};
 	            if (angular.isDefined(entityInstance.children) && entityInstance.children.length) {
-	                data = getDataFromChildren(entityInstance);
+	                data = _this.getDataFromChildren(entityInstance);
 	            }
 	            return data;
 	        };
-	        var processChild = function (entityInstance, entityInstanceParent) {
-	            var data = {};
-	            var forms = entityInstance.forms;
-	            for (var f in forms) {
-	                var form = forms[f];
-	                angular.extend(data, processForm(form, entityInstance));
+	        this.init = function (entityInstance, data) {
+	            for (var key in data) {
+	                if (key.charAt(0) !== '$' && angular.isDefined(entityInstance.metaData[key])) {
+	                    var propertyMetaData = entityInstance.metaData[key];
+	                    if (angular.isDefined(propertyMetaData) && angular.isDefined(propertyMetaData.hb_formfieldtype) && propertyMetaData.hb_formfieldtype === 'json') {
+	                        if (data[key].trim() !== '') {
+	                            entityInstance.data[key] = angular.fromJson(data[key]);
+	                        }
+	                    }
+	                    else {
+	                        entityInstance.data[key] = data[key];
+	                    }
+	                }
 	            }
-	            if (angular.isDefined(entityInstance.children) && entityInstance.children.length) {
-	                var childData = getDataFromChildren(entityInstance);
-	                angular.extend(data, childData);
-	            }
-	            if (angular.isDefined(entityInstance.parents) && entityInstance.parents.length) {
-	                var parentData = getDataFromParents(entityInstance, entityInstanceParent);
-	                angular.extend(data, parentData);
-	            }
-	            return data;
 	        };
-	        var processParent = function (entityInstance) {
-	            var data = {};
-	            if (entityInstance.$$getID() !== '') {
-	                data[entityInstance.$$getIDName()] = entityInstance.$$getID();
-	            }
-	            //$log.debug('processParent');
-	            //$log.debug(entityInstance);
-	            var forms = entityInstance.forms;
-	            for (var f in forms) {
-	                var form = forms[f];
-	                data = angular.extend(data, processForm(form, entityInstance));
-	            }
-	            return data;
-	        };
-	        var processForm = function (form, entityInstance) {
-	            //$log.debug('begin process form');
+	        this.processForm = function (form, entityInstance) {
+	            _this.$log.debug('begin process form');
 	            var data = {};
 	            form.$setSubmitted();
 	            for (var key in form) {
@@ -4079,11 +5625,42 @@
 	                }
 	            }
 	            data[entityInstance.$$getIDName()] = entityInstance.$$getID();
-	            //$log.debug('process form data');
-	            //$log.debug(data);
+	            _this.$log.debug('process form data');
+	            _this.$log.debug(data);
 	            return data;
 	        };
-	        var getDataFromParents = function (entityInstance, entityInstanceParent) {
+	        this.processParent = function (entityInstance) {
+	            var data = {};
+	            if (entityInstance.$$getID() !== '') {
+	                data[entityInstance.$$getIDName()] = entityInstance.$$getID();
+	            }
+	            _this.$log.debug('processParent');
+	            _this.$log.debug(entityInstance);
+	            var forms = entityInstance.forms;
+	            for (var f in forms) {
+	                var form = forms[f];
+	                data = angular.extend(data, _this.processForm(form, entityInstance));
+	            }
+	            return data;
+	        };
+	        this.processChild = function (entityInstance, entityInstanceParent) {
+	            var data = {};
+	            var forms = entityInstance.forms;
+	            for (var f in forms) {
+	                var form = forms[f];
+	                angular.extend(data, _this.processForm(form, entityInstance));
+	            }
+	            if (angular.isDefined(entityInstance.children) && entityInstance.children.length) {
+	                var childData = _this.getDataFromChildren(entityInstance);
+	                angular.extend(data, childData);
+	            }
+	            if (angular.isDefined(entityInstance.parents) && entityInstance.parents.length) {
+	                var parentData = _this.getDataFromParents(entityInstance, entityInstanceParent);
+	                angular.extend(data, parentData);
+	            }
+	            return data;
+	        };
+	        this.getDataFromParents = function (entityInstance, entityInstanceParent) {
 	            var data = {};
 	            for (var c in entityInstance.parents) {
 	                var parentMetaData = entityInstance.parents[c];
@@ -4093,9 +5670,9 @@
 	                        if (angular.isUndefined(data[parentMetaData.name])) {
 	                            data[parentMetaData.name] = {};
 	                        }
-	                        var parentData = processParent(parent);
-	                        //$log.debug('parentData:'+parentMetaData.name);
-	                        //$log.debug(parentData);
+	                        var parentData = _this.processParent(parent);
+	                        _this.$log.debug('parentData:' + parentMetaData.name);
+	                        _this.$log.debug(parentData);
 	                        angular.extend(data[parentMetaData.name], parentData);
 	                    }
 	                    else {
@@ -4105,24 +5682,24 @@
 	            ;
 	            return data;
 	        };
-	        var getDataFromChildren = function (entityInstance) {
+	        this.getDataFromChildren = function (entityInstance) {
 	            var data = {};
-	            //$log.debug('childrenFound');
-	            //$log.debug(entityInstance.children);
+	            _this.$log.debug('childrenFound');
+	            _this.$log.debug(entityInstance.children);
 	            for (var c in entityInstance.children) {
 	                var childMetaData = entityInstance.children[c];
 	                var children = entityInstance.data[childMetaData.name];
-	                //$log.debug(childMetaData);
-	                //$log.debug(children);
+	                _this.$log.debug(childMetaData);
+	                _this.$log.debug(children);
 	                if (angular.isArray(entityInstance.data[childMetaData.name])) {
 	                    if (angular.isUndefined(data[childMetaData.name])) {
 	                        data[childMetaData.name] = [];
 	                    }
 	                    angular.forEach(entityInstance.data[childMetaData.name], function (child, key) {
-	                        //$log.debug('process child array item')
-	                        var childData = processChild(child, entityInstance);
-	                        //$log.debug('process child return');
-	                        //$log.debug(childData);
+	                        _this.$log.debug('process child array item');
+	                        var childData = _this.processChild(child, entityInstance);
+	                        _this.$log.debug('process child return');
+	                        _this.$log.debug(childData);
 	                        data[childMetaData.name].push(childData);
 	                    });
 	                }
@@ -4131,85 +5708,53 @@
 	                        data[childMetaData.name] = {};
 	                    }
 	                    var child = entityInstance.data[childMetaData.name];
-	                    //$log.debug('begin process child');
-	                    var childData = processChild(child, entityInstance);
-	                    //$log.debug('process child return');
-	                    //$log.debug(childData);
+	                    _this.$log.debug('begin process child');
+	                    var childData = _this.processChild(child, entityInstance);
+	                    _this.$log.debug('process child return');
+	                    _this.$log.debug(childData);
 	                    angular.extend(data, childData);
 	                }
 	            }
-	            //$log.debug('returning child data');
-	            //$log.debug(data);
+	            _this.$log.debug('returning child data');
+	            _this.$log.debug(data);
 	            return data;
 	        };
-	        var getModifiedDataByInstance = function (entityInstance) {
-	            var modifiedData = {};
-	            var objectSaveLevel = getObjectSaveLevel(entityInstance);
-	            //$log.debug('objectSaveLevel : ' + objectSaveLevel );
-	            var valueStruct = validateObject(objectSaveLevel);
-	            //$log.debug('validateObject data');
-	            //$log.debug(valueStruct.value);
-	            modifiedData = {
-	                objectLevel: objectSaveLevel,
-	                value: valueStruct.value,
-	                valid: valueStruct.valid
-	            };
-	            return modifiedData;
-	        };
-	        var _getValidationsByProperty = function (entityInstance, property) {
-	            return entityInstance.validations.properties[property];
-	        };
-	        var _getValidationByPropertyAndContext = function (entityInstance, property, context) {
-	            var validations = _getValidationsByProperty(entityInstance, property);
-	            for (var i in validations) {
-	                var contexts = validations[i].contexts.split(',');
-	                for (var j in contexts) {
-	                    if (contexts[j] === context) {
-	                        return validations[i];
-	                    }
-	                }
-	            }
-	        };
-	        return $delegate;
+	        this.$log = $log;
 	    }
-	    return HibachiServiceDecorator;
+	    return HibachiValidationService;
 	}());
-	exports.HibachiServiceDecorator = HibachiServiceDecorator;
+	exports.HibachiValidationService = HibachiValidationService;
 
 
 /***/ },
-/* 29 */
-/***/ function(module, exports) {
+/* 51 */
+/***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
-	var HibachiScope = (function () {
+	var baseentityservice_1 = __webpack_require__(19);
+	var EntityService = (function (_super) {
+	    __extends(EntityService, _super);
 	    //@ngInject
-	    function HibachiScope(appConfig) {
-	        var _this = this;
-	        this.loginDisplayed = false;
-	        this.isValidToken = true;
-	        this.setToken = function (token) {
-	            _this.token = token;
-	            var stringArray = token.split('.');
-	            try {
-	                _this.jwtInfo = angular.fromJson(window.atob(stringArray[0]).trim());
-	                _this.session = angular.fromJson(window.atob(stringArray[1]).trim());
-	            }
-	            catch (err) {
-	                _this.isValidToken = false;
-	            }
-	        };
-	        this.config = appConfig;
+	    function EntityService($injector, $hibachi, utilityService) {
+	        _super.call(this, $injector, $hibachi, utilityService);
+	        this.$injector = $injector;
+	        this.$hibachi = $hibachi;
+	        this.utilityService = utilityService;
 	    }
-	    return HibachiScope;
-	}());
-	exports.HibachiScope = HibachiScope;
+	    return EntityService;
+	}(baseentityservice_1.BaseEntityService));
+	exports.EntityService = EntityService;
 
 
 /***/ },
-/* 30 */
+/* 52 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -4232,6 +5777,16 @@
 	                'results': [],
 	                'id': function (data) {
 	                    return data['productID'];
+	                }
+	            },
+	            'order': {
+	                'title': rbkeyService.getRBKey('entity.order_plural'),
+	                'resultNameFilter': function (data) {
+	                    return data['orderNumber'];
+	                },
+	                'results': [],
+	                'id': function (data) {
+	                    return data['orderID'];
 	                }
 	            },
 	            'brand': {
@@ -4346,7 +5901,7 @@
 
 
 /***/ },
-/* 31 */
+/* 53 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -4371,7 +5926,7 @@
 
 
 /***/ },
-/* 32 */
+/* 54 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -4396,7 +5951,7 @@
 
 
 /***/ },
-/* 33 */
+/* 55 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -4436,7 +5991,28 @@
 
 
 /***/ },
-/* 34 */
+/* 56 */
+/***/ function(module, exports) {
+
+	"use strict";
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var DateFilter = (function () {
+	    function DateFilter() {
+	    }
+	    //@ngInject
+	    DateFilter.Factory = function ($filter) {
+	        return function (date, dateString) {
+	            return $filter('date')(Date.parse(date), dateString);
+	        };
+	    };
+	    return DateFilter;
+	}());
+	exports.DateFilter = DateFilter;
+
+
+/***/ },
+/* 57 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -4444,17 +6020,18 @@
 	"use strict";
 	var SWActionCallerController = (function () {
 	    //@ngInject
-	    function SWActionCallerController($scope, $element, $templateRequest, $compile, corePartialsPath, utilityService, $hibachi, rbkeyService, hibachiPathBuilder) {
+	    function SWActionCallerController($scope, $element, $templateRequest, $compile, $timeout, corePartialsPath, utilityService, $hibachi, rbkeyService, hibachiPathBuilder) {
 	        var _this = this;
 	        this.$scope = $scope;
 	        this.$element = $element;
 	        this.$templateRequest = $templateRequest;
 	        this.$compile = $compile;
+	        this.$timeout = $timeout;
 	        this.corePartialsPath = corePartialsPath;
 	        this.utilityService = utilityService;
 	        this.$hibachi = $hibachi;
 	        this.rbkeyService = rbkeyService;
-	        this.init = function () {
+	        this.$onInit = function () {
 	            //Check if is NOT a ngRouter
 	            if (angular.isUndefined(_this.isAngularRoute)) {
 	                _this.isAngularRoute = _this.utilityService.isAngularRoute();
@@ -4476,9 +6053,9 @@
 	            if (_this.type == "button") {
 	                //handle submit.
 	                /** in order to attach the correct controller to local vm, we need a watch to bind */
-	                var unbindWatcher = _this.$scope.$watch(function () { return _this.$scope.frmController; }, function (newValue, oldValue) {
+	                var unbindWatcher = _this.$scope.$watch(function () { return _this.formController; }, function (newValue, oldValue) {
 	                    if (newValue !== undefined) {
-	                        _this.formCtrl = newValue;
+	                        _this.formController = newValue;
 	                    }
 	                    unbindWatcher();
 	                });
@@ -4506,7 +6083,12 @@
 	            */
 	        };
 	        this.submit = function () {
-	            _this.formCtrl.submit(_this.action);
+	            _this.$timeout(function () {
+	                if (_this.form.$valid) {
+	                    _this.formController.submit(_this.action);
+	                }
+	                _this.form.$submitted = true;
+	            });
 	        };
 	        this.getAction = function () {
 	            return _this.action || '';
@@ -4645,6 +6227,7 @@
 	        };
 	        this.$scope = $scope;
 	        this.$element = $element;
+	        this.$timeout = $timeout;
 	        this.$templateRequest = $templateRequest;
 	        this.$compile = $compile;
 	        this.rbkeyService = rbkeyService;
@@ -4656,7 +6239,7 @@
 	            _this.$element.parent().append(template);
 	            $compile(template)($scope);
 	            //need to perform init after promise completes
-	            _this.init();
+	            //this.init();
 	        });
 	    }
 	    return SWActionCallerController;
@@ -4689,9 +6272,13 @@
 	            id: "@",
 	            isAngularRoute: "=?"
 	        };
+	        this.require = { formController: "^?swForm", form: "^?form" };
 	        this.controller = SWActionCallerController;
 	        this.controllerAs = "swActionCaller";
 	        this.link = function (scope, element, attrs) {
+	            if (angular.isDefined(scope.swActionCaller.formController)) {
+	                scope.formController = scope.swActionCaller.formController;
+	            }
 	        };
 	    }
 	    SWActionCaller.Factory = function () {
@@ -4711,7 +6298,7 @@
 
 
 /***/ },
-/* 35 */
+/* 58 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -4946,7 +6533,7 @@
 
 
 /***/ },
-/* 36 */
+/* 59 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -5031,7 +6618,7 @@
 
 
 /***/ },
-/* 37 */
+/* 60 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -5080,7 +6667,7 @@
 
 
 /***/ },
-/* 38 */
+/* 61 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -5171,7 +6758,7 @@
 
 
 /***/ },
-/* 39 */
+/* 62 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -5225,7 +6812,7 @@
 
 
 /***/ },
-/* 40 */
+/* 63 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -5282,7 +6869,7 @@
 
 
 /***/ },
-/* 41 */
+/* 64 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -5331,7 +6918,7 @@
 
 
 /***/ },
-/* 42 */
+/* 65 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -5379,7 +6966,7 @@
 
 
 /***/ },
-/* 43 */
+/* 66 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -5532,7 +7119,7 @@
 
 
 /***/ },
-/* 44 */
+/* 67 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -5605,7 +7192,7 @@
 
 
 /***/ },
-/* 45 */
+/* 68 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -5644,7 +7231,7 @@
 
 
 /***/ },
-/* 46 */
+/* 69 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -5833,13 +7420,13 @@
 
 
 /***/ },
-/* 47 */
+/* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	"use strict";
-	var md5 = __webpack_require__(48);
+	var md5 = __webpack_require__(71);
 	var SWGravatarController = (function () {
 	    // @ngInject
 	    function SWGravatarController() {
@@ -5875,14 +7462,14 @@
 
 
 /***/ },
-/* 48 */
+/* 71 */
 /***/ function(module, exports, __webpack_require__) {
 
 	(function(){
-	  var crypt = __webpack_require__(49),
-	      utf8 = __webpack_require__(50).utf8,
-	      isBuffer = __webpack_require__(51),
-	      bin = __webpack_require__(50).bin,
+	  var crypt = __webpack_require__(72),
+	      utf8 = __webpack_require__(73).utf8,
+	      isBuffer = __webpack_require__(74),
+	      bin = __webpack_require__(73).bin,
 
 	  // The core
 	  md5 = function (message, options) {
@@ -6041,7 +7628,7 @@
 
 
 /***/ },
-/* 49 */
+/* 72 */
 /***/ function(module, exports) {
 
 	(function() {
@@ -6143,7 +7730,7 @@
 
 
 /***/ },
-/* 50 */
+/* 73 */
 /***/ function(module, exports) {
 
 	var charenc = {
@@ -6182,7 +7769,7 @@
 
 
 /***/ },
-/* 51 */
+/* 74 */
 /***/ function(module, exports) {
 
 	/**
@@ -6205,7 +7792,7 @@
 
 
 /***/ },
-/* 52 */
+/* 75 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -6250,6 +7837,9 @@
 	            //default search is available
 	            if (angular.isUndefined(_this.hasSearch)) {
 	                _this.hasSearch = true;
+	            }
+	            if (angular.isUndefined(_this.showFilters)) {
+	                _this.showFilters = false;
 	            }
 	            if (angular.isString(_this.showSearch)) {
 	                _this.showSearch = (_this.showSearch.toLowerCase() === 'true');
@@ -6437,7 +8027,6 @@
 	                }
 	                _this.allpropertyidentifiers = _this.utilityService.listAppend(_this.allpropertyidentifiers, _this.exampleEntity.$$getIDName() + 'Path');
 	                _this.tableattributes = _this.utilityService.listAppend(_this.tableattributes, 'data-parentidproperty=' + _this.parentPropertyName + '.' + _this.exampleEntity.$$getIDName(), ' ');
-	                _this.collectionConfig.setAllRecords(true);
 	            }
 	            //            if(
 	            //                !this.edit
@@ -6459,8 +8048,6 @@
 	            }
 	            if (_this.multiselectValues && _this.multiselectValues.length) {
 	                //select all owned ids
-	                console.log('swListingDisplay');
-	                console.log(_this.multiselectValues);
 	                if (angular.isString(_this.multiselectValues)) {
 	                    _this.multiselectValues = _this.multiselectValues.split(',');
 	                }
@@ -6707,8 +8294,6 @@
 	                else {
 	                    propertyIdentifierWithoutAlias = propertyIdentifier;
 	                }
-	                console.log('pwithoutid');
-	                console.log(_this.utilityService.replaceAll(propertyIdentifierWithoutAlias, '.', '_'));
 	                return _this.utilityService.replaceAll(propertyIdentifierWithoutAlias, '.', '_');
 	            }
 	            return '';
@@ -6861,6 +8446,7 @@
 	            adminattributes: "@?",
 	            /* Settings */
 	            showheader: "=?",
+	            showFilters: "=?",
 	            showSearch: "=?",
 	            showTopPagination: "=?",
 	            /* Basic Action Caller Overrides*/
@@ -6895,7 +8481,7 @@
 
 
 /***/ },
-/* 53 */
+/* 76 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -7007,7 +8593,8 @@
 	        this.bindToController = {
 	            collectionConfig: "=",
 	            paginator: "=",
-	            getCollection: "&"
+	            getCollection: "&",
+	            showFilters: "=?"
 	        };
 	        this.controller = SWListingControlsController;
 	        this.controllerAs = 'swListingControls';
@@ -7027,7 +8614,7 @@
 
 
 /***/ },
-/* 54 */
+/* 77 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -7076,7 +8663,7 @@
 
 
 /***/ },
-/* 55 */
+/* 78 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -7135,7 +8722,7 @@
 
 
 /***/ },
-/* 56 */
+/* 79 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -7205,7 +8792,7 @@
 
 
 /***/ },
-/* 57 */
+/* 80 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -7264,7 +8851,7 @@
 
 
 /***/ },
-/* 58 */
+/* 81 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -7301,7 +8888,7 @@
 
 
 /***/ },
-/* 59 */
+/* 82 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -7349,7 +8936,7 @@
 
 
 /***/ },
-/* 60 */
+/* 83 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -7425,7 +9012,7 @@
 
 
 /***/ },
-/* 61 */
+/* 84 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -7482,7 +9069,7 @@
 
 
 /***/ },
-/* 62 */
+/* 85 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -7518,7 +9105,7 @@
 
 
 /***/ },
-/* 63 */
+/* 86 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -7610,7 +9197,7 @@
 
 
 /***/ },
-/* 64 */
+/* 87 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -7692,7 +9279,7 @@
 
 
 /***/ },
-/* 65 */
+/* 88 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -7736,7 +9323,7 @@
 
 
 /***/ },
-/* 66 */
+/* 89 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -7807,7 +9394,7 @@
 
 
 /***/ },
-/* 67 */
+/* 90 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -7831,9 +9418,6 @@
 	            }
 	        };
 	        this.toggleSelection = function (toggleValue, selectionid, selection) {
-	            console.log(toggleValue);
-	            console.log(selectionid);
-	            console.log(selection);
 	            if (_this.isRadio) {
 	                _this.selectionService.radioSelection(selectionid, selection);
 	                _this.toggleValue = toggleValue;
@@ -7893,7 +9477,7 @@
 
 
 /***/ },
-/* 68 */
+/* 91 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -7944,7 +9528,7 @@
 
 
 /***/ },
-/* 69 */
+/* 92 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -7989,7 +9573,7 @@
 
 
 /***/ },
-/* 70 */
+/* 93 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -8023,7 +9607,7 @@
 
 
 /***/ },
-/* 71 */
+/* 94 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -8057,7 +9641,7 @@
 
 
 /***/ },
-/* 72 */
+/* 95 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -8145,7 +9729,7 @@
 
 
 /***/ },
-/* 73 */
+/* 96 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -8200,7 +9784,7 @@
 
 
 /***/ },
-/* 74 */
+/* 97 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -8255,27 +9839,25 @@
 
 
 /***/ },
-/* 75 */
+/* 98 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	/// <reference path='../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
 	//import alertmodule = require('./alert/alert.module');
-	var alert_module_1 = __webpack_require__(76);
-	var collection_module_1 = __webpack_require__(80);
-	var core_module_1 = __webpack_require__(14);
-	var dialog_module_1 = __webpack_require__(106);
-	var entity_module_1 = __webpack_require__(109);
-	var pagination_module_1 = __webpack_require__(115);
-	var form_module_1 = __webpack_require__(118);
-	var validation_module_1 = __webpack_require__(134);
-	var workflow_module_1 = __webpack_require__(150);
+	var alert_module_1 = __webpack_require__(99);
+	var collection_module_1 = __webpack_require__(103);
+	var dialog_module_1 = __webpack_require__(130);
+	var entity_module_1 = __webpack_require__(133);
+	var pagination_module_1 = __webpack_require__(139);
+	var form_module_1 = __webpack_require__(142);
+	var validation_module_1 = __webpack_require__(154);
+	var workflow_module_1 = __webpack_require__(171);
 	//directives
-	var swsaveandfinish_1 = __webpack_require__(165);
+	var swsaveandfinish_1 = __webpack_require__(186);
 	var hibachimodule = angular.module('hibachi', [
 	    alert_module_1.alertmodule.name,
-	    core_module_1.coremodule.name,
 	    collection_module_1.collectionmodule.name,
 	    entity_module_1.entitymodule.name,
 	    dialog_module_1.dialogmodule.name,
@@ -8283,23 +9865,32 @@
 	    form_module_1.formmodule.name,
 	    validation_module_1.validationmodule.name,
 	    workflow_module_1.workflowmodule.name
-	])
+	]).config([function () {
+	    }])
+	    .run(['$rootScope', 'publicService', function ($rootScope, publicService) {
+	        $rootScope.hibachiScope = publicService;
+	        $rootScope.hasAccount = publicService.hasAccount;
+	        $rootScope.hibachiScope.getAccount();
+	        $rootScope.hibachiScope.getCart();
+	        $rootScope.hibachiScope.getCountries();
+	        $rootScope.hibachiScope.getStates();
+	    }])
 	    .constant('hibachiPartialsPath', 'hibachi/components/')
 	    .directive('swSaveAndFinish', swsaveandfinish_1.SWSaveAndFinish.Factory());
 	exports.hibachimodule = hibachimodule;
 
 
 /***/ },
-/* 76 */
+/* 99 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	/// <reference path='../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
 	//controllers
-	var alertcontroller_1 = __webpack_require__(77);
+	var alertcontroller_1 = __webpack_require__(100);
 	//services
-	var alertservice_1 = __webpack_require__(78);
+	var alertservice_1 = __webpack_require__(101);
 	var alertmodule = angular.module('hibachi.alert', [])
 	    .controller('alertController', alertcontroller_1.AlertController)
 	    .service('alertService', alertservice_1.AlertService);
@@ -8307,7 +9898,7 @@
 
 
 /***/ },
-/* 77 */
+/* 100 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -8325,14 +9916,14 @@
 
 
 /***/ },
-/* 78 */
+/* 101 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	"use strict";
 	//import Alert = require('../model/alert');
-	var alert_1 = __webpack_require__(79);
+	var alert_1 = __webpack_require__(102);
 	var AlertService = (function () {
 	    function AlertService($timeout, alerts) {
 	        var _this = this;
@@ -8398,7 +9989,7 @@
 
 
 /***/ },
-/* 79 */
+/* 102 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -8420,7 +10011,7 @@
 
 
 /***/ },
-/* 80 */
+/* 103 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -8429,33 +10020,34 @@
 	//modules
 	var core_module_1 = __webpack_require__(14);
 	//services
-	var collectionconfigservice_1 = __webpack_require__(81);
-	var collectionservice_1 = __webpack_require__(82);
+	var collectionconfigservice_1 = __webpack_require__(104);
+	var collectionservice_1 = __webpack_require__(105);
 	//controllers
-	var collections_1 = __webpack_require__(83);
-	var createcollection_1 = __webpack_require__(84);
-	var confirmationcontroller_1 = __webpack_require__(85);
+	var collections_1 = __webpack_require__(106);
+	var createcollection_1 = __webpack_require__(107);
+	var confirmationcontroller_1 = __webpack_require__(108);
 	//directives
-	var swcollection_1 = __webpack_require__(86);
-	var swaddfilterbuttons_1 = __webpack_require__(87);
-	var swdisplayoptions_1 = __webpack_require__(88);
-	var swdisplayitem_1 = __webpack_require__(89);
-	var swcollectiontable_1 = __webpack_require__(90);
-	var swcolumnitem_1 = __webpack_require__(91);
-	var swconditioncriteria_1 = __webpack_require__(92);
-	var swcriteria_1 = __webpack_require__(93);
-	var swcriteriaboolean_1 = __webpack_require__(94);
-	var swcriteriadate_1 = __webpack_require__(95);
-	var swcriteriamanytomany_1 = __webpack_require__(96);
-	var swcriteriamanytoone_1 = __webpack_require__(97);
-	var swcriterianumber_1 = __webpack_require__(98);
-	var swcriteriaonetomany_1 = __webpack_require__(99);
-	var swcriteriarelatedobject_1 = __webpack_require__(100);
-	var swcriteriastring_1 = __webpack_require__(101);
-	var sweditfilteritem_1 = __webpack_require__(102);
-	var swfiltergroups_1 = __webpack_require__(103);
-	var swfilteritem_1 = __webpack_require__(104);
-	var swfiltergroupitem_1 = __webpack_require__(105);
+	var swcollection_1 = __webpack_require__(109);
+	var swaddfilterbuttons_1 = __webpack_require__(110);
+	var swdisplayoptions_1 = __webpack_require__(111);
+	var swdisplayitem_1 = __webpack_require__(112);
+	var swdisplayitemaggregate_1 = __webpack_require__(113);
+	var swcollectiontable_1 = __webpack_require__(114);
+	var swcolumnitem_1 = __webpack_require__(115);
+	var swconditioncriteria_1 = __webpack_require__(116);
+	var swcriteria_1 = __webpack_require__(117);
+	var swcriteriaboolean_1 = __webpack_require__(118);
+	var swcriteriadate_1 = __webpack_require__(119);
+	var swcriteriamanytomany_1 = __webpack_require__(120);
+	var swcriteriamanytoone_1 = __webpack_require__(121);
+	var swcriterianumber_1 = __webpack_require__(122);
+	var swcriteriaonetomany_1 = __webpack_require__(123);
+	var swcriteriarelatedobject_1 = __webpack_require__(124);
+	var swcriteriastring_1 = __webpack_require__(125);
+	var sweditfilteritem_1 = __webpack_require__(126);
+	var swfiltergroups_1 = __webpack_require__(127);
+	var swfilteritem_1 = __webpack_require__(128);
+	var swfiltergroupitem_1 = __webpack_require__(129);
 	var collectionmodule = angular.module('hibachi.collection', [core_module_1.coremodule.name])
 	    .config([function () {
 	    }]).run([function () {
@@ -8470,6 +10062,7 @@
 	    .directive('swAddFilterButtons', swaddfilterbuttons_1.SWAddFilterButtons.Factory())
 	    .directive('swDisplayOptions', swdisplayoptions_1.SWDisplayOptions.Factory())
 	    .directive('swDisplayItem', swdisplayitem_1.SWDisplayItem.Factory())
+	    .directive('swDisplayItemAggregate', swdisplayitemaggregate_1.SWDisplayItemAggregate.Factory())
 	    .directive('swCollectionTable', swcollectiontable_1.SWCollectionTable.Factory())
 	    .directive('swColumnItem', swcolumnitem_1.SWColumnItem.Factory())
 	    .directive('swConditionCriteria', swconditioncriteria_1.SWConditionCriteria.Factory())
@@ -8490,7 +10083,7 @@
 
 
 /***/ },
-/* 81 */
+/* 104 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -9050,9 +10643,6 @@
 	            _this.columns = columns;
 	            return _this;
 	        };
-	        console.log('abc');
-	        console.log(rbkeyService);
-	        console.log($hibachi);
 	        this.$hibachi = $hibachi;
 	        this.rbkeyService = rbkeyService;
 	        if (angular.isDefined(this.baseEntityName)) {
@@ -9068,7 +10658,7 @@
 
 
 /***/ },
-/* 82 */
+/* 105 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -9271,7 +10861,7 @@
 
 
 /***/ },
-/* 83 */
+/* 106 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -9543,7 +11133,7 @@
 
 
 /***/ },
-/* 84 */
+/* 107 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -9748,7 +11338,7 @@
 
 
 /***/ },
-/* 85 */
+/* 108 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -9785,7 +11375,7 @@
 
 
 /***/ },
-/* 86 */
+/* 109 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -9832,7 +11422,7 @@
 
 
 /***/ },
-/* 87 */
+/* 110 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -9880,7 +11470,7 @@
 
 
 /***/ },
-/* 88 */
+/* 111 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -9895,6 +11485,8 @@
 	            scope: {
 	                orderBy: "=",
 	                columns: '=',
+	                joins: "=",
+	                groupBys: "=",
 	                propertiesList: "=",
 	                saveCollection: "&",
 	                baseEntityAlias: "=?",
@@ -9928,7 +11520,7 @@
 	                        var baseEntityCfcName = $scope.baseEntityName.replace('Slatwall', '').charAt(0).toLowerCase() + $scope.baseEntityName.replace('Slatwall', '').slice(1);
 	                        var propertyIdentifier = selectedProperty.propertyIdentifier;
 	                        var title = '';
-	                        var propertyIdentifierArray = propertyIdentifier.split('.');
+	                        var propertyIdentifierArray = propertyIdentifier.replace(/^_/, '').split(/[._]+/);
 	                        var currentEntity;
 	                        var currentEntityInstance;
 	                        var prefix = 'entity.';
@@ -9955,10 +11547,12 @@
 	                        });
 	                        return title;
 	                    };
-	                    $scope.addColumn = function (selectedProperty, closeDialog) {
-	                        $log.debug('add Column');
-	                        $log.debug(selectedProperty);
-	                        if (selectedProperty.$$group === 'simple' || 'attribute') {
+	                    $scope.addColumn = function (closeDialog) {
+	                        var selectedProperty = $scope.selectedProperty;
+	                        if (angular.isDefined($scope.selectedAggregate)) {
+	                            selectedProperty = $scope.selectedAggregate;
+	                        }
+	                        if (selectedProperty.$$group === 'simple' || 'attribute' || 'compareCollections') {
 	                            $log.debug($scope.columns);
 	                            if (angular.isDefined(selectedProperty)) {
 	                                var column = {
@@ -9983,7 +11577,69 @@
 	                                else {
 	                                    column['type'] = 'none';
 	                                }
+	                                if (angular.isDefined(selectedProperty.aggregate)) {
+	                                    column['ormtype'] = 'string';
+	                                    column['aggregate'] = {
+	                                        aggregateFunction: selectedProperty.aggregate.toUpperCase(),
+	                                        aggregateAlias: selectedProperty.propertyIdentifier.split(/[._]+/).pop() + selectedProperty.aggregate.charAt(0).toUpperCase() + selectedProperty.aggregate.slice(1)
+	                                    };
+	                                    if (selectedProperty.cfc) {
+	                                        column['title'] = rbkeyService.getRBKey('entity.' + selectedProperty.cfc + '.' + column['aggregate']['aggregateAlias']);
+	                                    }
+	                                    else if (selectedProperty.aggregateObject) {
+	                                        column['title'] = rbkeyService.getRBKey('entity.' + selectedProperty.aggregateObject + '.' + column['aggregate']['aggregateAlias']);
+	                                    }
+	                                    else {
+	                                        column['title'] = rbkeyService.getRBKey('entity.' + selectedProperty.propertyIdentifier.split(/[._]+/).pop() + '.' + column['aggregate']['aggregateAlias']);
+	                                    }
+	                                }
 	                                $scope.columns.push(column);
+	                                if ((selectedProperty.propertyIdentifier.match(/_/g) || []).length > 1) {
+	                                    var PIlimit = selectedProperty.propertyIdentifier.length;
+	                                    if (selectedProperty.propertyIdentifier.indexOf('.') != -1) {
+	                                        PIlimit = selectedProperty.propertyIdentifier.indexOf('.');
+	                                    }
+	                                    var propertyIdentifierJoins = selectedProperty.propertyIdentifier.substring(1, PIlimit);
+	                                    var propertyIdentifierParts = propertyIdentifierJoins.split('_');
+	                                    var current_collection = $hibachi.getEntityExample(propertyIdentifierParts[0].charAt(0).toUpperCase() + propertyIdentifierParts[0].slice(1));
+	                                    var _propertyIdentifier = '';
+	                                    var joins = [];
+	                                    if (angular.isDefined($scope.joins)) {
+	                                        joins = $scope.joins;
+	                                    }
+	                                    for (var i = 1; i < propertyIdentifierParts.length; i++) {
+	                                        if (angular.isDefined(current_collection.metaData[propertyIdentifierParts[i]]) && ('cfc' in current_collection.metaData[propertyIdentifierParts[i]])) {
+	                                            current_collection = $hibachi.getEntityExample(current_collection.metaData[propertyIdentifierParts[i]].cfc);
+	                                            _propertyIdentifier += '_' + propertyIdentifierParts[i];
+	                                            var newJoin = {
+	                                                associationName: _propertyIdentifier.replace(/_([^_]+)$/, '.$1').substring(1),
+	                                                alias: '_' + propertyIdentifierParts[0] + _propertyIdentifier
+	                                            };
+	                                            var joinFound = false;
+	                                            for (var j = 0; j < joins.length; j++) {
+	                                                if (joins[j].alias === newJoin.alias) {
+	                                                    joinFound = true;
+	                                                    break;
+	                                                }
+	                                            }
+	                                            if (!joinFound) {
+	                                                joins.push(newJoin);
+	                                            }
+	                                        }
+	                                    }
+	                                    $scope.joins = joins;
+	                                    if (angular.isUndefined($scope.groupBys) || $scope.groupBys.split(',').length != $scope.columns.length) {
+	                                        var groupbyArray = angular.isUndefined($scope.groupBys) ? [] : $scope.groupBys.split(',');
+	                                        for (var col = 0; col < $scope.columns.length; col++) {
+	                                            if ('attributeID' in $scope.columns[col])
+	                                                continue;
+	                                            if (groupbyArray.indexOf($scope.columns[col].propertyIdentifier) == -1) {
+	                                                groupbyArray.push($scope.columns[col].propertyIdentifier);
+	                                            }
+	                                        }
+	                                        $scope.groupBys = groupbyArray.join(',');
+	                                    }
+	                                }
 	                                $scope.saveCollection();
 	                                if (angular.isDefined(closeDialog) && closeDialog === true) {
 	                                    $scope.addDisplayDialog.toggleDisplayDialog();
@@ -10008,11 +11664,15 @@
 	                            unbindBaseEntityAlias();
 	                        }
 	                    });
-	                    $scope.selectedPropertyChanged = function (selectedProperty) {
+	                    $scope.selectedPropertyChanged = function (selectedProperty, aggregate) {
 	                        // drill down or select field?
-	                        $log.debug('selectedPropertyChanged');
-	                        $log.debug(selectedProperty);
-	                        $scope.selectedProperty = selectedProperty;
+	                        if (!aggregate) {
+	                            $scope.selectedProperty = selectedProperty;
+	                            $scope.selectedAggregate = undefined;
+	                        }
+	                        else {
+	                            $scope.selectedAggregate = selectedProperty;
+	                        }
 	                    };
 	                    jQuery(function ($) {
 	                        var panelList = angular.element($element).children('ul');
@@ -10060,7 +11720,7 @@
 
 
 /***/ },
-/* 89 */
+/* 112 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -10068,7 +11728,7 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWDisplayItem = (function () {
 	    //@ngInject
-	    function SWDisplayItem($http, $compile, $templateCache, $log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder) {
+	    function SWDisplayItem($hibachi, collectionPartialsPath, metadataService, hibachiPathBuilder) {
 	        return {
 	            require: '^swDisplayOptions',
 	            restrict: 'A',
@@ -10092,44 +11752,27 @@
 	                };
 	                scope.$watch('selectedProperty', function (selectedProperty) {
 	                    if (angular.isDefined(selectedProperty)) {
-	                        if (selectedProperty === null) {
-	                            scope.showDisplayItem = false;
-	                            return;
+	                        if (angular.isUndefined(scope.propertiesList[selectedProperty.propertyIdentifier])) {
+	                            var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(selectedProperty.cfc);
+	                            filterPropertiesPromise.then(function (value) {
+	                                metadataService.setPropertiesList(value, selectedProperty.propertyIdentifier);
+	                                scope.propertiesList[selectedProperty.propertyIdentifier] = metadataService.getPropertiesListByBaseEntityAlias(selectedProperty.propertyIdentifier);
+	                                metadataService.formatPropertiesList(scope.propertiesList[selectedProperty.propertyIdentifier], selectedProperty.propertyIdentifier);
+	                            }, function (reason) {
+	                            });
 	                        }
-	                        if (selectedProperty.$$group !== 'drilldown') {
-	                            scope.showDisplayItem = false;
-	                            return;
-	                        }
-	                        if (selectedProperty.$$group === 'drilldown') {
-	                            if (angular.isUndefined(scope.propertiesList[selectedProperty.propertyIdentifier])) {
-	                                var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(selectedProperty.cfc);
-	                                filterPropertiesPromise.then(function (value) {
-	                                    metadataService.setPropertiesList(value, selectedProperty.propertyIdentifier);
-	                                    scope.propertiesList[selectedProperty.propertyIdentifier] = metadataService.getPropertiesListByBaseEntityAlias(selectedProperty.propertyIdentifier);
-	                                    metadataService.formatPropertiesList(scope.propertiesList[selectedProperty.propertyIdentifier], selectedProperty.propertyIdentifier);
-	                                }, function (reason) {
-	                                });
-	                            }
-	                        }
-	                        scope.showDisplayItem = true;
 	                    }
 	                });
 	            }
 	        };
 	    }
 	    SWDisplayItem.Factory = function () {
-	        var directive = function ($http, $compile, $templateCache, $log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder) {
-	            return new SWDisplayItem($http, $compile, $templateCache, $log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder);
+	        var directive = function ($hibachi, collectionPartialsPath, metadataService, hibachiPathBuilder) {
+	            return new SWDisplayItem($hibachi, collectionPartialsPath, metadataService, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
-	            '$http',
-	            '$compile',
-	            '$templateCache',
-	            '$log',
 	            '$hibachi',
-	            '$filter',
 	            'collectionPartialsPath',
-	            'collectionService',
 	            'metadataService',
 	            'hibachiPathBuilder'
 	        ];
@@ -10141,7 +11784,84 @@
 
 
 /***/ },
-/* 90 */
+/* 113 */
+/***/ function(module, exports) {
+
+	"use strict";
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWDisplayItemAggregate = (function () {
+	    //@ngInject
+	    function SWDisplayItemAggregate($hibachi, collectionPartialsPath, metadataService, hibachiPathBuilder) {
+	        return {
+	            require: '^swDisplayOptions',
+	            restrict: 'A',
+	            scope: {
+	                selectedProperty: "=",
+	                propertiesList: "=",
+	                breadCrumbs: "=",
+	                selectedPropertyChanged: "&"
+	            },
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "displayitemaggregate.html",
+	            link: function (scope, element, attrs, displayOptionsController) {
+	                scope.showDisplayItem = false;
+	                scope.aggegate = {};
+	                scope.aggegate.selectedAggregate = '';
+	                scope.aggregateOptions = [
+	                    { id: 'average', value: 'Average' },
+	                    { id: 'count', value: 'Count' },
+	                    { id: 'sum', value: 'Sum' }
+	                ];
+	                scope.selectAggregate = function (aggregate) {
+	                    if (aggregate == 'count') {
+	                        scope.selectedProperty.aggregate = aggregate;
+	                        scope.selectedPropertyChanged({ selectedProperty: scope.selectedProperty });
+	                    }
+	                    else {
+	                        scope.aggegate.currentObject = scope.selectedProperty.cfc;
+	                    }
+	                };
+	                scope.selectedDisplayOptionChanged = function (selectedDisplayOption) {
+	                    selectedDisplayOption.aggregate = scope.aggegate.selectedAggregate;
+	                    selectedDisplayOption.aggregateObject = scope.aggegate.currentObject;
+	                    scope.selectedPropertyChanged({ selectedProperty: selectedDisplayOption });
+	                };
+	                scope.$watch('selectedProperty', function (selectedProperty) {
+	                    if (angular.isDefined(selectedProperty)) {
+	                        if (angular.isUndefined(scope.propertiesList[selectedProperty.propertyIdentifier])) {
+	                            var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(selectedProperty.cfc);
+	                            filterPropertiesPromise.then(function (value) {
+	                                metadataService.setPropertiesList(value, selectedProperty.propertyIdentifier);
+	                                scope.propertiesList[selectedProperty.propertyIdentifier] = metadataService.getPropertiesListByBaseEntityAlias(selectedProperty.propertyIdentifier);
+	                                metadataService.formatPropertiesList(scope.propertiesList[selectedProperty.propertyIdentifier], selectedProperty.propertyIdentifier);
+	                            }, function (reason) {
+	                            });
+	                        }
+	                        scope.showDisplayItem = true;
+	                    }
+	                });
+	            }
+	        };
+	    }
+	    SWDisplayItemAggregate.Factory = function () {
+	        var directive = function ($hibachi, collectionPartialsPath, metadataService, hibachiPathBuilder) {
+	            return new SWDisplayItemAggregate($hibachi, collectionPartialsPath, metadataService, hibachiPathBuilder);
+	        };
+	        directive.$inject = [
+	            '$hibachi',
+	            'collectionPartialsPath',
+	            'metadataService',
+	            'hibachiPathBuilder'
+	        ];
+	        return directive;
+	    };
+	    return SWDisplayItemAggregate;
+	}());
+	exports.SWDisplayItemAggregate = SWDisplayItemAggregate;
+
+
+/***/ },
+/* 114 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -10164,9 +11884,6 @@
 	                if (angular.isUndefined(scope.angularLinks)) {
 	                    scope.angularLinks = false;
 	                }
-	                console.log('here');
-	                console.log(scope.collection);
-	                console.log($hibachi);
 	                scope.collectionObject = $hibachi['new' + scope.collection.collectionObject]();
 	                var escapeRegExp = function (str) {
 	                    return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
@@ -10209,7 +11926,7 @@
 
 
 /***/ },
-/* 91 */
+/* 115 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -10403,7 +12120,7 @@
 
 
 /***/ },
-/* 92 */
+/* 116 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -11294,7 +13011,7 @@
 
 
 /***/ },
-/* 93 */
+/* 117 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -11338,7 +13055,7 @@
 
 
 /***/ },
-/* 94 */
+/* 118 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -11439,7 +13156,7 @@
 
 
 /***/ },
-/* 95 */
+/* 119 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -11849,7 +13566,7 @@
 
 
 /***/ },
-/* 96 */
+/* 120 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -11993,7 +13710,7 @@
 
 
 /***/ },
-/* 97 */
+/* 121 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -12157,7 +13874,7 @@
 
 
 /***/ },
-/* 98 */
+/* 122 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -12323,7 +14040,7 @@
 
 
 /***/ },
-/* 99 */
+/* 123 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -12463,7 +14180,7 @@
 
 
 /***/ },
-/* 100 */
+/* 124 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -12477,7 +14194,7 @@
 	            link: function (scope, element, attrs) {
 	                var getRelatedObjectOptions = function () {
 	                    var relatedObjectOptions = {
-	                        drillEntity: {},
+	                        drillEntity: null,
 	                        hasEntity: {
 	                            display: "Defined",
 	                            comparisonOperator: "is not",
@@ -12487,9 +14204,18 @@
 	                            display: "Not Defined",
 	                            comparisonOperator: "is",
 	                            value: "null"
+	                        },
+	                        aggregate: {
+	                            aggregate: ""
 	                        }
 	                    };
 	                    return relatedObjectOptions;
+	                };
+	                scope.aggegate = {};
+	                scope.aggegate.selectedAggregate = '';
+	                scope.aggregateOptions = ['Average', 'Count', 'Sum'];
+	                scope.selectAggregate = function (aggregate) {
+	                    scope.selectedFilterProperty.selectedCriteriaType.aggregate = aggregate;
 	                };
 	                scope.relatedObjectOptions = getRelatedObjectOptions();
 	                scope.conditionOptions = getRelatedObjectOptions();
@@ -12505,11 +14231,7 @@
 	                        }, function (reason) {
 	                        });
 	                    }
-	                    scope.selectedCriteriaChanged = function (selectedCriteria) {
-	                        $log.debug(selectedCriteria);
-	                        $log.debug('changed');
-	                        //update breadcrumbs as array of filterpropertylist keys
-	                        $log.debug(scope.selectedFilterProperty);
+	                    scope.selectedCriteriaChanged = function (selectedCriteria, selectedAggregate) {
 	                        var breadCrumb = {
 	                            entityAlias: scope.selectedFilterProperty.name,
 	                            cfc: scope.selectedFilterProperty.cfc,
@@ -12520,6 +14242,10 @@
 	                        $log.debug(breadCrumb);
 	                        $log.debug(scope.filterItem.breadCrumbs);
 	                        scope.filterItem.breadCrumbs.push(breadCrumb);
+	                        if (selectedAggregate) {
+	                            scope.selectedFilterProperty.selectedCriteriaType.ormtype = 'integer';
+	                            scope.selectedFilterProperty.selectedCriteriaType.aggregate = selectedAggregate;
+	                        }
 	                        //populate editfilterinfo with the current level of the filter property we are inspecting by pointing to the new scope key
 	                        scope.selectedFilterPropertyChanged({ selectedFilterProperty: scope.selectedFilterProperty.selectedCriteriaType });
 	                        //update criteria to display the condition of the new critera we have selected
@@ -12551,7 +14277,7 @@
 
 
 /***/ },
-/* 101 */
+/* 125 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -12734,7 +14460,7 @@
 
 
 /***/ },
-/* 102 */
+/* 126 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -12896,9 +14622,11 @@
 	                        return;
 	                    }
 	                    if ((selectedFilterProperty.propertyIdentifier.match(/_/g) || []).length > 1) {
-	                        var propertyIdentifierJoins = selectedFilterProperty.propertyIdentifier.substring(1, selectedFilterProperty.propertyIdentifier.indexOf('.'));
+	                        var propertyIdentifierStart = (selectedFilterProperty.propertyIdentifier.charAt(0) == '_') ? 1 : 0;
+	                        var propertyIdentifierEnd = (selectedFilterProperty.propertyIdentifier.indexOf('.') == -1) ? selectedFilterProperty.propertyIdentifier.length : selectedFilterProperty.propertyIdentifier.indexOf('.');
+	                        var propertyIdentifierJoins = selectedFilterProperty.propertyIdentifier.substring(propertyIdentifierStart, propertyIdentifierEnd);
 	                        var propertyIdentifierParts = propertyIdentifierJoins.split('_');
-	                        var current_collection = $hibachi.getEntityExample(propertyIdentifierParts[0].charAt(0).toUpperCase() + propertyIdentifierParts[0].slice(1));
+	                        var current_collection = $hibachi.getEntityExample(scope.collectionConfig.baseEntityName);
 	                        var _propertyIdentifier = '';
 	                        var joins = [];
 	                        if (angular.isDefined(scope.collectionConfig.joins)) {
@@ -12925,7 +14653,7 @@
 	                            }
 	                        }
 	                        scope.collectionConfig.joins = joins;
-	                        if (angular.isUndefined(scope.collectionConfig.groupBys) || scope.collectionConfig.groupBys.split(',').length != scope.collectionConfig.columns.length) {
+	                        if (angular.isDefined(scope.collectionConfig.columns) && (angular.isUndefined(scope.collectionConfig.groupBys) || scope.collectionConfig.groupBys.split(',').length != scope.collectionConfig.columns.length)) {
 	                            var groupbyArray = angular.isUndefined(scope.collectionConfig.groupBys) ? [] : scope.collectionConfig.groupBys.split(',');
 	                            for (var column = 0; column < scope.collectionConfig.columns.length; column++) {
 	                                if (groupbyArray.indexOf(scope.collectionConfig.columns[column].propertyIdentifier) == -1) {
@@ -13007,10 +14735,15 @@
 	                                        filterItem.value = decimalValueString;
 	                                    }
 	                                }
+	                                if (angular.isDefined(selectedFilterProperty.aggregate)) {
+	                                    filterItem.aggregate = selectedFilterProperty.aggregate;
+	                                }
 	                                filterItem.displayValue = filterItem.value;
 	                                break;
 	                        }
 	                        switch (selectedFilterProperty.fieldtype) {
+	                            case 'one-to-many':
+	                            case 'many-to-many':
 	                            case 'many-to-one':
 	                                filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
 	                                //is null, is not null
@@ -13018,12 +14751,6 @@
 	                                    filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
 	                                }
 	                                filterItem.displayValue = filterItem.value;
-	                                break;
-	                            case 'one-to-many':
-	                            case 'many-to-many':
-	                                filterItem.collectionID = selectedFilterProperty.selectedCollection.collectionID;
-	                                filterItem.displayValue = selectedFilterProperty.selectedCollection.collectionName;
-	                                filterItem.criteria = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
 	                                break;
 	                        }
 	                        if (angular.isUndefined(filterItem.displayValue)) {
@@ -13081,7 +14808,7 @@
 
 
 /***/ },
-/* 103 */
+/* 127 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -13180,7 +14907,7 @@
 
 
 /***/ },
-/* 104 */
+/* 128 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -13248,7 +14975,7 @@
 
 
 /***/ },
-/* 105 */
+/* 129 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -13321,16 +15048,16 @@
 
 
 /***/ },
-/* 106 */
+/* 130 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
 	"use strict";
 	//services
-	var dialogservice_1 = __webpack_require__(107);
+	var dialogservice_1 = __webpack_require__(131);
 	//controllers
-	var pagedialog_1 = __webpack_require__(108);
+	var pagedialog_1 = __webpack_require__(132);
 	var dialogmodule = angular.module('hibachi.dialog', []).config(function () {
 	})
 	    .service('dialogService', dialogservice_1.DialogService)
@@ -13340,7 +15067,7 @@
 
 
 /***/ },
-/* 107 */
+/* 131 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -13382,7 +15109,7 @@
 
 
 /***/ },
-/* 108 */
+/* 132 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -13406,7 +15133,7 @@
 
 
 /***/ },
-/* 109 */
+/* 133 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -13421,12 +15148,12 @@
 	// import {FormService} from "./services/formservice";
 	// import {MetaDataService} from "./services/metadataservice";
 	//controllers
-	var otherwisecontroller_1 = __webpack_require__(110);
-	var routercontroller_1 = __webpack_require__(111);
+	var otherwisecontroller_1 = __webpack_require__(134);
+	var routercontroller_1 = __webpack_require__(135);
 	//directives
-	var swdetailtabs_1 = __webpack_require__(112);
-	var swdetail_1 = __webpack_require__(113);
-	var swlist_1 = __webpack_require__(114);
+	var swdetailtabs_1 = __webpack_require__(136);
+	var swdetail_1 = __webpack_require__(137);
+	var swlist_1 = __webpack_require__(138);
 	var core_module_1 = __webpack_require__(14);
 	var entitymodule = angular.module('hibachi.entity', ['ngRoute', core_module_1.coremodule.name])
 	    .config(['$routeProvider', '$injector', '$locationProvider', 'appConfig',
@@ -13477,7 +15204,7 @@
 
 
 /***/ },
-/* 110 */
+/* 134 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -13494,7 +15221,7 @@
 
 
 /***/ },
-/* 111 */
+/* 135 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -13523,7 +15250,7 @@
 
 
 /***/ },
-/* 112 */
+/* 136 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -13557,7 +15284,7 @@
 
 
 /***/ },
-/* 113 */
+/* 137 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -13591,7 +15318,6 @@
 	                    if (scope.entityID === 'create') {
 	                        scope.createMode = true;
 	                        scope.entity = $hibachi['new' + propertyCasedEntityName]();
-	                        console.log('Entity', scope.entity);
 	                        setupMetaData();
 	                    }
 	                    else {
@@ -13599,7 +15325,6 @@
 	                        var entityPromise = $hibachi['get' + propertyCasedEntityName]({ id: scope.entityID });
 	                        entityPromise.promise.then(function () {
 	                            scope.entity = entityPromise.value;
-	                            console.log('Entity', scope.entity);
 	                            setupMetaData();
 	                        });
 	                    }
@@ -13634,7 +15359,7 @@
 
 
 /***/ },
-/* 114 */
+/* 138 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -13682,15 +15407,15 @@
 
 
 /***/ },
-/* 115 */
+/* 139 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/hibachiTypescript.d.ts" />
 	//services
-	var paginationservice_1 = __webpack_require__(116);
-	var swpaginationbar_1 = __webpack_require__(117);
+	var paginationservice_1 = __webpack_require__(140);
+	var swpaginationbar_1 = __webpack_require__(141);
 	var core_module_1 = __webpack_require__(14);
 	var paginationmodule = angular.module('hibachi.pagination', [core_module_1.coremodule.name])
 	    .run([function () {
@@ -13702,7 +15427,7 @@
 
 
 /***/ },
-/* 116 */
+/* 140 */
 /***/ function(module, exports) {
 
 	/// <reference path="../../../typings/tsd.d.ts" />
@@ -13882,7 +15607,7 @@
 
 
 /***/ },
-/* 117 */
+/* 141 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -13926,7 +15651,7 @@
 
 
 /***/ },
-/* 118 */
+/* 142 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/hibachiTypescript.d.ts' />
@@ -13943,22 +15668,19 @@
 	//  components
 	"use strict";
 	//form
-	var swinput_1 = __webpack_require__(119);
-	var swfformfield_1 = __webpack_require__(120);
-	var swform_1 = __webpack_require__(121);
-	var swformfield_1 = __webpack_require__(122);
-	var swformfieldjson_1 = __webpack_require__(123);
-	var swformfieldnumber_1 = __webpack_require__(124);
-	var swformfieldpassword_1 = __webpack_require__(125);
-	var swformfieldradio_1 = __webpack_require__(126);
-	var swformfieldsearchselect_1 = __webpack_require__(127);
-	var swformfieldselect_1 = __webpack_require__(128);
-	var swformfieldtext_1 = __webpack_require__(129);
-	var swformfielddate_1 = __webpack_require__(130);
-	var swformregistrar_1 = __webpack_require__(131);
-	var swfpropertydisplay_1 = __webpack_require__(132);
-	var swpropertydisplay_1 = __webpack_require__(133);
-	var formmodule = angular.module('hibachi.form', ['angularjs-datetime-picker']).config(function () {
+	var swinput_1 = __webpack_require__(143);
+	var swfformfield_1 = __webpack_require__(144);
+	var swform_1 = __webpack_require__(145);
+	var swformfield_1 = __webpack_require__(146);
+	var swformfieldjson_1 = __webpack_require__(147);
+	var swformfieldsearchselect_1 = __webpack_require__(148);
+	var swformregistrar_1 = __webpack_require__(149);
+	var swerrordisplay_1 = __webpack_require__(150);
+	var swpropertydisplay_1 = __webpack_require__(151);
+	var swfpropertydisplay_1 = __webpack_require__(152);
+	var swformsubscriber_1 = __webpack_require__(153);
+	var core_module_1 = __webpack_require__(14);
+	var formmodule = angular.module('hibachi.form', ['angularjs-datetime-picker', core_module_1.coremodule.name]).config(function () {
 	})
 	    .constant('coreFormPartialsPath', 'form/components/')
 	    .directive('swInput', swinput_1.SWInput.Factory())
@@ -13966,205 +15688,293 @@
 	    .directive('swForm', swform_1.SWForm.Factory())
 	    .directive('swFormField', swformfield_1.SWFormField.Factory())
 	    .directive('swFormFieldJson', swformfieldjson_1.SWFormFieldJson.Factory())
-	    .directive('swFormFieldNumber', swformfieldnumber_1.SWFormFieldNumber.Factory())
-	    .directive('swFormFieldPassword', swformfieldpassword_1.SWFormFieldPassword.Factory())
-	    .directive('swFormFieldRadio', swformfieldradio_1.SWFormFieldRadio.Factory())
 	    .directive('swFormFieldSearchSelect', swformfieldsearchselect_1.SWFormFieldSearchSelect.Factory())
-	    .directive('swFormFieldSelect', swformfieldselect_1.SWFormFieldSelect.Factory())
-	    .directive('swFormFieldText', swformfieldtext_1.SWFormFieldText.Factory())
-	    .directive('swFormFieldDate', swformfielddate_1.SWFormFieldDate.Factory())
 	    .directive('swFormRegistrar', swformregistrar_1.SWFormRegistrar.Factory())
-	    .directive('swfPropertyDisplay', swfpropertydisplay_1.SWFPropertyDisplay.Factory())
-	    .directive('swPropertyDisplay', swpropertydisplay_1.SWPropertyDisplay.Factory());
+	    .directive('swfPropertyDisplay', swfpropertydisplay_1.SWFPropertyDisplay.Factory(swfpropertydisplay_1.SWFPropertyDisplay, "swfpropertydisplay.html"))
+	    .directive('swPropertyDisplay', swpropertydisplay_1.SWPropertyDisplay.Factory(swpropertydisplay_1.SWPropertyDisplay, "propertydisplay.html"))
+	    .directive('swErrorDisplay', swerrordisplay_1.SWErrorDisplay.Factory())
+	    .directive('swFormSubscriber', swformsubscriber_1.SWFormSubscriber.Factory());
 	exports.formmodule = formmodule;
 
 
 /***/ },
-/* 119 */
+/* 143 */
 /***/ function(module, exports) {
 
 	"use strict";
-	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
-	/**
-	 * This validate directive will look at the current element, figure out the context (save, edit, delete) and
-	 * validate based on that context as defined in the validation properties object.
-	 */
-	var SWInput = (function () {
-	    function SWInput($log, $compile, $hibachi, utilityService, rbkeyService) {
-	        var getValidationDirectives = function (propertyDisplay) {
+	var SWInputController = (function () {
+	    //@ngInject
+	    function SWInputController($timeout, $scope, $log, $compile, $hibachi, $injector, utilityService, rbkeyService, observerService, metadataService) {
+	        var _this = this;
+	        this.$timeout = $timeout;
+	        this.$scope = $scope;
+	        this.$log = $log;
+	        this.$compile = $compile;
+	        this.$hibachi = $hibachi;
+	        this.$injector = $injector;
+	        this.utilityService = utilityService;
+	        this.rbkeyService = rbkeyService;
+	        this.observerService = observerService;
+	        this.metadataService = metadataService;
+	        this.eventHandlers = "";
+	        this.onSuccess = function () {
+	            _this.$timeout(function () {
+	                _this.utilityService.setPropertyValue(_this.swForm.object, _this.property, _this.value);
+	                if (_this.swPropertyDisplay) {
+	                    _this.utilityService.setPropertyValue(_this.swPropertyDisplay.object, _this.property, _this.value);
+	                }
+	                if (_this.swfPropertyDisplay) {
+	                    _this.utilityService.setPropertyValue(_this.swfPropertyDisplay.object, _this.property, _this.value);
+	                    _this.swfPropertyDisplay.editing = false;
+	                }
+	                _this.utilityService.setPropertyValue(_this.swFormField.object, _this.property, _this.value);
+	            });
+	        };
+	        this.getValidationDirectives = function () {
 	            var spaceDelimitedList = '';
-	            var name = propertyDisplay.property;
-	            var form = propertyDisplay.form.$$swFormInfo;
-	            $log.debug("Name is:" + name + " and form is: " + form);
-	            if (angular.isUndefined(propertyDisplay.object.validations)
-	                || angular.isUndefined(propertyDisplay.object.validations.properties)
-	                || angular.isUndefined(propertyDisplay.object.validations.properties[propertyDisplay.property])) {
+	            var name = _this.property;
+	            var form = _this.form;
+	            _this.$log.debug("Name is:" + name + " and form is: " + form);
+	            if (_this.metadataService.isAttributePropertyByEntityAndPropertyIdentifier(_this.object, _this.propertyIdentifier)) {
+	                _this.object.validations.properties[name] = [];
+	                if (_this.object.metaData[_this.property].requiredFlag && _this.object.metaData[_this.property].requiredFlag.trim().toLowerCase() == "yes") {
+	                    _this.object.validations.properties[name].push({
+	                        contexts: "save",
+	                        required: true
+	                    });
+	                }
+	                if (_this.object.metaData[_this.property].validationRegex) {
+	                    _this.object.validations.properties[name].push({
+	                        contexts: "save", regex: _this.object.metaData[_this.property].validationRegex
+	                    });
+	                }
+	            }
+	            if (angular.isUndefined(_this.object.validations)
+	                || angular.isUndefined(_this.object.validations.properties)
+	                || angular.isUndefined(_this.object.validations.properties[_this.property])) {
 	                return '';
 	            }
-	            var validations = propertyDisplay.object.validations.properties[propertyDisplay.property];
-	            $log.debug("Validations: ", validations);
-	            $log.debug(propertyDisplay.form.$$swFormInfo);
+	            var validations = _this.object.validations.properties[_this.property];
+	            _this.$log.debug("Validations: ", validations);
+	            _this.$log.debug(_this.form);
 	            var validationsForContext = [];
 	            //get the form context and the form name.
-	            var formContext = propertyDisplay.form.$$swFormInfo.context;
-	            var formName = propertyDisplay.form.$$swFormInfo.name;
-	            $log.debug("Form context is: ");
-	            $log.debug(formContext);
-	            $log.debug("Form Name: ");
-	            $log.debug(formName);
+	            var formContext = _this.swForm.context;
+	            var formName = _this.swForm.name;
+	            _this.$log.debug("Form context is: ");
+	            _this.$log.debug(formContext);
+	            _this.$log.debug("Form Name: ");
+	            _this.$log.debug(formName);
 	            //get the validations for the current element.
-	            var propertyValidations = propertyDisplay.object.validations.properties[name];
+	            var propertyValidations = _this.object.validations.properties[name];
 	            /*
 	            * Investigating why number inputs are not working.
 	            * */
 	            //check if the contexts match.
 	            if (angular.isObject(propertyValidations)) {
 	                //if this is a procesobject validation then the context is implied
-	                if (angular.isUndefined(propertyValidations[0].contexts) && propertyDisplay.object.metaData.isProcessObject) {
-	                    propertyValidations[0].contexts = propertyDisplay.object.metaData.className.split('_')[1];
+	                if (angular.isUndefined(propertyValidations[0].contexts) && _this.object.metaData.isProcessObject) {
+	                    propertyValidations[0].contexts = _this.object.metaData.className.split('_')[1];
 	                }
 	                if (propertyValidations[0].contexts === formContext) {
-	                    $log.debug("Matched");
+	                    _this.$log.debug("Matched");
 	                    for (var prop in propertyValidations[0]) {
 	                        if (prop != "contexts" && prop !== "conditions") {
 	                            spaceDelimitedList += (" swvalidation" + prop.toLowerCase() + "='" + propertyValidations[0][prop] + "'");
 	                        }
 	                    }
 	                }
-	                $log.debug(spaceDelimitedList);
+	                _this.$log.debug(spaceDelimitedList);
 	            }
 	            //loop over validations that are required and create the space delimited list
-	            $log.debug(validations);
+	            _this.$log.debug(validations);
 	            //get all validations related to the form context;
-	            $log.debug(form);
-	            $log.debug(propertyDisplay);
+	            _this.$log.debug(form);
 	            angular.forEach(validations, function (validation, key) {
-	                if (utilityService.listFind(validation.contexts.toLowerCase(), form.context.toLowerCase()) !== -1) {
-	                    $log.debug("Validations for context");
-	                    $log.debug(validation);
+	                if (validation.contexts && _this.utilityService.listFind(validation.contexts.toLowerCase(), _this.swForm.context.toLowerCase()) !== -1) {
+	                    _this.$log.debug("Validations for context");
+	                    _this.$log.debug(validation);
 	                    validationsForContext.push(validation);
 	                }
 	            });
-	            //now that we have all related validations for the specific form context that we are working with collection the directives we need
-	            //getValidationDirectiveByType();
 	            return spaceDelimitedList;
 	        };
-	        var getTemplate = function (propertyDisplay) {
+	        this.onEvent = function (event, eventName) {
+	            var customEventName = _this.swForm.name + _this.name + eventName;
+	            var data = {
+	                event: event,
+	                eventName: eventName,
+	                form: _this.form,
+	                swForm: _this.swForm,
+	                swInput: _this,
+	                inputElement: $('input').first()[0]
+	            };
+	            _this.observerService.notify(customEventName, data);
+	        };
+	        this.getTemplate = function () {
 	            var template = '';
 	            var validations = '';
 	            var currency = '';
-	            if (!propertyDisplay.noValidate) {
-	                validations = getValidationDirectives(propertyDisplay);
+	            var style = "";
+	            if (!_this.class) {
+	                _this.class = "form-control";
 	            }
-	            if (propertyDisplay.object.metaData.$$getPropertyFormatType(propertyDisplay.property) == "currency") {
+	            if (!_this.noValidate) {
+	                validations = _this.getValidationDirectives();
+	            }
+	            if (_this.object.metaData.$$getPropertyFormatType(_this.property) == "currency") {
 	                currency = 'sw-currency-formatter ';
-	                if (angular.isDefined(propertyDisplay.object.data.currencyCode)) {
-	                    currency = currency + 'data-currency-code="' + propertyDisplay.object.data.currencyCode + '" ';
+	                if (angular.isDefined(_this.object.data.currencyCode)) {
+	                    currency = currency + 'data-currency-code="' + _this.object.data.currencyCode + '" ';
 	                }
 	            }
-	            var appConfig = $hibachi.getConfig();
-	            console.log('propertyDisplay', propertyDisplay);
+	            var appConfig = _this.$hibachi.getConfig();
 	            var placeholder = '';
-	            if (angular.isDefined(propertyDisplay.object.metaData[propertyDisplay.property].hb_nullrbkey)) {
-	                placeholder = rbkeyService.getRBKey(propertyDisplay.object.metaData[propertyDisplay.property].hb_nullrbkey);
+	            if (_this.object.metaData && _this.object.metaData[_this.property] && _this.object.metaData[_this.property].hb_nullrbkey) {
+	                placeholder = _this.rbkeyService.getRBKey(_this.object.metaData[_this.property].hb_nullrbkey);
 	            }
-	            if (propertyDisplay.fieldType === 'text') {
-	                template = '<input type="text" class="form-control" ' +
-	                    'ng-model="propertyDisplay.object.data[propertyDisplay.property]" ' +
-	                    'ng-disabled="!propertyDisplay.editable" ' +
-	                    'ng-show="propertyDisplay.editing" ' +
-	                    'name="' + propertyDisplay.property + '" ' +
+	            if (_this.fieldType.toLowerCase() === 'json') {
+	                style = style += 'display:none';
+	            }
+	            var acceptedFieldTypes = ['email', 'text', 'password', 'number', 'time', 'date', 'datetime', 'json'];
+	            if (acceptedFieldTypes.indexOf(_this.fieldType.toLowerCase()) >= 0) {
+	                template = '<input type="' + _this.fieldType.toLowerCase() + '" class="' + _this.class + '" ' +
+	                    'ng-model="swInput.value" ' +
+	                    'ng-disabled="swInput.editable === false" ' +
+	                    'ng-show="swInput.editing" ' +
+	                    'name="' + _this.property + '" ' +
 	                    'placeholder="' + placeholder + '" ' +
 	                    validations + currency +
-	                    'id="swinput' + utilityService.createID(26) + '"' +
-	                    ' />';
+	                    'id="swinput' + _this.swForm.name + _this.name + '" ' +
+	                    'style="' + style + '"' +
+	                    _this.inputAttributes +
+	                    _this.eventHandlerTemplate;
 	            }
-	            else if (propertyDisplay.fieldType === 'password') {
-	                template = '<input type="password" class="form-control" ' +
-	                    'ng-model="propertyDisplay.object.data[propertyDisplay.property]" ' +
-	                    'ng-disabled="!propertyDisplay.editable" ' +
-	                    'ng-show="propertyDisplay.editing" ' +
-	                    'name="' + propertyDisplay.property + '" ' +
-	                    'placeholder="' + placeholder + '" ' +
-	                    validations +
-	                    'id="swinput' + utilityService.createID(26) + '"' +
-	                    ' />';
+	            var dateFieldTypes = ['date', 'datetime', 'time'];
+	            if (dateFieldTypes.indexOf(_this.fieldType.toLowerCase()) >= 0) {
+	                template = template + 'datetime-picker ';
 	            }
-	            else if (propertyDisplay.fieldType === 'number') {
-	                template = '<input type="number" class="form-control" ' +
-	                    'ng-model="propertyDisplay.object.data[propertyDisplay.property]" ' +
-	                    'ng-disabled="!propertyDisplay.editable" ' +
-	                    'ng-show="propertyDisplay.editing" ' +
-	                    'name="' + propertyDisplay.property + '" ' +
-	                    'placeholder="' + placeholder + '" ' +
-	                    validations +
-	                    'id="swinput' + utilityService.createID(26) + '"' +
-	                    ' />';
+	            if (_this.fieldType === 'time') {
+	                template = template + 'data-time-only="true" date-format="' + appConfig.timeFormat.replace('tt', 'a') + '" ';
 	            }
-	            else if (propertyDisplay.fieldType === 'time') {
-	                template = '<input type="text" class="form-control" ' +
-	                    'datetime-picker data-time-only="true" date-format="' + appConfig.timeFormat.replace('tt', 'a') + '" ' +
-	                    'ng-model="propertyDisplay.object.data[propertyDisplay.property]" ' +
-	                    'ng-disabled="!propertyDisplay.editable" ' +
-	                    'ng-show="propertyDisplay.editing" ' +
-	                    'name="' + propertyDisplay.property + '" ' +
-	                    'placeholder="' + placeholder + '" ' +
-	                    validations +
-	                    'id="swinput' + utilityService.createID(26) + '"' +
-	                    ' />';
+	            if (_this.fieldType === 'date') {
+	                template = template + 'data-date-only="true" future-only date-format="' + appConfig.dateFormat + '" ';
 	            }
-	            else if (propertyDisplay.fieldType === 'date') {
-	                template = '<input type="text" class="form-control" ' +
-	                    'datetime-picker data-date-only="true" future-only date-format="' + appConfig.dateFormat + '" ' +
-	                    'ng-model="propertyDisplay.object.data[propertyDisplay.property]" ' +
-	                    'ng-disabled="!propertyDisplay.editable" ' +
-	                    'ng-show="propertyDisplay.editing" ' +
-	                    'name="' + propertyDisplay.property + '" ' +
-	                    'placeholder="' + placeholder + '" ' +
-	                    validations +
-	                    'id="swinput' + utilityService.createID(26) + '"' +
-	                    ' />';
-	            }
-	            else if (propertyDisplay.fieldType === 'dateTime') {
-	                template = '<input type="text" class="form-control" ' +
-	                    'datetime-picker ' +
-	                    'ng-model="propertyDisplay.object.data[propertyDisplay.property]" ' +
-	                    'ng-disabled="!propertyDisplay.editable" ' +
-	                    'ng-show="propertyDisplay.editing" ' +
-	                    'name="' + propertyDisplay.property + '" ' +
-	                    'placeholder="' + placeholder + '" ' +
-	                    validations +
-	                    'id="swinput' + utilityService.createID(26) + '"' +
-	                    ' />';
+	            if (template.length) {
+	                template = template + ' />';
 	            }
 	            return template;
 	        };
-	        return {
-	            require: '^form',
-	            scope: {
-	                propertyDisplay: "=",
-	                type: "@?"
-	            },
-	            restrict: "E",
-	            //adding model and form controller
-	            link: function (scope, element, attr, formController) {
-	                //renders the template and compiles it
-	                element.html(getTemplate(scope.propertyDisplay));
-	                $compile(element.contents())(scope);
+	        this.$onInit = function () {
+	            var bindToControllerProps = _this.$injector.get('swInputDirective')[0].bindToController;
+	            for (var i in bindToControllerProps) {
+	                if (!_this[i]) {
+	                    if (!_this[i] && _this.swFormField && _this.swFormField[i]) {
+	                        _this[i] = _this.swFormField[i];
+	                    }
+	                    else if (!_this[i] && _this.swPropertyDisplay && _this.swPropertyDisplay[i]) {
+	                        _this[i] = _this.swPropertyDisplay[i];
+	                    }
+	                    else if (!_this[i] && _this.swfPropertyDisplay && _this.swfPropertyDisplay[i]) {
+	                        _this[i] = _this.swfPropertyDisplay[i];
+	                    }
+	                    else if (!_this[i] && _this.swForm && _this.swForm[i]) {
+	                        _this[i] = _this.swForm[i];
+	                    }
+	                }
 	            }
+	            _this.property = _this.property || _this.propertyIdentifier;
+	            _this.propertyIdentifier = _this.propertyIdentifier || _this.property;
+	            _this.type = _this.type || _this.fieldType;
+	            _this.fieldType = _this.fieldType || _this.type;
+	            _this.edit = _this.edit || _this.editing;
+	            _this.editing = _this.editing || _this.edit;
+	            _this.editing = _this.editing || true;
+	            _this.fieldType = _this.fieldType || "text";
+	            _this.inputAttributes = _this.inputAttributes || "";
+	            _this.inputAttributes = _this.utilityService.replaceAll(_this.inputAttributes, "'", '"');
+	            _this.value = _this.utilityService.getPropertyValue(_this.object, _this.property);
+	            _this.eventHandlersArray = _this.eventHandlers.split(',');
+	            _this.eventHandlerTemplate = "";
+	            for (var i in _this.eventHandlersArray) {
+	                var eventName = _this.eventHandlersArray[i];
+	                if (eventName.length) {
+	                    _this.eventHandlerTemplate += " ng-" + eventName + "=\"swInput.onEvent($event,'" + eventName + "')\"";
+	                }
+	            }
+	            //attach a successObserver
+	            if (_this.object) {
+	                _this.eventNameForObjectSuccess = _this.object.metaData.className.split('_')[0] + _this.context + 'Success';
+	                _this.observerService.attach(_this.onSuccess, _this.eventNameForObjectSuccess, _this.eventNameForObjectSuccess + _this.property);
+	            }
+	            _this.$scope.$on("$destroy", function () {
+	                _this.observerService.detachById(_this.eventNameForObjectSuccess + _this.property);
+	            });
 	        };
+	        this.$timeout = $timeout;
+	        this.$scope = $scope;
+	        this.utilityService = utilityService;
+	        this.$hibachi = $hibachi;
+	        this.rbkeyService = rbkeyService;
+	        this.$log = $log;
+	        this.$injector = $injector;
+	        this.observerService = observerService;
+	        this.metadataService = metadataService;
+	    }
+	    return SWInputController;
+	}());
+	var SWInput = (function () {
+	    //ngInject
+	    function SWInput($compile) {
+	        var _this = this;
+	        this.restrict = "E";
+	        this.require = {
+	            swForm: "?^swForm",
+	            form: "?^form",
+	            swFormField: "?^swFormField",
+	            swPropertyDisplay: "?^swPropertyDisplay",
+	            swfPropertyDisplay: "?^swfPropertyDisplay"
+	        };
+	        this.scope = {};
+	        this.bindToController = {
+	            propertyIdentifier: "@?",
+	            name: "@?",
+	            class: "@?",
+	            errorClass: "@?",
+	            option: "=?",
+	            valueObject: "=?",
+	            object: "=?",
+	            label: "@?",
+	            labelText: "@?",
+	            labelClass: "@?",
+	            optionValues: "=?",
+	            edit: "=?",
+	            title: "@?",
+	            value: "=?",
+	            errorText: "@?",
+	            fieldType: "@?",
+	            property: "@?",
+	            inputAttributes: "@?",
+	            type: "@?",
+	            editing: "=?",
+	            eventHandlers: "@?",
+	            context: "@?"
+	        };
+	        this.controller = SWInputController;
+	        this.controllerAs = "swInput";
+	        this.link = function (scope, element, attr) {
+	            //renders the template and compiles it
+	            element.html(scope.swInput.getTemplate());
+	            _this.$compile(element.contents())(scope);
+	        };
+	        this.$compile = $compile;
 	    }
 	    SWInput.Factory = function () {
-	        var directive = function ($log, $compile, $hibachi, utilityService, rbkeyService) {
-	            return new SWInput($log, $compile, $hibachi, utilityService, rbkeyService);
+	        var directive = function ($compile) {
+	            return new SWInput($compile);
 	        };
 	        directive.$inject = [
-	            '$log',
-	            '$compile',
-	            '$hibachi',
-	            'utilityService',
-	            'rbkeyService'
+	            '$compile'
 	        ];
 	        return directive;
 	    };
@@ -14174,7 +15984,7 @@
 
 
 /***/ },
-/* 120 */
+/* 144 */
 /***/ function(module, exports) {
 
 	/**********************************************************************************************
@@ -14218,28 +16028,21 @@
 	    * Property Display Controller handles the logic for this directive.
 	    */
 	var SWFFormFieldController = (function () {
-	    function SWFFormFieldController($scope) {
-	        //let vm:IFormFieldControllerVM = this;
-	        //
-	        //if (this.propertyDisplay){
-	        //    vm.propertyDisplay = this.propertyDisplay;
-	        //}else{
-	        //    vm.propertyDisplay =  {
-	        //        name: vm.name,
-	        //        class: vm.class,
-	        //        errorClass: vm.errorClass,
-	        //        type: vm.type,
-	        //        object: vm.object,
-	        //        propertyIdentifier: vm.propertyIdentifier
-	        //    };
-	        //    //console.log("Built a property display");
-	        //}
+	    //@ngInject
+	    function SWFFormFieldController($scope, $element, $compile, utilityService) {
 	        this.$scope = $scope;
+	        this.$element = $element;
+	        this.$compile = $compile;
+	        this.utilityService = utilityService;
+	        this.utilityService = utilityService;
+	        this.$scope = $scope;
+	        this.$element = $element;
+	        this.$compile = $compile;
 	    }
 	    /**
 	        * Handles the logic for the frontend version of the property display.
 	        */
-	    SWFFormFieldController.$inject = ['$scope'];
+	    SWFFormFieldController.$inject = ['$scope', '$element', '$compile', 'utilityService'];
 	    return SWFFormFieldController;
 	}());
 	/**
@@ -14248,10 +16051,10 @@
 	var SWFFormField = (function () {
 	    function SWFFormField(coreFormPartialsPath, hibachiPathBuilder) {
 	        this.restrict = "E";
-	        this.require = "^?swfPropertyDisplay";
+	        this.require = { swfPropertyDisplayCtrl: "^?swfPropertyDisplay", form: "^?form" };
 	        this.controller = SWFFormFieldController;
 	        this.controllerAs = "swfFormField";
-	        this.scope = true;
+	        this.scope = {};
 	        this.bindToController = {
 	            propertyDisplay: "=?",
 	            propertyIdentifier: "@?",
@@ -14283,21 +16086,22 @@
 
 
 /***/ },
-/* 121 */
+/* 145 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	"use strict";
 	/**
-	 * Form Controller handles the logic for this directive.
-	 */
+	* Form Controller handles the logic for this directive.
+	*/
 	var SWFormController = (function () {
 	    /**
 	     * This controller handles most of the logic for the swFormDirective when more complicated self inspection is needed.
 	     */
 	    // @ngInject
-	    function SWFormController($scope, $element, $hibachi, $http, $timeout, observerService, $rootScope) {
+	    function SWFormController($scope, $element, $hibachi, $http, $timeout, observerService, $rootScope, entityService, utilityService) {
+	        var _this = this;
 	        this.$scope = $scope;
 	        this.$element = $element;
 	        this.$hibachi = $hibachi;
@@ -14305,242 +16109,234 @@
 	        this.$timeout = $timeout;
 	        this.observerService = observerService;
 	        this.$rootScope = $rootScope;
-	        /** only use if the developer has specified these features with isProcessForm */
-	        if (angular.isUndefined(this.isDirty)) {
-	            this.isDirty = false;
-	        }
-	        this.isProcessForm = this.isProcessForm || "false";
-	        if (this.isProcessForm == "true") {
-	            this.handleForm(this, $scope);
-	        }
-	    }
-	    /**
-	     * Iterates through the form elements and checks if the names of any of them match
-	     * the meta data that comes back from the processObject call. Supplies a generic submit
-	     * method that can be called by any subclasses that inject formCtrl. On submit,
-	     * this class will attach any errors to the correspnding form element.
-	     */
-	    SWFormController.prototype.handleForm = function (context, $scope) {
-	        var _this = this;
-	        //console.log("Context", context);
-	        /** local variables */
-	        this.processObject = this.name || "";
-	        var vm = context;
-	        vm.hiddenFields = this.hiddenFields;
-	        vm.entityName = this.entityName;
-	        vm.processObject = this.processObject;
-	        vm.action = this.action;
-	        vm.actions = this.actions;
-	        vm.$timeout = this.$timeout;
-	        vm.postOnly = false;
-	        vm.hibachiScope = this.$rootScope.hibachiScope;
-	        var observerService = this.observerService;
-	        /** parse the name */
-	        vm.entityName = this.processObject.split("_")[0];
-	        var processObject = this.processObject.split("_")[1];
-	        /** try to grab the meta data from the process entity in slatwall in a process exists
-	         *  otherwise, just use the service method to access it.
-	         */
-	        /** Cart is an alias for an Order */
-	        if (vm.entityName == "Order") {
-	            vm.entityName = "Cart";
-	        }
-	        ;
-	        /** find the form scope */
-	        this.$scope.$on('anchor', function (event, data) {
-	            if (data.anchorType == "form" && data.scope !== undefined) {
-	                vm["formCtrl"] = data.scope;
-	            }
-	        });
-	        /** make sure we have our data using new logic and $hibachi*/
-	        if (this.processObject == undefined || vm.entityName == undefined) {
-	            throw ("ProcessObject Undefined Exception");
-	        }
-	        if (angular.isDefined(this.object) && this.object.name) {
-	            vm.actionFn = this.object;
-	        }
-	        else {
-	            vm.postOnly = true;
-	        }
-	        /** We use these for our models */
-	        vm.formData = {};
-	        /** returns all the data from the form by iterating the form elements */
-	        vm.getFormData = function () {
-	            var _this = this;
-	            //console.log("Form Data:", this.object);
-	            angular.forEach(this.object, function (val, key) {
-	                /** Check for form elements that have a name that doesn't start with $ */
-	                if (angular.isString(val)) {
-	                    _this.formData[key] = val;
-	                }
-	            });
-	            return vm.formData || "";
+	        this.entityService = entityService;
+	        this.utilityService = utilityService;
+	        this.eventsObj = [];
+	        this.formData = {};
+	        this.isObject = function () {
+	            return (angular.isObject(_this.object));
 	        };
-	        /****
-	          * Handle parsing through the server errors and injecting the error text for that field
-	          * If the form only has a submit, then simply call that function and set errors.
-	          ***/
-	        vm.parseErrors = function (result) {
-	            var _this = this;
-	            //console.log("Resultant Errors: ", result);
-	            if (angular.isDefined(result.errors) && result.errors) {
-	                angular.forEach(result.errors, function (val, key) {
-	                    //console.log("Parsing Rule: ", result.errors[key]);
-	                    //console.log(this.object, key, this.object[key]);
-	                    //console.log("Yes, is defined...");
-	                    var primaryElement = _this.$element.find("[error-for='" + key + "']");
-	                    //console.log("Primary Element: ", primaryElement);
-	                    vm.$timeout(function () {
-	                        //console.log("Appending");
-	                        primaryElement.append("<span name='" + key + "Error'>" + result.errors[key] + "</span>");
-	                    }, 0);
-	                    //vm["formCtrl"][vm.processObject][key].$setValidity(key, false);//set field invalid
-	                    //vm["formCtrl"][vm.processObject][key].$setPristine(key, false);
-	                }, this);
-	            }
+	        /** create the generic submit function */
+	        this.submit = function (actions) {
+	            actions = actions || _this.action;
+	            _this.clearErrors();
+	            _this.formData = _this.getFormData() || "";
+	            _this.doActions(actions);
 	        };
-	        vm.eventsObj = [];
-	        /** looks at the onSuccess, onError, and onLoading and parses the string into useful subcategories */
-	        vm.parseEventString = function (evntStr, evntType) {
-	            vm.events = vm.parseEvents(evntStr, evntType); //onSuccess : [hide:this, show:someOtherForm, refresh:Account]
-	        };
-	        vm.eventsHandler = function (params) {
-	            for (var e in params.events) {
-	                if (angular.isDefined(params.events[e].value) && params.events[e].value == vm.processObject.toLowerCase()) {
-	                    if (params.events[e].name == "hide") {
-	                        vm.hide(params.events[e].value);
-	                    }
-	                    if (params.events[e].name == "show") {
-	                        vm.show(params.events[e].value);
-	                    }
-	                    if (params.events[e].name == "update") {
-	                        vm.update(params.events[e].value);
-	                    }
-	                    if (params.events[e].name == "refresh") {
-	                        vm.refresh(params.events[e].value);
-	                    }
-	                    ;
+	        //array or comma delimited
+	        this.doActions = function (actions) {
+	            if (angular.isArray(actions)) {
+	                for (var _i = 0, _a = actions; _i < _a.length; _i++) {
+	                    var action = _a[_i];
+	                    _this.doAction(action);
 	                }
 	            }
-	        };
-	        /** hides this directive on event */
-	        vm.hide = function (param) {
-	            if (vm.processObject.toLowerCase() == param) {
-	                _this.$element.hide();
-	            }
-	        };
-	        /** shows this directive on event */
-	        vm.show = function (param) {
-	            if (vm.processObject.toLowerCase() == param) {
-	                _this.$element.show();
-	            }
-	        };
-	        /** refreshes this directive on event */
-	        vm.refresh = function (params) {
-	            //stub
-	        };
-	        /** updates this directive on event */
-	        vm.update = function (params) {
-	            //stub
-	        };
-	        /** clears this directive on event */
-	        vm.clear = function (params) {
-	            //stub
-	        };
-	        vm.parseEvents = function (str, evntType) {
-	            if (str == undefined)
-	                return;
-	            var strTokens = str.split(","); //this gives the format [hide:this, show:Account_Logout, update:Account or Cart]
-	            var eventsObj = {
-	                "events": []
-	            }; //will hold events
-	            for (var token in strTokens) {
-	                var t = strTokens[token].split(":")[0].toLowerCase().replace(' ', '');
-	                var u = strTokens[token].split(":")[1].toLowerCase().replace(' ', '');
-	                if (t == "show" || t == "hide" || t == "refresh" || t == "update") {
-	                    if (u == "this") {
-	                        u == vm.processObject.toLowerCase();
-	                    } //<--replaces the alias this with the name of this form.
-	                    var event_1 = { "name": t, "value": u };
-	                    eventsObj.events.push(event_1);
-	                }
-	            }
-	            if (eventsObj.events.length) {
-	                observerService.attach(vm.eventsHandler, "onSuccess");
-	            }
-	            return eventsObj;
-	        };
-	        /** find and clear all errors on form */
-	        vm.clearErrors = function () {
-	            /** clear all form errors on submit. */
-	            _this.$timeout(function () {
-	                var errorElements = _this.$element.find("[error-for]");
-	                errorElements.empty();
-	                //vm["formCtrl"][vm.processObject].$setPristine(true);
-	            }, 0);
-	        };
-	        /** iterates through the factory submitting data */
-	        vm.iterateFactory = function (submitFunction) {
-	            if (!submitFunction) {
-	                throw "Action not defined on form";
-	            }
-	            var submitFn = vm.hibachiScope.doAction;
-	            vm.formData = vm.formData || {};
-	            //console.log("Calling Final Submit");
-	            submitFn(submitFunction, vm.formData).then(function (result) {
-	                if (vm.hibachiScope.hasErrors) {
-	                    vm.parseErrors(result.data);
-	                    //trigger an onError event
-	                    observerService.notify("onError", { "caller": _this.processObject, "events": vm.events.events || "" });
-	                }
-	                else {
-	                    //trigger a on success event
-	                    observerService.notify("onSuccess", { "caller": _this.processObject, "events": vm.events.events || "" });
-	                }
-	            }, angular.noop);
-	            //console.log("Leaving iterateFactory.");
-	        };
-	        /** does either a single or multiple actions */
-	        vm.doAction = function (actionObject) {
-	            if (angular.isArray(actionObject)) {
-	                for (var _i = 0, actionObject_1 = actionObject; _i < actionObject_1.length; _i++) {
-	                    var submitFunction = actionObject_1[_i];
-	                    vm.iterateFactory(submitFunction);
-	                }
-	            }
-	            else if (angular.isString(actionObject)) {
-	                vm.iterateFactory(actionObject);
+	            else if (angular.isString(actions)) {
+	                _this.doAction(actions);
 	            }
 	            else {
 	                throw ("Unknown type of action exception");
 	            }
 	        };
-	        /** create the generic submit function */
-	        vm.submit = function (Action) {
-	            var action = Action || _this.action;
-	            vm.clearErrors();
-	            vm.formData = vm.getFormData() || "";
-	            vm.doAction(action);
+	        // /** iterates through the factory submitting data */
+	        this.doAction = function (action) {
+	            if (!action) {
+	                throw "Action not defined on form";
+	            }
+	            _this.formData = _this.formData || {};
+	            //
+	            var request = _this.$rootScope.hibachiScope.doAction(action, _this.formData)
+	                .then(function (result) {
+	                if (_this.events && _this.events.events) {
+	                    if (result.errors) {
+	                        _this.parseErrors(result.errors);
+	                        //trigger an onError event
+	                        _this.observerService.notify("onError", { "caller": _this.context, "events": _this.events.events || "" });
+	                    }
+	                    else {
+	                        //trigger a on success event
+	                        _this.observerService.notify("onSuccess", { "caller": _this.context, "events": _this.events.events || "" });
+	                    }
+	                }
+	            }, angular.noop);
 	        };
-	        this.submit = vm.submit;
-	        /* give children access to the process
-	        */
-	        vm.getProcessObject = function () {
-	            return vm.processEntity;
+	        this.parseEvents = function (str, evntType) {
+	            if (str == undefined)
+	                return;
+	            var strTokens = str.split(","); //this gives the format [hide:this, show:Account_Logout, update:Account or Cart, event:element]
+	            var eventsObj = {
+	                "events": []
+	            }; //will hold events
+	            for (var token in strTokens) {
+	                var eventName = strTokens[token].split(":")[0].toLowerCase().replace(' ', '');
+	                var formName = strTokens[token].split(":")[1].toLowerCase().replace(' ', '');
+	                if (formName == "this") {
+	                    formName == _this.context.toLowerCase();
+	                } //<--replaces the alias this with the name of this form.
+	                var event_1 = { "name": eventName, "value": formName };
+	                eventsObj.events.push(event_1);
+	            }
+	            if (eventsObj.events.length) {
+	                _this.observerService.attach(_this.eventsHandler, "onSuccess");
+	            }
+	            return eventsObj;
 	        };
+	        /** looks at the onSuccess, onError, and onLoading and parses the string into useful subcategories */
+	        this.parseEventString = function (evntStr, evntType) {
+	            _this.events = _this.parseEvents(evntStr, evntType); //onSuccess : [hide:this, show:someOtherForm, refresh:Account]
+	        };
+	        /****
+	             * Handle parsing through the server errors and injecting the error text for that field
+	            * If the form only has a submit, then simply call that function and set errors.
+	            ***/
+	        this.parseErrors = function (errors) {
+	            if (angular.isDefined(errors) && errors) {
+	                angular.forEach(errors, function (val, key) {
+	                    var primaryElement = _this.$element.find("[error-for='" + key + "']");
+	                    _this.$timeout(function () {
+	                        primaryElement.append("<span name='" + key + "Error'>" + errors[key] + "</span>");
+	                    }, 0);
+	                }, _this);
+	            }
+	        };
+	        /** find and clear all errors on form */
+	        this.clearErrors = function () {
+	            /** clear all form errors on submit. */
+	            _this.$timeout(function () {
+	                var errorElements = _this.$element.find("[error-for]");
+	                errorElements.empty();
+	                //vm["formCtrl"][this.context].$setPristine(true);
+	            }, 0);
+	        };
+	        this.eventsHandler = function (params) {
+	            //this will call any form specific functions such as hide,show,refresh,update or whatever else you later add
+	            for (var e in params.events) {
+	                if (angular.isDefined(params.events[e].value) && params.events[e].value == _this.name.toLowerCase()) {
+	                    if (params.events[e].name && _this[params.events[e].name]) {
+	                        _this[params.events[e].name](params.events[e].value);
+	                    }
+	                }
+	            }
+	        };
+	        /** hides this directive on event */
+	        this.hide = function (param) {
+	            if (_this.name.toLowerCase() == param) {
+	                _this.$element.hide();
+	            }
+	        };
+	        /** shows this directive on event */
+	        this.show = function (param) {
+	            if (_this.name.toLowerCase() == param) {
+	                _this.$element.show();
+	            }
+	        };
+	        /** refreshes this directive on event */
+	        this.refresh = function (params) {
+	            //stub
+	        };
+	        /** updates this directive on event */
+	        this.update = function (params) {
+	            //stub
+	        };
+	        /** clears this directive on event */
+	        this.clear = function (params) {
+	            //stub
+	        };
+	        /** returns all the data from the form by iterating the form elements */
+	        this.getFormData = function () {
+	            var iterable = _this.formCtrl;
+	            angular.forEach(iterable, function (val, key) {
+	                if (typeof val === 'object' && val.hasOwnProperty('$modelValue')) {
+	                    if (_this.object.forms[_this.name][key].$modelValue) {
+	                        val = _this.object.forms[_this.name][key].$modelValue;
+	                    }
+	                    else if (_this.object.forms[_this.name][key].$viewValue) {
+	                        val = _this.object.forms[_this.name][key].$viewValue;
+	                    }
+	                    /** Check for form elements that have a name that doesn't start with $ */
+	                    if (angular.isString(val)) {
+	                        _this.formData[key] = val;
+	                    }
+	                    if (val.$modelValue) {
+	                        _this.formData[key] = val.$modelValue;
+	                    }
+	                    else if (val.$viewValue) {
+	                        _this.formData[key] = val.$viewValue;
+	                    }
+	                }
+	            });
+	            return _this.formData || "";
+	        };
+	        /** only use if the developer has specified these features with isProcessForm */
+	        this.$hibachi = $hibachi;
+	        this.utilityService = utilityService;
+	        if (angular.isUndefined(this.isDirty)) {
+	            this.isDirty = false;
+	        }
+	        //object can be either an instance or a string that will become an instance
+	        if (angular.isString(this.object)) {
+	            var objectNameArray = this.object.split('_');
+	            this.entityName = objectNameArray[0];
+	            //if the object name array has two parts then we can infer that it is a process object
+	            if (objectNameArray.length > 1) {
+	                this.context = this.context || objectNameArray[1];
+	                this.isProcessForm = true;
+	            }
+	            else {
+	                this.context = this.context || 'save';
+	                this.isProcessForm = false;
+	            }
+	            //convert the string to an object
+	            this.$timeout(function () {
+	                _this.object = _this.$hibachi['new' + _this.object]();
+	            });
+	        }
+	        else {
+	            if (this.object && this.object.metaData) {
+	                this.isProcessForm = this.object.metaData.isProcessObject;
+	                this.entityName = this.object.metaData.className.split('_')[0];
+	                if (this.isProcessForm) {
+	                    this.context = this.context || this.object.metaData.className.split('_')[1];
+	                }
+	                else {
+	                    this.context = this.context || 'save';
+	                }
+	            }
+	        }
+	        //
+	        this.context = this.context || this.name;
+	        if (this.isProcessForm) {
+	            /** Cart is an alias for an Order */
+	            if (this.entityName == "Order") {
+	                this.entityName = "Cart";
+	            }
+	            ;
+	        }
+	        //  /** find the form scope */
+	        // this.$scope.$on('anchor', (event, data) =>
+	        // {
+	        //     if (data.anchorType == "form" && data.scope !== undefined) {
+	        //         this.formCtrl = data.scope;
+	        //     }
+	        // });
+	        /** make sure we have our data using new logic and $hibachi*/
+	        //        if (this.context == undefined || this.entityName == undefined) {
+	        //            throw ("ProcessObject Undefined Exception");
+	        //        }
 	        /* handle events
 	        */
 	        if (this.onSuccess) {
-	            vm.parseEventString(this.onSuccess, "onSuccess");
-	            observerService.attach(vm.eventsHandler, "onSuccess");
+	            this.parseEventString(this.onSuccess, "onSuccess");
+	            observerService.attach(this.eventsHandler, "onSuccess");
 	        }
 	        else if (this.onError) {
-	            vm.parseEventString(this.onError, "onError");
-	            observerService.attach(vm.eventsHandler, "onError"); //stub
+	            this.parseEventString(this.onError, "onError");
+	            observerService.attach(this.eventsHandler, "onError"); //stub
 	        }
-	    };
+	    }
 	    return SWFormController;
 	}());
+	exports.SWFormController = SWFormController;
 	var SWForm = (function () {
 	    // @ngInject
 	    function SWForm(coreFormPartialsPath, hibachiPathBuilder) {
@@ -14559,7 +16355,6 @@
 	            name: "@?",
 	            context: "@?",
 	            entityName: "@?",
-	            processObject: "@?",
 	            hiddenFields: "=?",
 	            action: "@?",
 	            actions: "@?",
@@ -14569,16 +16364,16 @@
 	            onSuccess: "@?",
 	            onError: "@?",
 	            hideUntil: "@?",
-	            isProcessForm: "@?",
-	            isDirty: "=?"
+	            isDirty: "=?",
+	            inputAttributes: "@?",
+	            eventHandlers: "@?"
 	        };
 	        /**
 	            * Sets the context of this form
 	            */
 	        this.link = function (scope, element, attrs, controller) {
-	            scope.context = scope.context || 'save';
 	        };
-	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.coreFormPartialsPath) + "formPartial.html";
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.coreFormPartialsPath) + "form.html";
 	    }
 	    /**
 	     * Handles injecting the partials path into this class
@@ -14596,31 +16391,247 @@
 
 
 /***/ },
-/* 122 */
+/* 146 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	"use strict";
-	var SWFormField = (function () {
-	    function SWFormField($log, $templateCache, $window, $hibachi, formService, coreFormPartialsPath, hibachiPathBuilder) {
-	        return {
-	            require: "^form",
-	            restrict: 'AE',
-	            scope: {
-	                propertyDisplay: "="
-	            },
-	            templateUrl: hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + 'formfield.html',
-	            link: function (scope, element, attrs, formController) {
-	                if (angular.isUndefined(scope.propertyDisplay.object.$$getID) || scope.propertyDisplay.object.$$getID() === '') {
-	                    scope.propertyDisplay.isDirty = true;
+	var SWFormFieldController = (function () {
+	    //@ngInject
+	    function SWFormFieldController($injector, $scope, $timeout, $log, $hibachi, observerService, utilityService) {
+	        var _this = this;
+	        this.$injector = $injector;
+	        this.$scope = $scope;
+	        this.$timeout = $timeout;
+	        this.$log = $log;
+	        this.$hibachi = $hibachi;
+	        this.observerService = observerService;
+	        this.utilityService = utilityService;
+	        this.formFieldChanged = function (option) {
+	            if (_this.fieldType === 'yesno') {
+	                _this.object.data[_this.property] = option.value;
+	                _this.form[_this.property].$dirty = true;
+	                _this.form['selected' + _this.object.metaData.className + _this.property + _this.selectedRadioFormName].$dirty = false;
+	            }
+	            else if (_this.fieldType === 'select') {
+	                _this.$log.debug('formfieldchanged');
+	                _this.$log.debug(option);
+	                if (_this.selectType === 'object' && typeof _this.object.data[_this.property].$$getIDName == "function") {
+	                    _this.object.data[_this.property]['data'][_this.object.data[_this.property].$$getIDName()] = option.value;
+	                    if (angular.isDefined(_this.form[_this.object.data[_this.property].$$getIDName()])) {
+	                        _this.form[_this.object.data[_this.property].$$getIDName()].$dirty = true;
+	                    }
 	                }
-	                if (angular.isDefined(formController[scope.propertyDisplay.property])) {
-	                    scope.propertyDisplay.errors = formController[scope.propertyDisplay.property].$error;
-	                    formController[scope.propertyDisplay.property].formType = scope.propertyDisplay.fieldType;
+	                else if (_this.selectType === 'string') {
+	                    _this.object.data[_this.property] = option.value;
+	                    _this.form[_this.property].$dirty = true;
 	                }
+	                _this.observerService.notify(_this.object.metaData.className + _this.property.charAt(0).toUpperCase() + _this.property.slice(1) + 'OnChange', option);
+	            }
+	            else {
+	                _this.object.data[_this.property] = option.value;
+	                _this.form[_this.property].$dirty = true;
+	                _this.form['selected' + _this.object.metaData.className + _this.property + _this.selectedRadioFormName].$dirty = false;
 	            }
 	        };
+	        this.$onInit = function () {
+	            var bindToControllerProps = _this.$injector.get('swFormFieldDirective')[0].bindToController;
+	            for (var i in bindToControllerProps) {
+	                if (!_this[i]) {
+	                    if (!_this[i] && _this.swPropertyDisplay && _this.swPropertyDisplay[i]) {
+	                        _this[i] = _this.swPropertyDisplay[i];
+	                    }
+	                    else if (!_this[i] && _this.swfPropertyDisplay && _this.swfPropertyDisplay[i]) {
+	                        _this[i] = _this.swfPropertyDisplay[i];
+	                    }
+	                    else if (!_this[i] && _this.swForm && _this.swForm[i]) {
+	                        _this[i] = _this.swForm[i];
+	                    }
+	                }
+	            }
+	            _this.property = _this.property || _this.propertyIdentifier;
+	            _this.propertyIdentifier = _this.propertyIdentifier || _this.property;
+	            _this.type = _this.type || _this.fieldType;
+	            _this.fieldType = _this.fieldType || _this.type;
+	            _this.edit = _this.edit || _this.editing;
+	            _this.editing = _this.editing || _this.edit;
+	            _this.editing = _this.editing || true;
+	            _this.fieldType = _this.fieldType || "text";
+	            if (_this.fieldType === 'yesno') {
+	                _this.yesnoStrategy();
+	            }
+	            if (_this.fieldType === 'select') {
+	                _this.selectStrategy();
+	            }
+	        };
+	        this.selectStrategy = function () {
+	            //this is specific to the admin because it implies loading of options via api
+	            if (angular.isDefined(_this.object.metaData[_this.property].fieldtype)) {
+	                _this.selectType = 'object';
+	                _this.$log.debug('selectType:object');
+	            }
+	            else {
+	                _this.selectType = 'string';
+	                _this.$log.debug('selectType:string');
+	            }
+	            _this.getOptions();
+	        };
+	        this.getOptions = function () {
+	            if (angular.isUndefined(_this.options)) {
+	                if (!_this.optionsArguments || !_this.optionsArguments.hasOwnProperty('property')) {
+	                    _this.optionsArguments = {
+	                        'property': _this.propertyIdentifier || _this.property
+	                    };
+	                }
+	                var optionsPromise = _this.$hibachi.getPropertyDisplayOptions(_this.object.metaData.className, _this.optionsArguments);
+	                optionsPromise.then(function (value) {
+	                    _this.options = value.data;
+	                    if (_this.selectType === 'object') {
+	                        if (angular.isUndefined(_this.object.data[_this.property])) {
+	                            _this.object.data[_this.property] = _this.$hibachi['new' + _this.object.metaData[_this.property].cfc]();
+	                        }
+	                        if (_this.object.data[_this.property].$$getID() === '') {
+	                            _this.$log.debug('no ID');
+	                            _this.$log.debug(_this.object.data[_this.property].$$getIDName());
+	                            _this.object.data['selected' + _this.property] = _this.options[0];
+	                            _this.object.data[_this.property] = _this.$hibachi['new' + _this.object.metaData[_this.property].cfc]();
+	                            _this.object.data[_this.property]['data'][_this.object.data[_this.property].$$getIDName()] = _this.options[0].value;
+	                        }
+	                        else {
+	                            var found = false;
+	                            for (var i in _this.options) {
+	                                if (angular.isObject(_this.options[i].value)) {
+	                                    _this.$log.debug('isObject');
+	                                    _this.$log.debug(_this.object.data[_this.property].$$getIDName());
+	                                    if (_this.options[i].value === _this.object.data[_this.property]) {
+	                                        _this.object.data['selected' + _this.property] = _this.options[i];
+	                                        _this.object.data[_this.property] = _this.options[i].value;
+	                                        found = true;
+	                                        break;
+	                                    }
+	                                }
+	                                else {
+	                                    _this.$log.debug('notisObject');
+	                                    _this.$log.debug(_this.object.data[_this.property].$$getIDName());
+	                                    if (_this.options[i].value === _this.object.data[_this.property].$$getID()) {
+	                                        _this.object.data['selected' + _this.property] = _this.options[i];
+	                                        _this.object.data[_this.property]['data'][_this.object.data[_this.property].$$getIDName()] = _this.options[i].value;
+	                                        found = true;
+	                                        break;
+	                                    }
+	                                }
+	                                if (!found) {
+	                                    _this.object.data['selected' + _this.property] = _this.options[0];
+	                                }
+	                            }
+	                        }
+	                    }
+	                    else if (_this.selectType === 'string') {
+	                        if (_this.object.data[_this.property] !== null) {
+	                            for (var i in _this.options) {
+	                                if (_this.options[i].value === _this.object.data[_this.property]) {
+	                                    _this.object.data['selected' + _this.property] = _this.options[i];
+	                                    _this.object.data[_this.property] = _this.options[i].value;
+	                                }
+	                            }
+	                        }
+	                        else {
+	                            _this.object.data['selected' + _this.property] = _this.options[0];
+	                            _this.object.data[_this.property] = _this.options[0].value;
+	                        }
+	                    }
+	                });
+	            }
+	        };
+	        this.yesnoStrategy = function () {
+	            //format value
+	            _this.selectedRadioFormName = _this.utilityService.createID(26);
+	            _this.object.data[_this.property] = (_this.object.data[_this.property]
+	                && _this.object.data[_this.property].length
+	                && _this.object.data[_this.property].toLowerCase().trim() === 'yes') || _this.object.data[_this.property] == 1 ? 1 : 0;
+	            _this.options = [
+	                {
+	                    name: 'Yes',
+	                    value: 1
+	                },
+	                {
+	                    name: 'No',
+	                    value: 0
+	                }
+	            ];
+	            if (angular.isDefined(_this.object.data[_this.property])) {
+	                for (var i in _this.options) {
+	                    if (_this.options[i].value === _this.object.data[_this.property]) {
+	                        _this.selected = _this.options[i];
+	                        _this.object.data[_this.property] = _this.options[i].value;
+	                    }
+	                }
+	            }
+	            else {
+	                _this.selected = _this.options[0];
+	                _this.object.data[_this.property] = _this.options[0].value;
+	            }
+	            _this.$timeout(function () {
+	                _this.form[_this.property].$dirty = _this.isDirty;
+	            });
+	        };
+	        this.$injector = $injector;
+	        this.$scope = $scope;
+	        this.$timeout = $timeout;
+	        this.$log = $log;
+	        this.$hibachi = $hibachi;
+	        this.observerService = observerService;
+	        this.utilityService = utilityService;
+	    }
+	    return SWFormFieldController;
+	}());
+	exports.SWFormFieldController = SWFormFieldController;
+	var SWFormField = (function () {
+	    //@ngInject
+	    function SWFormField($log, $templateCache, $window, $hibachi, formService, coreFormPartialsPath, hibachiPathBuilder) {
+	        this.restrict = "EA";
+	        this.require = {
+	            swfPropertyDisplay: "^?swfPropertyDisplay",
+	            swPropertyDisplay: "^?swPropertyDisplay",
+	            form: "^?form",
+	            swForm: '^?swForm'
+	        };
+	        this.controller = SWFormFieldController;
+	        this.controllerAs = "swFormField";
+	        this.scope = {};
+	        this.bindToController = {
+	            propertyIdentifier: "@?",
+	            name: "@?",
+	            class: "@?",
+	            errorClass: "@?",
+	            type: "@?",
+	            option: "=?",
+	            valueObject: "=?",
+	            object: "=?",
+	            label: "@?",
+	            labelText: "@?",
+	            labelClass: "@?",
+	            optionValues: "=?",
+	            edit: "=?",
+	            title: "@?",
+	            value: "=?",
+	            errorText: "@?",
+	            fieldType: "@?",
+	            property: "@?",
+	            inputAttributes: "@?",
+	            options: "=?",
+	            optionsArguments: "=?",
+	            eagerLoadOptions: "=?",
+	            isDirty: "=?",
+	            onChange: "=?",
+	            editable: "=?",
+	            eventHandlers: "@?",
+	            context: "@?"
+	        };
+	        this.link = function (scope, element, attrs) {
+	        };
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + 'formfield.html';
 	    }
 	    SWFormField.Factory = function () {
 	        var directive = function ($log, $templateCache, $window, $hibachi, formService, coreFormPartialsPath, hibachiPathBuilder) {
@@ -14640,11 +16651,10 @@
 	    return SWFormField;
 	}());
 	exports.SWFormField = SWFormField;
-	//	angular.module('slatwalladmin').directive('swFormField',['$log','$templateCache', '$window', '$hibachi', 'formService', 'coreFormPartialsPath',($log, $templateCache, $window, $hibachi, formService, coreFormPartialsPath) => new swFormField($log, $templateCache, $window, $hibachi, formService, coreFormPartialsPath)]);
 
 
 /***/ },
-/* 123 */
+/* 147 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -14687,166 +16697,7 @@
 
 
 /***/ },
-/* 124 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
-	var SWFormFieldNumberController = (function () {
-	    function SWFormFieldNumberController() {
-	        if (this.propertyDisplay.isDirty == undefined)
-	            this.propertyDisplay.isDirty = false;
-	        this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
-	    }
-	    return SWFormFieldNumberController;
-	}());
-	var SWFormFieldNumber = (function () {
-	    function SWFormFieldNumber(coreFormPartialsPath, hibachiPathBuilder) {
-	        this.restrict = 'E';
-	        this.require = "^form";
-	        this.scope = true;
-	        this.bindToController = {
-	            propertyDisplay: "=?"
-	        };
-	        this.templateUrl = "";
-	        this.controller = SWFormFieldNumberController;
-	        this.controllerAs = "ctrl";
-	        this.link = function (scope, element, attrs, formController) { };
-	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + "number.html";
-	    }
-	    SWFormFieldNumber.Factory = function () {
-	        var directive = function (coreFormPartialsPath, hibachiPathBuilder) {
-	            return new SWFormFieldNumber(coreFormPartialsPath, hibachiPathBuilder);
-	        };
-	        directive.$inject = ['coreFormPartialsPath', 'hibachiPathBuilder'];
-	        return directive;
-	    };
-	    return SWFormFieldNumber;
-	}());
-	exports.SWFormFieldNumber = SWFormFieldNumber;
-
-
-/***/ },
-/* 125 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
-	var swFormFieldPasswordController = (function () {
-	    //@ngInject
-	    function swFormFieldPasswordController() {
-	        this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
-	    }
-	    return swFormFieldPasswordController;
-	}());
-	var SWFormFieldPassword = (function () {
-	    //@ngInject
-	    function SWFormFieldPassword(coreFormPartialsPath, hibachiPathBuilder) {
-	        this.restrict = 'E';
-	        this.require = "^form";
-	        this.scope = true;
-	        this.bindToController = {
-	            propertyDisplay: "=?"
-	        };
-	        this.controller = swFormFieldPasswordController;
-	        this.controllerAs = "ctrl";
-	        this.link = function (scope, element, attrs, formController) { };
-	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + "password.html";
-	    }
-	    SWFormFieldPassword.Factory = function () {
-	        var directive = function (coreFormPartialsPath, hibachiPathBuilder) {
-	            return new SWFormFieldPassword(coreFormPartialsPath, hibachiPathBuilder);
-	        };
-	        directive.$inject = ['coreFormPartialsPath', 'hibachiPathBuilder'];
-	        return directive;
-	    };
-	    return SWFormFieldPassword;
-	}());
-	exports.SWFormFieldPassword = SWFormFieldPassword;
-
-
-/***/ },
-/* 126 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
-	var SWFormFieldRadio = (function () {
-	    //@ngInject
-	    function SWFormFieldRadio($log, $timeout, coreFormPartialsPath, hibachiPathBuilder) {
-	        return {
-	            templateUrl: hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + 'radio.html',
-	            require: "^form",
-	            restrict: 'E',
-	            scope: {
-	                propertyDisplay: "="
-	            },
-	            link: function (scope, element, attr, formController) {
-	                console.log('radio');
-	                var makeRandomID = function makeid(count) {
-	                    var text = "";
-	                    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-	                    for (var i = 0; i < count; i++)
-	                        text += possible.charAt(Math.floor(Math.random() * possible.length));
-	                    return text;
-	                };
-	                if (scope.propertyDisplay.fieldType === 'yesno') {
-	                    //format value
-	                    scope.selectedRadioFormName = makeRandomID(26);
-	                    scope.propertyDisplay.object.data[scope.propertyDisplay.property] = (scope.propertyDisplay.object.data[scope.propertyDisplay.property].length && scope.propertyDisplay.object.data[scope.propertyDisplay.property].toLowerCase().trim() === 'yes') || scope.propertyDisplay.object.data[scope.propertyDisplay.property] == 1 ? 1 : 0;
-	                    scope.formFieldChanged = function (option) {
-	                        scope.propertyDisplay.object.data[scope.propertyDisplay.property] = option.value;
-	                        scope.propertyDisplay.form[scope.propertyDisplay.property].$dirty = true;
-	                        scope.propertyDisplay.form['selected' + scope.propertyDisplay.object.metaData.className + scope.propertyDisplay.property + scope.selectedRadioFormName].$dirty = false;
-	                    };
-	                    scope.propertyDisplay.options = [
-	                        {
-	                            name: 'Yes',
-	                            value: 1
-	                        },
-	                        {
-	                            name: 'No',
-	                            value: 0
-	                        }
-	                    ];
-	                    if (angular.isDefined(scope.propertyDisplay.object.data[scope.propertyDisplay.property])) {
-	                        for (var i in scope.propertyDisplay.options) {
-	                            if (scope.propertyDisplay.options[i].value === scope.propertyDisplay.object.data[scope.propertyDisplay.property]) {
-	                                scope.selected = scope.propertyDisplay.options[i];
-	                                scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.options[i].value;
-	                            }
-	                        }
-	                    }
-	                    else {
-	                        scope.selected = scope.propertyDisplay.options[0];
-	                        scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.options[0].value;
-	                    }
-	                    $timeout(function () {
-	                        scope.propertyDisplay.form[scope.propertyDisplay.property].$dirty = scope.propertyDisplay.isDirty;
-	                    });
-	                }
-	            }
-	        };
-	    }
-	    SWFormFieldRadio.Factory = function () {
-	        var directive = function ($log, $timeout, coreFormPartialsPath, hibachiPathBuilder) {
-	            return new SWFormFieldRadio($log, $timeout, coreFormPartialsPath, hibachiPathBuilder);
-	        };
-	        directive.$inject = [
-	            '$log', '$timeout', 'coreFormPartialsPath', 'hibachiPathBuilder'
-	        ];
-	        return directive;
-	    };
-	    return SWFormFieldRadio;
-	}());
-	exports.SWFormFieldRadio = SWFormFieldRadio;
-
-
-/***/ },
-/* 127 */
+/* 148 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -14968,235 +16819,7 @@
 
 
 /***/ },
-/* 128 */
-/***/ function(module, exports) {
-
-	"use strict";
-	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWFormFieldSelect = (function () {
-	    //@ngInject
-	    function SWFormFieldSelect($log, $hibachi, formService, coreFormPartialsPath, utilityService, observerService, hibachiPathBuilder) {
-	        return {
-	            templateUrl: hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + 'select.html',
-	            require: "^form",
-	            restrict: 'E',
-	            scope: {
-	                propertyDisplay: "="
-	            },
-	            link: function (scope, element, attr, formController) {
-	                if (angular.isDefined(scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].fieldtype)) {
-	                    scope.selectType = 'object';
-	                    $log.debug('selectType:object');
-	                }
-	                else {
-	                    scope.selectType = 'string';
-	                    $log.debug('selectType:string');
-	                }
-	                scope.formFieldChanged = function (option) {
-	                    $log.debug('formfieldchanged');
-	                    $log.debug(option);
-	                    if (scope.selectType === 'object' && typeof scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName == "function") {
-	                        scope.propertyDisplay.object.data[scope.propertyDisplay.property]['data'][scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()] = option.value;
-	                        if (angular.isDefined(scope.propertyDisplay.form[scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()])) {
-	                            scope.propertyDisplay.form[scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()].$dirty = true;
-	                        }
-	                    }
-	                    else if (scope.selectType === 'string') {
-	                        scope.propertyDisplay.object.data[scope.propertyDisplay.property] = option.value;
-	                        scope.propertyDisplay.form[scope.propertyDisplay.property].$dirty = true;
-	                    }
-	                    observerService.notify(scope.propertyDisplay.object.metaData.className + scope.propertyDisplay.property.charAt(0).toUpperCase() + scope.propertyDisplay.property.slice(1) + 'OnChange', option);
-	                };
-	                scope.getOptions = function () {
-	                    if (angular.isUndefined(scope.propertyDisplay.options)) {
-	                        var optionsPromise = $hibachi.getPropertyDisplayOptions(scope.propertyDisplay.object.metaData.className, scope.propertyDisplay.optionsArguments);
-	                        optionsPromise.then(function (value) {
-	                            scope.propertyDisplay.options = value.data;
-	                            if (scope.selectType === 'object') {
-	                                if (angular.isUndefined(scope.propertyDisplay.object.data[scope.propertyDisplay.property])) {
-	                                    scope.propertyDisplay.object.data[scope.propertyDisplay.property] = $hibachi['new' + scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].cfc]();
-	                                }
-	                                if (scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getID() === '') {
-	                                    $log.debug('no ID');
-	                                    $log.debug(scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName());
-	                                    scope.propertyDisplay.object.data['selected' + scope.propertyDisplay.property] = scope.propertyDisplay.options[0];
-	                                    scope.propertyDisplay.object.data[scope.propertyDisplay.property] = $hibachi['new' + scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].cfc]();
-	                                    scope.propertyDisplay.object.data[scope.propertyDisplay.property]['data'][scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()] = scope.propertyDisplay.options[0].value;
-	                                }
-	                                else {
-	                                    var found = false;
-	                                    for (var i in scope.propertyDisplay.options) {
-	                                        if (angular.isObject(scope.propertyDisplay.options[i].value)) {
-	                                            $log.debug('isObject');
-	                                            $log.debug(scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName());
-	                                            if (scope.propertyDisplay.options[i].value === scope.propertyDisplay.object.data[scope.propertyDisplay.property]) {
-	                                                scope.propertyDisplay.object.data['selected' + scope.propertyDisplay.property] = scope.propertyDisplay.options[i];
-	                                                scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.options[i].value;
-	                                                found = true;
-	                                                break;
-	                                            }
-	                                        }
-	                                        else {
-	                                            $log.debug('notisObject');
-	                                            $log.debug(scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName());
-	                                            if (scope.propertyDisplay.options[i].value === scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getID()) {
-	                                                scope.propertyDisplay.object.data['selected' + scope.propertyDisplay.property] = scope.propertyDisplay.options[i];
-	                                                scope.propertyDisplay.object.data[scope.propertyDisplay.property]['data'][scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()] = scope.propertyDisplay.options[i].value;
-	                                                found = true;
-	                                                break;
-	                                            }
-	                                        }
-	                                        if (!found) {
-	                                            scope.propertyDisplay.object.data['selected' + scope.propertyDisplay.property] = scope.propertyDisplay.options[0];
-	                                        }
-	                                    }
-	                                }
-	                            }
-	                            else if (scope.selectType === 'string') {
-	                                if (scope.propertyDisplay.object.data[scope.propertyDisplay.property] !== null) {
-	                                    for (var i in scope.propertyDisplay.options) {
-	                                        if (scope.propertyDisplay.options[i].value === scope.propertyDisplay.object.data[scope.propertyDisplay.property]) {
-	                                            scope.propertyDisplay.object.data['selected' + scope.propertyDisplay.property] = scope.propertyDisplay.options[i];
-	                                            scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.options[i].value;
-	                                        }
-	                                    }
-	                                }
-	                                else {
-	                                    scope.propertyDisplay.object.data['selected' + scope.propertyDisplay.property] = scope.propertyDisplay.options[0];
-	                                    scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.options[0].value;
-	                                }
-	                            }
-	                        });
-	                    }
-	                };
-	                if (scope.propertyDisplay.eagerLoadOptions == true) {
-	                    scope.getOptions();
-	                }
-	                //formService.setPristinePropertyValue(scope.propertyDisplay.property,scope.propertyDisplay.object[scope.propertyDisplay.valueOptions].value[0]);
-	            }
-	        }; //<--end return
-	    }
-	    SWFormFieldSelect.Factory = function () {
-	        var directive = function ($log, $hibachi, formService, coreFormPartialsPath, utilityService, observerService, hibachiPathBuilder) {
-	            return new SWFormFieldSelect($log, $hibachi, formService, coreFormPartialsPath, utilityService, observerService, hibachiPathBuilder);
-	        };
-	        directive.$inject = [
-	            '$log',
-	            '$hibachi',
-	            'formService',
-	            'coreFormPartialsPath',
-	            'utilityService',
-	            'observerService',
-	            'hibachiPathBuilder'
-	        ];
-	        return directive;
-	    };
-	    return SWFormFieldSelect;
-	}());
-	exports.SWFormFieldSelect = SWFormFieldSelect;
-
-
-/***/ },
-/* 129 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
-	var SWFormFieldTextController = (function () {
-	    //@ngInject
-	    function SWFormFieldTextController(formService) {
-	        this.formService = formService;
-	        if (this.propertyDisplay.isDirty == undefined)
-	            this.propertyDisplay.isDirty = false;
-	        this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
-	        this.formService.setPristinePropertyValue(this.propertyDisplay.property, this.propertyDisplay.object.data[this.propertyDisplay.property]);
-	    }
-	    return SWFormFieldTextController;
-	}());
-	var SWFormFieldText = (function () {
-	    function SWFormFieldText(coreFormPartialsPath, hibachiPathBuilder) {
-	        this.restrict = 'E';
-	        this.require = "^form";
-	        this.controller = SWFormFieldTextController;
-	        this.controllerAs = "ctrl";
-	        this.scope = true;
-	        this.bindToController = {
-	            propertyDisplay: "="
-	        };
-	        //@ngInject
-	        this.link = function (scope, element, attr, formController) {
-	        };
-	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + "text.html";
-	    }
-	    SWFormFieldText.Factory = function () {
-	        var directive = function (coreFormPartialsPath, hibachiPathBuilder) {
-	            return new SWFormFieldText(coreFormPartialsPath, hibachiPathBuilder);
-	        };
-	        directive.$inject = [
-	            'coreFormPartialsPath',
-	            'hibachiPathBuilder'
-	        ];
-	        return directive;
-	    };
-	    return SWFormFieldText;
-	}());
-	exports.SWFormFieldText = SWFormFieldText;
-	//     angular.module('slatwalladmin').directive('swFormFieldText', ['$log','$hibachi','formService','partialsPath', ($log, $hibachi, formService, partialsPath) => new SWFormFieldText($log, $hibachi, formService, partialsPath)]);
-	// }
-
-
-/***/ },
-/* 130 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
-	var SWFormFieldDateController = (function () {
-	    //@ngInject
-	    function SWFormFieldDateController(formService) {
-	        this.formService = formService;
-	        if (this.propertyDisplay.isDirty == undefined)
-	            this.propertyDisplay.isDirty = false;
-	        this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
-	        this.formService.setPristinePropertyValue(this.propertyDisplay.property, this.propertyDisplay.object.data[this.propertyDisplay.property]);
-	    }
-	    return SWFormFieldDateController;
-	}());
-	var SWFormFieldDate = (function () {
-	    function SWFormFieldDate(coreFormPartialsPath, hibachiPathBuilder) {
-	        this.restrict = 'E';
-	        this.require = "^form";
-	        this.controller = SWFormFieldDateController;
-	        this.controllerAs = "ctrl";
-	        this.scope = true;
-	        this.bindToController = {
-	            propertyDisplay: "="
-	        };
-	        //@ngInject
-	        this.link = function (scope, element, attr, formController) {
-	        };
-	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + "date.html";
-	    }
-	    SWFormFieldDate.Factory = function () {
-	        var directive = function (coreFormPartialsPath, hibachiPathBuilder) {
-	            return new SWFormFieldDate(coreFormPartialsPath, hibachiPathBuilder);
-	        };
-	        directive.$inject = [
-	            'coreFormPartialsPath',
-	            'hibachiPathBuilder'
-	        ];
-	        return directive;
-	    };
-	    return SWFormFieldDate;
-	}());
-	exports.SWFormFieldDate = SWFormFieldDate;
-
-
-/***/ },
-/* 131 */
+/* 149 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -15207,16 +16830,19 @@
 	    function SWFormRegistrar(formService, coreFormPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'E',
-	            require: "^form",
+	            require: ["^form", "^swForm"],
 	            scope: {
-	                object: "=",
-	                context: "@",
-	                name: "@",
-	                isDirty: "="
+	                object: "=?",
+	                context: "@?",
+	                name: "@?",
+	                isDirty: "=?"
 	            },
-	            link: function (scope, element, attrs, formController) {
+	            link: function (scope, element, attrs, formController, transclude) {
 	                /*add form info at the form level*/
-	                formController.$$swFormInfo = {
+	                scope.$watch(function () { return formController[0]; }, function () {
+	                    formController[1].formCtrl = formController[0];
+	                });
+	                formController[0].$$swFormInfo = {
 	                    object: scope.object,
 	                    context: scope.context || 'save',
 	                    name: scope.name
@@ -15229,18 +16855,18 @@
 	                    return text;
 	                };
 	                if (scope.isDirty) {
-	                    formController.autoDirty = true;
+	                    formController[0].autoDirty = true;
 	                }
-	                scope.form = formController;
+	                scope.form = formController[0];
 	                /*register form with service*/
-	                formController.name = scope.name;
-	                formController.$setDirty();
-	                formService.setForm(formController);
+	                formController[0].name = scope.name;
+	                formController[0].$setDirty();
+	                formService.setForm(formController[0]);
 	                /*register form at object level*/
 	                if (!angular.isDefined(scope.object.forms)) {
 	                    scope.object.forms = {};
 	                }
-	                scope.object.forms[scope.name] = formController;
+	                scope.object.forms[scope.name] = formController[0];
 	            }
 	        };
 	    }
@@ -15263,280 +16889,238 @@
 
 
 /***/ },
-/* 132 */
+/* 150 */
 /***/ function(module, exports) {
 
-	/**********************************************************************************************
-	 **********************************************************************************************
-	 **********************************************************************************************
-	 **		Property Display (This one is specifically for the frontend so that it can be modified)
-	 **		isHidden
-	 **		requiredFlag
-	 **		title
-	 **		hint
-	 **		editting
-	 **		object
-	 **		class
-	 **		___________________________________________
-	 ** 	attr.type have the following options:
-	 **
-	 **		checkbox			|	As a single checkbox this doesn't require any options, but it will create a hidden field for you so that the key gets submitted even when not checked.  The value of the checkbox will be 1
-	 **		checkboxgroup		|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
-	 **		file				|	No value can be passed in
-	 **		multiselect			|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
-	 **		password			|	No Value can be passed in
-	 **		radiogroup			|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
-	 **		select      		|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
-	 **		text				|	Simple Text Field
-	 **		textarea			|	Simple Textarea
-	 **		yesno				|	This is used by booleans and flags to create a radio group of Yes and No
-	 **		submit				|	submit button to post these properties back to the server.
-	 **		------------------------------------------------------------------------------------------------------
-	 **
-	 **		attr.valueObject" type="any" default="" />
-	 **		attr.valueObjectProperty" type="string" default="" />
-	 **
-	 **		General Settings that end up getting applied to the value object
-	 **		attr.type" type="string" default="text"
-	 **		attr.name" type="string" default=""
-	 **		attr.class" type="string" default=""
-	 **		attr.value" type="any" default=""
-	 **		attr.valueOptions" type="array" default="#arrayNew(1)#"		<!--- Used for select, checkbox group, multiselect --->
-	 **		attr.fieldAttributes" type="string" default=""
-	 **
-	 *********************************************************************************************
-	 *********************************************************************************************
-	 *********************************************************************************************
-	 */
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	"use strict";
-	/**
-	    * Property Display Controller handles the logic for this directive.
-	    */
-	var SWFPropertyDisplayController = (function () {
-	    /**
-	        * Handles the logic for the frontend version of the property display.
-	        */
+	var SWErrorDisplayController = (function () {
 	    //@ngInject
-	    function SWFPropertyDisplayController($scope) {
-	        this.$scope = $scope;
-	        this.optionValues = [];
-	        var vm = this;
-	        vm.processObject = {};
-	        vm.valueObjectProperty = this.valueObjectProperty;
-	        vm.type = this.type || "text";
-	        vm.class = this.class || "formControl";
-	        vm.valueObject = this.valueObject;
-	        vm.fieldAttributes = this.fieldAttributes || "";
-	        vm.label = this.label || "true";
-	        vm.labelText = this.labelText || "";
-	        vm.labelClass = this.labelClass || "";
-	        vm.name = this.name || "unnamed";
-	        vm.options = this.options;
-	        vm.valueOptions = this.valueOptions;
-	        vm.errorClass = this.errorClass;
-	        vm.errorText = this.errorText;
-	        vm.object = this.object; //this is the process object
-	        vm.propertyIdentifier = this.propertyIdentifier; //this is the property
-	        vm.loader = this.loader;
-	        vm.noValidate = this.noValidate;
-	        /** in order to attach the correct controller to local vm, we need a watch to bind */
-	        /** handle options */
-	        if (vm.options && angular.isString(vm.options)) {
-	            var optionsArray = [];
-	            optionsArray = vm.options.toString().split(",");
-	            angular.forEach(optionsArray, function (o) {
-	                var newOption = {
-	                    name: "",
-	                    value: ""
-	                };
-	                newOption.name = o;
-	                newOption.value = o;
-	                this.optionValues.push(newOption);
-	            }, vm);
-	        }
-	        if (angular.isDefined(vm.valueOptions) && angular.isObject(vm.valueOptions)) {
-	            vm.optionsValues = [];
-	            angular.forEach(vm.valueOptions, function (o) {
-	                var newOption = {
-	                    name: "",
-	                    value: ""
-	                };
-	                if (angular.isDefined(o.name) && angular.isDefined(o.value)) {
-	                    newOption.name = o.name;
-	                    newOption.value = o.value;
-	                    vm.optionValues.push(newOption);
-	                }
-	            });
-	        }
-	        /** handle turning the options into an array of objects */
-	        /** handle setting the default value for the yes / no element  */
-	        if (this.type == "yesno" && (this.value && angular.isString(this.value))) {
-	            vm.selected == this.value;
-	        }
-	        this.propertyDisplay = {
-	            type: vm.type,
-	            name: vm.name,
-	            class: vm.class,
-	            loader: vm.loader,
-	            errorClass: vm.errorClass,
-	            option: vm.options,
-	            valueObject: vm.valueObject,
-	            object: vm.object,
-	            label: vm.label,
-	            labelText: vm.labelText,
-	            labelClass: vm.labelClass,
-	            optionValues: vm.optionValues,
-	            edit: vm.editting,
-	            title: vm.title,
-	            value: vm.value || "",
-	            errorText: vm.errorText,
-	        };
-	        //console.log("Property Display", this.propertyDisplay);
+	    function SWErrorDisplayController($injector) {
+	        this.$injector = $injector;
+	        this.$injector = $injector;
 	    }
-	    return SWFPropertyDisplayController;
+	    SWErrorDisplayController.prototype.$onInit = function () {
+	        var bindToControllerProps = this.$injector.get('swErrorDisplayDirective')[0].bindToController;
+	        for (var i in bindToControllerProps) {
+	            if (!this[i] && i !== 'name') {
+	                if (!this[i] && this.swPropertyDisplay && this.swPropertyDisplay[i]) {
+	                    this[i] = this.swPropertyDisplay[i];
+	                }
+	                else if (!this[i] && this.swfPropertyDisplay && this.swfPropertyDisplay[i]) {
+	                    this[i] = this.swfPropertyDisplay[i];
+	                }
+	                else if (!this[i] && this.swForm && this.swForm[i]) {
+	                    this[i] = this.swForm[i];
+	                }
+	            }
+	        }
+	        this.property = this.property || this.propertyIdentifier;
+	        this.propertyIdentifier = this.propertyIdentifier || this.property;
+	        if (!this.name && this.property) {
+	            this.name = this.property;
+	        }
+	    };
+	    return SWErrorDisplayController;
 	}());
-	/**
-	    * This class handles configuring formFields for use in process forms on the front end.
-	    */
-	var SWFPropertyDisplay = (function () {
-	    //@ngInject
-	    function SWFPropertyDisplay(coreFormPartialsPath, hibachiPathBuilder) {
+	exports.SWErrorDisplayController = SWErrorDisplayController;
+	var SWErrorDisplay = (function () {
+	    // @ngInject
+	    function SWErrorDisplay(coreFormPartialsPath, hibachiPathBuilder) {
+	        this.coreFormPartialsPath = coreFormPartialsPath;
+	        this.hibachiPathBuilder = hibachiPathBuilder;
+	        this.require = {
+	            swForm: "^?swForm",
+	            form: "^?form",
+	            swPropertyDisplay: "^?swPropertyDisplay",
+	            swfPropertyDisplay: "^?swfPropertyDisplay"
+	        };
 	        this.restrict = "E";
-	        this.require = "?^swForm";
-	        this.transclude = true;
-	        this.templateUrl = "";
-	        this.controller = SWFPropertyDisplayController;
-	        this.controllerAs = "swfPropertyDisplayController";
+	        this.controller = SWErrorDisplayController;
+	        this.controllerAs = "swErrorDisplay";
 	        this.scope = {};
 	        this.bindToController = {
+	            form: "=?",
+	            name: "@?",
+	            property: "@?",
+	            propertyIdentifier: "@?",
+	            errorClass: "@?"
+	        };
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.coreFormPartialsPath) + "errordisplay.html";
+	    }
+	    SWErrorDisplay.Factory = function () {
+	        var directive = function (coreFormPartialsPath, hibachiPathBuilder) {
+	            return new SWErrorDisplay(coreFormPartialsPath, hibachiPathBuilder);
+	        };
+	        directive.$inject = [
+	            'coreFormPartialsPath',
+	            'hibachiPathBuilder'
+	        ];
+	        return directive;
+	    };
+	    return SWErrorDisplay;
+	}());
+	exports.SWErrorDisplay = SWErrorDisplay;
+
+
+/***/ },
+/* 151 */
+/***/ function(module, exports) {
+
+	"use strict";
+	var SWPropertyDisplayController = (function () {
+	    //@ngInject
+	    function SWPropertyDisplayController($filter, utilityService, $injector, metadataService) {
+	        var _this = this;
+	        this.$filter = $filter;
+	        this.utilityService = utilityService;
+	        this.$injector = $injector;
+	        this.metadataService = metadataService;
+	        this.optionValues = [];
+	        this.$onInit = function () {
+	            var bindToControllerProps = _this.$injector.get('swPropertyDisplayDirective')[0].bindToController;
+	            for (var i in bindToControllerProps) {
+	                if (!_this[i] && _this.swForm && _this.swForm[i]) {
+	                    _this[i] = _this.swForm[i];
+	                }
+	            }
+	            _this.errors = {};
+	            if (angular.isUndefined(_this.editing)) {
+	                _this.editing = false;
+	            }
+	            if (angular.isUndefined(_this.editable)) {
+	                _this.editable = true;
+	            }
+	            if (angular.isUndefined(_this.isHidden)) {
+	                _this.isHidden = false;
+	            }
+	            if (angular.isUndefined(_this.noValidate)) {
+	                _this.noValidate = false;
+	            }
+	            if (angular.isUndefined(_this.optionsArguments)) {
+	                _this.optionsArguments = {};
+	            }
+	            _this.applyFilter = function (model, filter) {
+	                try {
+	                    return _this.$filter(filter)(model);
+	                }
+	                catch (e) {
+	                    return model;
+	                }
+	            };
+	            _this.property = _this.property || _this.propertyIdentifier;
+	            _this.propertyIdentifier = _this.propertyIdentifier || _this.property;
+	            _this.type = _this.type || _this.fieldType;
+	            _this.fieldType = _this.fieldType || _this.type;
+	            _this.edit = _this.edit || _this.editing;
+	            _this.editing = _this.editing || _this.edit;
+	            //swfproperty logic
+	            if (angular.isUndefined(_this.type) && _this.object && _this.object.metaData) {
+	                _this.type = _this.metadataService.getPropertyFieldType(_this.object, _this.propertyIdentifier);
+	            }
+	            if (angular.isUndefined(_this.hint) && _this.object && _this.object.metaData) {
+	                _this.hint = _this.metadataService.getPropertyHintByObjectAndPropertyIdentifier(_this.object, _this.propertyIdentifier);
+	            }
+	            if (angular.isUndefined(_this.title) && _this.object && _this.object.metaData) {
+	                _this.labelText = _this.metadataService.getPropertyTitle(_this.object, _this.propertyIdentifier);
+	            }
+	            _this.labelText = _this.labelText || _this.title;
+	            _this.title = _this.title || _this.labelText;
+	            _this.type = _this.type || "text";
+	            _this.class = _this.class || "form-control";
+	            _this.fieldAttributes = _this.fieldAttributes || "";
+	            _this.label = _this.label || "true";
+	            _this.labelText = _this.labelText || "";
+	            _this.labelClass = _this.labelClass || "";
+	            _this.name = _this.name || "unnamed";
+	            _this.object = _this.object || _this.swForm.object; //this is the process object
+	            /** handle options */
+	            if (_this.options && angular.isString(_this.options)) {
+	                var optionsArray = [];
+	                optionsArray = _this.options.toString().split(",");
+	                angular.forEach(optionsArray, function (o) {
+	                    var newOption = {
+	                        name: "",
+	                        value: ""
+	                    };
+	                    newOption.name = o;
+	                    newOption.value = o;
+	                    _this.optionValues.push(newOption);
+	                });
+	            }
+	            /** handle turning the options into an array of objects */
+	            /** handle setting the default value for the yes / no element  */
+	            if (_this.type == "yesno" && (_this.value && angular.isString(_this.value))) {
+	                _this.selected == _this.value;
+	            }
+	        };
+	        this.$filter = $filter;
+	        this.utilityService = utilityService;
+	        this.$injector = $injector;
+	        this.metadataService = metadataService;
+	    }
+	    return SWPropertyDisplayController;
+	}());
+	exports.SWPropertyDisplayController = SWPropertyDisplayController;
+	var SWPropertyDisplay = (function () {
+	    //@ngInject
+	    function SWPropertyDisplay(coreFormPartialsPath, hibachiPathBuilder, swpropertyPartialPath) {
+	        this.coreFormPartialsPath = coreFormPartialsPath;
+	        this.hibachiPathBuilder = hibachiPathBuilder;
+	        this.swpropertyPartialPath = swpropertyPartialPath;
+	        this.require = { swForm: "?^swForm", form: "?^form" };
+	        this.restrict = 'AE';
+	        this.scope = {};
+	        this.bindToController = {
+	            //swfproperty scope
 	            type: "@?",
 	            name: "@?",
 	            class: "@?",
 	            edit: "@?",
-	            title: "@?",
-	            hint: "@?",
 	            valueObject: "=?",
 	            valueObjectProperty: "=?",
 	            propertyIdentifier: "@?",
-	            options: "@?",
 	            valueOptions: "=?",
 	            fieldAttributes: "@?",
-	            object: "=",
 	            label: "@?",
 	            labelText: "@?",
 	            labelClass: "@?",
 	            errorText: "@?",
 	            errorClass: "@?",
-	            formTemplate: "@?"
-	        };
-	        this.link = function (scope, element, attrs, formController, transcludeFn) {
-	            scope.frmController = formController;
-	        };
-	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + 'swfpropertydisplaypartial.html';
-	    }
-	    SWFPropertyDisplay.Factory = function () {
-	        var directive = function (coreFormPartialsPath, hibachiPathBuilder) {
-	            return new SWFPropertyDisplay(coreFormPartialsPath, hibachiPathBuilder);
-	        };
-	        directive.$inject = ['coreFormPartialsPath', 'hibachiPathBuilder'];
-	        return directive;
-	    };
-	    return SWFPropertyDisplay;
-	}());
-	exports.SWFPropertyDisplay = SWFPropertyDisplay;
-
-
-/***/ },
-/* 133 */
-/***/ function(module, exports) {
-
-	"use strict";
-	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWPropertyDisplayController = (function () {
-	    //@ngInject
-	    function SWPropertyDisplayController($filter) {
-	        var _this = this;
-	        this.$filter = $filter;
-	        this.$onInit = function () {
-	            if (!angular.isDefined(_this.object)) {
-	                _this.object = _this.form.$$swFormInfo.object;
-	            }
-	            if (angular.isUndefined(_this.fieldType)) {
-	                _this.fieldType = _this.object.metaData.$$getPropertyFieldType(_this.property);
-	            }
-	            if (angular.isUndefined(_this.hint)) {
-	                _this.hint = _this.object.metaData.$$getPropertyHint(_this.property);
-	            }
-	            if (angular.isUndefined(_this.title)) {
-	                _this.title = _this.object.metaData.$$getPropertyTitle(_this.property);
-	            }
-	        };
-	        this.errors = {};
-	        if (angular.isUndefined(this.editing)) {
-	            this.editing = false;
-	        }
-	        if (angular.isUndefined(this.editable)) {
-	            this.editable = true;
-	        }
-	        if (angular.isUndefined(this.isHidden)) {
-	            this.isHidden = false;
-	        }
-	        if (angular.isUndefined(this.eagerLoadOptions)) {
-	            this.eagerLoadOptions = true;
-	        }
-	        if (angular.isUndefined(this.noValidate)) {
-	            this.noValidate = false;
-	        }
-	        if (angular.isUndefined(this.optionsArguments)) {
-	            this.optionsArguments = {};
-	        }
-	        this.applyFilter = function (model, filter) {
-	            try {
-	                return $filter(filter)(model);
-	            }
-	            catch (e) {
-	                return model;
-	            }
-	        };
-	    }
-	    return SWPropertyDisplayController;
-	}());
-	var SWPropertyDisplay = (function () {
-	    function SWPropertyDisplay(coreFormPartialsPath, hibachiPathBuilder) {
-	        this.coreFormPartialsPath = coreFormPartialsPath;
-	        this.hibachiPathBuilder = hibachiPathBuilder;
-	        this.require = { form: '^form' };
-	        this.restrict = 'AE';
-	        this.scope = {};
-	        this.bindToController = {
-	            property: "@",
+	            formTemplate: "@?",
+	            //swpropertyscope
+	            property: "@?",
 	            object: "=?",
-	            options: "=?",
 	            editable: "=?",
 	            editing: "=?",
 	            isHidden: "=?",
 	            title: "=?",
 	            hint: "@?",
+	            options: "=?",
 	            optionsArguments: "=?",
 	            eagerLoadOptions: "=?",
 	            isDirty: "=?",
 	            onChange: "=?",
 	            fieldType: "@?",
-	            noValidate: "=?"
+	            noValidate: "=?",
+	            inputAttributes: "@?",
+	            optionValues: "=?",
+	            eventHandlers: "@?",
+	            context: "@?"
 	        };
 	        this.controller = SWPropertyDisplayController;
 	        this.controllerAs = "swPropertyDisplay";
-	        this.link = function ($scope, element, attrs, formController) {
+	        this.templateUrlPath = "propertydisplay.html";
+	        this.link = function (scope, element, attrs, formController) {
+	            scope.frmController = formController;
+	            scope.swfPropertyDisplay = scope.swPropertyDisplay;
 	        };
-	        console.warn(this);
-	        this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.coreFormPartialsPath) + "propertydisplay.html";
+	        this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.coreFormPartialsPath) + swpropertyPartialPath;
 	    }
-	    SWPropertyDisplay.Factory = function () {
+	    SWPropertyDisplay.Factory = function (swpropertyClass, swpropertyPartialPath) {
 	        var directive = function (coreFormPartialsPath, hibachiPathBuilder) {
-	            return new SWPropertyDisplay(coreFormPartialsPath, hibachiPathBuilder);
+	            return new swpropertyClass(coreFormPartialsPath, hibachiPathBuilder, swpropertyPartialPath);
 	        };
 	        directive.$inject = ['coreFormPartialsPath', 'hibachiPathBuilder'];
 	        return directive;
@@ -15548,28 +17132,167 @@
 
 
 /***/ },
-/* 134 */
+/* 152 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var swpropertydisplay_1 = __webpack_require__(151);
+	var SWFPropertyDisplayController = (function (_super) {
+	    __extends(SWFPropertyDisplayController, _super);
+	    //@ngInject
+	    function SWFPropertyDisplayController($filter, utilityService, $injector, metadataService) {
+	        _super.call(this, $filter, utilityService, $injector, metadataService);
+	        this.$filter = $filter;
+	        this.utilityService = utilityService;
+	        this.$injector = $injector;
+	        this.metadataService = metadataService;
+	        this.editing = true;
+	    }
+	    return SWFPropertyDisplayController;
+	}(swpropertydisplay_1.SWPropertyDisplayController));
+	exports.SWFPropertyDisplayController = SWFPropertyDisplayController;
+	var SWFPropertyDisplay = (function (_super) {
+	    __extends(SWFPropertyDisplay, _super);
+	    //@ngInject
+	    function SWFPropertyDisplay(coreFormPartialsPath, hibachiPathBuilder, swpropertyPartialPath) {
+	        _super.call(this, coreFormPartialsPath, hibachiPathBuilder, swpropertyPartialPath);
+	        this.coreFormPartialsPath = coreFormPartialsPath;
+	        this.hibachiPathBuilder = hibachiPathBuilder;
+	        this.swpropertyPartialPath = swpropertyPartialPath;
+	        this.controller = SWFPropertyDisplayController;
+	        this.controllerAs = "swfPropertyDisplay";
+	        this.link = function (scope, element, attrs) {
+	        };
+	    }
+	    return SWFPropertyDisplay;
+	}(swpropertydisplay_1.SWPropertyDisplay));
+	exports.SWFPropertyDisplay = SWFPropertyDisplay;
+
+
+/***/ },
+/* 153 */
+/***/ function(module, exports) {
+
+	"use strict";
+	var SWFormSubscriberController = (function () {
+	    //@ngInject
+	    function SWFormSubscriberController($log, $compile, $hibachi, utilityService, rbkeyService, $injector) {
+	        var _this = this;
+	        this.$log = $log;
+	        this.$compile = $compile;
+	        this.$hibachi = $hibachi;
+	        this.utilityService = utilityService;
+	        this.rbkeyService = rbkeyService;
+	        this.$injector = $injector;
+	        this.$onInit = function () {
+	            var bindToControllerProps = _this.$injector.get('swFormSubscriberDirective')[0].bindToController;
+	            for (var i in bindToControllerProps) {
+	                if (!_this[i]) {
+	                    if (!_this[i] && _this.swForm && _this.swForm[i]) {
+	                        _this[i] = _this.swForm[i];
+	                    }
+	                }
+	            }
+	            _this.property = _this.property || _this.propertyIdentifier;
+	            _this.propertyIdentifier = _this.propertyIdentifier || _this.property;
+	            _this.type = _this.type || _this.fieldType;
+	            _this.fieldType = _this.fieldType || _this.type;
+	            _this.edit = _this.edit || _this.editing;
+	            _this.editing = _this.editing || _this.edit;
+	            _this.editing = _this.editing || true;
+	            _this.fieldType = _this.fieldType || "text";
+	            _this.inputAttributes = _this.inputAttributes || "";
+	        };
+	        this.utilityService = utilityService;
+	        this.$hibachi = $hibachi;
+	        this.rbkeyService = rbkeyService;
+	        this.$log = $log;
+	        this.$injector = $injector;
+	    }
+	    return SWFormSubscriberController;
+	}());
+	var SWFormSubscriber = (function () {
+	    //ngInject
+	    function SWFormSubscriber() {
+	        this.restrict = "A";
+	        this.require = {
+	            swForm: "?^swForm",
+	            form: "?^form"
+	        };
+	        this.scope = {};
+	        this.bindToController = {
+	            propertyIdentifier: "@?",
+	            name: "@?",
+	            class: "@?",
+	            errorClass: "@?",
+	            option: "=?",
+	            valueObject: "=?",
+	            object: "=?",
+	            label: "@?",
+	            labelText: "@?",
+	            labelClass: "@?",
+	            optionValues: "=?",
+	            edit: "=?",
+	            title: "@?",
+	            value: "=?",
+	            errorText: "@?",
+	            fieldType: "@?",
+	            property: "@?",
+	            inputAttributes: "@?",
+	            type: "@?",
+	            editing: "=?"
+	        };
+	        this.controller = SWFormSubscriberController;
+	        this.controllerAs = "SWFormSubscriber";
+	        this.link = function (scope, element, attr) {
+	        };
+	    }
+	    SWFormSubscriber.Factory = function () {
+	        var directive = function () {
+	            return new SWFormSubscriber();
+	        };
+	        directive.$inject = [];
+	        return directive;
+	    };
+	    return SWFormSubscriber;
+	}());
+	exports.SWFormSubscriber = SWFormSubscriber;
+
+
+/***/ },
+/* 154 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/hibachiTypescript.d.ts" />
 	"use strict";
-	var swvalidate_1 = __webpack_require__(135);
-	var swvalidationminlength_1 = __webpack_require__(136);
-	var swvalidationdatatype_1 = __webpack_require__(137);
-	var swvalidationeq_1 = __webpack_require__(138);
-	var swvalidationgte_1 = __webpack_require__(139);
-	var swvalidationlte_1 = __webpack_require__(140);
-	var swvalidationmaxlength_1 = __webpack_require__(141);
-	var swvalidationmaxvalue_1 = __webpack_require__(142);
-	var swvalidationminvalue_1 = __webpack_require__(143);
-	var swvalidationneq_1 = __webpack_require__(144);
-	var swvalidationnumeric_1 = __webpack_require__(145);
-	var swvalidationregex_1 = __webpack_require__(146);
-	var swvalidationrequired_1 = __webpack_require__(147);
-	var swvalidationunique_1 = __webpack_require__(148);
-	var swvalidationuniqueornull_1 = __webpack_require__(149);
-	var validationmodule = angular.module('hibachi.validation', [])
+	//components
+	var swvalidate_1 = __webpack_require__(155);
+	var swvalidationminlength_1 = __webpack_require__(156);
+	var swvalidationdatatype_1 = __webpack_require__(157);
+	var swvalidationeq_1 = __webpack_require__(158);
+	var swvalidationgte_1 = __webpack_require__(159);
+	var swvalidationlte_1 = __webpack_require__(160);
+	var swvalidationmaxlength_1 = __webpack_require__(161);
+	var swvalidationmaxvalue_1 = __webpack_require__(162);
+	var swvalidationminvalue_1 = __webpack_require__(163);
+	var swvalidationneq_1 = __webpack_require__(164);
+	var swvalidationnumeric_1 = __webpack_require__(165);
+	var swvalidationregex_1 = __webpack_require__(166);
+	var swvalidationrequired_1 = __webpack_require__(167);
+	var swvalidationunique_1 = __webpack_require__(168);
+	var swvalidationuniqueornull_1 = __webpack_require__(169);
+	//services
+	var validationservice_1 = __webpack_require__(170);
+	var core_module_1 = __webpack_require__(14);
+	var validationmodule = angular.module('hibachi.validation', [core_module_1.coremodule.name])
 	    .run([function () {
 	    }])
 	    .directive('swValidate', swvalidate_1.SWValidate.Factory())
@@ -15586,12 +17309,13 @@
 	    .directive("swvalidationregex", swvalidationregex_1.SWValidationRegex.Factory())
 	    .directive("swvalidationrequired", swvalidationrequired_1.SWValidationRequired.Factory())
 	    .directive("swvalidationunique", swvalidationunique_1.SWValidationUnique.Factory())
-	    .directive("swvalidationuniqueornull", swvalidationuniqueornull_1.SWValidationUniqueOrNull.Factory());
+	    .directive("swvalidationuniqueornull", swvalidationuniqueornull_1.SWValidationUniqueOrNull.Factory())
+	    .service("validationService", validationservice_1.ValidationService);
 	exports.validationmodule = validationmodule;
 
 
 /***/ },
-/* 135 */
+/* 155 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -15978,40 +17702,30 @@
 
 
 /***/ },
-/* 136 */
+/* 156 */
 /***/ function(module, exports) {
 
 	"use strict";
-	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
-	/**
-	 * Returns true if the user value is greater than the min length.
-	 */
-	/**
-	 * Returns true if the user value is greater than the minimum value.
-	 */
 	var SWValidationMinLength = (function () {
-	    function SWValidationMinLength($log) {
+	    function SWValidationMinLength($log, validationService) {
 	        return {
 	            restrict: "A",
 	            require: "^ngModel",
 	            link: function (scope, element, attributes, ngModel) {
 	                ngModel.$validators.swvalidationminlength =
 	                    function (modelValue, viewValue) {
-	                        var constraintValue = attributes.swvalidationminlength;
-	                        var userValue = viewValue || 0;
-	                        if (parseInt(viewValue.length) >= parseInt(constraintValue)) {
-	                            return true;
+	                        var length = 0;
+	                        if (viewValue && viewValue.length) {
+	                            length = viewValue.length;
 	                        }
-	                        $log.debug('invalid min length');
-	                        return false;
+	                        return validationService.validateMinLength(length || 0, attributes.swvalidationminlength);
 	                    };
 	            }
 	        };
 	    }
 	    SWValidationMinLength.Factory = function () {
-	        var directive = function ($log) { return new SWValidationMinLength($log); };
-	        directive.$inject = ['$log'];
+	        var directive = function ($log, validationService) { return new SWValidationMinLength($log, validationService); };
+	        directive.$inject = ['$log', 'validationService'];
 	        return directive;
 	    };
 	    return SWValidationMinLength;
@@ -16020,58 +17734,30 @@
 
 
 /***/ },
-/* 137 */
+/* 157 */
 /***/ function(module, exports) {
 
 	"use strict";
-	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
-	/**
-	 * True if the data type matches the given data type.
-	 */
-	/**
-	 * Validates true if the model value is a numeric value.
-	 */
 	var SWValidationDataType = (function () {
-	    function SWValidationDataType() {
+	    //@ngInject
+	    function SWValidationDataType(validationService) {
 	        return {
 	            restrict: "A",
 	            require: "^ngModel",
 	            link: function (scope, element, attributes, ngModel) {
-	                var MY_EMAIL_REGEXP = /^[a-zA-Z0-9_.]+@[a-zA-Z0-9_]+?\.[a-zA-Z]{2,3}$/;
-	                ngModel.$validators.swvalidationdatatype =
-	                    function (modelValue) {
-	                        if (angular.isString(modelValue) && attributes.swvalidationdatatype === "string") {
-	                            return true;
-	                        }
-	                        if (angular.isNumber(parseInt(modelValue)) && attributes.swvalidationdatatype === "numeric") {
-	                            return true;
-	                        }
-	                        if (angular.isArray(modelValue) && attributes.swvalidationdatatype === "array") {
-	                            return true;
-	                        }
-	                        if (angular.isDate(modelValue) && attributes.swvalidationdatatype === "date") {
-	                            return true;
-	                        }
-	                        if (angular.isObject(modelValue) && attributes.swvalidationdatatype === "object") {
-	                            return true;
-	                        }
-	                        if (attributes.swvalidationdatatype === 'email') {
-	                            return MY_EMAIL_REGEXP.test(modelValue);
-	                        }
-	                        if (angular.isUndefined(modelValue && attributes.swvalidationdatatype === "undefined")) {
-	                            return true;
-	                        }
-	                        return false;
-	                    };
+	                var isValidFunction = function (modelValue) {
+	                    return validationService.validateDataType(modelValue, attributes.swvalidationdatatype);
+	                };
+	                ngModel.$validators.swvalidationdatatype = isValidFunction;
+	                ngModel.$validators['swvalidation' + attributes.swvalidationdatatype] = isValidFunction;
 	            }
 	        };
 	    }
 	    SWValidationDataType.Factory = function () {
-	        var directive = function () {
-	            return new SWValidationDataType();
+	        var directive = function (validationService) {
+	            return new SWValidationDataType(validationService);
 	        };
-	        directive.$inject = [];
+	        directive.$inject = ['validationService'];
 	        return directive;
 	    };
 	    return SWValidationDataType;
@@ -16080,41 +17766,31 @@
 
 
 /***/ },
-/* 138 */
+/* 158 */
 /***/ function(module, exports) {
 
 	"use strict";
-	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
-	/**
-	 * SwValidationEQ: Validates true if the user value == the constraint value.
-	 * @usage <input type='text' swvalidationgte='5' /> will validate false if the user enters
-	 * value other than 5.
-	 */
 	var SWValidationEq = (function () {
-	    function SWValidationEq() {
+	    //@ngInject
+	    function SWValidationEq(validationService) {
 	        return {
 	            restrict: "A",
 	            require: "^ngModel",
 	            link: function (scope, element, attributes, ngModel) {
 	                ngModel.$validators.swvalidationeq =
 	                    function (modelValue, viewValue) {
-	                        var constraintValue = attributes.swvalidationeq;
-	                        if (modelValue === constraintValue) {
-	                            return true;
-	                        }
-	                        else {
-	                            return false;
-	                        }
+	                        return validationService.validateEq(modelValue, attributes.swvalidationeq);
 	                    }; //<--end function
 	            } //<--end link
 	        };
 	    }
 	    SWValidationEq.Factory = function () {
-	        var directive = function () {
-	            return new SWValidationEq();
+	        var directive = function (validationService) {
+	            return new SWValidationEq(validationService);
 	        };
-	        directive.$inject = [];
+	        directive.$inject = [
+	            'validationService'
+	        ];
 	        return directive;
 	    };
 	    return SWValidationEq;
@@ -16123,37 +17799,26 @@
 
 
 /***/ },
-/* 139 */
+/* 159 */
 /***/ function(module, exports) {
 
 	"use strict";
-	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
-	/**
-	 * SwValidationGTE: Validates true if the user value >= to the constraint value.
-	 * @usage <input type='text' swvalidationGte='5' /> will validate false if the user enters
-	 * value less than OR equal to 5.
-	 */
 	var SWValidationGte = (function () {
-	    function SWValidationGte() {
+	    function SWValidationGte(validationService) {
 	        return {
 	            restrict: "A",
 	            require: "^ngModel",
 	            link: function (scope, element, attributes, ngModel) {
 	                ngModel.$validators.swvalidationGte =
 	                    function (modelValue, viewValue) {
-	                        var constraintValue = attributes.swvalidationGte || 0;
-	                        if (parseInt(modelValue) >= parseInt(constraintValue)) {
-	                            return true; //Passes the validation
-	                        }
-	                        return false;
+	                        return validationService.validateGte(modelValue, attributes.swvalidationGte);
 	                    }; //<--end function
 	            } //<--end link
 	        };
 	    }
 	    SWValidationGte.Factory = function () {
-	        var directive = function () { return new SWValidationGte(); };
-	        directive.$inject = [];
+	        var directive = function (validationService) { return new SWValidationGte(validationService); };
+	        directive.$inject = ['validationService'];
 	        return directive;
 	    };
 	    return SWValidationGte;
@@ -16162,38 +17827,26 @@
 
 
 /***/ },
-/* 140 */
+/* 160 */
 /***/ function(module, exports) {
 
 	"use strict";
-	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
-	/**
-	 * SwValidationLTE: Validates true if the user value <= to the constraint value.
-	 * @usage <input type='number' swvalidationlte='5000' /> will validate false if the user enters
-	 * value greater than OR equal to 5,000.
-	 */
 	var SWValidationLte = (function () {
-	    function SWValidationLte() {
+	    function SWValidationLte(validationService) {
 	        return {
 	            restrict: "A",
 	            require: "^ngModel",
 	            link: function (scope, element, attributes, ngModel) {
 	                ngModel.$validators.swvalidationlte =
 	                    function (modelValue, viewValue) {
-	                        var constraintValue = attributes.swvalidationlte;
-	                        var userValue = viewValue || 0;
-	                        if (parseInt(viewValue) <= parseInt(constraintValue)) {
-	                            return true;
-	                        }
-	                        return false;
+	                        return validationService.validateLte(modelValue, attributes.swvalidationlte);
 	                    };
 	            }
 	        };
 	    }
 	    SWValidationLte.Factory = function () {
-	        var directive = function () { return new SWValidationLte(); };
-	        directive.$inject = [];
+	        var directive = function (validationService) { return new SWValidationLte(validationService); };
+	        directive.$inject = ['validationService'];
 	        return directive;
 	    };
 	    return SWValidationLte;
@@ -16202,36 +17855,30 @@
 
 
 /***/ },
-/* 141 */
+/* 161 */
 /***/ function(module, exports) {
 
 	"use strict";
-	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
-	/**
-	 * Returns true if the user value is greater than the max length.
-	 */
 	var SWValidationMaxLength = (function () {
-	    function SWValidationMaxLength() {
+	    function SWValidationMaxLength(validationService) {
 	        return {
 	            restrict: "A",
 	            require: "^ngModel",
 	            link: function (scope, element, attributes, ngModel) {
 	                ngModel.$validators.swvalidationmaxlength =
 	                    function (modelValue, viewValue) {
-	                        var constraintValue = attributes.swvalidationmaxlength;
-	                        var userValue = viewValue || 0;
-	                        if (parseInt(viewValue.length) >= parseInt(constraintValue)) {
-	                            return true;
+	                        var length = 0;
+	                        if (viewValue && viewValue.length) {
+	                            length = viewValue.length;
 	                        }
-	                        return false;
+	                        return validationService.validateMaxLength(length || 0, attributes.swvalidationmaxlength);
 	                    };
 	            }
 	        };
 	    }
 	    SWValidationMaxLength.Factory = function () {
-	        var directive = function () { return new SWValidationMaxLength(); };
-	        directive.$inject = [];
+	        var directive = function (validationService) { return new SWValidationMaxLength(validationService); };
+	        directive.$inject = ['validationService'];
 	        return directive;
 	    };
 	    return SWValidationMaxLength;
@@ -16240,36 +17887,26 @@
 
 
 /***/ },
-/* 142 */
+/* 162 */
 /***/ function(module, exports) {
 
 	"use strict";
-	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
-	/**
-	 * Returns true if the user value is greater than the min value.
-	 */
 	var SWValidationMaxValue = (function () {
-	    function SWValidationMaxValue() {
+	    function SWValidationMaxValue(validationService) {
 	        return {
 	            restrict: "A",
 	            require: "^ngModel",
 	            link: function (scope, element, attributes, ngModel) {
 	                ngModel.$validators.swvalidationmaxvalue =
 	                    function (modelValue, viewValue) {
-	                        var constraintValue = attributes.swvalidationmaxvalue;
-	                        var userValue = viewValue || 0;
-	                        if (parseInt(viewValue) <= parseInt(constraintValue)) {
-	                            return true;
-	                        }
-	                        return false;
+	                        validationService.validateMaxValue(viewValue, attributes.swvalidationmaxvalue);
 	                    };
 	            }
 	        };
 	    }
 	    SWValidationMaxValue.Factory = function () {
-	        var directive = function () { return new SWValidationMaxValue(); };
-	        directive.$inject = [];
+	        var directive = function (validationService) { return new SWValidationMaxValue(validationService); };
+	        directive.$inject = ['validationService'];
 	        return directive;
 	    };
 	    return SWValidationMaxValue;
@@ -16278,36 +17915,26 @@
 
 
 /***/ },
-/* 143 */
+/* 163 */
 /***/ function(module, exports) {
 
 	"use strict";
-	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
-	/**
-	 * Returns true if the user value is greater than the minimum value.
-	 */
 	var SWValidationMinValue = (function () {
-	    function SWValidationMinValue() {
+	    function SWValidationMinValue(validationService) {
 	        return {
 	            restrict: "A",
 	            require: "^ngModel",
 	            link: function (scope, element, attributes, ngModel) {
 	                ngModel.$validators.swvalidationminvalue =
 	                    function (modelValue, viewValue) {
-	                        var constraintValue = attributes.swvalidationminvalue;
-	                        var userValue = viewValue || 0;
-	                        if (parseInt(modelValue) >= parseInt(constraintValue)) {
-	                            return true;
-	                        }
-	                        return false;
+	                        return validationService.validateMinValue(viewValue, attributes.swvalidationminvalue);
 	                    };
 	            }
 	        };
 	    }
 	    SWValidationMinValue.Factory = function () {
-	        var directive = function () { return new SWValidationMinValue(); };
-	        directive.$inject = [];
+	        var directive = function (validationService) { return new SWValidationMinValue(validationService); };
+	        directive.$inject = ['validationService'];
 	        return directive;
 	    };
 	    return SWValidationMinValue;
@@ -16316,34 +17943,26 @@
 
 
 /***/ },
-/* 144 */
+/* 164 */
 /***/ function(module, exports) {
 
 	"use strict";
-	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
-	/**
-	 *  Validates true if the user value != the property value.
-	 */
 	var SWValidationNeq = (function () {
-	    function SWValidationNeq() {
+	    function SWValidationNeq(validationService) {
 	        return {
 	            restrict: "A",
 	            require: "^ngModel",
 	            link: function (scope, element, attributes, ngModel) {
 	                ngModel.$validators.swvalidationneq =
 	                    function (modelValue) {
-	                        if (modelValue != attributes.swvalidationneq) {
-	                            return true;
-	                        }
-	                        return false;
+	                        return validationService.validateNeq(modelValue, attributes.swvalidationneq);
 	                    };
 	            }
 	        };
 	    }
 	    SWValidationNeq.Factory = function () {
-	        var directive = function () { return new SWValidationNeq(); };
-	        directive.$inject = [];
+	        var directive = function (validationService) { return new SWValidationNeq(validationService); };
+	        directive.$inject = ['validationService'];
 	        return directive;
 	    };
 	    return SWValidationNeq;
@@ -16352,38 +17971,26 @@
 
 
 /***/ },
-/* 145 */
+/* 165 */
 /***/ function(module, exports) {
 
 	"use strict";
-	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
-	/**
-	 * Validates true if the model value (user value) is a numeric value.
-	 * @event This event fires on every change to an input.
-	 */
 	var SWValidationNumeric = (function () {
-	    function SWValidationNumeric() {
+	    function SWValidationNumeric(validationService) {
 	        return {
 	            restrict: "A",
 	            require: "^ngModel",
 	            link: function (scope, element, attributes, ngModel) {
 	                ngModel.$validators.swvalidationnumeric =
 	                    function (modelValue, viewValue) {
-	                        //Returns true if this is not a number.
-	                        if (!isNaN(viewValue)) {
-	                            return true;
-	                        }
-	                        else {
-	                            return false;
-	                        }
+	                        return validationService.validateNumeric(viewValue);
 	                    };
 	            }
 	        };
 	    }
 	    SWValidationNumeric.Factory = function () {
-	        var directive = function () { return new SWValidationNumeric(); };
-	        directive.$inject = [];
+	        var directive = function (validationService) { return new SWValidationNumeric(validationService); };
+	        directive.$inject = ['validationService'];
 	        return directive;
 	    };
 	    return SWValidationNumeric;
@@ -16392,17 +17999,12 @@
 
 
 /***/ },
-/* 146 */
+/* 166 */
 /***/ function(module, exports) {
 
 	"use strict";
-	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
-	/**
-	 * Validates true if the model value matches a regex string.
-	 */
 	var SWValidationRegex = (function () {
-	    function SWValidationRegex() {
+	    function SWValidationRegex(validationService) {
 	        return {
 	            restrict: "A",
 	            require: "^ngModel",
@@ -16410,21 +18012,14 @@
 	                ngModel.$validators.swvalidationregex =
 	                    function (modelValue) {
 	                        //Returns true if this user value (model value) does match the pattern
-	                        var pattern = attributes.swvalidationregex;
-	                        var regex = new RegExp(pattern);
-	                        if (regex.test(modelValue)) {
-	                            return true;
-	                        }
-	                        else {
-	                            return false;
-	                        }
+	                        return validationService.validateRegex(modelValue, attributes.swvalidationregex);
 	                    };
 	            }
 	        };
 	    }
 	    SWValidationRegex.Factory = function () {
-	        var directive = function () { return new SWValidationRegex(); };
-	        directive.$inject = [];
+	        var directive = function (validationService) { return new SWValidationRegex(validationService); };
+	        directive.$inject = ['validationService'];
 	        return directive;
 	    };
 	    return SWValidationRegex;
@@ -16433,17 +18028,13 @@
 
 
 /***/ },
-/* 147 */
+/* 167 */
 /***/ function(module, exports) {
 
 	"use strict";
-	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
-	/**
-	 * Returns true if the uservalue is empty and false otherwise
-	 */
 	var SWValidationRequired = (function () {
-	    function SWValidationRequired() {
+	    //@ngInject
+	    function SWValidationRequired(validationService) {
 	        return {
 	            restrict: "A",
 	            require: "^ngModel",
@@ -16451,17 +18042,14 @@
 	                ngModel.$validators.swvalidationrequired =
 	                    function (modelValue, viewValue) {
 	                        var value = modelValue || viewValue;
-	                        if (value) {
-	                            return true;
-	                        }
-	                        return false;
+	                        return validationService.validateRequired(value);
 	                    };
 	            }
 	        };
 	    }
 	    SWValidationRequired.Factory = function () {
-	        var directive = function () { return new SWValidationRequired(); };
-	        directive.$inject = [];
+	        var directive = function (validationService) { return new SWValidationRequired(validationService); };
+	        directive.$inject = ['validationService'];
 	        return directive;
 	    };
 	    return SWValidationRequired;
@@ -16470,51 +18058,30 @@
 
 
 /***/ },
-/* 148 */
+/* 168 */
 /***/ function(module, exports) {
 
 	"use strict";
-	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
-	/**
-	 * Validates true if the given object is 'unique' and false otherwise.
-	 */
 	var SWValidationUnique = (function () {
-	    function SWValidationUnique($http, $q, $hibachi, $log) {
+	    //@ngInject
+	    function SWValidationUnique($http, $q, $hibachi, $log, validationService) {
 	        return {
 	            restrict: "A",
-	            require: "ngModel",
-	            link: function (scope, element, attributes, ngModel) {
+	            require: ["ngModel", "^?swFormField"],
+	            link: function (scope, element, attributes, controllers) {
+	                var ngModel = controllers[0];
 	                ngModel.$asyncValidators.swvalidationunique = function (modelValue, viewValue) {
-	                    $log.debug('asyc');
-	                    var deferred = $q.defer(), currentValue = modelValue || viewValue, key = scope.propertyDisplay.object.metaData.className, property = scope.propertyDisplay.property;
-	                    //First time the asyncValidators function is loaded the
-	                    //key won't be set  so ensure that we have
-	                    //key and propertyName before checking with the server
-	                    if (key && property) {
-	                        $hibachi.checkUniqueValue(key, property, currentValue)
-	                            .then(function (unique) {
-	                            $log.debug('uniquetest');
-	                            $log.debug(unique);
-	                            if (unique) {
-	                                deferred.resolve(); //It's unique
-	                            }
-	                            else {
-	                                deferred.reject(); //Add unique to $errors
-	                            }
-	                        });
-	                    }
-	                    else {
-	                        deferred.resolve(); //Ensure promise is resolved if we hit this
-	                    }
-	                    return deferred.promise;
+	                    var currentValue = modelValue || viewValue;
+	                    var objectName = controllers[1].object.metaData.className;
+	                    var property = controllers[1].property;
+	                    return validationService.validateUnique(currentValue, objectName, property);
 	                };
 	            }
 	        };
 	    }
 	    SWValidationUnique.Factory = function () {
-	        var directive = function ($http, $q, $hibachi, $log) { return new SWValidationUnique($http, $q, $hibachi, $log); };
-	        directive.$inject = ['$http', '$q', '$hibachi', '$log'];
+	        var directive = function ($http, $q, $hibachi, $log, validationService) { return new SWValidationUnique($http, $q, $hibachi, $log, validationService); };
+	        directive.$inject = ['$http', '$q', '$hibachi', '$log', 'validationService'];
 	        return directive;
 	    };
 	    return SWValidationUnique;
@@ -16523,51 +18090,29 @@
 
 
 /***/ },
-/* 149 */
+/* 169 */
 /***/ function(module, exports) {
 
 	"use strict";
-	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
-	/**
-	 * Validates true if the given object is 'unique' and false otherwise.
-	 */
 	var SWValidationUniqueOrNull = (function () {
-	    function SWValidationUniqueOrNull($http, $q, $hibachi, $log) {
+	    //@ngInject
+	    function SWValidationUniqueOrNull($http, $q, $hibachi, $log, validationService) {
 	        return {
 	            restrict: "A",
 	            require: "ngModel",
 	            link: function (scope, element, attributes, ngModel) {
 	                ngModel.$asyncValidators.swvalidationuniqueornull = function (modelValue, viewValue) {
-	                    $log.debug('async');
-	                    var deferred = $q.defer(), currentValue = modelValue || viewValue, key = scope.propertyDisplay.object.metaData.className, property = scope.propertyDisplay.property;
-	                    //First time the asyncValidators function is loaded the
-	                    //key won't be set  so ensure that we have
-	                    //key and propertyName before checking with the server
-	                    if (key && property) {
-	                        $hibachi.checkUniqueOrNullValue(key, property, currentValue)
-	                            .then(function (unique) {
-	                            $log.debug('uniquetest');
-	                            $log.debug(unique);
-	                            if (unique) {
-	                                deferred.resolve(); //It's unique
-	                            }
-	                            else {
-	                                deferred.reject(); //Add unique to $errors
-	                            }
-	                        });
-	                    }
-	                    else {
-	                        deferred.resolve(); //Ensure promise is resolved if we hit this
-	                    }
-	                    return deferred.promise;
+	                    var currentValue = modelValue || viewValue;
+	                    var objectName = scope.propertyDisplay.object.metaData.className;
+	                    var property = scope.propertyDisplay.property;
+	                    return validationService.validateUniqueOrNull(currentValue, objectName, property);
 	                };
 	            }
 	        };
 	    }
 	    SWValidationUniqueOrNull.Factory = function () {
-	        var directive = function ($http, $q, $hibachi, $log) { return new SWValidationUniqueOrNull($http, $q, $hibachi, $log); };
-	        directive.$inject = ['$http', '$q', '$hibachi', '$log'];
+	        var directive = function ($http, $q, $hibachi, $log, validationService) { return new SWValidationUniqueOrNull($http, $q, $hibachi, $log, validationService); };
+	        directive.$inject = ['$http', '$q', '$hibachi', '$log', 'validationService'];
 	        return directive;
 	    };
 	    return SWValidationUniqueOrNull;
@@ -16576,28 +18121,177 @@
 
 
 /***/ },
-/* 150 */
+/* 170 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	/*services return promises which can be handled uniquely based on success or failure by the controller*/
+	"use strict";
+	var ValidationService = (function () {
+	    //@ngInject
+	    function ValidationService($hibachi, $q) {
+	        var _this = this;
+	        this.$hibachi = $hibachi;
+	        this.$q = $q;
+	        this.MY_EMAIL_REGEXP = /^[a-zA-Z0-9_.]+@[a-zA-Z0-9_]+?\.[a-zA-Z]{2,3}$/;
+	        this.validateUnique = function (value, objectName, property) {
+	            var deferred = _this.$q.defer();
+	            //First time the asyncValidators function is loaded the
+	            //key won't be set  so ensure that we have
+	            //key and propertyName before checking with the server
+	            if (objectName && property) {
+	                _this.$hibachi.checkUniqueValue(objectName, property, value)
+	                    .then(function (unique) {
+	                    if (unique) {
+	                        deferred.resolve(); //It's unique
+	                    }
+	                    else {
+	                        deferred.reject(); //Add unique to $errors
+	                    }
+	                });
+	            }
+	            else {
+	                deferred.resolve(); //Ensure promise is resolved if we hit this
+	            }
+	            return deferred.promise;
+	        };
+	        this.validateUniqueOrNull = function (value, objectName, property) {
+	            var deferred = _this.$q.defer();
+	            //First time the asyncValidators function is loaded the
+	            //key won't be set  so ensure that we have
+	            //key and propertyName before checking with the server
+	            if (objectName && property) {
+	                _this.$hibachi.checkUniqueOrNullValue(objectName, property, value)
+	                    .then(function (unique) {
+	                    if (unique) {
+	                        deferred.resolve(); //It's unique
+	                    }
+	                    else {
+	                        deferred.reject(); //Add unique to $errors
+	                    }
+	                });
+	            }
+	            else {
+	                deferred.resolve(); //Ensure promise is resolved if we hit this
+	            }
+	            return deferred.promise;
+	        };
+	        this.validateEmail = function (value) {
+	            return _this.validateDataType(value, 'email');
+	        };
+	        this.validateDataType = function (value, type) {
+	            if (angular.isString(value) && type === "string") {
+	                return true;
+	            }
+	            if (angular.isNumber(parseInt(value)) && type === "numeric") {
+	                return true;
+	            }
+	            if (angular.isArray(value) && type === "array") {
+	                return true;
+	            }
+	            if (angular.isDate(value) && type === "date") {
+	                return true;
+	            }
+	            if (angular.isObject(value) && type === "object") {
+	                return true;
+	            }
+	            if (type === 'email') {
+	                return _this.MY_EMAIL_REGEXP.test(value);
+	            }
+	            if (angular.isUndefined(value && type === "undefined")) {
+	                return true;
+	            }
+	            return false;
+	        };
+	        this.validateEq = function (value, expectedValue) {
+	            return (value === expectedValue);
+	        };
+	        this.validateNeq = function (value, expectedValue) {
+	            return (value !== expectedValue);
+	        };
+	        this.validateGte = function (value, comparisonValue) {
+	            if (comparisonValue === void 0) { comparisonValue = 0; }
+	            if (angular.isString(value)) {
+	                value = parseInt(value);
+	            }
+	            if (angular.isString(comparisonValue)) {
+	                comparisonValue = parseInt(comparisonValue);
+	            }
+	            return (value >= comparisonValue);
+	        };
+	        this.validateLte = function (value, comparisonValue) {
+	            if (comparisonValue === void 0) { comparisonValue = 0; }
+	            if (angular.isString(value)) {
+	                value = parseInt(value);
+	            }
+	            if (angular.isString(comparisonValue)) {
+	                comparisonValue = parseInt(comparisonValue);
+	            }
+	            return (value <= comparisonValue);
+	        };
+	        this.validateMaxLength = function (value, comparisonValue) {
+	            if (comparisonValue === void 0) { comparisonValue = 0; }
+	            return _this.validateLte(value, comparisonValue);
+	        };
+	        this.validateMaxValue = function (value, comparisonValue) {
+	            if (comparisonValue === void 0) { comparisonValue = 0; }
+	            return _this.validateLte(value, comparisonValue);
+	        };
+	        this.validateMinLength = function (value, comparisonValue) {
+	            if (comparisonValue === void 0) { comparisonValue = 0; }
+	            return _this.validateGte(value, comparisonValue);
+	        };
+	        this.validateMinValue = function (value, comparisonValue) {
+	            if (comparisonValue === void 0) { comparisonValue = 0; }
+	            return _this.validateGte(value, comparisonValue);
+	        };
+	        this.validateNumeric = function (value) {
+	            return !isNaN(value);
+	        };
+	        this.validateRegex = function (value, pattern) {
+	            var regex = new RegExp(pattern);
+	            return regex.test(value);
+	        };
+	        this.validateRequired = function (value) {
+	            if (value) {
+	                return true;
+	            }
+	            else {
+	                return false;
+	            }
+	        };
+	        this.$hibachi = $hibachi;
+	        this.$q = $q;
+	    }
+	    return ValidationService;
+	}());
+	exports.ValidationService = ValidationService;
+
+
+/***/ },
+/* 171 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	/// <reference path='../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
 	//services
-	var workflowconditionservice_1 = __webpack_require__(151);
-	var scheduleservice_1 = __webpack_require__(152);
+	var workflowconditionservice_1 = __webpack_require__(172);
+	var scheduleservice_1 = __webpack_require__(173);
 	//directives
-	var swadmincreatesuperuser_1 = __webpack_require__(153);
-	var swworkflowbasic_1 = __webpack_require__(154);
-	var swworkflowcondition_1 = __webpack_require__(155);
-	var swworkflowconditiongroupitem_1 = __webpack_require__(156);
-	var swworkflowconditiongroups_1 = __webpack_require__(157);
-	var swworkflowtask_1 = __webpack_require__(158);
-	var swworkflowtaskactions_1 = __webpack_require__(159);
-	var swworkflowtasks_1 = __webpack_require__(160);
-	var swworkflowtrigger_1 = __webpack_require__(161);
-	var swworkflowtriggers_1 = __webpack_require__(162);
-	var swworkflowtriggerhistory_1 = __webpack_require__(163);
-	var swschedulepreview_1 = __webpack_require__(164);
+	var swadmincreatesuperuser_1 = __webpack_require__(174);
+	var swworkflowbasic_1 = __webpack_require__(175);
+	var swworkflowcondition_1 = __webpack_require__(176);
+	var swworkflowconditiongroupitem_1 = __webpack_require__(177);
+	var swworkflowconditiongroups_1 = __webpack_require__(178);
+	var swworkflowtask_1 = __webpack_require__(179);
+	var swworkflowtaskactions_1 = __webpack_require__(180);
+	var swworkflowtasks_1 = __webpack_require__(181);
+	var swworkflowtrigger_1 = __webpack_require__(182);
+	var swworkflowtriggers_1 = __webpack_require__(183);
+	var swworkflowtriggerhistory_1 = __webpack_require__(184);
+	var swschedulepreview_1 = __webpack_require__(185);
 	//filters
 	var workflowmodule = angular.module('hibachi.workflow', ['hibachi.collection']).config(function () {
 	})
@@ -16620,7 +18314,7 @@
 
 
 /***/ },
-/* 151 */
+/* 172 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -16676,7 +18370,7 @@
 
 
 /***/ },
-/* 152 */
+/* 173 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -16768,7 +18462,7 @@
 
 
 /***/ },
-/* 153 */
+/* 174 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -16803,7 +18497,7 @@
 
 
 /***/ },
-/* 154 */
+/* 175 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -16818,8 +18512,6 @@
 	            },
 	            templateUrl: hibachiPathBuilder.buildPartialsPath(workflowPartialsPath) + "workflowbasic.html",
 	            link: function (scope, element, attrs) {
-	                console.log('workflowtest');
-	                console.log(scope.workflow);
 	            }
 	        };
 	    }
@@ -16843,7 +18535,7 @@
 
 
 /***/ },
-/* 155 */
+/* 176 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -16966,7 +18658,7 @@
 
 
 /***/ },
-/* 156 */
+/* 177 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -17006,7 +18698,7 @@
 
 
 /***/ },
-/* 157 */
+/* 178 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -17056,7 +18748,7 @@
 
 
 /***/ },
-/* 158 */
+/* 179 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -17109,7 +18801,7 @@
 
 
 /***/ },
-/* 159 */
+/* 180 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -17382,7 +19074,7 @@
 
 
 /***/ },
-/* 160 */
+/* 181 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -17480,9 +19172,6 @@
 	                   * --------------------------------------------------------------------------------------------------------
 	                   */
 	                scope.saveWorkflowTask = function (task, context) {
-	                    console.log("Context: " + context);
-	                    console.log("saving task");
-	                    console.log(scope.workflowTasks.selectedTask);
 	                    //scope.workflowTasks.selectedTask.$$setWorkflow(scope.workflow);
 	                    scope.workflowTasks.selectedTask.$$save().then(function (res) {
 	                        scope.done = true;
@@ -17578,14 +19267,14 @@
 
 
 /***/ },
-/* 161 */
+/* 182 */
 /***/ function(module, exports) {
 
 	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWWorkflowTrigger = (function () {
-	    function SWWorkflowTrigger($hibachi, alertService, metadataService, workflowPartialsPath, hibachiPathBuilder, $http) {
+	    function SWWorkflowTrigger($http, $hibachi, alertService, metadataService, workflowPartialsPath, hibachiPathBuilder, utilityService) {
 	        return {
 	            restrict: 'A',
 	            replace: true,
@@ -17595,14 +19284,11 @@
 	            },
 	            templateUrl: hibachiPathBuilder.buildPartialsPath(workflowPartialsPath) + "workflowtrigger.html",
 	            link: function (scope, element, attrs) {
-	                console.log('workflow trigger init');
 	                /**
 	                 * Selects the current workflow trigger.
 	                 */
 	                scope.selectWorkflowTrigger = function (workflowTrigger) {
-	                    console.log('SelectWorkflowTriggers');
 	                    scope.done = false;
-	                    console.log(workflowTrigger);
 	                    scope.finished = false;
 	                    scope.workflowTriggers.selectedTrigger = undefined;
 	                    var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(scope.workflowTrigger.data.workflow.data.workflowObject);
@@ -17631,7 +19317,7 @@
 	                    }
 	                    scope.executingTrigger = true;
 	                    var appConfig = $hibachi.getConfig();
-	                    var urlString = appConfig.baseURL + '/index.cfm/?' + appConfig.action + '=admin:workflow.executeScheduleWorkflowTrigger&workflowTriggerID=' + workflowTrigger.data.workflowTriggerID;
+	                    var urlString = appConfig.baseURL + '/index.cfm/?' + appConfig.action + '=api:workflow.executeScheduleWorkflowTrigger&workflowTriggerID=' + workflowTrigger.data.workflowTriggerID + '&x=' + utilityService.createID();
 	                    $http.get(urlString).finally(function () {
 	                        scope.executingTrigger = false;
 	                        var alert = alertService.newAlert();
@@ -17645,8 +19331,6 @@
 	                 * Overrides the delete function for the confirmation modal. Delegates to the normal delete method.
 	                 */
 	                scope.deleteEntity = function (entity) {
-	                    console.log("Delete Called");
-	                    console.log(entity);
 	                    scope.deleteTrigger(entity);
 	                };
 	                /**
@@ -17655,7 +19339,6 @@
 	                scope.deleteTrigger = function (workflowTrigger) {
 	                    var deleteTriggerPromise = $hibachi.saveEntity('WorkflowTrigger', workflowTrigger.data.workflowTriggerID, {}, 'Delete');
 	                    deleteTriggerPromise.then(function (value) {
-	                        console.log('deleteTrigger');
 	                        scope.workflowTriggers.splice(workflowTrigger.$$index, 1);
 	                    });
 	                };
@@ -17663,16 +19346,17 @@
 	        };
 	    }
 	    SWWorkflowTrigger.Factory = function () {
-	        var directive = function ($hibachi, alertService, metadataService, workflowPartialsPath, hibachiPathBuilder, $http) {
-	            return new SWWorkflowTrigger($hibachi, alertService, metadataService, workflowPartialsPath, hibachiPathBuilder, $http);
+	        var directive = function ($http, $hibachi, alertService, metadataService, workflowPartialsPath, hibachiPathBuilder, utilityService) {
+	            return new SWWorkflowTrigger($http, $hibachi, alertService, metadataService, workflowPartialsPath, hibachiPathBuilder, utilityService);
 	        };
 	        directive.$inject = [
+	            '$http',
 	            '$hibachi',
 	            'alertService',
 	            'metadataService',
 	            'workflowPartialsPath',
 	            'hibachiPathBuilder',
-	            '$http'
+	            'utilityService'
 	        ];
 	        return directive;
 	    };
@@ -17682,7 +19366,7 @@
 
 
 /***/ },
-/* 162 */
+/* 183 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -17700,7 +19384,6 @@
 	                scope.schedule = {};
 	                scope.$watch('workflowTriggers.selectedTrigger', function (newValue, oldValue) {
 	                    if (newValue !== undefined && newValue !== oldValue) {
-	                        console.log('Ooh watch me, watch me', newValue);
 	                        if (newValue.data.triggerType == 'Schedule') {
 	                            if (angular.isDefined(newValue.data.schedule)) {
 	                                scope.schedule.selectedName = newValue.data.schedule.data.scheduleName;
@@ -17727,7 +19410,6 @@
 	                scope.scheduleCollectionConfig.setDisplayProperties("scheduleID,scheduleName,daysOfMonthToRun,daysOfWeekToRun,recuringType,frequencyStartTime,frequencyEndTime,frequencyInterval");
 	                scope.daysOfweek = [];
 	                scope.daysOfMonth = [];
-	                console.log('Workflow triggers init');
 	                scope.$id = 'swWorkflowTriggers';
 	                /**
 	                 * Retrieves the workflow triggers.
@@ -17749,16 +19431,12 @@
 	                        var workflowTriggersPromise = scope.workflow.$$getWorkflowTriggers();
 	                        workflowTriggersPromise.then(function () {
 	                            scope.workflowTriggers = scope.workflow.data.workflowTriggers;
-	                            console.log('workflowtriggers');
-	                            console.log(scope.workflowTriggers);
 	                            /* resets the workflow trigger */
 	                            if (angular.isUndefined(scope.workflow.data.workflowTriggers)) {
 	                                scope.workflow.data.workflowTriggers = [];
 	                                scope.workflowTriggers = scope.workflow.data.workflowTriggers;
 	                            }
 	                            angular.forEach(scope.workflowTriggers, function (workflowTrigger, key) {
-	                                console.log('trigger');
-	                                console.log(workflowTrigger);
 	                                if (workflowTrigger.data.triggerType === 'Schedule') {
 	                                    workflowTrigger.$$getSchedule();
 	                                    workflowTrigger.$$getScheduleCollection();
@@ -17789,9 +19467,7 @@
 	                    if (!scope.eventOptions.length) {
 	                        var eventOptionsPromise = $hibachi.getEventOptions(objectName);
 	                        eventOptionsPromise.then(function (value) {
-	                            console.log('getEventOptions');
 	                            scope.eventOptions = value.data;
-	                            console.log(scope.eventOptions.name);
 	                        });
 	                    }
 	                    scope.showEventOptions = !scope.showEventOptions;
@@ -17802,7 +19478,6 @@
 	                scope.saveWorkflowTrigger = function (context) {
 	                    if (!scope.workflowTriggers.selectedTrigger.$$isPersisted()) {
 	                        scope.workflowTriggers.selectedTrigger.$$setWorkflow(scope.workflow);
-	                        console.warn(scope.workflow);
 	                    }
 	                    var saveWorkflowTriggerPromise = scope.workflowTriggers.selectedTrigger.$$save();
 	                    saveWorkflowTriggerPromise.then(function () {
@@ -17814,7 +19489,6 @@
 	                        scope.schedulePreview = {};
 	                        //Clear the form by adding a new task action if 'save and add another' otherwise, set save and set finished
 	                        if (context == 'add') {
-	                            console.log("Save and New");
 	                            scope.addWorkflowTrigger();
 	                        }
 	                        else if (context == "finish") {
@@ -17833,8 +19507,6 @@
 	                 * Changes the selected trigger value.
 	                 */
 	                scope.selectEvent = function (eventOption) {
-	                    console.log("SelectEvent");
-	                    console.log(eventOption);
 	                    //Needs to clear old and set new.
 	                    scope.workflowTriggers.selectedTrigger.data.triggerEventTitle = eventOption.name;
 	                    scope.workflowTriggers.selectedTrigger.data.triggerEvent = eventOption.value;
@@ -17846,14 +19518,11 @@
 	                    }
 	                    scope.searchEvent.name = eventOption.name;
 	                    scope.showEventOptions = false;
-	                    console.log(eventOption);
-	                    console.log(scope.workflowTriggers);
 	                };
 	                /**
 	                 * Selects a new collection.
 	                 */
 	                scope.selectCollection = function (collection) {
-	                    console.log('selectCollection');
 	                    scope.workflowTriggers.selectedTrigger.data.scheduleCollection = collection;
 	                    scope.showCollections = false;
 	                };
@@ -17867,15 +19536,20 @@
 	                    scope.workflowTriggers.splice(workflowTrigger.$$index, 1);
 	                };
 	                scope.setAsEvent = function (workflowTrigger) {
+	                    if (!workflowTrigger.$$isPersisted()) {
+	                        workflowTrigger.data.saveTriggerHistoryFlag = 0;
+	                    }
 	                    //add event,  clear schedule
 	                };
 	                scope.setAsSchedule = function (workflowTrigger) {
+	                    if (!workflowTrigger.$$isPersisted()) {
+	                        workflowTrigger.data.saveTriggerHistoryFlag = 1;
+	                    }
 	                };
 	                /**
 	                 * Adds a workflow trigger.
 	                 */
 	                scope.addWorkflowTrigger = function () {
-	                    console.log('addWorkflowTrigger', scope.schedule);
 	                    var newWorkflowTrigger = $hibachi.newWorkflowTrigger();
 	                    scope.workflowTriggers.selectedTrigger = newWorkflowTrigger;
 	                };
@@ -17896,7 +19570,6 @@
 	                        formService.resetForm(scope.scheduleEntity.forms['scheduleForm']);
 	                        scope.createSchedule = false;
 	                    }, function () {
-	                        console.log('ERROR');
 	                    });
 	                };
 	                scope.selectCollection = function (item) {
@@ -17968,7 +19641,7 @@
 
 
 /***/ },
-/* 163 */
+/* 184 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -18008,7 +19681,7 @@
 
 
 /***/ },
-/* 164 */
+/* 185 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -18046,7 +19719,7 @@
 
 
 /***/ },
-/* 165 */
+/* 186 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -18156,13 +19829,13 @@
 
 
 /***/ },
-/* 166 */
+/* 187 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/hibachiTypescript.d.ts" />
 	"use strict";
-	var alert_module_1 = __webpack_require__(76);
+	var alert_module_1 = __webpack_require__(99);
 	var loggermodule = angular.module('logger', [alert_module_1.alertmodule.name])
 	    .run([function () {
 	    }]);

@@ -25,6 +25,7 @@ class SWFormController {
     public context:string;
     public formCtrl;
     public formData = {};
+    public inputAttributes:string;
     /**
      * This controller handles most of the logic for the swFormDirective when more complicated self inspection is needed.
      */
@@ -37,10 +38,12 @@ class SWFormController {
         public $timeout,
         public observerService,
         public $rootScope,
-        public entityService
+        public entityService,
+        public utilityService
     ){
         /** only use if the developer has specified these features with isProcessForm */
         this.$hibachi = $hibachi;
+        this.utilityService = utilityService;
         if(angular.isUndefined(this.isDirty)){
             this.isDirty = false;
         }
@@ -60,7 +63,7 @@ class SWFormController {
             }
             //convert the string to an object
             this.$timeout( ()=> {
-                console.log(this.object);
+
                 this.object = this.$hibachi['new'+this.object]();
             });
         }else{
@@ -142,16 +145,19 @@ class SWFormController {
         if (!action) {throw "Action not defined on form";}
 
         this.formData = this.formData || {};
-        //console.log("Calling Final Submit");
+        //
         let request = this.$rootScope.hibachiScope.doAction(action, this.formData)
         .then( (result) =>{
-            if (result.errors) {
-                this.parseErrors(result.errors);
-                    //trigger an onError event
-                this.observerService.notify("onError", {"caller" : this.context, "events": this.events.events||""});
-            } else {
-                //trigger a on success event
-                this.observerService.notify("onSuccess", {"caller":this.context, "events":this.events.events||""});
+            if(this.events && this.events.events){
+                if (result.errors) {
+                    this.parseErrors(result.errors);
+                        //trigger an onError event
+
+                    this.observerService.notify("onError", {"caller" : this.context, "events": this.events.events||""});
+                } else {
+                    //trigger a on success event
+                    this.observerService.notify("onSuccess", {"caller":this.context, "events":this.events.events||""});
+                }
             }
         }, angular.noop);
 
@@ -254,19 +260,26 @@ class SWFormController {
     /** returns all the data from the form by iterating the form elements */
     public getFormData = ()=>
     {
-        console.log('test');
-        console.log(this.object)
-        console.log(this);
+        var iterable = this.formCtrl;
 
-        var iterable = this.object;
-        if(this.object.data){
-            iterable = this.object.data;
-        }
 
         angular.forEach(iterable, (val, key) => {
-            /** Check for form elements that have a name that doesn't start with $ */
-            if (angular.isString(val)) {
-                this.formData[key] = val;
+
+            if(typeof val === 'object' && val.hasOwnProperty('$modelValue')){
+                if(this.object.forms[this.name][key].$modelValue){
+                    val = this.object.forms[this.name][key].$modelValue;
+                }else if(this.object.forms[this.name][key].$viewValue){
+                    val = this.object.forms[this.name][key].$viewValue;
+                }
+                /** Check for form elements that have a name that doesn't start with $ */
+                if (angular.isString(val)) {
+                    this.formData[key] = val;
+                }
+                if(val.$modelValue){
+                    this.formData[key] = val.$modelValue;
+                }else if(val.$viewValue){
+                    this.formData[key] = val.$viewValue;
+                }
             }
         });
 
@@ -299,8 +312,9 @@ class SWForm implements ng.IDirective {
             onSuccess: "@?",
             onError: "@?",
             hideUntil: "@?",
-            isProcessForm: "@?",
-            isDirty:"=?"
+            isDirty:"=?",
+            inputAttributes:"@?",
+            eventHandlers:"@?"
     };
 
     /**
@@ -327,9 +341,10 @@ class SWForm implements ng.IDirective {
     }
     // @ngInject
     constructor( public coreFormPartialsPath, public hibachiPathBuilder) {
-        this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.coreFormPartialsPath) + "formPartial.html";
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.coreFormPartialsPath) + "form.html";
     }
 }
 export{
-    SWForm
+    SWForm,
+    SWFormController
 }

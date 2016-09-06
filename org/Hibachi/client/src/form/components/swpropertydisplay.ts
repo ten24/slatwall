@@ -1,5 +1,7 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+import {MetaDataService} from "../../core/services/metadataservice";
+
 class SWPropertyDisplayController {
     private applyFilter;
     private setupFormController;
@@ -27,7 +29,7 @@ class SWPropertyDisplayController {
     public rawFileTarget; 
     public showLabel; 
     public form;
-    public saved:boolean=false; 
+	public saved:boolean=false; 
     public onChangeEvent:string; 
     public hasOnChangeCallback:boolean; 
     public onChangeCallback; 
@@ -44,13 +46,56 @@ class SWPropertyDisplayController {
     public showRevert:boolean; 
     public showSave:boolean; 
 
+    //swfproperty display properties
+    public type;
+	public class;
+	public fieldAttributes;
+	public valueObject;
+	public label;
+	public name;
+	public options;
+	public valueObjectProperty;
+    public valueOptions;
+	public processObject;
+	public optionValues:Array<string> = [];
+	public propertyDisplay;
+    public edit:boolean;
+
+	public value;
+	public submit;
+	public labelText;
+	public labelClass;
+	public errorText;
+	public errorClass;
+	public propertyIdentifier;
+	public loader;
+
+    public swForm;
+    public selected;
+
     //@ngInject
     constructor(
         private listingService,
         private observerService,
-        private utilityService,
-        public $filter
+        public $filter,
+        public utilityService,
+        public $injector,
+        public metadataService:MetaDataService
     ){
+    
+	}
+
+    public $onInit=()=>{
+
+        var bindToControllerProps = this.$injector.get('swPropertyDisplayDirective')[0].bindToController;
+        for(var i in bindToControllerProps){
+
+			if(!this[i] && this.swForm && this.swForm[i]){
+				this[i] = this.swForm[i];
+			}
+		}
+
+
         this.errors = {};
         this.edited = false; 
         this.initialValue = this.object.data[this.property]; 
@@ -85,9 +130,7 @@ class SWPropertyDisplayController {
         if(angular.isUndefined(this.isHidden)){
             this.isHidden = false;
         }
-        if(angular.isUndefined(this.eagerLoadOptions)){
-            this.eagerLoadOptions = true;
-        }
+
         if(angular.isUndefined(this.noValidate)){
             this.noValidate = false;
         }
@@ -109,36 +152,80 @@ class SWPropertyDisplayController {
             this.pageRecord.edited = false; 
         }
 
-        this.applyFilter = function(model, filter) {
+        this.applyFilter = (model, filter)=> {
             try{
-                return $filter(filter)(model)
+                return this.$filter(filter)(model)
             }catch (e){
                 return model;
             }
         };
-    }
+        
+		this.property = this.property || this.propertyIdentifier;
+        this.propertyIdentifier = this.propertyIdentifier || this.property;
 
-    public $onInit=()=>{
-        if(!angular.isDefined(this.object)){
-            this.object = this.form.$$swFormInfo.object;
-        }
-        if(angular.isUndefined(this.object) || angular.isUndefined(this.object.metaData)){
-            throw("swPropertyDisplayController for property: " + this.property + " must be passed an object which is a jsentities instance");
-        }
-        if(angular.isDefined(this.object.metaData[this.property])){
-            if(angular.isUndefined(this.fieldType)){
-                this.fieldType = this.object.metaData.$$getPropertyFieldType(this.property);
-            }
+        this.type = this.type || this.fieldType;
+        this.fieldType = this.fieldType || this.type;
 
-            if(angular.isUndefined(this.hint)){
-                this.hint = this.object.metaData.$$getPropertyHint(this.property);
-            }
+        this.edit = this.edit || this.editing;
+        this.editing = this.editing || this.edit;
 
-            if(angular.isUndefined(this.title)){
-                this.title = this.object.metaData.$$getPropertyTitle(this.property);
-            }
+        //swfproperty logic
+        if(angular.isUndefined(this.type) && this.object && this.object.metaData){
+            this.type = this.metadataService.getPropertyFieldType(this.object,this.propertyIdentifier);
         }
-    };
+        if(angular.isDefined(this.onChangeEvent)){
+            this.observerService.notify(this.onChangeEvent,result);
+        }
+        
+		if(angular.isUndefined(this.title) && this.object && this.object.metaData){
+
+            this.labelText = this.metadataService.getPropertyTitle(this.object,this.propertyIdentifier);
+
+        }
+
+        this.labelText = this.labelText || this.title;
+        this.title = this.title || this.labelText;
+
+		this.type                	= this.type || "text" ;
+		this.class			   	= this.class|| "form-control";
+		this.fieldAttributes     	= this.fieldAttributes || "";
+		this.label			    = this.label || "true";
+		this.labelText			= this.labelText || "";
+		this.labelClass			= this.labelClass || "";
+		this.name			    	= this.name || "unnamed";
+
+
+		this.object				= this.object || this.swForm.object; //this is the process object
+
+		/** handle options */
+		if (this.options && angular.isString(this.options)){
+			let optionsArray = [];
+			optionsArray = this.options.toString().split(",");
+
+			angular.forEach(optionsArray, (o)=>{
+				let newOption:any = {
+					name:"",
+					value:""
+				};
+
+                newOption.name = o;
+				newOption.value= o;
+
+				this.optionValues.push(newOption);
+			});
+		}
+
+        /** handle turning the options into an array of objects */
+		/** handle setting the default value for the yes / no element  */
+		if (this.type=="yesno" && (this.value && angular.isString(this.value))){
+			this.selected == this.value;
+		}
+		
+		if(angular.isUndefined(this.hint) && this.object && this.object.metaData){
+            this.hint = this.metadataService.getPropertyHintByObjectAndPropertyIdentifier(this.object,this.propertyIdentifier);
+        }
+
+	}
 
 
     public getNgClassObjectForInput = () => {
@@ -159,11 +246,6 @@ class SWPropertyDisplayController {
                                             this.propertyDisplayID, 
                                             this.save
                                           );
-        }
-        if(angular.isDefined(this.onChangeEvent)){
-            this.observerService.notify(this.onChangeEvent,result);
-        }
-    }
 
     public clear = () =>{
         if(this.reverted){
@@ -210,21 +292,43 @@ class SWPropertyDisplayController {
 }
 
 class SWPropertyDisplay implements ng.IDirective{
-    public templateUrl;
-    public require = {form:'^form'};
+
+    public static $inject = ['coreFormPartialsPath', 'hibachiPathBuilder'];
+    public templateUrl:string;
+    public require = {swForm:"?^swForm",form:"?^form"};
     public restrict = 'AE';
     public scope = {};
 
     public bindToController = {
-        property:"@",
+
+        //swfproperty scope
+
+        type: "@?",
+        name: "@?",
+        class: "@?",
+        edit: "@?",
+        valueObject: "=?",
+        valueObjectProperty: "=?",
+        propertyIdentifier: "@?",
+        valueOptions: "=?",
+        fieldAttributes: "@?",
+        label:"@?",
+        labelText: "@?",
+        labelClass: "@?",
+        errorText: "@?",
+        errorClass: "@?",
+        formTemplate: "@?",
+
+        //swpropertyscope
+
+        property:"@?",
         object:"=?",
-        options:"=?",
-        edited:"=?",
-        editable:"=?",//disabled
+        editable:"=?",
         editing:"=?",
         isHidden:"=?",
         title:"=?",
         hint:"@?",
+        options:"=?",
         optionsArguments:"=?",
         eagerLoadOptions:"=?",
         isDirty:"=?",
@@ -246,36 +350,51 @@ class SWPropertyDisplay implements ng.IDirective{
         showSave:"=?",
         placeholderText:"@",
         placeholderRbKey:"@"
+        inputAttributes:"@?",
+        optionValues:"=?",
+        eventHandlers:"@?",
+        context:"@?"
     };
     public controller=SWPropertyDisplayController;
     public controllerAs="swPropertyDisplay";
 
-    public static Factory(){
+    public templateUrlPath = "propertydisplay.html";
+    
+	//@ngInject
+    constructor(
+        public coreFormPartialsPath,
+        public hibachiPathBuilder,
+        public swpropertyPartialPath
+
+    ){
+        this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.coreFormPartialsPath) + swpropertyPartialPath;
+    }
+
+
+    public link:ng.IDirectiveLinkFn = (scope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, formController: any) =>{
+        scope.frmController = formController;
+        scope.swfPropertyDisplay = scope.swPropertyDisplay;
+    };
+
+
+    public static Factory(swpropertyClass,swpropertyPartialPath?:string){
         var directive = (
             $compile, 
             scopeService, 
             coreFormPartialsPath,
             hibachiPathBuilder
-        )=>new SWPropertyDisplay(
-            $compile, 
-            scopeService, 
-            coreFormPartialsPath,
-            hibachiPathBuilder
+        )=>new swpropertyClass(
+            $compile,
+			scopeService
+			coreFormPartialsPath,
+            hibachiPathBuilder,
+            swpropertyPartialPath
         );
         directive.$inject = ['$compile','scopeService','coreFormPartialsPath', 'hibachiPathBuilder'];
 
         return directive;
     }
 
-    constructor(
-        public $compile, 
-        public scopeService,
-        public coreFormPartialsPath,
-        public hibachiPathBuilder
-    ){
-        this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.coreFormPartialsPath) + "propertydisplay.html";
-    }
-    
     
     public link:ng.IDirectiveLinkFn = ($scope, element: ng.IAugmentedJQuery, attrs, formController: any) =>{
         
@@ -322,5 +441,6 @@ class SWPropertyDisplay implements ng.IDirective{
     };
 }
 export{
-    SWPropertyDisplay
+    SWPropertyDisplay,
+    SWPropertyDisplayController
 }

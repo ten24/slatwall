@@ -229,13 +229,16 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     public any function getAccountAddressOptions() {
     	if( !structKeyExists(variables, "accountAddressOptions")) {
     		variables.accountAddressOptions = [];
-			var s = getService("accountService").getAccountAddressSmartList();
-			s.addFilter(propertyIdentifier="account.accountID",value=getOrder().getAccount().getAccountID(),fetch="false");
-			s.addOrder("accountAddressName|ASC");
-			var r = s.getRecords();
-			for(var i=1; i<=arrayLen(r); i++) {
-				arrayAppend(variables.accountAddressOptions, {name=r[i].getSimpleRepresentation(), value=r[i].getAccountAddressID()});
+			if(!isNull(getOrder().getAccount())){
+				var s = getService("accountService").getAccountAddressSmartList();
+				s.addFilter(propertyIdentifier="account.accountID",value=getOrder().getAccount().getAccountID(),fetch="false");
+				s.addOrder("accountAddressName|ASC");
+				var r = s.getRecords();
+				for(var i=1; i<=arrayLen(r); i++) {
+					arrayAppend(variables.accountAddressOptions, {name=r[i].getSimpleRepresentation(), value=r[i].getAccountAddressID()});
+				}
 			}
+			arrayPrepend(variables.accountAddressOptions, {name=rbKey("define.none"), value=""});
 		}
 		return variables.accountAddressOptions;
 	}
@@ -348,10 +351,8 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     public any function getShippingMethodOptions() {
     	if( !structKeyExists(variables, "shippingMethodOptions")) {
 
-    		// If there aren't any shippingMethodOptions available, then try to populate this fulfillment
-    		if( !arrayLen(getFulfillmentShippingMethodOptions()) ) {
-    			getService("shippingService").updateOrderFulfillmentShippingMethodOptions( this );
-    		}
+			//update the shipping method options with the shipping service to insure qualifiers are re-evaluated    		
+			getService("shippingService").updateOrderFulfillmentShippingMethodOptions( this );
 
     		// At this point they have either been populated just before, or there were already options
     		var optionsArray = [];
@@ -390,7 +391,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     		}
 
     		if(!arrayLen(optionsArray)) {
-    			arrayPrepend(optionsArray, {name=rbKey('define.none'), value=''});
+    			arrayPrepend(optionsArray, {name=rbKey('define.select'), value=''});
     		}
 
     		variables.shippingMethodOptions = optionsArray;
@@ -433,7 +434,9 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
   		if( !structKeyExists(variables,"subtotal") ) {
 	    	variables.subtotal = 0;
 	    	for( var i=1; i<=arrayLen(getOrderFulfillmentItems()); i++ ) {
-	    		variables.subtotal = precisionEvaluate(variables.subtotal + getOrderFulfillmentItems()[i].getExtendedPrice());
+				if(getOrderFulfillmentItems()[i].isRootOrderItem()){
+				    variables.subtotal = precisionEvaluate(variables.subtotal + getOrderFulfillmentItems()[i].getExtendedPrice());	    	
+	    		}
 	    	}
   		}
     	return variables.subtotal;

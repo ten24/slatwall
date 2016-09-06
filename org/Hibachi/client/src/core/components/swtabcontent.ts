@@ -38,9 +38,9 @@ class SWTabContent implements ng.IDirective{
     public scope = {};
 
     public bindToController = {
-        "active":"=?",
-        "loaded":"=?",
-        "name":"@?"
+        active:"=?",
+        loaded:"=?",
+        name:"@?"
     };
     public controller=SWTabContentController;
     public controllerAs="swTabContent";
@@ -56,7 +56,7 @@ class SWTabContent implements ng.IDirective{
                 
             },
             post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
-                var parentDirective = this.scopeService.locateParentScope($scope,"swTabGroup")["swTabGroup"];
+                var parentDirective = this.scopeService.getRootParentScope($scope,"swTabGroup")["swTabGroup"];
                 if(angular.isDefined(parentDirective) && angular.isDefined(parentDirective.tabs)){
                     parentDirective.tabs.push($scope.swTabContent);
                     if(parentDirective.tabs.length == 1){

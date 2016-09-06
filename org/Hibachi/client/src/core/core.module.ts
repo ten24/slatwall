@@ -20,7 +20,10 @@ import {FilterService} from "./services/filterservice";
 import {ExpandableService} from "./services/expandableservice";
 import {MetaDataService} from "./services/metadataservice";
 import {RbKeyService} from "./services/rbkeyservice";
+import {ScopeService} from "./services/scopeservice";
 import {$Hibachi} from "./services/hibachiservice";
+import {HistoryService} from "./services/historyservice"; 
+import {ListingService} from "./services/listingservice"
 import {LocalStorageService} from "./services/localstorageservice";
 import {ListingService} from "./services/listingservice"
 import {HibachiServiceDecorator} from "./services/hibachiservicedecorator";
@@ -55,6 +58,7 @@ import {SWEntityActionBarButtonGroup} from "./components/swentityactionbarbutton
 import {SWExpandableRecord} from "./components/swexpandablerecord";
 import {SWGravatar} from "./components/swgravatar";
 import {SWListingDisplay} from "./components/swlistingdisplay";
+import {SWListingDisplayCell} from "./components/swlistingdisplaycell";
 import {SWListingControls} from "./components/swlistingcontrols";
 import {SWListingAggregate} from "./components/swlistingaggregate";
 import {SWListingColorFilter} from "./components/swlistingcolorfilter";
@@ -65,12 +69,15 @@ import {SWListingFilter} from "./components/swlistingfilter";
 import {SWListingFilterGroup} from "./components/swlistingfiltergroup";
 import {SWListingOrderBy} from "./components/swlistingorderby";
 import {SWListingRowSave} from "./components/swlistingrowsave"; 
+import {SWListingSearch} from "./components/swlistingsearch";
 import {SWLogin} from "./components/swlogin";
 import {SWModalLauncher} from "./components/swmodallauncher";
 import {SWModalWindow} from "./components/swmodalwindow"; 
 import {SWNumbersOnly} from "./components/swnumbersonly";
 import {SWLoading} from "./components/swloading";
 import {SWScrollTrigger} from "./components/swscrolltrigger";
+import {SWTabGroup} from "./components/swtabgroup";
+import {SWTabContent} from "./components/swtabcontent";
 import {SWTooltip} from "./components/swtooltip";
 import {SWRbKey} from "./components/swrbkey";
 import {SWOptions} from "./components/swoptions";
@@ -166,12 +173,13 @@ var coremodule = angular.module('hibachi.core',[
 .service('historyService',HistoryService)
 .service('metadataService',MetaDataService)
 .service('rbkeyService',RbKeyService)
-.service('listingService', ListingService)
 .provider('$hibachi',$Hibachi)
 .decorator('$hibachi',HibachiServiceDecorator)
 .service('hibachiInterceptor', HibachiInterceptor.Factory())
 .service('hibachiScope',HibachiScope)
 .service('scopeService',ScopeService)
+.service('historyService',HistoryService)
+.service('listingService', ListingService)
 .service('localStorageService',LocalStorageService)
 .service('requestService',RequestService)
 .service('accountService',AccountService)
@@ -210,10 +218,12 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swListingColumn',SWListingColumn.Factory())
 .directive('swListingDisableRule', SWListingDisableRule.Factory())
 .directive('swListingExpandableRule', SWListingExpandableRule.Factory())
+.directive('swListingDisplayCell',SWListingDisplayCell.Factory())
 .directive('swListingFilter',SWListingFilter.Factory())
 .directive('swListingFilterGroup',SWListingFilterGroup.Factory())
 .directive('swListingOrderBy',SWListingOrderBy.Factory())
 .directive('swListingRowSave', SWListingRowSave.Factory())
+.directive('swListingSearch', SWListingSearch.Factory())
 .directive('swLogin',SWLogin.Factory())
 .directive('swModalLauncher',SWModalLauncher.Factory())
 .directive('swModalWindow', SWModalWindow.Factory())
@@ -223,6 +233,8 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swRbkey',SWRbKey.Factory())
 .directive('swOptions',SWOptions.Factory())
 .directive('swSelection',SWSelection.Factory())
+.directive('swTabGroup', SWTabGroup.Factory())
+.directive('swTabContent', SWTabContent.Factory())
 .directive('swTooltip', SWTooltip.Factory())
 .directive('swClickOutside',SWClickOutside.Factory())
 .directive('swDirective',SWDirective.Factory())

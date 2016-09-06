@@ -72,6 +72,7 @@ class UtilityService extends BaseService{
             data.push(parseFunction(context));
         });
         return this.replacePropertiesWithData(stringItem, data);
+    }
 
     //used to do inheritance at runtime
     public extend = (ChildClass, ParentClass)=> {
@@ -295,7 +296,48 @@ class UtilityService extends BaseService{
           }
     };
 
-      public isDescendantElement = (parent, child) => {
+
+    public getPropertyValue=(object, propertyIdentifier):void=> {
+
+        var keys = propertyIdentifier.split('.'), obj = object, keyPart;
+        while ((keyPart = keys.shift()) && keys.length) {
+            obj = obj[keyPart];
+        }
+        return obj[keyPart];
+
+    }
+
+    public setPropertyValue=(object, propertyIdentifier,value):void=> {
+
+        var keys = propertyIdentifier.split('.'), obj = object, keyPart;
+
+
+        while ((keyPart = keys.shift()) && keys.length) {
+            if(!obj[keyPart]){
+                obj[keyPart] = {};
+            }
+            obj = obj[keyPart];
+
+        }
+        obj[keyPart] = value;
+
+
+
+    };
+
+    public nvpToObject=(NVPData):{}=>{
+        var object = {};
+        for(var key in NVPData){
+            var value = NVPData[key];
+            var propertyIdentitifer = key.replace(/\_/g,'.');
+            this.setPropertyValue(object,propertyIdentitifer,value);
+
+
+        }
+        return object;
+    };
+
+    public isDescendantElement = (parent, child) => {
         var node = child.parentNode;
         while (node != null) {
             if (node == parent) {

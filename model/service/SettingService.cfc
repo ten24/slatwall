@@ -149,6 +149,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			emailCCAddress = {fieldType="text"},
 			emailBCCAddress = {fieldType="text"},
 			emailFailToAddress = {fieldType="text", defaultValue="email@youremaildomain.com"},
+			emailReplyToAddress = {fieldType="text"},
 			emailSubject = {fieldType="text", defaultValue="Notification From Slatwall"},
 			emailIMAPServer = {fieldType="text"},
 			emailIMAPServerPort = {fieldType="text"},
@@ -201,7 +202,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalAdminDomainNames = {fieldtype="text"},
 			globalClientSecret = {fieldtype="text",defaultValue="#createUUID()#"},
 			globalDisplayIntegrationProcessingErrors = {fieldtype="yesno", defaultValue=1},
-
+			globalUseShippingIntegrationForTrackingNumberOption = {fieldtype="yesno", defaultValue=0},
+			globalSmartListGetAllRecordsLimit = {fieldType="text",defaultValue=250},
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
 			imageMissingImagePath = {fieldType="text",defaultValue="/assets/images/missingimage.jpg"},
@@ -886,8 +888,9 @@ component extends="HibachiService" output="false" accessors="true" {
 
 			getHibachiDAO().flushORMSession();
 
-			getHibachiCacheService().resetCachedKeyByPrefix('setting_#arguments.entity.getSettingName()#');
-
+			//wait for thread to finish because admin depends on getting the savedID
+			getHibachiCacheService().resetCachedKeyByPrefix('setting_#arguments.entity.getSettingName()#',true);
+			
 			// If calculation is needed, then we should do it
 			if(listFindNoCase("skuAllowBackorderFlag,skuAllowPreorderFlag,skuQATSIncludesQNROROFlag,skuQATSIncludesQNROVOFlag,skuQATSIncludesQNROSAFlag,skuTrackInventoryFlag", arguments.entity.getSettingName())) {
 				updateStockCalculated();

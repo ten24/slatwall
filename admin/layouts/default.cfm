@@ -91,7 +91,7 @@ Notes:
 			var hibachiConfig = $.slatwall.getConfig();
 		</script>
 
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/assets/js/admin.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/assets/js/admin.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#"></script>
 		<!--- Trigger Print Window --->
 		<cfif arrayLen($.slatwall.getPrintQueue()) and request.context.slatAction neq "admin:print.default">
 			<script type="text/javascript">
@@ -176,7 +176,14 @@ Notes:
 							<cfif arrayLen(local.integrationSubsystems)>
 								<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.integrations_nav')#" icon="random icon-white" type="nav">
 									<cfloop array="#local.integrationSubsystems#" index="local.intsys">
-										<hb:HibachiActionCaller action="#local.intsys['subsystem']#:main.default" text="#local.intsys['name']#" type="list">
+										<hb:HibachiActionCaller action="#local.intsys['subsystem']#:main.default" text="#local.intsys['subsystem']#" type="list">
+										<cfset local.integration = $.slatwall.getService('integrationService').getIntegrationByIntegrationPackage(local.intsys['subsystem']) />
+										<cfset local.integrationCFC = $.slatwall.getService('integrationService').getIntegrationCFC(local.integration) />
+										<cfif structKeyExists(local.integrationCFC,'getMenuItems')>
+											<cfloop array="#local.integrationCFC.getMenuItems()#" index="local.menuitem">
+												<hb:HibachiActionCaller action="#local.menuitem['action']#" text="#local.menuitem['text']#" type="list">
+											</cfloop>
+										</cfif>
 									</cfloop>
 								</hb:HibachiActionCallerDropdown>
 							</cfif>
@@ -233,7 +240,7 @@ Notes:
 									<cfif $.slatwall.getAccount().getSuperUserFlag()>
 										<hb:HibachiActionCaller action="admin:main.encryptionupdatepassword" type="list">
 										<hb:HibachiActionCaller action="admin:main.encryptionreencryptdata" type="list">
-										<hb:HibachiActionCaller action="admin:main.default" querystring="reload=true" type="list" text="Reload Slatwall">
+										<hb:HibachiActionCaller action="admin:main.default" querystring="#getHibachiScope().getApplicationValue('applicationReloadKey')#=#getHibachiScope().getApplicationValue('applicationReloadPassword')#" type="list" text="Reload Slatwall">
 									</cfif>
 								</hb:HibachiDividerHider>
 							</hb:HibachiActionCallerDropdown>
@@ -285,10 +292,30 @@ Notes:
 									<li><a title="Developer Docs" href="http://docs.getslatwall.com/##developer" target="_blank">#$.slatwall.rbKey('define.developerDocs')#</a></li>
 									<hb:HibachiActionCaller action="admin:main.about" type="list">
 									<li class="divider"></li>
-									<hb:HibachiActionCaller action="admin:main.changelanguage" queryString="?rbLocale=en_us&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" text="<i class='flag-icon flag-icon-us'></i> #$.slatwall.rbKey('define.language.en_us')#" type="list">
-									<hb:HibachiActionCaller action="admin:main.changelanguage" queryString="?rbLocale=en_gb&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" text="<i class='flag-icon flag-icon-gb'></i> #$.slatwall.rbKey('define.language.en_gb')#" type="list">
-									<hb:HibachiActionCaller action="admin:main.changelanguage" queryString="?rbLocale=fr_fr&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" text="<i class='flag-icon flag-icon-fr'></i> #$.slatwall.rbKey('define.language.fr_fr')#" type="list">
-									<hb:HibachiActionCaller action="admin:main.changelanguage" queryString="?rbLocale=de_de&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" text="<i class='flag-icon flag-icon-de'></i> #$.slatwall.rbKey('define.language.de_de')#" type="list">
+									<hb:HibachiActionCaller action="admin:main.changelanguage" 
+										queryString="?rbLocale=en_us&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" 
+										text="<i class='flag-icon flag-icon-us'></i> #$.slatwall.rbKey('define.language.en_us')#" 
+										type="list"
+										ignoreHTMLEditFormat="true"
+									>
+									<hb:HibachiActionCaller action="admin:main.changelanguage" 
+										queryString="?rbLocale=en_gb&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" 
+										text="<i class='flag-icon flag-icon-gb'></i> #$.slatwall.rbKey('define.language.en_gb')#" 
+										type="list"
+										ignoreHTMLEditFormat="true"
+									>
+									<hb:HibachiActionCaller action="admin:main.changelanguage" 
+										queryString="?rbLocale=fr_fr&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" 
+										text="<i class='flag-icon flag-icon-fr'></i> #$.slatwall.rbKey('define.language.fr_fr')#" 
+										type="list"
+										ignoreHTMLEditFormat="true"
+									>
+									<hb:HibachiActionCaller action="admin:main.changelanguage" 
+										queryString="?rbLocale=de_de&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" 
+										text="<i class='flag-icon flag-icon-de'></i> #$.slatwall.rbKey('define.language.de_de')#" 
+										type="list"
+										ignoreHTMLEditFormat="true"	
+									>
 								</hb:HibachiActionCallerDropdown>
 							</ul>
 						</div>
@@ -370,8 +397,8 @@ Notes:
 			<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckeditor/adapters/jquery.js"></script>
 			<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckfinder/ckfinder.js"></script>
 		</cfif>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/src/bundle.js?instantiationKey=#$.slatwall.getApplicationValue('version')#" charset="utf-8"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/global.js?instantiationKey=#$.slatwall.getApplicationValue('version')#"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/src/bundle.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" charset="utf-8"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/global.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#"></script>
 	</body>
 </html>
 </cfoutput>

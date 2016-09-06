@@ -390,7 +390,7 @@ component extends="FW1.framework" {
 					context.getResponse().setStatus(status, "#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#");
 					message['message'] = 'timeout';
 				}else if(structKeyExists(authorizationDetails,'invalidToken') && authorizationDetails.invalidToken == true){
-					status = getHibachiScope().getService("hibachiAuthenticationService").getInvalidCredentialsStatusCode();;
+					status = getHibachiScope().getService("hibachiAuthenticationService").getInvalidCredentialsStatusCode();
 					context.getResponse().setStatus(status, "#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#");
 					message['message'] = 'invalid_token';
 				}
@@ -556,6 +556,9 @@ component extends="FW1.framework" {
                     if(!coreBF.containsBean("hibachiJWTService")) {
                         coreBF.declareBean("hibachiJWTService", "#variables.framework.applicationKey#.org.Hibachi.HibachiJWTService", true);  
                     } 
+                    if(!coreBF.containsBean("hibachiJsonService")){
+						coreBF.declareBean("hibachiJsonService", "#variables.framework.applicationKey#.org.Hibachi.HibachiJsonService",true);
+					}
 					// If the default transient beans were not found in the model, add a reference to the core one in hibachi
 					if(!coreBF.containsBean("hibachiScope")) {
 						coreBF.declareBean("hibachiScope", "#variables.framework.applicationKey#.org.Hibachi.HibachiScope", false);
@@ -572,6 +575,7 @@ component extends="FW1.framework" {
 					if(!coreBF.containsBean("hibachiJWT")){
 						coreBF.declareBean("hibachiJWT", "#variables.framework.applicationKey#.org.Hibachi.HibachiJWT",false);
 					}
+					
 					
 					// Setup the custom bean factory
 					if(directoryExists("#getHibachiScope().getApplicationValue("applicationRootMappingPath")#/custom/model")) {
@@ -651,6 +655,12 @@ component extends="FW1.framework" {
 					getBeanFactory().getBean('hibachiEventService').registerEventHandlers();
 					
 					//===================== END: EVENT HANDLER SETUP =========================
+					
+					//==================== START: JSON BUILD SETUP ========================
+					
+					getBeanFactory().getBean('hibachiJsonService').createJson();
+					
+					//===================== END: JSON BUILD SETUP =========================
 					
 					// Application Setup Ended
 					getHibachiScope().setApplicationValue("initialized", true);

@@ -78,6 +78,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// Calculated Properties
 	property name="calculatedQATS" ormtype="integer";
 	property name="calculatedQOH" ormtype="integer";
+	property name="calculatedSkuDefinition" ormtype="string";
 
 	// Related Object Properties (many-to-one)
 	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID" hb_cascadeCalculate="true";
@@ -738,7 +739,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		}
 		return variables.currencyDetails;
 	}
-
+	/**
+	* @Suppress
+	*/
 	public any function getCurrentAccountPrice() {
 		if(!structKeyExists(variables, "currentAccountPrice")) {
 			variables.currentAccountPrice = getService("priceGroupService").calculateSkuPriceBasedOnCurrentAccount(sku=this);
@@ -749,7 +752,11 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public any function getCurrentAccountPriceByCurrencyCode(required string currencyCode) {
 		if(!structKeyExists(variables, "currentAccountPrice_#arguments.currencyCode#")) {
 			variables["currentAccountPrice_#arguments.currencyCode#"] = getService("priceGroupService").calculateSkuPriceBasedOnCurrentAccountAndCurrencyCode(sku=this,currencyCode=arguments.currencyCode);
+			if(!structKeyExists(variables, "currentAccountPrice_#arguments.currencyCode#")) {
+				return;	
+			}
 		}
+		
 		return variables["currentAccountPrice_#arguments.currencyCode#"];
 	}
 
@@ -913,23 +920,42 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public any function getLivePriceByCurrencyCode(required string currencyCode) {
 		if(!structKeyExists(variables, "livePrice_#arguments.currencyCode#")) {
 			// Create a prices array, and add the
-			var prices = [getPriceByCurrencyCode(arguments.currencyCode)];
+			var price = getPriceByCurrencyCode(arguments.currencyCode);
+			var prices = [];
+			if(!isNull(price)){
+				arrayAppend(prices,price);
+			}
 
 			// Add the current account price, and sale price
-			arrayAppend(prices, getSalePriceByCurrencyCode(currencyCode=arguments.currencyCode));
-			arrayAppend(prices, getCurrentAccountPriceByCurrencyCode(currencyCode=arguments.currencyCode));
+			var salePrice = getSalePriceByCurrencyCode(currencyCode=arguments.currencyCode);
+			if(!isNull(salePrice)){
+				arrayAppend(prices,salePrice);
+			}
+			
+			var currentAccountPrice = getCurrentAccountPriceByCurrencyCode(currencyCode=arguments.currencyCode);
+			if(!isNull(currentAccountPrice)){
+				arrayAppend(prices, currentAccountPrice);	
+			}
+
+			if(!arraylen(prices)){
+				return;
+			}
 
 			// Sort by best price
 			arraySort(prices, "numeric", "asc");
-
+			
 			// set that in the variables scope
 			variables["livePrice_#arguments.currencyCode#"]= prices[1];
+		
+			
 		}
 		return variables["livePrice_#arguments.currencyCode#"];
 	}
 
 
-	// @hint Returns an array of locations associated with this sku.
+	/**
+	* Returns an array of locations associated with this sku.
+	*/
 	public any function getLocations() {
 		if(!structKeyExists(variables,"locations")) {
 			variables.locations = [];
@@ -995,13 +1021,18 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return getQuantity("QOH");
 	}
 
+	/**
+	* @Suppress
+	*/
 	public any function getSalePriceDetails() {
 		if(!structKeyExists(variables, "salePriceDetails")) {
 			variables.salePriceDetails = getProduct().getSkuSalePriceDetails(skuID=getSkuID());
 		}
 		return variables.salePriceDetails;
 	}
-
+	/**
+	* @Suppress
+	*/
 	public any function getSalePriceDetailsByCurrencyCode(required string currencyCode) {
 		if(!structKeyExists(variables, "salePriceDetailsByCurrencyCode_#currencyCode#")) {
 			variables["salePriceDetails_#currencyCode#"] = getProduct().getSkuSalePriceDetailsByCurrencyCode(skuID=getSkuID(),currencyCode=arguments.currencyCode);
@@ -1463,6 +1494,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 			// Build smartlist that will return sku events occurring at the same time and location as this event
 			variables.eventConflictsSmartList = getService("skuService").getSkuSmartlist();
+			
 			variables.eventConflictsSmartList.joinRelatedProperty("SlatwallSku", "locationConfigurations", "left");
 			variables.eventConflictsSmartList.joinRelatedProperty("SlatwallLocationConfiguration", "location", "left");
 			variables.eventConflictsSmartList.addWhereCondition("aslatwalllocation.locationID IN (:lcIDs)",{lcIDs=locationIDList});

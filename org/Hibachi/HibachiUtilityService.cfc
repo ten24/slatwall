@@ -87,7 +87,12 @@
 		}
 
 		public any function formatValue_decimal(required string value){
-			return numberFormat(arguments.value,'_.__');
+			if(isNumeric(arguments.value)){
+				return numberFormat(arguments.value,'_.__');	
+			}else{
+				//used in cases such as string "N/A"
+				return arguments.value;				
+			}
 		}
 
 		public any function formatValue_second( required string value, struct formatDetails={} ) {
@@ -326,8 +331,20 @@
 				var valueKey = replace(replace(templateKeys[i], "${", ""),"}","");
 				if( isStruct(arguments.object) && structKeyExists(arguments.object, valueKey) ) {
 					replaceDetails.value = arguments.object[ valueKey ];
-				} else if (isObject(arguments.object)) {
-					//if null then is blank
+				} else if (isObject(arguments.object) && (
+					(
+						arguments.object.isPersistent() && getHasPropertyByEntityNameAndPropertyIdentifier(arguments.object.getEntityName(), valueKey))
+						||
+						(
+							arguments.object.isPersistent() 
+							&& structKeyExists(getService('hibachiService'),'getHasAttributeByEntityNameAndPropertyIdentifier')
+							&& getService('hibachiService').getHasAttributeByEntityNameAndPropertyIdentifier(arguments.object.getEntityName(), valueKey))
+							||
+						(
+							!arguments.object.isPersistent() && arguments.object.hasProperty(valueKey)
+						)	
+					)
+				) {
 					replaceDetails.value = arguments.object.getValueByPropertyIdentifier(valueKey, arguments.formatValues);
 				} else if (arguments.removeMissingKeys) {
 					replaceDetails.value = '';

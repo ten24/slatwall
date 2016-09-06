@@ -5,6 +5,7 @@ import {BaseObject} from "../baseobject";
 import {HibachiService} from "../../services/hibachiservice";
 import {HibachiValidationService} from "../../services/hibachivalidationservice";
 import {EntityService} from "../../services/entityService";
+import {UtilityService} from "../../services/utilityService";
 
 abstract class BaseTransient extends BaseObject{
 
@@ -15,23 +16,29 @@ abstract class BaseTransient extends BaseObject{
     public entityService:EntityService;
     public metaData:Object;
     public data:any;
+    public utilityService:UtilityService;
 
     constructor($injector){
         super($injector);
         this.$hibachi = <HibachiService>this.getService('$hibachi');
         this.hibachiValidationService = <HibachiValidationService>this.getService('hibachiValidationService');
+        this.utilityService = <UtilityService>this.getService('utilityService');
         this.entityService = <EntityService>this.getService('entityService');
     }
 
     public populate = (response)=>{
         var data = response;
+
         if(response.data){
             data= response.data;
         }
 
-        for(var key in data){
+        data = this.utilityService.nvpToObject(data);
 
+
+        for(var key in data){
             let propertyIdentifier = key.replace(this.className.toLowerCase()+'.','');
+
 			let propertyIdentifierArray = propertyIdentifier.split('.');
 			let propertyIdentifierKey = propertyIdentifier.replace(/\./g,'_');
             let currentEntity = this;
@@ -41,31 +48,36 @@ abstract class BaseTransient extends BaseObject{
 
                     //if we are on the last item in the array
                     if(propertyKey === propertyIdentifierArray.length-1){
+                        //if is json
+                        //if(currentEntity.metaData[key]){
+                        //if propertyidentifier
+                       // }else{
+                            if(angular.isObject(data[key]) && currentEntity.metaData[property].fieldtype && currentEntity.metaData[property].fieldtype === 'many-to-one'){
 
-                        if(angular.isObject(data[key]) && currentEntity.metaData[property].fieldtype && currentEntity.metaData[property].fieldtype === 'many-to-one'){
-
-                            var relatedEntity = this.entityService.newEntity(currentEntity.metaData[property].cfc);
-                            if(relatedEntity.populate){
-                                relatedEntity.populate(data[key]);
-                            }else{
-                                relatedEntity.$$init(data[key]);
-                                currentEntity['$$set'+currentEntity.metaData[property].name.charAt(0).toUpperCase()+currentEntity.metaData[property].name.slice(1)](relatedEntity);
-                            }
-                        }else if(angular.isArray(data[propertyIdentifierKey]) && currentEntity.metaData[property].fieldtype && (currentEntity.metaData[property].fieldtype === 'one-to-many')){
-
-                            angular.forEach(data[key],(arrayItem,propertyKey)=>{
-                                var relatedEntity = this.entityService.newEntity(currentEntity.metaData[property].cfc);;
+                                var relatedEntity = this.entityService.newEntity(currentEntity.metaData[property].cfc);
                                 if(relatedEntity.populate){
-                                    relatedEntity.populate(arrayItem)
+                                    relatedEntity.populate(data[key]);
                                 }else{
-                                    relatedEntity.$$init(arrayItem);
-                                    currentEntity['$$add'+currentEntity.metaData[property].singularname.charAt(0).toUpperCase()+currentEntity.metaData[property].singularname.slice(1)](relatedEntity);
+                                    relatedEntity.$$init(data[key]);
+                                    currentEntity['$$set'+currentEntity.metaData[property].name.charAt(0).toUpperCase()+currentEntity.metaData[property].name.slice(1)](relatedEntity);
                                 }
-                            });
-                        }else{
+                            }else if(angular.isArray(data[propertyIdentifierKey]) && currentEntity.metaData[property].fieldtype && (currentEntity.metaData[property].fieldtype === 'one-to-many')){
 
-                            currentEntity[property] = data[key];
-                        }
+                                angular.forEach(data[key],(arrayItem,propertyKey)=>{
+                                    var relatedEntity = this.entityService.newEntity(currentEntity.metaData[property].cfc);
+                                    if(relatedEntity.populate){
+                                        relatedEntity.populate(arrayItem)
+                                    }else{
+                                        relatedEntity.$$init(arrayItem);
+                                        currentEntity['$$add'+currentEntity.metaData[property].singularname.charAt(0).toUpperCase()+currentEntity.metaData[property].singularname.slice(1)](relatedEntity);
+                                    }
+                                });
+                            }else{
+
+                                currentEntity[property] = data[key];
+                            }
+                        //}
+
 
                     }else{
                         var propertyMetaData = currentEntity.metaData[property];
@@ -140,8 +152,6 @@ abstract class BaseTransient extends BaseObject{
 			}
 		}
     }
-
-
 
     public getError=(errorName:string)=>{
         return this.getErrorByErrorName(errorName);

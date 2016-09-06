@@ -59,18 +59,18 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 		variables.trackingURL = "http://wwwapps.ups.com/WebTracking/track?loc=en_US&track.x=Track&trackNums=${trackingNumber}";
 
 		variables.shippingMethods = {
-			01="UPS Next Day Air",
-			02="UPS 2nd Day Air",
-			03="UPS Ground",
-			07="UPS Worldwide Express",
-			08="UPS Worldwide Express Expedited",
-			11="UPS Standard",
-			12="UPS 3 Day Select",
-			13="UPS Next Day Air Saver",
-			14="UPS Next Day Air Early A.M.",
-			54="UPS Worldwide Express Plus",
-			59="UPS 2nd Day Air A.M.",
-			65="UPS Saver"
+			01="Next Day Air",
+			02="2nd Day Air",
+			03="Ground",
+			07="Worldwide Express",
+			08="Worldwide Express Expedited",
+			11="Standard",
+			12="3 Day Select",
+			13="Next Day Air Saver",
+			14="Next Day Air Early A.M.",
+			54="Worldwide Express Plus",
+			59="2nd Day Air A.M.",
+			65="Saver"
 		};
 		
 		return this;
@@ -97,34 +97,35 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 			include "RatesRequestTemplate.cfm";
         }
         var JsonResponse = getJsonResponse(jsonPacket);
+        
         var responseBean = getShippingRatesResponseBean(JsonResponse);
 		
 		return responseBean;
 	}
 	
 	public struct function getJsonResponse(required any jsonPacket){
-		var url = "";
+		var urlString = "";
 		var service = "Rate";
 		if(setting('testingFlag')) {
-			url = variables.testUrl & service;
+			urlString = variables.testUrl & service;
 		} else {
-			url = variables.productionUrl & service;
+			urlString = variables.productionUrl & service;
 		}
-		return getResponse(requestPacket=arguments.jsonPacket,url=url,format="json");
+		return getResponse(requestPacket=arguments.jsonPacket,urlString=urlString,format="json");
 	}
 	
 	private any function getShippingProcessShipmentResponseBean(struct jsonResponse){
-		var responseBean = new Slatwall.model.transient.fulfillment.ShippingProcessShipmentResponseBean();
+		var responseBean = getTransient('ShippingProcessShipmentResponseBean');
 		responseBean.setData(arguments.jsonResponse);
 		if(
-			!structKeyExists(responseBean,'data') || 
+			isNull(responseBean.getData()) || 
 			(
-				structKeyExists(responseBean,'data') && structKeyExists(responseBean.data,'Fault')
+				!isNull(responseBean.getData()) && structKeyExists(responseBean.getData(),'Fault')
 			) 
 		) {
-			addMessage(messageName="communicationError", message="An unexpected communication error occured, please notify system administrator.");
+			responseBean.addMessage(messageName="communicationError", message="An unexpected communication error occured, please notify system administrator.");
 			// If XML fault then log error
-			addError("unknown", "An unexpected communication error occured, please notify system administrator.");
+			responseBean.addError("unknown", "An unexpected communication error occured, please notify system administrator.");
 		} else {
 			// Log all messages from UPS into the response bean
 			responseBean.addMessage(
@@ -157,22 +158,20 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 	
 	
 	public any function getShippingRatesResponseBean(required any JsonResponse){
-		var responseBean = new Slatwall.model.transient.fulfillment.ShippingRatesResponseBean();
+		var responseBean = getTransient('ShippingRatesResponseBean');
 		responseBean.setData(arguments.JsonResponse);
-		
-		if(!structKeyExists(responseBean,'data') || 
+			
+		if(isNull(responseBean.getData()) || 
 			(
-				structKeyExists(responseBean,'data') && structKeyExists(responseBean.data,'Fault')
+				!isNull(responseBean.getData()) && structKeyExists(responseBean.getData(),'Fault')
 			) 
 		) {
+			
 			responseBean.addMessage(messageName="communicationError", message="An unexpected communication error occured, please notify system administrator.");
 			// If XML fault then log error
 			responseBean.addError("unknown", "An unexpected communication error occured, please notify system administrator.");
 		} else {
-			
-			
 			if(!responseBean.hasErrors()) {
-				
 				for(var i=1; i<=arrayLen(responseBean.getData().RateResponse.RatedShipment); i++) {
 					responseBean.addShippingMethod(
 						shippingProviderMethod=responseBean.getData().RateResponse.RatedShipment[i].Service.code,
@@ -181,6 +180,7 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 				}
 			}
 		}
+		
 
 		return responseBean;
 	}

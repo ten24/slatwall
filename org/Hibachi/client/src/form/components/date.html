@@ -1,7 +1,0 @@
-<sw-input data-property-display="ctrl.propertyDisplay"></sw-input>
-<!-- Error Messages -->
-<span style="color:red"
-      ng-repeat="(key,value) in ctrl.propertyDisplay.errors"
-      ng-show="(ctrl.propertyDisplay.form.$submitted && ctrl.propertyDisplay.form[ctrl.propertyDisplay.property].$invalid) || (ctrl.propertyDisplay.form[ctrl.propertyDisplay.property].$invalid && ctrl.propertyDisplay.form[ctrl.propertyDisplay.property].$dirty)">
-  <span  ng-show="key === 'required'">{{ctrl.propertyDisplay.title}} is a required field<br></span>
-</span>

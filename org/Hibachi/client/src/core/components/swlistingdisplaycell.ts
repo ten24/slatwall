@@ -22,23 +22,14 @@ class SWListingDisplayCellController{
     constructor(
         public corePartialsPath,
         public hibachiPathBuilder,
+        public listingService, 
         public utilityService,
         public $scope
     ){
         this.hibachiPathBuilder = hibachiPathBuilder;
         this.corePartialsPath = corePartialsPath;
         this.$scope = $scope;
-        this.value = this.pageRecord[this.swListingDisplay.getPageRecordKey(this.column.propertyIdentifier)];
-        //If there is no value for this column, we can see if other substitute property identifiers were defined
-        if(angular.isUndefined(this.value) && angular.isDefined(this.column.fallbackPropertyIdentifiers)){
-            var fallbackPropertyArray = this.column.fallbackPropertyIdentifiers.split(",");
-            for(var i=0; i<fallbackPropertyArray.length; i++){
-                if(angular.isDefined(this.pageRecord[fallbackPropertyArray[i]])){
-                    this.value = this.pageRecord[fallbackPropertyArray[i]];
-                    break;
-                }
-            }
-        }
+        this.value = this.listingService.getPageRecordValueByColumn(this.pageRecord, this.column);        
         
         this.popover = this.utilityService.replaceStringWithProperties(this.column.tooltip, this.pageRecord)
 

@@ -44,7 +44,7 @@
 	<cfparam name="attributes.autocompleteSelectedValueDetails" type="struct" default="#structNew()#" />
 	
 	<cfparam name="attributes.fieldAttributes" type="string" default="" />					<!--- hint: This is used to pass specific additional fieldAttributes when in edit mode --->
-	
+	<cfparam name="attributes.ignoreHTMLEditFormat" type="boolean" default="false" />
 	<!---
 		attributes.fieldType have the following options:
 		
@@ -88,6 +88,10 @@
 			<!--- Set Up whatever fieldtype this should be --->
 			<cfif attributes.fieldType eq "">
 				<cfset attributes.fieldType = attributes.object.getPropertyFieldType( attributes.property ) />
+			</cfif>
+			
+			<cfif attributes.fieldType eq 'wysiwyg'>
+				<cfset attributes.ignoreHTMLEditFormat = true/>
 			</cfif>
 			
 			<!--- If this is in edit mode then get the pertinent field info --->

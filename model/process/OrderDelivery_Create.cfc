@@ -84,8 +84,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	public boolean function getUseShippingIntegrationForTrackingNumber(){
 		return (
-			!isNull(getorderfulfillment().getSelectedShippingMethodOption().getShippingMethodRate())
+			!isNull(getorderfulfillment().getSelectedShippingMethodOption())
+			&& !isNull(getorderfulfillment().getSelectedShippingMethodOption().getShippingMethodRate())
 			&& !isNull(getorderfulfillment().getSelectedShippingMethodOption().getShippingMethodRate().getShippingIntegration())
+			&& getHibachiScope().setting('globalUseShippingIntegrationForTrackingNumberOption')
 		);
 	}
 
@@ -132,9 +134,12 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		var selectedIntegration = getShippingIntegration();
 		var shippingIntegrationCFC = getService('integrationService').getShippingIntegrationCFC(selectedIntegration);
 		//create OrderDelivery and get tracking Number and generate label if shipping.cfc has method
-		if(structKeyExists(shippingIntegrationCFC,'processShipmentRequestWithOrderDelivery_Create')){
-			shippingIntegrationCFC.processShipmentRequestWithOrderDelivery_Create(this);
-		}
+		if(structKeyExists(shippingIntegrationCFC,'processShipmentRequest')){
+  			shippingIntegrationCFC.processShipmentRequestWithOrderDelivery_Create(this);
+ 		} else {
+ 			this.setTrackingNumber("");
+ 			this.setContainerLabel("");
+  		}
 		
 	}
 	

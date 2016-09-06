@@ -630,7 +630,7 @@ class CollectionConfig {
     };
 
     public hasColumns=():boolean=>{
-        return (this.columns.length > 0);
+        return this.columns && this.columns.length > 0;
     };
 
     public clearFilters=():CollectionConfig =>{

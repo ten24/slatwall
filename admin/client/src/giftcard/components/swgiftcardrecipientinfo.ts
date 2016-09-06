@@ -3,11 +3,14 @@
 class SWGiftCardRecipientInfoController {
 
 	public giftCard;
+	public detailAccountLink; 
 
-	constructor(){
-
+	//@ngInject
+	constructor(public $hibachi){
+		if(angular.isDefined(this.giftCard.ownerAccount_accountID)){
+			this.detailAccountLink = $hibachi.buildUrl('admin:entity.detailaccount', 'accountID=' + this.giftCard.ownerAccount_accountID);
+		}
 	}
-
 }
 
 class SWGiftCardRecipientInfo implements ng.IDirective {

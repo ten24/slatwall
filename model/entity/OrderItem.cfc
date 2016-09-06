@@ -193,6 +193,10 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
         return true;
     }
 
+    public boolean function isRootOrderItem(){
+    	return isNull(this.getParentOrderItem());
+    }
+
 	public string function getOrderStatusCode(){
 		return getOrder().getStatusCode();
 	}

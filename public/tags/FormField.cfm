@@ -174,12 +174,12 @@ Notes:
 		</cfcase>
 		<cfcase value="text">
 			<cfoutput>
-				<input type="text" name="#attributes.name#" value="#attributes.hibachiScope.hibachiHTMLEditFormat(attributes.value)#" class="#attributes.class#" #attributes.fieldAttributes# />
+				<input type="text" name="#attributes.name#" value="#attributes.value#" class="#attributes.class#" #attributes.fieldAttributes# />
 			</cfoutput>
 		</cfcase>
 		<cfcase value="textarea">
 			<cfoutput>
-				<textarea name="#attributes.name#" class="#attributes.class#" #attributes.fieldAttributes#>#attributes.hibachiScope.hibachiHTMLEditFormat(attributes.value)#</textarea>
+				<textarea name="#attributes.name#" class="#attributes.class#" #attributes.fieldAttributes#>#attributes.value#</textarea>
 			</cfoutput>
 		</cfcase>
 		<cfcase value="yesno">

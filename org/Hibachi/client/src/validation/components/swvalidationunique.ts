@@ -9,13 +9,15 @@ class SWValidationUnique{
     constructor($http,$q,$hibachi,$log,validationService:ValidationService){
         return {
             restrict : "A",
-            require : "ngModel",
-            link : function(scope, element, attributes, ngModel) {
+            require : ["ngModel","^?swFormField"],
+            link : function(scope, element, attributes, controllers) {
+                var ngModel = controllers[0];
+
                 ngModel.$asyncValidators.swvalidationunique = (modelValue, viewValue)=> {
 
                     var currentValue = modelValue || viewValue;
-                    var objectName = scope.propertyDisplay.object.metaData.className;
-                    var property = scope.propertyDisplay.property;
+                    var objectName = controllers[1].object.metaData.className;
+                    var property = controllers[1].property;
                     return validationService.validateUnique(currentValue,objectName,property);
                 };
 

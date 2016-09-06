@@ -5,7 +5,7 @@ class SWOrderItemGiftRecipientRowController {
 	public recipient;
 	public quantity;
     public tableForm:any;
-    public showInvalidRecipientMessage:boolean; 
+    public showInvalidRecipientMessage:boolean;
 
 	constructor(){
 
@@ -27,9 +27,9 @@ class SWOrderItemGiftRecipientRowController {
 
 	public saveGiftRecipient = (recipient:any) =>{
 		if(this.tableForm.$valid){
-            this.showInvalidRecipientMessage = false; 
-            recipient.editing = false;  
-        } else { 
+            this.showInvalidRecipientMessage = false;
+            recipient.editing = false;
+        } else {
             this.showInvalidRecipientMessage = true;
         }
 	}
@@ -54,7 +54,7 @@ class SWOrderItemGiftRecipientRowController {
 	}
 
 	public getMessageCharactersLeft = ():number =>{
-		if(angular.isDefined(this.recipient.giftMessage)){
+		if(angular.isDefined(this.recipient.giftMessage) && this.recipient.giftMessage != null ){
 			return 250 - this.recipient.giftMessage.length;
 		} else {
 			return 250;

@@ -16,6 +16,7 @@ class SWExpandableRecordController{
     public collectionPromise:any;
     public collectionConfig:any;
     public childCollectionConfig:any;
+    public tempChildCollectionConfig:any; 
     public parentId:string;
     public parentIDName:string; 
     public entity:any
@@ -35,6 +36,10 @@ class SWExpandableRecordController{
         expandableService.addRecord(this.recordID);
         if(angular.isDefined(this.refreshChildrenEvent) && this.refreshChildrenEvent.length){
             this.observerService.attach(this.refreshChildren, this.refreshChildrenEvent)
+        }
+        //prevent nonassign error because bindto is a function
+        if(this.tempChildCollectionConfig != null){
+            angular.copy(this.tempChildCollectionConfig, this.childCollectionConfig); 
         }
     }
 
@@ -91,9 +96,9 @@ class SWExpandableRecordController{
             this.childrenOpen = !this.childrenOpen;
             this.expandableService.updateState(this.recordID,{isOpen:this.childrenOpen});
             if(!this.childrenLoaded){
-                    if(angular.isUndefined(this.childCollectionConfig)){
+                    if(this.childCollectionConfig == null){
                         this.setupChildCollectionConfig(); 
-                    } 
+                    }
                     if(angular.isFunction(this.childCollectionConfig.getEntity)){
                         this.collectionPromise = this.childCollectionConfig.getEntity();
                     } 
@@ -135,11 +140,11 @@ class SWExpandableRecord implements ng.IDirective{
     public bindToController={
         recordValue:"=",
         link:"@",
-        expandable:"=",
+        expandable:"=?",
         parentId:"=",
         entity:"=",
-        collectionConfig:"=",
-        childCollectionConfig:"=?",
+        collectionConfig:"=?",
+        childCollectionConfig:"=?tempChildCollectionConfig",
         refreshChildrenEvent:"=?",
         listingId:"@?",
         records:"=",

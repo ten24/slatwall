@@ -27,7 +27,7 @@ class OrderItemGiftRecipientControl{
                 this.adding = false;
                 this.searchText = "";
                 var count = 1;
-                this.currentGiftRecipient = new GiftRecipient();
+
 
         }
 
