@@ -67,7 +67,7 @@ class SWCollectionColumn implements ng.IDirective{
 
         console.log("column",column)
         
-        var currentScope = this.scopeService.locateParentScope(scope,"swCollectionConfig"); 
+        var currentScope = this.scopeService.getRootParentScope(scope,"swCollectionConfig"); 
         
         if(angular.isDefined(currentScope.swCollectionConfig)){ 
             //push directly here because we've already built the column object

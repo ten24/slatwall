@@ -45,7 +45,7 @@ class SWCollectionFilter implements ng.IDirective{
                 hidden:scope.SWCollectionFilter.hidden
         };
         
-        var currentScope = this.scopeService.locateParentScope(scope, "swCollectionConfig");
+        var currentScope = this.scopeService.getRootParentScope(scope, "swCollectionConfig");
        
         if(angular.isDefined(currentScope.swCollectionConfig)){ 
             currentScope.swCollectionConfig.filters.push(filter); 
