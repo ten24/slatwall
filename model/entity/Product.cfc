@@ -375,17 +375,17 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			skuCollection.addFilter("skuID",getDefaultSku().getSkuID());
 		}
 		var skuCollectionRecords = skuCollection.getRecords();
-		
+
 		// Add all skus's default images
 		var missingImagePath = setting('imageMissingImagePath');
 		var imageAltString = stringReplace(setting('imageAltString'));
-		
+
 		var skuCollectionRecordsCount = arrayLen(skuCollectionRecords);
 		for(var i=1; i<=skuCollectionRecordsCount; i++) {
 			var skuData = skuCollectionRecords[i];
 			if(ArrayFind(filenames, skuData['imageFile']) ==0) {
 				ArrayAppend(filenames, skuData['imageFile']);
-				
+
 				var thisImage = {};
 				thisImage.originalFilename = skuData['imageFile'];
 				thisImage.originalPath = getService('imageService').getProductImagePathByImageFile(skuData['imageFile']);
@@ -396,14 +396,14 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 				thisImage.resizedImagePaths = [];
 				var resizeSizesCount = arrayLen(arguments.resizeSizes);
 				for(var s=1; s<=resizeSizesCount; s++) {
-					
+
 					var resizeImageData={
 						imagePath=getService('imageService').getProductImagePathByImageFile(skuData['imageFile']),
 						size=arguments.resizeSizes[s].size
 					};
-					
+
 					arrayAppend(
-						thisImage.resizedImagePaths, 
+						thisImage.resizedImagePaths,
 						getService("imageService").getResizedImagePath(argumentCollection=resizeImageData)
 					);
 				}
@@ -414,14 +414,14 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		// Add all alternate image paths
 		var productImagesCollection = this.getProductImagesCollectionList();
 		productImagesCollection.setDisplayProperties('imageID,imageFile,imageName,imageDescription,directory');
-		
+
 		var productImagesRecords = productImagesCollectionList.getRecords();
 		var productImagesRecordsCount = arrayLen(productImagesRecords);
 		for(var i=1; i<=productImagesRecordsCount; i++) {
 			var productImageData = productImagesRecords[i];
 			if( ArrayFind(filenames, productImageData['imageID'])==0 ) {
 				ArrayAppend(filenames, productImageData['imageID']);
-				
+
 				var thisImage = {};
 				thisImage.originalFilename = productImageData['imageFile'];
 				thisImage.originalPath = getService('imageService').getImagePathByImageFileAndDirectory(productImageData['imageFile'],productImageData['directory']);
@@ -437,7 +437,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 					thisImage.description = productImageData['imageDescription'];
 				}
 				thisImage.resizedImagePaths = [];
-		
+
 				var resizesCount = arrayLen(arguments.resizeSizes);
 				for(var s=1; s<=resizesCount; s++) {
 					var resizeImageData={
@@ -448,9 +448,9 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 					};
 					arrayAppend(
 						thisImage.resizedImagePaths,
-						getService("imageService").getResizedImagePath(argumentCollection=resizeImageData) 
+						getService("imageService").getResizedImagePath(argumentCollection=resizeImageData)
 					);
-						
+
 				}
 				arrayAppend(imageGalleryArray, thisImage);
 			}
@@ -780,6 +780,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 			var sl = getService('skuService').getSkuSmartList();
 			sl.addSelect('skuID','skuID');
+			sl.addSelect('skuCode', 'skuCode');
 			sl.addSelect('imageFile','imageFile');
 			sl.addSelect('product.productType.productTypeIDPath','productTypeIDPath');
 			sl.addFilter('imageFile','NOT NULL');
