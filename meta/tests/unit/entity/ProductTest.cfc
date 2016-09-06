@@ -90,7 +90,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var optionGroup1 = createUUID();
 		var optionG11 = createUUID();
 		var optionG12 = createUUID();
-
+ 
 		var optionGroup1Data = {
 			optionGroupID = optionGroup1,
 			options = [
@@ -228,8 +228,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			productName = 'TestName',
 			skus = [
 				{
-					skuID = '',
-					skuCode = createUUID()
+					skuID = ''
 				}
 			]
 		};
@@ -250,7 +249,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(0, product.getNumberOfUnusedProductOptionCombinations());
 		assertFalse(product.hasUnusedProductOptionCombinations());
 	}
-
+	
 //=============== Private Helper functions ====================================
 
 
@@ -291,19 +290,19 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			optionGroup = {
 				optionGroupID = arguments.optionGroupID
 			}
-		};
+		};			
 
 		if(len(arguments.skuID)){
 			optionData1.skus=[
 				{
-					skuID=arguments.skuID
-				}
+					skuID=arguments.skuID	
+				}	
 			];
 		}
-
+		
 		return createPersistedTestEntity('Option', optionData1);
 	}
-
+	
 	/**
 	* This function will return mockOptionGroup with properites you passed in. Make the null arguments "" in order
 	*/
@@ -319,9 +318,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		}
 		return createPersistedTestEntity('OptionGroup', optionGroupData);
 	}
-
+	
 	/**
-	* Return mocked Product entity with properites you passed in.<br>If no argument, make it "".
+	* Return mocked Product entity with properites you passed in.<br>If no argument, make it "". 
 	*/
 	private any function createMockProduct(string productTypeID = "") {
 		var productData = {
@@ -338,41 +337,40 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	*/
 	private any function createMockProductType (string productID="", string parentProductTypeID="") {
 		var productTypeData = {
-			productTypeID = ""
+			productTypeID = ""			
 		};
-
+		
 		if(len(arguments.productID)){
 			productTypeData.product.productID = arguments.productID;
 		}
 		if(len(arguments.parentProductTypeID)){
 			productTypeData.parentProductType.productTypeID = arguments.parentProductTypeID;
 		}
-
+		
 		return createPersistedTestEntity('ProductType', productTypeData);
 	}
-
+	
 	/**
-	* This function will return mockSku with properites you passed in <br> Make the null arguments "" in order
+	* This function will return mockSku with properites you passed in <br> Make the null arguments "" in order 
 	*/
 	private any function createMockSku(string idOfProduct = "", string currencyCode = "", string skuImageFile = "") {
 		var skuData = {
-			skuID = "",
-			skuCode = createUUID()
+			skuID = ""
 		};
 		if (len(arguments.idOfProduct)) {
 			skuData.product.productID = arguments.idOfProduct;
 		}
 		if (len(arguments.currencyCode)) {
 			skuData.currencyCode = arguments.currencyCode;
-		}
+		}		
 		if (len(arguments.skuImageFile)) {
 			skuData.imageFile = arguments.skuImageFile;
 		}
 		return createPersistedTestEntity('Sku', skuData);
 	}
-
+	
 	/**
-	* This function will return mockImage with properites you passed in. Make the null arguments "" in order
+	* This function will return mockImage with properites you passed in. Make the null arguments "" in order 
 	*/
 	private any function createMockImage(string imageDirectory = "", string imageFile = "") {
 		var imageData = {
@@ -386,10 +384,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		}
 		return createPersistedTestEntity('Image', imageData);
 	}
-
-
+	
+	
    //================== End Of Private Helper Functions =========================================
-
+	
 	//============Start From Here
 	public void function getAvailableForPurchaseFlagTest() {
 		//testing startDate < now() < endDate
@@ -399,10 +397,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			purchaseEndDateTime = dateAdd('d', 3, now())
 		};
 		var product1 = createTestEntity('Product', productData1);
-
+		
 		var resultBetweenTwoDates = product1.getAvailableForPurchaseFlag();
 		assertTrue(resultBetweenTwoDates);
-
+		
 		//testing startDate > now() < endDate
 		var productData2 = {
 			productID = '',
@@ -410,26 +408,26 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			purchaseEndDateTime = dateAdd('d', 3, now())
 		};
 		var product2 = createTestEntity('Product', productData2);
-
+		
 		var resultBeforeTwoDates = product2.getAvailableForPurchaseFlag();
 		assertFalse(resultBeforeTwoDates, 'startDate > now() < endDate should not be available');
-
+		
 		//testing empty startDate and endDate
 		var productData3 = {
 			productID = ''
 		};
 		var product3 = createTestEntity('Product', productData3);
-
+		
 		var resultEmptyTwoDates = product3.getAvailableForPurchaseFlag();
 		assertTrue(resultEmptyTwoDates, 'Empty PurchaseStart/EndDateTime give errors');
-
+		
 		//testing valid startDate but empty endDate
 		var productData4 = {
 			productID = '',
 			purchaseStartDateTime = dateAdd('d', -2, now())
 		};
 		var product4 = createTestEntity('Product', productData4);
-
+		
 		var resultExistedStartDateEmptyEndDate = product4.getAvailableForPurchaseFlag();
 		assertTrue(resultExistedStartDateEmptyEndDate);
 	}
@@ -441,7 +439,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var mockContent3 = createMockContent("Macbeth", 1);
 		var mockContent4 = createMockContent("", 1);
 		var mockContent5 = createMockContent("The Happy Prince", 0);
-
+		
 		var productData = {
 			productID = "",
 			listingPages = [
@@ -463,7 +461,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			]
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
-
+		
 		var result = mockProduct.getListingPagesOptionsSmartList().getRecords(refresh = true);
 		//testing the activeFlag filter
 		assertEquals(4, arrayLen(result), 'testing the activeFlag filter');
@@ -482,34 +480,32 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			productBundleGroupID = ""
 		};
 		var mockProductBundleGroup1 = createPersistedTestEntity('ProductBundleGroup', productBundleGroupData1);
-
+		
 		var productBundleGroupData2 = {
 			productBundleGroupID = ""
 		};
 		var mockProductBundleGroup2 = createPersistedTestEntity('ProductBundleGroup', productBundleGroupData2);
-
+		
 		var productBundleGroupData3 = {
 			productBundleGroupID = ""
 		};
 		var mockProductBundleGroup3 = createPersistedTestEntity('ProductBundleGroup', productBundleGroupData3);
-
+		
 		var skuData = {
 			skuID = "",
-			skuCode = createUUID(),
 			productBundleGroups = [
 				{
 					productBundleGroupID = mockProductBundleGroup1.getProductBundleGroupID()
 				},
 				{
 					productBundleGroupID = mockProductBundleGroup2.getProductBundleGroupID()
-				}
+				}	
 			]
 		};
 		var mockSku1 = createPersistedTestEntity('Sku', skuData);
-
+		
 		var skuData2 = {
 			skuID = "",
-			skuCode = createUUID(),
 			productBundleGroups = [
 				{
 					productBundleGroupID = mockProductBundleGroup3.getProductBundleGroupID()
@@ -517,7 +513,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			]
 		};
 		var mockSku2 = createPersistedTestEntity('Sku', skuData2);
-
+		
 		var productData = {
 			productID = "",
 			skus = [
@@ -530,20 +526,19 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			]
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
-
+		
 		//testing if the result is correct
 		var result = mockProduct.getProductBundleGroupsCount();
 		assertEquals(3, result);
 	}
-
+	
 	public void function getProductBundleGroupsCountTest_NoSku() {
 		//testing if no SKU entity created
 		var skuData = {
-			skuID = "",
-			skuCode = createUUID()
+			skuID = ""
 		};
 		var mockSku = createPersistedTestEntity('Sku', skuData);
-
+		
 		var productData = {
 			productID = "",
 			skus = [
@@ -553,20 +548,20 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			]
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
-
+		
 		var result = mockProduct.getProductBundleGroupsCount();
-		assertEquals(0, result);
+		assertEquals(0, result);	 
 	}
-
+	
 	public void function getProductBundleGroupsCountTest_NoProductBundleGroup() {
-		//testing if no ProductBundleGroups entity created in SKU
+		//testing if no ProductBundleGroups entity created in SKU 
 		var productData = {
 			productID = ""
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
-
+		
 		var result = mockProduct.getProductBundleGroupsCount();
-		assertEquals(0, result);
+		assertEquals(0, result);	 
 	}
 
 
@@ -576,25 +571,22 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			subscriptionTermID = ""
 		};
 		var mockSubscriptionTerm = createPersistedTestEntity('SubscriptionTerm', subscriptionTermData);
-
+		
 		var skuData1 = {//no renewalSku, has subscriptionTerm, should be added
 			skuID = "",
-			skuCode = createUUID(),
 			subscriptionTerm = {
 				subscriptionTermID = mockSubscriptionTerm.getSubscriptionTermID()
 			}
 		};
 		var mockSku1 = createPersistedTestEntity('Sku', skuData1);
-
+		
 		var skuDataForRenewal = {
-			skuID = "",
-			skuCode = createUUID()
+			skuID = ""
 		};
 		var mockSkuForRenewal = createPersistedTestEntity('Sku', skuDataForRenewal);
-
+		
 		var skuData2 = {//has renewalSku, has subscriptionTerm, should not be added
 			skuID = "",
-			skuCode = createUUID(),
 			renewalSku = {
 				skuID = mockSkuForRenewal.getSkuID()
 			},
@@ -603,13 +595,12 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}
 		};
 		var mockSku2 = createPersistedTestEntity('Sku', skuData2);
-
+		
 		var skuData3 = {//no renewalSku, no subscriptionTerm, should not be added
-			skuID = "",
-			skuCode = createUUID()
+			skuID = ""
 		};
 		var mockSku3 = createPersistedTestEntity('Sku', skuData3);
-
+		
 		var productData = {
 			productID = "",
 			skus = [
@@ -625,32 +616,29 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			]
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
-
+		
 		var result = mockProduct.getSubscriptionSkuSmartList().getRecords(refresh = true);
 		assertTrue(arrayFind(result, mockSku1));
 		assertEquals(0, arrayFind(result, mockSku2));
 		assertEquals(0, arrayFind(result, mockSku3));
 	}
-
+	
 	public void function getSkusTest_NoArgument() {
 		var skuData1 = {
-			skuID = "",
-			skuCode = createUUID()
+			skuID = ""
 		};
 		var mockSku1 = createPersistedTestEntity('Sku', skuData1);
-
+		
 		var skuData2 = {
-			skuID = "",
-			skuCode = createUUID()
+			skuID = ""
 		};
 		var mockSku2 = createPersistedTestEntity('Sku', skuData2);
-
+		
 		var skuData3 = {
-			skuID = "",
-			skuCode = createUUID()
+			skuID = ""
 		};
 		var mockSku3 = createPersistedTestEntity('Sku', skuData3);
-
+		
 		var productData = {
 			productID = "",
 			skus = [
@@ -666,29 +654,29 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			]
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
-
+		
 		var result = mockProduct.getSkus(sorted = true);
 		assertTrue(arrayFind(result, mockSku1));
 		assertTrue(arrayFind(result, mockSku2));
 		assertTrue(arrayFind(result, mockSku3));
 	}
-
+	
 	public void function getSkusTest_SortedFetchOptionBothTrue() {
-		//Potential Bug: based on the function in SkuService.cfc, if we pass arguments, fetchOptions must be true,
+		//Potential Bug: based on the function in SkuService.cfc, if we pass arguments, fetchOptions must be true, 
 		//and sorted is a required argument
 
-		var mockProductType = createMockProductType("", "444df2f7ea9c87e60051f3cd87b435a1");
+		var mockProductType = createMockProductType("", "444df2f7ea9c87e60051f3cd87b435a1");		
 		var mockProduct = createMockProduct(mockProductType.getProductTypeID());
-
+		
 		var optionGroupData = {
 			optionGroupID = ""
 		};
 		var mockOptionGroup = createPersistedTestEntity('OptionGroup', optionGroupData);
-
+		
 		var mockOption1 = createMockOption(mockOptionGroup.getOptionGroupID());
 		var mockOption2 = createMockOption(mockOptionGroup.getOptionGroupID());
 		var mockOption3 = createMockOption(mockOptionGroup.getOptionGroupID());
-
+		
 		var skuData1 = {//should be added
 			skuID = "4028288f54f3979c01557df0b0b52aaaa",
 			options = [
@@ -704,7 +692,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}
 		};
 		var mockSku1 = createPersistedTestEntity('Sku', skuData1);
-
+		
 		var skuData2 = {//should be added
 			skuID = "",
 			options = [
@@ -717,7 +705,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}
 		};
 		var mockSku2 = createPersistedTestEntity('Sku', skuData2);
-
+		
 		var skuData3 = {//should not be added
 			skuID = "",
 			product = {
@@ -730,13 +718,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(arrayFind(result, mockSku1));
 		assertTrue(arrayFind(result, mockSku2));
 		assertFalse(arrayFind(result, mockSku3));
-		assertEquals(2, arrayLen(result));
+		assertEquals(2, arrayLen(result));	
 	}
-
-
+	
+	
 	public void function getProductTypeOptionsTest_noArgument() {
 		//testing the function without the argument, should return child-types below the mockProduct's baseProductType
-
+		
 		//mock a child product type
 		var mockProductType1 = createMockProductType("", '50cdfabbc57f7d103538d9e0e37f61e4');//parentProductType: gift-card
 		var mockProductType2 = createMockProductType("", '50cdfabbc57f7d103538d9e0e37f61e4');
@@ -744,11 +732,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var mockProductType4 = createMockProductType("", '444df315a963bea00867567110d47728');//parentProductType: event
 		var mockProductType5 = createMockProductType("", mockProductType2.getProductTypeID());//parentProductType: mockProductType2
 		var mockProductType6 = createMockProductType("", mockProductType2.getProductTypeID());//parentProductType: mockProductType2
-
+		
 		var mockProduct = createMockProduct(mockProductType3.getProductTypeID());//mockProduct <-> mockProductType2
-
+		
 		var resultNoArgument = mockProduct.getProductTypeOptions();
-
+		
 		var resultValues = [];
 		for (i = 1; i <= arrayLen(resultNoArgument); i++) {
 			ArrayAppend(resultValues, resultNoArgument[i].value);
@@ -758,22 +746,22 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(arrayFind(resultValues, mockProductType3.getProductTypeID()));
 		assertFalse(arrayFind(resultValues, mockProductType4.getProductTypeID()));//Won't return child of other baseType
 		assertTrue(arrayFind(resultValues, mockProductType5.getProductTypeID()));
-		assertTrue(arrayFind(resultValues, mockProductType6.getProductTypeID()));
+		assertTrue(arrayFind(resultValues, mockProductType6.getProductTypeID()));		
 	}
-
+	
 	public void function getProductTypeOptionsTest_argumentSameWithProductType() {
 		//testing the argument passed in, is same with mockProduct's baseProductType
-
+		
 		//mock a child product type
 		var mockProductType1 = createMockProductType("", '50cdfabbc57f7d103538d9e0e37f61e4');//parentProductType: gift-card
-		var mockProductType2 = createMockProductType("", '50cdfabbc57f7d103538d9e0e37f61e4');
+		var mockProductType2 = createMockProductType("", '50cdfabbc57f7d103538d9e0e37f61e4');		
 		var mockProductType3 = createMockProductType("", '50cdfabbc57f7d103538d9e0e37f61e4');
 		var mockProductType4 = createMockProductType("", '444df315a963bea00867567110d47728');//parentProductType: event
-
+		
 		var mockProduct = createMockProduct(mockProductType2.getProductTypeID());
-
+		
 		var resultWithArgument = mockProduct.getProductTypeOptions("gift-card");
-
+		
 		var resultValues = [];
 		for (i = 1; i <= arrayLen(resultWithArgument); i++) {
 			ArrayAppend(resultValues, resultWithArgument[i].value);
@@ -783,19 +771,19 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(arrayFind(resultValues, mockProductType3.getProductTypeID()));
 		assertFalse(arrayFind(resultValues, mockProductType4.getProductTypeID()));
 	}
-
+	
 	public void function getProductTypeOptionsTest_argumentDifferentFromProductType() {
-		//testing the argument passed in, is different with mockProduct's baseProductType,
+		//testing the argument passed in, is different with mockProduct's baseProductType, 
 		//so should only return the relative-type with the argument type
-
+		
 		//mock a child product type
 		var mockProductType1 = createMockProductType("", '50cdfabbc57f7d103538d9e0e37f61e4');//parentProductType: gift-card
-		var mockProductType2 = createMockProductType("", '50cdfabbc57f7d103538d9e0e37f61e4');
+		var mockProductType2 = createMockProductType("", '50cdfabbc57f7d103538d9e0e37f61e4');		
 		var mockProductType3 = createMockProductType("", '50cdfabbc57f7d103538d9e0e37f61e4');
 		var mockProductType4 = createMockProductType("", '444df315a963bea00867567110d47728');//parentProductType: event
-
+		
 		var mockProduct = createMockProduct(mockProductType2.getProductTypeID());//associate mockProduct w/ mockProdouctType2
-
+		
 		var result = mockProduct.getProductTypeOptions("Event");
 
 		var resultValues = [];
@@ -813,7 +801,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var mockSku2 = createMockSku();
 		var mockSku3 = createMockSku();
 		var mockSku4 = createMockSku();
-
+		
 		var productData = {
 			productID = "",
 			skus = [
@@ -829,24 +817,24 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			]
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
-
+		
 		//testing the skuID belong to this product
 		var result = mockProduct.getSkuByID(mockSku2.getSkuID());
 		assertEquals(mockSku2.getSkuID(), result.getSkuID());
-
+		
 		//testing the skuID not belong to the product
 		var resultNoExist = mockProduct.getSkuByID(mockSku4.getSkuID());
 		assertTrue(isNull(resultNoExist));
-
+		
 		//testing error ID
 		var resultRandomString = mockProduct.getSkuByID("randomStringNoID");
 		assertTrue(isNull(resultRandomString));
 	}
-
+	
 	public void function getImagesTest() {
 		var mockImage1 = createMockImage();
 		var mockImage2 = createMockImage();
-
+		
 		//testing the product with mockImage1
 		var productData = {
 			productID = "",
@@ -857,31 +845,25 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			]
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
-
+		
 		var result = mockProduct.getImages();
 		assertEquals(1, arrayLen(result));
 		assertEquals(mockImage1.getImageID(), result[1].getImageID());
-
+		
 		//testing the product without Images
 		var mockProductNoImage = createMockProduct();
 		var resultNotExist = mockProductNoImage.getImages();
 		assertTrue(isDefined("resultNotExist"));
-		assertEquals(0, arrayLen(resultNotExist));
+		assertEquals(0, arrayLen(resultNotExist));	
 	}
-
+	
 	public void function getTotalImageCountTest() {
 		var mockImage1 = createMockImage();
 		var mockImage2 = createMockImage();
-
+		
 		//testing the product with mockImage1
 		var productData = {
 			productID = "",
-			skus = [
-				{
-					skuID='',
-					skuCode=createUUID()
-				}
-			],
 			productImages = [
 				{
 					imageID = mockImage1.getImageID()
@@ -892,26 +874,26 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			]
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
-
+		
 		assertEquals(2, mockProduct.getProductImagesCount());
 		assertEquals(2 + 0, mockProduct.getTotalImageCount());
-
+		
 		//testing the product without mockImages
 		var productData2 = {
 			productID = ""
 		};
 		var mockProductNoImages = createPersistedTestEntity('Product', productData2);
-
+		
 		assertEquals(0, mockProductNoImages.getProductImagesCount());
 		assertEquals(0 + 0, mockProductNoImages.getTotalImageCount());
 	}
-
+	
 	public void function getTemplateOptionsTest() {
 		//Never been used elsewhere. Skip the test.
 	}
-
+	
 	//=================Non-persisted Helpers ====================
-
+	
 	/**
 	* @hint "helper for getOptionsGroupsXXX() function to create mock Data. Arguments are 2 OptionGroup ID"
 	*
@@ -921,10 +903,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			productID = ""
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
-
+		
 		var mockOption1 = createMockOption(arguments.optionGroupId1);
 		var mockOption2 = createMockOption(arguments.optionGroupId2);
-
+		
 		var skuData1 = {
 			skuID = "",
 			product = {
@@ -940,45 +922,45 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			]
 		};
 		var mockSku = createPersistedTestEntity('Sku', skuData1);
-
+				
 		if (!mockOption1.hasSku(mockSku)) {
 			arrayAppend(mockOption1.getSkus(), mockSku);
 		}
-
+		
 		if (!mockOption2.hasSku(mockSKU)) {
 			arrayAppend(mockOption2.getSkus(), mockSku);
 		}
 
 		return mockProduct;
 	}
-
-	public void function getOptionGroupsTest() {
+	
+	public void function getOptionGroupsTest() {				
 		var optionGroupsData1 = {
 			optionGroupID = ""
 		};
 		var mockOptionGroup1 = createPersistedTestEntity('OptionGroup', optionGroupsData1);
 		var optionGroupsData2 = {
 			optionGroupID = ""
-
+			
 		};
 		var mockOptionGroup2 = createPersistedTestEntity('OptionGroup', optionGroupsData2);
-
+		
 		var mockProduct = createMockDataForGetOptionGroupsHelper(mockOptionGroup1.getOptionGroupID(), mockOptionGroup2.getOptionGroupID());
 		var resultOptionGroups = mockProduct.getOptionGroups();
-
+		
 		var indexOfMockOptionGroup1 = arrayFind(resultOptionGroups, mockOptionGroup1);
 		var indexOfMockOptionGroup2 = arrayFind(resultOptionGroups, mockOptionGroup2);
-
+		
 		//testing the productID filter
 		assertNotEquals(0, indexOfMockOptionGroup1);
 		assertNotEquals(0, indexOfMockOptionGroup2);
 		assertEquals(mockProduct.getProductID(), resultOptionGroups[indexOfMockOptionGroup1].getOptions()[1].getSkus()[1].getProduct().getProductID());
-
+		
 		//testing the ascending order
 		assertEquals(mockOptionGroup1.getOptionGroupID() < mockOptionGroup2.getOptionGroupID(), indexOfMockOptionGroup1 < indexOfMockOptionGroup2);
 	}
-
-	public void function getOptionGroupsStructTest() {
+	
+	public void function getOptionGroupsStructTest() {		
 		var optionGroupsData1 = {
 			optionGroupID = "",
 			optionGroupName = "Hello Kitty"
@@ -987,18 +969,18 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var optionGroupsData2 = {
 			optionGroupID = "",
 			optionGroupName = "Hello Doggy"
-
+			
 		};
 		var mockOptionGroup2 = createPersistedTestEntity('OptionGroup', optionGroupsData2);
-
+		
 		var mockProduct = createMockDataForGetOptionGroupsHelper(mockOptionGroup1.getOptionGroupID(), mockOptionGroup2.getOptionGroupID());
 		var resultOptionGroupsStruct = mockProduct.getOptionGroupsStruct();
-
+		
 		assertIsStruct(resultOptionGroupsStruct);//Yuqing: Check if works in CircleCI
 		assertEquals("Hello Kitty", resultOptionGroupsStruct[mockOptionGroup1.getOptionGroupID()].getOptionGroupName());
 		assertEquals(mockOptionGroup2.getOptionGroupID(), resultOptionGroupsStruct[mockOptionGroup2.getOptionGroupID()].getOptionGroupID());
 	}
-
+	
 	public void function getOptionGroupsAsListTest() {
 
 		var optionGroupsData1 = {
@@ -1007,17 +989,17 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var mockOptionGroup1 = createPersistedTestEntity('OptionGroup', optionGroupsData1);
 		var optionGroupsData2 = {
 			optionGroupID = ""
-
+			
 		};
 		var mockOptionGroup2 = createPersistedTestEntity('OptionGroup', optionGroupsData2);
-
+		
 		var mockProduct = createMockDataForGetOptionGroupsHelper(mockOptionGroup1.getOptionGroupID(), mockOptionGroup2.getOptionGroupID());
 		var resultOptionGroupsList = mockProduct.getOptionGroupsAsList();
-
+		
 		assertTrue(len(resultOptionGroupsList) >= 2);
-		assertTrue(listFind(resultOptionGroupsList, mockOptionGroup1.getOptionGroupID()) != 0);
+		assertTrue(listFind(resultOptionGroupsList, mockOptionGroup1.getOptionGroupID()) != 0);		
 	}
-
+	
 	public void function getOptionGroupCountTest() {
 		var optionGroupsData1 = {
 			optionGroupID = ""
@@ -1025,26 +1007,26 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var mockOptionGroup1 = createPersistedTestEntity('OptionGroup', optionGroupsData1);
 		var optionGroupsData2 = {
 			optionGroupID = ""
-
+			
 		};
 		var mockOptionGroup2 = createPersistedTestEntity('OptionGroup', optionGroupsData2);
-
+		
 		var mockProduct = createMockDataForGetOptionGroupsHelper(mockOptionGroup1.getOptionGroupID(), mockOptionGroup2.getOptionGroupID());
 		assertEquals(2, mockProduct.getOptionGroupCount());
 	}
-
+	
 	public void function getAllowAddOptionGroupFlagTest_OneSkuTwoOptionGroups() {
-		//Testing the mock Data from the private helper
+		//Testing the mock Data from the private helper 
 		var optionGroupsData1 = {
 			optionGroupID = ""
 		};
 		var mockOptionGroup1 = createPersistedTestEntity('OptionGroup', optionGroupsData1);
 		var optionGroupsData2 = {
 			optionGroupID = ""
-
+			
 		};
 		var mockOptionGroup2 = createPersistedTestEntity('OptionGroup', optionGroupsData2);
-
+		
 		var mockProduct = createMockDataForGetOptionGroupsHelper(mockOptionGroup1.getOptionGroupID(), mockOptionGroup2.getOptionGroupID());
 		var resultAllowFlag = mockProduct.getAllowAddOptionGroupFlag();
 		assertTrue(resultAllowFlag);
@@ -1055,15 +1037,15 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			productID = ""
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
-
+		
 		var optionGroupsData1 = {
 			optionGroupID = ""
 		};
 		var mockOptionGroup1 = createPersistedTestEntity('OptionGroup', optionGroupsData1);
-
+		
 		var mockOption1 = createMockOption(mockOptionGroup1.getOptionGroupID());
 		var mockOption2 = createMockOption(mockOptionGroup1.getOptionGroupID());
-
+		
 		var skuData1 = {
 			skuID = "",
 			product = {
@@ -1098,12 +1080,12 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			productID = ""
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
-
+		
 		var optionData = {
 			optionID = ""
 		};
 		var mockOption = createPersistedTestEntity('Option', optionData);
-
+		
 		var skuData = {
 			skuID = "",
 			product = {
@@ -1116,11 +1098,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			]
 		};
 		var mockSku = createPersistedTestEntity('Sku', skuData);
-
+		
 		var resultNoOptionGroup = mockProduct.getAllowAddOptionGroupFlag();
-		assertTrue(resultNoOptionGroup);
+		assertTrue(resultNoOptionGroup);		
 	}
-	public void function getCategoryIDsTest() {
+	public void function getCategoryIDsTest() {		
 		var categoryData1 = {
 			categoryID = ""
 		};
@@ -1133,7 +1115,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			categoryID = ""
 		};
 		var mockCategory3 = createPersistedTestEntity('Category', categoryData3);
-
+		
 		//testing existed categories
 		var productData = {
 			productID = "",
@@ -1147,22 +1129,22 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			]
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
-
+		
 		var resultExistCategories = mockProduct.getCategoryIDs();
 		assertTrue(listFind(resultExistCategories, mockCategory1.getCategoryID()) > 0);
 		assertTrue(listFind(resultExistCategories, mockCategory2.getCategoryID()) > 0);
 		assertTrue(listFind(resultExistCategories, mockCategory3.getCategoryID()) == 0);
-
+		
 		//testing empty category
 		var mockProductNoCategory = createMockProduct();
 		var resultNoCategory = mockProductNoCategory.getCategoryIDs();
 		assertTrue(Len(resultNoCategory) == 0);
 	}
-
+	
 	public void function getTemplateTest_ContentTemplateTypeIsCttProduct() {
 		//testing product associate w/ content and ContentTemplateType is cttProduct
 		var mockContent1 = createMockContentWithContentTemplateType("444df330fc19e5beb17ff974ac03db18");//cttProduct
-
+		
 		var productData = {
 			productID = ""
 			,
@@ -1173,23 +1155,23 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			]
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
-
+		
 		var settingData = {
 			settingID="",
 			settingName="productDisplayTemplate",
 			settingValue = "cttBarrierPage, cttProduct, cttcttProductType"
 		};
 		var settingEntity = createPersistedTestEntity('Setting',settingData);
-
+		
 		var result = mockProduct.getTemplate();
 		assertEquals(settingEntity.getsettingValue(), result);
-
+		
 	}
-
+	
 	public void function getTemplateTest_ContentTemplateTypeNotCttProduct() {
 		//testing product Template with mockContent
 		var mockContent = createMockContentWithContentTemplateType("444df332f3988ad0c802b83361f99a01");//cttBrand
-
+		
 		var productData = {
 			productID = "",
 			listingPages = [
@@ -1199,20 +1181,20 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			]
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
-
+		
 		var settingData = {
 			settingID="",
 			settingName="productDisplayTemplate",
 			settingValue = "cttBarrierPage, cttProduct, cttcttProductType"
 		};
 		var settingEntity = createPersistedTestEntity('Setting',settingData);
-
+		
 		var result = mockProduct.getTemplate();
 		//Even though the result is same, executing different code in SettingService
 		assertEquals(settingEntity.getsettingValue(), result);
-
+		
 	}
-
+	
 	public void function getTemplateTest_GlobalSettingNoContents() {
 		//testing product Template with no mockContent
 		var productData = {
@@ -1220,17 +1202,17 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
-
+		
 		var settingData = {
 			settingID="",
 			settingName="productDisplayTemplate",
 			settingValue = "cttBarrierPage, cttProduct, cttcttProductType"
 		};
 		var settingEntity = createPersistedTestEntity('Setting',settingData);
-
+		
 		var result = mockProduct.getTemplate();
 		assertEquals(settingEntity.getsettingValue(), result);
-
+		
 	}
 
 	public void function getAlternateImageDirectoryTest() {
@@ -1238,19 +1220,19 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var result = mockProduct.getAlternateImageDirectory();
 		assertEquals("/custom/assets/images/product/", result);
 	}
-
-
+	
+	
 	// @hint "This function mostly used by testing getProductRating()"
 	private any function createMockProductReviewWithRating(numeric rating = -1) {
 		var productReviewData = {
-			productReviewID = ""
+			productReviewID = ""			
 		};
 		if (rating != -1) {
 			productReviewData.rating = arguments.rating;
 		}
 		return createPersistedTestEntity('ProductReview', productReviewData);
 	}
-
+	
 	public void function getProductRatingTest2() {
 		var mockProductReview1 = createMockProductReviewWithRating(10);
 		var mockProductReview2 = createMockProductReviewWithRating(20);
@@ -1272,10 +1254,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			]
 		};
 		var mockProductOnMath = createPersistedTestEntity('Product', productData1);
-
+		
 		var resultOnMath = mockProductOnMath.getProductRating();
 		assertEquals(20, resultOnMath);
-
+		
 		//testing the productReview w/ and w/o rating
 		var productData2 = {
 			productID = "",
@@ -1289,10 +1271,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			]
 		};
 		var mockProductWithWithoutRating = createPersistedTestEntity('Product', productData2);
-
+		
 		var resultWithWithoutRating = mockProductWithWithoutRating.getProductRating();
 		assertEquals(5, resultWithWithoutRating);
-
+		
 		//testing the productReveiw without rating
 		var productData3 = {
 			productID = "",
@@ -1303,21 +1285,21 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			]
 		};
 		var mockProductWithoutRating = createPersistedTestEntity('Product', productData3);
-
+		
 		var resultWithoutRating = mockProductWithoutRating.getProductRating();
 		assertEquals(0, resultWithoutRating);
-
+		
 		//testing the product without productReview properety
 		var mockProductWithoutProductReveiw = createMockProduct();
-
+		
 		var resultWithoutProductReview = mockProductWithoutProductReveiw.getProductRating();
 		assertEquals(0, resultWithoutProductReview);
 	}
-
+	
 	public void function getImageGalleryArrayTest_StructValues() {
-		//testing if the struct values works well
+		//testing if the struct values works well		 	
 		var mockSku = createMockSku("", "", "admin.logo.png");
-
+	 				
 		var imageData = {
 			imageID = "",
 			imageName = "Favicon Image Name",
@@ -1326,14 +1308,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			directory = "mockDirectory"
 		};
 		var mockImage = createPersistedTestEntity('Image', imageData);
-
+		
 		var productData = {
 			productID = "",
 			productName = "MockProductName",
 			skus = [
 				{
-					skuID = mockSku.getSkuID(),
-					skuCode = createUUID()
+					skuID = mockSku.getSkuID()
 				}
 			],
 			productImages = [
@@ -1344,11 +1325,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			productDescription = "MockProduct's description"
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
-
+		
 		var resultImageGalleryArray = mockProduct.getImageGalleryArray();
-
+		
 		assertEquals(2, arrayLen(resultImageGalleryArray));
-
+		
 		//testing values on sku default image
 		assertEquals("admin.logo.png", resultImageGalleryArray[1].originalFileName);
 		assertEquals("/custom/assets/images/product/default/admin.logo.png", trim(resultImageGalleryArray[1].originalPath));
@@ -1359,7 +1340,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(!isNull(resultImageGalleryArray[1].resizedImagePaths[1]));
 		assertTrue(!isNull(resultImageGalleryArray[1].resizedImagePaths[2]));
 		assertTrue(!isNull(resultImageGalleryArray[1].resizedImagePaths[3]));
-
+		
 		//testing the values on productImage
 		assertEquals("/custom/assets/images/mockDirectory/", trim(resultImageGalleryArray[2].originalPath));
 		assertEquals("productAlternateImage", resultImageGalleryArray[2].type);
@@ -1368,7 +1349,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals("Mock Image's Description'", resultImageGalleryArray[2].description);
 		assertTrue(!isNull(resultImageGalleryArray[2].resizedImagePaths[1]));
 		assertTrue(!isNull(resultImageGalleryArray[2].resizedImagePaths[2]));
-		assertTrue(!isNull(resultImageGalleryArray[2].resizedImagePaths[3]));
+		assertTrue(!isNull(resultImageGalleryArray[2].resizedImagePaths[3]));		
 	}
 	public void function getImageGalleryArrayTest_SkuImagesAssociation() {
 		//Testing the associatino
@@ -1376,25 +1357,22 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	var mockSku2 = createMockSku();//Does not have images, should not be added
 	 	var mockSku3 = createMockSku("", "", "fakeFile.somefile");
 	 	var mockSku4 = createMockSku("", "", "favicon.png");
-
+	 	
 		var mockImage1 = createMockImage("/fakedirectory", "admin.logo.png");
 		var mockImage2 = createMockImage();
-
+		
 		var productData = {
 			productID = "",
 			productName=createUUID(),
 			skus = [
 				{
-					skuID = mockSku1.getSkuID(),
-					skuCode = createUUID()
+					skuID = mockSku1.getSkuID()
 				},
 				{
-					skuID = mockSku2.getSkuID(),
-					skuCode = createUUID()
+					skuID = mockSku2.getSkuID()
 				},
 				{
-					skuID = mockSku3.getSkuID(),
-					skuCode = createUUID()
+					skuID = mockSku3.getSkuID()
 				}
 			],
 			productImages = [
@@ -1407,12 +1385,12 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			]
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
-
+		
 		var resultImageGalleryArray = mockProduct.getImageGalleryArray();
-
+		
 		assertEquals(5, arrayLen(resultImageGalleryArray));
-	}
-
+	}	
+	
 	public void function getProductURLTest() {
 		//testing if the urlTitle exists
 		var productData = {
@@ -1420,16 +1398,16 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			urlTitle = "MockProductURLTitle"
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
-
+		
 		var result = mockProduct.getPRoductURL();
 		assertEquals("/sp/MockProductURLTitle/", result);
-
+		
 		//testing if the urlTitle exists
 		var productData2 = {
 			productID = ""
 		};
 		var mockProductNoURL = createPersistedTestEntity('Product', productData2);
-
+		
 		var resultNoProductURL = mockProductNoURL.getPRoductURL();
 		assertEquals("/sp//", resultNoProductURL);
 	}
@@ -1441,25 +1419,25 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			urlTitle = "MockProductURLTitle"
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
-
+		
 		var result = mockProduct.getListingProductURL();
 		assertEquals("sp/MockProductURLTitle/", result);
-
+		
 		//testing if the urlTitle exists
 		var productData2 = {
 			productID = ""
 		};
 		var mockProductNoURL = createPersistedTestEntity('Product', productData2);
-
+		
 		var resultNoProductURL = mockProductNoURL.getListingProductURL();
 		assertEquals("sp//", resultNoProductURL);
 	}
 
 	//=================End Test: non-persisted Helpers===========
 
-
+	
 	// Start Testing: Functions that delegate to the default sku
-
+	
 	/**
 	* @hint "Helper of functions delegate to the default sku. This returns the PRODUCT entity with the default SKU"
 	*/
@@ -1469,21 +1447,20 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			imageFile = "admin.logo.png"
 		};
 		var mockSku = createPersistedTestEntity('Sku', skuData);
-
+		
 		var productData = {
 			productID = "",
 			productType = {
 				typeID = "50cdfabbc57f7d103538d9e0e37f61e4" //giftcard
 			},
 			defaultSku = {
-				skuID = mockSku.getSkuID(),
-				skuCode = createUUID()
+				skuID = mockSku.getSkuID()
 			}
 		};
 		return createPersistedTestEntity('Product', productData);
-
+		
 	}
-
+	
 	/**
 	* Helper of functions delegate to the default sku. This returns the PRODUCT entity without the default SKU
 	*/
@@ -1495,88 +1472,88 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}
 		};
 		return createPersistedTestEntity('Product', productData);
-
+		
 	}
-
+	
 	public void function getImageDirectoryTest() {
 		//TODO: deprecate method getImageDirectory() is undefined in sku.cfc
-
+		
 		//Testing the PRODUCT with defaultSKU
 		var mockProductWithDefaultSku = createMockDataWithDefaultSku();
-
+				
 		//Testing the PRODUCT without defaultSKU
-		var mockProductWithoutDefaultSku = createMockDataWithoutDefaultSku();
+		var mockProductWithoutDefaultSku = createMockDataWithoutDefaultSku();				
 	}
-
+	
 	public void function getImagePathTest() {
 		//Testing the PRODUCT with defaultSKU
 		var mockProductWithDefaultSku = createMockDataWithDefaultSku();
-
+		
 		var resultImagePathWithDefaultSKU = mockProductWithDefaultSku.getImagePath();
 		assertEquals("/custom/assets/images/product/default/admin.logo.png", resultImagePathWithDefaultSKU);
-
+		
 		//Testing the PRODUCT without defaultSKU
 		var mockProductWithoutDefaultSku = createMockDataWithoutDefaultSku();
-
+				
 		var resultImagePathWithoutDefaultSKU = mockProductWithoutDefaultSku.getImagePath();
 		assertEquals("/custom/assets/images/product/default/", resultImagePathWithoutDefaultSKU);
-
+		
 	}
-
+	
 	public void function getImageTest() {
 		//Testing the PRODUCT with defaultSKU
 		var mockProductWithDefaultSku = createMockDataWithDefaultSku();
-
+		
 		var resultImageWithDefaultSKU = mockProductWithDefaultSku.getImage();
 		assertEquals('<img src="/assets/images/missingimage.jpg" />', resultImageWithDefaultSKU);
-
+		
 		//Testing the PRODUCT without defaultSKU
 		var mockProductWithoutDefaultSku = createMockDataWithoutDefaultSku();
-
+				
 		var resultImageWithoutDefaultSKU = mockProductWithoutDefaultSku.getImage();
 		assertEquals('<img src="/assets/images/missingimage.jpg" />', resultImageWithoutDefaultSKU);
 	}
-
+	
 	public void function getResizedImagePathTest() {
 		//Testing the PRODUCT with defaultSKU
 		var mockProductWithDefaultSku = createMockDataWithDefaultSku();
-
+		
 		var resultResizedPathWithDefaultSKU = mockProductWithDefaultSku.getResizedImagePath();
 		assertEquals("/assets/images/missingimage.jpg", resultResizedPathWithDefaultSKU);
-
+		
 		//Testing the PRODUCT without defaultSKU
 		var mockProductWithoutDefaultSku = createMockDataWithoutDefaultSku();
-
+				
 		var resultResizedPathWithoutDefaultSKU = mockProductWithoutDefaultSku.getResizedImagePath();
 		assertEquals("/assets/images/missingimage.jpg", resultResizedPathWithoutDefaultSKU);
 	}
-
+	
 	public void function getImageExistsFlagTest() {
-		createTestFile (expandPath('/Slatwall') & '/assets/images/admin.logo.png',
+		createTestFile (expandPath('/Slatwall') & '/assets/images/admin.logo.png', 
 						"/custom/assets/images/product/default/admin.logo.png");
-
+								
 		//Testing the PRODUCT with defaultSKU
 		var mockProductWithDefaultSku = createMockDataWithDefaultSku();
-
+		
 		var resultFlagWithDefaultSKU = mockProductWithDefaultSku.getImageExistsFlag();
 		assertTrue(resultFlagWithDefaultSKU);
-
+		
 		//testing the PRODUCT without defaultSKU
 		var mockProductWithoutDefaultSku = createMockDataWithoutDefaultSku();
 
 		var resultFlagWithoutDefaultSKU = mockProductWithoutDefaultSku.getImageExistsFlag();
 		assertFalse(resultFlagWithoutDefaultSKU);
 	}
-
+	
 	public void function getOptionsByOptionGroupTest() {
-		var mockOptionGroup1 = createMockOptionGroup();
+		var mockOptionGroup1 = createMockOptionGroup();		
 		var mockOptionGroup2 = createMockOptionGroup();
-
+		
 		var mockOption1 = createMockOption(mockOptionGroup1.getOptionGroupID());
 		var mockOption2 = createMockOption(mockOptionGroup1.getOptionGroupID());
 		var mockOption3 = createMockOption(mockOptionGroup2.getOptionGroupID());
 		var mockOption4 = createMockOption(mockOptionGroup2.getOptionGroupID());
-
+		
 		var mockProduct1 = createMockProduct();
 		var mockProduct2 = createMockProduct();
 		//Mocked Data:
@@ -1603,7 +1580,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}
 		};
 		var mockSku1 = createPersistedTestEntity('Sku', skuData1);
-
+		
 		var skuData2 = {
 			skuID = "",
 			options = [
@@ -1629,44 +1606,43 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//Testing the optionGroup filter does not match( MockOptionGroup1 on mockProduct2, which weren't linked by mockOption3)
 		var resultMockOptionGroupNotMatch = mockProduct2.getOptionsByOptionGroup(mockOptionGroup1.getOptionGroupID());
 		assertEquals(0, arrayLen(resultMockOptionGroupNotMatch));
-
-
+		
+		
 		//Testing the Product filter on mockProduct2
 		var resultTestProductFilterOnOptionGroup1 = mockProduct2.getOptionsByOptionGroup(mockOptionGroup2.getOptionGroupID());
 		assertEquals(2, arrayLen(resultTestProductFilterOnOptionGroup1));
-
+		
 		//Testing the sort order on the pervious result: resultMockOptionGroup1
 		var indexOfMockOption1 = arrayFind(resultMockOptionGroup1, mockOption1);
 		var indexOfMockOption2 = arrayFind(resultMockOptionGroup1, mockOption2);
 		assertEquals(indexOfMockOption1<indexOfMockOption2, mockOption1.getOptionID() < mockOption2.getOptionID());
 	}
-
+	
 	public void function getRenewalMethodOptionsTest() {
 		//Testing returns of the rbKey values
 		var mockProduct = createMockProduct();
 		var resultOptions = mockProduct.getRenewalMethodOptions();
-
+		
 		assertEquals("Select a Sku to be used upon renewal.", resultOptions[1].name);
 		assertEquals("renewalsku", resultOptions[1].value);
 		assertEquals("Select a benefit and price to be used upon renewal.", resultOptions[2].name);
 		assertEquals("custom", resultOptions[2].value);
 	}
-
+	
 	public void function getSkuBySelectedOptionsTest() {
 		var mockOption1 = createMockOption();
 		var mockOption2 = createMockOption();
 		var mockOption3 = createMockOption();
-
+		
 		var mockProduct1 = createMockProduct();
 		var mockProduct2 = createMockProduct();
 		//Mocked Data:
-		//mockProduct1 -> mockSku1 -> mockOption1
-		//mockProduct2 -> mockSku2 -> mockOption2
-		//						   -> mockOption3
-		//			   -> mockSku3 -> mockOption3
+		//mockProduct1 -> mockSku1 -> mockOption1 
+		//mockProduct2 -> mockSku2 -> mockOption2 
+		//						   -> mockOption3 
+		//			   -> mockSku3 -> mockOption3 
 		var skuData1 = {
 			skuID = "",
-			skuCode = createUUID(),
 			options = [
 				{
 					optionID = mockOption1.getOptionID()
@@ -1679,7 +1655,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var mockSku1 = createPersistedTestEntity('Sku', skuData1);
 		var skuData2 = {
 			skuID = "",
-			skuCode = createUUID(),
 			options = [
 				{
 					optionID = mockOption2.getOptionID()
@@ -1693,10 +1668,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}
 		};
 		var mockSku2 = createPersistedTestEntity('Sku', skuData2);
-
+		
 		var skuData3 = {
 			skuID = "",
-			skuCode = createUUID(),
 			options = [
 				{
 					optionID = mockOption3.getOptionID()
@@ -1707,27 +1681,27 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}
 		};
 		var mockSku3 = createPersistedTestEntity('Sku', skuData3);
-
+		
 		//Testing the result without options passed
 		var resultSkuWithoutArgu = mockProduct1.getSkuBySelectedOptions();
 		assertEquals(mockSku1.getSkuID(), resultSkuWithoutArgu.getSkuID());
-
+		
 		try { //arrayLen of getSkus() > 1
-			mockProduct2.getSkuBySelectedOptions();
+			mockProduct2.getSkuBySelectedOptions(); 
 		} catch (any e) {
 			assertTrue(find( "You must submit a comma seperated list of selectOptions to find an indvidual sku in this product", e.message) != 0);
 		}
-
+		
 		//Testing results with arguments
 		var resultSkuWithOption2 = mockProduct2.getSkuBySelectedOptions(mockOption2.getOptionID());
 		assertEquals(mockSku2, resultSkuWithOption2);
-
+		
 		try { //arrayLen(skus) > 1
 			result = mockProduct2.getSkuBySelectedOptions(mockOption3.getOptionID());
 		} catch (any e) {
 			assertTrue(find( "More than one sku is returned when the selected options are: ", e.message) != 0);
 		}
-
+		
 		try { //arrayLen(skus) < 1
 			mockProduct2.getSkuBySelectedOptions(mockOption1.getOptionID());
 		} catch (any e) {
@@ -1739,17 +1713,16 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var mockOption2 = createMockOption();
 		var mockOption3 = createMockOption();
 		var mockOption4 = createMockOption();
-
+		
 		var mockProduct = createMockProduct();
 		//Mocked Data:
-		//mockProduct1 -> mockSku1 -> mockOption1
-		//						   -> mockOption2
-		//						   -> mockOption3
-		//			   -> mockSku2 -> mockOption3
-		//						   -> mockOption4
+		//mockProduct1 -> mockSku1 -> mockOption1 
+		//						   -> mockOption2 
+		//						   -> mockOption3 
+		//			   -> mockSku2 -> mockOption3 
+		//						   -> mockOption4 
 		var skuData1 = {
 			skuID = "",
-			skuCode = createUUID(),
 			options = [
 				{
 					optionID = mockOption1.getOptionID()
@@ -1766,10 +1739,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}
 		};
 		var mockSku1 = createPersistedTestEntity('Sku', skuData1);
-
+		
 		var skuData2 = {
 			skuID = "",
-			skuCode = createUUID(),
 			options = [
 				{
 					optionID = mockOption3.getOptionID()
@@ -1783,32 +1755,32 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}
 		};
 		var mockSku2 = createPersistedTestEntity('Sku', skuData2);
-
+		
 		//Testing the result without options passed
 		var resultSkusWithoutArgu = mockProduct.getSkusBySelectedOptions();
 		assertEquals(2, arrayLen(resultSkusWithoutArgu));
 		assertTrue(arrayFind(resultSkusWithoutArgu, mockSku1));
 		assertTrue(arrayFind(resultSkusWithoutArgu, mockSku2));
-
+		
 		//Testing results with arguments
 		var resultSkusWithOption3 = mockProduct.getSkusBySelectedOptions(mockOption3.getOptionID());
 		assertEquals(2, arrayLen(resultSkusWithOption3));
 		assertTrue(arrayFind(resultSkusWithOption3, mockSku1));
-
+		
 		var resultSkusWithOption4 = mockProduct.getSkusBySelectedOptions(mockOption4.getOptionID());
 		assertEquals(1, arrayLen(resultSkusWithOption4));
-		assertTrue(arrayFind(resultSkusWithOption4, mockSku2));
+		assertTrue(arrayFind(resultSkusWithOption4, mockSku2));	
 	}
-
+	
 	public void function getSkuOptionDetailsTest() {
-		var mockOptionGroup1 = createMockOptionGroup("optionGroupName1", "ogCodeA");
+		var mockOptionGroup1 = createMockOptionGroup("optionGroupName1", "ogCodeA");		
 		var mockOptionGroup2 = createMockOptionGroup("optionGroupName2", "ogCodeB");
-
+		
 		var mockOption1 = createMockOption(mockOptionGroup1.getOptionGroupID());
 		var mockOption2 = createMockOption(mockOptionGroup1.getOptionGroupID());
 		var mockOption3 = createMockOption(mockOptionGroup2.getOptionGroupID());
 		var mockOption4 = createMockOption(mockOptionGroup2.getOptionGroupID());
-
+		
 		var productTypeData1 = {
 			productTypeID = "",
 			systemCode = "merchandise"
@@ -1824,7 +1796,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//mockProduct2 XX mockSku2 -> mockOption4 -> mockOptionGroup2
 		var skuData1 = {
 			skuID = "",
-			skuCode = createUUID(),
 			options = [
 				{
 					optionID = mockOption1.getOptionID()
@@ -1843,10 +1814,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			calculatedQATS=2
 		};
 		var mockSku1 = createPersistedTestEntity('Sku', skuData1);
-
+		
 		var skuData2 = {
 			skuID = "",
-			skuCode = createUUID(),
 			options = [
 				{
 					optionID = mockOption4.getOptionID()
@@ -1855,66 +1825,66 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			calculatedQATS=2
 		};
 		var mockSku2 = createPersistedTestEntity('Sku', skuData2);
-
+		
 		//Testing product with Sku and no Argument passed
 		var resultWithSkuNoArgus = mockProduct1.getSkuOptionDetails();
 		assertEquals(2, structCount(resultWithSkuNoArgus));
 		assertEquals(2, arrayLen(resultWithSkuNoArgus["ogCodeA"]["options"]));
 		assertEquals(1, arrayLen(resultWithSkuNoArgus["ogCodeB"]["options"]));
 		assertEquals(mockOption1.getOptionID(), resultWithSkuNoArgus["ogCodeA"]["options"][1]['OptionID']);
-
+		
 		//Testing product with Sku and the matched Argument passed
 		var resultWithSkuWithMatchArgu = mockProduct1.getSkuOptionDetails(mockOption2.getOptionID());
 //		TODO:update test now that it filters by optionGroup
 //		assertEquals(2, structCount(resultWithSkuWithMatchArgu));
 //		assertEquals(2, arrayLen(resultWithSkuWithMatchArgu["ogCodeA"]["options"]));
 //		assertEquals(1, arrayLen(resultWithSkuWithMatchArgu["ogCodeB"]["options"]));
-
+		
 		//Testing product with SKU but the argument not matched with mockProduct1
 		try {
 			mockProduct1.getSkuOptionDetails(mockOption4.getOptionID());
 		} catch (any e) {
 			//This is a potential bug which FrontEnd won't allow
-		}
-
+		}	
+				
 		//Testing product WITHOUT Sku and no Argument passed
 		var resultNoSkuNoArgus = mockProduct2.getSkuOptionDetails();
 		assertEquals(0, structCount(resultNoSkuNoArgus));
-
+		
 		//Testing product WITHOUT Sku and matched Argument passed
 		var resultNoSkuWithMatchArgu = mockProduct2.getSkuOptionDetails(mockOption4.getOptionID());
 		assertEquals(0, structCount(resultNoSkuWithMatchArgu));
 	}
-
+	
 	public void function getCrumbDataTest() {
 		var mockPath = "HelloPath";
-
+		
 		var siteData = {
 			siteID = ""
 		};
 		var mockSite = createPersistedTestEntity('Site', siteData);
-
+		
 		var mockBaseCrumbArray = [
 			{
 				parentArray = "MockedParentArray"
 			}
 		];
-
+		
 		var mockProduct = createMockProduct();
-
+		
 		var result = mockProduct.getCrumbData(mockPath, mockSite.getSiteID(), mockBaseCrumbArray);
 		assertEquals("HelloPat", result.filename);
 		assertEquals("MockedParentArray", result.parentArray);
-	}
+	}	
 
 	//End testing: functions that delegate to the default sku
-
+	
 	public any function getEstimatedReceivalDetailsTest() {
 		var locationData = {
 			locationID = ""
 		};
 		var mockLocation = createPersistedTestEntity('Location', locationData);
-
+		
 		var stockData = {
 			stockID = "",
 			location = {
@@ -1922,12 +1892,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}
 		};
 		var mockStock = createPersistedTestEntity('Stock', stockData);
-
+		
 		var mockProduct = createMockProduct();
-
+		
 		var skuData = {
 			skuID = "",
-			skuCode = createUUID(),
 			stocks = [
 				{
 					stockID = mockStock.getStockID()
@@ -1954,7 +1923,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}
 		};
 		var mockVendorOrder = createPersistedTestEntity('VendorOrder', vendorOrderData);
-
+		
 		var vendorOrderItemData = {
 			vendorOrderItemID = "",
 			estimatedReceivalDateTime = dateAdd('d', -3, now()),
@@ -1964,16 +1933,16 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			},
 			vendorOrder = {
 				vendorOrderID = mockVendorOrder.getVendorOrderID()
-			}
+			}			
 		};
 		var mockVendorOrderItem = createPersistedTestEntity('VendorOrderItem', vendorOrderItemData);
-
+		
 		var result = mockProduct.getEstimatedReceivalDetails();
 		assertFalse(isNull(result.estimatedReceivals[1].estimatedReceivalDateTime));
 		assertEquals(1000, result.skus[mockSku.getSkuID()].estimatedReceivals[1].quantity);
 		return mockProduct;
 	}
-
+	
 	public void function getEstimatedReceivalDatesTest_NoArgument() {
 		//Using the mock data from getEstimatedReceivalDetailsTest()
 		var mockProduct = getEstimatedReceivalDetailsTest();
@@ -1982,14 +1951,14 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertFalse(isNull(result[1].estimatedReceivalDateTime));
 		assertEquals(1000, result[1].quantity);
 	}
-
+	
 	public void function getEstimatedReceivalDatesTest_WithArgument() {
 		//Copy the mock data from getEstimatedReceivalDetailsTest()
 		var locationData = {
 			locationID = ""
 		};
 		var mockLocation = createPersistedTestEntity('Location', locationData);
-
+		
 		var stockData = {
 			stockID = "",
 			location = {
@@ -1997,12 +1966,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}
 		};
 		var mockStock = createPersistedTestEntity('Stock', stockData);
-
+		
 		var mockProduct = createMockProduct();
-
+		
 		var skuData = {
 			skuID = "",
-			skuCode = createUUID(),
 			stocks = [
 				{
 					stockID = mockStock.getStockID()
@@ -2013,7 +1981,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}
 		};
 		var mockSku = createPersistedTestEntity('Sku', skuData);
-
+		
 		if (!mockSku.hasStock(mockStock)) {
 			arrayAppend(mockSku.getStocks(), mockStock);
 		}
@@ -2029,7 +1997,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}
 		};
 		var mockVendorOrder = createPersistedTestEntity('VendorOrder', vendorOrderData);
-
+		
 		var vendorOrderItemData = {
 			vendorOrderItemID = "",
 			estimatedReceivalDateTime = dateAdd('d', -3, now()),
@@ -2039,15 +2007,15 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			},
 			vendorOrder = {
 				vendorOrderID = mockVendorOrder.getVendorOrderID()
-			}
+			}			
 		};
 		var mockVendorOrderItem = createPersistedTestEntity('VendorOrderItem', vendorOrderItemData);
-
+		
 		//When the only argument stockID
 		var resultArguStock = mockProduct.getEstimatedReceivalDates( stockID = mockStock.getStockID() );
 		assertFalse(isNull(resultArguStock[1].estimatedReceivalDateTime));
 		assertEquals(1000, resultArguStock[1].quantity);
-
+		
 		//When the only argument is sku
 		var resultArguSku = mockProduct.getEstimatedReceivalDates( skuID = mockSku.getSkuID() );
 		assertEquals(1000, resultArguSku[1].quantity);
@@ -2055,49 +2023,47 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//When the only argumeis locationID
 		var resultArguLocation = mockProduct.getEstimatedReceivalDates( locationID = mockLocation.getLocationID() );
 		assertEquals(1000, resultArguLocation[1].quantity);
-
+		
 		//When the argumeits are skuID & locationID
 		var resultArgusSkuLocation = mockProduct.getEstimatedReceivalDates( mockSku.getSkuID(), mockLocation.getLocationID() );
 		assertFalse(isNull(resultArgusSkuLocation[1].estimatedReceivalDateTime));
-		assertEquals(1000, resultArgusSkuLocation[1].quantity);
+		assertEquals(1000, resultArgusSkuLocation[1].quantity);		
 	}
-
+	
 	public void function getQuantityTest() {
 		//@Suppress the tests of different quantity types.
-
+		
 		//testing a already calculated quantity (take QATS for example)
 		var mockProduct = createMockProduct();
 		var resultQATS = mockProduct.getQuantity('QATS');
 		assertEquals(1000, resultQATS);//setting('skuOrderMaximumQuantity') default value
-
+		
 		//Testing arguments of a not previously calculated quantity (Take QOH for instance)
 		var skuData = {
 			skuID = "",
-			skuCode = createUUID(),
 			product = {
 				productID = mockProduct.getProductID()
 			}
 		};
 		var mockSku = createPErsistedTestEntity('SKu', skuData);
-
+		
 		var locationData = {
 			locationID = "",
 			locationIDPath = "FakeLocationIDPath"
 		};
 		var mockLocation = createPersistedTestEntity('Location', locationData);
-
+		
 		var stockData = {
 			stockID = "",
 			location = {
 				locationID = mockLocation.getLocationID()
 			},
 			sku = {
-				skuID = mockSku.getSkuID(),
-				skuCode = createUUID()
+				skuID = mockSku.getSkuID()
 			}
 		};
 		var mockStock = createPersistedTestEntity('Stock', stockData);
-
+		
 		var inventoryData = {
 			inventoryID = '',
 			quantityIn = 2000,
@@ -2110,7 +2076,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		var resultQOHNoArgu = mockProduct.getQuantity('QOH');
 		assertEquals(1500, resultQOHNoArgu);
-
+		
 		//Testing with single not-required argument
 		var resultQOHWithSku = mockProduct.getQuantity('QOH', mockSku.getSkuID());
 		assertEquals(1500, resultQOHWithSku);
@@ -2120,12 +2086,12 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(1500, resultQOHWithLocation);
 		var resultQOHWithLocationSku = mockProduct.getQuantity(quantityType="QOH", skuID=mockSku.getSkuID(), locationID=mockLocation.getLocationID());
 		assertEquals(1500, resultQOHWithLocationSku);
-
+		
 		//testing with not matched argument
 		var resultQOHWithWrongArgu = mockProduct.getQuantity(quantityType="QOH", stockID="34334");
 		assertEquals(0, resultQOHWithWrongArgu);
 	}
-
+   
 	// ============ START: Non-Persistent Property Methods =================
 
 	public void function getBaseProductTypeTest_ExistedSystemCode() {
@@ -2135,7 +2101,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			systemCode = "merchandise"
 		};
 		var mockParentProductType = createPersistedTestEntity('ProductType', productTypeData);
-
+		
 		var productTypeData = {
 			productTypeID = "",
 			systemCode = "Hellokitty",
@@ -2144,7 +2110,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}
 		};
 		var mockProductType = createPersistedTestEntity('ProductType', productTypeData);
-
+		
 		var productData = {
 			productID = "",
 			productType = {
@@ -2152,9 +2118,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
-
+		
 		var result = mockProduct.getBaseProductType();
-		assertEquals('Hellokitty', result);
+		assertEquals('Hellokitty', result);	
 	}
 
 	public void function getBaseProductTypeTest_NoSystemCodeButHasParentProductType() {
@@ -2164,7 +2130,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			systemCode = "merchandise"
 		};
 		var mockParentProductType = createPersistedTestEntity('ProductType', productTypeData);
-
+		
 		var productTypeData = {
 			productTypeID = "",
 			parentProductType = {
@@ -2172,7 +2138,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}
 		};
 		var mockProductType = createPersistedTestEntity('ProductType', productTypeData);
-
+		
 		var productData = {
 			productID = "",
 			productType = {
@@ -2180,30 +2146,30 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
-
+		
 		var result = mockProduct.getBaseProductType();
-		assertEquals('merchandise', result);
+		assertEquals('merchandise', result);			
 	}
-
+	
 	public void function getBaseProductTypeTest_NullProductType() {
 		//testing if ProductType is undefined
 		var productData = {
 			productID = ""
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
-
+		
 		var result = mockProduct.getBaseProductType();
 		assertTrue(isNull(mockProduct.getBaseProductType()));
 	}
-
-
+	
+	
 //	 public void function getDefaultProductImageFilesTest() {
 //	 	//testing product w/ skus
 //	 	var mockSku1 = createMockSku("", "", "/mock/SomeImageFilePath");
 //	 	var mockSku2 = createMockSku("", "", "/mockThe/Image/File2");
 //	 	var mockSku3 = createMockSku();
 //	 	var mockSku4 = createMockSku("", "",  "Mockfilefor other product entity");
-//
+//		
 //		var productData = {
 //			productID = "",
 //			skus = [
@@ -2219,39 +2185,39 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 //			]
 //		};
 //		var mockProduct = createPersistedTestEntity('Product', productData);
-//
+//		
 //		var result = mockProduct.getDefaultProductImageFiles();
 //		assertEquals(2, arrayLen(result));
 //		assertEquals(mockSku1.getImageFile(), result[1].imageFile);
-//
+//		
 //		//testing product without skus
 //		var productData2 = {
 //			productID = ""
 //		};
 //		var mockProductNoSku = createPersistedTestEntity('Product', productData2);
-//
+//		
 //		var resultNoSku = mockProductNoSku.getDefaultProductImageFiles();
 //		assertEquals(0, arrayLen(resultNoSku));
 //	 }
-
-
-	//	public void function getDefaultProductImageFilesCountTest() {
+	 
+	 
+	//	public void function getDefaultProductImageFilesCountTest() {		
 //		//testing sku w/ existed imageFile. Create the image file first
-//		createTestFile (expandPath('/Slatwall') & '/assets/images/admin.logo.png',
+//		createTestFile (expandPath('/Slatwall') & '/assets/images/admin.logo.png', 
 //						"/custom/assets/images/product/default/admin.logo.png");
 //		var mockSku1 = createMockSku("", "", "admin.logo.png");
-//
+//		
 //		//testing null imageFile
 //	 	var mockSku2 = createMockSku();
-//
+//	 	
 //	 	//testing the invalid imageFile
 //	 	var mockSku3 = createMockSku("", "", "fakeFile.somefile");
-//
+//	 	
 //	 	//testing the sku NOT belong to other product instead of the testing one (mockProduct)
-//	 	createTestFile (expandPath('/Slatwall') & '/assets/images/favicon.png',
+//	 	createTestFile (expandPath('/Slatwall') & '/assets/images/favicon.png', 
 //						"/custom/assets/images/product/default/favicon.png");
 //	 	var mockSku4 = createMockSku("", "", "favicon.png");
-//
+//	 	
 //	 	var productData = {
 //			productID = "",
 //			productType={
@@ -2271,7 +2237,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 //			]
 //		};
 //		var mockProduct = createPersistedTestEntity('Product', productData);
-//
+//		
 //		var productData2 = {
 //			productID = "",
 //			productType={
@@ -2283,14 +2249,14 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 //			}]
 //		};
 //		var mockProduct2 = createPersistedTestEntity('Product', productData2);
-//
+//		
 //		//Only the imageFile of mockSku1 should be counted.
 //		var result = mockProduct.getDefaultProductImageFilesCount();
 //		assertEquals(1, result);
 //	}
 //}
-
-
+	
+	
 	 public void function getBrandNameTest() {
 	 	//testing if both brand and brandName existed
 	 	var brandData = {
@@ -2298,7 +2264,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 		brandName = "ten24 Undigital Solution"
 	 	};
 	 	var mockBrand = createPersistedTestEntity('Brand', brandData);
-
+	 	
 	 	var productData = {
 	 		productID = "",
 	 		brand = {
@@ -2306,16 +2272,16 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 		}
 	 	};
 	 	var mockProduct = createPersistedTestEntity('Product', productData);
-
+	 	
 	 	var resultBoth = mockProduct.getBrandName();
 	 	assertEquals(mockBrand.getBrandName(), resultBoth);
-
-	 	//testing if brandName is NULL
+	 	
+	 	//testing if brandName is NULL	 	
 	 	var brandData2 = {
 	 		brandID = ""
 	 	};
 	 	var mockBrandNoName = createPersistedTestEntity('Brand', brandData2);
-
+	 	
 	 	var productData2 = {
 	 		productID = "",
 	 		brand = {
@@ -2323,7 +2289,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 		}
 	 	};
 	 	var mockProductNoName = createPersistedTestEntity('Product', productData2);
-
+	 	
 	 	var resultNoBrandName = mockProductNoName.getBrandName();
 	 	assertIsEmpty(resultNoBrandName);
 
@@ -2332,23 +2298,23 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			productID = ""
 		};
 		var mockProductNoBrand = createPersistedTestEntity('Product', productData3);
-
+		
 		var resultNoBrand = mockProductNoBrand.getBrandName();
-		assertIsEmpty(resultNoBrand);
+		assertIsEmpty(resultNoBrand);	 	
 	 }
-
+	 
 	 public void function getBrandOptionsTest() {
 	 	//Testing when mockBrand1 is associated with mockProduct
 	 	var brandData1 = {
 	 		brandID = ""
 	 	};
 	 	var mockBrand1 = createPersistedTestEntity('Brand', brandData1);
-
+	 	
 	 	var brandData2 = {
 	 		brandID = ""
 	 	};
 	 	var mockBrand2 = createPersistedTestEntity('Brand', brandData2);
-
+	 	
 	 	var productData = {
 	 		productID = "",
 	 		brand = {
@@ -2356,7 +2322,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 		}
 	 	};
 	 	var mockProduct = createPersistedTestEntity('Product', productData);
-
+	 	
 	 	var result = mockProduct.getBrandOptions();
 
 	 	var resultOfBrandIDList = "";
@@ -2365,13 +2331,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	}
 	 	assertTrue(listFind(resultOfBrandIDList, mockBrand1.getBrandID()) > 0);
 	 	assertTrue(listFind(resultOfBrandIDList, mockBrand2.getBrandID()) > 0);
-
+	 	
 	 	//Testing when no brand is associated with the Product, should return at least the existing two and the NULL one
 	 	var mockProductNoBrand = createMockProduct();
 	 	var result2 = mockProductNoBrand.getBrandOptions();
 	 	assertTrue(arrayLen(result2) >= 3);
 	 }
-
+	 
 	 private any function createMockSkuWithSkuCode(required string skuCode) {
 	 	var skuData = {
 	 		skuID = '',
@@ -2379,13 +2345,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	};
 	 	return createPersistedTestEntity('Sku', skuData);
 	 }
-
-	 public void function getNextSkuCodeCountTest() {
-	 	var mockSku1 = createMockSKuWithSkuCode(createUUID());
+	 
+	 public void function getNextSkuCodeCountTest() {	 	
+	 	var mockSku1 = createMockSKuWithSkuCode('sku');
 	 	var mockSku2 = createMockSKuWithSkuCode('sku-2');
 	 	var mockSku3 = createMockSKuWithSkuCode('sku-3');
 	 	var mockSku4 = createMockSKu();
-
+	 	
 		//Testing the skuCode has no hythen
 	 	var productData1 = {
 	 		productID = '',
@@ -2396,10 +2362,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 		]
 	 	};
 	 	var mockProductInvalidSkuCode = createPersistedTestEntity('Product', productData1);
-
+	
 	 	var resultInvalidSkuCode = mockProductInvalidSkuCode.getNextSkuCodeCount();
-	 	assertEquals(1, resultInvalidSkuCode);
-
+	 	assertEquals(1, resultInvalidSkuCode);	 	
+	 	
 	 	//Testing the skuCode used numeric after '-'
 	 	var productData2 = {
 	 		productID = "",
@@ -2413,10 +2379,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 		]
 	 	};
 	 	var mockProductValid = createPersistedTestEntity('Product', productData2);
-
+	 	
 	 	var resultValid = mockProductValid.getNextSkuCodeCount();
-	 	assertEquals(4, resultValid);
-
+	 	assertEquals(4, resultValid); 	
+	 	
 	 	//Testing the Sku that no skuCode defined, the default is '-1'
 	 	var productData3 = {
 	 		productID = '',
@@ -2435,62 +2401,59 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	 public void function getQATSTest() {
 	 	var mockProduct = createMockProduct();
-
+	 	
 	 	var resultDefault = mockProduct.getQATS();
 	 	assertTrue(mockProduct.getQuantity("QATS"), resultDefault);
 	 }
-
+	 
 	 public void function getPlacedOrderItemsSmartListTest() {
 	 	//mockProduct1 -> (Sku) -> MockOrderItem1 -> mockOrder1: ostNew
 	 	//			   -> (Sku) -> MockOrderItem2 -> mockOrder2: ostNotPlaced
 	 	//mockProduct2 -> (Sku) -> MockOrderItem3 -> mockOrder1: ostNew
-
+	 	
 	 	var productData1 = {
 			productID = ""
 		};
 		var mockProduct1 = createPersistedTestEntity('Product', productData1);
-
+		
 		var productData2 = {
 			productID = ""
 		};
 		var mockProduct2 = createPersistedTestEntity('Product', productData2);
-
+				
 		var orderItemData1 = {
 	 		orderItemID = "",
 	 		sku = {
 	 			skuID = "",
-	 			skuCode = createUUID(),
 	 			product = {
 	 				productID = mockProduct1.getProductID()
 	 			}
 	 		}
 	 	};
 	 	var mockOrderItem1 = createPersistedTestEntity('OrderItem', orderItemData1);
-
+	 	
 	 	var orderItemData2 = {
 	 		orderItemID = "",
 	 		sku = {
 	 			skuID = "",
-	 			skuCode = createUUID(),
 	 			product = {
 	 				productID = mockProduct1.getProductID()
 	 			}
 	 		}
 	 	};
 	 	var mockOrderItem2 = createPersistedTestEntity('OrderItem', orderItemData2);
-
+	 	
 	 	var orderItemData3 = {
 	 		orderItemID = "",
 	 		sku = {
 	 			skuID = "",
-	 			skuCode = createUUID(),
 	 			product = {
 	 				productID = mockProduct2.getProductID()
 	 			}
 	 		}
 	 	};
 	 	var mockOrderItem3 = createPersistedTestEntity('OrderItem', orderItemData3);
-
+	 	
 		var orderData1 = {
 			orderID = "",
 			orderStatusType = {
@@ -2506,7 +2469,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			]
 		};
 		var mockOrder1 = createPersistedTestEntity('Order', orderData1);
-
+		
 		var orderData2 = {
 			orderID = "",
 			orderStatusType = {
@@ -2519,72 +2482,70 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			]
 		};
 		var mockOrder2 = createPersistedTestEntity('Order', orderData2);
-
+		
 	 	var result = mockProduct1.getPlacedOrderItemsSmartList().getRecords(refresh = true);
 	 	//testing the filter of productID
 	 	assertEquals(mockProduct1.getProductID(), result[1].getSku().getProduct().getProductID());
 		//testing the filter of orderStatusType
 	 	assertEquals(1, arrayLen(result));
 	 	assertEquals("ostNew", result[1].getOrder().getOrderStatusType().getSystemCode());
-
-
+	 	
+	 	
 	 }
 	 public void function getBundleSkusSmartListTest() {
 		var productData = {
 			productID = ""
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
-
+		
 		var skuData1 = {
 			skuID = "",
-			skuCode = createUUID(),
 			bundleFlag = 1,
 			product = {
 				productID = mockProduct.getProductID()
 			}
 		};
 		var mockSku1 = createPersistedTestEntity('Sku', skuData1);
-
+		
 		var skuData2 = {
 			skuID = "",
-			skuCode = createUUID(),
 			bundleFlag = 0,
 			product = {
 				productID = mockProduct.getProductID()
 			}
 		};
 		var mockSku2 = createPersistedTestEntity('Sku', skuData2);
-
+		
 		var result = mockProduct.getBundleSkusSmartList().getRecords(refresh = true);
 		//testing the bundleFlag filter
 		assertEquals(1, arrayLen(result));
 		//testing the productID filter
-		assertEquals(mockProduct.getProductID(), result[1].getProduct().getProductID());
+		assertEquals(mockProduct.getProductID(), result[1].getProduct().getProductID());		
 	}
-
-
-
+	
+	 
+	 
 	 public void function getAllowBackorderFlagTest() {
 	 	//testing default setting
 	 	var mockProduct = createMockProduct();
-
+	 	
 	 	var resultDefault = mockProduct.getAllowBackorderFlag();
 	 	assertFalse(resultDefault);
-
+	 	
 	 	//testing setting is override
 	 	var mockProduct2 = createMockProduct();
-
+	 	
 	 	var settingData = {
 	 		settingID = "",
 	 		settingName = "skuAllowBackorderFlag",
 	 		settingValue = 1
 	 	};
 	 	var settingEntity = createPersistedTestEntity('Setting', settingData);
-
+	 	
 	 	var resultOverrideSetting = mockProduct2.getAllowBackorderFlag();
 	 	assertTrue(resultOverrideSetting);
 	 }
-
+	 
 	 public void function getTitleTest() {
 	 	//testing if both brandName and productName existed
 	 	var brandData1 = {
@@ -2592,7 +2553,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 		brandName = "24ten"
 	 	};
 	 	var mockBrandHasName= createPersistedTestEntity('Brand', brandData1);
-
+	 	
 	 	var productData1 = {
 	 		productID = "",
 	 		productName = "ten24 beer",
@@ -2601,10 +2562,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 		}
 	 	};
 	 	var mockProductHasName = createPersistedTestEntity('Product', productData1);
-
+	 	
 	 	var resultBothName = mockProductHasName.getTitle();
 	 	assertFalse(isNull(resultBothName));
-
+	 	
 	 	//testing if productName is missing
 	 	var productData2 = {
 	 		productID = "",
@@ -2613,16 +2574,16 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 		}
 	 	};
 	 	var mockProductNoName = createPersistedTestEntity('Product', productData2);
-
+	 	
 	 	var resultBrandNameOnly = mockProductNoName.getTitle();
 	 	assertEquals(mockBrandHasName.getBrandName(), resultBrandNameOnly);
-
+	 	
 	 	//testing if brandName is missing
 	 	var brandData2 = {
 	 		brandID = ""
 	 	};
 	 	var mockBrandNoName = createPersistedTestEntity('Brand', brandData2);
-
+	 	
 	 	var productData2 = {
 	 		productID = "",
 	 		productName = "Sakura JJ15",
@@ -2631,16 +2592,16 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 		}
 	 	};
 	 	var mockProductHasName2 = createPersistedTestEntity('Product', productData2);
-
+	 	
 	 	var resultProductNameOnly = mockProductHasName2.getTitle();
 	 	assertEquals(mockProductHasName2.getProductName(), resultProductNameOnly);
 	 }
-
-
+	 
+	
 	 public void function getCurrencyCodeTest() {
 	 	//testing default currency code
 		var mockSku = createMockSku();
-
+		
 	 	var productData = {
 	 		productID = "",
 	 		defaultSku = {
@@ -2648,7 +2609,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 		}
 	 	};
 	 	var mockProduct = createPersistedTestEntity('Product', productData);
-
+	 	
 	 	assertEquals("USD", mockProduct.getCurrencyCode());
 
 		//testing other currency code
@@ -2661,24 +2622,24 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 		}
 	 	};
 	 	var mockProduct2 = createPersistedTestEntity('Product', productData2);
-
+	 	
 	 	assertEquals("CNY", mockProduct2.getCurrencyCode());
-
+		
 		//Potential bug: invalid currencyCode could also be returned; should add validation if not select button frontend
 	 }
-
+	 
 	 public void function getEventConflictExistsFlagTest() {
 	 	//TODO: Wait for Chris' new verstion of the function to test
 	 	//@Suppress to Sku.cfc getEventConflictExistsFlag()
 	 }
-
+	 
 	 public void function getPriceTest() {
 	 	var skuData = {
 	 		skuID = "",
 	 		price = 100
 	 	};
 	 	var mockSku = createPersistedTestEntity('Sku', skuData);
-
+	 	
 	 	//Testing product with Sku
 	 	var productData = {
 	 		productID = "",
@@ -2687,22 +2648,22 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 		}
 	 	};
 	 	var mockProductWithSku = createPersistedTestEntity('Product', productData);
-
+	 	
 	 	var result = mockProductWithSku.getPrice();
 	 	assertEquals(100, result);
-
+	 	
 	 	//Testing the product without Sku
 	 	var productData2 = {
 	 		productID = ""
 	 	};
 	 	var mockProductNoSku = createPersistedTestEntity('Product', productData2);
-
+	 	
 	 	var resultNoSku = mockProductNoSku.getPrice();
 	 	assertEquals(0, resultNoSku);
-
+	 	
 	 	//Testing the product with SKU but has no price
 	 	var mockSkuNoPrice = createMockSku();
-
+	 	
 	 	var productData3 = {
 	 		productID = '',
 	 		defaultSku = {
@@ -2710,18 +2671,18 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 		}
 	 	};
 	 	var mockProductWithSkuNoPrice = createPersistedTestEntity('Product', productData3);
-
+	 	
 	 	var resultWithSkuNoPrice = mockProductWithSkuNoPrice.getPrice();
 	 	assertEquals(0, resultWithSkuNoPrice);
 	 }
-
+	 
 	 public void function getRenewalPriceTest() {
 	 	var skuData = {
 	 		skuID = "",
 	 		renewalPrice = 100
 	 	};
 	 	var mockSku = createPersistedTestEntity('Sku', skuData);
-
+	 	
 	 	//Testing product with Sku
 	 	var productData = {
 	 		productID = "",
@@ -2730,15 +2691,15 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 		}
 	 	};
 	 	var mockProductWithSku = createPersistedTestEntity('Product', productData);
-
+	 	
 	 	var result = mockProductWithSku.getRenewalPrice();
 	 	assertEquals(100, result);
-
+	 	
 	 	//Skip testing the product without Sku
-
+	 	
 	 	//Testing the product with SKU but has no price
 	 	var mockSkuNoPrice = createMockSku();
-
+	 	
 	 	var productData3 = {
 	 		productID = '',
 	 		defaultSku = {
@@ -2746,18 +2707,18 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 		}
 	 	};
 	 	var mockProductWithSkuNoPrice = createPersistedTestEntity('Product', productData3);
-
+	 	
 	 	var resultWithSkuNoPrice = mockProductWithSkuNoPrice.getRenewalPrice();
 	 	assertEquals(0, resultWithSkuNoPrice);
 	 }
-
+	 
 	 public void function getListPriceTest() {
 	 	var skuData = {
 	 		skuID = "",
 	 		listPrice = 100
 	 	};
 	 	var mockSku = createPersistedTestEntity('Sku', skuData);
-
+	 	
 	 	//Testing product with Sku
 	 	var productData = {
 	 		productID = "",
@@ -2766,15 +2727,15 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 		}
 	 	};
 	 	var mockProductWithSku = createPersistedTestEntity('Product', productData);
-
+	 	
 	 	var result = mockProductWithSku.getListPrice();
 	 	assertEquals(100, result);
-
+	 	
 	 	//Skip testing the product without Sku
-
+	 	
 	 	//Testing the product with SKU but has no price
 	 	var mockSkuNoPrice = createMockSku();
-
+	 	
 	 	var productData3 = {
 	 		productID = '',
 	 		defaultSku = {
@@ -2782,29 +2743,28 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 		}
 	 	};
 	 	var mockProductWithSkuNoPrice = createPersistedTestEntity('Product', productData3);
-
+	 	
 	 	var resultWithSkuNoPrice = mockProductWithSkuNoPrice.getListPrice();
 	 	assertEquals(0, resultWithSkuNoPrice);
 	 }
-
-	 private any function createMockProductAboutSalePrice() {
+	 
+	 private any function createMockProductAboutSalePrice() {	 	
 		var promotionRewardData = {
 			promotionRewardID = '',
 			amount = 3,
 			amountType = 'amountOff'
 		};
 		var mockPromotionReward = createPersistedTestEntity('PromotionReward', promotionRewardData);
-
+		
 	 	var skuData = {
 	 		skuID = '',
-	 		skuCode = createUUID(),
 	 		price = 10,
 	 		promotionRewards = [{
 	 			promotionRewardID = mockPromotionReward.getPromotionRewardID()
 	 		}]
 	 	};
 	 	var mockSku = createPersistedTestEntity('Sku', skuData);
-
+	 	
 	 	var productData = {
 			productid = '',
 			skus = [
@@ -2813,10 +2773,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				}
 			]
 		};
-
+		
 		var mockProduct = createPersistedTestEntity('product',productData);
-
-
+		
+		
 		var promotionPeriodData = {
 			promotionPeriodID = '',
 			promotionRewards = [{
@@ -2824,7 +2784,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}]
 		};
 		var mockPromotionPeriod = createPersistedTestEntity('PromotionPeriod', promotionPeriodData);
-
+		
 		var promotionData = {
 			promotionid = '',
 			promotionPeriods = [{
@@ -2835,27 +2795,27 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		return mockProduct;
 	 }
-
-	 public void function getSalePriceTest() {
+	 
+	 public void function getSalePriceTest() {	
 		var mockProduct = createMockProductAboutSalePrice();
-
+		
 		//Testing the calculation with SKU
 		var resultSalePrice = mockProduct.getSalePrice();
 		assertEquals(7, resultSalePrice);
-
+		
 		//Testing the situation with no sku
 		var mockProductNoSku = createMockProduct();
 		var resultNoSku = mockProductNoSku.getSalePrice();
 		assertEquals(0, resultNoSku);
 	 }
-
-	 public void function getSalePriceByCurrencyCodeTest_DefaultCurrencyCode() {
+	
+	 public void function getSalePriceByCurrencyCodeTest_DefaultCurrencyCode() {				
 		var mockProduct = createMockProductAboutSalePrice();
 		var resultDefaultCode = mockProduct.getSalePriceByCurrencyCode('USD');
 		assertEquals(7, resultDefaultCode);
 	}
-
-	public void function getSalePriceByCurrencyCodeTest_ResetCurrencyCode() {
+	
+	public void function getSalePriceByCurrencyCodeTest_ResetCurrencyCode() {		
 		//Mocking data similar with the private helper createMockProductAboutSalePrice()
 		var promotionRewardData = {
 			promotionRewardID = '',
@@ -2863,10 +2823,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			amountType = 'amountOff'
 		};
 		var mockPromotionReward = createPersistedTestEntity('PromotionReward', promotionRewardData);
-
+		
 	 	var skuData = {
 	 		skuID = '',
-	 		skuCode = createUUID(),
 	 		price = 10,
 	 		currencyCode = 'CNY',
 	 		promotionRewards = [{
@@ -2874,7 +2833,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 		}]
 	 	};
 	 	var mockSku = createPersistedTestEntity('Sku', skuData);
-
+	 	
 	 	var productData = {
 			productid = '',
 			skus = [
@@ -2884,8 +2843,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			]
 		};
 		var mockProduct = createPersistedTestEntity('product',productData);
-
-
+		
+		
 		var promotionPeriodData = {
 			promotionPeriodID = '',
 			promotionRewards = [{
@@ -2893,7 +2852,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}]
 		};
 		var mockPromotionPeriod = createPersistedTestEntity('PromotionPeriod', promotionPeriodData);
-
+		
 		var promotionData = {
 			promotionid = '',
 			promotionPeriods = [{
@@ -2903,7 +2862,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var promotion = createPersistedTestEntity('promotion',promotionData);
 
 		//reset setting skuCurrency
-		//TODO: try to change the default currencyCode, but fails
+		//TODO: try to change the default currencyCode, but fails	
 		var settingData = {
 			settingID = "",
 			settingName="SkuCurrency",
@@ -2915,21 +2874,21 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			resultResetCode = mockProduct.getSalePriceByCurrencyCode('CNY');
 		} catch (any e) {
 			assertTrue(resultResetCode.getNewFlag());
-		}
+		}			
 	}
 
 	public void function getSalePriceDiscountTypeTest() {
 		//Too much data to mock, skip it
 	}
-
+	
 	public void function getSalePriceExpirationDateTimeTest() {
 		//Test the circumstance without defaultSku defined
 		var mockProduct = createMockProduct();
 
 		var result = mockProduct.getSalePriceExpirationDateTime();
-		assertEquals(now(), result);
+		assertEquals(now(), result);		
 	}
-
+	 
 	 private any function createMockSkuWithProductAndTwoOptions(required string productID, required string OptionID1, required string OptionID2) {
 		var skuData1 = {
 			skuID = "",
@@ -2947,15 +2906,15 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		return createPersistedTestEntity(entityName='Sku', data=skuData1);
 	 }
-
+	 
 	 public void function getNumberOfUnusedProductOptionCombinationsTest() {
 		var mockProduct = createMockProduct();
-
+		
 		var mockOptionGroup1 = createMockOptionGroup();
 		var mockOptionGroup2 = createMockOptionGroup();
-
+		
 		var mockOptionArray = [];
-
+		
 		var mockOptionArray[1] = createMockOption(mockOptionGroup1.getOptionGroupID());
 		var mockOptionArray[2] = createMockOption(mockOptionGroup1.getOptionGroupID());
 		var mockOptionArray[3] = createMockOption(mockOptionGroup1.getOptionGroupID());
@@ -2969,14 +2928,14 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		var mockSku2 = createMockSkuWithProductAndTwoOptions(mockProduct.getProductID(), mockOptionArray[1].getOptionID(), mockOptionArray[9].getOptionID());
 		var mockSku2 = createMockSkuWithProductAndTwoOptions(mockProduct.getProductID(), mockOptionArray[3].getOptionID(), mockOptionArray[10].getOptionID());
-
+		
 		var result = mockProduct.getNumberOfUnusedProductOptionCombinations();
 		assertEquals(21-2, result);
 	 }
-
+	 
 	 public void function getUnusedProductSubscriptionTermsTest() {
 	 	var mockProduct = createMockProduct();
-
+		
 		var mockSku = createMockSku(mockProduct.getProductID());
 
 		var subscriptionTermDataWithSKU = {
@@ -3009,10 +2968,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var resultSkuFilter = mockSubscriptionTerm.getService('subscriptionService').getUnusedProductSubscriptionTerms( mockProduct.getProductID() );
 		assertTrue(arrayFind(resultSkuFilter, ExpectStructUsedByMockProduct) == 0);
 		assertTrue(arrayFind(resultSkuFilter, ExpectStructUnused) != 0);
-
+		
 		//@Suppress other test cases in SubscriptionDAO.cfc getUnusedProductSubscriptionTermsTest() function
 	 }
-
+	
 	 private any function createMockEventRegistration(string skuID='s') {
 	 	var eventRegistrationData = {
 	 		eventRegistrationID = ""
@@ -3024,20 +2983,20 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	}
 	 	return createPersistedTestEntity('EventRegistration', eventRegistrationData);
 	 }
-
+	 
 	 public void function getEventRegistrationsSmartListTest() {
 	 	var mockProduct = createMockProduct();
 
 	 	var mockSku = createMockSku(mockProduct.getProductID(), "", "");
-
+	 	
 	 	var mockEventRegistration1 = createMockEventRegistration(mockSku.getSkuID());
 	 	var mockEventRegistration2 = createMockEventRegistration();
-
+		
 	 	var result = mockProduct.getEventRegistrationsSmartList().getRecords(refresh = true);
 	 	assertEquals(1, arrayLen(result));
 	 	assertEquals(mockEventRegistration1.getEventRegistrationID(), result[1].getEventRegistrationID());
 	 }
-
+	 
 	 // ================== START TEST: Overridden Methods ========================
 	 private any function createMockAttributeSet(required boolean activeFlag, required string attributeSetObject, string attributeSetCode="") {
 	 	var attributeSetData = {
@@ -3047,12 +3006,12 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	};
 	 	return createPersistedTestEntity('attributeSet', attributeSetData);
 	 }
-
+	 
 	 public void function getAssignedAttributeSetSmartListTest_TwoFilters() {
 		var mockAttributeSet1 = createMockAttributeSet(1,"Product");
 		var mockAttributeSet2 = createMockAttributeSet(0,"Product");
 		var mockAttributeSet3 = createMockAttributeSet(1,"Sku");
-
+		
 		var productTypeData = {
 			productTypeID = "",
 			attributeSets = [
@@ -3065,16 +3024,16 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				{
 					attributeSetID = mockAttributeSet3.getAttributeSetID()
 				}
-
+				
 			]
 		};
 		var mockProductType = createPersistedTestEntity('ProductType', productTypeData);
-
+		
 		var brandData = {
 			brandID = ""
 		};
 		var mockBrand = createPersistedTestEntity('Brand', brandData);
-
+		
 		var productData = {
 			productID = "",
 			brand = {
@@ -3082,14 +3041,14 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
-
+		
 		var result = mockProduct.getAssignedAttributeSetSmartList().getRecords(refresh = true);
 		//Testing the two filters on the smartList
 		assertTrue(arrayFind(result, mockAttributeSet1) != 0);
 		assertTrue(arrayFind(result, mockAttributeSet2) == 0);
-		assertTrue(arrayFind(result, mockAttributeSet3) == 0);
+		assertTrue(arrayFind(result, mockAttributeSet3) == 0);		
 	 }
-
+	 
 	 private any function createMockAttributeSetWithFalseGlobalFlag(string productTypeID="", string productID="", string brandID="") {
 	 	var attributeSetData = {
 	 		attributeSetID = "",
@@ -3114,7 +3073,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	}
 	 	return createPersistedTestEntity('attributeSet', attributeSetData);
 	 }
-
+	 
 	 public void function getAssignedAttributeSetSmartListTest_WhereCondition() {
 	 	//Testing generally if the where conditions work when globalFlag equals to 0
 	 	var attributeSetData = {
@@ -3123,24 +3082,24 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 		attributeSetObject = 'Product',
 	 		globalFlag = 0
 	 	};
-
+	 	
 		var mockAttributeSet1 = createPersistedTestEntity('AttributeSet', attributeSetData);
-
+		
 		var brandData = {
 			brandID = ""
 		};
 		var mockBrand = createPersistedTestEntity('Brand', brandData);
-
+		
 		var productTypeData = {
 	 		productTypeID = "",
 	 		attributeSets = [
 	 			{
 	 				attributeSetID = mockAttributeSet1.getAttributeSetID()
 	 			}
-	 		]
+	 		]	 		
 	 	};
-		var mockProductType = createPersistedTestEntity('ProductType', productTypeData);
-
+		var mockProductType = createPersistedTestEntity('ProductType', productTypeData);	
+		
 		var productData = {
 			productID = '',
 			brand = {
@@ -3155,10 +3114,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var result = mockProduct.getAssignedAttributeSetSmartList(true).getRecords(refresh = true);
 		assertTrue(arrayFind(result, mockAttributeSet1) != 0);
 	}
-	public void function getAssignedAttributeSetSmartListTest_NoBrand() {
+	public void function getAssignedAttributeSetSmartListTest_NoBrand() {		
 		//Testing if no brandID involved
 		var mockAttributeSet2 = createMockAttributeSetWithFalseGlobalFlag();
-
+		
 		var productTypeData2 = {
 	 		productTypeID = "",
 	 		attributeSets = [
@@ -3166,10 +3125,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 				attributeSetID = mockAttributeSet2.getAttributeSetID()
 	 			}
 	 		]
-
+	 		
 	 	};
-		var mockProductType2 = createPersistedTestEntity('ProductType', productTypeData2);
-
+		var mockProductType2 = createPersistedTestEntity('ProductType', productTypeData2);	
+		
 		var productData2 = {
 			productID = '',
 			productType = {
@@ -3177,25 +3136,25 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}
 		};
 		var mockProductNoBrand = createPersistedTestEntity('Product', productData2);
-
+		
 		var resultNoBrand = mockProductNoBrand.getAssignedAttributeSetSmartList(true).getRecords(refresh = true);
 		assertTrue(arrayFind(resultNoBrand, mockAttributeSet2) != 0);
 	 }
-
+	 
 	 public void function getSimpleRepresentationPropertyNameTest() {
 	 	var mockProduct = createMockProduct();
 	 	var result = mockProduct.getSimpleRepresentationPropertyName();
 	 	assertEquals('ProductName', result);
-	 }
+	 } 
 	 // ==================  END TEST:  Overridden Methods ========================
-
+	 
 	 // ================== START: Deprecated Methods ========================
 
 	public void function getAttributeSetsTest_NoArgu(){
 		var mockAttributeSet1 = createMockAttributeSet(1,"Product");
 		var mockAttributeSet2 = createMockAttributeSet(1,"Product");
 		var mockAttributeSet3 = createMockAttributeSet(1,"Sku");
-
+		
 		var productTypeData = {
 			productTypeID = "",
 			attributeSets = [
@@ -3208,16 +3167,16 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				{
 					attributeSetID = mockAttributeSet3.getAttributeSetID()
 				}
-
+				
 			]
 		};
 		var mockProductType = createPersistedTestEntity('ProductType', productTypeData);
-
+		
 		var brandData = {
 			brandID = ""
 		};
 		var mockBrand = createPersistedTestEntity('Brand', brandData);
-
+		
 		var productData = {
 			productID = "",
 			brand = {
@@ -3225,18 +3184,18 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}
 		};
 		var mockProduct = createPersistedTEstEntity('Product', productData);
-
+		
 		var result = mockProduct.getAttributeSets();
 		assertTrue(arrayFind(result, mockAttributeSet1) != 0);
 		assertTrue(arrayFind(result, mockAttributeSet2) != 0);
 		assertTrue(arrayFind(result, mockAttributeSet3) == 0);
 	}
-
+	
 	public void function getAttributeSetsTest_WithArgu(){
 		var mockAttributeSet1 = createMockAttributeSet(1,"Product");
 		var mockAttributeSet2 = createMockAttributeSet(1,"OrderItem");
 		var mockAttributeSet3 = createMockAttributeSet(1,"Sku");
-
+		
 		var productTypeData = {
 			productTypeID = "",
 			attributeSets = [
@@ -3249,16 +3208,16 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				{
 					attributeSetID = mockAttributeSet3.getAttributeSetID()
 				}
-
+				
 			]
 		};
 		var mockProductType = createPersistedTestEntity('ProductType', productTypeData);
-
+		
 		var brandData = {
 			brandID = ""
 		};
 		var mockBrand = createPersistedTestEntity('Brand', brandData);
-
+		
 		var productData = {
 			productID = "",
 			brand = {
@@ -3266,7 +3225,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}
 		};
 		var mockProduct = createPersistedTEstEntity('Product', productData);
-
+		
 		//Testing if the type code works
 		var resultWithValidArgu = mockProduct.getAttributeSets(["astProductCustomization", "astOrderItem"]);
 		assertTrue(arrayFind(resultWithValidArgu, mockAttributeSet1) == 0);
