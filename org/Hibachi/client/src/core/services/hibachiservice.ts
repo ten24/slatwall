@@ -72,19 +72,23 @@ class HibachiService{
 	getJsEntities= () =>{
 		return this._jsEntities;
 	};
-		setJsEntities= (jsEntities) =>{
+	
+	setJsEntities= (jsEntities) =>{
 		this._jsEntities = jsEntities;
 	};
 
 	getJsEntityInstances= () =>{
 		return this._jsEntityInstances;
 	};
-		setJsEntityInstances= (jsEntityInstances) =>{
+	
+	setJsEntityInstances= (jsEntityInstances) =>{
 		this._jsEntityInstances = jsEntityInstances;
 	};
+	
 	getEntityExample = (entityName)=>{
 		return this._jsEntityInstances[entityName];
 	};
+	
 	getEntityMetaData = (entityName)=>{
 		return this._jsEntityInstances[entityName].metaData;
 	};
