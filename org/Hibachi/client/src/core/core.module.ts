@@ -20,6 +20,7 @@ import {ExpandableService} from "./services/expandableservice";
 import {MetaDataService} from "./services/metadataservice";
 import {RbKeyService} from "./services/rbkeyservice";
 import {ScopeService} from "./services/scopeservice";
+import {TypeaheadService} from "./services/typeaheadservice";
 import {$Hibachi} from "./services/hibachiservice";
 import {HistoryService} from "./services/historyservice"; 
 import {ListingService} from "./services/listingservice"
@@ -164,6 +165,7 @@ var coremodule = angular.module('hibachi.core',[
 .service('metadataService',MetaDataService)
 .service('rbkeyService',RbKeyService)
 .service('scopeService',ScopeService)
+.service('typeaheadService', TypeaheadService)
 .provider('$hibachi',$Hibachi)
 .decorator('$hibachi',HibachiServiceDecorator)
 .service('hibachiInterceptor', HibachiInterceptor.Factory())
