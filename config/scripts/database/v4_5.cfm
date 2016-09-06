@@ -93,7 +93,7 @@ Notes:
 </cftry>
 <cftry> 
 	<cfquery name="local.getsubscriptionusages">
-		select * from SwSubscriptionUsage
+		select * from SwSubsUsage
 	</cfquery>
 
 	<cfloop query="local.getsubscriptionusages">
@@ -106,7 +106,7 @@ Notes:
 		</cfquery> 		
 		<cfloop query="local.getsubscriptionusageorderitems">
 			<cfquery name="local.updateSubscriptionUsage"> 
-				update SwSubscriptionUsage 
+				update SwSubsUsage 
 				set initialOrderItemID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getsubsscriptionusageorderitems.orderItemID#" />
 				where subscriptionUsageID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getsubscriptionusages.subscriptionUsageID#" />
 			</cfquery> 	
