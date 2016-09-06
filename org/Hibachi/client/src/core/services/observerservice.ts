@@ -15,7 +15,11 @@ import {UtilityService} from "./utilityservice";
 class ObserverService extends BaseService{
     private observers;
     //@ngInject
-    constructor(public $timeout,private utilityService){
+    constructor(
+        public  $timeout, 
+        private historyService, 
+        private utilityService
+    ){
         /**
          * @ngdoc property
          * @name ObserverService#observers
@@ -137,6 +141,13 @@ class ObserverService extends BaseService{
                 });
             }
         });
+    }
+    notifyAndRecord = (event:string, parameters:any):void => { 
+      this.notify(event, parameters).then(
+        ()=>{
+            this.historyService.recordHistory(event,parameters,true);
+        }
+      ); 
     }
 }
 export {ObserverService};
