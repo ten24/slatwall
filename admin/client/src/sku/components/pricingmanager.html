@@ -45,9 +45,13 @@
                                 data-cell-view="swSkuPriceEdit"
                             >
                             </sw-listing-column>
-                            <sw-listing-column data-property-identifier="skuDescription" data-fallback-property-identifiers="skuDescription,bundledSku_skuDefinition"></sw-listing-column>
-                            <sw-listing-column data-property-identifier="skuCode" data-fallback-property-identifiers="skuCode,bundledSku_skuCode" tdclass="primary"></sw-listing-column>
-                            
+                            <sw-listing-column data-property-identifier="skuDescription" 
+                                               data-fallback-property-identifiers="skuDescription,bundledSku_skuDefinition">
+                            </sw-listing-column>
+                            <sw-listing-column data-property-identifier="skuCode" 
+                                               data-fallback-property-identifiers="skuCode,bundledSku_skuCode" 
+                                               tdclass="primary">
+                            </sw-listing-column>
                         </sw-listing-columns>
                         
                         <sw-collection-configs>
@@ -59,8 +63,8 @@
                             >
                                 <sw-collection-columns>
                                     <sw-collection-column data-property-identifier="skuID"></sw-collection-column>
-                                    <sw-collection-column data-property-identifier="bundleFlag" data-is-searchabled="true"></sw-collection-column>
-                                    <sw-collection-column data-property-identifier="skuCode" data-is-searchabled="true"></sw-collection-column>
+                                    <sw-collection-column data-property-identifier="bundleFlag" data-is-searchable="true"></sw-collection-column>
+                                    <sw-collection-column data-property-identifier="skuCode" data-is-searchable="true"></sw-collection-column>
                                     <sw-collection-column data-property-identifier="skuDescription" data-is-searchable="true"></sw-collection-column>
                                     <sw-collection-column data-property-identifier="calculatedQATS" data-is-searchable="false"></sw-collection-column>
                                     <sw-collection-column data-property-identifier="calculatedQOH" data-is-searchable="false"></sw-collection-column>
