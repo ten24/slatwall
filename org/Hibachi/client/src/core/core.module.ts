@@ -27,10 +27,8 @@ import {$Hibachi} from "./services/hibachiservice";
 import {HistoryService} from "./services/historyservice"; 
 import {ListingService} from "./services/listingservice"
 import {LocalStorageService} from "./services/localstorageservice";
-import {ListingService} from "./services/listingservice"
 import {HibachiServiceDecorator} from "./services/hibachiservicedecorator";
 import {HibachiScope} from "./services/hibachiscope";
-import {HistoryService} from "./services/historyservice";
 import {RequestService} from "./services/requestservice";
 import {HibachiValidationService} from "./services/hibachivalidationservice";
 import {EntityService} from "./services/entityservice";
@@ -75,7 +73,6 @@ import {SWListingFilter} from "./components/swlistingfilter";
 import {SWListingFilterGroup} from "./components/swlistingfiltergroup";
 import {SWListingOrderBy} from "./components/swlistingorderby";
 import {SWListingRowSave} from "./components/swlistingrowsave"; 
-import {SWListingSearch} from "./components/swlistingsearch";
 import {SWLogin} from "./components/swlogin";
 import {SWModalLauncher} from "./components/swmodallauncher";
 import {SWModalWindow} from "./components/swmodalwindow"; 
@@ -96,7 +93,6 @@ import {SWHref} from "./components/swhref";
 import {SWProcessCaller} from "./components/swprocesscaller";
 import {SWSortable} from "./components/swsortable";
 import {SWListingGlobalSearch} from "./components/swlistingglobalsearch";
-import {SWListingDisplayCell} from "./components/swlistingdisplaycell";
 
 import {BaseObject} from "./model/baseobject";
 declare var $:any;
@@ -188,8 +184,6 @@ var coremodule = angular.module('hibachi.core',[
 .service('hibachiInterceptor', HibachiInterceptor.Factory())
 .service('hibachiScope',HibachiScope)
 .service('scopeService',ScopeService)
-.service('historyService',HistoryService)
-.service('listingService', ListingService)
 .service('localStorageService',LocalStorageService)
 .service('requestService',RequestService)
 .service('accountService',AccountService)
@@ -259,7 +253,6 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swProcessCaller',SWProcessCaller.Factory())
 .directive('sw:sortable',SWSortable.Factory())
 .directive('swListingGlobalSearch',SWListingGlobalSearch.Factory())
-.directive('swListingDisplayCell',SWListingDisplayCell.Factory())
 ;
 export{
 	coremodule
