@@ -15,11 +15,27 @@
                         data-record-detail-action="admin:entity.detailsku"
                         data-base-entity-name="Sku">
                         <sw-listing-columns>
-                            <sw-listing-column
-                                data-property-identifier="defaultSku"
-                                data-title="Default"
+                            <sw-listing-column 
+                                data-property-identifier="skuCode" 
+                                data-fallback-property-identifiers="skuCode,bundledSku_skuCode" 
+                                tdclass="primary">
+                            </sw-listing-column>
+                            <sw-listing-column 
+                                data-property-identifier="skuDescription" 
+                                data-fallback-property-identifiers="skuDescription,bundledSku_skuDefinition">
+                            </sw-listing-column>
+                            <sw-listing-column 
+                                data-property-identifier="price"
                                 data-is-visible="true"
-                                data-cell-view="swDefaultSkuRadio">
+                                data-cell-view="swSkuPriceEdit">
+                            </sw-listing-column>
+                            <sw-listing-column 
+                                data-property-identifier="calculatedQATS">
+                            </sw-listing-column>
+                            <sw-listing-column
+                                data-property-identifier="calculatedQOH"
+                                data-is-visible="true"
+                                data-cell-view="swSkuStockAdjustmentModalLauncher">
                             </sw-listing-column>
                             <sw-listing-column
                                 data-property-identifier="imageFile"
@@ -29,27 +45,11 @@
                                 data-is-visible="true">
                             </sw-listing-column>
                             <sw-listing-column
-                                data-property-identifier="calculatedQOH"
+                                data-property-identifier="defaultSku"
+                                data-title="Default"
                                 data-is-visible="true"
-                                data-cell-view="swSkuStockAdjustmentModalLauncher">
-                            </sw-listing-column>
-                            <sw-listing-column 
-                                data-property-identifier="calculatedQATS">
-                            </sw-listing-column>
-                            <sw-listing-column 
-                                data-property-identifier="price"
-                                data-is-visible="true"
-                                data-cell-view="swSkuPriceEdit">
-                            </sw-listing-column>
-                            <sw-listing-column 
-                                data-property-identifier="skuDescription" 
-                                data-fallback-property-identifiers="skuDescription,bundledSku_skuDefinition">
-                            </sw-listing-column>
-                            <sw-listing-column 
-                                data-property-identifier="skuCode" 
-                                data-fallback-property-identifiers="skuCode,bundledSku_skuCode" 
-                                tdclass="primary">
-                            </sw-listing-column>
+                                data-cell-view="swDefaultSkuRadio">
+                            </sw-listing-column>   
                         </sw-listing-columns>
                         
                         <sw-collection-configs>
