@@ -351,7 +351,7 @@ class SWPropertyDisplay implements ng.IDirective{
         showRevert:"=?",
         showSave:"=?",
         placeholderText:"@",
-        placeholderRbKey:"@"
+        placeholderRbKey:"@",
         inputAttributes:"@?",
         optionValues:"=?",
         eventHandlers:"@?",
@@ -379,8 +379,7 @@ class SWPropertyDisplay implements ng.IDirective{
             $compile, 
             scopeService, 
             coreFormPartialsPath,
-            hibachiPathBuilder,
-            swpropertyPartialPath
+            hibachiPathBuilder
         )=>new swpropertyClass(
             $compile,
 			scopeService,
@@ -388,7 +387,7 @@ class SWPropertyDisplay implements ng.IDirective{
             hibachiPathBuilder,
             swpropertyPartialPath
         );
-        directive.$inject = ['$compile','scopeService','coreFormPartialsPath', 'hibachiPathBuilder', 'swpropertyPartialPath'];
+        directive.$inject = ['$compile','scopeService','coreFormPartialsPath', 'hibachiPathBuilder'];
 
         return directive;
     }
