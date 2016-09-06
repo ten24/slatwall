@@ -80,8 +80,13 @@ class ListingService{
         }
     }
 
-    public getColumnIndexByPropertyIdentifier = (listingID:string, propertyIdentifier) =>{
-        var columns = this.getListingCollectionConfigColumns(listingID) || this.getListingColumns(listingID); 
+    public getListingCollectionConfigColumnIndexByPropertyIdentifier = (listingID:string, propertyIdentifier) =>{
+        var columns = this.getListingCollectionConfigColumns(listingID);
+        return this.utilityService.ArrayFindByPropertyValue(columns,'propertyIdentifier',propertyIdentifier);
+    }
+
+    public getListingColumnIndexByPropertyIdentifier = (listingID:string, propertyIdentifier) =>{
+        var columns = this.getListingColumns(listingID); 
         return this.utilityService.ArrayFindByPropertyValue(columns,'propertyIdentifier',propertyIdentifier);
     }
 
@@ -137,7 +142,7 @@ class ListingService{
                         var pageRecord = pageRecords[j];
                         var primaryID = pageRecords[j][primaryIDPropertyName];
                         var sortOrder =  j + 1; 
-                        var primaryIDColumnIndex = this.getColumnIndexByPropertyIdentifier(listingID, primaryIDWithBaseAlias);
+                        var primaryIDColumnIndex = this.getListingCollectionConfigColumnIndexByPropertyIdentifier(listingID, primaryIDWithBaseAlias);
                         if(angular.isDefined(primaryID)){
                             pageRecordsWithManualSortOrder[primaryID] = sortOrder;
                         } else if(primaryIDColumnIndex !== -1){
@@ -359,9 +364,10 @@ class ListingService{
         if(this.getListing(listingID).collectionConfig != null && this.getListing(listingID).collectionConfig.baseEntityAlias != null){
             column.propertyIdentifier = this.getListing(listingID).collectionConfig.baseEntityAlias + "." + column.propertyIdentifier;
         } else if (this.getListingBaseEntityName(listingID) != null) {
-            column.propertyIdentifier = '_' + this.getListingBaseEntityName(listingID);
+            column.propertyIdentifier = '_' + this.getListingBaseEntityName(listingID) + '.' + column.propertyIdentifier;
         }
-        if(this.getColumnIndexByPropertyIdentifier(listingID, column.propertyIdentifier) === -1){
+        console.log("will addcolumn", this.getListingColumnIndexByPropertyIdentifier(listingID, column.propertyIdentifier), column);
+        if(this.getListingColumnIndexByPropertyIdentifier(listingID, column.propertyIdentifier) === -1){
             if(column.aggregate){
                 this.getListing(listingID).aggregates.push(column.aggregate);
             } else {

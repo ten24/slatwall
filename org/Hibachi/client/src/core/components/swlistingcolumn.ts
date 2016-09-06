@@ -29,7 +29,7 @@ class SWListingColumnController{
             if(this.$injector.has(this.headerView+'Directive')){
                 this.hasHeaderView = true;
             }else{
-                throw(this.hasHeaderView + ' is not an existing directive');
+                throw(this.headerView + ' is not an existing directive');
             }
         }
     }
@@ -103,10 +103,6 @@ class SWListingColumn implements ng.IDirective{
             hasHeaderView:scope.swListingColumn.hasHeaderView, 
             isVisible:scope.swListingColumn.isVisible || true
         };
-
-        if(angular.isDefined(scope.swListingColumn.cellView)){
-            column.hasCellView = true; 
-        }
 
         if(scope.swListingColumn.hasCellView){
             column.cellView = scope.swListingColumn.cellView;
