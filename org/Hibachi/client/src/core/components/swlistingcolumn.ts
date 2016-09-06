@@ -104,6 +104,10 @@ class SWListingColumn implements ng.IDirective{
             isVisible:scope.swListingColumn.isVisible || true
         };
 
+        if(angular.isDefined(scope.swListingColumn.cellView)){
+            column.hasCellView = true; 
+        }
+
         if(scope.swListingColumn.hasCellView){
             column.cellView = scope.swListingColumn.cellView;
         }
