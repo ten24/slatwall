@@ -20,5 +20,6 @@
 		<Record updateScriptID="b91716b8b9dbd166f056cc7b2fbb4f2b" scriptPath="database/v4_1.cfm" loadOrder="14" maxExecutionCount="1" />
 	    <Record updateScriptID="e88d25f3dd5313217f3b770e6e606bf5" scriptPath="database/v4_2.cfm" loadOrder="15" maxExecutionCount="1" />
 	    <Record updateScriptID="b834dfeabc18118481069c9b882d9d44" scriptPath="database/v4_3.cfm" loadOrder="16" maxExecutionCount="1" />
+		<Record updateScriptID="4028818356e1f8880156ffb726790085" scriptPAth="database/v4_5.cfm" loadOrder="17" maxExecutionCount="1" />
 	</Records>
 </Table>
