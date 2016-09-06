@@ -67,7 +67,9 @@ class ListingService{
     }
 
     public getListingCollectionConfigColumns = (listingID:string) =>{
-        return this.getListing(listingID).collectionConfig.columns;
+        if(this.getListing(listingID).collectionConfig != null){
+            return this.getListing(listingID).collectionConfig.columns;
+        }
     }
 
     public getListingExampleEntity = (listingID:string) =>{
@@ -124,7 +126,7 @@ class ListingService{
     }
 
     public getPageRecordsWithManualSortOrder = (listingID:string) =>{
-        if(angular.isDefined(this.getListing(listingID))){
+        if( angular.isDefined(this.getListing(listingID)) && this.getListingPageRecords(listingID) != null ){
             var pageRecords = this.getListingPageRecords(listingID); 
             var primaryIDPropertyName = this.getListingEntityPrimaryIDPropertyName(listingID);
             var primaryIDWithBaseAlias = this.getListing(listingID).collectionConfig.baseEntityAlias + '.' + primaryIDPropertyName;
@@ -357,7 +359,7 @@ class ListingService{
         if(this.getListing(listingID).collectionConfig != null && this.getListing(listingID).collectionConfig.baseEntityAlias != null){
             column.propertyIdentifier = this.getListing(listingID).collectionConfig.baseEntityAlias + "." + column.propertyIdentifier;
         } else if (this.getListingBaseEntityName(listingID) != null) {
-            column.propertyIdentifier = this.$hibachi.getBaseEntityAliasFromName(this.getListingBaseEntityName(listingID));
+            column.propertyIdentifier = '_' + this.getListingBaseEntityName(listingID);
         }
         if(this.getColumnIndexByPropertyIdentifier(listingID, column.propertyIdentifier) === -1){
             if(column.aggregate){
@@ -403,7 +405,8 @@ class ListingService{
             
             var column = this.getListing(listingID).columns[i];
 
-            if(this.getListing(listingID).collectionConfig != null){
+            if(this.getListing(listingID).collectionConfig != null && !column.hasCellView){
+                console.log("Pushing column", column);
                 this.getListing(listingID).collectionConfig.addColumn(column.propertyIdentifier,undefined,column);
             } 
 
