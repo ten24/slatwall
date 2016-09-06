@@ -18,6 +18,7 @@ import {OrderPaymentService} from "./services/orderpaymentservice";
 import {FormService} from "./services/formservice";
 import {FilterService} from "./services/filterservice"; 
 import {ExpandableService} from "./services/expandableservice";
+import {ListingService} from "./services/listingservice"; 
 import {MetaDataService} from "./services/metadataservice";
 import {RbKeyService} from "./services/rbkeyservice";
 import {$Hibachi} from "./services/hibachiservice";
@@ -26,6 +27,7 @@ import {LocalStorageService} from "./services/localstorageservice";
 import {HibachiServiceDecorator} from "./services/hibachiservicedecorator";
 import {HibachiScope} from "./services/hibachiscope";
 import {RequestService} from "./services/requestservice";
+import {ScopeService} from "./services/scopeservice"; 
 import {HibachiValidationService} from "./services/hibachivalidationservice";
 import {EntityService} from "./services/entityservice";
 //controllers

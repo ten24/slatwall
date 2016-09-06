@@ -20,7 +20,6 @@ import {SWErrorDisplay} from "./components/swerrordisplay";
 import {SWPropertyDisplay} from "./components/swpropertydisplay";
 import {SWFPropertyDisplay} from "./components/swfpropertydisplay";
 import {SWFormSubscriber} from "./components/swformsubscriber";
-import {coremodule} from "../core/core.module";
 
 var formmodule = angular.module('hibachi.form',['angularjs-datetime-picker',coremodule.name]).config(()=>{
 
