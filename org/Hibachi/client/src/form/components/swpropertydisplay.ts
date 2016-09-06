@@ -246,6 +246,8 @@ class SWPropertyDisplayController {
                                             this.propertyDisplayID, 
                                             this.save
                                           );
+		}
+	}
 
     public clear = () =>{
         if(this.reverted){
