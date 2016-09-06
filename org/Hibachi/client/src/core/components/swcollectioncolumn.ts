@@ -8,7 +8,6 @@ class SWCollectionColumnController{
 class SWCollectionColumn implements ng.IDirective{
     public restrict:string = 'EA';
     public scope=true;
-    public priority=1000; 
     public bindToController={
         propertyIdentifier:"@",
         fallbackPropertyIdentifiers:"@?",
