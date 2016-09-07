@@ -6,7 +6,6 @@ import {HibachiInterceptor,IHibachi,IHibachiConfig,HibachiJQueryStatic} from "./
 import {HibachiPathBuilder} from "./services/hibachipathbuilder";
 
 //services
-import {CacheService} from "./services/cacheservice"; 
 import {PublicService} from "./services/publicservice";
 import {AccountService} from "./services/accountservice";
 import {CartService} from "./services/cartservice";
@@ -17,12 +16,12 @@ import {ObserverService} from "./services/observerservice";
 import {OrderService} from "./services/orderservice";
 import {OrderPaymentService} from "./services/orderpaymentservice";
 import {FormService} from "./services/formservice";
-import {TypeaheadService} from "./services/typeaheadservice";
 import {FilterService} from "./services/filterservice"; 
 import {ExpandableService} from "./services/expandableservice";
 import {MetaDataService} from "./services/metadataservice";
 import {RbKeyService} from "./services/rbkeyservice";
 import {ScopeService} from "./services/scopeservice";
+import {TypeaheadService} from "./services/typeaheadservice";
 import {$Hibachi} from "./services/hibachiservice";
 import {HistoryService} from "./services/historyservice"; 
 import {ListingService} from "./services/listingservice"
@@ -45,7 +44,7 @@ import {DateFilter} from "./filters/datefilter";
 import {SWActionCaller} from "./components/swactioncaller";
 import {SWTypeaheadSearch} from "./components/swtypeaheadsearch";
 import {SWTypeaheadInputField} from "./components/swtypeaheadinputfield";
-import {SWTypeaheadMultiselect} from "./components/swtypeaheadmultiselect"; 
+import {SWTypeaheadMultiselect} from "./components/swtypeaheadmultiselect";
 import {SWTypeaheadSearchLineItem} from "./components/swtypeaheadsearchlineitem";
 import {SWTypeaheadRemoveSelection} from "./components/swtypeaheadremoveselection";
 import {SWCollectionConfig} from "./components/swcollectionconfig";
@@ -63,7 +62,6 @@ import {SWGravatar} from "./components/swgravatar";
 import {SWListingDisplay} from "./components/swlistingdisplay";
 import {SWListingDisplayCell} from "./components/swlistingdisplaycell";
 import {SWListingControls} from "./components/swlistingcontrols";
-import {SWListingSearch} from "./components/swlistingsearch";
 import {SWListingAggregate} from "./components/swlistingaggregate";
 import {SWListingColorFilter} from "./components/swlistingcolorfilter";
 import {SWListingColumn} from "./components/swlistingcolumn";
@@ -73,12 +71,12 @@ import {SWListingFilter} from "./components/swlistingfilter";
 import {SWListingFilterGroup} from "./components/swlistingfiltergroup";
 import {SWListingOrderBy} from "./components/swlistingorderby";
 import {SWListingRowSave} from "./components/swlistingrowsave"; 
+import {SWListingSearch} from "./components/swlistingsearch";
 import {SWLogin} from "./components/swlogin";
 import {SWModalLauncher} from "./components/swmodallauncher";
 import {SWModalWindow} from "./components/swmodalwindow"; 
 import {SWNumbersOnly} from "./components/swnumbersonly";
 import {SWLoading} from "./components/swloading";
-import {SWOrderByControls} from "./components/sworderbycontrols";
 import {SWScrollTrigger} from "./components/swscrolltrigger";
 import {SWTabGroup} from "./components/swtabgroup";
 import {SWTabContent} from "./components/swtabcontent";
@@ -93,7 +91,6 @@ import {SWHref} from "./components/swhref";
 import {SWProcessCaller} from "./components/swprocesscaller";
 import {SWSortable} from "./components/swsortable";
 import {SWListingGlobalSearch} from "./components/swlistingglobalsearch";
-
 import {BaseObject} from "./model/baseobject";
 declare var $:any;
 
@@ -163,7 +160,6 @@ var coremodule = angular.module('hibachi.core',[
 .constant('hibachiPathBuilder',new HibachiPathBuilder())
 .constant('corePartialsPath','core/components/')
 //services
-.service('cacheService', CacheService)
 .service('publicService',PublicService)
 .service('utilityService',UtilityService)
 .service('selectionService',SelectionService)
@@ -172,18 +168,16 @@ var coremodule = angular.module('hibachi.core',[
 .service('expandableService',ExpandableService)
 .service('filterService',FilterService)
 .service('formService',FormService)
+.service('metadataService',MetaDataService)
+.service('rbkeyService',RbKeyService)
+.service('scopeService',ScopeService)
 .service('typeaheadService', TypeaheadService)
-.service('metadataService',MetaDataService)
-.service('rbkeyService',RbKeyService)
-.service('historyService',HistoryService)
-.service('metadataService',MetaDataService)
-.service('rbkeyService',RbKeyService)
-.service('listingService', ListingService)
 .provider('$hibachi',$Hibachi)
 .decorator('$hibachi',HibachiServiceDecorator)
 .service('hibachiInterceptor', HibachiInterceptor.Factory())
 .service('hibachiScope',HibachiScope)
-.service('scopeService',ScopeService)
+.service('historyService',HistoryService)
+.service('listingService', ListingService)
 .service('localStorageService',LocalStorageService)
 .service('requestService',RequestService)
 .service('accountService',AccountService)
@@ -199,7 +193,6 @@ var coremodule = angular.module('hibachi.core',[
 .filter('percentage',[PercentageFilter.Factory])
 .filter('trim', [SWTrim.Factory])
 .filter('entityRBKey',['rbkeyService',EntityRBKey.Factory])
-.filter('swdate',['$log','$filter',DateFilter.Factory])
 //directives
 .directive('swCollectionConfig',SWCollectionConfig.Factory())
 .directive('swCollectionColumn',SWCollectionColumn.Factory())
@@ -221,7 +214,6 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swDraggableContainer', SWDraggableContainer.Factory())
 .directive('swListingDisplay',SWListingDisplay.Factory())
 .directive('swListingControls',SWListingControls.Factory())
-.directive('swListingSearch', SWListingSearch.Factory())
 .directive('swListingAggregate',SWListingAggregate.Factory())
 .directive('swListingColorFilter',SWListingColorFilter.Factory())
 .directive('swListingColumn',SWListingColumn.Factory())
@@ -241,7 +233,6 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swScrollTrigger',SWScrollTrigger.Factory())
 .directive('swRbkey',SWRbKey.Factory())
 .directive('swOptions',SWOptions.Factory())
-.directive('swOrderByControls', SWOrderByControls.Factory())
 .directive('swSelection',SWSelection.Factory())
 .directive('swTabGroup', SWTabGroup.Factory())
 .directive('swTabContent', SWTabContent.Factory())

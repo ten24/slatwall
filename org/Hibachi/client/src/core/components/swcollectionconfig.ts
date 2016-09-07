@@ -133,7 +133,7 @@ class SWCollectionConfig implements ng.IDirective{
             newCollectionConfig.setAllRecords(scope.swCollectionConfig.allRecords);   
             newCollectionConfig.setDistinct(scope.swCollectionConfig.distinct);            
             
-            var currentScope = this.scopeService.locateParentScope(scope, scope.swCollectionConfig.parentDirectiveControllerAsName);
+            var currentScope = this.scopeService.getRootParentScope(scope, scope.swCollectionConfig.parentDirectiveControllerAsName);
             
             if(currentScope[scope.swCollectionConfig.parentDirectiveControllerAsName]){
                 var parentDirective = currentScope[scope.swCollectionConfig.parentDirectiveControllerAsName];

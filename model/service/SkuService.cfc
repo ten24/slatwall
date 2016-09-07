@@ -603,6 +603,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		smartList.addKeywordProperty(propertyIdentifier="product.productName", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="product.productType.productTypeName", weight=1);
 
+		smartList.addOrder('skuCode|ASC');
+
 		return smartList;
 	}
 

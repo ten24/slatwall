@@ -1,10 +1,18 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-
-class ScheduleService{
+import {BaseEntityService} from "../../core/services/baseentityservice";
+class ScheduleService extends BaseEntityService{
     private schedulePreview = {};
-    public static $inject = ["utilityService"];
-    public constructor(public utilityService){}
+
+    //@ngInject
+    constructor(
+        public $injector:ng.auto.IInjectorService,
+        public $hibachi,
+        public utilityService
+    ){
+        super($injector,$hibachi,utilityService,'Schedule');
+
+    }
 
     public clearSchedulePreview =()=>{
         this.schedulePreview = {};
