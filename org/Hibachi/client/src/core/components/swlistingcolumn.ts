@@ -64,7 +64,7 @@ class SWListingColumn implements ng.IDirective{
             buttonGroup:scope.swListingColumn.buttonGroup
         };
         if(this.utilityService.ArrayFindByPropertyValue(scope.$parent.swListingDisplay.columns,'propertyIdentifier',column.propertyIdentifier) === -1){
-            scope.$parent.swListingDisplay.columns.push(column);
+            scope.$parent.swListingDisplay.columns.unshift(column);
         }
     }
 }

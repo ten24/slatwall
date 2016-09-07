@@ -379,6 +379,7 @@
 
 				}
 			}
+			$.slatwall.getService("hibachiEventService").announceEvent(eventName="MuraOnRenderStartComplete");
 		}
 		
 		public void function onSiteRequestEnd( required any $ ) {

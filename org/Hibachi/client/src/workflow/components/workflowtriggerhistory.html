@@ -1,0 +1,12 @@
+<sw-listing-display data-collection="'WorkflowTriggerHistory'"
+                    data-edit="false"
+                    data-show-search="true"
+                    data-has-search="false"
+                    data-has-action-bar="false">
+    <sw-listing-column data-property-identifier="successFlag" ></sw-listing-column>
+    <sw-listing-column data-property-identifier="response" ></sw-listing-column>
+    <sw-listing-column data-property-identifier="endTime" ></sw-listing-column>
+    <sw-listing-column data-property-identifier="startTime" ></sw-listing-column>
+    <sw-listing-column data-property-identifier="workflowTrigger.triggerType" tdclass="primary" ></sw-listing-column>
+    <sw-listing-filter data-property-identifier="workflowTrigger.workflow.workflowID" data-comparison-operator="=" data-comparison-value="{{$root.workflowID}}" ></sw-listing-filter>
+</sw-listing-display>

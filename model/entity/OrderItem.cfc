@@ -146,17 +146,15 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 	public numeric function getMaximumOrderQuantity() {
 		var maxQTY = 0;
-
 		if(getSku().getActiveFlag() && getSku().getProduct().getActiveFlag()) {
 			maxQTY = getSku().setting('skuOrderMaximumQuantity');
-
 			if(getSku().setting('skuTrackInventoryFlag') && !getSku().setting('skuAllowBackorderFlag')) {
 				if( !isNull(getStock()) && getStock().getQuantity('QATS') <= maxQTY ) {
 					maxQTY = getStock().getQuantity('QATS');
 					if(!isNull(getOrder()) && getOrder().getOrderStatusType().getSystemCode() neq 'ostNotPlaced') {
 						maxQTY += getService('orderService').getOrderItemDBQuantity( orderItemID=this.getOrderItemID() );
 					}
-				} else if(getSKU().getQuantity('QATS') <= maxQTY) {
+				} else if(getSku().getQuantity('QATS') <= maxQTY) {
 					maxQTY = getSku().getQuantity('QATS');
 					if(!isNull(getOrder()) && getOrder().getOrderStatusType().getSystemCode() neq 'ostNotPlaced') {
 						maxQTY += getService('orderService').getOrderItemDBQuantity( orderItemID=this.getOrderItemID() );
@@ -193,6 +191,10 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
             return quantity >= getSku().setting('skuOrderMinimumQuantity');
         }
         return true;
+    }
+
+    public boolean function isRootOrderItem(){
+    	return isNull(this.getParentOrderItem());
     }
 
 	public string function getOrderStatusCode(){
@@ -317,12 +319,12 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		if(isNull(arguments.orderItem)){
 			arguments.orderItem = this;
 		}
-		
+
 		var amountType = "skuPrice";//default
 		if (!isNull(arguments.orderItem.getProductBundleGroup())){
 			amountType = arguments.orderItem.getProductBundleGroup().getAmountType();
 		}
-		
+
 		//fixed
 		if(amountType == 'fixed'){
 			return arguments.orderItem.getProductBundleGroup().getAmount();

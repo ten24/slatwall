@@ -53,6 +53,7 @@ component entityname="SlatwallEmail" table="SwEmail" persistent="true" accessors
 	property name="emailTo" hb_populateEnabled="public" ormtype="string";
 	property name="emailFrom" hb_populateEnabled="public" ormtype="string";
 	property name="emailFailTo" hb_populateEnabled="public" ormtype="string";
+	property name="emailReplyTo" hb_populateEnabled="public" ormtype="string";
 	property name="emailCC" hb_populateEnabled="public" ormtype="string";
 	property name="emailBCC" hb_populateEnabled="public" ormtype="string";
 	property name="emailSubject" hb_populateEnabled="public" ormtype="string";

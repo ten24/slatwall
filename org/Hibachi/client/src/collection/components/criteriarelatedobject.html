@@ -1,0 +1,71 @@
+<!-- Filter Criteria Start -->
+<form ng-if="selectedFilterProperty">
+    <div class="s-filter-group-item">
+        <div class="s-options-group s-radio-block">
+            <div class="radio">
+                <input class="s-account-field-radio" type="radio" name="radio1" id="radio1" data-ng-model="selectedFilterProperty.selectedCriteriaType"  data-ng-value="conditionOptions.drillEntity" >
+                <label for="radio1">
+                    Use  {{selectedFilterProperty.displayPropertyIdentifier}} field:
+                </label>
+                <div class="s-radio-select" data-sw-loading="filterPropertiesList[selectedFilterProperty.propertyIdentifier].data">
+                    <select data-ng-model="selectedFilterProperty.selectedCriteriaType"
+                            data-ng-change="selectedCriteriaChanged(selectedFilterProperty.selectedCriteriaType)"
+                            data-ng-options="filterProperty as filterProperty.displayPropertyIdentifier
+          					for filterProperty in filterPropertiesList[selectedFilterProperty.propertyIdentifier].data
+          					| orderBy:['displayPropertyIdentifier'] track by filterProperty.propertyIdentifier
+          					"
+                            class="form-control input-sm"
+                            data-ng-if="!selectedFilterProperty.selectedCriteriaType">
+                        <option value="">Select From {{selectedFilterProperty.displayPropertyIdentifier}}:</option>
+                    </select>
+                </div>
+            </div>
+            <div class="radio">
+                <input class="s-account-field-radio" type="radio" name="radio4" id="radio4" ng-model="selectedFilterProperty.selectedCriteriaType"  ng-value="conditionOptions.aggregate" >
+                <label for="radio4">
+                    Use  {{selectedFilterProperty.displayPropertyIdentifier}} aggregate
+                </label>
+                <div class="s-radio-select" data-sw-loading="filterPropertiesList[selectedFilterProperty.propertyIdentifier].data" data-ng-if="selectedFilterProperty.selectedCriteriaType">
+
+                    <select data-ng-model="aggegate.selectedAggregate"
+                            data-ng-change="selectAggregate(aggegate.selectedAggregate)"
+                            data-ng-options="aggregate as aggregate for aggregate in aggregateOptions"
+                            class="form-control input-sm">
+                        <option value="">Select From {{selectedProperty.displayPropertyIdentifier}}:</option>
+                    </select>
+
+
+                    <select data-ng-model="selectedFilterProperty.selectedCriteriaType"
+                            data-ng-change="selectedCriteriaChanged(selectedFilterProperty.selectedCriteriaType, aggegate.selectedAggregate)"
+                            data-ng-options="filterProperty as filterProperty.displayPropertyIdentifier
+          				        for filterProperty in filterPropertiesList[selectedFilterProperty.propertyIdentifier].data
+          					    | orderBy:['displayPropertyIdentifier']
+          					    | filter:{fieldtype:'!one-to-many'}
+                                | filter:{fieldtype:'!many-to-many'}
+                                | filter:{fieldtype:'!many-to-one'}
+                                track by filterProperty.propertyIdentifier
+          					"
+                            class="form-control input-sm"
+                            data-ng-if="aggegate.selectedAggregate">
+                        <option value="">Select From {{selectedFilterProperty.displayPropertyIdentifier}}:</option>
+                    </select>
+                </div>
+            </div>
+            <div class="radio">
+                <input type="radio" name="radio1" id="radio2" ng-value="conditionOptions.hasEntity" ng-model="selectedFilterProperty.selectedCriteriaType" >
+                <label for="radio2">
+                    Has {{selectedFilterProperty.displayPropertyIdentifier}}
+                </label>
+            </div>
+            <div class="radio">
+                <input type="radio" name="radio1" id="radio3" ng-value="conditionOptions.notHasEntity" ng-model="selectedFilterProperty.selectedCriteriaType" >
+                <label for="radio3">
+                    Doesn't Have  {{selectedFilterProperty.displayPropertyIdentifier}}
+                </label>
+            </div>
+
+        </div>
+
+    </div>
+</form>
+<!-- //Filter Criteria End -->

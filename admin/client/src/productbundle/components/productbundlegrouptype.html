@@ -24,19 +24,27 @@
                  
 				</div>-->
                 
-                <div sw-typeahead-search 
-                        data-collection-config="productBundleGroupTypes.typeaheadCollectionConfig"
+               <div sw-typeahead-search 
                         data-search-text="productBundleGroup.data.productBundleGroupType.data.typeName"
-                        data-placeholder-text="Search or Add Bundle Group Type..."
+                        data-placeholder-rb-key="admin.entity.createProduct.searchProductBundleType"
                         data-add-function="selectProductBundleGroupType"
                         data-add-button-function="productBundleGroupTypes.setAdding"
                         data-validate-required="true"
                         >
                         
-                        <span sw-typeahead-search-line-item data-property-identifier="typeName">
-                            <span ng-bind="item.typeName"></span>
-                        </span> 
-                        
+                        <sw-collection-config 
+                            data-entity-name="Type"
+                            data-parent-directive-controller-as-name="swTypeaheadSearch"
+							data-collection-config-property="collectionConfig"
+                            data-all-records="true"
+                        >
+                            <sw-collection-column data-property-identifier="typeID"></sw-collection-column>
+                            <sw-collection-column data-property-identifier="typeCode" data-is-searchabled="true"></sw-collection-column>
+                            <sw-collection-column data-property-identifier="typeName" data-is-searchabled="true"></sw-collection-column>
+                            <sw-collection-filter data-property-identifier="parentType.systemCode" data-comparison-operator="=" data-comparison-value="ProductBundleGroupType"></sw-collection-filter>
+                        </sw-collection-config>
+                       
+                        <span sw-typeahead-search-line-item data-property-identifier="typeName"></span>           
                 </div>
 
 				<!--<div ng-if="showAddProductBundleGroupTypeBtn && productBundleGroup.data.productBundleGroupType.data.typeName.length">

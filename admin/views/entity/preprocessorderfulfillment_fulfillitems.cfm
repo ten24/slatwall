@@ -100,7 +100,7 @@ Notes:
 							<td>#orderItem.getQuantity()#</td>
 							<td>#orderItem.getQuantityUndelivered()#</td>
 							<td>#orderItem.getQuantityDelivered()#</td>
-							<td><input type="text" name="orderDeliveryItems[#orderItemIndex#].quantity" value="" class="span1" /></td>
+							<td><input type="text" name="orderDeliveryItems[#orderItemIndex#].quantity" value="0" class="span1" /></td>
 						</tr>
 					</cfloop>
 				</table>

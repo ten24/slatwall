@@ -299,6 +299,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// ===================== START: Process Methods ===========================
 	
+	public any function processIntegration_test(required any integration) {
+		var integrationTypes = getIntegrationCFC(arguments.integration).getIntegrationTypes();
+
+		for(var integrationType in integrationTypes) {
+			var integrationCFC = arguments.integration.getIntegrationCFC(integrationType);
+			if(structKeyExists(integrationCFC, "testIntegration")) {
+				var result = integrationCFC.testIntegration();
+				arguments.integration.addError(errorName="TestResult", errorMessage="#serializeJSON(result.getData())#");
+			} else {
+				arguments.integration.addError(errorName="TestResult", errorMessage="#rbKey('define.test_not_implemented')#");
+			}
+		}
+
+		return arguments.integration;
+	}
+	
 	// =====================  END: Process Methods ============================
 	
 	// ====================== START: Save Overrides ===========================

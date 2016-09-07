@@ -71,13 +71,28 @@ Notes:
 
 				<!--- Shipping - Hidden Fields --->
 				<cfif rc.processObject.getOrderFulfillment().getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">
+					
 					<input type="hidden" name="shippingMethod.shippingMethodID" value="#rc.processObject.getShippingMethod().getShippingMethodID()#" />
 					<input type="hidden" name="shippingAddress.addressID" value="#rc.processObject.getShippingAddress().getAddressID()#" />
 				</cfif>
-
+				
 				<!--- Shipping - Inputs --->
 				<cfif rc.processObject.getOrderFulfillment().getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">
-					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="trackingNumber" edit="true" />
+					<cfset hasShippingIntegration = rc.processObject.getUseShippingIntegrationForTrackingNumber()>
+					<cfif hasShippingIntegration && getHibachiScope().setting('globalUseShippingIntegrationForTrackingNumberOption')>
+						<hb:HibachiDisplayToggle selector="input[name='trackingNumber']" showValues="0" loadVisable="#hasShippingIntegration#">
+							<hb:HibachiPropertyDisplay 
+								object="#rc.processObject#" 
+								property="useShippingIntegrationForTrackingNumber" 
+								edit="true"
+							>
+						</hb:HibachiDisplayToggle>
+						<hb:HibachiDisplayToggle selector="input[name='useShippingIntegrationForTrackingNumber']" showValues="0" loadVisible="#!hasShippingIntegration#">
+							<hb:HibachiPropertyDisplay object="#rc.processObject#" property="trackingNumber" edit="true" />
+						</hb:HibachiDisplayToggle>
+					<cfelse>
+						<hb:HibachiPropertyDisplay object="#rc.processObject#" property="trackingNumber" edit="true" />
+					</cfif>
 				</cfif>
 
 				<!--- Gift Card Codes --->
@@ -140,7 +155,7 @@ Notes:
 							<cfif IsNumeric(recordData.quantity) && thisQuantity gt 0>
 								<td>#thisQuantity#</td>
 							<cfelse>
-								<td style="color:##cc0000;">#$.slatwall.rbKey('define.quantitymustbegreaterthanzero')#</td>
+								<td style="color:##cc0000;">#$.slatwall.rbKey('entity.orderDelivery.process.create.cannotfulfillitem')#</td>
 							</cfif>
 
 							<input type="hidden" name="orderDeliveryItems[#orderItemIndex#].orderItem.orderItemID" value="#recordData.orderItem.orderItemID#" />

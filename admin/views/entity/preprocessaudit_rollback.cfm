@@ -66,6 +66,7 @@ Notes:
 </cfif>
 
 <cfoutput>
+	
 	<cfif !isNull(rc.audit.getChangeDetails())>
 		<cfset changeDetails = rc.audit.getChangeDetails() />
 		<cfsavecontent variable="changeDetailsHTML">
@@ -78,6 +79,7 @@ Notes:
 						</cfif>
 						<th>#request.context.fw.getHibachiScope().rbKey("entity.audit.changeDetails.propertyChanged.new")#</th>
 					</tr>
+					<cfset entity = request.context.fw.getHibachiScope().getService('hibachiService').getEntityObject(rc.audit.getBaseObject())/>
 					
 					<cfloop array="#changeDetails.properties#" index="changeDetail">
 						<tr>
@@ -100,6 +102,16 @@ Notes:
 							</cfif>
 							
 							<cfif isSimpleValue(changeDetail.new)>
+								<cfset sanitize = true/>
+								<cfif entity.hasProperty(changeDetail.propertyName)>
+									<cfset fieldType = entity.getPropertyFieldType(changeDetail.propertyName)/>
+									<cfif fieldType eq 'wysiwyg'>
+										<cfset sanitize = false/>
+									</cfif>
+								</cfif>
+								<cfif sanitize>
+									<cfset changeDetail.new = request.context.fw.getHibachiScope().hibachiHTMLEditFormat(changeDetail.new)/>
+								</cfif>
 								<td>#changeDetail.new#</td>
 							<cfelseif isObject(changeDetail.new)>
 								<td><hb:HibachiActionCaller action="admin:entity.detail#changeDetail.new.getClassName()#" queryString="#changeDetail.new.getPrimaryIDPropertyName()#=#changeDetail.new.getPrimaryIDValue()#" text="#changeDetail.new.getSimpleRepresentation()#" /></td>
@@ -127,7 +139,7 @@ Notes:
 					</cfif>
 					
 					<cfif !isNull(rc.audit.getChangeDetails())>
-						<hb:HibachiPropertyDisplay object="#rc.audit#" property="changeDetails" value="#changeDetailsHTML#">
+						<hb:HibachiPropertyDisplay object="#rc.audit#" ignoreHTMLEditFormat="true" property="changeDetails" value="#changeDetailsHTML#">
 					</cfif>
 				<cfelse>
 					<hb:HibachiPropertyDisplay object="#rc.audit#" property="sessionAccountEmailAddress">

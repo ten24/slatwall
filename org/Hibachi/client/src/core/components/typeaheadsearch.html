@@ -1,16 +1,27 @@
 <div class="s-select-list-wrapper s-search" sw-click-outside="swTypeaheadSearch.closeThis(swTypeaheadSearch.clickOutsideArguments)" >
-    
     <div class="form-group">
         <div class="input-group">
             <div class="s-input-btn">
-                <input id="searchinput" ng-if="swTypeaheadSearch.validateRequired" placeholder="{{swTypeaheadSearch.placeholderText}}" ng-model="swTypeaheadSearch.searchText" ng-change="swTypeaheadSearch.search(swTypeaheadSearch.searchText)" type="search" class="form-control" required>
-                <input id="searchinput" ng-if="!swTypeaheadSearch.validateRequired" placeholder="{{swTypeaheadSearch.placeholderText}}" ng-model="swTypeaheadSearch.searchText" ng-change="swTypeaheadSearch.search(swTypeaheadSearch.searchText)" type="search" class="form-control">
-                <span class="glyphicon glyphicon-remove" ng-if="swTypeaheadSearch.searchText.length" ng-click="swTypeaheadSearch.clearSearch()"></span>
+                <input  ng-if="swTypeaheadSearch.placeholderText"
+                        id="searchinput"
+                        placeholder="{{swTypeaheadSearch.placeholderText}}"
+                        ng-model="swTypeaheadSearch.searchText"
+                        ng-change="swTypeaheadSearch.search(swTypeaheadSearch.searchText)"
+                        type="search"
+                        class="form-control"
+                        autocomplete="off"
+                        data-ng-required="swTypeaheadSearch.validateRequired"
+                        data-ng-disabled="swTypeaheadSearch.disabled"/>
+                <span class="glyphicon glyphicon-remove" ng-if="swTypeaheadSearch.searchText.length && !swTypeaheadSearch.disabled" ng-click="swTypeaheadSearch.clearSearch()"></span>
+                <span class="fa fa-eye" ng-if="swTypeaheadSearch.searchText.length && swTypeaheadSearch.showViewButton" ng-click="swTypeaheadSearch.viewButtonClick()" style="right: 28px"></span>
             </div>
             <div class="input-group-btn">
-                <button class="btn btn-sm btn-default" type='button' ng-if="swTypeaheadSearch.hideSearch" ng-click="swTypeaheadSearch.toggleOptions()"><i class="fa fa-caret-down" ></i></button>
-                <button class="btn btn-sm btn-default" type='button' ng-if="!swTypeaheadSearch.hideSearch" ng-click="swTypeaheadSearch.toggleOptions()"><i class="fa fa-caret-up"></i></button>
-				<button class="btn btn-sm btn-primary" type='button' ng-click="swTypeaheadSearch.addButtonItem()"><i class="fa fa-plus"></i></button>
+                <button class="btn btn-sm btn-default" type='button' ng-click="swTypeaheadSearch.toggleOptions()" data-ng-disabled="swTypeaheadSearch.disabled">
+                    <i class="fa" data-ng-class="(swTypeaheadSearch.hideSearch) ? 'fa-caret-down': 'fa-caret-up'" ></i>
+                </button>
+				<button class="btn btn-sm btn-primary" type='button' ng-if="swTypeaheadSearch.showAddButton" ng-click="swTypeaheadSearch.addButtonItem()" data-ng-disabled="swTypeaheadSearch.disabled">
+                    <i class="fa fa-plus"></i>
+                </button>
             </div>
         </div>
     </div>

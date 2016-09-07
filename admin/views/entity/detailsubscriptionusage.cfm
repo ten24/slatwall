@@ -69,6 +69,8 @@ Notes:
 			<hb:HibachiEntityDetailItem property="subscriptionStatus" />
 			<hb:HibachiEntityDetailItem view="admin:entity/subscriptionusagetabs/orderitems" />
 			<hb:HibachiEntityDetailItem view="admin:entity/subscriptionusagetabs/subscriptionusagesettings" />
+			<hb:HibachiEntityDetailItem view="admin:entity/subscriptionusagetabs/subscriptionusageaccounts" />
+			<hb:HibachiEntityDetailItem view="admin:entity/subscriptionusagetabs/subscriptionusageaccess" />
 		</hb:HibachiEntityDetailGroup>
 	</hb:HibachiEntityDetailForm>
 </cfoutput>

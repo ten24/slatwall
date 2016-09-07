@@ -63,4 +63,4 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="balanceAmount" />
 		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
 </hb:HibachiListingDisplay>
-<hb:HibachiActionCaller action="admin:entity.preprocessorder" entity="order" class="btn btn-default" icon="plus" querystring="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#&processcontext=create&newAccountFlag=false" modal=true />
+<hb:HibachiProcessCaller action="admin:entity.preprocessaccount" processContext="redeemGiftCard" entity="account" class="btn btn-default" icon="plus" querystring="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#" modal=true />

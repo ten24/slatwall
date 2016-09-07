@@ -1,4 +1,4 @@
-/*
+ /*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -77,6 +77,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 	// Calculated Properties
 	property name="calculatedQATS" ormtype="integer";
+	property name="calculatedSkuDefinition" ormtype="string";
 
 	// Related Object Properties (many-to-one)
 	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID" hb_cascadeCalculate="true";
@@ -704,7 +705,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		}
 		return variables.currencyDetails;
 	}
-	//@SuppressCodeCoverage
+	/**
+	* @Suppress
+	*/
 	public any function getCurrentAccountPrice() {
 		if(!structKeyExists(variables, "currentAccountPrice")) {
 			variables.currentAccountPrice = getService("priceGroupService").calculateSkuPriceBasedOnCurrentAccount(sku=this);
@@ -715,7 +718,11 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public any function getCurrentAccountPriceByCurrencyCode(required string currencyCode) {
 		if(!structKeyExists(variables, "currentAccountPrice_#arguments.currencyCode#")) {
 			variables["currentAccountPrice_#arguments.currencyCode#"] = getService("priceGroupService").calculateSkuPriceBasedOnCurrentAccountAndCurrencyCode(sku=this,currencyCode=arguments.currencyCode);
+			if(!structKeyExists(variables, "currentAccountPrice_#arguments.currencyCode#")) {
+				return;	
+			}
 		}
+		
 		return variables["currentAccountPrice_#arguments.currencyCode#"];
 	}
 
@@ -859,23 +866,42 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public any function getLivePriceByCurrencyCode(required string currencyCode) {
 		if(!structKeyExists(variables, "livePrice_#arguments.currencyCode#")) {
 			// Create a prices array, and add the
-			var prices = [getPriceByCurrencyCode(arguments.currencyCode)];
+			var price = getPriceByCurrencyCode(arguments.currencyCode);
+			var prices = [];
+			if(!isNull(price)){
+				arrayAppend(prices,price);
+			}
 
 			// Add the current account price, and sale price
-			arrayAppend(prices, getSalePriceByCurrencyCode(currencyCode=arguments.currencyCode));
-			arrayAppend(prices, getCurrentAccountPriceByCurrencyCode(currencyCode=arguments.currencyCode));
+			var salePrice = getSalePriceByCurrencyCode(currencyCode=arguments.currencyCode);
+			if(!isNull(salePrice)){
+				arrayAppend(prices,salePrice);
+			}
+			
+			var currentAccountPrice = getCurrentAccountPriceByCurrencyCode(currencyCode=arguments.currencyCode);
+			if(!isNull(currentAccountPrice)){
+				arrayAppend(prices, currentAccountPrice);	
+			}
+
+			if(!arraylen(prices)){
+				return;
+			}
 
 			// Sort by best price
 			arraySort(prices, "numeric", "asc");
-
+			
 			// set that in the variables scope
 			variables["livePrice_#arguments.currencyCode#"]= prices[1];
+		
+			
 		}
 		return variables["livePrice_#arguments.currencyCode#"];
 	}
 
 
-	// @hint Returns an array of locations associated with this sku.
+	/**
+	* Returns an array of locations associated with this sku.
+	*/
 	public any function getLocations() {
 		if(!structKeyExists(variables,"locations")) {
 			variables.locations = [];
@@ -937,14 +963,18 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return getQuantity("QATS");
 	}
 
-	//@Suppress
+	/**
+	* @Suppress
+	*/
 	public any function getSalePriceDetails() {
 		if(!structKeyExists(variables, "salePriceDetails")) {
 			variables.salePriceDetails = getProduct().getSkuSalePriceDetails(skuID=getSkuID());
 		}
 		return variables.salePriceDetails;
 	}
-	//@Suppress
+	/**
+	* @Suppress
+	*/
 	public any function getSalePriceDetailsByCurrencyCode(required string currencyCode) {
 		if(!structKeyExists(variables, "salePriceDetailsByCurrencyCode_#currencyCode#")) {
 			variables["salePriceDetails_#currencyCode#"] = getProduct().getSkuSalePriceDetailsByCurrencyCode(skuID=getSkuID(),currencyCode=arguments.currencyCode);
@@ -986,40 +1016,47 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		}
 		return variables.stocksDeletableFlag;
 	}
+	
+	public string function getSkuDefinitionByBaseProductType(
+		string baseProductType
+	){
+		var skuDefinition = "";
+		if(isNull(arguments.baseProductType)){
+			arguments.baseProductType = "";
+		}
+		
+		if(!isNull(getSkuName())){
+			skuDefinition = "Name: #getSkuName()#<br>";
+		}
+		
+		switch (arguments.baseProductType)
+		{
+			case "merchandise":
+				skuDefinition = skuDefinition & getDao('skuDao').getSkuDefinitionForMerchandiseBySkuID(getSkuID());
+	    		break;
+
+	    	case "subscription":
+	    		if(!isNull(getSubscriptionTerm()) && !isNull(getSubscriptionTerm().getSubscriptionTermName())){
+	    			skuDefinition = "#rbKey('entity.subscriptionTerm')#: #getSubscriptionTerm().getSubscriptionTermName()#";
+	    		}
+				break;
+
+			case "event":
+				var configs = this.getLocationConfigurations();
+				for(config in configs){
+					skuDefinition = skuDefinition & config.getlocationPathName() & " (#config.getLocationConfigurationName()#) <br>";
+				}
+				break;
+
+			default:
+				skuDefinition = "";
+		}
+		return skuDefinition;
+	}
 
 	public string function getSkuDefinition() {
 		if(!structKeyExists(variables, "skuDefinition")) {
-			variables.skuDefinition = "";
-			var baseProductType = getBaseProductType();
-			if(isNull(baseProductType)){
-				baseProductType = "";
-			}
-
-			switch (baseProductType)
-			{
-				case "merchandise":
-					for(var option in getOptions()) {
-		    			variables.skuDefinition = listAppend(variables.skuDefinition, " #option.getOptionGroup().getOptionGroupName()#: #option.getOptionName()#", ",");
-	    			}
-		    		break;
-
-		    	case "subscription":
-		    		if(!isNull(getSubscriptionTerm()) && !isNull(getSubscriptionTerm().getSubscriptionTermName())){
-		    			variables.skuDefinition = "#rbKey('entity.subscriptionTerm')#: #getSubscriptionTerm().getSubscriptionTermName()#";
-		    		}
-					break;
-
-				case "event":
-					var configs = this.getLocationConfigurations();
-					for(config in configs){
-						variables.skuDefinition = variables.skuDefinition & config.getlocationPathName() & " (#config.getLocationConfigurationName()#) <br>";
-					}
-					break;
-
-				default:
-					variables.skuDefinition = "";
-			}
-
+			variables.skuDefinition = getSkuDefinitionByBaseProductType(getBaseProductType());
 		}
 		return trim(variables.skuDefinition);
 	}
