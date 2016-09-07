@@ -52,7 +52,6 @@ Notes:
 <cfparam name="rc.productReviewSmartList" type="any" />
 
 <cfoutput>
-	<cfif $.slatwall.getLoggedInFlag()>
 	<div class="row s-body-nav">
 	    <nav class="navbar navbar-default" role="navigation">
 	      <div class="col-md-4 s-header-info">
@@ -87,7 +86,6 @@ Notes:
 		<!---<h5>#request.slatwallScope.rbKey("admin.main.dashboard.timeline")#</h5>--->
 		<hb:HibachiTimeline baseObjectList="Product,Order,Brand,Account" recordsShow="20" />
 	</div>
-		
-	</cfif>
+	
 
 </cfoutput>

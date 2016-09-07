@@ -248,7 +248,7 @@ Notes:
 						<div class="pull-right s-temp-nav">
 							<ul class="nav navbar-nav">
 								<li ng-controller="globalSearch">
-									
+									<cfif $.slatwall.getLoggedInAsAdminFlag()>
 										<!--- Start of Search --->
 										<form name="search" class="navbar-form navbar-right s-header-search" action="/" onSubmit="return false;" autocomplete="off" style="padding: 7px;margin-right: 0px;margin-left: 20px;">
 											<div class="form-group">
@@ -277,14 +277,14 @@ Notes:
 											</div>
 										</form>
 										<!--- End of Search --->
-
+									</cfif>
 								</li>
 								<hb:HibachiActionCallerDropdown title="" icon="cogs icon-white" dropdownclass="pull-right s-settings-dropdown" dropdownId="j-mobile-nav" type="nav">
-									
-									<hb:HibachiActionCaller action="admin:entity.detailaccount" querystring="accountID=#$.slatwall.account('accountID')#" type="list">
-									<hb:HibachiActionCaller action="admin:main.logout" type="list">
-									<li class="divider"></li>
-									
+									<cfif $.slatwall.getLoggedInAsAdminFlag()> 
+										<hb:HibachiActionCaller action="admin:entity.detailaccount" querystring="accountID=#$.slatwall.account('accountID')#" type="list">
+										<hb:HibachiActionCaller action="admin:main.logout" type="list">
+										<li class="divider"></li>
+									</cfif>
 									<li><a title="User Docs" href="http://docs.getslatwall.com/##users-administrator-overview" target="_blank">#$.slatwall.rbKey('define.userGuide')#</a></li>
 									<li><a title="Developer Docs" href="http://docs.getslatwall.com/##developer" target="_blank">#$.slatwall.rbKey('define.developerDocs')#</a></li>
 									<hb:HibachiActionCaller action="admin:main.about" type="list">

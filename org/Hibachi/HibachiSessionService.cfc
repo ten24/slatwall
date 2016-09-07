@@ -263,7 +263,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		}
 		
 		//only delete this extended session cookie if this is a hard logout instead of soft.
-		if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#-ExtendedPSID") && !arguments.softLogout){
+		if((structKeyExists(cookie, "#getApplicationValue('applicationKey')#-ExtendedPSID") && !arguments.softLogout) || (structKeyExists(cookie, "#getApplicationValue('applicationKey')#-ExtendedPSID") && currentSession.getAccount().getAdminAccountFlag())){
 			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-ExtendedPSID", value='', expires="#now()#");
 			structDelete(cookie,"#getApplicationValue('applicationKey')#-ExtendedPSID", true);
 		}
