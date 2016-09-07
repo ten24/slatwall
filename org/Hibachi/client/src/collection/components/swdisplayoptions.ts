@@ -152,14 +152,7 @@ class SWDisplayOptions{
                                     aggregateFunction : selectedProperty.aggregate.toUpperCase(),
                                     aggregateAlias : selectedProperty.propertyIdentifier.split(/[._]+/).pop()+selectedProperty.aggregate.charAt(0).toUpperCase() + selectedProperty.aggregate.slice(1)
                                 };
-                                if(selectedProperty.cfc){
-                                    column['title'] = rbkeyService.getRBKey('entity.'+selectedProperty.cfc+'.'+column['aggregate']['aggregateAlias']);
-                                }else if(selectedProperty.aggregateObject){
-                                    column['title'] = rbkeyService.getRBKey('entity.'+selectedProperty.aggregateObject+'.'+column['aggregate']['aggregateAlias']);
-                                }else{
-                                    column['title'] = rbkeyService.getRBKey('entity.'+selectedProperty.propertyIdentifier.split(/[._]+/).pop()+'.'+column['aggregate']['aggregateAlias']);
-                                }
-
+                                column['title'] +=  ' '+ rbkeyService.getRBKey('define.'+column['aggregate']['aggregateFunction']);
                             }
                             $scope.columns.push(column);
 
@@ -172,7 +165,7 @@ class SWDisplayOptions{
                                 var propertyIdentifierParts = propertyIdentifierJoins.split('_');
 
 
-                                var current_collection = $hibachi.getEntityExample(propertyIdentifierParts[0].charAt(0).toUpperCase() + propertyIdentifierParts[0].slice(1));
+                                var  current_collection = $hibachi.getEntityExample($scope.baseEntityName);
                                 var _propertyIdentifier = '';
                                 var joins = [];
 

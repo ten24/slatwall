@@ -278,7 +278,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  		return this.getOptionGroupCount() gt 0 || this.getSkusCount() eq 1;
  	}
 
-	//TODO: Unused function
+	//TODO: Unused function 
 	public string function getCategoryIDs() {
 		var categoryIDs = "";
 		for( var i=1; i<= arrayLen(getCategories()); i++ ) {
