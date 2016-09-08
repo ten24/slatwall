@@ -765,6 +765,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 			var sl = getService('skuService').getSkuSmartList();
 			sl.addSelect('skuID','skuID');
+			sl.addSelect('skuCode','skuCode');
 			sl.addSelect('imageFile','imageFile');
 			sl.addSelect('product.productType.productTypeIDPath','productTypeIDPath');
 			sl.addFilter('imageFile','NOT NULL');
