@@ -537,8 +537,13 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	public boolean function validate_eq(required any object, required string propertyIdentifier, required string constraintValue) {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		var propertyName = listLast(arguments.propertyIdentifier,'.'); 
+		var validateAsNumeric = validateAsNumeric(arguments.object, propertyName); 
 		if(!isNull(propertyObject)) {
 			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
+			if(validateAsNumeric){
+				propertyValue = val(propertyValue); 
+			} 
 		}
 		if(!isNull(propertyValue) && !isNull(propertyValue) && propertyValue == arguments.constraintValue) {
 			return true;
@@ -548,8 +553,13 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	public boolean function validate_neq(required any object, required string propertyIdentifier, required string constraintValue) {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		var propertyName = listLast(arguments.propertyIdentifier,'.'); 
+		var validateAsNumeric = validateAsNumeric(arguments.object, propertyName); 
 		if(!isNull(propertyObject)) {
-			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
+			var propertyValue = propertyObject.invokeMethod("get#propertyName#");
+			if(validateAsNumeric){
+				propertyValue = val(propertyValue); 
+			} 
 		}
 		if(!isNull(propertyValue) && propertyValue != arguments.constraintValue) {
 			return true;
@@ -559,18 +569,21 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	public boolean function validate_lteProperty(required any object, required string propertyIdentifier, required string constraintValue) {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
-		var lastPropertyIdentifier = listLast(arguments.propertyIdentifier,'.'); 
-		var lastComparePropertyIdentifier = listLast(arguments.constraintValue,'.'); 
-		var propertyMetaData = object.getPropertyMetaData(lastComparePropertyIdentifier);
-		var comparePropertyMetaData = object.getPropertyMetaData(lastPropertyIdentifier); 
+		var propertyName = listLast(arguments.propertyIdentifier,'.'); 
+		var comparePropertyName = listLast(arguments.constraintValue,'.'); 
+		var validateAsNumeric = validateAsNumeric(arguments.object, propertyName, comparePropertyName); 
 		if(!isNull(propertyObject)) {
 			var propertyValue = propertyObject.invokeMethod("get#lastPropertyIdentifier#");
-			propertyValue = val(propertyValue);
+			if(validateAsNumeric){
+				propertyValue = val(propertyValue);
+			}
 		}
 		var comparePropertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.constraintValue );
 		if(!isNull(comparePropertyObject)) {
 			var comparePropertyValue = comparePropertyObject.invokeMethod("get#lastComparePropertyIdentifier#");
-			comparePropertyValue = val(comparePropertyValue); 
+			if(validateAsNumeric){ 
+				comparePropertyValue = val(comparePropertyValue); 
+			}
 		}
 		if(!isNull(propertyValue) && !isNull(comparePropertyValue) && propertyValue <= comparePropertyValue) {
 			return true;
@@ -580,14 +593,21 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	public boolean function validate_ltProperty(required any object, required string propertyIdentifier, required string constraintValue) {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		var propertyName = listLast(arguments.propertyIdentifier,'.'); 
+		var comparePropertyName = listLast(arguments.constraintValue,'.'); 
+		var validateAsNumeric = validateAsNumeric(arguments.object, propertyName, comparePropertyName); 
 		if(!isNull(propertyObject)) {
-			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
-			propertyValue = val(propertyValue); 
+			var propertyValue = propertyObject.invokeMethod("get#propertyName#");
+			if(validateAsNumeric){
+				propertyValue = val(propertyValue); 
+			}
 		}
 		var comparePropertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.constraintValue );
 		if(!isNull(comparePropertyObject)) {
-			var comparePropertyValue = comparePropertyObject.invokeMethod("get#listLast(arguments.constraintValue,'.')#");
-			comparePropertyValue = val(comparePropertyValue); 
+			var comparePropertyValue = comparePropertyObject.invokeMethod("get#comparePropertyName#");
+			if(validateAsNumeric){
+				comparePropertyValue = val(comparePropertyValue); 
+			}
 		}
 		if(!isNull(propertyValue) && !isNull(comparePropertyValue) && propertyValue < comparePropertyValue) {
 			return true;
@@ -597,14 +617,21 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	public boolean function validate_gteProperty(required any object, required string propertyIdentifier, required string constraintValue) {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		var propertyName = listLast(arguments.propertyIdentifier,'.'); 
+		var comparePropertyName = listLast(arguments.constraintValue,'.'); 
+		var validateAsNumeric = validateAsNumeric(arguments.object, propertyName, comparePropertyName); 
 		if(!isNull(propertyObject)) {
-			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
-			propertyValue = val(propertyValue); 
+			var propertyValue = propertyObject.invokeMethod("get#propertyName#");
+			if(validateAsNumeric){
+				propertyValue = val(propertyValue); 
+			} 
 		}
 		var comparePropertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.constraintValue );
 		if(!isNull(comparePropertyObject)) {
-			var comparePropertyValue = comparePropertyObject.invokeMethod("get#listLast(arguments.constraintValue,'.')#");
-			comparePropertyValue = val(comparePropertyValue); 
+			var comparePropertyValue = comparePropertyObject.invokeMethod("get#comparePropertyName#");
+			if(validateAsNumeric){
+				comparePropertyValue = val(comparePropertyValue)
+			} 
 		}
 		if(!isNull(propertyValue) && !isNull(comparePropertyValue) && propertyValue >= comparePropertyValue) {
 			return true;
@@ -614,14 +641,21 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	public boolean function validate_gtProperty(required any object, required string propertyIdentifier, required string constraintValue) {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		var propertyName = listLast(arguments.propertyIdentifier,'.'); 
+		var comparePropertyName = listLast(arguments.constraintValue,'.'); 
+		var validateAsNumeric = validateAsNumeric(arguments.object, propertyName, comparePropertyName); 
 		if(!isNull(propertyObject)) {
-			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
-			propertyValue = val(propertyValue); 
+			var propertyValue = propertyObject.invokeMethod("get#propertyName#");
+			if(validateAsNumeric){ 
+				propertyValue = val(propertyValue); 
+			} 
 		}
 		var comparePropertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.constraintValue );
 		if(!isNull(comparePropertyObject)) {
-			var comparePropertyValue = comparePropertyObject.invokeMethod("get#listLast(arguments.constraintValue,'.')#");
-			comparePropertyValue = val(comparePropertyValue); 
+			var comparePropertyValue = comparePropertyObject.invokeMethod("get#comparePropertyName#");
+			if(validateAsNumeric){ 
+				comparePropertyValue = val(comparePropertyValue); 
+			}
 		}
 		if(!isNull(propertyValue) && !isNull(comparePropertyValue) && propertyValue > comparePropertyValue) {
 			return true;
@@ -727,4 +761,18 @@ component output="false" accessors="true" extends="HibachiService" {
 		return false;
 	}
 
+
+	private boolean function validateAsNumeric(required any object, required string propertyName, string comparePropertyName){
+		var propertyMetaData = arguments.object.getPropertyMetaData(propertyIdentifier);
+		
+		if(arguments.object.getPropertyIsNumeric(arguments.propertyName)){
+			return true; 
+		}  
+
+		if(arguments.object.getPropertyIsNumeric(arguments.comparePropertyName)){
+			return true; 
+		}
+		
+		return false; 			
+	}
 }

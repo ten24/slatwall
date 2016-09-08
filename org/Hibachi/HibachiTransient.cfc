@@ -779,6 +779,16 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 		return "text";
 	}
 
+	public boolean function getPropertyIsNumeric( required string propertyName ) {
+		var propertyMetaData = getPropertyMetaData(arguments.propertyName);
+		if( structKeyExists(propertyMetaData, "ormtype") && 
+			listFindNoCase("big_decimal,integer,int,double,float", propertyMetaData.ormtype)
+		){
+			return true; 
+		}
+		return false; 
+	} 
+
 	// @help public method for getting the meta data of a specific property
 	public struct function getPropertyMetaData( required string propertyName ) {
 		var propertiesStruct = getPropertiesStruct();
