@@ -8,14 +8,17 @@ class SWCollectionColumnController{
 class SWCollectionColumn implements ng.IDirective{
     public restrict:string = 'EA';
     public scope=true;
-    public priority=1000; 
     public bindToController={
         propertyIdentifier:"@",
-        isVisible:"@?",
-        isSearchable:"@?",
-        isDeletable:"@?",
-        isExportable:"@?",
-        hidden:"@?"
+        fallbackPropertyIdentifiers:"@?",
+        isVisible:"=?",
+        isSearchable:"=?",
+        isDeletable:"=?",
+        isExportable:"=?",
+        isKeywordColumn:"=?",
+        isOnlyKeywordColumn:"=?",
+        tdclass:"@?",
+        hidden:"=?"
     };
     public controller=SWCollectionColumn;
     public controllerAs="swCollectionColumn";
@@ -23,40 +26,50 @@ class SWCollectionColumn implements ng.IDirective{
 
     public static Factory(){
         var directive:ng.IDirectiveFactory=(
+            scopeService, 
             utilityService
         )=>new SWCollectionColumn(
+            scopeService, 
             utilityService
         );
         directive.$inject = [
+            'scopeService',
             'utilityService'
         ];
         return directive;
     }
     
     //@ngInject
-    constructor(private utilityService){}
+    constructor(private scopeService, private utilityService){}
 
     public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any) =>{
         
+        if(angular.isUndefined(scope.swCollectionColumn.isKeywordColumn)){
+            scope.swCollectionColumn.isKeywordColumn = false;
+        }
+        if(angular.isUndefined(scope.swCollectionColumn.isOnlyKeywordColumn)){
+            scope.swCollectionColumn.isOnlyKeywordColumn = scope.swCollectionColumn.isKeywordColumn;
+        }
+        
         var column = {
                 propertyIdentifier:scope.swCollectionColumn.propertyIdentifier,
+                fallbackPropertyIdentifiers:scope.swCollectionColumn.fallbackPropertyIdentifiers,
                 isVisible:scope.swCollectionColumn.isVisible,
                 isSearchable:scope.swCollectionColumn.isSearchable,
                 isDeletable:scope.swCollectionColumn.isDeletable, 
                 isExportable:scope.swCollectionColumn.isExportable,
-                hidden:scope.swCollectionColumn.hidden
+                hidden:scope.swCollectionColumn.hidden,
+                tdclass:scope.swCollectionColumn.tdclass,
+                isKeywordColumn:scope.swCollectionColumn.isKeywordColumn, 
+                isOnlyKeywordColumn:scope.swCollectionColumn.isOnlyKeywordColumn
         };
+
+        console.log("column",column)
         
-        var currentScope = scope; 
-        //get the right parent scope
-        while(angular.isDefined(currentScope.$parent)){
-            if(angular.isDefined(currentScope.swCollectionConfig)){ 
-                break; 
-            }
-            currentScope = currentScope.$parent; 
-        }
+        var currentScope = this.scopeService.getRootParentScope(scope,"swCollectionConfig"); 
         
         if(angular.isDefined(currentScope.swCollectionConfig)){ 
+            //push directly here because we've already built the column object
             currentScope.swCollectionConfig.columns.push(column); 
             currentScope.swCollectionConfig.columnsDeferred.resolve(); 
         } else {

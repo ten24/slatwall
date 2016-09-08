@@ -9,7 +9,7 @@ class SWCurrency{
         var data = null, serviceInvoked = false;
         function realFilter(value,decimalPlace,returnStringFlag=true) {
             // REAL FILTER LOGIC, DISREGARDING PROMISES
-            if(data != null){
+            if(data == null){
                 $log.debug("Please provide a valid currencyCode, swcurrency defaults to $");
                 data="$";
             }

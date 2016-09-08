@@ -10,6 +10,7 @@ import {CacheService} from "./services/cacheservice";
 import {PublicService} from "./services/publicservice";
 import {AccountService} from "./services/accountservice";
 import {CartService} from "./services/cartservice";
+import {DraggableService} from "./services/draggableservice";
 import {UtilityService} from "./services/utilityservice";
 import {SelectionService} from "./services/selectionservice";
 import {ObserverService} from "./services/observerservice";
@@ -21,6 +22,7 @@ import {ExpandableService} from "./services/expandableservice";
 import {ListingService} from "./services/listingservice"; 
 import {MetaDataService} from "./services/metadataservice";
 import {RbKeyService} from "./services/rbkeyservice";
+import {TypeaheadService} from "./services/typeaheadservice";
 import {$Hibachi} from "./services/hibachiservice";
 import {HistoryService} from "./services/historyservice"; 
 import {LocalStorageService} from "./services/localstorageservice";
@@ -43,13 +45,17 @@ import {DateFilter} from "./filters/datefilter";
 import {SWActionCaller} from "./components/swactioncaller";
 import {SWTypeaheadSearch} from "./components/swtypeaheadsearch";
 import {SWTypeaheadInputField} from "./components/swtypeaheadinputfield";
+import {SWTypeaheadMultiselect} from "./components/swtypeaheadmultiselect";
 import {SWTypeaheadSearchLineItem} from "./components/swtypeaheadsearchlineitem";
+import {SWTypeaheadRemoveSelection} from "./components/swtypeaheadremoveselection";
 import {SWCollectionConfig} from "./components/swcollectionconfig";
 import {SWCollectionFilter} from "./components/swcollectionfilter";
 import {SWCollectionColumn} from "./components/swcollectioncolumn";
 import {SWActionCallerDropdown} from "./components/swactioncallerdropdown";
 import {SWColumnSorter} from "./components/swcolumnsorter";
 import {SWConfirm} from "./components/swconfirm";
+import {SWDraggable} from "./components/swdraggable";
+import {SWDraggableContainer} from "./components/swdraggablecontainer";
 import {SWEntityActionBar} from "./components/swentityactionbar";
 import {SWEntityActionBarButtonGroup} from "./components/swentityactionbarbuttongroup";
 import {SWExpandableRecord} from "./components/swexpandablerecord";
@@ -161,12 +167,14 @@ var coremodule = angular.module('hibachi.core',[
 .service('utilityService',UtilityService)
 .service('selectionService',SelectionService)
 .service('observerService',ObserverService)
+.service('draggableService',DraggableService)
 .service('expandableService',ExpandableService)
 .service('filterService',FilterService)
 .service('formService',FormService)
 .service('historyService',HistoryService)
 .service('metadataService',MetaDataService)
 .service('rbkeyService',RbKeyService)
+.service('typeaheadService', TypeaheadService)
 .provider('$hibachi',$Hibachi)
 .decorator('$hibachi',HibachiServiceDecorator)
 .service('hibachiInterceptor', HibachiInterceptor.Factory())
@@ -195,7 +203,9 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swCollectionFilter',SWCollectionFilter.Factory())
 .directive('swTypeaheadSearch',SWTypeaheadSearch.Factory())
 .directive('swTypeaheadInputField',SWTypeaheadInputField.Factory())
+.directive('swTypeaheadMultiselect', SWTypeaheadMultiselect.Factory())
 .directive('swTypeaheadSearchLineItem', SWTypeaheadSearchLineItem.Factory())
+.directive('swTypeaheadRemoveSelection', SWTypeaheadRemoveSelection.Factory())
 .directive('swActionCaller',SWActionCaller.Factory())
 .directive('swActionCallerDropdown',SWActionCallerDropdown.Factory())
 .directive('swColumnSorter',SWColumnSorter.Factory())
@@ -204,6 +214,8 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swEntityActionBarButtonGroup',SWEntityActionBarButtonGroup.Factory())
 .directive('swExpandableRecord',SWExpandableRecord.Factory())
 .directive('swGravatar', SWGravatar.Factory())
+.directive('swDraggable',SWDraggable.Factory())
+.directive('swDraggableContainer', SWDraggableContainer.Factory())
 .directive('swListingDisplay',SWListingDisplay.Factory())
 .directive('swListingControls',SWListingControls.Factory())
 .directive('swListingAggregate',SWListingAggregate.Factory())
