@@ -763,14 +763,12 @@ component output="false" accessors="true" extends="HibachiService" {
 
 
 	private boolean function validateAsNumeric(required any object, required string propertyName, string comparePropertyName){
-		
-		var propertyMetaData = arguments.object.getPropertyMetaData(arguments.propertyName);
-		
-		if(arguments.object.getPropertyIsNumeric(arguments.propertyName)){
+	
+		if(arguments.object.hasProperty(arguments.propertyName) && arguments.object.getPropertyIsNumeric(arguments.propertyName)){
 			return true; 
 		}  
 
-		if(structKeyExists(arguments, "comparePropertyName") && arguments.object.getPropertyIsNumeric(arguments.comparePropertyName)){
+		if(structKeyExists(arguments, "comparePropertyName") && arguments.object.hasProperty(arguments.comparePropertyName) && arguments.object.getPropertyIsNumeric(arguments.comparePropertyName)){
 			return true; 
 		}
 		
