@@ -481,7 +481,7 @@ component output="false" accessors="true" extends="HibachiService" {
 	public boolean function validate_lt(required any object, required string propertyIdentifier, required string constraintValue) {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
 		if(!isNull(propertyObject)) {
-			var propertyValue = val(propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#"));
+			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
 		}
 		if(!isNull(propertyValue) && propertyValue < arguments.constraintValue) {
 			return true;
@@ -493,7 +493,6 @@ component output="false" accessors="true" extends="HibachiService" {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
 		if(!isNull(propertyObject)) {
 			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
-			propertyValue = val(propertyValue);
 		}
 		if(!isNull(propertyValue) && propertyValue >= arguments.constraintValue) {
 			return true;
@@ -505,7 +504,6 @@ component output="false" accessors="true" extends="HibachiService" {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
 		if(!isNull(propertyObject)) {
 			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
-			propertyValue = val(propertyValue); 
 		}
 		if(!isNull(propertyValue) && propertyValue > arguments.constraintValue) {
 			return true;
@@ -540,7 +538,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		var propertyName = listLast(arguments.propertyIdentifier,'.'); 
 		var validateAsNumeric = validateAsNumeric(arguments.object, propertyName); 
 		if(!isNull(propertyObject)) {
-			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
+			var propertyValue = propertyObject.invokeMethod("get#propertyName#");
 			if(validateAsNumeric){
 				propertyValue = val(propertyValue); 
 			} 
