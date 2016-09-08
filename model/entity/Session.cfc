@@ -109,6 +109,41 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 		
 	} 
 	
+	/** Because we are never removing the account from the session - 
+	    it becomes important that if we are returning this data, we only do that 
+	    if the user is not an admin user that is not logged in, or for a public user
+	    only if they are in the extended session period or earlier. 
+	*/
+	public any function getAccount(boolean testAccount=false) {
+		
+		if(!structKeyExists(variables, "account") && arguments.testAccount){
+			variables.account = getService('accountService').newAccount();
+		}
+		
+		if(structKeyExists(variables, "account")) {
+			//if the user is logged in then return the account. 
+			//if this is a public account and within the extended period - then return the data.
+			
+			if (arguments.testAccount || getLoggedInFlag()  ||
+			   (structKeyExists(cookie,"#getApplicationValue('applicationKey')#-ExtendedPSID") && 
+			   !isNull(variables.lastRequestDateTime) && 
+			   !isNull(getHibachiScope().setting("globalPublicAutoLogoutMinutes")) &&
+			   (dateDiff("n", getLastRequestDateTime(), now()) <= getHibachiScope().setting("globalPublicAutoLogoutMinutes")))){
+				//return the account data.	
+				return variables.account;
+			
+			}
+		} 
+			
+		variables.requestAccount = getService("accountService").newAccount();
+			
+		
+		return variables.requestAccount;
+	
+	}
+	
+	/*
+	//Using this was to do it causes the app to get info it shouldn't.
 	public any function getAccount() {
 		if(structKeyExists(variables, "account")) {
 			return variables.account;
@@ -117,6 +152,8 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 		}
 		return variables.requestAccount;
 	}
+	
+	*/
 	
 	public any function getOrder() {
 		if(structKeyExists(variables, "order")) {

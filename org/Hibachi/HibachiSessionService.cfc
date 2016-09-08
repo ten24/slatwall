@@ -191,6 +191,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		getHibachiScope().setSessionValue('sessionID', getHibachiScope().getSession().getSessionID());
 		
 		if (arguments.updateLoginCookies == true){
+			
 			//Generate new session cookies for every time the session is persisted (on every login);
 			//This cookie is removed on browser close
 			var npCookieValue = getValueForCookie();
