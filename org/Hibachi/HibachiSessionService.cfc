@@ -150,7 +150,9 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 		// If the sessions account is an admin and last request by the session was 15 min or longer ago. 
 		
-		if((getHibachiScope().getSessionFoundPSIDCookieFlag()||getHibachiScope().getSessionFoundExtendedPSIDCookieFlag()||getHibachiScope().getSessionFoundNPSIDCookieFlag() && !getHibachiScope().getLoggedInFlag())
+		if((
+			(getHibachiScope().getSessionFoundPSIDCookieFlag()||getHibachiScope().getSessionFoundExtendedPSIDCookieFlag()||getHibachiScope().getSessionFoundNPSIDCookieFlag()) 
+			&& !getHibachiScope().getLoggedInFlag())
 		
 			|| (!isNull(getHibachiScope().getSession().getAccountAuthentication()) && getHibachiScope().getSession().getAccountAuthentication().getForceLogoutFlag()) 
 		
