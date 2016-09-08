@@ -539,7 +539,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		var validateAsNumeric = validateAsNumeric(arguments.object, propertyName); 
 		if(!isNull(propertyObject)) {
 			var propertyValue = propertyObject.invokeMethod("get#propertyName#");
-			if(validateAsNumeric){
+			if(validateAsNumeric && !isNull(propertyValue)){
 				propertyValue = val(propertyValue); 
 			} 
 		}
@@ -555,7 +555,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		var validateAsNumeric = validateAsNumeric(arguments.object, propertyName); 
 		if(!isNull(propertyObject)) {
 			var propertyValue = propertyObject.invokeMethod("get#propertyName#");
-			if(validateAsNumeric){
+			if(validateAsNumeric && !isNull(propertyValue)){
 				propertyValue = val(propertyValue); 
 			} 
 		}
@@ -572,14 +572,14 @@ component output="false" accessors="true" extends="HibachiService" {
 		var validateAsNumeric = validateAsNumeric(arguments.object, propertyName, comparePropertyName); 
 		if(!isNull(propertyObject)) {
 			var propertyValue = propertyObject.invokeMethod("get#propertyName#");
-			if(validateAsNumeric){
+			if(validateAsNumeric && !isNull(propertyValue)){
 				propertyValue = val(propertyValue);
 			}
 		}
 		var comparePropertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.constraintValue );
 		if(!isNull(comparePropertyObject)) {
 			var comparePropertyValue = comparePropertyObject.invokeMethod("get#comparePropertyName#");
-			if(validateAsNumeric){ 
+			if(validateAsNumeric && !isNull(comparePropertyValue)){ 
 				comparePropertyValue = val(comparePropertyValue); 
 			}
 		}
@@ -596,14 +596,14 @@ component output="false" accessors="true" extends="HibachiService" {
 		var validateAsNumeric = validateAsNumeric(arguments.object, propertyName, comparePropertyName); 
 		if(!isNull(propertyObject)) {
 			var propertyValue = propertyObject.invokeMethod("get#propertyName#");
-			if(validateAsNumeric){
+			if(validateAsNumeric && !isNull(propertyValue)){
 				propertyValue = val(propertyValue); 
 			}
 		}
 		var comparePropertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.constraintValue );
 		if(!isNull(comparePropertyObject)) {
 			var comparePropertyValue = comparePropertyObject.invokeMethod("get#comparePropertyName#");
-			if(validateAsNumeric){
+			if(validateAsNumeric && !isNull(comparePropertyValue)){
 				comparePropertyValue = val(comparePropertyValue); 
 			}
 		}
@@ -620,14 +620,14 @@ component output="false" accessors="true" extends="HibachiService" {
 		var validateAsNumeric = validateAsNumeric(arguments.object, propertyName, comparePropertyName); 
 		if(!isNull(propertyObject)) {
 			var propertyValue = propertyObject.invokeMethod("get#propertyName#");
-			if(validateAsNumeric){
+			if(validateAsNumeric && !isNull(propertyValue)){
 				propertyValue = val(propertyValue); 
 			} 
 		}
 		var comparePropertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.constraintValue );
 		if(!isNull(comparePropertyObject)) {
 			var comparePropertyValue = comparePropertyObject.invokeMethod("get#comparePropertyName#");
-			if(validateAsNumeric){
+			if(validateAsNumeric && !isNull(comparePropertyValue)){
 				comparePropertyValue = val(comparePropertyValue);
 			} 
 		}
@@ -644,14 +644,14 @@ component output="false" accessors="true" extends="HibachiService" {
 		var validateAsNumeric = validateAsNumeric(arguments.object, propertyName, comparePropertyName); 
 		if(!isNull(propertyObject)) {
 			var propertyValue = propertyObject.invokeMethod("get#propertyName#");
-			if(validateAsNumeric){ 
+			if(validateAsNumeric && !isNull(propertyValue)){ 
 				propertyValue = val(propertyValue); 
 			} 
 		}
 		var comparePropertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.constraintValue );
 		if(!isNull(comparePropertyObject)) {
 			var comparePropertyValue = comparePropertyObject.invokeMethod("get#comparePropertyName#");
-			if(validateAsNumeric){ 
+			if(validateAsNumeric && !isNull(comparePropertyValue)){ 
 				comparePropertyValue = val(comparePropertyValue); 
 			}
 		}
