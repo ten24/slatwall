@@ -204,6 +204,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalClientSecret = {fieldtype="text",defaultValue="#createUUID()#"},
 			globalDisplayIntegrationProcessingErrors = {fieldtype="yesno", defaultValue=1},
 			globalUseExtendedSession = {fieldtype="yesno", defaultValue=0},
+			globalCopyCartToNewSessionOnLogout = {fieldtype="yesno", defaultValue=0},
 			globalUseShippingIntegrationForTrackingNumberOption = {fieldtype="yesno", defaultValue=0},
 			globalSmartListGetAllRecordsLimit = {fieldType="text",defaultValue=250},
 			// Image
