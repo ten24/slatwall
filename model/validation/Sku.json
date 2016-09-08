@@ -5,7 +5,11 @@
 	    },  
     	"isGiftCardSku":{
     		"product": {"method":"isGiftCardSku"}
-    	}
+    	},
+    	"eventSku":{
+	    	"baseProductType":	{"eq":"event"},
+	    	"bundleFlag":		{"eq":0}
+ 	    }
 	},
 	"properties":{
 		"defaultFlag":				[{"contexts":"delete","eq":false}],
@@ -22,6 +26,7 @@
 		"redemptionAmountType":     [{"conditions":"isGiftCardSku", "required":true}],
 		"transactionExistsFlag":	[{"contexts":"delete","eq":false}],
 		"physicalCounts":			[{"contexts":"delete","maxCollection":0}],
-		"redemptionAmount":	[{"conditions":"isGiftCardSku", "dataType":"numeric", "minValue":0}]
+		"redemptionAmount":	[{"conditions":"isGiftCardSku", "dataType":"numeric", "minValue":0}],
+		"eventConflictExistsFlag":  [{"contexts":"save","conditions":"eventSku","eq":false}]
 	}
 }
