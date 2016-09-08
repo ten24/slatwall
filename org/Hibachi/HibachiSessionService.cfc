@@ -236,7 +236,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 	}
 	
 	/** Logs out the user completely. */
-	public void function logoutAccount(softLogout=false) {
+	public void function logoutAccount(boolean softLogout=false) {
 		var currentSession = getHibachiScope().getSession();
 		var auditLogData = {};
 	
