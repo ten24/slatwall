@@ -226,6 +226,7 @@ class SWInputController{
 				'ng-model="swInput.value" '+
 				'ng-disabled="swInput.editable === false" '+
 				'ng-show="swInput.editing" '+
+				`ng-class="{'form-control':propertyDisplay.inListingDisplay, 'input-xs':propertyDisplay.inListingDisplay}"` + 
 				'name="'+this.property+'" ' +
 				'placeholder="'+placeholder+'" '+
 				validations + currency +

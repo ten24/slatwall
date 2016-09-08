@@ -173,9 +173,6 @@ class SWPropertyDisplayController {
         if(angular.isUndefined(this.type) && this.object && this.object.metaData){
             this.type = this.metadataService.getPropertyFieldType(this.object,this.propertyIdentifier);
         }
-        if(angular.isDefined(this.onChangeEvent)){
-            this.observerService.notify(this.onChangeEvent,result);
-        }
         
 		if(angular.isUndefined(this.title) && this.object && this.object.metaData){
 
@@ -227,11 +224,6 @@ class SWPropertyDisplayController {
 
 	}
 
-
-    public getNgClassObjectForInput = () => {
-        return "{'form-control':propertyDisplay.inListingDisplay, 'input-xs':propertyDisplay.inListingDisplay}";
-    }
-
     public onChange = (result?) =>{
         this.edited = true; 
         if(this.saved){
@@ -247,6 +239,10 @@ class SWPropertyDisplayController {
                                             this.save
                                           );
 		}
+
+        if(angular.isDefined(this.onChangeEvent)){
+            this.observerService.notify(this.onChangeEvent,result);
+        }
 	}
 
     public clear = () =>{
