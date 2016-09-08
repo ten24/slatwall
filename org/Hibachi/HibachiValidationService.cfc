@@ -573,14 +573,14 @@ component output="false" accessors="true" extends="HibachiService" {
 		var comparePropertyName = listLast(arguments.constraintValue,'.'); 
 		var validateAsNumeric = validateAsNumeric(arguments.object, propertyName, comparePropertyName); 
 		if(!isNull(propertyObject)) {
-			var propertyValue = propertyObject.invokeMethod("get#lastPropertyIdentifier#");
+			var propertyValue = propertyObject.invokeMethod("get#propertyName#");
 			if(validateAsNumeric){
 				propertyValue = val(propertyValue);
 			}
 		}
 		var comparePropertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.constraintValue );
 		if(!isNull(comparePropertyObject)) {
-			var comparePropertyValue = comparePropertyObject.invokeMethod("get#lastComparePropertyIdentifier#");
+			var comparePropertyValue = comparePropertyObject.invokeMethod("get#comparePropertyName#");
 			if(validateAsNumeric){ 
 				comparePropertyValue = val(comparePropertyValue); 
 			}
