@@ -481,7 +481,7 @@ component output="false" accessors="true" extends="HibachiService" {
 	public boolean function validate_lt(required any object, required string propertyIdentifier, required string constraintValue) {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
 		if(!isNull(propertyObject)) {
-			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
+			var propertyValue = val(propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#"));
 		}
 		if(!isNull(propertyValue) && propertyValue < arguments.constraintValue) {
 			return true;
@@ -493,6 +493,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
 		if(!isNull(propertyObject)) {
 			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
+			propertyValue = val(propertyValue);
 		}
 		if(!isNull(propertyValue) && propertyValue >= arguments.constraintValue) {
 			return true;
@@ -504,6 +505,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
 		if(!isNull(propertyObject)) {
 			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
+			propertyValue = val(propertyValue); 
 		}
 		if(!isNull(propertyValue) && propertyValue > arguments.constraintValue) {
 			return true;
@@ -559,10 +561,12 @@ component output="false" accessors="true" extends="HibachiService" {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
 		if(!isNull(propertyObject)) {
 			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
+			propertyValue = val(propertyValue);
 		}
 		var comparePropertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.constraintValue );
 		if(!isNull(comparePropertyObject)) {
 			var comparePropertyValue = comparePropertyObject.invokeMethod("get#listLast(arguments.constraintValue,'.')#");
+			comparePropertyValue = val(comparePropertyValue); 
 		}
 		if(!isNull(propertyValue) && !isNull(comparePropertyValue) && propertyValue <= comparePropertyValue) {
 			return true;
@@ -574,10 +578,12 @@ component output="false" accessors="true" extends="HibachiService" {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
 		if(!isNull(propertyObject)) {
 			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
+			propertyValue = val(propertyValue); 
 		}
 		var comparePropertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.constraintValue );
 		if(!isNull(comparePropertyObject)) {
 			var comparePropertyValue = comparePropertyObject.invokeMethod("get#listLast(arguments.constraintValue,'.')#");
+			comparePropertyValue = val(comparePropertyValue); 
 		}
 		if(!isNull(propertyValue) && !isNull(comparePropertyValue) && propertyValue < comparePropertyValue) {
 			return true;
@@ -589,10 +595,12 @@ component output="false" accessors="true" extends="HibachiService" {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
 		if(!isNull(propertyObject)) {
 			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
+			propertyValue = val(propertyValue); 
 		}
 		var comparePropertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.constraintValue );
 		if(!isNull(comparePropertyObject)) {
 			var comparePropertyValue = comparePropertyObject.invokeMethod("get#listLast(arguments.constraintValue,'.')#");
+			comparePropertyValue = val(comparePropertyValue); 
 		}
 		if(!isNull(propertyValue) && !isNull(comparePropertyValue) && propertyValue >= comparePropertyValue) {
 			return true;
@@ -604,10 +612,12 @@ component output="false" accessors="true" extends="HibachiService" {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
 		if(!isNull(propertyObject)) {
 			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
+			propertyValue = val(propertyValue); 
 		}
 		var comparePropertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.constraintValue );
 		if(!isNull(comparePropertyObject)) {
 			var comparePropertyValue = comparePropertyObject.invokeMethod("get#listLast(arguments.constraintValue,'.')#");
+			comparePropertyValue = val(comparePropertyValue); 
 		}
 		if(!isNull(propertyValue) && !isNull(comparePropertyValue) && propertyValue > comparePropertyValue) {
 			return true;
