@@ -559,13 +559,17 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	public boolean function validate_lteProperty(required any object, required string propertyIdentifier, required string constraintValue) {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		var lastPropertyIdentifier = listLast(arguments.propertyIdentifier,'.'); 
+		var lastComparePropertyIdentifier = listLast(arguments.constraintValue,'.'); 
+		var propertyMetaData = object.getPropertyMetaData(lastComparePropertyIdentifier);
+		var comparePropertyMetaData = object.getPropertyMetaData(lastPropertyIdentifier); 
 		if(!isNull(propertyObject)) {
-			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
+			var propertyValue = propertyObject.invokeMethod("get#lastPropertyIdentifier#");
 			propertyValue = val(propertyValue);
 		}
 		var comparePropertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.constraintValue );
 		if(!isNull(comparePropertyObject)) {
-			var comparePropertyValue = comparePropertyObject.invokeMethod("get#listLast(arguments.constraintValue,'.')#");
+			var comparePropertyValue = comparePropertyObject.invokeMethod("get#lastComparePropertyIdentifier#");
 			comparePropertyValue = val(comparePropertyValue); 
 		}
 		if(!isNull(propertyValue) && !isNull(comparePropertyValue) && propertyValue <= comparePropertyValue) {
