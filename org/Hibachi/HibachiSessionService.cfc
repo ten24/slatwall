@@ -182,7 +182,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 	}
 	
-	public void function persistSession(updateLoginCookies=false) {
+	public void function persistSession(boolean updateLoginCookies=false) {
 	
 		// Save the session
 		getHibachiDAO().save( getHibachiScope().getSession() );
