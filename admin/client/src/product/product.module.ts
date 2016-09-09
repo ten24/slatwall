@@ -9,8 +9,7 @@ import {ProductCreateController} from "./controllers/preprocessproduct_create";
 //filters
 
 //directives
-
-
+import {SWProductListingPages} from "./components/swproductlistingpages"; 
 
 var productmodule = angular.module('hibachi.product',[coremodule.name]).config(()=>{
 
@@ -23,6 +22,7 @@ var productmodule = angular.module('hibachi.product',[coremodule.name]).config((
 //filters
 
 //directives
+.directive('swProductListingPages', SWProductListingPages.Factory())
 
 ;
 export{
