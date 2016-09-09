@@ -1009,6 +1009,26 @@ component extends="HibachiService" accessors="true" {
 			}
 		}
 
+		if(structKeyExists(data, "assignedContentIDList")){
+			var listingPagesSelection = ListToArray(data["assignedContentIDList"]);
+			var currentProductListingPages = product.getListingPages();
+			//purge existing listing pages not in the selection
+			for(var page in currentProductListingPages){
+				if(!ListContains(data["assignedContentIDList"], page.getContent().getContentID())){
+					this.deleteProductListingPage(page);
+				}
+			}
+			//add new listing pages
+			for(var contentID in listingPagesSelection){
+				var content = this.getContent(contentID);
+				if(!product.hasContent(contentID)){
+					var newProductListingPage = this.newProductListingPage();
+					newProductListingPage.setContent(content);
+					newProductListingPage.setProduct(arguments.product);
+					newProductListingPage = this.saveProductListingPage(newProductListingPage);
+				}
+			}
+		}
 		arguments.product = super.save(arguments.product, arguments.data);
 		// Set default sku if no default sku was set
 		if(isNull(arguments.product.getDefaultSku()) && arrayLen(arguments.product.getSkus())){
@@ -1039,6 +1059,11 @@ component extends="HibachiService" accessors="true" {
 				data.urlTitle = getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.productType.getProductTypeName(), tableName="SwProductType");
 			}
 		}
+        
+        //Do this premptively when new so the product name path will calculate
+        if(arguments.productType.getNewFlag() && structKeyExists(data, "parentProductType") && structKeyExists(data.parentProductType,"productTypeID")){
+            arguments.productType.setParentProductType(this.getProductType(data.parentProductType.productTypeID));
+        }
 
 		arguments.productType = super.save(arguments.productType, arguments.data);
 

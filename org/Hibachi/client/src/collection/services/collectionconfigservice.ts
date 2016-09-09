@@ -92,8 +92,10 @@ class CollectionConfig {
         public  observerService,
         public  baseEntityName?:string,
         public  baseEntityAlias?:string,
-        public columns?:Column[],
+        public  columns?:Column[],
+        public  keywordColumns:Column[]=[],
         private filterGroups:Array<any>=[{filterGroup: []}],
+        private keywordFilterGroups:Array<any>=[{filterGroup: []}],
         private joins?:Join[],
         private orderBy?:OrderBy[],
         private groupBys?:string,
@@ -117,6 +119,7 @@ class CollectionConfig {
 
     public clearFilterGroups=():CollectionConfig=>{
         this.filterGroups = [{filterGroup: []}];
+        this.keywordFilterGroups = [{filterGroup: []}];
         return this;
     };
 
@@ -166,6 +169,7 @@ class CollectionConfig {
             baseEntityAlias: this.baseEntityAlias,
             baseEntityName: this.baseEntityName,
             columns: this.columns,
+            keywordColumns: this.keywordColumns,
             filterGroups: this.filterGroups,
             joins: this.joins,
             groupBys: this.groupBys,
@@ -185,9 +189,20 @@ class CollectionConfig {
 
     public getOptions= (): Object =>{
         this.validateFilter(this.filterGroups);
+        if(this.keywords.length && this.keywordColumns.length > 0){
+            console.log("using Keyword Columns", this.keywordColumns);
+            var columns = this.keywordColumns;
+        } else {
+            var columns = this.columns; 
+        }
+        if(this.keywords.length && this.keywordFilterGroups[0].filterGroup.length > 0){
+            var filters = this.keywordFilterGroups; 
+        } else { 
+            var filters = this.filterGroups
+        }
         var options= {
-            columnsConfig: angular.toJson(this.columns),
-            filterGroupsConfig: angular.toJson(this.filterGroups),
+            columnsConfig: angular.toJson(columns),
+            filterGroupsConfig: angular.toJson(filters),
             joinsConfig: angular.toJson(this.joins),
             orderByConfig:angular.toJson(this.orderBy),
             groupBysConfig: angular.toJson(this.groupBys),
@@ -279,7 +294,9 @@ class CollectionConfig {
                 isExportable = true,
                 persistent ,
                 ormtype = 'string',
-                lastProperty=column.split('.').pop()
+                lastProperty=column.split('.').pop(),
+                isKeywordColumn=true,
+                isOnlyKeywordColumn=false
                 ;
             var lastEntity = this.$hibachi.getEntityExample(this.$hibachi.getLastEntityNameInPropertyIdentifier(this.baseEntityName,column));
             if(angular.isUndefined(lastEntity)){
@@ -289,25 +306,37 @@ class CollectionConfig {
             if(angular.isUndefined(this.columns)){
                 this.columns = [];
             }
-            if(!angular.isUndefined(options['isVisible'])){
+            //hide id columns
+            if(angular.isDefined(options['isVisible'])){
                 isVisible = options['isVisible'];
             }
-            if(!angular.isUndefined(options['isDeletable'])){
+            if( angular.isUndefined(options.isVisible) && 
+                column.substring(column.length - 2) === "ID"
+            ){
+                isVisible = false;
+            }
+            if(angular.isDefined(options['isDeletable'])){
                 isDeletable = options['isDeletable'];
             }
-            if(!angular.isUndefined(options['isSearchable'])){
+            if(angular.isDefined(options['isSearchable'])){
                 isSearchable = options['isSearchable'];
             }
-            if(!angular.isUndefined(options['isExportable'])){
+            if(angular.isDefined(options['isExportable'])){
                 isExportable = options['isExportable'];
             }
             if(angular.isUndefined(options['isExportable']) && !isVisible){
                 isExportable = false;
             }
-            if(!angular.isUndefined(options['ormtype'])){
+            if(angular.isDefined(options['ormtype'])){
                 ormtype = options['ormtype'];
             }else if(lastEntity.metaData[lastProperty] && lastEntity.metaData[lastProperty].ormtype){
                 ormtype = lastEntity.metaData[lastProperty].ormtype;
+            }
+            if(angular.isDefined(options['isKeywordColumn'])){
+                isKeywordColumn = options['isKeywordColumn']
+            }
+             if(angular.isDefined(options['isOnlyKeywordColumn'])){
+                isOnlyKeywordColumn = options['isOnlyKeywordColumn']
             }
 
             if(angular.isDefined(lastEntity.metaData[lastProperty])){
@@ -336,9 +365,13 @@ class CollectionConfig {
                     columnObject[key] = options[key];
                 }
             }
-
-
-            this.columns.push(columnObject);
+            console.log("looking to add", columnObject, isOnlyKeywordColumn, isKeywordColumn);
+            if(!isOnlyKeywordColumn){
+                this.columns.push(columnObject);
+            }
+            if(isKeywordColumn){
+                this.keywordColumns.push(columnObject);
+            }
         }
         return this;
     };
@@ -376,7 +409,7 @@ class CollectionConfig {
         return this;
     };
 
-    public addDisplayProperty= (propertyIdentifier: string, title: string = '', options:any = {}):CollectionConfig =>{
+    public addDisplayProperty= (propertyIdentifier: string, title: string = '', options:any = {}):CollectionConfig =>{  
         var _DividedColumns = propertyIdentifier.trim().split(',');
         var _DividedTitles = title.trim().split(',');
         _DividedColumns.forEach((column:string, index)  => {
@@ -391,11 +424,16 @@ class CollectionConfig {
         return this;
     };
 
-    public addFilter= (propertyIdentifier: string, value: any, comparisonOperator: string = '=', logicalOperator?: string, hidden:boolean=false):CollectionConfig =>{
+    public addFilter= (propertyIdentifier: string, value: any, comparisonOperator: string = '=', logicalOperator?: string, hidden:boolean=false, isKeywordFilter=true, isOnlyKeywordFilter=false):CollectionConfig =>{
         //create filter
         var filter = this.createFilter(propertyIdentifier, value, comparisonOperator, logicalOperator, hidden);
 
-        this.filterGroups[0].filterGroup.push(filter);
+        if(!isOnlyKeywordFilter){
+            this.filterGroups[0].filterGroup.push(filter);
+        }
+        if(isKeywordFilter){
+            this.keywordFilterGroups[0].filterGroup.push(filter);
+        }   
         return this;
     };
 
@@ -477,6 +515,24 @@ class CollectionConfig {
         this.removeFilterHelper(this.filterGroups, propertyIdentifier, value, comparisonOperator);
         return this;
     };
+
+    public removeFilterByDisplayPropertyIdentifier = (displayPropertyIdentifier) =>{
+        this.removeFromFilterGroupsByPropertyIdentifier(this.filterGroups, displayPropertyIdentifier); 
+        this.removeFromFilterGroupsByPropertyIdentifier(this.keywordFilterGroups, displayPropertyIdentifier); 
+    }
+
+    private removeFromFilterGroupsByPropertyIdentifier = (filterGroups, displayPropertyIdentifier) =>{
+        for( var j = 0; j < filterGroups.length; j++){
+            var filterGroup = filterGroups[j].filterGroup; 
+            for( var i = 0; i < filterGroup.length; i++){
+                var filter = filterGroup[i]; 
+                if(filter.displayPropertyIdentifier == displayPropertyIdentifier){
+                    filterGroup.splice(i, 1);
+                    i--;
+                }
+            }
+        }
+    }
 
     public removeFilterHelper = (filter:any, propertyIdentifier:string, value:any, comparisonOperator:string, currentGroup?)=>{
         if(angular.isUndefined(currentGroup)){
@@ -623,7 +679,7 @@ class CollectionConfig {
     };
 
     public hasColumns=():boolean=>{
-        return this.columns && this.columns.length > 0;
+        return this.columns != null && this.columns.length > 0;
     };
 
     public clearFilters=():CollectionConfig =>{
