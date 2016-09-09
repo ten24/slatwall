@@ -4,17 +4,6 @@
 <cfparam name="this.datasource.password" default="" />
 <!--- Just in case the it picks up on the entity first --->
 <cfquery name="local.updateSwProductListingPageAddColumn" datasource="#this.datasource.name#">
-IF EXISTS(
-    SELECT *
-    FROM sys.columns 
-    WHERE Name      = N'productListingPageID'
-      AND Object_ID = Object_ID(N'SwProductListingPage'))
-BEGIN
-    ALTER TABLE SwProductListingPage
-    DROP Column productListingPageID
-END
-</cfquery>
-<cfquery name="local.updateSwProductListingPageAddColumn" datasource="#this.datasource.name#">
     ALTER TABLE SwProductListingPage
     ADD productListingPageID VARCHAR(32)
 </cfquery>
