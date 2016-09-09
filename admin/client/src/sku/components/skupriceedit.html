@@ -1,6 +1,6 @@
 <sw-form ng-if="swSkuPriceEdit.sku" 
         data-object="swSkuPriceEdit.sku" 
-        data-name="'{{swSkuPriceEdit.formName}}'"> 
+        data-name="{{swSkuPriceEdit.formName}}"> 
         <span ng-show="swSkuPriceEdit.showPriceEdit">
             <sw-property-display
                     data-object="swSkuPriceEdit.sku"
@@ -22,7 +22,7 @@
 </sw-form>
 <sw-form ng-if="swSkuPriceEdit.skuPrice" 
         data-object="swSkuPriceEdit.skuPrice" 
-        data-name="'{{swSkuPriceEdit.formName}}'"> 
+        data-name="{{swSkuPriceEdit.formName}}"> 
         <span ng-show="swSkuPriceEdit.showPriceEdit">
             <sw-property-display
                     ng-if="!swSkuPriceEdit.skuPrice.data.inferred"
