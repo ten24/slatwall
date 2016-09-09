@@ -21,7 +21,7 @@ class ScopeService {
     }
 
     public hasParentScope = (scope, targetScopeName) =>{
-        if(this.locateParentScope(scope, targetScopeName) != null){
+        if(this.getRootParentScope(scope, targetScopeName) != null){
             return true; 
         }
         return false; 

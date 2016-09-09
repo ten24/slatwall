@@ -143,7 +143,7 @@ class SWOrderByControls implements ng.IDirective{
                 if( $scope.swOrderByControls.inListingDisplay && 
                     this.scopeService.hasParentScope($scope,"swListingDisplay")
                 ){
-                    var listingDisplayScope = this.scopeService.locateParentScope($scope,"swListingDisplay")["swListingDisplay"];
+                    var listingDisplayScope = this.scopeService.getRootParentScope($scope,"swListingDisplay")["swListingDisplay"];
                     $scope.swOrderByControls.listingId = listingDisplayScope.tableID; 
                     this.listingService.attachToListingInitiated($scope.swOrderByControls.listingId, $scope.swOrderByControls.updateOrderBy); 
                     if( $scope.swOrderByControls.collectionConfig == null && 

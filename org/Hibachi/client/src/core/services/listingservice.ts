@@ -247,9 +247,14 @@ class ListingService{
             classObjectString = classObjectString.concat(",");
         }); 
         classObjectString = classObjectString.concat(" 's-child':" + this.getPageRecordIsChild(listingID, pageRecord)); 
-        classObjectString = classObjectString.concat(",'s-selected-row':" + pageRecord.newFlag);
+        var newFlag = false; 
+        if(pageRecord.newFlag != null && typeof pageRecord.newFlag === 'string' && pageRecord.newFlag.trim() !== ''){
+            newFlag = pageRecord.newFlag; 
+        }
+        classObjectString = classObjectString.concat(",'s-selected-row':" + newFlag);
         classObjectString = classObjectString.concat(",'s-disabled':" + this.getPageRecordMatchesDisableRule(listingID, pageRecord));
         classObjectString = classObjectString.concat(",'s-edited':pageRecord.edited");
+        console.log("class objection", classObjectString);
         return classObjectString + "}"; 
     };
     
