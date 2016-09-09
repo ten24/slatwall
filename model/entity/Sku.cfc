@@ -1433,6 +1433,16 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return variables.assignedAttributeSetSmartList;
 	}
 
+	// @help Compile smartlist of conflicting events based on location and event dates
+	public any function getEventConflictsSmartList() {
+		if(!structKeyExists(variables, "eventConflictsSmartList")) {
+			variables.eventConflictsSmartList =getService("skuService").getEventConflictsSmartList(sku=this);
+		}
+
+		return variables.eventConflictsSmartList;
+
+	}
+
 	// @help we override this so that the onMM below will work
 	public struct function getPropertyMetaData(string propertyName) {
 
