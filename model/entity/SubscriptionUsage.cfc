@@ -82,8 +82,8 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 
 	// Related Object Properties (many-to-many)
 
-	// Calculated Properts 
-	property name="calculatedCurrentStatusCode";
+	// Calculated Properts
+	property name="calculatedCurrentStatus" cfc="SubscriptionStatus" fieldtype="many-to-one" fkcolumn="currentSubscriptionStatusID"; 
 
 	// Remote Properties
 	property name="remoteID" ormtype="string";
