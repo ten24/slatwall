@@ -48,13 +48,13 @@ Notes:
 --->
 
 <cfset local.scriptHasErrors = false />
-<cfparam name="this.ormSettings.dialect" />
+<cfparam name="this.ormSettings.dialect" default="#getHibachiScope().getApplicationValue('databaseType')#" />
 
 <cftry>
 	<cfquery name="local.setbundleitemquantity">
 		update SwOrderItem set SwOrderItem.bundleItemQuantity = SwOrderItem.quantity where parentOrderItemID is not null
 	</cfquery>
-	
+
 	<cfif this.ormSettings.dialect eq 'MicrosoftSQLServer'>
 		<cfquery name="local.updatechildorderitemquantity">
 			update SwOrderItem
@@ -71,19 +71,19 @@ Notes:
 				SwOrderItem.parentOrderItemID = p.orderItemID
 			set SwOrderItem.quantity = p.quantity * SwOrderItem.bundleItemQuantity
 			where SwOrderItem.parentOrderItemID = p.orderItemID
-		</cfquery> 	
+		</cfquery>
 	<cfelseif this.ormSettings.dialect eq 'Oracle10g'>
 		<cfquery name="local.updatechildorderitemquantity">
 			update
 				(select
 					SwOrderItem.quantity as oldQuantity,
 					p.quantity * SwOrderItem.bundleItemQuantity as newQuantity
-				from SwOrderItem 
+				from SwOrderItem
 					inner join SwOrderItem p on
 						SwOrderItem.parentOrderItemID = p.orderItemID
 				where SwOrderItem.parentOrderItemID is not null) orderItem
 			set orderItem.oldQuantity = orderItem.newQuantity
-		</cfquery> 	
+		</cfquery>
 	</cfif>
 
 	<cfcatch>
@@ -91,7 +91,7 @@ Notes:
 		<cfset local.scriptHasErrors = true />
 	</cfcatch>
 </cftry>
-<cftry> 
+<cftry>
 	<cfquery name="local.getsubscriptionusages">
 		select * from SwSubsUsage
 	</cfquery>
@@ -99,25 +99,25 @@ Notes:
 	<cfloop query="local.getsubscriptionusages">
 		<cfquery name="local.getsubscriptionusageorderitems">
 			select * from SwSubscriptionOrderItem oi
-			where 
+			where
 				oi.subscriptionUsageID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getsubscriptionusages.subscriptionUsageID#" />
-			and 
+			and
 				oi.subscriptionOrderItemTypeID = '444df311d7615e7cf56b836f515aebd4'
-		</cfquery> 		
+		</cfquery>
 		<cfloop query="local.getsubscriptionusageorderitems">
-			<cfquery name="local.updateSubscriptionUsage"> 
-				update SwSubsUsage 
-				set initialOrderItemID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getsubsscriptionusageorderitems.orderItemID#" />
+			<cfquery name="local.updateSubscriptionUsage">
+				update SwSubsUsage
+				set initialOrderItemID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getsubscriptionusageorderitems.orderItemID#" />
 				where subscriptionUsageID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getsubscriptionusages.subscriptionUsageID#" />
-			</cfquery> 	
-			<cfbreak> 	
-		</cfloop> 
-	</cfloop> 
+			</cfquery>
+			<cfbreak>
+		</cfloop>
+	</cfloop>
 	<cfcatch>
 		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update Subscription Usages initial order item">
 		<cfset local.scriptHasErrors = true />
 	</cfcatch>
-</cftry> 
+</cftry>
 <cfif local.scriptHasErrors>
 	<cflog file="Slatwall" text="General Log - Part of Script v4_5 had errors when running">
 	<cfthrow detail="Part of Script v4_5 had errors when running">
