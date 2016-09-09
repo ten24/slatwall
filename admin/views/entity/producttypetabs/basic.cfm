@@ -13,6 +13,9 @@
 			</cfif>
 			<hb:HibachiPropertyDisplay object="#rc.productType#" property="productTypeName" edit="#rc.edit#">
 			<cfif not rc.productType.isNew()>
+			    <cfif !isNull(rc.productType.getParentProductType())>
+			        <hb:HibachiPropertyDisplay object="#rc.productType#" property="productTypeNamePath" edit="false">
+				</cfif>
 				<hb:HibachiPropertyDisplay object="#rc.productType#" property="urlTitle" edit="#rc.edit#">
 			</cfif>
 		</hb:HibachiPropertyList>
