@@ -601,7 +601,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public any function getAvailableForPurchaseFlag() {
 		if(!structKeyExists(variables, "availableForPurchaseFlag")) {
 			// If purchase dates are null OR now() is between purchase start and end dates then this product is available for purchase
-			if(	getActiveFlag() && getPublishedFlag()
+			if(	getActiveFlag()
 				&& (
 				( isNull(this.getPurchaseStartDateTime()) && isNull(this.getPurchaseStartDateTime()) )
 				|| ( !isNull(this.getPurchaseStartDateTime()) && !isNull(this.getPurchaseStartDateTime()) && dateCompare(now(),this.getPurchaseStartDateTime(),"s") == 1 && dateCompare(now(),this.getPurchaseEndDateTime(),"s") == -1 ) )
