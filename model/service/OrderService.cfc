@@ -1366,6 +1366,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								if(!orderItem.getSku().getAvailableForPurchaseFlag() OR !orderItem.getSku().allowWaitlistedRegistrations() ){
 									arguments.order.addError('payment','Event: #orderItem.getSku().getProduct().getProductName()# is unavailable for registration. The registration period has closed.');
 								}
+								if(!orderItem.hasEventRegistration()){
+									arguments.order.addError('orderItem','Error when trying to register for: #orderItem.getSku().getProduct().getProductName()#. Please verify your registration details.');
+								}
 							}
 						}
 
@@ -1405,19 +1408,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 							// Log that the order was placed
 							logHibachi(message="New Order Processed - Order Number: #order.getOrderNumber()# - Order ID: #order.getOrderID()#", generalLog=true);
-
-							// Loop over the orderItems looking for any skus that are 'event' skus, and setting their registration value
-							/*for(var orderitem in arguments.order.getOrderItems()) {
-								if(orderitem.getSku().getBaseProductType() == "event") {
-									for(var eventRegistration in orderitem.getEventRegistrations()) {
-										if(orderItem.getSku().setting('skuAllowWaitlistingFlag')) {
-											eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstPending"));
-										} else {
-											eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstRegistered"));
-										}
-									}
-								}
-							}*/
 
 							// Look for 'auto' order fulfillments
 							for(var i=1; i<=arrayLen( arguments.order.getOrderFulfillments() ); i++) {
