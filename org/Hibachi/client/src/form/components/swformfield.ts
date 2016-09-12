@@ -36,6 +36,8 @@ class SWFormFieldController {
 	public isDirty:boolean;
 	public selectType:string;
 	public eagerLoadOptions:boolean;
+	public rawFileTarget:string;
+	public binaryFileTarget:string;
 	public optionsArguments:any;
 	public valueOptions:any;
 
@@ -295,6 +297,8 @@ class SWFormField{
 		options:"=?",
         optionsArguments:"=?",
         eagerLoadOptions:"=?",
+		rawFileTarget:"@?",
+		binaryFileTarget:"@?",
         isDirty:"=?",
         onChange:"=?",
 		editable:"=?",

@@ -42,6 +42,8 @@ class SWInputController{
 	public inputAttributes:string;
 	public noValidate:boolean;
 	public propertyIdentifier:string;
+	public binaryFileTarget:string; 
+	public rawFileTarget:string; 
 	public type:string;
 	public edit:boolean;
 	public editing:boolean;
@@ -351,6 +353,8 @@ class SWInput{
 		errorText: "@?",
 		fieldType: "@?",
 		property:"@?",
+		binaryFileTarget:"@?",
+		rawFileTarget:"@?",
 		inputAttributes:"@?",
 		type:"@?",
 		editing:"=?",
@@ -370,10 +374,10 @@ class SWInput{
 	}
 
 	public link:ng.IDirectiveLinkFn = (scope:any,element,attr)=>{
-
-		if(scope.propertyDisplay && scope.propertyDisplay.fieldType === 'file'){
+		console.log("swinput scope", scope.swInput.rawFileTarget);
+		if(scope.swInput.type === 'file'){
 			console.log("swinput is in file mode")
-			var model = $parse("propertyDisplay.object.data[propertyDisplay.rawFileTarget]"); 
+			var model = $parse("swInput.object.data[swInput.rawFileTarget]"); 
 			var modelSetter = model.assign;
 			element.bind("change", (e)=>{
 				var fileToUpload = (e.srcElement || e.target).files[0];
@@ -381,11 +385,11 @@ class SWInput{
 					modelSetter(scope, fileToUpload);
 				});
 				$timeout(()=>{
-					this.fileService.uploadFile(fileToUpload, scope.propertyDisplay.object, scope.propertyDisplay.binaryFileTarget)
+					this.fileService.uploadFile(fileToUpload, scope.swInput.object, scope.swInput.binaryFileTarget)
 					.then(
 						(result)=>{
-							scope.propertyDisplay.object[scope.propertyDisplay.property] = fileToUpload;
-							scope.propertyDisplay.onChange(result)
+							scope.swInput.object[scope.swInput.property] = fileToUpload;
+							scope.swInput.onEvent(e, "change");
 						},
 						()=>{
 							//error	notify user
