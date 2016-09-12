@@ -12,7 +12,7 @@ import {SWInput} from "./components/swinput";
 import {SWFFormField} from "./components/swfformfield";
 import {SWForm} from "./components/swform";
 import {SWFormField} from "./components/swformfield";
-import {SWFormFieldFile} from "./components/swformfield";
+import {SWFormFieldFile} from "./components/swformfieldfile";
 import {SWFormFieldJson} from "./components/swformfieldjson";
 import {SWFormFieldSearchSelect} from "./components/swformfieldsearchselect";
 import {SWFormRegistrar} from "./components/swformregistrar";

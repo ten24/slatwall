@@ -367,6 +367,29 @@ class SWInput{
 	}
 	public link:ng.IDirectiveLinkFn = (scope:any,element,attr)=>{
 
+		if(scope.propertyDisplay && scope.propertyDisplay.fieldType === 'file'){
+			var model = $parse("propertyDisplay.object.data[propertyDisplay.rawFileTarget]"); 
+			var modelSetter = model.assign;
+			element.bind("change", (e)=>{
+				var fileToUpload = (e.srcElement || e.target).files[0];
+				scope.$apply(()=>{
+					modelSetter(scope, fileToUpload);
+				});
+				$timeout(()=>{
+					fileService.uploadFile(fileToUpload, scope.propertyDisplay.object, scope.propertyDisplay.binaryFileTarget)
+					.then(
+						(result)=>{
+							scope.propertyDisplay.object[scope.propertyDisplay.property] = fileToUpload;
+							scope.propertyDisplay.onChange(result)
+						},
+						()=>{
+							//error	notify user
+						}
+					);
+				});		
+			});
+		}
+
 		//renders the template and compiles it
 		element.html(scope.swInput.getTemplate());
 		this.$compile(element.contents())(scope);
