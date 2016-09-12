@@ -228,13 +228,13 @@ Notes:
 			
 			var params = {productID=arguments.productID};
 			var vendorOrderItemQuantityHQL = "SELECT COALESCE(sum(vendorOrderItem.quantity),0)
-									FROM SlatwallOrderItem orderItem
+								FROM SlatwallVendorOrderItem vendorOrderItem
 									WHERE
-										orderItem.order.orderStatusType.systemCode NOT IN ('ostNotPlaced','ostClosed','ostCanceled')
-					 				 AND
-					  					orderItem.orderItemType.systemCode = 'oitReturn'
-					  				 AND
-										orderItem.sku.product.productID = :productID
+										vendorOrderItem.vendorOrder.vendorOrderStatusType.systemCode != 'ostClosed'
+							 		AND
+							  			vendorOrderItem.vendorOrder.vendorOrderType.systemCode = 'votPurchaseOrder'
+							  		AND
+										vendorOrderItem.stock.sku.product.productID = :productID
 									";
 			
 			var vendorOrderItemQuantitySum = ORMExecuteQuery(vendorOrderItemQuantityHQL,params,true);
