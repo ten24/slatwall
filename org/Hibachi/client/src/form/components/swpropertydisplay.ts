@@ -31,6 +31,7 @@ class SWPropertyDisplayController {
     public form;
 	public saved:boolean=false; 
     public onChangeEvent:string; 
+    public swInputOnChangeEvent:string; 
     public hasOnChangeCallback:boolean; 
     public onChangeCallback; 
     public hasSaveCallback:boolean; 
@@ -220,6 +221,13 @@ class SWPropertyDisplayController {
 		
 		if(angular.isUndefined(this.hint) && this.object && this.object.metaData){
             this.hint = this.metadataService.getPropertyHintByObjectAndPropertyIdentifier(this.object,this.propertyIdentifier);
+        }
+
+        if( (this.hasOnChangeCallback || this.inListingDisplay || this.onChangeEvent) &&
+            (angular.isDefined(this.swForm) && angular.isDefined(this.name))
+        ){
+            this.swInputOnChangeEvent = this.swForm.name + this.name + 'change'; 
+            this.observerService.attach(this.onChange, this.swInputOnChangeEvent);
         }
 
 	}
