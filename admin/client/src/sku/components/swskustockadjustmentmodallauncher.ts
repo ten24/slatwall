@@ -29,10 +29,11 @@ class SWSkuStockAdjustmentModalLauncherController{
     constructor(
         private $http, 
         private $q, 
-        private $hibachi 
+        private $hibachi, 
+        private utilityService
     ){
         if(angular.isDefined(this.skuId)){
-            this.name="j-change-qty-" + this.skuId;
+            this.name="j-change-qty-" + this.utilityService.createID(32);
         } else{
             throw("SWSkuStockAdjustmentModalLauncherController was not provided with a sku id"); 
         }

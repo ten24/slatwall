@@ -2,7 +2,9 @@
                    data-save-action="swSkuStockAdjustmentModalLauncher.save"
                    data-title="Stock Adjustment"><!-- Change this to rb -->
     <sw-modal-static-button>
-        <sw-form data-object="swSkuStockAdjustmentModalLauncher.sku" ng-if="swSkuStockAdjustmentModalLauncher.sku">
+        <sw-form data-name="{{swSkuStockAdjustmentModalLauncher.name}}"
+                 data-object="swSkuStockAdjustmentModalLauncher.sku" 
+                 ng-if="swSkuStockAdjustmentModalLauncher.sku">
             <sw-property-display data-object="swSkuStockAdjustmentModalLauncher.sku"
                                  data-property="newQOH"
                                  data-editable="true"
@@ -11,14 +13,14 @@
                                  data-in-listing-display="true"
                                  data-row-save-enabled="false"
                                  data-in-modal="true"
+                                 data-event-handlers="change"
                                  data-on-change="swSkuStockAdjustmentModalLauncher.updateNewQuantity()"
             >
             </sw-property-display>
         </sw-form> 
     </sw-modal-static-button>
     <sw-modal-content> 
-        <sw-form 
-                 data-name="swSkuStockAdjustmentModalLauncher.name"
+        <sw-form data-name="{{swSkuStockAdjustmentModalLauncher.name}}"
                  data-object="swSkuStockAdjustmentModalLauncher.stockAdjustment"    
                  data-context="save"> 
             <div class="row">              
