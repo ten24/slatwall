@@ -82,10 +82,7 @@ Notes:
 		public array function getQNDOO(required string productID, string productRemoteID) {
 			var params = { productID = arguments.productID };
 			
-			var hql = "SELECT NEW MAP(
-								coalesce( 
-								(	
-									SELECT sum(orderItem.quantity)
+			var orderItemQuantityHql = "SELECT COALESCE(sum(orderItem.quantity),0)
 									FROM SlatwallOrderItem orderItem
 									WHERE
 										orderItem.order.orderStatusType.systemCode NOT IN ('ostNotPlaced','ostClosed','ostCanceled')
@@ -93,7 +90,13 @@ Notes:
 						  				orderItem.orderItemType.systemCode = 'oitSale'
 						  			AND 
 										orderItem.sku.product.productID = :productID
-								), 0 ) 
+									";
+			var orderItemQuantitySum = ORMExecuteQuery(orderItemQuantityHql,params,true);								
+			
+			var hql = "SELECT NEW MAP(
+									
+								:orderItemQuantitySum
+								
 								- coalesce( sum(orderDeliveryItem.quantity), 0 ) as QNDOO, 
 							orderItem.sku.skuID as skuID, 
 							stock.stockID as stockID, 
@@ -113,12 +116,13 @@ Notes:
 						  	orderItem.orderItemType.systemCode = 'oitSale'
 						  AND 
 							orderItem.sku.product.productID = :productID
+						 
 						GROUP BY
 							orderItem.sku.skuID,
 							stock.stockID,
 							location.locationID,
 							location.locationIDPath";
-			return ormExecuteQuery(hql, params);	
+			return ormExecuteQuery(hql, {productID=arguments.productID,orderItemQuantitySum=orderItemQuantitySum});	
 		}
 		
 		// Quantity not delivered on return vendor order 
@@ -131,19 +135,22 @@ Notes:
 		public array function getQNDOSA(required string productID, string productRemoteID) {
 			
 			var params = {productID=arguments.productID};
+			
+			var stockAdjustmentItemQuantityHql = "SELECT COALESCE(sum(stockAdjustmentItem.quantity),0)
+									FROM SlatwallStockAdjustmentItem stockAdjustmentItem
+										LEFT JOIN
+										stockAdjustmentItem.fromStock fromStock
+									WHERE
+										stockAdjustmentItem.stockAdjustment.stockAdjustmentStatusType.systemCode != 'sastClosed'
+									  AND
+										fromStock.sku.product.productID = :productID
+									";
+			
+			var stockAdjustmentItemQuantitySum = ORMExecuteQuery(stockAdjustmentItemQuantityHql,params,true);
+			params['stockAdjustmentItemQuantitySum'] = stockAdjustmentItemQuantitySum;
+			
 			var hql = "SELECT NEW MAP(
-					coalesce( 
-						(
-							SELECT sum(stockAdjustmentItem.quantity)
-							FROM SlatwallStockAdjustmentItem stockAdjustmentItem
-								LEFT JOIN
-								stockAdjustmentItem.fromStock fromStock
-							WHERE
-								stockAdjustmentItem.stockAdjustment.stockAdjustmentStatusType.systemCode != 'sastClosed'
-							  AND
-								fromStock.sku.product.productID = :productID
-						), 0 
-					) 
+					:stockAdjustmentItemQuantitySum
 					- coalesce( sum(stockAdjustmentDeliveryItem.quantity), 0 ) as QNDOSA, 
 						fromStock.sku.skuID as skuID, 
 						fromStock.stockID as stockID, 
@@ -174,10 +181,7 @@ Notes:
 		public array function getQNRORO(required string productID, string productRemoteID) {
 			
 			var params = { productID=arguments.productID };
-			var hql = "SELECT NEW MAP(
-								coalesce( 
-								(
-									SELECT sum(orderItem.quantity)
+			var orderItemQuantityHQL = "SELECT COALESCE(sum(orderItem.quantity),0)
 									FROM SlatwallOrderItem orderItem
 									WHERE
 										orderItem.order.orderStatusType.systemCode NOT IN ('ostNotPlaced','ostClosed','ostCanceled')
@@ -185,7 +189,13 @@ Notes:
 					  					orderItem.orderItemType.systemCode = 'oitReturn'
 					  				 AND
 										orderItem.sku.product.productID = :productID
-								), 0 ) 
+									";
+			
+			var orderItemQuantitySum = ORMExecuteQuery(orderItemQuantityHQL,params,true);
+			params['orderItemQuantitySum'] = orderItemQuantitySum;
+			
+			var hql = "SELECT NEW MAP(
+								:orderItemQuantitySum
 								- coalesce( sum(stockReceiverItem.quantity), 0 ) as QNRORO, 
 							orderItem.sku.skuID as skuID, 
 							stock.stockID as stockID, 
@@ -217,18 +227,21 @@ Notes:
 		public array function getQNROVO(required string productID, string productRemoteID) {
 			
 			var params = {productID=arguments.productID};
+			var vendorOrderItemQuantityHQL = "SELECT COALESCE(sum(vendorOrderItem.quantity),0)
+									FROM SlatwallOrderItem orderItem
+									WHERE
+										orderItem.order.orderStatusType.systemCode NOT IN ('ostNotPlaced','ostClosed','ostCanceled')
+					 				 AND
+					  					orderItem.orderItemType.systemCode = 'oitReturn'
+					  				 AND
+										orderItem.sku.product.productID = :productID
+									";
+			
+			var vendorOrderItemQuantitySum = ORMExecuteQuery(vendorOrderItemQuantityHQL,params,true);
+			params['vendorOrderItemQuantitySum'] = vendorOrderItemQuantitySum;
+			
 			var hql = "SELECT NEW MAP(
-							coalesce( 
-							(	SELECT sum(vendorOrderItem.quantity)
-								FROM SlatwallVendorOrderItem vendorOrderItem
-								WHERE
-									vendorOrderItem.vendorOrder.vendorOrderStatusType.systemCode != 'ostClosed'
-						 			AND
-						  			vendorOrderItem.vendorOrder.vendorOrderType.systemCode = 'votPurchaseOrder'
-						  			AND
-									vendorOrderItem.stock.sku.product.productID = :productID
-								
-							), 0 ) 
+							:vendorOrderItemQuantitySum 
 							- coalesce( sum(stockReceiverItem.quantity), 0 ) as QNROVO, 
 							stock.sku.skuID as skuID, 
 							stock.stockID as stockID, 
@@ -262,10 +275,7 @@ Notes:
 		public array function getQNROSA(required string productID, string productRemoteID) {
 			
 			var params = {productID = arguments.productID };
-			var hql = "SELECT NEW MAP(
-							coalesce( 
-								(
-									SELECT sum(stockAdjustmentItem.quantity)
+			var stockAdjustmentItemQuantityHQL = "SELECT COALESCE(sum(stockAdjustmentItem.quantity),0)
 									FROM 
 										SlatwallStockAdjustmentItem stockAdjustmentItem
 									  LEFT JOIN
@@ -274,7 +284,13 @@ Notes:
 										stockAdjustmentItem.stockAdjustment.stockAdjustmentStatusType.systemCode != 'sastClosed'
 						  			  AND 
 										toStock.sku.product.productID = :productID
-								), 0 ) 
+									";
+			
+			var stockAdjustmentItemQuantitySum = ORMExecuteQuery(stockAdjustmentItemQuantityHQL,params,true);
+			params['stockAdjustmentItemQuantitySum'] = stockAdjustmentItemQuantitySum;
+			
+			var hql = "SELECT NEW MAP(
+							:stockAdjustmentItemQuantitySum 
 							- coalesce( sum(stockReceiverItem.quantity), 0 ) as QNROSA, 
 							toStock.sku.skuID as skuID, 
 							toStock.stockID as stockID, 
