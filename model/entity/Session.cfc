@@ -55,8 +55,8 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 	property name="lastRequestIPAddress" ormtype="string";
 	property name="lastPlacedOrderID" ormtype="string";
 	property name="rbLocale" ormtype="string";
-	property name="sessionCookiePSID" ormtype="string" length="64";
-	property name="sessionCookieNPSID" ormtype="string" length="64"; 
+	property name="sessionCookiePSID" ormtype="string" length="64" index="PI_SESSIONCOOKIEPSID";
+	property name="sessionCookieNPSID" ormtype="string" length="64" index="PI_SESSIONCOOKIENPSID"; 
 	property name="sessionExpirationDateTime" ormtype="timestamp";
 	property name="deviceID" ormtype="string" default="" ;
 	
