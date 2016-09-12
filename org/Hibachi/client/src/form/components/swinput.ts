@@ -219,7 +219,7 @@ class SWInputController{
 			style = style += 'display:none';
 		}
 
-		var acceptedFieldTypes = ['email','text','password','number','time','date','datetime','json'];
+		var acceptedFieldTypes = ['email','text','password','number','time','date','datetime','json','file'];
 
 		if(acceptedFieldTypes.indexOf(this.fieldType.toLowerCase()) >= 0){
 			template = '<input type="'+this.fieldType.toLowerCase()+'" class="'+this.class+'" '+
@@ -329,7 +329,7 @@ class SWInput{
 		swPropertyDisplay:"?^swPropertyDisplay",
 		swfPropertyDisplay:"?^swfPropertyDisplay"
 	};
-	public $compile:ng.ICompileService;
+
 	public scope={};
 	public propertyDisplay;
 
@@ -359,15 +359,20 @@ class SWInput{
 	}
 	public controller=SWInputController;
 	public controllerAs = "swInput";
+	
 	//ngInject
 	constructor(
-		$compile
+		public $compile,
+		public $timeout, 
+		public $parse, 
+		public fileService
 	){
-		this.$compile = $compile;
 	}
+
 	public link:ng.IDirectiveLinkFn = (scope:any,element,attr)=>{
 
 		if(scope.propertyDisplay && scope.propertyDisplay.fieldType === 'file'){
+			console.log("swinput is in file mode")
 			var model = $parse("propertyDisplay.object.data[propertyDisplay.rawFileTarget]"); 
 			var modelSetter = model.assign;
 			element.bind("change", (e)=>{
@@ -376,7 +381,7 @@ class SWInput{
 					modelSetter(scope, fileToUpload);
 				});
 				$timeout(()=>{
-					fileService.uploadFile(fileToUpload, scope.propertyDisplay.object, scope.propertyDisplay.binaryFileTarget)
+					this.fileService.uploadFile(fileToUpload, scope.propertyDisplay.object, scope.propertyDisplay.binaryFileTarget)
 					.then(
 						(result)=>{
 							scope.propertyDisplay.object[scope.propertyDisplay.property] = fileToUpload;
@@ -398,12 +403,21 @@ class SWInput{
 
 	public static Factory(){
 		var directive = (
-			$compile
+			$compile,
+			$timeout, 
+			$parse, 
+			fileService
 		)=>new SWInput(
-			$compile
+			$compile,
+			$timeout, 
+			$parse, 
+			fileService
 		);
 		directive.$inject = [
-			'$compile'
+			'$compile',
+			'$timeout', 
+			'$parse', 
+			'fileService'
 		];
 		return directive
 	}
