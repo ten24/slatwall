@@ -40,6 +40,7 @@ class SWInputController{
 	public property:string;
 	public object:any;
 	public inputAttributes:string;
+	public inListingDisplay:boolean;
 	public noValidate:boolean;
 	public propertyIdentifier:string;
 	public binaryFileTarget:string; 
@@ -177,6 +178,7 @@ class SWInputController{
 	};
 
 	public onEvent = (event:Event,eventName:string):void=>{
+		console.log("swinput onEvent", event, eventName);
 		let customEventName = this.swForm.name+this.name+eventName;
 		let data = {
 			event:event,
@@ -346,6 +348,7 @@ class SWInput{
 		label: 	"@?",
 		labelText: "@?",
 		labelClass: "@?",
+		inListingDisplay: "=?",
 		optionValues: "=?",
 		edit: 	"=?",
 		title: 	"@?",
@@ -376,15 +379,28 @@ class SWInput{
 	public link:ng.IDirectiveLinkFn = (scope:any,element,attr)=>{
 		console.log("swinput scope", scope.swInput.rawFileTarget);
 		if(scope.swInput.type === 'file'){
-			console.log("swinput is in file mode")
+			console.log("swinput is in file mode", scope.swInput.object);
+			if(angular.isUndefined(scope.swInput.object.data[scope.swInput.rawFileTarget])){
+				scope.swInput.object[scope.swInput.rawFileTarget] = "";
+				scope.swInput.object.data[scope.swInput.rawFileTarget] = ""; 
+			}
 			var model = $parse("swInput.object.data[swInput.rawFileTarget]"); 
 			var modelSetter = model.assign;
 			element.bind("change", (e)=>{
+				console.log("swinput changing");
 				var fileToUpload = (e.srcElement || e.target).files[0];
-				scope.$apply(()=>{
-					modelSetter(scope, fileToUpload);
-				});
+				console.log("swinput changing", fileToUpload);
+				scope.$apply(
+					()=>{
+						modelSetter(scope, fileToUpload);
+					},
+					()=>{
+						throw("swinput couldn't apply the file to scope");
+					}
+				);
+				
 				$timeout(()=>{
+					console.log("swinput calling fileservice", fileToUpload);
 					this.fileService.uploadFile(fileToUpload, scope.swInput.object, scope.swInput.binaryFileTarget)
 					.then(
 						(result)=>{

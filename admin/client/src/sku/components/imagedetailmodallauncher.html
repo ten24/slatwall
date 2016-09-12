@@ -45,7 +45,7 @@
                         <div class="col-md-6">
                             <div class="form-group" ng-if="!swImageDetailModalLauncher.customImageNameFlag" id="j-standard-image-name">
                                 <label for="" class="control-label">Image Name</label>
-                                <input type="text" name="imagename" ng-model="swImageDetailModalLauncher.sku.data.imageFile" class="form-control" disabled>
+                                <input type="text" name="imagefile" ng-model="swImageDetailModalLauncher.sku.data.imageFile" class="form-control" disabled>
                             </div>  
                             <div class="form-group" ng-if="swImageDetailModalLauncher.customImageNameFlag" id="j-custom-image-name">
                                 <label for="" class="control-label">Custom Image Name</label>
@@ -59,12 +59,15 @@
                         <div class="col-md-6">
                             <sw-property-display
                                 data-object="swImageDetailModalLauncher.sku"
-                                data-property="imageFile"
+                                data-name="uploadFile"
+                                data-label="Image File"
+                                data-property="uploadFile"
                                 data-field-type="file"
                                 data-binary-file-target="imagePath"
                                 data-raw-file-target="uploadFile"
                                 data-editing="true"
                                 data-editable="true"
+                                data-event-handlers="change"
                                 data-on-change-event="{{swImageDetailModalLauncher.imageFileUpdateEvent}}"
                             >
                             </sw-property-display>  

@@ -233,6 +233,7 @@ class SWPropertyDisplayController {
 	}
 
     public onChange = (result?) =>{
+        console.log("swpropertydisplay onChange", result);
         this.edited = true; 
         if(this.saved){
             this.saved = false; 

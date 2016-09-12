@@ -73,9 +73,7 @@ class SWImageDetailModalLauncherController{
     }
 
     public updateImage = (rawImage) => {
-        if(angular.isDefined(rawImage)){
-            this.sku.data.imagePath = rawImage;
-        }   
+  
     }
     
     public saveAction = () => {

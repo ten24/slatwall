@@ -34,6 +34,7 @@ class SWFormFieldController {
 	public options:any;
 	public selected:any;
 	public isDirty:boolean;
+	public inListingDisplay:boolean; 
 	public selectType:string;
 	public eagerLoadOptions:boolean;
 	public rawFileTarget:string;
@@ -293,6 +294,7 @@ class SWFormField{
 		errorText: "@?",
 		fieldType: "@?",
 		property:"@?",
+		inListingDisplay:"=", 
 		inputAttributes:"@?",
 		options:"=?",
         optionsArguments:"=?",

@@ -12,13 +12,15 @@ class FileService {
         var deferred = this.$q.defer();
         var promise = deferred.promise; 
         var fileReader = new FileReader(); 
+        console.log("fileservice reading file", file); 
         fileReader.readAsDataURL(file);
         fileReader.onload = (result)=>{
-            //object.data[property] = fileReader.result;
+            object.data[property] = fileReader.result;
             deferred.resolve(fileReader.result); 
         };
         fileReader.onerror = (result)=>{
             deferred.reject();    
+            throw("fileservice couldn't read the file");
         }
         return promise; 
     }
