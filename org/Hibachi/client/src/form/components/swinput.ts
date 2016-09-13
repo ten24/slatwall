@@ -40,16 +40,24 @@ class SWInputController{
 	public property:string;
 	public object:any;
 	public inputAttributes:string;
+	public initialValue:any; 
 	public inListingDisplay:boolean;
+	public listingID:string; 
+	public pageRecordIndex:number;  
+	public propertyDisplayID:string; 
 	public noValidate:boolean;
 	public propertyIdentifier:string;
 	public binaryFileTarget:string; 
 	public rawFileTarget:string; 
 	public type:string;
 	public edit:boolean;
+	public edited:boolean;
 	public editing:boolean;
 	public name:string;
 	public value:any;
+	public reverted:boolean;
+	public revertToValue:any; 
+	public showRevert:boolean; 
 	public context:string;
 	public eventNameForObjectSuccess:string;
 
@@ -65,20 +73,12 @@ class SWInputController{
 		public $compile,
         public $hibachi,
 		public $injector,
+		public listingService, 
 		public utilityService,
         public rbkeyService,
 		public observerService:ObserverService,
 		public metadataService:MetaDataService
 	){
-		this.$timeout = $timeout;
-        this.$scope = $scope;
-		this.utilityService = utilityService;
-		this.$hibachi = $hibachi;
-		this.rbkeyService = rbkeyService;
-		this.$log = $log;
-		this.$injector = $injector;
-		this.observerService = observerService;
-		this.metadataService = metadataService;
 	}
 
 	public onSuccess = ()=>{
@@ -177,6 +177,28 @@ class SWInputController{
 		return spaceDelimitedList;
 	};
 
+	public clear = () =>{
+        if(this.reverted){
+            this.reverted = false; 
+            this.showRevert = true; 
+        }
+        this.edited = false; 
+        this.value= this.initialValue; 
+        if(this.inListingDisplay && this.rowSaveEnabled){
+            this.listingService.markUnedited( this.listingID, 
+                                              this.pageRecordIndex, 
+                                              this.propertyDisplayID
+                                            );
+        }
+    }
+
+    public revert = () =>{
+        this.showRevert = false; 
+        this.reverted = true; 
+        this.value = this.revertToValue; 
+        this.onEvent({}, "change");
+    }
+
 	public onEvent = (event:Event,eventName:string):void=>{
 
 		let customEventName = this.swForm.name+this.name+eventName;
@@ -256,7 +278,27 @@ class SWInputController{
 			template = template + ' />';
 		}
 
-		return template;
+		var actionButtons = `
+			<a class="s-remove-change" 
+				data-ng-click="swPropertyDisplay.clear()" 
+				data-ng-if="swInput.edited && swInput.editing">
+					<i class="fa fa-remove"></i>
+			</a>
+
+			<!-- Revert Button -->
+			<button class="btn btn-xs btn-default s-revert-btn"
+					data-ng-show="swInput.showRevert" 
+					data-ng-click="swInput.revert()" 
+					data-toggle="popover" 
+					data-trigger="hover" 
+					data-content="{{swInput.revertText}}" 
+					data-original-title="" 
+					title="">
+				<i class="fa fa-refresh"></i>
+			</button>
+		`;
+
+		return template + actionButtons;
 	};
 
 	public $onInit = ()=>{
@@ -352,6 +394,10 @@ class SWInput{
 		labelText: "@?",
 		labelClass: "@?",
 		inListingDisplay: "=?",
+		listingID: "=?" 
+		pageRecordIndex: "=?",
+	    propertyDisplayID: "=?", 
+		initialValue:"=?",
 		optionValues: "=?",
 		edit: 	"=?",
 		title: 	"@?",
@@ -361,6 +407,9 @@ class SWInput{
 		property:"@?",
 		binaryFileTarget:"@?",
 		rawFileTarget:"@?",
+		reverted:"=?",
+		revertToValue:"=?",
+		showRevert:"=?", 
 		inputAttributes:"@?",
 		type:"@?",
 		editing:"=?",

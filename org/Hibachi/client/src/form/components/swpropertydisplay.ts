@@ -268,6 +268,13 @@ class SWPropertyDisplayController {
         }
     }
 
+    public revert = () =>{
+        this.showRevert = false; 
+        this.reverted = true; 
+        this.object.data[this.property] = this.revertToValue; 
+        this.onChange(); 
+    }
+
     public save = () =>{
         //do this eagerly to hide save will reverse if theres an error
         this.edited = false;          
@@ -289,12 +296,7 @@ class SWPropertyDisplayController {
         }
     }
 
-    public revert = () =>{
-        this.showRevert = false; 
-        this.reverted = true; 
-        this.object.data[this.property] = this.revertToValue; 
-        this.onChange(); 
-    }
+    
 }
 
 class SWPropertyDisplay implements ng.IDirective{

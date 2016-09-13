@@ -18,11 +18,6 @@
         <span sw-form-field ng-show="swPropertyDisplay.editing"
             data-property-display="swfPropertyDisplay.propertyDisplay">
         </span>
-        <a class="s-remove-change" 
-           data-ng-click="swPropertyDisplay.clear()" 
-           data-ng-if="swPropertyDisplay.edited && swPropertyDisplay.editing">
-            <i class="fa fa-remove"></i>
-        </a>
 
         <!-- Save Button -->
         <a  class="btn btn-xs btn-success s-action-btn" 
@@ -41,20 +36,6 @@
             save 
         </a>
         <!-- End Save Button -->
-
-        <!-- Revert Button -->
-        <button class="btn btn-xs btn-default s-revert-btn"
-                data-ng-show="swPropertyDisplay.showRevert" 
-                data-ng-click="swPropertyDisplay.revert()" 
-                data-toggle="popover" 
-                data-trigger="hover" 
-                data-content="{{swPropertyDisplay.revertText}}" 
-                data-original-title="" 
-                title="">
-            <i class="fa fa-refresh"></i>
-        </button>
-
-        
 
         <!-- Display -->
         <p  class="form-control-static"
