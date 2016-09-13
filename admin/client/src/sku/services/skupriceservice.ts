@@ -220,7 +220,7 @@ export class SkuPriceService {
                         for(var j=0; j < eligibleCurrencyCodes.length; j++){
                             if( ( sku.data.currencyCode != eligibleCurrencyCodes[j]) &&
                                 ( skuPriceSet.length > 0 && !this.skuPriceSetHasCurrencyCode(skuPriceSet,eligibleCurrencyCodes[j]) ) ||
-                                  skuPriceSet.length == 0
+                                ( ( sku.data.currencyCode != eligibleCurrencyCodes[j]) && skuPriceSet.length == 0)
                             ){
                                 skuPriceSet.push(this.createInferredSkuPriceForCurrency(sku,this.defaultCurrencySkuPriceForSet(skuPriceSet),eligibleCurrencyCodes[j]));
                             }
@@ -241,6 +241,7 @@ export class SkuPriceService {
     }
 
     public getBaseSkuPricesForSku = (skuID, eligibleCurrencyCodes?) =>{
+        console.log("eligibleCurrency", eligibleCurrencyCodes);
         var deferred = this.$q.defer(); 
         var promise = deferred.promise; 
         var skuPriceSet = [];

@@ -297,8 +297,7 @@ class UtilityService extends BaseService{
     };
 
 
-    public getPropertyValue=(object, propertyIdentifier):void=> {
-
+    public getPropertyValue=(object, propertyIdentifier)=> {
         var keys = propertyIdentifier.split('.'), obj = object, keyPart;
         while ((keyPart = keys.shift()) && keys.length) {
             obj = obj[keyPart];
