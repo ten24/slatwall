@@ -35,7 +35,6 @@ class SWDefaultSkuRadioController{
         if(angular.isUndefined(this.skuId) && angular.isUndefined(this.sku)){
             throw("You must provide a skuID to SWDefaultSkuRadioController");
         }
-        console.log("isDefault?",this.skuId, this.productDefaultSkuSkuId);
         this.isDefaultSku = (this.skuId == this.productDefaultSkuSkuId);
         if(angular.isUndefined(this.sku)){
             var skuData = {
