@@ -194,7 +194,8 @@ class SWInputController{
 	public getTemplate = ()=>{
 		var template = '';
 		var validations = '';
-		var currency = '';
+		var currencyTitle = '';
+		var currencyFormatter = '';
 		var style = "";
 
 		if(!this.class){
@@ -206,9 +207,10 @@ class SWInputController{
 		}
 
 		if(this.object.metaData.$$getPropertyFormatType(this.property) == "currency"){
-			currency = 'sw-currency-formatter ';
+			currencyFormatter = 'sw-currency-formatter ';
 			if(angular.isDefined(this.object.data.currencyCode)){
-				currency = currency + 'data-currency-code="' + this.object.data.currencyCode + '" ';
+				currencyFormatter = currencyFormatter + 'data-currency-code="' + this.object.data.currencyCode + '" ';
+				currencyTitle = '<span class="s-title">' + this.object.data.currencyCode + '</span>';
 			}
 		}
 
@@ -226,14 +228,14 @@ class SWInputController{
 		var acceptedFieldTypes = ['email','text','password','number','time','date','datetime','json','file'];
 
 		if(acceptedFieldTypes.indexOf(this.fieldType.toLowerCase()) >= 0){
-			template = '<input type="'+this.fieldType.toLowerCase()+'" class="'+this.class+'" '+
+			template = currencyTitle + '<input type="'+this.fieldType.toLowerCase()+'" class="'+this.class+'" '+
 				'ng-model="swInput.value" '+
 				'ng-disabled="swInput.editable === false" '+
 				'ng-show="swInput.editing" '+
 				`ng-class="{'form-control':swInput.inListingDisplay, 'input-xs':swInput.inListingDisplay}"` + 
 				'name="'+this.property+'" ' +
 				'placeholder="'+placeholder+'" '+
-				validations + currency +
+				validations + currencyFormatter +
 				'id="swinput'+this.swForm.name+this.name+'" '+
 				'style="'+style+'"'+
 				this.inputAttributes+
