@@ -178,7 +178,7 @@ class SWInputController{
 	};
 
 	public onEvent = (event:Event,eventName:string):void=>{
-		console.log("swinput onEvent", event, eventName);
+
 		let customEventName = this.swForm.name+this.name+eventName;
 		let data = {
 			event:event,
@@ -288,6 +288,7 @@ class SWInputController{
 		this.inputAttributes = this.inputAttributes || "";
 
 		this.inputAttributes = this.utilityService.replaceAll(this.inputAttributes,"'",'"');
+
 		this.value = this.utilityService.getPropertyValue(this.object,this.property);
 
 		this.eventHandlersArray = <Array<EventHandler>>this.eventHandlers.split(',');
@@ -377,9 +378,9 @@ class SWInput{
 	}
 
 	public link:ng.IDirectiveLinkFn = (scope:any,element,attr)=>{
-		console.log("swinput scope", scope.swInput.rawFileTarget);
+
 		if(scope.swInput.type === 'file'){
-			console.log("swinput is in file mode", scope.swInput.object);
+
 			if(angular.isUndefined(scope.swInput.object.data[scope.swInput.rawFileTarget])){
 				scope.swInput.object[scope.swInput.rawFileTarget] = "";
 				scope.swInput.object.data[scope.swInput.rawFileTarget] = ""; 
@@ -387,9 +388,9 @@ class SWInput{
 			var model = this.$parse("swInput.object.data[swInput.rawFileTarget]"); 
 			var modelSetter = model.assign;
 			element.bind("change", (e)=>{
-				console.log("swinput changing");
+
 				var fileToUpload = (e.srcElement || e.target).files[0];
-				console.log("swinput changing", fileToUpload);
+
 				scope.$apply(
 					()=>{
 						modelSetter(scope, fileToUpload);
@@ -400,7 +401,7 @@ class SWInput{
 				);
 				
 				this.$timeout(()=>{
-					console.log("swinput calling fileservice", fileToUpload);
+
 					this.fileService.uploadFile(fileToUpload, scope.swInput.object, scope.swInput.binaryFileTarget)
 					.then(
 						(result)=>{
