@@ -12,6 +12,7 @@ export class SkuPriceService {
     constructor(public $http,
                 public $q, 
                 public $hibachi,
+                public entityService,
                 public cacheService,
                 public collectionConfigService, 
                 public observerService,
@@ -140,7 +141,7 @@ export class SkuPriceService {
     }
 
     private createInferredSkuPriceForCurrency = (sku, skuPrice, currencyCode) =>{
-        var nonPersistedSkuPrice = this.$hibachi.newSkuPrice(); 
+        var nonPersistedSkuPrice = this.entityService.newEntity('SkuPrice'); 
         nonPersistedSkuPrice.$$setSku(sku);
         nonPersistedSkuPrice.data.currencyCode = currencyCode; 
         //if for some reason the price that came back was preformatted althought this really shouldn't be needed

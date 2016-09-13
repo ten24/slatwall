@@ -294,7 +294,7 @@ class SWFormField{
 		errorText: "@?",
 		fieldType: "@?",
 		property:"@?",
-		inListingDisplay:"=", 
+		inListingDisplay:"=?", 
 		inputAttributes:"@?",
 		options:"=?",
         optionsArguments:"=?",

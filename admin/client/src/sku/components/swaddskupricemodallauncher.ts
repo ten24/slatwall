@@ -21,6 +21,7 @@ class SWAddSkuPriceModalLauncherController{
     //@ngInject
     constructor(
         private $hibachi,
+        private entityService,
         private formService,
         private listingService,
         private observerService, 
@@ -29,7 +30,7 @@ class SWAddSkuPriceModalLauncherController{
     ){
         this.uniqueName = this.baseName + this.utilityService.createID(16); 
         this.formName = "addSkuPrice" + this.utilityService.createID(16);
-        this.skuPrice = this.$hibachi.newEntity('SkuPrice'); 
+        this.skuPrice = this.entityService.newEntity('SkuPrice'); 
     }    
     
     public initData = () =>{
@@ -137,12 +138,14 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
     public static Factory(){
         var directive = (
             $hibachi,
+            entityService,
             scopeService,
             collectionConfigService,
             skuPartialsPath,
 			slatwallPathBuilder
         )=> new SWAddSkuPriceModalLauncher(
             $hibachi, 
+            entityService,
             scopeService,
             collectionConfigService,
             skuPartialsPath,
@@ -150,6 +153,7 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
         );
         directive.$inject = [
             '$hibachi',
+            'entityService',
             'scopeService',
             'collectionConfigService',
             'skuPartialsPath',
@@ -159,6 +163,7 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
     }
     constructor(
         private $hibachi, 
+        private entityService,
         private scopeService, 
         private collectionConfigService, 
 		private skuPartialsPath,
@@ -171,7 +176,9 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
         return {
             pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
                 //have to do our setup here because there is no direct way to pass the pageRecord into this transcluded directive
+                console.log("swaddskupricemodallauncher")
                 var currentScope = this.scopeService.getRootParentScope($scope, "pageRecord");
+                console.log("do we have page record scope", currentScope.pageRecord);
                 if(angular.isDefined(currentScope.pageRecord)){ 
                     $scope.swAddSkuPriceModalLauncher.pageRecord = currentScope.pageRecord;
                     //sku record case
@@ -184,7 +191,7 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
                         }
                         $scope.swAddSkuPriceModalLauncher.currencyCodeOptions = currentScope.pageRecord.eligibleCurrencyCodeList.split(",");
                         $scope.swAddSkuPriceModalLauncher.sku = this.$hibachi.populateEntity('Sku',skuData);
-                        $scope.swAddSkuPriceModalLauncher.skuPrice = this.$hibachi.newEntity('SkuPrice');
+                        $scope.swAddSkuPriceModalLauncher.skuPrice = this.entityService.newEntity('SkuPrice');
                         $scope.swAddSkuPriceModalLauncher.skuPrice.$$setSku($scope.swAddSkuPriceModalLauncher.sku);
                     }
                 } else{ 
