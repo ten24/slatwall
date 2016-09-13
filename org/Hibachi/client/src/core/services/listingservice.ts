@@ -254,7 +254,6 @@ class ListingService{
         classObjectString = classObjectString.concat(",'s-selected-row':" + newFlag);
         classObjectString = classObjectString.concat(",'s-disabled':" + this.getPageRecordMatchesDisableRule(listingID, pageRecord));
         classObjectString = classObjectString.concat(",'s-edited':pageRecord.edited");
-        console.log("class objection", classObjectString);
         return classObjectString + "}"; 
     };
     
@@ -416,7 +415,6 @@ class ListingService{
             var column = this.getListing(listingID).columns[i];
 
             if(this.getListing(listingID).collectionConfig != null && !column.hasCellView){
-                console.log("Pushing column", column);
                 this.getListing(listingID).collectionConfig.addColumn(column.propertyIdentifier,undefined,column);
             } 
 
