@@ -241,7 +241,6 @@ export class SkuPriceService {
     }
 
     public getBaseSkuPricesForSku = (skuID, eligibleCurrencyCodes?) =>{
-        console.log("eligibleCurrency", eligibleCurrencyCodes);
         var deferred = this.$q.defer(); 
         var promise = deferred.promise; 
         var skuPriceSet = [];
