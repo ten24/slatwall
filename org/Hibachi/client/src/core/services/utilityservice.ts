@@ -347,6 +347,21 @@ class UtilityService extends BaseService{
         return false;
     };
 
+    //utility service toJson avoids circular references
+    public toJson = (obj) =>{
+        var seen = [];
+
+        return JSON.stringify(obj, (key, val)=>{
+            if (val != null && typeof val == "object") {
+                if (seen.indexOf(val) >= 0) {
+                    return;
+                }
+                seen.push(val);
+            }
+            return val;
+        });
+    }
+
     public listFind = (list: string = '', value: string = '', delimiter: string = ','): number => {
           var splitString = list.split(delimiter);
           var stringFound = -1;
