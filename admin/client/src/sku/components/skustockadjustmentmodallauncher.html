@@ -47,10 +47,11 @@
                                 <div ng-class="{'s-positive':swSkuStockAdjustmentModalLauncher.stockAdjustmentItem.data.quantity > 0,
                                                 's-negative':swSkuStockAdjustmentModalLauncher.stockAdjustmentItem.data.quantity < 0}" class="s-value"><!-- s-positive class will turn green for positive number -->
                                     <span>{{ swSkuStockAdjustmentModalLauncher.stockAdjustmentItem.data.quantity }}</span>
-                                    <input type="hidden" ng-model="swSkuStockAdjustmentModalLauncher.stockAdjustmentItem.data.quantity" name="quantity" class="form-control input-xs" />
                                 </div>
                             </div>
                         </div>
+
+                        
                         
                         <div class="col-md-4">
                             <div class="s-modal-module">
@@ -82,32 +83,6 @@
                  data-name="stockAdjustmentItemForm"
                  data-object="swSkuStockAdjustmentModalLauncher.stockAdjustmentItem"
                  data-context="save">
-                <!-- BEGIN HIDDEN FIELDS -->
-                <sw-property-display data-object="swSkuStockAdjustmentModalLauncher.stockAdjustmentItem"
-                                        data-property="quantity"
-                                        data-is-dirty="true"
-                                        data-is-hidden="true"
-                                        data-editing="true"      
-                        >
-                </sw-property-display>
-                <sw-property-display data-object="swSkuStockAdjustmentModalLauncher.stockAdjustmentItem"
-                                data-property="sku"
-                                data-is-dirty="true"
-                                data-is-hidden="true"
-                                data-editing="true"   
-                                data-options-arguments="{property:'sku'}"   
-                >
-                </sw-property-display>
-                <sw-property-display data-object="swSkuStockAdjustmentModalLauncher.stockAdjustmentItem"
-                                data-property="toStock"
-                                data-is-dirty="true"
-                                data-is-hidden="true"
-                                data-editing="true"   
-                                data-options-arguments="{property:'toStock'}"   
-                >
-                </sw-property-display>
-
-                <!-- END HIDDEN FIELDS -->
-        </sw-form> 
+        </sw-form>
     </sw-modal-content> 
 </sw-modal-launcher>

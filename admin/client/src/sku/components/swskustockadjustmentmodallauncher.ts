@@ -64,6 +64,7 @@ class SWSkuStockAdjustmentModalLauncherController{
         this.stockAdjustment.$$setToLocation(this.toLocation);
         this.stockAdjustmentItem = this.$hibachi.newStockAdjustmentItem();
         this.stockAdjustment.$$addStockAdjustmentItem(this.stockAdjustmentItem);
+        this.stock.$$setSku(this.sku);
         this.stockAdjustmentItem.$$setToStock(this.stock);
         this.stockAdjustmentType = this.$hibachi.populateEntity("Type",{typeID:"444df2e60db81c12589c9b39346009f2"});//manual in stock adjustment type 
         this.stockAdjustmentStatusType = this.$hibachi.populateEntity("Type",{typeID:"444df2e2f66ddfaf9c60caf5c76349a6"});//new status type for stock adjusment
@@ -74,25 +75,27 @@ class SWSkuStockAdjustmentModalLauncherController{
     }
     
     public save = () => {
-        var savePromise = this.stockAdjustment.$$save(); 
-        savePromise.then(
-            (response)=>{
-                console.log("stockadjustment response", response)
-                this.sku.data.newQOH = this.newQuantity; 
-                this.sku.data.calculatedQOH = this.newQuantity; 
-                this.stockAdjustmentID = response.stockAdjustmentID; 
-            }
-        ).finally(()=>{
-            this.$http({
-                        method:"POST", 
-                        url:this.$hibachi.getUrlWithActionPrefix()+"entity.processStockAdjustment&processContext=processAdjustment&stockAdjustmentID="+this.stockAdjustmentID
-           	}).then((response)=>{
-                this.initData(); 
-            });
+        this.stock.$$save().then().finally(()=>{
+            var stockAdjustmentSavePromise = this.stockAdjustment.$$save(); 
+            stockAdjustmentSavePromise.then(
+                (response)=>{
+                    this.sku.data.newQOH = this.newQuantity; 
+                    this.sku.data.calculatedQOH = this.newQuantity; 
+                    this.stockAdjustmentID = response.stockAdjustmentID; 
+                }
+            ).finally(()=>{
+                this.$http({
+                    method:"POST", 
+                    url:this.$hibachi.getUrlWithActionPrefix()+"entity.processStockAdjustment&processContext=processAdjustment&stockAdjustmentID="+this.stockAdjustmentID
+                }).then((response)=>{
+                    this.initData(); 
+                });
 
+            });
+            return stockAdjustmentSavePromise; 
         });
-        return savePromise;
     }    
+
 
     public updateNewQuantity = () => { 
         if(!isNaN(this.sku.data.newQOH)){
