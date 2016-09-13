@@ -21,6 +21,10 @@ export class SkuPriceService {
          this.observerService.attach(this.updateSkuPrices,'skuPricesUpdate');
     }
 
+    public newSkuPrice = () =>{
+        return this.entityService.newEntity('SkuPrice');
+    }
+
     public getRelatedSkuPriceCollectionConfig = (skuID,currencyCode,minQuantity,maxQuantity) =>{
         var relatedSkuPriceCollectionConfig = this.collectionConfigService.newCollectionConfig("SkuPrice"); 
         relatedSkuPriceCollectionConfig.addDisplayProperty("skuPriceID,sku.skuID,minQuantity,maxQuantity,currencyCode,price");

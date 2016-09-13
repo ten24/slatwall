@@ -384,7 +384,7 @@ class SWInput{
 				scope.swInput.object[scope.swInput.rawFileTarget] = "";
 				scope.swInput.object.data[scope.swInput.rawFileTarget] = ""; 
 			}
-			var model = $parse("swInput.object.data[swInput.rawFileTarget]"); 
+			var model = this.$parse("swInput.object.data[swInput.rawFileTarget]"); 
 			var modelSetter = model.assign;
 			element.bind("change", (e)=>{
 				console.log("swinput changing");
@@ -399,7 +399,7 @@ class SWInput{
 					}
 				);
 				
-				$timeout(()=>{
+				this.$timeout(()=>{
 					console.log("swinput calling fileservice", fileToUpload);
 					this.fileService.uploadFile(fileToUpload, scope.swInput.object, scope.swInput.binaryFileTarget)
 					.then(

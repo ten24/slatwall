@@ -58,7 +58,6 @@ class SWAddSkuPriceModalLauncherController{
         } else if(angular.isDefined(this.currencyCodeOptions) && this.currencyCodeOptions.length){
             this.skuPrice.data.currencyCode = this.currencyCodeOptions[0]; 
         }
-        console.log("thissku",this.sku);
     }
     
     public save = () => {
@@ -176,9 +175,7 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
         return {
             pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
                 //have to do our setup here because there is no direct way to pass the pageRecord into this transcluded directive
-                console.log("swaddskupricemodallauncher")
                 var currentScope = this.scopeService.getRootParentScope($scope, "pageRecord");
-                console.log("do we have page record scope", currentScope.pageRecord);
                 if(angular.isDefined(currentScope.pageRecord)){ 
                     $scope.swAddSkuPriceModalLauncher.pageRecord = currentScope.pageRecord;
                     //sku record case
