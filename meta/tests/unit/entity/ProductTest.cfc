@@ -444,18 +444,23 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			productID = "",
 			listingPages = [
 				{
+					productListingPageID = '',
 					contentID = mockContent1.getContentID()
 				},
 				{
+					productListingPageID = '', 
 					contentID = mockContent2.getContentID()
 				},
 				{
+					productListingPageID = '', 
 					contentID = mockContent3.getContentID()
 				},
 				{
+					productListingPageID = '', 
 					contentID = mockContent4.getContentID()
 				},
 				{
+					productListingPageID = '', 
 					contentID = mockContent5.getContentID()
 				}
 			]
