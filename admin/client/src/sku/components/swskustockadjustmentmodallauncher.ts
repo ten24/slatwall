@@ -75,7 +75,7 @@ class SWSkuStockAdjustmentModalLauncherController{
     }
     
     public save = () => {
-        this.stock.$$save().then().finally(()=>{
+        return this.stock.$$save().then().finally(()=>{
             var stockAdjustmentSavePromise = this.stockAdjustment.$$save(); 
             stockAdjustmentSavePromise.then(
                 (response)=>{
@@ -91,8 +91,7 @@ class SWSkuStockAdjustmentModalLauncherController{
                     this.initData(); 
                 });
 
-            });
-            return stockAdjustmentSavePromise; 
+            }); 
         });
     }    
 
