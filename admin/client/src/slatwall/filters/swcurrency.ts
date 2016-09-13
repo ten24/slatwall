@@ -9,12 +9,12 @@ class SWCurrency{
         var data = null, serviceInvoked = false;
         function realFilter(value,decimalPlace,returnStringFlag=true) {
             // REAL FILTER LOGIC, DISREGARDING PROMISES
-            if(data != null){
+            if(!angular.isDefined(data)){
                 $log.debug("Please provide a valid currencyCode, swcurrency defaults to $");
                 data="$";
             }
-            if(value != null){
-                if(decimalPlace != null){
+            if(angular.isDefined(value)){
+                if(angular.isDefined(decimalPlace)){
                     value = parseFloat(value.toString()).toFixed(decimalPlace)
                 } else {
                     value = parseFloat(value.toString()).toFixed(2)
