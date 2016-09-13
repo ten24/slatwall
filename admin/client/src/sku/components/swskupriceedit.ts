@@ -112,7 +112,6 @@ class SWSkuPriceEditController{
             }
             this.revertToValue =  this.currencyFilter(this.skuPriceService.getInferredSkuPrice(sku, this.masterPriceObject.data.price, this.currencyCode),this.currencyCode,2,false);
         }
-        console.log("revert",this.revertToValue);
     }    
 
     public updateDisplay = (currencyCode) =>{
