@@ -108,7 +108,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	
 	public void function getQATSTest_ifLogics() {
 		var productData = {
-			skuID = ''
+			productID = ''
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
 		

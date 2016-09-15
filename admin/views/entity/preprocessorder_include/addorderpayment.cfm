@@ -125,6 +125,9 @@ loadvisable="#len(rc.addOrderPaymentProcessObject.getAccountPaymentMethodID())#"
 <hb:hibachipropertydisplay object="#rc.addOrderPaymentProcessObject.getNewOrderPayment()#"
                           fieldname="newOrderPayment.securityCode" property="securityCode"
                           edit="#rc.edit#">
+<hb:hibachipropertydisplay object="#rc.addOrderPaymentProcessObject.getNewOrderPayment()#"
+                          fieldname="newOrderPayment.companyPaymentMethodFlag" property="companyPaymentMethodFlag"
+                          edit="#rc.edit#">
 </hb:HibachiDisplayToggle>
 
 <!--- Term Payment Details --->
