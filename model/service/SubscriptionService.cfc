@@ -124,6 +124,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var subscriptionUsage = this.newSubscriptionUsage();
 
 		//copy all the info from order items to subscription usage if it's initial order item
+		subscriptionUsage.setInitialOrderItem(arguments.orderItem); 
 		subscriptionUsage.copyOrderItemInfo(arguments.orderItem);
 
 		// set account
