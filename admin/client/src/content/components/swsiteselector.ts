@@ -159,7 +159,7 @@ class SWSiteSelector implements ng.IDirective{
             $scope.swSiteSelector.inListingDisplay = !$scope.swSiteSelector.withTypeahead; 
         }
         if($scope.swSiteSelector.inListingDisplay == true && this.scopeService.hasParentScope($scope, "swListingDisplay")){
-            var listingDisplayScope = this.scopeService.locateParentScope($scope, "swListingDisplay")["swListingDisplay"]; 
+            var listingDisplayScope = this.scopeService.getRootParentScope($scope, "swListingDisplay")["swListingDisplay"]; 
             $scope.swSiteSelector.listingID = listingDisplayScope.tableID; 
             if(listingDisplayScope.collectionConfig != null){
                 $scope.swSiteSelector.collectionConfigToFilter = listingDisplayScope.collectionConfig;

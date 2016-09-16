@@ -111,6 +111,7 @@ class ObserverService extends BaseService{
      * @description notifies all observers of a specific event
      */
     notify = (event:string, parameters:any):any => {
+        console.warn(event); 
         event = event.toLowerCase();
         return this.$timeout(()=>{
             for(var id in this.observers[event]) {
@@ -142,8 +143,8 @@ class ObserverService extends BaseService{
             }
         });
     }
-    notifyAndRecord = (event:string, parameters:any):void => { 
-      this.notify(event, parameters).then(
+    notifyAndRecord = (event:string, parameters:any):any => { 
+      return this.notify(event, parameters).then(
         ()=>{
             this.historyService.recordHistory(event,parameters,true);
         }

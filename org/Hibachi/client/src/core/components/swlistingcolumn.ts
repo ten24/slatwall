@@ -29,7 +29,7 @@ class SWListingColumnController{
             if(this.$injector.has(this.headerView+'Directive')){
                 this.hasHeaderView = true;
             }else{
-                throw(this.hasHeaderView + ' is not an existing directive');
+                throw(this.headerView + ' is not an existing directive');
             }
         }
     }

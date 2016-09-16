@@ -6,6 +6,7 @@ import {HibachiInterceptor,IHibachi,IHibachiConfig,HibachiJQueryStatic} from "./
 import {HibachiPathBuilder} from "./services/hibachipathbuilder";
 
 //services
+import {CacheService} from "./services/cacheservice"; 
 import {PublicService} from "./services/publicservice";
 import {AccountService} from "./services/accountservice";
 import {CartService} from "./services/cartservice";
@@ -18,17 +19,17 @@ import {OrderPaymentService} from "./services/orderpaymentservice";
 import {FormService} from "./services/formservice";
 import {FilterService} from "./services/filterservice"; 
 import {ExpandableService} from "./services/expandableservice";
+import {ListingService} from "./services/listingservice"; 
 import {MetaDataService} from "./services/metadataservice";
 import {RbKeyService} from "./services/rbkeyservice";
-import {ScopeService} from "./services/scopeservice";
 import {TypeaheadService} from "./services/typeaheadservice";
 import {$Hibachi} from "./services/hibachiservice";
 import {HistoryService} from "./services/historyservice"; 
-import {ListingService} from "./services/listingservice"
 import {LocalStorageService} from "./services/localstorageservice";
 import {HibachiServiceDecorator} from "./services/hibachiservicedecorator";
 import {HibachiScope} from "./services/hibachiscope";
 import {RequestService} from "./services/requestservice";
+import {ScopeService} from "./services/scopeservice"; 
 import {HibachiValidationService} from "./services/hibachivalidationservice";
 import {EntityService} from "./services/entityservice";
 //controllers
@@ -91,6 +92,7 @@ import {SWHref} from "./components/swhref";
 import {SWProcessCaller} from "./components/swprocesscaller";
 import {SWSortable} from "./components/swsortable";
 import {SWListingGlobalSearch} from "./components/swlistingglobalsearch";
+
 import {BaseObject} from "./model/baseobject";
 declare var $:any;
 
@@ -160,6 +162,7 @@ var coremodule = angular.module('hibachi.core',[
 .constant('hibachiPathBuilder',new HibachiPathBuilder())
 .constant('corePartialsPath','core/components/')
 //services
+.service('cacheService', CacheService)
 .service('publicService',PublicService)
 .service('utilityService',UtilityService)
 .service('selectionService',SelectionService)
@@ -168,15 +171,15 @@ var coremodule = angular.module('hibachi.core',[
 .service('expandableService',ExpandableService)
 .service('filterService',FilterService)
 .service('formService',FormService)
+.service('historyService',HistoryService)
 .service('metadataService',MetaDataService)
 .service('rbkeyService',RbKeyService)
-.service('scopeService',ScopeService)
 .service('typeaheadService', TypeaheadService)
 .provider('$hibachi',$Hibachi)
 .decorator('$hibachi',HibachiServiceDecorator)
 .service('hibachiInterceptor', HibachiInterceptor.Factory())
 .service('hibachiScope',HibachiScope)
-.service('historyService',HistoryService)
+.service('scopeService',ScopeService)
 .service('listingService', ListingService)
 .service('localStorageService',LocalStorageService)
 .service('requestService',RequestService)
@@ -193,6 +196,7 @@ var coremodule = angular.module('hibachi.core',[
 .filter('percentage',[PercentageFilter.Factory])
 .filter('trim', [SWTrim.Factory])
 .filter('entityRBKey',['rbkeyService',EntityRBKey.Factory])
+.filter('swdate',['$log','$filter',DateFilter.Factory])
 //directives
 .directive('swCollectionConfig',SWCollectionConfig.Factory())
 .directive('swCollectionColumn',SWCollectionColumn.Factory())

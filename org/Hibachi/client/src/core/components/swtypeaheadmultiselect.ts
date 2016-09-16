@@ -156,7 +156,7 @@ class SWTypeaheadMultiselect implements ng.IDirective{
                     $scope.swTypeaheadMultiselect.inListingDisplay = false; 
                 }
                 if($scope.swTypeaheadMultiselect.inListingDisplay && this.scopeService.hasParentScope($scope, "swListingDisplay")) {
-                    var listingDisplayScope = this.scopeService.locateParentScope( $scope, "swListingDisplay")["swListingDisplay"]
+                    var listingDisplayScope = this.scopeService.getRootParentScope( $scope, "swListingDisplay")["swListingDisplay"]
                     $scope.swTypeaheadMultiselect.listingId = listingDisplayScope.tableID;
                     listingDisplayScope.typeaheadDataKey = $scope.swTypeaheadMultiselect.typeaheadDataKey;
                 }

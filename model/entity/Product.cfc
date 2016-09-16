@@ -114,6 +114,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="brandName" type="string" persistent="false";
 	property name="brandOptions" type="array" persistent="false";
 	property name="bundleSkusSmartList" persistent="false";
+	property name="eligibleCurrencyCodeList" persistent="false";
 	property name="estimatedReceivalDetails" type="struct" persistent="false";
 	property name="eventConflictExistsFlag" type="boolean" persistent="false";
 	property name="eventRegistrations" type="array" persistent="false";
@@ -900,6 +901,12 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	}
 
 
+
+	public any function getEligibleCurrencyCodeList(){
+		if( structKeyExists(variables, "defaultSku") ) {
+			return getDefaultSku().getEligibleCurrencyCodeList();
+		}
+	}
 
 	public any function getEventConflictExistsFlag() {
 		if( structKeyExists(variables, "eventConflictExistsFlag") ) {

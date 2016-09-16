@@ -67,7 +67,9 @@ class ListingService{
     }
 
     public getListingCollectionConfigColumns = (listingID:string) =>{
-        return this.getListing(listingID).collectionConfig.columns;
+        if(this.getListing(listingID).collectionConfig != null){
+            return this.getListing(listingID).collectionConfig.columns;
+        }
     }
 
     public getListingExampleEntity = (listingID:string) =>{
@@ -78,8 +80,13 @@ class ListingService{
         }
     }
 
-    public getColumnIndexByPropertyIdentifier = (listingID:string, propertyIdentifier) =>{
-        var columns = this.getListingCollectionConfigColumns(listingID) || this.getListingColumns(listingID); 
+    public getListingCollectionConfigColumnIndexByPropertyIdentifier = (listingID:string, propertyIdentifier) =>{
+        var columns = this.getListingCollectionConfigColumns(listingID);
+        return this.utilityService.ArrayFindByPropertyValue(columns,'propertyIdentifier',propertyIdentifier);
+    }
+
+    public getListingColumnIndexByPropertyIdentifier = (listingID:string, propertyIdentifier) =>{
+        var columns = this.getListingColumns(listingID); 
         return this.utilityService.ArrayFindByPropertyValue(columns,'propertyIdentifier',propertyIdentifier);
     }
 
@@ -124,7 +131,7 @@ class ListingService{
     }
 
     public getPageRecordsWithManualSortOrder = (listingID:string) =>{
-        if(angular.isDefined(this.getListing(listingID))){
+        if( angular.isDefined(this.getListing(listingID)) && this.getListingPageRecords(listingID) != null ){
             var pageRecords = this.getListingPageRecords(listingID); 
             var primaryIDPropertyName = this.getListingEntityPrimaryIDPropertyName(listingID);
             var primaryIDWithBaseAlias = this.getListing(listingID).collectionConfig.baseEntityAlias + '.' + primaryIDPropertyName;
@@ -135,7 +142,7 @@ class ListingService{
                         var pageRecord = pageRecords[j];
                         var primaryID = pageRecords[j][primaryIDPropertyName];
                         var sortOrder =  j + 1; 
-                        var primaryIDColumnIndex = this.getColumnIndexByPropertyIdentifier(listingID, primaryIDWithBaseAlias);
+                        var primaryIDColumnIndex = this.getListingCollectionConfigColumnIndexByPropertyIdentifier(listingID, primaryIDWithBaseAlias);
                         if(angular.isDefined(primaryID)){
                             pageRecordsWithManualSortOrder[primaryID] = sortOrder;
                         } else if(primaryIDColumnIndex !== -1){
@@ -240,7 +247,11 @@ class ListingService{
             classObjectString = classObjectString.concat(",");
         }); 
         classObjectString = classObjectString.concat(" 's-child':" + this.getPageRecordIsChild(listingID, pageRecord)); 
-        classObjectString = classObjectString.concat(",'s-selected-row':" + pageRecord.newFlag);
+        var newFlag = false; 
+        if(pageRecord.newFlag != null && typeof pageRecord.newFlag === 'string' && pageRecord.newFlag.trim() !== ''){
+            newFlag = pageRecord.newFlag; 
+        }
+        classObjectString = classObjectString.concat(",'s-selected-row':" + newFlag);
         classObjectString = classObjectString.concat(",'s-disabled':" + this.getPageRecordMatchesDisableRule(listingID, pageRecord));
         classObjectString = classObjectString.concat(",'s-edited':pageRecord.edited");
         return classObjectString + "}"; 
@@ -357,9 +368,9 @@ class ListingService{
         if(this.getListing(listingID).collectionConfig != null && this.getListing(listingID).collectionConfig.baseEntityAlias != null){
             column.propertyIdentifier = this.getListing(listingID).collectionConfig.baseEntityAlias + "." + column.propertyIdentifier;
         } else if (this.getListingBaseEntityName(listingID) != null) {
-            column.propertyIdentifier = this.$hibachi.getBaseEntityAliasFromName(this.getListingBaseEntityName(listingID));
+            column.propertyIdentifier = '_' + this.getListingBaseEntityName(listingID) + '.' + column.propertyIdentifier;
         }
-        if(this.getColumnIndexByPropertyIdentifier(listingID, column.propertyIdentifier) === -1){
+        if(this.getListingColumnIndexByPropertyIdentifier(listingID, column.propertyIdentifier) === -1){
             if(column.aggregate){
                 this.getListing(listingID).aggregates.push(column.aggregate);
             } else {
@@ -403,7 +414,7 @@ class ListingService{
             
             var column = this.getListing(listingID).columns[i];
 
-            if(this.getListing(listingID).collectionConfig != null){
+            if(this.getListing(listingID).collectionConfig != null && !column.hasCellView){
                 this.getListing(listingID).collectionConfig.addColumn(column.propertyIdentifier,undefined,column);
             } 
 

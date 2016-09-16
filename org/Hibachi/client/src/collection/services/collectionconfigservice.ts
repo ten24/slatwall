@@ -152,6 +152,10 @@ class CollectionConfig {
         this.keywords = jsonCollection.keywords;
         return this;
     };
+    
+    public clone= () =>{
+        return this.newCollectionConfig(this.baseEntityName, this.baseEntityAlias).loadJson(JSON.parse(JSON.stringify(this.getCollectionConfig())));
+    }
 
     public loadFilterGroups= (filterGroupsConfig:Array<any>=[{filterGroup: []}]):CollectionConfig =>{
         this.filterGroups = filterGroupsConfig;
@@ -425,7 +429,11 @@ class CollectionConfig {
     };
 
     public addFilter= (propertyIdentifier: string, value: any, comparisonOperator: string = '=', logicalOperator?: string, hidden:boolean=false, isKeywordFilter=true, isOnlyKeywordFilter=false):CollectionConfig =>{
-        //create filter
+        if(!this.filterGroups[0].filterGroup.length){
+            logicalOperator = undefined; 
+        }
+        
+		//create filter
         var filter = this.createFilter(propertyIdentifier, value, comparisonOperator, logicalOperator, hidden);
 
         if(!isOnlyKeywordFilter){
