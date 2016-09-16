@@ -46,24 +46,31 @@
 Notes:
 
 */
-component output="false" accessors="true" extends="HibachiTransient"  {
+component extends="Slatwall.org.Hibachi.HibachiEntityQueueDao" persistent="false" accessors="true" output="false" {
 	
-	property name="data" type="any";
-	property name="method" type="string" default="GET";
 	
-	public any function init() {
-		// Set Defaults
-		this.setData({});
-		
-		// Populate all keys passed in
-		for(var key in arguments) {
-			if(structKeyExists(this, "set#key#")) {
-				var setterMethod = this["set" & key];
-				setterMethod(arguments[key]);
-			}
-		}
-		
-		return this;
-	} 
+	// ===================== START: Logical Methods ===========================
+	
+	// =====================  END: Logical Methods ============================
+	
+	// ===================== START: DAO Passthrough ===========================
+	
+	// ===================== START: DAO Passthrough ===========================
+	
+	// ===================== START: Process Methods ===========================
+	
+	// =====================  END: Process Methods ============================
+	
+	// ====================== START: Save Overrides ===========================
+	
+	// ======================  END: Save Overrides ============================
+	
+	// ==================== START: Smart List Overrides =======================
+	
+	// ====================  END: Smart List Overrides ========================
+	
+	// ====================== START: Get Overrides ============================
+	
+	// ======================  END: Get Overrides =============================
 	
 }

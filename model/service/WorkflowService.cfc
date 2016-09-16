@@ -202,7 +202,8 @@ component extends="HibachiService" accessors="true" output="false" {
 
 				//if there was any errors inside of the thread, propagate to catch
 				if(structKeyExists(evaluate(currentThreadName), 'error')){
-					throw(evaluate(currentThreadName).error.message);
+					writedump(evaluate(currentThreadName).error)
+					//throw(evaluate(currentThreadName).error.message);
 					break;
 				}
 			}
@@ -232,8 +233,16 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 
 		// Update the taskSechedules nextRunDateTime
-		workflowTrigger.setNextRunDateTime( arguments.workflowTrigger.getSchedule().getNextRunDateTime(arguments.workflowTrigger.getStartDateTime(), arguments.workflowTrigger.getEndDateTime() ) );
+		var runDateTimeData = {};
+		if(!isNull(arguments.workflowTrigger.getStartDateTime())){
+			runDateTimeData['startDateTime'] = arguments.workflowTrigger.getStartDateTime();
+		}
+		if(!isNull(arguments.workflowTrigger.getEndDateTime())){
+			runDateTimeData['endDateTime'] = arguments.workflowTrigger.getEndDateTime();
+		}
+		var nextRunDateTime = arguments.workflowTrigger.getSchedule().getNextRunDateTime(argumentCollection=runDateTimeData);
 
+		workflowTrigger.setNextRunDateTime( nextRunDateTime );
 		this.saveWorkflowTrigger(workflowTrigger);
 
 
@@ -287,7 +296,14 @@ component extends="HibachiService" accessors="true" output="false" {
 			//PROCESS
 			case 'process' :
 				var entityService = getServiceByEntityName( entityName=arguments.entity.getClassName());
-				var processMethod = entityService.invokeMethod(workflowTaskAction.getProcessMethod(), {'1'=arguments.entity});
+				var processContext = listLast(workflowTaskAction.getProcessMethod(),'_');
+				var processData = {'1'=arguments.entity};
+				
+				if(arguments.entity.hasProcessObject(processContext)){
+					processData['2'] = arguments.entity.getProcessObject(processContext);
+				}
+				var processMethod = entityService.invokeMethod(workflowTaskAction.getProcessMethod(), processData);
+				
 				if(!processMethod.hasErrors()) {
 					actionSuccess = true;
 				}

@@ -1167,14 +1167,46 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return variables.recordsCount;
 	}
 
-	public any function getPrimaryIDs(){
+	public array function getPrimaryIDs(){
+		var primaryIDName = baseEntityObject.getPrimaryIDPropertyName();
+		
+		return getPropertyNameValues(primaryIDName);
+	}
+	
+	public array function getPropertyNameValues(required string propertyName){
 		var baseEntityObject = getService('hibachiService').getEntityObject( getCollectionObject() );
-		this.getCollectionConfigStruct().columns = [{
-			"ormtype" = "id",
-			"title" = "id",
-			"propertyIdentifier" = "_#lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject()))#.#baseEntityObject.getPrimaryIDPropertyName()#"
-		}];
+		var propertyMetaData = baseEntityObject.getPropertyMetaData(arguments.propertyName);
+		var column = {
+			
+		};
+		if(structKeyExists(propertyMetaData,'ormtype')){
+			column['ormtype'] = propertyMetaData.ormtype;	
+		}
+		if(structKeyExists(propertyMetaData,'ormtype')){
+			column['title'] = baseEntityObject.getPropertyTitle(arguments.propertyName);	
+		}
+		column['propertyIdentifier'] = "_#lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject()))#.#arguments.propertyName#";
+		
+		this.getCollectionConfigStruct().columns = [column];
 		return getRecords(formatRecords=false);
+	}
+	//trasforms [{id:'idvalue',otherproperty;'value'}] into {'idvalue':'value'} via transformRecordsToNVP('id','otherproperty')
+	public struct function transformRecordsToNVP(required string keyPropertyValue,required string valuePropertyValue){
+		var hashmap = {};
+		for(var record in getRecords()){
+			hashmap[record[arguments.keyPropertyValue]] = record[arguments.valuePropertyValue];
+		}
+		return hashmap;
+	}
+	
+	public string function getPropertyNameValuesList(required string propertyName){
+		var propertyNameValues = getPropertyNameValues(arguments.propertyName);
+		var propertyNameValuesList = "";
+		for(var propertyNameValueStruct in propertyNameValues){
+			var propertyNameValue = propertyNameValueStruct[arguments.propertyName];
+			propertyNameValuesList = listAppend(propertyNameValuesList,propertyNameValue);
+		}
+		return propertyNameValuesList;
 	}
 
 	public numeric function getPageRecordsStart() {

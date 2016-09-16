@@ -51,7 +51,7 @@ component entityname="SlatwallWorkflowTriggerHistory" table="SwWorkflowTriggerHi
 // Persistent Properties
 	property name="workflowTriggerHistoryID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="successFlag" ormtype="boolean";
-	property name="response" ormtype="string";
+	property name="response" ormtype="string" length="8000";
 	property name="startTime" ormtype="timestamp";
 	property name="endTime" ormtype="timestamp";
 

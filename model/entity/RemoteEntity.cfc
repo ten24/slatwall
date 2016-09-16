@@ -46,24 +46,32 @@
 Notes:
 
 */
-component output="false" accessors="true" extends="HibachiTransient"  {
+component displayname="Remote Entity" entityname="SlatwallRemoteEntity" table="SwRemoteEntity" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_permission="this" {
 	
-	property name="data" type="any";
-	property name="method" type="string" default="GET";
+	// Persistent Properties
+	property name="remoteEntityID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="integration" hb_populateEnabled="public" cfc="Integration" fieldtype="many-to-one" fkcolumn="integrationID" index="PI_INTEGRATION_REMOTEID";
+	property name="remoteID" ormtype="string" index="PI_INTEGRATION_REMOTEID";
+	property name="deletedFlag" ormttype="boolean";
+	// Audit Properties
+	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
+	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
-	public any function init() {
-		// Set Defaults
-		this.setData({});
+	// Related Object Properties
+	
+	// ============ START: Non-Persistent Property Methods =================
+	public boolean function isDeleted(){
+		return !isNull(getDeletedFlag()) && getDeletedFlag();
+	}
+	// ============  END:  Non-Persistent Property Methods =================
 		
-		// Populate all keys passed in
-		for(var key in arguments) {
-			if(structKeyExists(this, "set#key#")) {
-				var setterMethod = this["set" & key];
-				setterMethod(arguments[key]);
-			}
-		}
-		
-		return this;
-	} 
+	// ============= START: Bidirectional Helper Methods ===================
 	
+	// =============  END:  Bidirectional Helper Methods ===================
+	
+	// =================== START: ORM Event Hooks  =========================
+	
+	// ===================  END:  ORM Event Hooks  =========================
 }

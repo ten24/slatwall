@@ -46,24 +46,37 @@
 Notes:
 
 */
-component output="false" accessors="true" extends="HibachiTransient"  {
+component extends="HibachiDao" persistent="false" accessors="true" output="false" {
+
+	public any function getEntityQueueByBaseObjectAndBaseIDAndEntityQueueTypeAndIntegration(required string baseObject, required string baseID, required string entityQueueType, required any integration){
+		return ORMExecuteQuery('SELECT eq FROM SlatwallEntityQueue eq where eq.baseID=:baseID AND baseObject=:baseObject AND entityQueueType=:entityQueueType AND integration=:integration',
+			{baseID=arguments.baseID,baseObject=arguments.baseObject,entityQueueType=arguments.entityQueueType,integration=arguments.integration}
+			,true
+		);
+	}
 	
-	property name="data" type="any";
-	property name="method" type="string" default="GET";
+	// ===================== START: Logical Methods ===========================
 	
-	public any function init() {
-		// Set Defaults
-		this.setData({});
-		
-		// Populate all keys passed in
-		for(var key in arguments) {
-			if(structKeyExists(this, "set#key#")) {
-				var setterMethod = this["set" & key];
-				setterMethod(arguments[key]);
-			}
-		}
-		
-		return this;
-	} 
+	// =====================  END: Logical Methods ============================
+	
+	// ===================== START: DAO Passthrough ===========================
+	
+	// ===================== START: DAO Passthrough ===========================
+	
+	// ===================== START: Process Methods ===========================
+	
+	// =====================  END: Process Methods ============================
+	
+	// ====================== START: Save Overrides ===========================
+	
+	// ======================  END: Save Overrides ============================
+	
+	// ==================== START: Smart List Overrides =======================
+	
+	// ====================  END: Smart List Overrides ========================
+	
+	// ====================== START: Get Overrides ============================
+	
+	// ======================  END: Get Overrides =============================
 	
 }

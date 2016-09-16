@@ -46,24 +46,29 @@
 Notes:
 
 */
-component output="false" accessors="true" extends="HibachiTransient"  {
+component output="false" accessors="true" extends="HibachiProcess" {
 	
-	property name="data" type="any";
-	property name="method" type="string" default="GET";
+	// Injected Entity
+	property name="integration";	
+	// Helper Properties
 	
-	public any function init() {
-		// Set Defaults
-		this.setData({});
-		
-		// Populate all keys passed in
-		for(var key in arguments) {
-			if(structKeyExists(this, "set#key#")) {
-				var setterMethod = this["set" & key];
-				setterMethod(arguments[key]);
-			}
-		}
-		
-		return this;
-	} 
+	// ======================== START: Defaults ============================
 	
+	// ========================  END: Defaults =============================
+
+	// =================== START: Lazy Object Helpers ======================
+	
+	// ===================  END: Lazy Object Helpers =======================
+	
+	// ================== START: New Property Helpers ======================
+	
+	// ==================  END: New Property Helpers =======================
+	
+	// ====================== START: Data Options ==========================
+	
+	// ======================  END: Data Options ===========================
+	
+	// ===================== START: Helper Methods =========================
+	
+	// =====================  END: Helper Methods ==========================	
 }
