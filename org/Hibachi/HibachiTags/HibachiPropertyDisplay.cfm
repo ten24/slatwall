@@ -44,7 +44,7 @@
 	<cfparam name="attributes.autocompleteSelectedValueDetails" type="struct" default="#structNew()#" />
 	
 	<cfparam name="attributes.fieldAttributes" type="string" default="" />					<!--- hint: This is used to pass specific additional fieldAttributes when in edit mode --->
-	
+	<cfparam name="attributes.ignoreHTMLEditFormat" type="boolean" default="false" />
 	<!---
 		attributes.fieldType have the following options:
 		
@@ -90,6 +90,10 @@
 				<cfset attributes.fieldType = attributes.object.getPropertyFieldType( attributes.property ) />
 			</cfif>
 			
+			<cfif attributes.fieldType eq 'wysiwyg'>
+				<cfset attributes.ignoreHTMLEditFormat = true/>
+			</cfif>
+			
 			<!--- If this is in edit mode then get the pertinent field info --->
 			<cfif attributes.edit or attributes.fieldType eq "listingMultiselect">
 				<cfset attributes.fieldClass = listAppend(attributes.fieldClass, attributes.object.getPropertyValidationClass( attributes.property ), " ") />
@@ -107,6 +111,7 @@
 						<cfset attributes.multiselectPropertyIdentifier = "#attributes.hibachiScope.getService('hibachiService').getPrimaryIDPropertyNameByEntityName( propertyMD.cfc )#" />
 					</cfif>
 					<cfset attributes.valueOptionsSmartList = attributes.object.invokeMethod( "get#attributes.property#OptionsSmartList" ) />
+					
 				</cfif>
 			</cfif>
 			
@@ -133,7 +138,10 @@
 					<cfset attributes.value = attributes.valueDefault />
 				</cfif>
 				
-				<cfif attributes.edit eq 'true' AND attributes.object.getPropertyFormatType( attributes.property ) eq 'currency'>
+				<cfif attributes.edit eq 'true' 
+						AND attributes.object.getPropertyFormatType( attributes.property ) eq 'currency'
+						AND !structKeyExists(attributes.object.getPropertyMetaData(attributes.property), "hb_nullRBKey")
+				>
 					<cfset attributes.value = attributes.object.getFormattedValue(attributes.property,'decimal') />
 				</cfif>
 				

@@ -12,22 +12,23 @@ dependencies:
     - git config --global push.default current
 
     # Install node modules for building JS
-    - npm install -g webpack gulp
-    - npm install gulp gulp-inject@3 gulp-chmod gulp-util run-sequence webpack force-case-sensitivity-webpack-plugin strip-loader ng-annotate-webpack-plugin tsify typescript
+    - npm install -g webpack gulp less
+
+    - npm install gulp gulp-inject@3 gulp-chmod gulp-util run-sequence webpack force-case-sensitivity-webpack-plugin strip-loader ng-annotate-webpack-plugin tsify typescript ts-loader md5 blueimp-md5
 
     # Install awscli so that we can push builds to S3
     - pip install awscli
-
     # Install se-interpreter (Interperates SeleniumBuilder json for SauceLabs using nodeJS)
     - cd meta/tests/integration/se-interpreter && npm install
 
     # Minify JS
      # generate typings
-    - cd org/Hibachi/client && gulp gen-ts-refs
+    - cd org/Hibachi/client && gulp gen-ts-refs && webpack --config webpack-frontend-production.config.js -p --display-error-details
     - cd admin/client && gulp gen-ts-refs
     # Minify JS
-    - cd admin/client && webpack --config webpack-production.config.js -p --display-error-details
-
+    - cd admin/client && webpack --config webpack-production.config.js -p --display-error-details 
+    # Minify 
+    - cd admin/client/css && lessc main.less main.css
     # Update docker-compose
     - curl -L https://github.com/docker/compose/releases/download/1.4.1/docker-compose-`uname -s`-`uname -m` > docker-compose
     - chmod +x docker-compose
@@ -52,19 +53,21 @@ test:
 
     # Wait for Saucelabs connection
     - if [[ ! -z $SAUCE_USERNAME ]] ; then while [ ! -e ~/sauce_is_ready ]; do sleep 1; done; fi
-  override:
+
     # Run Sauce Labs Integration Setup Tests
-    - if [[ ! -z $SAUCE_USERNAME ]] ; then node meta/tests/integration/se-interpreter/interpreter.js --parallel=1 --listener=meta/tests/integration/se-interpreter/utils/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/setup_config.json; fi
+    - if [[ ! -z $SAUCE_USERNAME ]] ; then node meta/tests/integration/se-interpreter/interpreter.js --parallel=1 --listener=meta/tests/integration/se-interpreter/utils/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/setup_config.json --silent; fi
 
+    # Run Build
+    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwallweb_1)" -- ant -f /var/www/meta/tests/build.xml buildDocsAndTests
+  override:
     # Run Sauce Labs Integration Admin Tests, 2 side by side at a time
-    - if [[ ! -z $SAUCE_USERNAME ]] ; then node meta/tests/integration/se-interpreter/interpreter.js --parallel=5 --listener=meta/tests/integration/se-interpreter/utils/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/admin_config.json; fi
-
-    # Kill the Sauce Labs tunnel
-    - if [[ ! -z $SAUCE_USERNAME ]] ; then cd sc-*-linux && kill $(cat sc.pid); fi
+    - if [[ ! -z $SAUCE_USERNAME ]] ; then node meta/tests/integration/se-interpreter/interpreter.js --parallel=5 --listener=meta/tests/integration/se-interpreter/utils/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/admin_config.json --silent; fi
 
     # Run Unit Tests
     - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwallweb_1)" -- ant -f /var/www/meta/tests/build.xml runUnitTests
-
+  post:
+    # Kill the Sauce Labs tunnel
+    - if [[ ! -z $SAUCE_USERNAME ]] ; then cd sc-*-linux && kill $(cat sc.pid); fi
 deployment:
 
   # As long as this build passed, we can commit JS builds, Version #, and do downstream merging when necessary

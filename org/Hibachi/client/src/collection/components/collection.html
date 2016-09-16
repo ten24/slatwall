@@ -27,6 +27,7 @@
 											data-filter-group="collectionConfig.filterGroups[0]"
 											data-filter-group-item="collectionConfig.filterGroups[0].filterGroup"
 											data-filter-properties-list="filterPropertiesList"
+                                            data-read-only="readOnly"
 											data-save-collection="saveCollection()"
 											>
 										</ul>
@@ -41,6 +42,8 @@
 					<div class="tab-pane s-display-options" id="j-display-options-{{tabsUniqueID}}">
 						<sw-display-options
 							data-columns="collectionConfig.columns"
+                            data-joins="collectionConfig.joins"
+                            data-group-bys="collectionConfig.groupBys"
 							data-properties-list="filterPropertiesList"
 							data-save-collection="saveCollection()"
 							data-callbacks="callbacks"
@@ -101,6 +104,7 @@
 							ng-change="searchCollection()"
 							/>
 							<i ng-show="loadingCollection" class="fa fa-refresh fa-spin"></i>
+                            <i ng-show="!loadingCollection" class="fa fa-search"></i>
 					</li>
 				</ul>
 			</div>

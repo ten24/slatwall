@@ -10,8 +10,8 @@
 			<hb:HibachiPropertyDisplay object="#rc.sku#" property="activeFlag" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.sku#" property="skuName" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.sku#" property="skuCode" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.sku#" property="publishedFlag" edit="#rc.edit#">
 			<cfif rc.product.getBaseProductType() EQ "event">
-				<hb:HibachiPropertyDisplay object="#rc.sku#" property="publishedFlag" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.sku#" property="eventStartDateTime" edit="false">
 				<hb:HibachiPropertyDisplay object="#rc.sku#" property="eventEndDateTime" edit="false">
 				<hb:HibachiPropertyDisplay object="#rc.sku#" property="startReservationDateTime" edit="false">

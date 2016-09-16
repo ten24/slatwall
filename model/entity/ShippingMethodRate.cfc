@@ -53,8 +53,11 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 	property name="sortOrder" ormtype="integer" sortContext="shippingMethod";
 	property name="minimumShipmentWeight" ormtype="float" hb_nullRBKey="define.0";
 	property name="maximumShipmentWeight" ormtype="float" hb_nullRBKey="define.unlimited";
-	property name="minimumShipmentItemPrice" ormtype="big_decimal" hb_nullRBKey="define.0";
-	property name="maximumShipmentItemPrice" ormtype="big_decimal" hb_nullRBKey="define.unlimited";
+	property name="minimumShipmentQuantity" ormtype="float" hb_nullRBKey="define.0";
+    property name="maximumShipmentQuantity" ormtype="float" hb_nullRBKey="define.unlimited";
+	property name="minimumShipmentItemPrice" ormtype="big_decimal" hb_formatType="currency"  hb_nullRBKey="define.0";
+	property name="maximumShipmentItemPrice" ormtype="big_decimal" hb_formatType="currency" hb_nullRBKey="define.unlimited";
+	property name="rateMultiplierAmount" ormtype="big_decimal" hb_formatType="currency" hb_nullRBKey="define.0";
 	property name="defaultAmount" ormtype="big_decimal" hb_formatType="currency" hb_nullRBKey="define.0";
 	property name="shippingIntegrationMethod" ormtype="string";
 	property name="splitShipmentWeight" ormtype="float" hb_nullRBKey="define.unlimited";
@@ -67,9 +70,10 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 	
 	// Related Object Properties (one-to-many)
 	property name="shippingMethodOptions" singularname="shippingMethodOption" cfc="ShippingMethodOption" type="array" fieldtype="one-to-many" fkcolumn="shippingMethodRateID" cascade="delete-orphan" inverse="true" lazy="extra";
-	
+    
 	// Related Object Properties (many-to-many - owner)
-	
+	property name="priceGroups" singularname="priceGroup" cfc="PriceGroup" type="array" fieldtype="many-to-many" linktable="SwShippingMethodRatePriceGroup" fkcolumn="shippingMethodRateID" inversejoincolumn="priceGroupID";
+    
 	// Related Object Properties (many-to-many - inverse)
 	
 	// Remote Properties
@@ -85,11 +89,14 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 	property name="shippingIntegrationMethodOptions" type="array" persistent="false";
 	property name="addressZoneOptions" type="array" persistent="false";
 	property name="shipmentWeightRange" type="string" persistent="false";
+	property name="shipmentQuantityRange" type="string" persistent="false";
 	property name="shipmentItemPriceRange" type="string" persistent="false";
 	property name="shippingMethodRateName" type="string" persistent="false";
-	
+	property name="hasPriceGroups" type="string" persistent="false";
 	
 	// ============ START: Non-Persistent Property Methods =================
+	
+	
 	
 	public array function getAddressZoneOptions() {
 		if(!structKeyExists(variables, "addressZoneOptions")) {
@@ -131,6 +138,35 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 		}
 		return variables.shipmentWeightRange;
 	}
+	
+	public string function getShipmentQuantityRange() {
+        if(!structKeyExists(variables, "shipmentQuantityRange")) {
+            variables.shipmentQuantityRange = "";
+            
+            var lower = 0;
+            var upper = 0;
+            
+            if(!isNull(getMinimumShipmentQuantity()) && getMinimumShipmentQuantity() gt 0) {
+                lower = getMinimumshipmentQuantity();
+            }
+            
+            if(!isNull(getMaximumShipmentQuantity()) && getMaximumShipmentQuantity() gt 0) {
+                upper = getMaximumShipmentQuantity();
+            }
+            
+            if(lower == 0 && upper == 0) {
+                variables.shipmentQuantityRange = rbKey('define.any');
+            } else {
+                variables.shipmentQuantityRange = lower & " - ";
+                if(upper gt 0) {
+                    variables.shipmentQuantityRange &= upper;
+                } else {
+                    variables.shipmentQuantityRange &= rbKey('define.any');
+                }
+            }
+        }
+        return variables.shipmentQuantityRange;
+    }
 		
 	public string function getShipmentItemPriceRange() {
 		if(!structKeyExists(variables, "shipmentItemPriceRange")) {
@@ -159,6 +195,18 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 		}
 		return variables.shipmentItemPriceRange;
 	}
+	
+	public string function getHasPriceGroups() {
+        if(!structKeyExists(variables, "hasPriceGroups")) {
+            variables.hasPriceGroups = "No";
+            
+            if(!isNull(getPriceGroups()) && arrayLen(getPriceGroups())) {
+                variables.hasPriceGroups = "Yes";
+            }
+            
+        }
+        return variables.hasPriceGroups;
+    }
 	
 	public string function getShippingMethodRateName() {
 		if(!structKeyExists(variables, "shippingMethodRateName")) {
@@ -211,6 +259,26 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 		structDelete(variables, "shippingMethod");
 	}
 	
+	// Price Groups (many-to-many - owner)    
+    public void function addPriceGroup(required any priceGroup) {    
+        if(arguments.priceGroup.isNew() or !hasPriceGroup(arguments.priceGroup)) {    
+            arrayAppend(variables.priceGroups, arguments.priceGroup);    
+        }    
+        if(isNew() or !arguments.priceGroup.hasShippingMethodRate( this )) {    
+            arrayAppend(arguments.priceGroup.getShippingMethodRates(), this);    
+        }    
+    }    
+    public void function removePriceGroup(required any priceGroup) {    
+        var thisIndex = arrayFind(variables.priceGroups, arguments.priceGroup);    
+        if(thisIndex > 0) {    
+            arrayDeleteAt(variables.priceGroups, thisIndex);    
+        }    
+        var thatIndex = arrayFind(arguments.priceGroup.getShippingMethodRates(), this);    
+        if(thatIndex > 0) {    
+            arrayDeleteAt(arguments.priceGroup.getShippingMethodRates(), thatIndex);    
+        }    
+    }
+    
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// =============== START: Custom Validation Methods ====================

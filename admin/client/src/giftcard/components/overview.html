@@ -15,8 +15,10 @@
 </div>
 
 <!--Small content block-->
-<div class="s-sm-content-block s-status s-green">
-	<div class="col-xs-1 col-sm-1 col-md-2 col-lg-3 s-icon">
+<div class="s-sm-content-block s-status"
+     ng-class="{'s-red': swGiftCardOverview.giftCard.activeFlag !== 'Yes ', 's-green': swGiftCardOverview.giftCard.activeFlag === 'Yes '}">
+	<div class="col-xs-1 col-sm-1 col-md-2 col-lg-3 s-icon"
+		 >
 		<i class="fa fa-circle"></i>
 	</div>
 	<div class="col-xs-11 col-sm-11 col-md-10 col-lg-9 s-content">
@@ -24,8 +26,8 @@
 			Status
 		</div>
 		<div class="s-body">
-			<span ng-show="swGiftCardOverview.giftCard.activeFlag">Active</span>
-			<span ng-show="!swGiftCardOverview.giftCard.activeFlag">Inactive</span>
+			<span ng-show="swGiftCardOverview.giftCard.activeFlag === 'Yes '">Active</span>
+			<span ng-show="swGiftCardOverview.giftCard.activeFlag !== 'Yes '">Inactive</span>
 			<div class="dropdown s-action">
 				<a href="##" class="dropdown-toggle hide" id="dropdownMenu1" data-toggle="dropdown">
 					<i class="fa fa-ellipsis-h" title="actions"></i>

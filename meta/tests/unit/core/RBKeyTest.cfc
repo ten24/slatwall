@@ -87,7 +87,28 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			}
 		}
 
-		assert(allFound);
+		assert(allFound, ArrayToList(variables.debugArray, chr(13) & chr(10)));
+	}
+	
+	public void function settingsHaveRBkeys() {
+		var settingMetaData = request.slatwallScope.getService("settingService").getAllSettingMetaData();
+		var settingNameList = structKeyList(settingMetaData);
+		
+		var criminalsMessage = '';
+		var numOfMissingRbkey = 0;
+		
+		for (settingName in settingNameList) {
+		
+			var rbkeyString = request.SlatwallScope.rbKey('setting.#settingName#');
+
+			if(len(rbkeyString) >= 8 && right(rbkeyString,8) == '_missing'){
+				numOfMissingRbkey++;
+				criminalsMessage &= "settingName=#settingName# rbkeyString=#rbkeyString# , <br>"&chr(10)&chr(13);
+			}
+			
+		}
+		criminalsMessage = 'There are #numOfMissingRbkey# settingNames miss the RBKeys , <br>'&chr(10)&chr(13) & criminalsMessage;
+		assertTrue(numOfMissingRbkey == 0, criminalsMessage);
 	}
 
 }

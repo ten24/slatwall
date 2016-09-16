@@ -32,43 +32,59 @@
                 <div class="row">
                     <div class="col-xs-3">
                         <div class="form-group form-group-sm">
-                            <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Select From <span ng-bind="propertiesList[breadCrumbs[breadCrumbs.length-1].propertyIdentifier].entityName | entityRBKey"></span></label>
+                            <h4>Select From <span ng-bind="propertiesList[breadCrumbs[breadCrumbs.length-1].propertyIdentifier].entityName | entityRBKey"></span></h4>
                             <div class="col-sm-12 s-no-paddings">
                                 <select ng-model="selectedProperty" 
                                     ng-change="selectedPropertyChanged(selectedProperty)" 
                                     ng-options="property as property.displayPropertyIdentifier 
                                     for property in propertiesList[breadCrumbs[breadCrumbs.length-1].propertyIdentifier].data 
-                                    | filter:{fieldtype:'!one-to-many'}
-                                    | filter:{fieldtype:'!many-to-many'}
+
                                     | orderBy:['displayPropertyIdentifier'] track by property.propertyIdentifier
                                     " 
                                     class="form-control input-sm">
                                     <option value="">Select From <span ng-bind="propertiesList[breadCrumbs[breadCrumbs.length-1].propertyIdentifier].entityName | entityRBKey"></span>{{propertiesList[breadCrumbs[breadCrumbs.length-1].propertyIdentifier].entityName | entityRBKey}}:</option>
                                 </select>
                             </div>
+
                             <div class="clearfix"></div>
                         </div>
                     </div>
-                    <span 
-                        sw-display-item
-                        data-selected-property="selectedProperty"
-                        data-properties-list="propertiesList"
-                        data-bread-crumbs="breadCrumbs"	
-                        data-selected-property-changed="selectedPropertyChanged(selectedProperty)"
-                        >
-                    </span>
+                    <div class="col-xs-6">
+                        <span
+                            data-ng-if="selectedProperty.$$group == 'drilldown' && !selectedProperty.aggregate"
+                            sw-display-item
+                            data-selected-property="selectedProperty"
+                            data-properties-list="propertiesList"
+                            data-bread-crumbs="breadCrumbs"
+                            data-selected-property-changed="selectedPropertyChanged(selectedProperty)"
+                            >
+                        </span>
+
+
+                        <span
+                                data-ng-if="selectedProperty.$$group == 'compareCollections'"
+                                sw-display-item-aggregate
+                                data-selected-property="selectedProperty"
+                                data-properties-list="propertiesList"
+                                data-bread-crumbs="breadCrumbs"
+                                data-selected-property-changed="selectedPropertyChanged(selectedProperty, true)"
+                                >
+                        </span>
+
+
+                    </div>
                     <div class="col-xs-3">
-                        <div class="s-button-select-group" ng-class="{'disabled' : selectedProperty == null || selectedProperty.cfc != undefined}">
+                        <div class="s-button-select-group" ng-class="{'disabled' : selectedProperty == null || (selectedProperty.cfc != undefined && selectedAggregate == undefined)}">
                             <button  type="button" 
                                 class="btn btn-sm btn-primary"
-                                ng-click="addColumn(selectedProperty)">
+                                ng-click="addColumn()">
                                 Save & Add Another
                             </button>
                             <div class="s-or-box">OR-</div>
                             <button 
                                 type="button" 
                                 class="btn btn-sm btn-primary"
-                                ng-click="addColumn(selectedProperty,true)">
+                                ng-click="addColumn(true)">
                                 Save & Finish
                             </button>
                         </div>

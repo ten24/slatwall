@@ -58,7 +58,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	property name="productListingPageFlag" ormtype="boolean";
 	property name="urlTitle" ormtype="string" length="4000";
 	property name="urlTitlePath" ormtype="string" length="8000";
-	property name="contentBody" ormtype="string" length="8000" ;
+	property name="contentBody" ormtype="string" length="8000" hb_formFieldType="wysiwyg";
 	property name="displayInNavigation" ormtype="boolean";
 	property name="excludeFromSearch" ormtype="boolean";
 	property name="sortOrder" ormtype="integer";
@@ -80,8 +80,8 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	
 	// Related Object Properties (many-to-many - inverse)
 	property name="skus" singularname="sku" cfc="Sku" type="array" fieldtype="many-to-many" linktable="SwSkuAccessContent" fkcolumn="contentID" inversejoincolumn="skuID" inverse="true";
-	property name="listingProducts" singularname="listingProduct" cfc="Product" type="array" fieldtype="many-to-many" linktable="SwProductListingPage" fkcolumn="contentID" inversejoincolumn="productID" cascade="all-delete-orphan" inverse="true";
-	property name="attributeSets" singularname="attributeSet" cfc="AttributeSet" type="array" fieldtype="many-to-many" linktable="SwAttributeSetContent" fkcolumn="contentID" inversejoincolumn="attributeSetID" cascade="all-delete-orphan" inverse="true";
+	property name="listingProducts" singularname="listingProduct" cfc="Product" type="array" fieldtype="many-to-many" linktable="SwProductListingPage" fkcolumn="contentID" inversejoincolumn="productID" inverse="true";
+	property name="attributeSets" singularname="attributeSet" cfc="AttributeSet" type="array" fieldtype="many-to-many" linktable="SwAttributeSetContent" fkcolumn="contentID" inversejoincolumn="attributeSetID" inverse="true";
 	
 	// Remote properties
 	property name="remoteID" ormtype="string" hint="Only used when integrated with a remote system";
@@ -109,10 +109,11 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	// ============ START: Non-Persistent Property Methods =================
 	public string function getAssetsPath(){
 		if(!structKeyExists(variables,'assetsPath')){
-			variables.assetsPath = getSite().getAssetsPath();;
+			variables.assetsPath = getSite().getAssetsPath();
 		}
 		return variables.assetsPath;
 	}
+	
 	
 	public string function getTitlePath(string delimiter){
 		var titlePath = '';
@@ -472,6 +473,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	
 	
 	// ============== START: Overridden Implicet Getters ===================
+	
 	
 	public string function getContentIDPath() {
 		if(isNull(variables.contentIDPath)) {

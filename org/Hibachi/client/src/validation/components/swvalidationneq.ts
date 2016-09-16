@@ -3,23 +3,23 @@
 /**
  *  Validates true if the user value != the property value.
  */
+import {ValidationService} from "../services/validationservice";
 class SWValidationNeq{
-    constructor(){
+    constructor(validationService:ValidationService){
         return {
             restrict: "A",
             require: "^ngModel",
             link: function(scope, element, attributes, ngModel) {
-                    ngModel.$validators.swvalidationneq = 
-                    function(modelValue) {
-                        if (modelValue != attributes.swvalidationneq){return true;}
-                        return false;
+                    ngModel.$validators.swvalidationneq =
+                    (modelValue)=> {
+                        return validationService.validateNeq(modelValue,attributes.swvalidationneq);
                 };
             }
         };
     }
     public static Factory(){
-        var directive = ()=>new SWValidationNeq();
-        directive.$inject = [];
+        var directive = (validationService)=>new SWValidationNeq(validationService);
+        directive.$inject = ['validationService'];
         return directive;
     }
 }

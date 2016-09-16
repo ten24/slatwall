@@ -49,6 +49,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="skuPrice" ormtype="big_decimal";
 	property name="currencyCode" ormtype="string" length="3";
 	property name="quantity" hb_populateEnabled="public" ormtype="integer";
+	property name="bundleItemQuantity" hb_populateEnabled="public" ormtype="integer";
 	property name="estimatedDeliveryDateTime" ormtype="timestamp";
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
 
@@ -146,17 +147,15 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 	public numeric function getMaximumOrderQuantity() {
 		var maxQTY = 0;
-
 		if(getSku().getActiveFlag() && getSku().getProduct().getActiveFlag()) {
 			maxQTY = getSku().setting('skuOrderMaximumQuantity');
-
 			if(getSku().setting('skuTrackInventoryFlag') && !getSku().setting('skuAllowBackorderFlag')) {
 				if( !isNull(getStock()) && getStock().getQuantity('QATS') <= maxQTY ) {
 					maxQTY = getStock().getQuantity('QATS');
 					if(!isNull(getOrder()) && getOrder().getOrderStatusType().getSystemCode() neq 'ostNotPlaced') {
 						maxQTY += getService('orderService').getOrderItemDBQuantity( orderItemID=this.getOrderItemID() );
 					}
-				} else if(getSKU().getQuantity('QATS') <= maxQTY) {
+				} else if(getSku().getQuantity('QATS') <= maxQTY) {
 					maxQTY = getSku().getQuantity('QATS');
 					if(!isNull(getOrder()) && getOrder().getOrderStatusType().getSystemCode() neq 'ostNotPlaced') {
 						maxQTY += getService('orderService').getOrderItemDBQuantity( orderItemID=this.getOrderItemID() );
@@ -193,6 +192,10 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
             return quantity >= getSku().setting('skuOrderMinimumQuantity');
         }
         return true;
+    }
+
+    public boolean function isRootOrderItem(){
+    	return isNull(this.getParentOrderItem());
     }
 
 	public string function getOrderStatusCode(){
@@ -306,7 +309,11 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		//then get the price of it's componenets and add them
 		for(var childOrderItem in this.getChildOrderItems()){
 			var childProductBundleGroupPrice = getProductBundleGroupPrice(childOrderItem);
-			var childQuantity = childOrderItem.getQuantity();
+			var childQuantity = childOrderItem.getQuantity();			
+			//if we have a package quantity use that instead
+			if(!isNull(childOrderItem.getBundleItemQuantity())){
+				childQuantity = childOrderItem.getBundleItemQuantity(); 
+			}
 			productBundlePrice += precisionEvaluate(childProductBundleGroupPrice * childQuantity);
 		}
 
@@ -317,12 +324,12 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		if(isNull(arguments.orderItem)){
 			arguments.orderItem = this;
 		}
-		
+
 		var amountType = "skuPrice";//default
 		if (!isNull(arguments.orderItem.getProductBundleGroup())){
 			amountType = arguments.orderItem.getProductBundleGroup().getAmountType();
 		}
-		
+
 		//fixed
 		if(amountType == 'fixed'){
 			return arguments.orderItem.getProductBundleGroup().getAmount();
@@ -408,6 +415,23 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 		return taxLiabilityAmount;
 	}
+
+	public void function setQuantity(required numeric quantity){ 
+		variables.quantity = arguments.quantity;
+		if(this.isRootOrderItem()){
+			for(var childOrderItem in this.getChildOrderItems()){
+				var newQuantity = PrecisionEvaluate(childOrderItem.getBundleItemQuantity() * variables.quantity);
+				childOrderItem.setQuantity(newQuantity); 
+			}
+		}	
+	}	
+
+	public void function setBundleItemQuantity(required numeric bundleItemQuantity){
+		if(!this.isRootOrderItem()){
+			variables.bundleItemQuantity = arguments.bundleItemQuantity; 
+			variables.quantity = PrecisionEvaluate(getParentOrderItem().getQuantity() * variables.bundleItemQuantity); 
+		} 
+	} 
 
 	public numeric function getQuantityDelivered() {
 		var quantityDelivered = 0;

@@ -124,6 +124,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var subscriptionUsage = this.newSubscriptionUsage();
 
 		//copy all the info from order items to subscription usage if it's initial order item
+		subscriptionUsage.setInitialOrderItem(arguments.orderItem); 
 		subscriptionUsage.copyOrderItemInfo(arguments.orderItem);
 
 		// set account
@@ -345,7 +346,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// =====================  END: Logical Methods ============================
 
 	// ===================== START: DAO Passthrough ===========================
-
+	
+	//@SuppressCodeCoverage
 	public array function getUnusedProductSubscriptionTerms( required string productID ){
 		return getSubscriptionDAO().getUnusedProductSubscriptionTerms( argumentCollection=arguments );
 	}

@@ -89,7 +89,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 							}else{
 								message = error;
 							}
-							this.addError(errorKey,htmleditFormat(message));
+							this.addError(errorKey,hibachiHTMLeditFormat(message));
 						}
 					}
 					
@@ -257,15 +257,24 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 			
 			//Check if a custom property exists
 			if (getService("hibachiService").getEntityHasPropertyByEntityName(getClassName(),attributeEntity.getAttributeCode())){
-				invokeMethod("set#attributeEntity.getAttributeCode()#", {1=arguments.value});
+				if(arguments.value != "") {
+					invokeMethod("set#attributeEntity.getAttributeCode()#", {1=arguments.value});
+				} else {
+					var thisMethod = this["set" & attributeEntity.getAttributeCode()];
+					thisMethod(javacast('null',''));
+				}
 				return '';
 			}
 		}else{
 			//Check if a custom property exists
 			if (getService("hibachiService").getEntityHasPropertyByEntityName(getClassName(),arguments.attribute)){
-				invokeMethod("set#arguments.attribute#", {1=arguments.value});
+				if(arguments.value != "") {
+					invokeMethod("set#arguments.attribute#", {1=arguments.value});
+				} else {
+					var thisMethod = this["set" & arguments.attribute];
+					thisMethod(javacast('null',''));
+				}
 				return '';
-				
 			}
 		}
 		
@@ -438,14 +447,13 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	public any function getFilterProperties(string includesList = "", string excludesList = ""){
 		var properties = super.getFilterProperties(argumentCollection=arguments);
 		var attributeProperties = getAttributesProperties(properties);
-		getService('hibachiUtilityService').arrayConcat(properties,attributeProperties);
-		return properties;
+		return getService('hibachiUtilityService').arrayConcat(properties,attributeProperties);
 	}
 	
 	public any function getAttributesProperties(array properties=[]){
 		var attributesProperties = [];
 		var attributesArray = getAttributesArray();
-		for(var i = arrayLen(attributesArray); i > 1 ;i=i-1){
+		for(var i = arrayLen(attributesArray); i > 0 ;i--){
 			var attribute = attributesArray[i];
 			if(!structKeyExists(this,'get#attribute.getAttributeCode()#')){
 				var attributeProperty = {};

@@ -57,7 +57,32 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="stockService" type="any";
 	property name="settingService" type="any";
 	property name="typeService" type="any";
+	
+	public string function getSkuDefinitionBySkuIDAndBaseProductTypeID(required string skuID, required string baseProductTypeID){
+		var skuDefinition = "";
+		if(isNull(arguments.baseProductTypeID)){
+			arguments.baseProductTypeID = "";
+		}
+		
+		switch (arguments.baseProductTypeID)
+		{
+			//merchandist
+			case "444df2f7ea9c87e60051f3cd87b435a1":
+				skuDefinition = getSkuDao().getSkuDefinitionForMerchandiseBySkuID(arguments.skuID);
+	    		break;
+			//subscription
+	    	case "444df2f9c7deaa1582e021e894c0e299":
+				break;
+			//event
+			case "444df315a963bea00867567110d47728":
+				break;
 
+			default:
+				skuDefinition = "";
+		}
+		return skuDefinition;
+	}
+	
 	public any function processImageUpload(required any Sku, required struct imageUploadResult) {
 		var imagePath = arguments.Sku.getImagePath();
 		var imageSaved = getService("imageService").saveImageFile(uploadResult=arguments.imageUploadResult,filePath=imagePath,allowedExtensions="jpg,jpeg,png,gif");
@@ -534,6 +559,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ====================== START: Save Overrides ===========================
 
 	public any function saveSku(required any sku, required struct data={}){
+		var previousActiveState = arguments.sku.getActiveFlag();
 		if(arguments.sku.getProduct().getBaseProductType() == "subscription"){
 			if(structKeyExists(arguments.data,"renewalMethod")){
 				if(arguments.data.renewalMethod == "renewalsku"){
@@ -548,7 +574,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 		}
-		return super.save(entity=arguments.sku, data=arguments.data);
+		arguments.sku = super.save(entity=arguments.sku, data=arguments.data);
+		
+		if(!sku.hasErrors()){
+			if(!arguments.sku.isNew() && previousActiveState == 1 && arguments.sku.getActiveFlag() == 0){
+				sku.setPublishedFlag(false);
+			}
+		}
+		
+		return arguments.sku;
 	}
 
 	// ======================  END: Save Overrides ============================
@@ -568,6 +602,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		smartList.addKeywordProperty(propertyIdentifier="publishedFlag", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="product.productName", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="product.productType.productTypeName", weight=1);
+
+		smartList.addOrder('skuCode|ASC');
 
 		return smartList;
 	}

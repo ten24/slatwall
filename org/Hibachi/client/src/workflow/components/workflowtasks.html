@@ -41,8 +41,8 @@
 	<div class="col-xs-12 s-add-filter s-tab-layout" id="j-create-new-task" ng-if="workflowTasks.selectedTask && !workflowTasks.selectedTask.hidden"><!-- This hidden is for the X button closing -->
 		<div class="row" ng-show="!finished && !workflowTasks.selectedTask.hidden || !workflowTasks.selectedTask.$$isPersisted()">
 			<h4>
-				 <span ng-show="!workflowTasks.selectedTask.$$isPersisted()">Create New</span><span ng-show="workflowTasks.selectedTask.$$isPersisted()">Edit</span> Task 
-				 <i class="fa fa-times" 
+				 <span ng-show="!workflowTasks.selectedTask.$$isPersisted()">Create New</span><span ng-show="workflowTasks.selectedTask.$$isPersisted()">Edit</span> Task
+				 <i class="fa fa-times"
 				 	data-target="#j-create-new-task"
 				 	ng-click="workflowTasks.selectedTask.hidden = true"
 				 ></i>
@@ -54,8 +54,9 @@
 	</div>
 	<div class="clearfix"></div>
 </div>
-<button class="btn btn-xs btn-primary" 
+<button class="btn btn-xs btn-primary"
 		data-target="#j-create-new-task"
-		ng-click="addWorkflowTask();" 		
+		ng-click="addWorkflowTask();"
+       ng-hide="workflowTasks.selectedTask && !workflowTasks.selectedTask.hidden">
 	<i class="fa fa-plus"></i> Create New Task
 </button>

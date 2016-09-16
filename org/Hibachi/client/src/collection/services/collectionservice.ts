@@ -3,10 +3,8 @@
 /*collection service is used to maintain the state of the ui*/
 import {PageDialog} from "../../dialog/model/pagedialog";
 import {IFilter} from "./collectionconfigservice";
- class CollectionService{
-    public static $inject = [
-        '$filter','$log'
-    ];
+import {BaseEntityService} from "../../core/services/baseentityservice";
+class CollectionService extends BaseEntityService{
     private _pageDialogs;
     private _collection;
     private _collectionConfig;
@@ -14,11 +12,16 @@ import {IFilter} from "./collectionconfigservice";
     private _filterCount;
     private _orderBy;
 
+
+    //@ngInject
     constructor(
+        public $injector:ng.auto.IInjectorService,
+        public $hibachi,
+        public utilityService,
         private $filter:ng.IFilterService,
         private $log:ng.ILogService
     ){
-
+        super($injector,$hibachi,utilityService,'Collection');
         this.$filter = $filter;
         this.$log = $log;
         this._collection = null;
@@ -104,7 +107,7 @@ import {IFilter} from "./collectionconfigservice";
         filterGroupItem.setItemInUse(!filterGroupItem.$$isClosed);
     }
 
-    newFilterItem = (filterItemGroup:any,setItemInUse:any,prepareForFilterGroup:any):void =>{
+    newFilterItem = (filterItemGroup:any,setItemInUse:any,prepareForFilterGroup:any) =>{
         if(angular.isUndefined(prepareForFilterGroup)){
             prepareForFilterGroup = false;
         }
@@ -132,8 +135,8 @@ import {IFilter} from "./collectionconfigservice";
 
         this.selectFilterItem(filterItem);
 
-
-    }
+        return (filterItemGroup.length - 1);
+    };
 
     newFilterGroupItem = (filterItemGroup:any,setItemInUse:any):void =>{
         var filterGroupItem:any = {

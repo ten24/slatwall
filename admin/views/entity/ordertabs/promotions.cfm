@@ -52,28 +52,26 @@ Notes:
 <cfparam name="rc.order" type="any" />
 
 <cfoutput>
-	<!---
-	<hb:HibachiListingDisplay smartList="#rc.order.getPromotionCodesSmartList()#"
-							  recordDeleteAction="admin:entity.processOrder"
-							  recordDeleteQueryString="processContent=removePromotionCode&redirectAction=admin:entity.detailOrder&orderID=#rc.order.getOrderID()#">
-			
-		<hb:HibachiListingColumn propertyIdentifier="promotionCode" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="promotion.promotionName" />
-		
-	</hb:HibachiListingDisplay>
-	--->
-	<cfif arrayLen(rc.order.getPromotionCodes())>
+	<cfif arrayLen(rc.order.getAllAppliedPromotions())>
 		<table class="table table-bordered table-hover">
 			<tr>
 				<th>#$.slatwall.rbKey('entity.promotionCode')#</th>
+				<th>#$.slatwall.rbKey('entity.promotion')#</th>
+				<th>#$.slatwall.rbKey('define.qualified')#</th>
 				<th></th>
 			</tr>
-			<cfloop array="#rc.order.getPromotionCodes()#" index="appliedPromotionCode">
+			<cfloop array="#rc.order.getAllAppliedPromotions()#" index="appliedPromotion">
 				<tr>
-					<td class="primary">#appliedPromotionCode.getPromotionCode()#</td>
+					<td class="primary">#appliedPromotion.promotionCode#</td>
+					<td class="primary">#appliedPromotion.promotion_promotionName#</td>
+					<td>#appliedPromotion.qualified#</td>
 					<td class="admin admin2">
-						<hb:HibachiActionCaller action="admin:entity.detailPromotion" queryString="promotionID=#appliedpromotionCode.getPromotion().getPromotionID()#" class="btn btn-default btn-xs" icon="eye-open" iconOnly="true"  />
-						<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="removePromotionCode" queryString="promotionCodeID=#appliedPromotionCode.getPromotionCodeID()#" class="btn btn-default btn-xs" iconOnly="true" icon="trash">
+						<hb:HibachiActionCaller action="admin:entity.detailPromotion" queryString="promotionID=#appliedPromotion.promotion_promotionID#" class="btn btn-default btn-xs" icon="eye-open" iconOnly="true"  />
+						<cfif len(appliedPromotion.promotionCodeID)>
+							<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="removePromotionCode" queryString="promotionCodeID=#appliedPromotion.promotionCodeID#" confirm="true" confirmText="#$.slatwall.rbKey('admin.entity.processorder.removePromotionCode_confirm')#" class="btn btn-default btn-xs" iconOnly="true" icon="trash">
+						<cfelse>
+							<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="removePromotionCode" queryString="promotionCodeID=#appliedPromotion.promotionCodeID#" confirm="true" confirmText="#$.slatwall.rbKey('admin.entity.processorder.removePromotionCode_confirm')#" class="btn btn-default btn-xs disabled" iconOnly="true" icon="trash">
+						</cfif>
 					</td>
 				</tr>
 			</cfloop>

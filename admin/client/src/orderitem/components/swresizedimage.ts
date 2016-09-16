@@ -32,9 +32,10 @@ class SWResizedImage{
 				//Call slatwallService to get the path from the image.
 				$hibachi.getResizedImageByProfileName(profileName, skuID)
                 .then(function (response) {
-					$log.debug('Get the image');
-					$log.debug(response.data.resizedImagePaths[0]);
-					scope.orderItem.imagePath = response.data.resizedImagePaths[0];
+					
+                    
+					$log.debug(response.resizedImagePaths[0]);
+					scope.orderItem.imagePath = response.resizedImagePaths[0];
 				});
 			}
 		};

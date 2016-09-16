@@ -61,17 +61,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		//Remove existing taxes from OrderItems
 		removeTaxesFromAllOrderItems(arguments.order);
 
-		// if account is tax exempt return after removing any tax previously applied to order
-		if(!isNull(arguments.order.getAccount()) && !isNull(arguments.order.getAccount().getTaxExemptFlag()) && arguments.order.getAccount().getTaxExemptFlag()) {
-			return;
-		}
-
 		// Setup the Tax Integration Array
  		var taxIntegrationArr = generateTaxIntegrationArray(arguments.order);
 
 		// Next Loop over the taxIntegrationArray to call getTaxRates on each
 		for(var integration in taxIntegrationArr) {
-
+			
 			if(integration.getActiveFlag()) {
 				var taxRatesRequestBean = generateTaxRatesRequestBeanForIntegration(arguments.order, integration);
 
@@ -181,6 +176,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 							// Else if there is no itegration or if there was supposed to be a response bean but we didn't get one, then just calculate based on this rate data store in our DB
 							} else {
+								
+								// if account is tax exempt return after removing any tax previously applied to order
+								if(!isNull(arguments.order.getAccount()) && !isNull(arguments.order.getAccount().getTaxExemptFlag()) && arguments.order.getAccount().getTaxExemptFlag()) {
+									continue;
+								}
 
 								var newAppliedTax = this.newTaxApplied();
 								newAppliedTax.setAppliedType("orderItem");
@@ -407,7 +407,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return taxRatesRequestBean;
 
 	}
-
 
 	// ===================== START: Logical Methods ===========================
 
