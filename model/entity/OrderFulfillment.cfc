@@ -78,6 +78,9 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
 	// Related Object Properties (many-to-many - inverse)
 
+	// Calculated properties
+	property name="calculatedSelectedShippingMethodOption" cfc="ShippingMethodOption" fieldtype="many-to-one" fkcolumn="selectedShippingMethodOptionID";
+
 	// Remote properties
 	property name="remoteID" ormtype="string";
 
