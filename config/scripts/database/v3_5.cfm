@@ -150,6 +150,12 @@ Notes:
 			UPDATE SwAttributeSet SET attributeSetObject = 'File' WHERE attributeSetTypeID = '2de85a7daab45eaa8ccd31a2c32ac370'
 		</cfquery>
 		<cfquery name="local.updateData">
+			UPDATE SwAttributeSet SET attributeSetObject = 'Location' WHERE attributeSetTypeID = '5accbfaceca4d70a228b27cc61b0986a'
+		</cfquery>
+		<cfquery name="local.updateData">
+			UPDATE SwAttributeSet SET attributeSetObject = 'LocationConfiguration' WHERE attributeSetTypeID = '5accbfb1e1a2a2dfd8dc4136631d68f0'
+		</cfquery>
+		<cfquery name="local.updateData">
 			UPDATE SwAttributeSet SET attributeSetObject = 'Order' WHERE attributeSetTypeID = '444df327c72a5bd51bb2f691aac17008'
 		</cfquery>
 		<cfquery name="local.updateData">

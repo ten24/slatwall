@@ -94,7 +94,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="skuCurrencies" singularname="skuCurrency" cfc="SkuCurrency" type="array" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
 	property name="stocks" singularname="stock" fieldtype="one-to-many" fkcolumn="skuID" cfc="Stock" inverse="true" hb_cascadeCalculate="true" cascade="all-delete-orphan";
 	property name="bundledSkus" singularname="bundledSku" fieldtype="one-to-many" fkcolumn="skuID" cfc="SkuBundle" inverse="true" cascade="all-delete-orphan";
-	property name="eventRegistrations" singularname="eventRegistration" fieldtype="one-to-many" fkcolumn="skuID" cfc="EventRegistration" inverse="true" cascade="all-delete-orphan" lazy="extra";
+	property name="eventRegistrations" singularname="eventRegistration" fieldtype="one-to-many" fkcolumn="skuID" cfc="EventRegistration" inverse="true" cascade="all-delete-orphan";
 	property name="assignedSkuBundles" singularname="assignedSkuBundle" fieldtype="one-to-many" fkcolumn="bundledSkuID" cfc="SkuBundle" inverse="true" cascade="all-delete-orphan" lazy="extra"; // No Bi-Directional
 	property name="productBundleGroups" type="array" cfc="ProductBundleGroup" singularname="productBundleGroup"  fieldtype="one-to-many" fkcolumn="productBundleSkuID" cascade="all-delete-orphan" inverse="true";
 	property name="productReviews" singularname="productReview" cfc="ProductReview" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
@@ -167,6 +167,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="redemptionAmountTypeOptions" persistent="false";
 	property name="giftCardExpirationTermOptions" persistent="false";
 	property name="formattedRedemptionAmount" persistent="false";
+	property name="allowWaitlistedRegistrations" persistent="false";
 	// Deprecated Properties
 
 
@@ -401,7 +402,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// END: Image Methods
 
 	public boolean function getEventConflictExistsFlag() {
-		if(getEventConflictsSmartList().getRecordsCount() GT 0) {
+		var eventConflictsSmartList = getService("skuService").getEventConflictsSmartList(sku=this);
+		
+		if(eventConflictsSmartList.getRecordsCount() GT 0) {
 			return true;
 		}
 		return false;
@@ -598,7 +601,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public any function getAvailableForPurchaseFlag() {
 		if(!structKeyExists(variables, "availableForPurchaseFlag")) {
 			// If purchase dates are null OR now() is between purchase start and end dates then this product is available for purchase
-			if(	getActiveFlag() && getPublishedFlag()
+			if(	getActiveFlag()
 				&& (
 				( isNull(this.getPurchaseStartDateTime()) && isNull(this.getPurchaseStartDateTime()) )
 				|| ( !isNull(this.getPurchaseStartDateTime()) && !isNull(this.getPurchaseStartDateTime()) && dateCompare(now(),this.getPurchaseStartDateTime(),"s") == 1 && dateCompare(now(),this.getPurchaseEndDateTime(),"s") == -1 ) )
@@ -1025,10 +1028,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			arguments.baseProductType = "";
 		}
 		
-		if(!isNull(getSkuName())){
-			skuDefinition = "Name: #getSkuName()#<br>";
-		}
-		
 		switch (arguments.baseProductType)
 		{
 			case "merchandise":
@@ -1066,6 +1065,15 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			variables.transactionExistsFlag = getService("skuService").getTransactionExistsFlag( skuID=this.getSkuID() );
 		}
 		return variables.transactionExistsFlag;
+	}
+	
+	public boolean function allowWaitlistedRegistrations() {
+ 		if (this.getAvailableSeatCount() <= 0 ){
+			if(this.getAllowEventWaitlistingFlag() == 0){
+				return false;
+			}
+		}
+		return true;
 	}
 
 
@@ -1142,13 +1150,21 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public void function removeAttributeValue(required any attributeValue) {
 		arguments.attributeValue.removeSku( this );
 	}
-
-	// Sku Currencies (one-to-many)
-	public void function addSkuCurrency(required any skuCurrency) {
-		arguments.skuCurrency.setSku( this );
+	
+	// Event Registrations (one-to-many)    
+	public void function addEventRegistrations(required any eventRegistration) {    
+		arguments.eventRegistration.setSku( this );    
+	}    
+	public void function removeEventRegistration(required any eventRegistration) {    
+		arguments.eventRegistration.removeSku( this );    
 	}
-	public void function removeSkuCurrency(required any skuCurrency) {
-		arguments.skuCurrency.removeSku( this );
+	
+	// Sku Currencies (one-to-many)    
+	public void function addSkuCurrency(required any skuCurrency) {    
+		arguments.skuCurrency.setSku( this );    
+	}    
+	public void function removeSkuCurrency(required any skuCurrency) {    
+		arguments.skuCurrency.removeSku( this );    
 	}
 
 	// Stocks (one-to-many)
@@ -1420,30 +1436,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// @help Compile smartlist of conflicting events based on location and event dates
 	public any function getEventConflictsSmartList() {
 		if(!structKeyExists(variables, "eventConflictsSmartList")) {
-			var locationConfigurationIDList = "";
-
-			// Build list of this Sku's locations
-			var locationIDList = "";
-			for(var lc in this.getLocationConfigurations()) {
-				if( len(locationIDList) ) {
-					if( !listFind( locationIDList,lc.getLocationID() ) ) {
-						listAppend(locationIDList,lc.getLocationID(),",");
-					}
-				} else {
-					locationIDList = lc.getLocationID();
-				}
-			}
-
-			// Build smartlist that will return sku events occurring at the same time and location as this event
-			variables.eventConflictsSmartList = getService("skuService").getSkuSmartlist();
-			
-			variables.eventConflictsSmartList.joinRelatedProperty("SlatwallSku", "locationConfigurations", "left");
-			variables.eventConflictsSmartList.joinRelatedProperty("SlatwallLocationConfiguration", "location", "left");
-			variables.eventConflictsSmartList.addWhereCondition("aslatwalllocation.locationID IN (:lcIDs)",{lcIDs=locationIDList});
-			variables.eventConflictsSmartList.addWhereCondition("aslatwallsku.skuID <> :thisSkuID",{thisSkuID=this.getSkuID()});
-			variables.eventConflictsSmartList.addWhereCondition("aslatwallsku.eventStartDateTime < :thisEndDateTime",{thisEndDateTime=this.getEventEndDateTime()});
-			variables.eventConflictsSmartList.addWhereCondition("aslatwallsku.eventEndDateTime > :thisStartDateTime",{thisStartDateTime=this.getEventStartDateTime()});
-			variables.eventConflictsSmartList.addOrder("eventStartDateTime|ASC");
+			variables.eventConflictsSmartList =getService("skuService").getEventConflictsSmartList(sku=this);
 		}
 
 		return variables.eventConflictsSmartList;
