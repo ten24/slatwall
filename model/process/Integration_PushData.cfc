@@ -46,36 +46,29 @@
 Notes:
 
 */
-component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
-	public void function setUp() {
-		super.setup();
-		
-		variables.service = request.slatwallScope.getService("updateService");
-		
-		var filePathWith = expandPath('/Slatwall')&"/meta/tests/unit/resources/updateService/AccountWithoutCustomProperties.txt";
-		variables.fileContentForAccountWithoutCustomPropeties = fileRead(filePathWith);
-		
-		
-		var filePathWithout = expandPath('/Slatwall')&"/meta/tests/unit/resources/updateService/AccountWithCustomProperties.txt";
-		variables.fileContentForAccountWithCustomPropeties = fileRead(filePathWithout);
-		
-		
-		variables.customFileContent = 'component{
-				property name="salesforceEntity" cfc="RemoteEntity" fieldtype="many-to-one" fkcolumn="salesforceEntityID";
-				property name="salesforceEntityabc" cfc="RemoteEntity" fieldtype="many-to-one" fkcolumn="salesforceEntityabcID";
-				
-				public any function myFUnction(){
-					return "test";
-				}
-				
-				private any function myprivateFunction(){
-					return "tests";
-	}
+component output="false" accessors="true" extends="HibachiProcess" {
 	
-	public void function updateCMSApplicationsTest(){
-		variables.service.updateCMSApplications();
-	}
+	// Injected Entity
+	property name="integration";	
+	// Helper Properties
+	
+	// ======================== START: Defaults ============================
+	
+	// ========================  END: Defaults =============================
+
+	// =================== START: Lazy Object Helpers ======================
+	
+	// ===================  END: Lazy Object Helpers =======================
+	
+	// ================== START: New Property Helpers ======================
+	
+	// ==================  END: New Property Helpers =======================
+	
+	// ====================== START: Data Options ==========================
+	
+	// ======================  END: Data Options ===========================
+	
+	// ===================== START: Helper Methods =========================
+	
+	// =====================  END: Helper Methods ==========================	
 }
-
-

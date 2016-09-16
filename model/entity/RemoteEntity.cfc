@@ -46,36 +46,28 @@
 Notes:
 
 */
-component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
-	public void function setUp() {
-		super.setup();
-		
-		variables.service = request.slatwallScope.getService("updateService");
-		
-		var filePathWith = expandPath('/Slatwall')&"/meta/tests/unit/resources/updateService/AccountWithoutCustomProperties.txt";
-		variables.fileContentForAccountWithoutCustomPropeties = fileRead(filePathWith);
-		
-		
-		var filePathWithout = expandPath('/Slatwall')&"/meta/tests/unit/resources/updateService/AccountWithCustomProperties.txt";
-		variables.fileContentForAccountWithCustomPropeties = fileRead(filePathWithout);
-		
-		
-		variables.customFileContent = 'component{
-				property name="salesforceEntity" cfc="RemoteEntity" fieldtype="many-to-one" fkcolumn="salesforceEntityID";
-				property name="salesforceEntityabc" cfc="RemoteEntity" fieldtype="many-to-one" fkcolumn="salesforceEntityabcID";
-				
-				public any function myFUnction(){
-					return "test";
-				}
-				
-				private any function myprivateFunction(){
-					return "tests";
-	}
+component displayname="Remote Entity" entityname="SlatwallRemoteEntity" table="SwRemoteEntity" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_permission="this" {
 	
-	public void function updateCMSApplicationsTest(){
-		variables.service.updateCMSApplications();
+	// Persistent Properties
+	property name="remoteEntityID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="integration" hb_populateEnabled="public" cfc="Integration" fieldtype="many-to-one" fkcolumn="integrationID" index="PI_INTEGRATION_REMOTEID";
+	property name="remoteID" ormtype="string" index="PI_INTEGRATION_REMOTEID";
+	property name="deletedFlag" ormttype="boolean";
+	// Audit Properties
+	
+	// Related Object Properties
+	
+	// ============ START: Non-Persistent Property Methods =================
+	public boolean function isDeleted(){
+		return !isNull(getDeletedFlag()) && getDeletedFlag();
 	}
+	// ============  END:  Non-Persistent Property Methods =================
+		
+	// ============= START: Bidirectional Helper Methods ===================
+	
+	// =============  END:  Bidirectional Helper Methods ===================
+	
+	// =================== START: ORM Event Hooks  =========================
+	
+	// ===================  END:  ORM Event Hooks  =========================
 }
-
-

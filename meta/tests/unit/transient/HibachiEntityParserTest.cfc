@@ -47,12 +47,10 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
 	public void function setUp() {
 		super.setup();
 		
-		variables.service = request.slatwallScope.getService("updateService");
-		
+		variables.hibachiEntityParser = request.slatwallScope.getTransient("HibachiEntityParser");
 		var filePathWith = expandPath('/Slatwall')&"/meta/tests/unit/resources/updateService/AccountWithoutCustomProperties.txt";
 		variables.fileContentForAccountWithoutCustomPropeties = fileRead(filePathWith);
 		
@@ -60,22 +58,30 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var filePathWithout = expandPath('/Slatwall')&"/meta/tests/unit/resources/updateService/AccountWithCustomProperties.txt";
 		variables.fileContentForAccountWithCustomPropeties = fileRead(filePathWithout);
 		
-		
-		variables.customFileContent = 'component{
-				property name="salesforceEntity" cfc="RemoteEntity" fieldtype="many-to-one" fkcolumn="salesforceEntityID";
-				property name="salesforceEntityabc" cfc="RemoteEntity" fieldtype="many-to-one" fkcolumn="salesforceEntityabcID";
-				
-				public any function myFUnction(){
-					return "test";
-				}
-				
-				private any function myprivateFunction(){
-					return "tests";
 	}
 	
-	public void function updateCMSApplicationsTest(){
-		variables.service.updateCMSApplications();
+	public void function hasCustomPropertiesTest_WithCustomProperties(){
+		
+		variables.hibachiEntityParser.setFileContent(variables.fileContentForAccountWithCustomPropeties);
+		
+		assert(variables.hibachiEntityParser.hasCustomProperties());
 	}
+	
+	public void function hasCustomPropertiesTest_WithoutCustomProperties(){
+		
+		
+		variables.hibachiEntityParser.setFileContent(variables.fileContentForAccountWithoutCustomPropeties);
+		
+		assertFalse(variables.hibachiEntityParser.hasCustomProperties());
+	}
+	
+	public void function getCustomPropertyContentTest(){
+		
+		variables.hibachiEntityParser.setFileContent(variables.fileContentForAccountWithCustomPropeties);
+		
+		assert(len(variables.hibachiEntityParser.getCustomPropertyContent()));
+	}
+	
 }
 
 

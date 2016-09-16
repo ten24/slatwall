@@ -46,36 +46,37 @@
 Notes:
 
 */
-component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
+component extends="HibachiDao" persistent="false" accessors="true" output="false" {
 
-	public void function setUp() {
-		super.setup();
-		
-		variables.service = request.slatwallScope.getService("updateService");
-		
-		var filePathWith = expandPath('/Slatwall')&"/meta/tests/unit/resources/updateService/AccountWithoutCustomProperties.txt";
-		variables.fileContentForAccountWithoutCustomPropeties = fileRead(filePathWith);
-		
-		
-		var filePathWithout = expandPath('/Slatwall')&"/meta/tests/unit/resources/updateService/AccountWithCustomProperties.txt";
-		variables.fileContentForAccountWithCustomPropeties = fileRead(filePathWithout);
-		
-		
-		variables.customFileContent = 'component{
-				property name="salesforceEntity" cfc="RemoteEntity" fieldtype="many-to-one" fkcolumn="salesforceEntityID";
-				property name="salesforceEntityabc" cfc="RemoteEntity" fieldtype="many-to-one" fkcolumn="salesforceEntityabcID";
-				
-				public any function myFUnction(){
-					return "test";
-				}
-				
-				private any function myprivateFunction(){
-					return "tests";
+	public any function getEntityQueueByBaseObjectAndBaseIDAndEntityQueueTypeAndIntegration(required string baseObject, required string baseID, required string entityQueueType, required any integration){
+		return ORMExecuteQuery('SELECT eq FROM SlatwallEntityQueue eq where eq.baseID=:baseID AND baseObject=:baseObject AND entityQueueType=:entityQueueType AND integration=:integration',
+			{baseID=arguments.baseID,baseObject=arguments.baseObject,entityQueueType=arguments.entityQueueType,integration=arguments.integration}
+			,true
+		);
 	}
 	
-	public void function updateCMSApplicationsTest(){
-		variables.service.updateCMSApplications();
-	}
+	// ===================== START: Logical Methods ===========================
+	
+	// =====================  END: Logical Methods ============================
+	
+	// ===================== START: DAO Passthrough ===========================
+	
+	// ===================== START: DAO Passthrough ===========================
+	
+	// ===================== START: Process Methods ===========================
+	
+	// =====================  END: Process Methods ============================
+	
+	// ====================== START: Save Overrides ===========================
+	
+	// ======================  END: Save Overrides ============================
+	
+	// ==================== START: Smart List Overrides =======================
+	
+	// ====================  END: Smart List Overrides ========================
+	
+	// ====================== START: Get Overrides ============================
+	
+	// ======================  END: Get Overrides =============================
+	
 }
-
-
