@@ -100,7 +100,19 @@ export class BaseBootStrapper{
 
     getAttributeCacheKeyData = ()=>{
 
-        return this.$http.get(hibachiConfig.baseURL+'?'+hibachiConfig.action+'=api:main.getAttributeModel')
+        
+        var urlString = "";
+        
+        if(!hibachiConfig){
+            hibachiConfig = {};    
+        }
+        
+        if(!hibachiConfig.baseURL){
+            hibachiConfig.baseURL = '';
+        }
+        urlString += hibachiConfig.baseURL;
+
+        return this.$http.get(urlString+'?'+hibachiConfig.action+'=api:main.getAttributeModel')
         .then( (resp:any)=> {
             coremodule.constant('attributeMetaData',resp.data.data);
             localStorage.setItem('attributeMetaData',JSON.stringify(resp.data.data));
