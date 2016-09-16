@@ -129,7 +129,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// check to make sure that this rate applies to the current orderFulfillment
 				if(!isNull(shippingMethodRate.getShippingIntegration()) && shippingMethodRate.getShippingIntegration().getActiveFlag()){
 					var shippingIntegration = getIntegrationByOrderFulfillmentAndShippingMethodRate(arguments.orderFulfillment,shippingMethodRate);
-					if(!isNull(shippingINtegration) && !arrayFind(integrations, shippingIntegration)){
+					if(!isNull(shippingIntegration) && !arrayFind(integrations, shippingIntegration)){
 						arrayAppend(integrations,shippingIntegration);
 					}
 				} 
@@ -148,7 +148,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public numeric function getChargeAmountByShipmentItemMultiplierAndRateMultiplierAmount(required numeric defaultAmount, required numeric shipmentItemMultiplier, required numeric rateMultiplierAmount){
 		
-		var chargeAmount = PrecisionEvaluate(arguments.defaultAmount + PrecisionEvaluate(arguments.rateMultiplierAmount * arguments.shipmentItemMultiplier));
+		var chargeAmount = PrecisionEvaluate(arguments.defaultAmount + (arguments.rateMultiplierAmount * arguments.shipmentItemMultiplier));
 		return chargeAmount;
 	}
 	
@@ -423,7 +423,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			return false;
 		}
 
-		if(!isNull(shippingMethodRate.getSplitShipmentWeight() && shipmentWeight > shippingMethodRate.getSplitShipmentWeight()){
+		if(!isNull(shippingMethodRate.getSplitShipmentWeight()) && shipmentWeight > shippingMethodRate.getSplitShipmentWeight()){
 			return false; 
 		} 
 
