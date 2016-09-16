@@ -57,9 +57,9 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 	property name="lastRequestIPAddress" ormtype="string";
 	property name="lastPlacedOrderID" ormtype="string";
 	property name="rbLocale" ormtype="string";
-	property name="sessionCookiePSID" ormtype="string" length="64";//keeps track of cart
-	property name="sessionCookieNPSID" ormtype="string" length="64"; //keeps track of user on session.
-	property name="sessionCookieExtendedPSID" ormtype="string" length="64"; //keeps track of user during extended session period.	
+	property name="sessionCookiePSID" ormtype="string" length="64" index="PI_SESSIONCOOKIEPSID";//keeps track of cart
+	property name="sessionCookieNPSID" ormtype="string" length="64" index="PI_SESSIONCOOKIENPSID"; //keeps track of user on session.
+	property name="sessionCookieExtendedPSID" ormtype="string" length="64" index="PI_SESSIONCOOKIEEXTENDEDPSID"; //keeps track of user during extended session period.	
 	property name="sessionExpirationDateTime" ormtype="timestamp";
 	property name="deviceID" ormtype="string" default="" ;
 	

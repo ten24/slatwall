@@ -29,6 +29,7 @@ component output="false" accessors="true" extends="HibachiController" {
     this.publicMethods=listAppend(this.publicMethods, 'login');
     this.publicMethods=listAppend(this.publicMethods, 'getResourceBundle');
     this.publicMethods=listAppend(this.publicMethods, 'getCurrencies');
+    this.publicMethods=listAppend(this.publicMethods, 'getCurrencyRates');
     this.publicMethods=listAppend(this.publicMethods, 'getModel');
     this.publicMethods=listAppend(this.publicMethods, 'getAttributeModel');
     this.publicMethods=listAppend(this.publicMethods, 'getConfig');
@@ -120,6 +121,10 @@ component output="false" accessors="true" extends="HibachiController" {
         }
 
         arguments.rc.apiResponse.content['data'] = currencyStruct;
+    }
+
+    public void function getCurrencyRates(required struct rc){
+		arguments.rc.apiResponse.content = getService("CurrencyService").getAllAvailableCurrencyRates();
     }
 
     public void function login(required struct rc){

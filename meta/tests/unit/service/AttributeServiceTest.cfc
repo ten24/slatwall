@@ -87,6 +87,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//saving clears the cache
 		var attributeName = 'adf'&generateRandomString();
 		attribute = variables.service.saveAttribute(attribute,{attributeName=attributeName,attributeType="text"});
+		sleep(200);
 		//make sure no errors
 		assert(structCount(attribute.getErrors()) == 0);
 		//make sure change happened

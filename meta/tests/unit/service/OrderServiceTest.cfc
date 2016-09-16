@@ -242,7 +242,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		orderItemsAdded[1].addOrderItemGiftRecipient(recipient1);
 
 		numOfUnassignedGiftCards = orderItemsAdded[1].getNumberOfUnassignedGiftCards();
-
 		assertEquals(0, numOfUnassignedGiftCards);
 	}
 
@@ -276,10 +275,14 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			orderItemTypeID=""
 		};
 		var orderItemData2 = {
-			orderItemID=CreateUUID()
+			orderItemID=CreateUUID(),
+			quantity=1,
+			bundleItemQuantity=1
 		};
 		var orderItemData3 = {
-			orderItemID=CreateUUID()
+			orderItemID=CreateUUID(),
+			quantity=1,
+			bundleItemQuantity=1
 		};
 		var orderItem1 = createPersistedTestEntity('OrderItem', orderItemData1);
 		var orderItem2 = createPersistedTestEntity('OrderItem', orderItemData2);

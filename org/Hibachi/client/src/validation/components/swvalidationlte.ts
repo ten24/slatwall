@@ -15,7 +15,6 @@ class SWValidationLte{
                     ngModel.$validators.swvalidationlte =
                     function(modelValue, viewValue) {
                         return validationService.validateLte(modelValue,attributes.swvalidationlte);
-
                     };
             }
         };

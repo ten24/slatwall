@@ -34,8 +34,11 @@ class SWFormFieldController {
 	public options:any;
 	public selected:any;
 	public isDirty:boolean;
+	public inListingDisplay:boolean; 
 	public selectType:string;
 	public eagerLoadOptions:boolean;
+	public rawFileTarget:string;
+	public binaryFileTarget:string;
 	public optionsArguments:any;
 	public valueOptions:any;
 
@@ -73,7 +76,7 @@ class SWFormFieldController {
 				if(angular.isDefined(this.form[this.object.data[this.property].$$getIDName()])){
 					this.form[this.object.data[this.property].$$getIDName()].$dirty = true;
 				}
-			}else if(this.selectType === 'string'){
+			}else if(this.selectType === 'string' && option && option.value != null){
 
 				this.object.data[this.property] = option.value;
 				this.form[this.property].$dirty = true;
@@ -291,10 +294,13 @@ class SWFormField{
 		errorText: "@?",
 		fieldType: "@?",
 		property:"@?",
+		inListingDisplay:"=?", 
 		inputAttributes:"@?",
 		options:"=?",
         optionsArguments:"=?",
         eagerLoadOptions:"=?",
+		rawFileTarget:"@?",
+		binaryFileTarget:"@?",
         isDirty:"=?",
         onChange:"=?",
 		editable:"=?",

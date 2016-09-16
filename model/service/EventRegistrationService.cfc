@@ -144,6 +144,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		smartList.addInFilter('sku.skuID', '#arguments.sku.getSkuID()#');
 		smartlist.addWhereCondition("aslatwalleventregistration.eventRegistrationStatusType.systemCode <> 'erstWaitlisted'");
 		smartlist.addWhereCondition("aslatwalleventregistration.eventRegistrationStatusType.systemCode <> 'erstCancelled'");
+		smartlist.addWhereCondition("aslatwalleventregistration.eventRegistrationStatusType.systemCode <> 'erstNotPlaced'");
 		
 		return smartlist.getRecordsCount();
 	}

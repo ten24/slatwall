@@ -49,6 +49,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="skuPrice" ormtype="big_decimal";
 	property name="currencyCode" ormtype="string" length="3";
 	property name="quantity" hb_populateEnabled="public" ormtype="integer";
+	property name="bundleItemQuantity" hb_populateEnabled="public" ormtype="integer";
 	property name="estimatedDeliveryDateTime" ormtype="timestamp";
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
 
@@ -70,7 +71,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="appliedTaxes" singularname="appliedTax" cfc="TaxApplied" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true" cascade="all-delete-orphan";
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true" cascade="all-delete-orphan";
 	property name="childOrderItems" hb_populateEnabled="public" singularname="childOrderItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="parentOrderItemID" inverse="true" cascade="all-delete-orphan";
-	property name="eventRegistrations" singularname="eventRegistration" hb_populateEnabled="public" fieldtype="one-to-many" fkcolumn="orderItemID" cfc="EventRegistration" inverse="true" cascade="all-delete-orphan" lazy="extra" ;
+	property name="eventRegistrations" singularname="eventRegistration" hb_populateEnabled="public" fieldtype="one-to-many" fkcolumn="orderItemID" cfc="EventRegistration" inverse="true" cascade="all-delete-orphan" ;
 	property name="orderDeliveryItems" singularname="orderDeliveryItem" cfc="OrderDeliveryItem" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true" cascade="delete-orphan";
 	property name="stockReceiverItems" singularname="stockReceiverItem" cfc="StockReceiverItem" type="array" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true";
 	property name="referencingOrderItems" singularname="referencingOrderItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="referencedOrderItemID" inverse="true" cascade="all"; // Used For Returns
@@ -308,7 +309,11 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		//then get the price of it's componenets and add them
 		for(var childOrderItem in this.getChildOrderItems()){
 			var childProductBundleGroupPrice = getProductBundleGroupPrice(childOrderItem);
-			var childQuantity = childOrderItem.getQuantity();
+			var childQuantity = childOrderItem.getQuantity();			
+			//if we have a package quantity use that instead
+			if(!isNull(childOrderItem.getBundleItemQuantity())){
+				childQuantity = childOrderItem.getBundleItemQuantity(); 
+			}
 			productBundlePrice += precisionEvaluate(childProductBundleGroupPrice * childQuantity);
 		}
 
@@ -385,7 +390,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		if(!structKeyExists(variables, "activeRegistrationsSmartList")) {
 			variables.activeRegistrationsSmartList = getService('EventRegistrationService').getEventRegistrationSmartList();
 			variables.activeRegistrationsSmartList.addFilter('orderItem.orderItemID', getOrderItemID());
-			variables.activeRegistrationsSmartList.addInFilter('eventRegistrationStatusType.systemCode', 'erstRegistered,erstWaitListed,erstPendingApproval,erstAttended,erstNotPlaced');
+			variables.activeRegistrationsSmartList.addInFilter('eventRegistrationStatusType.systemCode', 'erstRegistered,erstWaitListed,erstPendingApproval,erstPendingConfirmation,erstAttended,erstNotPlaced');
 		}
 
 		return variables.activeRegistrationsSmartList;
@@ -410,6 +415,23 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 		return taxLiabilityAmount;
 	}
+
+	public void function setQuantity(required numeric quantity){ 
+		variables.quantity = arguments.quantity;
+		if(this.isRootOrderItem()){
+			for(var childOrderItem in this.getChildOrderItems()){
+				var newQuantity = PrecisionEvaluate(childOrderItem.getBundleItemQuantity() * variables.quantity);
+				childOrderItem.setQuantity(newQuantity); 
+			}
+		}	
+	}	
+
+	public void function setBundleItemQuantity(required numeric bundleItemQuantity){
+		if(!this.isRootOrderItem()){
+			variables.bundleItemQuantity = arguments.bundleItemQuantity; 
+			variables.quantity = PrecisionEvaluate(getParentOrderItem().getQuantity() * variables.bundleItemQuantity); 
+		} 
+	} 
 
 	public numeric function getQuantityDelivered() {
 		var quantityDelivered = 0;
@@ -630,6 +652,14 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	public void function removeAttributeValue(required any attributeValue) {
 		arguments.attributeValue.removeOrderItem( this );
 	}
+	
+	// Event Registrations (one-to-many)
+ 	public void function addEventRegistration(required any eventRegistration) {
+		arguments.eventRegistration.setOrderItem( this );
+  	}
+	public void function removeEventRegistration(required any eventRegistration) {
+ 		arguments.eventRegistration.removeOrderItem( this );
+  	}
 
 	// Child Order Items (one-to-many)
 	public void function addChildOrderItem(required any childOrderItem) {
@@ -638,7 +668,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	public void function removeChildOrderItem(required any childOrderItem) {
 		arguments.childOrderItem.removeParentOrderItem( this );
 	}
-
+	
 	// Order Delivery Items (one-to-many)
 	public void function addOrderDeliveryItem(required any orderDeliveryItem) {
 		arguments.orderDeliveryItem.setOrderItem( this );

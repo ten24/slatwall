@@ -10,6 +10,8 @@ Coldfusion 9.0.1 or Newer
 
 Railo 4.1 or Newer
 
+Lucee 4.5
+
 
 Documentation
 -------------

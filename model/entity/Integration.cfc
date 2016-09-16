@@ -104,6 +104,10 @@ component displayname="Integration" entityname="SlatwallIntegration" table="SwIn
 				return getService("integrationService").getPaymentIntegrationCFC(this);
 				break;
 			}
+			case "data" : {
+				return getService("integrationService").getDataIntegrationCFC(this);
+				break;
+			}
 			case "shipping" : {
 				return getService("integrationService").getShippingIntegrationCFC(this);
 				break;

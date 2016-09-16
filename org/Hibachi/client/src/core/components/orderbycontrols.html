@@ -1,0 +1,65 @@
+<input type="hidden" name="{{swOrderByControls.sortDefaultDirectionFieldName}}" ng-value="swOrderByControls.sortCode" />
+<div class="s-select-wrapper s-titled-select-wrapper s-sort-by" 
+     data-ng-class="{'s-disabled':swOrderByControls.disabled || !swOrderByControls.edit}" 
+     >
+    <span>Sort By:</span>
+    <select class="form-control input-sm" 
+            name="{{swOrderByControls.sortPropertyFieldName}}"
+            data-ng-model="swOrderByControls.selectedPropertyIdentifier"
+            data-ng-change="swOrderByControls.updateSortOrderProperty()" 
+            data-ng-disabled="swOrderByControls.disabled || !swOrderByControls.edit"
+            >
+
+        <option value="" selected="" sw-rbkey="'define.select'"></option>
+        
+        <option value="{{column.propertyIdentifier}}" data-ng-show="column.isVisible" data-ng-repeat="column in swOrderByControls.collectionConfig.columns track by $index">
+            {{column.title}}
+        </option>
+    </select>
+</div>
+
+<div class="btn-group s-option-toggles" 
+     style="float: none; vertical-align: top;" 
+     role="group" 
+     aria-label="...">
+    <button type="button" 
+            class="btn btn-default" 
+            data-ng-class="{'s-selected' : swOrderByControls.sortCode=='ASC'}"
+            data-ng-click="swOrderByControls.sortAscending()"
+            data-ng-disabled="!swOrderByControls.edit"
+            data-toggle="popover" 
+            data-trigger="hover" 
+            data-placement="top" 
+            data-content="Ascending" 
+            >
+            <i class="fa fa-sort-alpha-asc" aria-hidden="true"></i>
+    </button>
+    <button type="button" 
+            class="btn btn-default" 
+            data-ng-class="{'s-selected' : swOrderByControls.sortCode=='DESC'}"
+            data-ng-click="swOrderByControls.sortDescending()"
+            data-ng-disabled="!swOrderByControls.edit"
+            data-toggle="popover" 
+            data-trigger="hover" 
+            data-placement="top" 
+            data-content="Descending" 
+            >
+            <i class="fa fa-sort-alpha-desc" aria-hidden="true"></i>
+    </button>
+    <button type="button" 
+            class="btn btn-default" 
+            data-ng-class="{'s-selected' : swOrderByControls.sortCode=='MANUAL'}"
+            data-ng-click="swOrderByControls.manualSort()"
+            data-ng-disabled="!swOrderByControls.edit"
+            data-toggle="popover" 
+            data-trigger="hover" 
+            data-placement="top" 
+            data-content="Manual" 
+            >
+            <i class="fa fa-bars" aria-hidden="true"></i>
+    </button>
+</div>
+<!-- This probably won't end up being part of this directive -->
+<button class="btn btn-default collapsed" style="vertical-align: top;margin-left: 5px;" type="button" data-toggle="collapse" data-target="#j-display-options" aria-expanded="false">
+    <i class="fa fa-th"></i>
+</button>

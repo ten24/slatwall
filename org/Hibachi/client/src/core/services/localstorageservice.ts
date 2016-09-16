@@ -24,7 +24,7 @@ class LocalStorageService{
         if(value.charAt(0)==='{' || value.charAt(0)==='['){
             value = angular.fromJson(value);
         }
-        return value
+        return value;
     }
 
     setItem = (key:string, data:any)=>{

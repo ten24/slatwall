@@ -149,7 +149,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			emailCCAddress = {fieldType="text"},
 			emailBCCAddress = {fieldType="text"},
 			emailFailToAddress = {fieldType="text", defaultValue="email@youremaildomain.com"},
-			emailReplyToAddress = {fieldType="text", defaultValue="email@youremaildomain.com"},
+			emailReplyToAddress = {fieldType="text"},
 			emailSubject = {fieldType="text", defaultValue="Notification From Slatwall"},
 			emailIMAPServer = {fieldType="text"},
 			emailIMAPServerPort = {fieldType="text"},
@@ -327,8 +327,24 @@ component extends="HibachiService" output="false" accessors="true" {
 
 		return allSettingMetaData;
 	}
+	
+	private string function extractPackageNameBySettingName (required string settingName){
+		var substringInfo = REFIND('\integration(?!.*\\)(.*?)(?=[A-Z])',arguments.settingName,1,true);
+		var substring = Mid(arguments.settingName,substringInfo.pos[1],substringInfo.len[1]);
+		var packageName = Mid(substring,12,len(substring));
+		return packageName;
+	}
 
 	public array function getSettingOptions(required string settingName, any settingObject) {
+		//check if setting is related to an integration
+		if(
+			left(arguments.settingName,11) == 'integration' 
+		){
+			var packageName = extractPackageNameBySettingName(arguments.settingName);
+			var integration = getService('integrationService').getIntegrationByIntegrationPackage(trim(packageName));
+			return integration.getIntegrationCFC().getSettingOptions(arguments.settingName);
+		}
+		
 		switch(arguments.settingName) {
 			case "contentTemplateFile":
 				if(structKeyExists(arguments, "settingObject")) {
@@ -794,6 +810,7 @@ component extends="HibachiService" output="false" accessors="true" {
 				// Select
 				} else if (settingMetaData.fieldType == "select") {
 					var options = getSettingOptions(arguments.settingName);
+					
 
 					if(!arrayLen(options)){
 						settingDetails.settingValueFormatted = settingDetails.settingValue;

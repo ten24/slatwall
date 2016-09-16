@@ -71,6 +71,7 @@ Notes:
 
 </hb:HibachiDisplayToggle>
 
+
 <hb:HibachiDisplayToggle selector="select[name='copyFromType']" showvalues="accountPaymentMethod"
 loadvisable="#len(rc.addOrderPaymentProcessObject.getAccountPaymentMethodID())#"
                         forcesslflag="#$.slatwall.setting('globalForceCreditCardOverSSL')#">
@@ -94,10 +95,10 @@ loadvisable="#len(rc.addOrderPaymentProcessObject.getAccountPaymentMethodID())#"
                           valueoptions="#rc.addOrderPaymentProcessObject.getPaymentMethodIDOptions()#"
                           edit="#rc.edit#">
 
-	<cfif ArrayLen( rc.addOrderPaymentProcessObject.getPaymentMethodIDOptions() ) AND !isNull(rc.addOrderPaymentProcessObject.getPaymentMethodIDOptions()[1]['paymentmethodtype']) >
-		<cfset loadPaymentMethodType = rc.addOrderPaymentProcessObject.getPaymentMethodIDOptions()[1]['paymentmethodtype']/>
-	<cfelseif !isNull(rc.addOrderPaymentProcessObject.getNewOrderPayment().getPaymentMethod())>
+	<cfif !isNull(rc.addOrderPaymentProcessObject.getNewOrderPayment().getPaymentMethod())>
 		<cfset loadPaymentMethodType = rc.addOrderPaymentProcessObject.getNewOrderPayment().getPaymentMethod().getPaymentMethodType()/>
+	<cfelseif ArrayLen( rc.addOrderPaymentProcessObject.getPaymentMethodIDOptions() ) AND !isNull(rc.addOrderPaymentProcessObject.getPaymentMethodIDOptions()[1]['paymentmethodtype']) >
+		<cfset loadPaymentMethodType = rc.addOrderPaymentProcessObject.getPaymentMethodIDOptions()[1]['paymentmethodtype']/>
 	<cfelse>
 		<cfset loadPaymentMethodType = ""/>
 	</cfif>
@@ -123,6 +124,9 @@ loadvisable="#len(rc.addOrderPaymentProcessObject.getAccountPaymentMethodID())#"
                           edit="#rc.edit#">
 <hb:hibachipropertydisplay object="#rc.addOrderPaymentProcessObject.getNewOrderPayment()#"
                           fieldname="newOrderPayment.securityCode" property="securityCode"
+                          edit="#rc.edit#">
+<hb:hibachipropertydisplay object="#rc.addOrderPaymentProcessObject.getNewOrderPayment()#"
+                          fieldname="newOrderPayment.companyPaymentMethodFlag" property="companyPaymentMethodFlag"
                           edit="#rc.edit#">
 </hb:HibachiDisplayToggle>
 
@@ -168,7 +172,6 @@ loadvisable="#len(rc.addOrderPaymentProcessObject.getAccountPaymentMethodID())#"
 
 <hb:hibachipropertydisplay object="#rc.addOrderPaymentProcessObject#"
                           fieldname="saveGiftCardToAccountFlag" property="saveGiftCardToAccountFlag"
-						  value="yes"
                           edit="#rc.edit#">
 
 

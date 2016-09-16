@@ -52,10 +52,77 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		super.setup();
 		
 		variables.service = request.slatwallScope.getService("updateService");
+		
+		var filePathWith = expandPath('/Slatwall')&"/meta/tests/unit/resources/updateService/AccountWithoutCustomProperties.txt";
+		variables.fileContentForAccountWithoutCustomPropeties = fileRead(filePathWith);
+		
+		
+		var filePathWithout = expandPath('/Slatwall')&"/meta/tests/unit/resources/updateService/AccountWithCustomProperties.txt";
+		variables.fileContentForAccountWithCustomPropeties = fileRead(filePathWithout);
+		
+		
+		variables.customFileContent = 'component{
+				property name="salesforceEntity" cfc="RemoteEntity" fieldtype="many-to-one" fkcolumn="salesforceEntityID";
+				property name="salesforceEntityabc" cfc="RemoteEntity" fieldtype="many-to-one" fkcolumn="salesforceEntityabcID";
+				
+				public any function myFUnction(){
+					return "test";
+				}
+				
+				private any function myprivateFunction(){
+					return "tests";
+	}
+			}
+		';
 	}
 	
 	public void function updateCMSApplicationsTest(){
 		variables.service.updateCMSApplications();
+	}
+	
+	
+	
+	public void function mergeEntityParsersTest_withoutCustomPropertiesInitially(){
+		
+		var coreEntityParser = request.slatwallScope.getTransient('hibachiEntityParser');
+		
+		coreEntityParser.setFileContent(variables.fileContentForAccountWithoutCustomPropeties);
+		
+		var customEntityParser = request.slatwallScope.getTransient('hibachiEntityParser');
+		customEntityParser.setFileContent(variables.customFileContent);
+		
+		variables.service.mergeEntityParsers(coreEntityParser,customEntityParser);
+		assertEquals(trim(coreEntityParser.getCustomPropertyContent()),trim(customEntityParser.getPropertyString()));
+		assertEquals(trim(coreEntityParser.getCustomFunctionContent()),trim(customEntityParser.getFunctionString()));
+	}
+	
+	public void function mergeEntityParsersTest_withCustomPropertiesInitially(){
+		
+		var coreEntityParser = request.slatwallScope.getTransient('hibachiEntityParser');
+		
+		coreEntityParser.setFileContent(variables.fileContentForAccountWithCustomPropeties);
+		
+		var customEntityParser = request.slatwallScope.getTransient('hibachiEntityParser');
+		
+		var additiveCustomFileContent = 'component{
+				property name="test" cfc="RemoteEntity" fieldtype="many-to-one" fkcolumn="salesforceEntityID";
+				
+				
+				public any function additive(){
+					return "test";
+				}
+				
+				private any function anotheradditivefunction(){
+					return "tests";
+				}
+			}
+		';
+		
+		customEntityParser.setFileContent(additiveCustomFileContent);
+		
+		variables.service.mergeEntityParsers(coreEntityParser,customEntityParser);
+		assert(coreEntityParser.getCustomPropertyContent() CONTAINS customEntityParser.getPropertyString());
+		assert(coreEntityParser.getCustomFunctionContent() CONTAINS customEntityParser.getFunctionString());
 	}
 }
 
