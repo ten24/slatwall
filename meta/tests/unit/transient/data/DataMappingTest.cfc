@@ -91,7 +91,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	public void function getSlatwallEntityNameByRemoteEntityNameTest(){
-		request.debug(variables.object.getSlatwallEntityNameByRemoteEntityName('Contact'));
 		assert(variables.object.getSlatwallEntityNameByRemoteEntityName('Contact')=='Account');
 	}
 }
