@@ -148,7 +148,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public numeric function getChargeAmountByShipmentItemMultiplierAndRateMultiplierAmount(required numeric defaultAmount, required numeric shipmentItemMultiplier, required numeric rateMultiplierAmount){
 		
-		var chargeAmount = arguments.defaultAmount + (arguments.rateMultiplierAmount * arguments.shipmentItemMultiplier);
+		var chargeAmount = PrecisionEvaluate(arguments.defaultAmount + PrecisionEvaluate(arguments.rateMultiplierAmount * arguments.shipmentItemMultiplier));
 		return chargeAmount;
 	}
 	
@@ -371,9 +371,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				arguments.orderFulfillment.removeFulfillmentShippingMethodOption( arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[c] );
 
 			// Else if this method option is the same shipping method that the user previously selected, then we can just update the fulfillmentCharge, as long as this wasn't set manually.
-			} else if (!isNull(arguments.orderFulfillment.getShippingMethod()) && arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[c].getShippingMethodRate().getShippingMethod().getShippingMethodID() == arguments.orderFulfillment.getShippingMethod().getShippingMethodID() && !arguments.orderFulfillment.getManualFulfillmentChargeFlag()) {
+			} else if (!isNull(arguments.orderFulfillment.getShippingMethod()) && 
+					   arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[c].getShippingMethodRate().getShippingMethod().getShippingMethodID() == arguments.orderFulfillment.getShippingMethod().getShippingMethodID() && 
+					   !arguments.orderFulfillment.getManualFulfillmentChargeFlag()
+			) {
 				arguments.orderFulfillment.setFulfillmentCharge( arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[c].getTotalCharge() );
-
 			}
 		}
 
@@ -420,6 +422,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!isNull(shippingMethodRate.getActiveFlag()) && isBoolean(shippingMethodRate.getActiveFlag()) && !shippingMethodRate.getActiveFlag()) {
 			return false;
 		}
+
+		if(!isNull(shippingMethodRate.getSplitShipmentWeight() && shipmentWeight > shippingMethodRate.getSplitShipmentWeight()){
+			return false; 
+		} 
 
 		// Make sure that the orderFulfillment Item Price is within the min and max of rate
 		var lowerPrice = 0;
