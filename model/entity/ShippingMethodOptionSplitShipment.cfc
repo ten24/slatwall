@@ -53,7 +53,7 @@ component entityname="SlatwallShippingMethodOptionSplitShipment" table="SwShipMe
 	property name="shipmentWeight" ormtype="float"; 
 	property name="shipmentCharge" ormtype="big_decimal"; 
 	
-	property name="shipmentOrderItems" singularname="shipmentOrderItem" cfc="OrderItem" fieldtype="many-to-many" linktable="SwSplitShipmentOrderItem" fkcolumn="shippingMethodOptionSplitShipmentID" inversejoincolumn="orderItemID"; 
+	property name="shipmentOrderItems" singularname="shipmentOrderItem" cfc="OrderItem" fieldtype="many-to-many" linktable="SwShipMethodOptSplitShipOrdItm" fkcolumn="shippingMethodOptionSplitShipmentID" inversejoincolumn="orderItemID"; 
 
 	// Related Object Properties (many-To-one)
 
