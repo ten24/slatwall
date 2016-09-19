@@ -75,7 +75,13 @@ component entityname="SlatwallShippingMethodOptionSplitShipment" table="SwShippi
 
 	// ============= START: Bidirectional Helper Methods ===================
 
-	// Order Fulfillment (many-to-one)
+	// Shipment Order Items (many-to-many - inverse)
+	public void function addShipmentOrderItem(required any shipmentOrderItem) {
+		arguments.shipmentOrderItem.addShippingMethodOptionSplitShipment( this );
+	}
+	public void function removeShipmentOrderItem(required any shipmentOrderItem) {
+		arguments.shipmentOrderItem.removeShippingMethodOptionSplitShipment( this );
+	}
 
 	// =============  END:  Bidirectional Helper Methods ===================
 

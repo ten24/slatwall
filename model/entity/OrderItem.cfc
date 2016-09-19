@@ -79,6 +79,11 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="giftCards" singularname="giftCard" cfc="GiftCard" type="array" fieldtype="one-to-many" fkcolumn="originalOrderItemID" cascade="all" inverse="true";
 	property name="orderItemGiftRecipients" singularname="orderItemGiftRecipient" cfc="OrderItemGiftRecipient" type="array" fieldtype="one-to-many" fkcolumn="orderItemID" cascade="all" inverse="true";
 
+	// Related Object Properties (many-to-many)
+
+	property name="shippingMethodOptionSplitShipments" singularname="shippingMethodOptionSplitShipment" cfc="ShippingMethodOptionSplitShipment" fieldtype="many-to-many" linktable="SwShippingMethodOptionSplitShipmentOrderItem" inversejoincolumn="shippingMethodOptionSplitShipmentID" fkcolumn="orderItemID"; 
+	
+
 	// Remote properties
 	property name="publicRemoteID" ormtype="string" hb_populateEnabled="public";
 	property name="remoteID" ormtype="string";
@@ -684,6 +689,27 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	public void function removeReferencingOrderItem(required any referencingOrderItem) {
 		arguments.referencingOrderItem.removeReferencedOrderItem( this );
 	}
+
+	// ShippingMethodOptionSplitShipment (many-to-many - owner)
+	public void function addShippingMethodOptionSplitShipment(required any shippingMethodOptionSplitShipment) {
+		if(isNew() or !hasShippingMethodOptionSplitShipment(arguments.shippingMethodOptionSplitShipment)) {
+			arrayAppend(variables.shippingMethodOptionSplitShipments, arguments.shippingMethodOptionSplitShipment);
+		}
+		if(arguments.shippingMethodOptionSplitShipment.isNew() or !arguments.shippingMethodOptionSplitShipment.hasShipmentOrderItem( this )) {
+			arrayAppend(arguments.shippingMethodOptionSplitShipment.getShipmentOrderItems(), this);
+		}
+	}
+	public void function removeShippingMethodOptionSplitShipment(required any shippingMethodOptionSplitShipment) {
+		var thisIndex = arrayFind(variables.shippingMethodOptionSplitShipment, arguments.shippingMethodOptionSplitShipment);
+		if(thisIndex > 0) {
+			arrayDeleteAt(variables.shippingMethodOptionSplitShipments, thisIndex);
+		}
+		var thatIndex = arrayFind(arguments.shippingMethodOptionSplitShipment.getShipmentOrderItems(), this);
+		if(thatIndex > 0) {
+			arrayDeleteAt(arguments.shippingMethodOptionSplitShipment.getShipmentOrderItems(), thatIndex);
+		}
+	}
+
 
 	// =============  END:  Bidirectional Helper Methods ===================
 
