@@ -128,7 +128,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				if(splitShipmentFlag){
 					logHibachi('#arguments.integrations[i].getIntegrationName()# Shipping Integration Rates Request - Splitting Shipment');
 					var orderFulfillmentItems = arguments.orderFulfillment.getOrderFulfillmentItems();
-					var rateReponseBeans = []; 
+					var rateResponseBeans = []; 
 					while(arrayLen(orderFulfillmentItems)){
 						orderFulfillmentItems = ratesRequestBean.clearAndSplitOrderFulfillmentItems(orderFulfillmentItems, splitShipmentWeight); 
 						ArrayAppend(rateResponseBeans, integrationShippingAPI.getRates(ratesRequestBean)); 
