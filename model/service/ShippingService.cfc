@@ -92,7 +92,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		for( var key in shippingMethodStruct ){
 			mergedRatesResponseBean.addShippingMethod(shippingMethodStruct[key]); 
-		}	
+		}
+		return mergedRatesResponseBean;	
 	} 
 	
 	public struct function getShippingMethodRatesResponseBeansByIntegrationsAndOrderFulfillment(required array integrations, required any orderFulfillment){
