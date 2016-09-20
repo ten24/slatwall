@@ -52,7 +52,8 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 	property name="productionUrl" type="string";
 	property name="shippingMethods" type="struct";
 	property name="trackingURL" type="string";
-
+	property name="eligibleShippingMethodRates" type="array"; 
+	
 	public any function init() {
 		variables.shippingMethods = {};
 		variables.trackingURL = "";
@@ -67,7 +68,16 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 		return variables.trackingURL;
 	}
 	
+	public void function addEligibleShippingMethodRate(required any shippingMethodRate){
+		arrayAppend(getEligibleShippingMethodRates(), shippingMethodRate); 
+	}
 	
+	public array function getEligibleShippingMethodRate(){
+		if(!structKeyExists(variables, 'eligibleShippingMethodRates')){
+			variables.eligibleShippingMethodRates = []; 
+		}
+		return variables.eligibleShippingMethodRates; 
+	} 	
 	
 	private any function getResponse(required string requestPacket, required string urlString, required string format="xml"){
 		// Setup Request to push to FedEx

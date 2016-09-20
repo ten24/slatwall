@@ -61,6 +61,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.maximumShipmentWeight,100000000) >= #arguments.orderFulfillment.getTotalShippingWeight()#');
 		return shippingMethodRatesSmartList.getRecords(); 
 	}
+
+	public boolean function getOrderFulfillmentCanBeSplitShipped(required any orderFulfillment, required numeric splitShipmentWeight){
+		var orderFulfillmentItems = arguments.orderFulfillment.getOrderFulfillmentItems(); 
+		for(var j=1; j<=arrayLen(orderFulfillmentItems); j++){
+			if(orderFulfillmentItems[j].getSku().getWeight() > arguments.splitShipmentWeight){
+				return false; 
+			}
+		} 
+		return true; 
+	} 
 	
 	public struct function getShippingMethodRatesResponseBeansByIntegrationsAndOrderFulfillment(required array integrations, required any orderFulfillment){
 		var responseBeans = {};
@@ -74,10 +84,37 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var ratesRequestBean = getTransient("ShippingRatesRequestBean");
 			ratesRequestBean.populateWithOrderFulfillment(arguments.orderFulfillment);
 
+			var splitShipmentFlag = false; 
+			if(ArrayLen(integrationShippingAPI.getEligibleShippingMethodRates())){
+				for(var j = 1; j <= ArrayLen(integrationShippingAPI.getEligibleShippingMethodRates()); j++){
+					var shippingMethodRate = integrationShippingAPI.getEligibleShippingMethodRates()[j];
+					if( !isNull(shippingMethodRate.getSplitShipmentWeight()) && 
+						ratesRequestBean.getTotalWeight() > shippingMethodRate.getSplitShipmentWeight() &&
+						this.getOrderFulfillmentCanBeSplitShipped(arguments.orderFulfillment, shippingMethodRate.getSplitShipmentWeight()gt)
+					){ 
+						var splitShipmentFlag = true; 
+						var splitShipmentWeight = shippingMethodRate.getSplitShipmentWeight(); 
+						break;  				
+					} 
+				}		
+			}
+
 			logHibachi('#arguments.integrations[i].getIntegrationName()# Shipping Integration Rates Request - Started');
 			// Inside of a try/catch call the 'getRates' method of the integraion
 			try {
-				responseBeans[ arguments.integrations[i].getIntegrationID() ] = integrationShippingAPI.getRates( ratesRequestBean );
+				if(splitShipmentFlag){
+					var orderFulfillmentItems = arguments.orderFulfillment.getOrderFulfillmentItems();
+					var rateReponseBeans = []; 
+					while(arrayLen(orderFulfillmentItems)){
+						orderFulfillmentItems = ratesRequestBean.clearAndSplitOrderFulfillmentItems(orderFulfillmentItems, splitShipmentWeight); 
+						ArrayAppend(rateResponseBeans, integrationShippingAPI.getRates(ratesRequestBean)); 
+					} 	
+					for(var j=1; j<=arrayLen(rateResponseBeans); j++){
+							
+					}
+				} else { 
+					responseBeans[ arguments.integrations[i].getIntegrationID() ] = integrationShippingAPI.getRates( ratesRequestBean );
+				} 
 			} catch(any e) {
 
 				logHibachi('An error occured with the #arguments.integrations[i].getIntegrationName()# integration when trying to call getRates()', true);
@@ -129,12 +166,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// check to make sure that this rate applies to the current orderFulfillment
 				if(!isNull(shippingMethodRate.getShippingIntegration()) && shippingMethodRate.getShippingIntegration().getActiveFlag()){
 					var shippingIntegration = getIntegrationByOrderFulfillmentAndShippingMethodRate(arguments.orderFulfillment,shippingMethodRate);
+					shippingIntegration.getIntegrationCFC("shipping").addEligibleShippingMethodRate(shippingMethodRate);
 					if(!isNull(shippingIntegration) && !arrayFind(integrations, shippingIntegration)){
 						arrayAppend(integrations,shippingIntegration);
 					}
 				} 
 			}
 		}
+		//set this to determine split shipping when calling getRates
+		arguments.orderFulfillment.setEligibleShippingMethodRates(integrationShippingMethodRates);
 		return integrations;
 	}
 	
@@ -423,8 +463,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			return false;
 		}
 
-		if(!isNull(shippingMethodRate.getSplitShipmentWeight()) && shipmentWeight > shippingMethodRate.getSplitShipmentWeight()){
-			return false; 
+		if(!isNull(shippingMethodRate.getSplitShipmentWeight())){
+			return true; 
 		} 
 
 		// Make sure that the orderFulfillment Item Price is within the min and max of rate

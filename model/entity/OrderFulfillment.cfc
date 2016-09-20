@@ -105,6 +105,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="quantityUndelivered" type="numeric" persistent="false";
 	property name="quantityDelivered" type="numeric" persistent="false";
 	property name="selectedShippingMethodOption" type="any" persistent="false";
+	property name="eligibleShippingMethodRates" type="any" persistent="false"; 
 	property name="shippingMethodRate" type="array" persistent="false";
 	property name="shippingMethodOptions" type="array" persistent="false";
 	property name="subtotal" type="numeric" persistent="false" hb_formatType="currency";
