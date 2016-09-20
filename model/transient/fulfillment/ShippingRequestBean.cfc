@@ -197,11 +197,11 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	public array function clearAndSplitOrderFulfillmentItems(required array orderFulfillmentItems, required numeric splitShipmentWeight) {
 		variables.shippingItemRequestBeans = [];
 		while(arrayLen(arguments.orderFulfillmentItems)){
-			this.addShippingItemWithOrderFulfillmentItem(orderFulfillmentItems[1]);
-			ArrayDeleteAt(arguments.orderFulfillmentItems, 1); 
 			if(getTotalWeight() + orderFulfillmentItems[1].getSku().setting('skuShippingWeight') > arguments.splitShipmentWeight){
 				break; 
 			}
+			this.addShippingItemWithOrderFulfillmentItem(orderFulfillmentItems[1]);
+			ArrayDeleteAt(arguments.orderFulfillmentItems, 1); 
 		} 
 		return arguments.orderFulfillmentItems; 
 	} 
