@@ -197,7 +197,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 		//set this to determine split shipping when calling getRates
-		arguments.orderFulfillment.setEligibleShippingMethodRates(integrationShippingMethodRates);
 		return integrations;
 	}
 	
