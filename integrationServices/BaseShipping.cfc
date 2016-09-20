@@ -72,7 +72,7 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 		arrayAppend(getEligibleShippingMethodRates(), shippingMethodRate); 
 	}
 	
-	public array function getEligibleShippingMethodRate(){
+	public array function getEligibleShippingMethodRates(){
 		if(!structKeyExists(variables, 'eligibleShippingMethodRates')){
 			variables.eligibleShippingMethodRates = []; 
 		}
