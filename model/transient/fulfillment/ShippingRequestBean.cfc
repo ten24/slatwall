@@ -198,7 +198,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		variables.shippingItemRequestBeans = [];
 		while(arrayLen(arguments.orderFulfillmentItems)){
 			this.addShippingItemWithOrderFulfillmentItem(orderFulfillmentItems[1]);
-			ArrayDeleteAt(arguments.orderFulfillmentItems); 
+			ArrayDeleteAt(arguments.orderFulfillmentItems, 1); 
 			if(getTotalWeight() + orderFulfillmentItems[1].getSku().setting('skuShippingWeight') > arguments.splitShipmentWeight){
 				break; 
 			}

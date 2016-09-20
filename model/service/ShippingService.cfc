@@ -71,6 +71,29 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} 
 		return true; 
 	} 
+
+	public any function mergeRateResponseBeansForSplitShipment(required array rateResponseBeans){
+		var mergedRatesResponseBean = new Slatwall.model.transient.fulfillment.ShippingRatesResponseBean();
+		var shippingMethodStruct = {}; 
+		for(var j=1; j<=arrayLen(rateResponseBeans); j++){
+			var responseBean = rateResponseBeans[j]; 
+			for(var k=1; k<=arrayLen(responseBean.getShippingMethodResponseBeans()); k++){
+				var shippingMethodResponseBean = responseBean.getShippingMethodResponseBeans()[k]; 	
+				var shippingProviderMethod = shippingMethodResponseBean.getShippingProviderMethod(); 
+				if(!structKeyExists(shippingMethodStruct, shippingProviderMethod)){
+					shippingMethodStruct[shippingProviderMethod] = {}; 	
+					shippingMethodStruct[shippingProviderMethod].shippingProviderMethod = shippingMethodResponseBean.getShippingProviderMethod(); 
+					shippingMethodStruct[shippingProviderMethod].totalCharge = shippingMethodResponseBean.getTotalCharge();
+					shippingMethodStruct[shippingProviderMethod].estimatedArrivalDate = shippingMethodResponseBean.getEstimatedArrivalDate();  
+				} else { 
+					shippingMethodStruct[shippingProviderMethod].totalCharge = PrecisionEvaluate(shippingMethodStruct[shippingProviderMethod].totalCharge + shippingMethodResponseBean.getTotalCharge()); 
+				} 
+			} 			
+		}
+		for( var key in shippingMethodStruct ){
+			mergedRatesResponseBean.addShippingMethod(shippingMethodStruct[key]); 
+		}	
+	} 
 	
 	public struct function getShippingMethodRatesResponseBeansByIntegrationsAndOrderFulfillment(required array integrations, required any orderFulfillment){
 		var responseBeans = {};
@@ -90,7 +113,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					var shippingMethodRate = integrationShippingAPI.getEligibleShippingMethodRates()[j];
 					if( !isNull(shippingMethodRate.getSplitShipmentWeight()) && 
 						ratesRequestBean.getTotalWeight() > shippingMethodRate.getSplitShipmentWeight() &&
-						this.getOrderFulfillmentCanBeSplitShipped(arguments.orderFulfillment, shippingMethodRate.getSplitShipmentWeight()gt)
+						this.getOrderFulfillmentCanBeSplitShipped(arguments.orderFulfillment, shippingMethodRate.getSplitShipmentWeight())
 					){ 
 						var splitShipmentFlag = true; 
 						var splitShipmentWeight = shippingMethodRate.getSplitShipmentWeight(); 
@@ -100,21 +123,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 			logHibachi('#arguments.integrations[i].getIntegrationName()# Shipping Integration Rates Request - Started');
-			// Inside of a try/catch call the 'getRates' method of the integraion
+			
 			try {
 				if(splitShipmentFlag){
+					logHibachi('#arguments.integrations[i].getIntegrationName()# Shipping Integration Rates Request - Splitting Shipment');
 					var orderFulfillmentItems = arguments.orderFulfillment.getOrderFulfillmentItems();
 					var rateReponseBeans = []; 
 					while(arrayLen(orderFulfillmentItems)){
 						orderFulfillmentItems = ratesRequestBean.clearAndSplitOrderFulfillmentItems(orderFulfillmentItems, splitShipmentWeight); 
 						ArrayAppend(rateResponseBeans, integrationShippingAPI.getRates(ratesRequestBean)); 
 					} 	
-					for(var j=1; j<=arrayLen(rateResponseBeans); j++){
-							
-					}
+					var rateResponseBean = this.mergeRateResponseBeansForSplitShipment(rateResponseBeans); 
 				} else { 
-					responseBeans[ arguments.integrations[i].getIntegrationID() ] = integrationShippingAPI.getRates( ratesRequestBean );
+					var rateResponseBean = integrationShippingAPI.getRates( ratesRequestBean );
 				} 
+				responseBeans[ arguments.integration[i].getIntegrationID() ] = rateResponseBean; 
 			} catch(any e) {
 
 				logHibachi('An error occured with the #arguments.integrations[i].getIntegrationName()# integration when trying to call getRates()', true);
