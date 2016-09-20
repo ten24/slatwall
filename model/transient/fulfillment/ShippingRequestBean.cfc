@@ -194,7 +194,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		);
 	} 
 
-	public void function clearAndSplitOrderFulfillmentItems(required array orderFulfillmentItems, required numeric splitShipmentWeight) {
+	public array function clearAndSplitOrderFulfillmentItems(required array orderFulfillmentItems, required numeric splitShipmentWeight) {
 		variables.shippingItemRequestBeans = [];
 		while(arrayLen(arguments.orderFulfillmentItems)){
 			this.addShippingItemWithOrderFulfillmentItem(orderFulfillmentItems[1]);

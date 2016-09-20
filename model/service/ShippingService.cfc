@@ -137,7 +137,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				} else { 
 					var rateResponseBean = integrationShippingAPI.getRates( ratesRequestBean );
 				} 
-				responseBeans[ arguments.integration[i].getIntegrationID() ] = rateResponseBean; 
+				responseBeans[ arguments.integrations[i].getIntegrationID() ] = rateResponseBean; 
 			} catch(any e) {
 
 				logHibachi('An error occured with the #arguments.integrations[i].getIntegrationName()# integration when trying to call getRates()', true);
