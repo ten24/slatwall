@@ -50,6 +50,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	property name="addressService" type="any";
 	property name="integrationService" type="any";
+	property name="orderService" type="any"; 
 	property name="settingService" type="any";
 
 	public array function getShippingMethodRatesByOrderFulfillmentAndShippingMethod(required any orderFulfillment, required any shippingMethod){
@@ -84,14 +85,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					shippingMethodStruct[shippingProviderMethod] = {}; 	
 					shippingMethodStruct[shippingProviderMethod].shippingProviderMethod = shippingMethodResponseBean.getShippingProviderMethod(); 
 					shippingMethodStruct[shippingProviderMethod].totalCharge = shippingMethodResponseBean.getTotalCharge();
-					shippingMethodStruct[shippingProviderMethod].estimatedArrivalDate = shippingMethodResponseBean.getEstimatedArrivalDate();  
 				} else { 
 					shippingMethodStruct[shippingProviderMethod].totalCharge = PrecisionEvaluate(shippingMethodStruct[shippingProviderMethod].totalCharge + shippingMethodResponseBean.getTotalCharge()); 
 				} 
 			} 			
 		}
 		for( var key in shippingMethodStruct ){
-			mergedRatesResponseBean.addShippingMethod(shippingMethodStruct[key]); 
+			mergedRatesResponseBean.addShippingMethod(
+				shippingProviderMethod=shippingMethodStruct[key].shippingProviderMethod,
+				totalCharge=shippingMethodStruct[key].totalCharge
+			); 
 		}
 		return mergedRatesResponseBean;	
 	} 
@@ -118,6 +121,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					){ 
 						var splitShipmentFlag = true; 
 						var splitShipmentWeight = shippingMethodRate.getSplitShipmentWeight(); 
+						var splitShippingMethodOption = shippingMethodRate.getShippingMethodOption(); 
 						break;  				
 					} 
 				}		
@@ -131,8 +135,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					var orderFulfillmentItems = arguments.orderFulfillment.getOrderFulfillmentItems();
 					var rateResponseBeans = []; 
 					while(arrayLen(orderFulfillmentItems)){
-						orderFulfillmentItems = ratesRequestBean.clearAndSplitOrderFulfillmentItems(orderFulfillmentItems, splitShipmentWeight); 
-						ArrayAppend(rateResponseBeans, integrationShippingAPI.getRates(ratesRequestBean)); 
+						var shippingMethodOptionSplitShipment = this.newShippingMethodOptionSplitShipment();
+						shippingMethodOptionSplitShipment.setShippingMethodOption(splitShippingMethodOption); 
+					    orderFulfillmentItems = splitOrderFulfillmentItems(orderFulfillmentItems, splitShipmentWeight, shippingMethodOptionSplitShipment); 	
+						shippingMethodOptionSplitShipment = this.saveShippingMethodOptionSplitShipment(shippingMethodOptionSplitShipment); 
+						ratesRequestBean.clearAndAddOrderFulfillmentItems(orderFulfillmentItems); 
+						var responseBean = integrationShippingAPI.getRates(ratesRequestBean); 
+						ArrayAppend(rateResponseBeans, responseBean); 
 					} 	
 					var rateResponseBean = this.mergeRateResponseBeansForSplitShipment(rateResponseBeans); 
 				} else { 
@@ -151,6 +160,30 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			logHibachi('#arguments.integrations[i].getIntegrationName()# Shipping Integration Rates Request - Finished');
 		}
 		return responseBeans;
+	}
+
+	private array function splitOrderFulfillmentItems(required array orderFulfillmentItems, required numeric splitShipmentWeight, required any shippingMethodOptionSplitShipment){
+		var currentWeight = 0; 
+		while(ArrayLen(orderFulfillmentItems){
+			var orderFulfillmentItem = arguments.orderFulfillmentItems[1]; 
+			if( orderFulfillmentItem.getTotalWeight() + currentWeight <= arguments.splitShipmentWeight){
+				arguments.shippingMethodOptionSplitShipment.addShipmentOrderItem(orderFulfillmentItem); 
+				currentWeight += orderFulfillmentItem.getTotalWeight(); 
+				arguments.shippingMethodOptionSplitShipment.setShipmentWeight(currentWeight);
+			} else if( orderFulfillmentItem.getTotalWeight() > arguments.splitShipmentWeight && 
+				       orderFulfillmentItem.getQuantity() > 1
+			){
+				for(var j=1; j<=orderFulfillmentItem.getQuantity(); j++){
+					splitOrderFulfillmentItem = getOrderService().copyToNewOrderItem(orderFulfillmentItem);
+					splitOrderFulfillmentItem.setQuantity(1); 
+					arrayAppend(arguments.orderFulfillmentItems, splitOrderFulfillmentItem); 
+				}
+			} else { 
+				break;
+			} 
+			ArrayDeleteAt(arguments.orderFulfillmentItems, 1); 
+		} 			
+		return arguments.orderFulfillmentItems; 
 	}
 
 	public any function getIntegrationByOrderFulfillmentAndShippingMethodRate(
