@@ -50,6 +50,7 @@ Notes:
 component accessors="true" output="false" extends="Slatwall.model.transient.ResponseBean" {
 
 	property name="shippingMethodResponseBeans" type="array";
+	property name="shippingMethodOptionSplitShipments" type="array"; 
 	
 	public any function init() {
 		// Set Defaults
