@@ -49,10 +49,11 @@ Notes:
 component entityname="SlatwallShippingMethodOptionSplitShipment" table="SwShipMethodOptSplitShipment" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="shippingService" {
 
 	// Persistent Properties
-	property name="shippingMethodOptionSplitShipmentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="shipMethodOptSplitShipmentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="shipmentWeight" ormtype="float"; 
 	property name="shipmentCharge" ormtype="big_decimal"; 
-	
+
+	property name="shippingMethodOption" cfc="ShippingMethodOption" fieldtype="many-to-one" fkcolumn="shipMethodOptSplitShipmentID";
 	property name="shipmentOrderItems" singularname="shipmentOrderItem" cfc="OrderItem" fieldtype="many-to-many" linktable="SwShipMethodOptSplitShipOrdItm" fkcolumn="shippingMethodOptionSplitShipmentID" inversejoincolumn="orderItemID"; 
 
 	// Related Object Properties (many-To-one)
@@ -68,12 +69,37 @@ component entityname="SlatwallShippingMethodOptionSplitShipment" table="SwShipMe
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non-Persistent Properties
+	property name="orderFulfillment" persistent="false"; 
 
 	// ============ START: Non-Persistent Property Methods =================
+
+	public any function getOrderFulfillment(){
+		if(!isNull(getShippingMethodOption())){
+			return getShippingMethodOption().getOrderFulfillment(); 
+		}
+	}
 
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================
+
+	// Shipping Method Option (many-to-one)
+	public void function setShippingMethodOption(required any shippingMethodOption) {
+		variables.shippingMethodOption = arguments.shippingMethodOption;
+		if(isNew() or !arguments.shippingMethodOption.hasShippingMethodOptionSplitShipment( this )) {
+			arrayAppend(arguments.shippingMethodOption.getShippingMethodOptionSplitShipments(), this);
+		}
+	}
+	public void function removeShippingMethodOption(any shippingMethodOption) {
+		if(!structKeyExists(arguments, "shippingMethodOption")) {
+			arguments.shippingMethodOption = variables.shippingMethodOption;
+		}
+		var index = arrayFind(arguments.shippingMethodOption.getShippingMethodOptionSplitShipments(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.shippingMethodOption.getShippingMethodOptionSplitShipments(), index);
+		}
+		structDelete(variables, "shippingMethodOption");
+	}
 
 	// Shipment Order Items (many-to-many - inverse)
 	public void function addShipmentOrderItem(required any shipmentOrderItem) {
