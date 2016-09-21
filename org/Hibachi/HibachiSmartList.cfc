@@ -810,6 +810,14 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		return variables.pageRecords;
 	}
 	
+	public any function getFirstRecord(boolean refresh=false) {
+		if( !structKeyExists(variables, "firstRecord") || arguments.refresh == true) {
+			saveState();
+			variables.firstRecord = ormExecuteQuery(getHQL(), getHQLParams(), true, {maxresults=1, ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
+		}
+		return variables.firstRecord;
+	}
+	
 	public void function clearRecordsCount() {
 		structDelete(variables, "recordsCount");
 	}
