@@ -73,8 +73,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return true; 
 	} 
 
-	public any function mergeRateResponseBeansForSplitShipment(required array rateResponseBeans){
+	public any function mergeRateResponseBeansAndSplitShipments(required array rateResponseBeans, required array shippingMethodOptionSplitShipments){
 		var mergedRatesResponseBean = new Slatwall.model.transient.fulfillment.ShippingRatesResponseBean();
+		mergedRatesResponseBean.setShippingMethodOptionSplitShipments(arguments.shippingMethodOptionSplitShipments); 
 		var shippingMethodStruct = {}; 
 		for(var j=1; j<=arrayLen(rateResponseBeans); j++){
 			var responseBean = rateResponseBeans[j]; 
@@ -115,13 +116,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(ArrayLen(integrationShippingAPI.getEligibleShippingMethodRates())){
 				for(var j = 1; j <= ArrayLen(integrationShippingAPI.getEligibleShippingMethodRates()); j++){
 					var shippingMethodRate = integrationShippingAPI.getEligibleShippingMethodRates()[j];
+					
 					if( !isNull(shippingMethodRate.getSplitShipmentWeight()) && 
 						ratesRequestBean.getTotalWeight() > shippingMethodRate.getSplitShipmentWeight() &&
 						this.getOrderFulfillmentCanBeSplitShipped(arguments.orderFulfillment, shippingMethodRate.getSplitShipmentWeight())
 					){ 
 						var splitShipmentFlag = true; 
 						var splitShipmentWeight = shippingMethodRate.getSplitShipmentWeight(); 
-						var splitShippingMethodOption = shippingMethodRate.getShippingMethodOption(); 
+						var splitShippingMethodRate = shippingMethodRate; 
 						break;  				
 					} 
 				}		
@@ -131,23 +133,33 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			try {
 				if(splitShipmentFlag){
+					
 					logHibachi('#arguments.integrations[i].getIntegrationName()# Shipping Integration Rates Request - Splitting Shipment');
+					
 					var orderFulfillmentItems = arguments.orderFulfillment.getOrderFulfillmentItems();
 					var rateResponseBeans = []; 
+					var shippingMethodOptionSplitShipments = []; 
+					
 					while(arrayLen(orderFulfillmentItems)){
 						var shippingMethodOptionSplitShipment = this.newShippingMethodOptionSplitShipment();
-						shippingMethodOptionSplitShipment.setShippingMethodOption(splitShippingMethodOption); 
+						//can't access shipping method option at this point in the process
+						//shippingMethodOptionSplitShipment.setShippingMethodOption(splitShippingMethodOption); 
 					    orderFulfillmentItems = splitOrderFulfillmentItems(orderFulfillmentItems, splitShipmentWeight, shippingMethodOptionSplitShipment); 	
 						shippingMethodOptionSplitShipment = this.saveShippingMethodOptionSplitShipment(shippingMethodOptionSplitShipment); 
-						ratesRequestBean.clearAndAddOrderFulfillmentItems(orderFulfillmentItems); 
+						ArrayAppend(shippingMethodOptionSplitShipments, shippingMethodOptionSplitShipment); 
+						ratesRequestBean.clearAndAddOrderFulfillmentItems(shippingMethodOptionSplitShipment.getShipmentOrderItems()); 
+						
 						var responseBean = integrationShippingAPI.getRates(ratesRequestBean); 
 						ArrayAppend(rateResponseBeans, responseBean); 
 					} 	
-					var rateResponseBean = this.mergeRateResponseBeansForSplitShipment(rateResponseBeans); 
+					
+					var rateResponseBean = this.mergeRateResponseBeansAndSplitShipments(rateResponseBeans, shippingMethodOptionSplitShipments); 
 				} else { 
 					var rateResponseBean = integrationShippingAPI.getRates( ratesRequestBean );
 				} 
+				
 				responseBeans[ arguments.integrations[i].getIntegrationID() ] = rateResponseBean; 
+			
 			} catch(any e) {
 
 				logHibachi('An error occured with the #arguments.integrations[i].getIntegrationName()# integration when trying to call getRates()', true);
@@ -164,20 +176,25 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	private array function splitOrderFulfillmentItems(required array orderFulfillmentItems, required numeric splitShipmentWeight, required any shippingMethodOptionSplitShipment){
 		var currentWeight = 0; 
-		while(ArrayLen(orderFulfillmentItems){
+		while(ArrayLen(orderFulfillmentItems)){
 			var orderFulfillmentItem = arguments.orderFulfillmentItems[1]; 
+			
 			if( orderFulfillmentItem.getTotalWeight() + currentWeight <= arguments.splitShipmentWeight){
+				
 				arguments.shippingMethodOptionSplitShipment.addShipmentOrderItem(orderFulfillmentItem); 
 				currentWeight += orderFulfillmentItem.getTotalWeight(); 
 				arguments.shippingMethodOptionSplitShipment.setShipmentWeight(currentWeight);
+			
 			} else if( orderFulfillmentItem.getTotalWeight() > arguments.splitShipmentWeight && 
 				       orderFulfillmentItem.getQuantity() > 1
 			){
+				
 				for(var j=1; j<=orderFulfillmentItem.getQuantity(); j++){
 					splitOrderFulfillmentItem = getOrderService().copyToNewOrderItem(orderFulfillmentItem);
 					splitOrderFulfillmentItem.setQuantity(1); 
 					arrayAppend(arguments.orderFulfillmentItems, splitOrderFulfillmentItem); 
 				}
+
 			} else { 
 				break;
 			} 
