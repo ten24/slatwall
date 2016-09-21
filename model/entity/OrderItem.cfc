@@ -112,6 +112,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="productBundlePrice" persistent="false" hb_formatType="currency";
 	property name="productBundleGroupPrice" persistent="false" hb_formatType="currency";
 	property name="salePrice" type="struct" persistent="false";
+	property name="totalWeight" persistent="false"; 
 
 
 	public numeric function getNumberOfUnassignedGiftCards(){
@@ -149,6 +150,10 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
         orderItemGiftRecipientSmartList.addWhereCondition("aslatwallorderitem.orderItemID='#this.getOrderItemID()#'");
         return orderItemGiftRecipientSmartList;
     }
+
+	public numeric function getTotalWeight() { 
+		return precisionEvaluate(getSku().getWeight() * getQuantity()); 	
+	} 
 
 	public numeric function getMaximumOrderQuantity() {
 		var maxQTY = 0;
