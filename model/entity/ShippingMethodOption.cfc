@@ -64,7 +64,7 @@ component entityname="SlatwallShippingMethodOption" table="SwShippingMethodOptio
 	property name="orderFulfillment" cfc="OrderFulfillment" fieldtype="many-to-one" fkcolumn="orderFulfillmentID";
 
 	// Related Object Properties (one-to-many)
-	property name="shippingMethodOptionSplitShipment" cfc="shippingMethodOptionSplitShipment" fieldtype="one-to-many" fkcolumn="shippingMethodOptionID"; 
+	property name="shippingMethodOptionSplitShipments" singularname="shippingMethodOptionSplitShipment" cfc="shippingMethodOptionSplitShipment" fieldtype="one-to-many" fkcolumn="shippingMethodOptionID"; 
 
 	// Related Object Properties (many-to-many - owner)
 
