@@ -59,6 +59,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	property name="shipToStateCode" type="string" default="";
 	property name="shipToPostalCode" type="string" default="";
 	property name="shipToCountryCode" type="string" default="";
+	property name="shipToCountry" type="string" default=""; 
 
 	property name="shipFromName" type="string" default="";
 	property name="shipFromEmailAddress" type="string" default="";
@@ -97,6 +98,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		populateShippingItemsWithOrderFulfillment(arguments.orderFulfillment);
 		populateShipToWithOrderFulfillment( arguments.orderFulfillment );
 		populateContactWithOrderFulfillment( arguments.orderFulfillment );
+		setValue( arguments.orderFulfillment.getOrder().getTotal );
 	}
 
 	public void function populateContactWithOrderFulfillment(required any orderFulfillment){
@@ -143,6 +145,9 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		if(!isNull(arguments.address.getCountryCode())) {
 			setShipToCountryCode(arguments.address.getCountryCode());
 		}
+		if(!isNull(arguments.address.getCountry())){
+			setShipToCountry(arguments.address.getCountry()); 
+		} 
 	}
 
 	public void function populateShipFromWithAddress(required any address) {

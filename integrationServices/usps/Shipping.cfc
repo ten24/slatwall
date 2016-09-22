@@ -96,18 +96,21 @@ component accessors="true" output="false" displayname="USPS" implements="Slatwal
         	requestURL = setting("liveAPIEndPointURL");
         }        
         
+        var xmlPacket = "";
         if(arguments.requestBean.getShipToCountryCode() == "US") {
-        	var xmlPacket = "";
 			savecontent variable="xmlPacket" {
 				include "RatesV4RequestTemplate.cfm";
 	        }
-        	requestURL &= "?API=RateV4&XML=#trim(xmlPacket)#";
         } else {
-			var ratesResponseBean = new Slatwall.model.transient.fulfillment.ShippingRatesResponseBean();
-			ratesResponseBean.setData("International Rate not implemented for this integration.");
-			ratesResponseBean.addError("IntegrationError", "International Rate not implemented for this integration.");
-        	return ratesResponseBean;
+			//var ratesResponseBean = new Slatwall.model.transient.fulfillment.ShippingRatesResponseBean();
+			//ratesResponseBean.setData("International Rate not implemented for this integration.");
+			//ratesResponseBean.addError("IntegrationError", "International Rate not implemented for this integration.");
+        	//return ratesResponseBean;
+			savecontent variable="xmlPacket" { 
+				include "IntlRatesV2RequestTemplate.cfm";
+			} 
         }
+        requestURL &= "?API=RateV4&XML=#trim(xmlPacket)#";
         
         // Setup Request to push to FedEx
         var httpRequest = new http();
