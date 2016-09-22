@@ -149,7 +149,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							orderFulfillmentItems = splitOrderFulfillmentItems(orderFulfillmentItems, splitShipmentWeight, shippingMethodOptionSplitShipment); 	
 							shippingMethodOptionSplitShipment = this.saveShippingMethodOptionSplitShipment(shippingMethodOptionSplitShipment); 
 							ArrayAppend(shippingMethodOptionSplitShipments, shippingMethodOptionSplitShipment); 
-							ratesRequestBean.clearAndAddOrderFulfillmentItems(shippingMethodOptionSplitShipment.getShipmentOrderItems()); 
+							ratesRequestBean.populateShippingItemsWithOrderFulfillmentItems(shippingMethodOptionSplitShipment.getShipmentOrderItems(), true); 
 							
 							var responseBean = integrationShippingAPI.getRates(ratesRequestBean); 
 							ArrayAppend(rateResponseBeans, responseBean); 

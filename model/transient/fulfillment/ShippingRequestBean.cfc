@@ -179,7 +179,10 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		populateShippingItemsWithOrderFulfillmentItems(arguments.orderFulfillment.getOrderFulfillmentItems());
 	}
 
-	public void function populateShippingItemsWithOrderFulfillmentItems(required array orderFulfillmentItems) {
+	public void function populateShippingItemsWithOrderFulfillmentItems(required array orderFulfillmentItems, boolean clear=false) {
+		if(arguments.clear){
+			variables.shippingItemRequestBeans = [];
+		} 
 		for(var i=1; i <= arrayLen(arguments.orderFulfillmentItems); i++) {
 			this.addShippingItemWithOrderFulfillmentItem(orderFulfillmentItems[i]); 
 		}
@@ -192,14 +195,6 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 				weightUnitOfMeasure=arguments.orderFulfillmentItem.getSku().setting( 'skuShippingWeightUnitCode' ),
 				quantity=arguments.orderFulfillmentItem.getQuantity()
 		);
-	} 
-
-	public array function clearAndAddOrderFulfillmentItems(required array orderFulfillmentItems) {
-		variables.shippingItemRequestBeans = [];
-		for(var j=0; j<arrayLen(arguments.orderFulfillmentItems); j++){
-			this.addShippingItemWithOrderFulfillmentItem(arguments.orderFulfillmentItems[1]);
-		} 
-		return arguments.orderFulfillmentItems; 
 	} 
 
 	public numeric function getTotalWeight( string unitCode="lb" ) {
