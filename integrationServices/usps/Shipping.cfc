@@ -155,11 +155,18 @@ component accessors="true" output="false" displayname="USPS" implements="Slatwal
 			}
 			
 			if(!ratesResponseBean.hasErrors()) {
-				for(var i=1; i<=arrayLen(xmlResponse[response].Package.Postage); i++) {
+				if(structKeyExists(xmlResponse[response].Package,"Postage")){
+					for(var i=1; i<=arrayLen(xmlResponse[response].Package.Postage); i++) {
+						ratesResponseBean.addShippingMethod(
+							shippingProviderMethod=xmlResponse[response].Package.Postage[i].XmlAttributes.classID,
+							totalCharge=xmlResponse[response].Package.Postage[i].Rate.XmlText
+						);
+					}
+				} else {
 					ratesResponseBean.addShippingMethod(
-						shippingProviderMethod=xmlResponse[response].Package.Postage[i].XmlAttributes.classID,
-						totalCharge=xmlResponse[response].Package.Postage[i].Rate.XmlText
-					);
+						shippingProviderMethod=xmlResponse[response].Package.Service.XmlAttributes.ID,
+						totalCharge=xmlResponse[response].Package.Service.Postage.XmlText
+					); 
 				}
 			}
 			
