@@ -97,16 +97,19 @@ component accessors="true" output="false" displayname="USPS" implements="Slatwal
         }        
         
         var xmlPacket = "";
+		var response = ""; 
         if(arguments.requestBean.getShipToCountryCode() == "US") {
 			savecontent variable="xmlPacket" {
 				include "RatesV4RequestTemplate.cfm";
 	        }
-			requestURL &= "?API=RateV4"; 
+			requestURL &= "?API=RateV4";
+			response = "RateV4Response";
         } else {
 			savecontent variable="xmlPacket" { 
 				include "IntlRatesV2RequestTemplate.cfm";
 			} 
 			requestURL &= "?API=IntlRateV2";
+			response = "IntlRateV2Response";
         }
         requestURL &= "&XML=#trim(xmlPacket)#";
         
@@ -143,19 +146,19 @@ component accessors="true" output="false" displayname="USPS" implements="Slatwal
 			// Log the error
 			logHibachi(xmlResponse.Error.Description.xmlText, true);
 		} else {
-			if(structKeyExists(xmlResponse.RateV4Response.Package, "Error")) {
+			if(structKeyExists(xmlResponse[response].Package, "Error")) {
 				ratesResponseBean.addMessage(
-					messageName=xmlResponse.RateV4Response.Package.Error.Source.xmlText,
-					message=xmlResponse.RateV4Response.Package.Error.Description.xmlText
+					messageName=xmlResponse[response].Package.Error.Source.xmlText,
+					message=xmlResponse[response].Package.Error.Description.xmlText
 				);
-				ratesResponseBean.addError(xmlResponse.RateV4Response.Package.Error.HelpContext.xmlText, xmlResponse.RateV4Response.Package.Error.Description.xmlText);
+				ratesResponseBean.addError(xmlResponse[response].Package.Error.HelpContext.xmlText, xmlResponse[response].Package.Error.Description.xmlText);
 			}
 			
 			if(!ratesResponseBean.hasErrors()) {
-				for(var i=1; i<=arrayLen(xmlResponse.RateV4Response.Package.Postage); i++) {
+				for(var i=1; i<=arrayLen(xmlResponse[response].Package.Postage); i++) {
 					ratesResponseBean.addShippingMethod(
-						shippingProviderMethod=xmlResponse.RateV4Response.Package.Postage[i].XmlAttributes.classID,
-						totalCharge=xmlResponse.RateV4Response.Package.Postage[i].Rate.XmlText
+						shippingProviderMethod=xmlResponse[response].Package.Postage[i].XmlAttributes.classID,
+						totalCharge=xmlResponse[response].Package.Postage[i].Rate.XmlText
 					);
 				}
 			}
