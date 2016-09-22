@@ -442,7 +442,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// If this method already exists in the fulfillment, then just update it and set optionUpdated to true so that we don't create a new one
 				var fullfillmentShippingMethodOptionsCount = arrayLen(arguments.orderFulfillment.getFulfillmentShippingMethodOptions());
 				for(var e=1; e<=fullfillmentShippingMethodOptionsCount; e++) {
-					var fulfillmentShippingMethodOption = fulfillmentShippingMethodOption; 
+					var fulfillmentShippingMethodOption = arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[e]; 
 					if(fulfillmentShippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodID() == rateToUse.shippingMethodRate.getShippingMethod().getShippingMethodID()) {
 						optionUpdated = true;
 

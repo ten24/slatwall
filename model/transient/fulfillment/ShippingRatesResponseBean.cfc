@@ -59,6 +59,10 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Resp
 		// Return the Base entity init and pass arguments
 		return super.init(argumentcollection=arguments);
 	}
+
+	public boolean function hasShippingMethodOptionSplitShipments(){
+		return structKeyExists(variables, "shippingMethodOptionSplitShipments"); 
+	}
 	
 	public any function addShippingMethod() {
 		arrayAppend(getShippingMethodResponseBeans(), new ShippingMethodResponseBean(argumentcollection=arguments));
