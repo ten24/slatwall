@@ -181,11 +181,13 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
     public boolean function hasQuantityWithinMaxOrderQuantity() {
         if(getOrderItemType().getSystemCode() == 'oitSale') {
         	var quantity = 0;
-        	for (var orderItem in getOrder().getOrderItems()){
-	            if (!isNull(orderItem.getSku()) && orderItem.getSku().getSkuID() == getSku().getSkuID()) {
-	                quantity += orderItem.getQuantity();
-	            }
-	        }
+			if(!isNull(getOrder())){
+				for (var orderItem in getOrder().getOrderItems()){
+					if (!isNull(orderItem.getSku()) && orderItem.getSku().getSkuID() == getSku().getSkuID()) {
+						quantity += orderItem.getQuantity();
+					}
+				}
+			}
             return quantity <= getMaximumOrderQuantity();
         }
         return true;
@@ -194,11 +196,13 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
     public boolean function hasQuantityWithinMinOrderQuantity() {
         if(getOrderItemType().getSystemCode() == 'oitSale') {
         	var quantity = 0;
-        	for (var orderItem in getOrder().getOrderItems()){
-	            if (!isNull(orderItem.getSku()) && orderItem.getSku().getSkuID() == getSku().getSkuID()) {
-	                quantity += orderItem.getQuantity();
-	            }
-	        }
+        	if(!isNull(getOrder())){
+				for (var orderItem in getOrder().getOrderItems()){
+					if (!isNull(orderItem.getSku()) && orderItem.getSku().getSkuID() == getSku().getSkuID()) {
+						quantity += orderItem.getQuantity();
+					}
+				}
+			}
             return quantity >= getSku().setting('skuOrderMinimumQuantity');
         }
         return true;
