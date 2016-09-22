@@ -98,7 +98,6 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		populateShippingItemsWithOrderFulfillment(arguments.orderFulfillment);
 		populateShipToWithOrderFulfillment( arguments.orderFulfillment );
 		populateContactWithOrderFulfillment( arguments.orderFulfillment );
-		setValue( arguments.orderFulfillment.getOrder().getTotal );
 	}
 
 	public void function populateContactWithOrderFulfillment(required any orderFulfillment){
@@ -146,7 +145,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 			setShipToCountryCode(arguments.address.getCountryCode());
 		}
 		if(!isNull(arguments.address.getCountry())){
-			setShipToCountry(arguments.address.getCountry()); 
+			setShipToCountry(arguments.address.getCountry().getCountryName()); 
 		} 
 	}
 
