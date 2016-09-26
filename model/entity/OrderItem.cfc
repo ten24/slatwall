@@ -81,7 +81,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 	// Related Object Properties (many-to-many)
 
-	property name="shippingMethodOptionSplitShipments" singularname="shippingMethodOptionSplitShipment" cfc="ShippingMethodOptionSplitShipment" fieldtype="many-to-many" linktable="SwShipMethodOptSplitShipOrdItm" inversejoincolumn="shippingMethodOptSplitShipmentID" fkcolumn="orderItemID"; 
+	property name="shippingMethodOptionSplitShipments" singularname="shippingMethodOptionSplitShipment" cfc="ShippingMethodOptionSplitShipment" fieldtype="many-to-many" linktable="SwShipMethodOptSplitShipOrdItm" inversejoincolumn="shipMethodOptSplitShipmentID" fkcolumn="orderItemID"; 
 	
 
 	// Remote properties

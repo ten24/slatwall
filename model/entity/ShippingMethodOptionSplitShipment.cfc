@@ -49,12 +49,12 @@ Notes:
 component entityname="SlatwallShippingMethodOptionSplitShipment" table="SwShipMethodOptSplitShipment" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="shippingService" {
 
 	// Persistent Properties
-	property name="shippingMethodOptSplitShipmentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="shipMethodOptSplitShipmentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="shipmentWeight" ormtype="float"; 
 	property name="shipmentCharge" ormtype="big_decimal"; 
 
 	property name="shippingMethodOption" cfc="ShippingMethodOption" fieldtype="many-to-one" fkcolumn="shippingMethodOptionID";
-	property name="shipmentOrderItems" singularname="shipmentOrderItem" cfc="OrderItem" fieldtype="many-to-many" linktable="SwShipMethodOptSplitShipOrdItm" fkcolumn="shippingMethodOptSplitShipmentID" inversejoincolumn="orderItemID"; 
+	property name="shipmentOrderItems" singularname="shipmentOrderItem" cfc="OrderItem" fieldtype="many-to-many" linktable="SwShipMethodOptSplitShipOrdItm" fkcolumn="shipMethodOptSplitShipmentID" inversejoincolumn="orderItemID"; 
 
 	// Related Object Properties (many-To-one)
 
