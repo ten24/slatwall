@@ -5,4 +5,4 @@ preUpdatesRun.txt.cfm
 metaDismiss.txt.cfm
 password.txt.cfm
 config.json
-resourceBundles/*
+resourceBundles/*.json
