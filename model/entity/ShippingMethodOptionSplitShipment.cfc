@@ -54,7 +54,7 @@ component entityname="SlatwallShippingMethodOptionSplitShipment" table="SwShipMe
 	property name="shipmentCharge" ormtype="big_decimal"; 
 
 	property name="shippingMethodOption" cfc="ShippingMethodOption" fieldtype="many-to-one" fkcolumn="shippingMethodOptionID";
-	property name="shipmentOrderItems" singularname="shipmentOrderItem" cfc="OrderItem" fieldtype="many-to-many" linktable="SwShipMethodOptSplitShipOrdItm" fkcolumn="shippingMethodOptionSplitShipmentID" inversejoincolumn="orderItemID"; 
+	property name="shipmentOrderItems" singularname="shipmentOrderItem" cfc="OrderItem" fieldtype="many-to-many" linktable="SwShipMethodOptSplitShipOrdItm" fkcolumn="shippingMethodOptSplitShipmentID" inversejoincolumn="orderItemID"; 
 
 	// Related Object Properties (many-To-one)
 
