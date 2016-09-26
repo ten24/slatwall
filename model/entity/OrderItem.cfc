@@ -187,7 +187,9 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 						quantity += orderItem.getQuantity();
 					}
 				}
-			}
+			} else { 
+				quantity = getQuantity(); 
+			} 
             return quantity <= getMaximumOrderQuantity();
         }
         return true;
@@ -202,7 +204,9 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 						quantity += orderItem.getQuantity();
 					}
 				}
-			}
+			} else { 
+				quantity = getQuantity(); 
+			} 
             return quantity >= getSku().setting('skuOrderMinimumQuantity');
         }
         return true;

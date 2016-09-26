@@ -194,7 +194,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				for(var j=1; j<=orderFulfillmentItem.getQuantity(); j++){
 					splitOrderFulfillmentItem = getOrderService().copyToNewOrderItem(orderFulfillmentItem);
 					splitOrderFulfillmentItem.setQuantity(1);
-					getOrderService().saveOrderItem(splitOrderFulfillmentItem);  
+					//save in this way to prevent order service from rerunning this calculation
+					getHibachiDAO().save(splitOrderFulfillmentItem);  
 					arrayAppend(arguments.orderFulfillmentItems, splitOrderFulfillmentItem); 
 				}
 
