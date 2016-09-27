@@ -106,14 +106,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		return returnHTML;
 	}
 	
-	public boolean function getLoggedInFlag() {
+	/*public boolean function getLoggedInFlag() {
 		
 		if (super.getLoggedInFlag() &&
 			!getSession().getAccount().getGuestAccountFlag()){
 				return true;
 		}
 		return false;
-	}
+	}*/
 	
 	// ================= Entity Helper Methods =====================
 	
