@@ -77,6 +77,8 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	property name="contactCompany" type="string" default="";
 	property name="contactPhoneNumber" type="string" default="";
 
+	property name="isInternationalShipment" type="boolean"; 
+
 	property name="shippingItemRequestBeans" type="array";
 
 	public any function init() {
@@ -84,6 +86,10 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		variables.shippingItemRequestBeans = [];
 
 		return super.init();
+	}
+
+	public boolean function isInternationalShipment(){
+		return getShipToCountryCode() != "US"; 
 	}
 
 	public void function addShippingItem() {
