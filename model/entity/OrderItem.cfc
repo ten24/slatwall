@@ -286,6 +286,12 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			discountAmount = precisionEvaluate(discountAmount + getAppliedPromotions()[i].getDiscountAmount());
 		}
 
+		if(!isNull(getSku()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
+			for(var childOrderItem in this.getChildOrderItems()){
+				discountAmount = precisionEvaluate(discountAmount + childOrderItem.getDiscountAmount()); 
+			} 
+		} 
+
 		return discountAmount;
 	}
 

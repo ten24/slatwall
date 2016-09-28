@@ -485,13 +485,15 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getItemDiscountAmountTotal() {
 		var discountTotal = 0;
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			if( listFindNoCase("oitSale,oitDeposit",getOrderItems()[i].getTypeCode()) ) {
-				discountTotal = precisionEvaluate(discountTotal + getOrderItems()[i].getDiscountAmount());
-			} else if ( getOrderItems()[i].getTypeCode() == "oitReturn" ) {
-				discountTotal = precisionEvaluate(discountTotal - getOrderItems()[i].getDiscountAmount());
-			} else {
-				throw("there was an issue calculating the itemDiscountAmountTotal because of a orderItemType associated with one of the items");
-			}
+			if(isNull(getOrderItems()[i].getParentOrderItem())){
+				if( listFindNoCase("oitSale,oitDeposit",getOrderItems()[i].getTypeCode()) ) {
+					discountTotal = precisionEvaluate(discountTotal + getOrderItems()[i].getDiscountAmount());
+				} else if ( getOrderItems()[i].getTypeCode() == "oitReturn" ) {
+					discountTotal = precisionEvaluate(discountTotal - getOrderItems()[i].getDiscountAmount());
+				} else {
+					throw("there was an issue calculating the itemDiscountAmountTotal because of a orderItemType associated with one of the items");
+				}
+			} 
 		}
 		return discountTotal;
 	}
