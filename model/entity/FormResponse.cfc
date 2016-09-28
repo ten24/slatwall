@@ -79,6 +79,15 @@ component displayname="FormResponse" entityname="SlatwallFormResponse" table="Sw
         return variables.attributes;
 	} 
 
+	public any function getFormEmailConfirmationValue(){
+ 		var attributeValueSmartList = getPropertySmartList('attributeValues'); 
+ 		attributeValueSmartList.addFilter('attribute.formEmailConfirmationFlag', true); 
+ 		var records = attributeValueSmartList.getRecords(); 
+ 		if(ArrayLen(records)){
+ 			return records[1].getAttributeValue(); 
+ 		} 
+ 	} 
+
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================
