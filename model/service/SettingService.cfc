@@ -342,7 +342,7 @@ component extends="HibachiService" output="false" accessors="true" {
 		){
 			var packageName = extractPackageNameBySettingName(arguments.settingName);
 			var integration = getService('integrationService').getIntegrationByIntegrationPackage(trim(packageName));
-			if(structkeyExists(integration.getIntegrationCFC(),"getSettingOptions")){
+			if(!isNull(integration) && structkeyExists(integration.getIntegrationCFC(),"getSettingOptions")){
 				return integration.getIntegrationCFC().getSettingOptions(arguments.settingName);
 			}
 		}
