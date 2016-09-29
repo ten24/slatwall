@@ -104,6 +104,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 		getFW().redirect(action="admin:entity.detailaddresszone", queryString="addressZoneID=#rc.addressZoneID#&messageKeys=admin.setting.deleteaddresszonelocation_success");
 	}
+	
+	public void function deleteFormResponse(required struct rc) {
+		param name="rc.formResponseID" default="";
+		rc.formResponse = getService('formService').getFormResponse(rc.formResponseID);
+
+		arguments.rc.sRedirectAction = "admin:entity.detailform";
+		arguments.rc.sRedirectQS = "formID=#rc.formResponse.getForm().getFormID()#";
+		genericDeleteMethod(entityName="formResponse", rc=arguments.rc);
+	}
 
 	// Country
 	public void function editCountry(required struct rc) {
