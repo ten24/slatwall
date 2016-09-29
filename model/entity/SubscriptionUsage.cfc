@@ -257,9 +257,9 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 
 	public any function getMostRecentSubscriptionOrderItem(){
 		if( hasSubscriptionOrderItems() ){
-			var subscriptionSmartList = getService('SubscriptionService').getSubscriptionOrderItemSmartList();
+			var subscriptionSmartList = this.getSubscriptionOrderItemSmartList();
 			subscriptionSmartList.addOrder("createdDateTime|DESC");
-			return subscriptionSmartList.getRecords()[1];
+			return subscriptionSmartList.getFirstRecord();
 		}
 	}
 
@@ -277,7 +277,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 
 	public any function getTotalNumberOfSubscriptionOrderItems(){
 		if( hasSubscriptionOrderItems() ){
-			return arrayLen( getSubscriptionOrderItems() );
+			return getSubscriptionOrderItemsCount();
 		}else{
 			return 0;
 		}
