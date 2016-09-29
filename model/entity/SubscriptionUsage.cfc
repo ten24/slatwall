@@ -65,7 +65,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	property name="accountPaymentMethod" cfc="AccountPaymentMethod" fieldtype="many-to-one" fkcolumn="accountPaymentMethodID";
 	property name="gracePeriodTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="gracePeriodTermID";
 	property name="initialTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="initialTermID";
-	property name="initialOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="initialOrderItemID"; 
+	property name="initialOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="initialOrderItemID";
 	property name="renewalSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="renewalSkuID";
 	property name="renewalTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="renewalTermID";
 	property name="subscriptionTerm" cfc="SubscriptionTerm" fieldtype="many-to-one" fkcolumn="subscriptionTermID";
@@ -83,7 +83,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	// Related Object Properties (many-to-many)
 
 	// Calculated Properts
-	property name="calculatedCurrentStatus" cfc="SubscriptionStatus" fieldtype="many-to-one" fkcolumn="currentSubscriptionStatusID"; 
+	property name="calculatedCurrentStatus" cfc="SubscriptionStatus" fieldtype="many-to-one" fkcolumn="currentSubscriptionStatusID";
 
 	// Remote Properties
 	property name="remoteID" ormtype="string";
@@ -117,7 +117,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 			return false;
 		}
 	}
-	
+
 	public void function setFirstReminderEmailDateBasedOnNextBillDate() {
 		// Setup the next Reminder email
 		if( len(this.setting('subscriptionUsageRenewalReminderDays')) ) {
@@ -264,22 +264,14 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	}
 
 	public any function getMostRecentOrderItem(){
-		if( hasSubscriptionOrderItems() && getTotalNumberOfSubscriptionOrderItems() > 1){
+		if( hasSubscriptionOrderItems() && getSubscriptionOrderItemsCount() > 1){
 			return getMostRecentSubscriptionOrderItem().getOrderItem();
 		}
 	}
 
 	public any function getMostRecentOrder(){
-		if( hasSubscriptionOrderItems() && getTotalNumberOfSubscriptionOrderItems() > 1){
+		if( hasSubscriptionOrderItems() && getSubscriptionOrderItemsCount() > 1){
 			return getMostRecentOrderItem().getOrder();
-		}
-	}
-
-	public any function getTotalNumberOfSubscriptionOrderItems(){
-		if( hasSubscriptionOrderItems() ){
-			return getSubscriptionOrderItemsCount();
-		}else{
-			return 0;
 		}
 	}
 
