@@ -682,7 +682,7 @@ for (var k in argv) {
     browserOptions[k.substring('browser-'.length)] = argv[k];
   }
 }
-
+//console.log("This is + " + browserOptions.browserName);
 var browserOptionsList = [browserOptions];
 if (typeof browserOptions.browserName == 'object') {
   browserOptionsList = browserOptions.browserName.map(function(bname) {

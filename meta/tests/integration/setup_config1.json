@@ -1,0 +1,21 @@
+{
+  "type": "interpreter-config",
+  "configurations": [
+    {
+      "settings": [
+        {
+          "driverOptions": {
+            "host": "localhost",
+            "port": 4444
+          },
+          "browserOptions": {
+            "browserName": "chrome"
+          }
+        }
+      ],
+      "scripts": [
+        "meta/tests/integration/setup/*"
+      ]
+    }
+  ]
+}

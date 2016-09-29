@@ -39,7 +39,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 	public void function verify_json_wait_for_eval() {
 		var adminIntegrationTestFiles = directoryList("#expandPath('/Slatwall')#/meta/tests/integration/admin");
-
+		
 		// Loop over all test files in the admin directory
 		for(var f=1; f<=arrayLen(adminIntegrationTestFiles); f++) {
 
@@ -56,6 +56,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				//abort;
 
 				// Loop over each step in the json
+				request.debug(arrayLen(testData["steps"]));
 				for(var s=1; s<=arrayLen(testData["steps"]); s++) {
 
 					// Setup a variable for this step
@@ -93,9 +94,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 						newStep["type"] = "waitForEval";
 						newStep["script"] = "return document.readyState";
 						newStep["value"] = "complete";
-
+						
 						if(!len(nextStepType) || nextStepType != "waitForEval") {
+							
 								arrayInsertAt(testData["steps"], s+1, newStep);
+								
 						}
 						if(!len(lastStepType) || lastStepType != "waitForEval") {
 								arrayInsertAt(testData["steps"], s, newStep);
