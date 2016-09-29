@@ -123,7 +123,7 @@ $('form').submit(function(){
 
 
 <!--- Add new default font --->
-<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,800,700' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,800,700' rel='stylesheet' type='text/css'>
 
 
 <!---If you uncomment this content you will be able to drag table columns to sort them
