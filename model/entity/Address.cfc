@@ -69,6 +69,9 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	property name="phoneNumber" hb_populateEnabled="public" ormtype="string";
 	property name="emailAddress" hb_populateEnabled="public" ormtype="string";
 	
+	//one-to-many
+ 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="addressID" cascade="all-delete-orphan" inverse="true";
+ 
 	// Remote properties
 	property name="remoteID" ormtype="string";
 	
@@ -194,6 +197,14 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 		
 	// ============= START: Bidirectional Helper Methods ===================
 	
+	// Attribute Values (one-to-many)    
+ 	public void function addAttributeValue(required any attributeValue) {    
+ 		arguments.attributeValue.setAddress( this );    
+ 	}    
+ 	public void function removeAttributeValue(required any attributeValue) {    
+ 		arguments.attributeValue.removeAddress( this );    
+ 	}
+ 	
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// =============== START: Custom Validation Methods ====================
