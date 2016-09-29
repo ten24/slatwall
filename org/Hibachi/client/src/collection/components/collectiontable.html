@@ -4,7 +4,7 @@
 	    <thead >
 	        <tr>
 	            <th style="">Row</span></th>
-	            <th ng-repeat="(key,column) in collectionConfig.columns" class="s-sortable" ng-bind="column.displayTitle || column.title" title="{{column.title}}" ng-show="column.isVisible"></th>
+	            <th ng-repeat="(key,column) in collectionConfig.columns" class="s-sortable" ng-bind="(column.displayTitle || column.title) | truncate:100:true" title="{{column.title}}" ng-show="column.isVisible"></th>
 	            <th></th>
 	        </tr>
 	    </thead>
@@ -19,8 +19,10 @@
 	            	></sw-selection>
 	            	
 	            </td>
-	            <td data-ng-if="!column.aggregate" ng-repeat="(key,column) in collectionConfig.columns" ng-bind="column.propertyIdentifier.replace(collectionConfig.baseEntityAlias,'').charAt(0) == '.' ? pageRecord[column.propertyIdentifier.replace(collectionConfig.baseEntityAlias+'.','')] : pageRecord[replaceAll(column.propertyIdentifier.replace(collectionConfig.baseEntityAlias+'_',''),'.','_')]"  ng-show="column.isVisible"></td>
-	            <td data-ng-if="column.aggregate" ng-repeat="(key,column) in collectionConfig.columns" ng-bind="pageRecord[column.aggregate.aggregateAlias]"  ng-show="column.isVisible"></td>
+	            <td  ng-repeat="(key,column) in collectionConfig.columns"  ng-show="column.isVisible">
+                    <span data-ng-if="column.aggregate" ng-bind="pageRecord[column.aggregate.aggregateAlias]"></span>
+                    <span data-ng-if="!column.aggregate" ng-bind="column.propertyIdentifier.replace(collectionConfig.baseEntityAlias,'').charAt(0) == '.' ? pageRecord[column.propertyIdentifier.replace(collectionConfig.baseEntityAlias+'.','')] : pageRecord[replaceAll(column.propertyIdentifier.replace(collectionConfig.baseEntityAlias+'_',''),'.','_')]"></span>
+                </td>
 	            <td class="s-edit-elements" ng-if="angularLinks === true">
 	            	<a sw-href="{{'/entity/'+collection.collectionObject+'/'+pageRecord[collectionObject.$$getIDName()]}}" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-eye-open"></i></a>
 			        <a sw-href="{{'/entity/'+collection.collectionObject+'/'+pageRecord[collectionObject.$$getIDName()]}}" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-pencil"></i></a>

@@ -52,7 +52,10 @@ Notes:
 <cfparam name="rc.subscriptionUsage" type="any" />
 
 <cfoutput>
-	<hb:HibachiListingDisplay smartList="#rc.subscriptionUsage.getSubscriptionOrderItemsSmartList()#">
+	<hb:HibachiListingDisplay 
+		smartList="#rc.subscriptionUsage.getSubscriptionOrderItemsSmartList()#"
+		recordDetailAction="admin:entity.detailOrder"
+	>
 		<hb:HibachiListingColumn propertyIdentifier="orderItem.order.orderNumber" />
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="orderItem.sku.product.productName" />
 		<hb:HibachiListingColumn propertyIdentifier="orderItem.sku.skuCode" />
