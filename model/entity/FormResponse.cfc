@@ -52,7 +52,7 @@ component displayname="FormResponse" entityname="SlatwallFormResponse" table="Sw
 	property name="formResponseID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 
 	// Related Object Properties (many-to-one)
-	property name="form" cfc="Form" fieldtype="many-to-one" fkcolumn="formID" cascade="all";
+	property name="form" cfc="Form" fieldtype="many-to-one" fkcolumn="formID";
 
 	// Related Object Properties (one-to-many)
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="formResponseID" cascade="all-delete-orphan";

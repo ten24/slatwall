@@ -63,7 +63,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	property name="attributeValueOption" cfc="AttributeOption" fieldtype="many-to-one" fkcolumn="attributeValueOptionID";
 
 	// Related Object Properties (many-to-one)
-	property name="formResponse" cfc="FormResponse" fieldtype="many-to-one" fkcolumn="formResponseID" cascade="all";
+	property name="formResponse" cfc="FormResponse" fieldtype="many-to-one" fkcolumn="formResponseID";
 
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	property name="accountAddress" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="accountAddressID";
