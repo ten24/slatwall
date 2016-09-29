@@ -26,6 +26,10 @@ component extends="FW1.framework" {
 	variables.framework.applicationKey = 'Hibachi';
 	variables.framework.action = 'action';
 	variables.framework.baseURL = replaceNoCase(replace(replaceNoCase( getDirectoryFromPath(getCurrentTemplatePath()) , expandPath('/'), '/' ), '\', '/', 'all'),'/org/Hibachi/','');
+	//base url should always end in a /
+	if(right(variables.framework.baseURL,1) != '/'){
+		variables.framework.baseURL &= '/';
+	}
 	variables.framework.base = variables.framework.baseURL;
 	variables.framework.basecfc = variables.framework.baseURL;
 	variables.framework.usingSubsystems = true;
