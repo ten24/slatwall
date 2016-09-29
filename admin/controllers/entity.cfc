@@ -156,6 +156,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	// Order
 	public void function detailOrder(required struct rc) {
+		if(structKeyExists(rc,'subscriptionOrderItemID')){
+			var subscriptionOrderItem = getService('orderService').getSubscriptionOrderItem(rc.subscriptionOrderItemID);
+			if(!isNull(subscriptionOrderItem)){
+				rc.order = subscriptionOrderItem.getOrderItem().getOrder();	
+			}
+		}
 		genericDetailMethod(entityName="Order", rc=arguments.rc);
 		if(!isNull(rc.order) && rc.order.getStatusCode() eq "ostNotPlaced") {
 			rc.entityActionDetails.listAction = "admin:entity.listcartandquote";
@@ -164,6 +170,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 
 	public void function editOrder(required struct rc) {
+		if(structKeyExists(rc,'subscriptionOrderItemID')){
+			var subscriptionOrderItem = getService('orderService').getSubscriptionOrderItem(rc.subscriptionOrderItemID);
+			if(!isNull(subscriptionOrderItem)){
+				rc.order = subscriptionOrderItem.getOrderItem().getOrder();	
+			}
+		}
 		genericEditMethod(entityName="Order", rc=arguments.rc);
 		if(!isNull(rc.order) && rc.order.getStatusCode() eq "ostNotPlaced") {
 			rc.entityActionDetails.listAction = "admin:entity.listcartandquote";
