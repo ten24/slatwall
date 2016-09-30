@@ -1189,7 +1189,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrderItem.setPrice( arguments.orderItem.getPrice() );
 		newOrderItem.setSkuPrice( arguments.orderItem.getSkuPrice() );
 		newOrderItem.setCurrencyCode( arguments.orderItem.getCurrencyCode() );
-		newOrderItem.setQuantity(arguments.orderItem.getQuantity() );
+		if(!isNull(arguments.orderItem.getBundleItemQuantity())){
+			newOrderItem.setBundleItemQuantity(arguments.orderItem.getBundleItemQuantity()); 
+		}
+		newOrderItem.setQuantity(arguments.orderItem.getQuantity());
 		newOrderItem.setOrderItemType( arguments.orderItem.getOrderItemType() );
 		newOrderItem.setOrderItemStatusType( arguments.orderItem.getOrderItemStatusType() );
 		newOrderItem.setSku( arguments.orderItem.getSku() );
@@ -1359,6 +1362,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						if(arguments.order.getPaymentAmountDue() > 0 && arguments.order.hasGiftCardOrderPaymentAmount()){
 							arguments.order.addMessage('paymentProcessedMessage', rbKey('entity.order.process.placeOrder.paymentProcessedMessage'));
 						}
+						
+						// Loop over the orderItems looking for any skus that are 'event' skus, and setting their registration value 
+						for(var orderitem in arguments.order.getOrderItems()) {
+							if(orderitem.getSku().getBaseProductType() == "event") {
+								if(!orderItem.getSku().getAvailableForPurchaseFlag() OR !orderItem.getSku().allowWaitlistedRegistrations() ){
+									arguments.order.addError('payment','Event: #orderItem.getSku().getProduct().getProductName()# is unavailable for registration. The registration period has closed.');
+								}
+								if(!orderItem.hasEventRegistration()){
+									arguments.order.addError('orderItem','Error when trying to register for: #orderItem.getSku().getProduct().getProductName()#. Please verify your registration details.');
+								}
+							}
+						}
 
 						// After all of the processing, double check that the order does not have errors.  If one of the payments didn't go through, then an error would have been set on the order.
 						if((!arguments.order.hasErrors() || amountAuthorizeCreditReceive gt 0) && arguments.order.getOrderPaymentAmountNeeded() == 0) {
@@ -1396,19 +1411,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 							// Log that the order was placed
 							logHibachi(message="New Order Processed - Order Number: #order.getOrderNumber()# - Order ID: #order.getOrderID()#", generalLog=true);
-
-							// Loop over the orderItems looking for any skus that are 'event' skus, and setting their registration value
-							/*for(var orderitem in arguments.order.getOrderItems()) {
-								if(orderitem.getSku().getBaseProductType() == "event") {
-									for(var eventRegistration in orderitem.getEventRegistrations()) {
-										if(orderItem.getSku().setting('skuAllowWaitlistingFlag')) {
-											eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstPending"));
-										} else {
-											eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstRegistered"));
-										}
-									}
-								}
-							}*/
 
 							// Look for 'auto' order fulfillments
 							for(var i=1; i<=arrayLen( arguments.order.getOrderFulfillments() ); i++) {
@@ -2070,6 +2072,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Set quantity if needed
 			if(isNull(arguments.childOrderItem.getQuantity())) {
 				arguments.childOrderItem.setQuantity( 1 );
+			}	
+			if(isNull(arguments.childOrderItem.getBundleItemQuantity())){
+				arguments.childOrderItem.setBundleItemQuantity(arguments.childOrderItem.getQuantity());
 			}
 			// Set orderFulfillment if needed
 			if(isNull(arguments.childOrderItem.getOrderFulfillment())) {
@@ -2169,10 +2174,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function processOrderItem_updateEventRegistrationQuantity(required any orderItem,struct data={}) {
 
 		// We need LESS event registrations due to order adjustment before order has been placed
-		if( arrayLen(orderItem.getActiveEventRegistrations()) > orderItem.getQuantity() && arguments.orderItem.getOrder().getStatusCode() == "ostNotPlaced" ) {
+		if( orderItem.getActiveEventRegistrations().getRecordsCount() > orderItem.getQuantity() && arguments.orderItem.getOrder().getStatusCode() == "ostNotPlaced" ) {
 
 			var removableEvents = [];
-			var numberToRemove = arrayLen(orderItem.getEventRegistrations()) - orderItem.getQuantity();
+			var numberToRemove = orderItem.getActiveEventRegistrations().getRecordsCount() - orderItem.getQuantity();
 
 			// Create an array of registrations we can safely remove, i.e. not associated with an account
 			for(var eventRegistration in orderItem.getEventRegistrations()) {
@@ -2195,13 +2200,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// We need less event registration, but couldn't do it... add error
-		if(arrayLen(orderItem.getEventRegistrations()) > orderItem.getQuantity()) {
+		if(orderItem.getActiveEventRegistrations().getRecordsCount() > orderItem.getQuantity()) {
 			orderItem.addError('updateRegistrationQuantity', rbKey('validate.orderItem.quantity.tooManyEventRegistrations'));
 		}
 
 		// We need MORE event registrations due to order adjustment before order has been placed
-		if(arrayLen(orderItem.getEventRegistrations()) < orderItem.getQuantity()) {
-			for(var i=1; i <= orderItem.getQuantity() - arrayLen(orderItem.getEventRegistrations()); i++ ) {
+		if(orderItem.getActiveEventRegistrations().getRecordsCount() < orderItem.getQuantity()) {
+			for(var i=1; i <= orderItem.getQuantity() - orderItem.getActiveEventRegistrations().getRecordsCount(); i++ ) {
 				var eventRegistration = this.newEventRegistration();
 				eventRegistration.setOrderItem(orderitem);
 				eventRegistration.seteventRegistrationStatusType( getTypeService().getTypeBySystemCode("erstNotPlaced") );

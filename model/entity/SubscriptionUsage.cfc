@@ -65,6 +65,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	property name="accountPaymentMethod" cfc="AccountPaymentMethod" fieldtype="many-to-one" fkcolumn="accountPaymentMethodID";
 	property name="gracePeriodTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="gracePeriodTermID";
 	property name="initialTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="initialTermID";
+	property name="initialOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="initialOrderItemID"; 
 	property name="renewalSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="renewalSkuID";
 	property name="renewalTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="renewalTermID";
 	property name="subscriptionTerm" cfc="SubscriptionTerm" fieldtype="many-to-one" fkcolumn="subscriptionTermID";
@@ -81,6 +82,9 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 
 	// Related Object Properties (many-to-many)
 
+	// Calculated Properts
+	property name="calculatedCurrentStatus" cfc="SubscriptionStatus" fieldtype="many-to-one" fkcolumn="currentSubscriptionStatusID"; 
+
 	// Remote Properties
 	property name="remoteID" ormtype="string";
 
@@ -96,8 +100,6 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	property name="currentStatusCode" persistent="false";
 	property name="currentStatusType" persistent="false";
 	property name="subscriptionOrderItemName" persistent="false";
-	property name="initialSubscriptionOrderItem" persistent="false";
-	property name="initialOrderItem" persistent="false";
 	property name="initialOrder" persistent="false";
 	property name="initialSku" persistent="false";
 	property name="initialProduct" persistent="false";
@@ -218,26 +220,6 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 			return true;
 		}
 		return false;
-	}
-
-	public any function getInitialSubscriptionOrderItem(){
-		if( hasSubscriptionOrderItems() ){
-			var subscriptionSmartList = getService('SubscriptionService').getSubscriptionOrderItemSmartList();
-			subscriptionSmartList.addFilter("subscriptionOrderItemType.systemCode", "soitInitial");
-			return subscriptionSmartList.getRecords();
-		}
-	}
-
-	public any function getInitialOrderItem(){
-
-		if( hasSubscriptionOrderItems() ){
-			var initialSubscriptionOrderItem = getInitialSubscriptionOrderItem();
-
-			if(!isNull(initialSubscriptionOrderItem)){
-				var orderitem = initialSubscriptionOrderItem[1].getOrderItem();
-				return orderitem;
-			}
-		}
 	}
 
 	public any function getInitialSku(){
