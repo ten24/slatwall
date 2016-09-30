@@ -559,39 +559,6 @@ component extends="HibachiService"  accessors="true" output="false"
         }
     }
     
-     public any function updateShippingAddressOnAllOrderFulfillments(required data){
-    	
-    	var cart = getHibachiScope().getCart();
-    	var orderFulfillments = cart.getOrderFulfillments();
-    	//if using a shipping address instead of account address.
-    	if (!structKeyExists(data, "accountAddressID")){
-    		var shippingAddress = getService("AddressService").newAddress();
-    		var address = getService("AddressService").saveAddress(shippingAddress, data, "full");
-		//if using an account address.
-		}else if(structKeyExists(data, "accountAddressID")){
-			var address = getService("AddressService").copyAddress(data.accountAddressID, true);
-		}else{
-			getHibachiScope().addActionResult( "public:cart.updateShippingAddressOnAllOrderFulfillments", true );//failed to update
-		}
-		if (!address.hasErrors()){
-		    	for (var orderFulfillment in orderFulfillments){
-		    		if (orderFulfillment.getFulfillmentMethodType() == "shipping"){
-		    				orderFulfillment.setShippingAddress(address);
-		    				getService("OrderService").saveOrderFulfillment(orderFulfillment);
-		    		}
-		    	}
-		}else{
-			writeDump(var=address.getErrors(), top=2);abort;
-		}
-		//save the cart
-		if (!cart.hasErrors()){
-			getService("OrderService").saveOrder(cart);
-			getHibachiScope().addActionResult( "public:cart.updateShippingAddressOnAllOrderFulfillments", false );
-		}else{
-			getHibachiScope().addActionResult( "public:cart.updateShippingAddressOnAllOrderFulfillments", true );
-		}
-	}	
-    
     /** Sets the shipping method to an order shippingMethodID */
     public void function addShippingMethodUsingShippingMethodID(required data){
         var shippingMethodId = data.shippingMethodID;
