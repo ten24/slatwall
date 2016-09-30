@@ -87,6 +87,7 @@
 									data-editing="true"
 									data-is-dirty="true"
 							></sw-property-display>
+							{{workflowTriggers.selectedTrigger.triggerEvent}}
                             <sw-property-display
                                     style="display:none"
                                     data-object="workflowTriggers.selectedTrigger"
@@ -133,8 +134,8 @@
 												<!-- Dropdown wrapper -->
 												<div class="dropdown s-search-results-wrapper" data-ng-show="showEventOptions">
 													<ul class="dropdown-menu">
-														<li data-ng-repeat="eventOption in eventOptions | filter:searchEvent.name">
-															<a data-ng-click="selectEvent(eventOption)">{{eventOption.name}}</a>
+														<li data-ng-repeat="eventOption in eventOptions | filter:searchEvent.name" data-ng-click="selectEvent(eventOption)">
+															<a >{{eventOption.name}}</a>
 														</li>
 														<li data-ng-show="(eventOptions | filter:searchEvent.name).length == 0">
 															<a sw-rbkey="'admin.entity.workflowtabs.triggers.norecordsfound'"><!-- Message created by rb key --></a>

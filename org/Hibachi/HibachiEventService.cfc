@@ -233,10 +233,11 @@ component output="false" update="true" extends="HibachiService" {
 	}
 	
 	public struct function getTriggerEventRBKeyHashMapByEntityName(required string entityName){
-		if(!structKeyExists(variables,'triggerEventRBKeyHashMap')){
+		
+		if(!structKeyExists(variables.triggerEventRBKeyHashMap,arguments.entityName)){
 			getEventNameOptionsForObject(arguments.entityName);
 		}
-		return variables.triggerEventRBKeyHashMap;
+		return variables.triggerEventRBKeyHashMap[arguments.entityName];
 	}
 	
 	public any function getEventNameOptionsForObject(required string objectName, boolean doOneToManyOptions = true) {
@@ -265,7 +266,8 @@ component output="false" update="true" extends="HibachiService" {
 						var optionStruct = getEventNameOptionsStruct(arguments.objectName,position,process,status);
 					
 						arrayAppend(opArr, optionStruct);
-						variables.triggerEventRBKeyHashMap[optionStruct['value']] = optionStruct['name'];
+						variables.triggerEventRBKeyHashMap[arguments.objectName] = {};
+						variables.triggerEventRBKeyHashMap[arguments.objectName][optionStruct['value']] = optionStruct['name'];
 					}
 				}
 			}
