@@ -40,10 +40,10 @@
 	<td class="s-total" ng-hide="orderItem.hide">
 		<ul>
 			<li ng-show="orderItem.data.sku.data.baseProductType === 'productBundle'" class="s-price-total">
-				+{{orderItem.data.productBundleGroupPrice * orderItem.data.quantity | currency}}
+				+{{(orderItem.data.productBundleGroupPrice - orderItem.data.discountAmount) * orderItem.data.quantity | currency}}
 			</li>
 			<li ng-show="orderItem.data.sku.data.baseProductType !== 'productBundle'" class="s-price-total">
-				+{{orderItem.data.productBundleGroupPrice * orderItem.data.quantity | currency}} 
+				+{{(orderItem.data.productBundleGroupPrice - orderItem.data.discountAmount) * orderItem.data.quantity | currency}} 
 			</li>
 			<li ng-show="orderItem.data.sku.data.baseProductType == 'productBundle'" class="s-price-list">
 				<ul>
