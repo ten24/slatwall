@@ -7320,3 +7320,7 @@ table.s-detail-content-table tbody tr.s-done {
 .paginationpages1 {
   display: none;
 }
+
+.david{
+    cursor: url('/assets/images/david.ico'), pointer !important;
+}
