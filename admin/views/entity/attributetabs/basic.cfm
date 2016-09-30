@@ -23,6 +23,9 @@
 			<hb:HibachiDisplayToggle selector="select[name='attributeInputType']" showValues="typeSelect" loadVisable="#(!isNull(rc.attribute.getAttributeInputType()) && listFindNoCase('typeSelect', rc.attribute.getAttributeInputType()))#">
 				<hb:HibachiPropertyDisplay object="#rc.attribute#" property="typeSet" edit="#rc.edit#">
 			</hb:HibachiDisplayToggle>
+			<cfif !isNull(rc.attribute.getForm())>
+ 				<hb:HibachiPropertyDisplay object="#rc.attribute#" property="formEmailConfirmationFlag" edit="#rc.edit#">
+ 			</cfif> 
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </cfoutput>
