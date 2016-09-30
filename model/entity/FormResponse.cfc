@@ -82,9 +82,9 @@ component displayname="FormResponse" entityname="SlatwallFormResponse" table="Sw
 	public any function getFormEmailConfirmationValue(){
  		var attributeValueSmartList = getPropertySmartList('attributeValues'); 
  		attributeValueSmartList.addFilter('attribute.formEmailConfirmationFlag', true); 
- 		var records = attributeValueSmartList.getRecords(); 
- 		if(ArrayLen(records)){
- 			return records[1].getAttributeValue(); 
+ 		var formEmailConfirmationValue = attributeValueSmartList.getFirstRecord(); 
+ 		if(!isNull(formEmailConfirmationValue)){
+ 			return formEmailConfirmationValue.getAttributeValue(); 
  		} 
  	} 
 
