@@ -1,6 +1,4 @@
-<!---
-
-    Slatwall - An Open Source eCommerce Platform
+<!--- Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 
     This program is free software: you can redistribute it and/or modify
@@ -65,19 +63,22 @@ Notes:
 
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.processObject.getnewFormQuestion()#" fieldName="newFormQuestion.activeFlag" property="activeFlag" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.processObject.getnewFormQuestion()#" fieldName="newFormQuestion.requiredFlag" property="requiredFlag" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.processObject.getnewFormQuestion()#" fieldName="newFormQuestion.attributeName" property="attributeName" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.processObject.getnewFormQuestion()#" fieldName="newFormQuestion.attributeCode" property="attributeCode" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.processObject.getnewFormQuestion()#" fieldName="newFormQuestion.attributeHint" property="attributeHint" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.processObject.getnewFormQuestion()#" fieldName="newFormQuestion.defaultValue" property="defaultValue" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.processObject.getnewFormQuestion()#" fieldName="newFormQuestion.attributeInputType" property="attributeInputType" valueDefault="text" edit="#rc.edit and rc.processObject.getnewFormQuestion().isNew()#">
-				<hb:HibachiDisplayToggle selector="select[name='attributeInputType']" showValues="relatedObjectSelect,relatedObjectMultiselect" loadVisable="#(!isNull(rc.processObject.getnewFormQuestion().getAttributeInputType()) && listFindNoCase('relatedObjectSelect,releatedObjectMultiselect', rc.processObject.getnewFormQuestion().getAttributeInputType()))#">
-					<hb:HibachiPropertyDisplay object="#rc.processObject.getnewFormQuestion()#" fieldName="newFormQuestion.relatedObject" property="relatedObject" edit="#rc.edit and rc.processObject.getNewFormQuestion().isNew()#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject.getNewFormQuestion()#" fieldName="newFormQuestion.activeFlag" property="activeFlag" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject.getNewFormQuestion()#" fieldName="newFormQuestion.requiredFlag" property="requiredFlag" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject.getNewFormQuestion()#" fieldName="newFormQuestion.attributeName" property="attributeName" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject.getNewFormQuestion()#" fieldName="newFormQuestion.attributeCode" property="attributeCode" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject.getNewFormQuestion()#" fieldName="newFormQuestion.attributeHint" property="attributeHint" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject.getNewFormQuestion()#" fieldName="newFormQuestion.defaultValue" property="defaultValue" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject.getNewFormQuestion()#" fieldName="newFormQuestion.attributeInputType" property="attributeInputType" valueDefault="text" edit="#rc.edit and rc.processObject.getnewFormQuestion().isNew()#">
+				<hb:HibachiDisplayToggle selector="select[name='newFormQuestion.attributeInputType']" showValues="relatedObjectSelect,relatedObjectMultiselect" loadVisable="#(!isNull(rc.processObject.getnewFormQuestion().getAttributeInputType()) && listFindNoCase('relatedObjectSelect,releatedObjectMultiselect', rc.processObject.getnewFormQuestion().getAttributeInputType()))#">
+					<hb:HibachiPropertyDisplay object="#rc.processObject.getNewFormQuestion()#" fieldName="newFormQuestion.relatedObject" property="relatedObject" edit="#rc.edit and rc.processObject.getNewFormQuestion().isNew()#">
 				</hb:HibachiDisplayToggle>
-				<hb:HibachiDisplayToggle selector="select[name='attributeInputType']" showValues="typeSelect" loadVisable="#(!isNull(rc.processObject.getnewFormQuestion().getAttributeInputType()) && listFindNoCase('typeSelect', rc.processObject.getnewFormQuestion().getAttributeInputType()))#">
-					<hb:HibachiPropertyDisplay object="#rc.processObject.getnewFormQuestion()#" fieldName="newFormQuestion.typeSet" property="typeSet" edit="#rc.edit and rc.processObject.getnewFormQuestion().isNew()#">
+				<hb:HibachiDisplayToggle selector="select[name='newFormQuestion.attributeInputType']" showValues="typeSelect" loadVisable="#(!isNull(rc.processObject.getnewFormQuestion().getAttributeInputType()) && listFindNoCase('typeSelect', rc.processObject.getnewFormQuestion().getAttributeInputType()))#">
+					<hb:HibachiPropertyDisplay object="#rc.processObject.getNewFormQuestion()#" fieldName="newFormQuestion.typeSet" property="typeSet" edit="#rc.edit and rc.processObject.getnewFormQuestion().isNew()#">
 				</hb:HibachiDisplayToggle>
+				<hb:HibachiDisplayToggle selector="select[name='newFormQuestion.attributeInputType']" showValues="email" loadVisible="false">
+					<hb:HibachiPropertyDisplay object="#rc.processObject.getNewFormQuestion()#" property="formEmailConfirmationFlag" edit="#rc.edit#"> 
+				</hb:HibachiDisplayToggle> 
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 

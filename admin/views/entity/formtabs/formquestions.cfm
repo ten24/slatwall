@@ -65,6 +65,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="attributeCode" />
 		<hb:HibachiListingColumn propertyIdentifier="attributeInputType" />
 		<hb:HibachiListingColumn propertyIdentifier="relatedObject" />
+		<hb:HibachiListingColumn propertyIdentifier="formEmailConfirmationFlag" />
 		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
 	</hb:HibachiListingDisplay>
 

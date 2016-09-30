@@ -484,11 +484,12 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 	public numeric function getItemDiscountAmountTotal() {
 		var discountTotal = 0;
-		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			if( listFindNoCase("oitSale,oitDeposit",getOrderItems()[i].getTypeCode()) ) {
-				discountTotal = precisionEvaluate(discountTotal + getOrderItems()[i].getDiscountAmount());
-			} else if ( getOrderItems()[i].getTypeCode() == "oitReturn" ) {
-				discountTotal = precisionEvaluate(discountTotal - getOrderItems()[i].getDiscountAmount());
+		var orderItems = getRootOrderItems(); 
+		for(var i=1; i<=arrayLen(orderItems); i++) {
+			if( listFindNoCase("oitSale,oitDeposit",orderItems[i].getTypeCode()) ) {
+				discountTotal = precisionEvaluate(discountTotal + orderItems[i].getDiscountAmount());
+			} else if ( orderItems[i].getTypeCode() == "oitReturn" ) {
+				discountTotal = precisionEvaluate(discountTotal - orderItems[i].getDiscountAmount());
 			} else {
 				throw("there was an issue calculating the itemDiscountAmountTotal because of a orderItemType associated with one of the items");
 			}
@@ -1024,11 +1025,12 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 	public numeric function getTaxTotal() {
 		var taxTotal = 0;
-		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			if( listFindNoCase("oitSale,oitDeposit",getOrderItems()[i].getTypeCode()) ) {
-				taxTotal = precisionEvaluate(taxTotal + getOrderItems()[i].getTaxAmount());
-			} else if ( getOrderItems()[i].getTypeCode() == "oitReturn" ) {
-				taxTotal = precisionEvaluate(taxTotal - getOrderItems()[i].getTaxAmount());
+		var orderItems = this.getRootOrderItems(); 
+		for(var i=1; i<=arrayLen(orderItems); i++) {
+			if( listFindNoCase("oitSale,oitDeposit",orderItems[i].getTypeCode()) ) {
+				taxTotal = precisionEvaluate(taxTotal + orderItems[i].getTaxAmount());
+			} else if ( orderItems[i].getTypeCode() == "oitReturn" ) {
+				taxTotal = precisionEvaluate(taxTotal - orderItems[i].getTaxAmount());
 			} else {
 				throw("there was an issue calculating the subtotal because of a orderItemType associated with one of the items");
 			}

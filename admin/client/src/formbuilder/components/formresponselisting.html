@@ -26,11 +26,18 @@
                 <th class="data primary" data-ng-repeat="column in swFormResponseListing.columns">	
                     <span ng-bind="column.question"></span>
                 </th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
             <tr id="{{record.formResponseID}}" data-ng-repeat="record in swFormResponseListing.pageRecords" >                
                 <td class="primary" ng-bind="record[column.questionID]" data-ng-repeat="column in swFormResponseListing.columns"></td>
+                <td>
+                	
+                	<a title="" class="adminentitydetailattribute btn btn-default btn-xs" target="_self" href="{{$root.buildUrl('entity.deleteFormResponse','formResponseID='+record.formResponseID)}}">
+						<i class="glyphicon glyphicon-trash"></i> 
+					</a>
+                </td>
             </tr>
         </tbody>
 	</table>
