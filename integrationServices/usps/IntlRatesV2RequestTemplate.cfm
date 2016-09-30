@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -43,30 +43,42 @@
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
 
-Notes:
-
-*/
-
-component accessors="true" output="false" extends="Slatwall.model.transient.ResponseBean" {
-
-	property name="shippingMethodResponseBeans" type="array";
-	property name="shippingMethodOptionSplitShipments" type="array"; 
+	Notes:
 	
-	public any function init() {
-		// Set Defaults
-		setShippingMethodResponseBeans([]);
-		
-		// Return the Base entity init and pass arguments
-		return super.init(argumentcollection=arguments);
-	}
+--->
+<cfsilent>
+	<cfset local.pounds = 0 />
+	<!--- minimum 2 ounce shipping weight required to ship --->
+	<cfset local.ounces = max(round(arguments.requestBean.getTotalWeight( unitCode="oz" )),2)>
+	<cfif local.ounces gt 16>
+		<cfset local.pounds = round(local.ounces / 16) />
+		<cfset local.ounces = local.ounces - (local.pounds * 16) />
+	<cfelseif local.ounces lte 1>
+		<cfset local.ounces = 0 />
+	</cfif>
+</cfsilent>
+<cfoutput>
+<IntlRateV2Request USERID="#setting('userID')#">
+	<Revision>2</Revision>
+	<Package ID="1">
+		<Pounds>#local.pounds#</Pounds>
+		<Ounces>#local.ounces#</Ounces>
+		<Machinable>true</Machinable>
+		<MailType>Package</MailType>
+		<GXG>
+			<POBoxFlag>N</POBoxFlag>
+			<GiftFlag>N</GiftFlag>
+		</GXG>
+		<ValueOfContents>#arguments.requestBean.getTotalValue()#</ValueOfContents> 
+		<Country>#arguments.requestBean.getShipToCountry()#</Country>
+		<Container>RECTANGULAR</Container>
+		<Size>LARGE</Size>
+		<Width>20</Width>
+		<Length>20</Length>
+		<Height>20</Height>
+		<Girth>80</Girth> 
+		<OriginZip>#setting('shipFromPostalCode')#</OriginZip>
+	</Package>
+</IntlRateV2Request>
+</cfoutput>
 
-	public boolean function hasShippingMethodOptionSplitShipments(){
-		return structKeyExists(variables, "shippingMethodOptionSplitShipments"); 
-	}
-	
-	public any function addShippingMethod() {
-		arrayAppend(getShippingMethodResponseBeans(), new ShippingMethodResponseBean(argumentcollection=arguments));
-	}
-	
-	
-}
