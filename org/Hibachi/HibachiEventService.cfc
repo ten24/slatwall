@@ -42,8 +42,10 @@ component output="false" update="true" extends="HibachiService" {
 	variables.registeredEvents = {};
 	variables.registeredEventHandlers = {};
 	variables.eventNameOptions = {};
-	
-	
+	/*{
+		"triggerEvent":"triggerEventRBKey"
+	}*/
+	variables.triggerEventRBKeyHashMap = {};
 	
 	public any function getEventHandler( required string objectFullname ) {
 		if(!structKeyExists(variables.registeredEventHandlers, arguments.objectFullname)) {
@@ -207,6 +209,36 @@ component output="false" update="true" extends="HibachiService" {
 		return opArr;
 	}
 	
+	private struct function getEventNameOptionsStruct(required string entityName, string position="before", string process="save", string status=""){
+		var optionStruct = {};
+		optionStruct['name'] = "#getHibachiScope().rbKey('entity.#arguments.entityName#')# - ";
+		
+		var processPrefix = "";
+		if(lcase(arguments.process) != 'save' && lcase(arguments.process) != 'delete'){
+			processPrefix = "Process_";
+			optionStruct['name'] &= "#getHibachiScope().rbKey('define.#arguments.position#')# #getHibachiScope().rbKey('entity.#arguments.entityName#.process.#arguments.process#')#";
+		}else{
+			optionStruct['name'] &= "#getHibachiScope().rbKey('define.#arguments.position#')# #getHibachiScope().rbKey('define.#arguments.process#')#"; 
+		}
+		if(len(arguments.status)){
+			optionStruct['name'] &= " #getHibachiScope().rbKey('define.#arguments.status#')# | #arguments.position##entityName##processPrefix##arguments.process##arguments.status#";
+		}else{
+			optionStruct['name'] &= " | #arguments.position##arguments.entityName##processPrefix##arguments.process#";	
+		}
+		
+		optionStruct['value'] = "#arguments.position##entityName##processPrefix##arguments.process##arguments.status#";
+		optionStruct['entityName'] = arguments.entityName;
+		
+		return optionStruct;
+	}
+	
+	public struct function getTriggerEventRBKeyHashMapByEntityName(required string entityName){
+		if(!structKeyExists(variables,'triggerEventRBKeyHashMap')){
+			getEventNameOptionsForObject(arguments.entityName);
+		}
+		return variables.triggerEventRBKeyHashMap;
+	}
+	
 	public any function getEventNameOptionsForObject(required string objectName, boolean doOneToManyOptions = true) {
 		if(!structKeyExists(variables.EventNameOptions,arguments.objectName)){
 			var opArr = [];
@@ -215,84 +247,29 @@ component output="false" update="true" extends="HibachiService" {
 			
 			var entityName = arguments.objectName;
 			
-			var optionStruct = {};
-			optionStruct['name'] = "#getHibachiScope().rbKey('entity.#entityName#')# - #getHibachiScope().rbKey('define.before')# #getHibachiScope().rbKey('define.save')# | before#entityName#Save";
-			optionStruct['value'] = "before#entityName#Save";
-			optionStruct['entityName'] = arguments.objectName;
-			arrayAppend(opArr, optionStruct);
-			
-			optionStruct = {};
-			optionStruct['name'] = "#getHibachiScope().rbKey('entity.#entityName#')# - #getHibachiScope().rbKey('define.after')# #getHibachiScope().rbKey('define.save')# | after#entityName#Save";
-			optionStruct['value'] = "after#entityName#Save";
-			optionStruct['entityName'] = arguments.objectName;
-			arrayAppend(opArr, optionStruct);
-			
-			optionStruct = {};
-			optionStruct['name'] = "#getHibachiScope().rbKey('entity.#entityName#')# - #getHibachiScope().rbKey('define.after')# #getHibachiScope().rbKey('define.save')# #getHibachiScope().rbKey('define.success')# | after#entityName#SaveSuccess";
-			optionStruct['value'] = "after#entityName#SaveSuccess";
-			optionStruct['entityName'] = arguments.objectName;
-			arrayAppend(opArr, optionStruct);
-			
-			optionStruct = {};
-			optionStruct['name'] = "#getHibachiScope().rbKey('entity.#entityName#')# - #getHibachiScope().rbKey('define.after')# #getHibachiScope().rbKey('define.save')# #getHibachiScope().rbKey('define.failure')# | after#entityName#SaveFailure";
-			optionStruct['value'] = "after#entityName#SaveFailure";
-			optionStruct['entityName'] = arguments.objectName;
-			arrayAppend(opArr, optionStruct);
-			
-			optionStruct = {};
-			optionStruct['name'] = "#getHibachiScope().rbKey('entity.#entityName#')# - #getHibachiScope().rbKey('define.before')# #getHibachiScope().rbKey('define.delete')# | before#entityName#Delete";
-			optionStruct['value'] = "before#entityName#Delete";
-			optionStruct['entityName'] = arguments.objectName;
-			arrayAppend(opArr, optionStruct);
-			
-			optionStruct = {};
-			optionStruct['name'] = "#getHibachiScope().rbKey('entity.#entityName#')# - #getHibachiScope().rbKey('define.after')# #getHibachiScope().rbKey('define.delete')# | after#entityName#Delete";
-			optionStruct['value'] = "after#entityName#Delete";
-			optionStruct['entityName'] = arguments.objectName;
-			arrayAppend(opArr, optionStruct);
-			
-			optionStruct = {};
-			optionStruct['name'] = "#getHibachiScope().rbKey('entity.#entityName#')# - #getHibachiScope().rbKey('define.after')# #getHibachiScope().rbKey('define.delete')# #getHibachiScope().rbKey('define.success')# | after#entityName#DeleteSuccess";
-			optionStruct['value'] = "after#entityName#DeleteSuccess";
-			optionStruct['entityName'] = arguments.objectName;
-			arrayAppend(opArr, optionStruct);
-			
-			optionStruct = {};
-			optionStruct['name'] = "#getHibachiScope().rbKey('entity.#entityName#')# - #getHibachiScope().rbKey('define.after')# #getHibachiScope().rbKey('define.delete')# #getHibachiScope().rbKey('define.failure')# | after#entityName#DeleteFailure";
-			optionStruct['value'] = "after#entityName#DeleteFailure";
-			optionStruct['entityName'] = arguments.objectName;
-			arrayAppend(opArr, optionStruct);
+			var positions = ['before','after'];
+			var processes = ['Save','Delete'];
+			var statuses = ['','Success','Failure'];
 			
 			if(structKeyExists(emd, "hb_processContexts")) {
+				
 				for(var c=1; c<=listLen(emd.hb_processContexts); c++) {
 					var thisContext = listGetAt(emd.hb_processContexts, c);
-					
-					optionStruct = {};
-					optionStruct['name'] = "#getHibachiScope().rbKey('entity.#entityName#')# - #getHibachiScope().rbKey('define.before')# #getHibachiScope().rbKey('entity.#entityName#.process.#thisContext#')# | before#entityName#Process_#thisContext#";
-					optionStruct['value'] = "before#entityName#Process_#thisContext#";
-					optionStruct['entityName'] = arguments.objectName;
-					arrayAppend(opArr, optionStruct);
-					
-					optionStruct = {};
-					optionStruct['name'] = "#getHibachiScope().rbKey('entity.#entityName#')# - #getHibachiScope().rbKey('define.after')# #getHibachiScope().rbKey('entity.#entityName#.process.#thisContext#')# | after#entityName#Process_#thisContext#";
-					optionStruct['value'] = "after#entityName#Process_#thisContext#";
-					optionStruct['entityName'] = arguments.objectName;
-					arrayAppend(opArr, optionStruct);
-					
-					optionStruct = {};
-					optionStruct['name'] = "#getHibachiScope().rbKey('entity.#entityName#')# - #getHibachiScope().rbKey('define.after')# #getHibachiScope().rbKey('entity.#entityName#.process.#thisContext#')# #getHibachiScope().rbKey('define.success')# | after#entityName#Process_#thisContext#Success";
-					optionStruct['value'] = "after#entityName#Process_#thisContext#Success";
-					optionStruct['entityName'] = arguments.objectName;
-					arrayAppend(opArr, optionStruct);
-					
-					optionStruct = {};
-					optionStruct['name'] = "#getHibachiScope().rbKey('entity.#entityName#')# - #getHibachiScope().rbKey('define.after')# #getHibachiScope().rbKey('entity.#entityName#.process.#thisContext#')# #getHibachiScope().rbKey('define.failure')# | after#entityName#Process_#thisContext#Failure";
-					optionStruct['value'] = "after#entityName#Process_#thisContext#Failure";
-					optionStruct['entityName'] = arguments.objectName;
-					arrayAppend(opArr, optionStruct);
-					
+					arrayAppend(processes,thisContext);	
 				}
 			}
+			
+			for(var process in processes){
+				for(var position in positions){
+					for(var status in statuses){
+						var optionStruct = getEventNameOptionsStruct(arguments.objectName,position,process,status);
+					
+						arrayAppend(opArr, optionStruct);
+						variables.triggerEventRBKeyHashMap[optionStruct['value']] = optionStruct['name'];
+					}
+				}
+			}
+			
 			if(arguments.doOneToManyOptions){
 				var propertiesArrayLength = arrayLen(emd.properties);
 				for(var d=1; d<=propertiesArrayLength;d++){
