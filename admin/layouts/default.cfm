@@ -402,24 +402,10 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/global.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#"></script>
 
 		<script>
-		    var allowedKeys = { 37: 'left', 38: 'up', 39: 'right', 40: 'down', 65: 'a', 66: 'b'};
-		    var konamiCode = ['up', 'up', 'down', 'down', 'left', 'right', 'left', 'right', 'a', 'b'];
-		    var konamiCodePosition = 0;
-
-		    document.addEventListener('keydown', function(e) {
-		        var key = allowedKeys[e.keyCode];
-		        var requiredKey = konamiCode[konamiCodePosition];
-		        if (key == requiredKey) {
-		            konamiCodePosition++;
-		            if (konamiCodePosition == konamiCode.length)
-		                activateCheats();
-		        } else
-		            konamiCodePosition = 0;
-		    });
-		    function activateCheats() {
-		        konamiCodePosition = 0;
-		        $('body').toggleClass('david');
-		    }
+            var c = [38,38,40,40,37,39,37,39,65,66], p = 0;
+            document.addEventListener('keydown', function(e) {
+                if(e.keyCode == c[p]){ p++; if(p==c.length){p=0; $('body').toggleClass('david');}}else{p=0;}
+            });
 		</script>
 </body>
 </html>
