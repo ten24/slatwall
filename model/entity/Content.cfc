@@ -108,7 +108,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	
 	// ============ START: Non-Persistent Property Methods =================
 	public string function getAssetsPath(){
-		if(!structKeyExists(variables,'assetsPath')){
+		if(!isNull(getSite()) && !structKeyExists(variables,'assetsPath')){
 			variables.assetsPath = getSite().getAssetsPath();
 		}
 		return variables.assetsPath;
@@ -320,13 +320,16 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 		}
 		
 		var addon = 1;
-		var contentEntity = getDao('contentDao').getContentBySiteIDAndUrlTitlePath(this.getSite().getSiteID(),urlTitlePathString);
-		while(!isNull(contentEntity) && this.getContentID() != contentEntity.getContentID()) {
-			urlTitle = '#urlTitle#-#addon#';
-			urlTitlePathString = "#urlTitlePathString#-#addon#";
-			addon++;
-			contentEntity = getDao('contentDao').getContentBySiteIDAndUrlTitlePath(this.getSite().getSiteID(),urlTitlePathString);
+		if(!isNull(getSite())){
+			var contentEntity = getDao('contentDao').getContentBySiteIDAndUrlTitlePath(getSite().getSiteID(),urlTitlePathString);
+			while(!isNull(contentEntity) && this.getContentID() != contentEntity.getContentID()) {
+				urlTitle = '#urlTitle#-#addon#';
+				urlTitlePathString = "#urlTitlePathString#-#addon#";
+				addon++;
+				contentEntity = getDao('contentDao').getContentBySiteIDAndUrlTitlePath(getSite().getSiteID(),urlTitlePathString);
+			}
 		}
+		
 		variables.urlTitle = urlTitle;
 		setUrlTitlePath(urlTitlePathString);
 		return urlTitlePathString;

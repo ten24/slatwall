@@ -59,22 +59,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getSettingService().getSettingRecordExistsFlag(settingName="contentRestrictAccessFlag", settingValue=1);
 	}
 
-	public any function processContent_create(required any content, required any processObject){
-		// Call save on the content
-		arguments.content.setSite(arguments.processObject.getSite());
-		arguments.content.setParentContent(arguments.processObject.getParentContent());
-		if(
-			(isNull(arguments.data.urlTitle) || (!isNull(arguments.data.urlTitle) && !len(arguments.data.urlTitle)))
-			&& !isNull(arguments.content.getParentContent())
-		){
-			arguments.data.urlTitle = arguments.data.title;
-		}
-
-		arguments.data.urlTitle = getService("HibachiUtilityService").createSEOString(arguments.data.urlTitle);
-		arguments.content = this.saveContent(arguments.content,arguments.data);
-		return arguments.content;
-	}
-
 	public any function getCMSTemplateOptions(required any content){
 		var templateDirectory = arguments.content.getSite().getTemplatesPath();
 		if(directoryExists(templateDirectory)) {
@@ -108,14 +92,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public any function saveContent(required any content, struct data={}){
-		arguments.content = super.save(arguments.content, arguments.data);
-		if(!arguments.content.hasErrors()){
-			if(structKeyExists(arguments.data,'urlTitle')){
-				arguments.data.urlTitle = getService("HibachiUtilityService").createSEOString(arguments.data.urlTitle);
-				arguments.content.setUrlTitle(arguments.data.urlTitle);
-			}
+		
+		if(structKeyExists(arguments.data,'urlTitle')){
+			arguments.data.urlTitle = getService("HibachiUtilityService").createSEOString(arguments.data.urlTitle);
+			arguments.content.setUrlTitle(arguments.data.urlTitle);
 		}
-
+		arguments.content = super.save(arguments.content, arguments.data);
 		return arguments.content;
 	}
 
@@ -158,6 +140,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 
 	// ===================== START: Process Methods ===========================
+	
+	public any function processContent_create(required any content, required any processObject){
+		// Call save on the content
+		arguments.content.setSite(arguments.processObject.getSite());
+		arguments.content.setParentContent(arguments.processObject.getParentContent());
+		if(
+			(isNull(arguments.data.urlTitle) || (!isNull(arguments.data.urlTitle) && !len(arguments.data.urlTitle)))
+			&& !isNull(arguments.content.getParentContent())
+		){
+			arguments.data.urlTitle = arguments.data.title;
+		}
+
+		arguments.data.urlTitle = getService("HibachiUtilityService").createSEOString(arguments.data.urlTitle);
+		arguments.content = this.saveContent(arguments.content,arguments.data);
+		return arguments.content;
+	}
 
 	public any function processContent_CreateSku(required any content, required any processObject) {
 
@@ -206,6 +204,39 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		getHibachiDAO().save( sku );
 
 		return arguments.content;
+	}
+	
+	public any function processContent_duplicateContent(required any content, required any processObject){
+		
+		arguments.processObject.setNewContent(arguments.content.duplicate(onlyPersistent=true));
+		
+		//get all settings that exist on the object
+		if(!arguments.content.getNewFlag()){
+			var settingCollectionList = this.getSettingCollectionList();
+			settingCollectionList.addFilter('content.contentID',arguments.content.getContentID());
+			var settingsData = settingCollectionList.getRecords();
+			
+			for(var settingData in settingsData){
+				var contentSetting = getService("settingService").newSetting();
+				contentSetting.setSettingName( settingData['settingName'] );
+				contentSetting.setSettingValue( settingData['settingValue'] );
+				contentSetting.setContent( arguments.processObject.getNewContent() );
+				getService("settingService").saveSetting( contentSetting );
+			}
+		}
+//		
+//		//Copy Content Attribtes
+		for(var attributeValue in arguments.content.getAttributeValues()) {
+			arguments.processObject.getNewContent().setAttributeValue( attributeValue.getAttribute().getAttributeCode(), attributeValue.getAttributeValue() );
+		}
+		
+		var data = {
+			title=arguments.processObject.getTitle(),
+			urlTitle=arguments.processObject.getUrlTItle()
+		};
+		
+		this.saveContent(arguments.processObject.getNewContent(),data);
+		return arguments.processObject.getNewContent();
 	}
 
 	// =====================  END: Process Methods ============================

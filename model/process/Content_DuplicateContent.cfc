@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,44 +45,53 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
 
+	// Injected Entity
+	property name="content";
+	
+	// Lazy / Injected Objects
+	
+	// New Properties
+	property name="newContent";
 
-<cfparam name="rc.content" type="any">
-<cfparam name="rc.edit" type="boolean">
+	// Data Properties (ID's)
+	
+	// Data Properties (Inputs)
+	property name="title" type="string";
+	property name="urlTitle" type="string";
+	
+	// Data Properties (Related Entity Populate)
+	
+	// Data Properties (Object / Array Populate)
+	
+	// Option Properties
+	
+	// Helper Properties
+	
+	// ======================== START: Defaults ============================
+	
+	// ========================  END: Defaults =============================
 
-<cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.content#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar 
-			type="detail" 
-			object="#rc.content#" 
-			edit="#rc.edit#" 
-			backQueryString="?ng##!/entity/Content/" 
-			showDelete="#!rc.content.hasChildContent()#"
-			deleteQueryString="?ngRedirectQS=/entity/Content/"
-			
-		>
-			<!---<hb:HibachiProcessCaller entity="#rc.content#" action="admin:entity.preprocesscontent" processContext="create" type="list" modal="true" />--->
-			<hb:HibachiProcessCaller entity="#rc.content#" action="admin:entity.preprocesscontent" processContext="duplicateContent" type="list" modal="true" />
-		</hb:HibachiEntityActionBar>
-		<hb:HibachiEntityDetailGroup object="#rc.content#">
-			<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
-			<cfif rc.content.getProductListingPageFlag()>
-				<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/products">
-			</cfif>
-			<cfif !isNull(rc.content.getSite()) && !isNull(rc.content.getSite().getApp())>
-				<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/content">
-			</cfif>
-			<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/settings">
-			<!--- Custom Attributes --->
-			
-			<cfloop array="#rc.content.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<swa:SlatwallAdminTabCustomAttributes object="#rc.content#" attributeSet="#attributeSet#" />
-			</cfloop>
-		</hb:HibachiEntityDetailGroup>
-
-	</hb:HibachiEntityDetailForm>
-</cfoutput>
-
+	// =================== START: Lazy Object Helpers ======================
+	
+	// ===================  END: Lazy Object Helpers =======================
+	
+	// ================== START: New Property Helpers ======================
+	
+	// ==================  END: New Property Helpers =======================
+	
+	// ====================== START: Data Options ==========================
+	
+	// ======================  END: Data Options ===========================
+	
+	// ===================== START: Helper Methods =========================
+	
+	public boolean function isUniqueUrlTitlePathBySite(){
+		return arguments.getNewContent().isUniqueUrlTitlePathBySite();
+	}
+	
+	// =====================  END: Helper Methods ==========================
+	
+}
