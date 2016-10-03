@@ -63,7 +63,7 @@ Notes:
 				subject="#arguments.email.getEmailSubject()#"
 				cc="#arguments.email.getEmailCC()#"
 				bcc="#arguments.email.getEmailBCC()#"
-				getEmailFailTo="#arguments.email.getFailTo()#"
+				failto="#arguments.email.getFailTo()#"
 				charset="utf-8">
 				<cfif !isNull(arguments.email.getRelatedObject())>
 					<cfmailparam name="Related-Object" value="#arguments.email.getRelatedObject()#">
