@@ -30,7 +30,7 @@
 		"pickupLocation":					[{"contexts":"placeOrder","conditions":"fulfillmentTypePickup","required":true}],
 		"requiredShippingInfoExistsFlag":	[{"contexts":"placeOrder","conditions":"fulfillmentTypeShipping","eq":true}],
 		"shippingMethod":			[
-			{"contexts":"placeOrder","conditions":"fulfillmentTypeShipping","required":true},
+			{"contexts":"placeOrder,fulfillItems","conditions":"fulfillmentTypeShipping","required":true},
 			{"contexts":"placeOrder","conditions":"fulfillmentTypeShippingWithoutRateOverride","method":"hasValidShippingMethodRate"}
 		],
 		"orderStatusCode":			[

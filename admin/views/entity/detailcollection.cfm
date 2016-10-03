@@ -7,7 +7,7 @@
 <hb:HibachiEntityDetailForm object="#rc.collection#" edit="#rc.edit#">
 	<hb:HibachiEntityActionBar type="detail" object="#rc.collection#" edit="#rc.edit#" />
 	<hb:HibachiEntityDetailGroup object="#rc.collection#">
-		<hb:HibachiEntityDetailItem view="admin:entity/collectiontabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+		<hb:HibachiEntityDetailItem view="admin:entity/collectiontabs/basic" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 		<hb:HibachiEntityDetailItem view="admin:entity/collectiontabs/options" open="true" text="#$.slatwall.rbKey('admin.define.configuration')#" />
 	</hb:HibachiEntityDetailGroup>		
 </hb:HibachiEntityDetailForm>
@@ -123,7 +123,7 @@ $('form').submit(function(){
 
 
 <!--- Add new default font --->
-<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,800,700' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,800,700' rel='stylesheet' type='text/css'>
 
 
 <!---If you uncomment this content you will be able to drag table columns to sort them

@@ -3,7 +3,7 @@
     <div class="col-xs-5 s-pannel-name" j-column-index="{{columnIndex}}" data-test="$index">
       <span ng-bind="columnIndex + 1"></span>
       <i class="fa fa-arrows-v"></i>
-      <span class="s-pannel-title" title="{{column.title}}" ng-bind="column.displayTitle || column.title"></span>
+      <span class="s-pannel-title" title="{{column.title}}" ng-bind="(column.displayTitle || column.title) | truncate:100:true"></span>
       <a class="s-pannel-title-edit" ng-click="editDisplayTitle()">edit</a>
       <span class="s-title-edit-menu" ng-show="editingDisplayTitle">
           <input type="text" class="form-control" ng-model="column.displayTitle">
