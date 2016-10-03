@@ -1,8 +1,11 @@
 {
    "steps":[  
-      {  
-         "type":"get",
-         "url":"http://cf10.localhost/?slatAction=main.login"
+       {  
+         "type":"waitForElementPresent",
+         "locator":{  
+            "type":"name",
+            "value":"emailAddress"
+         }
       },
       {  
          "type":"setElementText",

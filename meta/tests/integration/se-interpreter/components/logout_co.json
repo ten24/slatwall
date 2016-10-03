@@ -1,12 +1,19 @@
 {  
-   "steps":[  
+   "steps":[ 
+      {  
+         "type":"waitForElementPresent",
+         "locator":{  
+            "type":"xpath",
+            "value":"//*[@id='j-mobile-nav']/div/ul/li[2]/a/i"
+         }
+      }, 
       {  
          "type":"clickElement",
          "locator":{  
             "type":"xpath",
-            "value":"//div[@id='j-mobile-nav']/div/ul/li[2]/a/i"
+            "value":"//*[@id='j-mobile-nav']/div/ul/li[2]/a/i"
          }
-      },
+      },     
       {  
          "type":"clickElement",
          "locator":{  
