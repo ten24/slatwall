@@ -1,0 +1,31 @@
+{
+   "steps":[  
+      {  
+         "type":"get",
+         "url":"http://cf10.localhost/?slatAction=main.login"
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"emailAddress"
+         },
+         "text":"alexis.espinoza@ten24web.com"
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"password"
+         },
+         "text":"123456a"
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"xpath",
+            "value":"//form[@id='j-login-wrapper']//button[.='Login']"
+         }
+      }
+   ]
+}

@@ -89,7 +89,7 @@ var DefaultExecutorFactory = function() {
 };
 DefaultExecutorFactory.prototype.get = function(stepType) {
   if (!this.executors[stepType]) {
-    try {
+    try {   	
       this.executors[stepType] = require('./step_types/' + stepType + '.js');
     } catch (e) {
       return null;
@@ -98,14 +98,43 @@ DefaultExecutorFactory.prototype.get = function(stepType) {
   return this.executors[stepType];
 };
 
+
+var preProcess = function (script) {
+	var array_components = new Object();
+	for(var key in script) {
+		if(key == "include") {
+			for(var i = 0; i < script[key].length; i++) {				
+				array_components[script[key][i]['insertAt']] = JSON.parse(fs.readFileSync(__dirname+script[key][i]['rel_dir']));
+			}
+		}
+		if(key == "steps") {
+			var i;
+			for(i = 0; i < script[key].length; i++) {
+				if((i ==0) &&(array_components['Beginning']))  {
+					for(var counter = 0; counter < array_components['Beginning']['steps'].length; counter++) {
+						script[key].splice(counter, 0,array_components['Beginning']['steps'][counter]);
+					}
+				}
+			}
+			count = i;
+			for(var j = 0; j < array_components['Last']['steps'].length; j++) {						
+				script[key].splice(count, 0,array_components['Last']['steps'][j]);
+				count ++;
+			}			
+		}	
+	}
+	return script;
+}
 /** Encapsulates a single test run. */
 var TestRun = function(script, name, initialVars) {
+
   this.initialVars = initialVars || {};
   this.vars = {};
   for (var k in this.initialVars) {
     this.vars[k] = this.initialVars[k];
   }
-  this.script = script;
+  this.script = preProcess(script);
+ 
   this.stepIndex = -1;
   this.wd = null;
   this.silencePrints = false;
@@ -155,6 +184,7 @@ TestRun.prototype.start = function(callback, webDriverToUse) {
 };
 
 TestRun.prototype.currentStep = function() {
+	
   return this.script.steps[this.stepIndex];
 };
 

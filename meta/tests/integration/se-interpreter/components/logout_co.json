@@ -1,0 +1,18 @@
+{  
+   "steps":[  
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"xpath",
+            "value":"//div[@id='j-mobile-nav']/div/ul/li[2]/a/i"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"link text",
+            "value":"Logout"
+         }
+      }
+   ]
+}
