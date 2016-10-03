@@ -63,11 +63,12 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	property name="attributeValueOption" cfc="AttributeOption" fieldtype="many-to-one" fkcolumn="attributeValueOptionID";
 
 	// Related Object Properties (many-to-one)
-	property name="formResponse" cfc="FormResponse" fieldtype="many-to-one" fkcolumn="formResponseID" cascade="all";
+	property name="formResponse" cfc="FormResponse" fieldtype="many-to-one" fkcolumn="formResponseID";
 
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	property name="accountAddress" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="accountAddressID";
 	property name="accountPayment" cfc="AccountPayment" fieldtype="many-to-one" fkcolumn="accountPaymentID";
+	property name="address" cfc="Address" fieldtype="many-to-one" fkcolumn="addressID";
 	property name="attributeOption" cfc="AttributeOption" fieldtype="many-to-one" fkcolumn="attributeOptionID";
 	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID";
 	property name="eventRegistration" cfc="EventRegistration" fieldtype="many-to-one" fkcolumn="eventRegistrationID";
@@ -247,7 +248,27 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		}
 		structDelete(variables, "accountAddress");
 	}
-
+	
+	
+  	// Address (many-to-one)
+  	public void function setAddress(required any address) {
+  		variables.address = arguments.address;
+  		if(isNew() or !arguments.address.hasAttributeValue( this )) {
+  			arrayAppend(arguments.address.getAttributeValues(), this);
+  		}
+  	}
+  	
+  	public void function removeAddress(any address) {
+  		if(!structKeyExists(arguments, "address")) {
+  			arguments.address = variables.address;
+  		}
+  		var index = arrayFind(arguments.address.getAttributeValues(), this);
+  		if(index > 0) {
+  			arrayDeleteAt(arguments.address.getAttributeValues(), index);
+  		}
+  		structDelete(variables, "address");
+  	}
+	
 	// Attribute Option (many-to-one)
 	public void function setAttributeOption(required any attributeOption) {
 		variables.attributeOption = arguments.attributeOption;

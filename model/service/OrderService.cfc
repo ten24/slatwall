@@ -312,11 +312,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					if(arguments.processObject.matchesOrderItem( orderItem ) && isNull(orderItem.getParentOrderItem())){
 						foundItem = true;
 						var foundOrderItem = orderItem;
-						orderItem.setQuantity(orderItem.getQuantity() + arguments.processObject.getQuantity());
-						orderItem.validate(context='save');
-						if(orderItem.hasErrors()) {
-							arguments.order.addError('addOrderItem', orderItem.getErrors());
-						}
+						foundOrderItem.setQuantity(orderItem.getQuantity() + arguments.processObject.getQuantity());
+						foundOrderItem.validate(context='save');
+						if(foundOrderItem.hasErrors()) {
+							arguments.order.addError('addOrderItem', foundOrderItem.getErrors());
+						} 
 						break;
 					}
 				}
@@ -2696,7 +2696,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// If there were no errors, and the order is not placed, then we can make necessary implicit updates
 		if(!arguments.orderItem.hasErrors() && arguments.orderItem.getOrder().getStatusCode() == "ostNotPlaced") {
-
 			// If this item was part of a shipping fulfillment then update that fulfillment
 			if(!isNull(arguments.orderItem.getOrderFulfillment()) && arguments.orderItem.getOrderFulfillment().getFulfillmentMethodType() eq "shipping" && !isNull(arguments.orderItem.getOrderFulfillment().getShippingMethod())) {
 				getShippingService().updateOrderFulfillmentShippingMethodOptions( arguments.orderItem.getOrderFulfillment() );

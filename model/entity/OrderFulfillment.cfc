@@ -78,6 +78,9 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
 	// Related Object Properties (many-to-many - inverse)
 
+	// Calculated properties
+	property name="calculatedSelectedShippingMethodOption" cfc="ShippingMethodOption" fieldtype="many-to-one" fkcolumn="selectedShippingMethodOptionID";
+
 	// Remote properties
 	property name="remoteID" ormtype="string";
 
@@ -101,6 +104,8 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="orderStatusCode" type="numeric" persistent="false";
 	property name="quantityUndelivered" type="numeric" persistent="false";
 	property name="quantityDelivered" type="numeric" persistent="false";
+	property name="selectedShippingMethodOption" type="any" persistent="false";
+	property name="eligibleShippingMethodRates" type="any" persistent="false"; 
 	property name="shippingMethodRate" type="array" persistent="false";
 	property name="shippingMethodOptions" type="array" persistent="false";
 	property name="subtotal" type="numeric" persistent="false" hb_formatType="currency";

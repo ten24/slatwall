@@ -104,6 +104,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 		getFW().redirect(action="admin:entity.detailaddresszone", queryString="addressZoneID=#rc.addressZoneID#&messageKeys=admin.setting.deleteaddresszonelocation_success");
 	}
+	
+	public void function deleteFormResponse(required struct rc) {
+		param name="rc.formResponseID" default="";
+		rc.formResponse = getService('formService').getFormResponse(rc.formResponseID);
+
+		arguments.rc.sRedirectAction = "admin:entity.detailform";
+		arguments.rc.sRedirectQS = "formID=#rc.formResponse.getForm().getFormID()#";
+		genericDeleteMethod(entityName="formResponse", rc=arguments.rc);
+	}
 
 	// Country
 	public void function editCountry(required struct rc) {
@@ -156,6 +165,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	// Order
 	public void function detailOrder(required struct rc) {
+		if(structKeyExists(rc,'subscriptionOrderItemID')){
+			var subscriptionOrderItem = getService('orderService').getSubscriptionOrderItem(rc.subscriptionOrderItemID);
+			if(!isNull(subscriptionOrderItem)){
+				rc.order = subscriptionOrderItem.getOrderItem().getOrder();	
+			}
+		}
 		genericDetailMethod(entityName="Order", rc=arguments.rc);
 		if(!isNull(rc.order) && rc.order.getStatusCode() eq "ostNotPlaced") {
 			rc.entityActionDetails.listAction = "admin:entity.listcartandquote";
@@ -164,6 +179,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 
 	public void function editOrder(required struct rc) {
+		if(structKeyExists(rc,'subscriptionOrderItemID')){
+			var subscriptionOrderItem = getService('orderService').getSubscriptionOrderItem(rc.subscriptionOrderItemID);
+			if(!isNull(subscriptionOrderItem)){
+				rc.order = subscriptionOrderItem.getOrderItem().getOrder();	
+			}
+		}
 		genericEditMethod(entityName="Order", rc=arguments.rc);
 		if(!isNull(rc.order) && rc.order.getStatusCode() eq "ostNotPlaced") {
 			rc.entityActionDetails.listAction = "admin:entity.listcartandquote";

@@ -70,10 +70,59 @@ component accessors="true" output="false" displayname="USPS" implements="Slatwal
 			30 = "Express Mail - Legal Flat Rate Evelope",
 			31 = "Express Mail - Legal Flat Rate Envelope, Hold For Pickup",
 			32 = "Express Mail - Legal Flat Rate Envelope, Sunday/Holiday Delivery",
+			33 = "Priority Mail - Hold For Pickup",
+			34 = "Priority Mail - Large Flat Rate Box Hold For Pickup",
+			35 = "Priority Mail - Medium Flat Rate Box Hold For Pickup",
+			36 = "Priority Mail - Small Flat Rate Box Hold For Pickup",
+			37 = "Priority Mail - Flat Rate Envelope Hold For Pickup",
 			38 = "Priority Mail - Gift Card Flat Rate Envelope",
+		    39 = "Priority Mail - Gift Card Flat Rate Envelope Hold For Pickup",
 			40 = "Priority Mail - Window Flat Rate Envelope",
+			41 = "Priority Mail - Window Flat Rate Envelope Hold For Pickup",
 			42 = "Priority Mail - Small Flat Rate Envelope",
-			44 = "Priority Mail - Legal Flat Rate Envelope"
+			44 = "Priority Mail - Legal Flat Rate Envelope",
+			45 = "Priority Mail - Legal Flat Rate Envelope Hold For Pickup",
+			46 = "Priority Mail - Padded Flat Rate Envelope Hold For Pickup",
+			47 = "Priority Mail - Regional Rate Box A",
+			48 = "Priority Mail - Regional Rate Box A Hold For Pickup",
+			49 = "Priority Mail - Regional Rate Box B",
+			50 = "Priority Mail - Regional Rate Box B Hold For Pickup",
+			53 = "First-Class/ Package Service Hold For Pickup",
+			55 = "Priority Mail Express - Flat Rate Boxes",
+			56 = "Priority Mail Express - Flat Rate Boxes Hold For Pickup",
+			57 = "Priority Mail Express - Sunday/Holiday Delivery Flat Rate Boxes",
+			58 = "Priority Mail - Regional Rate Box C",
+			59 = "Priority Mail - Regional Rate Box C Hold For Pickup",
+			61 = "First-Class/ Package Service",
+			62 = "Priority Mail Express - Padded Flat Rate Envelope",
+			63 = "Priority Mail Express - Padded Flat Rate Envelope Hold For Pickup",
+			64 = "Priority Mail Express - Sunday/Holiday Delivery Padded Flat Rate Envelope",
+			i1 = "International - Priority Mail Express",
+			i2 = "International - Priority Mail",
+			i4 = "International - Global Express Guaranteed (GXG)",
+			i5 = "International - Global Express Guaranteed Document",
+			i6 = "International - Global Express Guaranteed Non-Document Rectangular",
+			i7 = "International - Global Express Guaranteed Non-Document Non-Rectangular",
+			i8 = "International - Priority Mail Flat Rate Envelope",
+			i9 = "International - Priority Mail Medium Flat Rate Box", 
+			i10 = "International - Priority Mail Express Flat Rate Envelope",
+			i11 = "International - Priority Mail Large Flat Rate Box",
+			i12 = "International - USPS GXG Envelopes",
+			i13 = "International - First-Class Mail Letter",
+			i14 = "International - First-Class Mail Large Envelope",
+			i15 = "International - First-Class Package Service",
+			i16 = "International - Priority Mail Small Flat Rate Box",
+			i17 = "International - Priority Mail Express Legal Flat Rate Envelope",
+			i18 = "International - Priority Mail Gift Card Flat Rate Envelope",
+			i19 = "International - Priority Mail Window Flat Rate Envelope",
+			i20 = "International - Priority Mail Small Flat Rate Envelope",
+			i21 = "International - First-Class Mail Postcard",
+			i22 = "International - Priority Mail Legal Flat Rate Envelope",
+			i23 = "International - Priority Mail Padded Flat Rate Envelope",
+			i24 = "International - Priority Mail DVD Flat Rate Priced Box",
+			i25 = "International - Priority Mail Large Video Flat Rate Priced Box",
+			i26 = "International - Priority Mail Express Flat Rate Boxes",
+			i27 = "International - Priority Mail Express Padded Flat Rate Envelope"
 		};
 		return this;
 	}
@@ -96,18 +145,22 @@ component accessors="true" output="false" displayname="USPS" implements="Slatwal
         	requestURL = setting("liveAPIEndPointURL");
         }        
         
-        if(arguments.requestBean.getShipToCountryCode() == "US") {
-        	var xmlPacket = "";
+        var xmlPacket = "";
+		var response = ""; 
+        if(!arguments.requestBean.isInternationalShipment()) {
 			savecontent variable="xmlPacket" {
 				include "RatesV4RequestTemplate.cfm";
 	        }
-        	requestURL &= "?API=RateV4&XML=#trim(xmlPacket)#";
+			requestURL &= "?API=RateV4";
+			response = "RateV4Response";
         } else {
-			var ratesResponseBean = new Slatwall.model.transient.fulfillment.ShippingRatesResponseBean();
-			ratesResponseBean.setData("International Rate not implemented for this integration.");
-			ratesResponseBean.addError("IntegrationError", "International Rate not implemented for this integration.");
-        	return ratesResponseBean;
+			savecontent variable="xmlPacket" { 
+				include "IntlRatesV2RequestTemplate.cfm";
+			} 
+			requestURL &= "?API=IntlRateV2";
+			response = "IntlRateV2Response";
         }
+        requestURL &= "&XML=#trim(xmlPacket)#";
         
         // Setup Request to push to FedEx
         var httpRequest = new http();
@@ -142,20 +195,27 @@ component accessors="true" output="false" displayname="USPS" implements="Slatwal
 			// Log the error
 			logHibachi(xmlResponse.Error.Description.xmlText, true);
 		} else {
-			if(structKeyExists(xmlResponse.RateV4Response.Package, "Error")) {
+			if(structKeyExists(xmlResponse[response].Package, "Error")) {
 				ratesResponseBean.addMessage(
-					messageName=xmlResponse.RateV4Response.Package.Error.Source.xmlText,
-					message=xmlResponse.RateV4Response.Package.Error.Description.xmlText
+					messageName=xmlResponse[response].Package.Error.Source.xmlText,
+					message=xmlResponse[response].Package.Error.Description.xmlText
 				);
-				ratesResponseBean.addError(xmlResponse.RateV4Response.Package.Error.HelpContext.xmlText, xmlResponse.RateV4Response.Package.Error.Description.xmlText);
+				ratesResponseBean.addError(xmlResponse[response].Package.Error.HelpContext.xmlText, xmlResponse[response].Package.Error.Description.xmlText);
 			}
 			
 			if(!ratesResponseBean.hasErrors()) {
-				for(var i=1; i<=arrayLen(xmlResponse.RateV4Response.Package.Postage); i++) {
+				if(structKeyExists(xmlResponse[response].Package,"Postage")){
+					for(var i=1; i<=arrayLen(xmlResponse[response].Package.Postage); i++) {
+						ratesResponseBean.addShippingMethod(
+							shippingProviderMethod=xmlResponse[response].Package.Postage[i].XmlAttributes.classID,
+							totalCharge=xmlResponse[response].Package.Postage[i].Rate.XmlText
+						);
+					}
+				} else {
 					ratesResponseBean.addShippingMethod(
-						shippingProviderMethod=xmlResponse.RateV4Response.Package.Postage[i].XmlAttributes.classID,
-						totalCharge=xmlResponse.RateV4Response.Package.Postage[i].Rate.XmlText
-					);
+						shippingProviderMethod= 'i' & xmlResponse[response].Package.Service.XmlAttributes.ID,
+						totalCharge=xmlResponse[response].Package.Service.Postage.XmlText
+					); 
 				}
 			}
 			

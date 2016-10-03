@@ -56,14 +56,12 @@ Notes:
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.category#" edit="#rc.edit#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.category#" edit="#rc.edit#" />
+	
+		<hb:HibachiEntityDetailGroup object="#rc.category#">
+			<hb:HibachiEntityDetailItem view="admin:entity/categorytabs/basic" open="true" showOnCreateFlag="true" />	
+			<hb:HibachiEntityDetailItem view="admin:entity/categorytabs/childcategories" /> 
+		</hb:HibachiEntityDetailGroup>	
 		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.category#" property="categoryName">
-				<hb:HibachiPropertyDisplay object="#rc.category#" property="restrictAccessFlag" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.category#" property="allowProductAssignmentFlag" edit="#rc.edit#">
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
 
 	</hb:HibachiEntityDetailForm>
 </cfoutput>
