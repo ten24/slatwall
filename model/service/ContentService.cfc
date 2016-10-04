@@ -209,10 +209,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function processContent_duplicateContent(required any content, required any processObject){
 		
 		arguments.processObject.setNewContent(arguments.content.duplicate(onlyPersistent=true));
-		var data = {
-			title=arguments.processObject.getTitle(),
-			urlTitle=arguments.processObject.getUrlTitle()
-		};
+		var data = {};
+		data['title']=arguments.processObject.getTitle();
+		data['urlTitle']=arguments.processObject.getUrlTitle();
 		
 		this.saveContent(arguments.processObject.getNewContent(),data);
 		//get all settings that exist on the object
