@@ -118,7 +118,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var settingData = {
 			setting="",
 			settingName="contentRestrictAccessFlag",
-			settingValue=1,
+			settingValue="1",
 			content={
 				contentID=contentEntity.getContentID()
 			}
@@ -136,7 +136,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(duplicatedContent.getContentBody(),contentEntity.getContentBody());
 		
 		//assert the settings are the same
-		assertEquals(duplicatedContent.setting('contentRestrictAccessFlag'),contentEntity.setting('contentRestrictAccessFlag'));
+		assertEquals("#duplicatedContent.setting('contentRestrictAccessFlag')#","#contentEntity.setting('contentRestrictAccessFlag')#");
 	}
 
 }
