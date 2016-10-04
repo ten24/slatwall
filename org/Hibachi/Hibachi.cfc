@@ -211,6 +211,11 @@ component extends="FW1.framework" {
 			// Verify that the session is setup
 			getHibachiScope().getService("hibachiSessionService").setProperSession();
 			
+			var AuthToken = "";
+			if(structKeyExists(GetHttpRequestData().Headers,'Auth-Token')){
+				AuthToken = GetHttpRequestData().Headers['Auth-Token'];
+			}
+			
 			// If there is no account on the session, then we can look for an Access-Key, Access-Key-Secret, to setup that account for this one request.
 			if(!getHibachiScope().getLoggedInFlag() &&
 				structKeyExists(httpRequestData, "headers") &&
@@ -222,19 +227,21 @@ component extends="FW1.framework" {
 				var accessKey 		= httpRequestData.headers["Access-Key"];
 				var accessKeySecret = httpRequestData.headers["Access-Key-Secret"];
 
-				// Attempt to find an account by accessKey & accessKeySecret
+				// Attempt to find an account by accessKey & accessKeySecret and set a default JWT if found.
 				var account = getHibachiScope().getService("AccountService").getAccountByAccessKeyAndSecret( accessKey=accessKey, accessKeySecret=accessKeySecret );
-
+				
 				// If an account was found, then set that account in the session for this request.  This should not persist
 				if (!isNull(account)){
 					getHibachiScope().getSession().setAccount( account );
+					AuthToken = 'Bearer '& getHibachiScope().getService('HibachiJWTService').createToken();
 				}
+				
 			}
 			
 			//check if we have the authorization header
-			if(structKeyExists(GetHttpRequestData().Headers,'Auth-Token')){
+			if(len(AuthToken)){
 				
-				var authorizationHeader = GetHttpRequestData().Headers['Auth-Token'];
+				var authorizationHeader = AuthToken;
 				var prefix = 'Bearer ';
 				//get token by stripping prefix
 				var token = right(authorizationHeader,len(authorizationHeader) - len(prefix));
@@ -249,12 +256,13 @@ component extends="FW1.framework" {
 				}
 			// If there is no account on the session, then we can look for an authToken to setup that account for this one request
 			}else if(!getHibachiScope().getLoggedInFlag() && structKeyExists(request, "context") && structKeyExists(request.context, "authToken") && len(request.context.authToken)) {
+				try{
 				var authTokenAccount = getHibachiScope().getDAO('hibachiDAO').getAccountByAuthToken(authToken=request.context.authToken);
 				if(!isNull(authTokenAccount)) {
 					getHibachiScope().getSession().setAccount( authTokenAccount );
 				}
+				}catch(any e){}//supress errors here.
 			}
-			
 			// Call the onEveryRequest() Method for the parent Application.cfc
 			onEveryRequest();
 		}
@@ -559,9 +567,6 @@ component extends="FW1.framework" {
                     if(!coreBF.containsBean("hibachiJsonService")){
 						coreBF.declareBean("hibachiJsonService", "#variables.framework.applicationKey#.org.Hibachi.HibachiJsonService",true);
 					}
-					if(!coreBF.containsBean("hibachiEntityQueueService")) {
-						coreBF.declareBean("hibachiEntityQueueService", "#variables.framework.applicationKey#.org.Hibachi.HibachiEntityQueueService", true);	
-					}
 					// If the default transient beans were not found in the model, add a reference to the core one in hibachi
 					if(!coreBF.containsBean("hibachiScope")) {
 						coreBF.declareBean("hibachiScope", "#variables.framework.applicationKey#.org.Hibachi.HibachiScope", false);
@@ -577,9 +582,6 @@ component extends="FW1.framework" {
 					}
 					if(!coreBF.containsBean("hibachiJWT")){
 						coreBF.declareBean("hibachiJWT", "#variables.framework.applicationKey#.org.Hibachi.HibachiJWT",false);
-					}
-					if(!coreBF.containsBean("hibachiEntityParser")){
-						coreBF.declareBean("hibachiEntityParser", "#variables.framework.applicationKey#.org.Hibachi.hibachiEntityParser",false);
 					}
 					
 					
@@ -618,17 +620,11 @@ component extends="FW1.framework" {
 						setBeanFactory(coreBF);
 					}
 					writeLog(file="#variables.framework.applicationKey#", text="General Log - Bean Factory Set");
+					
 					//========================= END: IOC SETUP ===============================
 					
 					// Call the onFirstRequest() Method for the parent Application.cfc
 					onFirstRequest();
-					
-					//==================== START: EVENT HANDLER SETUP ========================
-					
-					getBeanFactory().getBean('hibachiEventService').registerEventHandlers();
-					
-					
-					//===================== END: EVENT HANDLER SETUP =========================
 					
 					// ============================ FULL UPDATE =============================== (this is only run when updating, or explicitly calling it by passing update=true as a url key)
 					if(!fileExists(expandPath('/#variables.framework.applicationKey#/custom/config') & '/lastFullUpdate.txt.cfm') || (structKeyExists(url, variables.framework.hibachi.fullUpdateKey) && url[ variables.framework.hibachi.fullUpdateKey ] == variables.framework.hibachi.fullUpdatePassword)){
@@ -639,8 +635,6 @@ component extends="FW1.framework" {
 						
 						//Update custom properties
 						var success = getHibachiScope().getService('updateService').updateEntitiesWithCustomProperties();
-						
-						getHibachiScope().getService("hibachiEventService").announceEvent(eventName="afterUpdateEntitiesWithCustomProperties");
 						if (success){
 							writeLog(file="Slatwall", text="General Log - Attempting to update entities with custom properties.");
 						}else{
@@ -663,6 +657,12 @@ component extends="FW1.framework" {
 					
 					// Call the onFirstRequestPostUpdate() Method for the parent Application.cfc
 					onFirstRequestPostUpdate();
+					
+					//==================== START: EVENT HANDLER SETUP ========================
+					
+					getBeanFactory().getBean('hibachiEventService').registerEventHandlers();
+					
+					//===================== END: EVENT HANDLER SETUP =========================
 					
 					//==================== START: JSON BUILD SETUP ========================
 					
