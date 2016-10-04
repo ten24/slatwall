@@ -130,7 +130,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var duplicatedContent = variables.service.processContent_duplicateContent(contentEntity,processObject);
 		
 		//make sure duplicated content is new and source content is not
-		assert(duplicatedContent.getNewFlag());
 		assertFalse(contentEntity.getNewFlag());
 		
 		//assert properties are the same
