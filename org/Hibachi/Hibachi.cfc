@@ -646,7 +646,9 @@ component extends="FW1.framework" {
 						getHibachiScope().getService("hibachiTagService").cfsetting(requesttimeout=600);
 						
 						//Update custom properties
+						
 						var success = getHibachiScope().getService('updateService').updateEntitiesWithCustomProperties();
+						getHibachiScope().getService("hibachiEventService").announceEvent(eventName="afterUpdateEntitiesWithCustomProperties");
 						if (success){
 							writeLog(file="Slatwall", text="General Log - Attempting to update entities with custom properties.");
 						}else{
