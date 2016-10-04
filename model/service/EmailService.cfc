@@ -63,7 +63,6 @@ Notes:
 				subject="#arguments.email.getEmailSubject()#"
 				cc="#arguments.email.getEmailCC()#"
 				bcc="#arguments.email.getEmailBCC()#"
-				failto="#arguments.email.getEmailFailTo()#"
 				charset="utf-8">
 				<cfif !isNull(arguments.email.getRelatedObject())>
 					<cfmailparam name="Related-Object" value="#arguments.email.getRelatedObject()#">
@@ -71,6 +70,9 @@ Notes:
 				</cfif>
 				<cfif !isNull(arguments.email.getEmailReplyTo())>
 					<cfmailparam name="Reply-To" value="#arguments.email.getEmailReplyTo()#">
+				</cfif>
+				<cfif !isNull(arguments.email.getEmailFailTo())>
+					<cfmailparam name="Return-Path" value="#arguments.email.getEmailFailTo()#">
 				</cfif>
 				<cfmailpart type="text/plain">
 					<cfoutput>#arguments.email.getEmailBodyText()#</cfoutput>
@@ -86,9 +88,11 @@ Notes:
 				subject="#arguments.email.getEmailSubject()#"
 				cc="#arguments.email.getEmailCC()#"
 				bcc="#arguments.email.getEmailBCC()#"
-				failto="#arguments.email.getEmailFailTo()#"
 				charset="utf-8"
 				type="text/html">
+				<cfif !isNull(arguments.email.getEmailFailTo())>
+					<cfmailparam name="Return-Path" value="#arguments.email.getEmailFailTo()#">
+				</cfif>
 				<cfif !isNull(arguments.email.getRelatedObject())>
 					<cfmailparam name="Related-Object" value="#arguments.email.getRelatedObject()#">
 					<cfmailparam name="Related-Object-ID" value="#arguments.email.getRelatedObjectID()#">
@@ -105,9 +109,11 @@ Notes:
 				subject="#arguments.email.getEmailSubject()#"
 				cc="#arguments.email.getEmailCC()#"
 				bcc="#arguments.email.getEmailBCC()#"
-				failto="#arguments.email.getEmailFailTo()#"
 				charset="utf-8"
 				type="text/plain">
+				<cfif !isNull(arguments.email.getEmailFailTo())>
+					<cfmailparam name="Return-Path" value="#arguments.email.getEmailFailTo()#">
+				</cfif>
 				<cfif !isNull(arguments.email.getRelatedObject())>
 					<cfmailparam name="Related-Object" value="#arguments.email.getRelatedObject()#">
 					<cfmailparam name="Related-Object-ID" value="#arguments.email.getRelatedObjectID()#">
