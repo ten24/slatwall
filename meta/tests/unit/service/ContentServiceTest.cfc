@@ -118,7 +118,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var settingData = {
 			setting="",
 			settingName="contentRestrictAccessFlag",
-			settingValue="1",
+			settingValue=1,
 			content={
 				contentID=contentEntity.getContentID()
 			}
