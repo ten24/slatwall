@@ -161,9 +161,9 @@ Notes:
 					<cfif findNoCase("database/",script.getScriptPath())>
 						<cfset var dbSpecificFileName = replaceNoCase(script.getScriptPath(),".cfm",".#getApplicationValue("databaseType")#.cfm") />
 						<cfif fileExists(expandPath("/Slatwall/config/scripts/#dbSpecificFileName#"))>
-							<cfinclude template="#getHibachiScope().getBaseURL()#/config/scripts/#dbSpecificFileName#" />
+							<cfinclude template="#getHibachiScope().getBaseURL()#config/scripts/#dbSpecificFileName#" />
 						<cfelseif fileExists(expandPath("/Slatwall/config/scripts/#script.getScriptPath()#"))>
-							<cfinclude template="#getHibachiScope().getBaseURL()#/config/scripts/#script.getScriptPath()#" />
+							<cfinclude template="#getHibachiScope().getBaseURL()#config/scripts/#script.getScriptPath()#" />
 						<cfelse>
 							<cfthrow message="update script file doesn't exist" />
 						</cfif>
