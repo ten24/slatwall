@@ -131,7 +131,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		var duplicatedContent = variables.service.processContent_duplicateContent(contentEntity,processObject);
 		
-		
 		//make sure duplicated content is new and source content is not
 		assertFalse(contentEntity.getNewFlag());
 		
@@ -141,7 +140,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//assert the settings are the same
 		assertEquals("#duplicatedContent.setting('contentRestrictAccessFlag')#","#contentEntity.setting('contentRestrictAccessFlag')#");
 		
-		entityDelete(duplicatedContent);
 	}
 
 }
