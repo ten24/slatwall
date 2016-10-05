@@ -83,19 +83,12 @@ component extends="mxunit.framework.TestCase" output="false" {
 
 		for(var i=arrayLen(variables.persistentEntities); i>=1; i--) {
 			flushRequired = true;
-			try{
-				entityDelete( variables.persistentEntities[i] );
-			}catch(any e){
-				debug("Could Not Delete: " & e);
-			}
+			entityDelete( variables.persistentEntities[i] );
 		}
 		
-		if(structKeyExists(variables,'files')){
-			for (var i = arrayLen(variables.files); i >= 1; i--) {
-				fileDelete( variables.files[i] );
-			}
+		for (var i = arrayLen(variables.files); i >= 1; i--) {
+			fileDelete( variables.files[i] );
 		}
-		
 		
 		try{
 			if(flushRequired) {
