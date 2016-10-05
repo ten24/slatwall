@@ -126,17 +126,22 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var settingEntity = createPersistedTestEntity('setting',settingData);
 		
 		var processObject = contentEntity.getProcessObject('duplicateContent');
+		processObject.setTitle('duplicateContent#createUUID()#');
+		processObject.setURLTitle('duplicateContent#createUUID()#');
 		
 		var duplicatedContent = variables.service.processContent_duplicateContent(contentEntity,processObject);
 		
+		
 		//make sure duplicated content is new and source content is not
-//		assertFalse(contentEntity.getNewFlag());
-//		
-//		//assert properties are the same
-//		assertEquals(duplicatedContent.getContentBody(),contentEntity.getContentBody());
-//		
-//		//assert the settings are the same
-//		assertEquals("#duplicatedContent.setting('contentRestrictAccessFlag')#","#contentEntity.setting('contentRestrictAccessFlag')#");
+		assertFalse(contentEntity.getNewFlag());
+		
+		//assert properties are the same
+		assertEquals(duplicatedContent.getContentBody(),contentEntity.getContentBody());
+		
+		//assert the settings are the same
+		assertEquals("#duplicatedContent.setting('contentRestrictAccessFlag')#","#contentEntity.setting('contentRestrictAccessFlag')#");
+		
+		entityDelete(duplicatedContent);
 	}
 
 }
