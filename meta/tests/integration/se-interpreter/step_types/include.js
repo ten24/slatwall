@@ -1,7 +1,9 @@
 exports.run = function(tr, cb) {
+  var tools = require('../add_step_in_between');
   var fs = require('fs');
   var path = require('path');
   var component = JSON.parse(fs.readFileSync(path.join(__dirname, '../', tr.currentStep()['rel_dir'])));
+  component = tools.addStepInBetween(component,{"script":"return document.readyState","value":"complete","type":"waitForEval"}); 
   var currentStepIndex = tr.script.steps.indexOf(tr.currentStep());
   tr.script.steps.splice(currentStepIndex,1);
   for (var i = 0; i < component.steps.length; i++) {
