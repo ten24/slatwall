@@ -1,5 +1,5 @@
 {
-   "steps":[  
+   "steps":[ 
        {  
          "type":"waitForElementPresent",
          "locator":{  

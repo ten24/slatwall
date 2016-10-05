@@ -1,0 +1,245 @@
+{
+  "type": "script",
+  "seleniumVersion": "2",
+  "formatVersion": 2,
+  "steps": [ 
+    {  
+         "script":"return document.readyState",
+         "type":"waitForEval",
+         "value":"complete"
+    },
+    {
+      "type": "clickElement",
+      "locator": {
+        "type": "xpath",
+        "value": "//div[@class='btn-toolbar']//button[.=' Actions ']"
+      }
+    },
+    {  
+         "script":"return document.readyState",
+         "type":"waitForEval",
+         "value":"complete"
+    },
+    {
+      "type": "clickElement",
+      "locator": {
+        "type": "link text",
+        "value": "Place Order"
+      }
+    },
+    {  
+         "script":"return document.readyState",
+         "type":"waitForEval",
+         "value":"complete"
+    },
+    
+    {
+      "type": "setElementText",
+      "locator": {
+        "type": "name",
+        "value": "newOrderPayment.creditCardNumber"
+      },
+      "text": "4111111111111111"
+    },
+    {  
+         "script":"return document.readyState",
+         "type":"waitForEval",
+         "value":"complete"
+    },
+    {
+      "type": "setElementText",
+      "locator": {
+        "type": "name",
+        "value": "newOrderPayment.nameOnCreditCard"
+      },
+      "text": "Test"
+    },
+    {
+
+      "type": "waitForElementPresent",
+      "locator": {
+        "type": "css selector",
+        "value": "div.s-property.form-horizontal > div.hibachi-display-toggle > div.hibachi-display-toggle > div:nth-child(5) > div > select > option:nth-child(4)"
+      }
+    },
+    {
+      "type": "setElementSelected",
+      "locator": {
+        "type": "css selector",
+        "value": "div.s-property.form-horizontal > div.hibachi-display-toggle > div.hibachi-display-toggle > div:nth-child(5) > div > select > option:nth-child(4)"
+      }
+    },
+    
+    {  
+         "script":"return document.readyState",
+         "type":"waitForEval",
+         "value":"complete"
+    },
+    
+    {
+      "type": "setElementText",
+      "locator": {
+        "type": "name",
+        "value": "newOrderPayment.securityCode"
+      },
+      "text": "777"
+    },
+    {  
+         "script":"return document.readyState",
+         "type":"waitForEval",
+         "value":"complete"
+    },
+    
+   
+    {
+      "type": "setElementText",
+      "locator": {
+        "type": "name",
+        "value": "newOrderPayment.billingAddress.name"
+      },
+      "text": "Test name for billing Address"
+    },
+    {  
+         "script":"return document.readyState",
+         "type":"waitForEval",
+         "value":"complete"
+    },
+    {
+      "type": "setElementText",
+      "locator": {
+        "type": "name",
+        "value": "newOrderPayment.billingAddress.company"
+      },
+      "text": "Test Company"
+    },
+    {  
+         "script":"return document.readyState",
+         "type":"waitForEval",
+         "value":"complete"
+    },
+    {
+      "type": "setElementText",
+      "locator": {
+        "type": "name",
+        "value": "newOrderPayment.billingAddress.streetAddress"
+      },
+      "text": "Test Address"
+    },
+    {  
+         "script":"return document.readyState",
+         "type":"waitForEval",
+         "value":"complete"
+    },
+    {
+      "type": "setElementText",
+      "locator": {
+        "type": "name",
+        "value": "newOrderPayment.billingAddress.city"
+      },
+      "text": "Worcester"
+    },
+    {  
+         "script":"return document.readyState",
+         "type":"waitForEval",
+         "value":"complete"
+    },
+    {
+      "type": "setElementSelected",
+      "locator": {
+        "type": "xpath",
+        "value": "//div[@class='slatwall-address-container']/div[7]/div/select//option[24]"
+      }
+    },
+    {  
+         "script":"return document.readyState",
+         "type":"waitForEval",
+         "value":"complete"
+    },
+    {
+      "type": "setElementSelected",
+      "locator": {
+        "type": "xpath",
+        "value": "//div[@class='slatwall-address-container']/div[7]/div/select//option[24]"
+      }
+    },
+    {  
+         "script":"return document.readyState",
+         "type":"waitForEval",
+         "value":"complete"
+    },
+    {
+      "type": "setElementSelected",
+      "locator": {
+        "type": "xpath",
+        "value": "//div[@class='slatwall-address-container']/div[7]/div/select//option[24]"
+      }
+    },
+    {  
+         "script":"return document.readyState",
+         "type":"waitForEval",
+         "value":"complete"
+    },
+    {
+      "type": "setElementSelected",
+      "locator": {
+        "type": "xpath",
+        "value": "//div[@class='slatwall-address-container']/div[7]/div/select//option[25]"
+      }
+    },
+    {  
+         "script":"return document.readyState",
+         "type":"waitForEval",
+         "value":"complete"
+    },
+    {
+      "type": "setElementSelected",
+      "locator": {
+        "type": "xpath",
+        "value": "//div[@class='slatwall-address-container']/div[7]/div/select//option[26]"
+      }
+    },
+    {  
+         "script":"return document.readyState",
+         "type":"waitForEval",
+         "value":"complete"
+    },
+    {
+      "type": "setElementSelected",
+      "locator": {
+        "type": "xpath",
+        "value": "//div[@class='slatwall-address-container']/div[7]/div/select//option[26]"
+      }
+    },
+    {  
+         "script":"return document.readyState",
+         "type":"waitForEval",
+         "value":"complete"
+    },
+    {
+      "type": "setElementText",
+      "locator": {
+        "type": "name",
+        "value": "newOrderPayment.billingAddress.postalCode"
+      },
+      "text": "01602"
+    },
+    {  
+         "script":"return document.readyState",
+         "type":"waitForEval",
+         "value":"complete"
+    },
+    {
+      "type": "clickElement",
+      "locator": {
+        "type": "xpath",
+        "value": "//form[@id='adminentityprocessorder_placeorder']//button[normalize-space(.)='Place Order']"
+      }
+    }
+  ],
+  "data": {
+    "configs": {},
+    "source": "none"
+  },
+  "inputs": [],
+  "timeoutSeconds": 60
+}

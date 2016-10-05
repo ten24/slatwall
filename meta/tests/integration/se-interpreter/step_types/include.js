@@ -8,5 +8,5 @@ exports.run = function(tr, cb) {
     tr.script.steps.splice(currentStepIndex, 0,component.steps[i]);
     currentStepIndex++;
   }
-  tr.do('refresh', [], cb);  
+  tr.do('back', [], cb);  
 }

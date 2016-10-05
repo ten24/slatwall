@@ -99,7 +99,27 @@ DefaultExecutorFactory.prototype.get = function(stepType) {
   return this.executors[stepType];
 };
 
-
+/*
+Adds step in between the execution of a step
+@param script: JSON File
+@param step: Block Step to insert in between the steps in the file
+*/
+var addStepInBetween = function (script, step) {
+    var array_components = new Object();    
+    for(var key in script) {
+    	if(key == "steps") {
+    		var jsonFileSize = script[key].length;
+    		var counter = 1;
+        	for(var i = 1; i < jsonFileSize; i++) {
+        		if(counter == i) {
+        			script[key].splice(i, 0,step);
+        			counter = counter + 2;
+        		}
+            }
+        }   
+    }
+    return script;
+}
 /** Encapsulates a single test run. */
 var TestRun = function(script, name, initialVars) {
   this.initialVars = initialVars || {};
@@ -107,7 +127,7 @@ var TestRun = function(script, name, initialVars) {
   for (var k in this.initialVars) {
     this.vars[k] = this.initialVars[k];
   }
-  this.script = script;
+  this.script = addStepInBetween(script,{"script":"return document.readyState","value":"complete","type":"waitForEval"});
   this.stepIndex = -1;
   this.wd = null;
   this.silencePrints = false;

@@ -2,23 +2,12 @@
    "type":"script",
    "seleniumVersion":"2",
    "formatVersion":2,
-   "include":[  
-
-      {  
-         "rel_dir":"/components/login_co.json",
-         "insertAt":"Beginning"
-      },
-      {  
-         "rel_dir":"/components/logout_co.json",
-         "insertAt":"Last"
-      }
-   ],
    "steps":[
       {  
          "type":"get",
          "url":"http://cf10.localhost/?slatAction=main.login"
       },
-       {  
+      {  
          "type":"include",
          "rel_dir":"/components/login_co.json"
       },
@@ -43,18 +32,23 @@
             "value":"Create Order"
          }
       },
+      { 
+         "type":"store",
+         "text":"//label[@for='newAccountFlagNo']", 
+         "variable":"pathVar1"       
+      },
       {  
          "type":"waitForElementPresent",
          "locator":{  
             "type":"xpath",
-            "value":"//label[@for='newAccountFlagNo']"
+            "value":"${pathVar1}"
          }
       },
       {  
          "type":"clickElement",
          "locator":{  
             "type":"xpath",
-            "value":"//label[@for='newAccountFlagNo']"
+            "value":"${pathVar1}"
          }
       },
       {  
@@ -108,18 +102,24 @@
          },
          "text":"2"
       },
-      {  
-         "type":"waitForElementPresent",
-         "locator":{  
-            "type":"id",
-            "value":"adminentityprocessorder_4028288f576bc26e01576be0dbe80025"
-         }
-      },
+      
       {  
          "type":"clickElement",
          "locator":{  
-            "type":"id",
-            "value":"adminentityprocessorder_4028288f576bc26e01576be0dbe80025"
+            "type":"xpath",
+            "value":"//*[@id='adminentityprocessorder_4028288f576bc26e01576be0dbe80025']"
+         }
+      },
+      {  
+         "script":"return document.readyState",
+         "value":"complete",
+         "type":"waitForEval"
+      },
+      {  
+         "type":"waitForElementPresent",
+         "locator":{  
+            "type":"xpath",
+            "value":"//label[@for='registrants[1].newAccountFlagNo']"
          }
       },
       {  
@@ -186,6 +186,15 @@
             "type":"xpath",
             "value":"//form[@id='adminentityprocessorder_addorderitem']//button[normalize-space(.)='Add']"
          }
+      },
+      {  
+         "script":"return document.readyState",
+         "value":"complete",
+         "type":"waitForEval"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/place_order_credit_card_co.json"
       },
       {  
          "type":"include",

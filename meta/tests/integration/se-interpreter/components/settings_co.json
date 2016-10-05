@@ -1,0 +1,15 @@
+{
+   "steps":[ 
+       
+       { 
+         "type": "store",
+         "text":"Test name for billing Address", 
+         "variable":"billingAddressName"        
+      },
+      { 
+         "type": "store",
+         "text":"Test company", 
+         "variable":"billingAddressCompany"       
+      }
+   ]
+}
