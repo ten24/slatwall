@@ -125,11 +125,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var settingEntity = createPersistedTestEntity('setting',settingData);
 		
-		var processObject = contentEntity.getProcessObject('duplicateContent');
-		processObject.setTitle('duplicateContent#createUUID()#');
-		processObject.setURLTitle('duplicateContent#createUUID()#');
+		var data = {
+			title='duplicateContent#createUUID()#',
+			urlTitle='duplicateContent#createUUID()#'
+		};
 		
-		var duplicatedContent = variables.service.processContent_duplicateContent(contentEntity,processObject);
+		var duplicatedContent = variables.service.process(contentEntity,data,'duplicateContent');
 		
 		//make sure duplicated content is new and source content is not
 		assertFalse(contentEntity.getNewFlag());
