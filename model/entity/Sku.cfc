@@ -175,6 +175,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="redemptionAmountTypeOptions" persistent="false";
 	property name="giftCardExpirationTermOptions" persistent="false";
 	property name="formattedRedemptionAmount" persistent="false";
+	property name="weight" persistent="false"; 
 	property name="allowWaitlistedRegistrations" persistent="false";
 	// Deprecated Properties
 
@@ -503,6 +504,11 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
     }
 
 	// END: Price / Currency Methods
+
+	public numeric function getWeight(){
+		return this.setting( 'skuShippingWeight' );
+	} 
+
 
 	// START: Quantity Helper Methods
 

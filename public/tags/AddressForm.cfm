@@ -222,7 +222,7 @@
 							
 							jQuery.ajax({
 								type: 'get',
-								url: '#request.slatwallScope.getApplicationValue("baseURL")#/',
+								url: '#request.slatwallScope.getApplicationValue("baseURL")#',
 								data: data,
 								dataType: "json",
 								context: document.body,

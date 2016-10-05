@@ -187,9 +187,9 @@ Notes:
 					<cfif findNoCase("database/",script.getScriptPath())>
 						<cfset var dbSpecificFileName = replaceNoCase(script.getScriptPath(),".cfm",".#getApplicationValue("databaseType")#.cfm") />
 						<cfif fileExists(expandPath("/Slatwall/config/scripts/#dbSpecificFileName#"))>
-							<cfinclude template="#getHibachiScope().getBaseURL()#/config/scripts/#dbSpecificFileName#" />
+							<cfinclude template="#getHibachiScope().getBaseURL()#config/scripts/#dbSpecificFileName#" />
 						<cfelseif fileExists(expandPath("/Slatwall/config/scripts/#script.getScriptPath()#"))>
-							<cfinclude template="#getHibachiScope().getBaseURL()#/config/scripts/#script.getScriptPath()#" />
+							<cfinclude template="#getHibachiScope().getBaseURL()#config/scripts/#script.getScriptPath()#" />
 						<cfelse>
 							<cfthrow message="update script file doesn't exist" />
 						</cfif>
@@ -277,6 +277,32 @@ Notes:
 			return true;
 		</cfscript>
 	</cffunction>
+	<cffunction name="migrateAttributeToCustomProperty" returntype="void">
+		<cfargument name="entityName"/>
+		<cfargument name="customPropertyName"/>
+		
+		<cfset var entityMetaData = getEntityMetaData(arguments.entityName)/>
+		<cfset var primaryIDName = getPrimaryIDPropertyNameByEntityName(arguments.entityName)/>
+		
+		<cfquery name="local.attributeToCustomProperty">
+			UPDATE p
+
+			SET p.#arguments.customPropertyName# = av.attributeValue
+			
+			FROM #entityMetaData.table# p
+			
+			INNER JOIN SwAttributeValue av
+			
+			ON p.#primaryIDName# = av.#primaryIDName#
+			
+			INNER JOIN SwAttribute a
+			
+			ON av.attributeID = a.attributeID 
+			
+			WHERE a.attributeCode = '#arguments.customPropertyName#'
+		</cfquery>
+	</cffunction>
+	
 
 	<cfscript>
 		public void function checkIfCustomPropertiesExistInBase(required any customMeta, required any baseMeta){

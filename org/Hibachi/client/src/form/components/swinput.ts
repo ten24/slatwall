@@ -301,7 +301,7 @@ class SWInputController{
 		return template + actionButtons;
 	};
 
-	public $onInit = ()=>{
+    public pullBindings = ()=>{
 		var bindToControllerProps = this.$injector.get('swInputDirective')[0].bindToController;
 		for(var i in bindToControllerProps){
 			if(!this[i]){
@@ -334,6 +334,11 @@ class SWInputController{
 		this.inputAttributes = this.utilityService.replaceAll(this.inputAttributes,"'",'"');
 
 		this.value = this.utilityService.getPropertyValue(this.object,this.property);
+    }
+
+	public $onInit = ()=>{
+
+        this.pullBindings();
 
 		this.eventHandlersArray = <Array<EventHandler>>this.eventHandlers.split(',');
 
@@ -351,6 +356,9 @@ class SWInputController{
 		var eventNameForUpdateBindings = 'updateBindings';
 		var eventNameForUpdateBindingsID = this.object.metaData.className.split('_')[0]+'updateBindings';
 
+        var eventNameForPullBindings = 'pullBindings';
+        var eventNameForPullBindingsID = this.object.metaData.className.split('_')[0]+'pullBindings';
+
 		//attach a successObserver
 		if(this.object){
 			//update bindings on save success
@@ -358,6 +366,9 @@ class SWInputController{
 
 			//update bindings manually
 			this.observerService.attach(this.onSuccess,eventNameForUpdateBindings,eventNameForUpdateBindingsID);
+
+            //pull bindings from higher binding level manually
+            this.observerService.attach(this.pullBindings,eventNameForPullBindings,eventNameForPullBindingsID);
 
 		}
 

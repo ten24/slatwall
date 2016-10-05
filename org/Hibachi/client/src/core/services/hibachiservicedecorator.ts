@@ -238,6 +238,7 @@ class HibachiServiceDecorator{
 
                 angular.forEach(relatedAttributes,function(attributeSet){
                     angular.forEach(attributeSet.attributes,function(attribute){
+                        if(attribute && attribute.attributeCode){
                         Object.defineProperty(_jsEntities[ entity.className ].prototype, attribute.attributeCode, {
                             configurable:true,
                             enumerable:false,
@@ -251,6 +252,7 @@ class HibachiServiceDecorator{
                                 this.data[attribute.attributeCode]=value;
                             }
                         });
+                        }
                     });
                 });
 
@@ -481,7 +483,7 @@ class HibachiServiceDecorator{
                                         enumerable:false,
 
                                         get: function() {
-                                            if(attribute != null && this.data[attribute.attributeCode] == null){
+                                            if(attribute != null && attribute.attributeCode && this.data[attribute.attributeCode] == null){
                                                 return undefined;
                                             }
                                             return this.data[property.name];
@@ -526,7 +528,7 @@ class HibachiServiceDecorator{
                                             enumerable:false,
 
                                             get: function() {
-                                                if(attribute != null && this.data[attribute.attributeCode] == null){
+                                                if(attribute != null && attribute.attributeCode && this.data[attribute.attributeCode] == null){
                                                     return undefined;
                                                 }
                                                 return this.data[property.name];

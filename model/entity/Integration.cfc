@@ -99,7 +99,7 @@ component displayname="Integration" entityname="SlatwallIntegration" table="SwIn
 			case "authentication" : {
 				return getService("integrationService").getAuthenticationIntegrationCFC(this);
 				break;
-			}
+			} 
 			case "payment" : {
 				return getService("integrationService").getPaymentIntegrationCFC(this);
 				break;

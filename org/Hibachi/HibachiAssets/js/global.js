@@ -1157,7 +1157,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 			// Verify that an update isn't already running
 			if(!textAutocompleteHold(autocompleteField, thisData)) {
 				jQuery.ajax({
-					url: hibachiConfig.baseURL + '/',
+					url: hibachiConfig.baseURL,
 					method: 'post',
 					data: thisData,
 					dataType: 'json',
@@ -1284,7 +1284,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 			}
 			if(data['entityName']){
 				jQuery.ajax({
-					url: hibachiConfig.baseURL + '/',
+					url: hibachiConfig.baseURL,
 					method: 'post',
 					data: data,
 					dataType: 'json',
@@ -1431,7 +1431,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	}
 	
 	function addLoadingDiv( elementID ) {
-		var loadingDiv = '<div id="loading' + elementID + '" style="position:absolute;float:left;text-align:center;background-color:#FFFFFF;opacity:.9;z-index:900;"><img style="position:relative;" src="' + hibachiConfig.baseURL + '/org/Hibachi/HibachiAssets/images/loading.gif" title="loading" /></div>';	
+		var loadingDiv = '<div id="loading' + elementID + '" style="position:absolute;float:left;text-align:center;background-color:#FFFFFF;opacity:.9;z-index:900;"><img style="position:relative;" src="' + hibachiConfig.baseURL + 'org/Hibachi/HibachiAssets/images/loading.gif" title="loading" /></div>';	
 		jQuery('#' + elementID).before(loadingDiv);
 		jQuery('#loading' + elementID).width(jQuery('#' + elementID).width() + 2);
 		jQuery('#loading' + elementID).height(jQuery('#' + elementID).height() + 2);
@@ -1546,7 +1546,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		});
 	
 		jQuery.ajax({
-			url: hibachiConfig.baseURL + '/',
+			url: hibachiConfig.baseURL,
 			async: false,
 			data: data,
 			method: 'post',
@@ -1678,7 +1678,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 			};
 	
 			jQuery.ajax({
-				url: hibachiConfig.baseURL + '/',
+				url: hibachiConfig.baseURL,
 				method: 'post',
 				data: data,
 				dataType: 'json',
@@ -1698,11 +1698,11 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 							var records = result[key]['records'];
 	
 						    for(var r=0; r < records.length; r++) {
-						    	jQuery('#golbalsr-' + key).append('<li><a href="' + hibachiConfig.baseURL + '/?' + hibachiConfig.action + '=' + buckets[key]['detailAction'] + '&' + buckets[key]['primaryIDProperty'] + '=' + records[r]['value'] + '">' + records[r]['name'] + '</a></li>');
+						    	jQuery('#golbalsr-' + key).append('<li><a href="' + hibachiConfig.baseURL + '?' + hibachiConfig.action + '=' + buckets[key]['detailAction'] + '&' + buckets[key]['primaryIDProperty'] + '=' + records[r]['value'] + '">' + records[r]['name'] + '</a></li>');
 						    }
 	
 						    if(result[key]['recordCount'] > 10) {
-						    	jQuery('#golbalsr-' + key).append('<li><a href="' + hibachiConfig.baseURL + '/?' + hibachiConfig.action + '=' + buckets[key]['listAction'] + '&keywords=' + jQuery('#global-search').val() + '">...</a></li>');
+						    	jQuery('#golbalsr-' + key).append('<li><a href="' + hibachiConfig.baseURL + '?' + hibachiConfig.action + '=' + buckets[key]['listAction'] + '&keywords=' + jQuery('#global-search').val() + '">...</a></li>');
 						    } else if (result[key]['recordCount'] == 0) {
 						    	jQuery('#golbalsr-' + key).append('<li><em>none</em></li>');
 						    }
@@ -1751,7 +1751,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		}
 	
 		jQuery.ajax({
-			url: hibachiConfig.baseURL + '/',
+			url: hibachiConfig.baseURL,
 			method: 'post',
 			data: data,
 			dataType: 'json',
