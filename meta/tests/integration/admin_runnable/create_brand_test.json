@@ -1,0 +1,29 @@
+{  
+   "type":"script",
+   "seleniumVersion":"2",
+   "formatVersion":2,
+   "steps":[  
+      {  
+         "type":"get",
+         "url":"http://cf10.localhost/?slatAction=main.login"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/login_co.json"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/create_brand_co.json"
+      }
+   ],
+   "data":{  
+      "configs":{  
+
+      },
+      "source":"none"
+   },
+   "inputs":[  
+
+   ],
+   "timeoutSeconds":60
+}

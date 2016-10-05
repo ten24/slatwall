@@ -1,0 +1,87 @@
+{  
+   "steps":[
+      {  
+         "type":"waitForElementPresent",
+         "locator":{  
+            "type":"link text",
+            "value":"Products"
+         }
+      }, 
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"link text",
+            "value":"Products"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"link text",
+            "value":"Brands"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"link text",
+            "value":"Add Brand"
+         }
+      },
+      {  
+         "type":"store",
+         "text":"Brand name 1",
+         "variable":"brandNameTest"
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"brandName"
+         },
+         "text":"${brandNameTest}"
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"brandWebsite"
+         },
+         "text":"http://www.ten24web.com"
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"xpath",
+            "value":"//div[@class='btn-toolbar']//button[normalize-space(.)='Save']"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"xpath",
+            "value":"//div[@class='btn-toolbar']//a[normalize-space(.)='Brands']"
+         }
+      },
+      {  
+         "type":"store",
+         "text":"#j-main-content > div > div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover  > tbody > tr > td.primary",
+         "variable":"varPath"
+      },
+      {  
+         "type":"waitForElementPresent",
+         "locator":{  
+            "type":"css selector",
+            "value":"${varPath}"
+         }
+      },
+      {  
+         "type":"assertText",
+         "text":"${brandNameTest}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${varPath}"
+         }
+      }
+   ]
+}
