@@ -250,7 +250,7 @@ Notes:
 			return true;
 		</cfscript>
 	</cffunction>
-	<cffunction name="migrateAttributeToCustomProperty">
+	<cffunction name="migrateAttributeToCustomProperty" returntype="void">
 		<cfargument name="entityName"/>
 		<cfargument name="customPropertyName"/>
 		
@@ -260,7 +260,7 @@ Notes:
 		<cfquery name="local.attributeToCustomProperty">
 			UPDATE p
 
-			SET p.#customPropertyName# = av.attributeValue
+			SET p.#arguments.customPropertyName# = av.attributeValue
 			
 			FROM #entityMetaData.table# p
 			
@@ -272,7 +272,7 @@ Notes:
 			
 			ON av.attributeID = a.attributeID 
 			
-			WHERE a.attributeCode = '#customPropertyName#'
+			WHERE a.attributeCode = '#arguments.customPropertyName#'
 		</cfquery>
 	</cffunction>
 	
