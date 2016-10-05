@@ -89,7 +89,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// ===================== START: Helper Methods =========================
 	
 	public boolean function isUniqueUrlTitlePathBySite(){
-		return arguments.getNewContent().isUniqueUrlTitlePathBySite();
+		if(!isNull(getNewContent())){
+			return arguments.getNewContent().isUniqueUrlTitlePathBySite();	
+		}else{
+			false;
+		}
 	}
 	
 	// =====================  END: Helper Methods ==========================
