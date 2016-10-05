@@ -50,6 +50,7 @@ component extends="mxunit.framework.TestCase" output="false" {
 
 	variables.debugArray = [];
 	variables.persistentEntities = [];
+	variables.files = [];
 
 	// BEFORE ALL TESTS IN THIS SUITE
 	public void function beforeTests(){
