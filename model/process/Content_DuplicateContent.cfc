@@ -49,12 +49,12 @@ Notes:
 component output="false" accessors="true" extends="HibachiProcess" {
 
 	// Injected Entity
-	property name="content";
+	property name="content" type="any";
 	
 	// Lazy / Injected Objects
 	
 	// New Properties
-	property name="newContent";
+	property name="newContent" type="any";
 
 	// Data Properties (ID's)
 	
