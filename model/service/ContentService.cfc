@@ -92,7 +92,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public any function saveContent(required any content, struct data={}){
-		
 		if(structKeyExists(arguments.data,'urlTitle')){
 			arguments.data.urlTitle = getService("HibachiUtilityService").createSEOString(arguments.data.urlTitle);
 			arguments.content.setUrlTitle(arguments.data.urlTitle);
@@ -212,25 +211,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var data = {};
 		data['title']=arguments.processObject.getTitle();
 		data['urlTitle']=arguments.processObject.getUrlTitle();
-		
 		this.saveContent(arguments.processObject.getNewContent(),data);
 		//get all settings that exist on the object
-		var settingCollectionList = this.getSettingCollectionList();
-		settingCollectionList.addFilter('content.contentID',arguments.content.getContentID());
-		var settingsData = settingCollectionList.getRecords();
-		
-		for(var settingData in settingsData){
-			var contentSetting = getService("settingService").newSetting();
-			contentSetting.setSettingName( settingData['settingName'] );
-			contentSetting.setSettingValue( settingData['settingValue'] );
-			contentSetting.setContent( arguments.processObject.getNewContent() );
-			getService("settingService").saveSetting( contentSetting );
-		}
-		
-		//Copy Content Attribtes
-		for(var attributeValue in arguments.content.getAttributeValues()) {
-			arguments.processObject.getNewContent().setAttributeValue( attributeValue.getAttribute().getAttributeCode(), attributeValue.getAttributeValue() );
-		}
+//		var settingCollectionList = this.getSettingCollectionList();
+//		settingCollectionList.addFilter('content.contentID',arguments.content.getContentID());
+//		var settingsData = settingCollectionList.getRecords();
+//		
+//		for(var settingData in settingsData){
+//			var contentSetting = getService("settingService").newSetting();
+//			contentSetting.setSettingName( settingData['settingName'] );
+//			contentSetting.setSettingValue( settingData['settingValue'] );
+//			contentSetting.setContent( arguments.processObject.getNewContent() );
+//			getService("settingService").saveSetting( contentSetting );
+//		}
+//		
+//		//Copy Content Attribtes
+//		for(var attributeValue in arguments.content.getAttributeValues()) {
+//			arguments.processObject.getNewContent().setAttributeValue( attributeValue.getAttribute().getAttributeCode(), attributeValue.getAttributeValue() );
+//		}
 		
 		return arguments.processObject.getNewContent();
 	}
