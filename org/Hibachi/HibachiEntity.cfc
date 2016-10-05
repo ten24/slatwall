@@ -118,11 +118,38 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return variables[ "requestNewPropertyEntity#arguments.propertyName#" ];
 	} 
 	
-	public any function duplicate() {
+	public any function duplicate(boolean onlyPersistent=false) {
 		var newEntity = getService("hibachiService").getServiceByEntityName(getEntityName()).invokeMethod("new#replace(getEntityName(),getApplicationValue('applicationKey'),'')#");
 		var properties = getProperties();
+		var propertyIsPersistent = true;
+		
 		for(var p=1; p<=arrayLen(properties); p++) {
-			if( properties[p].name != getPrimaryIDPropertyName() && (!structKeyExists(properties[p], "fieldType") || ( properties[p].fieldType != "one-to-many" && properties[p].fieldType != "many-to-many")) ) {
+			if(
+				arguments.onlyPersistent
+				&& structKeyExists(properties[p],'persistent')
+			){
+				propertyIsPersistent = properties[p].persistent;
+			}else{
+				propertyIsPersistent = true;
+			}
+			
+			if( 
+				(
+					!arguments.onlyPersistent 
+					|| (
+						arguments.onlyPersistent
+						&& propertyIsPersistent
+					)
+				)
+				&& properties[p].name != getPrimaryIDPropertyName() 
+				&& (
+					!structKeyExists(properties[p], "fieldType") 
+					|| ( properties[p].fieldType != "one-to-many" && properties[p].fieldType != "many-to-many")
+				)
+				&&(
+					structKeyExists(this,'set#properties[p].name#')
+				) 
+			) {
 				var value = invokeMethod('get#properties[p].name#');
 				if(!isNull(value)) {
 					newEntity.invokeMethod("set#properties[p].name#", {1=value});
