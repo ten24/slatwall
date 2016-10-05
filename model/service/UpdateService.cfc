@@ -250,6 +250,32 @@ Notes:
 			return true;
 		</cfscript>
 	</cffunction>
+	<cffunction name="migrateAttributeToCustomProperty">
+		<cfargument name="entityName"/>
+		<cfargument name="customPropertyName"/>
+		
+		<cfset var entityMetaData = getEntityMetaData(arguments.entityName)/>
+		<cfset var primaryIDName = getPrimaryIDPropertyNameByEntityName(arguments.entityName)/>
+		
+		<cfquery name="local.attributeToCustomProperty">
+			UPDATE p
+
+			SET p.#customPropertyName# = av.attributeValue
+			
+			FROM #entityMetaData.table# p
+			
+			INNER JOIN SwAttributeValue av
+			
+			ON p.#primaryIDName# = av.#primaryIDName#
+			
+			INNER JOIN SwAttribute a
+			
+			ON av.attributeID = a.attributeID 
+			
+			WHERE a.attributeCode = '#customPropertyName#'
+		</cfquery>
+	</cffunction>
+	
 	<cffunction name="mergeProperties" returntype="any">
 	  <cfargument name="fileName" type="String">
 		<cfscript>
