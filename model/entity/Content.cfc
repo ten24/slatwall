@@ -341,9 +341,10 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 		if(isNull(content)){
 			return true;
 		//if on already does exist, check to see if it is the content that we are currently working with
-		}else{
+		}else if(!isNull(content.getContentID()) && !isNull(this.getContentID())){
 			return content.getContentID() == this.getContentID();
 		}
+		return false;
 	}
 	
 //	public string function getFullTitle(){
