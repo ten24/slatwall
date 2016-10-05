@@ -208,11 +208,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function processContent_duplicateContent(required any content, required any processObject){
 		
 		arguments.processObject.setNewContent(arguments.content.duplicate(onlyPersistent=true));
-		var data = {};
-		data['title']=arguments.processObject.getTitle();
-		data['urlTitle']=arguments.processObject.getUrlTitle();
-		this.saveContent(arguments.processObject.getNewContent(),data);
-		//get all settings that exist on the object
+//		var data = {};
+//		data['title']=arguments.processObject.getTitle();
+//		data['urlTitle']=arguments.processObject.getUrlTitle();
+//		this.saveContent(arguments.processObject.getNewContent(),data);
+//		//get all settings that exist on the object
 //		var settingCollectionList = this.getSettingCollectionList();
 //		settingCollectionList.addFilter('content.contentID',arguments.content.getContentID());
 //		var settingsData = settingCollectionList.getRecords();
