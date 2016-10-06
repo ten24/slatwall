@@ -117,6 +117,14 @@ elif [ $CIRCLE_BRANCH = "master" ] || [ $CIRCLE_BRANCH = "develop" ] || [ $CIRCL
       aws s3 cp slatwall-be.zip s3://slatwall-releases/slatwall-be.zip
       aws s3 cp slatwall-be.md5.txt s3://slatwall-releases/slatwall-be.md5.txt
     fi
+
+    # If this is the develop branch then we can push up BE Release to S3
+    if [ $CIRCLE_BRANCH = "hotfix" ]; then
+      git archive --format=zip HEAD > slatwall-hotfix.zip
+      md5sum slatwall-hotfix.zip > slatwall-hotfix.md5.txt
+      aws s3 cp slatwall-hotfix.zip s3://slatwall-releases/slatwall-hotfix.zip
+      aws s3 cp slatwall-hotfix.md5.txt s3://slatwall-releases/slatwall-hotfix.md5.txt
+    fi
 fi
 
 # If this was a master branch change, we need to try and merge into develop, and then push develop
