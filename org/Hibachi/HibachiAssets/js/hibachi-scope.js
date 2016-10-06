@@ -39,7 +39,7 @@
 				var result = {};
 				
 				$.ajax({
-					url: config.baseURL + 'index.cfm?slatAction=' + action,
+					url: config.baseURL + '/index.cfm?slatAction=' + action,
 					method: 'post',
 					async: doasync,
 					data: data,
@@ -60,7 +60,7 @@
 				var result = {};
 				
 				$.ajax({
-					url: config.baseURL + 'index.cfm?slatAction=admin:api.get&entityName=' + entityName + '&entityID=' + entityID,
+					url: config.baseURL + '/index.cfm?slatAction=admin:api.get&entityName=' + entityName + '&entityID=' + entityID,
 					method: 'get',
 					async: doasync,
 					dataType: 'json',
@@ -92,7 +92,7 @@
 				var result = {};
 				
 				$.ajax({
-					url: config.baseURL + 'index.cfm?slatAction=admin:api.get&entityName=' + entityName,
+					url: config.baseURL + '/index.cfm?slatAction=admin:api.get&entityName=' + entityName,
 					method: 'get',
 					async: doasync,
 					dataType: 'json',
@@ -128,7 +128,7 @@
 				var result = {};
 				
 				$.ajax({
-					url: config.baseURL + 'index.cfm?slatAction=public:ajax.account',
+					url: config.baseURL + '/index.cfm?slatAction=public:ajax.account',
 					method: 'get',
 					async: doasync,
 					data: data,
@@ -154,7 +154,7 @@
 				var result = {};
 				
 				$.ajax({
-					url: config.baseURL + 'index.cfm?slatAction=public:ajax.cart',
+					url: config.baseURL + '/index.cfm?slatAction=public:ajax.cart',
 					method: 'get',
 					async: doasync,
 					data: data,
