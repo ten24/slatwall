@@ -50,39 +50,24 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.content" type="any">
-<cfparam name="rc.edit" type="boolean">
+<cfparam name="rc.content" type="any" />
+<cfparam name="rc.processObject" type="any" />
+<cfparam name="rc.edit" type="boolean" />
+<cfif isNull(rc.content) && !isNull(rc.contentID)>
+	<cfset rc.content = getHibachiScope().getService('contentService').getContent(rc.contentID)/>
+</cfif>
 
-<cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.content#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar 
-			type="detail" 
-			object="#rc.content#" 
-			edit="#rc.edit#" 
-			backQueryString="?ng##!/entity/Content/" 
-			showDelete="#!rc.content.hasChildContent()#"
-			deleteQueryString="?ngRedirectQS=/entity/Content/"
-			
-		>
-			<!---<hb:HibachiProcessCaller entity="#rc.content#" action="admin:entity.preprocesscontent" processContext="create" type="list" modal="true" />--->
-			<hb:HibachiProcessCaller entity="#rc.content#" action="admin:entity.preprocesscontent" processContext="duplicateContent" type="list" modal="true" />
-		</hb:HibachiEntityActionBar>
-		<hb:HibachiEntityDetailGroup object="#rc.content#">
-			<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
-			<cfif rc.content.getProductListingPageFlag()>
-				<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/products">
-			</cfif>
-			<cfif !isNull(rc.content.getSite()) && !isNull(rc.content.getSite().getApp())>
-				<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/content">
-			</cfif>
-			<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/settings">
-			<!--- Custom Attributes --->
-			
-			<cfloop array="#rc.content.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<swa:SlatwallAdminTabCustomAttributes object="#rc.content#" attributeSet="#attributeSet#" />
-			</cfloop>
-		</hb:HibachiEntityDetailGroup>
-
-	</hb:HibachiEntityDetailForm>
-</cfoutput>
+<hb:HibachiEntityProcessForm entity="#rc.content#" edit="#rc.edit#" sRedirectAction="admin:entity.editcontent" fRedirectQS="contentID=#rc.content.getContentID()#">
+	
+	<hb:HibachiEntityActionBar type="preprocess" object="#rc.processObject#" backQueryString="?ng##!/entity/Content/" >
+	</hb:HibachiEntityActionBar>
+	
+	<hb:HibachiPropertyRow>
+		<hb:HibachiPropertyList>
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="title" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="urlTitle" edit="#rc.edit#">
+		</hb:HibachiPropertyList>
+	</hb:HibachiPropertyRow>
+	
+</hb:HibachiEntityProcessForm>
 
