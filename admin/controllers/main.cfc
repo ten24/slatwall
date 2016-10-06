@@ -188,6 +188,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var versions = getUpdateService().getAvailableVersions();
 		rc.availableDevelopVersion = versions.develop;
 		rc.availableMasterVersion = versions.master;
+		rc.availableHotfixVersion = versions.hotfix;
 
 		rc.currentVersion = getApplicationValue('version');
 		if(listLen(rc.currentVersion, '.') > 3) {

@@ -57,7 +57,9 @@ Notes:
 			<cfset var updateCopyStarted = false />
 			<cfset var zipName  = ''/> 		
 			<cfif arguments.branch eq 'master'>
-				<cfset zipName  = 'slatwall-latest'/> 		
+				<cfset zipName  = 'slatwall-latest'/> 	
+			<cfelseif arguments.branch eq 'hotfix'>
+				<cfset zipName = 'slatwall-hotfix'/>	
 			<cfelseif arguments.branch eq 'develop'>
 				<cfset zipName  = 'slatwall-be'/> 		
 			</cfif>
@@ -183,12 +185,15 @@ Notes:
 	<cffunction name="getAvailableVersions">
 		<cfset var masterVersion = "" />
 		<cfset var developVersion = "" />
+		<cfset var hotfixVersion = "" />
 		<cfset var versions = {} />
 
 		<cfhttp method="get" url="https://raw.github.com/ten24/Slatwall/master/version.txt.cfm" result="masterVersion">
+		<cfhttp method="get" url="https://raw.github.com/ten24/Slatwall/hotfix/version.txt.cfm" result="hotfixVersion">
 		<cfhttp method="get" url="https://raw.github.com/ten24/Slatwall/develop/version.txt.cfm" result="developVersion">
 
 		<cfset versions.master = trim(masterVersion.filecontent) />
+		<cfset versions.hotfix = trim(hotfixVersion.filecontent) />
 		<cfset versions.develop = trim(developVersion.filecontent) />
 
 		<cfreturn versions />
