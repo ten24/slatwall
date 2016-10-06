@@ -34,7 +34,11 @@ export class BaseBootStrapper{
                 && localStorage.getItem('attributeMetaData')
                 && localStorage.getItem('attributeMetaData') !== 'undefined'
             ){
-                 return $http.get(hibachiConfig.baseURL+'?'+hibachiConfig.action+'=api:main.getInstantiationKey')
+                 var baseURL = hibachiConfig.baseURL;
+                 if(baseURL.length && baseURL.slice(-1) !== '/'){
+                    baseURL += '/';
+                 }
+                 return $http.get(baseURL+'?'+hibachiConfig.action+'=api:main.getInstantiationKey')
 
                 .then( (resp)=> {
 
@@ -111,6 +115,11 @@ export class BaseBootStrapper{
             hibachiConfig.baseURL = '';
         }
         urlString += hibachiConfig.baseURL;
+        
+        
+         if(urlString.length && urlString.slice(-1) !== '/'){
+            urlString += '/';
+         }
 
         return this.$http.get(urlString+'?'+hibachiConfig.action+'=api:main.getAttributeModel')
         .then( (resp:any)=> {
