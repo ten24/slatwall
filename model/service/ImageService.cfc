@@ -140,9 +140,9 @@ component persistent="false" extends="HibachiService" output="false" accessors="
                 arguments.imagePath = getService('siteService').getCurrentRequestSite().setting('siteMissingImagePath');
 			
 			//check the custom location
-			} else if(fileExists(expandPath('/Slatwall') & "/custom/assets/images/missingimage.jpg")) {
+			} else if(fileExists(expandPath("#getApplicationValue('baseURL')#/custom/assets/images/missingimage.jpg"))) {
                
-                arguments.imagePath = "#getApplicationValue('baseURL')#custom/assets/images/missingimage.jpg";
+                arguments.imagePath = "#getApplicationValue('baseURL')#/custom/assets/images/missingimage.jpg";
                 
 			//check the global location
 			} else if ( fileExists(expandPath(getHibachiScope().setting('globalMissingImagePath'))) ) {
@@ -152,7 +152,7 @@ component persistent="false" extends="HibachiService" output="false" accessors="
             //check the default location
             } else {
 			  
-				arguments.imagePath = "#getApplicationValue('baseURL')#assets/images/missingimage.jpg";
+				arguments.imagePath = "#getApplicationValue('baseURL')#/assets/images/missingimage.jpg";
 			
 			}
 			

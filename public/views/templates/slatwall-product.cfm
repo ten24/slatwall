@@ -383,7 +383,7 @@ Notes:
 
 											jQuery.ajax({
 												type: 'get',
-												url: '#$.slatwall.getApplicationValue("baseURL")#',
+												url: '#$.slatwall.getApplicationValue("baseURL")#/',
 												data: data,
 												dataType: "json",
 												context: document.body,
