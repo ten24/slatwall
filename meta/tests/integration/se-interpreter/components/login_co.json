@@ -1,12 +1,5 @@
 {
    "steps":[ 
-       {  
-         "type":"waitForElementPresent",
-         "locator":{  
-            "type":"name",
-            "value":"emailAddress"
-         }
-      },
       {  
          "type":"setElementText",
          "locator":{  

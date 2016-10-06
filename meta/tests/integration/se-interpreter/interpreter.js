@@ -108,6 +108,7 @@ var TestRun = function(script, name, initialVars) {
   }
   var tools = require('./add_step_in_between');
   this.script = tools.addStepInBetween(script,{"script":"return document.readyState","value":"complete","type":"waitForEval"});
+  this.script = tools.addStepInBetween(this.script,{"type":"waitForElementPresent"});
   this.stepIndex = -1;
   this.wd = null;
   this.silencePrints = false;
