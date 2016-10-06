@@ -1,0 +1,47 @@
+{  
+   "steps":[  
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"link text",
+            "value":"Add Location"
+         }
+      },
+      {  
+         "type":"include_as_subcomponent",
+         "rel_dir":"components/location/location_name_config_co.json"
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"locationName"
+         },
+         "text":"${text}"
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"button.btn.btn-success"
+         }
+      },
+      
+      {  
+         "type":"waitForText",
+         "text":"${text}",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabbasic > div > div > div > div:nth-child(2) > div > p"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"${text}",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabbasic > div > div > div > div:nth-child(2) > div > p"
+         }
+      }
+   ]
+}

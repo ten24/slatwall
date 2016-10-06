@@ -1,0 +1,20 @@
+{  
+   "steps":[  
+      {  
+         "type":"storeCurrentUrl",
+         "variable":"url"
+      },
+      {  
+         "type":"waitForCurrentUrl",
+         "url":"${url}"
+      },
+      {  
+         "type":"verifyCurrentUrl",
+         "url":"${url}"
+      },
+      {  
+         "type":"assertCurrentUrl",
+         "url":"${url}"
+      }
+   ]
+}

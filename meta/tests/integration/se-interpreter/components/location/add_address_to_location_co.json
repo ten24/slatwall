@@ -1,0 +1,100 @@
+{  
+   "steps":[  
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(2) > a"
+         }
+      },
+
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tablocationaddresses > div > div > div > a"
+         }
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"address.name"
+         },
+         "text":"Ten24 Offices"
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"address.streetAddress"
+         },
+         "text":"20 Franklin Street"
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"address.city"
+         },
+         "text":"Worcester"
+      },
+      {  
+         "type":"setElementSelected",
+         "locator":{  
+            "type":"xpath",
+            "value":"//div[@class='slatwall-address-container']/div[6]/div/select//option[24]"
+         }
+      },
+      {  
+         "type":"setElementSelected",
+         "locator":{  
+            "type":"xpath",
+            "value":"//div[@class='slatwall-address-container']/div[6]/div/select//option[24]"
+         }
+      },
+      {  
+         "type":"setElementSelected",
+         "locator":{  
+            "type":"xpath",
+            "value":"//div[@class='slatwall-address-container']/div[6]/div/select//option[24]"
+         }
+      },
+      {  
+         "type":"setElementSelected",
+         "locator":{  
+            "type":"xpath",
+            "value":"//div[@class='slatwall-address-container']/div[6]/div/select//option[25]"
+         }
+      },
+      {  
+         "type":"setElementSelected",
+         "locator":{  
+            "type":"xpath",
+            "value":"//div[@class='slatwall-address-container']/div[6]/div/select//option[26]"
+         }
+      },
+      {  
+         "type":"setElementSelected",
+         "locator":{  
+            "type":"xpath",
+            "value":"//div[@class='slatwall-address-container']/div[6]/div/select//option[26]"
+         }
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"address.postalCode"
+         },
+         "text":"01602"
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"button.btn.btn-success"
+         }
+      }
+   ]
+}

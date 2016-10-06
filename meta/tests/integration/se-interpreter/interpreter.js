@@ -106,7 +106,7 @@ var TestRun = function(script, name, initialVars) {
   for (var k in this.initialVars) {
     this.vars[k] = this.initialVars[k];
   }
-  var tools = require('./add_step_in_between');
+  var tools = require('./functions');
   this.script = tools.addStepInBetween(script,{"script":"return document.readyState","value":"complete","type":"waitForEval"});
   this.script = tools.addStepInBetween(this.script,{"type":"waitForElementPresent"});
   this.stepIndex = -1;

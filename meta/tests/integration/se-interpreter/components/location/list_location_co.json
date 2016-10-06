@@ -1,0 +1,23 @@
+{  
+   "steps":[  
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"link text",
+            "value":"Config"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"link text",
+            "value":"Locations"
+         }
+      },
+      {  
+         "type":"include_as_subcomponent",
+         "rel_dir":"components/check_url_co.json"
+      }     
+   ]
+}
+

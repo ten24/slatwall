@@ -33,7 +33,10 @@ module.exports = {
     }
     return script;
 	},
-	
+	/*
+	gets all possible input types
+	@return Array with all possible input types
+  */
 	get_input_types : function () {
 		var input_type =  ["clickElement", "doubleClickElement", "mouseOverElement", "setElementText", "sendKeysToElement","setElementSelected","setElementNotSelected","clearSelections","submitElement","dragToAndDropElement","clickAndHoldElement","releaseElement"];
 	    return input_type;
