@@ -88,13 +88,15 @@ Notes:
 				<input type="hidden" name="slatAction" value="admin:main.update" />
 				<input type="hidden" name="process" value="1" />
 
-				<!---
+				
 				<!--- Custom Branch --->
-				<div class="form-group">
-					<label class="col-xs-2 control-label"><input type="radio" name="branchType" value="custom" /></label>
-					<input type="text" class="col-xs-10" name="customBranch" value="" placeholder="Custom Branch (ex: feature-newadmin)" /><br />
-				</div>
-				--->
+				<cfif $.slatwall.setting('globalAllowCustomBranchUpdates')>
+					<div class="form-group">
+						<label class="col-xs-2 control-label"><input type="radio" name="branchType" value="custom" /></label>
+						<input type="text" class="col-xs-10" name="customBranch" value="" placeholder="Custom Branch (ex: feature-newadmin)" /><br />
+					</div>
+				</cfif>
+				
 				<!--- Standard --->
 				<div class="form-group">
 					<label class="col-xs-2 control-label"><input type="radio" name="branchType" value="standard" checked="checked" /></label>
