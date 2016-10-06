@@ -53,6 +53,7 @@ Notes:
 		
 		<!--- this could take a while... --->
 		<cfsetting requesttimeout="600" />
+		<cftry>
 			<cfset var updateCopyStarted = false />
 			<cfset var zipName  = ''/> 		
 			<cfset var isZipFromGithub = false/>
@@ -145,7 +146,15 @@ Notes:
 				<cfset updateCMSApplications()>
 			</cfif>
 			
-
+			<!--- if there is any error during update, restore the old files and throw the error --->
+			<cfcatch type="any">
+				<cfif updateCopyStarted>
+					<cfzip action="unzip" destination="#slatwallRootPath#" file="#getTempDirectory()#slatwall_bak.zip" >
+				</cfif>
+				<cfset logHibachiException(cfcatch) />
+				<cfset getHibachiScope().showMessageKey('admin.main.update.unexpected_error') />
+			</cfcatch>
+		</cftry>
 	</cffunction>
 
 	<cffunction name="updateCMSApplications">
