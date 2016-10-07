@@ -1,9 +1,0 @@
-{  
-   "steps":[  
-      {  
-         "type":"store",
-         "text":"Ten24 Offices",
-         "variable":"text"
-      }
-   ]
-}

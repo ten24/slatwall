@@ -1,0 +1,40 @@
+{  
+   "steps":[ 
+      {  
+         "type":"store",
+         "text":"emailAddress",
+         "variable":"alexis.espinoza@ten24web.com"
+      },
+      {  
+         "type":"store",
+         "text":"Ten24 Offices",
+         "variable":"text"
+      },
+      {  
+         "type":"store",
+         "text":"20 Franklin Street",
+         "variable":"street_address"
+      },
+      {  
+         "type":"store",
+         "text":"Worcester",
+         "variable":"city"
+      },
+      {  
+         "type":"store",
+         "text":"01602",
+         "variable":"postalCode"
+      },
+      {  
+         "type":"store",
+         "text":"Location Configuration",
+         "variable":"location_configuration"
+      },
+      {  
+         "type":"store",
+         "text":"20",
+         "variable":"configuration_capacity"
+      }
+               
+   ]
+}

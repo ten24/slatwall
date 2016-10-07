@@ -24,8 +24,39 @@
          "rel_dir":"/components/location/add_address_to_location_co.json"
       },
       {  
-         "type":"include_as_subcomponent",
-         "rel_dir":"/components/location/location_name_config_co.json"
+         "type":"include",
+         "rel_dir":"/components/config/settings_co.json"
+      },    
+      {  
+         "type":"waitForText",
+         "text":"${text}",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-expandable > tbody > tr > td.primary"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"${text}",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-expandable > tbody > tr > td.primary"
+         }
+      },   
+      {
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-expandable > tbody > tr > td.admin.admin2 > a.adminentityeditlocation.btn.btn-default.btn-xs"
+         }
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/location/assert_location_address_accordion_co.json"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/location/location_configuration.json"
       }
    ],
    "data":{  

@@ -12,7 +12,8 @@ module.exports = {
     	var jsonFileSize = script[key].length;
     	if(key == "steps") {
     		var counter = 1;
-    		if (step['type'] === 'script') {
+    		 
+    		if (step['type'] === 'waitForEval') {
     			for(var i = 1; i < jsonFileSize; i++) {
         			if(counter == i) {
         				script[key].splice(i, 0,step);
@@ -38,9 +39,11 @@ module.exports = {
 	@return Array with all possible input types
   */
 	get_input_types : function () {
-		var input_type =  ["clickElement", "doubleClickElement", "mouseOverElement", "setElementText", "sendKeysToElement","setElementSelected","setElementNotSelected","clearSelections","submitElement","dragToAndDropElement","clickAndHoldElement","releaseElement"];
+		var input_type =  ["clickElement", "doubleClickElement", "mouseOverElement", "setElementText", "sendKeysToElement","setElementSelected","setElementNotSelected","clearSelections","submitElement","dragToAndDropElement","clickAndHoldElement","releaseElement","waitForText"];
 	    return input_type;
 	}
+	
+    
 };
 
  

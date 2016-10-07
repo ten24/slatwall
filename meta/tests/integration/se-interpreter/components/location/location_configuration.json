@@ -1,0 +1,41 @@
+{  
+   "steps":[ 
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(3) > a"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tablocationconfigurations > a"
+         }
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentitysavelocationconfiguration > div:nth-child(7) > div > div > div.form-group.s-required > div > input"
+         },
+         "text":"${location_configuration}"
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentitysavelocationconfiguration > div:nth-child(7) > div > div > div:nth-child(3) > div > input"
+         },
+         "text":"${configuration_capacity}"
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentitysavelocationconfiguration > div.row.s-body-nav > nav > div:nth-child(2) > div > div:nth-child(3) > button"
+         }
+      }
+   ]
+}

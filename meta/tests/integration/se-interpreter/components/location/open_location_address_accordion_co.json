@@ -1,0 +1,19 @@
+{  
+   "steps":[ 
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(2) > a"
+         }
+      },
+
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tablocationaddresses > div > div > div > a"
+         }
+      }
+   ]
+}
