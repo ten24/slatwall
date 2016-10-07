@@ -146,7 +146,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 		}
 	}
-
+	
+ 	// Add Order Items
+  	public void function addOrderItems(required any rc) {
+  		param name="data.skuIds" default="";
+      	param name="data.skuCodes" default="";
+  		
+  		getService("PublicService").addOrderItems(rc);
+  		
+  	}
+ 	
 	// Guest Account
 	public void function guestAccount(required any rc) {
 		param name="arguments.rc.createAuthenticationFlag" default="0";
