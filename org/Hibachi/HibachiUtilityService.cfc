@@ -159,8 +159,12 @@
 			return createSEOString(arguments.data.value);
 		}
 
-		public string function createUniqueURLTitle(required string titleString, required string tableName) {
-			return createUniqueColumn(arguments.titleString,arguments.tableName,'urlTitle');
+		public string function createUniqueURLTitle(required string titleString, string tableName="", string entityName="") {
+			if(len(arguments.tableName)){
+				return createUniqueColumn(arguments.titleString,arguments.tableName,'urlTitle');	
+			}else if(len(arguments.entityName)){
+				return createUniqueProperty(arguments);				
+			}
 		}
 
 		public string function createUniqueColumn(required string titleString, required string tableName, required string columnName) {
@@ -177,6 +181,24 @@
 				addon++;
 				returnTitle = "#urlTitle#-#addon#";
 				unique = getHibachiDAO().verifyUniqueTableValue(tableName=arguments.tableName, column=arguments.columnName, value=returnTitle);
+			}
+
+			return returnTitle;
+		}
+		
+		public string function createUniqueProperty(required string titleString, required string entityName, required string propertyName){
+			var addon = 1;
+
+			var urlTitle = createSEOString(arguments.titleString);
+
+			var returnTitle = urlTitle;
+
+			var unique = getHibachiDAO().verifyUniquePropertyValue(entityName=arguments.entityName, propertyName=arguments.propertyName, value=returnTitle);
+
+			while(!unique) {
+				addon++;
+				returnTitle = "#urlTitle#-#addon#";
+				unique = getHibachiDAO().verifyUniquePropertyValue(entityName=arguments.entityName, propertyName=arguments.propertyName, value=returnTitle);
 			}
 
 			return returnTitle;

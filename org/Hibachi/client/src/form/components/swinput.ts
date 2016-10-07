@@ -76,6 +76,8 @@ class SWInputController{
 		this.$injector = $injector;
 		this.observerService = observerService;
 		this.metadataService = metadataService;
+        
+        
 	}
 
 	public onSuccess = ()=>{
@@ -253,24 +255,24 @@ class SWInputController{
 
 		return template;
 	};
+    
+    public pullBindings = ()=>{
+        var bindToControllerProps = this.$injector.get('swInputDirective')[0].bindToController;
+        for(var i in bindToControllerProps){
+            if(!this[i]){
+                if(!this[i] && this.swFormField && this.swFormField[i]){
+                    this[i] = this.swFormField[i];
+                }else if(!this[i] && this.swPropertyDisplay && this.swPropertyDisplay[i]){
+                    this[i] = this.swPropertyDisplay[i];
+                }else if(!this[i] && this.swfPropertyDisplay && this.swfPropertyDisplay[i]){
+                    this[i] = this.swfPropertyDisplay[i];
+                }else if(!this[i] && this.swForm && this.swForm[i]){
+                    this[i] = this.swForm[i];
+                }
+            }
+        }
 
-	public $onInit = ()=>{
-		var bindToControllerProps = this.$injector.get('swInputDirective')[0].bindToController;
-		for(var i in bindToControllerProps){
-			if(!this[i]){
-				if(!this[i] && this.swFormField && this.swFormField[i]){
-					this[i] = this.swFormField[i];
-				}else if(!this[i] && this.swPropertyDisplay && this.swPropertyDisplay[i]){
-					this[i] = this.swPropertyDisplay[i];
-				}else if(!this[i] && this.swfPropertyDisplay && this.swfPropertyDisplay[i]){
-					this[i] = this.swfPropertyDisplay[i];
-				}else if(!this[i] && this.swForm && this.swForm[i]){
-					this[i] = this.swForm[i];
-				}
-			}
-		}
-
-		this.property = this.property || this.propertyIdentifier;
+        this.property = this.property || this.propertyIdentifier;
         this.propertyIdentifier = this.propertyIdentifier || this.property;
 
         this.type = this.type || this.fieldType;
@@ -279,13 +281,18 @@ class SWInputController{
         this.edit = this.edit || this.editing;
         this.editing = this.editing || this.edit;
 
-		this.editing = this.editing || true;
-		this.fieldType = this.fieldType || "text";
+        this.editing = this.editing || true;
+        this.fieldType = this.fieldType || "text";
 
-		this.inputAttributes = this.inputAttributes || "";
+        this.inputAttributes = this.inputAttributes || "";
 
-		this.inputAttributes = this.utilityService.replaceAll(this.inputAttributes,"'",'"');
-		this.value = this.utilityService.getPropertyValue(this.object,this.property);
+        this.inputAttributes = this.utilityService.replaceAll(this.inputAttributes,"'",'"');
+        this.value = this.utilityService.getPropertyValue(this.object,this.property);
+    }
+
+	public $onInit = ()=>{
+        
+        this.pullBindings();
 
 		this.eventHandlersArray = <Array<EventHandler>>this.eventHandlers.split(',');
 
@@ -302,6 +309,9 @@ class SWInputController{
 
 		var eventNameForUpdateBindings = 'updateBindings';
 		var eventNameForUpdateBindingsID = this.object.metaData.className.split('_')[0]+'updateBindings';
+        
+        var eventNameForPullBindings = 'pullBindings';
+        var eventNameForPullBindingsID = this.object.metaData.className.split('_')[0]+'pullBindings';
 
 		//attach a successObserver
 		if(this.object){
@@ -310,6 +320,9 @@ class SWInputController{
 
 			//update bindings manually
 			this.observerService.attach(this.onSuccess,eventNameForUpdateBindings,eventNameForUpdateBindingsID);
+            
+            //pull bindings from higher binding level manually
+            this.observerService.attach(this.pullBindings,eventNameForPullBindings,eventNameForPullBindingsID);
 
 		}
 

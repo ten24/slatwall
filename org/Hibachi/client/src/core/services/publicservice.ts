@@ -48,13 +48,15 @@ class PublicService {
         public accountService,
         public cartService,
         public orderService,
-        public observerService
+        public observerService,
+        public appConfig
     ) {
         this.orderService = orderService;
         this.cartService = cartService;
         this.accountService = accountService;
         this.requestService = requestService;
-        this.baseActionPath = "/index.cfm/api/scope/"; //default path
+        this.appConfig = appConfig;
+        this.baseActionPath = this.appConfig.baseURL+"index.cfm/api/scope/"; //default path
         this.confirmationUrl = "/order-confirmation";
         this.$http = $http;
         this.$location = $location;
@@ -100,31 +102,31 @@ class PublicService {
     }
     /** accessors for account */
     public getAccount=():any =>  {
-        let urlBase = '/index.cfm/api/scope/getAccount/';
+        let urlBase = this.baseActionPath+'getAccount/';
         return this.getData(urlBase, "account", "");
     }
     /** accessors for cart */
     public getCart=():any =>  {
-        let urlBase = '/index.cfm/api/scope/getCart/';
+        let urlBase = this.baseActionPath+'getCart/';
         return this.getData(urlBase, "cart", "");
     }
     /** accessors for countries */
     public getCountries=():any =>  {
-        let urlBase = '/index.cfm/api/scope/getCountries/';
+        let urlBase = this.baseActionPath+'getCountries/';
         return this.getData(urlBase, "countries", "");
     }
 
     /** accessors for states */
     public getStates=(countryCode:string):any =>  {
        if (!angular.isDefined(countryCode)) countryCode = "US";
-       let urlBase = '/index.cfm/api/scope/getStateCodeOptionsByCountryCode/';
+       let urlBase = this.baseActionPath+'getStateCodeOptionsByCountryCode/';
        return this.getData(urlBase, "states", "?countryCode="+countryCode);
     }
 
     /** accessors for states */
     public getAddressOptions=(countryCode:string):any =>  {
        if (!angular.isDefined(countryCode)) countryCode = "US";
-       let urlBase = '/index.cfm/api/scope/getAddressOptionsByCountryCode/';
+       let urlBase = this.baseActionPath+'getAddressOptionsByCountryCode/';
        return this.getData(urlBase, "addressOptions", "&countryCode="+countryCode);
     }
 

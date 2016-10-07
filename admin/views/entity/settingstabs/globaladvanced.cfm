@@ -69,6 +69,7 @@ Notes:
 		<swa:SlatwallSetting settingName="globalMIMETypeWhiteList" />
 		<swa:SlatwallSetting settingName="globalUseShippingIntegrationForTrackingNumberOption" />
 		<swa:SlatwallSetting settingName="globalSmartListGetAllRecordsLimit" />
+		<swa:SlatwallSetting settingName="globalAllowCustomBranchUpdates"/>
 	</swa:SlatwallSettingTable>
 </cfoutput>
 

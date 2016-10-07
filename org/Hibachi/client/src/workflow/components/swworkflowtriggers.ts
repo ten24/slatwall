@@ -68,8 +68,6 @@ class SWWorkflowTriggers{
                             if(angular.isDefined(newValue.data.scheduleCollection)){
                                 scope.selectedCollection = newValue.data.scheduleCollection.data.collectionName;
                             }
-                        }else if(newValue.data.triggerEventTitle) {
-                            scope.searchEvent.name = newValue.data.triggerEventTitle;
                         }
                     }
                 });
@@ -201,17 +199,23 @@ class SWWorkflowTriggers{
 				 * Changes the selected trigger value.
 				 */
 				scope.selectEvent = function(eventOption){
-					//Needs to clear old and set new.
-					scope.workflowTriggers.selectedTrigger.data.triggerEventTitle = eventOption.name;
+                    //Needs to clear old and set new.
+                    scope.workflowTriggers.selectedTrigger.data.triggerEventTitle = eventOption.name;
                     scope.workflowTriggers.selectedTrigger.data.triggerEvent = eventOption.value;
-					if(eventOption.entityName == scope.workflow.data.workflowObject){
-						scope.workflowTriggers.selectedTrigger.data.objectPropertyIdentifier = '';
+                    console.log(scope.workflowTriggers.selectedTrigger.data.triggerEvent);
+                    console.log(scope.workflowTriggers);
+                    if(eventOption.entityName == scope.workflow.data.workflowObject){
+                        scope.workflowTriggers.selectedTrigger.data.objectPropertyIdentifier = '';
 
                     }else{
-						scope.workflowTriggers.selectedTrigger.data.objectPropertyIdentifier = eventOption.entityName;
-					}
-					scope.searchEvent.name = eventOption.name;
-                    scope.showEventOptions = false;
+                        scope.workflowTriggers.selectedTrigger.data.objectPropertyIdentifier = eventOption.entityName;
+                    }
+                    
+                    scope.searchEvent.name = eventOption.name;
+                    scope.showEventOptions = false;  
+                    observerService.notify('pullBindings').then(function(){
+                          
+                    });
 				};
 
 				/**
