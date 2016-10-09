@@ -56,7 +56,11 @@
       },
       {  
          "type":"include",
-         "rel_dir":"/components/location/location_configuration.json"
+         "rel_dir":"/components/location/location_configuration_co.json"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/location/assert_location_configuration_co.json"
       }
    ],
    "data":{  

@@ -39,7 +39,7 @@ module.exports = {
 	@return Array with all possible input types
   */
 	get_input_types : function () {
-		var input_type =  ["clickElement", "doubleClickElement", "mouseOverElement", "setElementText", "sendKeysToElement","setElementSelected","setElementNotSelected","clearSelections","submitElement","dragToAndDropElement","clickAndHoldElement","releaseElement","waitForText"];
+		var input_type =  ["clickElement", "doubleClickElement", "mouseOverElement", "setElementText", "sendKeysToElement","setElementSelected","setElementNotSelected","clearSelections","submitElement","dragToAndDropElement","clickAndHoldElement","releaseElement"];
 	    return input_type;
 	}
 	
