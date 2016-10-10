@@ -26,7 +26,6 @@
          },
          "text":"${bundle_product_name}"
       },
-      
       {  
          "type":"setElementText",
          "locator":{  
@@ -34,7 +33,21 @@
             "value":"sw-property-display.ng-scope.ng-isolate-scope:nth-child(2) > div.form-group.ng-scope > div.s-form-input > span.ng-isolate-scope > sw-input.ng-scope.ng-isolate-scope > input"
          },
          "text":"${bundle_product_code}"
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.ng-scope > ng-form.ng-valid.ng-dirty.ng-valid-parse.ng-valid-swvalidationrequired.ng-valid-swvalidationminvalue.ng-valid-swvalidationdatatype.ng-valid-swvalidationnumeric > sw-form-registrar.ng-isolate-scope > sw-property-display.ng-scope.ng-isolate-scope > div.form-group.ng-scope  > div.s-form-input > span.ng-isolate-scope > sw-input.ng-scope.ng-isolate-scope > input"
+         },
+         "text":"${bundle_product_price}"
+      },
+      {  
+         "type":"setElementSelected",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.form-group.ng-scope > div.s-form-input > span.ng-isolate-scope > span.ng-scope > select > option:nth-child(1)"
+         }
       }
-      
    ]
 }
