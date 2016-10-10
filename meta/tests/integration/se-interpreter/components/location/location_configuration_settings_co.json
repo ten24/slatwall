@@ -1,0 +1,220 @@
+{  
+   "steps":[
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(2) > a > div > h4 > span"
+         }
+      }, 
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tablocationconfigurationsettings > table > tbody > tr:nth-child(1) > td.admin.admin1 > a"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentitysavesetting > div > div > div.modal-body > div > div > div > input"
+         }
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentitysavesetting > div > div > div.modal-body > div > div > div > input"
+         },
+         "text":"wyetyrwt"
+      },    
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentitysavesetting > div > div > div.modal-footer > div > button.btn.btn-success"
+         }
+      },
+      {  
+         "type":"waitForText",
+         "text":"${please_enter_a_valid_number}",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentitysavesetting > div > div > div.modal-body > div > div > div > label"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"${please_enter_a_valid_number}",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentitysavesetting > div > div > div.modal-body > div > div > div > label" 
+         }
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentitysavesetting > div > div > div.modal-body > div > div > div > input"
+         },
+         "text":"20"
+      },    
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentitysavesetting > div > div > div.modal-footer > div > button.btn.btn-success"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(2) > a > div > h4 > span"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tablocationconfigurationsettings > table > tbody > tr:nth-child(2) > td.admin.admin1 > a"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentitysavesetting > div > div > div.modal-body > div > div > div > input"
+         }
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentitysavesetting > div > div > div.modal-body > div > div > div > input"
+         },
+         "text":"wyetyrwt"
+      },    
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentitysavesetting > div > div > div.modal-footer > div > button.btn.btn-success"
+         }
+      },
+      {  
+         "type":"waitForText",
+         "text":"${please_enter_a_valid_number}",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentitysavesetting > div > div > div.modal-body > div > div > div > label"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"${please_enter_a_valid_number}",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentitysavesetting > div > div > div.modal-body > div > div > div > label" 
+         }
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentitysavesetting > div > div > div.modal-body > div > div > div > input"
+         },
+         "text":"30"
+      },    
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentitysavesetting > div > div > div.modal-footer > div > button.btn.btn-success"
+         }
+      },
+      {  
+         "__comment" :"DELETE",
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(2) > a > div > h4 > span"
+         }
+      }, 
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tablocationconfigurationsettings > table > tbody > tr:nth-child(1) > td.admin.admin1 > a"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentitysavesetting > div > div > div.modal-body > div > div.col-md-12.s-content-wrapper > a"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(2) > a > div > h4 > span"
+         }
+      }, 
+      {  
+         "type":"waitForText",
+         "text":"0",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tablocationconfigurationsettings > table > tbody > tr:nth-child(1) > td:nth-child(2)"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"0",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tablocationconfigurationsettings > table > tbody > tr:nth-child(1) > td:nth-child(2)" 
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tablocationconfigurationsettings > table > tbody > tr:nth-child(2) > td.admin.admin1 > a"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentitysavesetting > div > div > div.modal-body > div > div.col-md-12.s-content-wrapper > a"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(2) > a > div > h4 > span"
+         }
+      }, 
+      {  
+         "type":"waitForText",
+         "text":"0",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tablocationconfigurationsettings > table > tbody > tr:nth-child(2) > td:nth-child(2)"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"0",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tablocationconfigurationsettings > table > tbody > tr:nth-child(2) > td:nth-child(2)" 
+         }
+      }
+   ]
+}

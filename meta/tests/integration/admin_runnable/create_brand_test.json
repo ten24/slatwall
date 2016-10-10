@@ -13,7 +13,7 @@
       },
       {  
          "type":"include",
-         "rel_dir":"/components/create_brand_co.json"
+         "rel_dir":"/components/brand/create_brand_co.json"
       }
    ],
    "data":{  

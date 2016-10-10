@@ -7,11 +7,11 @@ exports.run = function(tr, cb) {
   */
   var component_size = component.steps.length;
   for (var i = 0; i < component.steps.length; i++) {
-  	if (component.steps[i]['type'] === 'include_as_subcomponent') {
+  	if (component.steps[i]['type'] === 'include') {
     	var sub_component_included = get_component(component.steps[i]['rel_dir']);
     	component.steps.splice(i,1);// deletes the ['rel_dir'] step in the subcomponent
     	for(var j = 0; j < sub_component_included.steps.length; j++) {
-    		console.log(sub_component_included.steps[j]);
+    		//console.log(sub_component_included.steps[j]);
     		component.steps.splice(i, 0,sub_component_included.steps[j]);
     		i++;
     		component_size++;

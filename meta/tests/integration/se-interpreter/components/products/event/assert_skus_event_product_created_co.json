@@ -1,0 +1,53 @@
+{  
+   "steps":[
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(2) > a"
+         }
+      },
+      {  
+         "type":"store",
+         "text":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-select > tbody > tr:nth-child(1) > td:nth-child(12)",
+         "variable":"price_with_currency_path"
+      }, 
+      {  
+         "type":"waitForText",
+         "text":"$12.00",
+         "locator":{  
+            "type":"css selector",
+            "value":"${price_with_currency_path}"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"$12.00",
+         "locator":{  
+            "type":"css selector",
+            "value":"${price_with_currency_path}"
+         }
+      },
+      {  
+         "type":"store",
+         "text":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-select > tbody > tr:nth-child(1) > td:nth-child(13)",
+         "variable":"price_with_currency_path"
+      }, 
+      {  
+         "type":"waitForText",
+         "text":"$12.00",
+         "locator":{  
+            "type":"css selector",
+            "value":"${price_with_currency_path}"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"$12.00",
+         "locator":{  
+            "type":"css selector",
+            "value":"${price_with_currency_path}"
+         }
+      }
+   ]
+}

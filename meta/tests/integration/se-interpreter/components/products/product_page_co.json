@@ -1,0 +1,18 @@
+{  
+   "steps":[  
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#j-mobile-nav > ul > li:nth-child(2) > a"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#j-mobile-nav > ul > li.dropdown.open > ul > li:nth-child(1) > a"
+         }
+      }
+   ]
+}

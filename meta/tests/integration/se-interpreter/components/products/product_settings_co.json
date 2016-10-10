@@ -1,0 +1,35 @@
+{  
+   "steps":[  
+      {  
+         "type":"store",
+         "text":"event product #1",
+         "variable":"event_name"
+      },
+      {  
+         "type":"store",
+         "text":"1231231123",
+         "variable":"event_code"
+      },
+      {  
+         "type":"store",
+         "text":"12",
+         "variable":"price"
+      },
+      {  
+         "type":"store",
+         "text":"12.00",
+         "variable":"price_with_currency"
+      },
+      {  
+         "type":"store",
+         "text":"24",
+         "variable":"list_price"
+      },
+      {  
+         "type":"store",
+         "text":"Event",
+         "variable":"product_type_name"
+      }
+      
+   ]
+}

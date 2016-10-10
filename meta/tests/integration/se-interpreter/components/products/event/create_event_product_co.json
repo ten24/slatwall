@@ -1,0 +1,140 @@
+{  
+   "steps":[  
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#j-main-content > div > div.row.s-body-nav > nav > div:nth-child(2) > div > div > button"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#j-main-content > div > div.row.s-body-nav > nav > div:nth-child(2) > div > div > ul > li:nth-child(3) > a"
+         }
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/check_url_co.json"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/products/product_settings_co.json"
+      },
+      { 
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-multiselect > tbody > tr > td.s-table-checkbox > a.table-action-multiselect"
+         }
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"product.productName"
+         },
+         "text":"${event_name}"
+      },
+      { 
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentityprocessproduct_create > div.row.s-body-nav > nav > div:nth-child(2) > div > div:nth-child(2) > button"
+         }
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"product.productCode"
+         },
+         "text":"${event_code}"
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"price"
+         },
+         "text":"${price}"
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"listPrice"
+         },
+         "text":"${list_price}"
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"name",
+            "value":"eventStartDateTime"
+         }
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/products/event/select_month_on_date_picker_co.json"
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#ui-datepicker-div > table > tbody > tr:nth-child(3) > td:nth-child(2) > a"
+         }
+      },
+      { 
+         "__comment":"Done", 
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#ui-datepicker-div > div.ui-datepicker-buttonpane.ui-widget-content > button.ui-datepicker-close.ui-state-default.ui-priority-primary.ui-corner-all"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"name",
+            "value":"eventEndDateTime"
+         }
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/products/event/select_month_on_date_picker_co.json"
+      },
+      {  
+         "__comment":"click one more to guarantee that the enxt month is clicked",
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#ui-datepicker-div > div.ui-datepicker-header.ui-widget-header.ui-helper-clearfix.ui-corner-all > a.ui-datepicker-next.ui-corner-all"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#ui-datepicker-div > table > tbody > tr:nth-child(3) > td:nth-child(2) > a"
+         }
+      },
+      { 
+         "__comment":"Done", 
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#ui-datepicker-div > div.ui-datepicker-buttonpane.ui-widget-content > button.ui-datepicker-close.ui-state-default.ui-priority-primary.ui-corner-all"
+         }
+      },
+      { 
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentityprocessproduct_create > div.row.s-body-nav > nav > div:nth-child(2) > div > div:nth-child(2) > button"
+         }
+      }
+      
+   ]
+}

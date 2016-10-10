@@ -15,7 +15,7 @@
          }
       },
       {  
-         "type":"include_as_subcomponent",
+         "type":"include",
          "rel_dir":"components/check_url_co.json"
       }     
    ]

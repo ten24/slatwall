@@ -28,11 +28,7 @@
             "value":"Add Brand"
          }
       },
-      {  
-         "type":"store",
-         "text":"Brand name 1",
-         "variable":"brandNameTest"
-      },
+      
       {  
          "type":"setElementText",
          "locator":{  
@@ -47,7 +43,7 @@
             "type":"name",
             "value":"brandWebsite"
          },
-         "text":"http://www.ten24web.com"
+         "text":"${ten24website}"
       },
       {  
          "type":"clickElement",

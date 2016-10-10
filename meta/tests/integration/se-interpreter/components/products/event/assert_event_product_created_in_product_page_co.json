@@ -1,0 +1,99 @@
+{  
+   "steps":[
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.row.s-body-nav > nav.navbar.navbar-default > div.col-md-6 > div.btn-toolbar > div.btn-group.btn-group-sm > a"
+         }
+      },
+      {  
+         "__comment":"Change the rows to one once the test is running in docker",
+         "type":"store",
+         "text":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(2) > td:nth-child(1)",
+         "variable":"product_type_name_path"
+      }, 
+      {  
+         "type":"waitForText",
+         "text":"${product_type_name}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${product_type_name_path}"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"${product_type_name}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${product_type_name_path}"
+         }
+      },
+      {  
+         "__comment":"Change the rows to one once the test is running in docker",
+         "type":"store",
+         "text":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(2) > td:nth-child(3)",
+         "variable":"product_type_name_path"
+      }, 
+      {  
+         "type":"waitForText",
+         "text":"${event_name}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${product_type_name_path}"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"${event_name}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${product_type_name_path}"
+         }
+      },
+      {  
+         "__comment":"Change the rows to one once the test is running in docker",
+         "type":"store",
+         "text":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(2) > td:nth-child(4)",
+         "variable":"product_type_name_path"
+      }, 
+      {  
+         "type":"waitForText",
+         "text":"${event_code}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${product_type_name_path}"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"${event_code}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${product_type_name_path}"
+         }
+      },
+      {  
+         "__comment":"Change the rows to one once the test is running in docker",
+         "type":"store",
+         "text":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(2) > td:nth-child(5)",
+         "variable":"product_type_name_path"
+      }, 
+      {  
+         "type":"waitForText",
+         "text":"$12.00",
+         "locator":{  
+            "type":"css selector",
+            "value":"${product_type_name_path}"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"$12.00",
+         "locator":{  
+            "type":"css selector",
+            "value":"${product_type_name_path}"
+         }
+      }              
+   ]
+}

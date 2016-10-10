@@ -1,12 +1,16 @@
 {
    "steps":[
       {  
+         "type":"include",
+         "rel_dir":"/components/config/settings_co.json"
+      },
+      {  
          "type":"setElementText",
          "locator":{  
             "type":"name",
             "value":"emailAddress"
          },
-         "text":"alexis.espinoza@ten24web.com"
+         "text":"${email_account}"
       },
       {  
          "type":"setElementText",
@@ -14,7 +18,7 @@
             "type":"name",
             "value":"password"
          },
-         "text":"123456a"
+         "text":"${account_password}"
       },
       {  
          "type":"clickElement",

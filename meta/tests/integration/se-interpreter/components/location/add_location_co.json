@@ -8,10 +8,6 @@
          }
       },
       {  
-         "type":"include_as_subcomponent",
-         "rel_dir":"components/config/settings_co.json"
-      },
-      {  
          "type":"setElementText",
          "locator":{  
             "type":"name",
@@ -26,7 +22,6 @@
             "value":"button.btn.btn-success"
          }
       },
-      
       {  
          "type":"waitForText",
          "text":"${text}",

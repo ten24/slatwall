@@ -7,12 +7,13 @@ module.exports = {
   */
   addStepInBetween : function (script, step) {
     var array_components = new Object();
-    var input_type = this.get_input_types();     
+    var input_type = this.get_input_types();
+    var index = 0;     
     for(var key in script) {
     	var jsonFileSize = script[key].length;
-    	if(key == "steps") {
+    	if((script['steps'][index]['type'] !== 'store') && (script['steps'][index]['type'] !== 'storeCurrentUrl')) {
+    		if(key == "steps") {
     		var counter = 1;
-    		 
     		if (step['type'] === 'waitForEval') {
     			for(var i = 1; i < jsonFileSize; i++) {
         			if(counter == i) {
@@ -20,7 +21,7 @@ module.exports = {
         				counter = counter + 2;
         			} 
             	}   			
-    		} else if (step['type'] === 'waitForElementPresent'){
+    		} else if (step['type'] === 'waitForElementPresent') {
     			for(var i = 0; i < jsonFileSize; i++) {
     				if(input_type.indexOf(script[key][i]['type']) > -1) {
     					script[key].splice(i, 0,{"type":"waitForElementPresent","locator":script[key][i]['locator']});
@@ -29,8 +30,8 @@ module.exports = {
     				}        			
             	}
     		}
-        	
-        }   
+          }
+    	}
     }
     return script;
 	},

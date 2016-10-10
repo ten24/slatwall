@@ -2,9 +2,19 @@
    "steps":[ 
       {  
          "type":"store",
-         "text":"emailAddress",
-         "variable":"alexis.espinoza@ten24web.com"
+         "text":"Starter..",
+         "variable":"starter"
       },
+      {  
+         "type":"store",
+         "text":"alexis.espinoza@ten24web.com",
+         "variable":"email_account"
+      },
+      {  
+         "type":"store",
+         "text":"123456a",
+         "variable":"account_password"
+      },      
       {  
          "type":"store",
          "text":"Ten24 Offices",
@@ -34,7 +44,23 @@
          "type":"store",
          "text":"20",
          "variable":"configuration_capacity"
+      },
+      {
+         "type":"store",
+         "text":"Please enter a valid number.",
+         "variable":"please_enter_a_valid_number"
+      },
+      {  
+         "__comment":"Used in create_brand_test",
+         "type":"store",
+         "text":"Brand name 1",
+         "variable":"brandNameTest"
+      },
+      {  
+         "__comment":"Used in create_brand_test",
+         "type":"store",
+         "text":"http://www.ten24web.com",
+         "variable":"ten24website"
       }
-               
    ]
 }
