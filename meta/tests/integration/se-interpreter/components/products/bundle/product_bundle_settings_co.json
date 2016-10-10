@@ -1,0 +1,19 @@
+{  
+   "steps":[  
+      {  
+         "type":"store",
+         "text":"bundle product #1",
+         "variable":"bundle_product_name"
+      },
+      {  
+         "type":"store",
+         "text":"1231231123999",
+         "variable":"bundle_product_code"
+      },
+      {  
+         "type":"store",
+         "text":"20",
+         "variable":"bundle_product_price"
+      }
+   ]
+}

@@ -1,0 +1,40 @@
+{  
+   "steps":[  
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#j-main-content > div > div.row.s-body-nav > nav > div:nth-child(2) > div > div > button"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#j-main-content > div > div.row.s-body-nav > nav > div:nth-child(2) > div > div > ul > li:nth-child(1) > a"
+         }
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/products/bundle/product_bundle_settings_co.json"
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"css selector",
+            "value":"sw-property-display.ng-scope.ng-isolate-scope:nth-child(1) > div.form-group.ng-scope > div.s-form-input > span.ng-isolate-scope > sw-input.ng-scope.ng-isolate-scope > input"
+         },
+         "text":"${bundle_product_name}"
+      },
+      
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"css selector",
+            "value":"sw-property-display.ng-scope.ng-isolate-scope:nth-child(2) > div.form-group.ng-scope > div.s-form-input > span.ng-isolate-scope > sw-input.ng-scope.ng-isolate-scope > input"
+         },
+         "text":"${bundle_product_code}"
+      }
+      
+   ]
+}
