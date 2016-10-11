@@ -1,10 +1,31 @@
 {  
    "steps":[
       {  
+         "type":"waitForElementPresent",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.panel-group.s-pannel-group"
+         }
+      },
+      {  
+         "type":"waitForElementPresent",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.panel-group.s-pannel-group > div:nth-child(2)"
+         }
+      },
+      {  
+         "type":"waitForElementPresent",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.panel-group.s-pannel-group > div:nth-child(2) > a"
+         }
+      },
+      {  
          "type":"clickElement",
          "locator":{  
             "type":"css selector",
-            "value":"#accordion > div:nth-child(2) > a"
+            "value":"div.panel-group.s-pannel-group > div:nth-child(2) > a"
          }
       },
       {  
@@ -47,6 +68,48 @@
          "locator":{  
             "type":"css selector",
             "value":"${price_with_currency_path}"
+         }
+      },
+      {  
+         "type":"waitForElementPresent",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.row.s-body-nav"
+         }
+      },
+      {  
+         "type":"waitForElementPresent",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.row.s-body-nav > nav.navbar.navbar-default"
+         }
+      },
+      {  
+         "type":"waitForElementPresent",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.row.s-body-nav > nav.navbar.navbar-default > div.col-md-6"
+         }
+      },
+      {  
+         "type":"waitForElementPresent",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.row.s-body-nav > nav.navbar.navbar-default > div.col-md-6 > div.btn-toolbar"
+         }
+      },
+      {  
+         "type":"waitForElementPresent",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.row.s-body-nav > nav.navbar.navbar-default > div.col-md-6 > div.btn-toolbar > div.btn-group.btn-group-sm"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.row.s-body-nav > nav.navbar.navbar-default > div.col-md-6 > div.btn-toolbar > div.btn-group.btn-group-sm > a"
          }
       }
    ]

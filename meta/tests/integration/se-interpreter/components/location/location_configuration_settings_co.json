@@ -1,6 +1,14 @@
 {  
    "steps":[
       {  
+         "__comment":"Close the Basic option in the accordion menu",
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(1) > a > div > h4 > span"
+         }
+      }, 
+      {  
          "type":"clickElement",
          "locator":{  
             "type":"css selector",
@@ -68,6 +76,15 @@
          }
       },
       {  
+         "__comment":"Close the Basic option in the accordion menu",
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(1) > a > div > h4 > span"
+         }
+      }, 
+      {  
+         "__comment":"Open Location COnfiguration Settings  option in the accordion menu",
          "type":"clickElement",
          "locator":{  
             "type":"css selector",
@@ -134,6 +151,14 @@
             "value":"#adminentitysavesetting > div > div > div.modal-footer > div > button.btn.btn-success"
          }
       },
+       {  
+         "__comment":"Close the Basic option in the accordion menu",
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(1) > a > div > h4 > span"
+         }
+      }, 
       {  
          "__comment" :"DELETE",
          "type":"clickElement",
@@ -156,6 +181,14 @@
             "value":"#adminentitysavesetting > div > div > div.modal-body > div > div.col-md-12.s-content-wrapper > a"
          }
       },
+      {  
+         "__comment":"Close the Basic option in the accordion menu",
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(1) > a > div > h4 > span"
+         }
+      }, 
       {  
          "type":"clickElement",
          "locator":{  
@@ -193,6 +226,14 @@
             "value":"#adminentitysavesetting > div > div > div.modal-body > div > div.col-md-12.s-content-wrapper > a"
          }
       },
+      {  
+         "__comment":"Close the Basic option in the accordion menu",
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(1) > a > div > h4 > span"
+         }
+      }, 
       {  
          "type":"clickElement",
          "locator":{  

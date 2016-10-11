@@ -1,13 +1,6 @@
 {  
    "steps":[
       {  
-         "type":"clickElement",
-         "locator":{  
-            "type":"css selector",
-            "value":"div.row.s-body-nav > nav.navbar.navbar-default > div.col-md-6 > div.btn-toolbar > div.btn-group.btn-group-sm > a"
-         }
-      },
-      {  
          "__comment":"Change the rows to one once the test is running in docker",
          "type":"store",
          "text":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(2) > td:nth-child(1)",

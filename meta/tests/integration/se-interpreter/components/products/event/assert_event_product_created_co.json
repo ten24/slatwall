@@ -31,6 +31,14 @@
             "type":"css selector",
             "value":"#tabbasic > div > div:nth-child(1) > div > div:nth-child(4) > div > p"
          }
+      },
+      {  
+         "__comment":"close the basic option in teh accoridion menu. Firefox was creating issues",
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.panel-group.s-pannel-group > div:nth-child(1) > a"
+         }
       }
    ]
 }
