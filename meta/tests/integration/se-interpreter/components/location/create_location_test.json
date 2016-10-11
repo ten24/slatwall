@@ -4,14 +4,6 @@
    "formatVersion":2,
    "steps":[  
       {  
-         "type":"get",
-         "url":"http://cf10.localhost/?slatAction=main.login"
-      },
-      {  
-         "type":"include",
-         "rel_dir":"/components/login_co.json"
-      },
-      {  
          "type":"include",
          "rel_dir":"/components/location/list_location_co.json"
       },
@@ -47,7 +39,7 @@
          "type":"clickElement",
          "locator":{  
             "type":"css selector",
-            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-expandable > tbody > tr > td.admin.admin2 > a.adminentityeditlocation.btn.btn-default.btn-xs"
+            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-expandable > tbody > tr:nth-child(1) > td.admin.admin2 > a.adminentityeditlocation.btn.btn-default.btn-xs"
          }
       },
       {  
@@ -65,10 +57,6 @@
       {
          "type": "include",
          "rel_dir":"/components/location/location_configuration_settings_co.json"
-      },
-      {
-         "type": "include",
-         "rel_dir":"/components/logout_co.json"
       }
    ],
    "data":{  

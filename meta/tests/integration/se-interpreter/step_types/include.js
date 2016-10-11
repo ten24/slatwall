@@ -1,5 +1,6 @@
 exports.run = function(tr, cb) {
-  var component = get_component(tr.currentStep()['rel_dir']);
+  var tools = require('../functions');
+  var component = tools.get_component(tr.currentStep()['rel_dir']);
   /*
   We check if there are subcomponents and we add them to the component. This is not
   included as a step as it was creating context problems

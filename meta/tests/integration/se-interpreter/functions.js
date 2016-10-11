@@ -42,9 +42,15 @@ module.exports = {
 	get_input_types : function () {
 		var input_type =  ["clickElement", "doubleClickElement", "mouseOverElement", "setElementText", "sendKeysToElement","setElementSelected","setElementNotSelected","clearSelections","submitElement","dragToAndDropElement","clickAndHoldElement","releaseElement"];
 	    return input_type;
+	},
+    get_component : function(relative_dir) {
+		var fs = require('fs');
+    	var path = require('path');
+    	var component = JSON.parse(fs.readFileSync(path.join(__dirname, './', relative_dir)));
+    	component = this.addStepInBetween(component,{"script":"return document.readyState","value":"complete","type":"waitForEval"});
+    	component = this.addStepInBetween(component,{"type":"waitForElementPresent"});
+    	return component;
 	}
-	
-    
 };
 
  

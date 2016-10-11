@@ -12,6 +12,23 @@
          "rel_dir":"/components/login_co.json"
       },
       {  
+         "type":"include",
+         "rel_dir":"/components/location/create_location_test.json"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/products/event/create_event_product_test.json"
+      },
+      {  
+         "__comment":"Temporarily needing to exit before creating the order",
+         "type":"include",
+         "rel_dir":"/components/logout_co.json"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/login_co.json"
+      },
+      {  
          "type":"clickElement",
          "locator":{  
             "type":"link text",
@@ -64,7 +81,7 @@
             "type":"name",
             "value":"accountID-autocompletesearch"
          },
-         "text":"alexis.espinoza@ten24web.com"
+         "text":"${email_account}"
       },
       {  
          "type":"clickElement",
@@ -106,20 +123,8 @@
       {  
          "type":"clickElement",
          "locator":{  
-            "type":"xpath",
-            "value":"//*[@id='adminentityprocessorder_4028288f576bc26e01576be0dbe80025']"
-         }
-      },
-      {  
-         "script":"return document.readyState",
-         "value":"complete",
-         "type":"waitForEval"
-      },
-      {  
-         "type":"waitForElementPresent",
-         "locator":{  
-            "type":"xpath",
-            "value":"//label[@for='registrants[1].newAccountFlagNo']"
+            "type":"css selector",
+            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(1) > td.admin.admin1:nth-child(12) > a"
          }
       },
       {  
@@ -129,11 +134,12 @@
             "value":"//label[@for='registrants[1].newAccountFlagNo']"
          }
       },
+      
       {  
          "type":"setElementSelected",
          "locator":{  
-            "type":"id",
-            "value":"registrants[1].newAccountFlagNo"
+            "type":"css selector",
+            "value":"fieldset:nth-child(9) > div.form-group > div.col-sm-8 > div:nth-child(2) > input[id='registrants[1].newAccountFlagNo']"
          }
       },
       {  
@@ -146,8 +152,8 @@
       {  
          "type":"setElementSelected",
          "locator":{  
-            "type":"id",
-            "value":"registrants[2].newAccountFlagNo"
+            "type":"css selector",
+            "value":"fieldset:nth-child(11) > div.form-group > div.col-sm-8  > div:nth-child(2) > input[id='registrants[2].newAccountFlagNo']"
          }
       },
       {  
@@ -186,11 +192,6 @@
             "type":"xpath",
             "value":"//form[@id='adminentityprocessorder_addorderitem']//button[normalize-space(.)='Add']"
          }
-      },
-      {  
-         "script":"return document.readyState",
-         "value":"complete",
-         "type":"waitForEval"
       },
       {  
          "type":"include",

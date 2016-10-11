@@ -4,15 +4,6 @@
    "formatVersion":2,
    "steps":[ 
       {  
-         "type":"get",
-         "url":"http://cf10.localhost/?slatAction=main.login"
-      },
-      
-      {  
-         "type":"include",
-         "rel_dir":"/components/login_co.json"
-      },
-      {  
          "type":"include",
          "rel_dir":"/components/products/product_page_co.json"
       },
@@ -32,7 +23,6 @@
          "type":"include",
          "rel_dir":"/components/products/event/assert_event_product_created_in_product_page_co.json"
       }
-      
    ],
    "data":{  
       "configs":{  

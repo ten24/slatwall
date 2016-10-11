@@ -1,0 +1,19 @@
+{  
+   "steps":[
+      {  
+         "__comment":"Close the Basic option in the accordion menu",
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(1) > a > div > h4 > span"
+         }
+      }, 
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(2) > a > div > h4 > span"
+         }
+      }
+   ]
+}

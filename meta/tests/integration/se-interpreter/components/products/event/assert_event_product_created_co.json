@@ -33,7 +33,7 @@
          }
       },
       {  
-         "__comment":"close the basic option in teh accoridion menu. Firefox was creating issues",
+         "__comment":"close the basic option in the accoridion menu. Firefox was creating issues",
          "type":"clickElement",
          "locator":{  
             "type":"css selector",

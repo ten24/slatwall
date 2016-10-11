@@ -1,20 +1,9 @@
 {  
    "steps":[
       {  
-         "__comment":"Close the Basic option in the accordion menu",
-         "type":"clickElement",
-         "locator":{  
-            "type":"css selector",
-            "value":"#accordion > div:nth-child(1) > a > div > h4 > span"
-         }
-      }, 
-      {  
-         "type":"clickElement",
-         "locator":{  
-            "type":"css selector",
-            "value":"#accordion > div:nth-child(2) > a > div > h4 > span"
-         }
-      }, 
+         "type":"include",
+         "rel_dir":"/components/location/close_basic_open_location_configuration_settings_co.json"
+      },
       {  
          "type":"clickElement",
          "locator":{  
@@ -76,20 +65,8 @@
          }
       },
       {  
-         "__comment":"Close the Basic option in the accordion menu",
-         "type":"clickElement",
-         "locator":{  
-            "type":"css selector",
-            "value":"#accordion > div:nth-child(1) > a > div > h4 > span"
-         }
-      }, 
-      {  
-         "__comment":"Open Location COnfiguration Settings  option in the accordion menu",
-         "type":"clickElement",
-         "locator":{  
-            "type":"css selector",
-            "value":"#accordion > div:nth-child(2) > a > div > h4 > span"
-         }
+         "type":"include",
+         "rel_dir":"/components/location/close_basic_open_location_configuration_settings_co.json"
       },
       {  
          "type":"clickElement",
@@ -151,23 +128,12 @@
             "value":"#adminentitysavesetting > div > div > div.modal-footer > div > button.btn.btn-success"
          }
       },
-       {  
-         "__comment":"Close the Basic option in the accordion menu",
-         "type":"clickElement",
-         "locator":{  
-            "type":"css selector",
-            "value":"#accordion > div:nth-child(1) > a > div > h4 > span"
-         }
-      }, 
       {  
-         "__comment" :"DELETE",
-         "type":"clickElement",
-         "locator":{  
-            "type":"css selector",
-            "value":"#accordion > div:nth-child(2) > a > div > h4 > span"
-         }
-      }, 
+         "type":"include",
+         "rel_dir":"/components/location/close_basic_open_location_configuration_settings_co.json"
+      },
       {  
+         "__comment":"DELETE",
          "type":"clickElement",
          "locator":{  
             "type":"css selector",
@@ -181,21 +147,14 @@
             "value":"#adminentitysavesetting > div > div > div.modal-body > div > div.col-md-12.s-content-wrapper > a"
          }
       },
+      {
+        "__comment":"Needed to refresh because values were not being updated in the accordion but were in fact being updated when doing it manually", 
+        "type": "refresh"
+      },
       {  
-         "__comment":"Close the Basic option in the accordion menu",
-         "type":"clickElement",
-         "locator":{  
-            "type":"css selector",
-            "value":"#accordion > div:nth-child(1) > a > div > h4 > span"
-         }
-      }, 
-      {  
-         "type":"clickElement",
-         "locator":{  
-            "type":"css selector",
-            "value":"#accordion > div:nth-child(2) > a > div > h4 > span"
-         }
-      }, 
+         "type":"include",
+         "rel_dir":"/components/location/close_basic_open_location_configuration_settings_co.json"
+      },
       {  
          "type":"waitForText",
          "text":"0",
@@ -226,20 +185,13 @@
             "value":"#adminentitysavesetting > div > div > div.modal-body > div > div.col-md-12.s-content-wrapper > a"
          }
       },
+      {
+        "__comment":"Needed to refresh because values were not being updated in the accordion but were in fact being updated when doing it manually", 
+        "type": "refresh"
+      },
       {  
-         "__comment":"Close the Basic option in the accordion menu",
-         "type":"clickElement",
-         "locator":{  
-            "type":"css selector",
-            "value":"#accordion > div:nth-child(1) > a > div > h4 > span"
-         }
-      }, 
-      {  
-         "type":"clickElement",
-         "locator":{  
-            "type":"css selector",
-            "value":"#accordion > div:nth-child(2) > a > div > h4 > span"
-         }
+         "type":"include",
+         "rel_dir":"/components/location/close_basic_open_location_configuration_settings_co.json"
       }, 
       {  
          "type":"waitForText",
