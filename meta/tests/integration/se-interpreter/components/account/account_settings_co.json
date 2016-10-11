@@ -1,0 +1,35 @@
+{  
+   "steps":[  
+      {  
+         "type":"store",
+         "text":"name1",
+         "variable":"account_first_name"
+      },
+      {  
+         "type":"store",
+         "text":"lastname1",
+         "variable":"account_last_name"
+      },
+      {  
+         "type":"store",
+         "text":"Ten24",
+         "variable":"account_company"
+      },
+      {  
+         "type":"store",
+         "text":"5084145233",
+         "variable":"account_phone_number"
+      },
+      {  
+         "type":"store",
+         "text":"name1lastnanme1@ten24web.com",
+         "variable":"account_email_address"
+      },
+      {  
+         "type":"store",
+         "text":"123456a",
+         "variable":"account_password"
+      }
+      
+   ]
+}

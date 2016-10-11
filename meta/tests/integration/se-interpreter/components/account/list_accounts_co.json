@@ -1,0 +1,27 @@
+{  
+   "steps":[
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#j-mobile-nav > ul > li:nth-child(4) > a"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#j-mobile-nav > ul > li.dropdown.open > ul > li:nth-child(1) > a"
+         }
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/check_url_co.json"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/account/account_settings_co.json"
+      }
+      
+   ]
+}

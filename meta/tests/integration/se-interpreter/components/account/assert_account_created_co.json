@@ -1,0 +1,93 @@
+{  
+   "steps":[
+      {  
+         "type":"store",
+         "text":"#tabbasic > div > div:nth-child(1) > div > div:nth-child(1) > div > p",
+         "variable":"path"
+      },
+      {  
+         "type":"store",
+         "text":"#tabbasic > div > div:nth-child(1) > div > div:nth-child(1) > div > p",
+         "variable":"path"
+      },  
+      {  
+         "type":"waitForText",
+         "text":"${account_first_name}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"${account_first_name}",
+         "locator":{  
+            "type":"css selector",
+            "value":"{path}"
+         }
+      },
+      {  
+         "type":"store",
+         "text":"#tabbasic > div > div:nth-child(1) > div > div:nth-child(2) > div > p",
+         "variable":"path"
+      },
+      {  
+         "type":"waitForText",
+         "text":"${account_last_name}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"${account_last_name}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "type":"store",
+         "text":"#tabbasic > div > div:nth-child(1) > div > div:nth-child(2) > div > p",
+         "variable":"path"
+      },
+      {  
+         "type":"waitForText",
+         "text":"${account_last_name}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"${account_last_name}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "type":"store",
+         "text":"#tabbasic > div > div:nth-child(1) > div > div:nth-child(3) > div > p",
+         "variable":"path"
+      },
+      {  
+         "type":"waitForText",
+         "text":"${account_company}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"${account_company}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      }
+   ]
+}
