@@ -14,6 +14,16 @@
          "type":"store",
          "text":"20",
          "variable":"bundle_product_price"
+      },
+      {  
+         "type":"store",
+         "text":"Product Bundle",
+         "variable":"product_bundle_type"
+      },
+      {  
+         "type":"store",
+         "text":"Brand name 1",
+         "variable":"brand_name"
       }
    ]
 }

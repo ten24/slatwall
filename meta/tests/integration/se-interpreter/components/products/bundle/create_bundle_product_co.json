@@ -16,7 +16,7 @@
       },
       {  
          "type":"include",
-         "rel_dir":"/components/products/bundle/product_bundle_settings_co.json"
+         "rel_dir":"/components/products/bundle/bundle_product_settings_co.json"
       },
       {  
          "type":"setElementText",
@@ -46,7 +46,14 @@
          "type":"setElementSelected",
          "locator":{  
             "type":"css selector",
-            "value":"div.form-group.ng-scope > div.s-form-input > span.ng-isolate-scope > span.ng-scope > select > option:nth-child(1)"
+            "value":"div.form-group.ng-scope > div.s-form-input > span.ng-isolate-scope > ng-switch > span.ng-scope > select > option:nth-child(2)"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#topOfPageDialog > div > div.ng-scope > div > span > footer > div > ul > sw-save-and-finish:nth-child(2) > li > a"
          }
       }
    ]

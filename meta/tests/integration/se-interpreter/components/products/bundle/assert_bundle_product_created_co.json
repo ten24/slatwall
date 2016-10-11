@@ -1,0 +1,113 @@
+{  
+   "steps":[
+      {  
+         "__comment":"Change the rows to one once the test is running in docker",
+         "type":"store",
+         "text":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(2) > td:nth-child(1)",
+         "variable":"path1"
+      },
+      {  
+         "__comment":"Change the rows to one once the test is running in docker",
+         "type":"store",
+         "text":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(2) > td:nth-child(1)",
+         "variable":"path"
+      },
+      {  
+         "type":"waitForText",
+         "text":"${product_bundle_type}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      
+      {  
+         "__comment":"Change the rows to one once the test is running in docker",
+         "type":"store",
+         "text":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(2) > td:nth-child(2)",
+         "variable":"path"
+      }, 
+      {  
+         "type":"waitForText",
+         "text":"${brand_name}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"${brand_name}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "__comment":"Change the rows to one once the test is running in docker",
+         "type":"store",
+         "text":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(2) > td:nth-child(3)",
+         "variable":"path"
+      }, 
+      {  
+         "type":"waitForText",
+         "text":"${bundle_product_name}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"${bundle_product_name}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "__comment":"Change the rows to one once the test is running in docker",
+         "type":"store",
+         "text":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(2) > td:nth-child(4)",
+         "variable":"path"
+      }, 
+      {  
+         "type":"waitForText",
+         "text":"${bundle_product_code}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"${bundle_product_code}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "__comment":"Change the rows to one once the test is running in docker",
+         "type":"store",
+         "text":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(2) > td:nth-child(5)",
+         "variable":"path"
+      }, 
+      {  
+         "type":"waitForText",
+         "text":"$20.00",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"$20.00",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      }              
+   ]
+}
