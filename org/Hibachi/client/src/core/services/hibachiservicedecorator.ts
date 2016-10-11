@@ -578,7 +578,7 @@ class HibachiServiceDecorator{
             });
             $delegate.setJsEntities(_jsEntities);
 
-            angular.forEach(_jsEntities,function(jsEntity){
+            angular.forEach(_jsEntities,function(jsEntity:any){
                 var jsEntityInstance = new jsEntity;
                 _jsEntityInstances[jsEntityInstance.metaData.className] = jsEntityInstance;
             });
