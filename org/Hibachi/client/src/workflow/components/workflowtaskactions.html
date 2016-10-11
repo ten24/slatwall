@@ -146,7 +146,7 @@
                                         </div>
                                         <!-- Dropdown wrapper -->
                                         <div class="dropdown s-search-results-wrapper" data-ng-if="swWorkflowTaskActions.showProcessOptions">
-                                            <ul class="dropdown-menu">
+                                            <ul class="dropdown-menu" ng-if="swWorkflowTaskActions.processOptions">
                                                 <li data-ng-repeat="processOption in swWorkflowTaskActions.processOptions | filter:swWorkflowTaskActions.searchProcess.name">
                                                     <a data-ng-click="swWorkflowTaskActions.selectProcess(processOption)">{{processOption.name}}</a>
                                                 </li>
