@@ -68,6 +68,8 @@ class SWWorkflowTriggers{
                             if(angular.isDefined(newValue.data.scheduleCollection)){
                                 scope.selectedCollection = newValue.data.scheduleCollection.data.collectionName;
                             }
+                        }else{
+                            scope.searchEvent.name = scope.workflowTriggers.selectedTrigger.triggerEventTitle;
                         }
                     }
                 });
@@ -81,6 +83,7 @@ class SWWorkflowTriggers{
                     scope.collectionCollectionConfig.addFilter("collectionObject",item.value);
                     scope.eventOptions = [];
                 },'WorkflowWorkflowObjectOnChange');
+                
 
                 scope.scheduleCollectionConfig = collectionConfigService.newCollectionConfig("Schedule");
                 scope.scheduleCollectionConfig.setDisplayProperties("scheduleID,scheduleName,daysOfMonthToRun,daysOfWeekToRun,recuringType,frequencyStartTime,frequencyEndTime,frequencyInterval");
@@ -202,8 +205,6 @@ class SWWorkflowTriggers{
                     //Needs to clear old and set new.
                     scope.workflowTriggers.selectedTrigger.data.triggerEventTitle = eventOption.name;
                     scope.workflowTriggers.selectedTrigger.data.triggerEvent = eventOption.value;
-                    console.log(scope.workflowTriggers.selectedTrigger.data.triggerEvent);
-                    console.log(scope.workflowTriggers);
                     if(eventOption.entityName == scope.workflow.data.workflowObject){
                         scope.workflowTriggers.selectedTrigger.data.objectPropertyIdentifier = '';
 
@@ -213,7 +214,10 @@ class SWWorkflowTriggers{
                     
                     scope.searchEvent.name = eventOption.name;
                     scope.showEventOptions = false;  
-                    observerService.notify('pullBindings').then(function(){
+                    observerService.notifyById('pullBindings','WorkflowTriggertriggerEventpullBindings').then(function(){
+                          
+                    });
+                    observerService.notifyById('pullBindings','WorkflowTriggertriggerEventTitlepullBindings').then(function(){
                           
                     });
 				};
