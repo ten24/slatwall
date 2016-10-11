@@ -40,15 +40,15 @@ class SWInputController{
 	public property:string;
 	public object:any;
 	public inputAttributes:string;
-	public initialValue:any; 
+	public initialValue:any;
 	public inListingDisplay:boolean;
-	public listingID:string; 
-	public pageRecordIndex:number;  
-	public propertyDisplayID:string; 
+	public listingID:string;
+	public pageRecordIndex:number;
+	public propertyDisplayID:string;
 	public noValidate:boolean;
 	public propertyIdentifier:string;
-	public binaryFileTarget:string; 
-	public rawFileTarget:string; 
+	public binaryFileTarget:string;
+	public rawFileTarget:string;
 	public type:string;
 	public edit:boolean;
 	public edited:boolean;
@@ -56,10 +56,11 @@ class SWInputController{
 	public name:string;
 	public value:any;
 	public reverted:boolean;
-	public revertToValue:any; 
-	public showRevert:boolean; 
+	public revertToValue:any;
+	public showRevert:boolean;
 	public context:string;
 	public eventNameForObjectSuccess:string;
+	public rowSaveEnabled:boolean;
 
 	public eventHandlers:string="";
 	public eventHandlersArray:Array<EventHandler>;
@@ -73,7 +74,7 @@ class SWInputController{
 		public $compile,
         public $hibachi,
 		public $injector,
-		public listingService, 
+		public listingService,
 		public utilityService,
         public rbkeyService,
 		public observerService:ObserverService,
@@ -179,24 +180,24 @@ class SWInputController{
 
 	public clear = () =>{
         if(this.reverted){
-            this.reverted = false; 
-            this.showRevert = true; 
+            this.reverted = false;
+            this.showRevert = true;
         }
-        this.edited = false; 
-        this.value= this.initialValue; 
+        this.edited = false;
+        this.value= this.initialValue;
         if(this.inListingDisplay && this.rowSaveEnabled){
-            this.listingService.markUnedited( this.listingID, 
-                                              this.pageRecordIndex, 
+            this.listingService.markUnedited( this.listingID,
+                                              this.pageRecordIndex,
                                               this.propertyDisplayID
                                             );
         }
     }
 
     public revert = () =>{
-        this.showRevert = false; 
-        this.reverted = true; 
-        this.value = this.revertToValue; 
-        this.onEvent({}, "change");
+        this.showRevert = false;
+        this.reverted = true;
+        this.value = this.revertToValue;
+        this.onEvent(<Event>{}, "change");
     }
 
 	public onEvent = (event:Event,eventName:string):void=>{
@@ -254,7 +255,7 @@ class SWInputController{
 				'ng-model="swInput.value" '+
 				'ng-disabled="swInput.editable === false" '+
 				'ng-show="swInput.editing" '+
-				`ng-class="{'form-control':swInput.inListingDisplay, 'input-xs':swInput.inListingDisplay}"` + 
+				`ng-class="{'form-control':swInput.inListingDisplay, 'input-xs':swInput.inListingDisplay}"` +
 				'name="'+this.property+'" ' +
 				'placeholder="'+placeholder+'" '+
 				validations + currencyFormatter +
@@ -279,20 +280,20 @@ class SWInputController{
 		}
 
 		var actionButtons = `
-			<a class="s-remove-change" 
-				data-ng-click="swPropertyDisplay.clear()" 
+			<a class="s-remove-change"
+				data-ng-click="swPropertyDisplay.clear()"
 				data-ng-if="swInput.edited && swInput.editing">
 					<i class="fa fa-remove"></i>
 			</a>
 
 			<!-- Revert Button -->
 			<button class="btn btn-xs btn-default s-revert-btn"
-					data-ng-show="swInput.showRevert" 
-					data-ng-click="swInput.revert()" 
-					data-toggle="popover" 
-					data-trigger="hover" 
-					data-content="{{swInput.revertText}}" 
-					data-original-title="" 
+					data-ng-show="swInput.showRevert"
+					data-ng-click="swInput.revert()"
+					data-toggle="popover"
+					data-trigger="hover"
+					data-content="{{swInput.revertText}}"
+					data-original-title=""
 					title="">
 				<i class="fa fa-refresh"></i>
 			</button>
@@ -405,9 +406,9 @@ class SWInput{
 		labelText: "@?",
 		labelClass: "@?",
 		inListingDisplay: "=?",
-		listingID: "=?" 
+		listingID: "=?",
 		pageRecordIndex: "=?",
-	    propertyDisplayID: "=?", 
+	    propertyDisplayID: "=?",
 		initialValue:"=?",
 		optionValues: "=?",
 		edit: 	"=?",
@@ -420,7 +421,7 @@ class SWInput{
 		rawFileTarget:"@?",
 		reverted:"=?",
 		revertToValue:"=?",
-		showRevert:"=?", 
+		showRevert:"=?",
 		inputAttributes:"@?",
 		type:"@?",
 		editing:"=?",
@@ -429,12 +430,12 @@ class SWInput{
 	}
 	public controller=SWInputController;
 	public controllerAs = "swInput";
-	
+
 	//ngInject
 	constructor(
 		public $compile,
-		public $timeout, 
-		public $parse, 
+		public $timeout,
+		public $parse,
 		public fileService
 	){
 	}
@@ -445,9 +446,9 @@ class SWInput{
 
 			if(angular.isUndefined(scope.swInput.object.data[scope.swInput.rawFileTarget])){
 				scope.swInput.object[scope.swInput.rawFileTarget] = "";
-				scope.swInput.object.data[scope.swInput.rawFileTarget] = ""; 
+				scope.swInput.object.data[scope.swInput.rawFileTarget] = "";
 			}
-			var model = this.$parse("swInput.object.data[swInput.rawFileTarget]"); 
+			var model = this.$parse("swInput.object.data[swInput.rawFileTarget]");
 			var modelSetter = model.assign;
 			element.bind("change", (e)=>{
 
@@ -461,7 +462,7 @@ class SWInput{
 						throw("swinput couldn't apply the file to scope");
 					}
 				);
-				
+
 				this.$timeout(()=>{
 
 					this.fileService.uploadFile(fileToUpload, scope.swInput.object, scope.swInput.binaryFileTarget)
@@ -474,7 +475,7 @@ class SWInput{
 							//error	notify user
 						}
 					);
-				});		
+				});
 			});
 		}
 
@@ -487,19 +488,19 @@ class SWInput{
 	public static Factory(){
 		var directive = (
 			$compile,
-			$timeout, 
-			$parse, 
+			$timeout,
+			$parse,
 			fileService
 		)=>new SWInput(
 			$compile,
-			$timeout, 
-			$parse, 
+			$timeout,
+			$parse,
 			fileService
 		);
 		directive.$inject = [
 			'$compile',
-			'$timeout', 
-			'$parse', 
+			'$timeout',
+			'$parse',
 			'fileService'
 		];
 		return directive
