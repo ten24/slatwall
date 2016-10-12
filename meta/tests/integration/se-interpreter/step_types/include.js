@@ -11,12 +11,3 @@ exports.run = function(tr, cb) {
  
   cb({'success': true});
 }
-var get_component = function(relative_dir) {
-	var fs = require('fs');
-    var path = require('path');
-    var tools = require('../functions');
-	var component = JSON.parse(fs.readFileSync(path.join(__dirname, '../', relative_dir)));
-    component = tools.addStepInBetween(component,{"script":"return document.readyState","value":"complete","type":"waitForEval"});
-    component = tools.addStepInBetween(component,{"type":"waitForElementPresent"});
-    return component;
-}

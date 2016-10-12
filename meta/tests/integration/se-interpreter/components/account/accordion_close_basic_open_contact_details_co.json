@@ -1,0 +1,20 @@
+  {  
+   "steps":[  
+      {  
+         "__comment":"Close first Basic option in the accordion",
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":" #accordion > div:nth-child(1) > a"
+         }
+      },
+      {  
+         "__comment":"Validate new contact details",
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":" #accordion > div:nth-child(2) > a"
+         }
+      }
+   ]
+}

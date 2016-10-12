@@ -1,0 +1,41 @@
+{  
+   "steps":[
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#collapse2 > content > div.tab-pane > div:nth-child(1) > div:nth-child(1) > div > a"
+         }
+      },
+      {  
+         "__comment":"HItting SAVE before any values",
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentitysaveaccountemailaddress > div > div > div.modal-footer > div > button.btn.btn-success"
+         }
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"emailAddress"
+         },
+         "text":"${personal_email_address}"
+      },
+      {  
+         "type":"setElementSelected",
+         "locator":{  
+            "type":"xpath",
+            "value":"//form[@id='adminentitysaveaccountemailaddress']/div/div/div[2]/div/div/div/div[2]/div/select//option[2]"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentitysaveaccountemailaddress > div > div > div.modal-footer > div > button.btn.btn-success"
+         }
+      }
+   ]
+}

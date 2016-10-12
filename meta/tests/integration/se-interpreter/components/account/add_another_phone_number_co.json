@@ -1,0 +1,46 @@
+{  
+   "steps":[
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabcontactdetails > div:nth-child(1) > div:nth-child(2) > div > a"
+         }
+      },
+      {  
+         "type":"store",
+         "text":"#adminentitysaveaccountphonenumber > div > div > div.modal-footer > div > button.btn.btn-success",
+         "variable":"save_button_path"
+      },
+      {  
+         "__comment":"HItting SAVE before any values",
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"${save_button_path}"
+         }
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"phoneNumber"
+         },
+         "text":"${another_phone_number}"
+      },
+      {  
+         "type":"setElementSelected",
+         "locator":{  
+            "type":"xpath",
+            "value":"//form[@id='adminentitysaveaccountphonenumber']/div/div/div[2]/div/div/div/div[2]/div/select//option[3]"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"${save_button_path}"
+         }
+      }
+   ]
+}

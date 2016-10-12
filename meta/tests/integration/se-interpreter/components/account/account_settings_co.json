@@ -22,14 +22,54 @@
       },
       {  
          "type":"store",
-         "text":"name1lastnanme1@ten24web.com",
+         "text":"name1lastname1",
+         "variable":"invalid_account_email_address"
+      },
+      {  
+         "type":"store",
+         "text":"name1lastname1@ten24web.com",
          "variable":"account_email_address"
       },
       {  
          "type":"store",
          "text":"123456a",
          "variable":"account_password"
+      },
+      {  
+         "__comment":"Must be responsive to the language when test multilang support",
+         "type":"store",
+         "text":"Yes",
+         "variable":"is_a_guest_account"
+      },
+      {  
+         "type":"store",
+         "text":"personal@ten24web.com",
+         "variable":"personal_email_address"
+      },
+      {  
+         "type":"store",
+         "text":"work@ten24web.com",
+         "variable":"work_email_address"
+      },
+      {  
+         "type":"store",
+         "text":"Personal",
+         "variable":"personal_tag"
+      },
+      {  
+         "type":"store",
+         "text":"Work",
+         "variable":"work_tag"
+      },
+      {
+         "type":"store",
+         "text":"5084145234",
+         "variable":"another_phone_number"
+      },
+      {  
+         "type":"store",
+         "text":"Mobile Phone",
+         "variable":"another_phone_number_tag"
       }
-      
    ]
 }

@@ -147,10 +147,6 @@
             "value":"#adminentitysavesetting > div > div > div.modal-body > div > div.col-md-12.s-content-wrapper > a"
          }
       },
-      {
-        "__comment":"Needed to refresh because values were not being updated in the accordion but were in fact being updated when doing it manually", 
-        "type": "refresh"
-      },
       {  
          "type":"include",
          "rel_dir":"/components/location/close_basic_open_location_configuration_settings_co.json"

@@ -19,15 +19,7 @@
          "type":"include",
          "rel_dir":"/components/products/event/create_event_product_test.json"
       },
-      {  
-         "__comment":"Temporarily needing to exit before creating the order",
-         "type":"include",
-         "rel_dir":"/components/logout_co.json"
-      },
-      {  
-         "type":"include",
-         "rel_dir":"/components/login_co.json"
-      },
+      
       {  
          "type":"clickElement",
          "locator":{  
@@ -162,13 +154,13 @@
             "type":"name",
             "value":"registrants1accountID-autocompletesearch"
          },
-         "text":"name1Lastname1@ten24web.com"
+         "text":"name1lastname1@ten24web.com"
       },
       {  
          "type":"clickElement",
          "locator":{  
-            "type":"xpath",
-            "value":"//*[@id=\"suggestionoption4028288f576bc26e01576bc58db30004\"]"
+            "type":"css selector",
+            "value":"#registrants1accountID-suggestions > li:nth-child(2) > a"
          }
       },
       {  
@@ -177,13 +169,13 @@
             "type":"name",
             "value":"registrants2accountID-autocompletesearch"
          },
-         "text":"name2Lastname2@ten24web.com"
+         "text":"${email_account}"
       },
       {  
          "type":"clickElement",
          "locator":{  
-            "type":"xpath",
-            "value":"//*[@id=\"suggestionoption4028288f576bc26e01576c15bb830032\"]"
+            "type":"css selector",
+            "value":"#registrants2accountID-suggestions > li:nth-child(1) > a"
          }
       },
       {  

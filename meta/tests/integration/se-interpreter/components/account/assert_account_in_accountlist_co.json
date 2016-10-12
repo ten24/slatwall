@@ -1,0 +1,125 @@
+{  
+   "steps":[
+      {  
+         "type":"waitForText",
+         "text":"${account_first_name}",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(2) > td:nth-child(1)"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"${account_first_name}",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(2) > td:nth-child(1)"
+         }
+      },
+      {  
+         "type":"store",
+         "text":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(2) > td:nth-child(2)",
+         "variable":"path"
+      },
+      {  
+         "type":"waitForText",
+         "text":"${account_last_name}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"${account_last_name}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "type":"store",
+         "text":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(2) > td:nth-child(3)",
+         "variable":"path"
+      },
+      {  
+         "type":"waitForText",
+         "text":"${account_company}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"${account_company}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "type":"store",
+         "text":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(2) > td:nth-child(4)",
+         "variable":"path"
+      },
+      {  
+         "type":"waitForText",
+         "text":"${account_phone_number}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"${account_phone_number}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "type":"store",
+         "text":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(2) > td:nth-child(5)",
+         "variable":"path"
+      },
+      {  
+         "type":"waitForText",
+         "text":"${account_email_address}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"${account_email_address}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "type":"store",
+         "text":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(2) > td:nth-child(6)",
+         "variable":"path"
+      },
+      {  
+         "type":"waitForText",
+         "text":"${is_a_guest_account}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"${is_a_guest_account}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      }
+   ]
+}
