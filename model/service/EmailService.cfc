@@ -63,7 +63,6 @@ Notes:
 				subject="#arguments.email.getEmailSubject()#"
 				cc="#arguments.email.getEmailCC()#"
 				bcc="#arguments.email.getEmailBCC()#"
-				failto="#getService('SettingService').getSettingValue('emailFailToAddress')#"
 				charset="utf-8">
 				<cfif !isNull(arguments.email.getRelatedObject())>
 					<cfmailparam name="Related-Object" value="#arguments.email.getRelatedObject()#">
@@ -71,6 +70,9 @@ Notes:
 				</cfif>
 				<cfif !isNull(arguments.email.getEmailReplyTo())>
 					<cfmailparam name="Reply-To" value="#arguments.email.getEmailReplyTo()#">
+				</cfif>
+				<cfif !isNull(arguments.email.getEmailFailTo())>
+					<cfmailparam name="Return-Path" value="#arguments.email.getEmailFailTo()#">
 				</cfif>
 				<cfmailpart type="text/plain">
 					<cfoutput>#arguments.email.getEmailBodyText()#</cfoutput>
@@ -86,9 +88,11 @@ Notes:
 				subject="#arguments.email.getEmailSubject()#"
 				cc="#arguments.email.getEmailCC()#"
 				bcc="#arguments.email.getEmailBCC()#"
-				failto="#getService('SettingService').getSettingValue('emailFailToAddress')#"
 				charset="utf-8"
 				type="text/html">
+				<cfif !isNull(arguments.email.getEmailFailTo())>
+					<cfmailparam name="Return-Path" value="#arguments.email.getEmailFailTo()#">
+				</cfif>
 				<cfif !isNull(arguments.email.getRelatedObject())>
 					<cfmailparam name="Related-Object" value="#arguments.email.getRelatedObject()#">
 					<cfmailparam name="Related-Object-ID" value="#arguments.email.getRelatedObjectID()#">
@@ -105,9 +109,11 @@ Notes:
 				subject="#arguments.email.getEmailSubject()#"
 				cc="#arguments.email.getEmailCC()#"
 				bcc="#arguments.email.getEmailBCC()#"
-				failto="#getService('SettingService').getSettingValue('emailFailToAddress')#"
 				charset="utf-8"
 				type="text/plain">
+				<cfif !isNull(arguments.email.getEmailFailTo())>
+					<cfmailparam name="Return-Path" value="#arguments.email.getEmailFailTo()#">
+				</cfif>
 				<cfif !isNull(arguments.email.getRelatedObject())>
 					<cfmailparam name="Related-Object" value="#arguments.email.getRelatedObject()#">
 					<cfmailparam name="Related-Object-ID" value="#arguments.email.getRelatedObjectID()#">
@@ -236,6 +242,7 @@ Notes:
 				arguments.email.setEmailCC( templateObject.stringReplace( emailTemplate.setting('emailCCAddress'), false, true ) );
 				arguments.email.setEmailBCC( templateObject.stringReplace( emailTemplate.setting('emailBCCAddress'), false, true ) );
 				arguments.email.setEmailReplyTo( templateObject.stringReplace( emailTemplate.setting('emailReplyToAddress'), false, true ) );
+				arguments.email.setEmailFailTo( templateObject.stringReplace( emailTemplate.setting('emailFailToAddress'), false, true ) );
 				arguments.email.setEmailSubject( templateObject.stringReplace( emailTemplate.setting('emailSubject'), false, true ) );
 				arguments.email.setEmailBodyHTML( templateObject.stringReplace( emailTemplate.getEmailBodyHTML() ) );
 				arguments.email.setEmailBodyText( templateObject.stringReplace( emailTemplate.getEmailBodyText() ) );
@@ -267,6 +274,7 @@ Notes:
 				arguments.email.setEmailCC( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailCC(), object=emailData) );
 				arguments.email.setEmailBCC( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailBCC(), object=emailData) );
 				arguments.email.setEmailReplyTo( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailReplyTo(), object=emailData) );
+				arguments.email.setEmailFailTo( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailFailTo(), object=emailData) );
 				arguments.email.setEmailSubject( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailSubject(), object=emailData) );
 				arguments.email.setEmailBodyHTML( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailBodyHTML(), object=emailData) );
 				arguments.email.setEmailBodyText( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailBodyText(), object=emailData) );
