@@ -146,9 +146,10 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 	
 	public any function getPropertiesWithAttributesByEntityName(required string entityName){
 		var entityObject = getEntityObject( arguments.entityName );
-		var properties = entityObject.getFilterProperties();
-		
-		return properties;
+		if (!isNull(properties)){
+			return properties;
+		}
+		return;
 	}
 	
 	public any function getFilterPropertiesByEntityName(required string entityName){
