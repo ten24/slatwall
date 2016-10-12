@@ -104,17 +104,17 @@ class SWWorkflowTrigger{
 				/**
 				 * Overrides the delete function for the confirmation modal. Delegates to the normal delete method.
 				 */
-				scope.deleteEntity = function(entity){
-					scope.deleteTrigger(entity);
+				scope.deleteEntity = function(entity, index){
+					scope.deleteTrigger(entity, index);
 				};
 
 				/**
 				 * Hard deletes a workflow trigger
 				 */
-				scope.deleteTrigger = function(workflowTrigger){
+				scope.deleteTrigger = function(workflowTrigger, index){
 					var deleteTriggerPromise = $hibachi.saveEntity('WorkflowTrigger',workflowTrigger.data.workflowTriggerID,{},'Delete');
 					deleteTriggerPromise.then(function(value){
-						scope.workflowTriggers.splice(workflowTrigger.$$index,1);
+						scope.workflowTriggers.splice(index,1);
 					});
 				};
 
