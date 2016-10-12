@@ -50,6 +50,7 @@ component extends="mxunit.framework.TestCase" output="false" {
 
 	variables.debugArray = [];
 	variables.persistentEntities = [];
+	variables.files = [];
 
 	// BEFORE ALL TESTS IN THIS SUITE
 	public void function beforeTests(){
@@ -83,7 +84,11 @@ component extends="mxunit.framework.TestCase" output="false" {
 
 		for(var i=arrayLen(variables.persistentEntities); i>=1; i--) {
 			flushRequired = true;
-			entityDelete( variables.persistentEntities[i] );
+			try{
+				entityDelete( variables.persistentEntities[i] );
+			}catch(any e){
+				debug("Could Not Delete: ");
+			}
 		}
 		
 		for (var i = arrayLen(variables.files); i >= 1; i--) {

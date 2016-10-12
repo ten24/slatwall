@@ -85,7 +85,7 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 	
 	public string function getAdminNavbarHTML() {
 		if(!structKeyExists(variables, "adminNavbarHTML")) {
-			variables.adminNavbarHTML = '<a href="#replace(request.slatwallScope.getSlatwallRootURL(), '/Slatwall', '')#/admin" class="brand" target="_self"><img src="#request.slatwallScope.getSlatwallRootPath()#assets/images/mura.logo.png" style="width:25px;heigh:26px;" title="Mura" /></a>'; 
+			variables.adminNavbarHTML = '<a href="#replace(request.slatwallScope.getSlatwallRootURL(), '/Slatwall', '')#/admin" class="brand" target="_self"><img src="#request.slatwallScope.getSlatwallRootPath()#/assets/images/mura.logo.png" style="width:25px;heigh:26px;" title="Mura" /></a>'; 
 		}
 		return variables.adminNavbarHTML;
 	}

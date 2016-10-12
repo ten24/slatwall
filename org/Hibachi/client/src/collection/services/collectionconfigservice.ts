@@ -152,7 +152,7 @@ class CollectionConfig {
         this.keywords = jsonCollection.keywords;
         return this;
     };
-    
+
     public clone= () =>{
         return this.newCollectionConfig(this.baseEntityName, this.baseEntityAlias).loadJson(JSON.parse(JSON.stringify(this.getCollectionConfig())));
     }
@@ -193,15 +193,15 @@ class CollectionConfig {
 
     public getOptions= (): Object =>{
         this.validateFilter(this.filterGroups);
-        if(this.keywords.length && this.keywordColumns.length > 0){
+        if(this.keywords && this.keywords.length && this.keywordColumns.length > 0){
             console.log("using Keyword Columns", this.keywordColumns);
             var columns = this.keywordColumns;
         } else {
-            var columns = this.columns; 
+            var columns = this.columns;
         }
-        if(this.keywords.length && this.keywordFilterGroups[0].filterGroup.length > 0){
-            var filters = this.keywordFilterGroups; 
-        } else { 
+        if(this.keywords && this.keywords.length && this.keywordFilterGroups[0].filterGroup.length > 0){
+            var filters = this.keywordFilterGroups;
+        } else {
             var filters = this.filterGroups
         }
         var options= {
@@ -306,7 +306,7 @@ class CollectionConfig {
             if(angular.isUndefined(lastEntity)){
                 throw("You have passed an incorrect entity name to a collection config");
             }
-            
+
             if(angular.isUndefined(this.columns)){
                 this.columns = [];
             }
@@ -314,7 +314,7 @@ class CollectionConfig {
             if(angular.isDefined(options['isVisible'])){
                 isVisible = options['isVisible'];
             }
-            if( angular.isUndefined(options.isVisible) && 
+            if( angular.isUndefined(options.isVisible) &&
                 column.substring(column.length - 2) === "ID"
             ){
                 isVisible = false;
@@ -413,7 +413,7 @@ class CollectionConfig {
         return this;
     };
 
-    public addDisplayProperty= (propertyIdentifier: string, title: string = '', options:any = {}):CollectionConfig =>{  
+    public addDisplayProperty= (propertyIdentifier: string, title: string = '', options:any = {}):CollectionConfig =>{
         var _DividedColumns = propertyIdentifier.trim().split(',');
         var _DividedTitles = title.trim().split(',');
         _DividedColumns.forEach((column:string, index)  => {
@@ -430,9 +430,9 @@ class CollectionConfig {
 
     public addFilter= (propertyIdentifier: string, value: any, comparisonOperator: string = '=', logicalOperator?: string, hidden:boolean=false, isKeywordFilter=true, isOnlyKeywordFilter=false):CollectionConfig =>{
         if(!this.filterGroups[0].filterGroup.length){
-            logicalOperator = undefined; 
+            logicalOperator = undefined;
         }
-        
+
 		//create filter
         var filter = this.createFilter(propertyIdentifier, value, comparisonOperator, logicalOperator, hidden);
 
@@ -441,7 +441,7 @@ class CollectionConfig {
         }
         if(isKeywordFilter){
             this.keywordFilterGroups[0].filterGroup.push(filter);
-        }   
+        }
         return this;
     };
 
@@ -525,15 +525,15 @@ class CollectionConfig {
     };
 
     public removeFilterByDisplayPropertyIdentifier = (displayPropertyIdentifier) =>{
-        this.removeFromFilterGroupsByPropertyIdentifier(this.filterGroups, displayPropertyIdentifier); 
-        this.removeFromFilterGroupsByPropertyIdentifier(this.keywordFilterGroups, displayPropertyIdentifier); 
+        this.removeFromFilterGroupsByPropertyIdentifier(this.filterGroups, displayPropertyIdentifier);
+        this.removeFromFilterGroupsByPropertyIdentifier(this.keywordFilterGroups, displayPropertyIdentifier);
     }
 
     private removeFromFilterGroupsByPropertyIdentifier = (filterGroups, displayPropertyIdentifier) =>{
         for( var j = 0; j < filterGroups.length; j++){
-            var filterGroup = filterGroups[j].filterGroup; 
+            var filterGroup = filterGroups[j].filterGroup;
             for( var i = 0; i < filterGroup.length; i++){
-                var filter = filterGroup[i]; 
+                var filter = filterGroup[i];
                 if(filter.displayPropertyIdentifier == displayPropertyIdentifier){
                     filterGroup.splice(i, 1);
                     i--;

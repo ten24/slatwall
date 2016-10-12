@@ -363,6 +363,7 @@ class ListingService{
             this.getListing(listingID).collectionConfig.setCurrentPage(this.getListing(listingID).paginator.getCurrentPage());
         }
     };
+    
 
     public addColumn = (listingID:string, column) =>{
         if(this.getListing(listingID).collectionConfig != null && this.getListing(listingID).collectionConfig.baseEntityAlias != null){
@@ -670,6 +671,8 @@ class ListingService{
             this.getListing(listingID).administrativeCount++;
         }
     };
+    
+    
 
     public setupDefaultGetCollection = (listingID:string) =>{
         if(this.getListing(listingID).collectionConfigs.length == 0){

@@ -156,17 +156,21 @@ class SWListingDisplayController{
                     this.getCollection = this.listingService.setupDefaultGetCollection(this.tableID);
                 }
                 this.paginator.getCollection = this.getCollection;
-                this.$timeout(
-                    ()=>{
-                        this.getCollection();
-                    }
-                );
+                //this.getCollection();
+        		var getCollectioneventID= (this.name || 'ListingDisplay');
+        		this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectioneventID);
+        
             }
         );
-        this.$scope.$on('$destroy',()=>{
-            this.observerService.detachById(this.$scope.collection);
-        });
+        
     }
+    
+    private getCollectionObserver=(param)=> {
+        console.warn("getCollectionObserver", param)
+        this.collectionConfig.loadJson(param.collectionConfig);
+        this.collectionData = undefined;
+        this.getCollection();
+    };
 
     private initializeState = () =>{
         this.tableID = 'LD'+this.utilityService.createID();

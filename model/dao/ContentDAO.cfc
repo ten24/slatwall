@@ -182,17 +182,17 @@ Notes:
 	</cffunction>
 	<cfscript>
 		public void function updateAllDescendantsUrlTitlePathByUrlTitle(required string contentIDs,required string previousURLTitlePath, required string newUrlTitlePath){
-			var queryService = new query();
 			arguments.contentIDs = listQualify(arguments.contentIDs,"'",",");
-			var sql = "UPDATE SwContent s SET UrlTitlePath=REPLACE(s.urlTitlePath,'#arguments.previousURLTitlePath#','#arguments.newUrlTitlePath#') Where s.contentID IN (#arguments.contentIDs#) ";
-			queryService.execute(sql=sql);
+			ORMExecuteQuery("
+				UPDATE SlatwallContent s
+				SET urlTitlePath=REPLACE(s.urlTitlePath,'#arguments.previousURLTitlePath#','#arguments.newUrlTitlePath#') 
+				Where s.contentID IN (#arguments.contentIDs#)"
+			);
 		}
 
 		public void function updateAllDescendantsTitlePathByUrlTitle(required string contentIDs,required string previousTitlePath, required string newTitlePath){
-			var queryService = new query();
 			arguments.contentIDs = listQualify(arguments.contentIDs,"'",",");
-			var sql = "UPDATE SwContent s SET titlePath=REPLACE(s.titlePath,'#arguments.previousTitlePath#','#arguments.newTitlePath#') Where s.contentID IN (#arguments.contentIDs#) ";
-			queryService.execute(sql=sql);
+			ORMExecuteQuery("UPDATE SlatwallContent s SET titlePath=REPLACE(s.titlePath,'#arguments.previousTitlePath#','#arguments.newTitlePath#') Where s.contentID IN (#arguments.contentIDs#) ");
 		}
 	</cfscript>
 

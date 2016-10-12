@@ -87,40 +87,43 @@ component  extends="HibachiService" accessors="true" {
 		if(getHibachiCacheService().hasCachedValue(modelCacheKey)){
 			model = getHibachiCacheService().getCachedValue(modelCacheKey);
 		}else{
-	        var entitiesListArray = listToArray(structKeyList(getHibachiScope().getService('hibachiService').getEntitiesMetaData()));
-	        for(var entityName in entitiesListArray) {
-	        	var attributeSetMetaDataStruct = {};
-	        	var attributeSetMetaDataStructCacheKey = 'attributeService_getAttributeModel_#entityName#';
-	            if(getHibachiCacheService().hasCachedValue(attributeSetMetaDataStructCacheKey)){
-		            attributeSetMetaDataStruct = getHibachiCacheService().getCachedValue(attributeSetMetaDataStructCacheKey);
-				}else{
-					var entity = getHibachiScope().getService('hibachiService').getEntityObject(entityName);
-					
-					var assignedAttributesSmartlist = entity.getAssignedAttributeSetSmartList();
-					assignedAttributesSmartlist.removeFilter('globalFlag');
-					
-					assignedAttributesSmartlist.addFilter('activeFlag',1);
-					var assignedAttributes = [];
-					try{
-						assignedAttributes = assignedAttributesSmartlist.getRecords(true);
-					}catch(any e){
-						assignedAttributes = [];
-					}
-					if(arrayLen(assignedAttributes)){
-						for(var attributeSet in assignedAttributes){
-							var attributeSetMeta = getAttributeSetMetaData(attributeSet);
-							attributeSetMetaDataStruct[attributeSet.getAttributeSetCode()]=attributeSetMeta;
+			lock name="application_#getHibachiInstanceApplicationScopeKey()#_#modelCacheKey#" timeout="5000"{
+		        var entitiesListArray = listToArray(structKeyList(getHibachiScope().getService('hibachiService').getEntitiesMetaData()));
+		        for(var entityName in entitiesListArray) {
+		        	var attributeSetMetaDataStruct = {};
+		        	var attributeSetMetaDataStructCacheKey = 'attributeService_getAttributeModel_#entityName#';
+		            if(getHibachiCacheService().hasCachedValue(attributeSetMetaDataStructCacheKey)){
+			            attributeSetMetaDataStruct = getHibachiCacheService().getCachedValue(attributeSetMetaDataStructCacheKey);
+					}else{
+						var entity = getHibachiScope().getService('hibachiService').getEntityObject(entityName);
+						
+						var assignedAttributesSmartlist = entity.getAssignedAttributeSetSmartList();
+						assignedAttributesSmartlist.removeFilter('globalFlag');
+						
+						assignedAttributesSmartlist.addFilter('activeFlag',1);
+						var assignedAttributes = [];
+						try{
+							assignedAttributes = assignedAttributesSmartlist.getRecords(true);
+						}catch(any e){
+							assignedAttributes = [];
 						}
-						getHibachiCacheService().setCachedValue(attributeSetMetaDataStructCacheKey,attributeSetMetaDataStruct);
+						if(arrayLen(assignedAttributes)){
+							for(var attributeSet in assignedAttributes){
+								var attributeSetMeta = getAttributeSetMetaData(attributeSet);
+								attributeSetMetaDataStruct[attributeSet.getAttributeSetCode()]=attributeSetMeta;
+							}
+							getHibachiCacheService().setCachedValue(attributeSetMetaDataStructCacheKey,attributeSetMetaDataStruct);
+						}
 					}
-				}
-				
-				if(structCount(attributeSetMetaDataStruct)){
-					model[entityName] = attributeSetMetaDataStruct;	
-				}
-	        }
-	        getHibachiCacheService().setCachedValue(modelCacheKey,model);
+					
+					if(structCount(attributeSetMetaDataStruct)){
+						model[entityName] = attributeSetMetaDataStruct;	
+					}
+		        }
+		        getHibachiCacheService().setCachedValue(modelCacheKey,model);
+			}
 		}
+		
 		
         return model;
 	}
