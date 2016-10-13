@@ -329,10 +329,10 @@
 					}
 
 				//handle account
-				} else if ( accountKeyLocation && !$.slatwall.getDisplayAccount().isNew() && $.slatwall.getDisplayAccount().getActiveFlag()  ) {
+				} else if ( accountKeyLocation && !$.slatwall.getProfile().isNew() && $.slatwall.getProfile().getActiveFlag()  ) {
 					
 					// Attempt to find the productType template
-					var accountTemplateContent = $.slatwall.getService("contentService").getContent( $.slatwall.getDisplayAccount().setting('accountDisplayTemplate', [$.slatwall.getSite()]) );
+					var accountTemplateContent = $.slatwall.getService("contentService").getContent( $.slatwall.getProfile().setting('accountDisplayTemplate', [$.slatwall.getSite()]) );
 					
 					// As long as the content is not null, and has all the necessary values we can continue
 					if(!isNull(accountTemplateContent) && !isNull(accountTemplateContent.getCMSContentID()) && !isNull(accountTemplateContent.getSite()) && !isNull(accountTemplateContent.getSite().getCMSSiteID())) {
@@ -345,14 +345,14 @@
 						$.event('muraForceFilename', false);
 						
 						// Change Title, HTMLTitle & Meta Details of page
-						$.content().setTitle( $.slatwall.getDisplayAccount().getFirstName() & " " & $.slatwall.getDisplayAccount().getLastName() );
-						if(len($.slatwall.getDisplayAccount().setting('accountHTMLTitleString'))) {
-							$.content().setHTMLTitle( $.slatwall.getDisplayAccount().stringReplace( $.slatwall.getDisplayAccount().setting('accountHTMLTitleString') ) );	
+						$.content().setTitle( $.slatwall.getProfile().getFirstName() & " " & $.slatwall.getProfile().getLastName() );
+						if(len($.slatwall.getProfile().setting('accountHTMLTitleString'))) {
+							$.content().setHTMLTitle( $.slatwall.getProfile().stringReplace( $.slatwall.getProfile().setting('accountHTMLTitleString') ) );	
 						} else {
-							$.content().setHTMLTitle( $.slatwall.getDisplayAccount().getFirstName() & " " & $.slatwall.getDisplayAccount().getLastName() );
+							$.content().setHTMLTitle( $.slatwall.getProfile().getFirstName() & " " & $.slatwall.getProfile().getLastName() );
 						}
-						$.content().setMetaDesc( $.slatwall.getDisplayAccount().stringReplace( $.slatwall.getDisplayAccount().setting('accountMetaDescriptionString') ) );
-						$.content().setMetaKeywords( $.slatwall.getDisplayAccount().stringReplace( $.slatwall.getDisplayAccount().setting('accountMetaKeywordsString') ) );
+						$.content().setMetaDesc( $.slatwall.getProfile().stringReplace( $.slatwall.getProfile().setting('accountMetaDescriptionString') ) );
+						$.content().setMetaKeywords( $.slatwall.getProfile().stringReplace( $.slatwall.getProfile().setting('accountMetaKeywordsString') ) );
 						
 					} else {
 						
