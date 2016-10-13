@@ -938,9 +938,13 @@ component extends="HibachiService" output="false" accessors="true" {
 					globalURLKeyBrand,
 					globalURLKeyProduct,
 					globalURLKeyProductType,
+					globalURLKeyAccount,
+					globalURLKeyAddress,
 					productDisplayTemplate,
 					productTypeDisplayTemplate,
-					brandDisplayTemplate", 
+					brandDisplayTemplate,
+					accountDisplayTemplate
+					addressDisplayTemplate", 
 					arguments.entity.getSettingName()
 				) || 
 				left(arguments.entity.getSettingName(),7) == 'content'
