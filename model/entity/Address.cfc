@@ -68,6 +68,7 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	
 	property name="phoneNumber" hb_populateEnabled="public" ormtype="string";
 	property name="emailAddress" hb_populateEnabled="public" ormtype="string";
+	property name="urlTitle" ormtype="string"; //allows this entity to be found via a url title.
 	
 	//one-to-many
   	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="addressID" cascade="all-delete-orphan" inverse="true";
@@ -287,6 +288,16 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	}
 	
 	// ==================  END:  Deprecated Methods ========================
+	public string function getAddressURL() {
+		return "/#setting('globalUrlKeyAddress')#/#getUrlTitle()#/";
+	}
 	
+	public string function getListingAddressURL() {
+		return "#setting('globalUrlKeyAddress')#/#getUrlTitle()#/";
+	}
+	
+	public string function getUrlTitle() {
+		return "#reReplace(getName(), ' ', '-')#";
+	}
 }
 
