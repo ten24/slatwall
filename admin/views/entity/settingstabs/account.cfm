@@ -48,9 +48,12 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
-
+<cfparam name="rc.sitesArray" />
 <cfoutput>
 	<swa:SlatwallSettingTable showInheritance="false">
+		<swa:SlatwallSetting settingName="accountHTMLTitleString" />
+		<swa:SlatwallSetting settingName="accountMetaDescriptionString" />
+		<swa:SlatwallSetting settingName="accountMetaKeywordsString" />
 		<swa:SlatwallSetting settingName="accountEligiblePaymentMethods" />
 		<swa:SlatwallSetting settingName="accountEligiblePaymentTerms" />
 		<swa:SlatwallSetting settingName="accountPaymentTerm" />
@@ -59,6 +62,10 @@ Notes:
 		<swa:SlatwallSetting settingName="accountFailedPublicLoginAttemptCount" />
 		<swa:SlatwallSetting settingName="accountAdminForcePasswordResetAfterDays" />
 		<swa:SlatwallSetting settingName="accountLockMinutes" />
+		<!--- Site Specific Settings --->
+		<cfloop array="#rc.sitesArray#" index="site">
+			<swa:SlatwallSetting settingName="accountDisplayTemplate" settingFilterEntities="#[site]#" />
+		</cfloop>
 	</swa:SlatwallSettingTable>
 </cfoutput>
 

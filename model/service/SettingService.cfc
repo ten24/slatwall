@@ -123,10 +123,20 @@ component extends="HibachiService" output="false" accessors="true" {
 			accountFailedPublicLoginAttemptCount = {fieldType="text", defaultValue=0, validate={dataType="numeric", required=true}},
 			accountAdminForcePasswordResetAfterDays = {fieldType="text", defaultValue=90, validate={dataType="numeric", required=true, maxValue=90}},
 			accountLockMinutes = {fieldtype="text", defaultValue=30, validate={dataType="numeric", required=true, minValue=30}},
-
+			accountDisplayTemplate = {fieldType="select"},
+			accountHTMLTitleString = {fieldType="text", defaultValue="${firstName} ${lastName}"},
+			accountMetaDescriptionString = {fieldType="textarea", defaultValue="${firstName} ${lastName}"},
+			accountMetaKeywordsString = {fieldType="textarea", defaultValue="${firstName} ${lastName}"},
+			
 			// Account Authentication
 			accountAuthenticationAutoLogoutTimespan = {fieldType="text"},
-
+			
+			// Address
+			addressDisplayTemplate = {fieldType="select"},
+			addressHTMLTitleString = {fieldType="text", defaultValue="${name}"},
+			addressMetaDescriptionString = {fieldType="textarea", defaultValue="${name}"},
+			addressMetaKeywordsString = {fieldType="textarea", defaultValue="${name}"},
+			
 			// Brand
 			brandDisplayTemplate = {fieldType="select"},
 			brandHTMLTitleString = {fieldType="text", defaultValue="${brandName}"},
@@ -193,6 +203,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalURLKeyBrand = {fieldType="text",defaultValue="sb"},
 			globalURLKeyProduct = {fieldType="text",defaultValue="sp"},
 			globalURLKeyProductType = {fieldType="text",defaultValue="spt"},
+			globalURLKeyAccount = {fieldType="text",defaultValue="ac"},
+			globalURLKeyAddress = {fieldType="text",defaultValue="ad"},
 			globalWeightUnitCode = {fieldType="select",defaultValue="lb"},
 			globalAdminAutoLogoutMinutes = {fieldtype="text", defaultValue=15, validate={dataType="numeric",required=true,maxValue=15}},
 			globalPublicAutoLogoutMinutes = {fieldtype="text", defaultValue=30, validate={dataType="numeric", required=true}},
@@ -349,6 +361,11 @@ component extends="HibachiService" output="false" accessors="true" {
 					return getContentService().getDisplayTemplateOptions( "Brand", arguments.settingObject.getSite().getSiteID() );
 				}
 				return getContentService().getDisplayTemplateOptions( "brand" );
+			case "addressDisplayTemplate":
+				if(structKeyExists(arguments, "settingObject")) {
+					return getContentService().getDisplayTemplateOptions( "Address", arguments.settingObject.getSite().getSiteID() );
+				}
+				return getContentService().getDisplayTemplateOptions( "address" );
 			case "contentFileTemplate":
 				return getContentService().getDisplayTemplateOptions( "brand" );
 			case "productDisplayTemplate":
@@ -361,6 +378,11 @@ component extends="HibachiService" output="false" accessors="true" {
 					return getContentService().getDisplayTemplateOptions( "ProductType", arguments.settingObject.getSite().getSiteID() );
 				}
 				return getContentService().getDisplayTemplateOptions( "productType" );
+			case "accountDisplayTemplate":
+				if(structKeyExists(arguments, "settingObject")) {
+					return getContentService().getDisplayTemplateOptions( "Account", arguments.settingObject.getSite().getSiteID() );
+				}
+				return getContentService().getDisplayTemplateOptions( "account" );
 			case "contentRestrictedContentDisplayTemplate":
 				if(structKeyExists(arguments, "settingObject")) {
 					return getContentService().getDisplayTemplateOptions( "BarrierPage", arguments.settingObject.getContent().getSite().getSiteID() );

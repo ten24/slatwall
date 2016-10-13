@@ -46,38 +46,18 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
-
-
-<cfset sites = $.slatwall.getService('siteService').getSiteSmartList() />
-<cfset sites.addFilter('activeFlag', 1) />
-
-<cfset rc.sitesArray = sites.getRecords() />
-
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+<cfparam name="rc.sitesArray" />
 <cfoutput>
-	<hb:HibachiEntityActionBar type="static"></hb:HibachiEntityActionBar>
-	
-	<hb:HibachiEntityDetailGroup>
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/global" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/globaladvanced" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/account" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/address" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/brand" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/content" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/email" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/fulfillmentmethod" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/image" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/locationConfiguration" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/paymentmethod" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/producttype" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/product" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/site" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/shippingmethod" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/shippingmethodrate" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/sku" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/subscriptionusage" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/task" />
-	</hb:HibachiEntityDetailGroup>
+	<swa:SlatwallSettingTable showInheritance="false">
+		<swa:SlatwallSetting settingName="addressHTMLTitleString" />
+		<swa:SlatwallSetting settingName="addressMetaDescriptionString" />
+		<swa:SlatwallSetting settingName="addressMetaKeywordsString" />
+		<!--- Site Specific Settings --->
+		<cfloop array="#rc.sitesArray#" index="site">
+			<swa:SlatwallSetting settingName="addressDisplayTemplate" settingFilterEntities="#[site]#" />
+		</cfloop>
+	</swa:SlatwallSettingTable>
 </cfoutput>
 
