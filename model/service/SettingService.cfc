@@ -84,6 +84,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			"product",
 			"content",
 			"account",
+			"address",
 			"image",
 			"brand",
 			"email",
