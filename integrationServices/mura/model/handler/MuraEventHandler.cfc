@@ -134,6 +134,8 @@
 				var brandKeyLocation = 0;
 				var productKeyLocation = 0;
 				var productTypeKeyLocation = 0;
+				var addressKeyLocation = 0;
+				var accountKeyLocation = 0;
 				
 				// First look for the Brand URL Key
 				if (listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyBrand'), "/")) {
@@ -156,6 +158,22 @@
 					productTypeKeyLocation = listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyProductType'), "/");
 					if(productTypeKeyLocation < listLen($.event('path'),"/")) {
 						$.slatwall.setProductType( $.slatwall.getService("productService").getProductTypeByURLTitle(listGetAt($.event('path'), productTypeKeyLocation + 1, "/"), true) );
+					}
+				}
+				
+				// Look for the Address URL Key
+				if (listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyAddress'), "/")) {
+					addressKeyLocation = listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyAddress'), "/");
+					if(addressKeyLocation < listLen($.event('path'),"/")) {
+						$.slatwall.setAddress( $.slatwall.getService("addressService").getAddressByURLTitle(listGetAt($.event('path'), addressKeyLocation + 1, "/"), true) );
+					}
+				}
+				
+				// Look for the Account URL Key
+				if (listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyAccount'), "/")) {
+					accountKeyLocation = listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyAccount'), "/");
+					if(accountKeyLocation < listLen($.event('path'),"/")) {
+						$.slatwall.setAccount( $.slatwall.getService("accountService").getAccountByURLTitle(listGetAt($.event('path'), accountKeyLocation + 1, "/"), true) );
 					}
 				}
 				
@@ -276,6 +294,37 @@
 					} else {
 						
 						throw("Slatwall has attempted to display a 'Brand' on your website, however the 'Brand Display Template' setting is either blank or invalid.  Please navigate to the Slatwall admin and make sure that there is a valid 'Brand Display Template' assigned.");
+						
+					}
+				//handle address
+				} else if ( addressKeyLocation && !$.slatwall.getAddress().isNew() && $.slatwall.getAddress().getActiveFlag()  ) {
+					
+					// Attempt to find the productType template
+					var addressTemplateContent = $.slatwall.getService("contentService").getContent( $.slatwall.getAddress().setting('addressDisplayTemplate', [$.slatwall.getSite()]) );
+					
+					// As long as the content is not null, and has all the necessary values we can continue
+					if(!isNull(addressTemplateContent) && !isNull(addressTemplateContent.getCMSContentID()) && !isNull(addressTemplateContent.getSite()) && !isNull(addressTemplateContent.getSite().getCMSSiteID())) {
+						
+						// Setup the content node in the slatwallScope
+						$.slatwall.setContent( addressTemplateContent );
+						
+						// Override the contentBean for the request
+						$.event('contentBean', $.getBean("content").loadBy( contentID=$.slatwall.getContent().getCMSContentID(), siteID=$.slatwall.getContent().getSite().getCMSSiteID() ) );
+						$.event('muraForceFilename', false);
+						
+						// Change Title, HTMLTitle & Meta Details of page
+						$.content().setTitle( $.slatwall.getAddress().getName() );
+						if(len($.slatwall.getAddress().setting('addressHTMLTitleString'))) {
+							$.content().setHTMLTitle( $.slatwall.getAddress().stringReplace( $.slatwall.getAddress().setting('addressHTMLTitleString') ) );	
+						} else {
+							$.content().setHTMLTitle( $.slatwall.getAddress().getName() );
+						}
+						$.content().setMetaDesc( $.slatwall.getAddress().stringReplace( $.slatwall.getAddress().setting('addressMetaDescriptionString') ) );
+						$.content().setMetaKeywords( $.slatwall.getAddress().stringReplace( $.slatwall.getAddress().setting('addressMetaKeywordsString') ) );
+						
+					} else {
+						
+						throw("Slatwall has attempted to display a 'Address' on your website, however the 'Address Display Template' setting is either blank or invalid.  Please navigate to the Slatwall admin and make sure that there is a valid 'Address Display Template' assigned.");
 						
 					}
 
