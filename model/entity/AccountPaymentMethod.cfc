@@ -257,7 +257,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		}
 	}
 
-	public boolean function hasOnlyGenerateTokenTrasactions() {
+	public boolean function hasOnlyGenerateTokenTransactions() {
 		return getDAO("paymentDAO").getAccountPaymentMethodNonGenerateTokenTransactionCount( accountPaymentMethodID = this.getAccountPaymentMethodID() ) eq 0;
 	}
 
