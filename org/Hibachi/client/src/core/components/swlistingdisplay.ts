@@ -83,9 +83,6 @@ class SWListingDisplayController{
     ){
         
         this.initialSetup();
-        this.$scope.$on('$destroy',()=>{
-            this.observerService.detachById(this.$scope.collection);
-        });
     }
 
     private initialSetup = () => {
@@ -209,8 +206,11 @@ class SWListingDisplayController{
         }
         this.paginator.getCollection = this.getCollection;
         //this.getCollection();
-
-        this.observerService.attach(this.getCollectionObserver,'getCollection',(this.name || 'ListingDisplay'));
+        var getCollectioneventID= (this.name || 'ListingDisplay');
+        this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectioneventID);
+        this.$scope.$on('$destroy',()=>{
+            this.observerService.detachById(getCollectioneventID);
+        });
     };
 
     private getCollectionObserver=(param)=> {
@@ -273,10 +273,17 @@ class SWListingDisplayController{
 
 
             //attach observer so we know when a selection occurs
-            this.observerService.attach(this.updateMultiselectValues,'swSelectionToggleSelection',this.collectionObject);
+            var selectionToggleEventName = 'swSelectionToggleSelection'+this.collectionObject;
+            this.observerService.attach(this.updateMultiselectValues,'swSelectionToggleSelection',selectionToggleEventName);
+            this.$scope.$on('$destroy',()=>{
+                this.observerService.detachById(selectionToggleEventName);
+            });
 
             //attach observer so we know when a pagination change occurs
             this.observerService.attach(this.paginationPageChange,'swPaginationAction');
+            this.$scope.$on('$destroy',()=>{
+                this.observerService.detachByEvent('swPaginationAction');
+            });
         }
         if(this.multiselectable && (!this.columns || !this.columns.length)){
             //check if it has an active flag and if so then add the active flag

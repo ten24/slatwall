@@ -124,7 +124,10 @@ component entityname="SlatwallWorkflowTrigger" table="SwWorkflowTrigger" persist
 	
 	public void function setTriggerEvent(required string triggerEvent){
 		variables.triggerEvent = arguments.triggerEvent;
-		var eventNameOptions = getService('hibachiEventService').getTriggerEventRBKeyHashMapByEntityName(this.getWorkflow().getWorkflowObject());
+		var eventNameOptions = {};
+		if(!isNull(this.getWorkflow()) && !isNull(this.getWorkflow().getWorkflowObject())){
+			eventNameOptions = getService('hibachiEventService').getTriggerEventRBKeyHashMapByEntityName(this.getWorkflow().getWorkflowObject());	
+		}
 		
 		if(structKeyExists(eventNameOptions,arguments.triggerEvent)){
 			variables.triggerEventTitle = eventNameOptions[arguments.triggerEvent];

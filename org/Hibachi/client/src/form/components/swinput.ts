@@ -308,11 +308,10 @@ class SWInputController{
 		var eventNameForObjectSuccessID = this.eventNameForObjectSuccess+this.property;
 
 		var eventNameForUpdateBindings = 'updateBindings';
-		var eventNameForUpdateBindingsID = this.object.metaData.className.split('_')[0]+'updateBindings';
+		var eventNameForUpdateBindingsID = this.object.metaData.className.split('_')[0]+this.property+'updateBindings';
         
         var eventNameForPullBindings = 'pullBindings';
-        var eventNameForPullBindingsID = this.object.metaData.className.split('_')[0]+'pullBindings';
-
+        var eventNameForPullBindingsID = this.object.metaData.className.split('_')[0]+this.property+'pullBindings';
 		//attach a successObserver
 		if(this.object){
 			//update bindings on save success

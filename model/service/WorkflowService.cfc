@@ -79,10 +79,6 @@ component extends="HibachiService" accessors="true" output="false" {
 						//Attach workflowTrigger to workflowTriggerHistory
 						workflowTriggerHistory.setWorkflowTrigger(workflowTrigger);
 						workflowTriggerHistory.setStartTime(now());
-
-						// Persist the info to the DB
-						workflowTriggerHistory = this.saveWorkflowTriggerHistory(workflowTriggerHistory);
-						getHibachiDAO().flushORMSession();
 					}
 
 					try {
@@ -123,7 +119,6 @@ component extends="HibachiService" accessors="true" output="false" {
 
 						// Persist the info to the DB
 						workflowTriggerHistory = this.saveWorkflowTriggerHistory(workflowTriggerHistory);
-						getHibachiDAO().flushORMSession();
 					}
 				}
 			//}
