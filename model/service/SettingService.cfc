@@ -101,7 +101,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			sku = ["product.productID", "product.productType.productTypeIDPath&product.brand.brandID", "product.productType.productTypeIDPath"],
 			product = ["productType.productTypeIDPath&brand.brandID", "productType.productTypeIDPath"],
 			productType = ["productTypeIDPath"],
-			content = ["contentIDPath","contentID","site.siteID"],
+			content = ["contentIDPath","site.siteID"],
 			email = ["emailTemplate.emailTemplateID"],
 			shippingMethodRate = ["shippingMethod.shippingMethodID"],
 			accountAuthentication = [ "integration.integrationID" ],
@@ -204,6 +204,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalDisplayIntegrationProcessingErrors = {fieldtype="yesno", defaultValue=1},
 			globalUseShippingIntegrationForTrackingNumberOption = {fieldtype="yesno", defaultValue=0},
 			globalSmartListGetAllRecordsLimit = {fieldType="text",defaultValue=250},
+			globalAllowCustomBranchUpdates={fieldType="yesno",defaultValue=0},
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
 			imageMissingImagePath = {fieldType="text",defaultValue="/assets/images/missingimage.jpg"},
