@@ -82,9 +82,9 @@ Notes:
 		<cfargument name="fileName" type="string" />
 		
 		<cfif structKeyExists(arguments,"fileName") and fileExists("#getApplicationValue('applicationRootMappingPath')#/custom/templates/#lcase(arguments.templateType)#/#lcase(arguments.objectName)#/#arguments.fileName#")>
-			<cfreturn "#getApplicationValue('slatwallRootURL')#custom/templates/#lcase(arguments.templateType)#/#lcase(arguments.objectName)#/#arguments.fileName#" />
+			<cfreturn "#getApplicationValue('slatwallRootURL')#/custom/templates/#lcase(arguments.templateType)#/#lcase(arguments.objectName)#/#arguments.fileName#" />
 		<cfelseif structKeyExists(arguments,"fileName") and fileExists("#getApplicationValue('applicationRootMappingPath')#/templates/#lcase(arguments.templateType)#/#lcase(arguments.objectName)#/#arguments.fileName#")>
-			<cfreturn "#getApplicationValue('slatwallRootURL')#templates/#lcase(arguments.templateType)#/#lcase(arguments.objectName)#/#arguments.fileName#" />
+			<cfreturn "#getApplicationValue('slatwallRootURL')#/templates/#lcase(arguments.templateType)#/#lcase(arguments.objectName)#/#arguments.fileName#" />
 		</cfif>
 		
 		<cfreturn "" />
