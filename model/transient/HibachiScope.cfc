@@ -54,6 +54,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	property name="content" type="any";
 	property name="product" type="any";
 	property name="productType" type="any";
+	property name="address" type="any";
+	property name="displayAccount" type="any";
 	property name="site" type="any";
 	property name="app" type="any";
 	
@@ -151,6 +153,22 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			variables.productType = getService("productService").newProductType();
 		}
 		return variables.productType;
+	}
+	
+	// Address
+	public any function getAddress() {
+		if(!structKeyExists(variables, "address")) {
+			variables.address = getService("addressService").newAddress();
+		}
+		return variables.address;
+	}
+	
+	// Display Account
+	public any function getDisplayAccount() {
+		if(!structKeyExists(variables, "displayAccount")) {
+			variables.displayAccount = getService("accountService").newAccount();
+		}
+		return variables.account;
 	}
 	
 	// Site
