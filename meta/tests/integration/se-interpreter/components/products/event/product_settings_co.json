@@ -17,7 +17,7 @@
       },
       {  
          "type":"store",
-         "text":"12.00",
+         "text":"$12.00",
          "variable":"price_with_currency"
       },
       {  
@@ -29,6 +29,11 @@
          "type":"store",
          "text":"Event",
          "variable":"product_type_name"
+      },
+      {
+         "type":"store",
+         "text":"February, 13 2017 00:00:00",
+         "variable":"start_date_for_event"
       }
       
    ]

@@ -4,42 +4,77 @@
          "type":"clickElement",
          "locator":{  
             "type":"css selector",
-            "value":"#tabcontactdetails > div:nth-child(3) > div > div > a"
-         }
-      },
-      {  
-         "type":"store",
-         "text":"#adminentitysaveaccountphonenumber > div > div > div.modal-footer > div > button.btn.btn-success",
-         "variable":"save_button_path"
-      },
-      {  
-         "__comment":"HItting SAVE before any values",
-         "type":"clickElement",
-         "locator":{  
-            "type":"css selector",
-            "value":"${save_button_path}"
+            "value":"#tabcontactdetails > div:nth-child(3) > div:nth-child(1) > div > a"
          }
       },
       {  
          "type":"setElementText",
          "locator":{  
             "type":"name",
-            "value":"phoneNumber"
+            "value":"accountAddressName"
          },
-         "text":"${another_phone_number}"
+         "text":"${add_account_address_nickname}"
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"address.name"
+         },
+         "text":"${add_account_address_name}"
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"address.company"
+         },
+         "text":"${account_company}"
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"address.streetAddress"
+         },
+         "text":"${add_account_address_street_address}"
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"address.street2Address"
+         },
+         "text":"${add_account_address_street_address2}"
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"address.city"
+         },
+         "text":"${add_account_address_city}"
       },
       {  
          "type":"setElementSelected",
          "locator":{  
             "type":"xpath",
-            "value":"//form[@id='adminentitysaveaccountphonenumber']/div/div/div[2]/div/div/div/div[2]/div/select//option[3]"
+            "value":"//div[@class='slatwall-address-container']/div[7]/div/select//option[26]"
          }
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"address.postalCode"
+         },
+         "text":"${add_account_address_postal_code}"
       },
       {  
          "type":"clickElement",
          "locator":{  
             "type":"css selector",
-            "value":"${save_button_path}"
+            "value":"#adminentitysaveaccountaddress > div > div > div.modal-footer > div > button.btn.btn-success"
          }
       }
    ]

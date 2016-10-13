@@ -14,6 +14,7 @@ module.exports = {
     	if((script['steps'][index]['type'] !== 'store') && (script['steps'][index]['type'] !== 'storeCurrentUrl')) {
     		if(key == "steps") {
     		var counter = 1;
+    		
     		if (step['type'] === 'waitForEval') {
     			for(var i = 1; i < jsonFileSize; i++) {
         			if(counter == i) {

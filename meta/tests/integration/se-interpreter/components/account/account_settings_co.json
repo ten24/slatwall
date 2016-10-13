@@ -70,6 +70,46 @@
          "type":"store",
          "text":"Mobile Phone",
          "variable":"another_phone_number_tag"
+      },
+      {  
+         "type":"store",
+         "text":"Ten24web nickname",
+         "variable":"add_account_address_nickname"
+      },
+      {  
+         "type":"store",
+         "text":"Ten24web test address name",
+         "variable":"add_account_address_name"
+      },
+      {  
+         "type":"store",
+         "text":"20 Franklin Street Worcester",
+         "variable":"add_account_address_street_address"
+      },
+      {  
+         "type":"store",
+         "text":"Alternative address test",
+         "variable":"add_account_address_street_address2"
+      },
+      {  
+         "type":"store",
+         "text":"Worcester",
+         "variable":"add_account_address_city"
+      },
+      {  
+         "type":"store",
+         "text":"01609",
+         "variable":"add_account_address_postal_code"
+      },
+      {  
+         "type":"store",
+         "text":"US",
+         "variable":"add_account_address_country"
+      },
+      {  
+         "type":"store",
+         "text":"MA",
+         "variable":"add_account_address_state"
       }
    ]
 }

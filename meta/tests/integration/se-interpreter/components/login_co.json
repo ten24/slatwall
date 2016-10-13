@@ -1,6 +1,11 @@
 {
    "steps":[
       {  
+         "height":902.4,
+         "type":"setWindowSize",
+         "width":1440
+      },
+      {  
          "type":"include",
          "rel_dir":"/components/config/settings_co.json"
       },

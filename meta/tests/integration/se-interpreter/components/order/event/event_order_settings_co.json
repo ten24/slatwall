@@ -1,0 +1,21 @@
+{  
+   "steps":[ 
+     
+      {  
+         "type":"store",
+         "text":"2",
+         "variable":"quantity"
+      },
+      {
+      	"type":"store",
+      	"text":"$24.00",
+      	"variable":"total"
+      },
+      {
+         "type":"store",
+         "text":"Attend Event",
+         "variable":"fullfillment"
+      }
+            
+   ]
+}

@@ -37,7 +37,7 @@
          "type":"clickElement",
          "locator":{  
             "type":"css selector",
-            "value":"div.panel-group.s-pannel-group > div:nth-child(1) > a"
+            "value":"div.panel-group.s-pannel-group> div.j-panel.panel.panel-default:nth-child(1) > a"
          }
       }
    ]

@@ -200,12 +200,196 @@
             "value":"${path}"
          }
       },
+      {
+         "type":"include",
+         "rel_dir":"/components/account/add_account_address_co.json"
+      },
+      {
+         "type":"include",
+         "rel_dir":"/components/account/accordion_close_basic_open_contact_details_co.json"
+      },
+      {  
+         "__comment":"Checking the address recently created (Nickname)",
+         "type":"store",
+         "text":"#tabcontactdetails > div:nth-child(3) > div > div > div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-select > tbody > tr:nth-child(1) > td.primary",
+         "variable":"path"
+      },
+      {  
+         "type":"waitForText",
+         "text":"${add_account_address_nickname}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"${add_account_address_nickname}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "__comment":"Checking name",
+         "type":"store",
+         "text":"#tabcontactdetails > div:nth-child(3) > div > div > div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-select > tbody > tr:nth-child(1) > td:nth-child(3)",
+         "variable":"path"
+      },
+      {  
+         "type":"waitForText",
+         "text":"${add_account_address_name}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"${add_account_address_name}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "__comment":"Checking Street address",
+         "type":"store",
+         "text":"#tabcontactdetails > div:nth-child(3) > div > div > div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-select > tbody > tr:nth-child(1) > td:nth-child(4)",
+         "variable":"path"
+      },
+      {  
+         "type":"waitForText",
+         "text":"${add_account_address_street_address}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"${add_account_address_street_address}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "__comment":"Checking Street address 2",
+         "type":"store",
+         "text":"#tabcontactdetails > div:nth-child(3) > div > div > div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-select > tbody > tr:nth-child(1) > td:nth-child(5)",
+         "variable":"path"
+      },
+      {  
+         "type":"waitForText",
+         "text":"${add_account_address_street_address2}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"${add_account_address_street_address2}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "__comment":"Checking city",
+         "type":"store",
+         "text":"#tabcontactdetails > div:nth-child(3) > div > div > div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-select > tbody > tr:nth-child(1) > td:nth-child(6)",
+         "variable":"path"
+      },
+      {  
+         "type":"waitForText",
+         "text":"${add_account_address_city}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"${add_account_address_city}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "__comment":"Checking state",
+         "type":"store",
+         "text":"#tabcontactdetails > div:nth-child(3) > div > div > div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-select > tbody > tr:nth-child(1) > td:nth-child(7)",
+         "variable":"path"
+      },
+      {  
+         "type":"waitForText",
+         "text":"${add_account_address_state}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"${add_account_address_state}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "__comment":"Checking postal code",
+         "type":"store",
+         "text":"#tabcontactdetails > div:nth-child(3) > div > div > div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-select > tbody > tr:nth-child(1) > td:nth-child(8)",
+         "variable":"path"
+      },
+      {  
+         "type":"waitForText",
+         "text":"${add_account_address_postal_code}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"${add_account_address_postal_code}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "__comment":"Checking state",
+         "type":"store",
+         "text":"#tabcontactdetails > div:nth-child(3) > div > div > div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-select > tbody > tr:nth-child(1) > td:nth-child(9)",
+         "variable":"path"
+      },
+      {  
+         "type":"waitForText",
+         "text":"${add_account_address_country}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"${add_account_address_country}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
       {  
          "__comment":"Close contact details accordion menu",
          "type":"clickElement",
          "locator":{  
             "type":"css selector",
-            "value":" #accordion > div:nth-child(2) > a"
+            "value":"#accordion > div:nth-child(2) > a"
          }
       }
    ]
