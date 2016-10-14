@@ -257,6 +257,10 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		}
 	}
 
+	public boolean function hasOnlyGenerateTokenTrasactions() {
+		return getDAO("paymentDAO").getAccountPaymentMethodNonGenerateTokenTransactionCount( accountPaymentMethodID = this.getAccountPaymentMethodID() ) eq 0;
+	}
+
 	// ============ START: Non-Persistent Property Methods =================
 
 	public any function getPaymentMethodOptionsSmartList() {
@@ -303,7 +307,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		if(!isNull(this.getGiftCardBalanceAmount())){
 			return getService("HibachiUtilityService").formatValue_currency(this.getGiftCardBalanceAmount(), {currencyCode=this.getGiftCard().getCurrencyCode()});
 		}
-		return ""; 
+		return "";
 	}
 
 	// ============  END:  Non-Persistent Property Methods =================

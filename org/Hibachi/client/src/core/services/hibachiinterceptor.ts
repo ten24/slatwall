@@ -110,9 +110,11 @@ class HibachiInterceptor implements IInterceptor{
         if(config.url.charAt(0) !== '/'){
             return config;
         }
-        if(config.method == 'GET' && config.url.indexOf('.html') > 0 && config.url.indexOf('admin/client/partials') > 0) {
+
+        if(config.method == 'GET' && config.url.indexOf('.html') >= 0 && config.url.indexOf('/') >= 0)  {
             //all partials are bound to instantiation key
-            config.url = config.url + '?instantiationKey='+$.hibachi.getConfig().instantiationKey;
+            config.url = config.url + '?instantiationKey='+this.appConfig.instantiationKey;
+
             return config;
         }
         config.cache = true;

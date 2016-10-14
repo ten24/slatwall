@@ -79,8 +79,7 @@ class HibachiValidationService{
                     this.$log.debug('key:'+key);
                     if(key.charAt(0) !== '$' && angular.isObject(form[key])){
                         var inputField = form[key];
-
-                        if(inputField.$modelValue){
+                        if(typeof inputField.$modelValue != 'undefined' && inputField.$modelValue !== ''){
                             inputField.$dirty = true;
                         }
 
@@ -124,7 +123,7 @@ class HibachiValidationService{
                     for(var key in form){
                         if(key.charAt(0) !== '$' && angular.isObject(form[key])){
                             var inputField = form[key];
-                            if(inputField.$modelValue){
+                            if(typeof inputField.$modelValue != 'undefined' && inputField.$modelValue !== ''){
                                 inputField.$dirty = true;
                             }
                             if(angular.isDefined(inputField) && angular.isDefined(inputField.$valid) && inputField.$valid === true && (inputField.$dirty === true || (form.autoDirty && form.autoDirty == true))){
