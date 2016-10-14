@@ -2,8 +2,13 @@
    "steps":[  
       {  
          "type":"store",
-         "text":"quantity",
-         "variable":"2"
-      }      
-   ]
+         "text":"2",
+         "variable":"quantity"
+      },
+      {  
+         "type":"store",
+         "text":"Return Order",
+         "variable":"return_order_type"
+      }   
+  ]
 }

@@ -1,0 +1,70 @@
+{  
+   "steps":[
+      {  
+         "type":"store",
+         "text":"#tabbasic > div > div:nth-child(1) > div > div:nth-child(1) > div > div > div.autocomplete-selected > span",
+         "variable":"path"
+      },
+      {  
+         "type":"waitForText",
+         "text":"${user_account}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"${user_account}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "__comment":"Assuming Return order gets displayed",
+         "type":"store",
+         "text":"//div[@id='tabbasic']/div/div[1]/div/div[3]/div/select//option[1]",
+         "variable":"path"
+      }, 
+      {  
+         "type":"waitForText",
+         "text":"${return_order_type}",
+         "locator":{  
+            "type":"xpath",
+            "value":"${path}"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"${return_order_type}",
+         "locator":{  
+            "type":"xpath",
+            "value":"${path}"
+         }
+      },
+      {  
+         "__comment":"Assuming Return order gets displayed",
+         "type":"store",
+         "text":"//div[@id='tabbasic']/div/div[1]/div/div[4]/div/select//option[2]",
+         "variable":"path"
+      }, 
+      {  
+         "type":"waitForText",
+         "text":"${office_location}",
+         "locator":{  
+            "type":"xpath",
+            "value":"${path}"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"${office_location}",
+         "locator":{  
+            "type":"xpath",
+            "value":"${path}"
+         }
+      }
+            
+   ]
+}

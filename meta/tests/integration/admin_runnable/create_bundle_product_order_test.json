@@ -11,21 +11,10 @@
          "type":"include",
          "rel_dir":"/components/login_co.json"
       }, 
+      
       {  
          "type":"include",
-         "rel_dir":"/components/location/create_location_test.json"
-      },
-      {  
-         "type":"include",
-         "rel_dir":"/components/account/create_guest_account_test.json"
-      },
-      {  
-         "type":"include",
-         "rel_dir":"/components/products/event/create_event_product_test.json"
-      },
-      {  
-         "type":"include",
-         "rel_dir":"/components/order/event/event_order_settings_co.json"
+         "rel_dir":"/components/order/order_settings_co.json"
       },
       {  
          "type":"clickElement",
@@ -46,6 +35,11 @@
          "rel_dir":"/components/order/create_order_with_guest_account_co.json"
       },
       {  
+         "type":"include",
+         "rel_dir":"/components/order/assert_order_created_co.json"
+      },
+      {  
+         "__comment":"Close the accordion as it has caused trouble with firefox before",
          "type":"clickElement",
          "locator":{  
             "type":"css selector",
@@ -62,11 +56,11 @@
       },
       {  
          "type":"include",
-         "rel_dir":"/components/order/event/add_sku_co.json"
+         "rel_dir":"/components/order/bundle/add_sku_with_email_fullfilment_co.json"
       },
       {  
          "type":"include",
-         "rel_dir":"/components/order/event/assert_added_sku_co.json"
+         "rel_dir":"/components/order/bundle/assert_added_sku_with_email_fullfilment_co.json"
       },
       {  
          "type":"include",

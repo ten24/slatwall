@@ -1,0 +1,80 @@
+{  
+   "steps":[  
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(1) > td.admin.admin1:nth-child(12) > a"
+         }
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/products/bundle/bundle_product_settings_co.json"
+      },
+      {  
+         "type":"store",
+         "text":"#adminentityprocessorder_addorderitem > div > div > div.modal-body > span > div > div > div > div:nth-child(5) > div > p",
+         "variable":"path"
+      },
+      {  
+         "type":"waitForText",
+         "text":"${bundle_product_name}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"${bundle_product_name}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "type":"store",
+         "text":"#adminentityprocessorder_addorderitem > div > div > div.modal-body > span > div > div > div > div:nth-child(7) > div > input",
+         "variable":"path"
+      },
+      {  
+         "type":"waitForElementValue",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         },
+         "value":"${quantity}"
+      },
+      {  
+         "type":"verifyElementValue",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         },
+         "value":"${quantity}"
+      },
+      {  
+         "type":"assertElementValue",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         },
+         "value":"${quantity}"
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"emailAddress"
+         },
+         "text":"${email_account}"
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentityprocessorder_addorderitem > div > div > div.modal-footer > button"
+         }
+      }
+   ]
+}
