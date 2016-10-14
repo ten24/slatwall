@@ -50,7 +50,7 @@ Notes:
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.sitesArray" />
 <cfoutput>
-	<swa:SlatwallSettingTable showInheritance="false">
+	<swa:SlatwallSettingTable showFilterEntities="#arrayLen(rc.sitesArray)#" showInheritance="false">
 		<swa:SlatwallSetting settingName="addressHTMLTitleString" />
 		<swa:SlatwallSetting settingName="addressMetaDescriptionString" />
 		<swa:SlatwallSetting settingName="addressMetaKeywordsString" />
