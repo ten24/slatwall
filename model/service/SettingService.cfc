@@ -509,9 +509,9 @@ component extends="HibachiService" output="false" accessors="true" {
 
 			settingsRemoved = getSettingDAO().removeAllRelatedSettings(columnName=arguments.entity.getPrimaryIDPropertyName(), columnID=arguments.entity.getPrimaryIDValue());
 
-		} else if ( arguments.entity.getPrimaryIDPropertyName() == "fulfillmetnMethodID" ) {
+		} else if ( arguments.entity.getPrimaryIDPropertyName() == "fulfillmentMethodID" ) {
 
-			settingsRemoved = getSettingDAO().removeAllRelatedSettings(columnName="fulfillmetnMethodID", columnID=arguments.entity.getFulfillmentMethodID());
+			settingsRemoved = getSettingDAO().removeAllRelatedSettings(columnName="fulfillmentMethodID", columnID=arguments.entity.getFulfillmentMethodID());
 
 			for(var a=1; a<=arrayLen(arguments.entity.getShippingMethods()); a++) {
 				settingsRemoved += getSettingDAO().removeAllRelatedSettings(columnName="shippingMethodID", columnID=arguments.entity.getShippingMethods()[a].getShippingMethodID());
