@@ -24,6 +24,31 @@
          "type":"store",
          "text":"Brand name 1",
          "variable":"brand_name"
+      },
+      {  
+         "type":"store",
+         "text":"Ten24 Bundle Group Type",
+         "variable":"bundle_group_type"
+      },
+      {  
+         "type":"store",
+         "text":"1231231123999-1",
+         "variable":"bundle_group_type_code"
+      },
+      {  
+         "type":"store",
+         "text":"Ten24 Bundle Group Type description",
+         "variable":"bundle_group_type_description"
+      },
+      {  
+         "type":"store",
+         "text":"22",
+         "variable":"min_quantity"
+      },
+      {  
+         "type":"store",
+         "text":"333",
+         "variable":"max_quantity"
       }
    ]
 }

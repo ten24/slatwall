@@ -3,13 +3,13 @@
       {  
          "__comment":"Change the rows to one once the test is running in docker",
          "type":"store",
-         "text":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(2) > td:nth-child(1)",
+         "text":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(1) > td:nth-child(1)",
          "variable":"path1"
       },
       {  
          "__comment":"Change the rows to one once the test is running in docker",
          "type":"store",
-         "text":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(2) > td:nth-child(1)",
+         "text":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(1) > td:nth-child(1)",
          "variable":"path"
       },
       {  
@@ -20,11 +20,18 @@
             "value":"${path}"
          }
       },
-      
+      {  
+         "type":"verifyText",
+         "text":"${product_bundle_type}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
       {  
          "__comment":"Change the rows to one once the test is running in docker",
          "type":"store",
-         "text":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(2) > td:nth-child(2)",
+         "text":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(1) > td:nth-child(2)",
          "variable":"path"
       }, 
       {  
@@ -46,7 +53,7 @@
       {  
          "__comment":"Change the rows to one once the test is running in docker",
          "type":"store",
-         "text":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(2) > td:nth-child(3)",
+         "text":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(1) > td:nth-child(3)",
          "variable":"path"
       }, 
       {  
@@ -68,7 +75,7 @@
       {  
          "__comment":"Change the rows to one once the test is running in docker",
          "type":"store",
-         "text":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(2) > td:nth-child(4)",
+         "text":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(1) > td:nth-child(4)",
          "variable":"path"
       }, 
       {  
@@ -90,7 +97,7 @@
       {  
          "__comment":"Change the rows to one once the test is running in docker",
          "type":"store",
-         "text":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(2) > td:nth-child(5)",
+         "text":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(1) > td:nth-child(5)",
          "variable":"path"
       }, 
       {  

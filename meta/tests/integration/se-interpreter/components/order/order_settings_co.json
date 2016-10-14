@@ -1,0 +1,9 @@
+{  
+   "steps":[  
+      {  
+         "type":"store",
+         "text":"quantity",
+         "variable":"2"
+      }      
+   ]
+}

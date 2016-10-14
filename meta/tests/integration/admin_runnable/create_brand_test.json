@@ -13,7 +13,15 @@
       },
       {  
          "type":"include",
+         "rel_dir":"/components/brand/brand_settings_co.json"
+      },
+      {  
+         "type":"include",
          "rel_dir":"/components/brand/create_brand_co.json"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/brand/assert_brand_created_co.json"
       }
    ],
    "data":{  

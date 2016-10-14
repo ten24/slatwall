@@ -43,6 +43,21 @@
             "type":"name",
             "value":"brandWebsite"
          },
+         "text":"${invalidUrl}"
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"xpath",
+            "value":"//div[@class='btn-toolbar']//button[normalize-space(.)='Save']"
+         }
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"brandWebsite"
+         },
          "text":"${ten24website}"
       },
       {  

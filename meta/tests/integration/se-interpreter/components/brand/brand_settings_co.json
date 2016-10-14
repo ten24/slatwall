@@ -1,0 +1,19 @@
+ {  
+   "steps":[ 
+      {  
+         "type":"store",
+         "text":"Brand name 1",
+         "variable":"brandNameTest"
+      },
+      {  
+         "type":"store",
+         "text":"invalidUrl",
+         "variable":"invalidUrl"
+      },
+      {  
+         "type":"store",
+         "text":"http://www.ten24web.com",
+         "variable":"ten24website"
+      }
+   ]
+}

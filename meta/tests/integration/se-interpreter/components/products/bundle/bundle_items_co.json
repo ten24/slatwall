@@ -1,0 +1,52 @@
+{  
+   "steps":[  
+      
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"css selector",
+            "value":"#topOfPageDialog > div > div.ng-scope > div > span > section > sw-product-bundle-groups > div > ul > sw-product-bundle-group > li > div.s-bundle-group-dropdown > div > div > div > div > sw-product-bundle-collection-filter-item-typeahead > div > div:nth-child(2) > div.col-sm-12.col-md-6.s-select-item > div.input-group > input"
+         },
+         "text":"${brand_name}"
+      },
+      {  
+         "__comment":"Include the bundle item",
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.col-xs-12.s-bundle-add-items-inner > div.s-bundle-add-items.s-workflow-objs > ul.list-unstyled.s-order-item-options.s-negative-obj > li.s-bundle-add-obj.ng-scope > ul.list-unstyled.list-inline.s-last > li.col-xs-1.s-bundle-details-add > a"
+         }        
+      },
+      {  
+         "__comment":"Checking the included bunlde item on the right panel",
+         "type":"store",
+         "text":"#topOfPageDialog > div > div.ng-scope > div > span > section > sw-product-bundle-groups > div > ul > sw-product-bundle-group > li > div.s-bundle-group-dropdown > div > div > div > div > sw-product-bundle-collection-filter-item-typeahead > div > div:nth-child(2) > div.col-xs-12.col-md-6.s-selected-items > div > ul > li > ul.list-unstyled.list-inline.s-middle > li:nth-child(1) > span:nth-child(2)",
+         "variable":"path"
+      },
+      {  
+         "type":"waitForText",
+         "text":"${brand_name}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"${brand_name}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "__comment":"Save",
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#topOfPageDialog > div > div.ng-scope > div > span > section > sw-product-bundle-groups > div > ul > sw-product-bundle-group > li > div.s-bundle-group-dropdown > div > div > div > div > button:nth-child(4)"
+         }        
+      }  
+         
+   ]
+}

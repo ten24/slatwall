@@ -1,0 +1,46 @@
+{  
+   "steps":[
+      {  
+         "type":"store",
+         "text":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(1) > td.primary:nth-child(1)",
+         "variable":"path"
+      },
+      {  
+         "type":"waitForText",
+         "text":"${brandNameTest}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"${brandNameTest}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "type":"store",
+         "text":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(1) > td:nth-child(2)",
+         "variable":"path"
+      },
+      {  
+         "type":"waitForText",
+         "text":"${ten24website}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      },
+      {  
+         "type":"verifyText",
+         "text":"${ten24website}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path}"
+         }
+      }
+   ]
+}

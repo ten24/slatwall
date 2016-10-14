@@ -1,0 +1,74 @@
+{  
+   "steps":[  
+      {  
+         "__comment":"bundle group",
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#topOfPageDialog > div > div.ng-scope > div > span > section > sw-product-bundle-groups > button"
+         }
+      },
+      {  
+         "__comment":"write bundle group",
+         "type":"setElementText",
+         "locator":{  
+            "type":"css selector",
+            "value":"#j-inside-product-bundle-group-type > div > div > div.form-group > div > div.s-input-btn > input"
+         },
+         "text":"${bundle_group_type}"
+      },
+      {  
+         "__comment":"add bundle group",
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#j-inside-product-bundle-group-type > div > div > div.form-group > div > div.input-group-btn > button.btn.btn-sm.btn-primary.ng-scope"
+         }        
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"css selector",
+            "value":"#j-inside-product-bundle-group-type > div.s-add-content.ng-scope > span > sw-form:nth-child(1) > div > ng-form > sw-form-registrar > sw-property-display:nth-child(3) > div > div > span > sw-input > input"
+         },
+         "text":"${bundle_group_type_code}"
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"css selector",
+            "value":"#j-inside-product-bundle-group-type > div.s-add-content.ng-scope > span > sw-form:nth-child(1) > div > ng-form > sw-form-registrar > sw-property-display:nth-child(4) > div > div > span > sw-input > input"
+         },
+         "text":"${bundle_group_type_description}"
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#j-inside-product-bundle-group-type > div.s-add-content.ng-scope > span > button"
+         }        
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"css selector",
+            "value":"#topOfPageDialog > div > div.ng-scope > div > span > section > sw-product-bundle-groups > div > ul > sw-product-bundle-group > li > div.s-bundle-group-dropdown > div > div > div > div > div > div > sw-form > div > ng-form > sw-form-registrar > div > div:nth-child(1) > sw-property-display > div > div > span > sw-input > input"
+         },
+         "text":"${min_quantity}"
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"css selector",
+            "value":"#topOfPageDialog > div > div.ng-scope > div > span > section > sw-product-bundle-groups > div > ul > sw-product-bundle-group > li > div.s-bundle-group-dropdown > div > div > div > div > div > div > sw-form > div > ng-form > sw-form-registrar > div > div:nth-child(2) > sw-property-display > div > div > span > sw-input > input"
+         },
+         "text":"${max_quantity}"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/products/bundle/bundle_items_co.json"
+      }
+      
+      
+   ]
+}

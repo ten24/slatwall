@@ -74,7 +74,7 @@
       }, 
       {  
          "type":"waitForText",
-         "text":"$12.00",
+         "text":"${price_with_currency}",
          "locator":{  
             "type":"css selector",
             "value":"${product_type_name_path}"
@@ -82,7 +82,7 @@
       },
       {  
          "type":"verifyText",
-         "text":"$12.00",
+         "text":"${price_with_currency}",
          "locator":{  
             "type":"css selector",
             "value":"${product_type_name_path}"
