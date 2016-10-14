@@ -297,7 +297,7 @@
 						
 					}
 				//handle address
-				} else if ( addressKeyLocation && !$.slatwall.getAddress().isNew() && $.slatwall.getAddress().getActiveFlag()  ) {
+				} else if ( addressKeyLocation && !$.slatwall.getAddress().isNew()  ) {
 					
 					// Attempt to find the productType template
 					var addressTemplateContent = $.slatwall.getService("contentService").getContent( $.slatwall.getAddress().setting('addressDisplayTemplate', [$.slatwall.getSite()]) );
@@ -329,7 +329,7 @@
 					}
 
 				//handle account
-				} else if ( accountKeyLocation && !$.slatwall.getProfile().isNew() && $.slatwall.getProfile().getActiveFlag()  ) {
+				} else if ( accountKeyLocation && !$.slatwall.getProfile().isNew()  ) {
 					
 					// Attempt to find the productType template
 					var accountTemplateContent = $.slatwall.getService("contentService").getContent( $.slatwall.getProfile().setting('accountDisplayTemplate', [$.slatwall.getSite()]) );
