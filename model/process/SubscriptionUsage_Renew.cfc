@@ -131,6 +131,9 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 
 	public numeric function getProratedPrice() {
+		if(isNull(getSubscriptionUsage().getExpirationDate()) || !isDate(getSubscriptionUsage().getExpirationDate())) {
+			return getSubscriptionUsage().getRenewalPrice();
+		}
 		var extendDurationFromNow = dateDiff("d", getSubscriptionUsage().getExpirationDate(), getExtendExpirationDate() );
 		var prorateDurationFromNow = dateDiff("d", getSubscriptionUsage().getExpirationDate(), getProrateExpirationDate() );
 		var proratePercentage = prorateDurationFromNow / extendDurationFromNow * 100;
