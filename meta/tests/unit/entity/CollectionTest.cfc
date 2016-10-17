@@ -58,6 +58,81 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 
 	}
+	
+	public void function fixBadCollectionConfigTest(){
+		var collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'RyansAccountOrders'&createUUID(),
+			collectionName = 'RyansAccountOrders'&createUUID(),
+			collectionConfig = '
+				{
+					"baseEntityName":"SlatwallAccount",
+					"baseEntityAlias":"Account",
+					"columns":[
+						{
+							"propertyIdentifier":""
+						},
+						{
+							"propertyIdentifier":"Account.firstName"
+						}
+					],
+					"joins":[
+						{
+							"associationName":"orders",
+							"alias":"Account_orders"
+						}
+					],
+					"orderBy":[
+						{
+							"propertyIdentifier":"Account.firstName",
+							"direction":"DESC"
+						}
+					],
+					"groupBy":[
+						{
+							"propertyIdentifier":"accountID"
+						}
+					],
+					"filterGroups":[
+						{
+							"filterGroup":[
+								{
+									"propertyIdentifier":"",
+									"comparisonOperator":"",
+									"value":""
+								},
+								{
+									"logicalOperator":"AND",
+									"propertyIdentifier":"",
+									"comparisonOperator":"",
+									"value":""
+								}
+							]
+
+						},
+						{
+							"filterGroup":[
+								{
+									"propertyIdentifier":"",
+									"comparisonOperator":"",
+									"value":""
+								}
+							]
+
+						}
+					]
+
+				}
+			',
+			collectionObject = "SlatwallAccount"
+		};
+		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		request.debug(collectionEntity.getHQL());
+		var pageRecords = collectionEntity.getPageRecords();
+		
+		assert(isArray(pageRecords));
+		
+	}
 
 
 	public void function addFilterTest(){
