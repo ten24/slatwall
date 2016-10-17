@@ -30,11 +30,43 @@ module.exports = {
     					jsonFileSize++;
     				}        			
             	}
-    		}
+    		} 
           }
     	}
     }
     return script;
+	},
+	generate_assertions : function(step) {
+		var array_of_assertion_steps = [];
+		switch(step['assertion_type']) {
+			case "waitForText":
+				  array_of_assertion_steps.push({"type":step['assertion_type'],"text":step['text'],"locator":step['locator']})
+			      array_of_assertion_steps.push({"type":"verifyText","text":step['text'],"locator":step['locator']})
+				  array_of_assertion_steps.push({"type":"assertText","text":step['text'],"locator":step['locator']})
+			      break;
+		    case "waitForElementSelected":
+		    	  array_of_assertion_steps.push({"type":step['assertion_type'],"locator":step['locator']});
+			      array_of_assertion_steps.push({"type":"verifyElementSelected","locator":step['locator'],"value":step['value']})
+				  array_of_assertion_steps.push({"type":"assertElementSelected","locator":step['locator'],"value":step['value']})
+			      break;
+			case "waitForElementValue":
+			 	  array_of_assertion_steps.push({"type":step['assertion_type'],"locator":step['locator'],"value":step['text']});
+			      array_of_assertion_steps.push({"type":"verifyElementValue","locator":step['locator'],"value":step['text']})
+				  array_of_assertion_steps.push({"type":"assertElementValue","locator":step['locator'],"value":step['text']})
+			      break;
+		}
+		return array_of_assertion_steps
+	},
+	split_path_and_wait : function (step) {
+		var path_steps = [];
+	    var split_path = step['locator']['value'].split(">");
+	    var split_path_str = split_path[0].trim();
+	    path_steps.push({"type":"waitForElementPresent","locator":{"type":step['locator']['type'],"value":split_path_str}});
+	    for(var i = 1; i< split_path.length; i++) {
+	    	split_path_str = split_path_str + " > " + split_path[i].trim();
+	    	path_steps.push({"type":"waitForElementPresent","locator":{"type":step['locator']['type'],"value":split_path_str}});
+	    }
+		return path_steps;
 	},
 	/*
 	gets all possible input types

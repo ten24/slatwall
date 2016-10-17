@@ -1,0 +1,64 @@
+{  
+   "steps":[
+      {  
+         "__comment":"Expand group type",
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabbundlegroups > span > section > span > div > ul > sw-product-bundle-group > li > div.row > div.col-xs-4 > div > a.btn.btn-default.s-edit.j-tool-tip-item"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"${bundle_group_type}",
+         "locator":{  
+            "type":"css selector",
+            "value":"#j-inside-product-bundle-group-type > div > div > div.form-group > div > div.s-input-btn > input"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForElementValue",
+         "text":"${min_quantity}",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabbundlegroups > span > section > span > div > ul > sw-product-bundle-group > li > div.s-bundle-group-dropdown > div > div > div > div > div > div > sw-form > div > ng-form > sw-form-registrar > div > div:nth-child(1) > sw-property-display > div > div > span > sw-input > input"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForElementValue",
+         "text":"${max_quantity}",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabbundlegroups > span > section > span > div > ul > sw-product-bundle-group > li > div.s-bundle-group-dropdown > div > div > div > div > div > div > sw-form > div > ng-form > sw-form-registrar > div > div:nth-child(2) > sw-property-display > div > div > span > sw-input > input"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"${brand_name}",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabbundlegroups > span > section > span > div > ul > sw-product-bundle-group > li > div.s-bundle-group-dropdown > div > div > div > div > sw-product-bundle-collection-filter-item-typeahead > div > div:nth-child(2) > div.col-xs-12.col-md-6.s-selected-items > div > ul > li > ul.list-unstyled.list-inline.s-middle > li:nth-child(1) > span:nth-child(2)"
+         }
+      },
+      {  
+         "__comment":"SAVE (Base price adjustment=NONE. Need to do fixed, sku price, sku precenatge increase and decrease)",
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabbundlegroups > span > section > span > div > ul > sw-product-bundle-group > li > div.s-bundle-group-dropdown > div > div > div > div > button:nth-child(4)"
+         }
+      },
+      {  
+         "__comment":"Close group type",
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabbundlegroups > span > section > span > div > ul > sw-product-bundle-group > li > div.row > div.col-xs-4 > div > a.btn.btn-default.s-edit.j-tool-tip-item"
+         }
+      }
+   ]
+}

@@ -1,31 +1,17 @@
 {  
-   "steps":[ 
+   "steps":[
       {  
-         "type":"waitForText",
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
          "text":"${event_name}",
          "locator":{  
             "type":"css selector",
             "value":"#tabbasic > div > div:nth-child(1) > div > div:nth-child(3) > div > p"
          }
-      },
+      },  
       {  
-         "type":"verifyText",
-         "text":"${event_name}",
-         "locator":{  
-            "type":"css selector",
-            "value":"#tabbasic > div > div:nth-child(1) > div > div:nth-child(3) > div > p"
-         }
-      },
-      {  
-         "type":"waitForText",
-         "text":"${event_code}",
-         "locator":{  
-            "type":"css selector",
-            "value":"#tabbasic > div > div:nth-child(1) > div > div:nth-child(4) > div > p"
-         }
-      },
-      {  
-         "type":"verifyText",
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
          "text":"${event_code}",
          "locator":{  
             "type":"css selector",

@@ -8,23 +8,17 @@
          }
       },
       {  
-         "type":"waitForText",
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
          "text":"${text}",
          "locator":{  
             "type":"css selector",
             "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-select > tbody > tr > td:nth-child(2)"
          }
-      },
+      },  
       {  
-         "type":"verifyText",
-         "text":"${text}",
-         "locator":{  
-            "type":"css selector",
-            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-select > tbody > tr > td:nth-child(2)"
-         }
-      },
-      {  
-         "type":"waitForText",
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
          "text":"${street_address}",
          "locator":{  
             "type":"css selector",
@@ -32,15 +26,8 @@
          }
       },
       {  
-         "type":"verifyText",
-         "text":"${street_address}",
-         "locator":{  
-            "type":"css selector",
-            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-select > tbody > tr > td:nth-child(3)"
-         }
-      },
-      {  
-         "type":"waitForText",
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
          "text":"${city}",
          "locator":{  
             "type":"css selector",
@@ -48,23 +35,8 @@
          }
       },
       {  
-         "type":"verifyText",
-         "text":"${city}",
-         "locator":{  
-            "type":"css selector",
-            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-select > tbody > tr > td:nth-child(5)"
-         }
-      },
-      {  
-         "type":"waitForText",
-         "text":"${postalCode}",
-         "locator":{  
-            "type":"css selector",
-            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-select > tbody > tr > td:nth-child(7)"
-         }
-      },
-      {  
-         "type":"verifyText",
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
          "text":"${postalCode}",
          "locator":{  
             "type":"css selector",

@@ -1,0 +1,115 @@
+{  
+   "steps":[  
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":" #accordion > div:nth-child(1) > a"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"${bundle_product_name}",
+         "locator":{  
+            "type":"css selector",
+            "value":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td.s-title > span"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"$${bundle_product_price}.00",
+         "locator":{  
+            "type":"css selector",
+            "value":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td:nth-child(6) > span > ul > li:nth-child(1)"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"+$${bundle_product_price}.00 (Base Price)",
+         "locator":{  
+            "type":"css selector",
+            "value":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td:nth-child(6) > span > ul > li.s-price-list > ul > li:nth-child(1)"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"$0.00",
+         "locator":{  
+            "type":"css selector",
+            "value":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td:nth-child(6) > span > ul > li.s-price-list > ul > li:nth-child(2) > span"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"${quantity}",
+         "locator":{  
+            "type":"css selector",
+            "value":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td.s-qty.ng-binding"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"$0.00",
+         "locator":{  
+            "type":"css selector",
+            "value":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td.s-discount.ng-scope > span"
+         }
+      },
+      {  
+         "script":"return ${quantity} * ${bundle_product_price}",
+         "variable":"total_with_currency",
+         "type":"storeEval"
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"$${total_with_currency}.00",
+         "locator":{  
+            "type":"css selector",
+            "value":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td:nth-child(9) > ul > li.s-price-total.ng-binding"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"+$${total_with_currency}.00 (Base Price)",
+         "locator":{  
+            "type":"css selector",
+            "value":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td:nth-child(9) > ul > li.s-price-list > ul > li:nth-child(1)"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"$0.00",
+         "locator":{  
+            "type":"css selector",
+            "value":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td:nth-child(9) > ul > li.s-price-list > ul > li:nth-child(2) > span"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"$0.00",
+         "locator":{  
+            "type":"css selector",
+            "value":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td.s-total.ng-binding.ng-scope"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"${fullfilment_email_type}",
+         "locator":{  
+            "type":"css selector",
+            "value":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td.s-fullfilment > ul > li > swoishippinglabelstamp > ul > li > span"
+         }
+      }
+   ]
+}

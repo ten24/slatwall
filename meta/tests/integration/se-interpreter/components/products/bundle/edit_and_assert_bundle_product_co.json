@@ -1,0 +1,116 @@
+{  
+   "steps":[
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(1) > td.admin.admin2:nth-child(9) > a.adminentityeditproduct.btn.btn-default.btn-xs"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForElementValue",
+         "text":"${bundle_product_name}",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabbasic > div > div:nth-child(1) > div > div:nth-child(3) > div > input"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForElementValue",
+         "text":"${bundle_product_code}",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabbasic > div > div:nth-child(1) > div > div:nth-child(4) > div > input"
+         }
+      },
+      { 
+         "type":"generateAssertion",
+         "assertion_type":"waitForElementSelected",
+         "locator":{  
+            "type":"xpath",
+            "value":"//*[@id='tabbasic']/div/div[2]/div/div[1]/div/select/option[2]"
+         },
+         "value":"${brand_name}"
+      },
+      { 
+         "type":"generateAssertion",
+         "assertion_type":"waitForElementSelected",
+         "locator":{  
+            "type":"xpath",
+            "value":"//*[@id='tabbasic']/div/div[2]/div/div[2]/div/select/option"
+         },
+         "value":"${product_bundle_type}"
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForElementValue",
+         "text":"${bundle_product_price}.00",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabbasic > div > div:nth-child(2) > div > div:nth-child(3) > div > input"
+         }
+      },
+      {  
+         "__comment":"Close the upper basic accordion tab",
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(1) > a"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"1",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(2) > a > div > h4 > span.badge"
+         }
+      },  
+      {  
+         "__comment":"Close the upper basic accordion tab",
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(2) > a"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"${min_quantity}",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabbundlegroups > span > section > span > div > ul > sw-product-bundle-group > li > div.row > div.col-xs-8.s-bundle-group-title > div > ul.list-unstyled.list-inline.s-bundle-group-min > li.ng-binding"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"${max_quantity}",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabbundlegroups > span > section > span > div > ul > sw-product-bundle-group > li > div.row > div.col-xs-8.s-bundle-group-title > div > ul.list-unstyled.list-inline.s-bundle-group-max > li.ng-binding"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"${bundle_group_type}",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabbundlegroups > span > section > span > div > ul > sw-product-bundle-group > li > div.row > div.col-xs-8.s-bundle-group-title > span.s-bundle-group-title-text.ng-binding"
+         }
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/products/bundle/assert_bundle_product_group_co.json"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/products/bundle/assert_bundle_product_group_co.json"
+      }
+   ]
+}

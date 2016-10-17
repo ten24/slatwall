@@ -12,150 +12,66 @@
          "rel_dir":"/components/products/event/product_settings_co.json"
       },
       {  
-         "type":"store",
-         "text":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td.s-title > span",
-         "variable":"path"
-      }, 
-      {  
-         "type":"waitForText",
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
          "text":"${event_name}",
          "locator":{  
             "type":"css selector",
-            "value":"${path}"
+            "value":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td.s-title > span"
          }
       },
       {  
-         "type":"verifyText",
-         "text":"${event_name}",
-         "locator":{  
-            "type":"css selector",
-            "value":"${path}"
-         }
-      },
-      {  
-         "type":"store",
-         "text":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td.s-sku.ng-binding",
-         "variable":"path"
-      }, 
-      {  
-         "type":"waitForText",
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
          "text":"${event_code}-1",
          "locator":{  
             "type":"css selector",
-            "value":"${path}"
+            "value":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td.s-sku.ng-binding"
          }
       },
       {  
-         "type":"verifyText",
-         "text":"${event_code}-1",
-         "locator":{  
-            "type":"css selector",
-            "value":"${path}"
-         }
-      },
-      {  
-         "type":"store",
-         "text":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td.ng-isolate-scope > ul > li:nth-child(1) > span.s-detail-content.ng-binding.ng-scope",
-         "variable":"path"
-      }, 
-      {  
-         "type":"waitForText",
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
          "text":"${start_date_for_event}",
          "locator":{  
             "type":"css selector",
-            "value":"${path}"
+            "value":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td.ng-isolate-scope > ul > li:nth-child(1) > span.s-detail-content.ng-binding.ng-scope"
          }
-      },
-      {  
-         "type":"verifyText",
-         "text":"${start_date_for_event}",
-         "locator":{  
-            "type":"css selector",
-            "value":"${path}"
-         }
-      },
-      {  
-         "type":"store",
-         "text":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td:nth-child(6) > span > ul > li:nth-child(2)",
-         "variable":"path"
       }, 
       {  
-         "type":"waitForText",
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
          "text":"${price_with_currency}",
          "locator":{  
             "type":"css selector",
-            "value":"${path}"
+            "value":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td:nth-child(6) > span > ul > li:nth-child(2)"
          }
       },
       {  
-         "type":"verifyText",
-         "text":"${price_with_currency}",
-         "locator":{  
-            "type":"css selector",
-            "value":"${path}"
-         }
-      },
-      {  
-         "type":"store",
-         "text":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td.s-qty.ng-binding",
-         "variable":"path"
-      }, 
-      {  
-         "type":"waitForText",
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
          "text":"${quantity}",
          "locator":{  
             "type":"css selector",
-            "value":"${path}"
+            "value":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td.s-qty.ng-binding"
          }
-      },
+      },  
       {  
-         "type":"verifyText",
-         "text":"${quantity}",
-         "locator":{  
-            "type":"css selector",
-            "value":"${path}"
-         }
-      },
-      {  
-         "type":"store",
-         "text":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td:nth-child(9) > ul > li.s-price-total.ng-binding",
-         "variable":"path"
-      }, 
-      {  
-         "type":"waitForText",
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
          "text":"${total}",
          "locator":{  
             "type":"css selector",
-            "value":"${path}"
+            "value":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td:nth-child(9) > ul > li.s-price-total.ng-binding"
          }
       },
       {  
-         "type":"verifyText",
-         "text":"${total}",
-         "locator":{  
-            "type":"css selector",
-            "value":"${path}"
-         }
-      },
-      {  
-         "type":"store",
-         "text":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td.s-fullfilment > ul > li > swoishippinglabelstamp > ul > li > span",
-         "variable":"path"
-      }, 
-      {  
-         "type":"waitForText",
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
          "text":"${fullfillment}",
          "locator":{  
             "type":"css selector",
-            "value":"${path}"
-         }
-      },
-      {  
-         "type":"verifyText",
-         "text":"${fullfillment}",
-         "locator":{  
-            "type":"css selector",
-            "value":"${path}"
+            "value":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td.s-fullfilment > ul > li > swoishippinglabelstamp > ul > li > span"
          }
       }
    ]

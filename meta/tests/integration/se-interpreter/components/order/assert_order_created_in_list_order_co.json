@@ -1,9 +1,9 @@
 {  
-   "steps":[
+   "steps":[  
       {  
          "type":"generateAssertion",
          "assertion_type":"waitForText",
-         "text":"${product_type_name}",
+         "text":"${order_number_one}",
          "locator":{  
             "type":"css selector",
             "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(1) > td:nth-child(1)"
@@ -12,7 +12,7 @@
       {  
          "type":"generateAssertion",
          "assertion_type":"waitForText",
-         "text":"${event_name}",
+         "text":"${account_login_name}",
          "locator":{  
             "type":"css selector",
             "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(1) > td:nth-child(3)"
@@ -21,7 +21,7 @@
       {  
          "type":"generateAssertion",
          "assertion_type":"waitForText",
-         "text":"${event_code}",
+         "text":"${account_login_last_name}",
          "locator":{  
             "type":"css selector",
             "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(1) > td:nth-child(4)"
@@ -30,11 +30,38 @@
       {  
          "type":"generateAssertion",
          "assertion_type":"waitForText",
-         "text":"${price_with_currency}",
+         "text":"${account_company}",
          "locator":{  
             "type":"css selector",
             "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(1) > td:nth-child(5)"
          }
-      }             
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"${return_order_type}",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(1) > td:nth-child(6)"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"${order_status_new}",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(1) > td:nth-child(7)"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"$${total_with_currency}.00",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(1) > td:nth-child(10)"
+         }
+      }
    ]
 }

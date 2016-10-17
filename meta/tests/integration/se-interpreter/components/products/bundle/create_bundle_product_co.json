@@ -54,77 +54,8 @@
          "rel_dir":"/components/products/bundle/add_bundle_product_group_type_co.json"
       },
       {  
-         "type":"waitForElementPresent",
-         "locator":{  
-            "type":"css selector",
-            "value":"#topOfPageDialog"
-         }
-      },
-      {  
-         "type":"waitForElementPresent",
-         "locator":{  
-            "type":"css selector",
-            "value":"#topOfPageDialog > div.ng-scope.s-dialog-container"
-         }
-      },
-      {  
-         "type":"waitForElementPresent",
-         "locator":{  
-            "type":"css selector",
-            "value":"#topOfPageDialog > div.ng-scope.s-dialog-container > div.ng-scope"
-         }
-      },
-      {  
-         "type":"waitForElementPresent",
-         "locator":{  
-            "type":"css selector",
-            "value":"#topOfPageDialog > div.ng-scope.s-dialog-container > div.ng-scope > div.s-create-window.ng-scope"
-         }
-      },
-      {  
-         "type":"waitForElementPresent",
-         "locator":{  
-            "type":"css selector",
-            "value":"#topOfPageDialog > div.ng-scope.s-dialog-container > div.ng-scope > div.s-create-window.ng-scope > span.ng-scope"
-         }
-      },
-      {  
-         "type":"waitForElementPresent",
-         "locator":{  
-            "type":"css selector",
-            "value":"#topOfPageDialog > div.ng-scope.s-dialog-container > div.ng-scope > div.s-create-window.ng-scope > span.ng-scope > footer"
-         }
-      },
-      {  
-         "type":"waitForElementPresent",
-         "locator":{  
-            "type":"css selector",
-            "value":"#topOfPageDialog > div.ng-scope.s-dialog-container > div.ng-scope > div.s-create-window.ng-scope > span.ng-scope > footer > div.navbar.navbar-s-navbar-ten24.s-dialog-footer"
-         }
-      },
-      {  
-         "type":"waitForElementPresent",
-         "locator":{  
-            "type":"css selector",
-            "value":"#topOfPageDialog > div.ng-scope.s-dialog-container > div.ng-scope > div.s-create-window.ng-scope > span.ng-scope > footer > div.navbar.navbar-s-navbar-ten24.s-dialog-footer > ul.nav.navbar-nav.pull-right"
-         }
-      },
-      {  
-         "type":"waitForElementPresent",
-         "locator":{  
-            "type":"css selector",
-            "value":"#topOfPageDialog > div.ng-scope.s-dialog-container > div.ng-scope > div.s-create-window.ng-scope > span.ng-scope > footer > div.navbar.navbar-s-navbar-ten24.s-dialog-footer > ul.nav.navbar-nav.pull-right > sw-save-and-finish:nth-child(2)"
-         }
-      },
-      {  
-         "type":"waitForElementPresent",
-         "locator":{  
-            "type":"css selector",
-            "value":"#topOfPageDialog > div.ng-scope.s-dialog-container > div.ng-scope > div.s-create-window.ng-scope > span.ng-scope > footer > div.navbar.navbar-s-navbar-ten24.s-dialog-footer > ul.nav.navbar-nav.pull-right > sw-save-and-finish:nth-child(2) > li.active"
-         }
-      },
-      {  
-         "type":"waitForElementPresent",
+         "__comment":"splits the css selector into small addressable path chunks. Chrome was having issues when waiting on the full path directly",
+         "type":"splitPathAndWait",
          "locator":{  
             "type":"css selector",
             "value":"#topOfPageDialog > div.ng-scope.s-dialog-container > div.ng-scope > div.s-create-window.ng-scope > span.ng-scope > footer > div.navbar.navbar-s-navbar-ten24.s-dialog-footer > ul.nav.navbar-nav.pull-right > sw-save-and-finish:nth-child(2) > li.active > a"

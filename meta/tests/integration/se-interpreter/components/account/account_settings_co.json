@@ -1,5 +1,25 @@
 {  
-   "steps":[  
+   "steps":[
+      {  
+         "type":"store",
+         "text":"alexis.espinoza@ten24web.com",
+         "variable":"email_account"
+      },
+      {  
+         "type":"store",
+         "text":"123456a",
+         "variable":"account_password"
+      },
+      {  
+         "type":"store",
+         "text":"Test user name",
+         "variable":"account_login_name"
+      },
+      {  
+         "type":"store",
+         "text":"Test user lastname",
+         "variable":"account_login_last_name"
+      },  
       {  
          "type":"store",
          "text":"name1",
@@ -29,11 +49,6 @@
          "type":"store",
          "text":"name1lastname1@ten24web.com",
          "variable":"account_email_address"
-      },
-      {  
-         "type":"store",
-         "text":"123456a",
-         "variable":"account_password"
       },
       {  
          "__comment":"Must be responsive to the language when test multilang support",

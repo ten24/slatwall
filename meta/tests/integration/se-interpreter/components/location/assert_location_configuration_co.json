@@ -6,9 +6,10 @@
             "type":"css selector",
             "value":"#accordion > div:nth-child(3) > a"
          }
-      },    
+      },
       {  
-         "type":"waitForText",
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
          "text":"${location_configuration}",
          "locator":{  
             "type":"css selector",
@@ -16,23 +17,8 @@
          }
       },
       {  
-         "type":"verifyText",
-         "text":"${location_configuration}",
-         "locator":{  
-            "type":"css selector",
-            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(1) > td.primary" 
-         }
-      },
-       {  
-         "type":"waitForText",
-         "text":"${configuration_capacity}",
-         "locator":{  
-            "type":"css selector",
-            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(1) > td.primary:nth-child(2)"
-         }
-      },
-      {  
-         "type":"verifyText",
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
          "text":"${configuration_capacity}",
          "locator":{  
             "type":"css selector",
@@ -47,7 +33,8 @@
          }
       },
       {  
-         "type":"waitForText",
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
          "text":"${location_configuration}",
          "locator":{  
             "type":"css selector",
@@ -55,30 +42,13 @@
          }
       },
       {  
-         "type":"verifyText",
-         "text":"${location_configuration}",
-         "locator":{  
-            "type":"css selector",
-            "value":"#tabbasic > div > div > div > div:nth-child(2) > div > p"
-         }
-      },
-      {  
-         "type":"waitForText",
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
          "text":"${configuration_capacity}",
          "locator":{  
             "type":"css selector",
             "value":"#tabbasic > div > div > div > div:nth-child(3) > div > p"
          }
-      },
-      {  
-         "type":"verifyText",
-         "text":"${configuration_capacity}",
-         "locator":{  
-            "type":"css selector",
-            "value":"#tabbasic > div > div > div > div:nth-child(3) > div > p"
-         }
-      } 
-
-
+      }
    ]
 }

@@ -9,6 +9,42 @@
          "type":"store",
          "text":"Return Order",
          "variable":"return_order_type"
-      }   
+      },
+      {  
+         "type":"store",
+         "text":"1",
+         "variable":"order_number_one"
+      },
+      {  
+         "type":"store",
+         "text":"New",
+         "variable":"order_status_new"
+      },
+      {  
+         "type":"store",
+         "text":"Ten24 Offices",
+         "variable":"office_location"
+      },
+      {  
+         "type":"store",
+         "text":"4111111111111111",
+         "variable":"credit_card_number"
+      },
+      {  
+         "type":"store",
+         "text":"777",
+         "variable":"security_code"
+      },
+      {  
+         "type":"store",
+         "text":"Ten24 Offices",
+         "variable":"office_location"
+      },
+      {  
+         "type":"store",
+         "text":"Ten24 Offices",
+         "variable":"office_location"
+      }
+      
   ]
 }

@@ -7,7 +7,7 @@
       },
       {  
          "type":"include",
-         "rel_dir":"/components/config/settings_co.json"
+         "rel_dir":"/components/account/account_settings_co.json"
       },
       {  
          "type":"setElementText",

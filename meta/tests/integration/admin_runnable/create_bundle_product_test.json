@@ -22,6 +22,10 @@
       {  
          "type":"include",
          "rel_dir":"/components/products/bundle/assert_bundle_product_created_co.json"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/products/bundle/edit_and_assert_bundle_product_co.json"
       }
    ],
    "data":{  

@@ -1,70 +1,32 @@
 {  
    "steps":[
       {  
-         "type":"store",
-         "text":"#tabbasic > div > div:nth-child(1) > div > div:nth-child(1) > div > div > div.autocomplete-selected > span",
-         "variable":"path"
-      },
-      {  
-         "type":"waitForText",
-         "text":"${user_account}",
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"${account_login_name} ${account_login_last_name}",
          "locator":{  
             "type":"css selector",
-            "value":"${path}"
+            "value":"#tabbasic > div > div:nth-child(1) > div > div:nth-child(1) > div > div > div.autocomplete-selected > span"
          }
       },
-      {  
-         "type":"verifyText",
-         "text":"${user_account}",
-         "locator":{  
-            "type":"css selector",
-            "value":"${path}"
-         }
-      },
-      {  
-         "__comment":"Assuming Return order gets displayed",
-         "type":"store",
-         "text":"//div[@id='tabbasic']/div/div[1]/div/div[3]/div/select//option[1]",
-         "variable":"path"
-      }, 
-      {  
-         "type":"waitForText",
-         "text":"${return_order_type}",
+      { 
+         "__comment":"Assuming Return order gets displayed", 
+         "type":"generateAssertion",
+         "assertion_type":"waitForElementSelected",
          "locator":{  
             "type":"xpath",
-            "value":"${path}"
-         }
+            "value":"//div[@id='tabbasic']/div/div[1]/div/div[3]/div/select//option[1]"
+         },
+         "value":"${return_order_type}"
       },
       {  
-         "type":"verifyText",
-         "text":"${return_order_type}",
-         "locator":{  
-            "type":"xpath",
-            "value":"${path}"
-         }
-      },
-      {  
-         "__comment":"Assuming Return order gets displayed",
-         "type":"store",
-         "text":"//div[@id='tabbasic']/div/div[1]/div/div[4]/div/select//option[2]",
-         "variable":"path"
-      }, 
-      {  
-         "type":"waitForText",
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
          "text":"${office_location}",
          "locator":{  
             "type":"xpath",
-            "value":"${path}"
-         }
-      },
-      {  
-         "type":"verifyText",
-         "text":"${office_location}",
-         "locator":{  
-            "type":"xpath",
-            "value":"${path}"
+            "value":"//div[@id='tabbasic']/div/div[1]/div/div[4]/div/select//option[2]"
          }
       }
-            
    ]
 }

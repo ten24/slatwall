@@ -1,0 +1,77 @@
+{  
+   "steps":[  
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(1) > td.admin.admin1:nth-child(12) > a"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"xpath",
+            "value":"//label[@for='registrants[1].newAccountFlagNo']"
+         }
+      },
+      {  
+         "__comment":"valid for firefox fieldset:nth-child(9) > div.form-group > div.col-sm-8 > div:nth-child(2) > input[id='registrants[1].newAccountFlagNo']",
+         "type":"setElementSelected",
+         "locator":{  
+            "type":"id",
+            "value":"registrants[1].newAccountFlagNo"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"xpath",
+            "value":"//label[@for='registrants[2].newAccountFlagNo']"
+         }
+      },
+      {  
+         "type":"setElementSelected",
+         "locator":{  
+            "type":"css selector",
+            "value":"fieldset:nth-child(11) > div.form-group > div.col-sm-8  > div:nth-child(2) > input[id='registrants[2].newAccountFlagNo']"
+         }
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"registrants1accountID-autocompletesearch"
+         },
+         "text":"name1lastname1@ten24web.com"
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#registrants1accountID-suggestions > li:nth-child(2) > a"
+         }
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"registrants2accountID-autocompletesearch"
+         },
+         "text":"${email_account}"
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#registrants2accountID-suggestions > li:nth-child(1) > a"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"xpath",
+            "value":"//form[@id='adminentityprocessorder_addorderitem']//button[normalize-space(.)='Add']"
+         }
+      }
+   ]
+}

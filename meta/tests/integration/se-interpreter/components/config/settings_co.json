@@ -1,29 +1,9 @@
 {  
    "steps":[ 
-      {
-         "type":"store",
-         "text":"Test user name Test user lastname",
-         "variable":"user_account"  
-      },
-      {  
-         "type":"store",
-         "text":"alexis.espinoza@ten24web.com",
-         "variable":"email_account"
-      },
-      {  
-         "type":"store",
-         "text":"123456a",
-         "variable":"account_password"
-      },      
       {  
          "type":"store",
          "text":"Ten24 Offices",
          "variable":"text"
-      },
-      {  
-         "type":"store",
-         "text":"Ten24 Offices",
-         "variable":"office_location"
       },
       {  
          "type":"store",

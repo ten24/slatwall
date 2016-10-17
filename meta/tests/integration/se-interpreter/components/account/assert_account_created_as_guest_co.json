@@ -1,24 +1,12 @@
 {  
    "steps":[
       {  
-         "type":"store",
-         "text":"#hibachiPropertyTable1 > tbody > tr:nth-child(5) > td.value:nth-child(2)",
-         "variable":"path"
-      },
-      {  
-         "type":"waitForText",
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
          "text":"${is_a_guest_account}",
          "locator":{  
             "type":"css selector",
-            "value":"${path}"
-         }
-      },
-      {  
-         "type":"verifyText",
-         "text":"${is_a_guest_account}",
-         "locator":{  
-            "type":"css selector",
-            "value":"${path}"
+            "value":"#hibachiPropertyTable1 > tbody > tr:nth-child(5) > td.value:nth-child(2)"
          }
       }
    ]
