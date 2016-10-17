@@ -164,7 +164,7 @@ class SWWorkflowTaskActionsController {
             this.$log.debug(workflowTaskAction);
             this.finished = false;
             this.workflowTaskActions.selectedTaskAction = undefined;
-            var filterPropertiesPromise = this.$hibachi.getFilterPropertiesByBaseEntityName(this.workflowTask.data.workflow.data.workflowObject);
+            var filterPropertiesPromise = this.$hibachi.getFilterPropertiesByBaseEntityName(this.workflowTask.data.workflow.data.workflowObject, true);
             filterPropertiesPromise.then( (value) =>{
                 this.filterPropertiesList = {
                     baseEntityName: this.workflowTask.data.workflow.data.workflowObject,
