@@ -449,7 +449,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 						imagePath=getService('imageService').getImagePathByImageFileAndDirectory(productImageData['imageFile'],productImageData['directory'])
 					};
 					if(structKeyExists(arguments.resizeSizes[s], "size")) {
-						resizeImageData.size=arguments.resizeSizes[s].size
+						resizeImageData.size=arguments.resizeSizes[s].size;
 					}
 					arrayAppend(
 						thisImage.resizedImagePaths,
