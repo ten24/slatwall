@@ -68,7 +68,7 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	
 	property name="phoneNumber" hb_populateEnabled="public" ormtype="string";
 	property name="emailAddress" hb_populateEnabled="public" ormtype="string";
-	property name="urlTitle" ormtype="string"; //allows this entity to be found via a url title.
+	property name="urlTitle" hb_populateEnabled="public" ormtype="string";
 	
 	//one-to-many
   	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="addressID" cascade="all-delete-orphan" inverse="true";
@@ -297,7 +297,11 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	}
 	
 	public string function getUrlTitle() {
-		return "#reReplace(getName(), ' ', '-')#";
+		var name = getName();
+		if (isNull(name)){
+			name = "#getFirstName()# #getLastName()#";
+		}
+		return "#reReplace(name, ' ', '-')#";
 	}
 }
 
