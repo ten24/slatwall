@@ -1836,9 +1836,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(
 				arguments.orderDelivery.getFulfillmentMethod().getFulfillmentMethodType() == "shipping"
 			) {
-				arguments.orderDelivery.setShippingMethod( arguments.processObject.getShippingMethod() );
-				arguments.orderDelivery.setShippingAddress( arguments.processObject.getShippingAddress().copyAddress( saveNewAddress=true ) );
-
+				
+				if (structKeyExists(arguments, "processObject") && structKeyExists(arguments, "orderDelivery") && !isNull(arguments.processObject.getShippingMethod())){
+					arguments.orderDelivery.setShippingMethod( arguments.processObject.getShippingMethod() );
+				}
+				
+				if (structKeyExists(arguments, "processObject")&& structKeyExists(arguments, "orderDelivery")  && !isNull(arguments.processObject.getShippingAddress())){
+					arguments.orderDelivery.setShippingAddress( arguments.processObject.getShippingAddress().copyAddress( saveNewAddress=true ) );
+				}
+				
 				// Setup the tracking number if we have it
 				if(
 					!isNull(arguments.processObject.getTrackingNumber())
