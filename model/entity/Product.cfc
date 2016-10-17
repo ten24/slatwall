@@ -398,10 +398,13 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 				for(var s=1; s<=resizeSizesCount; s++) {
 
 					var resizeImageData={
-						imagePath=getService('imageService').getProductImagePathByImageFile(skuData['imageFile']),
-						size=arguments.resizeSizes[s].size
+						imagePath=getService('imageService').getProductImagePathByImageFile(skuData['imageFile'])
 					};
 
+					if(structKeyExists(arguments.resizeSizes[s], "size")) {
+							resizeImageData.size=arguments.resizeSizes[s].size;
+					}
+					
 					arrayAppend(
 						thisImage.resizedImagePaths,
 						getService("imageService").getResizedImagePath(argumentCollection=resizeImageData)
