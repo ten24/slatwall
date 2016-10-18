@@ -7,10 +7,14 @@
       "type": "get",
       "url": "http://localhost/?slatAction=main.login"
     },
-    {
-      "script":"return document.readyState",
-      "type":"waitForEval",
-      "value":"complete"
+    {  
+         "height":902.4,
+         "type":"setWindowSize",
+         "width":1440
+    },
+    {  
+         "type":"include",
+         "rel_dir":"../se-interpreter/components/account/account_settings_co.json"
     },
     {
       "type": "setElementText",
@@ -18,7 +22,7 @@
         "type": "name",
         "value": "firstName"
       },
-      "text": "QA"
+      "text": "${account_login_name}"
     },
     {
       "type": "setElementText",
@@ -26,7 +30,7 @@
         "type": "name",
         "value": "lastName"
       },
-      "text": "User"
+      "text": "${account_login_last_name}"
     },
     {
       "type": "setElementText",
@@ -34,7 +38,7 @@
         "type": "name",
         "value": "company"
       },
-      "text": "QA Company"
+      "text": "${account_company}"
     },
     {
       "type": "setElementText",
@@ -42,7 +46,7 @@
         "type": "name",
         "value": "emailAddress"
       },
-      "text": "qa@mailinator.com"
+      "text": "${email_account}"
     },
     {
       "type": "setElementText",
@@ -50,7 +54,7 @@
         "type": "name",
         "value": "emailAddressConfirm"
       },
-      "text": "qa@mailinator.com"
+      "text": "${email_account}"
     },
     {
       "type": "setElementText",
@@ -58,7 +62,7 @@
         "type": "name",
         "value": "password"
       },
-      "text": "QaPa33word"
+      "text": "${account_password}"
     },
     {
       "type": "setElementText",
@@ -66,7 +70,7 @@
         "type": "name",
         "value": "passwordConfirm"
       },
-      "text": "QaPa33word"
+      "text": "${account_password}"
     },
     {
       "type": "clickElement",

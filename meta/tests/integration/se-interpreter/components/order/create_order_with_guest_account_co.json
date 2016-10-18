@@ -44,8 +44,8 @@
       {  
          "type":"clickElement",
          "locator":{  
-            "type":"xpath",
-            "value":"//*[@id=\"suggestionoption4028288f5767a070015767ac2314001c\"]"
+            "type":"css selector",
+            "value":"#adminentityprocessorder_create > div > div > div.modal-body > div > div > div > div.hibachi-display-toggle > div.form-group > div.col-sm-8 > div.autoselect-container > div.autocomplete-options > ul > li:nth-child(1) > a"
          }
       },
       {  

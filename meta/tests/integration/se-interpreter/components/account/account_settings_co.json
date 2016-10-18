@@ -2,22 +2,22 @@
    "steps":[
       {  
          "type":"store",
-         "text":"alexis.espinoza@ten24web.com",
+         "text":"qa@mailinator.com",
          "variable":"email_account"
       },
       {  
          "type":"store",
-         "text":"123456a",
+         "text":"QaPa33word",
          "variable":"account_password"
       },
       {  
          "type":"store",
-         "text":"Test user name",
+         "text":"QA",
          "variable":"account_login_name"
       },
       {  
          "type":"store",
-         "text":"Test user lastname",
+         "text":"User",
          "variable":"account_login_last_name"
       },  
       {  
@@ -32,7 +32,7 @@
       },
       {  
          "type":"store",
-         "text":"Ten24",
+         "text":"QA Company",
          "variable":"account_company"
       },
       {  

@@ -4,12 +4,12 @@
    "formatVersion":2,
    "steps":[
       {  
-         "type":"get",
-         "url":"http://cf10.localhost/?slatAction=main.login"
+         "type":"include",
+         "rel_dir":"../setup/00_create_super_user.json"
       },
       {  
          "type":"include",
-         "rel_dir":"/components/login_co.json"
+         "rel_dir":"/components/location/create_location_test.json"
       },
       {  
          "type":"include",

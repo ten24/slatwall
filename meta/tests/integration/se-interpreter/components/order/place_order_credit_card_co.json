@@ -71,7 +71,7 @@
         "type": "name",
         "value": "newOrderPayment.billingAddress.streetAddress"
       },
-      "text": "${account_company}"
+      "text": "${add_account_address_street_address}"
     },
     {
       "type": "setElementText",

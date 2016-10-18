@@ -42,7 +42,7 @@
             "type":"name",
             "value":"registrants1accountID-autocompletesearch"
          },
-         "text":"name1lastname1@ten24web.com"
+         "text":"${account_email_address}"
       },
       {  
          "type":"clickElement",
