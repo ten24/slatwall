@@ -9,6 +9,7 @@
 <input type="hidden" name="context" value="addFormResponse" />
 <sw:AttributeSetDisplay entity="#request.context.newFormResponse#" attributeSet="#request.context.requestedForm#" edit="true" />
 <input type="submit" value="Submit">
+<sw:Recaptcha />
 </form>
 </cfoutput>
 

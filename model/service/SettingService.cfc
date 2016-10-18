@@ -205,6 +205,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalUseShippingIntegrationForTrackingNumberOption = {fieldtype="yesno", defaultValue=0},
 			globalSmartListGetAllRecordsLimit = {fieldType="text",defaultValue=250},
 			globalAllowCustomBranchUpdates={fieldType="yesno",defaultValue=0},
+			
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
 			imageMissingImagePath = {fieldType="text",defaultValue="/assets/images/missingimage.jpg"},
@@ -242,6 +243,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			siteVerifyAccountEmailAddressEmailTemplate = {fieldType="select", defaultValue="61d29dd9f6ca76d9e352caf55500b458"},
 			siteOrderOrigin = {fieldType="select"},
             siteMissingImagePath = {fieldType="text", defaultValue="/assets/images/missingimage.jpg"},
+            siteRecaptchaSiteKey = {fieldType="text"},
+			siteRecaptchaSecretKey = {fieldType="text"},
 			
 			// Shipping Method
 			shippingMethodQualifiedRateSelection = {fieldType="select", defaultValue="lowest"},

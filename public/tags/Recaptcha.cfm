@@ -46,27 +46,14 @@
 Notes:
 
 --->
-
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-	    <meta charset="utf-8">
-	    <title>Slatwall</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-		<!--- jQuery is only required if you would like to use the Slatwall client side object --->
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-
-		<!--- This creates a client side object for Slatwall so that $.slatwall API works from the client side --->
-		<cfoutput>#$.slatwall.renderJSObject( subsystem="public" )#</cfoutput>
-
-		<!--- Bootstrap is just included for demo / example purposes.  Removing it will not stop Slatwall from working --->
-		<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
-		<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
-		<script src='https://www.google.com/recaptcha/api.js'></script>
-	</head>
-	<body>
-		<!--- This is only used by the sample app that is contained in /meta/sample --->
-		<cfif structKeyExists(request, "sampleNavigation")>
-			<cfoutput>#request.sampleNavigation#</cfoutput>
-		</cfif>
+<cfparam name="attributes.site" type="any" />
+<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
+<cfif thisTag.executionMode is "start">
+	<cfset recatchaSiteKey = ""/>
+	<cfif !isNull(attributes.site)>
+		<cfset recaptchaSiteKey = attributes.site.setting('siteRecaptchaSiteKey')/>
+	<cfelse>
+		<cfset recaptchaSiteKey = attributes.hibachiScope.setting('siteRecaptchaSiteKey')/>
+	</cfif>
+	<div class="g-recaptcha" data-sitekey="#recaptchaSiteKey#"></div>
+</cfif>
