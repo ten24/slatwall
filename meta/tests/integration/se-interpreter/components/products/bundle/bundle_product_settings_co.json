@@ -54,6 +54,11 @@
          "type":"store",
          "text":"Email",
          "variable":"fullfilment_email_type"
+      },
+      {
+         "type":"store",
+         "text":"Bundle product comment test",
+         "variable":"bundle_product_comment"
       }
    ]
 }

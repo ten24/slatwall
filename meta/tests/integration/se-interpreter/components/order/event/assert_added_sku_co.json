@@ -41,7 +41,7 @@
       {  
          "type":"generateAssertion",
          "assertion_type":"waitForText",
-         "text":"${price_with_currency}",
+         "text":"$${price}.00",
          "locator":{  
             "type":"css selector",
             "value":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td:nth-child(6) > span > ul > li:nth-child(2)"
@@ -55,11 +55,16 @@
             "type":"css selector",
             "value":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td.s-qty.ng-binding"
          }
-      },  
+      },
+      {  
+         "script":"return ${quantity} * ${price}",
+         "variable":"total_with_currency",
+         "type":"storeEval"
+      },
       {  
          "type":"generateAssertion",
          "assertion_type":"waitForText",
-         "text":"${total}",
+         "text":"$${total_with_currency}.00",
          "locator":{  
             "type":"css selector",
             "value":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td:nth-child(9) > ul > li.s-price-total.ng-binding"

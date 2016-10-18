@@ -10,7 +10,7 @@
       {  
          "type":"generateAssertion",
          "assertion_type":"waitForText",
-         "text":"${text}",
+         "text":"${office_location}",
          "locator":{  
             "type":"css selector",
             "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-select > tbody > tr > td:nth-child(2)"

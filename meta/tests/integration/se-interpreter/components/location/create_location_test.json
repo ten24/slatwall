@@ -2,7 +2,11 @@
    "type":"script",
    "seleniumVersion":"2",
    "formatVersion":2,
-   "steps":[  
+   "steps":[
+      {  
+         "type":"include",
+         "rel_dir":"/components/location/location_settings_co.json"
+      },  
       {  
          "type":"include",
          "rel_dir":"/components/location/list_location_co.json"
@@ -16,25 +20,14 @@
          "rel_dir":"/components/location/add_address_to_location_co.json"
       },
       {  
-         "type":"include",
-         "rel_dir":"/components/config/settings_co.json"
-      },    
-      {  
-         "type":"waitForText",
-         "text":"${text}",
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"${office_location}",
          "locator":{  
             "type":"css selector",
             "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-expandable > tbody > tr > td.primary"
          }
       },
-      {  
-         "type":"verifyText",
-         "text":"${text}",
-         "locator":{  
-            "type":"css selector",
-            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-expandable > tbody > tr > td.primary"
-         }
-      },   
       {
          "type":"clickElement",
          "locator":{  

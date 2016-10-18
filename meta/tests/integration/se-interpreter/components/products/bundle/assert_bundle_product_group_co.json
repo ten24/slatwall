@@ -10,7 +10,7 @@
       },
       {  
          "type":"generateAssertion",
-         "assertion_type":"waitForText",
+         "assertion_type":"waitForElementValue",
          "text":"${bundle_group_type}",
          "locator":{  
             "type":"css selector",
@@ -45,19 +45,19 @@
          }
       },
       {  
-         "__comment":"SAVE (Base price adjustment=NONE. Need to do fixed, sku price, sku precenatge increase and decrease)",
-         "type":"clickElement",
-         "locator":{  
-            "type":"css selector",
-            "value":"#tabbundlegroups > span > section > span > div > ul > sw-product-bundle-group > li > div.s-bundle-group-dropdown > div > div > div > div > button:nth-child(4)"
-         }
-      },
-      {  
          "__comment":"Close group type",
          "type":"clickElement",
          "locator":{  
             "type":"css selector",
             "value":"#tabbundlegroups > span > section > span > div > ul > sw-product-bundle-group > li > div.row > div.col-xs-4 > div > a.btn.btn-default.s-edit.j-tool-tip-item"
+         }
+      },
+      {  
+         "__comment":"Close accordion for Product Bundle Group",
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(2) > a"
          }
       }
    ]

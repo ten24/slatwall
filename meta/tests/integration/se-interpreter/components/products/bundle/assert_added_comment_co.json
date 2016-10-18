@@ -1,0 +1,47 @@
+{  
+   "steps":[
+      {  
+         "__comment":"Close Basic tab in the accordion",
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(1) > a"
+         }
+      },
+      {  
+         "__comment":"Open Comment",
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(14) > a"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"1",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(14) > a > div > h4 > span.badge"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"${bundle_product_comment}",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabComments > table > tbody > tr:nth-child(1) > td.primary"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"${account_login_name} ${account_login_last_name}",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabComments > table > tbody > tr:nth-child(1) > td:nth-child(3)"
+         }
+      }
+   ]
+}

@@ -2,12 +2,7 @@
    "steps":[  
       {  
          "type":"store",
-         "text":"2",
-         "variable":"quantity"
-      },
-      {  
-         "type":"store",
-         "text":"Return Order",
+         "text":"Exchange Order",
          "variable":"return_order_type"
       },
       {  
@@ -34,16 +29,6 @@
          "type":"store",
          "text":"777",
          "variable":"security_code"
-      },
-      {  
-         "type":"store",
-         "text":"Ten24 Offices",
-         "variable":"office_location"
-      },
-      {  
-         "type":"store",
-         "text":"Ten24 Offices",
-         "variable":"office_location"
       }
       
   ]

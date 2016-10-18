@@ -10,11 +10,26 @@
       {  
          "type":"include",
          "rel_dir":"/components/login_co.json"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/brand/create_brand_test.json"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/account/create_guest_account_test.json"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/products/bundle/create_bundle_product_test.json"
       }, 
-      
       {  
          "type":"include",
          "rel_dir":"/components/order/order_settings_co.json"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/order/bundle/bundle_product_order_settings_co.json"
       },
       {  
          "type":"clickElement",

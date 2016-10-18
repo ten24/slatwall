@@ -4,11 +4,6 @@
          "type":"store",
          "text":"2",
          "variable":"quantity"
-      },
-      {
-         "type":"store",
-         "text":"Attend Event",
-         "variable":"fullfillment"
       }
    ]
 }

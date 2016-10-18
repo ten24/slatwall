@@ -12,17 +12,17 @@
       },
       {  
          "type":"store",
-         "text":"12",
+         "text":"20",
          "variable":"price"
       },
       {  
          "type":"store",
-         "text":"$12.00",
+         "text":"$20.00",
          "variable":"price_with_currency"
       },
       {  
          "type":"store",
-         "text":"24",
+         "text":"40",
          "variable":"list_price"
       },
       {  

@@ -110,7 +110,11 @@
       },
       {  
          "type":"include",
-         "rel_dir":"/components/products/bundle/assert_bundle_product_group_co.json"
+         "rel_dir":"/components/products/bundle/add_comment_co.json"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/products/bundle/assert_added_comment_co.json"
       }
    ]
 }

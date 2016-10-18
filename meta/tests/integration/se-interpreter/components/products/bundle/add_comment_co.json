@@ -1,0 +1,37 @@
+{  
+   "steps":[
+      {  
+         "__comment":"Open Comment",
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(14) > a"
+         }
+      },
+      {  
+         "__comment":"Add comment",
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabComments > a"
+         }
+      },
+      {  
+         "__comment":"write bundle group",
+         "type":"setElementText",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentitysavecomment > div > div > div.modal-body > div > div > div > textarea"
+         },
+         "text":"${bundle_product_comment}"
+      },
+      {  
+         "__comment":"Save",
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentitysavecomment > div > div > div.modal-footer > div > button.btn.btn-success"
+         }
+      }
+   ]
+}

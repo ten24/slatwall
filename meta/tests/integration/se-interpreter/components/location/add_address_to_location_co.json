@@ -10,7 +10,7 @@
             "type":"name",
             "value":"address.name"
          },
-         "text":"${text}"
+         "text":"${office_location}"
       },
       {  
          "type":"setElementText",

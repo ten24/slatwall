@@ -4,14 +4,6 @@
    "formatVersion":2,
    "steps":[  
       {  
-         "type":"get",
-         "url":"http://cf10.localhost/?slatAction=main.login"
-      },
-      {  
-         "type":"include",
-         "rel_dir":"/components/login_co.json"
-      },
-      {  
          "type":"include",
          "rel_dir":"/components/brand/brand_settings_co.json"
       },

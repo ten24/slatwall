@@ -13,7 +13,7 @@
             "type":"name",
             "value":"locationName"
          },
-         "text":"${text}"
+         "text":"${office_location}"
       },
       {  
          "type":"clickElement",
@@ -23,16 +23,9 @@
          }
       },
       {  
-         "type":"waitForText",
-         "text":"${text}",
-         "locator":{  
-            "type":"css selector",
-            "value":"#tabbasic > div > div > div > div:nth-child(2) > div > p"
-         }
-      },
-      {  
-         "type":"verifyText",
-         "text":"${text}",
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"${office_location}",
          "locator":{  
             "type":"css selector",
             "value":"#tabbasic > div > div > div > div:nth-child(2) > div > p"
