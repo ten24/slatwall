@@ -106,14 +106,14 @@ component  extends="HibachiService" accessors="true" {
 				this.saveFormResponse(response);
 			}
 		}
-
+		
 		return this.saveForm(arguments.form);
 	}
 
 	public any function processForm_addFormResponse(required any form, required any processObject ){
 		var formResponse = processObject.getNewFormResponse();
-		formResponse.setForm(arguments.form);
-		return this.saveFormResponse(formResponse);
+		formResponse = this.saveFormResponse(formResponse);
+		return formResponse;
 	}
 
 	// =====================  END: Process Methods ============================
