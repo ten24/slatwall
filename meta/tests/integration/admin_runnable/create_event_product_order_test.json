@@ -5,7 +5,7 @@
    "steps":[
       {  
          "type":"include",
-         "rel_dir":"../setup/00_create_super_user.json"
+         "rel_dir":"/components/login_co.json"
       },
       {  
          "type":"include",

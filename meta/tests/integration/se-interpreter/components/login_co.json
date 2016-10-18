@@ -1,5 +1,9 @@
 {
    "steps":[
+      {
+         "type": "get",
+         "url": "http://localhost/?slatAction=main.login"
+      },
       {  
          "height":902.4,
          "type":"setWindowSize",
