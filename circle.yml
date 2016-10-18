@@ -56,6 +56,24 @@ test:
 
     # Run Sauce Labs Integration Setup Tests
     - if [[ ! -z $SAUCE_USERNAME ]] ; then node meta/tests/integration/se-interpreter/interpreter.js --parallel=1 --listener=meta/tests/integration/se-interpreter/utils/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/setup_config.json --silent; fi
+    
+    # Run Sauce Labs end-to_end Tests (The test will be allocated in a JSON file)
+    - if [[ ! -z $SAUCE_USERNAME ]] ; then 
+        mysqldump  -u root Slatwall > SlatwallSnapShot.sql
+        node meta/tests/integration/se-interpreter/interpreter.js --parallel=1 --listener=meta/tests/integration/se-interpreter/utils/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/admin_runnable/create_event_product_order_test.json --silent; 
+        mysqladmin -u root -f DROP Slatwall;
+        mysqladmin -u root  CREATE Slatwall
+        mysql -u root Slatwall < SlatwallSnapShot.sql
+        node meta/tests/integration/se-interpreter/interpreter.js --parallel=1 --listener=meta/tests/integration/se-interpreter/utils/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/admin_runnable/create_event_product_order_test.json --browser-browserName=chrome --silent; 
+        mysqladmin -u root -f DROP Slatwall;
+        mysqladmin -u root  CREATE Slatwall
+        mysql -u root Slatwall < SlatwallSnapShot.sql
+        node meta/tests/integration/se-interpreter/interpreter.js --parallel=1 --listener=meta/tests/integration/se-interpreter/utils/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/admin_runnable/create_bundle_product_order_test.json --silent; 
+        mysqladmin -u root -f DROP Slatwall;
+        mysqladmin -u root  CREATE Slatwall
+        mysql -u root Slatwall < SlatwallSnapShot.sql
+        node meta/tests/integration/se-interpreter/interpreter.js --parallel=1 --listener=meta/tests/integration/se-interpreter/utils/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/admin_runnable/create_bundle_product_order_test.json --browser-browserName=chrome --silent; 
+      fi
 
     # Run Build
     - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwallweb_1)" -- ant -f /var/www/meta/tests/build.xml buildDocsAndTests
