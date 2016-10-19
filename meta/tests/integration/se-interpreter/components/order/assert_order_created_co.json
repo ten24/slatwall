@@ -25,7 +25,7 @@
          "text":"${office_location}",
          "locator":{  
             "type":"xpath",
-            "value":"//div[@id='tabbasic']/div/div[1]/div/div[4]/div/select//option[2]"
+            "value":"//div[@id='tabbasic']/div/div[1]/div/div[4]/div/select//option[3]"
          }
       }
    ]

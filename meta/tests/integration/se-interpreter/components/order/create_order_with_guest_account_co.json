@@ -59,7 +59,7 @@
          "type":"setElementSelected",
          "locator":{  
             "type":"xpath",
-            "value":"//form[@id='adminentityprocessorder_create']/div/div/div[2]/div/div/div/div[7]/div/select//option[2]"
+            "value":"//form[@id='adminentityprocessorder_create']/div/div/div[2]/div/div/div/div[7]/div/select//option[3]"
          }
       },
       {  
