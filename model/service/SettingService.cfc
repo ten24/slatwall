@@ -865,7 +865,7 @@ component extends="HibachiService" output="false" accessors="true" {
 
 			getHibachiDAO().flushORMSession();
 
-			getHibachiCacheService().resetCachedKeyByPrefix('setting_#settingName#');
+			getHibachiCacheService().resetCachedKeyByPrefix('setting_#settingName#',true);
 
 			// If calculation is needed, then we should do it
 			if(calculateStockNeeded) {
