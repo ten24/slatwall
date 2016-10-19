@@ -20,19 +20,20 @@
          "rel_dir":"/components/location/add_address_to_location_co.json"
       },
       {  
+         "_comment":"Check it here",
          "type":"generateAssertion",
          "assertion_type":"waitForText",
          "text":"${office_location}",
          "locator":{  
             "type":"css selector",
-            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-expandable > tbody > tr > td.primary"
+            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-expandable > tbody > tr:nth-child(2) > td.primary"
          }
       },
       {
          "type":"clickElement",
          "locator":{  
             "type":"css selector",
-            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-expandable > tbody > tr:nth-child(1) > td.admin.admin2 > a.adminentityeditlocation.btn.btn-default.btn-xs"
+            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-expandable > tbody > tr:nth-child(2) > td.admin.admin2 > a.adminentityeditlocation.btn.btn-default.btn-xs"
          }
       },
       {  
