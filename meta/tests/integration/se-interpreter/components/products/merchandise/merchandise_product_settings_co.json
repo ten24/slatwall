@@ -1,0 +1,29 @@
+{  
+   "steps":[  
+      {  
+         "type":"store",
+         "text":"Merchandise product #1",
+         "variable":"merchandise_product_name"
+      },
+      {  
+         "script":"return Math.floor(Math.random()*100000)",
+         "variable":"merchandise_product_code",
+         "type":"storeEval"
+      },
+      {  
+         "type":"store",
+         "text":"20",
+         "variable":"merchandise_product_price"
+      },
+      {  
+         "type":"store",
+         "text":"40",
+         "variable":"merchandise_product_list_price"
+      },
+      {  
+         "type":"store",
+         "text":"Merchandise",
+         "variable":"merchandise_product_type"
+      }
+   ]
+}

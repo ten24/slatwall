@@ -1,0 +1,72 @@
+{  
+   "steps":[  
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#j-main-content > div > div.row.s-body-nav > nav > div:nth-child(2) > div > div > button"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#j-main-content > div > div.row.s-body-nav > nav > div:nth-child(2) > div > div > ul > li:nth-child(5) > a"
+         }
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/check_url_co.json"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/products/merchandise/merchandise_product_settings_co.json"
+      },
+      {  
+         "type":"setElementSelected",
+         "locator":{  
+            "type":"xpath",
+            "value":"//form[@id='adminentityprocessproduct_create']/div[2]/div[1]/div/div[2]/div/select//option[2]"
+         }
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"product.productName"
+         },
+         "text":"${merchandise_product_name}"
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"product.productCode"
+         },
+         "text":"${merchandise_product_code}"
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"price"
+         },
+         "text":"${merchandise_product_price}"
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"listPrice"
+         },
+         "text":"${merchandise_product_list_price}"
+      },
+      { 
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentityprocessproduct_create > div.row.s-body-nav > nav > div:nth-child(2) > div > div:nth-child(2) > button"
+         }
+      }
+   ]
+}

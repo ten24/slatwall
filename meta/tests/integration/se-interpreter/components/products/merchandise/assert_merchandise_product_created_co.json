@@ -1,0 +1,31 @@
+{  
+   "steps":[
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"${merchandise_product_name}",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabbasic > div > div:nth-child(1) > div > div:nth-child(3) > div > p"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"${merchandise_product_code}",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabbasic > div > div:nth-child(1) > div > div:nth-child(4) > div > p"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"${merchandise_product_type}",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabbasic > div > div:nth-child(2) > div > div:nth-child(2) > div > p"
+         }
+      }          
+   ]
+}

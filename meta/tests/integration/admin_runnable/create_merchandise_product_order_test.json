@@ -1,0 +1,41 @@
+{  
+   "type":"script",
+   "seleniumVersion":"2",
+   "formatVersion":2,
+   "steps":[
+      {  
+         "type":"include",
+         "rel_dir":"/components/login_co.json"
+      },
+      {   
+         "type":"include",
+         "rel_dir":"../se-interpreter/components/account/account_settings_co.json"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/location/create_location_test.json"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/brand/create_brand_test.json"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/account/create_guest_account_test.json"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/products/merchandise/create_merchandise_product_test_co.json"
+      }
+   ],
+   "data":{  
+      "configs":{  
+
+      },
+      "source":"none"
+   },
+   "inputs":[  
+
+   ],
+   "timeoutSeconds":60
+}
