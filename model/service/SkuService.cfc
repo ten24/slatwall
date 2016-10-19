@@ -586,6 +586,27 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	// ======================  END: Save Overrides ============================
+	
+	// ====================== START: Delete Overrides =========================
+	
+	public boolean function deleteSku(required any sku) {
+
+		// Check delete validation
+		if(arguments.sku.isDeletable() && !isNull(arguments.sku.getProductSchedule())) {
+
+			var productSchedule = arguments.sku.getProductSchedule();
+			//If this is the only sku associated to the product schedule, remove it from the schedule and delete the sku
+			if (productSchedule.getSkusCount() == 1){
+				getService("ProductScheduleService").deleteProductSchedule(productSchedule);
+			}
+		
+		}
+
+		return delete( arguments.sku );
+	}
+	
+	
+	// ======================  END: Delete Overrides ==========================
 
 	// ==================== START: Smart List Overrides =======================
 
