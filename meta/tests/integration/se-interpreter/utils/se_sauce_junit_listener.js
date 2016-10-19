@@ -65,8 +65,10 @@ Listener.prototype.startTestRun = function(testRun, info) {
   
   // Snapshot reset
   console.log('DB Snapshot Reset Started');
-  // Add line of code here for doing the mysql snapshot reset
-  // mysql --user=root --password=${MYSQL_ROOT_PASSWORD} --host=slatwalldb < /etc/slatwall_test_starting_point_snapshot.sql
+  var sys = require('sys')
+  var exec = require('child_process').exec;
+  function puts(error, stdout, stderr) { sys.puts(stdout) }
+  exec("mysql --user=root --password=${MYSQL_ROOT_PASSWORD} --host=slatwalldb < ./dbsnapshot/slatwall_test_starting_point_snapshot.sql", puts);
   console.log('DB Snapshot Reset Complete');
 
   // Base
