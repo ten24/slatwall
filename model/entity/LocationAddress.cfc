@@ -106,6 +106,21 @@ component displayname="Location Address" entityname="SlatwallLocationAddress" ta
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
+	
+	// =============== START: Custom Validation Methods ====================
+	public boolean function isDeletable() {
+		var locationConfigurationSmartList =  this.getLocation().getLocationConfigurationsSmartlist();
+		locationConfigurationSmartList.joinRelatedProperty('SlatwallLocationConfiguration', 'skus');
+		locationConfigurationSmartList.joinRelatedProperty('SlatwallSku', 'orderItems');
+
+		if ( locationConfigurationSmartList.getRecordsCount() ) {
+			return false;
+		}else{
+			return true;
+		}
+	}
+	
+	// ===============  END: Custom Validation Methods =====================
 
 	// ================== START: Overridden Methods ========================
 	public string function getSimpleRepresentation() {
