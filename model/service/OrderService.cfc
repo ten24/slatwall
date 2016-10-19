@@ -2572,7 +2572,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					orderFulfillment.removeOrder();
 
 				// If is is still in use, and a shipping fulfillment then we need to update some stuff.
-				} else if(orderFulfillment.getFulfillmentMethodType() eq "shipping") {
+				} else if( orderFulfillment.getFulfillmentMethodType() eq "shipping" && !isNull(orderFulfillment.getShippingMethod()) ) {
 
 					// Update the shipping methods
 					getShippingService().updateOrderFulfillmentShippingMethodOptions( orderFulfillment );
@@ -2649,7 +2649,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!arguments.orderFulfillment.hasErrors() && arguments.orderFulfillment.getOrder().getStatusCode() == "ostNotPlaced") {
 
 			// If this is a shipping fulfillment, then update the shippingMethodOptions and charge
-			if(arguments.orderFulfillment.getFulfillmentMethodType() eq "shipping") {
+			if(arguments.orderFulfillment.getFulfillmentMethodType() eq "shipping" && !isNull(arguments.orderFulfillment.getShippingMethod())) {
 
 				// Update the shipping Methods
 				getShippingService().updateOrderFulfillmentShippingMethodOptions( arguments.orderFulfillment );
