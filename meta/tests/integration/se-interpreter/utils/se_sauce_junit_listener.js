@@ -68,6 +68,7 @@ Listener.prototype.startTestRun = function(testRun, info) {
   var sys = require('sys')
   var exec = require('child_process').exec;
   function puts(error, stdout, stderr) { sys.puts(stdout) }
+  console.log("mysql --user=root --password=CiPassword --host=slatwalldb < ./dbsnapshot/slatwall_test_starting_point_snapshot.sql");
   exec("mysql --user=root --password=CiPassword --host=slatwalldb < ./dbsnapshot/slatwall_test_starting_point_snapshot.sql", puts);
   console.log('DB Snapshot Reset Complete');
 
