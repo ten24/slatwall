@@ -65,7 +65,7 @@ test:
     
     # Create a Backup Snapshot of the DB
     - sudo mkdir -p ./dbsnapshot/
-    - sudo chmod -R ./dbsnapshot/
+    - sudo chmod -R 777 ./dbsnapshot/
     - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)" -- mysqldump --add-drop-table --skip-comments --disable-keys --user=root --password=${MYSQL_ROOT_PASSWORD} Slatwall > ./dbsnapshot/slatwall_test_starting_point_snapshot.sql
       # Run Sauce Labs end-to_end Tests (The test will be allocated in a JSON file)
     
