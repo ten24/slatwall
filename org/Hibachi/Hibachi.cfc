@@ -674,12 +674,18 @@ component extends="FW1.framework" {
 		}
 	}
 	
-	public void function populateHeaders(){
+	public void function populateAPIHeaders(){
+		param name="request.context.headers" default="#structNew()#"; 
+		if(!structKeyExists(request.context.headers,'Content-Type')){
+			request.context.headers['Content-Type'] = 'application/json';
+		}
 		var context = getPageContext();
 		context.getOut().clearBuffer();
 		var response = context.getResponse();
-		for(var header in request.context.headers){
-			response.setHeader(header,request.context.headers[header]);
+		if(structKeyExists(request.context,'headers')){
+			for(var header in request.context.headers){
+				response.setHeader(header,request.context.headers[header]);
+			}
 		}
 	}
 	
@@ -690,7 +696,7 @@ component extends="FW1.framework" {
 		var context = getPageContext();
 		context.getOut().clearBuffer();
 		var response = context.getResponse();
-		populateHeaders();
+		populateAPIHeaders();
 		var responseString = '';
 		
 		if(structKeyExists(request.context, "messages")) {
@@ -739,7 +745,7 @@ component extends="FW1.framework" {
 		}		
 		// Check for an Ajax Response
 		if(request.context.ajaxRequest && !structKeyExists(request, "exception")) {
-			populateHeaders();
+			populateAPIHeaders();
 			if(isStruct(request.context.ajaxResponse)){
 				if(structKeyExists(request.context, "messages")) {
 					request.context.ajaxResponse["messages"] = request.context.messages;	
