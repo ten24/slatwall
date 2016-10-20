@@ -75,7 +75,7 @@ Listener.prototype.startTestRun = function(testRun, info) {
 };
 }
 console.log("sudo lxc-attach -n \"$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)\" -- mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql");
-exec("sudo lxc-attach -n \"$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)\" -- mysql --user=root --password=CiPassword -v -v -v Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql && echo OK || echo Failed", puts);
+exec("sudo lxc-attach -n \"$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)\" -- mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql && echo OK || echo Failed", puts);
 
 
 Listener.prototype.endTestRun = function(testRun, info) {
