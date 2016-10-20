@@ -67,17 +67,14 @@ Listener.prototype.startTestRun = function(testRun, info) {
   console.log('DB Snapshot Reset Started');
   var sys = require('sys')
   var exec = require('child_process').exec;
-  function puts_test (error, stdout, stderr) { 
-  	sys.puts_test(stdout) 
-  }
+  
   function puts(error, stdout, stderr) { 
   	sys.puts(stdout) 
   	console.log('DB Snapshot Reset Complete');
 	if (this.originalListener) { this.originalListener.startTestRun(testRun, info); }
 	}
-  exec("ls -la",puts_test);
-  console.log("mysql -u root -pCiPassword Slatwall < ./dbsnapshot/slatwall_test_starting_point_snapshot.sql");
-  exec("mysql -u root -pCiPassword -v -v -v Slatwall < dbsnapshot/slatwall_test_starting_point_snapshot.sql && echo OK || echo Failed", puts);
+  console.log("mysql -u root -pCiPassword Slatwall < /home/ubuntu/slatwall/dbsnapshot/slatwall_test_starting_point_snapshot.sql");
+  exec("mysql -u root -pCiPassword -v -v -v Slatwall < /home/ubuntu/slatwall/dbsnapshot/slatwall_test_starting_point_snapshot.sql && echo OK || echo Failed", puts);
   
   // Base
 };
