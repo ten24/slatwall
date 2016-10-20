@@ -17,6 +17,14 @@ Example usage:
   You can also use --listener-silent=true to prevent the default listener
   output from happening, just like the --silent command.
 */
+// Snapshot reset
+console.log('DB Snapshot Restore Started');
+var sys = require('sys')
+var exec = require('child_process').exec;
+function puts(error, stdout, stderr) { 
+  sys.puts(stdout) 
+  console.log('DB Snapshot Reset Complete');
+	
 
 var https = require('https');
 var util = require('util');
@@ -62,20 +70,7 @@ Listener.prototype.startTestRun = function(testRun, info) {
     return;
   }
   this._suite = getSuite(testRun);
-  
-  // Snapshot reset
-  console.log('DB Snapshot Reset Started');
-  var sys = require('sys')
-  var exec = require('child_process').exec;
-  
-  function puts(error, stdout, stderr) { 
-  	sys.puts(stdout) 
-  	console.log('DB Snapshot Reset Complete');
-	if (this.originalListener) { this.originalListener.startTestRun(testRun, info); }
-	}
-  console.log("sudo lxc-attach -n \"$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)\" -- mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql");
-  exec("sudo lxc-attach -n \"$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)\" -- mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql && echo OK || echo Failed", puts);
-  
+  if (this.originalListener) { this.originalListener.startTestRun(testRun, info); }
   // Base
 };
 
@@ -278,3 +273,8 @@ var logOnError = function logOnError (name, status, step, /*null*/ message) {
   message = '[FAIL] ' + (name || '') + (' ' + (step.step || '')) + ' '+ step.name;
   console.log(message);
 };
+
+}
+console.log("sudo lxc-attach -n \"$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)\" -- mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql");
+exec("sudo lxc-attach -n \"$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)\" -- mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql && echo OK || echo Failed", puts);
+
