@@ -74,7 +74,7 @@ Listener.prototype.startTestRun = function(testRun, info) {
 	if (this.originalListener) { this.originalListener.startTestRun(testRun, info); }
 	}
   console.log("mysql --user=root --password=CiPassword --host=slatwalldb -v -v -v slatwalldb < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql");
-  exec("mysql --user=root --password=CiPassword --host=slatwalldb -v -v -v slatwalldb < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql && echo OK || echo Failed", puts);
+  exec("sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)" -- mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql && echo OK || echo Failed", puts);
   
   // Base
 };
