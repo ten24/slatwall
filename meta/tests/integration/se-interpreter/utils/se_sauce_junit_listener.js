@@ -67,13 +67,15 @@ Listener.prototype.startTestRun = function(testRun, info) {
   console.log('DB Snapshot Reset Started');
   var sys = require('sys')
   var exec = require('child_process').exec;
-  function puts(error, stdout, stderr) { sys.puts(stdout) }
+  function puts(error, stdout, stderr) { 
+  	sys.puts(stdout) 
+  	console.log('DB Snapshot Reset Complete');
+	if (this.originalListener) { this.originalListener.startTestRun(testRun, info); }
+	}
   console.log("mysql --user=root --password=CiPassword --host=slatwalldb < ./dbsnapshot/slatwall_test_starting_point_snapshot.sql");
-  exec("mysql --user=root --password=CiPassword --host=slatwalldb < ./dbsnapshot/slatwall_test_starting_point_snapshot.sql", puts);
-  console.log('DB Snapshot Reset Complete');
-
+  exec("mysql --user=root --password=CiPassword --host=slatwalldb < ./dbsnapshot/slatwall_test_starting_point_snapshot.sql  && echo OK || echo Failed", puts);
+  
   // Base
-  if (this.originalListener) { this.originalListener.startTestRun(testRun, info); }
 };
 
 Listener.prototype.endTestRun = function(testRun, info) {
