@@ -59,7 +59,7 @@ class SWWorkflowTrigger{
 					scope.finished = false;
 					scope.workflowTriggers.selectedTrigger = undefined;
 
-                    var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(scope.workflowTrigger.data.workflow.data.workflowObject);
+                    var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(scope.workflowTrigger.data.workflow.data.workflowObject, true);
 					filterPropertiesPromise.then(function(value){
 						scope.filterPropertiesList = {
 							baseEntityName:		scope.workflowTrigger.data.workflow.data.workflowObject,
@@ -81,7 +81,7 @@ class SWWorkflowTrigger{
 
                     if(!workflowTrigger.data.workflow.data.workflowTasks || !workflowTrigger.data.workflow.data.workflowTasks.length) {
                         var alert = alertService.newAlert();
-                        alert.msg =  "You don't have any  Task yet!";
+                        alert.msg =  "You don't have any Task yet!";
                         alert.type = "error";
                         alert.fade = true;
                         alertService.addAlert(alert);
