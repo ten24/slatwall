@@ -18,13 +18,6 @@ Example usage:
   output from happening, just like the --silent command.
 */
 // Snapshot reset
-console.log('DB Snapshot Restore Started');
-var sys = require('sys')
-var exec = require('child_process').exec;
-function puts(error, stdout, stderr) { 
-  sys.puts(stdout) 
-  console.log('DB Snapshot Reset Complete');
-	
 
 var https = require('https');
 var util = require('util');
@@ -55,6 +48,13 @@ function Listener(testRun, params, interpreter_module) {
   this._name = '['+ testRun.name +'] ';
 };
 
+console.log('DB Snapshot Restore Started');
+var sys = require('sys')
+var exec = require('child_process').exec;
+
+function puts(error, stdout, stderr) { 
+  sys.puts(stdout) 
+  console.log('DB Snapshot Reset Complete');
 // Junit
 Listener.instances = 0;
 
@@ -73,6 +73,10 @@ Listener.prototype.startTestRun = function(testRun, info) {
   if (this.originalListener) { this.originalListener.startTestRun(testRun, info); }
   // Base
 };
+}
+console.log("sudo lxc-attach -n \"$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)\" -- mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql");
+exec("sudo lxc-attach -n \"$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)\" -- mysql --user=root --password=CiPassword -v -v -v Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql && echo OK || echo Failed", puts);
+
 
 Listener.prototype.endTestRun = function(testRun, info) {
   // Sauce
@@ -274,7 +278,4 @@ var logOnError = function logOnError (name, status, step, /*null*/ message) {
   console.log(message);
 };
 
-}
-console.log("sudo lxc-attach -n \"$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)\" -- mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql");
-exec("sudo lxc-attach -n \"$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)\" -- mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql && echo OK || echo Failed", puts);
 
