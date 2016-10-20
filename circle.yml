@@ -67,6 +67,7 @@ test:
     - sudo mkdir /home/ubuntu/slatwall/dbsnapshot
     - sudo chmod -R 777 /home/ubuntu/slatwall/dbsnapshot
     - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)" -- mysqldump --add-drop-table --skip-comments --disable-keys --user=root --password=CiPassword Slatwall > /home/ubuntu/slatwall/dbsnapshot/slatwall_test_starting_point_snapshot.sql && echo OK || echo Failed
+    - sudo chown -R ubuntu /home/ubuntu/slatwall/dbsnapshot 
       # Run Sauce Labs end-to_end Tests (The test will be allocated in a JSON file)
     
   
