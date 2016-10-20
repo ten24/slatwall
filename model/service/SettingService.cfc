@@ -246,7 +246,7 @@ component extends="HibachiService" output="false" accessors="true" {
             siteMissingImagePath = {fieldType="text", defaultValue="/assets/images/missingimage.jpg"},
             siteRecaptchaSiteKey = {fieldType="text"},
 			siteRecaptchaSecretKey = {fieldType="text"},
-			siteRecaptchaProtectedEvents = {fieldType="multiselect", defaultValue="beforeFormProcess_addFormResponse,beforeProductReviewSave"},
+			siteRecaptchaProtectedEvents = {fieldType="multiselect", defaultValue=""},
 			
 			// Shipping Method
 			shippingMethodQualifiedRateSelection = {fieldType="select", defaultValue="lowest"},
