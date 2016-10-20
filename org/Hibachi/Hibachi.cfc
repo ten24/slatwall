@@ -575,6 +575,9 @@ component extends="FW1.framework" {
 					if(!coreBF.containsBean("hibachiJWT")){
 						coreBF.declareBean("hibachiJWT", "#variables.framework.applicationKey#.org.Hibachi.HibachiJWT",false);
 					}
+					if(!coreBF.containsBean("hibachiRecaptcha")){
+						coreBF.declareBean("hibachiRecaptcha", "#variables.framework.applicationKey#.org.Hibachi.hibachiRecaptcha",false);
+					}
 					
 					
 					// Setup the custom bean factory
