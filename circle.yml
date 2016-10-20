@@ -64,10 +64,8 @@ test:
     - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwallweb_1)" -- ant -f /var/www/meta/tests/build.xml buildDocsAndTests
     
     # Create a Backup Snapshot of the DB
-    - sudo mkdir /home/ubuntu/slatwall/dbsnapshot
-    - sudo chmod -R 777 /home/ubuntu/slatwall/dbsnapshot
-    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)" -- mysqldump --add-drop-table --skip-comments --disable-keys --user=root --password=CiPassword Slatwall > /home/ubuntu/slatwall/dbsnapshot/slatwall_test_starting_point_snapshot.sql && echo OK || echo Failed
-    - sudo chown -R ubuntu /home/ubuntu/slatwall/dbsnapshot 
+    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)" -- mysqldump --add-drop-table --skip-comments --disable-keys --user=root --password=CiPassword Slatwall > /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql && echo OK || echo Failed
+    - sudo chown ubuntu /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql 
       # Run Sauce Labs end-to_end Tests (The test will be allocated in a JSON file)
     
   
