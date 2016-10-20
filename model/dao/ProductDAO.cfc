@@ -483,6 +483,12 @@ Notes:
 			WHERE productTypeID = <cfqueryparam value="#arguments.fromProductTypeID#" cfsqltype="cf_sql_varchar" >
 		</cfquery>
 	</cffunction>
-	
+
+	<cffunction name="getFirstScheduledSku" hint="Return the event sku with the earliest startDateTime">
+		<cfargument name="productScheduleID" type="string" required ="true">
+		
+		<cfreturn ormExecuteQuery("FROM #getApplicationKey()#Sku s WHERE s.productSchedule.productScheduleID = :productScheduleID ORDER BY s.eventStartDateTime ASC", {productScheduleID=arguments.productScheduleID},false, {maxresults=1})[1] />
+	</cffunction>
+		
 </cfcomponent>
 
