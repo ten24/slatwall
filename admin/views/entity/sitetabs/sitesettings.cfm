@@ -57,5 +57,6 @@ Notes:
 		<swa:SlatwallSetting settingName="siteMissingImagePath" settingObject="#rc.site#" />
 		<swa:SlatwallSetting settingName="siteRecaptchaSiteKey" settingObject="#rc.site#" />
 		<swa:SlatwallSetting settingName="siteRecaptchaSecretKey" settingObject="#rc.site#" />
+		<swa:SlatwallSetting settingName="siteRecaptchaProtectedEvents" settingObject="#rc.site#" />
 	</swa:SlatwallSettingTable>
 </cfoutput>

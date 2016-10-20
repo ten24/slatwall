@@ -47,6 +47,14 @@ component output="false" update="true" extends="HibachiService" {
 	}*/
 	variables.triggerEventRBKeyHashMap = {};
 	
+	public any function getRegisteredEventHandlers(){
+		return variables.registeredEventHandlers;
+	}
+	
+	public any function getRegisteredEvents(){
+		return variables.registeredEvents;
+	}
+	
 	public any function getEventHandler( required string objectFullname ) {
 		if(!structKeyExists(variables.registeredEventHandlers, arguments.objectFullname)) {
 			try {
@@ -135,11 +143,26 @@ component output="false" update="true" extends="HibachiService" {
 		}
 		
 		if(!isNull(object)) {
+			var functions = [];
 			var objectMetaData = getMetaData(object);
-			if(structKeyExists(objectMetaData, "functions")) {
-				for(var f=1; f<=arrayLen(objectMetaData.functions); f++) {
-					if(!structKeyExists(objectMetaData.functions[f], "access") || objectMetaData.functions[f].access == "public") {
-						registerEvent(eventName=objectMetaData.functions[f].name, object=object, objectFullname=objectFullname);
+			if(structKeyExists(objectMetaData, "functions")){
+				for(var functionItem in objectMetaData.functions){
+					arrayAppend(functions,functionItem);
+				}
+			}
+			
+			while(structKeyExists(objectMetaData,'extends')){
+				objectMetaData = objectMetaData.extends;
+				if(structKeyExists(objectMetaData, "functions")){
+					for(var functionItem in objectMetaData.functions){
+						arrayAppend(functions,functionItem);
+					}
+				}
+			}
+			if(arrayLen(functions)) {
+				for(var f=1; f<=arrayLen(functions); f++) {
+					if(!structKeyExists(functions[f], "access") || functions[f].access == "public") {
+						registerEvent(eventName=functions[f].name, object=object, objectFullname=objectFullname);
 					}
 				}	
 			}
@@ -166,18 +189,17 @@ component output="false" update="true" extends="HibachiService" {
 		
 	}
 	
-	public any function getEventNameOptions() {
-		var opArr = [];
-		arrayAppend(opArr, {name="#getHibachiScope().rbKey('define.select')#", value=""});
-		arrayAppend(opArr, {name="#getHibachiScope().rbKey('event.onEvent')# | onEvent", value="onEvent"});
-		arrayAppend(opArr, {name="#getHibachiScope().rbKey('event.onApplicationSetup')# | onApplicationSetup", value="onApplicationSetup"});
-		arrayAppend(opArr, {name="#getHibachiScope().rbKey('event.onApplicationFullUpdate')# | onApplicationFullUpdate", value="onApplicationFullUpdate"});
-		arrayAppend(opArr, {name="#getHibachiScope().rbKey('event.onApplicationBootstrapRequestStart')# | onApplicationBootstrapRequestStart", value="onApplicationBootstrapRequestStart"});
-		arrayAppend(opArr, {name="#getHibachiScope().rbKey('event.onApplicationRequestStart')# | onApplicationRequestStart", value="onApplicationRequestStart"});
-		arrayAppend(opArr, {name="#getHibachiScope().rbKey('event.onApplicationRequestEnd')# | onApplicationRequestEnd", value="onApplicationRequestEnd"});
-		arrayAppend(opArr, {name="#getHibachiScope().rbKey('event.onSessionAccountLogin')# | onSessionAccountLogin", value="onSessionAccountLogin"});
-		arrayAppend(opArr, {name="#getHibachiScope().rbKey('event.onSessionAccountLogout')# | onSessionAccountLogout", value="onSessionAccountLogout"});
+	public any function getEntityEventNameHashMap(){
+		var entityEventNameHashMap = {};
 		
+		var entityEventNameOptions = getEntityEventNameOptions();
+		for(entityEventNameOption in entityEventNameOptions){
+			entityEventNameHashMap[entityEventNameOption.name] = entityEventNameOption.value;
+		}
+	}
+	
+	public any function getEntityEventNameOptions(){
+		var opArr = [];
 		var emd = getEntitiesMetaData();
 		var entityNameArr = listToArray(structKeyList(emd));
 		arraySort(entityNameArr, "text");
@@ -204,6 +226,26 @@ component output="false" update="true" extends="HibachiService" {
 					arrayAppend(opArr, {name="#getHibachiScope().rbKey('entity.#entityName#')# - #getHibachiScope().rbKey('define.after')# #getHibachiScope().rbKey('entity.#entityName#.process.#thisContext#')# #getHibachiScope().rbKey('define.failure')# | after#entityName#Process_#thisContext#Failure", value="after#entityName#Process_#thisContext#Failure", entityName=entityName});
 				}
 			}
+		}
+		return opArr;
+	}
+	
+	
+	public any function getEventNameOptions() {
+		var opArr = [];
+		arrayAppend(opArr, {name="#getHibachiScope().rbKey('define.select')#", value=""});
+		arrayAppend(opArr, {name="#getHibachiScope().rbKey('event.onEvent')# | onEvent", value="onEvent"});
+		arrayAppend(opArr, {name="#getHibachiScope().rbKey('event.onApplicationSetup')# | onApplicationSetup", value="onApplicationSetup"});
+		arrayAppend(opArr, {name="#getHibachiScope().rbKey('event.onApplicationFullUpdate')# | onApplicationFullUpdate", value="onApplicationFullUpdate"});
+		arrayAppend(opArr, {name="#getHibachiScope().rbKey('event.onApplicationBootstrapRequestStart')# | onApplicationBootstrapRequestStart", value="onApplicationBootstrapRequestStart"});
+		arrayAppend(opArr, {name="#getHibachiScope().rbKey('event.onApplicationRequestStart')# | onApplicationRequestStart", value="onApplicationRequestStart"});
+		arrayAppend(opArr, {name="#getHibachiScope().rbKey('event.onApplicationRequestEnd')# | onApplicationRequestEnd", value="onApplicationRequestEnd"});
+		arrayAppend(opArr, {name="#getHibachiScope().rbKey('event.onSessionAccountLogin')# | onSessionAccountLogin", value="onSessionAccountLogin"});
+		arrayAppend(opArr, {name="#getHibachiScope().rbKey('event.onSessionAccountLogout')# | onSessionAccountLogout", value="onSessionAccountLogout"});
+		
+		var entityEventNameOptions = getEntityEventNameOptions();
+		for(var entityEventNameOption in entityEventNameOptions){
+			arrayAppend(opArr,entityEventNameOption);
 		}
 		
 		return opArr;

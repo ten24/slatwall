@@ -56,6 +56,7 @@ Notes:
 		<swa:SlatwallSetting settingName="siteOrderOrigin" />
 		<swa:SlatwallSetting settingName="siteRecaptchaSiteKey" />
 		<swa:SlatwallSetting settingName="siteRecaptchaSecretKey" />
+		<swa:SlatwallSetting settingName="siteRecaptchaProtectedEvents" />
 	</swa:SlatwallSettingTable>
 </cfoutput>
 

@@ -46,20 +46,15 @@
 Notes:
 
 --->
-<cfparam name="attributes.site" type="string" default=""/>
-<cfparam name="attributes.siteKey" type="any" default=""/>
+<cfparam name="attributes.site" type="any" default="#request.context.fw.getHibachiScope().getSite()#"/>
 <cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
 <cfif thisTag.executionMode is "start">
 	<cfset recatchaSiteKey = ""/>
 	
-	<cfif len(attributes.siteKey)>
-		<cfset recaptchaSiteKey = attributes.siteKey/>
+	<cfif !isNull(attributes.site)>
+		<cfset recaptchaSiteKey = attributes.site.setting('siteRecaptchaSiteKey')/>
 	<cfelse>
-		<cfif !isSimpleValue(attributes.site)>
-			<cfset recaptchaSiteKey = attributes.site.setting('siteRecaptchaSiteKey')/>
-		<cfelse>
-			<cfset recaptchaSiteKey = attributes.hibachiScope.setting('siteRecaptchaSiteKey')/>
-		</cfif>
+		<cfset recaptchaSiteKey = attributes.hibachiScope.setting('siteRecaptchaSiteKey')/>
 	</cfif>
 	
 	<cfoutput>

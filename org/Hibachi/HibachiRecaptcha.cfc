@@ -8,8 +8,14 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
   property name="remoteip";
 	
   public boolean function verifyResponse() {
-  		if(!isNull(getGRecaptchaResponse()) && !isNull(getSecretKey())){
-  			try{
+  		if(isNull(getSecretKey) && !isNull(getHibachiScope().getSite())){
+  			setSecretKey(getHibachiScope().getSite().setting('siteRecaptchaSecretKey'));
+  		}else{
+  			setSecretKey(getHibachiScope().setting('siteRecaptchaSecretKey'));
+  		}
+  	
+		if(!isNull(getGRecaptchaResponse()) && !isNull(getSecretKey())){
+			try{
 	  			var httpRequest = new http();
 	  			httpRequest.setMethod("post"); 
 			    httpRequest.setCharset("utf-8"); 
@@ -27,8 +33,8 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		    	return false;
 		    }
 		     
-  		}
-  		
-  		return false;
+		}
+		
+		return false;
   }
 }

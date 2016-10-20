@@ -112,6 +112,7 @@ component  extends="HibachiService" accessors="true" {
 
 	public any function processForm_addFormResponse(required any form, required any processObject ){
 		var formResponse = processObject.getNewFormResponse();
+		formResponse.setForm(arguments.form);
 		formResponse = this.saveFormResponse(formResponse);
 		return formResponse;
 	}
