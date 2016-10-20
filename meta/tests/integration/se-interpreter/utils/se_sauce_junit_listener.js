@@ -74,8 +74,8 @@ Listener.prototype.startTestRun = function(testRun, info) {
 	if (this.originalListener) { this.originalListener.startTestRun(testRun, info); }
 	}
   exec("ls -la", puts);
-  console.log("mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql");
-  exec("mysql --user=root --password=CiPassword --host=slatwalldb -v -v -v Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql && echo OK || echo Failed", puts);
+  console.log("mysql --user=root --password=CiPassword --host=slatwalldb -v -v -v slatwalldb < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql");
+  exec("mysql --user=root --password=CiPassword --host=slatwalldb -v -v -v slatwalldb < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql && echo OK || echo Failed", puts);
   
   // Base
 };
