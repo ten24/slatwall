@@ -236,12 +236,11 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
     }
 
 	public any function getSkuByID(required string skuID) {
-		var skus = getSkus();
-		for(var i = 1; i <= arrayLen(skus); i++) {
-			if(skus[i].getSkuID() == arguments.skuID) {
-				return skus[i];
-			}
-		}
+		var skuSmartList = getService("ProductService").getSkuSmartList();
+		skuSmartList.addFilter('skuID', arguments.skuID);
+		
+		return skuSmartlist.getFirstRecord();
+		
 	}
 
 	//TODO: unused function
@@ -528,7 +527,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			} else if (arrayLen(skus) < 1) {
 				throw("No Skus are found for these selected options: #arguments.selectedOptions#");
 			}
-		} else if (arrayLen(getSkus()) == 1) {
+		} else if (this.getSkusCount() == 1) {
 			return getSkus()[1];
 		} else {
 			throw("You must submit a comma seperated list of selectOptions to find an indvidual sku in this product");
@@ -1020,7 +1019,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public any function getSalePrice() {
 		if( structKeyExists(variables,"defaultSku") ) {
 			return getDefaultSku().getSalePrice();
-		} else if (arrayLen(getSkus())) {
+		} else if (this.getSkusCount()) {
 			return getSkus()[1].getSalePrice();
 		}
 		return 0;
@@ -1029,7 +1028,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public any function getSalePriceByCurrencyCode(required string currencyCode) {
 		if( structKeyExists(variables,"defaultSku") ) {
 			return getDefaultSku().getSalePriceByCurrencyCode(arguments.currencyCode);
-		} else if (arrayLen(getSkus())) {
+		} else if (this.getSkusCount()) {
 			return getSkus()[1].getSalePriceByCurrencyCode(arguments.currencyCode);
 		}
 		return 0;
@@ -1169,7 +1168,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public void function addSku(required any sku) {
 		//if sku code is null then create one automatically
 		if(this.getNewFlag() && isNull(arguments.sku.getSkuCode())){
-			var skusCount = arraylen(this.getSkus());
+			var skusCount = this.getSkusCount();
 			var skuCode = this.getProductCode() & "-#skusCount + 1#";
 			arguments.sku.setSkuCode(skuCode);
 		}
