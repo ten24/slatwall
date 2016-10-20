@@ -437,7 +437,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			case "taskSuccessEmailTemplate":
 				return getEmailService().getEmailTemplateOptions( "Task" );
 			case "siteRecaptchaProtectedEvents":
-				return getHibachiEventService().getEntityEventNameOptions();
+				return getHibachiEventService().getEntityEventNameOptions('before');
 		}
 
 		if(structKeyExists(getSettingMetaData(arguments.settingName), "valueOptions")) {
