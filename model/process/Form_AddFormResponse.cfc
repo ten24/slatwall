@@ -48,7 +48,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	 //data properties
 	 property name="newFormResponse" cfc="FormResponse" fieldtype="many-to-one" persistent="false" fkcolumn="formID";
-	 property name="gRecaptchaResponse" type="string";
 
 	public any function getNewFormResponse(){
 		if(!structKeyExists(variables, "newFormResponse")){
@@ -62,41 +61,21 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	public any function populate(required struct data){
 		
 		this = super.populate(arguments.data);
-		if(structKeyExists(arguments.data,'g-recaptcha-response')){
-			setgRecaptchaResponse(arguments.data['g-recaptcha-response']);
-		}
 		
-		if(this.verifyRecaptcha()){
-			for(var question in this.getForm().getFormQuestions()){
-				if(structKeyExists(data, question.getAttributeCode())){
-					//create and store the new attribute value
-					var newAttributeValue = getService("attributeService").newAttributeValue();
-					newAttributeValue.setAttributeValue(evaluate("data." & question.getAttributeCode()));
-					newAttributeValue.setAttribute(question);
-					newAttributeValue.setFormResponse(this.getNewFormResponse());
-					newAttributeValue.setAttributeValueType(question.getAttributeInputType());
-					getService("attributeService").saveAttributeValue(newAttributeValue);
-				}
+		
+		for(var question in this.getForm().getFormQuestions()){
+			if(structKeyExists(data, question.getAttributeCode())){
+				//create and store the new attribute value
+				var newAttributeValue = getService("attributeService").newAttributeValue();
+				newAttributeValue.setAttributeValue(evaluate("data." & question.getAttributeCode()));
+				newAttributeValue.setAttribute(question);
+				newAttributeValue.setFormResponse(this.getNewFormResponse());
+				newAttributeValue.setAttributeValueType(question.getAttributeInputType());
+				getService("attributeService").saveAttributeValue(newAttributeValue);
 			}
 		}
 
 		return this;
 	}
 	
-	public boolean function verifyRecaptcha(){
-		if(!structKeyExists(variables,'verifiedRecaptcha')){
-			//g-recaptcha-response
-			var hibachiRecaptcha = getTransient('hibachiRecaptcha');
-			hibachiRecaptcha.setGRecaptchaResponse(getGRecaptchaResponse());
-			var currentSite = getHibachiScope().getCurrentRequestSite();
-			if(!isNull(currentSite)){
-				hibachiRecaptcha.setSecretKey(currentSite.setting('siteRecaptchaSecretKey'));
-			}else{
-				hibachiRecaptcha.setSecretKey(getHibachiScope().setting('siteRecaptchaSecretKey'));
-			}
-			variables.verifiedRecaptcha = hibachiRecaptcha.verifyResponse();
-		}
-		
-		return variables.verifiedRecaptcha;
-	}
 }

@@ -1,5 +1,5 @@
 {
 	"properties":{
-		"gRecaptchaResponse":	[{"required":true,"method":"verifyRecaptcha"}]
+
 	}
 }

@@ -73,9 +73,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	public void function addFormResponse(required struct rc){
     	var formToProcess = getFormService().getForm(rc.formResponse.formID);
-    	var processObject = formToProcess.getProcessObject("AddFormResponse");
-    	processObject.populate(rc);
-    	formToProcess = getFormService().process(formToProcess,processObject,"addFormResponse");
+    	formToProcess = getFormService().process(formToProcess,arguments.rc,"addFormResponse");
     	getHibachiScope().addActionResult( "public:form.addFormResponse", formToProcess.hasErrors() );
 
     }
