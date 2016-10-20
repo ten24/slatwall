@@ -73,7 +73,6 @@ Listener.prototype.startTestRun = function(testRun, info) {
   	console.log('DB Snapshot Reset Complete');
 	if (this.originalListener) { this.originalListener.startTestRun(testRun, info); }
 	}
-  exec("ls -la", puts);
   console.log("mysql --user=root --password=CiPassword --host=slatwalldb -v -v -v slatwalldb < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql");
   exec("mysql --user=root --password=CiPassword --host=slatwalldb -v -v -v slatwalldb < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql && echo OK || echo Failed", puts);
   
