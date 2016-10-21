@@ -1,0 +1,81 @@
+{  
+   "steps":[
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabskus > a:nth-child(5)"
+         }
+      },
+      { 
+         "__comment":"Fields required",  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentityprocessproduct_addskubundle > div.row.s-body-nav > nav > div:nth-child(2) > div > div:nth-child(2) > button"
+         }
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"skuCode"
+         },
+         "text":"${merchandise_product_sku_bundle_code}"
+      },
+      {  
+         "__comment":"Invalid price",
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"price"
+         },
+         "text":"fff"
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentityprocessproduct_addskubundle > div.row.s-body-nav > nav > div:nth-child(2) > div > div:nth-child(2) > button"
+         }
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"price"
+         },
+         "text":"${merchandise_product_sku_bundle_price}"
+      },
+      {  
+         "__comment":"Skus required", 
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentityprocessproduct_addskubundle > div.row.s-body-nav > nav > div:nth-child(2) > div > div:nth-child(2) > button"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-multiselect > tbody > tr:nth-child(1) > td:nth-child(1) > a"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-multiselect > tbody > tr:nth-child(2) > td:nth-child(1) > a"
+         }
+      },
+      {  
+         "__comment":"All set", 
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentityprocessproduct_addskubundle > div.row.s-body-nav > nav > div:nth-child(2) > div > div:nth-child(2) > button"
+         }
+      }
+   ]
+}

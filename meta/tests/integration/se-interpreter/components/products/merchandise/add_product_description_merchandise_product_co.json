@@ -1,0 +1,54 @@
+{  
+   "steps":[
+      {  
+         "__comment":"Enable edit",
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#j-main-content > div > div.row.s-body-nav > nav > div:nth-child(2) > div > div:nth-child(3) > a.adminentityeditproduct.btn.btn-default"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(1) > a"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(6) > a"
+         }
+      },
+      {  
+         "__comment":"splits the css selector into small addressable path chunks. Chrome was having issues when waiting on the full path directly",
+         "type":"splitPathAndWait",
+         "locator":{  
+            "type":"css selector",
+            "value":"#cke_productDescription > div.cke_inner.cke_reset > div.cke_contents.cke_reset > iframe.cke_wysiwyg_frame.cke_reset > body > p"
+         }
+      },
+      
+      {
+         "type": "switchToFrame",
+         "identifier": "cke_wysiwyg_frame cke_reset"
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"css selector",
+            "value":"body > p"
+         },
+         "text":"${merchandise_product_description}"
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentitysaveproduct > div.row.s-body-nav > nav > div:nth-child(2) > div > div:nth-child(3) > button"
+         }
+      }
+   ]
+}

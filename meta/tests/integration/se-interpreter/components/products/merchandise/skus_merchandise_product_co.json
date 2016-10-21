@@ -1,0 +1,120 @@
+{  
+   "steps":[
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(1) > a"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(2) > a"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForTextPresent",
+         "text":"${merchandise_product_code}-1"
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForTextPresent",
+         "text":"$${merchandise_product_list_price}.00"
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForTextPresent",
+         "text":"$${merchandise_product_price}.00"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/products/merchandise/add_sku_merchandise_product_co.json"
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(1) > a"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(2) > a"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"2",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(2) > a > div > h4 > span.badge"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForTextPresent",
+         "text":"${merchandise_product_sku_code}"
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForTextPresent",
+         "text":"$${merchandise_product_sku_price}.00"
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForTextPresent",
+         "text":"$${merchandise_product_sku_list_price}.00"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/products/merchandise/add_sku_bundle_merchandise_product_co.json"
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(1) > a"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(2) > a"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"3",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(2) > a > div > h4 > span.badge"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForTextPresent",
+         "text":"${merchandise_product_sku_bundle_code}"
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForTextPresent",
+         "text":"$${merchandise_product_sku_bundle_price}.00"
+      },
+      {  
+         "__comment":"close sku tag",
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(2) > a"
+         }
+      }
+   ]
+}

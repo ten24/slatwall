@@ -1,0 +1,33 @@
+{  
+   "steps":[
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(14) > a"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabComments > a"
+         }
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentitysavecomment > div > div > div.modal-body > div > div > div > textarea"
+         },
+         "text":"${merchandise_product_comments}"
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentitysavecomment > div > div > div.modal-footer > div > button.btn.btn-success"
+         }
+      }
+   ]
+}

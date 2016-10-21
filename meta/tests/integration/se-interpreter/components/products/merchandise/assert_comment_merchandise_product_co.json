@@ -1,0 +1,43 @@
+{  
+   "steps":[
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(1) > a"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(14) > a"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"1",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(14) > a > div > h4 > span.badge"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"${merchandise_product_comments}",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabComments > table > tbody > tr > td.primary"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(14) > a"
+         }
+      }
+   ]
+}

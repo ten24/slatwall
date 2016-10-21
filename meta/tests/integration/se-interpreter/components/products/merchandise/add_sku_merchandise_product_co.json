@@ -1,0 +1,83 @@
+{  
+   "steps":[
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabskus > a.adminentitypreprocessproduct.btn.btn-primary.modalload"
+         }
+      },
+      {  
+         "__comment":"Sku field required",
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentityprocessproduct_addsku > div > div > div.modal-footer > button"
+         }
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"newSku.skuName"
+         },
+         "text":"${merchandise_product_sku_name}"
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"newSku.skuCode"
+         },
+         "text":"${merchandise_product_sku_code}"
+      },
+      {  
+         "__comment":"Checking validtations for price",
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"newSku.price"
+         },
+         "text":"ffff"
+      },
+      {  
+         "__comment":"Checking validtations for list price",
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"newSku.listPrice"
+         },
+         "text":"aaaa"
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentityprocessproduct_addsku > div > div > div.modal-footer > button"
+         }
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"newSku.price"
+         },
+         "text":"${merchandise_product_sku_price}"
+      },
+      {  
+         "type":"setElementText",
+         "locator":{  
+            "type":"name",
+            "value":"newSku.listPrice"
+         },
+         "text":"${merchandise_product_sku_list_price}"
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentityprocessproduct_addsku > div > div > div.modal-footer > button"
+         }
+      }
+   ]
+}

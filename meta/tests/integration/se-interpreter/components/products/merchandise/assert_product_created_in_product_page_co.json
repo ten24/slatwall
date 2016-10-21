@@ -1,0 +1,70 @@
+{  
+   "steps":[
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#j-main-content > div > div.row.s-body-nav > nav > div:nth-child(2) > div > div:nth-child(1) > a"
+         }
+      },
+      {  
+         "type":"store",
+         "text":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(1) >",
+         "variable":"path"
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"${merchandise_product_type}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path} td:nth-child(1)"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"Brand name 1",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path} td:nth-child(2)"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"${merchandise_product_name}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path} td:nth-child(3)"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"${merchandise_product_code}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path} td:nth-child(4)"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"$${merchandise_product_price}.00",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path} td:nth-child(5)"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"${merchandise_product_type}",
+         "locator":{  
+            "type":"css selector",
+            "value":"${path} td:nth-child(6)"
+         }
+      }         
+   ]
+}

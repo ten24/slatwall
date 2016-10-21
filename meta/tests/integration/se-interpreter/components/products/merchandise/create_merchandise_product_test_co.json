@@ -14,6 +14,18 @@
       {  
          "type":"include",
          "rel_dir":"/components/products/merchandise/assert_merchandise_product_created_co.json"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/products/merchandise/skus_merchandise_product_co.json"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/products/merchandise/add_comment_merchandise_product_co.json"
+      },
+      {
+         "type":"include",
+         "rel_dir":"/components/products/merchandise/assert_comment_merchandise_product_co.json"
       }
    ],
    "data":{  

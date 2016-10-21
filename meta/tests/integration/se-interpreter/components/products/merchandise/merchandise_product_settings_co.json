@@ -24,6 +24,46 @@
          "type":"store",
          "text":"Merchandise",
          "variable":"merchandise_product_type"
+      },
+      {  
+         "script":"return Math.floor(Math.random()*100000)",
+         "variable":"merchandise_product_sku_code",
+         "type":"storeEval"
+      },
+      {  
+         "type":"store",
+         "text":"Merchandise sku name #1",
+         "variable":"merchandise_product_sku_name"
+      },
+      {  
+         "script":"return Math.floor(Math.random()*100)",
+         "variable":"merchandise_product_sku_price",
+         "type":"storeEval"
+      },
+      {  
+         "script":"return Math.floor(Math.random()*100)",
+         "variable":"merchandise_product_sku_list_price",
+         "type":"storeEval"
+      },
+      {  
+         "script":"return Math.floor(Math.random()*100000)",
+         "variable":"merchandise_product_sku_bundle_code",
+         "type":"storeEval"
+      },
+      {  
+         "script":"return Math.floor(Math.random()*100)",
+         "variable":"merchandise_product_sku_bundle_price",
+         "type":"storeEval"
+      },
+      {  
+         "type":"store",
+         "text":"Description comment for mercahdise product",
+         "variable":"merchandise_product_description"
+      },
+      {  
+         "type":"store",
+         "text":"Comments for mercahdise product",
+         "variable":"merchandise_product_comments"
       }
    ]
 }

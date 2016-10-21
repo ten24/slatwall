@@ -54,6 +54,11 @@ module.exports = {
 			      array_of_assertion_steps.push({"type":"verifyElementValue","locator":step['locator'],"value":step['text']})
 				  array_of_assertion_steps.push({"type":"assertElementValue","locator":step['locator'],"value":step['text']})
 			      break;
+			case "waitForTextPresent":
+			      array_of_assertion_steps.push({"type":step['assertion_type'],"text":step['text']});
+			      array_of_assertion_steps.push({"type":"verifyTextPresent","text":step['text']})
+				  array_of_assertion_steps.push({"type":"assertTextPresent","text":step['text']})
+			      break;
 		}
 		return array_of_assertion_steps
 	},
