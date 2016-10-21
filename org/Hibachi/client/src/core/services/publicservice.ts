@@ -56,7 +56,7 @@ class PublicService {
         this.accountService = accountService;
         this.requestService = requestService;
         this.appConfig = appConfig;
-        this.baseActionPath = this.appConfig.baseURL+"index.cfm/api/scope/"; //default path
+        this.baseActionPath = this.appConfig.baseURL+"/index.cfm/api/scope/"; //default path
         this.confirmationUrl = "/order-confirmation";
         this.$http = $http;
         this.$location = $location;
