@@ -60,7 +60,8 @@ Notes:
 								   backAction="admin:entity.detailLocation" 
 								   backQueryString="locationID=#rc.location.getLocationID()#"
 								   cancelAction="admin:entity.detailLocation"
-								   cancelQueryString="locationID=#rc.location.getLocationID()#">
+								   cancelQueryString="locationID=#rc.location.getLocationID()#"
+								   deleteQueryString="sRedirectAction=entity.detaillocation&locationID=#rc.location.getLocationID()#">
 								   	   
 		</hb:HibachiEntityActionBar>
 			

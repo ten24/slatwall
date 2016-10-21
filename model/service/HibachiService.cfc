@@ -144,9 +144,9 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 		return getEntityObject( arguments.entityName ).getAttributesProperties();
 	}
 	
-	public any function getPropertiesWithAttributesByEntityName(required string entityName){
+	public any function getPropertiesWithAttributesByEntityName(required string entityName, boolean includeNonPersistent = false){
 		var entityObject = getEntityObject( arguments.entityName );
-		var properties = entityObject.getFilterProperties();
+		var properties = entityObject.getFilterProperties("","", includeNonPersistent);
 		
 		return properties;
 	}

@@ -941,12 +941,19 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return defaultProperties;
 	}
 	
-	public any function getFilterProperties(string includesList = "", string excludesList = ""){
+	public any function getFilterProperties(string includesList = "", string excludesList = "", includeNonPersistent = false){
 		var properties = getProperties();
 		var defaultProperties = [];
+
 		for(var p=1; p<=arrayLen(properties); p++) {
-			if((len(includesList) && ListFind(arguments.includesList,properties[p].name) && !ListFind(arguments.excludesList,properties[p].name)) 
-			|| (!structKeyExists(properties[p], "persistent") || properties[p].persistent)){
+			if((len(includesList) && ListFind(arguments.includesList,properties[p].name) && !ListFind(arguments.excludesList,properties[p].name))
+				||
+				(
+					(!structKeyExists(properties[p], "persistent") || properties[p].persistent)
+					||
+					(includeNonPersistent == true && structKeyExists(properties[p], "persistent") && properties[p].persistent == false && structKeyExists(properties[p], "ormtype"))
+				)
+			){
 				properties[p]['displayPropertyIdentifier'] = getPropertyTitle(properties[p].name);
 				arrayAppend(defaultProperties,properties[p]);	
 			}

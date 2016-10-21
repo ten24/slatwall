@@ -244,7 +244,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// check to make sure that this rate applies to the current orderFulfillment
 				if(!isNull(shippingMethodRate.getShippingIntegration()) && shippingMethodRate.getShippingIntegration().getActiveFlag()){
 					var shippingIntegration = getIntegrationByOrderFulfillmentAndShippingMethodRate(arguments.orderFulfillment,shippingMethodRate);
-					shippingIntegration.getIntegrationCFC("shipping").addEligibleShippingMethodRate(shippingMethodRate);
+					if (!isNull(shippingIntegration)){
+						shippingIntegration.getIntegrationCFC("shipping").addEligibleShippingMethodRate(shippingMethodRate);
+					}
 					if(!isNull(shippingIntegration) && !arrayFind(integrations, shippingIntegration)){
 						arrayAppend(integrations,shippingIntegration);
 					}
