@@ -46,6 +46,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="collectionObject" ormtype="string" hb_formFieldType="select";
 	property name="collectionConfig" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json" hint="json object used to construct the base collection HQL query";
 
+	property name="baseCollectionID" ormtype="string";
 	// Calculated Properties
 
 	// Related Object Properties (many-to-one)
@@ -664,11 +665,55 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 	}
 
+
+	public any function mergeCollectionFilter(required any baseCollection, required any currentCollection) {
+		var totalFilterGroups = arrayLen(currentCollection);
+		for(var i =1; i <= totalFilterGroups; i++){
+			if(!ArrayIsDefined(baseCollection, i)){
+				baseCollection[i] = { "filterGroup" = []};
+			}
+			if(arraylen(baseCollection[i].filterGroup) && arraylen(currentCollection[i].filterGroup)){
+				currentCollection[i].filterGroup[1].logicalOperator = 'AND';
+			}
+			ArrayAppend(baseCollection[i].filterGroup, currentCollection[i].filterGroup, true);
+		}
+		return baseCollection;
+	}
+
+	public void function mergeJoins(required any baseJoins){
+		var currentCollection = getCollectionConfigStruct();
+		if(isNull(currentCollection.joins) || !arraylen(currentCollection.joins)){
+			currentCollection.joins = baseJoins;
+			return;
+		}
+		for(var i = 1; i <= arraylen(baseJoins); i++) {
+			var isFound = false;
+			for (var j = 1; j <= arraylen(currentCollection.joins); j++) {
+				if (currentCollection.joins[j]['associationName'] == baseJoins[i]['associationName']) {
+					isFound = true;
+					break;
+				}
+			}
+			if (!isFound) {
+				arrayAppend(currentCollection.joins, baseJoins[i]);
+			}
+		}
+	}
+
 	public array function getFilterGroupArrayFromAncestors(required any collectionEntity){
 		var collectionConfig = arguments.collectionEntity.getCollectionConfigStruct();
 		var filterGroupArray = [];
 		if(!isnull(collectionConfig.filterGroups) && arraylen(collectionConfig.filterGroups)){
 			filterGroupArray = collectionConfig.filterGroups;
+		}
+
+		if(!isNull(variables.baseCollectionID)){
+			var baseCollection = getService('hibachiService').getCollection(variables.baseCollectionID);
+			var baseCollectionConfig = baseCollection.getCollectionConfigStruct();
+			if(!isnull(baseCollectionConfig.filterGroups) && arraylen(baseCollectionConfig.filterGroups)){
+				filterGroupArray = mergeCollectionFilter(baseCollectionConfig.filterGroups, filterGroupArray);
+				mergeJoins(baseCollectionConfig.joins);
+			}
 		}
 
 		if(!isnull(arguments.collectionEntity.getParentCollection())){
