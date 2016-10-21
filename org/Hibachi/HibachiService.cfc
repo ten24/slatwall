@@ -201,7 +201,7 @@
         * @param fileName File name for export. (default: uuid)
         * @param fileType File type for export. (default: csv)
         * This returns the path and filename of the exported file.
-        */
+        */ 
         public any function export(required any data, string columns, string columnNames, string fileName, string fileType = 'csv', boolean downloadFile=true) {
             if (isArray(data)){
                 arguments.data = transformArrayOfStructsToQuery( data, ListToArray(columnNames));

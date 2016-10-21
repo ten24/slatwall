@@ -115,7 +115,7 @@ var coremodule = angular.module('hibachi.core',[
              }
          };
      });
-
+     //This filter is used to shorten a string by removing the charecter count that is passed to it and ending it with "..."
      $filterProvider.register('truncate',function(){
          return function (input, chars, breakOnWord) {
              if (isNaN(chars)) return input;
@@ -134,6 +134,30 @@ var coremodule = angular.module('hibachi.core',[
                      }
                  }
                  return input + '...';
+             }
+             return input;
+         };
+     });
+     //This filter is used to shorten long string but unlike "truncate", it removes from the start of the string and prepends "..."
+     $filterProvider.register('pretruncate',function(){
+         return function (input, chars, breakOnWord) {
+             if (isNaN(chars)) return input;
+             if (chars <= 0) return '';
+             if (input && input.length > chars) {
+                 input = input.slice('-' + chars);
+                //  input = input.substring(0, chars);
+                 if (!breakOnWord) {
+                     var lastspace = input.lastIndexOf(' ');
+                     //get last space
+                     if (lastspace !== -1) {
+                         input = input.substr(0, lastspace);
+                     }
+                 }else{
+                     while(input.charAt(input.length-1) === ' '){
+                         input = input.substr(0, input.length -1);
+                     }
+                 }
+                 return '...' + input;
              }
              return input;
          };

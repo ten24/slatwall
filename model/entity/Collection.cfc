@@ -695,7 +695,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			//add propertyKey and value to HQLParams
 			//if using a like parameter we need to add % to the value using angular
 			var logicalOperator = '';
-			if(structKeyExists(filter,"logicalOperator") && !isFirstFilter){
+			if(structKeyExists(filter,"logicalOperator") && len(filter.logicalOperator) && !isFirstFilter){
 				logicalOperator = filter.logicalOperator;
 			}
 			if(!isnull(filter.collectionID) || !isNull(filter.collection)){
@@ -707,25 +707,31 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 					filterGroupHQL &= getFilterGroupsHQL([filter]);
 				} else {
-					var comparisonOperator = getComparisonOperator(filter.comparisonOperator);
+					
+					if(structKeyExists(filter,'comparisonOperator') && len(filter.comparisonOperator)){
+						var comparisonOperator = getComparisonOperator(filter.comparisonOperator);
 
 
-					if (structKeyExists(filter, 'aggregate') && isnull(filter.attributeID)){
-						addAggregateFilter(filter);
-						continue;
-					}
-
-					var predicate = getPredicate(filter);
-					if(isnull(filter.attributeID)){
-						var propertyIdentifier = filter.propertyIdentifier;
-						if(ListFind('<>,!=,NOT IN,NOT LIKE',comparisonOperator) > 0){
-							propertyIdentifier = "COALESCE(#propertyIdentifier#,'')";
+						if (structKeyExists(filter, 'aggregate') && isnull(filter.attributeID)){
+							addAggregateFilter(filter);
+							continue;
 						}
-						filterGroupHQL &= " #logicalOperator# #propertyIdentifier# #comparisonOperator# #predicate# ";
-					}else{
-						var attributeHQL = getFilterAttributeHQL(filter);
-						filterGroupHQL &= " #logicalOperator# #attributeHQL# #comparisonOperator# #predicate# ";
+	
+						var predicate = getPredicate(filter);
+						if(isnull(filter.attributeID)){
+							if(structKeyExists(filter,'propertyIdentifier') && len(filter.propertyIdentifier)){
+								var propertyIdentifier = filter.propertyIdentifier;
+								if(ListFind('<>,!=,NOT IN,NOT LIKE',comparisonOperator) > 0){
+									propertyIdentifier = "COALESCE(#propertyIdentifier#,'')";
+								}
+								filterGroupHQL &= " #logicalOperator# #propertyIdentifier# #comparisonOperator# #predicate# ";
+							}
+						}else{
+							var attributeHQL = getFilterAttributeHQL(filter);
+							filterGroupHQL &= " #logicalOperator# #attributeHQL# #comparisonOperator# #predicate# ";
+						}
 					}
+					
 				}
 
 			}
@@ -1418,11 +1424,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						if(!isnull(column.aggregate))
 						{
 							//if we have an aggregate then put wrap the identifier
-							columnsHQL &= getAggregateHQL(column.aggregate,column.propertyIdentifier);
-
+							if(structKeyExists(column,'propertyIdentifier') && len(column.propertyIdentifier)){
+								columnsHQL &= getAggregateHQL(column.aggregate,column.propertyIdentifier);	
+							}
 						}else{
 							var columnAlias = Replace(Replace(column.propertyIdentifier,'.','_','all'),'_'&lcase(Replace(getCollectionObject(),'#getDao('hibachiDAO').getApplicationKey()#',''))&'_','');
-							columnsHQL &= ' #column.propertyIdentifier# as #columnAlias#';
+							if(structKeyExists(column,'propertyIdentifier') && len(column.propertyIdentifier)){
+								columnsHQL &= ' #column.propertyIdentifier# as #columnAlias#';								
+							}
 						}
 					}
 
