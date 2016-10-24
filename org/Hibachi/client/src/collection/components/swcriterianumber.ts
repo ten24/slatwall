@@ -109,6 +109,22 @@ class SWCriteriaNumber{
 								display:"Equals",
 								comparisonOperator:"eq"
 							},
+                            {
+                                display:"Greater Than",
+                                comparisonOperator:"gt"
+                            },
+                            {
+                                display:"Greater Than Or Equal",
+                                comparisonOperator:"gte"
+                            },
+                            {
+                                display:"Less Than",
+                                comparisonOperator:"lt"
+                            },
+                            {
+                                display:"Less Than Or Equal",
+                                comparisonOperator:"lte"
+                            },
 							{
 								display:"Doesn't Equal",
 								comparisonOperator:"neq"

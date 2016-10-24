@@ -390,9 +390,8 @@ class HibachiService{
 		return request.promise;
 
 	};
-	getFilterPropertiesByBaseEntityName= (entityName) => {
-
-		var urlString = this.getUrlWithActionPrefix()+'api:main.getFilterPropertiesByBaseEntityName&EntityName='+entityName;
+	getFilterPropertiesByBaseEntityName= (entityName,includeNonPersistent = false) => {
+		var urlString = this.getUrlWithActionPrefix()+'api:main.getFilterPropertiesByBaseEntityName&EntityName='+entityName+'&includeNonPersistent='+includeNonPersistent;
 		let request = this.requestService.newAdminRequest(urlString);
 
 		return request.promise;

@@ -14,13 +14,13 @@
 		}
 	},
 	"properties":{
-	    "paymentMethod":		[{"contexts":"save","required":true}],
+	  "paymentMethod":		[{"contexts":"save","required":true}],
 		"nameOnCreditCard":		[{"contexts":"save","conditions":"paymentTypeCreditCard","required":true}],
 		"creditCardNumber":		[{"contexts":"save","conditions":"paymentTypeCreditCardAndNew,editExistingCreditCardNumber","required":true,"dataType":"creditCard"}],
 		"expirationMonth":		[{"contexts":"save","conditions":"paymentTypeCreditCard","required":true,"dataType":"numeric"}],
 		"expirationYear":		[{"contexts":"save","conditions":"paymentTypeCreditCard","required":true,"dataType":"numeric"}],
 		"orderPayments":		[{"contexts":"delete","maxCollection":0}],
-		"paymentTransactions":	[{"contexts":"delete","maxCollection":0}]
+		"paymentTransactions":	[{"contexts":"delete","method":"hasOnlyGenerateTokenTransactions"}]
 	},
 	"populatedPropertyValidation":{
 	    "billingAddress":[{"validate":"full"}]

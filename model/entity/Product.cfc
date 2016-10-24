@@ -397,10 +397,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 				var resizeSizesCount = arrayLen(arguments.resizeSizes);
 				for(var s=1; s<=resizeSizesCount; s++) {
 
-					var resizeImageData={
-						imagePath=getService('imageService').getProductImagePathByImageFile(skuData['imageFile']),
-						size=arguments.resizeSizes[s].size
-					};
+					var resizeImageData = arguments.resizeSizes[s];
+					resizeImageData.imagePath = getService('imageService').getProductImagePathByImageFile(skuData['imageFile']);
 
 					arrayAppend(
 						thisImage.resizedImagePaths,
@@ -440,12 +438,12 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 				var resizesCount = arrayLen(arguments.resizeSizes);
 				for(var s=1; s<=resizesCount; s++) {
-					var resizeImageData={
-						alt=imageAltString,
-						missingImagePath=missingImagePath,
-						imagePath=getService('imageService').getImagePathByImageFileAndDirectory(productImageData['imageFile'],productImageData['directory']),
-						size=arguments.resizeSizes[s].size
-					};
+					
+					var resizeImageData = arguments.resizeSizes[s];
+					resizeImageData.alt = imageAltString;
+					resizeImageData.missingImagePath = missingImagePath;
+					resizeImageData.imagePath = getService('imageService').getImagePathByImageFileAndDirectory(productImageData['imageFile'],productImageData['directory']);
+
 					arrayAppend(
 						thisImage.resizedImagePaths,
 						getService("imageService").getResizedImagePath(argumentCollection=resizeImageData)

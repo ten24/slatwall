@@ -156,7 +156,7 @@ class SWWorkflowTasks{
 					scope.finished = false;
 					scope.workflowTasks.selectedTask = undefined;
 
-					var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(scope.workflow.data.workflowObject);
+					var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(scope.workflow.data.workflowObject, true);
 					filterPropertiesPromise.then(function(value){
 						scope.filterPropertiesList = {
 							baseEntityName:scope.workflow.data.workflowObject,
