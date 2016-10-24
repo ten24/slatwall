@@ -903,7 +903,22 @@
 			var hasAttributeByEntityNameAndPropertyIdentifier=getHasAttributeByEntityNameAndPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier);
 			
 			if(!hasAttributeByEntityNameAndPropertyIdentifier){
-				return structKeyExists(getPropertiesStructByEntityName(getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier))[listLast(arguments.propertyIdentifier, ".")],'cfc');
+				
+				var lastEntityNameInPropertyIdentifier = getLastEntityNameInPropertyIdentifier(
+					arguments.entityName, 
+					arguments.propertyIdentifier
+				);
+				
+				var propertiesStructByEntityName = getPropertiesStructByEntityName(
+					lastEntityNameInPropertyIdentifier
+				);
+				
+				var lastItemInPropertyIdentfier = listLast(arguments.propertyIdentifier, ".");
+				
+				
+				return structKeyExists(propertiesStructByEntityName,lastItemInPropertyIdentfier) && structKeyExists(
+					propertiesStructByEntityName[lastItemInPropertyIdentfier],'cfc'
+				);
 			} else {
 				return false;
 			}
