@@ -816,7 +816,10 @@
 		public any function getPropertyByEntityNameAndPropertyName( required string entityName, required string propertyName ) {
 			var hasAttributeByEntityNameAndPropertyIdentifier = getHasAttributeByEntityNameAndPropertyIdentifier(arguments.entityName, arguments.propertyName);
 			if(!hasAttributeByEntityNameAndPropertyIdentifier){
-				return getPropertiesStructByEntityName( entityName=arguments.entityName )[ arguments.propertyName ];
+				var propertiesStructByEntityName = getPropertiesStructByEntityName( entityName=arguments.entityName );
+				if(structKeyExists(propertiesStructByEntityName,arguments.propertyName)){
+					return propertiesStructByEntityName[ arguments.propertyName ];					
+				}
 			} else {
 				var key = 'attributeService_getAttributeNameByAttributeCode_#arguments.propertyName#';
 				if(getHibachiCacheService().hasCachedValue(key)) {
