@@ -1,0 +1,126 @@
+{  
+   "steps":[  
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(1) > td.admin.admin1:nth-child(12) > a"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"${merchandise_product_code}",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentityprocessorder_addorderitem > div > div > div.modal-body > span > div > div > div > div:nth-child(4) > div > p"
+         }
+      },
+      {  
+         "__comment":"${merchandise_product_name}",
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"Merchandise product #1",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentityprocessorder_addorderitem > div > div > div.modal-body > span > div > div > div > div:nth-child(5) > div > p"
+         }
+      },
+      { 
+         "__comment":"Check merchandise product name is displayed", 
+         "type":"generateAssertion",
+         "assertion_type":"waitForElementValue",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentityprocessorder_addorderitem > div > div > div.modal-body > span > div > div > div > div:nth-child(7) > div > input"
+         },
+         "text":"${quantity}"
+      },
+      { 
+         "__comment":"Check merchandise product name is displayed", 
+         "type":"generateAssertion",
+         "assertion_type":"waitForElementValue",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentityprocessorder_addorderitem > div > div > div.modal-body > span > div > div > div > div:nth-child(8) > div > input"
+         },
+         "text":"${merchandise_product_price}"
+      },
+      {
+         "type": "setElementText",
+         "locator": {
+            "type": "css selector",
+            "value": "#adminentityprocessorder_addorderitem > div > div > div.modal-body > span > div > div > div > div.hibachi-display-toggle > div.hibachi-display-toggle > div.hibachi-display-toggle > div.slatwall-address-container > div:nth-child(3) > div.col-sm-8 > input"
+         },
+         "text": "${account_login_name} ${account_login_last_name}"
+      },
+      {
+         "type": "setElementText",
+         "locator": {
+            "type": "css selector",
+            "value": "#adminentityprocessorder_addorderitem > div > div > div.modal-body > span > div > div > div > div.hibachi-display-toggle > div.hibachi-display-toggle > div.hibachi-display-toggle > div.slatwall-address-container > div:nth-child(4) > div.col-sm-8 > input"
+         },
+         "text": "${account_company}"
+      },
+      {
+         "type": "setElementText",
+         "locator": {
+            "type": "css selector",
+            "value": "#adminentityprocessorder_addorderitem > div > div > div.modal-body > span > div > div > div > div.hibachi-display-toggle > div.hibachi-display-toggle > div.hibachi-display-toggle > div.slatwall-address-container > div:nth-child(5) > div.col-sm-8 > input"
+         },
+         "text": "${add_account_address_street_address}"
+      },
+      {
+         "type": "setElementText",
+         "locator": {
+            "type": "css selector",
+            "value": "#adminentityprocessorder_addorderitem > div > div > div.modal-body > span > div > div > div > div.hibachi-display-toggle > div.hibachi-display-toggle > div.hibachi-display-toggle > div.slatwall-address-container > div:nth-child(6) > div.col-sm-8 > input"
+         },
+         "text": "${add_account_address_street_address2}"
+      },
+      {
+         "type": "setElementText",
+         "locator": {
+            "type": "css selector",
+            "value": "#adminentityprocessorder_addorderitem > div > div > div.modal-body > span > div > div > div > div.hibachi-display-toggle > div.hibachi-display-toggle > div.hibachi-display-toggle > div.slatwall-address-container > div:nth-child(7) > div.col-sm-8 > input"
+         },
+         "text": "${add_account_address_city}"
+      },
+      {
+         "type": "setElementSelected",
+         "locator": {
+            "type": "css selector",
+            "value": "#adminentityprocessorder_addorderitem > div > div > div.modal-body > span > div > div > div > div.hibachi-display-toggle > div.hibachi-display-toggle > div.hibachi-display-toggle > div.slatwall-address-container > div:nth-child(8) > div.col-sm-8 > select > option:nth-child(26)"
+         }
+      },
+      {
+         "type": "setElementText",
+         "locator": {
+            "type": "css selector",
+            "value": "#adminentityprocessorder_addorderitem > div > div > div.modal-body > span > div > div > div > div.hibachi-display-toggle > div.hibachi-display-toggle > div.hibachi-display-toggle > div.slatwall-address-container > div:nth-child(9) > div.col-sm-8 > input"
+         },
+         "text": "${add_account_address_postal_code}"
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"xpath",
+            "value":"//label[@for='saveShippingAccountAddressFlagNo']"
+         }
+      },
+      {  
+         "type":"setElementSelected",
+         "locator":{  
+            "type":"id",
+            "value":"saveShippingAccountAddressFlagNo"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentityprocessorder_addorderitem > div > div > div.modal-footer > button"
+         }
+      }
+   ]
+}

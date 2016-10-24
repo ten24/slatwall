@@ -1,0 +1,50 @@
+{  
+   "type":"script",
+   "seleniumVersion":"2",
+   "formatVersion":2,
+   "steps":[
+      {  
+         "type":"include",
+         "rel_dir":"/components/order/order_settings_co.json"
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"link text",
+            "value":"Orders"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"xpath",
+            "value":"//div[@id='j-mobile-nav']/ul/li[3]/ul/li[1]/a"
+         }
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/order/create_order_with_guest_account_co.json"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/order/assert_order_created_co.json"
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":" #accordion > div:nth-child(1) > a"
+         }
+      }
+   ],
+   "data":{  
+      "configs":{  
+
+      },
+      "source":"none"
+   },
+   "inputs":[  
+
+   ],
+   "timeoutSeconds":60
+}

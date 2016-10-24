@@ -1,0 +1,145 @@
+{  
+   "steps":[  
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(1) > a"
+         }
+      }, 
+      {  
+         "__comment":"${merchandise_product_name}",
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"Merchandise product #1 ",
+         "locator":{  
+            "type":"css selector",
+            "value":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td.s-title > span"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"${merchandise_product_code}",
+         "locator":{  
+            "type":"css selector",
+            "value":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td.s-sku.ng-binding"
+         }
+      },
+      {
+        "type": "print",
+        "text": "${merchandise_product_price}"
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"$${merchandise_product_price}",
+         "locator":{  
+            "type":"css selector",
+            "value":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td:nth-child(6) > span.s-price.ng-scope > ul > li:nth-child(2)"
+         }
+      },
+      
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"${quantity}",
+         "locator":{  
+            "type":"css selector",
+            "value":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td.s-qty.ng-binding"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"$0.00",
+         "locator":{  
+            "type":"css selector",
+            "value":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td.s-discount.ng-scope > span"
+         }
+      },
+      {  
+         "script":"return ${quantity} * ${merchandise_product_price}",
+         "variable":"total_with_currency",
+         "type":"storeEval"
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"$${total_with_currency}.00",
+         "locator":{  
+            "type":"css selector",
+            "value":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td:nth-child(9) > ul > li.s-price-total.ng-binding"
+         }
+      },
+      
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"$0.00",
+         "locator":{  
+            "type":"css selector",
+            "value":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td.s-total.ng-binding.ng-scope"
+         }
+      },
+      {
+        "type": "print",
+        "text": "${fullfillment_type}"
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"${fullfillment_type}",
+         "locator":{  
+            "type":"css selector",
+            "value":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td.s-fullfilment > ul > li > swoishippinglabelstamp > ul > li > span"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"${add_account_address_street_address}",
+         "locator":{  
+            "type":"css selector",
+            "value":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td.s-fullfilment > ul > li > swoishippinglabelstamp > ul > span > li:nth-child(1)"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"${add_account_address_street_address2}",
+         "locator":{  
+            "type":"css selector",
+            "value":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td.s-fullfilment > ul > li > swoishippinglabelstamp > ul > span > li:nth-child(2)"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"${add_account_address_city}",
+         "locator":{  
+            "type":"css selector",
+            "value":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td.s-fullfilment > ul > li > swoishippinglabelstamp > ul > span > li:nth-child(3) > span:nth-child(1)"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"${add_account_address_state}",
+         "locator":{  
+            "type":"css selector",
+            "value":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td.s-fullfilment > ul > li > swoishippinglabelstamp > ul > span > li:nth-child(3) > span:nth-child(2)"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"${add_account_address_postal_code}",
+         "locator":{  
+            "type":"css selector",
+            "value":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td.s-fullfilment > ul > li > swoishippinglabelstamp > ul > span > li:nth-child(3) > span:nth-child(4)"
+         }
+      }
+
+   ]
+}

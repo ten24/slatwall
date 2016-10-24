@@ -1,0 +1,14 @@
+{  
+   "steps":[ 
+      {  
+         "type":"store",
+         "text":"2",
+         "variable":"quantity"
+      },
+      {
+         "type":"store",
+         "text":"Shipping",
+         "variable":"fullfillment_type"
+      }
+   ]
+}

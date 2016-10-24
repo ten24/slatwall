@@ -13,6 +13,10 @@
       },
       {  
          "type":"include",
+         "rel_dir":"/components/location/create_location_test.json"
+      },
+      {  
+         "type":"include",
          "rel_dir":"/components/brand/create_brand_test.json"
       },
       {  
@@ -22,6 +26,71 @@
       {  
          "type":"include",
          "rel_dir":"/components/products/merchandise/create_merchandise_product_test_co.json"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/order/start_order_process_with_guest_account_co.json"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/order/merchandise/merchandise_order_settings_co.json"
+      },
+      {
+         "type": "storeText",
+         "variable":"merchandise_product_code",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(1) > td:nth-child(2)"
+         }
+      },
+      {
+        "type": "print",
+        "text": "${merchandise_product_code}"
+      },
+      {
+        "type": "storeElementValue",
+        "variable":"merchandise_product_price",
+        "locator":{  
+            "type":"css selector",
+            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(1) > td:nth-child(10) > input"
+         }
+      },
+      {
+        "type": "print",
+        "text": "${merchandise_product_price}"
+      },
+      {  
+         "__comment":"Select the second static element",
+         "type":"setElementText",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(1) > td:nth-child(11) > input"
+         },
+         "text":"${quantity}"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/order/merchandise/add_sku_co.json"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/order/merchandise/assert_added_sku_co.json"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/order/place_order_credit_card_co.json"
+      },
+      {  
+         "__comment":"Back to the order list",
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":" #j-main-content > div > div.row.s-body-nav > nav > div:nth-child(2) > div > div:nth-child(1) > a"
+         }
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/order/assert_order_created_in_list_order_co.json"
       }
    ],
    "data":{  

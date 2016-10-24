@@ -1,0 +1,60 @@
+{  
+   "type":"script",
+   "seleniumVersion":"2",
+   "formatVersion":2,
+   "steps":[
+      {  
+         "__comment":"splits the css selector into small addressable path chunks. Chrome was having issues when waiting on the full path directly",
+         "type":"splitPathAndWait",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-sortable > tbody > tr:nth-child(2) > td.admin.admin2:nth-child(6) > a:nth-child(2)"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-sortable > tbody > tr:nth-child(2) > td.admin.admin2:nth-child(6) > a:nth-child(2)"
+         }
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/fulfillment_methods/shipping/shipping_method_setting_co.json"
+      },
+      { 
+         "__comment":"Check fulfillment method name is displayed", 
+         "type":"generateAssertion",
+         "assertion_type":"waitForElementValue",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabbasic > div > div > div > div.form-group.s-required > div > input"
+         },
+         "text":"${fulfillment_method_name}"
+      },
+      { 
+         "__comment":"Check fulfillment method type is displayed", 
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabbasic > div > div > div > div:nth-child(4) > div > p"
+         },
+         "text":"${fulfillment_method_type}"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/fulfillment_methods/shipping/add_shipping_method_co.json"
+      }
+   ],
+   "data":{  
+      "configs":{  
+
+      },
+      "source":"none"
+   },
+   "inputs":[  
+
+   ],
+   "timeoutSeconds":60
+}

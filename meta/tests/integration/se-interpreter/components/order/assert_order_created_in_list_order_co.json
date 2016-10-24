@@ -54,6 +54,10 @@
             "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover > tbody > tr:nth-child(1) > td:nth-child(7)"
          }
       },
+      {
+        "type": "print",
+        "text": "${total_with_currency}"
+      },
       {  
          "type":"generateAssertion",
          "assertion_type":"waitForText",
