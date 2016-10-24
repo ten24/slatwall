@@ -444,8 +444,10 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		variables.quantity = arguments.quantity;
 		if(this.isRootOrderItem()){
 			for(var childOrderItem in this.getChildOrderItems()){
-				var newQuantity = PrecisionEvaluate(childOrderItem.getBundleItemQuantity() * variables.quantity);
-				childOrderItem.setQuantity(newQuantity); 
+				if (!isNull(childOrderItem.getBundleItemQuantity()) && structKeyExists(variables, "quantity")){
+					var newQuantity = PrecisionEvaluate(childOrderItem.getBundleItemQuantity() * variables.quantity);
+					childOrderItem.setQuantity(newQuantity); 
+				}
 			}
 		}	
 	}	

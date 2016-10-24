@@ -1137,16 +1137,16 @@ table .s-table-header .table-section a.s-hint {float:none;margin-left:10px;}
 
 .dropdown-toggle .fa-sort-desc:before {top: -2px;position: relative;}
 
-.s-j-draggablePanelList a {height: 40px;.border-radius(0);border:0px !important;margin:0px !important;background-color:@white;color:@black-20;}
-.s-j-draggablePanelList a:hover {border:0px !important;background:@black-5;color:@black-20;}
+.s-j-draggablePanelList .s-pannel-body a {height: 40px;.border-radius(0);border:0px !important;margin:0px !important;background-color:@white;color:@black-20;}
+.s-j-draggablePanelList .s-pannel-body a:hover {border:0px !important;background:@black-5;color:@black-20;}
 .s-j-draggablePanelList a.active {border:0px;box-shadow:none;border:0px;background-color:@white;color:@black-60;}
 .s-j-draggablePanelList a i {margin-top: 8px;}
 .s-j-draggablePanelList a.active:hover {background-color:@black-5;color:@black-60;}
 .s-j-draggablePanelList a:last-child {border:0px;}
 .s-j-draggablePanelList a .fa-sort-amount-asc, .s-j-draggablePanelList a .fa-sort-amount-desc {color:@black-60;}
-.s-j-draggablePanelList .s-remove {background-color:@black-30;color:@white !important;}
-.s-j-draggablePanelList .s-remove:hover {border:none !important;}
-.s-j-draggablePanelList .s-remove.active {background-color:@brand-danger !important;color:@white !important;}
+.s-j-draggablePanelList .s-pannel-body .s-remove {background-color:@black-30;color:@white !important;}
+.s-j-draggablePanelList .s-pannel-body .s-remove:hover {border:none !important;}
+.s-j-draggablePanelList .s-pannel-body .s-remove.active {background-color:@brand-danger !important;color:@white !important;}
 .s-j-draggablePanelList .s-sort-num {text-align:center;float:left;position:relative;font-size:12px;padding:0px;height:40px;}
 .s-j-draggablePanelList .s-sort-num > a:first-child {padding: 12px;display:inline-block;cursor:pointer;}
 .s-j-draggablePanelList .s-sort-num a:hover {text-decoration:none;color:@black;}
@@ -1158,8 +1158,8 @@ table .s-table-header .table-section a.s-hint {float:none;margin-left:10px;}
 .s-j-draggablePanelList .s-sort-num:hover {color:@black;}
 .s-j-draggablePanelList .s-sort.active {background-color:@white !important;color:#767676 !important;box-shadow:none;}
 .s-j-draggablePanelList .s-sort:hover {background-color:@black-5 !important;color:#767676 !important;box-shadow:none;}
-.s-j-draggablePanelList .s-pannel-name {cursor: move;height:40px;}
-.s-j-draggablePanelList .s-pannel-name input {width: 164px;display:inline-block;margin-top:5px;margin-right:5px;}
+.s-j-draggablePanelList .s-pannel-name {cursor: move;height:40px;white-space: nowrap;}
+.s-j-draggablePanelList .s-pannel-name input {width: 100%;display:inline-block;margin-top:3px;margin-right:5px;font-size: 12px !important;}
 .s-j-draggablePanelList .s-pannel-name .s-pannel-title {color:@black-60;background:none;}
 .s-j-draggablePanelList .s-pannel-name .s-pannel-title:hover {text-decoration:none;}
 .s-j-draggablePanelList .s-pannel-name .s-pannel-title:active {box-shadow:none !important;background:none !important;}
@@ -1167,6 +1167,11 @@ table .s-table-header .table-section a.s-hint {float:none;margin-left:10px;}
 .s-j-draggablePanelList .s-pannel-body {text-align:right;padding-right:0px;}
 .s-j-draggablePanelList .list-group-item {margin-bottom:2px;padding-top:0px;padding-bottom:0px;.border-radius();overflow: hidden;}
 .s-j-draggablePanelList .s-pannel-name > span:first-child {position:absolute;top:0px;left:0px;display:inline-block;width: 34px;text-align: center;height: 40px;background-color: @black-60;display: inline-block;padding-top: 11px;font-size: 12px;color: @black-10;}
+.s-j-draggablePanelList .s-pannel-name .s-title-wrapper {display: inline;}
+.s-j-draggablePanelList .s-pannel-name .s-title-wrapper .s-edit-mode {width: 100%;position: relative;}
+.s-j-draggablePanelList .s-pannel-name .s-title-wrapper .s-controlls {position: absolute;z-index: 2;}
+.s-j-draggablePanelList .s-pannel-name .s-title-wrapper .s-edit-mode .s-controlls {top: -3px;}
+.s-j-draggablePanelList .s-pannel-name .s-title-wrapper .s-view-mode .s-controlls {top: 11px;margin-left: 8px;cursor: pointer;}
 .s-j-draggablePanelList .s-pannel-name > i {margin-left: 30px;margin-top:14px;}
 .s-j-draggablePanelList .s-pannel-body .btn-group {float:right;}
 .s-pannel-name .s-title-edit-menu {-moz-box-shadow: inset 0 0 1px #999999;-webkit-box-shadow: inset 0 0 1px #999;box-shadow: inset 0 0 1px #999;position: absolute;left: 53px;top:0px;width: 276px;z-index: 1000;background-color: @black-5;height: 40px;padding-left: 10px;}
