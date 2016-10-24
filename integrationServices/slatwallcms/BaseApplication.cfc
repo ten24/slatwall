@@ -168,11 +168,11 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 			}
 			// Look for the Address URL Key
 			if (isAddressURLKey) {
-				var address = arguments.slatwallScope.getService("productService").getAddressByURLTitle(arguments.contenturlTitle, true);
+				var address = arguments.slatwallScope.getService("addressService").getAddressByURLTitle(arguments.contenturlTitle, true);
 				if(isNull(address)){
 					var content = render404(arguments.slatwallScope, site);
 				}
-				arguments.slatwallScope.setAddress( address );
+				arguments.slatwallScope.setRenderEntity( address );
 				entityName = 'address';
 			}
 			// Look for the Address URL Key
@@ -181,7 +181,7 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 				if(isNull(account)){
 					var content = render404(arguments.slatwallScope, site);
 				}
-				arguments.slatwallScope.setProfile( account );
+				arguments.slatwallScope.setRenderEntity( account );
 				entityName = 'account';
 			}
 			
