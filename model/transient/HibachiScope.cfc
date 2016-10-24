@@ -54,7 +54,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	property name="content" type="any";
 	property name="product" type="any";
 	property name="productType" type="any";
-	property name="renderEntity" type="any";
+	property name="address" type="any";
+	property name="account" type="any";
 	property name="site" type="any";
 	property name="app" type="any";
 	
@@ -152,6 +153,60 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			variables.productType = getService("productService").newProductType();
 		}
 		return variables.productType;
+	}
+	
+	// Address
+	public any function getAddress() {
+		if(!structKeyExists(variables, "address")) {
+			variables.address = getService("addressService").newAddress();
+		}
+		return variables.address;
+	}
+	
+	// Display Account
+	public any function getProfile() {
+		if(!structKeyExists(variables, "profile")) {
+			variables.displayAccount = getService("accountService").newAccount();
+		}
+		return variables.account;
+	}
+	
+	// Display Route Entity
+	public any function getRouteEntity(entityName) {
+		if (entityName == "address"){
+			return variables.address;	
+		}
+		if (entityName == "account"){
+			return variables.account;	
+		}
+		if (entityName == "product"){
+			return variables.product;	
+		}
+		if (entityName == "productType"){
+			return variables.productType;	
+		}
+		if (entityName == "brand"){
+			return variables.brand;	
+		}
+	}
+	
+	// Display Route Entity
+	public any function setRouteEntity(entityName, entity) {
+		if (entityName == "address"){
+			variables.address = entity;	
+		}
+		if (entityName == "account"){
+			variables.account = entity;	
+		}
+		if (entityName == "product"){
+			variables.product = entity;	
+		}
+		if (entityName == "productType"){
+			variables.productType = entity;	
+		}
+		if (entityName == "brand"){
+			variables.brand = entity;	
+		}
 	}
 	
 	// Site
