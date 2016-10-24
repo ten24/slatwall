@@ -290,9 +290,15 @@ component output="false" accessors="true" extends="HibachiController" {
 
     public any function getFilterPropertiesByBaseEntityName( required struct rc){
         var entityName = rereplace(rc.entityName,'_','');
-        arguments.rc.apiResponse.content['data'] = [];
+        var includeNonPersistent = false;
 
-        var filterProperties = getHibachiService().getPropertiesWithAttributesByEntityName(entityName);
+		if(structKeyExists(arguments.rc,'includeNonPersistent') && IsBoolean(arguments.rc.includeNonPersistent)){
+			includeNonPersistent = arguments.rc.includeNonPersistent;
+		}
+		arguments.rc.apiResponse.content['data'] = [];
+
+        var filterProperties = getHibachiService().getPropertiesWithAttributesByEntityName(entityName, includeNonPersistent);
+
         for(var filterProperty in filterProperties){
             if(
                 getHibachiScope().authenticateEntityProperty('read', entityName, filterProperty.name)

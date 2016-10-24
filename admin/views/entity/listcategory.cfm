@@ -58,7 +58,8 @@ Notes:
 <hb:HibachiListingDisplay smartList="#rc.categorySmartList#"
 						   recordDetailAction="admin:entity.detailcategory"
 						   recordEditAction="admin:entity.editcategory"
-						   recordEditQueryString="redirectAction=admin:entity.listcategory">
+						   recordEditQueryString="redirectAction=admin:entity.listcategory"
+						   recordDeleteAction="admin:entity.deletecategory">
 	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="categoryName" />
 	<hb:HibachiListingColumn propertyIdentifier="restrictAccessFlag" />
 	<hb:HibachiListingColumn propertyIdentifier="allowProductAssignmentFlag" />

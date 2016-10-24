@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,36 +45,19 @@
 
 Notes:
 
-*/
-component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiController" {
-
-	property name="fw" type="any";
-
-	property name="formService" type="any";
-	property name="hibachiSessionService" type="any";
-
-	public void function init( required any fw ) {
-		setFW( arguments.fw );
-	}
-
-	public void function before() {
-		getFW().setView("public:main.blank");
-	}
-
-	public void function after( required struct rc ) {
-		if(structKeyExists(arguments.rc, "fRedirectURL") && arrayLen(getHibachiScope().getFailureActions())) {
-			getFW().redirectExact( redirectLocation=arguments.rc.fRedirectURL );
-		} else if (structKeyExists(arguments.rc, "sRedirectURL") && !arrayLen(getHibachiScope().getFailureActions())) {
-			getFW().redirectExact( redirectLocation=arguments.rc.sRedirectURL );
-		} else if (structKeyExists(arguments.rc, "redirectURL")) {
-			getFW().redirectExact( redirectLocation=arguments.rc.redirectURL );
-		}
-	}
-
-	public void function addFormResponse(required struct rc){
-    	var formToProcess = getFormService().getForm(rc.formResponse.formID);
-    	formToProcess = getFormService().process(formToProcess,arguments.rc,"addFormResponse");
-    	getHibachiScope().addActionResult( "public:form.addFormResponse", formToProcess.hasErrors() );
-
-    }
-}
+--->
+<cfparam name="attributes.site" type="any" default="#request.context.fw.getHibachiScope().getSite()#"/>
+<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
+<cfif thisTag.executionMode is "start">
+	<cfset recatchaSiteKey = ""/>
+	
+	<cfif !isNull(attributes.site)>
+		<cfset recaptchaSiteKey = attributes.site.setting('siteRecaptchaSiteKey')/>
+	<cfelse>
+		<cfset recaptchaSiteKey = attributes.hibachiScope.setting('siteRecaptchaSiteKey')/>
+	</cfif>
+	
+	<cfoutput>
+		<div class="g-recaptcha" data-sitekey="#recaptchaSiteKey#"></div>
+	</cfoutput>
+</cfif>
