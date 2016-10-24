@@ -317,7 +317,7 @@
 						if (!isNull($.slatwall.getRouteEntity("address").getName())) {
 							$.content().setTitle( $.slatwall.getRouteEntity("address").getName() );
 						}
-						if(len($.slatwall.getRouteEntity().setting('addressHTMLTitleString'))) {
+						if(len($.slatwall.getRouteEntity("address").setting('addressHTMLTitleString'))) {
 							$.content().setHTMLTitle( $.slatwall.getRouteEntity("address").stringReplace( $.slatwall.getRouteEntity("address").setting('addressHTMLTitleString') ) );	
 						} else {
 							$.content().setHTMLTitle( $.slatwall.getRouteEntity("address").getName() );
