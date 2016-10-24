@@ -381,20 +381,21 @@ class SWPropertyDisplay implements ng.IDirective{
     }
 
     public static Factory(swpropertyClass,swpropertyPartialPath?:string){
+        
         var directive = (
             $compile,
             scopeService,
             coreFormPartialsPath,
-            hibachiPathBuilder,
-            swpropertyPartialPath
+            hibachiPathBuilder
         )=>new swpropertyClass(
             $compile,
 			scopeService,
 			coreFormPartialsPath,
             hibachiPathBuilder,
+            //not an inejctable don't add to $inject. This is in the form.module Factory implementation
             swpropertyPartialPath
         );
-        directive.$inject = ['$compile','scopeService','coreFormPartialsPath', 'hibachiPathBuilder','swpropertyPartialPath'];
+        directive.$inject = ['$compile','scopeService','coreFormPartialsPath','hibachiPathBuilder'];
 
         return directive;
     }
