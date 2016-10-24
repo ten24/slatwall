@@ -297,11 +297,18 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	}
 	
 	public string function getUrlTitle() {
-		var name = getName();
-		if (isNull(name)){
-			name = "#getFirstName()# #getLastName()#";
+		if (structKeyExists(variables, "urlTitle")){
+		   	return variables.urlTitle;
 		}
-		return "#reReplace(name, ' ', '-')#";
+
+		if (structKeyExists(variables, "name")){
+			return "#lCase(reReplace(variables.name, ' ', '-'))#";
+		}
+
+		if (structKeyExists(variables, "firstName") && structKeyExists(variables, "lastName")){
+			name = "#getFirstName()# #getLastName()#";
+			return "#lCase(reReplace(name, ' ', '-'))#";
+		}
 	}
 }
 
