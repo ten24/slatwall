@@ -816,7 +816,10 @@
 		public any function getPropertyByEntityNameAndPropertyName( required string entityName, required string propertyName ) {
 			var hasAttributeByEntityNameAndPropertyIdentifier = getHasAttributeByEntityNameAndPropertyIdentifier(arguments.entityName, arguments.propertyName);
 			if(!hasAttributeByEntityNameAndPropertyIdentifier){
-				return getPropertiesStructByEntityName( entityName=arguments.entityName )[ arguments.propertyName ];
+				var propertiesStructByEntityName = getPropertiesStructByEntityName( entityName=arguments.entityName );
+				if(structKeyExists(propertiesStructByEntityName,arguments.propertyName)){
+					return propertiesStructByEntityName[ arguments.propertyName ];					
+				}
 			} else {
 				var key = 'attributeService_getAttributeNameByAttributeCode_#arguments.propertyName#';
 				if(getHibachiCacheService().hasCachedValue(key)) {
@@ -903,7 +906,22 @@
 			var hasAttributeByEntityNameAndPropertyIdentifier=getHasAttributeByEntityNameAndPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier);
 			
 			if(!hasAttributeByEntityNameAndPropertyIdentifier){
-				return structKeyExists(getPropertiesStructByEntityName(getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier))[listLast(arguments.propertyIdentifier, ".")],'cfc');
+				
+				var lastEntityNameInPropertyIdentifier = getLastEntityNameInPropertyIdentifier(
+					arguments.entityName, 
+					arguments.propertyIdentifier
+				);
+				
+				var propertiesStructByEntityName = getPropertiesStructByEntityName(
+					lastEntityNameInPropertyIdentifier
+				);
+				
+				var lastItemInPropertyIdentfier = listLast(arguments.propertyIdentifier, ".");
+				
+				
+				return structKeyExists(propertiesStructByEntityName,lastItemInPropertyIdentfier) && structKeyExists(
+					propertiesStructByEntityName[lastItemInPropertyIdentfier],'cfc'
+				);
 			} else {
 				return false;
 			}
