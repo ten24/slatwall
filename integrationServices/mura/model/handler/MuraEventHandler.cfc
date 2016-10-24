@@ -165,7 +165,7 @@
 				if (listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyAddress'), "/")) {
 					addressKeyLocation = listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyAddress'), "/");
 					if(addressKeyLocation < listLen($.event('path'),"/")) {
-						$.slatwall.setRenderEntity( $.slatwall.getService("addressService").getAddressByURLTitle(listGetAt($.event('path'), addressKeyLocation + 1, "/"), true) );
+						$.slatwall.setRouteEntity("address", $.slatwall.getService("addressService").getAddressByURLTitle(listGetAt($.event('path'), addressKeyLocation + 1, "/"), true) );
 					}
 				}
 				
@@ -173,7 +173,7 @@
 				if (listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyAccount'), "/")) {
 					accountKeyLocation = listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyAccount'), "/");
 					if(accountKeyLocation < listLen($.event('path'),"/")) {
-						$.slatwall.setRenderEntity( $.slatwall.getService("addressService").getAccountByURLTitle(listGetAt($.event('path'), addressKeyLocation + 1, "/"), true) );
+						$.slatwall.setRouteEntity("account", $.slatwall.getService("addressService").getAccountByURLTitle(listGetAt($.event('path'), addressKeyLocation + 1, "/"), true) );
 					}
 				}
 				
@@ -297,10 +297,10 @@
 						
 					}
 				//handle address
-				} else if ( addressKeyLocation && !isNull($.slatwall.getRenderEntity()) && !$.slatwall.getRenderEntity().isNew()  ) {
+				} else if ( addressKeyLocation && !isNull($.slatwall.getRouteEntity("address")) && !$.slatwall.getRouteEntity("address").isNew()  ) {
 					
 					// Attempt to find the productType template
-					var addressTemplateContent = $.slatwall.getService("contentService").getContent( $.slatwall.getRenderEntity().setting('addressDisplayTemplate', [$.slatwall.getSite()]) );
+					var addressTemplateContent = $.slatwall.getService("contentService").getContent( $.slatwall.getRouteEntity("address").setting('addressDisplayTemplate', [$.slatwall.getSite()]) );
 					
 					// As long as the content is not null, and has all the necessary values we can continue
 					if(!isNull(addressTemplateContent) && !isNull(addressTemplateContent.getCMSContentID()) && !isNull(addressTemplateContent.getSite()) && !isNull(addressTemplateContent.getSite().getCMSSiteID())) {
@@ -314,16 +314,16 @@
 						
 						// Change Title, HTMLTitle & Meta Details of page
 						
-						if (!isNull($.slatwall.getRenderEntity().getName())) {
-							$.content().setTitle( $.slatwall.getRenderEntity().getName() );
+						if (!isNull($.slatwall.getRouteEntity("address").getName())) {
+							$.content().setTitle( $.slatwall.getRouteEntity("address").getName() );
 						}
-						if(len($.slatwall.getRenderEntity().setting('addressHTMLTitleString'))) {
-							$.content().setHTMLTitle( $.slatwall.getRenderEntity().stringReplace( $.slatwall.getRenderEntity().setting('addressHTMLTitleString') ) );	
+						if(len($.slatwall.getRouteEntity().setting('addressHTMLTitleString'))) {
+							$.content().setHTMLTitle( $.slatwall.getRouteEntity("address").stringReplace( $.slatwall.getRouteEntity("address").setting('addressHTMLTitleString') ) );	
 						} else {
-							$.content().setHTMLTitle( $.slatwall.getRenderEntity().getName() );
+							$.content().setHTMLTitle( $.slatwall.getRouteEntity("address").getName() );
 						}
-						$.content().setMetaDesc( $.slatwall.getRenderEntity().stringReplace( $.slatwall.getRenderEntity().setting('addressMetaDescriptionString') ) );
-						$.content().setMetaKeywords( $.slatwall.getRenderEntity().stringReplace( $.slatwall.getRenderEntity().setting('addressMetaKeywordsString') ) );
+						$.content().setMetaDesc( $.slatwall.getRouteEntity("address").stringReplace( $.slatwall.getRouteEntity("address").setting('addressMetaDescriptionString') ) );
+						$.content().setMetaKeywords( $.slatwall.getRouteEntity("address").stringReplace( $.slatwall.getRouteEntity("address").setting('addressMetaKeywordsString') ) );
 						
 					} else {
 						
@@ -332,10 +332,10 @@
 					}
 
 				//handle account
-				} else if ( accountKeyLocation && !isNull($.slatwall.getProfile()) && !$.slatwall.getProfile().isNew() ) {
+				} else if ( accountKeyLocation && !isNull($.slatwall.getRouteEntity("account")) && !$.slatwall.getRouteEntity("account").isNew() ) {
 					
 					// Attempt to find the productType template
-					var accountTemplateContent = $.slatwall.getService("contentService").getContent( $.slatwall.getRenderEntity().setting('accountDisplayTemplate', [$.slatwall.getSite()]) );
+					var accountTemplateContent = $.slatwall.getService("contentService").getContent( $.slatwall.getRouteEntity("account").setting('accountDisplayTemplate', [$.slatwall.getSite()]) );
 					
 					// As long as the content is not null, and has all the necessary values we can continue
 					if(!isNull(accountTemplateContent) && !isNull(accountTemplateContent.getCMSContentID()) && !isNull(accountTemplateContent.getSite()) && !isNull(accountTemplateContent.getSite().getCMSSiteID())) {
@@ -348,14 +348,14 @@
 						$.event('muraForceFilename', false);
 						
 						// Change Title, HTMLTitle & Meta Details of page
-						$.content().setTitle( $.slatwall.getRenderEntity().getFirstName() & " " & $.slatwall.getRenderEntity().getLastName() );
-						if(len($.slatwall.getRenderEntity().setting('accountHTMLTitleString'))) {
-							$.content().setHTMLTitle( $.slatwall.getRenderEntity().stringReplace( $.slatwall.getRenderEntity().setting('accountHTMLTitleString') ) );	
+						$.content().setTitle( $.slatwall.getRouteEntity("account").getFirstName() & " " & $.slatwall.getRouteEntity("account").getLastName() );
+						if(len($.slatwall.getRouteEntity().setting('accountHTMLTitleString'))) {
+							$.content().setHTMLTitle( $.slatwall.getRouteEntity("account").stringReplace( $.slatwall.getRouteEntity("account").setting('accountHTMLTitleString') ) );	
 						} else {
-							$.content().setHTMLTitle( $.slatwall.getRenderEntity().getFirstName() & " " & $.slatwall.getRenderEntity().getLastName() );
+							$.content().setHTMLTitle( $.slatwall.getRouteEntity("account").getFirstName() & " " & $.slatwall.getRouteEntity("account").getLastName() );
 						}
-						$.content().setMetaDesc( $.slatwall.getRenderEntity().stringReplace( $.slatwall.getRenderEntity().setting('accountMetaDescriptionString') ) );
-						$.content().setMetaKeywords( $.slatwall.getRenderEntity().stringReplace( $.slatwall.getRenderEntity().setting('accountMetaKeywordsString') ) );
+						$.content().setMetaDesc( $.slatwall.getRouteEntity("account").stringReplace( $.slatwall.getRouteEntity("account").setting('accountMetaDescriptionString') ) );
+						$.content().setMetaKeywords( $.slatwall.getRouteEntity("account").stringReplace( $.slatwall.getRouteEntity("account").setting('accountMetaKeywordsString') ) );
 						
 					} else {
 						

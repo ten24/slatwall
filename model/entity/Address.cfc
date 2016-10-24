@@ -296,19 +296,5 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 		return "#setting('globalUrlKeyAddress')#/#getUrlTitle()#/";
 	}
 	
-	public string function getUrlTitle() {
-		if (structKeyExists(variables, "urlTitle")){
-		   	return variables.urlTitle;
-		}
-
-		if (structKeyExists(variables, "name")){
-			return "#lCase(reReplace(variables.name, ' ', '-'))#";
-		}
-
-		if (structKeyExists(variables, "firstName") && structKeyExists(variables, "lastName")){
-			name = "#getFirstName()# #getLastName()#";
-			return "#lCase(reReplace(name, ' ', '-'))#";
-		}
-	}
 }
 
