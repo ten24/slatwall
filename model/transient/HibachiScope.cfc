@@ -55,7 +55,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	property name="product" type="any";
 	property name="productType" type="any";
 	property name="address" type="any";
-	property name="account" type="any";
 	property name="site" type="any";
 	property name="app" type="any";
 	
@@ -163,50 +162,37 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		return variables.address;
 	}
 	
-	// Display Account
-	public any function getProfile() {
-		if(!structKeyExists(variables, "profile")) {
-			variables.displayAccount = getService("accountService").newAccount();
-		}
-		return variables.account;
-	}
-	
 	// Display Route Entity
 	public any function getRouteEntity(entityName) {
-		if (entityName == "address"){
-			return variables.address;	
-		}
-		if (entityName == "account"){
-			return variables.account;	
-		}
-		if (entityName == "product"){
-			return variables.product;	
-		}
-		if (entityName == "productType"){
-			return variables.productType;	
-		}
-		if (entityName == "brand"){
-			return variables.brand;	
+		if (structKeyExists(variables, "routesArray") && arrayLen(variables.routesArray)){
+			for (route in variables.routesArray){
+				if (route["entityName"] == entityName && !isNull(route['entity'])){
+					return route["entity"];	
+				}
+			}
 		}
 	}
 	
-	// Display Route Entity
+	// Sets Route Entities
 	public any function setRouteEntity(entityName, entity) {
-		if (entityName == "address"){
-			variables.address = entity;	
+		var routeStruct = {};
+		//create the array of structs if it doesn't exist.
+		if (!structKeyExists(variables, "routesArray")){
+			variables.routesArray = [];
 		}
-		if (entityName == "account"){
-			variables.account = entity;	
+		
+		//set it to the new value if it already exists.
+		for (route in variables.routesArray){
+			if (route["entityName"] == entityName){
+				routeStruct = {"entityName" = entityName, "entity" = entity};
+				route = routeStruct;
+				return;	
+			}
 		}
-		if (entityName == "product"){
-			variables.product = entity;	
-		}
-		if (entityName == "productType"){
-			variables.productType = entity;	
-		}
-		if (entityName == "brand"){
-			variables.brand = entity;	
-		}
+		
+		//add the new struct to the array if it doesn't yet exist.
+		routeStruct = {"entityName" = entityName, "entity" = entity};
+		arrayAppend(variables.routesArray, routeStruct);
 	}
 	
 	// Site
