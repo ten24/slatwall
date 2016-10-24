@@ -722,6 +722,9 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	}
 	
 	public string function getUrlTitle() {
+		if (structKeyExists(variables, "urlTitle")){
+		   	return variables.urlTitle;
+		}
 		var fullName = "#getFirstName()#_#getLastName()#";
 		return "#reReplace(fullName, ' ', '-')#";
 	}
