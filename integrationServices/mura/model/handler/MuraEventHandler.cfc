@@ -165,7 +165,7 @@
 				if (listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyAddress'), "/")) {
 					addressKeyLocation = listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyAddress'), "/");
 					if(addressKeyLocation < listLen($.event('path'),"/")) {
-						$.slatwall.setAddress( $.slatwall.getService("addressService").getAddressByURLTitle(listGetAt($.event('path'), addressKeyLocation + 1, "/"), true) );
+						$.slatwall.setRenderEntity( $.slatwall.getService("addressService").getAddressByURLTitle(listGetAt($.event('path'), addressKeyLocation + 1, "/"), true) );
 					}
 				}
 				
@@ -173,7 +173,7 @@
 				if (listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyAccount'), "/")) {
 					accountKeyLocation = listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyAccount'), "/");
 					if(accountKeyLocation < listLen($.event('path'),"/")) {
-						$.slatwall.setProfile( $.slatwall.getService("accountService").getAccountByURLTitle(listGetAt($.event('path'), accountKeyLocation + 1, "/"), true) );
+						$.slatwall.setRenderEntity( $.slatwall.getService("addressService").getAccountByURLTitle(listGetAt($.event('path'), addressKeyLocation + 1, "/"), true) );
 					}
 				}
 				
@@ -297,10 +297,10 @@
 						
 					}
 				//handle address
-				} else if ( addressKeyLocation && !$.slatwall.getAddress().isNew()  ) {
+				} else if ( addressKeyLocation && !isNull($.slatwall.getRenderEntity()) && !$.slatwall.getRenderEntity().isNew()  ) {
 					
 					// Attempt to find the productType template
-					var addressTemplateContent = $.slatwall.getService("contentService").getContent( $.slatwall.getAddress().setting('addressDisplayTemplate', [$.slatwall.getSite()]) );
+					var addressTemplateContent = $.slatwall.getService("contentService").getContent( $.slatwall.getRenderEntity().setting('addressDisplayTemplate', [$.slatwall.getSite()]) );
 					
 					// As long as the content is not null, and has all the necessary values we can continue
 					if(!isNull(addressTemplateContent) && !isNull(addressTemplateContent.getCMSContentID()) && !isNull(addressTemplateContent.getSite()) && !isNull(addressTemplateContent.getSite().getCMSSiteID())) {
@@ -313,14 +313,17 @@
 						$.event('muraForceFilename', false);
 						
 						// Change Title, HTMLTitle & Meta Details of page
-						$.content().setTitle( $.slatwall.getAddress().getName() );
-						if(len($.slatwall.getAddress().setting('addressHTMLTitleString'))) {
-							$.content().setHTMLTitle( $.slatwall.getAddress().stringReplace( $.slatwall.getAddress().setting('addressHTMLTitleString') ) );	
-						} else {
-							$.content().setHTMLTitle( $.slatwall.getAddress().getName() );
+						
+						if (!isNull($.slatwall.getRenderEntity().getName())) {
+							$.content().setTitle( $.slatwall.getRenderEntity().getName() );
 						}
-						$.content().setMetaDesc( $.slatwall.getAddress().stringReplace( $.slatwall.getAddress().setting('addressMetaDescriptionString') ) );
-						$.content().setMetaKeywords( $.slatwall.getAddress().stringReplace( $.slatwall.getAddress().setting('addressMetaKeywordsString') ) );
+						if(len($.slatwall.getRenderEntity().setting('addressHTMLTitleString'))) {
+							$.content().setHTMLTitle( $.slatwall.getRenderEntity().stringReplace( $.slatwall.getRenderEntity().setting('addressHTMLTitleString') ) );	
+						} else {
+							$.content().setHTMLTitle( $.slatwall.getRenderEntity().getName() );
+						}
+						$.content().setMetaDesc( $.slatwall.getRenderEntity().stringReplace( $.slatwall.getRenderEntity().setting('addressMetaDescriptionString') ) );
+						$.content().setMetaKeywords( $.slatwall.getRenderEntity().stringReplace( $.slatwall.getRenderEntity().setting('addressMetaKeywordsString') ) );
 						
 					} else {
 						
@@ -329,10 +332,10 @@
 					}
 
 				//handle account
-				} else if ( accountKeyLocation && !$.slatwall.getProfile().isNew()  ) {
+				} else if ( accountKeyLocation && !isNull($.slatwall.getProfile()) && !$.slatwall.getProfile().isNew() ) {
 					
 					// Attempt to find the productType template
-					var accountTemplateContent = $.slatwall.getService("contentService").getContent( $.slatwall.getProfile().setting('accountDisplayTemplate', [$.slatwall.getSite()]) );
+					var accountTemplateContent = $.slatwall.getService("contentService").getContent( $.slatwall.getRenderEntity().setting('accountDisplayTemplate', [$.slatwall.getSite()]) );
 					
 					// As long as the content is not null, and has all the necessary values we can continue
 					if(!isNull(accountTemplateContent) && !isNull(accountTemplateContent.getCMSContentID()) && !isNull(accountTemplateContent.getSite()) && !isNull(accountTemplateContent.getSite().getCMSSiteID())) {
@@ -345,21 +348,20 @@
 						$.event('muraForceFilename', false);
 						
 						// Change Title, HTMLTitle & Meta Details of page
-						$.content().setTitle( $.slatwall.getProfile().getFirstName() & " " & $.slatwall.getProfile().getLastName() );
-						if(len($.slatwall.getProfile().setting('accountHTMLTitleString'))) {
-							$.content().setHTMLTitle( $.slatwall.getProfile().stringReplace( $.slatwall.getProfile().setting('accountHTMLTitleString') ) );	
+						$.content().setTitle( $.slatwall.getRenderEntity().getFirstName() & " " & $.slatwall.getRenderEntity().getLastName() );
+						if(len($.slatwall.getRenderEntity().setting('accountHTMLTitleString'))) {
+							$.content().setHTMLTitle( $.slatwall.getRenderEntity().stringReplace( $.slatwall.getRenderEntity().setting('accountHTMLTitleString') ) );	
 						} else {
-							$.content().setHTMLTitle( $.slatwall.getProfile().getFirstName() & " " & $.slatwall.getProfile().getLastName() );
+							$.content().setHTMLTitle( $.slatwall.getRenderEntity().getFirstName() & " " & $.slatwall.getRenderEntity().getLastName() );
 						}
-						$.content().setMetaDesc( $.slatwall.getProfile().stringReplace( $.slatwall.getProfile().setting('accountMetaDescriptionString') ) );
-						$.content().setMetaKeywords( $.slatwall.getProfile().stringReplace( $.slatwall.getProfile().setting('accountMetaKeywordsString') ) );
+						$.content().setMetaDesc( $.slatwall.getRenderEntity().stringReplace( $.slatwall.getRenderEntity().setting('accountMetaDescriptionString') ) );
+						$.content().setMetaKeywords( $.slatwall.getRenderEntity().stringReplace( $.slatwall.getRenderEntity().setting('accountMetaKeywordsString') ) );
 						
 					} else {
 						
 						throw("Slatwall has attempted to display a 'Account' on your website, however the 'Account Display Template' setting is either blank or invalid.  Please navigate to the Slatwall admin and make sure that there is a valid 'Account Display Template' assigned.");
 						
 					}
-
 				}
 			}
 		}
@@ -691,8 +693,6 @@
 				// If the "Add Sku" was selected, then we call that process method
 				if(structKeyExists(contentData, "addSku") && contentData.addSku && structKeyExists(contentData, "addSkuDetails")) {
 					contentData.addSkuDetails.productCode = muraContent.getFilename();
-					contentData.addSkuDetails.skuName = muraContent.getTitle();
-					
 					slatwallContent = $.slatwall.getService("contentService").processContent(slatwallContent, contentData.addSkuDetails, "createSku");
 				}
 			}
