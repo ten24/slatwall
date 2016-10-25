@@ -141,6 +141,22 @@ Notes:
 
 	</cffunction>
 
+	<cffunction name="removeAccountAddressFromSubscriptionUsages">
+		<cfargument name="accountAddressID" type="string" required="true" >
+
+		<cfset var rs = "" />
+
+		<cfquery name="rs">
+			UPDATE
+				SwSubsUsage
+			SET
+				shippingAccountAddressID = null
+			WHERE
+				shippingAccountAddressID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountAddressID#" />
+		</cfquery>
+
+	</cffunction>
+	
 	<cffunction name="removeAccountPaymentMethodFromOrderPayments">
 		<cfargument name="accountPaymentMethodID" type="string" required="true" >
 
