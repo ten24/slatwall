@@ -45,6 +45,18 @@
       {  
          "type":"include",
          "rel_dir":"/components/fulfillment_methods/shipping/add_shipping_method_co.json"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/fulfillment_methods/shipping/assert_added_shipping_method_co.json"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/fulfillment_methods/shipping/add_shipping_rates_co.json"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/fulfillment_methods/shipping/assert_shipping_rates_co.json"
       }
    ],
    "data":{  

@@ -1,0 +1,52 @@
+{  
+   "type":"script",
+   "seleniumVersion":"2",
+   "formatVersion":2,
+   "steps":[
+      { 
+         "__comment":"Check shipping_method_name is displayed on top", 
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "locator":{  
+            "type":"css selector",
+            "value":"#j-main-content > div > div.row.s-body-nav > nav > div.col-md-6.s-header-info > h1"
+         },
+         "text":"${shipping_method_name}"
+      },
+      { 
+         "__comment":"Check shipping_method_name is displayed on the basic accordion tab", 
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabbasic > div > div > div > div:nth-child(2) > div > p"
+         },
+         "text":"${shipping_method_name}"
+      },
+      {
+        "type": "print",
+        "text": "${shipping_method_code}"
+      },
+      { 
+         "__comment":"Check shipping_method_code is displayed on the basic accordion tab", 
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabbasic > div > div > div > div:nth-child(3) > div > p"
+         },
+         "text":"${shipping_method_code}"
+      }
+      
+   ],
+   "data":{  
+      "configs":{  
+
+      },
+      "source":"none"
+   },
+   "inputs":[  
+
+   ],
+   "timeoutSeconds":60
+}

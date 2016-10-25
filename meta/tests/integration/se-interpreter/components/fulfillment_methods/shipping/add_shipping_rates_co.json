@@ -21,38 +21,23 @@
          "type":"clickElement",
          "locator":{  
             "type":"css selector",
-            "value":"#tabshippingmethods > a"
+            "value":"#tabshippingmethodrates > div.btn-group > button"
          }
       },
       {  
-         "__comment":"Check empty fields",
+         "__comment":"Manual rate should be displayed",
          "type":"clickElement",
          "locator":{  
             "type":"css selector",
-            "value":"#adminentitysaveshippingmethod > div.row.s-body-nav > nav > div:nth-child(2) > div > div:nth-child(3) > button"
+            "value":"#tabshippingmethodrates > div.btn-group.open > ul > li > a"
          }
       },
-      {
-         "type": "setElementText",
-         "locator": {
-            "type": "name",
-            "value": "shippingMethodName"
-         },
-         "text":"${shipping_method_name}"
-      },
-      {
-         "type": "setElementText",
-         "locator": {
-            "type": "name",
-            "value": "shippingMethodCode"
-         },
-         "text":"${shipping_method_code}"
-      },
       {  
+         "__comment":"Create default shipping rate",
          "type":"clickElement",
          "locator":{  
             "type":"css selector",
-            "value":"#adminentitysaveshippingmethod > div.row.s-body-nav > nav > div:nth-child(2) > div > div:nth-child(3) > button"
+            "value":"#adminentitysaveshippingmethodrate > div > div > div.modal-footer > div > button.btn.btn-success"
          }
       }
    ],

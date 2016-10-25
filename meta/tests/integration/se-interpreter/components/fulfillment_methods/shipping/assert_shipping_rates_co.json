@@ -1,0 +1,165 @@
+{  
+   "type":"script",
+   "seleniumVersion":"2",
+   "formatVersion":2,
+   "steps":[
+      { 
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabbasic > div > div > div > div:nth-child(2) > div > p"
+         },
+         "text":"${default_address_zone}"
+      },
+      { 
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabbasic > div > div > div > div:nth-child(3) > div > p"
+         },
+         "text":"${default_min_fulfillment_quantity}"
+      },
+      { 
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabbasic > div > div > div > div:nth-child(4) > div > p"
+         },
+         "text":"${default_max_fulfillment_quantity}"
+      },
+      { 
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabbasic > div > div > div > div:nth-child(5) > div > p"
+         },
+         "text":"${default_min_fulfillment_weight}"
+      },
+      { 
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabbasic > div > div > div > div:nth-child(6) > div > p"
+         },
+         "text":"${default_max_fulfillment_weight}"
+      },
+      { 
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabbasic > div > div > div > div:nth-child(7) > div > p"
+         },
+         "text":"${default_min_fulfillment_subtotal}"
+      },
+      { 
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabbasic > div > div > div > div:nth-child(8) > div > p"
+         },
+         "text":"${default_split_shipment_weight}"
+      },
+      { 
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabbasic > div > div > div > div:nth-child(9) > div > p"
+         },
+         "text":"${default_default_amount}"
+      },
+      { 
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabbasic > div > div > div > div:nth-child(10) > div > p"
+         },
+         "text":"${default_rate_multiplier_amount}"
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#j-main-content > div > div.row.s-body-nav > nav > div:nth-child(2) > div > div:nth-child(1) > a"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(1) > a"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(2) > a"
+         }
+      },
+      { 
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-sortable > tbody > tr:nth-child(1) > td:nth-child(2)"
+         },
+         "text":"${shipping_rate_type}"
+      },
+      { 
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-sortable > tbody > tr:nth-child(1) > td:nth-child(4)"
+         },
+         "text":"${default_range}"
+      },
+      { 
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-sortable > tbody > tr:nth-child(1) > td:nth-child(5)"
+         },
+         "text":"${default_max_fulfillment_weight}"
+      },
+      { 
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-sortable > tbody > tr:nth-child(1) > td:nth-child(6)"
+         },
+         "text":"${default_range}"
+      },
+      { 
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-sortable > tbody > tr:nth-child(1) > td:nth-child(7)"
+         },
+         "text":"${default_range}"
+      }
+
+   ],
+   "data":{  
+      "configs":{  
+
+      },
+      "source":"none"
+   },
+   "inputs":[  
+
+   ],
+   "timeoutSeconds":60
+}

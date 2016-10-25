@@ -8,10 +8,10 @@
          }
       }, 
       {  
-         "__comment":"${merchandise_product_name}",
+         "__comment":"Merchandise product #1",
          "type":"generateAssertion",
          "assertion_type":"waitForText",
-         "text":"Merchandise product #1 ",
+         "text":"${merchandise_product_name}",
          "locator":{  
             "type":"css selector",
             "value":"#taborderitems > sw-order-items > div > div > ng-transclude > div > table > tbody.ng-scope.ng-isolate-scope > tr > td.s-title > span"

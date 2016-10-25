@@ -63,6 +63,18 @@
          }
       },
       {  
+         "type":"storeText",
+         "variable":"office_location",
+         "locator":{  
+            "type":"xpath",
+            "value":"//form[@id='adminentityprocessorder_create']/div/div/div[2]/div/div/div/div[7]/div/select//option[3]"
+         }
+      },
+      {
+         "type":"print",
+         "text":"${office_location}"
+      },
+      {  
          "type":"clickElement",
          "locator":{  
             "type":"xpath",

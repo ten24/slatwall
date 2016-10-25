@@ -4,10 +4,6 @@
    "formatVersion":2,
    "steps":[
       {  
-         "type":"include",
-         "rel_dir":"/components/login_co.json"
-      },
-      {  
          "type":"clickElement",
          "locator":{  
             "type":"css selector",

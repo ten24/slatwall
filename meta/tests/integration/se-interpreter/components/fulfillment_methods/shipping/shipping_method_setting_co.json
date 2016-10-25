@@ -7,8 +7,78 @@
       },
       {  
          "type":"store",
-         "text":"Shipping",
+         "text":"shipping",
          "variable":"fulfillment_method_type"
+      },
+      {  
+         "type":"store",
+         "text":"Shipping method name #1",
+         "variable":"shipping_method_name"
+      },
+      {  
+         "script":"return Math.floor(Math.random()*100000)",
+         "variable":"shipping_method_code",
+         "type":"storeEval"
+      },
+      {  
+         "type":"store",
+         "text":"All",
+         "variable":"default_address_zone"
+      },
+      {  
+         "type":"store",
+         "text":"0",
+         "variable":"default_min_fulfillment_quantity"
+      },
+      {  
+         "type":"store",
+         "text":"Unlimited",
+         "variable":"default_max_fulfillment_quantity"
+      },
+      {  
+         "type":"store",
+         "text":"0",
+         "variable":"default_min_fulfillment_weight"
+      },
+      {  
+         "type":"store",
+         "text":"Unlimited",
+         "variable":"default_max_fulfillment_weight"
+      },
+      {  
+         "type":"store",
+         "text":"0",
+         "variable":"default_min_fulfillment_subtotal"
+      },
+      {  
+         "type":"store",
+         "text":"Unlimited",
+         "variable":"default_split_shipment_weight"
+      },
+      {  
+         "type":"store",
+         "text":"0",
+         "variable":"default_default_amount"
+      },
+      {  
+         "type":"store",
+         "text":"0",
+         "variable":"default_rate_multiplier_amount"
+      },
+      {  
+         "type":"store",
+         "text":"Manual",
+         "variable":"shipping_rate_type"
+      },
+      {  
+         "type":"store",
+         "text":"Any",
+         "variable":"default_weight_range"
+      },
+      {  
+         "type":"store",
+         "text":"Any",
+         "variable":"default_range"
       }
    ]
 }

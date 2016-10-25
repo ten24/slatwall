@@ -1,0 +1,38 @@
+{  
+   "steps":[  
+      
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"${order_status_new}",
+         "locator":{  
+            "type":"css selector",
+            "value":"#hibachiPropertyTable1 > tbody > tr:nth-child(2) > td.value"
+         }
+      },
+      
+      {
+        "type": "print",
+        "text": "${total_with_currency}"
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"$${total_with_currency}.00",
+         "locator":{  
+            "type":"css selector",
+            "value":"#hibachiPropertyTable1 > tbody > tr:nth-child(5) > td.value"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"$${total_with_currency}.00",
+         "locator":{  
+            "type":"css selector",
+            "value":"#hibachiPropertyTable1 > tbody > tr:nth-child(9) > td.value.table-total"
+         }
+      }
+      
+   ]
+}
