@@ -2,8 +2,7 @@
 	"properties":{
 		"collectionID":		    [{"contexts":"save","method":"canSaveCollectionByCollectionObject"}],
 		"collectionCode":	    [{"contexts":"save","uniqueOrNull":true,"regex":"^[a-zA-Z0-9-_.|:~^]+$"}],
-		"collectionName":		[
-			{"contexts":"save","required":true}
-		]
+		"collectionName":		[{"contexts":"save","required":true}],
+        "collectionID":	        [{"contexts":"delete","method":"hasNoAssociatedCollection"}]
 	}
 }

@@ -1762,6 +1762,17 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// =============== START: Custom Validation Methods ====================
+	public boolean function hasNoAssociatedCollection() {
+		var collectionCollection =  getService('hibachiService').getCollectionCollectionList();
+		collectionCollection.addFilter('parentCollection.collectionID', variables.collectionID);
+		if(collectionCollection.getRecordsCount() == 0){
+			return true;
+		}else{
+			return false;
+		}
+
+
+	}
 
 	// ===============  END: Custom Validation Methods =====================
 
