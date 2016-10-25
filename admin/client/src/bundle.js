@@ -3654,7 +3654,6 @@
 	                }
 	            };
 	        });
-	        //This filter is used to shorten a string by removing the charecter count that is passed to it and ending it with "..."
 	        $filterProvider.register('truncate', function () {
 	            return function (input, chars, breakOnWord) {
 	                if (isNaN(chars))
@@ -3676,33 +3675,6 @@
 	                        }
 	                    }
 	                    return input + '...';
-	                }
-	                return input;
-	            };
-	        });
-	        //This filter is used to shorten long string but unlike "truncate", it removes from the start of the string and prepends "..."
-	        $filterProvider.register('pretruncate', function () {
-	            return function (input, chars, breakOnWord) {
-	                if (isNaN(chars))
-	                    return input;
-	                if (chars <= 0)
-	                    return '';
-	                if (input && input.length > chars) {
-	                    input = input.slice('-' + chars);
-	                    //  input = input.substring(0, chars);
-	                    if (!breakOnWord) {
-	                        var lastspace = input.lastIndexOf(' ');
-	                        //get last space
-	                        if (lastspace !== -1) {
-	                            input = input.substr(0, lastspace);
-	                        }
-	                    }
-	                    else {
-	                        while (input.charAt(input.length - 1) === ' ') {
-	                            input = input.substr(0, input.length - 1);
-	                        }
-	                    }
-	                    return '...' + input;
 	                }
 	                return input;
 	            };
@@ -4584,7 +4556,7 @@
 	        this.accountService = accountService;
 	        this.requestService = requestService;
 	        this.appConfig = appConfig;
-	        this.baseActionPath = this.appConfig.baseURL + "/index.cfm/api/scope/"; //default path
+	        this.baseActionPath = this.appConfig.baseURL + "index.cfm/api/scope/"; //default path
 	        this.confirmationUrl = "/order-confirmation";
 	        this.$http = $http;
 	        this.$location = $location;
@@ -6510,9 +6482,8 @@
 	            var request = _this.requestService.newAdminRequest(urlString);
 	            return request.promise;
 	        };
-	        this.getFilterPropertiesByBaseEntityName = function (entityName, includeNonPersistent) {
-	            if (includeNonPersistent === void 0) { includeNonPersistent = false; }
-	            var urlString = _this.getUrlWithActionPrefix() + 'api:main.getFilterPropertiesByBaseEntityName&EntityName=' + entityName + '&includeNonPersistent=' + includeNonPersistent;
+	        this.getFilterPropertiesByBaseEntityName = function (entityName) {
+	            var urlString = _this.getUrlWithActionPrefix() + 'api:main.getFilterPropertiesByBaseEntityName&EntityName=' + entityName;
 	            var request = _this.requestService.newAdminRequest(urlString);
 	            return request.promise;
 	        };
@@ -13791,88 +13762,31 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var CollectionCreateController = (function () {
 	    //@ngInject
-	    function CollectionCreateController($q, $scope, collectionConfigService, selectionService) {
+	    function CollectionCreateController($scope, collectionConfigService) {
 	        var _this = this;
-	        this.$q = $q;
 	        this.$scope = $scope;
 	        this.collectionConfigService = collectionConfigService;
-	        this.selectionService = selectionService;
+	        this.$scope.entity_createcollectionCtrl = {};
+	        this.$scope.entity_createcollectionCtrl.baseCollections = [];
+	        this.collection = this.collectionConfigService.newCollectionConfig('Collection');
+	        this.getBaseCollections('Access');
 	        //on select change get collection
-	        this.$scope.preprocessproduct_createCtrl.productTypeChanged = function (selectedOption) {
-	            _this.$scope.preprocessproduct_createCtrl.selectedOption = selectedOption;
-	            _this.$scope.preprocessproduct_createCtrl.getCollection();
-	            _this.selectionService.clearSelection('ListingDisplay');
+	        this.$scope.entity_createcollectionCtrl.collectionObjectChanged = function () {
+	            console.log(_this.$scope.entity_createcollectionCtrl.selectedOption);
+	            _this.getBaseCollections(_this.$scope.entity_createcollectionCtrl.selectedOption);
 	        };
-	        this.$scope.productTypeIDPaths = {};
-	        this.$scope.preprocessproduct_createCtrl.getCollection = function () {
-	            var productTypeDeffered = _this.$q.defer();
-	            var productTypePromise = productTypeDeffered.promise;
-	            if (angular.isUndefined(_this.$scope.productTypeIDPaths[_this.$scope.preprocessproduct_createCtrl.selectedOption.value])) {
-	                var productTypeCollectionConfig = _this.collectionConfigService.newCollectionConfig('ProductType');
-	                productTypeCollectionConfig.addDisplayProperty('productTypeID, productTypeIDPath');
-	                productTypeCollectionConfig.addFilter('productTypeID', _this.$scope.preprocessproduct_createCtrl.selectedOption.value, "=");
-	                productTypeCollectionConfig.getEntity().then(function (result) {
-	                    if (angular.isDefined(result.pageRecords[0])) {
-	                        _this.$scope.productTypeIDPaths[result.pageRecords[0].productTypeID] = result.pageRecords[0].productTypeIDPath;
-	                    }
-	                    productTypeDeffered.resolve();
-	                }, function (reason) {
-	                    productTypeDeffered.reject();
-	                    throw ("ProductCreateController was unable to retrieve the product type ID Path.");
-	                });
-	            }
-	            else {
-	                productTypeDeffered.resolve();
-	            }
-	            productTypePromise.then(function () {
-	                var collectionConfig = _this.collectionConfigService.newCollectionConfig('Option');
-	                collectionConfig.setDisplayProperties('optionGroup.optionGroupName,optionName', undefined, { isVisible: true });
-	                collectionConfig.setDisplayProperties('optionID', undefined, { isVisible: false });
-	                //this.collectionConfig.addFilter('optionGroup.optionGroupID',$('input[name="currentOptionGroups"]').val(),'NOT IN')
-	                collectionConfig.addFilter('optionGroup.globalFlag', 1, '=');
-	                var productTypeIDArray = _this.$scope.productTypeIDPaths[_this.$scope.preprocessproduct_createCtrl.selectedOption.value].split(",");
-	                for (var j = 0; j < productTypeIDArray.length; j++) {
-	                    collectionConfig.addFilter('optionGroup.productTypes.productTypeID', productTypeIDArray[j], '=', 'OR');
-	                }
-	                collectionConfig.setOrderBy('optionGroup.sortOrder|ASC,sortOrder|ASC');
-	                _this.$scope.preprocessproduct_createCtrl.collectionListingPromise = collectionConfig.getEntity();
-	                _this.$scope.preprocessproduct_createCtrl.collectionListingPromise.then(function (data) {
-	                    _this.$scope.preprocessproduct_createCtrl.collection = data;
-	                    _this.$scope.preprocessproduct_createCtrl.collection.collectionConfig = collectionConfig;
-	                });
-	            }, function () {
-	                throw ("ProductCreateController was unable to resolve the product type.");
-	            });
-	        };
-	        var renewalMethodOptions = $("select[name='renewalMethod']")[0];
-	        this.$scope.preprocessproduct_createCtrl.renewalMethodOptions = [];
-	        angular.forEach(renewalMethodOptions, function (option) {
-	            var optionToAdd = {
-	                label: option.label,
-	                value: option.value
-	            };
-	            _this.$scope.preprocessproduct_createCtrl.renewalMethodOptions.push(optionToAdd);
-	        });
-	        this.$scope.preprocessproduct_createCtrl.renewalSkuChoice = this.$scope.preprocessproduct_createCtrl.renewalMethodOptions[1];
-	        var productTypeOptions = $("select[name='product.productType.productTypeID']")[0];
-	        this.$scope.preprocessproduct_createCtrl.options = [];
-	        angular.forEach(productTypeOptions, function (jQueryOption) {
-	            var option = {
-	                label: jQueryOption.label,
-	                value: jQueryOption.value
-	            };
-	            _this.$scope.preprocessproduct_createCtrl.options.push(option);
-	        });
-	        this.$scope.preprocessproduct_createCtrl.selectedOption = {};
-	        if (angular.isDefined(this.$scope.preprocessproduct_createCtrl.options[0]) && angular.isDefined(this.$scope.preprocessproduct_createCtrl.options[0].value)) {
-	            this.$scope.preprocessproduct_createCtrl.selectedOption.value = this.$scope.preprocessproduct_createCtrl.options[0].value;
-	        }
-	        else {
-	            this.$scope.preprocessproduct_createCtrl.selectedOption.value = "";
-	        }
 	    }
+	    CollectionCreateController.prototype.getBaseCollections = function (baseCollectionObject) {
+	        var _this = this;
+	        this.collection.clearFilters();
+	        this.collection.addFilter('collectionObject', baseCollectionObject);
+	        this.collection.getEntity().then(function (res) {
+	            _this.$scope.entity_createcollectionCtrl.baseCollections = res.pageRecords;
+	        });
+	    };
 	    return CollectionCreateController;
 	})();
+	exports.CollectionCreateController = CollectionCreateController;
 
 
 /***/ },
@@ -16431,22 +16345,6 @@
 	                            {
 	                                display: "Equals",
 	                                comparisonOperator: "eq"
-	                            },
-	                            {
-	                                display: "Greater Than",
-	                                comparisonOperator: "gt"
-	                            },
-	                            {
-	                                display: "Greater Than Or Equal",
-	                                comparisonOperator: "gte"
-	                            },
-	                            {
-	                                display: "Less Than",
-	                                comparisonOperator: "lt"
-	                            },
-	                            {
-	                                display: "Less Than Or Equal",
-	                                comparisonOperator: "lte"
 	                            },
 	                            {
 	                                display: "Doesn't Equal",
@@ -21073,7 +20971,7 @@
 	                else {
 	                    angular.forEach(scope.workflowCondition.breadCrumbs, function (breadCrumb, key) {
 	                        if (angular.isUndefined(scope.filterPropertiesList[breadCrumb.propertyIdentifier])) {
-	                            var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(breadCrumb.cfc, true);
+	                            var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(breadCrumb.cfc);
 	                            filterPropertiesPromise.then(function (value) {
 	                                metadataService.setPropertiesList(value, breadCrumb.propertyIdentifier);
 	                                scope.filterPropertiesList[breadCrumb.propertyIdentifier] = metadataService.getPropertiesListByBaseEntityAlias(breadCrumb.propertyIdentifier);
@@ -21416,7 +21314,7 @@
 	            _this.$log.debug(workflowTaskAction);
 	            _this.finished = false;
 	            _this.workflowTaskActions.selectedTaskAction = undefined;
-	            var filterPropertiesPromise = _this.$hibachi.getFilterPropertiesByBaseEntityName(_this.workflowTask.data.workflow.data.workflowObject, true);
+	            var filterPropertiesPromise = _this.$hibachi.getFilterPropertiesByBaseEntityName(_this.workflowTask.data.workflow.data.workflowObject);
 	            filterPropertiesPromise.then(function (value) {
 	                _this.filterPropertiesList = {
 	                    baseEntityName: _this.workflowTask.data.workflow.data.workflowObject,
@@ -21671,7 +21569,7 @@
 	                    $log.debug(workflowTask);
 	                    scope.finished = false;
 	                    scope.workflowTasks.selectedTask = undefined;
-	                    var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(scope.workflow.data.workflowObject, true);
+	                    var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(scope.workflow.data.workflowObject);
 	                    filterPropertiesPromise.then(function (value) {
 	                        scope.filterPropertiesList = {
 	                            baseEntityName: scope.workflow.data.workflowObject,
@@ -21765,7 +21663,7 @@
 	                    scope.done = false;
 	                    scope.finished = false;
 	                    scope.workflowTriggers.selectedTrigger = undefined;
-	                    var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(scope.workflowTrigger.data.workflow.data.workflowObject, true);
+	                    var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(scope.workflowTrigger.data.workflow.data.workflowObject);
 	                    filterPropertiesPromise.then(function (value) {
 	                        scope.filterPropertiesList = {
 	                            baseEntityName: scope.workflowTrigger.data.workflow.data.workflowObject,
@@ -21783,7 +21681,7 @@
 	                        return;
 	                    if (!workflowTrigger.data.workflow.data.workflowTasks || !workflowTrigger.data.workflow.data.workflowTasks.length) {
 	                        var alert = alertService.newAlert();
-	                        alert.msg = "You don't have any Task yet!";
+	                        alert.msg = "You don't have any  Task yet!";
 	                        alert.type = "error";
 	                        alert.fade = true;
 	                        alertService.addAlert(alert);
