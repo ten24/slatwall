@@ -3086,7 +3086,7 @@ table .s-table-header .table-section a.s-hint {
   top: -2px;
   position: relative;
 }
-.s-j-draggablePanelList a {
+.s-j-draggablePanelList .s-pannel-body a {
   height: 40px;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
@@ -3099,7 +3099,7 @@ table .s-table-header .table-section a.s-hint {
   background-color: #ffffff;
   color: #cccccc;
 }
-.s-j-draggablePanelList a:hover {
+.s-j-draggablePanelList .s-pannel-body a:hover {
   border: 0px !important;
   background: #f2f2f2;
   color: #cccccc;
@@ -3124,14 +3124,14 @@ table .s-table-header .table-section a.s-hint {
 .s-j-draggablePanelList a .fa-sort-amount-desc {
   color: #666666;
 }
-.s-j-draggablePanelList .s-remove {
+.s-j-draggablePanelList .s-pannel-body .s-remove {
   background-color: #b3b3b3;
   color: #ffffff !important;
 }
-.s-j-draggablePanelList .s-remove:hover {
+.s-j-draggablePanelList .s-pannel-body .s-remove:hover {
   border: none !important;
 }
-.s-j-draggablePanelList .s-remove.active {
+.s-j-draggablePanelList .s-pannel-body .s-remove.active {
   background-color: #DA5757 !important;
   color: #ffffff !important;
 }
@@ -3201,12 +3201,14 @@ table .s-table-header .table-section a.s-hint {
 .s-j-draggablePanelList .s-pannel-name {
   cursor: move;
   height: 40px;
+  white-space: nowrap;
 }
 .s-j-draggablePanelList .s-pannel-name input {
-  width: 164px;
+  width: 100%;
   display: inline-block;
-  margin-top: 5px;
+  margin-top: 3px;
   margin-right: 5px;
+  font-size: 12px !important;
 }
 .s-j-draggablePanelList .s-pannel-name .s-pannel-title {
   color: #666666;
@@ -3250,6 +3252,25 @@ table .s-table-header .table-section a.s-hint {
   padding-top: 11px;
   font-size: 12px;
   color: #e6e6e6;
+}
+.s-j-draggablePanelList .s-pannel-name .s-title-wrapper {
+  display: inline;
+}
+.s-j-draggablePanelList .s-pannel-name .s-title-wrapper .s-edit-mode {
+  width: 100%;
+  position: relative;
+}
+.s-j-draggablePanelList .s-pannel-name .s-title-wrapper .s-controlls {
+  position: absolute;
+  z-index: 2;
+}
+.s-j-draggablePanelList .s-pannel-name .s-title-wrapper .s-edit-mode .s-controlls {
+  top: -3px;
+}
+.s-j-draggablePanelList .s-pannel-name .s-title-wrapper .s-view-mode .s-controlls {
+  top: 11px;
+  margin-left: 8px;
+  cursor: pointer;
 }
 .s-j-draggablePanelList .s-pannel-name > i {
   margin-left: 30px;
