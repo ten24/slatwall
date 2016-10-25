@@ -709,10 +709,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		if(!isNull(variables.baseCollectionID)){
 			var baseCollection = getService('hibachiService').getCollection(variables.baseCollectionID);
-			var baseCollectionConfig = baseCollection.getCollectionConfigStruct();
-			if(!isnull(baseCollectionConfig.filterGroups) && arraylen(baseCollectionConfig.filterGroups)){
-				filterGroupArray = mergeCollectionFilter(baseCollectionConfig.filterGroups, filterGroupArray);
-				mergeJoins(baseCollectionConfig.joins);
+			if(!isNull(baseCollection)) {
+				var baseCollectionConfig = baseCollection.getCollectionConfigStruct();
+				if (!isnull(baseCollectionConfig.filterGroups) && arraylen(baseCollectionConfig.filterGroups)) {
+					filterGroupArray = mergeCollectionFilter(baseCollectionConfig.filterGroups, filterGroupArray);
+					mergeJoins(baseCollectionConfig.joins);
+				}
 			}
 		}
 
