@@ -180,8 +180,15 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	}
 
 	public numeric function getRenewalPrice(){
+		if (structKeyExists(variables, "renewalPrice")){
+			return variables.renewalPrice;
+		}
 		if(!structKeyExists(variables, "renewalPrice") && !isNull(this.getRenewalSku())){
-			variables.renewalPrice = this.getRenewalSku().getRenewalPrice();
+			if (this.getRenewalSku().getRenewalPrice() > 0){
+				variables.renewalPrice = this.getRenewalSku().getRenewalPrice();
+			}else{
+				variables.renewalPrice = this.getRenewalSku().getPrice();
+			}
 		}else{
 			variables.renewalPrice = 0;
 		}

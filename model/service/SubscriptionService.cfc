@@ -141,20 +141,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		subscriptionUsage.setExpirationDate( arguments.orderItem.getSku().getSubscriptionTerm().getInitialTerm().getEndDate() );
 		subscriptionUsage.setNextBillDate( subscriptionUsage.getExpirationDate() );
 		subscriptionUsage.setFirstReminderEmailDateBasedOnNextBillDate();
-		subscriptionUsage.setRenewalSku(arguments.orderItem.getSku().getRenewalSku());
-
+		
+		if (!isNull(arguments.orderItem.getSku().getRenewalSku())){
+			subscriptionUsage.setRenewalSku(arguments.orderItem.getSku().getRenewalSku());
+			subscriptionUsage.setRenewalPrice(arguments.orderItem.getSku().getRenewalPrice());
+		}
 		// add active status to subscription usage
 		setSubscriptionUsageStatus(subscriptionUsage, 'sstActive');
-
+		
 		// create new subscription orderItem
 		var subscriptionOrderItem = this.newSubscriptionOrderItem();
 		subscriptionOrderItem.setOrderItem(arguments.orderItem);
 		subscriptionOrderItem.setSubscriptionOrderItemType(getTypeService().getTypeBySystemCode(subscriptionOrderItemType));
 		subscriptionOrderItem.setSubscriptionUsage(subscriptionUsage);
-
+		
 		// call save on this entity to make it persistent so we can use it for further lookup
 		this.saveSubscriptionUsage(subscriptionUsage);
-
+		
 		// copy all the subscription benefits
 		for(var subscriptionBenefit in arguments.orderItem.getSku().getSubscriptionBenefits()) {
 			var subscriptionUsageBenefit = this.getSubscriptionUsageBenefitBySubscriptionBenefitANDSubscriptionUsage([subscriptionBenefit,subscriptionUsage],true);
@@ -655,14 +658,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 
 		//if the renewal sku has changed update the renewal price
-		if(structKeyExists(arguments.data, "useRenewalSku")){
+		/*if(structKeyExists(arguments.data, "useRenewalSku")){
 			if(!arguments.data.useRenewalSku){
 				arguments.subscriptionUsage.setRenewalSku(javacast("null",""));
 				structDelete(arguments.data, "renewalSku");
 			} else if(!isNull(arguments.subscriptionUsage.getRenewalSku()) && structKeyExists(arguments.data, "renewalSku") && arguments.subscriptionUsage.getRenewalSku().getSkuID() != arguments.data.renewalSku.skuID){
 				arguments.data.renewalPrice = getSkuService().getSku(data.renewalSku.skuID).getRenewalPrice();
 			}
-		}
+		}*/
 
 		return this.save(arguments.subscriptionUsage, arguments.data, arguments.context);
 	}
