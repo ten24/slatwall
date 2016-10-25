@@ -673,18 +673,7 @@ component extends="HibachiService" accessors="true" {
 
 
 		newSku.setPrice( arguments.processObject.getPrice() );
-		//use the set renewal price if available and not zero.
-		if (arguments.product.getRenewalSku() != null && arguments.processObject.getRenewalPrice() > 0){
-			newSku.setRenewalPrice( arguments.processObject.getRenewalPrice() );	
-		//use the renewal price if available and not zero from the renewal sku.
-		}else if(arguments.product.getRenewalSku() != null && arguments.product.getRenewalSku().getRenewalPrice() > 0){
-			newSku.setRenewalPrice( arguments.processObject.getRenewalPrice() );
-		//or try to use the price frmo the renewal sku if available.
-		}else if(arguments.product.getRenewalSku() != null && !isNull(arguments.product.getRenewalSku().getPrice()) ){
-			newSku.setRenewalPrice( arguments.product.getRenewalSku().getPrice() );
-		}
-		
-		
+		newSku.setRenewalPrice( arguments.processObject.getRenewalPrice() );
 		if( !isNull(arguments.processObject.getListPrice()) && isNumeric( arguments.processObject.getListPrice() )) {
 			newSku.setListPrice( arguments.processObject.getListPrice() );
 		}
