@@ -1,7 +1,8 @@
 {
 	"properties":{
-		"collectionID":		[{"contexts":"save","method":"canSaveCollectionByCollectionObject"}],
-		"collectionCode":	[{"contexts":"save","uniqueOrNull":true,"regex":"^[a-zA-Z0-9-_.|:~^]+$"}],
+		"collectionID":		    [{"contexts":"save","method":"canSaveCollectionByCollectionObject"}],
+		"collectionObject":		[{"contexts":"save","required":true}],
+		"collectionCode":	    [{"contexts":"save","uniqueOrNull":true,"regex":"^[a-zA-Z0-9-_.|:~^]+$"}],
 		"collectionName":		[
 			{"contexts":"save","required":true}
 		]
