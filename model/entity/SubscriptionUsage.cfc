@@ -144,8 +144,8 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 		
 		//if we have a renewal sku, then use that to get the renewal price (still by currency code)
 		if (!isNull(arguments.orderItem.getSku().getRenewalSku())){
-			subscriptionUsage.setRenewalSku(arguments.orderItem.getSku().getRenewalSku());
-			subscriptionUsage.setRenewalPrice(arguments.orderItem.getSku().getRenewalSku().getRenewalPriceByCurrencyCode( currencyCode ));
+			setRenewalSku(arguments.orderItem.getSku().getRenewalSku());
+			setRenewalPrice(arguments.orderItem.getSku().getRenewalSku().getRenewalPriceByCurrencyCode( currencyCode ));
 		//otherwise, if we have a renewal price on the sku, then use the renewal price from the sku.
 		}else{
 			var renewalPrice = arguments.orderItem.getSku().getRenewalPriceByCurrencyCode( currencyCode );
