@@ -45,8 +45,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="collectionDescription" ormtype="string";
 	property name="collectionObject" ormtype="string" hb_formFieldType="select";
 	property name="collectionConfig" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json" hint="json object used to construct the base collection HQL query";
-
-	property name="baseCollectionID" ormtype="string";
 	// Calculated Properties
 
 	// Related Object Properties (many-to-one)
@@ -707,31 +705,15 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			filterGroupArray = collectionConfig.filterGroups;
 		}
 
-		if(!isNull(variables.baseCollectionID)){
-			var baseCollection = getService('hibachiService').getCollection(variables.baseCollectionID);
-			if(!isNull(baseCollection)) {
-				var baseCollectionConfig = baseCollection.getCollectionConfigStruct();
-				if (!isnull(baseCollectionConfig.filterGroups) && arraylen(baseCollectionConfig.filterGroups)) {
-					filterGroupArray = mergeCollectionFilter(baseCollectionConfig.filterGroups, filterGroupArray);
-					mergeJoins(baseCollectionConfig.joins);
-				}
-			}
-		}
-
 		if(!isnull(arguments.collectionEntity.getParentCollection())){
-
-			var parentFilterGroupArray = getFilterGroupArrayFromAncestors(arguments.collectionEntity.getParentCollection());
-
-			for(var parentFilterGroup in parentFilterGroupArray){
-				if(!arrayFind(filterGroupArray,parentFilterGroup)){
-					if(!structKeyExists(parentFilterGroup,"logicalOperator")){
-						parentFilterGroup["logicalOperator"] = ' AND ';
-					}
-					ArrayAppend(filterGroupArray,parentFilterGroup);
+			var parentCollectionStruct = arguments.collectionEntity.getParentCollection().getCollectionConfigStruct();
+			if (!isnull(parentCollectionStruct.filterGroups) && arraylen(parentCollectionStruct.filterGroups)) {
+				filterGroupArray = mergeCollectionFilter(parentCollectionStruct.filterGroups, filterGroupArray);
+				if(structKeyExists(parentCollectionStruct, 'joins')){
+					mergeJoins(parentCollectionStruct.joins);
 				}
 			}
 		}
-
 		return filterGroupArray;
 	}
 
