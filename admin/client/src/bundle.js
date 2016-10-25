@@ -3654,6 +3654,7 @@
 	                }
 	            };
 	        });
+	        //This filter is used to shorten a string by removing the charecter count that is passed to it and ending it with "..."
 	        $filterProvider.register('truncate', function () {
 	            return function (input, chars, breakOnWord) {
 	                if (isNaN(chars))
@@ -3675,6 +3676,33 @@
 	                        }
 	                    }
 	                    return input + '...';
+	                }
+	                return input;
+	            };
+	        });
+	        //This filter is used to shorten long string but unlike "truncate", it removes from the start of the string and prepends "..."
+	        $filterProvider.register('pretruncate', function () {
+	            return function (input, chars, breakOnWord) {
+	                if (isNaN(chars))
+	                    return input;
+	                if (chars <= 0)
+	                    return '';
+	                if (input && input.length > chars) {
+	                    input = input.slice('-' + chars);
+	                    //  input = input.substring(0, chars);
+	                    if (!breakOnWord) {
+	                        var lastspace = input.lastIndexOf(' ');
+	                        //get last space
+	                        if (lastspace !== -1) {
+	                            input = input.substr(0, lastspace);
+	                        }
+	                    }
+	                    else {
+	                        while (input.charAt(input.length - 1) === ' ') {
+	                            input = input.substr(0, input.length - 1);
+	                        }
+	                    }
+	                    return '...' + input;
 	                }
 	                return input;
 	            };
@@ -4556,7 +4584,7 @@
 	        this.accountService = accountService;
 	        this.requestService = requestService;
 	        this.appConfig = appConfig;
-	        this.baseActionPath = this.appConfig.baseURL + "index.cfm/api/scope/"; //default path
+	        this.baseActionPath = this.appConfig.baseURL + "/index.cfm/api/scope/"; //default path
 	        this.confirmationUrl = "/order-confirmation";
 	        this.$http = $http;
 	        this.$location = $location;
@@ -6482,8 +6510,9 @@
 	            var request = _this.requestService.newAdminRequest(urlString);
 	            return request.promise;
 	        };
-	        this.getFilterPropertiesByBaseEntityName = function (entityName) {
-	            var urlString = _this.getUrlWithActionPrefix() + 'api:main.getFilterPropertiesByBaseEntityName&EntityName=' + entityName;
+	        this.getFilterPropertiesByBaseEntityName = function (entityName, includeNonPersistent) {
+	            if (includeNonPersistent === void 0) { includeNonPersistent = false; }
+	            var urlString = _this.getUrlWithActionPrefix() + 'api:main.getFilterPropertiesByBaseEntityName&EntityName=' + entityName + '&includeNonPersistent=' + includeNonPersistent;
 	            var request = _this.requestService.newAdminRequest(urlString);
 	            return request.promise;
 	        };
@@ -16347,6 +16376,22 @@
 	                                comparisonOperator: "eq"
 	                            },
 	                            {
+	                                display: "Greater Than",
+	                                comparisonOperator: "gt"
+	                            },
+	                            {
+	                                display: "Greater Than Or Equal",
+	                                comparisonOperator: "gte"
+	                            },
+	                            {
+	                                display: "Less Than",
+	                                comparisonOperator: "lt"
+	                            },
+	                            {
+	                                display: "Less Than Or Equal",
+	                                comparisonOperator: "lte"
+	                            },
+	                            {
 	                                display: "Doesn't Equal",
 	                                comparisonOperator: "neq"
 	                            },
@@ -20971,7 +21016,7 @@
 	                else {
 	                    angular.forEach(scope.workflowCondition.breadCrumbs, function (breadCrumb, key) {
 	                        if (angular.isUndefined(scope.filterPropertiesList[breadCrumb.propertyIdentifier])) {
-	                            var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(breadCrumb.cfc);
+	                            var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(breadCrumb.cfc, true);
 	                            filterPropertiesPromise.then(function (value) {
 	                                metadataService.setPropertiesList(value, breadCrumb.propertyIdentifier);
 	                                scope.filterPropertiesList[breadCrumb.propertyIdentifier] = metadataService.getPropertiesListByBaseEntityAlias(breadCrumb.propertyIdentifier);
@@ -21314,7 +21359,7 @@
 	            _this.$log.debug(workflowTaskAction);
 	            _this.finished = false;
 	            _this.workflowTaskActions.selectedTaskAction = undefined;
-	            var filterPropertiesPromise = _this.$hibachi.getFilterPropertiesByBaseEntityName(_this.workflowTask.data.workflow.data.workflowObject);
+	            var filterPropertiesPromise = _this.$hibachi.getFilterPropertiesByBaseEntityName(_this.workflowTask.data.workflow.data.workflowObject, true);
 	            filterPropertiesPromise.then(function (value) {
 	                _this.filterPropertiesList = {
 	                    baseEntityName: _this.workflowTask.data.workflow.data.workflowObject,
@@ -21569,7 +21614,7 @@
 	                    $log.debug(workflowTask);
 	                    scope.finished = false;
 	                    scope.workflowTasks.selectedTask = undefined;
-	                    var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(scope.workflow.data.workflowObject);
+	                    var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(scope.workflow.data.workflowObject, true);
 	                    filterPropertiesPromise.then(function (value) {
 	                        scope.filterPropertiesList = {
 	                            baseEntityName: scope.workflow.data.workflowObject,
@@ -21663,7 +21708,7 @@
 	                    scope.done = false;
 	                    scope.finished = false;
 	                    scope.workflowTriggers.selectedTrigger = undefined;
-	                    var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(scope.workflowTrigger.data.workflow.data.workflowObject);
+	                    var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(scope.workflowTrigger.data.workflow.data.workflowObject, true);
 	                    filterPropertiesPromise.then(function (value) {
 	                        scope.filterPropertiesList = {
 	                            baseEntityName: scope.workflowTrigger.data.workflow.data.workflowObject,
@@ -21681,7 +21726,7 @@
 	                        return;
 	                    if (!workflowTrigger.data.workflow.data.workflowTasks || !workflowTrigger.data.workflow.data.workflowTasks.length) {
 	                        var alert = alertService.newAlert();
-	                        alert.msg = "You don't have any  Task yet!";
+	                        alert.msg = "You don't have any Task yet!";
 	                        alert.type = "error";
 	                        alert.fade = true;
 	                        alertService.addAlert(alert);
