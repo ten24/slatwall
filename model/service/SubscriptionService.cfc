@@ -658,14 +658,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 
 		//if the renewal sku has changed update the renewal price
-		/*if(structKeyExists(arguments.data, "useRenewalSku")){
+		if(structKeyExists(arguments.data, "useRenewalSku")){
 			if(!arguments.data.useRenewalSku){
 				arguments.subscriptionUsage.setRenewalSku(javacast("null",""));
 				structDelete(arguments.data, "renewalSku");
 			} else if(!isNull(arguments.subscriptionUsage.getRenewalSku()) && structKeyExists(arguments.data, "renewalSku") && arguments.subscriptionUsage.getRenewalSku().getSkuID() != arguments.data.renewalSku.skuID){
 				arguments.data.renewalPrice = getSkuService().getSku(data.renewalSku.skuID).getRenewalPrice();
 			}
-		}*/
+		}
 
 		return this.save(arguments.subscriptionUsage, arguments.data, arguments.context);
 	}
