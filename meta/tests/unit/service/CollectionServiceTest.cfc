@@ -345,8 +345,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			collection = {
 				collectionID = ''
 			} 
-		} 		
+		};
+		
 		accountCollection = variables.service.process(variables.service.newAccountCollection(), accountCollectionProcessData, 'Create');
+
+		assertFalse(accountCollection.hasErrors())
 	} 
 }
 
