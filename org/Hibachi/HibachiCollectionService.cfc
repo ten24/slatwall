@@ -522,8 +522,8 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	public any function getAPIResponseForEntityName(required string entityName, required struct data, boolean enforceAuthorization=true){
 
-		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName,arguments.collectionOptions);
 		var collectionOptions = this.getCollectionOptionsFromData(arguments.data); 
+		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName,collectionOptions);
 		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
 		
 		if(!structKeyExists(collectionConfigStruct,'filterGroups')){
@@ -535,12 +535,12 @@ component output="false" accessors="true" extends="HibachiService" {
 		if(!structKeyExists(collectionConfigStruct,'isDistinct')){
 			collectionConfigStruct.isDistinct = false;
 		}
-		return getAPIResponseForCollection(collectionEntity,arguments.collectionOptions,arguments.enforceAuthorization);
+		return getAPIResponseForCollection(collectionEntity,collectionOptions,arguments.enforceAuthorization);
 	}
 
 	public any function getAPIResponseForBasicEntityWithID(required string entityName, required string entityID, required struct data){
-		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName,collectionOptions);
 		var collectionOptions = this.getCollectionOptionsFromData(arguments.data); 
+		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName,collectionOptions);
 		
 		//set up search by id
 
