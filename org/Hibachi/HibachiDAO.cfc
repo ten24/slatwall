@@ -100,7 +100,8 @@
 
 	    	// Loop over the modifiedEntities to call updateCalculatedProperties
 	    	for(var entity in getHibachiScope().getModifiedEntities()){
-	    		entity.updateCalculatedProperties();
+	    		var mergedEntity = entityMerge(entity);
+	    		mergedEntity.updateCalculatedProperties();
 	    	}
 
 	    	// flush again to persist any changes done during ORM Event handler

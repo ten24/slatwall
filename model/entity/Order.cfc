@@ -1116,6 +1116,11 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		arguments.orderFulfillment.setOrder( this );
 	}
 	public void function removeOrderFulfillment(required any orderFulfillment) {
+		//must do this to handle the related calculated property on orderFulfillment.
+		if (!isNull(arguments.orderFulfillment.getSelectedShippingMethodOption())){
+			var dao = getDao("OrderDAO");
+			dao.removeSelectedShippingMethodOptionFromOrderFulfillments(arguments.orderFulfillment);
+		}
 		arguments.orderFulfillment.removeOrder( this );
 	}
 

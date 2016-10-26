@@ -315,6 +315,19 @@ Notes:
 			return true;
 		}
 	</cfscript>
+	<cffunction name="removeSelectedShippingMethodOptionFromOrderFulfillments">
+		<cfargument name="orderFulfillmentID" type="string" required="true" >
 
+		<cfset var rs = "" />
+
+		<cfquery name="rs">
+			UPDATE
+				SwOrderFulfillment
+			SET
+				selectedShippingMethodOptionID = null
+			WHERE
+				orderFulfillmentID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderFulfillmentID#" />
+		</cfquery>
+	</cffunction>
 </cfcomponent>
 
