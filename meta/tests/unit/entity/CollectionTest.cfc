@@ -134,7 +134,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 	}
 
-
 	public void function addFilterTest(){
 
 		var uniqueNumberForDescription = createUUID();
@@ -2223,11 +2222,25 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		//addToDebug(collectionEntity.getNonPersistentColumn());
 	}
+	
+	
+	public void function removeFilterTest(){
+		var accountCollectionList = variables.entityService.getCollectionList('Account');
+		accountCollectionList.addFilter('accountID','test');
+		accountCollectionList.addFilter('accountID','tester','=','OR');
+		accountCollectionList.addFilter('accountID','testee','=','AND');
+		
+		accountCollectionList.removeFilter(propertyIdentifier='accountID',value='testee');
+		assert(arrayLen(accountCollectionList.getCollectionConfigStruct().filterGroups[1].filterGroup)==2);
+		assert(accountCollectionList.getCollectionConfigStruct().filterGroups[1].filterGroup[1].value == 'test');
+		assert(accountCollectionList.getCollectionConfigStruct().filterGroups[1].filterGroup[2].value == 'tester');
 
+	}
+	
 	public void function getHQLTest_emptyFilterGroup(){
 		var collectionBestAcountEmailAddressesData = {
 			collectionid = '',
-			collectionCode = 'BestAccountEmailAddresses',
+			collectionCode = 'BestAccountEmailAddresses'&createUUID(),
 			baseEntityName="AccountEmailAddress",
 			collectionConfig = '
 				 {
