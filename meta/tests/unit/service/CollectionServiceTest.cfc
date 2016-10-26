@@ -327,7 +327,27 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//addToDebug(apiResponse);
 	}
 	
-	
+	public void function test_AccountCollection_Create(){
+		var accountData = {
+			accountid = "",
+			firstName = "jimmy",
+			lastName = "twoshoes"
+		};
+		var account = createPersistedTestEntity('account',accountData);
+		
+		var accountCollectionProcessData = {
+			accountCollectionID = '',
+			collectionConfig = '{}',
+			entityName = 'Product',
+			account = {
+				accountID = ''
+			},
+			collection = {
+				collectionID = ''
+			} 
+		} 		
+		accountCollection = variables.service.process(variables.service.newAccountCollection(), 'Create', accountCollectionProcessData);
+	} 
 }
 
 
