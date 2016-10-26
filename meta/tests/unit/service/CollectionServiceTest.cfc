@@ -346,7 +346,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				collectionID = ''
 			} 
 		} 		
-		accountCollection = variables.service.process(variables.service.newAccountCollection(), 'Create', accountCollectionProcessData);
+		accountCollection = variables.service.process(variables.service.newAccountCollection(), accountCollectionProcessData, 'Create');
 	} 
 }
 
