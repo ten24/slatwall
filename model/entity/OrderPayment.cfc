@@ -416,6 +416,21 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		return;
 	}
 
+	public boolean function giftCardNotAppliedToOrder(){
+ 		var orderPayments = getOrder().getOrderPayments();
+ 		if(this.hasGiftCard()){	
+ 			for(var payment in orderPayments){
+ 				if( payment.getOrderPaymentID() != this.getOrderPaymentID() &&
+ 					this.getGiftCard().getGiftCardCode() == payment.getGiftCardNumberEncrypted() &&
+ 				    payment.getStatusCode() == 'opstActive'
+ 				){
+ 					return false; 
+ 				}
+ 			}	
+ 		}
+ 		return true; 
+ 	}
+
 	public string function getPaymentMethodType() {
 		if(!isNull(getPaymentMethod())) {
 			return getPaymentMethod().getPaymentMethodType();
