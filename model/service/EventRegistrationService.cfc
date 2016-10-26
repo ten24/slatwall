@@ -274,7 +274,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		processEventRegistration( eventRegistration, {}, "confirm");
 	}
 
-	public any function processEventRegistration_pending(required any eventRegistration, required any processObject) {
+	public any function processEventRegistration_pendingApproval(required any eventRegistration, required any processObject) {
 		// Set up the comment if someone typed in the box
 		if(structKeyExists(arguments.processObject, "comment") && len(trim(arguments.processObject.getComment()))) {
 			var comment = getCommentService().newComment();
@@ -282,7 +282,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// Change the status
-		arguments.eventRegistration.seteventRegistrationStatusType( getTypeService().getTypeBySystemCode("erstPending") );
+		arguments.eventRegistration.seteventRegistrationStatusType( getTypeService().getTypeBySystemCode("erstPendingApproval") );
+
+		return arguments.eventRegistration;
+	}
+	
+	public any function processEventRegistration_pendingConfirmation(required any eventRegistration, required any processObject) {
+		// Set up the comment if someone typed in the box
+		if(structKeyExists(arguments.processObject, "comment") && len(trim(arguments.processObject.getComment()))) {
+			var comment = getCommentService().newComment();
+			comment = getCommentService().saveComment(comment, arguments.processObject);
+		}
+
+		// Change the status
+		arguments.eventRegistration.seteventRegistrationStatusType( getTypeService().getTypeBySystemCode("erstPendingConfirmation") );
 
 		return arguments.eventRegistration;
 	}
