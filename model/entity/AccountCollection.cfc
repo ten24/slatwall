@@ -40,15 +40,16 @@ component displayname="Collection" entityname="SlatwallAccountCollection" table=
 
 	// Persistent Properties
 	property name="accountCollectionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="accountCollectionName" ormtype="string";
-	property name="collectionDisplayCode" ormtype="string"; 
-	property name="collectionConfig" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json" hint="json object used to construct the base collection HQL query";
+	property name="accountCollectionName" hb_populateEnabled="public" ormtype="string";
+	property name="collectionDisplayCode" hb_populateEnabled="public" ormtype="string"; 
+	property name="collectionConfig" hb_populateEnabled="public" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json" hint="json object used to construct the base collection HQL query";
+	property name="entityName" hb_populateEnabled="public" ormtype="string"; 
 
 	// Calculated Properties
 
 	// Related Object Properties (many-to-one)
-	property name="collection" cfc="Collection" fieldtype="many-to-one" fkcolumn="collectionID";
-	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
+	property name="collection" hb_populateEnabled="public" cfc="Collection" fieldtype="many-to-one" fkcolumn="collectionID";
+	property name="account" hb_populateEnabled="public" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 
 	// Related Object Properties (one-to-many)
 
@@ -66,9 +67,22 @@ component displayname="Collection" entityname="SlatwallAccountCollection" table=
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non-Persistent Properties
-	property name="collectionConfigStruct" type="struct" persistent="false";
+	property name="accountCollection" type="any" persistent="false";
 
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public any function getAccountCollection(){
+		if(!structKeyExists(variables, 'accountCollection')){
+			if(!isNull(this.getCollection())){
+				variables.accountCollection = this.getCollection(); 
+			} else {
+				var hibachiCollectionService = getService('HibachiCollectionService');
+				var collectionOptions = hibachiCollectionService.getCollectionOptionsFromData(deserializeJSON(getCollectionConfig())); 
+				variables.accountCollection = hibachiCollectionService.getTransientCollectionByEntityName(getEntityName(), collectionOptions);
+			} 
+		}	
+		return variables.accountCollection; 
+	} 
 
 	// ============  END:  Non-Persistent Property Methods =================
 
@@ -85,17 +99,6 @@ component displayname="Collection" entityname="SlatwallAccountCollection" table=
 	// ===============  END: Custom Formatting Methods =====================
 
 	// ============== START: Overridden Implicit Getters ===================
-
-	public any function getCollectionConfigStruct(){
-		if(isNull(variables.collectionConfigStruct)){
-			variables.collectionConfigStruct = deserializeCollectionConfig();
-		}
-		return variables.collectionConfigStruct;
-	}
-	
-	public any function deserializeCollectionConfig(){
-		return deserializeJSON(getCollectionConfig());
-	}
 	
 	// ==============  END: Overridden Implicit Getters ====================
 
