@@ -1,0 +1,8 @@
+{
+	"properties" : {
+		"collectionDisplayCode":	[{"contexts":"save","uniqueOrNull":true,"regex":"^[a-zA-Z0-9-_.|:~^]+$"}],
+		"collectionConfig":			[{"contexts":"save","required":true}],
+		"entityName":				[{"contexts":"save","required":true}], 
+		"account":					[{"contexts":"save","required":true}]	
+	} 
+}
