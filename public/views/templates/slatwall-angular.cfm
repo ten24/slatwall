@@ -19,5 +19,5 @@
 		<!---<swf-directive partial-path="{{customTemplateFolder}}" partial-name="createaccountpartial"></swf-directive>--->
 		<swf-directive partial-path="/public/views/templates/partials/" partial-name="login"></swf-directive>
 	</body>
-	<cfoutput><script type="text/javascript"  src="/org/Hibachi/client/src/slatwall_frontend.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#"></script></cfoutput>
+	<cfoutput><script type="text/javascript"  src="/org/Hibachi/client/src/slatwall.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#"></script></cfoutput>
 </html>
