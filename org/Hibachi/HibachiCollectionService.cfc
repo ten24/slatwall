@@ -373,24 +373,24 @@ component output="false" accessors="true" extends="HibachiService" {
 		//propertyIdentifers
 		collectionConfigStruct = {};
 		collectionConfigStruct = {
-			baseEntityName = '#getDao('HibachiDao').getApplicationKey()##arguments.data.entityName#',
+			baseEntityName = '#getDao('HibachiDao').getApplicationKey()##arguments.rc.entityName#',
 			baseEntityAlias = '_' & lcase(rc.entityName)
 		};
 
 		if(!isnull(arguments.data.filterConfig)){
-			collectionConfigStruct.filterGroups = deserializeJson(arguments.data.filterConfig);
+			collectionConfigStruct.filterGroups = deserializeJson(arguments.rc.filterConfig);
 		}
 
 		if(!isNull(arguments.data.joinsConfig)){
-			collectionConfigStruct.joins = deserializeJson(arguments.data.joinsConfig);
+			collectionConfigStruct.joins = deserializeJson(arguments.rc.joinsConfig);
 		}
 
 		if(!isNull(arguments.data.orderByConfig)){
-			collectionConfigStruct.orderBy = deserializeJson(arguments.data.orderByConfig);
+			collectionConfigStruct.orderBy = deserializeJson(arguments.rc.orderByConfig);
 		}
 
 		if(!isNull(arguments.data.columnsConfig)){
-			collectionConfigStruct.columns = deserializeJson(arguments.data.columnsConfig);
+			collectionConfigStruct.columns = deserializeJson(arguments.rc.columnsConfig);
 		}
 
 
