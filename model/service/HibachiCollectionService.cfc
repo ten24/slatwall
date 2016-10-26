@@ -39,6 +39,9 @@ Notes:
 
 component extends="Slatwall.org.Hibachi.HibachiCollectionService" accessors="true" output="false" {
 	
-	
-	
+	public function any processAccountCollection_Create(required any accountCollection, required any processObject){
+		var accountCollection = this.saveAccountCollection(arguments.processObject.getAccountCollection());	
+		
+		return accountCollection; 
+	}	
 }
