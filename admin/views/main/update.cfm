@@ -57,7 +57,7 @@ Notes:
 
 <cfif rc.currentBranch eq 'master'>
 	<cfset local.currentReleaseType = $.slatwall.rbKey('define.master') />
-<cfelseif local.currentReleaseType eq 'hotfix'>
+<cfelseif rc.currentBranch eq 'hotfix'>
 	<cfset local.currentReleaseType = $.slatwall.rbKey('define.hotfix') />
 <cfelse>
 	<cfset local.currentReleaseType = $.slatwall.rbKey('define.develop') />
