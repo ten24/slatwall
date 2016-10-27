@@ -15,7 +15,7 @@ component accessors="true" output="false" extends="HibachiService" {
 				if(arguments.useHeaderRow){
 					arguments.columnsList  = REReplaceNoCase(line, "[^a-zA-Z\d,]", "", "all");
 				}
-				var csvQuery = QueryNew(arguments.columnsList, arguments.listColumnTypes));
+				var csvQuery = QueryNew(arguments.columnsList, arguments.listColumnTypes);
 				var numberOfColumns = listlen(line, ',', true); 
 			}
 			if(i > 1 && numberOfColumns == listLen(line, ',', true)){
