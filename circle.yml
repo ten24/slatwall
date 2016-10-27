@@ -82,22 +82,24 @@ test:
     # the tests in this condition will be  parallelized ##
     ######################################################
     
-    - if [[ ! -z $SAUCE_USERNAME ]] ; then 
-    -   sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)" -- mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql && echo OK || echo Failed
-    -   node meta/tests/integration/se-interpreter/interpreter.js --parallel=1  --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/admin_runnable/create_bundle_product_order_test.json  --browser-browserName=firefox --silent; 
-    -   sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)" -- mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql && echo OK || echo Failed
-    -   node meta/tests/integration/se-interpreter/interpreter.js --parallel=1  --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/admin_runnable/create_bundle_product_order_test.json  --browser-browserName=chrome --silent;
+    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)" -- mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql && echo OK || echo Failed
+    - if [[ ! -z $SAUCE_USERNAME ]] ; then node meta/tests/integration/se-interpreter/interpreter.js --parallel=1  --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/admin_runnable/create_bundle_product_order_test.json  --browser-browserName=firefox --silent; fi
 
-    -   sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)" -- mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql && echo OK || echo Failed
-    -   node meta/tests/integration/se-interpreter/interpreter.js --parallel=1  --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/admin_runnable/create_event_product_order_test.json  --browser-browserName=firefox --silent; 
-    -   sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)" -- mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql && echo OK || echo Failed
-    -   node meta/tests/integration/se-interpreter/interpreter.js --parallel=1  --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/admin_runnable/create_event_product_order_test.json  --browser-browserName=chrome --silent;
+    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)" -- mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql && echo OK || echo Failed
+    - if [[ ! -z $SAUCE_USERNAME ]] ; then node meta/tests/integration/se-interpreter/interpreter.js --parallel=1  --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/admin_runnable/create_bundle_product_order_test.json  --browser-browserName=chrome --silent; fi
 
-    -   sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)" -- mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql && echo OK || echo Failed
-    -   node meta/tests/integration/se-interpreter/interpreter.js --parallel=1  --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/admin_runnable/create_merchandise_product_order_test.json  --browser-browserName=firefox --silent; 
-    -   sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)" -- mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql && echo OK || echo Failed
-    -   node meta/tests/integration/se-interpreter/interpreter.js --parallel=1  --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/admin_runnable/create_merchandise_product_order_test.json  --browser-browserName=chrome --silent;
-    - fi
+    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)" -- mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql && echo OK || echo Failed
+    - if [[ ! -z $SAUCE_USERNAME ]] ; then node meta/tests/integration/se-interpreter/interpreter.js --parallel=1  --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/admin_runnable/create_event_product_order_test.json  --browser-browserName=firefox --silent; fi
+
+    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)" -- mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql && echo OK || echo Failed
+    - if [[ ! -z $SAUCE_USERNAME ]] ; then node meta/tests/integration/se-interpreter/interpreter.js --parallel=1  --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/admin_runnable/create_event_product_order_test.json  --browser-browserName=chrome --silent; fi
+
+    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)" -- mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql && echo OK || echo Failed
+    - if [[ ! -z $SAUCE_USERNAME ]] ; then node meta/tests/integration/se-interpreter/interpreter.js --parallel=1  --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/admin_runnable/create_merchandise_product_order_test.json  --browser-browserName=firefox --silent; fi
+
+    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)" -- mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql && echo OK || echo Failed
+    - if [[ ! -z $SAUCE_USERNAME ]] ; then node meta/tests/integration/se-interpreter/interpreter.js --parallel=1  --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/admin_runnable/create_merchandise_product_order_test.json  --browser-browserName=chrome --silent; fi
+
     ######################################################
     #                                                    #
     ######################################################
