@@ -48,7 +48,7 @@ function Listener(testRun, params, interpreter_module) {
   this._name = '['+ testRun.name +'] ';
 };
 
-console.log('DB Snapshot Restore Started');
+
 var sys = require('sys')
 var exec = require('child_process').exec;
 // Junit

@@ -54,18 +54,34 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
+    <span data-ng-controller="entity_createcollection as entity_createcollectionCtrl" data-ng-init="entity_createcollectionCtrl.selectedOption = 'Access'">
 	<hb:HibachiEntityDetailForm object="#rc.collection#" edit="#rc.edit#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.collection#" edit="#rc.edit#" />
 		<div class="s-top-spacer">
 			<hb:HibachiPropertyRow>
+
+				<!--- inject angular here --->
+				<cfset fieldAttributes = 'ng-model="entity_createcollectionCtrl.selectedOption" ng-change="entity_createcollectionCtrl.collectionObjectChanged()"'/>
+
 				<hb:HibachiPropertyList>
 					<hb:HibachiPropertyDisplay object="#rc.collection#" property="collectionName" edit="#rc.edit#">
-					<hb:HibachiPropertyDisplay object="#rc.collection#" property="collectionObject" edit="#rc.edit#">
+					<hb:HibachiPropertyDisplay object="#rc.collection#" property="collectionObject" edit="#rc.edit#" fieldAttributes="#fieldAttributes#">
 					<hb:HibachiPropertyDisplay object="#rc.collection#" property="collectionDescription" edit="#rc.edit#">
 					<hb:HibachiPropertyDisplay object="#rc.collection#" property="collectionCode" edit="#rc.edit#">
+
+
+					<div class="form-group">
+						<label for="baseCollectionID" class="control-label col-sm-4"><span class="s-title">Base Collection</span></label>
+						<div class="col-sm-8">
+							<select class="form-control" id="baseCollectionID" name="parentCollection.collectionID" data-ng-model="test" data-ng-options="option.collectionName for option in entity_createcollectionCtrl.baseCollections track by option.collectionID">
+								<option></option>
+							</select>
+						</div>
+					</div>
+
 				</hb:HibachiPropertyList>
 			</hb:HibachiPropertyRow>
 		</div>
 	</hb:HibachiEntityDetailForm>
+	</span>
 </cfoutput>
-
