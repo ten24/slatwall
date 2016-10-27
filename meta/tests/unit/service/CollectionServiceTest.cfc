@@ -353,10 +353,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		assertFalse(accountCollection.hasErrors());
 
-		assertTrue(accountCollection.hasCollectionConfig());
-		assertTrue(accountCollection.hasEntityName());
-		assertTrue(accountCollection.hasCollection());
-		assertTrue(accountCollection.hasAccount());
+		assertTrue(!isNull(accountCollection.getAccountCollection()));
 
 	}
 }
