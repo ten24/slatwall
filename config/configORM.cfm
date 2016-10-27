@@ -1,4 +1,3 @@
-<cfset arrayAppend(this.ormsettings.cfclocation, "/Slatwall/integrationServices") />
 <cftry>
 	<cfdbinfo datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#" type="Version" name="dbVersion">
 	<cfcatch>
