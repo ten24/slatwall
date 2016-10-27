@@ -57,7 +57,7 @@ Notes:
 
 <cfif rc.currentBranch eq 'master'>
 	<cfset local.currentReleaseType = $.slatwall.rbKey('define.master') />
-<cfelseif rc.currentBranch eq 'hotfix'>
+<cfelseif local.currentReleaseType eq 'hotfix'>
 	<cfset local.currentReleaseType = $.slatwall.rbKey('define.hotfix') />
 <cfelse>
 	<cfset local.currentReleaseType = $.slatwall.rbKey('define.develop') />
@@ -93,12 +93,12 @@ Notes:
 				
 				<!--- Custom Branch --->
 				<cfif $.slatwall.setting('globalAllowCustomBranchUpdates')>
-                    <div class="form-group">
-                        <label class="col-xs-2 control-label"><input type="radio" name="branchType" value="custom" /></label>
-                        <div class="col-xs-10" style="padding:0px;">
-                            <input type="text" class="form-control col-xs-10" name="customBranch" value="" placeholder="Custom Branch (ex: feature-newadmin)" /><br />
-                        </div>
-                    </div>
+				    <div class="form-group">
+				        <label class="col-xs-2 control-label"><input type="radio" name="branchType" value="custom" /></label>
+				        <div class="col-xs-10" style="padding:0px;">
+				            <input type="text" class="form-control col-xs-10" name="customBranch" value="" placeholder="Custom Branch (ex: feature-newadmin)" />
+				        </div>
+				    </div>
 				</cfif>
 				
 				<!--- Standard --->
