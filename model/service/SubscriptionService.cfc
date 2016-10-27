@@ -523,16 +523,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						orderPayment.copyFromOrderPayment( arguments.processObject.getOrderPayment() );
 						orderPayment.setCurrencyCode( order.getCurrencyCode() );
 						orderPayment.setOrder( order );
-					} else if (arguments.processObject.getRenewalPaymentType() eq 'new') {
+					}  else if (arguments.processObject.getRenewalPaymentType() eq 'new') {
+						
 						order = getOrderService().processOrder(order, arguments.data, 'addOrderPayment');
+						getOrderService().saveOrder(order);
 					}
 
 
-					if(!isNull(orderPayment)){
+					if(!isNull(orderPayment) || (!isNull(order) && !isNull(order.getOrderPayments()[1]))){
 						//set up subscription renewal data
 						var subscriptionData = {
 							isSubscriptionRenewal=true
 						};
+						if (isNull(orderPayment)){
+							orderPayment = order.getOrderPayments()[1];
+						}
 						orderPayment = getOrderService().processOrderPayment(orderPayment, subscriptionData, 'runPlaceOrderTransaction');
 
 						//create deliveries if there are no errors else propagate errors
