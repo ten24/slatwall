@@ -441,7 +441,7 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
     {
         var productNameList = "";
         
-        if(len(requestBean.getOrder().getOrderID())) {
+        if(!isNull(requestBean.getOrder()) && len(requestBean.getOrder().getOrderID())) {
             for (var orderItem in requestBean.getOrder().getOrderItems()){
             	var description = orderItem.getSku().getSkuCode() & " - " & orderItem.getSku().getProduct().getProductName();
                 productNameList = listAppend(productNameList, description);
