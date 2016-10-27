@@ -1,0 +1,39 @@
+{  
+   "type":"script",
+   "seleniumVersion":"2",
+   "formatVersion":2,
+   "steps":[
+      {  
+         "type":"include",
+         "rel_dir":"/components/login_co.json"
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#j-mobile-nav > ul > li:nth-child(6) > a"
+         }
+      },
+      {  
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#j-mobile-nav > ul > li.dropdown.open > ul > li:nth-child(12) > a"
+         }
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/fulfillment_methods/shipping/fullfilment_method_shipping_method_co.json"
+      }
+   ],
+   "data":{  
+      "configs":{  
+
+      },
+      "source":"none"
+   },
+   "inputs":[  
+
+   ],
+   "timeoutSeconds":60
+}

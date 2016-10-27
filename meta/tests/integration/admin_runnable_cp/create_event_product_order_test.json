@@ -9,12 +9,12 @@
       },
       {  
          "type":"include",
-         "rel_dir":"/components/location/location_settings_co.json"
+         "rel_dir":"/components/location/create_location_test.json"
       },
-      {   
+      {  
          "type":"include",
-         "rel_dir":"../se-interpreter/components/account/account_settings_co.json"
-      },  
+         "rel_dir":"/components/account/create_guest_account_test.json"
+      },
       {  
          "type":"include",
          "rel_dir":"/components/products/event/create_event_product_test.json"

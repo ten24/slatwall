@@ -13,15 +13,11 @@
       },
       {  
          "type":"include",
-         "rel_dir":"/components/location/create_location_test.json"
-      },
-      {  
+         "rel_dir":"/components/location/location_settings_co.json"
+      },  
+       {  
          "type":"include",
-         "rel_dir":"/components/brand/create_brand_test.json"
-      },
-      {  
-         "type":"include",
-         "rel_dir":"/components/account/create_guest_account_test.json"
+         "rel_dir":"/components/brand/brand_settings_co.json"
       },
       {  
          "type":"include",
