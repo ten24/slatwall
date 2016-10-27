@@ -340,7 +340,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			collectionConfig = '{}',
 			entityName = 'Product',
 			account = {
-				accountID = ''
+				accountID = account.getAccountID() 
 			},
 			collection = {
 				collectionID = ''
