@@ -7,6 +7,10 @@
             "value":"#accordion > div:nth-child(1) > a"
          }
       }, 
+      {
+         "type":"print",
+         "text":"${merchandise_product_name};"
+      },
       {  
          "__comment":"Merchandise product #1",
          "type":"generateAssertion",

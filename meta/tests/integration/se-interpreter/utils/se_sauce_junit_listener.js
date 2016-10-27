@@ -51,10 +51,6 @@ function Listener(testRun, params, interpreter_module) {
 console.log('DB Snapshot Restore Started');
 var sys = require('sys')
 var exec = require('child_process').exec;
-
-function puts(error, stdout, stderr) { 
-  sys.puts(stdout) 
-  console.log('DB Snapshot Reset Complete');
 // Junit
 Listener.instances = 0;
 
@@ -73,9 +69,6 @@ Listener.prototype.startTestRun = function(testRun, info) {
   if (this.originalListener) { this.originalListener.startTestRun(testRun, info); }
   // Base
 };
-}
-console.log("sudo lxc-attach -n \"$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)\" -- mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql");
-exec("sudo lxc-attach -n \"$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)\" -- mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql && echo OK || echo Failed", puts);
 
 
 Listener.prototype.endTestRun = function(testRun, info) {

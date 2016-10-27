@@ -60,6 +60,7 @@ module.exports = {
 				  array_of_assertion_steps.push({"type":"assertTextPresent","text":step['text']})
 			      break;
 		}
+		//console.log(JSON.stringify(array_of_assertion_steps));
 		return array_of_assertion_steps
 	},
 	split_path_and_wait : function (step) {
@@ -85,8 +86,8 @@ module.exports = {
 		var fs = require('fs');
     	var path = require('path');
     	var component = JSON.parse(fs.readFileSync(path.join(__dirname, './', relative_dir)));
-    	component = this.addStepInBetween(component,{"script":"return document.readyState","value":"complete","type":"waitForEval"});
-    	component = this.addStepInBetween(component,{"type":"waitForElementPresent"});
+    	//component = this.addStepInBetween(component,{"script":"return document.readyState","value":"complete","type":"waitForEval"});
+    	//component = this.addStepInBetween(component,{"type":"waitForElementPresent"});
     	return component;
 	}
 };

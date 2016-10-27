@@ -1,0 +1,70 @@
+{  
+   "type":"script",
+   "seleniumVersion":"2",
+   "formatVersion":2,
+   "steps":[
+      {  
+         "type":"include",
+         "rel_dir":"/components/login_co.json"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/location/location_settings_co.json"
+      },  
+      {  
+         "type":"include",
+         "rel_dir":"/components/location/list_location_co.json"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/location/add_location_co.json"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/location/add_address_to_location_co.json"
+      },
+      {  
+         "_comment":"Check it here",
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"${office_location}",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-expandable > tbody > tr:nth-child(2) > td.primary"
+         }
+      },
+      {
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"div.table-responsive.s-listing-display-table-wrapper > table.table.table-bordered.table-hover.table-expandable > tbody > tr:nth-child(2) > td.admin.admin2 > a.adminentityeditlocation.btn.btn-default.btn-xs"
+         }
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/location/assert_location_address_accordion_co.json"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/location/location_configuration_co.json"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/location/assert_location_configuration_co.json"
+      },
+      {
+         "type": "include",
+         "rel_dir":"/components/location/location_configuration_settings_co.json"
+      }
+   ],
+   "data":{  
+      "configs":{  
+
+      },
+      "source":"none"
+   },
+   "inputs":[  
+
+   ],
+   "timeoutSeconds":60
+}

@@ -1,0 +1,33 @@
+{  
+   "type":"script",
+   "seleniumVersion":"2",
+   "formatVersion":2,
+   "steps":[
+      {  
+         "type":"include",
+         "rel_dir":"/components/login_co.json"
+      },  
+      {  
+         "type":"include",
+         "rel_dir":"/components/brand/brand_settings_co.json"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/brand/create_brand_co.json"
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/brand/assert_brand_created_co.json"
+      }
+   ],
+   "data":{  
+      "configs":{  
+
+      },
+      "source":"none"
+   },
+   "inputs":[  
+
+   ],
+   "timeoutSeconds":60
+}

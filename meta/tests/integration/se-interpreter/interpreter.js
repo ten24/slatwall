@@ -107,8 +107,9 @@ var TestRun = function(script, name, initialVars) {
     this.vars[k] = this.initialVars[k];
   }
   var tools = require('./functions');
-  this.script = tools.addStepInBetween(script,{"script":"return document.readyState","value":"complete","type":"waitForEval"});
-  this.script = tools.addStepInBetween(this.script,{"type":"waitForElementPresent"});
+  //this.script = tools.addStepInBetween(script,{"script":"return document.readyState","value":"complete","type":"waitForEval"});
+  //this.script = tools.addStepInBetween(this.script,{"type":"waitForElementPresent"});
+  this.script =script;
   this.stepIndex = -1;
   this.wd = null;
   this.silencePrints = false;

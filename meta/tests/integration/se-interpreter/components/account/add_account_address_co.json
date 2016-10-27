@@ -1,10 +1,18 @@
 {  
    "steps":[
       {  
+         "__comment":"splits the css selector into small addressable path chunks. Chrome was having issues when waiting on the full path directly",
+         "type":"splitPathAndWait",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabcontactdetails > div:nth-child(3) > div > div > a"
+         }
+      },
+      {  
          "type":"clickElement",
          "locator":{  
             "type":"css selector",
-            "value":"#tabcontactdetails > div:nth-child(3) > div:nth-child(1) > div > a"
+            "value":"#tabcontactdetails > div:nth-child(3) > div > div > a"
          }
       },
       {  
