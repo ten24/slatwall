@@ -6,17 +6,17 @@ component accessors="true" output="false" extends="HibachiService" {
 		return getHibachiDAO().isUniqueProperty(argumentcollection=arguments);
 	}
 
-	public any function loadQueryFromCSV(required string pathToCSV){
-		csvFile = FileOpen(ExpandPath(pathToCSV));
+	public any function loadQueryFromCSVFileWithColumnTypeList(required string pathToCSV, required string ColumnTypeList, boolean useHeaderRow=true, string columnList){
+		var csvFile = FileOpen(ExpandPath(pathToCSV));
 		var i = 1;
 		while(!FileisEOF(csvFile)){ 
 			var line = FileReadLine(csvFile);
 			if(i == 1){
-				columnsRow = REReplaceNoCase(line, "[^a-zA-Z\d,]", "", "all");
+				if(arguments.useHeaderRow){
+					arguments.columnsList  = REReplaceNoCase(line, "[^a-zA-Z\d,]", "", "all");
+				}
+				var csvQuery = QueryNew(arguments.columnsList, arguments.listColumnTypes));
 				var numberOfColumns = listlen(line, ',', true); 
-				var columnTypes = []; 
-				ArraySet(columnTypes, 1, numberOfColumns, "VarChar"); 	
-				var csvQuery = QueryNew(columnsRow, arrayToList(columnTypes));
 			}
 			if(i > 1 && numberOfColumns == listLen(line, ',', true)){
 				var row = listToArray(line, ",", true);
@@ -27,7 +27,7 @@ component accessors="true" output="false" extends="HibachiService" {
 				}
 				QueryAddRow(csvQuery, row);
 			} else { 
-				//writeDump("row:" & i & 'line:' & line);
+				this.logHibachi('HibachiDataDAO could not convert row: ' & i & ' in CSV: ' & pathToCSV);	
 			} 
 			i++; 
 		}
