@@ -415,10 +415,12 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// END: Image Methods
 
 	public boolean function getEventConflictExistsFlag() {
-		var eventConflictsSmartList = getService("skuService").getEventConflictsSmartList(sku=this);
-		
-		if(eventConflictsSmartList.getRecordsCount() GT 0) {
-			return true;
+		if( ! this.getBundleFlag()){
+			var eventConflictsSmartList = getService("skuService").getEventConflictsSmartList(sku=this);
+			
+			if(eventConflictsSmartList.getRecordsCount() GT 0) {
+				return true;
+			}
 		}
 		return false;
 	}
