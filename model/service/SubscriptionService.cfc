@@ -513,7 +513,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 				}
 
-			}
 		// Existing Renewal Order to be re-submitted
 		} else {
 			
