@@ -87,7 +87,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	}
 
 	public boolean function isInternationalShipment(){
-		return getShipToCountryCode() != "US"; 
+		return getShipToCountryCode() != "US" && getShipToCountryCode() != "PR"; 
 	}
 
 	public void function addShippingItem() {
