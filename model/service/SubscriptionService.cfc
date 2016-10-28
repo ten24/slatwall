@@ -529,7 +529,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.subscriptionUsage;
 	}
 	
-	public any function setupOrderPayment(required any subscriptionUsage, required any processObject){
+	public any function setupOrderPayment(required any order, required any processObject){
 		// Setup the Order Payment
 
 		if((!isNull(arguments.processObject.getSubscriptionUsage().getAutoPayFlag())&& arguments.processObject.getSubscriptionUsage().getAutoPayFlag())|| !arguments.processObject.getAutoUpdateFlag()){
