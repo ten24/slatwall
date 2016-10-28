@@ -63,7 +63,7 @@ test:
     - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)" -- mysqldump --add-drop-table --skip-comments --disable-keys --user=root --password=CiPassword Slatwall > /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql && echo OK || echo Failed
     - sudo chmod 755 /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql
     - sudo chown ubuntu /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql 
-    
+
     # Run Build
     - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwallweb_1)" -- ant -f /var/www/meta/tests/build.xml buildDocsAndTests
     
@@ -82,23 +82,23 @@ test:
     ######################################################
     # the tests in this condition will be  parallelized ##
     ######################################################
-    
-    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)" -- mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql && echo OK || echo Failed
+    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)" -- mysqldump --add-drop-table --skip-comments --disable-keys --user=root --password=CiPassword Slatwall > /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot_with_config_data.sql && echo OK || echo Failed
+    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)" -- mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot_with_config_data.sql && echo OK || echo Failed
     - if [[ ! -z $SAUCE_USERNAME ]] ; then node meta/tests/integration/se-interpreter/interpreter.js --parallel=1 --listener=meta/tests/integration/se-interpreter/utils/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/admin_runnable/create_bundle_product_order_test.json  --browser-browserName=firefox --driver-host=ondemand.saucelabs.com --driver-port=80 --browser-username=${SAUCE_USERNAME} --browser-accessKey=${SAUCE_ACCESS_KEY} --browser-tunnelIdentifier=${CIRCLE_BUILD_NUM} --browser-build=${CIRCLE_BUILD_NUM} --silent; fi
 
-    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)" -- mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql && echo OK || echo Failed
+    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)" -- mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot_with_config_data.sql && echo OK || echo Failed
     - if [[ ! -z $SAUCE_USERNAME ]] ; then node meta/tests/integration/se-interpreter/interpreter.js --parallel=1 --listener=meta/tests/integration/se-interpreter/utils/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/admin_runnable/create_bundle_product_order_test.json  --browser-browserName=chrome --driver-host=ondemand.saucelabs.com --driver-port=80 --browser-username=${SAUCE_USERNAME} --browser-accessKey=${SAUCE_ACCESS_KEY} --browser-tunnelIdentifier=${CIRCLE_BUILD_NUM} --browser-build=${CIRCLE_BUILD_NUM} --silent; --silent; fi
 
-    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)" -- mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql && echo OK || echo Failed
+    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)" -- mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot_with_config_data.sql && echo OK || echo Failed
     - if [[ ! -z $SAUCE_USERNAME ]] ; then node meta/tests/integration/se-interpreter/interpreter.js --parallel=1 --listener=meta/tests/integration/se-interpreter/utils/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/admin_runnable/create_event_product_order_test.json  --browser-browserName=firefox --driver-host=ondemand.saucelabs.com --driver-port=80 --browser-username=${SAUCE_USERNAME} --browser-accessKey=${SAUCE_ACCESS_KEY} --browser-tunnelIdentifier=${CIRCLE_BUILD_NUM} --browser-build=${CIRCLE_BUILD_NUM} --silent; fi
 
-    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)" -- mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql && echo OK || echo Failed
+    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)" -- mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot_with_config_data.sql && echo OK || echo Failed
     - if [[ ! -z $SAUCE_USERNAME ]] ; then node meta/tests/integration/se-interpreter/interpreter.js --parallel=1 --listener=meta/tests/integration/se-interpreter/utils/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/admin_runnable/create_event_product_order_test.json  --browser-browserName=chrome --driver-host=ondemand.saucelabs.com --driver-port=80 --browser-username=${SAUCE_USERNAME} --browser-accessKey=${SAUCE_ACCESS_KEY} --browser-tunnelIdentifier=${CIRCLE_BUILD_NUM} --browser-build=${CIRCLE_BUILD_NUM} --silent; fi
 
-    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)" -- mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql && echo OK || echo Failed
+    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)" -- mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot_with_config_data.sql && echo OK || echo Failed
     - if [[ ! -z $SAUCE_USERNAME ]] ; then node meta/tests/integration/se-interpreter/interpreter.js --parallel=1 --listener=meta/tests/integration/se-interpreter/utils/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/admin_runnable/create_merchandise_product_order_test.json  --browser-browserName=firefox --driver-host=ondemand.saucelabs.com --driver-port=80 --browser-username=${SAUCE_USERNAME} --browser-accessKey=${SAUCE_ACCESS_KEY} --browser-tunnelIdentifier=${CIRCLE_BUILD_NUM} --browser-build=${CIRCLE_BUILD_NUM} --silent; fi
 
-    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)" -- mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql && echo OK || echo Failed
+    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)" -- mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot_with_config_data.sql && echo OK || echo Failed
     - if [[ ! -z $SAUCE_USERNAME ]] ; then node meta/tests/integration/se-interpreter/interpreter.js --parallel=1 --listener=meta/tests/integration/se-interpreter/utils/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/admin_runnable/create_merchandise_product_order_test.json  --browser-browserName=chrome --driver-host=ondemand.saucelabs.com --driver-port=80 --browser-username=${SAUCE_USERNAME} --browser-accessKey=${SAUCE_ACCESS_KEY} --browser-tunnelIdentifier=${CIRCLE_BUILD_NUM} --browser-build=${CIRCLE_BUILD_NUM} --silent; fi
 
     ######################################################
