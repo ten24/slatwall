@@ -532,13 +532,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function setupOrderPayment(required any subscriptionUsage, required any processObject){
 		// Setup the Order Payment
 
-		if(
-			(
-				!isNull(arguments.processObject.getSubscriptionUsage().getAutoPayFlag())
-				&& arguments.processObject.getSubscriptionUsage().getAutoPayFlag()
-			)
-			|| !arguments.processObject.getAutoUpdateFlag()
-		){
+		if((!isNull(arguments.processObject.getSubscriptionUsage().getAutoPayFlag())&& arguments.processObject.getSubscriptionUsage().getAutoPayFlag())|| !arguments.processObject.getAutoUpdateFlag()){
+			
 			if(
 				arguments.processObject.getRenewalPaymentType() eq 'accountPaymentMethod'
 				&& !isNull(arguments.processObject.getAccountPaymentMethod())
@@ -570,21 +565,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 
-		if(!isNull(orderPayment)){
-			//set up subscription renewal data
-			var subscriptionData = {
-				isSubscriptionRenewal=true
-			};
-			
-			orderPayment = getOrderService().processOrderPayment(orderPayment, subscriptionData, 'runPlaceOrderTransaction');
-
-			//create deliveries if there are no errors else propagate errors
-			if(!orderPayment.hasErrors()){
-				// Look for 'auto' order fulfillments
-				getOrderService().createOrderDeliveryForAutoFulfillmentMethod(order.getOrderFulfillments()[1]);
-			}else{
-				if(structKeyExists(orderPayment.getErrors(),'runPlaceOrderTransaction')){
-					arguments.subscriptionUsage.addError('runPlaceOrderTransaction', orderPayment.getErrors().runPlaceOrderTransaction);
+			if(!isNull(orderPayment)){
+				//set up subscription renewal data
+				var subscriptionData = {
+					isSubscriptionRenewal=true
+				};
+				
+				orderPayment = getOrderService().processOrderPayment(orderPayment, subscriptionData, 'runPlaceOrderTransaction');
+	
+				//create deliveries if there are no errors else propagate errors
+				if(!orderPayment.hasErrors()){
+					// Look for 'auto' order fulfillments
+					getOrderService().createOrderDeliveryForAutoFulfillmentMethod(order.getOrderFulfillments()[1]);
+				}else{
+					if(structKeyExists(orderPayment.getErrors(),'runPlaceOrderTransaction')){
+						arguments.subscriptionUsage.addError('runPlaceOrderTransaction', orderPayment.getErrors().runPlaceOrderTransaction);
+					}
 				}
 			}
 		}
