@@ -410,6 +410,19 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     	}
     }
 
+	public string function getShippingIntegrationName() { 
+		if(!isNull(getShippingIntegration())){
+			return getShippingIntegration().getIntegrationName(); 
+		}
+		return ''; 
+	} 
+
+	public any function getShippingIntegration() { 
+		if(!isNull(getShippingMethodRate()) && !isNull(getShippingMethodRate().getShippingIntegration())){
+				return getShippingMethodRate().getShippingIntegration(); 
+		} 
+	}	
+
     public any function getSelectedShippingMethodOption() {
     	if(!structKeyExists(variables, "selectedShippingMethodOption")) {
     		if(!isNull(getShippingMethod())) {
