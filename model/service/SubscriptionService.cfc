@@ -496,62 +496,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// Persist the order to the DB
 				getHibachiDAO().flushORMSession();
 
-				// Setup the Order Payment
-
-				if(
-					(
-						!isNull(arguments.processObject.getSubscriptionUsage().getAutoPayFlag())
-						&& arguments.processObject.getSubscriptionUsage().getAutoPayFlag()
-					)
-					|| !arguments.processObject.getAutoUpdateFlag()
-				){
-					if(
-						arguments.processObject.getRenewalPaymentType() eq 'accountPaymentMethod'
-						&& !isNull(arguments.processObject.getAccountPaymentMethod())
-					) {
-						var orderPayment = getOrderService().newOrderPayment();
-
-						orderPayment.copyFromAccountPaymentMethod( arguments.processObject.getAccountPaymentMethod() );
-						orderPayment.setCurrencyCode( order.getCurrencyCode() );
-						orderPayment.setOrder( order );
-
-					} else if (
-						arguments.processObject.getRenewalPaymentType() eq 'orderPayment'
-						&& !isNull(arguments.processObject.getOrderPayment())
-					) {
-						var orderPayment = getOrderService().newOrderPayment();
-						orderPayment.copyFromOrderPayment( arguments.processObject.getOrderPayment() );
-						orderPayment.setCurrencyCode( order.getCurrencyCode() );
-						orderPayment.setOrder( order );
-					} else if (arguments.processObject.getRenewalPaymentType() eq 'new') {
-						
-						order = getOrderService().processOrder(order, arguments.data, 'addOrderPayment');
-						
-						if (!order.hasErrors()){
-							var orderPayment = order.getOrderPayments()[1]; //this should be the only payment because we use newOrderPayment with this.
-						}
-						
-					}
-
-
-					if(!isNull(orderPayment)){
-						//set up subscription renewal data
-						var subscriptionData = {
-							isSubscriptionRenewal=true
-						};
-						
-						orderPayment = getOrderService().processOrderPayment(orderPayment, subscriptionData, 'runPlaceOrderTransaction');
-
-						//create deliveries if there are no errors else propagate errors
-						if(!orderPayment.hasErrors()){
-							// Look for 'auto' order fulfillments
-							getOrderService().createOrderDeliveryForAutoFulfillmentMethod(order.getOrderFulfillments()[1]);
-						}else{
-							if(structKeyExists(orderPayment.getErrors(),'runPlaceOrderTransaction')){
-								arguments.subscriptionUsage.addError('runPlaceOrderTransaction', orderPayment.getErrors().runPlaceOrderTransaction);
-							}
-						}
-					}
+				setupOrderPayment(order, arguments.processObject);
+				
 				}
 
 				// As long as the order was placed, then we can update the nextBillDateTime & nextReminderDateTime
@@ -570,7 +516,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		// Existing Renewal Order to be re-submitted
 		} else {
-
+			
+			setupOrderPayment(order, arguments.processObject);
+			
 			// TODO: Add Retry Logic
 			if(!isNull(order.getOrderNumber())){
 				arguments.subscriptionUsage.addError('renew', rbKey('validate.processSubscriptionUsage_renew.order.newFlag') & ' <a href="?slatAction=admin:entity.detailOrder&orderID=#order.getOrderID()#">#getHibachiScope().rbKey('entity.Order')#: #order.getOrderNumber()# - #order.getStatus()#</a>');
@@ -581,7 +529,67 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return arguments.subscriptionUsage;
 	}
+	
+	public any function setupOrderPayment(required any subscriptionUsage, required any processObject){
+		// Setup the Order Payment
 
+		if(
+			(
+				!isNull(arguments.processObject.getSubscriptionUsage().getAutoPayFlag())
+				&& arguments.processObject.getSubscriptionUsage().getAutoPayFlag()
+			)
+			|| !arguments.processObject.getAutoUpdateFlag()
+		){
+			if(
+				arguments.processObject.getRenewalPaymentType() eq 'accountPaymentMethod'
+				&& !isNull(arguments.processObject.getAccountPaymentMethod())
+			) {
+				var orderPayment = getOrderService().newOrderPayment();
+
+				orderPayment.copyFromAccountPaymentMethod( arguments.processObject.getAccountPaymentMethod() );
+				orderPayment.setCurrencyCode( order.getCurrencyCode() );
+				orderPayment.setOrder( order );
+
+			} else if (
+				arguments.processObject.getRenewalPaymentType() eq 'orderPayment'
+				&& !isNull(arguments.processObject.getOrderPayment())
+			) {
+				var orderPayment = getOrderService().newOrderPayment();
+				orderPayment.copyFromOrderPayment( arguments.processObject.getOrderPayment() );
+				orderPayment.setCurrencyCode( order.getCurrencyCode() );
+				orderPayment.setOrder( order );
+			} else if (arguments.processObject.getRenewalPaymentType() eq 'new') {
+				
+				order = getOrderService().processOrder(order, arguments.data, 'addOrderPayment');
+				
+				if (!order.hasErrors()){
+					var orderPaymentSmartList = order.getOrderPaymentsSmartList();
+					orderPaymentSmartList.addFilter('orderPaymentStatusType.systemCode', 'opstActive');
+					var orderPayment = orderPaymentSmartList.getRecords();
+				}
+				
+			}
+
+
+		if(!isNull(orderPayment)){
+			//set up subscription renewal data
+			var subscriptionData = {
+				isSubscriptionRenewal=true
+			};
+			
+			orderPayment = getOrderService().processOrderPayment(orderPayment, subscriptionData, 'runPlaceOrderTransaction');
+
+			//create deliveries if there are no errors else propagate errors
+			if(!orderPayment.hasErrors()){
+				// Look for 'auto' order fulfillments
+				getOrderService().createOrderDeliveryForAutoFulfillmentMethod(order.getOrderFulfillments()[1]);
+			}else{
+				if(structKeyExists(orderPayment.getErrors(),'runPlaceOrderTransaction')){
+					arguments.subscriptionUsage.addError('runPlaceOrderTransaction', orderPayment.getErrors().runPlaceOrderTransaction);
+				}
+			}
+		}
+	}
 	public any function processSubscriptionUsage_sendRenewalReminder(required any subscriptionUsage) {
 
 		if(len(subscriptionUsage.setting('subscriptionUsageRenewalReminderEmailTemplate'))) {
