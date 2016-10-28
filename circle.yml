@@ -73,11 +73,11 @@ test:
   
   override:
     # Run Sauce Labs Integration Admin Tests, 2 side by side at a time
-    - if [[ ! -z $SAUCE_USERNAME ]] ; then node meta/tests/integration/se-interpreter/interpreter.js --parallel=4 --listener=meta/tests/integration/se-interpreter/utils/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/admin_config_firefox.json --silent; fi
+    - if [[ ! -z $SAUCE_USERNAME ]] ; then node meta/tests/integration/se-interpreter/interpreter.js --parallel=5 --listener=meta/tests/integration/se-interpreter/utils/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/admin_config_firefox.json --silent; fi
     # reimport the db
     - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwalldb_1)" -- mysql --user=root --password=CiPassword Slatwall < /home/ubuntu/slatwall/slatwall_test_starting_point_snapshot.sql && echo OK || echo Failed
     
-    - if [[ ! -z $SAUCE_USERNAME ]] ; then node meta/tests/integration/se-interpreter/interpreter.js --parallel=4 --listener=meta/tests/integration/se-interpreter/utils/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/admin_config_chrome.json --silent; fi
+    - if [[ ! -z $SAUCE_USERNAME ]] ; then node meta/tests/integration/se-interpreter/interpreter.js --parallel=5 --listener=meta/tests/integration/se-interpreter/utils/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/admin_config_chrome.json --silent; fi
     
     ######################################################
     # the tests in this condition will be  parallelized ##

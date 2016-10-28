@@ -1,0 +1,99 @@
+{  
+   "type":"script",
+   "seleniumVersion":"2",
+   "formatVersion":2,
+   "steps":[
+      {  
+         "type":"include",
+         "rel_dir":"/components/login_co.json"
+      },
+      {  
+         "__comment":"splits the css selector into small addressable path chunks. Chrome was having issues when waiting on the full path directly",
+         "type":"splitPathAndWait",
+         "locator":{  
+            "type":"css selector",
+            "value":"#j-mobile-nav > ul > li:nth-child(6) > a"
+         }
+      },  
+      {
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#j-mobile-nav > ul > li:nth-child(6) > a"
+         }
+      },
+      {
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#j-mobile-nav > ul > li.dropdown.open > ul > li:nth-child(1) > a"
+         }
+      },
+      {  
+         "type":"include",
+         "rel_dir":"/components/check_url_co.json"
+      },
+      {
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(2) > a"
+         }
+      },
+      {
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabglobaladvanced > table > tbody > tr:nth-child(9) > td.admin.admin1 > a"
+         }
+      }, 
+      {
+         "type":"clickElement",
+         "locator":{  
+            "type":"xpath",
+            "value":"//label[@for='settingValueNo']"
+         }
+      },
+      {
+         "type":"setElementSelected",
+         "locator":{  
+            "type":"id",
+            "value":"settingValueNo"
+         }
+      },
+      {
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#adminentitysavesetting > div > div > div.modal-footer > div > button.btn.btn-success"
+         }
+      },
+      {
+         "type":"clickElement",
+         "locator":{  
+            "type":"css selector",
+            "value":"#accordion > div:nth-child(2) > a"
+         }
+      },
+      {  
+         "type":"generateAssertion",
+         "assertion_type":"waitForText",
+         "text":"No",
+         "locator":{  
+            "type":"css selector",
+            "value":"#tabglobaladvanced > table > tbody > tr:nth-child(9) > td:nth-child(2)"
+         }
+      }
+      
+   ],
+   "data":{  
+      "configs":{  
+
+      },
+      "source":"none"
+   },
+   "inputs":[  
+
+   ],
+   "timeoutSeconds":60
+}
