@@ -511,7 +511,11 @@
 								<cfelse>
 									<td class="#column.tdclass#">
 										<cfif len(column.propertyIdentifier)>
-											#attributes.hibachiScope.hibachiHTMLEditFormat(record.getValueByPropertyIdentifier( propertyIdentifier=column.propertyIdentifier, formatValue=true ))#
+											<cfif record.getFieldTypeByPropertyIdentifier(column.propertyIdentifier) eq 'wysiwyg'>
+												#record.getValueByPropertyIdentifier( propertyIdentifier=column.propertyIdentifier, formatValue=true )#
+											<cfelse>
+												#attributes.hibachiScope.hibachiHTMLEditFormat(record.getValueByPropertyIdentifier( propertyIdentifier=column.propertyIdentifier, formatValue=true ))#
+											</cfif>
 										<cfelseif len(column.processObjectProperty)>
 											<cfset attData = duplicate(column) />
 											<cfset attData.object = thisRecordProcessObject />
