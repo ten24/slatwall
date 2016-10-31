@@ -507,7 +507,14 @@
 							<cfloop array="#thistag.columns#" index="column">
 								<!--- Expandable Check --->
 								<cfif column.tdclass eq "primary" and thistag.expandable>
-									<td class="#column.tdclass#"><a href="##" class="table-action-expand depth0" data-depth="0"><i class="glyphicon glyphicon-plus"></i></a> #attributes.hibachiScope.hibachiHTMLEditFormat(record.getValueByPropertyIdentifier( propertyIdentifier=column.propertyIdentifier, formatValue=true ))#</td>
+									<td class="#column.tdclass#"><a href="##" class="table-action-expand depth0" data-depth="0"><i class="glyphicon glyphicon-plus"></i></a> 
+										<cfif record.getFieldTypeByPropertyIdentifier(column.propertyIdentifier) eq 'wysiwyg'>
+											#record.getValueByPropertyIdentifier( propertyIdentifier=column.propertyIdentifier, formatValue=true )#
+										<cfelse>
+											#attributes.hibachiScope.hibachiHTMLEditFormat(record.getValueByPropertyIdentifier( propertyIdentifier=column.propertyIdentifier, formatValue=true ))#
+										</cfif>
+										
+									</td>
 								<cfelse>
 									<td class="#column.tdclass#">
 										<cfif len(column.propertyIdentifier)>
