@@ -60,7 +60,7 @@ Notes:
 </cfif>
 
 <cfif not listFindNoCase("login,loginInvalid,logout", rc.audit.getAuditType())>
-	<cfset rc.pageTitle = "#getHibachiScope().hibachiHTMLEditFormat(rc.audit.getTitle())#" />
+	<cfset rc.pageTitle = "#rc.audit.getTitle()#" />
 <cfelse>
 	<cfset rc.pageTitle = rc.audit.getFormattedValue('auditType') />
 </cfif>
