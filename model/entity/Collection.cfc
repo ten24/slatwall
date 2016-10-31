@@ -1421,13 +1421,23 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						columnsHQL &= getColumnAttributeHQL(column);
 					}else{
 						//check if we have an aggregate
-						if(!isnull(column.aggregate))
+						if(!isNull(column.aggregate))
 						{
 							//if we have an aggregate then put wrap the identifier
 							if(structKeyExists(column,'propertyIdentifier') && len(column.propertyIdentifier)){
 								columnsHQL &= getAggregateHQL(column.aggregate,column.propertyIdentifier);	
 							}
+							if( ( !structKeyExists(variables, "groupByRequired") || !variables.groupByRequired ) &&
+								  structKeyExists(column.aggregate, "aggregateFunction") && 
+							   ( column.aggregate.aggregateFunction == 'min' ||
+								 column.aggregate.aggregateFunction == 'max' ) 
+							){
+								variables.groupByRequired = false; 
+							} else {
+								variables.groupByRequired = true; 
+							}
 						}else{
+							variables.groupByRequired = true; 
 							var columnAlias = Replace(Replace(column.propertyIdentifier,'.','_','all'),'_'&lcase(Replace(getCollectionObject(),'#getDao('hibachiDAO').getApplicationKey()#',''))&'_','');
 							if(structKeyExists(column,'propertyIdentifier') && len(column.propertyIdentifier)){
 								columnsHQL &= ' #column.propertyIdentifier# as #columnAlias#';								
@@ -1494,7 +1504,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 			}//<--end if build select
 			if(
-				(getHasDisplayAggregate() || getHasManyRelationFilter())
+				(
+					( structKeyExists(variables, "groupByRequired") &&
+					  variables.groupByRequired )
+				   || getHasManyRelationFilter()
+				)
 				&& (
 					!structKeyExists(collectionConfig,'groupBys')
 					|| (
