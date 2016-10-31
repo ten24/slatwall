@@ -532,7 +532,7 @@ component extends="HibachiService" accessors="true" {
 						}
 					}
 					
-					changeDetail[column] = columnValue;
+					changeDetail[column] = hibachiHTMLEditFormat(columnValue);
 				}
 			}
 			
