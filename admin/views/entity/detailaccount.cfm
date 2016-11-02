@@ -93,6 +93,8 @@ Notes:
 			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/subscriptionusage" count="#rc.account.getSubscriptionUsagesSmartList().getRecordsCount()#" />
 			<hb:HibachiEntityDetailItem property="permissionGroups" />
 			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/accountsettings" />
+			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/parentaccounts" />
+			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/childaccounts" />
 
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.account.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">

@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,41 +45,24 @@
 
 Notes:
 
-*/
-component displayname="Account Relationship" entityname="SlatwallAccountRelationship" table="SwAccountRelationship" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" {
-	
-	// Persistent Properties
-	property name="accountRelationshipID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="activeFlag" type="boolean";
-	
-	// Related Object Properties (Many-To-One)
-	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" hb_optionsNullRBKey="define.select";
-	property name="relatedAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="relatedAccountID" hb_optionsNullRBKey="define.select";
-	property name="relationshipType" cfc="Type" fieldtype="many-to-one" fkcolumn="relationshipTypeID" hb_optionsNullRBKey="define.select" hb_optionsSmartListData="f:parentType.systemCode=relationshipType";
-	
-	property name="parentAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="parentAccountID";
-	property name="childAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="childAccountID";
-	
-	// Audit Properties
-	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
-	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
-	
-	// ============ START: Non-Persistent Property Methods =================
-	
-	// ============  END:  Non-Persistent Property Methods =================
-	
-	// ============= START: Bidirectional Helper Methods ===================
-	
-	// =============  END:  Bidirectional Helper Methods ===================
-	
-	// ================== START: Overridden Methods ========================
-	
-	// ==================  END:  Overridden Methods ========================
-		
-	// =================== START: ORM Event Hooks  =========================
-	
-	// ===================  END:  ORM Event Hooks  =========================
-}
+--->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
+
+<cfparam name="rc.account" type="any" />
+
+<hb:HibachiListingDisplay smartList="#rc.account.getParentAccountsSmartList()#"
+						  recordDetailAction="admin:entity.detailaccount"
+						  recordEditAction="admin:entity.editaccount">
+
+	<hb:HibachiListingColumn propertyIdentifier="firstName" />
+	<hb:HibachiListingColumn propertyIdentifier="lastName" />
+	<hb:HibachiListingColumn propertyIdentifier="accountCode" />
+	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="company" />
+	<hb:HibachiListingColumn propertyIdentifier="primaryPhoneNumber.phoneNumber" />
+	<hb:HibachiListingColumn propertyIdentifier="primaryEmailAddress.emailAddress" />
+	<hb:HibachiListingColumn propertyIdentifier="guestAccountFlag" />
+	<hb:HibachiListingColumn propertyIdentifier="organizationFlag" />
+</hb:HibachiListingDisplay>
 

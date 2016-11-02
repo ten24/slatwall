@@ -46,19 +46,21 @@
 Notes:
 
 */
-component displayname="Account Relationship" entityname="SlatwallAccountRelationship" table="SwAccountRelationship" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" {
+component displayname="AccountRelationshipRole" entityname="SlatwallAccountRelationshipRole" table="SwAccountRelationshipRole" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" {
 	
 	// Persistent Properties
-	property name="accountRelationshipID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="activeFlag" type="boolean";
+	property name="accountRelationshipRoleID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="accountRelationshipRoleName" ormtype="string";
+	//property name="parentAccountManagementPermissionGroupID"
 	
-	// Related Object Properties (Many-To-One)
-	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" hb_optionsNullRBKey="define.select";
-	property name="relatedAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="relatedAccountID" hb_optionsNullRBKey="define.select";
-	property name="relationshipType" cfc="Type" fieldtype="many-to-one" fkcolumn="relationshipTypeID" hb_optionsNullRBKey="define.select" hb_optionsSmartListData="f:parentType.systemCode=relationshipType";
+	// Related Object Properties (many-to-one)
+		
+	// Related Object Properties (one-to-many)
 	
-	property name="parentAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="parentAccountID";
-	property name="childAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="childAccountID";
+	// Related Object Properties (many-to-many)
+	
+	// Remote Properties
+	property name="remoteID" ormtype="string";
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -66,20 +68,37 @@ component displayname="Account Relationship" entityname="SlatwallAccountRelation
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
+	// Non-Persistent Properties
+
 	// ============ START: Non-Persistent Property Methods =================
 	
 	// ============  END:  Non-Persistent Property Methods =================
-	
+		
 	// ============= START: Bidirectional Helper Methods ===================
 	
 	// =============  END:  Bidirectional Helper Methods ===================
+
+	// =============== START: Custom Validation Methods ====================
 	
+	// ===============  END: Custom Validation Methods =====================
+	
+	// =============== START: Custom Formatting Methods ====================
+	
+	// ===============  END: Custom Formatting Methods =====================
+	
+	// ============== START: Overridden Implicet Getters ===================
+	
+	// ==============  END: Overridden Implicet Getters ====================
+
 	// ================== START: Overridden Methods ========================
 	
 	// ==================  END:  Overridden Methods ========================
-		
+	
 	// =================== START: ORM Event Hooks  =========================
 	
 	// ===================  END:  ORM Event Hooks  =========================
+	
+	// ================== START: Deprecated Methods ========================
+	
+	// ==================  END:  Deprecated Methods ========================
 }
-
