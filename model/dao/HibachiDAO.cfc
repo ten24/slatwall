@@ -228,7 +228,7 @@
 		<cfargument name="entityName" type="string" required="true" />
 		<cfargument name="propertyName" type="string" required="true" />
 		<cfargument name="value" type="string" required="true" />
-		<cfset var result = ORMExecuteQuey("SELECT COUNT(#arguments.propertyName#) FROM #arguments.entityName# WHERE #arguments.propertyName# = :value",{value=arguments.value},true)/>
+		<cfset var result = ORMExecuteQuery("SELECT COUNT(#arguments.propertyName#) FROM #arguments.entityName# WHERE #arguments.propertyName# = :value",{value=arguments.value},true)/>
 		<cfreturn result > 0/>
 	</cffunction>
 	
