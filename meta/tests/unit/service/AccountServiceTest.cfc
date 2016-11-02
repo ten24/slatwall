@@ -70,6 +70,69 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		assert(deleteOK);
 	}
+	
+	public void function processAccount_CreateTest_accountCodeRequiredForOrganizations(){
+		
+		//case tests if organization flag is flipped that account code is required
+		var accountData = {
+			accountID=""
+		};
+		var account = createTestEntity('Account',accountData);
+		
+		var data = {
+			organizationFlag=1,
+			
+			firstName='testName',
+			lastName="testLastName",
+			createAuthenticationFlag=0
+		};
+		
+		
+		account = variables.service.processAccount(account,data,'create');
+		assert(structKeyExists(account.getErrors(),'accountCode'));		
+		
+	}
+	
+	public void function processAccount_CreateTest_accountCodeCreatedBasedOnCompany(){
+		
+		//case tests if organization flag is flipped that account code is required
+		var accountData = {
+			accountID=""
+		};
+		var account = createPersistedTestEntity('Account',accountData);
+		var companyName = "testCompanyName"&createUUID();
+		var data = {
+			organizationFlag=1,
+			company=companyName,
+			firstName='testName',
+			lastName="testLastName",
+			createAuthenticationFlag=0
+		};
+		
+		
+		account = variables.service.processAccount(account,data,'create');
+		
+		assertEquals(account.getAccountCode(), lcase(account.getCompany()));
+		request.debug(account.getAccountCode());
+		var accountData = {
+			accountID=""
+		};
+		var account2 = createPersistedTestEntity('Account',accountData);
+		var data2 = {
+			organizationFlag=1,
+			company=companyName,
+			firstName='testName',
+			lastName="testLastName",
+			createAuthenticationFlag=0
+		};
+		
+		
+		account = variables.service.processAccount(account2,data2,'create');
+		
+		assertEquals(account2.getAccountCode(),companyName&'-1');
+	}
+	
+	
 }
 
 

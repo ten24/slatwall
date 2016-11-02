@@ -13,6 +13,24 @@
 	"properties":{
 		"firstName":							[{"contexts":"save","required":true}],
 		"lastName":								[{"contexts":"save","required":true}],
+		"accountCode":	    [
+			{
+				"conditions":"isOrganizationFlag",
+				"contexts":"save",
+				"unique":true,
+				"required":true
+			},
+			{
+				"conditions":"isNotOrganizationFlag",
+				"contexts":"save",
+				"uniqueOrNull":true
+			},
+			{
+				"required":true,
+				"contexts":"save",
+				"regex":"^[a-zA-Z0-9-_.|:~^]+$"
+			}
+		],
 		"superUserFlag":						[{"contexts":"generateAPIAccessKey","eq":false}],
 		"emailAddress":							[
 			{
@@ -31,23 +49,7 @@
 												],
 		"accountEmailAddressesNotInUseFlag":	[{"contexts":"createPassword","eq":true}],
 		"primaryEmailAddress":					[{"contexts":"save","conditions":"slatwallAuthenticatedAccount","method":"getPrimaryEmailAddressesNotInUseFlag"}],
-		"unenrolledAccountLoyaltyOptions":		[{"contexts":"addAccountLoyalty","minCollection":1}],
-		"accountCode":	    [
-			{
-				"conditions":"isOrganizationFlag",
-				"contexts":"save",
-				"unique":true,
-				"null":false
-			},
-			{
-				"conditions":"isNotOrganizationFlag",
-				"contexts":"save",
-				"uniqueOrNull":true
-			},
-			{
-				"contexts":"save",
-				"regex":"^[a-zA-Z0-9-_.|:~^]+$"
-			}
-		],
+		"unenrolledAccountLoyaltyOptions":		[{"contexts":"addAccountLoyalty","minCollection":1}]
+
 	}
 }

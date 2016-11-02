@@ -184,7 +184,7 @@
 
 		public string function createUniqueColumn(required string titleString, required string tableName, required string columnName) {
 
-			var addon = 1;
+			var addon = 0;
 
 			var urlTitle = createSEOString(arguments.titleString);
 
@@ -202,7 +202,7 @@
 		}
 		
 		public string function createUniqueProperty(required string titleString, required string entityName, required string propertyName){
-			var addon = 1;
+			var addon = 0;
 
 			var urlTitle = createSEOString(arguments.titleString);
 

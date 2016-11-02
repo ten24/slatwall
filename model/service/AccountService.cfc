@@ -249,12 +249,27 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		return arguments.account;
 	}
+	
+	public any function saveAccount(required any account, struct data={}, string context="save"){
+		
+		if(!isNull(arguments.account.getOrganizationFlag()) && arguments.account.getOrganizationFlag()){
+			if(!isNull(arguments.account.getCompany()) && isNull(arguments.account.getAccountCode())){
+				var accountCode = getService('hibachiutilityService').createUniqueProperty(arguments.account.getCompany(),getApplicationValue('applicationKey')&arguments.account.getClassName(),'accountCode');
+				arguments.account.setAccountCode(accountCode);
+			}
+		}
+		return super.save(entity=arguments.account,data=arguments.data);
+	}
 
 	public any function processAccount_create(required any account, required any processObject, struct data={}) {
 
 		// Populate the account with the correct values that have been previously validated
 		arguments.account.setFirstName( processObject.getFirstName() );
 		arguments.account.setLastName( processObject.getLastName() );
+		
+		if(!isNull(arguments.processObject.getOrganizationFlag())){
+			arguments.account.setOrganizationFlag(arguments.processObject.getOrganizationFlag());
+		}
 
 		// If company was passed in then set that up
 		if(!isNull(processObject.getCompany())) {
@@ -286,10 +301,10 @@ component extends="HibachiService" accessors="true" output="false" {
 				arguments.account.addError("accessID", rbKey('validate.account.accessID'));
 			}
 		}
-
+		
 		// Save & Populate the account so that custom attributes get set
 		arguments.account = this.saveAccount(arguments.account, arguments.data);
-
+		
 		// If the createAuthenticationFlag was set to true, the add the authentication
 		if(!arguments.account.hasErrors() && processObject.getCreateAuthenticationFlag()) {
 			var accountAuthentication = this.newAccountAuthentication();
@@ -1111,7 +1126,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	// =====================  END: Process Methods ============================
 
 	// ====================== START: Save Overrides ===========================
-
+	
 	public any function saveAccountPaymentMethod(required any accountPaymentMethod, struct data={}, string context="save") {
 		param name="arguments.data.runSaveAccountPaymentMethodTransactionFlag" default="true";
 
@@ -1139,7 +1154,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.accountPaymentMethod;
 
 	}
-
+	
 	public any function savePermissionGroup(required any permissionGroup, struct data={}, string context="save") {
 
 		arguments.permissionGroup.setPermissionGroupName( arguments.data.permissionGroupName );
@@ -1175,6 +1190,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		return arguments.permissionGroup;
 	}
+	
 
 	// ======================  END: Save Overrides ============================
 
