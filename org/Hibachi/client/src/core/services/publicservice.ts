@@ -186,7 +186,7 @@ class PublicService {
             this.baseActionPath = "/index.cfm/api/scope/" + action;//public path
         }
 
-        let urlBase = this.baseActionPath;
+        let urlBase = this.appConfig.baseURL+this.baseActionPath;
 
         if(data){
             method = "post";
