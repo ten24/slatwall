@@ -57,6 +57,8 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="loginLockExpiresDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="failedLoginAttemptCount" hb_populateEnabled="false" ormtype="integer" hb_auditable="false";
 	property name="taxExemptFlag" ormtype="boolean";
+	property name="organizationFlag" ormtype="boolean";
+	property name="accountCode" ormtype="string" index="PI_ACCOUNTCODE";
 	// CMS Properties
 	property name="cmsAccountID" ormtype="string" hb_populateEnabled="false" index="RI_CMSACCOUNTID";
 

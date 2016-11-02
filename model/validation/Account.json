@@ -2,23 +2,52 @@
 	"conditions":{
 	    "slatwallAuthenticatedAccount":{
 	        "slatwallAuthenticationExistsFlag":{"eq":true}
-	    }
+	    },
+		"isOrganizationAccount":{
+			"organizationFlag":{"eq":true}
+		},
+		"isNotOrganizationFlag":{
+			"organizationFlag":{"neq":true}
+		}
 	},
 	"properties":{
 		"firstName":							[{"contexts":"save","required":true}],
 		"lastName":								[{"contexts":"save","required":true}],
 		"superUserFlag":						[{"contexts":"generateAPIAccessKey","eq":false}],
-		"emailAddress":							[{"contexts":"save","dataType":"email"}],
+		"emailAddress":							[
+			{
+				"contexts":"save","dataType":"email"
+			},
+			{
+				"contexts":"createPassword","required":true
+			}
+		],
 		"orders":								[{"contexts":"delete","maxCollection":0}],
 		"productReviews":						[{"contexts":"delete","maxCollection":0}],
 		"cmsAccountID":							[{"contexts":"save","uniqueOrNull":true}],
-		"emailAddress":							[{"contexts":"createPassword","required":true}],
 		"slatwallAuthenticationExistsFlag":		[
 											    	{"contexts":"createPassword","eq":false},
 											    	{"contexts":"changePassword","eq":true}
 												],
 		"accountEmailAddressesNotInUseFlag":	[{"contexts":"createPassword","eq":true}],
 		"primaryEmailAddress":					[{"contexts":"save","conditions":"slatwallAuthenticatedAccount","method":"getPrimaryEmailAddressesNotInUseFlag"}],
-		"unenrolledAccountLoyaltyOptions":		[{"contexts":"addAccountLoyalty","minCollection":1}]
+		"unenrolledAccountLoyaltyOptions":		[{"contexts":"addAccountLoyalty","minCollection":1}],
+		"accountCode":	    [
+			{
+				"conditions":"isOrganizationFlag",
+				"contexts":"save",
+				"unique":true,
+				"null":false
+			},
+			{
+				"conditions":"isNotOrganizationFlag",
+				"contexts":"save",
+				"uniqueOrNull":true
+			},
+			{
+				"contexts":"save",
+				"regex":"^[a-zA-Z0-9-_.|:~^]+$"
+			}
+		],
 	}
 }
