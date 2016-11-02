@@ -229,7 +229,7 @@
 		<cfargument name="propertyName" type="string" required="true" />
 		<cfargument name="value" type="string" required="true" />
 		<cfset var result = ORMExecuteQuery("SELECT COUNT(#arguments.propertyName#) FROM #arguments.entityName# WHERE #arguments.propertyName# = :value",{value=arguments.value},true)/>
-		<cfreturn result > 0/>
+		<cfreturn result eq 0/>
 	</cffunction>
 	
 </cfcomponent>
