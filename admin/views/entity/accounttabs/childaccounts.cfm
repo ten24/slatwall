@@ -52,18 +52,18 @@ Notes:
 
 <cfparam name="rc.account" type="any" />
 
-<hb:HibachiListingDisplay smartList="#rc.account.getChildAccountsSmartList()#"
+<hb:HibachiListingDisplay smartList="#rc.account.getChildAccountRelationshipsSmartList()#"
 						  recordDetailAction="admin:entity.detailaccount"
 						  recordEditAction="admin:entity.editaccount">
 
-	<hb:HibachiListingColumn propertyIdentifier="firstName" />
-	<hb:HibachiListingColumn propertyIdentifier="lastName" />
-	<hb:HibachiListingColumn propertyIdentifier="accountCode" />
-	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="company" />
-	<hb:HibachiListingColumn propertyIdentifier="primaryPhoneNumber.phoneNumber" />
-	<hb:HibachiListingColumn propertyIdentifier="primaryEmailAddress.emailAddress" />
-	<hb:HibachiListingColumn propertyIdentifier="guestAccountFlag" />
-	<hb:HibachiListingColumn propertyIdentifier="organizationFlag" />
+	<hb:HibachiListingColumn propertyIdentifier="childAccount.firstName" />
+	<hb:HibachiListingColumn propertyIdentifier="childAccount.lastName" />
+	<hb:HibachiListingColumn propertyIdentifier="childAccount.accountCode" />
+	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="childAccount.company" />
+	<hb:HibachiListingColumn propertyIdentifier="childAccount.primaryPhoneNumber.phoneNumber" />
+	<hb:HibachiListingColumn propertyIdentifier="childAccount.primaryEmailAddress.emailAddress" />
+	<hb:HibachiListingColumn propertyIdentifier="childAccount.guestAccountFlag" />
+	<hb:HibachiListingColumn propertyIdentifier="childAccount.organizationFlag" />
 </hb:HibachiListingDisplay>
 <!---<hb:HibachiActionCaller action="admin:entity.preprocessaccount" entity="account" class="btn btn-default" icon="plus" querystring="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#&processcontext=create" modal=true />--->
 

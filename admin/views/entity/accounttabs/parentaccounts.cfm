@@ -52,17 +52,17 @@ Notes:
 
 <cfparam name="rc.account" type="any" />
 
-<hb:HibachiListingDisplay smartList="#rc.account.getParentAccountsSmartList()#"
+<hb:HibachiListingDisplay smartList="#rc.account.getParentAccountRelationshipsSmartList()#"
 						  recordDetailAction="admin:entity.detailaccount"
 						  recordEditAction="admin:entity.editaccount">
 
-	<hb:HibachiListingColumn propertyIdentifier="firstName" />
-	<hb:HibachiListingColumn propertyIdentifier="lastName" />
-	<hb:HibachiListingColumn propertyIdentifier="accountCode" />
-	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="company" />
-	<hb:HibachiListingColumn propertyIdentifier="primaryPhoneNumber.phoneNumber" />
-	<hb:HibachiListingColumn propertyIdentifier="primaryEmailAddress.emailAddress" />
-	<hb:HibachiListingColumn propertyIdentifier="guestAccountFlag" />
-	<hb:HibachiListingColumn propertyIdentifier="organizationFlag" />
+	<hb:HibachiListingColumn propertyIdentifier="parentAccount.firstName" />
+	<hb:HibachiListingColumn propertyIdentifier="parentAccount.lastName" />
+	<hb:HibachiListingColumn propertyIdentifier="parentAccount.accountCode" />
+	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="parentAccount.company" />
+	<hb:HibachiListingColumn propertyIdentifier="parentAccount.primaryPhoneNumber.phoneNumber" />
+	<hb:HibachiListingColumn propertyIdentifier="parentAccount.primaryEmailAddress.emailAddress" />
+	<hb:HibachiListingColumn propertyIdentifier="parentAccount.guestAccountFlag" />
+	<hb:HibachiListingColumn propertyIdentifier="parentAccount.organizationFlag" />
 </hb:HibachiListingDisplay>
 

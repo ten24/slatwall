@@ -51,10 +51,10 @@ component displayname="AccountRelationshipRole" entityname="SlatwallAccountRelat
 	// Persistent Properties
 	property name="accountRelationshipRoleID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="accountRelationshipRoleName" ormtype="string";
-	//property name="parentAccountManagementPermissionGroupID"
+	
 	
 	// Related Object Properties (many-to-one)
-		
+	property name="parentAccountManagementPermissionGroup" cfc="PermissionGroup" fieldtype="many-to-one" fkcolumn="parentAccountManagementPermissionGroupID";
 	// Related Object Properties (one-to-many)
 	
 	// Related Object Properties (many-to-many)

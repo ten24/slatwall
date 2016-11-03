@@ -71,6 +71,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="primaryShippingAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="primaryShippingAddressID";
 	property name="accountCreatedSite" hb_populateEnabled="public" cfc="Site" fieldtype="many-to-one" fkcolumn="accountCreatedSiteID";
 	property name="ownerAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="ownerAccountID";
+	property name="accountRelationshipRole" cfc="AccountRelationshipRole" fieldtype="many-to-one" fkcolumn="accountRelationShipRoleID";
 
 	// Related Object Properties (one-to-many)
 	property name="childAccountRelationships" singularname="childAccountRelationship" fieldType="one-to-many" type="array" fkcolumn="accountID" cfc="AccountRelationship" inverse="true";
