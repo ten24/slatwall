@@ -247,12 +247,6 @@ component extends="FW1.framework" {
 						getHibachiScope().getSession().setAccount( account );
 					}
 				}
-			// If there is no account on the session, then we can look for an authToken to setup that account for this one request
-			}else if(!getHibachiScope().getLoggedInFlag() && structKeyExists(request, "context") && structKeyExists(request.context, "authToken") && len(request.context.authToken)) {
-				var authTokenAccount = getHibachiScope().getDAO('hibachiDAO').getAccountByAuthToken(authToken=request.context.authToken);
-				if(!isNull(authTokenAccount)) {
-					getHibachiScope().getSession().setAccount( authTokenAccount );
-				}
 			}
 			
 			// Call the onEveryRequest() Method for the parent Application.cfc
