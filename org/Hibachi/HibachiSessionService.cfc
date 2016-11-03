@@ -131,11 +131,13 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 		// Variable to store the last request dateTime of a session
 		var previousRequestDateTime = getHibachiScope().getSession().getLastRequestDateTime();
+		var lastLoginDateTime = getHibachiScope().getSession().getLoggedInDateTime();
 		
 		//set a value if previous request dateTime is null.
 		if (isNull(previousRequestDateTime)){
 			previousRequestDateTime = now();
 		}
+		
 		// update the sessionScope with the ID for the next request
 		getHibachiScope().setSessionValue('sessionID', getHibachiScope().getSession().getSessionID());
 		
@@ -154,7 +156,8 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 		// If the sessions account is an admin and last request by the session was 15 min or longer ago. 
 		
-		if((
+		if(isNull(lastLoginDateTime) ||
+		(
 			(getHibachiScope().getSessionFoundPSIDCookieFlag()||getHibachiScope().getSessionFoundExtendedPSIDCookieFlag()||getHibachiScope().getSessionFoundNPSIDCookieFlag()) && !getHibachiScope().getLoggedInFlag())
 		
 			|| (!isNull(getHibachiScope().getSession().getAccountAuthentication()) && getHibachiScope().getSession().getAccountAuthentication().getForceLogoutFlag()) 
