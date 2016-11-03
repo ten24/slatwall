@@ -54,7 +54,7 @@ component displayname="AccountRelationshipRole" entityname="SlatwallAccountRelat
 	
 	
 	// Related Object Properties (many-to-one)
-	property name="parentAccountManagementPermissionGroup" cfc="PermissionGroup" fieldtype="many-to-one" fkcolumn="parentAccountManagementPermissionGroupID";
+	property name="parentAccountManagementPermissionGroup" cfc="PermissionGroup" fieldtype="many-to-one" fkcolumn="parentAccountManagementPGID";
 	// Related Object Properties (one-to-many)
 	
 	// Related Object Properties (many-to-many)

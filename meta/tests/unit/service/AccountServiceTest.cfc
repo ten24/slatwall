@@ -113,7 +113,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		account = variables.service.processAccount(account,data,'create');
 		
 		assertEquals(account.getAccountCode(), lcase(account.getCompany()));
-		request.debug(account.getAccountCode());
 		var accountData = {
 			accountID=""
 		};
@@ -158,6 +157,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		
 		var childAccount2 = createPersistedTestEntity('account',childAccountData2);
+		
+		var accountRelationshipData = {
+			accountRelationshipID=""
+			
+		};
+		var accountRelationship = createPersistedTestData('accountRelationship',accountRelationshipData);
 		
 		deleteOK = variables.service.deleteAccount(childAccount2);
 		assertFalse(deleteOK);
