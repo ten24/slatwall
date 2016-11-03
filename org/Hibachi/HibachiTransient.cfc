@@ -375,7 +375,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 			// Setup the current property
 			currentProperty = properties[p];
-
+			
 			// Check to see if we should upload this property
 			if( 
 				structKeyExists(arguments.data, currentProperty.name) 
@@ -387,10 +387,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 				&& currentProperty.hb_fileUpload 
 				&& structKeyExists(currentProperty, "hb_fileAcceptMIMEType") 
 				&& len(arguments.data[ currentProperty.name ]) 
-				&& !isNull(form)
 				&& structKeyExists(form, currentProperty.name) 
 			) {
-
 				// Wrap in try/catch to add validation error based on fileAcceptMIMEType
 				try {
 
@@ -404,7 +402,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 					// Do the upload
 					var uploadData = fileUpload( uploadDirectory, currentProperty.name, currentProperty.hb_fileAcceptMIMEType, 'makeUnique' );
-
+					
 					// Update the property with the serverFile name
 					_setProperty(currentProperty.name, uploadData.serverFile);
 				} catch(any e) {
