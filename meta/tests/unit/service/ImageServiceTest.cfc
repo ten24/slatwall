@@ -46,24 +46,41 @@
 Notes:
 
 */
-component accessors="true" displayname="ResponseBean" hint="bean to encapsulate response from service layer" extends="HibachiTransient" {
-	
-	property name="data" type="any";
-	property name="statusCode" type="string";
-	
-	public any function init() {
-		// Set Defaults
-		this.setStatusCode("");
-		this.setData({});
+component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
+
+	public void function setUp() {
+		super.setup();
 		
-		// Populate all keys passed in
-		for(var key in arguments) {
-			if(structKeyExists(this, "set#key#")) {
-				var setterMethod = this["set" & key];
-				setterMethod(arguments[key]);	
+		variables.service = request.slatwallScope.getBean("imageService");
+	}
+	
+	public void function saveImageTest(){
+		var productData = {
+			productID="",
+			productName="test",
+			productCode='test'&createUUID()
+		};
+		var product = createPersistedTestEntity('Product',productData);
+		
+		
+		var imageData ={
+			image=""
+		};
+		var image = createTestEntity('image',imageData);
+		
+		var data = {
+			product={
+				productID=product.getProductID()
+			},
+			directory='product',
+			imageName='test',
+			imageType={
+				typeID='4028289a51a7450a0151ab186c740189'
 			}
-		}
+		};
 		
-		return this;
-	} 
-} 
+		image = variables.service.saveImage(image,data);
+		assert(structKeyExists(image.getErrors(),'imageFile'));
+	}	
+	
+}
