@@ -50,7 +50,7 @@ component displayname="Account Relationship" entityname="SlatwallAccountRelation
 	
 	// Persistent Properties
 	property name="accountRelationshipID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="activeFlag" type="boolean";
+	property name="activeFlag" ormtype="boolean";
 	
 	// Related Object Properties (Many-To-One)
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" hb_optionsNullRBKey="define.select";
