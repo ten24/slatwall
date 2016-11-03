@@ -63,5 +63,7 @@ component accessors="true" displayname="ResponseBean" hint="bean to encapsulate 
 				setterMethod(arguments[key]);	
 			}
 		}
+		
+		return this;
 	} 
 } 
