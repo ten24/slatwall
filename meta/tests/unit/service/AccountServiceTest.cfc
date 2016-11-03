@@ -145,7 +145,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(deleteOK);
 		
 		var ownerAccountData ={
-			accountID=""
+			accountID="",
+			primaryEmailAddress={
+				accountEmailAddressID="",
+				emailAddress="test"&createUUID()&"@aol.com"
+			}
 		};
 		var ownerAccount = createPersistedTestEntity('account',ownerAccountData);
 		
@@ -153,6 +157,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			accountID="",
 			ownerAccount={
 				accountID=ownerAccount.getAccountID()
+			},
+			primaryEmailAddress={
+				accountEmailAddressID="",
+				emailAddress="test"&createUUID()&"@aol.com"
 			}
 		};
 		
@@ -162,7 +170,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			accountRelationshipID=""
 			
 		};
-		var accountRelationship = createPersistedTestData('accountRelationship',accountRelationshipData);
+		var accountRelationship = createPersistedTestEntity('accountRelationship',accountRelationshipData);
 		
 		deleteOK = variables.service.deleteAccount(childAccount2);
 		assertFalse(deleteOK);
