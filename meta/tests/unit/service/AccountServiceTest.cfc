@@ -132,6 +132,38 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(account2.getAccountCode(),companyName&'-1');
 	}
 	
+	public void function deleteAccountTest_ifyouareOwner(){
+		var childAccountData = {
+			accountID="",
+			ownerAccount={
+				accountID=request.slatwallScope.getAccount().getAccountID()
+			}
+		};
+		
+		var childAccount = createPersistedTestEntity('account',childAccountData);
+		
+		var deleteOK = variables.service.deleteAccount(childAccount);
+		assert(deleteOK);
+		
+		var ownerAccountData ={
+			accountID=""
+		};
+		var ownerAccount = createPersistedTestEntity('account',ownerAccountData);
+		
+		var childAccountData2 = {
+			accountID="",
+			ownerAccount={
+				accountID=ownerAccount.getAccountID()
+			}
+		};
+		
+		var childAccount2 = createPersistedTestEntity('account',childAccountData2);
+		
+		deleteOK = variables.service.deleteAccount(childAccount2);
+		assertFalse(deleteOK);
+		assert(structKeyExists(childAccount2.getErrors(),'ownerAccount'));
+	}
+	
 	
 }
 

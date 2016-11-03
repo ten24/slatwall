@@ -49,7 +49,7 @@
 												],
 		"accountEmailAddressesNotInUseFlag":	[{"contexts":"createPassword","eq":true}],
 		"primaryEmailAddress":					[{"contexts":"save","conditions":"slatwallAuthenticatedAccount","method":"getPrimaryEmailAddressesNotInUseFlag"}],
-		"unenrolledAccountLoyaltyOptions":		[{"contexts":"addAccountLoyalty","minCollection":1}]
-
+		"unenrolledAccountLoyaltyOptions":		[{"contexts":"addAccountLoyalty","minCollection":1}],
+		"ownerAccount":							[{"contexts":"delete","method":"canDeleteByOwner"}]
 	}
 }
