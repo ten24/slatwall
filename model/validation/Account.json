@@ -6,7 +6,7 @@
 		"isOrganizationAccount":{
 			"organizationFlag":{"eq":true}
 		},
-		"isNotOrganizationFlag":{
+		"isNotOrganizationAccount":{
 			"organizationFlag":{"neq":true}
 		}
 	},
@@ -15,18 +15,17 @@
 		"lastName":								[{"contexts":"save","required":true}],
 		"accountCode":	    [
 			{
-				"conditions":"isOrganizationFlag",
+				"conditions":"isOrganizationAccount",
 				"contexts":"save",
 				"unique":true,
 				"required":true
 			},
 			{
-				"conditions":"isNotOrganizationFlag",
+				"conditions":"isNotOrganizationAccount",
 				"contexts":"save",
 				"uniqueOrNull":true
 			},
 			{
-				"required":true,
 				"contexts":"save",
 				"regex":"^[a-zA-Z0-9-_.|:~^]+$"
 			}

@@ -49,60 +49,10 @@ Notes:
 component output="false" accessors="true" extends="HibachiProcess" {
 
 	// Injected Entity
-	property name="account";
+	property name="accountRelationship";
 
 	// Data Properties
-	property name="firstName" hb_rbKey="entity.account.firstName";
-	property name="lastName" hb_rbKey="entity.account.lastName";
-	property name="company" hb_rbKey="entity.account.company";
-	property name="phoneNumber";
-	property name="emailAddress";
-	property name="emailAddressConfirm";
-	property name="createAuthenticationFlag" hb_sessionDefault="1";
-	property name="password";
-	property name="passwordConfirm";
-	property name="accessID";
-	property name="organizationFlag" hb_formFieldType="yesno" default=0;
-	property name="parentAccountID";
-	property name="childAccountID";
+	property name="accountRelationShipRole" hb_formfieldType="select" fieldtype="many-to-one" cfc="AccountRelationshipRole";
 	
-	property name="parentAccount" cfc="Account" fieldtype="many-to-one";
-	property name="childAccount" cfc="account" fieldtype="many-to-one";
-	
-	public any function getParentAccount(){
-		if(!structKeyExists(variables,'parentAccount')){
-			if(!isNull(getParentAccountID())){
-				variables.parentAccount = getService('accountService').getAccount(getParentAccountID());	
-			}else{
-				return;
-			}
-		}
-		return variables.parentAccount;
-	}
-	
-	public any function getChildAccount(){
-		if(!structKeyExists(variables,'childAccount')){
-			if(!isNull(getChildAccountID())){
-				variables.childAccount = getService('accountService').getAccount(getChildAccountID());	
-			}else{
-				return;
-			}
-		}
-		return variables.childAccount;
-	}
-	
-	public boolean function getCreateAuthenticationFlag() {
-		if(!structKeyExists(variables, "createAuthenticationFlag")) {
-			variables.createAuthenticationFlag = getPropertySessionDefault("createAuthenticationFlag");
-		}
-		return variables.createAuthenticationFlag;
-	}
-	
-	public boolean function getPrimaryEmailAddressNotInUseFlag() {
-		if(!isNull(getEmailAddress())) {
-			return getService("accountService").getPrimaryEmailAddressNotInUseFlag( emailAddress=getEmailAddress() );	
-		}
-		return true;
-	}
 	
 }

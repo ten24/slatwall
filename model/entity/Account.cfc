@@ -441,6 +441,20 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 			structDelete(variables, "primaryShippingAddress");
 		}
 	}
+	// Parent Account Relationships (one-to-many)
+	public void function addParentAccountRelationship(required any accountRelationship) {
+		if(arguments.accountRelationship.isNew() or !hasParentAccountRelationship(arguments.accountRelationship)) {
+			arguments.accountRelationship.setAccount(this);
+			arrayAppend(variables.parentAccountRelationships, arguments.accountRelationship);
+		}
+	}
+	// Child Account Relationships (one-to-many)
+	public void function addChildAccountRelationship(required any accountRelationship) {
+		if(arguments.accountRelationship.isNew() or !hasChildAccountRelationship(arguments.accountRelationship)) {
+			arguments.accountRelationship.setAccount(this);
+			arrayAppend(variables.childAccountRelationships, arguments.accountRelationship);
+		}
+	}
 
 	// Account Addresses (one-to-many)
 	public void function addAccountAddress(required any accountAddress) {

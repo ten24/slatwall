@@ -81,7 +81,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		var data = {
 			organizationFlag=1,
-			
 			firstName='testName',
 			lastName="testLastName",
 			createAuthenticationFlag=0
@@ -93,30 +92,61 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 	}
 	
-	public void function processAccount_CreateTest_accountCodeCreatedBasedOnCompany(){
+	public void function processAccount_CreateTest_addParentAndChildAccounts(){
+		
+		var childAccountData = {
+			accountID="",
+			firstName="Bob"
+		};
+		var childAccount = createPersistedTestEntity('Account',childAccountData);
+		
+		var parentAccountData = {
+			accountID="",
+			firstName="jimmy"
+		};
+		var parentAccount = createPersistedTestEntity('Account',parentAccountData);
 		
 		//case tests if organization flag is flipped that account code is required
 		var accountData = {
 			accountID=""
 		};
-		var account = createPersistedTestEntity('Account',accountData);
-		var companyName = "testCompanyName"&createUUID();
+		var account = createTestEntity('Account',accountData);
+		
 		var data = {
+			firstName='testName',
+			lastName="testLastName",
+			createAuthenticationFlag=0,
+			parentAccountID=parentAccount.getAccountID(),
+			childAccountID=childAccount.getAccountID()
+		};
+		
+		account = variables.service.processAccount(account,data,'create');
+		
+		assert(arraylen(account.getParentAccountRelationships()));
+		assert(arraylen(account.getParentAccountRelationships()[1].getParentAccount().getChildAccountRelationships()));
+		assert(!isNull(account.getParentAccountRelationships()[1].getParentAccount().getChildAccountRelationships()[1].getChildAccount()));
+		assertEquals(1,arraylen(account.getParentAccountRelationships()[1].getParentAccount().getChildAccountRelationships()));
+		assert(arraylen(account.getChildAccountRelationships()));
+	}
+	
+	public void function processAccount_CreateTest_accountCodeCreatedBasedOnCompany(){
+		var companyName = "testCompanyName"&createUUID();
+		//case tests if organization flag is flipped that account code is required
+		var accountData = {
+			accountID="",
 			organizationFlag=1,
 			company=companyName,
+			accountCode=lcase(companyName),
 			firstName='testName',
 			lastName="testLastName",
 			createAuthenticationFlag=0
 		};
+		var account = createPersistedTestEntity('Account',accountData);
 		
-		
-		account = variables.service.processAccount(account,data,'create');
-		
-		assertEquals(account.getAccountCode(), lcase(account.getCompany()));
-		var accountData = {
+		var accountData2 = {
 			accountID=""
 		};
-		var account2 = createPersistedTestEntity('Account',accountData);
+		var account2 = createTestEntity('Account',accountData2);
 		var data2 = {
 			organizationFlag=1,
 			company=companyName,
@@ -125,10 +155,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			createAuthenticationFlag=0
 		};
 		
-		
 		account = variables.service.processAccount(account2,data2,'create');
 		
-		assertEquals(account2.getAccountCode(),companyName&'-1');
+		assertEquals(companyName&'-1',account2.getAccountCode());
 	}
 	
 	public void function deleteAccountTest_ifyouareOwner(){
@@ -176,6 +205,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertFalse(deleteOK);
 		assert(structKeyExists(childAccount2.getErrors(),'ownerAccount'));
 	}
+	
 	
 	
 }

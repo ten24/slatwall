@@ -133,6 +133,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ===================== START: Process Methods ===========================
 
 	// Account
+	
 	public any function processAccount_addAccountPayment(required any account, required any processObject) {
 
 		// Get the populated newAccountPayment out of the processObject
@@ -260,6 +261,10 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		return super.save(entity=arguments.account,data=arguments.data);
 	}
+	
+	public any function processAccountRelationship_Approval(required accountRelationship){
+		
+	}
 
 	public any function processAccount_create(required any account, required any processObject, struct data={}) {
 
@@ -269,6 +274,30 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		if(!isNull(arguments.processObject.getOrganizationFlag())){
 			arguments.account.setOrganizationFlag(arguments.processObject.getOrganizationFlag());
+		}
+		
+		if(!isNull(arguments.processObject.getParentAccount())){
+			var accountRelationship = this.newAccountRelationship();
+			accountRelationship.setChildAccount(this);
+			accountRelationship.setParentAccount(arguments.processObject.getParentAccount());
+			arguments.account.addParentAccountRelationship(accountRelationship);	
+			accountRelationship.getParentAccount().addChildAccountRelationship(accountRelationship);
+			
+			arguments.account.setOwnerAccount(arguments.processObject.getParentAccount());
+		}
+		
+		if(isNull(arguments.account.getOwnerAccount())){
+			arguments.account.setOwnerAccount(getHibachiScope().getAccount());
+		}
+		
+		if(!isNull(arguments.processObject.getChildAccount())){
+			var accountRelationship = this.newAccountRelationship();
+			accountRelationship.setParentAccount(this);
+			accountRelationship.setChildAccount(arguments.processObject.getChildAccount());
+			arguments.account.addChildAccountRelationship(accountRelationship);
+			accountRelationship.getChildAccount().addParentAccountRelationship(accountRelationship);
+			
+			accountRelationship.getChildAccount().setOwnerAccount(arguments.account);
 		}
 
 		// If company was passed in then set that up
@@ -931,6 +960,8 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		return arguments.accountLoyalty;
 	}
+	
+	//public any function processAccountRelationship_addChildAccountRelationship(required any a)
 
 	public any function processAccountLoyalty_manualTransaction(required any accountLoyalty, required any processObject) {
 
