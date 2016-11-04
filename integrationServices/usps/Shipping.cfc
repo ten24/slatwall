@@ -148,7 +148,7 @@ component accessors="true" output="false" displayname="USPS" implements="Slatwal
         var xmlPacket = "";
 		var response = "";
         
-		if(!arguments.requestBean.isInternationalShipment()) {
+		if(arguments.requestBean.getShipToCountryCode() == "US" || arguments.requestBean.getShipToCountryCode() == "PR"){ 
 			savecontent variable="xmlPacket" {
 				include "RatesV4RequestTemplate.cfm";
 	        }
