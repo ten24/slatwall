@@ -48,7 +48,7 @@ Notes:
 */
 
 component accessors="true" output="false" extends="Slatwall.model.transient.ResponseBean"{
-
+	property name="requestBean" type="any";
  
 	public any function init() {
 		// Set defaults

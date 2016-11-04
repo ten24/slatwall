@@ -41,6 +41,7 @@
 /// <reference path="../src/collection/controllers/collections.ts" />
 /// <reference path="../src/collection/controllers/confirmationcontroller.ts" />
 /// <reference path="../src/collection/controllers/createcollection.ts" />
+/// <reference path="../src/collection/controllers/entity_createcollection.ts" />
 /// <reference path="../src/collection/services/collectionconfigservice.ts" />
 /// <reference path="../src/collection/services/collectionservice.ts" />
 /// <reference path="../src/core/components/swactioncaller.ts" />

@@ -1,3 +1,6 @@
+<cfparam name="this.datasource.username" default="" />
+<cfparam name="this.datasource.password" default="" />
+
 <cftry>
 	<cfdbinfo datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#" type="Version" name="dbVersion">
 	<cfcatch>
