@@ -58,9 +58,15 @@ Notes:
 		<swa:SlatwallSetting settingName="emailFailToAddress" />
 		<swa:SlatwallSetting settingName="emailReplyToAddress" />
 		<swa:SlatwallSetting settingName="emailSubject" />
+		<swa:SlatwallSetting settingName="emailSMTPServer" />
+		<swa:SlatwallSetting settingName="emailSMTPPort" />
+		<swa:SlatwallSetting settingName="emailSMTPUseSSL" />
+		<swa:SlatwallSetting settingName="emailSMTPUseTLS" />
+		<swa:SlatwallSetting settingName="emailSMTPUsername" />
+		<swa:SlatwallSetting settingName="emailSMTPPassword" />
 		<swa:SlatwallSetting settingName="emailIMAPServer" />
 		<swa:SlatwallSetting settingName="emailIMAPServerPort" />
 		<swa:SlatwallSetting settingName="emailIMAPServerUsername" />
-		<swa:SlatwallSetting settingName="emailIMAPServerPassword">
+		<swa:SlatwallSetting settingName="emailIMAPServerPassword" />
 	</swa:SlatwallSettingTable>
 </cfoutput>
