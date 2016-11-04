@@ -352,7 +352,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 
 		var propertyIdentifier = listFirst(arguments.orderByString,'|');
-		var direction = listLast(arguments.orderByString,'|');
+		var direction = 'ASC';
+		if(listLen(arguments.orderByString,"|") > 1){
+			direction = listLast(arguments.orderByString,'|');	
+		}
+		
 
 		var orderBy = {
 			"propertyIdentifier"=propertyIdentifier,
