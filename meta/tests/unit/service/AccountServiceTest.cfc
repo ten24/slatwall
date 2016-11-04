@@ -124,7 +124,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		assert(arraylen(account.getParentAccountRelationships()));
 		assert(arraylen(account.getParentAccountRelationships()[1].getParentAccount().getChildAccountRelationships()));
-		assert(!isNull(account.getParentAccountRelationships()[1].getParentAccount().getChildAccountRelationships()[1].getChildAccount()));
+		assertEquals(account.getFirstName(),account.getParentAccountRelationships()[1].getParentAccount().getChildAccountRelationships()[1].getChildAccount().getFirstName());
 		assertEquals(1,arraylen(account.getParentAccountRelationships()[1].getParentAccount().getChildAccountRelationships()));
 		assert(arraylen(account.getChildAccountRelationships()));
 	}

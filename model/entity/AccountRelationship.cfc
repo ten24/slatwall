@@ -51,13 +51,14 @@ component displayname="Account Relationship" entityname="SlatwallAccountRelation
 	// Persistent Properties
 	property name="accountRelationshipID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean";
-	
+	property name="approvalFlag" ormtype="boolean" default="0";
 	// Related Object Properties (Many-To-One)
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" hb_optionsNullRBKey="define.select";
 	
 	property name="parentAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="parentAccountID";
 	property name="childAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="childAccountID";
 	property name="accountRelationshipRole" cfc="AccountRelationshipRole" fieldtype="many-to-one" fkcolumn="accountRelationShipRoleID";
+	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";

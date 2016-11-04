@@ -275,24 +275,23 @@ component extends="HibachiService" accessors="true" output="false" {
 		if(!isNull(arguments.processObject.getOrganizationFlag())){
 			arguments.account.setOrganizationFlag(arguments.processObject.getOrganizationFlag());
 		}
-		
 		if(!isNull(arguments.processObject.getParentAccount())){
+			
 			var accountRelationship = this.newAccountRelationship();
-			accountRelationship.setChildAccount(this);
+			accountRelationship.setChildAccount(arguments.account);
 			accountRelationship.setParentAccount(arguments.processObject.getParentAccount());
 			arguments.account.addParentAccountRelationship(accountRelationship);	
 			accountRelationship.getParentAccount().addChildAccountRelationship(accountRelationship);
 			
 			arguments.account.setOwnerAccount(arguments.processObject.getParentAccount());
 		}
-		
 		if(isNull(arguments.account.getOwnerAccount())){
 			arguments.account.setOwnerAccount(getHibachiScope().getAccount());
 		}
 		
 		if(!isNull(arguments.processObject.getChildAccount())){
 			var accountRelationship = this.newAccountRelationship();
-			accountRelationship.setParentAccount(this);
+			accountRelationship.setParentAccount(arguments.account);
 			accountRelationship.setChildAccount(arguments.processObject.getChildAccount());
 			arguments.account.addChildAccountRelationship(accountRelationship);
 			accountRelationship.getChildAccount().addParentAccountRelationship(accountRelationship);

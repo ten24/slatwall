@@ -64,6 +64,8 @@ Notes:
 	<hb:HibachiListingColumn propertyIdentifier="childAccount.primaryEmailAddress.emailAddress" />
 	<hb:HibachiListingColumn propertyIdentifier="childAccount.guestAccountFlag" />
 	<hb:HibachiListingColumn propertyIdentifier="childAccount.organizationFlag" />
+	<hb:HibachiListingColumn propertyIdentifier="accountRelationshipRole.accountRelationshipRoleName" />
+	<hb:HibachiListingColumn propertyIdentifier="approvalFlag" />
 </hb:HibachiListingDisplay>
-<!---<hb:HibachiActionCaller action="admin:entity.preprocessaccount" entity="account" class="btn btn-default" icon="plus" querystring="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#&processcontext=create" modal=true />--->
+<hb:HibachiActionCaller action="admin:entity.preprocessaccount" entity="account" class="btn btn-default" icon="plus" querystring="sRedirectAction=admin:entity.detailaccount&parentAccountID=#rc.account.getAccountID()#&processcontext=create" modal=true />
 
