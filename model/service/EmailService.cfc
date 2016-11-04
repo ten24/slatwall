@@ -56,14 +56,26 @@ Notes:
 	<cffunction name="sendEmail" returntype="void" access="public">
 		<cfargument name="email" type="any" required="true" />
 
+		<cfset cfmailAttributes = structNew() />
+		<cfset cfmailAttributes["from"] = arguments.email.getEmailFrom() />
+		<cfset cfmailAttributes["subject"] = arguments.email.getEmailSubject() />
+		<cfset cfmailAttributes["to"] = arguments.email.getEmailTo() />
+		<cfset cfmailAttributes["cc"] = arguments.email.getEmailCC() />
+		<cfset cfmailAttributes["bcc"] = arguments.email.getEmailBCC() />
+		<cfset cfmailAttributes["charset"] = "utf-8" />
+
+		<cfif len(email.setting('emailSMTPServer'))>
+			<cfset cfmailAttributes["server"] = email.setting('emailSMTPServer') />
+			<cfset cfmailAttributes["port"] = email.setting('emailSMTPPort') />
+			<cfset cfmailAttributes["useSSL"] = email.setting('emailSMTPUseSSL') />
+			<cfset cfmailAttributes["useTLS"] = email.setting('emailSMTPUseTLS') />
+			<cfset cfmailAttributes["username"] = email.setting('emailSMTPUsername') />
+			<cfset cfmailAttributes["password"] = email.setting('emailSMTPPassword') />
+		</cfif>
+
 		<!--- Send Multipart E-mail --->
 		<cfif len(arguments.email.getEmailBodyHTML()) && len(arguments.email.getEmailBodyText()) && len(arguments.email.getEmailTo())>
-			<cfmail to="#arguments.email.getEmailTo()#"
-				from="#arguments.email.getEmailFrom()#"
-				subject="#arguments.email.getEmailSubject()#"
-				cc="#arguments.email.getEmailCC()#"
-				bcc="#arguments.email.getEmailBCC()#"
-				charset="utf-8">
+			<cfmail attributeCollection=cfmailAttributes>
 				<cfif !isNull(arguments.email.getRelatedObject())>
 					<cfmailparam name="Related-Object" value="#arguments.email.getRelatedObject()#">
 					<cfmailparam name="Related-Object-ID" value="#arguments.email.getRelatedObjectID()#">
@@ -83,13 +95,10 @@ Notes:
 			</cfmail>
 		<!--- Send HTML Only E-mail --->
 		<cfelseif len(arguments.email.getEmailBodyHTML()) && len(arguments.email.getEmailTo())>
-			<cfmail to="#arguments.email.getEmailTo()#"
-				from="#arguments.email.getEmailFrom()#"
-				subject="#arguments.email.getEmailSubject()#"
-				cc="#arguments.email.getEmailCC()#"
-				bcc="#arguments.email.getEmailBCC()#"
-				charset="utf-8"
-				type="text/html">
+
+			<cfset cfmailAttributes["type"] = "text/html" />
+
+			<cfmail attributeCollection=cfmailAttributes>
 				<cfif !isNull(arguments.email.getEmailFailTo())>
 					<cfmailparam name="Return-Path" value="#arguments.email.getEmailFailTo()#">
 				</cfif>
@@ -104,13 +113,10 @@ Notes:
 			</cfmail>
 		<!--- Send Text Only E-mail --->
 		<cfelseif len(arguments.email.getEmailBodyText()) && len(arguments.email.getEmailTo())>
-			<cfmail to="#arguments.email.getEmailTo()#"
-				from="#arguments.email.getEmailFrom()#"
-				subject="#arguments.email.getEmailSubject()#"
-				cc="#arguments.email.getEmailCC()#"
-				bcc="#arguments.email.getEmailBCC()#"
-				charset="utf-8"
-				type="text/plain">
+
+			<cfset cfmailAttributes["type"] = "text/plain" />
+
+			<cfmail attributeCollection=cfmailAttributes>
 				<cfif !isNull(arguments.email.getEmailFailTo())>
 					<cfmailparam name="Return-Path" value="#arguments.email.getEmailFailTo()#">
 				</cfif>
@@ -275,9 +281,9 @@ Notes:
 				arguments.email.setEmailBCC( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailBCC(), object=emailData) );
 				arguments.email.setEmailReplyTo( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailReplyTo(), object=emailData) );
 				arguments.email.setEmailFailTo( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailFailTo(), object=emailData) );
-				arguments.email.setEmailSubject( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailSubject(), object=emailData) );
-				arguments.email.setEmailBodyHTML( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailBodyHTML(), object=emailData) );
-				arguments.email.setEmailBodyText( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailBodyText(), object=emailData) );
+				arguments.email.setEmailSubject( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailSubject(), object=emailData, formatValues=true) );
+				arguments.email.setEmailBodyHTML( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailBodyHTML(), object=emailData, formatValues=true) );
+				arguments.email.setEmailBodyText( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailBodyText(), object=emailData, formatValues=true) );
 
 				arguments.email.setLogEmailFlag( emailTemplate.getLogEmailFlag() );
 			}

@@ -100,7 +100,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	// Remote Properties
 	property name="remoteID" ormtype="string";
 
-	// Audit Properties
+	// Audit Properties 
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -1088,7 +1088,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	*/
 	public array function getUnusedProductOptionGroups() {
 		if( !structKeyExists(variables, "unusedProductOptionGroups") ) {
-			variables.unusedProductOptionGroups = getService('optionService').getUnusedProductOptionGroups( getProductType().getProductTypeID(), structKeyList(getOptionGroupsStruct()) );
+			variables.unusedProductOptionGroups = getService('optionService').getUnusedProductOptionGroups( getProductType().getProductTypeIDPath(), structKeyList(getOptionGroupsStruct()) );
 		}
 		return variables.unusedProductOptionGroups;
 	}
