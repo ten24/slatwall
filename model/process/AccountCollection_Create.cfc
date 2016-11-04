@@ -60,7 +60,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			variables.accountCollection.setAccount(this.getAccount());
 		}
 		if(!isNull(this.getCollection())){
-			variables.accountCollection.setCollection(this.getCollection());
+			if(this.getCollection().getNewFlag()){
+				variables.accountCollection.setCollectionConfig(this.getCollection().getCollectionConfig());
+			} else {
+				variables.accountCollection.setCollection(this.getCollection());
+			}
 		}
 		return variables.accountCollection; 
 	}
