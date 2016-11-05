@@ -154,6 +154,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 				} else {
 					variables.primaryEmailAddressNotInUseFlag = getService("accountService").getPrimaryEmailAddressNotInUseFlag( emailAddress=getEmailAddress(), accountID=getAccountID() );
 				}
+				
 			}
 		}
 		return variables.primaryEmailAddressNotInUseFlag;
@@ -284,6 +285,10 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 			}
 		}
 		return variables.slatwallAuthenticationExistsFlag;
+	}
+	
+	public void function setSlatwallAuthenticationExistsFlag(required boolean slatwallAuthenticationExistsFlag){
+		variables.slatwallAuthenticationExistsFlag = arguments.slatwallAuthenticationExistsFlag;
 	}
 
 
