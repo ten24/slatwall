@@ -74,8 +74,8 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	
 
 	// Related Object Properties (one-to-many)
-	property name="childAccountRelationships" singularname="childAccountRelationship" fieldType="one-to-many" type="array" fkcolumn="accountID" cfc="AccountRelationship" inverse="true";
-	property name="parentAccountRelationships" singularname="parentAccountRelationship" fieldType="one-to-many" type="array" fkcolumn="accountID" cfc="AccountRelationship" inverse="true";
+	property name="childAccountRelationships" singularname="childAccountRelationship" fieldType="one-to-many" type="array" fkcolumn="parentAccountID" cfc="AccountRelationship";
+	property name="parentAccountRelationships" singularname="parentAccountRelationship" fieldType="one-to-many" type="array" fkcolumn="childAccountID"   cfc="AccountRelationship";
 	property name="accountAddresses" hb_populateEnabled="public" singularname="accountAddress" fieldType="one-to-many" type="array" fkColumn="accountID" cfc="AccountAddress" inverse="true" cascade="all-delete-orphan";
 	property name="accountAuthentications" singularname="accountAuthentication" cfc="AccountAuthentication" type="array" fieldtype="one-to-many" fkcolumn="accountID" cascade="all-delete-orphan" inverse="true";
 	property name="accountContentAccesses" hb_populateEnabled="false" singularname="accountContentAccess" cfc="AccountContentAccess" type="array" fieldtype="one-to-many" fkcolumn="accountID" inverse="true" cascade="all-delete-orphan";
@@ -439,20 +439,6 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 			arguments.accountAddress.setAccount( this );
 		} else {
 			structDelete(variables, "primaryShippingAddress");
-		}
-	}
-	// Parent Account Relationships (one-to-many)
-	public void function addParentAccountRelationship(required any accountRelationship) {
-		if(arguments.accountRelationship.isNew() or !hasParentAccountRelationship(arguments.accountRelationship)) {
-			arguments.accountRelationship.setAccount(this);
-			arrayAppend(variables.parentAccountRelationships, arguments.accountRelationship);
-		}
-	}
-	// Child Account Relationships (one-to-many)
-	public void function addChildAccountRelationship(required any accountRelationship) {
-		if(arguments.accountRelationship.isNew() or !hasChildAccountRelationship(arguments.accountRelationship)) {
-			arguments.accountRelationship.setAccount(this);
-			arrayAppend(variables.childAccountRelationships, arguments.accountRelationship);
 		}
 	}
 

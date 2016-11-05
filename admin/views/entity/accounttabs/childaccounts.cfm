@@ -52,9 +52,13 @@ Notes:
 
 <cfparam name="rc.account" type="any" />
 
+<!---<cfdump var="#rc.account.getChildAccountRelationships()#" top=2><cfabort>--->
 <hb:HibachiListingDisplay smartList="#rc.account.getChildAccountRelationshipsSmartList()#"
 						  recordDetailAction="admin:entity.detailaccount"
-						  recordEditAction="admin:entity.editaccount">
+						  recordEditAction="admin:entity.editaccount"
+						  recordDetailActionProperty="childAccount.accountID"
+						  recordEditActionProperty="childAccount.accountID"
+						  >
 
 	<hb:HibachiListingColumn propertyIdentifier="childAccount.firstName" />
 	<hb:HibachiListingColumn propertyIdentifier="childAccount.lastName" />

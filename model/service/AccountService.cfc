@@ -277,26 +277,30 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		if(!isNull(arguments.processObject.getParentAccount())){
 			
-			var accountRelationship = this.newAccountRelationship();
-			accountRelationship.setChildAccount(arguments.account);
-			accountRelationship.setParentAccount(arguments.processObject.getParentAccount());
-			arguments.account.addParentAccountRelationship(accountRelationship);	
-			accountRelationship.getParentAccount().addChildAccountRelationship(accountRelationship);
+			var parentAccountRelationship = this.newAccountRelationship();
+			parentAccountRelationship.setChildAccount(arguments.account);
+			parentAccountRelationship.setParentAccount(arguments.processObject.getParentAccount());
+			arguments.account.addParentAccountRelationship(parentAccountRelationship);	
+			parentAccountRelationship.getParentAccount().addChildAccountRelationship(parentAccountRelationship);
 			
 			arguments.account.setOwnerAccount(arguments.processObject.getParentAccount());
+			this.saveAccount(arguments.processObject.getParentAccount());
+			this.saveAccountRelationship(parentAccountRelationship);
 		}
 		if(isNull(arguments.account.getOwnerAccount())){
 			arguments.account.setOwnerAccount(getHibachiScope().getAccount());
 		}
 		
 		if(!isNull(arguments.processObject.getChildAccount())){
-			var accountRelationship = this.newAccountRelationship();
-			accountRelationship.setParentAccount(arguments.account);
-			accountRelationship.setChildAccount(arguments.processObject.getChildAccount());
-			arguments.account.addChildAccountRelationship(accountRelationship);
-			accountRelationship.getChildAccount().addParentAccountRelationship(accountRelationship);
+			var childAccountRelationship = this.newAccountRelationship();
+			childAccountRelationship.setParentAccount(arguments.account);
+			childAccountRelationship.setChildAccount(arguments.processObject.getChildAccount());
+			arguments.account.addChildAccountRelationship(childAccountRelationship);
+			childAccountRelationship.getChildAccount().addParentAccountRelationship(childAccountRelationship);
 			
-			accountRelationship.getChildAccount().setOwnerAccount(arguments.account);
+			childAccountRelationship.getChildAccount().setOwnerAccount(arguments.account);
+			this.saveAccount(arguments.processObject.getChildAccount());
+			this.saveAccountRelationship(childAccountRelationship);
 		}
 
 		// If company was passed in then set that up

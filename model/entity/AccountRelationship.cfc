@@ -80,11 +80,6 @@ component displayname="Account Relationship" entityname="SlatwallAccountRelation
 	
 	// ============= START: Bidirectional Helper Methods ===================
 	
-//	public void function setParentAccount(required any parentAccount){
-//		
-//		variables.parentAccount = arguments.parentAccount
-//	}
-	
 	// =============  END:  Bidirectional Helper Methods ===================
 	
 	// ================== START: Overridden Methods ========================

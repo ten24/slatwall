@@ -511,13 +511,16 @@ component output="false" accessors="true" extends="HibachiController" {
 				} else {
 
 					// Place the id in the URL for redirects in case this was a new entity before
-					var sRedirectQSArray= listToArray(arguments.rc.sRedirectQS,'&');
 					var isSPrimaryIDOverridden = false;
-					for(var sRedirectQSString in sRedirectQSArray){
-						if(listfirst(sRedirectQSString,'=')==entity.getPrimaryIDPropertyName()){
-							isSPrimaryIDOverridden = true;
+					if(structKeyExists(arguments.rc,'sRedirectQS')){
+						var sRedirectQSArray= listToArray(arguments.rc.sRedirectQS,'&');
+						for(var sRedirectQSString in sRedirectQSArray){
+							if(listfirst(sRedirectQSString,'=')==entity.getPrimaryIDPropertyName()){
+								isSPrimaryIDOverridden = true;
+							}
 						}
 					}
+					
 					if(!isSPrimaryIDOverridden){
 						url[ entity.getPrimaryIDPropertyName() ] = arguments.rc[ arguments.entityName ].getPrimaryIDValue();	
 					}
@@ -554,13 +557,17 @@ component output="false" accessors="true" extends="HibachiController" {
 
 				// Otherwise do the standard render / redirect
 				} else {
-					var fRedirectQSArray= listToArray(arguments.rc.fRedirectQS,'&');
+					
 					var isFPrimaryIDOverridden = false;
-					for(var fRedirectQSString in fRedirectQSArray){
-						if(listfirst(fRedirectQSString,'=')==entity.getPrimaryIDPropertyName()){
-							isFPrimaryIDOverridden = true;
+					if(structKeyExists(arguments.rc,'fRedirectQS')){
+						var fRedirectQSArray= listToArray(arguments.rc.fRedirectQS,'&');
+						for(var fRedirectQSString in fRedirectQSArray){
+							if(listfirst(fRedirectQSString,'=')==entity.getPrimaryIDPropertyName()){
+								isFPrimaryIDOverridden = true;
+							}
 						}
 					}
+					
 					// Place the id in the URL for redirects in case this was a new entity before
 					if(!isFPrimaryIDOverridden){
 						url[ entity.getPrimaryIDPropertyName() ] = arguments.rc[ arguments.entityName ].getPrimaryIDValue();	
