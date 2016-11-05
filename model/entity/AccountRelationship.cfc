@@ -76,6 +76,17 @@ component displayname="Account Relationship" entityname="SlatwallAccountRelation
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
+	public string function getSimpleRepresentation(){
+		var simpleRepresentation = "";
+		if(!isNull(getParentAccount()) && !isNull(getChildAccount())){
+			simpleRepresentation = getParentAccount().getSimpleRepresentation() &  ' > ' & getChildAccount().getSimpleRepresentation();
+			if(!isNull(getAccountRelationShipRole()) && !isNull(getAccountRelationShipRole().getAccountRelationshipRoleName())){
+				simpleRepresentation &= ' ( #getAccountRelationShipRole().getAccountRelationshipRoleName()# )';
+			}
+		}
+		return simpleRepresentation;
+	}
+	
 	// ============  END:  Non-Persistent Property Methods =================
 	
 	// ============= START: Bidirectional Helper Methods ===================

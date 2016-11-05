@@ -46,28 +46,21 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.account" type="any" />
+<cfparam name="rc.accountRelationship" type="any" />
+<cfparam name="rc.edit" type="boolean" />
 
-<!---<cfdump var="#rc.account.getChildAccountRelationships()#" top=2><cfabort>--->
-<hb:HibachiListingDisplay smartList="#rc.account.getChildAccountRelationshipsSmartList()#"
-						  recordDetailAction="admin:entity.detailaccountRelationShip"
-						  recordEditAction="admin:entity.editaccountRelationShip"
-						  >
-
-	<hb:HibachiListingColumn propertyIdentifier="childAccount.firstName" />
-	<hb:HibachiListingColumn propertyIdentifier="childAccount.lastName" />
-	<hb:HibachiListingColumn propertyIdentifier="childAccount.accountCode" />
-	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="childAccount.company" />
-	<hb:HibachiListingColumn propertyIdentifier="childAccount.primaryPhoneNumber.phoneNumber" />
-	<hb:HibachiListingColumn propertyIdentifier="childAccount.primaryEmailAddress.emailAddress" />
-	<hb:HibachiListingColumn propertyIdentifier="childAccount.guestAccountFlag" />
-	<hb:HibachiListingColumn propertyIdentifier="childAccount.organizationFlag" />
-	<hb:HibachiListingColumn propertyIdentifier="accountRelationshipRole.accountRelationshipRoleName" />
-	<hb:HibachiListingColumn propertyIdentifier="approvalFlag" />
-</hb:HibachiListingDisplay>
-<hb:HibachiActionCaller action="admin:entity.preprocessaccount" entity="account" class="btn btn-default" icon="plus" querystring="sRedirectAction=admin:entity.detailaccount&parentAccountID=#rc.account.getAccountID()#&processcontext=create" modal=true />
-
+<cfoutput>
+	<hb:HibachiEntityDetailForm object="#rc.accountRelationship#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.accountRelationship#" edit="#rc.edit#" >
+		</hb:HibachiEntityActionBar>
+		
+		<hb:HibachiEntityDetailGroup object="#rc.accountRelationship#">
+			<hb:HibachiEntityDetailItem view="admin:entity/accountRelationshipTabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+		</hb:HibachiEntityDetailGroup>
+		
+	</hb:HibachiEntityDetailForm>
+</cfoutput>
