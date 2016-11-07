@@ -106,15 +106,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		return returnHTML;
 	}
 	
-	public boolean function getLoggedInFlag() {
-		
-		if (super.getLoggedInFlag() &&
-			!getSession().getAccount().getGuestAccountFlag()){
-				return true;
-		}
-		return false;
-	}
-	
 	// ================= Entity Helper Methods =====================
 	
 	// Brand
@@ -263,7 +254,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			data[ 'processObjects' ][ key ][ 'hasErrors' ] = getAccount().getProcessObjects()[ key ].hasErrors();
 			data[ 'processObjects' ][ key ][ 'errors' ] = getAccount().getProcessObjects()[ key ].getErrors();
 		}
-		
+		data['loggedInFlag'] = getLoggedInFlag();
 		return data;
 	}
 

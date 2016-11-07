@@ -74,7 +74,7 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 	
 	// Non-Persistent Properties
 	property name="requestAccount" type="any" persistent="false"; 
-	
+	property name="loggedInFlag" type="any" persistent="false"; 
 	
 	/**
 	 * Handles all of the cases on the session that the user is not logged in.
