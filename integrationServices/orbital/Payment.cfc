@@ -101,6 +101,10 @@ component accessors="true" output="false" displayname="PayFlowPro" implements="S
 
 		// Get the response from Orbital
 		try {
+			var liveModeFlag = setting('liveModeFlag');
+			if(!isNull(arguments.requestBean.getOrder()) && !isNull(arguments.requestBean.getOrder().getTestOrderFlag()) && arguments.requestBean.getOrder().getTestOrderFlag()){
+				liveModeFlag = false;
+			}
 			var response = postRequest(requestXML);
 			responseBean = getResponseBean(response.fileContent, requestXML, requestBean);
 		} catch(any e) {
@@ -111,10 +115,10 @@ component accessors="true" output="false" displayname="PayFlowPro" implements="S
 		return responseBean;
 	}
 	
-	private any function postRequest(required string requestXML) {
+	private any function postRequest(required string requestXML, boolean liveModeFlag=setting('liveModeFlag')) {
 		var httpRequest = new Http();
 		httpRequest.setMethod("POST");
-		if( setting('liveModeFlag') ) {
+		if( arguments.liveModeFlag ) {
 			httpRequest.setUrl( variables.liveGatewayURL );
 		} else {
 			httpRequest.setUrl( variables.testgatewayURL );	

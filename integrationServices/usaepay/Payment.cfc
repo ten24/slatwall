@@ -67,13 +67,18 @@ Notes:
 		
 		<cfset var q_auth = queryNew('empty') />
 		
+		<cfset var testingFlag = setting('testingFlag')/>
+		<cfif !isNull(arguments.requestBean.getOrder()) && !isNull(arguments.requestBean.getOrder().getTestOrderFlag()) && arguments.requestBean.getOrder().getTestOrderFlag()>
+			<cfset testingFlag = true/>
+		</cfif>
+		
 		<cfswitch expression="#arguments.requestBean.getTransactionType()#" >
 			<cfcase value="authorize">
 				<cfmodule template="usaepay.cfm"
 					queryname="q_auth"
 					key="#setting('key')#"
 					pin="#setting('pin')#"
-					sandbox="#setting('testingFlag')#"
+					sandbox="#testingFlag#"
 					command="authonly"
 					card="#arguments.requestBean.getCreditCardNumber()#"
 					expdate="#left(arguments.requestBean.getExpirationMonth(),2)##left(arguments.requestBean.getExpirationYear(),2)#"
@@ -93,7 +98,7 @@ Notes:
 					queryname="q_auth"
 					key="#setting('key')#"
 					pin="#setting('pin')#"
-					sandbox="#setting('testingFlag')#"
+					sandbox="#testingFlag#"
 					command="sale"
 					card="#arguments.requestBean.getCreditCardNumber()#"
 					expdate="#left(arguments.requestBean.getExpirationMonth(),2)##left(arguments.requestBean.getExpirationYear(),2)#"
@@ -114,7 +119,7 @@ Notes:
 					queryname="q_auth"
 					key="#setting('key')#"
 					pin="#setting('pin')#"
-					sandbox="#setting('testingFlag')#"
+					sandbox="#testingFlag#"
 					command="capture"
 					refnum="#arguments.requestBean.getPreAuthorizationProviderTransactionID()#"
 					amount="#arguments.requestBean.getTransactionAmount()#"
@@ -127,7 +132,7 @@ Notes:
 					queryname="q_auth"
 					key="#setting('key')#"
 					pin="#setting('pin')#"
-					sandbox="#setting('testingFlag')#"
+					sandbox="#testingFlag#"
 					command="refund"
 					invoice="#arguments.requestBean.getOrderID()#"
 					refnum="#arguments.requestBean.getOriginalChargeProviderTransactionID()#"
@@ -141,7 +146,7 @@ Notes:
 					queryname="q_auth"
 					key="#setting('key')#"
 					pin="#setting('pin')#"
-					sandbox="#setting('testingFlag')#"
+					sandbox="#testingFlag#"
 					command="void"
 					invoice="#arguments.requestBean.getOrderID()#"
 					refnum="#arguments.requestBean.getOriginalProviderTransactionID()#"

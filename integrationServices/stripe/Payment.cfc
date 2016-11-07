@@ -72,7 +72,13 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
         // determine which authentication keys to use based on test mode setting
         var activePublicKey = setting("testPublicKey");
         var activeSecretKey = setting("testSecretKey");
-        if (!setting("testMode"))
+        
+        var testMode = setting("testMode");
+        if(!isNull(arguments.requestBean.getOrder()) && !isNull(arguments.requestBean.getOrder().getTestOrderFlag()) && arguments.requestBean.getOrder().getTestOrderFlag()){
+        	testMode = true;
+        }
+        
+        if (!testMode)
         {
             activePublicKey = setting("livePublicKey");
             activeSecretKey = setting("liveSecretKey");
