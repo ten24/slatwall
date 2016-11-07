@@ -764,7 +764,6 @@ class SWConditionCriteria{
                                                 selectedCondition.conditionDisplay = 'How many '+ selectedCondition.dateInfo.measureTypeDisplay+' ago?';
                                                 selectedCondition.showCriteriaStart = false;
                                                 selectedCondition.showNumberOf = true;
-                                                selectedCondition.displayValue='TESTING';
                                             }
 
                                         }
