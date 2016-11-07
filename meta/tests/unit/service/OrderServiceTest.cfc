@@ -53,6 +53,28 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.service = request.slatwallScope.getService("orderService");
 
 	}
+	
+	//test account will create test orders
+	public void function processOrder_createTest_testAccountCreatesTestOrder(){
+		var accountData = {
+			accountID="",
+			testAccountFlag=1
+		};
+		var account = createPersistedTestEntity('account',accountData);
+		
+		var orderData = {
+			orderID=""
+		};
+		var order = createTestEntity('order',orderData);
+		
+		var processData={
+			accountID=account.getAccountID(),
+			newAccountFlag=0
+		};
+		
+		order = variables.service.process(order,processData,'create');
+		assert(order.getTestOrderFlag());
+	}
 
 	//test is incomplete as it bypasses the currencyconverions,promotion, and tax intergration update amounts code
 	public void function processOrder_addAndRemoveOrderItem_addOrderItems(){
