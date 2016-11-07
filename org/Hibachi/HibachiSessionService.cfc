@@ -218,7 +218,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 				getHibachiScope().getSession().setSessionCookieExtendedPSID(cookieValue);
 				getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-ExtendedPSID", value=getHibachiScope().getSession().getSessionCookieExtendedPSID(), expires="#getHibachiScope().setting('globalExtendedSessionAutoLogoutInDays')#");
 			}
-			
+			getHibachiDAO().save(getHibachiScope().getSession().getOrder());
 			// Make sure that this login is persisted
 			getHibachiDAO().flushORMSession();
 		}
