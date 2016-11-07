@@ -66,10 +66,7 @@ component accessors="true" output="false" displayname="SagePay" implements="Slat
 		var rawResponse="";
 		var requestData=getRequestData(requestBean);
 		
-		var testMode = setting('testMode');
-		if(!isNull(arguments.requestBean.getOrder()) && !isNull(arguments.requestBean.getOrder().getTestOrderFlag()) && arguments.requestBean.getOrder().getTestOrderFlag()){
-			testMode = true;
-		}
+		var testMode = getTestModeFlag(arguments.requestBean,'testMode');
 		
 		rawResponse=postRequest(requestData, testMode);
 		return getResponseBean(rawResponse,requestData,requestBean);

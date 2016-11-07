@@ -84,10 +84,7 @@ component accessors="true" output="false" displayname="Authorize.net" implements
 		requestData["x_version"] = "3.1";
 		requestData["x_login"] = setting('loginID');
 		requestData["x_tran_key"] = setting('transKey');
-		var testModeFlag = setting('testModeFlag');
-		if(!isNull(arguments.requestBean.getOrder()) && !isNull(arguments.requestBean.getOrder().getTestOrderFlag()) && arguments.requestBean.getOrder().getTestOrderFlag()){
-			testModeFlag = arguments.requestBean.getOrder().getTestOrderFlag();
-		}
+		var testModeFlag = getTestModeFlag(arguments.requestBean,'testModeFlag');
 		requestData["x_test_request"] = testModeFlag;
 		requestData["x_duplicate_window"] = setting('duplicateWindow');
 		requestData["x_method"] = "CC";

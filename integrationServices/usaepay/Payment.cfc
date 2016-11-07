@@ -67,10 +67,7 @@ Notes:
 		
 		<cfset var q_auth = queryNew('empty') />
 		
-		<cfset var testingFlag = setting('testingFlag')/>
-		<cfif !isNull(arguments.requestBean.getOrder()) && !isNull(arguments.requestBean.getOrder().getTestOrderFlag()) && arguments.requestBean.getOrder().getTestOrderFlag()>
-			<cfset testingFlag = true/>
-		</cfif>
+		<cfset var testingFlag = getTestModeFlag(arguments.requestBean)/>
 		
 		<cfswitch expression="#arguments.requestBean.getTransactionType()#" >
 			<cfcase value="authorize">

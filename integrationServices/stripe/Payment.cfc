@@ -73,10 +73,7 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
         var activePublicKey = setting("testPublicKey");
         var activeSecretKey = setting("testSecretKey");
         
-        var testMode = setting("testMode");
-        if(!isNull(arguments.requestBean.getOrder()) && !isNull(arguments.requestBean.getOrder().getTestOrderFlag()) && arguments.requestBean.getOrder().getTestOrderFlag()){
-        	testMode = true;
-        }
+        var testMode = getTestModeFlag(arguments.requestBean,'testMode');
         
         if (!testMode)
         {

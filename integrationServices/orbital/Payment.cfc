@@ -101,11 +101,8 @@ component accessors="true" output="false" displayname="PayFlowPro" implements="S
 
 		// Get the response from Orbital
 		try {
-			var liveModeFlag = setting('liveModeFlag');
-			if(!isNull(arguments.requestBean.getOrder()) && !isNull(arguments.requestBean.getOrder().getTestOrderFlag()) && arguments.requestBean.getOrder().getTestOrderFlag()){
-				liveModeFlag = false;
-			}
-			var response = postRequest(requestXML);
+			var liveModeFlag = getLiveModeFlag(arguments.requestBean);
+			var response = postRequest(requestXML,liveModeFlag);
 			responseBean = getResponseBean(response.fileContent, requestXML, requestBean);
 		} catch(any e) {
 			/* An unexpected error happened, handled below */

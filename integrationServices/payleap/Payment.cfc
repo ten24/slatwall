@@ -76,10 +76,7 @@ component accessors="true" output="false" displayname="PayLeap" implements="Slat
 	
 	public any function processCreditCard(required any requestBean){
 		var requestData = getRequestData(requestBean);
-		var liveModeFlag = setting('liveModeFlag');
-		if(!isNull(arguments.requestBean.getOrder()) && !isNull(arguments.requestBean.getOrder.getTestOrderFlag()) && arguments.requestBean.getOrder.getTestOrderFlag()){
-			liveModeFlag = false;
-		}
+		var liveModeFlag = getLiveModeFlag();
 		
 		var rawResponse = postRequest(requestData, requestBean.getTransactionID(),liveModeFlag);
 		return getResponseBean(rawResponse, requestData, requestBean);
