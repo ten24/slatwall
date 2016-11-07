@@ -216,8 +216,8 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		httpRequest.addParam(type="formfield", name="hdrImg", value=arguments.paymentMethod.getIntegration().setting('paypalHeaderImage'));
 		
 		if (!isNull(arguments.order) && !isNull(arguments.order.getAccount()) && !isNull(arguments.order.getAccount().getEmailAddress())){
-			httpRequest.addParam(type="formfield", name="email", value=arguments.order.getAccount().getEmailAddress());
-		}
+ 			httpRequest.addParam(type="formfield", name="email", value=arguments.order.getAccount().getEmailAddress());
+ 		}
 		
 		httpRequest.addParam(type="formfield", name="returnURL", value="#returnURL#");
 		httpRequest.addParam(type="formfield", name="cancelURL", value=paymentMethod.getIntegration().setting('cancelURL'));
@@ -252,7 +252,7 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		httpRequest.addParam(type="formfield", name="method", value="getExpressCheckoutDetails");
 		httpRequest.addParam(type="formfield", name="user", value=arguments.paymentMethod.getIntegration().setting('paypalAccountUser'));
 		httpRequest.addParam(type="formfield", name="pwd", value=arguments.paymentMethod.getIntegration().setting('paypalAccountPassword'));
-		httpRequest.addParam(type="formfield", name="signature", value=arguments.paymentMethod.getIntegration().setting('paypalAccountSignature'));	// Dynamic
+		httpRequest.addParam(type="formfield", name="signature", value=arguments.paymentMethod.getIntegration().setting('paypalAccountSignature'));									// Dynamic
 		httpRequest.addParam(type="formfield", name="version", value="98.0");
 		httpRequest.addParam(type="formfield", name="token", value="#arguments.token#");
 		
