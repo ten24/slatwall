@@ -748,15 +748,26 @@ class SWConditionCriteria{
 											selectedCondition.showNumberOf = false;
 										}
 										if(selectedCondition.dateInfo.type === 'exactDate'){
-											selectedCondition.showCriteriaStart = true;
-											selectedCondition.showCriteriaEnd = false;
-											selectedCondition.disableCriteriaStart = false;
-											selectedCondition.disableCriteriaEnd = true;
-											selectedCondition.showNumberOf = false;
-											selectedCondition.conditionDisplay = '';
-											selectedFilterProperty.criteriaRangeStart = new Date(selectedFilterProperty.criteriaRangeStart).setHours(0,0,0,0);
-											selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23,59,59,999);
-										}
+                                            selectedCondition.showCriteriaEnd = false;
+                                            selectedCondition.disableCriteriaStart = false;
+                                            selectedCondition.disableCriteriaEnd = true;
+
+
+                                            if(!selectedCondition.dateInfo.measureType){
+                                                selectedCondition.conditionDisplay = '';
+                                                selectedCondition.showCriteriaStart = true;
+                                                selectedCondition.showNumberOf = false;
+
+                                                selectedFilterProperty.criteriaRangeStart = new Date(selectedFilterProperty.criteriaRangeStart).setHours(0,0,0,0);
+                                                selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23,59,59,999);
+                                            }else{
+                                                selectedCondition.conditionDisplay = 'How many '+ selectedCondition.dateInfo.measureTypeDisplay+' ago?';
+                                                selectedCondition.showCriteriaStart = false;
+                                                selectedCondition.showNumberOf = true;
+                                                selectedCondition.displayValue='TESTING';
+                                            }
+
+                                        }
 									}else{
 										selectedCondition.showCriteriaStart = false;
 										selectedCondition.showCriteriaEnd = false;
