@@ -92,7 +92,10 @@ Notes:
 			<hb:HibachiEntityDetailItem property="productReviews" />
 			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/subscriptionusage" count="#rc.account.getSubscriptionUsagesSmartList().getRecordsCount()#" />
 			<hb:HibachiEntityDetailItem property="permissionGroups" />
-			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/accountsettings" />
+			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/parentaccounts" count="#rc.account.getParentAccountRelationShipsSmartList().getRecordsCount()#"/>
+			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/childaccounts" count="#rc.account.getChildAccountRelationShipsSmartList().getRecordsCount()#"/>
+			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/accountsettings"/>
+			
 
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.account.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">

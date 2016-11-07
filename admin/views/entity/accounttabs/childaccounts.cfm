@@ -46,34 +46,28 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.accountSmartList" type="any" />
+<cfparam name="rc.account" type="any" />
 
-<cfoutput>
-	
-	<hb:HibachiEntityActionBar type="listing" object="#rc.accountSmartList#" showCreate="false">
-	
-	<!--- Create ---> 
-		<hb:HibachiEntityActionBarButtonGroup>			
-			<hb:HibachiProcessCaller action="admin:entity.preprocessaccount" entity="account" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.create')# #$.slatwall.rbKey('entity.account')#" modal="true" />			
-		</hb:HibachiEntityActionBarButtonGroup>
-	</hb:HibachiEntityActionBar>
+<!---<cfdump var="#rc.account.getChildAccountRelationships()#" top=2><cfabort>--->
+<hb:HibachiListingDisplay smartList="#rc.account.getChildAccountRelationshipsSmartList()#"
+						  recordDetailAction="admin:entity.detailaccountRelationShip"
+						  recordEditAction="admin:entity.editaccountRelationShip"
+						  >
 
-	<hb:HibachiListingDisplay smartList="#rc.accountSmartList#"
-							   recordEditAction="admin:entity.editaccount"
-							   recordDetailAction="admin:entity.detailaccount">
-							      	      
-		<hb:HibachiListingColumn propertyIdentifier="firstName" />
-		<hb:HibachiListingColumn propertyIdentifier="lastName" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="company" />
-		<hb:HibachiListingColumn propertyIdentifier="primaryPhoneNumber.phoneNumber" />
-		<hb:HibachiListingColumn propertyIdentifier="primaryEmailAddress.emailAddress" />
-		<hb:HibachiListingColumn propertyIdentifier="guestAccountFlag" />
-		<hb:HibachiListingColumn propertyIdentifier="organizationFlag" />
-		
-	</hb:HibachiListingDisplay>
+	<hb:HibachiListingColumn propertyIdentifier="childAccount.firstName" />
+	<hb:HibachiListingColumn propertyIdentifier="childAccount.lastName" />
+	<hb:HibachiListingColumn propertyIdentifier="childAccount.accountCode" />
+	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="childAccount.company" />
+	<hb:HibachiListingColumn propertyIdentifier="childAccount.primaryPhoneNumber.phoneNumber" />
+	<hb:HibachiListingColumn propertyIdentifier="childAccount.primaryEmailAddress.emailAddress" />
+	<hb:HibachiListingColumn propertyIdentifier="childAccount.guestAccountFlag" />
+	<hb:HibachiListingColumn propertyIdentifier="childAccount.organizationFlag" />
+	<hb:HibachiListingColumn propertyIdentifier="accountRelationshipRole.accountRelationshipRoleName" />
+	<hb:HibachiListingColumn propertyIdentifier="approvalFlag" />
+</hb:HibachiListingDisplay>
+<hb:HibachiActionCaller action="admin:entity.preprocessaccount" entity="account" class="btn btn-default" icon="plus" querystring="sRedirectAction=admin:entity.detailaccount&parentAccountID=#rc.account.getAccountID()#&processcontext=create" modal=true />
 
-</cfoutput>

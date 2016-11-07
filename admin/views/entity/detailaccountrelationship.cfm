@@ -50,30 +50,17 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.accountSmartList" type="any" />
+<cfparam name="rc.accountRelationship" type="any" />
+<cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	
-	<hb:HibachiEntityActionBar type="listing" object="#rc.accountSmartList#" showCreate="false">
-	
-	<!--- Create ---> 
-		<hb:HibachiEntityActionBarButtonGroup>			
-			<hb:HibachiProcessCaller action="admin:entity.preprocessaccount" entity="account" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.create')# #$.slatwall.rbKey('entity.account')#" modal="true" />			
-		</hb:HibachiEntityActionBarButtonGroup>
-	</hb:HibachiEntityActionBar>
-
-	<hb:HibachiListingDisplay smartList="#rc.accountSmartList#"
-							   recordEditAction="admin:entity.editaccount"
-							   recordDetailAction="admin:entity.detailaccount">
-							      	      
-		<hb:HibachiListingColumn propertyIdentifier="firstName" />
-		<hb:HibachiListingColumn propertyIdentifier="lastName" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="company" />
-		<hb:HibachiListingColumn propertyIdentifier="primaryPhoneNumber.phoneNumber" />
-		<hb:HibachiListingColumn propertyIdentifier="primaryEmailAddress.emailAddress" />
-		<hb:HibachiListingColumn propertyIdentifier="guestAccountFlag" />
-		<hb:HibachiListingColumn propertyIdentifier="organizationFlag" />
+	<hb:HibachiEntityDetailForm object="#rc.accountRelationship#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.accountRelationship#" edit="#rc.edit#" >
+		</hb:HibachiEntityActionBar>
 		
-	</hb:HibachiListingDisplay>
-
+		<hb:HibachiEntityDetailGroup object="#rc.accountRelationship#">
+			<hb:HibachiEntityDetailItem view="admin:entity/accountRelationshipTabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+		</hb:HibachiEntityDetailGroup>
+		
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

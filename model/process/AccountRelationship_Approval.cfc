@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,35 +45,14 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
 
+	// Injected Entity
+	property name="accountRelationship";
 
-<cfparam name="rc.accountSmartList" type="any" />
-
-<cfoutput>
+	// Data Properties
+	property name="accountRelationShipRole" hb_formfieldType="select" fieldtype="many-to-one" cfc="AccountRelationshipRole";
 	
-	<hb:HibachiEntityActionBar type="listing" object="#rc.accountSmartList#" showCreate="false">
 	
-	<!--- Create ---> 
-		<hb:HibachiEntityActionBarButtonGroup>			
-			<hb:HibachiProcessCaller action="admin:entity.preprocessaccount" entity="account" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.create')# #$.slatwall.rbKey('entity.account')#" modal="true" />			
-		</hb:HibachiEntityActionBarButtonGroup>
-	</hb:HibachiEntityActionBar>
-
-	<hb:HibachiListingDisplay smartList="#rc.accountSmartList#"
-							   recordEditAction="admin:entity.editaccount"
-							   recordDetailAction="admin:entity.detailaccount">
-							      	      
-		<hb:HibachiListingColumn propertyIdentifier="firstName" />
-		<hb:HibachiListingColumn propertyIdentifier="lastName" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="company" />
-		<hb:HibachiListingColumn propertyIdentifier="primaryPhoneNumber.phoneNumber" />
-		<hb:HibachiListingColumn propertyIdentifier="primaryEmailAddress.emailAddress" />
-		<hb:HibachiListingColumn propertyIdentifier="guestAccountFlag" />
-		<hb:HibachiListingColumn propertyIdentifier="organizationFlag" />
-		
-	</hb:HibachiListingDisplay>
-
-</cfoutput>
+}
