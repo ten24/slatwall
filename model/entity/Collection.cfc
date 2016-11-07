@@ -95,6 +95,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="hasDisplayAggregate" type="boolean" persistent="false";
 	property name="hasManyRelationFilter" type="boolean" persistent="false";
 
+	property name="groupBys" type="string" persistent="false";
+
 	//property name="entityNameOptions" persistent="false" hint="an array of name/value structs for the entity's metaData";
 	property name="collectionObjectOptions" persistent="false";
 
@@ -902,11 +904,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return fromHQL;
 	}
 
-	public string function getHQL(boolean excludeSelectAndOrderBy = false, forExport=false){
+	public string function getHQL(boolean excludeSelectAndOrderBy = false, forExport=false, removeOrderBy = false){
 		variables.HQLParams = {};
 		variables.postFilterGroups = [];
 		variables.postOrderBys = [];
-		var HQL = createHQLFromCollectionObject(this, arguments.excludeSelectAndOrderBy, arguments.forExport);
+		var HQL = createHQLFromCollectionObject(this, arguments.excludeSelectAndOrderBy, arguments.forExport, arguments.removeOrderBy);
 		return HQL;
 	}
 
@@ -1043,6 +1045,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				groupByList = listAppend(groupByList,orderBy.propertyIdentifier);
 			}
 		}
+		variables.groupBys = groupByList;
 		return ' GROUP BY ' & groupByList;
 	}
 
@@ -1248,6 +1251,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					var HQL = '';
 					if(hasAggregateFilter()){
 						HQL = 'SELECT count(DISTINCT id) FROM  #getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject())#  WHERE id in ( SELECT DISTINCT #getCollectionConfigStruct().baseEntityAlias#.id #getHQL(true)# )';
+					}else if(!isNull(variables.groupBys)){
+						HQL = 'SELECT COUNT(DISTINCT id) FROM  #getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject())# tempAlias WHERE EXISTS( #getHQL(false, false, true)# HAVING MIN(#getCollectionConfigStruct().baseEntityAlias#.id)=tempAlias.id)';
 					}else{
 						HQL = getSelectionCountHQL() & getHQL(true);
 					}
@@ -1515,7 +1520,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	public any function createHQLFromCollectionObject(required any collectionObject,
 		boolean excludeSelectAndOrderBy=false,
-		boolean forExport=false
+		boolean forExport=false,
+	    boolean removeOrderBy=false
 	){
 		var HQL = "";
 		var collectionConfig = arguments.collectionObject.getCollectionConfigStruct();
@@ -1544,13 +1550,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					selectHQL &= getSelectionsHQL(columns=collectionConfig.columns, isDistinct=isDistinct, forExport=arguments.forExport);
 				}
 
-				if(!isnull(getPostOrderBys()) && arraylen(getPostOrderBys())){
-					orderByHQL &= getOrderByHQL(getPostOrderBys());
-				}else if(!isNull(collectionConfig.orderBy) && arrayLen(collectionConfig.orderBy)){
-					//build Order By
-					orderByHQL &= getOrderByHQL(collectionConfig.orderBy);
-				}else{
-					orderByHQL &= getOrderByHQL();
+				if(!removeOrderBy) {
+					if (!isnull(getPostOrderBys()) && arraylen(getPostOrderBys())) {
+						orderByHQL &= getOrderByHQL(getPostOrderBys());
+					} else
+						if (!isNull(collectionConfig.orderBy) && arrayLen(collectionConfig.orderBy)) {
+							//build Order By
+							orderByHQL &= getOrderByHQL(collectionConfig.orderBy);
+						} else {
+							orderByHQL &= getOrderByHQL();
+						}
 				}
 			}//<--end if build select
 			if(
