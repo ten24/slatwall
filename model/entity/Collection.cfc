@@ -41,7 +41,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	// Persistent Properties
 	property name="collectionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="collectionName" ormtype="string";
-	property name="collectionCode" ormtype="string" unique="true" index="PI_COLLECTIONCODE";
+	property name="collectionCode" ormtype="string" index="PI_COLLECTIONCODE";
 	property name="collectionDescription" ormtype="string";
 	property name="collectionObject" ormtype="string" hb_formFieldType="select";
 	property name="collectionConfig" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json" hint="json object used to construct the base collection HQL query";

@@ -50,30 +50,25 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.accountSmartList" type="any" />
+<cfparam name="rc.accountRelationshipRole" type="any">
+<cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	
-	<hb:HibachiEntityActionBar type="listing" object="#rc.accountSmartList#" showCreate="false">
-	
-	<!--- Create ---> 
-		<hb:HibachiEntityActionBarButtonGroup>			
-			<hb:HibachiProcessCaller action="admin:entity.preprocessaccount" entity="account" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.create')# #$.slatwall.rbKey('entity.account')#" modal="true" />			
-		</hb:HibachiEntityActionBarButtonGroup>
-	</hb:HibachiEntityActionBar>
+	<hb:HibachiEntityDetailForm object="#rc.accountRelationshipRole#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.accountRelationshipRole#" edit="#rc.edit#" />
+		<div class="s-top-spacer">
+			<hb:HibachiPropertyRow>
 
-	<hb:HibachiListingDisplay smartList="#rc.accountSmartList#"
-							   recordEditAction="admin:entity.editaccount"
-							   recordDetailAction="admin:entity.detailaccount">
-							      	      
-		<hb:HibachiListingColumn propertyIdentifier="firstName" />
-		<hb:HibachiListingColumn propertyIdentifier="lastName" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="company" />
-		<hb:HibachiListingColumn propertyIdentifier="primaryPhoneNumber.phoneNumber" />
-		<hb:HibachiListingColumn propertyIdentifier="primaryEmailAddress.emailAddress" />
-		<hb:HibachiListingColumn propertyIdentifier="guestAccountFlag" />
-		<hb:HibachiListingColumn propertyIdentifier="organizationFlag" />
-		
-	</hb:HibachiListingDisplay>
+				<hb:HibachiPropertyList>
+					<hb:HibachiPropertyDisplay object="#rc.accountRelationshipRole#" property="accountRelationshipRoleName" edit="#rc.edit#">
+					<hb:HibachiPropertyDisplay object="#rc.accountRelationshipRole#" property="parentAccountManagementPermissionGroup" edit="#rc.edit#" >
 
+
+
+				</hb:HibachiPropertyList>
+			</hb:HibachiPropertyRow>
+		</div>
+	</hb:HibachiEntityDetailForm>
+	</span>
 </cfoutput>
+

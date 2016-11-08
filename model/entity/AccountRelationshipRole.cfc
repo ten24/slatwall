@@ -46,18 +46,21 @@
 Notes:
 
 */
-component displayname="Account Relationship" entityname="SlatwallAccountRelationship" table="SwAccountRelationship" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" {
+component displayname="AccountRelationshipRole" entityname="SlatwallAccountRelationshipRole" table="SwAccountRelationshipRole" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" {
 	
 	// Persistent Properties
-	property name="accountRelationshipID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="activeFlag" ormtype="boolean";
-	property name="approvalFlag" ormtype="boolean" default="0";
-	// Related Object Properties (Many-To-One)
-	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" hb_optionsNullRBKey="define.select";
+	property name="accountRelationshipRoleID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="accountRelationshipRoleName" ormtype="string";
 	
-	property name="parentAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="parentAccountID";
-	property name="childAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="childAccountID";
-	property name="accountRelationshipRole" cfc="AccountRelationshipRole" fieldtype="many-to-one" fkcolumn="accountRelationShipRoleID";
+	
+	// Related Object Properties (many-to-one)
+	property name="parentAccountManagementPermissionGroup" cfc="PermissionGroup" fieldtype="many-to-one" fkcolumn="parentAccountManagementPGID";
+	// Related Object Properties (one-to-many)
+	
+	// Related Object Properties (many-to-many)
+	
+	// Remote Properties
+	property name="remoteID" ormtype="string";
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -65,40 +68,37 @@ component displayname="Account Relationship" entityname="SlatwallAccountRelation
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
-	// ============ START: DEPRECATED Property Methods =================
-	
-	/*DEPRECATED will be removed in the following version. Currently not in use in core*/
-	property name="relatedAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="relatedAccountID" hb_optionsNullRBKey="define.select";
-	/*DEPRECATED will be removed in the following version. Currently not in use in core*/
-	property name="relationshipType" cfc="Type" fieldtype="many-to-one" fkcolumn="relationshipTypeID" hb_optionsNullRBKey="define.select" hb_optionsSmartListData="f:parentType.systemCode=relationshipType";
-	
-	// ============ END: DEPRECATED Property Methods =================
-	
+	// Non-Persistent Properties
+
 	// ============ START: Non-Persistent Property Methods =================
 	
-	public string function getSimpleRepresentation(){
-		var simpleRepresentation = "";
-		if(!isNull(getParentAccount()) && !isNull(getChildAccount())){
-			simpleRepresentation = getParentAccount().getSimpleRepresentation() &  ' > ' & getChildAccount().getSimpleRepresentation();
-			if(!isNull(getAccountRelationShipRole()) && !isNull(getAccountRelationShipRole().getAccountRelationshipRoleName())){
-				simpleRepresentation &= ' ( #getAccountRelationShipRole().getAccountRelationshipRoleName()# )';
-			}
-		}
-		return simpleRepresentation;
-	}
-	
 	// ============  END:  Non-Persistent Property Methods =================
-	
+		
 	// ============= START: Bidirectional Helper Methods ===================
 	
 	// =============  END:  Bidirectional Helper Methods ===================
+
+	// =============== START: Custom Validation Methods ====================
 	
+	// ===============  END: Custom Validation Methods =====================
+	
+	// =============== START: Custom Formatting Methods ====================
+	
+	// ===============  END: Custom Formatting Methods =====================
+	
+	// ============== START: Overridden Implicet Getters ===================
+	
+	// ==============  END: Overridden Implicet Getters ====================
+
 	// ================== START: Overridden Methods ========================
 	
 	// ==================  END:  Overridden Methods ========================
-		
+	
 	// =================== START: ORM Event Hooks  =========================
 	
 	// ===================  END:  ORM Event Hooks  =========================
+	
+	// ================== START: Deprecated Methods ========================
+	
+	// ==================  END:  Deprecated Methods ========================
 }
-

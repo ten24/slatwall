@@ -50,29 +50,24 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.accountSmartList" type="any" />
+<cfparam name="rc.accountRelationshipRoleSmartList" type="any" />
 
 <cfoutput>
 	
-	<hb:HibachiEntityActionBar type="listing" object="#rc.accountSmartList#" showCreate="false">
+	<hb:HibachiEntityActionBar type="listing" object="#rc.accountRelationshipRoleSmartList#" showCreate="false">
 	
 	<!--- Create ---> 
 		<hb:HibachiEntityActionBarButtonGroup>			
-			<hb:HibachiProcessCaller action="admin:entity.preprocessaccount" entity="account" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.create')# #$.slatwall.rbKey('entity.account')#" modal="true" />			
+			<hb:HibachiProcessCaller action="admin:entity.createaccountrelationshiprole" entity="accountrelationshiprole" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.create')# #$.slatwall.rbKey('entity.accountrelationshiprole')#" modal="true" />			
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<hb:HibachiListingDisplay smartList="#rc.accountSmartList#"
-							   recordEditAction="admin:entity.editaccount"
-							   recordDetailAction="admin:entity.detailaccount">
+	<hb:HibachiListingDisplay smartList="#rc.accountrelationshiproleSmartList#"
+							   recordEditAction="admin:entity.editaccountrelationshiprole"
+							   recordDetailAction="admin:entity.detailaccountrelationshiprole">
 							      	      
-		<hb:HibachiListingColumn propertyIdentifier="firstName" />
-		<hb:HibachiListingColumn propertyIdentifier="lastName" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="company" />
-		<hb:HibachiListingColumn propertyIdentifier="primaryPhoneNumber.phoneNumber" />
-		<hb:HibachiListingColumn propertyIdentifier="primaryEmailAddress.emailAddress" />
-		<hb:HibachiListingColumn propertyIdentifier="guestAccountFlag" />
-		<hb:HibachiListingColumn propertyIdentifier="organizationFlag" />
+		<hb:HibachiListingColumn propertyIdentifier="accountrelationshiproleName" />
+		<hb:HibachiListingColumn propertyIdentifier="parentAccountManagementPermissionGroup.permissionGroupName" />
 		
 	</hb:HibachiListingDisplay>
 
