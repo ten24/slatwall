@@ -928,7 +928,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.order.addError('create', account.getErrors());
 		} else {
 			arguments.order.setAccount(account);
-
+			//set up as Test Order if account is a test account
+			if(!isNull(account.getTestAccountFlag()) && account.getTestAccountFlag()){
+				arguments.order.setTestOrderFlag(true);
+			}
 			// Setup Order Type
 			arguments.order.setOrderType( getTypeService().getType( processObject.getOrderTypeID() ) );
 
