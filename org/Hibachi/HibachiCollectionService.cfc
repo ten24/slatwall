@@ -443,10 +443,14 @@ component output="false" accessors="true" extends="HibachiService" {
 		var currentPage = 1;
 		if(structKeyExists(arguments.data,'P:Current')){
 			currentPage = arguments.data['P:Current'];
+		}else if(structKeyExists(arguments.data, 'currentPage')){
+			currentPage = arguments.data['currentPage'];
 		}
 		var pageShow = 10;
 		if(structKeyExists(arguments.data,'P:Show')){
 			pageShow = arguments.data['P:Show'];
+		} else if(structKeyExists(arguments.data, 'pageShow')){
+			pageShow = arguments.data['pageShow'];
 		}
 
 		var keywords = "";
@@ -586,32 +590,31 @@ component output="false" accessors="true" extends="HibachiService" {
 		return response;
 	}
 
-	public any function getAPIResponseForCollection(required any collectionEntity, required struct data, boolean enforceAuthorization=true){
+	public any function getAPIResponseForCollection(required any collectionEntity, required struct collectionOptions, boolean enforceAuthorization=true){
 		var response = {};
-		var collectionOptions = this.getCollectionOptionsFromData(arguments.data); 
 		if(getHibachiScope().authenticateCollection('read', arguments.collectionEntity) || !arguments.enforceAuthorization){
-			if(structkeyExists(collectionOptions,'currentPage')){
+			if(structkeyExists(arguments.collectionOptions,'currentPage')){
 				collectionEntity.setCurrentPageDeclaration(collectionOptions.currentPage);
 			}
-			if(structKeyExists(collectionOptions,'pageShow')){
+			if(structKeyExists(arguments.collectionOptions,'pageShow')){
 				collectionEntity.setPageRecordsShow(collectionOptions.pageShow);
 			}
-			if(structKeyExists(collectionOptions,'keywords')){
+			if(structKeyExists(arguments.collectionOptions,'keywords')){
 				collectionEntity.setKeywords(collectionOptions.keywords);
 			}
 
-			if(structKeyExists(collectionOptions,'propertyIdentifiersList') && len(collectionOptions.propertyIdentifiersList)){
-				addColumnsToCollectionConfigStructByPropertyIdentifierList(arguments.collectionEntity,collectionOptions.propertyIdentifiersList,arguments.enforceAuthorization);
+			if(structKeyExists(arguments.collectionOptions,'propertyIdentifiersList') && len(arguments.collectionOptions.propertyIdentifiersList)){
+				addColumnsToCollectionConfigStructByPropertyIdentifierList(arguments.collectionEntity,arguments.collectionOptions.propertyIdentifiersList,arguments.enforceAuthorization);
 				var collectionPropertyIdentifiers = [];
 			}else{
 				var collectionPropertyIdentifiers = getPropertyIdentifierArray(collectionEntity.getCollectionObject());
 			}
-			if(structKeyExists(collectionOptions,'filterGroupsConfig') && len(collectionOptions.filterGroupsConfig)){
-				collectionEntity.getCollectionConfigStruct().filterGroups = deserializeJson(collectionOptions.filterGroupsConfig);
+			if(structKeyExists(arguments.collectionOptions,'filterGroupsConfig') && len(arguments.collectionOptions.filterGroupsConfig)){
+				collectionEntity.getCollectionConfigStruct().filterGroups = deserializeJson(arguments.collectionOptions.filterGroupsConfig);
 			}
 
-			if(structKeyExists(collectionOptions,'columnsConfig') && len(collectionOptions.columnsConfig)){
-				collectionEntity.getCollectionConfigStruct().columns = deserializeJson(collectionOptions.columnsConfig);
+			if(structKeyExists(arguments.collectionOptions,'columnsConfig') && len(arguments.collectionOptions.columnsConfig)){
+				collectionEntity.getCollectionConfigStruct().columns = deserializeJson(arguments.collectionOptions.columnsConfig);
 				//look for non persistent columns
 				for(var column in collectionEntity.getCollectionConfigStruct().columns){
 					if(structKeyExists(column,'persistent') && column.persistent == false){
@@ -622,8 +625,8 @@ component output="false" accessors="true" extends="HibachiService" {
 				}
 			}
 
-			if(structKeyExists(collectionOptions,'joinsConfig') && len(collectionOptions.joinsConfig)){
-				collectionEntity.getCollectionConfigStruct().joins = deserializeJson(collectionOptions.joinsConfig);
+			if(structKeyExists(arguments.collectionOptions,'joinsConfig') && len(arguments.collectionOptions.joinsConfig)){
+				collectionEntity.getCollectionConfigStruct().joins = deserializeJson(arguments.collectionOptions.joinsConfig);
 
 				for(var currentJoin = 1; currentJoin <= arraylen(collectionEntity.getCollectionConfigStruct().joins); currentJoin++){
 
@@ -645,18 +648,18 @@ component output="false" accessors="true" extends="HibachiService" {
 				}
 			}
 
-			if(structKeyExists(collectionOptions,'orderByConfig') && len(collectionOptions.orderByConfig)){
-				collectionEntity.getCollectionConfigStruct().orderBy = deserializeJson(collectionOptions.orderByConfig);
+			if(structKeyExists(arguments.collectionOptions,'orderByConfig') && len(arguments.collectionOptions.orderByConfig)){
+				collectionEntity.getCollectionConfigStruct().orderBy = deserializeJson(arguments.collectionOptions.orderByConfig);
 			}
-			if(structKeyExists(collectionOptions,'groupBysConfig') && len(collectionOptions.groupBysConfig)){
-				collectionEntity.getCollectionConfigStruct().groupBys = deserializeJson(collectionOptions.groupBysConfig);
+			if(structKeyExists(arguments.collectionOptions,'groupBysConfig') && len(arguments.collectionOptions.groupBysConfig)){
+				collectionEntity.getCollectionConfigStruct().groupBys = deserializeJson(arguments.collectionOptions.groupBysConfig);
 			}
 
-			if(structKeyExists(collectionOptions,'processContext') && len(collectionOptions.processContext)){
+			if(structKeyExists(arguments.collectionOptions,'processContext') && len(arguments.collectionOptions.processContext)){
 				collectionEntity.setProcessContext(collectionOptions.processContext);
 			}
-			if(structKeyExists(collectionOptions,'isDistict')){
-				collectionEntity.getCollectionConfigStruct().isDistinct = collectionOptions.isDistinct;
+			if(structKeyExists(arguments.collectionOptions,'isDistict')){
+				collectionEntity.getCollectionConfigStruct().isDistinct = arguments.collectionOptions.isDistinct;
 			}
 
 			var defaultPropertyIdentifiers = getPropertyIdentifierArray('collection');
@@ -694,7 +697,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			var authorizedProperties = getAuthorizedProperties(arguments.collectionEntity, collectionPropertyIdentifiers, aggregatePropertyIdentifierArray,attributePropertyIdentifierArray,enforceAuthorization);
 
 			var collectionStruct = {};
-			if(structKeyExists(collectionOptions,'allRecords') && collectionOptions.allRecords == 'true'){
+			if(structKeyExists(arguments.collectionOptions,'allRecords') && arguments.collectionOptions.allRecords == 'true'){
 				collectionStruct = getFormattedRecords(arguments.collectionEntity,authorizedProperties);
 			}else{
 				//paginated collection struct

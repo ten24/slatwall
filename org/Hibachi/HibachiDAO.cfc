@@ -303,7 +303,7 @@
 		<cfif arguments.compositeKeyOperator eq "">
 			<cfset arguments.compositeKeyOperator = "AND">
 		</cfif>
-
+		
 		<cfif arguments.returnPrimaryKeyValue>
 			<cfset var checkrs = "" />
 			<cfset var primaryKeyValue = "" />
@@ -327,7 +327,7 @@
 							#arguments.tableName#
 						SET
 							<cfloop from="1" to="#listLen(keyList)#" index="i">
-								<cfif arguments.updateData[ listGetAt(keyList, i) ].value eq "NULL" OR (arguments.insertData[ listGetAt(keyList, i) ].value EQ "" AND arguments.insertData[ listGetAt(keyList, i) ].dataType EQ "timestamp")>
+								<cfif arguments.updateData[ listGetAt(keyList, i) ].value eq "NULL" OR arguments.insertData[ listGetAt(keyList, i) ].value EQ "">
 									#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" value="" null="yes">
 								<cfelse>
 									#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" value="#arguments.updateData[ listGetAt(keyList, i) ].value#">
@@ -349,7 +349,7 @@
 					#arguments.tableName#
 				SET
 					<cfloop from="1" to="#listLen(keyList)#" index="i">
-						<cfif arguments.updateData[ listGetAt(keyList, i) ].value eq "NULL" OR (arguments.insertData[ listGetAt(keyList, i) ].value EQ "" AND arguments.insertData[ listGetAt(keyList, i) ].dataType EQ "timestamp")>
+						<cfif arguments.updateData[ listGetAt(keyList, i) ].value eq "NULL" OR arguments.insertData[ listGetAt(keyList, i) ].value EQ "">
 							#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" value="" null="yes">
 						<cfelse>
 							#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" value="#arguments.updateData[ listGetAt(keyList, i) ].value#">
@@ -383,7 +383,7 @@
 				<cfif getApplicationValue("databaseType") eq "Oracle10g" AND listFindNoCase(keyListOracle,'type')>#listSetAt(keyListOracle,listFindNoCase(keyListOracle,'type'),'"type"')#<cfelse>#keyList#</cfif>
 			) VALUES (
 				<cfloop from="1" to="#listLen(keyList)#" index="i">
-					<cfif arguments.insertData[ listGetAt(keyList, i) ].value eq "NULL" OR (arguments.insertData[ listGetAt(keyList, i) ].value EQ "" AND arguments.insertData[ listGetAt(keyList, i) ].dataType EQ "timestamp")>
+					<cfif arguments.insertData[ listGetAt(keyList, i) ].value eq "NULL" OR arguments.insertData[ listGetAt(keyList, i) ].value EQ "">
 						<cfqueryparam cfsqltype="cf_sql_#arguments.insertData[ listGetAt(keyList, i) ].dataType#" value="" null="yes">
 					<cfelse>
 						<cfqueryparam cfsqltype="cf_sql_#arguments.insertData[ listGetAt(keyList, i) ].dataType#" value="#arguments.insertData[ listGetAt(keyList, i) ].value#">
