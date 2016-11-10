@@ -262,43 +262,7 @@
 		}
 	}
      
-	     /*
-	      * queryToCsv
-	      * Allows us to pass in a query object and returns that data as a CSV.
-	      * This is a refactor of Ben Nadel's method, http://www.bennadel.com/blog/1239-Updated-Converting-A-ColdFusion-Query-To-CSV-Using-QueryToCSV-.htm
-	      * @param  {Query}      q               {required}  The cf query object to convert. E.g. pass in: qry.execute().getResult();
-	      * @param  {Boolean}    hr              {required}  True if we should include a header row in our CSV, defaults to TRUE
-	      * @param  {String}     d               {required}  Delimiter to use in CSV, defaults to a comma (,)
-	      * @return {String}                                         CSV content
-	      */
-	     public string function queryToCsv(required query q, required boolean hr = true, required string d = ","){
-
-		 var colNames    = listToArray( lCase(arguments.q.columnlist) );
-		 var newLine     = (chr(13) & chr(10));
-		 var buffer      = CreateObject('java','java.lang.StringBuffer').Init();
-		 // Check if we should include a header row
-		 if(arguments.hr){
-		     // append our header row 
-		     buffer.append( 
-		      ArrayToList(colNames,arguments.d) & newLine
-		     );
-		 }
-		 // Loop over query and build csv rows
-		 for(var i=1; i <= arguments.q.recordcount; i=i+1){
-		     // this individual row
-		     var thisRow = [];
-		     // loop over column list
-		     for(var j=1; j <= arrayLen(colNames); j=j+1){
-			 // create our row
-			 thisRow[j] = replace( replace( arguments.q[colNames[j]][i],',','','all'),'""','""""','all' );
-		     }
-		     // Append new row to csv output
-		     buffer.append(
-			 JavaCast( 'string', ( ArrayToList( thisRow, arguments.d ) & iif(i < arguments.q.recordcount, "newLine","") ) )
-		     );
-		 }
-		 return buffer.toString();
-	     };
+	
 	private query function transformArrayOfStructsToQuery( required array arrayOfStructs, required array colNames ){
 		var rowsTotal = ArrayLen(arrayOfStructs);
 		var columnsTotal = ArrayLen(colNames);
