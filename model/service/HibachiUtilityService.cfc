@@ -404,19 +404,8 @@ Notes:
 		//return the struct
 		return stReturn;
 	}
-
-	/**
-	* exports the given query/array to file.
-	*
-	* @param data      Data to export. (Required) (Currently only supports query).
-	* @param columns      list of columns to export. (optional, default: all)
-	* @param columnNames      list of column headers to export. (optional, default: none)
-	* @param fileName      file name for export. (default: guid)
-	* @param fileType      file type for export. (default: csv)
-	* @param download      download the file. (default: true)
-	* @return struct with file info.
-	*/
-	/**
+	
+       /**
 	* exports the given query/array to file.
 	*
 	* @param data      Data to export. (Required) (Currently only supports query).
