@@ -252,7 +252,7 @@
 				fileWrite(filePath,outputData);
 		
 				if(structKeyExists(arguments, "downloadFile") && arguments.downloadFile == true){
-					downloadFile(fileNameWithExt,filePath,"application/#arguments.fileType#",true);
+					getService("HibachiUtilityService").downloadFile(fileNameWithExt,filePath,"application/#arguments.fileType#",true);
 				} else{
 					
 					result.fileName = fileNameWithExt;
