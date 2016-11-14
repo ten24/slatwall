@@ -687,7 +687,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			if(arraylen(baseCollection[i].filterGroup) && arraylen(currentCollection[i].filterGroup)){
 				currentCollection[i].filterGroup[1].logicalOperator = 'AND';
 			}
-			ArrayAppend(baseCollection[i].filterGroup, currentCollection[i].filterGroup, true);
+			for(var filter in currentCollection[i].filterGroup){
+				ArrayAppend(baseCollection[i].filterGroup,filter);	
+			}
 		}
 		return baseCollection;
 	}
