@@ -151,8 +151,9 @@ component accessors="true" output="false" displayname="USPS" implements="Slatwal
         }        
         
         var xmlPacket = "";
-		var response = ""; 
-        if(!arguments.requestBean.isInternationalShipment()) {
+		var response = "";
+        
+		if(arguments.requestBean.getShipToCountryCode() == "US" || arguments.requestBean.getShipToCountryCode() == "PR"){ 
 			savecontent variable="xmlPacket" {
 				include "RatesV4RequestTemplate.cfm";
 	        }
@@ -181,7 +182,7 @@ component accessors="true" output="false" displayname="USPS" implements="Slatwal
 		
 		
 		var xmlResponse = XmlParse(REReplace(httpRequest.send().getPrefix().fileContent, "^[^<]*", "", "one"));
-
+				
 		var ratesResponseBean = new Slatwall.model.transient.fulfillment.ShippingRatesResponseBean();
 		ratesResponseBean.setData(xmlResponse);
 		
@@ -192,6 +193,7 @@ component accessors="true" output="false" displayname="USPS" implements="Slatwal
 			
 			// Log the error
 			logHibachi("An unexpected communication error occured, please notify system administrator.", true);
+
 		} else if (isDefined('xmlResponse.Error')) {
 			ratesResponseBean.addMessage(messageName=xmlResponse.Error.Number.xmlText, message=xmlResponse.Error.Description.xmlText);
 			// If XML fault then log error
@@ -205,6 +207,7 @@ component accessors="true" output="false" displayname="USPS" implements="Slatwal
 					messageName=xmlResponse[response].Package.Error.Source.xmlText,
 					message=xmlResponse[response].Package.Error.Description.xmlText
 				);
+				logHibachi('USPS encountered the following issue: ' & xmlResponse[response].Package.Error.HelpContext.xmlText & ' : ' & xmlResponse[response].Package.Error.Description.xmlText, true);
 				ratesResponseBean.addError(xmlResponse[response].Package.Error.HelpContext.xmlText, xmlResponse[response].Package.Error.Description.xmlText);
 			}
 			
@@ -217,15 +220,25 @@ component accessors="true" output="false" displayname="USPS" implements="Slatwal
 						);
 					}
 				} else {
-					ratesResponseBean.addShippingMethod(
-						shippingProviderMethod= 'i' & xmlResponse[response].Package.Service.XmlAttributes.ID,
-						totalCharge=xmlResponse[response].Package.Service.Postage.XmlText
-					); 
+					for(var i=1; i<=arrayLen(xmlResponse[response].Package.xmlChildren); i++){
+						var currentXmlChild = xmlResponse[response].Package.xmlChildren[i]; 
+						if(currentXmlChild.xmlName == 'Service'){
+							var shippingProviderMethod= 'i' & currentXmlChild.XmlAttributes.ID;
+							for(var j=1; j<=arrayLen(currentXmlChild.xmlChildren); j++){
+								if(currentXmlChild.xmlChildren[j].XmlName == 'Postage'){
+									ratesResponseBean.addShippingMethod(
+										shippingProviderMethod=shippingProviderMethod,
+										totalCharge = currentXmlChild.xmlChildren[j].XmlText
+									);
+									break; 
+								}
+							}
+						}
+					}
 				}
 			}
 			
 		}
-		
 		return ratesResponseBean;
 	}
 	

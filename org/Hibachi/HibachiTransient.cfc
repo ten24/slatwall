@@ -376,9 +376,6 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 			// Setup the current property
 			currentProperty = properties[p];
 			
-			if(isNull(form)){
-				form = {};
-			}
 			
 			// Check to see if we should upload this property
 			if( 

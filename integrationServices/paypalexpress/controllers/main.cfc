@@ -122,7 +122,7 @@ component accessors="true" output="false" {
 				// Manually set the providerToken value because it can't be populated
 				var addOrderPaymentProcessObject = rc.$.slatwall.cart().getProcessObject('addOrderPayment');
 				addOrderPaymentProcessObject.getNewOrderPayment().setProviderToken(responseData.token & '~' & responseData.payerID);
-				
+				addOrderPaymentProcessObject.setCopyFromType('');
 				var order = getOrderService().processOrder( rc.$.slatwall.cart(), paymentData, 'addOrderPayment');
 				
 				arguments.rc.$.slatwall.addActionResult( "public:cart.addOrderPayment", order.hasErrors() );
