@@ -195,7 +195,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		mockAccount = createTestEntity('Account', accountData);
 		var resultNoName = mockAccount.getFullName();
-		assertEquals(resultNoName, " ");
+		assertEquals(resultNoName, "");
 	}
 	public void function getAddressTest() {
 		//testing existing PrimaryAddress existing Account Address
@@ -2319,7 +2319,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		accountData = {};
 		mockAccount = createTestEntity('Account', accountData);
 		var resultFirstLastName = mockAccount.getSimpleRepresentation();
-		assertEquals(resultFirstLastName, " ");
+		assertEquals(resultFirstLastName, "");
 	}
 	
 	// ================== END TESTING: Overridden Methods ========================
