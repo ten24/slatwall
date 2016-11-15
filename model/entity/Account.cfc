@@ -60,6 +60,8 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="organizationFlag" ormtype="boolean";
 	property name="testAccountFlag" ormtype="boolean";
 	property name="accountCode" ormtype="string" hb_populateEnabled="public" index="PI_ACCOUNTCODE";
+	//calucluated property
+	property name="calculatedFullName" ormtype="string";
 	// CMS Properties
 	property name="cmsAccountID" ormtype="string" hb_populateEnabled="false" index="RI_CMSACCOUNTID";
 
@@ -219,7 +221,17 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	}
 
 	public string function getFullName() {
-		return "#getFirstName()# #getLastName()#";
+		var fullName = "";
+		if(!isNull(getFirstName())){
+			fullName &= getFirstName();
+		}
+		if(len(fullName)){
+			fullName &= ' ';
+		}
+		if(!isNull(getLastName())){
+			fullName &= getLastName();
+		}
+		return fullName;
 	}
 
 	public string function getGravatarURL(numeric size=80) {
