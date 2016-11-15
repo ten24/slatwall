@@ -291,7 +291,7 @@ class CollectionConfig {
     };
 
     public addColumn= (column: string, title: string = '', options:any = {}):CollectionConfig =>{
-        if(!this.columns || this.utilityService.ArrayFindByPropertyValue(this.columns,'propertyIdentifier',column) === -1){
+        if(!this.columns || options.aggregate != null || this.utilityService.ArrayFindByPropertyValue(this.columns,'propertyIdentifier',column) === -1){
             var isVisible = true,
                 isDeletable = true,
                 isSearchable = true,
