@@ -377,7 +377,6 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 			currentProperty = properties[p];
 			
 			
-			
 			// Check to see if we should upload this property
 			if( 
 				structKeyExists(arguments.data, currentProperty.name) 
