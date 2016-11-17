@@ -64,13 +64,13 @@ Notes:
 		<cfset cfmailAttributes["bcc"] = arguments.email.getEmailBCC() />
 		<cfset cfmailAttributes["charset"] = "utf-8" />
 
-		<cfif structKeyExists(arguments, 'emailTemplate') && !isNull(arguments.emailTemplate) && len(emailTemplate.setting('emailSMTPServer'))>
-			<cfset cfmailAttributes["server"] = emailTemplate.setting('emailSMTPServer') />
-			<cfset cfmailAttributes["port"] = emailTemplate.setting('emailSMTPPort') />
-			<cfset cfmailAttributes["useSSL"] = emailTemplate.setting('emailSMTPUseSSL') />
-			<cfset cfmailAttributes["useTLS"] = emailTemplate.setting('emailSMTPUseTLS') />
-			<cfset cfmailAttributes["username"] = emailTemplate.setting('emailSMTPUsername') />
-			<cfset cfmailAttributes["password"] = emailTemplate.setting('emailSMTPPassword') />
+		<cfif structKeyExists(arguments, 'emailTemplate') && !isNull(arguments.emailTemplate) && len(arguments.emailTemplate.setting('emailSMTPServer'))>
+			<cfset cfmailAttributes["server"] = arguments.emailTemplate.setting('emailSMTPServer') />
+			<cfset cfmailAttributes["port"] = arguments.emailTemplate.setting('emailSMTPPort') />
+			<cfset cfmailAttributes["useSSL"] = arguments.emailTemplate.setting('emailSMTPUseSSL') />
+			<cfset cfmailAttributes["useTLS"] = arguments.emailTemplate.setting('emailSMTPUseTLS') />
+			<cfset cfmailAttributes["username"] = arguments.emailTemplate.setting('emailSMTPUsername') />
+			<cfset cfmailAttributes["password"] = arguments.emailTemplate.setting('emailSMTPPassword') />
 		</cfif>
 
 		<!--- Send Multipart E-mail --->
