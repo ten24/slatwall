@@ -64,18 +64,18 @@ Notes:
 		<cfset cfmailAttributes["bcc"] = arguments.email.getEmailBCC() />
 		<cfset cfmailAttributes["charset"] = "utf-8" />
 
-		<cfif len(email.setting('emailSMTPServer'))>
-			<cfset cfmailAttributes["server"] = email.setting('emailSMTPServer') />
-			<cfset cfmailAttributes["port"] = email.setting('emailSMTPPort') />
-			<cfset cfmailAttributes["useSSL"] = email.setting('emailSMTPUseSSL') />
-			<cfset cfmailAttributes["useTLS"] = email.setting('emailSMTPUseTLS') />
-			<cfset cfmailAttributes["username"] = email.setting('emailSMTPUsername') />
-			<cfset cfmailAttributes["password"] = email.setting('emailSMTPPassword') />
+		<cfif structKeyExists(arguments, 'emailTemplate') && !isNull(arguments.emailTemplate) && len(emailTemplate.setting('emailSMTPServer'))>
+			<cfset cfmailAttributes["server"] = emailTemplate.setting('emailSMTPServer') />
+			<cfset cfmailAttributes["port"] = emailTemplate.setting('emailSMTPPort') />
+			<cfset cfmailAttributes["useSSL"] = emailTemplate.setting('emailSMTPUseSSL') />
+			<cfset cfmailAttributes["useTLS"] = emailTemplate.setting('emailSMTPUseTLS') />
+			<cfset cfmailAttributes["username"] = emailTemplate.setting('emailSMTPUsername') />
+			<cfset cfmailAttributes["password"] = emailTemplate.setting('emailSMTPPassword') />
 		</cfif>
 
 		<!--- Send Multipart E-mail --->
 		<cfif len(arguments.email.getEmailBodyHTML()) && len(arguments.email.getEmailBodyText()) && len(arguments.email.getEmailTo())>
-			<cfmail attributeCollection=cfmailAttributes>
+			<cfmail attributeCollection="#cfmailAttributes#">
 				<cfif !isNull(arguments.email.getRelatedObject())>
 					<cfmailparam name="Related-Object" value="#arguments.email.getRelatedObject()#">
 					<cfmailparam name="Related-Object-ID" value="#arguments.email.getRelatedObjectID()#">
@@ -142,10 +142,10 @@ Notes:
 		<cfset var email = "" />
 
 		<!--- Loop over the queue --->
-		<cfloop array="#getHibachiScope().getEmailQueue()#" index="email">
+		<cfloop array="#getHibachiScope().getEmailQueue()#" index="queueData">
 
 			<!--- Send the email --->
-			<cfset sendEmail(email) />
+			<cfset sendEmail(argumentcollection="#queueData#") />
 		</cfloop>
 
 		<!--- Clear out the queue --->
@@ -193,18 +193,13 @@ Notes:
 		var email = this.newEmail();
 		arguments[arguments.entity.getClassName()] = arguments.entity;
 		email = this.processEmail(email, arguments, 'createFromTemplate');
-		email = this.processEmail(email, 'addToQueue');
+		email = this.processEmail(email, arguments, 'addToQueue');
 		return email;
 	}
 
 	public void function generateAndSendFromEntityAndEmailTemplateID( required any entity, required any emailTemplateID ) {
-		var email = this.newEmail();
-		var emailData = {
-			emailTemplateID = arguments.emailTemplateID
-		};
-		emailData[ arguments.entity.getPrimaryIDPropertyName() ] = arguments.entity.getPrimaryIDValue();
-		email = this.processEmail(email, emailData, 'createFromTemplate');
-		email = this.processEmail(email, {}, 'addToQueue');
+		var emailTemplate = getTemplateService().getEmailTemplate( arguments.emailTemplateID);
+		this.generateAndSendFromEntityAndEmailTemplate(arguments.entity, emailTemplate);
 	}
 
 	</cfscript>
@@ -313,7 +308,12 @@ Notes:
 			len(arguments.email.getEmailSubject())
 		) {
 			// Append the email to the email queue
-			arrayAppend(getHibachiScope().getEmailQueue(), arguments.email);
+			var queueData = {};
+			queueData['email'] = arguments.email;
+			if(structKeyExists( arguments.data, 'emailTemplate')){
+				queueData['emailTemplate'] = arguments.data.emailTemplate;
+			}
+			arrayAppend(getHibachiScope().getEmailQueue(),queueData);
 		}
 
 		return arguments.email;
