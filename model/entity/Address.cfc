@@ -90,7 +90,7 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	property name="countryCodeOptions" persistent="false" type="array";
 	property name="salutationOptions" persistent="false" type="array";
 	property name="stateCodeOptions" persistent="false" type="array";
-	property name="addressName";
+	property name="addressName" persistent="false" type="string";
 	
 	// ==================== START: Logical Methods =========================
 	
