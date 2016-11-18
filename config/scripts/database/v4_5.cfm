@@ -125,9 +125,3 @@ Notes:
 	<cflog file="Slatwall" text="General Log - Script v4_5 has run with no errors">
 </cfif>
 
-<cfif local.scriptHasErrors>
-	<cflog file="Slatwall" text="General Log - Part of Script v4_5 had errors when running">
-	<cfthrow detail="Part of Script v4_5 had errors when running">
-<cfelse>
-	<cflog file="Slatwall" text="General Log - Script v4_5 has run with no errors">
-</cfif>
