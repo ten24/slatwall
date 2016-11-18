@@ -95,7 +95,9 @@ Notes:
 				<cfif skuHasEventConflict>
 					<cfset conflictLabel = conflictLabel & '*'>
 				</cfif>
-				<hb:HibachiEntityDetailItem view="admin:entity/skutabs/eventconflicts" text="#conflictLabel#" />
+				<cfif rc.sku.setting('skuEventEnforceConflicts')>
+					<hb:HibachiEntityDetailItem view="admin:entity/skutabs/eventconflicts" text="#conflictLabel#" />
+				</cfif>
 				<hb:HibachiEntityDetailItem view="admin:entity/skutabs/eventregistrations" />
 			<cfelseif rc.product.getBaseProductType() EQ "contentaccess">
 				<hb:HibachiEntityDetailItem property="accessContents" />
