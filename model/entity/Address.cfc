@@ -70,6 +70,9 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	property name="emailAddress" hb_populateEnabled="public" ormtype="string";
 	property name="urlTitle" hb_populateEnabled="public" ormtype="string";
 	
+	//Calculated Properties
+	property name="calculatedAddressName" type="string"; 
+	
 	//one-to-many
   	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="addressID" cascade="all-delete-orphan" inverse="true";
  
@@ -87,6 +90,7 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	property name="countryCodeOptions" persistent="false" type="array";
 	property name="salutationOptions" persistent="false" type="array";
 	property name="stateCodeOptions" persistent="false" type="array";
+	property name="addressName";
 	
 	// ==================== START: Logical Methods =========================
 	
@@ -195,6 +199,33 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
+	
+	public string function getAddressName(){
+		if(!structKeyExists(variables,'addressName')){
+			var name = "";
+			if( !isNull(getStreetAddress()) ) {
+				name =  listAppend(name, " #getStreetAddress()#" );
+			}
+			if( !isNull(getStreet2Address()) ) {
+				name = listAppend(name, " #getStreet2Address()#" );
+			}
+			if( !isNull(getCity()) ) {
+				name = listAppend(name, " #getCity()#" );
+			}
+			if( !isNull(getStateCode()) ) {
+				name = listAppend(name, " #getStateCode()#" );
+			}
+			if( !isNull(getPostalCode()) ) {
+				name = listAppend(name, " #getPostalCode()#" );
+			}
+			if( !isNull(getCountryCode()) ) {
+				name = listAppend(name, " #getCountryCode()#" );
+			}
+			variables.addressName = name; 
+		}
+		
+		return variables.addressName;
+	}
 		
 	// ============= START: Bidirectional Helper Methods ===================
 	
@@ -249,27 +280,8 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 
 	// ================== START: Overridden Methods ========================
 	
-	public string function getSimpleRepresentation() {
-		var simpleRepresentation = "";
-		if( !isNull(getStreetAddress()) ) {
-			simpleRepresentation = listAppend(simpleRepresentation, " #getStreetAddress()#" );
-		}
-		if( !isNull(getStreet2Address()) ) {
-			simpleRepresentation = listAppend(simpleRepresentation, " #getStreet2Address()#" );
-		}
-		if( !isNull(getCity()) ) {
-			simpleRepresentation = listAppend(simpleRepresentation, " #getCity()#" );
-		}
-		if( !isNull(getStateCode()) ) {
-			simpleRepresentation = listAppend(simpleRepresentation, " #getStateCode()#" );
-		}
-		if( !isNull(getPostalCode()) ) {
-			simpleRepresentation = listAppend(simpleRepresentation, " #getPostalCode()#" );
-		}
-		if( !isNull(getCountryCode()) ) {
-			simpleRepresentation = listAppend(simpleRepresentation, " #getCountryCode()#" );
-		}
-		return simpleRepresentation;
+	public string function getSimpleRepresentationPropertyName() {
+		return 'calculatedAddressName';
 	}
 	
 	// ==================  END:  Overridden Methods ========================
