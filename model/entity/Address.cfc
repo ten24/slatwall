@@ -70,7 +70,7 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	property name="emailAddress" hb_populateEnabled="public" ormtype="string";
 	
 	//Calculated Properties
-	property name="calculatedAddressName" ormtype="string"; 
+	property name="calculatedAddressName" ormtype="string" length="1024"; 
 	
 	//one-to-many
   	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="addressID" cascade="all-delete-orphan" inverse="true";

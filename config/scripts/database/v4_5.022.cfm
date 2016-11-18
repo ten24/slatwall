@@ -51,13 +51,28 @@ Notes:
 <cfparam name="this.ormSettings.dialect" default="#getHibachiScope().getApplicationValue('databaseType')#" />
 
 <cftry>
-	<cfquery name="local.getAddress">
-		select addressID,streetAddress,street2Address,city,stateCode,postalCode,countryCode from SwAddress
-	</cfquery>
-
-	<cfloop query="local.getAddress">
+	<cfif this.ormSettings.dialect eq 'MicrosoftSQLServer'>
+		<cfquery name="local.updateAddress">
+			UPDATE swAddress set calculatedAddressName = STUFF(
+			    (
+			      SELECT ', ' + v
+			      FROM (VALUES (streetAddress), (street2Address), (city), (stateCode), (postalCode), (countryCode)) AS v (v)
+			      FOR XML PATH (''), TYPE
+			    ).value('.[1]', 'varchar(max)'),
+			    1, 2, ''
+			  )
+		</cfquery>
+	<cfelseif ListFind(this.ormSettings.dialect, 'MySQL')>
+		<cfquery name="local.updateAddress">
+			UPDATE SwAddress set calculatedAddressName = CONCAT_WS(', ',streetAddress,street2Address,city,stateCode,postalCode,countryCode)
+		</cfquery>
+	<cfelseif this.ormSettings.dialect eq 'Oracle10g'>
+		<cfquery name="local.getAddress">
+			select addressID,streetAddress,street2Address,city,stateCode,postalCode,countryCode from SwAddress
+		</cfquery>
+	
 		<cfloop query="local.getAddress">
-			
+				
 			<cfscript>
 				local.name = "";
 				if( len(local.getAddress.StreetAddress) ) {
@@ -81,12 +96,13 @@ Notes:
 			</cfscript>
 			<cfquery name="local.updateAddress">
 				update SwAddress
-				set addressName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.name#" />
+				set calculatedAddressName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.name#" />
 				where addressID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getAddress.addressID#" />
 			</cfquery>
-			
+				
 		</cfloop>
-	</cfloop>
+	</cfif>
+	
 	<cfcatch>
 		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update Address">
 		<cfset local.scriptHasErrors = true />
