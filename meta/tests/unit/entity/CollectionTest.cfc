@@ -949,6 +949,126 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(HQLParams['testKey'],'testValue');
 	}
 
+
+	public void function exactDateFilter(){
+
+		var uniqueNumberForDescription = createUUID();
+
+		var productData1 = {
+			productID = '',
+			productName = 'dProduct',
+			createdDateTime = DateAdd('d', -10, now()),
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData1);
+
+		var productData2 = {
+			productID = '',
+			productName = 'cProduct',
+			createdDateTime = DateAdd('d', -10, now()),
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData2);
+
+		var productData3 = {
+			productID = '',
+			productName = 'bProduct',
+			createdDateTime = DateAdd('d', -10, now()),
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData3);
+
+		var productData4 = {
+			productID = '',
+			productName = 'aProduct',
+			createdDateTime = DateAdd('d', -10, now()),
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData4);
+		
+		var collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'exactDateProducts'&createUUID(),
+			collectionName = 'exactDateProducts'&createUUID(),
+			collectionObject = "SlatwallPeoduct",
+			collectionConfig = '
+				{
+				   "baseEntityAlias":"_product",
+				   "baseEntityName":"Product",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_product.productID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"Product ID",
+				         "key":"productID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Created Date Time",
+				               "propertyIdentifier":"_product.createdDateTime",
+				               "comparisonOperator":"between",
+				               "breadCrumbs":[
+				                  {
+				                     "rbKey":"Product",
+				                     "entityAlias":"_product",
+				                     "cfc":"_product",
+				                     "propertyIdentifier":"_product"
+				                  }
+				               ],
+				               "measureType":"d",
+				               "measureCriteria":"exactDate",
+				               "criteriaNumberOf":"10",
+				               "value":"10",
+				               "displayValue":"10 Days Ago",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"Exact N Day(s) Ago"
+				            },
+				            {
+				               "displayPropertyIdentifier":"Product Description",
+				               "propertyIdentifier":"_product.productDescription",
+				               "comparisonOperator":"=",
+				               "logicalOperator":"AND",
+				               "breadCrumbs":[
+				                  {
+				                     "rbKey":"Product",
+				                     "entityAlias":"_product",
+				                     "cfc":"_product",
+				                     "propertyIdentifier":"_product"
+				                  }
+				               ],
+				               "value":"12334",
+				               "displayValue":"12334",
+				               "ormtype":"string",
+				               "conditionDisplay":"Equals"
+				            }
+				         ]
+				      }
+				   ],
+				   "currentPage":1,
+				   "pageShow":10
+				}
+			'
+		};
+		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		var pageRecords = collectionEntity.getPageRecords();
+
+		assertTrue(arraylen(pageRecords) == 4,  "Wrong amount of products returned! Expecting 4 records but returned #arrayLen(pageRecords)#");
+
+
+	}
+
 	public void function addHQLParamsFromNestedCollectionTest(){
 
 		var collectionEntityData = {
