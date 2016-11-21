@@ -990,7 +990,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			collectionid = '',
 			collectionCode = 'exactDateProducts'&createUUID(),
 			collectionName = 'exactDateProducts'&createUUID(),
-			collectionObject = "SlatwallPeoduct",
+			collectionObject = "SlatwallProduct",
 			collectionConfig = '
 				{
 				   "baseEntityAlias":"_product",
