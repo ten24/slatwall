@@ -957,7 +957,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var productData1 = {
 			productID = '',
 			productName = 'dProduct',
-			createdDateTime = DateAdd('d', -10, now()),
+			purchaseStartDateTime = DateAdd('d', -10, now()),
 			productDescription = uniqueNumberForDescription
 		};
 		createPersistedTestEntity('product', productData1);
@@ -965,7 +965,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var productData2 = {
 			productID = '',
 			productName = 'cProduct',
-			createdDateTime = DateAdd('d', -10, now()),
+			purchaseStartDateTime = DateAdd('d', -10, now()),
 			productDescription = uniqueNumberForDescription
 		};
 		createPersistedTestEntity('product', productData2);
@@ -973,7 +973,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var productData3 = {
 			productID = '',
 			productName = 'bProduct',
-			createdDateTime = DateAdd('d', -10, now()),
+			purchaseStartDateTime = DateAdd('d', -10, now()),
 			productDescription = uniqueNumberForDescription
 		};
 		createPersistedTestEntity('product', productData3);
@@ -981,7 +981,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var productData4 = {
 			productID = '',
 			productName = 'aProduct',
-			createdDateTime = DateAdd('d', -10, now()),
+			purchaseStartDateTime = DateAdd('d', -10, now()),
 			productDescription = uniqueNumberForDescription
 		};
 		createPersistedTestEntity('product', productData4);
@@ -1016,8 +1016,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				      {
 				         "filterGroup":[
 				            {
-				               "displayPropertyIdentifier":"Created Date Time",
-				               "propertyIdentifier":"_product.createdDateTime",
+				               "displayPropertyIdentifier":"Purchase Start Date Time",
+				               "propertyIdentifier":"_product.purchaseStartDateTime",
 				               "comparisonOperator":"between",
 				               "breadCrumbs":[
 				                  {
