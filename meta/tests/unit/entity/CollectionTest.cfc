@@ -985,7 +985,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			productDescription = uniqueNumberForDescription
 		};
 		createPersistedTestEntity('product', productData4);
-		
+
 		var collectionEntityData = {
 			collectionid = '',
 			collectionCode = 'exactDateProducts'&createUUID(),
@@ -1048,8 +1048,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				                     "propertyIdentifier":"_product"
 				                  }
 				               ],
-				               "value":"12334",
-				               "displayValue":"12334",
+				               "value":"#uniqueNumberForDescription#",
+				               "displayValue":"#uniqueNumberForDescription#",
 				               "ormtype":"string",
 				               "conditionDisplay":"Equals"
 				            }
