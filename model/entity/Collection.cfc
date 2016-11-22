@@ -1527,7 +1527,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					addHQLParam(fromParamID,fromValue);
 					var toParamID = getParamID();
 					addHQLParam(toParamID,toValue);
-
+				}
 				if(structKeyExists(arguments.filter, 'measureType') && structKeyExists(arguments.filter, 'measureCriteria')) {
 
 					if (arguments.filter.measureCriteria == 'exactDate') {
@@ -1557,7 +1557,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 					predicate = ":#fromParamID# AND :#toParamID#";
 				}
-				}
+				
 			}else if(listFind('integer,float,big_decimal',arguments.filter.ormtype)){
 				var fromValue = listFirst(arguments.filter.value,'-');
 				var toValue = listLast(arguments.filter.value,'-');
@@ -1569,7 +1569,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				predicate = ":#fromParamID# AND :#toParamID#";
 			}
 
-
+			}
 		}else if(arguments.filter.comparisonOperator eq 'is' || arguments.filter.comparisonOperator eq 'is not'){
 			predicate = filter.value;
 		}else if(arguments.filter.comparisonOperator eq 'in' || arguments.filter.comparisonOperator eq 'not in'){
