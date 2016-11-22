@@ -280,6 +280,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuEligibleOrderOrigins = {fieldType="listingMultiselect", listingMultiselectEntityName="OrderOrigin", defaultValue=this.getAllActiveOrderOriginIDList()},
 			skuEligiblePaymentMethods = {fieldType="listingMultiselect", listingMultiselectEntityName="PaymentMethod", defaultValue=getPaymentService().getAllActivePaymentMethodIDList()},
 			skuEmailFulfillmentTemplate = {fieldType="select", listingMultiselectEntityName="EmailTemplate", defaultValue=""},
+			skuEventEnforceConflicts = {fieldType="yesno", defaultValue=1},
 			skuGiftCardEmailFulfillmentTemplate = {fieldtype="select", listingMultiselectEntityName="EmailTemplate", defaultValue=""},
 			skuGiftCardAutoGenerateCode = {fieldType="yesno", defaultValue=1},
 			skuGiftCardCodeLength = {fieldType="text", defaultValue=16},
@@ -299,6 +300,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuTaxCategory = {fieldType="select", defaultValue="444df2c8cce9f1417627bd164a65f133"},
 			skuTrackInventoryFlag = {fieldType="yesno", defaultValue=0},
 			skuShippingCostExempt = {fieldType="yesno", defaultValue=0},
+			
 
 			// Subscription Term
 			subscriptionUsageAutoRetryPaymentDays = {fieldType="text", defaultValue=""},

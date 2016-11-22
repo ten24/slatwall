@@ -146,6 +146,7 @@
 /// <reference path="../src/form/components/swfformfield.ts" />
 /// <reference path="../src/form/components/swform.ts" />
 /// <reference path="../src/form/components/swformfield.ts" />
+<<<<<<< HEAD
 /// <reference path="../src/form/components/swformfieldcurrency.ts" />
 /// <reference path="../src/form/components/swformfieldfile.ts" />
 /// <reference path="../src/form/components/swformfieldjson.ts" />
@@ -157,6 +158,15 @@
 /// <reference path="../src/form/components/swinput.ts" />
 /// <reference path="../src/form/components/swpropertydisplay.ts" />
 /// <reference path="../src/form/services/fileservice.ts" />
+=======
+/// <reference path="../src/form/components/swformfieldjson.ts" />
+/// <reference path="../src/form/components/swformfieldsearchselect.ts" />
+/// <reference path="../src/form/components/swformregistrar.ts" />
+/// <reference path="../src/form/components/swformsubscriber.ts" />
+/// <reference path="../src/form/components/swfpropertydisplay.ts" />
+/// <reference path="../src/form/components/swinput.ts" />
+/// <reference path="../src/form/components/swpropertydisplay.ts" />
+>>>>>>> refs/remotes/origin/hotfix
 /// <reference path="../src/frontend/components/swfdirective.ts" />
 /// <reference path="../src/frontend/controllers/frontend.ts" />
 /// <reference path="../src/hibachi/components/swsaveandfinish.ts" />

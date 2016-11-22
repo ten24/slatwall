@@ -1528,11 +1528,27 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					var toParamID = getParamID();
 					addHQLParam(toParamID,toValue);
 
-					predicate = ":#fromParamID# AND :#toParamID#";
-				}else{
-					//if list length is 1 then we treat it as a date range From Now() - Days to Now()
-					var fromValue = DateAdd("d",-arguments.filter.value,Now());
-					var toValue = Now();
+				if(structKeyExists(arguments.filter, 'measureType') && structKeyExists(arguments.filter, 'measureCriteria')) {
+
+					if (arguments.filter.measureCriteria == 'exactDate') {
+
+						switch (arguments.filter.measureType) {
+							case 'd':
+								var currentdatetime = DateAdd('d', - arguments.filter.criteriaNumberOf, now());
+								var fromValue = CreateDateTime(year(currentdatetime), month(currentdatetime), day(currentdatetime), 0, 0, 0);
+								var toValue = CreateDateTime(year(currentdatetime), month(currentdatetime), day(currentdatetime), 23, 59, 59);
+								break;
+							case 'm':
+								var currentdatetime = DateAdd('m', - arguments.filter.criteriaNumberOf, now());
+								var fromValue = CreateDateTime(year(currentdatetime), month(currentdatetime), 1, 0, 0, 0);
+								var toValue = CreateDateTime(year(currentdatetime), month(currentdatetime), DaysInMonth(currentdatetime), 23, 59, 59);
+								break;
+							case 'y':
+								var currentdatetime = DateAdd('yyyy', - arguments.filter.criteriaNumberOf, now());
+								var fromValue = CreateDateTime(year(currentdatetime), 1, 1, 0, 0, 0);
+								var toValue = CreateDateTime(year(currentdatetime), 12, 31, 23, 59, 59);
+								break;
+						}
 
 					var fromParamID = getParamID();
 					addHQLParam(fromParamID,fromValue);
@@ -1540,6 +1556,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					addHQLParam(toParamID,toValue);
 
 					predicate = ":#fromParamID# AND :#toParamID#";
+				}
 				}
 			}else if(listFind('integer,float,big_decimal',arguments.filter.ormtype)){
 				var fromValue = listFirst(arguments.filter.value,'-');

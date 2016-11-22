@@ -244,9 +244,9 @@ Notes:
 				arguments.email.setEmailBCC( templateObject.stringReplace( emailTemplate.setting('emailBCCAddress'), false, true ) );
 				arguments.email.setEmailReplyTo( templateObject.stringReplace( emailTemplate.setting('emailReplyToAddress'), false, true ) );
 				arguments.email.setEmailFailTo( templateObject.stringReplace( emailTemplate.setting('emailFailToAddress'), false, true ) );
-				arguments.email.setEmailSubject( templateObject.stringReplace( emailTemplate.setting('emailSubject'), false, true ) );
-				arguments.email.setEmailBodyHTML( templateObject.stringReplace( emailTemplate.getEmailBodyHTML() ) );
-				arguments.email.setEmailBodyText( templateObject.stringReplace( emailTemplate.getEmailBodyText() ) );
+				arguments.email.setEmailSubject( templateObject.stringReplace( emailTemplate.setting('emailSubject'), true, true ) );
+				arguments.email.setEmailBodyHTML( templateObject.stringReplace( emailTemplate.getEmailBodyHTML(),true ) );
+				arguments.email.setEmailBodyText( templateObject.stringReplace( emailTemplate.getEmailBodyText(),true ) );
 
 
 				var templateFileResponse = "";
