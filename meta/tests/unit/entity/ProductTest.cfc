@@ -68,15 +68,21 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			productReviews = [
 				{
 					productReviewid='',
-					rating=5
+					rating=5,
+					activeFlag=1
+					
 				},
 				{
 					productReviewid='',
-					rating=1
+					rating=1,
+					activeFlag=1
+
 				},
 				{
 					productReviewid='',
-					rating=4
+					rating=4,
+					activeFlag=1
+
 				}
 			]
 		};
@@ -1225,7 +1231,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	// @hint "This function mostly used by testing getProductRating()"
 	private any function createMockProductReviewWithRating(numeric rating = -1) {
 		var productReviewData = {
-			productReviewID = ""			
+			productReviewID = "",
+			activeFlag=1
+						
 		};
 		if (rating != -1) {
 			productReviewData.rating = arguments.rating;
