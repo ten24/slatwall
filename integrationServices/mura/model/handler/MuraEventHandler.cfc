@@ -491,7 +491,7 @@
 							
 							//Build the ID LIst
 							var newIDList = parentCategory.getCategoryIDPath();
-							listAppend(newIDList, slatwallCategory.getCategoryID() );
+							newIDList = listAppend(newIDList, slatwallCategory.getCategoryID() );
 							
 							//Set the new categoryIDPath
 							slatwallCategory.setCategoryIDPath(newIDList);
@@ -1105,13 +1105,14 @@
 			FROM
 				SwCategory
 			WHERE
-				categoryIDPath <> <cfqueryparam cfsqltype="cf_sql_varchar" value="#oldCategoryIDPath#" />
-			  AND
+				
 				categoryIDPath LIKE <cfqueryparam cfsqltype="cf_sql_varchar" value="#oldCategoryIDPath#%" />
 		</cfquery>
 		
 		
 		<cfloop query="rs">
+			
+			
 			<cfquery name="rs2">
 				UPDATE
 					SwCategory
