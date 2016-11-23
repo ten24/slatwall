@@ -1091,7 +1091,7 @@ component extends="HibachiService" accessors="true" {
 		arguments.productReview = super.save(arguments.productReview, arguments.data);	
 		
 		if(!arguments.productReview.hasErrors() && arguments.productReview.getActiveFlag()){
-			arguments.productReview.getProduct().updateCalculatedProperties(true);
+			getHibachiScope().addModifiedEntity(arguments.productReview.getProduct());
 		}
 		
 		return arguments.productReview;
