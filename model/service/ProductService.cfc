@@ -1086,6 +1086,17 @@ component extends="HibachiService" accessors="true" {
 
 		return arguments.productType;
 	}
+	
+	public any function saveProductReview(required any productReview, struct data={}){
+		arguments.productReview = super.save(arguments.productReview, arguments.data);	
+		
+		if(!arguments.productReview.hasErrors() && arguments.productReview.getActiveFlag()){
+			arguments.productReview.getProduct().updateCalculatedProperties(true);
+		}
+		
+		return arguments.productReview;
+		
+	}
 
 	// ======================  END: Save Overrides ============================
 

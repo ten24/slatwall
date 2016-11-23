@@ -68,7 +68,8 @@ Notes:
 			return OrmExecuteQuery('
 				SELECT avg(pr.rating) 
 				FROM SlatwallProductReview pr 
-				where pr.product = :product
+				WHERE pr.product = :product
+				AND pr.activeFlag = 1
 				',{product=arguments.product},true
 			);
 		}
