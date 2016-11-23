@@ -1090,7 +1090,7 @@ component extends="HibachiService" accessors="true" {
 	public any function saveProductReview(required any productReview, struct data={}){
 		arguments.productReview = super.save(arguments.productReview, arguments.data);	
 		
-		if(!arguments.productReview.hasErrors() && arguments.productReview.getActiveFlag()){
+		if(!arguments.productReview.hasErrors()){
 			getHibachiScope().addModifiedEntity(arguments.productReview.getProduct());
 		}
 		
