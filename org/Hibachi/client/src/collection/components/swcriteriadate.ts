@@ -183,6 +183,33 @@ class SWCriteriaDate{
 				    				measureTypeDisplay:'Years'
 				    			}
 				    		},
+                            {
+								display:"Exact N Day(s) Ago",
+								comparisonOperator:	"between",
+								dateInfo:{
+									type:'exactDate',
+									measureType:'d',
+									measureTypeDisplay:'Days'
+								}
+							},
+							{
+								display:"Exact N Month(s) Ago",
+								comparisonOperator:	"between",
+								dateInfo:{
+									type:'exactDate',
+									measureType:'m',
+									measureTypeDisplay:'Months'
+								}
+							},
+							{
+								display:"Exact N Year(s) Ago",
+								comparisonOperator:	"between",
+								dateInfo:{
+									type:'exactDate',
+									measureType:'y',
+									measureTypeDisplay:'Years'
+								}
+							},
 							{
 								display:"Defined",
 								comparisonOperator:"is not",
@@ -323,11 +350,21 @@ class SWCriteriaDate{
 				  			selectedCondition.showCriteriaStart = true;
 				  			selectedCondition.showCriteriaEnd = false;
 				  			selectedCondition.disableCriteriaStart = false;
-				  			selectedCondition.disableCriteriaEnd = true;
-				  			selectedCondition.showNumberOf = false;
-				  			selectedCondition.conditionDisplay = '';
-				  			selectedFilterProperty.criteriaRangeStart = new Date(selectedFilterProperty.criteriaRangeStart).setHours(0,0,0,0);
-	  						selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23,59,59,999);
+							selectedCondition.disableCriteriaEnd = true;
+
+
+							if(!selectedCondition.dateInfo.measureType){
+								selectedCondition.conditionDisplay = '';
+								selectedCondition.showCriteriaStart = true;
+								selectedCondition.showNumberOf = false;
+
+								selectedFilterProperty.criteriaRangeStart = new Date(selectedFilterProperty.criteriaRangeStart).setHours(0,0,0,0);
+								selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23,59,59,999);
+							}else{
+								selectedCondition.conditionDisplay = 'How many '+ selectedCondition.dateInfo.measureTypeDisplay+' ago?';
+								selectedCondition.showCriteriaStart = false;
+								selectedCondition.showNumberOf = true;
+							}
 				  		}
 				  	}else{
 				  		selectedCondition.showCriteriaStart = false;

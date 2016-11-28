@@ -864,13 +864,13 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			}
 			
 			// Set createdByAccount
-			if(structKeyExists(this,"setCreatedByAccountID") && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
+			if(structKeyExists(this,"setCreatedByAccountID") && !getHibachiScope().getAccount().isNew() ){
 				setCreatedByAccountID( getHibachiScope().getAccount().getAccountID() );	
 			}
 			
 			// Set modifiedByAccount
-			if(structKeyExists(this,"setModifiedByAccountID") && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
-				setModifiedByAccount( getHibachiScope().getAccount().getAccountID() );
+			if(structKeyExists(this,"setModifiedByAccountID") && !getHibachiScope().getAccount().isNew() ){
+				setModifiedByAccountID( getHibachiScope().getAccount().getAccountID() );
 			}
 			
 			// Log audit only if admin user
@@ -906,8 +906,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		if(getHibachiScope().hasApplicationValue("initialized") && getHibachiScope().getApplicationValue("initialized")) {
 		
 			// Set modifiedByAccount
-			if(structKeyExists(this,"setModifiedByAccountID") && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
-				setModifiedByAccount(getHibachiScope().getAccount().getAccountID());
+			if(structKeyExists(this,"setModifiedByAccountID") && !getHibachiScope().getAccount().isNew() ){
+				setModifiedByAccountID(getHibachiScope().getAccount().getAccountID());
 			}
 			
 			// Log audit only if admin user or there are prevous audit recods
