@@ -574,7 +574,7 @@
 							
 							//Build the ID LIst
 							var newIDList = parentCategory.getCategoryIDPath();
-							listAppend(newIDList, slatwallCategory.getCategoryID() );
+							newIDList = listAppend(newIDList, slatwallCategory.getCategoryID() );
 							
 							//Set the new categoryIDPath
 							slatwallCategory.setCategoryIDPath(newIDList);
@@ -606,8 +606,11 @@
 			var slatwallCategory = $.slatwall.getService("contentService").getCategoryByCMSCategoryID($.event('categoryID'));
 			if(!isNull(slatwallCategory)) {
 				if(slatwallCategory.isDeletable()) {
-					$.slatwall.getService("contentService").deleteCategory( slatwallCategory );
-					ormFlush();
+					//cannot use ORM because slatwall orm behavior will cascade delete child categories
+					//$.slatwall.getService("contentService").deleteCategory( slatwallCategory );
+					//ormFlush();
+					$.slatwall.getService('contentService').deleteCategoryByCMSCategoryID($.event('categoryID'));
+					
 				} else {
 					slatwallCategory.setActiveFlag(0);
 				}	
@@ -1186,13 +1189,14 @@
 			FROM
 				SwCategory
 			WHERE
-				categoryIDPath <> <cfqueryparam cfsqltype="cf_sql_varchar" value="#oldCategoryIDPath#" />
-			  AND
+				
 				categoryIDPath LIKE <cfqueryparam cfsqltype="cf_sql_varchar" value="#oldCategoryIDPath#%" />
 		</cfquery>
 		
 		
 		<cfloop query="rs">
+			
+			
 			<cfquery name="rs2">
 				UPDATE
 					SwCategory

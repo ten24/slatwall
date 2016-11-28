@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,39 +45,12 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
 
+	// Injected Entity
+	property name="eventRegistration";
 
-<cfparam name="rc.productReview" type="any" />
-<cfparam name="rc.edit" type="boolean" />
-
-<cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.productReview#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.productReview#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
-
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<cfif !structKeyExists(rc,"modal")>
-					<hb:HibachiPropertyDisplay object="#rc.productReview.getProduct()#" property="productName" valueLink="?slatAction=admin:entity.detailproduct&productID=#rc.productReview.getProduct().getProductID()#" edit="false">
-				</cfif>
-				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="activeFlag" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="reviewTitle" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="reviewerName" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="rating" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="review" edit="#rc.edit#" fieldType="textarea">
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-
-		<hb:HibachiEntityDetailGroup object="#rc.productReview#">
-				
-		<!--- Custom Attributes --->
-		<cfloop array="#rc.productReview.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-			<swa:SlatwallAdminTabCustomAttributes object="#rc.productReview#" attributeSet="#attributeSet#" />
-		</cfloop>
-		
-		</hb:HibachiEntityDetailGroup>
-
-	</hb:HibachiEntityDetailForm>
-</cfoutput>
+	// Data Properties
+	property name="comment";
+}

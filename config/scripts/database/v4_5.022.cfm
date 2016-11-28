@@ -51,77 +51,66 @@ Notes:
 <cfparam name="this.ormSettings.dialect" default="#getHibachiScope().getApplicationValue('databaseType')#" />
 
 <cftry>
-	<cfquery name="local.setbundleitemquantity">
-		update SwOrderItem set SwOrderItem.bundleItemQuantity = SwOrderItem.quantity where parentOrderItemID is not null
-	</cfquery>
-
 	<cfif this.ormSettings.dialect eq 'MicrosoftSQLServer'>
-		<cfquery name="local.updatechildorderitemquantity">
-			update SwOrderItem
-			set SwOrderItem.quantity = p.quantity * SwOrderItem.bundleItemQuantity
-			from SwOrderItem
-				inner join SwOrderItem p on
-				SwOrderItem.parentOrderItemID = p.orderItemID
-			where SwOrderItem.parentOrderItemID is not null
+		<cfquery name="local.updateAddress">
+			UPDATE swAddress set calculatedAddressName = STUFF(
+			    (
+			      SELECT ', ' + v
+			      FROM (VALUES (streetAddress), (street2Address), (city), (stateCode), (postalCode), (countryCode)) AS v (v)
+			      FOR XML PATH (''), TYPE
+			    ).value('.[1]', 'varchar(max)'),
+			    1, 2, ''
+			  )
 		</cfquery>
 	<cfelseif ListFind(this.ormSettings.dialect, 'MySQL')>
-		<cfquery name="local.updatechildorderitemquantity">
-			update SwOrderItem
-			inner join SwOrderItem p on
-				SwOrderItem.parentOrderItemID = p.orderItemID
-			set SwOrderItem.quantity = p.quantity * SwOrderItem.bundleItemQuantity
-			where SwOrderItem.parentOrderItemID = p.orderItemID
+		<cfquery name="local.updateAddress">
+			UPDATE SwAddress set calculatedAddressName = CONCAT_WS(', ',streetAddress,street2Address,city,stateCode,postalCode,countryCode)
 		</cfquery>
 	<cfelseif this.ormSettings.dialect eq 'Oracle10g'>
-		<cfquery name="local.updatechildorderitemquantity">
-			update
-				(select
-					SwOrderItem.quantity as oldQuantity,
-					p.quantity * SwOrderItem.bundleItemQuantity as newQuantity
-				from SwOrderItem
-					inner join SwOrderItem p on
-						SwOrderItem.parentOrderItemID = p.orderItemID
-				where SwOrderItem.parentOrderItemID is not null) orderItem
-			set orderItem.oldQuantity = orderItem.newQuantity
+		<cfquery name="local.getAddress">
+			select addressID,streetAddress,street2Address,city,stateCode,postalCode,countryCode from SwAddress
 		</cfquery>
-	</cfif>
-
-	<cfcatch>
-		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update Child Order Item Quantity">
-		<cfset local.scriptHasErrors = true />
-	</cfcatch>
-</cftry>
-<cftry>
-	<cfquery name="local.getsubscriptionusages">
-		select * from SwSubsUsage
-	</cfquery>
-
-	<cfloop query="local.getsubscriptionusages">
-		<cfquery name="local.getsubscriptionusageorderitems">
-			select * from SwSubscriptionOrderItem oi
-			where
-				oi.subscriptionUsageID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getsubscriptionusages.subscriptionUsageID#" />
-			and
-				oi.subscriptionOrderItemTypeID = '444df311d7615e7cf56b836f515aebd4'
-		</cfquery>
-		<cfloop query="local.getsubscriptionusageorderitems">
-			<cfquery name="local.updateSubscriptionUsage">
-				update SwSubsUsage
-				set initialOrderItemID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getsubscriptionusageorderitems.orderItemID#" />
-				where subscriptionUsageID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getsubscriptionusages.subscriptionUsageID#" />
+	
+		<cfloop query="local.getAddress">
+				
+			<cfscript>
+				local.name = "";
+				if( len(local.getAddress.StreetAddress) ) {
+					local.name =  listAppend(local.name, " #local.getAddress.StreetAddress#" );
+				}
+				if( len(local.getAddress.Street2Address) ) {
+					local.name = listAppend(local.name, " #local.getAddress.Street2Address#" );
+				}
+				if( len(local.getAddress.city) ) {
+					local.name = listAppend(local.name, " #local.getAddress.city#" );
+				}
+				if( len(local.getAddress.statecode) ) {
+					local.name = listAppend(local.name, " #local.getAddress.StateCode#" );
+				}
+				if( len(local.getAddress.postalCode) ) {
+					local.name = listAppend(local.name, " #local.getAddress.postalCode#" );
+				}
+				if( len(local.getAddress.countryCode) ) {
+					local.name = listAppend(local.name, " #local.getAddress.countryCode#" );
+				}
+			</cfscript>
+			<cfquery name="local.updateAddress">
+				update SwAddress
+				set calculatedAddressName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.name#" />
+				where addressID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getAddress.addressID#" />
 			</cfquery>
-			<cfbreak>
+				
 		</cfloop>
-	</cfloop>
+	</cfif>
+	
 	<cfcatch>
-		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update Subscription Usages initial order item">
+		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update Address">
 		<cfset local.scriptHasErrors = true />
 	</cfcatch>
 </cftry>
 <cfif local.scriptHasErrors>
-	<cflog file="Slatwall" text="General Log - Part of Script v4_5 had errors when running">
-	<cfthrow detail="Part of Script v4_5 had errors when running">
+	<cflog file="Slatwall" text="General Log - Part of Script v4_5.022 had errors when running">
+	<cfthrow detail="Part of Script v4_5.022 had errors when running">
 <cfelse>
-	<cflog file="Slatwall" text="General Log - Script v4_5 has run with no errors">
+	<cflog file="Slatwall" text="General Log - Script v4_5.022 has run with no errors">
 </cfif>
-

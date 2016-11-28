@@ -243,9 +243,9 @@ Notes:
 				arguments.email.setEmailBCC( templateObject.stringReplace( emailTemplate.setting('emailBCCAddress'), false, true ) );
 				arguments.email.setEmailReplyTo( templateObject.stringReplace( emailTemplate.setting('emailReplyToAddress'), false, true ) );
 				arguments.email.setEmailFailTo( templateObject.stringReplace( emailTemplate.setting('emailFailToAddress'), false, true ) );
-				arguments.email.setEmailSubject( templateObject.stringReplace( emailTemplate.setting('emailSubject'), false, true ) );
-				arguments.email.setEmailBodyHTML( templateObject.stringReplace( emailTemplate.getEmailBodyHTML() ) );
-				arguments.email.setEmailBodyText( templateObject.stringReplace( emailTemplate.getEmailBodyText() ) );
+				arguments.email.setEmailSubject( templateObject.stringReplace( emailTemplate.setting('emailSubject'), true, true ) );
+				arguments.email.setEmailBodyHTML( templateObject.stringReplace( emailTemplate.getEmailBodyHTML(),true ) );
+				arguments.email.setEmailBodyText( templateObject.stringReplace( emailTemplate.getEmailBodyText(),true ) );
 
 
 				var templateFileResponse = "";
@@ -275,9 +275,9 @@ Notes:
 				arguments.email.setEmailBCC( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailBCC(), object=emailData) );
 				arguments.email.setEmailReplyTo( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailReplyTo(), object=emailData) );
 				arguments.email.setEmailFailTo( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailFailTo(), object=emailData) );
-				arguments.email.setEmailSubject( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailSubject(), object=emailData) );
-				arguments.email.setEmailBodyHTML( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailBodyHTML(), object=emailData) );
-				arguments.email.setEmailBodyText( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailBodyText(), object=emailData) );
+				arguments.email.setEmailSubject( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailSubject(), object=emailData, formatValues=true) );
+				arguments.email.setEmailBodyHTML( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailBodyHTML(), object=emailData, formatValues=true) );
+				arguments.email.setEmailBodyText( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailBodyText(), object=emailData, formatValues=true) );
 
 				arguments.email.setLogEmailFlag( emailTemplate.getLogEmailFlag() );
 			}

@@ -438,7 +438,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 				var resizesCount = arrayLen(arguments.resizeSizes);
 				for(var s=1; s<=resizesCount; s++) {
-					
+
 					var resizeImageData = arguments.resizeSizes[s];
 					resizeImageData.alt = imageAltString;
 					resizeImageData.missingImagePath = missingImagePath;
@@ -1088,7 +1088,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	*/
 	public array function getUnusedProductOptionGroups() {
 		if( !structKeyExists(variables, "unusedProductOptionGroups") ) {
-			variables.unusedProductOptionGroups = getService('optionService').getUnusedProductOptionGroups( getProductType().getProductTypeID(), structKeyList(getOptionGroupsStruct()) );
+			variables.unusedProductOptionGroups = getService('optionService').getUnusedProductOptionGroups( getProductType().getProductTypeIDPath(), structKeyList(getOptionGroupsStruct()) );
 		}
 		return variables.unusedProductOptionGroups;
 	}
