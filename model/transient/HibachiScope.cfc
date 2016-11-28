@@ -163,36 +163,20 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	}
 	
 	// Display Route Entity
-	public any function getRouteEntity(entityName) {
-		if (structKeyExists(variables, "routesArray") && arrayLen(variables.routesArray)){
-			for (route in variables.routesArray){
-				if (route["entityName"] == entityName && !isNull(route['entity'])){
-					return route["entity"];	
-				}
-			}
+	public any function getRouteEntity(entityName){
+		if (structKeyExists(variables, "routeEntity") && !isNull(arguments.entityName) && arrayLen(variables.routeEntity[arguments.entityName])) {
+			return variables.routeEntity[arguments.entityName][1];
 		}
 	}
 	
-	// Sets Route Entities
 	public any function setRouteEntity(entityName, entity) {
-		var routeStruct = {};
-		//create the array of structs if it doesn't exist.
-		if (!structKeyExists(variables, "routesArray")){
-			variables.routesArray = [];
+		if (!structKeyExists(variables, "routeEntity")){
+			variables.routeEntity = {};
 		}
-		
-		//set it to the new value if it already exists.
-		for (route in variables.routesArray){
-			if (route["entityName"] == entityName){
-				routeStruct = {"entityName" = entityName, "entity" = entity};
-				route = routeStruct;
-				return;	
-			}
+		if (!structKeyExists(variables.routeEntity, "#arguments.entityName#")) {
+			variables.routeEntity[arguments.entityName] = [];
 		}
-		
-		//add the new struct to the array if it doesn't yet exist.
-		routeStruct = {"entityName" = entityName, "entity" = entity};
-		arrayAppend(variables.routesArray, routeStruct);
+		arrayAppend(variables.routeEntity[arguments.entityName], entity);
 	}
 	
 	// Site
