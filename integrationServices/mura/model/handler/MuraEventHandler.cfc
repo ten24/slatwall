@@ -606,8 +606,11 @@
 			var slatwallCategory = $.slatwall.getService("contentService").getCategoryByCMSCategoryID($.event('categoryID'));
 			if(!isNull(slatwallCategory)) {
 				if(slatwallCategory.isDeletable()) {
-					$.slatwall.getService("contentService").deleteCategory( slatwallCategory );
-					ormFlush();
+					//cannot use ORM because slatwall orm behavior will cascade delete child categories
+					//$.slatwall.getService("contentService").deleteCategory( slatwallCategory );
+					//ormFlush();
+					$.slatwall.getService('contentService').deleteCategoryByCMSCategoryID($.event('categoryID'));
+					
 				} else {
 					slatwallCategory.setActiveFlag(0);
 				}	
