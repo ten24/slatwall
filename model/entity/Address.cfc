@@ -304,9 +304,5 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 		return "/#setting('globalUrlKeyAddress')#/#getUrlTitle()#/";
 	}
 	
-	public string function getListingAddressURL() {
-		return "#setting('globalUrlKeyAddress')#/#getUrlTitle()#/";
-	}
-	
 }
 

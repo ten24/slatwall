@@ -716,9 +716,6 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	public string function getAccountURL() {
 		return "/#setting('globalUrlKeyAccount')#/#getUrlTitle()#/";
 	}
-	
-	public string function getListingAddressURL() {
-		return "#setting('globalUrlKeyAccount')#/#getUrlTitle()#/";
-	}
+
 	
 }
