@@ -18,7 +18,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	
 	public string function getFileContent(){
 		if(!structKeyExists(variables,'fileContent')){
-			variables.fileContent = fileRead(expandPath(getFilePath()));
+			variables.fileContent = ReReplace(fileRead(expandPath(getFilePath())),'\r','','All');
 		}
 		return variables.fileContent;
 	}
