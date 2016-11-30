@@ -51,20 +51,12 @@ Notes:
 <cfparam name="rc.sitesArray" />
 <cfoutput>
 	<swa:SlatwallSettingTable showFilterEntities="#arrayLen(rc.sitesArray)#" showInheritance="false">
-		<swa:SlatwallSetting settingName="accountHTMLTitleString" />
-		<swa:SlatwallSetting settingName="accountMetaDescriptionString" />
-		<swa:SlatwallSetting settingName="accountMetaKeywordsString" />
-		<swa:SlatwallSetting settingName="accountEligiblePaymentMethods" />
-		<swa:SlatwallSetting settingName="accountEligiblePaymentTerms" />
-		<swa:SlatwallSetting settingName="accountPaymentTerm" />
-		<swa:SlatwallSetting settingName="accountTermCreditLimit" />
-		<swa:SlatwallSetting settingName="accountFailedAdminLoginAttemptCount" />
-		<swa:SlatwallSetting settingName="accountFailedPublicLoginAttemptCount" />
-		<swa:SlatwallSetting settingName="accountAdminForcePasswordResetAfterDays" />
-		<swa:SlatwallSetting settingName="accountLockMinutes" />
+		<swa:SlatwallSetting settingName="addressHTMLTitleString" />
+		<swa:SlatwallSetting settingName="addressMetaDescriptionString" />
+		<swa:SlatwallSetting settingName="addressMetaKeywordsString" />
 		<!--- Site Specific Settings --->
 		<cfloop array="#rc.sitesArray#" index="site">
-			<swa:SlatwallSetting settingName="accountDisplayTemplate" settingFilterEntities="#[site]#" />
+			<swa:SlatwallSetting settingName="addressDisplayTemplate" settingFilterEntities="#[site]#" />
 		</cfloop>
 	</swa:SlatwallSettingTable>
 </cfoutput>

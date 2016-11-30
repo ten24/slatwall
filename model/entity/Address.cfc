@@ -68,6 +68,7 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	
 	property name="phoneNumber" hb_populateEnabled="public" ormtype="string";
 	property name="emailAddress" hb_populateEnabled="public" ormtype="string";
+	property name="urlTitle" hb_populateEnabled="public" ormtype="string";
 	
 	//Calculated Properties
 	property name="calculatedAddressName" ormtype="string" length="1024"; 
@@ -299,6 +300,9 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	}
 	
 	// ==================  END:  Deprecated Methods ========================
+	public string function getAddressURL() {
+		return "/#setting('globalUrlKeyAddress')#/#getUrlTitle()#/";
+	}
 	
 }
 

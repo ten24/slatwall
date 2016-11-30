@@ -54,6 +54,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	property name="content" type="any";
 	property name="product" type="any";
 	property name="productType" type="any";
+	property name="address" type="any";
 	property name="site" type="any";
 	property name="app" type="any";
 	
@@ -151,6 +152,31 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			variables.productType = getService("productService").newProductType();
 		}
 		return variables.productType;
+	}
+	
+	// Address
+	public any function getAddress() {
+		if(!structKeyExists(variables, "address")) {
+			variables.address = getService("addressService").newAddress();
+		}
+		return variables.address;
+	}
+	
+	// Display Route Entity
+	public any function getRouteEntity(entityName){
+		if (structKeyExists(variables, "routeEntity") && !isNull(arguments.entityName) && arrayLen(variables.routeEntity[arguments.entityName])) {
+			return variables.routeEntity[arguments.entityName][1];
+		}
+	}
+	
+	public any function setRouteEntity(entityName, entity) {
+		if (!structKeyExists(variables, "routeEntity")){
+			variables.routeEntity = {};
+		}
+		if (!structKeyExists(variables.routeEntity, "#arguments.entityName#")) {
+			variables.routeEntity[arguments.entityName] = [];
+		}
+		arrayAppend(variables.routeEntity[arguments.entityName], entity);
 	}
 	
 	// Site
