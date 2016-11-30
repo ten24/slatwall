@@ -53,6 +53,7 @@ component entityname="SlatwallEntityQueueHistory" table="SwEntityQueueHistory" p
 	property name="baseObject" ormType="string" index="EI_BASEOBJECT";
 	property name="baseID" ormType="string" index="EI_BASEID";
 	property name="entityQueueType" ormType="string" hb_formatType="rbKey"; // dependent on the integration
+	property name="entityQueueData" ormtype="string" length="8000";
 	property name="entityQueueHistoryDateTime" ormtype="timestamp";
 	property name="successFlag" ormtype="boolean";
 	// Related Object Properties (many-to-one)

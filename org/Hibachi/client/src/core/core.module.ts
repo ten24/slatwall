@@ -220,7 +220,7 @@ var coremodule = angular.module('hibachi.core',[
 .filter('percentage',[PercentageFilter.Factory])
 .filter('trim', [SWTrim.Factory])
 .filter('entityRBKey',['rbkeyService',EntityRBKey.Factory])
-.filter('swdate',['$log','$filter',DateFilter.Factory])
+.filter('swdate',['$filter',DateFilter.Factory])
 //directives
 .directive('swCollectionConfig',SWCollectionConfig.Factory())
 .directive('swCollectionColumn',SWCollectionColumn.Factory())

@@ -41,7 +41,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	// Persistent Properties
 	property name="collectionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="collectionName" ormtype="string";
-	property name="collectionCode" ormtype="string" unique="true" index="PI_COLLECTIONCODE";
+	property name="collectionCode" ormtype="string" index="PI_COLLECTIONCODE";
 	property name="collectionDescription" ormtype="string";
 	property name="collectionObject" ormtype="string" hb_formFieldType="select";
 	property name="collectionConfig" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json" hint="json object used to construct the base collection HQL query";
@@ -428,7 +428,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 
 		var propertyIdentifier = listFirst(arguments.orderByString,'|');
-		var direction = listLast(arguments.orderByString,'|');
+		var direction = 'ASC';
+		if(listLen(arguments.orderByString,"|") > 1){
+			direction = listLast(arguments.orderByString,'|');	
+		}
+		
 
 		var orderBy = {
 			"propertyIdentifier"=propertyIdentifier,
@@ -761,7 +765,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			if(arraylen(baseCollection[i].filterGroup) && arraylen(currentCollection[i].filterGroup)){
 				currentCollection[i].filterGroup[1].logicalOperator = 'AND';
 			}
-			ArrayAppend(baseCollection[i].filterGroup, currentCollection[i].filterGroup, true);
+			for(var filter in currentCollection[i].filterGroup){
+				ArrayAppend(baseCollection[i].filterGroup,filter);	
+			}
 		}
 		return baseCollection;
 	}
@@ -1480,7 +1486,39 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		//verify we are handling a range value
 		if(arguments.filter.comparisonOperator eq 'between' || arguments.filter.comparisonOperator eq 'not between'){
 			if(arguments.filter.ormtype eq 'timestamp'){
-				if(listLen(arguments.filter.value,'-') > 1){
+
+				if(structKeyExists(arguments.filter, 'measureType') && structKeyExists(arguments.filter, 'measureCriteria')) {
+
+					if(arguments.filter.measureCriteria == 'exactDate'){
+
+						switch(arguments.filter.measureType){
+							case 'd':
+								var currentdatetime = DateAdd('d', - arguments.filter.criteriaNumberOf,now());
+								var fromValue =  CreateDateTime(year(currentdatetime), month(currentdatetime), day(currentdatetime), 0, 0, 0);
+								var toValue =  CreateDateTime(year(currentdatetime), month(currentdatetime), day(currentdatetime), 23, 59, 59);
+							break;
+							case 'm':
+								var currentdatetime = DateAdd('m', - arguments.filter.criteriaNumberOf,now());
+								var fromValue =  CreateDateTime(year(currentdatetime), month(currentdatetime), 1, 0, 0, 0);
+								var toValue =  CreateDateTime(year(currentdatetime), month(currentdatetime), DaysInMonth(currentdatetime), 23, 59, 59);
+							break;
+							case 'y':
+								var currentdatetime = DateAdd('yyyy', - arguments.filter.criteriaNumberOf,now());
+								var fromValue =  CreateDateTime(year(currentdatetime), 1, 1, 0, 0, 0);
+								var toValue =  CreateDateTime(year(currentdatetime), 12, 31, 23, 59, 59);
+							break;
+						}
+
+						var fromParamID = getParamID();
+						addHQLParam(fromParamID,fromValue);
+						var toParamID = getParamID();
+						addHQLParam(toParamID,toValue);
+
+						predicate = ":#fromParamID# AND :#toParamID#";
+
+					}
+
+				}else if(listLen(arguments.filter.value,'-') > 1){
 					//convert unix timestamp
 					var fromDate = DateAdd("s", listFirst(arguments.filter.value,'-')/1000, "January 1 1970 00:00:00");
 					var fromValue = dateFormat(fromDate,"yyyy-mm-dd") & " " & timeFormat(fromDate, "HH:MM:SS");
@@ -1490,12 +1528,28 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					addHQLParam(fromParamID,fromValue);
 					var toParamID = getParamID();
 					addHQLParam(toParamID,toValue);
+				}
+				if(structKeyExists(arguments.filter, 'measureType') && structKeyExists(arguments.filter, 'measureCriteria')) {
 
-					predicate = ":#fromParamID# AND :#toParamID#";
-				}else{
-					//if list length is 1 then we treat it as a date range From Now() - Days to Now()
-					var fromValue = DateAdd("d",-arguments.filter.value,Now());
-					var toValue = Now();
+					if (arguments.filter.measureCriteria == 'exactDate') {
+
+						switch (arguments.filter.measureType) {
+							case 'd':
+								var currentdatetime = DateAdd('d', - arguments.filter.criteriaNumberOf, now());
+								var fromValue = CreateDateTime(year(currentdatetime), month(currentdatetime), day(currentdatetime), 0, 0, 0);
+								var toValue = CreateDateTime(year(currentdatetime), month(currentdatetime), day(currentdatetime), 23, 59, 59);
+								break;
+							case 'm':
+								var currentdatetime = DateAdd('m', - arguments.filter.criteriaNumberOf, now());
+								var fromValue = CreateDateTime(year(currentdatetime), month(currentdatetime), 1, 0, 0, 0);
+								var toValue = CreateDateTime(year(currentdatetime), month(currentdatetime), DaysInMonth(currentdatetime), 23, 59, 59);
+								break;
+							case 'y':
+								var currentdatetime = DateAdd('yyyy', - arguments.filter.criteriaNumberOf, now());
+								var fromValue = CreateDateTime(year(currentdatetime), 1, 1, 0, 0, 0);
+								var toValue = CreateDateTime(year(currentdatetime), 12, 31, 23, 59, 59);
+								break;
+						}
 
 					var fromParamID = getParamID();
 					addHQLParam(fromParamID,fromValue);
@@ -1504,6 +1558,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 					predicate = ":#fromParamID# AND :#toParamID#";
 				}
+				
 			}else if(listFind('integer,float,big_decimal',arguments.filter.ormtype)){
 				var fromValue = listFirst(arguments.filter.value,'-');
 				var toValue = listLast(arguments.filter.value,'-');
@@ -1515,7 +1570,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				predicate = ":#fromParamID# AND :#toParamID#";
 			}
 
-
+			}
 		}else if(arguments.filter.comparisonOperator eq 'is' || arguments.filter.comparisonOperator eq 'is not'){
 			predicate = filter.value;
 		}else if(arguments.filter.comparisonOperator eq 'in' || arguments.filter.comparisonOperator eq 'not in'){

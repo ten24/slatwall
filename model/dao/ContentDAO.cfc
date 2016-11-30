@@ -75,6 +75,42 @@ Notes:
 			}
 		)>
 	</cffunction>
+	<!--- when deleting content make top level children attach to this categories parent and then delete the category --->
+	<cffunction name="deleteCategoryByCmsCategoryID" access="public">
+		<cfargument name="cmsCategoryID" type="string"/>
+		<cfquery name="local.getSlatwallCategoryID" result="local.getSlatwallCategoryIDResult">
+			SELECT categoryID, parentCategoryID FROM SwCategory where cmsCategoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.cmsCategoryID#" /> 
+		</cfquery>		
+		
+		<cfif local.getSlatwallCategoryIDResult.recordCount>
+			
+			<cfquery name="local.getTopLevelChildCategories" result="local.getTopLevelChildCategoriesResult">
+				SELECT categoryID FROM SwCategory where parentCategoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getSlatwallCategoryID.categoryID#" /> 
+			</cfquery>
+			
+			<cfif local.getTopLevelChildCategoriesResult.recordCount>
+				<cfloop query="local.getTopLevelChildCategories">
+					<cfif len(local.getSlatwallCategoryID.parentCategoryID)>
+						<cfquery name="local.updateTopLevelChildCategories">
+							Update SwCategory 
+							Set parentCategoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getSlatwallCategoryID.parentCategoryID#" />
+							Where categoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getTopLevelChildCategories.categoryID#" />
+						</cfquery>
+					<cfelse>
+						<cfquery name="local.updateTopLevelChildCategories">
+							Update SwCategory 
+							Set parentCategoryID = null
+							Where categoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getTopLevelChildCategories.categoryID#" />
+						</cfquery>
+					</cfif>
+				</cfloop>
+			</cfif>
+		</cfif>
+		<cfquery name="local.deleteCategory">
+			DELETE FROM SwCategory where categoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getSlatwallCategoryID.categoryID#" />
+		</cfquery>
+		
+	</cffunction>
 
 	<cffunction name="getContentBySiteIDAndUrlTitlePath" access="public">
 		<cfargument name="siteID" type="string" required="true">

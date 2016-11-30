@@ -201,6 +201,7 @@ Notes:
 										<hb:HibachiActionCaller queryString="ng##!/entity/App" text="#$.slatwall.rbKey('admin.entity.listapp')#" type="list">
 									</cfif>--->
 									<hb:HibachiActionCaller action="admin:entity.listaddresszone" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listaccountrelationshiprole" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listcollection" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listcountry" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listcurrency" type="list">

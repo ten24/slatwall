@@ -58,6 +58,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="referencedOrderType" ormtype="string" hb_formatType="rbKey";
 	property name="estimatedDeliveryDateTime" ormtype="timestamp";
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
+	property name="testOrderFlag" ormtype="boolean";
 	// Calculated Properties
 	property name="calculatedTotal" ormtype="big_decimal";
 

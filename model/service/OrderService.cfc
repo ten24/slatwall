@@ -899,7 +899,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// As long as there is no payment transactions, then we can delete the order
-		if( !hasPaymentTransaction ) {
+		if( !hasPaymentTransaction  && !arguments.order.isNew()) {
 			this.deleteOrder( arguments.order );
 
 		// Otherwise we can just remove the account so that it isn't remember as an open cart for this account
@@ -928,7 +928,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.order.addError('create', account.getErrors());
 		} else {
 			arguments.order.setAccount(account);
-
+			//set up as Test Order if account is a test account
+			if(!isNull(account.getTestAccountFlag()) && account.getTestAccountFlag()){
+				arguments.order.setTestOrderFlag(true);
+			}
 			// Setup Order Type
 			arguments.order.setOrderType( getTypeService().getType( processObject.getOrderTypeID() ) );
 

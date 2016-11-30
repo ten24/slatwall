@@ -31,10 +31,15 @@
 
     function bootstrapApplication(angularApp) {
         angular.element(document).ready(function () {
-        	if(angular.isArray(angularApp)){
-        		angular.bootstrap(document, angularApp);
-        	}else{
-        		angular.bootstrap(document, [angularApp]);
+        	try{
+	        	if(angular.isArray(angularApp)){
+	        		angular.bootstrap(document, angularApp);
+	        	}else{
+	        		angular.bootstrap(document, [angularApp]);
+	        	}
+	        //if bootstrap fails then fall back to ui.bootstrap exclusively
+        	}catch(e){
+        		angular.bootstrap(document, ['ui.bootstrap']);
         	}
         });
     }

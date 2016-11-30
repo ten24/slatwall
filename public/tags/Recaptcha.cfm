@@ -62,13 +62,13 @@ Notes:
 		<cfset recaptchaID = reReplace(createUUID(),'-','','all')/>
 		<script>
 			$(document).ready(function(){
-				if($('###recaptchaID#').parent('form').find('input[type="submit"]'))
-				$('###recaptchaID#').parent('form').find('input[type="submit"]')[0].disabled = true;
+				if($('###recaptchaID#').closest('form').find('input[type="submit"]'))
+				$('###recaptchaID#').closest('form').find('input[type="submit"]')[0].disabled = true;
 			});
 			
 			function enableBtn#recaptchaID#(recaptchaID){
-				if($('###recaptchaID#').parent('form').find('input[type="submit"]'))
-		    	$('###recaptchaID#').parent('form').find('input[type="submit"]')[0].disabled = false;
+				if($('###recaptchaID#').closest('form').find('input[type="submit"]'))
+		    	$('###recaptchaID#').closest('form').find('input[type="submit"]')[0].disabled = false;
 		    }
 
 			

@@ -415,7 +415,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// END: Image Methods
 
 	public boolean function getEventConflictExistsFlag() {
-		if( ! this.getBundleFlag()){
+		if( this.setting('skuEventEnforceConflicts') && !this.getBundleFlag()){
 			var eventConflictsSmartList = getService("skuService").getEventConflictsSmartList(sku=this);
 			
 			if(eventConflictsSmartList.getRecordsCount() GT 0) {
