@@ -49,23 +49,26 @@ Notes:
 component output="false" accessors="true" extends="HibachiProcess" {
 
 	// Injected Entity
-	property name="accountCollection";
+	property name="accountCollection" hb_populateEnabled="public";
+	property name="baseEntityName" hb_populateEnabled="public";
+	property name="collectionConfig" hb_populateEnabled="public";
 
-	property name="account";
-	property name="collection";
-
+	property name="account" cfc="Account" fieldType="many-to-one" hb_populateEnabled="public" fkcolumn="accountID";
+	property name="collection" cfc="Collection" fieldType="many-to-one" hb_populateEnabled="public" fkcolumn="collectionID";
 
 	public any function getAccountCollection(){
 		if(!isNull(this.getAccount())){
 			variables.accountCollection.setAccount(this.getAccount());
 		}
 		if(!isNull(this.getCollection())){
-			if(this.getCollection().getNewFlag()){
-				variables.accountCollection.setCollectionConfig(this.getCollection().getCollectionConfig());
-			} else {
-				variables.accountCollection.setCollection(this.getCollection());
-			}
+			variables.accountCollection.setCollection(this.getCollection());
 		}
+		if (!isNull(this.getCollectionConfig())){
+			variables.accountCollection.setCollectionConfig(this.getCollectionConfig());
+		} 
+		if (!isNull(this.getBaseEntityName())){
+			variables.accountCollection.setBaseEntityName(this.getBaseEntityName()); 
+		} 
 		return variables.accountCollection; 
 	}
 }
