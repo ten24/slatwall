@@ -373,8 +373,8 @@ component output="false" accessors="true" extends="HibachiService" {
 		//propertyIdentifers
 		collectionConfigStruct = {};
 		collectionConfigStruct = {
-			baseEntityName = '#getDao('HibachiDao').getApplicationKey()##arguments.rc.entityName#',
-			baseEntityAlias = '_' & lcase(rc.entityName)
+			baseEntityName = '#getDao('HibachiDao').getApplicationKey()##arguments.data.entityName#',
+			baseEntityAlias = '_' & lcase(arguments.data.entityName)
 		};
 
 		if(!isnull(arguments.data.filterConfig)){
