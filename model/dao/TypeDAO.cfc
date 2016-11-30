@@ -66,8 +66,21 @@ Notes:
 	
 	<cffunction name="getTypeBySystemCode" output="false" access="public">
 		<cfargument name="systemCode" type="string" required="true" >
+		<cfargument name="typeCode" type="string">
 		
-		<cfreturn ormExecuteQuery("SELECT atype FROM SlatwallType atype WHERE atype.systemCode = ? ORDER BY sortOrder ASC", [arguments.systemCode], true, {maxResults=1}) />
+		<cfif structKeyExists(arguments, "typeCode")>
+			<cfreturn ormExecuteQuery("SELECT atype FROM SlatwallType atype WHERE atype.systemCode = ? AND atype.typeCode = ? ORDER BY sortOrder ASC", [arguments.systemCode, arguments.typeCode], true, {maxResults=1}) />
+		<cfelse>
+			<cfreturn ormExecuteQuery("SELECT atype FROM SlatwallType atype WHERE atype.systemCode = ? AND atype.typeCode = NULL ORDER BY sortOrder ASC", [arguments.systemCode], true, {maxResults=1}) />
+		</cfif>
+	</cffunction>
+	
+	<cffunction name="getTypeOptionsBySystemCode" output="false" access="public">
+		<cfargument name="systemCode" type="string" required="true" >
+		
+		<cfset var options = ormExecuteQuery("SELECT atype FROM SlatwallType atype WHERE atype.systemCode = ?", [arguments.systemCode]) />
+		
+		<cfreturn options />
 	</cffunction>
 	
 </cfcomponent>
