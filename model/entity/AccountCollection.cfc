@@ -36,7 +36,7 @@
 Notes:
 
 */
-component displayname="Collection" entityname="SlatwallAccountCollection" table="SwAccountCollection" persistent="true" hb_permission="this" accessors="true" extends="HibachiEntity" hb_serviceName="hibachiCollectionService" {
+component displayname="AccountCollection" entityname="SlatwallAccountCollection" table="SwAccountCollection" persistent="true" hb_permission="this" accessors="true" extends="HibachiEntity" hb_serviceName="hibachiCollectionService" {
 
 	// Persistent Properties
 	property name="accountCollectionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -82,6 +82,10 @@ component displayname="Collection" entityname="SlatwallAccountCollection" table=
 			} 
 		}	
 		return variables.accountCollection; 
+	} 
+
+	public boolean function hasValidConfiguration(){
+		return !(isNull(this.getCollection()) && isNull(this.getCollectionConfig()));
 	} 
 
 	// ============  END:  Non-Persistent Property Methods =================
