@@ -40,8 +40,7 @@ Notes:
 component extends="Slatwall.org.Hibachi.HibachiCollectionService" accessors="true" output="false" {
 	
 	public any function processAccountCollection_Create(required any accountCollection, required any processObject){
-		var savedAccountCollection = this.saveAccountCollection(arguments.processObject.getAccountCollection());	
-		
-		return savedAccountCollection; 
-	}	
+		arguments.accountCollection = this.saveAccountCollection(arguments.processObject.getAccountCollection());	
+		return arguments.accountCollection; 
+	}
 }
