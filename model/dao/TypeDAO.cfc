@@ -71,7 +71,7 @@ Notes:
 		<cfif structKeyExists(arguments, "typeCode")>
 			<cfreturn ormExecuteQuery("SELECT atype FROM SlatwallType atype WHERE atype.systemCode = ? AND atype.typeCode = ? ORDER BY sortOrder ASC", [arguments.systemCode, arguments.typeCode], true, {maxResults=1}) />
 		<cfelse>
-			<cfreturn ormExecuteQuery("SELECT atype FROM SlatwallType atype WHERE atype.systemCode = ? AND atype.typeCode = NULL ORDER BY sortOrder ASC", [arguments.systemCode], true, {maxResults=1}) />
+			<cfreturn ormExecuteQuery("SELECT atype FROM SlatwallType atype WHERE atype.systemCode = ? AND atype.typeCode IS NULL ORDER BY sortOrder ASC", [arguments.systemCode], true, {maxResults=1}) />
 		</cfif>
 	</cffunction>
 	
