@@ -53,6 +53,59 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.service = request.slatwallScope.getService("orderService");
 
 	}
+	//can delete order without standard validation because it was created with a test account
+	public void function deleteOrder_canDeleteTestOrder(){
+		var orderData = {
+			orderID="",
+			testOrderFlag=0,
+			//ostClosed
+			orderStatusType={
+				typeID="444df2b8b98441f8e8fc6b5b4266548c"
+			}
+		};
+		var order = createPersistedTestEntity('order',orderData);
+		assertFalse(order.isDeletable());
+		assertEquals(order.getStatusCode(),'ostClosed');
+		var deleteOK = variables.service.deleteOrder(order);
+		assertFalse(deleteOK);
+		
+		var testOrderData = {
+			orderID="",
+			testOrderFlag=1,
+			//ostClosed
+			orderStatusType={
+				typeID="444df2b8b98441f8e8fc6b5b4266548c"
+			}
+		};
+		var testOrder = createPersistedTestEntity('order',testOrderData);
+		
+		assert(testOrder.isDeletable());
+		deleteOK = variables.service.deleteOrder(testOrder);
+		assert(deleteOK);
+		
+	}
+	
+	//test account will create test orders
+	public void function processOrder_createTest_testAccountCreatesTestOrder(){
+		var accountData = {
+			accountID="",
+			testAccountFlag=1
+		};
+		var account = createPersistedTestEntity('account',accountData);
+		
+		var orderData = {
+			orderID=""
+		};
+		var order = createTestEntity('order',orderData);
+		
+		var processData={
+			accountID=account.getAccountID(),
+			newAccountFlag=0
+		};
+		
+		order = variables.service.process(order,processData,'create');
+		assert(order.getTestOrderFlag());
+	}
 
 	//test is incomplete as it bypasses the currencyconverions,promotion, and tax intergration update amounts code
 	public void function processOrder_addAndRemoveOrderItem_addOrderItems(){

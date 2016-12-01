@@ -417,5 +417,5 @@ Notes:
 			return coreEntityParser.getFileContent();
 		</cfscript>
 	</cffunction>
-	
+	 
 </cfcomponent>

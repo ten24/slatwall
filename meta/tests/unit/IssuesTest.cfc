@@ -107,6 +107,31 @@ component extends="SlatwallUnitTestBase" {
 		var accountData = {
 			firstName = "1376",
 			lastName = "Issue",
+			primaryPhoneNumber={
+				accountPhoneNumberID="",
+				phoneNumber = "1234567890"	
+			},
+			primaryEmailAddress={
+				accountEmailAddressID="",
+				emailAddress = "issue1376@github.com"
+			}
+		};
+		 
+		var account = createPersistedTestEntity('account',accountData); 
+		
+		var accountAuthenticationdata ={
+			accountAuthenticationID="",
+			account={
+				accountID=account.getAccountID()
+			}
+		};
+		var accountAuthentication = createPersistedTestEntity('accountAuthentication',accountAuthenticationData);
+		
+		var accountHasErrors = account.hasErrors();
+		
+		var processData = {
+			firstName = "1376",
+			lastName = "Issue",
 			phoneNumber = "1234567890",
 			emailAddress = "issue1376@github.com",
 			emailAddressConfirm = "issue1376@github.com",
@@ -114,30 +139,15 @@ component extends="SlatwallUnitTestBase" {
 			password = "issue1376",
 			passwordConfirm = "issue1376"
 		};
-		 
-		var account = entityNew("SlatwallAccount");
 		
-		account = accountService.processAccount(account, accountData, 'create'); 
-		var accountHasErrors = account.hasErrors();
+		var accountData2 = {
+			accountID=""
+		};
 		
-		ormFlush();
-		
-		var account2 = entityNew("SlatwallAccount");
-		accountData.firstName="1376 - 2";
-		
-		account2 = accountService.processAccount(account2, accountData, 'create');
-		
+		accountData2.firstName="1376 - 2";
+		var account2 = createTestEntity('account',accountData2);
+		account2 = accountService.processAccount(account2, processData, 'create');
 		var account2HasErrors = account2.hasErrors();
-		
-		account.setPrimaryEmailAddress(javaCast("null",""));
-		account.setPrimaryPhoneNumber(javaCast("null",""));
-		account2.setPrimaryEmailAddress(javaCast("null",""));
-		account2.setPrimaryPhoneNumber(javaCast("null",""));
-		
-		entityDelete( account );
-		entityDelete (account2 );
-		
-		ormFlush();
 		
 		assertFalse(accountHasErrors);
 		assert(account2HasErrors);

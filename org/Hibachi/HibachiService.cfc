@@ -709,7 +709,9 @@
 			arguments.entityName = getProperlyCasedShortEntityName(arguments.entityName);
 			
 			if(structKeyExists(getEntitiesMetaData(), arguments.entityName) && structKeyExists(getEntitiesMetaData()[arguments.entityName], "hb_serviceName")) {
-				return getService( getEntitiesMetaData()[ arguments.entityName ].hb_serviceName );
+				if(hasService(getEntitiesMetaData()[ arguments.entityName ].hb_serviceName)){
+					return getService( getEntitiesMetaData()[ arguments.entityName ].hb_serviceName );
+				}
 			}
 			
 			// By default just return the base hibachi service
@@ -858,20 +860,34 @@
 	    }
 
 		public struct function getEntitiesProcessContexts(){
+			var serviceBeanInfo = getBeanFactory().getBeanInfo(regex="\w+Service").beanInfo;
+
 			if(!structCount(variables.entitiesProcessContexts)) {
-		    	var processComponentDirectoryListing = getProcessComponentDirectoryListing();
-		    	
-		    	for(var processComponent in processComponentDirectoryListing){
-		    		if(processComponent != 'HibachiProcess.cfc'){
-		    			var processObjectName = listFirst(processComponent,'.');
-		    			var entityName = listFirst(processObjectName,'_');
-		    			var processName = listLast(processObjectName,"_");
-		    			if(!structKeyExists(variables.entitiesProcessContexts,entityName)){
-		    				variables.entitiesProcessContexts[entityName] = [];
-		    			}
-		    			arrayAppend(variables.entitiesProcessContexts[entityName],processName);
-		    		}
-		    	}
+				//get processes form the services
+
+				for(var beanName in serviceBeanInfo){
+					var bean = getBeanFactory().getBean(beanName);
+					var serviceMetaData = getMetaData(bean);
+					if(structKeyExists(serviceMetaData,'functions')){
+						for(var functionItem in serviceMetaData.functions){
+							if(
+								(!structKeyExists(functionItem,'access') || functionItem.access == 'public')
+								&& lcase(left(functionItem.name,7))=='process'
+							){
+								var processObjectName = mid(functionItem.name,8,len(functionItem.name));
+				    			var entityName = listFirst(processObjectName,'_');
+				    			var processName = listLast(processObjectName,"_");
+				    			if(!structKeyExists(variables.entitiesProcessContexts,entityName)){
+				    				variables.entitiesProcessContexts[entityName] = [];
+				    			}
+				    			if(!arrayFind(variables.entitiesProcessContexts[entityName],processName)){
+									arrayAppend(variables.entitiesProcessContexts[entityName],processName);
+				    			}
+							}
+						}
+					}
+
+				}
 		    }
 	    	return variables.entitiesProcessContexts;
 	    }

@@ -175,7 +175,12 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 			// Setup Request to push to Avatax
 	        var httpRequest = new http();
 	        httpRequest.setMethod("POST");
-	        if(setting('testingFlag')) {
+	        var testingFlag = setting('testingFlag');
+	        if(!isNull(arguments.requestBean.getOrder()) && !isNull(arguments.requestBean.getOrder().getTestOrderFlag()) && arguments.requestBean.getOrder().getTestOrderFlag()){
+	        	testingFlag = arguments.requestBean.getOrder().getTestOrderFlag();
+	        }
+	        
+	        if(testingFlag) {
 	        	httpRequest.setUrl("https://development.avalara.net/1.0/tax/get");	
 	        } else {
 	        	httpRequest.setUrl("https://avatax.avalara.net/1.0/tax/get");

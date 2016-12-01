@@ -70,7 +70,8 @@ Notes:
 			<hb:HibachiProcessCaller action="admin:entity.preprocessEventRegistration" entity="#rc.eventRegistration#" processContext="approve" type="list" modal="true" />
 			<hb:HibachiProcessCaller action="admin:entity.preprocessEventRegistration" entity="#rc.eventRegistration#" processContext="attend" type="list" modal="true" />
 			<hb:HibachiProcessCaller action="admin:entity.preprocessEventRegistration" entity="#rc.eventRegistration#" processContext="cancel" type="list" modal="true" />
-			<hb:HibachiProcessCaller action="admin:entity.preprocessEventRegistration" entity="#rc.eventRegistration#" processContext="pending" type="list" modal="true" />
+			<hb:HibachiProcessCaller action="admin:entity.preprocessEventRegistration" entity="#rc.eventRegistration#" processContext="pendingApproval" type="list" modal="true" />
+			<hb:HibachiProcessCaller action="admin:entity.preprocessEventRegistration" entity="#rc.eventRegistration#" processContext="pendingConfirmation" type="list" modal="true" />
 			<hb:HibachiProcessCaller action="admin:entity.preprocessEventRegistration" entity="#rc.eventRegistration#" processContext="register" type="list" modal="true" />
 			<hb:HibachiProcessCaller action="admin:entity.preprocessEventRegistration" entity="#rc.eventRegistration#" processContext="waitlist" type="list" modal="true" />
 
