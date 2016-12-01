@@ -3,7 +3,7 @@
 /*services return promises which can be handled uniquely based on success or failure by the controller*/
 
 class ValidationService{
-    public MY_EMAIL_REGEXP =  /^[a-zA-Z0-9_.]+@[a-zA-Z0-9_]+?\.[a-zA-Z]{2,3}$/;
+    public MY_EMAIL_REGEXP =  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     //@ngInject
     constructor(
         public $hibachi,
