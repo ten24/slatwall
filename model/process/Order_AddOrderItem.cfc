@@ -156,11 +156,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			variables.orderItemTypeSystemCode = "oitSale";
 		}
 		
-		//treat this as a deposit item if the item has a sku that has a defined minimim less than 100%
-		if (structKeyExists(variables, "sku") && !isNull(variables.sku.setting('skuMinimumPercentageAmountRecievedRequiredToPlaceOrder')) && variables.sku.setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder") < 100){
-			variables.orderItemTypeSystemCode = "oitDeposit";
-		}
-		
 		return variables.orderItemTypeSystemCode;
 	}
 

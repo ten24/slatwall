@@ -956,12 +956,14 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		return returnQuantity;
 	}
 	
-	/** returns the sum of all deposits required on the order.
+	/** returns the sum of all deposits required on the order. we can
+	 *  tell if a deposit is required because a setting will indicate that they can pay a fraction
+	 *  of the whole.
 	 */
 	public numeric function getTotalDepositAmount() {
 		var totalDepositAmount = 0;
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			if(getOrderItems()[i].getOrderItemType().getSystemCode() eq "oitDeposit") {
+			if(getOrderItems()[i].getOrderItemType().getSystemCode() eq "oitSale" && getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder") < 100) {
 				totalDepositAmount += ((getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")/100) * getOrderItems()[i].getExtendedPrice() ) ;
 			}
 		}
@@ -972,7 +974,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getTotalNonDepositAmount() {
 		var totalNonDepositAmount = 0;
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			if(getOrderItems()[i].getOrderItemType().getSystemCode() eq "oitSale") {
+			if(getOrderItems()[i].getOrderItemType().getSystemCode() eq "oitSale" && getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder") == 100) {
 				totalNonDepositAmount += (getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder") * getOrderItems()[i].getExtendedPrice() ) ;
 			}
 		}
@@ -985,7 +987,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	
 	public boolean function hasDepositItemsOnOrder(){
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			if(getOrderItems()[i].getOrderItemType().getSystemCode() eq "oitDeposit") {
+			if(getOrderItems()[i].getOrderItemType().getSystemCode() eq "oitSale" && getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder") < 100) {
 				return true;
 			}
 		}
@@ -995,7 +997,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public boolean function hasNonDepositItemsOnOrder(){
 		//and has at least one sale item
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			if(getOrderItems()[i].getOrderItemType().getSystemCode() eq "oitSale") {
+			if(getOrderItems()[i].getOrderItemType().getSystemCode() eq "oitSale" && getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder") == 100) {
 				return true;
 			}
 		}
