@@ -542,6 +542,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							eventRegistration.setAccount(newAccount);
 
 						}
+						
+						if( depositsOnlyFlag || registrant.toWaitlistFlag == "1" ) {								
+							depositsCount++;
+							
+						} else if( salesOnlyFlag && salesCount > 0 ) {
+							registrant.toWaitlistFlag = "1";										
+							orderItemsToCreateCount = 2;
+							salesOnlyFlag = true;									
+						} else {
+							newOrderItem.setOrderItemType( getTypeService().getTypeBySystemCode('oitDeposit') );
+						}
 
 						eventRegistration = getEventRegistrationService().saveEventRegistration( eventRegistration );
 
@@ -1352,7 +1363,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								if (!arguments.order.hasErrors()){
 									for ( var eventRegistration in orderItem.getEventRegistrations() ) {
 										// Set registration status - Should this be done when order is placed instead?
-										if( orderitem.getSku().setting('skuRegistrationApprovalRequiredFlag')) {
+										if (orderItem.getOrderItemType().getSystemCode() == 'oitDeposit'){
+											eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstWaitlisted"));
+										}else if( orderitem.getSku().setting('skuRegistrationApprovalRequiredFlag')) {
 											eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstPendingApproval"));
 										}else if (orderitem.getSku().getAvailableSeatCount() > 0) {
 											eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstRegistered"));
