@@ -159,6 +159,8 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="totalQuantity" persistent="false";
 	property name="totalSaleQuantity" persistent="false";
 	property name="totalReturnQuantity" persistent="false";
+	property name="totalDepositAmount" persistent="false";
+	property name="totalNonDepositAmount" persistent="false";
 	
     //======= Mocking Injection for Unit Test ======	
 	property name="orderService" persistent="false" type="any";
@@ -953,7 +955,54 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		}
 		return returnQuantity;
 	}
-
+	
+	/** returns the sum of all deposits required on the order.
+	 */
+	public numeric function getTotalDepositAmount() {
+		var totalDepositAmount = 0;
+		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
+			if(getOrderItems()[i].getOrderItemType().getSystemCode() eq "oitDeposit") {
+				totalDepositAmount += ((getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")/100) * getOrderItems()[i].getExtendedPrice() ) ;
+			}
+		}
+		return totalDepositAmount;
+	}
+	
+	//returns the sum of all non-deposits required on the order.
+	public numeric function getTotalNonDepositAmount() {
+		var totalNonDepositAmount = 0;
+		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
+			if(getOrderItems()[i].getOrderItemType().getSystemCode() eq "oitSale") {
+				totalNonDepositAmount += (getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder") * getOrderItems()[i].getExtendedPrice() ) ;
+			}
+		}
+		return totalNonDepositAmount;
+	}
+	
+	public numeric function getTotalDepositAndNonDepositAmounts() {
+		return getTotalDepositAmount() + getTotalNonDepositAmount();
+	}
+	
+	public boolean function hasDepositItemsOnOrder(){
+		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
+			if(getOrderItems()[i].getOrderItemType().getSystemCode() eq "oitDeposit") {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean function hasNonDepositItemsOnOrder(){
+		//and has at least one sale item
+		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
+			if(getOrderItems()[i].getOrderItemType().getSystemCode() eq "oitSale") {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	
 	public numeric function getQuantityDelivered() {
 		var quantityDelivered = 0;
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
@@ -1008,13 +1057,27 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getSubtotal() {
 		var subtotal = 0;
 		var orderItems = this.getRootOrderItems();
-		for(var i=1; i<=arrayLen(orderItems); i++) {
-			if( listFindNoCase("oitSale,oitDeposit",orderItems[i].getTypeCode()) ) {
-				subtotal = precisionEvaluate(subtotal + orderItems[i].getExtendedPrice());
-			} else if ( orderItems[i].getTypeCode() == "oitReturn" ) {
-				subtotal = precisionEvaluate(subtotal - orderItems[i].getExtendedPrice());
-			} else {
-				throw("there was an issue calculating the subtotal because of a orderItemType associated with one of the items");
+		
+		if (this.hasDepositItemsOnOrder()){
+			if (this.hasNonDepositItemsOnOrder()){
+				
+				subTotal = this.getTotalNonDepositAmount();
+			
+			}else{
+			
+				subtotal = this.getTotalDepositAmount();
+			
+			}
+			
+		}else{
+			for(var i=1; i<=arrayLen(orderItems); i++) {
+				if( listFindNoCase("oitSale,oitDeposit",orderItems[i].getTypeCode())) {
+					subtotal = precisionEvaluate(subtotal + orderItems[i].getExtendedPrice());
+				} else if ( orderItems[i].getTypeCode() == "oitReturn" ) {
+					subtotal = precisionEvaluate(subtotal - orderItems[i].getExtendedPrice());
+				} else {
+					throw("there was an issue calculating the subtotal because of a orderItemType associated with one of the items");
+				}
 			}
 		}
 		return subtotal;
