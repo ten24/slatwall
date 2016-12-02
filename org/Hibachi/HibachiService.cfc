@@ -187,7 +187,6 @@
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Save", arguments);
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#SaveFailure", arguments);
 	        }
-
 	        // Return the entity
 	        return arguments.entity;
 	    }
