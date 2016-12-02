@@ -656,7 +656,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public any function processOrder_addOrderPayment(required any order, required any processObject) {
-
+		writeDump(var=processObject, top=2);
 		// Get the populated newOrderPayment out of the processObject
 		var newOrderPayment = processObject.getNewOrderPayment();
 		// If this is an existing account payment method, then we can pull the data from there
@@ -717,11 +717,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// We need to call updateOrderAmounts so that if the tax is updated from the billingAddress that change is put in place.
 		arguments.order = this.processOrder( arguments.order, 'updateOrderAmounts');
 
-
-
 		// Save the newOrderPayment
 		newOrderPayment = this.saveOrderPayment( newOrderPayment );
-
+		writeDump(var=newOrderPayment, top=2);
 		//check if the order payments paymentMethod is set to allow account to save. if true set the saveAccountPaymentMethodFlag to true
 		if (arguments.order.hasSavableOrderPaymentAndSubscriptionWithAutoPay()){
 			for (var orderPayment in arguments.processObject.getOrder().getOrderPayments() ){
@@ -1357,6 +1355,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							// As long as this orderPayment is active then we can run the place order transaction
 							if(orderPayment.getStatusCode() == 'opstActive') {
 								// Call the placeOrderTransactionType for the order payment
+								//adjust the amount on the orderPayment down to the deposit amount.
+								
 								orderPayment = this.processOrderPayment(orderPayment, {}, 'runPlaceOrderTransaction');
 								amountAuthorizeCreditReceive = precisionEvaluate(amountAuthorizeCreditReceive + orderPayment.getAmountAuthorized() + orderPayment.getAmountReceived() + orderPayment.getAmountCredited());
 							}
@@ -1417,6 +1417,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 							// Look for 'auto' order fulfillments
 							for(var i=1; i<=arrayLen( arguments.order.getOrderFulfillments() ); i++) {
+								//don't auto fulfill if the deposit has been paid but not the full amount.
 								createOrderDeliveryForAutoFulfillmentMethod(arguments.order.getOrderFulfillments()[i]);
 							}
 						}
