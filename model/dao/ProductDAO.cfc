@@ -66,9 +66,10 @@ Notes:
 		
 		public numeric function getProductRating(required any product){
 			return OrmExecuteQuery('
-				SELECT avg(pr.rating) 
+				SELECT COALESCE(avg(pr.rating), 0)
 				FROM SlatwallProductReview pr 
-				where pr.product = :product
+				WHERE pr.product = :product
+				AND pr.activeFlag = 1
 				',{product=arguments.product},true
 			);
 		}
