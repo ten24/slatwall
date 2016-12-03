@@ -448,10 +448,10 @@ component extends="FW1.framework" {
 		// Check to see if out application stuff is initialized
 		if(!getHibachiScope().hasApplicationValue("initialized") || !getHibachiScope().getApplicationValue("initialized")) {
 			// If not, lock the application until this is finished
-			lock scope="Application" timeout="360"  {
+			lock scope="Application" timeout="600"  {
 				
-				// Set the request timeout to 360
-				getHibachiScope().getService("hibachiTagService").cfsetting(requesttimeout=360);
+				// Set the request timeout to 600
+				createObject("Slatwall.org.Hibachi.HibachiTagService").cfsetting(requesttimeout=600);
 						
 				// Check again so that the qued requests don't back up
 				if(!getHibachiScope().hasApplicationValue("initialized") || !getHibachiScope().getApplicationValue("initialized")) {
