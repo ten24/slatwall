@@ -448,8 +448,11 @@ component extends="FW1.framework" {
 		// Check to see if out application stuff is initialized
 		if(!getHibachiScope().hasApplicationValue("initialized") || !getHibachiScope().getApplicationValue("initialized")) {
 			// If not, lock the application until this is finished
-			lock scope="Application" timeout="240"  {
+			lock scope="Application" timeout="360"  {
 				
+				// Set the request timeout to 360
+				getHibachiScope().getService("hibachiTagService").cfsetting(requesttimeout=360);
+						
 				// Check again so that the qued requests don't back up
 				if(!getHibachiScope().hasApplicationValue("initialized") || !getHibachiScope().getApplicationValue("initialized")) {
 					
@@ -624,9 +627,6 @@ component extends="FW1.framework" {
 					// ============================ FULL UPDATE =============================== (this is only run when updating, or explicitly calling it by passing update=true as a url key)
 					if(!fileExists(expandPath('/#variables.framework.applicationKey#/custom/config') & '/lastFullUpdate.txt.cfm') || (structKeyExists(url, variables.framework.hibachi.fullUpdateKey) && url[ variables.framework.hibachi.fullUpdateKey ] == variables.framework.hibachi.fullUpdatePassword)){
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - Full Update Initiated");
-						
-						// Set the request timeout to 360
-						getHibachiScope().getService("hibachiTagService").cfsetting(requesttimeout=600);
 						
 						//Update custom properties
 						var success = getHibachiScope().getService('updateService').updateEntitiesWithCustomProperties();
