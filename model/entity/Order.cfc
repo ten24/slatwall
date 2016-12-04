@@ -613,23 +613,17 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		
 		//if the order status is not placed, then the deposit must have not been paid, if there are deposit items on the order unless paid in previous payments.
     	if (this.hasDepositItemsOnOrder() && getOrderStatusType().getSystemCode() == 'ostNotPlaced'){
-
     		var total = getTotalDepositAmount() + getTotalNonDepositAmount();
-    		var orderPaymentAmountNeeded = 17;//precisionEvaluate(total - nonNullPayments);
+    		var orderPaymentAmountNeeded = precisionEvaluate(total + getTaxTotal() + getFulfillmentTotal() - getDiscountTotal() - nonNullPayments);;//precisionEvaluate(total - nonNullPayments);
     	
     	//if the order status is not placed, then the deposit must have not been paid, 
     	//if there are deposit items on the order unless paid in previous payments. The non-deposit items would have been paid
     	//in full previously.
     	}
-    	else if (this.hasDepositItemsOnOrder() && getOrderStatusType().getSystemCode() == 'ostProcessing'){
-    		var nonDepositTotal = getTotalBalanceRemainingAfterDepositForDepositItems();
-    		var total = nonDepositTotal;
-    		var orderPaymentAmountNeeded = precisionEvaluate(nonDepositTotal + getTaxTotal() + getFulfillmentTotal() - getDiscountTotal() - nonNullPayments);
-    	}
-    	
     	else {
     		var total = getTotal();
     		var orderPaymentAmountNeeded = precisionEvaluate(getTotal() - nonNullPayments);
+    		throw("Get Total #nonNullPayments#");
     	}
 		
 		if(orderPaymentAmountNeeded gt 0 && isNull(getDynamicChargeOrderPayment())) {
@@ -693,16 +687,11 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
     	if (this.hasDepositItemsOnOrder() && getOrderStatusType().getSystemCode() == 'ostNotPlaced'){
 
     		var total = getTotalDepositAmount() + getTotalNonDepositAmount();
-    		var orderPaymentAmountNeeded = precisionEvaluate(total - nonNullPayments);
+    		var orderPaymentAmountNeeded = precisionEvaluate(total + getTaxTotal() + getFulfillmentTotal() - getDiscountTotal() - nonNullPayments);
     	
     	//if the order status is not placed, then the deposit must have not been paid, 
     	//if there are deposit items on the order unless paid in previous payments. The non-deposit items would have been paid
     	//in full previously.
-    	}
-    	else if (this.hasDepositItemsOnOrder() && getOrderStatusType().getSystemCode() == 'ostProcessing'){
-    		var nonDepositTotal = getTotalBalanceRemainingAfterDepositForDepositItems();
-    		var total = nonDepositTotal;
-    		var orderPaymentAmountNeeded = precisionEvaluate(total - nonNullPayments);
     	}
     	
     	else {
@@ -1025,7 +1014,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 	
 	//This is the inverse of the deposit percentage for deposit items.
-	public numeric function totalBalanceRemainingAfterDepositForDepositItems(){
+	public numeric function getTotalBalanceRemainingAfterDepositForDepositItems(){
 		var totalBalanceRemainingAfterDepositForDepositItems = 0;
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
 			if(getOrderItems()[i].getOrderItemType().getSystemCode() eq "oitSale" && getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder") < 100) {
@@ -1033,6 +1022,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 				totalBalanceRemainingAfterDepositForDepositItems += ((100 - getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")/100) * getOrderItems()[i].getExtendedPrice() ) ;
 			}
 		}
+		
 		return totalBalanceRemainingAfterDepositForDepositItems;
 	}
 	

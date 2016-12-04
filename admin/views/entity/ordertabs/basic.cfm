@@ -64,11 +64,10 @@
 				<hb:HibachiPropertyDisplay object="#rc.order#" property="discountTotal" edit="false" displayType="table">
 				
 				<cfif rc.order.hasDepositItemsOnOrder()>
-					
+					<hb:HibachiPropertyTableBreak header="Deposit Totals" />	
 					<hb:HibachiPropertyDisplay object="#rc.order#" property="totalDepositAmount" edit="false" displayType="table">
 					<hb:HibachiPropertyDisplay object="#rc.order#" property="totalNonDepositAmount" edit="false" displayType="table">
 					<hb:HibachiPropertyDisplay object="#rc.order#" property="totalDepositAndNonDepositAmounts" edit="false" displayType="table">
-					
 				<cfelse>
 				
 					<hb:HibachiPropertyDisplay object="#rc.order#" property="total" edit="false" displayType="table" titleClass="table-total" valueClass="table-total">

@@ -656,7 +656,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public any function processOrder_addOrderPayment(required any order, required any processObject) {
-		writeDump(var=processObject, top=2);
+		//writeDump(var=processObject, top=2);
 		// Get the populated newOrderPayment out of the processObject
 		var newOrderPayment = processObject.getNewOrderPayment();
 		// If this is an existing account payment method, then we can pull the data from there
@@ -719,7 +719,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// Save the newOrderPayment
 		newOrderPayment = this.saveOrderPayment( newOrderPayment );
-		writeDump(var=newOrderPayment, top=2);
+		//writeDump(var=newOrderPayment, top=2);
 		//check if the order payments paymentMethod is set to allow account to save. if true set the saveAccountPaymentMethodFlag to true
 		if (arguments.order.hasSavableOrderPaymentAndSubscriptionWithAutoPay()){
 			for (var orderPayment in arguments.processObject.getOrder().getOrderPayments() ){
@@ -1329,7 +1329,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					var orderRequirementsList = getOrderRequirementsList( arguments.order );
 
 					// Verify the order requirements list, to make sure that this order has everything it needs to continue
-					if(len(orderRequirementsList)) {
+					if(len(orderRequirementsList) && !arguments.order.hasDepositItemsOnOrder()) {
 
 						if(listFindNoCase(orderRequirementsList, "account")) {
 							arguments.order.addError('account',rbKey('entity.order.process.placeOrder.accountRequirementError'));
@@ -1341,7 +1341,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							arguments.order.addError('return',rbKey('entity.order.process.placeOrder.returnRequirementError'));
 						}
 						if(listFindNoCase(orderRequirementsList, "payment")) {
+							
 							arguments.order.addError('payment',rbKey('entity.order.process.placeOrder.paymentRequirementError'));
+						
 						}
 
 
