@@ -2516,6 +2516,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Clear out any previous 'createTransaction' process objects
 			arguments.orderPayment.clearProcessObject( 'createTransaction' );
 
+
+			// call the method below if getPlaceOrderCreditTransactionType = "Authorize"
+			// then do another call for create transaction with transactionType = AuthAndCharge and amount = deposit amount
+			// if the getPlaceOrderCreditTransactionType = "AuthandCharge", set the amount to deposit amount
+			
 			// Call the processing method
 			arguments.orderPayment = this.processOrderPayment(arguments.orderPayment, processData, 'createTransaction');
 
