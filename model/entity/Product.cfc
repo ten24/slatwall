@@ -144,10 +144,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="livePrice" hb_formatType="currency" persistent="false";
 	property name="salePrice" hb_formatType="currency" persistent="false";
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
-	//CUSTOM PROPERTIES BEGIN
-	property name="imagefileatt" ormtype="string" hb_formFieldType="file" hb_fileUpload="true" hb_fileAcceptMIMEType="image/gif,image/jpeg,image/pjpeg,image/png,image/x-png" hb_fileAcceptExtension=".jpeg,.jpg,.png,.gif";
-	
-	//CUSTOM PROPERTIES END
+
 	public any function getAvailableForPurchaseFlag() {
 		if(!structKeyExists(variables, "availableToPurchaseFlag")) {
 			// If purchase start dates not existed, or before now(), the start date is valid
@@ -1350,21 +1347,5 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return smartList.getRecords();
 	}
 
-	// ==================  END:  Deprecated Methods ========================	//CUSTOM FUNCTIONS BEGIN
-	public string function getImageFileAttUploadDirectory(){
-		var uploadDirectory = setting('globalAssetsFileFolderPath') & "/";
-
-			uploadDirectory &= "#lcase('imagefileatt')#/";
-
-		return uploadDirectory;
-	}
-	
-	public string function getImageFileAttFileURL() {
-		return getURLFromPath(getImageFileAttUploadDirectory()) & getImageFileAtt();
-	}
-	
-	public void function removeImageFileAtt(){
-		setImageFileAtt(javacast('null',''));
-	}
-	//CUSTOM FUNCTIONS END
+	// ==================  END:  Deprecated Methods ========================
 }
