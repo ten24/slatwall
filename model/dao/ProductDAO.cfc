@@ -56,9 +56,9 @@ Notes:
 		public void function setSkusAsInactiveByProductID(required string productID){
 			var updateQuery = new Query();
 			var sql = '
-				UPDATE SwSku s
-				SET s.activeFlag=0,publishedFlag=0
-				WHERE s.productID = :productID
+				UPDATE SwSku
+				SET activeFlag=0, publishedFlag=0
+				WHERE productID = :productID
 			';
 			updateQuery.addParam(name="productID",value=arguments.productID,cfsqltype="cf_sql_varchar");
 			updateQuery.execute(sql=sql);

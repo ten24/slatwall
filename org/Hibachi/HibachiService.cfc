@@ -191,50 +191,74 @@
 	        return arguments.entity;
 	    }
 
-	  /**
-		* Exports the given query/array to file.
-		*
-		* @param data Data to export. (Required) (Currently only supports query and array of structs).
-		* @param columns List of columns to export. (optional, default: all)
-		* @param columnNames List of column headers to export. (optional, default: none)
-		* @param fileName File name for export. (default: uuid)
-		* @param fileType File type for export. (default: csv)
-		*/
-		public void function export(required any data, string columns, string columnNames, string fileName, string fileType = 'csv') {
-			if (isArray(data)){
-				arguments.data = transformArrayOfStructsToQuery( data, ListToArray(columnNames));
-			}
-			if(!structKeyExists(arguments,"fileName")){
-				arguments.fileName = createUUID() ;
-			}
-			var fileNameWithExt = arguments.fileName & "." & arguments.fileType ;
-			var filePath = getVirtualFileSystemPath() & "/" & fileNameWithExt ;
-			if(isQuery(data) && !structKeyExists(arguments,"columns")){
-				arguments.columns = arguments.data.columnList;
-			}
-			if(structKeyExists(arguments,"columns") && !structKeyExists(arguments,"columnNames")){
-				arguments.columnNames = arguments.columns;
-			}
-			var columnArray = listToArray(arguments.columns);
-			var columnCount = arrayLen(columnArray);
-
-			if(arguments.fileType == 'csv'){
-				var dataArray=[arguments.columnNames];
+	   /**
+         * Exports the given query/array to file.
+         * 
+         * @param data Data to export. (Required) (Currently only supports query and array of structs).
+         * @param columns List of columns to export. (optional, default: all)
+         * @param columnNames List of column headers to export. (optional, default: none)
+         * @param fileName File name for export. (default: uuid)
+         * @param fileType File type for export. (default: csv)
+         * This returns the path and filename of the exported file.
+         */
+         public any function export(required any data, string columns, string columnNames, string fileName, string fileType = 'csv', boolean downloadFile=true) {
+	         
+		         if (isArray(data)){
+		             arguments.data = transformArrayOfStructsToQuery( data, ListToArray(columnNames));
+		         }
+	    
+				var result = {};
+				var supportedFileTypes = "csv,txt";
+				if(!structKeyExists(arguments,"fileName")){
+					arguments.fileName = createUUID() ;
+				}
+				if(!listFindNoCase(supportedFileTypes,arguments.fileType)){
+					throw("File type not supported in export. Only supported file types are #supportedFileTypes#");
+				}
+				var fileNameWithExt = arguments.fileName & "." & arguments.fileType;
+				if(structKeyExists(application,"tempDir")){
+					var filePath = application.tempDir & "/" & fileNameWithExt;
+				} else {
+					var filePath = GetTempDirectory() & fileNameWithExt;
+				}
+				if(isQuery(data) && !structKeyExists(arguments,"columns")){
+					arguments.columns = arguments.data.columnList;
+				}
+				if(structKeyExists(arguments,"columns") && !structKeyExists(arguments,"columnNames")){
+					arguments.columnNames = arguments.columns;
+				}
+				var columnArray = listToArray(arguments.columns);
+				var columnCount = arrayLen(columnArray);
+		
+				var listQualifier = "";
+				var delimiter = "";
+				if(arguments.fileType == 'csv'){
+					delimiter = chr(44);
+					listQualifier = '"';
+				} else if(arguments.fileType == 'txt'){
+					delimiter = chr(9);
+				}
+		
+				var dataArray=[listChangeDelims(arguments.columnNames,delimiter,",")];
 				for(var i=1; i <= data.recordcount; i++){
 					var row = [];
 					for(var j=1; j <= columnCount; j++){
-						arrayAppend(row,'"#data[columnArray[j]][i]#"');
+						arrayAppend(row,'#listQualifier##data[columnArray[j]][i]##listQualifier#');
 					}
 					arrayAppend(dataArray,arrayToList(row));
 				}
 				var outputData = arrayToList(dataArray,"#chr(13)##chr(10)#");
 				fileWrite(filePath,outputData);
-			} else {
-				throw("Implement export for fileType #arguments.fileType#");
-			}
-
-			// Open / Download File
-			getHibachiUtilityService().downloadFile(fileNameWithExt,filePath,"application/#arguments.fileType#",true);
+		
+				if(structKeyExists(arguments, "downloadFile") && arguments.downloadFile == true){
+					getService("HibachiUtilityService").downloadFile(fileNameWithExt,filePath,"application/#arguments.fileType#",true);
+				} else{
+					
+					result.fileName = fileNameWithExt;
+					result.fileType = fileType;
+					result.filePath = filePath;
+					return result;
+				}
 		}
 
 	private query function transformArrayOfStructsToQuery( required array arrayOfStructs, required array colNames ){
