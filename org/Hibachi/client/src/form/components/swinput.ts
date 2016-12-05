@@ -439,7 +439,7 @@ class SWInput{
 	){
 	}
 
-	public link:ng.IDirectiveLinkFn = (scope:any,element,attr)=>{
+	public link:ng.IDirectiveLinkFn = (scope:any,element:any,attr)=>{
 
 		if(scope.swInput.type === 'file'){
 
