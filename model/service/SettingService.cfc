@@ -85,6 +85,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			"product",
 			"content",
 			"account",
+			"address",
 			"image",
 			"brand",
 			"email",
@@ -123,10 +124,20 @@ component extends="HibachiService" output="false" accessors="true" {
 			accountFailedPublicLoginAttemptCount = {fieldType="text", defaultValue=0, validate={dataType="numeric", required=true}},
 			accountAdminForcePasswordResetAfterDays = {fieldType="text", defaultValue=90, validate={dataType="numeric", required=true, maxValue=90}},
 			accountLockMinutes = {fieldtype="text", defaultValue=30, validate={dataType="numeric", required=true, minValue=30}},
+			accountDisplayTemplate = {fieldType="select"},
+			accountHTMLTitleString = {fieldType="text", defaultValue="${firstName} ${lastName}"},
+			accountMetaDescriptionString = {fieldType="textarea", defaultValue="${firstName} ${lastName}"},
+			accountMetaKeywordsString = {fieldType="textarea", defaultValue="${firstName} ${lastName}"},
 
 			// Account Authentication
 			accountAuthenticationAutoLogoutTimespan = {fieldType="text"},
 
+			// Address
+			addressDisplayTemplate = {fieldType="select"},
+			addressHTMLTitleString = {fieldType="text", defaultValue="${name}"},
+			addressMetaDescriptionString = {fieldType="textarea", defaultValue="${name}"},
+			addressMetaKeywordsString = {fieldType="textarea", defaultValue="${name}"},
+			
 			// Brand
 			brandDisplayTemplate = {fieldType="select"},
 			brandHTMLTitleString = {fieldType="text", defaultValue="${brandName}"},
@@ -379,6 +390,11 @@ component extends="HibachiService" output="false" accessors="true" {
 					return getContentService().getDisplayTemplateOptions( "Brand", arguments.settingObject.getSite().getSiteID() );
 				}
 				return getContentService().getDisplayTemplateOptions( "brand" );
+			case "addressDisplayTemplate":
+				if(structKeyExists(arguments, "settingObject")) {
+					return getContentService().getDisplayTemplateOptions( "Address", arguments.settingObject.getSite().getSiteID() );
+				}
+				return getContentService().getDisplayTemplateOptions( "address" );
 			case "contentFileTemplate":
 				return getContentService().getDisplayTemplateOptions( "brand" );
 			case "productDisplayTemplate":
@@ -391,6 +407,11 @@ component extends="HibachiService" output="false" accessors="true" {
 					return getContentService().getDisplayTemplateOptions( "ProductType", arguments.settingObject.getSite().getSiteID() );
 				}
 				return getContentService().getDisplayTemplateOptions( "productType" );
+			case "accountDisplayTemplate":
+				if(structKeyExists(arguments, "settingObject")) {
+					return getContentService().getDisplayTemplateOptions( "Account", arguments.settingObject.getSite().getSiteID() );
+				}
+				return getContentService().getDisplayTemplateOptions( "account" );
 			case "contentRestrictedContentDisplayTemplate":
 				if(structKeyExists(arguments, "settingObject")) {
 					return getContentService().getDisplayTemplateOptions( "BarrierPage", arguments.settingObject.getContent().getSite().getSiteID() );
@@ -516,9 +537,9 @@ component extends="HibachiService" output="false" accessors="true" {
 
 			settingsRemoved = getSettingDAO().removeAllRelatedSettings(columnName=arguments.entity.getPrimaryIDPropertyName(), columnID=arguments.entity.getPrimaryIDValue());
 
-		} else if ( arguments.entity.getPrimaryIDPropertyName() == "fulfillmetnMethodID" ) {
+		} else if ( arguments.entity.getPrimaryIDPropertyName() == "fulfillmentMethodID" ) {
 
-			settingsRemoved = getSettingDAO().removeAllRelatedSettings(columnName="fulfillmetnMethodID", columnID=arguments.entity.getFulfillmentMethodID());
+			settingsRemoved = getSettingDAO().removeAllRelatedSettings(columnName="fulfillmentMethodID", columnID=arguments.entity.getFulfillmentMethodID());
 
 			for(var a=1; a<=arrayLen(arguments.entity.getShippingMethods()); a++) {
 				settingsRemoved += getSettingDAO().removeAllRelatedSettings(columnName="shippingMethodID", columnID=arguments.entity.getShippingMethods()[a].getShippingMethodID());
@@ -946,9 +967,13 @@ component extends="HibachiService" output="false" accessors="true" {
 					globalURLKeyBrand,
 					globalURLKeyProduct,
 					globalURLKeyProductType,
+					globalURLKeyAccount,
+					globalURLKeyAddress,
 					productDisplayTemplate,
 					productTypeDisplayTemplate,
-					brandDisplayTemplate",
+					brandDisplayTemplate,
+					accountDisplayTemplate
+					addressDisplayTemplate", 
 					arguments.entity.getSettingName()
 				) ||
 				left(arguments.entity.getSettingName(),7) == 'content'

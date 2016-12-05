@@ -1111,6 +1111,17 @@ component extends="HibachiService" accessors="true" {
 
 		return arguments.productType;
 	}
+	
+	public any function saveProductReview(required any productReview, struct data={}){
+		arguments.productReview = super.save(arguments.productReview, arguments.data);	
+		
+		if(!arguments.productReview.hasErrors()){
+			getHibachiScope().addModifiedEntity(arguments.productReview.getProduct());
+		}
+		
+		return arguments.productReview;
+		
+	}
 
 	// ======================  END: Save Overrides ============================
 
