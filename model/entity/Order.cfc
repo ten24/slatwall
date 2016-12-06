@@ -610,22 +610,9 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getOrderPaymentAmountNeeded() {
 
 		var nonNullPayments = getOrderService().getOrderPaymentNonNullAmountTotal(orderID=getOrderID());
-		
-		//if the order status is not placed, then the deposit must have not been paid, if there are deposit items on the order unless paid in previous payments.
-    	if (this.hasDepositItemsOnOrder() && getOrderStatusType().getSystemCode() == 'ostNotPlaced'){
-    		var total = getTotalDepositAmount() + getTotalNonDepositAmount();
-    		var orderPaymentAmountNeeded = precisionEvaluate(total + getTaxTotal() + getFulfillmentTotal() - getDiscountTotal() - nonNullPayments);;//precisionEvaluate(total - nonNullPayments);
+		var total = getTotal();
+		var orderPaymentAmountNeeded = precisionEvaluate(getTotal() - nonNullPayments);
     	
-    	//if the order status is not placed, then the deposit must have not been paid, 
-    	//if there are deposit items on the order unless paid in previous payments. The non-deposit items would have been paid
-    	//in full previously.
-    	}
-    	else {
-    		var total = getTotal();
-    		var orderPaymentAmountNeeded = precisionEvaluate(getTotal() - nonNullPayments);
-    		throw("Get Total #nonNullPayments#");
-    	}
-		
 		if(orderPaymentAmountNeeded gt 0 && isNull(getDynamicChargeOrderPayment())) {
 			return orderPaymentAmountNeeded;
 		} else if (orderPaymentAmountNeeded lt 0 && isNull(getDynamicCreditOrderPayment())) {
@@ -682,24 +669,9 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 	public any function getDynamicChargeOrderPaymentAmount() {
 		var nonNullPayments = getOrderService().getOrderPaymentNonNullAmountTotal(orderID=getOrderID());
-		
-    	//if the order status is not placed, then the deposit must have not been paid, if there are deposit items on the order unless paid in previous payments.
-    	if (this.hasDepositItemsOnOrder() && getOrderStatusType().getSystemCode() == 'ostNotPlaced'){
-
-    		var total = getTotalDepositAmount() + getTotalNonDepositAmount();
-    		var orderPaymentAmountNeeded = precisionEvaluate(total + getTaxTotal() + getFulfillmentTotal() - getDiscountTotal() - nonNullPayments);
+		var total = getTotal();
+		var orderPaymentAmountNeeded = precisionEvaluate(getTotal() - nonNullPayments);
     	
-    	//if the order status is not placed, then the deposit must have not been paid, 
-    	//if there are deposit items on the order unless paid in previous payments. The non-deposit items would have been paid
-    	//in full previously.
-    	}
-    	
-    	else {
-    		var total = getTotal();
-    		var orderPaymentAmountNeeded = precisionEvaluate(getTotal() - nonNullPayments);
-    	}
-    	//if the order status is not place, then we need to change the deposit amounts for deposit items, and full amount for non-deposit items less other payments.
-		
 		if(orderPaymentAmountNeeded gt 0) {
 			return orderPaymentAmountNeeded;
 		}
