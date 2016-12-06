@@ -207,20 +207,20 @@
                 arguments.data = transformArrayOfStructsToQuery( data, ListToArray(columnNames));
             }
 	    
-				var result = {};
-				var supportedFileTypes = "csv,txt";
+			var result = {};
+			var supportedFileTypes = "csv,txt";
             if(!structKeyExists(arguments,"fileName")){
                 arguments.fileName = createUUID() ;
             }
-				if(!listFindNoCase(supportedFileTypes,arguments.fileType)){
-					throw("File type not supported in export. Only supported file types are #supportedFileTypes#");
-				}
+			if(!listFindNoCase(supportedFileTypes,arguments.fileType)){
+				throw("File type not supported in export. Only supported file types are #supportedFileTypes#");
+			}
             var fileNameWithExt = arguments.fileName & "." & arguments.fileType ;
-				if(structKeyExists(application,"tempDir")){
-					var filePath = application.tempDir & "/" & fileNameWithExt;
-				} else {
-					var filePath = GetTempDirectory() & fileNameWithExt;
-				}
+			if(structKeyExists(application,"tempDir")){
+				var filePath = application.tempDir & "/" & fileNameWithExt;
+			} else {
+				var filePath = GetTempDirectory() & fileNameWithExt;
+			}
             if(isQuery(data) && !structKeyExists(arguments,"columns")){
                 arguments.columns = arguments.data.columnList;
             }
@@ -230,21 +230,11 @@
             var columnArray = listToArray(arguments.columns);
             var columnCount = arrayLen(columnArray);
             
-				var listQualifier = "";
-				var delimiter = "";
             if(arguments.fileType == 'csv'){
                 var csv = queryToCSV(arguments.data);
                 fileWrite(filePath,csv);
-		
-				if(structKeyExists(arguments, "downloadFile") && arguments.downloadFile == true){
-					getService("HibachiUtilityService").downloadFile(fileNameWithExt,filePath,"application/#arguments.fileType#",true);
-            } else {
-					
-					result.fileName = fileNameWithExt;
-					result.fileType = fileType;
-					result.filePath = filePath;
-					return result;
-            }
+			}
+			
     
             // Open / Download File / or return info about the filepath name etc.
             if (arguments.downLoadFile){
