@@ -369,28 +369,28 @@ component output="false" accessors="true" extends="HibachiService" {
 		return columnsAndJoinsStruct;
 	}
 
-	public any function getTransientCollectionConfigStructByURLParams(required any rc){
+	public any function getTransientCollectionConfigStructByURLParams(required any data){
 		//propertyIdentifers
 		collectionConfigStruct = {};
 		collectionConfigStruct = {
-			baseEntityName = '#getDao('HibachiDao').getApplicationKey()##arguments.rc.entityName#',
+			baseEntityName = '#getDao('HibachiDao').getApplicationKey()##arguments.data.entityName#',
 			baseEntityAlias = '_' & lcase(rc.entityName)
 		};
 
 		if(!isnull(arguments.data.filterConfig)){
-			collectionConfigStruct.filterGroups = deserializeJson(arguments.rc.filterConfig);
+			collectionConfigStruct.filterGroups = deserializeJson(arguments.data.filterConfig);
 		}
 
 		if(!isNull(arguments.data.joinsConfig)){
-			collectionConfigStruct.joins = deserializeJson(arguments.rc.joinsConfig);
+			collectionConfigStruct.joins = deserializeJson(arguments.data.joinsConfig);
 		}
 
 		if(!isNull(arguments.data.orderByConfig)){
-			collectionConfigStruct.orderBy = deserializeJson(arguments.rc.orderByConfig);
+			collectionConfigStruct.orderBy = deserializeJson(arguments.data.orderByConfig);
 		}
 
 		if(!isNull(arguments.data.columnsConfig)){
-			collectionConfigStruct.columns = deserializeJson(arguments.rc.columnsConfig);
+			collectionConfigStruct.columns = deserializeJson(arguments.data.columnsConfig);
 		}
 
 
