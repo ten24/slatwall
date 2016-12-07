@@ -1748,8 +1748,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	public any function createHQLFromCollectionObject(required any collectionObject,
 		boolean excludeSelectAndOrderBy=false,
-		boolean forExport=false,
-	    boolean removeOrderBy=false
+		boolean forExport=false
 	){
 		var HQL = "";
 		var collectionConfig = arguments.collectionObject.getCollectionConfigStruct();
@@ -1778,7 +1777,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					selectHQL &= getSelectionsHQL(columns=collectionConfig.columns, isDistinct=isDistinct, forExport=arguments.forExport);
 				}
 
-				if(!removeOrderBy) {
+				if(!structKeyExists(variables.orderByRequired) || variables.orderByRequired){
 					if (!isnull(getPostOrderBys()) && arraylen(getPostOrderBys())) {
 						orderByHQL &= getOrderByHQL(getPostOrderBys());
 					} else
