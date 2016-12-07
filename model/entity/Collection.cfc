@@ -99,9 +99,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="hasManyRelationFilter" type="boolean" persistent="false";
 	property name="useElasticSearch" type="boolean" persistent="false";
 	
-
-	property name="groupBys" type="string" persistent="false";
-
 	//property name="entityNameOptions" persistent="false" hint="an array of name/value structs for the entity's metaData";
 	property name="collectionObjectOptions" persistent="false";
 
