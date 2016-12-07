@@ -1777,7 +1777,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					selectHQL &= getSelectionsHQL(columns=collectionConfig.columns, isDistinct=isDistinct, forExport=arguments.forExport);
 				}
 
-				if(!structKeyExists(variables.orderByRequired) || variables.orderByRequired){
+				if(!structKeyExists(variables, 'orderByRequired') || variables.orderByRequired){
 					if (!isnull(getPostOrderBys()) && arraylen(getPostOrderBys())) {
 						orderByHQL &= getOrderByHQL(getPostOrderBys());
 					} else
