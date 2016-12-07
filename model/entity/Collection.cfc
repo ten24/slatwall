@@ -1785,7 +1785,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			if(
 				(
 					( structKeyExists(variables, "groupByRequired") &&
-					  variables.groupByRequired )
+					  variables.groupByRequired &&
+					  getHasDisplayAggregate()
+					 )
 				   || getHasManyRelationFilter()
 				)
 				&& (
