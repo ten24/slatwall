@@ -381,7 +381,7 @@ class SWPropertyDisplay implements ng.IDirective{
     }
 
     public static Factory(swpropertyClass,swpropertyPartialPath?:string){
-        
+
         var directive = (
             $compile,
             scopeService,
@@ -401,7 +401,7 @@ class SWPropertyDisplay implements ng.IDirective{
     }
 
 
-    public link:ng.IDirectiveLinkFn = ($scope, element: ng.IAugmentedJQuery, attrs, formController: any) =>{
+    public link:ng.IDirectiveLinkFn = ($scope:any, element: ng.IAugmentedJQuery, attrs:any, formController: any) =>{
 
         $scope.frmController = formController;
         $scope.swfPropertyDisplay = $scope.swPropertyDisplay;

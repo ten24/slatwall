@@ -72,6 +72,11 @@
 							<cfelse>
 								<cfif attributes.valueLink neq "">
 									<p class="form-control-static value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>"><a href="#attributes.valueLink#" class="#attributes.valueLinkClass#">#attributes.value#</a></p>
+									<cfif IsImageFile(expandPath(attributes.valueLink))>
+										<div class="s-image">
+											<img src="#attributes.valueLink#" height="250" width="250" /> 
+										</div>
+									</cfif>										
 								<cfelse>
 									<p class="form-control-static value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">#attributes.value#</p>
 								</cfif>
