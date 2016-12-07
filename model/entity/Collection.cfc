@@ -990,11 +990,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return fromHQL;
 	}
 
-	public string function getHQL(boolean excludeSelectAndOrderBy = false, forExport=false, removeOrderBy = false){
+	public string function getHQL(boolean excludeSelectAndOrderBy = false, forExport=false){
 		variables.HQLParams = {};
 		variables.postFilterGroups = [];
 		variables.postOrderBys = [];
-		var HQL = createHQLFromCollectionObject(this, arguments.excludeSelectAndOrderBy, arguments.forExport, arguments.removeOrderBy);
+		var HQL = createHQLFromCollectionObject(this, arguments.excludeSelectAndOrderBy, arguments.forExport);
 		return HQL;
 	}
 
