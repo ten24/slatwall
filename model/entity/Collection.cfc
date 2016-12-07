@@ -1131,7 +1131,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				groupByList = listAppend(groupByList,orderBy.propertyIdentifier);
 			}
 		}
-		variables.groupBys = groupByList;
 		return ' GROUP BY ' & groupByList;
 	}
 
@@ -1692,10 +1691,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 		var endMapHQL = ')';
 
-		if(!len(columnsHQL)){
-			columnsHQL = "#getCollectionConfigStruct().baseEntityAlias#.id";
+		if(len(columnsHQL)){
+			HQL &= selectHQL & startMapHQL & columnsHQL & endMapHQL;
 		}
-		HQL &= selectHQL & startMapHQL & columnsHQL & endMapHQL;
 		return HQL;
 	}//<--end function
 	
