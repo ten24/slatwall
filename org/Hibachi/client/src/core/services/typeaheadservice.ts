@@ -7,6 +7,7 @@ class TypeaheadService{
     public typeaheadPromises = {};
     public typeaheadStates = {}; 
     
+    //@ngInject
     constructor(
         public $timeout, 
         public observerService

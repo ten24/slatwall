@@ -4,6 +4,7 @@ class CacheService{
 
     private cacheData = {}; 
 
+    //@ngInject
     constructor(
         private localStorageService
     ){
