@@ -2,8 +2,12 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWTabGroupController {
     public tabGroupID:string; 
+    public name:string;
+    public initTabEventName:string; 
     public switchTabEventName:string; 
+    public switchTabGroupEventName:string;
     public tabs:any[]; 
+    public hasActiveTab:boolean = false;
 
     // @ngInject
     constructor(private utilityService, 
@@ -14,12 +18,26 @@ class SWTabGroupController {
             this.tabs = []; 
         } 
         this.tabGroupID = "TG" + this.utilityService.createID(30);
-        this.switchTabEventName = "SwitchTab:" + this.tabGroupID;
-        this.observerService.attach(this.switchTab, this.switchTabEventName)
+        this.switchTabGroupEventName = "SwitchTabGroup" + this.tabGroupID;
+        this.initTabEventName = "InitTabForTabGroup" + this.tabGroupID
+        this.observerService.attach(this.initTab, this.initTabEventName);
+    }
+
+    public initTab = () =>{
+        for(var i = 0; i < this.tabs.length; i++){
+            if(!this.tabs[i].hide){
+                this.tabs[i].active = true;
+                this.tabs[i].loaded = true; 
+                break; 
+            }
+        }
     }
 
     public switchTab = (tabToActivate) => {
-        console.log("switchTab called", tabToActivate)
+        this.observerService.notify(this.switchTabGroupEventName);
+        if(this.switchTabEventName){
+            this.observerService.notify(this.switchTabEventName, tabToActivate);
+        }
         for(var i = 0; i < this.tabs.length; i++){
             this.tabs[i].active = false; 
         }
@@ -42,9 +60,8 @@ class SWTabGroup implements ng.IDirective{
     public transclude=true; 
     public restrict = "EA";
     public scope = {};
-
     public bindToController = {
-
+        switchTabEventName:"@?"
     };
     public controller=SWTabGroupController;
     public controllerAs="swTabGroup";
