@@ -1044,25 +1044,24 @@ component extends="HibachiService" accessors="true" {
 				data.urlTitle = getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.product.getProductName(), tableName="SwProduct");
 			}
 		}
-
-		if(structKeyExists(data, "assignedContentIDList")){
-			var listingPagesSelection = ListToArray(data["assignedContentIDList"]);
-			var currentProductListingPages = product.getListingPages();
+		if(structKeyExists(arguments.data, "assignedContentIDList")){
+			var listingPagesSelection = ListToArray(arguments.data["assignedContentIDList"]);
+			var currentProductListingPages = arguments.product.getListingPages();
 			//purge existing listing pages not in the selection
 			for(var page in currentProductListingPages){
-				if(!ListContains(data["assignedContentIDList"], page.getContent().getContentID())){
+				if(!ListContains(arguments.data["assignedContentIDList"], page.getContent().getContentID())){
 					this.deleteProductListingPage(page);
+				} else {
+					ListDeleteAt(arguments.data["assignedContentIDList"], listFind(arguments.data["assignedContentIDList"], page.getContent().getContentID()));	
 				}
 			}
 			//add new listing pages
 			for(var contentID in listingPagesSelection){
 				var content = this.getContent(contentID);
-				if(!product.hasContent(contentID)){
-					var newProductListingPage = this.newProductListingPage();
-					newProductListingPage.setContent(content);
-					newProductListingPage.setProduct(arguments.product);
-					newProductListingPage = this.saveProductListingPage(newProductListingPage);
-				}
+				var newProductListingPage = this.newProductListingPage();
+				newProductListingPage.setContent(content);
+				newProductListingPage.setProduct(arguments.product);
+				newProductListingPage = this.saveProductListingPage(newProductListingPage);
 			}
 		}
 		arguments.product = super.save(arguments.product, arguments.data);
