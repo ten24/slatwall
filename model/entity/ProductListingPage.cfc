@@ -79,8 +79,8 @@ component displayname="ProductListingPage" entityname="SlatwallProductListingPag
 
 	// Non-Persistent Properties
 	// Deprecated Properties
-
-
+	
+	
 	// ==================== START: Logical Methods =========================
 
 	// ====================  END: Logical Methods ==========================
@@ -90,7 +90,43 @@ component displayname="ProductListingPage" entityname="SlatwallProductListingPag
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================
+	
+	// Product (many-to-one)
+	public void function setProduct(required any product) {
+		variables.product = arguments.product;
+		if(isNew() or !arguments.product.hasProductListingPage( this )) {
+			arrayAppend(arguments.product.getProductListingPages(), this);
+		}
+	}
+	public void function removeProduct(any product) {
+		if(!structKeyExists(arguments, "product")) {
+			arguments.product = variables.product;
+		}
+		var index = arrayFind(arguments.product.getProductListingPages(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.product.getProductListingPages(), index);
+		}
+		structDelete(variables, "product");
+	}	
 
+	// Content (many-to-one)
+	public void function setContent(required any content) {
+		variables.content = arguments.content;
+		if(isNew() or !arguments.content.hasProductListingPage( this )) {
+			arrayAppend(arguments.content.getProductListingPages(), this);
+		}
+	}
+	public void function removeContent(any content) {
+		if(!structKeyExists(arguments, "content")) {
+			arguments.content = variables.content;
+		}
+		var index = arrayFind(arguments.content.getProductListingPages(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.content.getProductListingPages(), index);
+		}
+		structDelete(variables, "content");
+	}
+	
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// =============== START: Custom Validation Methods ====================
