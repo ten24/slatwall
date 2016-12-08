@@ -1055,7 +1055,6 @@ component extends="HibachiService" accessors="true" {
 				}
 			}
 			//add new listing pages
-			
 			for(var contentID in ListToArray(arguments.data["assignedContentIDList"])){
 				var content = this.getContent(contentID);
 				var newProductListingPage = this.newProductListingPage();
@@ -1142,6 +1141,13 @@ component extends="HibachiService" accessors="true" {
 
 		return delete( arguments.product );
 	}
+
+	public boolean function deleteProductListingPage(required any productListingPage){ 
+		
+		arguments.productListingPage.removeContent(); 
+		arguments.productListingPage.removeProduct(); 
+		return delete( arguments.productListingPage ); 
+	}	
 
 	// ======================  END: Delete Overrides ==========================
 
