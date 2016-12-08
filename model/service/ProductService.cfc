@@ -1045,10 +1045,10 @@ component extends="HibachiService" accessors="true" {
 			}
 		}
 		if(structKeyExists(arguments.data, "assignedContentIDList")){
-			var listingPagesSelection = ListToArray(arguments.data["assignedContentIDList"]);
+			;
 			var currentProductListingPages = arguments.product.getListingPages();
 			//purge existing listing pages not in the selection
-			for(var page in currentProductListingPages){
+			for(var page in ListToArray(arguments.data["assignedContentIDList"])){
 				if(!ListContains(arguments.data["assignedContentIDList"], page.getContent().getContentID())){
 					this.deleteProductListingPage(page);
 				} else {
@@ -1057,7 +1057,8 @@ component extends="HibachiService" accessors="true" {
 				}
 			}
 			//add new listing pages
-			for(var contentID in listingPagesSelection){
+			
+			for(var contentID in ListToArray(arguments.data["assignedContentIDList"])){
 				var content = this.getContent(contentID);
 				var newProductListingPage = this.newProductListingPage();
 				newProductListingPage.setContent(content);
