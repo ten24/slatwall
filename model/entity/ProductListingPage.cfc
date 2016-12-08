@@ -55,8 +55,8 @@ component displayname="ProductListingPage" entityname="SlatwallProductListingPag
 	// Calculated Properties
 
 	// Related Object Properties (many-to-one)
-	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID" cascade="refresh";
-	property name="content" cfc="Content" fieldtype="many-to-one" fkcolumn="contentID" cascade="refresh";
+	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID";
+	property name="content" cfc="Content" fieldtype="many-to-one" fkcolumn="contentID";
 
 	// Related Object Properties (one-to-many)
 

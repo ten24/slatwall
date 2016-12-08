@@ -1052,7 +1052,8 @@ component extends="HibachiService" accessors="true" {
 				if(!ListContains(arguments.data["assignedContentIDList"], page.getContent().getContentID())){
 					this.deleteProductListingPage(page);
 				} else {
-					ListDeleteAt(arguments.data["assignedContentIDList"], listFind(arguments.data["assignedContentIDList"], page.getContent().getContentID()));	
+					var indexOfContentID = listFind(arguments.data["assignedContentIDList"], page.getContent().getContentID());
+					arguments.data["assignedContentIDList"] = ListDeleteAt(arguments.data["assignedContentIDList"], indexOfContentID);	
 				}
 			}
 			//add new listing pages
