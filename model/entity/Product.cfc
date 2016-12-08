@@ -1151,6 +1151,14 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public void function removeAttributeValue(required any attributeValue) {
 		arguments.attributeValue.removeProduct( this );
 	}
+	
+	// Product Listing Pages (one-to-many)
+	public void function addListingPage(required any productListingPage) {
+		arguments.productListingPage.setProduct( this );
+	}
+	public void function removeListingPage(required any productListingPage) {
+		arguments.productListingPage.removeProduct( this );
+	}
 
 	// Product Images (one-to-many)
 	public void function addProductImage(required any productImage) {

@@ -435,6 +435,14 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 		}
 		structDelete(variables, "parentContent");
 	}
+	
+	// Product Listing Pages (one-to-many)
+	public void function addListingPage(required any productListingPage) {
+		arguments.productListingPage.setContent( this );
+	}
+	public void function removeListingPage(required any productListingPage) {
+		arguments.productListingPage.removeContent( this );
+	}
 
 
 	// Child Contents (one-to-many)
