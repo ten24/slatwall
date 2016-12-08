@@ -1045,10 +1045,8 @@ component extends="HibachiService" accessors="true" {
 			}
 		}
 		if(structKeyExists(arguments.data, "assignedContentIDList")){
-			;
-			var currentProductListingPages = arguments.product.getListingPages();
 			//purge existing listing pages not in the selection
-			for(var page in ListToArray(arguments.data["assignedContentIDList"])){
+			for(var page in arguments.product.getListingPages()){
 				if(!ListContains(arguments.data["assignedContentIDList"], page.getContent().getContentID())){
 					this.deleteProductListingPage(page);
 				} else {
