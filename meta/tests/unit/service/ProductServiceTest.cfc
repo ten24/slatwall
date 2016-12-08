@@ -238,7 +238,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var content3 = createPersistedTestEntity('Content',contentData3);
 
 		var serviceData = {
-			assignedContentIDList=ArrayToList([contentID1, contentID2, contentID3]);
+			assignedContentIDList=ArrayToList([contentID1, contentID2, contentID3])
 		};
 
 		var productToAssert = variables.service.saveProduct(product, serviceData);
@@ -246,7 +246,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(arrayLen(productToAssert.getListingPages()), 3);
 
 		var serviceData2 = {
-			assignedContentIDList=ArrayToList([contentID1, contentID2]);
+			assignedContentIDList=ArrayToList([contentID1, contentID2])
 		};
 
 		var productToAssert2 = variables.service.saveProduct(product, serviceData2);
