@@ -221,24 +221,21 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var product = createPersistedTestEntity('Product',productData);
 
-		var contentID1 = createUUID();
-		var contentID2 = createUUID();
-		var contentID3 = createUUID();
 		var contentData1 = {
-			contentID=contentID1
+			contentID=''
 		};
 		var content1 = createPersistedTestEntity('Content',contentData1);
 		var contentData2 = {
-			contentID=contentID2
+			contentID=''
 		};
 		var content2 = createPersistedTestEntity('Content',contentData2);
 		var contentData3 = {
-			contentID=contentID3
+			contentID=''
 		};
 		var content3 = createPersistedTestEntity('Content',contentData3);
 
 		var serviceData = {
-			assignedContentIDList=ArrayToList([contentID1, contentID2, contentID3])
+			assignedContentIDList=ArrayToList([content1.getContentID(), content2.getContentID(), content3.getContentID()])
 		};
 
 		var productToAssert = variables.service.saveProduct(product, serviceData);
@@ -246,7 +243,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(arrayLen(productToAssert.getListingPages()), 3);
 
 		var serviceData2 = {
-			assignedContentIDList=ArrayToList([contentID1, contentID2])
+			assignedContentIDList=ArrayToList([content1.getContentID(), content2.getContentID()])
 		};
 
 		var productToAssert2 = variables.service.saveProduct(product, serviceData2);
