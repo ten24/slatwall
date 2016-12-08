@@ -94,17 +94,17 @@ component displayname="ProductListingPage" entityname="SlatwallProductListingPag
 	// Product (many-to-one)
 	public void function setProduct(required any product) {
 		variables.product = arguments.product;
-		if(isNew() or !arguments.product.hasProductListingPage( this )) {
-			arrayAppend(arguments.product.getProductListingPages(), this);
+		if(isNew() or !arguments.product.hasListingPage( this )) {
+			arrayAppend(arguments.product.getListingPages(), this);
 		}
 	}
 	public void function removeProduct(any product) {
 		if(!structKeyExists(arguments, "product")) {
 			arguments.product = variables.product;
 		}
-		var index = arrayFind(arguments.product.getProductListingPages(), this);
+		var index = arrayFind(arguments.product.getListingPages(), this);
 		if(index > 0) {
-			arrayDeleteAt(arguments.product.getProductListingPages(), index);
+			arrayDeleteAt(arguments.product.getListingPages(), index);
 		}
 		structDelete(variables, "product");
 	}	
@@ -112,17 +112,17 @@ component displayname="ProductListingPage" entityname="SlatwallProductListingPag
 	// Content (many-to-one)
 	public void function setContent(required any content) {
 		variables.content = arguments.content;
-		if(isNew() or !arguments.content.hasProductListingPage( this )) {
-			arrayAppend(arguments.content.getProductListingPages(), this);
+		if(isNew() or !arguments.content.hasListingPage( this )) {
+			arrayAppend(arguments.content.getListingPages(), this);
 		}
 	}
 	public void function removeContent(any content) {
 		if(!structKeyExists(arguments, "content")) {
 			arguments.content = variables.content;
 		}
-		var index = arrayFind(arguments.content.getProductListingPages(), this);
+		var index = arrayFind(arguments.content.getListingPages(), this);
 		if(index > 0) {
-			arrayDeleteAt(arguments.content.getProductListingPages(), index);
+			arrayDeleteAt(arguments.content.getListingPages(), index);
 		}
 		structDelete(variables, "content");
 	}

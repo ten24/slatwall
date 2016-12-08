@@ -1153,10 +1153,10 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	}
 	
 	// Product Listing Pages (one-to-many)
-	public void function addProductListingPage(required any productListingPage) {
+	public void function addListingPage(required any productListingPage) {
 		arguments.productListingPage.setProduct( this );
 	}
-	public void function removeProductListingPage(required any productListingPage) {
+	public void function removeListingPage(required any productListingPage) {
 		arguments.productListingPage.removeProduct( this );
 	}
 
