@@ -206,6 +206,53 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			assertFalse(sku.publishedFlag);
 		}
 	}
+
+	public void function saveProductWithProductListingPages(){
+		
+		var productData = {
+			productID= ''; 
+			productName="product"& createUUID(),
+			productCode="productcode" & createUUID(),
+			activeFlag=1,
+			publishedFlag=1,
+			productType={
+				productTypeID='444df2f7ea9c87e60051f3cd87b435a1'
+			}
+		}; 
+		var product = createPersistedTestEntity('Product',productData);
+		
+		var contentID1 = createUUID(); 
+		var contentID2 = createUUID(); 
+		var contentID3 = createUUID(); 
+		var contentData1 = {
+			contentID=contentID1
+		}; 
+		var content1 = createPersistedTestEntity('Content',contentData1);
+		var contentData2 = {
+			contentID=contentID2
+		}; 
+		var content2 = createPersistedTestEntity('Content',contentData2);
+		var contentData3 = { 
+			contentID=contentID3
+		}; 
+		var content3 = createPersistedTestEntity('Content',contentData3);
+
+		var serviceData = {
+			assignedContentIDList=ArrayToList([contentID1, contentID2, contentID3]);	
+		} 
+
+		var productToAssert = variables.service.saveProduct(product, serviceData); 
+
+		assert(arrayLen(productToAssert.getListingPages()), 3);
+
+		var serviceData2 = {
+			assignedContentIDList=ArrayToList([contentID1, contentID2]);	
+		} 
+
+		var productToAssert2 = variables.service.saveProduct(product, serviceData2); 
+		
+		assert(arrayLen(productToAssert2.getListingPages()), 3);
+	}
 }
 
 
