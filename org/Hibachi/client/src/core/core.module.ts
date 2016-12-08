@@ -92,6 +92,7 @@ import {SWHref} from "./components/swhref";
 import {SWProcessCaller} from "./components/swprocesscaller";
 import {SWSortable} from "./components/swsortable";
 import {SWListingGlobalSearch} from "./components/swlistingglobalsearch";
+import {SWOrderByControls} from "./components/sworderbycontrols"; 
 
 import {BaseObject} from "./model/baseobject";
 declare var $:any;
@@ -272,6 +273,7 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swProcessCaller',SWProcessCaller.Factory())
 .directive('sw:sortable',SWSortable.Factory())
 .directive('swListingGlobalSearch',SWListingGlobalSearch.Factory())
+.directive('swOrderByControls', SWOrderByControls.Factory())
 ;
 export{
 	coremodule
