@@ -1061,7 +1061,7 @@ component extends="HibachiService" accessors="true" {
 			} 
 			//add new listing pages
 			for(var contentID in ListToArray(arguments.data["assignedContentIDList"])){
-				var content = this.getContent(contentID);
+				var content = this.getContentService().getContent(contentID);
 				var newProductListingPage = this.newProductListingPage();
 				newProductListingPage.setContent(content);
 				newProductListingPage.setProduct(arguments.product);
