@@ -1046,14 +1046,19 @@ component extends="HibachiService" accessors="true" {
 		}
 		if(structKeyExists(arguments.data, "assignedContentIDList")){
 			//purge existing listing pages not in the selection
-			for(var page in arguments.product.getListingPages()){
+			var originalListingPages = arguments.product.getListingPages();	
+			var listingPagesToDelete = []; 
+			for(var page in originalListingPages){
 				if(!ListContains(arguments.data["assignedContentIDList"], page.getContent().getContentID())){
-					this.deleteProductListingPage(page);
+					arrayAppend(listingPagesToDelete, page); 
 				} else {
 					var indexOfContentID = listFind(arguments.data["assignedContentIDList"], page.getContent().getContentID());
 					arguments.data["assignedContentIDList"] = ListDeleteAt(arguments.data["assignedContentIDList"], indexOfContentID);	
 				}
 			}
+			for(var page in listingPagesToDelete){
+				this.deleteProductListingPage(page); 
+			} 
 			//add new listing pages
 			for(var contentID in ListToArray(arguments.data["assignedContentIDList"])){
 				var content = this.getContent(contentID);
