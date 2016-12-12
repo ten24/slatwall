@@ -158,15 +158,6 @@ class SWSkuStockAdjustmentModalLauncher implements ng.IDirective{
         this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath)+"skustockadjustmentmodallauncher.html";
     }
 
-    public compile = (element: JQuery, attrs: angular.IAttributes) => {
-        return {
-            pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
-            },
-            post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
-
-            }
-        };
-    }
 }
 export{
     SWSkuStockAdjustmentModalLauncher,
