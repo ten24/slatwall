@@ -31,7 +31,7 @@ class SWDirective{
 			link: function(scope, element, attrs) {
 				var tempVariables = {}; 
 				angular.forEach(scope.variables, (value,key)=>{
-               	 if(key.toString().charAt(0) != "$" && value != " "){
+               	 if(key.toString().charAt(0) != "$" && value !== " "){
                 	    tempVariables[utilityService.keyToAttributeString(key)] = value;
                 	}
             	});
