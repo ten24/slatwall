@@ -32,6 +32,7 @@ class SWSkuStockAdjustmentModalLauncherController{
         private $hibachi, 
         private utilityService
     ){
+        console.log("heyohQOH", this.calculatedQoh);
         if(angular.isDefined(this.skuId)){
             this.name="j-change-qty-" + this.utilityService.createID(32);
         } else{
@@ -99,6 +100,8 @@ class SWSkuStockAdjustmentModalLauncherController{
     public updateNewQuantity = () => { 
         if(!isNaN(this.sku.data.newQOH)){
             this.newQuantity = this.sku.data.newQOH;
+        } else {
+            this.sku.data.newQOH = 0; 
         }
         this.updateStockAdjustmentQuantity();
     }
@@ -106,6 +109,8 @@ class SWSkuStockAdjustmentModalLauncherController{
     public updateStockAdjustmentQuantity = () => {
         if(!isNaN(this.newQuantity)){
             this.stockAdjustmentItem.data.quantity = this.newQuantity - this.sku.data.calculatedQOH;
+        } else {
+            this.newQuantity = 0;
         }
     }  
 }
@@ -146,6 +151,17 @@ class SWSkuStockAdjustmentModalLauncher implements ng.IDirective{
 	    slatwallPathBuilder
     ){
         this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath)+"skustockadjustmentmodallauncher.html";
+    }
+
+    public compile = (element: JQuery, attrs: angular.IAttributes) => {
+        return {
+            pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
+                console.log("attyyoung", attrs);
+            },
+            post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
+
+            }
+        };
     }
 }
 export{

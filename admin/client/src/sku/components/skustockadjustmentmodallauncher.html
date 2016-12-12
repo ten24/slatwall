@@ -9,7 +9,7 @@
                                  data-property="newQOH"
                                  data-editable="true"
                                  data-editing="true"
-                                 data-field-type="text"
+                                 data-field-type="number"
                                  data-in-listing-display="true"
                                  data-row-save-enabled="false"
                                  data-in-modal="true"
@@ -57,7 +57,10 @@
                             <div class="s-modal-module">
                                 <div class="s-title">New Qty</div>
                                 <div class="s-value">
-                                    <input type="text" ng-model="swSkuStockAdjustmentModalLauncher.newQuantity" ng-change="swSkuStockAdjustmentModalLauncher.updateStockAdjustmentQuantity()" class="form-control input-xs" />
+                                    <input type="number" 
+                                           ng-model="swSkuStockAdjustmentModalLauncher.newQuantity" 
+                                           ng-change="swSkuStockAdjustmentModalLauncher.updateStockAdjustmentQuantity()" 
+                                           class="form-control input-xs" />
                                 </div>
                              </div>
                         </div>
