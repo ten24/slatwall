@@ -22,7 +22,8 @@
     <sw-modal-content> 
         <sw-form data-name="{{swSkuStockAdjustmentModalLauncher.name}}"
                  data-object="swSkuStockAdjustmentModalLauncher.stockAdjustment"    
-                 data-context="save"> 
+                 data-context="save"
+                 ng-if="swSkuStockAdjustmentModalLauncher.stockAdjustment != null"> 
             <div class="row">              
                 
                 <div class="col-sm-4">
@@ -67,6 +68,7 @@
                     </div>
                     <sw-property-display data-object="swSkuStockAdjustmentModalLauncher.stockAdjustment"
                                          data-property="toLocation"
+                                         data-editable="true"
                                          data-editing="true"
                                          data-is-dirty="true"
                                          data-options-arguments="{property:'toLocation'}"

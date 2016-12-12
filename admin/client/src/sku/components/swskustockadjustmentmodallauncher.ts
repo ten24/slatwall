@@ -65,9 +65,9 @@ class SWSkuStockAdjustmentModalLauncherController{
         this.stockAdjustmentID="";
         this.stock = this.$hibachi.newStock();
         this.stockAdjustment = this.$hibachi.newStockAdjustment();
+        this.stockAdjustmentItem = this.$hibachi.newStockAdjustmentItem();
         this.toLocation = this.$hibachi.newLocation(); 
         this.stockAdjustment.$$setToLocation(this.toLocation);
-        this.stockAdjustmentItem = this.$hibachi.newStockAdjustmentItem();
         this.stockAdjustment.$$addStockAdjustmentItem(this.stockAdjustmentItem);
         this.stock.$$setSku(this.sku);
         this.stockAdjustmentItem.$$setToStock(this.stock);
@@ -80,7 +80,7 @@ class SWSkuStockAdjustmentModalLauncherController{
     }
     
     public save = () => {
-        return this.stock.$$save().then().finally(()=>{
+        return this.$q.all([this.observerService.notify('updateBindings'), this.stock.$$save()]).then().finally(()=>{
             var stockAdjustmentSavePromise = this.stockAdjustment.$$save(); 
             stockAdjustmentSavePromise.then(
                 (response)=>{
@@ -94,7 +94,7 @@ class SWSkuStockAdjustmentModalLauncherController{
                     method:"POST", 
                     url:this.$hibachi.getUrlWithActionPrefix()+"entity.processStockAdjustment&processContext=processAdjustment&stockAdjustmentID="+this.stockAdjustmentID
                 }).then((response)=>{
-                    this.initData(); 
+                    //don't need to do anything here
                 });
 
             }); 
