@@ -30,9 +30,10 @@ class SWSkuStockAdjustmentModalLauncherController{
         private $http, 
         private $q, 
         private $hibachi, 
+        private observerService,
         private utilityService
     ){
-        console.log("heyohQOH", this.calculatedQoh);
+
         if(angular.isDefined(this.skuId)){
             this.name="j-change-qty-" + this.utilityService.createID(32);
         } else{
@@ -41,6 +42,7 @@ class SWSkuStockAdjustmentModalLauncherController{
         if(angular.isDefined(this.calculatedQats)){
             this.calculatedQats = parseInt(this.calculatedQats);
         }
+
         if(angular.isDefined(this.calculatedQoh)){
             this.calculatedQoh = parseInt(this.calculatedQoh);
         }
@@ -54,6 +56,8 @@ class SWSkuStockAdjustmentModalLauncherController{
             newQOH:this.calculatedQoh || 0
         }
         this.sku = this.$hibachi.populateEntity("Sku", skudata);
+
+        this.observerService.attach(this.updateNewQuantity, this.name + 'newQuantitychange');
         this.initData();
     }
     
@@ -80,6 +84,7 @@ class SWSkuStockAdjustmentModalLauncherController{
             var stockAdjustmentSavePromise = this.stockAdjustment.$$save(); 
             stockAdjustmentSavePromise.then(
                 (response)=>{
+                    this.sku.newQOH = this.newQuantity;
                     this.sku.data.newQOH = this.newQuantity; 
                     this.sku.data.calculatedQOH = this.newQuantity; 
                     this.stockAdjustmentID = response.stockAdjustmentID; 
@@ -97,9 +102,9 @@ class SWSkuStockAdjustmentModalLauncherController{
     }    
 
 
-    public updateNewQuantity = () => { 
-        if(!isNaN(this.sku.data.newQOH)){
-            this.newQuantity = this.sku.data.newQOH;
+    public updateNewQuantity = (args) => { 
+        if(!isNaN(args.swInput.value)){
+            this.newQuantity = args.swInput.value;
         } else {
             this.sku.data.newQOH = 0; 
         }
@@ -156,7 +161,6 @@ class SWSkuStockAdjustmentModalLauncher implements ng.IDirective{
     public compile = (element: JQuery, attrs: angular.IAttributes) => {
         return {
             pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
-                console.log("attyyoung", attrs);
             },
             post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
 
