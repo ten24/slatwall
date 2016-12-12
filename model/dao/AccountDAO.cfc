@@ -178,7 +178,7 @@ Notes:
 	<cffunction name="getActivePasswordByEmailAddress" returntype="any" access="public">
 		<cfargument name="emailAddress" required="true" type="string" />
 
-		<cfreturn ormExecuteQuery("SELECT aa FROM #getApplicationKey()#AccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE aa.password is not null AND aa.integration.integrationID is null AND lower(pea.emailAddress)=:emailAddress AND aa.activeFlag = true", {emailAddress=lcase(arguments.emailAddress)}, true, {maxResults=1}) />
+		<cfreturn ormExecuteQuery("SELECT aa FROM #getApplicationKey()#AccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE aa.password is not null AND aa.integration.integrationID is null AND lower(pea.emailAddress)=:emailAddress AND aa.activeFlag = true ORDER BY aa.createdDateTime DESC", {emailAddress=lcase(arguments.emailAddress)}, true, {maxResults=1}) />
 	</cffunction>
 
 	<cffunction name="getActivePasswordByAccountID" returntype="any" access="public">
