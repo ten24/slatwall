@@ -58,16 +58,17 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 
 	}
+	
+	public boolean function returnFalse(){
+		return false;
+	}
+	
 	//test that if we trun enforce auth off but also aren't authenticated that only 1st level props are available
 	public void function backendCollectionAuthorizedTest(){
 		var skuCollection = variables.entityService.getSkuCollectionList();
 		var hibachiAuthenticationServiceFake = new Slatwall.model.service.HibachiAuthenticationService();
-		hibachiAuthenticationServiceFake.authenticateCollectionCrudByAccount = function(){
-			return false;
-		};
-		hibachiAuthenticationServiceFake.authenticateCollectionPropertyIdentifierCrudByAccount=function(){
-			return false;
-		};
+		hibachiAuthenticationServiceFake.authenticateCollectionCrudByAccount = returnFalse;
+		hibachiAuthenticationServiceFake.authenticateCollectionPropertyIdentifierCrudByAccount=returnFalse;
 		request.slatwallScope.setHibachiAuthenticationService(hibachiAuthenticationServiceFake);
 		skuCollection.addColumn({propertyIdentifier='product.productName'});
 		skuCollection.getPageRecords();
