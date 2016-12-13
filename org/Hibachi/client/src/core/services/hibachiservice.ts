@@ -140,10 +140,9 @@ class HibachiService{
 	};
 	//helper method to inflate a new entity with data
 	populateEntity = (entityName, data)=>{ 
-		var newEntity = this.newEntity(entityName); 
-		angular.extend(newEntity.data,data); 
-		//make sure all levels are populated
+		var newEntity = this.newEntity(entityName);
 		angular.extend(newEntity,data); 
+		angular.extend(newEntity.data,data); 
 		return newEntity;
 	}
 	//service method used to transform collection data to collection objects based on a collectionconfig
