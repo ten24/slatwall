@@ -137,7 +137,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			addressHTMLTitleString = {fieldType="text", defaultValue="${name}"},
 			addressMetaDescriptionString = {fieldType="textarea", defaultValue="${name}"},
 			addressMetaKeywordsString = {fieldType="textarea", defaultValue="${name}"},
-			
+
 			// Brand
 			brandDisplayTemplate = {fieldType="select"},
 			brandHTMLTitleString = {fieldType="text", defaultValue="${brandName}"},
@@ -313,7 +313,11 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuTaxCategory = {fieldType="select", defaultValue="444df2c8cce9f1417627bd164a65f133"},
 			skuTrackInventoryFlag = {fieldType="yesno", defaultValue=0},
 			skuShippingCostExempt = {fieldType="yesno", defaultValue=0},
-			
+			skuRevenueAccountLedger = {fieldType="select", defaultValue=""},
+			skuCogsAccountLedger = {fieldType="select", defaultValue=""},
+			skuAssetAccountLedger = {fieldType="select", defaultValue=""},
+			skuLiabilityAccountLedger = {fieldType="select", defaultValue=""},
+
 
 			// Subscription Term
 			subscriptionUsageAutoRetryPaymentDays = {fieldType="text", defaultValue=""},
@@ -483,6 +487,18 @@ component extends="HibachiService" output="false" accessors="true" {
 				optionSL.addSelect('taxCategoryName', 'name');
 				optionSL.addSelect('taxCategoryID', 'value');
 				return optionSL.getRecords();
+			case "skuRevenueAccountLedger":
+				var optionSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latRevenue');
+				return optionsSL.getRecords();
+			case "skuCogsAccountLedger":
+				var optionSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latCogs');
+				return optionsSL.getRecords();
+			case "skuAssetAccountLedger":
+				var optionSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latAsset');
+				return optionsSL.getRecords();
+			case "skuLiabilityAccountLedger":
+				var optionSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latLiability');
+				return optionsSL.getRecords();
 			case "subscriptionUsageRenewalReminderEmailTemplate":
 				return getEmailService().getEmailTemplateOptions( "SubscriptionUsage" );
 			case "taskFailureEmailTemplate":
@@ -975,7 +991,7 @@ component extends="HibachiService" output="false" accessors="true" {
 					productTypeDisplayTemplate,
 					brandDisplayTemplate,
 					accountDisplayTemplate
-					addressDisplayTemplate", 
+					addressDisplayTemplate",
 					arguments.entity.getSettingName()
 				) ||
 				left(arguments.entity.getSettingName(),7) == 'content'
