@@ -46,36 +46,41 @@
 Notes:
 
 */
-component displayname="Inventory" entityname="SlatwallInventory" table="SwInventory" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="inventoryService" {
+component entityname="SlatwallVendoSku" table="SwVendorSku" persistent="true" accessors="true" output="false" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="vendorService" hb_permission="this" {
 	
 	// Persistent Properties
-	property name="inventoryID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="quantityIn" ormtype="integer";
-	property name="quantityOut" ormtype="integer";
-	property name="cost" type="big_decimal";
-	property name="landedCost" type="big_decimal";
+	property name="vendorSkuID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	
+	// Calculated Properties
+	property name="calculatedLastCostCurrencyCode" ormtype="string";
+	property name="calculatedLastCost" ormtype="big_decimal";
+	property name="calculatedQuantity" ormtype="integer";
+	
+	// Related Object Properties (many-to-one)
+	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
+	property name="vendor" cfc="Vendor" fieldtype="many-to-one" fkcolumn="vendorID";
+	property name="alternateSkuCode" cfc="AlternateSkuCode" fieldtype="many-to-one" fkcolumn="alternateSkuCodeID";
+	property name="lastVendorOrderItem" cfc="VendorOrderItem" fieldtype="many-to-one" fkcolumn="lastVendorOrderItemID";
+	
+	// Related Object Properties (one-to-many)
+	
+	// Related Object Properties (many-to-many - owner)
+	
+	// Remote properties
+	property name="remoteID" ormtype="string";
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
-
-	// Related Object Properties (many-to-one)
-	property name="stock" fieldtype="many-to-one" fkcolumn="stockID" cfc="Stock";
-	property name="stockReceiverItem" cfc="StockReceiverItem" fieldtype="many-to-one" fkcolumn="stockReceiverItemID";
-	property name="orderDeliveryItem" cfc="OrderDeliveryItem" fieldtype="many-to-one" fkcolumn="orderDeliveryItemID";
-	//property name="vendorOrderDeliveryItem" cfc="VendorOrderDeliveryItem" fieldtype="many-to-one" fkcolumn="vendorOrderDeliveryItemID";
-	property name="stockAdjustmentDeliveryItem" cfc="StockAdjustmentDeliveryItem" fieldtype="many-to-one" fkcolumn="stockAdjustmentDeliveryItemID";
-	property name="cogsLedgerAccount" cfc="LedgerAccount" fieldtype="many-to-one" fkcolumn="cogsLedgerAccountID";
-	property name="expensesLedgerAccount" cfc="LedgerAccount" fieldtype="many-to-one" fkcolumn="expensesLedgerAccountID";
-	property name="inventoryLedgerAccount" cfc="LedgerAccount" fieldtype="many-to-one" fkcolumn="inventoryLedgerAccountID";
-	property name="revenueLedgerAccount" cfc="LedgerAccount" fieldtype="many-to-one" fkcolumn="revenueLedgerAccountID";
+	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
-	
+	// Non-Persistent Properties
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
 	// ============  END:  Non-Persistent Property Methods =================
-	
+		
 	// ============= START: Bidirectional Helper Methods ===================
 	
 	// =============  END:  Bidirectional Helper Methods ===================
@@ -83,13 +88,8 @@ component displayname="Inventory" entityname="SlatwallInventory" table="SwInvent
 	// ================== START: Overridden Methods ========================
 	
 	// ==================  END:  Overridden Methods ========================
-		
+	
 	// =================== START: ORM Event Hooks  =========================
 	
-	public void function preUpdate(Struct oldData){
-		//throw("Updates to an Inventory Record are not allowed because this illustrates a fundamental flaw in inventory tracking.");
-	}
-	
 	// ===================  END:  ORM Event Hooks  =========================
-	
 }
