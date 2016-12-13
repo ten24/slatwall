@@ -16,7 +16,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="successfulActions" type="array";
 	property name="auditsToCommitStruct" type="struct";
 	property name="modifiedEntities" type="array";
-	property name="hibachiAuthenticationService";
+	property name="hibachiAuthenticationService" type="any";
 	
 	public any function init() {
 		setORMHasErrors( false );
@@ -31,11 +31,19 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		setFailureActions( [] );
 		setAuditsToCommitStruct( {} );
 		setModifiedEntities( [] );
-		if(hasService('hibachiAuthenticationService')){
-			setHibachiAuthenticationService(getService('hibachiAuthenticationService'));	
-		}
 		
 		return super.init();
+	}
+	
+	public any function getHibachiAuthenticationService(){
+		if(!structKeyExists(variables,'hibachiAuthenticationService')){
+			variables.hibachiAuthenticationService = getService('hibachiAuthenticationService');	
+		}
+		return variables.hibachiAuthenticationService;
+	} 
+	
+	public void function setHibachiAuthenticationService(required any hibachiAuthenticationService){
+		variables.hibachiAuthenticationService = arguments.hibachiAuthenticationService;
 	}
 	
 	// @hint facade method to check the application scope for a value
