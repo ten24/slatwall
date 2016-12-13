@@ -215,9 +215,9 @@ component extends="FW1.framework" {
 			if(structKeyExists(GetHttpRequestData().Headers,'Auth-Token')){
 				AuthToken = GetHttpRequestData().Headers['Auth-Token'];
 			}
-
+			
 			// If there is no account on the session, then we can look for an Access-Key, Access-Key-Secret, to setup that account for this one request.
-			if(!getHibachiScope().getLoggedInFlag() &&
+			if(
 				structKeyExists(httpRequestData, "headers") &&
 				structKeyExists(httpRequestData.headers, "Access-Key") &&
 				len(httpRequestData.headers["Access-Key"]) &&
@@ -226,16 +226,15 @@ component extends="FW1.framework" {
 
 				var accessKey 		= httpRequestData.headers["Access-Key"];
 				var accessKeySecret = httpRequestData.headers["Access-Key-Secret"];
-
+				
 				// Attempt to find an account by accessKey & accessKeySecret and set a default JWT if found.
-				var account = getHibachiScope().getService("AccountService").getAccountByAccessKeyAndSecret( accessKey=accessKey, accessKeySecret=accessKeySecret );
-
+				var accessKeyAccount = getHibachiScope().getService("AccountService").getAccountByAccessKeyAndSecret( accessKey=accessKey, accessKeySecret=accessKeySecret );
+				
 				// If an account was found, then set that account in the session for this request.  This should not persist
-				if (!isNull(account)){
-					getHibachiScope().getSession().setAccount( account );
+				if (!isNull(accessKeyAccount)){
+					getHibachiScope().getSession().setAccount( accessKeyAccount );
 					AuthToken = 'Bearer '& getHibachiScope().getService('HibachiJWTService').createToken();
 				}
-
 			}
 
 			//check if we have the authorization header
@@ -246,12 +245,13 @@ component extends="FW1.framework" {
 				//get token by stripping prefix
 				var token = right(authorizationHeader,len(authorizationHeader) - len(prefix));
 				var jwt = getHibachiScope().getService('HibachiJWTService').getJwtByToken(token);
-
+				
 				if(jwt.verify()){
-					var account = getHibachiScope().getService('accountService').getAccountByAccountID(jwt.getPayload().accountid);
-					if(!isNull(account)){
-						account.setJwtToken(jwt);
-						getHibachiScope().getSession().setAccount( account );
+					
+					var jwtAccount = getHibachiScope().getService('accountService').getAccountByAccountID(jwt.getPayload().accountid);
+					if(!isNull(jwtAccount)){
+						jwtAccount.setJwtToken(jwt);
+						getHibachiScope().getSession().setAccount( jwtAccount );
 					}
 				}
 			// If there is no account on the session, then we can look for an authToken to setup that account for this one request
@@ -263,6 +263,7 @@ component extends="FW1.framework" {
 				}
 				}catch(any e){}//supress errors here.
 			}
+			
 			// Call the onEveryRequest() Method for the parent Application.cfc
 			onEveryRequest();
 		}
@@ -297,9 +298,9 @@ component extends="FW1.framework" {
 						hasJsonData = true;
 						request.context["jsonRequest"] = true;
 					}
-					}catch(any e){
-						//Could't deserialize the JSON data, should throw an error
-					}
+				}catch(any e){
+					//Could't deserialize the JSON data, should throw an error
+				}
 			}
 		}else if(structKeyExists(request.context, 'serializedJSONData') && isSimpleValue(request.context.serializedJSONData) && isJSON(request.context.serializedJSONData)) {
 			request.context["deserializedJsonData"] = deserializeJSON(request.context.serializedJSONData);
@@ -334,6 +335,7 @@ component extends="FW1.framework" {
 		// Get the hibachiConfig out of the application scope in case any changes were made to it
 		var hibachiConfig = getHibachiScope().getApplicationValue("hibachiConfig");
 		// Verify Authentication before anything happens
+		
 		if(
 			!authorizationDetails.authorizedFlag
 		) {
