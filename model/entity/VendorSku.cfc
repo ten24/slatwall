@@ -79,7 +79,7 @@ component entityname="SlatwallVendorSku" table="SwVendorSku" persistent="true" a
 	
 	property name="lastCostCurrencyCode" persistent="false";
 	property name="lastCost" persistent="false";
-	property name="quantity" persiste="false";
+	property name="quantity" persistent="false";
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
