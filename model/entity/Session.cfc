@@ -81,12 +81,11 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 	 */
 	public any function getLoggedInFlag(){
 		//If this is a new session, then the user is not logged in.
-		if (getNewFlag()){
+		if (getNewFlag() && !isNull(getSessionCookieExtendedPSID())){
 			return false;
 		}
-		
 		//If the loggedin dateTime is null, then user is logged out.
-		if ( isNull(getLoggedInDateTime()) ){
+		if ( isNull(getLoggedInDateTime()) && !isNull(getSessionCookieExtendedPSID())){
 			return false;
 		}
 		
