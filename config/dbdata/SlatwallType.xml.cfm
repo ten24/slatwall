@@ -150,7 +150,12 @@
 		<Record typeID="444df32200452ec23641f213a07c1dda" typeIDPath="444df32200452ec23641f213a07c1dda" parentTypeID="NULL" typeName="Subscription Status Change Reason Type" systemCode="subscriptionStatusChangeReasonType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="444df323c807edf43d3105d43f9f4eef" typeIDPath="444df32200452ec23641f213a07c1dda,444df323c807edf43d3105d43f9f4eef" parentTypeID="444df32200452ec23641f213a07c1dda" typeName="Payment Failed" systemCode="sscrtPaymentFailed" sortOrder="1" />
 		<Record typeID="444df324fc56d5fbf8908ba071bc52ca" typeIDPath="444df32200452ec23641f213a07c1dda,444df324fc56d5fbf8908ba071bc52ca" parentTypeID="444df32200452ec23641f213a07c1dda" typeName="User Initiated" systemCode="sscrtUserInitiated" sortOrder="2" />
-
+		
+		<Record typeID="a5380924cb4a3d53eb096ed36bf5b825" typeIDPath="a5380924cb4a3d53eb096ed36bf5b825" parentTypeID="NULL" typeName="Account Ledger Type" systemCode="accountLedgerType" childRequiresSystemCodeFlag="1" />
+		<Record typeID="a54668fcc2ff2c8413c7b85b6927a850" typeIDPath="a5380924cb4a3d53eb096ed36bf5b825,a54668fcc2ff2c8413c7b85b6927a850" parentTypeID="a5380924cb4a3d53eb096ed36bf5b825" typeName="Asset" systemCode="latAsset" sortOrder="1" />
+		<Record typeID="a54668fdc129db6427f2d597da3163d7" typeIDPath="a5380924cb4a3d53eb096ed36bf5b825,a54668fdc129db6427f2d597da3163d7" parentTypeID="a5380924cb4a3d53eb096ed36bf5b825" typeName="Cost Of Goods" systemCode="latCogs" sortOrder="1" />
+		<Record typeID="a54668fef238c6cd354e1d9b371700ea" typeIDPath="a5380924cb4a3d53eb096ed36bf5b825,a54668fef238c6cd354e1d9b371700ea" parentTypeID="a5380924cb4a3d53eb096ed36bf5b825" typeName="Expense" systemCode="latExpense" sortOrder="1" />
+		<Record typeID="a54668fbcafa5275c59482d98a1497bd" typeIDPath="a5380924cb4a3d53eb096ed36bf5b825,a54668fbcafa5275c59482d98a1497bd" parentTypeID="a5380924cb4a3d53eb096ed36bf5b825" typeName="Revenue" systemCode="latRevenue" sortOrder="1" />
 	</Records>
 </Table>
 

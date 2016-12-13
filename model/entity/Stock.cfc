@@ -76,6 +76,9 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non-Persistent Properties
+	
+	property name="averageCost" persistent="false";
+	property name="averageLandedCost" persistent="false";
 
 	property name="QATS" persistent="false";
 	property name="QOH" persistent="false";
