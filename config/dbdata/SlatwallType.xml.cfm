@@ -156,6 +156,7 @@
 		<Record typeID="a54668fdc129db6427f2d597da3163d7" typeIDPath="a5380924cb4a3d53eb096ed36bf5b825,a54668fdc129db6427f2d597da3163d7" parentTypeID="a5380924cb4a3d53eb096ed36bf5b825" typeName="Cost Of Goods" systemCode="latCogs" sortOrder="1" />
 		<Record typeID="a54668fef238c6cd354e1d9b371700ea" typeIDPath="a5380924cb4a3d53eb096ed36bf5b825,a54668fef238c6cd354e1d9b371700ea" parentTypeID="a5380924cb4a3d53eb096ed36bf5b825" typeName="Expense" systemCode="latExpense" sortOrder="1" />
 		<Record typeID="a54668fbcafa5275c59482d98a1497bd" typeIDPath="a5380924cb4a3d53eb096ed36bf5b825,a54668fbcafa5275c59482d98a1497bd" parentTypeID="a5380924cb4a3d53eb096ed36bf5b825" typeName="Revenue" systemCode="latRevenue" sortOrder="1" />
+		<Record typeID="a54668fbcafa5275c59482d98a1497bc" typeIDPath="a5380924cb4a3d53eb096ed36bf5b825,a54668fbcafa5275c59482d98a1497bc" parentTypeID="a5380924cb4a3d53eb096ed36bf5b825" typeName="Liability" systemCode="latLiabilty" sortOrder="1" />
 	</Records>
 </Table>
 
