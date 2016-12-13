@@ -52,6 +52,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	property name="currencyService" type="any";
 	property name="emailService" type="any";
 	property name="fileService" type="any";
+	property name="hibachiService" type="any";
 	property name="imageService" type="any";
 	property name="measurementService" type="any";
 	property name="optionService" type="any";
@@ -414,5 +415,17 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 		super.genericSaveMethod('TaskSchedule',rc);
 	}
-
+	
+	public void function deleteCustomPropertyFile(required struct rc){
+		var entityService = getHibachiService().getServiceByEntityName(arguments.rc.entityName);
+		var entity = entityService.invokeMethod('get#arguments.rc.entityName#By#arguments.rc.entityName#ID',{1=arguments.rc['#arguments.rc.entityName#ID']});
+		invoke(entity,'remove#arguments.rc.attributeCode#');
+		var attribute = getService('attributeService').getAttributeByAttributeCode(arguments.rc.attributeCode);
+		var filePath = ExpandPath(entity.invokeMethod('get#arguments.rc.attributeCode#FileUrl'));
+		var isFile = attribute.getAttributeInputType() == 'file';
+		if(isFile && FileExists(filePath)){
+			FileDelete(filePath);
+		}
+		renderOrRedirectSuccess( defaultAction="admin:entity.detailstate", maintainQueryString=true, rc=arguments.rc);
+	}
 }

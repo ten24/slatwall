@@ -184,7 +184,7 @@ component  extends="HibachiService" accessors="true" {
 	}
 
 	public any function saveAttribute(required any attribute, struct data={}) {
-
+		
 		if(arguments.attribute.getAttributeInputType() == 'file'
 			&& structKeyExists(arguments.data, "attributeCode")
 			&& arguments.attribute.getAttributeCode() != arguments.data.attributeCode

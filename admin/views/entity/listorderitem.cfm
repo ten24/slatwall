@@ -56,12 +56,17 @@ Notes:
 <cfset rc.orderItemSmartList.addOrder("order.orderOpenDateTime|DESC") />
 
 <cfif not len(rc.orderItemSmartList.getFilters("order.orderStatusType.typeName")) >
-	<cfset local.defaultStatusFilter = $.slatwall.getService('typeService').getTypeBySystemCode("ostNew").getTypeName() />
-	<cfset local.defaultStatusFilter = listAppend(local.defaultStatusFilter, $.slatwall.getService('typeService').getTypeBySystemCode("ostNew").getTypeName()) />
-	<cfset local.defaultStatusFilter = listAppend(local.defaultStatusFilter, $.slatwall.getService('typeService').getTypeBySystemCode("ostProcessing").getTypeName()) />
-	<cfset local.defaultStatusFilter = listAppend(local.defaultStatusFilter, $.slatwall.getService('typeService').getTypeBySystemCode("ostOnHold").getTypeName()) />
-	<cfset local.defaultStatusFilter = listAppend(local.defaultStatusFilter, $.slatwall.getService('typeService').getTypeBySystemCode("ostClosed").getTypeName()) />
-	<cfset local.defaultStatusFilter = listAppend(local.defaultStatusFilter, $.slatwall.getService('typeService').getTypeBySystemCode("ostCanceled").getTypeName()) />
+	
+	<cfset local.defaultStatusFilter = "">
+	<cfset local.orderStatusTypeCodes = ['ostNew','ostProcessing','ostOnHold','ostClosed','ostCanceled'] />
+	
+	<cfloop array="#local.orderStatusTypeCodes#" index="local.orderstatus">
+		<cfset local.orderstatusOptions =  $.slatwall.getService('typeService').getTypeOptionsBySystemCode(local.orderstatus) />
+		<cfloop array="#local.orderstatusOptions#" index="local.orderstatusOption">
+			<cfset local.defaultStatusFilter = listAppend(local.defaultStatusFilter, local.orderstatusOption.getTypeName()) />
+		</cfloop>
+	</cfloop>
+	
 	<cfset rc.orderItemSmartList.addFilter('order.orderStatusType.typeName', local.defaultStatusFilter) />
 </cfif>
 

@@ -3,10 +3,8 @@
 
 
 class ProductBundleService{
-    public static $inject = [
-        '$log','$hibachi','utilityService'
-    ];
 
+    //ngInject
     constructor(private $log:ng.ILogService, private $hibachi, private utilityService){
 
         this.$log = $log;

@@ -1044,25 +1044,28 @@ component extends="HibachiService" accessors="true" {
 				data.urlTitle = getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.product.getProductName(), tableName="SwProduct");
 			}
 		}
-
-		if(structKeyExists(data, "assignedContentIDList")){
-			var listingPagesSelection = ListToArray(data["assignedContentIDList"]);
-			var currentProductListingPages = product.getListingPages();
+		if(structKeyExists(arguments.data, "assignedContentIDList")){
 			//purge existing listing pages not in the selection
-			for(var page in currentProductListingPages){
-				if(!ListContains(data["assignedContentIDList"], page.getContent().getContentID())){
-					this.deleteProductListingPage(page);
+			var originalListingPages = arguments.product.getListingPages();	
+			var listingPagesToDelete = []; 
+			for(var page in originalListingPages){
+				if(!ListContains(arguments.data["assignedContentIDList"], page.getContent().getContentID())){
+					arrayAppend(listingPagesToDelete, page); 
+				} else {
+					var indexOfContentID = listFind(arguments.data["assignedContentIDList"], page.getContent().getContentID());
+					arguments.data["assignedContentIDList"] = ListDeleteAt(arguments.data["assignedContentIDList"], indexOfContentID);	
 				}
 			}
+			for(var page in listingPagesToDelete){
+				this.deleteProductListingPage(page); 
+			} 
 			//add new listing pages
-			for(var contentID in listingPagesSelection){
-				var content = this.getContent(contentID);
-				if(!product.hasContent(contentID)){
-					var newProductListingPage = this.newProductListingPage();
-					newProductListingPage.setContent(content);
-					newProductListingPage.setProduct(arguments.product);
-					newProductListingPage = this.saveProductListingPage(newProductListingPage);
-				}
+			for(var contentID in ListToArray(arguments.data["assignedContentIDList"])){
+				var content = this.getContentService().getContent(contentID);
+				var newProductListingPage = this.newProductListingPage();
+				newProductListingPage.setContent(content);
+				newProductListingPage.setProduct(arguments.product);
+				newProductListingPage = this.saveProductListingPage(newProductListingPage);
 			}
 		}
 		arguments.product = super.save(arguments.product, arguments.data);
@@ -1111,6 +1114,17 @@ component extends="HibachiService" accessors="true" {
 
 		return arguments.productType;
 	}
+	
+	public any function saveProductReview(required any productReview, struct data={}){
+		arguments.productReview = super.save(arguments.productReview, arguments.data);	
+		
+		if(!arguments.productReview.hasErrors()){
+			getHibachiScope().addModifiedEntity(arguments.productReview.getProduct());
+		}
+		
+		return arguments.productReview;
+		
+	}
 
 	// ======================  END: Save Overrides ============================
 
@@ -1132,6 +1146,13 @@ component extends="HibachiService" accessors="true" {
 
 		return delete( arguments.product );
 	}
+
+	public boolean function deleteProductListingPage(required any productListingPage){ 
+		
+		arguments.productListingPage.removeContent(); 
+		arguments.productListingPage.removeProduct(); 
+		return delete( arguments.productListingPage ); 
+	}	
 
 	// ======================  END: Delete Overrides ==========================
 

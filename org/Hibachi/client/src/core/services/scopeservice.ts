@@ -2,6 +2,7 @@ import {BaseService} from "./baseservice";
 
 class ScopeService { 
 
+    //ngInject
     constructor(){
 
     }

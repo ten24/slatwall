@@ -16,8 +16,6 @@ class SWAssignedProductsController {
         private collectionConfigService,
         private utilityService
     ){
-        console.log("edit", this.edit);
-        console.log("sort prop", this.productSortProperty);
         this.collectionConfig = collectionConfigService.newCollectionConfig("Product"); 
         this.collectionConfig.addDisplayProperty("productID,productName,productDescription,activeFlag,publishedFlag,productType.productTypeNamePath");
         this.alreadySelectedProductsCollectionConfig = collectionConfigService.newCollectionConfig("ProductListingPage"); 

@@ -9,7 +9,7 @@ class SWWorkflowConditionGroupItem{
 			formService,
 			workflowPartialsPath,
 			hibachiPathBuilder
-		)=> new (
+		)=> new SWWorkflowConditionGroupItem(
 			$log,
 			$location,
 			$hibachi,
@@ -39,7 +39,7 @@ class SWWorkflowConditionGroupItem{
 			restrict: 'E',
 
 			templateUrl:hibachiPathBuilder.buildPartialsPath(workflowPartialsPath)+"workflowconditiongroupitem.html",
-			link: function(scope, element,attrs){
+			link: function(scope:any, element,attrs){
 			}
 		};
 	}

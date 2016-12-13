@@ -11,7 +11,7 @@ class SWNumbersOnly implements ng.IDirective{
         maxNumber:'=?'
     }
 
-    public link:ng.IDirectiveLinkFn = ($scope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, modelCtrl: ng.INgModelController) =>{
+    public link:ng.IDirectiveLinkFn = ($scope:any, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, modelCtrl: ng.INgModelController) =>{
 
          modelCtrl.$parsers.unshift((inputValue) =>{
             var modelValue = modelCtrl.$modelValue;

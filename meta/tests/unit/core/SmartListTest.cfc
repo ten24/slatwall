@@ -53,6 +53,55 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		variables.smartList = request.slatwallScope.getSmartList("Product");
 	}
+	
+	public void function getFilterOptionsTest(){
+		
+		var parentCategoryData = {
+			categoryID="",
+			categoryName="shoes"
+		};
+		var parentCategory = createPersistedTestEntity('category',parentCategoryData);
+		
+		var categoryData = {
+			categoryID="",
+			categoryName="sandals"
+		};
+		var category = createPersistedTestEntity('category',categoryData);
+		
+		category.setParentCategory(parentCategory);
+		
+		var productData = {
+			productID="",
+			productName="test" & createUUID(),
+			productCode="test" & createUUID(),
+			activeFlag=1,
+			publishedFlag=1,
+			calculatedQATS=4,
+			categories=[
+				{
+					categoryID=category.getCategoryID()
+				},
+				{
+					categoryID=parentCategory.getCategoryID()
+				}
+			]
+		};
+		var product = createPersistedTestEntity('product',productData);
+		
+		var categorySmartList = request.slatwallScope.getSmartList("Product");
+		
+		
+		var results = variables.smartList.getFilterOptions('categories.categoryID','categories.categoryName');
+		
+		var parentresults = variables.smartList.getFilterOptions('categories.categoryID','categories.categoryName',"categories.parentCategory.categoryID");
+		
+		assert(arraylen(results) == 2);
+		
+		assert(arraylen(parentresults) == 2);
+		
+		assert(!structKeyExists(results[1],'parentValue'));
+		assert(structKeyExists(parentResults[1],'parentValue'));
+	}
 
 	// buildURL()
 	public void function buildURL_1() {

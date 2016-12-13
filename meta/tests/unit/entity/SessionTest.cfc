@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,27 +45,36 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
-<cfparam name="rc.sitesArray" />
-<cfoutput>
-	<swa:SlatwallSettingTable showFilterEntities="#arrayLen(rc.sitesArray)#" showInheritance="false">
-		<swa:SlatwallSetting settingName="accountHTMLTitleString" />
-		<swa:SlatwallSetting settingName="accountMetaDescriptionString" />
-		<swa:SlatwallSetting settingName="accountMetaKeywordsString" />
-		<swa:SlatwallSetting settingName="accountEligiblePaymentMethods" />
-		<swa:SlatwallSetting settingName="accountEligiblePaymentTerms" />
-		<swa:SlatwallSetting settingName="accountPaymentTerm" />
-		<swa:SlatwallSetting settingName="accountTermCreditLimit" />
-		<swa:SlatwallSetting settingName="accountFailedAdminLoginAttemptCount" />
-		<swa:SlatwallSetting settingName="accountFailedPublicLoginAttemptCount" />
-		<swa:SlatwallSetting settingName="accountAdminForcePasswordResetAfterDays" />
-		<swa:SlatwallSetting settingName="accountLockMinutes" />
-		<!--- Site Specific Settings --->
-		<cfloop array="#rc.sitesArray#" index="site">
-			<swa:SlatwallSetting settingName="accountDisplayTemplate" settingFilterEntities="#[site]#" />
-		</cfloop>
-	</swa:SlatwallSettingTable>
-</cfoutput>
+*/
+component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
+
+	// @hint put things in here that you want to run befor EACH test
+	public void function setUp() {
+		super.setup();
+		variables.entityService = "hibachiSessionService";
+		variables.entity = request.slatwallScope.getService( variables.entityService ).newSession();
+	}
+	
+	public any function getLoggedInFlagTest(){
+		var sessionData = {
+			sessionID="",
+			SessionCookieExtendedPSID=createUUID()
+		};
+		var sessionEntity = createTestEntity('Session',sessionData);
+		assertFalse(sessionEntity.getLoggedInFlag());
+		
+		var sessionData2 = {
+			sessionID="aa",
+			SessionCookieExtendedPSID=createUUID(),
+			loggedInDateTime=now()
+		};
+		var sessionEntity2 = createTestEntity('Session',sessionData2);
+		assertFalse(sessionEntity2.getLoggedInFlag());
+		
+	} 
+	//doesn't apply for session
+	public void function validate_as_save_for_a_new_instance_doesnt_pass() {
+	}
+}
+
 
