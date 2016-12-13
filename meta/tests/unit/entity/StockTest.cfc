@@ -60,6 +60,14 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 	public void function getAverageCostTest(){
+		
+		var inventoryData = {
+			inventoryID="",
+			quantityIn=7,
+			cost=10
+		};
+		var inventory = createPersistedTestEntity('Inventory',inventoryData);
+		
 		var locationData = {
 			locationID="",
 			locationName="testWarehouse",
@@ -77,13 +85,15 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var stockData = {
 			stockID="",
 			location={
-				locationID=locationEntity.getLoactionID()
+				locationID=locationEntity.getLocationID()
 			},
 			sku={
 				skuID=sku.getSkuID()
 			}
 		};
 		var stock = createPersistedTestEntity('Stock',stockData);
+		
+		
 	}
 	
 }

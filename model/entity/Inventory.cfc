@@ -52,8 +52,8 @@ component displayname="Inventory" entityname="SlatwallInventory" table="SwInvent
 	property name="inventoryID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="quantityIn" ormtype="integer";
 	property name="quantityOut" ormtype="integer";
-	property name="cost" type="big_decimal";
-	property name="landedCost" type="big_decimal";
+	property name="cost" ormtype="big_decimal";
+	property name="landedCost" ormtype="big_decimal";
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";

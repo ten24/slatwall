@@ -64,7 +64,7 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	property name="calculatedQOH" ormtype="integer";
 	property name="calculatedQNC" ormtype="integer";
 	property name="calculatedAverageCost" ormtype="big_decimal";
-	property name="calculatedLandedCost" ormtype="big_decimal";
+	property name="calculatedAverageLandedCost" ormtype="big_decimal";
 
 	// Remote properties
 	property name="remoteID" ormtype="string";
@@ -103,6 +103,14 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 
 
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public any function getAverageCost(){
+		
+	}
+	
+	public any function getAverageLandedCost(){
+		
+	}
 
 	public any function getQATS() {
 		return getQuantity("QATS");
