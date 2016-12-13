@@ -31,7 +31,9 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		setFailureActions( [] );
 		setAuditsToCommitStruct( {} );
 		setModifiedEntities( [] );
-		setHibachiAuthenticationService(getService('hibachiAuthenticationService'));
+		if(hasService('hibachiAuthenticationService')){
+			setHibachiAuthenticationService(getService('hibachiAuthenticationService'));	
+		}
 		
 		return super.init();
 	}
