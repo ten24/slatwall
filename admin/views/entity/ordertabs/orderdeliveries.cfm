@@ -60,6 +60,8 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
 		<hb:HibachiListingColumn propertyIdentifier="trackingNumber" /> 
 		<hb:HibachiListingColumn propertyIdentifier="totalQuantityDelivered" />
+		<hb:HibachiListingColumn propertyIdentifier="location.locationName" />
+		
 		
 	</hb:HibachiListingDisplay>
 </cfoutput>
