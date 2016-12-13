@@ -313,10 +313,10 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuTaxCategory = {fieldType="select", defaultValue="444df2c8cce9f1417627bd164a65f133"},
 			skuTrackInventoryFlag = {fieldType="yesno", defaultValue=0},
 			skuShippingCostExempt = {fieldType="yesno", defaultValue=0},
-			skuRevenueAccountLedger = {fieldType="select", defaultValue=""},
-			skuCogsAccountLedger = {fieldType="select", defaultValue=""},
-			skuAssetAccountLedger = {fieldType="select", defaultValue=""},
-			skuLiabilityAccountLedger = {fieldType="select", defaultValue=""},
+			skuRevenueLedgerAccount = {fieldType="select", defaultValue=""},
+			skuCogsLedgerAccount = {fieldType="select", defaultValue=""},
+			skuAssetLedgerAccount = {fieldType="select", defaultValue=""},
+			skuLiabilityLedgerAccount = {fieldType="select", defaultValue=""},
 
 
 			// Subscription Term
@@ -487,16 +487,16 @@ component extends="HibachiService" output="false" accessors="true" {
 				optionSL.addSelect('taxCategoryName', 'name');
 				optionSL.addSelect('taxCategoryID', 'value');
 				return optionSL.getRecords();
-			case "skuRevenueAccountLedger":
+			case "skuRevenueLedgerAccount":
 				var optionSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latRevenue');
 				return optionsSL.getRecords();
-			case "skuCogsAccountLedger":
+			case "skuCogsLedgerAccount":
 				var optionSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latCogs');
 				return optionsSL.getRecords();
-			case "skuAssetAccountLedger":
+			case "skuAssetLedgerAccount":
 				var optionSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latAsset');
 				return optionsSL.getRecords();
-			case "skuLiabilityAccountLedger":
+			case "skuLiabilityLedgerAccount":
 				var optionSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latLiability');
 				return optionsSL.getRecords();
 			case "subscriptionUsageRenewalReminderEmailTemplate":

@@ -50,13 +50,13 @@ component extends="HibachiService" accessors="true" output="false" {
 
 	// ===================== START: Logical Methods ===========================
 	
-	public any function getLedgerAccountOptionsSmartList(required string systemCode){
-		var sl = this.getLedgerAccountSmartList();
-		sl.addSelect('ledgerAccountName', 'name');
-		sl.addSelect('ledgerAccountID', 'value');
-		sl.addFilter('ledgerAccountType.systemCode',arguments.systemCode);
-		return sl;
-	}
+//	public any function getLedgerAccountOptionsSmartList(required string systemCode){
+//		var sl = this.getLedgerAccountSmartList();
+//		sl.addSelect('ledgerAccountName', 'name');
+//		sl.addSelect('ledgerAccountID', 'value');
+//		sl.addFilter('ledgerAccountType.systemCode',arguments.systemCode);
+//		return sl;
+//	}
 
 	// =====================  END: Logical Methods ============================
 

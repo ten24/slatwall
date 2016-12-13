@@ -165,6 +165,7 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listloyalty" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listloyaltyterm" type="list">
 									<li class="divider"></li>
+									<hb:HibachiActionCaller action="admin:entity.listledgeraccount" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listvendor" type="list">
 								</hb:HibachiDividerHider>
 							</hb:HibachiActionCallerDropdown>
