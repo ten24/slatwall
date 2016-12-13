@@ -1724,9 +1724,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 		var endMapHQL = ')';
 
-		if(len(columnsHQL)){
-			HQL &= selectHQL & startMapHQL & columnsHQL & endMapHQL;
+		if(!len(columnsHQL)){
+			columnsHQL = "#getCollectionConfigStruct().baseEntityAlias#.id";
 		}
+		HQL &= selectHQL & startMapHQL & columnsHQL & endMapHQL;
 		return HQL;
 	}//<--end function
 	
