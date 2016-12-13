@@ -60,16 +60,16 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			sessionID="",
 			SessionCookieExtendedPSID=createUUID()
 		};
-		var session = createTestEntity('Session',sessionData);
-		assertFalse(session.getLoggedInFlag());
+		var sessionEntity = createTestEntity('Session',sessionData);
+		assertFalse(sessionEntity.getLoggedInFlag());
 		
 		var sessionData2 = {
 			sessionID="aa",
 			SessionCookieExtendedPSID=createUUID(),
 			loggedInDateTime=now()
 		};
-		var session2 = createTestEntity('Session',sessionData2);
-		assertFalse(session.getLoggedInFlag());
+		var sessionEntity2 = createTestEntity('Session',sessionData2);
+		assertFalse(sessionEntity2.getLoggedInFlag());
 		
 	} 
 	//doesn't apply for session
