@@ -1636,6 +1636,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		return smartList;
 	}*/
 
+
+	}
+
 	public void function getHQLTest_date_in_range(){
 		var collectionData = {
 			collectionid = '',
