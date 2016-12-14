@@ -229,6 +229,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(ListContains(collectionConfig.groupBys,arguments.groupByAlias) == 0){
 		listAppend(collectionConfig.groupBys,arguments.groupByAlias);
 		}
+		variables.groupBys = collectionConfig.groupBys;
 		this.setCollectionConfigStruct(collectionConfig);
 	}
 
@@ -1255,13 +1256,17 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			} else {
 				if(!structKeyExists(variables,"records")) {
 					var HQL = '';
+					request.debug("hasAggregateFilter(): #hasAggregateFilter()#");
+					//request.debug("groupBys: #variables.groupBys#");
 					if(hasAggregateFilter()){
 						HQL = 'SELECT count(DISTINCT id) FROM  #getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject())#  WHERE id in ( SELECT DISTINCT #getCollectionConfigStruct().baseEntityAlias#.id #getHQL(true)# )';
 					}else if(!isNull(variables.groupBys)){
 						HQL = 'SELECT COUNT(DISTINCT tempAlias.id) FROM  #getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject())# tempAlias WHERE tempAlias.id IN ( SELECT MIN(#getCollectionConfigStruct().baseEntityAlias#.id) #getHQL(true, false, true)# )';
 					}else{
 						HQL = getSelectionCountHQL() & getHQL(true);
+						request.debug(HQl);
 					}
+
 					var recordCount = ormExecuteQuery(HQL, getHQLParams(), true, {ignoreCase="true"});
 					if(isNull(recordCount)){
 						recordCount = 0;
@@ -1642,6 +1647,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 
 			if(structKeyExists(collectionConfig,'groupBys')){
+				request.debug('HAHA');
+				request.debug(collectionConfig.groupBys);
 				groupByHQL = getGroupByHQL(collectionConfig.groupBys);
 			}
 
