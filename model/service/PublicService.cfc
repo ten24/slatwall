@@ -454,7 +454,7 @@ component extends="HibachiService"  accessors="true" output="false"
       		accountAddress.setAccount(getHibachiScope().getAccount());	
       		var savedAccountAddress = getService("AccountService").saveAccountAddress(accountAddress);
  	     	if (!savedAccountAddress.hasErrors()){
- 	     		ormFlush();
+ 	     		getDao('hibachiDao').flushOrmSession();
  	     	}
       	}
      }
@@ -471,7 +471,7 @@ component extends="HibachiService"  accessors="true" output="false"
      	newAddress = getService("AddressService").saveAddress(newAddress, data, "full");
       	
       	if (!isNull(newAddress) && !newAddress.hasErrors()){
- 	     	ormFlush();
+ 	     	getDao('hibachiDao').flushOrmSession();
       	}
      }
     
@@ -522,7 +522,7 @@ component extends="HibachiService"  accessors="true" output="false"
                  	accountAddress.setAccount(getHibachiScope().getAccount());
                  	var savedAccountAddress = getService("AccountService").saveAccountAddress(accountAddress);
                  	if (!savedAddress.hasErrors()){
-                 		ormFlush();
+                 		getDao('hibachiDao').flushOrmSession();
                  	}
                   
                 }
@@ -576,7 +576,7 @@ component extends="HibachiService"  accessors="true" output="false"
             var orderFulfillment = order.getOrderFulfillments()[orderFulfillmentWithShippingMethodOptions];
             orderFulfillment.setShippingMethod(shippingMethod);
             getOrderService().saveOrder(order); 
-            ormFlush();           
+            getDao('hibachiDao').flushOrmSession();           
         }else{
             this.addErrors(arguments.data, shippingMethod.getErrors()); //add the basic errors
             getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", shippingMethod.hasErrors());
