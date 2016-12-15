@@ -65,6 +65,8 @@ Notes:
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="packingSlipNumber" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="boxCount" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="locationID" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay fieldName="vendorOrder.shippingAndHandlingCost" object="#rc.processObject.getVendorOrder()#"  property="shippingAndHandlingCost" edit="#rc.edit#">
+					<hb:HibachiPropertyDisplay fieldName="vendorOrder.costDistributionType" object="#rc.processObject.getVendorOrder()#" property="costDistributionType" edit="#rc.edit#">
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 		

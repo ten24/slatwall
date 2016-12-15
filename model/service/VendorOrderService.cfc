@@ -179,7 +179,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.vendorOrder.setVendorOrderStatusType( getTypeService().getTypeBySystemCode("vostPartiallyReceived") );
 
 		}
-		
+		arguments.vendorOrder = this.saveVendorOrder(arguments.vendorOrder);
 		
 		return arguments.vendorOrder;
 	}
