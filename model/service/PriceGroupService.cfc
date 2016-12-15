@@ -274,7 +274,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for(var i=1; i<=arrayLen(priceGroups); i++) {
 			var caculatedSkuPrice = calculateSkuPriceBasedOnPriceGroupAndCurrencyCode(sku=arguments.sku, priceGroup=priceGroups[i],currencyCode=arguments.currencyCode);
 			// Sort the array by lowest price
-			if(price < caculatedSkuPrice){
+			if(price > caculatedSkuPrice){
 				price = caculatedSkuPrice;
 			}
 		}
