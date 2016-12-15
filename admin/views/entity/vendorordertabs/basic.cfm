@@ -16,6 +16,8 @@
 			<hb:HibachiPropertyDisplay object="#rc.vendorOrder#" property="vendorOrderNumber" edit="#rc.vendorOrder.isNew()#">
 			<hb:HibachiPropertyDisplay object="#rc.vendorOrder#" property="estimatedReceivalDateTime" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.vendorOrder#" property="billToLocation" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.vendorOrder#" property="shippingAndHandlingCost" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.vendorOrder#" property="costDistributionType" edit="#rc.edit#">
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </cfoutput>

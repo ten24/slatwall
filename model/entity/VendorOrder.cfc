@@ -53,6 +53,8 @@ component entityname="SlatwallVendorOrder" table="SwVendorOrder" persistent="tru
 	property name="vendorOrderNumber" ormtype="string";
 	property name="estimatedReceivalDateTime" ormtype="timestamp";
 	property name="currencyCode" ormtype="string" length="3" hb_formFieldType="select";
+	property name="shippingAndHandlingCost" ormtype="big_decimal" hb_formatType="currency" default="0";
+	property name="costDistributionType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
 	
 	// Related Object Properties (Many-To-One)
 	property name="billToLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
@@ -79,8 +81,25 @@ component entityname="SlatwallVendorOrder" table="SwVendorOrder" persistent="tru
 	property name="currencyCodeOptions" persistent="false";
 	property name="subTotal" persistent="false" hb_formatType="currency";
 	property name="total" persistent="false" hb_formatType="currency"; 
+	property name="costDistributionTypeOptions" persistent="false";
 	
-	
+	public array function getcostDistributionTypeOptions() {
+		//quantity | cost | weight 
+		var costDistributionTypeOptions = [];
+		var valuesList = 'quantity,cost,weight';
+		var namesList = 'define.quantity,define.cost,define.weight';
+		var valuesArray = ListToArray(valuesList);
+		var namesArray = ListToArray(namesList);
+		var valuesArrayLength = arrayLen(valuesArray);
+		
+		for(var i = 1; i <= valuesArrayLength; i++){
+			var optionStruct = {};
+			optionStruct['value'] = valuesArray[i];
+			optionStruct['name'] = rbKey(namesArray[i]);
+			arrayAppend(costDistributionTypeOptions,optionStruct);
+		}
+    	return costDistributionTypeOptions;
+    }
 	
 	public void function removeAllVendorOrderItems() {
 		for(var i=arrayLen(getVendorOrderItems()); i >= 1; i--) {
