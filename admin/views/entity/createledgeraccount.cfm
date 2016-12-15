@@ -61,6 +61,7 @@ Notes:
 			<hb:HibachiPropertyList divClass="col-md-6">
 				<hb:HibachiPropertyDisplay object="#rc.ledgerAccount#" property="ledgerAccountName" edit="#rc.edit#" />
 				<hb:HibachiPropertyDisplay object="#rc.ledgerAccount#" property="ledgerAccountType" edit="#rc.edit#" />
+				<hb:HibachiPropertyDisplay object="#rc.ledgerAccount#" property="ledgerAccountCode" edit="#rc.edit#" />
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 	</hb:HibachiEntityDetailForm>

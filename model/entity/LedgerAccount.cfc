@@ -51,6 +51,7 @@ component entityname="SlatwallLedgerAccount" table="SwLedgerAccount" persistent=
 	// Persistent Properties
 	property name="ledgerAccountID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="ledgerAccountName" ormtype="string";
+	property name="ledgerAccountCode" ormtype="string" unique="true" length="50" index="PI_LEDGERACCOUNTCODE";
 	// Calculated Properties
 	
 	// Related Object Properties (many-to-one)
