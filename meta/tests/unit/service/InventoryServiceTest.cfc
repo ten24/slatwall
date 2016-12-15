@@ -54,6 +54,26 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.service = request.slatwallScope.getBean("inventoryService");
 	}
 	
+	public void function createInventoryTest(){
+		var vendorOrderItemData = {
+			vendorOrderItemID=""
+		};
+		var vendorOrderItem = createPersistedTestEntity('vendorOrderItem',vendorOrderItemData);
+		
+		var stockReceiverItemData={
+			stockReceiverItemID="",
+			vendorOrderItem={
+				vendorOrderItemID=vendorOrderItem.getVendorOrderItemID()
+			},
+			stockReceiver={
+				stockReceiverID="",
+				receiverType = 'vendorOrder'
+			}
+		};
+		var stockReceiverItem = createPersistedTestEntity('stockReceiverItem',stockReceiverItemData);
+		
+	}
+	
 	public void function getQIATSTest() {
 		//Testing when the function is called w/ stock argument
 		var skuData = {
@@ -137,5 +157,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		return createPersistedTestEntity('Setting', settingData);
 	}
+	
+	
 	//============ END: Unit Test Private Helpers ==============s
 }

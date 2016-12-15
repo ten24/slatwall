@@ -56,6 +56,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	// Data Properties
 	property name="skuID";
+	property name="vendorSkuID";
 	property name="price";
 	property name="cost";
 	property name="quantity";

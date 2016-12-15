@@ -61,6 +61,18 @@ Notes:
 
 	<cfscript>
 		
+		public any function getAverageCost(required any stock){
+			return ORMExecuteQuery(
+				'SELECT AVG(i.cost/i.quantityIn)
+				FROM SlatwallInventory i 
+				LEFT JOIN i.stock s
+				WHERE s.stockID=:stockID
+				',
+				{stockID=arguments.stock.getStockID()},
+				true
+			);
+		}
+		
 		public any function getStockBySkuAndLocation(required any sku, required any location) {
 			return entityLoad("SlatwallStock", {location=arguments.location, sku=arguments.sku}, true);
 		}

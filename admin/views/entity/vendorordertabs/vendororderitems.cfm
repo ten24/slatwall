@@ -131,6 +131,8 @@ Notes:
 									  recordProcessUpdateTableID="LD#replace(rc.vendorOrder.getVendorOrderItemsSmartList().getSavedStateID(),'-','','all')#">
 									    
 				<hb:HibachiListingColumn propertyIdentifier="skuCode" />
+				<hb:HibachiListingColumn propertyIdentifier="skuName" />
+				<hb:HibachiListingColumn propertyIdentifier="price" />
 				<hb:HibachiListingColumn propertyIdentifier="product.productCode" />
 				<hb:HibachiListingColumn propertyIdentifier="product.brand.brandName" />
 				<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="product.productName" />
@@ -139,6 +141,7 @@ Notes:
 				<hb:HibachiListingColumn processObjectProperty="deliverToLocationID" title="#$.slatwall.rbKey('process.vendorOrder_AddVendorOrderItem.deliverToLocationID')#" fieldClass="span2" />
 				<hb:HibachiListingColumn processObjectProperty="quantity" title="#$.slatwall.rbKey('define.quantity')#" fieldClass="span1" />
 				<hb:HibachiListingColumn processObjectProperty="cost" title="#$.slatwall.rbKey('define.cost')#" fieldClass="span1" />
+				<hb:HibachiListingColumn processObjectProperty="venderSkuID" fieldClass="span1" />
 				
 			</hb:HibachiListingDisplay>
 		</cfif>

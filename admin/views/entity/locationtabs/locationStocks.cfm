@@ -59,6 +59,8 @@ Notes:
 		<hb:HibachiListingColumn  propertyIdentifier="sku.product.productName" />
 		<hb:HibachiListingColumn  propertyIdentifier="calculatedQOH" />
 		<hb:HibachiListingColumn  propertyIdentifier="calculatedQNC" />
+		<hb:HibachiListingColumn  propertyIdentifier="calculatedAverageCost" />
+		<hb:HibachiListingColumn  propertyIdentifier="calculatedAverageLandedCost" />
 		
 	</hb:HibachiListingDisplay>
 

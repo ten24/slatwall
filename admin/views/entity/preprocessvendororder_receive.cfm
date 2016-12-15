@@ -79,6 +79,10 @@ Notes:
 				<th class="primary">#$.slatwall.rbKey('entity.product.productName')#</th>
 				<th>#$.slatwall.rbKey('entity.sku.skuCode')#</th>
 				<th>#$.slatwall.rbKey('entity.location.locationName')#</th>
+				<th>#$.slatwall.rbKey('entity.sku.weight')#</th>
+				<th>#$.slatwall.rbKey('entity.vendorOrderItem.cost')#</th>
+				<th>#$.slatwall.rbKey('entity.vendorOrderItem.extendedCost')#</th>
+				<th>#$.slatwall.rbKey('entity.vendorOrderItem.extendedWeight')#</th>
 				<th>#$.slatwall.rbKey('entity.vendorOrderItem.quantity')#</th>
 				<th>#$.slatwall.rbKey('entity.vendorOrderItem.quantityReceived')#</th>
 				<th>#$.slatwall.rbKey('entity.vendorOrderItem.quantityUnreceived')#</th>
@@ -96,9 +100,14 @@ Notes:
 					<td>#vendorOrderItem.getStock().getSku().getProduct().getProductName()#</td>
 					<td>#vendorOrderItem.getStock().getSku().getSkuCode()#</td>
 					<td>#vendorOrderItem.getStock().getLocation().getLocationName()#</td>
+					<td>#vendorOrderItem.getStock().getSku().getWeight()#</td>
+					<td>#vendorOrderItem.getCost()#</td>
+					<td>#vendorOrderItem.getExtendedCost()#</td>
+					<td>#vendorOrderItem.getExtendedWeight()#</td>
 					<td>#vendorOrderItem.getQuantity()#</td>
 					<td>#vendorOrderItem.getQuantityReceived()#</td>
 					<td>#vendorOrderItem.getQuantityUnreceived()#</td>
+					
 					<td><input type="text" name="vendorOrderItems[#vendorOrderItemIndex#].quantity" value="" class="span1" /></td>
 				</tr>
 			</cfloop>

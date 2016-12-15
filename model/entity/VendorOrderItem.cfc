@@ -75,8 +75,10 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 
 	// Non-persistent properties
 	property name="extendedCost" persistent="false" hb_formatType="currency";
+	property name="extendedWeight" persistent="false";
 	property name="quantityReceived" persistent="false";
 	property name="quantityUnreceived" persistent="false";
+	
 
 	// ============ START: Non-Persistent Property Methods =================
 
@@ -86,6 +88,17 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 		}
 		return 0;
 
+	}
+	
+	public numeric function getExtendedWeight() {
+		if(
+			!isNull(getStock())
+			&& !isNull(getStock().getSku())
+			&& !isNull(getStock().getSku().getWeight())
+		) {
+			return getStock().getSku().getWeight() * getQuantity();
+		}
+		return 0;
 	}
 
 	public numeric function getQuantityReceived() {
