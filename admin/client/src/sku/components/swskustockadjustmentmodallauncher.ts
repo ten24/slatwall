@@ -33,7 +33,7 @@ class SWSkuStockAdjustmentModalLauncherController{
         private utilityService
     ){
         if(angular.isDefined(this.skuId)){
-            this.name="j-change-qty-" + this.utilityService.createID(32);
+            this.name="skuStockAdjustment" + this.utilityService.createID(32);
         } else{
             throw("SWSkuStockAdjustmentModalLauncherController was not provided with a sku id"); 
         }
