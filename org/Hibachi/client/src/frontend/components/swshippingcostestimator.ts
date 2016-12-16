@@ -5,19 +5,35 @@ declare var hibachiConfig:any;
 class SWShippingCostEstimatorController {
     private hibachiScope;
     private address;
-    private skuCode
+    private skuCode;
+    public estimatedShippingRates:any;
+
     //@ngInject
     constructor(private $log, public $rootScope) {
         this.$rootScope = $rootScope;
         this.hibachiScope = this.$rootScope.hibachiScope;
 
-        if (this.address != undefined){
-
+        if ( this.skuCode && this.address ){
+            this.getEstimatedShippingCosts(this.skuCode, this.address);
         }
-        if (this.skuCode != undefined){
-
+        if ( this.skuCode && this.address ){
+            this.getEstimatedShippingCosts(this.skuCode);
         }
     }
+
+    /** Get the estimated shipping rates. */
+    public getEstimatedShippingCosts = ( skuCode?:any, address?:any ) => {
+        this.$rootScope.slatwall.doAction("getEstimatedShippingRates", {skuCode: skuCode, address: address||{}}).then((result)=>{
+            if (result.estimatedShippingRates != undefined){
+                this.estimatedShippingRates = result;
+            }    
+            else {
+                this.estimatedShippingRates = [];
+            }
+        
+        });
+    }
+
 }
 
 class SWShippingCostEstimator implements ng.IDirective {
