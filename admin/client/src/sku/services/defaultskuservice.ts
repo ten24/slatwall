@@ -4,6 +4,8 @@ export class DefaultSkuService {
 
     private observerKeys = {}; 
 
+    private defaultSkuSelections = {}; 
+
     //@ngInject
     constructor(public $hibachi,
                 public observerService
@@ -12,36 +14,36 @@ export class DefaultSkuService {
 
     public attachObserver = (selectionID,productID) =>{
         if(angular.isUndefined(this.observerKeys[selectionID])){
-            this.observerKeys[selectionID] = {attached:true, productID:productID, hasBeenCalled:false}; 
-            this.observerService.attach(this.saveDefaultSku,'swSelectionToggleSelection' + selectionID);
-        }//otherwise the event has been attached
+            this.observerKeys[selectionID] = productID; 
+            this.observerService.attach(this.decideToSaveSku,'swSelectionToggleSelection' + selectionID);
+        }
     }
 
-    private saveDefaultSku = (response) =>{ 
-        //we only want to call save on the second and subsequent times the event fires, because it will fire when it is initialized
-        if(
-           angular.isDefined(this.observerKeys[response.selectionid]) &&
-           angular.isDefined(this.observerKeys[response.selectionid].hasBeenCalled) &&
-           this.observerKeys[response.selectionid].hasBeenCalled    
-        ){
-            this.$hibachi.getEntity( "Product", this.observerKeys[response.selectionid].productID ).then(
-                (product)=>{
-                    var product = this.$hibachi.populateEntity("Product",product); 
-                    product.$$setDefaultSku(this.$hibachi.populateEntity("Sku",{skuID:response.selection}));
-                    product.$$save().then(
-                        ()=>{
-                            //there was success
-                        },
-                        ()=>{
-                            //there was a problem
-                        });
-                },
-                (reason)=>{
-
-                }
-            );
-        } else { 
-            this.observerKeys[response.selectionid].hasBeenCalled = true; 
+    private decideToSaveSku = (args) =>{
+        if(this.observerKeys[args.selectionid] == null){
+            this.observerKeys[args.selectionid] = args.selection;
+        } else if(this.observerKeys[args.selectionid] != args.selection ) { 
+            this.observerKeys[args.selectionid] = args.selection;
+            this.saveDefaultSku(args);
         }
+    }
+
+    private saveDefaultSku = (args) =>{ 
+        this.$hibachi.getEntity( "Product", this.observerKeys[args.selectionid].productID ).then(
+            (product)=>{
+                var product = this.$hibachi.populateEntity("Product",product); 
+                product.$$setDefaultSku(this.$hibachi.populateEntity("Sku",{skuID:args.selection}));
+                product.$$save().then(
+                    ()=>{
+                        //there was success
+                    },
+                    ()=>{
+                        //there was a problem
+                    });
+            },
+            (reason)=>{
+
+            }
+        );
     }
 }
