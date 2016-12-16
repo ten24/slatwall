@@ -220,7 +220,7 @@ class SWSkuPriceEdit implements ng.IDirective{
         var tabContentScope = this.scopeService.getRootParentScope(scope,"swTabContent");
         if(tabContentScope != null){
             if(angular.isDefined(tabGroupScope) && tabContentScope["swTabContent"].name == "Basic"){
-                scope.swSkuPriceEdit.switchTabContextEventName = tabGroupScope["swTabGroup"].switchTabGroupEventName;
+                scope.swSkuPriceEdit.switchTabContextEventName = tabGroupScope["swTabGroup"].switchTabEventName;
                 scope.swSkuPriceEdit.tabToSwitchTo = tabGroupScope["swTabGroup"].getTabByName("Pricing");
                 scope.swSkuPriceEdit.showSwitchTabContextButton = true;
             } else {

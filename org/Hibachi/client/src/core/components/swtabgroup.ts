@@ -21,9 +21,10 @@ class SWTabGroupController {
         this.switchTabGroupEventName = "SwitchTabGroup" + this.tabGroupID;
         this.initTabEventName = "InitTabForTabGroup" + this.tabGroupID
         this.observerService.attach(this.initTab, this.initTabEventName);
-        if(this.switchTabEventName){
-            this.observerService.attach(this.switchTab, this.switchTabEventName);
+        if(angular.isUndefined(this.switchTabEventName)){
+            this.switchTabEventName = this.tabGroupID + "SwitchTabTo";
         }
+         this.observerService.attach(this.switchTab, this.switchTabEventName);
     }
 
     public initTab = () =>{
