@@ -71,6 +71,8 @@ component extends="HibachiService" accessors="true" output="false" {
 			inventory.setQuantityIn(arguments.stockReceiverItem.getQuantity());
 			inventory.setStock(arguments.stockReceiverItem.getStock());
 			inventory.setStockReceiverItem(arguments.stockReceiverItem);
+			inventory.setCost(arguments.stockReceiverItem.getCost());
+			//calculate Landed Cost
 			getHibachiDAO().save( inventory );
 			
 		}
