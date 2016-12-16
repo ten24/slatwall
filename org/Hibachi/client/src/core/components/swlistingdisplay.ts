@@ -169,7 +169,11 @@ class SWListingDisplayController{
         console.warn("getCollectionObserver", param)
         this.collectionConfig.loadJson(param.collectionConfig);
         this.collectionData = undefined;
-        this.getCollection();
+        this.$timeout(
+            ()=>{
+                this.getCollection();
+            }
+        ); 
     };
 
     private initializeState = () =>{
