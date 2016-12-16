@@ -6,6 +6,7 @@ import {hibachimodule} 	from "../hibachi/hibachi.module";
 import {FrontendController} from './controllers/frontend';
 //directives
 import {SWFDirective} 		from "./components/swfdirective";
+import {SWShippingCostEstimator} from "./components/swshippingcostestimator";
 
 declare var hibachiConfig:any;
 //need to inject the public service into the rootscope for use in the directives.
