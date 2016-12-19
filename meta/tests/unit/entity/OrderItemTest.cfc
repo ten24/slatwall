@@ -301,6 +301,36 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		orderItem.setQuantity(4);
 		assertEquals(380, orderItem.getExtendedPrice());
 	}
+	
+	public void function getExtendedPriceTest(){
+		var productData = {
+			productID="",
+			productName="productTest",
+			productType={
+				productTypeID='444df2f7ea9c87e60051f3cd87b435a1'
+			}
+		};
+		var product = createPersistedTestEntity('product',productData);
+		
+		var skuData = {
+			skuID="",
+			product={
+				productID=product.getProductID()
+			}
+		};
+		var sku = createPersistedTestEntity('sku',skuData);
+		
+		var orderItemData = {
+			orderItemID="",
+			quantity=2,
+			price=99.99,
+			sku={
+				skuID=sku.getSkuID()
+			}
+		};
+		var orderItem = createPersistedTestEntity('OrderItem',orderItemData);
+		assertEquals(orderItem.getExtendedPrice(),199.98);
+	}
 
 	public void function test_quantity_and_bundleItemQuantity() {
 		var	orderItemData = {
