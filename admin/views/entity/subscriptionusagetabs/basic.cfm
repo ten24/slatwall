@@ -46,6 +46,7 @@
 						<hb:HibachiListingColumn propertyIdentifier="skuName" />
 						<hb:HibachiListingColumn propertyIdentifier="subscriptionTerm.subscriptionTermName" title="#$.slatwall.getRBKey('define.renewalTerm')#"/>
 						<hb:HibachiListingColumn propertyIdentifier="renewalPrice" />
+						<hb:HibachiListingColumn propertyIdentifier="fulfillmentCharge" />
 					</hb:HibachiListingDisplay>
 				</hb:HibachiDisplayToggle>
 			<cfelseif !isNull(rc.subscriptionUsage.getRenewalSku())>
