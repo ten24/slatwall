@@ -323,7 +323,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			price = getPrice();
 		}
 
-		return precisionEvaluate(round(price * val(getQuantity()) * 100) / 100);
+		return val(precisionEvaluate("round(price * val(getQuantity()) * 100) / 100)");
 	}
 
 
