@@ -165,7 +165,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			emailIMAPServerPort = {fieldType="text"},
 			emailIMAPServerUsername = {fieldType="text"},
 			emailIMAPServerPassword = {fieldType="password"},
-			emailReplyToAddress = {fieldType="text", defaultValue="email@youremaildomain.com"},,
+			emailReplyToAddress = {fieldType="text", defaultValue="email@youremaildomain.com"},
 			emailSubject = {fieldType="text", defaultValue="Notification From Slatwall"},
 			emailSMTPServer = {fieldType="text", defaultValue=""},
 			emailSMTPPort = {fieldType="text", defaultValue=25},
