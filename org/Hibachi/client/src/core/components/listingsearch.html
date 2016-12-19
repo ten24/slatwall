@@ -6,7 +6,7 @@
         <ul class="dropdown-menu" role="menu">
             <li><a href data-ng-click="swListingSearch.selectSearchColumn()">All</a></li>
             <li data-ng-repeat="column in swListingSearch.collectionConfig.columns | orderBy:'title'"
-                data-ng-if="column.isSearchable && (column.ormtype == 'string' || column.ormtype == 'integer' || column.ormtype == 'big_decimal')">
+                data-ng-if="column.isSearchable && column.title.length && (column.ormtype == 'string' || column.ormtype == 'integer' || column.ormtype == 'big_decimal')">
                 <a href data-ng-click="swListingSearch.selectSearchColumn(column)" data-ng-bind="column.title"></a>
             </li>
         </ul>
