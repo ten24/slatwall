@@ -1261,7 +1261,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					}else{
 						HQL = getSelectionCountHQL() & getHQL(true);
 					}
-					request.debug(HQL);
 					var recordCount = ormExecuteQuery(HQL, getHQLParams(), true, {ignoreCase="true"});
 					if(isNull(recordCount)){
 						recordCount = 0;
