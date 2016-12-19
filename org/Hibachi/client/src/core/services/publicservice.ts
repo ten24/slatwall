@@ -118,7 +118,7 @@ class PublicService {
     public getCart=(refresh=false):any =>  {
         let urlBase = this.baseActionPath+'getCart/';
         if(!this.cartDataPromise || refresh){
-            this.cartDataPromise = this.getData(urlBase, "cart", "")
+            this.cartDataPromise = this.getData(urlBase, "cart", "");
         }
         return this.cartDataPromise;
     }
