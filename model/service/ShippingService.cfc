@@ -176,7 +176,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		return responseBeans;
 	}
-
+	
+	/* do not add orderFulfillmentItmes directley from an orm getter to this function because it will delete them from the data base via array delete at
+		instead use: var orderFulfillmentItems = getHibachiUtilityService().arrayConcat([], arguments.orderFulfillment.getOrderFulfillmentItems());
+	*/
 	private array function splitOrderFulfillmentItems(required array orderFulfillmentItems, required numeric splitShipmentWeight, required any shippingMethodOptionSplitShipment){
 		var currentWeight = 0; 
 		while(ArrayLen(orderFulfillmentItems)){
