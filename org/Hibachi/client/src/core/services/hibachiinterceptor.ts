@@ -178,9 +178,9 @@ class HibachiInterceptor implements IInterceptor{
 				}else if(rejection.data.messages[0].message === 'invalid_token'){
                     return $http.get(this.baseUrl+'?slataction=api:main.login').then((loginResponse:IHibachiInterceptorPromise<any>)=>{
                         if(loginResponse.status === 200){
-                        this.localStorageService.setItem('token',loginResponse.data.token);
+                            this.localStorageService.setItem('token',loginResponse.data.token);
                             rejection.config.headers = rejection.config.headers || {};
-                            rejection.config.headers['Auth-Token'] = 'Bearer ' + this.localStorageService.getItem('token');
+                            rejection.config.headers['Auth-Token'] = 'Bearer ' + loginResponse.data.token;
                             return $http(rejection.config).then(function(response) {
                                return response;
                             });
