@@ -60,5 +60,6 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="quantity" />
 		<hb:HibachiListingColumn propertyIdentifier="quantityDelivered" />
 		<hb:HibachiListingColumn propertyIdentifier="quantityUndelivered" />
+		<hb:HibachiListingColumn propertyIdentifier="stock.location.locationName" />
 	</hb:HibachiListingDisplay>
 </cfoutput>

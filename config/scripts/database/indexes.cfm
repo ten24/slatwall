@@ -51,34 +51,36 @@ Notes:
 
 <!--- Foreign Key Index Creation --->
 <cftry>
-	<cfset local.qrs = "" />
-	<cfset local.infoTables = "" />
-	<cfset local.infoColumns = "" />
-	<cfset local.infoIndexes = "" />
-	
-	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="tables" name="infoTables" pattern="Sw%" />
-	<cfloop query="infoTables">
-		<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" table="#infoTables.table_name#" name="infoColumns" />
-		<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Index" table="#infoTables.table_name#" name="infoIndexes" />
-		
-		<cfloop query="infoColumns">
-			<cfif infoColumns.is_foreignkey>
-				<cfquery name="qrs" dbtype="query">
-					SELECT
-						infoIndexes.column_name
-					FROM
-						infoIndexes
-					WHERE
-						LOWER(infoIndexes.column_name) = <cfqueryparam cfsqltype="cf_sql_varchar" value="#LCASE(infoColumns.column_name)#">
-				</cfquery>
-				<cfif not qrs.recordCount>
-					<cfquery name="createIndex">
-						CREATE INDEX FK_#UCASE(right(hash(infoTables.table_name & infoColumns.column_name), 27))# ON #infoTables.table_name# ( #infoColumns.column_name# )
+	<cfif getHibachiScope().getApplicationValue('databaseType') EQ "MicrosoftSQLServer">
+		<cfset local.qrs = "" />
+		<cfset local.infoTables = "" />
+		<cfset local.infoColumns = "" />
+		<cfset local.infoIndexes = "" />
+
+		<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="tables" name="infoTables" pattern="Sw%" />
+		<cfloop query="infoTables">
+			<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" table="#infoTables.table_name#" name="infoColumns" />
+			<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Index" table="#infoTables.table_name#" name="infoIndexes" />
+
+			<cfloop query="infoColumns">
+				<cfif infoColumns.is_foreignkey>
+					<cfquery name="qrs" dbtype="query">
+						SELECT
+							infoIndexes.column_name
+						FROM
+							infoIndexes
+						WHERE
+							LOWER(infoIndexes.column_name) = <cfqueryparam cfsqltype="cf_sql_varchar" value="#LCASE(infoColumns.column_name)#">
 					</cfquery>
+					<cfif not qrs.recordCount>
+						<cfquery name="createIndex">
+							CREATE INDEX FK_#UCASE(right(hash(infoTables.table_name & infoColumns.column_name), 27))# ON #infoTables.table_name# ( #infoColumns.column_name# )
+						</cfquery>
+					</cfif>
 				</cfif>
-			</cfif>
+			</cfloop>
 		</cfloop>
-	</cfloop>
+	</cfif>
 	<cfcatch>
 		<cflog file="Slatwall" text="ERROR in Foreign Key index creation : #cfcatch.Detail#">
 		<cfset local.scriptHasErrors = true />

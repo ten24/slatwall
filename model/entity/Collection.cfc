@@ -46,7 +46,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="collectionObject" ormtype="string" hb_formFieldType="select";
 	property name="collectionConfig" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json" hint="json object used to construct the base collection HQL query";
 	property name="dirtyReadFlag" ormtype="boolean";
-
+	
 	// Calculated Properties
 
 	// Related Object Properties (many-to-one)
@@ -69,6 +69,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non-Persistent Properties
+	property name="hibachiCollectionService" type="any" persistent="false";
 	property name="collectionConfigStruct" type="struct" persistent="false";
 	property name="hqlParams" type="struct" persistent="false";
 	property name="hqlAliases" type="struct" persistent="false";
@@ -98,6 +99,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="hasDisplayAggregate" type="boolean" persistent="false";
 	property name="hasManyRelationFilter" type="boolean" persistent="false";
 	property name="useElasticSearch" type="boolean" persistent="false";
+	property name="enforceAuthorization" type="boolean" persistent="false" default="true";
+	property name="authorizedProperties" singularname="authorizedProperty" type="array" persistent="false";
 	
 	//property name="entityNameOptions" persistent="false" hint="an array of name/value structs for the entity's metaData";
 	property name="collectionObjectOptions" persistent="false";
@@ -130,6 +133,31 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.useElasticSearch = false;
 		variables.dirtyReadFlag = false; 
 		variables.connection = ormGetSession().connection();
+		setHibachiCollectionService(getService('hibachiCollectionService'));
+	}
+	
+	public array function getAuthorizedProperties(){
+		if(!structKeyExists(variables,'authorizedProperties')){
+			variables.authorizedProperties = [];
+		}
+		return variables.authorizedProperties;
+	}
+	
+	public void function setAuthorizedProperties(required array authorizedProperties){
+		variables.authorizedProperties = arguments.authorizedProperties;
+	}
+	
+	public void function addAuthorizedProperty(required string authorizedProperty){
+		if(listLen(arguments.authorizedProperty,'.') > 1){
+			arguments.authorizedProperty = convertPropertyIdentifierToAlias(arguments.authorizedProperty); 	
+		}
+		if(!hasAuthorizedProperty(arguments.authorizedProperty)){
+			arrayAppend(getAuthorizedProperties(),authorizedProperty);	
+		}
+	}
+	
+	public boolean function hasAuthorizedProperty(required string authorizedProperty){
+		return arrayFind(getAuthorizedProperties(),authorizedProperty);
 	}
 	
 	public void function setFilterAggregates(required struct aggregations){
@@ -346,6 +374,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		arrayAppend(collectionConfig.columns,column);
 		this.setCollectionConfigStruct(collectionConfig);
+		//backend should Automatically Authorize
+		addAuthorizedProperty(convertPropertyIdentifierToAlias(column['propertyIdentifier']));
 	}
 
 	public void function addColumn(required column){
@@ -1061,7 +1091,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 		//check if we have a persistent collection
 		if(structKeyExists(arguments.filter,'collectionID')){
-			var collectionEntity = getService('hibachiCollectionService').getCollectionByCollectionID(arguments.filter.collectionID);
+			var collectionEntity = getHibachiCollectionService().getCollectionByCollectionID(arguments.filter.collectionID);
 		}
 
 		var mainCollectionAlias = arguments.filter.propertyIdentifier;
@@ -1201,12 +1231,20 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 		return variables.nonPersistentColumn;
 	}
+	
+	public string function convertPropertyIdentifierToAlias(required string propertyIdentifier){
+		if(left(arguments.propertyIdentifier,1) == '_'){
+			arguments.propertyIdentifier = listRest(arguments.propertyIdentifier,'.');
+		}
+		return Replace(arguments.propertyIdentifier,'.','_','all');
+	}
+		
 
 	// Paging Methods
 	public array function getPageRecords(boolean refresh=false, formatRecords=true) {
 
 		if(arguments.formatRecords){
-			var formattedRecords = getService('hibachiCollectionService').getAPIResponseForCollection(this,{},false).pageRecords;
+			var formattedRecords = getHibachiCollectionService().getAPIResponseForCollection(this,{},false).pageRecords;
 
 			variables.pageRecords =	formattedRecords;
 		}else{
@@ -1246,9 +1284,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 									var listRest = ListRest(column.propertyIdentifier,'.');
 									if(structKeyExists(column,'setting') && column.setting == true){
 										var listRest = ListRest(column.propertyIdentifier,'.');
-										pageRecord[Replace(listRest(column.propertyIdentifier,'.'),'.','_','all')] = getSettingValueFormattedByPropertyIdentifier(listRest,entity);
+										pageRecord[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = getSettingValueFormattedByPropertyIdentifier(listRest,entity);
 									}else{
-										pageRecord[Replace(listRest(column.propertyIdentifier,'.'),'.','_','all')] = entity.getValueByPropertyIdentifier(listRest);
+										pageRecord[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = entity.getValueByPropertyIdentifier(listRest);
 									}
 								}
 								arrayAppend(variables.pageRecords,pageRecord);
@@ -1301,7 +1339,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	public array function getRecords(boolean refresh=false, boolean forExport=false, boolean formatRecords=true) {
 		if(arguments.formatRecords){
-			var formattedRecords = getService('hibachiCollectionService').getAPIResponseForCollection(this,{allRecords=true},false).records;
+			var formattedRecords = getHibachiCollectionService().getAPIResponseForCollection(this,{allRecords=true},false).records;
 
 			variables.records =	formattedRecords;
 		}else{
@@ -1686,9 +1724,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 		var endMapHQL = ')';
 
-		if(len(columnsHQL)){
-			HQL &= selectHQL & startMapHQL & columnsHQL & endMapHQL;
+		if(!len(columnsHQL)){
+			columnsHQL = "#getCollectionConfigStruct().baseEntityAlias#.id";
 		}
+		HQL &= selectHQL & startMapHQL & columnsHQL & endMapHQL;
 		return HQL;
 	}//<--end function
 	

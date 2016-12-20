@@ -59,6 +59,33 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	}
 	
+	public boolean function returnFalse(){
+		return false;
+	}
+	
+	//test that if we trun enforce auth off but also aren't authenticated that only 1st level props are available
+	public void function backendCollectionAuthorizedTest(){
+		var skuCollection = variables.entityService.getSkuCollectionList();
+		var hibachiAuthenticationServiceFake = new Slatwall.model.service.HibachiAuthenticationService();
+		hibachiAuthenticationServiceFake.authenticateCollectionCrudByAccount = returnFalse;
+		hibachiAuthenticationServiceFake.authenticateCollectionPropertyIdentifierCrudByAccount=returnFalse;
+		request.slatwallScope.setHibachiAuthenticationService(hibachiAuthenticationServiceFake);
+		skuCollection.addColumn({propertyIdentifier='product.productName'});
+		skuCollection.getPageRecords();
+		//test checks to make sure that if the user is public and authentication isn't enforced that all dot chained properties must be declared explicity in authorized Properties via backend
+		assert(!arrayFind(skuCollection.getAuthorizedProperties(),'product_productName'));
+		
+		//manually adding to the whitelist
+		skuCollection.addAuthorizedProperty('product.productName');
+		
+		skuCollection.getPageRecords();
+		assert(arrayFind(skuCollection.getAuthorizedProperties(),'product_productName'));
+		
+		skuCollection.addDisplayProperty('product.productCode');
+		assert(arrayFind(skuCollection.getAuthorizedProperties(),'product_productCode'));
+		
+	}
+	
 	public void function fixBadCollectionConfigTest(){
 		var collectionEntityData = {
 			collectionid = '',

@@ -76,11 +76,11 @@ class SWListingControlsController {
         this.paginator.setCurrentPage(1);
     };
 
-    public toggleDisplayOptions=(closeButton:boolean=false)=>{
-        if(this.displayOptionsClosed) {
-            this.displayOptionsClosed = false;
-        }else if(closeButton){
-            this.displayOptionsClosed = true;
+    public toggleDisplayOptions= (closeButton:boolean=false)=>{
+        if(closeButton){
+            this.displayOptionsClosed = true; 
+        } else { 
+            this.displayOptionsClosed = !this.displayOptionsClosed;
         }
     };
 

@@ -220,8 +220,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 				getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-ExtendedPSID", value=getHibachiScope().getSession().getSessionCookieExtendedPSID(), expires="#getHibachiScope().setting('globalExtendedSessionAutoLogoutInDays')#");
 			}
 			
-			
-			getHibachiDAO().flushORMSession();
+			getHibachiScope().flushORMSession();
 			
 		}
 	}

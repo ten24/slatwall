@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,23 +45,36 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+*/
+component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
-<cfparam name="rc.order" type="any" />
-
-<cfoutput>
+	// @hint put things in here that you want to run befor EACH test
+	public void function setUp() {
+		super.setup();
+		variables.entityService = "hibachiSessionService";
+		variables.entity = request.slatwallScope.getService( variables.entityService ).newSession();
+	}
 	
-	<hb:HibachiListingDisplay smartList="#rc.order.getOrderDeliveriesSmartList()#"
-							  recordDetailAction="admin:entity.detailorderdelivery">
-			
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="fulfillmentMethod.fulfillmentMethodName" />
-		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
-		<hb:HibachiListingColumn propertyIdentifier="trackingNumber" /> 
-		<hb:HibachiListingColumn propertyIdentifier="totalQuantityDelivered" />
-		<hb:HibachiListingColumn propertyIdentifier="location.locationName" />
+	public any function getLoggedInFlagTest(){
+		var sessionData = {
+			sessionID="",
+			SessionCookieExtendedPSID=createUUID()
+		};
+		var sessionEntity = createTestEntity('Session',sessionData);
+		assertFalse(sessionEntity.getLoggedInFlag());
 		
+		var sessionData2 = {
+			sessionID="aa",
+			SessionCookieExtendedPSID=createUUID(),
+			loggedInDateTime=now()
+		};
+		var sessionEntity2 = createTestEntity('Session',sessionData2);
+		assertFalse(sessionEntity2.getLoggedInFlag());
 		
-	</hb:HibachiListingDisplay>
-</cfoutput>
+	} 
+	//doesn't apply for session
+	public void function validate_as_save_for_a_new_instance_doesnt_pass() {
+	}
+}
+
+
