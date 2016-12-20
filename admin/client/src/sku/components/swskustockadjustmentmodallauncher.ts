@@ -14,6 +14,7 @@ class SWSkuStockAdjustmentModalLauncherController{
     public stockAdjustmentStatusType:any; 
     public stockAdjustmentItem:any; 
     public toLocation:any; 
+    public toLocationTypeaheadDataKey:string; 
     public name:string; 
     public quantityDifference:number; 
     public calculatedQats:any; 
@@ -33,7 +34,7 @@ class SWSkuStockAdjustmentModalLauncherController{
         private observerService,
         private utilityService
     ){
-
+        this.toLocationTypeaheadDataKey = this.utilityService.createID(32);
         if(angular.isDefined(this.skuId)){
             this.name="skuStockAdjustment" + this.utilityService.createID(32);
         } else{
@@ -46,6 +47,12 @@ class SWSkuStockAdjustmentModalLauncherController{
         if(angular.isDefined(this.calculatedQoh)){
             this.calculatedQoh = parseInt(this.calculatedQoh);
         }
+        this.initData();
+        this.observerService.attach(this.updateNewQuantity, this.name + 'newQuantitychange');
+    }
+    
+    public initData = () => {
+        this.toLocation = undefined; 
         var skudata = {
             skuID:this.skuId,
             skuCode:this.skuCode,
@@ -56,12 +63,6 @@ class SWSkuStockAdjustmentModalLauncherController{
             newQOH:this.calculatedQoh || 0
         }
         this.sku = this.$hibachi.populateEntity("Sku", skudata);
-
-        this.observerService.attach(this.updateNewQuantity, this.name + 'newQuantitychange');
-        this.initData();
-    }
-    
-    public initData = () => {
         this.stockAdjustmentID="";
         this.stock = this.$hibachi.newStock();
         this.stockAdjustment = this.$hibachi.newStockAdjustment();
@@ -77,6 +78,7 @@ class SWSkuStockAdjustmentModalLauncherController{
         this.stockAdjustment.$$setStockAdjustmentStatusType(this.stockAdjustmentStatusType);
         this.stockAdjustmentItem.$$setSku(this.sku); 
         this.newQuantity = this.calculatedQoh || 0;
+        this.observerService.notify(this.toLocationTypeaheadDataKey + 'clearSearch');
     }
     
     public save = () => {
@@ -101,6 +103,14 @@ class SWSkuStockAdjustmentModalLauncherController{
         });
     }    
 
+    public addToLocation = (item) =>{
+        if(angular.isDefined(item)){
+            this.toLocation = this.$hibachi.populateEntity('Location', item); 
+            this.stockAdjustment.$$setToLocation(this.toLocation);
+        } else { 
+            this.toLocation = undefined; 
+        }
+    }
 
     public updateNewQuantity = (args) => { 
         if(!isNaN(args.swInput.value)){

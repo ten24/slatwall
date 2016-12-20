@@ -1,5 +1,6 @@
 <sw-modal-launcher data-modal-name="{{swSkuStockAdjustmentModalLauncher.name}}" 
                    data-save-action="swSkuStockAdjustmentModalLauncher.save"
+                   data-cancel-action="swSkuStockAdjustmentModalLauncher.initData"
                    data-title="Stock Adjustment"><!-- Change this to rb -->
     <sw-modal-static-button>
         <sw-form data-name="{{swSkuStockAdjustmentModalLauncher.name}}"
@@ -66,14 +67,17 @@
                              </div>
                         </div>
                     </div>
-                    <sw-property-display data-object="swSkuStockAdjustmentModalLauncher.stockAdjustment"
-                                         data-property="toLocation"
-                                         data-editable="true"
-                                         data-editing="true"
-                                         data-is-dirty="true"
-                                         data-options-arguments="{property:'toLocation'}"
-                            >
-                    </sw-property-display> 
+                    <sw-typeahead-search
+                        data-placeholder-text="Search Locations..."
+                        data-entity="Location"
+                        data-property-to-show="'locationName'"
+                        data-add-function="swSkuStockAdjustmentModalLauncher.addToLocation"
+                        data-validate-required="true"
+                        data-typeahead-data-key="{{swSkuStockAdjustmentModalLauncher.toLocationTypeaheadDataKey}}"
+                        > 
+                        <span sw-typeahead-search-line-item data-property-identifier="locationName">
+                        </span> 
+                    </sw-typeahead-search>
                     <!-- Temporary Omitting this field, not sure if we have the js capability to simple add comments
                          without manually creating a comment entity and commentRelationship
                     <div class="form-group">
