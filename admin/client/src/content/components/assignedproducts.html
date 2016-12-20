@@ -8,9 +8,7 @@
                     data-show-order-by="false"
                     data-administrative-count="1"
                     data-sortable-field-name="productListingPageSortOrder"
-                    data-base-entity-name="ProductListingPage"
                     >
-                    
                     <sw-collection-configs>
                         <sw-collection-config data-entity-name="ProductListingPage" 
                                               data-all-records="false" 
@@ -32,7 +30,7 @@
                                                       data-is-visible="true">
                                 </sw-collection-column>
                                 <sw-collection-column data-property-identifier="product.productType.productTypeName"  
-                                                      data-fallback-property-identifiers="productType_productTypeName" 
+                                                      data-fallback-property-identifiers="product.productType.productTypeName" 
                                                       data-is-visible="true">
                                 </sw-collection-column>
                                 <sw-collection-column data-property-identifier="product.activeFlag" 
@@ -44,7 +42,7 @@
                                                       data-is-visible="true">
                                 </sw-collection-column>
                                 <sw-collection-column data-property-identifier="product.defaultSku.price"  
-                                                      data-fallback-property-identifiers="defaultSku_price" 
+                                                      data-fallback-property-identifiers="product.defaultSku.price" 
                                                       data-is-visible="true">
                                 </sw-collection-column>
                                 <sw-collection-column data-property-identifier="content.contentID" 
