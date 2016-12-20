@@ -457,6 +457,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				order.getOrderFulfillments()[1].setShippingAddress( originalOrderFulfillment.getShippingAddress().copyAddress(true) );
 			}
 
+			// If there was originally a fulfillment charge copy it over a duplicate
+			if(!originalOrderFulfillment.getShippingAddress().getNewFlag()) {
+				order.getOrderFulfillments()[1].setFulfillmentCharge( originalOrderFulfillment.getFulfillmentCharge());
+			}
+			
 			// If there was originally an email address copy it over
 			if(!isNull(originalOrderFulfillment.getEmailAddress())) {
 				order.getOrderFulfillments()[1].setEmailAddress(originalOrderFulfillment.getEmailAddress());

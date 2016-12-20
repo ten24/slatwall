@@ -158,7 +158,9 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 		//Copy the shipping information from order fulfillment.
 		var orderFulfillment = orderItem.getOrderFulfillment();
 		if (!isNull(orderFulfillment)){
-			setFulfillmentCharge( orderFulfillment.getFulfillmentCharge() );
+			if (!isNull(orderFulfillment.getFulfillmentCharge())){
+				setFulfillmentCharge( orderFulfillment.getFulfillmentCharge() );
+			}
 			setEmailAddress( orderFulfillment.getEmailAddress() );
 			setShippingAccountAddress( orderFulfillment.getAccountAddress() );
 			setShippingMethod( orderFulfillment.getShippingMethod() );
