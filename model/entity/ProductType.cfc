@@ -107,7 +107,7 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 		// first, clear existing collection
 		variables.Products = [];
 		for( var product in arguments.Products ) {
-			addProduct(product);
+			product.setProductType( this );
 		}
 	}
 	
