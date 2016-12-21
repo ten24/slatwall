@@ -151,12 +151,10 @@ class SWListingDisplayController{
             }
         ).finally(
             ()=>{
-                //if getCollection doesn't exist then create it
                 if(angular.isUndefined(this.getCollection)){
                     this.getCollection = this.listingService.setupDefaultGetCollection(this.tableID);
                 }
                 this.paginator.getCollection = this.getCollection;
-                //this.getCollection();
         		var getCollectioneventID= (this.name || 'ListingDisplay');
         		this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectioneventID);
         
