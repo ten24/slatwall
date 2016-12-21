@@ -158,6 +158,19 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assert(isArray(pageRecords));
 		
 	}
+	
+	public void function applyDataTest(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+		
+		url['p:show'] = 1;
+		
+		var data = {};
+		data['p:show'] = 1;
+		data['p:current'] = 1;
+		data['f:firstName:eq=Ryan'];
+		
+		collectionEntity.applyData(data);
+	}
 
 	public void function addFilterTest(){
 

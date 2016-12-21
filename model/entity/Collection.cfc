@@ -511,8 +511,99 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return this;
 	}
 	//TODO parse data to seo based collection configuration
-	public void function applyData(required any data){
-
+	
+	public void function applyData(required any data=url){
+		var filterKeyList = "";
+		
+		if(!isStruct(data) && isSimpleValue(data)) {
+			data = getHibachiScope().getService('hibachiService').convertNVPStringToStruct(data);
+			filterKeyList = structKeyList(data);
+		}
+		
+		//Simple Filters
+		for (var datum in data){
+			
+			//handle filters.
+			if (left(datum, 2) == "f:"){
+				
+				var prop = datum.split(':')[2];
+				var dataToFilterOn = datum.split(':')[3];
+				dataToFilterOn = urlDecode(dataToFilterOn);
+				try{
+					var comparison = datum.split(':')[4];
+				}catch(var e){
+					comparison = "=";
+				}
+				if (!isNull(comparison)){
+					if (comparison == 'eq'){
+						comparison = "=";
+					}
+					if (comparison == 'like'){
+						dataToFilterOn = "%#dataToFilterOn#%";
+					}
+				}
+				this.addFilter(prop, dataToFilterOn, comparison);
+				
+			}
+			
+			//Handle Range
+			if (left(datum, 2) == "r:"){
+				var filterParts = "#listToArray(datum, ':')#";
+				var prop = filterParts[2];
+				var rangeValue = filterParts[3];
+				
+				var lowEndOfRange = listToArray(rangeValue, '^')[1];
+				var highEndOfRange = listToArray(rangeValue, '^')[2];
+				//must be greater than the low end and less than the high end.
+				
+				this.addFilter(prop, lowEndOfRange, ">=");
+				this.addFilter(prop, highEndOfRange, "<=");
+			}
+			
+			//OrderByList
+			if (datum.contains('orderbylist')){
+				var orderByList = datum.split(':')[2];
+				this.setOrderBy(orderbylist);
+			}
+			
+			//Single orderBy
+			if (datum.contains('orderby')){
+				var prop = "#datum.split(':')[2]#";
+				var d = "#listToArray(prop, '|')#";
+				prop = d[1];
+				if (isDefined("prop")){
+					prop = "_#lcase(entity)#.#prop#"; //add the alias.
+					
+					try{
+						var direction = d[2]; //optional
+					}catch (var e){}
+					if (isNull(direction)){
+						direction = "ASC";
+					}
+					
+					
+					if (!isNull(prop) && !isNull(direction)){
+						this.addOrderBy("#prop#|#direction#");	
+					}
+				}
+			}
+			
+			//Handle pagination.
+			if(datum.contains('p:current')){
+				var currentPage = datum.split(":")[3];
+			}
+			if (!isNull(currentPage)){
+				data['currentPageDeclaration'] = currentPage;
+				this.setPageRecordsStart(currentPage);
+			}
+			
+			if(datum.contains('p:show')){
+				var pageShow = datum.split(":")[3];
+			} 
+			if (!isNull(pageShow)){
+				this.setPageRecordsShow(pageShow);	
+			}
+		}
 	}
 
 	public void function setCollectionObject(required string collectionObject, boolean addDefaultColumns=true){
