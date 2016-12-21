@@ -335,11 +335,12 @@ class SWListingDisplayController{
     };
 
     public updateMultiselectValues = (res)=>{
-        this.multiselectValues = this.selectionService.getSelections(this.tableId);
-        if(this.selectionService.isAllSelected(this.tableId)){
-            this.multiselectCount = this.collectionData.recordsCount - this.selectionService.getSelectionCount(this.tableId);
+        this.multiselectValues = this.selectionService.getSelections(this.tableID);
+        console.log("updateMultiselectValues", this.multiselectValues);
+        if(this.selectionService.isAllSelected(this.tableID)){
+            this.multiselectCount = this.collectionData.recordsCount - this.selectionService.getSelectionCount(this.tableID);
         }else{
-            this.multiselectCount = this.selectionService.getSelectionCount(this.tableId);
+            this.multiselectCount = this.selectionService.getSelectionCount(this.tableID);
         }
         switch (res.action){
             case 'uncheck':
