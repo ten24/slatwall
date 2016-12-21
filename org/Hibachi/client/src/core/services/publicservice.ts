@@ -166,7 +166,7 @@ class PublicService {
 
             if(setter == 'cart'||setter=='account'){
                 //cart and account return cart and account info flat
-                this[setter].populate(result)
+                this[setter].populate(result);
 
             }else{
                 //other functions reutrn cart,account and then data
