@@ -1,16 +1,18 @@
 <sw-modal-launcher ng-if="!swAddSkuPriceModalLauncher.pageRecord.dataparentID || swAddSkuPriceModalLauncher.disableAllFieldsButPrice"
-    data-modal-name="{{swAddSkuPriceModalLauncher.uniqueName}}" 
-    data-title="Add Sku Price Detail" 
-    data-save-action="swAddSkuPriceModalLauncher.save">
+                   data-modal-name="{{swAddSkuPriceModalLauncher.uniqueName}}" 
+                   data-title="Add Sku Price Detail" 
+                   data-save-action="swAddSkuPriceModalLauncher.save">
+    
     <sw-modal-button>
         <ng-transclude></ng-transclude>
     </sw-modal-button>
+    
     <sw-modal-content> 
-        <sw-form 
-                name="{{swAddSkuPriceModalLauncher.formName}}" 
-                data-object="swAddSkuPriceModalLauncher.skuPrice"    
-                data-context="save"
-                >
+        
+        <sw-form name="{{swAddSkuPriceModalLauncher.formName}}" 
+                 data-object="swAddSkuPriceModalLauncher.skuPrice"    
+                 data-context="save"
+                 >
             <div class="row">
                     <div class="col-sm-4">
                         <sw-sku-thumbnail data-sku-data="swAddSkuPriceModalLauncher.sku.data">
@@ -20,11 +22,11 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <sw-property-display data-object="swAddSkuPriceModalLauncher.skuPrice" 
-                                                    data-property="price"
-                                                    data-editing="true"
-                                                    data-editable="true"
-                                                    data-is-dirty="true" 
-                                                    >
+                                                     data-property="price"
+                                                     data-editing="true"
+                                                     data-editable="true"
+                                                     data-is-dirty="true" 
+                                                     >
                                 </sw-property-display>
                             </div> 
                             <div class="col-sm-6">
