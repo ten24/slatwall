@@ -528,7 +528,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	*/
 	public void function applyData(required any data=url){
 		var filterKeyList = "";
-		
+		var hibachiBaseEntity = "";
+		hibachiBaseEntity = getCollectionObject();
+
 		if(!isStruct(data) && isSimpleValue(data)) {
 			data = getHibachiScope().getService('hibachiService').convertNVPStringToStruct(data);
 			filterKeyList = structKeyList(data);
@@ -632,7 +634,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}else if (arrayLen(rangeValue.split('^')) == 1){
 					
 					//are we setting the high or low?
-					if (left(data[datum], 1) == "^"){ ////if this starts with ^, for example ^40 (up to 40)
+					if (left(data[datum], 1) == "^"){ //if this starts with ^, for example ^40 (up to 40)
 						var lowEndOfRange = 0;
 						var highEndOfRange = listToArray(rangeValue, '^')[1];
 					}
