@@ -60,6 +60,7 @@ component extends="HibachiService" output="false" accessors="true" {
 	property name="emailService" type="any";
 	property name="fulfillmentService" type="any";
 	property name="integrationService" type="any";
+	property name="ledgerAccountService" type="any";
 	property name="locationService" type="any";
 	property name="measurementService" type="any";
 	property name="paymentService" type="any";
@@ -314,10 +315,12 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuTaxCategory = {fieldType="select", defaultValue="444df2c8cce9f1417627bd164a65f133"},
 			skuTrackInventoryFlag = {fieldType="yesno", defaultValue=0},
 			skuShippingCostExempt = {fieldType="yesno", defaultValue=0},
+			
 			skuRevenueLedgerAccount = {fieldType="select", defaultValue=""},
 			skuCogsLedgerAccount = {fieldType="select", defaultValue=""},
 			skuAssetLedgerAccount = {fieldType="select", defaultValue=""},
 			skuLiabilityLedgerAccount = {fieldType="select", defaultValue=""},
+			skuDeferredRevenueLedgerAccount = {fieldType="select", defaultValue=""},
 
 
 			// Subscription Term
@@ -489,16 +492,18 @@ component extends="HibachiService" output="false" accessors="true" {
 				optionSL.addSelect('taxCategoryID', 'value');
 				return optionSL.getRecords();
 			case "skuRevenueLedgerAccount":
-				var optionSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latRevenue');
+				var optionsSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latRevenue');
 				return optionsSL.getRecords();
 			case "skuCogsLedgerAccount":
-				var optionSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latCogs');
+				var optionsSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latCogs');
 				return optionsSL.getRecords();
 			case "skuAssetLedgerAccount":
-				var optionSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latAsset');
+				var optionsSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latAsset');
 				return optionsSL.getRecords();
 			case "skuLiabilityLedgerAccount":
-				var optionSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latLiability');
+				var optionsSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latLiability');
+			case "skuDeferredRevenueLedgerAccount":
+				var optionsSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latLiability');
 				return optionsSL.getRecords();
 			case "subscriptionUsageRenewalReminderEmailTemplate":
 				return getEmailService().getEmailTemplateOptions( "SubscriptionUsage" );
