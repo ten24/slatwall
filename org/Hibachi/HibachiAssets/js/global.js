@@ -1575,9 +1575,6 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	
 		if(inputValue !== undefined && inputValue.length > 0) {
 			jQuery.each(inputValue.split(','), function(vi, vv) {
-				console.log(inputValue);
-				console.log(vi);
-				console.log(vv);
 				jQuery(jQuery('table[data-multiselectfield="' + multiselectField  + '"]').find('tr[id=' + vv + '] .hibachi-ui-checkbox').addClass('hibachi-ui-checkbox-checked')).removeClass('hibachi-ui-checkbox');
 			});
 		}
