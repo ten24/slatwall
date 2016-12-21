@@ -521,7 +521,45 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 		//Simple Filters
 		for (var datum in data){
-			
+			//remove filters
+			if (left(datum, 2) == "fr:"){
+				
+				var prop = datum.split(':')[2];
+				var dataToFilterOn = data[datum]; //value of the filter.
+				
+				dataToFilterOn = urlDecode(dataToFilterOn); //make sure its url decoded.
+				var comparison = "=";
+				try{
+					comparison = datum.split(':')[3];
+				}catch(var e){
+					comparison = "=";
+				}
+				if (!isNull(comparison)){
+					if (comparison == 'eq'){
+						comparison = "=";
+					}
+					if (comparison == 'gte'){
+						comparison = ">=";
+					}
+					if (comparison == 'lte'){
+						comparison = "<=";
+					}
+					if (comparison == 'gt'){
+						comparison = ">";
+					}
+					if (comparison == 'lt'){
+						comparison = "<";
+					}
+					if (comparison == 'neq'){
+						comparison = "!=";
+					}
+					if (comparison == 'like'){
+						dataToFilterOn = "%#dataToFilterOn#%";
+					}
+				}
+				this.removeFilter(prop, dataToFilterOn, comparison);
+				
+			}
 			//handle filters.
 			if (left(datum, 2) == "f:"){
 				
