@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,61 +45,15 @@
 
 Notes:
 
-*/
-component extends="HibachiService" accessors="true" output="false" {
+--->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-	// ===================== START: Logical Methods ===========================
-	
-	public any function getLedgerAccountOptionsSmartList(required string systemCode){
-		var sl = this.getLedgerAccountSmartList();
-		sl.addSelect('ledgerAccountName', 'name');
-		sl.addSelect('ledgerAccountID', 'value');
-		sl.addFilter('ledgerAccountType.systemCode',arguments.systemCode);
-		return sl;
-	}
-	
-	public any function getExpenseLedgerAccountIDList(){
-		var returnList = "";
-		var sl = this.getLedgerAccountSmartList();
-		sl.addFilter('ledgerAccountType.systemCode','latExpense');
-		sl.addSelect('ledgerAccountID','ledgerAccountID');
-		var records = sl.getRecords();
-		for(var i=1; i<=arrayLen(records); i++) {
-			returnList = listAppend(returnList, records[i]['ledgerAccountID']);
-		}
-		return returnList;
-	}
-	
+<cfparam name="rc.physical" type="any" />
 
-	// =====================  END: Logical Methods ============================
-
-	// ===================== START: DAO Passthrough ===========================
-
-
-	// =====================  END: DAO Passthrough ============================
-
-	// ===================== START: Process Methods ===========================
-
-	// =====================  END: Process Methods ============================
-
-	// ====================== START: Save Overrides ===========================
-
-	// ======================  END: Save Overrides ============================
-
-	// ==================== START: Smart List Overrides =======================
-
-	// ====================  END: Smart List Overrides ========================
-
-	// ====================== START: Get Overrides ============================
-
-	// ======================  END: Get Overrides =============================
-
-	// ===================== START: Delete Overrides ==========================
-
-	// =====================  END: Delete Overrides ===========================
-
-	// ===================== START: Private Helper Functions ==================
-
-	// =====================  END:  Private Helper Functions ==================
-
-}
+<cfoutput>
+	<swa:SlatwallSettingTable>
+		<swa:SlatwallSetting settingName="physicalEligibleExpenseLedgerAccount" settingObject="#rc.physical#" />
+		<swa:SlatwallSetting settingName="physicalDefaultExpenseLedgerAccount" settingObject="#rc.physical#" />
+	</swa:SlatwallSettingTable>
+</cfoutput>

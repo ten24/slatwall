@@ -50,33 +50,19 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.physical" type="any">
-<cfparam name="rc.edit" type="boolean">
+<cfparam name="rc.physical" type="any" />
+<cfparam name="rc.edit" type="boolean" />
 
-<cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.physical#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.physical#" edit="#rc.edit#">
-			<hb:HibachiProcessCaller action="admin:entity.preprocessphysical" entity="#rc.physical#" processContext="addPhysicalCount" modal="true" type="list" />
-			<hb:HibachiProcessCaller action="admin:entity.preprocessphysical" entity="#rc.physical#" processContext="commit" type="list" modal="true"/>
-		</hb:HibachiEntityActionBar>
-
-		<hb:HibachiEntityDetailGroup object="#rc.physical#">
-			<hb:HibachiEntityDetailItem view="admin:entity/physicaltabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<hb:HibachiEntityDetailItem property="productTypes" />
-			<hb:HibachiEntityDetailItem property="brands" />
-			<hb:HibachiEntityDetailItem property="products" />
-			<hb:HibachiEntityDetailItem property="skus" />
-			<hb:HibachiEntityDetailItem property="locations" />
-			<hb:HibachiEntityDetailItem property="physicalcounts" />
-			<cfif rc.physical.getPhysicalStatusType().getSystemCode() eq "pstClosed">
-				<hb:HibachiEntityDetailItem property="stockadjustments" />
-			<cfelse>
-				<hb:HibachiEntityDetailItem view="admin:entity/physicaltabs/discrepancies" />
-			</cfif>
-			<hb:HibachiEntityDetailItem view="admin:entity/physicaltabs/physicalsettings" />
-			<swa:SlatwallAdminTabComments object="#rc.physical#" />
-		</hb:HibachiEntityDetailGroup>
-		
-	</hb:HibachiEntityDetailForm>
-</cfoutput>
+<hb:HibachiEntityProcessForm entity="#rc.physical#" edit="#rc.edit#" sRedirectAction="admin:entity.detailphysical">
+	
+	<hb:HibachiEntityActionBar type="preprocess" object="#rc.physical#">
+	</hb:HibachiEntityActionBar>
+	
+	<hb:HibachiPropertyRow>
+		<hb:HibachiPropertyList>
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="loyaltyID" edit="#rc.edit#">
+		</hb:HibachiPropertyList>
+	</hb:HibachiPropertyRow>
+	
+</hb:HibachiEntityProcessForm>
 

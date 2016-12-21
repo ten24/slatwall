@@ -93,7 +93,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			"stock",
 			"site",
 			"task",
-			"sku"
+			"sku",
+			"physical"
 		];
 	}
 
@@ -247,6 +248,18 @@ component extends="HibachiService" output="false" accessors="true" {
 			// Payment Method
 			paymentMethodMaximumOrderTotalPercentageAmount = {fieldType="text", defaultValue=100, formatType="percentage", validate={dataType="numeric", minValue=0, maxValue=100}},
 
+			// Physical
+			physicalEligibleExpenseLedgerAccount = {
+				fieldType="listingMultiselect", 
+				listingMultiselectEntityName="LedgerAccount",
+				listingMultiselectFilters=[{
+					propertyIdentifier="ledgerAccountType.systemCode",
+					value="latExpense"
+				}],
+				defaultValue=getLedgerAccountService().getExpenseLedgerAccountIDList()
+			},
+			physicalDefaultExpenseLedgerAccount = {fieldType="select", defaultValue=""},
+
 			// Product
 			productDisplayTemplate = {fieldType="select"},
 			productImageDefaultExtension = {fieldType="text",defaultValue="jpg"},
@@ -321,7 +334,6 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuAssetLedgerAccount = {fieldType="select", defaultValue=""},
 			skuLiabilityLedgerAccount = {fieldType="select", defaultValue=""},
 			skuDeferredRevenueLedgerAccount = {fieldType="select", defaultValue=""},
-
 
 			// Subscription Term
 			subscriptionUsageAutoRetryPaymentDays = {fieldType="text", defaultValue=""},
@@ -513,6 +525,9 @@ component extends="HibachiService" output="false" accessors="true" {
 				return getEmailService().getEmailTemplateOptions( "Task" );
 			case "siteRecaptchaProtectedEvents":
 				return getHibachiEventService().getEntityEventNameOptions('before');
+			case "physicalDefaultExpenseLedgerAccount":
+				var optionsSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latExpense');
+				return optionsSL.getRecords();
 		}
 
 		if(structKeyExists(getSettingMetaData(arguments.settingName), "valueOptions")) {
@@ -523,7 +538,14 @@ component extends="HibachiService" output="false" accessors="true" {
 	}
 
 	public any function getSettingOptionsSmartList(required string settingName) {
-			return getServiceByEntityName( getSettingMetaData(arguments.settingName).listingMultiselectEntityName ).invokeMethod("get#getSettingMetaData(arguments.settingName).listingMultiselectEntityName#SmartList");
+		var sl = getServiceByEntityName( getSettingMetaData(arguments.settingName).listingMultiselectEntityName ).invokeMethod("get#getSettingMetaData(arguments.settingName).listingMultiselectEntityName#SmartList");
+		if(structKeyExists(getSettingMetaData(arguments.settingName),'listingMultiselectFilters')){
+			var filters = getSettingMetaData(arguments.settingName).listingMultiselectFilters;
+			for(var filter in filters){
+				sl.addFilter(filter.propertyIdentifier,filter.value);	
+			}
+		}
+		return sl;
 	}
 
 	public array function getCustomIntegrationOptions() {
