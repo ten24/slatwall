@@ -21,41 +21,33 @@ export class BaseBootStrapper{
             this.$http = $http;
             this.$q = $q;
 
-            var cacheState = {
-                instantiationKey:false,
-                attributeCacheKey:false
-            }
 
-                 var baseURL = hibachiConfig.baseURL;
-                 if(baseURL.length && baseURL.slice(-1) !== '/'){
-                    baseURL += '/';
-                 }
-                 return $http.get(baseURL+'?'+hibachiConfig.action+'=api:main.getInstantiationKey')
+             var baseURL = hibachiConfig.baseURL;
+             if(baseURL.length && baseURL.slice(-1) !== '/'){
+                baseURL += '/';
+             }
+             return $http.get(baseURL+'?'+hibachiConfig.action+'=api:main.getInstantiationKey')
 
-                .then( (resp)=> {
-                    this.instantiationKey = resp.data.data.instantiationKey;
+            .then( (resp)=> {
+                this.instantiationKey = resp.data.data.instantiationKey;
 
-                    var invalidCache = [];
-                    try{
-                        var hashedData = md5(localStorage.getItem('attributeMetaData'));
-                        if(resp.data.data['attributeMetaData'] === hashedData.toUpperCase()){
-                            coremodule.constant('attributeMetaData',JSON.parse(localStorage.getItem('attributeMetaData')));
-                        }else{
-                            invalidCache.push('attributeCacheKey');
-                        }
-                    }catch(e){
+                var invalidCache = [];
+                try{
+                    var hashedData = md5(localStorage.getItem('attributeMetaData'));
+                    console.log(hashedData);
+                    if(resp.data.data['attributeCacheKey'] === hashedData.toUpperCase()){
+                        coremodule.constant('attributeMetaData',JSON.parse(localStorage.getItem('attributeMetaData')));
+                    }else{
                         invalidCache.push('attributeCacheKey');
                     }
-                    
-                    invalidCache.push('instantiationKey');
+                }catch(e){
+                    invalidCache.push('attributeCacheKey');
+                }
+                
+                invalidCache.push('instantiationKey');
 
-                    if( invalidCache.length > 0 ){
-                        return this.getData(invalidCache);
-                    }
-
-                   invalidCache = Object.keys(cacheState);
-                   return this.getData(invalidCache);
-                });
+               return this.getData(invalidCache);
+            });
             
         }])
         .loading(function(){
