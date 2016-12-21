@@ -13,6 +13,13 @@ class Sku extends BaseEntity{
         super($injector);
     }
 
+    public setNewQOH = (value) =>{
+        this.newQOH = value; 
+    }
+
+    public getNewQOH = () =>{
+        return this.newQOH; 
+    }
 
 }
 export {

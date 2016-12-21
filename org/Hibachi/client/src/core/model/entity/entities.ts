@@ -12,5 +12,6 @@ export {
     Account,
     Address,
     Cart,
-    OrderPayment
+    OrderPayment,
+    Sku
 }

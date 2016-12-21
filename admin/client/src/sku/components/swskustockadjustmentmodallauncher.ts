@@ -60,9 +60,10 @@ class SWSkuStockAdjustmentModalLauncherController{
             imagePath:this.imagePath,
             calculatedQATS:this.calculatedQats || 0,
             calculatedQOH:this.calculatedQoh || 0,
-            newQOH:this.calculatedQoh || 0
         }
         this.sku = this.$hibachi.populateEntity("Sku", skudata);
+        this.sku.setNewQOH(this.calculatedQoh || 0);
+
         this.stockAdjustmentID="";
         this.stock = this.$hibachi.newStock();
         this.stockAdjustment = this.$hibachi.newStockAdjustment();
