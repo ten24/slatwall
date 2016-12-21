@@ -620,7 +620,7 @@ component output="false" accessors="true" extends="HibachiService" {
 				}
 			}
 			
-			
+			//Handle pagination.
 			if(datum.contains('p:current')){
 				var currentPage = datum.split(":")[3];
 			}
