@@ -216,7 +216,7 @@ class ListingService{
             ( angular.isString(pageRecordValue) && pageRecordValue.trim().length == 0) ) && 
               angular.isDefined(column.fallbackPropertyIdentifiers)
         ){
-            var fallbackPropertyArray = column.fallbackPropertyIdentifiers.split(",");
+            var fallbackPropertyArray = column.fallbackPropertyIdentifiers.replace('.','_').split(",");
             for(var i=0; i<fallbackPropertyArray.length; i++){
                 if(angular.isDefined(pageRecord[this.getPageRecordKey(fallbackPropertyArray[i])])){
                     pageRecordValue = pageRecord[this.getPageRecordKey(fallbackPropertyArray[i])];

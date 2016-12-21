@@ -49,15 +49,27 @@ class SWCollectionColumn implements ng.IDirective{
         }
         if(angular.isUndefined(scope.swCollectionColumn.isOnlyKeywordColumn)){
             scope.swCollectionColumn.isOnlyKeywordColumn = scope.swCollectionColumn.isKeywordColumn;
+        }  
+        if(angular.isUndefined(scope.swCollectionColumn.isVisible)){
+            scope.swCollectionColumn.isVisible = true; 
         }
-        
+        if(angular.isUndefined(scope.swCollectionColumn.isSearchable)){
+            scope.swCollectionColumn.isSearchable = false; 
+        }
+        if(angular.isUndefined(scope.swCollectionColumn.isDeletable)){
+            scope.swCollectionColumn.isDeletable = false; 
+        }
+        if(angular.isUndefined(scope.swCollectionColumn.isExportable)){
+            scope.swCollectionColumn.isExportable = true; 
+        }
+
         var column = {
                 propertyIdentifier:scope.swCollectionColumn.propertyIdentifier,
                 fallbackPropertyIdentifiers:scope.swCollectionColumn.fallbackPropertyIdentifiers,
-                isVisible:scope.swCollectionColumn.isVisible || true,
-                isSearchable:scope.swCollectionColumn.isSearchable || false,
-                isDeletable:scope.swCollectionColumn.isDeletable || false, 
-                isExportable:scope.swCollectionColumn.isExportable || true,
+                isVisible:scope.swCollectionColumn.isVisible,
+                isSearchable:scope.swCollectionColumn.isSearchable,
+                isDeletable:scope.swCollectionColumn.isDeletable, 
+                isExportable:scope.swCollectionColumn.isExportable,
                 hidden:scope.swCollectionColumn.hidden,
                 tdclass:scope.swCollectionColumn.tdclass,
                 isKeywordColumn:scope.swCollectionColumn.isKeywordColumn, 
