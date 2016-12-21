@@ -154,10 +154,11 @@ class SWListingDisplayController{
                 if(angular.isUndefined(this.getCollection)){
                     this.getCollection = this.listingService.setupDefaultGetCollection(this.tableID);
                 }
+                
                 this.paginator.getCollection = this.getCollection;
-        		var getCollectioneventID= (this.name || 'ListingDisplay');
-        		this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectioneventID);
-        
+        		
+                var getCollectionEventID = this.tableId;
+        		this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
             }
         );
         
@@ -175,7 +176,11 @@ class SWListingDisplayController{
     };
 
     private initializeState = () =>{
-        this.tableID = 'LD'+this.utilityService.createID();
+        if(angular.isDefined(this.name)){
+            this.tableID = this.name; 
+        } else {
+            this.tableID = 'LD'+this.utilityService.createID();
+        }
         if (angular.isUndefined(this.collectionConfig)){
             //make it available to swCollectionConfig
             this.collectionConfig = null; 
@@ -235,9 +240,6 @@ class SWListingDisplayController{
         }
         if(angular.isUndefined(this.showOrderBy)){
             this.showOrderBy = true; 
-        }
-        if(angular.isUndefined(this.name)){
-            this.name = 'ListingDisplay';
         }
         if(angular.isUndefined(this.expandable)){
             this.expandable = false; 
@@ -333,11 +335,11 @@ class SWListingDisplayController{
     };
 
     public updateMultiselectValues = (res)=>{
-        this.multiselectValues = this.selectionService.getSelections(this.name);
-        if(this.selectionService.isAllSelected(this.name)){
-            this.multiselectCount = this.collectionData.recordsCount - this.selectionService.getSelectionCount(this.name);
+        this.multiselectValues = this.selectionService.getSelections(this.tableId);
+        if(this.selectionService.isAllSelected(this.tableId)){
+            this.multiselectCount = this.collectionData.recordsCount - this.selectionService.getSelectionCount(this.tableId);
         }else{
-            this.multiselectCount = this.selectionService.getSelectionCount(this.name);
+            this.multiselectCount = this.selectionService.getSelectionCount(this.tableId);
         }
         switch (res.action){
             case 'uncheck':
@@ -379,15 +381,15 @@ class SWListingDisplayController{
     public exportCurrentList =(selection:boolean=false)=>{
         if(this.collectionConfigs.length == 0){
             var exportCollectionConfig = angular.copy(this.collectionConfig.getCollectionConfig());
-            if (selection && !angular.isUndefined(this.selectionService.getSelections(this.name))
-                && (this.selectionService.getSelections(this.name).length > 0)) {
+            if (selection && !angular.isUndefined(this.selectionService.getSelections(this.tableID))
+                && (this.selectionService.getSelections(this.tableID).length > 0)) {
                 exportCollectionConfig.filterGroups[0].filterGroup = [
                     {
                         "displayPropertyIdentifier": this.rbkeyService.getRBKey("entity."+exportCollectionConfig.baseEntityName.toLowerCase()+"."+this.exampleEntity.$$getIDName().toLowerCase()),
                         "propertyIdentifier": exportCollectionConfig.baseEntityAlias + "."+this.exampleEntity.$$getIDName(),
                         "comparisonOperator": (this.allSelected) ? "not in":"in",
-                        "value": this.selectionService.getSelections(this.name).join(),
-                        "displayValue": this.selectionService.getSelections(this.name).join(),
+                        "value": this.selectionService.getSelections(this.tableID).join(),
+                        "displayValue": this.selectionService.getSelections(this.tableID).join(),
                         "ormtype": "string",
                         "fieldtype": "id",
                         "conditionDisplay": "In List"
@@ -414,11 +416,11 @@ class SWListingDisplayController{
 
     //these are no longer going to work
     public clearSelection=()=>{
-        this.selectionService.clearSelection(this.name);
+        this.selectionService.clearSelection(this.tableID);
     };
 
     public selectAll=()=>{
-        this.selectionService.selectAll(this.name);
+        this.selectionService.selectAll(this.tableID);
     };
 }
 
