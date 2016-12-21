@@ -445,7 +445,8 @@ component output="false" accessors="true" extends="HibachiService" {
 		?p:current=1
 		?r:calculatedsaleprice=20^50
 		?r:calculatedSalePrice=^50
-		?f:accountName:eq=someName
+		?f:accountName:eq=someName  - adds the filter.
+		?fr:accountName:eq=someName - removes the filter
 		?orderby=someKey|direction
 		?orderBy=someKey|direction,someOtherKey|direction ...
 		
