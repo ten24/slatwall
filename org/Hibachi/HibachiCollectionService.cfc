@@ -439,6 +439,210 @@ component output="false" accessors="true" extends="HibachiService" {
 		return collectionConfigStruct;
 	}
 
+	public string function buildURL(required string queryAddition, boolean appendValues=true, boolean toggleKeys=true, string currentURL="") {
+		// Generate full URL if one wasn't passed in
+		if(!len(arguments.currentURL)) {
+			if(len(cgi.query_string)) {
+				arguments.currentURL &= "?" & CGI.QUERY_STRING;	
+			}
+		}
+
+		var modifiedURL = "?";
+		variables.dataKeyDelimiter = ":";
+		
+		// Turn the old query string into a struct
+		var oldQueryKeys = {};
+		
+		if(findNoCase("?", arguments.currentURL)) {
+			var oldQueryString = right(arguments.currentURL, len(arguments.currentURL) - findNoCase("?", arguments.currentURL));
+			for(var i=1; i<=listLen(oldQueryString, "&"); i++) {
+				var keyValuePair = listGetAt(oldQueryString, i, "&");
+				oldQueryKeys[listFirst(keyValuePair,"=")] = listLast(keyValuePair,"=");
+			}
+		}
+		
+		// Turn the added query string to a struct
+		var newQueryKeys = {};
+		for(var i=1; i<=listLen(arguments.queryAddition, "&"); i++) {
+			var keyValuePair = listGetAt(arguments.queryAddition, i, "&");
+			newQueryKeys[listFirst(keyValuePair,"=")] = listLast(keyValuePair,"=");
+		}
+		
+		
+		// Get all keys and values from the old query string added
+		for(var key in oldQueryKeys) {
+			if(key != "P#variables.dataKeyDelimiter#Current" && key != "P#variables.dataKeyDelimiter#Start" && key != "P#variables.dataKeyDelimiter#Show") {
+				if(!structKeyExists(newQueryKeys, key)) {
+					modifiedURL &= "#key#=#oldQueryKeys[key]#&";
+				} else {
+					if(arguments.toggleKeys && structKeyExists(oldQueryKeys, key) && structKeyExists(newQueryKeys, key) && oldQueryKeys[key] == newQueryKeys[key]) {
+						structDelete(newQueryKeys, key);
+					} else if(arguments.appendValues) {
+						for(var i=1; i<=listLen(newQueryKeys[key], variables.valueDelimiter); i++) {
+							var thisVal = listGetAt(newQueryKeys[key], i, variables.valueDelimiter);
+							var findCount = listFindNoCase(oldQueryKeys[key], thisVal, variables.valueDelimiter);
+							if(findCount) {
+								newQueryKeys[key] = listDeleteAt(newQueryKeys[key], i, variables.valueDelimiter);
+								if(arguments.toggleKeys) {
+									oldQueryKeys[key] = listDeleteAt(oldQueryKeys[key], findCount);
+								}
+							}
+						}
+						if(len(oldQueryKeys[key]) && len(newQueryKeys[key])) {
+							if(left(key, 1) eq "r") {
+								modifiedURL &= "#key#=#newQueryKeys[key]#&";	
+							} else {
+								modifiedURL &= "#key#=#oldQueryKeys[key]##variables.valueDelimiter##newQueryKeys[key]#&";
+							}
+						} else if(len(oldQueryKeys[key])) {
+							modifiedURL &= "#key#=#oldQueryKeys[key]#&";
+						}
+						structDelete(newQueryKeys, key);
+					}
+				}
+			}
+		}
+		
+		// Get all keys and values from the additional query string added 
+		for(var key in newQueryKeys) {
+			if(key != "P#variables.dataKeyDelimiter#Current" && key != "P#variables.dataKeyDelimiter#Start" && key != "P#variables.dataKeyDelimiter#Show") {
+				modifiedURL &= "#key#=#newQueryKeys[key]#&";
+			}
+		}
+		
+		if(!structKeyExists(newQueryKeys, "P#variables.dataKeyDelimiter#Show") || newQueryKeys["P#variables.dataKeyDelimiter#Show"] == getPageRecordsShow()) {
+			// Add the correct page start
+			if( structKeyExists(newQueryKeys, "P#variables.dataKeyDelimiter#Start") ) {
+				modifiedURL &= "P#variables.dataKeyDelimiter#Start=#newQueryKeys[ 'P#variables.dataKeyDelimiter#Start' ]#&";
+			} else if( structKeyExists(newQueryKeys, "P#variables.dataKeyDelimiter#Current") ) {
+				modifiedURL &= "P#variables.dataKeyDelimiter#Current=#newQueryKeys[ 'P#variables.dataKeyDelimiter#Current' ]#&";
+			}
+		}
+		
+		// Add the correct page show
+		if( structKeyExists(newQueryKeys, "P#variables.dataKeyDelimiter#Show") ) {
+			modifiedURL &= "P#variables.dataKeyDelimiter#Show=#newQueryKeys[ 'P#variables.dataKeyDelimiter#Show' ]#&";
+		} else if( structKeyExists(oldQueryKeys, "P#variables.dataKeyDelimiter#Show") ) {
+			modifiedURL &= "P#variables.dataKeyDelimiter#Show=#oldQueryKeys[ 'P#variables.dataKeyDelimiter#Show' ]#&";
+		}
+		
+		if(right(modifiedURL, 1) eq "&") {
+			modifiedURL = left(modifiedURL, len(modifiedURL)-1);
+		} else if (right(modifiedURL, 1) eq "?") {
+			modifiedURL = "?c=1";
+		}
+		
+		return modifiedURL;
+	}
+	
+	
+	
+	public any function applyData(required collection){
+		var entity = "Product";
+		var data = url;
+		var filterKeyList = "";
+		
+		if(!isStruct(data) && isSimpleValue(data)) {
+			data = convertNVPStringToStruct(data);
+			filterKeyList = structKeyList(data);
+		}
+		
+		//writeDump(var=data, top=2);abort;
+		if (structKeyExists(arguments, "collection")){
+			var collectionEntity = collection;
+		}
+		
+		//Simple Filters
+		for (var datum in data){
+			
+			//handle filters.
+			if (left(datum, 2) == "f:"){
+				
+				var prop = datum.split(':')[2];
+				var dataToFilterOn = datum.split(':')[3];
+				dataToFilterOn = urlDecode(dataToFilterOn);
+				try{
+					var comparison = datum.split(':')[4];
+				}catch(var e){
+					comparison = "=";
+				}
+				if (!isNull(comparison)){
+					if (comparison == 'eq'){
+						comparison = "=";
+					}
+					if (comparison == 'like'){
+						dataToFilterOn = "%#dataToFilterOn#%";
+					}
+				}
+				collectionEntity.addFilter(prop, dataToFilterOn, comparison);
+				
+			}
+			
+			//Handle Range
+			if (left(datum, 2) == "r:"){
+				var filterParts = "#listToArray(datum, ':')#";
+				var prop = filterParts[2];
+				var rangeValue = filterParts[3];
+				
+				var lowEndOfRange = listToArray(rangeValue, '^')[1];
+				var highEndOfRange = listToArray(rangeValue, '^')[2];
+				//must be greater than the low end and less than the high end.
+				
+				collectionEntity.addFilter(prop, lowEndOfRange, ">=");
+				collectionEntity.addFilter(prop, highEndOfRange, "<=");
+			}
+			
+			//OrderByList
+			if (datum.contains('orderbylist')){
+				var orderByList = datum.split(':')[2];
+				collectionEntity.setOrderBy(orderbylist);
+			}
+			
+			//Single orderBy
+			if (datum.contains('orderby')){
+				var prop = "#datum.split(':')[2]#";
+				var d = "#listToArray(prop, '|')#";
+				prop = d[1];
+				if (isDefined("prop")){
+					prop = "_#lcase(entity)#.#prop#"; //add the alias.
+					
+					try{
+						var direction = d[2]; //optional
+					}catch (var e){}
+					if (isNull(direction)){
+						direction = "ASC";
+					}
+					
+					
+					if (!isNull(prop) && !isNull(direction)){
+						collectionEntity.addOrderBy("#prop#|#direction#");	
+					}
+				}
+			}
+			
+			var currentPage = 1;
+			if(datum.contains('p:current')){
+				currentPage = data['p:current'];
+			}else if(structKeyExists(data, 'currentPage')){
+				currentPage = data['currentPage'];
+			}
+			if (!isNull(currentPage)){
+				data['currentPageDeclaration'] = currentPage;
+				collectionEntity.setPageRecordsStart(currentPage);
+			}
+			var pageShow = 10;
+			if(structKeyExists(data,'p:show')){
+				pageShow = data['p:show'];
+			} else if(structKeyExists(data, 'pageShow')){
+				pageShow = data['pageShow'];
+			}
+			if (!isNull(pageShow)){
+				collectionEntity.setPageRecordsShow(pageShow);	
+			}
+		}
+		return collectionEntity;
+	}
+
 	public any function getCollectionOptionsFromData(required struct data){
 		//get entity service by entity name
 		var currentPage = 1;
