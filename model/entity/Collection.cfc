@@ -529,8 +529,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public void function applyData(required any data=url){
 		var filterKeyList = "";
 		var hibachiBaseEntity = "";
-		hibachiBaseEntity = getCollectionObject();
-
+		hibachiBaseEntity = this.getCollectionObject();
+		
 		if(!isStruct(data) && isSimpleValue(data)) {
 			data = getHibachiScope().getService('hibachiService').convertNVPStringToStruct(data);
 			filterKeyList = structKeyList(data);
@@ -538,7 +538,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 		//Simple Filters
 		for (var datum in data){
-			//remove filters
+			//handle filters.
 			if (left(datum, 2) == "fr:"){
 				
 				var prop = datum.split(':')[2];
@@ -634,7 +634,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}else if (arrayLen(rangeValue.split('^')) == 1){
 					
 					//are we setting the high or low?
-					if (left(data[datum], 1) == "^"){ //if this starts with ^, for example ^40 (up to 40)
+					if (left(data[datum], 1) == "^"){ ////if this starts with ^, for example ^40 (up to 40)
 						var lowEndOfRange = 0;
 						var highEndOfRange = listToArray(rangeValue, '^')[1];
 					}
@@ -658,22 +658,23 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					}else{
 						var direction = "ASC";
 					}
-					prop = "_" & lcase("#hibachiBaseEntity#") & "#prop#";
+					prop = "_" & lcase("#hibachiBaseEntity#") & ".#prop#";
 					this.setOrderBy("#prop#|#direction#");
 				}
 			}
 			
 			//Single orderBy with alias added.
 			if (datum.contains('orderBy') && !orderBys.contains(",")){
-				var prop = orderBys.split("|")[1];
-				if (arrayLen(orderBys.split("|")) > 1){
-					var direction = orderBys.split("|")[2];
+				
+				var prop = listToArray(orderBys,"|")[1];
+				if (arrayLen(listToArray(orderBys,"|")) > 1){
+					var direction = listToArray(orderBys,"|")[2];
 				}else{
 					var direction = "ASC";
 				}
 					
 				if (isDefined("prop")){
-					prop = "_" & lcase("#hibachiBaseEntity#") & "#prop#"; //add the alias.
+					prop = "_" & lcase("#hibachiBaseEntity#") & ".#prop#"; //add the alias.
 					
 					if (!isNull(prop) && !isNull(direction)){
 						this.addOrderBy("#prop#|#direction#");	
