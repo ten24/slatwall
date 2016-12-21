@@ -1454,6 +1454,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						if( getDirtyReadFlag() ) {
 							variables.connection.setTransactionIsolation(currentTransactionIsolation);
 						}
+
 					}
 					if(isNull(recordCount)){
 						recordCount = 0;
@@ -1897,7 +1898,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				joins = collectionConfig.joins;
 			}
 
-			if(structKeyExists(collectionConfig,'groupBys') && !arguments.excludeSelectAndOrderBy){
+			if(structKeyExists(collectionConfig,'groupBys')){
 				groupByHQL = getGroupByHQL(collectionConfig.groupBys);
 			}
 
