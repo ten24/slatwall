@@ -438,7 +438,7 @@ component output="false" accessors="true" extends="HibachiService" {
 
 		return collectionConfigStruct;
 	}
-
+	
 	public string function buildURL(required string queryAddition, boolean appendValues=true, boolean toggleKeys=true, string currentURL="") {
 		// Generate full URL if one wasn't passed in
 		if(!len(arguments.currentURL)) {
@@ -620,22 +620,18 @@ component output="false" accessors="true" extends="HibachiService" {
 				}
 			}
 			
-			var currentPage = 1;
+			
 			if(datum.contains('p:current')){
-				currentPage = data['p:current'];
-			}else if(structKeyExists(data, 'currentPage')){
-				currentPage = data['currentPage'];
+				var currentPage = datum.split(":")[3];
 			}
 			if (!isNull(currentPage)){
 				data['currentPageDeclaration'] = currentPage;
 				collectionEntity.setPageRecordsStart(currentPage);
 			}
-			var pageShow = 10;
-			if(structKeyExists(data,'p:show')){
-				pageShow = data['p:show'];
-			} else if(structKeyExists(data, 'pageShow')){
-				pageShow = data['pageShow'];
-			}
+			
+			if(datum.contains('p:show')){
+				var pageShow = datum.split(":")[3];
+			} 
 			if (!isNull(pageShow)){
 				collectionEntity.setPageRecordsShow(pageShow);	
 			}
