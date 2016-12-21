@@ -5,7 +5,6 @@
 		<cfset var slatwallApplication = createObject("component", "Slatwall.Application") />
 
 		<!--- Reload Slatwall --->
-		<!--<cfset slatwallApplication.reloadApplication() />-->
 		<cfset slatwallApplication.bootstrap() />
 		<cfset request.slatwallScope.getAccount().setSuperUserFlag(1)/>
 		<cfset $.slatwall = request.slatwallScope/>
