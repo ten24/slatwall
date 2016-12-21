@@ -128,7 +128,7 @@ component  extends="HibachiService" accessors="true" {
 			contentTemplateSetting.setContent( slatwallTemplatesChildContent );
 			getService("settingService").saveSetting( contentTemplateSetting );
 		}
-		ormflush();
+		getDao('siteDao').flushOrmSession();
 	}
 
 	public void function createHomePageChildrenContent(required any homePageContent, required any site){
@@ -190,7 +190,7 @@ component  extends="HibachiService" accessors="true" {
 			contentTemplateSetting.setContent( homePageChildContent );
 			getService("settingService").saveSetting( contentTemplateSetting );
 		}
-		ormflush();
+		getDao('siteDao').flushOrmSession();
 	}
 
 	public void function createDefaultContentPages(required any site){
@@ -207,7 +207,7 @@ component  extends="HibachiService" accessors="true" {
 		homePageContent.setSite(arguments.site);
 		arguments.site.addContent(homePageContent);
 		homePageContent = getService('contentService').saveContent(homePageContent,homePageContentData);
-		ormflush();
+		getDao('siteDao').flushOrmSession();
 		createHomePageChildrenContent(homePageContent,arguments.site);
 
 
@@ -230,7 +230,7 @@ component  extends="HibachiService" accessors="true" {
 		};
 		var slatwallTemplatesContent = getService('contentService').newContent();
 		slatwallTemplatesContent = getService('contentService').processContent(slatwallTemplatesContent,slatwallTemplatesContentData,'create');
-		ormflush();
+		getDao('siteDao').flushOrmSession();
 		createSlatwallTemplatesChildren(slatwallTemplatesContent,arguments.site);
 	}
 
@@ -314,7 +314,7 @@ component  extends="HibachiService" accessors="true" {
 			//deploy skeletonSite
 			deploySite(arguments.site);
 			arguments.site = super.save(arguments.site, arguments.data);
-			ormflush();
+			getDao('siteDao').flushOrmSession();
 
 		}
 		return arguments.site;

@@ -165,7 +165,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			emailIMAPServerPort = {fieldType="text"},
 			emailIMAPServerUsername = {fieldType="text"},
 			emailIMAPServerPassword = {fieldType="password"},
-			emailReplyToAddress = {fieldType="text"},
+			emailReplyToAddress = {fieldType="text", defaultValue="email@youremaildomain.com"},
+			emailSubject = {fieldType="text", defaultValue="Notification From Slatwall"},
 			emailSMTPServer = {fieldType="text", defaultValue=""},
 			emailSMTPPort = {fieldType="text", defaultValue=25},
 			emailSMTPUseSSL = {fieldType="yesno", defaultValue="false"},
@@ -934,6 +935,8 @@ component extends="HibachiService" output="false" accessors="true" {
 
 	public boolean function deleteSetting(required any entity) {
 
+		getHibachiScope().addModifiedEntity(arguments.entity); 
+
 		// Check to see if we are going to need to update the
 		var calculateStockNeeded = false;
 		if(listFindNoCase("skuAllowBackorderFlag,skuAllowPreorderFlag,skuQATSIncludesQNROROFlag,skuQATSIncludesQNROVOFlag,skuQATSIncludesQNROSAFlag,skuTrackInventoryFlag", arguments.entity.getSettingName())) {
@@ -946,9 +949,9 @@ component extends="HibachiService" output="false" accessors="true" {
 		// If there aren't any errors then flush, and clear cache
 		if(deleteResult && !getHibachiScope().getORMHasErrors()) {
 
-			getHibachiDAO().flushORMSession();
-
 			getHibachiCacheService().resetCachedKeyByPrefix('setting_#settingName#',true);
+			
+			getHibachiDAO().flushORMSession();
 
 			// If calculation is needed, then we should do it
 			if(calculateStockNeeded) {
@@ -967,14 +970,16 @@ component extends="HibachiService" output="false" accessors="true" {
 		// Call the default save logic
 		arguments.entity = super.save(argumentcollection=arguments);
 
+		getHibachiScope().addModifiedEntity(arguments.entity); 
+
 		// If there aren't any errors then flush, and clear cache
 		if(!getHibachiScope().getORMHasErrors()) {
-
-			getHibachiDAO().flushORMSession();
 
 			//wait for thread to finish because admin depends on getting the savedID
 			getHibachiCacheService().resetCachedKeyByPrefix('setting_#arguments.entity.getSettingName()#',true);
 
+			getHibachiDAO().flushORMSession();
+			
 			// If calculation is needed, then we should do it
 			if(listFindNoCase("skuAllowBackorderFlag,skuAllowPreorderFlag,skuQATSIncludesQNROROFlag,skuQATSIncludesQNROVOFlag,skuQATSIncludesQNROSAFlag,skuTrackInventoryFlag", arguments.entity.getSettingName())) {
 				updateStockCalculated();

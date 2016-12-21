@@ -158,6 +158,7 @@
 /// <reference path="../src/form/components/swpropertydisplay.ts" />
 /// <reference path="../src/form/services/fileservice.ts" />
 /// <reference path="../src/frontend/components/swfdirective.ts" />
+/// <reference path="../src/frontend/components/swshippingcostestimator.ts" />
 /// <reference path="../src/frontend/controllers/frontend.ts" />
 /// <reference path="../src/hibachi/components/swsaveandfinish.ts" />
 /// <reference path="../src/logger/services/exceptionhandler.ts" />

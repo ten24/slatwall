@@ -102,6 +102,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="enforceAuthorization" type="boolean" persistent="false" default="true";
 	property name="authorizedProperties" singularname="authorizedProperty" type="array" persistent="false";
 	
+	property name="groupBys" type="string" persistent="false";
+
 	//property name="entityNameOptions" persistent="false" hint="an array of name/value structs for the entity's metaData";
 	property name="collectionObjectOptions" persistent="false";
 
@@ -336,6 +338,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(ListContains(collectionConfig.groupBys,arguments.groupByAlias) == 0){
 		listAppend(collectionConfig.groupBys,arguments.groupByAlias);
 		}
+		variables.groupBys = collectionConfig.groupBys;
 		this.setCollectionConfigStruct(collectionConfig);
 	}
 
@@ -1017,11 +1020,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return fromHQL;
 	}
 
-	public string function getHQL(boolean excludeSelectAndOrderBy = false, forExport=false){
+	public string function getHQL(boolean excludeSelectAndOrderBy = false, forExport=false, removeOrderBy = false){
 		variables.HQLParams = {};
 		variables.postFilterGroups = [];
 		variables.postOrderBys = [];
-		var HQL = createHQLFromCollectionObject(this, arguments.excludeSelectAndOrderBy, arguments.forExport);
+		var HQL = createHQLFromCollectionObject(this, arguments.excludeSelectAndOrderBy, arguments.forExport, arguments.removeOrderBy);
 		return HQL;
 	}
 
@@ -1158,6 +1161,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				groupByList = listAppend(groupByList,orderBy.propertyIdentifier);
 			}
 		}
+		variables.groupBys = groupByList;
 		return ' GROUP BY ' & groupByList;
 	}
 
@@ -1437,8 +1441,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						var recordCount = getHibachiScope().getService('elasticSearchService').getRecordsCount(argumentCollection=arguments);
 					}else{
 						var HQL = '';
-						if(hasAggregateFilter()){
-							HQL = 'SELECT count(DISTINCT id) FROM  #getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject())#  WHERE id in ( SELECT DISTINCT #getCollectionConfigStruct().baseEntityAlias#.id #getHQL(true)# )';
+					if(hasAggregateFilter() || !isNull(variables.groupBys)){
+						HQL = 'SELECT COUNT(DISTINCT tempAlias.id) FROM  #getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject())# tempAlias WHERE tempAlias.id IN ( SELECT MIN(#getCollectionConfigStruct().baseEntityAlias#.id) #getHQL(true, false, true)# )';
 						}else{
 							HQL = getSelectionCountHQL() & getHQL(true);
 						}
@@ -1450,6 +1454,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						if( getDirtyReadFlag() ) {
 							variables.connection.setTransactionIsolation(currentTransactionIsolation);
 						}
+
 					}
 					if(isNull(recordCount)){
 						recordCount = 0;
@@ -1780,7 +1785,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	public any function createHQLFromCollectionObject(required any collectionObject,
 		boolean excludeSelectAndOrderBy=false,
-		boolean forExport=false
+		boolean forExport=false,
+	    boolean removeOrderBy=false
 	){
 		var HQL = "";
 		var collectionConfig = arguments.collectionObject.getCollectionConfigStruct();
@@ -1809,7 +1815,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					selectHQL &= getSelectionsHQL(columns=collectionConfig.columns, isDistinct=isDistinct, forExport=arguments.forExport);
 				}
 
-				if(!structKeyExists(variables, 'orderByRequired') || variables.orderByRequired){
+				if(!removeOrderBy){
 					if (!isnull(getPostOrderBys()) && arraylen(getPostOrderBys())) {
 						orderByHQL &= getOrderByHQL(getPostOrderBys());
 					} else
@@ -1892,7 +1898,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				joins = collectionConfig.joins;
 			}
 
-			if(structKeyExists(collectionConfig,'groupBys') && !arguments.excludeSelectAndOrderBy){
+			if(structKeyExists(collectionConfig,'groupBys')){
 				groupByHQL = getGroupByHQL(collectionConfig.groupBys);
 			}
 
