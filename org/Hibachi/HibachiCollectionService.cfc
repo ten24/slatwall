@@ -439,6 +439,19 @@ component output="false" accessors="true" extends="HibachiService" {
 		return collectionConfigStruct;
 	}
 	
+	/** 
+		Examples of each type of filter: 
+		?p:show=50
+		?p:current=1
+		?r:calculatedsaleprice=20^50
+		?r:calculatedSalePrice=^50
+		?f:accountName:eq=someName
+		?orderby=someKey|direction
+		?orderBy=someKey|direction,someOtherKey|direction ...
+		
+		Using coldfusion operator versions - gt,lt,gte,lte,eq,neq,like
+	
+	*/
 	public string function buildURL(required string queryAddition, boolean appendValues=true, boolean toggleKeys=true, string currentURL="") {
 		// Generate full URL if one wasn't passed in
 		if(!len(arguments.currentURL)) {
@@ -449,7 +462,7 @@ component output="false" accessors="true" extends="HibachiService" {
 
 		var modifiedURL = "?";
 		variables.dataKeyDelimiter = ":";
-		
+		variables.valuedelimiter = ",";
 		// Turn the old query string into a struct
 		var oldQueryKeys = {};
 		
