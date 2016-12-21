@@ -516,7 +516,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		?p:show=50
 		?p:current=1
 		?r:calculatedsaleprice=20^50
-		?r:calculatedSalePrice=^50
+		?r:calculatedSalePrice=^50 (does 0 to 50)
+		?r:calculatedSalePrice=50^ (does more than 50 to 10000)
 		?f:accountName:eq=someName  - adds the filter.
 		?fr:accountName:eq=someName - removes the filter
 		?orderby=someKey|direction
