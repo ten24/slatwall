@@ -14,6 +14,7 @@ class SWSkuStockAdjustmentModalLauncherController{
     public stockAdjustmentStatusType:any; 
     public stockAdjustmentItem:any; 
     public toLocation:any; 
+    public toLocationTypeaheadDataKey:string; 
     public name:string; 
     public quantityDifference:number; 
     public calculatedQats:any; 
@@ -30,8 +31,10 @@ class SWSkuStockAdjustmentModalLauncherController{
         private $http, 
         private $q, 
         private $hibachi, 
+        private observerService,
         private utilityService
     ){
+        this.toLocationTypeaheadDataKey = this.utilityService.createID(32);
         if(angular.isDefined(this.skuId)){
             this.name="skuStockAdjustment" + this.utilityService.createID(32);
         } else{
@@ -40,9 +43,16 @@ class SWSkuStockAdjustmentModalLauncherController{
         if(angular.isDefined(this.calculatedQats)){
             this.calculatedQats = parseInt(this.calculatedQats);
         }
+
         if(angular.isDefined(this.calculatedQoh)){
             this.calculatedQoh = parseInt(this.calculatedQoh);
         }
+        this.initData();
+        this.observerService.attach(this.updateNewQuantity, this.name + 'newQuantitychange');
+    }
+    
+    public initData = () => {
+        this.toLocation = undefined; 
         var skudata = {
             skuID:this.skuId,
             skuCode:this.skuCode,
@@ -50,19 +60,16 @@ class SWSkuStockAdjustmentModalLauncherController{
             imagePath:this.imagePath,
             calculatedQATS:this.calculatedQats || 0,
             calculatedQOH:this.calculatedQoh || 0,
-            newQOH:this.calculatedQoh || 0
         }
         this.sku = this.$hibachi.populateEntity("Sku", skudata);
-        this.initData();
-    }
-    
-    public initData = () => {
+        this.sku.setNewQOH(this.calculatedQoh || 0);
+
         this.stockAdjustmentID="";
         this.stock = this.$hibachi.newStock();
         this.stockAdjustment = this.$hibachi.newStockAdjustment();
+        this.stockAdjustmentItem = this.$hibachi.newStockAdjustmentItem();
         this.toLocation = this.$hibachi.newLocation(); 
         this.stockAdjustment.$$setToLocation(this.toLocation);
-        this.stockAdjustmentItem = this.$hibachi.newStockAdjustmentItem();
         this.stockAdjustment.$$addStockAdjustmentItem(this.stockAdjustmentItem);
         this.stock.$$setSku(this.sku);
         this.stockAdjustmentItem.$$setToStock(this.stock);
@@ -72,13 +79,15 @@ class SWSkuStockAdjustmentModalLauncherController{
         this.stockAdjustment.$$setStockAdjustmentStatusType(this.stockAdjustmentStatusType);
         this.stockAdjustmentItem.$$setSku(this.sku); 
         this.newQuantity = this.calculatedQoh || 0;
+        this.observerService.notify(this.toLocationTypeaheadDataKey + 'clearSearch');
     }
     
     public save = () => {
-        return this.stock.$$save().then().finally(()=>{
+        return this.$q.all([this.observerService.notify('updateBindings'), this.stock.$$save()]).then().finally(()=>{
             var stockAdjustmentSavePromise = this.stockAdjustment.$$save(); 
             stockAdjustmentSavePromise.then(
                 (response)=>{
+                    this.sku.newQOH = this.newQuantity;
                     this.sku.data.newQOH = this.newQuantity; 
                     this.sku.data.calculatedQOH = this.newQuantity; 
                     this.stockAdjustmentID = response.stockAdjustmentID; 
@@ -88,17 +97,27 @@ class SWSkuStockAdjustmentModalLauncherController{
                     method:"POST", 
                     url:this.$hibachi.getUrlWithActionPrefix()+"entity.processStockAdjustment&processContext=processAdjustment&stockAdjustmentID="+this.stockAdjustmentID
                 }).then((response)=>{
-                    this.initData(); 
+                    //don't need to do anything here
                 });
 
             }); 
         });
     }    
 
+    public addToLocation = (item) =>{
+        if(angular.isDefined(item)){
+            this.toLocation = this.$hibachi.populateEntity('Location', item); 
+            this.stockAdjustment.$$setToLocation(this.toLocation);
+        } else { 
+            this.toLocation = undefined; 
+        }
+    }
 
-    public updateNewQuantity = () => { 
-        if(!isNaN(this.sku.data.newQOH)){
-            this.newQuantity = this.sku.data.newQOH;
+    public updateNewQuantity = (args) => { 
+        if(!isNaN(args.swInput.value)){
+            this.newQuantity = args.swInput.value;
+        } else {
+            this.sku.data.newQOH = 0; 
         }
         this.updateStockAdjustmentQuantity();
     }
@@ -106,6 +125,8 @@ class SWSkuStockAdjustmentModalLauncherController{
     public updateStockAdjustmentQuantity = () => {
         if(!isNaN(this.newQuantity)){
             this.stockAdjustmentItem.data.quantity = this.newQuantity - this.sku.data.calculatedQOH;
+        } else {
+            this.newQuantity = 0;
         }
     }  
 }
@@ -147,6 +168,7 @@ class SWSkuStockAdjustmentModalLauncher implements ng.IDirective{
     ){
         this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath)+"skustockadjustmentmodallauncher.html";
     }
+
 }
 export{
     SWSkuStockAdjustmentModalLauncher,

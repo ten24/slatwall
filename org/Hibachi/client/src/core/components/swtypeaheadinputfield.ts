@@ -77,7 +77,7 @@ class SWTypeaheadInputField implements ng.IDirective{
         propertyToShow:"@",
         propertyToSave:"@",
         initialEntityId:"@",
-        validateRequired:"@?"
+        validateRequired:"=?"
 	};
 	public controller=SWTypeaheadInputFieldController;
 	public controllerAs="swTypeaheadInputField";
