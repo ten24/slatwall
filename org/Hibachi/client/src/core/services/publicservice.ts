@@ -102,7 +102,7 @@ class PublicService {
         var baseDate = new Date();
         var today = baseDate.getFullYear();
         var start = today;
-        for (var i = 0; i<= 5; i++){
+        for (var i = 0; i<= 15; i++){
             this.years.push(start + i);
         }
     }
@@ -204,10 +204,11 @@ class PublicService {
         if (action.indexOf(":") !== -1){
             this.baseActionPath = action; //any path
         }else{
-            this.baseActionPath = "/index.cfm/api/scope/" + action;//public path
+            this.baseActionPath = this.appConfig.baseURL + "/index.cfm/api/scope/" + action;//public path
         }
-
-        let urlBase = this.appConfig.baseURL+this.baseActionPath;
+		
+		
+        let urlBase = this.appConfig.baseURL + this.baseActionPath;
 
         if(data){
             method = "post";
