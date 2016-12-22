@@ -470,6 +470,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			direction = listLast(arguments.orderByString,'|');	
 		}
 		
+		if(left(propertyIdentifier,1) != '_'){
+			propertyIdentifier = collectionConfig.baseEntityAlias & '.' & propertyIdentifier;
+		}
+		
 		var orderBy = {
 			"propertyIdentifier"=propertyIdentifier,
 			"direction"=direction
@@ -532,22 +536,22 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		hibachiBaseEntity = this.getCollectionObject();
 		
 		if(!isStruct(data) && isSimpleValue(data)) {
-			data = getHibachiScope().getService('hibachiService').convertNVPStringToStruct(data);
+			data = getHibachiScope().getService('hibachiUtilityService').convertNVPStringToStruct(data);
 			filterKeyList = structKeyList(data);
 		}
 		
 		//Simple Filters
-		for (var datum in data){
+		for (var key in data){
 			//handle filters.
-			if (left(datum, 2) == "fr:"){
+			if (left(key, 2) == "fr:"){
 				
-				var prop = datum.split(':')[2];
-				var dataToFilterOn = data[datum]; //value of the filter.
+				var prop = key.split(':')[2];
+				var dataToFilterOn = data[key]; //value of the filter.
 				
 				dataToFilterOn = urlDecode(dataToFilterOn); //make sure its url decoded.
 				var comparison = "=";
 				try{
-					comparison = datum.split(':')[3];
+					comparison = key.split(':')[3];
 				}catch(var e){
 					comparison = "=";
 				}
@@ -578,15 +582,15 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				
 			}
 			//handle filters.
-			if (left(datum, 2) == "f:"){
+			if (left(key, 2) == "f:"){
 				
-				var prop = datum.split(':')[2];
-				var dataToFilterOn = data[datum]; //value of the filter.
+				var prop = key.split(':')[2];
+				var dataToFilterOn = data[key]; //value of the filter.
 				
 				dataToFilterOn = urlDecode(dataToFilterOn); //make sure its url decoded.
 				var comparison = "=";
 				try{
-					comparison = datum.split(':')[3];
+					comparison = key.split(':')[3];
 				}catch(var e){
 					comparison = "=";
 				}
@@ -618,81 +622,34 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 			
 			//Handle Range
-			if (left(datum, 2) == "r:"){
-				var filterParts = "#listToArray(datum, ':')#";
+			if (left(key, 2) == "r:"){
+				var filterParts = "#listToArray(key, ':')#";
 				var prop = filterParts[2];//property
-				var rangeValue = data[datum];//value 20^40 for example.
+				var rangeValue = data[key];//value 20^40 for example.
 				
 				//get the data value for the range. for example 20^40, ^40 (0 to 40), 100^ (more than 100)
 				
-				
-				if (arrayLen(listToArray(rangeValue, '^')) == 2){
-					
-					var lowEndOfRange = listToArray(rangeValue, '^')[1];
-					var highEndOfRange = listToArray(rangeValue, '^')[2];
-				//must be greater than the low end and less than the high end.
-				}else if (arrayLen(rangeValue.split('^')) == 1){
-					
-					//are we setting the high or low?
-					if (left(data[datum], 1) == "^"){ ////if this starts with ^, for example ^40 (up to 40)
-						var lowEndOfRange = 0;
-						var highEndOfRange = listToArray(rangeValue, '^')[1];
-					}
-					if (right(data[datum], 1) == "^"){ //if this ends with ^, for example 90^
-						var lowEndOfRange = listToArray(rangeValue, '^')[1];
-						var highEndOfRange = 10000;
-					}
-				}
-				this.addFilter(prop, lowEndOfRange, ">=");
-				this.addFilter(prop, highEndOfRange, "<=");
+				this.addFilter(prop,replace(rangeValue,'^','-'),'BETWEEN');
 			}
 			
 			//OrderByList
-			var orderBys = data[datum];
-			if (datum.contains('orderBy') && orderBys.contains(",")){
+			var orderBys = data[key];
+			if (left(key,7)=='orderBy'){
 				//this is a list.
-				for (var orderBy in data[datum].split(',')){
-					var prop = orderBy.split("|")[1];
-					if (arrayLen(orderBy.split("|")) > 1){
-						var direction = orderBy.split("|")[2];
-					}else{
-						var direction = "ASC";
-					}
-					prop = "_" & lcase("#hibachiBaseEntity#") & ".#prop#";
-					this.setOrderBy("#prop#|#direction#");
-				}
-			}
-			
-			//Single orderBy with alias added.
-			if (datum.contains('orderBy') && !orderBys.contains(",")){
-				
-				var prop = listToArray(orderBys,"|")[1];
-				if (arrayLen(listToArray(orderBys,"|")) > 1){
-					var direction = listToArray(orderBys,"|")[2];
-				}else{
-					var direction = "ASC";
-				}
-					
-				if (isDefined("prop")){
-					prop = "_" & lcase("#hibachiBaseEntity#") & ".#prop#"; //add the alias.
-					
-					if (!isNull(prop) && !isNull(direction)){
-						this.addOrderBy("#prop#|#direction#");	
-					}
-				}
+				this.setOrderBy(data[key]);
 			}
 			
 			//Handle pagination.
-			if(datum.contains('p:current')){
-				var currentPage = data[datum];
+			if(key.contains('p:current')){
+				var currentPage = data[key];
 			}
 			if (!isNull(currentPage)){
 				data['currentPageDeclaration'] = currentPage;
 				this.setPageRecordsStart(currentPage);
 			}
 			
-			if(datum.contains('p:show')){
-				var pageShow = data[datum];
+			if(key.contains('p:show')){
+				var pageShow = data[key];
 			} 
 			if (!isNull(pageShow)){
 				this.setPageRecordsShow(pageShow);	
