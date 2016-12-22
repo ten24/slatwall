@@ -143,6 +143,7 @@
 /// <reference path="../src/entity/components/swlist.ts" />
 /// <reference path="../src/entity/controllers/otherwisecontroller.ts" />
 /// <reference path="../src/entity/controllers/routercontroller.ts" />
+/// <reference path="../src/form/components/swaddressform.ts" />
 /// <reference path="../src/form/components/swerrordisplay.ts" />
 /// <reference path="../src/form/components/swfformfield.ts" />
 /// <reference path="../src/form/components/swform.ts" />
