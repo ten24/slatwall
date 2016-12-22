@@ -229,7 +229,7 @@ class SWInputController{
 			validations = this.getValidationDirectives();
 		}
 
-		if(this.object && this.object.metaData && this.object.metaData.$$getPropertyFormatType(this.property) != undefined&& this.object.metaData.$$getPropertyFormatType(this.property) == "currency"){
+		if(this.object && this.object.metaData && this.object.metaData.$$getPropertyFormatType(this.property) != undefined && this.object.metaData.$$getPropertyFormatType(this.property) == "currency"){
 			currencyFormatter = 'sw-currency-formatter ';
 			if(angular.isDefined(this.object.data.currencyCode)){
 				currencyFormatter = currencyFormatter + 'data-currency-code="' + this.object.data.currencyCode + '" ';
