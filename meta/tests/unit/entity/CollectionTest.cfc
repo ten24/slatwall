@@ -463,6 +463,18 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(collectionConfigStruct.orderBy[1]['propertyIdentifier'] == '_product.productName', "Wrong Order by Alias! Expecting '_product.productName' but returned #collectionConfigStruct.orderBy[1]['propertyIdentifier']#");
 	}
 
+
+	public void function addOrderByAlias2Test(){
+
+		var myCollection = variables.entityService.getProductCollectionList();
+		myCollection.setDisplayProperties('productName');
+		myCollection.setOrderBy('_product.productName|asc');
+
+		var collectionConfigStruct = myCollection.getCollectionConfigStruct();
+
+		assertTrue(collectionConfigStruct.orderBy[1]['propertyIdentifier'] == '_product.productName', "Wrong Order by Alias! Expecting '_product.productName' but returned #collectionConfigStruct.orderBy[1]['propertyIdentifier']#");
+	}
+
 	public void function addOrderByAliasFromRelatedObjectTest(){
 
 		var myCollection = variables.entityService.getProductCollectionList();

@@ -276,9 +276,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				});
 			}else{
 				if(structKeyExists(current_object[propertyIdentifierParts[i]],'ormtype')){
-					ormtype = current_object[propertyIdentifierParts[i]].ormtype;	
+					ormtype = current_object[propertyIdentifierParts[i]].ormtype;
 				}
-				
+
 				_propertyIdentifier &= '.' & propertyIdentifierParts[i];
 			}
 		}
@@ -470,29 +470,35 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			direction = listLast(arguments.orderByString,'|');	
 		}
 
-		var alias = collectionConfig.baseEntityAlias;
-		var _propertyIdentifier = '';
-		var propertyIdentifierParts = ListToArray(propertyIdentifier, '.');
-		var current_object = getService('hibachiService').getPropertiesStructByEntityName(getCollectionObject());
+		if(left(propertyIdentifier, 1) == '_'){
+			_propertyIdentifier = propertyIdentifier;
+		} else {
 
-		for (var i = 1; i <= arraylen(propertyIdentifierParts); i++) {
-			if(structKeyExists(current_object, propertyIdentifierParts[i]) && structKeyExists(current_object[propertyIdentifierParts[i]], 'cfc')){
-				if(structKeyExists(current_object[propertyIdentifierParts[i]], 'singularname')){
-					setHasManyRelationFilter(true);
+			var alias = collectionConfig.baseEntityAlias;
+			var _propertyIdentifier = '';
+			var propertyIdentifierParts = ListToArray(propertyIdentifier, '.');
+			var current_object = getService('hibachiService').getPropertiesStructByEntityName(getCollectionObject());
+
+			for (var i = 1; i <= arraylen(propertyIdentifierParts); i++) {
+				if (structKeyExists(current_object, propertyIdentifierParts[i]) && structKeyExists(current_object[propertyIdentifierParts[i]], 'cfc')) {
+					if (structKeyExists(current_object[propertyIdentifierParts[i]], 'singularname')) {
+						setHasManyRelationFilter(true);
+					}
+					current_object = getService('hibachiService').getPropertiesStructByEntityName(current_object[propertyIdentifierParts[i]]['cfc']);
+					_propertyIdentifier &= '_' & propertyIdentifierParts[i];
+					addJoin({
+						'associationName' = RemoveChars(rereplace(_propertyIdentifier, '_([^_]+)$', '.\1'), 1, 1),
+						'alias' = alias & _propertyIdentifier
+					});
+				} else {
+					_propertyIdentifier &= '.' & propertyIdentifierParts[i];
 				}
-				current_object = getService('hibachiService').getPropertiesStructByEntityName(current_object[propertyIdentifierParts[i]]['cfc']);
-				_propertyIdentifier &= '_' & propertyIdentifierParts[i];
-				addJoin({
-					'associationName' = RemoveChars(rereplace(_propertyIdentifier, '_([^_]+)$', '.\1' ),1,1),
-					'alias' = alias & _propertyIdentifier
-				});
-			}else{
-				_propertyIdentifier &= '.' & propertyIdentifierParts[i];
 			}
+			_propertyIdentifier = alias & _propertyIdentifier;
 		}
-		
+
 		var orderBy = {
-			"propertyIdentifier"=alias & _propertyIdentifier,
+			"propertyIdentifier"= _propertyIdentifier,
 			"direction"=direction
 		};
 
