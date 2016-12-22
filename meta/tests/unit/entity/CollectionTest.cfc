@@ -260,7 +260,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var queryString = '?orderby=price|DESC,skuName|ASC';
 		collectionEntity.applyData(queryString);
 		
-		request.debug(collectionEntity.getCollectionConfigStruct());
 		var orderBy = collectionEntity.getCollectionConfigStruct().orderBy;
 		assertEquals(orderBy[1].propertyIdentifier,'_sku.price');
 		assertEquals(orderBy[1].direction,'DESC');
