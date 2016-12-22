@@ -369,7 +369,7 @@ class ListingService{
         if(this.getListing(listingID).collectionConfig != null && this.getListing(listingID).collectionConfig.baseEntityAlias != null){
             column.propertyIdentifier = this.getListing(listingID).collectionConfig.baseEntityAlias + "." + column.propertyIdentifier;
         } else if (this.getListingBaseEntityName(listingID) != null) {
-            column.propertyIdentifier = '_' + this.getListingBaseEntityName(listingID) + '.' + column.propertyIdentifier;
+            column.propertyIdentifier = '_' + this.getListingBaseEntityName(listingID).toLowerCase() + '.' + column.propertyIdentifier;
         }
         if(this.getListingColumnIndexByPropertyIdentifier(listingID, column.propertyIdentifier) === -1){
             if(column.aggregate){
