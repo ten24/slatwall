@@ -469,9 +469,30 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(listLen(arguments.orderByString,"|") > 1){
 			direction = listLast(arguments.orderByString,'|');	
 		}
+
+		var alias = collectionConfig.baseEntityAlias;
+		var _propertyIdentifier = '';
+		var propertyIdentifierParts = ListToArray(propertyIdentifier, '.');
+		var current_object = getService('hibachiService').getPropertiesStructByEntityName(getCollectionObject());
+
+		for (var i = 1; i <= arraylen(propertyIdentifierParts); i++) {
+			if(structKeyExists(current_object, propertyIdentifierParts[i]) && structKeyExists(current_object[propertyIdentifierParts[i]], 'cfc')){
+				if(structKeyExists(current_object[propertyIdentifierParts[i]], 'singularname')){
+					setHasManyRelationFilter(true);
+				}
+				current_object = getService('hibachiService').getPropertiesStructByEntityName(current_object[propertyIdentifierParts[i]]['cfc']);
+				_propertyIdentifier &= '_' & propertyIdentifierParts[i];
+				addJoin({
+					'associationName' = RemoveChars(rereplace(_propertyIdentifier, '_([^_]+)$', '.\1' ),1,1),
+					'alias' = alias & _propertyIdentifier
+				});
+			}else{
+				_propertyIdentifier &= '.' & propertyIdentifierParts[i];
+			}
+		}
 		
 		var orderBy = {
-			"propertyIdentifier"=propertyIdentifier,
+			"propertyIdentifier"=alias & _propertyIdentifier,
 			"direction"=direction
 		};
 
@@ -892,10 +913,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 				if(!structKeyExists(arguments,'filterGroup')){
 					getCollectionConfigStruct().filterGroups[1].filterGroup = selectedFilterGroup;
-					}
 				}
 			}
 		}
+	}
 
 
 	private string function getFilterGroupHQL(required array filterGroup){
