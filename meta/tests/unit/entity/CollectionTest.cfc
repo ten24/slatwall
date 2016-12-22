@@ -268,6 +268,17 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(orderBy[2].direction,'ASC');
 		assert(collectionEntity.getHQL() CONTAINS 'ORDER BY _sku.price DESC ,_sku.skuName ASC');
 	}
+	
+	public void function applyData_removeFilterTest_queryString(){
+		var collectionEntity = variables.entityService.getSkuCollectionList();
+		collectionEntity.addFilter('price',1);
+		//make sure filter was added
+		assertTrue(arrayLen(collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup));
+		var queryString = "?fr:price:eq=1";
+		collectionEntity.applyData(queryString);
+		//make sure filter was removed
+		assertFalse(arrayLen(collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup));
+	}
 
 	public void function addFilterTest(){
 

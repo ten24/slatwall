@@ -543,7 +543,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		//Simple Filters
 		for (var key in data){
 			//handle filters.
-			if (left(key, 2) == "fr:"){
+			if (left(key, 3) == "fr:"){
 				
 				var prop = key.split(':')[2];
 				var dataToFilterOn = data[key]; //value of the filter.
@@ -578,8 +578,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						dataToFilterOn = "%#dataToFilterOn#%";
 					}
 				}
-				this.removeFilter(prop, dataToFilterOn, comparison);
-				
+				this.removeFilter(prop,dataToFilterOn,comparison);
 			}
 			//handle filters.
 			if (left(key, 2) == "f:"){
