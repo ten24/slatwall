@@ -17,7 +17,7 @@ import {SWFormFieldJson} from "./components/swformfieldjson";
 import {SWFormFieldSearchSelect} from "./components/swformfieldsearchselect";
 import {SWFormRegistrar} from "./components/swformregistrar";
 import {SWErrorDisplay} from "./components/swerrordisplay";
-
+import {SWAddressForm} from "./components/swaddressform";
 import {SWPropertyDisplay} from "./components/swpropertydisplay";
 import {SWFPropertyDisplay} from "./components/swfpropertydisplay";
 import {SWFormSubscriber} from "./components/swformsubscriber";
