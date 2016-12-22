@@ -257,9 +257,17 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	public void function applyDataTest_orderByTest_queryString(){
 		var collectionEntity = variables.entityService.getSkuCollectionList();
 		
-		var queryString = '?orderby=price|DESC';
-		
+		var queryString = '?orderby=price|DESC,skuName|ASC';
 		collectionEntity.applyData(queryString);
+		
+		request.debug(collectionEntity.getCollectionConfigStruct());
+		var orderBy = collectionEntity.getCollectionConfigStruct().orderBy;
+		assertEquals(orderBy[1].propertyIdentifier,'_sku.price');
+		assertEquals(orderBy[1].direction,'DESC');
+		
+		assertEquals(orderBy[2].propertyIdentifier,'_sku.skuName');
+		assertEquals(orderBy[2].direction,'ASC');
+		assert(collectionEntity.getHQL() CONTAINS 'ORDER BY _sku.price DESC ,_sku.skuName ASC');
 	}
 
 	public void function addFilterTest(){

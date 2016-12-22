@@ -470,6 +470,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			direction = listLast(arguments.orderByString,'|');	
 		}
 		
+		if(left(propertyIdentifier,1) != '_'){
+			propertyIdentifier = collectionConfig.baseEntityAlias & '.' & propertyIdentifier;
+		}
+		
 		var orderBy = {
 			"propertyIdentifier"=propertyIdentifier,
 			"direction"=direction
