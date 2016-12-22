@@ -204,11 +204,10 @@ class PublicService {
         if (action.indexOf(":") !== -1){
             this.baseActionPath = action; //any path
         }else{
-            this.baseActionPath = this.appConfig.baseURL + "/index.cfm/api/scope/" + action;//public path
+            this.baseActionPath = "/index.cfm/api/scope/" + action;//public path
         }
-		
-		
-        let urlBase = this.appConfig.baseURL + this.baseActionPath;
+
+        let urlBase = this.appConfig.baseURL+this.baseActionPath;
 
         if(data){
             method = "post";
