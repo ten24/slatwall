@@ -436,8 +436,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myCollection.setOrderBy('productName|asc');
 
 
-		request.debug(myCollection.getCollectionConfigStruct());
-
 		var collectionConfigStruct = myCollection.getCollectionConfigStruct();
 
 		var pageRecords = myCollection.getPageRecords();
