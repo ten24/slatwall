@@ -1,0 +1,14 @@
+<span ng-init="$.slatwall = $root.slatwall"></span>
+<span class="full" ng-click="$.slatwall.editingShippingInPayment = false">
+		<input type="checkbox" 
+		id="address"
+		ng-hide="!$.slatwall.cart.orderFulfillments['0'].data.shippingAddress.addressID"
+		ng-if="$.slatwall.orderRequiresFulfillment()"
+		ng-model="$.slatwall.saveShippingAsBilling" 
+		ng-true-value="'true'" 
+		ng-false-value="'false'" 
+		value="'false'">
+		<label ng-hide="!$.slatwall.cart.orderFulfillments['0'].data.shippingAddress.addressID" for="address">Use the shipping address as my billing address</label>
+</span>
+<br>
+<br>
