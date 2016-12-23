@@ -58,29 +58,18 @@
 											</div>
 										</div>
 									</td>
-				                    <td data-th="Price" class="price" ng-if="orderItem.quantity != undefined && orderItem.quantity != 0">
+				                    <td data-th="Price" class="price">
 				                    	
 				                    	<span ng-if="orderItem.price && !$.slatwall.getRequestByAction('updateOrderItemQuantity').loading">
 				                    		{{orderItem.price |currency}}
 				                    	</span>
-				                    	
-				                    	<span ng-if="orderItem.extendedPriceAfterDiscount && !orderItem.extendedPrice && !$.slatwall.getRequestByAction('updateOrderItemQuantity').loading">
-				                    		<small ng-if="orderItem.extendedPrice && (orderItem.extendedPrice != orderItem.extendedPriceAfterDiscount)">
-				                    			<strike>{{orderItem.extendedPrice |currency}}</strike> &nbsp; {{orderItem.extendedPriceAfterDiscount |currency}}
-				                    		</small>
-				                    		
-				                    		<small ng-if="orderItem.extendedPrice || (orderItem.extendedPrice == orderItem.extendedPriceAfterDiscount)">
-				                    			{{orderItem.extendedPriceAfterDiscount |currency}}
-				                    		</small>
-				                    	</span>
-				                    	
-				                    	
 				                    	
 				                    	<span ng-if="$.slatwall.getRequestByAction('updateOrderItemQuantity').loading">
 											<i class="fa fa-refresh fa-spin fa-lg fa-fw"></i>
 											<span class="sr-only">Loading...</span>
 										</span>
 									</td>
+									
 				                    <td class="quantity">
 				                    	<input style="width:50px" type="text" 
 											ng-init="quantity='1'" 
@@ -89,7 +78,19 @@
 											ng-model-options='{ debounce: 250 }' 
 											ng-change="$root.$root.slatwall.doAction('updateOrderItemQuantity', {'orderItem.sku.skuID':orderItem.sku.skuID, 'orderItem.qty':orderItem.quantity})" />
 				                    </td>
-									<td data-th="Total" class="total text-center">{{orderItem.extendedPriceAfterDiscount|currency :($root.$.slatwall.cart.currencyCode == 'EUR'?'&euro;':'$')}}</td>
+				                    
+									<td data-th="Total" class="total text-center">
+										<span ng-if="orderItem.extendedPrice && !$.slatwall.getRequestByAction('updateOrderItemQuantity').loading">
+				                    		<small ng-if="(orderItem.extendedPrice != orderItem.extendedPriceAfterDiscount)">
+				                    			<strike>{{orderItem.extendedPrice |currency}}</strike> &nbsp; {{orderItem.extendedPriceAfterDiscount |currency}}
+				                    		</small>
+				                    		
+				                    		<small ng-if="(orderItem.extendedPriceAfterDiscount && orderItem.extendedPrice == orderItem.extendedPriceAfterDiscount)">
+				                    			{{orderItem.extendedPriceAfterDiscount |currency}}
+				                    		</small>
+				                    	</span>
+									</td>
+				                    
 				                    <td>
 				                    	<a href="#" class="remove btn btn-sm" ng-click="$.slatwall.doAction('removeOrderItem', {'orderItemID': orderItem.orderItemID })"><i class="fa fa-trash-o"></i></a>
 									</td>
