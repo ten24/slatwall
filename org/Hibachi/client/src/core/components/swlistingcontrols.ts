@@ -8,6 +8,7 @@ class SWListingControlsController {
     private paginator;
     private searchText;
     private backupColumnsConfig;
+    private listingColumns; 
     private displayOptionsClosed:boolean=true;
     private filtersClosed:boolean=true;
     private showFilters:boolean; 
@@ -17,6 +18,7 @@ class SWListingControlsController {
     private itemInUse;
     private getCollection;
     private tableId; 
+    private columnIsControllableMap = {}; 
 
     //@ngInject
     constructor(
@@ -63,6 +65,21 @@ class SWListingControlsController {
     public getSelectedSearchColumnName = () =>{
         return (angular.isUndefined(this.selectedSearchColumn)) ? 'All' : this.selectedSearchColumn.title;
     };
+
+    public canDisplayColumn = (column) =>{
+        if(angular.isDefined(this.columnIsControllableMap[column.propertyIdentifier])){
+            return this.columnIsControllableMap[column.propertyIdentifier]; 
+        }
+        for(var i=0; i < this.listingColumns.length; i++){
+            if(column.propertyIdentifier == this.listingColumns[i].propertyIdentifier){
+                this.columnIsControllableMap[column.propertyIdentifier] = true; 
+            }
+        }
+        if(!this.columnIsControllableMap[column.propertyIdentifier]){
+            this.columnIsControllableMap[column.propertyIdentifier] = false; 
+        }
+        return this.columnIsControllableMap[column.propertyIdentifier]; 
+    }
 
     private addSearchFilter=()=>{
         if(angular.isUndefined(this.selectedSearchColumn) || !this.searchText) return;
