@@ -2521,15 +2521,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.orderPayment.clearProcessObject( 'createTransaction' );
 
 
-			// call the method below if getPlaceOrderChargeTransactionType = "Authorize"
+			// Call the method below if getPlaceOrderChargeTransactionType = "Authorize"
 			// then do another call for create transaction with transactionType = AuthAndCharge and amount = deposit amount
 			// if the getPlaceOrderChargeTransactionType = "AuthandCharge", set the amount to deposit amount
 			if (arguments.orderPayment.getOrder().hasDepositItemsOnOrder()){
 				
+				//if this is authorize.
 				if (arguments.orderPayment.getPaymentMethod().getPlaceOrderChargeTransactionType() == 'authorize'){
-					
+					//call the method below if getPlaceOrderChargeTransactionType = "Authorize"
 					arguments.orderPayment = this.createTransactionAndCheckErrors(arguments.orderPayment, processData);
 					
+					// then do another call for create transaction with transactionType = AuthAndCharge and amount = deposit amount
 					//set the transaction type and amount.
 					if (!arguments.orderPayment.hasErrors()){
 						arguments.orderPayment.clearProcessObject( 'createTransaction' );
@@ -2537,6 +2539,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						processData.amount = arguments.orderPayment.getOrder().getTotalDepositAmount();
 						arguments.orderPayment = this.createTransactionAndCheckErrors(arguments.orderPayment, processData);
 					}
+				// if the getPlaceOrderChargeTransactionType = "AuthandCharge", set the amount to deposit amount
 				}else if(arguments.orderPayment.getPaymentMethod().getPlaceOrderChargeTransactionType() == 'authorizeAndCharge'){
 					
 					//just set the deposit amount
@@ -2561,7 +2564,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				||
 			(arguments.orderPayment.getOrder().hasDepositItemsOnOrder() == false && listFindNoCase("authorize", processData.transactionType) && arguments.orderPayment.getAmountAuthorized() lt arguments.orderPayment.getAmount())
 				||
-			(arguments.orderPayment.getOrder().hasDepositItemsOnOrder() == true && listFindNoCase("authorize", processData.transactionType) && arguments.orderPayment.getAmountAuthorized() lt arguments.orderPayment.getAmount())
+			(arguments.orderPayment.getOrder().hasDepositItemsOnOrder() == true && listFindNoCase("authorize", processData.transactionType) && arguments.orderPayment.getAmountAuthorized() lt arguments.orderPayment.getOrder().getTotalDepositAmount())
 				||
 			(arguments.orderPayment.getOrder().hasDepositItemsOnOrder() == false && listFindNoCase("authorizeAndCharge,receive", processData.transactionType) && arguments.orderPayment.getAmountReceived() lt arguments.orderPayment.getAmount())
 				||

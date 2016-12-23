@@ -964,7 +964,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getTotalDepositAmount() {
 		var totalDepositAmount = 0;
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			if(getOrderItems()[i].getOrderItemType().getSystemCode() eq "oitSale" && !isNull(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder"))) {
+			if(getOrderItems()[i].getOrderItemType().getSystemCode() eq "oitSale" && !isNull(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder"))  && len(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) != 0) {
 				if (getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder") == 0){
 					totalDepositAmount += ((getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) * getOrderItems()[i].getExtendedPrice() ) ;
 	
@@ -972,7 +972,6 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 					totalDepositAmount += ((getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")/100) * getOrderItems()[i].getExtendedPrice() ) ;
 		
 				}	
-						
 			}
 		}
 		return totalDepositAmount;
@@ -980,17 +979,19 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	
 	public boolean function hasDepositItemsOnOrder(){
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			if(getOrderItems()[i].getOrderItemType().getSystemCode() eq "oitSale" && !isNull(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder"))) {
+			if(getOrderItems()[i].getOrderItemType().getSystemCode() eq "oitSale" && !isNull(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) && len(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) != 0) {
+				
 				return true;
 			}
 		}
+		
 		return false;
 	}
 	
 	public boolean function hasNonDepositItemsOnOrder(){
 		//and has at least one sale item
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			if(getOrderItems()[i].getOrderItemType().getSystemCode() eq "oitSale" && isNull(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder"))) {
+			if(getOrderItems()[i].getOrderItemType().getSystemCode() eq "oitSale" && isNull(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder") || len(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) == 0)) {
 				return true;
 			}
 		}
