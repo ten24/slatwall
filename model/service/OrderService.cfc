@@ -2561,7 +2561,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				||
 			(listFindNoCase("authorize", processData.transactionType) && arguments.orderPayment.getAmountAuthorized() lt arguments.orderPayment.getAmount())
 				||
-			(listFindNoCase("authorizeAndCharge,receive", processData.transactionType) && arguments.orderPayment.getAmountReceived() lt arguments.orderPayment.getAmount())
+			(!arguments.orderPayment.getOrder().hasDepositItemsOnOrder() && listFindNoCase("authorizeAndCharge,receive", processData.transactionType) && arguments.orderPayment.getAmountReceived() lt arguments.orderPayment.getAmount())
+				||
+			(arguments.orderPayment.getOrder().hasDepositItemsOnOrder() && listFindNoCase("authorizeAndCharge,receive", processData.transactionType) && arguments.orderPayment.getAmountReceived() lt arguments.orderPayment.getOrder().getTotalDepositAmount())
 				||
 			(listFindNoCase("credit", processData.transactionType) && arguments.orderPayment.getAmountCredited() lt arguments.orderPayment.getAmount())
 		) {
@@ -2574,18 +2576,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				arguments.orderPayment.getOrder().addError('runPlaceOrderTransaction', arguments.orderPayment.getError('createTransaction'), true);
 			}
 
-		}else if(arguments.orderPayment.getOrder().hasDepositItemsOnOrder() == true &&
-					listFindNoCase("authorizeAndCharge,receive", processData.transactionType) && 
-					arguments.orderPayment.getAmountReceived() lt arguments.orderPayment.getOrder().getTotalDepositAmount()) {
-
-			// Add a generic payment processing error and make it persistable
-			arguments.orderPayment.getOrder().addError('runPlaceOrderTransaction', rbKey('entity.order.process.placeOrder.paymentProcessingError'), true);
-
-			// Add the actual message
-			if(arguments.orderPayment.hasError('createTransaction')) {
-				arguments.orderPayment.getOrder().addError('runPlaceOrderTransaction', arguments.orderPayment.getError('createTransaction'), true);
-			}
 		}
+		
 		return arguments.orderPayment;
 	}
 
