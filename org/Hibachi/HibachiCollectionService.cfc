@@ -655,7 +655,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		
 		if (!isNull(whiteList)){
 			var authorizedPropertyList = whiteList.split(",");
-			for(var authorizedProperty in authorizedProperties){
+			for(var authorizedProperty in authorizedPropertyList){
 				collectionEntity.addAuthorizedProperty(authorizedProperty);
 			}
 		}
