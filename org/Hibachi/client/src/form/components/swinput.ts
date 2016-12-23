@@ -229,7 +229,7 @@ class SWInputController{
 			validations = this.getValidationDirectives();
 		}
 
-		if(this.object.metaData.$$getPropertyFormatType(this.property) == "currency"){
+		if(this.object && this.object.metaData && this.object.metaData.$$getPropertyFormatType(this.property) != undefined&& this.object.metaData.$$getPropertyFormatType(this.property) == "currency"){
 			currencyFormatter = 'sw-currency-formatter ';
 			if(angular.isDefined(this.object.data.currencyCode)){
 				currencyFormatter = currencyFormatter + 'data-currency-code="' + this.object.data.currencyCode + '" ';
@@ -359,14 +359,25 @@ class SWInputController{
             }
 		}
 
-		this.eventNameForObjectSuccess = this.object.metaData.className.split('_')[0]+this.context.charAt(0).toUpperCase()+this.context.slice(1)+'Success'
+		if (this.object && this.object.metaData && this.object.metaData.className != undefined){
+ 			this.eventNameForObjectSuccess = this.object.metaData.className.split('_')[0]+this.context.charAt(0).toUpperCase()+this.context.slice(1)+'Success'
+ 		}else{
+ 			this.eventNameForObjectSuccess = this.context.charAt(0).toUpperCase()+this.context.slice(1)+'Success'
+ 		}
 		var eventNameForObjectSuccessID = this.eventNameForObjectSuccess+this.property;
 
 		var eventNameForUpdateBindings = 'updateBindings';
-		var eventNameForUpdateBindingsID = this.object.metaData.className.split('_')[0]+this.property+'updateBindings';
-
+		if (this.object && this.object.metaData && this.object.metaData.className != undefined){
+ 			var eventNameForUpdateBindingsID = this.object.metaData.className.split('_')[0]+this.property+'updateBindings';
+ 		}else{
+ 			var eventNameForUpdateBindingsID = this.property+this.property+'updateBindings';
+ 		}
         var eventNameForPullBindings = 'pullBindings';
-        var eventNameForPullBindingsID = this.object.metaData.className.split('_')[0]+this.property+'pullBindings';
+        if (this.object && this.object.metaData && this.object.metaData.className != undefined){
+         	var eventNameForPullBindingsID = this.object.metaData.className.split('_')[0]+this.property+'pullBindings';
+		}else{
+ 			var eventNameForPullBindingsID = this.property+this.property+'pullBindings';
+ 		}
 		//attach a successObserver
 		if(this.object){
 			//update bindings on save success

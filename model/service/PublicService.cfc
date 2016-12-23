@@ -454,7 +454,8 @@ component extends="HibachiService"  accessors="true" output="false"
       		accountAddress.setAccount(getHibachiScope().getAccount());	
       		var savedAccountAddress = getService("AccountService").saveAccountAddress(accountAddress);
  	     	if (!savedAccountAddress.hasErrors()){
- 	     		getDao('hibachiDao').flushOrmSession();
+ 	     		getHibachiScope().addActionResult( "public:account.addNewAccountAddress", savedAccountAddress.hasErrors() ); 
+ 	     		getDao('hibachiDao').flushOrmSession(); 
  	     	}
       	}
      }
@@ -465,13 +466,31 @@ component extends="HibachiService"  accessors="true" output="false"
      public void function updateAddress(required data){
      	param name="data.countrycode" default="US";
      	param name="data.addressID" default="";
-     	
+     	param name="data.phoneNumber" default="";
      	
      	var newAddress = getService("AddressService").getAddress(data.addressID, true);
-     	newAddress = getService("AddressService").saveAddress(newAddress, data, "full");
-      	
+     	
       	if (!isNull(newAddress) && !newAddress.hasErrors()){
- 	     	getDao('hibachiDao').flushOrmSession();
+      		newAddress = getService("AddressService").saveAddress(newAddress, data, "full");
+      		
+      		//save the order.
+ 	     	getService("OrderService").saveOrder(getHibachiScope().getCart());
+ 	     	getHibachiScope().addActionResult( "public:cart.updateAddress", false ); 
+      	}
+     }
+    
+     /**
+      * Updates an address.
+      */
+     public void function updateAccountAddress(required data){
+     	
+     	var accountAddress = getService("AddressService").getAccountAddress(data.accountAddressID, true);
+     	accountAddress = getService("AddressService").saveAccountAddress(accountAddress, data, "save");
+      	
+      	if (!isNull(accountAddress) && !accountAddress.hasErrors()){
+      		//save the order.
+ 	     	getService("OrderService").saveAccount(getHibachiScope().getAccount());
+ 	     	getHibachiScope().addActionResult( "public:cart.updateAccountAddress", false ); 
       	}
      }
     
@@ -551,8 +570,13 @@ component extends="HibachiService"  accessors="true" output="false"
             //save the address at the order level.
             var order = getHibachiScope().cart();
             order.setShippingAddress(accountAddress.getAddress());
+            for (orderFulfillment in order.getOrderFulfillments()){
+            	orderFulfillment.setShippingAddress(accountAddress.getAddress());
+            	getService("OrderService").saveOrderFulfillment(orderFulfillment);
+            }
             order.setBillingAddress(accountAddress.getAddress());
-            getOrderService().saveOrder(order);            
+            getOrderService().saveOrder(order);     
+            getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", accountAddress.hasErrors());
         }else{
             this.addErrors(arguments.data, accountAddress.getErrors()); //add the basic errors
             getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", accountAddress.hasErrors());
@@ -576,7 +600,7 @@ component extends="HibachiService"  accessors="true" output="false"
             var orderFulfillment = order.getOrderFulfillments()[orderFulfillmentWithShippingMethodOptions];
             orderFulfillment.setShippingMethod(shippingMethod);
             getOrderService().saveOrder(order); 
-            getDao('hibachiDao').flushOrmSession();           
+            ormFlush();           
         }else{
             this.addErrors(arguments.data, shippingMethod.getErrors()); //add the basic errors
             getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", shippingMethod.hasErrors());
@@ -614,19 +638,33 @@ component extends="HibachiService"  accessors="true" output="false"
      * @http-return <b>(200)</b> Successfully Deleted or <b>(400)</b> Bad or Missing Input Data
      * @ProcessMethod AccountPaymentMethod_Save
      */
-    public void function addAccountPaymentMethod() {
-        
+    public void function addAccountPaymentMethod(required any data) {
+        if (!isNull(data) && !structKeyExists(data, 'accountPaymentMethod') && structKeyExists(data, "selectedPaymentMethod")){
+        	data['accountPaymentMethod'] = {};
+        	data['accountPaymentMethod']['accountPaymentMethodID']  = data.selectedPaymentMethod;
+        }
+        if (!isNull(data) && !structKeyExists(data, 'paymentMethod')){
+        	data['paymentMethod'] = {};
+        	data['paymentMethod'].paymentMethodID = '444df303dedc6dab69dd7ebcc9b8036a';
+        }
+        if (!isNull(data) && !structKeyExists(data, 'billingAddress')){
+        	data['newOrderPayment'] = data;
+        	data['newOrderPayment']['billingAddress'] = data;
+        }	
         if(getHibachiScope().getLoggedInFlag()) {
             
             // Fodatae the payment method to be added to the current account
-            var accountPaymentMethod = getHibachiScope().getAccount().getNewPropertyEntity( 'accountPaymentMethods' );
-            
-            accountPaymentMethod.setAccount( getHibachiScope().getAccount() );
+            if (structKeyExists(data, "selectedPaymentMethod")){
+            	var accountPaymentMethod = getHibachiScope().getService("AccountService").getAccountPaymentMethod( data.selectedPaymentMethod );
+            }else{
+            	var accountPaymentMethod = getHibachiScope().getService("AccountService").newAccountPaymentMethod(  );	
+            	accountPaymentMethod.setAccount( getHibachiScope().getAccount() );
+            }
             
             accountPaymentMethod = getAccountService().saveAccountPaymentMethod( accountPaymentMethod, arguments.data );
             
             getHibachiScope().addActionResult( "public:account.addAccountPaymentMethod", accountPaymentMethod.hasErrors() );
-            
+            data['ajaxResponse']['errors'] = accountPaymentMethod.getErrors();
             // If there were no errors then we can clear out the
             
         } else {
@@ -1039,6 +1077,8 @@ component extends="HibachiService"  accessors="true" output="false"
      @ProcessMethod Order_PlaceOrder
      */
     public void function placeOrder(required any data) {
+    	
+        getOrderService().saveOrder(getHibachiScope().cart(), data);
         
         // Insure that all items in the cart are within their max constraint
         if(!getHibachiScope().cart().hasItemsQuantityWithinMaxOrderQuantity()) {
@@ -1164,48 +1204,4 @@ component extends="HibachiService"  accessors="true" output="false"
         arguments.data.ajaxResponse['countryCodeOptions'] = getAddressService().getCountryCodeOptions();
     }
     
-    /** Given a skuCode, returns the estimated shipping rates for that sku. */
-    public any function getEstimatedShippingCostBySkuCode(any data){
-    	if (!isNull(data.skuCode)){
-    		
-    		//data setup.
-    		var orderFulfillment = getService("OrderService").newOrderFulfillment();
-    		var orderItem = getService("OrderService").newOrderItem();
-    		var sku = getService("SkuService").getSkuBySkuCode(data.skuCode);
-    		
-    		//set the sku so we have data for the rates.
-    		orderItem.setSku(sku);
-    		var shippingMethodOptions = [];
-    		
-    		//set the order so it doesn't stall when updating options.
-    		orderFulfillment.setOrder(getHibachiScope().getCart());
-    		
-    		var eligibleFulfillmentMethods = listToArray(sku.setting("skuEligibleFulfillmentMethods"));
-    		
-    		var options = {};
-    		
-    		//iterate through getting the options.
-    		for (var eligibleFulfillmentMethod in eligibleFulfillmentMethods){
-    			//get the fulfillment methods for this item.
-    			var fulfillmentMethod = getService("FulfillmentService").getFulfillmentMethod(eligibleFulfillmentMethod);
-    			if (!isNull(fulfillmentMethod) &&!isNull(fulfillmentMethod.getFulfillmentMethodType()) &&  fulfillmentMethod.getFulfillmentMethodType() == "shipping"){
-    				
-    				//set the method so we can update with the options.
-    				orderFulfillment.setFulfillmentMethod(fulfillmentMethod);
-    				getService("ShippingService").updateOrderFulfillmentShippingMethodOptions(orderFulfillment);
-    				if (!isNull(orderFulfillment.getShippingMethodOptions())){
-    					for (var rate in orderFulfillment.getShippingMethodOptions()){
-    						options['#rate.shippingMethodCode#'] = rate;
-    					}
-    				}
-    			}
-    		}
-    		
-    		//remove the orderfulfillment that we used to get the rates because it will disrupt other entities saving.
-    		getService("OrderService").deleteOrderFulfillment(orderFulfillment);
-    		data['ajaxResponse']['estimatedShippingRates'] = options;
-    	}
-    }
-    
 }
-
