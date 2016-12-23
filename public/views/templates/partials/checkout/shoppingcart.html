@@ -64,8 +64,6 @@
 				                    		{{orderItem.price |currency}}
 				                    	</span>
 				                    	
-				           
-				                    	
 				                    	<span ng-if="orderItem.extendedPriceAfterDiscount && !orderItem.extendedPrice && !$.slatwall.getRequestByAction('updateOrderItemQuantity').loading">
 				                    		<small ng-if="orderItem.extendedPrice && (orderItem.extendedPrice != orderItem.extendedPriceAfterDiscount)">
 				                    			<strike>{{orderItem.extendedPrice |currency}}</strike> &nbsp; {{orderItem.extendedPriceAfterDiscount |currency}}
