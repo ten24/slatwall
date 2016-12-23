@@ -30,6 +30,7 @@ import {HibachiServiceDecorator} from "./services/hibachiservicedecorator";
 import {HibachiScope} from "./services/hibachiscope";
 import {RequestService} from "./services/requestservice";
 import {ScopeService} from "./services/scopeservice"; 
+import {SkuService} from "./services/skuservice";
 import {HibachiValidationService} from "./services/hibachivalidationservice";
 import {EntityService} from "./services/entityservice";
 //controllers
@@ -92,6 +93,7 @@ import {SWHref} from "./components/swhref";
 import {SWProcessCaller} from "./components/swprocesscaller";
 import {SWSortable} from "./components/swsortable";
 import {SWListingGlobalSearch} from "./components/swlistingglobalsearch";
+import {SWOrderByControls} from "./components/sworderbycontrols"; 
 
 import {BaseObject} from "./model/baseobject";
 declare var $:any;
@@ -204,6 +206,7 @@ var coremodule = angular.module('hibachi.core',[
 .service('hibachiInterceptor', HibachiInterceptor.Factory())
 .service('hibachiScope',HibachiScope)
 .service('scopeService',ScopeService)
+.service('skuService', SkuService)
 .service('listingService', ListingService)
 .service('localStorageService',LocalStorageService)
 .service('requestService',RequestService)
@@ -272,6 +275,7 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swProcessCaller',SWProcessCaller.Factory())
 .directive('sw:sortable',SWSortable.Factory())
 .directive('swListingGlobalSearch',SWListingGlobalSearch.Factory())
+.directive('swOrderByControls', SWOrderByControls.Factory())
 ;
 export{
 	coremodule

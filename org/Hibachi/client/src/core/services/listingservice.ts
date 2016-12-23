@@ -216,7 +216,7 @@ class ListingService{
             ( angular.isString(pageRecordValue) && pageRecordValue.trim().length == 0) ) && 
               angular.isDefined(column.fallbackPropertyIdentifiers)
         ){
-            var fallbackPropertyArray = column.fallbackPropertyIdentifiers.split(",");
+            var fallbackPropertyArray = column.fallbackPropertyIdentifiers.replace('.','_').split(",");
             for(var i=0; i<fallbackPropertyArray.length; i++){
                 if(angular.isDefined(pageRecord[this.getPageRecordKey(fallbackPropertyArray[i])])){
                     pageRecordValue = pageRecord[this.getPageRecordKey(fallbackPropertyArray[i])];
@@ -232,10 +232,10 @@ class ListingService{
 
         for(var i = 0; i < this.getListing(listingID).collectionData.pageRecords.length; i++){
             if( this.getListing(listingID).isCurrentPageRecordsSelected == true ){
-                this.getListing(listingID).selectionService.addSelection(this.getListing(listingID).name, 
+                this.getListing(listingID).selectionService.addSelection(this.getListing(listingID).tableID, 
                                                                          this.getListingPageRecords(listingID)[i][this.getListingBaseEntityPrimaryIDPropertyName(listingID)]);
             } else {
-                this.selectionService.removeSelection(this.getListing(listingID).name,  this.getListingPageRecords(listingID)[i][this.getListingBaseEntityPrimaryIDPropertyName(listingID)]);
+                this.selectionService.removeSelection(this.getListing(listingID).tableID,  this.getListingPageRecords(listingID)[i][this.getListingBaseEntityPrimaryIDPropertyName(listingID)]);
             }
         }
     };
@@ -594,14 +594,14 @@ class ListingService{
         if(this.getListing(listingID).multiselectValues && this.getListing(listingID).multiselectValues.length){
             //select all owned ids
             angular.forEach(this.getListing(listingID).multiselectValues,(value)=>{
-                this.getListing(listingID).selectionService.addSelection(this.getListing(listingID).name,value);
+                this.getListing(listingID).selectionService.addSelection(this.getListing(listingID).tableID,value);
             });
         }
 
         if(this.getListing(listingID).multiselectIdPaths && this.getListing(listingID).multiselectIdPaths.length){
             angular.forEach(this.getListing(listingID).multiselectIdPaths.split(','),(value)=>{
                 var id = this.getListing(listingID).utilityService.listLast(value,'/');
-                this.getListing(listingID).selectionService.addSelection(this.getListing(listingID).name,id);
+                this.getListing(listingID).selectionService.addSelection(this.getListing(listingID).tableID,id);
             });
         }
     };

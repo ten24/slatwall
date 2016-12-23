@@ -5,6 +5,7 @@ class SWPricingManagerController{
     public productId;
     public product; 
     public productCollectionConfig;
+    public trackInventory; 
     
     //temporary var
     public singleEditTest; 
@@ -35,7 +36,8 @@ class SWPricingManager implements ng.IDirective{
     public priority = 1000;
     public scope = {}; 
     public bindToController = {
-        productId:"@"
+        productId:"@",
+        trackInventory:"=?"
     };
     public controller = SWPricingManagerController;
     public controllerAs="swPricingManager";

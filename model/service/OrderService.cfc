@@ -1346,9 +1346,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 						}
 
-						if(arguments.order.getPaymentAmountDue() > 0 && arguments.order.hasGiftCardOrderPaymentAmount()){
-							arguments.order.addMessage('paymentProcessedMessage', rbKey('entity.order.process.placeOrder.paymentProcessedMessage'));
-						}
+						
 						
 						// Loop over the orderItems looking for any skus that are 'event' skus, and setting their registration value 
 						for(var orderitem in arguments.order.getOrderItems()) {
@@ -1413,7 +1411,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 							// Log that the order was placed
 							logHibachi(message="New Order Processed - Order Number: #order.getOrderNumber()# - Order ID: #order.getOrderID()#", generalLog=true);
-
+							// if order had error but payment was captured, clear error and log to hibachi
+							if(arguments.order.hasErrors()) {
+								arguments.order.addMessage('paymentProcessedMessage', rbKey('entity.order.process.placeOrder.paymentProcessedMessage'));
+								for(var errorName in arguments.order.getErrors()) {
+									for(var i=1; i<=arrayLen(arguments.order.getErrors()[errorName]); i++) {
+										logHibachi(message="Order was placed but it had an error with an errorName: #errorName# and errorMessage: #arguments.order.getErrors()[errorName][i]#", generalLog=true);	
+									}
+								}
+								arguments.order.getHibachiErrors().setErrors(structnew());
+							}
 							// Look for 'auto' order fulfillments
 							for(var i=1; i<=arrayLen( arguments.order.getOrderFulfillments() ); i++) {
 								createOrderDeliveryForAutoFulfillmentMethod(arguments.order.getOrderFulfillments()[i]);

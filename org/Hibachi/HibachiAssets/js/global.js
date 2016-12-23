@@ -975,7 +975,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 			jQuery('.panel-collapse:not(".in")').collapse('show');
 		});
 		
-		//function to check form imputs for values and show or hide label text
+		//ADMIN LOGIN: function to check form imputs for values and show or hide label text
 		function checkFields(targetObj){
 			if( targetObj.value !== '') {
 				$(targetObj).closest('.form-group').find('.control-label').addClass('s-slide-out');
@@ -984,30 +984,39 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 			}
 		};
 		
-		//check all inputs on page load and show or hide label
+		//ADMIN LOGIN: check all inputs on page load and show or hide label
 		$('.s-login-wrapper .s-form-signin input').each(function(){
 			checkFields(this);
 		});
 		
-		//check input on keyup and show or hide label
+		//ADMIN LOGIN: check input on keyup and show or hide label
 		$('.s-login-wrapper .s-form-signin input').keyup(function(){	
 			var getIDVal = $(this).attr('id');
 			checkFields(this);
 		});
 		
-		//Hide login and show forgot password
+		//ADMIN LOGIN: Function to toggle show password on login
+		var togglePasswordLogin = function(){
+			$('#j-forgot-password-wrapper').toggle();
+			$('#j-login-wrapper').toggle();
+		};
+		
+		//ADMIN LOGIN: Hide login and show forgot password
 		$('#j-forgot-password').click(function(e){
 			e.preventDefault();
-			$('#j-forgot-password-wrapper').show();
-			$('#j-login-wrapper').hide();
+			togglePasswordLogin();
 		});
 		
-		//Show login and hide forgot password
+		//ADMIN LOGIN: Show login and hide forgot password
 		$('#j-back-to-login').click(function(e){
 			e.preventDefault();
-			$('#j-forgot-password-wrapper').hide();
-			$('#j-login-wrapper').show();
+			togglePasswordLogin();
 		});
+		
+		//ADMIN LOGIN: If forgot password error, show forgot password
+		if( $('#j-forgot-password-wrapper label.error').length ){
+			togglePasswordLogin();
+		}
 	
 		//[TODO]: Change Up JS
 		jQuery('.panel-collapse.in').parent().find('.s-accordion-toggle-icon').addClass('s-opened');
@@ -1566,9 +1575,6 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	
 		if(inputValue !== undefined && inputValue.length > 0) {
 			jQuery.each(inputValue.split(','), function(vi, vv) {
-				console.log(inputValue);
-				console.log(vi);
-				console.log(vv);
 				jQuery(jQuery('table[data-multiselectfield="' + multiselectField  + '"]').find('tr[id=' + vv + '] .hibachi-ui-checkbox').addClass('hibachi-ui-checkbox-checked')).removeClass('hibachi-ui-checkbox');
 			});
 		}

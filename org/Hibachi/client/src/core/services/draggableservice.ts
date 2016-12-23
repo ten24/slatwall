@@ -3,6 +3,7 @@
 
 class DraggableService{
     
+    //ngInject
     constructor(
         
     ){

@@ -65,7 +65,7 @@ component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true acces
 	//temporarily omitted
 	//property name="priceRule" cfc="PriceRule" fieldtype="many-to-one" fkcolumn="priceRuleID";
 	property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID";
-	property name="promotionReward" cfc="promotionReward" fieldtype="many-to-one" fkcolumn="promotionRewardID";
+	property name="promotionReward" cfc="PromotionReward" fieldtype="many-to-one" fkcolumn="promotionRewardID";
 
 	// Remote properties
 	property name="remoteID" ormtype="string";

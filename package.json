@@ -13,6 +13,7 @@
   "devDependencies": {
     "angular": "*",
     "bower": "*",
+	"less": "*",
     "force-case-sensitivity-webpack-plugin": "^0.1.1",
     "gulp": "*",
     "gulp-chmod": "^1.3.0",
@@ -45,8 +46,9 @@
     "buildHibachi":"cd org/Hibachi/client && webpack",
     "buildHibachi:prod":"cd org/Hibachi/client && webpack --config webpack-production.config.js -p",
     "buildFrontend":"cd org/Hibachi/client && webpack --config webpack-frontend-develop.config.js",
-    "buildFrontend:prod":"cd org/Hibachi/client && webpack --config webpack-frontend-production.config.js -p"
-  },
+    "buildFrontend:prod":"cd org/Hibachi/client && webpack --config webpack-frontend-production.config.js -p",
+	"buildCSS":"lessc admin/client/css/main.less admin/client/css/main.css"
+   },
   "jshintConfig": {
     "predef": [
       "angular"
