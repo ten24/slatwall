@@ -794,6 +794,7 @@
 
 			var passwordsJSON = serializeJSON({'passwords'=arguments.encryptionPasswordArray});
 			fileWrite(getEncryptionPasswordFilePath(), encrypt(passwordsJSON, hardCodedFileEncryptionKey, "AES/CBC/PKCS5Padding"));
+			logHibachi("Encryption key file updated", true);
 		}
 
 		private any function readEncryptionPasswordFile() {
