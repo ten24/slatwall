@@ -2557,13 +2557,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.orderPayment = this.processOrderPayment(arguments.orderPayment, processData, 'createTransaction');
 
 		// If there was expected authorize, receive, or credit
-		if( arguments.orderPayment.getOrder().hasDepositItemsOnOrder() == false && arguments.orderPayment.hasErrors()
+		if(arguments.orderPayment.hasErrors()
 				||
 			(listFindNoCase("authorize", processData.transactionType) && arguments.orderPayment.getAmountAuthorized() lt arguments.orderPayment.getAmount())
 				||
-			(!arguments.orderPayment.getOrder().hasDepositItemsOnOrder() && listFindNoCase("authorizeAndCharge,receive", processData.transactionType) && arguments.orderPayment.getAmountReceived() lt arguments.orderPayment.getAmount())
+			(arguments.orderPayment.getOrder().hasDepositItemsOnOrder() == false && listFindNoCase("authorizeAndCharge,receive", processData.transactionType) && arguments.orderPayment.getAmountReceived() lt arguments.orderPayment.getAmount())
 				||
-			(arguments.orderPayment.getOrder().hasDepositItemsOnOrder() && listFindNoCase("authorizeAndCharge,receive", processData.transactionType) && arguments.orderPayment.getAmountReceived() lt arguments.orderPayment.getOrder().getTotalDepositAmount())
+			(arguments.orderPayment.getOrder().hasDepositItemsOnOrder() == true && listFindNoCase("authorizeAndCharge,receive", processData.transactionType) && arguments.orderPayment.getAmountReceived() lt arguments.orderPayment.getOrder().getTotalDepositAmount())
 				||
 			(listFindNoCase("credit", processData.transactionType) && arguments.orderPayment.getAmountCredited() lt arguments.orderPayment.getAmount())
 		) {
