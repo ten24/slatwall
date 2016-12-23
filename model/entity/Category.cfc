@@ -62,13 +62,13 @@ component displayname="Category" entityname="SlatwallCategory" table="SwCategory
 	
 	// Related Object Properties (many-to-one)
 	property name="site" cfc="Site" fieldtype="many-to-one" fkcolumn="siteID";
-	property name="parentCategory" cfc="Category" fieldtype="many-to-one" fkcolumn="childCategoryID";
+	property name="parentCategory" cfc="Category" fieldtype="many-to-one" fkcolumn="parentCategoryID";
 	
 	// Related Object Properties (one-to-many)
 	property name="childCategories" singularname="childCategory" cfc="Category" type="array" fieldtype="one-to-many" fkcolumn="parentCategoryID" cascade="all-delete-orphan" inverse="true";
 	
 	// Related Object Properties (many-to-many - inverse)
-	property name="products" singularname="product" cfc="Product" fieldtype="many-to-many" linktable="SwProductCategory" fkcolumn="categoryID" inversejoincolumn="productID" inverse="true";
+	property name="products" singularname="product" cfc="Product" type="array" fieldtype="many-to-many" linktable="SwProductCategory" fkcolumn="categoryID" inversejoincolumn="productID" inverse="true";
 	property name="contents" singularname="content" cfc="Content" type="array" fieldtype="many-to-many" linktable="SwContentCategory" fkcolumn="categoryID" inversejoincolumn="contentID" inverse="true";
 	
 	// Remote properties
@@ -139,6 +139,12 @@ component displayname="Category" entityname="SlatwallCategory" table="SwCategory
 	public void function preUpdate(struct oldData){
 		super.preUpdate(argumentcollection=arguments);
 		setCategoryIDPath( buildIDPathList( "parentCategory" ) );
+	}
+	
+	public any function getChildCategoriesSmartList(){
+		var sl = getService('ContentService').getCategorySmartList();
+		sl.addFilter('parentCategory.categoryID',this.getCategoryID());
+		return sl;
 	}
 	
 	// ===================  END:  ORM Event Hooks  =========================
