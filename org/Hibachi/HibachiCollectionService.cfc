@@ -524,7 +524,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			}
 		}
 		
-		if(!structKeyExists(newQueryKeys, "P#variables.dataKeyDelimiter#Show") || newQueryKeys["P#variables.dataKeyDelimiter#Show"] == getPageRecordsShow()) {
+		if(!structKeyExists(newQueryKeys, "P#variables.dataKeyDelimiter#Show")) {
 			// Add the correct page start
 			if( structKeyExists(newQueryKeys, "P#variables.dataKeyDelimiter#Start") ) {
 				modifiedURL &= "P#variables.dataKeyDelimiter#Start=#newQueryKeys[ 'P#variables.dataKeyDelimiter#Start' ]#&";
