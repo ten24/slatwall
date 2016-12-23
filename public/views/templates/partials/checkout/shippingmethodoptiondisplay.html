@@ -1,0 +1,29 @@
+<!--- Allows the user to select a shipping method if they have already selected an address --->
+<span ng-init="$.slatwall = $root.slatwall"></span>
+<span ng-init="$.slatwall.currentShippingMethodOptions = $.slatwall.cart.data.orderFulfillments[$.slatwall.cart.data.orderFulfillmentWithShippingMethodOptionsIndex].shippingMethodOptions"></span>
+<span ng-init="$.slatwall.currentShippingAddress = $.slatwall.cart.data.orderFulfillments[$.slatwall.cart.data.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress"></span>
+<span ng-init="$.slatwall.currentShippingMethodID = $.slatwall.cart.data.orderFulfillments[$.slatwall.cart.data.orderFulfillmentWithShippingMethodOptionsIndex].shippingMethod.shippingMethodID"></span>
+
+<!--- Don't show this until the address is selected because that may determine the options and we don't want them choosing twice. --->
+<div class="method" 
+		ng-if="$.slatwall.cart.data.orderFulfillments[$.slatwall.cart.data.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.addressID != ''">
+    <h4>Select Shipping Method:</h4>
+  
+    <!-- Add save shipping method to API and add public service method in $.slatwall... -->
+    <p class="shippingMethodOption" 
+    	ng-repeat="option in $.slatwall.currentShippingMethodOptions track by $index" 
+    	ng-init="$.slatwall.lastSelectedShippingMethod[$index] = 'false'" 
+    	ng-click="$.slatwall.updateShippingMethod($index, option)">
+        
+        <input type="radio"  
+        	name="cb{{option.shippingMethodCode}}" 
+        	id="check{{optionValue}}" 
+        	ng-model="$.slatwall.lastSelectedShippingMethod[$index]" 
+        	ng-checked="$.slatwall.isLastSelectedShippingMethod($index) || $.slatwall.currentShippingMethodID == option.value" />
+        <label for="cb{{option.shippingMethodCode}}" ng-click="$.slatwall.selectShippingMethod($index)">{{option.name}}</label>
+    </p>
+    <input type="submit" 
+    		value="{{( $.slatwall.getRequestByAction('addShippingMethodUsingShippingMethodID').loading ? 'Loading...' : 'SAVE &amp; CONTINUE')}}" 
+    		ng-disabled="!$.slatwall.hasShippingAddressAndMethod && !$.slatwall.cart.fulfillmentTotal" 
+    		ng-click="$.slatwall.hasShippingAddressAndMethod=true;$.slatwall.edit='';"/>
+</div>

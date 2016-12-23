@@ -30,6 +30,7 @@ import {HibachiServiceDecorator} from "./services/hibachiservicedecorator";
 import {HibachiScope} from "./services/hibachiscope";
 import {RequestService} from "./services/requestservice";
 import {ScopeService} from "./services/scopeservice"; 
+import {SkuService} from "./services/skuservice";
 import {HibachiValidationService} from "./services/hibachivalidationservice";
 import {EntityService} from "./services/entityservice";
 //controllers
@@ -205,6 +206,7 @@ var coremodule = angular.module('hibachi.core',[
 .service('hibachiInterceptor', HibachiInterceptor.Factory())
 .service('hibachiScope',HibachiScope)
 .service('scopeService',ScopeService)
+.service('skuService', SkuService)
 .service('listingService', ListingService)
 .service('localStorageService',LocalStorageService)
 .service('requestService',RequestService)

@@ -470,6 +470,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			direction = listLast(arguments.orderByString,'|');	
 		}
 		
+		if(left(propertyIdentifier,1) != '_'){
+			propertyIdentifier = collectionConfig.baseEntityAlias & '.' & propertyIdentifier;
+		}
+		
 		var orderBy = {
 			"propertyIdentifier"=propertyIdentifier,
 			"direction"=direction
@@ -510,9 +514,149 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 		return this;
 	}
-	//TODO parse data to seo based collection configuration
-	public void function applyData(required any data){
-
+	
+	/** 
+		Examples of each type of filter: 
+		?p:show=50
+		?p:current=1
+		?r:calculatedsaleprice=20^50
+		?r:calculatedSalePrice=^50 (does 0 to 50)
+		?r:calculatedSalePrice=50^ (does more than 50 to 10000)
+		?f:accountName:eq=someName  - adds the filter.
+		?fr:accountName:eq=someName - removes the filter
+		?orderby=someKey|direction
+		?orderBy=someKey|direction,someOtherKey|direction ...
+		
+		Using coldfusion operator versions - gt,lt,gte,lte,eq,neq,like
+	
+	*/
+	public void function applyData(required any data=url){
+		var filterKeyList = "";
+		var hibachiBaseEntity = "";
+		hibachiBaseEntity = this.getCollectionObject();
+		
+		if(!isStruct(data) && isSimpleValue(data)) {
+			data = getHibachiScope().getService('hibachiUtilityService').convertNVPStringToStruct(data);
+			filterKeyList = structKeyList(data);
+		}
+		
+		//Simple Filters
+		for (var key in data){
+			//handle filters.
+			if (left(key, 3) == "fr:"){
+				
+				var prop = key.split(':')[2];
+				var dataToFilterOn = data[key]; //value of the filter.
+				
+				dataToFilterOn = urlDecode(dataToFilterOn); //make sure its url decoded.
+				var comparison = "=";
+				try{
+					comparison = key.split(':')[3];
+				}catch(var e){
+					comparison = "=";
+				}
+				if (!isNull(comparison)){
+					if (comparison == 'eq'){
+						comparison = "=";
+					}
+					if (comparison == 'gte'){
+						comparison = ">=";
+					}
+					if (comparison == 'lte'){
+						comparison = "<=";
+					}
+					if (comparison == 'gt'){
+						comparison = ">";
+					}
+					if (comparison == 'lt'){
+						comparison = "<";
+					}
+					if (comparison == 'neq'){
+						comparison = "!=";
+					}
+					if (comparison == 'like'){
+						dataToFilterOn = "%#dataToFilterOn#%";
+					}
+				}
+				this.removeFilter(prop,dataToFilterOn,comparison);
+			}
+			//handle filters.
+			if (left(key, 2) == "f:"){
+				
+				var prop = key.split(':')[2];
+				var dataToFilterOn = data[key]; //value of the filter.
+				
+				dataToFilterOn = urlDecode(dataToFilterOn); //make sure its url decoded.
+				var comparison = "=";
+				try{
+					comparison = key.split(':')[3];
+				}catch(var e){
+					comparison = "=";
+				}
+				if (!isNull(comparison)){
+					if (comparison == 'eq'){
+						comparison = "=";
+					}
+					if (comparison == 'gte'){
+						comparison = ">=";
+					}
+					if (comparison == 'lte'){
+						comparison = "<=";
+					}
+					if (comparison == 'gt'){
+						comparison = ">";
+					}
+					if (comparison == 'lt'){
+						comparison = "<";
+					}
+					if (comparison == 'neq'){
+						comparison = "!=";
+					}
+					if (comparison == 'like'){
+						dataToFilterOn = "%#dataToFilterOn#%";
+					}
+				}
+				this.addFilter(prop, dataToFilterOn, comparison);
+				
+			}
+			
+			//Handle Range
+			if (left(key, 2) == "r:"){
+				var filterParts = "#listToArray(key, ':')#";
+				var prop = filterParts[2];//property
+				var rangeValue = data[key];//value 20^40 for example.
+				
+				//get the data value for the range. for example 20^40, ^40 (0 to 40), 100^ (more than 100)
+				
+				this.addFilter(prop,replace(rangeValue,'^','-'),'BETWEEN');
+			}
+			
+			//OrderByList
+			var orderBys = data[key];
+			if (left(key,7)=='orderBy'){
+				//this is a list.
+				this.setOrderBy(data[key]);
+			}
+			
+			//Handle pagination.
+			if(findNoCase('p:current', key)){
+				var currentPage = data[key];
+			}
+			if (!isNull(currentPage)){
+				data['currentPageDeclaration'] = currentPage;
+				this.setPageRecordsStart(currentPage);
+			}
+			
+			if(findNoCase('p:show', key)){
+				var pageShow = data[key];
+			}
+			
+			if (!isNull(pageShow)){
+				this.setPageRecordsShow(pageShow);	
+			}
+			
+			
+		}
 	}
 
 	public void function setCollectionObject(required string collectionObject, boolean addDefaultColumns=true){

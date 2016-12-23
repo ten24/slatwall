@@ -49,6 +49,7 @@ class SWTypeaheadSearchController {
                 private $hibachi, 
                 private $timeout:ng.ITimeoutService, 
                 private utilityService, 
+                private observerService, 
                 private rbkeyService, 
                 private collectionConfigService,
                 private typeaheadService
@@ -158,6 +159,8 @@ class SWTypeaheadSearchController {
         angular.copy(this.searchableColumns,this.initialSearchableColumnsState);
 
         this.typeaheadService.setTypeaheadState(this.typeaheadDataKey, this);
+
+        this.observerService.attach(this.clearSearch, this.typeaheadDataKey + 'clearSearch');
 	}
 
     public clearSearch = () =>{

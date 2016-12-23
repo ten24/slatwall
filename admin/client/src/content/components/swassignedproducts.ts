@@ -17,9 +17,9 @@ class SWAssignedProductsController {
         private utilityService
     ){
         this.collectionConfig = collectionConfigService.newCollectionConfig("Product"); 
-        this.collectionConfig.addDisplayProperty("productID,productName,productDescription,activeFlag,publishedFlag,productType.productTypeNamePath");
+        this.collectionConfig.addDisplayProperty("productID,productName,productCode,productDescription,activeFlag,publishedFlag,productType.productTypeNamePath,productType.productTypeName,defaultSku.price");
         this.alreadySelectedProductsCollectionConfig = collectionConfigService.newCollectionConfig("ProductListingPage"); 
-        this.alreadySelectedProductsCollectionConfig.addDisplayProperty("productListingPageID,sortOrder,product.productID,product.productName,product.productDescription,product.activeFlag,product.publishedFlag");
+        this.alreadySelectedProductsCollectionConfig.addDisplayProperty("productListingPageID,sortOrder,product.productID,product.productName,product.productCode,product.productDescription,product.activeFlag,product.publishedFlag");
         this.alreadySelectedProductsCollectionConfig.addFilter("content.contentID", this.contentId, "=");
         this.typeaheadDataKey = utilityService.createID(32); 
     }

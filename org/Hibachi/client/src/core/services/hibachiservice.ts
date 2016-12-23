@@ -140,7 +140,7 @@ class HibachiService{
 	};
 	//helper method to inflate a new entity with data
 	populateEntity = (entityName, data)=>{ 
-		var newEntity = this.newEntity(entityName); 
+		var newEntity = this.newEntity(entityName);
 		angular.extend(newEntity.data,data); 
 		return newEntity;
 	}
