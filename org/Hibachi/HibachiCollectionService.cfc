@@ -438,6 +438,122 @@ component output="false" accessors="true" extends="HibachiService" {
 
 		return collectionConfigStruct;
 	}
+	
+	/** 
+		Examples of each type of filter: 
+		?p:show=50
+		?p:current=1
+		?r:calculatedsaleprice=20^50
+		?r:calculatedSalePrice=^50
+		?f:accountName:eq=someName  - adds the filter.
+		?fr:accountName:eq=someName - removes the filter
+		?orderby=someKey|direction
+		?orderBy=someKey|direction,someOtherKey|direction ...
+		
+		Using coldfusion operator versions - gt,lt,gte,lte,eq,neq,like
+	
+	*/
+	public string function buildURL(required string queryAddition, boolean appendValues=true, boolean toggleKeys=true, string currentURL="") {
+		// Generate full URL if one wasn't passed in
+		if(!len(arguments.currentURL)) {
+			if(len(cgi.query_string)) {
+				arguments.currentURL &= "?" & CGI.QUERY_STRING;	
+			}
+		}
+
+		var modifiedURL = "?";
+		variables.dataKeyDelimiter = ":";
+		variables.valuedelimiter = ",";
+		// Turn the old query string into a struct
+		var oldQueryKeys = {};
+		
+		if(findNoCase("?", arguments.currentURL)) {
+			var oldQueryString = right(arguments.currentURL, len(arguments.currentURL) - findNoCase("?", arguments.currentURL));
+			for(var i=1; i<=listLen(oldQueryString, "&"); i++) {
+				var keyValuePair = listGetAt(oldQueryString, i, "&");
+				oldQueryKeys[listFirst(keyValuePair,"=")] = listLast(keyValuePair,"=");
+			}
+		}
+		
+		// Turn the added query string to a struct
+		var newQueryKeys = {};
+		for(var i=1; i<=listLen(arguments.queryAddition, "&"); i++) {
+			var keyValuePair = listGetAt(arguments.queryAddition, i, "&");
+			newQueryKeys[listFirst(keyValuePair,"=")] = listLast(keyValuePair,"=");
+		}
+		
+		
+		// Get all keys and values from the old query string added
+		for(var key in oldQueryKeys) {
+			if(key != "P#variables.dataKeyDelimiter#Current" && key != "P#variables.dataKeyDelimiter#Start" && key != "P#variables.dataKeyDelimiter#Show") {
+				if(!structKeyExists(newQueryKeys, key)) {
+					modifiedURL &= "#key#=#oldQueryKeys[key]#&";
+				} else {
+					if(arguments.toggleKeys && structKeyExists(oldQueryKeys, key) && structKeyExists(newQueryKeys, key) && oldQueryKeys[key] == newQueryKeys[key]) {
+						structDelete(newQueryKeys, key);
+					} else if(arguments.appendValues) {
+						for(var i=1; i<=listLen(newQueryKeys[key], variables.valueDelimiter); i++) {
+							var thisVal = listGetAt(newQueryKeys[key], i, variables.valueDelimiter);
+							var findCount = listFindNoCase(oldQueryKeys[key], thisVal, variables.valueDelimiter);
+							if(findCount) {
+								newQueryKeys[key] = listDeleteAt(newQueryKeys[key], i, variables.valueDelimiter);
+								if(arguments.toggleKeys) {
+									oldQueryKeys[key] = listDeleteAt(oldQueryKeys[key], findCount);
+								}
+							}
+						}
+						if(len(oldQueryKeys[key]) && len(newQueryKeys[key])) {
+							if(left(key, 1) eq "r") {
+								modifiedURL &= "#key#=#newQueryKeys[key]#&";	
+							} else {
+								modifiedURL &= "#key#=#oldQueryKeys[key]##variables.valueDelimiter##newQueryKeys[key]#&";
+							}
+						} else if(len(oldQueryKeys[key])) {
+							modifiedURL &= "#key#=#oldQueryKeys[key]#&";
+						}
+						structDelete(newQueryKeys, key);
+					}
+				}
+			}
+		}
+		
+		// Get all keys and values from the additional query string added 
+		for(var key in newQueryKeys) {
+			if(key != "P#variables.dataKeyDelimiter#Current" && key != "P#variables.dataKeyDelimiter#Start" && key != "P#variables.dataKeyDelimiter#Show") {
+				modifiedURL &= "#key#=#newQueryKeys[key]#&";
+			}
+		}
+		
+		if(!structKeyExists(newQueryKeys, "P#variables.dataKeyDelimiter#Show")) {
+			// Add the correct page start
+			if( structKeyExists(newQueryKeys, "P#variables.dataKeyDelimiter#Start") ) {
+				modifiedURL &= "P#variables.dataKeyDelimiter#Start=#newQueryKeys[ 'P#variables.dataKeyDelimiter#Start' ]#&";
+			} else if( structKeyExists(newQueryKeys, "P#variables.dataKeyDelimiter#Current") ) {
+				modifiedURL &= "P#variables.dataKeyDelimiter#Current=#newQueryKeys[ 'P#variables.dataKeyDelimiter#Current' ]#&";
+			}
+		}
+		
+		// Add the correct page show
+		if( structKeyExists(newQueryKeys, "P#variables.dataKeyDelimiter#Show") ) {
+			modifiedURL &= "P#variables.dataKeyDelimiter#Show=#newQueryKeys[ 'P#variables.dataKeyDelimiter#Show' ]#&";
+		} else if( structKeyExists(oldQueryKeys, "P#variables.dataKeyDelimiter#Show") ) {
+			modifiedURL &= "P#variables.dataKeyDelimiter#Show=#oldQueryKeys[ 'P#variables.dataKeyDelimiter#Show' ]#&";
+		}
+		
+		if(right(modifiedURL, 1) eq "&") {
+			modifiedURL = left(modifiedURL, len(modifiedURL)-1);
+		} else if (right(modifiedURL, 1) eq "?") {
+			modifiedURL = "?c=1";
+		}
+		
+		return modifiedURL;
+	}
+	
+	
+	
+	public any function applyData(required any collection){
+		arguments.collection.applyData();
+	}
 
 	public any function getCollectionOptionsFromData(required struct data){
 		//get entity service by entity name

@@ -60,7 +60,6 @@ class SWModalLauncherController {
 
     public cancelCallback = () =>{
         if(this.hasCancelAction){
-            console.log("has cancel action???")
             this.cancelAction()(); 
         }
     }

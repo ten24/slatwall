@@ -1,0 +1,12 @@
+<span ng-init="$.slatwall = $root.slatwall"></span>
+<!--- Handle errors on placing order. --->
+<!--- Handle CC errors --->
+<div class="alert alert-danger" style="width:100%" ng-if="$.slatwall.cart.errors['addOrderPayment']">
+	There was an issue processing your payment. Please check your payment information or use another card.
+	<span ng-if="$.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['createTransaction']">
+		{{$.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments-1]['errors']['createTransaction']['0']}}<br>
+	</span>
+	<span ng-if="$.slatwall.newOrderPaymentErrors['declined']">
+		{{$.slatwall.cart.newOrderPaymentErrors['declined']}}		
+	</span>
+</div>

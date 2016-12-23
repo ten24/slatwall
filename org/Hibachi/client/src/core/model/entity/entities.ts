@@ -5,11 +5,13 @@ import {Account} from "./account";
 import {Address} from "./address";
 import {Cart} from "./cart";
 import {OrderPayment} from "./orderpayment";
+import {Sku} from "./sku";
 
 
 export {
     Account,
     Address,
     Cart,
-    OrderPayment
+    OrderPayment,
+    Sku
 }

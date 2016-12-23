@@ -454,7 +454,7 @@ component extends="HibachiService"  accessors="true" output="false"
       		accountAddress.setAccount(getHibachiScope().getAccount());	
       		var savedAccountAddress = getService("AccountService").saveAccountAddress(accountAddress);
  	     	if (!savedAccountAddress.hasErrors()){
- 	     		ormFlush();
+ 	     		getDao('hibachiDao').flushOrmSession();
  	     	}
       	}
      }
@@ -471,7 +471,7 @@ component extends="HibachiService"  accessors="true" output="false"
      	newAddress = getService("AddressService").saveAddress(newAddress, data, "full");
       	
       	if (!isNull(newAddress) && !newAddress.hasErrors()){
- 	     	ormFlush();
+ 	     	getDao('hibachiDao').flushOrmSession();
       	}
      }
     
@@ -522,7 +522,7 @@ component extends="HibachiService"  accessors="true" output="false"
                  	accountAddress.setAccount(getHibachiScope().getAccount());
                  	var savedAccountAddress = getService("AccountService").saveAccountAddress(accountAddress);
                  	if (!savedAddress.hasErrors()){
-                 		ormFlush();
+                 		getDao('hibachiDao').flushOrmSession();
                  	}
                   
                 }
@@ -576,7 +576,7 @@ component extends="HibachiService"  accessors="true" output="false"
             var orderFulfillment = order.getOrderFulfillments()[orderFulfillmentWithShippingMethodOptions];
             orderFulfillment.setShippingMethod(shippingMethod);
             getOrderService().saveOrder(order); 
-            ormFlush();           
+            getDao('hibachiDao').flushOrmSession();           
         }else{
             this.addErrors(arguments.data, shippingMethod.getErrors()); //add the basic errors
             getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", shippingMethod.hasErrors());
@@ -1164,4 +1164,48 @@ component extends="HibachiService"  accessors="true" output="false"
         arguments.data.ajaxResponse['countryCodeOptions'] = getAddressService().getCountryCodeOptions();
     }
     
+    /** Given a skuCode, returns the estimated shipping rates for that sku. */
+    public any function getEstimatedShippingCostBySkuCode(any data){
+    	if (!isNull(data.skuCode)){
+    		
+    		//data setup.
+    		var orderFulfillment = getService("OrderService").newOrderFulfillment();
+    		var orderItem = getService("OrderService").newOrderItem();
+    		var sku = getService("SkuService").getSkuBySkuCode(data.skuCode);
+    		
+    		//set the sku so we have data for the rates.
+    		orderItem.setSku(sku);
+    		var shippingMethodOptions = [];
+    		
+    		//set the order so it doesn't stall when updating options.
+    		orderFulfillment.setOrder(getHibachiScope().getCart());
+    		
+    		var eligibleFulfillmentMethods = listToArray(sku.setting("skuEligibleFulfillmentMethods"));
+    		
+    		var options = {};
+    		
+    		//iterate through getting the options.
+    		for (var eligibleFulfillmentMethod in eligibleFulfillmentMethods){
+    			//get the fulfillment methods for this item.
+    			var fulfillmentMethod = getService("FulfillmentService").getFulfillmentMethod(eligibleFulfillmentMethod);
+    			if (!isNull(fulfillmentMethod) &&!isNull(fulfillmentMethod.getFulfillmentMethodType()) &&  fulfillmentMethod.getFulfillmentMethodType() == "shipping"){
+    				
+    				//set the method so we can update with the options.
+    				orderFulfillment.setFulfillmentMethod(fulfillmentMethod);
+    				getService("ShippingService").updateOrderFulfillmentShippingMethodOptions(orderFulfillment);
+    				if (!isNull(orderFulfillment.getShippingMethodOptions())){
+    					for (var rate in orderFulfillment.getShippingMethodOptions()){
+    						options['#rate.shippingMethodCode#'] = rate;
+    					}
+    				}
+    			}
+    		}
+    		
+    		//remove the orderfulfillment that we used to get the rates because it will disrupt other entities saving.
+    		getService("OrderService").deleteOrderFulfillment(orderFulfillment);
+    		data['ajaxResponse']['estimatedShippingRates'] = options;
+    	}
+    }
+    
 }
+
