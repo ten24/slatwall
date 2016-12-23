@@ -546,13 +546,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						if( depositsOnlyFlag || registrant.toWaitlistFlag == "1" ) {								
 							depositsCount++;
 							
-						} else if( salesOnlyFlag && salesCount > 0 ) {
-							registrant.toWaitlistFlag = "1";										
-							orderItemsToCreateCount = 2;
-							salesOnlyFlag = true;									
-						} else {
-							newOrderItem.setOrderItemType( getTypeService().getTypeBySystemCode('oitDeposit') );
-						}
+						}else {
+								if( (arguments.processObject.getSku().getEventCapacity() > (currentRegistrantCount + salesCount) )  ) {
+									salesCount++;
+
+								} else {
+									// If we have an unexprected waitlister due to event filling before order item was created
+									// check to see if there were any sales that went through. If there were then move the registrant
+									// to a waitlist/deposit order item. If not then change the order item type to deposit and waitlist registrant.
+									if( !salesOnlyFlag && salesCount > 0 ) {
+										registrant.toWaitlistFlag = "1";
+										orderItemsToCreateCount = 2;
+										salesOnlyFlag = true;
+									} else {
+										newOrderItem.setOrderItemType( getTypeService().getTypeBySystemCode('oitDeposit') );
+									}
+
+								}
+							}
 
 						eventRegistration = getEventRegistrationService().saveEventRegistration( eventRegistration );
 
