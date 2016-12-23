@@ -639,7 +639,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 			
 			//Handle pagination.
-			if(key.contains('p:current')){
+			if(findNoCase('p:current', key)){
 				var currentPage = data[key];
 			}
 			if (!isNull(currentPage)){
@@ -647,12 +647,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				this.setPageRecordsStart(currentPage);
 			}
 			
-			if(key.contains('p:show')){
+			if(findNoCase('p:show', key)){
 				var pageShow = data[key];
-			} 
+			}
+			
 			if (!isNull(pageShow)){
 				this.setPageRecordsShow(pageShow);	
 			}
+			
 			
 		}
 	}
