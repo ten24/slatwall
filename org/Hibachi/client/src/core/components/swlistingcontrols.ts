@@ -16,12 +16,14 @@ class SWListingControlsController {
     private newFilterPosition;
     private itemInUse;
     private getCollection;
+    private tableId; 
 
     //@ngInject
     constructor(
         public $hibachi,
         public metadataService,
         public collectionService,
+        public listingService, 
         public observerService
     ) {
         if(angular.isUndefined(this.showToggleFilters)){
@@ -34,6 +36,11 @@ class SWListingControlsController {
             this.showFilters = false;
         }
         this.backupColumnsConfig = this.collectionConfig.getColumns();
+
+        if(angular.isDefined(this.tableId)){
+            this.listingColumns = this.listingService.getListingColumns(this.tableId);
+        }
+        console.log("this.collectionConfig.getColumns()",this.collectionConfig.getColumns(), this.listingColumns, this.tableId);
     
         this.filterPropertiesList = {};
 
@@ -122,6 +129,7 @@ class SWListingControls  implements ng.IDirective{
 
     public bindToController =  {
         collectionConfig : "=",
+        tableId : "=?",
         paginator : "=",
         getCollection : "&",
         showFilters : "=?",
