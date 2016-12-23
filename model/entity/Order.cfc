@@ -160,9 +160,6 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="totalSaleQuantity" persistent="false";
 	property name="totalReturnQuantity" persistent="false";
 	property name="totalDepositAmount" persistent="false" hb_formatType="currency";
-	property name="totalNonDepositAmount" persistent="false" hb_formatType="currency";
-	property name="totalDepositAndNonDepositAmounts" persistent="false" hb_formatType="currency";
-	property name="totalBalanceRemainingAfterDepositForDepositItems" persistent="false" hb_formatType="currency";
     
     //======= Mocking Injection for Unit Test ======	
 	property name="orderService" persistent="false" type="any";
@@ -967,41 +964,18 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getTotalDepositAmount() {
 		var totalDepositAmount = 0;
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			if(getOrderItems()[i].getOrderItemType().getSystemCode() eq "oitSale" && getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder") < 100) {
-				totalDepositAmount += ((getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")/100) * getOrderItems()[i].getExtendedPrice() ) ;
+			if(getOrderItems()[i].getOrderItemType().getSystemCode() eq "oitSale" && !isNull(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder"))) {
+				if (getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder") == 0){
+					totalDepositAmount += ((getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) * getOrderItems()[i].getExtendedPrice() ) ;
+	
+				}else if (getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder") > 0){
+					totalDepositAmount += ((getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")/100) * getOrderItems()[i].getExtendedPrice() ) ;
+		
+				}	
+						
 			}
 		}
 		return totalDepositAmount;
-	}
-	
-	//returns the sum of all non-deposits required on the order (excluding any deposit items.)
-	public numeric function getTotalNonDepositAmount() {
-		var totalNonDepositAmount = 0;
-		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			if(getOrderItems()[i].getOrderItemType().getSystemCode() eq "oitSale" && getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder") == 100) {
-				totalNonDepositAmount += ((getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")/100) * getOrderItems()[i].getExtendedPrice() ) ;
-			}
-		}
-		return totalNonDepositAmount;
-	}
-	
-	//This is the inverse of the deposit percentage for deposit items.
-	public numeric function getTotalBalanceRemainingAfterDepositForDepositItems(){
-		var totalBalanceRemainingAfterDepositForDepositItems = 0;
-		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			if(getOrderItems()[i].getOrderItemType().getSystemCode() eq "oitSale" && getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder") < 100) {
-				//for example 100 - 50% = 50 / 100 = .50 or 100 - 25 = 75 / 100 = .75
-				totalBalanceRemainingAfterDepositForDepositItems += ((100 - getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")/100) * getOrderItems()[i].getExtendedPrice() ) ;
-			}
-		}
-		
-		return totalBalanceRemainingAfterDepositForDepositItems;
-	}
-	
-	//This only includes the deposit amount for deposit items and the full amount for non-deposit items.
-	//This is the amount needed to initially place the order from an orderItem perspective (not including tax, promotions, etc).
-	public numeric function getTotalDepositAndNonDepositAmounts() {
-		return getTotalDepositAmount() + getTotalNonDepositAmount();
 	}
 	
 	public boolean function hasDepositItemsOnOrder(){

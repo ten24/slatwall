@@ -2559,7 +2559,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// If there was expected authorize, receive, or credit
 		if(arguments.orderPayment.hasErrors()
 				||
-			(listFindNoCase("authorize", processData.transactionType) && arguments.orderPayment.getAmountAuthorized() lt arguments.orderPayment.getAmount())
+			(arguments.orderPayment.getOrder().hasDepositItemsOnOrder() == false && listFindNoCase("authorize", processData.transactionType) && arguments.orderPayment.getAmountAuthorized() lt arguments.orderPayment.getAmount())
+				||
+			(arguments.orderPayment.getOrder().hasDepositItemsOnOrder() == true && listFindNoCase("authorize", processData.transactionType) && arguments.orderPayment.getAmountAuthorized() lt arguments.orderPayment.getAmount())
 				||
 			(arguments.orderPayment.getOrder().hasDepositItemsOnOrder() == false && listFindNoCase("authorizeAndCharge,receive", processData.transactionType) && arguments.orderPayment.getAmountReceived() lt arguments.orderPayment.getAmount())
 				||
