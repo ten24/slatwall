@@ -972,7 +972,8 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 				}	
 			}
 		}
-		totalDepositAmount = numberFormat(totalDepositAmount, "9.99");
+		
+		totalDepositAmount = round(totalDepositAmount*100)/100;
 		return totalDepositAmount;
 	}
 	
