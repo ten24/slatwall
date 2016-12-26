@@ -972,8 +972,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 				}	
 			}
 		}
-		
-		totalDepositAmount = round(totalDepositAmount*100)/100;
+		totalDepositAmount = val(precisionEvaluate("round(totalDepositAmount * 100)/100"));
 		return totalDepositAmount;
 	}
 	
