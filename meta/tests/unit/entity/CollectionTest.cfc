@@ -220,7 +220,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var queryString = '?r:price=20^100';
 		
 		collectionEntity.applyData(queryString);
-		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
+		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[2].filterGroup[1];
 		assertEquals(filter.propertyIdentifier,'_sku.price');
 		assertEquals(filter.comparisonOperator,'BETWEEN');
 		assertEquals(filter.value,'20-100');
@@ -233,7 +233,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var queryString = '?r:price=20^';
 		
 		collectionEntity.applyData(queryString);
-		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
+		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[2].filterGroup[1];
 		assertEquals(filter.propertyIdentifier,'_sku.price');
 		assertEquals(filter.comparisonOperator,'BETWEEN');
 		assertEquals(filter.value,'20-');
@@ -247,7 +247,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var queryString = '?r:price=^100';
 		
 		collectionEntity.applyData(queryString);
-		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
+		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[2].filterGroup[1];
 		assertEquals(filter.propertyIdentifier,'_sku.price');
 		assertEquals(filter.comparisonOperator,'BETWEEN');
 		assertEquals(filter.value,'-100');
@@ -573,6 +573,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var productWithSkusData = {
 			productID = '',
 			productName = 'ProductUnitTest',
+			productCode = 'ProductUnitTest'&createUUID(),
 			productDescription = uniqueNumberForDescription,
 			skus = [
 				{
@@ -602,6 +603,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var productWithSkusData = {
 			productID = '',
 			productName = 'ProductUnitTest',
+			productCode = 'ProductUnitTest'&createUUID(),
 			productDescription = uniqueNumberForDescription,
 			skus = [
 				{
@@ -638,6 +640,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var productWithSkusData = {
 			productID = '',
 			productName = 'ProductUnitTest',
+			productCode = 'ProductUnitTest'&createUUID(),
 			productDescription = uniqueNumberForDescription,
 			skus = [
 				{
@@ -674,6 +677,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var productWithSkusData = {
 			productID = '',
 			productName = 'ProductUnitTest',
+			productCode = 'ProductUnitTest'&createUUID(),
 			productDescription = uniqueNumberForDescription,
 			skus = [
 				{
@@ -710,6 +714,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var productWithSkusData = {
 			productID = '',
 			productName = 'ProductUnitTest',
+			productCode = 'ProductUnitTest'&createUUID(),
 			productDescription = uniqueNumberForDescription,
 			skus = [
 			{
@@ -812,6 +817,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var productWithSkusData1 = {
 			productID = '',
 			productName = 'ProductUnitTest1',
+			productCode = 'ProductUnitTest'&createUUID(),
 			productDescription = uniqueNumberForDescription,
 			skus = [
 				{
@@ -2022,7 +2028,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	public void function getHQLTest_Contains(){
 		var collectionBestAcountEmailAddressesData = {
 			collectionid = '',
-			collectionCode = 'BestAccountEmailAddresses',
+			collectionCode = 'BestAccountEmailAddresses'&createUUID(),
 			collectionObject="Account",
 			collectionConfig = '
 				{
@@ -2054,7 +2060,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	public void function getHQLTest_dateFilter(){
 		var collectionBestAcountEmailAddressesData = {
 		collectionid = '',
-		collectionCode = 'BestAccountEmailAddresses',
+		collectionCode = 'BestAccountEmailAddresses'&createUUID(),
 		baseEntityName="Account",
 		collectionConfig = '{
 			  "baseEntityName": "SlatwallAccount",
