@@ -88,7 +88,7 @@ Notes:
 						<hb:HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="renewalSubscriptionBenefits" title="#$.slatwall.rbKey('admin.entity.createProduct.selectRenewalSubscriptionBenefits')#" edit="true">
 							<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefitName" tdclass="primary" />
 						</hb:HibachiListingDisplay>
-				</hb:hibachiDisplayToggle>
+				</hb:HibachiDisplayToggle>
 
 				<hb:HibachiDisplayToggle selector="select[name='renewalMethod']" showvalues="renewalsku" loadVisable="false">
 						<swa:SlatwallErrorDisplay object="#rc.processObject#" errorName="renewalSku" />
@@ -98,7 +98,7 @@ Notes:
 							<hb:HibachiListingColumn propertyIdentifier="subscriptionTerm.subscriptionTermName" />
 							<hb:HibachiListingColumn propertyIdentifier="renewalPrice" />
 						</hb:HibachiListingDisplay>
-				</hb:hibachiDisplayToggle>
+				</hb:HibachiDisplayToggle>
 
 			</hb:HibachiPropertyList>
 		</div>
