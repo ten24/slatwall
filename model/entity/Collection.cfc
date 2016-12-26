@@ -138,6 +138,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		setHibachiCollectionService(getService('hibachiCollectionService'));
 	}
 	
+	public numeric function getCurrentPageDeclaration(){
+		return getPageRecordsStart();
+	}
+	
 	public array function getAuthorizedProperties(){
 		if(!structKeyExists(variables,'authorizedProperties')){
 			variables.authorizedProperties = [];
