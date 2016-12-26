@@ -542,7 +542,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			modifiedURL = "?c=1";
 		}
 		
-		return lcase(modifiedURL);
+		return modifiedURL;
 	}
 	
 	
