@@ -523,6 +523,19 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 		return "";
 	}
 
+	public string function getOrmTypeByPropertyIdentifier( required string propertyIdentifier ) {
+		if(listLen(arguments.propertyIdentifier, ".") eq 1) {
+			return this;
+		}
+		
+		var entityName = getService('HibachiService').getLastEntityNameInPropertyIdentifier(entityName=this.getClassName(), propertyIdentifier=arguments.propertyIdentifier );
+		var object = getService('HibachiService').getEntityObject(entityName);
+		var propertyName = listLast(arguments.propertyIdentifier,'.');
+		if(!isNull(object) && !isSimpleValue(object)) {
+			return object.getPropertyMetaData( propertyName ).ormtype;
+		}
+	}
+
 	public any function getLastObjectByPropertyIdentifier(required string propertyIdentifier) {
 
 		if(listLen(arguments.propertyIdentifier, ".") eq 1) {
