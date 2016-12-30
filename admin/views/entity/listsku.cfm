@@ -48,22 +48,29 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.skuSmartList" type="any" />
 
 <cfoutput>
 	
-	<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.skuSmartList#"
-			recordEditAction="admin:entity.editsku"
-			recorddetailaction="admin:entity.detailsku">
+	<hb:HibachiEntityActionBar type="listing" object="#rc.skuSmartList#" showCreate="false">
 			
 		<!--- Create ---> 
-		<hb:HibachiListingDisplayButtonGroup >
+		<hb:HibachiEntityActionBarButtonGroup>
 			<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('define.create')#" icon="plus" dropdownClass="pull-right">
-				<hb:HibachiActionCaller action="admin:entity.createproduct" text="#rc.$.slatwall.rbKey('define.contentAccess')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=contentAccess" type="list" />
-				<hb:HibachiActionCaller action="admin:entity.createproduct" text="#rc.$.slatwall.rbKey('define.merchandise')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=merchandise" type="list" />
-				<hb:HibachiActionCaller action="admin:entity.createproduct" text="#rc.$.slatwall.rbKey('define.subscription')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=subscription" type="list" />
+				<li><a ng-click="openPageDialog( 'admin/client/src/productbundle/components/createproductbundle' )">#rc.$.slatwall.rbKey('define.bundleProduct')#</a></li>
+				<hb:HibachiProcessCaller action="admin:entity.preprocessproduct" entity="product" processContext="create" text="#rc.$.slatwall.rbKey('define.contentAccess')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=contentAccess" disabled="#!$.slatwall.getSmartList("Content").getRecordsCount()#" disabledText="#$.slatwall.rbKey('admin.entity.listproduct.createNoContent')#" type="list" />
+				<hb:HibachiProcessCaller action="admin:entity.preprocessproduct" entity="product" processContext="create" text="#rc.$.slatwall.rbKey('define.event')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=event" type="list" />
+				<hb:HibachiProcessCaller action="admin:entity.preprocessproduct" entity="product" processContext="create" text="#rc.$.slatwall.rbKey('define.merchandise')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=merchandise" type="list" />
+				<hb:HibachiProcessCaller action="admin:entity.preprocessproduct" entity="product" processContext="create" text="#rc.$.slatwall.rbKey('define.subscription')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=subscription" type="list" disabled="#!$.slatwall.getSmartList("SubscriptionTerm").getRecordsCount() or !$.slatwall.getSmartList("SubscriptionBenefit").getRecordsCount()#"  disabledText="#$.slatwall.rbKey('admin.entity.listproduct.createNoSubscriptionBenefitOrTerm')#" />			
 			</hb:HibachiActionCallerDropdown>
-		</hb:HibachiListingDisplayButtonGroup>
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
+	
+	<hb:HibachiListingDisplay smartList="#rc.skuSmartList#"
+			recordEditAction="admin:entity.editsku"
+			recorddetailaction="admin:entity.detailsku">
 			
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="skuCode" />
 		<hb:HibachiListingColumn propertyIdentifier="product.productName" />
@@ -73,7 +80,9 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="listPrice" />
 		<hb:HibachiListingColumn propertyIdentifier="price" />
 		<hb:HibachiListingColumn propertyIdentifier="renewalPrice" />
+		<hb:HibachiListingColumn propertyIdentifier="calculatedSkuDefinition" />
 		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
+		<hb:HibachiListingColumn propertyIdentifier="publishedFlag" />
 		<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" />
 	</hb:HibachiListingDisplay>
 

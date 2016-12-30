@@ -48,19 +48,25 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.printTemplateSmartList" type="any" />
 
 <cfoutput>
 
-	<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.printTemplateSmartList#"
+	<hb:HibachiEntityActionBar type="listing" object="#rc.printTemplateSmartList#" showCreate="false">
+			
+		<!--- Create ---> 
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCaller action="admin:entity.createprinttemplate" entity="printtemplate" class="btn btn-primary" icon="plus icon-white" modal="true" />
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
+
+	
+	<hb:HibachiListingDisplay smartList="#rc.printTemplateSmartList#"
 							   recordDetailAction="admin:entity.detailPrintTemplate"
 							   recordEditAction="admin:entity.editPrintTemplate">
-							      
-		<!--- Create ---> 
-		<hb:HibachiListingDisplayButtonGroup >
-			<hb:HibachiActionCaller action="admin:entity.createprinttemplate" entity="printtemplate" class="btn btn-primary" icon="plus icon-white" modal="true" />
-		</hb:HibachiListingDisplayButtonGroup>
-		
+
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="printTemplateName" />
 	</hb:HibachiListingDisplay>
 

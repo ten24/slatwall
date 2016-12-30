@@ -107,7 +107,7 @@ component accessors="true" output="false" displayname="PayFlowPro" implements="S
 			requestData = listAppend(requestData, "TRXTYPE=#variables.transactionCodes[arguments.requestBean.getTransactionType()]#", "&");
 		}
 		// END HACK
-		
+		requestData = listAppend(requestData, "BUTTONSOURCE=SlatWall_SP", "&");
 		return requestData;
 	}
 
@@ -133,10 +133,18 @@ component accessors="true" output="false" displayname="PayFlowPro" implements="S
 		if(arguments.requestBean.getTransactionType() eq "credit") {
 			arrayAppend(paymentData,"ORIGID=#requestBean.getOriginalChargeProviderTransactionID()#");
 			
-		// If this is a delayed capture we want to use the preAuthorizationTransactionID
+		// If this is a delayed capture we want to use the preAuthorizationTransactionID, or originalChargeProviderTransactionID
 		} else if (arguments.requestBean.getTransactionType() eq "chargePreAuthorization") {
-			arrayAppend(paymentData,"ORIGID=#requestBean.getPreAuthorizationProviderTransactionID()#");
 		
+			// Look for an explicit preAuthorizationProviderTransactionID
+			if(len(requestBean.getPreAuthorizationProviderTransactionID())) {
+				arrayAppend(paymentData,"ORIGID=#requestBean.getPreAuthorizationProviderTransactionID()#");
+				
+			// Default to the 'original'
+			} else if (len(requestBean.getOriginalAuthorizationProviderTransactionID())) {
+				arrayAppend(paymentData,"ORIGID=#requestBean.getOriginalAuthorizationProviderTransactionID()#");
+			}
+			
 		// If there was no creditCardNumber passed, then use the providerToken
 		} else if(!len(requestBean.getCreditCardNumber()) && !isNull(requestBean.getProviderToken()) && len(requestBean.getProviderToken())) {
 			arrayAppend(paymentData,"ORIGID=#requestBean.getProviderToken()#");

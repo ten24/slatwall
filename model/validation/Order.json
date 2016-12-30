@@ -1,5 +1,6 @@
 {
 	"properties":{
+		"account":							[{"contexts":"addOrderPayment,placeOrder","required":true}],
 		"orderType":						[{"contexts":"save","required":true}],
 		"orderStatusType":					[{"contexts":"save","required":true}],
 		"statusCode":						[
@@ -16,7 +17,8 @@
 												{"contexts":"createReturn","minValue":1}   
 		],
 		"quantityReceived":					[{"contexts":"cancelOrder","maxValue":0}],
-		"orderItems":						[{"contexts":"placeOrder,addOrderPayment","minCollection":1}]
+		"orderItems":						[{"contexts":"placeOrder,addOrderPayment","minCollection":1}, 
+                                             {"contexts":"cancelOrder", "method":"canCancel"}]
 	},
 	"populatedPropertyValidation":{
 		"billingAddress":[{"validate":"full"}],

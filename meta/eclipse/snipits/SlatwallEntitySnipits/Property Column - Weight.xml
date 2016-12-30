@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<snippet filetemplate="false" extension="">
-<name>Property Column - Weight</name>
-<help></help>
-<starttext><![CDATA[property name="$${propertyName}" ormtype="big_decimal" formatType="weight";]]></starttext>
-<endtext><![CDATA[]]></endtext>
-</snippet>

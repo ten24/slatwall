@@ -50,6 +50,7 @@ component displayname="Location Address" entityname="SlatwallLocationAddress" ta
 	
 	// Persistent Properties
 	property name="locationAddressID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="locationAddressName" ormtype="string";
 	
 	// Related Object Properties (many-to-one)
 	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
@@ -105,8 +106,39 @@ component displayname="Location Address" entityname="SlatwallLocationAddress" ta
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
+	
+	// =============== START: Custom Validation Methods ====================
+	public boolean function hasNoAssociatedOrders() {
+		var locationConfigurationSmartList =  this.getLocation().getLocationConfigurationsSmartlist();
+		locationConfigurationSmartList.joinRelatedProperty('SlatwallLocationConfiguration', 'skus');
+		locationConfigurationSmartList.joinRelatedProperty('SlatwallSku', 'orderItems');
+
+		if ( locationConfigurationSmartList.getRecordsCount() ) {
+			return false;
+		}else{
+			return true;
+		}
+	}
+	
+	// ===============  END: Custom Validation Methods =====================
 
 	// ================== START: Overridden Methods ========================
+	public string function getSimpleRepresentation() {
+		var simpleRepresentation = "";
+		if(!isNull(getLocationAddressName())) {
+			simpleRepresentation &= getLocationAddressName();
+		}
+		if(!isNull(getAddress())) {
+			if(len(simpleRepresentation)) {
+				simpleRepresentation &= " - ";	
+			}
+			simpleRepresentation &= getAddress().getSimpleRepresentation();
+		}
+		if(len(simpleRepresentation)) {
+			return simpleRepresentation;
+		}
+		return rbKey('define.new');
+	}
 	
 	// ==================  END:  Overridden Methods ========================
 	

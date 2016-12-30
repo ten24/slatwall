@@ -1,5 +1,5 @@
 {
 	"properties":{
-		"promotionCode":	[{"required":true}]
+		"promotionCode":	[{"required":true,"method":"promotionCodeNotAlreadyApplied"}]
 	}
 }

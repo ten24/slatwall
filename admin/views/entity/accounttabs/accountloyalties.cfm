@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.account" type="any" />
 
 <cfoutput>
@@ -64,7 +66,7 @@ Notes:
 	</hb:HibachiListingDisplay>
 
 
-	<!---<hb:HibachiActionCaller action="admin:entity.createaccountloyalty" class="btn" icon="plus" queryString="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#" modal="true"  />--->
-	<hb:HibachiProcessCaller action="admin:entity.preprocessaccount" entity="#rc.account#" processContext="addAccountLoyalty" class="btn" icon="plus" modal="true" />
+	<!---<hb:HibachiActionCaller action="admin:entity.createaccountloyalty" class="btn btn-default" icon="plus" queryString="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#" modal="true"  />--->
+	<hb:HibachiProcessCaller action="admin:entity.preprocessaccount" entity="#rc.account#" processContext="addAccountLoyalty" class="btn btn-default" icon="plus" modal="true" />
 
 </cfoutput>

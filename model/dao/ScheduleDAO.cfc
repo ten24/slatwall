@@ -50,7 +50,7 @@ Notes:
 	<cffunction name="getDueTasks" access="public" returntype="Query" >
 		<cfargument name="maxCount" required="true" type="numeric" >
 		
-		<cfquery name="tasks">
+		<cfquery name="local.tasks">
 			SELECT
 				SwTask.taskID,
 				SwTaskSchedule.taskScheduleID

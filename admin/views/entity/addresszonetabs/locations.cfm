@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.addressZone" type="any" />
 
 <cfoutput>
@@ -65,4 +67,4 @@ Notes:
 	</hb:HibachiListingDisplay>
 </cfoutput>
 
-<hb:HibachiActionCaller action="admin:entity.createaddresszonelocation" class="btn" icon="plus" queryString="addressZoneID=#rc.addressZone.getAddressZoneID()#" modal=true />
+<hb:HibachiActionCaller action="admin:entity.createaddresszonelocation" class="btn btn-default" icon="plus" queryString="addressZoneID=#rc.addressZone.getAddressZoneID()#" modal=true />

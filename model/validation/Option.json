@@ -1,6 +1,6 @@
 {
 	"properties":{
-		"optionCode":			[{"contexts":"save","required":true,"unique":true,"regex":"^[a-zA-Z0-9-_.|:~^]+$"}],
+		"optionCode":			[{"contexts":"save", "unique":true,"required":true,"regex":"^[a-zA-Z0-9-_.|:~^]+$"}],
 		"optionName":			[{"contexts":"save","required":true}],
 		"optionGroup":			[{"contexts":"save","required":true}],
 		"skus":					[{"contexts":"delete","maxCollection":0}]

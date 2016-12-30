@@ -1,7 +1,7 @@
 <!---
 
     Slatwall - An Open Source eCommerce Platform
-    Copyright (C) 2011 ten24, LLC
+    Copyright (C) ten24, LLC
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -15,29 +15,39 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
-    Linking this library statically or dynamically with other modules is
-    making a combined work based on this library.  Thus, the terms and
+
+    Linking this program statically or dynamically with other modules is
+    making a combined work based on this program.  Thus, the terms and
     conditions of the GNU General Public License cover the whole
     combination.
- 
-    As a special exception, the copyright holders of this library give you
-    permission to link this library with independent modules to produce an
-    executable, regardless of the license terms of these independent
-    modules, and to copy and distribute the resulting executable under
-    terms of your choice, provided that you also meet, for each linked
-    independent module, the terms and conditions of the license of that
-    module.  An independent module is a module which is not derived from
-    or based on this library.  If you modify this library, you may extend
-    this exception to your version of the library, but you are not
-    obligated to do so.  If you do not wish to do so, delete this
-    exception statement from your version.
+
+    As a special exception, the copyright holders of this program give you
+    permission to combine this program with independent modules and your
+    custom code, regardless of the license terms of these independent
+    modules, and to copy and distribute the resulting program under terms
+    of your choice, provided that you follow these specific guidelines:
+
+	- You also meet the terms and conditions of the license of each
+	  independent module
+	- You must not alter the default display of the Slatwall name or logo from
+	  any part of the application
+	- Your custom code must not alter or create any files inside Slatwall,
+	  except in the following directories:
+		/integrationServices/
+
+	You may copy and distribute the modified version of this program that meets
+	the above guidelines as a combined work under the terms of GPL for this program,
+	provided that you include the source code of that other code when and as the
+	GNU GPL requires distribution of source code.
+
+    If you modify this program, you may extend this exception to your version
+    of the program, but you are not obligated to do so.
 
 Notes:
 
 --->
 <cfcomponent accessors="true" persistent="false" output="false" extends="HibachiReport">
-	
+
 	<cffunction name="getReportDateTimeDefinitions">
 		<cfreturn [
 			{alias='transactionDateTime', dataColumn='SwPaymentTransaction.transactionDateTime', title=rbKey('entity.paymentTransaction.transactionDateTime')},
@@ -45,7 +55,7 @@ Notes:
 			{alias='orderCloseDateTime', dataColumn='SwOrder.orderCloseDateTime', title=rbKey('entity.order.orderCloseDateTime')}
 		] />
 	</cffunction>
-	
+
 	<cffunction name="getMetricDefinitions">
 		<cfreturn [
 			{alias='amountReceived', function='sum', formatType="currency", title=rbKey('entity.paymentTransaction.amountReceived')},
@@ -53,7 +63,7 @@ Notes:
 			{alias='amountAuthorized', function='sum', formatType="currency", title=rbKey('entity.paymentTransaction.amountAuthorized')}
 		] />
 	</cffunction>
-	
+
 	<cffunction name="getDimensionDefinitions">
 		<cfreturn [
 			{alias='transactionDateTime', title=rbKey('entity.paymentTransaction.transactionDateTime')},
@@ -79,7 +89,7 @@ Notes:
 			{alias='billingCountryCode', title=rbKey('entity.address.countryCode')}
 		] />
 	</cffunction>
-	
+
 	<cffunction name="getData" returnType="Query">
 		<cfif not structKeyExists(variables, "data")>
 			<cfquery name="variables.data">
@@ -97,6 +107,8 @@ Notes:
 					SwPaymentTransaction.currencyCode,
 					SwPaymentTransaction.avsCode,
 					SwPaymentTransaction.transactionDateTime,
+					ost.systemCode,
+					opst.systemCode,
 					CASE
     					WHEN SwPaymentTransaction.orderPaymentID IS NOT NULL THEN 'orderPayment'
 						WHEN SwPaymentTransaction.accountPaymentID IS NOT NULL THEN 'accountPayment'
@@ -119,6 +131,12 @@ Notes:
 				  LEFT JOIN
 				  	SwOrderPayment on SwPaymentTransaction.orderPaymentID = SwOrderPayment.orderPaymentID
 				  LEFT JOIN
+				  	SwType opst on opst.typeID = SwOrderPayment.orderPaymentStatusTypeID
+				  LEFT JOIN
+				  	SwOrder on SwOrderPayment.orderID = SwOrder.orderID
+				  LEFT JOIN
+				  	SwType ost on ost.typeID = SwOrder.orderStatusTypeID
+				  LEFT JOIN
 				  	SwAddress opba on opba.addressID = SwOrderPayment.billingAddressID
 				  LEFT JOIN
 				  	SwAccountPayment on SwPaymentTransaction.accountPaymentID = SwAccountPayment.accountPaymentID
@@ -130,10 +148,14 @@ Notes:
 				  	SwAddress apmba on apmba.addressID = SwAccountPaymentMethod.billingAddressID
 				WHERE
 					#getReportDateTimeWhere()#
+				AND
+					opst.systemCode = 'opstActive'
+				AND
+					ost.systemCode != 'ostNotPlaced'
 			</cfquery>
 		</cfif>
-		
+
 		<cfreturn variables.data />
 	</cffunction>
-	
+
 </cfcomponent>

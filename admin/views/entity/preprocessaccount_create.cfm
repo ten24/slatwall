@@ -48,13 +48,14 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.account" type="any" />
 <cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
 	<hb:HibachiEntityProcessForm entity="#rc.account#" edit="#rc.edit#">
-		
 		<hb:HibachiEntityActionBar type="preprocess" object="#rc.account#">
 		</hb:HibachiEntityActionBar>
 		

@@ -1,0 +1,116 @@
+<div class="form-group" >
+			<label class="control-label" for=""><span sw-rbkey="'admin.productBundle.bundleGroupType'"></span>:</label>
+			<div class="s-search-filter" id="j-inside-product-bundle-group-type">
+			
+				<!--<div class="input-group" >
+					<input  type="text"
+							ng-model="productBundleGroup.data.productBundleGroupType.data.typeName"
+							placeholder="Search"
+							class="form-control input-sm"
+							typeahead="type.typeName for type in productBundleGroupTypes.getTypesByKeyword($viewValue) "
+							typeahead-on-select="selectProductBundleGroupType($item, $model, $label)"
+                            required
+					>
+                    
+                    
+					
+					<div class="input-group-btn">
+						<button type="button" class="btn btn-sm btn-default" ng-click="closeAddScreen();clearTypeName();">
+							<span ng-show="showAddProductBundleGroupTypeBtn" class="fa fa-caret-up"></span>
+							<span ng-show="!showAddProductBundleGroupTypeBtn" class="fa fa-caret-down"></span>
+						</button>
+					</div>
+					
+                 
+				</div>-->
+                
+               <div sw-typeahead-search 
+                        data-search-text="productBundleGroup.data.productBundleGroupType.data.typeName"
+                        data-placeholder-rb-key="admin.entity.createProduct.searchProductBundleType"
+                        data-add-function="selectProductBundleGroupType"
+                        data-add-button-function="productBundleGroupTypes.setAdding"
+                        data-validate-required="true"
+                        >
+                        
+                        <sw-collection-config 
+                            data-entity-name="Type"
+                            data-parent-directive-controller-as-name="swTypeaheadSearch"
+							data-collection-config-property="collectionConfig"
+                            data-all-records="true"
+                        >
+                            <sw-collection-column data-property-identifier="typeID"></sw-collection-column>
+                            <sw-collection-column data-property-identifier="typeCode" data-is-searchabled="true"></sw-collection-column>
+                            <sw-collection-column data-property-identifier="typeName" data-is-searchabled="true"></sw-collection-column>
+                            <sw-collection-filter data-property-identifier="parentType.systemCode" data-comparison-operator="=" data-comparison-value="ProductBundleGroupType"></sw-collection-filter>
+                        </sw-collection-config>
+                       
+                        <span sw-typeahead-search-line-item data-property-identifier="typeName"></span>           
+                </div>
+
+				<!--<div ng-if="showAddProductBundleGroupTypeBtn && productBundleGroup.data.productBundleGroupType.data.typeName.length">
+					<button type="button"
+							class="btn btn-dgrey"
+							ng-show="showAddProductBundleGroupTypeBtn"
+							ng-click="productBundleGroupTypes.setAdding(true)"
+					>
+						<i class="fa fa-plus"></i> <span sw-rbkey="'define.add'"></span> "{{productBundleGroup.data.productBundleGroupType.data.typeName}}"
+					</button>-->
+					<div class="s-add-content" ng-if="productBundleGroupTypes.$$adding">
+							<span ng-show="productBundleGroupTypes.$$adding && productBundleGroup.data.productBundleGroupType" >
+								<sw-form ng-attr-name="form.addProductBundleGroupType"
+									data-object="productBundleGroup.data.productBundleGroupType"
+									data-context="save"
+									ng-if="productBundleGroup.data.productBundleGroupType"
+								>
+									<sw-property-display
+											style="display:none"
+											data-object="productBundleGroup.data.productBundleGroupType"
+											data-property="typeID"
+											data-editing="true"
+											data-editable="true"
+											data-is-dirty="true"
+									></sw-property-display> 
+									<sw-property-display
+											data-object="productBundleGroup.data.productBundleGroupType"
+											data-property="typeName"
+											data-editing="true"
+											data-editable="true"
+											data-is-dirty="true"
+									></sw-property-display> 
+									<sw-property-display
+											data-object="productBundleGroup.data.productBundleGroupType"
+											data-property="typeCode"
+											data-editing="true"
+											data-editable="true"
+									></sw-property-display>
+									<sw-property-display
+											data-object="productBundleGroup.data.productBundleGroupType"
+											data-property="typeDescription"
+											data-editing="true"
+											data-editable="true"
+									></sw-property-display> 
+								</sw-form>
+								<sw-form name="form.addProductBundleGroupTypeParentType"
+									data-object="productBundleGroup.data.productBundleGroupType.data.parentType"
+									data-context="save"
+									ng-if="productBundleGroup.data.productBundleGroupType.data.parentType"
+								>
+										<sw-property-display
+											style="display:none"
+											data-object="productBundleGroup.data.productBundleGroupType.data.parentType"
+											data-property="typeID"
+											data-editing="true"
+											data-editable="true"
+											data-is-dirty="true"
+										></sw-property-display> 
+						        </sw-form>
+								<button type="button"
+								        class="btn btn-xs s-btn-ten24"
+										ng-click="saveProductBundleGroupType()"
+								>
+									<i  ng-class="{'fa fa-plus s-loading': productBundleGroupTypeSaving === true, 'fa fa-plus': productBundleGroupTypeSaving === false}"></i> Add Group Type
+								</button>
+							</span>
+					</div>
+		</div>
+	</div>

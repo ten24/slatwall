@@ -1,0 +1,30 @@
+<section class="content s-body-margin" id="j-main-content">
+	<div class="row s-body-nav">
+	    <nav class="navbar navbar-default" role="navigation">
+	      <div class="col-md-6 s-header-info">
+				<h1 class="actionbar-title" sw-rbkey="'entity.'+entityName.toLowerCase()"></h1>
+			</div>
+
+			<div class="col-md-6">
+				<div class="btn-toolbar">
+					<div class="btn-group btn-group-sm">
+						 <a title="Add {{entityDisplayName}}" class="adminentitycreatecollection btn btn-primary"  sw-href="{{'/entity/'+entityName+'/create'}}"><i class="glyphicon glyphicon-plus icon-white"></i> Add <span sw-rbkey="'entity.'+entityName.toLowerCase()"></span></a>
+					</div>
+				</div>
+			</div>
+		</nav>
+	</div>
+
+	
+
+    <sw-listing-display
+            data-collection="entityName"
+
+            data-record-detail-action="{{entityName}}"
+            data-show-search="true"
+            data-title="{{entityName}}"
+            data-multiselect-field-name="test"
+            data-multiselect-property-identifier="test"
+            data-edit="true">
+
+</section>

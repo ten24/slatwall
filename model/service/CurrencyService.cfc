@@ -68,6 +68,17 @@ component  extends="HibachiService" accessors="true" {
 		return returnList;
 	}
 	
+	public string function getCurrencyRatesByCurrencyCodeSmartlist(required string currencyCode){
+		var rates=this.getCurrencySmartList();
+		rates.addFilter('activeFlag',1);
+		rates.addFilter('currencyCode',arguments.currencyCode);
+		return rates;
+	}
+
+	public any function getCurrencyByCurrencyCode(required string currencyCode){
+		return getCurrencyDAO().getCurrencyByCurrencyCode(arguments.currencyCode);
+	}
+	
 	public array function getCurrencyOptions() {
 		var csl = this.getCurrencySmartList();
 		
@@ -78,13 +89,13 @@ component  extends="HibachiService" accessors="true" {
 		return csl.getRecords(); 
 	}
 	
-	public numeric function convertCurrency(required numeric amount, required originalCurrencyCode, required convertToCurrencyCode) {
-		return precisionEvaluate(arguments.amount * getCurrencyConversionRate(originalCurrencyCode=originalCurrencyCode, convertToCurrencyCode=convertToCurrencyCode));
+	public numeric function convertCurrency(required numeric amount, required originalCurrencyCode, required convertToCurrencyCode, conversionDateTime=now()) {
+		return round(precisionEvaluate(arguments.amount * getCurrencyConversionRate(originalCurrencyCode=originalCurrencyCode, convertToCurrencyCode=convertToCurrencyCode, conversionDateTime=arguments.conversionDateTime))*100)/100;
 	}
 	
-	public numeric function getCurrencyConversionRate(required originalCurrencyCode, required convertToCurrencyCode) {
+	public numeric function getCurrencyConversionRate(required originalCurrencyCode, required convertToCurrencyCode, conversionDateTime=now()) {
 		// First, check to see if there is a conversion record stored locally.
-		var currencyRate = getCurrencyDAO().getCurrentCurrencyRateByCurrencyCodes(originalCurrencyCode=arguments.originalCurrencyCode, convertToCurrencyCode=arguments.convertToCurrencyCode);
+		var currencyRate = getCurrencyDAO().getCurrentCurrencyRateByCurrencyCodes(originalCurrencyCode=arguments.originalCurrencyCode, convertToCurrencyCode=arguments.convertToCurrencyCode, conversionDateTime=arguments.conversionDateTime);
 		if(!isNull(currencyRate)) {
 			if(currencyRate.getConversionCurrencyCode() == arguments.convertToCurrencyCode) {
 				return currencyRate.getConversionRate();

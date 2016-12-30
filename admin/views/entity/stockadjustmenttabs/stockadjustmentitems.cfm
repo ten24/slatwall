@@ -48,6 +48,7 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.stockAdjustment" type="any" />
 
 <hb:HibachiListingDisplay smartList="#rc.stockAdjustment.getstockAdjustmentItemsSmartList()#"
@@ -62,7 +63,6 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="fromstock.sku.product.brand.brandName" />
 		<hb:HibachiListingColumn propertyIdentifier="fromstock.sku.product.productName" />
 		<hb:HibachiListingColumn propertyIdentifier="fromstock.sku.skuDefinition" sort="false" />
-		
 		<hb:HibachiListingColumn propertyIdentifier="fromstock.location.locationName" title="#$.slatwall.rbKey('admin.warehouse.detailstockadjustment.fromlocationname')#" />
 		<cfif rc.stockAdjustment.getStockAdjustmentType().getSystemCode() eq "satLocationTransfer">
 			<hb:HibachiListingColumn propertyIdentifier="tostock.location.locationName" title="#$.slatwall.rbKey('admin.warehouse.detailstockadjustment.tolocationname')#" />
@@ -79,17 +79,33 @@ Notes:
 </hb:HibachiListingDisplay>
 
 <cfif rc.edit>
-	<hb:HibachiListingDisplay smartList="#rc.stockAdjustment.getAddStockAdjustmentItemSkuOptionsSmartList()#"
+	<cfscript>
+			if( rc.stockAdjustment.getStockAdjustmentType().getSystemCode() eq "satLocationTransfer"){
+					SL=rc.stockAdjustment.getAddStockAdjustmentItemStockOptionsSmartList();
+				}else{
+					SL=rc.stockAdjustment.getAddStockAdjustmentItemSkuOptionsSmartList();
+				}
+	</cfscript>
+	<hb:HibachiListingDisplay smartList="#SL#"
 							  recordProcessAction="admin:entity.processStockAdjustment"
 							  recordProcessContext="addStockAdjustmentItem"
 							  recordProcessEntity="#rc.stockAdjustment#"
 							  recordProcessUpdateTableID="LD#replace(rc.stockAdjustment.getstockAdjustmentItemsSmartList().getSavedStateID(),'-','','all')#">
-							    
-		<hb:HibachiListingColumn propertyIdentifier="skuCode" />
-		<hb:HibachiListingColumn propertyIdentifier="product.productCode" />
-		<hb:HibachiListingColumn propertyIdentifier="product.brand.brandName" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="product.productName" />
-		<hb:HibachiListingColumn propertyIdentifier="product.productType.productTypeName" />
+		<cfif rc.stockAdjustment.getStockAdjustmentType().getSystemCode() eq "satLocationTransfer">
+			<hb:HibachiListingColumn propertyIdentifier="sku.skuCode" />
+			<hb:HibachiListingColumn propertyIdentifier="sku.product.productCode" />
+			<hb:HibachiListingColumn propertyIdentifier="sku.product.brand.brandName" />
+			<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="sku.product.productName" />
+			<hb:HibachiListingColumn propertyIdentifier="sku.product.productType.productTypeName" />
+			<hb:HibachiListingColumn propertyIdentifier="calculatedQNC" />
+		<cfelse>
+			<hb:HibachiListingColumn propertyIdentifier="skuCode" />
+			<hb:HibachiListingColumn propertyIdentifier="product.productCode" />
+			<hb:HibachiListingColumn propertyIdentifier="product.brand.brandName" />
+			<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="product.productName" />
+			<hb:HibachiListingColumn propertyIdentifier="product.productType.productTypeName" />
+		</cfif>					    
+		
 		<hb:HibachiListingColumn processObjectProperty="quantity" title="#$.slatwall.rbKey('define.quantity')#" fieldClass="span1" />
 	</hb:HibachiListingDisplay>
 </cfif>

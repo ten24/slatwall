@@ -48,12 +48,14 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.productType" type="any" />
 
 <cfoutput>
 	<swa:SlatwallSettingTable>
 		<swa:SlatwallSetting settingName="skuAllowBackorderFlag" settingObject="#rc.productType#" />
 		<swa:SlatwallSetting settingName="skuAllowPreorderFlag" settingObject="#rc.productType#" />
+		<swa:SlatwallSetting settingName="skuAllowWaitlistingFlag" settingObject="#rc.productType#" />
 		<swa:SlatwallSetting settingName="skuCurrency" settingObject="#rc.productType#" />
 		<swa:SlatwallSetting settingName="skuEligibleCurrencies" settingObject="#rc.productType#" />
 		<swa:SlatwallSetting settingName="skuEligibleFulfillmentMethods" settingObject="#rc.productType#" />
@@ -71,6 +73,8 @@ Notes:
 		<swa:SlatwallSetting settingName="skuTaxCategory" settingObject="#rc.productType#" />
 		<cfif rc.productType.getBaseProductType() eq "merchandise">
 			<!--- Wrap this arround settings if you want to disable them for certain product types --->
+		<cfelseif  rc.productType.getBaseProductType() eq "event">
+			<swa:SlatwallSetting settingName="skuEventEnforceConflicts" settingObject="#rc.productType#" />
 		</cfif>
 	</swa:SlatwallSettingTable>
 </cfoutput>

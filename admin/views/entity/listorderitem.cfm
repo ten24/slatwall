@@ -49,29 +49,37 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
+
+
 <cfparam name="rc.orderItemSmartList" type="any" />
 
 <cfset rc.orderItemSmartList.addOrder("order.orderOpenDateTime|DESC") />
 
-<cfif not len(rc.orderItemSmartList.getFilters("order.orderStatusType.type")) >
-	<cfset local.defaultStatusFilter = $.slatwall.getService('settingService').getTypeBySystemCode("ostNew").getType() />
-	<cfset local.defaultStatusFilter = listAppend(local.defaultStatusFilter, $.slatwall.getService('settingService').getTypeBySystemCode("ostNew").getType()) />
-	<cfset local.defaultStatusFilter = listAppend(local.defaultStatusFilter, $.slatwall.getService('settingService').getTypeBySystemCode("ostProcessing").getType()) />
-	<cfset local.defaultStatusFilter = listAppend(local.defaultStatusFilter, $.slatwall.getService('settingService').getTypeBySystemCode("ostOnHold").getType()) />
-	<cfset local.defaultStatusFilter = listAppend(local.defaultStatusFilter, $.slatwall.getService('settingService').getTypeBySystemCode("ostClosed").getType()) />
-	<cfset local.defaultStatusFilter = listAppend(local.defaultStatusFilter, $.slatwall.getService('settingService').getTypeBySystemCode("ostCanceled").getType()) />
-	<cfset rc.orderItemSmartList.addFilter('order.orderStatusType.type', local.defaultStatusFilter) />
+<cfif not len(rc.orderItemSmartList.getFilters("order.orderStatusType.typeName")) >
+	
+	<cfset local.defaultStatusFilter = "">
+	<cfset local.orderStatusTypeCodes = ['ostNew','ostProcessing','ostOnHold','ostClosed','ostCanceled'] />
+	
+	<cfloop array="#local.orderStatusTypeCodes#" index="local.orderstatus">
+		<cfset local.orderstatusOptions =  $.slatwall.getService('typeService').getTypeOptionsBySystemCode(local.orderstatus) />
+		<cfloop array="#local.orderstatusOptions#" index="local.orderstatusOption">
+			<cfset local.defaultStatusFilter = listAppend(local.defaultStatusFilter, local.orderstatusOption.getTypeName()) />
+		</cfloop>
+	</cfloop>
+	
+	<cfset rc.orderItemSmartList.addFilter('order.orderStatusType.typeName', local.defaultStatusFilter) />
 </cfif>
 
 <cfoutput>
+	<hb:HibachiEntityActionBar type="listing" object="#rc.orderItemSmartList#" showCreate="false" />
 	
-	<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.orderItemSmartList#"
+	<hb:HibachiListingDisplay smartList="#rc.orderItemSmartList#"
 							   recorddetailaction="admin:entity.detailorderitem"
 							   recordeditaction="admin:entity.editorderitem">
 		<hb:HibachiListingColumn propertyIdentifier="order.account.firstName" />
 		<hb:HibachiListingColumn propertyIdentifier="order.account.lastName" />
 		<hb:HibachiListingColumn propertyIdentifier="order.orderNumber" />
-		<hb:HibachiListingColumn propertyIdentifier="order.orderStatusType.type" />
+		<hb:HibachiListingColumn propertyIdentifier="order.orderStatusType.typeName" title="#$.slatwall.rbKey('entity.order.orderStatusType')#" />
 		<hb:HibachiListingColumn propertyIdentifier="order.orderOpenDateTime" />
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="sku.product.calculatedTitle" />
 		<hb:HibachiListingColumn propertyIdentifier="price" />

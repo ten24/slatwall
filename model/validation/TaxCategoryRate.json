@@ -10,6 +10,6 @@
 								{"contexts":"save","conditions":"noIntegration","required":true}
 							],
 		"appliedTaxes":		[{"contexts":"delete","maxCollection":0}],
-		"taxCategoryRateCode":	[{"contexts":"save","required":true,"regex":"^[a-zA-Z0-9-_.|:~^]+$"}]
+		"taxCategoryRateCode":	[{"contexts":"save","uniqueOrNull":true,"regex":"^[a-zA-Z0-9-_.|:~^]+$"}]
 	}
 }

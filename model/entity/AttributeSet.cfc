@@ -56,9 +56,7 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 	property name="attributeSetDescription" ormtype="string" length="2000";
 	property name="attributeSetObject" ormtype="string" hb_formFieldType="select";
 	property name="globalFlag" ormtype="boolean" default="1";
-	property name="requiredFlag" ormtype="boolean";
 	property name="accountSaveFlag" ormtype="boolean";
-	property name="additionalCharge" ormtype="big_decimal";
 	property name="sortOrder" ormtype="integer";
 	
 	// Related Object Properties (many-to-one)
@@ -67,10 +65,12 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 	property name="attributes" singularname="attribute" cfc="Attribute" fieldtype="one-to-many" fkcolumn="attributeSetID" inverse="true" cascade="all-delete-orphan" orderby="sortOrder";
 	
 	// Related Object Properties (many-to-many - owner)
+	property name="contents" singularname="content" cfc="Content" type="array" fieldtype="many-to-many" linktable="SwAttributeSetContent" fkcolumn="attributeSetID" inversejoincolumn="contentID";
 	property name="productTypes" singularname="productType" cfc="ProductType" type="array" fieldtype="many-to-many" linktable="SwAttributeSetProductType" fkcolumn="attributeSetID" inversejoincolumn="productTypeID";
 	property name="products" singularname="product" cfc="Product" type="array" fieldtype="many-to-many" linktable="SwAttributeSetProduct" fkcolumn="attributeSetID" inversejoincolumn="productID";
 	property name="brands" singularname="brand" cfc="Brand" type="array" fieldtype="many-to-many" linktable="SwAttributeSetBrand" fkcolumn="attributeSetID" inversejoincolumn="brandID";
 	property name="skus" singularname="sku" cfc="Sku" type="array" fieldtype="many-to-many" linktable="SwAttributeSetSku" fkcolumn="attributeSetID" inversejoincolumn="skuID";
+	property name="types" singularname="type" cfc="Type" type="array" fieldtype="many-to-many" linktable="SwAttributeSetType" fkcolumn="attributeSetID" inversejoincolumn="typeID";
 
 	// Related Object Properties (many-to-many - inverse)
 	
@@ -79,6 +79,12 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
+	
+	//Non-Persistent
+	
+	public string function getAttributeSetObjectPrimaryIDPropertyName(){
+		return getService('hibachiService').getPrimaryIDPropertyNameByEntityName(getAttributeSetObject());
+	}
 	
 	public array function getAttributes(orderby, sortType="text", direction="asc") {
 		if(!structKeyExists(arguments, "orderby")) {
@@ -97,21 +103,30 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 	public array function getAttributeSetObjectOptions() {
 		return [
 			{value="Account", name=rbKey("entity.Account")},
+			{value="AccountAddress", name=rbKey("entity.AccountAddress")},
 			{value="AccountPayment", name=rbKey("entity.AccountPayment")},
+			{value="Address", name=rbKey("entity.Address")},
 			{value="AttributeOption", name=rbKey("entity.AttributeOption")},
 			{value="Brand", name=rbKey("entity.Brand")},
+			{value="Content", name=rbKey("entity.Content")},
+			{value="EventRegistration", name=rbKey("entity.EventRegistration")},
 			{value="File", name=rbKey("entity.File")},
 			{value="Image", name=rbKey("entity.Image")},
+			{value="Location", name=rbKey("entity.Location")},
+			{value="LocationConfiguration", name=rbKey("entity.LocationConfiguration")},
 			{value="Order", name=rbKey("entity.Order")},
 			{value="OrderItem", name=rbKey("entity.OrderItem")},
 			{value="OrderPayment", name=rbKey("entity.OrderPayment")},
 			{value="OrderFulfillment", name=rbKey("entity.OrderFulfillment")},
 			{value="OrderDelivery", name=rbKey("entity.OrderDelivery")},
+			{value="OptionGroup", name=rbKey("entity.OptionGroup")},
 			{value="Product", name=rbKey("entity.Product")},
 			{value="ProductBundleGroup", name=rbKey("entity.ProductBundleGroup")},
 			{value="ProductType", name=rbKey("entity.ProductType")},
 			{value="ProductReview", name=rbKey("entity.ProductReview")},
+			{value="Promotion", name=rbKey("entity.Promotion")},
 			{value="Sku", name=rbKey("entity.Sku")},
+			{value="Site", name=rbKey("entity.Site")},
 			{value="SubscriptionBenefit", name=rbKey("entity.SubscriptionBenefit")},
 			{value="Type", name=rbKey("entity.Type")},
 			{value="Vendor", name=rbKey("entity.Vendor")},
@@ -151,6 +166,26 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 		}
 	}
 	
+	// Contents (many-to-many - owner)
+	public void function addContent(required any content) {    
+		if(arguments.content.isNew() or !hasContent(arguments.content)) {    
+			arrayAppend(variables.contents, arguments.content);    
+		}
+		if(isNew() or !arguments.content.hasAttributeSet( this )) {    
+			arrayAppend(arguments.content.getAttributeSets(), this);    
+		}    
+	}
+	public void function removeContent(required any content) {    
+		var thisIndex = arrayFind(variables.contents, arguments.content);    
+		if(thisIndex > 0) {    
+			arrayDeleteAt(variables.contents, thisIndex);    
+		}    
+		var thatIndex = arrayFind(arguments.content.getAttributeSets(), this);    
+		if(thatIndex > 0) {    
+			arrayDeleteAt(arguments.content.getAttributeSets(), thatIndex);    
+		}
+	}
+	
 	// =============  END:  Bidirectional Helper Methods ===================
 	
 	// ================== START: Overridden Methods ========================
@@ -159,7 +194,7 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 		if(!structKeyExists(variables, "globalFlag")) {
 			variables.globalFlag = 1;
 		}
-		if(!isNull(getAttributeSetObject()) && !listFindNoCase("OrderItem,ProductType,Product,Sku", getAttributeSetObject())) {
+		if(!isNull(getAttributeSetObject()) && !listFindNoCase("Content,OrderItem,ProductType,Product,Sku,Type", getAttributeSetObject())) {
 			variables.globalFlag = 1;
 		}
 		return variables.globalFlag;

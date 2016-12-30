@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.promotionperiod" type="any">
 <cfparam name="rc.promotion" type="any" default="#rc.promotionPeriod.getPromotion()#">
 <cfparam name="rc.edit" type="boolean">
@@ -69,22 +71,13 @@ Notes:
 							deleteQueryString="promotionID=#rc.promotion.getPromotionID()#&redirectAction=admin:entity.detailpromotion"   />
 							    			  	  
 		<input type="hidden" name="promotion.promotionID" value="#rc.promotion.getPromotionID()#" />
-
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.promotionperiod#" property="startdatetime" edit="#rc.edit#" fieldclass="noautofocus">
-				<hb:HibachiPropertyDisplay object="#rc.promotionperiod#" property="enddatetime" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.promotionperiod#" property="maximumusecount" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.promotionperiod#" property="maximumaccountusecount" edit="#rc.edit#">
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-
+		
+		<hb:HibachiEntityDetailGroup object="#rc.promotionperiod#">
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionperiodtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionperiodtabs/promotionrewards" />
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionperiodtabs/promotionqualifiers" />
+		</hb:HibachiEntityDetailGroup>
 	</hb:HibachiEntityDetailForm>
-	
-	<hb:HibachiTabGroup object="#rc.promotionperiod#">
-			<hb:HibachiTab view="admin:entity/promotionperiodtabs/promotionrewards" />
-			<hb:HibachiTab view="admin:entity/promotionperiodtabs/promotionqualifiers" />
-	</hb:HibachiTabGroup>
 	
 </cfoutput>
 

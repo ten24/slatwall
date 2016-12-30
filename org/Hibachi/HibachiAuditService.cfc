@@ -215,21 +215,6 @@ component extends="HibachiService" accessors="true" {
 					addAuditToCommit(audit);
 				}
 				
-				// If no previous audit create data available, manually add a 'create' audit for legacy data and make necessary adjustments to the data
-				if(!arguments.entity.getClassName() == "AttributeValue") {
-					var auditSmartList = getAuditSmartListForEntity(entity=arguments.entity, auditTypeList='create');
-					if (!isNull(arguments.oldData) && auditSmartList.getRecordsCount()  == 0) {
-						var auditLegacyCreate = logEntityModify(arguments.entity);
-						
-						// Remove oldData from arguments if it was provided because it is not applicable for property change data
-						var propertyChangeDataForLegacyCreate = generatePropertyChangeDataForEntity(entity=arguments.entity);
-						
-						// Revert new values back to the old values to capture an initial state
-						structAppend(propertyChangeDataForLegacyCreate.newPropertyData, propertyChangeData.oldPropertyData);
-						auditLegacyCreate.setData(serializeJSON(propertyChangeDataForLegacyCreate));
-					}
-				}
-				
 				return audit;
 			}
 		}
@@ -247,6 +232,7 @@ component extends="HibachiService" accessors="true" {
 		// Struct holds the actual property values that will be serialized as JSON when persisted to the database
 		var propertyChangeData = {};
 		propertyChangeData['newPropertyData'] = {};
+		propertyChangeData['oldPropertyData'] = {};
 		
 		// STEP 1. Convert old and new values into a standardized and simplified format that can be easily compared and serialized to JSON
 		
@@ -419,7 +405,9 @@ component extends="HibachiService" accessors="true" {
 		}
 		
 		if (len(auditType)) {
+			if (!isNull(audit.getBaseID()) && !isNull(auditType) && !isNull(arguments.audit.getBaseID())){
 			structInsert(auditStruct[audit.getBaseID()], auditType, arguments.audit);
+			}
 		}
 	}
 	
@@ -544,7 +532,12 @@ component extends="HibachiService" accessors="true" {
 						}
 					}
 					
-					changeDetail[column] = columnValue;
+					if(structKeyExists(currentProperty,'hb_formFieldType') && currentProperty.hb_formFieldType == 'wysiwyg'){
+						changeDetail[column] = columnValue;
+					}else{
+						changeDetail[column] = hibachiHTMLEditFormat(columnValue);
+					}
+					
 				}
 			}
 			
@@ -724,7 +717,7 @@ component extends="HibachiService" accessors="true" {
 		if( !getHibachiScope().getAccount().getNewFlag() && getHibachiScope().getAccount().getAdminAccountFlag() ){
 			audit.setSessionAccountID(getHibachiScope().getAccount().getAccountID());
 			audit.setSessionAccountFullName(getHibachiScope().getAccount().getFullName());
-			if (!isNull(getHibachiScope().getAccount().getEmailAddress())) {
+			if (!getHibachiScope().getAccount().hasPrimaryEmailaddress() and !isNull(getHibachiScope().getAccount().getEmailAddress())) {
 				audit.setSessionAccountEmailAddress(getHibachiScope().getAccount().getEmailAddress());
 			}
 		}

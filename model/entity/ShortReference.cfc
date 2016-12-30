@@ -49,7 +49,7 @@ Notes:
 component entityname="SlatwallShortReference" table="SwShortReference" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="hibachiService" {
 	
 	// Persistent Properties
-	property name="shortReferenceID" ormtype="integer" fieldtype="id" unsavedvalue="0";
+	property name="shortReferenceID" ormtype="integer" fieldtype="id" unsavedvalue="0" default="0";
 	property name="referenceObjectID" ormtype="string" unique="true" index="EI_REFERENCEOBJECTID";
 	property name="referenceObject" ormtype="string" index="EI_REFERENCEOBJECT";
 
@@ -100,6 +100,12 @@ component entityname="SlatwallShortReference" table="SwShortReference" persisten
 	// ===============  END: Custom Formatting Methods =====================
 	
 	// ============== START: Overridden Implicit Getters ===================
+	
+	public string function getShortReferenceID() {
+		if(structKeyExists(variables, "shortReferenceID")) {
+			return variables.shortReferenceID;	
+		}
+	}
 	
 	// ==============  END: Overridden Implicit Getters ====================
 	

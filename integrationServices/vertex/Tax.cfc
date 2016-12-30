@@ -176,28 +176,51 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 	}
 	
 	public any function postInvoiceRequestToVertex(required any requestBean){
-
+		
+		var documentDate = arguments.requestBean.getOrder().getOrderOpenDateTime();
+		
 		// Loop over each unique tax address
 		for(var taxAddressID in arguments.requestBean.getTaxRateItemRequestBeansByAddressID()) {
 			
 			var addressTaxRequestItems = arguments.requestBean.getTaxRateItemRequestBeansByAddressID()[ taxAddressID ];
+			
+			// Strip out items that shouldn't be sent based on their tax category if needed
+			if(!setting('sendInvoiceFlag')) {
+				for(var i=arrayLen(addressTaxRequestItems); i>=1; i--) {
+					if(!listFindNoCase(setting('taxCategoriesToInvoice'), addressTaxRequestItems[i].getTaxCategoryRate().getTaxCategory().getTaxCategoryID())) {
+						arrayDeleteAt(addressTaxRequestItems, i);
+					}
+				}
+			}
 
-			// Build Request XML
-			var xmlPacket = "";
+			if(arrayLen(addressTaxRequestItems) > 0) {
 				
-			savecontent variable="xmlPacket" {
-				include "InvoiceRequest.cfm";
+				// If these are return items, update the documentDate to be the original order date
+				if (addressTaxRequestItems[1].getOrderItem().getOrderItemType().getSystemCode() == 'oitReturn'
+					 && !isNull(addressTaxRequestItems[1].getOrderItem().getReferencedOrderItem())
+					 && !isNull(addressTaxRequestItems[1].getOrderItem().getReferencedOrderItem().getOrder().getOrderOpenDateTime())
+					 ) {
+					
+					documentDate = addressTaxRequestItems[1].getOrderItem().getReferencedOrderItem().getOrder().getOrderOpenDateTime();
+				}
+					
+				// Build Request XML
+				var xmlPacket = "";
+					
+				savecontent variable="xmlPacket" {
+					include "InvoiceRequest.cfm";
+				}
+				
+				// Setup Request to push to Vertex
+		        var httpRequest = new http();
+		        httpRequest.setMethod("POST");
+				httpRequest.setUrl("#setting('webServicesURL')#/CalculateTax60?wsdl");
+				httpRequest.addParam(type="XML", name="name",value=xmlPacket);
+		
+				// Parse response and set to struct
+				var xmlResponse = XmlParse(REReplace(httpRequest.send().getPrefix().fileContent, "^[^<]*", "", "one"));
 			}
 			
-			// Setup Request to push to Vertex
-	        var httpRequest = new http();
-	        httpRequest.setMethod("POST");
-			httpRequest.setUrl("#setting('webServicesURL')#/CalculateTax60?wsdl");
-			httpRequest.addParam(type="XML", name="name",value=xmlPacket);
-	
-			// Parse response and set to struct
-			var xmlResponse = XmlParse(REReplace(httpRequest.send().getPrefix().fileContent, "^[^<]*", "", "one"));
-
 		}
 	}
 

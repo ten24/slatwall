@@ -1,3 +1,5 @@
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfif thisTag.executionMode is "start">
 	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
 	<cfparam name="attributes.object" type="any" />
@@ -34,7 +36,7 @@
 	
 	<cfoutput>
 		<cfif attributes.edit>			
-			<form method="post" action="#formAction#" class="form-horizontal" enctype="#attributes.enctype#" id="#replaceNoCase(replaceNoCase(lcase(attributes.saveaction),':','','all'),'.','','all')#">
+			<form method="post" action="#formAction#" class="" enctype="#attributes.enctype#" id="#replaceNoCase(replaceNoCase(lcase(attributes.saveaction),':','','all'),'.','','all')#">
 			<input type="hidden" name="#request.context.fw.getAction()#" value="#attributes.saveaction#" />
 			<input type="hidden" name="#attributes.object.getPrimaryIDPropertyName()#" value="#attributes.object.getPrimaryIDValue()#" />
 			<cfif len(attributes.sRedirectURL)><input type="hidden" name="sRedirectURL" value="#attributes.sRedirectURL#" /></cfif>
@@ -47,24 +49,28 @@
 			<cfif len(attributes.fRedirectQS)><input type="hidden" name="fRedirectQS" value="#attributes.fRedirectQS#" /></cfif>
 		</cfif>
 		<cfif structKeyExists(request.context, "modal") and request.context.modal>
-			<div class="modal-header">
-				<a class="close" data-dismiss="modal">&times;</a>
-				<h3>#request.context.pageTitle#</h3>
-			</div>
-			<div class="modal-body">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<a class="close" data-dismiss="modal">&times;</a>
+						<h3>#request.context.pageTitle#</h3>
+					</div>
+					<div class="modal-body">
 		</cfif>
 	</cfoutput>
 <cfelse>
 	<cfoutput>
 		<cfif structKeyExists(request.context, "modal") and request.context.modal>
-			</div>
-			<div class="modal-footer">
-				<cfif attributes.edit>
-					<div class="btn-group">
-						<a href="##" class="btn btn-inverse" data-dismiss="modal"><i class="icon-remove icon-white"></i> #attributes.hibachiScope.rbKey('define.cancel')#</a>
-						<button type="submit" class="btn btn-success"><i class="icon-ok icon-white"></i> #attributes.hibachiScope.rbKey('define.save')#</button>
 					</div>
-				</cfif>
+					<div class="modal-footer">
+						<cfif attributes.edit>
+							<div class="btn-group">
+								<button href="##" class="btn btn-default" data-dismiss="modal"><i class="icon-remove icon-white"></i> #attributes.hibachiScope.rbKey('define.cancel')#</button>
+								<button type="submit" class="btn btn-success"><i class="icon-ok icon-white"></i> #attributes.hibachiScope.rbKey('define.save')#</button>
+							</div>
+						</cfif>
+					</div>
+				</div>
 			</div>
 		</cfif>
 		<cfif attributes.edit>

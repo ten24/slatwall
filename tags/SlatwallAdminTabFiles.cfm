@@ -51,6 +51,7 @@
 <cfif thisTag.executionMode is "start">
 	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
 	<cfparam name="attributes.object" type="any" />
+	<cfparam name="attributes.open" type="boolean" default="false" />
 	
 	<cfset attributes.tabid = "files" />
 	<cfset attributes.text = attributes.hibachiScope.rbKey("entity.file_plural") />
@@ -64,5 +65,5 @@
 		</div>
 	</cfsavecontent>
 	
-	<cfassociate basetag="cf_HibachiTabGroup" datacollection="tabs">
+	<cfassociate basetag="cf_HibachiEntityDetailGroup" datacollection="tabs">
 </cfif>

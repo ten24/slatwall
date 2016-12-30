@@ -1,0 +1,64 @@
+<!--Small content block-->
+<div class="s-sm-content-block">
+	<div class="col-xs-1 col-sm-1 col-md-2 col-lg-3 s-icon">
+		<i class="fa fa-credit-card"></i>
+	</div>
+	<div class="col-xs-11 col-sm-11 col-md-10 col-lg-9 s-content">
+		<div class="s-title">
+			Gift Card Number & Pin
+		</div>
+		<div class="s-body">
+			<span title="{{swGiftCardOverview.giftCard.giftCardCode}}">{{swGiftCardOverview.giftCard.giftCardCode}}</span>
+			<span title="{{swGiftCardOverview.giftCard.giftCardPin}}">( {{swGiftCardOverview.giftCard.giftCardPin}} )</span>
+		</div>
+	</div>
+</div>
+
+<!--Small content block-->
+<div class="s-sm-content-block s-status"
+     ng-class="{'s-red': swGiftCardOverview.giftCard.activeFlag !== 'Yes ', 's-green': swGiftCardOverview.giftCard.activeFlag === 'Yes '}">
+	<div class="col-xs-1 col-sm-1 col-md-2 col-lg-3 s-icon"
+		 >
+		<i class="fa fa-circle"></i>
+	</div>
+	<div class="col-xs-11 col-sm-11 col-md-10 col-lg-9 s-content">
+		<div class="s-title">
+			Status
+		</div>
+		<div class="s-body">
+			<span ng-show="swGiftCardOverview.giftCard.activeFlag === 'Yes '">Active</span>
+			<span ng-show="swGiftCardOverview.giftCard.activeFlag !== 'Yes '">Inactive</span>
+			<div class="dropdown s-action">
+				<a href="##" class="dropdown-toggle hide" id="dropdownMenu1" data-toggle="dropdown">
+					<i class="fa fa-ellipsis-h" title="actions"></i>
+				</a>
+				<ul class="dropdown-menu pull-right hide" aria-labelledby="dropdownMenu1">
+					<li><a href="#">Activate</a></li>
+					<li><a href="#">Close</a></li>
+					<li><a href="#">Pause</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!--Small content block-->
+<div class="s-sm-content-block">
+	<div class="col-xs-1 col-sm-1 col-md-2 col-lg-3 s-icon">
+		<i class="fa fa-clock-o"></i>
+	</div>
+	<div class="col-xs-11 col-sm-11 col-md-10 col-lg-9 s-content">
+		<div class="col-xs-11 col-sm-11 col-md-10 col-lg-9 s-content">
+			<div class="s-title">
+				Expiration
+			</div>
+			<div class="s-body">
+				<span ng-if="swGiftCardOverview.giftCard.expirationDate.trim().length > 0" ng-bind="swGiftCardOverview.giftCard.expirationDate"></span>
+				<span ng-if="swGiftCardOverview.giftCard.expirationDate.trim().length == 0">Never</span>
+				<a href="##" class="s-action hide" title="edit">
+					<i class="fa fa-pencil"></i>
+				</a>
+			</div>
+		</div>
+	</div>
+</div>

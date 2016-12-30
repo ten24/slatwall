@@ -258,6 +258,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		isl.addLikeFilter('integrationTypeList', '%authentication%');
 		
 		var authInts = isl.getRecords();
+		
 		for(var i=1; i<=arrayLen(authInts); i++) {
 			var intCFC = getAuthenticationIntegrationCFC(authInts[i]);
 			var adminLoginHTML = intCFC.getAdminLoginHTML();
@@ -297,6 +298,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ===================== START: DAO Passthrough ===========================
 	
 	// ===================== START: Process Methods ===========================
+	
+	public any function processIntegration_test(required any integration) {
+		var integrationTypes = getIntegrationCFC(arguments.integration).getIntegrationTypes();
+
+		for(var integrationType in integrationTypes) {
+			var integrationCFC = arguments.integration.getIntegrationCFC(integrationType);
+			if(structKeyExists(integrationCFC, "testIntegration")) {
+				var result = integrationCFC.testIntegration();
+				arguments.integration.addError(errorName="TestResult", errorMessage="#serializeJSON(result.getData())#");
+			} else {
+				arguments.integration.addError(errorName="TestResult", errorMessage="#rbKey('define.test_not_implemented')#");
+			}
+		}
+
+		return arguments.integration;
+	}
 	
 	// =====================  END: Process Methods ============================
 	

@@ -1,0 +1,11 @@
+<ul ng-switch="systemCode">
+	<li ng-repeat="header in orderItem.detailsName track by $index" 
+	    ng-if="orderItem.detailsName.length">
+				<span class="s-detail-title" ng-bind="header"></span>: <br> 
+				<span class="s-detail-content" ng-if="orderItem.details[$index]" ng-bind="orderItem.details[$index]"></span>
+	</li>
+	<li ng-repeat="value in orderItem.details track by $index" 
+	    ng-if="!orderItem.detailsName.length">
+			<span class="s-detail-content">{{value}}</span>
+	</li>
+</ul>

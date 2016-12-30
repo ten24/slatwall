@@ -50,7 +50,6 @@ Notes:
 
 <cfoutput>
 	<div class="svoaccountlistsubscription">
-		<!--- <cfdump var="#rc.account.getSubscriptionUsages()#" top="3" /> --->
 		<form name="account" method="post" action="#$.createHREF(filename='my-account')#">
 			<input type="hidden" name="slatAction" value="frontend:account.save" />
 	

@@ -103,8 +103,8 @@ Notes:
 	
 	<cfset thisTag.columnCount = 5 />
 	<cfoutput>
-		<table class="table table-striped table-bordered table-condensed">
-			<tbody>
+		<div class="table-responsive">	
+			<table class="table table-bordered table-hover">
 				<cfif arraylen(thisTag.auditArray)>
 					<!--- Remove time for day comparison --->
 					<cfset nowDate = createDate(year(now()), month(now()), day(now())) />
@@ -151,13 +151,14 @@ Notes:
 						
 						<!--- Output the date row --->
 						<cfif not dateGroupingUsageFlags[dateGroupUsageKey]>
-							<!--- Determine which format to show --->
-							<tr>
-								<th colspan="3">#dateGroupText#</th>
-							</tr>
+							<thead>
+								<!--- Determine which format to show --->
+								<tr>
+									<th colspan="3">#dateGroupText#</th>
+								</tr>
+							</thead>
 							<cfset dateGroupingUsageFlags[dateGroupUsageKey] = true />
 						</cfif>
-						
 						<tr>
 							<td style="white-space:nowrap;width:1%;"><cfif showTime>#currentAudit.getFormattedValue("auditDateTime", "time")#</cfif><cfif len(currentAudit.getSessionAccountFullName())> - #currentAudit.getSessionAccountFullName()#</cfif></td>
 							<td class="primary">
@@ -196,14 +197,20 @@ Notes:
 								</cfif>
 							</td>
 							<td class="admin admin1">
-								<hb:HibachiActionCaller action="admin:entity.preprocessaudit" queryString="processContext=rollback&#currentAudit.getPrimaryIDPropertyName()#=#currentAudit.getPrimaryIDValue()#&redirectAction=admin:entity.detail#currentAudit.getBaseObject()#" class="btn btn-mini" modal="true" icon="eye-open" iconOnly="true" />
+								<hb:HibachiActionCaller action="admin:entity.preprocessaudit" queryString="processContext=rollback&#currentAudit.getPrimaryIDPropertyName()#=#currentAudit.getPrimaryIDValue()#&redirectAction=admin:entity.detail#currentAudit.getBaseObject()#" class="btn btn-xs" modal="true" icon="eye-open" iconOnly="true" />
 							</td>
 						</tr>
 					</cfloop>
+					<cfif isObject(attributes.object) and attributes.object.hasProperty('createdDateTime') and attributes.object.getCreatedDateTime() lt attributes.auditSmartList.getRecords()[arrayLen(attributes.auditSmartList.getRecords())].getAuditDateTime()>
+						<tr><td colspan="#thisTag.columnCount#" style="text-align:center;"><em>#attributes.hibachiScope.rbKey("entity.audit.frontEndAndAdmin")#</em></td></tr>
+					</cfif>
+				<cfelseif isObject(attributes.object) and attributes.object.hasProperty('createdDateTime') and attributes.object.hasProperty('modifiedDateTime') and attributes.object.getCreatedDateTime() lt attributes.object.getModifiedDateTime()>
+					<tr><td colspan="#thisTag.columnCount#" style="text-align:center;"><em>#attributes.hibachiScope.rbKey("entity.audit.frontEndOnly")#</em></td></tr>
 				<cfelse>
 					<tr><td colspan="#thisTag.columnCount#" style="text-align:center;"><em>#attributes.hibachiScope.rbKey("entity.audit.norecords")#</em></td></tr>
 				</cfif>
-			</tbody>
-		</table>
+			
+			</table>
+		</div>
 	</cfoutput>
 </cfif>

@@ -1,0 +1,16 @@
+<ng-switch on="selectedFilterProperty.ormtype">
+	<sw-criteria-boolean ng-switch-when="boolean"></sw-criteria-boolean>
+	<sw-criteria-date ng-switch-when="timestamp"></sw-criteria-date>
+	<sw-criteria-number ng-switch-when="big_decimal"></sw-criteria-number>
+	<sw-criteria-number ng-switch-when="integer"></sw-criteria-number>
+	<sw-criteria-number ng-switch-when="float"></sw-criteria-number>
+	<sw-criteria-string ng-switch-when="string"></sw-criteria-string>
+</ng-switch>
+
+<!--<ng-switch on="selectedFilterProperty.fieldtype">-->
+	<!--<sw-criteria-one-to-many ng-switch-when="one-to-many"></sw-criteria-one-to-many>-->
+	<!--<sw-criteria-many-to-one ng-switch-when="many-to-one"></sw-criteria-many-to-one>-->
+	<!--<sw-criteria-many-to-many ng-switch-when="many-to-many"></sw-criteria-many-to-many>-->
+<!--</ng-switch>-->
+
+<sw-criteria-related-object data-ng-if="selectedFilterProperty.fieldtype == 'many-to-one' || selectedFilterProperty.fieldtype == 'one-to-many' || selectedFilterProperty.fieldtype == 'many-to-many'"></sw-criteria-related-object>

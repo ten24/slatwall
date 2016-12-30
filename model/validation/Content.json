@@ -1,5 +1,39 @@
 {
+	"conditions":{
+	    "notSlatwallCMS":{
+	        "site.app":{"null":true}
+	    },
+	    "isSlatwallCMS":{
+	    	 "site.app.integration.integrationPackage":{"eq":"slatwallcms"}
+	    },
+	    "topLevelContent":{
+	    	"parentContent":{"null":true}
+	    },
+	    "requireUrlTitle":{
+	    	"parentContent":{"required":true},
+	    	"site.app.integration.integrationPackage":{"eq":"slatwallcms"}
+	    },
+	    "notNewContent":{
+	    	"newFlag":{"eq":false},
+	    	"parentContent":{"null":false},
+	    	"site.app.integration.integrationPackage":{"eq":"slatwallcms"}
+	    }
+	},
 	"properties":{
-		"site":			[{"contexts":"save","required":true}]
+		"contentID":			[
+			{"contexts":"save","required":true,"conditions":"notSlatwallCMS"}
+		],
+		"urlTitle":				[
+			{
+				"contexts":"save,create,duplicateContent","conditions":"requireUrlTitle","required":true
+			},
+			{
+				"contexts":"save,duplicateContent","conditions":"notNewContent","regex":"^[A-Za-z0-9-]+$"
+			}
+		],
+		"urlTitlePath":			[{"contexts":"save,duplicateContent","method":"isUniqueUrlTitlePathBySite","conditions":"isSlatwallCMS"}],
+		"contentTemplateFile":	[{"contexts":"save","required":true,"conditions":"isSlatwallCMS"}],
+		"site":					[{"contexts":"save,duplicateContent","required":true}],
+		"parentContent":		[{"contexts":"duplicateContent","required":true,"conditions":"isSlatwallCMS"}]
 	}
 }

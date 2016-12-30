@@ -58,6 +58,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="fulfillmentRefundAmount";
 	property name="refundOrderPaymentID" hb_formFieldType="select";
 	property name="receiveItemsFlag" hb_formFieldType="yesno" hb_sessionDefault="0";
+	property name="stockLossFlag" hb_formFieldType="yesno";
 	property name="orderTypeCode" hb_formFieldType="select" hb_rbKey="entity.order.orderType";
 	
 
@@ -78,7 +79,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	public array function getRefundOrderPaymentIDOptions() {
 		if(!structKeyExists(variables, "refundOrderPaymentIDOptions")) {
 			variables.refundOrderPaymentIDOptions = [];
-			for(var orderPayment in getOrder().getOrderPayments()) {
+			
+			var opSmartList = getOrder().getOrderPaymentsSmartList();
+			opSmartList.addFilter('orderPaymentStatusType.systemCode', 'opstActive');
+			
+			for(var orderPayment in opSmartList.getRecords()) {
 				arrayAppend(variables.refundOrderPaymentIDOptions, {name=orderPayment.getSimpleRepresentation(), value=orderPayment.getOrderPaymentID()});
 			}
 			arrayAppend(variables.refundOrderPaymentIDOptions, {name=rbKey('define.new'), value=""});

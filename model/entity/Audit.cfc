@@ -55,8 +55,8 @@ component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors
 	property name="auditArchiveStartDateTime" ormtype="timestamp";
 	property name="auditArchiveEndDateTime" ormtype="timestamp";
 	property name="auditArchiveCreatedDateTime" ormtype="timestamp";
-	property name="baseObject" ormType="string";
-	property name="baseID" ormType="string";
+	property name="baseObject" ormType="string" index="EI_BASEOBJECT";
+	property name="baseID" ormType="string" index="EI_BASEID";
 	property name="data" ormType="string" length="8000";
 	property name="title" ormType="string" length="1000";
 	
@@ -159,6 +159,13 @@ component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors
 	// ===============  END: Custom Formatting Methods =====================
 	
 	// ============== START: Overridden Implicit Getters ===================
+	
+	//must use any as return type to handle persistent null situations
+	public any function getTitle(){
+		if(structKeyExists(variables,'title')){
+			return hibachiHtmlEditFormat(variables.title);
+		}
+	}
 	
 	// ==============  END: Overridden Implicit Getters ====================
 	

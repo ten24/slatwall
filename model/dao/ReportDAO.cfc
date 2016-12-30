@@ -91,7 +91,7 @@ Notes:
 				SELECT min(createdDateTime) as createdDateTime FROM SlatwallOrder
 			</cfquery>
 			<cfif rs.recordCount>
-				<cfset startDate = rs.createdDateTime />
+				<cfset arguments.startDate = rs.createdDateTime />
 			</cfif>
 		</cfif>
 		

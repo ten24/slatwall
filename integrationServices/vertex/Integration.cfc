@@ -71,6 +71,7 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 			originCountry = {fieldType="text"},
 			originCurrencyCode = {fieldType="text", defaultValue="USD"},
 			sendInvoiceFlag = {fieldType="yesno", defaultValue="1"},
+			taxCategoriesToInvoice = {fieldType="listingMultiselect", listingMultiselectEntityName="TaxCategory", defaultValue=""},
 			webServicesURL = {fieldType="text"},
 			webServicesPassword = {fieldType="password", encryptValue=true},
 			webServicesTimeout = {fieldType="text", defaultValue=60, validate={dataType="numeric", required=true, minValue=1}},

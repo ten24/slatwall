@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.promotionCode" type="any">
 <cfparam name="rc.promotion" type="any" default="#rc.promotionCode.getPromotion()#">
 <cfparam name="rc.edit" type="boolean">

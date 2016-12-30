@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.priceGroup" type="any">
 <cfparam name="rc.edit" type="boolean">
 
@@ -57,21 +59,11 @@ Notes:
 			<hb:HibachiActionCaller action="admin:entity.createpricegrouprate"  type="list" queryString="pricegroupID=#rc.pricegroup.getpricegroupID()#" modal="true" />
 		</hb:HibachiEntityActionBar>
 		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.priceGroup#" property="activeFlag" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.priceGroup#" property="priceGroupName" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.priceGroup#" property="priceGroupCode" edit="#rc.edit#">
-				<cfif arrayLen( rc.priceGroup.getParentPriceGroupOptions() ) gt 1>
-					<hb:HibachiPropertyDisplay object="#rc.priceGroup#" property="parentPriceGroup" edit="#rc.edit#">
-				</cfif>
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-		
-		<hb:HibachiTabGroup object="#rc.priceGroup#">
-			<hb:HibachiTab property="pricegrouprates" />
-			<hb:HibachiTab view="admin:entity/pricegrouptabs/assignedaccounts" />
-		</hb:HibachiTabGroup>
+		<hb:HibachiEntityDetailGroup object="#rc.priceGroup#">
+			<hb:HibachiEntityDetailItem view="admin:entity/pricegrouptabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<hb:HibachiEntityDetailItem property="pricegrouprates" />
+			<hb:HibachiEntityDetailItem view="admin:entity/pricegrouptabs/assignedaccounts" />
+		</hb:HibachiEntityDetailGroup>
 		
 	</hb:HibachiEntityDetailForm>
 </cfoutput>

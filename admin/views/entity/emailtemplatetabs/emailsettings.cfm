@@ -48,12 +48,15 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.emailTemplate" type="any" />
 
 <cfoutput>
 	<swa:SlatwallSettingTable>
 		<swa:SlatwallSetting settingName="emailFromAddress" settingObject="#rc.emailTemplate#" />
 		<swa:SlatwallSetting settingName="emailToAddress" settingObject="#rc.emailTemplate#" />
+		<swa:SlatwallSetting settingName="emailReplyToAddress" settingObject="#rc.emailTemplate#" />
 		<swa:SlatwallSetting settingName="emailCCAddress" settingObject="#rc.emailTemplate#" />
 		<swa:SlatwallSetting settingName="emailBCCAddress" settingObject="#rc.emailTemplate#" />
 		<swa:SlatwallSetting settingName="emailSubject" settingObject="#rc.emailTemplate#" />

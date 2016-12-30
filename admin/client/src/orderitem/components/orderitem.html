@@ -1,0 +1,167 @@
+
+
+<tr class="s-bundle-product l-1" ng-if="orderItem && attributes" 
+	ng-class="{
+		's-event l-1': orderItem.data.sku.data.baseProductType == 'event', 
+		's-bundle-product l-1': orderItem.data.sku.data.baseProductType == 'productBundle',
+		's-subscription l-1': orderItem.data.sku.data.baseProductType == 'subscription',
+		's-content-access l-1': orderItem.data.sku.data.baseProductType == 'content',
+		's-product l-1': orderItem.data.sku.data.baseProductType == 'merchandise',
+		's-return':orderItem.data.orderItemType.data.systemCode == 'oitReturn',
+		's-deposit':orderItem.onWaitlist === true,
+		's-pending-payment':orderItem.isPending === true
+	}">
+	<!-- Image 90x90 -->
+	<td rowspan="1000" class='s-image' style="width:90px;height:90px;">
+		<swresizedimage profilename="orderItem" data-order-item="orderItem"></swresizedimage>
+	</td>
+	
+	<!-- Handle the title field. Displays skuName if it exists and productName otherwise -->
+	<td class="s-title"> 
+		<span ng-if="orderItem.data.sku.data.skuName === ''" ng-bind="orderItem.data.sku.data.product.data.productName"></span>&nbsp
+		<span ng-if="orderItem.data.sku.data.skuName">
+			{{orderItem.data.sku.data.skuName}}&nbsp
+		</span>
+		<a href="{{'?slatAction=entity.detailorderitem&orderitemid='+orderItem.data.orderItemID}}" class="s-edit-link"
+			ng-show="orderItem.data.sku.data.baseProductType !== 'productBundle'">edit</a>
+		<a href="" class="s-edit-link" 
+			ng-show="orderItem.data.sku.data.baseProductType === 'productBundle' && !orderItem.clicked" 
+			ng-click="getChildOrderItems(orderItem)">detail</a>
+		<a href="" class="s-edit-link" 
+			ng-show="orderItem.data.sku.data.baseProductType === 'productBundle' && orderItem.clicked" 
+			ng-click="hideChildren(orderItem)">detail</a>
+		<!-- Handle button "Cancel Deposit"-->
+		<span ng-if="orderItem.onWaitlist === true">
+			<br>
+			<div class="s-button-group">
+				<button class="btn btn-xs btn-dgrey s-remove">Cancel Deposit</button>
+			</div>
+		</span>
+		<!-- Handle button "Claim Spot"-->
+		<span ng-if="orderItem.isPending === true ">
+			<br>
+			<div class="s-button-group">
+				<button class="btn btn-xs btn-dgrey s-remove" ng-click="cancelDeposit(orderItem)">Cancel Deposit</button>
+				<button class="btn btn-xs btn-success" ng-click="claimSpot(orderItem)">Claim Spot</button>
+			</div>
+		</span>
+		<!-- Handle event on waiting list, position in line -->
+		<span ng-if="orderItem.onWaitlist === true && !orderItem.eligible">
+		<br><span class="s-detail-title">Position:</span><br>
+		<span class="s-detail-content">{{ (orderItem.queuePosition - 1) }} customers ahead</span>
+		</span>
+		<!-- Handle event on waiting list, claim position -->
+		<span ng-if="orderItem.isPending === true">
+		<br><span class="s-detail-title">Space Reserve Until: </span><br>
+		<span class="s-detail-content">01/01/2015</span>
+		</span>
+	</td>
+	
+	<td class="s-sku">{{orderItem.data.sku.data.skuCode}}</td>
+	
+	<!-- Handle all custom details situations -->
+	<td sw-order-item-detail-stamp
+		data-system-code="orderItem.data.sku.data.baseProductType"
+		order-item-id="orderItem.data.orderItemID"
+		sku-Id="orderItem.data.sku.data.skuID"
+		order-item="orderItem">
+	</td>
+	
+	<!-- Handle Custom Attributes Values -->
+	<td class="s-customization" ng-show="attributes.length">
+ 		<span ng-repeat="attribute in attributes" ng-if="orderItem.data[attribute.attributeCode] && orderItem.data[attribute.attributeCode] !== ''">
+ 			<span class="s-detail-title" >{{attribute.attributeName}}:</span><br>
+ 			<span class="s-detail-content">{{orderItem.data[attribute.attributeCode]}}</span><br>
+ 		</span>
+ 	</td>
+	
+	<!-- Handle both cases of this 'price' being a Return Item -->
+	<td ng-if="orderItem.data.orderItemType.data.systemCode != 'oitReturn'">
+		<!-- Handle if this is a event pricing scheme-->
+		<span ng-if="orderItem.onWaitlist !== true" class="s-price">
+			<ul>
+				<li ng-show="orderItem.data.sku.data.baseProductType === 'productBundle'" class="s-price-total" ng-bind-html="orderItem.data.productBundlePrice | swcurrency:orderItem.data.currencyCode">
+				</li>
+				<li ng-show="orderItem.data.sku.data.baseProductType !== 'productBundle'" class="s-price-total"  ng-bind-html="orderItem.data.price | swcurrency:orderItem.data.currencyCode">
+				</li>
+				<li ng-show="orderItem.data.sku.data.baseProductType === 'productBundle'" class="s-price-list">
+					<ul>
+						<li>+<span ng-bind-html="orderItem.data.skuPrice | swcurrency:orderItem.data.currencyCode"></span> (Base Price)</li>
+						<li>+<span ng-bind-html="orderItem.data.skuPrice - orderItem.data.extendedPrice / orderItem.data.quantity | swcurrency:orderItem.data.currencyCode"></span> (Extras)</li>
+					</ul>
+				</li>
+			</ul>
+		</span>
+		<span ng-if="orderItem.onWaitlist === true && !orderItem.eligible">
+			<span class="s-price"></span><span ng-bind-html="'0  (Deposit)' | swcurrency:orderItem.data.currencyCode"></span><br>
+			<span class="s-price-list" ng-bind-html="orderItem.data.skuPrice + ' (Event Price)' | swcurrency:orderItem.data.currencyCode"></span>
+		</span>
+	</td>
+	
+	<td class="s-price" ng-if="orderItem.data.orderItemType.data.systemCode == 'oitReturn'">(-<span ng-bind-html="orderItem.data.skuPrice | swcurrency:orderItem.data.currencyCode"></span>) <span ng-show="orderItem.data.orderItemType.data.systemCode === 'oitDeposit'">(Event Price)</span></td>
+	
+	<td class="s-qty">{{orderItem.data.quantity}}</td>
+	
+	<!-- Handle both cases of this 'discount' being a Return Item -->
+	<td class="s-discount" ng-if="orderItem.data.orderItemType.data.systemCode != 'oitReturn'">-<span ng-bind-html="orderItem.data.discountAmount | swcurrency:orderItem.data.currencyCode"></span></td>
+	<td class="s-discount" ng-if="orderItem.data.orderItemType.data.systemCode == 'oitReturn'">(<span ng-bind-html="orderItem.data.discountAmount | swcurrency:orderItem.data.currencyCode"></span>)</td>
+	
+	<!-- Handle both cases of this 'total' being a Return Item -->
+	<td class="s-total" ng-if="orderItem.data.orderItemType.data.systemCode != 'oitReturn'">
+		<ul>
+			<li class="s-price-total" ng-bind-html="orderItem.data.itemTotal | swcurrency:orderItem.data.currencyCode"></li>
+			<li ng-show="orderItem.data.sku.data.baseProductType == 'productBundle'" class="s-price-list">
+				<ul>
+					<li>+<span ng-bind-html="orderItem.data.skuPrice * orderItem.data.quantity | swcurrency:orderItem.data.currencyCode"></span> (Base Price)</li>
+					<li>+<span ng-bind-html="orderItem.data.skuPrice * orderItem.data.quantity - orderItem.data.extendedPrice | swcurrency:orderItem.data.currencyCode"></span> (Extras)</li>
+				</ul>
+			</li>
+		</ul>
+	</td>
+	<td class="s-total" ng-if="orderItem.data.orderItemType.data.systemCode == 'oitReturn'">(-<span ng-bind-html="orderItem.data.itemTotal | swcurrency:orderItem.data.currencyCode"></span>)</td>
+	
+	<!-- Handle Tax Information -->
+	<td class="s-total" ng-if="orderItem.data.orderItemType.data.systemCode != 'oitReturn'" ng-bind-html="orderItem.data.taxAmount | swcurrency:orderItem.data.currencyCode"></td>
+	<td class="s-total" ng-if="orderItem.data.orderItemType.data.systemCode == 'oitReturn'">(<span ng-bind-html="orderItem.data.taxAmount | swcurrency:orderItem.data.currencyCode"></span>)</td>
+	
+	<!-- Handle Fulfillment Items -->
+	<td rowspan="1000" class="s-fullfilment">
+		<ul>
+			<li>
+				<swoishippinglabelstamp
+					data-order-fulfillment="orderItem.data.orderFulfillment">
+				</swoishippinglabelstamp>
+			</li>
+		</ul>
+	</td>
+	<td>
+		<span ng-bind-html="orderItem.data.stock.data.location.data.locationName">
+	</td>
+	
+	<!-- Handle Buttons - These should be replaced with the directives that do the same thing -->
+	<td rowspan="1000" class="s-actions">
+		<ul>
+			<li class="s-edit-btn"><a ng-href="{{'?slatAction=entity.detailorderitem&orderitemid='+orderItem.data.orderItemID}}"><button type="button" class="btn btn-default"><i class="fa fa-eye"></i></button></a></li>
+			<li class="s-remove-btn">
+				<a 		sw-confirm 
+    							class="s-remove-btn"
+							data-confirm-text="Confirm"
+							data-message-text="Are you sure you want to delete this orderitem?" 
+							data-callback="deleteEntity()"
+							data-use-rb-key="false"
+							data-simple=false
+							data-yes-text="Yes"
+							data-no-text="No"
+							data-entity="orderItem"><button class="btn btn-default" type="button"><i class="fa fa-trash"></i></button></a></li>
+		</ul>
+	</td>
+</tr>
+<!-- Handle Child OrderItems -->
+<tr ng-if="childOrderItems" ng-repeat="childOrderItem in childOrderItems" class="s-bundle-product l-{{childOrderItem.depth}}" sw-child-order-item data-order-item="childOrderItem" data-child-order-items="childOrderItems" data-attributes="attributes" 
+	ng-class="{
+	's-event l-1': childOrderItem.data.sku.data.baseProductType == 'event', 
+	's-bundle-product l-1': childOrderItem.data.sku.data.baseProductType == 'productBundle',
+	's-subscription l-1': childOrderItem.data.sku.data.product.data.productType.data.systemCode == 'subscription',
+	's-content-access l-1': childOrderItem.data.sku.data.baseProductType == 'content',
+	's-product l-1': childOrderItem.data.sku.data.baseProductType == 'merchandise'
+	}"></tr>

@@ -1,0 +1,72 @@
+<div class="s-create-window">
+    <span data-ng-controller="createCollection">
+  <header>
+      <div class="navbar navbar-s-navbar-ten24 s-dialog-header">
+          <span class="navbar-brand" data-ng-if="!readOnly">Create Collection ({{params.entityName}})</span>
+          <span class="navbar-brand" data-ng-if="readOnly" ng-bind="collection.collectionName"></span>
+          <ul class="nav navbar-nav pull-right">
+              <li class="active"><a data-ng-click="closePageDialog($index)"><i class="fa fa-times"></i></a></li>
+          </ul>
+      </div>
+  </header>
+        <section class="col-xs-12 s-bundle-content">
+
+            <div class="col-md-12 s-bundle-header" style="padding: 13px 15px 0px 15px">
+                <sw-form data-name="form.createCollection" data-object="newCollection" data-context="save" data-is-dirty="true">
+                    <sw-property-display
+                            data-object="newCollection"
+                            data-property="collectionName"
+                            data-editing="true"
+                            data-editable="true">
+                    </sw-property-display>
+
+                    <sw-property-display
+                            data-object="newCollection"
+                            data-property="collectionCode"
+                            data-editing="true"
+                            data-editable="true"
+                            data-title="'collectionCode'"
+                            style="display:none"
+                            data-field-type="json"
+                            data-hint="collectionCode">
+                    </sw-property-display>
+
+                    <sw-property-display
+                            data-object="newCollection"
+                            data-property="collectionObject"
+                            data-editing="true"
+                            data-editable="true"
+                            data-title="'collectionObject'"
+                            style="display:none"
+                            data-field-type="json"
+                            data-hint="collectionObject">
+                    </sw-property-display>
+
+                    <sw-property-display
+                            data-object="newCollection"
+                            data-property="collectionConfig"
+                            data-editing="true"
+                            data-editable="true"
+                            data-title="'collectionConfig'"
+                            style="display:none"
+                            data-field-type="json"
+                            data-hint="collectionConfig">
+                    </sw-property-display>
+                </sw-form>
+            </div>
+            <div class="col-md-12">
+                <span sw-collection toggleoption="true"></span>
+            </div>
+        </section>
+	  <footer  data-ng-if="!readOnly">
+          <div class="navbar navbar-s-navbar-ten24 s-dialog-footer">
+              <ul class="nav navbar-nav pull-right">
+                  <li class="active" ng-class="{'s-loading': closeSaving === true}">
+                      <a style="cursor:pointer;padding: 9px 12px;font-size: 16px;"
+                         data-ng-click="saveNewCollection($index);">Save & Finish</a>
+                  </li>
+              </ul>
+          </div>
+      </footer>
+	</span>
+</div><!--//wrapper end-->

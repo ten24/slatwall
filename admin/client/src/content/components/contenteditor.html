@@ -1,0 +1,24 @@
+
+<sw-form 
+	name="contentEditor" 
+	data-object="content"    
+	data-context="save"
+	>
+	<div class="col-md-6 s-header-left" >
+		<div class="s-header-detail">
+			<dl class="dl-horizontal" >
+				<textarea ckeditor="editorOptions" ng-change="onContentChange()" ng-model="content.data.contentBody"></textarea>
+			</dl>
+		</div>
+	</div>
+	<span  	sw-property-display
+		data-object="content"
+		data-property="contentBody"
+		data-editing="true"
+		style="display:none"
+	></span>
+</form>
+
+<!--<div class="s-button-select-group">
+	<button type="button" class="btn btn-sm btn-primary" ng-click="saveContent()">Save</button>
+</div>-->

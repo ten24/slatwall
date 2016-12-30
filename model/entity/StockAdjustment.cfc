@@ -70,6 +70,7 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 	
 	// Non-Persistent Properties
 	property name="addStockAdjustmentItemSkuOptionsSmartList" persistent="false";
+	property name="addStockAdjustmentItemStockOptionsSmartList" persistent="false";
 	property name="adjustmentSkuOptions" persistent="false";
 	property name="displayName" persistent="false";
 	property name="stockAdjustmentStatusTypeSystemCode" persistent="false";
@@ -136,8 +137,18 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 		return variables.addStockAdjustmentItemSkuOptionsSmartList;
 	}
 	
+	public any function getAddStockAdjustmentItemStockOptionsSmartList() {
+		if(!structKeyExists(variables, "addStockAdjustmentItemStockOptionsSmartList")) {
+			variables.addStockAdjustmentItemStockOptionsSmartList = getService("stockService").getStockSmartList();
+			variables.addStockAdjustmentItemStockOptionsSmartList.addFilter('location.locationID', getFromLocation().getLocationID());
+			variables.addStockAdjustmentItemStockOptionsSmartList.addFilter('sku.activeFlag', 1);
+			variables.addStockAdjustmentItemStockOptionsSmartList.addFilter('sku.product.activeFlag', 1);
+		}
+		return variables.addStockAdjustmentItemStockOptionsSmartList;
+	}
+
 	public string function getDisplayName(){
-		var displayName = "#getStockAdjustmentType().getType()#:";
+		var displayName = "#getStockAdjustmentType().getTypeName()#:";
 		if(!isNull(getFromLocation())) {
 			displayName = listAppend(displayName, getFromLocation().getLocationName(), " ");
 		}
@@ -210,14 +221,14 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 
 	public any function getStockAdjustmentType() {
 		if( !structKeyExists(variables, "stockAdjustmentType") ) {
-			variables.stockAdjustmentType = getService("settingService").getTypeBySystemCode("satLocationTransfer");
+			variables.stockAdjustmentType = getService("typeService").getTypeBySystemCode("satLocationTransfer");
 		}
 		return variables.stockAdjustmentType;
 	}
 	
 	public any function getStockAdjustmentStatusType() {
 		if( !structKeyExists(variables, "stockAdjustmentStatusType") ) {
-			variables.stockAdjustmentStatusType = getService("settingService").getTypeBySystemCode("sastNew");
+			variables.stockAdjustmentStatusType = getService("typeService").getTypeBySystemCode("sastNew");
 		}
 		return variables.stockAdjustmentStatusType;
 	}

@@ -76,8 +76,6 @@ component entityname="SlatwallSubscriptionTerm" table="SwSubscriptionTerm" persi
 	
 	// Non-Persistent Properties
 
-
-
 	// ============ START: Non-Persistent Property Methods =================
 	
 	// ============  END:  Non-Persistent Property Methods =================
@@ -91,14 +89,17 @@ component entityname="SlatwallSubscriptionTerm" table="SwSubscriptionTerm" persi
 	public void function removeSku(required any sku) {
 		arguments.sku.removeSubscriptionTerm( this );
 	}
-
-	// =============  END:  Bidirectional Helper Methods ===================
+	
+	// =============  END:  Bidirectional Helper Methods =======================
 
 	// ================== START: Overridden Methods ========================
 	
 	// ==================  END:  Overridden Methods ========================
 	
-	// =================== START: ORM Event Hooks  =========================
+	// =================== START: ORM Event Hooks  ========================
 	
 	// ===================  END:  ORM Event Hooks  =========================
+	
+	
+	
 }

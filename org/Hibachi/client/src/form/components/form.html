@@ -1,0 +1,6 @@
+
+<div  ng-if="swForm.object && swForm.isObject()">
+    <ng-form name='{{swForm.name}}'>
+    	<sw-form-registrar data-name="{{swForm.name}}" data-context="{{swForm.context}}" data-object="swForm.object" data-is-dirty="swForm.isDirty" ng-transclude></sw-form-registrar>
+    </ng-form>
+</div>

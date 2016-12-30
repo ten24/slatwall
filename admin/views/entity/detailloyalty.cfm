@@ -38,6 +38,12 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.loyalty" type="any">
 <cfparam name="rc.edit" type="boolean">
 
@@ -48,18 +54,13 @@ Notes:
 			<hb:HibachiActionCaller action="admin:entity.createloyaltyaccruement" queryString="redirectAction=admin:entity.detailloyalty&loyaltyID=#rc.loyalty.getLoyaltyID()#"type="list" modal="true" />
 			<hb:HibachiActionCaller action="admin:entity.createloyaltyredemption" queryString="redirectAction=admin:entity.detailloyalty&loyaltyID=#rc.loyalty.getLoyaltyID()#"type="list" modal="true" />		
 		</hb:HibachiEntityActionBar>
-		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.loyalty#" property="activeFlag" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.loyalty#" property="loyaltyName" edit="#rc.edit#">
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-		
-		<hb:HibachiTabGroup object="#rc.loyalty#">
-			<hb:HibachiTab view="admin:entity/loyaltytabs/loyaltyAccruement" />
-			<hb:HibachiTab view="admin:entity/loyaltytabs/loyaltyRedemption" />
-		</hb:HibachiTabGroup>
+
+		<hb:HibachiEntityDetailGroup object="#rc.loyalty#">
+			<hb:HibachiEntityDetailItem view="admin:entity/loyaltytabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<hb:HibachiEntityDetailItem view="admin:entity/loyaltytabs/loyaltyAccruement" />
+			<hb:HibachiEntityDetailItem view="admin:entity/loyaltytabs/loyaltyRedemption" />
+		</hb:HibachiEntityDetailGroup>
 		
 	</hb:HibachiEntityDetailForm>
 </cfoutput>
+

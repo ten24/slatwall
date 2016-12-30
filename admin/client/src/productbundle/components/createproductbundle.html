@@ -1,0 +1,118 @@
+<div class="s-create-window" >
+  <header>
+    <div class="navbar navbar-s-navbar-ten24 s-dialog-header">
+      <span class="navbar-brand" >Create Bundle</span>
+      <ul class="nav navbar-nav pull-right">
+        <li class="active"><a ng-click="closePageDialog($index)"><i class="fa fa-times"></i></a></li>
+      </ul>
+    </div>
+  </header>
+  <span ng-controller="create-bundle-controller">
+	  <section class="col-xs-12 s-bundle-content" >
+	    <div class="row s-bundle-header" >
+			<span ng-if="product">
+
+			        <div class="col-xs-6">
+				        <sw-form name="form.createProduct1"
+				     		data-object="product"
+							data-context="save"
+				     	>
+					        <sw-property-display
+									data-object="product"
+									data-property="productName"
+									data-editing="true"
+									data-editable="true"
+							></sw-property-display>
+					        <sw-property-display
+									data-object="product"
+									data-property="productCode"
+									data-editing="true"
+									data-editable="true"
+									data-on-change="product.data.skus[0].data.skuCode = product.data.productCode + '-1'"
+							></sw-property-display>
+						</sw-form>
+						<sw-form name="form.createSku2"
+					     		data-object="product.data.skus[0]"
+								data-context="save"
+								ng-if="product.data.skus[0]"
+					     >
+					        <sw-property-display
+					        		ng-if="product.data.skus[0]"
+									data-object="product.data.skus[0]"
+									data-property="price"
+									data-editing="true"
+									data-editable="true"
+							></sw-property-display>
+						</sw-form>
+			        </div>
+
+
+			        <div class="col-xs-6">
+			    		<sw-form name="form.createProduct"
+				     		data-object="product"
+							data-context="save"
+				     	>
+					        <sw-property-display
+									data-object="product"
+									data-property="productType"
+									data-editing="true"
+									data-editable="true"
+									data-options-arguments="{property:'productType',argument1:'productBundle'}"
+									data-is-dirty="true"
+							></sw-property-display>
+					        <sw-property-display
+									data-object="product"
+									data-property="brand"
+									data-editing="true"
+									data-editable="true"
+									data-is-dirty="true"
+							></sw-property-display>
+						</sw-form>
+
+					</div>
+
+			</span>
+
+	    </div><!-- //bundle head -->
+		<sw-form name="form.createSku"
+	     		data-object="product.data.skus[0]"
+				data-context="save"
+				ng-if="product.data.skus[0]"
+	     >
+			<sw-property-display
+								style="display:none"
+								data-object="product.data.skus[0]"
+								data-property="skuID"
+								data-editing="true"
+								data-editable="true"
+								data-no-validate="true"
+			></sw-property-display>
+			<sw-property-display
+								style="display:none"
+								data-object="product.data.skus[0]"
+								data-property="skuCode"
+								data-editing="true"
+								data-editable="true"
+								data-is-dirty="true"
+								data-no-validate="true"
+			></sw-property-display>
+
+	     </sw-form>
+	    <sw-product-bundle-groups
+	    		ng-if="product.data.skus[0].data.productBundleGroups"
+	    		data-sku="product.data.skus[0]"
+	    		data-product-bundle-groups="product.data.skus[0].data.productBundleGroups"
+
+	    >
+	    </sw-product-bundle-groups>
+	  </section>
+	  <footer>
+	    <div class="navbar navbar-s-navbar-ten24 s-dialog-footer">
+	      <ul class="nav navbar-nav pull-right">
+            <sw-save-and-finish data-entity="product" data-finish="false" data-partial="admin/client/src/productbundle/components/createproductbundle" data-custom-error-rbkey="validate.processProduct_create.productBundleGroup.invalid"></sw-save-and-finish>
+            <sw-save-and-finish data-entity="product" data-redirect-action="admin:entity.listproduct" data-custom-error-rbkey="validate.processProduct_create.productBundleGroup.invalid"></sw-save-and-finish>
+	      </ul>
+	    </div>
+	  </footer>
+	</span>
+</div><!--//wrapper end-->

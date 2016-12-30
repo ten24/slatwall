@@ -1,0 +1,63 @@
+
+<section class="content s-body-margin s-page-table-wrapper">
+	<div class="row s-body-nav">
+	    <nav class="navbar navbar-default" role="navigation">
+	      	<div class="col-md-6 s-header-info">
+				<h1 class="actionbar-title" sw-rbkey="'entity.'+entityName.toLowerCase()+'_plural'"></h1>
+			</div>
+			<div class="col-md-6">
+				<div class="btn-toolbar">
+					<div class="btn-group btn-group-sm">
+						<sw-options
+							data-object-name="Site"
+						></sw-options>
+						
+					</div>
+				</div>
+			</div>
+		</nav>
+	</div>
+	<div class="s-table-header-nav s-listing-head-margin">
+		<div class="col-xs-6 s-no-padding-left">
+			
+		</div>
+		<div class="col-xs-6 s-table-view-options s-no-padding-right pull-right">
+			<ul class="list-inline list-unstyled">
+				<!-- to implement searching-->
+				<li>
+					<div class="s-select-list-wrapper">
+						<div class="s-input-btn">
+							<input  type="text"
+								class="form-control input-sm general-listing-search"
+								placeholder="Search"
+								name="srch-term"
+								ng-model="swContentList.keywords"
+								ng-model-options="{ debounce: 500}"
+								ng-change="swContentList.searchCollection()"
+								/>
+							<i ng-show="swContentList.loadingCollection" class="fa fa-refresh fa-spin"></i>
+							<i ng-hide="swContentList.loadingCollection" class="fa fa-search"></i>
+						</div>
+					</div>
+					<!-- s-select-list-wrapper -->
+				</li>
+			</ul>
+		</div>
+	</div>
+	<sw-listing-display
+		ng-if="swContentList.collectionListingPromise && swContentList.collection"	
+		data-collection-promise="swContentList.collectionListingPromise"
+		data-collection="swContentList.collection"
+		data-get-collection="swContentList.getCollection"
+		data-record-edit-action="admin:entity.editcontent"
+		data-record-add-action="entity.preprocesscontent"
+		data-record-add-query-string="&processContext=create&siteID={{swContentList.selectedSite.siteID}}"
+		data-expandable-open-root="swContentList.openRoot"
+		data-expandable="!swContentList.isSearching"
+		data-has-search="false"
+        data-has-action-bar="false"
+        data-is-angular-route="false"
+	>
+	</sw-listing-display>
+
+</section>

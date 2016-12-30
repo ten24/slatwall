@@ -76,7 +76,7 @@ Notes:
 		<cfargument name="settingName" type="string" required="true" />
 		<cfargument name="settingRelationships" type="struct" default="#structNew()#" />
 		
-		<cfset var potentialRelationships = "accountID,contentID,brandID,emailID,emailTemplateID,fulfillmentMethodID,paymentMethodID,productID,productTypeID,shippingMethodID,shippingMethodRateID,siteID,skuID,subscriptionTermID,subscriptionUsageID,taskID" />
+		<cfset var potentialRelationships = "accountID,contentID,brandID,emailID,emailTemplateID,fulfillmentMethodID,locationID,locationConfigurationID,paymentMethodID,productID,productTypeID,shippingMethodID,shippingMethodRateID,siteID,skuID,subscriptionTermID,subscriptionUsageID,taskID" />
 		<cfset var relationship = "">
 		<cfset var rs = "">
 		

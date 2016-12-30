@@ -1,0 +1,97 @@
+<!-- Dragable List group -->
+<ul id="displayOptionsContainer" sortable="callbacks" ng-model="collectionConfig.columns" class="list-group s-j-draggablePanelList" ng-transclude>
+    
+</ul>
+
+<!-- Message if no items -->
+<div class="s-none-selected" style="display:none;">There are no fields selected</div>
+
+<!-- Button to show create option -->
+<button   type="button"
+    class="btn btn-xs btn-primary" 
+    data-target="#j-add-display-field"
+    data-toggle="collapse"
+    ng-click="addDisplayDialog.toggleDisplayDialog()"
+    >
+    Add Display Field
+</button>
+
+<!-- Create option dropdown -->
+<div ng-show="addDisplayDialog.isOpen" class="s-add-filter-box clearfix">
+    
+    <!-- Edit Filter Box -->
+    <div class="col-xs-12  s-add-filter" >
+        <div class="row">
+            <h4> Define Display Option: 
+                <span ng-repeat="breadCrumb in breadCrumbs" class="s-add-filter-breadcrumb"> 
+                    <span ng-show="breadCrumbs.length - 1 !== $index" ng-click="selectBreadCrumb($index)"><a href="">{{breadCrumb.entityAlias | entityRBKey}}</a><span ng-if="$index !== breadCrumbs.length - 2"> > </span></span>
+                </span>
+                <i  class="fa fa-times" ng-click="addDisplayDialog.toggleDisplayDialog()"></i>
+            </h4>
+            <div class="col-xs-12">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <div class="form-group form-group-sm">
+                            <h4>Select From <span ng-bind="propertiesList[breadCrumbs[breadCrumbs.length-1].propertyIdentifier].entityName | entityRBKey"></span></h4>
+                            <div class="col-sm-12 s-no-paddings">
+                                <select ng-model="selectedProperty" 
+                                    ng-change="selectedPropertyChanged(selectedProperty)" 
+                                    ng-options="property as property.displayPropertyIdentifier 
+                                    for property in propertiesList[breadCrumbs[breadCrumbs.length-1].propertyIdentifier].data 
+
+                                    | orderBy:['displayPropertyIdentifier'] track by property.propertyIdentifier
+                                    " 
+                                    class="form-control input-sm">
+                                    <option value="">Select From <span ng-bind="propertiesList[breadCrumbs[breadCrumbs.length-1].propertyIdentifier].entityName | entityRBKey"></span>{{propertiesList[breadCrumbs[breadCrumbs.length-1].propertyIdentifier].entityName | entityRBKey}}:</option>
+                                </select>
+                            </div>
+
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <span
+                            data-ng-if="selectedProperty.$$group == 'drilldown' && !selectedProperty.aggregate"
+                            sw-display-item
+                            data-selected-property="selectedProperty"
+                            data-properties-list="propertiesList"
+                            data-bread-crumbs="breadCrumbs"
+                            data-selected-property-changed="selectedPropertyChanged(selectedProperty)"
+                            >
+                        </span>
+
+
+                        <span
+                                data-ng-if="selectedProperty.$$group == 'compareCollections'"
+                                sw-display-item-aggregate
+                                data-selected-property="selectedProperty"
+                                data-properties-list="propertiesList"
+                                data-bread-crumbs="breadCrumbs"
+                                data-selected-property-changed="selectedPropertyChanged(selectedProperty, true)"
+                                >
+                        </span>
+
+
+                    </div>
+                    <div class="col-xs-3">
+                        <div class="s-button-select-group" ng-class="{'disabled' : selectedProperty == null || (selectedProperty.cfc != undefined && selectedAggregate == undefined)}">
+                            <button  type="button" 
+                                class="btn btn-sm btn-primary"
+                                ng-click="addColumn()">
+                                Save & Add Another
+                            </button>
+                            <div class="s-or-box">OR-</div>
+                            <button 
+                                type="button" 
+                                class="btn btn-sm btn-primary"
+                                ng-click="addColumn(true)">
+                                Save & Finish
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!-- /s-add-filter -->
+    
+</div><!-- /s-add-filter-box -->

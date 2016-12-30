@@ -48,31 +48,40 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.content" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.content#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.content#" edit="#rc.edit#" />
-		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.content#" property="title">
-				<hb:HibachiPropertyDisplay object="#rc.content#" property="activeFlag" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.content#" property="contentTemplateType" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.content#" property="productListingPageFlag" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.content#" property="allowPurchaseFlag" edit="#rc.edit#">
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-
-		<hb:HibachiTabGroup object="#rc.content#">
+		<hb:HibachiEntityActionBar 
+			type="detail" 
+			object="#rc.content#" 
+			edit="#rc.edit#" 
+			backQueryString="?ng##!/entity/Content/" 
+			showDelete="#!rc.content.hasChildContent()#"
+			deleteQueryString="?ngRedirectQS=/entity/Content/"
 			
+		>
+			<!---<hb:HibachiProcessCaller entity="#rc.content#" action="admin:entity.preprocesscontent" processContext="create" type="list" modal="true" />--->
+			<hb:HibachiProcessCaller entity="#rc.content#" action="admin:entity.preprocesscontent" processContext="duplicateContent" type="list" modal="true" />
+		</hb:HibachiEntityActionBar>
+		<hb:HibachiEntityDetailGroup object="#rc.content#">
+			<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
 			<cfif rc.content.getProductListingPageFlag()>
-				<hb:HibachiTab view="admin:entity/contenttabs/products">
+				<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/products">
 			</cfif>
+			<cfif !isNull(rc.content.getSite()) && !isNull(rc.content.getSite().getApp())>
+				<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/content">
+			</cfif>
+			<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/settings">
+			<!--- Custom Attributes --->
 			
-			<hb:HibachiTab view="admin:entity/contenttabs/settings">
-		</hb:HibachiTabGroup>
+			<cfloop array="#rc.content.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
+				<swa:SlatwallAdminTabCustomAttributes object="#rc.content#" attributeSet="#attributeSet#" />
+			</cfloop>
+		</hb:HibachiEntityDetailGroup>
 
 	</hb:HibachiEntityDetailForm>
 </cfoutput>

@@ -48,6 +48,7 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.priceGroup" type="any" />
 
 <hb:HibachiListingDisplay smartList="#rc.priceGroup.getPriceGroupRatesSmartList()#"
@@ -58,5 +59,5 @@ Notes:
 	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="appliesTo" />
 </hb:HibachiListingDisplay>
 
-<hb:HibachiActionCaller action="admin:entity.createpricegrouprate" class="btn" icon="plus" queryString="pricegroupID=#rc.pricegroup.getpricegroupID()#" modal="true" />
+<hb:HibachiActionCaller action="admin:entity.createpricegrouprate" class="btn btn-default" icon="plus" queryString="pricegroupID=#rc.pricegroup.getpricegroupID()#" modal="true" />
 	

@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.productReview" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
@@ -57,20 +59,25 @@ Notes:
 
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>
+				<cfif !structKeyExists(rc,"modal")>
+					<hb:HibachiPropertyDisplay object="#rc.productReview.getProduct()#" property="productName" valueLink="?slatAction=admin:entity.detailproduct&productID=#rc.productReview.getProduct().getProductID()#" edit="false">
+				</cfif>
 				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="activeFlag" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="reviewTitle" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="reviewerName" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="rating" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="review" edit="#rc.edit#" fieldType="textarea">
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 
-		<hb:HibachiTabGroup object="#rc.productReview#">
+		<hb:HibachiEntityDetailGroup object="#rc.productReview#">
 				
 		<!--- Custom Attributes --->
 		<cfloop array="#rc.productReview.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 			<swa:SlatwallAdminTabCustomAttributes object="#rc.productReview#" attributeSet="#attributeSet#" />
 		</cfloop>
 		
-		</hb:HibachiTabGroup>
+		</hb:HibachiEntityDetailGroup>
 
 	</hb:HibachiEntityDetailForm>
 </cfoutput>

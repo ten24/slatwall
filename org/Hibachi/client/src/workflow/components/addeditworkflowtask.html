@@ -1,0 +1,112 @@
+<!-- Workflow Task Actions Forms and Lineitems -->
+<div class="s-body-box">
+	<div class="col-xs-12 s-filter-content">
+		<!-- Header nav with title starts -->
+		<div class="row s-header-bar">
+			<div class="col-md-12 s-header-nav">
+				<ul class="nav nav-tabs" role="tablist">
+					<li class="active"><a href="/##j-basic-2" role="tab" data-toggle="tab" id="basictab">Basic</a></li>
+					<li><a href="/##j-conditions-2" role="tab" data-toggle="tab">Conditions</a></li>
+					<li>
+						<a 	href="/##j-actions-2" role="tab" 
+							data-toggle="tab" 
+							ng-init="taskActionsTabOpen=false" 
+							ng-click="taskActionsTabOpen=true"
+						>Actions</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<!-- //Header nav with title end -->
+
+		<!-- Tab panes for menu options start-->
+		<div class="row s-options s-task-actions">
+			<div class="tab-content" id="j-property-box">
+				
+					<div class="tab-pane active" id="j-basic-2">
+						<sw-form name="selectedTask" 
+							data-object="workflowTasks.selectedTask"	
+							data-context="save"
+						>
+							<div class="row">
+								<div class="col-xs-3">
+		
+									<div class="s-create-obj-window">
+		
+										<div class="form-group">
+											<sw-property-display
+												data-object="workflowTasks.selectedTask"
+												data-property="taskName"
+												data-editable="true"
+												data-editing="true"
+												data-is-dirty="true"	
+											>
+											</sw-property-display>
+										</div>
+		
+										<div class="form-group">
+											<sw-property-display
+												data-object="workflowTasks.selectedTask"
+												data-property="activeFlag"
+												data-editable="true"
+												data-editing="true"	
+												data-is-dirty="true"										
+											>
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-6"></div>
+								<div class="col-xs-3">
+								<div class="s-button-select-group">
+									<button type="button" class="btn btn-sm btn-primary" ng-click="saveWorkflowTask(workflowTask.selectedTask, 'add')">Save & Add Another</button>
+									<div class="s-or-box">OR-</div>
+									<button type="button" class="btn btn-sm btn-primary" ng-click="saveWorkflowTask(workflowTask.selectedTask, 'finish');">Save & Finish</button>
+								</div>
+								</div>
+							</div>
+						</sw-form>
+						
+					</div>
+					<div class="tab-pane" id="j-conditions-2">
+						<sw-form name="selectedTaskConditions" 
+							data-object="workflowTasks.selectedTask"	
+						>
+							<div class="s-setting-options">
+								<div class="row s-setting-options-body">
+		
+									<!-- Start Filter Group -->
+									<div class="col-xs-12 s-filters-selected">
+										<div class="row">
+											<sw-filter-groups
+													ng-if="workflowTasks.selectedTask.data.taskConditionsConfig.filterGroups.length"
+													data-collection-config="workflowTasks.selectedTask.data.taskConditionsConfig"
+													data-filter-group="workflowTasks.selectedTask.data.taskConditionsConfig.filterGroups[0]"
+							                		data-filter-group-item="workflowTasks.selectedTask.data.taskConditionsConfig.filterGroups[0].filterGroup"
+							                		data-filter-properties-list="filterPropertiesList"
+							                		data-comparison-type="'condition'"
+											></sw-filter-groups>
+										</div>
+									</div>
+								</div>
+							</div>
+							<span style="display:none"
+                                  sw-property-display
+                                  data-object="workflowTasks.selectedTask"
+                                  data-property="taskConditionsConfig"
+                                  data-editing="true"
+                                  data-editable="true"
+                                  data-is-dirty="true"
+                                  data-field-type="json"></span>
+						</sw-form>
+					</div>
+				
+				<div class="tab-pane" id="j-actions-2" ng-if="taskActionsTabOpen">
+					<sw-workflow-task-actions
+						data-workflow-task="workflowTasks.selectedTask"
+					>
+					</sw-workflow-task-actions>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

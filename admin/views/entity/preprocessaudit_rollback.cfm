@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.audit" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 <cfparam name="rc.disableProcess" default="#!rc.audit.getAuditRollbackValidFlag()#" />
@@ -64,10 +66,11 @@ Notes:
 </cfif>
 
 <cfoutput>
+	
 	<cfif !isNull(rc.audit.getChangeDetails())>
 		<cfset changeDetails = rc.audit.getChangeDetails() />
 		<cfsavecontent variable="changeDetailsHTML">
-			<table class="table table-striped table-bordered table-condensed">
+			<table class="table table-bordered table-hover">
 				<tbody>
 					<tr>
 						<th>#request.context.fw.getHibachiScope().rbKey("entity.audit.changeDetails.property")#</th>
@@ -76,6 +79,7 @@ Notes:
 						</cfif>
 						<th>#request.context.fw.getHibachiScope().rbKey("entity.audit.changeDetails.propertyChanged.new")#</th>
 					</tr>
+					<cfset entity = request.context.fw.getHibachiScope().getService('hibachiService').getEntityObject(rc.audit.getBaseObject())/>
 					
 					<cfloop array="#changeDetails.properties#" index="changeDetail">
 						<tr>
@@ -98,6 +102,16 @@ Notes:
 							</cfif>
 							
 							<cfif isSimpleValue(changeDetail.new)>
+								<cfset sanitize = true/>
+								<cfif entity.hasProperty(changeDetail.propertyName)>
+									<cfset fieldType = entity.getPropertyFieldType(changeDetail.propertyName)/>
+									<cfif fieldType eq 'wysiwyg'>
+										<cfset sanitize = false/>
+									</cfif>
+								</cfif>
+								<cfif sanitize>
+									<cfset changeDetail.new = request.context.fw.getHibachiScope().hibachiHTMLEditFormat(changeDetail.new)/>
+								</cfif>
 								<td>#changeDetail.new#</td>
 							<cfelseif isObject(changeDetail.new)>
 								<td><hb:HibachiActionCaller action="admin:entity.detail#changeDetail.new.getClassName()#" queryString="#changeDetail.new.getPrimaryIDPropertyName()#=#changeDetail.new.getPrimaryIDValue()#" text="#changeDetail.new.getSimpleRepresentation()#" /></td>
@@ -111,7 +125,7 @@ Notes:
 	
 	<hb:HibachiEntityProcessForm entity="#rc.audit#" edit="#rc.edit#" processActionQueryString="#rc.audit.getBaseObject()#ID=#rc.audit.getBaseID()#" disableProcess="#rc.disableProcess#" disableProcessText="#rc.disableProcessText#">		
 		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList divclass="span12">
+			<hb:HibachiPropertyList divclass="col-md-12">
 				<hb:HibachiPropertyDisplay object="#rc.audit#" property="auditID">
 				<hb:HibachiPropertyDisplay object="#rc.audit#" property="auditType">
 				<hb:HibachiPropertyDisplay object="#rc.audit#" property="sessionAccountFullName">
@@ -125,7 +139,7 @@ Notes:
 					</cfif>
 					
 					<cfif !isNull(rc.audit.getChangeDetails())>
-						<hb:HibachiPropertyDisplay object="#rc.audit#" property="changeDetails" value="#changeDetailsHTML#">
+						<hb:HibachiPropertyDisplay object="#rc.audit#" ignoreHTMLEditFormat="true" property="changeDetails" value="#changeDetailsHTML#">
 					</cfif>
 				<cfelse>
 					<hb:HibachiPropertyDisplay object="#rc.audit#" property="sessionAccountEmailAddress">

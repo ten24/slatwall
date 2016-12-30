@@ -48,12 +48,13 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.vendor" type="any" />
 
 <hb:HibachiListingDisplay smartList="#rc.vendor.getVendorOrdersSmartList()#" recordDetailAction="admin:entity.detailvendororder">
 	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="vendorOrderNumber" />
 	<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
-	<hb:HibachiListingColumn propertyIdentifier="vendorOrderType.type" />
+	<hb:HibachiListingColumn propertyIdentifier="vendorOrderType.typeName" />
 	<hb:HibachiListingColumn propertyIdentifier="total" />
 </hb:HibachiListingDisplay>
 

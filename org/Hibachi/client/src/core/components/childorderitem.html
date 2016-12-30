@@ -1,0 +1,52 @@
+	
+	<td class="s-title" ng-hide="orderItem.hide" >
+		<span ng-if="orderItem.data.sku.data.skuName">{{orderItem.data.sku.data.skuName}}</span>&nbsp
+		<a href="{{$root.buildUrl('entity.detailorderitem')+'&orderitemid='+orderItem.data.orderItemID}}" class="s-edit-link" 
+				ng-show="orderItem.data.sku.data.baseProductType !== 'productBundle'">edit</a><br>
+		<span>{{orderItem.data.sku.data.product.data.productName}}</span>
+			<a href="" class="s-edit-link" 
+				ng-show="orderItem.data.sku.data.baseProductType === 'productBundle' && !orderItem.clicked" 
+				ng-click="getChildOrderItems(orderItem)">detail</a>
+			<a href="" class="s-edit-link" 
+				ng-show="orderItem.data.sku.data.baseProductType === 'productBundle' && orderItem.clicked" 
+				ng-click="hideChildren(orderItem)">detail</a>
+	</td>
+	<td class="s-sku" ng-hide="orderItem.hide">{{orderItem.data.sku.data.skuCode}}</td>
+	<td class="s-detail" ng-hide="orderItem.hide"></td>
+	<td class="s-customization" ng-show="attributes.length"><span ng-repeat="attribute in attributes" ng-if="orderItem.data[attribute.attributeCode] !== ''"><span class="s-detail-title" >{{attribute.attributeName}}:</span><br><span class="s-detail-content">{{orderItem.data[attribute.attributeCode]}}</span><br></span></td>
+	<td class="s-price" ng-hide="orderItem.hide">
+		<!-- child order items price is calculated by the productBundle group -->
+		<ul>
+			<li  class="s-price-total">
+				+{{orderItem.data.productBundleGroupPrice | currency}} 
+			</li>
+			<li ng-show="orderItem.data.sku.data.baseProductType === 'productBundle'" class="s-price-list">
+				<ul>
+					<li>+<span ng-bind="orderItem.data.skuPrice * orderItem.data.productBundleGroupPercentage | currency"></span> (Base Price)</li>
+					<li>+<span ng-bind="(orderItem.data.productBundlePrice - orderItem.data.skuPrice) * orderItem.data.productBundleGroupPercentage | currency"></span> (Extras)</li>
+				</ul>
+			</li> 
+		</ul>
+	</td>
+	<td class="s-qty" ng-hide="orderItem.hide">{{orderItem.data.quantity}}</td>
+	<td class="s-discount" ng-hide="orderItem.hide">-{{ orderItem.data.discountAmount | currency }}</td>
+	<td class="s-total" ng-hide="orderItem.hide">
+		<ul>
+			<li ng-show="orderItem.data.sku.data.baseProductType === 'productBundle'" class="s-price-total">
+				+{{orderItem.data.productBundleGroupPrice * orderItem.data.quantity | currency}}
+			</li>
+			<li ng-show="orderItem.data.sku.data.baseProductType !== 'productBundle'" class="s-price-total">
+				+{{orderItem.data.productBundleGroupPrice * orderItem.data.quantity | currency}} 
+			</li>
+			<li ng-show="orderItem.data.sku.data.baseProductType == 'productBundle'" class="s-price-list">
+				<ul>
+					<li>+<span ng-bind="orderItem.data.skuPrice * orderItem.data.quantity * orderItem.data.productBundleGroupPercentage | currency"></span> (Base Price)</li>
+					<li>+<span ng-bind="(orderItem.data.productBundlePrice - orderItem.data.skuPrice) * orderItem.data.quantity * orderItem.data.productBundleGroupPercentage | currency"></span> (Extras)</li>
+				</ul>
+			</li>
+		</ul>
+	</td>
+	<!-- Handle Tax information -->
+	<td class="s-total" ng-if="orderItem.data.orderItemType.data.systemCode != 'oitReturn'" ng-hide="orderItem.hide">{{orderItem.data.taxAmount | currency}}</td>
+	<td class="s-total" ng-if="orderItem.data.orderItemType.data.systemCode == 'oitReturn'" ng-hide="orderItem.hide">({{orderItem.data.taxAmount | currency}})</td>
+	

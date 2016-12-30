@@ -1,1 +1,4 @@
-**/
+# ignore everything
+*
+# except ckeditor_config.js
+!ckeditor_config.js

@@ -48,11 +48,14 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.productReviewSmartList" type="any" />
 <cfset rc.productReviewSmartList.addOrder("createdDateTime|DESC") />
 <cfoutput>
+	<hb:HibachiEntityActionBar type="listing" object="#rc.productReviewSmartList#" showCreate="false" />
 	
-	<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.productReviewSmartList#"
+	<hb:HibachiListingDisplay smartList="#rc.productReviewSmartList#"
 								recordDetailAction="admin:entity.detailproductreview"
 								recordEditAction="admin:entity.editproductreview">
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="reviewTitle" />

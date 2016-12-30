@@ -1,0 +1,8 @@
+{
+	"properties":{
+		"productBundleGroupType" : [{"contexts":"save","required":true}],
+		"minimumQuantity" : [{"contexts":"save", "required":true, "dataType":"numeric", "minValue":0}],
+		"maximumQuantity" : [{"contexts":"save", "required":true, "dataType":"numeric", "minValue":1}],
+		"skuCollectionConfig" : [{"contexts":"save", "required":true}]
+	}
+}

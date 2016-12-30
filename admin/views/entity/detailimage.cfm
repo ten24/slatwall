@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.image" type="any">
 <cfparam name="rc.edit" type="boolean">
 
@@ -75,22 +77,22 @@ Notes:
 
 		<hb:HibachiPropertyRow>
 			
-			<hb:HibachiPropertyList divclass="span12">
+			<hb:HibachiPropertyList divclass="col-md-12">
 				<hb:HibachiPropertyDisplay object="#rc.image#" property="imageName" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.image#" property="imageType" edit="#rc.edit#">
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 		
-		<hb:HibachiTabGroup object="#rc.image#">
-			<hb:HibachiTab view="admin:entity/imagetabs/image" />
+		<hb:HibachiEntityDetailGroup object="#rc.image#">
+			<hb:HibachiEntityDetailItem view="admin:entity/imagetabs/image" />
 			<cfif not isNull(rc.image.getProduct())>
-				<hb:HibachiTab view="admin:entity/imagetabs/options" />
+				<hb:HibachiEntityDetailItem view="admin:entity/imagetabs/options" />
 			</cfif>
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.image.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 				<swa:SlatwallAdminTabCustomAttributes object="#rc.image#" attributeSet="#attributeSet#" />
 			</cfloop>
-		</hb:HibachiTabGroup>
+		</hb:HibachiEntityDetailGroup>
 	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

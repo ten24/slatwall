@@ -48,14 +48,16 @@ Notes:
 */
 component entityname="SlatwallProductBundleGroup" table="SwProductBundleGroup" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="productService" hb_permission="productBundleSku.productBundleGroups" {
 	
+	
+
 	// Persistent Properties
 	property name="productBundleGroupID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="activeFlag" ormtype="boolean";
-	property name="minimumQuantity" ormtype="integer";
-	property name="maximumQuantity" ormtype="integer";
-	property name="amountType" ormtype="string";
-	property name="amount" ormtype="big_decimal";
-	property name="skuCollectionConfig" ormtype="string" length="4000";
+	property name="activeFlag" ormtype="boolean" hb_formatType="yesno";
+	property name="minimumQuantity" ormtype="integer" hb_formFieldType="number" default="1";
+	property name="maximumQuantity" ormtype="integer" hb_formFieldType="number" default="1";
+	property name="amountType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
+	property name="amount" hb_formFieldType="number" ormtype="big_decimal" default="0";
+	property name="skuCollectionConfig" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json";
 
 	// Calculated Properties
 
@@ -80,11 +82,51 @@ component entityname="SlatwallProductBundleGroup" table="SwProductBundleGroup" p
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
-	
+	property name="amountTypeOptions" persistent="false";
 	// Deprecated Properties
 
 
 	// ==================== START: Logical Methods =========================
+	public array function getAmountTypeOptions() {
+		//none | fixed | fixedPerQuantity | skuPrice | skuPricePercentageIncrease | skuPricePercentageDecrease
+		var amountOptions = [];
+		var valuesList = 'none,fixed,skuPrice,skuPricePercentageIncrease,skuPricePercentageDecrease';
+		var namesList = 'entity.productBundleGroup.none,entity.productBundleGroup.fixed,entity.productBundleGroup.skuPrice,entity.productBundleGroup.skuPricePercentageIncrease,entity.productBundleGroup.skuPricePercentageDecrease';
+		var valuesArray = ListToArray(valuesList);
+		var namesArray = ListToArray(namesList);
+		var valuesArrayLength = arrayLen(valuesArray);
+		
+		for(var i = 1; i <= valuesArrayLength; i++){
+			var optionStruct = {};
+			optionStruct['value'] = valuesArray[i];
+			optionStruct['name'] = rbKey(namesArray[i]);
+			arrayAppend(amountOptions,optionStruct);
+		}
+    	return amountOptions;
+    }
+
+    public string function getSkuCollectionConfig(){
+    	if(isNull(variables.skuCollectionConfig)){
+    		var defaultSkuCollectionConfig = {};
+    		defaultSkuCollectionConfig["baseEntityName"]='Sku';
+			defaultSkuCollectionConfig["baseEntityAlias"]='_sku';
+			
+			defaultSkuCollectionConfig["filterGroups"]=[{"filterGroup"=[]}];
+			defaultSkuCollectionConfig["columns"]=[];
+			var defaultColumnsArray = ['skuID','activeFlag','publishedFlag','skuName','skuDescription','skuCode','listPrice','price','renewalPrice'];
+			
+			for(var column in defaultColumnsArray){
+				var columnStruct = {};
+				columnStruct['propertyIdentifier'] = '_sku.#column#';
+				columnStruct['title'] = getService('HibachiRBService').getRBKey('entity.sku.#column#');
+				columnStruct['isVisible'] = true;
+				ArrayAppend(defaultSkuCollectionConfig["columns"],columnStruct);
+			}
+    		variables.skuCollectionConfig = serializeJson(defaultSkuCollectionConfig);
+    	}
+    	return variables.skuCollectionConfig;
+    }
+
 	/*
 	public any function getSkuOptionsCollection() {
 		

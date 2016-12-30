@@ -48,16 +48,33 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.product" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
 <cfset selectedListingDisplays = rc.product.getListingPages() />
-<cfset selectedListingPageIDs = "" />
-<cfloop array="#selectedListingDisplays#" index="lp">
-	<cfset selectedListingPageIDs = listAppend(selectedListingPageIDs, lp.getPrimaryIDValue()) />
+<cfset selectedListingPageIDPaths = "" />
+<cfloop array="#selectedListingDisplays#" index="local.lp">
+	<cfset selectedListingPageIDPaths = listAppend(selectedListingPageIDPaths, replace(local.lp.getContentIDPath(),',','/','all')) />
 </cfloop>
-
-<hb:HibachiListingDisplay smartList="#rc.product.getListingPagesOptionsSmartList()#" multiselectFieldName="listingPages" multiselectValues="#selectedListingPageIDs#" edit="#rc.edit#">
+<cfoutput>
+	<sw-listing-display
+		data-collection="'Content'"
+		data-multiselect-field-name="listingPages"
+		data-multiselect-id-paths="#selectedListingPageIDPaths#"
+		data-edit="#rc.edit#"
+		data-has-search="false"
+        data-has-action-bar="false"
+		data-record-edit-action="admin:entity.editcontent"
+		data-is-angular-route="false"
+		data-get-child-count="true"
+	>
+		<sw-listing-column data-property-identifier="title" tdclass="primary" />
+		<sw-listing-column data-property-identifier="site.siteName" />
+	</sw-listing-display>
+</cfoutput>
+<!--- deprecating previous listing display --->
+<!---<hb:HibachiListingDisplay smartList="#rc.product.getListingPagesOptionsSmartList()#" multiselectFieldName="listingPages" multiselectValues="#selectedListingPageIDs#" edit="#rc.edit#">
 	<hb:HibachiListingColumn propertyIdentifier="title" tdclass="primary" />
 	<hb:HibachiListingColumn propertyIdentifier="site.siteName" />
-</hb:HibachiListingDisplay>
+</hb:HibachiListingDisplay>--->

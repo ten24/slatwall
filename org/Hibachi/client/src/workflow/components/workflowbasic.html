@@ -1,0 +1,31 @@
+
+<div class="col-md-6 s-header-left" >
+	<div class="s-header-detail">
+		<dl class="dl-horizontal" ng-if="workflow">
+			<span  	sw-property-display
+					data-object="workflow"
+					data-property="workflowName"
+					data-editing="true"
+					data-editable="true"
+			>
+			</span>
+			<span  	sw-property-display
+					data-object="workflow"
+					data-options-arguments="{property:'workflowObject'}"
+					data-eager-load-options="true"
+					data-property="workflowObject"
+					data-editing="true"
+					data-editable="!workflow.$$isPersisted()"
+			>
+			</span>
+			<span  	sw-property-display
+					data-object="workflow"
+					data-property="activeFlag"
+					data-editing="true"
+					data-editable="true"
+			>
+			</span>
+			
+		</dl>
+	</div>
+</div>

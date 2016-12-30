@@ -48,10 +48,11 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.sku" type="any" />
 
 <cfoutput>
-	<table class="table table-striped table-bordered table-condensed">
+	<table class="table table-bordered table-hover">
 		<tr>
 			<th>#$.slatwall.rbKey('entity.currency')#</th>
 			<th>#$.slatwall.rbKey('entity.sku.listPrice')#</th>
@@ -68,19 +69,29 @@ Notes:
 			</cfif>
 				<td class="primary">#local.currency.getCurrencyName()#</td>
 				<cfif structKeyExists(rc.sku.getCurrencyDetails()[ local.currency.getCurrencyCode() ], "listPriceFormatted")>
-					<td>#rc.sku.getCurrencyDetails()[ local.currency.getCurrencyCode() ].listPriceFormatted#</td>
+					<td>
+						#rc.sku.getCurrencyDetails()[ local.currency.getCurrencyCode() ].listPriceFormatted#
+						<cfif rc.sku.getCurrencyDetails()[ local.currency.getCurrencyCode() ].converted>
+							( #$.slatwall.rbKey('admin.entity.skutabs.currencies.converted')# )
+						</cfif>
+					</td>
 				<cfelse>
 					<td></td>
 				</cfif>
-				<td>#rc.sku.getCurrencyDetails()[ local.currency.getCurrencyCode() ].priceFormatted#</td>
+				<td>
+					#rc.sku.getCurrencyDetails()[ local.currency.getCurrencyCode() ].priceFormatted#
+					<cfif rc.sku.getCurrencyDetails()[ local.currency.getCurrencyCode() ].converted>
+						( #$.slatwall.rbKey('admin.entity.skutabs.currencies.converted')# )
+					</cfif>
+				</td>
 				<td>#local.currencyCode#</td>
 				<td>
 					<cfif local.currency.getCurrencyCode() eq rc.sku.setting('skuCurrency')>
-						<hb:HibachiActionCaller action="admin:entity.editSkuCurrency" class="btn btn-mini" icon="pencil" icononly="true" modal="true" disabled="true" />
+						<hb:HibachiActionCaller action="admin:entity.editSkuCurrency" class="btn btn-default btn-xs" icon="pencil" icononly="true" modal="true" disabled="true" />
 					<cfelseif rc.sku.getCurrencyDetails()[ local.currency.getCurrencyCode() ].converted>
-						<hb:HibachiActionCaller action="admin:entity.createSkuCurrency" querystring="currencyCode=#local.currencyCode#&skuID=#rc.sku.getSkuID()#&redirectAction=admin:entity.detailsku" class="btn btn-mini" icon="pencil" icononly="true" modal="true" />
+						<hb:HibachiActionCaller action="admin:entity.createSkuCurrency" querystring="currencyCode=#local.currencyCode#&skuID=#rc.sku.getSkuID()#&redirectAction=admin:entity.detailsku" class="btn btn-default btn-xs" icon="pencil" icononly="true" modal="true" />
 					<cfelse>
-						<hb:HibachiActionCaller action="admin:entity.editSkuCurrency" querystring="skuCurrencyID=#rc.sku.getCurrencyDetails()[ local.currency.getCurrencyCode() ].skuCurrencyID#&currencyCode=#local.currencyCode#&skuID=#rc.sku.getSkuID()#&redirectAction=admin:entity.detailsku" class="btn btn-mini" icon="pencil" icononly="true" modal="true" />
+						<hb:HibachiActionCaller action="admin:entity.editSkuCurrency" querystring="skuCurrencyID=#rc.sku.getCurrencyDetails()[ local.currency.getCurrencyCode() ].skuCurrencyID#&currencyCode=#local.currencyCode#&skuID=#rc.sku.getSkuID()#&redirectAction=admin:entity.detailsku" class="btn btn-default btn-xs" icon="pencil" icononly="true" modal="true" />
 					</cfif>
 				</td>
 			</tr>

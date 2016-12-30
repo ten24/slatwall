@@ -13,7 +13,7 @@ component accessors="true" output="false" extends="HibachiService" {
 		if(structKeyExists(hibachiConfig, "useCachingEngineFlag") && hibachiConfig.useCachingEngineFlag) {
 			setInternalCacheFlag( false );
 		}
-		if(structKeyExists(server,"railo")) {
+		if(structKeyExists(server,"railo") || structKeyExists(server,'lucee')) {
 			setRailoFlag( true );	
 		}
 		
@@ -87,17 +87,20 @@ component accessors="true" output="false" extends="HibachiService" {
 			var tuple = {
 				reset = true
 			};
-			if(arrayFindNoCase(cacheGetAllIDs(), arguments.key)) {
+			
+			// Done in a try catch in case the value doesn't exist
+			try{
 				tuple.value = cacheGet( arguments.key ).value;
-			}
+			} catch(any e){};
+			
 			cachePut( arguments.key, tuple );
 		}
 	}
 	
-	public any function resetCachedKeyByPrefix( required string keyPrefix ) {
+	public any function resetCachedKeyByPrefix( required string keyPrefix, boolean waitForThreadComplete=false ) {
 		// Because there could be lots of keys potentially we do this in a thread
-		thread name="hibachiCacheService_resetCachedKeyByPrefix_#createUUID()#" keyPrefix=arguments.keyPrefix {
-			
+		var threadName="hibachiCacheService_resetCachedKeyByPrefix_#replace(createUUID(),'-','','ALL')#";
+		thread name="#threadName#" keyPrefix=arguments.keyPrefix {
 			if(getInternalCacheFlag()) {
 				
 				var allKeysArray = listToArray(structKeyList(getCache()));
@@ -120,7 +123,13 @@ component accessors="true" output="false" extends="HibachiService" {
 			}
 			
 		}
+		if(arguments.waitForThreadComplete){
+			threadJoin(threadName);	
+		}
+		
+		return evaluate(threadName);
 	}
+	
 	
 	public any function getOrCacheFunctionValue(required string key, required any fallbackObject, required any fallbackFunction, struct fallbackArguments={}) {
 		// Check to see if this cache key already exists, and if so just return the cached value

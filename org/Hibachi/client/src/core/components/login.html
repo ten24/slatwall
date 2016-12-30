@@ -1,0 +1,21 @@
+<section class="col-xs-12 s-bundle-content" >
+    <div class="row s-bundle-header" ng-if="SwLogin.account_login">
+		<div class="col-xs-6">
+			<sw-form name="form.account_login"  object="SwLogin.account_login" context="Login">
+				<sw-property-display object="SwLogin.account_login" property="emailAddress" editing="true"></sw-property-display>
+				<sw-property-display object="SwLogin.account_login" property="password" editing="true"></sw-property-display>
+			</sw-form>
+		</div>
+    </div>
+</section>
+<footer>
+    <div class="navbar navbar-s-navbar-ten24 s-dialog-footer">
+      <ul class="nav navbar-nav pull-right">
+        <li ng-class="{'active s-loading': closeSaving === true, 'active': closeSaving === false}">
+        	<a  style="cursor:pointer;padding: 9px 12px;font-size: 16px;"
+        		ng-click="SwLogin.login();"
+        	>Login</a>
+        </li>
+      </ul>
+    </div>
+</footer>

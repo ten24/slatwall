@@ -49,13 +49,16 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
+
+
 <cfparam name="rc.vendorOrderItemSmartList" type="any" />
 
 <cfset rc.vendorOrderItemSmartList.addOrder("vendorOrder.createdDateTime|DESC") />
 
 <cfoutput>
-	
-	<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.vendorOrderItemSmartList#"
+	<hb:HibachiEntityActionBar type="listing" object="#rc.vendorOrderItemSmartList#" showCreate="false" />
+
+	<hb:HibachiListingDisplay smartList="#rc.vendorOrderItemSmartList#"
 							   recorddetailaction="admin:entity.detailvendororderitem"
 							   recorddetailmodal="true"
 							   recordeditaction="admin:entity.editvendororderitem"
@@ -63,7 +66,7 @@ Notes:
 							   recordeditmodal="true">
 		<hb:HibachiListingColumn propertyIdentifier="vendorOrder.vendor.vendorName" />
 		<hb:HibachiListingColumn propertyIdentifier="vendorOrder.vendorOrderNumber" />
-		<hb:HibachiListingColumn propertyIdentifier="vendorOrder.vendorOrderStatusType.type" />
+		<hb:HibachiListingColumn propertyIdentifier="vendorOrder.vendorOrderStatusType.typeName" />
 		<hb:HibachiListingColumn propertyIdentifier="stock.sku.product.brand.brandName" />
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="stock.sku.product.calculatedTitle" />
 		<hb:HibachiListingColumn propertyIdentifier="stock.sku.skuCode" />

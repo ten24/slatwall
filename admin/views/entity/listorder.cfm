@@ -49,19 +49,24 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
+
+
 <cfparam name="rc.orderSmartList" type="any" />
 
 <cfoutput>
 	
-	<hb:HibachiListingDisplay title="#rc.pageTitle#" type="listing" smartList="#rc.orderSmartList#"
+	<hb:HibachiEntityActionBar type="listing" object="#rc.orderSmartList#" showCreate="false">
+			
+		<!--- Create ---> 
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiProcessCaller action="admin:entity.preprocessorder" entity="order" processContext="create" class="btn btn-primary" icon="plus icon-white" modal="true" />
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
+	
+	<hb:HibachiListingDisplay type="listing" smartList="#rc.orderSmartList#"
 			recordDetailAction="admin:entity.detailorder"
 			recordEditAction="admin:entity.editorder"
 			showCreate="true">
-			
-		<!--- Create ---> 
-		<hb:HibachiListingDisplayButtonGroup >
-			<hb:HibachiProcessCaller action="admin:entity.preprocessorder" entity="order" processContext="create" class="btn btn-primary" icon="plus icon-white" modal="true" />
-		</hb:HibachiListingDisplayButtonGroup>
 			
 		<cfif rc.slatAction eq "admin:entity.listorder">
 			<hb:HibachiListingColumn propertyIdentifier="orderNumber" />
@@ -70,8 +75,8 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="account.firstName" />
 		<hb:HibachiListingColumn propertyIdentifier="account.lastName" />
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="account.company" />
-		<hb:HibachiListingColumn propertyIdentifier="orderType.type" />
-		<hb:HibachiListingColumn propertyIdentifier="orderStatusType.type" title="#$.slatwall.rbKey('define.status')#" />
+		<hb:HibachiListingColumn propertyIdentifier="orderType.typeName" sort=true title="#$.slatwall.rbKey('entity.order.orderType')#"/>
+		<hb:HibachiListingColumn propertyIdentifier="orderStatusType.typeName" title="#$.slatwall.rbKey('define.status')#" filter="true" sort="true" />
 		<hb:HibachiListingColumn propertyIdentifier="orderOrigin.orderOriginName" />
 		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
 		<hb:HibachiListingColumn propertyIdentifier="calculatedTotal" />

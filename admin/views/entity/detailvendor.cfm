@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.vendor" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
@@ -55,28 +57,17 @@ Notes:
 	<hb:HibachiEntityActionBar type="detail" object="#rc.vendor#" edit="#rc.edit#">
 		<hb:HibachiActionCaller action="admin:entity.createvendoraddress" queryString="vendorID=#rc.vendor.getVendorID()#" type="list" modal=true />
 	</hb:HibachiEntityActionBar>
-	
-	<hb:HibachiPropertyRow>
-		<hb:HibachiPropertyList>
-			<hb:HibachiPropertyDisplay object="#rc.vendor#" property="vendorName" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.vendor#" property="accountNumber" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.vendor#" property="vendorWebsite" edit="#rc.edit#">
-			
-			<input type="hidden" name="primaryEmailAddress.vendorEmailAddressID" value="#rc.Vendor.getPrimaryEmailAddress().getVendorEmailAddressID()#" />
-			<hb:HibachiPropertyDisplay object="#rc.Vendor.getPrimaryEmailAddress()#" property="emailAddress" fieldName="primaryEmailAddress.emailAddress" edit="#rc.edit#" valueLink="mailto:#rc.Vendor.getEmailAddress()#">
-			
-		</hb:HibachiPropertyList>
-	</hb:HibachiPropertyRow>
-	
-	<hb:HibachiTabGroup object="#rc.vendor#">
-		<hb:HibachiTab view="admin:entity/vendortabs/vendoraddresses" />
-		<hb:HibachiTab view="admin:entity/vendortabs/vendorbrands" />
-		<hb:HibachiTab view="admin:entity/vendortabs/vendororders" />
+
+	<hb:HibachiEntityDetailGroup object="#rc.vendor#">
+		<hb:HibachiEntityDetailItem view="admin:entity/vendortabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+		<hb:HibachiEntityDetailItem view="admin:entity/vendortabs/vendoraddresses" />
+		<hb:HibachiEntityDetailItem view="admin:entity/vendortabs/vendorbrands" />
+		<hb:HibachiEntityDetailItem view="admin:entity/vendortabs/vendororders" />
 		
 		<!--- Custom Attributes --->
 		<cfloop array="#rc.vendor.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 			<swa:SlatwallAdminTabCustomAttributes object="#rc.vendor#" attributeSet="#attributeSet#" />
 		</cfloop>
-	</hb:HibachiTabGroup>
+	</hb:HibachiEntityDetailGroup>
 	
 </hb:HibachiEntityDetailForm>

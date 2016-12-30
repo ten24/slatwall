@@ -46,6 +46,8 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../tags" />
+<cfimport prefix="hb" taglib="../org/Hibachi/HibachiTags" />
 <cfparam name="attributes.smartList" type="any" />
 <cfparam name="attributes.showValue" default="" />
 <cfparam name="attributes.showOptions" default="10,25,50,100,250,1000,ALL" />

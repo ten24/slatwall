@@ -50,7 +50,7 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 	
 	public void function afterOrderProcess_PlaceOrderSuccess(required any slatwallScope, required any order) {
 		
-		if(arguments.slatwallScope.setting('integrationVertexSendInvoiceFlag')) {
+		if(arguments.slatwallScope.setting('integrationVertexSendInvoiceFlag') || len(arguments.slatwallScope.setting('integrationVertexTaxCategoriesToInvoice'))) {
 			
 			var integration = arguments.slatwallScope.getService('integrationService').getIntegrationByIntegrationPackage( 'vertex' );
 		

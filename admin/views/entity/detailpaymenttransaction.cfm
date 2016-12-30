@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.paymentTransaction" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
@@ -74,7 +76,7 @@ Notes:
 					<cfif isStruct(messagesStruct)>
 					<dt>#$.slatwall.rbKey('entity.paymentTransaction.message')#</dt>
 						<dl>
-						<table class="table table-striped table-bordered table-condensed">
+						<table class="table table-bordered table-hover">
 							<tbody>
 								<cfloop collection="#messagesStruct#" item="messageKey">
 									<cfset messages = messagesStruct[messageKey] />

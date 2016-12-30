@@ -1,0 +1,87 @@
+<div class="s-filter-content-table-view">
+	<!-- <div class="s-table-header-nav">
+		<div class="s-header-nav">
+			<div class="col-xs-6" style="padding-left:0px;">
+				TODO: implement keyword searching and bulk actions
+				<ul class="list-inline list-unstyled">
+					<li>
+						<div class="s-select-list-wrapper">
+							<div class="form-group">
+								<div class="input-group">
+									<div class="s-input-btn">
+										<input  type="text"
+											class="form-control input-sm"
+											placeholder="Search"
+											name="srch-term"
+											ng-model="keywords"
+											ng-change="searchCollection()"
+											/>
+										<i ng-show="loadingCollection" class="fa fa-refresh fa-spin"></i>
+									</div>
+									<div class="input-group-btn">
+										<button   class="btn btn-primary btn-sm"
+											type="button"
+											ng-click="searchCollection()"
+											>
+										<i class="fa fa-search"></i>
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+					</li>
+				</ul>
+			</div>
+		
+			<div class="s-header-nav">
+				<div class="col-xs-6 s-table-view-options">
+					<ul class="list-inline list-unstyled">
+						<li>
+							
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div> --->
+	<sw-pagination-bar data-paginator="paginator"></sw-pagination-bar>
+	
+	<div sw-loading="orderItems">
+		{{paginator.getRecordsCount}}
+		<div class="table-responsive">
+			<table class="table table-bordered s-order-item-table">
+				<thead>
+					<tr>
+						<th sw-rbkey="'define.image'"></th>
+						<th sw-rbkey="'define.title'"></th>
+						<th sw-rbkey="'entity.sku'"></th>
+						<th sw-rbkey="'admin.orderdetail.orderitems.details'"></th>
+						<th ng-show="attributes.length" sw-rbkey="'admin.orderdetail.orderitems.customization'"></th><!-- Only show when we have attributes -->
+						<th sw-rbkey="'define.price'"></th>
+						<th sw-rbkey="'define.qty'"></th>
+						<th sw-rbkey="'define.discount'"></th>
+						<th sw-rbkey="'define.total'"></th>
+						<th sw-rbkey="'define.tax'"></th>
+						<th sw-rbkey="'define.fulfillment'"></th>
+						<th sw-rbkey="'entity.location.locationName'"></th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody ng-repeat="orderItem in orderItems" sw-order-item data-order-item="orderItem" data-attributes="attributes" data-order-id="orderId" ng-show="paginator.getRecordsCount()">
+					<!-- Begin Merchandise Row -->
+				</tbody>
+
+				<tbody ng-hide="paginator.getRecordsCount()">
+					<tr>
+						<td colspan="100" style="text-align: center;">
+							<em sw-rbkey="'admin.entity.ordertabs.orderitems.noresults'"><!-- Text created via rb key --></em>
+						</td>
+					</tr>
+				</tbody>
+				
+			</table>
+
+		</div>
+	</div>
+</div>

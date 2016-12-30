@@ -48,15 +48,18 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.orderFulfillment" type="any" />
 
 <cfoutput>
 	<hb:HibachiListingDisplay smartList="#rc.orderFulfillment.getOrderFulfillmentItemsSmartList()#">
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="sku.product.title" />
 		<hb:HibachiListingColumn propertyIdentifier="sku.skuCode" />
-		<hb:HibachiListingColumn propertyIdentifier="orderItemStatusType.type" />
+		<hb:HibachiListingColumn propertyIdentifier="orderItemStatusType.typeName" />
 		<hb:HibachiListingColumn propertyIdentifier="quantity" />
 		<hb:HibachiListingColumn propertyIdentifier="quantityDelivered" />
 		<hb:HibachiListingColumn propertyIdentifier="quantityUndelivered" />
+		<hb:HibachiListingColumn propertyIdentifier="stock.location.locationName" />
 	</hb:HibachiListingDisplay>
 </cfoutput>

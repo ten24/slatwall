@@ -1,0 +1,44 @@
+<div data-ng-if="!filterGroupItem.length" class="alert alert-info" sw-rbkey="'entity.Collection.filter.norecordsfound'" style="margin-right: 15px; margin-left: 15px;" role="alert"><!-- Message created by rb key --></div>
+<ul class="list-unstyled s-filter-groups" style="margin-bottom: 0" data-ng-if="filterGroup">
+	<span data-ng-repeat="filterGroup in filterGroupItem" >
+		<!-- figure out if item is filterItem or filterGroup-->
+		<span data-ng-switch data-on="filterGroup.hasOwnProperty('filterGroup')" >
+			
+			<!-- filter Item -->
+			<span 	data-ng-switch-when="false"
+					sw-filter-item 
+					data-collection-config="collectionConfig"
+					data-filter-item="filterGroup" 
+					data-filter-properties-list="filterPropertiesList"
+					data-sibling-items="filterGroupItem"
+					data-filter-item-index="$index"
+					data-save-collection="saveCollection()"
+					data-comparison-type="comparisonType"
+                    data-simple="simple"
+					>
+			</span>
+			
+			<!-- filter Group Item -->
+			<span 	data-ng-switch-when="true"
+					data-ng-if="!simple && filterGroup && filterPropertiesList"
+					sw-filter-group-item 
+					data-collection-config="collectionConfig"
+					data-filter-group-item="filterGroup"
+					data-sibling-items="filterGroupItem"
+					data-filter-properties-list="filterPropertiesList"
+					data-filter-group-item-index="$index"
+               		data-save-collection="saveCollection()"
+               		data-comparison-type="comparisonType"
+					>
+			</span>
+			
+		</span>
+	</span>
+	<!-- buttons for adding filters -->
+	<sw-add-filter-buttons
+			data-item-in-use="itemInUse"
+            data-read-only="readOnly"
+            data-ng-if="!simple"
+	>
+	</sw-add-filter-buttons>
+</ul>

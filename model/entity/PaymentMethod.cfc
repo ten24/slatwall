@@ -61,7 +61,7 @@ Notes:
 		chargePreAuthorization	
 		generateToken
 */
-component entityname="SlatwallPaymentMethod" table="SwPaymentMethod" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="paymentService" hb_permission="this" hb_processContexts="processPayment,processCashPayment,processCheckPayment,processCreditCardPayment,processExternalPayment,processGiftCardPayment,processTermAccountPayment" {
+component entityname="SlatwallPaymentMethod" table="SwPaymentMethod" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="paymentService" hb_permission="this" hb_processContexts="processPayment,processCashPayment,processCheckPayment,processCreditCardPayment,processExternalPayment,processGiftCardPayment,processTermAccountPayment" {
 	
 	// Persistent Properties
 	property name="paymentMethodID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -76,6 +76,7 @@ component entityname="SlatwallPaymentMethod" table="SwPaymentMethod" persistent=
 	property name="saveOrderPaymentEncryptFlag" ormtype="boolean";
 	property name="placeOrderChargeTransactionType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey" column="placeOrderChargeTxType";
 	property name="placeOrderCreditTransactionType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey" column="placeOrderCreditTxType";
+	property name="subscriptionRenewalTransactionType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey" column="subscriptionRenewalTxType";
 	
 	// Related Object Properties (many-to-one)
 	property name="paymentIntegration" cfc="Integration" fieldtype="many-to-one" fkcolumn="paymentIntegrationID";
@@ -180,6 +181,16 @@ component entityname="SlatwallPaymentMethod" table="SwPaymentMethod" persistent=
 		return variables.placeOrderCreditTransactionTypeOptions;
 	}
 
+	public array function getSubscriptionRenewalTransactionTypeOptions(){
+		if(!structKeyExists(variables,'subscriptionRenewalTransactionTypeOptions')){
+			variables.subscriptionRenewalTransactionTypeOptions = [{name=rbKey('define.none'), value=""}];
+			if(!isNull(getPaymentMethodType()) && getPaymentMethodType() eq "creditCard") {
+				arrayAppend(variables.subscriptionRenewalTransactionTypeOptions, {name=rbKey('define.authorize'), value="authorize"});
+				arrayAppend(variables.subscriptionRenewalTransactionTypeOptions, {name=rbKey('define.authorizeAndCharge'), value="authorizeAndCharge"});
+			}
+		}
+		return variables.subscriptionRenewalTransactionTypeOptions;
+	}
 
 	public array function getPaymentIntegrationOptions() {
 		if(!structKeyExists(variables, "paymentIntegrationOptions")) {
@@ -196,13 +207,14 @@ component entityname="SlatwallPaymentMethod" table="SwPaymentMethod" persistent=
 					if(listFindNoCase(optionsSL.getRecords()[i].getIntegrationCFC("payment").getPaymentMethodTypes(), getPaymentMethodType())) {
 						arrayAppend(variables.paymentIntegrationOptions, {name=optionsSL.getRecords()[i].getIntegrationName(), value=optionsSL.getRecords()[i].getIntegrationID()});	
 					}
-				}	
+				}
 			}
 		}
 
 		return variables.paymentIntegrationOptions;
 	} 
-
+	
+	
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================

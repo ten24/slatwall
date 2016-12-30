@@ -1,0 +1,40 @@
+<ul ng-switch="orderFulfillment.data.fulfillmentMethod.data.fulfillmentMethodType">
+	<li class="s-header"> <span ng-bind="orderFulfillment.data.fulfillmentMethod.data.fulfillmentMethodName"></span>: <a ng-href="{{'?slatAction=entity.editorderfulfillment&orderFulfillmentID='+orderFulfillment.data.orderFulfillmentID}}" class="s-edit-link">edit</a></li>
+	
+	<span ng-switch-when="shipping">
+		<li ng-bind="orderFulfillment.data.shippingAddress.data.streetAddress"></li>
+		<li ng-bind="orderFulfillment.data.shippingAddress.data.street2Address"></li>
+		<li>
+			<span ng-bind="orderFulfillment.data.shippingAddress.data.city"> &nbsp</span> 
+			<span ng-bind="orderFulfillment.data.shippingAddress.data.stateCode"> &nbsp</span><br>
+			<span ng-bind="orderFulfillment.data.shippingAddress.data.postalCode"></span>
+		</li>
+	</span>
+	<span ng-switch-when="'attend'">
+		<!-- What critiria are displayed for attend?-->
+	</span>
+	<span ng-switch-when="auto">
+		<!-- What critiria are displayed for auto?-->
+	</span>
+	<span ng-switch-when="email">
+		<!-- Need to add the email address here. -->
+		<span ng-bind="orderFulfillment.data.emailAddress"></span>
+	</span>
+	<span ng-switch-when="pickup">
+		
+		<!-- Need to add a pickup address here.-->
+		<li ng-bind="orderFulfillment.data.pickupLocation.data.primaryAddress.data.address.data.streetAddress"></li>
+		<li ng-bind="orderFulfillment.data.pickupLocation.data.primaryAddress.data.address.data.street2Address"></li>
+		<li>
+			<span ng-bind="orderFulfillment.data.pickupLocation.data.primaryAddress.data.address.data.city"> &nbsp</span> 
+			<span ng-bind="orderFulfillment.data.pickupLocation.data.primaryAddress.data.address.data.stateCode"> &nbsp</span><br>
+			<span ng-bind="orderFulfillment.data.pickupLocation.data.primaryAddress.data.address.data.postalCode"></span>
+		</li>
+	</span>
+	<span ng-switch-when="download">
+	<!-- Should have the download link here.-->
+	</span>
+	<span ng-switch-default>
+		<ul></ul>
+	</span>
+</ul>

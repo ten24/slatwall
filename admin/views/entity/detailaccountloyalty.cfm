@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.accountLoyalty" type="any">
 <cfparam name="rc.account" type="any" default="#rc.accountLoyalty.getAccount()#">
 <cfparam name="rc.edit" type="boolean">
@@ -66,17 +68,11 @@ Notes:
 		
 		<!--- Hidden field to attach this to the account --->
 		<input type="hidden" name="account.accountID" value="#rc.account.getAccountID()#" />
-		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.accountLoyalty#" property="loyalty" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.accountLoyalty#" property="lifetimeBalance" edit="false">
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-		
-		<hb:HibachiTabGroup object="#rc.accountLoyalty#">
-			<hb:HibachiTab view="admin:entity/accountloyaltytabs/accountloyaltytransactions" />
-		</hb:HibachiTabGroup>
+
+		<hb:HibachiEntityDetailGroup object="#rc.accountLoyalty#">
+			<hb:HibachiEntityDetailItem view="admin:entity/accountloyaltytabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<hb:HibachiEntityDetailItem view="admin:entity/accountloyaltytabs/accountloyaltytransactions" />
+		</hb:HibachiEntityDetailGroup>
 			
 	</hb:HibachiEntityDetailForm>
 </cfoutput>

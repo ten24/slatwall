@@ -10,5 +10,6 @@
 	</Columns>
 	<Records>
 		<Record paymentMethodID="444df303dedc6dab69dd7ebcc9b8036a" paymentMethodName="Credit Card" paymentMethodType="creditCard" activeFlag="1" sortOrder="1" allowSaveFlag="0" />
+		<Record paymentMethodID="50d8cd61009931554764385482347f3a" paymentMethodName="Gift Card" paymentMethodType="giftCard" activeFlag="1" sortOrder="1" allowSaveFlag="0" />
 	</Records>
 </Table>

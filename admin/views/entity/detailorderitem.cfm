@@ -2,45 +2,45 @@
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
-	
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-	
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-	
+
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
+
     Linking this program statically or dynamically with other modules is
     making a combined work based on this program.  Thus, the terms and
     conditions of the GNU General Public License cover the whole
     combination.
-	
-    As a special exception, the copyright holders of this program give you
-    permission to combine this program with independent modules and your 
-    custom code, regardless of the license terms of these independent
-    modules, and to copy and distribute the resulting program under terms 
-    of your choice, provided that you follow these specific guidelines: 
 
-	- You also meet the terms and conditions of the license of each 
-	  independent module 
-	- You must not alter the default display of the Slatwall name or logo from  
-	  any part of the application 
-	- Your custom code must not alter or create any files inside Slatwall, 
+    As a special exception, the copyright holders of this program give you
+    permission to combine this program with independent modules and your
+    custom code, regardless of the license terms of these independent
+    modules, and to copy and distribute the resulting program under terms
+    of your choice, provided that you follow these specific guidelines:
+
+	- You also meet the terms and conditions of the license of each
+	  independent module
+	- You must not alter the default display of the Slatwall name or logo from
+	  any part of the application
+	- Your custom code must not alter or create any files inside Slatwall,
 	  except in the following directories:
 		/integrationServices/
 
-	You may copy and distribute the modified version of this program that meets 
-	the above guidelines as a combined work under the terms of GPL for this program, 
-	provided that you include the source code of that other code when and as the 
+	You may copy and distribute the modified version of this program that meets
+	the above guidelines as a combined work under the terms of GPL for this program,
+	provided that you include the source code of that other code when and as the
 	GNU GPL requires distribution of source code.
-    
-    If you modify this program, you may extend this exception to your version 
+
+    If you modify this program, you may extend this exception to your version
     of the program, but you are not obligated to do so.
 
 Notes:
@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.orderItem" type="any" />
 <cfparam name="rc.order" type="any" default="#rc.orderItem.getOrder()#" />
 <cfparam name="rc.sku" type="any" default="#rc.orderItem.getSku()#" />
@@ -59,86 +61,41 @@ Notes:
 								   backaction="admin:entity.detailorder"
 								   backquerystring="orderID=#rc.order.getOrderID()#"
 								   deleteQueryString="redirectAction=admin:entity.detailorder&orderID=#rc.order.getOrderID()#">
-								      
-			<hb:HibachiActionCaller action="admin:entity.createcomment" querystring="orderID=#rc.orderItem.getOrderItemID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
+
+			<hb:HibachiActionCaller action="admin:entity.createcomment" querystring="orderItemID=#rc.orderItem.getOrderItemID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
 		</hb:HibachiEntityActionBar>
 		<cfif rc.edit>
 			<!--- Hidden field to allow rc.order to be set on invalid submit --->
 			<input type="hidden" name="orderID" value="#rc.order.getOrderID()#" />
-			
+
 			<!--- Hidden field to attach this to the order --->
 			<input type="hidden" name="order.orderID" value="#rc.order.getOrderID()#" />
 		</cfif>
-		
-		<hb:HibachiPropertyRow>
-			
-			<hb:HibachiPropertyList divclass="span6">
-				<div class="well">
-					#rc.sku.getImage(width=100, height=100)#
-				</div>
-				<hr />
-				<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="price" edit="#rc.edit#" />
-				<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="quantity" edit="#rc.edit#" />
-			</hb:HibachiPropertyList>
-			
-			<hb:HibachiPropertyList divclass="span6">
-				
-				<!--- Totals --->
-				<hb:HibachiPropertyTable>
-					<hb:HibachiPropertyTableBreak header="Sku Details" />
-					<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="skuPrice" edit="false" displayType="table" title="#$.slatwall.rbKey('admin.entity.detailorderitem.skuPriceWhenOrdered')#" />
-					<hb:HibachiPropertyDisplay object="#rc.orderItem.getSku()#" property="price" edit="false" displayType="table" title="#$.slatwall.rbKey('admin.entity.detailorderitem.currentSkuPrice')#" />
-					<cfif rc.orderItem.getSku().getProduct().getBaseProductType() eq "subscription">
-						<hb:HibachiPropertyDisplay object="#rc.orderItem.getSku()#" property="renewalPrice" edit="#rc.edit#" displayType="table" title="#$.slatwall.rbKey('admin.entity.detailorderitem.currentSkuRenewalPrice')#" />
-					</cfif>
-					<hb:HibachiPropertyDisplay object="#rc.sku#" property="skuCode" edit="false" displayType="table">
-					<cfloop array="#rc.sku.getAlternateSkuCodes()#" index="asc">
-						<hb:HibachiPropertyDisplay object="#asc#" title="#asc.getAlternateSkuCodeType().getType()#" property="alternateSkuCode" edit="false" displayType="table">	
-					</cfloop>
-					<cfloop array="#rc.sku.getOptions()#" index="option">
-						<hb:HibachiPropertyDisplay object="#option#" title="#option.getOptionGroup().getOptionGroupName()#" property="optionName" edit="false" displayType="table">
-					</cfloop>
-					<hb:HibachiPropertyTableBreak header="Status" />
-					<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="orderItemStatusType" edit="false" displayType="table" />
-					<cfif rc.orderItem.getOrderItemType().getSystemCode() eq "oitSale">
-						<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="quantityDelivered" edit="false" displayType="table" />
-						<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="quantityUndelivered" edit="false" displayType="table" />
-					<cfelse>
-						<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="quantityReceived" edit="false" displayType="table" />
-						<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="quantityUnreceived" edit="false" displayType="table" />
-					</cfif>
-					<hb:HibachiPropertyTableBreak header="Price Totals" />
-					<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="extendedPrice" edit="false" displayType="table" />
-					<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="discountAmount" edit="false" displayType="table" />
-					<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="extendedPriceAfterDiscount" edit="false" displayType="table" />
-					<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="taxAmount" edit="false" displayType="table" />
-					<hb:HibachiPropertyTableBreak />
-					<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="itemTotal" edit="false" displayType="table" titleClass="table-total" valueClass="table-total" />	
-					
-				</hb:HibachiPropertyTable>
-				
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-		
+
 		<!--- Tabs --->
-		<hb:HibachiTabGroup object="#rc.orderItem#">
-			<hb:HibachiTab view="admin:entity/orderitemtabs/taxes" />
-			<hb:HibachiTab view="admin:entity/orderitemtabs/promotions" />
-			
-			<cfif rc.orderItem.getOrderItemType().getSystemCode() eq "oitSale">
-				<hb:HibachiTab view="admin:entity/orderitemtabs/deliveryitems" />
-			<cfelse>
-				<hb:HibachiTab view="admin:entity/orderitemtabs/stockReceiverItems" />
+		<hb:HibachiEntityDetailGroup object="#rc.orderItem#">
+			<hb:HibachiEntityDetailItem view="admin:entity/orderitemtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/orderitemtabs/taxes" />
+			<hb:HibachiEntityDetailItem view="admin:entity/orderitemtabs/promotions" />
+
+			<cfif rc.sku.isGiftCardSku() >
+            	<hb:HibachiEntityDetailItem view="admin:entity/orderitemtabs/orderitemgiftrecipients" />
 			</cfif>
-			
+
+			<cfif rc.orderItem.getOrderItemType().getSystemCode() eq "oitSale">
+				<hb:HibachiEntityDetailItem view="admin:entity/orderitemtabs/deliveryitems" />
+			<cfelse>
+				<hb:HibachiEntityDetailItem view="admin:entity/orderitemtabs/stockReceiverItems" />
+			</cfif>
+
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.orderItem.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 				<swa:SlatwallAdminTabCustomAttributes object="#rc.orderItem#" attributeSet="#attributeSet#" />
 			</cfloop>
-			
+
 			<!--- Comments --->
-			<swa:SlatwallAdminTabComments object="#rc.orderItem#" />
-		</hb:HibachiTabGroup>
-		
+			<swa:SlatwallAdminTabComments object="#rc.orderItem#" parentObject="#rc.orderItem.getOrder()#" />
+		</hb:HibachiEntityDetailGroup>
+
 	</hb:HibachiEntityDetailForm>
 </cfoutput>

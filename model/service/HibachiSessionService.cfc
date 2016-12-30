@@ -62,8 +62,18 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 			getHibachiScope().getSession().setOrder( newOrder );
 			
 		// If the current order doesn't have an account, and the current order is not new, then set this account in the current order
-		} else if ( isNull(getHibachiScope().getSession().getOrder().getAccount()) && !getHibachiScope().getSession().getOrder().isNew() ) {
+		} else if ( isNull(getHibachiScope().getSession().getOrder().getAccount()) && !getHibachiScope().getSession().getOrder().getNewFlag() ) {
+			
 			getHibachiScope().getSession().getOrder().setAccount( getHibachiScope().getAccount() );
+			
+		// If there is not current order, and the account has existing cart or carts attach the most recently modified
+		} else if ( getHibachiScope().getSession().getOrder().getNewFlag() ) {
+			
+			var mostRecentCart = getOrderService().getMostRecentNotPlacedOrderByAccountID( getHibachiScope().getAccount().getAccountID() );
+			if(!isNull(mostRecentCart)) {
+				getHibachiScope().getSession().setOrder( mostRecentCart );
+			}
+			
 		}
 		
 		// Force persistance
@@ -78,14 +88,14 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 		session[ "#getApplicationValue('applicationKey')#CKFinderAccess"] = getHibachiScope().authenticateAction("admin:main.ckfinder");
 	}
 	
-	public void function setPropperSession() {
+	public void function setProperSession() {
 		if(len(getHibachiScope().setting('globalNoSessionIPRegex')) && reFindNoCase(getHibachiScope().setting('globalNoSessionIPRegex'), cgi.remote_addr)) {
 			getHibachiScope().setPersistSessionFlag( false );
 		} else if (getHibachiScope().setting('globalNoSessionPersistDefault')) {
 			getHibachiScope().setPersistSessionFlag( false );
 		}
 		
-		super.setPropperSession();
+		super.setProperSession();
 		
 		// If the current session account was authenticated by an integration, then check the verifySessionLogin() method to make sure that we should still be logged in
 		if(!isNull(getHibachiScope().getSession().getAccountAuthentication()) && !isNull(getHibachiScope().getSession().getAccountAuthentication().getIntegration()) && !getHibachiScope().getSession().getAccountAuthentication().getIntegration().getIntegrationCFC("authentication").verifySessionLogin()) {

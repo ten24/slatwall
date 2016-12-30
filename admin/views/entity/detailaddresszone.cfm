@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.addressZone" type="any">
 <cfparam name="rc.edit" type="boolean">
 
@@ -56,14 +58,9 @@ Notes:
 		<hb:HibachiActionCaller action="admin:entity.createaddresszonelocation" queryString="addressZoneID=#rc.addressZone.getAddressZoneID()#" type="list" modal=true />
 	</hb:HibachiEntityActionBar>
 	
-	<hb:HibachiPropertyRow>
-		<hb:HibachiPropertyList>
-			<hb:HibachiPropertyDisplay object="#rc.addressZone#" property="addressZoneName" edit="#rc.edit#">
-		</hb:HibachiPropertyList>
-	</hb:HibachiPropertyRow>
-	
-	<hb:HibachiTabGroup object="#rc.addressZone#">
-		<hb:HibachiTab view="admin:entity/addresszonetabs/locations" />
-	</hb:HibachiTabGroup>
+	<hb:HibachiEntityDetailGroup object="#rc.addressZone#">
+		<hb:HibachiEntityDetailItem view="admin:entity/addresszonetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+		<hb:HibachiEntityDetailItem view="admin:entity/addresszonetabs/locations" />
+	</hb:HibachiEntityDetailGroup>
 	
 </hb:HibachiEntityDetailForm>

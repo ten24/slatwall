@@ -61,6 +61,6 @@
 				<input type="password" name="password" placeholder="Password">
 			</div>
 		</div>
-		<button type="submit" class="btn pull-right">Login w/Mura</button>
+		<button type="submit" class="btn btn-default pull-right">Login w/Mura</button>
 	</fieldset>
 </form>

@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.email" type="any" />
 <cfparam name="rc.emailTemplate" type="any" />
 <cfparam name="rc.edit" type="boolean" />
@@ -66,13 +68,30 @@ Notes:
 		
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.email#" property="emailTo" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.email#" property="emailFrom" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.email#" property="emailCC" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.email#" property="emailBCC" edit="#rc.edit#">
+				
+				<div class="row">
+					<div class="col-xs-6">
+						<hb:HibachiPropertyDisplay object="#rc.email#" property="emailTo" edit="#rc.edit#">
+					</div>
+					<div class="col-xs-6">
+						<hb:HibachiPropertyDisplay object="#rc.email#" property="emailFrom" edit="#rc.edit#">
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="col-xs-6">
+						<hb:HibachiPropertyDisplay object="#rc.email#" property="emailCC" edit="#rc.edit#">
+					</div>
+					<div class="col-xs-6">
+						<hb:HibachiPropertyDisplay object="#rc.email#" property="emailBCC" edit="#rc.edit#">
+					</div>
+				</div>
+
 				<hb:HibachiPropertyDisplay object="#rc.email#" property="emailSubject" edit="#rc.edit#">
+					
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
+		
 		<hr />
 		<div style="width:100%;">
 			<div style="width:100%;">

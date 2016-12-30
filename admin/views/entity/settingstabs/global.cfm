@@ -48,6 +48,7 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfoutput>
 	<swa:SlatwallSettingTable showInheritance="false">
 		<swa:SlatwallSetting settingName="globalUsageStats" />
@@ -65,9 +66,13 @@ Notes:
 		<swa:SlatwallSetting settingName="globalURLKeyBrand" />
 		<swa:SlatwallSetting settingName="globalURLKeyProduct" />
 		<swa:SlatwallSetting settingName="globalURLKeyProductType" />
+		<swa:SlatwallSetting settingName="globalURLKeyAddress" />
+		<swa:SlatwallSetting settingName="globalURLKeyAccount" />
 		<swa:SlatwallSetting settingName="globalWeightUnitCode" />
 		<swa:SlatwallSetting settingName="globalAdminAutoLogoutMinutes" />
 		<swa:SlatwallSetting settingName="globalPublicAutoLogoutMinutes" />
+        <swa:SlatwallSetting settingName="globalGiftCardMessageLength" />
+        <swa:SlatwallSetting settingName="globalMaximumFulfillmentsPerOrder" />
 	</swa:SlatwallSettingTable>
 </cfoutput>
 

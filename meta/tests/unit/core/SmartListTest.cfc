@@ -53,6 +53,55 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		variables.smartList = request.slatwallScope.getSmartList("Product");
 	}
+	
+	public void function getFilterOptionsTest(){
+		
+		var parentCategoryData = {
+			categoryID="",
+			categoryName="shoes"
+		};
+		var parentCategory = createPersistedTestEntity('category',parentCategoryData);
+		
+		var categoryData = {
+			categoryID="",
+			categoryName="sandals"
+		};
+		var category = createPersistedTestEntity('category',categoryData);
+		
+		category.setParentCategory(parentCategory);
+		
+		var productData = {
+			productID="",
+			productName="test" & createUUID(),
+			productCode="test" & createUUID(),
+			activeFlag=1,
+			publishedFlag=1,
+			calculatedQATS=4,
+			categories=[
+				{
+					categoryID=category.getCategoryID()
+				},
+				{
+					categoryID=parentCategory.getCategoryID()
+				}
+			]
+		};
+		var product = createPersistedTestEntity('product',productData);
+		
+		var categorySmartList = request.slatwallScope.getSmartList("Product");
+		
+		
+		var results = variables.smartList.getFilterOptions('categories.categoryID','categories.categoryName');
+		
+		var parentresults = variables.smartList.getFilterOptions('categories.categoryID','categories.categoryName',"categories.parentCategory.categoryID");
+		
+		assert(arraylen(results) == 2);
+		
+		assert(arraylen(parentresults) == 2);
+		
+		assert(!structKeyExists(results[1],'parentValue'));
+		assert(structKeyExists(parentResults[1],'parentValue'));
+	}
 
 	// buildURL()
 	public void function buildURL_1() {
@@ -77,6 +126,63 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var urlResponse = variables.smartList.buildURL(queryAddition="f:productName=hello", currentURL="/");
 		
 		assert(urlResponse eq '?f:productName=hello');
+	}
+	
+	public void function countTest(){
+		var productData = {
+			productID="",
+			productName="test",
+			productCode="test-#createUUID()#",
+			skus=[
+				{
+					skuID="",
+					skuName="test"
+				},
+				{
+					skuID="",
+					skuName="otherTest"
+				}
+			]
+		};
+		var product = createTestEntity('Product',productData);
+		assertEquals(product.getSkus()[1].getSkuCode(),product.getProductCode()&'-1');
+		assertEquals(product.getSkus()[2].getSkuCode(),product.getProductCode()&'-2');
+		
+		var productData2 = {
+			productID="",
+			productName="test",
+			productCode="test-#createUUID()#",
+			skus=[
+				{
+					skuID="",
+					skuName="test"
+				},
+				{
+					skuID="",
+					skuName="otherTest"
+				},
+				{
+					skuID="",
+					skuName="test3"
+				}
+			]
+		};
+		var product2 = createPersistedTestEntity('Product',productData2);
+		var skuData = {
+			skuID="",
+			skuName="test"
+		};
+		var sku = createTestEntity('Sku',skuData);
+		product2.addSku(sku);
+		var skuData2 = {
+			skuID="",
+			skuName="othertest"
+		};
+		var sku2 = createTestEntity('Sku',skuData2);
+		product2.addSku(sku2);
+		assertEquals(product2.getSkus()[1].getSkuCode(),product2.getProductCode()&'-1');
+		assertEquals(product2.getSkus()[2].getSkuCode(),product2.getProductCode()&'-2');
+		assertTrue(isNull(product2.getSkus()[4].getSkuCode()));
 	}
 	
 }

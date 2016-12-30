@@ -86,6 +86,9 @@ component accessors="true" output="false" {
 				} else {
 					location("https://www.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=#responseData.token#", false);	
 				}
+			} else if (structKeyExists(responseData, "ack") && responseData.ack == "Failure") {
+				rc.$.slatwall.cart().addError('Payment',responseData["L_SHORTMESSAGE0"]);
+				rc.$.slatwall.cart().addError('PaypalExpressErrorDetail',responseData);
 			}
 		}
 	}
@@ -119,7 +122,7 @@ component accessors="true" output="false" {
 				// Manually set the providerToken value because it can't be populated
 				var addOrderPaymentProcessObject = rc.$.slatwall.cart().getProcessObject('addOrderPayment');
 				addOrderPaymentProcessObject.getNewOrderPayment().setProviderToken(responseData.token & '~' & responseData.payerID);
-				
+				addOrderPaymentProcessObject.setCopyFromType('');
 				var order = getOrderService().processOrder( rc.$.slatwall.cart(), paymentData, 'addOrderPayment');
 				
 				arguments.rc.$.slatwall.addActionResult( "public:cart.addOrderPayment", order.hasErrors() );

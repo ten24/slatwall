@@ -51,7 +51,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function setUp() {
 		super.setup();
 		
-		variables.service = request.slatwallScope.getBean("dataService");
+		variables.service = request.slatwallScope.getBean("contentService");
 	}
 	
 	public void function deleteCategory_removes_content_assignments() {
@@ -71,5 +71,76 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		assert(deleteOK);
 	}
+	
+//	public void function processContent_duplicateContent_Test(){
+//		
+//		var appData = {
+//			appID="",
+//			appCode="#createUUID()#"
+//		};
+//		var app = createPersistedTestEntity('app',appData);
+//		
+//		var siteData = {
+//			siteID="",
+//			siteName="testsite",
+//			siteCode="#createUUID()#",
+//			app={
+//				appID=app.getAppID()
+//			}
+//		};
+//		var site = createPersistedTestEntity('site',siteData);
+//		
+//		var parentContentData = {
+//			contentID="",
+//			site={
+//				siteID=site.getSiteID()
+//			},
+//			title="parentTestContent",
+//			urlTitle="parentTestUrlTItle#createUUID()#",
+//			contentBody="<p>myParentContent</p>"
+//		};
+//		var parentContentEntity = createPersistedTestEntity('content',parentContentData);
+//		
+//		var contentData = {
+//			contentID="",
+//			site={
+//				siteID=site.getSiteID()
+//			},
+//			title="testContent",
+//			urlTitle="testUrlTItle#createUUID()#",
+//			contentBody="<p>myContent</p>",
+//			parentContent={
+//				contentID=parentContentEntity.getContentID()
+//			}
+//		};
+//		var contentEntity = createPersistedTestEntity('content',contentData);
+//		
+//		var settingData = {
+//			setting="",
+//			settingName="contentRestrictAccessFlag",
+//			settingValue="1",
+//			content={
+//				contentID=contentEntity.getContentID()
+//			}
+//		};
+//		var settingEntity = createPersistedTestEntity('setting',settingData);
+//		
+//		var data = {
+//			title='duplicateContent#createUUID()#',
+//			urlTitle='duplicateContent#createUUID()#'
+//		};
+//		
+//		var duplicatedContent = variables.service.process(contentEntity,data,'duplicateContent');
+//		
+//		//make sure duplicated content is new and source content is not
+//		assertFalse(contentEntity.getNewFlag());
+//		
+//		//assert properties are the same
+//		assertEquals(duplicatedContent.getContentBody(),contentEntity.getContentBody());
+//		
+//		//assert the settings are the same
+//		assertEquals("#duplicatedContent.setting('contentRestrictAccessFlag')#","#contentEntity.setting('contentRestrictAccessFlag')#");
+//		
+//	}
 
 }

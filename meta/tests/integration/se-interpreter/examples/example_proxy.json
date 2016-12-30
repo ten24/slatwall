@@ -1,0 +1,21 @@
+{
+  "type": "interpreter-config",
+  "configurations": [
+    {
+      "settings": [
+        {
+          "browserOptions": {
+            "browserName": "firefox",
+            "proxy": {
+              "proxyType": "manual",
+              "httpProxy": "localhost:8085"
+            }
+          }
+        }
+      ],
+      "scripts": [
+        "examples/tests/get.json"
+      ]
+    }
+  ]
+}

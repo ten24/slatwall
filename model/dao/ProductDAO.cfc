@@ -49,6 +49,31 @@ Notes:
 <cfcomponent accessors="true" extends="HibachiDAO">
 	
 	<cfscript>
+		public void function setSkusAsInactiveByProduct(required any product){
+			setSkusAsInactiveByProductID(arguments.product.getProductID());
+		}
+		
+		public void function setSkusAsInactiveByProductID(required string productID){
+			var updateQuery = new Query();
+			var sql = '
+				UPDATE SwSku
+				SET activeFlag=0, publishedFlag=0
+				WHERE productID = :productID
+			';
+			updateQuery.addParam(name="productID",value=arguments.productID,cfsqltype="cf_sql_varchar");
+			updateQuery.execute(sql=sql);
+		}
+		
+		public numeric function getProductRating(required any product){
+			return OrmExecuteQuery('
+				SELECT COALESCE(avg(pr.rating), 0)
+				FROM SlatwallProductReview pr 
+				WHERE pr.product = :product
+				AND pr.activeFlag = 1
+				',{product=arguments.product},true
+			);
+		}
+		
 		public void function loadDataFromFile(required string fileURL, string textQualifier = ""){
 			var fileType = listLast(arguments.fileURL,".");
 			var delimiter = "";
@@ -431,5 +456,15 @@ Notes:
 		</cfquery>
 	</cffunction>
 	 
+	<cffunction name="updateProductProductType" hint="Moves all products from one product type to another">
+		<cfargument name="fromProductTypeID" type="string" required="true" >
+		<cfargument name="toProductTypeID" type="string" required="true" >
+		<cfquery name="updateProduct" >
+			UPDATE SwProduct 
+			SET productTypeID = <cfqueryparam value="#arguments.toProductTypeID#" cfsqltype="cf_sql_varchar" >
+			WHERE productTypeID = <cfqueryparam value="#arguments.fromProductTypeID#" cfsqltype="cf_sql_varchar" >
+		</cfquery>
+	</cffunction>
+	
 </cfcomponent>
 

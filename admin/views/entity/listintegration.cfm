@@ -48,12 +48,16 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.integrationSmartList" type="any" />
 <cfset rc.integrationSmartList.addFilter('installedFlag', 1) />
 
 <cfoutput>
 	
-	<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.integrationSmartList#" recordDetailAction="admin:entity.detailintegration" recordEditAction="admin:entity.editintegration">
+	<hb:HibachiEntityActionBar type="listing" object="#rc.integrationSmartList#" showCreate="false" />
+	
+	<hb:HibachiListingDisplay smartList="#rc.integrationSmartList#" recordDetailAction="admin:entity.detailintegration" recordEditAction="admin:entity.editintegration">
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="integrationName" />
 		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
 	</hb:HibachiListingDisplay>

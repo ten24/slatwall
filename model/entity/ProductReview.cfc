@@ -54,7 +54,7 @@ component displayname="Product Review" entityname="SlatwallProductReview" table=
 	property name="reviewerName" hb_populateEnabled="public" ormtype="string";
 	property name="review" hb_populateEnabled="public" ormtype="string" length="4000" hint="HTML Formated review of the Product";
 	property name="reviewTitle" hb_populateEnabled="public" ormtype="string";
-	property name="rating" hb_populateEnabled="public" ormtpe="int";
+	property name="rating" hb_populateEnabled="public" ormtype="int";
 
 	// Related Object Properties (many-to-one)
 	property name="product" hb_populateEnabled="public" cfc="Product" fieldtype="many-to-one" fkcolumn="productID";
@@ -194,6 +194,11 @@ component displayname="Product Review" entityname="SlatwallProductReview" table=
 
 	public string function getSimpleRepresentationPropertyName() {
 		return "reviewTitle";
+	}
+	
+	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,remoteID,remoteEmployeeID,remoteCustomerID,remoteContactID,cmsAccountID,cmsContentID,cmsSiteID"){
+		
+		return super.getDefaultCollectionProperties(argumentCollection=arguments);
 	}
 
 	// ==================  END:  Overridden Methods ========================

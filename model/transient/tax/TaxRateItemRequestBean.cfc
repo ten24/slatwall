@@ -75,4 +75,6 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Requ
 	// Reference Objects
 	property name="orderItem" type="any" default="";
 	property name="taxAddress" type="any" default="";
+	property name="taxCategoryRate" type="any" default="";
+	
 }

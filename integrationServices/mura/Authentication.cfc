@@ -59,9 +59,7 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 	}
 	
 	public string function getAdminLoginHTML() {
-		return '<a href="/admin">Login With Mura</a>';
+		return '<div class="s-form-signin s-other-services"><a class="btn btn-default btn-lg " target="_self" href="/admin">Login With Mura</a></div>';
 	}
 	
-
 }
-

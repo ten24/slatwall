@@ -48,15 +48,16 @@ Notes:
 */
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 	
-	property name="venderOrderDAO";
+	property name="venderOrderDAO" type="any";
 	
-	property name="addressService";
-	property name="locationService";
-	property name="productService";
-	property name="settingService";
-	property name="skuService";
-	property name="stockService";
-	property name="taxService";
+	property name="addressService" type="any";
+	property name="locationService" type="any";
+	property name="productService" type="any";
+	property name="settingService" type="any";
+	property name="skuService" type="any";
+	property name="stockService" type="any";
+	property name="taxService" type="any";
+	property name="typeService" type="any";
 	
 	public any function getVendorOrderSmartList(struct data={}) {
 		arguments.entityName = "SlatwallVendorOrder";
@@ -73,13 +74,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function getStockReceiverSmartList(string vendorOrderID) {
 		var smartList = getStockService().getStockReceiverSmartlist();	
-		smartList.addFilter("stockReceiverItems_vendorOrderItem_vendorOrder_vendorOrderID",arguments.vendorOrderID);
+		smartList.addFilter("stockReceiverItems.vendorOrderItem.vendorOrder.vendorOrderID", arguments.vendorOrderID);
 		return smartList;
 	}
 	
 	public any function getStockReceiverItemSmartList(any stockReceiver) {
 		var smartList = getStockService().getStockReceiverItemSmartlist();	
-		smartList.addFilter("stockReceiver.stockReceiverID",arguments.stockReceiver.getStockReceiverID());
+		smartList.addFilter("stockReceiver.stockReceiverID", arguments.stockReceiver.getStockReceiverID());
 		return smartList;
 	}
 		
@@ -111,7 +112,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function processVendorOrder_addVendorOrderItem(required any vendorOrder, required any processObject){
 		
-		var vendorOrderItemType = getSettingService().getTypeBySystemCode( arguments.processObject.getVendorOrderItemTypeSystemCode() );
+		var vendorOrderItemType = getTypeService().getTypeBySystemCode( arguments.processObject.getVendorOrderItemTypeSystemCode() );
 		var deliverToLocation = getStockService().getStockBySkuAndLocation(arguments.processObject.getSku(),getLocationService().getLocation(arguments.processObject.getDeliverToLocationID()));
 		
 		var newVendorOrderItem = this.newVendorOrderItem();
@@ -159,6 +160,26 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		getStockService().saveStockReceiver( stockReceiver );
+		
+		var closedFlag = true;
+		var partiallyReceivedFlag = false;
+		
+		for(var vendorOrderItem in arguments.vendorOrder.getVendorOrderItems()) {
+			if(vendorOrderItem.getQuantityUnreceived() > 0) {
+				closedFlag = false;
+			}
+			if(vendorOrderItem.getQuantityReceived() > 0) {
+				partiallyReceivedFlag = true;
+			}
+		}
+		// Change the status depending on what value the partiallyReceivedFlag or closedFlag
+		if(closedFlag){
+			arguments.vendorOrder.setVendorOrderStatusType( getTypeService().getTypeBySystemCode("vostClosed") );
+		} else if(partiallyReceivedFlag) {
+			arguments.vendorOrder.setVendorOrderStatusType( getTypeService().getTypeBySystemCode("vostPartiallyReceived") );
+
+		}
+		
 		
 		return arguments.vendorOrder;
 	}

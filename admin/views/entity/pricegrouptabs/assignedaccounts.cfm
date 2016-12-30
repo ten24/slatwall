@@ -48,19 +48,18 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.priceGroup" type="any" />
 
 <cfoutput>
-
-<hb:HibachiListingDisplay smartList="#rc.priceGroup.getAccountsOptionsSmartList()#" multiselectFieldName="accounts" multiselectPropertyIdentifier="accountID" multiselectValues="#rc.priceGroup.getAccountsAssignedIDList()#" edit="#rc.edit#">
+	<hb:HibachiListingDisplay smartList="#rc.priceGroup.getAccountsOptionsSmartList()#" multiselectFieldName="accounts" multiselectPropertyIdentifier="accountID" multiselectValues="#rc.priceGroup.getAccountsAssignedIDList()#" edit="#rc.edit#">
 						      
-	<hb:HibachiListingColumn propertyIdentifier="firstName" />
-	<hb:HibachiListingColumn propertyIdentifier="lastName" />
-	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="company" />
-	<hb:HibachiListingColumn propertyIdentifier="primaryPhoneNumber.phoneNumber" />
-	<hb:HibachiListingColumn propertyIdentifier="primaryEmailAddress.emailAddress" />
-	<hb:HibachiListingColumn propertyIdentifier="guestAccountFlag" />
+		<hb:HibachiListingColumn propertyIdentifier="firstName" />
+		<hb:HibachiListingColumn propertyIdentifier="lastName" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="company" />
+		<hb:HibachiListingColumn propertyIdentifier="primaryPhoneNumber.phoneNumber" />
+		<hb:HibachiListingColumn propertyIdentifier="primaryEmailAddress.emailAddress" />
+		<hb:HibachiListingColumn propertyIdentifier="guestAccountFlag" />
 	
-</hb:HibachiListingDisplay>
-
+	</hb:HibachiListingDisplay>
 </cfoutput>

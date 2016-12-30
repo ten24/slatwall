@@ -49,6 +49,8 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
+
+
 <cfparam name="rc.orderPayment" type="any" />
 <cfparam name="rc.order" type="any" />
 <cfparam name="rc.paymentMethod" type="any" />
@@ -90,10 +92,10 @@ Notes:
 			</hb:HibachiPropertyRow>
 			
 			<hb:HibachiPropertyRow>
-				<hb:HibachiPropertyList divClass="span6">
+				<hb:HibachiPropertyList divClass="col-md-6">
 					<swa:SlatwallAddressDisplay address="#$.slatwall.getService("addressService").newAddress()#" fieldnameprefix="billingAddress." edit="#rc.edit#" />
 				</hb:HibachiPropertyList>
-				<hb:HibachiPropertyList divClass="span6">
+				<hb:HibachiPropertyList divClass="col-md-6">
 					<hb:HibachiPropertyDisplay object="#rc.orderPayment#" property="nameOnCreditCard" edit="#rc.edit#" />
 					<hb:HibachiPropertyDisplay object="#rc.orderPayment#" property="creditCardNumber" edit="#rc.edit#" />
 					<hb:HibachiPropertyDisplay object="#rc.orderPayment#" property="expirationMonth" edit="#rc.edit#" />
@@ -116,7 +118,7 @@ Notes:
 			<input type="hidden" name="termPaymentAccount.accountID" value="#rc.order.getAccount().getAccountID()#" />
 			
 			<hb:HibachiPropertyRow>
-				<hb:HibachiPropertyList divClass="span6">
+				<hb:HibachiPropertyList divClass="col-md-6">
 					<hb:HibachiPropertyDisplay object="#rc.order.getAccount()#" property="fullName" edit="false" />
 					<hb:HibachiPropertyDisplay object="#rc.order.getAccount()#" property="termAccountAvailableCredit" edit="false" />
 					<hb:HibachiPropertyDisplay object="#rc.order.getAccount()#" property="termAccountBalance" edit="false" />

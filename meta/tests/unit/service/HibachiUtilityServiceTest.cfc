@@ -54,6 +54,122 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.service = request.slatwallScope.getService("hibachiUtilityService");
 	}
 	
+	public void function hibachiHTMLEditFormatTest(){
+		var angularTamperableString = 'this is a string where it is {{vulnerable}}';
+		var resultString = variables.service.hibachiHTMLEditFormat(angularTamperableString);
+		//adding ascii character to prevent execution of angular templates
+		assertEquals(resultString,'this is a string where it is {'&chr(002)&'{'&chr(002)&'vulnerable}}');
+	}
+			
+	public void function getTemplateKeysTest() {
+		var mockTemplate = '<div>${anything}</div>${anotherTemplateKey},${onemoreTemplateKey}';
+		
+		var expectedTemplateKeyValues = [
+			'${anything}',
+			'${anotherTemplateKey}',
+			'${onemoreTemplateKey}'
+		];
+		
+		var resultTemplateKeys = variables.service.getTemplateKeys(mockTemplate);
+		
+		assertEquals(resultTemplateKeys,expectedTemplateKeyValues);
+	}
+	
+	
+	public void function replaceStringTemplate_withObject_Test(){
+		//testing with an object
+		var mockTemplate = '<div>${firstName}</div>';
+		var mockObject = createTestEntity('Account');
+		mockObject.setFirstName('Yuqing');
+		var resultStringResult = variables.service.replaceStringTemplate(mockTemplate, mockObject);
+		assertEquals(resultStringResult,'<div>Yuqing</div>');
+	}
+	
+	public void function replaceStringTemplate_withObjectMissingKey_Test(){
+		//testing Missing Object
+		var mockTemplate = '<div>${firstName}</div>';
+		var mockObject = createTestEntity('Account');
+		var resultMissingObject = variables.service.replaceStringTemplate(mockTemplate, mockObject);
+		assertEquals(resultMissingObject,'<div></div>');
+		
+	}
+	public void function replaceStringTemplate_withObjectMissingKeyRemoveMissingKey_Test(){
+		//testing Missing Object with RemoveMissingKey True
+		var mockTemplate = '<div>${anything}</div>${anotherTemplateKey},${onemoreTemplateKey}';
+		var mockObject = {}; 
+		var resultMissingObject = variables.service.replaceStringTemplate(mockTemplate, mockObject,false,true);
+		assertEquals(resultMissingObject, '<div></div>,');
+	}
+	
+	
+	public void function replaceStringTemplate_withStructure_Test(){
+		//testing with a structure
+		var mockTemplate = '<div>${anything}</div>${anotherTemplateKey},${onemoreTemplateKey}';
+		var mockStructure = {
+			anything = 'value',
+			anotherTemplateKey = "othervalue",
+			onemoreTemplateKey = "onemorevalue"
+		}; 
+		var resultStringResult = variables.service.replaceStringTemplate(mockTemplate, mockStructure);
+		assertEquals(resultStringResult,'<div>value</div>othervalue,onemorevalue');
+	}
+	
+	public void function replaceStringTemplate_withStructureMissingKey_Test(){
+		//testing Missing Structure
+		var mockTemplate = '<div>${anything}</div>${anotherTemplateKey},${onemoreTemplateKey}';
+		var mockStructure = {}; 
+		var resultMissingStructure = variables.service.replaceStringTemplate(mockTemplate, mockStructure);
+		assertEquals(resultMissingStructure, '<div>${anything}</div>${anotherTemplateKey},${onemoreTemplateKey}');
+	}
+	
+	public void function replaceStringTemplate_withStructureMissingKeyRemoveMissingKey_Test(){
+		//testing Missing Structure with RemoveMissingKey True
+		var mockTemplate = '<div>${anything}</div>${anotherTemplateKey},${onemoreTemplateKey}';
+		var mockStructure = {}; 
+		var resultMissingStructure = variables.service.replaceStringTemplate(mockTemplate, mockStructure,false,true);
+		assertEquals(resultMissingStructure, '<div></div>,');
+	}
+	
+	/**
+	*function tested under Model -> Service -> HibachiUtilityService <br>
+	* 3 Tests: IsPrimaryKey, NotPrimaryKey, NotExist
+	*
+	*
+	*/
+	public void function queryToStructOfStructuresTest_IsPrimaryKey() {
+		//testing returns if PK
+		var testQuery = queryNew("id,name,sex", "Integer,Varchar,Varchar", 
+				[ 
+					[1, "One", "F"], 
+					[2, "Two", "M"] ,
+					[3, "Three", "MF"]
+				]); 
+		var expectedStructure = {
+			1 = '',
+			2 = '',
+			3 = ''
+		}; 
+		var resultStructure = variables.service.queryToStructOfStructures(testQuery, "id");
+		assertEquals(resultStructure, expectedStructure);
+	}
+	public void function queryToStructOfStructuresTest_NotPrimaryKey() {
+		//testing returns if not the PK
+		var testQuery = queryNew("id,name,sex", "Integer,Varchar,Varchar", 
+				[ 
+					[1, "One", "F"], 
+					[2, "Two", "M"] ,
+					[3, "Three", "MF"]
+				]); 
+		var expectedStructure = {
+			one = 'fdf',
+			two = '',
+			Three = ''
+		}; 
+		var resultStructure = variables.service.queryToStructOfStructures(testQuery, "Name");
+
+		assertEquals(expectedStructure, resultStructure);
+		//Skip testing the non-existed attribute 
+	}	
 	
 	public void function lcaseStructKeys_lcases_structure_keys_at_top_level() {
 		var data = {};
@@ -186,4 +302,65 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		// Incorrect
 		//decrypt('2Tef82tq+TUV3XPJCaBANQ==', 'PRE8ihKSRr8vOczQgCo2fw==', 'AES/CBC/PKCS5Padding', 'Base64');
 	}
+	
+	titleStrings = ["Gift Card-$50", "Gift Card $50", "Gift - Card - $50", "Gift -- Card -- $50"];
+	
+	/**
+	* @mxunit:dataprovider titleStrings
+	*/
+	public void function getUrlTitle(titleString) {
+		
+		var expectedTitle = "gift-card-50";
+		var urlTitle = variables.service.createUniqueURLTitle(titleString=arguments.titleString, tableName="SwProduct");
+		assertEquals(expectedTitle, urlTitle, "title string #arguments.titleString#, position #arguments.index# failed");
+		urlTitle = variables.service.createUniqueURLTitle(titleString=lcase(arguments.titleString), tableName="SwProduct");
+		assertEquals(expectedTitle, urlTitle, "title string #arguments.titleString#, position #arguments.index# failed");
+		urlTitle = variables.service.createUniqueURLTitle(titleString=ucase(arguments.titleString), tableName="SwProduct");
+		assertEquals(expectedTitle, urlTitle, "title string #arguments.titleString#, position #arguments.index# failed");
+	}
+	
+	public void function arrayOfStructsSortTest(){
+		var mockArrayOfStructures= [
+			{
+				"key":"value",
+				"key2":"anothervalue"
+				
+			},
+			{
+				"key":"value",
+				"key2":"differentvalue"
+				
+			},
+			{
+				"key":"value",
+				"key2":"anothervaluedifferentvalue"
+				
+			}
+		];
+		
+		var mockExpectedResultForDescending = [
+			{
+				"key":"value",
+				"key2":"differentvalue"
+				
+			},
+			{
+				"key":"value",
+				"key2":"anothervaluedifferentvalue"
+				
+			},
+			{
+				"key":"value",
+				"key2":"anothervalue"
+				
+			}
+		];
+		
+		var result = variables.service.arrayOfStructsSort(mockArrayOfStructures,'key2','desc');
+		//assertResults
+		
+		assertEquals( serializeJson(result), serializejson(mockExpectedResultForDescending));
+		
+	}
 }
+

@@ -1,0 +1,30 @@
+<div class="s-search-filter" id="j-inside-product-bundle-group-type" sw-click-outside="closeThis(clickOutsideArgs)" >
+
+	<div class="input-group" ng-if="propertyDisplay.object">
+		<input  type="text"
+				ng-model="propertyDisplay.object.data[propertyDisplay.property].data[cfcProperCase+'Name']"
+				placeholder="Search"
+				class="form-control input"
+				typeahead="object[cfcProperCase+'Name'] for object in selectionOptions.getOptionsByKeyword($viewValue)"
+				typeahead-on-select="selectItem($item, $model, $label)">
+
+		<input 	type="text"
+				style="display:none"
+				name="{{propertyDisplay.property}}"
+				ng-model="propertyDisplay.object.data[propertyDisplay.property]"/>
+		<div class="input-group-btn">
+			<button type="button" class="btn btn-sm btn-default" ng-click="closeAddScreen();clearTypeName();">
+				<span ng-if="showAddBtn" class="fa fa-caret-up"></span>
+				<span ng-if="!showAddBtn" class="fa fa-caret-down"></span>
+			</button>
+		</div>
+
+	</div>
+	<div ng-if="showAddBtn && propertyDisplay.object.data[propertyDisplay.property].data[cfcProperCase+'Name'] "><!-- Only show if there is text -->
+		<button type="button" class="btn btn-dgrey" ng-click="setAdding(true)">
+			<i class="fa fa-plus"></i> Add "{{propertyDisplay.object.data[propertyDisplay.property].data[cfcProperCase+'Name']}}"
+		</button>
+		<!-- <ng-include ng-if="propertyDisplay.template" src="propertyDisplay.template"></ng-include> -->
+	</div>
+
+</div>

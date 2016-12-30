@@ -1,0 +1,46 @@
+{
+	"conditions":{
+	    "fulfillmentTypeShipping":{
+	        "fulfillmentMethodType":	{"eq":"shipping"}
+	    },
+	    "fulfillmentTypePickup":{
+	        "fulfillmentMethodType":	{"eq":"pickup"}
+	    },
+	    "fulfillmentTypeEmailWithoutRecipients":{
+    		"emailAddress": 			{"method":"needsEmailForFulfillment"},
+	        "fulfillmentMethodType":	{"eq":"email"}
+	    },
+	    "fulfillmentTypeShippingNoAccountAddress":{
+	        "fulfillmentMethodType":	{"eq":"shipping"},
+	        "accountAddress":			{"null":true}
+	    },
+	    "fulfillmentTypeShippingWithoutRateOverride":{
+	        "fulfillmentMethodType":	{"eq":"shipping"},
+	        "accountAddress":			{"null":true}
+	    }
+	},
+	"properties":{
+		"orderFulfillmentID":				[{"contexts":"delete","maxValue":0},{"contexts":"save","method":"hasQuantityOfOrderFulfillmentsWithinMaxOrderQuantity"}],
+		"order":							[{"contexts":"save","required":true}],
+		"fulfillmentCharge":				[{"contexts":"save","dataType":"numeric","minValue":0}],
+		"fulfillmentMethod":				[{"contexts":"save","required":true,"method":"allOrderFulfillmentItemsAreEligibleForFulfillmentMethod"}],
+		"orderFulfillmentItems":			[{"contexts":"placeOrder,fulfillItems","minCollection":1}],
+		"quantityUndelivered":				[{"contexts":"fulfillItems","minValue":0}],
+		"emailAddress":						[{"contexts":"placeOrder","conditions":"fulfillmentTypeEmailWithoutRecipients","required":true}],
+		"pickupLocation":					[{"contexts":"placeOrder","conditions":"fulfillmentTypePickup","required":true}],
+		"requiredShippingInfoExistsFlag":	[{"contexts":"placeOrder","conditions":"fulfillmentTypeShipping","eq":true}],
+		"shippingMethod":			[
+			{"contexts":"placeOrder,fulfillItems","conditions":"fulfillmentTypeShipping","required":true},
+			{"contexts":"placeOrder","conditions":"fulfillmentTypeShippingWithoutRateOverride","method":"hasValidShippingMethodRate"}
+		],
+		"orderStatusCode":			[
+			{"contexts":"edit,manualFulfillmentCharge","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"},
+			{"contexts":"fulfillItems","inList":"ostNew,ostProcessing"}
+		]
+	},
+	"populatedPropertyValidation":{
+		"shippingAddress":[
+			{"conditions":"fulfillmentTypeShippingNoAccountAddress","validate":"full"}
+	    ]
+	}
+}

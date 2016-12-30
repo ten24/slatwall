@@ -51,11 +51,12 @@ Notes:
 	<cffunction name="getCurrentCurrencyRateByCurrencyCodes" output="false" access="public" returntype="any">
 		<cfargument name="originalCurrencyCode" type="string" required="true" />
 		<cfargument name="convertToCurrencyCode" type="string" required="true" />
+		<cfargument name="conversionDateTime" type="date" default="#now()#" />
 		
 		<!--- Setup HQL --->
 		<cfset var hql="SELECT currencyrate FROM SlatwallCurrencyRate currencyrate
 			WHERE
-			  	currencyrate.effectiveStartDateTime < :now
+			  	currencyrate.effectiveStartDateTime < :conversionDateTime
 			  AND
 			  	(
 					(currencyrate.currencyCode = :originalCurrencyCode AND currencyrate.conversionCurrencyCode = :convertToCurrencyCode)
@@ -66,8 +67,8 @@ Notes:
 				currencyrate.effectiveStartDateTime DESC" />
 		
 		<!--- Setup HQL Params --->
-		<cfset hqlParams = {} />
-		<cfset hqlParams['now'] = now() />
+		<cfset var hqlParams = {} />
+		<cfset hqlParams['conversionDateTime'] = arguments.conversionDateTime />
 		<cfset hqlParams['originalCurrencyCode'] = arguments.originalCurrencyCode />
 		<cfset hqlParams['convertToCurrencyCode'] = arguments.convertToCurrencyCode />
 		
@@ -77,6 +78,11 @@ Notes:
 		<cfif arrayLen(results)>
 			<cfreturn results[1] />
 		</cfif>
+	</cffunction>
+
+	<cffunction name="getCurrencyByCurrencyCode" output="false" access="public">
+		<cfargument name="currencyCode" type="string" required="true" >
+		<cfreturn ormExecuteQuery("SELECT acurrency FROM SlatwallCurrency acurrency WHERE acurrency.currencyCode = ? ", [arguments.currencyCode], true, {maxResults=1}) />
 	</cffunction>
 	
 </cfcomponent>

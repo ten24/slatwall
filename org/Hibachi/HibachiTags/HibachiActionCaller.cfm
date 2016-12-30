@@ -1,6 +1,8 @@
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfif thisTag.executionMode is "start">
 	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
-	<cfparam name="attributes.action" type="string" />
+	<cfparam name="attributes.action" type="string" default=""/>
 	<cfparam name="attributes.text" type="string" default="">
 	<cfparam name="attributes.type" type="string" default="link">
 	<cfparam name="attributes.queryString" type="string" default="" />
@@ -17,6 +19,9 @@
 	<cfparam name="attributes.modal" type="boolean" default="false" />
 	<cfparam name="attributes.modalFullWidth" type="boolean" default="false" />
 	<cfparam name="attributes.id" type="string" default="" />
+	<cfparam name="attributes.ignoreHTMLEditFormat" type="boolean" default="false"/>
+	
+	
 	
 	<cfset attributes.class = Replace(Replace(attributes.action, ":", "", "all"), ".", "", "all") & " " & attributes.class />
 	
@@ -27,7 +32,7 @@
 	--->
 	
 	<cfif attributes.icon neq "">
-		<cfset attributes.icon = '<i class="icon-#attributes.icon#"></i> ' />
+		<cfset attributes.icon = '<i class="glyphicon glyphicon-#attributes.icon#"></i> ' />
 	</cfif>
 	
 	<cfset actionItem = listLast(attributes.action, ".") />
@@ -81,7 +86,7 @@
 		<cfif not len(attributes.disabledtext)>
 		    <cfset attributes.disabledtext = attributes.hibachiScope.rbKey("#Replace(attributes.action, ":", ".", "all")#_disabled") />
 		</cfif>
-		<cfset attributes.class &= " disabled alert-disabled" />
+		<cfset attributes.class &= " btn-disabled" />
 		<cfset attributes.confirm = false />
 	<cfelseif attributes.confirm>
 		<cfif not len(attributes.confirmtext)>
@@ -104,17 +109,92 @@
 	<cfif not attributes.hibachiScope.authenticateAction(action=attributes.action)>
 		<cfset attributes.class &= " disabled" />
 	</cfif>
-
+	<cfif !attributes.ignoreHTMLEditFormat>
+		<cfset attributes.text = attributes.hibachiScope.hibachiHTMLEditFormat(attributes.text)/>
+		<cfset attribtues.title = attributes.hibachiScope.hibachiHTMLEditFormat(attributes.title)/>
+	</cfif>
 
 	<cfif attributes.hibachiScope.authenticateAction(action=attributes.action) || (attributes.type eq "link" && attributes.iconOnly)>
 		<cfif attributes.type eq "link">
-			<cfoutput><a title="#attributes.title#" class="#attributes.class#" href="#attributes.hibachiScope.buildURL(action=attributes.action,querystring=attributes.querystring)#"<cfif attributes.modal && not attributes.disabled> data-toggle="modal" data-target="##adminModal"</cfif><cfif attributes.disabled> data-disabled="#attributes.disabledtext#"<cfelseif attributes.confirm> data-confirm="#attributes.confirmtext#"</cfif><cfif len(attributes.id)>id="#attributes.id#"</cfif>>#attributes.icon##attributes.text#</a></cfoutput>
+			<cfoutput>
+				<a  title="#attributes.title#" 
+					class="#attributes.class#" 
+					target="_self" 
+					href="#attributes.hibachiScope.buildURL(action=attributes.action,querystring=attributes.querystring)#"
+					<cfif attributes.modal && not attributes.disabled>
+						 data-toggle="modal" 
+						 data-target="##adminModal"
+					</cfif>
+					<cfif attributes.disabled>
+						 data-disabled="#attributes.disabledtext#"
+					<cfelseif attributes.confirm> 
+						data-confirm="#attributes.confirmtext#"
+					</cfif>
+					<cfif len(attributes.id)>
+						id="#attributes.id#"
+					</cfif>
+				>
+					#attributes.icon##attributes.text#
+				</a>
+			</cfoutput>
 		<cfelseif attributes.type eq "list">
-			<cfoutput><li><a title="#attributes.title#" class="#attributes.class#" href="#attributes.hibachiScope.buildURL(action=attributes.action,querystring=attributes.querystring)#"<cfif attributes.modal && not attributes.disabled> data-toggle="modal" data-target="##adminModal"</cfif><cfif attributes.disabled> data-disabled="#attributes.disabledtext#"<cfelseif attributes.confirm> data-confirm="#attributes.confirmtext#"</cfif><cfif len(attributes.id)>id="#attributes.id#"</cfif>>#attributes.icon##attributes.text#</a></li></cfoutput> 
+			<cfoutput>
+				<li>
+					<a  title="#attributes.title#" 
+						class="#attributes.class#" 
+						target="_self" 
+						href="#attributes.hibachiScope.buildURL(action=attributes.action,querystring=attributes.querystring)#"
+						<cfif attributes.modal 
+							&& not attributes.disabled
+						> 
+							data-toggle="modal" 
+							data-target="##adminModal"
+						</cfif>
+						<cfif attributes.disabled>
+							 data-disabled="#attributes.disabledtext#"
+						<cfelseif attributes.confirm>
+							 data-confirm="#attributes.confirmtext#"
+						</cfif>
+						<cfif len(attributes.id)>
+							id="#attributes.id#"
+						</cfif>
+					>
+						#attributes.icon##attributes.text#
+					</a>
+				</li>
+			</cfoutput> 
 		<cfelseif attributes.type eq "button">
-			<cfoutput><button class="btn #attributes.class#" title="#attributes.title#"<cfif len(attributes.name)> name="#attributes.name#" value="#attributes.action#"</cfif><cfif attributes.modal && not attributes.disabled> data-toggle="modal" data-target="##adminModal"</cfif><cfif attributes.disabled> data-disabled="#attributes.disabledtext#"<cfelseif attributes.confirm> data-confirm="#attributes.confirmtext#"</cfif><cfif attributes.submit>type="submit"</cfif><cfif len(attributes.id)>id="#attributes.id#"</cfif>>#attributes.icon##attributes.text#</button></cfoutput>
+			<cfoutput>
+				<button class="#attributes.class#" 
+						title="#attributes.title#"
+						<cfif len(attributes.name)> 
+							name="#attributes.name#" 
+							value="#attributes.action#"
+						</cfif>
+						<cfif attributes.modal && not attributes.disabled> 
+							data-toggle="modal" 
+							data-target="##adminModal"
+						</cfif>
+						<cfif attributes.disabled>
+							 data-disabled="#attributes.disabledtext#"
+						<cfelseif attributes.confirm>
+							 data-confirm="#attributes.confirmtext#"
+						</cfif>
+						<cfif attributes.submit>
+							type="submit"
+						</cfif>
+						<cfif len(attributes.id)>
+							id="#attributes.id#"
+						</cfif>
+				>
+					#attributes.icon##attributes.text#
+				</button>
+			</cfoutput>
 		<cfelseif attributes.type eq "submit">
 			<cfoutput>This action caller type has been discontinued</cfoutput>
 		</cfif>
 	</cfif>
+	
+	
+	
 </cfif>

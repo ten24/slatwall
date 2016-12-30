@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.vendorOrder" type="any" />
 <cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
@@ -69,7 +71,7 @@ Notes:
 		<hr />
 				
 		<!--- Items Selector --->
-		<table class="table table-striped table-bordered table-condensed">
+		<table class="table table-bordered table-hover">
 			<tr>
 				<th>#$.slatwall.rbKey('entity.brand')#</th>
 				<th class="primary">#$.slatwall.rbKey('entity.product.productName')#</th>

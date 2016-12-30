@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.subscriptionUsage" type="any">
 <cfparam name="rc.edit" type="boolean">
 
@@ -61,28 +63,14 @@ Notes:
 			<hb:HibachiProcessCaller entity="#rc.subscriptionUsage#" action="admin:entity.preprocesssubscriptionusage" processContext="addUsageBenefit" type="list" modal="true" />
 		</hb:HibachiEntityActionBar>
 		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList divClass="span6">
-				<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="currentStatusType" edit="false">
-				<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="autoRenewFlag" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="autoPayFlag" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="renewalPrice" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="accountPaymentMethod" edit="#rc.edit#">
-			</hb:HibachiPropertyList>
-			<hb:HibachiPropertyList divClass="span6">
-				<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="expirationDate" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="gracePeriodTerm" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="nextBillDate" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="nextReminderEmailDate" edit="#rc.edit#">
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-		
-		<hb:HibachiTabGroup object="#rc.subscriptionUsage#">
-			<hb:HibachiTab view="admin:entity/subscriptionusagetabs/usagebenifits">
-			<hb:HibachiTab property="subscriptionStatus">
-			<hb:HibachiTab view="admin:entity/subscriptionusagetabs/orderitems">
-			<hb:HibachiTab view="admin:entity/subscriptionusagetabs/subscriptionusagesettings" />
-		</hb:HibachiTabGroup>
-
+		<hb:HibachiEntityDetailGroup object="#rc.subscriptionUsage#">
+			<hb:HibachiEntityDetailItem view="admin:entity/subscriptionusagetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<hb:HibachiEntityDetailItem view="admin:entity/subscriptionusagetabs/usagebenifits" />
+			<hb:HibachiEntityDetailItem property="subscriptionStatus" />
+			<hb:HibachiEntityDetailItem view="admin:entity/subscriptionusagetabs/orderitems" />
+			<hb:HibachiEntityDetailItem view="admin:entity/subscriptionusagetabs/subscriptionusagesettings" />
+			<hb:HibachiEntityDetailItem view="admin:entity/subscriptionusagetabs/subscriptionusageaccounts" />
+			<hb:HibachiEntityDetailItem view="admin:entity/subscriptionusagetabs/subscriptionusageaccess" />
+		</hb:HibachiEntityDetailGroup>
 	</hb:HibachiEntityDetailForm>
 </cfoutput>

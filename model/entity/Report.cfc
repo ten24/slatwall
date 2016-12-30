@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallReport" table="SwReport" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="hibachiReportService" {
+component entityname="SlatwallReport" table="SwReport" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="hibachiReportService" hb_permission="this" {
 	
 	// Persistent Properties
 	property name="reportID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -61,6 +61,9 @@ component entityname="SlatwallReport" table="SwReport" persistent="true" accesso
 	property name="dynamicDateRangeType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
 	property name="dynamicDateRangeEndType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
 	property name="dynamicDateRangeInterval" ormtype="integer";
+	property name="reportType" ormtype="string";
+	property name="limitResults" ormtype="integer";
+	property name="showReport" ormtype="boolean" default="false";
 	
 	// Calculated Properties
 
@@ -88,6 +91,7 @@ component entityname="SlatwallReport" table="SwReport" persistent="true" accesso
 	property name="reportEndDateTime" persistent="false";
 	property name="reportCompareStartDateTime" persistent="false";
 	property name="reportCompareEndDateTime" persistent="false";
+	property name="orderByType" persistent="false"; 
 	
 	// Deprecated Properties
 
@@ -146,9 +150,9 @@ component entityname="SlatwallReport" table="SwReport" persistent="true" accesso
 			} else if (getDynamicDateRangeEndType() eq 'lastMonthEnd') {
 				variables.reportEndDateTime = dateAdd("d", -1, createDate(year(now()), month(now()), 1));
 			} else if (getDynamicDateRangeEndType() eq 'thisQuarterEnd') {
-				variables.reportEndDateTime = dateAdd("d", -1, createDate(year(now()), (quarter(now()) * 3) + 1, 1));
+				variables.reportEndDateTime = dateAdd("d", -1, createDate(year(now()), (quarter(now()) * 3), 1));
 			} else if (getDynamicDateRangeEndType() eq 'lastQuarterEnd') {
-				variables.reportEndDateTime = dateAdd("q",-1,dateAdd("d", -1, createDate(year(now()), (quarter(now()) * 3) + 1, 1)));
+				variables.reportEndDateTime = dateAdd("q",-1,dateAdd("d", -1, createDate(year(now()), (quarter(now()) * 3), 1)));
 			} else if (getDynamicDateRangeEndType() eq 'thisYearEnd') {
 				variables.reportEndDateTime = createDate(year(now()), 12, 31);
 			} else if (getDynamicDateRangeEndType() eq 'lastYearEnd') {

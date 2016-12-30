@@ -1,5 +1,6 @@
 component output="false" accessors="true" extends="HibachiService" {
 
+	property name="hibachiService" type="any";
 	property name="hibachiSessionService" type="any";
 
 	// ============================ PUBLIC AUTHENTICATION METHODS =================================
@@ -9,7 +10,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		return authDetails.authorizedFlag;
 	}
 	
-	public struct function getActionAuthenticationDetailsByAccount(required string action, required any account) {
+	public struct function getActionAuthenticationDetailsByAccount(required string action, required any account, struct restInfo) {
 		
 		var authDetails = {
 			authorizedFlag = false,
@@ -18,10 +19,18 @@ component output="false" accessors="true" extends="HibachiService" {
 			anyAdminAccessFlag = false,
 			publicAccessFlag = false,
 			entityPermissionAccessFlag = false,
-			actionPermissionAccessFlag = false
+			actionPermissionAccessFlag = false,
+			forbidden = false,
+			invalidToken = false,
+			timeout = false
 		};
 		
+		if(!(!isNull(arguments.account.getJwtToken()) && arguments.account.getJwtToken().verify())){
+			authDetails.invalidToken = true;
+		}
+		
 		// Check if the user is a super admin, if true no need to worry about security
+		//Here superuser when not logged in is still false
 		if( arguments.account.getSuperUserFlag() ) {
 			authDetails.authorizedFlag = true;
 			authDetails.superUserAccessFlag = true;
@@ -37,7 +46,6 @@ component output="false" accessors="true" extends="HibachiService" {
 		}
 		
 		var actionPermissions = getActionPermissionDetails();
-		
 		// Check if the subsystem & section are defined, if not then return true because that means authentication was not turned on
 		if(!structKeyExists(actionPermissions, subsystemName) || !actionPermissions[ subsystemName ].hasSecureMethods || !structKeyExists(actionPermissions[ subsystemName ].sections, sectionName)) {
 			authDetails.authorizedFlag = true;
@@ -57,6 +65,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			
 			// Check if the action is anyLogin, if so and the user is logged in, then we can return true
 			if(listFindNocase(actionPermissions[ subsystemName ].sections[ sectionName ].anyLoginMethods, itemName) && getHibachiScope().getLoggedInFlag()) {
+				
 				authDetails.authorizedFlag = true;
 				authDetails.anyLoginAccessFlag = true;
 				return authDetails;
@@ -71,19 +80,22 @@ component output="false" accessors="true" extends="HibachiService" {
 			
 			// Check to see if this is a defined secure method, and if so we can test it against the account
 			if(listFindNocase(actionPermissions[ subsystemName ].sections[ sectionName ].secureMethods, itemName)) {
+				
 				var pgOK = false;
 				for(var p=1; p<=arrayLen(arguments.account.getPermissionGroups()); p++){
 					pgOK = authenticateSubsystemSectionItemActionByPermissionGroup(subsystem=subsystemName, section=sectionName, item=itemName, permissionGroup=arguments.account.getPermissionGroups()[p]); 
 				}
+				
 				if(pgOk) {
 					authDetails.authorizedFlag = true;
 					authDetails.actionPermissionAccessFlag = true;
 				}
+			
 				return authDetails;
 			}
 			
-			// Check to see if the controller is an entity or rest controller, and then verify against the entity itself
-			if(getActionPermissionDetails()[ subsystemName ].sections[ sectionName ].entityController || getActionPermissionDetails()[ subsystemName ].sections[ sectionName ].restController) {
+			// Check to see if the controller is an entity, and then verify against the entity itself
+			if(getActionPermissionDetails()[ subsystemName ].sections[ sectionName ].entityController) {
 				if ( left(itemName, 6) == "create" ) {
 					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="create", entityName=right(itemName, len(itemName)-6), account=arguments.account);
 				} else if ( left(itemName, 6) == "detail" ) {
@@ -113,9 +125,48 @@ component output="false" accessors="true" extends="HibachiService" {
 					authDetails.entityPermissionAccessFlag = true;
 				}
 			}
+			// Check to see if the controller is for rest, and then verify against the entity itself
+			if(getActionPermissionDetails()[ subsystemName ].sections[ sectionName ].restController){
+				//require a token to validate
+				if(!isNull(arguments.account.getJwtToken()) && arguments.account.getJwtToken().verify()){
+					if (StructKeyExists(arguments.restInfo, "context")){
+						var hasProcess = invokeMethod('new'&arguments.restInfo.entityName).hasProcessObject(arguments.restInfo.context);
+					}else{
+						var hasProcess = false;
+					}
+					if(hasProcess){
+						authDetails.authorizedFlag = true;
+					}else if(itemName == 'get'){
+						authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="read",entityName=arguments.restInfo.entityName,account=arguments.account);
+					}else if(itemName == 'post'){
+						if(arguments.restInfo.context == 'get'){
+							authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="read",entityName=arguments.restInfo.entityName,account=arguments.account);
+						}else if(arguments.restInfo.context == 'save'){
+							authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="create", entityName=arguments.restInfo.entityName, account=arguments.account);
+							if(!authDetails.authorizedFlag) {
+								authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="update", entityName=arguments.restInfo.entityName, account=arguments.account); 	
+							}
+						}else{
+							authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType=arguments.restInfo.context,entityName=arguments.restInfo.entityName,account=arguments.account);
+						}
+					}
+					if(authDetails.authorizedFlag) {
+						authDetails.entityPermissionAccessFlag = true;
+					}else{
+						authDetails.forbidden = true;
+					}
+					
+				}
+			}
+		}else{
+			authDetails.timeout = true;
 		}
 		
 		return authDetails;
+	}
+	
+	public boolean function authenticateCollectionCrudByAccount(required string crudType, required any collection, required any account){
+		return authenticateEntityCrudByAccount(crudType=arguments.crudType, entityName=arguments.collection.getCollectionObject(), account=arguments.account);
 	}
 	
 	public boolean function authenticateEntityCrudByAccount(required string crudType, required string entityName, required any account) {
@@ -134,6 +185,40 @@ component output="false" accessors="true" extends="HibachiService" {
 		
 		// If for some reason not of the above were meet then just return false
 		return false;
+	}
+	
+	public boolean function isInternalRequest(){
+		//domain contains http://domain/ so parse it
+		var httpArray = listtoArray(cgi.http_referer,'/');
+		if(arraylen(httpArray) >= 2){
+			var domainReferer = httpArray[2];
+		
+			return domainReferer == cgi.http_host;
+		}else{
+			return false;
+		}
+	} 
+	
+	public numeric function getInvalidCredentialsStatusCode(){
+		if(isInternalRequest()){
+			//499 for angular requests so we don't interfere with existing iis or apache 401 authentications on the internal app
+			return 499;
+		}else{
+			//401 for external api requests
+			return 401;
+		}
+	}
+	
+	public boolean function authenticateCollectionPropertyIdentifierCrudByAccount(required crudType, required any collection, required string propertyIdentifier, required any account){
+		var propertyIdentifierWithoutAlias = getService('hibachiCollectionService').getHibachiPropertyIdentifierByCollectionPropertyIdentifier(arguments.propertyIdentifier);
+		var isObject = getService('hibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(entityName=arguments.collection.getCollectionObject(),propertyIdentifier=propertyIdentifierWithoutAlias);
+		if(isObject){
+			var lastEntity = getService('hibachiService').getLastEntityNameInPropertyIdentifier(entityName=arguments.collection.getCollectionObject(),propertyIdentifier=propertyIdentifierWithoutAlias);
+		}else{
+			var lastEntity = getService('hibachiService').getLastEntityNameInPropertyIdentifier(entityName=arguments.collection.getCollectionObject(),propertyIdentifier=propertyIdentifierWithoutAlias);
+			var propertyStruct = getService('hibachiService').getPropertyByEntityNameAndPropertyName(lastEntity, listLast(propertyIdentifierWithoutAlias,'.'));
+		}
+		return authenticateEntityPropertyCrudByAccount(crudType=arguments.crudType, entityName=lastEntity, propertyName=listLast(propertyIdentifierWithoutAlias,'.'), account=arguments.account);
 	}
 	
 	public boolean function authenticateEntityPropertyCrudByAccount(required string crudType, required string entityName, required string propertyName, required any account) {
@@ -315,7 +400,7 @@ component output="false" accessors="true" extends="HibachiService" {
 				}
 				
 				// Setup the 'hasSecureMethods' value
-				if(len(subsystemPermissions.sections[ section ].secureMethods)) {
+				if(len(subsystemPermissions.sections[ section ].secureMethods & subsystemPermissions.sections[ section ].anyAdminMethods & subsystemPermissions.sections[ section ].anyLoginMethods)) {
 					subsystemPermissions.hasSecureMethods = true;
 				}
 				
@@ -437,6 +522,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		
 		return authenticateEntityByPermissionGroup(crudType=arguments.crudType, entityName=arguments.entityName, permissionGroup=arguments.permissionGroup);
 	}
+	
 	
 	
 }

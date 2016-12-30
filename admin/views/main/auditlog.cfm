@@ -2,6 +2,18 @@
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfset auditSmartList = $.slatwall.getService('hibachiAuditService').getAuditSmartList( rc ) />
 <cfoutput>
+<div class="row s-body-nav">
+    <nav class="navbar navbar-default" role="navigation">
+      <div class="col-md-4 s-header-info">
+		
+			<!--- Page Title --->
+			<h1 class="actionbar-title">#$.slatwall.rbKey('admin.entity.listAudit')#</h1>
+		</div>
+	 </div>
+   </nav>
+</div>
+
+
 
 <!---
 <form action="" method="get">
@@ -13,18 +25,18 @@
 <cfset columns = [{propertyIdentifier="auditType"},{propertyIdentifier="title"},{propertyIdentifier="baseObject"}] />
 <cfset columnCount = arraylen(columns) />
 <cfif true>
-<table id="LD#replace(auditSmartList.getSavedStateID(),'-','','all')#" class="table table-striped table-bordered table-condensed" data-norecordstext="#request.context.fw.getHibachiScope().rbKey("entity.audit.norecords", {entityNamePlural='Audits'})#" data-savedstateid="#auditSmartList.getSavedStateID()#" data-entityname="#auditSmartList.getBaseEntityName()#" data-idproperty="auditID">
+<table id="LD#replace(auditSmartList.getSavedStateID(),'-','','all')#" class="table table-bordered table-hover" data-norecordstext="#request.context.fw.getHibachiScope().rbKey("entity.audit.norecords", {entityNamePlural='Audits'})#" data-savedstateid="#auditSmartList.getSavedStateID()#" data-entityname="#auditSmartList.getBaseEntityName()#" data-idproperty="auditID">
 	<tr>
 		<th class="listing-display-header" colspan="#columnCount#">
 			<!--- Keyword Search --->
-			<div class="span8">
+			<div class="col-md-8">
 				<input type="text" name="search" class="span3 general-listing-search" placeholder="#request.context.fw.getHibachiScope().rbKey('define.search')#" value="" tableid="LD#replace(auditSmartList.getSavedStateID(),'-','','all')#">
 			</div>
-			<div class="span4">
+			<div class="col-md-4">
 				<div class="groups">
 					<!--- Audit Type Filtering --->
 					<div class="btn-group">
-						<button class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-list-alt"></i> #request.context.fw.getHibachiScope().rbKey('entity.audit.auditType')# <span class="caret"></span></button>
+						<button class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="icon-list-alt"></i> #request.context.fw.getHibachiScope().rbKey('entity.audit.auditType')# <span class="caret"></span></button>
 						<ul class="dropdown-menu pull-right">
 							<hb:HibachiActionCaller action="#auditSmartList.buildURL('fr:auditType=true', false)#" text="#request.context.fw.getHibachiScope().rbKey('define.all')#" type="list">
 							<hb:HibachiActionCaller action="#auditSmartList.buildURL('f:auditType=create', false)#" text="#request.context.fw.getHibachiScope().rbKey('entity.audit.auditType.create')#" type="list">

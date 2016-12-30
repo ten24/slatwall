@@ -1,0 +1,228 @@
+<div class="s-bundle-add-items s-workflow-objs">
+    <div ng-show="!swWorkflowTaskActions.workflowTaskActions.length" class="alert alert-info" role="alert" sw-rbkey="'entity.workflowtaskaction.norecordsfound'"><!-- Message created by rb key --></div>
+    <span class="list-unstyled s-order-item-options" ng-repeat="workflowTaskAction in swWorkflowTaskActions.workflowTaskActions" ng-init="workflowTaskAction.$$actionIndex = $index">
+        <span class="s-bundle-add-obj" data-ng-if="workflowTaskAction.$$isPersisted()">
+            <ul class="list-unstyled list-inline">
+                <li class="s-item-type s-tooltip ng-binding" data-ng-bind="$index+1"></li>
+            </ul>
+            <ul class="list-unstyled list-inline s-middle">
+                <li class="j-tool-tip-item s-bundle-details">Type: <span data-ng-bind="workflowTaskAction.data.actionType"></span></li>
+                <li class="j-tool-tip-item s-bundle-details">
+                    Object: 
+                    <span ng-bind="workflowTaskAction.data.workflowTask.data.workflow.data.workflowObject"></span>
+                </li>
+                <li class="j-tool-tip-item s-bundle-details" data-ng-if="workflowTaskAction.data.actionType != 'delete'">
+                    Detail: 
+                    <ng-switch on="workflowTaskAction.data.actionType" ng-if="workflowTaskAction.data.actionType">
+                        <span data-ng-switch-when="print" data-ng-bind="workflowTaskAction.data.printTemplate.data.printTemplateName"></span>
+                        <span data-ng-switch-when="email" data-ng-bind="workflowTaskAction.data.emailTemplate.data.emailTemplateName"></span>
+                        <span data-ng-switch-when="process" data-ng-bind="workflowTaskAction.data.processMethod"></span>
+                    </ng-switch>
+                </li>
+            </ul>
+            <ul class="list-unstyled list-inline s-last">
+                <li class="col-xs-1 j-tool-tip-item s-bundle-details-add" data-ng-click="swWorkflowTaskActions.selectWorkflowTaskAction(swWorkflowTaskActions.workflowTaskActions[$index]); swWorkflowTaskActions.setHidden(swWorkflowTaskActions.workflowTaskActions[$index]);">
+                    <a class="btn btn-lgrey s-edit" data-target="#s-add-obj-1">
+                    <i 	class="fa fa-pencil"
+                        ></i>
+                    </a>
+                </li>
+                <li class="col-xs-1 j-tool-tip-item s-bundle-details-add">
+						<a class="btn btn-lgrey s-remove" 
+                        sw-confirm 
+                        data-confirm-text="Confirm"
+                        data-message-text="Are you sure you want to delete this task action?" 
+                        data-callback="swWorkflowTaskActions.deleteEntity(workflowTaskActions[$index])"
+                        data-use-rb-key="false"
+                        data-simple=false
+                        data-yes-text="Yes"
+							data-no-text="No"			
+							>
+                    <i class="fa fa-trash"></i>
+                    </a>
+                </li>
+            </ul>
+            <div class="clearfix"></div>
+        </span>
+    </span>
+</div>
+<div class="clearFixInline" data-ng-if="!swWorkflowTaskActions.workflowTaskActions.selectedTaskAction.hidden">
+
+	<div class="col-xs-12 s-add-filter" 
+	    id="j-add-action-b"
+	    ng-if="swWorkflowTaskActions.workflowTaskActions.selectedTaskAction && !swWorkflowTaskActions.finished">
+	    <sw-form name="selectedTaskAction"
+	        data-object="swWorkflowTaskActions.workflowTaskActions.selectedTaskAction"
+	        data-context="save">
+				<div class="row">
+					<h4 class="s-heading">Add Action {{swWorkflowTaskActions.workflowTaskActions.selectedTaskAction.data.actionType}}
+	                <i 	class="fa fa-times" 
+	                    data-target="#j-add-action-b"
+                        data-ng-click="swWorkflowTaskActions.workflowTaskActions.selectedTaskAction.hidden = true"
+	                    ></i>
+	            </h4>
+	            <div class="col-xs-12">
+	                <div class="row">
+							<div class="col-xs-3">
+	                        <div class="form-group form-group-sm">
+	                            <sw-property-display
+	                                data-object="swWorkflowTaskActions.workflowTaskActions.selectedTaskAction"
+	                                data-property="actionType"
+	                                data-editable="true"
+	                                data-editing="true"
+	                                data-options-arguments="{property:'actionType'}"
+	                                >
+	                            </sw-property-display>
+	                        </div>
+	                    </div>
+	                    <div class="col-xs-6 s-criteria">
+								<!--- Filter Criteria Start --->
+	                        <div 	class="s-filter-group-item"
+                                    data-ng-if="swWorkflowTaskActions.workflowTaskActions.selectedTaskAction.data.actionType === 'email'"
+	                            >
+	                            <h4>Email Template</h4>
+	                            <div class="form-group form-group-sm">
+                                    <div sw-typeahead-search
+                                         data-collection-config="swWorkflowTaskActions.emailTemplateCollectionConfig"
+                                         data-property-to-show="'emailTemplateName'"
+                                         data-placeholder-text="Search Email templates..."
+                                         data-add-function="swWorkflowTaskActions.selectEmailTemplate"
+                                         data-search-text="swWorkflowTaskActions.emailTemplateSelected">
+                                        <span sw-typeahead-search-line-item
+                                              data-property-identifier="emailTemplateName"
+                                              ng-bind="item.emailTemplateName"></span>
+                                    </div>
+	                            </div>
+	                        </div>
+	                        <!-- //Filter Criteria End -->
+	                        <!-- Filter Criteria Start -->
+	                        <div 	class="s-filter-group-item"
+	                            data-ng-if="swWorkflowTaskActions.workflowTaskActions.selectedTaskAction.data.actionType === 'print'">
+	                            <h4>Print Template</h4>
+	                            <div class="form-group form-group-sm">
+                                    <div sw-typeahead-search
+                                         data-collection-config="swWorkflowTaskActions.printTemplateCollectionConfig"
+                                         data-property-to-show="'printTemplateID'"
+                                         data-placeholder-text="Search Print templates..."
+                                         data-add-function="swWorkflowTaskActions.selectPrintTemplate"
+                                         data-search-text="swWorkflowTaskActions.printTemplateSelected">
+                                        <span sw-typeahead-search-line-item data-property-identifier="printTemplateName"></span>
+                                    </div>
+	                            </div>
+	                        </div>
+	                        <!-- //Filter Criteria End -->
+	                        <!-- Filter Criteria Start -->
+	                        <div 	class="s-filter-group-item"
+                                    data-ng-if="swWorkflowTaskActions.workflowTaskActions.selectedTaskAction.data.actionType === 'update'"
+	                            >
+	                            <h4>Update Data</h4>
+	                            <div class="form-group form-group-sm">
+	                                <input type="text" class="form-control" placeholder="Ready To Capture">
+	                                <!-- <p class="help-block">Help text here.</p> -->
+	                            </div>
+	                        </div>
+	                        <!-- //Filter Criteria End -->
+	                        <!-- Filter Criteria Start -->
+	                        <div 	class="s-filter-group-item"
+									data-ng-if="swWorkflowTaskActions.workflowTaskActions.selectedTaskAction.data.actionType === 'process'">
+                                <h4>Process Method</h4>
+                                <div class="form-group form-group-sm">
+                                    <!--- search --->
+                                    <div class="s-select-list-wrapper s-search">
+                                        <div class="form-group">
+                                            <!-- Option select field wrapper -->
+                                            <div class="input-group">
+                                                <div class="s-input-btn">
+                                                    <!-- Need to display the workflow event name if it exists -->
+                                                    <input type="search" class="form-control" placeholder="Search&hellip;" data-ng-model="swWorkflowTaskActions.searchProcess.name" data-ng-focus="swWorkflowTaskActions.searchProcess.name = ''" data-ng-change="swWorkflowTaskActions.getProcessOptions(swWorkflowTaskActions.workflowTask.data.workflow.data.workflowObject)">
+                                                    <!--														<!--<span class="glyphicon glyphicon-remove"></span>-->
+                                                    <!--<i class="fa fa-refresh fa-spin"></i>--><!-- Loading Icon -->
+
+                                                </div>
+                                                <div class="input-group-btn" data-ng-if="swWorkflowTaskActions.workflowTask.data.workflow.data.workflowObject">
+                                                    <button class="btn btn-sm btn-default" data-ng-click="swWorkflowTaskActions.getProcessOptions(swWorkflowTaskActions.workflowTask.data.workflow.data.workflowObject);"><i class="fa fa-caret-down"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Dropdown wrapper -->
+                                        <div class="dropdown s-search-results-wrapper" data-ng-if="swWorkflowTaskActions.showProcessOptions">
+                                            <ul class="dropdown-menu" ng-if="swWorkflowTaskActions.processOptions">
+                                                <li data-ng-repeat="processOption in swWorkflowTaskActions.processOptions | filter:swWorkflowTaskActions.searchProcess.name">
+                                                    <a data-ng-click="swWorkflowTaskActions.selectProcess(processOption)">{{processOption.name}}</a>
+                                                </li>
+                                                <li data-ng-if="(processOptions | filter:swWorkflowTaskActions.searchProcess.name).length == 0">
+                                                    <a sw-rbkey="'admin.entity.workflowtabs.triggers.norecordsfound'"><!-- Message created by rb key --></a>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <!--- // search --->
+	                            <!--<h4>Dynamic Numeric</h4>-->
+	                            <!--<div class="row">-->
+	                                <!--<div class="col-md-6 form-group form-group-sm">-->
+	                                    <!--<select class="form-control input-sm">-->
+	                                        <!--<option value="1">Dynamic Numeric Value</option>-->
+	                                        <!--<option value="2">Add 'N'</option>-->
+	                                        <!--<option value="3">Set value to '0'</option>-->
+	                                        <!--<option value="4">Subtract 'N'</option>-->
+	                                    <!--</select>-->
+	                                <!--</div>-->
+	                                <!--<div class="col-md-6 form-group form-group-sm">-->
+	                                    <!--<input type="number" class="form-control" placeholder="" value="4">-->
+	                                    <!--&lt;!&ndash; <p class="help-block">Help text here.</p> &ndash;&gt;-->
+	                                <!--</div>-->
+	                            <!--</div>-->
+	                        </div>
+	                        <!-- //Filter Criteria End -->
+	                        <!-- Filter Criteria Start -->
+	                        <div 	class="s-filter-group-item"
+	                            data-ng-if="swWorkflowTaskActions.workflowTaskActions.selectedTaskAction.data.actionType === 'delete'">
+	                            <h4>Delete</h4>
+	                            <div class="form-group form-group-sm s-checkbox">
+	                                <input type="checkbox" data-ng-model="swWorkflowTaskActions.deleteConfirmed" id="j-delete-confirm"><label for="j-delete-confirm"> Confirm "{{swWorkflowTaskActions.workflowTask.data.workflow.data.workflowObject}}" object will be deleted</label>
+	                            </div>
+	                        </div>
+	                        <!-- //Filter Criteria End -->
+	                    </div>
+	                    <div class="col-xs-3">
+	                        <div class="s-button-select-group">
+									<button
+                                        type="button"
+                                        class="btn btn-sm s-btn-ten24"
+                                        data-ng-click="swWorkflowTaskActions.saveWorkflowTaskAction(swWorkflowTaskActions.workflowTaskActions.selectedTaskAction, 'add')"
+                                        data-ng-disabled="swWorkflowTaskActions.workflowTaskActions.selectedTaskAction.data.actionType == 'delete'  && !swWorkflowTaskActions.deleteConfirmed"
+                                    >
+                                        Save & Add Another
+                                    </button>
+	                            <div class="s-or-box">OR</div>
+									<button
+                                        type="button"
+                                        class="btn btn-sm s-btn-ten24"
+                                        data-ng-click="swWorkflowTaskActions.saveWorkflowTaskAction(swWorkflowTaskActions.workflowTaskActions.selectedTaskAction, 'finish')"
+                                        data-ng-disabled="swWorkflowTaskActions.workflowTaskActions.selectedTaskAction.data.actionType == 'delete' && !swWorkflowTaskActions.deleteConfirmed"
+                                    >
+                                        Save & Finish
+                                    </button>
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	    </sw-form>
+	</div>
+	<!-- //Edit Filter Box -->
+	<!--<div class="clearfix"></div>-->
+		<div class="form-group">
+			<!-- This is the add button -->
+			<button class="btn btn-xs btn-primary"
+                    data-ng-if="!swWorkflowTaskActions.workflowTaskActions.selectedTaskAction"
+					data-target="#j-add-action-b"
+					data-ng-click="swWorkflowTaskActions.addWorkflowTaskAction();"
+                    >
+				<i class="fa fa-plus"></i>
+				Add Action
+			</button>
+		</div>
+</div><!-- /s-bundle-add-items -->

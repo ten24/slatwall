@@ -48,11 +48,15 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.settingSmartList" type="any" />
 
 <cfoutput>
+	<hb:HibachiEntityActionBar type="listing" object="#rc.settingSmartList#" showCreate="false" />
+
 	
-	<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.settingSmartList#"
+	<hb:HibachiListingDisplay smartList="#rc.settingSmartList#"
 							   recordDeleteAction="admin:entity.deleteSetting">
 		<hb:HibachiListingColumn propertyIdentifier="settingName" />
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="settingValue" />

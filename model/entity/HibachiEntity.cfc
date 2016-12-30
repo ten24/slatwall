@@ -1,5 +1,4 @@
 /*
-
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
@@ -26,7 +25,6 @@
     custom code, regardless of the license terms of these independent
     modules, and to copy and distribute the resulting program under terms 
     of your choice, provided that you follow these specific guidelines: 
-
 	- You also meet the terms and conditions of the license of each 
 	  independent module 
 	- You must not alter the default display of the Slatwall name or logo from  
@@ -34,7 +32,6 @@
 	- Your custom code must not alter or create any files inside Slatwall, 
 	  except in the following directories:
 		/integrationServices/
-
 	You may copy and distribute the modified version of this program that meets 
 	the above guidelines as a combined work under the terms of GPL for this program, 
 	provided that you include the source code of that other code when and as the 
@@ -42,15 +39,14 @@
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
-
 Notes:
-
 */
 component output="false" accessors="true" persistent="false" extends="Slatwall.org.Hibachi.HibachiEntity" {
 
 	property name="assignedAttributeSetSmartList" type="any" persistent="false";
 	property name="attributeValuesByAttributeIDStruct" type="struct" persistent="false";
 	property name="attributeValuesByAttributeCodeStruct" type="struct" persistent="false";
+	property name="settingValueFormatted" type="any" persistent="false";
 
 	// @hint Override the populate method to look for custom attributes
 	public any function populate( required struct data={} ) {
@@ -73,6 +69,44 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		// Return this object
 		return this;
 	}
+	
+	public any function validateAttributes(string context=""){
+		var attributeValues = getAttributeValuesForEntity();
+	    for(var i=1; i < arrayLen(attributeValues); i++) {
+			var attributeValue = attributeValues[i];
+			
+	      // check to make sure it's not a custom property
+	      if( !isNull(attributeValue.getAttribute().getValidationRegEx()) ) {
+	      		
+	             attributeValue.validate(context=arguments.context,passThrough=true);
+	             
+	             if(attributeValue.hasErrors()){
+					for(var errorKey in attributeValue.getErrors()){
+						for(var error in attributeValue.getErrors()[errorKey] ){
+							var message = "";
+							if(findNoCase('regex',error) && !isNull(attributeValue.getAttribute()) && !isNull(attributeValue.getAttribute().getValidationMessage())){
+		             			message = attributeValue.getAttribute().getValidationMessage();
+							}else{
+								message = error;
+							}
+							this.addError(errorKey,hibachiHTMLeditFormat(message));
+						}
+					}
+					
+	             }
+	    	}
+	    }
+		
+	}
+	
+	public any function validate(string context="", passThrough=false){
+		
+		if(!arguments.passThrough){
+			validateAttributes(context=arguments.context);
+		}
+		return super.validate(argumentCollection=arguments);
+		
+	}
 
 	// @hint Returns an array of comments related to this entity
 	public array function getComments( boolean publicFlag ) {
@@ -92,15 +126,33 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		}
 		return variables.files;
 	}
-
+	
+	public any function getFilesSmartList(){
+		if(!structKeyExists(variables, "filesSmartList")) {
+			arguments.baseID = getPrimaryIDValue();
+			variables.filesSmartList = getService("fileService").getRelatedFilesSmartListForEntity(argumentCollection=arguments);
+		}
+		return variables.filesSmartList;
+	}
+	
 	// @hint helper function to return a Setting
 	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
 		return getService("settingService").getSettingValue(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
 	}
+	
+	
 
 	// @hint helper function to return the details of a setting
 	public struct function getSettingDetails(required any settingName, array filterEntities=[]) {
 		return getService("settingService").getSettingDetails(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities);
+	}
+	
+	// @hint helper function to return the details of a setting
+	public any function getSettingValueFormatted(any settingName, array filterEntities=[]) {
+		if(!structKeyExists(variables,'settingValueFormatted')){
+			variables.settingValueFormatted = getService("settingService").getSettingValueFormatted(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities);
+		}
+		return variables.settingValueFormatted;
 	}
 
 	// Attribute Value
@@ -121,8 +173,33 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	}
 
 	public any function getAttributeValue(required string attribute, returnEntity=false){
+		
+		//If custom property exists for this attribute, return the property value instead
+		if(len(arguments.attribute) eq 32) {
+			//If the id is passed in, need to load the attribute in order to get the attribute code
+			var attributeEntity = getService("attributeService").getAttributeByAttributeID(arguments.attribute);
+			
+			//Check if a custom property exists
+			if (getService("hibachiService").getEntityHasPropertyByEntityName(getClassName(),attributeEntity.getAttributeCode())){
+				if (!isNull(invokeMethod("get#attributeEntity.getAttributeCode()#"))){
+					return invokeMethod("get#attributeEntity.getAttributeCode()#");
+				}else{
+					return '';
+				}
+			}
+		}else{
+			//Check if a custom property exists
+			if (getService("hibachiService").getEntityHasPropertyByEntityName(getClassName(),arguments.attribute)){
+				if (!isNull(invokeMethod("get#arguments.attribute#"))){
+					return invokeMethod("get#arguments.attribute#");
+				}else{
+					return '';
+				}
+			}
+		}
+		
 		var attributeValueEntity = "";
-
+		
 		// If an ID was passed, and that value exists in the ID struct then use it
 		if(len(arguments.attribute) eq 32 && structKeyExists(getAttributeValuesByAttributeIDStruct(), arguments.attribute) ) {
 			attributeValueEntity = getAttributeValuesByAttributeIDStruct()[arguments.attribute];
@@ -161,9 +238,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		}
 
 		// If the attributeValueEntity wasn't found, then lets just go look at the actual attribute object by ID/CODE for a defaultValue
-		if(len(arguments.attribute) eq 32) {
-			var attributeEntity = getService("attributeService").getAttribute(arguments.attribute);
-		} else {
+		if(len(arguments.attribute) neq 32) {
 			var attributeEntity = getService("attributeService").getAttributeByAttributeCode(arguments.attribute);
 		}
 		if(!isNull(attributeEntity) && !isNull(attributeEntity.getDefaultValue()) && len(attributeEntity.getDefaultValue())) {
@@ -174,33 +249,77 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	}
 	
 	public any function setAttributeValue(required string attribute, required any value, boolean valueHasBeenEncryptedFlag=false){
+		//If custom property exists for this attribute, return the property value instead
+		if(len(arguments.attribute) eq 32) {
+			//If the id is passed in, need to load the attribute in order to get the attribute code
+			var attributeEntity = getService("attributeService").getAttributeByAttributeID(arguments.attribute);
+			
+			//Check if a custom property exists
+			if (getService("hibachiService").getEntityHasPropertyByEntityName(getClassName(),attributeEntity.getAttributeCode()) && attributeEntity.getAttributeInputType() != 'file'){
+				
+				if(arguments.value != "") {
+					invokeMethod("set#attributeEntity.getAttributeCode()#", {1=arguments.value});
+				} else {
+					var thisMethod = this["set" & attributeEntity.getAttributeCode()];
+					thisMethod(javacast('null',''));
+				}
+				return '';
+			}
+		}else{
+			//Check if a custom property exists
+			
+			if (
+				getService("hibachiService").getEntityHasPropertyByEntityName(getClassName(),arguments.attribute) 
+			){
+				var propertyStruct = getService("hibachiService").getPropertiesStructByEntityName(getClassName(),arguments.attribute);
+				if(structkeyExists(propertyStruct,'hb_formFieldType')
+					|| (
+						structkeyExists(propertyStruct,'hb_formFieldType')
+						&& propertyStruct['hb_formFieldType'] != 'file'
+					)
+				){
+					if(arguments.value != "") {
+						invokeMethod("set#arguments.attribute#", {1=arguments.value});
+					} else {
+						var thisMethod = this["set" & arguments.attribute];
+						thisMethod(javacast('null',''));
+					}
+					return '';
+				}
+				
+			}
+		}
 		
 		var attributeValueEntity = getAttributeValue( arguments.attribute, true);
 		
 		// Value is already encrypted, if attributeValueEntity.setAttributeValue called instead of attributeValueEntity.setAttributeValueEncrypted the encrypted value would be encrypted again
-		if (arguments.valueHasBeenEncryptedFlag) {
-			attributeValueEntity.setAttributeValueEncrypted( arguments.value );
-		} else {
-			attributeValueEntity.setAttributeValue( arguments.value );
-		}
-		attributeValueEntity.invokeMethod("set#attributeValueEntity.getAttributeValueType()#", {1=this});
+		if(isObject(attributeValueEntity)){
+			
 		
-		// If this attribute value is new, then we can add it to the array
-		if(attributeValueEntity.isNew()) {
-			attributeValueEntity.invokeMethod("set#attributeValueEntity.getAttributeValueType()#", {1=this});
-		}
-		
-		// If this attribute Value is from an attributeValueOption, then get the attributeValueOption and set it as well
-		if(listFindNoCase("radioGroup,select", attributeValueEntity.getAttribute().getAttributeInputType())) {
-			var attributeOption = getService('attributeService').getAttributeOption({attribute=attributeValueEntity.getAttribute(), attributeOptionValue=arguments.value});
-			if(!isNull(attributeOption)) {
-				attributeValueEntity.setAttributeValueOption( attributeOption );
+			if (arguments.valueHasBeenEncryptedFlag) {
+				attributeValueEntity.setAttributeValueEncrypted( arguments.value );
+			} else {
+				attributeValueEntity.setAttributeValue( arguments.value );	
 			}
-		}
+			attributeValueEntity.invokeMethod("set#attributeValueEntity.getAttributeValueType()#", {1=this});
+			
+			// If this attribute value is new, then we can add it to the array
+			if(attributeValueEntity.isNew()) {
+				attributeValueEntity.invokeMethod("set#attributeValueEntity.getAttributeValueType()#", {1=this});
+			}
+			
+			// If this attribute Value is from an attributeValueOption, then get the attributeValueOption and set it as well
+			if(listFindNoCase("radioGroup,select", attributeValueEntity.getAttribute().getAttributeInputType())) {
+				var attributeOption = getService('attributeService').getAttributeOption({attribute=attributeValueEntity.getAttribute(), attributeOptionValue=arguments.value});
+				if(!isNull(attributeOption)) {
+					attributeValueEntity.setAttributeValueOption( attributeOption );
+				}
+			}
 		
-		// Update the cache for this attribute value
-		getAttributeValuesByAttributeCodeStruct()[ attributeValueEntity.getAttribute().getAttributeCode() ] = attributeValueEntity;
-		getAttributeValuesByAttributeIDStruct()[ attributeValueEntity.getAttribute().getAttributeID() ] = attributeValueEntity;
+			// Update the cache for this attribute value
+			getAttributeValuesByAttributeCodeStruct()[ attributeValueEntity.getAttribute().getAttributeCode() ] = attributeValueEntity;
+			getAttributeValuesByAttributeIDStruct()[ attributeValueEntity.getAttribute().getAttributeID() ] = attributeValueEntity;
+		}
 	}
 
 	public any function getAssignedAttributeSetSmartList(){
@@ -294,9 +413,86 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	
 	public string function getShortReferenceID( boolean createNewFlag=false ) {
 		if(len(getPrimaryIDValue())) {
-			return getService("dataService").getShortReferenceID(referenceObjectID=getPrimaryIDValue(), referenceObject=getClassName(), createNewFlag=arguments.createNewFlag);	
+			return getService("hibachiDataService").getShortReferenceID(referenceObjectID=getPrimaryIDValue(), referenceObject=getClassName(), createNewFlag=arguments.createNewFlag);	
 		}
 		return '';
 	}
+	
+	public any function getDefaultPropertiesIdentifierList(){
+		var defaultEntityPropertiesList = getDefaultCollectionProperties();
+	}
+	
+	public array function getDefaultPropertyIdentifierArray(){
+		
+		var defaultPropertyIdentifiersList = getDefaultPropertyIdentifiersList();
+		// Turn the property identifiers into an array
+		return listToArray( defaultPropertyIdentifiersList );
+	}
+	
+	public string function getDefaultPropertyIdentifiersList(){
+		// Lets figure out the properties that need to be returned
+		var defaultProperties = getDefaultCollectionProperties();
+		var defaultPropertyIdentifiersList = "";
+		for(var i=1; i<=arrayLen(defaultProperties); i++) {
+			defaultPropertyIdentifiersList = listAppend(defaultPropertyIdentifiersList, defaultProperties[i]['name']);
+		}
+		return defaultPropertyIdentifiersList;
+	}
+	
+	public string function getAttributesCodeList(){
+		var attributeCodesList = getService("HibachiCacheService").getOrCacheFunctionValue(
+			"attributeService_getAttributeCodesListByAttributeSetObject_#getService("hibachiService").getProperlyCasedShortEntityName(getClassName())#", 
+			"attributeService", "getAttributeCodesListByAttributeSetObject", 
+			{1=getService("hibachiService").getProperlyCasedShortEntityName(getClassName())}
+			
+		);
+		return attributeCodesList;
+	}
+	
+	public array function getAttributesArray(){
+		var attributes = [];
+		var attributesListArray = listToArray(getAttributesCodeList());
+		for(var attributeCode in attributesListArray){
+			var attribute = getService('attributeService').getAttributeByAttributeCode(attributeCode);
+			
+			ArrayAppend(attributes,attribute);
+		}
+		return attributes;
+	}
+	
+	public any function getFilterProperties(string includesList = "", string excludesList = ""){
+		var properties = super.getFilterProperties(argumentCollection=arguments);
+		var attributeProperties = getAttributesProperties(properties);
+		return getService('hibachiUtilityService').arrayConcat(properties,attributeProperties);
+	}
+	
+	public any function getAttributesProperties(array properties=[]){
+		var attributesProperties = [];
+		var attributesArray = getAttributesArray();
+		for(var i = arrayLen(attributesArray); i > 0 ;i--){
+			var attribute = attributesArray[i];
+			if(!structKeyExists(this,'get#attribute.getAttributeCode()#')){
+				var attributeProperty = {};
+				attributeProperty['displayPropertyIdentifier'] = attribute.getAttributeName();
+				attributeProperty['name'] = attribute.getAttributeCode();
+				attributeProperty['attributeID'] = attribute.getAttributeID();
+				attributeProperty['attributeSetObject'] = ReReplace(attribute.getAttributeSet().getAttributeSetObject(),"\b(\w)","\L\1","ALL");
+				//TODO: normalize attribute types to separate table
+				attributeProperty['ormtype'] = 'string';
+				ArrayAppend(attributesProperties,attributeProperty);
+			}else if(arraylen(arguments.properties)){
+				for(var property in arguments.properties){
+					if(property.name == attribute.getAttributeCode()){
+						property['displayPropertyIdentifier'] = attribute.getAttributeName();
+						arrayDeleteAt(attributesArray,i);
+					}
+				}
+			}
+		}
+		return attributesProperties;
+	}
+	
+	
+	
 
 }

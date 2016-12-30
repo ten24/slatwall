@@ -48,11 +48,16 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.stateSmartList" type="any" />
 
 <cfoutput>
 	
-<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.stateSmartList#">
+<hb:HibachiEntityActionBar type="listing" object="#rc.stateSmartList#" showCreate="false" />
+
+	
+<hb:HibachiListingDisplay smartList="#rc.stateSmartList#">
 	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="stateName" />
 	<hb:HibachiListingColumn propertyIdentifier="stateCode" />
 	<hb:HibachiListingColumn propertyIdentifier="country.countryName" />

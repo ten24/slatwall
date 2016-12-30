@@ -1,0 +1,8 @@
+{
+    "conditions":{},
+	"properties":{
+	    "orderDeliveryItems":					[{"method":"hasQuantityOnOneOrderDeliveryItem", "method":"hasRecipientsForAllGiftCardDeliveryItems"}],
+	    "giftCardCodes":						[{"method":"hasAllGiftCardCodes"}]
+	},
+	"populatedPropertyValidation":{}
+}

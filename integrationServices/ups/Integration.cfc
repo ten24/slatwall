@@ -67,6 +67,11 @@ component accessors="true" output="false" displayname="UPS" extends="Slatwall.in
 			password = {fieldType="password", encryptValue=true},
 			testingFlag = {fieldType="yesno", defaultValue="1"},
 			shipperNumber = {fieldType="text"},
+			shipFromName = {fieldType="text"},
+			shipFromEmailAddress = {fieldType="text"},
+			shipFromCompany = {fieldType="text"},
+			shipFromPhoneNumber = {fieldType="text"},
+			shipFromAddressLine = {fieldType="text"},
 			shipFromCity = {fieldType="text"},
 			shipFromStateCode = {fieldType="text"},
 			shipFromPostalCode = {fieldType="text"},
@@ -81,6 +86,7 @@ component accessors="true" output="false" displayname="UPS" extends="Slatwall.in
 				{name="(20) Air Service Center", value="20"}
 			]},
 			customerClassificationCode = {fieldType="select", defaultValue="04", valueOptions=[
+				{name="(00) Negotiated (rates associated with shipper number)", value="00"},
 				{name="(01) Wholesale (default for daily pickups)", value="01"},
 				{name="(03) Occasional (default for other pickups)", value="03"},
 				{name="(04) Retail (default for customer counter pickups)", value="04"}

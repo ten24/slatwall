@@ -1,3 +1,5 @@
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <!--- Kill extra output. --->
 <cfsilent>
 
@@ -19,18 +21,18 @@
 			into which we want to store the iteration value.
 			--->
 			<cfparam name="ATTRIBUTES.Index" type="string"/>
-		
+
 			<!---
 			This is the value at which we will start the
 			date looping.
 			--->
-			<cfparam name="ATTRIBUTES.From" type="numeric"/>
+			<cfparam name="ATTRIBUTES.From" />
 		
 			<!---
 			This is the value at which we will end the
 			date looping (value is inclusive in loop).
 			--->
-			<cfparam name="ATTRIBUTES.To" type="numeric"/>
+			<cfparam name="ATTRIBUTES.To" />
 		
 			<!---
 			This is the amount by which we will incrememnt

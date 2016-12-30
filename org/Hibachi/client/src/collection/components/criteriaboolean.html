@@ -1,0 +1,20 @@
+<form action="index.html" method="post">
+  <div class="s-filter-group-item">
+
+    <div class="form-group form-group-sm">
+      <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Condition:</label>
+      <div class="s-no-paddings">
+      	<select id="u52_input" class="form-control input-sm j-custom-select" style="-webkit-appearance: menulist-button; border-color: rgb(153, 153, 153);"
+      			ng-model="selectedFilterProperty.selectedCriteriaType" 
+        		ng-options="conditionOption as conditionOption.display 
+        					for conditionOption in conditionOptions 
+        					
+        					" 	
+      	>
+      		<option selected="selected" value="">Select Condition</option>
+        </select>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</form>

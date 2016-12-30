@@ -48,50 +48,21 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.country" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.country#" edit="#rc.edit#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.country#" edit="#rc.edit#" />
-		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList divClass="span6">
-				<hb:HibachiPropertyDisplay object="#rc.country#" property="countryCode" edit="#rc.country.getNewFlag()#">
-				<hb:HibachiPropertyDisplay object="#rc.country#" property="countryCode3Digit" edit="#rc.country.getNewFlag()#">
-				<hb:HibachiPropertyDisplay object="#rc.country#" property="countryISONumber" edit="#rc.country.getNewFlag()#">
-				<hb:HibachiPropertyDisplay object="#rc.country#" property="activeFlag" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.country#" property="countryName" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.country#" property="defaultCurrency" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.country#" property="streetAddressLabel" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.country#" property="street2AddressLabel" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.country#" property="localityLabel" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.country#" property="cityLabel" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.country#" property="stateCodeLabel" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.country#" property="postalCodeLabel" edit="#rc.edit#">
-			</hb:HibachiPropertyList>
-			<hb:HibachiPropertyList divClass="span3">
-				<hb:HibachiPropertyDisplay object="#rc.country#" property="streetAddressShowFlag" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.country#" property="street2AddressShowFlag" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.country#" property="localityShowFlag" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.country#" property="cityShowFlag" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.country#" property="stateCodeShowFlag" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.country#" property="postalCodeShowFlag" edit="#rc.edit#">
-			</hb:HibachiPropertyList>
-			<hb:HibachiPropertyList divClass="span3">
-				<hb:HibachiPropertyDisplay object="#rc.country#" property="streetAddressRequiredFlag" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.country#" property="street2AddressRequiredFlag" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.country#" property="localityRequiredFlag" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.country#" property="cityRequiredFlag" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.country#" property="stateCodeRequiredFlag" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.country#" property="postalCodeRequiredFlag" edit="#rc.edit#">
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-	</hb:HibachiEntityDetailForm>
 	
-	<hb:HibachiTabGroup object="#rc.country#">
-		<hb:HibachiTab property="states" />
-	</hb:HibachiTabGroup>
+		<hb:HibachiEntityDetailGroup object="#rc.country#">
+			<hb:HibachiEntityDetailItem view="admin:entity/countrytabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<hb:HibachiEntityDetailItem view="admin:entity/countrytabs/addressRequirements" text="#$.slatwall.rbKey('admin.entity.detailcountry.addressrequirements')#" />
+			<hb:HibachiEntityDetailItem property="states" />
+		</hb:HibachiEntityDetailGroup>
+	</hb:HibachiEntityDetailForm>
 	
 </cfoutput>
 

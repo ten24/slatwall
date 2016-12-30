@@ -48,6 +48,7 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.task" type="any"/>
 
 <hb:HibachiListingDisplay smartlist="#rc.task.getTaskSchedulesSmartList()#" 
@@ -62,5 +63,5 @@ Notes:
 	<hb:HibachiListingColumn propertyidentifier="nextRunDateTime" />
 </hb:HibachiListingDisplay>
 
-<hb:HibachiActionCaller action="admin:entity.createTaskSchedule" class="btn" icon="plus" 
+<hb:HibachiActionCaller action="admin:entity.createTaskSchedule" class="btn btn-default" icon="plus" 
                       querystring="sRedirectAction=admin:entity.detailTask&taskID=#rc.task.getTaskID()#" modal=true/>

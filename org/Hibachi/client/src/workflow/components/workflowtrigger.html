@@ -1,0 +1,40 @@
+<div class="s-bundle-add-obj s-no-edit">
+	<ul class="list-unstyled list-inline">
+		<li class="s-item-type s-tooltip" data-toggle="tooltip" data-placement="right" title="{{workflowTrigger.data.triggerType}}">
+			<i class="fa" data-ng-class="workflowTrigger.data.triggerType === 'Event' ? 'fa-flag' : 'fa-calendar'"></i>
+		</li>
+	</ul>
+	<ul class="list-unstyled list-inline s-middle">
+		<li data-ng-if="workflowTrigger.data.triggerType === 'Event'" class="j-tool-tip-item s-bundle-details" data-ng-bind="workflowTrigger.data.triggerEventTitle"></li>
+		<li data-ng-if="workflowTrigger.data.triggerType === 'Schedule'" class="j-tool-tip-item s-bundle-details" data-ng-bind="workflowTrigger.data.scheduleCollection.data.collectionName + ' - ' + workflowTrigger.data.schedule.data.scheduleName"></li>
+	</ul>
+	<ul class="list-unstyled list-inline s-last">
+        <li class="col-xs-1 j-tool-tip-item s-bundle-details-add" data-ng-if="workflowTrigger.data.triggerType === 'Schedule'" data-ng-click="executeWorkflowTrigger(workflowTrigger);">
+            <a class="btn s-btn-lgrey s-edit">
+                <i class="fa" data-ng-class="executingTrigger ? 'fa-refresh fa-spin' : 'fa-play'"></i>
+            </a>
+        </li>
+
+		<li class="col-xs-1 j-tool-tip-item s-bundle-details-add" data-ng-click="selectWorkflowTrigger(workflowTrigger);">
+			<a class="btn btn-lgrey s-edit" data-target="#s-add-obj-1">
+				<i 	class="fa fa-pencil"
+				></i>
+			</a>
+		</li>
+		<li class="col-xs-1 j-tool-tip-item s-bundle-details-add">
+			<a 
+			class="btn btn-lgrey s-remove"
+		    sw-confirm
+            data-confirm-text="Confirm"
+			data-message-text="Are you sure you want to delete this trigger?"
+			data-callback="deleteEntity(workflowTrigger, $index)"
+			data-use-rb-key="false"
+			data-simple=false
+			data-yes-text="Yes"
+			data-no-text="No">
+		    <i class="fa fa-trash"></i>
+            </a>
+		</li>
+
+	</ul>
+</div>

@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.setting" type="any">
 <cfparam name="rc.settingName" type="string">
 <cfparam name="rc.currentValue" type="string">
@@ -93,7 +95,9 @@ Notes:
 				</cfif>
 			</hb:HibachiPropertyList>
 			<cfif !rc.setting.isNew() and local.hasRelationshipKey>
-				<hb:HibachiActionCaller action="admin:entity.deletesetting" queryString="settingID=#rc.setting.getSettingID()#&#local.redirectQS#&redirectAction=#rc.entityActionDetails.sRedirectAction#" class="btn btn-danger" />
+				<div class="col-md-12 s-content-wrapper">
+					<hb:HibachiActionCaller action="admin:entity.deletesetting" queryString="settingID=#rc.setting.getSettingID()#&#local.redirectQS#&redirectAction=#rc.entityActionDetails.sRedirectAction#" class="btn btn-danger" />
+				</div>
 			</cfif>
 		</hb:HibachiPropertyRow>
 	</hb:HibachiEntityDetailForm>
