@@ -35,6 +35,7 @@ class SWAddSkuPriceModalLauncherController{
     
     public initData = () =>{
         //these are populated in the link function initially
+        this.skuPrice = this.entityService.newEntity('SkuPrice'); 
         this.skuPrice.$$setSku(this.sku);
         if(angular.isUndefined(this.disableAllFieldsButPrice)){
             this.disableAllFieldsButPrice = false; 
@@ -58,9 +59,11 @@ class SWAddSkuPriceModalLauncherController{
         } else if(angular.isDefined(this.currencyCodeOptions) && this.currencyCodeOptions.length){
             this.skuPrice.data.currencyCode = this.currencyCodeOptions[0]; 
         }
+        this.observerService.notify("pullBindings");
     }
     
     public save = () => {
+        this.observerService.notify("updateBindings");
         var firstSkuPriceForSku = !this.skuPriceService.hasSkuPrices(this.sku.data.skuID);
         var savePromise = this.skuPrice.$$save();
         savePromise.then(
@@ -75,22 +78,28 @@ class SWAddSkuPriceModalLauncherController{
                         if( angular.isDefined(pageRecords[i].skuID) &&
                             pageRecords[i].skuID == this.sku.data.skuID
                         ){
+                            var skuPageRecord = pageRecords[i];
                             var index = i + 1; 
                             while(index < pageRecords.length && angular.isUndefined(pageRecords[index].skuID)){
                                 //if there is a place in the listing to insert the new sku price lets insert it
-                                if( ( 
-                                        pageRecords[index].minQuantity <= this.skuPrice.data.minQuantity &&
-                                        index + 1 < pageRecords.length && (
+                                if( 
+                                    ( pageRecords[index].minQuantity <= this.skuPrice.data.minQuantity ) &&
+                                    (   index + 1 < pageRecords.length && (
                                         pageRecords[index+1].minQuantity >= this.skuPrice.data.minQuantity ||
                                         angular.isDefined(pageRecords[index+1].skuID) ) 
-                                    ) || 
-                                    index + 1 == pageRecords.length
+                                    ) || index + 1 == pageRecords.length
                                 ){
-                                    this.skuPrice.data.skuSkuId = this.skuId;
                                     this.skuPrice.data.eligibleCurrencyCodeList = this.currencyCodeOptions.join(",");
+                                    //spoof the page record
                                     var skuPriceForListing = {}; 
-                                    angular.copy(this.skuPrice.data,skuPriceForListing); 
+                                    for(var key in this.skuPrice.data){
+                                        skuPriceForListing[key] =  this.skuPrice.data[key];
+                                    }
+                                    skuPriceForListing["sku_skuID"] = this.sku.skuID;
+                                    skuPriceForListing["sku_skuCode"] = this.sku.skuCode;
+                                    skuPriceForListing["sku_skuDefinition"] = this.sku.skuDefinition;
                                     pageRecords.splice(index+1,0,skuPriceForListing);
+                                    console.log("looking to insert success!", this.skuPrice.data, skuPriceForListing);
                                     break; 
                                 }  
                                 index++; 
@@ -110,6 +119,7 @@ class SWAddSkuPriceModalLauncherController{
             if(firstSkuPriceForSku){
                 this.listingService.getCollection(this.listingID); 
             }
+            this.listingService.notifyListingPageRecordsUpdate(this.listingID);
         });
         return savePromise; 
     }

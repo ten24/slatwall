@@ -16,6 +16,7 @@
                 <h2 data-ng-bind="swListingDisplay.title"></h2>
             </div>
             <sw-listing-controls data-ng-if="swListingDisplay.hasSearch !== false && swListingDisplay.collectionConfig != null && !swListingDisplay.customListingControls"
+                    data-table-id="swListingDisplay.tableID"
                     data-collection-config="swListingDisplay.collectionConfig"
                     data-get-collection="swListingDisplay.getCollection"
                     data-paginator="swListingDisplay.paginator"
