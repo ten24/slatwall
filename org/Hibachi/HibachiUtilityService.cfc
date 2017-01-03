@@ -429,6 +429,19 @@
 		    }
 		    return newArr;
 		}
+		
+		//name value pair string to struct. Separates url string by & ampersand
+		public struct function convertNVPStringToStruct( required string data ) {
+			if(left(arguments.data,1) == '?'){
+				arguments.data = right(arguments.data,len(arguments.data)-1);
+			}
+			var returnStruct = {};
+			var ampArray = listToArray(arguments.data, "&");
+			for(var i=1; i<=arrayLen(ampArray); i++) {
+				returnStruct[ listFirst(ampArray[i], "=") ] = listLast(ampArray[i], "=");
+			}
+			return returnStruct;
+		}
 
 		public string function filterFilename(required string filename) {
 			// Lower Case The Filename
@@ -781,6 +794,7 @@
 
 			var passwordsJSON = serializeJSON({'passwords'=arguments.encryptionPasswordArray});
 			fileWrite(getEncryptionPasswordFilePath(), encrypt(passwordsJSON, hardCodedFileEncryptionKey, "AES/CBC/PKCS5Padding"));
+			logHibachi("Encryption key file updated", true);
 		}
 
 		private any function readEncryptionPasswordFile() {

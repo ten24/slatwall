@@ -60,8 +60,12 @@ Notes:
 		<cfset cfmailAttributes["from"] = arguments.email.getEmailFrom() />
 		<cfset cfmailAttributes["subject"] = arguments.email.getEmailSubject() />
 		<cfset cfmailAttributes["to"] = arguments.email.getEmailTo() />
-		<cfset cfmailAttributes["cc"] = arguments.email.getEmailCC() />
-		<cfset cfmailAttributes["bcc"] = arguments.email.getEmailBCC() />
+		<cfif !isNull(arguments.email.getEmailCC())>
+			<cfset cfmailAttributes["cc"] = arguments.email.getEmailCC() />
+		</cfif>
+		<cfif !isNull(arguments.email.getEmailBCC())>
+			<cfset cfmailAttributes["bcc"] = arguments.email.getEmailBCC() />
+		</cfif>
 		<cfset cfmailAttributes["charset"] = "utf-8" />
 
 		<cfif structKeyExists(arguments, 'emailTemplate') && !isNull(arguments.emailTemplate) && len(arguments.emailTemplate.setting('emailSMTPServer'))>
@@ -98,7 +102,7 @@ Notes:
 
 			<cfset cfmailAttributes["type"] = "text/html" />
 
-			<cfmail attributeCollection=cfmailAttributes>
+			<cfmail attributeCollection="#cfmailAttributes#">
 				<cfif !isNull(arguments.email.getEmailFailTo())>
 					<cfmailparam name="Return-Path" value="#arguments.email.getEmailFailTo()#">
 				</cfif>
@@ -116,7 +120,7 @@ Notes:
 
 			<cfset cfmailAttributes["type"] = "text/plain" />
 
-			<cfmail attributeCollection=cfmailAttributes>
+			<cfmail attributeCollection="#cfmailAttributes#">
 				<cfif !isNull(arguments.email.getEmailFailTo())>
 					<cfmailparam name="Return-Path" value="#arguments.email.getEmailFailTo()#">
 				</cfif>

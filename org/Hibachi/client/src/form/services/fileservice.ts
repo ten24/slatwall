@@ -7,6 +7,22 @@ class FileService {
     constructor(private $q, private observerService){
       
     }
+
+    public imageExists = (src) =>{
+
+        var deferred = $q.defer();
+
+        var image = new Image();
+        image.onerror = function() {
+            deferred.reject();
+        };
+        image.onload = function() {
+            deferred.resolve();
+        };
+        image.src = src;
+
+        return deferred.promise;
+    }
     
     public uploadFile = (file:any,object:any,property:string) => {
         var deferred = this.$q.defer();

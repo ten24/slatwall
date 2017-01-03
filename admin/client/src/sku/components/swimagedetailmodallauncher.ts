@@ -9,6 +9,7 @@ class SWImageDetailModalLauncherController{
     public baseName:string = "j-image-detail";
     public imageFileName:string;
     public imagePath:string;
+    public imagePathToUse:string; 
     public imageFile:string;
     public productProductId:string;
     public customImageNameFlag:boolean;
@@ -24,23 +25,39 @@ class SWImageDetailModalLauncherController{
     constructor(
         private observerService,
         private formService,
+        private fileService, 
         private collectionConfigService,
         private utilityService,
         private $hibachi,
         private $http
     ){
         this.name = this.baseName + this.utilityService.createID(18);
-        var skuData = {
-            skuID:this.skuId,
-            skuCode:this.skuCode,
-            imageFileName:this.imageFileName,
-            imagePath:this.imagePath,
-            imageFile:this.imageFile
-        }
-        this.sku = this.$hibachi.populateEntity("Sku",skuData);
-        this.imageFileUpdateEvent = "file:"+this.imagePath;
-        this.observerService.attach(this.updateImage, this.imageFileUpdateEvent, this.skuId);
-        this.fetchImageOptionData();
+        
+        fileService.imageExists(this.imagePath).then(
+            ()=>{
+                this.imagePathToUse = this.imagePath; 
+            },
+            ()=>{
+                this.imagePathToUse = '/assets/images/image-placeholder.jpg';
+            }
+        ).finally(
+            ()=>{
+                console.log("using image path", this.imagePathToUse);
+                var skuData = {
+                    skuID:this.skuId,
+                    skuCode:this.skuCode,
+                    imageFileName:this.imageFileName,
+                    imagePath:this.imagePathToUse,
+                    imageFile:this.imageFile
+                }
+                this.sku = this.$hibachi.populateEntity("Sku",skuData);
+                this.imageFileUpdateEvent = "file:"+this.imagePath;
+                this.observerService.attach(this.updateImage, this.imageFileUpdateEvent, this.skuId);
+                this.fetchImageOptionData();
+            }
+        )
+
+        
     }
 
     private fetchImageOptionData = () =>{
