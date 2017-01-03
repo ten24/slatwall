@@ -157,7 +157,7 @@ class SWListingDisplayController{
                 
                 this.paginator.getCollection = this.getCollection;
         		
-                var getCollectionEventID = this.tableId;
+                var getCollectionEventID = this.tableID;
         		this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
             }
         );
