@@ -802,10 +802,10 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	}
 	
 	// Paging Methods
-	public array function getPageRecords(boolean refresh=false) {
+	public any function getPageRecords(boolean refresh=false, boolean unique=false) {
 		if( !structKeyExists(variables, "pageRecords") || arguments.refresh == true) {
 			saveState();
-			variables.pageRecords = ormExecuteQuery(getHQL(), getHQLParams(), false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
+			variables.pageRecords = ormExecuteQuery(getHQL(), getHQLParams(), arguments.unique, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
 		}
 		return variables.pageRecords;
 	}
