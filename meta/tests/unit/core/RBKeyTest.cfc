@@ -48,6 +48,8 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	
+	
+	
 	public void function allValidationsHaveRBkeys(){
 		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
 		var allFound = true;
@@ -69,6 +71,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 								//'validate.delete.Account.ownerAccount.canDeleteByOwner'
 								
 								if(key != 'contexts' && key != 'conditions'){
+									
 									var validationTypeName = key;
 									if(key == 'method'){
 										validationTypeName = validationPropertyDetail[key];
@@ -82,21 +85,25 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 										rbkey &= ".#validationPropertyDetail[key]#,#rbkeyFallback#";	
 									}
 									
-									var keyValue = request.slatwallScope.rbKey(rbkey,{propertyName=propertyName,className=exampleEntity.getClassName()});
-									if(right(keyValue,8) == '_missing') {
-										//if object doesn't have rbkey then check if the processObject has one
-										if(exampleEntity.hasProcessObject(context)){
-											var processObject = exampleEntity.getProcessObject(context);
-											rbkey = "validate.#processObject.getClassName()#.#propertyName#.#validationTypeName#";
-											keyValue = request.slatwallScope.rbKey(rbkey,{propertyName=propertyName,className=exampleEntity.getClassName()});						
-											if(right(keyValue,8) == '_missing') {
+									//exclude attribute message based regex validation
+									if(rbkey != 'validate.save.AttributeValue.attributeValue.regexMatches'){
+										var keyValue = request.slatwallScope.rbKey(rbkey,{propertyName=propertyName,className=exampleEntity.getClassName()});
+										if(right(keyValue,8) == '_missing') {
+											//if object doesn't have rbkey then check if the processObject has one
+											if(exampleEntity.hasProcessObject(context)){
+												var processObject = exampleEntity.getProcessObject(context);
+												rbkey = "validate.#processObject.getClassName()#.#propertyName#.#validationTypeName#";
+												keyValue = request.slatwallScope.rbKey(rbkey,{propertyName=propertyName,className=exampleEntity.getClassName()});						
+												if(right(keyValue,8) == '_missing') {
+													addToDebug(keyValue);
+													allFound = false;
+												}
+											}else{
 												addToDebug(keyValue);
-												allFound = false;
+												allFound = false;	
 											}
-										}else{
-											addToDebug(keyValue);
-											allFound = false;	
 										}
+									
 									}
 								}
 							}
@@ -105,6 +112,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				}	
 			}
 		}
+		assert(allFound, ArrayToList(variables.debugArray, chr(13) & chr(10)));
 	}
 
 	public void function all_entity_properties_have_keys() {
