@@ -647,6 +647,7 @@ component output="false" accessors="true" extends="HibachiService" {
 
 		var collectionOptions = this.getCollectionOptionsFromData(arguments.data); 
 		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName,collectionOptions);
+		collectionEntity.applyData();
 		collectionEntity.setEnforceAuthorization(arguments.enforceAuthorization);
 		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
 		

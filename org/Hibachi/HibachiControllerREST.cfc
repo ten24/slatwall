@@ -636,20 +636,13 @@ component output="false" accessors="true" extends="HibachiController" {
             handle accessing collections by id
         */
         param name="arguments.rc.propertyIdentifiers" default="";
-        param name="arguments.rc.applyData" default="false";
+        
         
         //first check if we have an entityName value
         if(!structKeyExists(arguments.rc, "entityName")) {
             arguments.rc.apiResponse.content['account'] = getHibachiScope().invokeMethod("getAccountData");
             arguments.rc.apiResponse.content['cart'] = getHibachiScope().invokeMethod("getCartData");
-        } else if (arguments.rc.applyData == true) {
-        	
-        	//get the collection using the entityName.
-        	var filteredCollection = entityService.invokeMethod("get#arguments.rc.entityName#CollectionList", {rc=arguments.rc});
-        	//apply the data to that collection.
-        	return filteredCollection.applyData();
-        	
-        }else {
+        } else {
             
             //considering using all url variables to create a transient collectionConfig for api response
             if(!structKeyExists(arguments.rc,'entityID')){
