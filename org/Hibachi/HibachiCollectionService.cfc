@@ -503,11 +503,7 @@ component output="false" accessors="true" extends="HibachiService" {
 							}
 						}
 						if(len(oldQueryKeys[key]) && len(newQueryKeys[key])) {
-							if(left(key, 1) eq "r") {
-								modifiedURL &= "#key#=#newQueryKeys[key]#&";	
-							} else {
 								modifiedURL &= "#key#=#oldQueryKeys[key]##variables.valueDelimiter##newQueryKeys[key]#&";
-							}
 						} else if(len(oldQueryKeys[key])) {
 							modifiedURL &= "#key#=#oldQueryKeys[key]#&";
 						}

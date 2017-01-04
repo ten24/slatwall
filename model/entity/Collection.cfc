@@ -138,6 +138,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		setHibachiCollectionService(getService('hibachiCollectionService'));
 	}
 	
+	public numeric function getCurrentPageDeclaration(){
+		return getPageRecordsStart();
+	}
+	
 	public array function getAuthorizedProperties(){
 		if(!structKeyExists(variables,'authorizedProperties')){
 			variables.authorizedProperties = [];
@@ -249,13 +253,20 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		required any value,
 		string comparisonOperator="=",
 		string logicalOperator="AND",
-	    string aggregate=""
+	    string aggregate="",
+	    any filterGroup
 	){
+		
 		var collectionConfig = this.getCollectionConfigStruct();
+		
 		var alias = collectionConfig.baseEntityAlias;
 
 		if(!structKeyExists(collectionConfig,'filterGroups')){
 			collectionConfig["filterGroups"] = [{"filterGroup"=[]}];
+		}
+		
+		if(!structKeyExists(arguments,'filterGroup')){
+			arguments.filterGroup = collectionConfig.filterGroups[1];
 		}
 
 		var _propertyIdentifier = '';
@@ -300,7 +311,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 
 		//if we already have a filter group then we need a logicalOperator
-		if(arraylen(collectionConfig.filterGroups[1].filterGroup)){
+		if(arraylen(arguments.filterGroup.filterGroup)){
 			filter["logicalOperator"]=arguments.logicalOperator;
 		}
 		//check if the propertyKey is an attribute
@@ -316,8 +327,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				propertyIdentifier=arguments.propertyIdentifier
 			);
 		}
-
-		arrayAppend(collectionConfig.filterGroups[1].filterGroup,filter);
+		
+		arrayAppend(arguments.filterGroup.filterGroup,filter);
+		
 	}
 
 	public void function setDisplayProperties(string displayPropertiesList=""){
@@ -557,7 +569,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 				if (!isNull(comparison)){
 					if (comparison == 'eq'){
-						comparison = "=";
+						if(listLen(dataToFilterOn) == 1){
+							comparison = "=";	
+						}else{
+							comparison = "in";
+						}
 					}
 					if (comparison == 'gte'){
 						comparison = ">=";
@@ -595,7 +611,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 				if (!isNull(comparison)){
 					if (comparison == 'eq'){
-						comparison = "=";
+						if(listLen(dataToFilterOn) == 1){
+							comparison = "=";	
+						}else{
+							comparison = "in";
+						}
 					}
 					if (comparison == 'gte'){
 						comparison = ">=";
@@ -622,15 +642,46 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			
 			//Handle Range
 			if (left(key, 2) == "r:"){
+				var ranges = listToArray(data[key]);
 				var filterParts = "#listToArray(key, ':')#";
 				var prop = filterParts[2];//property
-				var rangeValue = data[key];//value 20^40 for example.
+				var ormtype = getCollectionEntityObject().getOrmTypeByPropertyIdentifier(prop);
+				var rangeValues = listToArray(data[key]);//value 20^40,100^ for example.
+				var filterGroupIndex = 1;
 				
-				//get the data value for the range. for example 20^40, ^40 (0 to 40), 100^ (more than 100)
-				
-				this.addFilter(prop,replace(rangeValue,'^','-'),'BETWEEN');
+				for(var i=1; i <= arraylen(rangeValues);i++){
+					var rangeValue = rangeValues[i];
+					var filterData = {
+						propertyIdentifier=prop,
+						value=replace(rangeValue,'^','-'),
+						comparisonOperator='BETWEEN',
+						ormtype=ormtype
+					};
+					
+					if(i > 1){
+						filterData.logicalOperator = 'OR';
+					}
+					
+					if(!structKeyExists(getCollectionConfigStruct(),'filterGroups')){
+						getCollectionConfigStruct().filterGroups = [{filterGroup=[]}];
+					}
+					
+					if(arraylen(getCollectionConfigStruct().filterGroups) == 1){
+						var filterGroup = {filterGroup=[],logicalOperator="AND"};
+						arrayAppend(getCollectionConfigStruct().filterGroups,filterGroup);
+						filterData['filterGroup'] = getCollectionConfigStruct().filterGroups[2];
+						this.addFilter(argumentCollection=filterData);
+					}else if(arraylen(getCollectionConfigStruct().filterGroups) > 1){
+						getCollectionConfigStruct().filterGroups[2].logicalOperator="AND";
+						filterData['filterGroup'] = getCollectionConfigStruct().filterGroups[2];
+						this.addFilter(argumentCollection=filterData);
+					}
+					
+					//get the data value for the range. for example 20^40, ^40 (0 to 40), 100^ (more than 100)
+					
+					//;
+				}
 			}
-			
 			//OrderByList
 			var orderBys = data[key];
 			if (left(key,7)=='orderBy'){
@@ -1123,13 +1174,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			//constuct HQL to be used in filterGroup
 			var filterGroupHQL = getFilterGroupHQL(filterGroup.filterGroup);
 			if(len(filterGroupHQL)){
-				if(logicalOperator == "AND"){
-					filterGroupsHQL &= ") #logicalOperator# ((#filterGroupHQL#)";
-				} else {
-					filterGroupsHQL &= " #logicalOperator# (#filterGroupHQL#)";
-				}
-
-
+				filterGroupsHQL &= " #logicalOperator# (#filterGroupHQL#)";
 			}
 		}
 		return filterGroupsHQL;
@@ -1731,14 +1776,33 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					}
 				}
 			}else if(listFind('integer,float,big_decimal',arguments.filter.ormtype)){
-				var fromValue = listFirst(arguments.filter.value,'-');
-				var toValue = listLast(arguments.filter.value,'-');
-				var fromParamID = getParamID();
-				addHQLParam(fromParamID,fromValue);
-				var toParamID = getParamID();
-				addHQLParam(toParamID,toValue);
-
-				predicate = ":#fromParamID# AND :#toParamID#";
+				var ranges = listToArray(arguments.filter.value,'-');
+				if(arraylen(ranges) > 1){
+					var fromValue = ranges[1];
+					var toValue = ranges[2];
+					var fromParamID = getParamID();
+					addHQLParam(fromParamID,fromValue);
+					var toParamID = getParamID();
+					addHQLParam(toParamID,toValue);
+	
+					predicate = ":#fromParamID# AND :#toParamID#";
+				}else{
+					if(left(arguments.filter.value,1) == '-'){
+						var toValue = ranges[1];
+						var toParamID = getParamID();
+						addHQLParam(toParamID,toValue);
+						var minString = "(SELECT min(#arguments.filter.propertyIdentifier#) FROM #getDao('hibachiDAO').getApplicationKey()##getCollectionConfigStruct().baseEntityName# _minTable)";
+						//var minString = -1000000;
+						predicate = "#minString# AND :#toParamID#";
+					}else{
+						var fromValue = ranges[1];
+						var fromParamID = getParamID();
+						addHQLParam(fromParamID,fromValue);
+						var maxString = "(SELECT max(#arguments.filter.propertyIdentifier#) FROM #getDao('hibachiDAO').getApplicationKey()##getCollectionConfigStruct().baseEntityName# _maxTable)";
+						//var maxString = 1000000;
+						predicate = ":#fromParamID# AND #maxString#";
+					}				
+				}
 			}
 
 
