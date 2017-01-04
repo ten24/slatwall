@@ -103,11 +103,6 @@ component displayname="Image" entityname="SlatwallImage" table="SwImage" persist
 			arguments.alt = stringReplace(setting('imageAltString'));
 		}
 		
-		// Missing Image Path Setting
-		if(!structKeyExists(arguments, "missingImagePath")) {
-			arguments.missingImagePath = setting('imageMissingImagePath');
-		}
-		
 		// *** DEPRECATED SIZE LOGIC ***
 		if(structKeyExists(arguments, "size") && !isNull(getProduct()) && !structKeyExists(arguments, "width") && !structKeyExists(arguments, "height")) {
 			arguments.size = lcase(arguments.size);
@@ -130,11 +125,6 @@ component displayname="Image" entityname="SlatwallImage" table="SwImage" persist
 		
 		// Setup Image Path
 		arguments.imagePath = getImagePath();
-		
-		// Missing Image Path Setting
-		if(!structKeyExists(arguments, "missingImagePath")) {
-			arguments.missingImagePath = setting('imageMissingImagePath');
-		}
 		
 		// DEPRECATED SIZE LOGIC
 		if(structKeyExists(arguments, "size") && !isNull(getProduct()) && !structKeyExists(arguments, "width") && !structKeyExists(arguments, "height")) {

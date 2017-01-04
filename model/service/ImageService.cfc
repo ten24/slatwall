@@ -138,7 +138,11 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 			} else if (!isNull(getService('siteService').getCurrentRequestSite()) && !isNull(getService('siteService').getCurrentRequestSite().setting('siteMissingImagePath'))) {
                 
                 arguments.imagePath = getService('siteService').getCurrentRequestSite().setting('siteMissingImagePath');
-			
+            //Check settings location
+			}else if( fileExists(expandPath(getHibachiScope().setting('imageMissingImagePath'))) ){
+
+				arguments.imagePath = getHibachiScope().setting('imageMissingImagePath');
+
 			//check the custom location
 			} else if(fileExists(expandPath("#getApplicationValue('baseURL')#/custom/assets/images/missingimage.jpg"))) {
                
