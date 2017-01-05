@@ -643,11 +643,18 @@ component output="false" accessors="true" extends="HibachiService" {
 		return collectionOptions;
 	}
 
-	public any function getAPIResponseForEntityName(required string entityName, required struct data, boolean enforceAuthorization=true){
+	public any function getAPIResponseForEntityName(required string entityName, required struct data, boolean enforceAuthorization=true, string whiteList){
 
 		var collectionOptions = this.getCollectionOptionsFromData(arguments.data); 
 		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName,collectionOptions);
 		collectionEntity.setEnforceAuthorization(arguments.enforceAuthorization);
+		
+		if (!isNull(whiteList)){
+			var authorizedPropertyList = whiteList.split(",");
+			for(var authorizedProperty in authorizedPropertyList){
+				collectionEntity.addAuthorizedProperty(authorizedProperty);
+			}
+		}
 		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
 		
 		if(!structKeyExists(collectionConfigStruct,'filterGroups')){
@@ -660,7 +667,9 @@ component output="false" accessors="true" extends="HibachiService" {
 			collectionConfigStruct.isDistinct = false;
 		}
 		return getAPIResponseForCollection(collectionEntity,collectionOptions,collectionEntity.getEnforceAuthorization());
+	
 	}
+
 
 	public any function getAPIResponseForBasicEntityWithID(required string entityName, required string entityID, required struct data){
 		var collectionOptions = this.getCollectionOptionsFromData(arguments.data); 
