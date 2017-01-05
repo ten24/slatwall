@@ -1331,7 +1331,8 @@ component extends="HibachiService" accessors="true" output="false" {
 			getAccountDAO().removeAccountAddressFromOrderFulfillments( accountAddressID = arguments.accountAddress.getAccountAddressID() );
 			getAccountDAO().removeAccountAddressFromOrderPayments( accountAddressID = arguments.accountAddress.getAccountAddressID() );
 			getAccountDAO().removeAccountAddressFromOrders( accountAddressID = arguments.accountAddress.getAccountAddressID() );
-
+			getAccountDAO().removeAccountAddressFromSubscriptionUsages( accountAddressID = arguments.accountAddress.getAccountAddressID() );
+		   
 		    arguments.accountAddress.removeAccount();
             arguments.accountAddress.setAddress(javaCast("null","")); 
 
