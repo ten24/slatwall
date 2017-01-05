@@ -53,6 +53,62 @@ component extends="HibachiService" accessors="true" output="false" {
 
 	// ===================== START: Logical Methods ===========================
 	
+	public void function runWorkflowByEventTrigger(required any workflowTrigger, required any entity){
+		if(arguments.workflowTrigger.getStartDateTime() > now() || (!isNull(arguments.workflowTrigger.getEndDateTime()) && arguments.workflowTrigger.getEndDateTime() < now())){
+			continue;
+		}
+
+		if(arguments.workflowTrigger.getSaveTriggerHistoryFlag() == true) {
+
+			// Create a new workflowTriggerHistory to be logged
+			var workflowTriggerHistory = this.newWorkflowTriggerHistory();
+
+			//Attach workflowTrigger to workflowTriggerHistory
+			workflowTriggerHistory.setWorkflowTrigger(arguments.workflowTrigger);
+			workflowTriggerHistory.setStartTime(now());
+		}
+
+		//try {
+			var processData = {};
+
+			// If the triggerObject is the same as this event, then we just use it
+			if (isNull(arguments.workflowTrigger.getObjectPropertyIdentifier()) || !len(arguments.workflowTrigger.getObjectPropertyIdentifier()) || arguments.workflowTrigger.getObjectPropertyIdentifier() == arguments.entity.getClassName()) {
+
+				processData.entity = arguments.entity;
+
+			} else {
+				processData.entity = arguments.entity.getValueByPropertyIdentifier(arguments.workflowTrigger.getObjectPropertyIdentifier());
+
+			}
+
+			// As long as the processEntity was found, then we can process the workflow
+			if (structKeyExists(processData, "entity") && !isNull(processData.entity) && isObject(processData.entity) && processData.entity.getClassName() == arguments.workflowTrigger.getWorkflow().getWorkflowObject()) {
+				processData.workflowTrigger = arguments.workflowTrigger;
+
+				this.processWorkflow(arguments.workflowTrigger.getWorkflow(), processData, 'execute');
+			}
+			if (!isNull(workflowTriggerHistory)) {
+				// Update the workflowTriggerHistory
+				workflowTriggerHistory.setSuccessFlag(true);
+				workflowTriggerHistory.setResponse("");
+			}
+//		} catch (any e){
+//			if (!isNull(workflowTriggerHistory)) {
+//				// Update the workflowTriggerHistory
+//				workflowTriggerHistory.setSuccessFlag(false);
+//				workflowTriggerHistory.setResponse(e.Message);
+//			}
+//		}
+
+		if (!isNull(workflowTriggerHistory)) {
+			// Set the end for history
+			workflowTriggerHistory.setEndTime(now());
+
+			// Persist the info to the DB
+			workflowTriggerHistory = this.saveWorkflowTriggerHistory(workflowTriggerHistory);
+		}
+	}
+	
 	public any function runAllWorkflowsByEventTrigger( required any eventName, required any entity, required struct eventData={} ) {
 		// Pull the workflowTriggerEventsArray out of cache so that it is quick and can be checked to see if we need to trigger an event
 		var allWorkflowTriggerEventsArray = getHibachiCacheService().getOrCacheFunctionValue("workflowDAO_getWorkflowTriggerEventsArray", getWorkflowDAO(), "getWorkflowTriggerEventsArray");
@@ -67,59 +123,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 				for (var workflowTrigger in workflowTriggers) {
 
-					if(workflowTrigger.getStartDateTime() > now() || (!isNull(workflowTrigger.getEndDateTime()) && workflowTrigger.getEndDateTime() < now())){
-						continue;
-					}
-
-					if(workflowTrigger.getSaveTriggerHistoryFlag() == true) {
-
-						// Create a new workflowTriggerHistory to be logged
-						var workflowTriggerHistory = this.newWorkflowTriggerHistory();
-
-						//Attach workflowTrigger to workflowTriggerHistory
-						workflowTriggerHistory.setWorkflowTrigger(workflowTrigger);
-						workflowTriggerHistory.setStartTime(now());
-					}
-
-					try {
-						var processData = {};
-
-						// If the triggerObject is the same as this event, then we just use it
-						if (isNull(workflowTrigger.getObjectPropertyIdentifier()) || !len(workflowTrigger.getObjectPropertyIdentifier()) || workflowTrigger.getObjectPropertyIdentifier() == arguments.entity.getClassName()) {
-
-							processData.entity = arguments.entity;
-
-						} else {
-							processData.entity = arguments.entity.getValueByPropertyIdentifier(workflowTrigger.getObjectPropertyIdentifier());
-
-						}
-
-						// As long as the processEntity was found, then we can process the workflow
-						if (structKeyExists(processData, "entity") && !isNull(processData.entity) && isObject(processData.entity) && processData.entity.getClassName() == workflowTrigger.getWorkflow().getWorkflowObject()) {
-							processData.workflowTrigger = workflowTrigger;
-
-							this.processWorkflow(workflowTrigger.getWorkflow(), processData, 'execute');
-						}
-						if (!isNull(workflowTriggerHistory)) {
-							// Update the workflowTriggerHistory
-							workflowTriggerHistory.setSuccessFlag(true);
-							workflowTriggerHistory.setResponse("");
-						}
-					} catch (any e){
-						if (!isNull(workflowTriggerHistory)) {
-							// Update the workflowTriggerHistory
-							workflowTriggerHistory.setSuccessFlag(false);
-							workflowTriggerHistory.setResponse(e.Message);
-						}
-					}
-
-					if (!isNull(workflowTriggerHistory)) {
-						// Set the end for history
-						workflowTriggerHistory.setEndTime(now());
-
-						// Persist the info to the DB
-						workflowTriggerHistory = this.saveWorkflowTriggerHistory(workflowTriggerHistory);
-					}
+					runWorkflowByEventTrigger(workflowTrigger,arguments.entity);
 				}
 			//}
 		}
@@ -252,6 +256,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		switch (workflowTaskAction.getActionType()) {
 			// EMAIL
 			case 'email' :
+				
 				var email = getService('emailService').generateAndSendFromEntityAndEmailTemplate(entity=arguments.entity, emailTemplate=workflowTaskAction.getEmailTemplate());
 				if(!email.hasErrors()) {
 					actionSuccess = true;
@@ -338,7 +343,9 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		for(var workflowTask in arguments.workflow.getWorkflowTasks()) {
 			// Check to see if the task is active and the entity object passes the conditions validation
+			request.debug('here');
 			if(workflowTask.getActiveFlag() && workflowTask.getWorkflow().getActiveFlag() && entityPassesAllWorkflowTaskConditions(arguments.data.entity, workflowTask.getTaskConditionsConfigStruct())) {
+				request.debug('there');
 				// Now loop over all of the actions that can now be run that the workflow task condition has passes
 				for(var workflowTaskAction in workflowTask.getWorkflowTaskActions()) {
 

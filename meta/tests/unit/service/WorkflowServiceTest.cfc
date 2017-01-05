@@ -562,6 +562,32 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		addToDebug(conditionsGroupString);
 	}
 	
+	public void function sendOrderConfirmationOnPlaceOrderTest(){
+		//f80aaac73fc84ee7a7d53962c641f653 afterOrderProcess_placeOrderSuccess send order Confirmation
+		var orderData = {
+			orderID=""
+		};
+		var order = createPersistedTestEntity('Order',orderData);
+		
+		var orderItemData = {
+			orderItemID=""
+		};
+		var orderItem = createPersistedTestEntity('OrderItem',orderItemData);		
+		
+		var workflowTrigger = variables.service.getWorkflowTrigger('f80aaac73fc84ee7a7d53962c641f653');
+		variables.service.runWorkflowByEventTrigger(workflowTrigger);
+		var workflowTriggerHistorySmartList = variables.service.getWorkflowTriggerHistorySmartList();
+		workflowTriggerHistorySmartList.addFilter('workflowTrigger.workflowTriggerID',workflowTrigger.getWorkflowTriggerID());
+		workflowTriggerHistorySmartList.setPageRecordsShow(1);
+		var workflowTriggerHistory = workflowTriggerHistorySmartList.getPageRecords()[1];
+		assert(workflowTriggerHistory.getSuccessFlag());
+		
+	}
+	
+	public void function runWorkflowByEventTriggerTest(){
+		
+	}
+	
 	
 }
 
