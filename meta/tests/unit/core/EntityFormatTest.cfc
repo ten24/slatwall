@@ -73,6 +73,26 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		assert(!arrayLen(entitiesThatDontHaveSingularNameArray));
 	}
+	
+	public void function allcfcPropertiesAreCaseSensitive(){
+		var allSpelledProperly = true;
+		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
+		for(var entityName in allEntities) {
+			var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
+			for(var property in properties) {
+				if(
+					structkeyExists(property,'cfc') 
+				){
+					var longEntityName = 'Slatwall' & property.cfc;
+					if(!ArrayFind(allEntities,longEntityName)){
+						allSpelledProperly = false;
+						addToDebug( '#entityName#:#property.name# cfc attribute #property.cfc# needs to be case-sensitive' );
+					}
+				}
+			}
+		}
+		assert(allSpelledProperly);
+	}
 
 	//Entity Audit Properties Test
 	public void function all_entity_properties_have_audit_properties() {
@@ -451,7 +471,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	//This function checks if a persistant property (not cfc) uses type instead of ormtype to define the datatype
-	public void function check_persistant_nonCFC_properties_that_use_type() {
+	public void function check_persistant_nonCFC_properties_that_use_type_instead_of_ormtype() {
 		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
 		
 		var criminalsMessage = "";

@@ -54,6 +54,7 @@ component entityname="SlatwallEntityQueue" table="SwEntityQueue" persistent="tru
 	property name="baseID" ormType="string" index="EI_BASEID";
 	property name="entityQueueType" ormType="string" hb_formatType="rbKey"; // dependent on the integration
 	property name="entityQueueDateTime" ormtype="timestamp";
+	property name="entityQueueData" ormtype="string" length="8000";
 
 	// Related Object Properties (many-to-one)
 	

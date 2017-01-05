@@ -196,6 +196,33 @@ class SWCriteriaDate{
                                 }
                             },
 							{
+								display:"Exact N Day(s) Ago",
+								comparisonOperator:	"between",
+								dateInfo:{
+									type:'exactDate',
+									measureType:'d',
+									measureTypeDisplay:'Days'
+								}
+							},
+							{
+								display:"Exact N Month(s) Ago",
+								comparisonOperator:	"between",
+								dateInfo:{
+									type:'exactDate',
+									measureType:'m',
+									measureTypeDisplay:'Months'
+								}
+							},
+							{
+								display:"Exact N Year(s) Ago",
+								comparisonOperator:	"between",
+								dateInfo:{
+									type:'exactDate',
+									measureType:'y',
+									measureTypeDisplay:'Years'
+								}
+							},
+							{
 								display:"Defined",
 								comparisonOperator:"is not",
 								value:"null"

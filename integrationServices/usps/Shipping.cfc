@@ -140,9 +140,6 @@ component accessors="true" output="false" displayname="USPS" implements="Slatwal
         var requestURL = "";
         
         var testingFlag = setting('testingFlag');
-        if(!isNull(arguments.requestBean.getOrder()) && !isNull(arguments.requestBean.getOrder().getTestOrderFlag()) && arguments.requestBean.getOrder().getTestOrderFlag()){
-        	testingFlag = true;
-        }
         
         if(testingFlag) {
         	requestURL = setting("testAPIEndPointURL");

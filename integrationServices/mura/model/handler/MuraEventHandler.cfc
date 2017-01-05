@@ -134,6 +134,8 @@
 				var brandKeyLocation = 0;
 				var productKeyLocation = 0;
 				var productTypeKeyLocation = 0;
+				var addressKeyLocation = 0;
+				var accountKeyLocation = 0;
 				
 				// First look for the Brand URL Key
 				if (listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyBrand'), "/")) {
@@ -156,6 +158,22 @@
 					productTypeKeyLocation = listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyProductType'), "/");
 					if(productTypeKeyLocation < listLen($.event('path'),"/")) {
 						$.slatwall.setProductType( $.slatwall.getService("productService").getProductTypeByURLTitle(listGetAt($.event('path'), productTypeKeyLocation + 1, "/"), true) );
+					}
+				}
+				
+				// Look for the Address URL Key
+				if (listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyAddress'), "/")) {
+					addressKeyLocation = listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyAddress'), "/");
+					if(addressKeyLocation < listLen($.event('path'),"/")) {
+						$.slatwall.setRouteEntity("address", $.slatwall.getService("addressService").getAddressByURLTitle(listGetAt($.event('path'), addressKeyLocation + 1, "/"), true) );
+					}
+				}
+				
+				// Look for the Account URL Key
+				if (listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyAccount'), "/")) {
+					accountKeyLocation = listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyAccount'), "/");
+					if(accountKeyLocation < listLen($.event('path'),"/")) {
+						$.slatwall.setRouteEntity("account", $.slatwall.getService("addressService").getAccountByURLTitle(listGetAt($.event('path'), accountKeyLocation + 1, "/"), true) );
 					}
 				}
 				
@@ -278,7 +296,72 @@
 						throw("Slatwall has attempted to display a 'Brand' on your website, however the 'Brand Display Template' setting is either blank or invalid.  Please navigate to the Slatwall admin and make sure that there is a valid 'Brand Display Template' assigned.");
 						
 					}
+				//handle address
+				} else if ( addressKeyLocation && !isNull($.slatwall.getRouteEntity("address")) && !$.slatwall.getRouteEntity("address").isNew()  ) {
+					
+					// Attempt to find the productType template
+					var addressTemplateContent = $.slatwall.getService("contentService").getContent( $.slatwall.getRouteEntity("address").setting('addressDisplayTemplate', [$.slatwall.getSite()]) );
+					
+					// As long as the content is not null, and has all the necessary values we can continue
+					if(!isNull(addressTemplateContent) && !isNull(addressTemplateContent.getCMSContentID()) && !isNull(addressTemplateContent.getSite()) && !isNull(addressTemplateContent.getSite().getCMSSiteID())) {
+						
+						// Setup the content node in the slatwallScope
+						$.slatwall.setContent( addressTemplateContent );
+						
+						// Override the contentBean for the request
+						$.event('contentBean', $.getBean("content").loadBy( contentID=$.slatwall.getContent().getCMSContentID(), siteID=$.slatwall.getContent().getSite().getCMSSiteID() ) );
+						$.event('muraForceFilename', false);
+						
+						// Change Title, HTMLTitle & Meta Details of page
+						
+						if (!isNull($.slatwall.getRouteEntity("address").getName())) {
+							$.content().setTitle( $.slatwall.getRouteEntity("address").getName() );
+						}
+						if(len($.slatwall.getRouteEntity("address").setting('addressHTMLTitleString'))) {
+							$.content().setHTMLTitle( $.slatwall.getRouteEntity("address").stringReplace( $.slatwall.getRouteEntity("address").setting('addressHTMLTitleString') ) );	
+						} else {
+							$.content().setHTMLTitle( $.slatwall.getRouteEntity("address").getName() );
+						}
+						$.content().setMetaDesc( $.slatwall.getRouteEntity("address").stringReplace( $.slatwall.getRouteEntity("address").setting('addressMetaDescriptionString') ) );
+						$.content().setMetaKeywords( $.slatwall.getRouteEntity("address").stringReplace( $.slatwall.getRouteEntity("address").setting('addressMetaKeywordsString') ) );
+						
+					} else {
+						
+						throw("Slatwall has attempted to display a 'Address' on your website, however the 'Address Display Template' setting is either blank or invalid.  Please navigate to the Slatwall admin and make sure that there is a valid 'Address Display Template' assigned.");
+						
+					}
 
+				//handle account
+				} else if ( accountKeyLocation && !isNull($.slatwall.getRouteEntity("account")) && !$.slatwall.getRouteEntity("account").isNew() ) {
+					
+					// Attempt to find the productType template
+					var accountTemplateContent = $.slatwall.getService("contentService").getContent( $.slatwall.getRouteEntity("account").setting('accountDisplayTemplate', [$.slatwall.getSite()]) );
+					
+					// As long as the content is not null, and has all the necessary values we can continue
+					if(!isNull(accountTemplateContent) && !isNull(accountTemplateContent.getCMSContentID()) && !isNull(accountTemplateContent.getSite()) && !isNull(accountTemplateContent.getSite().getCMSSiteID())) {
+						
+						// Setup the content node in the slatwallScope
+						$.slatwall.setContent( accountTemplateContent );
+						
+						// Override the contentBean for the request
+						$.event('contentBean', $.getBean("content").loadBy( contentID=$.slatwall.getContent().getCMSContentID(), siteID=$.slatwall.getContent().getSite().getCMSSiteID() ) );
+						$.event('muraForceFilename', false);
+						
+						// Change Title, HTMLTitle & Meta Details of page
+						$.content().setTitle( $.slatwall.getRouteEntity("account").getFirstName() & " " & $.slatwall.getRouteEntity("account").getLastName() );
+						if(len($.slatwall.getRouteEntity().setting('accountHTMLTitleString'))) {
+							$.content().setHTMLTitle( $.slatwall.getRouteEntity("account").stringReplace( $.slatwall.getRouteEntity("account").setting('accountHTMLTitleString') ) );	
+						} else {
+							$.content().setHTMLTitle( $.slatwall.getRouteEntity("account").getFirstName() & " " & $.slatwall.getRouteEntity("account").getLastName() );
+						}
+						$.content().setMetaDesc( $.slatwall.getRouteEntity("account").stringReplace( $.slatwall.getRouteEntity("account").setting('accountMetaDescriptionString') ) );
+						$.content().setMetaKeywords( $.slatwall.getRouteEntity("account").stringReplace( $.slatwall.getRouteEntity("account").setting('accountMetaKeywordsString') ) );
+						
+					} else {
+						
+						throw("Slatwall has attempted to display a 'Account' on your website, however the 'Account Display Template' setting is either blank or invalid.  Please navigate to the Slatwall admin and make sure that there is a valid 'Account Display Template' assigned.");
+						
+					}
 				}
 			}
 		}
@@ -491,7 +574,7 @@
 							
 							//Build the ID LIst
 							var newIDList = parentCategory.getCategoryIDPath();
-							listAppend(newIDList, slatwallCategory.getCategoryID() );
+							newIDList = listAppend(newIDList, slatwallCategory.getCategoryID() );
 							
 							//Set the new categoryIDPath
 							slatwallCategory.setCategoryIDPath(newIDList);
@@ -523,8 +606,11 @@
 			var slatwallCategory = $.slatwall.getService("contentService").getCategoryByCMSCategoryID($.event('categoryID'));
 			if(!isNull(slatwallCategory)) {
 				if(slatwallCategory.isDeletable()) {
-					$.slatwall.getService("contentService").deleteCategory( slatwallCategory );
-					ormFlush();
+					//cannot use ORM because slatwall orm behavior will cascade delete child categories
+					//$.slatwall.getService("contentService").deleteCategory( slatwallCategory );
+					//ormFlush();
+					$.slatwall.getService('contentService').deleteCategoryByCMSCategoryID($.event('categoryID'));
+					
 				} else {
 					slatwallCategory.setActiveFlag(0);
 				}	
@@ -610,8 +696,6 @@
 				// If the "Add Sku" was selected, then we call that process method
 				if(structKeyExists(contentData, "addSku") && contentData.addSku && structKeyExists(contentData, "addSkuDetails")) {
 					contentData.addSkuDetails.productCode = muraContent.getFilename();
-					contentData.addSkuDetails.skuName = muraContent.getTitle();
-					
 					slatwallContent = $.slatwall.getService("contentService").processContent(slatwallContent, contentData.addSkuDetails, "createSku");
 				}
 			}
@@ -1105,13 +1189,14 @@
 			FROM
 				SwCategory
 			WHERE
-				categoryIDPath <> <cfqueryparam cfsqltype="cf_sql_varchar" value="#oldCategoryIDPath#" />
-			  AND
+				
 				categoryIDPath LIKE <cfqueryparam cfsqltype="cf_sql_varchar" value="#oldCategoryIDPath#%" />
 		</cfquery>
 		
 		
 		<cfloop query="rs">
+			
+			
 			<cfquery name="rs2">
 				UPDATE
 					SwCategory

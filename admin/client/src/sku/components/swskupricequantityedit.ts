@@ -35,8 +35,8 @@ class SWSkuPriceQuantityEditController{
         if(angular.isDefined(this.skuSkuId) && angular.isUndefined(this.skuPrice)){
             var skuPriceData = {
                 skuPriceID:this.skuPriceId, 
-                minQuantity:this.minQuantity, 
-                maxQuantity:this.maxQuantity,
+                minQuantity:parseInt(this.minQuantity), 
+                maxQuantity:parseInt(this.maxQuantity),
                 currencyCode:this.currencyCode,
                 price:this.price
             }

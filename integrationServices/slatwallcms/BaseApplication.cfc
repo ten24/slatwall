@@ -107,12 +107,18 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 		var templateBody = '';
 		if(!isNull(site.getResetSettingCache()) && site.getResetSettingCache()){
 			arguments.slatwallScope.getService('HibachiCacheService').resetCachedKeyByPrefix('content');
-			var cacheList = "globalURLKeyBrand,
+			var cacheList = 
+			   "globalURLKeyBrand,
 				globalURLKeyProduct,
 				globalURLKeyProductType,
+				globalURLKeyAccount,
+				globalURLKeyAddress,
+				
 				productDisplayTemplate,
 				productTypeDisplayTemplate,
-				brandDisplayTemplate"
+				brandDisplayTemplate,
+				accountDisplayTemplate,
+				addressDisplayTemplate"
 			;
 			var cacheArray = listToArray(cacheList);
 			for(var cacheItem in cacheArray){
@@ -126,6 +132,9 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 			var isBrandURLKey = arguments.slatwallScope.setting('globalURLKeyBrand') == arguments.entityURL;
 			var isProductURLKey = arguments.slatwallScope.setting('globalURLKeyProduct') == arguments.entityURL;
 			var isProductTypeURLKey = arguments.slatwallScope.setting('globalURLKeyProductType') == arguments.entityURL;
+			var isAddressURLKey = arguments.slatwallScope.setting('globalURLKeyAddress') == arguments.entityURL;
+			var isAccountURLKey = arguments.slatwallScope.setting('globalURLKeyAccount') == arguments.entityURL;
+			
 			var entityName = '';
 
 			// First look for the Brand URL Key
@@ -142,7 +151,7 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 			if(isProductURLKey) {
 				var product = arguments.slatwallScope.getService("productService").getProductByURLTitle(arguments.contenturlTitlePath, true);
 				if(isNull(product)){
-					var content = render404(arguments.slatwallScope,site);
+					var content = render404(arguments.slatwallScope, site);
 				}
 				arguments.slatwallScope.setProduct( product );
 				entityName = 'product';
@@ -152,11 +161,30 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 			if (isProductTypeURLKey) {
 				var productType = arguments.slatwallScope.getService("productService").getProductTypeByURLTitle(arguments.contenturlTitle, true);
 				if(isNull(productType)){
-					var content = render404(arguments.slatwallScope,site);
+					var content = render404(arguments.slatwallScope, site);
 				}
 				arguments.slatwallScope.setProductType( productType );
 				entityName = 'productType';
 			}
+			// Look for the Address URL Key
+			if (isAddressURLKey) {
+				var address = arguments.slatwallScope.getService("addressService").getAddressByURLTitle(arguments.contenturlTitle, true);
+				if(isNull(address)){
+					var content = render404(arguments.slatwallScope, site);
+				}
+				arguments.slatwallScope.setRouteEntity( "address", address );
+				entityName = 'address';
+			}
+			// Look for the Address URL Key
+			if (isAccountURLKey) {
+				var account = arguments.slatwallScope.getService("accountService").getAccountByURLTitle(arguments.contenturlTitle, true);
+				if(isNull(account)){
+					var content = render404(arguments.slatwallScope, site);
+				}
+				arguments.slatwallScope.setRouteEntity(  "account", account );
+				entityName = 'account';
+			}
+			
 			var entityDisplayTemplateSetting = arguments.slatwallScope.invokeMethod('get#entityName#').setting('#entityName#DisplayTemplate', [site]);
 			var entityTemplateContent = arguments.slatwallScope.getService("contentService").getContent( entityDisplayTemplateSetting );
 			if(!isnull(entityTemplateContent)){
@@ -200,8 +228,8 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 		savecontent variable="local.templateData"{
 			include "#contentPath#";
 		}
-		templateBody = arguments.slatwallScope.getService('hibachiUtilityService').replaceStringTemplate(template=templateData,object=arguments.slatwallScope.getContent(),formatValues=true);
-		templateBody = arguments.slatwallScope.getService('hibachiUtilityService').replaceStringEvaluateTemplate(template=templateBody,object=this,formatValues=true);
+		templateBody = arguments.slatwallScope.getService('hibachiUtilityService').replaceStringTemplate(templateData,arguments.slatwallScope.getContent());
+		templateBody = arguments.slatwallScope.getService('hibachiUtilityService').replaceStringEvaluateTemplate(template=templateBody,object=this);
 		writeOutput(templateBody);
 		abort;
 	}

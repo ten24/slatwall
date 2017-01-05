@@ -49,8 +49,20 @@ class SWCollectionColumn implements ng.IDirective{
         }
         if(angular.isUndefined(scope.swCollectionColumn.isOnlyKeywordColumn)){
             scope.swCollectionColumn.isOnlyKeywordColumn = scope.swCollectionColumn.isKeywordColumn;
+        }  
+        if(angular.isUndefined(scope.swCollectionColumn.isVisible)){
+            scope.swCollectionColumn.isVisible = true; 
         }
-        
+        if(angular.isUndefined(scope.swCollectionColumn.isSearchable)){
+            scope.swCollectionColumn.isSearchable = false; 
+        }
+        if(angular.isUndefined(scope.swCollectionColumn.isDeletable)){
+            scope.swCollectionColumn.isDeletable = false; 
+        }
+        if(angular.isUndefined(scope.swCollectionColumn.isExportable)){
+            scope.swCollectionColumn.isExportable = true; 
+        }
+
         var column = {
                 propertyIdentifier:scope.swCollectionColumn.propertyIdentifier,
                 fallbackPropertyIdentifiers:scope.swCollectionColumn.fallbackPropertyIdentifiers,

@@ -49,9 +49,9 @@ Notes:
 component output="false" accessors="true" extends="HibachiProcess" {
 
 	// Injected Entity
-	property name="accountCollection";
-
-	property name="collectionConfig" hb_populateEnabled="public"; 
+	property name="accountCollection" hb_populateEnabled="public";
+	property name="baseEntityName" hb_populateEnabled="public";
+	property name="collectionConfig" hb_populateEnabled="public";
 
 	property name="account" cfc="Account" fieldType="many-to-one" hb_populateEnabled="public" fkcolumn="accountID";
 	property name="collection" cfc="Collection" fieldType="many-to-one" hb_populateEnabled="public" fkcolumn="collectionID";
@@ -65,6 +65,9 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		if (!isNull(this.getCollectionConfig())){
 			variables.accountCollection.setCollectionConfig(this.getCollectionConfig());
+		} 
+		if (!isNull(this.getBaseEntityName())){
+			variables.accountCollection.setBaseEntityName(this.getBaseEntityName()); 
 		} 
 		return variables.accountCollection; 
 	}

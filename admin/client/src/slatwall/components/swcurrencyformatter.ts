@@ -1,5 +1,10 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+interface SWScope extends ng.IScope{
+    ngModel:any,
+    currencyCode:string
+}
+
 class SWCurrencyFormatter {
 	public _timeoutPromise;
     public restrict = "A";
@@ -12,7 +17,7 @@ class SWCurrencyFormatter {
 	constructor(public $filter:ng.IFilterService, public $timeout:ng.ITimeoutService){
 	}
 
-    public link:ng.IDirectiveLinkFn = ($scope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, modelCtrl: ng.INgModelController) =>{
+    public link:ng.IDirectiveLinkFn = ($scope:SWScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, modelCtrl: ng.INgModelController) =>{
         modelCtrl.$parsers.push((data)=>{
             if(isNaN(data)){
                 data = 0;

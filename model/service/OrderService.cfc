@@ -503,6 +503,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 						// Create new event registration	 record
 						var eventRegistration = this.newEventRegistration();
+						
+						eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstNotPlaced"));
+						eventRegistration.generateAndSetAttendanceCode();
+						
 						if(depositsOnlyFlag) {
 							eventRegistration.setOrderItem(depositOrderItem);
 							eventRegistration.setSku(depositOrderItem.getSku());
@@ -510,7 +514,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							eventRegistration.setOrderItem(newOrderItem);
 							eventRegistration.setSku(newOrderItem.getSku());
 						}
-						eventRegistration.generateAndSetAttendanceCode();
 
 						// If newAccount registrant should contain an accountID otherwise should contain first, last, email, phone
 						if(registrant.newAccountFlag == 0) {
@@ -539,18 +542,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							eventRegistration.setAccount(newAccount);
 
 						}
-
-						// Set registration status - Should this be done when order is placed instead?
-						if(arguments.processObject.getSku().setting('skuRegistrationApprovalRequiredFlag')) {
-							eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstPendingApproval"));
-						} else {
-							if( depositsOnlyFlag || registrant.toWaitlistFlag == "1" ) {
-								depositsCount++;
-								eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstWaitlisted"));
-							} else {
+						
+						if( depositsOnlyFlag || registrant.toWaitlistFlag == "1" ) {								
+							depositsCount++;
+							
+						}else {
 								if( (arguments.processObject.getSku().getEventCapacity() > (currentRegistrantCount + salesCount) )  ) {
 									salesCount++;
-									eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstRegistered"));
 
 								} else {
 									// If we have an unexprected waitlister due to event filling before order item was created
@@ -562,13 +560,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 										salesOnlyFlag = true;
 									} else {
 										newOrderItem.setOrderItemType( getTypeService().getTypeBySystemCode('oitDeposit') );
-										eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstWaitlisted"));
 									}
 
 								}
 							}
-
-						}
 
 						eventRegistration = getEventRegistrationService().saveEventRegistration( eventRegistration );
 
@@ -1362,9 +1357,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 						}
 
-						if(arguments.order.getPaymentAmountDue() > 0 && arguments.order.hasGiftCardOrderPaymentAmount()){
-							arguments.order.addMessage('paymentProcessedMessage', rbKey('entity.order.process.placeOrder.paymentProcessedMessage'));
-						}
+						
 						
 						// Loop over the orderItems looking for any skus that are 'event' skus, and setting their registration value 
 						for(var orderitem in arguments.order.getOrderItems()) {
@@ -1374,6 +1367,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								}
 								if(!orderItem.hasEventRegistration()){
 									arguments.order.addError('orderItem','Error when trying to register for: #orderItem.getSku().getProduct().getProductName()#. Please verify your registration details.');
+								}
+								
+								if (!arguments.order.hasErrors()){
+									for ( var eventRegistration in orderItem.getEventRegistrations() ) {
+										// Set registration status - Should this be done when order is placed instead?
+										if (orderItem.getOrderItemType().getSystemCode() == 'oitDeposit'){
+											eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstWaitlisted"));
+										}else if( orderitem.getSku().setting('skuRegistrationApprovalRequiredFlag')) {
+											eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstPendingApproval"));
+										}else if (orderitem.getSku().getAvailableSeatCount() > 0) {
+											eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstRegistered"));
+										}else{
+											eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstWaitlisted"));
+										}
+									}
 								}
 							}
 						}
@@ -1414,7 +1422,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 							// Log that the order was placed
 							logHibachi(message="New Order Processed - Order Number: #order.getOrderNumber()# - Order ID: #order.getOrderID()#", generalLog=true);
-
+							// if order had error but payment was captured, clear error and log to hibachi
+							if(arguments.order.hasErrors()) {
+								arguments.order.addMessage('paymentProcessedMessage', rbKey('entity.order.process.placeOrder.paymentProcessedMessage'));
+								for(var errorName in arguments.order.getErrors()) {
+									for(var i=1; i<=arrayLen(arguments.order.getErrors()[errorName]); i++) {
+										logHibachi(message="Order was placed but it had an error with an errorName: #errorName# and errorMessage: #arguments.order.getErrors()[errorName][i]#", generalLog=true);	
+									}
+								}
+								arguments.order.getHibachiErrors().setErrors(structnew());
+							}
 							// Look for 'auto' order fulfillments
 							for(var i=1; i<=arrayLen( arguments.order.getOrderFulfillments() ); i++) {
 								createOrderDeliveryForAutoFulfillmentMethod(arguments.order.getOrderFulfillments()[i]);

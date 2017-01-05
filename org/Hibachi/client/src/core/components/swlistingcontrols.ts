@@ -8,6 +8,7 @@ class SWListingControlsController {
     private paginator;
     private searchText;
     private backupColumnsConfig;
+    private listingColumns; 
     private displayOptionsClosed:boolean=true;
     private filtersClosed:boolean=true;
     private showFilters:boolean; 
@@ -16,12 +17,15 @@ class SWListingControlsController {
     private newFilterPosition;
     private itemInUse;
     private getCollection;
+    private tableId; 
+    private columnIsControllableMap = {}; 
 
     //@ngInject
     constructor(
         public $hibachi,
         public metadataService,
         public collectionService,
+        public listingService, 
         public observerService
     ) {
         if(angular.isUndefined(this.showToggleFilters)){
@@ -34,6 +38,11 @@ class SWListingControlsController {
             this.showFilters = false;
         }
         this.backupColumnsConfig = this.collectionConfig.getColumns();
+
+        if(angular.isDefined(this.tableId)){
+            this.listingColumns = this.listingService.getListingColumns(this.tableId);
+        }
+        console.log("this.collectionConfig.getColumns()",this.collectionConfig.getColumns(), this.listingColumns, this.tableId);
     
         this.filterPropertiesList = {};
 
@@ -57,6 +66,21 @@ class SWListingControlsController {
         return (angular.isUndefined(this.selectedSearchColumn)) ? 'All' : this.selectedSearchColumn.title;
     };
 
+    public canDisplayColumn = (column) =>{
+        if(angular.isDefined(this.columnIsControllableMap[column.propertyIdentifier])){
+            return this.columnIsControllableMap[column.propertyIdentifier]; 
+        }
+        for(var i=0; i < this.listingColumns.length; i++){
+            if(column.propertyIdentifier == this.listingColumns[i].propertyIdentifier){
+                this.columnIsControllableMap[column.propertyIdentifier] = true; 
+            }
+        }
+        if(!this.columnIsControllableMap[column.propertyIdentifier]){
+            this.columnIsControllableMap[column.propertyIdentifier] = false; 
+        }
+        return this.columnIsControllableMap[column.propertyIdentifier]; 
+    }
+
     private addSearchFilter=()=>{
         if(angular.isUndefined(this.selectedSearchColumn) || !this.searchText) return;
 
@@ -76,11 +100,11 @@ class SWListingControlsController {
         this.paginator.setCurrentPage(1);
     };
 
-    public toggleDisplayOptions=(closeButton:boolean=false)=>{
-        if(this.displayOptionsClosed) {
-            this.displayOptionsClosed = false;
-        }else if(closeButton){
-            this.displayOptionsClosed = true;
+    public toggleDisplayOptions= (closeButton:boolean=false)=>{
+        if(closeButton){
+            this.displayOptionsClosed = true; 
+        } else { 
+            this.displayOptionsClosed = !this.displayOptionsClosed;
         }
     };
 
@@ -122,6 +146,7 @@ class SWListingControls  implements ng.IDirective{
 
     public bindToController =  {
         collectionConfig : "=",
+        tableId : "=?",
         paginator : "=",
         getCollection : "&",
         showFilters : "=?",

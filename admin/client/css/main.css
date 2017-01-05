@@ -6179,6 +6179,29 @@ a.disabled > i.hibachi-ui-radio-checked {
 .s-select-list-wrapper.s-small-select .s-search-results-wrapper {
   min-width: 350px;
 }
+/*-- Type Ahead Overwrites --*/
+.s-typeahead.s-select-list-wrapper {
+  position: relative;
+}
+.s-typeahead.s-select-list-wrapper input {
+  border-color: #ccc;
+  border-radius: 0px !important;
+  border-left: 0px;
+  border-right: 0px;
+}
+.s-typeahead.s-select-list-wrapper .input-group-btn.s-left .btn {
+  border-top-left-radius: 2px;
+  border-bottom-left-radius: 2px;
+  border-left: 1px solid #ccc;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  margin-right: -3px;
+}
+.s-typeahead.s-select-list-wrapper .input-group-btn.s-right .btn {
+  border-right: 1px solid #ccc;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
 /*-- List Select Component With Dropdown --*/
 .s-search-results-wrapper {
   -webkit-border-radius: 0;

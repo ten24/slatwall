@@ -8,7 +8,7 @@ class SWEditFilterItem{
             $timeout,
 			$hibachi,
 			collectionPartialsPath,
-			collectionService,
+			collectionService, 
 			metadataService,
 			hibachiPathBuilder,
             rbkeyService,

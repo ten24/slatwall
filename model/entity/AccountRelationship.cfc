@@ -57,7 +57,7 @@ component displayname="Account Relationship" entityname="SlatwallAccountRelation
 	
 	property name="parentAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="parentAccountID";
 	property name="childAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="childAccountID";
-	property name="accountRelationshipRole" cfc="AccountRelationshipRole" fieldtype="many-to-one" fkcolumn="accountRelationShipRoleID";
+	property name="accountRelationshipRole" cfc="AccountRelationshipRole" fieldtype="many-to-one" fkcolumn="accountRelationshipRoleID";
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";

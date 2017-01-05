@@ -338,7 +338,7 @@ Notes:
 						if(arguments.baseMeta.properties[j].name == arguments.customMeta.properties[i].name) {
 							writeLog(
 								file="Slatwall",
-								text="Custom property names can't be same as core property names"
+								text="Custom property names can't be same as core property names: #arguments.customMeta.properties[i].name#"
 							);
 						}
 					}
@@ -417,5 +417,5 @@ Notes:
 			return coreEntityParser.getFileContent();
 		</cfscript>
 	</cffunction>
-	
+	 
 </cfcomponent>
