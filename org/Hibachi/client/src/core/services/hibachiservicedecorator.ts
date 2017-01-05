@@ -238,11 +238,12 @@ class HibachiServiceDecorator{
 
                 angular.forEach(relatedAttributes,function(attributeSet){
                     angular.forEach(attributeSet.attributes,function(attribute){
+                        if(attribute && attribute.attributeCode){
                         Object.defineProperty(_jsEntities[ entity.className ].prototype, attribute.attributeCode, {
                             configurable:true,
                             enumerable:false,
                             get: function() {
-                                if(this.data[attribute.attributeCode] == null){
+                                if(attribute != null && this.data[attribute.attributeCode] == null){
                                     return undefined;
                                 }
                                 return this.data[attribute.attributeCode];
@@ -251,6 +252,7 @@ class HibachiServiceDecorator{
                                 this.data[attribute.attributeCode]=value;
                             }
                         });
+                        }
                     });
                 });
 
@@ -377,7 +379,7 @@ class HibachiServiceDecorator{
                                             enumerable:false,
 
                                             get: function() {
-                                                if(this.data[attribute.attributeCode] == null){
+                                                if(this.data[property.name] == null){
                                                     return undefined;
                                                 }
 
@@ -481,7 +483,7 @@ class HibachiServiceDecorator{
                                         enumerable:false,
 
                                         get: function() {
-                                            if(this.data[attribute.attributeCode] == null){
+                                            if(this.data[property.name] == null){
                                                 return undefined;
                                             }
                                             return this.data[property.name];
@@ -526,7 +528,7 @@ class HibachiServiceDecorator{
                                             enumerable:false,
 
                                             get: function() {
-                                                if(this.data[attribute.attributeCode] == null){
+                                                if(this.data[property.name] == null){
                                                     return undefined;
                                                 }
                                                 return this.data[property.name];
@@ -576,7 +578,7 @@ class HibachiServiceDecorator{
             });
             $delegate.setJsEntities(_jsEntities);
 
-            angular.forEach(_jsEntities,function(jsEntity){
+            angular.forEach(_jsEntities,function(jsEntity:any){
                 var jsEntityInstance = new jsEntity;
                 _jsEntityInstances[jsEntityInstance.metaData.className] = jsEntityInstance;
             });
@@ -804,7 +806,7 @@ class HibachiServiceDecorator{
                     if(modifiedData.valid){
                         var params:any = {};
 
-                        params.serializedJsonData = angular.toJson(modifiedData.value);
+                        params.serializedJsonData = utilityService.toJson(modifiedData.value);
                         //if we have a process object then the context is different from the standard save
                         var entityName = '';
                         var context = 'save';
@@ -818,7 +820,10 @@ class HibachiServiceDecorator{
                         var savePromise = $delegate.saveEntity(entityName,entityID,params,context);
                         savePromise.then(function(response){
                             var returnedIDs = response.data;
-                            if(angular.isDefined(response.SUCCESS) && response.SUCCESS === true){
+                            if(
+                                (angular.isDefined(response.SUCCESS) && response.SUCCESS === true)
+                                || (angular.isDefined(response.success) && response.success === true)
+                            ){
 
                                 if($location.url() == '/entity/'+entityName+'/create' && response.data[modifiedData.objectLevel.$$getIDName()]){
                                     $location.path('/entity/'+entityName+'/'+response.data[modifiedData.objectLevel.$$getIDName()], false);

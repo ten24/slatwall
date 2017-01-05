@@ -34,6 +34,23 @@ component accessors="true" output="false" persistent="false" {
 		return getBeanFactory().getBean( arguments.beanName );
 	}
 	
+	// @hint has a bean out of whatever the fw1 bean factory is
+	public any function hasBean(required string beanName) {
+		return getBeanFactory().containsBean( arguments.beanName );
+	}
+	// @hint sets bean factory
+	public void function setBeanFactory(required any beanFactory) {
+		application[ getApplicationValue('applicationKey') ].factory = arguments.beanFactory;
+	}
+
+	// @hint whether or not we have a bean
+	public boolean function hasService(required string serviceName){
+		if(!hasApplicationValue("service_#arguments.serviceName#")){
+			return hasBean(arguments.serviceName);
+		}
+		return true;
+	} 
+	
 	// @hint returns an application scope cached version of the service
 	public any function getService(required string serviceName) {
 		if( !hasApplicationValue("service_#arguments.serviceName#") ) {
@@ -233,7 +250,7 @@ component accessors="true" output="false" persistent="false" {
 			return application[ getHibachiInstanceApplicationScopeKey() ][ arguments.key ];
 		}
 		
-		throw("You have requested a value for '#arguments.key#' from the core hibachi application that is not setup.  This may be because the verifyApplicationSetup() method has not been called yet")
+		throw("You have requested a value for '#arguments.key#' from the core hibachi application that is not setup.  This may be because the verifyApplicationSetup() method has not been called yet");
 	}
 	
 	// @hint facade method to set values in the application scope 

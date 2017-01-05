@@ -54,6 +54,7 @@ component extends="HibachiService" output="false" accessors="true" {
 
 	property name="settingDAO" type="any";
 
+	property name="hibachiEventService" type="any";
 	property name="contentService" type="any";
 	property name="currencyService" type="any";
 	property name="emailService" type="any";
@@ -84,6 +85,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			"product",
 			"content",
 			"account",
+			"address",
 			"image",
 			"brand",
 			"email",
@@ -101,7 +103,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			sku = ["product.productID", "product.productType.productTypeIDPath&product.brand.brandID", "product.productType.productTypeIDPath"],
 			product = ["productType.productTypeIDPath&brand.brandID", "productType.productTypeIDPath"],
 			productType = ["productTypeIDPath"],
-			content = ["contentIDPath","contentID","site.siteID"],
+			content = ["contentIDPath","site.siteID"],
 			email = ["emailTemplate.emailTemplateID"],
 			shippingMethodRate = ["shippingMethod.shippingMethodID"],
 			accountAuthentication = [ "integration.integrationID" ],
@@ -122,10 +124,20 @@ component extends="HibachiService" output="false" accessors="true" {
 			accountFailedPublicLoginAttemptCount = {fieldType="text", defaultValue=0, validate={dataType="numeric", required=true}},
 			accountAdminForcePasswordResetAfterDays = {fieldType="text", defaultValue=90, validate={dataType="numeric", required=true, maxValue=90}},
 			accountLockMinutes = {fieldtype="text", defaultValue=30, validate={dataType="numeric", required=true, minValue=30}},
+			accountDisplayTemplate = {fieldType="select"},
+			accountHTMLTitleString = {fieldType="text", defaultValue="${firstName} ${lastName}"},
+			accountMetaDescriptionString = {fieldType="textarea", defaultValue="${firstName} ${lastName}"},
+			accountMetaKeywordsString = {fieldType="textarea", defaultValue="${firstName} ${lastName}"},
 
 			// Account Authentication
 			accountAuthenticationAutoLogoutTimespan = {fieldType="text"},
 
+			// Address
+			addressDisplayTemplate = {fieldType="select"},
+			addressHTMLTitleString = {fieldType="text", defaultValue="${name}"},
+			addressMetaDescriptionString = {fieldType="textarea", defaultValue="${name}"},
+			addressMetaKeywordsString = {fieldType="textarea", defaultValue="${name}"},
+			
 			// Brand
 			brandDisplayTemplate = {fieldType="select"},
 			brandHTMLTitleString = {fieldType="text", defaultValue="${brandName}"},
@@ -149,12 +161,20 @@ component extends="HibachiService" output="false" accessors="true" {
 			emailCCAddress = {fieldType="text"},
 			emailBCCAddress = {fieldType="text"},
 			emailFailToAddress = {fieldType="text", defaultValue="email@youremaildomain.com"},
-			emailReplyToAddress = {fieldType="text"},
-			emailSubject = {fieldType="text", defaultValue="Notification From Slatwall"},
 			emailIMAPServer = {fieldType="text"},
 			emailIMAPServerPort = {fieldType="text"},
 			emailIMAPServerUsername = {fieldType="text"},
 			emailIMAPServerPassword = {fieldType="password"},
+			emailReplyToAddress = {fieldType="text", defaultValue="email@youremaildomain.com"},
+			emailSubject = {fieldType="text", defaultValue="Notification From Slatwall"},
+			emailSMTPServer = {fieldType="text", defaultValue=""},
+			emailSMTPPort = {fieldType="text", defaultValue=25},
+			emailSMTPUseSSL = {fieldType="yesno", defaultValue="false"},
+			emailSMTPUseTLS = {fieldType="yesno", defaultValue="false"},
+			emailSMTPUsername = {fieldType="text"},
+			emailSMTPPassword = {fieldType="password"},
+			emailSubject = {fieldType="text", defaultValue="Notification From Slatwall"},
+
 
 			// Fulfillment Method
 			fulfillmentMethodShippingOptionSortType = {fieldType="select", defaultValue="sortOrder"},
@@ -166,44 +186,51 @@ component extends="HibachiService" output="false" accessors="true" {
 			fulfillmentMethodAutoMinReceivedPercentage = {fieldType="text", formatType="percentage", defaultValue=100},
 
 			// Global
-			globalUsageStats = {fieldType="yesno",defaultValue=0},
-			globalCurrencyLocale = {fieldType="select",defaultValue="English (US)"},
-			globalCurrencyType = {fieldType="select",defaultValue="Local"},
-			globalDateFormat = {fieldType="text",defaultValue="mmm dd, yyyy"},
+			globalAllowCustomBranchUpdates={fieldType="yesno",defaultValue=0},
+			globalAdminDomainNames = {fieldtype="text"},
+			globalAllowedOutsideRedirectSites = {fieldtype="text"},
 			globalAssetsImageFolderPath = {fieldType="text", defaultValue=getApplicationValue('applicationRootMappingPath') & '/custom/assets/images'},
 			globalAssetsFileFolderPath = {fieldType="text", defaultValue=getApplicationValue('applicationRootMappingPath') & '/custom/assets/files'},
 			globalAuditAutoArchiveVersionLimit = {fieldType="text", defaultValue=10, validate={dataType="numeric", minValue=0}},
 			globalAuditCommitMode = {fieldType="select", defaultValue="thread", valueOptions=[{name="separate thread",value="thread"}, {name="same request",value="sameRequest"}]},
+			globalCopyCartToNewSessionOnLogout = {fieldtype="yesno", defaultValue=0},
+			globalClientSecret = {fieldtype="text",defaultValue="#createUUID()#"},
+			globalCurrencyLocale = {fieldType="select",defaultValue="English (US)"},
+			globalCurrencyType = {fieldType="select",defaultValue="Local"},
+			globalDateFormat = {fieldType="text",defaultValue="mmm dd, yyyy"},
+			globalDisplayIntegrationProcessingErrors = {fieldtype="yesno", defaultValue=1},
 			globalEncryptionAlgorithm = {fieldType="select",defaultValue="AES"},
 			globalEncryptionEncoding = {fieldType="select",defaultValue="Base64"},
 			globalEncryptionKeyLocation = {fieldType="text"},
 			globalEncryptionKeySize = {fieldType="select",defaultValue="128"},
 			globalEncryptionService = {fieldType="select",defaultValue="internal"},
-            globalGiftCardMessageLength = {fieldType="text", defaultValue="250", validate={dataType="numeric",required=true,maxValue=4000}},
+			globalExtendedSessionAutoLogoutInDays = {fieldtype="text", defaultValue=5, validate={dataType="numeric", required=false}},
+			globalFileTypeWhiteList = {fieldtype="text", defaultValue="pdf,zip,xml,txt,csv,xls,doc,jpeg,jpg,png,gif"},
+			globalForceCreditCardOverSSL = {fieldtype="yesno",defaultValue=1},
+      		globalGiftCardMessageLength = {fieldType="text", defaultValue="250", validate={dataType="numeric",required=true,maxValue=4000}},
 			globalLogMessages = {fieldType="select",defaultValue="General"},
 			globalMaximumFulfillmentsPerOrder = {fieldtype="text", defaultValue=1000, validate={dataType="numeric", required=true}},
+			globalMIMETypeWhiteList = {fieldtype="text", defaultValue="image/jpeg,image/png,image/gif,text/csv,application/pdf,application/rss+xml,application/msword,application/zip,text/plain,application/vnd.ms-excel,"},
 			globalMissingImagePath = {fieldType="text", defaultValue=getURLFromPath(getApplicationValue('applicationRootMappingPath')) & '/custom/assets/images/missingimage.jpg'},
 			globalNoSessionIPRegex = {fieldType="text",defaultValue=""},
 			globalNoSessionPersistDefault = {fieldType="yesno",defaultValue=0},
 			globalOrderNumberGeneration = {fieldType="select",defaultValue="Internal"},
+			globalPublicAutoLogoutMinutes = {fieldtype="text", defaultValue=30, validate={dataType="numeric", required=true}},
 			globalRemoteIDShowFlag = {fieldType="yesno",defaultValue=0},
 			globalRemoteIDEditFlag = {fieldType="yesno",defaultValue=0},
+			globalSmartListGetAllRecordsLimit = {fieldType="text",defaultValue=250},
 			globalTimeFormat = {fieldType="text",defaultValue="hh:mm tt"},
 			globalURLKeyBrand = {fieldType="text",defaultValue="sb"},
 			globalURLKeyProduct = {fieldType="text",defaultValue="sp"},
 			globalURLKeyProductType = {fieldType="text",defaultValue="spt"},
+			globalURLKeyAccount = {fieldType="text",defaultValue="ac"},
+			globalURLKeyAddress = {fieldType="text",defaultValue="ad"},
+			globalUsageStats = {fieldType="yesno",defaultValue=0},
+			globalUseExtendedSession = {fieldtype="yesno", defaultValue=0},
+			globalUseShippingIntegrationForTrackingNumberOption = {fieldtype="yesno", defaultValue=0},
 			globalWeightUnitCode = {fieldType="select",defaultValue="lb"},
 			globalAdminAutoLogoutMinutes = {fieldtype="text", defaultValue=15, validate={dataType="numeric",required=true,maxValue=15}},
-			globalPublicAutoLogoutMinutes = {fieldtype="text", defaultValue=30, validate={dataType="numeric", required=true}},
-			globalForceCreditCardOverSSL = {fieldtype="yesno",defaultValue=1},
-			globalAllowedOutsideRedirectSites = {fieldtype="text"},
-			globalFileTypeWhiteList = {fieldtype="text", defaultValue="pdf,zip,xml,txt,csv,xls,doc,jpeg,jpg,png,gif"},
-			globalMIMETypeWhiteList = {fieldtype="text", defaultValue="image/jpeg,image/png,image/gif,text/csv,application/pdf,application/rss+xml,application/msword,application/zip,text/plain,application/vnd.ms-excel,"},
-			globalAdminDomainNames = {fieldtype="text"},
-			globalClientSecret = {fieldtype="text",defaultValue="#createUUID()#"},
-			globalDisplayIntegrationProcessingErrors = {fieldtype="yesno", defaultValue=1},
-			globalUseShippingIntegrationForTrackingNumberOption = {fieldtype="yesno", defaultValue=0},
-			globalSmartListGetAllRecordsLimit = {fieldType="text",defaultValue=250},
+
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
 			imageMissingImagePath = {fieldType="text",defaultValue="/assets/images/missingimage.jpg"},
@@ -241,7 +268,10 @@ component extends="HibachiService" output="false" accessors="true" {
 			siteVerifyAccountEmailAddressEmailTemplate = {fieldType="select", defaultValue="61d29dd9f6ca76d9e352caf55500b458"},
 			siteOrderOrigin = {fieldType="select"},
             siteMissingImagePath = {fieldType="text", defaultValue="/assets/images/missingimage.jpg"},
-			
+            siteRecaptchaSiteKey = {fieldType="text"},
+			siteRecaptchaSecretKey = {fieldType="text"},
+			siteRecaptchaProtectedEvents = {fieldType="multiselect", defaultValue=""},
+
 			// Shipping Method
 			shippingMethodQualifiedRateSelection = {fieldType="select", defaultValue="lowest"},
 
@@ -264,6 +294,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuEligibleOrderOrigins = {fieldType="listingMultiselect", listingMultiselectEntityName="OrderOrigin", defaultValue=this.getAllActiveOrderOriginIDList()},
 			skuEligiblePaymentMethods = {fieldType="listingMultiselect", listingMultiselectEntityName="PaymentMethod", defaultValue=getPaymentService().getAllActivePaymentMethodIDList()},
 			skuEmailFulfillmentTemplate = {fieldType="select", listingMultiselectEntityName="EmailTemplate", defaultValue=""},
+			skuEventEnforceConflicts = {fieldType="yesno", defaultValue=1},
 			skuGiftCardEmailFulfillmentTemplate = {fieldtype="select", listingMultiselectEntityName="EmailTemplate", defaultValue=""},
 			skuGiftCardAutoGenerateCode = {fieldType="yesno", defaultValue=1},
 			skuGiftCardCodeLength = {fieldType="text", defaultValue=16},
@@ -283,6 +314,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuTaxCategory = {fieldType="select", defaultValue="444df2c8cce9f1417627bd164a65f133"},
 			skuTrackInventoryFlag = {fieldType="yesno", defaultValue=0},
 			skuShippingCostExempt = {fieldType="yesno", defaultValue=0},
+			
 
 			// Subscription Term
 			subscriptionUsageAutoRetryPaymentDays = {fieldType="text", defaultValue=""},
@@ -325,7 +357,25 @@ component extends="HibachiService" output="false" accessors="true" {
 		return allSettingMetaData;
 	}
 
+	private string function extractPackageNameBySettingName (required string settingName){
+		var substringInfo = REFIND('\integration(?!.*\\)(.*?)(?=[A-Z])',arguments.settingName,1,true);
+		var substring = Mid(arguments.settingName,substringInfo.pos[1],substringInfo.len[1]);
+		var packageName = Mid(substring,12,len(substring));
+		return packageName;
+	}
+
 	public array function getSettingOptions(required string settingName, any settingObject) {
+		//check if setting is related to an integration
+		if(
+			left(arguments.settingName,11) == 'integration'
+		){
+			var packageName = extractPackageNameBySettingName(arguments.settingName);
+			var integration = getService('integrationService').getIntegrationByIntegrationPackage(trim(packageName));
+			if(!isNull(integration) && structkeyExists(integration.getIntegrationCFC(),"getSettingOptions")){
+				return integration.getIntegrationCFC().getSettingOptions(arguments.settingName);
+			}
+		}
+
 		switch(arguments.settingName) {
 			case "contentTemplateFile":
 				if(structKeyExists(arguments, "settingObject")) {
@@ -343,6 +393,11 @@ component extends="HibachiService" output="false" accessors="true" {
 					return getContentService().getDisplayTemplateOptions( "Brand", arguments.settingObject.getSite().getSiteID() );
 				}
 				return getContentService().getDisplayTemplateOptions( "brand" );
+			case "addressDisplayTemplate":
+				if(structKeyExists(arguments, "settingObject")) {
+					return getContentService().getDisplayTemplateOptions( "Address", arguments.settingObject.getSite().getSiteID() );
+				}
+				return getContentService().getDisplayTemplateOptions( "address" );
 			case "contentFileTemplate":
 				return getContentService().getDisplayTemplateOptions( "brand" );
 			case "productDisplayTemplate":
@@ -355,6 +410,11 @@ component extends="HibachiService" output="false" accessors="true" {
 					return getContentService().getDisplayTemplateOptions( "ProductType", arguments.settingObject.getSite().getSiteID() );
 				}
 				return getContentService().getDisplayTemplateOptions( "productType" );
+			case "accountDisplayTemplate":
+				if(structKeyExists(arguments, "settingObject")) {
+					return getContentService().getDisplayTemplateOptions( "Account", arguments.settingObject.getSite().getSiteID() );
+				}
+				return getContentService().getDisplayTemplateOptions( "account" );
 			case "contentRestrictedContentDisplayTemplate":
 				if(structKeyExists(arguments, "settingObject")) {
 					return getContentService().getDisplayTemplateOptions( "BarrierPage", arguments.settingObject.getContent().getSite().getSiteID() );
@@ -430,7 +490,8 @@ component extends="HibachiService" output="false" accessors="true" {
 				return getEmailService().getEmailTemplateOptions( "Task" );
 			case "taskSuccessEmailTemplate":
 				return getEmailService().getEmailTemplateOptions( "Task" );
-
+			case "siteRecaptchaProtectedEvents":
+				return getHibachiEventService().getEntityEventNameOptions('before');
 		}
 
 		if(structKeyExists(getSettingMetaData(arguments.settingName), "valueOptions")) {
@@ -441,7 +502,7 @@ component extends="HibachiService" output="false" accessors="true" {
 	}
 
 	public any function getSettingOptionsSmartList(required string settingName) {
-		return getServiceByEntityName( getSettingMetaData(arguments.settingName).listingMultiselectEntityName ).invokeMethod("get#getSettingMetaData(arguments.settingName).listingMultiselectEntityName#SmartList");
+			return getServiceByEntityName( getSettingMetaData(arguments.settingName).listingMultiselectEntityName ).invokeMethod("get#getSettingMetaData(arguments.settingName).listingMultiselectEntityName#SmartList");
 	}
 
 	public array function getCustomIntegrationOptions() {
@@ -479,9 +540,9 @@ component extends="HibachiService" output="false" accessors="true" {
 
 			settingsRemoved = getSettingDAO().removeAllRelatedSettings(columnName=arguments.entity.getPrimaryIDPropertyName(), columnID=arguments.entity.getPrimaryIDValue());
 
-		} else if ( arguments.entity.getPrimaryIDPropertyName() == "fulfillmetnMethodID" ) {
+		} else if ( arguments.entity.getPrimaryIDPropertyName() == "fulfillmentMethodID" ) {
 
-			settingsRemoved = getSettingDAO().removeAllRelatedSettings(columnName="fulfillmetnMethodID", columnID=arguments.entity.getFulfillmentMethodID());
+			settingsRemoved = getSettingDAO().removeAllRelatedSettings(columnName="fulfillmentMethodID", columnID=arguments.entity.getFulfillmentMethodID());
 
 			for(var a=1; a<=arrayLen(arguments.entity.getShippingMethods()); a++) {
 				settingsRemoved += getSettingDAO().removeAllRelatedSettings(columnName="shippingMethodID", columnID=arguments.entity.getShippingMethods()[a].getShippingMethodID());
@@ -782,15 +843,23 @@ component extends="HibachiService" output="false" accessors="true" {
 				if(settingMetaData.fieldType == "listingMultiselect") {
 					settingDetails.settingValueFormatted = "";
 					for(var i=1; i<=listLen(settingDetails.settingValue); i++) {
-						var thisID = listGetAt(settingDetails.settingValue, i);
-						var thisEntity = getServiceByEntityName( settingMetaData.listingMultiselectEntityName ).invokeMethod("get#settingMetaData.listingMultiselectEntityName#", {1=thisID});
-						if(!isNull(thisEntity)) {
-							settingDetails.settingValueFormatted = listAppend(settingDetails.settingValueFormatted, " " & thisEntity.getSimpleRepresentation());
+						if(structKeyExists(settingMetaData,'listingMultiselectEntityName')){
+							var thisID = listGetAt(settingDetails.settingValue, i);
+							var thisEntity = getServiceByEntityName( settingMetaData.listingMultiselectEntityName ).invokeMethod("get#settingMetaData.listingMultiselectEntityName#", {1=thisID});
+							if(!isNull(thisEntity)) {
+								settingDetails.settingValueFormatted = listAppend(settingDetails.settingValueFormatted, " " & thisEntity.getSimpleRepresentation());
+							}
+						}else if(structKeyExists(settingMetaData,'listingMultiselectServiceName')){
+							//value is comma delimited list of words mapped to service method to get rbkey from value from it
+							var thisValue = listGetAt(settingDetails.settingValue, i);
+							settingDetails.settingValueFormatted = listAppend(settingDetails.settingValueFormatted, " " & getServiceByEntityName(settingMetaData.listingMultiselectServiceName).invokeMethod(settingMetaData.listingMultiselectServiceMethod));
 						}
+
 					}
 				// Select
 				} else if (settingMetaData.fieldType == "select") {
 					var options = getSettingOptions(arguments.settingName);
+
 
 					if(!arrayLen(options)){
 						settingDetails.settingValueFormatted = settingDetails.settingValue;
@@ -850,6 +919,8 @@ component extends="HibachiService" output="false" accessors="true" {
 
 	public boolean function deleteSetting(required any entity) {
 
+		getHibachiScope().addModifiedEntity(arguments.entity); 
+
 		// Check to see if we are going to need to update the
 		var calculateStockNeeded = false;
 		if(listFindNoCase("skuAllowBackorderFlag,skuAllowPreorderFlag,skuQATSIncludesQNROROFlag,skuQATSIncludesQNROVOFlag,skuQATSIncludesQNROSAFlag,skuTrackInventoryFlag", arguments.entity.getSettingName())) {
@@ -862,9 +933,9 @@ component extends="HibachiService" output="false" accessors="true" {
 		// If there aren't any errors then flush, and clear cache
 		if(deleteResult && !getHibachiScope().getORMHasErrors()) {
 
+			getHibachiCacheService().resetCachedKeyByPrefix('setting_#settingName#',true);
+			
 			getHibachiDAO().flushORMSession();
-
-			getHibachiCacheService().resetCachedKeyByPrefix('setting_#settingName#');
 
 			// If calculation is needed, then we should do it
 			if(calculateStockNeeded) {
@@ -883,13 +954,15 @@ component extends="HibachiService" output="false" accessors="true" {
 		// Call the default save logic
 		arguments.entity = super.save(argumentcollection=arguments);
 
+		getHibachiScope().addModifiedEntity(arguments.entity); 
+
 		// If there aren't any errors then flush, and clear cache
 		if(!getHibachiScope().getORMHasErrors()) {
 
-			getHibachiDAO().flushORMSession();
-
 			//wait for thread to finish because admin depends on getting the savedID
 			getHibachiCacheService().resetCachedKeyByPrefix('setting_#arguments.entity.getSettingName()#',true);
+
+			getHibachiDAO().flushORMSession();
 			
 			// If calculation is needed, then we should do it
 			if(listFindNoCase("skuAllowBackorderFlag,skuAllowPreorderFlag,skuQATSIncludesQNROROFlag,skuQATSIncludesQNROVOFlag,skuQATSIncludesQNROSAFlag,skuTrackInventoryFlag", arguments.entity.getSettingName())) {
@@ -901,11 +974,15 @@ component extends="HibachiService" output="false" accessors="true" {
 					globalURLKeyBrand,
 					globalURLKeyProduct,
 					globalURLKeyProductType,
+					globalURLKeyAccount,
+					globalURLKeyAddress,
 					productDisplayTemplate,
 					productTypeDisplayTemplate,
-					brandDisplayTemplate", 
+					brandDisplayTemplate,
+					accountDisplayTemplate
+					addressDisplayTemplate", 
 					arguments.entity.getSettingName()
-				) || 
+				) ||
 				left(arguments.entity.getSettingName(),7) == 'content'
 			){
 				for(var site in getSiteService().getSiteSmartList().getRecords()){

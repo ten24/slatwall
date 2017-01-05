@@ -68,6 +68,21 @@
 		        return returnArray;
 		}
 
+		public boolean function isInThread(){
+			//java 8
+			try{
+				var ThreadAPI = createObject("java","java.lang.Thread");
+			//java 7
+			}catch(any e){
+				var ThreadAPI = createObject("java","java.lang.thread");
+			}
+
+
+			var currentThread = ThreadAPI.currentThread();
+
+			return currentThread.getThreadGroup().getName() == "cfthread";
+		}
+
 		// @hint this method will sanitize a struct of data
 		public void function sanitizeData(required any data){
 			for(var key in data){
@@ -159,13 +174,17 @@
 			return createSEOString(arguments.data.value);
 		}
 
-		public string function createUniqueURLTitle(required string titleString, required string tableName) {
-			return createUniqueColumn(arguments.titleString,arguments.tableName,'urlTitle');
+		public string function createUniqueURLTitle(required string titleString, string tableName="", string entityName="") {
+			if(len(arguments.tableName)){
+				return createUniqueColumn(arguments.titleString,arguments.tableName,'urlTitle');	
+			}else if(len(arguments.entityName)){
+				return createUniqueProperty(arguments);				
+			}
 		}
 
 		public string function createUniqueColumn(required string titleString, required string tableName, required string columnName) {
 
-			var addon = 1;
+			var addon = 0;
 
 			var urlTitle = createSEOString(arguments.titleString);
 
@@ -177,6 +196,24 @@
 				addon++;
 				returnTitle = "#urlTitle#-#addon#";
 				unique = getHibachiDAO().verifyUniqueTableValue(tableName=arguments.tableName, column=arguments.columnName, value=returnTitle);
+			}
+
+			return returnTitle;
+		}
+		
+		public string function createUniqueProperty(required string titleString, required string entityName, required string propertyName){
+			var addon = 0;
+
+			var urlTitle = createSEOString(arguments.titleString);
+
+			var returnTitle = urlTitle;
+
+			var unique = getHibachiDAO().verifyUniquePropertyValue(entityName=arguments.entityName, propertyName=arguments.propertyName, value=returnTitle);
+
+			while(!unique) {
+				addon++;
+				returnTitle = "#urlTitle#-#addon#";
+				unique = getHibachiDAO().verifyUniquePropertyValue(entityName=arguments.entityName, propertyName=arguments.propertyName, value=returnTitle);
 			}
 
 			return returnTitle;
@@ -331,8 +368,20 @@
 				var valueKey = replace(replace(templateKeys[i], "${", ""),"}","");
 				if( isStruct(arguments.object) && structKeyExists(arguments.object, valueKey) ) {
 					replaceDetails.value = arguments.object[ valueKey ];
-				} else if (isObject(arguments.object)) {
-					//if null then is blank
+				} else if (isObject(arguments.object) && (
+					(
+						arguments.object.isPersistent() && getHasPropertyByEntityNameAndPropertyIdentifier(arguments.object.getEntityName(), valueKey))
+						||
+						(
+							arguments.object.isPersistent() 
+							&& structKeyExists(getService('hibachiService'),'getHasAttributeByEntityNameAndPropertyIdentifier')
+							&& getService('hibachiService').getHasAttributeByEntityNameAndPropertyIdentifier(arguments.object.getEntityName(), valueKey))
+							||
+						(
+							!arguments.object.isPersistent() && arguments.object.hasProperty(valueKey)
+						)	
+					)
+				) {
 					replaceDetails.value = arguments.object.getValueByPropertyIdentifier(valueKey, arguments.formatValues);
 				} else if (arguments.removeMissingKeys) {
 					replaceDetails.value = '';
@@ -379,6 +428,19 @@
 		        newArr[arrayLen(a1)+i] = a2[i];
 		    }
 		    return newArr;
+		}
+		
+		//name value pair string to struct. Separates url string by & ampersand
+		public struct function convertNVPStringToStruct( required string data ) {
+			if(left(arguments.data,1) == '?'){
+				arguments.data = right(arguments.data,len(arguments.data)-1);
+			}
+			var returnStruct = {};
+			var ampArray = listToArray(arguments.data, "&");
+			for(var i=1; i<=arrayLen(ampArray); i++) {
+				returnStruct[ listFirst(ampArray[i], "=") ] = listLast(ampArray[i], "=");
+			}
+			return returnStruct;
 		}
 
 		public string function filterFilename(required string filename) {
@@ -732,6 +794,7 @@
 
 			var passwordsJSON = serializeJSON({'passwords'=arguments.encryptionPasswordArray});
 			fileWrite(getEncryptionPasswordFilePath(), encrypt(passwordsJSON, hardCodedFileEncryptionKey, "AES/CBC/PKCS5Padding"));
+			logHibachi("Encryption key file updated", true);
 		}
 
 		private any function readEncryptionPasswordFile() {

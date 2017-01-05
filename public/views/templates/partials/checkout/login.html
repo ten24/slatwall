@@ -1,0 +1,100 @@
+<span ng-init="$.slatwall = $root.slatwall"></span>
+<div ng-init="Account_LoginObj = $.slatwall.getProcessObject('Account_Login') "></div>
+
+<div id="loginForm" class="row" ng-show="!$.slatwall.forgotPassword">
+	    <div class="col-sm-7">
+			<sw-form
+			    data-is-process-form="true"
+			    data-object="Account_LoginObj"
+			    data-form-class=""
+			    data-error-class="error"
+			    data-name="Account_Login">
+
+			<div class="form-group">
+		        <swf-property-display
+		            data-name="emailAddress"
+		            data-type="email"
+		            data-object="Account_LoginObj"
+		            data-property-identifier="emailAddress"
+		            data-label-text="Email Address"
+		            data-class="form-control"
+		            data-editing="true">
+		        </swf-property-display>
+			</div>
+
+	        <div class="form-group last">
+		        <swf-property-display
+		            data-name="password"
+		            data-type="password"
+		            data-object="Account_LoginObj"
+		            data-property-identifier="password"
+		            data-label-text="Password"
+		            data-class="form-control"
+		            data-editing="true">
+		        </swf-property-display>
+	        </div>
+
+			<div class="form-group">
+			    <sw-action-caller
+			        data-action="login"
+			        data-modal="false"
+			        data-type="submit"
+			        data-class="button blue"
+			        data-error-class="error"
+			        data-text="{{($.slatwall.getRequestByAction('login').loading ? 'LOADING...' : 'Login')}}">
+			    </sw-action-caller>
+			</div>
+
+			<p><a href="#" ng-click="$.slatwall.forgotPassword = true;">Forgot your password?</a></p>
+		</div>
+	</sw-form>
+</div>
+<!--- Forgot password form --->
+<div ng-show="$.slatwall.forgotPassword" class="forgotPassword">
+
+	<!-- Instruction for getting the reset email-->
+    <p ng-if="!$.slatwall.account.hasErrors && $.slatwall.account.processObjects.forgotPassword.hasErrors == undefined">Enter your e-mail address and a password reset e-mail will be sent your inbox or <a ng-click="$.slatwall.forgotPassword = false">login</a></p>
+
+	<!-- Display a message if a reset email has been sent -->
+    <div class="msg alert alert-info" ng-show="$.slatwall.account.processObjects.forgotPassword.hasErrors != undefined && !$.slatwall.account.processObjects.forgotPassword.hasErrors">
+        <i class="fa fa-info-circle"></i> An email has been sent to the address you provided with a link to reset your password so you may <a ng-click="$.slatwall.forgotPassword = false">login</a>
+    </div>
+
+    <!-- Display a message if the email address is not recognized -->
+    <div class="msg" ng-show="$.slatwall.account.processObjects.forgotPassword.errors.emailAddress['0']">
+        <div class="alert alert-info"><i class="fa fa-info-circle"></i> {{$.slatwall.account.processObjects.forgotPassword.errors.emailAddress['0']}}</div>
+    </div>
+
+	<div ng-init="Account_ForgotPassword = $.slatwall.getProcessObject('Account_ForgotPassword') "></div>
+    <div class="row" ng-click="$.slatwall.addLoader('forgotPassword')">
+		<div class="col-sm-7">
+		    <sw-form
+		        data-is-process-form="true"
+		        data-object="Account_ForgotPassword"
+		        data-form-class="cssform"
+		        data-on-success="show:Account_Login"
+		        data-name="Account_ForgotPassword">
+
+			<div class="form-group">
+		        <swf-property-display
+		                data-name="emailAddress"
+		                data-type="email"
+		                data-object="Account_ForgotPassword"
+		                data-property-identifier="emailAddress"
+		                data-label-text="Email Address"
+		                data-class="form-control"
+		                data-editing="true">
+		        </swf-property-display>
+			</div>
+			<div class="form-group">
+		        <sw-action-caller
+		            data-action="forgotPassword"
+		            data-modal="false"
+		            data-type="submit"
+		            data-class="button blue"
+		            data-text="{{($.slatwall.getRequestByAction('forgotPassword').loading ? 'LOADING...' : 'Send Me Reset Email')}}">
+		        </sw-action-caller>
+			</div>
+		    </sw-form>
+    </div>
+</div>

@@ -49,18 +49,20 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	 //data properties
 	 property name="newFormResponse" cfc="FormResponse" fieldtype="many-to-one" persistent="false" fkcolumn="formID";
 
-
 	public any function getNewFormResponse(){
 		if(!structKeyExists(variables, "newFormResponse")){
 			variables.newFormResponse = getService("formService").newFormResponse();
 		}
 		return variables.newFormResponse;
 	}
+	
 
 	//override populate to capture attribute values
 	public any function populate(required struct data){
-		this = super.populate(data);
-
+		
+		this = super.populate(arguments.data);
+		
+		
 		for(var question in this.getForm().getFormQuestions()){
 			if(structKeyExists(data, question.getAttributeCode())){
 				//create and store the new attribute value
@@ -75,4 +77,5 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 		return this;
 	}
+	
 }

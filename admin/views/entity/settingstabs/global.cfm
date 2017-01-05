@@ -66,9 +66,14 @@ Notes:
 		<swa:SlatwallSetting settingName="globalURLKeyBrand" />
 		<swa:SlatwallSetting settingName="globalURLKeyProduct" />
 		<swa:SlatwallSetting settingName="globalURLKeyProductType" />
+		<swa:SlatwallSetting settingName="globalURLKeyAddress" />
+		<swa:SlatwallSetting settingName="globalURLKeyAccount" />
 		<swa:SlatwallSetting settingName="globalWeightUnitCode" />
 		<swa:SlatwallSetting settingName="globalAdminAutoLogoutMinutes" />
 		<swa:SlatwallSetting settingName="globalPublicAutoLogoutMinutes" />
+		<swa:SlatwallSetting settingName="globalExtendedSessionAutoLogoutInDays" />
+		<swa:SlatwallSetting settingName="globalUseExtendedSession" />
+		<swa:SlatwallSetting settingName="globalCopyCartToNewSessionOnLogout" />
         <swa:SlatwallSetting settingName="globalGiftCardMessageLength" />
         <swa:SlatwallSetting settingName="globalMaximumFulfillmentsPerOrder" />
 	</swa:SlatwallSettingTable>

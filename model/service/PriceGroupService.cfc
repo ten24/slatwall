@@ -272,10 +272,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// Loop over each of the price groups of this account, and get the price based on that pricegroup
 		for(var i=1; i<=arrayLen(priceGroups); i++) {
-			var caculatedSkuPrice = calculateSkuPriceBasedOnPriceGroupAndCurrencyCode(sku=arguments.sku, priceGroup=priceGroups[i],currencyCode=arguments.currencyCode);
+			var calculatedSkuPrice = calculateSkuPriceBasedOnPriceGroupAndCurrencyCode(sku=arguments.sku, priceGroup=priceGroups[i],currencyCode=arguments.currencyCode);
 			// Sort the array by lowest price
-			if(price < caculatedSkuPrice){
-				price = caculatedSkuPrice;
+			if(price > calculatedSkuPrice){
+				price = calculatedSkuPrice;
 			}
 		}
 		if(!isNull(price)){

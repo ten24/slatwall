@@ -101,6 +101,8 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="orderStatusCode" type="numeric" persistent="false";
 	property name="quantityUndelivered" type="numeric" persistent="false";
 	property name="quantityDelivered" type="numeric" persistent="false";
+	property name="selectedShippingMethodOption" type="any" persistent="false";
+	property name="eligibleShippingMethodRates" type="any" persistent="false"; 
 	property name="shippingMethodRate" type="array" persistent="false";
 	property name="shippingMethodOptions" type="array" persistent="false";
 	property name="subtotal" type="numeric" persistent="false" hb_formatType="currency";
@@ -229,13 +231,16 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     public any function getAccountAddressOptions() {
     	if( !structKeyExists(variables, "accountAddressOptions")) {
     		variables.accountAddressOptions = [];
-			var s = getService("accountService").getAccountAddressSmartList();
-			s.addFilter(propertyIdentifier="account.accountID",value=getOrder().getAccount().getAccountID(),fetch="false");
-			s.addOrder("accountAddressName|ASC");
-			var r = s.getRecords();
-			for(var i=1; i<=arrayLen(r); i++) {
-				arrayAppend(variables.accountAddressOptions, {name=r[i].getSimpleRepresentation(), value=r[i].getAccountAddressID()});
+			if(!isNull(getOrder().getAccount())){
+				var s = getService("accountService").getAccountAddressSmartList();
+				s.addFilter(propertyIdentifier="account.accountID",value=getOrder().getAccount().getAccountID(),fetch="false");
+				s.addOrder("accountAddressName|ASC");
+				var r = s.getRecords();
+				for(var i=1; i<=arrayLen(r); i++) {
+					arrayAppend(variables.accountAddressOptions, {name=r[i].getSimpleRepresentation(), value=r[i].getAccountAddressID()});
+				}
 			}
+			arrayPrepend(variables.accountAddressOptions, {name=rbKey("define.none"), value=""});
 		}
 		return variables.accountAddressOptions;
 	}
@@ -348,8 +353,8 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     public any function getShippingMethodOptions() {
     	if( !structKeyExists(variables, "shippingMethodOptions")) {
 
-    		//update the shipping method options with the shipping service to insure qualifiers are re-evaluated
-    		getService("shippingService").updateOrderFulfillmentShippingMethodOptions( this );
+			//update the shipping method options with the shipping service to insure qualifiers are re-evaluated    		
+			getService("shippingService").updateOrderFulfillmentShippingMethodOptions( this );
 
     		// At this point they have either been populated just before, or there were already options
     		var optionsArray = [];
@@ -402,6 +407,19 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     	}
     }
 
+	public string function getShippingIntegrationName() { 
+		if(!isNull(getShippingIntegration())){
+			return getShippingIntegration().getIntegrationName(); 
+		}
+		return ''; 
+	} 
+
+	public any function getShippingIntegration() { 
+		if(!isNull(getShippingMethodRate()) && !isNull(getShippingMethodRate().getShippingIntegration())){
+				return getShippingMethodRate().getShippingIntegration(); 
+		} 
+	}	
+
     public any function getSelectedShippingMethodOption() {
     	if(!structKeyExists(variables, "selectedShippingMethodOption")) {
     		if(!isNull(getShippingMethod())) {
@@ -431,8 +449,8 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
   		if( !structKeyExists(variables,"subtotal") ) {
 	    	variables.subtotal = 0;
 	    	for( var i=1; i<=arrayLen(getOrderFulfillmentItems()); i++ ) {
-	    	    if(getOrderFulfillmentItems()[i].isRootOrderItem()){
-	    		    variables.subtotal = precisionEvaluate(variables.subtotal + getOrderFulfillmentItems()[i].getExtendedPrice());
+				if(getOrderFulfillmentItems()[i].isRootOrderItem()){
+				    variables.subtotal = precisionEvaluate(variables.subtotal + getOrderFulfillmentItems()[i].getExtendedPrice());	    	
 	    		}
 	    	}
   		}

@@ -193,51 +193,96 @@
 	    }
 	    
 	  /**
-		* Exports the given query/array to file.
-		* 
-		* @param data Data to export. (Required) (Currently only supports query and array of structs).
-		* @param columns List of columns to export. (optional, default: all)
-		* @param columnNames List of column headers to export. (optional, default: none)
-		* @param fileName File name for export. (default: uuid)
-		* @param fileType File type for export. (default: csv)
-		*/
-		public void function export(required any data, string columns, string columnNames, string fileName, string fileType = 'csv') {
-			if (isArray(data)){
-				arguments.data = transformArrayOfStructsToQuery( data, ListToArray(columnNames));
+        * Exports the given query/array to file.
+        * 
+        * @param data Data to export. (Required) (Currently only supports query and array of structs).
+        * @param columns List of columns to export. (optional, default: all)
+        * @param columnNames List of column headers to export. (optional, default: none)
+        * @param fileName File name for export. (default: uuid)
+        * @param fileType File type for export. (default: csv)
+        * This returns the path and filename of the exported file.
+        */ 
+        public any function export(required any data, string columns, string columnNames, string fileName, string fileType = 'csv', boolean downloadFile=true) {
+            if (isArray(data)){
+                arguments.data = transformArrayOfStructsToQuery( data, ListToArray(columnNames));
+            }
+	    
+			var result = {};
+			var supportedFileTypes = "csv,txt";
+            if(!structKeyExists(arguments,"fileName")){
+                arguments.fileName = createUUID() ;
+            }
+			if(!listFindNoCase(supportedFileTypes,arguments.fileType)){
+				throw("File type not supported in export. Only supported file types are #supportedFileTypes#");
 			}
-			if(!structKeyExists(arguments,"fileName")){
-				arguments.fileName = createUUID() ;
-			}
-			var fileNameWithExt = arguments.fileName & "." & arguments.fileType ;
-			var filePath = getVirtualFileSystemPath() & "/" & fileNameWithExt ;
-			if(isQuery(data) && !structKeyExists(arguments,"columns")){
-				arguments.columns = arguments.data.columnList;
-			}
-			if(structKeyExists(arguments,"columns") && !structKeyExists(arguments,"columnNames")){
-				arguments.columnNames = arguments.columns;
-			}
-			var columnArray = listToArray(arguments.columns);
-			var columnCount = arrayLen(columnArray);
-			
-			if(arguments.fileType == 'csv'){
-				var dataArray=[arguments.columnNames];
-				for(var i=1; i <= data.recordcount; i++){
-					var row = [];
-					for(var j=1; j <= columnCount; j++){
-						arrayAppend(row,'"#data[columnArray[j]][i]#"');
-					}
-					arrayAppend(dataArray,arrayToList(row));
-				}
-				var outputData = arrayToList(dataArray,"#chr(13)##chr(10)#");
-				fileWrite(filePath,outputData);
+            var fileNameWithExt = arguments.fileName & "." & arguments.fileType ;
+			if(structKeyExists(application,"tempDir")){
+				var filePath = application.tempDir & "/" & fileNameWithExt;
 			} else {
-				throw("Implement export for fileType #arguments.fileType#");
+				var filePath = GetTempDirectory() & fileNameWithExt;
 			}
-	
-			// Open / Download File
-			getHibachiUtilityService().downloadFile(fileNameWithExt,filePath,"application/#arguments.fileType#",true);
-		}
-	
+            if(isQuery(data) && !structKeyExists(arguments,"columns")){
+                arguments.columns = arguments.data.columnList;
+            }
+            if(structKeyExists(arguments,"columns") && !structKeyExists(arguments,"columnNames")){
+                arguments.columnNames = arguments.columns;
+            }
+            var columnArray = listToArray(arguments.columns);
+            var columnCount = arrayLen(columnArray);
+            
+            if(arguments.fileType == 'csv'){
+                var csv = queryToCSV(arguments.data);
+                fileWrite(filePath,csv);
+			}
+			
+    
+            // Open / Download File / or return info about the filepath name etc.
+            if (arguments.downLoadFile){
+                 getHibachiUtilityService().downloadFile(fileNameWithExt,filePath,"application/#arguments.fileType#",true); 
+            }else{
+                 return {fileNameWithExt = fileNameWithExt, filePath = filePath};   
+            }
+            
+        }
+    
+    /*
+     * queryToCsv
+     * Allows us to pass in a query object and returns that data as a CSV.
+     * This is a refactor of Ben Nadel's method, http://www.bennadel.com/blog/1239-Updated-Converting-A-ColdFusion-Query-To-CSV-Using-QueryToCSV-.htm
+     * @param  {Query}      q               {required}  The cf query object to convert. E.g. pass in: qry.execute().getResult();
+     * @param  {Boolean}    hr              {required}  True if we should include a header row in our CSV, defaults to TRUE
+     * @param  {String}     d               {required}  Delimiter to use in CSV, defaults to a comma (,)
+     * @return {String}                                         CSV content
+     */
+    public string function queryToCsv(required query q, required boolean hr = true, required string d = ","){
+        
+        var colNames    = listToArray( lCase(arguments.q.columnlist) );
+        var newLine     = (chr(13) & chr(10));
+        var buffer      = CreateObject('java','java.lang.StringBuffer').Init();
+        // Check if we should include a header row
+        if(arguments.hr){
+            // append our header row 
+            buffer.append( 
+              ArrayToList(colNames,arguments.d) & newLine
+            );
+        }
+        // Loop over query and build csv rows
+        for(var i=1; i <= arguments.q.recordcount; i=i+1){
+            // this individual row
+            var thisRow = [];
+            // loop over column list
+            for(var j=1; j <= arrayLen(colNames); j=j+1){
+                // create our row
+                thisRow[j] = replace( replace( arguments.q[colNames[j]][i],',','','all'),'""','""""','all' );
+            }
+            // Append new row to csv output
+            buffer.append(
+                JavaCast( 'string', ( ArrayToList( thisRow, arguments.d ) & iif(i < arguments.q.recordcount, "newLine","") ) )
+            );
+        }
+        return buffer.toString();
+    };
+    
 	private query function transformArrayOfStructsToQuery( required array arrayOfStructs, required array colNames ){
 		var rowsTotal = ArrayLen(arrayOfStructs);
 		var columnsTotal = ArrayLen(colNames); 
@@ -259,7 +304,7 @@
 			}
 		}
 		return newQuery;
-	}	
+	}
 			    
 	 	/**
 		 * Generic ORM CRUD methods and dynamic methods by convention via onMissingMethod.
@@ -673,7 +718,9 @@
 			arguments.entityName = getProperlyCasedShortEntityName(arguments.entityName);
 			
 			if(structKeyExists(getEntitiesMetaData(), arguments.entityName) && structKeyExists(getEntitiesMetaData()[arguments.entityName], "hb_serviceName")) {
-				return getService( getEntitiesMetaData()[ arguments.entityName ].hb_serviceName );
+				if(hasService(getEntitiesMetaData()[ arguments.entityName ].hb_serviceName)){
+					return getService( getEntitiesMetaData()[ arguments.entityName ].hb_serviceName );
+				}
 			}
 			
 			// By default just return the base hibachi service
@@ -780,7 +827,10 @@
 		public any function getPropertyByEntityNameAndPropertyName( required string entityName, required string propertyName ) {
 			var hasAttributeByEntityNameAndPropertyIdentifier = getHasAttributeByEntityNameAndPropertyIdentifier(arguments.entityName, arguments.propertyName);
 			if(!hasAttributeByEntityNameAndPropertyIdentifier){
-				return getPropertiesStructByEntityName( entityName=arguments.entityName )[ arguments.propertyName ];
+				var propertiesStructByEntityName = getPropertiesStructByEntityName( entityName=arguments.entityName );
+				if(structKeyExists(propertiesStructByEntityName,arguments.propertyName)){
+					return propertiesStructByEntityName[ arguments.propertyName ];					
+				}
 			} else {
 				var key = 'attributeService_getAttributeNameByAttributeCode_#arguments.propertyName#';
 				if(getHibachiCacheService().hasCachedValue(key)) {
@@ -819,20 +869,34 @@
 	    }
 
 		public struct function getEntitiesProcessContexts(){
+			var serviceBeanInfo = getBeanFactory().getBeanInfo(regex="\w+Service").beanInfo;
+
 			if(!structCount(variables.entitiesProcessContexts)) {
-		    	var processComponentDirectoryListing = getProcessComponentDirectoryListing();
-		    	
-		    	for(var processComponent in processComponentDirectoryListing){
-		    		if(processComponent != 'HibachiProcess.cfc'){
-		    			var processObjectName = listFirst(processComponent,'.');
-		    			var entityName = listFirst(processObjectName,'_');
-		    			var processName = listLast(processObjectName,"_");
-		    			if(!structKeyExists(variables.entitiesProcessContexts,entityName)){
-		    				variables.entitiesProcessContexts[entityName] = [];
-		    			}
-		    			arrayAppend(variables.entitiesProcessContexts[entityName],processName);
-		    		}
-		    	}
+				//get processes form the services
+
+				for(var beanName in serviceBeanInfo){
+					var bean = getBeanFactory().getBean(beanName);
+					var serviceMetaData = getMetaData(bean);
+					if(structKeyExists(serviceMetaData,'functions')){
+						for(var functionItem in serviceMetaData.functions){
+							if(
+								(!structKeyExists(functionItem,'access') || functionItem.access == 'public')
+								&& lcase(left(functionItem.name,7))=='process'
+							){
+								var processObjectName = mid(functionItem.name,8,len(functionItem.name));
+				    			var entityName = listFirst(processObjectName,'_');
+				    			var processName = listLast(processObjectName,"_");
+				    			if(!structKeyExists(variables.entitiesProcessContexts,entityName)){
+				    				variables.entitiesProcessContexts[entityName] = [];
+				    			}
+				    			if(!arrayFind(variables.entitiesProcessContexts[entityName],processName)){
+									arrayAppend(variables.entitiesProcessContexts[entityName],processName);
+				    			}
+							}
+						}
+					}
+
+				}
 		    }
 	    	return variables.entitiesProcessContexts;
 	    }
@@ -867,7 +931,22 @@
 			var hasAttributeByEntityNameAndPropertyIdentifier=getHasAttributeByEntityNameAndPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier);
 			
 			if(!hasAttributeByEntityNameAndPropertyIdentifier){
-				return structKeyExists(getPropertiesStructByEntityName(getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier))[listLast(arguments.propertyIdentifier, ".")],'cfc');
+				
+				var lastEntityNameInPropertyIdentifier = getLastEntityNameInPropertyIdentifier(
+					arguments.entityName, 
+					arguments.propertyIdentifier
+				);
+				
+				var propertiesStructByEntityName = getPropertiesStructByEntityName(
+					lastEntityNameInPropertyIdentifier
+				);
+				
+				var lastItemInPropertyIdentfier = listLast(arguments.propertyIdentifier, ".");
+				
+				
+				return structKeyExists(propertiesStructByEntityName,lastItemInPropertyIdentfier) && structKeyExists(
+					propertiesStructByEntityName[lastItemInPropertyIdentfier],'cfc'
+				);
 			} else {
 				return false;
 			}

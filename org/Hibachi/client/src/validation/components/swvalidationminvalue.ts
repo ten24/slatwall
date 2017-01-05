@@ -12,6 +12,9 @@ class SWValidationMinValue{
             link: function(scope, element, attributes, ngModel) {
                 ngModel.$validators.swvalidationminvalue =
                 (modelValue, viewValue)=> {
+                    if(viewValue == null){
+                        return true; 
+                    }
                     return validationService.validateMinValue(viewValue,attributes.swvalidationminvalue);
                 };
             }

@@ -49,6 +49,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="skuPrice" ormtype="big_decimal";
 	property name="currencyCode" ormtype="string" length="3";
 	property name="quantity" hb_populateEnabled="public" ormtype="integer";
+	property name="bundleItemQuantity" hb_populateEnabled="public" ormtype="integer";
 	property name="estimatedDeliveryDateTime" ormtype="timestamp";
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
 
@@ -70,13 +71,18 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="appliedTaxes" singularname="appliedTax" cfc="TaxApplied" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true" cascade="all-delete-orphan";
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true" cascade="all-delete-orphan";
 	property name="childOrderItems" hb_populateEnabled="public" singularname="childOrderItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="parentOrderItemID" inverse="true" cascade="all-delete-orphan";
-	property name="eventRegistrations" singularname="eventRegistration" hb_populateEnabled="public" fieldtype="one-to-many" fkcolumn="orderItemID" cfc="EventRegistration" inverse="true" cascade="all-delete-orphan" lazy="extra" ;
+	property name="eventRegistrations" singularname="eventRegistration" hb_populateEnabled="public" fieldtype="one-to-many" fkcolumn="orderItemID" cfc="EventRegistration" inverse="true" cascade="all-delete-orphan" ;
 	property name="orderDeliveryItems" singularname="orderDeliveryItem" cfc="OrderDeliveryItem" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true" cascade="delete-orphan";
 	property name="stockReceiverItems" singularname="stockReceiverItem" cfc="StockReceiverItem" type="array" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true";
 	property name="referencingOrderItems" singularname="referencingOrderItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="referencedOrderItemID" inverse="true" cascade="all"; // Used For Returns
 	property name="accountLoyaltyTransactions" singularname="accountLoyaltyTransaction" cfc="AccountLoyaltyTransaction" type="array" fieldtype="one-to-many" fkcolumn="orderItemID" cascade="all" inverse="true";
 	property name="giftCards" singularname="giftCard" cfc="GiftCard" type="array" fieldtype="one-to-many" fkcolumn="originalOrderItemID" cascade="all" inverse="true";
 	property name="orderItemGiftRecipients" singularname="orderItemGiftRecipient" cfc="OrderItemGiftRecipient" type="array" fieldtype="one-to-many" fkcolumn="orderItemID" cascade="all" inverse="true";
+
+	// Related Object Properties (many-to-many)
+
+	property name="shippingMethodOptionSplitShipments" singularname="shippingMethodOptionSplitShipment" cfc="ShippingMethodOptionSplitShipment" fieldtype="many-to-many" linktable="SwShipMethodOptSplitShipOrdItm" inversejoincolumn="shipMethodOptSplitShipmentID" fkcolumn="orderItemID";
+
 
 	// Remote properties
 	property name="publicRemoteID" ormtype="string" hb_populateEnabled="public";
@@ -106,6 +112,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="productBundlePrice" persistent="false" hb_formatType="currency";
 	property name="productBundleGroupPrice" persistent="false" hb_formatType="currency";
 	property name="salePrice" type="struct" persistent="false";
+	property name="totalWeight" persistent="false";
 
 
 	public numeric function getNumberOfUnassignedGiftCards(){
@@ -144,6 +151,10 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
         return orderItemGiftRecipientSmartList;
     }
 
+	public numeric function getTotalWeight() {
+		return precisionEvaluate(getSku().getWeight() * getQuantity());
+	}
+
 	public numeric function getMaximumOrderQuantity() {
 		var maxQTY = 0;
 		if(getSku().getActiveFlag() && getSku().getProduct().getActiveFlag()) {
@@ -170,11 +181,15 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
     public boolean function hasQuantityWithinMaxOrderQuantity() {
         if(getOrderItemType().getSystemCode() == 'oitSale') {
         	var quantity = 0;
-        	for (var orderItem in getOrder().getOrderItems()){
-	            if (!isNull(orderItem.getSku()) && orderItem.getSku().getSkuID() == getSku().getSkuID()) {
-	                quantity += orderItem.getQuantity();
-	            }
-	        }
+			if(!isNull(getOrder())){
+				for (var orderItem in getOrder().getOrderItems()){
+					if (!isNull(orderItem.getSku()) && orderItem.getSku().getSkuID() == getSku().getSkuID()) {
+						quantity += orderItem.getQuantity();
+					}
+				}
+			} else {
+				quantity = getQuantity();
+			}
             return quantity <= getMaximumOrderQuantity();
         }
         return true;
@@ -183,11 +198,15 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
     public boolean function hasQuantityWithinMinOrderQuantity() {
         if(getOrderItemType().getSystemCode() == 'oitSale') {
         	var quantity = 0;
-        	for (var orderItem in getOrder().getOrderItems()){
-	            if (!isNull(orderItem.getSku()) && orderItem.getSku().getSkuID() == getSku().getSkuID()) {
-	                quantity += orderItem.getQuantity();
-	            }
-	        }
+        	if(!isNull(getOrder())){
+				for (var orderItem in getOrder().getOrderItems()){
+					if (!isNull(orderItem.getSku()) && orderItem.getSku().getSkuID() == getSku().getSkuID()) {
+						quantity += orderItem.getQuantity();
+					}
+				}
+			} else {
+				quantity = getQuantity();
+			}
             return quantity >= getSku().setting('skuOrderMinimumQuantity');
         }
         return true;
@@ -285,6 +304,12 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			discountAmount = precisionEvaluate(discountAmount + getAppliedPromotions()[i].getDiscountAmount());
 		}
 
+		if(!isNull(getSku()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
+			for(var childOrderItem in this.getChildOrderItems()){
+				discountAmount = precisionEvaluate(discountAmount + childOrderItem.getDiscountAmount());
+			}
+		}
+
 		return discountAmount;
 	}
 
@@ -297,8 +322,8 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		}else if(!isNull(getPrice())){
 			price = getPrice();
 		}
+		return val(precisionEvaluate("round(price * val(getQuantity()) * 100) / 100"));
 
-		return precisionEvaluate(round(price * val(getQuantity()) * 100) / 100);
 	}
 
 
@@ -309,6 +334,10 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		for(var childOrderItem in this.getChildOrderItems()){
 			var childProductBundleGroupPrice = getProductBundleGroupPrice(childOrderItem);
 			var childQuantity = childOrderItem.getQuantity();
+			//if we have a package quantity use that instead
+			if(!isNull(childOrderItem.getBundleItemQuantity())){
+				childQuantity = childOrderItem.getBundleItemQuantity();
+			}
 			productBundlePrice += precisionEvaluate(childProductBundleGroupPrice * childQuantity);
 		}
 
@@ -385,7 +414,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		if(!structKeyExists(variables, "activeRegistrationsSmartList")) {
 			variables.activeRegistrationsSmartList = getService('EventRegistrationService').getEventRegistrationSmartList();
 			variables.activeRegistrationsSmartList.addFilter('orderItem.orderItemID', getOrderItemID());
-			variables.activeRegistrationsSmartList.addInFilter('eventRegistrationStatusType.systemCode', 'erstRegistered,erstWaitListed,erstPendingApproval,erstAttended,erstNotPlaced');
+			variables.activeRegistrationsSmartList.addInFilter('eventRegistrationStatusType.systemCode', 'erstRegistered,erstWaitListed,erstPendingApproval,erstPendingConfirmation,erstAttended,erstNotPlaced');
 		}
 
 		return variables.activeRegistrationsSmartList;
@@ -409,6 +438,25 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		}
 
 		return taxLiabilityAmount;
+	}
+
+	public void function setQuantity(required numeric quantity){
+		variables.quantity = arguments.quantity;
+		if(this.isRootOrderItem()){
+			for(var childOrderItem in this.getChildOrderItems()){
+				if (!isNull(childOrderItem.getBundleItemQuantity()) && structKeyExists(variables, "quantity")){
+					var newQuantity = PrecisionEvaluate(childOrderItem.getBundleItemQuantity() * variables.quantity);
+					childOrderItem.setQuantity(newQuantity);
+				}
+			}
+		}
+	}
+
+	public void function setBundleItemQuantity(required numeric bundleItemQuantity){
+		if(!this.isRootOrderItem()){
+			variables.bundleItemQuantity = arguments.bundleItemQuantity;
+			variables.quantity = PrecisionEvaluate(getParentOrderItem().getQuantity() * variables.bundleItemQuantity);
+		}
 	}
 
 	public numeric function getQuantityDelivered() {
@@ -631,6 +679,14 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		arguments.attributeValue.removeOrderItem( this );
 	}
 
+	// Event Registrations (one-to-many)
+ 	public void function addEventRegistration(required any eventRegistration) {
+		arguments.eventRegistration.setOrderItem( this );
+  	}
+	public void function removeEventRegistration(required any eventRegistration) {
+ 		arguments.eventRegistration.removeOrderItem( this );
+  	}
+
 	// Child Order Items (one-to-many)
 	public void function addChildOrderItem(required any childOrderItem) {
 		arguments.childOrderItem.setParentOrderItem( this );
@@ -662,6 +718,27 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	public void function removeReferencingOrderItem(required any referencingOrderItem) {
 		arguments.referencingOrderItem.removeReferencedOrderItem( this );
 	}
+
+	// ShippingMethodOptionSplitShipment (many-to-many - owner)
+	public void function addShippingMethodOptionSplitShipment(required any shippingMethodOptionSplitShipment) {
+		if(isNew() or !hasShippingMethodOptionSplitShipment(arguments.shippingMethodOptionSplitShipment)) {
+			arrayAppend(variables.shippingMethodOptionSplitShipments, arguments.shippingMethodOptionSplitShipment);
+		}
+		if(arguments.shippingMethodOptionSplitShipment.isNew() or !arguments.shippingMethodOptionSplitShipment.hasShipmentOrderItem( this )) {
+			arrayAppend(arguments.shippingMethodOptionSplitShipment.getShipmentOrderItems(), this);
+		}
+	}
+	public void function removeShippingMethodOptionSplitShipment(required any shippingMethodOptionSplitShipment) {
+		var thisIndex = arrayFind(variables.shippingMethodOptionSplitShipment, arguments.shippingMethodOptionSplitShipment);
+		if(thisIndex > 0) {
+			arrayDeleteAt(variables.shippingMethodOptionSplitShipments, thisIndex);
+		}
+		var thatIndex = arrayFind(arguments.shippingMethodOptionSplitShipment.getShipmentOrderItems(), this);
+		if(thatIndex > 0) {
+			arrayDeleteAt(arguments.shippingMethodOptionSplitShipment.getShipmentOrderItems(), thatIndex);
+		}
+	}
+
 
 	// =============  END:  Bidirectional Helper Methods ===================
 

@@ -48,6 +48,8 @@ Notes:
 */
 
 component extends="HibachiService" accessors="true" {
+
+	property name="HibachiUtilityService" type="any";
 	
 	// ===================== START: Logical Methods ===========================
 	
@@ -453,7 +455,7 @@ component extends="HibachiService" accessors="true" {
 		
 		if (arraylen(archiveCandidates)) {
 			// Threaded process of audits that may need to be archived
-			if (getHibachiScope().setting('globalAuditCommitMode') == 'thread') {
+			if (getHibachiScope().setting('globalAuditCommitMode') == 'thread' && !getHibachiUtilityService().isInThread()) {
 				thread name="archiveThread-#createHibachiUUID()#" action="run" archiveCandidates="#archiveCandidates#" {
 					for (var audit in attributes.archiveCandidates) {
 						this.processAudit(audit, 'archive');
@@ -532,7 +534,12 @@ component extends="HibachiService" accessors="true" {
 						}
 					}
 					
-					changeDetail[column] = columnValue;
+					if(structKeyExists(currentProperty,'hb_formFieldType') && currentProperty.hb_formFieldType == 'wysiwyg'){
+						changeDetail[column] = columnValue;
+					}else{
+						changeDetail[column] = hibachiHTMLEditFormat(columnValue);
+					}
+					
 				}
 			}
 			

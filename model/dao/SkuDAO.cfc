@@ -237,4 +237,51 @@ Notes:
 		<cfreturn nogSortOrder />
 	</cffunction>
 	
+	<!--- Retuns a list of all locationID's used during a given time range --->
+	<cffunction name="getUsedLocationIdsByEventDates" returntype="any" access="public" >
+		<cfargument name="eventStartDateTime" type="date" />
+		<cfargument name="eventEndDateTime" type="date" />
+	 
+		<cfquery name="getUsedLocationIdsByEventDates" >
+			SELECT
+				DISTINCT lc.LocationID 
+			FROM 
+				SwSku
+			LEFT OUTER JOIN 
+				SwProduct 
+			ON 
+				SwSku.productID=SwProduct.productID 
+			LEFT OUTER JOIN 
+				SwSkuLocationConfiguration slc
+			ON 
+				SwSku.skuID = slc.skuID
+			LEFT OUTER JOIN 
+				SwLocationConfiguration lc
+			ON 
+				slc.locationConfigurationID = lc.locationConfigurationID
+			WHERE 
+				SwSku.activeFlag=1
+			AND 
+				SwProduct.activeFlag=1 
+			AND 
+				SwSku.bundleFlag=0 
+			AND
+				(	
+					(	
+						SwSku.eventStartDateTime <= <cfqueryparam cfsqltype="CF_SQL_TIMESTAMP" value="#arguments.eventStartDateTime#">
+							AND 
+						SwSku.eventEndDateTime >= <cfqueryparam cfsqltype="CF_SQL_TIMESTAMP" value="#arguments.eventEndDateTime#">
+					)
+					OR
+					(
+						SwSku.eventStartDateTime BETWEEN <cfqueryparam cfsqltype="CF_SQL_TIMESTAMP" value="#arguments.eventStartDateTime#"> AND <cfqueryparam cfsqltype="CF_SQL_TIMESTAMP" value="#arguments.eventEndDateTime#"> 
+							OR 
+						SwSku.eventEndDateTime BETWEEN <cfqueryparam cfsqltype="CF_SQL_TIMESTAMP" value="#arguments.eventStartDateTime#"> AND <cfqueryparam cfsqltype="CF_SQL_TIMESTAMP" value="#arguments.eventEndDateTime#">
+					)
+				)
+		</cfquery> 
+		
+		<cfreturn valueList(getUsedLocationIdsByEventDates.LocationID) />
+	</cffunction>
+	
 </cfcomponent>

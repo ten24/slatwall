@@ -34,8 +34,11 @@ class SWFormFieldController {
 	public options:any;
 	public selected:any;
 	public isDirty:boolean;
+	public inListingDisplay:boolean; 
 	public selectType:string;
 	public eagerLoadOptions:boolean;
+	public rawFileTarget:string;
+	public binaryFileTarget:string;
 	public optionsArguments:any;
 	public valueOptions:any;
 
@@ -59,7 +62,7 @@ class SWFormFieldController {
 	}
 
 	public formFieldChanged = (option)=>{
-
+        
 		if(this.fieldType === 'yesno'){
 			this.object.data[this.property] = option.value;
 
@@ -291,10 +294,13 @@ class SWFormField{
 		errorText: "@?",
 		fieldType: "@?",
 		property:"@?",
+		inListingDisplay:"=?", 
 		inputAttributes:"@?",
 		options:"=?",
         optionsArguments:"=?",
         eagerLoadOptions:"=?",
+		rawFileTarget:"@?",
+		binaryFileTarget:"@?",
         isDirty:"=?",
         onChange:"=?",
 		editable:"=?",

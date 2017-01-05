@@ -56,21 +56,39 @@ Notes:
 	<cffunction name="sendEmail" returntype="void" access="public">
 		<cfargument name="email" type="any" required="true" />
 
+		<cfset cfmailAttributes = structNew() />
+		<cfset cfmailAttributes["from"] = arguments.email.getEmailFrom() />
+		<cfset cfmailAttributes["subject"] = arguments.email.getEmailSubject() />
+		<cfset cfmailAttributes["to"] = arguments.email.getEmailTo() />
+		<cfif !isNull(arguments.email.getEmailCC())>
+			<cfset cfmailAttributes["cc"] = arguments.email.getEmailCC() />
+		</cfif>
+		<cfif !isNull(arguments.email.getEmailBCC())>
+			<cfset cfmailAttributes["bcc"] = arguments.email.getEmailBCC() />
+		</cfif>
+		<cfset cfmailAttributes["charset"] = "utf-8" />
+
+		<cfif structKeyExists(arguments, 'emailTemplate') && !isNull(arguments.emailTemplate) && len(arguments.emailTemplate.setting('emailSMTPServer'))>
+			<cfset cfmailAttributes["server"] = arguments.emailTemplate.setting('emailSMTPServer') />
+			<cfset cfmailAttributes["port"] = arguments.emailTemplate.setting('emailSMTPPort') />
+			<cfset cfmailAttributes["useSSL"] = arguments.emailTemplate.setting('emailSMTPUseSSL') />
+			<cfset cfmailAttributes["useTLS"] = arguments.emailTemplate.setting('emailSMTPUseTLS') />
+			<cfset cfmailAttributes["username"] = arguments.emailTemplate.setting('emailSMTPUsername') />
+			<cfset cfmailAttributes["password"] = arguments.emailTemplate.setting('emailSMTPPassword') />
+		</cfif>
+
 		<!--- Send Multipart E-mail --->
 		<cfif len(arguments.email.getEmailBodyHTML()) && len(arguments.email.getEmailBodyText()) && len(arguments.email.getEmailTo())>
-			<cfmail to="#arguments.email.getEmailTo()#"
-				from="#arguments.email.getEmailFrom()#"
-				subject="#arguments.email.getEmailSubject()#"
-				cc="#arguments.email.getEmailCC()#"
-				bcc="#arguments.email.getEmailBCC()#"
-				failto="#getService('SettingService').getSettingValue('emailFailToAddress')#"
-				charset="utf-8">
+			<cfmail attributeCollection="#cfmailAttributes#">
 				<cfif !isNull(arguments.email.getRelatedObject())>
 					<cfmailparam name="Related-Object" value="#arguments.email.getRelatedObject()#">
 					<cfmailparam name="Related-Object-ID" value="#arguments.email.getRelatedObjectID()#">
 				</cfif>
 				<cfif !isNull(arguments.email.getEmailReplyTo())>
 					<cfmailparam name="Reply-To" value="#arguments.email.getEmailReplyTo()#">
+				</cfif>
+				<cfif !isNull(arguments.email.getEmailFailTo())>
+					<cfmailparam name="Return-Path" value="#arguments.email.getEmailFailTo()#">
 				</cfif>
 				<cfmailpart type="text/plain">
 					<cfoutput>#arguments.email.getEmailBodyText()#</cfoutput>
@@ -81,14 +99,13 @@ Notes:
 			</cfmail>
 		<!--- Send HTML Only E-mail --->
 		<cfelseif len(arguments.email.getEmailBodyHTML()) && len(arguments.email.getEmailTo())>
-			<cfmail to="#arguments.email.getEmailTo()#"
-				from="#arguments.email.getEmailFrom()#"
-				subject="#arguments.email.getEmailSubject()#"
-				cc="#arguments.email.getEmailCC()#"
-				bcc="#arguments.email.getEmailBCC()#"
-				failto="#getService('SettingService').getSettingValue('emailFailToAddress')#"
-				charset="utf-8"
-				type="text/html">
+
+			<cfset cfmailAttributes["type"] = "text/html" />
+
+			<cfmail attributeCollection="#cfmailAttributes#">
+				<cfif !isNull(arguments.email.getEmailFailTo())>
+					<cfmailparam name="Return-Path" value="#arguments.email.getEmailFailTo()#">
+				</cfif>
 				<cfif !isNull(arguments.email.getRelatedObject())>
 					<cfmailparam name="Related-Object" value="#arguments.email.getRelatedObject()#">
 					<cfmailparam name="Related-Object-ID" value="#arguments.email.getRelatedObjectID()#">
@@ -100,14 +117,13 @@ Notes:
 			</cfmail>
 		<!--- Send Text Only E-mail --->
 		<cfelseif len(arguments.email.getEmailBodyText()) && len(arguments.email.getEmailTo())>
-			<cfmail to="#arguments.email.getEmailTo()#"
-				from="#arguments.email.getEmailFrom()#"
-				subject="#arguments.email.getEmailSubject()#"
-				cc="#arguments.email.getEmailCC()#"
-				bcc="#arguments.email.getEmailBCC()#"
-				failto="#getService('SettingService').getSettingValue('emailFailToAddress')#"
-				charset="utf-8"
-				type="text/plain">
+
+			<cfset cfmailAttributes["type"] = "text/plain" />
+
+			<cfmail attributeCollection="#cfmailAttributes#">
+				<cfif !isNull(arguments.email.getEmailFailTo())>
+					<cfmailparam name="Return-Path" value="#arguments.email.getEmailFailTo()#">
+				</cfif>
 				<cfif !isNull(arguments.email.getRelatedObject())>
 					<cfmailparam name="Related-Object" value="#arguments.email.getRelatedObject()#">
 					<cfmailparam name="Related-Object-ID" value="#arguments.email.getRelatedObjectID()#">
@@ -130,10 +146,10 @@ Notes:
 		<cfset var email = "" />
 
 		<!--- Loop over the queue --->
-		<cfloop array="#getHibachiScope().getEmailQueue()#" index="email">
+		<cfloop array="#getHibachiScope().getEmailQueue()#" index="queueData">
 
 			<!--- Send the email --->
-			<cfset sendEmail(email) />
+			<cfset sendEmail(argumentcollection="#queueData#") />
 		</cfloop>
 
 		<!--- Clear out the queue --->
@@ -181,18 +197,13 @@ Notes:
 		var email = this.newEmail();
 		arguments[arguments.entity.getClassName()] = arguments.entity;
 		email = this.processEmail(email, arguments, 'createFromTemplate');
-		email = this.processEmail(email, 'addToQueue');
+		email = this.processEmail(email, arguments, 'addToQueue');
 		return email;
 	}
 
 	public void function generateAndSendFromEntityAndEmailTemplateID( required any entity, required any emailTemplateID ) {
-		var email = this.newEmail();
-		var emailData = {
-			emailTemplateID = arguments.emailTemplateID
-		};
-		emailData[ arguments.entity.getPrimaryIDPropertyName() ] = arguments.entity.getPrimaryIDValue();
-		email = this.processEmail(email, emailData, 'createFromTemplate');
-		email = this.processEmail(email, {}, 'addToQueue');
+		var emailTemplate = getTemplateService().getEmailTemplate( arguments.emailTemplateID);
+		this.generateAndSendFromEntityAndEmailTemplate(arguments.entity, emailTemplate);
 	}
 
 	</cfscript>
@@ -236,9 +247,10 @@ Notes:
 				arguments.email.setEmailCC( templateObject.stringReplace( emailTemplate.setting('emailCCAddress'), false, true ) );
 				arguments.email.setEmailBCC( templateObject.stringReplace( emailTemplate.setting('emailBCCAddress'), false, true ) );
 				arguments.email.setEmailReplyTo( templateObject.stringReplace( emailTemplate.setting('emailReplyToAddress'), false, true ) );
-				arguments.email.setEmailSubject( templateObject.stringReplace( emailTemplate.setting('emailSubject'), false, true ) );
-				arguments.email.setEmailBodyHTML( templateObject.stringReplace( emailTemplate.getEmailBodyHTML() ) );
-				arguments.email.setEmailBodyText( templateObject.stringReplace( emailTemplate.getEmailBodyText() ) );
+				arguments.email.setEmailFailTo( templateObject.stringReplace( emailTemplate.setting('emailFailToAddress'), false, true ) );
+				arguments.email.setEmailSubject( templateObject.stringReplace( emailTemplate.setting('emailSubject'), true, true ) );
+				arguments.email.setEmailBodyHTML( templateObject.stringReplace( emailTemplate.getEmailBodyHTML(),true ) );
+				arguments.email.setEmailBodyText( templateObject.stringReplace( emailTemplate.getEmailBodyText(),true ) );
 
 
 				var templateFileResponse = "";
@@ -267,9 +279,10 @@ Notes:
 				arguments.email.setEmailCC( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailCC(), object=emailData) );
 				arguments.email.setEmailBCC( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailBCC(), object=emailData) );
 				arguments.email.setEmailReplyTo( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailReplyTo(), object=emailData) );
-				arguments.email.setEmailSubject( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailSubject(), object=emailData) );
-				arguments.email.setEmailBodyHTML( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailBodyHTML(), object=emailData) );
-				arguments.email.setEmailBodyText( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailBodyText(), object=emailData) );
+				arguments.email.setEmailFailTo( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailFailTo(), object=emailData) );
+				arguments.email.setEmailSubject( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailSubject(), object=emailData, formatValues=true) );
+				arguments.email.setEmailBodyHTML( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailBodyHTML(), object=emailData, formatValues=true) );
+				arguments.email.setEmailBodyText( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailBodyText(), object=emailData, formatValues=true) );
 
 				arguments.email.setLogEmailFlag( emailTemplate.getLogEmailFlag() );
 			}
@@ -299,7 +312,12 @@ Notes:
 			len(arguments.email.getEmailSubject())
 		) {
 			// Append the email to the email queue
-			arrayAppend(getHibachiScope().getEmailQueue(), arguments.email);
+			var queueData = {};
+			queueData['email'] = arguments.email;
+			if(structKeyExists( arguments.data, 'emailTemplate')){
+				queueData['emailTemplate'] = arguments.data.emailTemplate;
+			}
+			arrayAppend(getHibachiScope().getEmailQueue(),queueData);
 		}
 
 		return arguments.email;

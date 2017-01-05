@@ -17,6 +17,12 @@ class PublicService {
     public errors:{[key:string]:any}={};
     public newBillingAddress:any;
 
+    public accountDataPromise:any;
+    public addressOptionData:any; 
+    public cartDataPromise:any;  
+    public countryDataPromise:any; 
+    public stateDataPromise:any; 
+
     public http:ng.IHttpService;
     public confirmationUrl:string;
     public header:any;
@@ -48,13 +54,15 @@ class PublicService {
         public accountService,
         public cartService,
         public orderService,
-        public observerService
+        public observerService,
+        public appConfig
     ) {
         this.orderService = orderService;
         this.cartService = cartService;
         this.accountService = accountService;
         this.requestService = requestService;
-        this.baseActionPath = "/index.cfm/api/scope/"; //default path
+        this.appConfig = appConfig;
+        this.baseActionPath = this.appConfig.baseURL+"/index.cfm/api/scope/"; //default path
         this.confirmationUrl = "/order-confirmation";
         this.$http = $http;
         this.$location = $location;
@@ -94,38 +102,53 @@ class PublicService {
         var baseDate = new Date();
         var today = baseDate.getFullYear();
         var start = today;
-        for (var i = 0; i<= 5; i++){
+        for (var i = 0; i<= 15; i++){
             this.years.push(start + i);
         }
     }
     /** accessors for account */
-    public getAccount=():any =>  {
-        let urlBase = '/index.cfm/api/scope/getAccount/';
-        return this.getData(urlBase, "account", "");
+    public getAccount=(refresh=false):any =>  {
+        let urlBase = this.baseActionPath+'getAccount/';
+        if(!this.accountDataPromise || refresh){
+            this.accountDataPromise = this.getData(urlBase, "account", "");
+        }
+        return this.accountDataPromise;
     }
     /** accessors for cart */
-    public getCart=():any =>  {
-        let urlBase = '/index.cfm/api/scope/getCart/';
-        return this.getData(urlBase, "cart", "");
+    public getCart=(refresh=false):any =>  {
+        let urlBase = this.baseActionPath+'getCart/';
+        if(!this.cartDataPromise || refresh){
+            this.cartDataPromise = this.getData(urlBase, "cart", "");
+        }
+        return this.cartDataPromise;
     }
     /** accessors for countries */
-    public getCountries=():any =>  {
-        let urlBase = '/index.cfm/api/scope/getCountries/';
-        return this.getData(urlBase, "countries", "");
+    public getCountries=(refresh=false):any =>  {
+        let urlBase = this.baseActionPath+'getCountries/';
+        if(!this.countryDataPromise || refresh){
+            this.countryDataPromise = this.getData(urlBase, "countries", "");
+        }
+        return this.countryDataPromise; 
     }
 
     /** accessors for states */
-    public getStates=(countryCode:string):any =>  {
+    public getStates=(countryCode:string, refresh=false):any =>  {
        if (!angular.isDefined(countryCode)) countryCode = "US";
-       let urlBase = '/index.cfm/api/scope/getStateCodeOptionsByCountryCode/';
-       return this.getData(urlBase, "states", "?countryCode="+countryCode);
+       let urlBase = this.baseActionPath+'getStateCodeOptionsByCountryCode/';
+       if(!this.stateDataPromise || refresh){
+           this.stateDataPromise = this.getData(urlBase, "states", "?countryCode="+countryCode); 
+       }
+       return this.stateDataPromise;
     }
 
     /** accessors for states */
-    public getAddressOptions=(countryCode:string):any =>  {
+    public getAddressOptions=(countryCode:string, refresh=false):any =>  {
        if (!angular.isDefined(countryCode)) countryCode = "US";
-       let urlBase = '/index.cfm/api/scope/getAddressOptionsByCountryCode/';
-       return this.getData(urlBase, "addressOptions", "&countryCode="+countryCode);
+       let urlBase = this.baseActionPath+'getAddressOptionsByCountryCode/';
+       if(!this.addressOptionData || refresh){
+           this.addressOptionData = this.getData(urlBase, "addressOptions", "&countryCode="+countryCode);
+       }
+       return this.addressOptionData;
     }
 
     /** accessors for states */
@@ -143,7 +166,7 @@ class PublicService {
 
             if(setter == 'cart'||setter=='account'){
                 //cart and account return cart and account info flat
-                this[setter].populate(result)
+                this[setter].populate(result);
 
             }else{
                 //other functions reutrn cart,account and then data
@@ -184,7 +207,7 @@ class PublicService {
             this.baseActionPath = "/index.cfm/api/scope/" + action;//public path
         }
 
-        let urlBase = this.baseActionPath;
+        let urlBase = this.appConfig.baseURL+this.baseActionPath;
 
         if(data){
             method = "post";

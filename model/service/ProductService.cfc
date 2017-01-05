@@ -90,7 +90,7 @@ component extends="HibachiService" accessors="true" {
 	}
 
 	// @help Generates an event sku stub. Used to replace repetitive code.
-	private void function createEventSkuOrSkus(required processObject, required startDateTime, required endDateTime, any productSchedule) {
+	private any function createEventSkuOrSkus(required processObject, required startDateTime, required endDateTime, any productSchedule) {
 
 		// Bundled location configuration
 		if(arguments.processObject.getBundleLocationConfigurationFlag()) {
@@ -156,7 +156,9 @@ component extends="HibachiService" accessors="true" {
 			}
 
 			newSku.generateAndSetAttendanceCode();
-
+			
+			this.saveSku(newSku);
+			
 		// Single location configuration
 		} else {
 
@@ -206,41 +208,55 @@ component extends="HibachiService" accessors="true" {
 				}
 
 				newSku.generateAndSetAttendanceCode();
-
+				
+				this.saveSku(newSku);
+				
+				if( newSku.hasErrors() ){
+					break;
+				}
 			}
 		}
-
+		
+		return newSku;
 	}
 
 	// @help Utilized by scheduled sku creation processes to create daily skus
-	private void function createDailyScheduledSkus(required product, required processObject, required productSchedule) {
+	private any function createDailyScheduledSkus(required product, required processObject, required productSchedule) {
 
 		// Set initial values for first iteration
-		newSkuStartDateTime = arguments.processObject.getEventStartDateTime();
-		newSkuEndDateTime = arguments.processObject.getEventEndDateTime();
+		var newSkuStartDateTime = arguments.processObject.getEventStartDateTime();
+		var newSkuEndDateTime = arguments.processObject.getEventEndDateTime();
+		var latestSKu = '';
 
 		// Create sku for every day from start date to end date
 		do {
 
-			createEventSkuOrSkus( arguments.processObject, newSkuStartDateTime, newSkuEndDateTime, arguments.productSchedule);
+			latestSku = createEventSkuOrSkus( arguments.processObject, newSkuStartDateTime, newSkuEndDateTime, arguments.productSchedule);
 
 			// Increment Start/End date time based on recurring time unit
 			newSkuStartDateTime = dateAdd("d", 1, newSkuStartDateTime);
 			newSkuEndDateTime = dateAdd("d", 1, newSkuEndDateTime);
 
-		} while ( newSkuStartDateTime < arguments.productSchedule.getScheduleEndDate() );
+		} while ( !latestSku.hasErrors() && newSkuStartDateTime < arguments.productSchedule.getScheduleEndDate() );
+	
+		if (latestSku.hasErrors()) {
+			arguments.product.addErrors(latestSku.getErrors());
+		}
+			
+		return arguments.product;
 	}
 
 	// @help Utilized by scheduled sku creation processes to create weekly skus
-	private void function createWeeklyScheduledSkus(required product, required processObject, required productSchedule) {
+	private any function createWeeklyScheduledSkus(required product, required processObject, required productSchedule) {
 
 		// Make sure days are in order
 		arguments.processObject.setWeeklyRepeatDays(listSort(arguments.processObject.getWeeklyRepeatDays(),"numeric" ));
 		arguments.productSchedule.setWeeklyRepeatDays( arguments.processObject.getWeeklyRepeatDays() );
 
 		// Set initial values for first iteration
-		newSkuStartDateTime = arguments.processObject.getEventStartDateTime();
-		newSkuEndDateTime = arguments.processObject.getEventEndDateTime();
+		var newSkuStartDateTime = arguments.processObject.getEventStartDateTime();
+		var newSkuEndDateTime = arguments.processObject.getEventEndDateTime();
+		var latestSku = '';
 
 		var scheduleStartDay = dayOfWeek(arguments.processObject.getEventStartDateTime());
 		var actualScheduleStartDay = scheduleStartDay;
@@ -277,7 +293,7 @@ component extends="HibachiService" accessors="true" {
 
 		do {
 
-			createEventSkuOrSkus( arguments.processObject, newSkuStartDateTime, newSkuEndDateTime, arguments.productSchedule );
+			latestSku = createEventSkuOrSkus( arguments.processObject, newSkuStartDateTime, newSkuEndDateTime, arguments.productSchedule );
 
 			// Increment Start/End date time based on recurring time unit
 			newSkuStartDateTime = nextScheduleDate(arguments.processObject.getWeeklyRepeatDays(),newSkuStartDateTime,cursorPosition);
@@ -289,19 +305,25 @@ component extends="HibachiService" accessors="true" {
 				cursorPosition++;
 			}
 
-		} while ( newSkuStartDateTime < arguments.productSchedule.getScheduleEndDate() );
-
+		} while ( !latestSku.hasErrors() && newSkuStartDateTime < arguments.productSchedule.getScheduleEndDate() );
+		
+		if (latestSku.hasErrors()) {
+			arguments.product.addErrors(latestSku.getErrors());
+		}
+			
+		return arguments.product;
 	}
 
 	// @help Utilized by scheduled sku creation processes to create monthly skus
-	private void function createMonthlyScheduledSkus(required product, required processObject, required productSchedule) {
+	private any function createMonthlyScheduledSkus(required product, required processObject, required productSchedule) {
 
 		arguments.productSchedule.setMonthlyRepeatByType( arguments.processObject.getMonthlyRepeatByType() );
 
 		// Set initial values for first iteration
-		newSkuStartDateTime = arguments.processObject.getEventStartDateTime();
-		newSkuEndDateTime = arguments.processObject.getEventEndDateTime();
-
+		var newSkuStartDateTime = arguments.processObject.getEventStartDateTime();
+		var newSkuEndDateTime = arguments.processObject.getEventEndDateTime();
+		var latestSku = '';
+		
 		var nextMonth = month(arguments.processObject.getEventStartDateTime());
 		var nextYear = year(arguments.processObject.getEventStartDateTime());
 		var monthDay = 0;
@@ -319,7 +341,7 @@ component extends="HibachiService" accessors="true" {
 
 		do {
 
-			createEventSkuOrSkus( arguments.processObject, newSkuStartDateTime, newSkuEndDateTime, arguments.productSchedule );
+			latestSku = createEventSkuOrSkus( arguments.processObject, newSkuStartDateTime, newSkuEndDateTime, arguments.productSchedule );
 
 			// Increment Start/End date time based on monthly repeatBy value
 			if(arguments.processObject.getMonthlyRepeatByType() == "dayOfWeek") {
@@ -343,13 +365,17 @@ component extends="HibachiService" accessors="true" {
 				newSkuEndDateTime = dateAdd("m",1,newSkuEndDateTime);
 			}
 
-		} while ( newSkuStartDateTime < productSchedule.getscheduleEndDate() );
+		} while ( !latestSku.hasErrors() && newSkuStartDateTime < productSchedule.getscheduleEndDate() );
 
-
+		if (latestSku.hasErrors()) {
+			arguments.product.addErrors(latestSku.getErrors());
+		}
+			
+		return arguments.product;
 	}
 
 	// @help Utilized by scheduled sku creation processes to create yearly skus
-	private void function createYearlyScheduledSkus(required product, required processObject, required productSchedule) {
+	private any function createYearlyScheduledSkus(required product, required processObject, required productSchedule) {
 
 		// Set initial values for first iteration
 		var newSkuStartDateTime = arguments.processObject.getEventStartDateTime();
@@ -359,13 +385,18 @@ component extends="HibachiService" accessors="true" {
 
 		do {
 
-			createEventSkuOrSkus( arguments.processObject, newSkuStartDateTime, newSkuEndDateTime, arguments.productSchedule );
+			latestSku = createEventSkuOrSkus( arguments.processObject, newSkuStartDateTime, newSkuEndDateTime, arguments.productSchedule );
 
 			newSkuStartDateTime = dateAdd("yyyy",1,newSkuStartDateTime);
 			newSkuEndDateTime = dateAdd("yyyy",1,newSkuEndDateTime);
 
-		} while ( newSkuStartDateTime < productSchedule.getscheduleEndDate() );
-
+		} while ( !latestSku.hasErrors() && newSkuStartDateTime < productSchedule.getscheduleEndDate() );
+		
+		if (latestSku.hasErrors()) {
+			arguments.product.addErrors(latestSku.getErrors());
+		}
+			
+ 		return arguments.product;
 	}
 
 	// Create new incremented datetime based on recurring type (daily, weekly, monthly, etc.)
@@ -422,7 +453,6 @@ component extends="HibachiService" accessors="true" {
 
 	// Process: Product
 	public any function processProduct_addOptionGroup(required any product, required any processObject) {
-
 		getOptionService().addOptionGroupByOptionGroupIDAndProductID(arguments.processObject.getOptionGroup(),arguments.product.getProductID());
 
 		return arguments.product;
@@ -492,43 +522,46 @@ component extends="HibachiService" accessors="true" {
 
 			// DAILY
 			if( arguments.processObject.getRecurringTimeUnit() == "Daily" ) {
-				createDailyScheduledSkus(arguments.product, arguments.processObject, newProductSchedule);
+				arguments.product = createDailyScheduledSkus(arguments.product, arguments.processObject, newProductSchedule);
 
 			// WEEKLY
 			} else if( arguments.processObject.getRecurringTimeUnit() == "Weekly" ) {
-				createWeeklyScheduledSkus(arguments.product, arguments.processObject, newProductSchedule);
+				arguments.product = createWeeklyScheduledSkus(arguments.product, arguments.processObject, newProductSchedule);
 
 			// MONTHLY
 			} else if( arguments.processObject.getRecurringTimeUnit() == "Monthly" ) {
-				createMonthlyScheduledSkus(arguments.product, arguments.processObject, newProductSchedule);
+				arguments.product = createMonthlyScheduledSkus(arguments.product, arguments.processObject, newProductSchedule);
 
 			// YEARLY
 			} else if( arguments.processObject.getrecurringTimeUnit() == "Yearly" ) {
-				createYearlyScheduledSkus(arguments.product, arguments.processObject, newProductSchedule);
+				arguments.product = createYearlyScheduledSkus(arguments.product, arguments.processObject, newProductSchedule);
 			}
+			
+			if (!arguments.product.hasErrors()){
 
-			// Persist new product schedule
-			newProductSchedule = getProductScheduleService().saveProductSchedule( newProductSchedule );
-
-			// Create a sku bundle for all the skus in the schedule based on response to createBundleFlag
-			if( arguments.processObject.getCreateBundleFlag() ) {
-				var skus = "";
-
-				for(var sku in product.getSkus()) {
-					if(!sku.getBundleFlag() && !listFindNoCase(existingSkuIDList,sku.getSkuID())){
-						skus = listAppend(skus, sku.getSkuID());
+				// Persist new product schedule
+				newProductSchedule = getProductScheduleService().saveProductSchedule( newProductSchedule );
+	
+				// Create a sku bundle for all the skus in the schedule based on response to createBundleFlag
+				if( arguments.processObject.getCreateBundleFlag() ) {
+					var skus = "";
+	
+					for(var sku in product.getSkus()) {
+						if(!sku.getBundleFlag() && !listFindNoCase(existingSkuIDList,sku.getSkuID())){
+							skus = listAppend(skus, sku.getSkuID());
+						}
 					}
+	
+					// Set up new bundle data
+					var newBundleData = {
+						skuCode = "#product.getProductCode()#-#product.getNextSkuCodeCount()#",
+						price = 0,
+						skus = skus
+					};
+	
+					// Bundle newly created skus
+					product = this.processProduct( product, newBundleData, 'addSkuBundle' );
 				}
-
-				// Set up new bundle data
-				var newBundleData = {
-					skuCode = "#product.getProductCode()#-#product.getNextSkuCodeCount()#",
-					price = 0,
-					skus = skus
-				};
-
-				// Bundle newly created skus
-				product = this.processProduct( product, newBundleData, 'addSkuBundle' );
 			}
 		}
 
@@ -542,6 +575,7 @@ component extends="HibachiService" accessors="true" {
 
 		// Setup the sku
 		newSku.setProduct( arguments.product );
+		newSku.setSkuName( arguments.processObject.getSkuName() );
 		newSku.setSkuCode( arguments.processObject.getSkuCode() );
 		newSku.setPrice( arguments.processObject.getPrice() );
 		newSku.setBundleFlag( true );
@@ -582,7 +616,8 @@ component extends="HibachiService" accessors="true" {
 				if(isNumeric(postEventRegistrationMinutes) && postEventRegistrationMinutes gt 0) {
 					endResDateTime = dateAdd("m", postEventRegistrationMinutes, endResDateTime);
 				}
-
+				
+				newSku.setSkuName( arguments.processObject.getSkuName() );
 				newSku.setStartReservationDateTime( startResDateTime );
 				newSku.setEndReservationDateTime( endResDateTime );
 				newSku.setEventStartDateTime( getSkuService().getSku( skuArray[1] ).getEventStartDateTime() );
@@ -657,6 +692,18 @@ component extends="HibachiService" accessors="true" {
 		return arguments.product;
 	}
 
+    private void function setListPriceOnSkuByProductAndProcessObject(required any sku, required any product, required any processObject){
+		var listPrice = arguments.processObject.getListPrice(); 
+
+        if(isNull(listPrice) || !isNumeric(listPrice) || listPrice == 0){
+            listPrice = arguments.product.getListPrice(); 
+        }
+
+		if(!isNull(listPrice) && isNumeric(listPrice) && listPrice > 0) {
+			arguments.sku.setListPrice(listPrice);
+		}
+	} 
+
 	public any function createSingleSku(required any product, required any processObject){
 
 		var thisSku = this.newSku();
@@ -665,9 +712,7 @@ component extends="HibachiService" accessors="true" {
 		thisSku.setPrice(arguments.processObject.getPrice());
 		thisSku.setImageFile(thisSku.generateImageFileName());
 
-		if(isNumeric(arguments.product.getlistPrice()) && arguments.product.getlistPrice() > 0) {
-			thisSku.setListPrice(arguments.product.getlistPrice());
-		}
+        setListPriceOnSkuByProductAndProcessObject(thisSku, arguments.product, arguments.processObject);
 
 		thisSku.setSkuCode(arguments.product.getProductCode() & "-1");
 		arguments.product.setDefaultSku( thisSku );
@@ -711,6 +756,7 @@ component extends="HibachiService" accessors="true" {
 				for(var c=1; c<=listLen(arguments.processObject.getContents()); c++) {
 					var newSku = this.newSku();
 					newSku.setPrice(arguments.processObject.getPrice());
+					newSku.setListPrice(arguments.processObject.getListPrice()); 
 					newSku.setSkuCode(arguments.product.getProductCode() & "-#c#");
 					newSku.setProduct(arguments.product);
 					newSku.setImageFile(newSku.generateImageFileName());
@@ -763,9 +809,7 @@ component extends="HibachiService" accessors="true" {
 					// Setup the New Sku
 					var newSku = this.newSku();
 					newSku.setPrice(arguments.processObject.getPrice());
-					if(isNumeric(arguments.product.getlistPrice()) && arguments.product.getlistPrice() > 0) {
-						newSku.setListPrice(arguments.product.getlistPrice());
-					}
+                    setListPriceOnSkuByProductAndProcessObject(newSku, arguments.product, arguments.processObject);
 					newSku.setSkuCode(product.getProductCode() & "-#arrayLen(product.getSkus()) + 1#");
 
 					// Add the Sku to the product, and if the product doesn't have a default, then also set as default
@@ -990,9 +1034,9 @@ component extends="HibachiService" accessors="true" {
 	// ====================== START: Save Overrides ===========================
 
 	public any function saveProduct(required any product, struct data={}){
-		
+
 		var previousActiveFlag = arguments.product.getActiveFlag();
-		
+
 		if( (isNull(arguments.product.getURLTitle()) || !len(arguments.product.getURLTitle())) && (!structKeyExists(arguments.data, "urlTitle") || !len(arguments.data.urlTitle)) ) {
 			if(structKeyExists(arguments.data, "productName") && len(arguments.data.productName)) {
 				data.urlTitle = getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.data.productName, tableName="SwProduct");
@@ -1000,7 +1044,30 @@ component extends="HibachiService" accessors="true" {
 				data.urlTitle = getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.product.getProductName(), tableName="SwProduct");
 			}
 		}
-
+		if(structKeyExists(arguments.data, "assignedContentIDList")){
+			//purge existing listing pages not in the selection
+			var originalListingPages = arguments.product.getListingPages();	
+			var listingPagesToDelete = []; 
+			for(var page in originalListingPages){
+				if(!ListContains(arguments.data["assignedContentIDList"], page.getContent().getContentID())){
+					arrayAppend(listingPagesToDelete, page); 
+				} else {
+					var indexOfContentID = listFind(arguments.data["assignedContentIDList"], page.getContent().getContentID());
+					arguments.data["assignedContentIDList"] = ListDeleteAt(arguments.data["assignedContentIDList"], indexOfContentID);	
+				}
+			}
+			for(var page in listingPagesToDelete){
+				this.deleteProductListingPage(page); 
+			} 
+			//add new listing pages
+			for(var contentID in ListToArray(arguments.data["assignedContentIDList"])){
+				var content = this.getContentService().getContent(contentID);
+				var newProductListingPage = this.newProductListingPage();
+				newProductListingPage.setContent(content);
+				newProductListingPage.setProduct(arguments.product);
+				newProductListingPage = this.saveProductListingPage(newProductListingPage);
+			}
+		}
 		arguments.product = super.save(arguments.product, arguments.data);
 		// Set default sku if no default sku was set
 		if(isNull(arguments.product.getDefaultSku()) && arrayLen(arguments.product.getSkus())){
@@ -1020,7 +1087,6 @@ component extends="HibachiService" accessors="true" {
 				arguments.product.setPublishedFlag(false);
 			}
 		}
-		
 		return arguments.product;
 	}
 
@@ -1032,19 +1098,34 @@ component extends="HibachiService" accessors="true" {
 				data.urlTitle = getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.productType.getProductTypeName(), tableName="SwProductType");
 			}
 		}
+        
+        //Do this premptively when new so the product name path will calculate
+        if(arguments.productType.getNewFlag() && structKeyExists(data, "parentProductType") && structKeyExists(data.parentProductType,"productTypeID")){
+            arguments.productType.setParentProductType(this.getProductType(data.parentProductType.productTypeID));
+        }
 
 		arguments.productType = super.save(arguments.productType, arguments.data);
 
 		// if this type has a parent, inherit all products that were assigned to that parent
 		if(!arguments.productType.hasErrors() && !isNull(arguments.productType.getParentProductType()) and arrayLen(arguments.productType.getParentProductType().getProducts())) {
-			ormFlush();
+			getProductDAO.flushOrmSession();
 			getProductDAO().updateProductProductType( arguments.productType.getParentProductType().getProductTypeID(), arguments.productType.getProductTypeID() );
 		}
 
 		return arguments.productType;
 	}
 	
-	
+	public any function saveProductReview(required any productReview, struct data={}){
+		arguments.productReview = super.save(arguments.productReview, arguments.data);	
+		
+		if(!arguments.productReview.hasErrors()){
+			getHibachiScope().addModifiedEntity(arguments.productReview.getProduct());
+		}
+		
+		return arguments.productReview;
+		
+	}
+
 	// ======================  END: Save Overrides ============================
 
 	// ====================== START: Delete Overrides =========================
@@ -1065,6 +1146,13 @@ component extends="HibachiService" accessors="true" {
 
 		return delete( arguments.product );
 	}
+
+	public boolean function deleteProductListingPage(required any productListingPage){ 
+		
+		arguments.productListingPage.removeContent(); 
+		arguments.productListingPage.removeProduct(); 
+		return delete( arguments.productListingPage ); 
+	}	
 
 	// ======================  END: Delete Overrides ==========================
 

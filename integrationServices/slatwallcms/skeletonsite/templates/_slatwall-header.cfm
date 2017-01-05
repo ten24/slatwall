@@ -63,6 +63,7 @@ Notes:
 		<!--- Bootstrap is just included for demo / example purposes.  Removing it will not stop Slatwall from working --->
 		<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
 		<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
+		<!---<script src='https://www.google.com/recaptcha/api.js'></script>--->
 	</head>
 	<body>
 		<!--- This is only used by the sample app that is contained in /meta/sample --->

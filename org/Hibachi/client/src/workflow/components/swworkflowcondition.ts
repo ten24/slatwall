@@ -93,7 +93,7 @@ class SWWorkflowCondition{
 				}else{
 					angular.forEach(scope.workflowCondition.breadCrumbs,function(breadCrumb,key){
 						if(angular.isUndefined(scope.filterPropertiesList[breadCrumb.propertyIdentifier])){
-							var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(breadCrumb.cfc);
+							var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(breadCrumb.cfc, true);
 							filterPropertiesPromise.then(function(value){
 								metadataService.setPropertiesList(value,breadCrumb.propertyIdentifier);
 								scope.filterPropertiesList[breadCrumb.propertyIdentifier] = metadataService.getPropertiesListByBaseEntityAlias(breadCrumb.propertyIdentifier);

@@ -17,7 +17,13 @@ class SWValidationRequired{
                 function (modelValue, viewValue) {
 
                     var value = modelValue || viewValue;
-                    return validationService.validateRequired(value);
+                    
+                    if(attributes.swvalidationrequired === "true"){
+                        return validationService.validateRequired(value);
+                    } else { 
+                        return true; 
+                    }
+                    
                 };
             }
         };

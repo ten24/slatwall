@@ -375,7 +375,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 			// Setup the current property
 			currentProperty = properties[p];
-
+			
+			
 			// Check to see if we should upload this property
 			if( 
 				structKeyExists(arguments.data, currentProperty.name) 
@@ -387,10 +388,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 				&& currentProperty.hb_fileUpload 
 				&& structKeyExists(currentProperty, "hb_fileAcceptMIMEType") 
 				&& len(arguments.data[ currentProperty.name ]) 
-				&& !isNull(form)
 				&& structKeyExists(form, currentProperty.name) 
 			) {
-
 				// Wrap in try/catch to add validation error based on fileAcceptMIMEType
 				try {
 
@@ -404,7 +403,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 					// Do the upload
 					var uploadData = fileUpload( uploadDirectory, currentProperty.name, currentProperty.hb_fileAcceptMIMEType, 'makeUnique' );
-
+					
 					// Update the property with the serverFile name
 					_setProperty(currentProperty.name, uploadData.serverFile);
 				} catch(any e) {
@@ -522,6 +521,16 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 		}
 
 		return "";
+	}
+
+	public string function getOrmTypeByPropertyIdentifier( required string propertyIdentifier ) {
+		var entityName = getService('HibachiService').getLastEntityNameInPropertyIdentifier(entityName=this.getClassName(), propertyIdentifier=arguments.propertyIdentifier );
+		var object = getService('HibachiService').getEntityObject(entityName);
+		var propertyName = listLast(arguments.propertyIdentifier,'.');
+		
+		if(!isNull(object) && !isSimpleValue(object)) {
+			return object.getPropertyMetaData( propertyName ).ormtype;
+		}
 	}
 
 	public any function getLastObjectByPropertyIdentifier(required string propertyIdentifier) {
@@ -778,6 +787,16 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 		// Default case if no matches were found is a text field
 		return "text";
 	}
+
+	public boolean function getPropertyIsNumeric( required string propertyName ) {
+		var propertyMetaData = getPropertyMetaData(arguments.propertyName);
+		if( structKeyExists(propertyMetaData, "ormtype") && 
+			listFindNoCase("big_decimal,integer,int,double,float", propertyMetaData.ormtype)
+		){
+			return true; 
+		}
+		return false; 
+	} 
 
 	// @help public method for getting the meta data of a specific property
 	public struct function getPropertyMetaData( required string propertyName ) {

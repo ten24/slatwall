@@ -147,10 +147,10 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		} else {
 			httpRequest.setUrl( variables.productionURL );
 		}
-		
 		httpRequest.setPort( 443 );
 		httpRequest.setTimeout( 120 );
 		httpRequest.setResolveurl( false );
+		
 		httpRequest.addParam(type="formfield", name="method", value="setExpressCheckout");
 		httpRequest.addParam(type="formfield", name="user", value=arguments.paymentMethod.getIntegration().setting('paypalAccountUser'));
 		httpRequest.addParam(type="formfield", name="pwd", value=arguments.paymentMethod.getIntegration().setting('paypalAccountPassword'));
@@ -185,18 +185,30 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 			httpRequest.addParam(type="formfield", name="L_PAYMENTREQUEST_0_AMT#i#", value="-#arguments.order.getDiscountTotal()#");
 			httpRequest.addParam(type="formfield", name="L_PAYMENTREQUEST_0_QTY#i#", value="1");
 		}
-		
+
 		var itemSubTotal = arguments.order.getSubTotalAfterItemDiscounts();
 		if(arguments.order.getOrderDiscountAmountTotal() > 0){
 			itemSubTotal -= arguments.order.getOrderDiscountAmountTotal();
-		}
+		} 
+
+		var total = arguments.order.getTotal(); 
+		
+		if(arguments.order.hasGiftCardOrderPaymentAmount()){
+			i++; 
+			httpRequest.addParam(type="formfield", name="L_PAYMENTREQUEST_0_NAME#i#", value="Gift Card Payment");
+			httpRequest.addParam(type="formfield", name="L_PAYMENTREQUEST_0_NUMBER#i#", value="DISCOUNT");
+			httpRequest.addParam(type="formfield", name="L_PAYMENTREQUEST_0_AMT#i#", value="-#arguments.order.getGiftCardOrderPaymentAmount()#");
+			httpRequest.addParam(type="formfield", name="L_PAYMENTREQUEST_0_QTY#i#", value="1");
+			itemSubTotal -= arguments.order.getGiftCardOrderPaymentAmount();
+			total -= arguments.order.getGiftCardOrderPaymentAmount(); 
+		}	
 		
 		// cart totals
 		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_PAYMENTACTION", value="SALE");
 		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_ITEMAMT", value="#itemSubTotal#");
 		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_TAXAMT", value="#arguments.order.getTaxTotal()#");
 		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_SHIPPINGAMT", value="#arguments.order.getfulfillmentChargeAfterDiscountTotal()#");
-		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_AMT", value="#arguments.order.getTotal()#");
+		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_AMT", value="#total#");
 		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_CURRENCYCODE", value="#arguments.order.getCurrencyCode()#");
 		
 		//httpRequest.addParam(type="formfield", name="noShipping", value="0");
@@ -204,8 +216,9 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		httpRequest.addParam(type="formfield", name="hdrImg", value=arguments.paymentMethod.getIntegration().setting('paypalHeaderImage'));
 		
 		if (!isNull(arguments.order) && !isNull(arguments.order.getAccount()) && !isNull(arguments.order.getAccount().getEmailAddress())){
-			httpRequest.addParam(type="formfield", name="email", value=arguments.order.getAccount().getEmailAddress());
-		}
+ 			httpRequest.addParam(type="formfield", name="email", value=arguments.order.getAccount().getEmailAddress());
+ 		}
+		
 		httpRequest.addParam(type="formfield", name="returnURL", value="#returnURL#");
 		httpRequest.addParam(type="formfield", name="cancelURL", value=paymentMethod.getIntegration().setting('cancelURL'));
 

@@ -52,7 +52,7 @@ component displayname="FormResponse" entityname="SlatwallFormResponse" table="Sw
 	property name="formResponseID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 
 	// Related Object Properties (many-to-one)
-	property name="form" cfc="Form" fieldtype="many-to-one" fkcolumn="formID" cascade="all";
+	property name="form" cfc="Form" fieldtype="many-to-one" fkcolumn="formID";
 
 	// Related Object Properties (one-to-many)
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="formResponseID" cascade="all-delete-orphan";
@@ -68,8 +68,25 @@ component displayname="FormResponse" entityname="SlatwallFormResponse" table="Sw
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
+    property name="attributes" persistent="false"; 
 
 	// ============ START: Non-Persistent Property Methods =================
+
+	public any function getAttributes() {
+        if(!structKeyExists(variables, "attributes")){
+            variables.attributes = this.getForm().getFormQuestions(); 
+        }
+        return variables.attributes;
+	} 
+
+	public any function getFormEmailConfirmationValue(){
+ 		var attributeValueSmartList = getPropertySmartList('attributeValues'); 
+ 		attributeValueSmartList.addFilter('attribute.formEmailConfirmationFlag', true); 
+ 		var formEmailConfirmationValue = attributeValueSmartList.getFirstRecord(); 
+ 		if(!isNull(formEmailConfirmationValue)){
+ 			return formEmailConfirmationValue.getAttributeValue(); 
+ 		} 
+ 	} 
 
 	// ============  END:  Non-Persistent Property Methods =================
 
@@ -117,6 +134,25 @@ component displayname="FormResponse" entityname="SlatwallFormResponse" table="Sw
 
 	// ================== START: Overridden Methods ========================
 
+    public any function getAttributeValuesByAttributeCodeStruct(){ 
+        if(!structKeyExists(variables, "attributeValuesByAttributeCodeStruct")){
+            variables.attributeValuesByAttributeCodeStruct = {}; 
+            for (var attributeValue in this.getAttributeValues()){
+                variables.attributeValuesByAttributeCodeStruct[attributeValue.getAttribute().getAttributeCode()] = attributeValue; 
+            }
+        } 
+        return variables.attributeValuesByAttributeCodeStruct; 
+    } 
+    
+
+    public any function onMissingMethod(required string missingMethodName, required any missingMethodArguments ){
+		var attributeValuesByCode = getAttributeValuesByAttributeCodeStruct();
+		var attributeCode = right(arguments.missingMethodName, len(arguments.missingMethodName)-3); 
+		if (structKeyExists(attributeValuesByCode, attributeCode)) {
+			return attributeValuesByCode[attributeCode].getAttributeValue();	
+        }
+        return super.onMissingMethod(arguments.missingMethodName, arguments.missingMethodArguments);
+    }
 	// ==================  END:  Overridden Methods ========================
 
 	// =================== START: ORM Event Hooks  =========================

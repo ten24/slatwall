@@ -312,11 +312,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					if(arguments.processObject.matchesOrderItem( orderItem ) && isNull(orderItem.getParentOrderItem())){
 						foundItem = true;
 						var foundOrderItem = orderItem;
-						orderItem.setQuantity(orderItem.getQuantity() + arguments.processObject.getQuantity());
-						orderItem.validate(context='save');
-						if(orderItem.hasErrors()) {
-							arguments.order.addError('addOrderItem', orderItem.getErrors());
-						}
+						foundOrderItem.setQuantity(orderItem.getQuantity() + arguments.processObject.getQuantity());
+						foundOrderItem.validate(context='save');
+						if(foundOrderItem.hasErrors()) {
+							arguments.order.addError('addOrderItem', foundOrderItem.getErrors());
+						} 
 						break;
 					}
 				}
@@ -503,6 +503,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 						// Create new event registration	 record
 						var eventRegistration = this.newEventRegistration();
+						
+						eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstNotPlaced"));
+						eventRegistration.generateAndSetAttendanceCode();
+						
 						if(depositsOnlyFlag) {
 							eventRegistration.setOrderItem(depositOrderItem);
 							eventRegistration.setSku(depositOrderItem.getSku());
@@ -510,7 +514,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							eventRegistration.setOrderItem(newOrderItem);
 							eventRegistration.setSku(newOrderItem.getSku());
 						}
-						eventRegistration.generateAndSetAttendanceCode();
 
 						// If newAccount registrant should contain an accountID otherwise should contain first, last, email, phone
 						if(registrant.newAccountFlag == 0) {
@@ -539,18 +542,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							eventRegistration.setAccount(newAccount);
 
 						}
-
-						// Set registration status - Should this be done when order is placed instead?
-						if(arguments.processObject.getSku().setting('skuRegistrationApprovalRequiredFlag')) {
-							eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstPendingApproval"));
-						} else {
-							if( depositsOnlyFlag || registrant.toWaitlistFlag == "1" ) {
-								depositsCount++;
-								eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstWaitlisted"));
-							} else {
+						
+						if( depositsOnlyFlag || registrant.toWaitlistFlag == "1" ) {								
+							depositsCount++;
+							
+						}else {
 								if( (arguments.processObject.getSku().getEventCapacity() > (currentRegistrantCount + salesCount) )  ) {
 									salesCount++;
-									eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstRegistered"));
 
 								} else {
 									// If we have an unexprected waitlister due to event filling before order item was created
@@ -562,13 +560,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 										salesOnlyFlag = true;
 									} else {
 										newOrderItem.setOrderItemType( getTypeService().getTypeBySystemCode('oitDeposit') );
-										eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstWaitlisted"));
 									}
 
 								}
 							}
-
-						}
 
 						eventRegistration = getEventRegistrationService().saveEventRegistration( eventRegistration );
 
@@ -899,7 +894,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// As long as there is no payment transactions, then we can delete the order
-		if( !hasPaymentTransaction ) {
+		if( !hasPaymentTransaction  && !arguments.order.isNew()) {
 			this.deleteOrder( arguments.order );
 
 		// Otherwise we can just remove the account so that it isn't remember as an open cart for this account
@@ -928,7 +923,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.order.addError('create', account.getErrors());
 		} else {
 			arguments.order.setAccount(account);
-
+			//set up as Test Order if account is a test account
+			if(!isNull(account.getTestAccountFlag()) && account.getTestAccountFlag()){
+				arguments.order.setTestOrderFlag(true);
+			}
 			// Setup Order Type
 			arguments.order.setOrderType( getTypeService().getType( processObject.getOrderTypeID() ) );
 
@@ -1189,7 +1187,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrderItem.setPrice( arguments.orderItem.getPrice() );
 		newOrderItem.setSkuPrice( arguments.orderItem.getSkuPrice() );
 		newOrderItem.setCurrencyCode( arguments.orderItem.getCurrencyCode() );
-		newOrderItem.setQuantity(arguments.orderItem.getQuantity() );
+		if(!isNull(arguments.orderItem.getBundleItemQuantity())){
+			newOrderItem.setBundleItemQuantity(arguments.orderItem.getBundleItemQuantity()); 
+		}
+		newOrderItem.setQuantity(arguments.orderItem.getQuantity());
 		newOrderItem.setOrderItemType( arguments.orderItem.getOrderItemType() );
 		newOrderItem.setOrderItemStatusType( arguments.orderItem.getOrderItemStatusType() );
 		newOrderItem.setSku( arguments.orderItem.getSku() );
@@ -1356,8 +1357,33 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 						}
 
-						if(arguments.order.getPaymentAmountDue() > 0 && arguments.order.hasGiftCardOrderPaymentAmount()){
-							arguments.order.addMessage('paymentProcessedMessage', rbKey('entity.order.process.placeOrder.paymentProcessedMessage'));
+						
+						
+						// Loop over the orderItems looking for any skus that are 'event' skus, and setting their registration value 
+						for(var orderitem in arguments.order.getOrderItems()) {
+							if(orderitem.getSku().getBaseProductType() == "event") {
+								if(!orderItem.getSku().getAvailableForPurchaseFlag() OR !orderItem.getSku().allowWaitlistedRegistrations() ){
+									arguments.order.addError('payment','Event: #orderItem.getSku().getProduct().getProductName()# is unavailable for registration. The registration period has closed.');
+								}
+								if(!orderItem.hasEventRegistration()){
+									arguments.order.addError('orderItem','Error when trying to register for: #orderItem.getSku().getProduct().getProductName()#. Please verify your registration details.');
+								}
+								
+								if (!arguments.order.hasErrors()){
+									for ( var eventRegistration in orderItem.getEventRegistrations() ) {
+										// Set registration status - Should this be done when order is placed instead?
+										if (orderItem.getOrderItemType().getSystemCode() == 'oitDeposit'){
+											eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstWaitlisted"));
+										}else if( orderitem.getSku().setting('skuRegistrationApprovalRequiredFlag')) {
+											eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstPendingApproval"));
+										}else if (orderitem.getSku().getAvailableSeatCount() > 0) {
+											eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstRegistered"));
+										}else{
+											eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstWaitlisted"));
+										}
+									}
+								}
+							}
 						}
 
 						// After all of the processing, double check that the order does not have errors.  If one of the payments didn't go through, then an error would have been set on the order.
@@ -1396,20 +1422,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 							// Log that the order was placed
 							logHibachi(message="New Order Processed - Order Number: #order.getOrderNumber()# - Order ID: #order.getOrderID()#", generalLog=true);
-
-							// Loop over the orderItems looking for any skus that are 'event' skus, and setting their registration value
-							/*for(var orderitem in arguments.order.getOrderItems()) {
-								if(orderitem.getSku().getBaseProductType() == "event") {
-									for(var eventRegistration in orderitem.getEventRegistrations()) {
-										if(orderItem.getSku().setting('skuAllowWaitlistingFlag')) {
-											eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstPending"));
-										} else {
-											eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstRegistered"));
-										}
+							// if order had error but payment was captured, clear error and log to hibachi
+							if(arguments.order.hasErrors()) {
+								arguments.order.addMessage('paymentProcessedMessage', rbKey('entity.order.process.placeOrder.paymentProcessedMessage'));
+								for(var errorName in arguments.order.getErrors()) {
+									for(var i=1; i<=arrayLen(arguments.order.getErrors()[errorName]); i++) {
+										logHibachi(message="Order was placed but it had an error with an errorName: #errorName# and errorMessage: #arguments.order.getErrors()[errorName][i]#", generalLog=true);	
 									}
 								}
-							}*/
-
+								arguments.order.getHibachiErrors().setErrors(structnew());
+							}
 							// Look for 'auto' order fulfillments
 							for(var i=1; i<=arrayLen( arguments.order.getOrderFulfillments() ); i++) {
 								createOrderDeliveryForAutoFulfillmentMethod(arguments.order.getOrderFulfillments()[i]);
@@ -1699,7 +1721,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(arguments.order.getOrderStatusType().getSystemCode() == "ostNotPlaced") {
 				for(var orderItem in arguments.order.getOrderItems()){
 					var skuPrice = val(orderItem.getSkuPrice());
-					var SkuPriceByCurrencyCode = val(orderItem.getSku().getPriceByCurrencyCode(orderItem.getCurrencyCode()));
+					var SkuPriceByCurrencyCode = val(orderItem.getSku().getPriceByCurrencyCode(orderItem.getCurrencyCode(), orderItem.getQuantity()));
  					if(listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) && skuPrice != SkuPriceByCurrencyCode){
  						if(!orderItem.getSku().getUserDefinedPriceFlag()) {
  							orderItem.setPrice(SkuPriceByCurrencyCode);
@@ -1834,9 +1856,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(
 				arguments.orderDelivery.getFulfillmentMethod().getFulfillmentMethodType() == "shipping"
 			) {
-				arguments.orderDelivery.setShippingMethod( arguments.processObject.getShippingMethod() );
-				arguments.orderDelivery.setShippingAddress( arguments.processObject.getShippingAddress().copyAddress( saveNewAddress=true ) );
-
+				
+				
+				if (!isNull(arguments.processObject.getShippingMethod())){
+ 					arguments.orderDelivery.setShippingMethod( arguments.processObject.getShippingMethod() );
+ 				}
+ 				
+ 				if (!isNull(arguments.processObject.getShippingAddress())){
+ 					arguments.orderDelivery.setShippingAddress( arguments.processObject.getShippingAddress().copyAddress( saveNewAddress=true ) );
+ 				}
+ 				
+				
 				// Setup the tracking number if we have it
 				if(
 					!isNull(arguments.processObject.getTrackingNumber())
@@ -2070,6 +2100,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Set quantity if needed
 			if(isNull(arguments.childOrderItem.getQuantity())) {
 				arguments.childOrderItem.setQuantity( 1 );
+			}	
+			if(isNull(arguments.childOrderItem.getBundleItemQuantity())){
+				arguments.childOrderItem.setBundleItemQuantity(arguments.childOrderItem.getQuantity());
 			}
 			// Set orderFulfillment if needed
 			if(isNull(arguments.childOrderItem.getOrderFulfillment())) {
@@ -2169,10 +2202,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function processOrderItem_updateEventRegistrationQuantity(required any orderItem,struct data={}) {
 
 		// We need LESS event registrations due to order adjustment before order has been placed
-		if( arrayLen(orderItem.getActiveEventRegistrations()) > orderItem.getQuantity() && arguments.orderItem.getOrder().getStatusCode() == "ostNotPlaced" ) {
+		if( orderItem.getActiveEventRegistrations().getRecordsCount() > orderItem.getQuantity() && arguments.orderItem.getOrder().getStatusCode() == "ostNotPlaced" ) {
 
 			var removableEvents = [];
-			var numberToRemove = arrayLen(orderItem.getEventRegistrations()) - orderItem.getQuantity();
+			var numberToRemove = orderItem.getActiveEventRegistrations().getRecordsCount() - orderItem.getQuantity();
 
 			// Create an array of registrations we can safely remove, i.e. not associated with an account
 			for(var eventRegistration in orderItem.getEventRegistrations()) {
@@ -2195,13 +2228,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// We need less event registration, but couldn't do it... add error
-		if(arrayLen(orderItem.getEventRegistrations()) > orderItem.getQuantity()) {
+		if(orderItem.getActiveEventRegistrations().getRecordsCount() > orderItem.getQuantity()) {
 			orderItem.addError('updateRegistrationQuantity', rbKey('validate.orderItem.quantity.tooManyEventRegistrations'));
 		}
 
 		// We need MORE event registrations due to order adjustment before order has been placed
-		if(arrayLen(orderItem.getEventRegistrations()) < orderItem.getQuantity()) {
-			for(var i=1; i <= orderItem.getQuantity() - arrayLen(orderItem.getEventRegistrations()); i++ ) {
+		if(orderItem.getActiveEventRegistrations().getRecordsCount() < orderItem.getQuantity()) {
+			for(var i=1; i <= orderItem.getQuantity() - orderItem.getActiveEventRegistrations().getRecordsCount(); i++ ) {
 				var eventRegistration = this.newEventRegistration();
 				eventRegistration.setOrderItem(orderitem);
 				eventRegistration.seteventRegistrationStatusType( getTypeService().getTypeBySystemCode("erstNotPlaced") );
@@ -2691,7 +2724,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// If there were no errors, and the order is not placed, then we can make necessary implicit updates
 		if(!arguments.orderItem.hasErrors() && arguments.orderItem.getOrder().getStatusCode() == "ostNotPlaced") {
-
 			// If this item was part of a shipping fulfillment then update that fulfillment
 			if(!isNull(arguments.orderItem.getOrderFulfillment()) && arguments.orderItem.getOrderFulfillment().getFulfillmentMethodType() eq "shipping" && !isNull(arguments.orderItem.getOrderFulfillment().getShippingMethod())) {
 				getShippingService().updateOrderFulfillmentShippingMethodOptions( arguments.orderItem.getOrderFulfillment() );

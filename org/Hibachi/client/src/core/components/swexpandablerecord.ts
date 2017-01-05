@@ -2,9 +2,12 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 
 class SWExpandableRecordController{
+    
     public childrenLoaded = false;
     public childrenOpen = false;
     public children = [];
+    public pageRecord; 
+    public expandable:boolean;
     public recordDepth:number;
     public records:any;
     public recordID:string;
@@ -12,64 +15,90 @@ class SWExpandableRecordController{
     public collectionData:any;
     public collectionPromise:any;
     public collectionConfig:any;
+    public childCollectionConfig:any;
     public parentId:string;
+    public parentIDName:string; 
     public entity:any
+    public listingId:string; 
+    public refreshChildrenEvent
+    public expandableRules; 
+    
     //@ngInject
-    constructor(private $timeout:ng.ITimeoutService, private utilityService, private $hibachi, private collectionConfigService, private expandableService){
-        this.$timeout = $timeout;
-        this.$hibachi = $hibachi;
-        this.utilityService = utilityService;
-        this.collectionConfigService = collectionConfigService;
+    constructor(private $timeout:ng.ITimeoutService, 
+                private $hibachi, 
+                private utilityService, 
+                private collectionConfigService, 
+                private expandableService,
+                private listingService,
+                private observerService){
         this.recordID = this.parentId; //this is what parent is initalized to in the listing display
         expandableService.addRecord(this.recordID);
+        if(angular.isDefined(this.refreshChildrenEvent) && this.refreshChildrenEvent.length){
+            this.observerService.attach(this.refreshChildren, this.refreshChildrenEvent)
+        }
     }
+
+    public refreshChildren = () =>{
+        this.getEntity();
+    }
+    
+    public setupChildCollectionConfig = () =>{
+        this.childCollectionConfig = this.collectionConfigService.newCollectionConfig(this.entity.metaData.className);
+        //set up parent
+        var parentName = this.entity.metaData.hb_parentPropertyName;
+        var parentCFC = this.entity.metaData[parentName].cfc;
+        this.parentIDName = this.$hibachi.getEntityExample(parentCFC).$$getIDName();
+        //set up child
+        var childName = this.entity.metaData.hb_childPropertyName;
+        var childCFC = this.entity.metaData[childName].cfc
+        var childIDName = this.$hibachi.getEntityExample(childCFC).$$getIDName();
+
+        this.childCollectionConfig.clearFilterGroups();
+        this.childCollectionConfig.collection = this.entity;
+        this.childCollectionConfig.addFilter(parentName+'.'+ this.parentIDName,this.parentId);
+        this.childCollectionConfig.setAllRecords(true);
+        angular.forEach(this.collectionConfig.columns,(column)=>{
+            this.childCollectionConfig.addColumn(column.propertyIdentifier,column.title,column);
+        });
+
+        angular.forEach(this.collectionConfig.joins,(join)=>{
+            this.childCollectionConfig.addJoin(join);
+        });
+        this.childCollectionConfig.groupBys = this.collectionConfig.groupBys;
+    }
+
+    public getEntity = ()=>{
+         this.collectionPromise.then((data)=>{
+            this.collectionData = data;
+            this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records
+            if(this.collectionData.pageRecords.length){
+                angular.forEach(this.collectionData.pageRecords,(pageRecord)=>{
+                    this.expandableService.addRecord(pageRecord[this.parentIDName],true);
+                    pageRecord.dataparentID = this.recordID;
+                    pageRecord.depth = this.recordDepth || 0;
+                    pageRecord.depth++;
+                    //push the children into the listing display
+                    this.children.push(pageRecord);
+                    this.records.splice(this.recordIndex+1,0,pageRecord);
+                });
+            }
+            this.childrenLoaded = true;
+        });
+    }
+    
     public toggleChild = ()=>{
         this.$timeout(()=>{
             this.childrenOpen = !this.childrenOpen;
             this.expandableService.updateState(this.recordID,{isOpen:this.childrenOpen});
             if(!this.childrenLoaded){
-                    var childCollectionConfig = this.collectionConfigService.newCollectionConfig(this.entity.metaData.className);
-                    //set up parent
-                    var parentName = this.entity.metaData.hb_parentPropertyName;
-                    var parentCFC = this.entity.metaData[parentName].cfc;
-                    var parentIDName = this.$hibachi.getEntityExample(parentCFC).$$getIDName();
-                    //set up child
-                    var childName = this.entity.metaData.hb_childPropertyName;
-                    var childCFC = this.entity.metaData[childName].cfc
-                    var childIDName = this.$hibachi.getEntityExample(childCFC).$$getIDName();
-
-                    childCollectionConfig.clearFilterGroups();
-                    childCollectionConfig.collection = this.entity;
-                    childCollectionConfig.addFilter(parentName+'.'+parentIDName,this.parentId);
-                    childCollectionConfig.setAllRecords(true);
-                    angular.forEach(this.collectionConfig.columns,(column)=>{
-                        childCollectionConfig.addColumn(column.propertyIdentifier,column.title,column);
-                    });
-
-                    angular.forEach(this.collectionConfig.joins,(join)=>{
-                        childCollectionConfig.addJoin(join);
-                    });
-                    childCollectionConfig.groupBys = this.collectionConfig.groupBys;
-                    this.collectionPromise = childCollectionConfig.getEntity();
-
-                    this.collectionPromise.then((data)=>{
-                        this.collectionData = data;
-                        this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records
-                        if(this.collectionData.pageRecords.length){
-                            angular.forEach(this.collectionData.pageRecords,(pageRecord)=>{
-                                this.expandableService.addRecord(pageRecord[parentIDName],true);
-                                pageRecord.dataparentID = this.recordID;
-                                pageRecord.depth = this.recordDepth || 0;
-                                pageRecord.depth++;
-                                //push the children into the listing display
-                                this.children.push(pageRecord);
-                                this.records.splice(this.recordIndex+1,0,pageRecord);
-                            });
-                        }
-                        this.childrenLoaded = true;
-                    });
+                    if(this.childCollectionConfig == null){
+                        this.setupChildCollectionConfig(); 
+                    }
+                    if(angular.isFunction(this.childCollectionConfig.getEntity)){
+                        this.collectionPromise = this.childCollectionConfig.getEntity();
+                    } 
+                    this.getEntity();
             }
-
             angular.forEach(this.children,(child)=>{
                 child.dataIsVisible=this.childrenOpen;
                 var entityPrimaryIDName = this.entity.$$getIDName();
@@ -106,16 +135,21 @@ class SWExpandableRecord implements ng.IDirective{
     public bindToController={
         recordValue:"=",
         link:"@",
-        expandable:"=",
+        expandable:"=?",
         parentId:"=",
         entity:"=",
-        collectionConfig:"=",
+        collectionConfig:"=?",
+        childCollectionConfig:"=?",
+        refreshChildrenEvent:"=?",
+        listingId:"@?",
         records:"=",
+        pageRecord:"=",
         recordIndex:"=",
         recordDepth:"=",
         childCount:"=",
         autoOpen:"=",
-        multiselectIdPaths:"="
+        multiselectIdPaths:"=",
+        expandableRules:"="
     };
 
     public static Factory(){

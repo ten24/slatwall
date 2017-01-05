@@ -58,6 +58,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="referencedOrderType" ormtype="string" hb_formatType="rbKey";
 	property name="estimatedDeliveryDateTime" ormtype="timestamp";
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
+	property name="testOrderFlag" ormtype="boolean";
 	// Calculated Properties
 	property name="calculatedTotal" ormtype="big_decimal";
 
@@ -158,6 +159,28 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="totalQuantity" persistent="false";
 	property name="totalSaleQuantity" persistent="false";
 	property name="totalReturnQuantity" persistent="false";
+	
+    //======= Mocking Injection for Unit Test ======	
+	property name="orderService" persistent="false" type="any";
+	property name='orderDAO' persistent="false" type="any";
+
+	public void function init(){
+		setOrderService(getService('orderService'));
+		setOrderDao(getDAO('OrderDAO'));
+		super.init();
+	}
+//	
+//	public void function setOrderService(required any orderService){
+//		variables.orderService = arguments.orderService;
+//	}
+	
+//	public void function setOrderDAO(required any orderDAO) {
+//		//TODO: check if necessary using setORderDAO()
+//		variables.orderDAO = arguments.orderDAO
+//	}
+
+
+	//======= End of Mocking Injection ========
 
 	public string function getStatus() {
 		return getOrderStatusType().getTypeName();
@@ -185,36 +208,12 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		return true;
 	}
 
-	public struct function getOrderItemQualifiedDiscounts(){
-		var orderItemQualifiedDiscounts = {};
-
-
-		for(var orderItem in this.getOrderItems()) {
-			var salePriceDetails = orderItem.getSku().getSalePriceDetails();
-
-			if(structKeyExists(salePriceDetails, "salePrice") && salePriceDetails.salePrice < orderItem.getSku().getPrice()) {
-
-				var discountAmount = precisionEvaluate((orderItem.getSku().getPrice() * orderItem.getQuantity()) - (salePriceDetails.salePrice * orderItem.getQuantity()));
-
-				orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ] = [];
-
-				// Insert this value into the potential discounts array
-				arrayAppend(orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ], {
-					promotionRewardID = "",
-					promotion = this.getPromotion(salePriceDetails.promotionID),
-					discountAmount = discountAmount
-				});
-
-			}
-		}
-		return orderItemQualifiedDiscounts;
-	}
-
 
 	public struct function getAddPaymentRequirementDetails() {
 		if(!structKeyExists(variables, "addPaymentRequirementDetails")) {
 			variables.addPaymentRequirementDetails = {};
 			var requiredAmount = precisionEvaluate(getTotal() - getPaymentAmountTotal());
+
 			if(requiredAmount > 0) {
 				variables.addPaymentRequirementDetails.amount = requiredAmount;
 				variables.addPaymentRequirementDetails.orderPaymentType = getService("typeService").getTypeBySystemCode("optCharge");
@@ -252,11 +251,11 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 	// @hint: This is called from the ORM Event to setup an OrderNumber when an order is placed
 	public void function confirmOrderNumberOpenDateCloseDatePaymentAmount() {
-
+	
 		// If the order is open, and has no open dateTime
 		if((isNull(variables.orderNumber) || variables.orderNumber == "") && !isNUll(getOrderStatusType()) && !isNull(getOrderStatusType().getSystemCode()) && getOrderStatusType().getSystemCode() != "ostNotPlaced") {
 			if(setting('globalOrderNumberGeneration') == "Internal" || setting('globalOrderNumberGeneration') == "") {
-				var maxOrderNumber = getService("orderService").getMaxOrderNumber();
+				var maxOrderNumber = getOrderService().getMaxOrderNumber();
 				if( arrayIsDefined(maxOrderNumber,1) ){
 					setOrderNumber(maxOrderNumber[1] + 1);
 				} else {
@@ -283,7 +282,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 
 	public numeric function getPreviouslyReturnedFulfillmentTotal() {
-		return getService("OrderService").getPreviouslyReturnedFulfillmentTotal(getOrderId());
+		return getOrderService().getPreviouslyReturnedFulfillmentTotal(getOrderId());
 	}
 
 	// A helper to loop over all deliveries, and grab all of the items of each and put them into a single array
@@ -311,8 +310,8 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 
 	public boolean function hasGiftCardOrderPaymentAmount(){
-
-		var amount = getDAO("OrderDAO").getGiftCardOrderPaymentAmount(this.getOrderID());
+		
+		var amount = getOrderDAO().getGiftCardOrderPaymentAmount(this.getOrderID());
 
 		if(amount gt 0){
 			return true;
@@ -321,7 +320,9 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		return false;
 
 	}
-
+	/**
+	* @Suppress
+	*/
 	public numeric function getGiftCardOrderPaymentAmount(){
 		return getDAO("OrderDAO").getGiftCardOrderPaymentAmount(this.getOrderID());
 	}
@@ -342,11 +343,11 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 	public boolean function hasGiftCardOrderItems(orderItemID=""){
 
-		var giftCardOrderItems = getDAO("OrderDAO").getGiftCardOrderItems(this.getOrderID());
+		var giftCardOrderItems = getOrderDAO().getGiftCardOrderItems(this.getOrderID());
 
-		if(orderItemID EQ "" AND ArrayLen(giftCardOrderItems) GT 0){
+		if(arguments.orderItemID EQ "" AND ArrayLen(giftCardOrderItems) GT 0){
 			return true;
-		} else if (orderItemID NEQ ""){
+		} else if (arguments.orderItemID NEQ ""){
 
 			for(var item in giftCardOrderItems){
 				if(item.getOrderItemID() EQ arguments.orderItemID){
@@ -358,11 +359,17 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 		return false;
 	}
-
+	
+	/**
+	* @Suppress
+	*/
 	public array function getGiftCardOrderItems() {
 		return getDAO('OrderDAO').getGiftCardOrderItems(this.getOrderID());
 	}
-
+	
+	/**
+	* @Suppress
+	*/
     public any function getAllOrderItemGiftRecipientsSmartList(){
         var orderItemGiftRecipientSmartList = getService("OrderService").getOrderItemGiftRecipientSmartList();
         orderItemGiftRecipientSmartList.joinRelatedProperty("SlatwallOrderItemGiftRecipient", "orderItem", "left", true);
@@ -372,7 +379,14 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 	public void function checkNewBillingAccountAddressSave() {
 		// If this isn't a guest, there isn't an accountAddress, save is on - copy over an account address
-    	if(!isNull(getSaveBillingAccountAddressFlag()) && getSaveBillingAccountAddressFlag() && !isNull(getAccount()) && !getAccount().getGuestAccountFlag() && isNull(getBillingAccountAddress()) && !isNull(getBillingAddress()) && !getBillingAddress().hasErrors()) {
+    	if(!isNull(getSaveBillingAccountAddressFlag()) 
+    		&& getSaveBillingAccountAddressFlag() 
+    		&& !isNull(getAccount()) 
+    		&& !getAccount().getGuestAccountFlag() 
+    		&& isNull(getBillingAccountAddress()) 
+    		&& !isNull(getBillingAddress()) 
+    		&& !getBillingAddress().hasErrors()
+    	  ) {
 
     		// Create a New Account Address, Copy over Shipping Address, and save
     		var accountAddress = getService('accountService').newAccountAddress();
@@ -389,9 +403,15 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 
 	public void function checkNewShippingAccountAddressSave() {
-
 		// If this isn't a guest, there isn't an accountAddress, save is on - copy over an account address
-    	if(!isNull(getSaveShippingAccountAddressFlag()) && getSaveShippingAccountAddressFlag() && !isNull(getAccount()) && !getAccount().getGuestAccountFlag() && isNull(getShippingAccountAddress()) && !isNull(getShippingAddress()) && !getShippingAddress().hasErrors()) {
+    	if( !isNull(getSaveShippingAccountAddressFlag()) 
+    		&& getSaveShippingAccountAddressFlag() 
+    		&& !isNull(getAccount()) 
+    		&& !getAccount().getGuestAccountFlag() 
+    		&& isNull(getShippingAccountAddress()) 
+    		&& !isNull(getShippingAddress()) 
+    		&& !getShippingAddress().hasErrors()
+    	  ) {
 
     		// Create a New Account Address, Copy over Shipping Address, and save
     		var accountAddress = getService('accountService').newAccountAddress();
@@ -465,11 +485,12 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 	public numeric function getItemDiscountAmountTotal() {
 		var discountTotal = 0;
-		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			if( listFindNoCase("oitSale,oitDeposit",getOrderItems()[i].getTypeCode()) ) {
-				discountTotal = precisionEvaluate(discountTotal + getOrderItems()[i].getDiscountAmount());
-			} else if ( getOrderItems()[i].getTypeCode() == "oitReturn" ) {
-				discountTotal = precisionEvaluate(discountTotal - getOrderItems()[i].getDiscountAmount());
+		var orderItems = getRootOrderItems(); 
+		for(var i=1; i<=arrayLen(orderItems); i++) {
+			if( listFindNoCase("oitSale,oitDeposit",orderItems[i].getTypeCode()) ) {
+				discountTotal = precisionEvaluate(discountTotal + orderItems[i].getDiscountAmount());
+			} else if ( orderItems[i].getTypeCode() == "oitReturn" ) {
+				discountTotal = precisionEvaluate(discountTotal - orderItems[i].getDiscountAmount());
 			} else {
 				throw("there was an issue calculating the itemDiscountAmountTotal because of a orderItemType associated with one of the items");
 			}
@@ -584,9 +605,9 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 	public numeric function getOrderPaymentAmountNeeded() {
 
-		var nonNullPayments = getService("orderService").getOrderPaymentNonNullAmountTotal(orderID=getOrderID());
+		var nonNullPayments = getOrderService().getOrderPaymentNonNullAmountTotal(orderID=getOrderID());
 		var orderPaymentAmountNeeded = precisionEvaluate(getTotal() - nonNullPayments);
-
+	
 		if(orderPaymentAmountNeeded gt 0 && isNull(getDynamicChargeOrderPayment())) {
 			return orderPaymentAmountNeeded;
 		} else if (orderPaymentAmountNeeded lt 0 && isNull(getDynamicCreditOrderPayment())) {
@@ -642,7 +663,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 
 	public any function getDynamicChargeOrderPaymentAmount() {
-		var nonNullPayments = getService("orderService").getOrderPaymentNonNullAmountTotal(orderID=getOrderID());
+		var nonNullPayments = getOrderService().getOrderPaymentNonNullAmountTotal(orderID=getOrderID());
 		var orderPaymentAmountNeeded = precisionEvaluate(getTotal() - nonNullPayments);
 
 		if(orderPaymentAmountNeeded gt 0) {
@@ -653,7 +674,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 
 	public any function getDynamicCreditOrderPaymentAmount() {
-		var nonNullPayments = getService("orderService").getOrderPaymentNonNullAmountTotal(orderID=getOrderID());
+		var nonNullPayments = getOrderService().getOrderPaymentNonNullAmountTotal(orderID=getOrderID());
 		var orderPaymentAmountNeeded = precisionEvaluate(getTotal() - nonNullPayments);
 
 		if(orderPaymentAmountNeeded lt 0) {
@@ -1005,11 +1026,12 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 	public numeric function getTaxTotal() {
 		var taxTotal = 0;
-		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			if( listFindNoCase("oitSale,oitDeposit",getOrderItems()[i].getTypeCode()) ) {
-				taxTotal = precisionEvaluate(taxTotal + getOrderItems()[i].getTaxAmount());
-			} else if ( getOrderItems()[i].getTypeCode() == "oitReturn" ) {
-				taxTotal = precisionEvaluate(taxTotal - getOrderItems()[i].getTaxAmount());
+		var orderItems = this.getRootOrderItems(); 
+		for(var i=1; i<=arrayLen(orderItems); i++) {
+			if( listFindNoCase("oitSale,oitDeposit",orderItems[i].getTypeCode()) ) {
+				taxTotal = precisionEvaluate(taxTotal + orderItems[i].getTaxAmount());
+			} else if ( orderItems[i].getTypeCode() == "oitReturn" ) {
+				taxTotal = precisionEvaluate(taxTotal - orderItems[i].getTaxAmount());
 			} else {
 				throw("there was an issue calculating the subtotal because of a orderItemType associated with one of the items");
 			}

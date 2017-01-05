@@ -6,24 +6,31 @@ import {HibachiInterceptor,IHibachi,IHibachiConfig,HibachiJQueryStatic} from "./
 import {HibachiPathBuilder} from "./services/hibachipathbuilder";
 
 //services
+import {CacheService} from "./services/cacheservice"; 
 import {PublicService} from "./services/publicservice";
 import {AccountService} from "./services/accountservice";
 import {CartService} from "./services/cartservice";
+import {DraggableService} from "./services/draggableservice";
 import {UtilityService} from "./services/utilityservice";
 import {SelectionService} from "./services/selectionservice";
 import {ObserverService} from "./services/observerservice";
 import {OrderService} from "./services/orderservice";
 import {OrderPaymentService} from "./services/orderpaymentservice";
 import {FormService} from "./services/formservice";
+import {FilterService} from "./services/filterservice"; 
 import {ExpandableService} from "./services/expandableservice";
+import {ListingService} from "./services/listingservice"; 
 import {MetaDataService} from "./services/metadataservice";
 import {RbKeyService} from "./services/rbkeyservice";
-import {ScopeService} from "./services/scopeservice";
+import {TypeaheadService} from "./services/typeaheadservice";
 import {$Hibachi} from "./services/hibachiservice";
+import {HistoryService} from "./services/historyservice"; 
 import {LocalStorageService} from "./services/localstorageservice";
 import {HibachiServiceDecorator} from "./services/hibachiservicedecorator";
 import {HibachiScope} from "./services/hibachiscope";
 import {RequestService} from "./services/requestservice";
+import {ScopeService} from "./services/scopeservice"; 
+import {SkuService} from "./services/skuservice";
 import {HibachiValidationService} from "./services/hibachivalidationservice";
 import {EntityService} from "./services/entityservice";
 //controllers
@@ -39,26 +46,37 @@ import {DateFilter} from "./filters/datefilter";
 import {SWActionCaller} from "./components/swactioncaller";
 import {SWTypeaheadSearch} from "./components/swtypeaheadsearch";
 import {SWTypeaheadInputField} from "./components/swtypeaheadinputfield";
+import {SWTypeaheadMultiselect} from "./components/swtypeaheadmultiselect";
 import {SWTypeaheadSearchLineItem} from "./components/swtypeaheadsearchlineitem";
+import {SWTypeaheadRemoveSelection} from "./components/swtypeaheadremoveselection";
 import {SWCollectionConfig} from "./components/swcollectionconfig";
 import {SWCollectionFilter} from "./components/swcollectionfilter";
 import {SWCollectionColumn} from "./components/swcollectioncolumn";
 import {SWActionCallerDropdown} from "./components/swactioncallerdropdown";
 import {SWColumnSorter} from "./components/swcolumnsorter";
 import {SWConfirm} from "./components/swconfirm";
+import {SWDraggable} from "./components/swdraggable";
+import {SWDraggableContainer} from "./components/swdraggablecontainer";
 import {SWEntityActionBar} from "./components/swentityactionbar";
 import {SWEntityActionBarButtonGroup} from "./components/swentityactionbarbuttongroup";
 import {SWExpandableRecord} from "./components/swexpandablerecord";
 import {SWGravatar} from "./components/swgravatar";
 import {SWListingDisplay} from "./components/swlistingdisplay";
+import {SWListingDisplayCell} from "./components/swlistingdisplaycell";
 import {SWListingControls} from "./components/swlistingcontrols";
 import {SWListingAggregate} from "./components/swlistingaggregate";
 import {SWListingColorFilter} from "./components/swlistingcolorfilter";
 import {SWListingColumn} from "./components/swlistingcolumn";
+import {SWListingDisableRule} from "./components/swlistingdisablerule";
+import {SWListingExpandableRule} from "./components/swlistingexpandablerule";
 import {SWListingFilter} from "./components/swlistingfilter";
 import {SWListingFilterGroup} from "./components/swlistingfiltergroup";
 import {SWListingOrderBy} from "./components/swlistingorderby";
+import {SWListingRowSave} from "./components/swlistingrowsave"; 
+import {SWListingSearch} from "./components/swlistingsearch";
 import {SWLogin} from "./components/swlogin";
+import {SWModalLauncher} from "./components/swmodallauncher";
+import {SWModalWindow} from "./components/swmodalwindow"; 
 import {SWNumbersOnly} from "./components/swnumbersonly";
 import {SWLoading} from "./components/swloading";
 import {SWScrollTrigger} from "./components/swscrolltrigger";
@@ -75,6 +93,8 @@ import {SWHref} from "./components/swhref";
 import {SWProcessCaller} from "./components/swprocesscaller";
 import {SWSortable} from "./components/swsortable";
 import {SWListingGlobalSearch} from "./components/swlistingglobalsearch";
+import {SWOrderByControls} from "./components/sworderbycontrols"; 
+
 import {BaseObject} from "./model/baseobject";
 declare var $:any;
 
@@ -97,7 +117,7 @@ var coremodule = angular.module('hibachi.core',[
              }
          };
      });
-
+     //This filter is used to shorten a string by removing the charecter count that is passed to it and ending it with "..."
      $filterProvider.register('truncate',function(){
          return function (input, chars, breakOnWord) {
              if (isNaN(chars)) return input;
@@ -116,6 +136,30 @@ var coremodule = angular.module('hibachi.core',[
                      }
                  }
                  return input + '...';
+             }
+             return input;
+         };
+     });
+     //This filter is used to shorten long string but unlike "truncate", it removes from the start of the string and prepends "..."
+     $filterProvider.register('pretruncate',function(){
+         return function (input, chars, breakOnWord) {
+             if (isNaN(chars)) return input;
+             if (chars <= 0) return '';
+             if (input && input.length > chars) {
+                 input = input.slice('-' + chars);
+                //  input = input.substring(0, chars);
+                 if (!breakOnWord) {
+                     var lastspace = input.lastIndexOf(' ');
+                     //get last space
+                     if (lastspace !== -1) {
+                         input = input.substr(0, lastspace);
+                     }
+                 }else{
+                     while(input.charAt(input.length-1) === ' '){
+                         input = input.substr(0, input.length -1);
+                     }
+                 }
+                 return '...' + input;
              }
              return input;
          };
@@ -144,19 +188,26 @@ var coremodule = angular.module('hibachi.core',[
 .constant('hibachiPathBuilder',new HibachiPathBuilder())
 .constant('corePartialsPath','core/components/')
 //services
+.service('cacheService', CacheService)
 .service('publicService',PublicService)
 .service('utilityService',UtilityService)
 .service('selectionService',SelectionService)
 .service('observerService',ObserverService)
+.service('draggableService',DraggableService)
 .service('expandableService',ExpandableService)
+.service('filterService',FilterService)
 .service('formService',FormService)
+.service('historyService',HistoryService)
 .service('metadataService',MetaDataService)
 .service('rbkeyService',RbKeyService)
-.service('scopeService',ScopeService)
+.service('typeaheadService', TypeaheadService)
 .provider('$hibachi',$Hibachi)
 .decorator('$hibachi',HibachiServiceDecorator)
 .service('hibachiInterceptor', HibachiInterceptor.Factory())
 .service('hibachiScope',HibachiScope)
+.service('scopeService',ScopeService)
+.service('skuService', SkuService)
+.service('listingService', ListingService)
 .service('localStorageService',LocalStorageService)
 .service('requestService',RequestService)
 .service('accountService',AccountService)
@@ -172,13 +223,16 @@ var coremodule = angular.module('hibachi.core',[
 .filter('percentage',[PercentageFilter.Factory])
 .filter('trim', [SWTrim.Factory])
 .filter('entityRBKey',['rbkeyService',EntityRBKey.Factory])
+.filter('swdate',['$filter',DateFilter.Factory])
 //directives
 .directive('swCollectionConfig',SWCollectionConfig.Factory())
 .directive('swCollectionColumn',SWCollectionColumn.Factory())
 .directive('swCollectionFilter',SWCollectionFilter.Factory())
 .directive('swTypeaheadSearch',SWTypeaheadSearch.Factory())
 .directive('swTypeaheadInputField',SWTypeaheadInputField.Factory())
+.directive('swTypeaheadMultiselect', SWTypeaheadMultiselect.Factory())
 .directive('swTypeaheadSearchLineItem', SWTypeaheadSearchLineItem.Factory())
+.directive('swTypeaheadRemoveSelection', SWTypeaheadRemoveSelection.Factory())
 .directive('swActionCaller',SWActionCaller.Factory())
 .directive('swActionCallerDropdown',SWActionCallerDropdown.Factory())
 .directive('swColumnSorter',SWColumnSorter.Factory())
@@ -187,15 +241,24 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swEntityActionBarButtonGroup',SWEntityActionBarButtonGroup.Factory())
 .directive('swExpandableRecord',SWExpandableRecord.Factory())
 .directive('swGravatar', SWGravatar.Factory())
+.directive('swDraggable',SWDraggable.Factory())
+.directive('swDraggableContainer', SWDraggableContainer.Factory())
 .directive('swListingDisplay',SWListingDisplay.Factory())
 .directive('swListingControls',SWListingControls.Factory())
 .directive('swListingAggregate',SWListingAggregate.Factory())
 .directive('swListingColorFilter',SWListingColorFilter.Factory())
 .directive('swListingColumn',SWListingColumn.Factory())
+.directive('swListingDisableRule', SWListingDisableRule.Factory())
+.directive('swListingExpandableRule', SWListingExpandableRule.Factory())
+.directive('swListingDisplayCell',SWListingDisplayCell.Factory())
 .directive('swListingFilter',SWListingFilter.Factory())
 .directive('swListingFilterGroup',SWListingFilterGroup.Factory())
 .directive('swListingOrderBy',SWListingOrderBy.Factory())
+.directive('swListingRowSave', SWListingRowSave.Factory())
+.directive('swListingSearch', SWListingSearch.Factory())
 .directive('swLogin',SWLogin.Factory())
+.directive('swModalLauncher',SWModalLauncher.Factory())
+.directive('swModalWindow', SWModalWindow.Factory())
 .directive('swNumbersOnly',SWNumbersOnly.Factory())
 .directive('swLoading',SWLoading.Factory())
 .directive('swScrollTrigger',SWScrollTrigger.Factory())
@@ -212,6 +275,7 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swProcessCaller',SWProcessCaller.Factory())
 .directive('sw:sortable',SWSortable.Factory())
 .directive('swListingGlobalSearch',SWListingGlobalSearch.Factory())
+.directive('swOrderByControls', SWOrderByControls.Factory())
 ;
 export{
 	coremodule

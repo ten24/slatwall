@@ -122,6 +122,18 @@ component entityname="SlatwallWorkflowTrigger" table="SwWorkflowTrigger" persist
 	
 	// ============== START: Overridden Implicit Getters ===================
 	
+	public void function setTriggerEvent(required string triggerEvent){
+		variables.triggerEvent = arguments.triggerEvent;
+		var eventNameOptions = {};
+		if(!isNull(this.getWorkflow()) && !isNull(this.getWorkflow().getWorkflowObject())){
+			eventNameOptions = getService('hibachiEventService').getTriggerEventRBKeyHashMapByEntityName(this.getWorkflow().getWorkflowObject());	
+		}
+		
+		if(structKeyExists(eventNameOptions,arguments.triggerEvent)){
+			variables.triggerEventTitle = eventNameOptions[arguments.triggerEvent];
+		}
+	}
+	
 	// ==============  END: Overridden Implicit Getters ====================
 	
 	// ============= START: Overridden Smart List Getters ==================

@@ -53,14 +53,13 @@ Notes:
 <cfparam name="rc.categorySmartList" type="any" />
 
 <cfoutput>
-<hb:HibachiEntityActionBar type="listing" object="#rc.categorySmartList#" showCreate="false">
+<hb:HibachiEntityActionBar type="listing" object="#rc.categorySmartList#" showCreate="true">
 </hb:HibachiEntityActionBar>
 <hb:HibachiListingDisplay smartList="#rc.categorySmartList#"
 						   recordDetailAction="admin:entity.detailcategory"
-						   recordDetailModal="true"
 						   recordEditAction="admin:entity.editcategory"
 						   recordEditQueryString="redirectAction=admin:entity.listcategory"
-						   recordEditModal="true">
+						   recordDeleteAction="admin:entity.deletecategory">
 	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="categoryName" />
 	<hb:HibachiListingColumn propertyIdentifier="restrictAccessFlag" />
 	<hb:HibachiListingColumn propertyIdentifier="allowProductAssignmentFlag" />

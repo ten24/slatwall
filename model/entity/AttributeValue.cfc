@@ -63,13 +63,15 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	property name="attributeValueOption" cfc="AttributeOption" fieldtype="many-to-one" fkcolumn="attributeValueOptionID";
 
 	// Related Object Properties (many-to-one)
-	property name="formResponse" cfc="FormResponse" fieldtype="many-to-one" fkcolumn="formResponseID" cascade="all";
+	property name="formResponse" cfc="FormResponse" fieldtype="many-to-one" fkcolumn="formResponseID";
 
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	property name="accountAddress" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="accountAddressID";
 	property name="accountPayment" cfc="AccountPayment" fieldtype="many-to-one" fkcolumn="accountPaymentID";
+	property name="address" cfc="Address" fieldtype="many-to-one" fkcolumn="addressID";
 	property name="attributeOption" cfc="AttributeOption" fieldtype="many-to-one" fkcolumn="attributeOptionID";
 	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID";
+	property name="eventRegistration" cfc="EventRegistration" fieldtype="many-to-one" fkcolumn="eventRegistrationID";
 	property name="file" cfc="File" fieldtype="many-to-one" fkcolumn="fileID";
 	property name="image" cfc="Image" fieldtype="many-to-one" fkcolumn="imageID";
 	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
@@ -246,7 +248,27 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		}
 		structDelete(variables, "accountAddress");
 	}
-
+	
+	
+  	// Address (many-to-one)
+  	public void function setAddress(required any address) {
+  		variables.address = arguments.address;
+  		if(isNew() or !arguments.address.hasAttributeValue( this )) {
+  			arrayAppend(arguments.address.getAttributeValues(), this);
+  		}
+  	}
+  	
+  	public void function removeAddress(any address) {
+  		if(!structKeyExists(arguments, "address")) {
+  			arguments.address = variables.address;
+  		}
+  		var index = arrayFind(arguments.address.getAttributeValues(), this);
+  		if(index > 0) {
+  			arrayDeleteAt(arguments.address.getAttributeValues(), index);
+  		}
+  		structDelete(variables, "address");
+  	}
+	
 	// Attribute Option (many-to-one)
 	public void function setAttributeOption(required any attributeOption) {
 		variables.attributeOption = arguments.attributeOption;
@@ -299,6 +321,24 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 			arrayDeleteAt(arguments.brand.getAttributeValues(), index);
 		}
 		structDelete(variables, "brand");
+	}
+	
+	// Event Registrationf (many-to-one)
+	public void function setEventRegistration(required any eventRegistration) {
+		variables.eventRegistration = arguments.eventRegistration;
+		if(isNew() or !arguments.eventRegistration.hasAttributeValue( this )) {
+			arrayAppend(arguments.eventRegistration.getAttributeValues(), this);
+		}
+	}
+	public void function removeEventRegistration(any eventRegistration) {
+		if(!structKeyExists(arguments, "eventRegistration")) {
+			arguments.eventRegistration = variables.eventRegistration;
+		}
+		var index = arrayFind(arguments.eventRegistration.getAttributeValues(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.eventRegistration.getAttributeValues(), index);
+		}
+		structDelete(variables, "eventRegistration");
 	}
 
 	// File (many-to-one)

@@ -72,13 +72,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		account = accountService.processAccount(account, accountData, 'create');
 		var accountHasErrors = account.hasErrors();
 
-		ormFlush();
 
 		var deleteOK = accountService.deleteAccount(account);
 
 		assert(deleteOk);
 
-		ormFlush();
 	}
 
 	public void function password_reset_test() {
@@ -190,14 +188,14 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		mockAccount = createTestEntity('Account', accountData);
 		var resultOnlyLastName = mockAccount.getFullName();
-		assertEquals(resultOnlyLastName, " Kitty");
+		assertEquals(resultOnlyLastName, "Kitty");
 		//testing empty FirstName & LastName
 		accountData = {
 			accountID = "001"
 		};
 		mockAccount = createTestEntity('Account', accountData);
 		var resultNoName = mockAccount.getFullName();
-		assertEquals(resultNoName, " ");
+		assertEquals(resultNoName, "");
 	}
 	public void function getAddressTest() {
 		//testing existing PrimaryAddress existing Account Address
@@ -2316,12 +2314,12 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		};
 		mockAccount = createTestEntity('Account', accountData);
 		var resultFirstLastName = mockAccount.getSimpleRepresentation();
-		assertEquals(resultFirstLastName, " ");
+		assertEquals(resultFirstLastName, "");
 		//testing empty account
 		accountData = {};
 		mockAccount = createTestEntity('Account', accountData);
 		var resultFirstLastName = mockAccount.getSimpleRepresentation();
-		assertEquals(resultFirstLastName, " ");
+		assertEquals(resultFirstLastName, "");
 	}
 	
 	// ================== END TESTING: Overridden Methods ========================

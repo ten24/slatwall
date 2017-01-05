@@ -133,6 +133,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ===================== START: Process Methods ===========================
 
 	// Account
+	
 	public any function processAccount_addAccountPayment(required any account, required any processObject) {
 
 		// Get the populated newAccountPayment out of the processObject
@@ -249,67 +250,115 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		return arguments.account;
 	}
+	
+	public any function saveAccount(required any account, struct data={}, string context="save"){
+		
+		if(!isNull(arguments.account.getOrganizationFlag()) && arguments.account.getOrganizationFlag()){
+			if(!isNull(arguments.account.getCompany()) && isNull(arguments.account.getAccountCode())){
+				var accountCode = getService('hibachiutilityService').createUniqueProperty(arguments.account.getCompany(),getApplicationValue('applicationKey')&arguments.account.getClassName(),'accountCode');
+				arguments.account.setAccountCode(accountCode);
+			}
+		}
+		return super.save(entity=arguments.account,data=arguments.data);
+	}
+	
+	public any function processAccountRelationship_Approval(required accountRelationship){
+		
+	}
 
 	public any function processAccount_create(required any account, required any processObject, struct data={}) {
 
-		// Populate the account with the correct values that have been previously validated
-		arguments.account.setFirstName( processObject.getFirstName() );
-		arguments.account.setLastName( processObject.getLastName() );
-
-		// If company was passed in then set that up
-		if(!isNull(processObject.getCompany())) {
-			arguments.account.setCompany( processObject.getCompany() );
-		}
-
-		// If phone number was passed in the add a primary phone number
-		if(!isNull(processObject.getPhoneNumber())) {
-			var accountPhoneNumber = this.newAccountPhoneNumber();
-			accountPhoneNumber.setAccount( arguments.account );
-			accountPhoneNumber.setPhoneNumber( processObject.getPhoneNumber() );
-		}
-
-		// If email address was passed in then add a primary email address
-		if(!isNull(processObject.getEmailAddress())) {
-			var accountEmailAddress = this.newAccountEmailAddress();
-			accountEmailAddress.setAccount( arguments.account );
-			accountEmailAddress.setEmailAddress( processObject.getEmailAddress() );
-
-			arguments.account.setPrimaryEmailAddress( accountEmailAddress );
-		}
+		if(arguments.account.getNewFlag()){
 		
-		if(!arguments.account.hasErrors() && !isNull(processObject.getAccessID())) {
-			var subscriptionUsageBenefitAccountCreated = false;
-			var access = getService("accessService").getAccess(processObject.getAccessID());
-		
-			if(isNull(access)) {
-				//return access code error
-				arguments.account.addError("accessID", rbKey('validate.account.accessID'));
+			// Populate the account with the correct values that have been previously validated
+			arguments.account.setFirstName( processObject.getFirstName() );
+			arguments.account.setLastName( processObject.getLastName() );
+			
+			if(!isNull(arguments.processObject.getOrganizationFlag())){
+				arguments.account.setOrganizationFlag(arguments.processObject.getOrganizationFlag());
+			}
+			if(!isNull(arguments.processObject.getParentAccount())){
+				
+				var parentAccountRelationship = this.newAccountRelationship();
+				parentAccountRelationship.setChildAccount(arguments.account);
+				parentAccountRelationship.setParentAccount(arguments.processObject.getParentAccount());
+				arguments.account.addParentAccountRelationship(parentAccountRelationship);	
+				parentAccountRelationship.getParentAccount().addChildAccountRelationship(parentAccountRelationship);
+				
+				arguments.account.setOwnerAccount(arguments.processObject.getParentAccount());
+				this.saveAccount(arguments.processObject.getParentAccount());
+				this.saveAccountRelationship(parentAccountRelationship);
+			}
+			if(isNull(arguments.account.getOwnerAccount())){
+				arguments.account.setOwnerAccount(getHibachiScope().getAccount());
+			}
+			
+			if(!isNull(arguments.processObject.getChildAccount())){
+				var childAccountRelationship = this.newAccountRelationship();
+				childAccountRelationship.setParentAccount(arguments.account);
+				childAccountRelationship.setChildAccount(arguments.processObject.getChildAccount());
+				arguments.account.addChildAccountRelationship(childAccountRelationship);
+				childAccountRelationship.getChildAccount().addParentAccountRelationship(childAccountRelationship);
+				
+				childAccountRelationship.getChildAccount().setOwnerAccount(arguments.account);
+				this.saveAccount(arguments.processObject.getChildAccount());
+				this.saveAccountRelationship(childAccountRelationship);
+			}
+	
+			// If company was passed in then set that up
+			if(!isNull(processObject.getCompany())) {
+				arguments.account.setCompany( processObject.getCompany() );
+			}
+	
+			// If phone number was passed in the add a primary phone number
+			if(!isNull(processObject.getPhoneNumber())) {
+				var accountPhoneNumber = this.newAccountPhoneNumber();
+				accountPhoneNumber.setAccount( arguments.account );
+				accountPhoneNumber.setPhoneNumber( processObject.getPhoneNumber() );
+			}
+	
+			// If email address was passed in then add a primary email address
+			if(!isNull(processObject.getEmailAddress())) {
+				var accountEmailAddress = this.newAccountEmailAddress();
+				accountEmailAddress.setAccount( arguments.account );
+				accountEmailAddress.setEmailAddress( processObject.getEmailAddress() );
+	
+				arguments.account.setPrimaryEmailAddress( accountEmailAddress );
+			}
+			
+			if(!arguments.account.hasErrors() && !isNull(processObject.getAccessID())) {
+				var subscriptionUsageBenefitAccountCreated = false;
+				var access = getService("accessService").getAccess(processObject.getAccessID());
+			
+				if(isNull(access)) {
+					//return access code error
+					arguments.account.addError("accessID", rbKey('validate.account.accessID'));
+				}
+			}
+			
+			// Save & Populate the account so that custom attributes get set
+			arguments.account = this.saveAccount(arguments.account, arguments.data);
+			
+			// If the createAuthenticationFlag was set to true, the add the authentication
+			if(!arguments.account.hasErrors() && processObject.getCreateAuthenticationFlag()) {
+				var accountAuthentication = this.newAccountAuthentication();
+				accountAuthentication.setAccount( arguments.account );
+	
+				// Put the accountAuthentication into the hibernate scope so that it has an id which will allow the hash / salting below to work
+				getHibachiDAO().save(accountAuthentication);
+	
+				// Set the password
+				accountAuthentication.setPassword( getHashedAndSaltedPassword(arguments.processObject.getPassword(), accountAuthentication.getAccountAuthenticationID()) );
+			}
+	
+			// Call save on the account now that it is all setup
+			arguments.account = this.saveAccount(arguments.account);
+			
+			// if all validation passed and setup accounts subscription benefits based on access 
+			if(!arguments.account.hasErrors() && !isNull(access)) {
+				subscriptionUsageBenefitAccountCreated = getService("subscriptionService").createSubscriptionUsageBenefitAccountByAccess(access, arguments.account);
 			}
 		}
-
-		// Save & Populate the account so that custom attributes get set
-		arguments.account = this.saveAccount(arguments.account, arguments.data);
-
-		// If the createAuthenticationFlag was set to true, the add the authentication
-		if(!arguments.account.hasErrors() && processObject.getCreateAuthenticationFlag()) {
-			var accountAuthentication = this.newAccountAuthentication();
-			accountAuthentication.setAccount( arguments.account );
-
-			// Put the accountAuthentication into the hibernate scope so that it has an id which will allow the hash / salting below to work
-			getHibachiDAO().save(accountAuthentication);
-
-			// Set the password
-			accountAuthentication.setPassword( getHashedAndSaltedPassword(arguments.processObject.getPassword(), accountAuthentication.getAccountAuthenticationID()) );
-		}
-
-		// Call save on the account now that it is all setup
-		arguments.account = this.saveAccount(arguments.account);
-		
-		// if all validation passed and setup accounts subscription benefits based on access 
-		if(!arguments.account.hasErrors() && !isNull(access)) {
-			subscriptionUsageBenefitAccountCreated = getService("subscriptionService").createSubscriptionUsageBenefitAccountByAccess(access, arguments.account);
-		}
-
 		return arguments.account;
 	}
 
@@ -916,7 +965,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		return arguments.accountLoyalty;
 	}
-
+	
 	public any function processAccountLoyalty_manualTransaction(required any accountLoyalty, required any processObject) {
 
 		// Create a new transaction
@@ -1111,7 +1160,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	// =====================  END: Process Methods ============================
 
 	// ====================== START: Save Overrides ===========================
-
+	
 	public any function saveAccountPaymentMethod(required any accountPaymentMethod, struct data={}, string context="save") {
 		param name="arguments.data.runSaveAccountPaymentMethodTransactionFlag" default="true";
 
@@ -1139,7 +1188,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.accountPaymentMethod;
 
 	}
-
+	
 	public any function savePermissionGroup(required any permissionGroup, struct data={}, string context="save") {
 
 		arguments.permissionGroup.setPermissionGroupName( arguments.data.permissionGroupName );
@@ -1175,6 +1224,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		return arguments.permissionGroup;
 	}
+	
 
 	// ======================  END: Save Overrides ============================
 

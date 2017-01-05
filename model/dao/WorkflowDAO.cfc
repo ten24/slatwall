@@ -53,8 +53,7 @@ Notes:
 		
 		<!--- TODO: This needs to query DB and return an array of ALL workflow events --->
 		<!--- ['onOrderSaveSuccess','onOrderProcess_placeOrderSuccess'] --->
-		<cfreturn ORMExecuteQuery('SELECT
-										triggerEvent
+		<cfreturn ORMExecuteQuery('SELECT triggerEvent
 									FROM
 										SlatwallWorkflowTrigger
 									WHERE

@@ -10,6 +10,7 @@ import {CollectionService} from "./services/collectionservice";
 import {CollectionController} from "./controllers/collections";
 import {CreateCollection} from "./controllers/createcollection";
 import {ConfirmationController} from "./controllers/confirmationcontroller";
+import {CollectionCreateController} from "./controllers/entity_createcollection";
 //directives
 import {SWCollection} from "./components/swcollection";
 import {SWAddFilterButtons} from "./components/swaddfilterbuttons";
@@ -45,6 +46,7 @@ var collectionmodule = angular.module('hibachi.collection',[coremodule.name])
 .controller('collections',CollectionController)
 .controller('confirmationController',ConfirmationController)
 .controller('createCollection',CreateCollection)
+.controller('entity_createcollection',CollectionCreateController)
 //services
 .factory('collectionConfigService', ['rbkeyService','$hibachi','utilityService','observerService', (rbkeyService,$hibachi: any,utilityService, observerService) => new CollectionConfig(rbkeyService,$hibachi,utilityService,observerService)])
 .service('collectionService', CollectionService)

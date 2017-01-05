@@ -72,7 +72,10 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
         // determine which authentication keys to use based on test mode setting
         var activePublicKey = setting("testPublicKey");
         var activeSecretKey = setting("testSecretKey");
-        if (!setting("testMode"))
+        
+        var testMode = getTestModeFlag(arguments.requestBean,'testMode');
+        
+        if (!testMode)
         {
             activePublicKey = setting("livePublicKey");
             activeSecretKey = setting("liveSecretKey");
@@ -384,7 +387,7 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
             httpRequest.addParam(type="formfield", name="metadata[billing_name]", value="#requestBean.getBillingName()#");
         }
         //Additional order data.
-        if(len(requestBean.getOrder().getOrderID())) {
+        if(!isNull(requestBean.getOrder()) && !isNull(requestBean.getOrder().getOrderID()) && len(requestBean.getOrder().getOrderID())) {
             httpRequest.addParam(type="formfield", name="metadata[order_id]", value="#requestBean.getOrder().getOrderID()#");
             var orderItemCount = 0;
             for (var orderItem in requestBean.getOrder().getOrderItems()){
@@ -441,7 +444,7 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
     {
         var productNameList = "";
         
-        if(len(requestBean.getOrder().getOrderID())) {
+        if(!isNull(requestBean.getOrder()) && !isNull(requestBean.getOrder().getOrderID()) && len(requestBean.getOrder().getOrderID())) {
             for (var orderItem in requestBean.getOrder().getOrderItems()){
             	var description = orderItem.getSku().getSkuCode() & " - " & orderItem.getSku().getProduct().getProductName();
                 productNameList = listAppend(productNameList, description);
