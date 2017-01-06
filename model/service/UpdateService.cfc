@@ -263,7 +263,7 @@ Notes:
 
 	<cffunction name="updateEntitiesWithCustomProperties" returntype="boolean">
 		 <cfscript>
-			try{
+			//try{
 				var path = "#ExpandPath('/Slatwall/')#" & "model/entity";
 				var pathCustom = "#ExpandPath('/Slatwall/')#" & "custom/model/entity";
 				var compiledPath = "#ExpandPath('/Slatwall/')#" & "model/entity";
@@ -295,10 +295,10 @@ Notes:
 				}
 				
 				return true;
-			}catch(any e){
-				writeLog(file="Slatwall", text="Error reading from the file system while updating properties: #e#");
-				return false;
-			}
+//			}catch(any e){
+//				writeLog(file="Slatwall", text="Error reading from the file system while updating properties: #e#");
+//				return false;
+//			}
 			return true;
 		</cfscript>
 	</cffunction>
@@ -346,7 +346,7 @@ Notes:
 			}
 		}
 		
-		public any function mergeEntityParsers(required any coreEntityParser, required any customEntityParser){
+		public any function mergeEntityParsers(required any coreEntityParser, required any customEntityParser, boolean purgeCustomProperties=false){
 			var conditionalLineBreak = variables.conditionLineBreak;
 			
 			if(lcase(getApplicationValue("lineBreakStyle")) == 'windows'){
@@ -356,6 +356,12 @@ Notes:
 			var newContent = "";
 			//add properties
 			if(len(arguments.customEntityParser.getPropertyString())){
+				if(arguments.coreEntityParser.hasCustomProperties() && arguments.purgeCustomProperties){
+					if(arguments.coreEntityParser.hasCustomProperties()){
+						arguments.coreEntityParser.setFileContent(replace(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomPropertyContent(),''));
+					}
+				}
+				
 				if(arguments.coreEntityParser.hasCustomProperties()){
 					var customPropertyStartPos = arguments.coreEntityParser.getCustomPropertyStartPosition();
 					var customPropertyEndPos = arguments.coreEntityParser.getCustomPropertyEndPosition();
@@ -379,10 +385,14 @@ Notes:
 			}
 			//add functions
 			if(len(arguments.customEntityParser.getFunctionString())){
+				if(arguments.purgeCustomProperties && arguments.coreEntityParser.hasCustomFunctions()){
+					arguments.coreEntityParser.setFileContent(replace(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomFunctionContent(),''));	
+				}	
 				
 				if(arguments.coreEntityParser.hasCustomFunctions()){
 					var customFunctionStartPos = arguments.coreEntityParser.getCustomFunctionStartPosition();
 					var customFunctionEndPos = arguments.coreEntityParser.getCustomFunctionEndPosition();
+									
 					if(!arguments.coreEntityParser.getCustomFunctionContent() CONTAINS arguments.customEntityParser.getFunctionString()){
 						var contentBeforeCustomFunctionsStart = left(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomFunctionContentStartPosition()-1);
 						var contentAfterCustomFunctionsStart = mid(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomFunctionContentEndPosition(), (len(arguments.coreEntityParser.getFileContent()) - arguments.coreEntityParser.getCustomPropertyContentEndPosition())+1);
@@ -412,7 +422,7 @@ Notes:
 			
 			checkIfCustomPropertiesExistInBase(customEntityParser.getMetaData(),coreEntityParser.getMetaData());
 
-			mergeEntityParsers(coreEntityParser,customEntityParser);
+			mergeEntityParsers(coreEntityParser,customEntityParser,true);
 
 			return coreEntityParser.getFileContent();
 		</cfscript>
