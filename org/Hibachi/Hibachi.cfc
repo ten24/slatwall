@@ -93,6 +93,7 @@ component extends="FW1.framework" {
 	variables.framework.hibachi.noaccessDefaultItem = 'noaccess';
 	variables.framework.hibachi.sessionCookieDomain = "";
 	variables.framework.hibachi.lineBreakStyle = SERVER.OS.NAME;
+	variables.framework.hibachi.disableFullUpdateOnServerStartup = false;
 	
 	// Allow For Application Config
 	try{include "../../config/configFramework.cfm";}catch(any e){}
@@ -618,7 +619,12 @@ component extends="FW1.framework" {
 					// Call the onFirstRequest() Method for the parent Application.cfc
 					onFirstRequest();
 					
-					var runCustomProperties = !structKeyExists(server,'runCustomProperties') || (structKeyExists(server,'runCustomProperties') && server.runCustomProperties);
+					var runFullUpdate = !variables.framework.hibachi.disableFullUpdateOnServerStartup 
+						&& (
+							!structKeyExists(server,'runFullUpdate') 
+							|| (structKeyExists(server,'runFullUpdate') && server.runFullUpdate
+						)
+					);
 					// ============================ FULL UPDATE =============================== (this is only run when updating, or explicitly calling it by passing update=true as a url key)
 					if(
 						!fileExists(expandPath('/#variables.framework.applicationKey#/custom/config') & '/lastFullUpdate.txt.cfm') 
@@ -626,10 +632,10 @@ component extends="FW1.framework" {
 							structKeyExists(url, variables.framework.hibachi.fullUpdateKey) 
 							&& url[ variables.framework.hibachi.fullUpdateKey ] == variables.framework.hibachi.fullUpdatePassword
 						)
-						|| runCustomProperties
+						|| runFullUpdate
 					){
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - Full Update Initiated");
-						server.runCustomProperties = false;
+						server.runFullUpdate = false;
 						//Update custom properties
 						var success = getHibachiScope().getService('updateService').updateEntitiesWithCustomProperties();
 						if (success){
