@@ -138,6 +138,7 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 			} else if (!isNull(getService('siteService').getCurrentRequestSite()) && !isNull(getService('siteService').getCurrentRequestSite().setting('siteMissingImagePath'))) {
                 
                 arguments.imagePath = getService('siteService').getCurrentRequestSite().setting('siteMissingImagePath');
+                
             //Check settings location
 			}else if( fileExists(expandPath(getHibachiScope().setting('imageMissingImagePath'))) ){
 
