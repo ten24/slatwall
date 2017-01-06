@@ -618,17 +618,17 @@ component extends="FW1.framework" {
 					// Call the onFirstRequest() Method for the parent Application.cfc
 					onFirstRequest();
 					
+					var runCustomProperties = !structKeyExists(server,'runCustomProperties') || (structKeyExists(server,'runCustomProperties') && server.runCustomProperties);
 					// ============================ FULL UPDATE =============================== (this is only run when updating, or explicitly calling it by passing update=true as a url key)
-					if(!fileExists(expandPath('/#variables.framework.applicationKey#/custom/config') & '/lastFullUpdate.txt.cfm') || (structKeyExists(url, variables.framework.hibachi.fullUpdateKey) && url[ variables.framework.hibachi.fullUpdateKey ] == variables.framework.hibachi.fullUpdatePassword)){
+					if(
+						!fileExists(expandPath('/#variables.framework.applicationKey#/custom/config') & '/lastFullUpdate.txt.cfm') 
+						|| (
+							structKeyExists(url, variables.framework.hibachi.fullUpdateKey) 
+							&& url[ variables.framework.hibachi.fullUpdateKey ] == variables.framework.hibachi.fullUpdatePassword
+						)
+					){
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - Full Update Initiated");
 						
-						//Update custom properties
-						var success = getHibachiScope().getService('updateService').updateEntitiesWithCustomProperties();
-						if (success){
-							writeLog(file="Slatwall", text="General Log - Attempting to update entities with custom properties.");
-						}else{
-							writeLog(file="Slatwall", text="General Log - Error updating entities with custom properties");
-						}
 						// Reload ORM
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() started");
 						ormReload();
