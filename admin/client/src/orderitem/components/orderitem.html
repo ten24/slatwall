@@ -25,8 +25,8 @@
 		<a href="{{'?slatAction=entity.detailorderitem&orderitemid='+orderItem.data.orderItemID}}" class="s-edit-link"
 			ng-show="orderItem.data.sku.data.baseProductType !== 'productBundle'">edit</a>
 		<a href="" class="s-edit-link" 
-			ng-show="orderItem.data.sku.data.baseProductType === 'productBundle' && !orderItem.clicked" 
-			ng-click="getChildOrderItems(orderItem)">detail</a>
+			ng-show="orderItem.data.sku.data.baseProductType === 'productBundle' && !orderItem.clicked && childOrderItems.length > 0" 
+			ng-click="showChildOrderItems()">detail</a>
 		<a href="" class="s-edit-link" 
 			ng-show="orderItem.data.sku.data.baseProductType === 'productBundle' && orderItem.clicked" 
 			ng-click="hideChildren(orderItem)">detail</a>
