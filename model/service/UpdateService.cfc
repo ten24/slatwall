@@ -263,7 +263,7 @@ Notes:
 
 	<cffunction name="updateEntitiesWithCustomProperties" returntype="boolean">
 		 <cfscript>
-			//try{
+			try{
 				var path = "#ExpandPath('/Slatwall/')#" & "model/entity";
 				var pathCustom = "#ExpandPath('/Slatwall/')#" & "custom/model/entity";
 				var compiledPath = "#ExpandPath('/Slatwall/')#" & "model/entity";
@@ -295,10 +295,10 @@ Notes:
 				}
 				
 				return true;
-//			}catch(any e){
-//				writeLog(file="Slatwall", text="Error reading from the file system while updating properties: #e#");
-//				return false;
-//			}
+			}catch(any e){
+				writeLog(file="Slatwall", text="Error reading from the file system while updating properties: #e#");
+				return false;
+			}
 			return true;
 		</cfscript>
 	</cffunction>
