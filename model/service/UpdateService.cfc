@@ -357,9 +357,7 @@ Notes:
 			//add properties
 			if(len(arguments.customEntityParser.getPropertyString())){
 				if(arguments.coreEntityParser.hasCustomProperties() && arguments.purgeCustomProperties){
-					if(arguments.coreEntityParser.hasCustomProperties()){
-						arguments.coreEntityParser.setFileContent(replace(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomPropertyContent(),''));
-					}
+					arguments.coreEntityParser.setFileContent(replace(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomPropertyContent(),''));
 				}
 				
 				if(arguments.coreEntityParser.hasCustomProperties()){
