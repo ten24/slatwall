@@ -104,6 +104,7 @@ component extends="FW1.framework" {
 
 	// Defaults
 	this.mappings[ "/#variables.framework.applicationKey#" ] = replace(replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all"), "/org/Hibachi/", "");
+	
 
 	// Allow For Application Config
 	try{include "../../config/configMappings.cfm";}catch(any e){}

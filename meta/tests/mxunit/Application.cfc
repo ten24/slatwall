@@ -56,6 +56,9 @@ component {
 	this.sessionManagement = true;
 
 	this.mappings[ "/Slatwall" ] = replace(replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all"), "/meta/tests/mxunit/", "");
+	this.mappings[ "/mxunit" ] = replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all");
+
+	
 
 	this.ormEnabled = true;
 	this.ormSettings.cfclocation = ["/Slatwall/model/entity","/Slatwall/integrationServices"];

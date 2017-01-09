@@ -54,7 +54,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.service = request.slatwallScope.getBean("imageService");
 	}
 	
-	public void function saveImageTest(){
+	public void function saveImage_cantsaveWithoutFile_Test(){
 		var productData = {
 			productID="",
 			productName="test",
@@ -80,6 +80,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		
 		image = variables.service.saveImage(image,data);
+		
 		assert(structKeyExists(image.getErrors(),'imageFile'));
 	}	
 	
