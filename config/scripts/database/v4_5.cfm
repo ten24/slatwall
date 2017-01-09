@@ -50,7 +50,7 @@ Notes:
 <cfset local.scriptHasErrors = false />
 <cfparam name="this.ormSettings.dialect" default="#getHibachiScope().getApplicationValue('databaseType')#" />
 
-<!---<cftry>--->
+<cftry>
 	<cfquery name="local.setbundleitemquantity">
 		update SwOrderItem set SwOrderItem.bundleItemQuantity = SwOrderItem.quantity where parentOrderItemID is not null
 	</cfquery>
@@ -93,12 +93,12 @@ Notes:
 		</cfquery>
 	</cfif>
 
-	<!---<cfcatch>
+	<cfcatch>
 		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update Child Order Item Quantity">
 		<cfset local.scriptHasErrors = true />
 	</cfcatch>
 </cftry>
-<cftry>--->
+<cftry>
 	<cfquery name="local.getsubscriptionusages">
 		select * from SwSubsUsage
 	</cfquery>
@@ -120,11 +120,11 @@ Notes:
 			<cfbreak>
 		</cfloop>
 	</cfloop>
-	<!---<cfcatch>
+	<cfcatch>
 		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update Subscription Usages initial order item">
 		<cfset local.scriptHasErrors = true />
 	</cfcatch>
-</cftry>--->
+</cftry>
 <cfif local.scriptHasErrors>
 	<cflog file="Slatwall" text="General Log - Part of Script v4_5 had errors when running">
 	<cfthrow detail="Part of Script v4_5 had errors when running">
