@@ -83,9 +83,62 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(structKeyExists(image.getErrors(),'imageFile'));
 	}	
 	
-	public void function missingImageSettingTest(){
+	private void function checkImagePath(imagePath){
+			
+			var siteService = request.slatwallScope.getService('siteService');
+			
+			if(!isNull(siteService.getCurrentRequestSite()) && !isNull(siteService.getCurrentRequestSite().setting('siteMissingImagePath'))){
+				request.debug('siteSetting assertion');
+				assert(imagePath EQ siteService.getCurrentRequestSite().setting('siteMissingImagePath'));
+			}else if(fileExists(expandPath("#variables.service.getApplicationValue('baseUrl')#/custom/assets/images/missingimage.jpg"))){
+				request.debug('custom assertion');
+				assert(imagePath EQ "#variables.service.getApplicationValue('baseUrl')#/custom/assets/images/missingimage.jpg");
+			}else if(fileExists(expandPath(variables.service.getHibachiScope().setting('imageMissingImagePath')))){
+				request.debug('global assertion');
+				assert(imagePath EQ "#variables.service.getApplicationValue('baseUrl')##variables.service.getHibachiScope().setting('imageMissingImagePath')#"	);
+			}else{
+				request.debug('final assertion');
+				assert(imagePath EQ "#variables.service.getApplicationValue('baseURL')#/assets/images/missingimage.jpg", "Default assertion");
+			}
+		}
+	
+	public void function missingImageSettingTest_imageMissingImagePath(){
+		
+		var settingService = request.slatwallScope.getService('settingService');
+		
+		//Test default, should hit global assertion
 		var imagePath = variables.service.getResizedImagePath('falsepath');
-		assert(fileExists(expandPath(imagePath)));
+		checkImagePath(imagePath);
+	}
+	
+	public void function missingImageSettingTest_customMissingImageFile(){
+		//Test custom file, should hit custom assertion
+		createTestFile(expandPath(variables.service.getHibachiScope().setting('imageMissingImagePath')), '#variables.service.getApplicationValue('baseUrl')#/custom/assets/images/missingimage.jpg');
+		imagePath = variables.service.getResizedImagePath('falsepath');
+		checkImagePath(imagePath);
+	}
+	
+	public void function missingImageSettingTest_siteMissingImagePath(){
+		
+		var siteData = {
+			siteID="#createUuid()#",
+			siteName="#createUuid()#",
+			siteCode="#createUuid()#",
+			domainNames="slatwall"
+		};
+		var site = createPersistedTestEntity(entityName="site",data=siteData);
+		site = variables.service.saveSite(site,siteData);
+
+		//create setting for siteMissingImagePath
+		var settingData = {
+			settingID = "",
+			settingName = "siteMissingImagePath",
+			settingValue = "/assets/images/missingimage.jpg",
+            site: siteData.siteid
+		};
+		var settingEntity = createPersistedTestEntity('Setting',settingData);
+		imagePath = variables.service.getResizedImagePath('falsepath');
+		checkImagePath(imagePath);
 	}
 	
 }
