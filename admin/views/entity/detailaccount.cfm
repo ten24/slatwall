@@ -67,7 +67,7 @@ Notes:
 			<hb:HibachiProcessCaller entity="#rc.account#" action="admin:entity.preprocessaccount" processContext="createPassword" type="list" modal="true" hideDisabled="false" />
 			<hb:HibachiProcessCaller entity="#rc.account#" action="admin:entity.preprocessaccount" processContext="changePassword" type="list" modal="true" />
 			<!--- If the logged in user is a super user, or they own this account then allow api token generation. --->
-			<cfif getHibachiScope().getAccount().getSuperUserFlag() || getHibachiScope().getAccount().getAccountID() eq arguments.account.getAccountID()>
+			<cfif getHibachiScope().getAccount().getSuperUserFlag() || getHibachiScope().getAccount().getAccountID() eq rc.account.getAccountID()>
 				<hb:HibachiProcessCaller entity="#rc.account#" action="admin:entity.preprocessaccount" processContext="generateAPIAccessKey"  type="list" modal="true" />
 			</cfif>
 			<li class="divider"></li>
@@ -92,7 +92,10 @@ Notes:
 			<hb:HibachiEntityDetailItem property="productReviews" />
 			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/subscriptionusage" count="#rc.account.getSubscriptionUsagesSmartList().getRecordsCount()#" />
 			<hb:HibachiEntityDetailItem property="permissionGroups" />
-			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/accountsettings" />
+			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/parentaccounts" count="#rc.account.getParentAccountRelationShipsSmartList().getRecordsCount()#"/>
+			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/childaccounts" count="#rc.account.getChildAccountRelationShipsSmartList().getRecordsCount()#"/>
+			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/accountsettings"/>
+			
 
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.account.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">

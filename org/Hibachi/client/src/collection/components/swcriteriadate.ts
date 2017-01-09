@@ -5,39 +5,23 @@ class SWCriteriaDate{
 	public static Factory(){
 		var directive:ng.IDirectiveFactory = (
 			$log,
-			$hibachi,
-			$filter,
 			collectionPartialsPath,
-			collectionService,
-			metadataService,
 			hibachiPathBuilder
 		)=>new SWCriteriaDate(
 			$log,
-			$hibachi,
-			$filter,
 			collectionPartialsPath,
-			collectionService,
-			metadataService,
 			hibachiPathBuilder
 		);
 		directive.$inject = [
 			'$log',
-			'$hibachi',
-			'$filter',
 			'collectionPartialsPath',
-			'collectionService',
-			'metadataService',
 			'hibachiPathBuilder'
 		];
 		return directive;
 	}
 	constructor(
 		$log,
-		$hibachi,
-		$filter,
 		collectionPartialsPath,
-		collectionService,
-		metadataService,
 		hibachiPathBuilder
 	){
 		return {
@@ -183,7 +167,35 @@ class SWCriteriaDate{
 				    				measureTypeDisplay:'Years'
 				    			}
 				    		},
+
                             {
+                                display:"Exact N Day(s) Ago",
+                                comparisonOperator:	"between",
+                                dateInfo:{
+                                    type:'exactDate',
+                                    measureType:'d',
+                                    measureTypeDisplay:'Days'
+                                }
+                            },
+                            {
+                                display:"Exact N Month(s) Ago",
+                                comparisonOperator:	"between",
+                                dateInfo:{
+                                    type:'exactDate',
+                                    measureType:'m',
+                                    measureTypeDisplay:'Months'
+                                }
+                            },
+                            {
+                                display:"Exact N Year(s) Ago",
+                                comparisonOperator:	"between",
+                                dateInfo:{
+                                    type:'exactDate',
+                                    measureType:'y',
+                                    measureTypeDisplay:'Years'
+                                }
+                            },
+							{
 								display:"Exact N Day(s) Ago",
 								comparisonOperator:	"between",
 								dateInfo:{
@@ -350,21 +362,21 @@ class SWCriteriaDate{
 				  			selectedCondition.showCriteriaStart = true;
 				  			selectedCondition.showCriteriaEnd = false;
 				  			selectedCondition.disableCriteriaStart = false;
-							selectedCondition.disableCriteriaEnd = true;
+                            selectedCondition.disableCriteriaEnd = true;
 
 
-							if(!selectedCondition.dateInfo.measureType){
-								selectedCondition.conditionDisplay = '';
-								selectedCondition.showCriteriaStart = true;
-								selectedCondition.showNumberOf = false;
+                            if(!selectedCondition.dateInfo.measureType){
+                                selectedCondition.conditionDisplay = '';
+                                selectedCondition.showCriteriaStart = true;
+                                selectedCondition.showNumberOf = false;
 
-								selectedFilterProperty.criteriaRangeStart = new Date(selectedFilterProperty.criteriaRangeStart).setHours(0,0,0,0);
-								selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23,59,59,999);
-							}else{
-								selectedCondition.conditionDisplay = 'How many '+ selectedCondition.dateInfo.measureTypeDisplay+' ago?';
-								selectedCondition.showCriteriaStart = false;
-								selectedCondition.showNumberOf = true;
-							}
+                                selectedFilterProperty.criteriaRangeStart = new Date(selectedFilterProperty.criteriaRangeStart).setHours(0,0,0,0);
+                                selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23,59,59,999);
+                            }else{
+                                selectedCondition.conditionDisplay = 'How many '+ selectedCondition.dateInfo.measureTypeDisplay+' ago?';
+                                selectedCondition.showCriteriaStart = false;
+                                selectedCondition.showNumberOf = true;
+                            }
 				  		}
 				  	}else{
 				  		selectedCondition.showCriteriaStart = false;

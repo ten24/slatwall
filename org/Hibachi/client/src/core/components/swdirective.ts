@@ -3,40 +3,55 @@
 class SWDirective{
 	public static Factory(){
 		var directive = (
-			$compile
+			$compile,
+			utilityService
 		)=>new SWDirective(
-			$compile
+			$compile,
+			utilityService
 		);
 		directive.$inject = [
-			'$compile'
+			'$compile',
+			'utilityService'
 		];
 		return directive;
 	}
     //@ngInject
 	constructor(
-		$compile
+		$compile,
+		utilityService
 	){
 		return {
-			restrict: 'A',
-			replace:true,
+			restrict: 'AE',
+			//replace:true,
 			scope:{
 				variables:"=", //{key:value}
-				directive:"="
+				directiveTemplate:"="
 			},
+			controllerAs: "swDirective",
 			link: function(scope, element, attrs) {
-
-		        var template = '<span ' + scope.directive + ' ';
+				var tempVariables = {}; 
+				angular.forEach(scope.variables, (value,key)=>{
+               	 if(key.toString().charAt(0) != "$" && value !== " "){
+                	    tempVariables[utilityService.keyToAttributeString(key)] = value;
+                	}
+            	});
+				scope.variables = tempVariables;
+		        var template = '<' + scope.directiveTemplate + ' ';
 		        if(angular.isDefined(scope.variables)){
-			        angular.forEach(scope.variables, function(value,key){
-			        	template += ' ' + key + '=' + value + ' ';
+			        angular.forEach(scope.variables, (value,key)=>{
+						if(!angular.isString(value) && !angular.isNumber(value)){
+							template += ' ' + key + '="swDirective.' + 'variables.' + key + '" ';
+						} else { 
+			        		template += ' ' + key + '="' + value + '" ';
+						}
 			        });
 			    }
 
-		        template += + '>';
-		        template += '</span>';
+		        template += '>';
+		        template += '</'+scope.directiveTemplate+'>';
 
 		        // Render the template.
-		        element.html('').append($compile(template)(scope));
+		        element.html($compile(template)(scope));
 		    }
 		};
 	}

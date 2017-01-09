@@ -71,6 +71,9 @@ Notes:
 		<swa:SlatwallSetting settingName="globalWeightUnitCode" />
 		<swa:SlatwallSetting settingName="globalAdminAutoLogoutMinutes" />
 		<swa:SlatwallSetting settingName="globalPublicAutoLogoutMinutes" />
+		<swa:SlatwallSetting settingName="globalExtendedSessionAutoLogoutInDays" />
+		<swa:SlatwallSetting settingName="globalUseExtendedSession" />
+		<swa:SlatwallSetting settingName="globalCopyCartToNewSessionOnLogout" />
         <swa:SlatwallSetting settingName="globalGiftCardMessageLength" />
         <swa:SlatwallSetting settingName="globalMaximumFulfillmentsPerOrder" />
 	</swa:SlatwallSettingTable>

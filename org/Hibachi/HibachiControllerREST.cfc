@@ -29,6 +29,7 @@ component output="false" accessors="true" extends="HibachiController" {
     this.publicMethods=listAppend(this.publicMethods, 'login');
     this.publicMethods=listAppend(this.publicMethods, 'getResourceBundle');
     this.publicMethods=listAppend(this.publicMethods, 'getCurrencies');
+    this.publicMethods=listAppend(this.publicMethods, 'getCurrencyRates');
     this.publicMethods=listAppend(this.publicMethods, 'getModel');
     this.publicMethods=listAppend(this.publicMethods, 'getAttributeModel');
     this.publicMethods=listAppend(this.publicMethods, 'getConfig');
@@ -120,6 +121,10 @@ component output="false" accessors="true" extends="HibachiController" {
         }
 
         arguments.rc.apiResponse.content['data'] = currencyStruct;
+    }
+
+    public void function getCurrencyRates(required struct rc){
+		arguments.rc.apiResponse.content = getService("CurrencyService").getAllAvailableCurrencyRates();
     }
 
     public void function login(required struct rc){
@@ -631,111 +636,35 @@ component output="false" accessors="true" extends="HibachiController" {
             handle accessing collections by id
         */
         param name="arguments.rc.propertyIdentifiers" default="";
+        
+        
         //first check if we have an entityName value
         if(!structKeyExists(arguments.rc, "entityName")) {
             arguments.rc.apiResponse.content['account'] = getHibachiScope().invokeMethod("getAccountData");
             arguments.rc.apiResponse.content['cart'] = getHibachiScope().invokeMethod("getCartData");
         } else {
-            //get entity service by entity name
-            var currentPage = 1;
-            if(structKeyExists(arguments.rc,'P:Current')){
-                currentPage = arguments.rc['P:Current'];
-            }
-            var pageShow = 10;
-            if(structKeyExists(arguments.rc,'P:Show')){
-                pageShow = arguments.rc['P:Show'];
-            }
-
-            var keywords = "";
-            if(structKeyExists(arguments.rc,'keywords')){
-                keywords = arguments.rc['keywords'];
-            }
-            var filterGroupsConfig = "";
-            if(structKeyExists(arguments.rc,'filterGroupsConfig')){
-                filterGroupsConfig = arguments.rc['filterGroupsConfig'];
-            }
-            var joinsConfig = "";
-            if(structKeyExists(arguments.rc,'joinsConfig')){
-                joinsConfig = arguments.rc['joinsConfig'];
-            }
-
-            var orderByConfig = "";
-            if(structKeyExists(arguments.rc,'orderByConfig')){
-                orderByConfig = arguments.rc['orderByConfig'];
-            }
-
-            var groupBysConfig = "";
-            if(structKeyExists(arguments.rc,'groupBysConfig')){
-                groupBysConfig = arguments.rc['groupBysConfig'];
-            }
-
-            var propertyIdentifiersList = "";
-            if(structKeyExists(arguments.rc,"propertyIdentifiersList")){
-                propertyIdentifiersList = arguments.rc['propertyIdentifiersList'];
-            }
-
-            var columnsConfig = "";
-            if(structKeyExists(arguments.rc,'columnsConfig')){
-                columnsConfig = arguments.rc['columnsConfig'];
-            }
-
-            var isDistinct = false;
-            if(structKeyExists(arguments.rc, "isDistinct")){
-                isDistinct = arguments.rc['isDistinct'];
-            }
-
-            var allRecords = false;
-            if(structKeyExists(arguments.rc,'allRecords')){
-                allRecords = arguments.rc['allRecords'];
-            }
-
-            var defaultColumns = false;
-            if(structKeyExists(arguments.rc,'defaultColumns')){
-                defaultColumns = arguments.rc['defaultColumns'];
-            }
-
-            var processContext = '';
-            if(structKeyExists(arguments.rc,'processContext')){
-                processContext = arguments.rc['processContext'];
-            }
-
-            var collectionOptions = {
-                currentPage=currentPage,
-                pageShow=pageShow,
-                keywords=keywords,
-                filterGroupsConfig=filterGroupsConfig,
-                joinsConfig=joinsConfig,
-                propertyIdentifiersList=propertyIdentifiersList,
-                isDistinct=isDistinct,
-                columnsConfig=columnsConfig,
-                orderByConfig=orderByConfig,
-                groupBysConfig=groupBysConfig,
-                allRecords=allRecords,
-                defaultColumns=defaultColumns,
-                processContext=processContext
-            };
-
+            
             //considering using all url variables to create a transient collectionConfig for api response
             if(!structKeyExists(arguments.rc,'entityID')){
                 //should be able to add select and where filters here
-                var result = getService('hibachiCollectionService').getAPIResponseForEntityName(    arguments.rc.entityName,
-                                                                            collectionOptions);
+                var result = getService('hibachiCollectionService').getAPIResponseForEntityName( arguments.rc.entityName,
+																								 arguments.rc);
 
                 structAppend(arguments.rc.apiResponse.content,result);
             }else{
 
-                var collectionEntity = getService('hibachiCollectionService').getCollectionByCollectionID(arguments.rc.entityID);
+                var collectionEntity = getService('hibachiCollectionService').getCollectionByCollectionID( arguments.rc.entityID );
                 //figure out if we have a collection or a basic entity
                 if(isNull(collectionEntity)){
                     //should only be able to add selects (&propertyIdentifier=)
-                    var result = getService('hibachiCollectionService').getAPIResponseForBasicEntityWithID(arguments.rc.entityName,
-                                                                                arguments.rc.entityID,
-                                                                                collectionOptions);
+                    var result = getService('hibachiCollectionService').getAPIResponseForBasicEntityWithID( arguments.rc.entityName,
+																										    arguments.rc.entityID,
+																										    arguments.rc );
                     structAppend(arguments.rc.apiResponse.content,result);
                 }else{
                     //should be able to add select and where filters here
-                    var result = getService('hibachiCollectionService').getAPIResponseForCollection(    collectionEntity,
-                                                                                collectionOptions);
+                    var result = getService('hibachiCollectionService').getAPIResponseForCollection( collectionEntity,
+																									 arguments.rc );
                     structAppend(arguments.rc.apiResponse.content,result);
                 }
             }

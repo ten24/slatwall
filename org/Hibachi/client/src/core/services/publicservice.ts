@@ -17,6 +17,12 @@ class PublicService {
     public errors:{[key:string]:any}={};
     public newBillingAddress:any;
 
+    public accountDataPromise:any;
+    public addressOptionData:any; 
+    public cartDataPromise:any;  
+    public countryDataPromise:any; 
+    public stateDataPromise:any; 
+
     public http:ng.IHttpService;
     public confirmationUrl:string;
     public header:any;
@@ -96,38 +102,53 @@ class PublicService {
         var baseDate = new Date();
         var today = baseDate.getFullYear();
         var start = today;
-        for (var i = 0; i<= 5; i++){
+        for (var i = 0; i<= 15; i++){
             this.years.push(start + i);
         }
     }
     /** accessors for account */
-    public getAccount=():any =>  {
+    public getAccount=(refresh=false):any =>  {
         let urlBase = this.baseActionPath+'getAccount/';
-        return this.getData(urlBase, "account", "");
+        if(!this.accountDataPromise || refresh){
+            this.accountDataPromise = this.getData(urlBase, "account", "");
+        }
+        return this.accountDataPromise;
     }
     /** accessors for cart */
-    public getCart=():any =>  {
+    public getCart=(refresh=false):any =>  {
         let urlBase = this.baseActionPath+'getCart/';
-        return this.getData(urlBase, "cart", "");
+        if(!this.cartDataPromise || refresh){
+            this.cartDataPromise = this.getData(urlBase, "cart", "");
+        }
+        return this.cartDataPromise;
     }
     /** accessors for countries */
-    public getCountries=():any =>  {
+    public getCountries=(refresh=false):any =>  {
         let urlBase = this.baseActionPath+'getCountries/';
-        return this.getData(urlBase, "countries", "");
+        if(!this.countryDataPromise || refresh){
+            this.countryDataPromise = this.getData(urlBase, "countries", "");
+        }
+        return this.countryDataPromise; 
     }
 
     /** accessors for states */
-    public getStates=(countryCode:string):any =>  {
+    public getStates=(countryCode:string, refresh=false):any =>  {
        if (!angular.isDefined(countryCode)) countryCode = "US";
        let urlBase = this.baseActionPath+'getStateCodeOptionsByCountryCode/';
-       return this.getData(urlBase, "states", "?countryCode="+countryCode);
+       if(!this.stateDataPromise || refresh){
+           this.stateDataPromise = this.getData(urlBase, "states", "?countryCode="+countryCode); 
+       }
+       return this.stateDataPromise;
     }
 
     /** accessors for states */
-    public getAddressOptions=(countryCode:string):any =>  {
+    public getAddressOptions=(countryCode:string, refresh=false):any =>  {
        if (!angular.isDefined(countryCode)) countryCode = "US";
        let urlBase = this.baseActionPath+'getAddressOptionsByCountryCode/';
-       return this.getData(urlBase, "addressOptions", "&countryCode="+countryCode);
+       if(!this.addressOptionData || refresh){
+           this.addressOptionData = this.getData(urlBase, "addressOptions", "&countryCode="+countryCode);
+       }
+       return this.addressOptionData;
     }
 
     /** accessors for states */
@@ -186,7 +207,7 @@ class PublicService {
             this.baseActionPath = "/index.cfm/api/scope/" + action;//public path
         }
 
-        let urlBase = this.baseActionPath;
+        let urlBase = this.appConfig.baseURL+this.baseActionPath;
 
         if(data){
             method = "post";

@@ -8,7 +8,7 @@ class SWEditFilterItem{
             $timeout,
 			$hibachi,
 			collectionPartialsPath,
-			collectionService,
+			collectionService, 
 			metadataService,
 			hibachiPathBuilder,
             rbkeyService,
@@ -305,66 +305,66 @@ class SWEditFilterItem{
                                 break;
                                 //TODO:simplify timestamp and big decimal to leverage reusable function for null, range, and value
                             case 'timestamp':
-								//retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
-								filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
-								//is it null or a range
+                                //retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
+                                filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+                                //is it null or a range
 
-								if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
-									filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
-									filterItem.displayValue = filterItem.value;
-								}else{
-									if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'calculation'){
-										var _daysBetween = daysBetween(new Date(selectedFilterProperty.criteriaRangeStart),new Date(selectedFilterProperty.criteriaRangeEnd));
+                                if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
+                                    filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
+                                    filterItem.displayValue = filterItem.value;
+                                }else{
+                                    if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'calculation'){
+                                        var _daysBetween = daysBetween(new Date(selectedFilterProperty.criteriaRangeStart),new Date(selectedFilterProperty.criteriaRangeEnd));
 
-										filterItem.value = _daysBetween;
-										filterItem.displayValue = selectedFilterProperty.selectedCriteriaType.display;
-										if(angular.isDefined(selectedFilterProperty.criteriaNumberOf)){
-											filterItem.criteriaNumberOf = selectedFilterProperty.criteriaNumberOf;
-										}
+                                        filterItem.value = _daysBetween;
+                                        filterItem.displayValue = selectedFilterProperty.selectedCriteriaType.display;
+                                        if(angular.isDefined(selectedFilterProperty.criteriaNumberOf)){
+                                            filterItem.criteriaNumberOf = selectedFilterProperty.criteriaNumberOf;
+                                        }
 
-									}else if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'exactDate'){
-										if(angular.isUndefined(selectedFilterProperty.selectedCriteriaType.dateInfo.measureType)){
-											filterItem.value = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
-											filterItem.displayValue = $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeStart),'MM/dd/yyyy @ h:mma') + '-' + $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeEnd),'MM/dd/yyyy @ h:mma');
-										}else{
-											filterItem.measureType = selectedFilterProperty.selectedCriteriaType.dateInfo.measureType;
-											filterItem.measureCriteria = selectedFilterProperty.selectedCriteriaType.dateInfo.type;
-											filterItem.criteriaNumberOf = "0";
-
-
-											if(angular.isDefined(selectedFilterProperty.criteriaNumberOf)){
-												filterItem.criteriaNumberOf = selectedFilterProperty.criteriaNumberOf;
-											}
-											filterItem.value = filterItem.criteriaNumberOf;
-											filterItem.displayValue = filterItem.criteriaNumberOf;
-
-											switch(filterItem.measureType){
-												case 'd':
-													filterItem.displayValue +=' Day';
-													break;
-												case 'm':
-													filterItem.displayValue +=' Month';
-													break;
-												case 'y':
-													filterItem.displayValue +=' Year';
-													break;
-											}
-											filterItem.displayValue += ((filterItem.criteriaNumberOf > 1)?'s':'')+' Ago';
-										}
-									}else{
-										var dateValueString = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
-										filterItem.value = dateValueString;
-										var formattedDateValueString = $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeStart),'MM/dd/yyyy @ h:mma') + '-' + $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeEnd),'MM/dd/yyyy @ h:mma');
-										filterItem.displayValue = formattedDateValueString;
-										if(angular.isDefined(selectedFilterProperty.criteriaNumberOf)){
-											filterItem.criteriaNumberOf = selectedFilterProperty.criteriaNumberOf;
-										}
-									}
+                                    }else if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'exactDate'){
+                                        if(angular.isUndefined(selectedFilterProperty.selectedCriteriaType.dateInfo.measureType)){
+                                            filterItem.value = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
+                                            filterItem.displayValue = $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeStart),'MM/dd/yyyy @ h:mma') + '-' + $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeEnd),'MM/dd/yyyy @ h:mma');
+                                        }else{
+                                            filterItem.measureType = selectedFilterProperty.selectedCriteriaType.dateInfo.measureType;
+                                            filterItem.measureCriteria = selectedFilterProperty.selectedCriteriaType.dateInfo.type;
+                                            filterItem.criteriaNumberOf = "0";
 
 
-								}
+                                            if(angular.isDefined(selectedFilterProperty.criteriaNumberOf)){
+                                                filterItem.criteriaNumberOf = selectedFilterProperty.criteriaNumberOf;
+                                            }
+                                            filterItem.value = filterItem.criteriaNumberOf;
+                                            filterItem.displayValue = filterItem.criteriaNumberOf;
 
-								break;
+                                            switch(filterItem.measureType){
+                                                case 'd':
+                                                    filterItem.displayValue +=' Day';
+                                                    break;
+                                                case 'm':
+                                                    filterItem.displayValue +=' Month';
+                                                    break;
+                                                case 'y':
+                                                    filterItem.displayValue +=' Year';
+                                                    break;
+                                            }
+                                            filterItem.displayValue += ((filterItem.criteriaNumberOf > 1)?'s':'')+' Ago';
+                                        }
+                                    }else{
+                                        var dateValueString = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
+                                        filterItem.value = dateValueString;
+                                        var formattedDateValueString = $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeStart),'MM/dd/yyyy @ h:mma') + '-' + $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeEnd),'MM/dd/yyyy @ h:mma');
+                                        filterItem.displayValue = formattedDateValueString;
+                                        if(angular.isDefined(selectedFilterProperty.criteriaNumberOf)){
+                                            filterItem.criteriaNumberOf = selectedFilterProperty.criteriaNumberOf;
+                                        }
+                                    }
+
+
+                                }
+
+                                break;
                             case 'big_decimal':
                             case 'integer':
                             case 'float':

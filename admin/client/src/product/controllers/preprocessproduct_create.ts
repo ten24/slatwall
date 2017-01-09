@@ -106,7 +106,8 @@ class ProductCreateController{
             } else {
                 this.$scope.preprocessproduct_createCtrl.selectedOption.value = "";
             }
-          
+
+            this.$scope.preprocessproduct_createCtrl.getCollection();
         }
 
 }

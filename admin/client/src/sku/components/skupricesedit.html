@@ -1,0 +1,14 @@
+<sw-sku-price-edit ng-if="swSkuPricesEdit.sku" 
+                data-sku="swSkuPricesEdit.sku"
+                data-base-entity-name="{{swSkuPricesEdit.baseEntityName}}" 
+                data-base-entity-id="{{swSkuPricesEdit.baseEntityId}}"
+></sw-sku-price-edit>
+<div ng-if="swSkuPricesEdit.skuPrices.length > 0" sw-loading="swSkuPricesEdit.loadingPromise">
+    <sw-sku-price-edit 
+                    ng-repeat="skuPrice in swSkuPricesEdit.skuPrices" 
+                    data-eligible-currency-code-list="{{swSkuPricesEdit.eligibleCurrencyCodeList}}"
+                    data-sku-price="skuPrice" 
+                    data-master-price-object="swSkuPricesEdit.masterPriceObject"
+                    data-listing-display-id="{{swSkuPricesEdit.listingDisplayId}}"
+    ></sw-sku-price-edit>
+</div>

@@ -301,7 +301,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		if(!structKeyExists(variables, "sku") && !isNull(getSkuCode())) {
 			variables.sku = getService("skuService").getSkuBySkuCode( getSkuCode() );
 		}
-		
+
+
 		// Then we look for a product & potentiall selected options
 		if(!structKeyExists(variables, "sku") && !isNull(getProduct())) {
 
@@ -342,11 +343,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 				variables.product = sku.getProduct();
 			}
 		}
-
-		// Lastly we can look for a productID
-		if(!structKeyExists(variables, "product") && !isNull(getProductID())) {
-			variables.product = getService("productService").getProduct( getProductID() );
-		}
 		
 		// Now we look for a skuCode
 		if(!structKeyExists(variables, "product") && !isNull(getSkuCode())) {
@@ -355,7 +351,12 @@ component output="false" accessors="true" extends="HibachiProcess" {
 				variables.product = sku.getProduct();
 			}
 		}
-		
+
+		// Lastly we can look for a productID
+		if(!structKeyExists(variables, "product") && !isNull(getProductID())) {
+			variables.product = getService("productService").getProduct( getProductID() );
+		}
+
 		// Only if a sku was setup can we return one
 		if (structKeyExists(variables, "product")) {
 			return variables.product;

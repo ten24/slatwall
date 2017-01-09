@@ -53,7 +53,10 @@
 		/>
 	</span>
 
-	<input type="file" ng-switch-when="file" ng-model="swFormField.object[swFormField.name]"  class="{{swFormField.class}}" name="{{swFormField.name}}"></input>
+	<sw-form-field-file ng-switch-when="file" 
+						data-property-display="swFormField">
+	</sw-form-field-file>
+
 	<textarea ng-switch-when="textarea" class="{{swFormField.class}}"  id="{{swFormField.name}}TextArea" ng-model="swFormField.object[swFormField.name]" name="{{swFormField.name}}"></textarea>
 	<input type="checkbox" ng-switch-when="checkbox" value="{{swFormField.value}}" class="{{swFormField.class}}" name="{{swFormField.name}}"><span></span></input>
 

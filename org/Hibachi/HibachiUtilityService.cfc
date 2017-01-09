@@ -68,6 +68,21 @@
 		        return returnArray;
 		}
 
+		public boolean function isInThread(){
+			//java 8
+			try{
+				var ThreadAPI = createObject("java","java.lang.Thread");
+			//java 7
+			}catch(any e){
+				var ThreadAPI = createObject("java","java.lang.thread");
+			}
+
+
+			var currentThread = ThreadAPI.currentThread();
+
+			return currentThread.getThreadGroup().getName() == "cfthread";
+		}
+
 		// @hint this method will sanitize a struct of data
 		public void function sanitizeData(required any data){
 			for(var key in data){
@@ -169,7 +184,7 @@
 
 		public string function createUniqueColumn(required string titleString, required string tableName, required string columnName) {
 
-			var addon = 1;
+			var addon = 0;
 
 			var urlTitle = createSEOString(arguments.titleString);
 
@@ -187,7 +202,7 @@
 		}
 		
 		public string function createUniqueProperty(required string titleString, required string entityName, required string propertyName){
-			var addon = 1;
+			var addon = 0;
 
 			var urlTitle = createSEOString(arguments.titleString);
 
@@ -413,6 +428,19 @@
 		        newArr[arrayLen(a1)+i] = a2[i];
 		    }
 		    return newArr;
+		}
+		
+		//name value pair string to struct. Separates url string by & ampersand
+		public struct function convertNVPStringToStruct( required string data ) {
+			if(left(arguments.data,1) == '?'){
+				arguments.data = right(arguments.data,len(arguments.data)-1);
+			}
+			var returnStruct = {};
+			var ampArray = listToArray(arguments.data, "&");
+			for(var i=1; i<=arrayLen(ampArray); i++) {
+				returnStruct[ listFirst(ampArray[i], "=") ] = listLast(ampArray[i], "=");
+			}
+			return returnStruct;
 		}
 
 		public string function filterFilename(required string filename) {
@@ -766,6 +794,7 @@
 
 			var passwordsJSON = serializeJSON({'passwords'=arguments.encryptionPasswordArray});
 			fileWrite(getEncryptionPasswordFilePath(), encrypt(passwordsJSON, hardCodedFileEncryptionKey, "AES/CBC/PKCS5Padding"));
+			logHibachi("Encryption key file updated", true);
 		}
 
 		private any function readEncryptionPasswordFile() {

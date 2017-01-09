@@ -139,7 +139,9 @@ component accessors="true" output="false" displayname="USPS" implements="Slatwal
 		
         var requestURL = "";
         
-        if(setting('testingFlag')) {
+        var testingFlag = setting('testingFlag');
+        
+        if(testingFlag) {
         	requestURL = setting("testAPIEndPointURL");
         } else {
         	requestURL = setting("liveAPIEndPointURL");

@@ -2,24 +2,21 @@ component output="false" accessors="true" extends="HibachiTransient" {
 
 	property name="account" type="any";
 	property name="session" type="any";
-	
-	property name="loggedInFlag" type="boolean";
 	property name="loggedInAsAdminFlag" type="boolean";
 	property name="publicPopulateFlag" type="boolean";
 	property name="persistSessionFlag" type="boolean";
 	property name="sessionFoundNPSIDCookieFlag" type="boolean";
 	property name="sessionFoundPSIDCookieFlag" type="boolean";
-	
+	property name="sessionFoundExtendedPSIDCookieFlag" type="boolean";
 	property name="ormHasErrors" type="boolean" default="false";
 	property name="rbLocale";
 	property name="url" type="string";
-	
 	property name="calledActions" type="array";
 	property name="failureActions" type="array";
 	property name="successfulActions" type="array";
-	
 	property name="auditsToCommitStruct" type="struct";
 	property name="modifiedEntities" type="array";
+	property name="hibachiAuthenticationService" type="any";
 	
 	public any function init() {
 		setORMHasErrors( false );
@@ -28,16 +25,25 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		setPersistSessionFlag( true );
 		setSessionFoundNPSIDCookieFlag( false );
 		setSessionFoundPSIDCookieFlag( false );
-		
+		setSessionFoundExtendedPSIDCookieFlag( false );
 		setCalledActions( [] );
 		setSuccessfulActions( [] );
 		setFailureActions( [] );
-		
 		setAuditsToCommitStruct( {} );
 		setModifiedEntities( [] );
 		
-		
 		return super.init();
+	}
+	
+	public any function getHibachiAuthenticationService(){
+		if(!structKeyExists(variables,'hibachiAuthenticationService')){
+			variables.hibachiAuthenticationService = getService('hibachiAuthenticationService');	
+		}
+		return variables.hibachiAuthenticationService;
+	} 
+	
+	public void function setHibachiAuthenticationService(required any hibachiAuthenticationService){
+		variables.hibachiAuthenticationService = arguments.hibachiAuthenticationService;
 	}
 	
 	// @hint facade method to check the application scope for a value
@@ -97,16 +103,26 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		setAuditsToCommitStruct({});
 	}
 	
+	/** This checks if the user is logged in by checking whether or not the user has manually logged out or has timed out.  
+	 *  This method should return as it always has. 
+	 */
 	public boolean function getLoggedInFlag() {
-		if(!getSession().getAccount().getNewFlag()) {
-			return true;
-		}
-		return false;
+		return getSession().getLoggedInFlag();
 	}
 	
+	/**
+	 * Because we are not removing the account from the session, logged in flag needs to
+	 * be checked before checking if they are an admin account.
+	 */
 	public boolean function getLoggedInAsAdminFlag() {
-		if(getAccount().getAdminAccountFlag()) {
+		if(!isNull(getSession()) &&
+			getSession().getLoggedInFlag() && 
+		   !isNull(getSession().getAccount()) && 
+		   !isNull(getSession().getAccount().getAdminAccountFlag()) &&  
+			getSession().getAccount().getAdminAccountFlag()) {
+				
 			return true;
+			
 		}
 		return false;
 	}
@@ -267,22 +283,22 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	}
 	
 	public boolean function authenticateAction( required string action ) {
-		return getService("hibachiAuthenticationService").authenticateActionByAccount( action=arguments.action, account=getAccount() );
+		return getHibachiAuthenticationService().authenticateActionByAccount( action=arguments.action, account=getAccount() );
 	}
 
 	public boolean function authenticateEntity( required string crudType, required string entityName ) {
-		return getService("hibachiAuthenticationService").authenticateEntityCrudByAccount( crudType=arguments.crudType, entityName=arguments.entityName, account=getAccount() );
+		return getHibachiAuthenticationService().authenticateEntityCrudByAccount( crudType=arguments.crudType, entityName=arguments.entityName, account=getAccount() );
 	}
 	
 	public boolean function authenticateEntityProperty( required string crudType, required string entityName, required string propertyName ) {
-		return getService("hibachiAuthenticationService").authenticateEntityPropertyCrudByAccount( crudType=arguments.crudType, entityName=arguments.entityName, propertyName=arguments.propertyName, account=getAccount() );
+		return getHibachiAuthenticationService().authenticateEntityPropertyCrudByAccount( crudType=arguments.crudType, entityName=arguments.entityName, propertyName=arguments.propertyName, account=getAccount() );
 	}
 	
 	public boolean function authenticateCollection(required string crudType, required any collection){
-		return getService("hibachiAuthenticationService").authenticateCollectionCrudByAccount( crudType=arguments.crudType, collection=arguments.collection, account=getAccount() );
+		return getHibachiAuthenticationService().authenticateCollectionCrudByAccount( crudType=arguments.crudType, collection=arguments.collection, account=getAccount() );
 	}
 	
 	public boolean function authenticateCollectionPropertyIdentifier(required string crudType, required any collection, required string propertyIdentifier){
-		return getService("hibachiAuthenticationService").authenticateCollectionPropertyIdentifierCrudByAccount( crudType=arguments.crudType, collection=arguments.collection, propertyIdentifier=arguments.propertyIdentifier, account=getAccount() );
+		return getHibachiAuthenticationService().authenticateCollectionPropertyIdentifierCrudByAccount( crudType=arguments.crudType, collection=arguments.collection, propertyIdentifier=arguments.propertyIdentifier, account=getAccount() );
 	}
 }

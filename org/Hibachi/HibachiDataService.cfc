@@ -6,6 +6,34 @@ component accessors="true" output="false" extends="HibachiService" {
 		return getHibachiDAO().isUniqueProperty(argumentcollection=arguments);
 	}
 
+	public any function loadQueryFromCSVFileWithColumnTypeList(required string pathToCSV, required string ColumnTypeList, boolean useHeaderRow=true, string columnList){
+		var csvFile = FileOpen(ExpandPath(pathToCSV));
+		var i = 1;
+		while(!FileisEOF(csvFile)){ 
+			var line = FileReadLine(csvFile);
+			if(i == 1){
+				if(arguments.useHeaderRow){
+					arguments.columnsList  = REReplaceNoCase(line, "[^a-zA-Z\d,]", "", "all");
+				}
+				var csvQuery = QueryNew(arguments.columnsList, arguments.listColumnTypes);
+				var numberOfColumns = listlen(line, ',', true); 
+			}
+			if(i > 1 && numberOfColumns == listLen(line, ',', true)){
+				var row = listToArray(line, ",", true);
+				for(var i = 1; i <= ArrayLen(row); i++){
+					if(len(row[i]) == 0){
+						row[i] = javaCast('null',''); 
+					} 
+				}
+				QueryAddRow(csvQuery, row);
+			} else { 
+				this.logHibachi('HibachiDataDAO could not convert row: ' & i & ' in CSV: ' & pathToCSV);	
+			} 
+			i++; 
+		}
+		return csvQuery; 
+	}	
+
 	public boolean function loadDataFromXMLDirectory(required string xmlDirectory, boolean ignorePreviouslyInserted=true) {
 		var dirList = directoryList(arguments.xmlDirectory);
 

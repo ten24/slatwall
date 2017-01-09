@@ -49,6 +49,25 @@ Notes:
 <cfcomponent accessors="true" extends="HibachiDAO">
 	
 	<cfscript>
+        public any function getChildrenProductTypeIDs(required any productType){
+            return ormExecuteQuery(
+                'Select productTypeID from #getApplicationKey()#ProductType
+                 where productTypeNamePath<>:productTypeNamePath
+                 and productTypeNamePath like :productTypeNamePathLike',
+                 {
+                    productTypeNamePath=productType.getProductTypeNamePath(),
+                    productTypeNamePathLike=productType.getProductTypeNamePath() & '%'
+                 }
+            );
+        }
+
+		public void function updateChildrenProductTypeNamePaths(required array productTypeIDs, required string previousProductTypeNamePath, required string newProductTypeNamePath ){
+			var queryService = new query();
+			arguments.contentIDs = listQualify(arguments.productTypeIDs,"'",",");
+			var sql = "UPDATE SwProductType pt SET productTypeNamePath=REPLACE(pt.productTypeNamePath,'#arguments.previousProductTypeNamePath#','#arguments.newProductTypeNamePath#') Where s.productTypeIDs IN (#arguments.productTypeIDs#) ";
+			queryService.execute(sql=sql);
+		}
+		
 		public void function setSkusAsInactiveByProduct(required any product){
 			setSkusAsInactiveByProductID(arguments.product.getProductID());
 		}
@@ -465,6 +484,12 @@ Notes:
 			WHERE productTypeID = <cfqueryparam value="#arguments.fromProductTypeID#" cfsqltype="cf_sql_varchar" >
 		</cfquery>
 	</cffunction>
-	
+
+	<cffunction name="getFirstScheduledSku" hint="Return the event sku with the earliest startDateTime">
+		<cfargument name="productScheduleID" type="string" required ="true">
+		
+		<cfreturn ormExecuteQuery("FROM #getApplicationKey()#Sku s WHERE s.productSchedule.productScheduleID = :productScheduleID ORDER BY s.eventStartDateTime ASC", {productScheduleID=arguments.productScheduleID},false, {maxresults=1})[1] />
+	</cffunction>
+		
 </cfcomponent>
 

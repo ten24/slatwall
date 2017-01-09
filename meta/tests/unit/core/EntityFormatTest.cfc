@@ -471,7 +471,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	//This function checks if a persistant property (not cfc) uses type instead of ormtype to define the datatype
-	public void function check_persistant_nonCFC_properties_that_use_type() {
+	public void function check_persistant_nonCFC_properties_that_use_type_instead_of_ormtype() {
 		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
 		
 		var criminalsMessage = "";

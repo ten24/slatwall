@@ -77,6 +77,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 	// Calculated Properties
 	property name="calculatedQATS" ormtype="integer";
+	property name="calculatedQOH" ormtype="integer";
 	property name="calculatedSkuDefinition" ormtype="string";
 
 	// Related Object Properties (many-to-one)
@@ -91,6 +92,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="alternateSkuCodes" singularname="alternateSkuCode" fieldtype="one-to-many" fkcolumn="skuID" cfc="AlternateSkuCode" inverse="true" cascade="all-delete-orphan";
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
 	property name="orderItems" singularname="orderItem" fieldtype="one-to-many" fkcolumn="skuID" cfc="OrderItem" inverse="true" lazy="extra";
+	property name="skuPrices" singularname="skuPrice" fieldtype="one-to-many" fkcolumn="skuID" cfc="SkuPrice" cascade="all-delete-orphan" lazy="extra";
 	property name="skuCurrencies" singularname="skuCurrency" cfc="SkuCurrency" type="array" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
 	property name="stocks" singularname="stock" fieldtype="one-to-many" fkcolumn="skuID" cfc="Stock" inverse="true" hb_cascadeCalculate="true" cascade="all-delete-orphan";
 	property name="bundledSkus" singularname="bundledSku" fieldtype="one-to-many" fkcolumn="skuID" cfc="SkuBundle" inverse="true" cascade="all-delete-orphan";
@@ -136,12 +138,15 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="baseProductType" persistent="false";
 	property name="currentAccountPrice" type="numeric" hb_formatType="currency" persistent="false";
 	property name="currencyDetails" type="struct" persistent="false";
+	property name="eligibleCurrencyCodeList" type="string" persistent="false";
 	property name="defaultFlag" type="boolean" persistent="false";
 	property name="eligibleFulfillmentMethods" type="array" persistent="false";
 	property name="eventConflictsSmartList" persistent="false";
 	property name="eventConflictExistsFlag" type="boolean" persistent="false";
 	property name="eventOverbookedFlag" type="boolean" persistent="false";
 	property name="imageExistsFlag" type="boolean" persistent="false";
+	property name="imageFileName" type="string" persistent="false";
+	property name="imagePath" type="string" persistent="false";
 	property name="livePrice" type="numeric" hb_formatType="currency" persistent="false";
 	property name="locations" type="array" persistent="false";
 	property name="nextEstimatedAvailableDate" type="string" persistent="false";
@@ -150,8 +155,10 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="optionsIDList" persistent="false";
 	property name="placedOrderItemsSmartList" type="any" persistent="false";
 	property name="productScheduleSmartList" type="any" persistent="false";
+	property name="bundledSkusCount" type="any" persistent="false";
 	property name="eventStatus" type="any" persistent="false";
 	property name="qats" type="numeric" persistent="false";
+	property name="qoh" type="numeric" persistent="false";
 	property name="registeredUserCount" type="integer" persistent="false";
 	property name="registrantCount" type="integer" persistent="false";
 	property name="registrantEmailList" type="array" persistent="false";
@@ -162,6 +169,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="salePriceDiscountAmount" type="string" persistent="false";
 	property name="salePriceExpirationDateTime" type="date" hb_formatType="datetime" persistent="false";
 	property name="skuDefinition" persistent="false";
+	property name="skuPricesCount" persistent="false";
 	property name="stocksDeletableFlag" persistent="false" type="boolean";
 	property name="transactionExistsFlag" persistent="false" type="boolean";
 	property name="redemptionAmountTypeOptions" persistent="false";
@@ -312,6 +320,10 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return name & ext;
 	}
 
+	public string function getImageFileName() {
+		return generateImageFileName();
+	}
+
     public string function getImageExtension() {
 		return listLast(getImageFile(), ".");
 	}
@@ -403,14 +415,13 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// END: Image Methods
 
 	public boolean function getEventConflictExistsFlag() {
-		if(this.setting('skuEventEnforceConflicts')){
+		if( this.setting('skuEventEnforceConflicts') && !this.getBundleFlag()){
 			var eventConflictsSmartList = getService("skuService").getEventConflictsSmartList(sku=this);
-		
+			
 			if(eventConflictsSmartList.getRecordsCount() GT 0) {
 				return true;
 			}
 		}
-		
 		return false;
 	}
 
@@ -463,24 +474,35 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return getService("priceGroupService").getRateForSkuBasedOnPriceGroup(sku=this, priceGroup=arguments.priceGroup);
 	}
 
-	public any function getPriceByCurrencyCode( required string currencyCode ) {
-	    	if(structKeyExists(getCurrencyDetails(), arguments.currencyCode)) {
-	    		return getCurrencyDetails()[ arguments.currencyCode ].price;
-	    	}
+	public any function getPriceByCurrencyCode( required string currencyCode, numeric quantity ) {
+		if(structKeyExists(arguments, "quantity")){
+			skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(this.getSkuID(), currencyCode, quantity);
+			if(!isNull(skuPriceResults) && isArray(skuPriceResults) && arrayLen(skuPriceResults) > 0){
+				var prices = [];
+				for(var i=1; i <= arrayLen(skuPriceResults); i++){
+					ArrayAppend(prices, skuPriceResults[i].getPrice());
+				}
+				ArraySort(prices, "numeric","asc");
+				return prices[1];
+			} else if (!isNull(skuPriceResults) && !isNull(skuPriceResults.getPrice())){
+				return skuPriceResults.getPrice();
+			}
+		}
+    	if(structKeyExists(getCurrencyDetails(), arguments.currencyCode)) {
+    		return getCurrencyDetails()[ arguments.currencyCode ].price;
+    	}
     }
 
     public any function getListPriceByCurrencyCode( required string currencyCode ) {
-	    	if(structKeyExists(getCurrencyDetails(), arguments.currencyCode) && structKeyExists(getCurrencyDetails()[ arguments.currencyCode ], "listPrice")) {
-	    		return getCurrencyDetails()[ arguments.currencyCode ].listPrice;
-	    	}
+    	if(structKeyExists(getCurrencyDetails(), arguments.currencyCode) && structKeyExists(getCurrencyDetails()[ arguments.currencyCode ], "listPrice")) {
+    		return getCurrencyDetails()[ arguments.currencyCode ].listPrice;
+    	}
     }
 
     public any function getRenewalPriceByCurrencyCode( required string currencyCode ) {
-
     	if(structKeyExists(getCurrencyDetails(), arguments.currencyCode) && structKeyExists(getCurrencyDetails()[ arguments.currencyCode ], "renewalPrice")) {
     		return getCurrencyDetails()[ arguments.currencyCode ].renewalPrice;
     	}
-
     }
 
 	// END: Price / Currency Methods
@@ -650,6 +672,17 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return variables.currencyCode;
 	}
 
+	public string function getEligibleCurrencyCodeList(){
+		if(!structKeyExists(variables, "eligibleCurrencyCodeList")) {
+			variables.currencyCodeList = "";
+
+			for(var key in this.getCurrencyDetails()){
+				variables.currencyCodeList = listAppend(variables.currencyCodeList, key);
+			}
+		}
+		return variables.currencyCodeList;
+	}
+
 	public struct function getCurrencyDetails() {
 		if(!structKeyExists(variables, "currencyDetails")) {
 			variables.currencyDetails = {};
@@ -682,21 +715,21 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 						variables.currencyDetails[ thisCurrency.getCurrencyCode() ].converted = false;
 					}
 					// Look through the definitions to see if this currency is defined for this sku
-					for(var c=1; c<=arrayLen(getSkuCurrencies()); c++) {
-						if(getSkuCurrencies()[c].getCurrencyCode() eq thisCurrency.getCurrencyCode()) {
-							if(!isNull(getSkuCurrencies()[c].getRenewalPrice())) {
-								variables.currencyDetails[ thisCurrency.getCurrencyCode() ].renewalPrice = getSkuCurrencies()[c].getRenewalPrice();
-								variables.currencyDetails[ thisCurrency.getCurrencyCode() ].renewalPriceFormatted = getSkuCurrencies()[c].getFormattedValue("renewalPrice");
-							}
-							if(!isNull(getSkuCurrencies()[c].getListPrice())) {
-								variables.currencyDetails[ thisCurrency.getCurrencyCode() ].listPrice = getSkuCurrencies()[c].getListPrice();
-								variables.currencyDetails[ thisCurrency.getCurrencyCode() ].listPriceFormatted = getSkuCurrencies()[c].getFormattedValue("listPrice");
-							}
-							variables.currencyDetails[ thisCurrency.getCurrencyCode() ].price = getSkuCurrencies()[c].getPrice();
-							variables.currencyDetails[ thisCurrency.getCurrencyCode() ].priceFormatted = getSkuCurrencies()[c].getFormattedValue("price");
-							variables.currencyDetails[ thisCurrency.getCurrencyCode() ].converted = false;
-							variables.currencyDetails[ thisCurrency.getCurrencyCode() ].skuCurrencyID = getSkuCurrencies()[c].getSkuCurrencyID();
+					var baseSkuPriceForCurrencyCode = getDAO("SkuPriceDAO").getBaseSkuPriceForSkuByCurrencyCode(this.getSkuID(), thisCurrency.getCurrencyCode());
+					if(!isNull(baseSkuPriceForCurrencyCode)){
+						if(!isNull(baseSkuPriceForCurrencyCode.getRenewalPrice())) {
+							variables.currencyDetails[ thisCurrency.getCurrencyCode() ].renewalPrice = baseSkuPriceForCurrencyCode.getRenewalPrice();
+							variables.currencyDetails[ thisCurrency.getCurrencyCode() ].renewalPriceFormatted = baseSkuPriceForCurrencyCode.getFormattedValue("renewalPrice");
 						}
+						if(!isNull(baseSkuPriceForCurrencyCode.getListPrice())) {
+							variables.currencyDetails[ thisCurrency.getCurrencyCode() ].listPrice = baseSkuPriceForCurrencyCode.getListPrice();
+							variables.currencyDetails[ thisCurrency.getCurrencyCode() ].listPriceFormatted = baseSkuPriceForCurrencyCode.getFormattedValue("listPrice");
+						}
+						variables.currencyDetails[ thisCurrency.getCurrencyCode() ].price = baseSkuPriceForCurrencyCode.getPrice();
+						variables.currencyDetails[ thisCurrency.getCurrencyCode() ].priceFormatted = baseSkuPriceForCurrencyCode.getFormattedValue("price");
+						variables.currencyDetails[ thisCurrency.getCurrencyCode() ].converted = true;
+						variables.currencyDetails[ thisCurrency.getCurrencyCode() ].skuPriceID = baseSkuPriceForCurrencyCode.getSkuPriceID();
+
 					}
 					// Use a conversion mechinism
 					if(!structKeyExists(variables.currencyDetails[ thisCurrency.getCurrencyCode() ], "price")) {
@@ -755,6 +788,16 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return variables.eligibleFulfillmentMethods;
 	}
 
+	public any function getBundledSkusCount() {
+		if(!structKeyExists(variables, "bundledSkusCount")){
+			variables.bundledSkusCount = 0;
+			if(arrayLen(this.getBundledSkus())){
+				variables.bundledSkusCount = arrayLen(this.getBundledSkus());
+			}
+		}
+		return variables.bundledSkusCount;
+	}
+
 	// @hint Returns count of registered or waitlisted users associated with this sku
 	public any function getRegistrantCount() {
 		if(!structKeyExists(variables, "registrantCount")) {
@@ -781,6 +824,16 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			variables.registeredUserCount = ruCount;
 		}
 		return variables.registeredUserCount;
+	}
+
+	public any function getSkuPricesCount() {
+		if(!structKeyExists(variables, "skuPricesCount")){
+			variables.skuPricesCount = 0;
+			if(arrayLen(this.getSkuPrices())){
+				variables.skuPricesCount = arrayLen(this.getSkuPrices());
+			}
+		}
+		return variables.skuPricesCount;
 	}
 
 
@@ -975,6 +1028,10 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return getQuantity("QATS");
 	}
 
+	public any function getQOH() {
+		return getQuantity("QOH");
+	}
+
 	/**
 	* @Suppress
 	*/
@@ -1001,7 +1058,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return getPrice();
 	}
 
-	public any function getSalePriceByCurrencyCode(required string currencyCode) {
+	public any function getSalePriceByCurrencyCode(required string currencyCode, numeric quantity) {
 		if(structKeyExists(getSalePriceDetailsByCurrencyCode(arguments.currencyCode), "salePrice")) {
 			return getSalePriceDetailsByCurrencyCode(arguments.currencyCode)[ "salePrice"];
 		}
@@ -1028,14 +1085,14 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		}
 		return variables.stocksDeletableFlag;
 	}
-	
+
 	public string function getSkuDefinitionByBaseProductType(string baseProductType){
 		
 		var skuDefinition = "";
-		
 		if(isNull(arguments.baseProductType)){
 			arguments.baseProductType = "";
 		}
+		
 		switch (arguments.baseProductType)
 		{
 			case "merchandise":
@@ -1058,7 +1115,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 						skuDefinition = skuDefinition & ', ';
 					}
 				}
-				
 				break;
 
 			default:

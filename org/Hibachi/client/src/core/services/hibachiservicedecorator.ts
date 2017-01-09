@@ -59,6 +59,7 @@ class HibachiServiceDecorator{
                             entityInstance.processObject = processObjectInstance;
                         }else{
                             if(entityInstance.populate){
+
                                 entityInstance.populate(response);
 
                             }else{
@@ -238,19 +239,19 @@ class HibachiServiceDecorator{
                 angular.forEach(relatedAttributes,function(attributeSet){
                     angular.forEach(attributeSet.attributes,function(attribute){
                         if(attribute && attribute.attributeCode){
-                            Object.defineProperty(_jsEntities[ entity.className ].prototype, attribute.attributeCode, {
-                                configurable:true,
-                                enumerable:false,
-                                get: function() {
-                                    if(this.data[attribute.attributeCode] == null){
-                                        return undefined;
-                                    }
-                                    return this.data[attribute.attributeCode];
-                                },
-                                set: function(value) {
-                                    this.data[attribute.attributeCode]=value;
+                        Object.defineProperty(_jsEntities[ entity.className ].prototype, attribute.attributeCode, {
+                            configurable:true,
+                            enumerable:false,
+                            get: function() {
+                                if(attribute != null && this.data[attribute.attributeCode] == null){
+                                    return undefined;
                                 }
-                            });
+                                return this.data[attribute.attributeCode];
+                            },
+                            set: function(value) {
+                                this.data[attribute.attributeCode]=value;
+                            }
+                        });
                         }
                     });
                 });
@@ -805,7 +806,7 @@ class HibachiServiceDecorator{
                     if(modifiedData.valid){
                         var params:any = {};
 
-                        params.serializedJsonData = angular.toJson(modifiedData.value);
+                        params.serializedJsonData = utilityService.toJson(modifiedData.value);
                         //if we have a process object then the context is different from the standard save
                         var entityName = '';
                         var context = 'save';

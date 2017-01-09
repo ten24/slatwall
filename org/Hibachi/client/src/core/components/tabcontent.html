@@ -1,0 +1,8 @@
+<div role="tabpanel" 
+     class="tab-pane" 
+     ng-class="{'active':tab.active}" 
+     id="j-basic" 
+     ng-show="swTabContent.active" 
+     ng-if="swTabContent.loaded && !swTabContent.hide">
+    <ng-transclude></ng-transclude>
+</div> 

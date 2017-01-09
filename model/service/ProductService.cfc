@@ -1044,7 +1044,30 @@ component extends="HibachiService" accessors="true" {
 				data.urlTitle = getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.product.getProductName(), tableName="SwProduct");
 			}
 		}
-
+		if(structKeyExists(arguments.data, "assignedContentIDList")){
+			//purge existing listing pages not in the selection
+			var originalListingPages = arguments.product.getListingPages();	
+			var listingPagesToDelete = []; 
+			for(var page in originalListingPages){
+				if(!ListContains(arguments.data["assignedContentIDList"], page.getContent().getContentID())){
+					arrayAppend(listingPagesToDelete, page); 
+				} else {
+					var indexOfContentID = listFind(arguments.data["assignedContentIDList"], page.getContent().getContentID());
+					arguments.data["assignedContentIDList"] = ListDeleteAt(arguments.data["assignedContentIDList"], indexOfContentID);	
+				}
+			}
+			for(var page in listingPagesToDelete){
+				this.deleteProductListingPage(page); 
+			} 
+			//add new listing pages
+			for(var contentID in ListToArray(arguments.data["assignedContentIDList"])){
+				var content = this.getContentService().getContent(contentID);
+				var newProductListingPage = this.newProductListingPage();
+				newProductListingPage.setContent(content);
+				newProductListingPage.setProduct(arguments.product);
+				newProductListingPage = this.saveProductListingPage(newProductListingPage);
+			}
+		}
 		arguments.product = super.save(arguments.product, arguments.data);
 		// Set default sku if no default sku was set
 		if(isNull(arguments.product.getDefaultSku()) && arrayLen(arguments.product.getSkus())){
@@ -1075,12 +1098,17 @@ component extends="HibachiService" accessors="true" {
 				data.urlTitle = getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.productType.getProductTypeName(), tableName="SwProductType");
 			}
 		}
+        
+        //Do this premptively when new so the product name path will calculate
+        if(arguments.productType.getNewFlag() && structKeyExists(data, "parentProductType") && structKeyExists(data.parentProductType,"productTypeID")){
+            arguments.productType.setParentProductType(this.getProductType(data.parentProductType.productTypeID));
+        }
 
 		arguments.productType = super.save(arguments.productType, arguments.data);
 
 		// if this type has a parent, inherit all products that were assigned to that parent
 		if(!arguments.productType.hasErrors() && !isNull(arguments.productType.getParentProductType()) and arrayLen(arguments.productType.getParentProductType().getProducts())) {
-			ormFlush();
+			getProductDAO.flushOrmSession();
 			getProductDAO().updateProductProductType( arguments.productType.getParentProductType().getProductTypeID(), arguments.productType.getProductTypeID() );
 		}
 
@@ -1118,6 +1146,13 @@ component extends="HibachiService" accessors="true" {
 
 		return delete( arguments.product );
 	}
+
+	public boolean function deleteProductListingPage(required any productListingPage){ 
+		
+		arguments.productListingPage.removeContent(); 
+		arguments.productListingPage.removeProduct(); 
+		return delete( arguments.productListingPage ); 
+	}	
 
 	// ======================  END: Delete Overrides ==========================
 

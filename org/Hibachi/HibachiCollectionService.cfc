@@ -308,6 +308,7 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	//even though void return type it still makes changes to the collectionConfigStuct
 	private void function addColumnsToCollectionConfigStructByPropertyIdentifierList(required any collectionEntity, required string propertyIdentifierList, boolean enforceAuthorization=true){
+		arguments.collectionEntity.setEnforceAuthorization(arguments.enforceAuthorization);
 		var collectionConfigStruct = arguments.collectionEntity.getCollectionConfigStruct();
 		if(structKeyExists(collectionConfigStruct,'columns')){
 			var columnsArray = collectionConfigStruct.columns;
@@ -318,7 +319,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		var propertyIdentifiersArray = ListToArray(arguments.propertyIdentifierList);
 		for(propertyIdentifierItem in propertyIdentifiersArray){
 			if(
-				!arguments.enforceAuthorization || getHibachiScope().authenticateCollectionPropertyIdentifier('read', this, propertyIdentifierItem)
+				!arguments.collectionEntity.getEnforceAuthorization() || getHibachiScope().authenticateCollectionPropertyIdentifier('read', this, propertyIdentifierItem)
 			){
 				columnStruct = {
 					propertyIdentifier = "#propertyIdentifierItem#"
@@ -369,43 +370,43 @@ component output="false" accessors="true" extends="HibachiService" {
 		return columnsAndJoinsStruct;
 	}
 
-	public any function getTransientCollectionConfigStructByURLParams(required any rc){
+	public any function getTransientCollectionConfigStructByURLParams(required any data){
 		//propertyIdentifers
 		collectionConfigStruct = {};
 		collectionConfigStruct = {
-			baseEntityName = '#getDao('HibachiDao').getApplicationKey()##arguments.rc.entityName#',
-			baseEntityAlias = '_' & lcase(rc.entityName)
+			baseEntityName = '#getDao('HibachiDao').getApplicationKey()##arguments.data.entityName#',
+			baseEntityAlias = '_' & lcase(arguments.data.entityName)
 		};
 
-		if(!isnull(arguments.rc.filterConfig)){
-			collectionConfigStruct.filterGroups = deserializeJson(arguments.rc.filterConfig);
+		if(!isnull(arguments.data.filterConfig)){
+			collectionConfigStruct.filterGroups = deserializeJson(arguments.data.filterConfig);
 		}
 
-		if(!isNull(arguments.rc.joinsConfig)){
-			collectionConfigStruct.joins = deserializeJson(arguments.rc.joinsConfig);
+		if(!isNull(arguments.data.joinsConfig)){
+			collectionConfigStruct.joins = deserializeJson(arguments.data.joinsConfig);
 		}
 
-		if(!isNull(arguments.rc.orderByConfig)){
-			collectionConfigStruct.orderBy = deserializeJson(arguments.rc.orderByConfig);
+		if(!isNull(arguments.data.orderByConfig)){
+			collectionConfigStruct.orderBy = deserializeJson(arguments.data.orderByConfig);
 		}
 
-		if(!isNull(arguments.rc.columnsConfig)){
-			collectionConfigStruct.columns = deserializeJson(arguments.rc.columnsConfig);
+		if(!isNull(arguments.data.columnsConfig)){
+			collectionConfigStruct.columns = deserializeJson(arguments.data.columnsConfig);
 		}
 
 
 		//adds to columns section if preceeded by a period then add to joins section, check for parenthesis for aggregates
 		//&propertyIdentifiers=propertyIdentifier,join.propertyIdentifier,aggregate|join.propertyIdentifier
-		/*if(!isNull(arguments.rc.propertyIdentifiers)){
-			var columnsAndJoinsStruct = getColumnsAndJoinsStructByUrlPropertyIdentifiersList(arguments.rc.propertyIdentifiers);
+		/*if(!isNull(arguments.data.propertyIdentifiers)){
+			var columnsAndJoinsStruct = getColumnsAndJoinsStructByUrlPropertyIdentifiersList(arguments.data.propertyIdentifiers);
 			collectionConfigStruct.columns = columnsAndJoinsStruct.columns;
 			collectionConfigStruct.joins = columnsAndJoinsStruct.joins;
 		}*/
 
 		//this should handle sorting
 		//&orderBy=propertyIdentifier|direction
-		/*if(!isNull(arguments.rc.orderBy)){
-			collectionConfig.orderBy = getOrderByArrayByURLParams(arguments.rc.orderBy);
+		/*if(!isNull(arguments.data.orderBy)){
+			collectionConfig.orderBy = getOrderByArrayByURLParams(arguments.data.orderBy);
 		}*/
 
 		//this should be how we handle filterGroups
@@ -431,17 +432,232 @@ component output="false" accessors="true" extends="HibachiService" {
 		*/
 
 
-		/*if(!isNull(arguments.rc.filterGroups)){
-			collectionConfig.filterGroups = getFilterGroupsArray(arguments.rc.filterGroups);
+		/*if(!isNull(arguments.data.filterGroups)){
+			collectionConfig.filterGroups = getFilterGroupsArray(arguments.data.filterGroups);
 		}*/
 
 		return collectionConfigStruct;
 	}
+	
+	/** 
+		Examples of each type of filter: 
+		?p:show=50
+		?p:current=1
+		?r:calculatedsaleprice=20^50
+		?r:calculatedSalePrice=^50
+		?f:accountName:eq=someName  - adds the filter.
+		?fr:accountName:eq=someName - removes the filter
+		?orderby=someKey|direction
+		?orderBy=someKey|direction,someOtherKey|direction ...
+		
+		Using coldfusion operator versions - gt,lt,gte,lte,eq,neq,like
+	
+	*/
+	public string function buildURL(required string queryAddition, boolean appendValues=true, boolean toggleKeys=true, string currentURL="") {
+		// Generate full URL if one wasn't passed in
+		if(!len(arguments.currentURL)) {
+			if(len(cgi.query_string)) {
+				arguments.currentURL &= "?" & CGI.QUERY_STRING;	
+			}
+		}
 
-	public any function getAPIResponseForEntityName(required string entityName, required struct collectionOptions, boolean enforceAuthorization=true){
+		var modifiedURL = "?";
+		variables.dataKeyDelimiter = ":";
+		variables.valuedelimiter = ",";
+		// Turn the old query string into a struct
+		var oldQueryKeys = {};
+		
+		if(findNoCase("?", arguments.currentURL)) {
+			var oldQueryString = right(arguments.currentURL, len(arguments.currentURL) - findNoCase("?", arguments.currentURL));
+			for(var i=1; i<=listLen(oldQueryString, "&"); i++) {
+				var keyValuePair = listGetAt(oldQueryString, i, "&");
+				oldQueryKeys[listFirst(keyValuePair,"=")] = listLast(keyValuePair,"=");
+			}
+		}
+		
+		// Turn the added query string to a struct
+		var newQueryKeys = {};
+		for(var i=1; i<=listLen(arguments.queryAddition, "&"); i++) {
+			var keyValuePair = listGetAt(arguments.queryAddition, i, "&");
+			newQueryKeys[listFirst(keyValuePair,"=")] = listLast(keyValuePair,"=");
+		}
+		
+		
+		// Get all keys and values from the old query string added
+		for(var key in oldQueryKeys) {
+			if(key != "P#variables.dataKeyDelimiter#Current" && key != "P#variables.dataKeyDelimiter#Start" && key != "P#variables.dataKeyDelimiter#Show") {
+				if(!structKeyExists(newQueryKeys, key)) {
+					modifiedURL &= "#key#=#oldQueryKeys[key]#&";
+				} else {
+					if(arguments.toggleKeys && structKeyExists(oldQueryKeys, key) && structKeyExists(newQueryKeys, key) && oldQueryKeys[key] == newQueryKeys[key]) {
+						structDelete(newQueryKeys, key);
+					} else if(arguments.appendValues) {
+						for(var i=1; i<=listLen(newQueryKeys[key], variables.valueDelimiter); i++) {
+							var thisVal = listGetAt(newQueryKeys[key], i, variables.valueDelimiter);
+							var findCount = listFindNoCase(oldQueryKeys[key], thisVal, variables.valueDelimiter);
+							if(findCount) {
+								newQueryKeys[key] = listDeleteAt(newQueryKeys[key], i, variables.valueDelimiter);
+								if(arguments.toggleKeys) {
+									oldQueryKeys[key] = listDeleteAt(oldQueryKeys[key], findCount);
+								}
+							}
+						}
+						if(len(oldQueryKeys[key]) && len(newQueryKeys[key])) {
+								modifiedURL &= "#key#=#oldQueryKeys[key]##variables.valueDelimiter##newQueryKeys[key]#&";
+						} else if(len(oldQueryKeys[key])) {
+							modifiedURL &= "#key#=#oldQueryKeys[key]#&";
+						}
+						structDelete(newQueryKeys, key);
+					}
+				}
+			}
+		}
+		
+		// Get all keys and values from the additional query string added 
+		for(var key in newQueryKeys) {
+			if(key != "P#variables.dataKeyDelimiter#Current" && key != "P#variables.dataKeyDelimiter#Start" && key != "P#variables.dataKeyDelimiter#Show") {
+				modifiedURL &= "#key#=#newQueryKeys[key]#&";
+			}
+		}
+		
+		if(!structKeyExists(newQueryKeys, "P#variables.dataKeyDelimiter#Show")) {
+			// Add the correct page start
+			if( structKeyExists(newQueryKeys, "P#variables.dataKeyDelimiter#Start") ) {
+				modifiedURL &= "P#variables.dataKeyDelimiter#Start=#newQueryKeys[ 'P#variables.dataKeyDelimiter#Start' ]#&";
+			} else if( structKeyExists(newQueryKeys, "P#variables.dataKeyDelimiter#Current") ) {
+				modifiedURL &= "P#variables.dataKeyDelimiter#Current=#newQueryKeys[ 'P#variables.dataKeyDelimiter#Current' ]#&";
+			}
+		}
+		
+		// Add the correct page show
+		if( structKeyExists(newQueryKeys, "P#variables.dataKeyDelimiter#Show") ) {
+			modifiedURL &= "P#variables.dataKeyDelimiter#Show=#newQueryKeys[ 'P#variables.dataKeyDelimiter#Show' ]#&";
+		} else if( structKeyExists(oldQueryKeys, "P#variables.dataKeyDelimiter#Show") ) {
+			modifiedURL &= "P#variables.dataKeyDelimiter#Show=#oldQueryKeys[ 'P#variables.dataKeyDelimiter#Show' ]#&";
+		}
+		
+		if(right(modifiedURL, 1) eq "&") {
+			modifiedURL = left(modifiedURL, len(modifiedURL)-1);
+		} else if (right(modifiedURL, 1) eq "?") {
+			modifiedURL = "?c=1";
+		}
+		
+		return modifiedURL;
+	}
+	
+	
+	
+	public any function applyData(required any collection){
+		arguments.collection.applyData();
+	}
 
-		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName,arguments.collectionOptions);
+	public any function getCollectionOptionsFromData(required struct data){
+		//get entity service by entity name
+		var currentPage = 1;
+		if(structKeyExists(arguments.data,'P:Current')){
+			currentPage = arguments.data['P:Current'];
+		}else if(structKeyExists(arguments.data, 'currentPage')){
+			currentPage = arguments.data['currentPage'];
+		}
+		var pageShow = 10;
+		if(structKeyExists(arguments.data,'P:Show')){
+			pageShow = arguments.data['P:Show'];
+		} else if(structKeyExists(arguments.data, 'pageShow')){
+			pageShow = arguments.data['pageShow'];
+		}
+
+		var keywords = "";
+		if(structKeyExists(arguments.data,'keywords')){
+			keywords = arguments.data['keywords'];
+		}
+		var filterGroupsConfig = "";
+		if(structKeyExists(arguments.data,'filterGroupsConfig')){
+			filterGroupsConfig = arguments.data['filterGroupsConfig'];
+		}
+		var joinsConfig = "";
+		if(structKeyExists(arguments.data,'joinsConfig')){
+			joinsConfig = arguments.data['joinsConfig'];
+		}
+
+		var orderByConfig = "";
+		if(structKeyExists(arguments.data,'orderByConfig')){
+			orderByConfig = arguments.data['orderByConfig'];
+		}
+
+		var groupBysConfig = "";
+		if(structKeyExists(arguments.data,'groupBysConfig')){
+			groupBysConfig = arguments.data['groupBysConfig'];
+		}
+
+		var propertyIdentifiersList = "";
+		if(structKeyExists(arguments.data,"propertyIdentifiersList")){
+			propertyIdentifiersList = arguments.data['propertyIdentifiersList'];
+		}
+
+		var columnsConfig = "";
+		if(structKeyExists(arguments.data,'columnsConfig')){
+			columnsConfig = arguments.data['columnsConfig'];
+		}
+
+		var isDistinct = false;
+		if(structKeyExists(arguments.data, "isDistinct")){
+			isDistinct = arguments.data['isDistinct'];
+		}
+
+		var allRecords = false;
+		if(structKeyExists(arguments.data,'allRecords')){
+			allRecords = arguments.data['allRecords'];
+		}
+
+		var dirtyRead = false; 
+		if(structKeyExists(arguments.data, 'dirtyRead')){
+			dirtyRead = true;
+		} 
+
+		var defaultColumns = false;
+		if(structKeyExists(arguments.data,'defaultColumns')){
+			defaultColumns = arguments.data['defaultColumns'];
+		}
+
+		var processContext = '';
+		if(structKeyExists(arguments.data,'processContext')){
+			processContext = arguments.data['processContext'];
+		}
+
+		var collectionOptions = {
+			currentPage=currentPage,
+			pageShow=pageShow,
+			keywords=keywords,
+			filterGroupsConfig=filterGroupsConfig,
+			joinsConfig=joinsConfig,
+			propertyIdentifiersList=propertyIdentifiersList,
+			isDistinct=isDistinct,
+			columnsConfig=columnsConfig,
+			orderByConfig=orderByConfig,
+			groupBysConfig=groupBysConfig,
+			allRecords=allRecords,
+			dirtyRead=dirtyRead,
+			defaultColumns=defaultColumns,
+			processContext=processContext
+		};
+		return collectionOptions;
+	}
+
+	public any function getAPIResponseForEntityName(required string entityName, required struct data, boolean enforceAuthorization=true, string whiteList){
+
+		var collectionOptions = this.getCollectionOptionsFromData(arguments.data); 
+		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName,collectionOptions);
+		collectionEntity.applyData();
+		collectionEntity.setEnforceAuthorization(arguments.enforceAuthorization);
+		
+		if (!isNull(whiteList)){
+			var authorizedPropertyList = whiteList.split(",");
+			for(var authorizedProperty in authorizedPropertyList){
+				collectionEntity.addAuthorizedProperty(authorizedProperty);
+			}
+		}
 		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
+		
 		if(!structKeyExists(collectionConfigStruct,'filterGroups')){
 			collectionConfigStruct.filterGroups = [];
 		}
@@ -451,12 +667,15 @@ component output="false" accessors="true" extends="HibachiService" {
 		if(!structKeyExists(collectionConfigStruct,'isDistinct')){
 			collectionConfigStruct.isDistinct = false;
 		}
-		return getAPIResponseForCollection(collectionEntity,arguments.collectionOptions,arguments.enforceAuthorization);
+		return getAPIResponseForCollection(collectionEntity,collectionOptions,collectionEntity.getEnforceAuthorization());
+	
 	}
 
-	public any function getAPIResponseForBasicEntityWithID(required string entityName, required string entityID, required struct collectionOptions){
-		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName,arguments.collectionOptions);
 
+	public any function getAPIResponseForBasicEntityWithID(required string entityName, required string entityID, required struct data){
+		var collectionOptions = this.getCollectionOptionsFromData(arguments.data); 
+		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName,collectionOptions);
+		
 		//set up search by id
 
 		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
@@ -474,20 +693,20 @@ component output="false" accessors="true" extends="HibachiService" {
 		var propertyIdentifier = '_' & lcase(arguments.entityName) & '.id';
 		var filterStruct = createFilterStruct(propertyIdentifier,'=',arguments.entityID);
 
-		if(!len(arguments.collectionOptions.filterGroupsConfig)){
+		if(!len(collectionOptions.filterGroupsConfig)){
 			var filterGroupsConfig = [{
 				filterGroup = []
 			}];
 		}else{
-			var filterGroupsConfig = deserializeJson(arguments.collectionOptions.filterGroupsConfig);
+			var filterGroupsConfig = deserializeJson(collectionOptions.filterGroupsConfig);
 		}
 
 		arrayAppend(filterGroupsConfig[1].filterGroup,filterStruct);
 
 
-		arguments.collectionOptions.filterGroupsConfig = serializeJson(filterGroupsConfig);
+		collectionOptions.filterGroupsConfig = serializeJson(filterGroupsConfig);
 
-		var collectionResponse = getAPIResponseForCollection(collectionEntity,arguments.collectionOptions);
+		var collectionResponse = getAPIResponseForCollection(collectionEntity,collectionOptions);
 		var response = {};
 
 		if(arrayLen(collectionEntity.getProcessObjects())){
@@ -503,19 +722,22 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	public any function getAPIResponseForCollection(required any collectionEntity, required struct collectionOptions, boolean enforceAuthorization=true){
 		var response = {};
-		if(getHibachiScope().authenticateCollection('read', arguments.collectionEntity) || !arguments.enforceAuthorization){
+		
+		arguments.collectionEntity.setEnforceAuthorization(arguments.enforceAuthorization);
+		
+		if(getHibachiScope().authenticateCollection('read', arguments.collectionEntity) || !arguments.collectionEntity.getEnforceAuthorization()){
 			if(structkeyExists(arguments.collectionOptions,'currentPage')){
-				collectionEntity.setCurrentPageDeclaration(arguments.collectionOptions.currentPage);
+				collectionEntity.setCurrentPageDeclaration(collectionOptions.currentPage);
 			}
 			if(structKeyExists(arguments.collectionOptions,'pageShow')){
-				collectionEntity.setPageRecordsShow(arguments.collectionOptions.pageShow);
+				collectionEntity.setPageRecordsShow(collectionOptions.pageShow);
 			}
 			if(structKeyExists(arguments.collectionOptions,'keywords')){
-				collectionEntity.setKeywords(arguments.collectionOptions.keywords);
+				collectionEntity.setKeywords(collectionOptions.keywords);
 			}
 
 			if(structKeyExists(arguments.collectionOptions,'propertyIdentifiersList') && len(arguments.collectionOptions.propertyIdentifiersList)){
-				addColumnsToCollectionConfigStructByPropertyIdentifierList(arguments.collectionEntity,arguments.collectionOptions.propertyIdentifiersList,arguments.enforceAuthorization);
+				addColumnsToCollectionConfigStructByPropertyIdentifierList(arguments.collectionEntity,arguments.collectionOptions.propertyIdentifiersList,arguments.collectionEntity.getEnforceAuthorization());
 				var collectionPropertyIdentifiers = [];
 			}else{
 				var collectionPropertyIdentifiers = getPropertyIdentifierArray(collectionEntity.getCollectionObject());
@@ -567,11 +789,14 @@ component output="false" accessors="true" extends="HibachiService" {
 			}
 
 			if(structKeyExists(arguments.collectionOptions,'processContext') && len(arguments.collectionOptions.processContext)){
-				collectionEntity.setProcessContext(arguments.collectionOptions.processContext);
+				collectionEntity.setProcessContext(collectionOptions.processContext);
 			}
 			if(structKeyExists(arguments.collectionOptions,'isDistict')){
 				collectionEntity.getCollectionConfigStruct().isDistinct = arguments.collectionOptions.isDistinct;
 			}
+			if(structKeyExists(arguments.collectionOptions,'dirtyRead')){
+				collectionEntity.setDirtyReadFlag(arguments.collectionOptions.dirtyRead);
+			} 
 
 			var defaultPropertyIdentifiers = getPropertyIdentifierArray('collection');
 
@@ -604,15 +829,17 @@ component output="false" accessors="true" extends="HibachiService" {
 				}
 			}
 
-
-			var authorizedProperties = getAuthorizedProperties(arguments.collectionEntity, collectionPropertyIdentifiers, aggregatePropertyIdentifierArray,attributePropertyIdentifierArray,enforceAuthorization);
+			var authorizedProperties = getAuthorizedProperties(arguments.collectionEntity, collectionPropertyIdentifiers, aggregatePropertyIdentifierArray,attributePropertyIdentifierArray,arguments.collectionEntity.getEnforceAuthorization());
+			for(var authorizedProperty in authorizedProperties){
+				arguments.collectionEntity.addAuthorizedProperty(authorizedProperty);
+			}
 
 			var collectionStruct = {};
 			if(structKeyExists(arguments.collectionOptions,'allRecords') && arguments.collectionOptions.allRecords == 'true'){
-				collectionStruct = getFormattedRecords(arguments.collectionEntity,authorizedProperties);
+				collectionStruct = getFormattedRecords(arguments.collectionEntity,arguments.collectionEntity.getAuthorizedProperties());
 			}else{
 				//paginated collection struct
-				collectionStruct = getFormattedPageRecords(arguments.collectionEntity,authorizedProperties);
+				collectionStruct = getFormattedPageRecords(arguments.collectionEntity,arguments.collectionEntity.getAuthorizedProperties());
 			}
 			structAppend(response,collectionStruct);
 		}
@@ -624,7 +851,10 @@ component output="false" accessors="true" extends="HibachiService" {
 		for(var collectionPropertyIdentifier in arguments.collectionPropertyIdentifiers){
 			if(
 				getHibachiScope().authenticateCollectionPropertyIdentifier('read', arguments.collectionEntity,collectionPropertyIdentifier)
-				|| !arguments.enforeAuthorization
+				|| (
+					!arguments.enforeAuthorization
+					&& !findnocase('_',collectionPropertyIdentifier)
+				)
 			){
 				arrayAppend(authorizedProperties,collectionPropertyIdentifier);
 			}
@@ -636,7 +866,7 @@ component output="false" accessors="true" extends="HibachiService" {
 
 			arrayAppend(authorizedProperties,attributePropertyIdentifier);
 		}
-
+	
 		return authorizedProperties;
 	}
 
