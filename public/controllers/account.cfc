@@ -298,7 +298,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			getHibachiScope().addActionResult( "public:account.duplicateOrder", true );
 		}
 	}
-	
+
+	// Add Order Payment with account checks
 	public void function addOrderPayment(required any rc) {
 		param name="rc.newOrderPayment" default="#structNew()#";
 		param name="rc.newOrderPayment.orderPaymentID" default="";
@@ -334,12 +335,47 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	// Applies a Payment to an order. This is used when a deposit was paid but a user needs to complete the order.
 	public void function applyPayment(required any rc) {
-		param name="rc.orderNumber" default="#structNew()#";
-		param name="rc.newOrderPayment.orderPaymentID" default="";
-		param name="rc.accountAddressID" default="";
-		param name="rc.accountPaymentMethodID" default="";
-
+		param name="rc.orderID" default="";
+		param name="rc.orderPaymentAmount" default="";
 		
+		//Find the transaction and call the above method.
+		if (!isNull(arguments.rc.orderID)){
+			
+			//find the order.
+			var order = getService("OrderService").getOrder(arguments.rc.orderID);
+			if (isNull(order)){
+				return;
+			}
+			
+			//find the payment.
+			var orderPayments = order.getOrderPayments();
+			if (isNull(orderPayments)){
+				return;
+			}
+			
+			//create the transaction.
+			for (var orderPayment in orderPayments){
+				if(orderPayment.getStatusCode() == 'opstActive') {
+ 					
+ 					//pay the balance or the set amount that the user wanted to pay this payment.
+ 					var amount = 0;
+ 					if (!isNull(rc.orderPaymentAmount)){
+ 						amount = rc.orderPaymentAmount;
+ 					}else{
+ 						amount = orderPayment.getOrder().getPaymentAmountDue();
+ 					}
+	 				var processData = {
+	 					amount = amount,
+	 					transactionType = "chargePreAuthorizations"
+	 				};
+	 				
+					orderPayment = getService("OrderService").processOrderPayment(orderPayment, processData, 'createTransaction');
+					if (orderPayment.hasErrors()){
+						getHibachiScope().addErrors(orderPayment.getErrors());
+					}
+				}
+			}
+		}
 	}
 
 }
