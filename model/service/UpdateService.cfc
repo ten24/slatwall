@@ -204,7 +204,7 @@ Notes:
 			<!--- Run the script if never ran successfully or success count < max count ---->
 			<cfif isNull(script.getMaxExecutionCount()) OR script.getSuccessfulExecutionCount() EQ 0 OR script.getSuccessfulExecutionCount() LT script.getMaxExecutionCount()>
 				<!---- try to run the script --->
-				<cftry>
+				<!---<cftry>--->
 					<!--- if it's a database script look for db specific file --->
 					<cfif findNoCase("database/",script.getScriptPath())>
 						<cfset var dbSpecificFileName = replaceNoCase(script.getScriptPath(),".cfm",".#getApplicationValue("databaseType")#.cfm") />
@@ -213,15 +213,15 @@ Notes:
 						<cfelseif fileExists(expandPath("/Slatwall/config/scripts/#script.getScriptPath()#"))>
 							<cfinclude template="#getHibachiScope().getBaseURL()#/config/scripts/#script.getScriptPath()#" />
 						<cfelse>
-							<cfthrow message="update script file doesn't exist" />
+							<cfthrow message="update script file doesn't exist #getHibachiScope().getBaseURL()#/config/scripts/#script.getScriptPath()#" />
 						</cfif>
 					</cfif>
 					<cfset script.setSuccessfulExecutionCount(script.getSuccessfulExecutionCount()+1) />
-					<cfcatch>
+					<!---<cfcatch>
 						<!--- failed, let's log this execution count --->
 						<cfset script.setExecutionCount(script.getExecutionCount()+1) />
 					</cfcatch>
-				</cftry>
+				</cftry>--->
 				<cfset script.setLastExecutedDateTime(now()) />
 				<cfset this.saveUpdateScript(script) />
 			</cfif>

@@ -50,7 +50,7 @@ Notes:
 <cfset local.scriptHasErrors = false />
 <cfparam name="this.ormSettings.dialect" default="#getHibachiScope().getApplicationValue('databaseType')#" />
 
-<cftry>
+<!---<cftry>--->
 	<cfquery name="local.setbundleitemquantity">
 		update SwOrderItem set SwOrderItem.bundleItemQuantity = SwOrderItem.quantity where parentOrderItemID is not null
 	</cfquery>
@@ -58,19 +58,25 @@ Notes:
 	<cfif this.ormSettings.dialect eq 'MicrosoftSQLServer'>
 		<cfquery name="local.updatechildorderitemquantity">
 			update SwOrderItem
-			set SwOrderItem.quantity = p.quantity * SwOrderItem.bundleItemQuantity
+			set SwOrderItem.quantity = case when p.quantity * SwOrderItem.bundleItemQuantity > 214748364
+			 then 214748364
+			 else p.quantity * SwOrderItem.bundleItemQuantity end
 			from SwOrderItem
 				inner join SwOrderItem p on
 				SwOrderItem.parentOrderItemID = p.orderItemID
 			where SwOrderItem.parentOrderItemID is not null
+			and p.quantity is not null and SwOrderItem.bundleItemQuantity is not null
 		</cfquery>
 	<cfelseif ListFind(this.ormSettings.dialect, 'MySQL')>
 		<cfquery name="local.updatechildorderitemquantity">
 			update SwOrderItem
 			inner join SwOrderItem p on
 				SwOrderItem.parentOrderItemID = p.orderItemID
-			set SwOrderItem.quantity = p.quantity * SwOrderItem.bundleItemQuantity
+			set SwOrderItem.quantity = case when p.quantity * SwOrderItem.bundleItemQuantity > 214748364
+			 then 214748364
+			 else p.quantity * SwOrderItem.bundleItemQuantity end
 			where SwOrderItem.parentOrderItemID = p.orderItemID
+			and p.quantity is not null and SwOrderItem.bundleItemQuantity is not null
 		</cfquery>
 	<cfelseif this.ormSettings.dialect eq 'Oracle10g'>
 		<cfquery name="local.updatechildorderitemquantity">
@@ -81,17 +87,18 @@ Notes:
 				from SwOrderItem
 					inner join SwOrderItem p on
 						SwOrderItem.parentOrderItemID = p.orderItemID
-				where SwOrderItem.parentOrderItemID is not null) orderItem
+				where SwOrderItem.parentOrderItemID is not null
+				and p.quantity is not null and SwOrderItem.bundleItemQuantity is not null) orderItem
 			set orderItem.oldQuantity = orderItem.newQuantity
 		</cfquery>
 	</cfif>
 
-	<cfcatch>
+	<!---<cfcatch>
 		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update Child Order Item Quantity">
 		<cfset local.scriptHasErrors = true />
 	</cfcatch>
 </cftry>
-<cftry>
+<cftry>--->
 	<cfquery name="local.getsubscriptionusages">
 		select * from SwSubsUsage
 	</cfquery>
@@ -113,11 +120,11 @@ Notes:
 			<cfbreak>
 		</cfloop>
 	</cfloop>
-	<cfcatch>
+	<!---<cfcatch>
 		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update Subscription Usages initial order item">
 		<cfset local.scriptHasErrors = true />
 	</cfcatch>
-</cftry>
+</cftry>--->
 <cfif local.scriptHasErrors>
 	<cflog file="Slatwall" text="General Log - Part of Script v4_5 had errors when running">
 	<cfthrow detail="Part of Script v4_5 had errors when running">
