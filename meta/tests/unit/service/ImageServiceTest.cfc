@@ -115,7 +115,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	public void function missingImageSettingTest_siteMissingImagePath(){
-		
+		//Site specific setting, should hit site assertion
 		var siteData = {
 			siteID="#createUuid()#",
 			siteName="#createUuid()#",
