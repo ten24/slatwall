@@ -53,7 +53,8 @@ component extends="HibachiService" accessors="true" output="false" {
 
 	// ===================== START: Logical Methods ===========================
 	
-	public void function runWorkflowByEventTrigger(required any workflowTrigger, required any entity){
+	public boolean function runWorkflowByEventTrigger(required any workflowTrigger, required any entity){
+		var successFlag = false;
 		if(arguments.workflowTrigger.getStartDateTime() > now() || (!isNull(arguments.workflowTrigger.getEndDateTime()) && arguments.workflowTrigger.getEndDateTime() < now())){
 			continue;
 		}
@@ -67,8 +68,8 @@ component extends="HibachiService" accessors="true" output="false" {
 			workflowTriggerHistory.setWorkflowTrigger(arguments.workflowTrigger);
 			workflowTriggerHistory.setStartTime(now());
 		}
-
-		//try {
+		
+		try {
 			var processData = {};
 
 			// If the triggerObject is the same as this event, then we just use it
@@ -87,18 +88,22 @@ component extends="HibachiService" accessors="true" output="false" {
 
 				this.processWorkflow(arguments.workflowTrigger.getWorkflow(), processData, 'execute');
 			}
+			
 			if (!isNull(workflowTriggerHistory)) {
 				// Update the workflowTriggerHistory
-				workflowTriggerHistory.setSuccessFlag(true);
+				
+				workflowTriggerHistory.setSuccessFlag(1);
 				workflowTriggerHistory.setResponse("");
 			}
-//		} catch (any e){
-//			if (!isNull(workflowTriggerHistory)) {
-//				// Update the workflowTriggerHistory
-//				workflowTriggerHistory.setSuccessFlag(false);
-//				workflowTriggerHistory.setResponse(e.Message);
-//			}
-//		}
+			successFlag = true;
+		} catch (any e){
+			successFlag = false;
+			if (!isNull(workflowTriggerHistory)) {
+				// Update the workflowTriggerHistory
+				workflowTriggerHistory.setSuccessFlag(false);
+				workflowTriggerHistory.setResponse(e.Message);
+			}
+		}
 
 		if (!isNull(workflowTriggerHistory)) {
 			// Set the end for history
@@ -107,6 +112,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			// Persist the info to the DB
 			workflowTriggerHistory = this.saveWorkflowTriggerHistory(workflowTriggerHistory);
 		}
+		return successFlag;
 	}
 	
 	public any function runAllWorkflowsByEventTrigger( required any eventName, required any entity, required struct eventData={} ) {
@@ -252,7 +258,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 	private boolean function executeTaskAction(required any workflowTaskAction, required any entity, required string type){
 		var actionSuccess = false;
-
+		
 		switch (workflowTaskAction.getActionType()) {
 			// EMAIL
 			case 'email' :
@@ -343,20 +349,17 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		for(var workflowTask in arguments.workflow.getWorkflowTasks()) {
 			// Check to see if the task is active and the entity object passes the conditions validation
-			request.debug('here');
 			if(workflowTask.getActiveFlag() && workflowTask.getWorkflow().getActiveFlag() && entityPassesAllWorkflowTaskConditions(arguments.data.entity, workflowTask.getTaskConditionsConfigStruct())) {
-				request.debug('there');
 				// Now loop over all of the actions that can now be run that the workflow task condition has passes
 				for(var workflowTaskAction in workflowTask.getWorkflowTaskActions()) {
-
 					if(!isnull(workflowTaskAction.getUpdateData())){
 						if(!isnull(workflowTaskAction.getActionType())){
 							if(data.workflowTrigger.getTriggerType() == 'Event'){
 								arguments.data.entity.setAnnounceEvent(false);
 							}
 							//Execute ACTION
-							executeTaskAction(workflowTaskAction, arguments.data.entity, data.workflowTrigger.getTriggerType());
-
+							var actionSuccess = executeTaskAction(workflowTaskAction, arguments.data.entity, data.workflowTrigger.getTriggerType());
+							
 							if(data.workflowTrigger.getTriggerType() == 'Event') {
 								arguments.data.entity.setAnnounceEvent(true);
 							}

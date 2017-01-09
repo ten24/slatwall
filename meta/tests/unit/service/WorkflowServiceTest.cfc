@@ -563,9 +563,19 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	public void function sendOrderConfirmationOnPlaceOrderTest(){
-		//f80aaac73fc84ee7a7d53962c641f653 afterOrderProcess_placeOrderSuccess send order Confirmation
+		//active afterOrderProcess_placeOrderSuccess send order Confirmation
+		var accountData = {
+			accountID="",
+			firstName="ryan",
+			lastName="marchand"
+		};
+		var account = createPersistedTestEntity('account',accountData);
+		
 		var orderData = {
-			orderID=""
+			orderID="",
+			account={
+				accountID=account.getAccountID()
+			}
 		};
 		var order = createPersistedTestEntity('Order',orderData);
 		
@@ -574,14 +584,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var orderItem = createPersistedTestEntity('OrderItem',orderItemData);		
 		
-		var workflowTrigger = variables.service.getWorkflowTrigger('f80aaac73fc84ee7a7d53962c641f653');
-		variables.service.runWorkflowByEventTrigger(workflowTrigger);
-		var workflowTriggerHistorySmartList = variables.service.getWorkflowTriggerHistorySmartList();
-		workflowTriggerHistorySmartList.addFilter('workflowTrigger.workflowTriggerID',workflowTrigger.getWorkflowTriggerID());
-		workflowTriggerHistorySmartList.setPageRecordsShow(1);
-		var workflowTriggerHistory = workflowTriggerHistorySmartList.getPageRecords()[1];
-		assert(workflowTriggerHistory.getSuccessFlag());
-		
+		var workflowTriggerSmartList = variables.service.getWorkflowTriggerSmartList();
+		workflowTriggerSmartList.addFilter('workflow.activeFlag',1);
+		workflowTriggerSmartList.addFilter('triggerEvent','afterOrderProcess_placeOrderSuccess');
+		var workflowTrigger = workflowTriggerSmartList.getPageRecords()[1];
+		var successFlag = variables.service.runWorkflowByEventTrigger(workflowTrigger,order);
+		assert(successFlag);
+		assert(!request.slatwallScope.getORMHasErrors());
 	}
 	
 	public void function runWorkflowByEventTriggerTest(){

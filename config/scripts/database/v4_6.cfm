@@ -124,17 +124,17 @@ Notes:
 	
 	  <!--- Create Workflow Task --->
 	  <cfquery name='local.insert'>
-	    INSERT INTO SwWorkflowTask (workflowTaskID, activeFlag, taskName, taskConditionsConfig, workflowID) VALUES ('#local.workflowTaskID#', 1, '#arguments.eventTriggerName#', '{&quot;filterGroups&quot;:[{&quot;filterGroup&quot;:[]}],&quot;baseEntityAlias&quot;:&quot;#arguments.eventTriggerObject#&quot;,&quot;baseEntityName&quot;:&quot;#arguments.eventTriggerObject#&quot;}', '#local.workflowID#')
+	    INSERT INTO SwWorkflowTask (workflowTaskID, activeFlag, taskName, taskConditionsConfig, workflowID) VALUES ('#local.workflowTaskID#', 1, '#arguments.eventTriggerName#', '{"filterGroups":[{"filterGroup":[]}],"baseEntityAlias":"#arguments.eventTriggerObject#","baseEntityName":"#arguments.eventTriggerObject#"}', '#local.workflowID#')
 	  </cfquery>
 	
 	  <!--- Create Workflow Action --->
 	  <cfif arguments.eventTriggerType eq 'email'>
 	    <cfquery name='local.insert'>
-	      INSERT INTO SwWorkflowTaskAction (workflowTaskActionID, actionType, updateData, emailTemplateID, workflowTaskID) VALUES ('#local.workflowTaskActionID#', 'Email', '{&quot;staticData&quot;:{},&quot;dynamicData&quot;:{}}', '#arguments.emailTemplateID#', '#local.workflowTaskID#')
+	      INSERT INTO SwWorkflowTaskAction (workflowTaskActionID, actionType, updateData, emailTemplateID, workflowTaskID) VALUES ('#local.workflowTaskActionID#', 'Email', '{"staticData":{},"dynamicData":{}}', '#arguments.emailTemplateID#', '#local.workflowTaskID#')
 	    </cfquery>
 	  <cfelseif arguments.eventTriggerType eq 'print'>
 	    <cfquery name='local.insert'>
-	      INSERT INTO SwWorkflowTaskAction (workflowTaskActionID, actionType, updateData, printTemplateID, workflowTaskID) VALUES ('#local.workflowTaskActionID#', 'Print', '{&quot;staticData&quot;:{},&quot;dynamicData&quot;:{}}', '#arguments.printTemplateID#', '#local.workflowTaskID#')
+	      INSERT INTO SwWorkflowTaskAction (workflowTaskActionID, actionType, updateData, printTemplateID, workflowTaskID) VALUES ('#local.workflowTaskActionID#', 'Print', '{"staticData":{},"dynamicData":{}}', '#arguments.printTemplateID#', '#local.workflowTaskID#')
 	    </cfquery>
 	  </cfif>
 </cffunction>
