@@ -417,8 +417,6 @@ Notes:
 			//declared file paths
 			var coreEntityParser = getTransient('HibachiEntityParser');
 			coreEntityParser.setFilePath("model/entity/#arguments.fileName#");
-			
-			checkIfCustomPropertiesExistInBase(customEntityParser.getMetaData(),coreEntityParser.getMetaData());
 
 			mergeEntityParsers(coreEntityParser,customEntityParser,true);
 
