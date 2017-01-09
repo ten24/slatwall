@@ -366,7 +366,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
  					}
 	 				var processData = {
 	 					amount = amount,
-	 					transactionType = "chargePreAuthorizations"
+	 					transactionType = "authorizeAndCharge"
 	 				};
 	 				
 					orderPayment = getService("OrderService").processOrderPayment(orderPayment, processData, 'createTransaction');
