@@ -147,7 +147,11 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	// ============ START: Non-Persistent Property Methods =================
 	
 	public boolean function canDeleteByOwner(){
-		return isNull(getOwnerAccount()) || getHibachiScope().getAccount().getAccountID() == this.getOwnerAccount().getAccountID();
+		return isNull(getOwnerAccount()) 
+		|| (
+			!isNull(getHibachiScope().getAccount().getSuperUserFlag())
+			&& getHibachiScope().getAccount().getSuperUserFlag()
+		) || getHibachiScope().getAccount().getAccountID() == this.getOwnerAccount().getAccountID();
 	}
 
 	public any function getPrimaryEmailAddressesNotInUseFlag() {
