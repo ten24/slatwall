@@ -132,7 +132,7 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 			//look if the path was supplied
 			if(structKeyExists(arguments, "missingImagePath") && fileExists(expandPath(arguments.missingImagePath))) {
 			
-				arguments.imagePath = arguments.missingImagePath;
+				arguments.imagePath = "#getApplicationValue('baseURL')##arguments.missingImagePath#";
 				
 		    //look if this has been supplied at the site level.
 			} else if (!isNull(getService('siteService').getCurrentRequestSite()) && !isNull(getService('siteService').getCurrentRequestSite().setting('siteMissingImagePath'))) {
@@ -143,11 +143,11 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 			} else if(fileExists(expandPath("#getApplicationValue('baseURL')#/custom/assets/images/missingimage.jpg"))) {
                
                 arguments.imagePath = "#getApplicationValue('baseURL')#/custom/assets/images/missingimage.jpg";
-                
-			//check the global location
-			} else if ( fileExists(expandPath(getHibachiScope().setting('globalMissingImagePath'))) ) {
-               
-                arguments.imagePath = getHibachiScope().setting('globalMissingImagePath');
+                            
+            //Check settings location
+			}else if( fileExists(expandPath(getHibachiScope().setting('imageMissingImagePath'))) ){
+
+				arguments.imagePath = "#getApplicationValue('baseURL')##getHibachiScope().setting('imageMissingImagePath')#";			
             
             //check the default location
             } else {

@@ -83,4 +83,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(structKeyExists(image.getErrors(),'imageFile'));
 	}	
 	
+	public void function missingImageSettingTest(){
+		var imagePath = variables.service.getResizedImagePath('falsepath');
+		assert(fileExists(expandPath(imagePath)));
+	}
+	
 }
