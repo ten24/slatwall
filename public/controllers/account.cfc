@@ -298,5 +298,48 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			getHibachiScope().addActionResult( "public:account.duplicateOrder", true );
 		}
 	}
+	
+	public void function addOrderPayment(required any rc) {
+		param name="rc.newOrderPayment" default="#structNew()#";
+		param name="rc.newOrderPayment.orderPaymentID" default="";
+		param name="rc.accountAddressID" default="";
+		param name="rc.accountPaymentMethodID" default="";
+
+		// Make sure that someone isn't trying to pass in another users orderPaymentID
+		if(len(rc.newOrderPayment.orderPaymentID)) {
+			var orderPayment = getOrderService().getOrderPayment(rc.newOrderPayment.orderPaymentID);
+			if(orderPayment.getOrder().getOrderID() != getHibachiScope().cart().getOrderID()) {
+				rc.newOrderPayment.orderPaymentID = "";
+			}
+		}
+		
+		
+		if (structKeyExists(rc.newOrderPayment, "order") && structKeyExists(rc.newOrderPayment.order, "orderID")){
+			//if they provided an orderID, then get the order and check that they own it.
+			var order = getService("OrderService").getOrder(rc.newOrderPayment.order.orderID);
+			if (!isNull(order)){
+				var orderAccount = order.getAccount();
+				if (orderAccount != getHibachiScope().getAccount()){
+					//they are not the same.
+					return;
+				}
+			}
+		}
+		rc.newOrderPayment.orderPaymentType.typeID = '444df2f0fed139ff94191de8fcd1f61b';
+
+		var cart = getOrderService().processOrder( getHibachiScope().cart(), arguments.rc, 'addOrderPayment');
+
+		getHibachiScope().addActionResult( "public:cart.addOrderPayment", cart.hasErrors() );
+	}
+	
+	// Applies a Payment to an order. This is used when a deposit was paid but a user needs to complete the order.
+	public void function applyPayment(required any rc) {
+		param name="rc.orderNumber" default="#structNew()#";
+		param name="rc.newOrderPayment.orderPaymentID" default="";
+		param name="rc.accountAddressID" default="";
+		param name="rc.accountPaymentMethodID" default="";
+
+		
+	}
 
 }

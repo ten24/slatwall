@@ -2520,6 +2520,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Clear out any previous 'createTransaction' process objects
 			arguments.orderPayment.clearProcessObject( 'createTransaction' );
 
+			// Call the processing method
+			arguments.orderPayment = this.processOrderPayment(arguments.orderPayment, processData, 'createTransaction');
 
 			// Call the method below if getPlaceOrderChargeTransactionType = "Authorize"
 			// then do another call for create transaction with transactionType = AuthAndCharge and amount = deposit amount
@@ -2539,6 +2541,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						processData.amount = arguments.orderPayment.getOrder().getTotalDepositAmount();
 						arguments.orderPayment = this.createTransactionAndCheckErrors(arguments.orderPayment, processData);
 					}
+					
 				// if the getPlaceOrderChargeTransactionType = "AuthandCharge", set the amount to deposit amount
 				}else if(arguments.orderPayment.getPaymentMethod().getPlaceOrderChargeTransactionType() == 'authorizeAndCharge'){
 					
@@ -2546,10 +2549,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					processData.amount = arguments.orderPayment.getOrder().getTotalDepositAmount();
 					arguments.orderPayment = this.createTransactionAndCheckErrors(arguments.orderPayment, processData);
 					
+					// then do another call for create transaction with transactionType = auth and amount = payment amount due.
+					if (!arguments.orderPayment.hasErrors()){
+						arguments.orderPayment.clearProcessObject( 'createTransaction' );
+						processData.transactionType = "authorize";
+						processData.amount = arguments.orderPayment.getOrder().getPaymentAmountDue();
+						arguments.orderPayment = this.createTransactionAndCheckErrors(arguments.orderPayment, processData);
+					}
 				}
-				
-			}else{
-				arguments.orderPayment = this.createTransactionAndCheckErrors(arguments.orderPayment, processData);
 			}
 		}
 		return arguments.orderPayment;
