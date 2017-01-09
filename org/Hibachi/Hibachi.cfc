@@ -93,7 +93,8 @@ component extends="FW1.framework" {
 	variables.framework.hibachi.noaccessDefaultItem = 'noaccess';
 	variables.framework.hibachi.sessionCookieDomain = "";
 	variables.framework.hibachi.lineBreakStyle = SERVER.OS.NAME;
-
+	variables.framework.hibachi.disableFullUpdateOnServerStartup = false;
+	
 	// Allow For Application Config
 	try{include "../../config/configFramework.cfm";}catch(any e){}
 	// Allow For Instance Config
@@ -631,18 +632,24 @@ component extends="FW1.framework" {
 
 					// Call the onFirstRequest() Method for the parent Application.cfc
 					onFirstRequest();
-
-					//==================== START: EVENT HANDLER SETUP ========================
-
-					getBeanFactory().getBean('hibachiEventService').registerEventHandlers();
-
-
-					//===================== END: EVENT HANDLER SETUP =========================
-
+					
+					var runFullUpdate = !variables.framework.hibachi.disableFullUpdateOnServerStartup 
+						&& (
+							!structKeyExists(server,'runFullUpdate') 
+							|| (structKeyExists(server,'runFullUpdate') && server.runFullUpdate
+						)
+					);
 					// ============================ FULL UPDATE =============================== (this is only run when updating, or explicitly calling it by passing update=true as a url key)
-					if(!fileExists(expandPath('/#variables.framework.applicationKey#/custom/config') & '/lastFullUpdate.txt.cfm') || (structKeyExists(url, variables.framework.hibachi.fullUpdateKey) && url[ variables.framework.hibachi.fullUpdateKey ] == variables.framework.hibachi.fullUpdatePassword)){
+					if(
+						!fileExists(expandPath('/#variables.framework.applicationKey#/custom/config') & '/lastFullUpdate.txt.cfm') 
+						|| (
+							structKeyExists(url, variables.framework.hibachi.fullUpdateKey) 
+							&& url[ variables.framework.hibachi.fullUpdateKey ] == variables.framework.hibachi.fullUpdatePassword
+						)
+						|| runFullUpdate
+					){
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - Full Update Initiated");
-
+						server.runFullUpdate = false;
 						//Update custom properties
 
 						var success = getHibachiScope().getService('updateService').updateEntitiesWithCustomProperties();
@@ -652,11 +659,12 @@ component extends="FW1.framework" {
 						}else{
 							writeLog(file="Slatwall", text="General Log - Error updating entities with custom properties");
 						}
+						
 						// Reload ORM
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() started");
 						ormReload();
-						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() was successful");
-
+						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() was successful"); 
+						
 						onUpdateRequest();
 
 						// Write File
