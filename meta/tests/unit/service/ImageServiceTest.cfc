@@ -88,16 +88,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			var siteService = request.slatwallScope.getService('siteService');
 			
 			if(!isNull(siteService.getCurrentRequestSite()) && !isNull(siteService.getCurrentRequestSite().setting('siteMissingImagePath'))){
-				request.debug('siteSetting assertion');
 				assert(imagePath EQ siteService.getCurrentRequestSite().setting('siteMissingImagePath'));
 			}else if(fileExists(expandPath("#variables.service.getApplicationValue('baseUrl')#/custom/assets/images/missingimage.jpg"))){
-				request.debug('custom assertion');
 				assert(imagePath EQ "#variables.service.getApplicationValue('baseUrl')#/custom/assets/images/missingimage.jpg");
 			}else if(fileExists(expandPath(variables.service.getHibachiScope().setting('imageMissingImagePath')))){
-				request.debug('global assertion');
 				assert(imagePath EQ "#variables.service.getApplicationValue('baseUrl')##variables.service.getHibachiScope().setting('imageMissingImagePath')#"	);
 			}else{
-				request.debug('final assertion');
 				assert(imagePath EQ "#variables.service.getApplicationValue('baseURL')#/assets/images/missingimage.jpg", "Default assertion");
 			}
 		}
@@ -124,7 +120,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			siteID="#createUuid()#",
 			siteName="#createUuid()#",
 			siteCode="#createUuid()#",
-			domainNames="slatwall"
+			domainNames="#request.slatwallScope.getService('siteService').getCurrentDomain()#"
 		};
 		var site = createPersistedTestEntity(entityName="site",data=siteData);
 		site = variables.service.saveSite(site,siteData);
