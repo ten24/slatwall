@@ -160,7 +160,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assert(fileExists(expandPath(imagePath)));
 	}
 	
-	public function getResizedImageCreatesImgElementWithMissingPath(){
+	public function getResizedImage_CreatesImgElementWithMissingPath(){
 		var imagePath = variables.entity.getResizedImagePath();
 		var image = variables.entity.getResizedImage();
 		assert(image EQ '<img src="#imagePath#" />');
