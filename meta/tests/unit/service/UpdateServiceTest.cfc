@@ -80,6 +80,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.service.updateCMSApplications();
 	}
 	
+	public void function allScriptsSucceededTest(){
+		var updateScripts = variables.service.listUpdateScript();
+		for(var updateScript in updateScripts){
+			assert(updateScript.getSuccessfulExecutionCount() > 0,'script: #updateScript.getscriptPath()# failed');
+		}
+	}
 	
 	
 	public void function mergeEntityParsersTest_withoutCustomPropertiesInitially(){

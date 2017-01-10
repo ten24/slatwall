@@ -48,52 +48,21 @@ Notes:
 --->
 
 <cfset local.scriptHasErrors = false />
-<cfparam name="this.ormSettings.dialect" default="#getHibachiScope().getApplicationValue('databaseType')#" />
+
 
 <cftry>
-		<cfquery name="local.setbundleitemquantity">
-			UPDATE SwOrderItem oi inner join SwOrderItem p on p.orderItemID = oi.parentOrderItemID
-			set oi.bundleItemQuantity=oi.quantity, oi.quantity = (p.quantity * oi.quantity)
-			where oi.parentOrderItemID is not null and oi.bundleItemQuantity is null
-		</cfquery>
-	
-	
-	<cfcatch>
-		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update Child Order Item Quantity">
-		<cfset local.scriptHasErrors = true />
-	</cfcatch>
-</cftry>
-<cftry>
-	<cfquery name="local.getsubscriptionusages">
-		select * from SwSubsUsage
-	</cfquery>
 
-	<cfloop query="local.getsubscriptionusages">
-		<cfquery name="local.getsubscriptionusageorderitems">
-			select * from SwSubscriptionOrderItem oi
-			where
-				oi.subscriptionUsageID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getsubscriptionusages.subscriptionUsageID#" />
-			and
-				oi.subscriptionOrderItemTypeID = '444df311d7615e7cf56b836f515aebd4'
-		</cfquery>
-		<cfloop query="local.getsubscriptionusageorderitems">
-			<cfquery name="local.updateSubscriptionUsage">
-				update SwSubsUsage
-				set initialOrderItemID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getsubscriptionusageorderitems.orderItemID#" />
-				where subscriptionUsageID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getsubscriptionusages.subscriptionUsageID#" />
-			</cfquery>
-			<cfbreak>
-		</cfloop>
-	</cfloop>
 	<cfcatch>
-		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update Subscription Usages initial order item">
+		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - ">
 		<cfset local.scriptHasErrors = true />
 	</cfcatch>
+
+
 </cftry>
+
 <cfif local.scriptHasErrors>
-	<cflog file="Slatwall" text="General Log - Part of Script v4_5 had errors when running">
-	<cfthrow detail="Part of Script v4_5 had errors when running">
+	<cflog file="Slatwall" text="General Log - Part of Script v5_0 had errors when running">
+	<cfthrow detail="Part of Script v5_0 had errors when running">
 <cfelse>
-	<cflog file="Slatwall" text="General Log - Script v4_5 has run with no errors">
+	<cflog file="Slatwall" text="General Log - Script v5_0 has run with no errors">
 </cfif>
-

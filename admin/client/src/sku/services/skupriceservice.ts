@@ -323,8 +323,11 @@ export class SkuPriceService {
     }
 
     private isQuantityRangeSkuPrice = (skuPriceData, minQuantity, maxQuantity) =>{
-        return ( parseInt(skuPriceData.minQuantity) == parseInt(minQuantity) &&
-                 parseInt(skuPriceData.maxQuantity) == parseInt(maxQuantity))
+		 return ( ((parseInt(skuPriceData.minQuantity) == parseInt(minQuantity)) || 
+                   (isNaN(parseInt(skuPriceData.minQuantity)) == (isNaN(parseInt(minQuantity))))) &&
+                   (parseInt(skuPriceData.maxQuantity) == parseInt(maxQuantity) ||
+                   (isNaN(parseInt(skuPriceData.maxQuantity)) == (isNaN(parseInt(maxQuantity))))));        
+
     }
 
     public sortSkuPrices = (skuPriceSet)=>{

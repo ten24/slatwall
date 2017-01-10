@@ -12,13 +12,15 @@
 	        "contexts":"save",
 	        "required":"false",
 	        "dataType":"numeric",
-	        "minValue":"0"
+	        "minValue":"0",
+			"method" : "hasValidQuantityConfiguration"
         }],
 	    "maxQuantity" : [{
 	        "contexts":"save",
 	        "required":"false",
 	        "dataType":"numeric",
-	        "minValue":"0"
+	        "minValue":"0",
+			"method" : "hasValidQuantityConfiguration"
         }],
         "currencyCode" : [{
             "contexts":"save",
