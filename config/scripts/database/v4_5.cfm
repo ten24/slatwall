@@ -51,40 +51,12 @@ Notes:
 <cfparam name="this.ormSettings.dialect" default="#getHibachiScope().getApplicationValue('databaseType')#" />
 
 <cftry>
-	<cftransaction>
 		<cfquery name="local.setbundleitemquantity">
-			update SwOrderItem set SwOrderItem.bundleItemQuantity = SwOrderItem.quantity where parentOrderItemID is not null and SwOrderItem.bundleItemQuantity is null
+			UPDATE SwOrderItem oi inner join SwOrderItem p on p.orderItemID = oi.parentOrderItemID
+			set oi.bundleItemQuantity=oi.quantity, oi.quantity = (p.quantity * oi.quantity)
+			where oi.parentOrderItemID is not null and oi.bundleItemQuantity is null
 		</cfquery>
 	
-		<cfif this.ormSettings.dialect eq 'MicrosoftSQLServer'>
-			<cfquery name="local.updatechildorderitemquantity">
-				update SwOrderItem
-				set SwOrderItem.quantity = p.quantity * SwOrderItem.bundleItemQuantity
-				from SwOrderItem
-					inner join SwOrderItem p on
-					SwOrderItem.parentOrderItemID = p.orderItemID
-				where SwOrderItem.parentOrderItemID is not null
-			</cfquery>
-		<cfelseif ListFind(this.ormSettings.dialect, 'MySQL')>
-			<cfquery name="local.updatechildorderitemquantity">
-				UPDATE SwOrderItem oi inner join SwOrderItem p on p.orderItemID = oi.parentOrderItemID
-				set oi.quantity = (p.quantity * oi.bundleItemQuantity)
-				where oi.parentOrderItemID is not null
-			</cfquery>
-		<cfelseif this.ormSettings.dialect eq 'Oracle10g'>
-			<cfquery name="local.updatechildorderitemquantity">
-				update
-					(select
-						SwOrderItem.quantity as oldQuantity,
-						p.quantity * SwOrderItem.bundleItemQuantity as newQuantity
-					from SwOrderItem
-						inner join SwOrderItem p on
-							SwOrderItem.parentOrderItemID = p.orderItemID
-					where SwOrderItem.parentOrderItemID is not null) orderItem
-				set orderItem.oldQuantity = orderItem.newQuantity
-			</cfquery>
-		</cfif>
-	</cftransaction>
 	
 	<cfcatch>
 		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update Child Order Item Quantity">
