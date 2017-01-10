@@ -82,8 +82,7 @@ Notes:
 					from SwOrderItem
 						inner join SwOrderItem p on
 							SwOrderItem.parentOrderItemID = p.orderItemID
-					where SwOrderItem.parentOrderItemID is not null
-					and p.quantity is not null and SwOrderItem.bundleItemQuantity is not null) orderItem
+					where SwOrderItem.parentOrderItemID is not null) orderItem
 				set orderItem.oldQuantity = orderItem.newQuantity
 			</cfquery>
 		</cfif>
