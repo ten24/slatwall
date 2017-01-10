@@ -77,6 +77,14 @@ component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true acces
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non-Persistent Properties
-
-
+	property name="hasValidQuantityConfiguration" persistent="false"; 
+ 	
+ 	public boolean function hasValidQuantityConfiguration(){
+ 		if(!(isNull(this.getMinQuantity()) && isNull(this.getMaxQuantity())) && (isNull(this.getMinQuantity()) || isNull(this.getMaxQuantity()))){ 
+ 			return false; 
+ 		} else if(this.getMinQuantity() >= this.getMaxQuantity()){
+ 			return false;
+ 		} 
+ 		return true; 
+ 	} 
 }
