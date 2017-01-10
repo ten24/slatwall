@@ -156,14 +156,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public any function processGiftCard_offlineTransaction(required any giftCard, required any processObject){
-       if(processObject.getTransactionType() == 'credit'){
-            var creditProcessObject = arguments.giftCard.getProcessObject('addCredit');
-            creditProcessObject.setCreditAmount(processObject.getAmount()); 
-            return this.processGiftCard_addCredit(arguments.giftCard, creditprocessObject); 
-       } else if (processObject.getTransactionType() == 'debit'){
+
+       if(arguments.processObject.getTransactionType() == 'credit'){
+
+         	var creditProcessObject = arguments.giftCard.getProcessObject('addCredit');
+           	creditProcessObject.setCreditAmount(arguments.processObject.getAmount()); 
+            return this.processGiftCard(arguments.GiftCard, creditProcessObject, 'addCredit'); 
+       
+       } else if (arguments.processObject.getTransactionType() == 'debit'){
+
             var debitProcessObject = arguments.giftcard.getProcessObject('addDebit'); 
-            debitProcessObject.setDebitAmount(processObject.getAmount()); 
-            return this.processGiftCard_addDebit(arguments.giftCard, debitProcessObject); 
+            debitProcessObject.setDebitAmount(arguments.processObject.getAmount()); 
+            return this.processGiftCard(arguments.giftCard, debitProcessObject, 'addDebit'); 
+       
        }
        return arguments.giftCard; 
 	} 
