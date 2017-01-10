@@ -255,7 +255,7 @@ class SWInputController{
             if(this.fieldType === 'time'){
                 inputType="text";
             }
-			template = currencyTitle + '<input type="'+this.inputType+'" class="'+this.class+'" '+
+			template = currencyTitle + '<input type="' + inputType + '" class="' + this.class + '" '+
 				'ng-model="swInput.value" '+
 				'ng-disabled="swInput.editable === false" '+
 				'ng-show="swInput.editing" '+
