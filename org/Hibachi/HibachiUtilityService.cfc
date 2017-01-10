@@ -1242,7 +1242,6 @@
 		<cfset var cs = "">
 		<cfset var signature = "">
 		
-		<!--- if keyName submitted blank, use fileName --->
 		<cfif !structKeyExists(arguments, "keyName") or not compare(arguments.keyName, '')>
 			<cfset arguments.keyName = arguments.fileName>
 		</cfif>
@@ -1250,13 +1249,10 @@
 		<!--- Create a canonical string to send --->
 		<cfset cs = "PUT\n\n#arguments.contentType#\n#dateTimeString#\nx-amz-acl:#arguments.acl#\nx-amz-storage-class:#arguments.storageClass#\n/#arguments.bucketName#/#arguments.keyName#">
 		
-		<!--- Create a proper signature --->
 		<cfset signature = createS3Signature(cs,awsSecretAccessKey)>
 		
-		<!--- Read the image data into a variable --->
 		<cffile action="readBinary" file="#arguments.uploadDir##arguments.fileName#" variable="binaryFileData">
 		
-		<!--- Send the file to amazon. The "X-amz-acl" controls the access properties of the file --->
 		<cfhttp method="PUT" url="http://s3.amazonaws.com/#arguments.bucketName#/#arguments.keyName#" timeout="#arguments.HTTPtimeout#">
 			<cfhttpparam type="header" name="Authorization" value="AWS #arguments.awsAccessKeyId#:#signature#">
 			<cfhttpparam type="header" name="Content-Type" value="#arguments.contentType#">
