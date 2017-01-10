@@ -155,7 +155,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		return createPersistedTestEntity('Location', locationData);
 	}
 	
-	public function getResizedImagePathGetsMissingImagePath(){
+	public function getResizedImagePath_GetsMissingImagePath(){
 		var imagePath = variables.entity.getResizedImagePath();
 		assert(fileExists(expandPath(imagePath)));
 	}
