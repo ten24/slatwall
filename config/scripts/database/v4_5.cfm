@@ -67,11 +67,9 @@ Notes:
 			</cfquery>
 		<cfelseif ListFind(this.ormSettings.dialect, 'MySQL')>
 			<cfquery name="local.updatechildorderitemquantity">
-				update SwOrderItem
-				inner join SwOrderItem p on
-					SwOrderItem.parentOrderItemID = p.orderItemID
-				set SwOrderItem.quantity = p.quantity * SwOrderItem.bundleItemQuantity
-				where SwOrderItem.parentOrderItemID = p.orderItemID
+				UPDATE SwOrderItem oi inner join SwOrderItem p on p.orderItemID = oi.parentOrderItemID
+				set oi.quantity = (p.quantity * oi.bundleItemQuantity)
+				where oi.parentOrderItemID is not null
 			</cfquery>
 		<cfelseif this.ormSettings.dialect eq 'Oracle10g'>
 			<cfquery name="local.updatechildorderitemquantity">
