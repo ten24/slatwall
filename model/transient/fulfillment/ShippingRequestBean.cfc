@@ -213,7 +213,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 				if(arguments.unitCode neq getShippingItemRequestBeans()[i].getWeightUnitOfMeasure()) {
 					itemWeight = getService("measurementService").convertWeight(weight=getShippingItemRequestBeans()[i].getWeight(), originalUnitCode=getShippingItemRequestBeans()[i].getWeightUnitOfMeasure(), convertToUnitCode=arguments.unitCode);
 				}
-				totalWeight = precisionEvaluate(totalWeight + (itemWeight * getShippingItemRequestBeans()[i].getQuantity()));
+				totalWeight = val(precisionEvaluate(totalWeight + (itemWeight * getShippingItemRequestBeans()[i].getQuantity())));
 			}
 		}
 		return totalWeight;
@@ -223,7 +223,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		var totalValue = 0;
 		for(var i=1; i<=arrayLen(getShippingItemRequestBeans()); i++) {
 			if(isNumeric(getShippingItemRequestBeans()[i].getValue())) {
-				totalValue = precisionEvaluate(totalValue + (round(getShippingItemRequestBeans()[i].getValue() * getShippingItemRequestBeans()[i].getQuantity() * 100) / 100));
+				totalValue = val(precisionEvaluate(totalValue + (round(getShippingItemRequestBeans()[i].getValue() * getShippingItemRequestBeans()[i].getQuantity() * 100) / 100)));
 			}
 		}
 		return totalValue;
