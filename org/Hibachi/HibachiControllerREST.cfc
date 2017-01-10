@@ -636,6 +636,8 @@ component output="false" accessors="true" extends="HibachiController" {
             handle accessing collections by id
         */
         param name="arguments.rc.propertyIdentifiers" default="";
+        
+        
         //first check if we have an entityName value
         if(!structKeyExists(arguments.rc, "entityName")) {
             arguments.rc.apiResponse.content['account'] = getHibachiScope().invokeMethod("getAccountData");

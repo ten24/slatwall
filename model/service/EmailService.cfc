@@ -102,7 +102,7 @@ Notes:
 
 			<cfset cfmailAttributes["type"] = "text/html" />
 
-			<cfmail attributeCollection=cfmailAttributes>
+			<cfmail attributeCollection="#cfmailAttributes#">
 				<cfif !isNull(arguments.email.getEmailFailTo())>
 					<cfmailparam name="Return-Path" value="#arguments.email.getEmailFailTo()#">
 				</cfif>
@@ -120,7 +120,7 @@ Notes:
 
 			<cfset cfmailAttributes["type"] = "text/plain" />
 
-			<cfmail attributeCollection=cfmailAttributes>
+			<cfmail attributeCollection="#cfmailAttributes#">
 				<cfif !isNull(arguments.email.getEmailFailTo())>
 					<cfmailparam name="Return-Path" value="#arguments.email.getEmailFailTo()#">
 				</cfif>

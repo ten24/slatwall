@@ -8,6 +8,7 @@
 /// <reference path="jquery/jquery.d.ts" />
 /// <reference path="requirejs/require.d.ts" />
 /// <reference path="js-md5/md5.d.ts" />
+/// <reference path="jasmine/jasmine.d.ts" />
 /// <reference path="datejs/datejs.d.ts" />
 /// <reference path="md5/md5.d.ts" />
 /// <reference path="bootstrap/bootstrap.d.ts" />

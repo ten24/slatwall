@@ -193,8 +193,7 @@ Notes:
 
 	<cffunction name="runScripts">
 		<cfset var scripts = this.listUpdateScriptOrderByLoadOrder() />
-		<cfset var script = "" />
-		<cfloop array="#scripts#" index="script">
+		<cfloop array="#scripts#" index="local.script">
 			<cfif isNull(script.getSuccessfulExecutionCount())>
 				<cfset script.setSuccessfulExecutionCount(0) />
 			</cfif>
@@ -213,7 +212,7 @@ Notes:
 						<cfelseif fileExists(expandPath("/Slatwall/config/scripts/#script.getScriptPath()#"))>
 							<cfinclude template="#getHibachiScope().getBaseURL()#/config/scripts/#script.getScriptPath()#" />
 						<cfelse>
-							<cfthrow message="update script file doesn't exist" />
+							<cfthrow message="update script file doesn't exist #getHibachiScope().getBaseURL()#/config/scripts/#script.getScriptPath()#" />
 						</cfif>
 					</cfif>
 					<cfset script.setSuccessfulExecutionCount(script.getSuccessfulExecutionCount()+1) />
@@ -346,7 +345,7 @@ Notes:
 			}
 		}
 		
-		public any function mergeEntityParsers(required any coreEntityParser, required any customEntityParser){
+		public any function mergeEntityParsers(required any coreEntityParser, required any customEntityParser, boolean purgeCustomProperties=false){
 			var conditionalLineBreak = variables.conditionLineBreak;
 			
 			if(lcase(getApplicationValue("lineBreakStyle")) == 'windows'){
@@ -356,6 +355,10 @@ Notes:
 			var newContent = "";
 			//add properties
 			if(len(arguments.customEntityParser.getPropertyString())){
+				if(arguments.coreEntityParser.hasCustomProperties() && arguments.purgeCustomProperties){
+					arguments.coreEntityParser.setFileContent(replace(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomPropertyContent(),''));
+				}
+				
 				if(arguments.coreEntityParser.hasCustomProperties()){
 					var customPropertyStartPos = arguments.coreEntityParser.getCustomPropertyStartPosition();
 					var customPropertyEndPos = arguments.coreEntityParser.getCustomPropertyEndPosition();
@@ -379,10 +382,14 @@ Notes:
 			}
 			//add functions
 			if(len(arguments.customEntityParser.getFunctionString())){
+				if(arguments.purgeCustomProperties && arguments.coreEntityParser.hasCustomFunctions()){
+					arguments.coreEntityParser.setFileContent(replace(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomFunctionContent(),''));	
+				}	
 				
 				if(arguments.coreEntityParser.hasCustomFunctions()){
 					var customFunctionStartPos = arguments.coreEntityParser.getCustomFunctionStartPosition();
 					var customFunctionEndPos = arguments.coreEntityParser.getCustomFunctionEndPosition();
+									
 					if(!arguments.coreEntityParser.getCustomFunctionContent() CONTAINS arguments.customEntityParser.getFunctionString()){
 						var contentBeforeCustomFunctionsStart = left(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomFunctionContentStartPosition()-1);
 						var contentAfterCustomFunctionsStart = mid(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomFunctionContentEndPosition(), (len(arguments.coreEntityParser.getFileContent()) - arguments.coreEntityParser.getCustomPropertyContentEndPosition())+1);
@@ -409,10 +416,8 @@ Notes:
 			//declared file paths
 			var coreEntityParser = getTransient('HibachiEntityParser');
 			coreEntityParser.setFilePath("model/entity/#arguments.fileName#");
-			
-			checkIfCustomPropertiesExistInBase(customEntityParser.getMetaData(),coreEntityParser.getMetaData());
 
-			mergeEntityParsers(coreEntityParser,customEntityParser);
+			mergeEntityParsers(coreEntityParser,customEntityParser,true);
 
 			return coreEntityParser.getFileContent();
 		</cfscript>
