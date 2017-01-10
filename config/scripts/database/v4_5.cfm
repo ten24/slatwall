@@ -53,7 +53,7 @@ Notes:
 <cftry>
 	<cftransaction>
 		<cfquery name="local.setbundleitemquantity">
-			update SwOrderItem set SwOrderItem.bundleItemQuantity = SwOrderItem.quantity where parentOrderItemID is not null
+			update SwOrderItem set SwOrderItem.bundleItemQuantity = SwOrderItem.quantity where parentOrderItemID is not null and SwOrderItem.bundleItemQuantity is null
 		</cfquery>
 	
 		<cfif this.ormSettings.dialect eq 'MicrosoftSQLServer'>
