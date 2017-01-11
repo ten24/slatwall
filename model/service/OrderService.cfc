@@ -310,6 +310,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 				// The item being added to the cart should have its stockID added based on that location
 				var location = orderFulfillment.getPickupLocation();
+				var stock = getService("StockService").getStockByLocationANDSku([location, arguments.processObject.getSku()], false);
+				
+				//If we found a stock for that location, then set the stock to the process.
+				if (!isNull(stock)){
+					arguments.processObject.setStock(stock);
+				}
+			}
+			
+			// Check the fullfillment for a pickup location.
+			if (!isNull(orderFulfillment.getPickupLocation())){
+				
+				// The item being added to the cart should have its stockID added based on that location
+				var location = orderFulfillment.getPickupLocation();
 				var stock = getService("StockService").getStockByLocationIDAndSkuID([location.getLocationID(), arguments.processObject.getSku().getSkuID()], false);
 				
 				//If we found a stock for that location, then set the stock to the process.
@@ -2703,7 +2716,25 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// Save the accountAddress if needed
 				arguments.orderFulfillment.checkNewAccountAddressSave();
 			}
-
+			
+			//Update the pickup location on the orderItem if the pickup location was updated on the orderFulfillment.
+			if(arguments.orderFulfillment.getFulfillmentMethodType() eq "pickup") {
+				if (!isNull(data.pickupLocation.locationID)){
+					var location = getService("LocationService").getLocation(data.pickupLocation.locationID);
+					if (!isNull(location)){
+						for (var orderItem in orderFulfillment.getOrderFulfillmentItems()){
+							//set the stock based on location.
+							var stock = getService("StockService").getStockByLocationANDSku([location, orderItem.getSku()], false);
+							
+							if (!isNull(stock)){
+								orderItem.setStock(stock);
+								throw("Set the stock");
+								getService("OrderService").saveOrderItem(orderItem);
+							}
+						}
+					}
+				}
+			}
 		}
 
 		// Recalculate the order amounts for tax and promotions
