@@ -227,11 +227,11 @@ component output="false" accessors="true" extends="HibachiController" {
 
         var service = getHibachiScope().getService("hibachiValidationService");
         var objectName = arguments.rc.object;
-		var entityService = getService("hibachiService").getServiceByEntityName(objectName); 
+		var entityService = getService("hibachiService").getServiceByEntityName(entityName=objectName); 
         var propertyIdentifier = arguments.rc.propertyIdentifier;
         var value = arguments.rc.value;
-		
-		if(!structKeyExists(rc, "objectID")){
+	
+		if(structKeyExists(arguments.rc, "objectID")){
 			var entity = entityService.invokeMethod('get#objectName#', {1=arguments.rc.objectID});
 		}  
 		if(isNull(entity)){
