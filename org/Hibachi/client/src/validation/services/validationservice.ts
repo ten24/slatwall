@@ -15,13 +15,14 @@ class ValidationService{
 
 
 
-    public validateUnique=(value, objectName, property)=>{
+    public validateUnique=(value, object, property)=>{
+        console.log("validateUnique", object); 
         var deferred = this.$q.defer();
         //First time the asyncValidators function is loaded the
         //key won't be set  so ensure that we have
         //key and propertyName before checking with the server
-        if (objectName && property) {
-            this.$hibachi.checkUniqueValue(objectName, property, value)
+        if (object && property) {
+            this.$hibachi.checkUniqueValue(object, property, value)
             .then((unique)=> {
                 if (unique) {
                     deferred.resolve(); //It's unique

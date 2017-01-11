@@ -18,7 +18,7 @@ class SWValidationUnique{
                     var currentValue = modelValue || viewValue;
                     var objectName = controllers[1].object.metaData.className;
                     var property = controllers[1].property;
-                    return validationService.validateUnique(currentValue,objectName,property);
+                    return validationService.validateUnique(currentValue,controllers[1].object,property);
                 };
 
             }

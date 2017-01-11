@@ -310,14 +310,19 @@ class HibachiService{
         return request.promise;
     };
 	checkUniqueOrNullValue = (object, property, value) => {
-		return this.$http.get(this.getUrlWithActionPrefix()+'api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property +
+		var objectName = object.metaData.className;
+		var objectID = object.$$getID(); 
+		return this.$http.get(this.getUrlWithActionPrefix()+'api:main.getValidationPropertyStatus&object=' + objectName + '&objectID=' + objectID + '&propertyidentifier=' + property +
 		'&value=' + escape(value)).then(
 	 (results:any):ng.IPromise<any> =>{
 		return results.data.uniqueStatus;
 		})
 	};
 	checkUniqueValue = (object, property, value) => {
-		return this.$http.get(this.getUrlWithActionPrefix()+'api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property +
+		console.log("checkUnique", object.$$getID());
+		var objectName = object.metaData.className;
+		var objectID = object.$$getID(); 
+		return this.$http.get(this.getUrlWithActionPrefix()+'api:main.getValidationPropertyStatus&object=' + objectName + '&objectID=' + objectID + '&propertyidentifier=' + property +
 			'&value=' + escape(value)).then(
 			 (results:any):ng.IPromise<any> =>{
 				return results.data.uniqueStatus;
