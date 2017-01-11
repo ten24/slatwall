@@ -236,9 +236,9 @@ component output="false" accessors="true" extends="HibachiController" {
 		}  
 		if(isNull(entity)){
 			var entity = getService('hibachiService').invokeMethod('new#objectName#');
-			entity.invokeMethod('set#propertyIdentifier#',{1=value});
 		}
-        var response["uniqueStatus"] = service.validate_unique(entity, propertyIdentifier);
+		entity.invokeMethod('set#propertyIdentifier#',{1=value});
+		var response["uniqueStatus"] = service.validate_unique(entity, propertyIdentifier);
         arguments.rc.apiResponse.content = response;
 
     }
