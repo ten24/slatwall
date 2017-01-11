@@ -156,7 +156,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
   		
   	}
 
-	public void function cancel(required any rc) {
+	public void function cancelOrder(required any rc) {
 		var order = getOrderService().process(getOrderService().getOrder(rc.orderID), {}, "cancelOrder");
 		if( !order.hasErrors() ) {
 			getHibachiScope().addActionResult( "public:cart.cancel", false); 
