@@ -318,21 +318,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 			
-			// Check the fullfillment for a pickup location.
-			if (!isNull(orderFulfillment.getPickupLocation())){
-				
-				// The item being added to the cart should have its stockID added based on that location
-				var location = orderFulfillment.getPickupLocation();
-				var stock = getService("StockService").getStockByLocationIDAndSkuID([location.getLocationID(), arguments.processObject.getSku().getSkuID()], false);
-				
-				//If we found a stock for that location, then set the stock to the process.
-				if (!isNull(stock)){
-					arguments.processObject.setStock(stock);
-				}else{
-					throw("The stock was null!");
-				}
-			}
-			
 			// Check for the sku in the orderFulfillment already, so long that the order doens't have any errors
 			if(!arguments.order.hasErrors()) {
 				for(var orderItem in orderFulfillment.getOrderFulfillmentItems()){
