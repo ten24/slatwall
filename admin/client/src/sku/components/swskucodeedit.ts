@@ -147,19 +147,6 @@ class SWSkuCodeEdit implements ng.IDirective{
         if(angular.isDefined(currentScope["pageRecordKey"])){
              scope.swSkuCodeEdit.pageRecordIndex = currentScope["pageRecordKey"];
         }
-
-        var skuPricesEditScope = this.scopeService.getRootParentScope(scope, "swSkuPricesEdit");
-        if(skuPricesEditScope != null){
-            scope.swSkuCodeEdit.baseEntityId = skuPricesEditScope["swSkuPricesEdit"].baseEntityId;
-            scope.swSkuCodeEdit.baseEntityName = skuPricesEditScope["swSkuPricesEdit"].baseEntityName;
-        }
-        if( angular.isDefined( scope.swSkuCodeEdit.baseEntityId) && angular.isUndefined( scope.swSkuCodeEdit.skuId)){
-             scope.swSkuCodeEdit.selectCurrencyCodeEventName = "currencyCodeSelect" +  scope.swSkuCodeEdit.baseEntityId;
-            this.observerService.attach( scope.swSkuCodeEdit.updateDisplay,  scope.swSkuCodeEdit.selectCurrencyCodeEventName,  scope.swSkuCodeEdit.formName);
-            if(this.historyService.hasHistory(scope.swSkuCodeEdit.selectCurrencyCodeEventName)){
-                scope.swSkuCodeEdit.updateDisplay(this.historyService.getHistory(scope.swSkuCodeEdit.selectCurrencyCodeEventName));
-            }
-        }
 	}
 }
 export{
