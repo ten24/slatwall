@@ -143,17 +143,21 @@
 		<ul>
 			<li class="s-edit-btn"><a ng-href="{{'?slatAction=entity.detailorderitem&orderitemid='+orderItem.data.orderItemID}}"><button type="button" class="btn btn-default"><i class="fa fa-eye"></i></button></a></li>
 			<li class="s-remove-btn">
-				<a 		sw-confirm 
-    						class="s-remove-btn"
-							data-confirm-text="Confirm"
-							data-message-text="Are you sure you want to delete this orderitem?" 
-							data-callback="deleteEntity()"
-							data-use-rb-key="false"
-							data-simple=false
-							data-yes-text="Yes"
-							data-no-text="No"
-							data-entity="orderItem"
-							ng-disabled="!orderItem.data.isDeletable"><button class="btn btn-default" type="button"><i class="fa fa-trash"></i></button></a></li>
+				<button class="btn btn-default s-remove-btn j-tool-tip-item" type="button" sw-confirm
+					data-confirm-text="Confirm"
+					data-message-text="Are you sure you want to delete this orderitem?" 
+					data-callback="deleteEntity()"
+					data-use-rb-key="false"
+					data-simple=false
+					data-yes-text="Yes"
+					data-no-text="No"
+					data-entity="orderItem"
+					ng-disabled="!orderItem.data.isDeletable"
+					ng-class="{'j-tool-tip-item': !orderItem.data.isDeletable}"
+					data-toggle="tooltip"
+					data-placement="top"
+					title
+					data-original-title="Item cannot be deleted once fulfilled."><i class="fa fa-trash"></i></button></li>
 		</ul>
 	</td>
 </tr>
