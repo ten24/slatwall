@@ -297,13 +297,18 @@ class ListingService{
 
     public markSaved = (listingID:string, pageRecordIndex) => {
         var pageRecords = this.getListingPageRecords(listingID); 
+        var savePromises = []; 
         for(var key in pageRecords[pageRecordIndex].editedFields){
             if(angular.isFunction(pageRecords[pageRecordIndex].editedFields[key])){
-                pageRecords[pageRecordIndex].editedFields[key]();
+                savePromises.push(pageRecords[pageRecordIndex].editedFields[key]());
             }
         }
-        delete pageRecords[pageRecordIndex].editedFields;
-        pageRecords[pageRecordIndex].edited = false; 
+        this.$q.all(savePromises).then(
+            ()=>{
+                delete pageRecords[pageRecordIndex].editedFields;
+                pageRecords[pageRecordIndex].edited = false; 
+            }
+        )
     }
     //End Row Save Functionality
 
