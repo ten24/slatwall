@@ -49,6 +49,7 @@ Notes:
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 
 	property name="addressService" type="any";
+	property name="hibachiUtilityService" type="any";
 	property name="integrationService" type="any";
 	property name="orderService" type="any"; 
 	property name="settingService" type="any";
@@ -142,7 +143,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					for(var j=1; j<=arrayLen(splitShipmentWeights); j++){
 						var splitShipmentWeight = splitShipmentWeights[j]; 
 						var splitShippingMethodRate = splitShippingMethodRates[j];  
-						var orderFulfillmentItems = arguments.orderFulfillment.getOrderFulfillmentItems();
+						var orderFulfillmentItems = getHibachiUtilityService().arrayConcat([], arguments.orderFulfillment.getOrderFulfillmentItems());//don't directly access the order fulfillment items
 
 						while(arrayLen(orderFulfillmentItems)){
 							var shippingMethodOptionSplitShipment = this.newShippingMethodOptionSplitShipment();
@@ -175,7 +176,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		return responseBeans;
 	}
-
+	
+	/* do not add orderFulfillmentItmes directley from an orm getter to this function because it will delete them from the data base via array delete at
+		instead use: var orderFulfillmentItems = getHibachiUtilityService().arrayConcat([], arguments.orderFulfillment.getOrderFulfillmentItems());
+	*/
 	private array function splitOrderFulfillmentItems(required array orderFulfillmentItems, required numeric splitShipmentWeight, required any shippingMethodOptionSplitShipment){
 		var currentWeight = 0; 
 		while(ArrayLen(orderFulfillmentItems)){
@@ -244,7 +248,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// check to make sure that this rate applies to the current orderFulfillment
 				if(!isNull(shippingMethodRate.getShippingIntegration()) && shippingMethodRate.getShippingIntegration().getActiveFlag()){
 					var shippingIntegration = getIntegrationByOrderFulfillmentAndShippingMethodRate(arguments.orderFulfillment,shippingMethodRate);
-					shippingIntegration.getIntegrationCFC("shipping").addEligibleShippingMethodRate(shippingMethodRate);
+					if (!isNull(shippingIntegration)){
+						shippingIntegration.getIntegrationCFC("shipping").addEligibleShippingMethodRate(shippingMethodRate);
+					}
 					if(!isNull(shippingIntegration) && !arrayFind(integrations, shippingIntegration)){
 						arrayAppend(integrations,shippingIntegration);
 					}

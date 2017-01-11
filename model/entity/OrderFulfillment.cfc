@@ -78,9 +78,6 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
 	// Related Object Properties (many-to-many - inverse)
 
-	// Calculated properties
-	property name="calculatedSelectedShippingMethodOption" cfc="ShippingMethodOption" fieldtype="many-to-one" fkcolumn="selectedShippingMethodOptionID";
-
 	// Remote properties
 	property name="remoteID" ormtype="string";
 
@@ -409,6 +406,19 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     		return getSelectedShippingMethodOption().getShippingMethodRate();
     	}
     }
+
+	public string function getShippingIntegrationName() { 
+		if(!isNull(getShippingIntegration())){
+			return getShippingIntegration().getIntegrationName(); 
+		}
+		return ''; 
+	} 
+
+	public any function getShippingIntegration() { 
+		if(!isNull(getShippingMethodRate()) && !isNull(getShippingMethodRate().getShippingIntegration())){
+				return getShippingMethodRate().getShippingIntegration(); 
+		} 
+	}	
 
     public any function getSelectedShippingMethodOption() {
     	if(!structKeyExists(variables, "selectedShippingMethodOption")) {

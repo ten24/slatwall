@@ -377,20 +377,18 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 			currentProperty = properties[p];
 
 			// Check to see if we should upload this property
-			if( 
-				structKeyExists(arguments.data, currentProperty.name) 
+			if(
+				structKeyExists(arguments.data, currentProperty.name)
 				&& (
-					!structKeyExists(currentProperty, "fieldType") 
+					!structKeyExists(currentProperty, "fieldType")
 					|| currentProperty.fieldType == "column"
-				) && isSimpleValue(arguments.data[ currentProperty.name ]) 
-				&& structKeyExists(currentProperty, "hb_fileUpload") 
-				&& currentProperty.hb_fileUpload 
-				&& structKeyExists(currentProperty, "hb_fileAcceptMIMEType") 
-				&& len(arguments.data[ currentProperty.name ]) 
-				&& !isNull(form)
-				&& structKeyExists(form, currentProperty.name) 
+				) && isSimpleValue(arguments.data[ currentProperty.name ])
+				&& structKeyExists(currentProperty, "hb_fileUpload")
+				&& currentProperty.hb_fileUpload
+				&& structKeyExists(currentProperty, "hb_fileAcceptMIMEType")
+				&& len(arguments.data[ currentProperty.name ])
+				&& structKeyExists(form, currentProperty.name)
 			) {
-
 				// Wrap in try/catch to add validation error based on fileAcceptMIMEType
 				try {
 
@@ -510,7 +508,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	public any function getValueByPropertyIdentifier(required string propertyIdentifier, boolean formatValue=false) {
 		var object = getLastObjectByPropertyIdentifier( propertyIdentifier=arguments.propertyIdentifier );
 		var propertyName = listLast(arguments.propertyIdentifier,'.');
-		
+
 		if(!isNull(object) && !isSimpleValue(object)) {
 			if(arguments.formatValue) {
 				return object.getFormattedValue( propertyName );
@@ -781,13 +779,13 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 	public boolean function getPropertyIsNumeric( required string propertyName ) {
 		var propertyMetaData = getPropertyMetaData(arguments.propertyName);
-		if( structKeyExists(propertyMetaData, "ormtype") && 
+		if( structKeyExists(propertyMetaData, "ormtype") &&
 			listFindNoCase("big_decimal,integer,int,double,float", propertyMetaData.ormtype)
 		){
-			return true; 
+			return true;
 		}
-		return false; 
-	} 
+		return false;
+	}
 
 	// @help public method for getting the meta data of a specific property
 	public struct function getPropertyMetaData( required string propertyName ) {

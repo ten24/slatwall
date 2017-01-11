@@ -987,9 +987,17 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		return exists;
 	}
 	
-	public array function getFilterOptions(required string valuePropertyIdentifier, required string namePropertyIdentifier) {
+	public array function getFilterOptions(
+		required string valuePropertyIdentifier, 
+		required string namePropertyIdentifier,
+		string parentPropertyIdentifier
+	) {
 		var nameProperty = getAliasedProperty(propertyIdentifier=arguments.namePropertyIdentifier);
 		var valueProperty = getAliasedProperty(propertyIdentifier=arguments.valuePropertyIdentifier);
+		
+		if(structKeyExists(arguments,'parentPropertyIdentifier')){
+			 var parentProperty = getAliasedProperty(propertyIdentifier=arguments.parentPropertyIdentifier);
+		}
 		
 		var originalWhereGroup = duplicate(variables.whereGroups);
 		
@@ -1001,21 +1009,34 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 			}
 		}
 			
-		var results = ormExecuteQuery("SELECT NEW MAP(
+		var hql = "SELECT NEW MAP(
 			#nameProperty# as name,
 			#valueProperty# as value,
 			count(#nameProperty#) as count
-			)
-		#getHQLFrom(allowFetch=false)#
+			";
+		
+		if(structKeyExists(arguments,'parentPropertyIdentifier')){
+			hql &= ", #parentProperty# as parentValue";
+		}
+		hql &=")";
+		
+		hql &="#getHQLFrom(allowFetch=false)#
 		#getHQLWhere()# #IIF(len(getHQLWhere()), DE('AND'), DE('WHERE'))#
 				#nameProperty# IS NOT NULL
 			AND
 				#valueProperty# IS NOT NULL
 		GROUP BY
 			#nameProperty#,
-			#valueProperty#
+			#valueProperty#";
+			
+		if(structKeyExists(arguments,'parentPropertyIdentifier')){
+			hql &= ", #parentProperty#";
+		}
+			
+		hql &= "
 		ORDER BY
-			#nameProperty# ASC", getHQLParams());
+			#nameProperty# ASC";
+		var results = ormExecuteQuery(hql, getHQLParams());
 		
 		variables.whereGroups = originalWhereGroup;
 		

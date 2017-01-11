@@ -167,8 +167,7 @@ Notes:
 
 	<cffunction name="runScripts">
 		<cfset var scripts = this.listUpdateScriptOrderByLoadOrder() />
-		<cfset var script = "" />
-		<cfloop array="#scripts#" index="script">
+		<cfloop array="#scripts#" index="local.script">
 			<cfif isNull(script.getSuccessfulExecutionCount())>
 				<cfset script.setSuccessfulExecutionCount(0) />
 			</cfif>
@@ -329,7 +328,7 @@ Notes:
 			var customMeta = getComponentMetaData(customFileComponentPath);
 
 			//Grab the contents of the files and figure our the properties.
-			var fileContent = fileRead(expandPath(filePath)) ;
+			var fileContent = ReReplace(fileRead(expandPath(filePath)),'\r','','All');
 
 			//declared custom strings
 			
@@ -356,7 +355,7 @@ Notes:
 				}
 			}
 			
-			var customFileContent = fileRead(expandPath(customFilePath)) ;
+			var customFileContent = ReReplace(fileRead(expandPath(customFilePath)),'\r','','All') ;
 
 			// check duplicate properties and if there is a duplicate then write it to log
 			if(structKeyExists(customMeta,'properties')){

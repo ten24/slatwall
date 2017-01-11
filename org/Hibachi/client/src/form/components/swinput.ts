@@ -220,11 +220,15 @@ class SWInputController{
 		if(this.fieldType.toLowerCase() === 'json'){
 			style = style += 'display:none';
 		}
-
+        
 		var acceptedFieldTypes = ['email','text','password','number','time','date','datetime','json'];
-
+        
 		if(acceptedFieldTypes.indexOf(this.fieldType.toLowerCase()) >= 0){
-			template = '<input type="'+this.fieldType.toLowerCase()+'" class="'+this.class+'" '+
+            var inputType = this.fieldType.toLowerCase();
+            if(this.fieldType === 'time'){
+                inputType="text";
+            }
+			template = '<input type="'+this.inputType+'" class="'+this.class+'" '+
 				'ng-model="swInput.value" '+
 				'ng-disabled="swInput.editable === false" '+
 				'ng-show="swInput.editing" '+
@@ -242,7 +246,7 @@ class SWInputController{
 			template = template + 'datetime-picker ';
 		}
 		if(this.fieldType === 'time'){
-			template = template + 'data-time-only="true" date-format="'+appConfig.timeFormat.replace('tt','a')+'" ';
+			template = template + 'data-time-only="true" date-format="'+appConfig.timeFormat.replace('tt','a')+'" ng-blur="swInput.pushBindings()"';
 		}
 		if(this.fieldType === 'date'){
 			template = template + 'data-date-only="true" future-only date-format="'+appConfig.dateFormat+'" ';
@@ -288,6 +292,10 @@ class SWInputController{
 
         this.inputAttributes = this.utilityService.replaceAll(this.inputAttributes,"'",'"');
         this.value = this.utilityService.getPropertyValue(this.object,this.property);
+    }
+    
+    public pushBindings = ()=>{
+        this.observerService.notify('updateBindings').then(()=>{});    
     }
 
 	public $onInit = ()=>{

@@ -86,7 +86,11 @@ component displayname="Access" entityname="SlatwallAccess" table="SwAccess" pers
 	// =============== START: Custom Validation Methods ====================
 	
 	public boolean function hasUsageOrUsageBenefitOrUsageBenefitAccount() {
-		if(!isNull(getSubscriptionUsage()) || !isNull(getSubscriptionUsageBenefit()) || !isNull(getsubscriptionUsageBenefitAccount())) {
+		if(
+			!isNull(getSubscriptionUsage()) 
+			|| !isNull(getSubscriptionUsageBenefit()) 
+			|| !isNull(getsubscriptionUsageBenefitAccount())
+		) {
 			return true;
 		}
 		return false;

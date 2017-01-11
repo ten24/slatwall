@@ -262,6 +262,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return false;
 	}
 
+	public void function deleteCategoryByCMSCategoryID(required string cmsCategoryID){
+		getContentDao().deleteCategoryByCMSCategoryID(argumentCollection=arguments);
+	}
+
 	// =====================  END: Delete Overrides ===========================
 }
 

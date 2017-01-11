@@ -59,7 +59,7 @@ class SWFormFieldController {
 	}
 
 	public formFieldChanged = (option)=>{
-
+        
 		if(this.fieldType === 'yesno'){
 			this.object.data[this.property] = option.value;
 

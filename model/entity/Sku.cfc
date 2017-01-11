@@ -403,11 +403,14 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// END: Image Methods
 
 	public boolean function getEventConflictExistsFlag() {
-		var eventConflictsSmartList = getService("skuService").getEventConflictsSmartList(sku=this);
+		if(this.setting('skuEventEnforceConflicts')){
+			var eventConflictsSmartList = getService("skuService").getEventConflictsSmartList(sku=this);
 		
-		if(eventConflictsSmartList.getRecordsCount() GT 0) {
-			return true;
+			if(eventConflictsSmartList.getRecordsCount() GT 0) {
+				return true;
+			}
 		}
+		
 		return false;
 	}
 
@@ -1026,14 +1029,13 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return variables.stocksDeletableFlag;
 	}
 	
-	public string function getSkuDefinitionByBaseProductType(
-		string baseProductType
-	){
+	public string function getSkuDefinitionByBaseProductType(string baseProductType){
+		
 		var skuDefinition = "";
+		
 		if(isNull(arguments.baseProductType)){
 			arguments.baseProductType = "";
 		}
-		
 		switch (arguments.baseProductType)
 		{
 			case "merchandise":
@@ -1048,9 +1050,15 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 			case "event":
 				var configs = this.getLocationConfigurations();
-				for(config in configs){
-					skuDefinition = skuDefinition & config.getlocationPathName() & " (#config.getLocationConfigurationName()#) <br>";
+				
+				for (var i=1; i <= this.getLocationConfigurationsCount(); i++ ){
+					skuDefinition = skuDefinition & configs[i].getlocationPathName() & "(#configs[i].getLocationConfigurationName()#)";
+				
+					if (i != this.getLocationConfigurationsCount()){
+						skuDefinition = skuDefinition & ', ';
+					}
 				}
+				
 				break;
 
 			default:

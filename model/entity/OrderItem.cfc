@@ -81,8 +81,8 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 	// Related Object Properties (many-to-many)
 
-	property name="shippingMethodOptionSplitShipments" singularname="shippingMethodOptionSplitShipment" cfc="ShippingMethodOptionSplitShipment" fieldtype="many-to-many" linktable="SwShipMethodOptSplitShipOrdItm" inversejoincolumn="shipMethodOptSplitShipmentID" fkcolumn="orderItemID"; 
-	
+	property name="shippingMethodOptionSplitShipments" singularname="shippingMethodOptionSplitShipment" cfc="ShippingMethodOptionSplitShipment" fieldtype="many-to-many" linktable="SwShipMethodOptSplitShipOrdItm" inversejoincolumn="shipMethodOptSplitShipmentID" fkcolumn="orderItemID";
+
 
 	// Remote properties
 	property name="publicRemoteID" ormtype="string" hb_populateEnabled="public";
@@ -112,7 +112,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="productBundlePrice" persistent="false" hb_formatType="currency";
 	property name="productBundleGroupPrice" persistent="false" hb_formatType="currency";
 	property name="salePrice" type="struct" persistent="false";
-	property name="totalWeight" persistent="false"; 
+	property name="totalWeight" persistent="false";
 
 
 	public numeric function getNumberOfUnassignedGiftCards(){
@@ -151,9 +151,9 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
         return orderItemGiftRecipientSmartList;
     }
 
-	public numeric function getTotalWeight() { 
-		return precisionEvaluate(getSku().getWeight() * getQuantity()); 	
-	} 
+	public numeric function getTotalWeight() {
+		return precisionEvaluate(getSku().getWeight() * getQuantity());
+	}
 
 	public numeric function getMaximumOrderQuantity() {
 		var maxQTY = 0;
@@ -187,9 +187,9 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 						quantity += orderItem.getQuantity();
 					}
 				}
-			} else { 
-				quantity = getQuantity(); 
-			} 
+			} else {
+				quantity = getQuantity();
+			}
             return quantity <= getMaximumOrderQuantity();
         }
         return true;
@@ -204,9 +204,9 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 						quantity += orderItem.getQuantity();
 					}
 				}
-			} else { 
-				quantity = getQuantity(); 
-			} 
+			} else {
+				quantity = getQuantity();
+			}
             return quantity >= getSku().setting('skuOrderMinimumQuantity');
         }
         return true;
@@ -306,9 +306,9 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 		if(!isNull(getSku()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
 			for(var childOrderItem in this.getChildOrderItems()){
-				discountAmount = precisionEvaluate(discountAmount + childOrderItem.getDiscountAmount()); 
-			} 
-		} 
+				discountAmount = precisionEvaluate(discountAmount + childOrderItem.getDiscountAmount());
+			}
+		}
 
 		return discountAmount;
 	}
@@ -322,8 +322,8 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		}else if(!isNull(getPrice())){
 			price = getPrice();
 		}
+		return val(precisionEvaluate("round(price * val(getQuantity()) * 100) / 100"));
 
-		return precisionEvaluate(round(price * val(getQuantity()) * 100) / 100);
 	}
 
 
@@ -333,10 +333,10 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		//then get the price of it's componenets and add them
 		for(var childOrderItem in this.getChildOrderItems()){
 			var childProductBundleGroupPrice = getProductBundleGroupPrice(childOrderItem);
-			var childQuantity = childOrderItem.getQuantity();			
+			var childQuantity = childOrderItem.getQuantity();
 			//if we have a package quantity use that instead
 			if(!isNull(childOrderItem.getBundleItemQuantity())){
-				childQuantity = childOrderItem.getBundleItemQuantity(); 
+				childQuantity = childOrderItem.getBundleItemQuantity();
 			}
 			productBundlePrice += precisionEvaluate(childProductBundleGroupPrice * childQuantity);
 		}
@@ -440,22 +440,24 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		return taxLiabilityAmount;
 	}
 
-	public void function setQuantity(required numeric quantity){ 
+	public void function setQuantity(required numeric quantity){
 		variables.quantity = arguments.quantity;
 		if(this.isRootOrderItem()){
 			for(var childOrderItem in this.getChildOrderItems()){
-				var newQuantity = PrecisionEvaluate(childOrderItem.getBundleItemQuantity() * variables.quantity);
-				childOrderItem.setQuantity(newQuantity); 
+				if (!isNull(childOrderItem.getBundleItemQuantity()) && structKeyExists(variables, "quantity")){
+					var newQuantity = PrecisionEvaluate(childOrderItem.getBundleItemQuantity() * variables.quantity);
+					childOrderItem.setQuantity(newQuantity);
+				}
 			}
-		}	
-	}	
+		}
+	}
 
 	public void function setBundleItemQuantity(required numeric bundleItemQuantity){
 		if(!this.isRootOrderItem()){
-			variables.bundleItemQuantity = arguments.bundleItemQuantity; 
-			variables.quantity = PrecisionEvaluate(getParentOrderItem().getQuantity() * variables.bundleItemQuantity); 
-		} 
-	} 
+			variables.bundleItemQuantity = arguments.bundleItemQuantity;
+			variables.quantity = PrecisionEvaluate(getParentOrderItem().getQuantity() * variables.bundleItemQuantity);
+		}
+	}
 
 	public numeric function getQuantityDelivered() {
 		var quantityDelivered = 0;
@@ -676,7 +678,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	public void function removeAttributeValue(required any attributeValue) {
 		arguments.attributeValue.removeOrderItem( this );
 	}
-	
+
 	// Event Registrations (one-to-many)
  	public void function addEventRegistration(required any eventRegistration) {
 		arguments.eventRegistration.setOrderItem( this );
@@ -692,7 +694,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	public void function removeChildOrderItem(required any childOrderItem) {
 		arguments.childOrderItem.removeParentOrderItem( this );
 	}
-	
+
 	// Order Delivery Items (one-to-many)
 	public void function addOrderDeliveryItem(required any orderDeliveryItem) {
 		arguments.orderDeliveryItem.setOrderItem( this );

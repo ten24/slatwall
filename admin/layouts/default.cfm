@@ -98,6 +98,7 @@ Notes:
 				var printWindow = window.open('#request.slatwallScope.getBaseURL()#?slatAction=admin:print.default', '_blank');
 			</script>
 		</cfif>
+		<script src='https://www.google.com/recaptcha/api.js'></script>
 	</head>
 
 	<!--- Start old navbar --->

@@ -65,7 +65,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="calculatedQATS" ormtype="integer" description="Stores the latest calculation of the dynamic 'qats' property which in turn calculates from the defaultSku's dynamic qats property.";
 	property name="calculatedAllowBackorderFlag" ormtype="boolean" description="Stores the value of the 'Allow Backorder' setting.  This is commonly used to drive dynamic product lists on the frontend where availability is important." deprecated="true" deprecatedDescription="Because the calculatedQATS propert takes into account if a product is able to be backordered, this property is no longer needed and will be removed in a future release for performance reasons.";
 	property name="calculatedTitle" ormtype="string" description="Stores the latest calculation of the products marketing 'Title' which is generated based on a dynamic string template in the products settings.";
-
+	property name="calculatedProductRating" ormtype="big_decimal" description="Stores the latest calculation of the products Rating which is generated based on the average rating of productReviews.";
+	
 	// Related Object Properties (many-to-one)
 	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID" hb_optionsNullRBKey="define.none" fetch="join";
 	property name="productType" cfc="ProductType" fieldtype="many-to-one" fkcolumn="productTypeID" fetch="join";
@@ -130,6 +131,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="unusedProductOptions" type="array" persistent="false";
 	property name="unusedProductOptionGroups" type="array" persistent="false";
 	property name="unusedProductSubscriptionTerms" type="array" persistent="false";
+	property name="productRating" type="numeric" persistent="false";
 
 	// Non-Persistent Properties - Delegated to default sku
 	property name="currentAccountPrice" hb_formatType="currency" persistent="false";
@@ -397,10 +399,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 				var resizeSizesCount = arrayLen(arguments.resizeSizes);
 				for(var s=1; s<=resizeSizesCount; s++) {
 
-					var resizeImageData={
-						imagePath=getService('imageService').getProductImagePathByImageFile(skuData['imageFile']),
-						size=arguments.resizeSizes[s].size
-					};
+					var resizeImageData = arguments.resizeSizes[s];
+					resizeImageData.imagePath = getService('imageService').getProductImagePathByImageFile(skuData['imageFile']);
 
 					arrayAppend(
 						thisImage.resizedImagePaths,
@@ -440,12 +440,12 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 				var resizesCount = arrayLen(arguments.resizeSizes);
 				for(var s=1; s<=resizesCount; s++) {
-					var resizeImageData={
-						alt=imageAltString,
-						missingImagePath=missingImagePath,
-						imagePath=getService('imageService').getImagePathByImageFileAndDirectory(productImageData['imageFile'],productImageData['directory']),
-						size=arguments.resizeSizes[s].size
-					};
+
+					var resizeImageData = arguments.resizeSizes[s];
+					resizeImageData.alt = imageAltString;
+					resizeImageData.missingImagePath = missingImagePath;
+					resizeImageData.imagePath = getService('imageService').getImagePathByImageFileAndDirectory(productImageData['imageFile'],productImageData['directory']);
+
 					arrayAppend(
 						thisImage.resizedImagePaths,
 						getService("imageService").getResizedImagePath(argumentCollection=resizeImageData)
@@ -1090,7 +1090,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	*/
 	public array function getUnusedProductOptionGroups() {
 		if( !structKeyExists(variables, "unusedProductOptionGroups") ) {
-			variables.unusedProductOptionGroups = getService('optionService').getUnusedProductOptionGroups( getProductType().getProductTypeID(), structKeyList(getOptionGroupsStruct()) );
+			variables.unusedProductOptionGroups = getService('optionService').getUnusedProductOptionGroups( getProductType().getProductTypeIDPath(), structKeyList(getOptionGroupsStruct()) );
 		}
 		return variables.unusedProductOptionGroups;
 	}

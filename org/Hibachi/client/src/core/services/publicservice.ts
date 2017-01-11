@@ -56,7 +56,7 @@ class PublicService {
         this.accountService = accountService;
         this.requestService = requestService;
         this.appConfig = appConfig;
-        this.baseActionPath = this.appConfig.baseURL+"index.cfm/api/scope/"; //default path
+        this.baseActionPath = this.appConfig.baseURL+"/index.cfm/api/scope/"; //default path
         this.confirmationUrl = "/order-confirmation";
         this.$http = $http;
         this.$location = $location;
@@ -145,7 +145,7 @@ class PublicService {
 
             if(setter == 'cart'||setter=='account'){
                 //cart and account return cart and account info flat
-                this[setter].populate(result)
+                this[setter].populate(result);
 
             }else{
                 //other functions reutrn cart,account and then data

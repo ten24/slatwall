@@ -93,6 +93,7 @@ component extends="FW1.framework" {
 	variables.framework.hibachi.noaccessDefaultItem = 'noaccess';
 	variables.framework.hibachi.sessionCookieDomain = "";
 	variables.framework.hibachi.lineBreakStyle = SERVER.OS.NAME;
+	variables.framework.hibachi.disableFullUpdateOnServerStartup = false;
 	
 	// Allow For Application Config
 	try{include "../../config/configFramework.cfm";}catch(any e){}
@@ -246,12 +247,6 @@ component extends="FW1.framework" {
 						account.setJwtToken(jwt);
 						getHibachiScope().getSession().setAccount( account );
 					}
-				}
-			// If there is no account on the session, then we can look for an authToken to setup that account for this one request
-			}else if(!getHibachiScope().getLoggedInFlag() && structKeyExists(request, "context") && structKeyExists(request.context, "authToken") && len(request.context.authToken)) {
-				var authTokenAccount = getHibachiScope().getDAO('hibachiDAO').getAccountByAuthToken(authToken=request.context.authToken);
-				if(!isNull(authTokenAccount)) {
-					getHibachiScope().getSession().setAccount( authTokenAccount );
 				}
 			}
 			
@@ -448,8 +443,11 @@ component extends="FW1.framework" {
 		// Check to see if out application stuff is initialized
 		if(!getHibachiScope().hasApplicationValue("initialized") || !getHibachiScope().getApplicationValue("initialized")) {
 			// If not, lock the application until this is finished
-			lock scope="Application" timeout="240"  {
+			lock scope="Application" timeout="600"  {
 				
+				// Set the request timeout to 600
+				createObject("Slatwall.org.Hibachi.HibachiTagService").cfsetting(requesttimeout=600);
+						
 				// Check again so that the qued requests don't back up
 				if(!getHibachiScope().hasApplicationValue("initialized") || !getHibachiScope().getApplicationValue("initialized")) {
 					
@@ -575,6 +573,9 @@ component extends="FW1.framework" {
 					if(!coreBF.containsBean("hibachiJWT")){
 						coreBF.declareBean("hibachiJWT", "#variables.framework.applicationKey#.org.Hibachi.HibachiJWT",false);
 					}
+					if(!coreBF.containsBean("hibachiRecaptcha")){
+						coreBF.declareBean("hibachiRecaptcha", "#variables.framework.applicationKey#.org.Hibachi.hibachiRecaptcha",false);
+					}
 					
 					
 					// Setup the custom bean factory
@@ -618,13 +619,23 @@ component extends="FW1.framework" {
 					// Call the onFirstRequest() Method for the parent Application.cfc
 					onFirstRequest();
 					
+					var runFullUpdate = !variables.framework.hibachi.disableFullUpdateOnServerStartup 
+						&& (
+							!structKeyExists(server,'runFullUpdate') 
+							|| (structKeyExists(server,'runFullUpdate') && server.runFullUpdate
+						)
+					);
 					// ============================ FULL UPDATE =============================== (this is only run when updating, or explicitly calling it by passing update=true as a url key)
-					if(!fileExists(expandPath('/#variables.framework.applicationKey#/custom/config') & '/lastFullUpdate.txt.cfm') || (structKeyExists(url, variables.framework.hibachi.fullUpdateKey) && url[ variables.framework.hibachi.fullUpdateKey ] == variables.framework.hibachi.fullUpdatePassword)){
+					if(
+						!fileExists(expandPath('/#variables.framework.applicationKey#/custom/config') & '/lastFullUpdate.txt.cfm') 
+						|| (
+							structKeyExists(url, variables.framework.hibachi.fullUpdateKey) 
+							&& url[ variables.framework.hibachi.fullUpdateKey ] == variables.framework.hibachi.fullUpdatePassword
+						)
+						|| runFullUpdate
+					){
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - Full Update Initiated");
-						
-						// Set the request timeout to 360
-						getHibachiScope().getService("hibachiTagService").cfsetting(requesttimeout=600);
-						
+						server.runFullUpdate = false;
 						//Update custom properties
 						var success = getHibachiScope().getService('updateService').updateEntitiesWithCustomProperties();
 						if (success){
@@ -632,11 +643,12 @@ component extends="FW1.framework" {
 						}else{
 							writeLog(file="Slatwall", text="General Log - Error updating entities with custom properties");
 						}
+						
 						// Reload ORM
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() started");
 						ormReload();
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() was successful"); 
-							
+						
 						onUpdateRequest();
 						
 						// Write File
@@ -674,16 +686,29 @@ component extends="FW1.framework" {
 		}
 	}
 	
+	public void function populateAPIHeaders(){
+		param name="request.context.headers" default="#structNew()#"; 
+		if(!structKeyExists(request.context.headers,'Content-Type')){
+			request.context.headers['Content-Type'] = 'application/json';
+		}
+		var context = getPageContext();
+		context.getOut().clearBuffer();
+		var response = context.getResponse();
+		if(structKeyExists(request.context,'headers')){
+			for(var header in request.context.headers){
+				response.setHeader(header,request.context.headers[header]);
+			}
+		}
+	}
+	
 	public void function renderApiResponse(){
-		param name="request.context.headers.contentType" default="application/json";
+		
 		param name="request.context.apiResponse.content" default="#structNew()#"; 
 		//need response header for api
 		var context = getPageContext();
 		context.getOut().clearBuffer();
 		var response = context.getResponse();
-		for(var header in request.context.headers){
-			response.setHeader(header,request.context.headers[header]);
-		}
+		populateAPIHeaders();
 		var responseString = '';
 		
 		if(structKeyExists(request.context, "messages")) {
@@ -700,7 +725,7 @@ component extends="FW1.framework" {
 		}
 		
 		//leaving a note here in case we ever wish to support XML for api responses
-		if(isStruct(request.context.apiResponse.content) && request.context.headers.contentType eq 'application/json'){
+		if(isStruct(request.context.apiResponse.content) && request.context.headers['Content-Type'] eq 'application/json'){
 			responseString = serializeJSON(request.context.apiResponse.content);
 			
 			// If running CF9 we need to fix strings that were improperly cast to numbers
@@ -708,7 +733,7 @@ component extends="FW1.framework" {
 				responseString = getHibachiScope().getService("hibachiUtilityService").updateCF9SerializeJSONOutput(responseString);
 			}
 		}
-		if(isStruct(request.context.apiResponse.content) && request.context.headers.contentType eq 'application/xml'){
+		if(isStruct(request.context.apiResponse.content) && request.context.headers['Content-Type'] eq 'application/xml'){
 			//response String to xml placeholder
 		}
 		writeOutput( responseString );
@@ -732,6 +757,7 @@ component extends="FW1.framework" {
 		}		
 		// Check for an Ajax Response
 		if(request.context.ajaxRequest && !structKeyExists(request, "exception")) {
+			populateAPIHeaders();
 			if(isStruct(request.context.ajaxResponse)){
 				if(structKeyExists(request.context, "messages")) {
 					request.context.ajaxResponse["messages"] = request.context.messages;	

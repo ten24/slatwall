@@ -86,23 +86,24 @@ class SWOrderItems{
 
 					var orderItemCollection = collectionConfigService.newCollectionConfig('OrderItem');
  					orderItemCollection.setDisplayProperties(
- 						'orderItemID,currencyCode,sku.skuName'+
-                         ',price,skuPrice,sku.skuID,sku.skuCode,productBundleGroup.productBundleGroupID,sku.product.productID'+
- 						',sku.product.productName,sku.product.productDescription,sku.eventStartDateTime'+
- 						',quantity,orderFulfillment.fulfillmentMethod.fulfillmentMethodName,orderFulfillment.orderFulfillmentID'+
- 						',orderFulfillment.shippingAddress.streetAddress'+
-     					',orderFulfillment.shippingAddress.street2Address,orderFulfillment.shippingAddress.postalCode,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode'+
- 						',orderFulfillment.shippingAddress.countryCode'+
-                         ',orderItemType.systemCode,orderFulfillment.fulfillmentMethod.fulfillmentMethodType'+
-                         ',orderFulfillment.pickupLocation.primaryAddress.address.streetAddress,orderFulfillment.pickupLocation.primaryAddress.address.street2Address'+
-                         ',orderFulfillment.pickupLocation.primaryAddress.address.city,orderFulfillment.pickupLocation.primaryAddress.address.stateCode'+
-                         ',orderFulfillment.pickupLocation.primaryAddress.address.postalCode'+
- 						',itemTotal,discountAmount,taxAmount,extendedPrice,productBundlePrice,sku.baseProductType'+
-                         ',sku.subscriptionBenefits'+
-                         ',sku.product.productType.systemCode,sku.options,sku.locations'+
- 						',sku.subscriptionTerm.subscriptionTermName'+
- 						',sku.imageFile'+
- 					   ''
+ 						`orderItemID,currencyCode,sku.skuName
+                         ,price,skuPrice,sku.skuID,sku.skuCode,productBundleGroup.productBundleGroupID,sku.product.productID
+ 						,sku.product.productName,sku.product.productDescription,sku.eventStartDateTime
+ 						,quantity,orderFulfillment.fulfillmentMethod.fulfillmentMethodName,orderFulfillment.orderFulfillmentID
+ 						,orderFulfillment.shippingAddress.streetAddress
+     					,orderFulfillment.shippingAddress.street2Address,orderFulfillment.shippingAddress.postalCode,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode
+ 						,orderFulfillment.shippingAddress.countryCode
+                         ,orderItemType.systemCode,orderFulfillment.fulfillmentMethod.fulfillmentMethodType
+                         ,orderFulfillment.pickupLocation.primaryAddress.address.streetAddress,orderFulfillment.pickupLocation.primaryAddress.address.street2Address
+                         ,orderFulfillment.pickupLocation.primaryAddress.address.city,orderFulfillment.pickupLocation.primaryAddress.address.stateCode
+                         ,orderFulfillment.pickupLocation.primaryAddress.address.postalCode
+ 						,itemTotal,discountAmount,taxAmount,extendedPrice,productBundlePrice,sku.baseProductType
+                         ,sku.subscriptionBenefits
+                         ,sku.product.productType.systemCode,sku.options,sku.locations
+ 						,sku.subscriptionTerm.subscriptionTermName
+ 						,sku.imageFile,
+                        stock.location.locationName`
+ 					   
                       )
  					.addFilter('order.orderID',scope.orderId)
  					.addFilter('parentOrderItem','null','IS')
