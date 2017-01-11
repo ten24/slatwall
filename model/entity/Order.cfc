@@ -165,11 +165,6 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="orderService" persistent="false" type="any";
 	property name='orderDAO' persistent="false" type="any";
 
-	//CUSTOM PROPERTIES BEGIN
-property name="customerNote" ormtype="string" type="string";
-	property name="orderExportedDateTime" ormtype="timestamp";
-	property name="preferredLocation" hb_populateEnabled="public" cfc="Location" fieldtype="many-to-one" fkcolumn="preferredLocationID";//CUSTOM PROPERTIES END
-
 	public void function init(){
 		setOrderService(getService('orderService'));
 		setOrderDao(getDAO('OrderDAO'));
