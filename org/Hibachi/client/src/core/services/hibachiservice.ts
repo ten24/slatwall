@@ -319,7 +319,6 @@ class HibachiService{
 		})
 	};
 	checkUniqueValue = (object, property, value) => {
-		console.log("checkUnique", object.$$getID());
 		var objectName = object.metaData.className;
 		var objectID = object.$$getID(); 
 		return this.$http.get(this.getUrlWithActionPrefix()+'api:main.getValidationPropertyStatus&object=' + objectName + '&objectID=' + objectID + '&propertyidentifier=' + property +

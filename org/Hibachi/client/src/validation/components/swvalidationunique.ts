@@ -16,7 +16,6 @@ class SWValidationUnique{
                 ngModel.$asyncValidators.swvalidationunique = (modelValue, viewValue)=> {
 
                     var currentValue = modelValue || viewValue;
-                    var objectName = controllers[1].object.metaData.className;
                     var property = controllers[1].property;
                     return validationService.validateUnique(currentValue,controllers[1].object,property);
                 };
