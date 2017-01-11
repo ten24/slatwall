@@ -155,6 +155,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
   		getService("PublicService").addOrderItems(rc);
   		
   	}
+
+	public void function cancel(required any rc) {
+		var order = getOrderService().process(getOrderService().getOrder(rc.orderID), {}, "cancelOrder");
+		if( !order.hasErrors() ) {
+			getHibachiScope().addActionResult( "public:cart.cancel", false); 
+		} else {
+			getHibachiScope().addActionReuslt( "public:cart.cancel", true); 
+		} 
+	} 
  	
 	// Guest Account
 	public void function guestAccount(required any rc) {
