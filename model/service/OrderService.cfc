@@ -2713,7 +2713,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							
 							if (!isNull(stock)){
 								orderItem.setStock(stock);
-								throw("Set the stock");
 								getService("OrderService").saveOrderItem(orderItem);
 							}
 						}
