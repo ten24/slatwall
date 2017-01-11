@@ -866,29 +866,31 @@ component extends="HibachiService"  accessors="true" output="false"
         
         var cart = getHibachiScope().cart();
         
-        // Check to see if we can attach the current account to this order, required to apply price group details
-        if( isNull(cart.getAccount()) && getHibachiScope().getLoggedInFlag() ) {
-            cart.setAccount( getHibachiScope().getAccount() );
-        }
-        
-        cart = getOrderService().processOrder( cart, arguments.data, 'addOrderItem');
-        
-        getHibachiScope().addActionResult( "public:cart.addOrderItem", cart.hasErrors() );
-        
-        if(!cart.hasErrors()) {
-            // If the cart doesn't have errors then clear the process object
-            cart.clearProcessObject("addOrderItem");
-            
-            // Also make sure that this cart gets set in the session as the order
-            getHibachiScope().getSession().setOrder( cart );
-            
-            // Make sure that the session is persisted
-            getHibachiSessionService().persistSession();
-            
-        }else{
-            addErrors(data, getHibachiScope().getCart().getProcessObject("addOrderItem").getErrors());
-        }
-        
+        //lock to help with double click.
+        lock name="order_#cart.getOrderID()#" timeout="60" {
+ 	        // Check to see if we can attach the current account to this order, required to apply price group details
+ 	        if( isNull(cart.getAccount()) && getHibachiScope().getLoggedInFlag() ) {
+ 	            cart.setAccount( getHibachiScope().getAccount() );
+ 	        }
+ 	        
+ 	        cart = getOrderService().processOrder( cart, arguments.data, 'addOrderItem');
+ 	        
+ 	        getHibachiScope().addActionResult( "public:cart.addOrderItem", cart.hasErrors() );
+ 	        
+ 	        if(!cart.hasErrors()) {
+ 	            // If the cart doesn't have errors then clear the process object
+ 	            cart.clearProcessObject("addOrderItem");
+ 	            
+ 	            // Also make sure that this cart gets set in the session as the order
+ 	            getHibachiScope().getSession().setOrder( cart );
+ 	            
+ 	            // Make sure that the session is persisted
+ 	            getHibachiSessionService().persistSession();
+ 	            
+ 	        }else{
+ 	            addErrors(data, getHibachiScope().getCart().getProcessObject("addOrderItem").getErrors());
+ 	        }
+    	}
     }
     /** 
      * @http-context updateOrderItemQuantity
