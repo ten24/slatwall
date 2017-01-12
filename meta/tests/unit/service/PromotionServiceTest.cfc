@@ -303,7 +303,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var price = 8;
 		var quantity = 7;
 		//data setup end
-		//amountOff discountAmount = precisionEvaluate(originalAmount - roundedFinalAmount);
+		//amountOff discountAmount = val(precisionEvaluate(originalAmount - roundedFinalAmount));
 		var discountAmount = variables.service.getDiscountAmount(promotionReward,price,quantity);
 		assertEquals(discountAmount,39.01);
 	}
@@ -339,7 +339,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var price = 8;
 		var quantity = 7;
 		//data setup end
-		//percentage off precisionEvaluate(originalAmount * (reward.getAmount()/100))
+		//percentage off val(precisionEvaluate(originalAmount * (reward.getAmount()/100)))
 		var discountAmount = variables.service.getDiscountAmount(promotionReward,price,quantity);
 		assertEquals(discountAmount,11.2);
 	}
@@ -357,7 +357,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var price = 8;
 		var quantity = 7;
 		//data setup end
-		//amount precisionEvaluate((arguments.price - reward.getAmount()) * arguments.quantity)
+		//amount val(precisionEvaluate((arguments.price - reward.getAmount()) * arguments.quantity))
 		var discountAmount = variables.service.getDiscountAmount(promotionReward,price,quantity);
 		assertEquals(discountAmount,42);
 	}

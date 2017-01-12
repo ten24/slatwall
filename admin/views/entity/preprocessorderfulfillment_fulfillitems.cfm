@@ -72,8 +72,7 @@ Notes:
 				</cfif>
 
 				<!--- Location --->
-				<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('entity.location')#" fieldName="location.locationID" valueOptions="#$.slatwall.getService('locationService').getLocationOptions()#" fieldType="select" edit="true" />
-
+				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="pickupLocation" edit="#rc.edit#">
 				<hr />
 
 				<!--- Items Selector --->

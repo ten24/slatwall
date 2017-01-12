@@ -17,6 +17,7 @@ import {SWSkuStockAdjustmentModalLauncher} from "./components/swskustockadjustme
 import {SWDefaultSkuRadio} from "./components/swdefaultskuradio"; 
 import {SWSkuCurrencySelector} from "./components/swskucurrencyselector";
 import {SWSkuPriceEdit} from "./components/swskupriceedit";
+import {SWSkuCodeEdit} from "./components/swskucodeedit"; 
 import {SWSkuPricesEdit} from "./components/swskupricesedit";
 import {SWSkuPriceQuantityEdit} from "./components/swskupricequantityedit";
 import {SWSkuThumbnail} from "./components/swskuthumbnail";
@@ -41,6 +42,7 @@ var skumodule = angular.module('hibachi.sku',[coremodule.name]).config(()=>{
 .directive('swDefaultSkuRadio', SWDefaultSkuRadio.Factory())
 .directive('swSkuCurrencySelector', SWSkuCurrencySelector.Factory())
 .directive('swSkuPriceEdit', SWSkuPriceEdit.Factory())
+.directive('swSkuCodeEdit', SWSkuCodeEdit.Factory())
 .directive('swSkuPricesEdit', SWSkuPricesEdit.Factory())
 .directive('swSkuPriceQuantityEdit', SWSkuPriceQuantityEdit.Factory())
 .directive('swSkuThumbnail', SWSkuThumbnail.Factory())
