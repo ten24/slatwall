@@ -277,12 +277,17 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 
 	public void function cancelOrder(required any rc) {
-		var order = getOrderService().process(getOrderService().getOrder(rc.orderID), {}, "cancelOrder");
-		if( !order.hasErrors() ) {
-			getHibachiScope().addActionResult( "public:cart.cancel", false); 
+		var order = getOrderService().getOrder( arguments.rc.orderID );
+		if(!isNull(order) && order.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID()){
+			var order = getOrderService().process( order, {}, "cancelOrder");
+			if( !order.hasErrors() ) {
+				getHibachiScope().addActionResult( "public:account.cancelOrder", false); 
+			} else {
+				getHibachiScope().addActionResult( "public:account.cancelOrder", true); 
+			}
 		} else {
-			getHibachiScope().addActionReuslt( "public:cart.cancel", true); 
-		} 
+			getHibachiScope().addActionResult( "public:account.cancelOrder", true); 
+		}  
 	} 
 
 	public void function duplicateOrder() {
