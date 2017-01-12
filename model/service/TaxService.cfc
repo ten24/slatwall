@@ -114,7 +114,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 					// Setup the orderItem level taxShippingAddress
 					structDelete(taxAddresses, "taxShippingAddress");
-					if(!isNull(orderItem.getOrderFulfillment()) && orderItem.getOrderFulfillment().getFulfillmentMethodType() eq 'pickup' && !isNull(orderItem.getOrderFulfillment().getPickupLocation()) && !isNull(orderItem.getOrderFulfillment().getPickupLocation().getPrimaryAddress()) {
+					if(!isNull(orderItem.getOrderFulfillment()) && orderItem.getOrderFulfillment().getFulfillmentMethodType() == 'pickup' && !isNull(orderItem.getOrderFulfillment().getPickupLocation()) && !isNull(orderItem.getOrderFulfillment().getPickupLocation().getPrimaryAddress()) ) {
 						taxAddresses.taxShippingAddress = orderItem.getOrderFulfillment().getPickupLocation().getPrimaryAddress().getAddress();
 					} else if(!isNull(orderItem.getOrderFulfillment()) && !getHibachiValidationService().validate(object=orderItem.getOrderFulfillment().getShippingAddress(), context="full", setErrors=false).hasErrors()) {
 						taxAddresses.taxShippingAddress = orderItem.getOrderFulfillment().getShippingAddress();
@@ -383,7 +383,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 				// Setup the orderItem level taxShippingAddress
 				structDelete(taxAddresses, "taxShippingAddress");
-				if(!isNull(orderItem.getOrderFulfillment()) && orderItem.getOrderFulfillment().getFulfillmentMethodType() eq 'pickup' && !isNull(orderItem.getOrderFulfillment().getPickupLocation()) && !isNull(orderItem.getOrderFulfillment().getPickupLocation().getPrimaryAddress()) {
+				if(!isNull(orderItem.getOrderFulfillment()) && orderItem.getOrderFulfillment().getFulfillmentMethodType() eq 'pickup' && !isNull(orderItem.getOrderFulfillment().getPickupLocation()) && !isNull(orderItem.getOrderFulfillment().getPickupLocation().getPrimaryAddress()) ) {
 					taxAddresses.taxShippingAddress = orderItem.getOrderFulfillment().getPickupLocation().getPrimaryAddress().getAddress();
 				} else if(!isNull(orderItem.getOrderFulfillment()) && !getHibachiValidationService().validate(object=orderItem.getOrderFulfillment().getShippingAddress(), context="full", setErrors=false).hasErrors()) {
 					taxAddresses.taxShippingAddress = orderItem.getOrderFulfillment().getShippingAddress();
