@@ -159,15 +159,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
        if(arguments.processObject.getTransactionType() == 'credit'){
 
-         	var creditProcessObject = arguments.giftCard.getProcessObject('addCredit');
-           	creditProcessObject.setCreditAmount(arguments.processObject.getAmount()); 
-            return this.processGiftCard(arguments.GiftCard, creditProcessObject, 'addCredit'); 
+         	var creditData = {
+         		creditAmount: arguments.processObject.getAmount();
+         	};
+
+            return this.processGiftCard(arguments.GiftCard, creditData, 'addCredit'); 
        
        } else if (arguments.processObject.getTransactionType() == 'debit'){
 
-            var debitProcessObject = arguments.giftcard.getProcessObject('addDebit'); 
-            debitProcessObject.setDebitAmount(arguments.processObject.getAmount()); 
-            return this.processGiftCard(arguments.giftCard, debitProcessObject, 'addDebit'); 
+            var debitData = {
+            	debitAmount: arguments.processObject.getAmount()
+            };
+            return this.processGiftCard(arguments.giftCard, debitData, 'addDebit'); 
        
        }
        return arguments.giftCard; 
