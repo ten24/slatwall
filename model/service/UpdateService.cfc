@@ -222,7 +222,8 @@ Notes:
 					</cfcatch>
 				</cftry>
 				<cfset script.setLastExecutedDateTime(now()) />
-				<cfset this.saveUpdateScript(script) />
+				<cfset getDao('HibachiDao').save(script) />
+				<cfset getDao('HibachiDao').flushORMSession()/>
 			</cfif>
 		</cfloop>
 	</cffunction>
