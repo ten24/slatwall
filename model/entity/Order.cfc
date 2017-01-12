@@ -159,6 +159,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="totalQuantity" persistent="false";
 	property name="totalSaleQuantity" persistent="false";
 	property name="totalReturnQuantity" persistent="false";
+	property name="totalDepositAmount" persistent="false" hb_formatType="currency";
 	
     //======= Mocking Injection for Unit Test ======	
 	property name="orderService" persistent="false" type="any";
@@ -943,7 +944,49 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		}
 		return saleQuantity;
 	}
-
+	
+	/** returns the sum of all deposits required on the order. we can
+ 	 *  tell if a deposit is required because a setting will indicate that they can pay a fraction
+ 	 *  of the whole. Returns the total deposit amount rounded to two decimal places IE. 3.495 becomes 3.50.
+ 	 */
+ 	public numeric function getTotalDepositAmount() {
+ 		var totalDepositAmount = 0;
+ 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
+ 			if(getOrderItems()[i].getOrderItemType().getSystemCode() eq "oitSale" && !isNull(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder"))  && len(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) != 0) {
+ 				if (getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder") == 0){
+ 					totalDepositAmount += val(precisionEvaluate("(getOrderItems()[i].getSku().setting('skuMinimumPercentageAmountRecievedRequiredToPlaceOrder')) * getOrderItems()[i].getExtendedPrice()")) ;	
+ 				}else if (getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder") > 0){
+ 					totalDepositAmount += val(precisionEvaluate("(getOrderItems()[i].getSku().setting('skuMinimumPercentageAmountRecievedRequiredToPlaceOrder')/100) * getOrderItems()[i].getExtendedPrice() ")) ;
+ 				}	
+ 			}
+ 		}
+ 		totalDepositAmount = val(precisionEvaluate("round(totalDepositAmount * 100)/100"));
+ 		return totalDepositAmount;
+ 	}
+ 	
+ 	public boolean function hasDepositItemsOnOrder(){
+ 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
+ 			if(getOrderItems()[i].getOrderItemType().getSystemCode() eq "oitSale" && !isNull(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) && len(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) != 0) {
+ 				
+ 				return true;
+ 			}
+ 		}
+ 		
+ 		return false;
+ 	}
+ 	
+ 	public boolean function hasNonDepositItemsOnOrder(){
+ 		//and has at least one sale item
+ 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
+ 			if(getOrderItems()[i].getOrderItemType().getSystemCode() eq "oitSale" && isNull(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder") || len(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) == 0)) {
+ 				return true;
+ 			}
+ 		}
+ 		return false;
+ 	}
+ 	
+ 	
+	
 	public numeric function getTotalReturnQuantity() {
 		var returnQuantity = 0;
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
