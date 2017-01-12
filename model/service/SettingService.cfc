@@ -207,7 +207,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalExtendedSessionAutoLogoutInDays = {fieldtype="text", defaultValue=5, validate={dataType="numeric", required=false}},
 			globalFileTypeWhiteList = {fieldtype="text", defaultValue="pdf,zip,xml,txt,csv,xls,doc,jpeg,jpg,png,gif"},
 			globalForceCreditCardOverSSL = {fieldtype="yesno",defaultValue=1},
-      		globalGiftCardMessageLength = {fieldType="text", defaultValue="250", validate={dataType="numeric",required=true,maxValue=4000}},
+			globalGiftCardMessageLength = {fieldType="text", defaultValue="250", validate={dataType="numeric",required=true,maxValue=4000}},
 			globalLogMessages = {fieldType="select",defaultValue="General"},
 			globalMaximumFulfillmentsPerOrder = {fieldtype="text", defaultValue=1000, validate={dataType="numeric", required=true}},
 			globalMIMETypeWhiteList = {fieldtype="text", defaultValue="image/jpeg,image/png,image/gif,text/csv,application/pdf,application/rss+xml,application/msword,application/zip,text/plain,application/vnd.ms-excel,"},

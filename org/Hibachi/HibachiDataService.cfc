@@ -15,7 +15,7 @@ component accessors="true" output="false" extends="HibachiService" {
 				if(arguments.useHeaderRow){
 					arguments.columnsList  = REReplaceNoCase(line, "[^a-zA-Z\d,]", "", "all");
 				}
-				var csvQuery = QueryNew(arguments.columnsList, arguments.listColumnTypes);
+				var csvQuery = QueryNew(arguments.columnsList, arguments.columnTypeList);
 				var numberOfColumns = listlen(line, ',', true); 
 			}
 			if(i > 1 && numberOfColumns == listLen(line, ',', true)){
@@ -432,7 +432,7 @@ component accessors="true" output="false" extends="HibachiService" {
 									break;
 								}
 							}
-							if(okToImport) {
+							if(okToImport && len(tableData[tableName].idcolumns)) {
 								// set the primary key ID for insert
 								primaryKeyValue = getHibachiScope().createHibachiUUID();
 								tableData[ tableName ].insertData[ tables[ tableName ][ "primaryKeyColumn" ] ] = {value = primaryKeyValue, dataType = 'varchar'};
