@@ -155,7 +155,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
   		getService("PublicService").addOrderItems(rc);
   		
   	}
-
  	
 	// Guest Account
 	public void function guestAccount(required any rc) {
