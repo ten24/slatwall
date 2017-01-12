@@ -304,7 +304,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 
 			}
-
+			
+			// Check the fullfillment for a pickup location.
+			if (!isNull(orderFulfillment.getPickupLocation())){
+				
+				// The item being added to the cart should have its stockID added based on that location
+				var location = orderFulfillment.getPickupLocation();
+				var stock = getService("StockService").getStockByLocationANDSku([location, arguments.processObject.getSku()], false);
+				
+				//If we found a stock for that location, then set the stock to the process.
+				if (!isNull(stock)){
+					arguments.processObject.setStock(stock);
+				}
+			}
+			
 			// Check for the sku in the orderFulfillment already, so long that the order doens't have any errors
 			if(!arguments.order.hasErrors()) {
 				for(var orderItem in orderFulfillment.getOrderFulfillmentItems()){
@@ -348,7 +361,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Create a new Order Item
 			var newOrderItem = this.newOrderItem();
 
-
+			if (!isNull(arguments.processObject.getStock())){
+				newOrderItem.setStock(arguments.processObject.getStock());	
+			}
+			
 			// Set Header Info
 			newOrderItem.setOrder( arguments.order );
 			newOrderItem.setPublicRemoteID( arguments.processObject.getPublicRemoteID() );
@@ -2685,7 +2701,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// Save the accountAddress if needed
 				arguments.orderFulfillment.checkNewAccountAddressSave();
 			}
-
+			
+			//Update the pickup location on the orderItem if the pickup location was updated on the orderFulfillment.
+			if(arguments.orderFulfillment.getFulfillmentMethodType() eq "pickup") {
+				if (!isNull(data.pickupLocation.locationID)){
+					var location = getService("LocationService").getLocation(data.pickupLocation.locationID);
+					if (!isNull(location)){
+						for (var orderItem in orderFulfillment.getOrderFulfillmentItems()){
+							//set the stock based on location.
+							var stock = getService("StockService").getStockByLocationANDSku([location, orderItem.getSku()], false);
+							
+							if (!isNull(stock)){
+								orderItem.setStock(stock);
+								getService("OrderService").saveOrderItem(orderItem);
+							}
+						}
+					}
+				}
+			}
 		}
 
 		// Recalculate the order amounts for tax and promotions
