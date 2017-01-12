@@ -153,11 +153,7 @@
 					data-no-text="No"
 					data-entity="orderItem"
 					ng-disabled="!orderItem.data.isDeletable"
-					ng-class="{'j-tool-tip-item': !orderItem.data.isDeletable}"
-					data-toggle="tooltip"
-					data-placement="top"
-					title
-					data-original-title="Item cannot be deleted once fulfilled."><i class="fa fa-trash"></i></button></li>
+					title="{{orderItem.data.isDeletable ? '' : 'You cannot delete fulfilled order items.'}}"><i class="fa fa-trash"></i></button></li>
 		</ul>
 	</td>
 </tr>
