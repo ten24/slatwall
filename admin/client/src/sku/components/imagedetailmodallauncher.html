@@ -5,11 +5,9 @@
                    >
     <sw-modal-button>
         <!-- Load Sku Image Here -->
-        <span ng-if="swImageDetailModalLauncher.sku"> 
-            <img src='{{swImageDetailModalLauncher.sku.data.imagePath}}' 
-                 class="s-responsive-image" 
-                />
-        </span> 
+        <div ng-if="swImageDetailModalLauncher.sku" class="table-image-wrapper" style="background-image: URL({{swImageDetailModalLauncher.sku.data.imagePath}})"> 
+            <!--- Image is a background image set in parent div --->
+        </div> 
     </sw-modal-button>
     <sw-modal-content> 
         <sw-form ng-if="swImageDetailModalLauncher.sku"
@@ -26,14 +24,14 @@
                     </div>
                 </div>-->
 
-                <div class="alert alert-info" id="j-multi-sku-message">
-                                    <strong>( {{swImageDetailModalLauncher.skusAffectedCount}} ) skus with the same option value will be effected.</strong>
-                                    <div>
-                                        <ul>
-                                            <li ng-repeat="option in swImageDetailModalLauncher.imageOptions">{{ option.data.optionGroup_optionGroupName }} : {{ option.data.optionName }} ( {{swImageDetailModalLauncher.skusAffectedCount}} )</li>
-                                        </ul>
-                                    </div>
-                                </div>
+                <div class="alert alert-info popup-alert-message" id="j-multi-sku-message">
+                    <strong>( {{swImageDetailModalLauncher.skusAffectedCount}} ) skus with the same option value will be effected.</strong>
+                    <div>
+                        <ul>
+                            <li ng-repeat="option in swImageDetailModalLauncher.imageOptions">{{ option.data.optionGroup_optionGroupName }} : {{ option.data.optionName }} ( {{swImageDetailModalLauncher.skusAffectedCount}} )</li>
+                        </ul>
+                    </div>
+                </div>
                 
                 <div class="col-xs-4 s-image-edit">
                     <sw-sku-thumbnail data-sku-data="swImageDetailModalLauncher.sku.data"
