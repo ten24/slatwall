@@ -276,6 +276,20 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		}
 	}
 
+	public void function cancelOrder(required any rc) {
+		var order = getOrderService().getOrder( arguments.rc.orderID );
+		if(!isNull(order) && order.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID()){
+			var order = getOrderService().process( order, {}, "cancelOrder");
+			if( !order.hasErrors() ) {
+				getHibachiScope().addActionResult( "public:account.cancelOrder", false); 
+			} else {
+				getHibachiScope().addActionResult( "public:account.cancelOrder", true); 
+			}
+		} else {
+			getHibachiScope().addActionResult( "public:account.cancelOrder", true); 
+		}  
+	} 
+
 	public void function duplicateOrder() {
 		param name="arguments.rc.orderID" default="";
 		param name="arguments.rc.setAsCartFlag" default="0";

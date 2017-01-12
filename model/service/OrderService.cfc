@@ -304,7 +304,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 
 			}
-
+			
+			// Check the fullfillment for a pickup location.
+			if (!isNull(orderFulfillment.getPickupLocation())){
+				
+				// The item being added to the cart should have its stockID added based on that location
+				var location = orderFulfillment.getPickupLocation();
+				var stock = getService("StockService").getStockByLocationANDSku([location, arguments.processObject.getSku()], false);
+				
+				//If we found a stock for that location, then set the stock to the process.
+				if (!isNull(stock)){
+					arguments.processObject.setStock(stock);
+				}
+			}
+			
 			// Check for the sku in the orderFulfillment already, so long that the order doens't have any errors
 			if(!arguments.order.hasErrors()) {
 				for(var orderItem in orderFulfillment.getOrderFulfillmentItems()){
@@ -348,7 +361,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Create a new Order Item
 			var newOrderItem = this.newOrderItem();
 
-
+			if (!isNull(arguments.processObject.getStock())){
+				newOrderItem.setStock(arguments.processObject.getStock());	
+			}
+			
 			// Set Header Info
 			newOrderItem.setOrder( arguments.order );
 			newOrderItem.setPublicRemoteID( arguments.processObject.getPublicRemoteID() );
@@ -818,7 +834,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for(var orderPayment in arguments.order.getOrderPayments()) {
 
            if(orderPayment.getStatusCode() eq "opstActive") {
-				var totalReceived = precisionEvaluate(orderPayment.getAmountReceived() - orderPayment.getAmountCredited());
+				var totalReceived = val(precisionEvaluate(orderPayment.getAmountReceived() - orderPayment.getAmountCredited()));
 				if(totalReceived gt 0) {
 					var transactionData = {
 						amount = totalReceived,
@@ -1030,7 +1046,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				returnOrderPayment.setOrder( returnOrder );
 				returnOrderPayment.setCurrencyCode( returnOrder.getCurrencyCode() );
 				returnOrderPayment.setOrderPaymentType( getTypeService().getTypeBySystemCode( 'optCredit' ) );
-				returnOrderPayment.setAmount( precisionEvaluate(returnOrder.getTotal() * -1) );
+				returnOrderPayment.setAmount( val(precisionEvaluate(returnOrder.getTotal() * -1) ));
 			}
 
 		}
@@ -1352,7 +1368,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							// As long as this orderPayment is active then we can run the place order transaction
 							if(orderPayment.getStatusCode() == 'opstActive') {
 								orderPayment = this.processOrderPayment(orderPayment, {}, 'runPlaceOrderTransaction');
-								amountAuthorizeCreditReceive = precisionEvaluate(amountAuthorizeCreditReceive + orderPayment.getAmountAuthorized() + orderPayment.getAmountReceived() + orderPayment.getAmountCredited());
+								amountAuthorizeCreditReceive = val(precisionEvaluate(amountAuthorizeCreditReceive + orderPayment.getAmountAuthorized() + orderPayment.getAmountReceived() + orderPayment.getAmountCredited()));
 							}
 						}
 
@@ -1627,7 +1643,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!listFindNoCase("ostNotPlaced,ostOnHold,ostClosed,ostCanceled", arguments.order.getOrderStatusType().getSystemCode())) {
 
 			// We can check to see if all the items have been delivered and the payments have all been received then we can close this order
-			if(precisionEvaluate(arguments.order.getPaymentAmountReceivedTotal() - arguments.order.getPaymentAmountCreditedTotal()) == arguments.order.getTotal() && arguments.order.getQuantityUndelivered() == 0 && arguments.order.getQuantityUnreceived() == 0)	{
+			if(val(precisionEvaluate(arguments.order.getPaymentAmountReceivedTotal() - arguments.order.getPaymentAmountCreditedTotal())) == arguments.order.getTotal() && arguments.order.getQuantityUndelivered() == 0 && arguments.order.getQuantityUnreceived() == 0)	{
 				arguments.order.setOrderStatusType(  getTypeService().getTypeBySystemCode("ostClosed") );
 			// The default case is just to set it to processing
 			} else {
@@ -1768,7 +1784,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				orderPayment = this.processOrderPayment(orderPayment, transactionData, 'createTransaction');
 
 				if(!orderPayment.hasErrors()) {
-					amountToBeCaptured = precisionEvaluate(amountToBeCaptured - transactionData.amount);
+					amountToBeCaptured = val(precisionEvaluate(amountToBeCaptured - transactionData.amount));
 				}
 			}
 		}
@@ -2403,7 +2419,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			for(var a=1; a<=arrayLen(uncapturedAuthorizations); a++) {
 
-				var thisToCharge = precisionEvaluate(arguments.processObject.getAmount() - totalAmountCharged);
+				var thisToCharge = val(precisionEvaluate(arguments.processObject.getAmount() - totalAmountCharged));
 
 				if(thisToCharge gt uncapturedAuthorizations[a].chargeableAmount) {
 					thisToCharge = uncapturedAuthorizations[a].chargeableAmount;
@@ -2430,7 +2446,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				if(paymentTransaction.hasError('runTransaction')) {
 					arguments.orderPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
 				} else {
-					precisionEvaluate(totalAmountCharged + paymentTransaction.getAmountReceived());
+					val(precisionEvaluate(totalAmountCharged + paymentTransaction.getAmountReceived()));
 				}
 
 			}
@@ -2735,7 +2751,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// Save the accountAddress if needed
 				arguments.orderFulfillment.checkNewAccountAddressSave();
 			}
-
+			
+			//Update the pickup location on the orderItem if the pickup location was updated on the orderFulfillment.
+			if(arguments.orderFulfillment.getFulfillmentMethodType() eq "pickup") {
+				if (!isNull(data.pickupLocation.locationID)){
+					var location = getService("LocationService").getLocation(data.pickupLocation.locationID);
+					if (!isNull(location)){
+						for (var orderItem in orderFulfillment.getOrderFulfillmentItems()){
+							//set the stock based on location.
+							var stock = getService("StockService").getStockByLocationANDSku([location, orderItem.getSku()], false);
+							
+							if (!isNull(stock)){
+								orderItem.setStock(stock);
+								getService("OrderService").saveOrderItem(orderItem);
+							}
+						}
+					}
+				}
+			}
 		}
 
 		// Recalculate the order amounts for tax and promotions

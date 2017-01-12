@@ -88,7 +88,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					shippingMethodStruct[shippingProviderMethod].shippingProviderMethod = shippingMethodResponseBean.getShippingProviderMethod(); 
 					shippingMethodStruct[shippingProviderMethod].totalCharge = shippingMethodResponseBean.getTotalCharge();
 				} else { 
-					shippingMethodStruct[shippingProviderMethod].totalCharge = PrecisionEvaluate(shippingMethodStruct[shippingProviderMethod].totalCharge + shippingMethodResponseBean.getTotalCharge()); 
+					shippingMethodStruct[shippingProviderMethod].totalCharge = val(precisionEvaluate(shippingMethodStruct[shippingProviderMethod].totalCharge + shippingMethodResponseBean.getTotalCharge()));
 				} 
 			} 			
 		}
@@ -275,7 +275,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public numeric function getChargeAmountByShipmentItemMultiplierAndRateMultiplierAmount(required numeric defaultAmount, required numeric shipmentItemMultiplier, required numeric rateMultiplierAmount){
 		
-		var chargeAmount = PrecisionEvaluate(arguments.defaultAmount + (arguments.rateMultiplierAmount * arguments.shipmentItemMultiplier));
+		var chargeAmount = val(precisionEvaluate(arguments.defaultAmount + (arguments.rateMultiplierAmount * arguments.shipmentItemMultiplier)));
 		return chargeAmount;
 	}
 	
@@ -652,16 +652,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			switch(arguments.shippingMethodRate.setting('shippingMethodRateAdjustmentType')) {
 				case "increasePercentage":
-					returnAmount = precisionEvaluate(arguments.originalAmount + (arguments.originalAmount * shippingMethodRateAdjustmentAmount));
+					returnAmount = val(precisionEvaluate(arguments.originalAmount + (arguments.originalAmount * shippingMethodRateAdjustmentAmount)));
 					break;
 				case "decreasePercentage":
-					returnAmount = precisionEvaluate(arguments.originalAmount - (arguments.originalAmount * shippingMethodRateAdjustmentAmount));
+					returnAmount = val(precisionEvaluate(arguments.originalAmount - (arguments.originalAmount * shippingMethodRateAdjustmentAmount)));
 					break;
 				case "increaseAmount":
-					returnAmount = precisionEvaluate(arguments.originalAmount + shippingMethodRateAdjustmentAmount);
+					returnAmount = val(precisionEvaluate(arguments.originalAmount + shippingMethodRateAdjustmentAmount));
 					break;
 				case "decreaseAmount":
-					returnAmount = precisionEvaluate(arguments.originalAmount - shippingMethodRateAdjustmentAmount);
+					returnAmount = val(precisionEvaluate(arguments.originalAmount - shippingMethodRateAdjustmentAmount));
 					break;
 			}
 		}
