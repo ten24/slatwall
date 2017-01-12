@@ -46,32 +46,24 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
-
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
 <cfparam name="rc.accountPayment" type="any" />
-<cfparam name="rc.account" type="any" default="#rc.accountPayment.getAccount()#">
-<cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.accountPayment#" edit="#rc.edit#" forceSSLFlag="#$.slatwall.setting('globalForceCreditCardOverSSL')#">
-								
-		<hb:HibachiEntityActionBar type="detail" object="#rc.accountPayment#" edit="#rc.edit#"
-								   backAction="admin:entity.detailaccount"
-								   backQueryString="accountID=#rc.account.getAccountID()#" />
+	<hb:HibachiListingDisplay smartList="#rc.accountPayment.getPaymentTransactionsSmartList()#"
+			recordDetailAction="admin:entity.detailpaymenttransaction"
+			recordDetailModal="true">
 		
-		<input type="hidden" name="account.accountID" value="#rc.account.getAccountID()#" />
+		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />		
+		<hb:HibachiListingColumn propertyIdentifier="transactionType" />
+		<hb:HibachiListingColumn propertyIdentifier="transactionSuccessFlag" />
+		<hb:HibachiListingColumn propertyIdentifier="authorizationCode" />
+		<hb:HibachiListingColumn propertyIdentifier="authorizationCodeUsed" />
+		<hb:HibachiListingColumn propertyIdentifier="amountAuthorized" />
+		<hb:HibachiListingColumn propertyIdentifier="amountReceived" />
+		<hb:HibachiListingColumn propertyIdentifier="amountCredited" />
 		
-		<hb:HibachiEntityDetailGroup object="#rc.accountPayment#">
-			<hb:HibachiEntityDetailItem view="admin:entity/accountpaymenttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-
-			<hb:HibachiEntityDetailItem view="admin:entity/accountpaymenttabs/paymenttransactions" />
-			<!--- Custom Attributes --->
-			<cfloop array="#rc.accountPayment.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<swa:SlatwallAdminTabCustomAttributes object="#rc.accountPayment#" attributeSet="#attributeSet#" />
-			</cfloop>
-		</hb:HibachiEntityDetailGroup>
-		
-	</hb:HibachiEntityDetailForm>
+	</hb:HibachiListingDisplay>
 </cfoutput>
