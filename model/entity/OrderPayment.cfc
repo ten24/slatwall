@@ -300,7 +300,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 
 		for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
 			if(!isNull(getPaymentTransactions()[i].getAmountReceived())) {
-				amountReceived = precisionEvaluate(amountReceived + getPaymentTransactions()[i].getAmountReceived());
+				amountReceived = val(precisionEvaluate(amountReceived + getPaymentTransactions()[i].getAmountReceived()));
 			}
 		}
 
@@ -312,7 +312,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 
 		for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
 			if(!isNull(getPaymentTransactions()[i].getAmountCredited())) {
-				amountCredited = precisionEvaluate(amountCredited + getPaymentTransactions()[i].getAmountCredited());
+				amountCredited = val(precisionEvaluate(amountCredited + getPaymentTransactions()[i].getAmountCredited()));
 			}
 		}
 
@@ -325,7 +325,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 
 		for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
 			if(isNull(getPaymentTransactions()[i].getAuthorizationCodeInvalidFlag()) || !getPaymentTransactions()[i].getAuthorizationCodeInvalidFlag()) {
-				amountAuthorized = precisionEvaluate(amountAuthorized + getPaymentTransactions()[i].getAmountAuthorized());
+				amountAuthorized = val(precisionEvaluate(amountAuthorized + getPaymentTransactions()[i].getAmountAuthorized()));
 			}
 		}
 
@@ -336,7 +336,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		var unauthroized = 0;
 
 		if ( getOrderPaymentType().getSystemCode() == "optCharge" ) {
-			unauthroized = precisionEvaluate(getAmount() - getAmountAuthorized());
+			unauthroized = val(precisionEvaluate(getAmount() - getAmountAuthorized()));
 		}
 
 		return unauthroized;
@@ -346,7 +346,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		var uncaptured = 0;
 
 		if ( getOrderPaymentType().getSystemCode() == "optCharge" ) {
-			uncaptured = precisionEvaluate(getAmountAuthorized() - getAmountReceived());
+			uncaptured = val(precisionEvaluate(getAmountAuthorized() - getAmountReceived()));
 		}
 
 		return uncaptured;
@@ -356,7 +356,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		var unreceived = 0;
 
 		if ( getOrderPaymentType().getSystemCode() == "optCharge" ) {
-			unreceived = precisionEvaluate(getAmount() - getAmountReceived());
+			unreceived = val(precisionEvaluate(getAmount() - getAmountReceived()));
 		}
 
 		return unreceived;
@@ -366,9 +366,9 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		var uncredited = 0;
 
 		if ( getOrderPaymentType().getSystemCode() == "optCredit" ) {
-			uncredited = precisionEvaluate(getAmount() - getAmountCredited());
+			uncredited = val(precisionEvaluate(getAmount() - getAmountCredited()));
 		} else if ( getOrderPaymentType().getSystemCode() == "optCharge" ) {
-			uncredited = precisionEvaluate(getAmountReceived() - getAmountCredited());
+			uncredited = val(precisionEvaluate(getAmountReceived() - getAmountCredited()));
 		}
 
 		return uncredited;
@@ -543,7 +543,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 			var total = getOrder().getTotal();
 			var paymentTotal = getService("orderService").getOrderPaymentNonNullAmountTotal(orderID=getOrder().getOrderID());
 
-			variables.orderAmountNeeded = precisionEvaluate(total - paymentTotal);
+			variables.orderAmountNeeded = val(precisionEvaluate(total - paymentTotal));
 		}
 
 		return variables.orderAmountNeeded;
@@ -570,18 +570,18 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		if(!isNull(getPaymentMethod())) {
 
 			var maxPercent = getPaymentMethod().setting('paymentMethodMaximumOrderTotalPercentageAmount');
-			var maxAmountOfTotal = precisionEvaluate(getOrder().getTotal() * (maxPercent/100));
+			var maxAmountOfTotal = val(precisionEvaluate(getOrder().getTotal() * (maxPercent/100)));
 			var previouslyAppliedPaymentAmountByMethod = getOrder().getPaymentAmountTotalByPaymentMethod(getPaymentMethod(), this);
 
 			if(getOrderPaymentType().getSystemCode() eq 'optCredit') {
-				maxAmountOfTotal = precisionEvaluate(maxAmountOfTotal * -1);
+				maxAmountOfTotal = val(precisionEvaluate(maxAmountOfTotal * -1));
 				if(maxAmountOfTotal lt previouslyAppliedPaymentAmountByMethod) {
 					return previouslyAppliedPaymentAmountByMethod;
 				} else {
-					return precisionEvaluate(maxAmountOfTotal + previouslyAppliedPaymentAmountByMethod);
+					return val(precisionEvaluate(maxAmountOfTotal + previouslyAppliedPaymentAmountByMethod));
 				}
 			} else {
-				return precisionEvaluate(maxAmountOfTotal - previouslyAppliedPaymentAmountByMethod);
+				return val(precisionEvaluate(maxAmountOfTotal - previouslyAppliedPaymentAmountByMethod));
 			}
 		}
 	}
