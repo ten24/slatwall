@@ -65,7 +65,7 @@ class SWActionCallerController{
         }else{
             this.actionUrl = '#!/entity/'+this.action+'/'+this.queryString.split('=')[1];
         }
-
+        
 //			this.class = this.utilityService.replaceAll(this.utilityService.replaceAll(this.getAction(),':',''),'.','') + ' ' + this.class;
         this.type = this.type || 'link';
         if(angular.isDefined(this.titleRbKey)){
@@ -86,16 +86,15 @@ class SWActionCallerController{
 
                     unbindWatcher();
                 });
-
             }
 //			this.actionItem = this.getActionItem();
 //			this.actionItemEntityName = this.getActionItemEntityName();
 //			this.text = this.getText();
-//			if(this.getDisabled()){
-//				this.getDisabledText();
-//			}else if(this.getConfirm()){
-//				this.getConfirmText();
-//			}
+			if(this.getDisabled()){
+				this.getDisabledText();
+			}else if(this.getConfirm()){
+				this.getConfirmText();
+			}
 //
 //			if(this.modalFullWidth && !this.getDisabled()){
 //				this.class = this.class + " modalload-fullwidth";

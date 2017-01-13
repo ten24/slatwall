@@ -101,6 +101,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="extendedPriceAfterDiscount" persistent="false" hb_formatType="currency";
 	property name="orderStatusCode" persistent="false";
 	property name="isDeletable" persistent="false";
+	property name="deleteErrors" persistent="false";
 	property name="quantityDelivered" persistent="false";
 	property name="quantityUndelivered" persistent="false";
 	property name="quantityReceived" persistent="false";
@@ -464,6 +465,10 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		var result = !getService("hibachiValidationService").validate(object=this, context="delete", setErrors=false).hasErrors();
 		return result ? true : false;
 	} 
+
+	public string function getDeleteErrors() {
+		return getService("hibachiValidationService").validate(object=this, context="delete", setErrors=false).getAllErrorsHTML();
+	}
 
 	public numeric function getQuantityDelivered() {
 		var quantityDelivered = 0;
