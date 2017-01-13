@@ -54,7 +54,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.service = request.slatwallScope.getBean("giftCardService");
 	}
 	
-	public void function processGiftCard_addCredit(){
+	public void function processGiftCard_addCreditTest(){
 		var giftCardData = {
 			giftCardID:""
 		};
@@ -66,7 +66,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(giftCard.getBalanceAmount() EQ 15);
 	}
 	
-	public void function processGiftCard_addDebit(){
+	public void function processGiftCard_addDebitTest(){
 		var giftCardData = {
 			giftCardID:""
 		};
@@ -105,8 +105,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	
 	public void function processGiftCard_offlineTransactionTest_debit(){
 		var giftCardData = {
-			giftCardID:"",
-			balanceAmount:10
+			giftCardID:""
 			};
 		var giftCard = createPersistedTestEntity('giftCard',giftCardData);
 		
