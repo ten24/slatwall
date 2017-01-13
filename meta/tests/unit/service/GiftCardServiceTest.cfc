@@ -60,9 +60,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var giftCard = createPersistedTestEntity('giftCard',giftCardData);
 		
-		var processObj = giftCard.getProcessObject('addCredit');
-		processObj.setCreditAmount(15);
-		giftCard = variables.service.processGiftCard(giftCard, processObj, 'addCredit');
+		var creditData = {
+			creditAmount=15
+		};
+		giftCard = variables.service.processGiftCard(giftCard, creditData, 'addCredit');
 		assert(giftCard.getBalanceAmount() EQ 15);
 	}
 	
@@ -80,9 +81,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		giftCard.addGiftCardTransaction(creditTransaction);
 		assert(giftCard.getBalanceAmount() EQ 15);
 		
-		processObj = giftCard.getProcessObject('addDebit');
-		processObj.setDebitAmount(8);
-		giftCard = variables.service.processGiftCard(giftCard, processObj, 'addDebit');
+		var debitData = {
+			debitAmount=8
+		};
+		
+		giftCard = variables.service.processGiftCard(giftCard, debitData, 'addDebit');
 		request.debug(giftCard);
 		assert(giftCard.getBalanceAmount() EQ 7);
 	}
@@ -92,13 +95,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			giftCardID:""
 		};
 		var giftCard = createPersistedTestEntity('giftCard',giftCardData);
+				
+		var transactionData = {
+			transactionType='credit',
+			amount='20'
+		};
 		
-		var processObj = giftCard.getProcessObject('offlineTransaction');
-		
-		processObj.setTransactionType('credit');
-		processObj.setAmount(20);
-		
-		giftCard = variables.service.processGiftCard(giftCard, processObj, 'offlineTransaction');
+		giftCard = variables.service.processGiftCard(giftCard, transactionData, 'offlineTransaction');
 		assert(giftCard.getBalanceAmount() EQ 20);
 		
 	}	
@@ -116,12 +119,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var creditTransaction = createPersistedTestEntity('giftCardTransaction', creditTransactionData);
 		giftCard.addGiftCardTransaction(creditTransaction);
 	
-		var processObj = giftCard.getProcessObject('offlineTransaction');
+		var transactionData = {
+			transactionType='debit',
+			amount='7'
+		};
 		
-		processObj.setTransactionType('debit');
-		processObj.setAmount(7);
-		
-		giftCard = variables.service.processGiftCard(giftCard, processObj, 'offlineTransaction');
+		giftCard = variables.service.processGiftCard(giftCard, transactionData, 'offlineTransaction');
 		request.debug(giftCard);
 		assert(giftCard.getBalanceAmount() EQ 3);
 	}	
