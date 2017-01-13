@@ -212,6 +212,11 @@ component extends="FW1.framework" {
 			// Verify that the session is setup
 			getHibachiScope().getService("hibachiSessionService").setProperSession();
 			
+			var AuthToken = "";
+			if(structKeyExists(GetHttpRequestData().Headers,'Auth-Token')){
+				AuthToken = GetHttpRequestData().Headers['Auth-Token'];
+			}
+			
 			// If there is no account on the session, then we can look for an Access-Key, Access-Key-Secret, to setup that account for this one request.
 			if(!getHibachiScope().getLoggedInFlag() &&
 				structKeyExists(httpRequestData, "headers") &&
@@ -223,19 +228,21 @@ component extends="FW1.framework" {
 				var accessKey 		= httpRequestData.headers["Access-Key"];
 				var accessKeySecret = httpRequestData.headers["Access-Key-Secret"];
 
-				// Attempt to find an account by accessKey & accessKeySecret
+				// Attempt to find an account by accessKey & accessKeySecret and set a default JWT if found.
 				var account = getHibachiScope().getService("AccountService").getAccountByAccessKeyAndSecret( accessKey=accessKey, accessKeySecret=accessKeySecret );
-
+				
 				// If an account was found, then set that account in the session for this request.  This should not persist
 				if (!isNull(account)){
 					getHibachiScope().getSession().setAccount( account );
+					AuthToken = 'Bearer '& getHibachiScope().getService('HibachiJWTService').createToken();
 				}
+				
 			}
 			
 			//check if we have the authorization header
-			if(structKeyExists(GetHttpRequestData().Headers,'Auth-Token')){
+			if(len(AuthToken)){
 				
-				var authorizationHeader = GetHttpRequestData().Headers['Auth-Token'];
+				var authorizationHeader = AuthToken;
 				var prefix = 'Bearer ';
 				//get token by stripping prefix
 				var token = right(authorizationHeader,len(authorizationHeader) - len(prefix));
@@ -248,8 +255,8 @@ component extends="FW1.framework" {
 						getHibachiScope().getSession().setAccount( account );
 					}
 				}
-			}
 			
+			}
 			// Call the onEveryRequest() Method for the parent Application.cfc
 			onEveryRequest();
 		}

@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,33 +45,27 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+*/
+component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
-
-<cfparam name="rc.accountPayment" type="any" />
-<cfparam name="rc.account" type="any" default="#rc.accountPayment.getAccount()#">
-<cfparam name="rc.edit" type="boolean" />
-
-<cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.accountPayment#" edit="#rc.edit#" forceSSLFlag="#$.slatwall.setting('globalForceCreditCardOverSSL')#">
-								
-		<hb:HibachiEntityActionBar type="detail" object="#rc.accountPayment#" edit="#rc.edit#"
-								   backAction="admin:entity.detailaccount"
-								   backQueryString="accountID=#rc.account.getAccountID()#" />
+	// @hint put things in here that you want to run befor EACH test
+	public void function setUp() {
+		super.setup();
 		
-		<input type="hidden" name="account.accountID" value="#rc.account.getAccountID()#" />
-		
-		<hb:HibachiEntityDetailGroup object="#rc.accountPayment#">
-			<hb:HibachiEntityDetailItem view="admin:entity/accountpaymenttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+		variables.entity = request.slatwallScope.newEntity( 'Image' );
+	}
+	
+	public function getResizedImagePathGetsMissingImagePath(){
+		var imagePath = variables.entity.getResizedImagePath();
+		assert(fileExists(expandPath(imagePath)));
+	}
+	
+	public function getResizedImageCreatesImgElementWithMissingPath(){
+		var imagePath = variables.entity.getResizedImagePath();
+		var image = variables.entity.getResizedImage();
+		assert(image EQ '<img src="#imagePath#" />');
+	}
+	
+}
 
-			<hb:HibachiEntityDetailItem view="admin:entity/accountpaymenttabs/paymenttransactions" />
-			<!--- Custom Attributes --->
-			<cfloop array="#rc.accountPayment.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<swa:SlatwallAdminTabCustomAttributes object="#rc.accountPayment#" attributeSet="#attributeSet#" />
-			</cfloop>
-		</hb:HibachiEntityDetailGroup>
-		
-	</hb:HibachiEntityDetailForm>
-</cfoutput>
+
