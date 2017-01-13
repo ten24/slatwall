@@ -373,8 +373,8 @@ Notes:
 
 			//declare custom positions
 			var propertyStartPos = findNoCase("property name=", customFileContent) ;
-			var privateFunctionLineStartPos = reFindNoCase('\private(.*?)function',customFileContent) ;
-			var publicFunctionLineStartPos = reFindNoCase('\public(.*?)function',customFileContent) ;
+			var privateFunctionLineStartPos = reFindNoCase('\private[^"].*function.*\(.*\)',customFileContent) ;
+			var publicFunctionLineStartPos = reFindNoCase('\public[^"].*function.*\(.*\)',customFileContent) ;
 
 			var functionLineStartPos = 0;
 			if(privateFunctionLineStartPos && publicFunctionLineStartPos){
@@ -405,7 +405,6 @@ Notes:
 			if(propertyStartPos){
 				propertyString = mid(customFileContent, propertyStartPos, abs(propertyEndPos-propertyStartPos));
 			}
-
 			var newContent = fileContent;
 
 			//add properties
