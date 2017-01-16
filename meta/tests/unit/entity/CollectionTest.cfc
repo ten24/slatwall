@@ -178,7 +178,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		collectionEntity.applyData(queryString);
 		
 		assertEquals(collectionEntity.getPageRecordsShow(),2);
-		assertEquals(collectionEntity.getPageRecordsStart(),3);
+		assertEquals(collectionEntity.getCurrentPageDeclaration(),3);
 	}
 	
 	public void function applyDataTest_filterTest_queryString(){
@@ -199,7 +199,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var data = {};
 		data['p:current'] = 72;
 		collectionEntity.applyData(data);
-		assertEquals(collectionEntity.getPageRecordsStart(),72);
+		assertEquals(collectionEntity.getCurrentPageDeclaration(),72);
 	}
 	
 	public void function applyData_filterEqualsTest(){
