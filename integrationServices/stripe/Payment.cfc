@@ -169,7 +169,7 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
             }
             
             //get the setting for statement_descriptor
-            if (!isNull(requestBean.getOrder().getOrderCreatedSite()) && len(requestBean.getOrder().getOrderCreatedSite().getSiteCode())){
+            if (!isNull(requestBean.getOrder()) && !isNull(requestBean.getOrder().getOrderCreatedSite()) && len(requestBean.getOrder().getOrderCreatedSite().getSiteCode())){
                 var siteCode = requestBean.getOrder().getOrderCreatedSite().getSiteCode();
                 try{
                     var statementDescriptionSettingValue = getHibachiScope().getService('SettingService').getSettingValue('integration#siteCode#StatementDescription');
