@@ -86,10 +86,36 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var customEntityParser = request.slatwallScope.getTransient('hibachiEntityParser');
 		customEntityParser.setFileContent(variables.customFileContent);
 		variables.service.mergeEntityParsers(coreEntityParser,customEntityParser);
-		if(coreEntityParser.hasCustomFunctions()){
-			assertEquals(trim(coreEntityParser.getCustomPropertyContent()),trim(customEntityParser.getPropertyString()));
-		}
+		
+		assert(len(coreEntityParser.getCustomPropertyContent));
+		assertEquals(trim(coreEntityParser.getCustomPropertyContent()),trim(customEntityParser.getPropertyString()));
 		assertEquals(trim(coreEntityParser.getCustomFunctionContent()),trim(customEntityParser.getFunctionString()));
+		assertEquals(trim("public void function testFunc(){
+		return '';
+	}"), trim(coreEntityParser.getCustomFunctionContent()));
+	
+		request.debug(customEntityParser.getPropertyString());
+	}
+	
+	
+	public void function mergeEntityParsersTest_withCustomPropertiesInitially_andPurge(){
+		
+		var coreEntityParser = request.slatwallScope.getTransient('hibachiEntityParser');
+		
+		coreEntityParser.setFileContent(variables.fileContentForAccountWithCustomPropeties);
+		
+		var customEntityParser = request.slatwallScope.getTransient('hibachiEntityParser');
+		customEntityParser.setFileContent(variables.customFileContent);
+		variables.service.mergeEntityParsers(coreEntityParser,customEntityParser, true);
+		
+		assert(len(coreEntityParser.getCustomPropertyContent));
+		assertEquals(trim(coreEntityParser.getCustomPropertyContent()),trim(customEntityParser.getPropertyString()));
+		assertEquals(trim(coreEntityParser.getCustomFunctionContent()),trim(customEntityParser.getFunctionString()));
+		assertEquals(trim("public void function testFunc(){
+		return '';
+	}"), trim(coreEntityParser.getCustomFunctionContent()));
+	
+		request.debug(customEntityParser.getPropertyString());
 	}
 	
 	public void function mergeEntityParsersTest_withCustomPropertiesInitially(){
@@ -102,8 +128,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		customEntityParser.setFileContent(variables.customFileContent);
 		
 		variables.service.mergeEntityParsers(coreEntityParser,customEntityParser);
+		
+		assert(len(customEntityParser.getPropertyString));
 		assert(coreEntityParser.getCustomPropertyContent() CONTAINS customEntityParser.getPropertyString());
 		assert(coreEntityParser.getCustomFunctionContent() CONTAINS customEntityParser.getFunctionString());
+		assertEquals(trim("public void function testFunc(){
+		return '';
+	}"), trim(customEntityParser.getFunctionString()));
 	}
 }
 
