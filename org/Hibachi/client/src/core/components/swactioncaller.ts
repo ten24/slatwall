@@ -90,11 +90,11 @@ class SWActionCallerController{
 //			this.actionItem = this.getActionItem();
 //			this.actionItemEntityName = this.getActionItemEntityName();
 //			this.text = this.getText();
-			if(this.getDisabled()){
-				this.getDisabledText();
-			}else if(this.getConfirm()){
-				this.getConfirmText();
-			}
+			// if(this.getDisabled()){
+			// 	this.getDisabledText();
+			// }else if(this.getConfirm()){
+			// 	this.getConfirmText();
+			// }
 //
 //			if(this.modalFullWidth && !this.getDisabled()){
 //				this.class = this.class + " modalload-fullwidth";

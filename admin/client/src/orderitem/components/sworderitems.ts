@@ -102,7 +102,7 @@ class SWOrderItems{
                          ,sku.product.productType.systemCode,sku.options,sku.locations
  						,sku.subscriptionTerm.subscriptionTermName
  						,sku.imageFile,
-                        stock.location.locationName, quantityDelivered, isDeletable, deleteErrors`
+                        stock.location.locationName, isDeletable, deleteErrors`
  					   
                       )
  					.addFilter('order.orderID',scope.orderId)
