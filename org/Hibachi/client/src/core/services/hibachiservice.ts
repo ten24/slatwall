@@ -223,12 +223,13 @@ class HibachiService{
 	/*basic entity getter where id is optional, returns a promise*/
 	getEntity= (entityName:string, options:any) => {
 		/*
-			*
-			* getEntity('Product', '12345-12345-12345-12345');
-			* getEntity('Product', {keywords='Hello'});
-			*
-			*/
-		var actionPath = this.appConfig.integrationActionPath || "api:main.get";
+		*
+		* getEntity('Product', '12345-12345-12345-12345');
+		* getEntity('Product', {keywords='Hello'});
+		*
+		*/
+		var subsystemName = this.appConfig.subsystemName || "api";
+		
 		if(angular.isUndefined(options)){
 			options = {};
 		}
@@ -240,7 +241,8 @@ class HibachiService{
 
 		var params:any= {};
 		if(typeof options === 'string') {
-			var urlString = this.getUrlWithActionPrefix()+ actionPath + '&entityName='+entityName+'&entityID='+options;
+
+			var urlString = this.getUrlWithActionPrefix() + subsystemName + ':' + 'main.get&entityName='+entityName+'&entityID='+options;
 		} else {
 			params['P:Current'] = options.currentPage || 1;
 			params['P:Show'] = options.pageShow || 10;
@@ -255,8 +257,9 @@ class HibachiService{
 			params.allRecords = options.allRecords || false;
 			params.defaultColumns = options.defaultColumns || true;
 			params.processContext = options.processContext || '';
-			var urlString = this.getUrlWithActionPrefix()+actionPath+'&entityName='+entityName;
+			var urlString = this.getUrlWithActionPrefix()+ subsystemName + ':' +'main.get&entityName='+entityName;
 		}
+		
 		if(angular.isDefined(options.id)) {
 			urlString += '&entityId='+options.id;
 		}
