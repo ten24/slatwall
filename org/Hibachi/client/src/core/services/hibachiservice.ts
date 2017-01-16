@@ -255,7 +255,7 @@ class HibachiService{
 			params.allRecords = options.allRecords || false;
 			params.defaultColumns = options.defaultColumns || true;
 			params.processContext = options.processContext || '';
-			var urlString = this.getUrlWithActionPrefix()+'api:main.get&entityName='+entityName;
+			var urlString = this.getUrlWithActionPrefix()+actionPath+'&entityName='+entityName;
 		}
 		if(angular.isDefined(options.id)) {
 			urlString += '&entityId='+options.id;
