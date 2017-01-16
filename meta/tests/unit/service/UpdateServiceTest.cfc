@@ -86,9 +86,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var customEntityParser = request.slatwallScope.getTransient('hibachiEntityParser');
 		customEntityParser.setFileContent(variables.customFileContent);
 		variables.service.mergeEntityParsers(coreEntityParser,customEntityParser);
-		request.debug('\n');
-		request.debug(coreEntityParser.getCustomPropertyContent());
-		assertEquals(trim(coreEntityParser.getCustomPropertyContent()),trim(customEntityParser.getPropertyString()));
+		if(coreEntityParser.hasCustomFunctions()){
+			assertEquals(trim(coreEntityParser.getCustomPropertyContent()),trim(customEntityParser.getPropertyString()));
+		}
 		assertEquals(trim(coreEntityParser.getCustomFunctionContent()),trim(customEntityParser.getFunctionString()));
 	}
 	

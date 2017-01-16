@@ -382,7 +382,7 @@ Notes:
 					request.debug("\nnewContent");
 					request.debug(newContent);
 					arguments.coreEntityParser.setFileContent(newContent);
-				}
+				} 
 			}
 			//add functions
 			if(len(arguments.customEntityParser.getFunctionString())){
