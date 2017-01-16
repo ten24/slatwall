@@ -228,6 +228,7 @@ class HibachiService{
 			* getEntity('Product', {keywords='Hello'});
 			*
 			*/
+		var actionPath = this.appConfig.integrationActionPath || "api:main.get";
 		if(angular.isUndefined(options)){
 			options = {};
 		}
@@ -239,8 +240,7 @@ class HibachiService{
 
 		var params:any= {};
 		if(typeof options === 'string') {
-
-			var urlString = this.getUrlWithActionPrefix()+'api:main.get&entityName='+entityName+'&entityID='+options;
+			var urlString = this.getUrlWithActionPrefix()+ actionPath + '&entityName='+entityName+'&entityID='+options;
 		} else {
 			params['P:Current'] = options.currentPage || 1;
 			params['P:Show'] = options.pageShow || 10;
