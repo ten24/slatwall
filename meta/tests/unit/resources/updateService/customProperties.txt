@@ -1139,7 +1139,1164 @@ component {
 
 	property name="baseLocation" type="string" persistent="false";
 	property name="locationPathName" persistent="false";
+
+	property name="locationAddressID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="locationAddressName" ormtype="string";
 	
+	// Related Object Properties (many-to-one)
+	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
+	property name="address" cfc="Address" fieldtype="many-to-one" fkcolumn="addressID" hb_populateValidationContext="location";
+
+	property name="locationConfigurationID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="locationConfigurationName" ormtype="string";
+	property name="locationConfigurationCapacity" ormtype="integer";
+	property name="activeFlag" ormtype="boolean" ;
+	
+	// Related Object Properties (Many-to-One)
+	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
+	
+	// Related Object Properties (One-to-Many)
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="locationConfigurationID" cascade="all-delete-orphan" inverse="true";
+	
+	// Related Object Properties (Many-to-Many - owner)
+	
+	// Related Object Properties (many-to-many - inverse)
+	property name="skus" singularname="sku" cfc="Sku" type="array" fieldtype="many-to-many" linktable="SwSkuLocationConfiguration" fkcolumn="locationConfigurationID" inversejoincolumn="skuID" inverse="true";
+
+	//Non-persistent properties
+	property name="locationTree" persistent="false";
+	property name="locationPathName" persistent="false";
+
+	property name="loyaltyID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="loyaltyName" ormtype="string";
+	property name="activeFlag" ormtype="boolean" default="1";
+	
+	// Related Object Properties (one-to-many)
+	property name="loyaltyAccruements" singularname="loyaltyAccruement" cfc="LoyaltyAccruement" type="array" fieldtype="one-to-many" fkcolumn="loyaltyID" cascade="all-delete-orphan" inverse="true";
+	property name="loyaltyRedemptions" singularname="loyaltyRedemption" cfc="LoyaltyRedemption" type="array" fieldtype="one-to-many" fkcolumn="loyaltyID" cascade="all-delete-orphan" inverse="true";
+	property name="accountLoyalties" singularname="accountLoyalty" cfc="AccountLoyalty" type="array" fieldtype="one-to-many" fkcolumn="loyaltyID" cascade="all-delete-orphan" inverse="true";
+	property name="loyaltyTerms" singularname="loyaltyTerm" cfc="LoyaltyTerm" type="array" fieldtype="one-to-many" fkcolumn="loyaltyID" cascade="all-delete-orphan" inverse="true";
+
+	property name="loyaltyAccruementID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="startDateTime" ormtype="timestamp" hb_nullRBKey="define.forever";
+	property name="endDateTime" ormtype="timestamp" hb_nullRBKey="define.forever";
+	property name="accruementType" ormType="string" hb_formatType="rbKey" hb_formFieldType="select";
+	property name="pointType" ormType="string" hb_formatType="rbKey" hb_formFieldType="select";
+	property name="pointQuantity" ormType="integer";
+	property name="activeFlag" ormtype="boolean" default="1";
+	property name="currencyCode" ormtype="string" length="3";
+	
+	// Related Object Properties (many-to-one)
+	property name="loyalty" cfc="Loyalty" fieldtype="many-to-one" fkcolumn="loyaltyID";
+	property name="expirationTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="expirationTermID" hb_optionsNullRBKey="define.never";
+	
+	// Related Object Properties (one-to-many)
+	property name="accountLoyaltyTransactions" singularname="accountLoyaltyTransaction" cfc="AccountLoyaltyTransaction" type="array" fieldtype="one-to-many" fkcolumn="loyaltyAccruementID" cascade="all-delete-orphan" inverse="true";
+	
+	// Related Object Properties (many-to-many - owner)
+	property name="brands" singularname="brand" cfc="Brand" fieldtype="many-to-many" linktable="SwLoyaltyAccruBrand" fkcolumn="loyaltyAccruementID" inversejoincolumn="brandID";
+	property name="skus" singularname="sku" cfc="Sku" fieldtype="many-to-many" linktable="SwLoyaltyAccruSku" fkcolumn="loyaltyAccruementID" inversejoincolumn="skuID";
+	property name="products" singularname="product" cfc="Product" fieldtype="many-to-many" linktable="SwLoyaltyAccruProduct" fkcolumn="loyaltyAccruementID" inversejoincolumn="productID";
+	property name="productTypes" singularname="productType" cfc="ProductType" fieldtype="many-to-many" linktable="SwLoyaltyAccruProductType" fkcolumn="loyaltyAccruementID" inversejoincolumn="productTypeID";
+	
+	property name="excludedBrands" singularname="excludedBrand" cfc="Brand" type="array" fieldtype="many-to-many" linktable="SwLoyaltyAccruExclBrand" fkcolumn="loyaltyAccruementID" inversejoincolumn="brandID";
+	property name="excludedSkus" singularname="excludedSku" cfc="Sku" fieldtype="many-to-many" linktable="SwLoyaltyAccruExclSku" fkcolumn="loyaltyAccruementID" inversejoincolumn="skuID";
+	property name="excludedProducts" singularname="excludedProduct" cfc="Product" fieldtype="many-to-many" linktable="SwLoyaltyAccruExclProduct" fkcolumn="loyaltyAccruementID" inversejoincolumn="productID";
+	property name="excludedProductTypes" singularname="excludedProductType" cfc="ProductType" fieldtype="many-to-many" linktable="SwLoyaltyAccruExclProductType" fkcolumn="loyaltyAccruementID" inversejoincolumn="productTypeID";
+	
+	property name="loyaltyRedemptionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="redemptionPointType" ormType="string" hb_formFieldType="select";
+	property name="redemptionType" ormType="string" hb_formatType="rbKey" hb_formFieldType="select";
+	property name="autoRedemptionType" ormType="string" hb_formatType="rbKey" hb_formFieldType="select";
+	property name="amountType" ormType="string" hb_formatType="rbKey" hb_formFieldType="select";
+	property name="amount" ormType="big_decimal";
+	property name="activeFlag" ormtype="boolean" default="1";
+	property name="nextRedemptionDateTime" ormtype="timestamp" hb_nullRBKey="define.forever";
+	property name="currencyCode" ormtype="string" length="3";
+	property name="minimumPointQuantity" ormType="integer";
+	
+	// Related Object Properties (many-to-one)
+	property name="loyalty" cfc="Loyalty" fieldtype="many-to-one" fkcolumn="loyaltyID";
+	property name="loyaltyTerm" cfc="LoyaltyTerm" fieldtype="many-to-one" fkcolumn="loyaltyTermID";
+	property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID";
+	
+	// Related Object Properties (one-to-many)
+	property name="accountLoyaltyTransactions" singularname="accountLoyaltyTransaction" cfc="AccountLoyaltyTransaction" type="array" fieldtype="one-to-many" fkcolumn="loyaltyRedemptionID" cascade="all-delete-orphan" inverse="true";
+	
+	// Related Object Properties (many-to-many - owner)
+	property name="brands" singularname="brand" cfc="Brand" fieldtype="many-to-many" linktable="SwLoyaltyRedemptionBrand" fkcolumn="loyaltyRedemptionID" inversejoincolumn="brandID";
+	property name="skus" singularname="sku" cfc="Sku" fieldtype="many-to-many" linktable="SwLoyaltyRedemptionSku" fkcolumn="loyaltyRedemptionID" inversejoincolumn="skuID";
+	property name="products" singularname="product" cfc="Product" fieldtype="many-to-many" linktable="SwLoyaltyRedemptionProduct" fkcolumn="loyaltyRedemptionID" inversejoincolumn="productID";
+	property name="productTypes" singularname="productType" cfc="ProductType" fieldtype="many-to-many" linktable="SwLoyaltyRedemptionProductType" fkcolumn="loyaltyRedemptionID" inversejoincolumn="productTypeID";
+	
+	property name="excludedBrands" singularname="excludedBrand" cfc="Brand" type="array" fieldtype="many-to-many" linktable="SwLoyaltyRedemptionExclBrand" fkcolumn="loyaltyRedemptionID" inversejoincolumn="brandID";
+	property name="excludedSkus" singularname="excludedSku" cfc="Sku" fieldtype="many-to-many" linktable="SwLoyaltyRedemptionExclSku" fkcolumn="loyaltyRedemptionID" inversejoincolumn="skuID";
+	property name="excludedProducts" singularname="excludedProduct" cfc="Product" fieldtype="many-to-many" linktable="SwLoyaltyRedemptionExclProduct" fkcolumn="loyaltyRedemptionID" inversejoincolumn="productID";
+	property name="excludedProductTypes" singularname="excludedProductType" cfc="ProductType" fieldtype="many-to-many" linktable="SwLoyaltyRedempExclProductType" fkcolumn="loyaltyRedemptionID" inversejoincolumn="productTypeID";
+
+	property name="loyaltyTermID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="loyaltyTermName" ormtype="string";
+	property name="loyaltyTermStartDateTime" ormtype="timestamp" hb_nullRBKey="define.forever";
+
+	// Calculated Properties
+
+	// Related Object Properties (many-to-one)
+	property name="loyalty" cfc="Loyalty" fieldtype="many-to-one" fkcolumn="loyaltyID";
+	property name="term" cfc="Term" fieldtype="many-to-one" fkcolumn="termID";
+
+	property name="nextLoyaltyTermEndDateTime" persistent="false";
+
+	// Persistent Properties
+	property name="unitCode" ormtype="string" fieldtype="id" unique="true" generated="never";
+	property name="measurementType" ormtype="string" hb_formFieldType="select";
+	property name="unitName" ormtype="string";
+	property name="conversionRatio" ormtype="float";
+
+	property name="optionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="optionCode" ormtype="string" index="PI_OPTIONCODE";
+	property name="optionName" ormtype="string";
+	property name="optionDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg";
+	property name="sortOrder" ormtype="integer" sortContext="optionGroup";
+	
+	// Related Object Properties (many-to-one)
+	property name="optionGroup" cfc="OptionGroup" fieldtype="many-to-one" fkcolumn="optionGroupID";
+	property name="defaultImage" cfc="Image" fieldtype="many-to-one" fkcolumn="defaultImageID";
+	
+	// Related Object Properties (one-to-many)
+	property name="images" singularname="image" cfc="Image" type="array" fieldtype="one-to-many" fkcolumn="optionID" cascade="all-delete-orphan" inverse="true";
+	
+	// Related Object Properties (many-to-many - inverse)
+	property name="skus" singularname="sku" cfc="Sku" fieldtype="many-to-many" linktable="SwSkuOption" fkcolumn="optionID" inversejoincolumn="skuID" inverse="true"; 
+	property name="promotionRewards" singularname="promotionReward" cfc="PromotionReward" fieldtype="many-to-many" linktable="SwPromoRewardOption" fkcolumn="optionID" inversejoincolumn="promotionRewardID" inverse="true";
+	property name="promotionRewardExclusions" singularname="promotionRewardExclusion" cfc="PromotionReward" type="array" fieldtype="many-to-many" linktable="SwPromoRewardExclOption" fkcolumn="optionID" inversejoincolumn="promotionRewardID" inverse="true";
+	property name="promotionQualifiers" singularname="promotionQualifier" cfc="PromotionQualifier" fieldtype="many-to-many" linktable="SwPromoQualOption" fkcolumn="optionID" inversejoincolumn="promotionQualifierID" inverse="true";
+	property name="promotionQualifierExclusions" singularname="promotionQualifierExclusion" cfc="PromotionQualifier" type="array" fieldtype="many-to-many" linktable="SwPromoQualExclOption" fkcolumn="optionID" inversejoincolumn="promotionQualifierID" inverse="true";
+	property name="productImages" singularname="productImage" cfc="Image" fieldtype="many-to-many" linktable="SwImageOption" fkcolumn="optionID" inversejoincolumn="imageID" inverse="true" lazy="extra"; 
+
+	property name="optionGroupID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="optionGroupName" ormtype="string";
+	property name="optionGroupCode" ormtype="string" index="PI_OPTIONGROUPCODE";
+	property name="optionGroupImage" ormtype="string";
+	property name="optionGroupDescription" ormtype="string" length="4000";
+	property name="imageGroupFlag" ormtype="boolean" default="0";
+	property name="sortOrder" ormtype="integer" required="true";
+	property name="globalFlag" ormtype="boolean" default="1";
+
+	property name="options" singularname="option" cfc="Option" fieldtype="one-to-many" fkcolumn="optionGroupID" inverse="true" cascade="all-delete-orphan" orderby="sortOrder";
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="optionGroupID" inverse="true" cascade="all-delete-orphan";
+	
+	// Related Object Properties (many-to-many - owner)
+	property name="productTypes" singularname="productType" cfc="ProductType" type="array" fieldtype="many-to-many" linktable="SwOptionGroupProductType" fkcolumn="optionGroupID" inversejoincolumn="productTypeID";
+
+	property name="orderID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="orderNumber" ormtype="string";
+	property name="currencyCode" ormtype="string" length="3";
+	property name="orderOpenDateTime" ormtype="timestamp";
+	property name="orderOpenIPAddress" ormtype="string";
+	property name="orderCloseDateTime" ormtype="timestamp";
+	property name="referencedOrderType" ormtype="string" hb_formatType="rbKey";
+	property name="estimatedDeliveryDateTime" ormtype="timestamp";
+	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
+	property name="testOrderFlag" ormtype="boolean";
+	// Calculated Properties
+	property name="calculatedTotal" ormtype="big_decimal";
+
+	// Related Object Properties (many-to-one)
+	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
+	property name="assignedAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="assignedAccountID";
+	property name="billingAccountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="billingAccountAddressID";
+	property name="billingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="billingAddressID";
+	property name="defaultStockLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
+	property name="orderType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderType";
+	property name="orderStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderStatusType";
+	property name="orderOrigin" cfc="OrderOrigin" fieldtype="many-to-one" fkcolumn="orderOriginID" hb_optionsNullRBKey="define.none";
+	property name="referencedOrder" cfc="Order" fieldtype="many-to-one" fkcolumn="referencedOrderID";	// Points at the "parent" (NOT return) order.
+	property name="shippingAccountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="shippingAccountAddressID";
+	property name="shippingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID";
+	property name="orderCreatedSite" hb_populateEnabled="public" cfc="Site" fieldtype="many-to-one" fkcolumn="orderCreatedSiteID";
+	property name="orderPlacedSite" hb_populateEnabled="public" cfc="Site" fieldtype="many-to-one" fkcolumn="orderPlacedSiteID";
+
+	// Related Object Properties (one-To-many)
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
+	property name="orderItems" hb_populateEnabled="public" singularname="orderItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
+	property name="appliedPromotions" singularname="appliedPromotion" cfc="PromotionApplied" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
+	property name="orderDeliveries" singularname="orderDelivery" cfc="OrderDelivery" fieldtype="one-to-many" fkcolumn="orderID" cascade="delete-orphan" inverse="true";
+	property name="orderFulfillments" hb_populateEnabled="public" singularname="orderFulfillment" cfc="OrderFulfillment" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
+	property name="orderPayments" hb_populateEnabled="public" singularname="orderPayment" cfc="OrderPayment" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
+	property name="orderReturns" hb_populateEnabled="public" singularname="orderReturn" cfc="OrderReturn" type="array" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
+	property name="stockReceivers" singularname="stockReceiver" cfc="StockReceiver" type="array" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
+	property name="referencingOrders" singularname="referencingOrder" cfc="Order" fieldtype="one-to-many" fkcolumn="referencedOrderID" cascade="all-delete-orphan" inverse="true";
+	property name="accountLoyaltyTransactions" singularname="accountLoyaltyTransaction" cfc="AccountLoyaltyTransaction" type="array" fieldtype="one-to-many" fkcolumn="orderID" cascade="all" inverse="true";
+
+	// Related Object Properties (many-To-many - owner)
+	property name="promotionCodes" singularname="promotionCode" cfc="PromotionCode" fieldtype="many-to-many" linktable="SwOrderPromotionCode" fkcolumn="orderID" inversejoincolumn="promotionCodeID";
+
+	property name="addOrderItemSkuOptionsSmartList" persistent="false";
+	property name="addOrderItemStockOptionsSmartList" persistent="false";
+	property name="addPaymentRequirementDetails" persistent="false";
+	property name="deliveredItemsAmountTotal" persistent="false";
+	property name="depositItemSmartList" persistent="false";
+	property name="discountTotal" persistent="false" hb_formatType="currency";
+	property name="dynamicChargeOrderPayment" persistent="false";
+	property name="dynamicCreditOrderPayment" persistent="false";
+	property name="dynamicChargeOrderPaymentAmount" persistent="false" hb_formatType="currency";
+	property name="dynamicCreditOrderPaymentAmount" persistent="false" hb_formatType="currency";
+	property name="eligiblePaymentMethodDetails" persistent="false";
+	property name="itemDiscountAmountTotal" persistent="false" hb_formatType="currency";
+	property name="fulfillmentDiscountAmountTotal" persistent="false" hb_formatType="currency";
+	property name="fulfillmentTotal" persistent="false" hb_formatType="currency";
+	property name="fulfillmentChargeTotal" persistent="false" hb_formatType="currency";
+	property name="fulfillmentRefundTotal" persistent="false" hb_formatType="currency";
+	property name="fulfillmentChargeAfterDiscountTotal" persistent="false" hb_formatType="currency";
+	property name="nextEstimatedDeliveryDateTime" type="timestamp" persistent="false";
+	property name="nextEstimatedFulfillmentDateTime" type="timestamp" persistent="false";
+	property name="orderDiscountAmountTotal" persistent="false" hb_formatType="currency";
+	property name="orderPaymentAmountNeeded" persistent="false" hb_formatType="currency";
+	property name="orderPaymentChargeAmountNeeded" persistent="false" hb_formatType="currency";
+	property name="orderPaymentCreditAmountNeeded" persistent="false" hb_formatType="currency";
+	property name="orderPaymentRefundOptions" persistent="false";
+	property name="orderRequirementsList" persistent="false";
+	property name="orderTypeOptions" persistent="false";
+	property name="defaultStockLocationOptions" persistent="false";
+	property name="paymentAmountTotal" persistent="false" hb_formatType="currency";
+	property name="paymentAmountReceivedTotal" persistent="false" hb_formatType="currency";
+	property name="paymentAmountCreditedTotal" persistent="false" hb_formatType="currency";
+	property name="paymentAmountDue" persistent="false" hb_formatType="currency";
+	property name="paymentAmountDueAfterGiftCards" persistent="false" hb_formatType="currency";
+	property name="paymentMethodOptionsSmartList" persistent="false";
+	property name="promotionCodeList" persistent="false";
+	property name="quantityDelivered" persistent="false";
+	property name="quantityUndelivered" persistent="false";
+	property name="quantityReceived" persistent="false";
+	property name="quantityUnreceived" persistent="false";
+	property name="returnItemSmartList" persistent="false";
+	property name="referencingPaymentAmountCreditedTotal" persistent="false" hb_formatType="currency";
+	property name="rootOrderItems" persistent="false";
+	property name="saleItemSmartList" persistent="false";
+	property name="saveBillingAccountAddressFlag" hb_populateEnabled="public" persistent="false";
+	property name="saveBillingAccountAddressName" hb_populateEnabled="public" persistent="false";
+	property name="saveShippingAccountAddressFlag" hb_populateEnabled="public" persistent="false";
+	property name="saveShippingAccountAddressName" hb_populateEnabled="public" persistent="false";
+	property name="statusCode" persistent="false";
+	property name="subTotal" persistent="false" hb_formatType="currency";
+	property name="subTotalAfterItemDiscounts" persistent="false" hb_formatType="currency";
+	property name="taxTotal" persistent="false" hb_formatType="currency";
+	property name="total" persistent="false" hb_formatType="currency";
+	property name="totalItems" persistent="false";
+	property name="totalQuantity" persistent="false";
+	property name="totalSaleQuantity" persistent="false";
+	property name="totalReturnQuantity" persistent="false";
+	property name="totalDepositAmount" persistent="false" hb_formatType="currency";
+	
+    //======= Mocking Injection for Unit Test ======	
+	property name="orderService" persistent="false" type="any";
+	property name='orderDAO' persistent="false" type="any";
+
+	property name="orderDeliveryID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="trackingNumber" ormtype="string";
+	property name="containerLabel" ormtype="clob";
+	// Related Object Properties (Many-To-One)
+	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
+	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
+	property name="fulfillmentMethod" cfc="FulfillmentMethod" fieldtype="many-to-one" fkcolumn="fulfillmentMethodID";
+	property name="shippingMethod" cfc="ShippingMethod" fieldtype="many-to-one" fkcolumn="shippingMethodID";
+	property name="shippingAddress" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID";
+	property name="paymentTransaction" cfc="PaymentTransaction" fieldtype="many-to-one" fkcolumn="paymentTransactionID";
+
+	// Related Object Properties (One-To-Many)
+	property name="orderDeliveryItems" singularname="orderDeliveryItem" cfc="OrderDeliveryItem" fieldtype="one-to-many" fkcolumn="orderDeliveryID" cascade="all-delete-orphan" inverse="true";
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="orderDeliveryID" cascade="all-delete-orphan" inverse="true";
+
+	property name="totalQuantityDelivered" persistent="false" type="numeric" hb_formatType="numeric";
+
+	property name="orderDeliveryItemID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="quantity" ormtype="integer";
+
+	// Related Object Properties (many-to-one)
+	property name="orderDelivery" cfc="OrderDelivery" fieldtype="many-to-one" fkcolumn="orderDeliveryID";
+	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID" hb_cascadeCalculate="true";
+	property name="stock" cfc="Stock" fieldtype="many-to-one" fkcolumn="stockID" hb_cascadeCalculate="true";
+
+	// Related Object Properties (one-to-many)
+	property name="referencingOrderItems" singularname="referencingOrderItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="referencedOrderDeliveryItemID" inverse="true" cascade="all"; // Used For Returns
+	property name="quantityReturned" persistent="false";
+	property name="order" persistent="false";
+	property name="sku" persistent="false" type="any";
+
+	property name="orderFulfillmentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="fulfillmentCharge" ormtype="big_decimal";
+	property name="currencyCode" ormtype="string" length="3";
+	property name="emailAddress" hb_populateEnabled="public" ormtype="string";
+	property name="manualFulfillmentChargeFlag" ormtype="boolean" hb_populateEnabled="false";
+	property name="estimatedDeliveryDateTime" ormtype="timestamp";
+	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
+
+	// Related Object Properties (many-to-one)
+	property name="accountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="accountAddressID";
+	property name="accountEmailAddress" hb_populateEnabled="public" cfc="AccountEmailAddress" fieldtype="many-to-one" fkcolumn="accountEmailAddressID";
+	property name="fulfillmentMethod" hb_populateEnabled="public" cfc="FulfillmentMethod" fieldtype="many-to-one" fkcolumn="fulfillmentMethodID";
+	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
+	property name="pickupLocation" hb_populateEnabled="public" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
+	property name="shippingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID";
+	property name="shippingMethod" hb_populateEnabled="public" cfc="ShippingMethod" fieldtype="many-to-one" fkcolumn="shippingMethodID";
+	property name="orderFulfillmentStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderFulfillmentStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderFulfillmentStatusType";
+
+	// Related Object Properties (one-to-many)
+	property name="orderFulfillmentItems" hb_populateEnabled="public" singularname="orderFulfillmentItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="orderFulfillmentID" cascade="all" inverse="true";
+	property name="appliedPromotions" singularname="appliedPromotion" cfc="PromotionApplied" fieldtype="one-to-many" fkcolumn="orderFulfillmentID" cascade="all-delete-orphan" inverse="true";
+	property name="fulfillmentShippingMethodOptions" singularname="fulfillmentShippingMethodOption" cfc="ShippingMethodOption" fieldtype="one-to-many" fkcolumn="orderFulfillmentID" cascade="all-delete-orphan" inverse="true";
+	property name="accountLoyaltyTransactions" singularname="accountLoyaltyTransaction" cfc="AccountLoyaltyTransaction" type="array" fieldtype="one-to-many" fkcolumn="orderFulfillmentID" cascade="all" inverse="true";
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="orderFulfillmentID" cascade="all-delete-orphan" inverse="true";
+
+	property name="accountAddressOptions" type="array" persistent="false";
+	property name="saveAccountAddressFlag" hb_populateEnabled="public" persistent="false";
+	property name="saveAccountAddressName" hb_populateEnabled="public" persistent="false";
+	property name="requiredShippingInfoExistsFlag" persistent="false";
+	property name="chargeAfterDiscount" type="numeric" persistent="false" hb_formatType="currency";
+	property name="discountAmount" type="numeric" persistent="false" hb_formatType="currency";
+	property name="fulfillmentMethodType" type="numeric" persistent="false";
+	property name="nextEstimatedDeliveryDateTime" type="timestamp" persistent="false";
+	property name="nextEstimatedFulfillmentDateTime" type="timestamp" persistent="false";
+	property name="orderStatusCode" type="numeric" persistent="false";
+	property name="quantityUndelivered" type="numeric" persistent="false";
+	property name="quantityDelivered" type="numeric" persistent="false";
+	property name="selectedShippingMethodOption" type="any" persistent="false";
+	property name="eligibleShippingMethodRates" type="any" persistent="false"; 
+	property name="shippingMethodRate" type="array" persistent="false";
+	property name="shippingMethodOptions" type="array" persistent="false";
+	property name="subtotal" type="numeric" persistent="false" hb_formatType="currency";
+	property name="subtotalAfterDiscounts" type="array" persistent="false" hb_formatType="currency";
+	property name="subtotalAfterDiscountsWithTax" type="array" persistent="false" hb_formatType="currency";
+	property name="taxAmount" type="numeric" persistent="false" hb_formatType="currency";
+	property name="totalShippingWeight" type="numeric" persistent="false" hb_formatType="weight";
+    property name="totalShippingQuantity" type="numeric" persistent="false" hb_formatType="weight";
+    property name="shipmentItemMultiplier" type="numeric" persistent="false";
+
+	// Deprecated
+	property name="discountTotal" persistent="false";
+	property name="shippingCharge" persistent="false";
+	property name="saveAccountAddress" persistent="false";
+
+	property name="orderItemID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="price" ormtype="big_decimal";
+	property name="skuPrice" ormtype="big_decimal";
+	property name="currencyCode" ormtype="string" length="3";
+	property name="quantity" hb_populateEnabled="public" ormtype="integer";
+	property name="bundleItemQuantity" hb_populateEnabled="public" ormtype="integer";
+	property name="estimatedDeliveryDateTime" ormtype="timestamp";
+	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
+
+	// Related Object Properties (many-to-one)
+	property name="appliedPriceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="appliedPriceGroupID";
+	property name="orderItemType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderItemTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderItemType" fetch="join";
+	property name="orderItemStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderItemStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderItemStatusType" fetch="join";
+	property name="sku" hb_populateEnabled="public" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID" hb_cascadeCalculate="true" fetch="join";
+	property name="stock" hb_populateEnabled="public" cfc="Stock" fieldtype="many-to-one" fkcolumn="stockID";
+	property name="order" hb_populateEnabled="false" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID" hb_cascadeCalculate="true" fetch="join";
+	property name="orderFulfillment" cfc="OrderFulfillment" fieldtype="many-to-one" fkcolumn="orderFulfillmentID";
+	property name="orderReturn" cfc="OrderReturn" fieldtype="many-to-one" fkcolumn="orderReturnID";
+	property name="parentOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="parentOrderItemID";
+	property name="productBundleGroup" hb_populateEnabled="public" cfc="ProductBundleGroup" fieldtype="many-to-one" fkcolumn="productBundleGroupID";
+	property name="referencedOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="referencedOrderItemID"; // Used For Returns. This is set when this order is a return.
+
+	// Related Object Properties (one-to-many)
+	property name="appliedPromotions" singularname="appliedPromotion" cfc="PromotionApplied" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true" cascade="all-delete-orphan";
+	property name="appliedTaxes" singularname="appliedTax" cfc="TaxApplied" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true" cascade="all-delete-orphan";
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true" cascade="all-delete-orphan";
+	property name="childOrderItems" hb_populateEnabled="public" singularname="childOrderItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="parentOrderItemID" inverse="true" cascade="all-delete-orphan";
+	property name="eventRegistrations" singularname="eventRegistration" hb_populateEnabled="public" fieldtype="one-to-many" fkcolumn="orderItemID" cfc="EventRegistration" inverse="true" cascade="all-delete-orphan" ;
+	property name="orderDeliveryItems" singularname="orderDeliveryItem" cfc="OrderDeliveryItem" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true" cascade="delete-orphan";
+	property name="stockReceiverItems" singularname="stockReceiverItem" cfc="StockReceiverItem" type="array" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true";
+	property name="referencingOrderItems" singularname="referencingOrderItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="referencedOrderItemID" inverse="true" cascade="all"; // Used For Returns
+	property name="accountLoyaltyTransactions" singularname="accountLoyaltyTransaction" cfc="AccountLoyaltyTransaction" type="array" fieldtype="one-to-many" fkcolumn="orderItemID" cascade="all" inverse="true";
+	property name="giftCards" singularname="giftCard" cfc="GiftCard" type="array" fieldtype="one-to-many" fkcolumn="originalOrderItemID" cascade="all" inverse="true";
+	property name="orderItemGiftRecipients" singularname="orderItemGiftRecipient" cfc="OrderItemGiftRecipient" type="array" fieldtype="one-to-many" fkcolumn="orderItemID" cascade="all" inverse="true";
+
+	// Related Object Properties (many-to-many)
+
+	property name="shippingMethodOptionSplitShipments" singularname="shippingMethodOptionSplitShipment" cfc="ShippingMethodOptionSplitShipment" fieldtype="many-to-many" linktable="SwShipMethodOptSplitShipOrdItm" inversejoincolumn="shipMethodOptSplitShipmentID" fkcolumn="orderItemID";
+
+
+	// Remote properties
+	property name="publicRemoteID" ormtype="string" hb_populateEnabled="public";
+
+	property name="activeEventRegistrations" persistent="false";
+	property name="discountAmount" persistent="false" hb_formatType="currency" hint="This is the discount amount after quantity (talk to Greg if you don't understand)" ;
+	property name="extendedPrice" persistent="false" hb_formatType="currency";
+	property name="extendedPriceAfterDiscount" persistent="false" hb_formatType="currency";
+	property name="orderStatusCode" persistent="false";
+	property name="quantityDelivered" persistent="false";
+	property name="quantityUndelivered" persistent="false";
+	property name="quantityReceived" persistent="false";
+	property name="quantityUnreceived" persistent="false";
+	property name="registrants" persistent="false";
+	property name="renewalSku" persistent="false";
+	property name="taxAmount" persistent="false" hb_formatType="currency";
+	property name="taxLiabilityAmount" persistent="false" hb_formatType="currency";
+	property name="itemTotal" persistent="false" hb_formatType="currency";
+	property name="productBundlePrice" persistent="false" hb_formatType="currency";
+	property name="productBundleGroupPrice" persistent="false" hb_formatType="currency";
+	property name="salePrice" type="struct" persistent="false";
+	property name="totalWeight" persistent="false";
+
+	property name="orderItemGiftRecipientID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="firstName" ormtype="string" hb_populateEnabled="public";
+	property name="lastName" ormtype="string" hb_populateEnabled="public";
+	property name="emailAddress" ormtype="string" hb_populateEnabled="public";
+	property name="quantity" ormtype="integer" hb_populateEnabled="public";
+	property name="giftMessage" ormtype="string" length="4000" hb_populateEnabled="public";
+
+	// Related Object Properties (many-to-one)
+	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID";
+	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
+
+	// Related Object Properties (one-to-many)
+    property name="giftCards" singularname="giftCard" cfc="GiftCard" fieldtype="one-to-many" fkcolumn="orderItemGiftRecipientID" cascade="all-delete-orphan";
+
+    property name="orderOriginID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="activeFlag" ormtype="boolean" hb_formatType="yesno";
+	property name="orderOriginName" ormtype="string";
+	property name="orderOriginType" ormtype="string" hb_formFieldType="select";
+	
+	// Related Object Properties (many-to-one)
+	
+	// Related Object Properties (one-to-many)
+	property name="orders" singularname="order" cfc="Order" fieldtype="one-to-many" fkcolumn="orderOriginID" inverse="true" lazy="extra";
+
+	property name="orderPaymentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="amount" hb_populateEnabled="public" ormtype="big_decimal";
+	property name="currencyCode" ormtype="string" length="3";
+	property name="bankRoutingNumberEncrypted" ormType="string";
+	property name="bankAccountNumberEncrypted" ormType="string";
+	property name="checkNumberEncrypted" ormType="string";
+	property name="companyPaymentMethodFlag" hb_populateEnabled="public" ormType="boolean";
+	property name="creditCardNumberEncrypted" ormType="string" hb_auditable="false";
+	property name="creditCardNumberEncryptedDateTime" ormType="timestamp" hb_auditable="false" column="creditCardNumberEncryptDT";
+	property name="creditCardNumberEncryptedGenerator" ormType="string" hb_auditable="false" column="creditCardNumberEncryptGen";
+	property name="creditCardLastFour" ormType="string";
+	property name="creditCardType" ormType="string";
+	property name="expirationMonth" hb_populateEnabled="public" ormType="string" hb_formfieldType="select";
+	property name="expirationYear" hb_populateEnabled="public" ormType="string" hb_formfieldType="select";
+	property name="giftCardNumberEncrypted" ormType="string";
+	property name="nameOnCreditCard" hb_populateEnabled="public" ormType="string";
+	property name="paymentDueDate" hb_populateEnabled="public" ormtype="timestamp";
+	property name="providerToken" ormType="string";
+	property name="purchaseOrderNumber" hb_populateEnabled="public" ormType="string";
+    property name="giftCardPaymentProcessedFlag" hb_populateEnabled="public" ormType="boolean" default="false";
+
+
+	// Related Object Properties (many-to-one)
+	property name="accountPaymentMethod" hb_populateEnabled="public" cfc="AccountPaymentMethod" fieldtype="many-to-one" fkcolumn="accountPaymentMethodID";
+	property name="billingAccountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="billingAccountAddressID";
+	property name="billingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="billingAddressID" cascade="all";
+	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
+	property name="orderPaymentType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderPaymentTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderPaymentType" fetch="join";
+	property name="orderPaymentStatusType" hb_populateEnabled="false" cfc="Type" fieldtype="many-to-one" fkcolumn="orderPaymentStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderPaymentStatusType" fetch="join";
+	property name="paymentMethod" hb_populateEnabled="public" cfc="PaymentMethod" fieldtype="many-to-one" fkcolumn="paymentMethodID" fetch="join";
+	property name="paymentTerm" cfc="PaymentTerm" fieldtype="many-to-one" fkcolumn="paymentTermID" fetch="join";
+	property name="referencedOrderPayment" cfc="OrderPayment" fieldtype="many-to-one" fkcolumn="referencedOrderPaymentID";
+	property name="termPaymentAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="termPaymentAccountID";
+
+	// Related Object Properties (one-to-many)
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="orderPaymentID" cascade="all-delete-orphan" inverse="true";
+	property name="giftCardTransactions" singularname="giftCardTransaction" cfc="GiftCardTransaction" type="array" fieldtype="one-to-many" fkcolumn="orderPaymentID" cascade="all-delete-orphan" inverse="true";
+	property name="paymentTransactions" singularname="paymentTransaction" cfc="PaymentTransaction" type="array" fieldtype="one-to-many" fkcolumn="orderPaymentID" cascade="all" inverse="true" orderby="createdDateTime DESC" ;
+	property name="referencingOrderPayments" singularname="referencingOrderPayment" cfc="OrderPayment" fieldType="one-to-many" fkcolumn="referencedOrderPaymentID" cascade="all" inverse="true";
+	property name="appliedAccountPayments" singularname="appliedAccountPayment" cfc="AccountPaymentApplied" type="array" fieldtype="one-to-many" fkcolumn="orderPaymentID" cascade="all" inverse="true";
+
+	property name="amountAuthorized" type="numeric" hb_formatType="currency" persistent="false";
+	property name="amountCredited" type="numeric" hb_formatType="currency" persistent="false";
+	property name="amountReceived" type="numeric" hb_formatType="currency" persistent="false";
+	property name="amountUnauthorized" persistent="false" hb_formatType="currency";
+	property name="amountUncredited" persistent="false" hb_formatType="currency";
+	property name="amountUncaptured" persistent="false" hb_formatType="currency";
+	property name="amountUnreceived" persistent="false" hb_formatType="currency";
+	property name="bankRoutingNumber" persistent="false" hb_populateEnabled="public";
+	property name="bankAccountNumber" persistent="false" hb_populateEnabled="public";
+	property name="checkNumber" persistent="false" hb_populateEnabled="public";
+	property name="creditCardNumber" persistent="false" hb_populateEnabled="public";
+	property name="expirationDate" persistent="false";
+	property name="experationMonthOptions" persistent="false";
+	property name="expirationYearOptions" persistent="false";
+	property name="giftCardNumber" persistent="false" hb_populateEnabled="public";
+	property name="giftCard" persistent="false";
+	property name="paymentMethodType" persistent="false";
+	property name="paymentMethodOptions" persistent="false";
+	property name="peerOrderPaymentNullAmountExistsFlag" persistent="false";
+	property name="orderStatusCode" persistent="false";
+	property name="originalAuthorizationCode" persistent="false";
+	property name="originalAuthorizationProviderTransactionID" persistent="false";
+	property name="originalChargeProviderTransactionID" persistent="false";
+	property name="originalProviderTransactionID" persistent="false";
+	property name="saveBillingAccountAddressFlag" persistent="false";
+	property name="saveBillingAccountAddressName" persistent="false";
+	property name="securityCode" persistent="false" hb_populateEnabled="public";
+	property name="statusCode" persistent="false";
+	property name="sucessfulPaymentTransactionExistsFlag" persistent="false";
+	property name="orderAmountNeeded" persistent="false";
+	property name="creditCardOrProviderTokenExistsFlag" persistent="false";
+	property name="dynamicAmountFlag" persistent="false" hb_formatType="yesno";
+	property name="maximumPaymentMethodPaymentAmount" persistent="false";
+
+	property name="orderReturnID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="fulfillmentRefundAmount" ormtype="big_decimal";
+	property name="currencyCode" ormtype="string" length="3";
+	
+	// Related Object Properties (many-to-one)
+	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
+	property name="returnLocation" hb_populateEnabled="public" cfc="Location" fieldtype="many-to-one" fkcolumn="returnLocationID";
+	
+	// Related Object Properties (one-to-many)
+	property name="orderReturnItems" hb_populateEnabled="public" singularname="orderReturnItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="orderReturnID" cascade="all" inverse="true";
+
+	// Persistent Properties
+	property name="paymentMethodID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="paymentMethodName" ormtype="string";
+	property name="paymentMethodType" ormtype="string" hb_formatType="rbKey";
+	property name="allowSaveFlag" ormtype="boolean" default="false";
+	property name="activeFlag" ormtype="boolean" default="false";
+	property name="sortOrder" ormtype="integer";
+	property name="saveAccountPaymentMethodTransactionType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey" column="saveAccountPaymentMethodTxType";
+	property name="saveAccountPaymentMethodEncryptFlag" ormtype="boolean" column="saveAccPaymentMethodEncFlag";
+	property name="saveOrderPaymentTransactionType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey" column="saveOrderPaymentTxType";
+	property name="saveOrderPaymentEncryptFlag" ormtype="boolean";
+	property name="placeOrderChargeTransactionType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey" column="placeOrderChargeTxType";
+	property name="placeOrderCreditTransactionType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey" column="placeOrderCreditTxType";
+	property name="subscriptionRenewalTransactionType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey" column="subscriptionRenewalTxType";
+	
+	// Related Object Properties (many-to-one)
+	property name="paymentIntegration" cfc="Integration" fieldtype="many-to-one" fkcolumn="paymentIntegrationID";
+	
+	// Related Object Properties (one-to-many)
+	property name="accountPaymentMethods" singularname="accountPaymentMethod" cfc="AccountPaymentMethod" type="array" fieldtype="one-to-many" fkcolumn="paymentMethodID" cascade="all" inverse="true" lazy="extra";		// Set to lazy, just used for delete validation
+	property name="orderPayments" singularname="orderPayment" cfc="OrderPayment" type="array" fieldtype="one-to-many" fkcolumn="paymentMethodID" cascade="all-delete-orphan" inverse="true" lazy="extra";				// Set to lazy, just used for delete validation
+
+	property name="saveAccountPaymentMethodTransactionTypeOptions" persistent="false";
+	property name="saveOrderPaymentTransactionTypeOptions" persistent="false";
+	property name="placeOrderChargeTransactionTypeOptions" persistent="false";
+	property name="placeOrderCreditTransactionTypeOptions" persistent="false";
+	property name="paymentIntegrationOptions" persistent="false";
+
+	property name="paymentTermID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="activeFlag" ormtype="boolean";
+	property name="paymentTermName" ormtype="string";
+	property name="sortOrder" ormtype="integer";
+	
+	// Related Object Properties (many-to-one)
+	property name="term" cfc="Term" fieldtype="many-to-one" fkcolumn="termID";	
+	
+	// Related Object Properties (one-to-many)
+	property name="orderPayments" hb_populateEnabled="false" singularname="orderPayment" fieldType="one-to-many" type="array" fkColumn="paymentTermID" cfc="OrderPayment" inverse="true" orderby="createdDateTime desc";
+	property name="accountPaymentMethods" hb_populateEnabled="false" singularname="accountPaymentMethod" fieldType="one-to-many" type="array" fkColumn="paymentTermID" cfc="AccountPaymentMethod" inverse="true" orderby="createdDateTime desc";
+
+	property name="paymentTransactionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="transactionType" ormtype="string";
+	property name="transactionStartTickCount" ormtype="string";
+	property name="transactionEndTickCount" ormtype="string";
+	property name="transactionSuccessFlag" ormtype="boolean";
+	property name="providerTransactionID" ormtype="string";
+	property name="transactionDateTime" ormtype="timestamp";
+	property name="authorizationCode" ormtype="string";
+	property name="authorizationCodeUsed" ormtype="string";
+	property name="authorizationCodeInvalidFlag" ormtype="boolean";
+	property name="amountAuthorized" notnull="true" dbdefault="0" ormtype="big_decimal";
+	property name="amountReceived" notnull="true" dbdefault="0" ormtype="big_decimal";
+	property name="amountCredited" notnull="true" dbdefault="0" ormtype="big_decimal";
+	property name="currencyCode" ormtype="string" length="3";
+	property name="securityCodeMatchFlag" ormtype="boolean";
+	property name="avsCode" ormtype="string";				// @hint this is whatever the avs code was that got returned
+	property name="statusCode" ormtype="string";			// @hint this is the status code that was passed back in the response bean
+	property name="message" ormtype="string" length="4000"; // @hint this is a pipe and tilda delimited list of any messages that came back in the response.
+
+	// Related Object Properties (many-to-one)
+	property name="accountPayment" cfc="AccountPayment" fieldtype="many-to-one" fkcolumn="accountPaymentID";
+	property name="accountPaymentMethod" cfc="AccountPaymentMethod" fieldtype="many-to-one" fkcolumn="accountPaymentMethodID";
+	property name="orderPayment" cfc="OrderPayment" fieldtype="many-to-one" fkcolumn="orderPaymentID";
+
+	property name="amountCharged" notnull="true" dbdefault="0" ormtype="big_decimal";
+
+	// Non-Persistent Properties
+
+	property name="avsDescription" persistent="false";
+
+	property name="permissionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="accessType" ormtype="string";
+	property name="subsystem" ormtype="string";
+	property name="section" ormtype="string";
+	property name="item" ormtype="string";
+	property name="allowActionFlag" ormtype="boolean";
+	property name="allowCreateFlag" ormtype="boolean";
+	property name="allowReadFlag" ormtype="boolean";
+	property name="allowUpdateFlag" ormtype="boolean";
+	property name="allowDeleteFlag" ormtype="boolean";
+	property name="allowProcessFlag" ormtype="boolean";
+	property name="entityClassName" ormtype="string";
+	property name="propertyName" ormtype="string";
+	property name="processContext" ormtype="string";
+	
+	// Related Object Properties (many-to-one)
+	property name="permissionGroup" cfc="PermissionGroup" fieldtype="many-to-one" fkcolumn="permissionGroupID";
+
+	property name="permissionGroupID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="permissionGroupName" ormtype="string";
+	
+	// Related Object Properties (many-to-one)
+	
+	// Related Object Properties (one-to-many)
+	property name="permissions" singularname="permission" cfc="Permission" type="array" fieldtype="one-to-many" fkcolumn="permissionGroupID" cascade="all-delete-orphan" inverse="true";
+	
+	// Related Object Properties (many-to-many - owner)
+
+	// Related Object Properties (many-to-many - inverse)
+	property name="accounts" singularname="account" cfc="Account" fieldtype="many-to-many" linktable="SwAccountPermissionGroup" fkcolumn="permissionGroupID" inversejoincolumn="accountID" inverse="true";
+
+	property name="physicalID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="physicalName" ormtype="string";
+
+	// Related Object Properties (many-to-one)
+	property name="physicalStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="physicalStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=physicalStatusType";
+	
+	// Related Object Properties (one-to-many)
+	property name="physicalCounts" singularname="physicalCount" cfc="PhysicalCount" type="array" fieldtype="one-to-many" fkcolumn="physicalID" cascade="all-delete-orphan" inverse="true";
+	property name="stockAdjustments" singularname="stockAdjustment" cfc="StockAdjustment" type="array" fieldtype="one-to-many" fkcolumn="physicalID" cascade="all-delete-orphan" inverse="true";
+	
+	// Related Object Properties (many-to-many - owner)
+	property name="locations" singularname="location" cfc="Location" type="array" fieldtype="many-to-many" linktable="SwPhysicalLocation" fkcolumn="physicalID" inversejoincolumn="locationID";
+	property name="productTypes" singularname="productType" cfc="ProductType" type="array" fieldtype="many-to-many" linktable="SwPhysicalProductType" fkcolumn="physicalID" inversejoincolumn="productTypeID";
+	property name="products" singularname="product" cfc="Product" type="array" fieldtype="many-to-many" linktable="SwPhysicalProduct" fkcolumn="physicalID" inversejoincolumn="productID";
+	property name="brands" singularname="brand" cfc="Brand" type="array" fieldtype="many-to-many" linktable="SwPhysicalBrand" fkcolumn="physicalID" inversejoincolumn="BrandID";
+	property name="skus" singularname="sku" cfc="Sku" type="array" fieldtype="many-to-many" linktable="SwPhysicalSku" fkcolumn="physicalID" inversejoincolumn="skuID";
+
+	property name="physicalStatusTypeSystemCode" persistent="false";
+	property name="discrepancyQuery" persistent="false";
+	property name="physicalCountID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="countPostDateTime" ormtype="timestamp";
+
+	// Calculated Properties
+
+	// Related Object Properties (many-to-one)
+	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
+	property name="physical" cfc="Physical" fieldtype="many-to-one" fkcolumn="physicalID";
+	
+	// Related Object Properties (one-to-many)
+	property name="physicalCountItems" singularname="physicalCountItem" cfc="PhysicalCountItem" type="array" fieldtype="one-to-many" fkcolumn="physicalCountID" cascade="all-delete-orphan" inverse="true";
+
+	property name="physicalStatusTypeSystemCode" persistent="false";
+
+	property name="physicalCountItemID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="quantity" ormtype="integer";
+	property name="skuCode" ormtype="string" index="PI_SKUCODE";
+	property name="countPostDateTime" ormtype="timestamp";
+	 
+	// Calculated Properties
+
+	// Related Object Properties (many-to-one)
+	property name="physicalCount" cfc="PhysicalCount" fieldtype="many-to-one" fkcolumn="physicalCountID";
+	property name="stock" cfc="Stock" fieldtype="many-to-one" fkcolumn="stockID";
+
+	property name="physicalStatusTypeSystemCode" persistent="false";
+	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID" persistent="false";
+
+	property name="priceGroupID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="priceGroupIDPath" ormtype="string" length="4000";
+	property name="activeFlag" ormtype="boolean";
+	property name="priceGroupName" ormtype="string";
+	property name="priceGroupCode" ormtype="string" index="PI_PRICEGROUPCODE";
+
+	property name="parentPriceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="parentPriceGroupID" hb_optionsNullRBKey="define.none";
+	
+	// Related Object Properties (One-To-Many)
+	property name="appliedOrderItems" singularname="appliedOrderItem" cfc="OrderItem" type="array" fieldtype="one-to-many" fkcolumn="appliedPriceGroupID" inverse="true";
+	property name="childPriceGroups" singularname="ChildPriceGroup" cfc="PriceGroup" fieldtype="one-to-many" fkcolumn="parentPriceGroupID" inverse="true";
+	property name="priceGroupRates" singularname="priceGroupRate" cfc="PriceGroupRate" fieldtype="one-to-many" fkcolumn="priceGroupID" cascade="all-delete-orphan" inverse="true";
+	property name="loyaltyRedemptions" singularname="loyaltyRedemption" cfc="LoyaltyRedemption" type="array" fieldtype="one-to-many" fkcolumn="priceGroupID" cascade="all-delete-orphan" inverse="true";    
+	
+	// Related Object Properties (many-to-many - invers)
+	property name="accounts" singularname="account" cfc="Account" fieldtype="many-to-many" linktable="SwAccountPriceGroup" fkcolumn="priceGroupID" inversejoincolumn="accountID" inverse="true";
+	property name="subscriptionBenefits" singularname="subscriptionBenefit" cfc="SubscriptionBenefit" type="array" fieldtype="many-to-many" linktable="SwSubsBenefitPriceGroup" fkcolumn="priceGroupID" inversejoincolumn="subscriptionBenefitID" inverse="true";
+	property name="subscriptionUsageBenefits" singularname="subscriptionUsageBenefit" cfc="SubscriptionUsageBenefit" type="array" fieldtype="many-to-many" linktable="SwSubsUsageBenefitPriceGroup" fkcolumn="priceGroupID" inversejoincolumn="subscriptionUsageBenefitID" inverse="true";
+	property name="shippingMethodRates" singularname="shippingMethodRate" cfc="ShippingMethodRate" type="array" fieldtype="many-to-many" linktable="SwShippingMethodRatePriceGroup" fkcolumn="priceGroupID" inversejoincolumn="shippingMethodRateID" inverse="true";
+	property name="promotionRewards" singularname="promotionReward" cfc="PromotionReward" type="array" fieldtype="many-to-many" linktable="SwPromoRewardEligiblePriceGrp" fkcolumn="priceGroupID" inversejoincolumn="promotionRewardID" inverse="true";
+
+	property name="priceGroupRateID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="globalFlag" ormType="boolean" default="false";
+	property name="amount" ormType="big_decimal" hb_formatType="custom";
+	property name="amountType" ormType="string" hb_formFieldType="select";
+	property name="currencyCode" ormtype="string" length="3";
+
+	property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID";
+	property name="roundingRule" cfc="RoundingRule" fieldtype="many-to-one" fkcolumn="roundingRuleID" hb_optionsNullRBKey="define.none";
+	
+	// Related Object Properties (one-to-many)
+	property name="priceGroupRateCurrencies" singularname="priceGroupRateCurrency" cfc="PriceGroupRateCurrency" type="array" fieldtype="one-to-many" fkcolumn="priceGroupRateID" cascade="all-delete-orphan" inverse="true";
+
+
+	// Related Object Properties (many-to-many)
+	property name="productTypes" singularname="productType" cfc="ProductType" fieldtype="many-to-many" linktable="SwPriceGroupRateProductType" fkcolumn="priceGroupRateID" inversejoincolumn="productTypeID";
+	property name="products" singularname="product" cfc="Product" fieldtype="many-to-many" linktable="SwPriceGroupRateProduct" fkcolumn="priceGroupRateID" inversejoincolumn="productID";
+	property name="skus" singularname="sku" cfc="Sku" fieldtype="many-to-many" linktable="SwPriceGroupRateSku" fkcolumn="priceGroupRateID" inversejoincolumn="skuID";
+	
+	property name="excludedProductTypes" singularname="excludedProductType" cfc="ProductType" fieldtype="many-to-many" linktable="SwPriceGrpRateExclProductType" fkcolumn="priceGroupRateID" inversejoincolumn="productTypeID";
+	property name="excludedProducts" singularname="excludedProduct" cfc="Product" fieldtype="many-to-many" linktable="SwPriceGroupRateExclProduct" fkcolumn="priceGroupRateID" inversejoincolumn="productID";
+	property name="excludedSkus" singularname="excludedSku" cfc="Sku" fieldtype="many-to-many" linktable="SwPriceGroupRateExclSku" fkcolumn="priceGroupRateID" inversejoincolumn="skuID";
+	
+	// Non-persistent entities
+	property name="amountTypeOptions" persistent="false";
+	property name="appliesTo" type="string" persistent="false";
+	property name="displayName" type="string" persistent="false";
+	property name="currencyCodeOptions" persistent="false";
+	property name="priceGroupRateCurrencyID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="amount" ormtype="big_decimal" hb_formatType="currency" hb_rbKey='entity.priceGroupRate.amount';
+	
+	// Related Object Properties (many-to-one)
+	property name="currency" cfc="Currency" fieldtype="many-to-one" fkcolumn="currencyCode";
+	property name="priceGroupRate" cfc="PriceGroupRate" fieldtype="many-to-one" fkcolumn="priceGroupRateID";
+
+	property name="currencyCode" insert="false" update="false";
+
+	property name="printID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="printContent" ormtype="string";
+
+	property name="logPrintFlag" persistent="false"; 
+
+	property name="printTemplateID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="printTemplateName" ormtype="string";
+	property name="printTemplateObject" ormtype="string" hb_formFieldType="select";
+	property name="printTemplateFile" ormtype="string" hb_formFieldType="select";
+	property name="printContent" ormtype="string" length="4000" hb_formFieldType="wysiwyg";
+
+	property name="printTemplateObjectOptions" persistent="false";
+	property name="printTemplateFileOptions" persistent="false";
+
+	property name="productID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="activeFlag" ormtype="boolean";
+	property name="urlTitle" ormtype="string" unique="true" description="URL Title defines the string in a URL that Slatwall will use to identify this product.  For Example: http://www.myslatwallsite.com/sp/my-url-title/ where sp is the global product url key, and my-url-title is the urlTitle of this product";
+	property name="productName" ormtype="string" description="Defines the name of the product.  This can also be set at sku level with the skuName property.";
+	property name="productCode" ormtype="string" unique="true" index="PI_PRODUCTCODE" description="A unique value that identifies this product and only this product.  This could also be though of as a 'Model Number' but should not be confused with skuCode which identifies the actual unit being sold.";
+	property name="productDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg" description="General marketing description of the product.";
+	property name="publishedFlag" ormtype="boolean" default="false" description="This flag is used to determine if the product should be available for sale as published on the frontend of a website.";
+	property name="sortOrder" ormtype="integer" description="The sort order value can be used to manually organize all of the products in your catalog.";
+	property name="purchaseStartDateTime" ormtype="timestamp" description="This field can be set to restrict the begining of a time periord when this product can be sold.";
+	property name="purchaseEndDateTime" ormtype="timestamp" description="This field can be set to restrict the end of a time periord when this product can be sold.";
+
+	// Calculated Properties
+	property name="calculatedSalePrice" ormtype="big_decimal" description="Stores the latest calculation of the dynamic 'salePrice' property which in turn calculates from the defaultSku's dynamic salePrice property.";
+	property name="calculatedQATS" ormtype="integer" description="Stores the latest calculation of the dynamic 'qats' property which in turn calculates from the defaultSku's dynamic qats property.";
+	property name="calculatedAllowBackorderFlag" ormtype="boolean" description="Stores the value of the 'Allow Backorder' setting.  This is commonly used to drive dynamic product lists on the frontend where availability is important." deprecated="true" deprecatedDescription="Because the calculatedQATS propert takes into account if a product is able to be backordered, this property is no longer needed and will be removed in a future release for performance reasons.";
+	property name="calculatedTitle" ormtype="string" description="Stores the latest calculation of the products marketing 'Title' which is generated based on a dynamic string template in the products settings.";
+	property name="calculatedProductRating" ormtype="big_decimal" description="Stores the latest calculation of the products Rating which is generated based on the average rating of productReviews.";
+
+	// Related Object Properties (many-to-one)
+	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID" hb_optionsNullRBKey="define.none" fetch="join";
+	property name="productType" cfc="ProductType" fieldtype="many-to-one" fkcolumn="productTypeID" fetch="join";
+	property name="defaultSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="defaultSkuID" cascade="delete" fetch="join";
+	property name="renewalSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="renewalSkuID" cascade="delete" fetch="join";
+
+	// Related Object Properties (one-to-many)
+	property name="listingPages" singularname="listingPage" cfc="ProductListingPage" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
+	property name="skus" type="array" cfc="Sku" singularname="sku" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
+	property name="productImages" type="array" cfc="Image" singularname="productImage" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
+	property name="productReviews" singularname="productReview" cfc="ProductReview" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
+	property name="productSchedules" singularName="productSchedule" cfc="ProductSchedule" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
+
+	// Related Object Properties (many-to-many - owner)
+	property name="categories" singularname="category" cfc="Category" fieldtype="many-to-many" linktable="SwProductCategory" fkcolumn="productID" inversejoincolumn="categoryID";
+	property name="relatedProducts" singularname="relatedProduct" cfc="Product" type="array" fieldtype="many-to-many" linktable="SwRelatedProduct" fkcolumn="productID" inversejoincolumn="relatedProductID";
+
+	// Related Object Properties (many-to-many - inverse)
+	property name="promotionRewards" singularname="promotionReward" cfc="PromotionReward" fieldtype="many-to-many" linktable="SwPromoRewardProduct" fkcolumn="productID" inversejoincolumn="promotionRewardID" inverse="true";
+	property name="promotionRewardExclusions" singularname="promotionRewardExclusion" cfc="PromotionReward" type="array" fieldtype="many-to-many" linktable="SwPromoRewardExclProduct" fkcolumn="productID" inversejoincolumn="promotionRewardID" inverse="true";
+	property name="promotionQualifiers" singularname="promotionQualifier" cfc="PromotionQualifier" fieldtype="many-to-many" linktable="SwPromoQualProduct" fkcolumn="productID" inversejoincolumn="promotionQualifierID" inverse="true";
+	property name="promotionQualifierExclusions" singularname="promotionQualifierExclusion" cfc="PromotionQualifier" type="array" fieldtype="many-to-many" linktable="SwPromoQualExclProduct" fkcolumn="productID" inversejoincolumn="promotionQualifierID" inverse="true";
+	property name="loyaltyAccruements" singularname="loyaltyAccruement" cfc="LoyaltyAccruement" fieldtype="many-to-many" linktable="SwLoyaltyAccruProduct" fkcolumn="productID" inversejoincolumn="loyaltyAccruementID" inverse="true";
+	property name="loyaltyAccruementExclusions" singularname="loyaltyAccruementExclusion" cfc="LoyaltyAccruement" type="array" fieldtype="many-to-many" linktable="SwLoyaltyAccruExclProduct" fkcolumn="productID" inversejoincolumn="loyaltyAccruementID" inverse="true";
+	property name="loyaltyRedemptions" singularname="loyaltyRedemption" cfc="LoyaltyRedemption" type="array" fieldtype="many-to-many" linktable="SwLoyaltyRedemptionProduct" fkcolumn="productID" inversejoincolumn="loyaltyRedemptionID" inverse="true";
+	property name="loyaltyRedemptionExclusions" singularname="loyaltyRedemptionExclusion" cfc="LoyaltyRedemption" type="array" fieldtype="many-to-many" linktable="SwLoyaltyRedempExclProduct" fkcolumn="productID" inversejoincolumn="loyaltyRedemptionID" inverse="true";
+	property name="priceGroupRates" singularname="priceGroupRate" cfc="PriceGroupRate" fieldtype="many-to-many" linktable="SwPriceGroupRateProduct" fkcolumn="productID" inversejoincolumn="priceGroupRateID" inverse="true";
+	property name="vendors" singularname="vendor" cfc="Vendor" type="array" fieldtype="many-to-many" linktable="SwVendorProduct" fkcolumn="productID" inversejoincolumn="vendorID" inverse="true";
+	property name="physicals" singularname="physical" cfc="Physical" type="array" fieldtype="many-to-many" linktable="SwPhysicalProduct" fkcolumn="productID" inversejoincolumn="physicalID" inverse="true";
+
+	property name="allowBackorderFlag" type="boolean" persistent="false";
+	property name="availableForPurchaseFlag" type="boolean" persistent="false";
+	property name="allowAddOptionGroupFlag" type="boolean" persistent="false";
+	property name="baseProductType" type="string" persistent="false";
+	property name="brandName" type="string" persistent="false";
+	property name="brandOptions" type="array" persistent="false";
+	property name="bundleSkusSmartList" persistent="false";
+	property name="eligibleCurrencyCodeList" persistent="false";
+	property name="estimatedReceivalDetails" type="struct" persistent="false";
+	property name="eventConflictExistsFlag" type="boolean" persistent="false";
+	property name="eventRegistrations" type="array" persistent="false";
+	property name="totalImageCount" type="numeric" persistent="false";
+	property name="nextSkuCodeCount" persistent="false";
+	property name="optionGroupCount" type="numeric" persistent="false";
+	property name="productBundleGroupsCount" type="numeric" persistent="false";
+	property name="defaultProductImageFilesCount" type="numeric" persistent="false";
+	property name="placedOrderItemsSmartList" type="any" persistent="false";
+	property name="qats" type="numeric" persistent="false";
+	property name="salePriceDetailsForSkus" type="struct" persistent="false";
+	property name="title" type="string" persistent="false";
+	property name="transactionExistsFlag" type="boolean" persistent="false";
+	property name="unusedProductOptions" type="array" persistent="false";
+	property name="unusedProductOptionGroups" type="array" persistent="false";
+	property name="unusedProductSubscriptionTerms" type="array" persistent="false";
+	property name="productRating" type="numeric" persistent="false";
+
+	// Non-Persistent Properties - Delegated to default sku
+	property name="currentAccountPrice" hb_formatType="currency" persistent="false";
+	property name="currencyCode" persistent="false";
+	property name="defaultProductImageFiles" persistent="false";
+	property name="price" hb_formatType="currency" persistent="false";
+	property name="renewalMethodOptions" type="array" persistent="false";
+	property name="renewalPrice" hb_formatType="currency" persistent="false";
+	property name="listPrice" hb_formatType="currency" persistent="false";
+	property name="livePrice" hb_formatType="currency" persistent="false";
+	property name="salePrice" hb_formatType="currency" persistent="false";
+	property name="schedulingOptions" hb_formatType="array" persistent="false";
+
+	property name="productBundleBuildID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	
+	// Calculated Properties
+
+	// Related Object Properties (many-to-one)
+	property name="productBundleSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="productBundleSkuID";
+	property name="session" cfc="Session" fieldtype="many-to-one" fkcolumn="sessionID";
+	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
+
+	property name="productBundleBuildItemID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="quantity" ormtype="integer";
+	
+	// Calculated Properties
+
+	// Related Object Properties (many-to-one)
+	property name="productBundleBuild" cfc="ProductBundleBuild" fieldtype="many-to-one" fkcolumn="productBundleBuildID";
+	property name="productBundleGroup" cfc="ProductBundleGroup" fieldtype="many-to-one" fkcolumn="productBundleGroupID";
+	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
+
+	property name="productBundleGroupID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="activeFlag" ormtype="boolean" hb_formatType="yesno";
+	property name="minimumQuantity" ormtype="integer" hb_formFieldType="number" default="1";
+	property name="maximumQuantity" ormtype="integer" hb_formFieldType="number" default="1";
+	property name="amountType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
+	property name="amount" hb_formFieldType="number" ormtype="big_decimal" default="0";
+	property name="skuCollectionConfig" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json";
+
+	// Calculated Properties
+
+	// Related Object Properties (many-to-one)
+	property name="productBundleSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="productBundleSkuID";
+	property name="productBundleGroupType" cfc="Type" fieldtype="many-to-one" fkcolumn="productBundleGroupTypeID" hb_optionsSmartListData="f:parentType.systemCode=productBundleGroupType";
+	
+	// Related Object Properties (one-to-many)
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="productBundleGroupID" cascade="all-delete-orphan" inverse="true";
+
+	property name="amountTypeOptions" persistent="false";
+
+	property name="productListingPageID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="sortOrder" ormtype="integer";
+
+	// Calculated Properties
+
+	// Related Object Properties (many-to-one)
+	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID";
+	property name="content" cfc="Content" fieldtype="many-to-one" fkcolumn="contentID";
+
+	property name="productReviewID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="activeFlag" ormtype="boolean";
+	property name="reviewerName" hb_populateEnabled="public" ormtype="string";
+	property name="review" hb_populateEnabled="public" ormtype="string" length="4000" hint="HTML Formated review of the Product";
+	property name="reviewTitle" hb_populateEnabled="public" ormtype="string";
+	property name="rating" hb_populateEnabled="public" ormtype="int";
+
+	// Related Object Properties (many-to-one)
+	property name="product" hb_populateEnabled="public" cfc="Product" fieldtype="many-to-one" fkcolumn="productID";
+	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
+	property name="sku" hb_populateEnabled="public" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
+	
+	// Related Object Properties (one-to-many)
+ 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="productReviewID" inverse="true" cascade="all-delete-orphan";
+
+ 	property name="productScheduleID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="recurringTimeUnit" ormtype="string" hb_formFieldType="select" hint="Daily, Weekly, Monthly, Yearly";
+	property name="weeklyRepeatDays" ormtype="string" hb_formFieldType="select" hint="List containing days of the week on which the schedule occurs.";
+	property name="monthlyRepeatByType" ormtype="string" hb_formFieldType="select" hint="Whether recurrence is repeated based on day of month or day of week.";
+	property name="scheduleEndDate" ormtype="timestamp" hb_formFieldType="date" hint="If endsOn=date this will be the date the schedule ends";
+
+	// Calculated Properties
+
+	// Related Object Properties (many-to-one)
+	property name="product" hb_populateEnabled="public" cfc="Product" fieldtype="many-to-one" fkcolumn="productID";
+
+	// Related Object Properties (one-to-many)
+	property name="skus" type="array" cfc="Sku" singularname="sku" fieldtype="one-to-many" fkcolumn="productScheduleID" cascade="all" inverse="true";
+
+	property name="firstScheduledSku" persistent="false";
+	property name="scheduleSummary" persistent="false";
+	property name="scheduleStartDate" persistent="false";
+
+	property name="productTypeID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="productTypeIDPath" ormtype="string" length="4000";
+	property name="activeFlag" ormtype="boolean" hint="As A ProductType Get Old, They would be marked as Not Active";
+	property name="publishedFlag" ormtype="boolean";
+	property name="urlTitle" ormtype="string" unique="true" hint="This is the name that is used in the URL string";
+	property name="productTypeName" ormtype="string";
+	property name="productTypeNamePath" ormtype="string";
+	property name="productTypeDescription" ormtype="string" length="4000";
+	property name="systemCode" ormtype="string";
+
+	// Related Object Properties (Many-To-One)
+	property name="parentProductType" cfc="ProductType" fieldtype="many-to-one" fkcolumn="parentProductTypeID";
+
+	// Related Object Properties (One-To-Many)
+	property name="childProductTypes" singularname="childProductType" cfc="ProductType" fieldtype="one-to-many" inverse="true" fkcolumn="parentProductTypeID" cascade="all";
+	property name="products" singularname="product" cfc="Product" fieldtype="one-to-many" inverse="true" fkcolumn="productTypeID" lazy="extra" cascade="all";
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="productTypeID" cascade="all-delete-orphan" inverse="true";
+
+	// Related Object Properties (Many-To-Many - inverse)
+	property name="promotionRewards" singularname="promotionReward" cfc="PromotionReward" fieldtype="many-to-many" linktable="SwPromoRewardProductType" fkcolumn="productTypeID" inversejoincolumn="promotionRewardID" inverse="true";
+	property name="promotionRewardExclusions" singularname="promotionRewardExclusion" cfc="PromotionReward" type="array" fieldtype="many-to-many" linktable="SwPromoRewardExclProductType" fkcolumn="productTypeID" inversejoincolumn="promotionRewardID" inverse="true";
+	property name="promotionQualifiers" singularname="promotionQualifier" cfc="PromotionQualifier" fieldtype="many-to-many" linktable="SwPromoQualProductType" fkcolumn="productTypeID" inversejoincolumn="promotionQualifierID" inverse="true";
+	property name="promotionQualifierExclusions" singularname="promotionQualifierExclusion" cfc="PromotionQualifier" type="array" fieldtype="many-to-many" linktable="SwPromoQualExclProductType" fkcolumn="productTypeID" inversejoincolumn="promotionQualifierID" inverse="true";
+	property name="loyaltyAccruements" singularname="loyaltyAccruement" cfc="LoyaltyAccruement" fieldtype="many-to-many" linktable="SwLoyaltyAccruProductType" fkcolumn="productTypeID" inversejoincolumn="loyaltyAccruementID" inverse="true";
+	property name="loyaltyAccruementExclusions" singularname="loyaltyAccruementExclusion" cfc="LoyaltyAccruement" type="array" fieldtype="many-to-many" linktable="SwLoyaltyAccruExclProductType" fkcolumn="productTypeID" inversejoincolumn="loyaltyAccruementID" inverse="true";
+	property name="loyaltyRedemptions" singularname="loyaltyRedemption" cfc="LoyaltyRedemption" type="array" fieldtype="many-to-many" linktable="SwLoyaltyRedemptionProductType" fkcolumn="productTypeID" inversejoincolumn="loyaltyRedemptionID" inverse="true";
+	property name="loyaltyRedemptionExclusions" singularname="loyaltyRedemptionExclusion" cfc="LoyaltyRedemption" type="array" fieldtype="many-to-many" linktable="SwLoyaltyRedempExclProductType" fkcolumn="productTypeID" inversejoincolumn="loyaltyRedemptionID" inverse="true";
+	property name="priceGroupRates" singularname="priceGroupRate" cfc="PriceGroupRate" fieldtype="many-to-many" linktable="SwPriceGroupRateProductType" fkcolumn="productTypeID" inversejoincolumn="priceGroupRateID" inverse="true";
+	property name="priceGroupRateExclusions" singularname="priceGroupRateExclusion" cfc="PriceGroupRate" fieldtype="many-to-many" linktable="SwPriceGrpRateExclProductType" fkcolumn="productTypeID" inversejoincolumn="priceGroupRateID" inverse="true";
+	property name="attributeSets" singularname="attributeSet" cfc="AttributeSet" type="array" fieldtype="many-to-many" linktable="SwAttributeSetProductType" fkcolumn="productTypeID" inversejoincolumn="attributeSetID" inverse="true";
+	property name="optionGroups" singularname="optionGroup" cfc="OptionGroup" type="array" fieldtype="many-to-many" linktable="SwOptionGroupProductType" fkcolumn="productTypeID" inversejoincolumn="optionGroupID" inverse="true";
+	property name="physicals" singularname="physical" cfc="Physical" type="array" fieldtype="many-to-many" linktable="SwPhysicalProductType" fkcolumn="productTypeID" inversejoincolumn="physicalID" inverse="true";
+	property name="parentProductTypeOptions" type="array" persistent="false";
+
+	property name="promotionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="promotionName" ormtype="string";
+	property name="promotionSummary" ormtype="string" length="1000";
+	property name="promotionDescription" ormtype="string" length="4000";
+	property name="activeFlag" ormtype="boolean" default="1";
+	
+	// Related Object Properties (many-to-one)
+	property name="defaultImage" cfc="Image" fieldtype="many-to-one" fkcolumn="defaultImageID";
+	
+	// Related Object Properties (one-to-many)
+	property name="promotionPeriods" singularname="promotionPeriod" cfc="PromotionPeriod" fieldtype="one-to-many" fkcolumn="promotionID" cascade="all-delete-orphan" inverse="true";    
+	property name="promotionCodes" singularname="promotionCode" cfc="PromotionCode" fieldtype="one-to-many" fkcolumn="promotionID" cascade="all-delete-orphan" inverse="true";
+	property name="appliedPromotions" singularname="appliedPromotion" cfc="PromotionApplied" fieldtype="one-to-many" fkcolumn="promotionID" cascade="all" inverse="true";
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" type="array" fkcolumn="promotionID" cascade="all-delete-orphan" inverse="true";
+
+	property name="currentFlag" type="boolean" persistent="false";
+	property name="currentPromotionPeriodFlag" type="boolean" persistent="false";
+	property name="currentPromotionCodeFlag" type="boolean" persistent="false";
+	property name="promotionCodesDeletableFlag" type="boolean" persistent="false"; 
+
+	property name="promotionAccountID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="startDateTime" ormtype="timestamp";
+	property name="endDateTime" ormtype="timestamp";
+	
+	// Related Entities
+	property name="promotion" cfc="Promotion" fieldtype="many-to-one" fkcolumn="promotionID";
+	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
+
+	property name="promotionAppliedID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="discountAmount" ormtype="big_decimal";
+	property name="appliedType" ormtype="string";
+	property name="currencyCode" ormtype="string" length="3";
+	
+	// Related Entities
+	property name="promotion" cfc="Promotion" fieldtype="many-to-one" fkcolumn="promotionID";
+	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID" hb_cascadeCalculate="true";
+	property name="orderFulfillment" cfc="OrderFulfillment" fieldtype="many-to-one" fkcolumn="orderfulfillmentID";
+	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
+
+	property name="promotionCodeID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="promotionCode" ormtype="string" index="PI_PROMOTIONCODE";
+	property name="startDateTime" ormtype="timestamp" hb_formatType="dateTime" hb_nullRBKey="define.forever";
+	property name="endDateTime" ormtype="timestamp" hb_formatType="dateTime" hb_nullRBKey="define.forever";
+	property name="maximumUseCount" ormtype="integer" notnull="false" hb_nullRBKey="define.unlimited";
+	property name="maximumAccountUseCount" ormtype="integer" notnull="false" hb_nullRBKey="define.unlimited";
+
+	// Related Object Properties (many-to-one)
+	property name="promotion" cfc="Promotion" fieldtype="many-to-one" fkcolumn="promotionID";
+	
+	// Related Object Properties (one-to-many)
+	
+	// Related Object Properties (many-to-many - owner)
+	property name="accounts" singularname="account" cfc="Account" type="array" fieldtype="many-to-many" linktable="SwPromotionCodeAccount" fkcolumn="promotionCodeID" inversejoincolumn="accountID";
+	
+	// Related Object Properties (many-to-many - inverse)
+	property name="orders" singularname="order" cfc="Order" type="array" fieldtype="many-to-many" linktable="SwOrderPromotionCode" fkcolumn="promotionCodeID" inversejoincolumn="orderID" inverse="true" lazy="extra";
+
+	property name="currentFlag" type="boolean" persistent="false";
+
+	property name="promotionPeriodID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="startDateTime" ormtype="timestamp" hb_formatType="dateTime" hb_nullRBKey="define.forever";
+	property name="endDateTime" ormtype="timestamp" hb_formatType="dateTime" hb_nullRBKey="define.forever";
+	property name="maximumUseCount" ormtype="integer" notnull="false"  hb_nullRBKey="define.unlimited";
+	property name="maximumAccountUseCount" ormtype="integer" notnull="false"  hb_nullRBKey="define.unlimited";
+	
+	// Related Object Properties (many-to-one)
+	property name="promotion" cfc="Promotion" fieldtype="many-to-one" fkcolumn="promotionID" fetch="join";
+	
+	// Related Object Properties (one-to-many)   
+	property name="promotionRewards" singularname="promotionReward" cfc="PromotionReward" fieldtype="one-to-many" fkcolumn="promotionPeriodID" cascade="all-delete-orphan" inverse="true";
+	property name="promotionQualifiers" singularname="promotionQualifier" cfc="PromotionQualifier" fieldtype="one-to-many" fkcolumn="promotionPeriodID" cascade="all-delete-orphan" inverse="true";
+
+	property name="promotionQualifierID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="qualifierType" ormtype="string" hb_formatType="rbKey";
+	
+	property name="minimumOrderQuantity" ormtype="integer" hb_nullRBKey="define.0";
+	property name="maximumOrderQuantity" ormtype="integer" hb_nullRBKey="define.unlimited";
+	property name="minimumOrderSubtotal" ormtype="big_decimal" hb_formatType="currency" hb_nullRBKey="define.0";
+	property name="maximumOrderSubtotal" ormtype="big_decimal" hb_formatType="currency" hb_nullRBKey="define.unlimited";
+	property name="minimumItemQuantity" ormtype="integer" hb_nullRBKey="define.0";
+	property name="maximumItemQuantity" ormtype="integer" hb_nullRBKey="define.unlimited";
+	property name="minimumItemPrice" ormtype="big_decimal" hb_formatType="currency" hb_nullRBKey="define.0";
+	property name="maximumItemPrice" ormtype="big_decimal" hb_formatType="currency" hb_nullRBKey="define.unlimited";
+	property name="minimumFulfillmentWeight" ormtype="big_decimal" hb_formatType="weight" hb_nullRBKey="define.0";
+	property name="maximumFulfillmentWeight" ormtype="big_decimal" hb_formatType="weight" hb_nullRBKey="define.unlimited";
+	property name="rewardMatchingType" ormtype="string" hb_formatType="rbKey" hb_formFieldType="select";
+	
+	// Related Entities (many-to-one)
+	property name="promotionPeriod" cfc="PromotionPeriod" fieldtype="many-to-one" fkcolumn="promotionPeriodID";
+	
+	// Related Entities (one-to-many)
+	
+	// Related Entities (many-to-many - owner)
+	property name="fulfillmentMethods" singularname="fulfillmentMethod" cfc="FulfillmentMethod" fieldtype="many-to-many" linktable="SwPromoQualFulfillmentMethod" fkcolumn="promotionQualifierID" inversejoincolumn="fulfillmentMethodID";
+	property name="shippingMethods" singularname="shippingMethod" cfc="ShippingMethod" fieldtype="many-to-many" linktable="SwPromoQualShippingMethod" fkcolumn="promotionQualifierID" inversejoincolumn="shippingMethodID";
+	property name="shippingAddressZones" singularname="shippingAddressZone" cfc="AddressZone" fieldtype="many-to-many" linktable="SwPromoQualShipAddressZone" fkcolumn="promotionQualifierID" inversejoincolumn="addressZoneID";
+	
+	property name="brands" singularname="brand" cfc="Brand" fieldtype="many-to-many" linktable="SwPromoQualBrand" fkcolumn="promotionQualifierID" inversejoincolumn="brandID";
+	property name="options" singularname="option" cfc="Option" fieldtype="many-to-many" linktable="SwPromoQualOption" fkcolumn="promotionQualifierID" inversejoincolumn="optionID";
+	property name="skus" singularname="sku" cfc="Sku" fieldtype="many-to-many" linktable="SwPromoQualSku" fkcolumn="promotionQualifierID" inversejoincolumn="skuID";
+	property name="products" singularname="product" cfc="Product" fieldtype="many-to-many" linktable="SwPromoQualProduct" fkcolumn="promotionQualifierID" inversejoincolumn="productID";
+	property name="productTypes" singularname="productType" cfc="ProductType" fieldtype="many-to-many" linktable="SwPromoQualProductType" fkcolumn="promotionQualifierID" inversejoincolumn="productTypeID";
+	
+	property name="excludedBrands" singularname="excludedBrand" cfc="Brand" type="array" fieldtype="many-to-many" linktable="SwPromoQualExclBrand" fkcolumn="promotionQualifierID" inversejoincolumn="brandID";
+	property name="excludedOptions" singularname="excludedOption" cfc="Option" type="array" fieldtype="many-to-many" linktable="SwPromoQualExclOption" fkcolumn="promotionQualifierID" inversejoincolumn="optionID";
+	property name="excludedSkus" singularname="excludedSku" cfc="Sku" fieldtype="many-to-many" linktable="SwPromoQualExclSku" fkcolumn="promotionQualifierID" inversejoincolumn="skuID";
+	property name="excludedProducts" singularname="excludedProduct" cfc="Product" fieldtype="many-to-many" linktable="SwPromoQualExclProduct" fkcolumn="promotionQualifierID" inversejoincolumn="productID";
+	property name="excludedProductTypes" singularname="excludedProductType" cfc="ProductType" fieldtype="many-to-many" linktable="SwPromoQualExclProductType" fkcolumn="promotionQualifierID" inversejoincolumn="productTypeID";
+
+	property name="qualifierApplicationTypeOptions" type="array" persistent="false";
+
+	property name="promotionRewardID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="amount" ormType="big_decimal" hb_formatType="custom";
+	property name="currencyCode" ormtype="string" length="3";
+	property name="amountType" ormType="string" hb_formatType="rbKey";
+	property name="rewardType" ormType="string" hb_formatType="rbKey";
+	property name="applicableTerm" ormType="string" hb_formatType="rbKey" hb_formFieldType="select";
+	property name="maximumUsePerOrder" ormType="integer" hb_nullRBKey="define.unlimited";
+	property name="maximumUsePerItem" ormtype="integer" hb_nullRBKey="define.unlimited";
+	property name="maximumUsePerQualification" ormtype="integer" hb_nullRBKey="define.unlimited";
+
+	// Related Object Properties (many-to-one)
+	property name="promotionPeriod" cfc="PromotionPeriod" fieldtype="many-to-one" fkcolumn="promotionPeriodID";
+	property name="roundingRule" cfc="RoundingRule" fieldtype="many-to-one" fkcolumn="roundingRuleID" hb_optionsNullRBKey="define.none";
+
+	// Related Object Properties (one-to-many)
+	property name="promotionRewardCurrencies" singularname="promotionRewardCurrency" cfc="PromotionRewardCurrency" type="array" fieldtype="one-to-many" fkcolumn="promotionRewardID" cascade="all-delete-orphan" inverse="true";
+
+	// Related Object Properties (many-to-many - owner)
+	property name="eligiblePriceGroups" singularname="eligiblePriceGroup" cfc="PriceGroup" type="array" fieldtype="many-to-many" linktable="SwPromoRewardEligiblePriceGrp" fkcolumn="promotionRewardID" inversejoincolumn="priceGroupID";
+	
+	property name="fulfillmentMethods" singularname="fulfillmentMethod" cfc="FulfillmentMethod" fieldtype="many-to-many" linktable="SwPromoRewardFulfillmentMethod" fkcolumn="promotionRewardID" inversejoincolumn="fulfillmentMethodID";
+	property name="shippingAddressZones" singularname="shippingAddressZone" cfc="AddressZone" fieldtype="many-to-many" linktable="SwPromoRewardShipAddressZone" fkcolumn="promotionRewardID" inversejoincolumn="addressZoneID";
+	property name="shippingMethods" singularname="shippingMethod" cfc="ShippingMethod" fieldtype="many-to-many" linktable="SwPromoRewardShippingMethod" fkcolumn="promotionRewardID" inversejoincolumn="shippingMethodID";
+	
+	property name="brands" singularname="brand" cfc="Brand" fieldtype="many-to-many" linktable="SwPromoRewardBrand" fkcolumn="promotionRewardID" inversejoincolumn="brandID";
+	property name="options" singularname="option" cfc="Option" fieldtype="many-to-many" linktable="SwPromoRewardOption" fkcolumn="promotionRewardID" inversejoincolumn="optionID";
+	property name="skus" singularname="sku" cfc="Sku" fieldtype="many-to-many" linktable="SwPromoRewardSku" fkcolumn="promotionRewardID" inversejoincolumn="skuID";
+	property name="products" singularname="product" cfc="Product" fieldtype="many-to-many" linktable="SwPromoRewardProduct" fkcolumn="promotionRewardID" inversejoincolumn="productID";
+	property name="productTypes" singularname="productType" cfc="ProductType" fieldtype="many-to-many" linktable="SwPromoRewardProductType" fkcolumn="promotionRewardID" inversejoincolumn="productTypeID";
+	
+	property name="excludedBrands" singularname="excludedBrand" cfc="Brand" type="array" fieldtype="many-to-many" linktable="SwPromoRewardExclBrand" fkcolumn="promotionRewardID" inversejoincolumn="brandID";
+	property name="excludedOptions" singularname="excludedOption" cfc="Option" type="array" fieldtype="many-to-many" linktable="SwPromoRewardExclOption" fkcolumn="promotionRewardID" inversejoincolumn="optionID";
+	property name="excludedSkus" singularname="excludedSku" cfc="Sku" fieldtype="many-to-many" linktable="SwPromoRewardExclSku" fkcolumn="promotionRewardID" inversejoincolumn="skuID";
+	property name="excludedProducts" singularname="excludedProduct" cfc="Product" fieldtype="many-to-many" linktable="SwPromoRewardExclProduct" fkcolumn="promotionRewardID" inversejoincolumn="productID";
+	property name="excludedProductTypes" singularname="excludedProductType" cfc="ProductType" fieldtype="many-to-many" linktable="SwPromoRewardExclProductType" fkcolumn="promotionRewardID" inversejoincolumn="productTypeID";
+
+	property name="amountTypeOptions" persistent="false";
+	property name="applicableTermOptions" persistent="false";
+	property name="rewards" type="string" persistent="false";
+	property name="currencyCodeOptions" persistent="false";
+
+	property name="promotionRewardCurrencyID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="amount" ormtype="big_decimal" hb_formatType="currency" hb_rbKey='entity.promotionReward.amount';
+	
+	// Related Object Properties (many-to-one)
+	property name="currency" cfc="Currency" fieldtype="many-to-one" fkcolumn="currencyCode";
+	property name="promotionReward" cfc="PromotionReward" fieldtype="many-to-one" fkcolumn="promotionRewardID";
+
+	property name="remoteEntityID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="integration" hb_populateEnabled="public" cfc="Integration" fieldtype="many-to-one" fkcolumn="integrationID" index="PI_INTEGRATION_REMOTEID";
+	property name="remoteID" ormtype="string" index="PI_INTEGRATION_REMOTEID";
+	property name="deletedFlag" ormttype="boolean";
+
+	property name="reportID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="reportName" ormtype="string";
+	property name="reportTitle" ormtype="string";
+	property name="reportDateTime" ormtype="string";
+	property name="reportDateTimeGroupBy" ormtype="string";
+	property name="reportCompareFlag" ormtype="boolean";
+	property name="metrics" ormtype="string" length="4000";
+	property name="dimensions" ormtype="string" length="4000";
+	property name="dynamicDateRangeFlag" ormtype="boolean";
+	property name="dynamicDateRangeType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
+	property name="dynamicDateRangeEndType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
+	property name="dynamicDateRangeInterval" ormtype="integer";
+	property name="reportType" ormtype="string";
+	property name="limitResults" ormtype="integer";
+	property name="showReport" ormtype="boolean" default="false";
+
+	property name="dynamicDateRangeTypeOptions" persistent="false";
+	property name="dynamicDateRangeEndTypeOptions" persistent="false";
+	property name="reportStartDateTime" persistent="false";
+	property name="reportEndDateTime" persistent="false";
+	property name="reportCompareStartDateTime" persistent="false";
+	property name="reportCompareEndDateTime" persistent="false";
+	property name="orderByType" persistent="false"; 
+
+	property name="roundingRuleID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="roundingRuleName" ormtype="string";
+	property name="roundingRuleExpression" ormtype="string";
+	property name="roundingRuleDirection" ormtype="string"; 
+
+	property name="priceGroupRates" singularname="priceGroupRate" cfc="PriceGroupRate" fieldtype="one-to-many" fkcolumn="roundingRuleID" inverse="true";
+	property name="scheduleID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="scheduleName" ormtype="string";
+	
+	property name="recuringType" ormtype="string" hb_formFieldtype="select" hb_formatType="rbKey";																							// Daily, Weekly, Monthly										Daily
+	property name="daysOfWeekToRun" ormtype="string" hb_formfieldType="checkboxgroup";																					// 1, 2, 3, 4, 5, 6, 7											NULL	(required if recuringType is weekly)
+	property name="daysOfMonthToRun" ormtype="string" hb_formfieldType="checkboxgroup";																					// 1 - 31			[1,10,20]									NULL	(required if recuringType is monthly)
+	
+	// During an individual Day
+	property name="frequencyInterval" ormtype="integer";																												// 1 - x (minutes)
+	property name="frequencyStartTime" ormtype="timestamp" hb_formfieldType="time" hb_formatType="time";																// 4 PM
+	property name="frequencyEndTime" ormtype="timestamp" hb_formfieldType="time" hb_formatType="time" hb_nullRBKey="entity.schedule.frequencyEndTime.runOnce";			// 12 PM
+
+	property name="sessionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="shippingAddressPostalCode" ormtype="string";
+	property name="lastRequestDateTime" ormtype="timestamp";
+	property name="loggedInDateTime" ormtype="timestamp";
+	property name="loggedOutDateTime" ormtype="timestamp";
+	property name="lastRequestIPAddress" ormtype="string";
+	property name="lastPlacedOrderID" ormtype="string";
+	property name="rbLocale" ormtype="string";
+	property name="sessionCookiePSID" ormtype="string" length="64" index="PI_SESSIONCOOKIEPSID";//keeps track of cart
+	property name="sessionCookieNPSID" ormtype="string" length="64" index="PI_SESSIONCOOKIENPSID"; //keeps track of user on session.
+	property name="sessionCookieExtendedPSID" ormtype="string" length="64" index="PI_SESSIONCOOKIEEXTENDEDPSID"; //keeps track of user during extended session period.	
+	property name="sessionExpirationDateTime" ormtype="timestamp";
+	property name="deviceID" ormtype="string" default="" ;
+
+	property name="requestAccount" type="any" persistent="false"; 
+	
+	// Related Entities
+	property name="account" type="any" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" fetch="join";
+	property name="accountAuthentication" cfc="AccountAuthentication" fieldtype="many-to-one" fkcolumn="accountAuthenticationID" fetch="join";
+	property name="order" type="any" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
+
+
 	public void function testFunc(){
 		return '';
 	}
