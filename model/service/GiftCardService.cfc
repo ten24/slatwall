@@ -160,7 +160,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
        if(arguments.processObject.getTransactionType() == 'credit'){
 
          	var creditData = {
-         		creditAmount: arguments.processObject.getAmount();
+         		creditAmount=arguments.processObject.getAmount()
          	};
 
             return this.processGiftCard(arguments.GiftCard, creditData, 'addCredit'); 
@@ -168,7 +168,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
        } else if (arguments.processObject.getTransactionType() == 'debit'){
 
             var debitData = {
-            	debitAmount: arguments.processObject.getAmount()
+            	debitAmount=arguments.processObject.getAmount()
             };
             return this.processGiftCard(arguments.giftCard, debitData, 'addDebit'); 
        

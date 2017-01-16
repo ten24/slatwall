@@ -56,7 +56,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	
 	public void function processGiftCard_addCreditTest(){
 		var giftCardData = {
-			giftCardID:""
+			giftCardID="",
+			currencyCode="USD"
 		};
 		var giftCard = createPersistedTestEntity('giftCard',giftCardData);
 		
@@ -64,12 +65,16 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			creditAmount=15
 		};
 		giftCard = variables.service.processGiftCard(giftCard, creditData, 'addCredit');
+		request.debug(giftCard);
 		assert(giftCard.getBalanceAmount() EQ 15);
+		assert(giftCard.getCalculatedBalanceAmount() EQ 15);
+		
 	}
 	
 	public void function processGiftCard_addDebitTest(){
 		var giftCardData = {
-			giftCardID:""
+			giftCardID="",
+			currencyCode="USD"
 		};
 		var giftCard = createPersistedTestEntity('giftCard',giftCardData);
 		
@@ -88,11 +93,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		giftCard = variables.service.processGiftCard(giftCard, debitData, 'addDebit');
 		request.debug(giftCard);
 		assert(giftCard.getBalanceAmount() EQ 7);
+		assert(giftCard.getCalculatedBalanceAmount() EQ 7);
 	}
 	
 	public void function processGiftCard_offlineTransactionTest_credit(){
 		var giftCardData = {
-			giftCardID:""
+			giftCardID="",
+			currencyCode="USD"
 		};
 		var giftCard = createPersistedTestEntity('giftCard',giftCardData);
 				
@@ -103,12 +110,14 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		giftCard = variables.service.processGiftCard(giftCard, transactionData, 'offlineTransaction');
 		assert(giftCard.getBalanceAmount() EQ 20);
+		assert(giftCard.getCalculatedBalanceAmount() EQ 20);
 		
 	}	
 	
 	public void function processGiftCard_offlineTransactionTest_debit(){
 		var giftCardData = {
-			giftCardID:""
+			giftCardID="",
+			currencyCode="USD"
 			};
 		var giftCard = createPersistedTestEntity('giftCard',giftCardData);
 		
@@ -118,15 +127,15 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var creditTransaction = createPersistedTestEntity('giftCardTransaction', creditTransactionData);
 		giftCard.addGiftCardTransaction(creditTransaction);
-	
+		
 		var transactionData = {
 			transactionType='debit',
 			amount='7'
 		};
-		
 		giftCard = variables.service.processGiftCard(giftCard, transactionData, 'offlineTransaction');
-		request.debug(giftCard);
 		assert(giftCard.getBalanceAmount() EQ 3);
-	}	
+		assert(giftCard.getCalculatedBalanceAmount() EQ 3);
+	}
+	
 	
 }
