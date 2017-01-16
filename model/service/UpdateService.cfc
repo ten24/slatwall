@@ -379,7 +379,7 @@ Notes:
 									right(arguments.coreEntityParser.getFileContent(),len(arguments.coreEntityParser.getFileContent()) -arguments.coreEntityParser.getPropertyEndPos())
 					;
 					arguments.coreEntityParser.setFileContent(newContent);
-				}
+				} 
 			}
 			//add functions
 			if(len(arguments.customEntityParser.getFunctionString())){
