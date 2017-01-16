@@ -154,14 +154,6 @@
 					data-entity="orderItem"
 					ng-disabled="!orderItem.data.isDeletable"
 					title="{{orderItem.data.isDeletable ? '' : 'You cannot delete fulfilled order items.'}}"><i class="fa fa-trash"></i></button></li>
-				<!-- <sw-action-caller class="s-remove-btn" type="button"
-					icon="trash"
-					confirm="true"
-					confirmtext="Are you sure you want to delete this orderitem?"
-					disabledtext="{{orderItem.data.deleteErrors}}"
-					action="admin:entity.deleteOrderItem"
-					query-string="orderItemID={{orderItem.orderItemID}}">
-				</sw-action-caller> -->
 		</ul>
 	</td>
 </tr>
