@@ -21,6 +21,9 @@ var frontendmodule = angular.module('frontend', [hibachimodule.name])
     }else{
         hibachiPathBuilder.setBasePartialsPath('custom/client/src/');
     }
+    if (hibachiConfig && hibachiConfig.integrationActionPath){
+        hibachiPathBuilder.setIntegrationActionPath(hibachiConfig.integrationActionPath);
+    }
 }])
 
 .run(['$rootScope', '$hibachi','publicService','hibachiPathBuilder','entityService', function($rootScope, $hibachi, publicService,hibachiPathBuilder,entityService) {

@@ -4,6 +4,8 @@
 class HibachiPathBuilder{
     public baseURL:string;
     public basePartialsPath:string;
+    public integrationActionPath:string;
+    
     //@ngInject
     constructor(){
 
@@ -15,6 +17,10 @@ class HibachiPathBuilder{
 
     public setBasePartialsPath = (basePartialsPath:string):void=>{
         this.basePartialsPath = basePartialsPath
+    }
+
+    public setIntegrationActionPath = (integrationActionPath:string):void=>{
+        this.integrationActionPath = integrationActionPath;
     }
 
     public buildPartialsPath=(componentsPath:string):string=>{
