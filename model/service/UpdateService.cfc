@@ -352,7 +352,6 @@ Notes:
 			if(lcase(getApplicationValue("lineBreakStyle")) == 'windows'){
 				conditionalLineBreak = "";
 			}
-
 			var newContent = "";
 			//add properties
 			if(len(arguments.customEntityParser.getPropertyString())){
@@ -373,14 +372,10 @@ Notes:
 					}
 				}else{
 					var customPropertyString = arguments.customEntityParser.getCustomPropertyStringByPropertyString();
-					request.debug("Custom Property String");
-					request.debug(customPropertyString);
 					newContent = 	left(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getPropertyEndPos()-variables.paddingCount) 
 									& conditionalLineBreak & chr(9) & customPropertyString & chr(9) & 
 									right(arguments.coreEntityParser.getFileContent(),len(arguments.coreEntityParser.getFileContent()) -arguments.coreEntityParser.getPropertyEndPos())
 					;
-					request.debug("\nnewContent");
-					request.debug(newContent);
 					arguments.coreEntityParser.setFileContent(newContent);
 				} 
 			}
