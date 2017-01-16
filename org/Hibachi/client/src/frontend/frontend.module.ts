@@ -22,15 +22,15 @@ var frontendmodule = angular.module('frontend', [hibachimodule.name])
         hibachiPathBuilder.setBasePartialsPath('custom/client/src/');
     }
     /** Sets the custom public integration point */
-    if (hibachiConfig && hibachiConfig.integrationActionPath){
-        hibachiPathBuilder.setIntegrationActionPath(hibachiConfig.integrationActionPath);
+    if (hibachiConfig && hibachiConfig.subsystemName){
+        hibachiPathBuilder.setSubsystemName(hibachiConfig.subsystemName);
     }
 }])
 
 .run(['$rootScope', '$hibachi','publicService','hibachiPathBuilder','entityService', function($rootScope, $hibachi, publicService,hibachiPathBuilder,entityService) {
 	$rootScope.slatwall = $rootScope.hibachiScope;
     $rootScope.slatwall.getProcessObject = entityService.newProcessObject;
-    $rootScope.slatwall.$hibachi.appConfig.integrationActionPath = hibachiPathBuilder.integrationActionPath;
+    $rootScope.slatwall.$hibachi.appConfig.subsystemName = hibachiPathBuilder.subsystemName;
 
 }])
 

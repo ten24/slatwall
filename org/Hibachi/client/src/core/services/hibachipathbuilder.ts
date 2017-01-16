@@ -4,8 +4,8 @@
 class HibachiPathBuilder{
     public baseURL:string;
     public basePartialsPath:string;
-    public integrationActionPath:string;
-    
+    public subsystemName:string;
+
     //@ngInject
     constructor(){
 
@@ -19,8 +19,8 @@ class HibachiPathBuilder{
         this.basePartialsPath = basePartialsPath
     }
 
-    public setIntegrationActionPath = (integrationActionPath:string):void=>{
-        this.integrationActionPath = integrationActionPath;
+    public setSubsystemName = (subsystemName:string):void=>{
+        this.subsystemName = subsystemName
     }
 
     public buildPartialsPath=(componentsPath:string):string=>{
