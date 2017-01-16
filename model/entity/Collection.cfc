@@ -138,9 +138,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		setHibachiCollectionService(getService('hibachiCollectionService'));
 	}
 	
-	public numeric function getCurrentPageDeclaration(){
-		return getPageRecordsStart();
-	}
 	
 	public array function getAuthorizedProperties(){
 		if(!structKeyExists(variables,'authorizedProperties')){
@@ -695,7 +692,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 			if (!isNull(currentPage)){
 				data['currentPageDeclaration'] = currentPage;
-				this.setPageRecordsStart(currentPage);
+				this.setCurrentPageDeclaration(currentPage);
 			}
 			
 			if(findNoCase('p:show', key)){
