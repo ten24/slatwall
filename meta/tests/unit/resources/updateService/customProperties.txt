@@ -1,0 +1,5 @@
+component {
+	property name="accountAddressName" hb_populateEnabled="public" ormtype="string" hint="Nickname for this account Address";
+	property name="address" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="addressID" cascade="all" hb_populateValidationContext="full";
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="accountAddressID" cascade="all-delete-orphan" inverse="true";
+}

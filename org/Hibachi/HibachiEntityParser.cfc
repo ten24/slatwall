@@ -144,11 +144,15 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	}
 	
 	public string function getCustomPropertyContent(){
-		return mid(
-			getFileContent(),
-			getCustomPropertyContentStartPosition(),
-			getCustomPropertyContentEndPosition()-getCustomPropertyContentStartPosition()
-		);
+		if(hasCustomFunctions()){
+			return mid(
+				getFileContent(),
+				getCustomPropertyContentStartPosition(),
+				getCustomPropertyContentEndPosition()-getCustomPropertyContentStartPosition()
+			);
+		}
+		request.debug("no custom functions");
+		return '';
 	}
 	
 	public numeric function getCustomFunctionContentStartPosition(){
@@ -160,11 +164,14 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	}
 	
 	public string function getCustomFunctionContent(){
-		return mid(
-			getFileContent(),
-			getCustomFunctionContentStartPosition(),
-			getCustomFunctionContentEndPosition()-getCustomFunctionContentStartPosition()
-		);
+		if(hasCustomFunctions()){
+			return mid(
+				getFileContent(),
+				getCustomFunctionContentStartPosition(),
+				getCustomFunctionContentEndPosition()-getCustomFunctionContentStartPosition()
+			);
+		}
+		return '';
 	}
 	
 	

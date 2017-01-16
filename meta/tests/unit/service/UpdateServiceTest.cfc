@@ -60,20 +60,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var filePathWithout = expandPath('/Slatwall')&"/meta/tests/unit/resources/updateService/AccountWithCustomProperties.txt";
 		variables.fileContentForAccountWithCustomPropeties = fileRead(filePathWithout);
 		
+		var customFilePath = expandPath('/Slatwall')&"/meta/tests/unit/resources/updateService/customProperties.txt";
+		variables.customFileContent = fileRead(customFilePath);
 		
-		variables.customFileContent = 'component{
-				property name="salesforceEntity" cfc="RemoteEntity" fieldtype="many-to-one" fkcolumn="salesforceEntityID";
-				property name="salesforceEntityabc" cfc="RemoteEntity" fieldtype="many-to-one" fkcolumn="salesforceEntityabcID";
-				
-				public any function myFUnction(){
-					return "test";
-				}
-				
-				private any function myprivateFunction(){
-					return "tests";
-	}
-			}
-		';
 	}
 	
 	public void function updateCMSApplicationsTest(){
@@ -96,8 +85,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		var customEntityParser = request.slatwallScope.getTransient('hibachiEntityParser');
 		customEntityParser.setFileContent(variables.customFileContent);
-		
 		variables.service.mergeEntityParsers(coreEntityParser,customEntityParser);
+		request.debug('\n');
+		request.debug(coreEntityParser.getCustomPropertyContent());
 		assertEquals(trim(coreEntityParser.getCustomPropertyContent()),trim(customEntityParser.getPropertyString()));
 		assertEquals(trim(coreEntityParser.getCustomFunctionContent()),trim(customEntityParser.getFunctionString()));
 	}
@@ -109,22 +99,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		coreEntityParser.setFileContent(variables.fileContentForAccountWithCustomPropeties);
 		
 		var customEntityParser = request.slatwallScope.getTransient('hibachiEntityParser');
-		
-		var additiveCustomFileContent = 'component{
-				property name="test" cfc="RemoteEntity" fieldtype="many-to-one" fkcolumn="salesforceEntityID";
-				
-				
-				public any function additive(){
-					return "test";
-				}
-				
-				private any function anotheradditivefunction(){
-					return "tests";
-				}
-			}
-		';
-		
-		customEntityParser.setFileContent(additiveCustomFileContent);
+		customEntityParser.setFileContent(variables.customFileContent);
 		
 		variables.service.mergeEntityParsers(coreEntityParser,customEntityParser);
 		assert(coreEntityParser.getCustomPropertyContent() CONTAINS customEntityParser.getPropertyString());
