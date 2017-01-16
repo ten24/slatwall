@@ -88,11 +88,11 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	}
 	
 	public numeric function getPrivateFunctionLineStartPos(){
-		return reFindNoCase('\private[^"].*function.*\(.*\)',getFileContent());
+		return reFindNoCase('\private(?:\s+\w+){1}\sfunction',getFileContent());
 	}
 	
 	public numeric function getPublicFunctionLineStartPos(){
-		return reFindNoCase('\public[^"].*function.*\(.*\)',getFileContent());
+		return reFindNoCase('\public(?:\s+\w+){1}\sfunction',getFileContent());
 	}
 	
 	public numeric function getFunctionLineStartPos(){
