@@ -143,7 +143,7 @@
 		<ul>
 			<li class="s-edit-btn"><a ng-href="{{'?slatAction=entity.detailorderitem&orderitemid='+orderItem.data.orderItemID}}"><button type="button" class="btn btn-default"><i class="fa fa-eye"></i></button></a></li>
 			<li class="s-remove-btn">
-				<!-- <button class="btn btn-default s-remove-btn j-tool-tip-item" type="button" sw-confirm
+				<button class="btn btn-default s-remove-btn j-tool-tip-item" type="button" sw-confirm
 					data-confirm-text="Confirm"
 					data-message-text="Are you sure you want to delete this orderitem?" 
 					data-callback="deleteEntity()"
@@ -153,15 +153,15 @@
 					data-no-text="No"
 					data-entity="orderItem"
 					ng-disabled="!orderItem.data.isDeletable"
-					title="{{orderItem.data.isDeletable ? '' : 'You cannot delete fulfilled order items.'}}"><i class="fa fa-trash"></i></button></li> -->
-				<sw-action-caller class="s-remove-btn" type="button"
+					title="{{orderItem.data.isDeletable ? '' : 'You cannot delete fulfilled order items.'}}"><i class="fa fa-trash"></i></button></li>
+				<!-- <sw-action-caller class="s-remove-btn" type="button"
 					icon="trash"
 					confirm="true"
 					confirmtext="Are you sure you want to delete this orderitem?"
 					disabledtext="{{orderItem.data.deleteErrors}}"
 					action="admin:entity.deleteOrderItem"
 					query-string="orderItemID={{orderItem.orderItemID}}">
-				</sw-action-caller>
+				</sw-action-caller> -->
 		</ul>
 	</td>
 </tr>
