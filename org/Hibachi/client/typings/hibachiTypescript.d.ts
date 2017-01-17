@@ -52,6 +52,7 @@
 /// <reference path="../src/core/components/swcollectioncolumn.ts" />
 /// <reference path="../src/core/components/swcollectionconfig.ts" />
 /// <reference path="../src/core/components/swcollectionfilter.ts" />
+/// <reference path="../src/core/components/swcollectionorderby.ts" />
 /// <reference path="../src/core/components/swcolumnsorter.ts" />
 /// <reference path="../src/core/components/swconfirm.ts" />
 /// <reference path="../src/core/components/swdirective.ts" />
