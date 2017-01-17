@@ -16,6 +16,7 @@ class SWTypeaheadInputFieldController {
     public allRecords;
     public maxRecords; 
     public propertyToShow;
+    public validateRequired:boolean; 
     
     // @ngInject
 	constructor(private $scope, 
@@ -31,6 +32,10 @@ class SWTypeaheadInputFieldController {
             this.allRecords = false; 
         }
         
+        if(angular.isUndefined(this.validateRequired)){
+            this.validateRequired = false;
+        }
+
         if(angular.isUndefined(this.maxRecords)){
             this.maxRecords = 100; 
         }
@@ -78,6 +83,7 @@ class SWTypeaheadInputField implements ng.IDirective{
         fieldName:"@",
         entityName:"@",
         allRecords:"=?",
+        validateRequired:"=?", 
         maxRecords:"@",
         propertiesToLoad:"@?",
         placeholderRbKey:"@?",
