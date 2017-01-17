@@ -87,7 +87,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		customEntityParser.setFileContent(variables.customFileContent);
 		variables.service.mergeEntityParsers(coreEntityParser,customEntityParser);
 		
-		assert(len(coreEntityParser.getCustomPropertyContent));
+		assert(len(coreEntityParser.getCustomPropertyContent()));
 		assertEquals(trim(coreEntityParser.getCustomPropertyContent()),trim(customEntityParser.getPropertyString()));
 		assertEquals(trim(coreEntityParser.getCustomFunctionContent()),trim(customEntityParser.getFunctionString()));
 		assertEquals(trim("public void function testFunc(){
@@ -108,7 +108,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		customEntityParser.setFileContent(variables.customFileContent);
 		variables.service.mergeEntityParsers(coreEntityParser,customEntityParser, true);
 		
-		assert(len(coreEntityParser.getCustomPropertyContent));
+		assert(len(coreEntityParser.getCustomPropertyContent()));
 		assertEquals(trim(coreEntityParser.getCustomPropertyContent()),trim(customEntityParser.getPropertyString()));
 		assertEquals(trim(coreEntityParser.getCustomFunctionContent()),trim(customEntityParser.getFunctionString()));
 		assertEquals(trim("public void function testFunc(){
@@ -129,7 +129,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		variables.service.mergeEntityParsers(coreEntityParser,customEntityParser);
 		
-		assert(len(customEntityParser.getPropertyString));
+		assert(len(customEntityParser.getPropertyString()));
 		assert(coreEntityParser.getCustomPropertyContent() CONTAINS customEntityParser.getPropertyString());
 		assert(coreEntityParser.getCustomFunctionContent() CONTAINS customEntityParser.getFunctionString());
 		assertEquals(trim("public void function testFunc(){
