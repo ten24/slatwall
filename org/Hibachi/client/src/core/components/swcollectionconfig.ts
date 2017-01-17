@@ -3,15 +3,19 @@
 class SWCollectionConfigController{
     public filters = []; 
     public columns = []; 
-    public keywordColumns = []; 
+    public orderBys = [];
+    public keywordColumns = [];
     public collectionConfig:any;
     public collectionConfigProperty:string;
     public multiCollectionConfigProperty:string;
     
-    public columnsDeferred; 
-    public filtersDeferred; 
-    public columnsPromise; 
-    public filtersPromise; 
+    public columnsDeferred;
+    public filtersDeferred;
+    public orderBysDeferred;
+    public columnsPromise;
+    public filtersPromise;
+    public orderBysPromise;
+
     
     //@ngInject
     constructor(
@@ -23,6 +27,8 @@ class SWCollectionConfigController{
         this.columnsPromise =  this.columnsDeferred.promise; 
         this.filtersDeferred = this.$q.defer(); 
         this.filtersPromise =  this.filtersDeferred.promise;
+        this.orderBysDeferred = this.$q.defer();
+        this.orderBysPromise =  this.columnsDeferred.promise;
     }
 }
 
@@ -31,7 +37,8 @@ class SWCollectionConfig implements ng.IDirective{
     public scope=true;
     public transclude={
         columns:"?swCollectionColumns",
-        filters:"?swCollectionFilters"
+        filters:"?swCollectionFilters",
+        orderBys:"?swCollectionOrderBys"
     };
     public bindToController={
         allRecords:"=?",
@@ -51,6 +58,7 @@ class SWCollectionConfig implements ng.IDirective{
     public template = ` 
         <div ng-transclude="columns"></div>
         <div ng-transclude="filters"></div>
+        <div ng-transclude="orderBys"></div>
     `
 
     public static Factory(){
@@ -105,6 +113,9 @@ class SWCollectionConfig implements ng.IDirective{
             if(angular.isUndefined(scope.swCollectionConfig.allRecords)){
                 scope.swCollectionConfig.allRecords=false;
             }
+            if(angular.isUndefined(scope.swCollectionConfig.pageShow)){
+                scope.swCollectionConfig.pageShow=10;
+            }
             if(angular.isUndefined(scope.swCollectionConfig.distinct)){
                 scope.swCollectionConfig.distinct=false;
             }
@@ -132,7 +143,8 @@ class SWCollectionConfig implements ng.IDirective{
             var newCollectionConfig = this.collectionConfigService.newCollectionConfig(scope.swCollectionConfig.entityName);
             newCollectionConfig.setAllRecords(scope.swCollectionConfig.allRecords);   
             newCollectionConfig.setDistinct(scope.swCollectionConfig.distinct);            
-            
+            newCollectionConfig.setPageShow(scope.swCollectionConfig.pageShow);
+
             var currentScope = this.scopeService.getRootParentScope(scope, scope.swCollectionConfig.parentDirectiveControllerAsName);
             
             if(currentScope[scope.swCollectionConfig.parentDirectiveControllerAsName]){
@@ -143,17 +155,25 @@ class SWCollectionConfig implements ng.IDirective{
 
             scope.swCollectionConfig.columnsPromise.then(()=>{
                 angular.forEach(scope.swCollectionConfig.columns, (column)=>{
-                    console.log("adding column again", column);
+
                     newCollectionConfig.addDisplayProperty(column.propertyIdentifier, '', column);
                 });
             }); 
             scope.swCollectionConfig.filtersPromise.then(()=>{
                 angular.forEach(scope.swCollectionConfig.filters, (filter)=>{
+
                     newCollectionConfig.addFilter(filter.propertyIdentifier, filter.comparisonValue, filter.comparisonOperator, filter.logicalOperator, filter.hidden);
                 }); 
             });
 
-            this.$q.all(allCollectionConfigPromises).then(  
+            scope.swCollectionConfig.orderBysPromise.then(()=>{
+                angular.forEach(scope.swCollectionConfig.orderBys, (orderBy)=>{
+
+                    newCollectionConfig.addOrderBy(orderBy);
+                });
+            });
+
+            this.$q.all(allCollectionConfigPromises).then(
                 ()=>{
                     if(angular.isDefined(parentDirective)){
                         if(angular.isDefined(scope.swCollectionConfig.multiCollectionConfigProperty) 
@@ -168,7 +188,7 @@ class SWCollectionConfig implements ng.IDirective{
                         if(angular.isDefined(parentDirective[scope.swCollectionConfig.parentDeferredProperty])){
                             parentDirective[scope.swCollectionConfig.parentDeferredProperty].resolve();
                         } else {
-                            throw("SWCollectionConfig cannot resolve rule");
+                            //throw("SWCollectionConfig cannot resolve rule");
                         }
                     } 
                 },(reason)=>{
