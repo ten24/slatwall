@@ -4,13 +4,13 @@ class FileService {
     private fileReader;
     
     //@ngInject
-    constructor(private $q, private observerService){
+    constructor(public $q, public observerService){
       
     }
 
     public imageExists = (src) =>{
 
-        var deferred = $q.defer();
+        var deferred = this.$q.defer();
 
         var image = new Image();
         image.onerror = function() {
