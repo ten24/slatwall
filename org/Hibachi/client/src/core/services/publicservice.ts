@@ -499,6 +499,7 @@ class PublicService {
 
 
         data = {
+        	'newOrderPayment.billingAddress.addressID': '',
             'newOrderPayment.billingAddress.streetAddress': billingAddress.streetAddress,
             'newOrderPayment.billingAddress.street2Address': billingAddress.street2Address,
             'newOrderPayment.nameOnCreditCard': billingAddress.nameOnCreditCard,
