@@ -206,6 +206,7 @@
 /// <reference path="../src/core/model/entity/baseentity.ts" />
 /// <reference path="../src/core/model/entity/cart.ts" />
 /// <reference path="../src/core/model/entity/entities.ts" />
+/// <reference path="../src/core/model/entity/orderitem.ts" />
 /// <reference path="../src/core/model/entity/orderpayment.ts" />
 /// <reference path="../src/core/model/entity/sku.ts" />
 /// <reference path="../src/core/model/process/baseprocess.ts" />
