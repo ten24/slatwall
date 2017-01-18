@@ -830,16 +830,7 @@ class PublicService {
         }
         return false;
     };
-    /**
-     * Returns true if the user has an account and is logged in.
-     */
-    this.hasAccount = function () {
-        //console.log("hasAccount", this.account.accountID);
-        if (this.account.accountID != undefined && this.account.accountID != "") {
-            return true;
-        }
-        return false;
-    };
+
 
 }
 export {PublicService};
