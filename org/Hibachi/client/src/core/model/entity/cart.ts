@@ -7,7 +7,7 @@ class Cart extends BaseEntity{
     public requiresFulfillment:boolean=false;
     public orderRequirementsList:string="";
     public orderPayments:any=[];
-    public orderitems:Array<any>=[];
+    public orderItems:Array<any>=[];
     public fulfillmentTotal;
     public orderFulfillments:Array<any>=[];
     public account:any;
@@ -42,9 +42,9 @@ class Cart extends BaseEntity{
 
     public getOrderItemQuantitySum = ()=>{
         var totalQuantity = 0;
-        if (angular.isDefined(this.orderitems)){
-            for (var orderItem in this.orderitems){
-                totalQuantity = totalQuantity + this.orderitems[orderItem].quantity;
+        if (angular.isDefined(this.orderItems)){
+            for (var orderItem in this.orderItems){
+                totalQuantity = totalQuantity + this.orderItems[orderItem].quantity;
             }
             return totalQuantity;
         }

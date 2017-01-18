@@ -18,10 +18,10 @@ class PublicService {
     public newBillingAddress:any;
 
     public accountDataPromise:any;
-    public addressOptionData:any; 
-    public cartDataPromise:any;  
-    public countryDataPromise:any; 
-    public stateDataPromise:any; 
+    public addressOptionData:any;
+    public cartDataPromise:any;
+    public countryDataPromise:any;
+    public stateDataPromise:any;
 
     public http:ng.IHttpService;
     public confirmationUrl:string;
@@ -128,7 +128,7 @@ class PublicService {
         if(!this.countryDataPromise || refresh){
             this.countryDataPromise = this.getData(urlBase, "countries", "");
         }
-        return this.countryDataPromise; 
+        return this.countryDataPromise;
     }
 
     /** accessors for states */
@@ -136,7 +136,7 @@ class PublicService {
        if (!angular.isDefined(countryCode)) countryCode = "US";
        let urlBase = this.baseActionPath+'getStateCodeOptionsByCountryCode/';
        if(!this.stateDataPromise || refresh){
-           this.stateDataPromise = this.getData(urlBase, "states", "?countryCode="+countryCode); 
+           this.stateDataPromise = this.getData(urlBase, "states", "?countryCode="+countryCode);
        }
        return this.stateDataPromise;
     }
@@ -499,9 +499,11 @@ class PublicService {
 
 
         data = {
+            'newOrderPayment.billingAddress.addressID':'',
             'newOrderPayment.billingAddress.streetAddress': billingAddress.streetAddress,
             'newOrderPayment.billingAddress.street2Address': billingAddress.street2Address,
             'newOrderPayment.nameOnCreditCard': billingAddress.nameOnCreditCard,
+            'newOrderPayment.billingAddress.name': billingAddress.nameOnCreditCard,
             'newOrderPayment.expirationMonth': expirationMonth,
             'newOrderPayment.expirationYear': expirationYear,
             'newOrderPayment.billingAddress.countrycode': country || billingAddress.countrycode,
@@ -514,7 +516,7 @@ class PublicService {
             'newOrderPayment.saveShippingAsBilling':(this.saveShippingAsBilling == true),
         };
 
-        processObject.populate(data);
+        //processObject.populate(data);
 
 
         //Make sure we have required fields for a newOrderPayment.
@@ -753,6 +755,84 @@ class PublicService {
             this.rates = result.data;
         });
     }
+
+    /**
+     *  Returns true when the fulfillment body should be showing
+     *  Show if we don't need an account but do need a fulfillment
+     *
+     */
+    public showFulfillmentTabBody = ()=> {
+        if ((this.cart.orderRequirementsList.indexOf('account') == -1) && this.account.accountID &&
+            (this.cart.orderRequirementsList.indexOf('fulfillment') != -1) ||
+            (this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
+                (this.edit == 'fulfillment')) {
+            return true;
+        }
+        return false;
+    };
+    /**
+     *  Returns true when the fulfillment body should be showing
+     *  Show if we don't need an account,fulfillment, and don't have a payment - or
+     *  we have a payment but are editting the payment AND nothing else is being edited
+     *
+     */
+    public showPaymentTabBody = ()=> {
+        if ((this.cart.orderRequirementsList.indexOf('account') == -1) && this.account.accountID &&
+            (this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
+            (this.cart.orderRequirementsList.indexOf('payment') != -1) && this.edit == '' ||
+            (this.cart.orderRequirementsList.indexOf('payment') == -1) &&
+                (this.edit == 'payment')) {
+            return true;
+        }
+        return false;
+    };
+
+    /**
+     *  Returns true if the review tab body should be showing.
+     *  Show if we don't need an account,fulfillment,payment, but not if something else is being edited
+     *
+     */
+    public showReviewTabBody = ()=> {
+        if ((this.cart.orderRequirementsList.indexOf('account') == -1) && this.account.accountID &&
+            (this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
+            (this.cart.orderRequirementsList.indexOf('payment') == -1) &&
+            (this.edit == '') || (this.edit == 'review')) {
+            return true;
+        }
+        return false;
+    };
+    /** Returns true if the fulfillment tab should be active */
+    public fulfillmentTabIsActive = ()=> {
+        if ((this.edit == 'fulfillment') ||
+            (this.edit == '' && ((this.cart.orderRequirementsList.indexOf('account') == -1) && this.account.accountID) &&
+                (this.cart.orderRequirementsList.indexOf('fulfillment') != -1))) {
+            return true;
+        }
+        return false;
+    };
+    /** Returns true if the payment tab should be active */
+    public paymentTabIsActive = ()=> {
+        if ((this.edit == 'payment') ||
+            (this.edit == '' &&
+                (this.cart.orderRequirementsList.indexOf('account') == -1) && this.account.accountID &&
+                (this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
+                (this.cart.orderRequirementsList.indexOf('payment') != -1))) {
+            return true;
+        }
+        return false;
+    };
+    /** Returns true if the review tab should be active */
+    public reviewTabIsActive =  ()=> {
+        if ((this.edit == 'review' ||
+            (this.edit == '' &&
+                (this.cart.orderRequirementsList.indexOf('account') == -1) && this.account.accountID &&
+                (this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
+                (this.cart.orderRequirementsList.indexOf('payment') == -1)))) {
+            return true;
+        }
+        return false;
+    };
+
 
 }
 export {PublicService};
