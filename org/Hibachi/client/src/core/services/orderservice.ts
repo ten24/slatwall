@@ -15,7 +15,7 @@ class OrderService extends BaseEntityService{
     }
 
     public newOrder_AddOrderPayment = ()=>{
-        return this.newProcessObject('newOrder_AddOrderPayment');
+        return {};
     }
 }
 export {

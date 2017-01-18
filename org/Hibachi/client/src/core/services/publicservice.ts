@@ -499,9 +499,11 @@ class PublicService {
 
 
         data = {
+            'newOrderPayment.billingAddress.addressID':'',
             'newOrderPayment.billingAddress.streetAddress': billingAddress.streetAddress,
             'newOrderPayment.billingAddress.street2Address': billingAddress.street2Address,
             'newOrderPayment.nameOnCreditCard': billingAddress.nameOnCreditCard,
+            'newOrderPayment.billingAddress.name': billingAddress.nameOnCreditCard,
             'newOrderPayment.expirationMonth': expirationMonth,
             'newOrderPayment.expirationYear': expirationYear,
             'newOrderPayment.billingAddress.countrycode': country || billingAddress.countrycode,
@@ -514,7 +516,7 @@ class PublicService {
             'newOrderPayment.saveShippingAsBilling':(this.saveShippingAsBilling == true),
         };
 
-        processObject.populate(data);
+        //processObject.populate(data);
 
 
         //Make sure we have required fields for a newOrderPayment.
@@ -753,6 +755,84 @@ class PublicService {
             this.rates = result.data;
         });
     }
+    
+    /**
+     *  Returns true when the fulfillment body should be showing
+     *  Show if we don't need an account but do need a fulfillment
+     *
+     */
+    this.showFulfillmentTabBody = function () {
+        if ((this.cart.orderRequirementsList.indexOf('account') == -1) && this.account.accountID &&
+            (this.cart.orderRequirementsList.indexOf('fulfillment') != -1) ||
+            (this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
+                (this.edit == 'fulfillment')) {
+            return true;
+        }
+        return false;
+    };
+    /**
+     *  Returns true when the fulfillment body should be showing
+     *  Show if we don't need an account,fulfillment, and don't have a payment - or
+     *  we have a payment but are editting the payment AND nothing else is being edited
+     *
+     */
+    this.showPaymentTabBody = function () {
+        if ((this.cart.orderRequirementsList.indexOf('account') == -1) && this.account.accountID &&
+            (this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
+            (this.cart.orderRequirementsList.indexOf('payment') != -1) && this.edit == '' ||
+            (this.cart.orderRequirementsList.indexOf('payment') == -1) &&
+                (this.edit == 'payment')) {
+            return true;
+        }
+        return false;
+    };
+    
+    /**
+     *  Returns true if the review tab body should be showing.
+     *  Show if we don't need an account,fulfillment,payment, but not if something else is being edited
+     *
+     */
+    this.showReviewTabBody = function () {
+        if ((this.cart.orderRequirementsList.indexOf('account') == -1) && this.account.accountID &&
+            (this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
+            (this.cart.orderRequirementsList.indexOf('payment') == -1) &&
+            (this.edit == '') || (this.edit == 'review')) {
+            return true;
+        }
+        return false;
+    };
+    /** Returns true if the fulfillment tab should be active */
+    this.fulfillmentTabIsActive = function () {
+        if ((this.edit == 'fulfillment') ||
+            (this.edit == '' && ((this.cart.orderRequirementsList.indexOf('account') == -1) && this.account.accountID) &&
+                (this.cart.orderRequirementsList.indexOf('fulfillment') != -1))) {
+            return true;
+        }
+        return false;
+    };
+    /** Returns true if the payment tab should be active */
+    this.paymentTabIsActive = function () {
+        if ((this.edit == 'payment') ||
+            (this.edit == '' &&
+                (this.cart.orderRequirementsList.indexOf('account') == -1) && this.account.accountID &&
+                (this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
+                (this.cart.orderRequirementsList.indexOf('payment') != -1))) {
+            return true;
+        }
+        return false;
+    };
+    /** Returns true if the review tab should be active */
+    this.reviewTabIsActive = function () {
+        if ((this.edit == 'review' ||
+            (this.edit == '' &&
+                (this.cart.orderRequirementsList.indexOf('account') == -1) && this.account.accountID &&
+                (this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
+                (this.cart.orderRequirementsList.indexOf('payment') == -1)))) {
+            return true;
+        }
+        return false;
+    };
+
 
 }
 export {PublicService};
