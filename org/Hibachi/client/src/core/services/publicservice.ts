@@ -514,7 +514,7 @@ class PublicService {
             'newOrderPayment.saveShippingAsBilling':(this.saveShippingAsBilling == true),
         };
 
-        processObject.populate(data);
+        //processObject.populate(data);
 
 
         //Make sure we have required fields for a newOrderPayment.
