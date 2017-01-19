@@ -925,6 +925,7 @@ component extends="HibachiService"  accessors="true" output="false"
             addErrors(data, getHibachiScope().getCart().getProcessObject("addOrderItem").getErrors());
         }
     }
+    
     /** 
      * @http-context updateOrderItemQuantity
      * @description Update Order Item on an Order
