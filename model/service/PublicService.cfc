@@ -835,22 +835,58 @@ component extends="HibachiService"  accessors="true" output="false"
     public void function addOrderItems(required any data){
     	param name="data.skuIds" default="";
     	param name="data.skuCodes" default="";
-    	
+    	param name="data.quantities" default="";
     	
     	//add skuids
-    	if (!isNull(data.skuIds)){
-    		for (var sku in data.skuIds){
-    			data["skuID"]=sku; data["quantity"]=1;
+		var index = 1;
+		var hasSkuCodes = false;
+		
+		//get the quantities being added
+		if (structKeyExists(data, "quantities") && len(data.quantities)){
+			var quantities = listToArray(data.quantities);
+		}
+		
+		//get the skus being added
+		if (structKeyExists(data, "skuIds") && len(data.skuIds)){
+			var skus = listToArray(data.skuIds);
+		}
+		
+		//get the skuCodes if they exist.
+		if (structKeyExists(data, "skuCodes") && len(data.skuCodes)){
+			var skus = listToArray(data.skuCodes);
+			hasSkuCodes = true;
+		}
+		
+		//if we have both skus and quantities, add them.
+		if (!isNull(skus) && !isNull(quantities) && arrayLen(skus) && arrayLen(quantities)){
+			if (arrayLen(skus) == arrayLen(quantities)){
+				//we have a quantity fo each sku.
+				for (var sku in skus){
+					//send that sku and that quantity.
+					if (hasSkuCodes == true){
+						data["skuCode"]=sku; 
+					}else{
+						data["skuID"]=sku; 	
+					}
+	    			
+	    			data["quantity"]=quantities[index];
+	    			addOrderItem(data=data);
+	    			index++;
+	    		}
+			}
+		
+		//If they did not pass in quantities, but we have skus, assume 1 for each quantity.
+		}else if(!isNull(skus)){
+    		for (var sku in skus){
+    			if (hasSkuCodes == true){
+					data["skuCode"]=sku; 
+				}else{
+					data["skuID"]=sku; 	
+				}
+    			data["quantity"]=1;
     			addOrderItem(data=data);
     		}
-    	}
-    	//add skuCodes
-    	if (!isNull(data.skuCodes)){
-    		for (var sku in data.skuCodes){
-    			data["skuCode"]=sku; data["quantity"]=1;
-    			addOrderItem(data=data);
-    		}
-    	}
+		}
     }
     
     /** 
