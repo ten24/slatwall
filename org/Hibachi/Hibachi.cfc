@@ -236,7 +236,7 @@ component extends="FW1.framework" {
 					getHibachiScope().getSession().setAccount( accessKeyAccount );
 					AuthToken = 'Bearer '& getHibachiScope().getService('HibachiJWTService').createToken();
 				}
-			}
+			} 
 
 			//check if we have the authorization header
 			if(len(AuthToken)){

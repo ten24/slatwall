@@ -155,6 +155,17 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		return createPersistedTestEntity('Location', locationData);
 	}
 	
+	public function getResizedImagePath_GetsMissingImagePath(){
+		var imagePath = variables.entity.getResizedImagePath();
+		assert(fileExists(expandPath(imagePath)));
+	}
+	
+	public function getResizedImage_CreatesImgElementWithMissingPath(){
+		var imagePath = variables.entity.getResizedImagePath();
+		var image = variables.entity.getResizedImage();
+		assert(image EQ '<img src="#imagePath#" />');
+	}
+	
 	private any function createMockSkuWithEventTime(required numeric startDateFromNow, required numeric endDateFromNow) {
 		var skuData = {
 			skuID = "",

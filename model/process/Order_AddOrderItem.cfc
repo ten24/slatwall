@@ -155,6 +155,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		if(!structKeyExists(variables, 'orderItemTypeSystemCode')) {
 			variables.orderItemTypeSystemCode = "oitSale";
 		}
+		
 		return variables.orderItemTypeSystemCode;
 	}
 

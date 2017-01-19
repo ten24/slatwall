@@ -110,7 +110,7 @@ class ObserverService extends BaseService{
      * @param {string|object|Array|number} parameters pass whatever your listener is expecting
      * @description notifies all observers of a specific event
      */
-    notify = (event:string, parameters:any):any => {
+    notify = (event:string, parameters?:any):any => {
         console.warn(event); 
         event = event.toLowerCase();
         return this.$timeout(()=>{

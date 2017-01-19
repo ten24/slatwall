@@ -547,8 +547,10 @@
 		}
 
 		public string function encryptValue(required string value, string salt="") {
-			var passwords = getEncryptionPasswordArray();
-			return encrypt(arguments.value, generatePasswordBasedEncryptionKey(password=passwords[1].password, salt=arguments.salt, iterationCount=passwords[1].iterationCount), getEncryptionAlgorithm(), getEncryptionEncoding());
+			if(len(arguments.value)){
+				var passwords = getEncryptionPasswordArray();
+				return encrypt(arguments.value, generatePasswordBasedEncryptionKey(password=passwords[1].password, salt=arguments.salt, iterationCount=passwords[1].iterationCount), getEncryptionAlgorithm(), getEncryptionEncoding());				
+			}
 		}
 
 		public string function hibachiHTMLEditFormat(required string html){

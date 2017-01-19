@@ -49,35 +49,21 @@ Notes:
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.location" default="any" >
- 
+<cfparam name="rc.accountPayment" type="any" />
+
 <cfoutput>
-	<hb:HibachiPropertyRow>
-		<hb:HibachiPropertyList divClass="span12">
-			<h5>#$.slatwall.rbKey('entity.locationAddress_plural')#</h5>
-			<hb:HibachiListingDisplay smartList="#rc.location.getLocationAddressesSmartList()#"
-									  recordEditAction="admin:entity.editlocationaddress"
-									  recordEditQueryString="locationID=#rc.location.getLocationID()#"
-									  recordEditModal=true
-									  recordDeleteAction="admin:entity.deletelocationaddress"
-									  recordDeleteQueryString="locationID=#rc.location.getLocationID()#&redirectAction=admin:entity.detaillocation"
-									  selectFieldName="primaryAddress.locationAddressID"
-									  selectValue="#rc.location.getPrimaryAddress().getLocationAddressID()#"
-									  selectTitle="#$.slatwall.rbKey('define.primary')#"
-									  edit="#rc.edit#">
-						
-				<hb:HibachiListingColumn propertyIdentifier="address.name" />
-			    <hb:HibachiListingColumn propertyIdentifier="address.phoneNumber" />
-			    <hb:HibachiListingColumn propertyIdentifier="address.emailAddress" />
-				<hb:HibachiListingColumn propertyIdentifier="address.streetAddress" />
-				<hb:HibachiListingColumn propertyIdentifier="address.street2Address" />
-				<hb:HibachiListingColumn propertyIdentifier="address.city" />
-				<hb:HibachiListingColumn propertyIdentifier="address.stateCode" />
-				<hb:HibachiListingColumn propertyIdentifier="address.postalCode" />
-			</hb:HibachiListingDisplay>
-			
-			<hb:HibachiActionCaller action="admin:entity.createlocationaddress" class="btn" icon="plus" queryString="sRedirectAction=admin:entity.detaillocation&locationID=#rc.location.getLocationID()#" modal=true />
-		</hb:HibachiPropertyList>
-	</hb:HibachiPropertyRow>
-	
+	<hb:HibachiListingDisplay smartList="#rc.accountPayment.getPaymentTransactionsSmartList()#"
+			recordDetailAction="admin:entity.detailpaymenttransaction"
+			recordDetailModal="true">
+		
+		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />		
+		<hb:HibachiListingColumn propertyIdentifier="transactionType" />
+		<hb:HibachiListingColumn propertyIdentifier="transactionSuccessFlag" />
+		<hb:HibachiListingColumn propertyIdentifier="authorizationCode" />
+		<hb:HibachiListingColumn propertyIdentifier="authorizationCodeUsed" />
+		<hb:HibachiListingColumn propertyIdentifier="amountAuthorized" />
+		<hb:HibachiListingColumn propertyIdentifier="amountReceived" />
+		<hb:HibachiListingColumn propertyIdentifier="amountCredited" />
+		
+	</hb:HibachiListingDisplay>
 </cfoutput>

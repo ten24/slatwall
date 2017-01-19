@@ -222,7 +222,8 @@ Notes:
 					</cfcatch>
 				</cftry>
 				<cfset script.setLastExecutedDateTime(now()) />
-				<cfset this.saveUpdateScript(script) />
+				<cfset getDao('HibachiDao').save(script) />
+				<cfset getDao('HibachiDao').flushORMSession()/>
 			</cfif>
 		</cfloop>
 	</cffunction>
@@ -378,7 +379,7 @@ Notes:
 									right(arguments.coreEntityParser.getFileContent(),len(arguments.coreEntityParser.getFileContent()) -arguments.coreEntityParser.getPropertyEndPos())
 					;
 					arguments.coreEntityParser.setFileContent(newContent);
-				}
+				} 
 			}
 			//add functions
 			if(len(arguments.customEntityParser.getFunctionString())){
