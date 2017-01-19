@@ -96,6 +96,7 @@ Notes:
 			<hb:HibachiListingColumn propertyIdentifier="sku.product.productCode" />
 			<hb:HibachiListingColumn propertyIdentifier="sku.product.brand.brandName" />
 			<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="sku.product.productName" />
+			<hb:HibachiListingColumn propertyIdentifier="sku.skuDefinition" />
 			<hb:HibachiListingColumn propertyIdentifier="sku.product.productType.productTypeName" />
 			<hb:HibachiListingColumn propertyIdentifier="calculatedQNC" />
 		<cfelse>
@@ -103,6 +104,7 @@ Notes:
 			<hb:HibachiListingColumn propertyIdentifier="product.productCode" />
 			<hb:HibachiListingColumn propertyIdentifier="product.brand.brandName" />
 			<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="product.productName" />
+			<hb:HibachiListingColumn propertyIdentifier="skuDefinition" />
 			<hb:HibachiListingColumn propertyIdentifier="product.productType.productTypeName" />
 		</cfif>					    
 		
