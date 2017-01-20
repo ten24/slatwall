@@ -96,7 +96,7 @@ class PublicService {
         var baseDate = new Date();
         var today = baseDate.getFullYear();
         var start = today;
-        for (var i = 0; i<= 5; i++){
+        for (var i = 0; i<= 15; i++){
             this.years.push(start + i);
         }
     }
@@ -731,6 +731,34 @@ class PublicService {
 
             this.rates = result.data;
         });
+    }
+    
+    /** Returns the state from the list of states by stateCode */
+    public getStateByStateCode = (stateCode) => {
+     	for (var state in this.states.stateCodeOptions){
+     		if (this.states.stateCodeOptions[state].value == stateCode){
+     			return this.states.stateCodeOptions[state];
+     		}
+     	}
+    }
+     
+    /** Returns the state from the list of states by stateCode */
+    public resetRequests = (request) => {
+     	delete this.requests[request];
+    }
+    
+    /** Returns true if the addresses match. */
+    public addressesMatch = (address1, address2) => {
+    	if (angular.isDefined(address1) && angular.isDefined(address2)){
+        	if ( (address1.streetAddress == address2.streetAddress && 
+	            address1.street2Address == address2.street2Address &&
+	            address1.city == address2.city &&
+	            address1.postalcode == address2.postalcode &&
+	            address1.countrycode == address2.countrycode)){
+            	return true;
+            }
+        }
+        return false;
     }
 
 }
