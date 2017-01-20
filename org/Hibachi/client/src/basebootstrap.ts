@@ -21,8 +21,10 @@ export class BaseBootStrapper{
             this.$http = $http;
             this.$q = $q;
 
-
              var baseURL = hibachiConfig.baseURL;
+             if(!baseURL) {
+                 baseURL = '/'
+             }
              if(baseURL.length && baseURL.slice(-1) !== '/'){
                 baseURL += '/';
              }

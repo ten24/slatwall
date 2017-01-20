@@ -25,7 +25,7 @@ class HibachiPathBuilder{
 
     public buildPartialsPath=(componentsPath:string):string=>{
         if(angular.isDefined(this.baseURL) && angular.isDefined(this.basePartialsPath)){
-            return this.baseURL + this.basePartialsPath + componentsPath;
+            return (this.baseURL + this.basePartialsPath + componentsPath).replace("//","/");
          }else{
             throw('need to define baseURL and basePartialsPath in hibachiPathBuilder. Inject hibachiPathBuilder into module and configure it there');
         }
