@@ -159,7 +159,8 @@
 					            data-property-identifier="stateCode"
 					            data-object="SwAddressForm.address"
 					            data-options="$root.slatwall.states.stateCodeOptions"
-					            ng-init="SwAddressForm.address.stateCode = SwAddressForm.address.stateCode ||''" >
+					            ng-init="SwAddressForm.address.stateCode = SwAddressForm.address.stateCode ||''" 
+					            input-attributes="ng-required=true">
 					            </swf-property-display>
 					        </div>
 					        <div class="col-xs-7" ng-if="$root.slatwall.selectedCountry.value != 'US' && $root.slatwall.selectedCountry.value != 'CA' && SwAddressForm.hasField('locality')">
