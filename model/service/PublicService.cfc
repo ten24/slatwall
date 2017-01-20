@@ -454,8 +454,11 @@ component extends="HibachiService"  accessors="true" output="false"
       		accountAddress.setAccount(getHibachiScope().getAccount());	
       		var savedAccountAddress = getService("AccountService").saveAccountAddress(accountAddress);
  	     	if (!savedAccountAddress.hasErrors()){
- 	     		ormFlush();
+ 	     		getHibachiScope().addActionResult( "public:account.addNewAccountAddress", savedAccountAddress.hasErrors() ); 
+  	     		getDao('hibachiDao').flushOrmSession();; 
  	     	}
+      	}else{
+      		getHibachiScope().addActionResult( "public:account.addNewAccountAddress", true ); 
       	}
      }
      
@@ -465,14 +468,30 @@ component extends="HibachiService"  accessors="true" output="false"
      public void function updateAddress(required data){
      	param name="data.countrycode" default="US";
      	param name="data.addressID" default="";
-     	
+     	param name="data.phoneNumber" default="";
      	
      	var newAddress = getService("AddressService").getAddress(data.addressID, true);
-     	newAddress = getService("AddressService").saveAddress(newAddress, data, "full");
-      	
-      	if (!isNull(newAddress) && !newAddress.hasErrors()){
- 	     	ormFlush();
-      	}
+     	if (!isNull(newAddress) && !newAddress.hasErrors()){
+       		newAddress = getService("AddressService").saveAddress(newAddress, data, "full");
+       		
+       		//save the order.
+  	     	getService("OrderService").saveOrder(getHibachiScope().getCart());
+  	     	getHibachiScope().addActionResult( "public:cart.updateAddress", false ); 
+       	}
+     }
+     
+     /**
+      * Updates an address.
+      */
+     public void function updateAccountAddress(required data){
+     	
+      	var accountAddress = getService("AddressService").getAccountAddress(data.accountAddressID, true);
+      	accountAddress = getService("AddressService").saveAccountAddress(accountAddress, data, "save");
+     	if (!isNull(accountAddress) && !accountAddress.hasErrors()){
+       		//save the order.
+  	     	getService("OrderService").saveAccount(getHibachiScope().getAccount());
+  	     	getHibachiScope().addActionResult( "public:cart.updateAccountAddress", false );
+  	    } 
      }
     
     /** 
@@ -522,7 +541,7 @@ component extends="HibachiService"  accessors="true" output="false"
                  	accountAddress.setAccount(getHibachiScope().getAccount());
                  	var savedAccountAddress = getService("AccountService").saveAccountAddress(accountAddress);
                  	if (!savedAddress.hasErrors()){
-                 		ormFlush();
+                 		getDao('hibachiDao').flushOrmSession();;
                  	}
                   
                 }
@@ -550,9 +569,13 @@ component extends="HibachiService"  accessors="true" output="false"
         if (!isNull(accountAddress) && !accountAddress.hasErrors()){
             //save the address at the order level.
             var order = getHibachiScope().cart();
-            order.setShippingAddress(accountAddress.getAddress());
+            for (orderFulfillment in order.getOrderFulfillments()){
+             	orderFulfillment.setShippingAddress(accountAddress.getAddress());
+             	getService("OrderService").saveOrderFulfillment(orderFulfillment);
+            }
             order.setBillingAddress(accountAddress.getAddress());
-            getOrderService().saveOrder(order);            
+            getOrderService().saveOrder(order);     
+            getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", accountAddress.hasErrors());           
         }else{
             this.addErrors(arguments.data, accountAddress.getErrors()); //add the basic errors
             getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", accountAddress.hasErrors());
@@ -571,12 +594,13 @@ component extends="HibachiService"  accessors="true" output="false"
         }
         var shippingMethod = getService('ShippingService').getShippingMethod(shippingMethodId);
         
-        if (isObject(shippingMethod) && !shippingMethod.hasErrors()){
+        if (!isNull(shippingMethod) && !shippingMethod.hasErrors()){
             var order = getHibachiScope().cart();
             var orderFulfillment = order.getOrderFulfillments()[orderFulfillmentWithShippingMethodOptions];
             orderFulfillment.setShippingMethod(shippingMethod);
             getOrderService().saveOrder(order); 
-            ormFlush();           
+            getDao('hibachiDao').flushOrmSession();;           
+            getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", shippingMethod.hasErrors());
         }else{
             this.addErrors(arguments.data, shippingMethod.getErrors()); //add the basic errors
             getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", shippingMethod.hasErrors());
@@ -614,19 +638,35 @@ component extends="HibachiService"  accessors="true" output="false"
      * @http-return <b>(200)</b> Successfully Deleted or <b>(400)</b> Bad or Missing Input Data
      * @ProcessMethod AccountPaymentMethod_Save
      */
-    public void function addAccountPaymentMethod() {
+    public void function addAccountPaymentMethod(required any data) {
+        
+        if (!isNull(data) && !structKeyExists(data, 'accountPaymentMethod') && structKeyExists(data, "selectedPaymentMethod")){
+        	data['accountPaymentMethod'] = {};
+        	data['accountPaymentMethod']['accountPaymentMethodID']  = data.selectedPaymentMethod;
+        }
+        if (!isNull(data) && !structKeyExists(data, 'paymentMethod')){
+         	data['paymentMethod'] = {};
+         	data['paymentMethod'].paymentMethodID = '444df303dedc6dab69dd7ebcc9b8036a';
+        }
+        if (!isNull(data) && !structKeyExists(data, 'billingAddress')){
+         	data['newOrderPayment'] = data;
+         	data['newOrderPayment']['billingAddress'] = data;
+        }	
         
         if(getHibachiScope().getLoggedInFlag()) {
             
             // Fodatae the payment method to be added to the current account
-            var accountPaymentMethod = getHibachiScope().getAccount().getNewPropertyEntity( 'accountPaymentMethods' );
-            
-            accountPaymentMethod.setAccount( getHibachiScope().getAccount() );
+           if (structKeyExists(data, "selectedPaymentMethod")){
+             	var accountPaymentMethod = getHibachiScope().getService("AccountService").getAccountPaymentMethod( data.selectedPaymentMethod );
+           }else{
+             	var accountPaymentMethod = getHibachiScope().getService("AccountService").newAccountPaymentMethod(  );	
+             	accountPaymentMethod.setAccount( getHibachiScope().getAccount() );
+           }
             
             accountPaymentMethod = getAccountService().saveAccountPaymentMethod( accountPaymentMethod, arguments.data );
             
             getHibachiScope().addActionResult( "public:account.addAccountPaymentMethod", accountPaymentMethod.hasErrors() );
-            
+            data['ajaxResponse']['errors'] = accountPaymentMethod.getErrors();
             // If there were no errors then we can clear out the
             
         } else {
