@@ -84,7 +84,7 @@ class SWSiteSelectorController {
         console.log("updating default established")
         if(this.localStorageService.hasItem("defaultSiteID")){
             this.defaultEstablished = true;
-            console.log("defaultSiteID from localStorageService",this.localStorageService.getItem("defaultSiteID"));
+
             this.defaultSiteID = this.localStorageService.getItem("defaultSiteID");
         } else {
             console.log("default established false")

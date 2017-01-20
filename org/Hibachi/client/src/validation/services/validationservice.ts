@@ -16,7 +16,7 @@ class ValidationService{
 
 
     public validateUnique=(value, object, property)=>{
-        console.log("validateUnique", object); 
+
         var deferred = this.$q.defer();
         //First time the asyncValidators function is loaded the
         //key won't be set  so ensure that we have
