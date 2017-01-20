@@ -34,6 +34,8 @@ class PublicService {
     public readyToPlaceOrder:boolean;
     public edit:String;
     public editPayment:boolean;
+    public imagePath:{[key:string]:any}={};
+    
     ///index.cfm/api/scope/
 
     //@ngInject
@@ -760,6 +762,32 @@ class PublicService {
         }
         return false;
     }
+    
+    /** Should be pushed down into core. Returns the profile image by name. */
+   	this.getResizedImageByProfileName = (profileName, skuIDList) => {
+   		this.imagePath = {};
+   		
+   		if (profileName == undefined){
+   			profileName = "medium";
+   		}
+   		
+   		$http.get("/index.cfm/api/scope/?context=getResizedImageByProfileName&profileName="+profileName+"&skuIds="+skuIDList).success(function(result){
+   		 	
+   		 	this.imagePath[skuIDList] = "";
+   		 	
+   		 	result = angular.fromJson(result);
+   		 	if (angular.isDefined(result.resizedImagePaths) && angular.isDefined(result.resizedImagePaths.resizedImagePaths) && result.resizedImagePaths.resizedImagePaths[0] != undefined){
+   		 		
+   		 		this.imagePath[skuIDList] = result.resizedImagePaths.resizedImagePaths[0];
+   		 		this.loading = false;
+   		 		return this.imagePath[skuIDList];
+   		 		
+   		 	}else{
+   		 		return "";
+   		 	}
+   		 	
+   		}); 
+   	}
 
 }
 export {PublicService};
