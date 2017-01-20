@@ -35,7 +35,7 @@
 					    <!--- hidden fields - Will contain the address id if one was provided. --->
 					    <input type="hidden" ng-model="SwAddressForm.address.addressID" name="addressID" value="{{SwAddressForm.address.addressID}}" ng-init="SwAddressForm.address.addressID = SwAddressForm.address.addressID||''"/>
 					    
-					    <!-- Country -->
+					    <!--- Country --->
 				    	<div class="col-sm-6 form-group" ng-if="SwAddressForm.showCountrySelect == 'true'|| SwAddressForm.showCountrySelect == true">
 				    		<input type="hidden" ng-model="SwAddressForm.address.countryCode" value="{{selectedCountry.value}}"/>
 					            
@@ -150,12 +150,17 @@
 				          <div class="row">
 				          	
 					        <div class="col-xs-7" ng-if="$root.slatwall.selectedCountry.value == 'US' || $root.slatwall.selectedCountry.value == 'CA'" ng-init="$root.slatwall.selectedCountry.value='US'">
-					            <input type="hidden" ng-model="SwAddressForm.address.stateCode" value="{{selectedState.value}}" />
-					            <label for="statecode">State</label>
-					            <select ng-required="true" required="true" tabindex="9" class="form-control" name="statecode" ng-model="selectedState" ng-init="selectedState = $root.slatwall.getStateByStateCode(SwAddressForm.address.stateCode)||''" ng-options="state as state.name for state in $root.slatwall.states.stateCodeOptions" ng-change="SwAddressForm.address.stateCode = selectedState.value">
-									<option value="" ng-if="SwAddressForm.address.stateCode == undefined || SwAddressForm.address.stateCode == ''"> — Select State — </option>
-					            </select>
-					            
+					            <swf-property-display 
+					            data-name="statecode" 
+					            data-class="form-control"
+					            data-type="select"
+					            data-select-type="string"
+					            data-editing="true"
+					            data-property-identifier="stateCode"
+					            data-object="SwAddressForm.address"
+					            data-options="$root.slatwall.states.stateCodeOptions"
+					            ng-init="SwAddressForm.address.stateCode = SwAddressForm.address.stateCode ||''" >
+					            </swf-property-display>
 					        </div>
 					        <div class="col-xs-7" ng-if="$root.slatwall.selectedCountry.value != 'US' && $root.slatwall.selectedCountry.value != 'CA' && SwAddressForm.hasField('locality')">
 					            <swf-property-display

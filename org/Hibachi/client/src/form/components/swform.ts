@@ -261,12 +261,12 @@ class SWFormController {
     public getFormData = ()=>
     {
         var iterable = this.formCtrl;
-
-
+ 
         angular.forEach(iterable, (val, key) => {
-
+            
             if(typeof val === 'object' && val.hasOwnProperty('$modelValue')){
-                if(this.object.forms[this.name][key].$modelValue){
+
+                 if(this.object.forms[this.name][key].$modelValue){
                     val = this.object.forms[this.name][key].$modelValue;
                 }else if(this.object.forms[this.name][key].$viewValue){
                     val = this.object.forms[this.name][key].$viewValue;
@@ -282,7 +282,7 @@ class SWFormController {
                 }
             }
         });
-
+        
         return this.formData || "";
     }
 }

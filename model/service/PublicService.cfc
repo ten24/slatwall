@@ -453,10 +453,13 @@ component extends="HibachiService"  accessors="true" output="false"
       		accountAddress.setAddress(newAddress);
       		accountAddress.setAccount(getHibachiScope().getAccount());	
       		var savedAccountAddress = getService("AccountService").saveAccountAddress(accountAddress);
- 	     	if (!savedAccountAddress.hasErrors()){
- 	     		getDao('hibachiDao').flushOrmSession();
- 	     	}
-      	}
+          getHibachiScope().addActionResult("public:account.addNewAccountAddress", savedAccountAddress.hasErrors());
+   	     	if (!savedAccountAddress.hasErrors()){
+   	     		getDao('hibachiDao').flushOrmSession();
+   	     	}
+      	} else{
+          getHibachiScope().addActionResult("public:account.addNewAccountAddress", true);
+        }
      }
      
      /**
