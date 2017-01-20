@@ -764,7 +764,7 @@ class PublicService {
     }
     
     /** Should be pushed down into core. Returns the profile image by name. */
-   	this.getResizedImageByProfileName = (profileName, skuIDList) => {
+   	public getResizedImageByProfileName = (profileName, skuIDList) => {
    		this.imagePath = {};
    		
    		if (profileName == undefined){
