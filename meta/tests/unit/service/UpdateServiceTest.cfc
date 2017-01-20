@@ -93,8 +93,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(trim("public void function testFunc(){
 		return '';
 	}"), trim(coreEntityParser.getCustomFunctionContent()));
-	
-		request.debug(customEntityParser.getPropertyString());
+		
 	}
 	
 	
@@ -114,8 +113,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(trim("public void function testFunc(){
 		return '';
 	}"), trim(coreEntityParser.getCustomFunctionContent()));
-	
-		request.debug(customEntityParser.getPropertyString());
+		
 	}
 	
 	public void function mergeEntityParsersTest_withCustomPropertiesInitially(){
