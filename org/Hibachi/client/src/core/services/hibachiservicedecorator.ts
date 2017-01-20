@@ -257,7 +257,7 @@ class HibachiServiceDecorator{
 
                 angular.forEach(entity,function(property){
                     if(angular.isObject(property) && angular.isDefined(property.name)){
-                        if(angular.isUndefined(property.persistent)){
+                        //if(angular.isUndefined(property.persistent)){
                             if(angular.isDefined(property.fieldtype)){
                                 if(['many-to-one'].indexOf(property.fieldtype) >= 0){
 
@@ -570,7 +570,7 @@ class HibachiServiceDecorator{
                                     return this.data[property.name];
                                 };
                             }
-                        }
+                        //}
                     }
                 });
 
