@@ -116,7 +116,7 @@ component {
 	// Remote properties
 	
 	
-	roperty name="accountAuthenticationID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="accountAuthenticationID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="password" ormtype="string";
 	property name="accessKey" ormtype="string";
 	property name="accessKeyPassword" ormtype="string";
@@ -3134,6 +3134,18 @@ component {
 	property name="duration" persistent="false" hb_formatType="second";
 
 	public void function testFunc(){
+		return '';
+	}
+	
+	private void function testFunc3(){
+		return '';
+	}
+	
+	public void function testFunc2(){
+		return '';
+	}
+	
+	private void function testFunc4(){
 		return '';
 	}
 }
