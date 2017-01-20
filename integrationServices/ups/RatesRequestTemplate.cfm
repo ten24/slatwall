@@ -95,7 +95,7 @@
 		<cfif local.totalWeight gt 150>
 			<cfset local.finalWeight = local.totalWeight MOD 150>
 			<cfloop index="count" from="1" to="#round(abs(local.totalWeight / 150))#">
-				
+			<cfif count neq 1>,</cfif>		
 			  "Package": {
 			    "PackagingType": { "Code": "02" },
 			    "PackageWeight": {
@@ -107,7 +107,7 @@
 			</cfloop>
 			<cfif local.finalWeight gt 0>
 				
-			  "Package": {
+			  ,"Package": {
 			    "PackagingType": { "Code": "02" },
 				"PackageWeight": {
 					<cfif local.finalWeight lt 1>
@@ -117,7 +117,7 @@
 					</cfif>
 					"UnitOfMeasurement": { "Code": "LBS" }
 				}
-							
+			}			
 			</cfif>
 		<cfelse>
 			
