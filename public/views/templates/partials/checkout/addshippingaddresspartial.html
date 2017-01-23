@@ -6,20 +6,20 @@
 <swf-directive partial-path="/custom/client/src/frontend/components/checkouttemplates/checkout/" partial-name="addressbookdisplay"></swf-directive>
 
 <!--- Displays all addresses from the addess book and lets you select one to use as the shipping address. --->
-<swf-directive partial-path="/custom/client/src/frontend/components/checkouttemplates/checkout/" partial-name="shippingmethodoptiondisplay"  ng-if="$.slatwall.cart.data.orderFulfillments[$.slatwall.cart.data.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.addressID && $.slatwall.OrderAddShippingObj.edit != true && $.slatwall.accountAddressEditFormIndex == undefined"></swf-directive>
+<swf-directive partial-path="/custom/client/src/frontend/components/checkouttemplates/checkout/" partial-name="shippingmethodoptiondisplay"  ng-if="$.slatwall.cart.data.orderFulfillments[$.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.addressID && $.slatwall.OrderAddShippingObj.edit != true && $.slatwall.accountAddressEditFormIndex == undefined"></swf-directive>
 
 <!--- When an address needs to be saved. --->
-<div id="editaddress" ng-show="($.slatwall.cart.data.orderFulfillments[$.slatwall.cart.data.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.addressID == undefined)||($.slatwall.accountAddressEditFormIndex != undefined && $.slatwall.accountAddressEditFormIndex != 'new')||$.slatwall.accountAddressEditFormIndex == 'new'">
+<div id="editaddress" ng-show="($.slatwall.cart.data.orderFulfillments[$.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.addressID == undefined)||($.slatwall.accountAddressEditFormIndex != undefined && $.slatwall.accountAddressEditFormIndex != 'new')||$.slatwall.accountAddressEditFormIndex == 'new'">
 
-    	<h4 ng-if="$.slatwall.cart.data.orderFulfillments[$.slatwall.cart.data.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.addressID==undefined">Your items are shipping to:</h4>
+    	<h4 ng-if="$.slatwall.cart.data.orderFulfillments[$.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.addressID==undefined">Your items are shipping to:</h4>
 		<!---<sw-address-form
 			data-field-list="countryCode,name,company,streetAddress,street2Address,locality,city,stateCode,postalCode,phoneNumber"
 			data-slatwall-scope="$.slatwall"
-			data-id="{{$.slatwall.cart.data.orderFulfillments[$.slatwall.cart.data.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.addressID}}" 
-			data-address="$.slatwall.cart.data.orderFulfillments[$.slatwall.cart.data.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress" 
+			data-id="{{$.slatwall.cart.data.orderFulfillments[$.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.addressID}}" 
+			data-address="$.slatwall.cart.data.orderFulfillments[$.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress" 
 			data-tab-index="1" 
 			data-address-name="shippingAddress" 
-			data-field-name-prefix="orderFulfillments[{{$.slatwall.cart.data.orderFulfillmentWithShippingMethodOptionsIndex}}].shippingAddress." 
+			data-field-name-prefix="orderFulfillments[{{$.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex}}].shippingAddress." 
 			data-show-country-select="true" 
 			data-show-submit-button="true"
 			data-action="updateShippingAddressOnAllOrderFulfillments"

@@ -2024,6 +2024,7 @@
 	                //post
 	                var request_1 = _this.requestService.newPublicRequest(urlBase, data, method);
 	                request_1.promise.then(function (result) {
+	                    console.log("result: ", result);
 	                    _this.processAction(result, request_1);
 	                }).catch(function (response) {
 	                });

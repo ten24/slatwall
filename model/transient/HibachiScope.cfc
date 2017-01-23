@@ -325,6 +325,23 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		
 		var data = getService('hibachiUtilityService').buildPropertyIdentifierListDataStruct(getCart(), arguments.propertyList, availablePropertyList);
 		
+        //Attach some meta for for orderFulfillments
+        
+        var requiresFulfillment = false;
+        var orderFulfillmentWithShippingMethodOptionsIndex = 1;
+        for (orderFulfillment in data.orderFulfillments){
+            if (isArray(orderFulfillment.shippingMethodOptions) && arrayLen(orderFulfillment.shippingMethodOptions) >= 1){
+                        requiresFulfillment = true; break;
+            }
+            orderFulfillmentWithShippingMethodOptionsIndex++;
+        }
+        data['requiresFulfillment'] = requiresFulfillment;
+        if (requiresFulfillment){
+              data['orderFulfillmentWithShippingMethodOptionsIndex'] = orderFulfillmentWithShippingMethodOptionsIndex - 1;
+        }else{
+              data['orderFulfillmentWithShippingMethodOptionsIndex'] = -1;
+        }
+        // writeDump(var=data, top=1);abort;
 		// add error messages
 		data["hasErrors"] = getCart().hasErrors();
 		data["errors"] = getCart().getErrors();
