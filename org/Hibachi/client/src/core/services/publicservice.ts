@@ -141,6 +141,18 @@ class PublicService {
        return this.stateDataPromise;
     }
 
+    public getStateByStateCode = function(stateCode){
+        if (!angular.isDefined(this.states) || !angular.isDefined(this.states.stateCodeOptions) || !angular.isDefined(stateCode)){
+            return;
+        }
+        for (var state in this.states.stateCodeOptions){
+            if (this.states.stateCodeOptions[state].value == stateCode){
+                //console.log(slatwall.states.stateCodeOptions[state].value, stateCode);
+                return this.states.stateCodeOptions[state];
+            }
+        }
+    }
+
     /** accessors for states */
     public getAddressOptions=(countryCode:string, refresh=false):any =>  {
        if (!angular.isDefined(countryCode)) countryCode = "US";

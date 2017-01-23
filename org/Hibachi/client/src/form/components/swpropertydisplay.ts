@@ -99,7 +99,21 @@ class SWPropertyDisplayController {
 
         this.errors = {};
         this.edited = false;
-        this.initialValue = this.object.data[this.property];
+
+        this.property = this.property || this.propertyIdentifier;
+        this.propertyIdentifier = this.propertyIdentifier || this.property;
+
+        this.type = this.type || this.fieldType;
+        this.fieldType = this.fieldType || this.type;
+
+        this.edit = this.edit || this.editing;
+        this.editing = this.editing || this.edit;
+
+        console.log("this.object", this.object);
+        console.log('this.property', this.property);
+
+
+        this.initialValue = this.object[this.property];
         this.propertyDisplayID = this.utilityService.createID(32);
         if(angular.isUndefined(this.showSave)){
             this.showSave = true;
@@ -160,15 +174,6 @@ class SWPropertyDisplayController {
                 return model;
             }
         };
-
-		this.property = this.property || this.propertyIdentifier;
-        this.propertyIdentifier = this.propertyIdentifier || this.property;
-
-        this.type = this.type || this.fieldType;
-        this.fieldType = this.fieldType || this.type;
-
-        this.edit = this.edit || this.editing;
-        this.editing = this.editing || this.edit;
 
         //swfproperty logic
         if(angular.isUndefined(this.type) && this.object && this.object.metaData){

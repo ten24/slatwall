@@ -463,18 +463,20 @@ component extends="HibachiService"  accessors="true" output="false"
      /**
       * Updates an address.
       */
-     public void function updateAddress(required data){
+    public void function updateAddress(required data){
      	param name="data.countrycode" default="US";
      	param name="data.addressID" default="";
      	
-     	
      	var newAddress = getService("AddressService").getAddress(data.addressID, true);
      	newAddress = getService("AddressService").saveAddress(newAddress, data, "full");
-      	
-      	if (!isNull(newAddress) && !newAddress.hasErrors()){
+
+      if(!isNull(newAddress)){
+        getHibachiScope().addActionResult("public:account.updateAddress", newAddress.hasErrors());	
+      }
+    	if (!isNull(newAddress) && !newAddress.hasErrors()){
  	     	getDao('hibachiDao').flushOrmSession();
-      	}
-     }
+    	}
+    }
     
     /** 
      * @http-context deleteAccountAddress

@@ -134,7 +134,7 @@ class SWFormFieldController {
 	public selectStrategy = ()=>{
 		//this is specific to the admin because it implies loading of options via api
 
-        if(angular.isDefined(this.object.metaData[this.property].fieldtype)){
+        if(angular.isDefined(this.object.metaData) && angular.isDefined(this.object.metaData[this.property].fieldtype)){
             this.selectType = 'object';
             this.$log.debug('selectType:object');
         }else{

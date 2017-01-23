@@ -158,8 +158,9 @@
 					            data-editing="true"
 					            data-property-identifier="stateCode"
 					            data-object="SwAddressForm.address"
+					            data-label-text="State"
 					            data-options="$root.slatwall.states.stateCodeOptions"
-					            ng-init="SwAddressForm.address.stateCode = SwAddressForm.address.stateCode ||''" 
+					            ng-init="SwAddressForm.address.data.selectedstateCode = $root.slatwall.getStateByStateCode(SwAddressForm.address.stateCode)||''" 
 					            input-attributes="ng-required=true">
 					            </swf-property-display>
 					        </div>
