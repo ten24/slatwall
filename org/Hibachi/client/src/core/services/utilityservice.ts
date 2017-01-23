@@ -279,10 +279,19 @@ class UtilityService extends BaseService{
           var count = count || 26;
 
           var text = "";
-          var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+          var firstPossibleCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";  
+          var nextPossibleCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+          var currentPossibleCharacters="";
 
-          for( var i=0; i < count; i++ )
-              text += possible.charAt(Math.floor(Math.random() * possible.length));
+          for( var i=0; i < count; i++ ){
+              if(i === 0){
+                  currentPossibleCharacters=firstPossibleCharacters
+              }else{
+                  currentPossibleCharacters=nextPossibleCharacters
+              }
+              text += currentPossibleCharacters.charAt(Math.floor(Math.random() * currentPossibleCharacters.length));
+          }
+              
 
           return text;
     };

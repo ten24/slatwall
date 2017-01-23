@@ -72,7 +72,7 @@ class HibachiService{
 	getJsEntities= () =>{
 		return this._jsEntities;
 	};
-	
+
 	setJsEntities= (jsEntities) =>{
 		this._jsEntities = jsEntities;
 	};
@@ -80,15 +80,15 @@ class HibachiService{
 	getJsEntityInstances= () =>{
 		return this._jsEntityInstances;
 	};
-	
+
 	setJsEntityInstances= (jsEntityInstances) =>{
 		this._jsEntityInstances = jsEntityInstances;
 	};
-	
+
 	getEntityExample = (entityName)=>{
 		return this._jsEntityInstances[entityName];
 	};
-	
+
 	getEntityMetaData = (entityName)=>{
 		return this._jsEntityInstances[entityName].metaData;
 	};
@@ -139,9 +139,9 @@ class HibachiService{
 
 	};
 	//helper method to inflate a new entity with data
-	populateEntity = (entityName, data)=>{ 
+	populateEntity = (entityName, data)=>{
 		var newEntity = this.newEntity(entityName);
-		angular.extend(newEntity.data,data); 
+		angular.extend(newEntity.data,data);
 		return newEntity;
 	}
 	//service method used to transform collection data to collection objects based on a collectionconfig
@@ -229,11 +229,11 @@ class HibachiService{
 		*
 		*/
 		var apiSubsystemName = this.appConfig.apiSubsystemName || "api";
-		
+
 		if(angular.isUndefined(options)){
 			options = {};
 		}
-		console.log("get entity options", options);
+
 
 		if(angular.isDefined(options.deferKey)) {
 			this.cancelPromise(options.deferKey);
@@ -259,7 +259,7 @@ class HibachiService{
 			params.processContext = options.processContext || '';
 			var urlString = this.getUrlWithActionPrefix()+ apiSubsystemName + ':' +'main.get&entityName='+entityName;
 		}
-		
+
 		if(angular.isDefined(options.id)) {
 			urlString += '&entityId='+options.id;
 		}
@@ -314,7 +314,7 @@ class HibachiService{
     };
 	checkUniqueOrNullValue = (object, property, value) => {
 		var objectName = object.metaData.className;
-		var objectID = object.$$getID(); 
+		var objectID = object.$$getID();
 		return this.$http.get(this.getUrlWithActionPrefix()+'api:main.getValidationPropertyStatus&object=' + objectName + '&objectID=' + objectID + '&propertyidentifier=' + property +
 		'&value=' + escape(value)).then(
 	 (results:any):ng.IPromise<any> =>{
@@ -323,7 +323,7 @@ class HibachiService{
 	};
 	checkUniqueValue = (object, property, value) => {
 		var objectName = object.metaData.className;
-		var objectID = object.$$getID(); 
+		var objectID = object.$$getID();
 		return this.$http.get(this.getUrlWithActionPrefix()+'api:main.getValidationPropertyStatus&object=' + objectName + '&objectID=' + objectID + '&propertyidentifier=' + property +
 			'&value=' + escape(value)).then(
 			 (results:any):ng.IPromise<any> =>{

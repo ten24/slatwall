@@ -67,18 +67,18 @@ abstract class BaseTransient extends BaseObject{
                                 angular.forEach(data[key],(arrayItem,propertyKey)=>{
                                     var relatedEntity = this.entityService.newEntity(currentEntity.metaData[property].cfc);
                                     if(relatedEntity.populate){
-                                        
+
                                         relatedEntity.populate(arrayItem);
                                         var hasItem = false;
                                         for(var item in currentEntity[property]){
-                                            console.log('test',item);
+
                                             if(currentEntity[property][item].$$getID().length > 0 && currentEntity[property][item].$$getID() === relatedEntity.$$getID()){
                                                 hasItem = true;
-                                                break;    
-                                            }    
+                                                break;
+                                            }
                                         }
                                         if(!hasItem){
-                                            currentEntity['$$add'+currentEntity.metaData[property].singularname.charAt(0).toUpperCase()+currentEntity.metaData[property].singularname.slice(1)](relatedEntity);    
+                                            currentEntity['$$add'+currentEntity.metaData[property].singularname.charAt(0).toUpperCase()+currentEntity.metaData[property].singularname.slice(1)](relatedEntity);
                                         }
                                     }else{
                                         relatedEntity.$$init(arrayItem);

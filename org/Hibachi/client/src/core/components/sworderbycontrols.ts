@@ -4,50 +4,50 @@
 class SWOrderByControlsController {
 
     public id:string;
-    public eventString:string; 
+    public eventString:string;
 
     public collectionConfig:any;//used for getting the properties
-    public selectedPropertyIdentifier:any; 
+    public selectedPropertyIdentifier:any;
     public sortCode:string = "ASC";
-    public columns:any[]; 
-    public disabled:boolean; 
-    public initialSortProperty:string; 
-    public initialSortDefaultDirection:string; 
-    public inListingDisplay:boolean; 
+    public columns:any[];
+    public disabled:boolean;
+    public initialSortProperty:string;
+    public initialSortDefaultDirection:string;
+    public inListingDisplay:boolean;
     public listingId:string;
-    public sortPropertyFieldName:string; 
-    public sortDefaultDirectionFieldName:string; 
-    public toggleCollectionConfig:boolean; 
+    public sortPropertyFieldName:string;
+    public sortDefaultDirectionFieldName:string;
+    public toggleCollectionConfig:boolean;
     public propertyNotChosen:boolean;
-    public edit:boolean; 
+    public edit:boolean;
 
     // @ngInject
-    constructor( private listingService, 
-                 private observerService, 
+    constructor( private listingService,
+                 private observerService,
                  private utilityService ){
             if( angular.isUndefined(this.edit)){
-                this.edit = true; 
+                this.edit = true;
             }
-            console.log("orderbycontrols edit mode:", this.edit);
+
             if( angular.isDefined(this.collectionConfig) ){
-                 this.columns = this.collectionConfig.columns; 
-            } 
+                 this.columns = this.collectionConfig.columns;
+            }
             if( angular.isDefined(this.initialSortDefaultDirection) && this.initialSortDefaultDirection.length > 0){
-                this.sortCode = this.initialSortDefaultDirection; 
+                this.sortCode = this.initialSortDefaultDirection;
             }
             if( angular.isDefined(this.initialSortProperty) && this.initialSortProperty.length > 0){
                 this.selectedPropertyIdentifier = this.initialSortProperty;
             }
-            this.id = this.utilityService.createID(32);  
+            this.id = this.utilityService.createID(32);
     }
 
     public updateSortOrderProperty = ():void =>{
         if(angular.isDefined(this.selectedPropertyIdentifier)){
-            this.propertyNotChosen=false; 
+            this.propertyNotChosen=false;
         } else {
-            this.propertyNotChosen=true; 
+            this.propertyNotChosen=true;
         }
-        this.updateOrderBy(); 
+        this.updateOrderBy();
     }
 
     public updateOrderBy = () =>{
@@ -56,7 +56,7 @@ class SWOrderByControlsController {
         }
         switch(this.sortCode){
             case "ASC":
-                this.disabled = false; 
+                this.disabled = false;
                 if(propertyIdentifier != null){
                     if(angular.isDefined(this.collectionConfig)){
                         this.collectionConfig.toggleOrderBy(propertyIdentifier,true);//single column mode true
@@ -65,10 +65,10 @@ class SWOrderByControlsController {
                         this.listingService.setSingleColumnOrderBy(this.listingId, propertyIdentifier, "ASC");
                     }
                 }
-                if(this.inListingDisplay) this.listingService.setManualSort(this.listingId, false); 
-                break; 
+                if(this.inListingDisplay) this.listingService.setManualSort(this.listingId, false);
+                break;
             case "DESC":
-                this.disabled = false; 
+                this.disabled = false;
                 if(propertyIdentifier != null){
                     if(angular.isDefined(this.collectionConfig)){
                         this.collectionConfig.toggleOrderBy(propertyIdentifier,true);//single column mode true
@@ -76,26 +76,26 @@ class SWOrderByControlsController {
                     if(this.inListingDisplay){
                         this.listingService.setSingleColumnOrderBy(this.listingId, propertyIdentifier, "DESC");
                     }
-                    if(this.inListingDisplay) this.listingService.setManualSort(this.listingId, false); 
+                    if(this.inListingDisplay) this.listingService.setManualSort(this.listingId, false);
                 }
-                break; 
+                break;
             case "MANUAL":
                 //flip listing
-                this.disabled = true; 
+                this.disabled = true;
                 if(this.inListingDisplay){
-                    this.listingService.setManualSort(this.listingId, true); 
+                    this.listingService.setManualSort(this.listingId, true);
                 }
-                break; 
+                break;
         }
     }
 
     public sortAscending = ():void =>{
-        this.sortCode = 'ASC'; 
+        this.sortCode = 'ASC';
         this.updateOrderBy();
     }
 
     public sortDescending = ():void =>{
-        this.sortCode = 'DESC'; 
+        this.sortCode = 'DESC';
         this.updateOrderBy();
     }
 
@@ -109,7 +109,7 @@ class SWOrderByControlsController {
 class SWOrderByControls implements ng.IDirective{
 
     public templateUrl;
-    public transclude=true; 
+    public transclude=true;
     public restrict = "EA";
     public scope = {};
 
@@ -128,8 +128,8 @@ class SWOrderByControls implements ng.IDirective{
     public controllerAs="swOrderByControls";
 
     // @ngInject
-    constructor( public $compile, 
-                 private scopeService, 
+    constructor( public $compile,
+                 private scopeService,
                  private listingService,
                  private corePartialsPath,
                  hibachiPathBuilder
@@ -140,13 +140,13 @@ class SWOrderByControls implements ng.IDirective{
     public compile = (element: JQuery, attrs: angular.IAttributes, transclude: any) => {
         return {
             pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
-                if( $scope.swOrderByControls.inListingDisplay && 
+                if( $scope.swOrderByControls.inListingDisplay &&
                     this.scopeService.hasParentScope($scope,"swListingDisplay")
                 ){
                     var listingDisplayScope = this.scopeService.getRootParentScope($scope,"swListingDisplay")["swListingDisplay"];
-                    $scope.swOrderByControls.listingId = listingDisplayScope.tableID; 
-                    this.listingService.attachToListingInitiated($scope.swOrderByControls.listingId, $scope.swOrderByControls.updateOrderBy); 
-                    if( $scope.swOrderByControls.collectionConfig == null && 
+                    $scope.swOrderByControls.listingId = listingDisplayScope.tableID;
+                    this.listingService.attachToListingInitiated($scope.swOrderByControls.listingId, $scope.swOrderByControls.updateOrderBy);
+                    if( $scope.swOrderByControls.collectionConfig == null &&
                         listingDisplayScope.collectionConfig != null
                     ){
                         $scope.swOrderByControls.collectionConfig = listingDisplayScope.collectionConfig;
@@ -162,7 +162,7 @@ class SWOrderByControls implements ng.IDirective{
     public static Factory(){
         var directive:ng.IDirectiveFactory = (
             $compile
-            ,scopeService 
+            ,scopeService
             ,listingService
             ,corePartialsPath
             ,hibachiPathBuilder
