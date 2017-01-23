@@ -378,7 +378,9 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
     				if( (sortType eq 'price' && thisOption.totalCharge < thisExistingOption.totalCharge)
     				  	||
-    					(sortType eq 'sortOrder' && thisOption.shippingMethodSortOrder < thisExistingOption.shippingMethodSortOrder) ) {
+    					(sortType eq 'sortOrder' && thisOption.shippingMethodSortOrder < thisExistingOption.shippingMethodSortOrder) 
+    					&&
+    					thisOption.value != thisExistingOption.value) {
 
     					arrayInsertAt(optionsArray, i, thisOption);
     					inserted = true;
