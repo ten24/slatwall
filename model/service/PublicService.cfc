@@ -457,9 +457,7 @@ component extends="HibachiService"  accessors="true" output="false"
    	     	if (!savedAccountAddress.hasErrors()){
    	     		getDao('hibachiDao').flushOrmSession();
    	     	}
-      	} else{
-          getHibachiScope().addActionResult("public:account.addNewAccountAddress", true);
-        }
+      	}
      }
      
      /**
