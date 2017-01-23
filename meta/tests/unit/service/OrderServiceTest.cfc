@@ -313,4 +313,286 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertTrue(ArrayLen(duplicateorderitem.getChildOrderItems()));
 
 	}
+	
+	public void function processOrder_placeOrder_TermPayment(){
+		//adding a test shippingMethod
+		var shippingMethodData ={
+			shippingMethodID="",
+			fulfillementMethod={
+				//shipping
+				fulfillmentMethodID='444df2fb93d5fa960ba2966ba2017953'
+			},
+			activeFlag=1,
+			shippingMethodName="testShippingMethod"&createUUID(),
+			shippingMethodCode="testShippingMethod"&createUUID()
+		};
+		var shippingMethod = createPersistedTestEntity('ShippingMethod',shippingMethodData);
+		
+		var shippingMethodRateData={
+			shippingMethodRateID="",
+			shippingMethod={
+				shippingMethodID=shippingMethod.getShippingMethodID()
+			}
+		};
+		var shippingMethodRate = createPersistedTestEntity('ShippingMethodRate',shippingMethodRateData);
+		
+		var accountData={
+			accountID="",
+			firstName="test",
+			lastName="test"
+		};
+		var account = createPersistedTestEntity('account',accountData);
+		 
+		
+		//create Term Payment Method
+		var termPaymentMethodData={
+			paymentMethodID="",
+			activeFlag=1,
+			paymentMethodName="testTermPaymentMethod"&createUUID(),
+			allowSaveFlag=1,
+			placeOrderChargeTransactionType="",
+			placeOrderCreditTransactionType="",
+			subscriptionRenewalTransactionType=""
+		};
+		var termPaymentMethod = createPersistedTestEntity('PaymentMethod',termPaymentMethodData);
+		
+		var accountPaymentMethodData={
+			accountPaymentMethodID="",
+			activeFlag=1,
+			account={
+				accountID=account.getAccountID()
+			},
+			paymentMethod={
+				paymentMethodID=termPaymentMethod.getPaymentMethodID()
+			}
+			
+		};
+		var accountPaymentMethod = createPersistedTestEntity('AccountPaymentMethod',accountPaymentMethodData);
+		
+		//set up eligible sku payment methods
+		var settingData={
+			settingID="",
+			settingName="skuEligiblePaymentMethods",
+			settingValue=termPaymentMethod.getPaymentMethodID()
+		};
+		var settingEntity = createPersistedTestEntity('Setting',settingData);
+		
+		//set up an orderable product
+		var productData = {
+			productID="",
+			productCode="testProduct"&createUUID(),
+			productType={
+				//merchandise
+				productTypeID='444df2f7ea9c87e60051f3cd87b435a1'
+			}
+		};
+		var product = createPersistedTestEntity('Product',productData);
+		
+		var skuData={
+			skuID="",
+			skuCode="testSku"&createUUID(),
+			product={
+				productID=product.getProductID()
+			}
+		};
+		var sku = createPersistedTestEntity('sku',skuData);
+		 
+		var orderData = {
+			orderID="",
+			account={
+				accountID=account.getAccountID()
+			},
+			currencyCode='USD',
+			orderType={
+				//sales order
+				typeID='444df2df9f923d6c6fd0942a466e84cc'
+			}
+			
+		};
+		var order = createPersistedTestEntity('Order',orderData);
+		
+		var shippingAddressData={
+			addressID="",
+			firstName="test",
+			lastName="test",
+			street1="test st",
+			company="",
+			city="test",
+			stateCode="MA",
+			countryCode="US",
+			postalCode="01757"
+		};
+		var shippingAddress = createPersistedTestEntity('Address',shippingAddressData);
+		
+		var accountAddressData = {
+			accountAddressID="",
+			address={
+				addressID=shippingAddress.getAddressID()
+			},
+			account={
+				accountID=account.getAccountID()
+			}
+		};
+		var accountAddress = createPersistedTestEntity('AccountAddress',accountAddressData);
+		
+		var addOrderItemData={
+			skuID=sku.getSkuID(),
+			orderItemTypeSystemCode="oitSale",
+			quantity=1,
+			price=1.00,
+			orderFulfillmentID="new",
+			//shipping
+			fulfillmentMethodID='444df2fb93d5fa960ba2966ba2017953',
+			//default location
+			pickupLocationID='88e6d435d3ac2e5947c81ab3da60eba2',
+			
+			shippingAccountAddressID=accountAddress.getAccountAddressID(),
+			shippingAddress.countryCode='US',
+			saveShippingAccountAddressFlag=1,
+			preProcessDisplayedFlag=1
+		};
+		order = variables.service.process(order,addOrderItemData,'addOrderItem');
+		
+		var placeOrderData = {
+			preProcessDisplayedFlag=1,
+			newOrderPayment={
+				order={
+					orderID=order.getOrderID()
+				},
+				orderPayment={
+					//charge
+					typeID='444df2f0fed139ff94191de8fcd1f61b'
+				},
+				paymentMethod={
+					//credit
+					paymentMethodID='444df303dedc6dab69dd7ebcc9b8036a',
+					billingAddress={
+						countryCode="US"
+					}
+				},
+				expirationMonth='01',
+				expirationYear='17',
+				companyPaymentMethodFlag=0,
+				saveGiftCardToAccountFlag=0,
+				accountAddressID=accountAddress.getAccountAddressID()
+			},
+			saveAccountPaymentMethodFlag=0,
+			copyFromType="accountPaymentMethod",
+			accountPaymentMethodID=accountPaymentMethod.getAccountPaymentMethodID()
+			
+		};
+		ormflush();
+		order = variables.service.process(order,placeOrderData,'placeOrder');
+		request.debug(order.getErrors());
+		//variables.service.processOrder_placeOrder();
+	}
+	
+	public void function getOrderRequirementsListTest_failsOrderfulfillment(){
+		var accountData = {
+			accountID=""
+		};
+		var account = createPersistedTestEntity('account',accountData);
+		var orderData = {
+			orderID="",
+			account={
+				accountID=account.getAccountID()
+			}
+		};
+		var order = createPersistedTestEntity('Order',orderData);
+		
+		//adding an invalid orderFulfillment
+		var orderFulfillmentData = {
+			orderFulfillmentID="",
+			//shipping
+			fulfillmentMethod={
+				fulfillmentMethodID="444df2fb93d5fa960ba2966ba2017953"
+			}
+		};
+		var orderFulfillment = createPersistedTestEntity('OrderFulfillment',orderFulfillmentData);
+		
+		order.addOrderFulfillment(orderFulfillment);
+		orderFulfillment.setOrder(order);
+		
+		assert(arraylen(order.getOrderFulfillments()));
+		
+		orderRequirementsList = variables.service.getOrderRequirementsList(order);
+		assertEquals(orderRequirementsList,'fulfillment');
+	}
+	
+	public void function getOrderRequirementsListTest_failsOrderReturn(){
+		var accountData = {
+			accountID=""
+		};
+		var account = createPersistedTestEntity('account',accountData);
+		var orderData = {
+			orderID="",
+			account={
+				accountID=account.getAccountID()
+			}
+		};
+		var order = createPersistedTestEntity('Order',orderData);
+		
+		//check if each of the orderReturn is ready to process
+		var orderReturnData={
+			orderReturnID=""
+		};
+		var orderReturn = createPersistedTestEntity('OrderReturn',orderReturnData);
+		orderReturn.addError('testerror','testerror');
+		
+		order.addOrderReturn(orderReturn);
+		orderReturn.setOrder(order);
+		
+		orderRequirementsList = variables.service.getOrderRequirementsList(order);
+		assertEquals(orderRequirementsList,'return');
+	}
+	
+	public void function getOrderRequirementsListTest_failsPayment(){
+		var accountData = {
+			accountID=""
+		};
+		var account = createPersistedTestEntity('account',accountData);
+
+		var orderPaymentData1 = {
+			orderPaymentID = '',
+			orderPaymentType = {
+				typeID = '444df2f0fed139ff94191de8fcd1f61b'//optCharge
+			},
+			amount = 10 
+		};
+		var orderPayment = createPersistedTestEntity('OrderPayment', orderPaymentData1);		
+		
+		var orderData = {
+			orderID="",
+			account={
+				accountID=account.getAccountID()
+			}
+			
+		};
+		var order = createPersistedTestEntity('Order',orderData);
+		
+		orderPayment.setOrder(order);
+		order.addOrderPayment(orderPayment);
+		
+		//checks if arguments.order.getPaymentAmountTotal() != arguments.order.getTotal()
+		//or // Otherwise, make sure that the order payments all pass the isProcessable for placeOrder & does not have any errors
+		
+		orderRequirementsList = variables.service.getOrderRequirementsList(order);
+		assertEquals(orderRequirementsList,'payment');
+	}
+	
+	public void function getOrderRequirementsListTest_failsAccount(){
+		var orderData = {
+			orderID=""
+		};
+		var order = createPersistedTestEntity('Order',orderData);
+		
+		//will complain that it needs a valid account
+		var orderRequirementsList = variables.service.getOrderRequirementsList(order);
+		assertEquals(orderRequirementsList,'account');
+		
+		
+		
+		
+		
+	}
 }
