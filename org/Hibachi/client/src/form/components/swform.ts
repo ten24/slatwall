@@ -112,10 +112,9 @@ class SWFormController {
         //     observerService.attach(this.eventsHandler, "onError");//stub
         // }
         if(this.eventListeners){
-            console.log('scoooope', $scope);
             let eventObj = this.parseEventString(this.eventListeners);
             eventObj.events.forEach(event=>{
-                observerService.attach(this[event.action], event.name);
+                observerService.attach(event.action, event.name);
             })
         }
         // console.log("submitOnReturn:", this.submitOnReturn);
@@ -196,7 +195,12 @@ class SWFormController {
             let eventAction = strTokens[token].split(":")[1].replace(' ', '');
 
             // if (eventAction == "this") {formName == this.context.toLowerCase();} //<--replaces the alias this with the name of this form.
-            let event = {"name" : eventName, "action" : eventAction};
+            let path = eventAction.split('.');
+            let eventObj = this[path.shift()];
+            while(path.length && eventObj[path[0]]){
+                eventObj = eventObj[path.shift()];
+            }
+            let event = {"name" : eventName, "action" : eventObj};
             eventsObj.events.push(event);
 
         }

@@ -19631,7 +19631,12 @@
 	                var eventName = strTokens[token].split(":")[0].replace(' ', '');
 	                var eventAction = strTokens[token].split(":")[1].replace(' ', '');
 	                // if (eventAction == "this") {formName == this.context.toLowerCase();} //<--replaces the alias this with the name of this form.
-	                var event_1 = { "name": eventName, "action": eventAction };
+	                var path = eventAction.split('.');
+	                var eventObj = _this[path.shift()];
+	                while (path.length && eventObj[path[0]]) {
+	                    eventObj = eventObj[path.shift()];
+	                }
+	                var event_1 = { "name": eventName, "action": eventObj };
 	                eventsObj.events.push(event_1);
 	            }
 	            // if (eventsObj.events.length){
@@ -19791,10 +19796,9 @@
 	        //     observerService.attach(this.eventsHandler, "onError");//stub
 	        // }
 	        if (this.eventListeners) {
-	            console.log('scoooope', $scope);
 	            var eventObj = this.parseEventString(this.eventListeners);
 	            eventObj.events.forEach(function (event) {
-	                observerService.attach(_this[event.action], event.name);
+	                observerService.attach(event.action, event.name);
 	            });
 	        }
 	        // console.log("submitOnReturn:", this.submitOnReturn);
