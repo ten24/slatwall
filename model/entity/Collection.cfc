@@ -125,6 +125,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.hasDisplayAggregate = false;
 		variables.hasManyRelationFilter = false;
 		variables.filterAliasMaps = {};
+		variables.filterGroupAliasMap = {}; 
 	}
 
 	public any function getCollectionEntityObject(){
@@ -142,6 +143,24 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return filterAlias;
 	}
 
+	public numeric function getFilterGroupIndexByFilterGroupAlias(required string filterGroupAlias, required string filterGroupLogicalOperator){
+ 		if(!structKeyExists(variables.filterGroupAliasMap, arguments.filterGroupAlias)){
+ 			variables.filterGroupAliasMap[filterGroupAlias] = addFilterGroupWithAlias(arguments.filterGroupAlias, arguments.filterGroupLogicalOperator);
+ 		} 
+ 		return variables.filterGroupAliasMap[filterGroupAlias]; 
+ 	} 
+
+ 	public numeric function addFilterGroupWithAlias(required string filterGroupAlias, required string filterGroupLogicalOperator){
+ 		var collectionConfig = this.getCollectionConfigStruct();	
+ 		var newFilterGroup = {"filterGroup"=[]};
+ 		if(ArrayLen(collectionConfig.filterGroups) >= 1){
+ 			newFilterGroup["logicalOperator"] = arguments.filterGroupLogicalOperator; 
+ 		} 
+ 		ArrayAppend(collectionConfig.filterGroups, newFilterGroup);
+ 		this.setCollectionConfigStruct(collectionConfig);
+ 		return ArrayLen(collectionConfig.filterGroups); 
+ 	}
+
 	//add Filter
 	public void function addFilter(
 		required string propertyIdentifier,
@@ -149,6 +168,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		string comparisonOperator="=",
 		string logicalOperator="AND",
 	    string aggregate=""
+		string filterGroupAlias="",
+ 		string filterGroupLogicalOperator="AND"
 	){
 		var collectionConfig = this.getCollectionConfigStruct();
 		var alias = collectionConfig.baseEntityAlias;
@@ -208,7 +229,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			);
 		}
 
-		arrayAppend(collectionConfig.filterGroups[1].filterGroup,filter);
+		var filterGroupIndex = 1; 
+ 		if(len(arguments.filterGroupAlias) > 0){
+ 			filterGroupIndex = this.getFilterGroupIndexByFilterGroupAlias(arguments.filterGroupAlias, arguments.filterGroupLogicalOperator); 
+ 		} 
+ 		arrayAppend(collectionConfig.filterGroups[filterGroupIndex].filterGroup,filter);
 	}
 
 	public void function setDisplayProperties(string displayPropertiesList=""){
