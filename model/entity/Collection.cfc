@@ -230,7 +230,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 
 		var filterGroupIndex = 1; 
- 		if(len(arguments.filterGroupAlias) > 0){
+ 		if(structKeyExists(arguments, "filterGroupAlias") && len(arguments.filterGroupAlias) > 0){
  			filterGroupIndex = this.getFilterGroupIndexByFilterGroupAlias(arguments.filterGroupAlias, arguments.filterGroupLogicalOperator); 
  		} 
  		arrayAppend(collectionConfig.filterGroups[filterGroupIndex].filterGroup,filter);
