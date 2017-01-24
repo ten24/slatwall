@@ -14,6 +14,7 @@ class SWFPropertyDisplayController extends SWPropertyDisplayController {
         super($filter,utilityService,$injector,metadataService,observerService);
 
         this.editing = true;
+
     }
 }
 

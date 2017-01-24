@@ -19571,6 +19571,12 @@
 	        this.isObject = function () {
 	            return (angular.isObject(_this.object));
 	        };
+	        this.submitKeyCheck = function (event) {
+	            var key = event.event.keyCode;
+	            if (key == 13) {
+	                _this.submit();
+	            }
+	        };
 	        /** create the generic submit function */
 	        this.submit = function (actions) {
 	            actions = actions || _this.action;
@@ -19788,6 +19794,12 @@
 	            this.parseEventString(this.onError, "onError");
 	            observerService.attach(this.eventsHandler, "onError"); //stub
 	        }
+	        console.log("submitOnReturn:", this.submitOnReturn);
+	        if (this.submitOnReturn) {
+	            var submitEvent = this.name + this.submitOnReturn + 'keyup';
+	            console.log("Submit event!", submitEvent);
+	            observerService.attach(this.submitKeyCheck, submitEvent);
+	        }
 	    }
 	    return SWFormController;
 	}());
@@ -19821,7 +19833,7 @@
 	            hideUntil: "@?",
 	            isDirty: "=?",
 	            inputAttributes: "@?",
-	            eventHandlers: "@?"
+	            submitOnReturn: "@?"
 	        };
 	        /**
 	            * Sets the context of this form

@@ -26,6 +26,7 @@ class SWFormController {
     public formCtrl;
     public formData = {};
     public inputAttributes:string;
+    public submitOnReturn:string;
     /**
      * This controller handles most of the logic for the swFormDirective when more complicated self inspection is needed.
      */
@@ -110,11 +111,24 @@ class SWFormController {
             this.parseEventString(this.onError, "onError");
             observerService.attach(this.eventsHandler, "onError");//stub
         }
+        console.log("submitOnReturn:", this.submitOnReturn);
+        if(this.submitOnReturn){
+            let submitEvent = this.name + this.submitOnReturn + 'keyup';
+            console.log("Submit event!", submitEvent)
+            observerService.attach(this.submitKeyCheck, submitEvent);
+        }
 
     }
 
     public isObject=()=>{
         return (angular.isObject(this.object));
+    }
+
+    public submitKeyCheck = (event) =>{
+        let key = event.event.keyCode;
+        if(key == 13){
+            this.submit();
+        }
     }
 
     /** create the generic submit function */
@@ -314,7 +328,7 @@ class SWForm implements ng.IDirective {
             hideUntil: "@?",
             isDirty:"=?",
             inputAttributes:"@?",
-            eventHandlers:"@?"
+            submitOnReturn:"@?"
     };
 
     /**
