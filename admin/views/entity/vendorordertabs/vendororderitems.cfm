@@ -89,6 +89,7 @@ Notes:
 				<hb:HibachiListingColumn propertyIdentifier="product.productCode" />
 				<hb:HibachiListingColumn propertyIdentifier="product.brand.brandName" />
 				<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="product.productName" />
+				<hb:HibachiListingColumn propertyIdentifier="calculatedSkuDefinition" />
 				<hb:HibachiListingColumn propertyIdentifier="product.productType.productTypeName" />
 				<hb:HibachiListingColumn processObjectProperty="quantity" title="#$.slatwall.rbKey('define.quantity')#" fieldClass="span1" />
 			</hb:HibachiListingDisplay>
@@ -110,7 +111,7 @@ Notes:
 			<hb:HibachiListingColumn propertyidentifier="stock.sku.product.brand.brandName" />
 			<hb:HibachiListingColumn tdclass="primary" propertyidentifier="stock.sku.product.productName" />
 			<hb:HibachiListingColumn propertyidentifier="stock.sku.skucode" />
-			<hb:HibachiListingColumn propertyidentifier="stock.sku.skuDefinition" />
+			<hb:HibachiListingColumn propertyidentifier="stock.sku.calculatedSkuDefinition" />
 			<hb:HibachiListingColumn propertyidentifier="stock.location.locationName" />
 			<hb:HibachiListingColumn propertyidentifier="quantity" />
 			<hb:HibachiListingColumn propertyidentifier="quantityReceived" />
@@ -135,7 +136,7 @@ Notes:
 				<hb:HibachiListingColumn propertyIdentifier="product.productCode" />
 				<hb:HibachiListingColumn propertyIdentifier="product.brand.brandName" />
 				<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="product.productName" />
-				<hb:HibachiListingColumn propertyIdentifier="skuDefinition" />
+				<hb:HibachiListingColumn propertyIdentifier="calculatedSkuDefinition" />
 				<hb:HibachiListingColumn propertyIdentifier="product.productType.productTypeName" />
 				<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" />
 				<hb:HibachiListingColumn processObjectProperty="deliverToLocationID" title="#$.slatwall.rbKey('process.vendorOrder_AddVendorOrderItem.deliverToLocationID')#" fieldClass="span2" value="#rc.vendorOrder.getBillToLocation().getLocationID()#" />
