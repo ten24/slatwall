@@ -118,6 +118,8 @@ class SWFormFieldController {
 		this.editing = this.editing || true;
 		this.fieldType = this.fieldType || "text";
 
+        console.log("OPTIONS BRO LOOK AT THESE OPTIONS LIKE DANG ALSO THE OBJECT IS FIRST SO YOU KNOW WHICH ONE THIS IS SO YOU DON'T GET CONFUSED DONT EVEN WORRY BRO I GOT YOU", this.object, this.options)
+
 
 
 		if(this.fieldType === 'yesno'){
@@ -134,7 +136,7 @@ class SWFormFieldController {
 	public selectStrategy = ()=>{
 		//this is specific to the admin because it implies loading of options via api
 
-        if(angular.isDefined(this.object.metaData) && angular.isDefined(this.object.metaData[this.property].fieldtype)){
+        if(angular.isDefined(this.object.metaData) && angular.isDefined(this.object.metaData[this.property]) && angular.isDefined(this.object.metaData[this.property].fieldtype)){
             this.selectType = 'object';
             this.$log.debug('selectType:object');
         }else{
@@ -276,11 +278,11 @@ class SWFormField{
 	public controllerAs = "swFormField";
 	public scope = {};
 	public bindToController = {
-		propertyIdentifier: "@?",
+		propertyIdentifier: "@?", property:"@?",
 		name : "@?",
 		class: "@?",
 		errorClass: "@?",
-		type: "@?",
+		fieldType: "@?", type: "@?",
 		option: "=?",
 		valueObject: "=?",
 		object: "=?",
@@ -292,8 +294,6 @@ class SWFormField{
 		title: 	"@?",
 		value: 	"=?",
 		errorText: "@?",
-		fieldType: "@?",
-		property:"@?",
 		inListingDisplay:"=?", 
 		inputAttributes:"@?",
 		options:"=?",

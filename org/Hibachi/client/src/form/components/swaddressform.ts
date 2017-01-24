@@ -12,8 +12,10 @@ class SWAddressFormController {
 	public showAddressBookSelect:boolean = false;
 	public showCountrySelect:boolean = true;
 	public showSubmitButton:boolean = true;
-
+    public address:any;
+    public addressName:string;
     public param:string = "?slataction=";
+    public showAlerts:string = "true";
 
 	//@ngInject
     constructor(private $log) {
@@ -34,6 +36,35 @@ class SWAddressFormController {
 		if (this.action == undefined) {
 			this.showSubmitButton = false;
 		}
+
+        let addressName = this.addressName;
+
+        if(this.address){
+            this.address.getData = function(){
+                let formData = {};
+                let form = this.forms[addressName];
+                for(let key in form){
+                    let val = form[key];
+                    if(typeof val === 'object' && val.hasOwnProperty('$modelValue')){
+                        if(val.$modelValue){
+                            val = val.$modelValue;
+                        }else if(val.$viewValue){
+                            val = val.$viewValue;
+                        }
+
+                        if(angular.isString(val)){
+                            formData[key] = val;
+                        }
+                        if(val.$modelValue){
+                            formData[key] = val.$modelValue;
+                        }else if(val.$viewValue){
+                            formData[key] = val.$viewValue;
+                        }
+                    }
+                }
+                return formData || "";
+            }
+        } 
     }
 
 	public getAction = () => {
@@ -78,8 +109,10 @@ class SWAddressForm implements ng.IComponentOptions {
         addressName: "@",
         showAddressBookSelect: "@",
         showCountrySelect: "@",
-        showSubmitButton: "@"
+        showSubmitButton: "@",
+        showAlerts: "@"
     };
+    public scope={};
     /**
      * Handles injecting the partials path into this class
      */

@@ -109,9 +109,6 @@ class SWPropertyDisplayController {
         this.edit = this.edit || this.editing;
         this.editing = this.editing || this.edit;
 
-        console.log("this.object", this.object);
-        console.log('this.property', this.property);
-
 
         this.initialValue = this.object[this.property];
         this.propertyDisplayID = this.utilityService.createID(32);
@@ -174,7 +171,6 @@ class SWPropertyDisplayController {
                 return model;
             }
         };
-
         //swfproperty logic
         if(angular.isUndefined(this.type) && this.object && this.object.metaData){
             this.type = this.metadataService.getPropertyFieldType(this.object,this.propertyIdentifier);

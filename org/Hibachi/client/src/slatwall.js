@@ -1884,6 +1884,7 @@
 	        this.years = [];
 	        this.shippingAddress = "";
 	        this.billingAddress = "";
+	        this.imagePath = {};
 	        // public hasErrors = ()=>{
 	        //     return this.errors.length;
 	        // }
@@ -2256,7 +2257,8 @@
 	            // this.cart.orderPayments.errors = {};
 	            // this.cart.orderPayments.hasErrors = false;
 	            //Grab all the data
-	            var billingAddress = _this.newBillingAddress;
+	            var billingAddress = _this.newBillingAddress.getData();
+	            var cardInfo = _this.newCardInfo;
 	            var expirationMonth = formdata.month;
 	            var expirationYear = formdata.year;
 	            var country = formdata.country;
@@ -2275,22 +2277,24 @@
 	                'newOrderPayment.billingAddress.addressID': '',
 	                'newOrderPayment.billingAddress.streetAddress': billingAddress.streetAddress,
 	                'newOrderPayment.billingAddress.street2Address': billingAddress.street2Address,
-	                'newOrderPayment.nameOnCreditCard': billingAddress.nameOnCreditCard,
-	                'newOrderPayment.billingAddress.name': billingAddress.nameOnCreditCard,
+	                'newOrderPayment.nameOnCreditCard': cardInfo.nameOnCreditCard,
+	                'newOrderPayment.billingAddress.name': cardInfo.nameOnCreditCard,
 	                'newOrderPayment.expirationMonth': expirationMonth,
 	                'newOrderPayment.expirationYear': expirationYear,
-	                'newOrderPayment.billingAddress.countrycode': country || billingAddress.countrycode,
+	                'newOrderPayment.billingAddress.countrycode': country || billingAddress.countryCode,
 	                'newOrderPayment.billingAddress.city': '' + billingAddress.city,
-	                'newOrderPayment.billingAddress.statecode': state || billingAddress.statecode,
+	                'newOrderPayment.billingAddress.statecode': state || billingAddress.stateCode,
 	                'newOrderPayment.billingAddress.locality': billingAddress.locality || '',
-	                'newOrderPayment.billingAddress.postalcode': billingAddress.postalcode,
-	                'newOrderPayment.securityCode': billingAddress.cvv,
-	                'newOrderPayment.creditCardNumber': billingAddress.cardNumber,
+	                'newOrderPayment.billingAddress.postalcode': billingAddress.postalCode,
+	                'newOrderPayment.securityCode': cardInfo.cvv,
+	                'newOrderPayment.creditCardNumber': cardInfo.cardNumber,
 	                'newOrderPayment.saveShippingAsBilling': (_this.saveShippingAsBilling == true),
 	            };
 	            //processObject.populate(data);
+	            console.log("new order payment: ", data);
 	            //Make sure we have required fields for a newOrderPayment.
 	            _this.validateNewOrderPayment(data);
+	            console.log("orderpayment", _this.cart.orderPayments);
 	            if (_this.cart.orderPayments.hasErrors && Object.keys(_this.cart.orderPayments.errors).length) {
 	                return -1;
 	            }
@@ -2462,6 +2466,29 @@
 	                _this.finding = false;
 	                _this.addGiftCardOrderPayments(true);
 	            }
+	        };
+	        this.getResizedImageByProfileName = function (profileName, skuIDList) {
+	            _this.loading = true;
+	            if (profileName == undefined) {
+	                profileName = "medium";
+	            }
+	            _this.$http.get("/index.cfm/api/scope/?context=getResizedImageByProfileName&profileName=" + profileName + "&skuIds=" + skuIDList).success(function (result) {
+	                console.log(_this);
+	                if (!angular.isDefined(_this.imagePath)) {
+	                    _this.imagePath = {};
+	                }
+	                _this.imagePath[skuIDList] = "";
+	                result = angular.fromJson(result);
+	                if (angular.isDefined(result.resizedImagePaths) && angular.isDefined(result.resizedImagePaths.resizedImagePaths) && result.resizedImagePaths.resizedImagePaths[0] != undefined) {
+	                    _this.imagePath[skuIDList] = result.resizedImagePaths.resizedImagePaths[0];
+	                    _this.loading = false;
+	                    return _this.imagePath[skuIDList];
+	                }
+	                else {
+	                    _this.loading = false;
+	                    return "";
+	                }
+	            });
 	        };
 	        //returns the amount total of giftcards added to this account.
 	        this.getAppliedGiftCardTotals = function () {
@@ -19930,6 +19957,7 @@
 	            _this.editing = _this.editing || _this.edit;
 	            _this.editing = _this.editing || true;
 	            _this.fieldType = _this.fieldType || "text";
+	            console.log("OPTIONS BRO LOOK AT THESE OPTIONS LIKE DANG ALSO THE OBJECT IS FIRST SO YOU KNOW WHICH ONE THIS IS SO YOU DON'T GET CONFUSED DONT EVEN WORRY BRO I GOT YOU", _this.object, _this.options);
 	            if (_this.fieldType === 'yesno') {
 	                _this.yesnoStrategy();
 	            }
@@ -19939,7 +19967,7 @@
 	        };
 	        this.selectStrategy = function () {
 	            //this is specific to the admin because it implies loading of options via api
-	            if (angular.isDefined(_this.object.metaData) && angular.isDefined(_this.object.metaData[_this.property].fieldtype)) {
+	            if (angular.isDefined(_this.object.metaData) && angular.isDefined(_this.object.metaData[_this.property]) && angular.isDefined(_this.object.metaData[_this.property].fieldtype)) {
 	                _this.selectType = 'object';
 	                _this.$log.debug('selectType:object');
 	            }
@@ -20073,11 +20101,11 @@
 	        this.controllerAs = "swFormField";
 	        this.scope = {};
 	        this.bindToController = {
-	            propertyIdentifier: "@?",
+	            propertyIdentifier: "@?", property: "@?",
 	            name: "@?",
 	            class: "@?",
 	            errorClass: "@?",
-	            type: "@?",
+	            fieldType: "@?", type: "@?",
 	            option: "=?",
 	            valueObject: "=?",
 	            object: "=?",
@@ -20089,8 +20117,6 @@
 	            title: "@?",
 	            value: "=?",
 	            errorText: "@?",
-	            fieldType: "@?",
-	            property: "@?",
 	            inListingDisplay: "=?",
 	            inputAttributes: "@?",
 	            options: "=?",
@@ -20491,6 +20517,7 @@
 	        this.showCountrySelect = true;
 	        this.showSubmitButton = true;
 	        this.param = "?slataction=";
+	        this.showAlerts = "true";
 	        this.getAction = function () {
 	            if (!angular.isDefined(_this.action)) {
 	                _this.action = "addAddress";
@@ -20522,6 +20549,34 @@
 	        if (this.action == undefined) {
 	            this.showSubmitButton = false;
 	        }
+	        var addressName = this.addressName;
+	        if (this.address) {
+	            this.address.getData = function () {
+	                var formData = {};
+	                var form = this.forms[addressName];
+	                for (var key in form) {
+	                    var val = form[key];
+	                    if (typeof val === 'object' && val.hasOwnProperty('$modelValue')) {
+	                        if (val.$modelValue) {
+	                            val = val.$modelValue;
+	                        }
+	                        else if (val.$viewValue) {
+	                            val = val.$viewValue;
+	                        }
+	                        if (angular.isString(val)) {
+	                            formData[key] = val;
+	                        }
+	                        if (val.$modelValue) {
+	                            formData[key] = val.$modelValue;
+	                        }
+	                        else if (val.$viewValue) {
+	                            formData[key] = val.$viewValue;
+	                        }
+	                    }
+	                }
+	                return formData || "";
+	            };
+	        }
 	    }
 	    return SWAddressFormController;
 	}());
@@ -20548,8 +20603,10 @@
 	            addressName: "@",
 	            showAddressBookSelect: "@",
 	            showCountrySelect: "@",
-	            showSubmitButton: "@"
+	            showSubmitButton: "@",
+	            showAlerts: "@"
 	        };
+	        this.scope = {};
 	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.coreFormPartialsPath) + "addressform.html";
 	    }
 	    /**
@@ -20597,8 +20654,6 @@
 	            _this.fieldType = _this.fieldType || _this.type;
 	            _this.edit = _this.edit || _this.editing;
 	            _this.editing = _this.editing || _this.edit;
-	            console.log("this.object", _this.object);
-	            console.log('this.property', _this.property);
 	            _this.initialValue = _this.object[_this.property];
 	            _this.propertyDisplayID = _this.utilityService.createID(32);
 	            if (angular.isUndefined(_this.showSave)) {

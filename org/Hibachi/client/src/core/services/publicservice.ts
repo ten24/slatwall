@@ -16,6 +16,7 @@ class PublicService {
     public requests:{ [action: string]: PublicRequest; }={};
     public errors:{[key:string]:any}={};
     public newBillingAddress:any;
+    public newCardInfo:any;
 
     public accountDataPromise:any;
     public addressOptionData:any;
@@ -40,6 +41,8 @@ class PublicService {
     public readyToPlaceOrder:boolean;
     public edit:String;
     public editPayment:boolean;
+    public loading;
+    public imagePath = {};
     ///index.cfm/api/scope/
 
     //@ngInject
@@ -477,8 +480,8 @@ class PublicService {
             newOrderPaymentErrors['securityCode'] = 'Required *';
         }
         if (Object.keys(newOrderPaymentErrors).length){
-            //this.cart.orderPayments.hasErrors = true;
-            //this.cart.orderPayments.errors = newOrderPaymentErrors;
+            // this.cart.orderPayments.hasErrors = true;
+            // this.cart.orderPayments.errors = newOrderPaymentErrors;
         }
     }
 
@@ -491,7 +494,8 @@ class PublicService {
         // this.cart.orderPayments.hasErrors = false;
 
         //Grab all the data
-        var billingAddress  = this.newBillingAddress;
+        var billingAddress  = this.newBillingAddress.getData();
+        var cardInfo        = this.newCardInfo;
         var expirationMonth = formdata.month;
         var expirationYear  = formdata.year;
         var country         = formdata.country;
@@ -514,25 +518,26 @@ class PublicService {
             'newOrderPayment.billingAddress.addressID':'',
             'newOrderPayment.billingAddress.streetAddress': billingAddress.streetAddress,
             'newOrderPayment.billingAddress.street2Address': billingAddress.street2Address,
-            'newOrderPayment.nameOnCreditCard': billingAddress.nameOnCreditCard,
-            'newOrderPayment.billingAddress.name': billingAddress.nameOnCreditCard,
+            'newOrderPayment.nameOnCreditCard': cardInfo.nameOnCreditCard,
+            'newOrderPayment.billingAddress.name': cardInfo.nameOnCreditCard,
             'newOrderPayment.expirationMonth': expirationMonth,
             'newOrderPayment.expirationYear': expirationYear,
-            'newOrderPayment.billingAddress.countrycode': country || billingAddress.countrycode,
+            'newOrderPayment.billingAddress.countrycode': country || billingAddress.countryCode,
             'newOrderPayment.billingAddress.city': ''+billingAddress.city,
-            'newOrderPayment.billingAddress.statecode': state || billingAddress.statecode,
+            'newOrderPayment.billingAddress.statecode': state || billingAddress.stateCode,
             'newOrderPayment.billingAddress.locality': billingAddress.locality || '',
-            'newOrderPayment.billingAddress.postalcode': billingAddress.postalcode,
-            'newOrderPayment.securityCode': billingAddress.cvv,
-            'newOrderPayment.creditCardNumber': billingAddress.cardNumber,
+            'newOrderPayment.billingAddress.postalcode': billingAddress.postalCode,
+            'newOrderPayment.securityCode': cardInfo.cvv,
+            'newOrderPayment.creditCardNumber': cardInfo.cardNumber,
             'newOrderPayment.saveShippingAsBilling':(this.saveShippingAsBilling == true),
         };
 
         //processObject.populate(data);
 
-
+        console.log("new order payment: ", data)
         //Make sure we have required fields for a newOrderPayment.
         this.validateNewOrderPayment( data );
+        console.log("orderpayment", this.cart.orderPayments);
         if ( this.cart.orderPayments.hasErrors && Object.keys(this.cart.orderPayments.errors).length ){
             return -1;
         }
@@ -722,6 +727,37 @@ class PublicService {
         }
 
     };
+
+    public getResizedImageByProfileName = (profileName, skuIDList)=>{
+               
+       this.loading = true;
+       
+       if (profileName == undefined){
+           profileName = "medium";
+       }
+       
+       this.$http.get("/index.cfm/api/scope/?context=getResizedImageByProfileName&profileName="+profileName+"&skuIds="+skuIDList).success((result:any)=>{
+            console.log(this);
+            if(!angular.isDefined(this.imagePath)){
+                this.imagePath = {};
+            }
+            this.imagePath[skuIDList] = "";
+            
+            result = angular.fromJson(result);
+            if (angular.isDefined(result.resizedImagePaths) && angular.isDefined(result.resizedImagePaths.resizedImagePaths) && result.resizedImagePaths.resizedImagePaths[0] != undefined){
+                
+                this.imagePath[skuIDList] = result.resizedImagePaths.resizedImagePaths[0];
+                this.loading = false;
+                return this.imagePath[skuIDList];
+                
+            }else{
+                this.loading = false;
+                return "";
+            }
+            
+         });
+        
+     };
 
     //returns the amount total of giftcards added to this account.
     public getAppliedGiftCardTotals = ()=>{
