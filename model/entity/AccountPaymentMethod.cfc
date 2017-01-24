@@ -418,7 +418,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 				rep = listAppend(rep, " #getGiftCardNumber()#", "|");
 			}
 		}
-		if(isExpired()){
+		if(getPaymentMethodType() == "creditCard" && isExpired()){
 			rep = rep & ' (' & rbkey('define.expired') & ')';
 		}
 		return rep;
