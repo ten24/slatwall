@@ -67,6 +67,7 @@ Notes:
 			<hb:HibachiListingColumn propertyidentifier="stock.sku.product.brand.brandName" />
 			<hb:HibachiListingColumn tdclass="primary" propertyidentifier="stock.sku.product.productName"  />
 			<hb:HibachiListingColumn propertyidentifier="stock.sku.skucode" />
+			<hb:HibachiListingColumn propertyidentifier="stock.sku.calculatedSkuDefinition" />
 			<hb:HibachiListingColumn propertyidentifier="stock.location.locationName" />
 			<hb:HibachiListingColumn propertyidentifier="quantity" />
 			<hb:HibachiListingColumn propertyidentifier="quantityReceived" />
