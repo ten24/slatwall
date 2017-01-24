@@ -26,7 +26,7 @@ class SWFormController {
     public formCtrl;
     public formData = {};
     public inputAttributes:string;
-    public submitOnReturn:string;
+    public eventListeners:string;
     /**
      * This controller handles most of the logic for the swFormDirective when more complicated self inspection is needed.
      */
@@ -103,20 +103,27 @@ class SWFormController {
 //        }
         /* handle events
         */
-        if (this.onSuccess){
-            this.parseEventString(this.onSuccess, "onSuccess");
-            observerService.attach(this.eventsHandler, "onSuccess");
+        // if (this.onSuccess){
+        //     this.parseEventString(this.onSuccess, "onSuccess");
+        //     observerService.attach(this.eventsHandler, "onSuccess");
 
-        }else if(this.onError){
-            this.parseEventString(this.onError, "onError");
-            observerService.attach(this.eventsHandler, "onError");//stub
+        // }else if(this.onError){
+        //     this.parseEventString(this.onError, "onError");
+        //     observerService.attach(this.eventsHandler, "onError");//stub
+        // }
+        if(this.eventListeners){
+            console.log('scoooope', $scope);
+            let eventObj = this.parseEventString(this.eventListeners);
+            eventObj.events.forEach(event=>{
+                observerService.attach(this[event.action], event.name);
+            })
         }
-        console.log("submitOnReturn:", this.submitOnReturn);
-        if(this.submitOnReturn){
-            let submitEvent = this.name + this.submitOnReturn + 'keyup';
-            console.log("Submit event!", submitEvent)
-            observerService.attach(this.submitKeyCheck, submitEvent);
-        }
+        // console.log("submitOnReturn:", this.submitOnReturn);
+        // if(this.submitOnReturn){
+        //     let submitEvent = this.name + this.submitOnReturn + 'keyup';
+        //     console.log("Submit event!", submitEvent)
+        //     observerService.attach(this.submitKeyCheck, submitEvent);
+        // }
 
     }
 
@@ -185,17 +192,17 @@ class SWFormController {
             "events": []
         }; //will hold events
         for (var token in strTokens){
-            let eventName = strTokens[token].split(":")[0].toLowerCase().replace(' ', '');
-            let formName = strTokens[token].split(":")[1].toLowerCase().replace(' ', '');
+            let eventName = strTokens[token].split(":")[0].replace(' ', '');
+            let eventAction = strTokens[token].split(":")[1].replace(' ', '');
 
-            if (formName == "this") {formName == this.context.toLowerCase();} //<--replaces the alias this with the name of this form.
-            let event = {"name" : eventName, "value" : formName};
+            // if (eventAction == "this") {formName == this.context.toLowerCase();} //<--replaces the alias this with the name of this form.
+            let event = {"name" : eventName, "action" : eventAction};
             eventsObj.events.push(event);
 
         }
-        if (eventsObj.events.length){
-            this.observerService.attach(this.eventsHandler, "onSuccess");
-        }
+        // if (eventsObj.events.length){
+        //     this.observerService.attach(this.eventsHandler, "onSuccess");
+        // }
 
         return eventsObj;
     }
@@ -203,7 +210,7 @@ class SWFormController {
      /** looks at the onSuccess, onError, and onLoading and parses the string into useful subcategories */
     public parseEventString = (evntStr:string, evntType)=>
     {
-        this.events = this.parseEvents(evntStr, evntType); //onSuccess : [hide:this, show:someOtherForm, refresh:Account]
+        return this.parseEvents(evntStr, evntType); //onSuccess : [hide:this, show:someOtherForm, refresh:Account]
 
     }
 
@@ -328,7 +335,7 @@ class SWForm implements ng.IDirective {
             hideUntil: "@?",
             isDirty:"=?",
             inputAttributes:"@?",
-            submitOnReturn:"@?"
+            eventListeners:"@?"
     };
 
     /**

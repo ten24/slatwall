@@ -19186,7 +19186,6 @@
 	            _this.onEvent({}, "change");
 	        };
 	        this.onEvent = function (event, eventName) {
-	            console.log(event, eventName);
 	            var customEventName = _this.swForm.name + _this.name + eventName;
 	            var data = {
 	                event: event,
@@ -19629,22 +19628,20 @@
 	                "events": []
 	            }; //will hold events
 	            for (var token in strTokens) {
-	                var eventName = strTokens[token].split(":")[0].toLowerCase().replace(' ', '');
-	                var formName = strTokens[token].split(":")[1].toLowerCase().replace(' ', '');
-	                if (formName == "this") {
-	                    formName == _this.context.toLowerCase();
-	                } //<--replaces the alias this with the name of this form.
-	                var event_1 = { "name": eventName, "value": formName };
+	                var eventName = strTokens[token].split(":")[0].replace(' ', '');
+	                var eventAction = strTokens[token].split(":")[1].replace(' ', '');
+	                // if (eventAction == "this") {formName == this.context.toLowerCase();} //<--replaces the alias this with the name of this form.
+	                var event_1 = { "name": eventName, "action": eventAction };
 	                eventsObj.events.push(event_1);
 	            }
-	            if (eventsObj.events.length) {
-	                _this.observerService.attach(_this.eventsHandler, "onSuccess");
-	            }
+	            // if (eventsObj.events.length){
+	            //     this.observerService.attach(this.eventsHandler, "onSuccess");
+	            // }
 	            return eventsObj;
 	        };
 	        /** looks at the onSuccess, onError, and onLoading and parses the string into useful subcategories */
 	        this.parseEventString = function (evntStr, evntType) {
-	            _this.events = _this.parseEvents(evntStr, evntType); //onSuccess : [hide:this, show:someOtherForm, refresh:Account]
+	            return _this.parseEvents(evntStr, evntType); //onSuccess : [hide:this, show:someOtherForm, refresh:Account]
 	        };
 	        /****
 	             * Handle parsing through the server errors and injecting the error text for that field
@@ -19786,20 +19783,26 @@
 	        //        }
 	        /* handle events
 	        */
-	        if (this.onSuccess) {
-	            this.parseEventString(this.onSuccess, "onSuccess");
-	            observerService.attach(this.eventsHandler, "onSuccess");
+	        // if (this.onSuccess){
+	        //     this.parseEventString(this.onSuccess, "onSuccess");
+	        //     observerService.attach(this.eventsHandler, "onSuccess");
+	        // }else if(this.onError){
+	        //     this.parseEventString(this.onError, "onError");
+	        //     observerService.attach(this.eventsHandler, "onError");//stub
+	        // }
+	        if (this.eventListeners) {
+	            console.log('scoooope', $scope);
+	            var eventObj = this.parseEventString(this.eventListeners);
+	            eventObj.events.forEach(function (event) {
+	                observerService.attach(_this[event.action], event.name);
+	            });
 	        }
-	        else if (this.onError) {
-	            this.parseEventString(this.onError, "onError");
-	            observerService.attach(this.eventsHandler, "onError"); //stub
-	        }
-	        console.log("submitOnReturn:", this.submitOnReturn);
-	        if (this.submitOnReturn) {
-	            var submitEvent = this.name + this.submitOnReturn + 'keyup';
-	            console.log("Submit event!", submitEvent);
-	            observerService.attach(this.submitKeyCheck, submitEvent);
-	        }
+	        // console.log("submitOnReturn:", this.submitOnReturn);
+	        // if(this.submitOnReturn){
+	        //     let submitEvent = this.name + this.submitOnReturn + 'keyup';
+	        //     console.log("Submit event!", submitEvent)
+	        //     observerService.attach(this.submitKeyCheck, submitEvent);
+	        // }
 	    }
 	    return SWFormController;
 	}());
@@ -19833,7 +19836,7 @@
 	            hideUntil: "@?",
 	            isDirty: "=?",
 	            inputAttributes: "@?",
-	            submitOnReturn: "@?"
+	            eventListeners: "@?"
 	        };
 	        /**
 	            * Sets the context of this form

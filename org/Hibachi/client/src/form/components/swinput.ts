@@ -201,7 +201,6 @@ class SWInputController{
     }
 
 	public onEvent = (event:Event,eventName:string):void=>{
-		console.log(event, eventName);
 		let customEventName = this.swForm.name+this.name+eventName;
 		let data = {
 			event:event,
