@@ -158,7 +158,6 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="totalQuantity" persistent="false";
 	property name="totalSaleQuantity" persistent="false";
 	property name="totalReturnQuantity" persistent="false";
-	property name="hasCreditCardPaymentMethodValue" persistent="false";
 	
     //======= Mocking Injection for Unit Test ======	
 	property name="orderService" persistent="false" type="any";
