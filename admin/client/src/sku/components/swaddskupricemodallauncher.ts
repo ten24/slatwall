@@ -99,7 +99,7 @@ class SWAddSkuPriceModalLauncherController{
                                     skuPriceForListing["sku_skuCode"] = this.sku.skuCode;
                                     skuPriceForListing["sku_skuDefinition"] = this.sku.skuDefinition;
                                     pageRecords.splice(index+1,0,skuPriceForListing);
-                                    console.log("looking to insert success!", this.skuPrice.data, skuPriceForListing);
+
                                     break; 
                                 }  
                                 index++; 

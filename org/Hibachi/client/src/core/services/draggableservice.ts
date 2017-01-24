@@ -2,14 +2,14 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 
 class DraggableService{
-    
+
     //ngInject
     constructor(
-        
+
     ){
-        
+
     }
-    
+
     public isDropAllowed = (event) =>{
         //todo implement
 
@@ -22,7 +22,7 @@ class DraggableService{
         var targetSize = horizontal ? targetNode.offsetWidth : targetNode.offsetHeight;
         var targetPosition = horizontal ? targetNode.offsetLeft : targetNode.offsetTop;
         targetPosition = relativeToParent ? targetPosition : 0;
-        console.log("isMouseInFirstHalf", mousePointer < targetPosition + targetSize / 2);
+
         return mousePointer < targetPosition + targetSize / 2;
     }
 }
