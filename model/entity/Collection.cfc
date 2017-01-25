@@ -895,13 +895,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			//constuct HQL to be used in filterGroup
 			var filterGroupHQL = getFilterGroupHQL(filterGroup.filterGroup);
 			if(len(filterGroupHQL)){
-				if(logicalOperator == "AND"){
-					filterGroupsHQL &= ") #logicalOperator# ((#filterGroupHQL#)";
-				} else {
-					filterGroupsHQL &= " #logicalOperator# (#filterGroupHQL#)";
-				}
-
-
+				filterGroupsHQL &= " #logicalOperator# (#filterGroupHQL#)";
 			}
 		}
 		return filterGroupsHQL;
