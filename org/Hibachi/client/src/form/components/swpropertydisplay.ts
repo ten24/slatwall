@@ -12,7 +12,7 @@ class SWPropertyDisplayController {
     public isHidden:boolean;
     public fieldType;
     public object;
-    public property;
+    public property; //dominant over propertyIdentifier
     public propertyDisplayID:string;
     public title;
     public hint;
@@ -68,7 +68,7 @@ class SWPropertyDisplayController {
 	public labelClass;
 	public errorText;
 	public errorClass;
-	public propertyIdentifier;
+	public propertyIdentifier; //dominant
 	public loader;
 
     public swForm;
