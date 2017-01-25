@@ -33,7 +33,19 @@ var appConfig = {
         ]
     },
     plugins: [
-        new ForceCaseSensitivityPlugin()
+        new ForceCaseSensitivityPlugin(),
+        function()
+	    {
+	        this.plugin("done", function(stats)
+	        {
+	            if (stats.compilation.errors && stats.compilation.errors.length)
+	            {
+	                console.log(stats.compilation.errors);
+	                process.exit(1);
+	            }
+	            // ...
+	        });
+	    }
     ],
     setupApp: function(customPath, bootstrap){
         PATHS = {
