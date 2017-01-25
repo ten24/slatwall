@@ -173,7 +173,6 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 
 		}
-
 		// Loop over all account payments and link them to the AccountPaymentApplied object
 		for (var appliedOrderPayment in processObject.getAppliedOrderPayments()) {
 
@@ -195,10 +194,10 @@ component extends="HibachiService" accessors="true" output="false" {
 				newAccountPaymentApplied = this.saveAccountPaymentApplied( newAccountPaymentApplied );
 			}
 		}
-
+		
 		// Save the newAccountPayment
 		newAccountPayment = this.saveAccountPayment( newAccountPayment );
-
+		
 		// If there are errors in the newAccountPayment after save, then add them to the account
 		if(newAccountPayment.hasErrors()) {
 			arguments.account.addError('accountPayment', rbKey('admin.entity.order.addAccountPayment_error'));
@@ -211,7 +210,11 @@ component extends="HibachiService" accessors="true" output="false" {
 
 			if(newAccountPayment.getAccountPaymentType().getSystemCode() eq "aptCharge") {
 				if(newAccountPayment.getPaymentMethod().getPaymentMethodType() eq "creditCard") {
-					transactionData.transactionType = 'authorizeAndCharge';
+					if(!isNull(newAccountPayment.getPaymentMethod().getIntegration())) {
+						transactionData.transactionType = 'authorizeAndCharge';	
+					} else {
+						transactionData.transactionType = 'receiveOffline';	
+					}
 				} else {
 					transactionData.transactionType = 'receive';
 				}
@@ -220,7 +223,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 
 			newAccountPayment = this.processAccountPayment(newAccountPayment, transactionData, 'createTransaction');
-
+			
 			//Loop over the newaccountpayment.getAppliedPayments
 			for (var appliedAccountPayment in newAccountPayment.getAppliedAccountPayments()) {
 				if(!IsNull(appliedAccountPayment.getOrderPayment())) {
