@@ -19957,7 +19957,6 @@
 	            _this.editing = _this.editing || _this.edit;
 	            _this.editing = _this.editing || true;
 	            _this.fieldType = _this.fieldType || "text";
-	            console.log("OPTIONS BRO LOOK AT THESE OPTIONS LIKE DANG ALSO THE OBJECT IS FIRST SO YOU KNOW WHICH ONE THIS IS SO YOU DON'T GET CONFUSED DONT EVEN WORRY BRO I GOT YOU", _this.object, _this.options);
 	            if (_this.fieldType === 'yesno') {
 	                _this.yesnoStrategy();
 	            }

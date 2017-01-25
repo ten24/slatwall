@@ -36,7 +36,7 @@
 					    <input type="hidden" ng-model="SwAddressForm.address.addressID" name="addressID" value="{{SwAddressForm.address.addressID}}" ng-init="SwAddressForm.address.addressID = SwAddressForm.address.addressID||''"/>
 					    
 					    <!--- Country --->
-				    	<div class="col-sm-6 form-group" ng-if="SwAddressForm.showCountrySelect == 'true'|| SwAddressForm.showCountrySelect == true">
+				    	<div class="col-sm-6 form-group" ng-if="(SwAddressForm.showCountrySelect == 'true'|| SwAddressForm.showCountrySelect == true) && $root.slatwall.countries.countryCodeOptions">
 				    		<!--- <input type="hidden" ng-model="SwAddressForm.address.countryCode" value="{{selectedCountry.value}}"/>
 					            
 				    		<label for="countrycode">Country - {{$root.slatwall.selectedCountry.value}}</label>

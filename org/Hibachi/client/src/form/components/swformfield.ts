@@ -118,10 +118,6 @@ class SWFormFieldController {
 		this.editing = this.editing || true;
 		this.fieldType = this.fieldType || "text";
 
-        console.log("OPTIONS BRO LOOK AT THESE OPTIONS LIKE DANG ALSO THE OBJECT IS FIRST SO YOU KNOW WHICH ONE THIS IS SO YOU DON'T GET CONFUSED DONT EVEN WORRY BRO I GOT YOU", this.object, this.options)
-
-
-
 		if(this.fieldType === 'yesno'){
 			this.yesnoStrategy();
 		}

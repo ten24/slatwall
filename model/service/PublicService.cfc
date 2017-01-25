@@ -553,9 +553,11 @@ component extends="HibachiService"  accessors="true" output="false"
         if (!isNull(accountAddress) && !accountAddress.hasErrors()){
             //save the address at the order level.
             var order = getHibachiScope().cart();
+            
             order.setShippingAddress(accountAddress.getAddress());
             order.setBillingAddress(accountAddress.getAddress());
-            getOrderService().saveOrder(order);            
+            getOrderService().saveOrder(order);
+            getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", accountAddress.hasErrors());
         }else{
             this.addErrors(arguments.data, accountAddress.getErrors()); //add the basic errors
             getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", accountAddress.hasErrors());
@@ -775,6 +777,7 @@ component extends="HibachiService"  accessors="true" output="false"
      @ProcessMethod Order_ForceItemQuantityUpdate
      */
     public void function updateOrder( required struct data ) {
+
         var cart = getOrderService().saveOrder( getHibachiScope().cart(), arguments.data );
         
         // Insure that all items in the cart are within their max constraint

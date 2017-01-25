@@ -413,7 +413,6 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
     		&& !isNull(getShippingAddress()) 
     		&& !getShippingAddress().hasErrors()
     	  ) {
-
     		// Create a New Account Address, Copy over Shipping Address, and save
     		var accountAddress = getService('accountService').newAccountAddress();
     		if(!isNull(getSaveShippingAccountAddressName())) {
