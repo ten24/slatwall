@@ -100,6 +100,9 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	property name="paymentMethodOptionsSmartList" persistent="false";
 
 	public string function getPaymentMethodType() {
+		if(isNull(getPaymentMethod())){
+			return "";
+		}
 		return getPaymentMethod().getPaymentMethodType();
 	}
 
