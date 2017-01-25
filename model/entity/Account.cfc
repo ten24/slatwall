@@ -51,6 +51,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	// Persistent Properties
 	property name="accountID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="superUserFlag" ormtype="boolean";
+	property name="name" hb_populateEnabled="public" ormtype="string";
 	property name="firstName" hb_populateEnabled="public" ormtype="string";
 	property name="lastName" hb_populateEnabled="public" ormtype="string";
 	property name="company" hb_populateEnabled="public" ormtype="string";
@@ -74,7 +75,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="primaryShippingAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="primaryShippingAddressID";
 	property name="accountCreatedSite" hb_populateEnabled="public" cfc="Site" fieldtype="many-to-one" fkcolumn="accountCreatedSiteID";
 	property name="ownerAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="ownerAccountID";
-	
+
 
 	// Related Object Properties (one-to-many)
 	property name="childAccountRelationships" singularname="childAccountRelationship" fieldType="one-to-many" type="array" fkcolumn="parentAccountID" cfc="AccountRelationship";
@@ -139,15 +140,15 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="termOrderPaymentsByDueDateSmartList" persistent="false";
 	property name="jwtToken" persistent="false";
 	property name="urlTitle" ormtype="string"; //allows this entity to be found via a url title.
-	
+
 	public boolean function isPriceGroupAssigned(required string  priceGroupId) {
 		return structKeyExists(this.getPriceGroupsStruct(), arguments.priceGroupID);
 	}
 
 	// ============ START: Non-Persistent Property Methods =================
-	
+
 	public boolean function canDeleteByOwner(){
-		return isNull(getOwnerAccount()) 
+		return isNull(getOwnerAccount())
 		|| (
 			!isNull(getHibachiScope().getAccount().getSuperUserFlag())
 			&& getHibachiScope().getAccount().getSuperUserFlag()
@@ -163,7 +164,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 				} else {
 					variables.primaryEmailAddressNotInUseFlag = getService("accountService").getPrimaryEmailAddressNotInUseFlag( emailAddress=getEmailAddress(), accountID=getAccountID() );
 				}
-				
+
 			}
 		}
 		return variables.primaryEmailAddressNotInUseFlag;
@@ -182,13 +183,13 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		return variables.saveablePaymentMethodsSmartList;
 	}
 
-	public any function getEligibleAccountPaymentMethodsSmartList() {		
+	public any function getEligibleAccountPaymentMethodsSmartList() {
 		// These are the payment methods that are allowed only when adding an account payment
 		if(!structKeyExists(variables, "eligibleAccountPaymentMethodsSmartList")) {
 			var sl = getService("paymentService").getPaymentMethodSmartList();
-			
-			// Prevent 'termPayment' from displaying as account payment method option			
-			sl.addInFilter('paymentMethodType', 'cash,check,creditCard,external,giftCard');			
+
+			// Prevent 'termPayment' from displaying as account payment method option
+			sl.addInFilter('paymentMethodType', 'cash,check,creditCard,external,giftCard');
 			sl.addInFilter('paymentMethodID', setting('accountEligiblePaymentMethods'));
 			sl.addFilter('activeFlag', 1);
 
@@ -228,15 +229,20 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 
 	public string function getFullName() {
 		var fullName = "";
-		if(!isNull(getFirstName())){
-			fullName &= getFirstName();
+		if(!isNull(getName()) && len(getName())){
+			fullName &= getName();
+		} else {
+			if(!isNull(getFirstName())){
+				fullName &= getFirstName();
+			}
+			if(len(fullName)){
+				fullName &= ' ';
+			}
+			if(!isNull(getLastName())){
+				fullName &= getLastName();
+			}
 		}
-		if(len(fullName)){
-			fullName &= ' ';
-		}
-		if(!isNull(getLastName())){
-			fullName &= getLastName();
-		}
+
 		return fullName;
 	}
 
@@ -305,7 +311,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		}
 		return variables.slatwallAuthenticationExistsFlag;
 	}
-	
+
 	public void function setSlatwallAuthenticationExistsFlag(required boolean slatwallAuthenticationExistsFlag){
 		variables.slatwallAuthenticationExistsFlag = arguments.slatwallAuthenticationExistsFlag;
 	}
@@ -364,9 +370,9 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 			var smartList = getService("loyaltyService").getLoyaltySmartList();
 			smartList.addFilter('activeFlag', 1);
 			smartList.addWhereCondition(" NOT EXISTS
-				( 
-					FROM SlatwallAccountLoyalty al 
-					WHERE al.loyalty.loyaltyID = aslatwallloyalty.loyaltyID 
+				(
+					FROM SlatwallAccountLoyalty al
+					WHERE al.loyalty.loyaltyID = aslatwallloyalty.loyaltyID
 					and al.account.accountID = '#getAccountID()#'
 				)
 			");
@@ -389,7 +395,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		for (var i = ArrayLen(authentications); i >= 1; i--){
 			var authentication = authentications[i];
 
-			if( 
+			if(
                 !isNull(authentication.getIntegration())
                 || isNull(authentication.getPassword())
                 || isNull(authentication.getActiveFlag())
@@ -750,5 +756,5 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		return "/#setting('globalUrlKeyAccount')#/#getUrlTitle()#/";
 	}
 
-	
+
 }
