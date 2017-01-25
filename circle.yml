@@ -12,9 +12,9 @@ dependencies:
     - git config --global push.default current
 
     # Install node modules for building JS
-    - npm install -g webpack gulp less
+    - npm install -g webpack@1.13.3 gulp less
 
-    - npm install gulp gulp-inject@3 gulp-chmod@1.3.0 gulp-util run-sequence webpack force-case-sensitivity-webpack-plugin strip-loader ng-annotate-webpack-plugin tsify typescript ts-loader md5 blueimp-md5
+    - npm install gulp gulp-inject@3 gulp-chmod@1.3.0 gulp-util run-sequence webpack@1.13.3 force-case-sensitivity-webpack-plugin strip-loader ng-annotate-webpack-plugin tsify typescript ts-loader@1.3.0 md5 blueimp-md5
 
     # Install awscli so that we can push builds to S3
     - pip install awscli
