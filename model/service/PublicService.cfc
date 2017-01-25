@@ -569,7 +569,7 @@ component extends="HibachiService"  accessors="true" output="false"
         if (!isNull(accountAddress) && !accountAddress.hasErrors()){
             //save the address at the order level.
             var order = getHibachiScope().cart();
-            for (orderFulfillment in order.getOrderFulfillments()){
+            for (var orderFulfillment in order.getOrderFulfillments()){
              	orderFulfillment.setShippingAddress(accountAddress.getAddress());
              	getService("OrderService").saveOrderFulfillment(orderFulfillment);
             }
@@ -946,7 +946,7 @@ component extends="HibachiService"  accessors="true" output="false"
         }
         
         if (structKeyExists(data, "orderItem") && structKeyExists(data.orderItem, "sku") && structKeyExists(data.orderItem.sku, "skuID") && structKeyExists(data.orderItem, "qty") && data.orderItem.qty > 0 ){
-            for (orderItem in cart.getOrderItems()){
+            for (var orderItem in cart.getOrderItems()){
                 if (orderItem.getSku().getSkuID() == data.orderItem.sku.skuID){
                     orderItem.setQuantity(data.orderItem.qty);
                 }
