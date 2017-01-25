@@ -376,7 +376,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     			for(var i=1; i<=arrayLen(optionsArray); i++) {
     				var thisExistingOption = optionsArray[i];
 					
-					if(!this.hasOption(optionsArray, thisOption) && 
+					if( (!this.hasOption(optionsArray, thisOption)) && 
     					(sortType eq 'price' && thisOption.totalCharge < thisExistingOption.totalCharge) ||
     					(sortType eq 'sortOrder' && thisOption.shippingMethodSortOrder < thisExistingOption.shippingMethodSortOrder)) {
 						
