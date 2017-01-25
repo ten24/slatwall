@@ -65,6 +65,15 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(arrayLen(variables.entity.getExpirationYearOptions()), 20);
 	}
 	
+	public void function isValidTest(){
+		var accountPaymentData={
+			accountPaymentID=""
+		};
+		var accountPayment = createPersistedTestEntity('AccountPayment',accountPaymentData);
+		accountPayment.validate('save');
+		assert(accountPayment.hasErrors());		
+	}
+	
 	
 }
 
