@@ -233,7 +233,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
  		if(structKeyExists(arguments, "filterGroupAlias") && len(arguments.filterGroupAlias) > 0){
  			filterGroupIndex = this.getFilterGroupIndexByFilterGroupAlias(arguments.filterGroupAlias, arguments.filterGroupLogicalOperator); 
  		} 
- 		arrayAppend(collectionConfig.filterGroups[filterGroupIndex].filterGroup,filter);
+ 		arrayAppend(getCollectionConfigStruct().filterGroups[filterGroupIndex].filterGroup,filter);
 	}
 
 	public void function setDisplayProperties(string displayPropertiesList=""){
