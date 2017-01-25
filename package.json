@@ -27,7 +27,7 @@
     "tsify": "*",
     "typescript": "*",
     "vinyl-source-stream": "^1.1.0",
-    "webpack": "*",
+    "webpack": "^1.13.3",
     "webpack-dev-server": "^1.12.1",
     "webpack-stream": "*"
   },
