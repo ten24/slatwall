@@ -4,7 +4,7 @@
  * This validate directive will look at the current element, figure out the context (save, edit, delete) and
  * validate based on that context as defined in the validation properties object.
  */
-import {SWFormController} from "./swForm";
+import {SWFormController} from "./swform";
 
 class SWFormSubscriberController{
 	public propertyDisplay:any;
