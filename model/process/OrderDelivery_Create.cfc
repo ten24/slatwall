@@ -218,7 +218,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	public boolean function getCaptureAuthorizedPaymentsFlag() {
 		if(!structKeyExists(variables, "captureAuthorizedPaymentsFlag")) {
 			variables.captureAuthorizedPaymentsFlag = 0;
-			if(getCapturableAmount()) {
+			if(getCapturableAmount() && getOrder().hasCreditCardPaymentMethod()) {
 				variables.captureAuthorizedPaymentsFlag = 1;
 			}
 		}

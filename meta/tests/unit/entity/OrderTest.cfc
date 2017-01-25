@@ -59,6 +59,33 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		variables.entity.validate(context="save");
 		assertFalse( variables.entity.hasErrors() );
 	}
+	
+	public void function hasCreditCardPaymentMethodTest(){
+		var orderData ={
+			orderID=""
+		};
+		var order = createPersistedTestEntity('Order',orderData);
+		assertFalse(order.hasCreditCardPaymentMethod());
+		
+		var orderPaymentData = {
+			orderPaymentID="",
+			paymentMethod={
+				//credit card
+				paymentMethodID="444df303dedc6dab69dd7ebcc9b8036a"
+			}
+		};
+		var orderPayment= createPersistedTestEntity('OrderPayment',orderPaymentData);
+		
+		order.addOrderPayment(orderPayment);
+		orderPayment.setOrder(order);
+		
+		assert(arraylen(order.getOrderPayments()));
+		
+		assert(order.hasCreditCardPaymentMethod());
+		
+		order.removeOrderPayment(orderPayment);
+		assertFalse(order.hasCreditCardPaymentMethod());
+	}
 
 	public void function validate_billingAddress_as_full_fails_when_not_fully_populated() {
 		var populateData = {

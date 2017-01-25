@@ -15,8 +15,6 @@ class Cart extends BaseEntity{
     public orderID;
     //deprecated
 
-
-
     constructor($injector){
         super($injector);
     }
