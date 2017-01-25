@@ -158,7 +158,6 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="totalQuantity" persistent="false";
 	property name="totalSaleQuantity" persistent="false";
 	property name="totalReturnQuantity" persistent="false";
-	property name="hasCreditCardPaymentMethodValue" persistent="false";
 	
     //======= Mocking Injection for Unit Test ======	
 	property name="orderService" persistent="false" type="any";
@@ -1138,7 +1137,8 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		arguments.orderPayment.setOrder( this );
 		//clear the cache on whether we have a credit card PaymentMethod
 		if(
-			!variables.hasCreditCardPaymentMethodValue
+			structKeyExists(variables,'hasCreditCardPaymentMethodValue')
+			&& !variables.hasCreditCardPaymentMethodValue
 			&& !isNull(arguments.orderPayment.getPaymentMethod()) 
 			&& arguments.orderPayment.getPaymentMethod().getPaymentMethodType() == 'creditCard'
 		){
@@ -1148,7 +1148,9 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public void function removeOrderPayment(required any orderPayment) {
 		arguments.orderPayment.removeOrder( this );
 		//clear the cache on credit card PaymentMethod
-		structDelete(variables,'hasCreditCardPaymentMethodValue');
+		if(structKeyExists(variables,'hasCreditCardPaymentMethodValue')){
+			structDelete(variables,'hasCreditCardPaymentMethodValue');	
+		}
 	}
 
 	// Order Returns (one-to-many)
