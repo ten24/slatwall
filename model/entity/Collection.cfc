@@ -167,7 +167,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		required any value,
 		string comparisonOperator="=",
 		string logicalOperator="AND",
-	    string aggregate=""
+	    string aggregate="",
 		string filterGroupAlias="",
  		string filterGroupLogicalOperator="AND"
 	){
@@ -230,7 +230,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 
 		var filterGroupIndex = 1; 
- 		if(structKeyExists(arguments, "filterGroupAlias") && len(arguments.filterGroupAlias) > 0){
+ 		if(len(arguments.filterGroupAlias) > 0){
  			filterGroupIndex = this.getFilterGroupIndexByFilterGroupAlias(arguments.filterGroupAlias, arguments.filterGroupLogicalOperator); 
  		} 
  		arrayAppend(getCollectionConfigStruct().filterGroups[filterGroupIndex].filterGroup,filter);
