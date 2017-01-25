@@ -181,14 +181,14 @@ class PublicService {
 
         if (!action) {throw "Action is required exception";}
 
+        var urlBase = "";
+		
         //check if the caller is defining a path to hit, otherwise use the public scope.
         if (action.indexOf(":") !== -1){
-            this.baseActionPath = action; //any path
+            urlBase = action; //any path
         }else{
-            this.baseActionPath = "/index.cfm/api/scope/" + action;//public path
+            urlBase = "/index.cfm/api/scope/" + action;//public path
         }
-
-        let urlBase = this.baseActionPath;
 
         if(data){
             method = "post";
