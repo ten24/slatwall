@@ -2273,6 +2273,7 @@
 	            // processObject.newBillingAddress.billingAddress.country = formdata.country || processObject.data.newOrderPayment.billingAddress.country;
 	            // processObject.newBillingAddress.billingAddress.statecode = formdata.state || processObject.data.newOrderPayment.billingAddress.statecode;
 	            // processObject.newBillingAddress.saveShippingAsBilling=(this.saveShippingAsBilling == true);
+	            console.log('billingAddress', billingAddress);
 	            data = {
 	                'newOrderPayment.billingAddress.addressID': '',
 	                'newOrderPayment.billingAddress.streetAddress': billingAddress.streetAddress,
@@ -2281,11 +2282,11 @@
 	                'newOrderPayment.billingAddress.name': cardInfo.nameOnCreditCard,
 	                'newOrderPayment.expirationMonth': expirationMonth,
 	                'newOrderPayment.expirationYear': expirationYear,
-	                'newOrderPayment.billingAddress.countrycode': country || billingAddress.countryCode,
+	                'newOrderPayment.billingAddress.countrycode': country || billingAddress.countrycode,
 	                'newOrderPayment.billingAddress.city': '' + billingAddress.city,
-	                'newOrderPayment.billingAddress.statecode': state || billingAddress.stateCode,
+	                'newOrderPayment.billingAddress.statecode': state || billingAddress.statecode,
 	                'newOrderPayment.billingAddress.locality': billingAddress.locality || '',
-	                'newOrderPayment.billingAddress.postalcode': billingAddress.postalCode,
+	                'newOrderPayment.billingAddress.postalcode': billingAddress.postalcode,
 	                'newOrderPayment.securityCode': cardInfo.cvv,
 	                'newOrderPayment.creditCardNumber': cardInfo.cardNumber,
 	                'newOrderPayment.saveShippingAsBilling': (_this.saveShippingAsBilling == true),
@@ -2304,12 +2305,10 @@
 	                if (serverData.cart.hasErrors || angular.isDefined(_this.cart.orderPayments[_this.cart.orderPayments.length - 1]['errors']) && !_this.cart.orderPayments[_this.cart.orderPayments.length - 1]['errors'].hasErrors) {
 	                    _this.cart.hasErrors = true;
 	                    _this.readyToPlaceOrder = true;
-	                    _this.edit = '';
 	                }
 	                else {
 	                    _this.editPayment = false;
 	                    _this.readyToPlaceOrder = true;
-	                    _this.edit = '';
 	                }
 	            });
 	        };
@@ -20556,6 +20555,7 @@
 	                for (var key in form) {
 	                    var val = form[key];
 	                    if (typeof val === 'object' && val.hasOwnProperty('$modelValue')) {
+	                        console.log(val);
 	                        if (val.$modelValue) {
 	                            val = val.$modelValue;
 	                        }
@@ -20973,6 +20973,7 @@
 	        _this.swpropertyPartialPath = swpropertyPartialPath;
 	        _this.controller = SWFPropertyDisplayController;
 	        _this.controllerAs = "swfPropertyDisplay";
+	        _this.scope = {};
 	        _this.link = function (scope, element, attrs) {
 	        };
 	        return _this;

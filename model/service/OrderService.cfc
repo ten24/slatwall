@@ -1307,7 +1307,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			// Reload the order in case it was already in cache
 			getHibachiDAO().reloadEntity(arguments.order);
-
 			// Make sure that the entity is notPlaced before going any further
 			if(arguments.order.getOrderStatusType().getSystemCode() == "ostNotPlaced") {
 
@@ -1356,6 +1355,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							arguments.order.addError('payment',rbKey('entity.order.process.placeOrder.paymentRequirementError'));
 						
 						}
+					writeDump(var=order.getErrors(), top=1);abort;
 
 
 					} else {
@@ -1431,7 +1431,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 							// Save the order to the database
 							getHibachiDAO().save( arguments.order );
-
 							// Do a flush so that the order is commited to the DB
 							getHibachiDAO().flushORMSession();
 

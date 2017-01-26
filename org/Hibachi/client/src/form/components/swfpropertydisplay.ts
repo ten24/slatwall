@@ -21,6 +21,7 @@ class SWFPropertyDisplayController extends SWPropertyDisplayController {
 class SWFPropertyDisplay extends SWPropertyDisplay{
     public controller=SWFPropertyDisplayController;
     public controllerAs="swfPropertyDisplay";
+    public scope={};
     //@ngInject
     constructor(
         public $compile,

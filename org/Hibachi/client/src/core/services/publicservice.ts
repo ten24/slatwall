@@ -512,7 +512,7 @@ class PublicService {
         // processObject.newBillingAddress.billingAddress.country = formdata.country || processObject.data.newOrderPayment.billingAddress.country;
         // processObject.newBillingAddress.billingAddress.statecode = formdata.state || processObject.data.newOrderPayment.billingAddress.statecode;
         // processObject.newBillingAddress.saveShippingAsBilling=(this.saveShippingAsBilling == true);
-
+        console.log('billingAddress', billingAddress)
 
         data = {
             'newOrderPayment.billingAddress.addressID':'',
@@ -522,11 +522,11 @@ class PublicService {
             'newOrderPayment.billingAddress.name': cardInfo.nameOnCreditCard,
             'newOrderPayment.expirationMonth': expirationMonth,
             'newOrderPayment.expirationYear': expirationYear,
-            'newOrderPayment.billingAddress.countrycode': country || billingAddress.countryCode,
+            'newOrderPayment.billingAddress.countrycode': country || billingAddress.countrycode,
             'newOrderPayment.billingAddress.city': ''+billingAddress.city,
-            'newOrderPayment.billingAddress.statecode': state || billingAddress.stateCode,
+            'newOrderPayment.billingAddress.statecode': state || billingAddress.statecode,
             'newOrderPayment.billingAddress.locality': billingAddress.locality || '',
-            'newOrderPayment.billingAddress.postalcode': billingAddress.postalCode,
+            'newOrderPayment.billingAddress.postalcode': billingAddress.postalcode,
             'newOrderPayment.securityCode': cardInfo.cvv,
             'newOrderPayment.creditCardNumber': cardInfo.cardNumber,
             'newOrderPayment.saveShippingAsBilling':(this.saveShippingAsBilling == true),
@@ -550,11 +550,9 @@ class PublicService {
             if (serverData.cart.hasErrors || angular.isDefined(this.cart.orderPayments[this.cart.orderPayments.length-1]['errors']) && !this.cart.orderPayments[this.cart.orderPayments.length-1]['errors'].hasErrors){
                 this.cart.hasErrors = true;
                 this.readyToPlaceOrder = true;
-                this.edit = '';
             }else{
                 this.editPayment = false;
                 this.readyToPlaceOrder = true;
-                this.edit = '';
             }
         });
     };

@@ -13,6 +13,7 @@
 		    		 ng-show="swFormField.editing"
 		    		 ng-options="propertyDisplayOption as propertyDisplayOption.name for propertyDisplayOption in swFormField.options track by propertyDisplayOption.value"
 					 ng-change="swFormField.formFieldChanged(swFormField.object.data['selected'+swFormField.property])"
+					 ng-init="swFormField.object.data[swFormField.property] = swFormField.object.data['selected'+swFormField.property].value"
 		>
 		</select>
 

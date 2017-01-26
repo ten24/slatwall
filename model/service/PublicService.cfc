@@ -1077,7 +1077,6 @@ component extends="HibachiService"  accessors="true" output="false"
                 getHibachiScope().setSessionValue('confirmationOrderID', order.getOrderID());
                 getHibachiScope().getSession().setLastPlacedOrderID( order.getOrderID() );
             }
-            
         }
     
     }

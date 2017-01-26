@@ -37,18 +37,6 @@
 					    
 					    <!--- Country --->
 				    	<div class="col-sm-6 form-group" ng-if="(SwAddressForm.showCountrySelect == 'true'|| SwAddressForm.showCountrySelect == true) && $root.slatwall.countries.countryCodeOptions">
-				    		<!--- <input type="hidden" ng-model="SwAddressForm.address.countryCode" value="{{selectedCountry.value}}"/>
-					            
-				    		<label for="countrycode">Country - {{$root.slatwall.selectedCountry.value}}</label>
-				    		<select name="countrycode"
-					    		ng-required="true"
-					        	class="form-control" 
-					            ng-model="$root.slatwall.selectedCountry"  
-					            ng-options="country as country.name for country in $root.slatwall.countries.countryCodeOptions" 
-					            ng-change="$root.slatwall.getStates($root.slatwall.selectedCountry.value); SwAddressForm.address.countryCode = $root.slatwall.selectedCountry.value || $root.slatwall.countries.countryCodeOptions['234']"
-					            ng-init="($root.slatwall.states == undefined)?$root.slatwall.getStates('US'):false;$root.slatwall.selectedCountry = $root.slatwall.countries.countryCodeOptions['234'];SwAddressForm.address.countryCode = $root.slatwall.selectedCountry.value">
-					            <option value="US"> Country * </option>
-							</select> --->
 
 							<swf-property-display 
 					            data-name="countrycode" 
@@ -60,7 +48,7 @@
 					            data-object="SwAddressForm.address"
 					            data-label-text="Country"
 					            data-options="$root.slatwall.countries.countryCodeOptions"
-					            ng-init="($root.slatwall.states == undefined)?$root.slatwall.getStates('US'):false;SwAddressForm.address.data.selectedcountrycode = $root.slatwall.countries.countryCodeOptions['234']" 
+					            ng-init="($root.slatwall.states == undefined)?$root.slatwall.getStates('US'):false;SwAddressForm.address.data.selectedcountrycode = $root.slatwall.countries.countryCodeOptions['234']"
 					            input-attributes="ng-required=true">
 			            	</swf-property-display>
 
@@ -72,8 +60,8 @@
 				    		<input name="countryCode" 
 				    			style="display:none"
 					    		ng-required="true"
-					        	class="form-control" 
-					            ng-model="SwAddressForm.address.countryCode"  
+					        	class="form-control"
+					            ng-model="SwAddressForm.address.countryCode"
 					            ng-init="SwAddressForm.address.countryCode=$root.slatwall.defaultCountryCode;$root.slatwall.selectedCountry.value = $root.slatwall.defaultCountryCode;" />
 					          
 							<span class="error" error-for="country"></span>
@@ -164,7 +152,7 @@
 					    <div class="col-sm-6 form-group">
 				          <div class="row">
 				          	
-					        <div class="col-xs-7" ng-if="SwAddressForm.address.data.selectedcountrycode.value == 'US' || SwAddressForm.address.data.selectedcountrycode.value == 'CA'">
+					        <div class="col-xs-7" ng-if="(SwAddressForm.address.data.selectedcountrycode.value == 'US' || SwAddressForm.address.data.selectedcountrycode.value == 'CA') && $root.slatwall.states.stateCodeOptions">
 					            <swf-property-display 
 					            data-name="statecode" 
 					            data-class="form-control"
