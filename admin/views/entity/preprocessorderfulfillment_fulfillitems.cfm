@@ -72,7 +72,9 @@ Notes:
 				</cfif>
 
 				<!--- Location --->
-				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="pickupLocation" edit="#rc.edit#">
+				<cfif rc.orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "pickup">
+ 					<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="pickupLocation" fieldName="location.locationID" edit="#rc.edit#">
+ 				</cfif>
 				<hr />
 
 				<!--- Items Selector --->
