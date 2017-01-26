@@ -203,8 +203,8 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		// If there are errors in the newAccountPayment after save, then add them to the account
 		if(newAccountPayment.hasErrors()) {
+			
 			arguments.account.addError('accountPayment', rbKey('admin.entity.order.addAccountPayment_error'));
-
 		// If no errors, then we can process a transaction
 		} else {
 			var transactionData = {
@@ -240,7 +240,15 @@ component extends="HibachiService" accessors="true" output="false" {
 						};
 	
 						if(newAccountPayment.getAccountPaymentType().getSystemCode() eq "aptCharge") {
-							transactionData.transactionType = 'receive';
+							if(newAccountPayment.getPaymentMethod().getPaymentMethodType() eq "creditCard") {
+								if(!isNull(newAccountPayment.getPaymentMethod().getIntegration())) {
+									transactionData.transactionType = 'authorizeAndCharge';	
+								} else {
+									transactionData.transactionType = 'receiveOffline';	
+								}
+							} else {
+								transactionData.transactionType = 'receive';
+							}
 						} else {
 							transactionData.transactionType = 'credit';
 						}
