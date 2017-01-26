@@ -34,6 +34,10 @@ class SWTypeaheadInputFieldController {
             }
         }
         
+        if(angular.isUndefined(this.validateRequired)){
+            this.validateRequired = false;
+        }
+
         //get the collection config
         this.$transclude($scope,()=>{});
 
@@ -80,7 +84,9 @@ class SWTypeaheadInputField implements ng.IDirective{
         propertyToShow:"@",
         propertyToSave:"@",
         initialEntityId:"@",
-        validateRequired:"=?"
+        allRecords:"=?",
+        validateRequired:"=?", 
+        maxRecords:"@"
 	};
 	public controller=SWTypeaheadInputFieldController;
 	public controllerAs="swTypeaheadInputField";

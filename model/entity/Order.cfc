@@ -208,6 +208,19 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 		return true;
 	}
+	
+	public boolean function hasCreditCardPaymentMethod(){
+		if(!structKeyExists(variables,'hasCreditCardPaymentMethodValue')){
+			variables.hasCreditCardPaymentMethodValue = false;
+			for(var orderPayment in getOrderPayments()){
+				if(orderPayment.getPaymentMethod().getPaymentMethodType() == 'creditCard'){
+					variables.hasCreditCardPaymentMethodValue = true;
+					break;	
+				}
+			}
+		}
+		return variables.hasCreditCardPaymentMethodValue;
+	}
 
 
 	public struct function getAddPaymentRequirementDetails() {
@@ -1165,9 +1178,22 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	// Order Payments (one-to-many)
 	public void function addOrderPayment(required any orderPayment) {
 		arguments.orderPayment.setOrder( this );
+		//clear the cache on whether we have a credit card PaymentMethod
+		if(
+			structKeyExists(variables,'hasCreditCardPaymentMethodValue')
+			&& !variables.hasCreditCardPaymentMethodValue
+			&& !isNull(arguments.orderPayment.getPaymentMethod()) 
+			&& arguments.orderPayment.getPaymentMethod().getPaymentMethodType() == 'creditCard'
+		){
+			structDelete(variables,'hasCreditCardPaymentMethodValue');
+		}
 	}
 	public void function removeOrderPayment(required any orderPayment) {
 		arguments.orderPayment.removeOrder( this );
+		//clear the cache on credit card PaymentMethod
+		if(structKeyExists(variables,'hasCreditCardPaymentMethodValue')){
+			structDelete(variables,'hasCreditCardPaymentMethodValue');	
+		}
 	}
 
 	// Order Returns (one-to-many)

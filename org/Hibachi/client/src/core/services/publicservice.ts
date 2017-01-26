@@ -802,7 +802,7 @@ class PublicService {
         });
     }
 
-    /**
+      /**
      *  Returns true when the fulfillment body should be showing
      *  Show if we don't need an account but do need a fulfillment
      *
@@ -822,6 +822,7 @@ class PublicService {
      *  we have a payment but are editting the payment AND nothing else is being edited
      *
      */
+   
     public showPaymentTabBody = ()=> {
         if ((this.cart.orderRequirementsList.indexOf('account') == -1) && this.account.accountID &&
             (this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
@@ -867,17 +868,8 @@ class PublicService {
         }
         return false;
     };
-    /** Returns true if the review tab should be active */
-    public reviewTabIsActive =  ()=> {
-        if ((this.edit == 'review' ||
-            (this.edit == '' &&
-                (this.cart.orderRequirementsList.indexOf('account') == -1) && this.account.accountID &&
-                (this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
-                (this.cart.orderRequirementsList.indexOf('payment') == -1)))) {
-            return true;
-        }
-        return false;
-    };
+    
+    
 
 
 }

@@ -87,7 +87,7 @@ class SWAddressFormController {
 		return false;
 	}
 
-}
+} 
 
 class SWAddressForm implements ng.IComponentOptions {
 

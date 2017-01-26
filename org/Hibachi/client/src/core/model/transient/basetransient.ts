@@ -79,7 +79,7 @@ abstract class BaseTransient extends BaseObject{
                                         }
                                         if(!hasItem){
                                             currentEntity['$$add'+currentEntity.metaData[property].singularname.charAt(0).toUpperCase()+currentEntity.metaData[property].singularname.slice(1)](relatedEntity);
-                                        }
+                                        } 
                                     }else{
                                         relatedEntity.$$init(arrayItem);
                                         currentEntity['$$add'+currentEntity.metaData[property].singularname.charAt(0).toUpperCase()+currentEntity.metaData[property].singularname.slice(1)](relatedEntity);
