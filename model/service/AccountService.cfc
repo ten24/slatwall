@@ -173,25 +173,28 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 
 		}
-		// Loop over all account payments and link them to the AccountPaymentApplied object
-		for (var appliedOrderPayment in processObject.getAppliedOrderPayments()) {
-
-			if(IsNumeric(appliedOrderPayment.amount) && appliedOrderPayment.amount > 0) {
-				var orderPayment = getOrderService().getOrderPayment( appliedOrderPayment.orderPaymentID );
-
-				var newAccountPaymentApplied = this.newAccountPaymentApplied();
-				newAccountPaymentApplied.setAccountPayment( newAccountPayment );
-
-				newAccountPaymentApplied.setAmount( appliedOrderPayment.amount );
-
-				// Link to the order payment if the payment is assigned to a term order. Also set the payment type
-				if(!isNull(orderPayment)) {
-					newAccountPaymentApplied.setOrderPayment( orderPayment );
-					newAccountPaymentApplied.setAccountPaymentType( getTypeService().getType( appliedOrderPayment.paymentTypeID  ) );
+		
+		
+		if(!newAccountPayment.hasErrors()) {
+			// Loop over all account payments and link them to the AccountPaymentApplied object
+			for (var appliedOrderPayment in processObject.getAppliedOrderPayments()) {
+				if(IsNumeric(appliedOrderPayment.amount) && appliedOrderPayment.amount > 0) {
+					var orderPayment = getOrderService().getOrderPayment( appliedOrderPayment.orderPaymentID );
+	
+					var newAccountPaymentApplied = this.newAccountPaymentApplied();
+					newAccountPaymentApplied.setAccountPayment( newAccountPayment );
+	
+					newAccountPaymentApplied.setAmount( appliedOrderPayment.amount );
+	
+					// Link to the order payment if the payment is assigned to a term order. Also set the payment type
+					if(!isNull(orderPayment)) {
+						newAccountPaymentApplied.setOrderPayment( orderPayment );
+						newAccountPaymentApplied.setAccountPaymentType( getTypeService().getType( appliedOrderPayment.paymentTypeID  ) );
+					}
+	
+					// Save the account payment applied
+					newAccountPaymentApplied = this.saveAccountPaymentApplied( newAccountPaymentApplied );
 				}
-
-				// Save the account payment applied
-				newAccountPaymentApplied = this.saveAccountPaymentApplied( newAccountPaymentApplied );
 			}
 		}
 		
@@ -223,21 +226,22 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 
 			newAccountPayment = this.processAccountPayment(newAccountPayment, transactionData, 'createTransaction');
-			
 			//Loop over the newaccountpayment.getAppliedPayments
-			for (var appliedAccountPayment in newAccountPayment.getAppliedAccountPayments()) {
-				if(!IsNull(appliedAccountPayment.getOrderPayment())) {
-					transactionData = {
-						amount = appliedAccountPayment.getAmount()
-					};
-
-					if(newAccountPayment.getAccountPaymentType().getSystemCode() eq "aptCharge") {
-						transactionData.transactionType = 'receive';
-					} else {
-						transactionData.transactionType = 'credit';
+			if(!newAccountPayment.hasErrors()){
+				for (var appliedAccountPayment in newAccountPayment.getAppliedAccountPayments()) {
+					if(!IsNull(appliedAccountPayment.getOrderPayment())) {
+						transactionData = {
+							amount = appliedAccountPayment.getAmount()
+						};
+	
+						if(newAccountPayment.getAccountPaymentType().getSystemCode() eq "aptCharge") {
+							transactionData.transactionType = 'receive';
+						} else {
+							transactionData.transactionType = 'credit';
+						}
+	
+						getOrderService().processOrderPayment(appliedAccountPayment.getOrderPayment(), transactionData, 'createTransaction');
 					}
-
-					getOrderService().processOrderPayment(appliedAccountPayment.getOrderPayment(), transactionData, 'createTransaction');
 				}
 			}
 		}
