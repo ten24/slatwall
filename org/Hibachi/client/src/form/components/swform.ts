@@ -117,24 +117,11 @@ class SWFormController {
                 observerService.attach(event.action, event.name);
             })
         }
-        // console.log("submitOnReturn:", this.submitOnReturn);
-        // if(this.submitOnReturn){
-        //     let submitEvent = this.name + this.submitOnReturn + 'keyup';
-        //     console.log("Submit event!", submitEvent)
-        //     observerService.attach(this.submitKeyCheck, submitEvent);
-        // }
 
     }
 
     public isObject=()=>{
         return (angular.isObject(this.object));
-    }
-
-    public submitKeyCheck = (event) =>{
-        let key = event.event.keyCode;
-        if(key == 13){
-            this.submit();
-        }
     }
 
     /** create the generic submit function */
@@ -183,7 +170,7 @@ class SWFormController {
 
     }
 
-    public parseEvents = (str:string, evntType)=> {
+    public parseEvents = (str:string)=> {
 
         if (str == undefined) return;
         let strTokens = str.split(","); //this gives the format [hide:this, show:Account_Logout, update:Account or Cart, event:element]
@@ -212,9 +199,9 @@ class SWFormController {
     }
 
      /** looks at the onSuccess, onError, and onLoading and parses the string into useful subcategories */
-    public parseEventString = (evntStr:string, evntType)=>
+    public parseEventString = (evntStr:string)=>
     {
-        return this.parseEvents(evntStr, evntType); //onSuccess : [hide:this, show:someOtherForm, refresh:Account]
+        return this.parseEvents(evntStr); //onSuccess : [hide:this, show:someOtherForm, refresh:Account]
 
     }
 

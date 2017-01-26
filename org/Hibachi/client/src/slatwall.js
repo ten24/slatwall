@@ -1954,7 +1954,6 @@
 	            }
 	            for (var state in this.states.stateCodeOptions) {
 	                if (this.states.stateCodeOptions[state].value == stateCode) {
-	                    //console.log(slatwall.states.stateCodeOptions[state].value, stateCode);
 	                    return this.states.stateCodeOptions[state];
 	                }
 	            }
@@ -2034,7 +2033,6 @@
 	                //post
 	                var request_1 = _this.requestService.newPublicRequest(urlBase, data, method);
 	                request_1.promise.then(function (result) {
-	                    console.log("result: ", result);
 	                    _this.processAction(result, request_1);
 	                }).catch(function (response) {
 	                });
@@ -2273,7 +2271,6 @@
 	            // processObject.newBillingAddress.billingAddress.country = formdata.country || processObject.data.newOrderPayment.billingAddress.country;
 	            // processObject.newBillingAddress.billingAddress.statecode = formdata.state || processObject.data.newOrderPayment.billingAddress.statecode;
 	            // processObject.newBillingAddress.saveShippingAsBilling=(this.saveShippingAsBilling == true);
-	            console.log('billingAddress', billingAddress);
 	            data = {
 	                'newOrderPayment.billingAddress.addressID': '',
 	                'newOrderPayment.billingAddress.streetAddress': billingAddress.streetAddress,
@@ -2292,10 +2289,8 @@
 	                'newOrderPayment.saveShippingAsBilling': (_this.saveShippingAsBilling == true),
 	            };
 	            //processObject.populate(data);
-	            console.log("new order payment: ", data);
 	            //Make sure we have required fields for a newOrderPayment.
 	            _this.validateNewOrderPayment(data);
-	            console.log("orderpayment", _this.cart.orderPayments);
 	            if (_this.cart.orderPayments.hasErrors && Object.keys(_this.cart.orderPayments.errors).length) {
 	                return -1;
 	            }
@@ -2472,7 +2467,6 @@
 	                profileName = "medium";
 	            }
 	            _this.$http.get("/index.cfm/api/scope/?context=getResizedImageByProfileName&profileName=" + profileName + "&skuIds=" + skuIDList).success(function (result) {
-	                console.log(_this);
 	                if (!angular.isDefined(_this.imagePath)) {
 	                    _this.imagePath = {};
 	                }
@@ -19590,12 +19584,6 @@
 	        this.isObject = function () {
 	            return (angular.isObject(_this.object));
 	        };
-	        this.submitKeyCheck = function (event) {
-	            var key = event.event.keyCode;
-	            if (key == 13) {
-	                _this.submit();
-	            }
-	        };
 	        /** create the generic submit function */
 	        this.submit = function (actions) {
 	            actions = actions || _this.action;
@@ -19640,7 +19628,7 @@
 	                }
 	            }, angular.noop);
 	        };
-	        this.parseEvents = function (str, evntType) {
+	        this.parseEvents = function (str) {
 	            if (str == undefined)
 	                return;
 	            var strTokens = str.split(","); //this gives the format [hide:this, show:Account_Logout, update:Account or Cart, event:element]
@@ -19665,8 +19653,8 @@
 	            return eventsObj;
 	        };
 	        /** looks at the onSuccess, onError, and onLoading and parses the string into useful subcategories */
-	        this.parseEventString = function (evntStr, evntType) {
-	            return _this.parseEvents(evntStr, evntType); //onSuccess : [hide:this, show:someOtherForm, refresh:Account]
+	        this.parseEventString = function (evntStr) {
+	            return _this.parseEvents(evntStr); //onSuccess : [hide:this, show:someOtherForm, refresh:Account]
 	        };
 	        /****
 	             * Handle parsing through the server errors and injecting the error text for that field
@@ -19821,12 +19809,6 @@
 	                observerService.attach(event.action, event.name);
 	            });
 	        }
-	        // console.log("submitOnReturn:", this.submitOnReturn);
-	        // if(this.submitOnReturn){
-	        //     let submitEvent = this.name + this.submitOnReturn + 'keyup';
-	        //     console.log("Submit event!", submitEvent)
-	        //     observerService.attach(this.submitKeyCheck, submitEvent);
-	        // }
 	    }
 	    return SWFormController;
 	}());
@@ -20549,7 +20531,6 @@
 	                for (var key in form) {
 	                    var val = form[key];
 	                    if (typeof val === 'object' && val.hasOwnProperty('$modelValue')) {
-	                        console.log(val);
 	                        if (val.$modelValue) {
 	                            val = val.$modelValue;
 	                        }

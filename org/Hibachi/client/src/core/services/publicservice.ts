@@ -150,7 +150,6 @@ class PublicService {
         }
         for (var state in this.states.stateCodeOptions){
             if (this.states.stateCodeOptions[state].value == stateCode){
-                //console.log(slatwall.states.stateCodeOptions[state].value, stateCode);
                 return this.states.stateCodeOptions[state];
             }
         }
@@ -236,7 +235,6 @@ class PublicService {
             //post
             let request:PublicRequest = this.requestService.newPublicRequest(urlBase,data,method)
             request.promise.then((result:any)=>{
-                console.log("result: ", result);
                 this.processAction(result,request);
             }).catch((response)=>{
 
@@ -512,7 +510,6 @@ class PublicService {
         // processObject.newBillingAddress.billingAddress.country = formdata.country || processObject.data.newOrderPayment.billingAddress.country;
         // processObject.newBillingAddress.billingAddress.statecode = formdata.state || processObject.data.newOrderPayment.billingAddress.statecode;
         // processObject.newBillingAddress.saveShippingAsBilling=(this.saveShippingAsBilling == true);
-        console.log('billingAddress', billingAddress)
 
         data = {
             'newOrderPayment.billingAddress.addressID':'',
@@ -534,10 +531,8 @@ class PublicService {
 
         //processObject.populate(data);
 
-        console.log("new order payment: ", data)
         //Make sure we have required fields for a newOrderPayment.
         this.validateNewOrderPayment( data );
-        console.log("orderpayment", this.cart.orderPayments);
         if ( this.cart.orderPayments.hasErrors && Object.keys(this.cart.orderPayments.errors).length ){
             return -1;
         }
@@ -735,7 +730,6 @@ class PublicService {
        }
        
        this.$http.get("/index.cfm/api/scope/?context=getResizedImageByProfileName&profileName="+profileName+"&skuIds="+skuIDList).success((result:any)=>{
-            console.log(this);
             if(!angular.isDefined(this.imagePath)){
                 this.imagePath = {};
             }

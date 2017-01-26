@@ -46,7 +46,6 @@ class SWAddressFormController {
                 for(let key in form){
                     let val = form[key];
                     if(typeof val === 'object' && val.hasOwnProperty('$modelValue')){
-                        console.log(val);
                         if(val.$modelValue){
                             val = val.$modelValue;
                         }else if(val.$viewValue){
