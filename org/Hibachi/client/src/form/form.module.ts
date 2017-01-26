@@ -41,9 +41,7 @@ var formmodule = angular.module('hibachi.form',['angularjs-datetime-picker',core
 .directive('swPropertyDisplay',SWPropertyDisplay.Factory(SWPropertyDisplay,"propertydisplay.html"))
 .directive('swErrorDisplay',SWErrorDisplay.Factory())
 .directive('swAddressForm',SWAddressForm.Factory())
-.directive('swFormSubscriber',SWFormSubscriber.Factory())
-.directive('swAddressForm',SWAddressForm.Factory())
-;
+.directive('swFormSubscriber',SWFormSubscriber.Factory());
 export{
 	formmodule
 }
