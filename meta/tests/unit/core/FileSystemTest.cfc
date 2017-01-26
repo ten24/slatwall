@@ -49,13 +49,23 @@ Notes:
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 	public void function makeSureAllViewFilesAreLowerCased() {
-		var path = expandPath('/Slatwall/admin');
-		var viewFiles = directoryList(path,true,'path','*.cfm');
+		var path = expandPath('/Slatwall');
+		var adminFiles = directoryList(path&'/admin',true,'path','*.cfm|*.ts|*.js');
+		
+		var path = expandPath('/Slatwall');
+		var hibachiClientFiles = directoryList(path&'/org/Hibachi/client',true,'path','*.ts');
+		
+		var viewFiles = adminFiles;
+		
+		for(var item in hibachiClientFiles){
+			arrayAppend(viewFiles,item);
+		}
+		
 		var allLowercaseFileNames = true;
 		var offenders = '';
 		for(var item in viewFiles){
 			var fileName = listLast(item,'/');
-			if(REFIND("[A-Z]",fileName)){
+			if(REFIND("[A-Z]",fileName) && fileName DOES NOT CONTAIN '.d.ts'){
 				offenders = listAppend(offenders,item);
 				allLowercaseFileNames =false;
 			}
