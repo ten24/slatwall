@@ -227,7 +227,12 @@ component extends="HibachiService" accessors="true" output="false" {
 
 			newAccountPayment = this.processAccountPayment(newAccountPayment, transactionData, 'createTransaction');
 			//Loop over the newaccountpayment.getAppliedPayments
-			if(!newAccountPayment.hasErrors()){
+			if(newAccountPayment.hasErrors()){
+				for(var errorKey in newAccountPayment.getErrors()){
+					arguments.account.addError(errorKey, newAccountPayment.getErrors()[errorKey]);	
+				}
+				
+			}else{
 				for (var appliedAccountPayment in newAccountPayment.getAppliedAccountPayments()) {
 					if(!IsNull(appliedAccountPayment.getOrderPayment())) {
 						transactionData = {
