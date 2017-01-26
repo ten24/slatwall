@@ -76,7 +76,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
 //directives
 .directive('swCurrencyFormatter',SWCurrencyFormatter.Factory())
 //controllers
-.controller('preprocessaccount_addaccountpayment', ['$scope', '$compile',function($scope, $compile) {
+.controller('preprocessaccount_addaccountpayment', ['$scope', '$compile',function($scope:any, $compile) {
     //Define the different payment types used here
     var paymentType = {aptCharge:"444df32dd2b0583d59a19f1b77869025",aptCredit:"444df32e9b448ea196c18c66e1454c46", aptAdjustment:"68e3fb57d8102b47acc0003906d16ddd"};
     
