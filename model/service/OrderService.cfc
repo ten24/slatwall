@@ -1355,8 +1355,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							arguments.order.addError('payment',rbKey('entity.order.process.placeOrder.paymentRequirementError'));
 						
 						}
-					writeDump(var=order.getErrors(), top=1);abort;
-
 
 					} else {
 
