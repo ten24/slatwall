@@ -2738,7 +2738,26 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// Call the generic save method to populate and validate
 		arguments.orderFulfillment = save(arguments.orderFulfillment, arguments.data, arguments.context);
-
+		
+		
+ 		//Update the pickup location on the orderItem if the pickup location was updated on the orderFulfillment.
+ 		if(arguments.orderFulfillment.getFulfillmentMethodType() eq "pickup") {
+ 			if (!isNull(data.pickupLocation.locationID)){
+ 				var location = getService("LocationService").getLocation(data.pickupLocation.locationID);
+ 				if (!isNull(location)){
+ 					for (var orderItem in orderFulfillment.getOrderFulfillmentItems()){
+ 						//set the stock based on location.
+ 						var stock = getService("StockService").getStockByLocationANDSku([location, orderItem.getSku()], false);
+ 						
+ 						if (!isNull(stock)){
+ 							orderItem.setStock(stock);
+ 							getService("OrderService").saveOrderItem(orderItem);
+ 						}
+ 					}
+ 				}
+ 			}
+ 		}
+ 
 		// If there were no errors, and the order is not placed, then we can make necessary implicit updates
 		if(!arguments.orderFulfillment.hasErrors() && arguments.orderFulfillment.getOrder().getStatusCode() == "ostNotPlaced") {
 
@@ -2750,24 +2769,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 				// Save the accountAddress if needed
 				arguments.orderFulfillment.checkNewAccountAddressSave();
-			}
-			
-			//Update the pickup location on the orderItem if the pickup location was updated on the orderFulfillment.
-			if(arguments.orderFulfillment.getFulfillmentMethodType() eq "pickup") {
-				if (!isNull(data.pickupLocation.locationID)){
-					var location = getService("LocationService").getLocation(data.pickupLocation.locationID);
-					if (!isNull(location)){
-						for (var orderItem in orderFulfillment.getOrderFulfillmentItems()){
-							//set the stock based on location.
-							var stock = getService("StockService").getStockByLocationANDSku([location, orderItem.getSku()], false);
-							
-							if (!isNull(stock)){
-								orderItem.setStock(stock);
-								getService("OrderService").saveOrderItem(orderItem);
-							}
-						}
-					}
-				}
 			}
 		}
 
