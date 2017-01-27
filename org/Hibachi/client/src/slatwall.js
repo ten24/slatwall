@@ -1883,7 +1883,6 @@
 	        this.months = [{ name: '01 - JAN', value: 1 }, { name: '02 - FEB', value: 2 }, { name: '03 - MAR', value: 3 }, { name: '04 - APR', value: 4 }, { name: '05 - MAY', value: 5 }, { name: '06 - JUN', value: 6 }, { name: '07 - JUL', value: 7 }, { name: '08 - AUG', value: 8 }, { name: '09 - SEP', value: 9 }, { name: '10 - OCT', value: 10 }, { name: '11 - NOV', value: 11 }, { name: '12 - DEC', value: 12 }];
 	        this.years = [];
 	        this.shippingAddress = "";
-	        this.billingAddress = "";
 	        this.imagePath = {};
 	        // public hasErrors = ()=>{
 	        //     return this.errors.length;
@@ -2247,6 +2246,13 @@
 	            if (Object.keys(newOrderPaymentErrors).length) {
 	            }
 	        };
+	        this.setOrderPaymentInfo = function () {
+	            var billingAddress = _this.billingAddress.getData();
+	            for (var key in _this.newCardInfo) {
+	                billingAddress[key] = _this.newCardInfo[key];
+	            }
+	            _this.newBillingAddress = billingAddress;
+	        };
 	        /** Allows an easy way to calling the service addOrderPayment.
 	        */
 	        this.addOrderPayment = function (formdata) {
@@ -2255,8 +2261,7 @@
 	            // this.cart.orderPayments.errors = {};
 	            // this.cart.orderPayments.hasErrors = false;
 	            //Grab all the data
-	            var billingAddress = _this.newBillingAddress.getData();
-	            var cardInfo = _this.newCardInfo;
+	            var billingAddress = _this.newBillingAddress;
 	            var expirationMonth = formdata.month;
 	            var expirationYear = formdata.year;
 	            var country = formdata.country;
@@ -2275,8 +2280,8 @@
 	                'newOrderPayment.billingAddress.addressID': '',
 	                'newOrderPayment.billingAddress.streetAddress': billingAddress.streetAddress,
 	                'newOrderPayment.billingAddress.street2Address': billingAddress.street2Address,
-	                'newOrderPayment.nameOnCreditCard': cardInfo.nameOnCreditCard,
-	                'newOrderPayment.billingAddress.name': cardInfo.nameOnCreditCard,
+	                'newOrderPayment.nameOnCreditCard': billingAddress.nameOnCreditCard,
+	                'newOrderPayment.billingAddress.name': billingAddress.nameOnCreditCard,
 	                'newOrderPayment.expirationMonth': expirationMonth,
 	                'newOrderPayment.expirationYear': expirationYear,
 	                'newOrderPayment.billingAddress.countrycode': country || billingAddress.countrycode,
@@ -2284,9 +2289,10 @@
 	                'newOrderPayment.billingAddress.statecode': state || billingAddress.statecode,
 	                'newOrderPayment.billingAddress.locality': billingAddress.locality || '',
 	                'newOrderPayment.billingAddress.postalcode': billingAddress.postalcode,
-	                'newOrderPayment.securityCode': cardInfo.cvv,
-	                'newOrderPayment.creditCardNumber': cardInfo.cardNumber,
+	                'newOrderPayment.securityCode': billingAddress.cvv,
+	                'newOrderPayment.creditCardNumber': billingAddress.cardNumber,
 	                'newOrderPayment.saveShippingAsBilling': (_this.saveShippingAsBilling == true),
+	                'newOrderPayment.creditCardLastFour': billingAddress.cardNumber.slice(-4)
 	            };
 	            //processObject.populate(data);
 	            //Make sure we have required fields for a newOrderPayment.
@@ -2305,6 +2311,7 @@
 	                    _this.editPayment = false;
 	                    _this.readyToPlaceOrder = true;
 	                }
+	                console.log('result', result);
 	            });
 	        };
 	        /** Allows an easy way to calling the service addOrderPayment.
@@ -19583,6 +19590,12 @@
 	        this.formData = {};
 	        this.isObject = function () {
 	            return (angular.isObject(_this.object));
+	        };
+	        this.submitKeyCheck = function (event) {
+	            event = event.event;
+	            if (event.keyCode == 13) {
+	                _this.submit(_this.action);
+	            }
 	        };
 	        /** create the generic submit function */
 	        this.submit = function (actions) {

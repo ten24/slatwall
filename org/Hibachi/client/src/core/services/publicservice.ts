@@ -34,7 +34,7 @@ class PublicService {
     public months = [{name:'01 - JAN',value:1},{name:'02 - FEB',value:2},{name:'03 - MAR',value:3},{name:'04 - APR',value:4},{name:'05 - MAY',value:5},{name:'06 - JUN',value:6},{name:'07 - JUL',value:7},{name:'08 - AUG',value:8},{name:'09 - SEP',value:9},{name:'10 - OCT',value:10},{name:'11 - NOV',value:11},{name:'12 - DEC',value:12}];
     public years = [];
     public shippingAddress = "";
-    public billingAddress = "";
+    public billingAddress:any;
     public paymentMethods;
     public orderPlaced:boolean;
     public saveShippingAsBilling:boolean;
@@ -483,6 +483,14 @@ class PublicService {
         }
     }
 
+    public setOrderPaymentInfo = () => {
+        let billingAddress = this.billingAddress.getData();
+        for(let key in this.newCardInfo){
+            billingAddress[key] = this.newCardInfo[key];
+        }
+        this.newBillingAddress = billingAddress;
+    }
+
     /** Allows an easy way to calling the service addOrderPayment.
     */
     public addOrderPayment = (formdata)=>{
@@ -492,8 +500,7 @@ class PublicService {
         // this.cart.orderPayments.hasErrors = false;
 
         //Grab all the data
-        var billingAddress  = this.newBillingAddress.getData();
-        var cardInfo        = this.newCardInfo;
+        var billingAddress  = this.newBillingAddress;
         var expirationMonth = formdata.month;
         var expirationYear  = formdata.year;
         var country         = formdata.country;
@@ -515,8 +522,8 @@ class PublicService {
             'newOrderPayment.billingAddress.addressID':'',
             'newOrderPayment.billingAddress.streetAddress': billingAddress.streetAddress,
             'newOrderPayment.billingAddress.street2Address': billingAddress.street2Address,
-            'newOrderPayment.nameOnCreditCard': cardInfo.nameOnCreditCard,
-            'newOrderPayment.billingAddress.name': cardInfo.nameOnCreditCard,
+            'newOrderPayment.nameOnCreditCard': billingAddress.nameOnCreditCard,
+            'newOrderPayment.billingAddress.name': billingAddress.nameOnCreditCard,
             'newOrderPayment.expirationMonth': expirationMonth,
             'newOrderPayment.expirationYear': expirationYear,
             'newOrderPayment.billingAddress.countrycode': country || billingAddress.countrycode,
@@ -524,9 +531,10 @@ class PublicService {
             'newOrderPayment.billingAddress.statecode': state || billingAddress.statecode,
             'newOrderPayment.billingAddress.locality': billingAddress.locality || '',
             'newOrderPayment.billingAddress.postalcode': billingAddress.postalcode,
-            'newOrderPayment.securityCode': cardInfo.cvv,
-            'newOrderPayment.creditCardNumber': cardInfo.cardNumber,
+            'newOrderPayment.securityCode': billingAddress.cvv,
+            'newOrderPayment.creditCardNumber': billingAddress.cardNumber,
             'newOrderPayment.saveShippingAsBilling':(this.saveShippingAsBilling == true),
+            'newOrderPayment.creditCardLastFour': billingAddress.cardNumber.slice(-4)
         };
 
         //processObject.populate(data);
@@ -549,6 +557,8 @@ class PublicService {
                 this.editPayment = false;
                 this.readyToPlaceOrder = true;
             }
+
+            console.log('result', result);
         });
     };
 
@@ -851,6 +861,7 @@ class PublicService {
         }
         return false;
     };
+
     /** Returns true if the payment tab should be active */
     public paymentTabIsActive = ()=> {
         if ((this.edit == 'payment') ||

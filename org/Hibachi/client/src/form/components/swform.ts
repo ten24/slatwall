@@ -124,6 +124,13 @@ class SWFormController {
         return (angular.isObject(this.object));
     }
 
+    public submitKeyCheck = (event) => {
+        event = event.event;
+        if(event.keyCode == 13){
+            this.submit(this.action);
+        }
+    }
+
     /** create the generic submit function */
     public submit = (actions) =>
     {
