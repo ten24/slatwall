@@ -1642,6 +1642,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var collectionData = {
 			collectionid = '',
 			collectionName='dateInRange',
+			collectionObject = 'SlatwallAccount',
 			collectionConfig = '
 				{
 				   "baseEntityName":"SlatwallAccount",
@@ -1867,8 +1868,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				}
 			'
 		};
-		var collectionEntity = createPersistedTestEntity('collection',collectionData);
-		//addToDebug(collectionEntity.getPageRecords());
+		var collectionEntity = createPersistedTestEntity('Collection',collectionData);
+		assert(REFind('_account\.createdDateTime BETWEEN :P[a-f0-9]{32} AND :P[a-f0-9]{32}', collectionEntity.getHQL()) > 0);
 	}
 
 	public void function getHQLTest_Contains(){
