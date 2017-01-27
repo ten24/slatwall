@@ -16,7 +16,7 @@ class SWUnique{
                 var hashCheck = {}, newItems = [];
 
                 var extractValueToCompare = (item)=>{
-                    if (item[filterOn] != null) {
+                    if (angular.isDefined(item) && item[filterOn] != null) {
                         return item[filterOn];
                     }
                     return item; 
