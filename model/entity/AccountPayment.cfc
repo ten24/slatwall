@@ -325,11 +325,16 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		for(var accountPaymentApplied in getAppliedAccountPayments()) {
 			if(isNull(accountPaymentApplied.getOrderPayment())) {
 				if(accountPaymentApplied.getAccountPaymentType().getSystemCode() == "aptCharge") {
+					if(getAmountReceived()>0){
 					amountUnassigned = val(precisionEvaluate(amountUnassigned + accountPaymentApplied.getAmount()));
+					}
+							
 				} else {
+					if(getAMountCredited() > 0){
 					amountUnassigned = val(precisionEvaluate(amountUnassigned - accountPaymentApplied.getAmount()));
 				}
 			}
+		}
 		}
 		
 		return amountUnassigned;

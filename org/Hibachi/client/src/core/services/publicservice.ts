@@ -40,6 +40,8 @@ class PublicService {
     public readyToPlaceOrder:boolean;
     public edit:String;
     public editPayment:boolean;
+    public imagePath:{[key:string]:any}={};
+    
     ///index.cfm/api/scope/
 
     //@ngInject
@@ -200,14 +202,16 @@ class PublicService {
 
         if (!action) {throw "Action is required exception";}
 
+        var urlBase = "";
+		
         //check if the caller is defining a path to hit, otherwise use the public scope.
         if (action.indexOf(":") !== -1){
-            this.baseActionPath = action; //any path
+            urlBase = action; //any path
         }else{
-            this.baseActionPath = "/index.cfm/api/scope/" + action;//public path
+            urlBase = "/index.cfm/api/scope/" + action;//public path
         }
 
-        let urlBase = this.appConfig.baseURL+this.baseActionPath;
+
 
         if(data){
             method = "post";
@@ -755,6 +759,61 @@ class PublicService {
             this.rates = result.data;
         });
     }
+
+    
+    /** Returns the state from the list of states by stateCode */
+    public getStateByStateCode = (stateCode) => {
+     	for (var state in this.states.stateCodeOptions){
+     		if (this.states.stateCodeOptions[state].value == stateCode){
+     			return this.states.stateCodeOptions[state];
+     		}
+     	}
+    }
+     
+    /** Returns the state from the list of states by stateCode */
+    public resetRequests = (request) => {
+     	delete this.requests[request];
+    }
+    
+    /** Returns true if the addresses match. */
+    public addressesMatch = (address1, address2) => {
+    	if (angular.isDefined(address1) && angular.isDefined(address2)){
+        	if ( (address1.streetAddress == address2.streetAddress && 
+	            address1.street2Address == address2.street2Address &&
+	            address1.city == address2.city &&
+	            address1.postalcode == address2.postalcode &&
+	            address1.countrycode == address2.countrycode)){
+            	return true;
+            }
+        }
+        return false;
+    }
+    
+    /** Should be pushed down into core. Returns the profile image by name. */
+   	public getResizedImageByProfileName = (profileName, skuIDList) => {
+   		this.imagePath = {};
+   		
+   		if (profileName == undefined){
+   			profileName = "medium";
+   		}
+   		
+   		$http.get("/index.cfm/api/scope/?context=getResizedImageByProfileName&profileName="+profileName+"&skuIds="+skuIDList).success(function(result){
+   		 	
+   		 	this.imagePath[skuIDList] = "";
+   		 	
+   		 	result = angular.fromJson(result);
+   		 	if (angular.isDefined(result.resizedImagePaths) && angular.isDefined(result.resizedImagePaths.resizedImagePaths) && result.resizedImagePaths.resizedImagePaths[0] != undefined){
+   		 		
+   		 		this.imagePath[skuIDList] = result.resizedImagePaths.resizedImagePaths[0];
+   		 		this.loading = false;
+   		 		return this.imagePath[skuIDList];
+   		 		
+   		 	}else{
+   		 		return "";
+   		 	}
+   		 	
+   		}); 
+   	}
 
       /**
      *  Returns true when the fulfillment body should be showing

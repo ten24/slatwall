@@ -375,18 +375,20 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
     			for(var i=1; i<=arrayLen(optionsArray); i++) {
     				var thisExistingOption = optionsArray[i];
-
-    				if( (sortType eq 'price' && thisOption.totalCharge < thisExistingOption.totalCharge)
-    				  	||
-    					(sortType eq 'sortOrder' && thisOption.shippingMethodSortOrder < thisExistingOption.shippingMethodSortOrder) ) {
-
+					
+					if( (!this.hasOption(optionsArray, thisOption)) && 
+    					(sortType eq 'price' && thisOption.totalCharge < thisExistingOption.totalCharge) ||
+    					(sortType eq 'sortOrder' && thisOption.shippingMethodSortOrder < thisExistingOption.shippingMethodSortOrder)) {
+						
     					arrayInsertAt(optionsArray, i, thisOption);
     					inserted = true;
     					break;
     				}
+    				
     			}
 
-    			if(!inserted) {
+    			if(!inserted && !this.hasOption(optionsArray, thisOption)) {
+    				
     				arrayAppend(optionsArray, thisOption);
     			}
 
@@ -400,6 +402,18 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     	}
     	return variables.shippingMethodOptions;
     }
+	
+	public any function hasOption(optionsArray, option){
+		var found = false;
+		for(var i=1; i<=arrayLen(optionsArray); i++) {
+			var thisExistingOption = optionsArray[i];
+			if (option.value == thisExistingOption.value){
+				found = true;
+				break;
+			}
+		}
+		return found;
+	}
 
 	public any function getShippingMethodRate() {
     	if(!isNull(getSelectedShippingMethodOption())) {
