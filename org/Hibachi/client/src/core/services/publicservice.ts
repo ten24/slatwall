@@ -563,52 +563,138 @@ class PublicService {
     };
 
     /** Allows an easy way to calling the service addOrderPayment.
-    */
+                    */
     public addGiftCardOrderPayments = (redeemGiftCardToAccount)=>{
+        this.hasGiftCardPayment = true;
         //reset the form errors.
         this.cart.hasErrors=false;
         this.cart.orderPayments.errors = {};
         this.cart.orderPayments.hasErrors = false;
-
+        this.finding = true;
+        
         //Grab all the data
-        var giftCards = this.account.giftCards;
+        var giftCards = [];
+        if (angular.isDefined(this.account.giftCards)){
+            giftCards = this.account.giftCards;    
+         }
+        
         var data = {};
-
+        
         data = {
             'newOrderPayment.paymentMethod.paymentMethodID':'50d8cd61009931554764385482347f3a',
             'newOrderPayment.redeemGiftCardToAccount':redeemGiftCardToAccount,
         };
-
+        
         //add the amounts from the gift cards
         for (var card in giftCards){
             if (giftCards[card].applied == true){
-
-                data['newOrderPayment.giftCardNumber'] = giftCards[card].giftCardCode;
-                if (giftCards[card].calculatedTotal < this.cart.calculatedTotal){
-                    data['newOrderPayment.amount'] = giftCards[card].calculatedBalanceAmount; //will use once we have amount implemented.
-                }else{
-                    data['newOrderPayment.amount'] = this.cart.calculatedTotal;//this is so it doesn't throw the 100% error
+                
+                //If the amount on the card is not enough to cover the balance, then use the full balance.
+                
+                //find the orderAmountNeeded
+                if (this.cart.orderPayments.length){
+                    for (var payment in this.cart.orderPayments){
+                        if (this.cart.orderPayments[payment].paymentMethod != null &&    
+                            this.cart.orderPayments[payment].paymentMethod.paymentMethodName == "Gift Card"
+                        ){
+                            if (angular.isDefined(this.cart.orderPayments[payment].orderAmountNeeded)){
+                                var remainingBalance = this.cart.orderPayments[payment].orderAmountNeeded;
+                                break;
+                            }
+                        }
+                    }
                 }
+                
+                //Base the balance off of the balanceAmount.
+                if (!angular.isDefined(remainingBalance)){
+                    var remainingBalance = giftCards[card].balanceAmount || giftCards[card].calculatedBalanceAmount;    
+                }
+                
+                
+                if (this.cart.calculatedTotal > remainingBalance){
+                    data['newOrderPayment.amount'] = remainingBalance;
+                }else{
+                    data['newOrderPayment.amount'] = this.cart.calculatedTotal;
+                }
+                data['newOrderPayment.order.account.accountID'] = this.account.accountID;
+                data['newOrderPayment.giftCardNumber'] = giftCards[card].giftCardCode;
                 data['copyFromType'] = "";
-
-                //Post the new order payment and set errors as needed.
-                this.$q.all([this.doAction('addOrderPayment', data, 'post')]).then(function(result){
-                    var serverData;
-                    if (angular.isDefined(result['0'])){
-                        serverData = result['0'].data;
-                    }
-                    if (serverData.cart.hasErrors || angular.isDefined(this.cart.orderPayments[this.cart.orderPayments.length-1]['errors']) && !this.cart.orderPayments[''+(this.cart.orderPayments.length-1)]['errors'].hasErrors){
-                        this.cart.hasErrors = true;
-                        this.readyToPlaceOrder = true;
-                        this.edit = '';
+                
+                this.doAction('addOrderPayment', data, 'post').then((result:any)=>{
+                    var serverData
+                    if (angular.isDefined(result)){
+                        serverData = result;
+                        console.log(serverData.cart);
+                        this.finding = false; 
+                        if (serverData.cart.hasErrors){
+                            console.log('yeww', serverData.cart.errors);
+                            this.cart.hasErrors = true;
+                            this.readyToPlaceOrder = false;
+                            this.edit = '';
+                            this.giftCardError = this.cart.errors.addOrderPayment[0];
+                            this.finding = false;
+                        }
                     }else{
-
+                        console.log("An unexpected error has occurred!");
                     }
-                });
+                });   
             }
         }
-
+              
     };
+
+    // /** Allows an easy way to calling the service addOrderPayment.
+    // */
+    // public addGiftCardOrderPayments = (redeemGiftCardToAccount)=>{
+    //     //reset the form errors.
+    //     this.cart.hasErrors=false;
+    //     this.cart.orderPayments.errors = {};
+    //     this.cart.orderPayments.hasErrors = false;
+    //     console.log("We adding?")
+    //     //Grab all the data
+    //     var giftCards = this.account.giftCards;
+    //     var data = {};
+
+    //     data = {
+    //         'newOrderPayment.paymentMethod.paymentMethodID':'50d8cd61009931554764385482347f3a',
+    //         'newOrderPayment.redeemGiftCardToAccount':redeemGiftCardToAccount,
+    //     };
+    //     console.log("We about to be floopin?")
+    //     console.log(giftCards)
+    //     //add the amounts from the gift cards
+    //     for (var card in giftCards){
+    //         console.log("IF YOU CAN HEAR ME SEND HELP IM TRAPPED")
+    //         console.log(giftCards[card])
+    //         if (giftCards[card].applied == true){
+
+    //             data['newOrderPayment.giftCardNumber'] = giftCards[card].giftCardCode;
+    //             if (giftCards[card].calculatedTotal < this.cart.calculatedTotal){
+    //                 data['newOrderPayment.amount'] = giftCards[card].calculatedBalanceAmount; //will use once we have amount implemented.
+    //             }else{
+    //                 data['newOrderPayment.amount'] = this.cart.calculatedTotal;//this is so it doesn't throw the 100% error
+    //             }
+    //             data['copyFromType'] = "";
+    //             console.log("We floopin")
+    //             //Post the new order payment and set errors as needed.
+    //             this.doAction('addOrderPayment', data, 'post').then(function(result){
+    //                 var serverData;
+    //                 if (angular.isDefined(result['0'])){
+    //                     serverData = result['0'].data;
+    //                 }
+    //                 console.log("We resulting?")
+    //                 if (serverData.cart.hasErrors || angular.isDefined(this.cart.orderPayments[this.cart.orderPayments.length-1]['errors']) && !this.cart.orderPayments[''+(this.cart.orderPayments.length-1)]['errors'].hasErrors){
+    //                     this.cart.hasErrors = true;
+    //                     this.readyToPlaceOrder = true;
+    //                     this.edit = '';
+    //                     console.log("We erroring :(")
+    //                 }else{
+    //                     console.log("Success!")
+    //                 }
+    //             });
+    //         }
+    //     }
+
+    // };
 
     /** returns the index of the last selected shipping method. This is used to get rid of the delay.
     */
@@ -708,28 +794,44 @@ class PublicService {
     //Applies a giftcard from the user account onto the payment.
     public applyGiftCard = (giftCardCode)=>{
         this.finding = true;
-
-        //find the code already on the account.
-        var found = false;
-        for (var giftCard in this.account.giftCards){
-            if (this.account.giftCards[giftCard].balanceAmount == 0){
-                this.account.giftCards[giftCard]['error'] = "The balance is $0.00 for this card.";
-                found = false;
-            }
-            if (this.account.giftCards[giftCard].giftCardCode == giftCardCode){
-                this.account.giftCards[giftCard].applied = true;
-                found = true;
-            }
-        }
-        if (found){
-            this.finding = false;
-            this.addGiftCardOrderPayments(false);
-        }else{
-            this.finding = false;
-            this.addGiftCardOrderPayments(true);
-        }
-
+        //set the card to applied
+        var giftCard = {
+            "giftCardCode":giftCardCode,
+            "applied":true
+        };
+        this.account.giftCards.push(giftCard);
+        this.addGiftCardOrderPayments(true);
+        this.finding = false;
     };
+
+    // //Applies a giftcard from the user account onto the payment.
+    // public applyGiftCard = (giftCardCode)=>{
+    //     this.finding = true;
+    //     console.log("We finding? ", this.finding);
+    //     //find the code already on the account.
+    //     var found = false;
+    //     console.log("account gcs", this.account.giftCards);
+    //     console.log("gCode", giftCardCode)
+    //     for (var giftCard in this.account.giftCards){
+    //         if (this.account.giftCards[giftCard].balanceAmount == 0){
+    //             this.account.giftCards[giftCard]['error'] = "The balance is $0.00 for this card.";
+    //             found = false;
+    //         }
+    //         if (this.account.giftCards[giftCard].giftCardCode == giftCardCode){
+    //             console.log("WHat?!")
+    //             this.account.giftCards[giftCard].applied = true;
+    //             found = true;
+    //         }
+    //     }
+    //     if (found){
+    //         this.finding = false;
+    //         this.addGiftCardOrderPayments(false);
+    //     }else{
+    //         this.finding = false;
+    //         this.addGiftCardOrderPayments(true);
+    //     }
+
+    // };
 
     public getResizedImageByProfileName = (profileName, skuIDList)=>{
                
