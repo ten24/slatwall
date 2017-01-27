@@ -581,7 +581,7 @@ component extends="FW1.framework" {
 						coreBF.declareBean("hibachiJWT", "#variables.framework.applicationKey#.org.Hibachi.HibachiJWT",false);
 					}
 					if(!coreBF.containsBean("hibachiRecaptcha")){
-						coreBF.declareBean("hibachiRecaptcha", "#variables.framework.applicationKey#.org.Hibachi.hibachiRecaptcha",false);
+						coreBF.declareBean("hibachiRecaptcha", "#variables.framework.applicationKey#.org.Hibachi.HibachiRecaptcha",false);
 					}
 					
 					
