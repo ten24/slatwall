@@ -1,1 +1,0 @@
-<cfset $.slatwall.getService('hibachiCollectionService').collectionConfigExport(rc) />

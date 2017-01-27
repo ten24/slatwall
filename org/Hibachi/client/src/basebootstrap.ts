@@ -34,7 +34,7 @@ export class BaseBootStrapper{
                 var invalidCache = [];
                 try{
                     var hashedData = md5(localStorage.getItem('attributeMetaData'));
-                    console.log(hashedData);
+                    
                     if(resp.data.data['attributeCacheKey'] === hashedData.toUpperCase()){
                         coremodule.constant('attributeMetaData',JSON.parse(localStorage.getItem('attributeMetaData')));
                     }else{

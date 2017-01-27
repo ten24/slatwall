@@ -127,6 +127,20 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals( '123 Main Street', variables.entity.getBillingAddress().getStreetAddress() );
 		
 	}
+	
+	public void function isValidTest(){
+		var accountPaymentMethodData={
+			accountPaymentMethodID="",
+			paymentMethod={
+				//credit card
+				paymentMethodID="444df303dedc6dab69dd7ebcc9b8036a"
+			}
+		};
+		var accountPaymentMethod = createPersistedTestEntity('AccountPaymentMethod',accountPaymentMethodData);
+		accountPaymentMethod.validate('save');
+		assert(accountPaymentMethod.hasErrors());		
+	}
+	
 }
 
 
