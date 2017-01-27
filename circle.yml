@@ -36,7 +36,7 @@ dependencies:
 
     # Install Sauce Labs Connector
     #- wget https://saucelabs.com/downloads/sc-latest-linux.tar.gz
-    - tar -xzf sc-latest-linux.tar.gz
+    #- tar -xzf sc-latest-linux.tar.gz
 
 test:
   pre:
