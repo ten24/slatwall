@@ -132,11 +132,10 @@ Notes:
 	</cffunction>
 
 	<cffunction name="sendEmailQueue" returntype="void" access="public">
-
+		<cfset writeLog(file="Slatwall.log", text="General Log - sendingEmailQueue");/>
 		<cfset var email = "" />
-
 		<!--- Loop over the queue --->
-		<cfloop array="#getHibachiScope().getEmailQueue()#" index="email">
+		<cfloop array="#getHibachiScope().getEmailQueue()#" index="local.email">
 
 			<!--- Send the email --->
 			<cfset sendEmail(email) />
