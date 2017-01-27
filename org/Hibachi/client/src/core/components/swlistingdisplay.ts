@@ -10,7 +10,7 @@ class SWListingDisplayController{
     public allprocessobjectproperties:string = "false";
     public aggregates = [];
     public buttonGroup = [];
-    public childCollectionConfigs = {}; 
+    public childCollectionConfigs = {};
     public collectionID;
     public collectionPromise;
     public collectionData:any;
@@ -24,12 +24,12 @@ class SWListingDisplayController{
     public columns = [];
     public columnCount;
     public commonProperties;
-    public customListingControls:boolean; 
+    public customListingControls:boolean;
     public defaultSelectEvent;
     public disableRules = [];
     public edit:boolean;
     public expandable:boolean;
-    public expandableRules = []; 
+    public expandableRules = [];
     public exampleEntity:any = "";
     public exportAction;
     public filters = [];
@@ -38,8 +38,8 @@ class SWListingDisplayController{
     public getCollection;
     public getChildCount;
     public hasCollectionPromise;
-    public hideRules = []; 
-    public multiSlot:boolean; 
+    public hideRules = [];
+    public multiSlot:boolean;
     public multiselectable:boolean = false;
     public multiselectFieldName;
     public multiselectIdPaths;
@@ -47,8 +47,8 @@ class SWListingDisplayController{
     public multiselectValues;
     public multipleCollectionDeffered:any;
     public multipleCollectionPromise:any;
-    public singleCollectionDeferred:any; 
-    public singleCollectionPromise:any; 
+    public singleCollectionDeferred:any;
+    public singleCollectionPromise:any;
     public norecordstext;
     public orderBys = [];
     public orderByStates = {};
@@ -68,21 +68,21 @@ class SWListingDisplayController{
 
     public selectFieldName;
     public selectable:boolean = false;
-    public showOrderBy:boolean; 
+    public showOrderBy:boolean;
     public showSearch:boolean;
-    public showSearchFilters = false; 
+    public showSearchFilters = false;
     public showTopPagination:boolean;
-    public showFilters:boolean; 
+    public showFilters:boolean;
     public sortable:boolean = false;
-    public sortableFieldName:string; 
+    public sortableFieldName:string;
     public sortProperty;
     public tableID:string;
     public tableclass:string;
     public tableattributes:string;
-    public typeaheadDataKey:string; 
+    public typeaheadDataKey:string;
     public hasSearch:boolean;
-    public baseEntity:any; 
-    public baseEntityName:string; 
+    public baseEntity:any;
+    public baseEntityName:string;
     public baseEntityID:string;
 
     public selections;
@@ -99,14 +99,14 @@ class SWListingDisplayController{
         public $hibachi,
         public utilityService,
         public collectionConfigService,
-        public listingService, 
+        public listingService,
         public paginationService,
         public selectionService,
         public observerService,
         public rbkeyService
-    ){  
-        this.initializeState(); 
-        
+    ){
+        this.initializeState();
+
         //promises to determine which set of logic will run
         this.multipleCollectionDeffered = $q.defer();
         this.multipleCollectionPromise = this.multipleCollectionDeffered.promise;
@@ -115,7 +115,7 @@ class SWListingDisplayController{
 
         if(angular.isDefined(this.collection) && angular.isString(this.collection)){
             //not sure why we have two properties for this
-            this.baseEntityName = this.collection; 
+            this.baseEntityName = this.collection;
             this.collectionObject = this.collection;
             this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
             this.multipleCollectionDeffered.reject();
@@ -125,45 +125,45 @@ class SWListingDisplayController{
              this.hasCollectionPromise = true;
              this.multipleCollectionDeffered.reject();
         }
-        
+
         if(this.collectionConfig != null){
             this.multipleCollectionDeffered.reject();
         }
-     
-        this.listingService.setListingState(this.tableID, this); 
+
+        this.listingService.setListingState(this.tableID, this);
 
         //this is performed after the listing state is set above to populate columns and multiple collectionConfigs if present
         this.$transclude(this.$scope,()=>{});
 
         this.singleCollectionPromise.then(()=>{
-            this.multipleCollectionDeffered.reject(); 
-        });     
-        
+            this.multipleCollectionDeffered.reject();
+        });
+
         this.multipleCollectionPromise.then(
             ()=>{
                 //now do the intial setup
-                this.listingService.setupInMultiCollectionConfigMode(this.tableID); 
+                this.listingService.setupInMultiCollectionConfigMode(this.tableID);
             }
         ).catch(
             ()=>{
                 //do the initial setup for single collection mode
-                this.listingService.setupInSingleCollectionConfigMode(this.tableID,this.$scope); 
+                this.listingService.setupInSingleCollectionConfigMode(this.tableID,this.$scope);
             }
         ).finally(
             ()=>{
                 if(angular.isUndefined(this.getCollection)){
                     this.getCollection = this.listingService.setupDefaultGetCollection(this.tableID);
                 }
-                
+
                 this.paginator.getCollection = this.getCollection;
-        		
+
                 var getCollectionEventID = this.tableID;
         		this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
             }
         );
-        
+
     }
-    
+
     private getCollectionObserver=(param)=> {
         console.warn("getCollectionObserver", param)
         this.collectionConfig.loadJson(param.collectionConfig);
@@ -172,21 +172,21 @@ class SWListingDisplayController{
             ()=>{
                 this.getCollection();
             }
-        ); 
+        );
     };
 
     private initializeState = () =>{
         if(angular.isDefined(this.name)){
-            this.tableID = this.name; 
+            this.tableID = this.name;
         } else {
             this.tableID = 'LD'+this.utilityService.createID();
         }
         if (angular.isUndefined(this.collectionConfig)){
             //make it available to swCollectionConfig
-            this.collectionConfig = null; 
+            this.collectionConfig = null;
         }
         if(angular.isUndefined(this.multiSlot)){
-            this.multiSlot = false; 
+            this.multiSlot = false;
         }
         if(angular.isDefined(this.administrativeCount)){
             this.administrativeCount = parseInt(this.administrativeCount);
@@ -209,40 +209,40 @@ class SWListingDisplayController{
             this.administrativeCount++;
             this.adminattributes = this.getAdminAttributesByType('add');
         }
-        if( this.collectionConfig != null && 
-            angular.isDefined(this.collection) && 
+        if( this.collectionConfig != null &&
+            angular.isDefined(this.collection) &&
             angular.isDefined(this.collection.collectionConfig)
         ){
-            this.collectionConfig = this.collection.collectionConfig; 
+            this.collectionConfig = this.collection.collectionConfig;
         }
-        if( angular.isUndefined(this.collectionObject) && 
-            angular.isDefined(this.collection) && 
+        if( angular.isUndefined(this.collectionObject) &&
+            angular.isDefined(this.collection) &&
             angular.isDefined(this.collection.collectionObject)
         ){
-            this.collectionObject = this.collection.collectionObject; 
+            this.collectionObject = this.collection.collectionObject;
         }
         //set defaults if value is not specifies
         this.processObjectProperties = this.processObjectProperties || '';
         this.recordProcessButtonDisplayFlag = this.recordProcessButtonDisplayFlag || true;
         this.norecordstext = this.rbkeyService.getRBKey('entity.' + this.collectionObject + '.norecords');
         if(angular.isUndefined(this.defaultSelectEvent)){
-            this.defaultSelectEvent = 'swSelectionToggleSelection' + this.tableID; 
+            this.defaultSelectEvent = 'swSelectionToggleSelection' + this.tableID;
         }
         if(angular.isUndefined(this.isAngularRoute)){
-            this.isAngularRoute = true;    
+            this.isAngularRoute = true;
         }
         if(angular.isUndefined(this.customListingControls)){
-            this.customListingControls = false; 
+            this.customListingControls = false;
         }
         if(angular.isUndefined(this.hasSearch)){
             this.hasSearch = true;
             this.showSearch = true;
         }
         if(angular.isUndefined(this.showOrderBy)){
-            this.showOrderBy = true; 
+            this.showOrderBy = true;
         }
         if(angular.isUndefined(this.expandable)){
-            this.expandable = false; 
+            this.expandable = false;
         }
         //setup export action
         if(angular.isDefined(this.exportAction)){
@@ -270,7 +270,7 @@ class SWListingDisplayController{
     }
 
     public getPageRecordMatchesHideRule = (pageRecord)=>{
-        return this.listingService.getPageRecordMatchesHideRule(this.tableID, pageRecord); 
+        return this.listingService.getPageRecordMatchesHideRule(this.tableID, pageRecord);
     }
 
     public getPageRecordValueByColumn = (pageRecord, column)=>{
@@ -282,42 +282,42 @@ class SWListingDisplayController{
     }
 
     public getPageRecordMatchesDisableRule = (pageRecord)=>{
-        return this.listingService.getPageRecordMatchesDisableRule(this.tableID, pageRecord); 
+        return this.listingService.getPageRecordMatchesDisableRule(this.tableID, pageRecord);
     }
-    
+
     public getKeyOfMatchedExpandableRule = (pageRecord)=>{
         return this.listingService.getKeyOfMatchedExpandableRule(this.tableID, pageRecord);
     }
-    
+
     public getPageRecordMatchesExpandableRule = (pageRecord)=>{
         return this.listingService.getPageRecordMatchesExpandableRule(this.tableID, pageRecord);
     }
-    
+
     public getPageRecordChildCollectionConfigForExpandableRule = (pageRecord) => {
         return this.listingService.getPageRecordChildCollectionConfigForExpandableRule(this.tableID, pageRecord);
     }
 
     public getPageRecordRefreshChildrenEvent = (pageRecord) => {
         if(this.listingService.hasPageRecordRefreshChildrenEvent(this.tableID, pageRecord)){
-            return this.listingService.getPageRecordRefreshChildrenEvent(this.tableID, pageRecord); 
-        } else { 
-            return ""; 
+            return this.listingService.getPageRecordRefreshChildrenEvent(this.tableID, pageRecord);
+        } else {
+            return "";
         }
     }
-    
+
     public getExampleEntityForExpandableRecord = (pageRecord) =>{
-        return this.listingService.getExampleEntityForExpandableRecord(this.tableID, pageRecord); 
+        return this.listingService.getExampleEntityForExpandableRecord(this.tableID, pageRecord);
     }
-    
+
     public getNGClassObjectForPageRecordRow = (pageRecord)=>{
         return this.listingService.getNGClassObjectForPageRecordRow(this.tableID, pageRecord);
     };
-    
+
     public getNGClassObjectForPageRecordCell = (pageRecord,column)=>{
-        var classObjectString = "{"; 
-        return classObjectString + "}"; 
+        var classObjectString = "{";
+        return classObjectString + "}";
     };
-    
+
     private getColorFilterConditionString = (colorFilter, pageRecord)=>{
        return this.listingService.getColorFilterConditionString(colorFilter, pageRecord);
     };
@@ -325,18 +325,18 @@ class SWListingDisplayController{
     private hasSingleCollectionConfig=()=>{
         return this.collectionConfig && this.collectionConfigs.length == 0;
     }
-    
+
     public toggleOrderBy = (column) => {
         this.listingService.toggleOrderBy(this.tableID, column);
     };
-    
+
     public columnOrderByIndex = (column) =>{
         return this.listingService.columnOrderByIndex(this.tableID, column);
     };
 
     public updateMultiselectValues = (res)=>{
         this.multiselectValues = this.selectionService.getSelections(this.tableID);
-        console.log("updateMultiselectValues", this.multiselectValues);
+
         if(this.selectionService.isAllSelected(this.tableID)){
             this.multiselectCount = this.collectionData.recordsCount - this.selectionService.getSelectionCount(this.tableID);
         }else{
@@ -397,8 +397,8 @@ class SWListingDisplayController{
                     }
                 ];
             }
-        } else { 
-            //multiCollectionConfig logic 
+        } else {
+            //multiCollectionConfig logic
         }
         $('body').append('<form action="/?'+this.$hibachi.getConfigValue('action')+'=main.collectionConfigExport" method="post" id="formExport"></form>');
         $('#formExport')
@@ -412,7 +412,7 @@ class SWListingDisplayController{
     };
 
     public selectCurrentPageRecords=()=>{
-        this.listingService.selectCurrentPageRecords(this.tableID); 
+        this.listingService.selectCurrentPageRecords(this.tableID);
     };
 
     //these are no longer going to work
@@ -430,17 +430,17 @@ class SWListingDisplay implements ng.IDirective{
     public restrict:string = 'E';
     public scope = {};
     public transclude:any = {
-        addAction:"?swListingAddAction", 
-        detailAction:"?swListingDetailAction", 
+        addAction:"?swListingAddAction",
+        detailAction:"?swListingDetailAction",
         deleteAction:"?swListingDeleteAction",
-        editAction:"?swListingEditAction", 
+        editAction:"?swListingEditAction",
         saveAction:"?swListingSaveAction",
-        columns:"?swListingColumns", 
+        columns:"?swListingColumns",
         collectionConfigs:"?swCollectionConfigs",
         disableRules:"?swDisabledRowRules",
         expandableRules:"?swExpandableRowRules",
         customListingControls:"?swCustomListingControls"
-    }; 
+    };
     public bindToController={
 
             isRadio:"=?",
@@ -554,7 +554,7 @@ class SWListingDisplay implements ng.IDirective{
     public controller:any=SWListingDisplayController;
     public controllerAs="swListingDisplay";
     public templateUrl;
-    
+
     public static Factory(){
         var directive:ng.IDirectiveFactory=(
             corePartialsPath,
