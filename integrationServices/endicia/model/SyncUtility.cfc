@@ -102,7 +102,7 @@
 		
 		<!--- Loop over order fulfillments and append each one to a new line in the file --->
 		<cfset var orderFulfillment = "" />
-		<cfloop array="#orderFulfillmentSmartList.getRecords()#" index="orderFulfillment">
+		<cfloop array="#orderFulfillmentSmartList.getRecords()#" index="local.orderFulfillment">
 			<cftry>
 				
 				<!--- Create fulfillment line --->

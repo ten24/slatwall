@@ -58,7 +58,7 @@ Notes:
 		<cfset var rs = "" />
 		<cfset var tableList = getTableList() />
 		
-		<cfloop list="#tableList#" index="tableName">
+		<cfloop list="#tableList#" index="local.tableName">
 			
 			<cfif not listFind("SwLog,SwSession", tableName)>
 				<cfquery name="rs">
@@ -83,7 +83,7 @@ Notes:
 		<cfset var columnName = "" />
 		<cfset var tableList = getTableList() />
 		
-		<cfloop list="#tableList#" index="tableName">
+		<cfloop list="#tableList#" index="local.tableName">
 			
 			<cfset var importQuery = arguments.pluginConfig.getCustomSetting('#tableName#') />
 			
@@ -111,7 +111,7 @@ Notes:
 							)
 						VALUES
 							(
-								<cfloop list="#importQuery.columnList#" index="columnName">
+								<cfloop list="#importQuery.columnList#" index="local.columnName">
 									'#importQuery[ columnName ]#'
 								</cfloop>
 							)
