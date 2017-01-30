@@ -227,13 +227,18 @@ component output="false" accessors="true" extends="HibachiController" {
 
         var service = getHibachiScope().getService("hibachiValidationService");
         var objectName = arguments.rc.object;
+		var entityService = getService("hibachiService").getServiceByEntityName(entityName=objectName); 
         var propertyIdentifier = arguments.rc.propertyIdentifier;
         var value = arguments.rc.value;
-        var entity = getService('hibachiService').invokeMethod('new#objectName#');
-        entity.invokeMethod('set#propertyIdentifier#',{1=value});
-
-
-        var response["uniqueStatus"] = service.validate_unique(entity, propertyIdentifier);
+	
+		if(structKeyExists(arguments.rc, "objectID")){
+			var entity = entityService.invokeMethod('get#objectName#', {1=arguments.rc.objectID});
+		}  
+		if(isNull(entity)){
+			var entity = getService('hibachiService').invokeMethod('new#objectName#');
+		}
+		entity.invokeMethod('set#propertyIdentifier#',{1=value});
+		var response["uniqueStatus"] = service.validate_unique(entity, propertyIdentifier);
         arguments.rc.apiResponse.content = response;
 
     }
@@ -636,6 +641,8 @@ component output="false" accessors="true" extends="HibachiController" {
             handle accessing collections by id
         */
         param name="arguments.rc.propertyIdentifiers" default="";
+        
+        
         //first check if we have an entityName value
         if(!structKeyExists(arguments.rc, "entityName")) {
             arguments.rc.apiResponse.content['account'] = getHibachiScope().invokeMethod("getAccountData");

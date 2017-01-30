@@ -42,7 +42,7 @@ class SWImageDetailModalLauncherController{
             }
         ).finally(
             ()=>{
-                console.log("using image path", this.imagePathToUse);
+
                 var skuData = {
                     skuID:this.skuId,
                     skuCode:this.skuCode,

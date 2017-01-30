@@ -246,13 +246,13 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	}
 
 	public numeric function getChargeAfterDiscount() {
-		return precisionEvaluate(getFulfillmentCharge() - getDiscountAmount());
+		return val(precisionEvaluate(getFulfillmentCharge() - getDiscountAmount()));
 	}
 
 	public numeric function getDiscountAmount() {
 		discountAmount = 0;
 		for(var i=1; i<=arrayLen(getAppliedPromotions()); i++) {
-			discountAmount = precisionEvaluate(discountAmount + getAppliedPromotions()[i].getDiscountAmount());
+			discountAmount = val(precisionEvaluate(discountAmount + getAppliedPromotions()[i].getDiscountAmount()));
 		}
 		return discountAmount;
 	}
@@ -262,14 +262,14 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	}
 
     public numeric function getFulfillmentTotal() {
-    	return precisionEvaluate(getSubtotalAfterDiscountsWithTax() + getChargeAfterDiscount());
+    	return val(precisionEvaluate(getSubtotalAfterDiscountsWithTax() + getChargeAfterDiscount()));
     }
 
    	public numeric function getItemDiscountAmountTotal() {
    		if(!structKeyExists(variables, "itemDiscountAmountTotal")) {
    			variables.itemDiscountAmountTotal = 0;
    			for(var i=1; i<=arrayLen(getOrderFulfillmentItems()); i++) {
-				variables.itemDiscountAmountTotal = precisionEvaluate(variables.itemDiscountAmountTotal + getOrderFulfillmentItems()[i].getDiscountAmount());
+				variables.itemDiscountAmountTotal = val(precisionEvaluate(variables.itemDiscountAmountTotal + getOrderFulfillmentItems()[i].getDiscountAmount()));
 			}
    		}
 		return variables.itemDiscountAmountTotal;
@@ -375,18 +375,20 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
     			for(var i=1; i<=arrayLen(optionsArray); i++) {
     				var thisExistingOption = optionsArray[i];
-
-    				if( (sortType eq 'price' && thisOption.totalCharge < thisExistingOption.totalCharge)
-    				  	||
-    					(sortType eq 'sortOrder' && thisOption.shippingMethodSortOrder < thisExistingOption.shippingMethodSortOrder) ) {
-
+					
+					if( (!this.hasOption(optionsArray, thisOption)) && 
+    					(sortType eq 'price' && thisOption.totalCharge < thisExistingOption.totalCharge) ||
+    					(sortType eq 'sortOrder' && thisOption.shippingMethodSortOrder < thisExistingOption.shippingMethodSortOrder)) {
+						
     					arrayInsertAt(optionsArray, i, thisOption);
     					inserted = true;
     					break;
     				}
+    				
     			}
 
-    			if(!inserted) {
+    			if(!inserted && !this.hasOption(optionsArray, thisOption)) {
+    				
     				arrayAppend(optionsArray, thisOption);
     			}
 
@@ -400,6 +402,18 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     	}
     	return variables.shippingMethodOptions;
     }
+	
+	public any function hasOption(optionsArray, option){
+		var found = false;
+		for(var i=1; i<=arrayLen(optionsArray); i++) {
+			var thisExistingOption = optionsArray[i];
+			if (option.value == thisExistingOption.value){
+				found = true;
+				break;
+			}
+		}
+		return found;
+	}
 
 	public any function getShippingMethodRate() {
     	if(!isNull(getSelectedShippingMethodOption())) {
@@ -450,7 +464,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	    	variables.subtotal = 0;
 	    	for( var i=1; i<=arrayLen(getOrderFulfillmentItems()); i++ ) {
 				if(getOrderFulfillmentItems()[i].isRootOrderItem()){
-				    variables.subtotal = precisionEvaluate(variables.subtotal + getOrderFulfillmentItems()[i].getExtendedPrice());	    	
+				    variables.subtotal = val(precisionEvaluate(variables.subtotal + getOrderFulfillmentItems()[i].getExtendedPrice()));	    	
 	    		}
 	    	}
   		}
@@ -458,18 +472,18 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     }
 
     public numeric function getSubtotalAfterDiscounts() {
-    	return precisionEvaluate(getSubtotal() - getItemDiscountAmountTotal());
+    	return val(precisionEvaluate(getSubtotal() - getItemDiscountAmountTotal()));
     }
 
     public numeric function getSubtotalAfterDiscountsWithTax() {
-    	return precisionEvaluate(getSubtotal() - getItemDiscountAmountTotal() + getTaxAmount());
+    	return val(precisionEvaluate(getSubtotal() - getItemDiscountAmountTotal() + getTaxAmount()));
     }
 
     public numeric function getTaxAmount() {
     	if( !structkeyExists(variables, "taxAmount") ) {
     		variables.taxAmount = 0;
 	    	for( var i=1; i<=arrayLen(getOrderFulfillmentItems()); i++ ) {
-	    		variables.taxAmount = precisionEvaluate(variables.taxAmount + getOrderFulfillmentItems()[i].getTaxAmount());
+	    		variables.taxAmount = val(precisionEvaluate(variables.taxAmount + getOrderFulfillmentItems()[i].getTaxAmount()));
 	    	}
     	}
     	return variables.taxAmount;
@@ -480,7 +494,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
     	for( var orderItem in getOrderFulfillmentItems()) {
     		var convertedWeight = getService("measurementService").convertWeightToGlobalWeightUnit(orderItem.getSku().setting('skuShippingWeight'), orderItem.getSku().setting('skuShippingWeightUnitCode'));
-    		totalShippingWeight = precisionEvaluate(totalShippingWeight + (convertedWeight * orderItem.getQuantity()));
+    		totalShippingWeight = val(precisionEvaluate(totalShippingWeight + (convertedWeight * orderItem.getQuantity())));
     	}
 
     	return totalShippingWeight;
@@ -493,7 +507,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     				  		|| (
 		    				  	!isNull(this.getFulfillmentMethod())
 		    				  	&& this.getFulfillmentMethod().setting('fulfillmentMethodAutoMinReceivedPercentage')
-		    						<= precisionEvaluate( this.getOrder().getPaymentAmountReceivedTotal() * 100 / this.getOrder().getTotal() )
+		    						<= val(precisionEvaluate( this.getOrder().getPaymentAmountReceivedTotal() * 100 / this.getOrder().getTotal() ))
 		    				)
     				  )
     			);
@@ -762,7 +776,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     }
 
 	public numeric function getDiscountTotal() {
-		return precisionEvaluate(getDiscountAmount() + getItemDiscountAmountTotal());
+		return val(precisionEvaluate(getDiscountAmount() + getItemDiscountAmountTotal()));
 	}
 
 	public numeric function getShippingCharge() {

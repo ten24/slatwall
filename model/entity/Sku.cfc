@@ -267,7 +267,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	                }
 	                break;
 	            case "percentage":
-	                amount = precisionEvaluate(precisionEvaluate(amount * variables.redemptionAmount)/100);
+	                amount = val(precisionEvaluate(precisionEvaluate(amount * variables.redemptionAmount)/100));
 	                break;
 	        }
 	    }else{

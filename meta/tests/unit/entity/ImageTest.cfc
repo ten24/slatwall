@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,26 +45,27 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+*/
+component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
+
+	// @hint put things in here that you want to run befor EACH test
+	public void function setUp() {
+		super.setup();
+		
+		variables.entity = request.slatwallScope.newEntity( 'Image' );
+	}
+	
+	public function getResizedImagePathGetsMissingImagePath(){
+		var imagePath = variables.entity.getResizedImagePath();
+		assert(fileExists(expandPath(imagePath)));
+	}
+	
+	public function getResizedImageCreatesImgElementWithMissingPath(){
+		var imagePath = variables.entity.getResizedImagePath();
+		var image = variables.entity.getResizedImage();
+		assert(image EQ '<img src="#imagePath#" />');
+	}
+	
+}
 
 
-<cfparam name="rc.eventRegistration" type="any" />
-
-<cfoutput>
-	<hb:HibachiEntityProcessForm entity="#rc.eventRegistration#" edit="#rc.edit#" sRedirectAction="admin:entity.editeventRegistration">
-		
-		<hb:HibachiEntityActionBar type="preprocess" object="#rc.eventRegistration#">
-		</hb:HibachiEntityActionBar>
-		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				
-				<cfinclude template="preprocesseventRegistration_include/changestatuscomment.cfm" />
-				
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-		
-	</hb:HibachiEntityProcessForm>
-</cfoutput>

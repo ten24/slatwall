@@ -276,6 +276,20 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		}
 	}
 
+	public void function cancelOrder(required any rc) {
+		var order = getOrderService().getOrder( arguments.rc.orderID );
+		if(!isNull(order) && order.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID()){
+			var order = getOrderService().process( order, {}, "cancelOrder");
+			if( !order.hasErrors() ) {
+				getHibachiScope().addActionResult( "public:account.cancelOrder", false); 
+			} else {
+				getHibachiScope().addActionResult( "public:account.cancelOrder", true); 
+			}
+		} else {
+			getHibachiScope().addActionResult( "public:account.cancelOrder", true); 
+		}  
+	} 
+
 	public void function duplicateOrder() {
 		param name="arguments.rc.orderID" default="";
 		param name="arguments.rc.setAsCartFlag" default="0";
@@ -296,6 +310,85 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			getHibachiScope().addActionResult( "public:account.duplicateOrder", false );
 		} else {
 			getHibachiScope().addActionResult( "public:account.duplicateOrder", true );
+		}
+	}
+
+	// Add Order Payment with account checks
+	public void function addOrderPayment(required any rc) {
+		param name="rc.newOrderPayment" default="#structNew()#";
+		param name="rc.newOrderPayment.orderPaymentID" default="";
+		param name="rc.accountAddressID" default="";
+		param name="rc.accountPaymentMethodID" default="";
+
+		// Make sure that someone isn't trying to pass in another users orderPaymentID
+		if(len(rc.newOrderPayment.orderPaymentID)) {
+			var orderPayment = getOrderService().getOrderPayment(rc.newOrderPayment.orderPaymentID);
+			if(orderPayment.getOrder().getOrderID() != getHibachiScope().cart().getOrderID()) {
+				rc.newOrderPayment.orderPaymentID = "";
+			}
+		}
+		
+		
+		if (structKeyExists(rc.newOrderPayment, "order") && structKeyExists(rc.newOrderPayment.order, "orderID")){
+			//if they provided an orderID, then get the order and check that they own it.
+			var order = getService("OrderService").getOrder(rc.newOrderPayment.order.orderID);
+			if (!isNull(order)){
+				var orderAccount = order.getAccount();
+				if (orderAccount != getHibachiScope().getAccount()){
+					//they are not the same.
+					return;
+				}
+			}
+		}
+		rc.newOrderPayment.orderPaymentType.typeID = '444df2f0fed139ff94191de8fcd1f61b';
+
+		var cart = getOrderService().processOrder( getHibachiScope().cart(), arguments.rc, 'addOrderPayment');
+
+		getHibachiScope().addActionResult( "public:cart.addOrderPayment", cart.hasErrors() );
+	}
+	
+	// Applies a Payment to an order. This is used when a deposit was paid but a user needs to complete the order.
+	public void function applyPayment(required any rc) {
+		param name="rc.orderID" default="";
+		param name="rc.orderPaymentAmount" default="";
+		
+		//Find the transaction and call the above method.
+		if (!isNull(arguments.rc.orderID)){
+			
+			//find the order.
+			var order = getService("OrderService").getOrder(arguments.rc.orderID);
+			if (isNull(order)){
+				return;
+			}
+			
+			//find the payment.
+			var orderPayments = order.getOrderPayments();
+			if (isNull(orderPayments)){
+				return;
+			}
+			
+			//create the transaction.
+			for (var orderPayment in orderPayments){
+				if(orderPayment.getStatusCode() == 'opstActive') {
+ 					
+ 					//pay the balance or the set amount that the user wanted to pay this payment.
+ 					var amount = 0;
+ 					if (!isNull(rc.orderPaymentAmount)){
+ 						amount = rc.orderPaymentAmount;
+ 					}else{
+ 						amount = orderPayment.getOrder().getPaymentAmountDue();
+ 					}
+	 				var processData = {
+	 					amount = amount,
+	 					transactionType = "authorizeAndCharge"
+	 				};
+	 				
+					orderPayment = getService("OrderService").processOrderPayment(orderPayment, processData, 'createTransaction');
+					if (orderPayment.hasErrors()){
+						getHibachiScope().addErrors(orderPayment.getErrors());
+					}
+				}
+			}
 		}
 	}
 

@@ -297,13 +297,18 @@ class ListingService{
 
     public markSaved = (listingID:string, pageRecordIndex) => {
         var pageRecords = this.getListingPageRecords(listingID); 
+        var savePromises = []; 
         for(var key in pageRecords[pageRecordIndex].editedFields){
             if(angular.isFunction(pageRecords[pageRecordIndex].editedFields[key])){
-                pageRecords[pageRecordIndex].editedFields[key]();
+                savePromises.push(pageRecords[pageRecordIndex].editedFields[key]());
             }
         }
-        delete pageRecords[pageRecordIndex].editedFields;
-        pageRecords[pageRecordIndex].edited = false; 
+        this.$q.all(savePromises).then(
+            ()=>{
+                delete pageRecords[pageRecordIndex].editedFields;
+                pageRecords[pageRecordIndex].edited = false; 
+            }
+        )
     }
     //End Row Save Functionality
 
@@ -369,7 +374,7 @@ class ListingService{
         if(this.getListing(listingID).collectionConfig != null && this.getListing(listingID).collectionConfig.baseEntityAlias != null){
             column.propertyIdentifier = this.getListing(listingID).collectionConfig.baseEntityAlias + "." + column.propertyIdentifier;
         } else if (this.getListingBaseEntityName(listingID) != null) {
-            column.propertyIdentifier = '_' + this.getListingBaseEntityName(listingID) + '.' + column.propertyIdentifier;
+            column.propertyIdentifier = '_' + this.getListingBaseEntityName(listingID).toLowerCase() + '.' + column.propertyIdentifier;
         }
         if(this.getListingColumnIndexByPropertyIdentifier(listingID, column.propertyIdentifier) === -1){
             if(column.aggregate){

@@ -138,9 +138,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		setHibachiCollectionService(getService('hibachiCollectionService'));
 	}
 	
-	public numeric function getCurrentPageDeclaration(){
-		return getPageRecordsStart();
-	}
 	
 	public array function getAuthorizedProperties(){
 		if(!structKeyExists(variables,'authorizedProperties')){
@@ -564,7 +561,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				var comparison = "=";
 				try{
 					comparison = key.split(':')[3];
-				}catch(var e){
+				}catch(any e){
 					comparison = "=";
 				}
 				if (!isNull(comparison)){
@@ -695,7 +692,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 			if (!isNull(currentPage)){
 				data['currentPageDeclaration'] = currentPage;
-				this.setPageRecordsStart(currentPage);
+				this.setCurrentPageDeclaration(currentPage);
 			}
 			
 			if(findNoCase('p:show', key)){
@@ -1745,36 +1742,36 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			if(arguments.filter.ormtype eq 'timestamp'){
 				
 				
-				if(structKeyExists(arguments.filter, 'measureType') && structKeyExists(arguments.filter, 'measureCriteria')) {
+				if(structKeyExists(arguments.filter, 'measureCriteria') && arguments.filter.measureCriteria == 'exactDate' && structKeyExists(arguments.filter, 'measureType')) {
 
-					if (arguments.filter.measureCriteria == 'exactDate') {
-
-						switch (arguments.filter.measureType) {
-							case 'd':
-								var currentdatetime = DateAdd('d', - arguments.filter.criteriaNumberOf, now());
-								var fromValue = CreateDateTime(year(currentdatetime), month(currentdatetime), day(currentdatetime), 0, 0, 0);
-								var toValue = CreateDateTime(year(currentdatetime), month(currentdatetime), day(currentdatetime), 23, 59, 59);
-								break;
-							case 'm':
-								var currentdatetime = DateAdd('m', - arguments.filter.criteriaNumberOf, now());
-								var fromValue = CreateDateTime(year(currentdatetime), month(currentdatetime), 1, 0, 0, 0);
-								var toValue = CreateDateTime(year(currentdatetime), month(currentdatetime), DaysInMonth(currentdatetime), 23, 59, 59);
-								break;
-							case 'y':
-								var currentdatetime = DateAdd('yyyy', - arguments.filter.criteriaNumberOf, now());
-								var fromValue = CreateDateTime(year(currentdatetime), 1, 1, 0, 0, 0);
-								var toValue = CreateDateTime(year(currentdatetime), 12, 31, 23, 59, 59);
-								break;
-						}
-
-						var fromParamID = getParamID();
-						addHQLParam(fromParamID, fromValue);
-						var toParamID = getParamID();
-						addHQLParam(toParamID, toValue);
-
-						predicate = ":#fromParamID# AND :#toParamID#";
+					switch (arguments.filter.measureType) {
+						case 'd':
+							var currentdatetime = DateAdd('d', - arguments.filter.criteriaNumberOf, now());
+							var fromValue = CreateDateTime(year(currentdatetime), month(currentdatetime), day(currentdatetime), 0, 0, 0);
+							var toValue = CreateDateTime(year(currentdatetime), month(currentdatetime), day(currentdatetime), 23, 59, 59);
+							break;
+						case 'm':
+							var currentdatetime = DateAdd('m', - arguments.filter.criteriaNumberOf, now());
+							var fromValue = CreateDateTime(year(currentdatetime), month(currentdatetime), 1, 0, 0, 0);
+							var toValue = CreateDateTime(year(currentdatetime), month(currentdatetime), DaysInMonth(currentdatetime), 23, 59, 59);
+							break;
+						case 'y':
+							var currentdatetime = DateAdd('yyyy', - arguments.filter.criteriaNumberOf, now());
+							var fromValue = CreateDateTime(year(currentdatetime), 1, 1, 0, 0, 0);
+							var toValue = CreateDateTime(year(currentdatetime), 12, 31, 23, 59, 59);
+							break;
 					}
+
 				}
+
+				var fromParamID = getParamID();
+				addHQLParam(fromParamID, fromValue);
+				var toParamID = getParamID();
+				addHQLParam(toParamID, toValue);
+
+				predicate = ":#fromParamID# AND :#toParamID#";
+
+
 			}else if(listFind('integer,float,big_decimal',arguments.filter.ormtype)){
 				var ranges = listToArray(arguments.filter.value,'-');
 				if(arraylen(ranges) > 1){

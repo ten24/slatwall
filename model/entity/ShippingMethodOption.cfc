@@ -90,7 +90,7 @@ component entityname="SlatwallShippingMethodOption" table="SwShippingMethodOptio
 	}
 
 	public numeric function getTotalChargeAfterDiscount() {
-		return precisionEvaluate(getTotalCharge() - getDiscountAmount());
+		return val(precisionEvaluate(getTotalCharge() - getDiscountAmount()));
 	}
 
 	// ============ START: Non-Persistent Property Methods =================

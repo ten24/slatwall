@@ -70,6 +70,7 @@ Notes:
 		<swa:SlatwallSetting settingName="skuEligiblePaymentMethods" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuHoldBackQuantity" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuOrderMinimumQuantity" settingObject="#rc.sku#" />
+		<swa:SlatwallSetting settingName="skuMinimumPercentageAmountRecievedRequiredToPlaceOrder" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuOrderMaximumQuantity" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuShippingWeight" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuShippingWeightUnitCode" settingObject="#rc.sku#" />

@@ -606,7 +606,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	public void function encryptProperty(required string propertyName) {
 		var generatorValue = createHibachiUUID();
 		var value = this.invokeMethod('get#arguments.propertyName#');
-		if(!isNull(value)) {
+		
+		if(!isNull(value) && len(value) && value != '********') {
 			var encryptedPropertyValue = encryptValue(value, generatorValue);
 
 			// Set encrypted generator

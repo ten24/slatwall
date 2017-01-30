@@ -46,29 +46,24 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-
-<cfparam name="rc.order" type="any" />
+<cfparam name="rc.accountPayment" type="any" />
 
 <cfoutput>
-	<hb:HibachiEntityProcessForm entity="#rc.order#" edit="#rc.edit#" sRedirectAction="admin:entity.editorder">
+	<hb:HibachiListingDisplay smartList="#rc.accountPayment.getPaymentTransactionsSmartList()#"
+			recordDetailAction="admin:entity.detailpaymenttransaction"
+			recordDetailModal="true">
 		
-		<hb:HibachiEntityActionBar type="preprocess" object="#rc.order#">
-		</hb:HibachiEntityActionBar>
+		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />		
+		<hb:HibachiListingColumn propertyIdentifier="transactionType" />
+		<hb:HibachiListingColumn propertyIdentifier="transactionSuccessFlag" />
+		<hb:HibachiListingColumn propertyIdentifier="authorizationCode" />
+		<hb:HibachiListingColumn propertyIdentifier="authorizationCodeUsed" />
+		<hb:HibachiListingColumn propertyIdentifier="amountAuthorized" />
+		<hb:HibachiListingColumn propertyIdentifier="amountReceived" />
+		<hb:HibachiListingColumn propertyIdentifier="amountCredited" />
 		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<input type="hidden" name="saveNewFlag" value="true" />       
-				<label class="control-label">
-					Duplicate account, billing, and shipping data? 
-					<input type="checkbox" name="copyPersonalDataFlag" value="true">
-				</label>
-				<br>
-				Upon completion you will be redirected to the new order. Do you wish to duplicate this order?			
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-		
-	</hb:HibachiEntityProcessForm>
+	</hb:HibachiListingDisplay>
 </cfoutput>

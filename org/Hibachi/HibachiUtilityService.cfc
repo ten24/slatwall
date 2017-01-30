@@ -547,8 +547,10 @@
 		}
 
 		public string function encryptValue(required string value, string salt="") {
-			var passwords = getEncryptionPasswordArray();
-			return encrypt(arguments.value, generatePasswordBasedEncryptionKey(password=passwords[1].password, salt=arguments.salt, iterationCount=passwords[1].iterationCount), getEncryptionAlgorithm(), getEncryptionEncoding());
+			if(len(arguments.value)){
+				var passwords = getEncryptionPasswordArray();
+				return encrypt(arguments.value, generatePasswordBasedEncryptionKey(password=passwords[1].password, salt=arguments.salt, iterationCount=passwords[1].iterationCount), getEncryptionAlgorithm(), getEncryptionEncoding());				
+			}
 		}
 
 		public string function hibachiHTMLEditFormat(required string html){
@@ -1189,5 +1191,89 @@
 		<cfreturn ToBase64(newpdf) />
     </cffunction>
 
+	
+	<cffunction name="HMAC_SHA1" returntype="binary" access="private" output="false" hint="NSA SHA-1 Algorithm">
+		<cfargument name="signKey" type="string" required="true" />
+		<cfargument name="signMessage" type="string" required="true" />
+
+		<cfset var jMsg = JavaCast("string",arguments.signMessage).getBytes("iso-8859-1") />
+		<cfset var jKey = JavaCast("string",arguments.signKey).getBytes("iso-8859-1") />
+		<cfset var key = createObject("java","javax.crypto.spec.SecretKeySpec") />
+		<cfset var mac = createObject("java","javax.crypto.Mac") />
+
+		<cfset key = key.init(jKey,"HmacSHA1") />
+		<cfset mac = mac.getInstance(key.getAlgorithm()) />
+		<cfset mac.init(key) />
+		<cfset mac.update(jMsg) />
+
+		<cfreturn mac.doFinal() />
+	</cffunction>
+
+	<cffunction name="createS3Signature" returntype="string" access="public" output="false">
+		<cfargument name="stringToSign" type="string" required="true" />
+		<cfargument name="awsSecretAccessKey" type="string" required="true">
+		
+		<!--- Replace "\n" with "chr(10)" to get a correct digest --->
+		<cfset var fixedData = replace(arguments.stringToSign,"\n","#chr(10)#","all")>
+		<!--- Calculate the hash of the information --->
+		<cfset var digest = HMAC_SHA1(awsSecretAccessKey,fixedData)>
+		<!--- fix the returned data to be a proper signature --->
+		<cfset var signature = ToBase64("#digest#")>
+		
+		<cfreturn signature>
+	</cffunction>
+
+	<cffunction name="uploadToS3" access="public" output="false" returntype="string" 
+					description="Puts an object into a bucket.">
+		<cfargument name="bucketName" type="string" required="true">
+		<cfargument name="fileName" type="string" required="true">
+		<cfargument name="contentType" type="string" required="true">
+		<cfargument name="awsAccessKeyId" type="string" required="true">
+		<cfargument name="awsSecretAccessKey" type="string" required="true">
+		<cfargument name="uploadDir" type="string" required="false" default="#ExpandPath('./')#">
+		<cfargument name="HTTPtimeout" type="numeric" required="false" default="300">
+		<cfargument name="cacheControl" type="boolean" required="false" default="true">
+		<cfargument name="cacheDays" type="numeric" required="false" default="30">
+		<cfargument name="acl" type="string" required="false" default="public-read">
+		<cfargument name="storageClass" type="string" required="false" default="STANDARD">
+		<cfargument name="keyName" type="string" required="false">
+		
+		<cfset var versionID = "">
+		<cfset var binaryFileData = "">
+		<cfset var dateTimeString = GetHTTPTimeString(Now())>
+		<cfset var cs = "">
+		<cfset var signature = "">
+		
+		<cfif !structKeyExists(arguments, "keyName") or not compare(arguments.keyName, '')>
+			<cfset arguments.keyName = arguments.fileName>
+		</cfif>
+
+		<!--- Create a canonical string to send --->
+		<cfset cs = "PUT\n\n#arguments.contentType#\n#dateTimeString#\nx-amz-acl:#arguments.acl#\nx-amz-storage-class:#arguments.storageClass#\n/#arguments.bucketName#/#arguments.keyName#">
+		
+		<cfset signature = createS3Signature(cs,awsSecretAccessKey)>
+		
+		<cffile action="readBinary" file="#arguments.uploadDir##arguments.fileName#" variable="binaryFileData">
+		
+		<cfhttp method="PUT" url="http://s3.amazonaws.com/#arguments.bucketName#/#arguments.keyName#" timeout="#arguments.HTTPtimeout#">
+			<cfhttpparam type="header" name="Authorization" value="AWS #arguments.awsAccessKeyId#:#signature#">
+			<cfhttpparam type="header" name="Content-Type" value="#arguments.contentType#">
+			<cfhttpparam type="header" name="Date" value="#dateTimeString#">
+			<cfhttpparam type="header" name="x-amz-acl" value="#arguments.acl#">
+			<cfhttpparam type="header" name="x-amz-storage-class" value="#arguments.storageClass#">
+			<cfhttpparam type="body" value="#binaryFileData#">
+			<cfif arguments.cacheControl>
+				<cfhttpparam type="header" name="Cache-Control" value="max-age=2592000">
+				<cfhttpparam type="header" name="Expires" value="#DateFormat(now()+arguments.cacheDays,'ddd, dd mmm yyyy')# #TimeFormat(now(),'H:MM:SS')# GMT">
+			</cfif>
+		</cfhttp>		
+		
+		<cftry>
+			<cfset versionID = cfhttp.responseHeader['x-amz-version-id']>
+			<cfcatch></cfcatch>
+		</cftry>
+		
+		<cfreturn versionID>
+	</cffunction>
 
 </cfcomponent>

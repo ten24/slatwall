@@ -204,7 +204,7 @@ component displayname="Price Group Rate" entityname="SlatwallPriceGroupRate" tab
 			//Check for defined conversion rate 
 			var currencyRate = getService("currencyService").getCurrencyDAO().getCurrentCurrencyRateByCurrencyCodes(originalCurrencyCode=getCurrencyCode(), convertToCurrencyCode=arguments.currencyCode, conversionDateTime=now());
 			if(!isNull(currencyRate)) {
-				return precisionEvaluate(currencyRate.getConversionRate()*getAmount());
+				return val(precisionEvaluate(currencyRate.getConversionRate()*getAmount()));
 			}
 		
 		}

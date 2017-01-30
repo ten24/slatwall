@@ -19,7 +19,7 @@
     Linking this program statically or dynamically with other modules is
     making a combined work based on this program.  Thus, the terms and
     conditions of the GNU General Public License cover the whole
-    combination.
+    combination. 
 	
     As a special exception, the copyright holders of this program give you
     permission to combine this program with independent modules and your 
@@ -46,27 +46,23 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-
-
-
-
-<cfparam name="rc.stockAdjustmentItem" type="any">
-<cfparam name="rc.stockAdjustment" type="any" default="#rc.stockAdjustmentItem.getStockAdjustment()#">
-<cfparam name="rc.edit" type="boolean">
+<cfparam name="rc.location" default="any" >
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.stockAdjustmentItem#" edit="#rc.edit#" saveActionQueryString="stockAdjustmentID=#rc.stockAdjustment.getStockAdjustmentID()#">
+
+	<hb:HibachiListingDisplay smartList="#rc.location.getStocksSmartList()#" >
+							    
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="sku.skuCode" />
+		<hb:HibachiListingColumn  propertyIdentifier="sku.product.productName" />
+		<hb:HibachiListingColumn  propertyIdentifier="calculatedQOH" />
+		<hb:HibachiListingColumn  propertyIdentifier="calculatedQNC" />
+		<hb:HibachiListingColumn  propertyIdentifier="calculatedAverageCost" />
+		<hb:HibachiListingColumn  propertyIdentifier="calculatedAverageLandedCost" />
 		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.stockAdjustmentItem#" property="quantity" edit="#rc.edit#">
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-		
-	</hb:HibachiEntityDetailForm>
+	</hb:HibachiListingDisplay>
+
+
 </cfoutput>
-
-
