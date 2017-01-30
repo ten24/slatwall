@@ -2247,11 +2247,18 @@
 	            }
 	        };
 	        this.setOrderPaymentInfo = function () {
-	            var billingAddress = _this.billingAddress.getData();
+	            var billingAddress;
+	            if (_this.useShippingAsBilling) {
+	                billingAddress = _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress;
+	            }
+	            else {
+	                billingAddress = _this.billingAddress.getData();
+	            }
 	            for (var key in _this.newCardInfo) {
 	                billingAddress[key] = _this.newCardInfo[key];
 	            }
 	            _this.newBillingAddress = billingAddress;
+	            console.log("new billinga ddresss", _this.newBillingAddress);
 	        };
 	        /** Allows an easy way to calling the service addOrderPayment.
 	        */
@@ -2282,8 +2289,8 @@
 	                'newOrderPayment.billingAddress.street2Address': billingAddress.street2Address,
 	                'newOrderPayment.nameOnCreditCard': billingAddress.nameOnCreditCard,
 	                'newOrderPayment.billingAddress.name': billingAddress.nameOnCreditCard,
-	                'newOrderPayment.expirationMonth': expirationMonth || billingAddress.expirationMonth,
-	                'newOrderPayment.expirationYear': expirationYear || billingAddress.expirationYear,
+	                'newOrderPayment.expirationMonth': expirationMonth || billingAddress.selectedMonth,
+	                'newOrderPayment.expirationYear': expirationYear || billingAddress.selectedYear,
 	                'newOrderPayment.billingAddress.countrycode': country || billingAddress.countrycode,
 	                'newOrderPayment.billingAddress.city': '' + billingAddress.city,
 	                'newOrderPayment.billingAddress.statecode': state || billingAddress.statecode,
@@ -2297,6 +2304,7 @@
 	                'copyFromType': billingAddress.copyFromType,
 	                'saveAccountPaymentMethodFlag': _this.saveCardInfo
 	            };
+	            console.log('data', data);
 	            //processObject.populate(data);
 	            //Make sure we have required fields for a newOrderPayment.
 	            _this.validateNewOrderPayment(data);

@@ -37,6 +37,7 @@ class PublicService {
     public billingAddress:any;
     public paymentMethods;
     public orderPlaced:boolean;
+    public useShippingAsBilling:boolean;
     public saveShippingAsBilling:boolean;
     public saveCardInfo:boolean;
     public readyToPlaceOrder:boolean;
@@ -483,11 +484,17 @@ class PublicService {
     }
 
     public setOrderPaymentInfo = () => {
-        let billingAddress = this.billingAddress.getData();
+        let billingAddress;
+        if(this.useShippingAsBilling){
+            billingAddress = this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress;
+        }else{
+            billingAddress = this.billingAddress.getData();
+        }
         for(let key in this.newCardInfo){
             billingAddress[key] = this.newCardInfo[key];
         }
         this.newBillingAddress = billingAddress;
+        console.log("new billinga ddresss", this.newBillingAddress)
     }
 
     /** Allows an easy way to calling the service addOrderPayment.
@@ -523,8 +530,8 @@ class PublicService {
             'newOrderPayment.billingAddress.street2Address': billingAddress.street2Address,
             'newOrderPayment.nameOnCreditCard': billingAddress.nameOnCreditCard,
             'newOrderPayment.billingAddress.name': billingAddress.nameOnCreditCard,
-            'newOrderPayment.expirationMonth': expirationMonth || billingAddress.expirationMonth,
-            'newOrderPayment.expirationYear': expirationYear || billingAddress.expirationYear,
+            'newOrderPayment.expirationMonth': expirationMonth || billingAddress.selectedMonth,
+            'newOrderPayment.expirationYear': expirationYear || billingAddress.selectedYear,
             'newOrderPayment.billingAddress.countrycode': country || billingAddress.countrycode,
             'newOrderPayment.billingAddress.city': ''+billingAddress.city,
             'newOrderPayment.billingAddress.statecode': state || billingAddress.statecode,
@@ -538,7 +545,7 @@ class PublicService {
             'copyFromType': billingAddress.copyFromType,
             'saveAccountPaymentMethodFlag': this.saveCardInfo
         };
-
+        console.log('data', data);
         //processObject.populate(data);
 
         //Make sure we have required fields for a newOrderPayment.

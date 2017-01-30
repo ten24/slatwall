@@ -729,7 +729,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// Save the newOrderPayment
 		newOrderPayment = this.saveOrderPayment( newOrderPayment );
-		writeDump(var=newOrderPayment.getErrors(),top=1);abort;
+
 		//check if the order payments paymentMethod is set to allow account to save. if true set the saveAccountPaymentMethodFlag to true
 		if (arguments.order.hasSavableOrderPaymentAndSubscriptionWithAutoPay()){
 			for (var orderPayment in arguments.processObject.getOrder().getOrderPayments() ){
