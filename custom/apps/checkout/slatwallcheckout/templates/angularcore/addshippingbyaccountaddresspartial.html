@@ -1,0 +1,46 @@
+<!-- Add Shipping Address By Selecting an Account Address -->
+<div ng-init="OrderAddShippingObj = {}"></div>
+<!--- When an address has already been saved. --->
+<div class="content-address-wrapper" id="allAddresses" ng-click="$root.slatwall.nextClicked=false">
+
+    <div class="addressContentWrapper" vertilize-container>
+        <div ng-repeat="(key, value) in $root.slatwall.account.accountAddresses" class="col-sm-4 content-address">
+            <div class="address-wrapper">
+                <div vertilize>
+                    <span class="address-indicator">
+                        <i ng-if="$root.slatwall.account.accountAddresses[key].address.streetAddress === $root.slatwall.cart.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.streetAddress && 
+                            $root.slatwall.account.accountAddresses[key].address.street2Address === $root.slatwall.cart.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.street2Address &&
+                            $root.slatwall.account.accountAddresses[key].address.city === $root.slatwall.cart.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.city &&
+                            $root.slatwall.account.accountAddresses[key].address.postalcode === $root.slatwall.cart.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.postalcode &&
+                            $root.slatwall.account.accountAddresses[key].address.countrycode === $root.slatwall.cart.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.countrycode &&
+                            ( ( $root.slatwall.account.accountAddresses[key].address.locality === $root.slatwall.cart.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.locality ) || ( $root.slatwall.account.accountAddresses[key].address.statecode === $root.slatwall.cart.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.statecode ) )" class="fa fa-check-circle"></i>
+                    </span>
+
+                    <ul class="list-unstyled address-info">
+                        <!-- <li><small>Account Address</small></li>  -->
+                        <li ng-if="$root.slatwall.account.accountAddresses[key].accountAddressName">{{$root.slatwall.account.accountAddresses[key].accountAddressName}}&nbsp;</li>
+                        <li>{{$root.slatwall.account.accountAddresses[key].address.name}}&nbsp;</li>
+                        <li>{{$root.slatwall.account.accountAddresses[key].address.company}}</li>
+                        <li>{{$root.slatwall.account.accountAddresses[key].address.streetAddress}}</li>
+                        <li>{{$root.slatwall.account.accountAddresses[key].address.street2Address}}</li>
+                        <li>{{$root.slatwall.account.accountAddresses[key].address.city}}, <span ng-if="$root.slatwall.account.accountAddresses[key].address.statecode">{{$root.slatwall.account.accountAddresses[key].address.statecode}}</span><span ng-if="$root.slatwall.account.accountAddresses[key].address.locality">{{$root.slatwall.account.accountAddresses[key].address.locality}}</span> <span ng-if="$root.slatwall.account.accountAddresses[key].address.postalcode">{{$root.slatwall.account.accountAddresses[key].address.postalcode}}</span></li>
+                        <li>{{$root.slatwall.account.accountAddresses[key].address.countrycode}}</li>
+                        <li><a href="tel:{{$root.slatwall.account.accountAddresses[key].address.phoneNumber}}" class="tel">{{$root.slatwall.account.accountAddresses[key].address.phoneNumber}}</a></li>
+                        <li>
+                        <button type="button" class="btn-yellow" ng-click="$root.slatwall.doAction('addShippingAddressUsingAccountAddress', {'accountAddressID': value.accountAddressID ,'saveAsAccountAddressFlag':'true'});$root.slatwall.selectedAddress=value.address;thisSelected=true;$root.slatwall.edit='fulfillment'"><i ng-show="thisSelected" class="fa fa-spinner fa-spin fa-3x fa-fw margin-bottom" style="font-size: 12px;margin:0px;"></i>Select Address</button>
+                        <button type="button" class="btn-white" ng-click="$root.slatwall.accountAddressEditFormIndex = key">Edit</button>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    
+<div class="col-sm-4 content-address existing_user">
+    <button type="button" class="btn-white btn-block address-wrapper address"  ng-click="$root.slatwall.cart.addAddress = !$root.slatwall.cart.addAddress; $root.slatwall.accountAddressEditFormIndex = 'new'">
+		<i class="fa fa-plus" aria-hidden="true"></i><br/>
+		<span>Add Address</span>
+	</button>
+</div>

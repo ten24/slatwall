@@ -1,0 +1,22 @@
+<table class="table table-condensed checkoutMiniCart">
+    <tr ng-repeat="orderItem in $root.slatwall.cart.orderItems">
+        <td class="text-center">
+           
+            <div ng-init="$root.slatwall.getResizedImageByProfileName('large', orderItem.sku.skuID)">
+				<a href="#"><img src="{{$root.slatwall.imagePath[orderItem.sku.skuID]}}" class="img-responsive center-block" ng-if="!$root.slatwall.loading"></a>
+				<span ng-if="$root.slatwall.loading">
+					<i class="fa fa-refresh fa-spin fa-lg fa-fw"></i>
+				</span>
+			</div>
+        </td>
+        <td>
+            <h5>
+                <span ng-if="!orderItem.sku.skuName || (orderItem.sku.skuName == '' && orderItem.sku.product.productName != '')">{{orderItem.sku.product.productName}}</span>
+                <span ng-if="orderItem.sku.skuName && orderItem.sku.skuName != ''">{{orderItem.sku.skuName}}</span>
+            </h5>
+            {{orderItem.sku.calculatedSkuDefinition}}<br>
+            {{orderItem.price |currency :($root.slatwall.cart.currencyCode == 'EUR'?'&euro;':'$')}}<br>
+            Quantity: {{orderItem.quantity}}
+        </td>
+    </tr>
+</table>

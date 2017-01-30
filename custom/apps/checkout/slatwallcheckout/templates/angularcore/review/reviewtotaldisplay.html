@@ -1,0 +1,8 @@
+<ul ng-class="list-group" class="list-group">
+    <li class="list-group-item" ng-if="$root.slatwall.cart.subtotal && $root.slatwall.cart.discountTotal || $root.slatwall.cart.taxTotal || $root.slatwall.cart.fulfillmentTotal" ><span>Subtotal</span> {{$root.slatwall.cart.subtotal|currency :($root.slatwall.cart.currencyCode == 'EUR'?'&euro;':'$')}}</li>
+    <li class="list-group-item" ng-if="$root.slatwall.cart.discountTotal"><span>Discount Total </span> -{{($root.slatwall.cart.discountTotal|currency :($root.slatwall.cart.currencyCode == 'EUR'?'&euro;':'$'))}}</li>
+    <li class="list-group-item" ng-if="$root.slatwall.cart.fulfillmentTotal == $root.slatwall.cart.fulfillmentChargeAfterDiscountTotal"><span>Shipping </span> {{($root.slatwall.cart.fulfillmentTotal|currency :($root.slatwall.cart.currencyCode == 'EUR'?'&euro;':'$'))}}</li>
+    <li class="list-group-item" ng-if="$root.slatwall.cart.fulfillmentTotal !== $root.slatwall.cart.fulfillmentChargeAfterDiscountTotal"><span>Shipping (discounted)</span> {{($root.slatwall.cart.fulfillmentChargeAfterDiscountTotal|currency :($root.slatwall.cart.currencyCode == 'EUR'?'&euro;':'$'))}}</li>
+    <li class="list-group-item" ng-if="$root.slatwall.cart.taxTotal"><span>Tax</span> {{($root.slatwall.cart.taxTotal|currency :($root.slatwall.cart.currencyCode == 'EUR'?'&euro;':'$'))}}</li>
+    <li class="list-group-item" ng-if="$root.slatwall.cart.calculatedTotal" ng-class="($root.slatwall.cart.subtotal && !$root.slatwall.cart.discountTotal && !$root.slatwall.cart.taxTotal && !$root.slatwall.cart.fulfillmentTotal) ? 'subtotal' : 'total'"><span><b>TOTAL</b></span> {{($root.slatwall.cart.calculatedTotal|currency :($root.slatwall.cart.currencyCode == 'EUR'?'&euro;':'$'))}}</li>
+</ul>

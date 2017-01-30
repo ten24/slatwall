@@ -1,0 +1,87 @@
+<span ng-init="imagePath = '/custom/apps/slatwallcms/projectName/assets/images'"></span>
+<span ng-init="$.slatwall = $root.slatwall"></span>
+
+<divng-cloak>
+    <fieldset>
+        <legend>Payment Information</legend>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="namec">Name on Credit Card</label>
+                    <input type="text" class="form-control"  id="name" name="nameOnCreditCard" ng-model="$.slatwall.newCardInfo.nameOnCreditCard">
+                    <span class="error" ng-if="$.slatwall.cart.newOrderPaymentErrors['nameOnCreditCard']">{{$.slatwall.cart.newOrderPaymentErrors['nameOnCreditCard']}}</span>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="row">
+                    <div class="col-sm-8">
+                        <div class="form-group">
+                            <label for="cardnumber">Card Number</label>
+                            <input type="text" class="form-control"  id="cardnumber" ng-model="$.slatwall.newCardInfo.cardNumber">
+                            <span class="error" ng-if="$.slatwall.cart.newOrderPaymentErrors['creditCardNumber']">{{$.slatwall.cart.newOrderPaymentErrors['creditCardNumber']}}</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>CVV <!---<a href="#cvvModalContent" class="info cvvModal"><i class="fa fa-question"></i></a>---></label>
+                            <input type="text" id="cvv2" class="form-control width" size="3" max="3" ng-model="$.slatwall.newCardInfo.cvv">
+                            <span class="error" ng-if="$.slatwall.cart.newOrderPaymentErrors['cvv']">{{$.slatwall.cart.newOrderPaymentErrors['cvv']}}</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Expiration Month</label>
+                            <select class="form-control" ng-model="$.slatwall.newCardInfo.selectedMonth" ng-options="month.value as month.name for month in $.slatwall.months" ng-init="$.slatwall.newCardInfo.selectedMonth = $.slatwall.months[0].value">
+                                <option>Month *</option>
+                            </select>
+                            <span class="error" ng-if="$.slatwall.cart.newOrderPaymentErrors['expirationMonth']">{{$.slatwall.cart.newOrderPaymentErrors['expirationMonth'][0]}}</span>
+        					<span class="error" ng-if="$.slatwall.cart.newOrderPaymentErrors['expirationYear']">{{$.slatwall.cart.newOrderPaymentErrors['expirationYear'][0]}}</span>
+
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Expiration Year</label>
+                            <select class="year form-control" ng-model="$.slatwall.newCardInfo.selectedYear" ng-options="year for year in $.slatwall.years" ng-change="$.slatwall.cart.orderFulfillments['0'].shippingAddress.expirationYear = $.slatwall.newCardInfo.selectedYear" ng-init="$.slatwall.newCardInfo.selectedYear = $.slatwall.years[0]">
+                                <option>Year *</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Save this card for future orders</label>
+                    <input type="checkbox" ng-model="$root.slatwall.saveCardInfo">
+                </div>
+            </div>
+    </fieldset>
+
+    <fieldset>
+        <legend>Billing Information</legend>
+            <div class="row">
+                <label for="useShipping">Use Shipping Address as Billing Address</label>
+                <input type="checkbox" name="useShipping" ng-model="$root.slatwall.useShippingAsBilling">
+            </div>
+            <sw-address-form ng-if="!$root.slatwall.useShippingAsBilling"
+                data-field-list="countryCode,streetAddress,street2Address,locality,city,stateCode,postalCode"
+                data-slatwall-scope="$.slatwall"
+                data-address="$.slatwall.billingAddress" 
+                data-address-name="billingAddress" 
+                data-field-name-prefix="$.slatwall.billingAddress." 
+                data-show-country-select="true" 
+                data-show-submit-button="false"
+                data-show-address-book-select="false"
+                data-action-text="Review Order"
+                data-show-alerts="false"
+                ></sw-address-form>
+    </fieldset>
+</div>

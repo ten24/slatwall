@@ -1,0 +1,5 @@
+<span ng-if="$root.slatwall.getRequestByAction('addOrderPayment').hasSuccessfulAction()">
+	<span ng-init="$root.slatwall.edit='review'"></span>
+</span>
+<!--<input type="submit" value="{{($root.slatwall.getRequestByAction('addOrderPayment').loading)?'Submitting Order...':'Place Order'}}" class="button"      ng-click="$root.slatwall.addOrderPaymentAndPlaceOrder({'month':$root.slatwall.selectedMonth.value,'year':$root.slatwall.selectedYear,'country':$root.slatwall.selectedBillingCountry.value,'state':selectedBillingState.value,'saveShippingAsBilling':$root.slatwall.saveShippingAsBilling})" />-->
+<input type="submit" value="{{($root.slatwall.getRequestByAction('addOrderPayment').loading)?'LOADING...':'Add Payment Method'}}" class="button" ng-click="$root.slatwall.setOrderPaymentInfo(); $root.slatwall.addOrderPayment({'month':$root.slatwall.selectedMonth,'year':$root.slatwall.selectedYear,'country':$root.slatwall.selectedBillingCountry.value,'state':selectedBillingState.value,'saveShippingAsBilling':$root.slatwall.saveShippingAsBilling})" ng-disabled="!$root.slatwall.newCardInfo"/>
