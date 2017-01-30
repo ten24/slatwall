@@ -303,7 +303,7 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
                 responseBean.setAuthorizationCode(responseData.result.id);
                 
                 var amount = 0;
-                for ( refund in responseData.result.refunds ) {
+                for (var refund in responseData.result.refunds ) {
                     amount += refund.amount;
                 }
                 responseBean.setAmountCredited(amount / 100); // need to convert back to decimal from integer

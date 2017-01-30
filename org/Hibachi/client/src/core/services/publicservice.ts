@@ -16,6 +16,7 @@ class PublicService {
     public requests:{ [action: string]: PublicRequest; }={};
     public errors:{[key:string]:any}={};
     public newBillingAddress:any;
+    public loading:boolean;
 
     public accountDataPromise:any;
     public addressOptionData:any;
@@ -797,11 +798,11 @@ class PublicService {
    			profileName = "medium";
    		}
    		
-   		$http.get("/index.cfm/api/scope/?context=getResizedImageByProfileName&profileName="+profileName+"&skuIds="+skuIDList).success(function(result){
+   		this.$http.get("/index.cfm/api/scope/?context=getResizedImageByProfileName&profileName="+profileName+"&skuIds="+skuIDList).success((result:any)=>{
    		 	
    		 	this.imagePath[skuIDList] = "";
    		 	
-   		 	result = angular.fromJson(result);
+   		 	result = <any>angular.fromJson(result);
    		 	if (angular.isDefined(result.resizedImagePaths) && angular.isDefined(result.resizedImagePaths.resizedImagePaths) && result.resizedImagePaths.resizedImagePaths[0] != undefined){
    		 		
    		 		this.imagePath[skuIDList] = result.resizedImagePaths.resizedImagePaths[0];
@@ -883,7 +884,7 @@ class PublicService {
     };
     
     
-
+ 
 
 }
 export {PublicService};
