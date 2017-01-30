@@ -112,7 +112,7 @@ class HibachiService{
 			throw('No entity name was supplied to getLastEntityNameInPropertyIdentifier in hibachi service.');
 		}
 		//strip alias if it exists and convert everything to be periods
-		if(propertyIdentifier.includes('_')){
+		if(propertyIdentifier.charAt(0) === '_'){
 			propertyIdentifier = this.utilityService.listRest(propertyIdentifier.replace(/_/g,'.'),'.'); 
 		}
 		
