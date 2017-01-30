@@ -401,6 +401,13 @@ Notes:
 		</cfif>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/src/bundle.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" charset="utf-8"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/global.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#"></script>
-	</body>
+
+		<script>
+            var c = [38,38,40,40,37,39,37,39,65,66], p = 0;
+            document.addEventListener('keydown', function(e) {
+                if(e.keyCode == c[p]){ p++; if(p==c.length){p=0; $('body').toggleClass('david');}}else{p=0;}
+            });
+		</script>
+</body>
 </html>
 </cfoutput>
