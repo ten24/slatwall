@@ -2097,10 +2097,10 @@
 	            }
 	        };
 	        this.hasPaymentMethod = function (paymentMethodName) {
-	            for (var method in _this.paymentMethods) {
-	                if (_this.paymentMethods[method].paymentMethodName == paymentMethodName && _this.paymentMethods[method].activeFlag == "Yes ") {
+	            for (var _i = 0, _a = _this.cart.orderPayments; _i < _a.length; _i++) {
+	                var payment = _a[_i];
+	                if (payment.paymentMethod.paymentMethodName === paymentMethodName)
 	                    return true;
-	                }
 	            }
 	            return false;
 	        };
@@ -2282,8 +2282,8 @@
 	                'newOrderPayment.billingAddress.street2Address': billingAddress.street2Address,
 	                'newOrderPayment.nameOnCreditCard': billingAddress.nameOnCreditCard,
 	                'newOrderPayment.billingAddress.name': billingAddress.nameOnCreditCard,
-	                'newOrderPayment.expirationMonth': expirationMonth,
-	                'newOrderPayment.expirationYear': expirationYear,
+	                'newOrderPayment.expirationMonth': expirationMonth || billingAddress.expirationMonth,
+	                'newOrderPayment.expirationYear': expirationYear || billingAddress.expirationYear,
 	                'newOrderPayment.billingAddress.countrycode': country || billingAddress.countrycode,
 	                'newOrderPayment.billingAddress.city': '' + billingAddress.city,
 	                'newOrderPayment.billingAddress.statecode': state || billingAddress.statecode,
@@ -2292,7 +2292,10 @@
 	                'newOrderPayment.securityCode': billingAddress.cvv,
 	                'newOrderPayment.creditCardNumber': billingAddress.cardNumber,
 	                'newOrderPayment.saveShippingAsBilling': (_this.saveShippingAsBilling == true),
-	                'newOrderPayment.creditCardLastFour': billingAddress.cardNumber.slice(-4)
+	                'newOrderPayment.creditCardLastFour': billingAddress.cardNumber ? billingAddress.cardNumber.slice(-4) : '',
+	                'accountPaymentMethodID': billingAddress.accountPaymentMethodID,
+	                'copyFromType': billingAddress.copyFromType,
+	                'saveAccountPaymentMethodFlag': _this.saveCardInfo
 	            };
 	            //processObject.populate(data);
 	            //Make sure we have required fields for a newOrderPayment.
@@ -2362,6 +2365,7 @@
 	                    data['newOrderPayment.order.account.accountID'] = _this.account.accountID;
 	                    data['newOrderPayment.giftCardNumber'] = giftCards[card].giftCardCode;
 	                    data['copyFromType'] = "";
+	                    console.log("data", data);
 	                    _this.doAction('addOrderPayment', data, 'post').then(function (result) {
 	                        var serverData;
 	                        if (angular.isDefined(result)) {
@@ -2373,7 +2377,7 @@
 	                                _this.cart.hasErrors = true;
 	                                _this.readyToPlaceOrder = false;
 	                                _this.edit = '';
-	                                _this.giftCardError = _this.cart.errors.addOrderPayment[0];
+	                                _this.giftCardError = _this.cart.errors.addOrderPayment ? _this.cart.errors.addOrderPayment[0] : null;
 	                                _this.finding = false;
 	                            }
 	                        }
@@ -2588,7 +2592,7 @@
 	            var total = 0;
 	            for (var payment in _this.cart.orderPayments) {
 	                if (_this.cart.orderPayments[payment].giftCardNumber != "") {
-	                    total = total + parseInt(_this.cart.orderPayments[payment]['amount']);
+	                    total = total + Number(_this.cart.orderPayments[payment]['amount'].toFixed(2));
 	                }
 	            }
 	            return total;

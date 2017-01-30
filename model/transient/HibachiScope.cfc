@@ -263,7 +263,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		return "accountID,firstName,lastName,company,remoteID,primaryPhoneNumber.accountPhoneNumberID,primaryPhoneNumber.phoneNumber,primaryEmailAddress.accountEmailAddressID,primaryEmailAddress.emailAddress,
 			primaryAddress.accountAddressID,
 			accountAddresses.accountAddressName,accountAddresses.accountAddressID,
-			accountAddresses.address.addressID,accountAddresses.address.streetAddress,accountAddresses.address.street2Address,accountAddresses.address.city,accountAddresses.address.statecode,accountAddresses.address.postalcode,accountAddresses.address.countrycode, accountAddresses.address.name, accountAddresses.address.company, accountAddresses.address.phoneNumber";
+			accountAddresses.address.addressID,accountAddresses.address.streetAddress,accountAddresses.address.street2Address,accountAddresses.address.city,accountAddresses.address.statecode,accountAddresses.address.postalcode,accountAddresses.address.countrycode, accountAddresses.address.name, accountAddresses.address.company, accountAddresses.address.phoneNumber, accountPaymentMethods.accountPaymentMethodID, accountPaymentMethods.creditCardLastFour, accountPaymentMethods.creditCardType";
 	}
 	
 	public any function getAccountData(string propertyList) {
@@ -307,10 +307,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			orderFulfillments.shippingAddress.addressID,orderFulfillments.shippingAddress.streetAddress,orderFulfillments.shippingAddress.street2Address,orderFulfillments.shippingAddress.city,orderFulfillments.shippingAddress.statecode,orderFulfillments.shippingAddress.postalcode,orderFulfillments.shippingAddress.countrycode,
 			orderFulfillments.shippingMethodOptions,orderFulfillments.shippingMethodRate.shippingMethodRateID,
 			orderFulfillments.totalShippingWeight,orderFulfillments.taxAmount,
-			orderPayments.orderPaymentID,orderPayments.amount,orderPayments.currencyCode,orderPayments.creditCardType,orderPayments.expirationMonth,orderPayments.expirationYear,orderPayments.nameOnCreditCard,
+			orderPayments.orderPaymentID,orderPayments.amount,orderPayments.currencyCode,orderPayments.creditCardType,orderPayments.expirationMonth,orderPayments.expirationYear,orderPayments.nameOnCreditCard, orderPayments.creditCardLastFour,
 			orderPayments.billingAddress.addressID,orderPayments.billingAddress.streetAddress,orderPayments.billingAddress.street2Address,orderPayments.billingAddress.city,orderPayments.billingAddress.statecode,orderPayments.billingAddress.postalcode,orderPayments.billingAddress.countrycode,
-			orderPayments.paymentMethod.paymentMethodID,orderPayments.paymentMethod.paymentMethodName,
-			promotionCodes.promotionCode";
+			orderPayments.paymentMethod.paymentMethodID,orderPayments.paymentMethod.paymentMethodName, orderPayments.giftCard.balanceAmount, orderPayments.giftCard.giftCardCode, promotionCodes.promotionCode";
 	}
 	
 	public any function getCartData(string propertyList) {

@@ -1015,7 +1015,6 @@ component extends="HibachiService"  accessors="true" output="false"
         
         var addOrderPayment = getService('OrderService').processOrder( getHibachiScope().cart(), arguments.data, 'addOrderPayment');
         getHibachiScope().addActionResult( "public:cart.addOrderPayment", addOrderPayment.hasErrors() );
-        
     }
     /**
      Adds an order payment and then calls place order.

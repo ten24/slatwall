@@ -667,12 +667,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public any function processOrder_addOrderPayment(required any order, required any processObject) {
-		
 		// Get the populated newOrderPayment out of the processObject
 		var newOrderPayment = processObject.getNewOrderPayment();
+
 		// If this is an existing account payment method, then we can pull the data from there
 		if( arguments.processObject.getCopyFromType() == 'accountPaymentMethod' && len(arguments.processObject.getAccountPaymentMethodID())) {
-
 			// Setup the newOrderPayment from the existing payment method
 			var accountPaymentMethod = getAccountService().getAccountPaymentMethod( arguments.processObject.getAccountPaymentMethodID() );
 			newOrderPayment.copyFromAccountPaymentMethod( accountPaymentMethod );
@@ -730,7 +729,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// Save the newOrderPayment
 		newOrderPayment = this.saveOrderPayment( newOrderPayment );
-		
+		writeDump(var=newOrderPayment.getErrors(),top=1);abort;
 		//check if the order payments paymentMethod is set to allow account to save. if true set the saveAccountPaymentMethodFlag to true
 		if (arguments.order.hasSavableOrderPaymentAndSubscriptionWithAutoPay()){
 			for (var orderPayment in arguments.processObject.getOrder().getOrderPayments() ){
@@ -743,14 +742,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 		}
-
 		// Attach 'createTransaction' errors to the order
 		if(newOrderPayment.hasError('createTransaction')) {
 			arguments.order.addError('addOrderPayment', newOrderPayment.getError('createTransaction'), true);
 
 		} else if(newOrderPayment.hasErrors()) {
 			arguments.order.addError('addOrderPayment', newOrderPayment.getErrors());
-
 		// Otherwise if no errors, and we are supposed to save as accountpayment, and an accountPaymentMethodID doesn't already exist then we can create one.
 		} else if (!newOrderPayment.hasErrors()
 				&& ( arguments.processObject.getSaveAccountPaymentMethodFlag()
@@ -759,7 +756,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				&& isNull(newOrderPayment.getAccountPaymentMethod())) {
 			// Create a new Account Payment Method
 			var newAccountPaymentMethod = getAccountService().newAccountPaymentMethod();
-
 			// Attach to Account
 			newAccountPaymentMethod.setAccount( arguments.order.getAccount() );
 
@@ -790,7 +786,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!newOrderPayment.hasErrors() && arguments.order.getOrderStatusType().getSystemCode() != 'ostNotPlaced' && newOrderPayment.getPaymentMethodType() == 'termPayment' && !isNull(newOrderPayment.getPaymentTerm())) {
 			newOrderPayment.setPaymentDueDate( newOrderPayment.getPaymentTerm().getTerm().getEndDate() );
 		}
-
 		return arguments.order;
 	}
 

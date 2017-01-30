@@ -38,6 +38,7 @@ class PublicService {
     public paymentMethods;
     public orderPlaced:boolean;
     public saveShippingAsBilling:boolean;
+    public saveCardInfo:boolean;
     public readyToPlaceOrder:boolean;
     public edit:String;
     public editPayment:boolean;
@@ -315,10 +316,8 @@ class PublicService {
     }
 
     public hasPaymentMethod = (paymentMethodName)=>{
-        for (var method in this.paymentMethods){
-            if (this.paymentMethods[method].paymentMethodName == paymentMethodName && this.paymentMethods[method].activeFlag == "Yes "){
-                return true;
-            }
+        for (var payment of this.cart.orderPayments){
+            if(payment.paymentMethod.paymentMethodName === paymentMethodName) return true;
         }
         return false;
     }
@@ -524,8 +523,8 @@ class PublicService {
             'newOrderPayment.billingAddress.street2Address': billingAddress.street2Address,
             'newOrderPayment.nameOnCreditCard': billingAddress.nameOnCreditCard,
             'newOrderPayment.billingAddress.name': billingAddress.nameOnCreditCard,
-            'newOrderPayment.expirationMonth': expirationMonth,
-            'newOrderPayment.expirationYear': expirationYear,
+            'newOrderPayment.expirationMonth': expirationMonth || billingAddress.expirationMonth,
+            'newOrderPayment.expirationYear': expirationYear || billingAddress.expirationYear,
             'newOrderPayment.billingAddress.countrycode': country || billingAddress.countrycode,
             'newOrderPayment.billingAddress.city': ''+billingAddress.city,
             'newOrderPayment.billingAddress.statecode': state || billingAddress.statecode,
@@ -534,7 +533,10 @@ class PublicService {
             'newOrderPayment.securityCode': billingAddress.cvv,
             'newOrderPayment.creditCardNumber': billingAddress.cardNumber,
             'newOrderPayment.saveShippingAsBilling':(this.saveShippingAsBilling == true),
-            'newOrderPayment.creditCardLastFour': billingAddress.cardNumber.slice(-4)
+            'newOrderPayment.creditCardLastFour': billingAddress.cardNumber ? billingAddress.cardNumber.slice(-4) : '',
+            'accountPaymentMethodID': billingAddress.accountPaymentMethodID,
+            'copyFromType': billingAddress.copyFromType,
+            'saveAccountPaymentMethodFlag': this.saveCardInfo
         };
 
         //processObject.populate(data);
@@ -619,7 +621,7 @@ class PublicService {
                 data['newOrderPayment.order.account.accountID'] = this.account.accountID;
                 data['newOrderPayment.giftCardNumber'] = giftCards[card].giftCardCode;
                 data['copyFromType'] = "";
-                
+                console.log("data", data);
                 this.doAction('addOrderPayment', data, 'post').then((result:any)=>{
                     var serverData
                     if (angular.isDefined(result)){
@@ -631,7 +633,7 @@ class PublicService {
                             this.cart.hasErrors = true;
                             this.readyToPlaceOrder = false;
                             this.edit = '';
-                            this.giftCardError = this.cart.errors.addOrderPayment[0];
+                            this.giftCardError = this.cart.errors.addOrderPayment ? this.cart.errors.addOrderPayment[0] : null;
                             this.finding = false;
                         }
                     }else{
@@ -869,7 +871,7 @@ class PublicService {
         var total = 0;
         for (var payment in this.cart.orderPayments){
             if (this.cart.orderPayments[payment].giftCardNumber != ""){
-                total = total + parseInt(this.cart.orderPayments[payment]['amount']);
+                total = total + Number(this.cart.orderPayments[payment]['amount'].toFixed(2));
             }
         }
         return total;
