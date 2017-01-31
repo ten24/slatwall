@@ -202,7 +202,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				vendorID=testVendor.getVendorID()
 			},
 			vendorOrderNumber="123",
-			estimatedReceivalDateTime="Jan 30, 2017 12:00 AM",
+			//estimatedReceivalDateTime="Jan 30, 2017 12:00 AM",
 			billToLocation={
 				locationID=SandiegoLocation.getLocationID()
 			},
