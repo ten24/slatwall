@@ -145,7 +145,10 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="livePrice" hb_formatType="currency" persistent="false";
 	property name="salePrice" hb_formatType="currency" persistent="false";
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
-
+	//CUSTOM PROPERTIES BEGIN
+	property name="customproperty" ormtype="string";
+	
+	//CUSTOM PROPERTIES END
 	public any function getAvailableForPurchaseFlag() {
 		if(!structKeyExists(variables, "availableToPurchaseFlag")) {
 			// If purchase start dates not existed, or before now(), the start date is valid
@@ -699,9 +702,9 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 		// First we check to see if that quantityType is defined, if not we need to go out an get the specific struct, or value and cache it
 		if(!structKeyExists(variables, arguments.quantityType)) {
-
 			if(listFindNoCase("QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA", arguments.quantityType)) {
 				variables[ arguments.quantityType] = getService("inventoryService").invokeMethod("get#arguments.quantityType#", {productID=getProductID(), productRemoteID=getRemoteID()});
+				
 			} else if(listFindNoCase("QC,QE,QNC,QATS,QIATS", arguments.quantityType)) {
 				variables[ arguments.quantityType ] = getService("inventoryService").invokeMethod("get#arguments.quantityType#", {entity=this});
 			} else {
@@ -733,6 +736,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 		// If we have a skuID
 		if( structKeyExists( arguments, "skuID") ) {
+			
 			if( structKeyExists(variables[ arguments.quantityType ].skus, arguments.skuID) ) {
 				return variables[ arguments.quantityType ].skus[ arguments.skuID ][ arguments.quantityType ];
 			}
@@ -1335,5 +1339,9 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return smartList.getRecords();
 	}
 
-	// ==================  END:  Deprecated Methods ========================
+	// ==================  END:  Deprecated Methods ========================	//CUSTOM FUNCTIONS BEGIN
+	public void function myfunction(){
+		return true;
+	} 
+	//CUSTOM FUNCTIONS END
 }

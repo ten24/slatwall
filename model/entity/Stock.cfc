@@ -101,7 +101,6 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 		return variables[ arguments.quantityType ];
 	}
 
-
 	// ============ START: Non-Persistent Property Methods =================
 	
 	public any function getAverageCost(){

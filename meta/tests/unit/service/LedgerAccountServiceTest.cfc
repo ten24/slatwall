@@ -212,7 +212,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var vendorOrder = createTestEntity('VendorOrder',{});
 		
 		vendorOrder = variables.vendorOrderService.saveVendorORder(vendorOrder,vendorOrderData);
-		request.slatwallScope.getDao('hibachiDao').flushORMSession(true);
+		request.slatwallScope.flushORMSession(true);
 		
 		//ADD VENDOR ORDER ITEM
 		var vendorOrder_addOrderItemData = {
@@ -227,7 +227,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		
 		vendorOrder = variables.vendorOrderService.process(vendorOrder,vendorOrder_addOrderItemData,'AddVendorOrderItem');
-		request.slatwallScope.getDao('hibachiDao').flushORMSession(true);
+		request.slatwallScope.flushORMSession(true);
 		assert(arraylen(vendorOrder.getVendorOrderItems())==1);
 		
 		//RECEIVE VENDOR ORDER
@@ -253,11 +253,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			]
 		};
 		vendorOrder = variables.vendorOrderService.process(vendorOrder,vendorOrder_receiveData,'Receive');
-		request.slatwallScope.getDao('hibachiDao').flushORMSession(true);
-		request.debug(vendorOrder.getStockReceivers()[1].getStockReceiverItems()[1].getStock().getStockID());
-		request.debug(sku.getStocks()[1].getStockID());
+		request.slatwallScope.flushOrmSession(true);
 		
-		request.debug(sku.getQuantity('QOH'));
+		//clear the session and reload the entity to get the calculated properties to reflect since there is not multiple requests
+		//removes first level cache
+		ORMClearSession();
+		sku = variables.service.getSku(sku.getSkuID());
 		
 		assertEquals(arraylen(vendorOrder.getStockReceivers()),1);
 		assertEquals(arraylen(vendorOrder.getStockReceivers()[1].getStockReceiverItems()),1);
@@ -277,7 +278,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var order = createTestEntity('order',{});
 		order = variables.orderService.process(order,orderData,'create');
-		variables.orderService.getDao('hibachiDao').flushOrmSession(true);
+		request.slatwallScope.flushOrmSession(true);
 		
 
 		//SET UP PLACE ORDER

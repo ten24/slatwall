@@ -66,7 +66,6 @@ component extends="HibachiService" accessors="true" output="false" {
 				getSkuService().processSku(arguments.stockReceiverItem.getStock().getSku(), processData, 'breakupBundledSkus');
 				
 			}
-
 			var inventory = this.newInventory();
 			inventory.setQuantityIn(arguments.stockReceiverItem.getQuantity());
 			inventory.setStock(arguments.stockReceiverItem.getStock());
