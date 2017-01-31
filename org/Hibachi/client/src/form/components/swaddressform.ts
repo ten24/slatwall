@@ -38,7 +38,6 @@ class SWAddressFormController {
 		}
 
         let addressName = this.addressName;
-
         if(this.address){
             this.address.getData = function(){
                 let formData = {};

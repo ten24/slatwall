@@ -37,6 +37,7 @@ class PublicService {
     public billingAddress:any;
     public billingAddressEditFormIndex:any;
     public selectedBillingAddress:any;
+    public editBillingAddress:any;
     public paymentMethods:any;
     public orderPlaced:boolean;
     public useShippingAsBilling:boolean;
@@ -485,20 +486,32 @@ class PublicService {
         }
     }
 
+    // Prepare swAddressForm billing address / card info to be passed to addOrderPayment
     public setOrderPaymentInfo = () => {
         let billingAddress;
+        
+        //if selected, pass shipping address as billing address
         if(this.useShippingAsBilling){
             billingAddress = this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress;
-        }else if(this.billingAddressEditFormIndex && this.billingAddressEditFormIndex != ''){
-            billingAddress = this.billingAddress.getData();
-        }else{
+        
+        //If account address selected, use that
+        }else if(!this.billingAddressEditFormIndex || this.billingAddressEditFormIndex == ''){
             billingAddress = this.selectedBillingAddress;
+        
+        //If creating new address, get from form
+        }else if(this.billingAddressEditFormIndex == 'new'){
+            billingAddress = this.billingAddress.getData();
+        
+        //If editing existing account address, get from form
+        }else{
+            billingAddress = this.editBillingAddress.getData();
         }
+
+        //Add card info
         for(let key in this.newCardInfo){
             billingAddress[key] = this.newCardInfo[key];
         }
         this.newBillingAddress = billingAddress;
-        console.log("new billinga ddresss", this.newBillingAddress)
     }
 
     /** Allows an easy way to calling the service addOrderPayment.

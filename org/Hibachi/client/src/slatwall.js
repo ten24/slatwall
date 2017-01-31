@@ -2246,22 +2246,27 @@
 	            if (Object.keys(newOrderPaymentErrors).length) {
 	            }
 	        };
+	        // Prepare swAddressForm billing address / card info to be passed to addOrderPayment
 	        this.setOrderPaymentInfo = function () {
 	            var billingAddress;
+	            //if selected, pass shipping address as billing address
 	            if (_this.useShippingAsBilling) {
 	                billingAddress = _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress;
 	            }
-	            else if (_this.billingAddressEditFormIndex && _this.billingAddressEditFormIndex != '') {
+	            else if (!_this.billingAddressEditFormIndex || _this.billingAddressEditFormIndex == '') {
+	                billingAddress = _this.selectedBillingAddress;
+	            }
+	            else if (_this.billingAddressEditFormIndex == 'new') {
 	                billingAddress = _this.billingAddress.getData();
 	            }
 	            else {
-	                billingAddress = _this.selectedBillingAddress;
+	                billingAddress = _this.editBillingAddress.getData();
 	            }
+	            //Add card info
 	            for (var key in _this.newCardInfo) {
 	                billingAddress[key] = _this.newCardInfo[key];
 	            }
 	            _this.newBillingAddress = billingAddress;
-	            console.log("new billinga ddresss", _this.newBillingAddress);
 	        };
 	        /** Allows an easy way to calling the service addOrderPayment.
 	        */
