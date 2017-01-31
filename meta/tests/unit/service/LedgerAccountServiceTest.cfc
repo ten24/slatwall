@@ -255,6 +255,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		vendorOrder = variables.vendorOrderService.process(vendorOrder,vendorOrder_receiveData,'Receive');
 		request.slatwallScope.flushOrmSession(true);
 		
+		//verify that the vendor order is partially received
+		assertEquals(vendorOrder.getVendorOrderStatusType().getSystemCode(),'vostPartiallyReceived');
+		assertEquals(vendorOrder.getVendorOrderItems()[1].getQuantityUnreceived(),8);
 		//clear the session and reload the entity to get the calculated properties to reflect since there is not multiple requests
 		//removes first level cache
 		ORMClearSession();
@@ -264,6 +267,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(sku.getQATS(),2);
 		assertEquals(arraylen(vendorOrder.getStockReceivers()),1);
 		assertEquals(arraylen(vendorOrder.getStockReceivers()[1].getStockReceiverItems()),1);
+		assertEquals(vendorOrder.getStockReceivers()[1].getReceiverType(),'vendororder');
 		assertEquals(vendorOrder.getStockReceivers()[1].getStockReceiverItems()[1].getStock().getSku().getSkuID(),sku.getSkuID());
 		
 		//CUSTOMER CREATES ORDER
@@ -449,11 +453,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			//,vendorSkuID=1
 		};
 		
-		vendorOrder = variables.vendorOrderService.process(secondVendorOrder,secondVendorOrder_addOrderItemData,'AddVendorOrderItem');
+		secondVendorOrder = variables.vendorOrderService.process(secondVendorOrder,secondVendorOrder_addOrderItemData,'AddVendorOrderItem');
 		request.slatwallScope.flushORMSession(true);
 		assert(arraylen(secondVendorOrder.getVendorOrderItems())==1);
 		
-		//RECIEVE 1st VENDOR ORDER FULLY  / INCREMENT THE STOCK by 2
+		//COMPLETE RECIEVING 1st VENDOR ORDER FULLY  / INCREMENT THE STOCK by 2
 		vendorOrder_receiveData={
 			vendorOrderID=vendorOrder.getVendorOrderID(),
 			preProcessDisplayedFlag=1,
@@ -471,12 +475,18 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 						
 					},
 					//partial recieve
-					quantity=2
+					quantity=6
 				}
 			]
 		};
+		vendorOrder = variables.service.getVendorOrder(vendorOrder.getVendorOrderID());
 		vendorOrder = variables.vendorOrderService.process(vendorOrder,vendorOrder_receiveData,'Receive');
 		request.slatwallScope.flushOrmSession(true);
+		
+		assertEquals(vendorOrder.getVendorOrderStatusType().getSystemCode(),'vostPartiallyReceived');
+		assertEquals(vendorOrder.getVendorOrderItems()[1].getQuantityUnreceived(),2);
+		
+		//2nd Customer placed Order
 		
 		//RECEIVE 2nd VENDOR ORDER / INCREMENT THE STOCK
 //		var secondVendorOrder_receiveData={

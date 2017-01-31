@@ -54,7 +54,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	public void function createInventoryByStockReceiverItem(required any stockReceiverItem){
 		if(arguments.stockReceiverItem.getStock().getSku().setting("skuTrackInventoryFlag")) {
 			// Dynamically do a breakupBundledSkus call, if this is an order return, a bundle sku, the setting is enabled to do this dynamically
-			if(arguments.stockReceiverItem.getStockReceiver().getReceiverType() eq 'orderItem' 
+			if(arguments.stockReceiverItem.getStockReceiver().getReceiverType() == 'orderItem' 
 				&& ( !isNull(arguments.stockReceiverItem.getStock().getSku().getBundleFlag()) && arguments.stockReceiverItem.getStock().getSku().getBundleFlag() )
 				&& arguments.stockReceiverItem.getStock().getSku().setting("skuBundleAutoBreakupInventoryOnReturnFlag")) {
 
@@ -70,7 +70,13 @@ component extends="HibachiService" accessors="true" output="false" {
 			inventory.setQuantityIn(arguments.stockReceiverItem.getQuantity());
 			inventory.setStock(arguments.stockReceiverItem.getStock());
 			inventory.setStockReceiverItem(arguments.stockReceiverItem);
-			inventory.setCost(arguments.stockReceiverItem.getCost());
+			if(arguments.stockReceiverItem.getStockReceiver().getReceiverType() == 'vendororderitem'){
+				inventory.setCost(arguments.stockReceiverItem.getCost());
+//				inventory.setLandedCost();
+//				var arguments.stockReceiverItem.getVendorOrderItem().getShippingAndHandlingCost()/;
+//				inventory.setLandingAmount();	
+			}
+			
 			//calculate Landed Cost
 			getHibachiDAO().save( inventory );
 			

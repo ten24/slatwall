@@ -83,7 +83,18 @@ component entityname="SlatwallVendorOrder" table="SwVendorOrder" persistent="tru
 	property name="total" persistent="false" hb_formatType="currency"; 
 	property name="costDistributionTypeOptions" persistent="false";
 	
-	public array function getcostDistributionTypeOptions() {
+	public any function getPerQuantityLandingAmount(){
+		if(getQuantity()){
+			return val(precisionEvaluate(getShippingAndHandlingCost()/getQuantity()));	
+		}
+		return 0;
+	}
+	
+	public numeric function getQuantity(){
+		return ORMExecuteQuery('SELECT COALESCE(sum(quantity),0) FROM SlatwallVendorOrderItem where vendorOrder=:vendorOrder',{vendorOrder=this},true);
+	}
+	
+	public array function getCostDistributionTypeOptions() {
 		//quantity | cost | weight 
 		var costDistributionTypeOptions = [];
 		var valuesList = 'quantity,cost,weight';
@@ -246,7 +257,21 @@ component entityname="SlatwallVendorOrder" table="SwVendorOrder" persistent="tru
 	// ================== START: Overridden Methods ========================
 	
 	public string function getSimpleRepresentation() {
-		return "#getVendor().getVendorName()# - #getVendorOrderNumber()#";
+		var simpleRepresentation = "";
+		
+		if(!isNull(getVendor()) && !isNull(getVendor().getVendorName())){
+			simpleRepresentation &= getVendor().getVendorName();
+		}
+		
+		if(!isNull(getVendorOrderNumber())){
+			if(len(simpleRepresentation)){
+				simpleRepresentation &= ' - ';
+			}
+			
+			simpleRepresentation &= getVendorOrderNumber();
+		}
+		
+		return simpleRepresentation;
 	}
 	
 	// ==================  END:  Overridden Methods ========================

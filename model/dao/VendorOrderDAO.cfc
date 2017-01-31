@@ -82,19 +82,16 @@ component extends="HibachiDAO" {
 	
 	public numeric function getQuantityOfStockAlreadyOnOrder(required any vendorOrderID, required any skuID, required any locationID) {
 		var params = [arguments.vendorOrderID, arguments.skuID, arguments.locationID];	
-		var hql = " SELECT new map(sum(voi.quantity) as quantity)
+		var hql = " SELECT new map(
+					COALESCE(sum(voi.quantity),0) as quantity)
 					FROM SlatwallVendorOrderItem voi
 					WHERE voi.vendorOrder.vendorOrderID = ?
 					AND voi.stock.sku.skuID = ?    
 					AND voi.stock.location.locationID = ?                ";
 	
-		var result = ormExecuteQuery(hql, params);
+		var result = ormExecuteQuery(hql, params,true);
 
-		if(!structKeyExists(result[1], "quantity")) {
-			return 0;
-		} else {
-			return result[1]["quantity"];
-		}
+		return result["quantity"];
 	}
 	
 	public numeric function getQuantityOfStockAlreadyReceived(required any vendorOrderID, required any skuID, required any locationID) {

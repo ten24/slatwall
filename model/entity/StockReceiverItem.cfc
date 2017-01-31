@@ -65,6 +65,37 @@ component entityname="SlatwallStockReceiverItem" table="SwStockReceiverItem" per
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	
+	//nonpersistent properties
+	
+	
+	public any function getLandedCost(){
+		return getCost() + getLandingAmount();
+	}
+	
+	public any function getLandingAmount(){
+		
+		switch(getVendorOrderItem().getVendorOrder().getCostDistributionType()){
+			case "quantity":
+				return getLandingAmountByQuantity();
+				break;
+			case "cost":
+				return getLandingAmountByCost();
+				break;
+			case "weight":
+				return getLandingAmountByWeight();
+				break;
+		}
+		return 0;
+	}
+	
+	public numeric function getLandingAmountByQuantity(){
+		return getVendorOrderItem().getVendorOrder().getLandingAmountByQuantity();
+	}
+	
+	public numeric function getLandingAmountByCost(){
+		return getVendorOrderItem().getLandingAmountByCost();
+	}
+	
 	private boolean function hasOneAndOnlyOneRelatedItem() {
     	var relationshipCount = 0;
     	if(!isNull(getVendorOrderItem())) {

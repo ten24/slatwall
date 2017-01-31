@@ -162,10 +162,19 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 	// ================== START: Overridden Methods ========================
 
 	public string function getSimpleRepresentation() {
-		if(!isNull(getStock().getSku().getProduct().getCalculatedTitle())) {
-			return getStock().getSku().getProduct().getCalculatedTitle();
+		var simpleRepresentation = "";
+		if(
+			!isNull(getStock())
+			&& !isNull(getStock().getSku())
+			&& !isNull(getStock().getSku().getProduct())
+		){
+			if(!isNull(getStock().getSku().getProduct().getCalculatedTitle())){
+				simpleRepresentation = getStock().getSku().getProduct().getCalculatedTitle();
+			}else if(!isNull(getStock().getSku().getProduct().getTitle())){
+				simpleRepresentation = getStock().getSku().getProduct().getTitle();
+			}
 		}
-		return getStock().getSku().getProduct().getTitle();
+		return simpleRepresentation;
 	}
 
 	// ==================  END:  Overridden Methods ========================
