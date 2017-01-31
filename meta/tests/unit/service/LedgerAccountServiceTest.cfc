@@ -230,7 +230,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		request.slatwallScope.flushORMSession(true);
 		assert(arraylen(vendorOrder.getVendorOrderItems())==1);
 		
-		//RECEIVE VENDOR ORDER / INCREMENT THE STOCK
+		//RECEIVE VENDOR ORDER PARTIALLY  / INCREMENT THE STOCK by 2
 		var vendorOrder_receiveData={
 			vendorOrderID=vendorOrder.getVendorOrderID(),
 			preProcessDisplayedFlag=1,
@@ -372,7 +372,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.orderService.getDao('hibachiDao').flushOrmSession();
 
 
-		//WAREHOUSE SHIPS ORDER / CREATE ORDER DELIVERY
+		//WAREHOUSE SHIPS ORDER / CREATE ORDER DELIVERY from San Diego
 		var orderDeliveryData={
 			orderDeliveryID="",
 			preProcessDisplayedFlag=1,
@@ -383,7 +383,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				orderFulfillmentID=order.getOrderFulfillments()[1].getOrderFulfillmentID()
 			},
 			location={
-				locationID='88e6d435d3ac2e5947c81ab3da60eba2'
+				locationID=sandiegoLocation.getLocationID()
 			},
 			shippingMethod={
 				shippingMethodID=shippingMethod.getShippingMethodID()
@@ -416,7 +416,91 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//make sure that an item was removed from inventory when it shipped out
 		assertEquals(sku.getQATS(),1);
 		
-				
+		//SECOND VENDOR ORDER PLACED FROM A SEPERATE LOCATION
 		
+		//SET UP 2nd VENDOR ORDER
+		var secondVendorOrderData = {
+			vendorOrderID="",
+			currencyCode="USD",
+			vendor={
+				vendorID=testVendor.getVendorID()
+			},
+			vendorOrderNumber="123",
+			//estimatedReceivalDateTime="Jan 30, 2017 12:00 AM",
+			billToLocation={
+				locationID=NewYorkLocation.getLocationID()
+			},
+			shippingAndHandlingCost=10,
+			costDistributionType='quantity'
+		};
+		var secondVendorOrder = createTestEntity('VendorOrder',{});
+		
+		secondVendorOrder = variables.vendorOrderService.saveVendorORder(secondVendorOrder,secondVendorOrderData);
+		request.slatwallScope.flushORMSession(true);
+		
+		//ADD VENDOR ORDER ITEM to 2nd VENDOR ORDER / PLACE THE VENDOR ORDER
+		var secondVendorOrder_addOrderItemData = {
+			skuID=sku.getSkuID(),
+			vendorOrderItemTypeSystemCode='voitPurchase',
+			vendorOrderID=secondVendorOrder.getVendorOrderID(),
+			deliverToLocationID=newYorkLocation.getLocationID(),
+			quantity=10,
+			cost=50
+			//,vendorSkuID=1
+		};
+		
+		vendorOrder = variables.vendorOrderService.process(secondVendorOrder,secondVendorOrder_addOrderItemData,'AddVendorOrderItem');
+		request.slatwallScope.flushORMSession(true);
+		assert(arraylen(secondVendorOrder.getVendorOrderItems())==1);
+		
+		//RECIEVE 1st VENDOR ORDER FULLY  / INCREMENT THE STOCK by 2
+		vendorOrder_receiveData={
+			vendorOrderID=vendorOrder.getVendorOrderID(),
+			preProcessDisplayedFlag=1,
+			packingSlipNumber=1,
+			boxCount=1,
+			locationID=SandiegoLocation.getLocationID(),
+			vendorOrder={
+				shippingAndHandlingCost=10.00,
+				costDistributionType='quantity'				
+			},
+			vendorOrderItems=[
+				{
+					vendorOrderItem={
+						vendorOrderItemID=vendorOrder.getVendorOrderItems()[1].getVendorOrderItemID()
+						
+					},
+					//partial recieve
+					quantity=2
+				}
+			]
+		};
+		vendorOrder = variables.vendorOrderService.process(vendorOrder,vendorOrder_receiveData,'Receive');
+		request.slatwallScope.flushOrmSession(true);
+		
+		//RECEIVE 2nd VENDOR ORDER / INCREMENT THE STOCK
+//		var secondVendorOrder_receiveData={
+//			vendorOrderID=vendorOrder.getVendorOrderID(),
+//			preProcessDisplayedFlag=1,
+//			packingSlipNumber=1,
+//			boxCount=1,
+//			locationID=SandiegoLocation.getLocationID(),
+//			vendorOrder={
+//				shippingAndHandlingCost=10.00,
+//				costDistributionType='quantity'				
+//			},
+//			vendorOrderItems=[
+//				{
+//					vendorOrderItem={
+//						vendorOrderItemID=vendorOrder.getVendorOrderItems()[1].getVendorOrderItemID()
+//						
+//					},
+//					//partial recieve
+//					quantity=2
+//				}
+//			]
+//		};
+//		vendorOrder = variables.vendorOrderService.process(vendorOrder,vendorOrder_receiveData,'Receive');
+//		request.slatwallScope.flushOrmSession(true);
 	}
 }
