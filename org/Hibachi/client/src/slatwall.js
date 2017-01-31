@@ -19221,41 +19221,41 @@
 	        this.metadataService = metadataService;
 	        this.eventHandlers = "";
 	        this.onSuccess = function () {
-	            _this.utilityService.setPropertyValue(_this.swForm.object, _this.property, _this.value);
+	            _this.utilityService.setPropertyValue(_this.swForm.object, _this.propertyIdentifier, _this.value);
 	            if (_this.swPropertyDisplay) {
-	                _this.utilityService.setPropertyValue(_this.swPropertyDisplay.object, _this.property, _this.value);
+	                _this.utilityService.setPropertyValue(_this.swPropertyDisplay.object, _this.propertyIdentifier, _this.value);
 	            }
 	            if (_this.swfPropertyDisplay) {
-	                _this.utilityService.setPropertyValue(_this.swfPropertyDisplay.object, _this.property, _this.value);
+	                _this.utilityService.setPropertyValue(_this.swfPropertyDisplay.object, _this.propertyIdentifier, _this.value);
 	                _this.swfPropertyDisplay.editing = false;
 	            }
-	            _this.utilityService.setPropertyValue(_this.swFormField.object, _this.property, _this.value);
+	            _this.utilityService.setPropertyValue(_this.swFormField.object, _this.propertyIdentifier, _this.value);
 	        };
 	        this.getValidationDirectives = function () {
 	            var spaceDelimitedList = '';
-	            var name = _this.property;
+	            var name = _this.propertyIdentifier;
 	            var form = _this.form;
 	            _this.$log.debug("Name is:" + name + " and form is: " + form);
 	            if (_this.metadataService.isAttributePropertyByEntityAndPropertyIdentifier(_this.object, _this.propertyIdentifier)) {
 	                _this.object.validations.properties[name] = [];
-	                if (_this.object.metaData[_this.property].requiredFlag && _this.object.metaData[_this.property].requiredFlag.trim().toLowerCase() == "yes") {
+	                if (_this.object.metaData[_this.propertyIdentifier].requiredFlag && _this.object.metaData[_this.propertyIdentifier].requiredFlag.trim().toLowerCase() == "yes") {
 	                    _this.object.validations.properties[name].push({
 	                        contexts: "save",
 	                        required: true
 	                    });
 	                }
-	                if (_this.object.metaData[_this.property].validationRegex) {
+	                if (_this.object.metaData[_this.propertyIdentifier].validationRegex) {
 	                    _this.object.validations.properties[name].push({
-	                        contexts: "save", regex: _this.object.metaData[_this.property].validationRegex
+	                        contexts: "save", regex: _this.object.metaData[_this.propertyIdentifier].validationRegex
 	                    });
 	                }
 	            }
 	            if (angular.isUndefined(_this.object.validations)
 	                || angular.isUndefined(_this.object.validations.properties)
-	                || angular.isUndefined(_this.object.validations.properties[_this.property])) {
+	                || angular.isUndefined(_this.object.validations.properties[_this.propertyIdentifier])) {
 	                return '';
 	            }
-	            var validations = _this.object.validations.properties[_this.property];
+	            var validations = _this.object.validations.properties[_this.propertyIdentifier];
 	            _this.$log.debug("Validations: ", validations);
 	            _this.$log.debug(_this.form);
 	            var validationsForContext = [];
@@ -19341,7 +19341,7 @@
 	            if (!_this.noValidate) {
 	                validations = _this.getValidationDirectives();
 	            }
-	            if (_this.object && _this.object.metaData && _this.object.metaData.$$getPropertyFormatType(_this.property) != undefined && _this.object.metaData.$$getPropertyFormatType(_this.property) == "currency") {
+	            if (_this.object && _this.object.metaData && _this.object.metaData.$$getPropertyFormatType(_this.propertyIdentifier) != undefined && _this.object.metaData.$$getPropertyFormatType(_this.propertyIdentifier) == "currency") {
 	                currencyFormatter = 'sw-currency-formatter ';
 	                if (angular.isDefined(_this.object.data.currencyCode)) {
 	                    currencyFormatter = currencyFormatter + 'data-currency-code="' + _this.object.data.currencyCode + '" ';
@@ -19350,8 +19350,8 @@
 	            }
 	            var appConfig = _this.$hibachi.getConfig();
 	            var placeholder = '';
-	            if (_this.object.metaData && _this.object.metaData[_this.property] && _this.object.metaData[_this.property].hb_nullrbkey) {
-	                placeholder = _this.rbkeyService.getRBKey(_this.object.metaData[_this.property].hb_nullrbkey);
+	            if (_this.object.metaData && _this.object.metaData[_this.propertyIdentifier] && _this.object.metaData[_this.propertyIdentifier].hb_nullrbkey) {
+	                placeholder = _this.rbkeyService.getRBKey(_this.object.metaData[_this.propertyIdentifier].hb_nullrbkey);
 	            }
 	            if (_this.fieldType.toLowerCase() === 'json') {
 	                style = style += 'display:none';
@@ -19367,7 +19367,7 @@
 	                    'ng-disabled="swInput.editable === false" ' +
 	                    'ng-show="swInput.editing" ' +
 	                    "ng-class=\"{'form-control':swInput.inListingDisplay, 'input-xs':swInput.inListingDisplay}\"" +
-	                    'name="' + _this.property + '" ' +
+	                    'name="' + _this.propertyIdentifier + '" ' +
 	                    'placeholder="' + placeholder + '" ' +
 	                    validations + currencyFormatter +
 	                    'id="swinput' + _this.swForm.name + _this.name + '" ' +
@@ -19409,8 +19409,6 @@
 	                    }
 	                }
 	            }
-	            _this.property = _this.property || _this.propertyIdentifier;
-	            _this.propertyIdentifier = _this.propertyIdentifier || _this.property;
 	            _this.fieldType = _this.fieldType || _this.fieldType;
 	            _this.edit = _this.edit || _this.editing;
 	            _this.editing = _this.editing || _this.edit;
@@ -19418,7 +19416,7 @@
 	            _this.fieldType = _this.fieldType || "text";
 	            _this.inputAttributes = _this.inputAttributes || "";
 	            _this.inputAttributes = _this.utilityService.replaceAll(_this.inputAttributes, "'", '"');
-	            _this.value = _this.utilityService.getPropertyValue(_this.object, _this.property);
+	            _this.value = _this.utilityService.getPropertyValue(_this.object, _this.propertyIdentifier);
 	        };
 	        this.pushBindings = function () {
 	            _this.observerService.notify('updateBindings').then(function () { });
@@ -19439,20 +19437,20 @@
 	            else {
 	                _this.eventNameForObjectSuccess = _this.context.charAt(0).toUpperCase() + _this.context.slice(1) + 'Success';
 	            }
-	            var eventNameForObjectSuccessID = _this.eventNameForObjectSuccess + _this.property;
+	            var eventNameForObjectSuccessID = _this.eventNameForObjectSuccess + _this.propertyIdentifier;
 	            var eventNameForUpdateBindings = 'updateBindings';
 	            if (_this.object && _this.object.metaData && _this.object.metaData.className != undefined) {
-	                var eventNameForUpdateBindingsID = _this.object.metaData.className.split('_')[0] + _this.property + 'updateBindings';
+	                var eventNameForUpdateBindingsID = _this.object.metaData.className.split('_')[0] + _this.propertyIdentifier + 'updateBindings';
 	            }
 	            else {
-	                var eventNameForUpdateBindingsID = _this.property + _this.property + 'updateBindings';
+	                var eventNameForUpdateBindingsID = _this.propertyIdentifier + _this.propertyIdentifier + 'updateBindings';
 	            }
 	            var eventNameForPullBindings = 'pullBindings';
 	            if (_this.object && _this.object.metaData && _this.object.metaData.className != undefined) {
-	                var eventNameForPullBindingsID = _this.object.metaData.className.split('_')[0] + _this.property + 'pullBindings';
+	                var eventNameForPullBindingsID = _this.object.metaData.className.split('_')[0] + _this.propertyIdentifier + 'pullBindings';
 	            }
 	            else {
-	                var eventNameForPullBindingsID = _this.property + _this.property + 'pullBindings';
+	                var eventNameForPullBindingsID = _this.propertyIdentifier + _this.propertyIdentifier + 'pullBindings';
 	            }
 	            //attach a successObserver
 	            if (_this.object) {
@@ -20007,29 +20005,29 @@
 	        this.utilityService = utilityService;
 	        this.formFieldChanged = function (option) {
 	            if (_this.fieldType === 'yesno') {
-	                _this.object.data[_this.property] = option.value;
-	                _this.form[_this.property].$dirty = true;
-	                _this.form['selected' + _this.object.metaData.className + _this.property + _this.selectedRadioFormName].$dirty = false;
+	                _this.object.data[_this.propertyIdentifier] = option.value;
+	                _this.form[_this.propertyIdentifier].$dirty = true;
+	                _this.form['selected' + _this.object.metaData.className + _this.propertyIdentifier + _this.selectedRadioFormName].$dirty = false;
 	            }
 	            else if (_this.fieldType === 'select') {
 	                _this.$log.debug('formfieldchanged');
 	                _this.$log.debug(option);
-	                if (_this.selectType === 'object' && typeof _this.object.data[_this.property].$$getIDName == "function") {
-	                    _this.object.data[_this.property]['data'][_this.object.data[_this.property].$$getIDName()] = option.value;
-	                    if (angular.isDefined(_this.form[_this.object.data[_this.property].$$getIDName()])) {
-	                        _this.form[_this.object.data[_this.property].$$getIDName()].$dirty = true;
+	                if (_this.selectType === 'object' && typeof _this.object.data[_this.propertyIdentifier].$$getIDName == "function") {
+	                    _this.object.data[_this.propertyIdentifier]['data'][_this.object.data[_this.propertyIdentifier].$$getIDName()] = option.value;
+	                    if (angular.isDefined(_this.form[_this.object.data[_this.propertyIdentifier].$$getIDName()])) {
+	                        _this.form[_this.object.data[_this.propertyIdentifier].$$getIDName()].$dirty = true;
 	                    }
 	                }
 	                else if (_this.selectType === 'string' && option && option.value != null) {
-	                    _this.object.data[_this.property] = option.value;
-	                    _this.form[_this.property].$dirty = true;
+	                    _this.object.data[_this.propertyIdentifier] = option.value;
+	                    _this.form[_this.propertyIdentifier].$dirty = true;
 	                }
-	                _this.observerService.notify(_this.object.metaData.className + _this.property.charAt(0).toUpperCase() + _this.property.slice(1) + 'OnChange', option);
+	                _this.observerService.notify(_this.object.metaData.className + _this.propertyIdentifier.charAt(0).toUpperCase() + _this.propertyIdentifier.slice(1) + 'OnChange', option);
 	            }
 	            else {
-	                _this.object.data[_this.property] = option.value;
-	                _this.form[_this.property].$dirty = true;
-	                _this.form['selected' + _this.object.metaData.className + _this.property + _this.selectedRadioFormName].$dirty = false;
+	                _this.object.data[_this.propertyIdentifier] = option.value;
+	                _this.form[_this.propertyIdentifier].$dirty = true;
+	                _this.form['selected' + _this.object.metaData.className + _this.propertyIdentifier + _this.selectedRadioFormName].$dirty = false;
 	            }
 	        };
 	        this.$onInit = function () {
@@ -20047,8 +20045,6 @@
 	                    }
 	                }
 	            }
-	            _this.property = _this.property || _this.propertyIdentifier;
-	            _this.propertyIdentifier = _this.propertyIdentifier || _this.property;
 	            _this.edit = _this.edit || _this.editing;
 	            _this.editing = _this.editing || _this.edit;
 	            _this.editing = _this.editing || true;
@@ -20062,7 +20058,7 @@
 	        };
 	        this.selectStrategy = function () {
 	            //this is specific to the admin because it implies loading of options via api
-	            if (angular.isDefined(_this.object.metaData) && angular.isDefined(_this.object.metaData[_this.property]) && angular.isDefined(_this.object.metaData[_this.property].fieldtype)) {
+	            if (angular.isDefined(_this.object.metaData) && angular.isDefined(_this.object.metaData[_this.propertyIdentifier]) && angular.isDefined(_this.object.metaData[_this.propertyIdentifier].fieldtype)) {
 	                _this.selectType = 'object';
 	                _this.$log.debug('selectType:object');
 	            }
@@ -20076,64 +20072,64 @@
 	            if (angular.isUndefined(_this.options)) {
 	                if (!_this.optionsArguments || !_this.optionsArguments.hasOwnProperty('property')) {
 	                    _this.optionsArguments = {
-	                        'property': _this.propertyIdentifier || _this.property
+	                        'property': _this.propertyIdentifier || _this.propertyIdentifier
 	                    };
 	                }
 	                var optionsPromise = _this.$hibachi.getPropertyDisplayOptions(_this.object.metaData.className, _this.optionsArguments);
 	                optionsPromise.then(function (value) {
 	                    _this.options = value.data;
 	                    if (_this.selectType === 'object') {
-	                        if (angular.isUndefined(_this.object.data[_this.property])) {
-	                            _this.object.data[_this.property] = _this.$hibachi['new' + _this.object.metaData[_this.property].cfc]();
+	                        if (angular.isUndefined(_this.object.data[_this.propertyIdentifier])) {
+	                            _this.object.data[_this.propertyIdentifier] = _this.$hibachi['new' + _this.object.metaData[_this.propertyIdentifier].cfc]();
 	                        }
-	                        if (_this.object.data[_this.property].$$getID() === '') {
+	                        if (_this.object.data[_this.propertyIdentifier].$$getID() === '') {
 	                            _this.$log.debug('no ID');
-	                            _this.$log.debug(_this.object.data[_this.property].$$getIDName());
-	                            _this.object.data['selected' + _this.property] = _this.options[0];
-	                            _this.object.data[_this.property] = _this.$hibachi['new' + _this.object.metaData[_this.property].cfc]();
-	                            _this.object.data[_this.property]['data'][_this.object.data[_this.property].$$getIDName()] = _this.options[0].value;
+	                            _this.$log.debug(_this.object.data[_this.propertyIdentifier].$$getIDName());
+	                            _this.object.data['selected' + _this.propertyIdentifier] = _this.options[0];
+	                            _this.object.data[_this.propertyIdentifier] = _this.$hibachi['new' + _this.object.metaData[_this.propertyIdentifier].cfc]();
+	                            _this.object.data[_this.propertyIdentifier]['data'][_this.object.data[_this.propertyIdentifier].$$getIDName()] = _this.options[0].value;
 	                        }
 	                        else {
 	                            var found = false;
 	                            for (var i in _this.options) {
 	                                if (angular.isObject(_this.options[i].value)) {
 	                                    _this.$log.debug('isObject');
-	                                    _this.$log.debug(_this.object.data[_this.property].$$getIDName());
-	                                    if (_this.options[i].value === _this.object.data[_this.property]) {
-	                                        _this.object.data['selected' + _this.property] = _this.options[i];
-	                                        _this.object.data[_this.property] = _this.options[i].value;
+	                                    _this.$log.debug(_this.object.data[_this.propertyIdentifier].$$getIDName());
+	                                    if (_this.options[i].value === _this.object.data[_this.propertyIdentifier]) {
+	                                        _this.object.data['selected' + _this.propertyIdentifier] = _this.options[i];
+	                                        _this.object.data[_this.propertyIdentifier] = _this.options[i].value;
 	                                        found = true;
 	                                        break;
 	                                    }
 	                                }
 	                                else {
 	                                    _this.$log.debug('notisObject');
-	                                    _this.$log.debug(_this.object.data[_this.property].$$getIDName());
-	                                    if (_this.options[i].value === _this.object.data[_this.property].$$getID()) {
-	                                        _this.object.data['selected' + _this.property] = _this.options[i];
-	                                        _this.object.data[_this.property]['data'][_this.object.data[_this.property].$$getIDName()] = _this.options[i].value;
+	                                    _this.$log.debug(_this.object.data[_this.propertyIdentifier].$$getIDName());
+	                                    if (_this.options[i].value === _this.object.data[_this.propertyIdentifier].$$getID()) {
+	                                        _this.object.data['selected' + _this.propertyIdentifier] = _this.options[i];
+	                                        _this.object.data[_this.propertyIdentifier]['data'][_this.object.data[_this.propertyIdentifier].$$getIDName()] = _this.options[i].value;
 	                                        found = true;
 	                                        break;
 	                                    }
 	                                }
 	                                if (!found) {
-	                                    _this.object.data['selected' + _this.property] = _this.options[0];
+	                                    _this.object.data['selected' + _this.propertyIdentifier] = _this.options[0];
 	                                }
 	                            }
 	                        }
 	                    }
 	                    else if (_this.selectType === 'string') {
-	                        if (_this.object.data[_this.property] !== null) {
+	                        if (_this.object.data[_this.propertyIdentifier] !== null) {
 	                            for (var i in _this.options) {
-	                                if (_this.options[i].value === _this.object.data[_this.property]) {
-	                                    _this.object.data['selected' + _this.property] = _this.options[i];
-	                                    _this.object.data[_this.property] = _this.options[i].value;
+	                                if (_this.options[i].value === _this.object.data[_this.propertyIdentifier]) {
+	                                    _this.object.data['selected' + _this.propertyIdentifier] = _this.options[i];
+	                                    _this.object.data[_this.propertyIdentifier] = _this.options[i].value;
 	                                }
 	                            }
 	                        }
 	                        else {
-	                            _this.object.data['selected' + _this.property] = _this.options[0];
-	                            _this.object.data[_this.property] = _this.options[0].value;
+	                            _this.object.data['selected' + _this.propertyIdentifier] = _this.options[0];
+	                            _this.object.data[_this.propertyIdentifier] = _this.options[0].value;
 	                        }
 	                    }
 	                });
@@ -20142,9 +20138,9 @@
 	        this.yesnoStrategy = function () {
 	            //format value
 	            _this.selectedRadioFormName = _this.utilityService.createID(26);
-	            _this.object.data[_this.property] = (_this.object.data[_this.property]
-	                && _this.object.data[_this.property].length
-	                && _this.object.data[_this.property].toLowerCase().trim() === 'yes') || _this.object.data[_this.property] == 1 ? 1 : 0;
+	            _this.object.data[_this.propertyIdentifier] = (_this.object.data[_this.propertyIdentifier]
+	                && _this.object.data[_this.propertyIdentifier].length
+	                && _this.object.data[_this.propertyIdentifier].toLowerCase().trim() === 'yes') || _this.object.data[_this.propertyIdentifier] == 1 ? 1 : 0;
 	            _this.options = [
 	                {
 	                    name: 'Yes',
@@ -20155,20 +20151,20 @@
 	                    value: 0
 	                }
 	            ];
-	            if (angular.isDefined(_this.object.data[_this.property])) {
+	            if (angular.isDefined(_this.object.data[_this.propertyIdentifier])) {
 	                for (var i in _this.options) {
-	                    if (_this.options[i].value === _this.object.data[_this.property]) {
+	                    if (_this.options[i].value === _this.object.data[_this.propertyIdentifier]) {
 	                        _this.selected = _this.options[i];
-	                        _this.object.data[_this.property] = _this.options[i].value;
+	                        _this.object.data[_this.propertyIdentifier] = _this.options[i].value;
 	                    }
 	                }
 	            }
 	            else {
 	                _this.selected = _this.options[0];
-	                _this.object.data[_this.property] = _this.options[0].value;
+	                _this.object.data[_this.propertyIdentifier] = _this.options[0].value;
 	            }
 	            _this.$timeout(function () {
-	                _this.form[_this.property].$dirty = _this.isDirty;
+	                _this.form[_this.propertyIdentifier].$dirty = _this.isDirty;
 	            });
 	        };
 	        this.$injector = $injector;
@@ -20743,10 +20739,6 @@
 	            }
 	            _this.errors = {};
 	            _this.edited = false;
-	            _this.property = _this.property || _this.propertyIdentifier;
-	            _this.propertyIdentifier = _this.propertyIdentifier || _this.property;
-	            _this.type = _this.type || _this.fieldType;
-	            _this.fieldType = _this.fieldType || _this.type;
 	            _this.edit = _this.edit || _this.editing;
 	            _this.editing = _this.editing || _this.edit;
 	            _this.initialValue = _this.object[_this.property];
@@ -20810,15 +20802,15 @@
 	                }
 	            };
 	            //swfproperty logic
-	            if (angular.isUndefined(_this.type) && _this.object && _this.object.metaData) {
-	                _this.type = _this.metadataService.getPropertyFieldType(_this.object, _this.propertyIdentifier);
+	            if (angular.isUndefined(_this.fieldType) && _this.object && _this.object.metaData) {
+	                _this.fieldType = _this.metadataService.getPropertyFieldType(_this.object, _this.propertyIdentifier);
 	            }
 	            if (angular.isUndefined(_this.title) && _this.object && _this.object.metaData) {
 	                _this.labelText = _this.metadataService.getPropertyTitle(_this.object, _this.propertyIdentifier);
 	            }
 	            _this.labelText = _this.labelText || _this.title;
 	            _this.title = _this.title || _this.labelText;
-	            _this.type = _this.type || "text";
+	            _this.fieldType = _this.fieldType || "text";
 	            _this.class = _this.class || "form-control";
 	            _this.fieldAttributes = _this.fieldAttributes || "";
 	            _this.label = _this.label || "true";
@@ -20842,7 +20834,7 @@
 	            }
 	            /** handle turning the options into an array of objects */
 	            /** handle setting the default value for the yes / no element  */
-	            if (_this.type == "yesno" && (_this.value && angular.isString(_this.value))) {
+	            if (_this.fieldType == "yesno" && (_this.value && angular.isString(_this.value))) {
 	                _this.selected == _this.value;
 	            }
 	            if (angular.isUndefined(_this.hint) && _this.object && _this.object.metaData) {

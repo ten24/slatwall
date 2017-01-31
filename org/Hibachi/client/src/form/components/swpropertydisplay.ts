@@ -99,12 +99,6 @@ class SWPropertyDisplayController {
         this.errors = {};
         this.edited = false;
 
-        this.property = this.property || this.propertyIdentifier;
-        this.propertyIdentifier = this.propertyIdentifier || this.property;
-
-        this.type = this.type || this.fieldType;
-        this.fieldType = this.fieldType || this.type;
-
         this.edit = this.edit || this.editing;
         this.editing = this.editing || this.edit;
 
@@ -171,8 +165,8 @@ class SWPropertyDisplayController {
             }
         };
         //swfproperty logic
-        if(angular.isUndefined(this.type) && this.object && this.object.metaData){
-            this.type = this.metadataService.getPropertyFieldType(this.object,this.propertyIdentifier);
+        if(angular.isUndefined(this.fieldType) && this.object && this.object.metaData){
+            this.fieldType = this.metadataService.getPropertyFieldType(this.object,this.propertyIdentifier);
         }
 
 		if(angular.isUndefined(this.title) && this.object && this.object.metaData){
@@ -184,7 +178,7 @@ class SWPropertyDisplayController {
         this.labelText = this.labelText || this.title;
         this.title = this.title || this.labelText;
 
-		this.type                	= this.type || "text" ;
+		this.fieldType                	= this.fieldType || "text" ;
 		this.class			   	= this.class|| "form-control";
 		this.fieldAttributes     	= this.fieldAttributes || "";
 		this.label			    = this.label || "true";
@@ -215,7 +209,7 @@ class SWPropertyDisplayController {
 
         /** handle turning the options into an array of objects */
 		/** handle setting the default value for the yes / no element  */
-		if (this.type=="yesno" && (this.value && angular.isString(this.value))){
+		if (this.fieldType=="yesno" && (this.value && angular.isString(this.value))){
 			this.selected == this.value;
 		}
 

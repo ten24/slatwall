@@ -37,7 +37,6 @@ class SWInputController{
 	public swFormField:SWFormFieldController;
 	public class:string;
 	public fieldType:string;
-	public property:string;
 	public object:any;
 	public inputAttributes:string;
 	public initialValue:any;
@@ -82,44 +81,44 @@ class SWInputController{
 	}
 
 	public onSuccess = ()=>{
-		this.utilityService.setPropertyValue(this.swForm.object,this.property,this.value);
+		this.utilityService.setPropertyValue(this.swForm.object,this.propertyIdentifier,this.value);
 		if(this.swPropertyDisplay){
-			this.utilityService.setPropertyValue(this.swPropertyDisplay.object,this.property,this.value);
+			this.utilityService.setPropertyValue(this.swPropertyDisplay.object,this.propertyIdentifier,this.value);
 		}
 		if(this.swfPropertyDisplay){
-			this.utilityService.setPropertyValue(this.swfPropertyDisplay.object,this.property,this.value);
+			this.utilityService.setPropertyValue(this.swfPropertyDisplay.object,this.propertyIdentifier,this.value);
 			this.swfPropertyDisplay.editing = false;
 		}
-		this.utilityService.setPropertyValue(this.swFormField.object,this.property,this.value);
+		this.utilityService.setPropertyValue(this.swFormField.object,this.propertyIdentifier,this.value);
 	}
 
 	public getValidationDirectives = ()=>{
 		var spaceDelimitedList = '';
-		var name = this.property;
+		var name = this.propertyIdentifier;
 		var form = this.form;
 		this.$log.debug("Name is:" + name + " and form is: " + form);
 
 		if(this.metadataService.isAttributePropertyByEntityAndPropertyIdentifier(this.object,this.propertyIdentifier)){
 			this.object.validations.properties[name] = [];
-			if(this.object.metaData[this.property].requiredFlag && this.object.metaData[this.property].requiredFlag.trim().toLowerCase()=="yes"){
+			if(this.object.metaData[this.propertyIdentifier].requiredFlag && this.object.metaData[this.propertyIdentifier].requiredFlag.trim().toLowerCase()=="yes"){
 				this.object.validations.properties[name].push({
 					contexts:"save",
 					required:true
 				});
 			}
-			if(this.object.metaData[this.property].validationRegex){
+			if(this.object.metaData[this.propertyIdentifier].validationRegex){
 				this.object.validations.properties[name].push({
-					contexts:"save",regex:this.object.metaData[this.property].validationRegex
+					contexts:"save",regex:this.object.metaData[this.propertyIdentifier].validationRegex
 				});
 			}
 		}
 
 		if(angular.isUndefined(this.object.validations )
 			|| angular.isUndefined(this.object.validations.properties)
-			|| angular.isUndefined(this.object.validations.properties[this.property])){
+			|| angular.isUndefined(this.object.validations.properties[this.propertyIdentifier])){
 			return '';
 		}
-		var validations = this.object.validations.properties[this.property];
+		var validations = this.object.validations.properties[this.propertyIdentifier];
 
 		this.$log.debug("Validations: ", validations);
 		this.$log.debug(this.form);
@@ -227,7 +226,7 @@ class SWInputController{
 			validations = this.getValidationDirectives();
 		}
 
-		if(this.object && this.object.metaData && this.object.metaData.$$getPropertyFormatType(this.property) != undefined && this.object.metaData.$$getPropertyFormatType(this.property) == "currency"){
+		if(this.object && this.object.metaData && this.object.metaData.$$getPropertyFormatType(this.propertyIdentifier) != undefined && this.object.metaData.$$getPropertyFormatType(this.propertyIdentifier) == "currency"){
 			currencyFormatter = 'sw-currency-formatter ';
 			if(angular.isDefined(this.object.data.currencyCode)){
 				currencyFormatter = currencyFormatter + 'data-currency-code="' + this.object.data.currencyCode + '" ';
@@ -238,8 +237,8 @@ class SWInputController{
 		var appConfig = this.$hibachi.getConfig();
 
 		var placeholder ='';
-		if(this.object.metaData && this.object.metaData[this.property] && this.object.metaData[this.property].hb_nullrbkey){
-			placeholder = this.rbkeyService.getRBKey(this.object.metaData[this.property].hb_nullrbkey);
+		if(this.object.metaData && this.object.metaData[this.propertyIdentifier] && this.object.metaData[this.propertyIdentifier].hb_nullrbkey){
+			placeholder = this.rbkeyService.getRBKey(this.object.metaData[this.propertyIdentifier].hb_nullrbkey);
 		}
 
 		if(this.fieldType.toLowerCase() === 'json'){
@@ -258,7 +257,7 @@ class SWInputController{
 				'ng-disabled="swInput.editable === false" '+
 				'ng-show="swInput.editing" '+
 				`ng-class="{'form-control':swInput.inListingDisplay, 'input-xs':swInput.inListingDisplay}"` +
-				'name="'+this.property+'" ' +
+				'name="'+this.propertyIdentifier+'" ' +
 				'placeholder="'+placeholder+'" '+
 				validations + currencyFormatter +
 				'id="swinput'+this.swForm.name+this.name+'" '+
@@ -320,9 +319,6 @@ class SWInputController{
 			}
 		}
 
-		this.property = this.property || this.propertyIdentifier;
-        this.propertyIdentifier = this.propertyIdentifier || this.property;
-
         this.fieldType = this.fieldType || this.fieldType;
 
         this.edit = this.edit || this.editing;
@@ -335,7 +331,7 @@ class SWInputController{
 
 		this.inputAttributes = this.utilityService.replaceAll(this.inputAttributes,"'",'"');
 
-		this.value = this.utilityService.getPropertyValue(this.object,this.property);
+		this.value = this.utilityService.getPropertyValue(this.object,this.propertyIdentifier);
     }
 
     public pushBindings = ()=>{
@@ -361,19 +357,19 @@ class SWInputController{
  		}else{
  			this.eventNameForObjectSuccess = this.context.charAt(0).toUpperCase()+this.context.slice(1)+'Success'
  		}
-		var eventNameForObjectSuccessID = this.eventNameForObjectSuccess+this.property;
+		var eventNameForObjectSuccessID = this.eventNameForObjectSuccess+this.propertyIdentifier;
 
 		var eventNameForUpdateBindings = 'updateBindings';
 		if (this.object && this.object.metaData && this.object.metaData.className != undefined){
- 			var eventNameForUpdateBindingsID = this.object.metaData.className.split('_')[0]+this.property+'updateBindings';
+ 			var eventNameForUpdateBindingsID = this.object.metaData.className.split('_')[0]+this.propertyIdentifier+'updateBindings';
  		}else{
- 			var eventNameForUpdateBindingsID = this.property+this.property+'updateBindings';
+ 			var eventNameForUpdateBindingsID = this.propertyIdentifier+this.propertyIdentifier+'updateBindings';
  		}
         var eventNameForPullBindings = 'pullBindings';
         if (this.object && this.object.metaData && this.object.metaData.className != undefined){
-         	var eventNameForPullBindingsID = this.object.metaData.className.split('_')[0]+this.property+'pullBindings';
+         	var eventNameForPullBindingsID = this.object.metaData.className.split('_')[0]+this.propertyIdentifier+'pullBindings';
 		}else{
- 			var eventNameForPullBindingsID = this.property+this.property+'pullBindings';
+ 			var eventNameForPullBindingsID = this.propertyIdentifier+this.propertyIdentifier+'pullBindings';
  		}
 		//attach a successObserver
 		if(this.object){
