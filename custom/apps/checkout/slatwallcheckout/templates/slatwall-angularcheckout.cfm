@@ -171,7 +171,7 @@
 					                                Payment Amount: {{payment.amount | currency}}
 					                            </div>
 					                            <div class="card-balance-wrapper">
-					                                Remaining Card Balance: <span class="card-balance">{{payment.giftCard.balanceAmount | currency}}</span>
+					                                Card Balance: <span class="card-balance">{{payment.giftCard.balanceAmount | currency}}</span>
 					                            </div>
 					                        </span>
 					                    </div>

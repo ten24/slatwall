@@ -2251,8 +2251,11 @@
 	            if (_this.useShippingAsBilling) {
 	                billingAddress = _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress;
 	            }
-	            else {
+	            else if (_this.billingAddressEditFormIndex && _this.billingAddressEditFormIndex != '') {
 	                billingAddress = _this.billingAddress.getData();
+	            }
+	            else {
+	                billingAddress = _this.selectedBillingAddress;
 	            }
 	            for (var key in _this.newCardInfo) {
 	                billingAddress[key] = _this.newCardInfo[key];

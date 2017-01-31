@@ -35,7 +35,9 @@ class PublicService {
     public years = [];
     public shippingAddress = "";
     public billingAddress:any;
-    public paymentMethods;
+    public billingAddressEditFormIndex:any;
+    public selectedBillingAddress:any;
+    public paymentMethods:any;
     public orderPlaced:boolean;
     public useShippingAsBilling:boolean;
     public saveShippingAsBilling:boolean;
@@ -487,8 +489,10 @@ class PublicService {
         let billingAddress;
         if(this.useShippingAsBilling){
             billingAddress = this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress;
-        }else{
+        }else if(this.billingAddressEditFormIndex && this.billingAddressEditFormIndex != ''){
             billingAddress = this.billingAddress.getData();
+        }else{
+            billingAddress = this.selectedBillingAddress;
         }
         for(let key in this.newCardInfo){
             billingAddress[key] = this.newCardInfo[key];
