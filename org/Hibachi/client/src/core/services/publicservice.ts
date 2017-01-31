@@ -545,7 +545,6 @@ class PublicService {
             'copyFromType': billingAddress.copyFromType,
             'saveAccountPaymentMethodFlag': this.saveCardInfo
         };
-        console.log('data', data);
         //processObject.populate(data);
 
         //Make sure we have required fields for a newOrderPayment.
@@ -566,8 +565,6 @@ class PublicService {
                 this.editPayment = false;
                 this.readyToPlaceOrder = true;
             }
-
-            console.log('result', result);
         });
     };
 

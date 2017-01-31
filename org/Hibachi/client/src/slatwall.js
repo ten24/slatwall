@@ -2304,7 +2304,6 @@
 	                'copyFromType': billingAddress.copyFromType,
 	                'saveAccountPaymentMethodFlag': _this.saveCardInfo
 	            };
-	            console.log('data', data);
 	            //processObject.populate(data);
 	            //Make sure we have required fields for a newOrderPayment.
 	            _this.validateNewOrderPayment(data);
@@ -2322,7 +2321,6 @@
 	                    _this.editPayment = false;
 	                    _this.readyToPlaceOrder = true;
 	                }
-	                console.log('result', result);
 	            });
 	        };
 	        /** Allows an easy way to calling the service addOrderPayment.

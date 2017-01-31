@@ -1,7 +1,7 @@
 <span ng-init="imagePath = '/custom/apps/slatwallcms/projectName/assets/images'"></span>
 <span ng-init="$.slatwall = $root.slatwall"></span>
 
-<divng-cloak>
+<div ng-cloak>
     <fieldset>
         <legend>Payment Information</legend>
         <div class="row">
@@ -71,10 +71,24 @@
                 <label for="useShipping">Use Shipping Address as Billing Address</label>
                 <input type="checkbox" name="useShipping" ng-model="$root.slatwall.useShippingAsBilling">
             </div>
-            <sw-address-form ng-if="!$root.slatwall.useShippingAsBilling"
+            <swf-directive partial-path="{{$root.customTemplateFolder}}" partial-name="addbillingbyaccountaddresspartial" ng-show="!$root.slatwall.useShippingAsBilling"></swf-directive>
+            <sw-address-form ng-if="!$root.slatwall.useShippingAsBilling && $root.slatwall.billingAddressEditFormIndex == 'new'"
                 data-field-list="countryCode,streetAddress,street2Address,locality,city,stateCode,postalCode"
                 data-slatwall-scope="$.slatwall"
                 data-address="$.slatwall.billingAddress" 
+                data-address-name="billingAddress" 
+                data-field-name-prefix="$.slatwall.billingAddress." 
+                data-show-country-select="true" 
+                data-show-submit-button="false"
+                data-show-address-book-select="false"
+                data-action-text="Review Order"
+                data-show-alerts="false"
+                ></sw-address-form>
+            <sw-address-form ng-if="!$root.slatwall.useShippingAsBilling && $root.slatwall.billingAddressEditFormIndex != 'new' && $root.slatwall.billingAddressEditFormIndex != ''"
+                data-field-list="countryCode,streetAddress,street2Address,locality,city,stateCode,postalCode"
+                data-slatwall-scope="$.slatwall"
+                data-id="{{$.slatwall.account.accountAddresses[$.slatwall.billingAddressEditFormIndex].address.addressID}}" 
+                data-address="$.slatwall.account.accountAddresses[$.slatwall.billingAddressEditFormIndex].address" 
                 data-address-name="billingAddress" 
                 data-field-name-prefix="$.slatwall.billingAddress." 
                 data-show-country-select="true" 
