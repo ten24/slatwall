@@ -214,7 +214,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		vendorOrder = variables.vendorOrderService.saveVendorORder(vendorOrder,vendorOrderData);
 		request.slatwallScope.flushORMSession(true);
 		
-		//ADD VENDOR ORDER ITEM
+		//ADD VENDOR ORDER ITEM / PLACE THE VENDOR ORDER
 		var vendorOrder_addOrderItemData = {
 			skuID=sku.getSkuID(),
 			vendorOrderItemTypeSystemCode='voitPurchase',
@@ -230,7 +230,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		request.slatwallScope.flushORMSession(true);
 		assert(arraylen(vendorOrder.getVendorOrderItems())==1);
 		
-		//RECEIVE VENDOR ORDER
+		//RECEIVE VENDOR ORDER / INCREMENT THE STOCK
 		var vendorOrder_receiveData={
 			vendorOrderID=vendorOrder.getVendorOrderID(),
 			preProcessDisplayedFlag=1,
@@ -260,9 +260,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		ORMClearSession();
 		sku = variables.service.getSku(sku.getSkuID());
 		
+		//make sure the stock recievers, items and inventory were incremented
+		assertEquals(sku.getQATS(),2);
 		assertEquals(arraylen(vendorOrder.getStockReceivers()),1);
 		assertEquals(arraylen(vendorOrder.getStockReceivers()[1].getStockReceiverItems()),1);
 		assertEquals(vendorOrder.getStockReceivers()[1].getStockReceiverItems()[1].getStock().getSku().getSkuID(),sku.getSkuID());
+		
 		//CUSTOMER CREATES ORDER
 		
 		var orderData = {
@@ -306,9 +309,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var accountAddress = createPersistedTestEntity('AccountAddress',accountAddressData);
 		
-		//ADD ORDERITEM
+		//ADD ORDERITEM FROM OUR JUST ADDED INVENTORY
 
-	/*	var addOrderItemData={
+		var addOrderItemData={
 			skuID=sku.getSkuID(),
 			orderItemTypeSystemCode="oitSale",
 			quantity=1,
@@ -317,8 +320,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			//shipping
 			fulfillmentMethodID='444df2fb93d5fa960ba2966ba2017953',
 			//default location
-			pickupLocationID='88e6d435d3ac2e5947c81ab3da60eba2',
-
+			//pickupLocationID='88e6d435d3ac2e5947c81ab3da60eba2',
 			shippingAccountAddressID=accountAddress.getAccountAddressID(),
 			shippingAddress.countryCode='US',
 			saveShippingAccountAddressFlag=1,
@@ -326,9 +328,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		order = variables.orderService.process(order,addOrderItemData,'addOrderItem');
 		variables.orderService.getDao('hibachiDao').flushOrmSession();
-
+		
+		//check to make sure and orderfulfillment was created
 		assert(arraylen(order.getOrderFulfillments()));
 
+
+		//CUSTOMER PLACES ORDER
 		var placeOrderData={
 			orderID=order.getOrderID(),
 			preProcessDisplayedFlag=1,
@@ -366,6 +371,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		order = variables.orderService.process(order,placeOrderData,'placeOrder');
 		variables.orderService.getDao('hibachiDao').flushOrmSession();
 
+
+		//WAREHOUSE SHIPS ORDER / CREATE ORDER DELIVERY
 		var orderDeliveryData={
 			orderDeliveryID="",
 			preProcessDisplayedFlag=1,
@@ -398,11 +405,18 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		orderDelivery = variables.orderService.process(orderDelivery,orderDeliveryData,'create');
 		variables.orderService.getDao('hibachiDao').flushOrmSession();
 		
+		//make sure that the order delivery was Shipped to the customer
 		assert(arrayLen(orderDelivery.getOrderDeliveryItems()));
-		
 		assertEquals(orderDelivery.getOrderDeliveryItems()[1].getQuantity(),1);
-		*/
-		//
+		
+		//clear first level cache so we can get new calculations
+		ORMCLEARSESSION();
+		var sku = variables.service.getSku(sku.getSkuID());
+		
+		//make sure that an item was removed from inventory when it shipped out
+		assertEquals(sku.getQATS(),1);
+		
+				
 		
 	}
 }

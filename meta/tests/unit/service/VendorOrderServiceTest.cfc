@@ -191,7 +191,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//make sure that a stockReceiverItem is created
 		assert(arrayLen(vendorOrder.getVendorOrderItems()[1].getStockReceiverItems()));
 		assertEquals(vendorOrder.getVendorOrderStatusType().getSystemCode(),'vostPartiallyReceived');
-		request.debug(vendorOrder.getVendorOrderItems()[1].getStockReceiverItems()[1].getStockReceiverItemID());
 	}
 	
 	
