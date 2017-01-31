@@ -2266,6 +2266,7 @@
 	            for (var key in _this.newCardInfo) {
 	                billingAddress[key] = _this.newCardInfo[key];
 	            }
+	            console.log(billingAddress);
 	            _this.newBillingAddress = billingAddress;
 	        };
 	        /** Allows an easy way to calling the service addOrderPayment.

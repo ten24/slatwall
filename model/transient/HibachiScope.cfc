@@ -263,7 +263,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		return "accountID,firstName,lastName,company,remoteID,primaryPhoneNumber.accountPhoneNumberID,primaryPhoneNumber.phoneNumber,primaryEmailAddress.accountEmailAddressID,primaryEmailAddress.emailAddress,
 			primaryAddress.accountAddressID,
 			accountAddresses.accountAddressName,accountAddresses.accountAddressID,
-			accountAddresses.address.addressID,accountAddresses.address.streetAddress,accountAddresses.address.street2Address,accountAddresses.address.city,accountAddresses.address.statecode,accountAddresses.address.postalcode,accountAddresses.address.countrycode, accountAddresses.address.name, accountAddresses.address.company, accountAddresses.address.phoneNumber, accountPaymentMethods.accountPaymentMethodID, accountPaymentMethods.creditCardLastFour, accountPaymentMethods.creditCardType";
+			accountAddresses.address.addressID,accountAddresses.address.streetAddress,accountAddresses.address.street2Address,accountAddresses.address.city,accountAddresses.address.statecode,accountAddresses.address.postalcode,accountAddresses.address.countrycode, accountAddresses.address.name, accountAddresses.address.company, accountAddresses.address.phoneNumber, accountPaymentMethods.accountPaymentMethodID, accountPaymentMethods.creditCardLastFour, accountPaymentMethods.creditCardType, accountPaymentMethods.nameOnCreditCard, accountPaymentMethods.expirationMonth, accountPaymentMethods.expirationYear";
 	}
 	
 	public any function getAccountData(string propertyList) {

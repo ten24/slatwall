@@ -1,7 +1,7 @@
 <div class="row" ng-if="$root.slatwall.account.accountPaymentMethods && $root.slatwall.account.accountPaymentMethods.length" ng-init="$root.slatwall.savedPaymentMethod.copyFromType = 'accountPaymentMethod'">
-	<div class="col-sm-6">
+	<div>
 		Saved Credit Cards:
-		<select ng-model="$root.slatwall.savedPaymentMethod.accountPaymentMethodID" ng-options="paymentMethod.accountPaymentMethodID as paymentMethod.creditCardType + '-' + paymentMethod.creditCardLastFour for paymentMethod in $root.slatwall.account.accountPaymentMethods"></select>
+		<select ng-model="$root.slatwall.savedPaymentMethod.accountPaymentMethodID" ng-options="paymentMethod.accountPaymentMethodID as paymentMethod.nameOnCreditCard + ' - ' + paymentMethod.creditCardType + ' *' + paymentMethod.creditCardLastFour + ' exp. ' + ('0' + paymentMethod.expirationMonth).slice(-2) + '/' + paymentMethod.expirationYear.toString().slice(-2) for paymentMethod in $root.slatwall.account.accountPaymentMethods"></select>
 		<button ng-disabled="!$root.slatwall.savedPaymentMethod" ng-click="$root.slatwall.newBillingAddress = $root.slatwall.savedPaymentMethod; $root.slatwall.addOrderPayment({});">Add Payment Method</button>
 	</div>
 </div>

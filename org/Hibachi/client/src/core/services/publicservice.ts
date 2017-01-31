@@ -511,6 +511,7 @@ class PublicService {
         for(let key in this.newCardInfo){
             billingAddress[key] = this.newCardInfo[key];
         }
+        console.log(billingAddress);
         this.newBillingAddress = billingAddress;
     }
 
