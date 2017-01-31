@@ -1,5 +1,13 @@
 <span ng-init="$.slatwall = $root.slatwall"></span>
 <div ng-init="Account_LoginObj = $.slatwall.getProcessObject('Account_Login') "></div>
+<script type="text/javascript">
+	// var rootScope = angular.element(document.body).injector().get('$rootScope');
+	// console.log('rootSCope',rootScope);
+	// rootScope.frontendfun.doDaTing = function(){
+	// 	alert("Ehhh you did da ting bruddah");
+	// }
+
+</script>
 
 <div id="loginForm" class="row" ng-show="!$.slatwall.forgotPassword">
 	    <div class="col-sm-7">
@@ -10,7 +18,7 @@
 			    data-error-class="error"
 			    data-action="login"
 			    data-name="Account_Login"
-			    data-event-listeners="Account_Loginpasswordkeyup:submitKeyCheck">
+			    >
 			<div class="form-group">
 		        <swf-property-display
 		            data-name="emailAddress"
@@ -32,7 +40,8 @@
 		            data-label-text="Password"
 		            data-class="form-control"
 		            data-editing="true"
-		            data-event-handlers="keyup">
+		            data-event-handlers="keyup"
+		            data-event-listeners="{Account_Loginpasswordkeyup:swForm}">
 		        </swf-property-display>
 	        </div>
 

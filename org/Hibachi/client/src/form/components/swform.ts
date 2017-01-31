@@ -26,7 +26,7 @@ class SWFormController {
     public formCtrl;
     public formData = {};
     public inputAttributes:string;
-    public eventListeners:string;
+    public eventListeners;
     /**
      * This controller handles most of the logic for the swFormDirective when more complicated self inspection is needed.
      */
@@ -112,10 +112,10 @@ class SWFormController {
         //     observerService.attach(this.eventsHandler, "onError");//stub
         // }
         if(this.eventListeners){
-            let eventObj = this.parseEventString(this.eventListeners);
-            eventObj.events.forEach(event=>{
-                observerService.attach(event.action, event.name);
-            })
+            console.log('event listeners: ', this.eventListeners);
+            for(var key in this.eventListeners){
+                observerService.attach(this.eventListeners[key], key)
+            }
         }
 
     }
@@ -174,41 +174,6 @@ class SWFormController {
                 }
             }
         }, angular.noop);
-
-    }
-
-    public parseEvents = (str:string)=> {
-
-        if (str == undefined) return;
-        let strTokens = str.split(","); //this gives the format [hide:this, show:Account_Logout, update:Account or Cart, event:element]
-        let eventsObj = {
-            "events": []
-        }; //will hold events
-        for (var token in strTokens){
-            let eventName = strTokens[token].split(":")[0].replace(' ', '');
-            let eventAction = strTokens[token].split(":")[1].replace(' ', '');
-
-            // if (eventAction == "this") {formName == this.context.toLowerCase();} //<--replaces the alias this with the name of this form.
-            let path = eventAction.split('.');
-            let eventObj = this[path.shift()];
-            while(path.length && eventObj[path[0]]){
-                eventObj = eventObj[path.shift()];
-            }
-            let event = {"name" : eventName, "action" : eventObj};
-            eventsObj.events.push(event);
-
-        }
-        // if (eventsObj.events.length){
-        //     this.observerService.attach(this.eventsHandler, "onSuccess");
-        // }
-
-        return eventsObj;
-    }
-
-     /** looks at the onSuccess, onError, and onLoading and parses the string into useful subcategories */
-    public parseEventString = (evntStr:string)=>
-    {
-        return this.parseEvents(evntStr); //onSuccess : [hide:this, show:someOtherForm, refresh:Account]
 
     }
 
@@ -333,7 +298,7 @@ class SWForm implements ng.IDirective {
             hideUntil: "@?",
             isDirty:"=?",
             inputAttributes:"@?",
-            eventListeners:"@?"
+            eventListeners:"=?"
     };
 
     /**

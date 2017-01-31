@@ -19745,34 +19745,6 @@
 	                }
 	            }, angular.noop);
 	        };
-	        this.parseEvents = function (str) {
-	            if (str == undefined)
-	                return;
-	            var strTokens = str.split(","); //this gives the format [hide:this, show:Account_Logout, update:Account or Cart, event:element]
-	            var eventsObj = {
-	                "events": []
-	            }; //will hold events
-	            for (var token in strTokens) {
-	                var eventName = strTokens[token].split(":")[0].replace(' ', '');
-	                var eventAction = strTokens[token].split(":")[1].replace(' ', '');
-	                // if (eventAction == "this") {formName == this.context.toLowerCase();} //<--replaces the alias this with the name of this form.
-	                var path = eventAction.split('.');
-	                var eventObj = _this[path.shift()];
-	                while (path.length && eventObj[path[0]]) {
-	                    eventObj = eventObj[path.shift()];
-	                }
-	                var event_1 = { "name": eventName, "action": eventObj };
-	                eventsObj.events.push(event_1);
-	            }
-	            // if (eventsObj.events.length){
-	            //     this.observerService.attach(this.eventsHandler, "onSuccess");
-	            // }
-	            return eventsObj;
-	        };
-	        /** looks at the onSuccess, onError, and onLoading and parses the string into useful subcategories */
-	        this.parseEventString = function (evntStr) {
-	            return _this.parseEvents(evntStr); //onSuccess : [hide:this, show:someOtherForm, refresh:Account]
-	        };
 	        /****
 	             * Handle parsing through the server errors and injecting the error text for that field
 	            * If the form only has a submit, then simply call that function and set errors.
@@ -19921,10 +19893,10 @@
 	        //     observerService.attach(this.eventsHandler, "onError");//stub
 	        // }
 	        if (this.eventListeners) {
-	            var eventObj = this.parseEventString(this.eventListeners);
-	            eventObj.events.forEach(function (event) {
-	                observerService.attach(event.action, event.name);
-	            });
+	            console.log('event listeners: ', this.eventListeners);
+	            for (var key in this.eventListeners) {
+	                observerService.attach(this.eventListeners[key], key);
+	            }
 	        }
 	    }
 	    return SWFormController;
@@ -19959,7 +19931,7 @@
 	            hideUntil: "@?",
 	            isDirty: "=?",
 	            inputAttributes: "@?",
-	            eventListeners: "@?"
+	            eventListeners: "=?"
 	        };
 	        /**
 	            * Sets the context of this form
