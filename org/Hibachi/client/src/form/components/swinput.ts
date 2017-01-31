@@ -50,7 +50,6 @@ class SWInputController{
 	public rawFileTarget:string;
 	public edit:boolean;
 	public edited:boolean;
-	public editing:boolean;
 	public name:string;
 	public value:any;
 	public reverted:boolean;
@@ -87,7 +86,7 @@ class SWInputController{
 		}
 		if(this.swfPropertyDisplay){
 			this.utilityService.setPropertyValue(this.swfPropertyDisplay.object,this.propertyIdentifier,this.value);
-			this.swfPropertyDisplay.editing = false;
+			this.swfPropertyDisplay.edit = false;
 		}
 		this.utilityService.setPropertyValue(this.swFormField.object,this.propertyIdentifier,this.value);
 	}
@@ -255,7 +254,7 @@ class SWInputController{
 			template = currencyTitle + '<input type="' + inputType + '" class="' + this.class + '" '+
 				'ng-model="swInput.value" '+
 				'ng-disabled="swInput.editable === false" '+
-				'ng-show="swInput.editing" '+
+				'ng-show="swInput.edit" '+
 				`ng-class="{'form-control':swInput.inListingDisplay, 'input-xs':swInput.inListingDisplay}"` +
 				'name="'+this.propertyIdentifier+'" ' +
 				'placeholder="'+placeholder+'" '+
@@ -283,7 +282,7 @@ class SWInputController{
 		var actionButtons = `
 			<a class="s-remove-change"
 				data-ng-click="swPropertyDisplay.clear()"
-				data-ng-if="swInput.edited && swInput.editing">
+				data-ng-if="swInput.edited && swInput.edit">
 					<i class="fa fa-remove"></i>
 			</a>
 
@@ -319,12 +318,7 @@ class SWInputController{
 			}
 		}
 
-        this.fieldType = this.fieldType || this.fieldType;
-
-        this.edit = this.edit || this.editing;
-        this.editing = this.editing || this.edit;
-
-		this.editing = this.editing || true;
+		this.edit = this.edit || true;
 		this.fieldType = this.fieldType || "text";
 
 		this.inputAttributes = this.inputAttributes || "";
@@ -435,7 +429,6 @@ class SWInput{
 		showRevert:"=?",
 		inputAttributes:"@?",
 		type:"@?",
-		editing:"=?",
 		eventHandlers:"@?",
 		context:"@?"
 	}

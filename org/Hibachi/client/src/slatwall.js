@@ -19227,7 +19227,7 @@
 	            }
 	            if (_this.swfPropertyDisplay) {
 	                _this.utilityService.setPropertyValue(_this.swfPropertyDisplay.object, _this.propertyIdentifier, _this.value);
-	                _this.swfPropertyDisplay.editing = false;
+	                _this.swfPropertyDisplay.edit = false;
 	            }
 	            _this.utilityService.setPropertyValue(_this.swFormField.object, _this.propertyIdentifier, _this.value);
 	        };
@@ -19365,7 +19365,7 @@
 	                template = currencyTitle + '<input type="' + inputType + '" class="' + _this.class + '" ' +
 	                    'ng-model="swInput.value" ' +
 	                    'ng-disabled="swInput.editable === false" ' +
-	                    'ng-show="swInput.editing" ' +
+	                    'ng-show="swInput.edit" ' +
 	                    "ng-class=\"{'form-control':swInput.inListingDisplay, 'input-xs':swInput.inListingDisplay}\"" +
 	                    'name="' + _this.propertyIdentifier + '" ' +
 	                    'placeholder="' + placeholder + '" ' +
@@ -19388,7 +19388,7 @@
 	            if (template.length) {
 	                template = template + ' />';
 	            }
-	            var actionButtons = "\n\t\t\t<a class=\"s-remove-change\"\n\t\t\t\tdata-ng-click=\"swPropertyDisplay.clear()\"\n\t\t\t\tdata-ng-if=\"swInput.edited && swInput.editing\">\n\t\t\t\t\t<i class=\"fa fa-remove\"></i>\n\t\t\t</a>\n\n\t\t\t<!-- Revert Button -->\n\t\t\t<button class=\"btn btn-xs btn-default s-revert-btn\"\n\t\t\t\t\tdata-ng-show=\"swInput.showRevert\"\n\t\t\t\t\tdata-ng-click=\"swInput.revert()\"\n\t\t\t\t\tdata-toggle=\"popover\"\n\t\t\t\t\tdata-trigger=\"hover\"\n\t\t\t\t\tdata-content=\"{{swInput.revertText}}\"\n\t\t\t\t\tdata-original-title=\"\"\n\t\t\t\t\ttitle=\"\">\n\t\t\t\t<i class=\"fa fa-refresh\"></i>\n\t\t\t</button>\n\t\t";
+	            var actionButtons = "\n\t\t\t<a class=\"s-remove-change\"\n\t\t\t\tdata-ng-click=\"swPropertyDisplay.clear()\"\n\t\t\t\tdata-ng-if=\"swInput.edited && swInput.edit\">\n\t\t\t\t\t<i class=\"fa fa-remove\"></i>\n\t\t\t</a>\n\n\t\t\t<!-- Revert Button -->\n\t\t\t<button class=\"btn btn-xs btn-default s-revert-btn\"\n\t\t\t\t\tdata-ng-show=\"swInput.showRevert\"\n\t\t\t\t\tdata-ng-click=\"swInput.revert()\"\n\t\t\t\t\tdata-toggle=\"popover\"\n\t\t\t\t\tdata-trigger=\"hover\"\n\t\t\t\t\tdata-content=\"{{swInput.revertText}}\"\n\t\t\t\t\tdata-original-title=\"\"\n\t\t\t\t\ttitle=\"\">\n\t\t\t\t<i class=\"fa fa-refresh\"></i>\n\t\t\t</button>\n\t\t";
 	            return template + actionButtons;
 	        };
 	        this.pullBindings = function () {
@@ -19409,10 +19409,7 @@
 	                    }
 	                }
 	            }
-	            _this.fieldType = _this.fieldType || _this.fieldType;
-	            _this.edit = _this.edit || _this.editing;
-	            _this.editing = _this.editing || _this.edit;
-	            _this.editing = _this.editing || true;
+	            _this.edit = _this.edit || true;
 	            _this.fieldType = _this.fieldType || "text";
 	            _this.inputAttributes = _this.inputAttributes || "";
 	            _this.inputAttributes = _this.utilityService.replaceAll(_this.inputAttributes, "'", '"');
@@ -19516,7 +19513,6 @@
 	            showRevert: "=?",
 	            inputAttributes: "@?",
 	            type: "@?",
-	            editing: "=?",
 	            eventHandlers: "@?",
 	            context: "@?"
 	        };
@@ -20045,9 +20041,7 @@
 	                    }
 	                }
 	            }
-	            _this.edit = _this.edit || _this.editing;
-	            _this.editing = _this.editing || _this.edit;
-	            _this.editing = _this.editing || true;
+	            _this.edit = _this.edit || true;
 	            _this.fieldType = _this.fieldType || "text";
 	            if (_this.fieldType === 'yesno') {
 	                _this.yesnoStrategy();
@@ -21043,7 +21037,7 @@
 	        _this.$injector = $injector;
 	        _this.metadataService = metadataService;
 	        _this.observerService = observerService;
-	        _this.editing = true;
+	        _this.edit = true;
 	        return _this;
 	    }
 	    return SWFPropertyDisplayController;

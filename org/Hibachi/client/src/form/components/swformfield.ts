@@ -21,12 +21,11 @@ class SWFormFieldController {
 	public labelText;
 	public labelClass;
 	public optionValues;
-	public edit;
 	public title;
 	public value;
 	public errorText;
 	public fieldType;
-	public editing:boolean;
+	public edit:boolean;
 	public selectedRadioFormName;
 	public form:ng.IFormController;
 	public options:any;
@@ -104,10 +103,7 @@ class SWFormFieldController {
 			}
 		}
 
-        this.edit = this.edit || this.editing;
-        this.editing = this.editing || this.edit;
-
-		this.editing = this.editing || true;
+		this.edit = this.edit || true;
 		this.fieldType = this.fieldType || "text";
 
 		if(this.fieldType === 'yesno'){

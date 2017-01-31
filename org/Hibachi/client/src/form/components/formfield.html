@@ -10,7 +10,7 @@
 		<select type="{{swFormField.fieldType}}" class="form-control"
 		    		 ng-model="swFormField.object.data['selected'+swFormField.propertyIdentifier]"
 		    		 ng-disabled="!swFormField.editable"
-		    		 ng-show="swFormField.editing"
+		    		 ng-show="swFormField.edit"
 		    		 ng-options="propertyDisplayOption as propertyDisplayOption.name for propertyDisplayOption in swFormField.options track by propertyDisplayOption.value"
 					 ng-change="swFormField.formFieldChanged(swFormField.object.data['selected'+swFormField.property])"
 					 ng-init="swFormField.object.data[swFormField.property] = swFormField.object.data['selected'+swFormField.property].value"
@@ -37,7 +37,7 @@
 		<div class="radio" class="display:inline-block;" ng-repeat="option in swFormField.options track by option.value" ng-if="swFormField.selectedRadioFormName">
 			<input type="radio" name="{{'selected'+ swFormField.object.metaData.className + swFormField.property+swFormField.selectedRadioFormName}}" id="{{swFormField.object.metaData.className+'.'+ swFormField.property+ swFormField.selectedRadioFormName + $index}}"
 					ng-model="swFormField.selected"
-					ng-show="swFormField.editing"
+					ng-show="swFormField.edit"
 					ng-value="option"
 					ng-click="swFormField.formFieldChanged(swFormField.selected)"
 			>
