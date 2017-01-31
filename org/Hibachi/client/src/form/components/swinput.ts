@@ -49,7 +49,6 @@ class SWInputController{
 	public propertyIdentifier:string;
 	public binaryFileTarget:string;
 	public rawFileTarget:string;
-	public type:string;
 	public edit:boolean;
 	public edited:boolean;
 	public editing:boolean;
@@ -324,8 +323,7 @@ class SWInputController{
 		this.property = this.property || this.propertyIdentifier;
         this.propertyIdentifier = this.propertyIdentifier || this.property;
 
-        this.type = this.type || this.fieldType;
-        this.fieldType = this.fieldType || this.type;
+        this.fieldType = this.fieldType || this.fieldType;
 
         this.edit = this.edit || this.editing;
         this.editing = this.editing || this.edit;

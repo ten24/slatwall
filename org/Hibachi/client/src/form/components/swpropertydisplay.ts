@@ -48,7 +48,6 @@ class SWPropertyDisplayController {
     public showSave:boolean;
 
     //swfproperty display properties
-    public type;
 	public class;
 	public fieldAttributes;
 	public valueObject;

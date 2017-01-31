@@ -14,7 +14,6 @@ class SWFormFieldController {
 	public name;
 	public class;
 	public errorClass;
-	public type;
 	public option;
 	public valueObject;
 	public object;
@@ -108,9 +107,6 @@ class SWFormFieldController {
 
 		this.property = this.property || this.propertyIdentifier;
         this.propertyIdentifier = this.propertyIdentifier || this.property;
-
-        this.type = this.type || this.fieldType;
-        this.fieldType = this.fieldType || this.type;
 
         this.edit = this.edit || this.editing;
         this.editing = this.editing || this.edit;

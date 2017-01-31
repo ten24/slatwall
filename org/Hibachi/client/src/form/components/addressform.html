@@ -41,7 +41,7 @@
 							<swf-property-display 
 					            data-name="countrycode" 
 					            data-class="form-control"
-					            data-type="select"
+					            data-fieldType="select"
 					            data-select-type="string"
 					            data-editing="true"
 					            data-property-identifier="countrycode"
@@ -70,7 +70,7 @@
 				    	<div class="col-sm-6 form-group" ng-if="SwAddressForm.hasField('phoneNumber')">
 						    <swf-property-display
 						        data-name="{{SwAddressForm.fieldNamePrefix}}phoneNumber"
-						        data-type="text"
+						        data-fieldType="text"
 						        data-object="SwAddressForm.address"
 						        data-property-identifier="phoneNumber"
 						        data-label-text="Phone Number"
@@ -84,7 +84,7 @@
 					    <div class="col-sm-6 form-group" ng-if="SwAddressForm.hasField('name')">
 						    <swf-property-display
 						        data-name="{{SwAddressForm.fieldNamePrefix}}name"
-						        data-type="text"
+						        data-fieldType="text"
 						        data-object="SwAddressForm.address"
 						        data-property-identifier="name"
 						        data-label-text="Full Name"
@@ -96,7 +96,7 @@
 					    <div class="col-sm-6 form-group" ng-if="SwAddressForm.hasField('company')">
 						    <swf-property-display
 						        data-name="{{SwAddressForm.fieldNamePrefix}}company"
-						        data-type="text"
+						        data-fieldType="text"
 						        data-object="SwAddressForm.address"
 						        data-property-identifier="company"
 						        data-label-text="Company (optional)"
@@ -112,7 +112,7 @@
 				    	<div class="col-sm-6 form-group" ng-if="SwAddressForm.hasField('streetAddress')">
 				    		<swf-property-display
 					        data-name="{{SwAddressForm.fieldNamePrefix}}streetAddress"
-					        data-type="text"
+					        data-fieldType="text"
 					        data-object="SwAddressForm.address"
 					        data-property-identifier="streetAddress"
 					        data-label-text="Street "
@@ -125,7 +125,7 @@
 					    <div class="col-sm-6 form-group" ng-if="SwAddressForm.hasField('street2Address')">
 					    	<swf-property-display
 					        data-name="{{SwAddressForm.fieldNamePrefix}}street2Address"
-					        data-type="text"
+					        data-fieldType="text"
 					        data-object="SwAddressForm.address"
 					        data-property-identifier="street2Address"
 					        data-label-text="Apt./Suite"
@@ -140,7 +140,7 @@
 				    	<div class="col-sm-6 form-group" ng-if="SwAddressForm.hasField('city')">
 				    		<swf-property-display
 					        data-name="{{SwAddressForm.fieldNamePrefix}}city"
-					        data-type="text"
+					        data-fieldType="text"
 					        data-object="SwAddressForm.address"
 					        data-property-identifier="city"
 					        data-label-text="City"
@@ -156,7 +156,7 @@
 					            <swf-property-display 
 					            data-name="statecode" 
 					            data-class="form-control"
-					            data-type="select"
+					            data-fieldType="select"
 					            data-select-type="string"
 					            data-editing="true"
 					            data-property-identifier="statecode"
@@ -170,7 +170,7 @@
 					        <div class="col-xs-7" ng-if="SwAddressForm.address.data.selectedcountrycode.value != 'US' && SwAddressForm.address.data.selectedcountrycode.value != 'CA' && SwAddressForm.hasField('locality')">
 					            <swf-property-display
 							        data-name="{{SwAddressForm.fieldNamePrefix}}locality"
-							        data-type="text"
+							        data-fieldType="text"
 							        data-object="SwAddressForm.address"
 							        data-property-identifier="locality"
 							        data-label-text="Locality"
@@ -181,7 +181,7 @@
 					        <div class="col-xs-5" ng-if="SwAddressForm.hasField('postalCode')">
 					        	<swf-property-display
 							        data-name="{{SwAddressForm.fieldNamePrefix}}postalcode"
-							        data-type="text"
+							        data-fieldType="text"
 							        data-object="SwAddressForm.address"
 							        data-property-identifier="postalcode"
 							        data-label-text="Zip"
@@ -199,7 +199,7 @@
 					    	<sw-action-caller 
 								data-action="{{SwAddressForm.action}}"
 								data-modal="false" 
-								data-type="button" 
+								data-fieldType="button" 
 								data-class="btn-yellow"
 								data-text="{{($root.slatwall.getRequestByAction(SwAddressForm.action).loading ? 'LOADING' : SwAddressForm.actionText || 'SAVE &amp; CONTINUE')}}">
 							</sw-action-caller>

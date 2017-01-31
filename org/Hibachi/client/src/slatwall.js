@@ -19411,8 +19411,7 @@
 	            }
 	            _this.property = _this.property || _this.propertyIdentifier;
 	            _this.propertyIdentifier = _this.propertyIdentifier || _this.property;
-	            _this.type = _this.type || _this.fieldType;
-	            _this.fieldType = _this.fieldType || _this.type;
+	            _this.fieldType = _this.fieldType || _this.fieldType;
 	            _this.edit = _this.edit || _this.editing;
 	            _this.editing = _this.editing || _this.edit;
 	            _this.editing = _this.editing || true;
@@ -20050,8 +20049,6 @@
 	            }
 	            _this.property = _this.property || _this.propertyIdentifier;
 	            _this.propertyIdentifier = _this.propertyIdentifier || _this.property;
-	            _this.type = _this.type || _this.fieldType;
-	            _this.fieldType = _this.fieldType || _this.type;
 	            _this.edit = _this.edit || _this.editing;
 	            _this.editing = _this.editing || _this.edit;
 	            _this.editing = _this.editing || true;
