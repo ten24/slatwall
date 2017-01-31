@@ -260,10 +260,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	// =================== JS helper methods  ===========================
 
 	public any function getAvailableAccountPropertyList() {
-		return "accountID,firstName,lastName,company,remoteID,primaryPhoneNumber.accountPhoneNumberID,primaryPhoneNumber.phoneNumber,primaryEmailAddress.accountEmailAddressID,primaryEmailAddress.emailAddress,
+		return rereplace("accountID,firstName,lastName,company,remoteID,primaryPhoneNumber.accountPhoneNumberID,primaryPhoneNumber.phoneNumber,primaryEmailAddress.accountEmailAddressID,primaryEmailAddress.emailAddress,
 			primaryAddress.accountAddressID,
 			accountAddresses.accountAddressName,accountAddresses.accountAddressID,
-			accountAddresses.address.addressID,accountAddresses.address.streetAddress,accountAddresses.address.street2Address,accountAddresses.address.city,accountAddresses.address.statecode,accountAddresses.address.postalcode,accountAddresses.address.countrycode, accountAddresses.address.name, accountAddresses.address.company, accountAddresses.address.phoneNumber, accountPaymentMethods.accountPaymentMethodID, accountPaymentMethods.creditCardLastFour, accountPaymentMethods.creditCardType, accountPaymentMethods.nameOnCreditCard, accountPaymentMethods.expirationMonth, accountPaymentMethods.expirationYear";
+			accountAddresses.address.addressID,accountAddresses.address.streetAddress,accountAddresses.address.street2Address,accountAddresses.address.city,accountAddresses.address.statecode,accountAddresses.address.postalcode,accountAddresses.address.countrycode, accountAddresses.address.name, accountAddresses.address.company, accountAddresses.address.phoneNumber, accountPaymentMethods.accountPaymentMethodID, accountPaymentMethods.creditCardLastFour, accountPaymentMethods.creditCardType, accountPaymentMethods.nameOnCreditCard, accountPaymentMethods.expirationMonth, accountPaymentMethods.expirationYear","\s","","ALL");
 	}
 	
 	public any function getAccountData(string propertyList) {
@@ -294,7 +294,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	}
 
 	public any function getAvailableCartPropertyList() {
-		return "orderID,orderOpenDateTime,calculatedTotal,subtotal,taxTotal,fulfillmentTotal,fulfillmentChargeAfterDiscountTotal,promotionCodeList,discountTotal,
+		return rereplace("orderID,orderOpenDateTime,calculatedTotal,subtotal,taxTotal,fulfillmentTotal,fulfillmentChargeAfterDiscountTotal,promotionCodeList,discountTotal,
 			orderItems.orderItemID,orderItems.price,orderItems.skuPrice,orderItems.currencyCode,orderItems.quantity,orderItems.extendedPrice,orderItems.extendedPriceAfterDiscount,orderItems.taxAmount,orderItems.taxLiabilityAmount,orderItems.parentOrderItemID,orderItems.productBundleGroupID,
 			orderItems.orderFulfillment.orderFulfillmentID,
 			orderItems.sku.skuID,orderItems.sku.skuCode,orderItems.sku.imagePath,orderItems.sku.imageFile,
@@ -309,7 +309,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			orderFulfillments.totalShippingWeight,orderFulfillments.taxAmount,
 			orderPayments.orderPaymentID,orderPayments.amount,orderPayments.currencyCode,orderPayments.creditCardType,orderPayments.expirationMonth,orderPayments.expirationYear,orderPayments.nameOnCreditCard, orderPayments.creditCardLastFour,
 			orderPayments.billingAddress.addressID,orderPayments.billingAddress.streetAddress,orderPayments.billingAddress.street2Address,orderPayments.billingAddress.city,orderPayments.billingAddress.statecode,orderPayments.billingAddress.postalcode,orderPayments.billingAddress.countrycode,
-			orderPayments.paymentMethod.paymentMethodID,orderPayments.paymentMethod.paymentMethodName, orderPayments.giftCard.balanceAmount, orderPayments.giftCard.giftCardCode, promotionCodes.promotionCode";
+			orderPayments.paymentMethod.paymentMethodID,orderPayments.paymentMethod.paymentMethodName, orderPayments.giftCard.balanceAmount, orderPayments.giftCard.giftCardCode, promotionCodes.promotionCode","\s","","ALL");
 	}
 	
 	public any function getCartData(string propertyList) {
@@ -325,22 +325,22 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		var data = getService('hibachiUtilityService').buildPropertyIdentifierListDataStruct(getCart(), arguments.propertyList, availablePropertyList);
 		
         //Attach some meta for for orderFulfillments
-        
-        var requiresFulfillment = false;
-        var orderFulfillmentWithShippingMethodOptionsIndex = 1;
-        for (orderFulfillment in data.orderFulfillments){
-            if (isArray(orderFulfillment.shippingMethodOptions) && arrayLen(orderFulfillment.shippingMethodOptions) >= 1){
-                        requiresFulfillment = true; break;
-            }
-            orderFulfillmentWithShippingMethodOptionsIndex++;
+        if(structKeyExists(data, 'orderFulfillments')){
+	        var requiresFulfillment = false;
+	        var orderFulfillmentWithShippingMethodOptionsIndex = 1;
+	        for (orderFulfillment in data.orderFulfillments){
+	            if (isArray(orderFulfillment.shippingMethodOptions) && arrayLen(orderFulfillment.shippingMethodOptions) >= 1){
+	                        requiresFulfillment = true; break;
+	            }
+	            orderFulfillmentWithShippingMethodOptionsIndex++;
+	        }
+	        data['requiresFulfillment'] = requiresFulfillment;
+	        if (requiresFulfillment){
+	              data['orderFulfillmentWithShippingMethodOptionsIndex'] = orderFulfillmentWithShippingMethodOptionsIndex - 1;
+	        }else{
+	              data['orderFulfillmentWithShippingMethodOptionsIndex'] = -1;
+	        }
         }
-        data['requiresFulfillment'] = requiresFulfillment;
-        if (requiresFulfillment){
-              data['orderFulfillmentWithShippingMethodOptionsIndex'] = orderFulfillmentWithShippingMethodOptionsIndex - 1;
-        }else{
-              data['orderFulfillmentWithShippingMethodOptionsIndex'] = -1;
-        }
-
 		// add error messages
 		data["hasErrors"] = getCart().hasErrors();
 		data["errors"] = getCart().getErrors();
