@@ -108,7 +108,7 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	}
 	
 	public any function getAverageLandedCost(){
-		
+		return 0;
 	}
 
 	public any function getQATS() {

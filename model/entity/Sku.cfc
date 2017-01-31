@@ -1151,11 +1151,11 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	}
 	
 	public any function getAverageCost(){
-		
+		return 0;
 	}
 	
 	public any function getAverageLandedCost(){
-		
+		return 0;
 	}
 
 

@@ -63,7 +63,7 @@ Notes:
 		
 		public any function getAverageCost(required any stock){
 			return ORMExecuteQuery(
-				'SELECT AVG(i.cost/i.quantityIn)
+				'SELECT COALESCE(AVG(i.cost/i.quantityIn),0)
 				FROM SlatwallInventory i 
 				LEFT JOIN i.stock s
 				WHERE s.stockID=:stockID

@@ -235,7 +235,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//Check that the items were added.
 		var orderReturn = variables.service.processOrder_addOrderItem(order, processObject);
 		orderReturn = variables.service.processOrder_addOrderItem(order, processObjectTwo);
-		request.debug(orderReturn.getErrors());
 		var orderItemsAdded = orderReturn.getOrderItems();
 		//assertEquals("This will fail", orderItemsAdded[1].getOrderItemID());
 		assertEquals(2, arraylen(orderItemsAdded));//This works because we have two order items.
