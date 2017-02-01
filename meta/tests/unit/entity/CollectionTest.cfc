@@ -204,7 +204,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myProductCollection.setDisplayProperties('productName,productDescription');
 		myProductCollection.addFilter('productCode','FGP1', "OR", "", "productCodeFilterGroup");
 		myProductCollection.addFilter('productCode','FGP2', "OR", "", "productCodeFilterGroup");
-		var pageRecords = myProductActiveCollection.getPageRecords();
+		var pageRecords = myProductCollection.getPageRecords();
 
 		assertTrue(arrayLen(pageRecords) == 2, "Wrong amount of products returned! Expecting 2 record but returned #arrayLen(pageRecords)#");
 
@@ -212,7 +212,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myProductCollection.setDisplayProperties('productName,productDescription');
 		myProductCollection.addFilter('productCode','FGP1', "OR", "", "productCodeFilterGroup1");
 		myProductCollection.addFilter('productCode','FGP2', "OR", "", "productCodeFilterGroup2", "OR");
-		var pageRecords = myProductActiveCollection.getPageRecords();
+		var pageRecords = myProductCollection.getPageRecords();
 		
 		assertTrue(arrayLen(pageRecords) == 2, "Wrong amount of products returned! Expecting 2 record but returned #arrayLen(pageRecords)#");
 		
@@ -220,7 +220,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myProductCollection.setDisplayProperties('productName,productDescription');
 		myProductCollection.addFilter('productCode','FGP1', "OR", "", "productCodeFilterGroup1");
 		myProductCollection.addFilter('productCode','FGP2', "OR", "", "productCodeFilterGroup2");//AND is the default filter group comparison operator
-		var pageRecords = myProductActiveCollection.getPageRecords();
+		var pageRecords = myProductCollection.getPageRecords();
 		
 		assertTrue(arrayLen(pageRecords) == 0, "Wrong amount of products returned! Expecting 0 record but returned #arrayLen(pageRecords)#");
 		
