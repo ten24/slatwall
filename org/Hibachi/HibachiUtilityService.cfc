@@ -1223,7 +1223,7 @@
 		<cfreturn signature>
 	</cffunction>
 
-	<cffunction name="uploadToS3" access="public" output="false" returntype="string" 
+	<cffunction name="uploadToS3" access="public" output="false" returntype="boolean"
 					description="Puts an object into a bucket.">
 		<cfargument name="bucketName" type="string" required="true">
 		<cfargument name="fileName" type="string" required="true">
@@ -1266,14 +1266,9 @@
 				<cfhttpparam type="header" name="Cache-Control" value="max-age=2592000">
 				<cfhttpparam type="header" name="Expires" value="#DateFormat(now()+arguments.cacheDays,'ddd, dd mmm yyyy')# #TimeFormat(now(),'H:MM:SS')# GMT">
 			</cfif>
-		</cfhttp>		
-		
-		<cftry>
-			<cfset versionID = cfhttp.responseHeader['x-amz-version-id']>
-			<cfcatch></cfcatch>
-		</cftry>
-		
-		<cfreturn versionID>
+		</cfhttp>
+
+		<cfreturn cfhttp.responseHeader['Status_Code'] AND cfhttp.responseHeader['Status_Code'] EQ 200>
 	</cffunction>
 
 </cfcomponent>
