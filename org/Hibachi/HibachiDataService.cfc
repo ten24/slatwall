@@ -64,7 +64,7 @@ component accessors="true" output="false" extends="HibachiService" {
 	}	
 
 	public array function validateCSVFile(required string pathToCSV, string expectedColumnHeaders){
-		var csvFile = FileOpen(ExpandPath(pathToCSV));
+		var csvFile = FileOpen(pathToCSV);
 		var i = 1;
 		var problemLines = []; 
 		while(!FileisEOF(csvFile)){ 
