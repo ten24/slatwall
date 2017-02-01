@@ -94,6 +94,14 @@ component entityname="SlatwallVendorOrder" table="SwVendorOrder" persistent="tru
 		return ORMExecuteQuery('SELECT COALESCE(sum(quantity),0) FROM SlatwallVendorOrderItem where vendorOrder=:vendorOrder',{vendorOrder=this},true);
 	}
 	
+	public numeric function getTotalWeight(){
+		return ORMExecuteQuery('SELECT COALESCE(sum(stock.sku.weight),0) FROM SlatwallVendorOrderItem where vendorOrder=:vendorOrder',{vendorOrder=this},true);
+	}
+	
+	public numeric function getTotalCost(){
+		return ORMExecuteQuery('SELECT COALESCE(sum(cost),0) FROM SlatwallVendorOrderItem where vendorOrder=:vendorOrder',{vendorOrder=this},true);
+	}
+		
 	public array function getCostDistributionTypeOptions() {
 		//quantity | cost | weight 
 		var costDistributionTypeOptions = [];

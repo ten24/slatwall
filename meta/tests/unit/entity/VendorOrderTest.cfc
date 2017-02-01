@@ -82,6 +82,36 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		assert(6.25,vendorOrder.getQuantity);
 	}
+	
+	public void function getTotalWeightTest(){
+		var vendorOrderData = {
+			vendorOrderID="",
+			shippingAndHandlingCost=100
+		};
+		var vendorOrder = createPersistedTestEntity('VendorOrder',vendorOrderData);
+		
+		var vendorOrderItemData = {
+			vendorOrderItemID="",
+			quantity=6,
+			weight=2,
+			vendorOrder={
+				vendorOrderID=vendorOrder.getVendorOrderID()
+			}
+		};
+		var vendorOrderItem = createPersistedTestEntity('VendorOrderItem',vendorOrderItemData);
+		
+		var vendorOrderItemData2 = {
+			vendorOrderItemID="",
+			quantity=10,
+			weight=3,
+			vendorOrder={
+				vendorOrderID=vendorOrder.getVendorOrderID()
+			}
+		};
+		var vendorOrderItem2 = createPersistedTestEntity('VendorOrderItem',vendorOrderItemData2);
+		
+		request.debug(vendorOrder.getTotalWeight());
+	}
 }
 
 
