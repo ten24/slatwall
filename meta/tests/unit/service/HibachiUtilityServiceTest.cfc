@@ -390,8 +390,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		request.debug(iResult2);
 		assert(iResult2 == hResult2);
 		
-		request.debug(hibachiTernary(false, '', ' hide'));
-		assert(true);
+		hResult = hibachiTernary(condition1, returnTrueMessage(), returnFalseMessage());
+		iResult = IIF(condition1, de(returnTrueMessage()), de(returnFalseMessage()));
+		assert(iResult == hResult);
 	}
 	
 	public function hibachiTernary_handlesArgumentsCorrectly(){
