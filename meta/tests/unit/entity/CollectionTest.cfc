@@ -202,6 +202,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		myProductCollection = variables.entityService.getProductCollectionList();
 		myProductCollection.setDisplayProperties('productName,productDescription');
+		myProductCollection.addFilter('productDescription',uniqueNumberForTest);
 		myProductCollection.addFilter('productCode','FGP1', "=", "OR", "", "productCodeFilterGroup");
 		myProductCollection.addFilter('productCode','FGP2', "=", "OR", "", "productCodeFilterGroup");
 		var pageRecords = myProductCollection.getPageRecords();
@@ -210,6 +211,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		myProductCollection = variables.entityService.getProductCollectionList();
 		myProductCollection.setDisplayProperties('productName,productDescription');
+		myProductCollection.addFilter('productDescription',uniqueNumberForTest);
 		myProductCollection.addFilter('productCode','FGP1', "=", "OR", "", "productCodeFilterGroup1");
 		myProductCollection.addFilter('productCode','FGP2', "=", "OR", "", "productCodeFilterGroup2", "OR");
 		var pageRecords = myProductCollection.getPageRecords();
@@ -218,6 +220,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		myProductCollection = variables.entityService.getProductCollectionList();
 		myProductCollection.setDisplayProperties('productName,productDescription');
+		myProductCollection.addFilter('productDescription',uniqueNumberForTest);
 		myProductCollection.addFilter('productCode','FGP1', "=", "OR", "", "productCodeFilterGroup1");
 		myProductCollection.addFilter('productCode','FGP2', "=", "OR", "", "productCodeFilterGroup2");//AND is the default filter group comparison operator
 		var pageRecords = myProductCollection.getPageRecords();
