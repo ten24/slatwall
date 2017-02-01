@@ -1,11 +1,11 @@
 <span ng-init="$.slatwall = $root.slatwall"></span>
 <div ng-init="Account_LoginObj = $.slatwall.getProcessObject('Account_Login') "></div>
 <script type="text/javascript">
-	// var rootScope = angular.element(document.body).injector().get('$rootScope');
-	// console.log('rootSCope',rootScope);
-	// rootScope.frontendfun.doDaTing = function(){
-	// 	alert("Ehhh you did da ting bruddah");
-	// }
+	var root = angular.element(document.body).injector().get('$rootScope');
+	console.log('rootSCope',root);
+	root.doDaTing = function(){
+		alert("Ehhh you did da ting bruddah");
+	}
 
 </script>
 
@@ -17,8 +17,7 @@
 			    data-form-class=""
 			    data-error-class="error"
 			    data-action="login"
-			    data-name="Account_Login"
-			    >
+			    data-name="Account_Login">
 			<div class="form-group">
 		        <swf-property-display
 		            data-name="emailAddress"
@@ -40,8 +39,7 @@
 		            data-label-text="Password"
 		            data-class="form-control"
 		            data-editing="true"
-		            data-event-handlers="keyup"
-		            data-event-listeners="{Account_Loginpasswordkeyup:swForm}">
+		            data-event-handlers="keyup,dblclick">
 		        </swf-property-display>
 	        </div>
 
@@ -52,7 +50,7 @@
 			        data-class="button blue"
 			        data-error-class="error"
 			        data-text="{{($.slatwall.getRequestByAction('login').loading ? 'LOADING...' : 'Login')}}"
-			        >
+			        data-event-listeners="{Account_Loginpassworddblclick:$root.doDaTing, Account_Loginpasswordkeyup:$parent.swForm.submitKeyCheck}">
 			    </sw-action-caller>
 			</div>
 

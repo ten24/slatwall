@@ -79,7 +79,6 @@ class SWFormController {
             }
         }
 
-
         //
         this.context = this.context || this.name;
         if (this.isProcessForm) {
@@ -89,28 +88,6 @@ class SWFormController {
             };
         }
 
-        //  /** find the form scope */
-        // this.$scope.$on('anchor', (event, data) =>
-        // {
-        //     if (data.anchorType == "form" && data.scope !== undefined) {
-        //         this.formCtrl = data.scope;
-        //     }
-        // });
-
-        /** make sure we have our data using new logic and $hibachi*/
-//        if (this.context == undefined || this.entityName == undefined) {
-//            throw ("ProcessObject Undefined Exception");
-//        }
-        /* handle events
-        */
-        // if (this.onSuccess){
-        //     this.parseEventString(this.onSuccess, "onSuccess");
-        //     observerService.attach(this.eventsHandler, "onSuccess");
-
-        // }else if(this.onError){
-        //     this.parseEventString(this.onError, "onError");
-        //     observerService.attach(this.eventsHandler, "onError");//stub
-        // }
         if(this.eventListeners){
             console.log('event listeners: ', this.eventListeners);
             for(var key in this.eventListeners){
@@ -118,6 +95,22 @@ class SWFormController {
             }
         }
 
+    }
+
+    public parseDotPath = (str:string)=> {
+        let obj;
+        if (str == undefined) return;
+        let path = str.split('.');
+        if(path[0] === 'this'){
+            path.shift();
+            obj = this[path.shift()];
+        }else{
+            obj = window[path.shift()];
+        }
+        while(path.length && obj[path[0]]){
+            obj = obj[path.shift()];
+        }
+        return obj;
     }
 
     public isObject=()=>{

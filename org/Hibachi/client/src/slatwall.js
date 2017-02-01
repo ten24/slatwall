@@ -7842,7 +7842,7 @@
 	"use strict";
 	var SWActionCallerController = (function () {
 	    //@ngInject
-	    function SWActionCallerController($scope, $element, $templateRequest, $compile, $timeout, corePartialsPath, utilityService, $hibachi, rbkeyService, hibachiPathBuilder) {
+	    function SWActionCallerController($scope, $element, $templateRequest, $compile, $timeout, corePartialsPath, utilityService, observerService, $hibachi, rbkeyService, hibachiPathBuilder) {
 	        var _this = this;
 	        this.$scope = $scope;
 	        this.$element = $element;
@@ -7851,6 +7851,7 @@
 	        this.$timeout = $timeout;
 	        this.corePartialsPath = corePartialsPath;
 	        this.utilityService = utilityService;
+	        this.observerService = observerService;
 	        this.$hibachi = $hibachi;
 	        this.rbkeyService = rbkeyService;
 	        this.$onInit = function () {
@@ -8063,6 +8064,12 @@
 	            //need to perform init after promise completes
 	            //this.init();
 	        });
+	        if (this.eventListeners) {
+	            console.log('event listeners: ', this.eventListeners);
+	            for (var key in this.eventListeners) {
+	                observerService.attach(this.eventListeners[key], key);
+	            }
+	        }
 	    }
 	    return SWActionCallerController;
 	}());
@@ -8092,7 +8099,8 @@
 	            modal: "=",
 	            modalFullWidth: "=",
 	            id: "@",
-	            isAngularRoute: "=?"
+	            isAngularRoute: "=?",
+	            eventListeners: '=?'
 	        };
 	        this.require = { formController: "^?swForm", form: "^?form" };
 	        this.controller = SWActionCallerController;
@@ -19692,6 +19700,23 @@
 	        this.utilityService = utilityService;
 	        this.eventsObj = [];
 	        this.formData = {};
+	        this.parseDotPath = function (str) {
+	            var obj;
+	            if (str == undefined)
+	                return;
+	            var path = str.split('.');
+	            if (path[0] === 'this') {
+	                path.shift();
+	                obj = _this[path.shift()];
+	            }
+	            else {
+	                obj = window[path.shift()];
+	            }
+	            while (path.length && obj[path[0]]) {
+	                obj = obj[path.shift()];
+	            }
+	            return obj;
+	        };
 	        this.isObject = function () {
 	            return (angular.isObject(_this.object));
 	        };
@@ -19872,26 +19897,6 @@
 	            }
 	            ;
 	        }
-	        //  /** find the form scope */
-	        // this.$scope.$on('anchor', (event, data) =>
-	        // {
-	        //     if (data.anchorType == "form" && data.scope !== undefined) {
-	        //         this.formCtrl = data.scope;
-	        //     }
-	        // });
-	        /** make sure we have our data using new logic and $hibachi*/
-	        //        if (this.context == undefined || this.entityName == undefined) {
-	        //            throw ("ProcessObject Undefined Exception");
-	        //        }
-	        /* handle events
-	        */
-	        // if (this.onSuccess){
-	        //     this.parseEventString(this.onSuccess, "onSuccess");
-	        //     observerService.attach(this.eventsHandler, "onSuccess");
-	        // }else if(this.onError){
-	        //     this.parseEventString(this.onError, "onError");
-	        //     observerService.attach(this.eventsHandler, "onError");//stub
-	        // }
 	        if (this.eventListeners) {
 	            console.log('event listeners: ', this.eventListeners);
 	            for (var key in this.eventListeners) {

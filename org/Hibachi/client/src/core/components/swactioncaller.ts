@@ -30,6 +30,7 @@ class SWActionCallerController{
         public $timeout,
         private corePartialsPath,
         private utilityService,
+        private observerService,
         private $hibachi,
         private rbkeyService,
         hibachiPathBuilder
@@ -51,6 +52,13 @@ class SWActionCallerController{
             //need to perform init after promise completes
             //this.init();
         });
+
+                if(this.eventListeners){
+            console.log('event listeners: ', this.eventListeners);
+            for(var key in this.eventListeners){
+                observerService.attach(this.eventListeners[key], key)
+            }
+        }
     }
 
 
@@ -288,7 +296,8 @@ class SWActionCaller implements ng.IDirective{
         modal:"=",
         modalFullWidth:"=",
         id:"@",
-        isAngularRoute:"=?"
+        isAngularRoute:"=?",
+        eventListeners:'=?'
     };
     public require={formController:"^?swForm",form:"^?form"};
     public controller=SWActionCallerController;
