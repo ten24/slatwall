@@ -1268,7 +1268,7 @@
 			</cfif>
 		</cfhttp>
 
-		<cfreturn cfhttp.responseHeader['Status_Code'] AND cfhttp.responseHeader['Status_Code'] EQ 200>
+		<cfreturn !isNull(cfhttp) AND structKeyExists(cfhttp.responseHeader, 'Status_Code') AND cfhttp.responseHeader['Status_Code'] EQ 200>
 	</cffunction>
 
 </cfcomponent>
