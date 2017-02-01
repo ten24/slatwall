@@ -107,17 +107,7 @@ Notes:
 
 				</cfif>
 
-				<!---Loop through order payments to see if we paid with a credit card--->
-				<cfset orderPayments = #rc.processObject.getOrder().getOrderPayments()# />
-				<cfset foundCredit = false />
-				<cfloop array='#orderPayments#' index="payment">
-					<cfif payment.getPaymentMethodType() eq 'creditCard'>
-						<cfset foundCredit = true />
-						<cfbreak>
-					</cfif>
-				</cfloop>
-
-				<cfif rc.processObject.getCapturableAmount() gt 0 AND foundCredit>
+				<cfif rc.processObject.getCapturableAmount() gt 0 AND rc.processObject.getOrder().hasCreditCardPaymentMethod()>
 					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="captureAuthorizedPaymentsFlag" edit="true" />
 					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="capturableAmount" edit="false" />
 				</cfif>

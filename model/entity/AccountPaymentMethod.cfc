@@ -100,6 +100,9 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	property name="paymentMethodOptionsSmartList" persistent="false";
 
 	public string function getPaymentMethodType() {
+		if(isNull(getPaymentMethod())){
+			return "";
+		}
 		return getPaymentMethod().getPaymentMethodType();
 	}
 
@@ -418,7 +421,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 				rep = listAppend(rep, " #getGiftCardNumber()#", "|");
 			}
 		}
-		if(isExpired()){
+		if(getPaymentMethodType() == "creditCard" && isExpired()){
 			rep = rep & ' (' & rbkey('define.expired') & ')';
 		}
 		return rep;

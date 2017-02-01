@@ -16,7 +16,7 @@
 * limitations under the License.
 */
 
-var interpreter_version = "1.0.7";
+var interpreter_version = "1.0.8";
 var webdriver = require('wd');
 var S = require('string');
 var glob = require('glob');
@@ -122,8 +122,7 @@ var TestRun = function(script, name, initialVars) {
 
 TestRun.prototype.start = function(callback, webDriverToUse) {
   callback = callback || function() {};
-  this.browserOptions.name = this.name;
-
+  this.browserOptions.name = this.browserOptions.name || this.name;
   if (webDriverToUse) {
     this.wd = webDriverToUse;
     var info = { 'success': true, 'error': null };
@@ -321,9 +320,79 @@ TestRun.prototype.p = function(name) {
   return this.sub(v);
 };
 
+var keysMap = {
+  "NULL": "\uE000",
+  "CANCEL": "\uE001",
+  "HELP": "\uE002",
+  "BACK_SPACE": "\uE003",
+  "TAB": "\uE004",
+  "CLEAR": "\uE005",
+  "RETURN": "\uE006",
+  "ENTER": "\uE007",
+  "SHIFT": "\uE008",
+  "LEFT_SHIFT": "\uE008",
+  "CONTROL": "\uE009",
+  "LEFT_CONTROL": "\uE009",
+  "ALT": "\uE00A",
+  "LEFT_ALT": "\uE00A",
+  "PAUSE": "\uE00B",
+  "ESCAPE": "\uE00C",
+  "SPACE": "\uE00D",
+  "PAGE_UP": "\uE00E",
+  "PAGE_DOWN": "\uE00F",
+  "END": "\uE010",
+  "HOME": "\uE011",
+  "LEFT": "\uE012",
+  "ARROW_LEFT": "\uE012",
+  "UP": "\uE013",
+  "ARROW_UP": "\uE013",
+  "RIGHT": "\uE014",
+  "ARROW_RIGHT": "\uE014",
+  "DOWN": "\uE015",
+  "ARROW_DOWN": "\uE015",
+  "INSERT": "\uE016",
+  "DELETE": "\uE017",
+  "SEMICOLON": "\uE018",
+  "EQUALS": "\uE019",
+  "NUMPAD0": "\uE01A",
+  "NUMPAD1": "\uE01B",
+  "NUMPAD2": "\uE01C",
+  "NUMPAD3": "\uE01D",
+  "NUMPAD4": "\uE01E",
+  "NUMPAD5": "\uE01F",
+  "NUMPAD6": "\uE020",
+  "NUMPAD7": "\uE021",
+  "NUMPAD8": "\uE022",
+  "NUMPAD9": "\uE023",
+  "MULTIPLY": "\uE024",
+  "ADD": "\uE025",
+  "SEPARATOR": "\uE026",
+  "SUBTRACT": "\uE027",
+  "DECIMAL": "\uE028",
+  "DIVIDE": "\uE029",
+  "F1": "\uE031",
+  "F2": "\uE032",
+  "F3": "\uE033",
+  "F4": "\uE034",
+  "F5": "\uE035",
+  "F6": "\uE036",
+  "F7": "\uE037",
+  "F8": "\uE038",
+  "F9": "\uE039",
+  "F10": "\uE03A",
+  "F11": "\uE03B",
+  "F12": "\uE03C",
+  "META": "\uE03D",
+  "COMMAND": "\uE03D",
+  "ZENKAKU_HANKAKU": "\uE040"
+};
+
 TestRun.prototype.sub = function(value) {
   for (var k in this.vars) {
     value = value.replace(new RegExp("\\$\\{" + k + "\\}", "g"), this.vars[k]);
+  }
+  for (var k in keysMap) {
+    value = value.replace(new RegExp("\\!\\{" + k + "\\}", "g"), keysMap[k]);
   }
   return value;
 };
@@ -409,7 +478,7 @@ function getInterpreterListener(testRun) {
     },
     'endTestRun': function(testRun, info) {
       if (info.success) {
-        console.log(testRun.name + ": " + "Test passed ".green +("("+ testRun.browserOptions.browserName +") ").yellow);
+        console.log(testRun.name + ": " + "Test passed".green +("("+ testRun.browserOptions.browserName +") ").yellow);
       } else {
         if (info.error) {
           console.log(testRun.name + ": " + "Test failed: ".red +("("+ testRun.browserOptions.browserName +") ").yellow + util.inspect(info.error));
@@ -632,17 +701,25 @@ var defaultDataSources = [noneSource, manualSource, jsonSource, xmlSource];
  * @param scriptPath Optionally, the path of the script we're loading data for, for use in relative paths.
  */
 function loadData(dataConfig, dataSources, scriptPath) {
+  var configSource = 'none';
+  if (dataConfig.source && dataConfig.source != 'none') {
+    configSource = dataConfig.source;
+  } else if (defaultDataConfig) {
+    configSource = defaultDataConfig;
+  }
+
   if (dataSources) {
-    var sources = dataSources.filter(function(ds) { return ds.name == dataConfig.source; });
+    var sources = dataSources.filter(function(ds) { return ds.name == configSource; });
     if (sources.length > 0) {
-      return sources[0].load(dataConfig.configs[dataConfig.source], scriptPath);
+      console.log('Using Data: ' + configSource);
+      return sources[0].load(dataConfig.configs[configSource], scriptPath);
     }
   }
-  var sources = defaultDataSources.filter(function(ds) { return ds.name == dataConfig.source; });
+  var sources = defaultDataSources.filter(function(ds) { return ds.name == configSource; });
   if (sources.length == 0) {
     throw new Error("No data source of name \"" + dataConfig.source + "\" available.");
   }
-  return sources[0].load(dataConfig.configs[dataConfig.source], scriptPath);
+  return sources[0].load(dataConfig.configs[configSource], scriptPath);
 }
 
 exports.TestRun = TestRun;
@@ -665,6 +742,7 @@ var opt = require('optimist')
   .default('noPrint', false).describe('noPrint', 'no print step output')
   .default('silent', false).describe('silent', 'no non-error output')
   .default('parallel', 1).describe('parallel', 'number of tests to run in parallel')
+  .describe('dataConfig', 'the default dataConfig')
   .describe('dataSource', 'path to data source module')
   .describe('listener', 'path to listener module')
   .describe('executorFactory', 'path to factory for extra type executors')
@@ -726,6 +804,10 @@ if (argv.dataSource) {
       process.exit(78);
     }
   });
+}
+
+if (argv.dataConfig) {
+  var defaultDataConfig = argv.dataConfig;
 }
 
 var listener = null;
@@ -802,11 +884,11 @@ function runNext() {
     testRuns[index].shareStateFromPrevTestRun ? testRuns[index - 1].vars : null);
   } else {
     if (index == lastRunFinishedIndex) { // We're the last runner to complete.
-      //var listener = listenerFactory(testRuns[index - 1], listenerOptions);
-      //if (listener) {
-        //listener.endAllRuns(testRuns.length, successes);
-      //}
-      process.on('exit', function() { process.exit(successes == testRuns.length ? 0 : 0); });
+      var listener = listenerFactory(testRuns[index-1], listenerOptions);
+      if (listener) {
+        listener.endAllRuns(testRuns.length, successes);
+      }
+      process.on('exit', function() { process.exit(successes == testRuns.length ? 0 : 1); });
     }
   }
 }
