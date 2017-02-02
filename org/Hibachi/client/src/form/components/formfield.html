@@ -2,7 +2,6 @@
 <!--drive formfield by fieldtype-->
 <span ng-init="fieldTypes = ['email','text','password','number','time','date','datetime','json']"></span>
 <sw-input ng-if="fieldTypes.indexOf(swFormField.fieldType.toLowerCase()) >= 0" data-property-display="swFormField"></sw-input>
-
 <ng-switch on="swFormField.fieldType" >
 
 	<sw-form-field-search-select data-property-display="swFormField" ng-switch-when="search-select"></sw-form-field-search-select>

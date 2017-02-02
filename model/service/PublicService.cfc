@@ -445,7 +445,7 @@ component extends="HibachiService"  accessors="true" output="false"
      	if (structKeyExists(data, "accountAddressName")){
      		accountAddress.setAccountAddressName(data.accountAddressName);
      	}
-     	
+      writeDump(var=data,top=1);abort;     	
      	var newAddress = getService("AddressService").newAddress();
      	newAddress = getService("AddressService").saveAddress(newAddress, data, "full");
       	
@@ -457,7 +457,9 @@ component extends="HibachiService"  accessors="true" output="false"
    	     	if (!savedAccountAddress.hasErrors()){
    	     		getDao('hibachiDao').flushOrmSession();
    	     	}
-      	}
+      	}else{
+          getHibachiScope().addActionResult("public:account.addNewAccountAddress", newAddress.hasErrors());
+        }
      }
      
      /**

@@ -2020,6 +2020,7 @@
 	                _this.baseActionPath = "/index.cfm/api/scope/" + action; //public path
 	            }
 	            var urlBase = _this.appConfig.baseURL + _this.baseActionPath;
+	            console.log(urlBase);
 	            if (data) {
 	                method = "post";
 	                data.returnJsonObjects = "cart,account";
@@ -2029,6 +2030,7 @@
 	            }
 	            if (method == "post") {
 	                data.returnJsonObjects = "cart,account";
+	                console.log(data);
 	                //post
 	                var request_1 = _this.requestService.newPublicRequest(urlBase, data, method);
 	                request_1.promise.then(function (result) {
@@ -8065,8 +8067,8 @@
 	            //this.init();
 	        });
 	        if (this.eventListeners) {
-	            console.log('event listeners: ', this.eventListeners);
 	            for (var key in this.eventListeners) {
+	                console.log("typeof key", typeof key);
 	                observerService.attach(this.eventListeners[key], key);
 	            }
 	        }
@@ -19227,7 +19229,7 @@
 	        this.rbkeyService = rbkeyService;
 	        this.observerService = observerService;
 	        this.metadataService = metadataService;
-	        this.eventHandlers = "";
+	        this.eventAnnouncers = "";
 	        this.onSuccess = function () {
 	            _this.utilityService.setPropertyValue(_this.swForm.object, _this.propertyIdentifier, _this.value);
 	            if (_this.swPropertyDisplay) {
@@ -19327,6 +19329,7 @@
 	        };
 	        this.onEvent = function (event, eventName) {
 	            var customEventName = _this.swForm.name + _this.name + eventName;
+	            var formEventName = _this.swForm.name + eventName;
 	            var data = {
 	                event: event,
 	                eventName: eventName,
@@ -19336,6 +19339,7 @@
 	                inputElement: $('input').first()[0]
 	            };
 	            _this.observerService.notify(customEventName, data);
+	            _this.observerService.notify(formEventName, data);
 	        };
 	        this.getTemplate = function () {
 	            var template = '';
@@ -19381,7 +19385,7 @@
 	                    'id="swinput' + _this.swForm.name + _this.name + '" ' +
 	                    'style="' + style + '"' +
 	                    _this.inputAttributes +
-	                    _this.eventHandlerTemplate;
+	                    _this.eventAnnouncerTemplate;
 	            }
 	            var dateFieldTypes = ['date', 'datetime', 'time'];
 	            if (dateFieldTypes.indexOf(_this.fieldType.toLowerCase()) >= 0) {
@@ -19428,12 +19432,12 @@
 	        };
 	        this.$onInit = function () {
 	            _this.pullBindings();
-	            _this.eventHandlersArray = _this.eventHandlers.split(',');
-	            _this.eventHandlerTemplate = "";
-	            for (var i in _this.eventHandlersArray) {
-	                var eventName = _this.eventHandlersArray[i];
+	            _this.eventAnnouncersArray = _this.eventAnnouncers.split(',');
+	            _this.eventAnnouncerTemplate = "";
+	            for (var i in _this.eventAnnouncersArray) {
+	                var eventName = _this.eventAnnouncersArray[i];
 	                if (eventName.length) {
-	                    _this.eventHandlerTemplate += " ng-" + eventName + "=\"swInput.onEvent($event,'" + eventName + "')\"";
+	                    _this.eventAnnouncerTemplate += " ng-" + eventName + "=\"swInput.onEvent($event,'" + eventName + "')\"";
 	                }
 	            }
 	            if (_this.object && _this.object.metaData && _this.object.metaData.className != undefined) {
@@ -19521,7 +19525,7 @@
 	            showRevert: "=?",
 	            inputAttributes: "@?",
 	            type: "@?",
-	            eventHandlers: "@?",
+	            eventAnnouncers: "@?",
 	            context: "@?"
 	        };
 	        this.controller = SWInputController;
@@ -19897,12 +19901,6 @@
 	            }
 	            ;
 	        }
-	        if (this.eventListeners) {
-	            console.log('event listeners: ', this.eventListeners);
-	            for (var key in this.eventListeners) {
-	                observerService.attach(this.eventListeners[key], key);
-	            }
-	        }
 	    }
 	    return SWFormController;
 	}());
@@ -19936,7 +19934,8 @@
 	            hideUntil: "@?",
 	            isDirty: "=?",
 	            inputAttributes: "@?",
-	            eventListeners: "=?"
+	            eventListeners: "=?",
+	            eventAnnouncers: "@"
 	        };
 	        /**
 	            * Sets the context of this form
@@ -20190,7 +20189,8 @@
 	            onChange: "=?",
 	            editable: "=?",
 	            eventHandlers: "@?",
-	            context: "@?"
+	            context: "@?",
+	            eventAnnouncers: "@"
 	        };
 	        this.link = function (scope, element, attrs) {
 	        };
@@ -20580,6 +20580,7 @@
 	        this.showSubmitButton = true;
 	        this.param = "?slataction=";
 	        this.showAlerts = "true";
+	        this.eventListeners = {};
 	        this.getAction = function () {
 	            if (!angular.isDefined(_this.action)) {
 	                _this.action = "addAddress";
@@ -20594,6 +20595,12 @@
 	                return true;
 	            }
 	            return false;
+	        };
+	        this.submitKeyCheck = function (event) {
+	            event = event.event;
+	            if (event.keyCode == 13) {
+	                _this.submit(_this.action);
+	            }
 	        };
 	        //if exists, just name it slatwall.
 	        if (angular.isDefined(this.slatwallScope)) {
@@ -20639,6 +20646,8 @@
 	                return formData || "";
 	            };
 	        }
+	        var keyupName = this.addressName + 'keyup';
+	        this.eventListeners[keyupName] = this.submitKeyCheck;
 	    }
 	    return SWAddressFormController;
 	}());
@@ -20885,7 +20894,6 @@
 	        this.scope = {};
 	        this.bindToController = {
 	            //swfproperty scope
-	            type: "@?",
 	            name: "@?",
 	            class: "@?",
 	            edit: "@?",
@@ -20900,6 +20908,7 @@
 	            errorText: "@?",
 	            errorClass: "@?",
 	            formTemplate: "@?",
+	            eventAnnouncers: "@",
 	            //swpropertyscope
 	            property: "@?",
 	            object: "=?",

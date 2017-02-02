@@ -15,7 +15,7 @@ class SWActionCallerController{
     public disabled:boolean;
     public actionItemEntityName:string;
     public hibachiPathBuilder:any;
-
+    public eventListeners:any;
     public actionUrl:string;
     public queryString:string;
     public isAngularRoute:boolean;
@@ -53,9 +53,9 @@ class SWActionCallerController{
             //this.init();
         });
 
-                if(this.eventListeners){
-            console.log('event listeners: ', this.eventListeners);
+        if(this.eventListeners){
             for(var key in this.eventListeners){
+                console.log("typeof key", typeof key)
                 observerService.attach(this.eventListeners[key], key)
             }
         }

@@ -88,13 +88,6 @@ class SWFormController {
             };
         }
 
-        if(this.eventListeners){
-            console.log('event listeners: ', this.eventListeners);
-            for(var key in this.eventListeners){
-                observerService.attach(this.eventListeners[key], key)
-            }
-        }
-
     }
 
     public parseDotPath = (str:string)=> {
@@ -291,7 +284,8 @@ class SWForm implements ng.IDirective {
             hideUntil: "@?",
             isDirty:"=?",
             inputAttributes:"@?",
-            eventListeners:"=?"
+            eventListeners:"=?",
+            eventAnnouncers:"@"
     };
 
     /**

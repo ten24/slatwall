@@ -11,7 +11,7 @@ import {SWFormFieldController} from "./swformfield";
 import {ObserverService} from "../../core/services/observerService";
 import {MetaDataService} from "../../core/services/metadataService";
 //defines possible eventoptions
-type EventHandler = "blur" |
+type EventAnnouncer = "blur" |
 	"change" |
 	"click" |
 	"copy" |
@@ -59,9 +59,9 @@ class SWInputController{
 	public eventNameForObjectSuccess:string;
 	public rowSaveEnabled:boolean;
 
-	public eventHandlers:string="";
-	public eventHandlersArray:Array<EventHandler>;
-	public eventHandlerTemplate:string;
+	public eventAnnouncers:string="";
+	public eventAnnouncersArray:Array<eventAnnouncer>;
+	public eventAnnouncerTemplate:string;
 
 	//@ngInject
 	constructor(
@@ -199,6 +199,7 @@ class SWInputController{
 
 	public onEvent = (event:Event,eventName:string):void=>{
 		let customEventName = this.swForm.name+this.name+eventName;
+		let formEventName = this.swForm.name + eventName;
 		let data = {
 			event:event,
 			eventName:eventName,
@@ -208,6 +209,7 @@ class SWInputController{
 			inputElement:$('input').first()[0]
 		};
 		this.observerService.notify(customEventName,data);
+		this.observerService.notify(formEventName,data);
 	}
 
 	public getTemplate = ()=>{
@@ -262,7 +264,7 @@ class SWInputController{
 				'id="swinput'+this.swForm.name+this.name+'" '+
 				'style="'+style+'"'+
 				this.inputAttributes+
-				this.eventHandlerTemplate;
+				this.eventAnnouncerTemplate;
 		}
 
 		var dateFieldTypes = ['date','datetime','time'];
@@ -336,13 +338,13 @@ class SWInputController{
 
         this.pullBindings();
 
-		this.eventHandlersArray = <Array<EventHandler>>this.eventHandlers.split(',');
+		this.eventAnnouncersArray = <Array<EventAnnouncer>>this.eventAnnouncers.split(',');
 
-		this.eventHandlerTemplate = "";
-		for(var i in this.eventHandlersArray){
-			var eventName = this.eventHandlersArray[i];
+		this.eventAnnouncerTemplate = "";
+		for(var i in this.eventAnnouncersArray){
+			var eventName = this.eventAnnouncersArray[i];
             if(eventName.length){
-                this.eventHandlerTemplate += ` ng-`+eventName+`="swInput.onEvent($event,'`+eventName+`')"`;
+                this.eventAnnouncerTemplate += ` ng-`+eventName+`="swInput.onEvent($event,'`+eventName+`')"`;
             }
 		}
 
@@ -429,7 +431,7 @@ class SWInput{
 		showRevert:"=?",
 		inputAttributes:"@?",
 		type:"@?",
-		eventHandlers:"@?",
+		eventAnnouncers:"@?",
 		context:"@?"
 	}
 	public controller=SWInputController;

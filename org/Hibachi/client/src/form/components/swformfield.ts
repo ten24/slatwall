@@ -289,7 +289,8 @@ class SWFormField{
         onChange:"=?",
 		editable:"=?",
 		eventHandlers:"@?",
-		context:"@?"
+		context:"@?",
+		eventAnnouncers:"@"
 	};
 
 	//@ngInject

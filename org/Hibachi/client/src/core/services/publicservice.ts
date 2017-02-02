@@ -227,7 +227,7 @@ class PublicService {
         }
 
         let urlBase = this.appConfig.baseURL+this.baseActionPath;
-
+        console.log(urlBase);
         if(data){
             method = "post";
             data.returnJsonObjects = "cart,account";
@@ -237,6 +237,7 @@ class PublicService {
 
         if (method == "post"){
              data.returnJsonObjects = "cart,account";
+             console.log(data);
             //post
             let request:PublicRequest = this.requestService.newPublicRequest(urlBase,data,method)
             request.promise.then((result:any)=>{
@@ -574,7 +575,6 @@ class PublicService {
         //Post the new order payment and set errors as needed.
         this.doAction('addOrderPayment', data, 'post').then((result)=>{
             var serverData = result;
-
 
             if (serverData.cart.hasErrors || angular.isDefined(this.cart.orderPayments[this.cart.orderPayments.length-1]['errors']) && !this.cart.orderPayments[this.cart.orderPayments.length-1]['errors'].hasErrors){
                 this.cart.hasErrors = true;

@@ -16,6 +16,7 @@ class SWAddressFormController {
     public addressName:string;
     public param:string = "?slataction=";
     public showAlerts:string = "true";
+    public eventListeners:any = {};
 
 	//@ngInject
     constructor(private $log) {
@@ -63,7 +64,9 @@ class SWAddressFormController {
                 }
                 return formData || "";
             }
-        } 
+        }
+        let keyupName = this.addressName+'keyup';
+        this.eventListeners[keyupName] = this.submitKeyCheck;
     }
 
 	public getAction = () => {
@@ -84,6 +87,13 @@ class SWAddressFormController {
 		}
 		return false;
 	}
+
+    public submitKeyCheck = (event) => {
+        event = event.event;
+        if(event.keyCode == 13){
+            this.submit(this.action);
+        }
+    }
 
 } 
 

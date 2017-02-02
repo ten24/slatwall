@@ -305,7 +305,6 @@ class SWPropertyDisplay implements ng.IDirective{
 
         //swfproperty scope
 
-        type: "@?",
         name: "@?",
         class: "@?",
         edit: "@?",
@@ -320,6 +319,7 @@ class SWPropertyDisplay implements ng.IDirective{
         errorText: "@?",
         errorClass: "@?",
         formTemplate: "@?",
+        eventAnnouncers:"@",
 
         //swpropertyscope
 
