@@ -322,7 +322,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		}else if(!isNull(getPrice())){
 			price = getPrice();
 		}
-		return val(getService('HibachiUtilityService').precisionCalculate("round(price * val(getQuantity()) * 100) / 100"));
+		return val(getService('HibachiUtilityService').precisionCalculate(round(price * val(getQuantity()) * 100) / 100));
 
 	}
 

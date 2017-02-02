@@ -52,11 +52,6 @@ Notes:
 
 	<cfscript>
 		
-		public any function precisionCalculate(required numeric value, numeric scale=2){
-			var roundingmode = createObject('java','java.math.RoundingMode');
-			return javacast('bigdecimal',arguments.value).setScale(arguments.scale,roundingmode.HALF_EVEN);
-		}
-
 		public any function formatValue_currency( required string value, struct formatDetails={} ) {
 			if(structKeyExists(arguments.formatDetails, "currencyCode")) {
 				var currency = getService("currencyService").getCurrency( arguments.formatDetails.currencyCode );
