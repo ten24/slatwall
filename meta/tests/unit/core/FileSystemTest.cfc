@@ -73,5 +73,35 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(allLowercaseFileNames,offenders);
 		
 	}
+	
+	public void function parsestringTobigDecimalTest(){
+		
+//		request.debug(roundingmode.HALF_UP);
+//		request.debug(javacast('bigdecimal',59));
+//		request.debug(javacast('bigdecimal',59).add(javacast('bigdecimal',9.99)).multiply(javacast('bigdecimal',100).setScale(7)));
+//		
+//		request.debug(javacast('bigdecimal', 1223.23).setScale(2).multiply(javacast('bigdecimal',100).setScale(2)).divide(javacast('bigdecimal',1234.23).setScale(2),2,roundingmode.HALF_UP));
+		
+		precisionEvaluateTest(1223.23 * 100 / 1234.23);
+		
+		
+	}
+	
+	private any function precisionEvaluateTest(value){
+		addToDebug(precisionEvaluate(1223.23 * 100 / 1234.23)& ' precisionEvaluate ');
+		
+		
+		var roundingmode = createObject('java','java.math.RoundingMode');
+		
+		AddToDebug(arguments.value & ' value ');
+		var scaledvalue = javacast('bigdecimal',arguments.value).setScale(20);
+		AddToDebug(
+			scaledvalue & ' scaledvalue '
+		);
+			
+		AddToDebug(javacast('bigdecimal',1223.23).multiply(javacast('bigdecimal',100)).divide(javacast('bigdecimal',1234.23),10000,roundingmode.HALF_EVEN));
+		
+		return scaledvalue;
+	}
 
 }
