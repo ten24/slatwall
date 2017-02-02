@@ -74,27 +74,27 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 	}
 	
-	public void function parsestringTobigDecimalTest(){
-		
-		precisionEvaluateTest(1223.23 * 100 / 1234.23,getMaxScale(discountAmount,getApplied(),c,d));
-	}
+//	public void function parsestringTobigDecimalTest(){
+//		
+//		precisionEvaluateTest(1223.23 * 100 / 1234.23,getMaxScale(discountAmount,getApplied(),c,d));
+//	}
 	
-	private any function precisionEvaluateTest(value,scale=2){
-		addToDebug(precisionEvaluate(59.999 * 100.0001)& ' precisionEvaluate ');
-		
-		addToDebug(toString(59.99*100));
-		
-		var roundingmode = createObject('java','java.math.RoundingMode');
-		
-		AddToDebug(arguments.value & ' value ');
-		var scaledvalue = javacast('bigdecimal',arguments.value).setScale(20);
-		AddToDebug(
-			scaledvalue & ' scaledvalue '
-		);
-			
-		AddToDebug(javacast('bigdecimal',1223.23).multiply(javacast('bigdecimal',100)).divide(javacast('bigdecimal',1234.23),2,roundingmode.HALF_EVEN));
-		
-		return scaledvalue;
-	}
+//	private any function precisionEvaluateTest(value,scale=2){
+//		addToDebug(precisionEvaluate(59.999 * 100.0001)& ' precisionEvaluate ');
+//		
+//		addToDebug(toString(59.99*100));
+//		
+//		var roundingmode = createObject('java','java.math.RoundingMode');
+//		
+//		AddToDebug(arguments.value & ' value ');
+//		var scaledvalue = javacast('bigdecimal',arguments.value).setScale(20);
+//		AddToDebug(
+//			scaledvalue & ' scaledvalue '
+//		);
+//			
+//		AddToDebug(javacast('bigdecimal',1223.23).multiply(javacast('bigdecimal',100)).divide(javacast('bigdecimal',1234.23),2,roundingmode.HALF_EVEN));
+//		
+//		return scaledvalue;
+//	}
 
 }
