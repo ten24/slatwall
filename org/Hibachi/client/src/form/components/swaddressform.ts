@@ -16,10 +16,12 @@ class SWAddressFormController {
     public addressName:string;
     public param:string = "?slataction=";
     public showAlerts:string = "true";
-    public eventListeners:any = {};
+    public eventListeners:any;
 
 	//@ngInject
-    constructor(private $log) {
+    constructor(
+        private $log,
+        private observerService) {
 		//if exists, just name it slatwall.
 		if (angular.isDefined(this.slatwallScope)){
 			this.slatwall = this.slatwallScope;
@@ -65,8 +67,13 @@ class SWAddressFormController {
                 return formData || "";
             }
         }
-        let keyupName = this.addressName+'keyup';
-        this.eventListeners[keyupName] = this.submitKeyCheck;
+       if(this.eventListeners){
+           console.log("ayyyyy", this.eventListeners);
+            for(var key in this.eventListeners){
+                console.log(key);
+                observerService.attach(this.eventListeners[key], key)
+            }
+        }
     }
 
 	public getAction = () => {
@@ -119,7 +126,8 @@ class SWAddressForm implements ng.IComponentOptions {
         showAddressBookSelect: "@",
         showCountrySelect: "@",
         showSubmitButton: "@",
-        showAlerts: "@"
+        showAlerts: "@",
+        eventListeners:"="
     };
     public scope={};
     /**

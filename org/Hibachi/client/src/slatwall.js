@@ -8068,7 +8068,6 @@
 	        });
 	        if (this.eventListeners) {
 	            for (var key in this.eventListeners) {
-	                console.log("typeof key", typeof key);
 	                observerService.attach(this.eventListeners[key], key);
 	            }
 	        }
@@ -20572,15 +20571,15 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWAddressFormController = (function () {
 	    //@ngInject
-	    function SWAddressFormController($log) {
+	    function SWAddressFormController($log, observerService) {
 	        var _this = this;
 	        this.$log = $log;
+	        this.observerService = observerService;
 	        this.showAddressBookSelect = false;
 	        this.showCountrySelect = true;
 	        this.showSubmitButton = true;
 	        this.param = "?slataction=";
 	        this.showAlerts = "true";
-	        this.eventListeners = {};
 	        this.getAction = function () {
 	            if (!angular.isDefined(_this.action)) {
 	                _this.action = "addAddress";
@@ -20623,8 +20622,8 @@
 	            this.address.getData = function () {
 	                var formData = {};
 	                var form = this.forms[addressName];
-	                for (var key in form) {
-	                    var val = form[key];
+	                for (var key_1 in form) {
+	                    var val = form[key_1];
 	                    if (typeof val === 'object' && val.hasOwnProperty('$modelValue')) {
 	                        if (val.$modelValue) {
 	                            val = val.$modelValue;
@@ -20633,21 +20632,26 @@
 	                            val = val.$viewValue;
 	                        }
 	                        if (angular.isString(val)) {
-	                            formData[key] = val;
+	                            formData[key_1] = val;
 	                        }
 	                        if (val.$modelValue) {
-	                            formData[key] = val.$modelValue;
+	                            formData[key_1] = val.$modelValue;
 	                        }
 	                        else if (val.$viewValue) {
-	                            formData[key] = val.$viewValue;
+	                            formData[key_1] = val.$viewValue;
 	                        }
 	                    }
 	                }
 	                return formData || "";
 	            };
 	        }
-	        var keyupName = this.addressName + 'keyup';
-	        this.eventListeners[keyupName] = this.submitKeyCheck;
+	        if (this.eventListeners) {
+	            console.log("ayyyyy", this.eventListeners);
+	            for (var key in this.eventListeners) {
+	                console.log(key);
+	                observerService.attach(this.eventListeners[key], key);
+	            }
+	        }
 	    }
 	    return SWAddressFormController;
 	}());
@@ -20675,7 +20679,8 @@
 	            showAddressBookSelect: "@",
 	            showCountrySelect: "@",
 	            showSubmitButton: "@",
-	            showAlerts: "@"
+	            showAlerts: "@",
+	            eventListeners: "="
 	        };
 	        this.scope = {};
 	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.coreFormPartialsPath) + "addressform.html";

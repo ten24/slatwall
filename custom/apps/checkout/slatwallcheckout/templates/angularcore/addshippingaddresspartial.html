@@ -1,4 +1,12 @@
 <!-- Add Shipping Address Obj just to control state -->
+<script type="text/javascript">
+	var root = angular.element(document.body).injector().get('$rootScope');
+	root.functions = {
+		hideAccountAddressForm: ()=>{
+			root.slatwall.accountAddressEditFormIndex = undefined;
+		}
+	}
+</script>
 <span ng-init="$.slatwall = $root.slatwall"></span>
 <div ng-init="$.slatwall.OrderAddShippingObj = {}"></div>
 <!-- Displays all addresses from the addess book and lets you select one to use as the shipping address. -->
@@ -39,10 +47,11 @@
 			data-show-address-book-select="false" 
 			data-show-country-select="true" 
 			data-show-submit-button="true"
-			data-action="updateAddress"
+			data-action="updateAddress,addShippingAddressUsingAccountAddress"
 			data-action-text="Save and Continue"
 			data-show-address-book-select="false" 
-			ng-if="$.slatwall.accountAddressEditFormIndex != undefined">
+			ng-if="$.slatwall.accountAddressEditFormIndex != undefined"
+			data-event-listeners="{addShippingAddressUsingAccountAddressSuccess:$root.functions.hideAccountAddressForm}">
 		</sw-address-form>
 		
 		<h4 ng-if="$.slatwall.accountAddressEditFormIndex == 'new'">Create A New Address:</h4>
@@ -58,12 +67,13 @@
 			data-show-address-book-select="false" 
 			data-show-country-select="true" 
 			data-show-submit-button="true"
-			data-action="addNewAccountAddress"
+			data-action="addNewAccountAddress,addShippingAddressUsingAccountAddress"
 			data-action-text="Save and Continue"
 			show-close-button="true"
 			close-button-text="CLOSE"
 			data-on-close="$.slatwall.closeAccountAddressForm()"
-			ng-if="$.slatwall.accountAddressEditFormIndex == 'new'">
+			ng-if="$.slatwall.accountAddressEditFormIndex == 'new'"
+			data-event-listeners="{addShippingAddressUsingAccountAddressSuccess:$root.functions.hideAccountAddressForm}">
 		</sw-address-form>
 
 </sw-form>

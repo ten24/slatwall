@@ -455,6 +455,7 @@ component extends="HibachiService"  accessors="true" output="false"
           getHibachiScope().addActionResult("public:account.addNewAccountAddress", savedAccountAddress.hasErrors());
    	     	if (!savedAccountAddress.hasErrors()){
    	     		getDao('hibachiDao').flushOrmSession();
+            data.accountAddressID = savedAccountAddress.getAccountAddressID();
    	     	}
       	}else{
           getHibachiScope().addActionResult("public:account.addNewAccountAddress", newAddress.hasErrors());

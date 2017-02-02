@@ -55,7 +55,6 @@ class SWActionCallerController{
 
         if(this.eventListeners){
             for(var key in this.eventListeners){
-                console.log("typeof key", typeof key)
                 observerService.attach(this.eventListeners[key], key)
             }
         }
