@@ -352,15 +352,14 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
     public any function getShippingMethodOptions() {
     	if( !structKeyExists(variables, "shippingMethodOptions")) {
-
 			//update the shipping method options with the shipping service to insure qualifiers are re-evaluated    		
 			getService("shippingService").updateOrderFulfillmentShippingMethodOptions( this );
-
     		// At this point they have either been populated just before, or there were already options
+
     		var optionsArray = [];
+
     		var sortType = getFulfillmentMethod().setting('fulfillmentMethodShippingOptionSortType');
     		for(var shippingMethodOption in getFulfillmentShippingMethodOptions()) {
-
     			var thisOption = {};
     			thisOption['name'] = shippingMethodOption.getSimpleRepresentation();
     			thisOption['value'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodID();
@@ -395,7 +394,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     		if(!arrayLen(optionsArray)) {
     			arrayPrepend(optionsArray, {name=rbKey('define.select'), value=''});
     		}
-
+    		
     		variables.shippingMethodOptions = optionsArray;
     	}
     	return variables.shippingMethodOptions;

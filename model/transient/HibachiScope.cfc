@@ -294,7 +294,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	}
 
 	public any function getAvailableCartPropertyList() {
-		return rereplace("orderID,orderOpenDateTime,calculatedTotal,subtotal,taxTotal,fulfillmentTotal,fulfillmentChargeAfterDiscountTotal,promotionCodeList,discountTotal,
+		return rereplace("orderID,orderOpenDateTime,calculatedTotal,subtotal,taxTotal,fulfillmentTotal,fulfillmentChargeAfterDiscountTotal,promotionCodeList,discountTotal,orderRequirementsList,
 			orderItems.orderItemID,orderItems.price,orderItems.skuPrice,orderItems.currencyCode,orderItems.quantity,orderItems.extendedPrice,orderItems.extendedPriceAfterDiscount,orderItems.taxAmount,orderItems.taxLiabilityAmount,orderItems.parentOrderItemID,orderItems.productBundleGroupID,
 			orderItems.orderFulfillment.orderFulfillmentID,
 			orderItems.sku.skuID,orderItems.sku.skuCode,orderItems.sku.imagePath,orderItems.sku.imageFile,
@@ -327,19 +327,17 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
         //Attach some meta for for orderFulfillments
         if(structKeyExists(data, 'orderFulfillments')){
 	        var requiresFulfillment = false;
-	        var orderFulfillmentWithShippingMethodOptionsIndex = 1;
-	        for (orderFulfillment in data.orderFulfillments){
-	            if (isArray(orderFulfillment.shippingMethodOptions) && arrayLen(orderFulfillment.shippingMethodOptions) >= 1){
-	                        requiresFulfillment = true; break;
+	        var orderFulfillmentWithShippingMethodOptionsIndex = 0;
+	        for(i=1; i<=arrayLen(data.orderFulfillments);i=i+1){
+	        	var orderFulfillment = data.orderFulfillments[i];
+	        	if (isArray(orderFulfillment.shippingMethodOptions) && arrayLen(orderFulfillment.shippingMethodOptions) >= 1){
+	                  orderFulfillmentWithShippingMethodOptionsIndex = i;
+	                  requiresFulfillment = true;
+	                  break;
 	            }
-	            orderFulfillmentWithShippingMethodOptionsIndex++;
 	        }
 	        data['requiresFulfillment'] = requiresFulfillment;
-	        if (requiresFulfillment){
-	              data['orderFulfillmentWithShippingMethodOptionsIndex'] = orderFulfillmentWithShippingMethodOptionsIndex - 1;
-	        }else{
-	              data['orderFulfillmentWithShippingMethodOptionsIndex'] = -1;
-	        }
+	        data['orderFulfillmentWithShippingMethodOptionsIndex'] = orderFulfillmentWithShippingMethodOptionsIndex-1;
         }
 		// add error messages
 		data["hasErrors"] = getCart().hasErrors();

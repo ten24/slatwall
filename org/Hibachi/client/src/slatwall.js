@@ -1883,6 +1883,7 @@
 	        this.months = [{ name: '01 - JAN', value: 1 }, { name: '02 - FEB', value: 2 }, { name: '03 - MAR', value: 3 }, { name: '04 - APR', value: 4 }, { name: '05 - MAY', value: 5 }, { name: '06 - JUN', value: 6 }, { name: '07 - JUL', value: 7 }, { name: '08 - AUG', value: 8 }, { name: '09 - SEP', value: 9 }, { name: '10 - OCT', value: 10 }, { name: '11 - NOV', value: 11 }, { name: '12 - DEC', value: 12 }];
 	        this.years = [];
 	        this.shippingAddress = "";
+	        this.emailFulfillmentAddress = {};
 	        this.imagePath = {};
 	        // public hasErrors = ()=>{
 	        //     return this.errors.length;
@@ -2118,6 +2119,20 @@
 	        };
 	        this.hasCashPaymentMethod = function () {
 	            return _this.hasPaymentMethod("Cash");
+	        };
+	        this.hasFulfillmentMethod = function (fulfillmentMethodName) {
+	            for (var _i = 0, _a = _this.cart.orderFulfillments; _i < _a.length; _i++) {
+	                var fulfillment = _a[_i];
+	                if (fulfillment.fulfillmentMethod.fulfillmentMethodName === fulfillmentMethodName)
+	                    return true;
+	            }
+	            return false;
+	        };
+	        this.hasShippingFulfillmentMethod = function () {
+	            return _this.hasFulfillmentMethod("Shipping");
+	        };
+	        this.hasEmailFulfillmentMethod = function () {
+	            return _this.hasFulfillmentMethod("Email");
 	        };
 	        /** Returns true if the order requires a fulfillment */
 	        this.orderRequiresFulfillment = function () {

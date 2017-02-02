@@ -1,7 +1,7 @@
 <!-- Add Shipping Address By Selecting an Account Address -->
 <div ng-init="OrderAddShippingObj = {}"></div>
 <!--- When an address has already been saved. --->
-<div class="content-address-wrapper" id="allAddresses" ng-click="$root.slatwall.nextClicked=false">
+<div class="content-address-wrapper row" id="allAddresses" ng-click="$root.slatwall.nextClicked=false">
 
     <div class="addressContentWrapper" vertilize-container>
         <div ng-repeat="(key, value) in $root.slatwall.account.accountAddresses" class="col-sm-4 content-address">

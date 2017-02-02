@@ -1,0 +1,34 @@
+<div class="row">
+	<div class="col-sm-7">
+		<h4>Email Fulfillment</h4>
+			<div class="col-sm-7">
+			    <sw-form
+			        data-is-process-form="true"
+			        data-object="$root.slatwall.emailFulfillmentAddress"
+			        data-form-class="cssform"
+			        data-name="Email_Fulfillment"
+			        data-event-announcers="keyup"
+			        data-action="selectFulfillmentEmail">
+
+					<div class="form-group">
+				        <swf-property-display
+				                data-name="emailAddress"
+				                data-type="email"
+				                data-property-identifier="emailAddress"
+				                data-label-text="Email Address"
+				                data-class="form-control"
+				                data-editing="true">
+				        </swf-property-display>
+					</div>
+					<div class="form-group">
+				        <sw-action-caller
+				            data-modal="false"
+				            data-type="button"
+				            data-class="button blue"
+				            data-text="{{($.slatwall.getRequestByAction('forgotPassword').loading ? 'LOADING...' : 'Lock in My Decision (Permanently)')}}"
+				            data-event-listeners="{Account_ForgotPasswordkeyup:$parent.swForm.submitKeyCheck}">
+				        </sw-action-caller>
+					</div>
+			    </sw-form>
+		    </div>
+    </div>

@@ -66,10 +66,13 @@
 	                <h3 ng-class="(($root.slatwall.fulfillmentTabIsActive()) ? 'active' : '')">
 	                <a href="##" class="pull-right" ng-click="$root.slatwall.edit = 'fulfillment'"><i class="fa fa-pencil-square-o" ng-if="!$root.slatwall.fulfillmentTabIsActive() && $root.slatwall.hasAccount()" aria-hidden="true"></i></a>
 					<a href="##" class="pull-right" ng-if="$root.slatwall.edit=='fulfillment'" ng-click="$root.slatwall.edit = ''"><i class="fa fa-check-circle"></i></a>
-					Shipping Information</h3>
+					Fulfillment Information</h3>
 	                <div ng-show="$root.slatwall.hasAccount() && $root.slatwall.fulfillmentTabIsActive()">
-	                    <div class="details">
+	                    <div class="details" ng-show="$root.slatwall.hasShippingFulfillmentMethod()">
 	                        <swf-directive partial-path="{{customTemplateFolder}}" partial-name="addshippingaddresspartial"></swf-directive>
+	                    </div>
+	                    <div class="details" ng-show="$root.slatwall.hasEmailFulfillmentMethod()">
+	                    	<swf-directive partial-path="{{customTemplateFolder}}" partial-name="addemailfulfillmentaddresspartial"></swf-directive>
 	                    </div>
 	                </div>
 	            </div>
