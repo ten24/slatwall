@@ -20040,9 +20040,9 @@
 	        };
 	        this.getOptions = function () {
 	            if (angular.isUndefined(_this.options)) {
-	                if (!_this.optionsArguments || !_this.optionsArguments.hasOwnProperty('property')) {
+	                if (!_this.optionsArguments || !_this.optionsArguments.hasOwnProperty('propertyIdentifier')) {
 	                    _this.optionsArguments = {
-	                        'property': _this.propertyIdentifier || _this.propertyIdentifier
+	                        'propertyIdentifier': _this.propertyIdentifier
 	                    };
 	                }
 	                var optionsPromise = _this.$hibachi.getPropertyDisplayOptions(_this.object.metaData.className, _this.optionsArguments);

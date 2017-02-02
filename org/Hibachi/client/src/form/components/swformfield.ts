@@ -134,9 +134,9 @@ class SWFormFieldController {
 
 
 		if(angular.isUndefined(this.options)){
-			if(!this.optionsArguments || !this.optionsArguments.hasOwnProperty('property')){
+			if(!this.optionsArguments || !this.optionsArguments.hasOwnProperty('propertyIdentifier')){
 				this.optionsArguments={
-					'property':this.propertyIdentifier || this.propertyIdentifier
+					'propertyIdentifier':this.propertyIdentifier
 				};
 			}
 
