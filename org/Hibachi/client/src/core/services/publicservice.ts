@@ -227,7 +227,7 @@ class PublicService {
         }
 
         let urlBase = this.appConfig.baseURL+this.baseActionPath;
-        console.log(urlBase);
+        
         if(data){
             method = "post";
             data.returnJsonObjects = "cart,account";
@@ -237,7 +237,7 @@ class PublicService {
 
         if (method == "post"){
              data.returnJsonObjects = "cart,account";
-             console.log(data);
+             
             //post
             let request:PublicRequest = this.requestService.newPublicRequest(urlBase,data,method)
             request.promise.then((result:any)=>{
@@ -512,7 +512,7 @@ class PublicService {
         for(let key in this.newCardInfo){
             billingAddress[key] = this.newCardInfo[key];
         }
-        console.log(billingAddress);
+        
         this.newBillingAddress = billingAddress;
     }
 
@@ -643,15 +643,15 @@ class PublicService {
                 data['newOrderPayment.order.account.accountID'] = this.account.accountID;
                 data['newOrderPayment.giftCardNumber'] = giftCards[card].giftCardCode;
                 data['copyFromType'] = "";
-                console.log("data", data);
+                
                 this.doAction('addOrderPayment', data, 'post').then((result:any)=>{
                     var serverData
                     if (angular.isDefined(result)){
                         serverData = result;
-                        console.log(serverData.cart);
+                        
                         this.finding = false; 
                         if (serverData.cart.hasErrors){
-                            console.log('yeww', serverData.cart.errors);
+                            
                             this.cart.hasErrors = true;
                             this.readyToPlaceOrder = false;
                             this.edit = '';
@@ -659,7 +659,7 @@ class PublicService {
                             this.finding = false;
                         }
                     }else{
-                        console.log("An unexpected error has occurred!");
+                        
                     }
                 });   
             }
@@ -674,7 +674,7 @@ class PublicService {
     //     this.cart.hasErrors=false;
     //     this.cart.orderPayments.errors = {};
     //     this.cart.orderPayments.hasErrors = false;
-    //     console.log("We adding?")
+    //     
     //     //Grab all the data
     //     var giftCards = this.account.giftCards;
     //     var data = {};
@@ -683,12 +683,12 @@ class PublicService {
     //         'newOrderPayment.paymentMethod.paymentMethodID':'50d8cd61009931554764385482347f3a',
     //         'newOrderPayment.redeemGiftCardToAccount':redeemGiftCardToAccount,
     //     };
-    //     console.log("We about to be floopin?")
-    //     console.log(giftCards)
+    //     
+    //     
     //     //add the amounts from the gift cards
     //     for (var card in giftCards){
-    //         console.log("IF YOU CAN HEAR ME SEND HELP IM TRAPPED")
-    //         console.log(giftCards[card])
+    //         
+    //         
     //         if (giftCards[card].applied == true){
 
     //             data['newOrderPayment.giftCardNumber'] = giftCards[card].giftCardCode;
@@ -698,21 +698,21 @@ class PublicService {
     //                 data['newOrderPayment.amount'] = this.cart.calculatedTotal;//this is so it doesn't throw the 100% error
     //             }
     //             data['copyFromType'] = "";
-    //             console.log("We floopin")
+    //             
     //             //Post the new order payment and set errors as needed.
     //             this.doAction('addOrderPayment', data, 'post').then(function(result){
     //                 var serverData;
     //                 if (angular.isDefined(result['0'])){
     //                     serverData = result['0'].data;
     //                 }
-    //                 console.log("We resulting?")
+    //                 
     //                 if (serverData.cart.hasErrors || angular.isDefined(this.cart.orderPayments[this.cart.orderPayments.length-1]['errors']) && !this.cart.orderPayments[''+(this.cart.orderPayments.length-1)]['errors'].hasErrors){
     //                     this.cart.hasErrors = true;
     //                     this.readyToPlaceOrder = true;
     //                     this.edit = '';
-    //                     console.log("We erroring :(")
+    //                     
     //                 }else{
-    //                     console.log("Success!")
+    //                     
     //                 }
     //             });
     //         }
@@ -831,18 +831,18 @@ class PublicService {
     // //Applies a giftcard from the user account onto the payment.
     // public applyGiftCard = (giftCardCode)=>{
     //     this.finding = true;
-    //     console.log("We finding? ", this.finding);
+    //     
     //     //find the code already on the account.
     //     var found = false;
-    //     console.log("account gcs", this.account.giftCards);
-    //     console.log("gCode", giftCardCode)
+    //     
+    //     
     //     for (var giftCard in this.account.giftCards){
     //         if (this.account.giftCards[giftCard].balanceAmount == 0){
     //             this.account.giftCards[giftCard]['error'] = "The balance is $0.00 for this card.";
     //             found = false;
     //         }
     //         if (this.account.giftCards[giftCard].giftCardCode == giftCardCode){
-    //             console.log("WHat?!")
+    //             
     //             this.account.giftCards[giftCard].applied = true;
     //             found = true;
     //         }

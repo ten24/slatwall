@@ -47,11 +47,11 @@
 			data-show-address-book-select="false" 
 			data-show-country-select="true" 
 			data-show-submit-button="true"
-			data-action="updateAddress,addShippingAddressUsingAccountAddress"
+			data-action="updateAddress,addOrderShippingAddress"
 			data-action-text="Save and Continue"
 			data-show-address-book-select="false" 
 			ng-if="$.slatwall.accountAddressEditFormIndex != undefined"
-			data-event-listeners="{addShippingAddressUsingAccountAddressSuccess:$root.functions.hideAccountAddressForm}">
+			data-event-listeners="{updateAddressSuccess:$root.functions.hideAccountAddressForm}">
 		</sw-address-form>
 		
 		<h4 ng-if="$.slatwall.accountAddressEditFormIndex == 'new'">Create A New Address:</h4>

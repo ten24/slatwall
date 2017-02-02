@@ -471,7 +471,6 @@ component extends="HibachiService"  accessors="true" output="false"
      	
      	var newAddress = getService("AddressService").getAddress(data.addressID, true);
      	newAddress = getService("AddressService").saveAddress(newAddress, data, "full");
-
       if(!isNull(newAddress)){
         getHibachiScope().addActionResult("public:account.updateAddress", newAddress.hasErrors());	
       }
@@ -526,6 +525,7 @@ component extends="HibachiService"  accessors="true" output="false"
                  	accountAddress.setAddress(shippingAddress);
                  	accountAddress.setAccount(getHibachiScope().getAccount());
                  	var savedAccountAddress = getService("AccountService").saveAccountAddress(accountAddress);
+                  getHibachiScope().addActionResult( "public:cart.addShippingAddress", savedAccountAddress.hasErrors());
                  	if (!savedAddress.hasErrors()){
                  		getDao('hibachiDao').flushOrmSession();
                  	}
@@ -533,23 +533,23 @@ component extends="HibachiService"  accessors="true" output="false"
                 }
                 
                 getOrderService().saveOrder(order);
+
                 
             }else{
                     
                     this.addErrors(data, savedAddress.getErrors()); //add the basic errors
-                    getHibachiScope().addActionResult( "public:cart.AddShippingAddress", savedAddress.hasErrors());
+                    getHibachiScope().addActionResult( "public:cart.addShippingAddress", savedAddress.hasErrors());
             }
         }
     }
     
     /** Adds a shipping address to an order using an account address */
     public void function addShippingAddressUsingAccountAddress(required data){
-        var accountAddressId = data.accountAddressID;
-        if (isNull(accountAddressID)){
-            this.addErrors(arguments.data, "Could not add account address. address id empty."); //add the basic errors
-            getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", true);
-       		return;
+        if(isNull(data.accountAddressID)){
+          getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", true);
+          return;
         }
+        var accountAddressID = data.accountAddressID;
         var accountAddress = getService('AddressService').getAccountAddress(accountAddressID);
         
         if (!isNull(accountAddress) && !accountAddress.hasErrors()){
@@ -561,8 +561,10 @@ component extends="HibachiService"  accessors="true" output="false"
             getOrderService().saveOrder(order);
             getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", accountAddress.hasErrors());
         }else{
-            this.addErrors(arguments.data, accountAddress.getErrors()); //add the basic errors
-            getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", accountAddress.hasErrors());
+            if(!isNull(accountAddress)){
+              this.addErrors(arguments.data, accountAddress.getErrors()); //add the basic errors
+            }
+            getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", true);
         }
     }
     

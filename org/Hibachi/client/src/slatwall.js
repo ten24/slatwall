@@ -2020,7 +2020,6 @@
 	                _this.baseActionPath = "/index.cfm/api/scope/" + action; //public path
 	            }
 	            var urlBase = _this.appConfig.baseURL + _this.baseActionPath;
-	            console.log(urlBase);
 	            if (data) {
 	                method = "post";
 	                data.returnJsonObjects = "cart,account";
@@ -2030,7 +2029,6 @@
 	            }
 	            if (method == "post") {
 	                data.returnJsonObjects = "cart,account";
-	                console.log(data);
 	                //post
 	                var request_1 = _this.requestService.newPublicRequest(urlBase, data, method);
 	                request_1.promise.then(function (result) {
@@ -2268,7 +2266,6 @@
 	            for (var key in _this.newCardInfo) {
 	                billingAddress[key] = _this.newCardInfo[key];
 	            }
-	            console.log(billingAddress);
 	            _this.newBillingAddress = billingAddress;
 	        };
 	        /** Allows an easy way to calling the service addOrderPayment.
@@ -2382,15 +2379,12 @@
 	                    data['newOrderPayment.order.account.accountID'] = _this.account.accountID;
 	                    data['newOrderPayment.giftCardNumber'] = giftCards[card].giftCardCode;
 	                    data['copyFromType'] = "";
-	                    console.log("data", data);
 	                    _this.doAction('addOrderPayment', data, 'post').then(function (result) {
 	                        var serverData;
 	                        if (angular.isDefined(result)) {
 	                            serverData = result;
-	                            console.log(serverData.cart);
 	                            _this.finding = false;
 	                            if (serverData.cart.hasErrors) {
-	                                console.log('yeww', serverData.cart.errors);
 	                                _this.cart.hasErrors = true;
 	                                _this.readyToPlaceOrder = false;
 	                                _this.edit = '';
@@ -2399,7 +2393,6 @@
 	                            }
 	                        }
 	                        else {
-	                            console.log("An unexpected error has occurred!");
 	                        }
 	                    });
 	                }
@@ -2412,7 +2405,7 @@
 	        //     this.cart.hasErrors=false;
 	        //     this.cart.orderPayments.errors = {};
 	        //     this.cart.orderPayments.hasErrors = false;
-	        //     console.log("We adding?")
+	        //     
 	        //     //Grab all the data
 	        //     var giftCards = this.account.giftCards;
 	        //     var data = {};
@@ -2420,12 +2413,12 @@
 	        //         'newOrderPayment.paymentMethod.paymentMethodID':'50d8cd61009931554764385482347f3a',
 	        //         'newOrderPayment.redeemGiftCardToAccount':redeemGiftCardToAccount,
 	        //     };
-	        //     console.log("We about to be floopin?")
-	        //     console.log(giftCards)
+	        //     
+	        //     
 	        //     //add the amounts from the gift cards
 	        //     for (var card in giftCards){
-	        //         console.log("IF YOU CAN HEAR ME SEND HELP IM TRAPPED")
-	        //         console.log(giftCards[card])
+	        //         
+	        //         
 	        //         if (giftCards[card].applied == true){
 	        //             data['newOrderPayment.giftCardNumber'] = giftCards[card].giftCardCode;
 	        //             if (giftCards[card].calculatedTotal < this.cart.calculatedTotal){
@@ -2434,21 +2427,21 @@
 	        //                 data['newOrderPayment.amount'] = this.cart.calculatedTotal;//this is so it doesn't throw the 100% error
 	        //             }
 	        //             data['copyFromType'] = "";
-	        //             console.log("We floopin")
+	        //             
 	        //             //Post the new order payment and set errors as needed.
 	        //             this.doAction('addOrderPayment', data, 'post').then(function(result){
 	        //                 var serverData;
 	        //                 if (angular.isDefined(result['0'])){
 	        //                     serverData = result['0'].data;
 	        //                 }
-	        //                 console.log("We resulting?")
+	        //                 
 	        //                 if (serverData.cart.hasErrors || angular.isDefined(this.cart.orderPayments[this.cart.orderPayments.length-1]['errors']) && !this.cart.orderPayments[''+(this.cart.orderPayments.length-1)]['errors'].hasErrors){
 	        //                     this.cart.hasErrors = true;
 	        //                     this.readyToPlaceOrder = true;
 	        //                     this.edit = '';
-	        //                     console.log("We erroring :(")
+	        //                     
 	        //                 }else{
-	        //                     console.log("Success!")
+	        //                     
 	        //                 }
 	        //             });
 	        //         }
@@ -2557,18 +2550,18 @@
 	        // //Applies a giftcard from the user account onto the payment.
 	        // public applyGiftCard = (giftCardCode)=>{
 	        //     this.finding = true;
-	        //     console.log("We finding? ", this.finding);
+	        //     
 	        //     //find the code already on the account.
 	        //     var found = false;
-	        //     console.log("account gcs", this.account.giftCards);
-	        //     console.log("gCode", giftCardCode)
+	        //     
+	        //     
 	        //     for (var giftCard in this.account.giftCards){
 	        //         if (this.account.giftCards[giftCard].balanceAmount == 0){
 	        //             this.account.giftCards[giftCard]['error'] = "The balance is $0.00 for this card.";
 	        //             found = false;
 	        //         }
 	        //         if (this.account.giftCards[giftCard].giftCardCode == giftCardCode){
-	        //             console.log("WHat?!")
+	        //             
 	        //             this.account.giftCards[giftCard].applied = true;
 	        //             found = true;
 	        //         }

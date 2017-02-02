@@ -2,11 +2,6 @@
 <div ng-init="Account_LoginObj = $.slatwall.getProcessObject('Account_Login') "></div>
 <script type="text/javascript">
 	var root = angular.element(document.body).injector().get('$rootScope');
-	console.log('rootSCope',root);
-	root.doDaTing = function(){
-		alert("Ehhh you did da ting bruddah");
-	}
-
 </script>
 
 <div id="loginForm" class="row" ng-show="!$.slatwall.forgotPassword">
