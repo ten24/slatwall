@@ -362,5 +362,51 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals( serializeJson(result), serializejson(mockExpectedResultForDescending));
 		
 	}
+	
+	private string function returnTrueMessage(){
+		var trueMessage = "Condition is true";
+		return trueMessage;
+	}
+	private string function returnFalseMessage(){
+		var falseMessage = "Condition is false";
+		return falseMessage;
+	}
+	
+	public function hibachiTernary_equalsIIFbutWithoutStrings(){
+		var a = 2;
+		var b = 3;
+		var condition1 = a < b;
+		var condition2 = a > b;
+		
+		var hibachiTernary = service.hibachiTernary;
+		var hResult = hibachiTernary(a<b, returnTrueMessage(), returnFalseMessage());
+		assert(hResult == "Condition is true");
+		var iResult = IIF(condition1, 'returnTrueMessage()', 'returnFalseMessage()');
+		assert(iResult == hResult);
+		
+		var hResult2 = hibachiTernary(condition2, returnTrueMessage(), returnFalseMessage());
+		assert(hResult2 == "Condition is false");
+		var iResult2 = IIF(a>b, 'returnTrueMessage()', 'returnFalseMessage()');
+		request.debug(iResult2);
+		assert(iResult2 == hResult2);
+		
+		hResult = hibachiTernary(condition1, returnTrueMessage(), returnFalseMessage());
+		iResult = IIF(condition1, de(returnTrueMessage()), de(returnFalseMessage()));
+		assert(iResult == hResult);
+		
+		hResult = hibachiTernary(condition1, true, false);
+		iResult = IIF(condition1, true, false);
+		assert(iResult == hResult);
+	}
+	
+	public function hibachiTernary_handlesArgumentsCorrectly(){
+		var hibachiTernary = service.hibachiTernary;
+		var result1 = hibachiTernary(true, 'returnTrueMessage()', returnFalseMessage());
+		assert(result1 == 'returnTrueMessage()');
+		
+		var result2 = hibachiTernary(true, "writeOutput('yay')", returnFalseMessage());
+		assert(result2 == "writeOutput('yay')");
+		
+	}
 }
 

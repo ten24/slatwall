@@ -223,6 +223,10 @@
 			return result.toString().toUppercase();
   		}
 
+  		public any function hibachiTernary(required any condition, required any expression1, required any expression2){
+  			return (arguments.condition) ? arguments.expression1 : arguments.expression2;
+  		}
+
 		public any function buildPropertyIdentifierListDataStruct(required any object, required string propertyIdentifierList, required string availablePropertyIdentifierList) {
 			var responseData = {};
 
