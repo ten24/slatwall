@@ -275,7 +275,7 @@ Notes:
 				<cfset var accountAuthenticationFound = false />
 				
 				<!--- Loop over the account authentications --->
-				<cfloop array="#account.getAccountAuthentications()#" index="accountAuthentication">
+				<cfloop array="#account.getAccountAuthentications()#" index="local.accountAuthentication">
 					
 					<!--- When the gigya authentication is found, login the account --->
 					<cfif !isNull(accountAuthentication.getIntegration()) && accountAuthentication.getIntegration().getIntegrationPackage() eq 'gigya'>

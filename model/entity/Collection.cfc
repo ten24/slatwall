@@ -125,6 +125,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.hasDisplayAggregate = false;
 		variables.hasManyRelationFilter = false;
 		variables.filterAliasMaps = {};
+		variables.filterGroupAliasMap = {}; 
 	}
 
 	public any function getCollectionEntityObject(){
@@ -142,13 +143,33 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return filterAlias;
 	}
 
+	public numeric function getFilterGroupIndexByFilterGroupAlias(required string filterGroupAlias, required string filterGroupLogicalOperator){
+ 		if(!structKeyExists(variables.filterGroupAliasMap, arguments.filterGroupAlias)){
+ 			variables.filterGroupAliasMap[filterGroupAlias] = addFilterGroupWithAlias(arguments.filterGroupAlias, arguments.filterGroupLogicalOperator);
+ 		} 
+ 		return variables.filterGroupAliasMap[filterGroupAlias]; 
+ 	} 
+
+ 	public numeric function addFilterGroupWithAlias(required string filterGroupAlias, required string filterGroupLogicalOperator){
+ 		var collectionConfig = this.getCollectionConfigStruct();	
+ 		var newFilterGroup = {"filterGroup"=[]};
+ 		if(ArrayLen(collectionConfig.filterGroups) >= 1){
+ 			newFilterGroup["logicalOperator"] = arguments.filterGroupLogicalOperator; 
+ 		} 
+ 		ArrayAppend(collectionConfig.filterGroups, newFilterGroup);
+ 		this.setCollectionConfigStruct(collectionConfig);
+ 		return ArrayLen(collectionConfig.filterGroups); 
+ 	}
+
 	//add Filter
 	public void function addFilter(
 		required string propertyIdentifier,
 		required any value,
 		string comparisonOperator="=",
 		string logicalOperator="AND",
-	    string aggregate=""
+	    string aggregate="",
+		string filterGroupAlias="",
+ 		string filterGroupLogicalOperator="AND"
 	){
 		var collectionConfig = this.getCollectionConfigStruct();
 		var alias = collectionConfig.baseEntityAlias;
@@ -208,7 +229,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			);
 		}
 
-		arrayAppend(collectionConfig.filterGroups[1].filterGroup,filter);
+		var filterGroupIndex = 1; 
+ 		if(len(arguments.filterGroupAlias) > 0){
+ 			filterGroupIndex = this.getFilterGroupIndexByFilterGroupAlias(arguments.filterGroupAlias, arguments.filterGroupLogicalOperator); 
+ 		} 
+ 		arrayAppend(getCollectionConfigStruct().filterGroups[filterGroupIndex].filterGroup,filter);
 	}
 
 	public void function setDisplayProperties(string displayPropertiesList=""){
@@ -870,13 +895,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			//constuct HQL to be used in filterGroup
 			var filterGroupHQL = getFilterGroupHQL(filterGroup.filterGroup);
 			if(len(filterGroupHQL)){
-				if(logicalOperator == "AND"){
-					filterGroupsHQL &= ") #logicalOperator# ((#filterGroupHQL#)";
-				} else {
-					filterGroupsHQL &= " #logicalOperator# (#filterGroupHQL#)";
-				}
-
-
+				filterGroupsHQL &= " #logicalOperator# (#filterGroupHQL#)";
 			}
 		}
 		return filterGroupsHQL;
@@ -1328,36 +1347,45 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(arguments.filter.comparisonOperator eq 'between' || arguments.filter.comparisonOperator eq 'not between'){
 			if(arguments.filter.ormtype eq 'timestamp'){
 
-				if(structKeyExists(arguments.filter, 'measureType') && structKeyExists(arguments.filter, 'measureCriteria')) {
+				if(structKeyExists(arguments.filter, 'measureCriteria') && arguments.filter.measureCriteria == 'exactDate' && structKeyExists(arguments.filter, 'measureType')) {
 
-					if (arguments.filter.measureCriteria == 'exactDate') {
-
-						switch (arguments.filter.measureType) {
-							case 'd':
-								var currentdatetime = DateAdd('d', - arguments.filter.criteriaNumberOf, now());
-								var fromValue = CreateDateTime(year(currentdatetime), month(currentdatetime), day(currentdatetime), 0, 0, 0);
-								var toValue = CreateDateTime(year(currentdatetime), month(currentdatetime), day(currentdatetime), 23, 59, 59);
-								break;
-							case 'm':
-								var currentdatetime = DateAdd('m', - arguments.filter.criteriaNumberOf, now());
-								var fromValue = CreateDateTime(year(currentdatetime), month(currentdatetime), 1, 0, 0, 0);
-								var toValue = CreateDateTime(year(currentdatetime), month(currentdatetime), DaysInMonth(currentdatetime), 23, 59, 59);
-								break;
-							case 'y':
-								var currentdatetime = DateAdd('yyyy', - arguments.filter.criteriaNumberOf, now());
-								var fromValue = CreateDateTime(year(currentdatetime), 1, 1, 0, 0, 0);
-								var toValue = CreateDateTime(year(currentdatetime), 12, 31, 23, 59, 59);
-								break;
-						}
-
-						var fromParamID = getParamID();
-						addHQLParam(fromParamID, fromValue);
-						var toParamID = getParamID();
-						addHQLParam(toParamID, toValue);
-
-						predicate = ":#fromParamID# AND :#toParamID#";
+					switch (arguments.filter.measureType) {
+						case 'd':
+							var currentdatetime = DateAdd('d', - arguments.filter.criteriaNumberOf, now());
+							var fromValue = CreateDateTime(year(currentdatetime), month(currentdatetime), day(currentdatetime), 0, 0, 0);
+							var toValue = CreateDateTime(year(currentdatetime), month(currentdatetime), day(currentdatetime), 23, 59, 59);
+							break;
+						case 'm':
+							var currentdatetime = DateAdd('m', - arguments.filter.criteriaNumberOf, now());
+							var fromValue = CreateDateTime(year(currentdatetime), month(currentdatetime), 1, 0, 0, 0);
+							var toValue = CreateDateTime(year(currentdatetime), month(currentdatetime), DaysInMonth(currentdatetime), 23, 59, 59);
+							break;
+						case 'y':
+							var currentdatetime = DateAdd('yyyy', - arguments.filter.criteriaNumberOf, now());
+							var fromValue = CreateDateTime(year(currentdatetime), 1, 1, 0, 0, 0);
+							var toValue = CreateDateTime(year(currentdatetime), 12, 31, 23, 59, 59);
+							break;
 					}
+
+				}else if(listLen(arguments.filter.value,'-') > 1){
+					//convert unix timestamp
+					var fromDate = DateAdd("s", listFirst(arguments.filter.value,'-')/1000, "January 1 1970 00:00:00");
+					var fromValue = dateFormat(fromDate,"yyyy-mm-dd") & " " & timeFormat(fromDate, "HH:MM:SS");
+					var toDate = DateAdd("s", listLast(arguments.filter.value,'-')/1000, "January 1 1970 00:00:00");
+					var toValue = dateFormat(toDate,"yyyy-mm-dd") & " " & timeFormat(toDate, "HH:MM:SS");
+				}else{
+					//if list length is 1 then we treat it as a date range From Now() - Days to Now()
+					var fromValue = DateAdd("d",-arguments.filter.value,Now());
+					var toValue = Now();
 				}
+
+				var fromParamID = getParamID();
+				addHQLParam(fromParamID, fromValue);
+				var toParamID = getParamID();
+				addHQLParam(toParamID, toValue);
+
+				predicate = ":#fromParamID# AND :#toParamID#";
+
 			}else if(listFind('integer,float,big_decimal',arguments.filter.ormtype)){
 				var fromValue = listFirst(arguments.filter.value,'-');
 				var toValue = listLast(arguments.filter.value,'-');

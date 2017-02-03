@@ -51,7 +51,7 @@ Notes:
 	<cfproperty name="settingService" type="any" />
 
 	<cfscript>
-
+		
 		public any function formatValue_currency( required string value, struct formatDetails={} ) {
 			if(structKeyExists(arguments.formatDetails, "currencyCode")) {
 				var currency = getService("currencyService").getCurrency( arguments.formatDetails.currencyCode );

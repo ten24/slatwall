@@ -55,6 +55,226 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		variables.entity = request.slatwallScope.newEntity( 'OrderFulfillment' );
 	}
 	
+	private numeric function getDiscountAmountFake(){
+		return 75.42;
+	}
+	
+	public void function getChargeAfterDiscountTest(){
+		var orderfulfillment = createTestEntity('orderFulfillment',{
+			fulfillmentCharge=7
+		});
+		injectMethod(orderfulfillment,this,'getDiscountAmountFake','getDiscountAmount');
+		assertEquals(-68.42,orderfulfillment.getChargeAfterDiscount());
+	}
+	
+	public void function getDiscountAmountTest(){
+		var orderfulfillment = createPersistedTestEntity('orderFulfillment',{
+			orderFulfillmentID=""
+		});
+		var promotionAppliedData = {
+			promotionAppliedID="",
+			discountAmount=7,
+			orderFulfillment={
+				orderFulfillmentID=orderFulfillment.getOrderFulfillmentID()
+			}
+		};
+		var promotionApplied = createPersistedTestEntity('PromotionApplied',promotionAppliedData);
+		
+		var promotionAppliedData2 = {
+			promotionAppliedID="",
+			discountAmount=3.43,
+			orderFulfillment={
+				orderFulfillmentID=orderFulfillment.getOrderFulfillmentID()
+			}
+		};
+		var promotionApplied2 = createPersistedTestEntity('PromotionApplied',promotionAppliedData2);
+		
+		assertEquals(10.43,orderfulfillment.getDiscountAmount());
+	}
+	
+	private numeric function getSubtotalAfterDiscountsWithTaxFake(){
+		return 123.123;
+	}
+	
+	private numeric function getChargeAfterDiscountFake(){
+		return 12.23123;
+	}
+	
+	public void function getFulfillmentTotalTest(){
+		var orderfulfillment = createPersistedTestEntity('orderFulfillment',{
+			orderFulfillmentID=""
+		});
+		injectMethod(orderfulfillment,this,'getChargeAfterDiscountFake','getChargeAfterDiscount');
+		injectMethod(orderfulfillment,this,'getSubtotalAfterDiscountsWithTaxFake','getSubtotalAfterDiscountsWithTax');
+		
+		assertEquals(135.35,orderFulfillment.getFulfillmentTotal());
+	}
+	
+	public void function getItemDiscountAmountTotalTest(){
+		var orderfulfillment = createPersistedTestEntity('orderFulfillment',{
+			orderFulfillmentID=""
+		});
+		
+		var orderFulfillmentItemData = {
+			orderFulfillmentItemID="",
+			orderFulfillment={
+				orderFulfillmentID=orderFulfillment.getOrderFulfillmentID()	
+			}
+		};
+		var orderFulfillmentItem = createPersistedTestEntity('OrderItem',orderFulfillmentItemData);
+		injectMethod(orderFulfillmentItem,this,'getDiscountAmountFake','getDiscountAmount');
+		
+		var orderFulfillmentItemData2 = {
+			orderFulfillmentItemID="",
+			orderFulfillment={
+				orderFulfillmentID=orderFulfillment.getOrderFulfillmentID()	
+			}
+		};
+		var orderFulfillmentItem2 = createPersistedTestEntity('OrderItem',orderFulfillmentItemData2);
+		injectMethod(orderFulfillmentItem2,this,'getDiscountAmountFake','getDiscountAmount');
+		
+		assertEquals(150.84,orderfulfillment.getItemDiscountAmountTotal());
+	}
+	
+	public void function getSubtotalTest(){
+		var orderfulfillment = createPersistedTestEntity('orderFulfillment',{
+			orderFulfillmentID=""
+		});
+		
+		var orderFulfillmentItemData = {
+			orderFulfillmentItemID="",
+			orderFulfillment={
+				orderFulfillmentID=orderFulfillment.getOrderFulfillmentID()	
+			}
+		};
+		var orderFulfillmentItem = createPersistedTestEntity('OrderItem',orderFulfillmentItemData);
+		injectMethod(orderFulfillmentItem,this,'getExtendedPriceFake','getExtendedPrice');
+		
+		var orderFulfillmentItemData2 = {
+			orderFulfillmentItemID="",
+			orderFulfillment={
+				orderFulfillmentID=orderFulfillment.getOrderFulfillmentID()	
+			}
+		};
+		var orderFulfillmentItem2 = createPersistedTestEntity('OrderItem',orderFulfillmentItemData2);
+		injectMethod(orderFulfillmentItem2,this,'getExtendedPriceFake','getExtendedPrice');
+		
+		assertEquals(6424.64,orderFulfillment.getSubtotal());
+	}
+	
+	public void function getSubtotalAfterDiscountsTest(){
+		var orderfulfillment = createPersistedTestEntity('orderFulfillment',{
+			orderFulfillmentID=""
+		});
+		injectMethod(orderfulfillment,this,'getItemDiscountAmountTotalFake','getItemDiscountAmountTotal');
+		injectMethod(orderfulfillment,this,'getSubtotalFake','getSubtotal');
+		assertEquals(85950.20,orderfulfillment.getSubtotalAfterDiscounts());
+	}
+	
+	private numeric function getTaxAmountFake(){
+		return 898734.4398;
+	}
+	
+	public void function getSubtotalAfterDiscountsWithTaxTest(){
+		var orderfulfillment = createPersistedTestEntity('orderFulfillment',{
+			orderFulfillmentID=""
+		});
+		injectMethod(orderfulfillment,this,'getSubtotalFake','getSubtotal');
+		injectMethod(orderfulfillment,this,'getItemDiscountAmountTotalFake','getItemDiscountAmountTotal');
+		injectMethod(orderfulfillment,this,'getTaxAmountFake','getTaxAmount');
+		assertEquals(984684.64,orderfulfillment.getSubtotalAfterDiscountsWithTax());
+	}
+	
+	public void function getTaxAmountTest(){
+		var orderfulfillment = createPersistedTestEntity('orderFulfillment',{
+			orderFulfillmentID=""
+		});
+		
+		var orderFulfillmentItemData = {
+			orderFulfillmentItemID="",
+			orderFulfillment={
+				orderFulfillmentID=orderFulfillment.getOrderFulfillmentID()	
+			}
+		};
+		var orderFulfillmentItem = createPersistedTestEntity('OrderItem',orderFulfillmentItemData);
+		injectMethod(orderFulfillmentItem,this,'getTaxAmountFake','getTaxAmount');
+		
+		var orderFulfillmentItemData2 = {
+			orderFulfillmentItemID="",
+			orderFulfillment={
+				orderFulfillmentID=orderFulfillment.getOrderFulfillmentID()	
+			}
+		};
+		var orderFulfillmentItem2 = createPersistedTestEntity('OrderItem',orderFulfillmentItemData2);
+		injectMethod(orderFulfillmentItem2,this,'getTaxAmountFake','getTaxAmount');
+		
+		assertEquals(1797468.88,orderFulfillment.getTaxAmount());
+	}
+	
+	public void function getTotalShippingWeightTest(){
+		var orderfulfillment = createPersistedTestEntity('orderFulfillment',{
+			orderFulfillmentID=""
+		});
+	}
+	
+	private numeric function getPaymentAmountReceivedTotalFake(){
+		return 12.1231;
+	}
+	
+	private numeric function getTotalFake(){
+		return 875.34;
+	}
+	
+	public void function hasOrderWithMinAmountRecievedRequiredForFulfillmentTest(){
+		var orderfulfillment = createPersistedTestEntity('orderFulfillment',{
+			orderFulfillmentID=""
+		});
+		
+		var orderData = {
+			orderID="",
+			orderFulfillment={
+				orderFulfillmentID=orderFulfillment.getOrderFulfillmentID()
+			}
+		};
+		var order = createPersistedTestEntity('Order',orderData);
+		
+		injectMethod(order,this,'getTotalFake','getTotal');
+		injectMethod(order,this,'getPaymentAmountReceivedTotalFake','getPaymentAmountReceivedTotal');
+		orderFulfillment.setOrder(order);
+		var fulfillmentMethodData={
+			fulfillmentMethodID="",
+			orderFulfillment={
+				orderFulfillmentID=orderFulfillment.getOrderFulfillmentID()
+			}
+		};
+		var fulfillmentMethod = createPersistedTestEntity('fulfillmentMethod',fulfillmentMethodData);
+		orderFulfillment.setFulfillmentMethod(fulfillmentMethod);
+		
+		var settingData = {
+			settingID="",
+			settingName="fulfillmentMethodAutoMinReceivedPercentage",
+			settingValue="1",
+			fulfillmentMethod={
+				fulfillmentMethodID=fulfillmentMethod.getfulfillmentMethodID()
+			}
+		};
+		var settingEntity = createPersistedTestEntity('setting',settingData);
+		
+		assert(orderfulfillment.hasOrderWithMinAmountRecievedRequiredForFulfillment());
+	}
+	
+	private numeric function getItemDiscountAmountTotalFake(){
+		return 3523.23;
+	}
+	
+	private numeric function getSubtotalFake(){
+		return 89473.43;
+	}
+	
+	private numeric function getExtendedPriceFake(){
+		return 3212.32;
+	}
+	
 	public void function populate_accountAddress_updates_shippingAddress() {
 		
 		var accountAddressDataOne = {

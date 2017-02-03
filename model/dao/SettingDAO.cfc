@@ -89,7 +89,7 @@ Notes:
 				SwSetting
 			WHERE
 				LOWER(settingName) = <cfqueryparam cfsqltype="cf_sql_varchar" value="#LCASE(arguments.settingName)#">
-				<cfloop list="#potentialRelationships#" index="relationship">
+				<cfloop list="#potentialRelationships#" index="local.relationship">
 					<cfif structKeyExists(arguments.settingRelationships, relationship)>
 						AND #relationship# = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingRelationships[ relationship ]#" > 
 					<cfelse>

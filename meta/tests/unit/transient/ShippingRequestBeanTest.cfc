@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,30 +45,22 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+*/
+component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
+	public void function setUp() {
+		super.setup();
+		
+		variables.transient = request.slatwallScope.getBean("ShippingRequestBean");
+	}
+	
+	// getEntity()
+	public void function getTotalWeightTest() {
+//		var shippingItemRequestBean = request.slatwallScope.getBean("ShippingItemRequestBean");
+//		shippingItemRequestBean.setQuantity(5);
+//		variables.transient.
+//		request.debug(variables.transient.getTotalWeight());
+	}
+	
+}
 
 
-<cfparam name="rc.order" type="any" />
-
-<cfoutput>
-	<hb:HibachiEntityProcessForm entity="#rc.order#" edit="#rc.edit#" sRedirectAction="admin:entity.editorder">
-		
-		<hb:HibachiEntityActionBar type="preprocess" object="#rc.order#">
-		</hb:HibachiEntityActionBar>
-		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<input type="hidden" name="saveNewFlag" value="true" />       
-				<label class="control-label">
-					Duplicate account, billing, and shipping data? 
-					<input type="checkbox" name="copyPersonalDataFlag" value="true">
-				</label>
-				<br>
-				Upon completion you will be redirected to the new order. Do you wish to duplicate this order?			
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-		
-	</hb:HibachiEntityProcessForm>
-</cfoutput>
