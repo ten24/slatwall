@@ -2134,6 +2134,9 @@
 	        this.hasEmailFulfillmentMethod = function () {
 	            return _this.hasFulfillmentMethod("Email");
 	        };
+	        this.hasPickupFulfillmentMethod = function () {
+	            return _this.hasFulfillmentMethod("Pickup");
+	        };
 	        /** Returns true if the order requires a fulfillment */
 	        this.orderRequiresFulfillment = function () {
 	            return _this.cart.orderRequiresFulfillment();

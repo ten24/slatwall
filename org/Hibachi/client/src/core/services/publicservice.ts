@@ -362,6 +362,10 @@ class PublicService {
         return this.hasFulfillmentMethod("Email");
     }
 
+    public hasPickupFulfillmentMethod = ()=>{
+        return this.hasFulfillmentMethod("Pickup");
+    }
+
     /** Returns true if the order requires a fulfillment */
     public orderRequiresFulfillment = ():boolean=> {
 

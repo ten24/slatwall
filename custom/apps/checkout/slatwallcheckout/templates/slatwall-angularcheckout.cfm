@@ -74,6 +74,9 @@
 	                    <div class="details" ng-show="$root.slatwall.hasEmailFulfillmentMethod()">
 	                    	<swf-directive partial-path="{{customTemplateFolder}}" partial-name="addemailfulfillmentaddresspartial"></swf-directive>
 	                    </div>
+	                    <div class="details" ng-show="$root.slatwall.hasPickupFulfillmentMethod()">
+	                        <swf-directive partial-path="{{customTemplateFolder}}" partial-name="deliverystorepickup"></swf-directive>
+	                    </div>
 	                </div>
 	            </div>
 
