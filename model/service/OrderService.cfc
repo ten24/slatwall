@@ -834,7 +834,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for(var orderPayment in arguments.order.getOrderPayments()) {
 
            if(orderPayment.getStatusCode() eq "opstActive") {
-				var totalReceived = val(precisionEvaluate(orderPayment.getAmountReceived() - orderPayment.getAmountCredited()));
+				var totalReceived = getService('HibachiUtilityService').precisionCalculate(orderPayment.getAmountReceived() - orderPayment.getAmountCredited());
 				if(totalReceived gt 0) {
 					var transactionData = {
 						amount = totalReceived,
@@ -1046,7 +1046,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				returnOrderPayment.setOrder( returnOrder );
 				returnOrderPayment.setCurrencyCode( returnOrder.getCurrencyCode() );
 				returnOrderPayment.setOrderPaymentType( getTypeService().getTypeBySystemCode( 'optCredit' ) );
-				returnOrderPayment.setAmount( val(precisionEvaluate(returnOrder.getTotal() * -1) ));
+				returnOrderPayment.setAmount( getService('HibachiUtilityService').precisionCalculate(returnOrder.getTotal() * -1) );
 			}
 
 		}
@@ -1368,7 +1368,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							// As long as this orderPayment is active then we can run the place order transaction
 							if(orderPayment.getStatusCode() == 'opstActive') {
 								orderPayment = this.processOrderPayment(orderPayment, {}, 'runPlaceOrderTransaction');
-								amountAuthorizeCreditReceive = val(precisionEvaluate(amountAuthorizeCreditReceive + orderPayment.getAmountAuthorized() + orderPayment.getAmountReceived() + orderPayment.getAmountCredited()));
+								amountAuthorizeCreditReceive = val(getService('HibachiUtilityService').precisionCalculate(amountAuthorizeCreditReceive + orderPayment.getAmountAuthorized() + orderPayment.getAmountReceived() + orderPayment.getAmountCredited()));
 							}
 						}
 
@@ -1643,7 +1643,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!listFindNoCase("ostNotPlaced,ostOnHold,ostClosed,ostCanceled", arguments.order.getOrderStatusType().getSystemCode())) {
 
 			// We can check to see if all the items have been delivered and the payments have all been received then we can close this order
-			if(val(precisionEvaluate(arguments.order.getPaymentAmountReceivedTotal() - arguments.order.getPaymentAmountCreditedTotal())) == arguments.order.getTotal() && arguments.order.getQuantityUndelivered() == 0 && arguments.order.getQuantityUnreceived() == 0)	{
+			if(val(getService('HibachiUtilityService').precisionCalculate(arguments.order.getPaymentAmountReceivedTotal() - arguments.order.getPaymentAmountCreditedTotal())) == arguments.order.getTotal() && arguments.order.getQuantityUndelivered() == 0 && arguments.order.getQuantityUnreceived() == 0)	{
 				arguments.order.setOrderStatusType(  getTypeService().getTypeBySystemCode("ostClosed") );
 			// The default case is just to set it to processing
 			} else {
@@ -1784,7 +1784,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				orderPayment = this.processOrderPayment(orderPayment, transactionData, 'createTransaction');
 
 				if(!orderPayment.hasErrors()) {
-					amountToBeCaptured = val(precisionEvaluate(amountToBeCaptured - transactionData.amount));
+					amountToBeCaptured = val(getService('HibachiUtilityService').precisionCalculate(amountToBeCaptured - transactionData.amount));
 				}
 			}
 		}
@@ -2419,7 +2419,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			for(var a=1; a<=arrayLen(uncapturedAuthorizations); a++) {
 
-				var thisToCharge = val(precisionEvaluate(arguments.processObject.getAmount() - totalAmountCharged));
+				var thisToCharge = val(getService('HibachiUtilityService').precisionCalculate(arguments.processObject.getAmount() - totalAmountCharged));
 
 				if(thisToCharge gt uncapturedAuthorizations[a].chargeableAmount) {
 					thisToCharge = uncapturedAuthorizations[a].chargeableAmount;
@@ -2446,7 +2446,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				if(paymentTransaction.hasError('runTransaction')) {
 					arguments.orderPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
 				} else {
-					val(precisionEvaluate(totalAmountCharged + paymentTransaction.getAmountReceived()));
+					val(getService('HibachiUtilityService').precisionCalculate(totalAmountCharged + paymentTransaction.getAmountReceived()));
 				}
 
 			}

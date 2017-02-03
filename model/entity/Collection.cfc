@@ -135,7 +135,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.useElasticSearch = false;
 		variables.dirtyReadFlag = false; 
 		variables.connection = ormGetSession().connection();
+		variables.filterGroupAliasMap = {};
 		setHibachiCollectionService(getService('hibachiCollectionService'));
+		
 	}
 	
 	
@@ -194,6 +196,23 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return filterAlias;
 	}
 	
+	public numeric function getFilterGroupIndexByFilterGroupAlias(required string filterGroupAlias, required string filterGroupLogicalOperator){
+ 		if(!structKeyExists(variables.filterGroupAliasMap, arguments.filterGroupAlias)){
+ 			variables.filterGroupAliasMap[filterGroupAlias] = addFilterGroupWithAlias(arguments.filterGroupAlias, arguments.filterGroupLogicalOperator);
+ 		} 
+ 		return variables.filterGroupAliasMap[filterGroupAlias]; 
+ 	} 
+
+ 	public numeric function addFilterGroupWithAlias(required string filterGroupAlias, required string filterGroupLogicalOperator){
+ 		var collectionConfig = this.getCollectionConfigStruct();	
+ 		var newFilterGroup = {"filterGroup"=[]};
+ 		if(ArrayLen(collectionConfig.filterGroups) >= 1){
+ 			newFilterGroup["logicalOperator"] = arguments.filterGroupLogicalOperator; 
+ 		} 
+ 		ArrayAppend(collectionConfig.filterGroups, newFilterGroup);
+ 		this.setCollectionConfigStruct(collectionConfig);
+ 		return ArrayLen(collectionConfig.filterGroups); 
+ 	}
 	
 	public void function addFilterAggregate(
 		required string filterAggregateName,
@@ -251,7 +270,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		string comparisonOperator="=",
 		string logicalOperator="AND",
 	    string aggregate="",
-	    any filterGroup
+	    string filterGroupAlias="",
+ 		string filterGroupLogicalOperator="AND"
 	){
 		
 		var collectionConfig = this.getCollectionConfigStruct();
@@ -262,9 +282,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			collectionConfig["filterGroups"] = [{"filterGroup"=[]}];
 		}
 		
-		if(!structKeyExists(arguments,'filterGroup')){
-			arguments.filterGroup = collectionConfig.filterGroups[1];
-		}
 
 		var _propertyIdentifier = '';
 		var propertyIdentifierParts = ListToArray(arguments.propertyIdentifier, '.');
@@ -325,7 +342,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			);
 		}
 		
-		arrayAppend(arguments.filterGroup.filterGroup,filter);
+		var filterGroupIndex = 1; 
+ 		if(len(arguments.filterGroupAlias) > 0){
+ 			filterGroupIndex = this.getFilterGroupIndexByFilterGroupAlias(arguments.filterGroupAlias, arguments.filterGroupLogicalOperator); 
+ 		} 
+ 		arrayAppend(getCollectionConfigStruct().filterGroups[filterGroupIndex].filterGroup,filter);
 		
 	}
 
@@ -1762,6 +1783,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							break;
 					}
 
+				}else if(listLen(arguments.filter.value,'-') > 1){
+					//convert unix timestamp
+					var fromDate = DateAdd("s", listFirst(arguments.filter.value,'-')/1000, "January 1 1970 00:00:00");
+					var fromValue = dateFormat(fromDate,"yyyy-mm-dd") & " " & timeFormat(fromDate, "HH:MM:SS");
+					var toDate = DateAdd("s", listLast(arguments.filter.value,'-')/1000, "January 1 1970 00:00:00");
+					var toValue = dateFormat(toDate,"yyyy-mm-dd") & " " & timeFormat(toDate, "HH:MM:SS");
+				}else{
+					//if list length is 1 then we treat it as a date range From Now() - Days to Now()
+					var fromValue = DateAdd("d",-arguments.filter.value,Now());
+					var toValue = Now();
 				}
 
 				var fromParamID = getParamID();

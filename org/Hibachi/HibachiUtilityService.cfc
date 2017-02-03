@@ -17,7 +17,12 @@
 		};
 		variables.antisamyConfig.classLoader = CreateObject("component", "Slatwall.org.Hibachi.antisamy.lib.javaloader.JavaLoader").init(variables.antisamyConfig.jarArray);
 		variables.antiSamy = variables.antisamyConfig.classLoader.create("org.owasp.validator.html.AntiSamy").init();
-
+		
+		public any function precisionCalculate(required numeric value, numeric scale=2){
+			var roundingmode = createObject('java','java.math.RoundingMode');
+			return javacast('bigdecimal',arguments.value).setScale(arguments.scale,roundingmode.HALF_EVEN);
+		}
+		
 		/**
 		* Sorts an array of structures based on a key in the structures.
 		*
