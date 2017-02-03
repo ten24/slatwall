@@ -232,7 +232,7 @@ class SWTypeaheadSearchController {
 		if(!this.hideSearch && !this.multiselectMode){
 			this.hideSearch = true;
 		}
-
+        
         if(!this.multiselectMode){
             if( angular.isDefined(this.propertyToShow) ){
                 this.searchText = item[this.propertyToShow];

@@ -47,6 +47,7 @@ component output="false" accessors="true" extends="HibachiController" {
     }
 
     public any function before( required struct rc ) {
+
         arguments.rc.apiRequest = true;
 
         getFW().setView("public:main.blank");
@@ -641,7 +642,6 @@ component output="false" accessors="true" extends="HibachiController" {
         */
         param name="arguments.rc.propertyIdentifiers" default="";
         
-        
         //first check if we have an entityName value
         if(!structKeyExists(arguments.rc, "entityName")) {
             arguments.rc.apiResponse.content['account'] = getHibachiScope().invokeMethod("getAccountData");
@@ -651,17 +651,24 @@ component output="false" accessors="true" extends="HibachiController" {
             //considering using all url variables to create a transient collectionConfig for api response
             if(!structKeyExists(arguments.rc,'entityID')){
                 //should be able to add select and where filters here
-                var result = getService('hibachiCollectionService').getAPIResponseForEntityName( arguments.rc.entityName,structAppend(arguments.rc.apiResponse.content,result));
+                var result = getService('hibachiCollectionService').getAPIResponseForEntityName( arguments.rc.entityName,
+																								 arguments.rc);
+
+                structAppend(arguments.rc.apiResponse.content,result);
             }else{
+
                 var collectionEntity = getService('hibachiCollectionService').getCollectionByCollectionID( arguments.rc.entityID );
                 //figure out if we have a collection or a basic entity
                 if(isNull(collectionEntity)){
                     //should only be able to add selects (&propertyIdentifier=)
-                    var result = getService('hibachiCollectionService').getAPIResponseForBasicEntityWithID( arguments.rc.entityName, arguments.rc.entityID, arguments.rc );
+                    var result = getService('hibachiCollectionService').getAPIResponseForBasicEntityWithID( arguments.rc.entityName,
+																										    arguments.rc.entityID,
+																										    arguments.rc );
                     structAppend(arguments.rc.apiResponse.content,result);
                 }else{
                     //should be able to add select and where filters here
-                    var result = getService('hibachiCollectionService').getAPIResponseForCollection( collectionEntity, arguments.rc );
+                    var result = getService('hibachiCollectionService').getAPIResponseForCollection( collectionEntity,
+																									 arguments.rc );
                     structAppend(arguments.rc.apiResponse.content,result);
                 }
             }

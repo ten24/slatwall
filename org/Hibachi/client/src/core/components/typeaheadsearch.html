@@ -1,62 +1,29 @@
-<div class="s-select-list-wrapper s-typeahead" sw-click-outside="swTypeaheadSearch.closeThis(swTypeaheadSearch.clickOutsideArguments)" >
-    <div class="form-group">
+<div class="s-select-list-wrapper s-search" sw-click-outside="swTypeaheadSearch.closeThis(swTypeaheadSearch.clickOutsideArguments)" >
         <div class="input-group">
-             <div class="input-group-btn s-left">
-                <button type="button" 
-                        class="btn btn-default" 
-                        data-ng-disabled="swTypeaheadSearch.disabled"
-                        data-toggle="dropdown" 
-                        aria-expanded="false">
-                        <span>{{swTypeaheadSearch.searchableColumnSelection}}</span> <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                    <li>
-                        <a ng-click="swTypeaheadSearch.updateSearchableProperties('all')">
-                            <span sw-rbkey="'define.all'"></span>
-                        </a>
-                    </li>
-                    <li ng-repeat="column in swTypeaheadSearch.searchableColumns">
-                        <a ng-click="swTypeaheadSearch.updateSearchableProperties(column)">{{column.title}}</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="s-input-btn" ng-class="{ 's-add' : swTypeaheadSearch.multiselectMode, 's-search' : !swTypeaheadSearch.multiselectMode}">
-                <input  data-ng-if="swTypeaheadSearch.placeholderText"
+            <div class="s-input-btn">
+                <input  ng-if="swTypeaheadSearch.placeholderText"
                         id="searchinput"
-                        placeholder="{{swTypeaheadSearch.placeholderText}}"
-                        data-ng-model="swTypeaheadSearch.searchText"
-                        data-ng-change="swTypeaheadSearch.search(swTypeaheadSearch.searchText)"
+                        placeholder="search store locations by name, city, state, or zip"
+                        ng-model="swTypeaheadSearch.searchText"
+                        ng-change="swTypeaheadSearch.search(swTypeaheadSearch.searchText)"
                         type="search"
-                        class="form-control input-sm"
+                        class="form-control"
                         autocomplete="off"
-                        data-ng-required="{{swTypeaheadSearch.validateRequired}}"
-                        data-ng-disabled="{{swTypeaheadSearch.disabled}}"/>
-                <span class="glyphicon glyphicon-remove" ng-if="swTypeaheadSearch.searchText.length && !swTypeaheadSearch.disabled" ng-click="swTypeaheadSearch.clearSearch()"></span>
-                <span class="fa fa-eye" ng-if="swTypeaheadSearch.searchText.length && swTypeaheadSearch.showViewButton" ng-click="swTypeaheadSearch.viewButtonClick()" style="right: 28px"></span>
-            </div>
-            <div class="input-group-btn s-right">
-                <button class="btn btn-default" 
-                        type='button' 
-                        data-ng-click="swTypeaheadSearch.toggleOptions()" 
-                        data-ng-disabled="swTypeaheadSearch.disabled">
-                     <i class="fa" 
-                        data-ng-class="(swTypeaheadSearch.hideSearch) ? 'fa-caret-down': 'fa-caret-up'" >
-                     </i>
+                        data-ng-required="swTypeaheadSearch.validateRequired"
+                        data-ng-disabled="swTypeaheadSearch.disabled"/>
+                </div>
+            <div class="input-group-btn">
+                <button class="btn btn-default" type='button' ng-click="swTypeaheadSearch.toggleOptions()" data-ng-disabled="swTypeaheadSearch.disabled" style="border-radius:0;">
+                    <i class="fa" data-ng-class="(swTypeaheadSearch.hideSearch) ? 'fa-caret-down': 'fa-caret-up'" ></i>
                 </button>
-				<button class="btn btn-primary" 
-                        type='button' 
-                        data-ng-if="swTypeaheadSearch.showAddButton" 
-                        data-ng-click="swTypeaheadSearch.addButtonItem()" 
-                        data-ng-disabled="swTypeaheadSearch.disabled">
-                     <i class="fa fa-plus">
-                     </i>
+                <button class="btn btn-sm btn-primary" type='button' ng-if="swTypeaheadSearch.showAddButton" ng-click="swTypeaheadSearch.addButtonItem()" data-ng-disabled="swTypeaheadSearch.disabled">
+                    <i class="fa fa-plus"></i>
                 </button>
             </div>
         </div>
-    </div>
-    <div class="dropdown s-search-results-wrapper" ng-class="{'s-selectable':swTypeaheadSearch.multiselectMode}"> 
-        <ul ng-show="!swTypeaheadSearch.hideSearch" class="dropdown-menu">
+    <div class="dropdown s-search-results-wrapper" ng-class="{'open btn-group':!swTypeaheadSearch.hideSearch}">
+        <ul ng-show="!swTypeaheadSearch.hideSearch" class="dropdown-menu"> 
             <!-- populated by the directives link function -->
         </ul>
-    </div> 
+    </div>
 </div>

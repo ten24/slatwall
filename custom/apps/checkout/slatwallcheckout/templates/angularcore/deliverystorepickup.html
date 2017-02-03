@@ -2,7 +2,7 @@
 	<span ng-init="$.slatwall = $root.slatwall"></span>
 	<i class="fa fa-map-marker fa-3x icon-left"></i>
 	<span>
-		<h5>Your preferred store: <span ng-if="$root.slatwall.account.data.preferredLocation.primaryAddress != undefined || $root.slatwall.cart.data.orderFulfillments[0].pickupLocation.locationName != undefined">
+		<h5>Your selected store: <span ng-if="$root.slatwall.account.data.preferredLocation.primaryAddress != undefined || $root.slatwall.cart.data.orderFulfillments[0].pickupLocation.locationName != undefined">
 			<span ng-if="$root.slatwall.cart.data.orderFulfillments[0].pickupLocation.locationName != undefined && $root.slatwall.getLocationName('checkout') != 'None'">
 				{{$root.slatwall.getLocationName('checkout')}}
 			</span>
