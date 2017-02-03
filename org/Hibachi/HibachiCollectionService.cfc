@@ -141,10 +141,11 @@ component output="false" accessors="true" extends="HibachiService" {
 		return UCase(left(arguments.phrase,1)) & Right(arguments.phrase,Len(arguments.phrase)-1);
 	}
 
-	public any function getTransientCollectionByEntityName(required string entityName,struct collectionOptions){
+	public any function getTransientCollectionByEntityName(required string entityName, struct data){
+		var collectionOptions = this.getCollectionOptionsFromData(arguments.data); 
 		var collectionEntity = this.newCollection();
 		var properlyCasedShortEntityName = getProperlyCasedShortEntityName(arguments.entityName);
-		collectionEntity.setCollectionObject(properlyCasedShortEntityName,arguments.collectionOptions.defaultColumns);
+		collectionEntity.setCollectionObject(properlyCasedShortEntityName,collectionOptions.defaultColumns);
 
 		return collectionEntity;
 	}
