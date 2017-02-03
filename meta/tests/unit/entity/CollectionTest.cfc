@@ -169,8 +169,65 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		assertTrue(arrayLen(pageRecords) == 1, "Wrong amount of products returned! Expecting 1 record but returned #arrayLen(pageRecords)#");
 
-	}
+	}	
+	
+	public void function addFilterToFilterGroupsTest(){
 
+		var uniqueNumberForTest = createUUID();
+
+		var productActiveData = {
+			productID = '',
+			productName = 'FilterGroupProduct1',
+			productCode = "FGP1",
+			productDescription = uniqueNumberForTest
+		};
+		//By default Active flag is true.
+		var product = createPersistedTestEntity('product', productActiveData);
+
+		var productNotActiveData = {
+			productID = '',
+			productName = 'FilterGroupProduct2',
+			productCode = "FGP2",
+			productDescription = uniqueNumberForTest,
+			activeFlag = 'false'
+		};
+		var product = createPersistedTestEntity('product', productNotActiveData);
+
+		var myProductCollection = variables.entityService.getProductCollectionList();
+		myProductCollection.setDisplayProperties('productName,productDescription');
+		myProductCollection.addFilter('productDescription',uniqueNumberForTest);
+		var pageRecords = myProductCollection.getPageRecords();
+
+		assertTrue(arrayLen(pageRecords) == 2, "Wrong amount of products returned! Expecting 2 records but returned #arrayLen(pageRecords)#");
+
+		myProductCollection = variables.entityService.getProductCollectionList();
+		myProductCollection.setDisplayProperties('productName,productDescription');
+		myProductCollection.addFilter('productDescription',uniqueNumberForTest);
+		myProductCollection.addFilter('productCode','FGP1', "=", "OR", "", "productCodeFilterGroup");
+		myProductCollection.addFilter('productCode','FGP2', "=", "OR", "", "productCodeFilterGroup");
+		var pageRecords = myProductCollection.getPageRecords();
+
+		assertTrue(arrayLen(pageRecords) == 2, "Wrong amount of products returned! Expecting 2 record but returned #arrayLen(pageRecords)#");
+
+		myProductCollection = variables.entityService.getProductCollectionList();
+		myProductCollection.setDisplayProperties('productName,productDescription');
+		myProductCollection.addFilter('productDescription',uniqueNumberForTest);
+		myProductCollection.addFilter('productCode','FGP1', "=", "OR", "", "productCodeFilterGroup1");
+		myProductCollection.addFilter('productCode','FGP2', "=", "OR", "", "productCodeFilterGroup2", "OR");
+		var pageRecords = myProductCollection.getPageRecords();
+		
+		assertTrue(arrayLen(pageRecords) == 2, "Wrong amount of products returned! Expecting 2 record but returned #arrayLen(pageRecords)#");
+		
+		myProductCollection = variables.entityService.getProductCollectionList();
+		myProductCollection.setDisplayProperties('productName,productDescription');
+		myProductCollection.addFilter('productDescription',uniqueNumberForTest);
+		myProductCollection.addFilter('productCode','FGP1', "=", "OR", "", "productCodeFilterGroup1");
+		myProductCollection.addFilter('productCode','FGP2', "=", "OR", "", "productCodeFilterGroup2");//AND is the default filter group comparison operator
+		var pageRecords = myProductCollection.getPageRecords();
+		
+		assertTrue(arrayLen(pageRecords) == 0, "Wrong amount of products returned! Expecting 0 record but returned #arrayLen(pageRecords)#");
+		
+	}
 	public void function addFilterOneToManyTest(){
 
 		var uniqueNumberForDescription = createUUID();
