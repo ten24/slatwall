@@ -61,7 +61,7 @@
 					</div>
 	            </div>
 
-	            <!-- Tab heading 2 - Account Shipping Address / Method / Edit -->
+	            <!-- Tab heading 2 - Fulfillment / Method / Edit -->
 	            <div class="panel panel-default panel-body" ng-cloak ng-show="$root.slatwall.hasAccount()">
 	                <h3 ng-class="(($root.slatwall.fulfillmentTabIsActive()) ? 'active' : '')">
 	                <a href="##" class="pull-right" ng-click="$root.slatwall.edit = 'fulfillment'"><i class="fa fa-pencil-square-o" ng-if="!$root.slatwall.fulfillmentTabIsActive() && $root.slatwall.hasAccount()" aria-hidden="true"></i></a>
