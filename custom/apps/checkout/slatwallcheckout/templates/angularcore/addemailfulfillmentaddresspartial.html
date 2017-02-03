@@ -32,6 +32,8 @@
 				        </sw-action-caller>
 					</div>
 			    </sw-form>
-			    <div><!-- for display of selected email --></div>
+			    <div ng-show="$root.slatwall.cart.orderFulfillmentWithEmailTypeIndex > -1 && $root.slatwall.cart.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithEmailTypeIndex].emailAddress">
+			    	<p>Selected Email: {{$root.slatwall.cart.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithEmailTypeIndex].emailAddress}}</p>
+			    </div>
 		    </div>
     </div>

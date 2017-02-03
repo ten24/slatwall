@@ -302,7 +302,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			orderItems.sku.product.brand.brandName,
 			orderItems.sku.product.productType.productTypeName,
 			orderFulfillments.orderFulfillmentID,orderFulfillments.fulfillmentCharge,orderFulfillments.currencyCode,
-			orderFulfillments.fulfillmentMethod.fulfillmentMethodID,orderFulfillments.fulfillmentMethod.fulfillmentMethodName,
+			orderFulfillments.fulfillmentMethod.fulfillmentMethodID,orderFulfillments.fulfillmentMethod.fulfillmentMethodName,orderFulfillments.fulfillmentMethod.fulfillmentMethodType,
 			orderFulfillments.shippingMethod.shippingMethodID,orderFulfillments.shippingMethod.shippingMethodName,
 			orderFulfillments.shippingAddress.addressID,orderFulfillments.shippingAddress.streetAddress,orderFulfillments.shippingAddress.street2Address,orderFulfillments.shippingAddress.city,orderFulfillments.shippingAddress.statecode,orderFulfillments.shippingAddress.postalcode,orderFulfillments.shippingAddress.countrycode,
 			orderFulfillments.shippingMethodOptions,orderFulfillments.shippingMethodRate.shippingMethodRateID,
@@ -328,8 +328,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
         if(structKeyExists(data, 'orderFulfillments')){
 	        var requiresFulfillment = false;
 	        var orderFulfillmentWithShippingMethodOptionsIndex = 0;
+	        var orderFulfillmentWithEmailTypeIndex = 0;
 	        for(i=1; i<=arrayLen(data.orderFulfillments);i=i+1){
 	        	var orderFulfillment = data.orderFulfillments[i];
+	        	if(orderFulfillment.fulfillmentMethod.fulfillmentMethodType == 'email'){
+	            	orderFulfillmentWithEmailTypeIndex = i;
+	            	requiresFulfillment = true;
+	            	break;
+	            }
 	        	if (isArray(orderFulfillment.shippingMethodOptions) && arrayLen(orderFulfillment.shippingMethodOptions) >= 1){
 	                  orderFulfillmentWithShippingMethodOptionsIndex = i;
 	                  requiresFulfillment = true;
@@ -338,6 +344,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	        }
 	        data['requiresFulfillment'] = requiresFulfillment;
 	        data['orderFulfillmentWithShippingMethodOptionsIndex'] = orderFulfillmentWithShippingMethodOptionsIndex-1;
+	        data['orderFulfillmentWithEmailTypeIndex'] = orderFulfillmentWithEmailTypeIndex-1;
         }
 		// add error messages
 		data["hasErrors"] = getCart().hasErrors();
