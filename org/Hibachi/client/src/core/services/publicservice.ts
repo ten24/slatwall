@@ -34,7 +34,7 @@ class PublicService {
     public months = [{name:'01 - JAN',value:1},{name:'02 - FEB',value:2},{name:'03 - MAR',value:3},{name:'04 - APR',value:4},{name:'05 - MAY',value:5},{name:'06 - JUN',value:6},{name:'07 - JUL',value:7},{name:'08 - AUG',value:8},{name:'09 - SEP',value:9},{name:'10 - OCT',value:10},{name:'11 - NOV',value:11},{name:'12 - DEC',value:12}];
     public years = [];
     public shippingAddress = "";
-    public emailFulfillmentAddress:any={};
+    public emailFulfillmentAddress:any;
     public billingAddress:any;
     public billingAddressEditFormIndex:any;
     public selectedBillingAddress:any;
@@ -238,7 +238,7 @@ class PublicService {
 
         if (method == "post"){
              data.returnJsonObjects = "cart,account";
-             
+             console.log('urlBase', urlBase, 'data', data, 'method', method);
             //post
             let request:PublicRequest = this.requestService.newPublicRequest(urlBase,data,method)
             request.promise.then((result:any)=>{

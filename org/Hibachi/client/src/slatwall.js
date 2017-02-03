@@ -1883,7 +1883,6 @@
 	        this.months = [{ name: '01 - JAN', value: 1 }, { name: '02 - FEB', value: 2 }, { name: '03 - MAR', value: 3 }, { name: '04 - APR', value: 4 }, { name: '05 - MAY', value: 5 }, { name: '06 - JUN', value: 6 }, { name: '07 - JUL', value: 7 }, { name: '08 - AUG', value: 8 }, { name: '09 - SEP', value: 9 }, { name: '10 - OCT', value: 10 }, { name: '11 - NOV', value: 11 }, { name: '12 - DEC', value: 12 }];
 	        this.years = [];
 	        this.shippingAddress = "";
-	        this.emailFulfillmentAddress = {};
 	        this.imagePath = {};
 	        // public hasErrors = ()=>{
 	        //     return this.errors.length;
@@ -2030,6 +2029,7 @@
 	            }
 	            if (method == "post") {
 	                data.returnJsonObjects = "cart,account";
+	                console.log('urlBase', urlBase, 'data', data, 'method', method);
 	                //post
 	                var request_1 = _this.requestService.newPublicRequest(urlBase, data, method);
 	                request_1.promise.then(function (result) {
@@ -19429,6 +19429,7 @@
 	                }
 	            }
 	            _this.edit = _this.edit || true;
+	            console.log(_this.fieldType);
 	            _this.fieldType = _this.fieldType || "text";
 	            _this.inputAttributes = _this.inputAttributes || "";
 	            _this.inputAttributes = _this.utilityService.replaceAll(_this.inputAttributes, "'", '"');

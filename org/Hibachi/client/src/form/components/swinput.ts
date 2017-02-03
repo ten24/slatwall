@@ -60,7 +60,7 @@ class SWInputController{
 	public rowSaveEnabled:boolean;
 
 	public eventAnnouncers:string="";
-	public eventAnnouncersArray:Array<eventAnnouncer>;
+	public eventAnnouncersArray:Array<EventAnnouncer>;
 	public eventAnnouncerTemplate:string;
 
 	//@ngInject
@@ -321,6 +321,7 @@ class SWInputController{
 		}
 
 		this.edit = this.edit || true;
+		console.log(this.fieldType)
 		this.fieldType = this.fieldType || "text";
 
 		this.inputAttributes = this.inputAttributes || "";

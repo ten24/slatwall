@@ -567,6 +567,31 @@ component extends="HibachiService"  accessors="true" output="false"
             getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", true);
         }
     }
+
+    /** Sets an email address for email fulfillment */
+    public void function addEmailFulfillmentAddress(required data){
+      var emailAddress = data.emailAddress;
+      var order = getHibachiScope().getCart();
+      var orderFulfillments = order.getOrderFulfillments();
+
+      for(fulfillment in orderFulfillments){
+        if(fulfillment.getFulfillmentMethod().getFulfillmentMethodType() == 'email'){
+          var orderFulfillment = fulfillment;
+        }
+      }
+
+      if(!isNull(orderFulfillment) && !orderFulfillment.hasErrors()){
+        orderFulfillment.setEmailAddress(emailAddress);
+        getOrderService().saveOrder(order);
+        getDao('hibachiDao').flushOrmSession();
+        getHibachiScope().addActionResult('public:cart.addEmailFulfillmentAddress', order.hasErrors());
+      }else{
+        if(!isNull(orderFulfillment)){
+          this.addErrors(arguments.data, orderFulfillment.getErrors());
+        }
+        getHibachiScope().addActionResult('public:cart.addEmailFulfillmentAddress', true);
+      }
+    }
     
     /** Sets the shipping method to an order shippingMethodID */
     public void function addShippingMethodUsingShippingMethodID(required data){
