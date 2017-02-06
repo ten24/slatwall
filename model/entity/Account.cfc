@@ -334,13 +334,13 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		// First look at all the unreceived open order payment
 		for(var termAccountOrderPayment in getTermAccountOrderPayments()) {
 			if(!termAccountOrderPayment.getNewFlag()){
-				termAccountBalance = val(precisionEvaluate(termAccountBalance + termAccountOrderPayment.getAmountUnreceived()));
+				termAccountBalance = getService('HibachiUtilityService').precisionCalculate(termAccountBalance + termAccountOrderPayment.getAmountUnreceived());
 			}
 		}
 
 		// Now look for the unassigned payment amount
 		for(var accountPayment in getAccountPayments()) {
-			termAccountBalance = val(precisionEvaluate(termAccountBalance - accountPayment.getAmountUnassigned()));
+			termAccountBalance = getService('HibachiUtilityService').precisionCalculate(termAccountBalance - accountPayment.getAmountUnassigned());
 		}
 
 		return termAccountBalance;

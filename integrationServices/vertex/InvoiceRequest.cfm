@@ -103,7 +103,7 @@
 					 	<cfset count++ />
 					 	 <urn:LineItem lineItemNumber="#count#" materialCode="#taxRequestItem.getOrderItem().getSku().getSkuCode()#">
 					 	 	<cfif taxRequestItem.getOrderItem().getOrderItemType().getSystemCode() eq 'oitReturn'>
-					    	<urn:ExtendedPrice>#val(precisionEvaluate(taxRequestItem.getExtendedPriceAfterDiscount()*-1))#</urn:ExtendedPrice>
+					    	<urn:ExtendedPrice>#getHibachiScope().getService('HibachiUtilityService').precisionCalculate(taxRequestItem.getExtendedPriceAfterDiscount()*-1)#</urn:ExtendedPrice>
 					    	<cfelse>
 					    	<urn:ExtendedPrice>#taxRequestItem.getExtendedPriceAfterDiscount()#</urn:ExtendedPrice>
 					 	 	</cfif>

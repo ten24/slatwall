@@ -180,7 +180,7 @@ component entityname="SlatwallVendorOrder" table="SwVendorOrder" persistent="tru
 	public numeric function getSubtotal() {
 		var subtotal = 0;
 		for(var i=1; i<=arrayLen(getVendorOrderItems()); i++) {
-			subtotal = val(precisionEvaluate(subtotal + getVendorOrderItems()[i].getExtendedCost()));
+						subtotal = getService('HibachiUtilityService').precisionCalculate(subtotal + getVendorOrderItems()[i].getExtendedCost());
 		}
 		return subtotal;
 	}

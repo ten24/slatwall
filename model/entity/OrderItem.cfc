@@ -152,7 +152,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
     }
 
 	public numeric function getTotalWeight() {
-		return val(precisionEvaluate(getSku().getWeight() * getQuantity()));
+		return getService('HibachiUtilityService').precisionCalculate(getSku().getWeight() * getQuantity());
 	}
 
 	public numeric function getMaximumOrderQuantity() {
@@ -268,7 +268,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
     public numeric function getCombinedTaxRate() {
     	var taxRate = 0;
     	for(var i=1; i <= ArrayLen(getAppliedTaxes()); i++) {
-    		taxRate = val(precisionEvaluate(taxRate + getAppliedTaxes()[i].getTaxRate()));
+    		taxRate = getService('HibachiUtilityService').precisionCalculate(taxRate + getAppliedTaxes()[i].getTaxRate());
     	}
 
     	return taxRate;
@@ -301,12 +301,12 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		var discountAmount = 0;
 
 		for(var i=1; i<=arrayLen(getAppliedPromotions()); i++) {
-			discountAmount = val(precisionEvaluate(discountAmount + getAppliedPromotions()[i].getDiscountAmount()));
+			discountAmount = getService('HibachiUtilityService').precisionCalculate(discountAmount + getAppliedPromotions()[i].getDiscountAmount());
 		}
 
 		if(!isNull(getSku()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
 			for(var childOrderItem in this.getChildOrderItems()){
-				discountAmount = val(precisionEvaluate(discountAmount + childOrderItem.getDiscountAmount()));
+				discountAmount = getService('HibachiUtilityService').precisionCalculate(discountAmount + childOrderItem.getDiscountAmount());
 			}
 		}
 
@@ -322,7 +322,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		}else if(!isNull(getPrice())){
 			price = getPrice();
 		}
-		return val(precisionEvaluate("round(price * val(getQuantity()) * 100) / 100"));
+		return val(getService('HibachiUtilityService').precisionCalculate(round(price * val(getQuantity()) * 100) / 100));
 
 	}
 
@@ -338,7 +338,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			if(!isNull(childOrderItem.getBundleItemQuantity())){
 				childQuantity = childOrderItem.getBundleItemQuantity();
 			}
-			productBundlePrice += val(precisionEvaluate(childProductBundleGroupPrice * childQuantity));
+			productBundlePrice += getService('HibachiUtilityService').precisionCalculate(childProductBundleGroupPrice * childQuantity);
 		}
 
 		return productBundlePrice;
@@ -403,11 +403,11 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 
 	public numeric function getExtendedSkuPrice() {
-		return val(precisionEvaluate(getSkuPrice() * getQuantity()));
+		return getService('HibachiUtilityService').precisionCalculate(getSkuPrice() * getQuantity());
 	}
 
 	public numeric function getExtendedPriceAfterDiscount() {
-		return val(precisionEvaluate(getExtendedPrice() - getDiscountAmount()));
+		return getService('HibachiUtilityService').precisionCalculate(getExtendedPrice() - getDiscountAmount());
 	}
 
 	public any function getActiveEventRegistrations() {
@@ -424,7 +424,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		var taxAmount = 0;
 
 		for(var taxApplied in getAppliedTaxes()) {
-			taxAmount = val(precisionEvaluate(taxAmount + taxApplied.getTaxAmount()));
+			taxAmount = getService('HibachiUtilityService').precisionCalculate(taxAmount + taxApplied.getTaxAmount());
 		}
 
 		return taxAmount;
@@ -434,7 +434,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		var taxLiabilityAmount = 0;
 
 		for(var taxApplied in getAppliedTaxes()) {
-			taxLiabilityAmount = val(precisionEvaluate(taxLiabilityAmount + taxApplied.getTaxLiabilityAmount()));
+			taxLiabilityAmount = getService('HibachiUtilityService').precisionCalculate(taxLiabilityAmount + taxApplied.getTaxLiabilityAmount());
 		}
 
 		return taxLiabilityAmount;
@@ -445,7 +445,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		if(this.isRootOrderItem()){
 			for(var childOrderItem in this.getChildOrderItems()){
 				if (!isNull(childOrderItem.getBundleItemQuantity()) && structKeyExists(variables, "quantity")){
-					var newQuantity = val(PrecisionEvaluate(childOrderItem.getBundleItemQuantity() * variables.quantity));
+					var newQuantity = getService('HibachiUtilityService').precisionCalculate(childOrderItem.getBundleItemQuantity() * variables.quantity);
 					childOrderItem.setQuantity(newQuantity);
 				}
 			}
@@ -455,7 +455,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	public void function setBundleItemQuantity(required numeric bundleItemQuantity){
 		if(!this.isRootOrderItem()){
 			variables.bundleItemQuantity = arguments.bundleItemQuantity;
-			variables.quantity = val(PrecisionEvaluate(getParentOrderItem().getQuantity() * variables.bundleItemQuantity));
+			variables.quantity = getService('HibachiUtilityService').precisionCalculate(getParentOrderItem().getQuantity() * variables.bundleItemQuantity);
 		}
 	}
 
@@ -492,7 +492,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	}
 
 	public numeric function getItemTotal() {
-		return val(precisionEvaluate(getTaxAmount() + getExtendedPriceAfterDiscount()));
+		return getService('HibachiUtilityService').precisionCalculate(getTaxAmount() + getExtendedPriceAfterDiscount());
 	}
 
 	public any function getSalePrice() {

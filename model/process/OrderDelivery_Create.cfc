@@ -195,14 +195,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 					if(thisQuantity > orderItem.getQuantityUndelivered()) {
 						thisQuantity = orderItem.getQuantityUndelivered();
 					}
-					variables.capturableAmount = val(precisionEvaluate(variables.capturableAmount + ((orderItem.getItemTotal()/orderItem.getQuantity()) * thisQuantity )));
+					variables.capturableAmount = getService('HibachiUtilityService').precisionCalculate(variables.capturableAmount + ((orderItem.getItemTotal()/orderItem.getQuantity()) * thisQuantity ));
 				}
 			}
 
 			if(getOrder().getPaymentAmountReceivedTotal() eq 0) {
-				variables.capturableAmount = val(precisionEvaluate(variables.capturableAmount + getOrderFulfillment().getChargeAfterDiscount()));
+				variables.capturableAmount = getService('HibachiUtilityService').precisionCalculate(variables.capturableAmount + getOrderFulfillment().getChargeAfterDiscount());
 			} else {
-				variables.capturableAmount = val(precisionEvaluate(variables.capturableAmount - (getOrder().getPaymentAmountReceivedTotal() - getOrder().getDeliveredItemsAmountTotal())));
+				variables.capturableAmount = getService('HibachiUtilityService').precisionCalculate(variables.capturableAmount - (getOrder().getPaymentAmountReceivedTotal() - getOrder().getDeliveredItemsAmountTotal()));
 			}
 
 			if(variables.capturableAmount < 0) {
