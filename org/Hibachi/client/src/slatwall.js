@@ -8381,6 +8381,7 @@
 	                    var target = element.find(".dropdown-menu");
 	                    var listItemTemplateString = "\n                    <li ng-repeat=\"item in swTypeaheadSearch.results\" ng-class=\"{'s-selected':item.selected}\"></li>\n                ";
 	                    var anchorTemplateString = "\n                    <a ng-click=\"swTypeaheadSearch.addOrRemoveItem(item)\">\n                ";
+	                    console.log('rightcontentprop', $scope.swTypeaheadSearch.rightContentPropertyIdentifier);
 	                    if (angular.isDefined($scope.swTypeaheadSearch.rightContentPropertyIdentifier)) {
 	                        var rightContentTemplateString = "<span class=\"s-right-content\" ng-bind=\"item[swTypeaheadSearch.rightContentPropertyIdentifier]\"></span></a>";
 	                    }
@@ -8673,8 +8674,11 @@
 	        this.compile = function (element, attrs, transclude) {
 	            return {
 	                pre: function (scope, element, attrs) {
-	                    var innerHTML = '<span ng-bind="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '"></span>';
-	                    element.append(innerHTML);
+	                    var innerHTML = element[0].innerHTML;
+	                    element[0].innerHTML = '';
+	                    console.log('lement', element);
+	                    var span = '<span ng-if="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '.toString().trim().length">' + innerHTML + '</span><span ng-bind="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '"></span>';
+	                    element.append(span);
 	                },
 	                post: function (scope, element, attrs) { }
 	            };
