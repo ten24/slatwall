@@ -1,0 +1,14 @@
+<div class="alert alert-warning" ng-if="$root.slatwall.cart.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithEmailTypeIndex].emailAddress">
+    <address>
+        Recipient:
+        <span ng-if="$root.slatwall.cart.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithEmailTypeIndex].emailAddress">{{$root.slatwall.cart.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithEmailTypeIndex].emailAddress}}<br></span>
+    </address>
+    <hr>
+    <i class="fa fa-truck fa-lg" aria-hidden="true"></i>
+        Recipient Email Address
+    <a href="#" ng-click="$root.slatwall.edit = 'fulfillment'" class="edit">Edit</a>
+</div>
+
+<div class="alert alert-warning" ng-if="!$root.slatwall.cart.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithEmailTypeIndex].emailAddress">
+    <i class="fa fa-info-circle"></i> Select recipient email to continue.
+</div>

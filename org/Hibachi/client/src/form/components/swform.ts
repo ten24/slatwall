@@ -235,14 +235,16 @@ class SWFormController {
         angular.forEach(iterable, (val, key) => {
             
             if(typeof val === 'object' && val.hasOwnProperty('$modelValue')){
-
+                console.log(key + ' - ' , val)
                  if(this.object.forms[this.name][key].$modelValue){
                     val = this.object.forms[this.name][key].$modelValue;
                 }else if(this.object.forms[this.name][key].$viewValue){
                     val = this.object.forms[this.name][key].$viewValue;
+                }else if(this.object.forms[this.name][key].$dirty){
+                    val="";
                 }
                 /** Check for form elements that have a name that doesn't start with $ */
-                if (angular.isString(val)) {
+                if (angular.isString(val) || angular.isNumber(val)) {
                     this.formData[key] = val;
                 }
                 if(val.$modelValue){
@@ -250,6 +252,8 @@ class SWFormController {
                 }else if(val.$viewValue){
                     this.formData[key] = val.$viewValue;
                 }
+            }
+            else{
             }
         });
         

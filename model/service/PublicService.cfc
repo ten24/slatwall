@@ -513,8 +513,14 @@ component extends="HibachiService"  accessors="true" output="false"
             if (isObject(savedAddress) && !savedAddress.hasErrors()){
                 //save the address at the order level.
                 var order = getHibachiScope().cart();
-                order.setShippingAddress(savedAddress);
-                
+                for(fulfillment in order.getOrderFulfillments()){
+                  if(fulfillment.getFulfillmentMethod().getFulfillmentMethodType() == 'shipping'){
+                    var orderFulfillment = fulfillment;
+                  }
+                }
+                if(!isNull(orderFulfillment) && !orderFulfillment.hasErrors()){
+                  orderFulfillment.setShippingAddress(savedAddress);
+                }
                 if (structKeyExists(data, "saveShippingAsBilling") && data.saveShippingAsBilling){
                     order.setBillingAddress(savedAddress);
                 }
@@ -551,15 +557,22 @@ component extends="HibachiService"  accessors="true" output="false"
         }
         var accountAddressID = data.accountAddressID;
         var accountAddress = getService('AddressService').getAccountAddress(accountAddressID);
-        
         if (!isNull(accountAddress) && !accountAddress.hasErrors()){
             //save the address at the order level.
-            var order = getHibachiScope().cart();
-            
-            order.setShippingAddress(accountAddress.getAddress());
-            order.setBillingAddress(accountAddress.getAddress());
-            getOrderService().saveOrder(order);
-            getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", accountAddress.hasErrors());
+            var order = getHibachiScope().getCart();
+            for(fulfillment in order.getOrderFulfillments()){
+              if(fulfillment.getFulfillmentMethod().getFulfillmentMethodType() == 'shipping'){
+                var orderFulfillment = fulfillment;
+              }
+            }
+            if(!isNull(orderFulfillment) && !orderFulfillment.hasErrors()){
+              orderFulfillment.setShippingAddress(accountAddress.getAddress());
+              getOrderService().saveOrder(order);
+              getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", order.hasErrors());
+            }
+            else{
+              getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", true);
+            }
         }else{
             if(!isNull(accountAddress)){
               this.addErrors(arguments.data, accountAddress.getErrors()); //add the basic errors

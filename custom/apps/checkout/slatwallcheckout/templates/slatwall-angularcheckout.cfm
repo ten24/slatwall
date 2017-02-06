@@ -215,6 +215,20 @@
 										<swf-directive partial-path="{{customTemplateFolder}}review/" partial-name="ordershippingsummary"></swf-directive>
 									</fieldset>
 								</div>
+								<!--- Pickup --->
+								<div class="shipping_info col-sm-4" ng-if="$root.slatwall.cart.orderFulfillmentWithPickupTypeIndex >= 0">
+									<fieldset>
+										<legend>Pickup</legend>
+										<swf-directive partial-path="{{customTemplateFolder}}review/" partial-name="orderpickupsummary"></swf-directive>
+									</fieldset>
+								</div>
+								<!--- Email --->
+								<div class="shipping_info col-sm-4" ng-if="$root.slatwall.cart.orderFulfillmentWithEmailTypeIndex >= 0">
+									<fieldset>
+										<legend>Email</legend>
+										<swf-directive partial-path="{{customTemplateFolder}}review/" partial-name="orderemailsummary"></swf-directive>
+									</fieldset>
+								</div>
 							</div>
 
                             <div class="reviewtotal">

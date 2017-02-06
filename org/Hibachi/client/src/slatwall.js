@@ -8915,7 +8915,6 @@
 	                    else {
 	                    }
 	                }
-	                console.log('scope.swCollectionConfig', scope.swCollectionConfig);
 	            }, function (reason) {
 	                throw ("SWCollectionConfig is having some issues.");
 	            });
@@ -19328,6 +19327,7 @@
 	            };
 	            _this.observerService.notify(customEventName, data);
 	            _this.observerService.notify(formEventName, data);
+	            // this.observerService.notify(eventName,data);
 	        };
 	        this.getTemplate = function () {
 	            var template = '';
@@ -19825,14 +19825,18 @@
 	            var iterable = _this.formCtrl;
 	            angular.forEach(iterable, function (val, key) {
 	                if (typeof val === 'object' && val.hasOwnProperty('$modelValue')) {
+	                    console.log(key + ' - ', val);
 	                    if (_this.object.forms[_this.name][key].$modelValue) {
 	                        val = _this.object.forms[_this.name][key].$modelValue;
 	                    }
 	                    else if (_this.object.forms[_this.name][key].$viewValue) {
 	                        val = _this.object.forms[_this.name][key].$viewValue;
 	                    }
+	                    else if (_this.object.forms[_this.name][key].$dirty) {
+	                        val = "";
+	                    }
 	                    /** Check for form elements that have a name that doesn't start with $ */
-	                    if (angular.isString(val)) {
+	                    if (angular.isString(val) || angular.isNumber(val)) {
 	                        _this.formData[key] = val;
 	                    }
 	                    if (val.$modelValue) {
@@ -19841,6 +19845,8 @@
 	                    else if (val.$viewValue) {
 	                        _this.formData[key] = val.$viewValue;
 	                    }
+	                }
+	                else {
 	                }
 	            });
 	            return _this.formData || "";
@@ -20610,7 +20616,7 @@
 	        var addressName = this.addressName;
 	        if (this.address) {
 	            this.address.getData = function () {
-	                var formData = {};
+	                var formData = this.address;
 	                var form = this.forms[addressName];
 	                for (var key_1 in form) {
 	                    var val = form[key_1];
@@ -20632,13 +20638,13 @@
 	                        }
 	                    }
 	                }
+	                console.log('formData: ', formData);
 	                return formData || "";
 	            };
 	        }
+	        console.log('this.address: ', this.address);
 	        if (this.eventListeners) {
-	            console.log("ayyyyy", this.eventListeners);
 	            for (var key in this.eventListeners) {
-	                console.log(key);
 	                observerService.attach(this.eventListeners[key], key);
 	            }
 	        }

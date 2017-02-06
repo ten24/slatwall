@@ -161,6 +161,7 @@ class SWCollectionConfig implements ng.IDirective{
             }); 
             scope.swCollectionConfig.filtersPromise.then(()=>{
                 angular.forEach(scope.swCollectionConfig.filters, (filter)=>{
+
                     newCollectionConfig.addFilter(filter.propertyIdentifier, filter.comparisonValue, filter.comparisonOperator, filter.logicalOperator, filter.hidden);
                 }); 
             });
@@ -189,8 +190,7 @@ class SWCollectionConfig implements ng.IDirective{
                         } else {
                             //throw("SWCollectionConfig cannot resolve rule");
                         }
-                    }
-                    console.log('scope.swCollectionConfig',scope.swCollectionConfig)
+                    } 
                 },(reason)=>{
                     throw("SWCollectionConfig is having some issues.");
                 }

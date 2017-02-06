@@ -11,7 +11,6 @@
 		    data-class="new_adderess"
 		    data-name="{{SwAddressForm.addressName}}"
 		    data-event-announcers="keyup"
-		    data-event-listeners=SwAddressForm.eventListeners
 		    data-action="{{SwAddressForm.action}}">
 			    
 			    <div class="row" ng-cloak>
@@ -203,7 +202,8 @@
 								data-modal="false" 
 								data-type="button" 
 								data-class="btn-yellow"
-								data-text="{{($root.slatwall.getRequestByAction(SwAddressForm.action).loading ? 'LOADING' : SwAddressForm.actionText || 'SAVE &amp; CONTINUE')}}">
+								data-text="{{($root.slatwall.getRequestByAction(SwAddressForm.action).loading ? 'LOADING' : SwAddressForm.actionText || 'SAVE &amp; CONTINUE')}}"
+								data-event-listeners="{keyup:$parent.swForm.submitKeyCheck}">
 							</sw-action-caller>
 							<button 
 			                    ng-click="$root.slatwall.accountAddressEditFormIndex=undefined;"
