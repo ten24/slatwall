@@ -324,10 +324,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 
 
-		//if we already have a filter group then we need a logicalOperator
-		if(arraylen(arguments.filterGroup.filterGroup)){
-			filter["logicalOperator"]=arguments.logicalOperator;
-		}
 		//check if the propertyKey is an attribute
 		var hasAttribute = getService('hibachiService').getHasAttributeByEntityNameAndPropertyIdentifier(
 			entityName=getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),
