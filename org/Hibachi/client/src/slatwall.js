@@ -8911,6 +8911,7 @@
 	                    else {
 	                    }
 	                }
+	                console.log('scope.swCollectionConfig', scope.swCollectionConfig);
 	            }, function (reason) {
 	                throw ("SWCollectionConfig is having some issues.");
 	            });
