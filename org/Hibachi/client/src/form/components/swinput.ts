@@ -210,7 +210,7 @@ class SWInputController{
 		};
 		this.observerService.notify(customEventName,data);
 		this.observerService.notify(formEventName,data);
-		// this.observerService.notify(eventName,data);
+		this.observerService.notify(eventName,data);
 	}
 
 	public getTemplate = ()=>{

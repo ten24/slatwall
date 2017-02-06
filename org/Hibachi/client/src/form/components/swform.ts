@@ -111,9 +111,12 @@ class SWFormController {
     }
 
     public submitKeyCheck = (event) => {
-        event = event.event;
-        if(event.keyCode == 13){
-            this.submit(this.action);
+        console.log('yo');
+        if(event.form.name = this.name &&
+            event.event.keyCode == 13){
+            console.log("this", this);
+            console.log("Doing action: ", event.swForm.action)
+            this.submit(event.swForm.action);
         }
     }
 

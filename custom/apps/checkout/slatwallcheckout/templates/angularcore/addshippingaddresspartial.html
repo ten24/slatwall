@@ -18,23 +18,6 @@
 <!-- When an address needs to be saved. -->
 <div id="editaddress" ng-show="($root.slatwall.cart.data.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.addressID == undefined)||($root.slatwall.accountAddressEditFormIndex != undefined && $root.slatwall.accountAddressEditFormIndex != 'new')||$root.slatwall.accountAddressEditFormIndex == 'new'">
 
-    	<h4 ng-if="$root.slatwall.cart.data.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.addressID==undefined">Your items are shipping to:</h4>
-		<sw-address-form
-			data-field-list="countryCode,name,company,streetAddress,street2Address,locality,city,stateCode,postalCode,phoneNumber"
-			data-slatwall-scope="$root.slatwall"
-			data-id="{{$root.slatwall.cart.data.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.addressID}}" 
-			data-address="$root.slatwall.cart.data.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress" 
-			data-tab-index="1" 
-			data-address-name="shippingAddress" 
-			data-field-name-prefix="orderFulfillments[{{$root.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex}}].shippingAddress." 
-			data-show-country-select="true" 
-			data-show-submit-button="true"
-			data-action="updateShippingAddressOnAllOrderFulfillments"
-			data-action-text="Save and Continue"
-			data-show-address-book-select="false" 
-			ng-if="$root.slatwall.OrderAddShippingObj.edit!=false && $root.slatwall.accountAddressEditFormIndex == undefined">
-		</sw-address-form>
-		
 		<h4 ng-if="$root.slatwall.accountAddressEditFormIndex != undefined && $root.slatwall.accountAddressEditFormIndex != 'new'">Edit Your Address:</h4>
 		<sw-address-form
 			data-field-list="countryCode,name,company,streetAddress,street2Address,locality,city,stateCode,postalCode,phoneNumber"
@@ -43,7 +26,7 @@
 			data-address="$root.slatwall.account.accountAddresses[$root.slatwall.accountAddressEditFormIndex].address" 
 			data-tab-index="1" 
 			data-address-name="accountAddress" 
-			data-field-name-prefix="accountAddresses[$root.slatwall.accountAddressEditFormIndex]." 
+			data-field-name-prefix="accountAddresses[{{$root.slatwall.accountAddressEditFormIndex}}]." 
 			data-show-address-book-select="false" 
 			data-show-country-select="true" 
 			data-show-submit-button="true"

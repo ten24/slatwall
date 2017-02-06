@@ -8,11 +8,11 @@
 		    data-form-class="edit"
 		    data-error-class="error"
 		    data-object="SwAddressForm.address"
-		    data-class="new_adderess"
+		    data-class="new_address"
 		    data-name="{{SwAddressForm.addressName}}"
 		    data-event-announcers="keyup"
-		    data-action="{{SwAddressForm.action}}">
-			    
+		    data-action="{{SwAddressForm.action}}"
+		    data-event-listeners="{keyup:$$childHead.swForm.submitKeyCheck}">			    
 			    <div class="row" ng-cloak>
 			    	<!--- Show address book dropdown? --->
 			    	<div class="col-sm-6" ng-if="SwAddressForm.showAddressBookSelect == 'true'">
@@ -197,13 +197,12 @@
 
 				    <!--- If we want to render the submit button. --->
 			  		<div class="row" ng-show="SwAddressForm.showSubmitButton == 'true'" style="padding-top:20px">
-				  		<div class="col-xs-5">
+				  		<div class="col-xs-5" >
 					    	<sw-action-caller
 								data-modal="false" 
 								data-type="button" 
 								data-class="btn-yellow"
-								data-text="{{($root.slatwall.getRequestByAction(SwAddressForm.action).loading ? 'LOADING' : SwAddressForm.actionText || 'SAVE &amp; CONTINUE')}}"
-								data-event-listeners="{keyup:$parent.swForm.submitKeyCheck}">
+								data-text="{{($root.slatwall.getRequestByAction(SwAddressForm.action).loading ? 'LOADING' : SwAddressForm.actionText || 'SAVE &amp; CONTINUE')}}">
 							</sw-action-caller>
 							<button 
 			                    ng-click="$root.slatwall.accountAddressEditFormIndex=undefined;"

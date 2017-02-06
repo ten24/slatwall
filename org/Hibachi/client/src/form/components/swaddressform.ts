@@ -20,6 +20,7 @@ class SWAddressFormController {
 
 	//@ngInject
     constructor(
+        private $scope,
         private $log,
         private observerService) {
 		//if exists, just name it slatwall.
@@ -69,7 +70,6 @@ class SWAddressFormController {
             }
         }
 
-        console.log('this.address: ', this.address);
 
        if(this.eventListeners){
             for(var key in this.eventListeners){
@@ -96,13 +96,6 @@ class SWAddressFormController {
 		}
 		return false;
 	}
-
-    public submitKeyCheck = (event) => {
-        event = event.event;
-        if(event.keyCode == 13){
-            this.submit(this.action);
-        }
-    }
 
 } 
 

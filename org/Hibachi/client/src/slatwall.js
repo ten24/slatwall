@@ -4014,7 +4014,6 @@
 	         * @description notifies all observers of a specific event
 	         */
 	        _this.notify = function (event, parameters) {
-	            console.warn(event);
 	            event = event.toLowerCase();
 	            return _this.$timeout(function () {
 	                for (var id in _this.observers[event]) {
@@ -7880,6 +7879,11 @@
 	                <cfset attributes.class &= " disabled" />
 	            </cfif>
 	            */
+	            if (_this.eventListeners) {
+	                for (var key in _this.eventListeners) {
+	                    _this.observerService.attach(_this.eventListeners[key], key);
+	                }
+	            }
 	        };
 	        this.submit = function () {
 	            _this.$timeout(function () {
@@ -8040,11 +8044,6 @@
 	            //need to perform init after promise completes
 	            //this.init();
 	        });
-	        if (this.eventListeners) {
-	            for (var key in this.eventListeners) {
-	                observerService.attach(this.eventListeners[key], key);
-	            }
-	        }
 	    }
 	    return SWActionCallerController;
 	}());
@@ -19327,7 +19326,7 @@
 	            };
 	            _this.observerService.notify(customEventName, data);
 	            _this.observerService.notify(formEventName, data);
-	            // this.observerService.notify(eventName,data);
+	            _this.observerService.notify(eventName, data);
 	        };
 	        this.getTemplate = function () {
 	            var template = '';
@@ -19714,9 +19713,12 @@
 	            return (angular.isObject(_this.object));
 	        };
 	        this.submitKeyCheck = function (event) {
-	            event = event.event;
-	            if (event.keyCode == 13) {
-	                _this.submit(_this.action);
+	            console.log('yo');
+	            if (event.form.name = _this.name &&
+	                event.event.keyCode == 13) {
+	                console.log("this", _this);
+	                console.log("Doing action: ", event.swForm.action);
+	                _this.submit(event.swForm.action);
 	            }
 	        };
 	        /** create the generic submit function */
@@ -20567,8 +20569,9 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWAddressFormController = (function () {
 	    //@ngInject
-	    function SWAddressFormController($log, observerService) {
+	    function SWAddressFormController($scope, $log, observerService) {
 	        var _this = this;
+	        this.$scope = $scope;
 	        this.$log = $log;
 	        this.observerService = observerService;
 	        this.showAddressBookSelect = false;
@@ -20590,12 +20593,6 @@
 	                return true;
 	            }
 	            return false;
-	        };
-	        this.submitKeyCheck = function (event) {
-	            event = event.event;
-	            if (event.keyCode == 13) {
-	                _this.submit(_this.action);
-	            }
 	        };
 	        //if exists, just name it slatwall.
 	        if (angular.isDefined(this.slatwallScope)) {
@@ -20642,7 +20639,6 @@
 	                return formData || "";
 	            };
 	        }
-	        console.log('this.address: ', this.address);
 	        if (this.eventListeners) {
 	            for (var key in this.eventListeners) {
 	                observerService.attach(this.eventListeners[key], key);

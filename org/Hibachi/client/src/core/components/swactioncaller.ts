@@ -52,12 +52,6 @@ class SWActionCallerController{
             //need to perform init after promise completes
             //this.init();
         });
-
-        if(this.eventListeners){
-            for(var key in this.eventListeners){
-                observerService.attach(this.eventListeners[key], key)
-            }
-        }
     }
 
 
@@ -117,7 +111,11 @@ class SWActionCallerController{
             <cfset attributes.class &= " disabled" />
         </cfif>
         */
-
+        if(this.eventListeners){
+            for(var key in this.eventListeners){
+                this.observerService.attach(this.eventListeners[key], key)
+            }
+        }
 
     }
 
