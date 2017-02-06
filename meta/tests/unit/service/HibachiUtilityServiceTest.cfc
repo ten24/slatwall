@@ -387,7 +387,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var hResult2 = hibachiTernary(condition2, returnTrueMessage(), returnFalseMessage());
 		assert(hResult2 == "Condition is false");
 		var iResult2 = IIF(a>b, 'returnTrueMessage()', 'returnFalseMessage()');
-		request.debug(iResult2);
 		assert(iResult2 == hResult2);
 		
 		hResult = hibachiTernary(condition1, returnTrueMessage(), returnFalseMessage());
