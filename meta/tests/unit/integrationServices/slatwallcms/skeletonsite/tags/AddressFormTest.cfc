@@ -59,7 +59,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		savecontent variable="local.templateResult"{
 			cfmodule(template=templatePath, address=address);
 		} 
-		request.debug(templateResult);
 	}	
 
 	

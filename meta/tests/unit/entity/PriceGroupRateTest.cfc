@@ -51,20 +51,20 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	// @hint put things in here that you want to run befor EACH test
 	public void function setUp() {
 		super.setup();
-		
+		variables.entity = request.slatwallScope.getService("priceGroupService").newPriceGroupRate();
 	}
 	
 	public void function getAppliesToTest_ListCreation(){
-		var product = createPersistedTestEntity('Product', {productName:'TestProduct'});
+		var product = createPersistedTestEntity('Product', {productID="",productName='TestProduct',productCode='testproduct'&createUUID()});
 		var data = {
-			priceGroupRateID:''
+			priceGroupRateID=''
 		};
 		var priceGroupRate = createPersistedTestEntity('PriceGroupRate', data);
 		priceGroupRate.addProduct(product);
 		var appliesTo = priceGroupRate.getAppliesTo();
 		assert(appliesTo == 'Including: 1 Product');
 		
-		var product2 = createPersistedTestEntity('Product', {productName:'TestProduct2'});
+		var product2 = createPersistedTestEntity('Product', {productName='TestProduct2'});
 		priceGroupRate.addProduct(product2);
 		appliesTo = priceGroupRate.getAppliesTo();
 		assert(appliesTo == 'Including: 2 Products');
