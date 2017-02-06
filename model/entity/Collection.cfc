@@ -341,7 +341,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var filterGroupIndex = 1; 
  		if(len(arguments.filterGroupAlias) > 0){
  			filterGroupIndex = this.getFilterGroupIndexByFilterGroupAlias(arguments.filterGroupAlias, arguments.filterGroupLogicalOperator); 
- 		} 
+ 		}
+		//if we already have a filter group then we need a logicalOperator
+		if(arraylen(collectionConfig.filterGroups[filterGroupIndex].filterGroup)){
+			filter["logicalOperator"]=arguments.logicalOperator;
+		} 
  		arrayAppend(getCollectionConfigStruct().filterGroups[filterGroupIndex].filterGroup,filter);
 		
 	}
@@ -680,16 +684,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						getCollectionConfigStruct().filterGroups = [{filterGroup=[]}];
 					}
 					
-					if(arraylen(getCollectionConfigStruct().filterGroups) == 1){
-						var filterGroup = {filterGroup=[],logicalOperator="AND"};
-						arrayAppend(getCollectionConfigStruct().filterGroups,filterGroup);
-						filterData['filterGroup'] = getCollectionConfigStruct().filterGroups[2];
-						this.addFilter(argumentCollection=filterData);
-					}else if(arraylen(getCollectionConfigStruct().filterGroups) > 1){
-						getCollectionConfigStruct().filterGroups[2].logicalOperator="AND";
-						filterData['filterGroup'] = getCollectionConfigStruct().filterGroups[2];
-						this.addFilter(argumentCollection=filterData);
-					}
+					filterData['filterGroupAlias'] = "range#prop#";
+					filterData['filterGroupLogicalOperator'] = "AND";
+					this.addFilter(argumentCollection=filterData);
 					
 					//get the data value for the range. for example 20^40, ^40 (0 to 40), 100^ (more than 100)
 					
