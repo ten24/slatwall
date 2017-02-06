@@ -341,7 +341,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var filterGroupIndex = 1; 
  		if(len(arguments.filterGroupAlias) > 0){
  			filterGroupIndex = this.getFilterGroupIndexByFilterGroupAlias(arguments.filterGroupAlias, arguments.filterGroupLogicalOperator); 
- 		} 
+ 		}
+		//if we already have a filter group then we need a logicalOperator
+		if(arraylen(collectionConfig.filterGroups[filterGroupIndex].filterGroup)){
+			filter["logicalOperator"]=arguments.logicalOperator;
+		} 
  		arrayAppend(getCollectionConfigStruct().filterGroups[filterGroupIndex].filterGroup,filter);
 		
 	}
