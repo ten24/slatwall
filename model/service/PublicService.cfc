@@ -592,6 +592,31 @@ component extends="HibachiService"  accessors="true" output="false"
         getHibachiScope().addActionResult('public:cart.addEmailFulfillmentAddress', true);
       }
     }
+
+    /** Set store pickup location */
+    public void function addPickupFulfillmentLocation(required data){
+      var locationID = data.value;
+      var order = getHibachiScope().getCart();
+      var orderFulfillments = order.getOrderFulfillments();
+
+      for(fulfillment in orderFulfillments){
+        if(fulfillment.getFulfillmentMethod().getFulfillmentMethodType() == 'pickup'){
+          var orderFulfillment = fulfillment;
+        }
+      }
+
+      if(!isNull(orderFulfillment) && !orderFulfillment.hasErrors()){
+        orderFulfillment.setPickupLocation(getService('LocationService').getLocation(locationID));
+        getOrderService().saveOrder(order);
+        getDao('hibachiDao').flushOrmSession();
+        getHibachiScope().addActionResult('public:cart.addPickupFulfillmentLocation', order.hasErrors());
+      }else{
+        if(!isNull(orderFulfillment)){
+          this.addErrors(arguments.data, orderFulfillment.getErrors());
+        }
+        getHibachiScope().addActionResult('public:cart.addPickupFulfillmentLocation', true);
+      }
+    }
     
     /** Sets the shipping method to an order shippingMethodID */
     public void function addShippingMethodUsingShippingMethodID(required data){

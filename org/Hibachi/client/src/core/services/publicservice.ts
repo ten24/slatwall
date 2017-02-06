@@ -150,7 +150,7 @@ class PublicService {
        return this.stateDataPromise;
     }
 
-    public getStateByStateCode = function(stateCode){
+    public getStateByStateCode = (stateCode)=>{
         if (!angular.isDefined(this.states) || !angular.isDefined(this.states.stateCodeOptions) || !angular.isDefined(stateCode)){
             return;
         }
@@ -430,7 +430,7 @@ class PublicService {
     /**
      * Returns true if on a mobile device. This is important for placeholders.
      */
-     public isMobile = function(){
+     public isMobile = ()=>{
            if(this.$window.innerWidth <= 800 && this.$window.innerHeight <= 600) {
              return true;
            }
@@ -439,7 +439,7 @@ class PublicService {
 
      /** returns true if the shipping method is the selected shipping method
      */
-     public isSelectedShippingMethod = function(index, value){
+     public isSelectedShippingMethod = (index, value)=>{
         if (this.cart.fulfillmentTotal &&
               value == this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingMethod.shippingMethodID ||
               this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingMethodOptions.length == 1){
@@ -450,7 +450,7 @@ class PublicService {
 
      /** returns the index of the selected shipping method.
      */
-     public getSelectedShippingIndex = function(index, value){
+     public getSelectedShippingIndex = (index, value)=>{
         for (var i = 0; i <= this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingMethodOptions.length; i++){
             if (this.cart.fulfillmentTotal == this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingMethodOptions[i].totalCharge){
                 return i;
@@ -609,7 +609,6 @@ class PublicService {
     /** Allows an easy way to calling the service addOrderPayment.
                     */
     public addGiftCardOrderPayments = (redeemGiftCardToAccount)=>{
-        this.hasGiftCardPayment = true;
         //reset the form errors.
         this.cart.hasErrors=false;
         this.cart.orderPayments.errors = {};
@@ -654,7 +653,6 @@ class PublicService {
                     var remainingBalance = giftCards[card].balanceAmount || giftCards[card].calculatedBalanceAmount;    
                 }
                 
-                
                 if (this.cart.calculatedTotal > remainingBalance){
                     data['newOrderPayment.amount'] = remainingBalance;
                 }else{
@@ -687,62 +685,9 @@ class PublicService {
               
     };
 
-    // /** Allows an easy way to calling the service addOrderPayment.
-    // */
-    // public addGiftCardOrderPayments = (redeemGiftCardToAccount)=>{
-    //     //reset the form errors.
-    //     this.cart.hasErrors=false;
-    //     this.cart.orderPayments.errors = {};
-    //     this.cart.orderPayments.hasErrors = false;
-    //     
-    //     //Grab all the data
-    //     var giftCards = this.account.giftCards;
-    //     var data = {};
-
-    //     data = {
-    //         'newOrderPayment.paymentMethod.paymentMethodID':'50d8cd61009931554764385482347f3a',
-    //         'newOrderPayment.redeemGiftCardToAccount':redeemGiftCardToAccount,
-    //     };
-    //     
-    //     
-    //     //add the amounts from the gift cards
-    //     for (var card in giftCards){
-    //         
-    //         
-    //         if (giftCards[card].applied == true){
-
-    //             data['newOrderPayment.giftCardNumber'] = giftCards[card].giftCardCode;
-    //             if (giftCards[card].calculatedTotal < this.cart.calculatedTotal){
-    //                 data['newOrderPayment.amount'] = giftCards[card].calculatedBalanceAmount; //will use once we have amount implemented.
-    //             }else{
-    //                 data['newOrderPayment.amount'] = this.cart.calculatedTotal;//this is so it doesn't throw the 100% error
-    //             }
-    //             data['copyFromType'] = "";
-    //             
-    //             //Post the new order payment and set errors as needed.
-    //             this.doAction('addOrderPayment', data, 'post').then(function(result){
-    //                 var serverData;
-    //                 if (angular.isDefined(result['0'])){
-    //                     serverData = result['0'].data;
-    //                 }
-    //                 
-    //                 if (serverData.cart.hasErrors || angular.isDefined(this.cart.orderPayments[this.cart.orderPayments.length-1]['errors']) && !this.cart.orderPayments[''+(this.cart.orderPayments.length-1)]['errors'].hasErrors){
-    //                     this.cart.hasErrors = true;
-    //                     this.readyToPlaceOrder = true;
-    //                     this.edit = '';
-    //                     
-    //                 }else{
-    //                     
-    //                 }
-    //             });
-    //         }
-    //     }
-
-    // };
-
     /** returns the index of the last selected shipping method. This is used to get rid of the delay.
     */
-    public selectShippingMethod = function(index){
+    public selectShippingMethod = (index)=>{
         for (var method in this.lastSelectedShippingMethod){
             if (method != index){
                 this.lastSelectedShippingMethod[method] = 'false';
@@ -753,7 +698,7 @@ class PublicService {
 
     /** returns true if this was the last selected method
     */
-    public isLastSelectedShippingMethod = function(index){
+    public isLastSelectedShippingMethod = (index)=>{
         if (this.lastSelectedShippingMethod[index] === 'true'){
             return true;
         }
@@ -800,7 +745,7 @@ class PublicService {
         }
 
         //Post the new order payment and set errors as needed.
-        this.$q.all([this.doAction('addOrderPayment,placeOrder', data, 'post')]).then(function(result){
+        this.$q.all([this.doAction('addOrderPayment,placeOrder', data, 'post')]).then((result)=>{
             var serverData
             if (angular.isDefined(result['0'])){
                 serverData = result['0'].data;
@@ -848,34 +793,55 @@ class PublicService {
         this.finding = false;
     };
 
-    // //Applies a giftcard from the user account onto the payment.
-    // public applyGiftCard = (giftCardCode)=>{
-    //     this.finding = true;
-    //     
-    //     //find the code already on the account.
-    //     var found = false;
-    //     
-    //     
-    //     for (var giftCard in this.account.giftCards){
-    //         if (this.account.giftCards[giftCard].balanceAmount == 0){
-    //             this.account.giftCards[giftCard]['error'] = "The balance is $0.00 for this card.";
-    //             found = false;
-    //         }
-    //         if (this.account.giftCards[giftCard].giftCardCode == giftCardCode){
-    //             
-    //             this.account.giftCards[giftCard].applied = true;
-    //             found = true;
-    //         }
-    //     }
-    //     if (found){
-    //         this.finding = false;
-    //         this.addGiftCardOrderPayments(false);
-    //     }else{
-    //         this.finding = false;
-    //         this.addGiftCardOrderPayments(true);
-    //     }
+    public setLocationPreference = (storeData)=>{
+                
+                this.loading = true;
+                this.tempStoreData = storeData;
+                //send here if we are updating the value on the order, account, and orderFulfillment.
+                var url = this.getUrl();
+                if (url.indexOf('my-account') == -1){
+                    var params = "/?slataction=totalwine:ajax.setLocationPreference&ajaxRequest=1&returnJsonObject=account&locationID=" + storeData;
+                    
+                    //if we also want to set this on the account, then set this flag.
+                    if (url.indexOf('checkout') > 0){
+                        params = params + "&setPreferenceOnAccountFlag=true";
+                    }
+                    
+                    this.$http.get(params).then((result)=>{
+                        
+                        this.stores = undefined;
+                        if (result.data.account != undefined){
+                            this.account.data.preferredLocation = result.data.account.preferredLocation;
 
-    // };
+                        }
+                        if (result.data.cart != undefined){
+                            this.cart.data.orderFulfillments = result.data.cart.orderFulfillments;
+                            this.cart.data = result.data.cart;
+                        }
+                        this.loading = false;
+                    });
+                
+                //send here if we are just updating the value on the account. /my-account
+                } else {
+                    if (this.account.accountID != undefined && this.account.accountID != ""){
+                        this.$http.get("/?slataction=totalwine:ajax.setLocationPreferenceOnAccount&ajaxRequest=1&returnJsonObject=account&locationID=" + storeData).then((result)=>{
+                            
+                                this.stores = undefined;
+                                if (result.data.account != undefined){
+                                    this.account.data.preferredLocation = result.data.account.preferredLocation;
+                                }
+                        });
+                    }
+                    this.loading = false;
+                }
+               
+            $(window).load(()=>{
+                $('#locationModal').modal('hide');
+            });
+            this.showLocationModal = false;
+               this.resumeAddOrderItems();
+                
+           };
 
     public getResizedImageByProfileName = (profileName, skuIDList)=>{
                

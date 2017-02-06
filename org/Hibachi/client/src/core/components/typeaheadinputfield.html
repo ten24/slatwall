@@ -11,8 +11,4 @@
         >
         <ng-transclude></ng-transclude>
 </div>
-
-<span ng-if="swTypeaheadInputField.modelValue != undefined">
-        <span ng-init="$root.slatwall.setLocationPreference(swTypeaheadInputField.modelValue)"></span>
-</span>
-<input type="hidden" style="display:none" ng-model="swTypeaheadInputField.modelValue" name="{{swTypeaheadInputField.fieldName}}.locationID"  value="{{swTypeaheadInputField.modelValue}}">
+<input readonly style="display:none" ng-model="swTypeaheadInputField.modelValue" ng-change="$root.hibachi.setPickupLocation(swTypeaheadInputField.modelValue)" name="{{swTypeaheadInputField.fieldName}}" >

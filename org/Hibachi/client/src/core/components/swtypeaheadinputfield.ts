@@ -17,14 +17,17 @@ class SWTypeaheadInputFieldController {
     public initialEntityId:string; 
     public searchText:string;
     public validateRequired:boolean;
+    public action:string;
     private collectionConfig;
+    private $root;
     
     // @ngInject
 	constructor(private $scope,
                 private $transclude,
-                private collectionConfigService
+                private collectionConfigService,
+                private $rootScope
     ){
-        
+        this.$root = $rootScope;
         
         if( angular.isUndefined(this.typeaheadCollectionConfig)){
             if(angular.isDefined(this.entityName)){
@@ -63,7 +66,12 @@ class SWTypeaheadInputFieldController {
     }
     
     public addFunction = (value:any) => {
-        this.modelValue = value[this.propertyToSave]; 
+        console.log(value);
+        this.modelValue = value[this.propertyToSave];
+        console.log("modelValue", this.modelValue);
+        if(this.action){
+            this.$root.slatwall.doAction(this.action, {value:this.modelValue});
+        }
     }
 
 }
@@ -86,7 +94,8 @@ class SWTypeaheadInputField implements ng.IDirective{
         initialEntityId:"@",
         allRecords:"=?",
         validateRequired:"=?", 
-        maxRecords:"@"
+        maxRecords:"@",
+        action:"@"
 	};
 	public controller=SWTypeaheadInputFieldController;
 	public controllerAs="swTypeaheadInputField";

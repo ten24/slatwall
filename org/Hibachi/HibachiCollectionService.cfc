@@ -649,7 +649,6 @@ component output="false" accessors="true" extends="HibachiService" {
 		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName,collectionOptions);
 		collectionEntity.applyData();
 		collectionEntity.setEnforceAuthorization(arguments.enforceAuthorization);
-		
 		if (!isNull(whiteList)){
 			var authorizedPropertyList = whiteList.split(",");
 			for(var authorizedProperty in authorizedPropertyList){

@@ -1948,12 +1948,12 @@
 	            return _this.stateDataPromise;
 	        };
 	        this.getStateByStateCode = function (stateCode) {
-	            if (!angular.isDefined(this.states) || !angular.isDefined(this.states.stateCodeOptions) || !angular.isDefined(stateCode)) {
+	            if (!angular.isDefined(_this.states) || !angular.isDefined(_this.states.stateCodeOptions) || !angular.isDefined(stateCode)) {
 	                return;
 	            }
-	            for (var state in this.states.stateCodeOptions) {
-	                if (this.states.stateCodeOptions[state].value == stateCode) {
-	                    return this.states.stateCodeOptions[state];
+	            for (var state in _this.states.stateCodeOptions) {
+	                if (_this.states.stateCodeOptions[state].value == stateCode) {
+	                    return _this.states.stateCodeOptions[state];
 	                }
 	            }
 	        };
@@ -2194,7 +2194,7 @@
 	         * Returns true if on a mobile device. This is important for placeholders.
 	         */
 	        this.isMobile = function () {
-	            if (this.$window.innerWidth <= 800 && this.$window.innerHeight <= 600) {
+	            if (_this.$window.innerWidth <= 800 && _this.$window.innerHeight <= 600) {
 	                return true;
 	            }
 	            return false;
@@ -2202,9 +2202,9 @@
 	        /** returns true if the shipping method is the selected shipping method
 	        */
 	        this.isSelectedShippingMethod = function (index, value) {
-	            if (this.cart.fulfillmentTotal &&
-	                value == this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingMethod.shippingMethodID ||
-	                this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingMethodOptions.length == 1) {
+	            if (_this.cart.fulfillmentTotal &&
+	                value == _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingMethod.shippingMethodID ||
+	                _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingMethodOptions.length == 1) {
 	                return true;
 	            }
 	            return false;
@@ -2212,8 +2212,8 @@
 	        /** returns the index of the selected shipping method.
 	        */
 	        this.getSelectedShippingIndex = function (index, value) {
-	            for (var i = 0; i <= this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingMethodOptions.length; i++) {
-	                if (this.cart.fulfillmentTotal == this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingMethodOptions[i].totalCharge) {
+	            for (var i = 0; i <= _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingMethodOptions.length; i++) {
+	                if (_this.cart.fulfillmentTotal == _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingMethodOptions[i].totalCharge) {
 	                    return i;
 	                }
 	            }
@@ -2352,7 +2352,6 @@
 	        /** Allows an easy way to calling the service addOrderPayment.
 	                        */
 	        this.addGiftCardOrderPayments = function (redeemGiftCardToAccount) {
-	            _this.hasGiftCardPayment = true;
 	            //reset the form errors.
 	            _this.cart.hasErrors = false;
 	            _this.cart.orderPayments.errors = {};
@@ -2416,69 +2415,20 @@
 	                }
 	            }
 	        };
-	        // /** Allows an easy way to calling the service addOrderPayment.
-	        // */
-	        // public addGiftCardOrderPayments = (redeemGiftCardToAccount)=>{
-	        //     //reset the form errors.
-	        //     this.cart.hasErrors=false;
-	        //     this.cart.orderPayments.errors = {};
-	        //     this.cart.orderPayments.hasErrors = false;
-	        //     
-	        //     //Grab all the data
-	        //     var giftCards = this.account.giftCards;
-	        //     var data = {};
-	        //     data = {
-	        //         'newOrderPayment.paymentMethod.paymentMethodID':'50d8cd61009931554764385482347f3a',
-	        //         'newOrderPayment.redeemGiftCardToAccount':redeemGiftCardToAccount,
-	        //     };
-	        //     
-	        //     
-	        //     //add the amounts from the gift cards
-	        //     for (var card in giftCards){
-	        //         
-	        //         
-	        //         if (giftCards[card].applied == true){
-	        //             data['newOrderPayment.giftCardNumber'] = giftCards[card].giftCardCode;
-	        //             if (giftCards[card].calculatedTotal < this.cart.calculatedTotal){
-	        //                 data['newOrderPayment.amount'] = giftCards[card].calculatedBalanceAmount; //will use once we have amount implemented.
-	        //             }else{
-	        //                 data['newOrderPayment.amount'] = this.cart.calculatedTotal;//this is so it doesn't throw the 100% error
-	        //             }
-	        //             data['copyFromType'] = "";
-	        //             
-	        //             //Post the new order payment and set errors as needed.
-	        //             this.doAction('addOrderPayment', data, 'post').then(function(result){
-	        //                 var serverData;
-	        //                 if (angular.isDefined(result['0'])){
-	        //                     serverData = result['0'].data;
-	        //                 }
-	        //                 
-	        //                 if (serverData.cart.hasErrors || angular.isDefined(this.cart.orderPayments[this.cart.orderPayments.length-1]['errors']) && !this.cart.orderPayments[''+(this.cart.orderPayments.length-1)]['errors'].hasErrors){
-	        //                     this.cart.hasErrors = true;
-	        //                     this.readyToPlaceOrder = true;
-	        //                     this.edit = '';
-	        //                     
-	        //                 }else{
-	        //                     
-	        //                 }
-	        //             });
-	        //         }
-	        //     }
-	        // };
 	        /** returns the index of the last selected shipping method. This is used to get rid of the delay.
 	        */
 	        this.selectShippingMethod = function (index) {
-	            for (var method in this.lastSelectedShippingMethod) {
+	            for (var method in _this.lastSelectedShippingMethod) {
 	                if (method != index) {
-	                    this.lastSelectedShippingMethod[method] = 'false';
+	                    _this.lastSelectedShippingMethod[method] = 'false';
 	                }
 	            }
-	            this.lastSelectedShippingMethod[index] = 'true';
+	            _this.lastSelectedShippingMethod[index] = 'true';
 	        };
 	        /** returns true if this was the last selected method
 	        */
 	        this.isLastSelectedShippingMethod = function (index) {
-	            if (this.lastSelectedShippingMethod[index] === 'true') {
+	            if (_this.lastSelectedShippingMethod[index] === 'true') {
 	                return true;
 	            }
 	            return false;
@@ -2531,25 +2481,25 @@
 	                        for (var action in serverData.failureActions) {
 	                        }
 	                    }
-	                    this.edit = '';
+	                    _this.edit = '';
 	                    return true;
 	                }
 	                else if (serverData.successfulActions.length) {
 	                    //
-	                    this.cart.hasErrors = false;
-	                    this.editPayment = false;
-	                    this.edit = '';
+	                    _this.cart.hasErrors = false;
+	                    _this.editPayment = false;
+	                    _this.edit = '';
 	                    for (var action in serverData.successfulActions) {
 	                        //
 	                        if (serverData.successfulActions[action].indexOf("placeOrder") != -1) {
 	                            //if there are no errors then redirect.
-	                            this.orderPlaced = true;
-	                            this.redirectExact('/order-confirmation/');
+	                            _this.orderPlaced = true;
+	                            _this.redirectExact('/order-confirmation/');
 	                        }
 	                    }
 	                }
 	                else {
-	                    this.edit = '';
+	                    _this.edit = '';
 	                }
 	            });
 	        };
@@ -2565,33 +2515,46 @@
 	            _this.addGiftCardOrderPayments(true);
 	            _this.finding = false;
 	        };
-	        // //Applies a giftcard from the user account onto the payment.
-	        // public applyGiftCard = (giftCardCode)=>{
-	        //     this.finding = true;
-	        //     
-	        //     //find the code already on the account.
-	        //     var found = false;
-	        //     
-	        //     
-	        //     for (var giftCard in this.account.giftCards){
-	        //         if (this.account.giftCards[giftCard].balanceAmount == 0){
-	        //             this.account.giftCards[giftCard]['error'] = "The balance is $0.00 for this card.";
-	        //             found = false;
-	        //         }
-	        //         if (this.account.giftCards[giftCard].giftCardCode == giftCardCode){
-	        //             
-	        //             this.account.giftCards[giftCard].applied = true;
-	        //             found = true;
-	        //         }
-	        //     }
-	        //     if (found){
-	        //         this.finding = false;
-	        //         this.addGiftCardOrderPayments(false);
-	        //     }else{
-	        //         this.finding = false;
-	        //         this.addGiftCardOrderPayments(true);
-	        //     }
-	        // };
+	        this.setLocationPreference = function (storeData) {
+	            _this.loading = true;
+	            _this.tempStoreData = storeData;
+	            //send here if we are updating the value on the order, account, and orderFulfillment.
+	            var url = _this.getUrl();
+	            if (url.indexOf('my-account') == -1) {
+	                var params = "/?slataction=totalwine:ajax.setLocationPreference&ajaxRequest=1&returnJsonObject=account&locationID=" + storeData;
+	                //if we also want to set this on the account, then set this flag.
+	                if (url.indexOf('checkout') > 0) {
+	                    params = params + "&setPreferenceOnAccountFlag=true";
+	                }
+	                _this.$http.get(params).then(function (result) {
+	                    _this.stores = undefined;
+	                    if (result.data.account != undefined) {
+	                        _this.account.data.preferredLocation = result.data.account.preferredLocation;
+	                    }
+	                    if (result.data.cart != undefined) {
+	                        _this.cart.data.orderFulfillments = result.data.cart.orderFulfillments;
+	                        _this.cart.data = result.data.cart;
+	                    }
+	                    _this.loading = false;
+	                });
+	            }
+	            else {
+	                if (_this.account.accountID != undefined && _this.account.accountID != "") {
+	                    _this.$http.get("/?slataction=totalwine:ajax.setLocationPreferenceOnAccount&ajaxRequest=1&returnJsonObject=account&locationID=" + storeData).then(function (result) {
+	                        _this.stores = undefined;
+	                        if (result.data.account != undefined) {
+	                            _this.account.data.preferredLocation = result.data.account.preferredLocation;
+	                        }
+	                    });
+	                }
+	                _this.loading = false;
+	            }
+	            $(window).load(function () {
+	                $('#locationModal').modal('hide');
+	            });
+	            _this.showLocationModal = false;
+	            _this.resumeAddOrderItems();
+	        };
 	        this.getResizedImageByProfileName = function (profileName, skuIDList) {
 	            _this.loading = true;
 	            if (profileName == undefined) {
@@ -8184,11 +8147,13 @@
 	            }
 	            _this.collectionConfig.setKeywords(search);
 	            if (angular.isDefined(_this.filterGroupsConfig)) {
+	                console.log("gonna filter");
 	                //allows for filtering on search text
 	                var filterConfig = _this.filterGroupsConfig.replace("replaceWithSearchString", search);
 	                filterConfig = filterConfig.trim();
 	                _this.collectionConfig.loadFilterGroups(JSON.parse(filterConfig));
 	            }
+	            console.log(_this.collectionConfig);
 	            _this._timeoutPromise = _this.$timeout(function () {
 	                var promise = _this.collectionConfig.getEntity();
 	                promise.then(function (response) {
@@ -8455,16 +8420,23 @@
 	"use strict";
 	var SWTypeaheadInputFieldController = (function () {
 	    // @ngInject
-	    function SWTypeaheadInputFieldController($scope, $transclude, collectionConfigService) {
+	    function SWTypeaheadInputFieldController($scope, $transclude, collectionConfigService, $rootScope) {
 	        var _this = this;
 	        this.$scope = $scope;
 	        this.$transclude = $transclude;
 	        this.collectionConfigService = collectionConfigService;
+	        this.$rootScope = $rootScope;
 	        this.columns = [];
 	        this.filters = [];
 	        this.addFunction = function (value) {
+	            console.log(value);
 	            _this.modelValue = value[_this.propertyToSave];
+	            console.log("modelValue", _this.modelValue);
+	            if (_this.action) {
+	                _this.$root.slatwall.doAction(_this.action, { value: _this.modelValue });
+	            }
 	        };
+	        this.$root = $rootScope;
 	        if (angular.isUndefined(this.typeaheadCollectionConfig)) {
 	            if (angular.isDefined(this.entityName)) {
 	                this.typeaheadCollectionConfig = collectionConfigService.newCollectionConfig(this.entityName);
@@ -8515,7 +8487,8 @@
 	            initialEntityId: "@",
 	            allRecords: "=?",
 	            validateRequired: "=?",
-	            maxRecords: "@"
+	            maxRecords: "@",
+	            action: "@"
 	        };
 	        this.controller = SWTypeaheadInputFieldController;
 	        this.controllerAs = "swTypeaheadInputField";

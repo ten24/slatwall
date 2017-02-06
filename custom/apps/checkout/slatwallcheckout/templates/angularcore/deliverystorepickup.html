@@ -2,12 +2,12 @@
 	<span ng-init="$.slatwall = $root.slatwall"></span>
 	<i class="fa fa-map-marker fa-3x icon-left"></i>
 	<span>
-		<h5>Your selected store: <span ng-if="$root.slatwall.account.data.preferredLocation.primaryAddress != undefined || $root.slatwall.cart.data.orderFulfillments[0].pickupLocation.locationName != undefined">
-			<span ng-if="$root.slatwall.cart.data.orderFulfillments[0].pickupLocation.locationName != undefined && $root.slatwall.getLocationName('checkout') != 'None'">
-				{{$root.slatwall.getLocationName('checkout')}}
+		<h5>Your selected store: <span ng-if="$root.slatwall.account.data.preferredLocation.primaryAddress != undefined || $root.slatwall.cart.data.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation.locationName != undefined">
+			<span ng-if="$root.slatwall.cart.data.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation.locationName != undefined">
+				{{$root.slatwall.cart.data.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation.locationName}}
 			</span>
-			<span ng-if="$root.slatwall.account.data.preferredLocation.primaryAddress != undefined && $root.slatwall.cart.data.orderFulfillments[0].pickupLocation.locationName == undefined">
-				{{$.slatwall.account.data.preferredLocation.primaryAddress.address.streetAddress}} {{$root.slatwall.account.data.preferredLocation.primaryAddress.address.city}}</span>
+			<span ng-if="$root.slatwall.cart.data.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation.primaryAddress != undefined && $root.slatwall.cart.data.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation.locationName == undefined">
+				{{$root.slatwall.cart.data.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation.primaryAddress.address.streetAddress}} {{$root.slatwall.cart.data.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation.primaryAddress.address.city}}</span>
 			</span>
 			<span ng-if="$root.slatwall.account.data.preferredLocation.primaryAddress == undefined && $root.slatwall.cart.data.orderFulfillments[0].pickupLocation.locationName == undefined">None</span></h5>
 		<a href="#" ng-click="$.slatwall.stores = !$.slatwall.stores;" ng-if="$.slatwall.account.data.preferredLocation.primaryAddress != undefined">Change store</a>
@@ -27,6 +27,7 @@
 				data-show-view-button="true"
 				data-placeholder-text="Search Stores..."
 				data-multiselect-mode="false"
+				data-action="addPickupFulfillmentLocation"
 				data-selected-format-string="${locationName}&nbsp;${primaryAddress_address_city}&nbsp;${primaryAddress_address_stateCode}&nbsp;${primaryAddress_address_postalCode}">
 				
 				<sw-collection-config
@@ -34,15 +35,17 @@
 					  data-collection-config-property="typeaheadCollectionConfig"
                       data-parent-directive-controller-as-name="swTypeaheadInputField"
                       data-all-records="false"
-                      data-page-show="25">
+                      data-page-show="25"
+                      data-filter-flag="false">
 			
-				  
-				  <sw-collection-column data-property-identifier="primaryAddress.address.addressID"></sw-collection-column>
-				  <sw-collection-column data-property-identifier="primaryAddress.address.city"></sw-collection-column>
-				  <sw-collection-column data-property-identifier="primaryAddress.address.stateCode"></sw-collection-column>
-				  <sw-collection-column data-property-identifier="primaryAddress.address.postalCode"></sw-collection-column>
-				  <sw-collection-column data-property-identifier="locationName"></sw-collection-column>
-				  <sw-collection-column data-property-identifier="locationID"></sw-collection-column>
+				  <sw-collection-columns>
+					  <sw-collection-column data-property-identifier="primaryAddress.address.addressID"></sw-collection-column>
+					  <sw-collection-column data-property-identifier="primaryAddress.address.city"></sw-collection-column>
+					  <sw-collection-column data-property-identifier="primaryAddress.address.stateCode"></sw-collection-column>
+					  <sw-collection-column data-property-identifier="primaryAddress.address.postalCode"></sw-collection-column>
+					  <sw-collection-column data-property-identifier="locationName"></sw-collection-column>
+					  <sw-collection-column data-property-identifier="locationID"></sw-collection-column>
+				  </sw-collection-columns>
 				  
 			
   			  </sw-collection-config>

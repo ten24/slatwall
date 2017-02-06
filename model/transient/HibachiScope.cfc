@@ -306,7 +306,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			orderFulfillments.shippingMethod.shippingMethodID,orderFulfillments.shippingMethod.shippingMethodName,
 			orderFulfillments.shippingAddress.addressID,orderFulfillments.shippingAddress.streetAddress,orderFulfillments.shippingAddress.street2Address,orderFulfillments.shippingAddress.city,orderFulfillments.shippingAddress.statecode,orderFulfillments.shippingAddress.postalcode,orderFulfillments.shippingAddress.countrycode,
 			orderFulfillments.shippingMethodOptions,orderFulfillments.shippingMethodRate.shippingMethodRateID,
-			orderFulfillments.totalShippingWeight,orderFulfillments.taxAmount, orderFulfillments.emailAddress,
+			orderFulfillments.totalShippingWeight,orderFulfillments.taxAmount, orderFulfillments.emailAddress,orderFulfillments.pickupLocation.locationName, orderFulfillments.pickupLocation.primaryAddress.address.streetAddress, orderFulfillments.pickupLocation.primaryAddress.address.street2Address,
+			orderFulfillments.pickupLocation.primaryAddress.address.city,
 			orderPayments.orderPaymentID,orderPayments.amount,orderPayments.currencyCode,orderPayments.creditCardType,orderPayments.expirationMonth,orderPayments.expirationYear,orderPayments.nameOnCreditCard, orderPayments.creditCardLastFour,
 			orderPayments.billingAddress.addressID,orderPayments.billingAddress.streetAddress,orderPayments.billingAddress.street2Address,orderPayments.billingAddress.city,orderPayments.billingAddress.statecode,orderPayments.billingAddress.postalcode,orderPayments.billingAddress.countrycode,
 			orderPayments.paymentMethod.paymentMethodID,orderPayments.paymentMethod.paymentMethodName, orderPayments.giftCard.balanceAmount, orderPayments.giftCard.giftCardCode, promotionCodes.promotionCode","\s","","ALL");
@@ -329,10 +330,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	        var requiresFulfillment = false;
 	        var orderFulfillmentWithShippingMethodOptionsIndex = 0;
 	        var orderFulfillmentWithEmailTypeIndex = 0;
+	        var orderFulfillmentWithPickupTypeIndex = 0;
 	        for(i=1; i<=arrayLen(data.orderFulfillments);i=i+1){
 	        	var orderFulfillment = data.orderFulfillments[i];
 	        	if(orderFulfillment.fulfillmentMethod.fulfillmentMethodType == 'email'){
 	            	orderFulfillmentWithEmailTypeIndex = i;
+	            	requiresFulfillment = true;
+	            	break;
+	            }
+	            if(orderFulfillment.fulfillmentMethod.fulfillmentMethodType == 'pickup'){
+	            	orderFulfillmentWithPickupTypeIndex = i;
 	            	requiresFulfillment = true;
 	            	break;
 	            }
@@ -345,6 +352,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	        data['requiresFulfillment'] = requiresFulfillment;
 	        data['orderFulfillmentWithShippingMethodOptionsIndex'] = orderFulfillmentWithShippingMethodOptionsIndex-1;
 	        data['orderFulfillmentWithEmailTypeIndex'] = orderFulfillmentWithEmailTypeIndex-1;
+	        data['orderFulfillmentWithPickupTypeIndex'] = orderFulfillmentWithPickupTypeIndex-1;
         }
 		// add error messages
 		data["hasErrors"] = getCart().hasErrors();
