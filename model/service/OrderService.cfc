@@ -310,7 +310,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 				// The item being added to the cart should have its stockID added based on that location
 				var location = orderFulfillment.getPickupLocation();
-				var stock = getService("StockService").getStockByLocationANDSku([location, arguments.processObject.getSku()], false);
+				var stock = getService("StockService").getStockBySkuAndLocation(sku=processObject.getSku(), location=location);
 				
 				//If we found a stock for that location, then set the stock to the process.
 				if (!isNull(stock)){
@@ -2747,7 +2747,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  				if (!isNull(location)){
  					for (var orderItem in orderFulfillment.getOrderFulfillmentItems()){
  						//set the stock based on location.
- 						var stock = getService("StockService").getStockByLocationANDSku([location, orderItem.getSku()], false);
+ 						var stock = getService("StockService").getStockBySkuAndLocation(sku=orderItem.getSku(), location=location);
  						
  						if (!isNull(stock)){
  							orderItem.setStock(stock);
