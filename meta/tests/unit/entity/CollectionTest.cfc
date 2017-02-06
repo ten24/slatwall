@@ -119,34 +119,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 						}
 					],
 					"filterGroups":[
-						{
-							"filterGroup":[
-								{
-									"propertyIdentifier":"",
-									"comparisonOperator":"",
-									"value":""
-								},
-								{
-									"logicalOperator":"AND",
-									"propertyIdentifier":"",
-									"comparisonOperator":"",
-									"value":""
-								}
-							]
-
-						},
-						{
-							"filterGroup":[
-								{
-									"propertyIdentifier":"",
-									"comparisonOperator":"",
-									"value":""
-								}
-							]
-
-						}
 					]
-
 				}
 			',
 			collectionObject = "SlatwallAccount"
