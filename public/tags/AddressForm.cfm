@@ -123,7 +123,7 @@
 				
 				<!--- Street Address (important the data-sw-address allows for this to be modified by jQuery below)--->
 				<cfif thisField eq "streetAddress">
-					<div class="control-group#iif(attributes.address.getCountry().getStreetAddressShowFlag(), de(''), de(' hide'))#" data-sw-property="streetAddress">
+					<div class="control-group#request.slatwallScope.getService('hibachiUtilityService').hibachiTernary(attributes.address.getCountry().getStreetAddressShowFlag(), '', ' hide')#" data-sw-property="streetAddress">
 						<label class="control-label" for="rating" data-sw-label="true">#request.slatwallScope.rbKey('entity.address.streetAddress')#</label>
 						<div class="controls" data-sw-field="true">
 							
@@ -136,7 +136,7 @@
 				
 				<!--- Street 2 Address (important the data-sw-address allows for this to be modified by jQuery below)--->
 				<cfif thisField eq "street2Address">
-					<div class="control-group#iif(attributes.address.getCountry().getStreet2AddressShowFlag(), de(''), de(' hide'))#" data-sw-property="street2Address">
+					<div class="control-group#request.slatwallScope.getService('hibachiUtilityService').hibachiTernary(attributes.address.getCountry().getStreet2AddressShowFlag(), '', ' hide')#" data-sw-property="street2Address">
 						<label class="control-label" for="rating" data-sw-label="true">#request.slatwallScope.rbKey('entity.address.street2Address')#</label>
 						<div class="controls" data-sw-field="true">
 							
@@ -149,7 +149,7 @@
 				
 				<!--- Locality --->
 				<cfif thisField eq "locality">
-					<div class="control-group#iif(attributes.address.getCountry().getLocalityShowFlag(), de(''), de(' hide'))#" data-sw-property="locality">
+					<div class="control-group#request.slatwallScope.getService('hibachiUtilityService').hibachiTernary(attributes.address.getCountry().getLocalityShowFlag(), '', ' hide')#" data-sw-property="locality">
 						<label class="control-label" for="rating" data-sw-label="true">#request.slatwallScope.rbKey('entity.address.locality')#</label>
 						<div class="controls" data-sw-field="true">
 							
@@ -162,7 +162,7 @@
 				
 				<!--- City --->
 				<cfif thisField eq "city">
-					<div class="control-group#iif(attributes.address.getCountry().getCityShowFlag(), de(''), de(' hide'))#" data-sw-property="city">
+					<div class="control-group#request.slatwallScope.getService('hibachiUtilityService').hibachiTernary(attributes.address.getCountry().getCityShowFlag(), '', ' hide')#" data-sw-property="city">
 						<label class="control-label" for="rating" data-sw-label="true">#request.slatwallScope.rbKey('entity.address.city')#</label>
 						<div class="controls" data-sw-field="true">
 							
@@ -175,7 +175,7 @@
 				
 				<!--- State Code --->
 				<cfif thisField eq "stateCode">
-					<div class="control-group#iif(attributes.address.getCountry().getStateCodeShowFlag(), de(''), de(' hide'))#" data-sw-property="stateCode">
+					<div class="control-group#request.slatwallScope.getService('hibachiUtilityService').hibachiTernary(attributes.address.getCountry().getStateCodeShowFlag(), '', ' hide')#" data-sw-property="stateCode">
 						<label class="control-label" for="rating" data-sw-label="true">#request.slatwallScope.rbKey('entity.address.stateCode')#</label>
 						<div class="controls" data-sw-field="true">
 							
@@ -192,7 +192,7 @@
 				
 				<!--- Postal Code --->
 				<cfif thisField eq "postalCode">
-					<div class="control-group#iif(attributes.address.getCountry().getPostalCodeShowFlag(), de(''), de(' hide'))#" data-sw-property="postalCode">
+					<div class="control-group#request.slatwallScope.getService('hibachiUtilityService').hibachiTernary(attributes.address.getCountry().getPostalCodeShowFlag(), '', ' hide')#" data-sw-property="postalCode">
 						<label class="control-label" for="rating" data-sw-label="true">#request.slatwallScope.rbKey('entity.address.postalCode')#</label>
 						<div class="controls" data-sw-field="true">
 							
