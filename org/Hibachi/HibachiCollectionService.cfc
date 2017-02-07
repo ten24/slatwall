@@ -1,4 +1,6 @@
 component output="false" accessors="true" extends="HibachiService" {
+	property name="hibachiService" type="any";
+	
 	// ===================== START: Logical Methods ===========================
 	public string function getCollectionObjectByCasing(required collection, required string casing){
 		switch(arguments.casing){
@@ -697,11 +699,9 @@ component output="false" accessors="true" extends="HibachiService" {
 				arrayAppend(collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup,filterGroup);
 
 			}
-			collectionConfigExport(collectionEntity.getCollectionConfigStruct());
-//			var collectionData = collectionEntity.getRecords(forExport=true, formatRecords=false);
-//			var headers = StructKeyList(collectionData[1]);
-//			request.debug(StructKeyList(collectionData[1]));
-//			getService('hibachiService').export( collectionData, headers, headers, "ExportCollection", "csv" );
+			var exportCollectionConfigData = {};
+			exportCollectionConfigData['collectionConfig']=serializeJson(collectionEntity.getCollectionConfigStruct());
+			this.collectionConfigExport(exportCollectionConfigData);
 	}//<--end function
 	
 	public void function collectionConfigExport(required struct data) {
@@ -715,15 +715,16 @@ component output="false" accessors="true" extends="HibachiService" {
 		arguments.data.collectionConfig["allRecords"] = true;
 		collectionEntity.setCollectionConfig(serializeJSON(arguments.data.collectionConfig));
 		var collectionData = collectionEntity.getRecords(forExport=true,formatRecords=false);
-		var headers = StructKeyList(collectionData[1]);
-		getService('hibachiService').export( collectionData, headers, headers, arguments.data.collectionConfig.baseEntityName, "csv" );
-
+		var headers = getHeadersListByCollection(collectionEntity);
+		getHibachiService().export( collectionData, headers, headers, arguments.data.collectionConfig.baseEntityName, "csv" );
+			
 	}
 	
-	public string function getHeadersListByCollectionConfigColumns(required array columns){
+	public string function getHeadersListByCollection(required any collectionEntity){
 		var headersList = '';
+		var columns = arguments.collectionEntity.getCollectionConfigStruct().columns;
 		for(var column in columns){
-			headersList = listAppend(headersList,column.propertyIdentifier);
+			headersList = listAppend(headersList,arguments.collectionEntity.getColumnAlias(column));
 		}
 		return headersList;
 	}

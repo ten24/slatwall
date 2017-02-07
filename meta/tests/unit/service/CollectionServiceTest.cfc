@@ -179,11 +179,23 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		}';
 		var collectionData={
 			collectionID="",
-			collectionConfig=collectionConfig
+			collectionConfig=collectionConfig,
+			collectionObject="Account"
 		};
 		var collectionEntity = createPersistedTestEntity('Collection',collectionData);
-		
-		var test = variables.service.collectionsExport();
+		var data = {
+			collectionExportID=collectionEntity.getCollectionID()
+		};
+		var hibachiServiceFake = {};
+		hibachiSerivceFake.export = exportFake;
+		variables.service.setHibachiService(hibachiSerivceFake);
+		variables.service.collectionsExport(data);
+	}
+	
+	
+	
+	private void function exportFake(){
+		return;
 	}
 	
 	public void function getExportableColumnsByCollectionConfigTest(){
@@ -228,7 +240,19 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			{"isDeletable"=true,"isSearchable"=true,"title"="Company","isVisible"=true,"ormtype"="string","propertyIdentifier"="_account.company","isExportable"=false},
 			{"isDeletable"=true,"isSearchable"=true,"title"="Account Locked","isVisible"=true,"ormtype"="timestamp","propertyIdentifier"="_account.loginLockExpiresDateTime","isExportable"=false}
 		];
-		request.debug(variables.service.getHeadersListByCollectionConfigColumns(columns));
+		var collectionConfig = '{
+			"baseEntityName":"Account",
+			"baseEntityAlias":"_account"
+		}';
+		var collectionData={
+			collectionID="",
+			collectionConfig=collectionConfig,
+			collectionObject="Account"
+		};
+		var collectionEntity = createPersistedTestEntity('Collection',collectionData);
+		collectionEntity.getCollectionConfigStruct().columns = columns;
+		
+		assertEquals(variables.service.getHeadersListByCollection(collectionEntity),'accountID,superUserFlag,firstName,lastName,failedLoginAttemptCount,taxExemptFlag,urlTitle,company,loginLockExpiresDateTime');
 	}
 	
 	public void function getPropertyIdentifiersListTest(){
