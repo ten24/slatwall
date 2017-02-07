@@ -70,6 +70,7 @@ Notes:
 	        var hibachiConfig = {
 	            action:'slatAction'
 				,basePartialsPath: '/org/Hibachi/client/src/'
+				,customPartialsPath:'/custom/apps/checkout/slatwallcheckout/templates/angularcore/'
 	        };
 	    </script>
 	</head>

@@ -28,8 +28,9 @@ var frontendmodule = angular.module('frontend', [hibachimodule.name])
 
 }])
 
-.run(['$rootScope', '$hibachi','publicService','hibachiPathBuilder','entityService', function($rootScope, $hibachi, publicService,hibachiPathBuilder,entityService) {
+.run(['$rootScope', '$hibachi','publicService','hibachiPathBuilder','entityService', '$window', function($rootScope, $hibachi, publicService,hibachiPathBuilder,entityService, $window) {
 	$rootScope.slatwall = $rootScope.hibachiScope;
+    
     $rootScope.slatwall.getProcessObject = entityService.newProcessObject;
     $rootScope.slatwall.$hibachi.appConfig.apiSubsystemName = hibachiPathBuilder.apiSubsystemName;
 }])

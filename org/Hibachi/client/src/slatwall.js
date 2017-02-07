@@ -1271,6 +1271,7 @@
 	            .resolve(['$http', '$q', '$timeout', function ($http, $q, $timeout) {
 	                _this.$http = $http;
 	                _this.$q = $q;
+	                console.log("hibachiConfig", hibachiConfig);
 	                var baseURL = hibachiConfig.baseURL;
 	                if (!baseURL) {
 	                    baseURL = '/';
@@ -2400,13 +2401,10 @@
 	                        var serverData;
 	                        if (angular.isDefined(result)) {
 	                            serverData = result;
-	                            _this.finding = false;
 	                            if (serverData.cart.hasErrors) {
 	                                _this.cart.hasErrors = true;
 	                                _this.readyToPlaceOrder = false;
 	                                _this.edit = '';
-	                                _this.giftCardError = _this.cart.errors.addOrderPayment ? _this.cart.errors.addOrderPayment[0] : null;
-	                                _this.finding = false;
 	                            }
 	                        }
 	                        else {
@@ -2677,6 +2675,23 @@
 	                return true;
 	            }
 	            return false;
+	        };
+	        this.isCreatingAccount = function () {
+	            return !_this.hasAccount() && _this.showCreateAccount;
+	        };
+	        this.isSigningIn = function () {
+	            return !_this.hasAccount() && !_this.showCreateAccount;
+	        };
+	        this.forgotPasswordNotSubmitted = function () {
+	            return !_this.account.hasErrors && !_this.account.processObjects.forgotPassword;
+	        };
+	        this.forgotPasswordHasNoErrors = function () {
+	            return _this.account.processObjects && _this.account.processObjects.forgotPassword && !_this.account.processObjects.forgotPassword.hasErrors;
+	        };
+	        this.forgotPasswordError = function () {
+	            if (!_this.forgotPasswordNotSubmitted() && !_this.forgotPasswordHasNoErrors()) {
+	                return _this.account.processObjects.forgotPassword.errors.emailAddress['0'];
+	            }
 	        };
 	        this.orderService = orderService;
 	        this.cartService = cartService;
@@ -8675,7 +8690,6 @@
 	                pre: function (scope, element, attrs) {
 	                    var innerHTML = element[0].innerHTML;
 	                    element[0].innerHTML = '';
-	                    console.log('lement', element);
 	                    var span = '<span ng-if="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '.toString().trim().length">' + innerHTML + '</span><span ng-bind="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '"></span>';
 	                    element.append(span);
 	                },
@@ -13097,7 +13111,7 @@
 	            hibachiPathBuilder.setApiSubsystemName(hibachiConfig.apiSubsystemName);
 	        }
 	    }])
-	    .run(['$rootScope', '$hibachi', 'publicService', 'hibachiPathBuilder', 'entityService', function ($rootScope, $hibachi, publicService, hibachiPathBuilder, entityService) {
+	    .run(['$rootScope', '$hibachi', 'publicService', 'hibachiPathBuilder', 'entityService', '$window', function ($rootScope, $hibachi, publicService, hibachiPathBuilder, entityService, $window) {
 	        $rootScope.slatwall = $rootScope.hibachiScope;
 	        $rootScope.slatwall.getProcessObject = entityService.newProcessObject;
 	        $rootScope.slatwall.$hibachi.appConfig.apiSubsystemName = hibachiPathBuilder.apiSubsystemName;
@@ -19713,8 +19727,7 @@
 	            return (angular.isObject(_this.object));
 	        };
 	        this.submitKeyCheck = function (event) {
-	            console.log('yo');
-	            if (event.form.name = _this.name &&
+	            if (event.form.$name == _this.name &&
 	                event.event.keyCode == 13) {
 	                console.log("this", _this);
 	                console.log("Doing action: ", event.swForm.action);
@@ -19826,8 +19839,10 @@
 	        this.getFormData = function () {
 	            var iterable = _this.formCtrl;
 	            angular.forEach(iterable, function (val, key) {
+	                if (key === "name")
+	                    console.log("name - ", _this.object.forms[_this.name][key]);
 	                if (typeof val === 'object' && val.hasOwnProperty('$modelValue')) {
-	                    console.log(key + ' - ', val);
+	                    console.log(key);
 	                    if (_this.object.forms[_this.name][key].$modelValue) {
 	                        val = _this.object.forms[_this.name][key].$modelValue;
 	                    }
@@ -23719,11 +23734,13 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWFDirectiveController = (function () {
 	    //@ngInject
-	    function SWFDirectiveController($log, $rootScope) {
+	    function SWFDirectiveController($log, $rootScope, $scope) {
 	        this.$log = $log;
 	        this.$rootScope = $rootScope;
+	        this.$scope = $scope;
 	        this.$rootScope = $rootScope;
 	        this.hibachiScope = this.$rootScope.hibachiScope;
+	        $scope.slatwall = $rootScope.slatwall;
 	    }
 	    return SWFDirectiveController;
 	}());
@@ -23785,6 +23802,7 @@
 	        if (!hibachiConfig) {
 	            hibachiConfig = {};
 	        }
+	        console.log('customPartialspath', hibachiConfig.customPartialsPath);
 	        if (!hibachiConfig.customPartialsPath) {
 	            hibachiConfig.customPartialsPath = 'custom/client/src/frontend/';
 	        }

@@ -49,6 +49,7 @@ class PublicService {
     public editPayment:boolean;
     public loading;
     public imagePath = {};
+    public showCreateAccount:boolean;
     ///index.cfm/api/scope/
 
     //@ngInject
@@ -666,15 +667,10 @@ class PublicService {
                     var serverData
                     if (angular.isDefined(result)){
                         serverData = result;
-                        
-                        this.finding = false; 
-                        if (serverData.cart.hasErrors){
-                            
+                        if (serverData.cart.hasErrors){                            
                             this.cart.hasErrors = true;
                             this.readyToPlaceOrder = false;
                             this.edit = '';
-                            this.giftCardError = this.cart.errors.addOrderPayment ? this.cart.errors.addOrderPayment[0] : null;
-                            this.finding = false;
                         }
                     }else{
                         
@@ -985,9 +981,28 @@ class PublicService {
         }
         return false;
     };
-    
-    
 
+    public isCreatingAccount = () =>{
+        return !this.hasAccount() && this.showCreateAccount;
+    }
+
+    public isSigningIn = () =>{
+        return !this.hasAccount() && !this.showCreateAccount;
+    }
+
+    public forgotPasswordNotSubmitted = () =>{
+        return !this.account.hasErrors && !this.account.processObjects.forgotPassword;
+    }
+
+    public forgotPasswordHasNoErrors = ()=>{
+        return this.account.processObjects && this.account.processObjects.forgotPassword && !this.account.processObjects.forgotPassword.hasErrors
+    }
+
+    public forgotPasswordError = ()=>{
+        if(!this.forgotPasswordNotSubmitted() && !this.forgotPasswordHasNoErrors()){
+            return this.account.processObjects.forgotPassword.errors.emailAddress['0']
+        }
+    }
 
 }
 export {PublicService};

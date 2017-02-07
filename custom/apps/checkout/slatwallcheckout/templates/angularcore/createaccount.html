@@ -1,5 +1,4 @@
-<span ng-init="$.slatwall = $root.slatwall"></span>
-<div ng-init="Account_CreateObj = $.slatwall.getProcessObject('Account_Create') "></div>
+<div ng-init="Account_CreateObj = slatwall.getProcessObject('Account_Create') "></div>
 
 <sw-form data-is-process-form="true" data-form-class="cssform" data-error-class="error" data-object="Account_CreateObj" data-on-success="hide:Account_Create,show:Account_Logout" data-name="Account_Create" data-action="createAccount,login" data-event-announcers="keyup">
     <div ng-cloak ng-controller="frontendController">
@@ -60,7 +59,7 @@
         data-modal="false"
         data-type="button"
         data-class="button"
-        data-text="{{($.slatwall.getRequestByAction('createAccount,login').loading ? 'LOADING...' : 'Create Account & Continue')}}"
+        data-text="{{(slatwall.getRequestByAction('createAccount,login').loading ? 'LOADING...' : 'Create Account & Continue')}}"
         data-event-listeners="{Account_Createkeyup:$parent.swForm.submitKeyCheck}">
     </sw-action-caller>
 </sw-form>

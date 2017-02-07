@@ -1,6 +1,4 @@
 <!--- This import allows for the custom tags required by this page to work --->
-<cfimport prefix="sw" taglib="../tags" />
-
 <cfinclude template = "_slatwall-header.cfm">
 
 <cfoutput>
@@ -11,85 +9,74 @@
 
 <!--- Sets the custom template folder --->
 <span ng-init="customTemplateFolder = '/custom/apps/checkout/slatwallcheckout/templates/angularcore/'"></span>
-<!--- Get a copy of slatwall scope --->
-<span ng-init="$.slatwall = $root.slatwall"></span>
 <!--- Sets a default for create account toggle --->
-<span ng-init="$root.slatwall.showCreateAccount = true"></span>
+<span ng-init="slatwall.showCreateAccount = true"></span>
 <!--- Sets a default for editPayment toggle --->
-<span ng-init="$root.slatwall.editPayment = false"></span>
+<span ng-init="slatwall.editPayment = false"></span>
 <!--- Tab statuses --->
-<span ng-if="$root.slatwall.hasAccount()" ng-init="$root.slatwall.edit = 'fulfillment'"></span>
+<span ng-if="slatwall.hasAccount()" ng-init="slatwall.edit = 'fulfillment'"></span>
 
 <!--- Begin Angular Based Checkout. --->
 <section>
-	    <!--- Full Page Loader --->
-	    <div class="loading" ng-if="$root.slatwall.getRequestByAction('getCart').loading || $root.slatwall.getRequestByAction('getAccount').loading" style="background-color:##DDD1B3;color:black">
-	        <div class="spinner">
-	            <div class="bounce1"></div>
-	            <div class="bounce2"></div>
-	            <div class="bounce3"></div>
-	        </div>
-	    </div>
-
     <!--- order summary, promo code, and mini-cart --->
         <div class="row ng-cloak">
             <!--- CHECKOUT: ACCOUNT / LOGIN --->
             <div class="col-sm-8">
 	            <!-- Tab heading 1 - Account Login / Create / Edit -->
 	            <div class="panel panel-default panel-body" ng-cloak>
-	                <h3 ng-class="(!$root.slatwall.hasAccount()) ? 'active' : ''" ng-show="$root.slatwall.showCreateAccount && !$root.slatwall.hasAccount()">Create An Account</h3>
-	                <h3 ng-class="(!$root.slatwall.hasAccount()) ? 'active' : ''" ng-show="!$root.slatwall.showCreateAccount && !$root.slatwall.hasAccount()">Sign in to your Account</h3>
-	                <h3 ng-class="(!$root.slatwall.hasAccount()) ? 'active' : ''" ng-show="$root.slatwall.hasAccount()">Account - {{$root.slatwall.account.firstName}} {{$root.slatwall.account.lastName}}</h3>
-	                <p ng-show="$root.slatwall.hasAccount()">Not you? 
+	                <h3 ng-show="slatwall.isCreatingAccount()">Create An Account</h3>
+	                <h3 ng-show="slatwall.isSigningIn()">Sign in to your Account</h3>
+	                <h3 ng-show="slatwall.hasAccount()">Account - {{slatwall.account.firstName}} {{slatwall.account.lastName}}</h3>
+	                <p ng-show="slatwall.hasAccount()">Not you? 
 	                	<sw-action-caller
-				        data-action="public:account.logout"
-				        data-modal="false"
-				        data-type="link"
-				        data-error-class="error"
-				        data-text="Logout">
+					        data-action="public:account.logout"
+					        data-modal="false"
+					        data-type="link"
+					        data-error-class="error"
+					        data-text="Logout">
 				    	</sw-action-caller>
 			    	</p>
 
-	                <div class="details" ng-show="!$root.slatwall.hasAccount() && $root.slatwall.showCreateAccount">
-	                    <p>Already have an account?  <a href="##" class="loginCreateToggle" ng-click="$root.slatwall.showCreateAccount = !$root.slatwall.showCreateAccount">Sign in</a></p>
-						<swf-directive partial-path="{{customTemplateFolder}}" partial-name="createaccount"></swf-directive>
+	                <div class="details" ng-show="slatwall.isCreatingAccount()">
+	                    <p>Already have an account?  <a href="##" class="loginCreateToggle" ng-click="slatwall.showCreateAccount = !slatwall.showCreateAccount">Sign in</a></p>
+						<swf-directive partial-name="createaccount"></swf-directive>
 					</div>
 
-	                <div class="details" ng-show="!$root.slatwall.hasAccount() && !$root.slatwall.showCreateAccount">
+	                <div class="details" ng-show="slatwall.isSigningIn()">
 						<swf-directive partial-path="{{customTemplateFolder}}" partial-name="login"></swf-directive>
-	                    <p>Need an account? <a href="##" class="loginCreateToggle" ng-click="$root.slatwall.showCreateAccount = !$root.slatwall.showCreateAccount; $root.slatwall.forgotPassword = false">Create Account</a></p>
+	                    <p>Need an account? <a href="##" class="loginCreateToggle" ng-click="slatwall.showCreateAccount = !slatwall.showCreateAccount; slatwall.forgotPassword = false">Create Account</a></p>
 					</div>
 	            </div>
 
 	            <!-- Tab heading 2 - Fulfillment / Method / Edit -->
-	            <div class="panel panel-default panel-body" ng-cloak ng-show="$root.slatwall.hasAccount()">
-	                <h3 ng-class="(($root.slatwall.fulfillmentTabIsActive()) ? 'active' : '')">
-	                <a href="##" class="pull-right" ng-click="$root.slatwall.edit = 'fulfillment'"><i class="fa fa-pencil-square-o" ng-if="!$root.slatwall.fulfillmentTabIsActive() && $root.slatwall.hasAccount()" aria-hidden="true"></i></a>
-					<a href="##" class="pull-right" ng-if="$root.slatwall.edit=='fulfillment'" ng-click="$root.slatwall.edit = ''"><i class="fa fa-check-circle"></i></a>
+	            <div class="panel panel-default panel-body" ng-cloak ng-show="slatwall.hasAccount()">
+	                <h3 ng-class="((slatwall.fulfillmentTabIsActive()) ? 'active' : '')">
+	                <a href="##" class="pull-right" ng-click="slatwall.edit = 'fulfillment'"><i class="fa fa-pencil-square-o" ng-if="!slatwall.fulfillmentTabIsActive() && slatwall.hasAccount()" aria-hidden="true"></i></a>
+					<a href="##" class="pull-right" ng-if="slatwall.edit=='fulfillment'" ng-click="slatwall.edit = ''"><i class="fa fa-check-circle"></i></a>
 					Fulfillment Information</h3>
-	                <div ng-show="$root.slatwall.hasAccount() && $root.slatwall.fulfillmentTabIsActive()">
-	                    <div class="details" ng-show="$root.slatwall.hasShippingFulfillmentMethod()">
+	                <div ng-show="slatwall.hasAccount() && slatwall.fulfillmentTabIsActive()">
+	                    <div class="details" ng-show="slatwall.hasShippingFulfillmentMethod()">
 	                        <swf-directive partial-path="{{customTemplateFolder}}" partial-name="addshippingaddresspartial"></swf-directive>
 	                    </div>
-	                    <div class="details" ng-show="$root.slatwall.hasEmailFulfillmentMethod()">
+	                    <div class="details" ng-show="slatwall.hasEmailFulfillmentMethod()">
 	                    	<swf-directive partial-path="{{customTemplateFolder}}" partial-name="addemailfulfillmentaddresspartial"></swf-directive>
 	                    </div>
-	                    <div class="details" ng-show="$root.slatwall.hasPickupFulfillmentMethod()">
+	                    <div class="details" ng-show="slatwall.hasPickupFulfillmentMethod()">
 	                        <swf-directive partial-path="{{customTemplateFolder}}" partial-name="deliverystorepickup"></swf-directive>
 	                    </div>
 	                </div>
 	            </div>
 
 	            <!--- Tab heading 3 - Order Payment / Billing Address / Place Order / Edit --->
-	            <div class="content-block panel panel-default panel-body" ng-show="$root.slatwall.hasAccount()"><!--- ng-class="{'disabled' : showPaymentTabBody() == false}" --->
+	            <div class="content-block panel panel-default panel-body" ng-show="slatwall.hasAccount()"><!--- ng-class="{'disabled' : showPaymentTabBody() == false}" --->
 					<div class="content-header">
-						<h3 ng-class="(($root.slatwall.paymentTabIsActive()) ? 'active' : '')">
-			                <a href="##" class="pull-right" ng-click="$root.slatwall.edit = 'payment'"><i class="fa fa-pencil-square-o" ng-if="!$root.slatwall.paymentTabIsActive() && $root.slatwall.hasAccount()" aria-hidden="true"></i></a>
-							<a href="##" class="pull-right" ng-if="$root.slatwall.paymentTabIsActive()" ng-click="$root.slatwall.edit = ''"><i class="fa fa-check-circle"></i></a>
+						<h3 ng-class="((slatwall.paymentTabIsActive()) ? 'active' : '')">
+			                <a href="##" class="pull-right" ng-click="slatwall.edit = 'payment'"><i class="fa fa-pencil-square-o" ng-if="!slatwall.paymentTabIsActive() && slatwall.hasAccount()" aria-hidden="true"></i></a>
+							<a href="##" class="pull-right" ng-if="slatwall.paymentTabIsActive()" ng-click="slatwall.edit = ''"><i class="fa fa-check-circle"></i></a>
 							Payment Information
 						</h3>
 					</div>
-					<div class="content-body" ng-show="$root.slatwall.showPaymentTabBody()">
+					<div class="content-body" ng-show="slatwall.showPaymentTabBody()">
 						<div class="col-sm-12 payment-options">
 							<swf-directive partial-path="{{customTemplateFolder}}" partial-name="savedcreditcards"></swf-directive>
 							<div class="panel-group payments-options" id="accordion" role="tablist" aria-multiselectable="true">
@@ -156,15 +143,15 @@
 					            <div class="row giftcard-input">
 					                <div class="col-sm-8 form-group">
 					                    <input type="text" class="form-control" ng-model="giftCardCodeToApply">
-					                    <span class="error" ng-if="$root.slatwall.cart.orderPayments[0].errors['giftCard']">{{slatwall.cart.orderPayments[0].errors['giftCard']}}</span>
+					                    <span class="error" ng-if="slatwall.cart.orderPayments[0].errors['giftCard']">{{slatwall.cart.orderPayments[0].errors['giftCard']}}</span>
 					                </div>
 					                <div class="col-sm-4 form-group">
-					                    <button type="button" name="button" class="btn btn-block" ng-click="$root.slatwall.applyGiftCard(giftCardCodeToApply);">{{($root.slatwall.finding)?'Finding':'Add Gift Card'}}</button>
+					                    <button type="button" name="button" class="btn btn-block" ng-click="slatwall.applyGiftCard(giftCardCodeToApply);">{{(slatwall.finding)?'Finding':'Add Gift Card'}}</button>
 					                </div>
 					            </div>
 					            
 					            <div class="selected-gift-cards-wrapper" ng-repeat="payment in slatwall.cart.orderPayments track by $index">
-					                <div class="selected-gift-card" ng-show="$root.slatwall.cart.orderPayments[$index].giftCard.giftCardCode">
+					                <div class="selected-gift-card" ng-show="slatwall.cart.orderPayments[$index].giftCard.giftCardCode">
 					                    <div class="col-xs-6 left-side">
 					                        <span>
 					                            <i class="fa fa-credit-card"></i>
@@ -184,10 +171,10 @@
 					                </div>
 					           </div>
 					        </div>
-					        <div class="col-md-4 checkout-help" ng-show="$root.slatwall.hasGiftCardPaymentMethod()">
-					            <div class="alert" ng-class="{'alert-danger':$root.slatwall.getTotalMinusGiftCards() > 0, 'alert-success':$root.slatwall.getTotalMinusGiftCards() <= 0}">
-					                <h4>Balance Due: {{$root.slatwall.getTotalMinusGiftCards() | currency}}</h4>
-					                <p ng-show="$root.slatwall.getTotalMinusGiftCards() > 0">You have a remaining balance of  {{$root.slatwall.getTotalMinusGiftCards() | currency}}.  Please choose an additional payment method to complete your order.</p>
+					        <div class="col-md-4 checkout-help" ng-show="slatwall.hasGiftCardPaymentMethod()">
+					            <div class="alert" ng-class="{'alert-danger':slatwall.getTotalMinusGiftCards() > 0, 'alert-success':slatwall.getTotalMinusGiftCards() <= 0}">
+					                <h4>Balance Due: {{slatwall.getTotalMinusGiftCards() | currency}}</h4>
+					                <p ng-show="slatwall.getTotalMinusGiftCards() > 0">You have a remaining balance of  {{slatwall.getTotalMinusGiftCards() | currency}}.  Please choose an additional payment method to complete your order.</p>
 					            </div>
 					        </div>
 					    </div>
@@ -195,35 +182,35 @@
 				</div>
 
 	            <!--- Tab heading 4 - Review / Place Order --->
-	            <div class="panel panel-default panel-body" ng-cloak ng-show="$root.slatwall.hasAccount()">
-	                <h3 ng-class="($root.slatwall.reviewTabIsActive() ? 'active' : '')">
-	                <a href="##" class="pull-right" ng-click="$root.slatwall.edit = 'review'" ng-if="$root.slatwall.edit!='review' && $root.slatwall.edit!='' && $root.slatwall.hasAccount()""><i class="fa fa-eye"></i></a>Review Order</h3>
+	            <div class="panel panel-default panel-body" ng-cloak ng-show="slatwall.hasAccount()">
+	                <h3 ng-class="(slatwall.reviewTabIsActive() ? 'active' : '')">
+	                <a href="##" class="pull-right" ng-click="slatwall.edit = 'review'" ng-if="slatwall.edit!='review' && slatwall.edit!='' && slatwall.hasAccount()""><i class="fa fa-eye"></i></a>Review Order</h3>
 
-	                <div ng-show="$root.slatwall.hasAccount() && $root.slatwall.showReviewTabBody()">
+	                <div ng-show="slatwall.hasAccount() && slatwall.showReviewTabBody()">
 	                    <div class="details revieworder">
 							<div class="row">
 		                        <div class="payment_info col-sm-4">
 		                            <fieldset>
 										<legend>Billing & Payment</legend>
-		                            	<swf-directive partial-path="{{customTemplateFolder}}review/" partial-name="orderpaymentsummary"></swf-directive>
+		                            	<swf-directive partial-name="review/orderpaymentsummary"></swf-directive>
 									</fieldset>
 		                        </div>
 								<!--- Shipping --->
-								<div class="shipping_info col-sm-4" ng-if="$root.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex >= 0">
+								<div class="shipping_info col-sm-4" ng-if="slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex >= 0">
 									<fieldset>
 										<legend>Shipping</legend>
 										<swf-directive partial-path="{{customTemplateFolder}}review/" partial-name="ordershippingsummary"></swf-directive>
 									</fieldset>
 								</div>
 								<!--- Pickup --->
-								<div class="shipping_info col-sm-4" ng-if="$root.slatwall.cart.orderFulfillmentWithPickupTypeIndex >= 0">
+								<div class="shipping_info col-sm-4" ng-if="slatwall.cart.orderFulfillmentWithPickupTypeIndex >= 0">
 									<fieldset>
 										<legend>Pickup</legend>
 										<swf-directive partial-path="{{customTemplateFolder}}review/" partial-name="orderpickupsummary"></swf-directive>
 									</fieldset>
 								</div>
 								<!--- Email --->
-								<div class="shipping_info col-sm-4" ng-if="$root.slatwall.cart.orderFulfillmentWithEmailTypeIndex >= 0">
+								<div class="shipping_info col-sm-4" ng-if="slatwall.cart.orderFulfillmentWithEmailTypeIndex >= 0">
 									<fieldset>
 										<legend>Email</legend>
 										<swf-directive partial-path="{{customTemplateFolder}}review/" partial-name="orderemailsummary"></swf-directive>
@@ -235,7 +222,7 @@
                                 <form action="?s=1" method="post">
                                     <input type="hidden" name="sRedirectURL" value="/order-confirmation/" />
                                     <input type="hidden" name="slatAction" value="public:cart.placeOrder" />
-                                    <input type="submit" class="review button" value="{{( $root.slatwall.placeOrderNow ? 'Submitting Order...' : 'Place Order')}}" ng-click="$root.slatwall.placeOrderNow = true">
+                                    <input type="submit" class="review button" value="{{( slatwall.placeOrderNow ? 'Submitting Order...' : 'Place Order')}}" ng-click="slatwall.placeOrderNow = true">
                                 </form>
                             </div>
 	                    </div>
@@ -244,7 +231,7 @@
           	</div>
 
 		  
-		  <div class="col-sm-4" ng-show="$root.slatwall.hasAccount()">
+		  <div class="col-sm-4" ng-show="slatwall.hasAccount()">
 			  
 
 			  <!--- CART SUMMARY --->
@@ -274,7 +261,7 @@
 
        	</div>
 
-	    <div ng-if="!$root.slatwall.getRequestByAction('getCart').loading && $root.slatwall.hasAccount() && $root.slatwall.cart && $root.slatwall.cart.orderItems && !$root.slatwall.cart.orderItems.length && !$root.slatwall.loading && !$root.slatwall.orderPlaced" class="alert alert-warning ng-cloak">
+	    <div ng-if="!slatwall.getRequestByAction('getCart').loading && slatwall.hasAccount() && slatwall.cart && slatwall.cart.orderItems && !slatwall.cart.orderItems.length && !slatwall.loading && !slatwall.orderPlaced" class="alert alert-warning ng-cloak">
 	        <i class="fa fa-info-circle"></i> There are no items in your cart.
 	    </div>
 	</div>

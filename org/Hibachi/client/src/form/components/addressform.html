@@ -11,8 +11,7 @@
 		    data-class="new_address"
 		    data-name="{{SwAddressForm.addressName}}"
 		    data-event-announcers="keyup"
-		    data-action="{{SwAddressForm.action}}"
-		    data-event-listeners="{keyup:$$childHead.swForm.submitKeyCheck}">			    
+		    data-action="{{SwAddressForm.action}}">			    
 			    <div class="row" ng-cloak>
 			    	<!--- Show address book dropdown? --->
 			    	<div class="col-sm-6" ng-if="SwAddressForm.showAddressBookSelect == 'true'">
@@ -199,6 +198,7 @@
 			  		<div class="row" ng-show="SwAddressForm.showSubmitButton == 'true'" style="padding-top:20px">
 				  		<div class="col-xs-5" >
 					    	<sw-action-caller
+					    		data-event-listeners="{keyup:$parent.swForm.submitKeyCheck}"
 								data-modal="false" 
 								data-type="button" 
 								data-class="btn-yellow"

@@ -4,10 +4,12 @@ declare var hibachiConfig:any;
 
 class SWFDirectiveController {
     private hibachiScope;
+    public $root;
     //@ngInject
-    constructor(private $log, public $rootScope) {
+    constructor(private $log, public $rootScope, public $scope) {
         this.$rootScope = $rootScope;
         this.hibachiScope = this.$rootScope.hibachiScope;
+        $scope.slatwall = $rootScope.slatwall;
     }
 }
 
@@ -32,10 +34,12 @@ class SWFDirective implements ng.IDirective {
         if(!hibachiConfig){
             hibachiConfig = {};    
         }
-        
+        console.log('customPartialspath', hibachiConfig.customPartialsPath);
         if (!hibachiConfig.customPartialsPath) {
             hibachiConfig.customPartialsPath = 'custom/client/src/frontend/';
         }
+
+
 
         this.templatePath = hibachiConfig.customPartialsPath;
         this.url = hibachiConfig.customPartialsPath + 'swfdirectivepartial.html';

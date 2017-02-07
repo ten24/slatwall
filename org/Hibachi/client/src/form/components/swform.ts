@@ -111,8 +111,7 @@ class SWFormController {
     }
 
     public submitKeyCheck = (event) => {
-        console.log('yo');
-        if(event.form.name = this.name &&
+        if(event.form.$name == this.name &&
             event.event.keyCode == 13){
             console.log("this", this);
             console.log("Doing action: ", event.swForm.action)
@@ -236,9 +235,9 @@ class SWFormController {
         var iterable = this.formCtrl;
  
         angular.forEach(iterable, (val, key) => {
-            
+            if(key==="name") console.log("name - ", this.object.forms[this.name][key]);
             if(typeof val === 'object' && val.hasOwnProperty('$modelValue')){
-                console.log(key + ' - ' , val)
+                console.log(key)
                  if(this.object.forms[this.name][key].$modelValue){
                     val = this.object.forms[this.name][key].$modelValue;
                 }else if(this.object.forms[this.name][key].$viewValue){
