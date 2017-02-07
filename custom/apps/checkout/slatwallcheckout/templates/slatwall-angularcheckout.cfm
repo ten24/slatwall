@@ -44,17 +44,17 @@
 
 	                <div class="details" ng-show="slatwall.isSigningIn()">
 						<swf-directive partial-path="{{customTemplateFolder}}" partial-name="login"></swf-directive>
-	                    <p>Need an account? <a href="##" class="loginCreateToggle" ng-click="slatwall.showCreateAccount = !slatwall.showCreateAccount; slatwall.forgotPassword = false">Create Account</a></p>
+	                    <p>Need an account? <a href="##" class="loginCreateToggle" ng-click="slatwall.showCreateAccount = !slatwall.showCreateAccount; slatwall.showForgotPassword = false">Create Account</a></p>
 					</div>
 	            </div>
 
 	            <!-- Tab heading 2 - Fulfillment / Method / Edit -->
 	            <div class="panel panel-default panel-body" ng-cloak ng-show="slatwall.hasAccount()">
-	                <h3 ng-class="((slatwall.fulfillmentTabIsActive()) ? 'active' : '')">
-	                <a href="##" class="pull-right" ng-click="slatwall.edit = 'fulfillment'"><i class="fa fa-pencil-square-o" ng-if="!slatwall.fulfillmentTabIsActive() && slatwall.hasAccount()" aria-hidden="true"></i></a>
+	                <h3>
+	                <a href="##" class="pull-right" ng-click="slatwall.edit = 'fulfillment'"><i class="fa fa-pencil-square-o" ng-if="!slatwall.fulfillmentTabIsActive()" aria-hidden="true"></i></a>
 					<a href="##" class="pull-right" ng-if="slatwall.edit=='fulfillment'" ng-click="slatwall.edit = ''"><i class="fa fa-check-circle"></i></a>
 					Fulfillment Information</h3>
-	                <div ng-show="slatwall.hasAccount() && slatwall.fulfillmentTabIsActive()">
+	                <div ng-show="slatwall.fulfillmentTabIsActive()">
 	                    <div class="details" ng-show="slatwall.hasShippingFulfillmentMethod()">
 	                        <swf-directive partial-path="{{customTemplateFolder}}" partial-name="addshippingaddresspartial"></swf-directive>
 	                    </div>

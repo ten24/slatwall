@@ -2618,6 +2618,8 @@
 	       *
 	       */
 	        this.showFulfillmentTabBody = function () {
+	            if (!_this.hasAccount())
+	                return false;
 	            if ((_this.cart.orderRequirementsList.indexOf('account') == -1) && _this.account.accountID &&
 	                (_this.cart.orderRequirementsList.indexOf('fulfillment') != -1) ||
 	                (_this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
@@ -2633,6 +2635,8 @@
 	         *
 	         */
 	        this.showPaymentTabBody = function () {
+	            if (!_this.hasAccount())
+	                return false;
 	            if ((_this.cart.orderRequirementsList.indexOf('account') == -1) && _this.account.accountID &&
 	                (_this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
 	                (_this.cart.orderRequirementsList.indexOf('payment') != -1) && _this.edit == '' ||
@@ -2648,6 +2652,8 @@
 	         *
 	         */
 	        this.showReviewTabBody = function () {
+	            if (!_this.hasAccount())
+	                return false;
 	            if ((_this.cart.orderRequirementsList.indexOf('account') == -1) && _this.account.accountID &&
 	                (_this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
 	                (_this.cart.orderRequirementsList.indexOf('payment') == -1) &&
@@ -2658,6 +2664,8 @@
 	        };
 	        /** Returns true if the fulfillment tab should be active */
 	        this.fulfillmentTabIsActive = function () {
+	            if (!_this.hasAccount())
+	                return false;
 	            if ((_this.edit == 'fulfillment') ||
 	                (_this.edit == '' && ((_this.cart.orderRequirementsList.indexOf('account') == -1) && _this.account.accountID) &&
 	                    (_this.cart.orderRequirementsList.indexOf('fulfillment') != -1))) {
@@ -2667,6 +2675,8 @@
 	        };
 	        /** Returns true if the payment tab should be active */
 	        this.paymentTabIsActive = function () {
+	            if (!_this.hasAccount())
+	                return false;
 	            if ((_this.edit == 'payment') ||
 	                (_this.edit == '' &&
 	                    (_this.cart.orderRequirementsList.indexOf('account') == -1) && _this.account.accountID &&
@@ -2683,7 +2693,7 @@
 	            return !_this.hasAccount() && !_this.showCreateAccount;
 	        };
 	        this.forgotPasswordNotSubmitted = function () {
-	            return !_this.account.hasErrors && !_this.account.processObjects.forgotPassword;
+	            return !_this.account.processObjects || (!_this.account.hasErrors && !_this.account.processObjects.forgotPassword);
 	        };
 	        this.forgotPasswordHasNoErrors = function () {
 	            return _this.account.processObjects && _this.account.processObjects.forgotPassword && !_this.account.processObjects.forgotPassword.hasErrors;
@@ -2692,6 +2702,25 @@
 	            if (!_this.forgotPasswordNotSubmitted() && !_this.forgotPasswordHasNoErrors()) {
 	                return _this.account.processObjects.forgotPassword.errors.emailAddress['0'];
 	            }
+	        };
+	        this.hideAccountAddressForm = function () {
+	            _this.accountAddressEditFormIndex = undefined;
+	        };
+	        this.showEditAccountAddressForm = function () {
+	            return _this.accountAddressEditFormIndex != undefined && _this.accountAddressEditFormIndex != 'new';
+	        };
+	        this.showNewAccountAddressForm = function () {
+	            return _this.accountAddressEditFormIndex == 'new';
+	        };
+	        this.accountAddressIsSelectedShippingAddress = function (key) {
+	            if (_this.account &&
+	                _this.account.accountAddresses &&
+	                _this.cart.orderFulfillments &&
+	                _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex] &&
+	                _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress) {
+	                return _this.account.accountAddresses[key].address.addressID === _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.addressID;
+	            }
+	            return false;
 	        };
 	        this.orderService = orderService;
 	        this.cartService = cartService;

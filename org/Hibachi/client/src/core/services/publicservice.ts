@@ -36,6 +36,7 @@ class PublicService {
     public shippingAddress = "";
     public emailFulfillmentAddress:any;
     public billingAddress:any;
+    public accountAddressEditFormIndex:any;
     public billingAddressEditFormIndex:any;
     public selectedBillingAddress:any;
     public editBillingAddress:any;
@@ -920,6 +921,7 @@ class PublicService {
      *
      */
     public showFulfillmentTabBody = ()=> {
+        if(!this.hasAccount()) return false;
         if ((this.cart.orderRequirementsList.indexOf('account') == -1) && this.account.accountID &&
             (this.cart.orderRequirementsList.indexOf('fulfillment') != -1) ||
             (this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
@@ -936,6 +938,7 @@ class PublicService {
      */
    
     public showPaymentTabBody = ()=> {
+        if(!this.hasAccount()) return false;
         if ((this.cart.orderRequirementsList.indexOf('account') == -1) && this.account.accountID &&
             (this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
             (this.cart.orderRequirementsList.indexOf('payment') != -1) && this.edit == '' ||
@@ -952,6 +955,7 @@ class PublicService {
      *
      */
     public showReviewTabBody = ()=> {
+        if(!this.hasAccount()) return false;
         if ((this.cart.orderRequirementsList.indexOf('account') == -1) && this.account.accountID &&
             (this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
             (this.cart.orderRequirementsList.indexOf('payment') == -1) &&
@@ -962,6 +966,8 @@ class PublicService {
     };
     /** Returns true if the fulfillment tab should be active */
     public fulfillmentTabIsActive = ()=> {
+        if(!this.hasAccount()) return false;
+
         if ((this.edit == 'fulfillment') ||
             (this.edit == '' && ((this.cart.orderRequirementsList.indexOf('account') == -1) && this.account.accountID) &&
                 (this.cart.orderRequirementsList.indexOf('fulfillment') != -1))) {
@@ -972,6 +978,7 @@ class PublicService {
 
     /** Returns true if the payment tab should be active */
     public paymentTabIsActive = ()=> {
+        if(!this.hasAccount()) return false;
         if ((this.edit == 'payment') ||
             (this.edit == '' &&
                 (this.cart.orderRequirementsList.indexOf('account') == -1) && this.account.accountID &&
@@ -991,7 +998,7 @@ class PublicService {
     }
 
     public forgotPasswordNotSubmitted = () =>{
-        return !this.account.hasErrors && !this.account.processObjects.forgotPassword;
+        return !this.account.processObjects || (!this.account.hasErrors && !this.account.processObjects.forgotPassword);
     }
 
     public forgotPasswordHasNoErrors = ()=>{
@@ -1003,6 +1010,30 @@ class PublicService {
             return this.account.processObjects.forgotPassword.errors.emailAddress['0']
         }
     }
+
+    public hideAccountAddressForm = ()=>{
+        this.accountAddressEditFormIndex = undefined;
+    }
+
+    public showEditAccountAddressForm = ()=>{
+        return this.accountAddressEditFormIndex != undefined && this.accountAddressEditFormIndex != 'new';
+    }
+
+    public showNewAccountAddressForm = ()=>{
+        return this.accountAddressEditFormIndex == 'new';
+    }
+
+    public accountAddressIsSelectedShippingAddress = (key) =>{
+        if(this.account && 
+           this.account.accountAddresses &&
+           this.cart.orderFulfillments &&
+           this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex] &&
+           this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress){
+            return this.account.accountAddresses[key].address.addressID === this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.addressID
+        }
+        return false;
+    }
+
 
 }
 export {PublicService};

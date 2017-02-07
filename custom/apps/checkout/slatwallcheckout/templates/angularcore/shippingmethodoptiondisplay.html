@@ -1,30 +1,35 @@
 <!--- SELECT SHIPPING METHOD --->
-<div class="method col-md-12" ng-if="$root.slatwall.cart.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.addressID">
+<div class="method col-md-12" ng-if="slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.addressID">
 	<hr/>
     <div class="row">
                                             
             <div class="col-md-12 method">
 				<h4>Select Shipping Method</h4>
-			    <!-- Add save shipping method to API and add public service method in $root.slatwall... -->
-			    <p class="shippingMethodOption" ng-repeat="option in $root.slatwall.cart.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethodOptions track by $index">
-			    	<input type="radio" name="cb{{option.shippingMethodCode}}" id="check{{optionValue}}" ng-model="rememberMe[$index]" ng-click="rememberMe[$index]=true;$root.slatwall.selectedMethod = option.value;$root.slatwall.nextClicked=false;$root.slatwall.doAction('addShippingMethodUsingShippingMethodID', {'shippingMethodID': option.value });" ng-checked="(option.value == $root.slatwall.cart.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethod.shippingMethodID) || $root.slatwall.cart.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethodOptions.length == 1"/>
-			        <label for="cb{{option.shippingMethodCode}}" ng-click="rememberMe[$index]=true;$root.slatwall.selectedMethod = option.value;$root.slatwall.doAction('addShippingMethodUsingShippingMethodID', {'shippingMethodID': option.value });$root.slatwall.getCart()">{{option.name}}</label>
+			    <!-- Add save shipping method to API and add public service method in slatwall... -->
+			    <p class="shippingMethodOption" 
+			    ng-repeat="option in slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethodOptions track by $index" 
+			    ng-click="slatwall.doAction('addShippingMethodUsingShippingMethodID', {'shippingMethodID': option.value , 'orderFulfillmentWithShippingMethodOptionsIndex':slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex});
+			    rememberMe[$index] = true;">
+			    	<input type="radio" name="cb{{option.shippingMethodCode}}" id="check{{optionValue}}"
+			    	ng-model="rememberMe[$index]" 
+			    	ng-checked="(option.value == slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethod.shippingMethodID) || slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethodOptions.length == 1"/>
+			        <label for="cb{{option.shippingMethodCode}}">{{option.name}}</label>
 				</p>
-				<div class="loader-wrapper" ng-show="$root.slatwall.getRequestByAction('addShippingMethodUsingShippingMethodID').loading">
+				<div class="loader-wrapper" ng-show="slatwall.getRequestByAction('addShippingMethodUsingShippingMethodID').loading">
 					<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
 				</div>
 			</div>
 			<!-- Show a message if the user tries to get to the payment tab before selecting a shipping method -->
 			<div class="col-md-12 checkout-step-btn">
-				<div class="error alert alert-danger" ng-if="$root.slatwall.nextClicked && $root.slatwall.disableContinueToPayment()">
+				<div class="error alert alert-danger" ng-if="slatwall.nextClicked && slatwall.disableContinueToPayment()">
 					Please select a shipping method before continuing to payment
 			    </div>
 			</div>
 			
-			<div class="col-md-12 checkout-step-btn" ng-mouseover="$root.slatwall.nextClicked=true">
+			<div class="col-md-12 checkout-step-btn" ng-mouseover="slatwall.nextClicked=true">
 				<span class="next-step-btn" style="padding:20px">
 					<!-- Click event fires even though disabled so need to check the ng-disabled event before firing-->
-			    	<input type="submit" class="btn-yellow" value="Continue to Payment" ng-click="$root.slatwall.edit = 'payment'"/>
+			    	<input type="submit" class="btn-yellow" value="Continue to Payment" ng-click="slatwall.edit = 'payment'"/>
 				</span>
 			</div>
 	</div>
