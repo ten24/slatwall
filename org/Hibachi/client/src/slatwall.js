@@ -2725,6 +2725,19 @@
 	        this.hasEmailFulfillmentAddress = function () {
 	            return _this.cart.orderFulfillmentWithEmailTypeIndex > -1 && _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithEmailTypeIndex].emailAddress;
 	        };
+	        this.getPickupLocation = function () {
+	            return _this.cart.data.orderFulfillments[_this.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation;
+	        };
+	        this.namelessPickupLocation = function () {
+	            if (!_this.getPickupLocation())
+	                return false;
+	            return _this.getPickupLocation().primaryAddress != undefined && _this.getPickupLocation().locationName == undefined;
+	        };
+	        this.noPickupLocation = function () {
+	            if (!_this.getPickupLocation())
+	                return true;
+	            return _this.getPickupLocation().primaryAddress == undefined && _this.getPickupLocation().locationName == undefined;
+	        };
 	        this.orderService = orderService;
 	        this.cartService = cartService;
 	        this.accountService = accountService;

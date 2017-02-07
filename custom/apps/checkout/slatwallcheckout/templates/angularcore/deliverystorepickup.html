@@ -1,28 +1,27 @@
-<div class="row" ng-controller="frontendController">
+<div class="row">
 	<div class="col-sm-7">
 		<h4>Store Pickup</h4>
-		<span ng-init="$.slatwall = $root.slatwall"></span>
 		<i class="fa fa-map-marker fa-3x icon-left"></i>
 		<span>
-			<h5>Your selected store: <span ng-if="$root.slatwall.cart.data.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation.locationName != undefined">
-				<span ng-if="$root.slatwall.cart.data.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation.locationName != undefined">
-					{{$root.slatwall.cart.data.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation.locationName}}
+			<h5>Your selected store: <span ng-if="slatwall.getPickupLocation().locationName != undefined">
+				<span ng-if="slatwall.getPickupLocation().locationName != undefined">
+					{{slatwall.getPickupLocation().locationName}}
 				</span>
-				<span ng-if="$root.slatwall.cart.data.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation.primaryAddress != undefined && $root.slatwall.cart.data.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation.locationName == undefined">
-					{{$root.slatwall.cart.data.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation.primaryAddress.address.streetAddress}} {{$root.slatwall.cart.data.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation.primaryAddress.address.city}}</span>
+				<span ng-if="slatwall.namelessPickupLocation()">
+					{{slatwall.getPickupLocation().primaryAddress.address.streetAddress}} {{slatwall.getPickupLocation().primaryAddress.address.city}}</span>
 				</span>
-				<span ng-if="$root.slatwall.account.data.preferredLocation.primaryAddress == undefined && $root.slatwall.cart.data.orderFulfillments[0].pickupLocation.locationName == undefined">None</span></h5>
-			<a href="#" ng-click="$.slatwall.stores = !$.slatwall.stores;" ng-if="$.slatwall.account.data.preferredLocation.primaryAddress != undefined">Change store</a>
+				<span ng-if="slatwall.noPickupLocation()">None</span></h5>
+			<a href="#" ng-click="slatwall.stores = !slatwall.stores;" ng-if="slatwall.getPickupLocation().primaryAddress != undefined">Change store</a>
 		</span>
 
-		<div ng-if="($.slatwall.stores || !$.slatwall.account.data.preferredLocation)" style="padding-top:30px">
-			<span ng-if="$.slatwall.loading || $.slatwall.getRequestByAction('getAccount').loading">Loading Stores...</span>
+		<div ng-if="slatwall.stores || !slatwall.getPickupLocation().primaryAddress" style="padding-top:30px">
+			<span ng-if="slatwall.loading || slatwall.getRequestByAction('getAccount').loading">Loading Stores...</span>
 
 			<div>
 
 				<sw-typeahead-input-field
 					data-entity-name="Location"
-					data-field-name="preferredLocation"
+					data-field-name="pickupLocation"
 					data-property-to-save="locationID"
 					data-properties-to-load="locationName,primaryAddress.address.city,primaryAddress.address.stateCode,primaryAddress.address.postalCode"
 					data-show-add-button="true"

@@ -1037,7 +1037,19 @@ class PublicService {
     public hasEmailFulfillmentAddress = ()=>{
         return this.cart.orderFulfillmentWithEmailTypeIndex > -1 && this.cart.orderFulfillments[this.cart.orderFulfillmentWithEmailTypeIndex].emailAddress
     }
+    public getPickupLocation = () => {
+        return this.cart.data.orderFulfillments[this.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation;
+    }
 
+    public namelessPickupLocation = () => {
+        if(!this.getPickupLocation()) return false;
+        return this.getPickupLocation().primaryAddress != undefined && this.getPickupLocation().locationName == undefined
+    }
+
+    public noPickupLocation = () => {
+        if(!this.getPickupLocation()) return true;
+        return this.getPickupLocation().primaryAddress == undefined && this.getPickupLocation().locationName == undefined
+    }
 
 }
 export {PublicService};
