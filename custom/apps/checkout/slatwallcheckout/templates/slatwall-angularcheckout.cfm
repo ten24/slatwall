@@ -79,11 +79,11 @@
 					<div ng-show="slatwall.showPaymentTabBody()">
 						<div class="col-sm-12">
 							<swf-directive partial-path="{{customTemplateFolder}}" partial-name="savedcreditcards"></swf-directive>
-							<div class="panel-group payments-options" id="accordion" role="tablist" aria-multiselectable="true">
+							<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 			                    <div class="panel radio panel-default" ng-cloak>
 			                        <div class="panel-heading" role="tab" id="headingOne">
 			                            <h4 class="panel-title">
-			                                <a class="collapsed" data-toggle="collapse" data-parent="##accordion" href="##collapse1" aria-expanded="false" aria-controls="collapseOne" ng-click="clearBilling();">
+			                                <a class="collapsed" data-toggle="collapse" data-parent="##accordion" href="##collapse1" aria-expanded="false" aria-controls="collapseOne">
 			                                    <span class="dot"></span> Credit Card
 			                                </a>
 			                            </h4>
@@ -91,7 +91,7 @@
 			                        <div id="collapse1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading1" aria-expanded="false">
 			                            <div class="panel-body">
 											<div class="row">
-												<div class="col-md-12 payment-tab">
+												<div class="col-md-12">
 													<!--- Credit card --->
 													<swf-directive partial-path="{{customTemplateFolder}}" partial-name="orderpaymentpartial"></swf-directive>
 												</div>

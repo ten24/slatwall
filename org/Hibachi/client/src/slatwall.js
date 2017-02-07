@@ -2715,6 +2715,12 @@
 	        this.showNewAccountAddressForm = function () {
 	            return _this.accountAddressEditFormIndex == 'new';
 	        };
+	        this.showNewBillingAddressForm = function () {
+	            return !_this.useShippingAsBilling && _this.billingAddressEditFormIndex == 'new';
+	        };
+	        this.showEditBillingAddressForm = function () {
+	            return !_this.useShippingAsBilling && _this.billingAddressEditFormIndex && _this.billingAddressEditFormIndex != 'new';
+	        };
 	        this.accountAddressIsSelectedShippingAddress = function (key) {
 	            if (_this.account &&
 	                _this.account.accountAddresses &&
@@ -2745,6 +2751,12 @@
 	        };
 	        this.hasAccountPaymentMethods = function () {
 	            return _this.account && _this.account.accountPaymentMethods && _this.account.accountPaymentMethods.length;
+	        };
+	        this.showBillingAccountAddresses = function () {
+	            return !_this.useShippingAsBilling && !_this.billingAddressEditFormIndex;
+	        };
+	        this.hasNoCardInfo = function () {
+	            return !_this.newCardInfo || !_this.newCardInfo.nameOnCreditCard || !_this.newCardInfo.cardNumber || !_this.newCardInfo.cvv;
 	        };
 	        this.orderService = orderService;
 	        this.cartService = cartService;

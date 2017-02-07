@@ -1,20 +1,19 @@
 <!-- Add Shipping Address -->
-<span ng-init="$.slatwall = $root.slatwall"></span>
-<span ng-init="$.slatwall.saveShippingAsBilling = undefined"></span>
-<span ng-init="$.slatwall.newBillingAddress = $.slatwall.$hibachi.newOrder_AddOrderPayment()"></span>
-<span ng-init="$.slatwall.billingAddress = $.slatwall.$hibachi.newOrder_AddOrderPayment()"></span>
-<span ng-init="$.slatwall.editBillingAddress = $.slatwall.$hibachi.newOrder_AddOrderPayment()"></span>
+<span ng-init="slatwall.saveShippingAsBilling = undefined"></span>
+<span ng-init="slatwall.newBillingAddress = slatwall.$hibachi.newOrder_AddOrderPayment()"></span>
+<span ng-init="slatwall.billingAddress = slatwall.$hibachi.newOrder_AddOrderPayment()"></span>
+<span ng-init="slatwall.editBillingAddress = slatwall.$hibachi.newOrder_AddOrderPayment()"></span>
 
 <sw-form
     data-is-process-form="true"
     data-form-class="cssform"
     data-error-class="error"
-    data-object="$.slatwall.newBillingAddress"
+    data-object="slatwall.newBillingAddress"
     data-on-success="Hide:AddOrderPayment"
-    data-class="new_adderess"
+    data-class="new_address"
     data-name="addOrderPayment">
 
-    <div class="alert alert-danger error" ngshow="$.slatwall.cart['errors']['addOrderPayment']" ng-if="$.slatwall.cart['errors']['addOrderPayment']"><i class="fa fa-info-circle"></i> {{$.slatwall.cart['errors']['addOrderPayment'][0]}}</div>
+    <div class="alert alert-danger error" ng-show="slatwall.cart['errors']['addOrderPayment']" ng-if="slatwall.cart['errors']['addOrderPayment']"><i class="fa fa-info-circle"></i> {{slatwall.cart['errors']['addOrderPayment'][0]}}</div>
 
 	<!--- Display Order Payment Errors --->
 	<swf-directive partial-path="{{customTemplateFolder}}" partial-name="ordererrors"></swf-directive>

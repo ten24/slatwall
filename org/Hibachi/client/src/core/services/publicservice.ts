@@ -1027,6 +1027,14 @@ class PublicService {
         return this.accountAddressEditFormIndex == 'new';
     }
 
+    public showNewBillingAddressForm = ()=>{
+        return !this.useShippingAsBilling && this.billingAddressEditFormIndex == 'new'
+    }
+
+    public showEditBillingAddressForm = ()=>{
+        return !this.useShippingAsBilling && this.billingAddressEditFormIndex && this.billingAddressEditFormIndex != 'new'
+    }
+
     public accountAddressIsSelectedShippingAddress = (key) =>{
         if(this.account && 
            this.account.accountAddresses &&
@@ -1058,6 +1066,14 @@ class PublicService {
 
     public hasAccountPaymentMethods = () => {
         return this.account && this.account.accountPaymentMethods && this.account.accountPaymentMethods.length
+    }
+
+    public showBillingAccountAddresses = () =>{
+        return !this.useShippingAsBilling && !this.billingAddressEditFormIndex;
+    }
+
+    public hasNoCardInfo = () =>{
+        return !this.newCardInfo || !this.newCardInfo.nameOnCreditCard || !this.newCardInfo.cardNumber || !this.newCardInfo.cvv;
     }
 
 }
