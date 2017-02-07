@@ -1021,7 +1021,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		hql &=")";
 		
 		hql &="#getHQLFrom(allowFetch=false)#
-		#getHQLWhere()# #IIF(len(getHQLWhere()), DE('AND'), DE('WHERE'))#
+		#getHQLWhere()# #getHibachiScope().getService('hibachiUtilityService').hibachiTernary(len(getHQLWhere()), 'AND', 'WHERE')#
 				#nameProperty# IS NOT NULL
 			AND
 				#valueProperty# IS NOT NULL
