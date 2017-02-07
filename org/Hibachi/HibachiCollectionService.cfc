@@ -681,7 +681,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			param name="data.date" default="#dateFormat(now(), 'mm/dd/yyyy')#"; 							//<--The fileName of the report to export.
 			param name="data.collectionExportID" default="" type="string"; 											//<--The collection to export ID
 			var collectionEntity = this.getCollectionByCollectionID("#arguments.data.collectionExportID#");
-
+			
 			if(structKeyExists(arguments.data,'ids') && !isNull(arguments.data.ids) && arguments.data.ids != 'undefined' && arguments.data.ids != ''){
 				var propertyIdentifier = '_' & getService('hibachiCollectionService').getCollectionObjectByCasing(collectionEntity,'camel') & '.' & getService('hibachiService').getPrimaryIDPropertyNameByEntityName(collectionEntity.getCollectionObject());
 				var filterGroup = {
@@ -701,6 +701,9 @@ component output="false" accessors="true" extends="HibachiService" {
 			}
 			var exportCollectionConfigData = {};
 			exportCollectionConfigData['collectionConfig']=serializeJson(collectionEntity.getCollectionConfigStruct());
+			if(structKeyExists(arguments.data,'keywords')){
+				exportCollectionConfigData['keywords']=arguments.data.keywords;
+			}
 			this.collectionConfigExport(exportCollectionConfigData);
 	}//<--end function
 	
@@ -710,6 +713,9 @@ component output="false" accessors="true" extends="HibachiService" {
 		arguments.data.collectionConfig = DeserializeJSON(arguments.data.collectionConfig);
 
 		var collectionEntity = getCollectionList(arguments.data.collectionConfig.baseEntityName);
+		if(structKeyExists(arguments.data,'keywords')){
+			collectionEntity.setKeywords(arguments.data.keywords);
+		}
 		
 		arguments.data.collectionConfig.columns = getExportableColumnsByCollectionConfig(arguments.data.collectionConfig);
 		arguments.data.collectionConfig["allRecords"] = true;
@@ -717,7 +723,6 @@ component output="false" accessors="true" extends="HibachiService" {
 		var collectionData = collectionEntity.getRecords(forExport=true,formatRecords=false);
 		var headers = getHeadersListByCollection(collectionEntity);
 		getHibachiService().export( collectionData, headers, headers, arguments.data.collectionConfig.baseEntityName, "csv" );
-			
 	}
 	
 	public string function getHeadersListByCollection(required any collectionEntity){
