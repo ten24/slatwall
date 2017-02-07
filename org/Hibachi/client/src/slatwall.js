@@ -2513,6 +2513,9 @@
 	            _this.addGiftCardOrderPayments(true);
 	            _this.finding = false;
 	        };
+	        this.formatPaymentMethod = function (paymentMethod) {
+	            return paymentMethod.nameOnCreditCard + ' - ' + paymentMethod.creditCardType + ' *' + paymentMethod.creditCardLastFour + ' exp. ' + ('0' + paymentMethod.expirationMonth).slice(-2) + '/' + paymentMethod.expirationYear.toString().slice(-2);
+	        };
 	        this.setLocationPreference = function (storeData) {
 	            _this.loading = true;
 	            _this.tempStoreData = storeData;
@@ -2726,6 +2729,8 @@
 	            return _this.cart.orderFulfillmentWithEmailTypeIndex > -1 && _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithEmailTypeIndex].emailAddress;
 	        };
 	        this.getPickupLocation = function () {
+	            if (!_this.cart.data.orderFulfillments[_this.cart.orderFulfillmentWithPickupTypeIndex])
+	                return;
 	            return _this.cart.data.orderFulfillments[_this.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation;
 	        };
 	        this.namelessPickupLocation = function () {
@@ -2737,6 +2742,9 @@
 	            if (!_this.getPickupLocation())
 	                return true;
 	            return _this.getPickupLocation().primaryAddress == undefined && _this.getPickupLocation().locationName == undefined;
+	        };
+	        this.hasAccountPaymentMethods = function () {
+	            return _this.account && _this.account.accountPaymentMethods && _this.account.accountPaymentMethods.length;
 	        };
 	        this.orderService = orderService;
 	        this.cartService = cartService;

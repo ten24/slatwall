@@ -790,6 +790,10 @@ class PublicService {
         this.finding = false;
     };
 
+    public formatPaymentMethod = (paymentMethod) =>{
+        return paymentMethod.nameOnCreditCard + ' - ' + paymentMethod.creditCardType + ' *' + paymentMethod.creditCardLastFour + ' exp. ' + ('0' + paymentMethod.expirationMonth).slice(-2) + '/' + paymentMethod.expirationYear.toString().slice(-2)
+    }
+
     public setLocationPreference = (storeData)=>{
                 
                 this.loading = true;
@@ -1038,6 +1042,7 @@ class PublicService {
         return this.cart.orderFulfillmentWithEmailTypeIndex > -1 && this.cart.orderFulfillments[this.cart.orderFulfillmentWithEmailTypeIndex].emailAddress
     }
     public getPickupLocation = () => {
+        if(!this.cart.data.orderFulfillments[this.cart.orderFulfillmentWithPickupTypeIndex]) return;
         return this.cart.data.orderFulfillments[this.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation;
     }
 
@@ -1049,6 +1054,10 @@ class PublicService {
     public noPickupLocation = () => {
         if(!this.getPickupLocation()) return true;
         return this.getPickupLocation().primaryAddress == undefined && this.getPickupLocation().locationName == undefined
+    }
+
+    public hasAccountPaymentMethods = () => {
+        return this.account && this.account.accountPaymentMethods && this.account.accountPaymentMethods.length
     }
 
 }

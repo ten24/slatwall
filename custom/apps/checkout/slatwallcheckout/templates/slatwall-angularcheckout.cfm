@@ -68,16 +68,16 @@
 	            </div>
 
 	            <!--- Tab heading 3 - Order Payment / Billing Address / Place Order / Edit --->
-	            <div class="content-block panel panel-default panel-body" ng-show="slatwall.hasAccount()"><!--- ng-class="{'disabled' : showPaymentTabBody() == false}" --->
-					<div class="content-header">
-						<h3 ng-class="((slatwall.paymentTabIsActive()) ? 'active' : '')">
-			                <a href="##" class="pull-right" ng-click="slatwall.edit = 'payment'"><i class="fa fa-pencil-square-o" ng-if="!slatwall.paymentTabIsActive() && slatwall.hasAccount()" aria-hidden="true"></i></a>
+	            <div class="panel panel-default panel-body" ng-show="slatwall.hasAccount()">
+					<div class="">
+						<h3>
+			                <a href="##" class="pull-right" ng-click="slatwall.edit = 'payment'"><i class="fa fa-pencil-square-o" ng-if="!slatwall.paymentTabIsActive()" aria-hidden="true"></i></a>
 							<a href="##" class="pull-right" ng-if="slatwall.paymentTabIsActive()" ng-click="slatwall.edit = ''"><i class="fa fa-check-circle"></i></a>
 							Payment Information
 						</h3>
 					</div>
-					<div class="content-body" ng-show="slatwall.showPaymentTabBody()">
-						<div class="col-sm-12 payment-options">
+					<div ng-show="slatwall.showPaymentTabBody()">
+						<div class="col-sm-12">
 							<swf-directive partial-path="{{customTemplateFolder}}" partial-name="savedcreditcards"></swf-directive>
 							<div class="panel-group payments-options" id="accordion" role="tablist" aria-multiselectable="true">
 			                    <div class="panel radio panel-default" ng-cloak>
@@ -86,12 +86,6 @@
 			                                <a class="collapsed" data-toggle="collapse" data-parent="##accordion" href="##collapse1" aria-expanded="false" aria-controls="collapseOne" ng-click="clearBilling();">
 			                                    <span class="dot"></span> Credit Card
 			                                </a>
-											<!--- <span class="overflowed pull-right">
-			                                    <img src="#themePath#/assets/img/preview/payments/mastercard-2.jpg" alt="">
-			                                    <img src="#themePath#/assets/img/preview/payments/visa-2.jpg" alt="">
-			                                    <img src="#themePath#/assets/img/preview/payments/american-express-2.jpg" alt="">
-			                                    <img src="#themePath#/assets/img/preview/payments/discovery-2.jpg" alt="">
-			                                </span> --->
 			                            </h4>
 			                        </div>
 			                        <div id="collapse1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading1" aria-expanded="false">
