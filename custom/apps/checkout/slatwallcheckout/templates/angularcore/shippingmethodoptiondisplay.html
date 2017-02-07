@@ -21,14 +21,13 @@
 			</div>
 			<!-- Show a message if the user tries to get to the payment tab before selecting a shipping method -->
 			<div class="col-md-12 checkout-step-btn">
-				<div class="error alert alert-danger" ng-if="slatwall.nextClicked && slatwall.disableContinueToPayment()">
+				<div class="error alert alert-danger" ng-if="slatwall.disableContinueToPayment()">
 					Please select a shipping method before continuing to payment
 			    </div>
 			</div>
 			
-			<div class="col-md-12 checkout-step-btn" ng-mouseover="slatwall.nextClicked=true">
+			<div class="col-md-12">
 				<span class="next-step-btn" style="padding:20px">
-					<!-- Click event fires even though disabled so need to check the ng-disabled event before firing-->
 			    	<input type="submit" class="btn-yellow" value="Continue to Payment" ng-click="slatwall.edit = 'payment'"/>
 				</span>
 			</div>

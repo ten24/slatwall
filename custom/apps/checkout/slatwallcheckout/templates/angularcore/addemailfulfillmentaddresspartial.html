@@ -1,4 +1,4 @@
-<span ng-init="emailFulfillmentAddress = $root.slatwall.getProcessObject('OrderFulfillment', {fullfillmentMethodType:'email'})"></span>
+<span ng-init="emailFulfillmentAddress = slatwall.getProcessObject('OrderFulfillment', {fullfillmentMethodType:'email'})"></span>
 <div class="row">
 	<div class="col-sm-7">
 		<h4>Email Fulfillment</h4>
@@ -27,13 +27,13 @@
 				            data-modal="false"
 				            data-type="button"
 				            data-class="button blue"
-				            data-text="{{($.slatwall.getRequestByAction('addEmailFulfillmentAddress').loading ? 'LOADING...' : 'Add Email Address')}}"
+				            data-text="{{(slatwall.getRequestByAction('addEmailFulfillmentAddress').loading ? 'LOADING...' : 'Add Email Address')}}"
 				            data-event-listeners="{Email_Fulfillmentkeyup:$parent.swForm.submitKeyCheck}">
 				        </sw-action-caller>
 					</div>
 			    </sw-form>
-			    <div ng-show="$root.slatwall.cart.orderFulfillmentWithEmailTypeIndex > -1 && $root.slatwall.cart.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithEmailTypeIndex].emailAddress">
-			    	<p>Selected Email: {{$root.slatwall.cart.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithEmailTypeIndex].emailAddress}}</p>
+			    <div ng-show="slatwall.hasEmailFulfillmentAddress()">
+			    	<p>Selected Email: {{slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithEmailTypeIndex].emailAddress}}</p>
 			    </div>
 		    </div>
     </div>

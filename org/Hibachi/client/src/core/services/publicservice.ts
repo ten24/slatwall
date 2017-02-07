@@ -1034,6 +1034,10 @@ class PublicService {
         return false;
     }
 
+    public hasEmailFulfillmentAddress = ()=>{
+        return this.cart.orderFulfillmentWithEmailTypeIndex > -1 && this.cart.orderFulfillments[this.cart.orderFulfillmentWithEmailTypeIndex].emailAddress
+    }
+
 
 }
 export {PublicService};

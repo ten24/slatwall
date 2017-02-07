@@ -2722,6 +2722,9 @@
 	            }
 	            return false;
 	        };
+	        this.hasEmailFulfillmentAddress = function () {
+	            return _this.cart.orderFulfillmentWithEmailTypeIndex > -1 && _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithEmailTypeIndex].emailAddress;
+	        };
 	        this.orderService = orderService;
 	        this.cartService = cartService;
 	        this.accountService = accountService;
