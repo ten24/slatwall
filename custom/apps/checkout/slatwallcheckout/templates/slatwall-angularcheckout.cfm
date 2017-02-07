@@ -43,7 +43,7 @@
 					</div>
 
 	                <div class="details" ng-show="slatwall.isSigningIn()">
-						<swf-directive partial-path="{{customTemplateFolder}}" partial-name="login"></swf-directive>
+						<swf-directive partial-name="login"></swf-directive>
 	                    <p>Need an account? <a href="##" class="loginCreateToggle" ng-click="slatwall.showCreateAccount = !slatwall.showCreateAccount; slatwall.showForgotPassword = false">Create Account</a></p>
 					</div>
 	            </div>
@@ -56,13 +56,13 @@
 					Fulfillment Information</h3>
 	                <div ng-show="slatwall.fulfillmentTabIsActive()">
 	                    <div class="details" ng-show="slatwall.hasShippingFulfillmentMethod()">
-	                        <swf-directive partial-path="{{customTemplateFolder}}" partial-name="addshippingaddresspartial"></swf-directive>
+	                        <swf-directive partial-name="addshippingaddresspartial"></swf-directive>
 	                    </div>
 	                    <div class="details" ng-show="slatwall.hasEmailFulfillmentMethod()">
-	                    	<swf-directive partial-path="{{customTemplateFolder}}" partial-name="addemailfulfillmentaddresspartial"></swf-directive>
+	                    	<swf-directive partial-name="addemailfulfillmentaddresspartial"></swf-directive>
 	                    </div>
 	                    <div class="details" ng-show="slatwall.hasPickupFulfillmentMethod()">
-	                        <swf-directive partial-path="{{customTemplateFolder}}" partial-name="deliverystorepickup"></swf-directive>
+	                        <swf-directive partial-name="deliverystorepickup"></swf-directive>
 	                    </div>
 	                </div>
 	            </div>
@@ -78,7 +78,7 @@
 					</div>
 					<div ng-show="slatwall.showPaymentTabBody()">
 						<div class="col-sm-12">
-							<swf-directive partial-path="{{customTemplateFolder}}" partial-name="savedcreditcards"></swf-directive>
+							<swf-directive partial-name="savedcreditcards"></swf-directive>
 							<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 			                    <div class="panel radio panel-default" ng-cloak>
 			                        <div class="panel-heading" role="tab" id="headingOne">
@@ -93,7 +93,7 @@
 											<div class="row">
 												<div class="col-md-12">
 													<!--- Credit card --->
-													<swf-directive partial-path="{{customTemplateFolder}}" partial-name="orderpaymentpartial"></swf-directive>
+													<swf-directive partial-name="orderpaymentpartial"></swf-directive>
 												</div>
 											</div>
 			                            </div>
@@ -119,7 +119,7 @@
 													</a>
 													
 												</div>
-												<div class="col-sm-4 checkout-help">
+												<div class="col-sm-4">
 													<h4>About PayPal</h4>
 													<p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
 												</div>
@@ -131,59 +131,19 @@
 						</div>
 						
 						<!--- gift card form --->
-					    <div class="giftcard-options">
-					        <div class="col-md-8">
-					            <h4 class="input-title">Enter Gift Card</h4>
-					            <div class="row giftcard-input">
-					                <div class="col-sm-8 form-group">
-					                    <input type="text" class="form-control" ng-model="giftCardCodeToApply">
-					                    <span class="error" ng-if="slatwall.cart.orderPayments[0].errors['giftCard']">{{slatwall.cart.orderPayments[0].errors['giftCard']}}</span>
-					                </div>
-					                <div class="col-sm-4 form-group">
-					                    <button type="button" name="button" class="btn btn-block" ng-click="slatwall.applyGiftCard(giftCardCodeToApply);">{{(slatwall.finding)?'Finding':'Add Gift Card'}}</button>
-					                </div>
-					            </div>
-					            
-					            <div class="selected-gift-cards-wrapper" ng-repeat="payment in slatwall.cart.orderPayments track by $index">
-					                <div class="selected-gift-card" ng-show="slatwall.cart.orderPayments[$index].giftCard.giftCardCode">
-					                    <div class="col-xs-6 left-side">
-					                        <span>
-					                            <i class="fa fa-credit-card"></i>
-					                        </span>
-					                        <span class="card-info">
-					                            <div class="card-number">
-					                                {{payment.giftCard.giftCardCode}}
-					                            </div>
-					                            <div>
-					                                Payment Amount: {{payment.amount | currency}}
-					                            </div>
-					                            <div class="card-balance-wrapper">
-					                                Card Balance: <span class="card-balance">{{payment.giftCard.balanceAmount | currency}}</span>
-					                            </div>
-					                        </span>
-					                    </div>
-					                </div>
-					           </div>
-					        </div>
-					        <div class="col-md-4 checkout-help" ng-show="slatwall.hasGiftCardPaymentMethod()">
-					            <div class="alert" ng-class="{'alert-danger':slatwall.getTotalMinusGiftCards() > 0, 'alert-success':slatwall.getTotalMinusGiftCards() <= 0}">
-					                <h4>Balance Due: {{slatwall.getTotalMinusGiftCards() | currency}}</h4>
-					                <p ng-show="slatwall.getTotalMinusGiftCards() > 0">You have a remaining balance of  {{slatwall.getTotalMinusGiftCards() | currency}}.  Please choose an additional payment method to complete your order.</p>
-					            </div>
-					        </div>
-					    </div>
-						</div>
+						<swf-directive partial-name="giftcardpartial"></swf-directive>
+					</div>
 				</div>
 
 	            <!--- Tab heading 4 - Review / Place Order --->
 	            <div class="panel panel-default panel-body" ng-cloak ng-show="slatwall.hasAccount()">
 	                <h3 ng-class="(slatwall.reviewTabIsActive() ? 'active' : '')">
-	                <a href="##" class="pull-right" ng-click="slatwall.edit = 'review'" ng-if="slatwall.edit!='review' && slatwall.edit!='' && slatwall.hasAccount()""><i class="fa fa-eye"></i></a>Review Order</h3>
+	                <a href="##" class="pull-right" ng-click="slatwall.edit = 'review'" ng-if="!slatwall.showReviewTabBody()"><i class="fa fa-eye"></i></a>Review Order</h3>
 
-	                <div ng-show="slatwall.hasAccount() && slatwall.showReviewTabBody()">
+	                <div ng-show="slatwall.showReviewTabBody()">
 	                    <div class="details revieworder">
 							<div class="row">
-		                        <div class="payment_info col-sm-4">
+		                        <div class="col-sm-4">
 		                            <fieldset>
 										<legend>Billing & Payment</legend>
 		                            	<swf-directive partial-name="review/orderpaymentsummary"></swf-directive>
@@ -193,21 +153,21 @@
 								<div class="shipping_info col-sm-4" ng-if="slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex >= 0">
 									<fieldset>
 										<legend>Shipping</legend>
-										<swf-directive partial-path="{{customTemplateFolder}}review/" partial-name="ordershippingsummary"></swf-directive>
+										<swf-directive partial-name="review/ordershippingsummary"></swf-directive>
 									</fieldset>
 								</div>
 								<!--- Pickup --->
 								<div class="shipping_info col-sm-4" ng-if="slatwall.cart.orderFulfillmentWithPickupTypeIndex >= 0">
 									<fieldset>
 										<legend>Pickup</legend>
-										<swf-directive partial-path="{{customTemplateFolder}}review/" partial-name="orderpickupsummary"></swf-directive>
+										<swf-directive partial-name="review/orderpickupsummary"></swf-directive>
 									</fieldset>
 								</div>
 								<!--- Email --->
 								<div class="shipping_info col-sm-4" ng-if="slatwall.cart.orderFulfillmentWithEmailTypeIndex >= 0">
 									<fieldset>
 										<legend>Email</legend>
-										<swf-directive partial-path="{{customTemplateFolder}}review/" partial-name="orderemailsummary"></swf-directive>
+										<swf-directive partial-name="review/orderemailsummary"></swf-directive>
 									</fieldset>
 								</div>
 							</div>
@@ -232,7 +192,7 @@
 			  <div class="cart_product">
 				  <h4>In Your Cart <a href="/shopping-cart" class="pull-right edit"></a></h4>
 				  <div class="info">
-					  <swf-directive partial-path="{{customTemplateFolder}}" partial-name="inyourcartpartial"></swf-directive>
+					  <swf-directive partial-name="inyourcartpartial"></swf-directive>
 				  </div>
 			  </div>
 
@@ -240,7 +200,7 @@
 			  <div class="order">
 				  <h4>Order Summary</h4>
 				  <div class="info">
-					  <swf-directive partial-path="{{customTemplateFolder}}" partial-name="carttotaldisplay"></swf-directive>
+					  <swf-directive partial-name="carttotaldisplay"></swf-directive>
 				  </div>
 			  </div>
 

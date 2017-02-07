@@ -1,4 +1,4 @@
-<div class="alert alert-warning" ng-repeat="payment in $root.slatwall.cart.orderPayments">
+<div class="alert alert-warning" ng-repeat="payment in slatwall.cart.orderPayments">
     <div ng-if="payment.nameOnCreditCard">
         <address>
             <span ng-if="payment.nameOnCreditCard">{{payment.nameOnCreditCard}}<br></span>
@@ -10,11 +10,11 @@
         <hr>
         <i class="fa fa-credit-card fa-lg" aria-hidden="true"></i>
         ****{{payment.creditCardLastFour}}
-        <a href="#" ng-click="$root.slatwall.edit = 'payment';$('#payment').animatedScroll({easing: 'easeOutExpo'});" class="edit">
+        <a href="#" ng-click="slatwall.edit = 'payment'" class="edit">
             <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
         </a>
     </div>
-    <div ng-if="payment.giftCard && payment.giftCard.giftCardCode">
+    <div ng-if="slatwall.isGiftCardPayment(payment)">
         <i class="fa fa-credit-card fa-lg" aria-hidden="true"></i>
         <span>Gift Card: {{payment.giftCard.giftCardCode}}</span><br>
         <span>Remaining Balance: {{payment.giftCard.balanceAmount}}</span>
@@ -22,6 +22,6 @@
     <span>Payment Amount: {{payment.amount | currency}}
 </div>
 
-<div class="alert alert-danger" ng-if="!$root.slatwall.cart.orderPayments.length">
+<div class="alert alert-danger" ng-if="slatwall.orderHasNoPayments()">
     <i class="fa fa-info-circle"></i> Add payment information to continue.
 </div>
