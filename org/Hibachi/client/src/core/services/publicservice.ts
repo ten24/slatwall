@@ -1076,6 +1076,14 @@ class PublicService {
         return !this.newCardInfo || !this.newCardInfo.nameOnCreditCard || !this.newCardInfo.cardNumber || !this.newCardInfo.cvv;
     }
 
+    public isGiftCardPayment = (payment) =>{
+        return payment.giftCard && payment.giftCard.giftCardCode;
+    }
+
+    public orderHasNoPayments = () =>{
+        return !this.cart.orderPayments.length
+    }
+
 }
 export {PublicService};
 

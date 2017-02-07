@@ -2758,6 +2758,12 @@
 	        this.hasNoCardInfo = function () {
 	            return !_this.newCardInfo || !_this.newCardInfo.nameOnCreditCard || !_this.newCardInfo.cardNumber || !_this.newCardInfo.cvv;
 	        };
+	        this.isGiftCardPayment = function (payment) {
+	            return payment.giftCard && payment.giftCard.giftCardCode;
+	        };
+	        this.orderHasNoPayments = function () {
+	            return !_this.cart.orderPayments.length;
+	        };
 	        this.orderService = orderService;
 	        this.cartService = cartService;
 	        this.accountService = accountService;

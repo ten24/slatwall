@@ -1,16 +1,16 @@
-<div class="alert alert-warning" ng-if="$root.slatwall.cart.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.addressID">
+<div class="alert alert-warning" ng-if="slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.addressID">
     <address>
-        <span ng-if="$root.slatwall.cart.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.streetAddress">{{$root.slatwall.cart.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.streetAddress}}<br></span>
-        <span ng-if="$root.slatwall.cart.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.street2Address">{{$root.slatwall.cart.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.street2Address}}<br></span>
-        <span ng-if="$root.slatwall.cart.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.city">{{$root.slatwall.cart.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.city}}</span>, <span ng-if="$root.slatwall.cart.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.statecode">{{$root.slatwall.cart.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.statecode}}</span> <span ng-if="$root.slatwall.cart.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.postalcode">{{$root.slatwall.cart.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.postalcode}}</span><br>
-        <span ng-if="$root.slatwall.cart.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.countrycode">{{$root.slatwall.cart.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.countrycode}}</span>
+        <span ng-if="slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.streetAddress">{{slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.streetAddress}}<br></span>
+        <span ng-if="slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.street2Address">{{slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.street2Address}}<br></span>
+        <span ng-if="slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.city">{{slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.city}}</span>, <span ng-if="slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.statecode">{{slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.statecode}}</span> <span ng-if="slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.postalcode">{{slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.postalcode}}</span><br>
+        <span ng-if="slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.countrycode">{{slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.countrycode}}</span>
     </address>
     <hr>
     <i class="fa fa-truck fa-lg" aria-hidden="true"></i>
-    {{$root.slatwall.cart.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethod.shippingMethodName}}
-    <a href="#" ng-click="$root.slatwall.edit = 'fulfillment'" class="edit">Edit</a>
+    {{slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethod.shippingMethodName}}
+    <a href="#" ng-click="slatwall.edit = 'fulfillment'" class="edit">Edit</a>
 </div>
 
-<div class="alert alert-warning" ng-if="!$root.slatwall.cart.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.addressID">
+<div class="alert alert-warning" ng-if="!slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.addressID">
     <i class="fa fa-info-circle"></i> Select shipping options to continue.
 </div>
