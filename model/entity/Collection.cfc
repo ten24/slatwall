@@ -2372,7 +2372,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public any function canSaveCollectionByCollectionObject(){
 		return getHibachiScope().authenticateCollection('read', this);
 	}
-
+	
+	public boolean function getDirtyReadFlag(){
+ 		if(isNull(variables.dirtyReadFlag)){
+ 			variables.dirtyReadFlag = false;
+ 		}
+ 		return variables.dirtyReadFlag;
+ 	}
 }
 
 
