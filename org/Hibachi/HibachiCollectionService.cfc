@@ -664,6 +664,16 @@ component output="false" accessors="true" extends="HibachiService" {
 		};
 		return columnStruct;
 	}
+	
+	public array function getExportableColumnsByCollectionConfig(required struct collectionConfig){
+		var exportableColumns = [];
+		for(var column in arguments.collectionConfig.columns){
+			if(StructKeyExists(column, "isExportable") && column.isExportable == true){
+				ArrayAppend(exportableColumns, column);
+			}
+		}
+		return exportableColumns;
+	}
 
 	public void function collectionsExport(required struct data) {
 			param name="data.date" default="#dateFormat(now(), 'mm/dd/yyyy')#"; 							//<--The fileName of the report to export.
@@ -687,31 +697,35 @@ component output="false" accessors="true" extends="HibachiService" {
 				arrayAppend(collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup,filterGroup);
 
 			}
-			var collectionData = collectionEntity.getRecords(forExport=true, formatRecords=false);
-			var headers = StructKeyList(collectionData[1]);
-			getService('hibachiService').export( collectionData, headers, headers, "ExportCollection", "csv" );
+			collectionConfigExport(collectionEntity.getCollectionConfigStruct());
+//			var collectionData = collectionEntity.getRecords(forExport=true, formatRecords=false);
+//			var headers = StructKeyList(collectionData[1]);
+//			request.debug(StructKeyList(collectionData[1]));
+//			getService('hibachiService').export( collectionData, headers, headers, "ExportCollection", "csv" );
 	}//<--end function
-
+	
 	public void function collectionConfigExport(required struct data) {
 		param name="arguments.data.collectionConfig" type="string" pattern="^{.*}$";
 
 		arguments.data.collectionConfig = DeserializeJSON(arguments.data.collectionConfig);
 
 		var collectionEntity = getCollectionList(arguments.data.collectionConfig.baseEntityName);
-
-		var exportableColumns = [];
-		for(var column in arguments.data.collectionConfig.columns){
-			if(StructKeyExists(column, "isExportable") && column.isExportable == true){
-				ArrayAppend(exportableColumns, column);
-			}
-		}
-		arguments.data.collectionConfig.columns = exportableColumns;
+		
+		arguments.data.collectionConfig.columns = getExportableColumnsByCollectionConfig(arguments.data.collectionConfig);
 		arguments.data.collectionConfig["allRecords"] = true;
 		collectionEntity.setCollectionConfig(serializeJSON(arguments.data.collectionConfig));
 		var collectionData = collectionEntity.getRecords(forExport=true,formatRecords=false);
 		var headers = StructKeyList(collectionData[1]);
 		getService('hibachiService').export( collectionData, headers, headers, arguments.data.collectionConfig.baseEntityName, "csv" );
 
+	}
+	
+	public string function getHeadersListByCollectionConfigColumns(required array columns){
+		var headersList = '';
+		for(var column in columns){
+			headersList = listAppend(headersList,column.propertyIdentifier);
+		}
+		return headersList;
 	}
 
 	// =====================  END: Logical Methods ============================
