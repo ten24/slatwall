@@ -1,9 +1,9 @@
-<div class="alert alert-warning" ng-if="slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.addressID">
+<div class="alert alert-warning" ng-if="slatwall.getShippingAddress().addressID">
     <address>
-        <span ng-if="slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.streetAddress">{{slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.streetAddress}}<br></span>
-        <span ng-if="slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.street2Address">{{slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.street2Address}}<br></span>
-        <span ng-if="slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.city">{{slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.city}}</span>, <span ng-if="slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.statecode">{{slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.statecode}}</span> <span ng-if="slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.postalcode">{{slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.postalcode}}</span><br>
-        <span ng-if="slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.countrycode">{{slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.countrycode}}</span>
+        <span ng-if="slatwall.getShippingAddress().streetAddress">{{slatwall.getShippingAddress().streetAddress}}<br></span>
+        <span ng-if="slatwall.getShippingAddress().street2Address">{{slatwall.getShippingAddress().street2Address}}<br></span>
+        <span ng-if="slatwall.getShippingAddress().city">{{slatwall.getShippingAddress().city}}</span>, <span ng-if="slatwall.getShippingAddress().statecode">{{slatwall.getShippingAddress().statecode}}</span> <span ng-if="slatwall.getShippingAddress().postalcode">{{slatwall.getShippingAddress().postalcode}}</span><br>
+        <span ng-if="slatwall.getShippingAddress().countrycode">{{slatwall.getShippingAddress().countrycode}}</span>
     </address>
     <hr>
     <i class="fa fa-truck fa-lg" aria-hidden="true"></i>
@@ -11,6 +11,6 @@
     <a href="#" ng-click="slatwall.edit = 'fulfillment'" class="edit">Edit</a>
 </div>
 
-<div class="alert alert-warning" ng-if="!slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.addressID">
+<div class="alert alert-warning" ng-if="!slatwall.getShippingAddress().addressID">
     <i class="fa fa-info-circle"></i> Select shipping options to continue.
 </div>

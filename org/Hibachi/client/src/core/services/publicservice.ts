@@ -1054,6 +1054,16 @@ class PublicService {
         return this.cart.data.orderFulfillments[this.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation;
     }
 
+    public getShippingAddress = () =>{
+        if(!this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex]) return;
+        return this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress;
+    }
+
+    public getEmailFulfillmentAddress = () =>{
+        if(!this.cart.orderFulfillments[this.cart.orderFulfillmentWithEmailTypeIndex]) return;
+        return this.cart.orderFulfillments[this.cart.orderFulfillmentWithEmailTypeIndex].emailAddress;
+    }
+
     public namelessPickupLocation = () => {
         if(!this.getPickupLocation()) return false;
         return this.getPickupLocation().primaryAddress != undefined && this.getPickupLocation().locationName == undefined
@@ -1082,6 +1092,10 @@ class PublicService {
 
     public orderHasNoPayments = () =>{
         return !this.cart.orderPayments.length
+    }
+
+    public hasProductNameAndNoSkuName = (orderItem) =>{
+        return !orderItem.sku.skuName && orderItem.sku.product && orderItem.sku.product.productName
     }
 
 }

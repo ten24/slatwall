@@ -1,19 +1,19 @@
-<div class="alert alert-warning" ng-if="$root.slatwall.cart.data.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation.locationID">
+<div class="alert alert-warning" ng-if="slatwall.getPickupLocation().locationID">
     <address>
-        <span ng-if="$root.slatwall.cart.data.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation.locationName">{{$root.slatwall.cart.data.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation.locationName}}<br></span>
-        <span ng-if="$root.slatwall.cart.data.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation.primaryAddress.address.streetAddress">{{$root.slatwall.cart.data.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation.primaryAddress.address.streetAddress}}<br></span>
-        <span ng-if="$root.slatwall.cart.data.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation.primaryAddress.address.street2Address">{{$root.slatwall.cart.data.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation.primaryAddress.address.street2Address}}<br></span>
-        <span ng-if="$root.slatwall.cart.data.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation.primaryAddress.address.city">{{$root.slatwall.cart.data.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation.primaryAddress.address.city}}, </span>
-        <span ng-if="$root.slatwall.cart.data.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation.primaryAddress.address.statecode">{{$root.slatwall.cart.data.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation.primaryAddress.address.statecode}} </span>
-        <span ng-if="$root.slatwall.cart.data.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation.primaryAddress.address.postalcode">{{$root.slatwall.cart.data.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation.primaryAddress.address.postalcode}}<br></span>
-        <span ng-if="$root.slatwall.cart.data.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation.primaryAddress.address.countrycode">{{$root.slatwall.cart.data.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation.primaryAddress.address.countrycode}}</span>
+        <span ng-if="slatwall.getPickupLocation().locationName">{{slatwall.getPickupLocation().locationName}}<br></span>
+        <span ng-if="slatwall.getPickupLocation().primaryAddress.address.streetAddress">{{slatwall.getPickupLocation().primaryAddress.address.streetAddress}}<br></span>
+        <span ng-if="slatwall.getPickupLocation().primaryAddress.address.street2Address">{{slatwall.getPickupLocation().primaryAddress.address.street2Address}}<br></span>
+        <span ng-if="slatwall.getPickupLocation().primaryAddress.address.city">{{slatwall.getPickupLocation().primaryAddress.address.city}}, </span>
+        <span ng-if="slatwall.getPickupLocation().primaryAddress.address.statecode">{{slatwall.getPickupLocation().primaryAddress.address.statecode}} </span>
+        <span ng-if="slatwall.getPickupLocation().primaryAddress.address.postalcode">{{slatwall.getPickupLocation().primaryAddress.address.postalcode}}<br></span>
+        <span ng-if="slatwall.getPickupLocation().primaryAddress.address.countrycode">{{slatwall.getPickupLocation().primaryAddress.address.countrycode}}</span>
     </address>
     <hr>
     <i class="fa fa-building fa-lg" aria-hidden="true"></i>
     Pick Up Location
-    <a href="#" ng-click="$root.slatwall.edit = 'fulfillment'" class="edit">Edit</a>
+    <a href="#" ng-click="slatwall.edit = 'fulfillment'" class="edit">Edit</a>
 </div>
 
-<div class="alert alert-warning" ng-if="!$root.slatwall.cart.data.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation.locationID">
+<div class="alert alert-warning" ng-if="!slatwall.getPickupLocation().locationID">
     <i class="fa fa-info-circle"></i> Select pickup location to continue.
 </div>

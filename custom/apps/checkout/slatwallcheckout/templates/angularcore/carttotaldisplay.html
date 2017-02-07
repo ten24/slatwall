@@ -1,7 +1,6 @@
-<span ng-init="$.slatwall = $root.slatwall"></span>
 <ul ng-class="list-group">
-    <li class="list-group-item" ng-if="$.slatwall.cart.subtotal && $.slatwall.cart.discountTotal || $.slatwall.cart.taxTotal || $.slatwall.cart.fulfillmentTotal" >Subtotal <span>{{$.slatwall.cart.subtotal|currency :($root.$.slatwall.cart.currencyCode == 'EUR'?'&euro;':'$')}}</span></li>
-    <li class="list-group-item" ng-if="$.slatwall.cart.discountTotal">Discount Total <span> -{{($.slatwall.cart.discountTotal|currency :($root.$.slatwall.cart.currencyCode == 'EUR'?'&euro;':'$'))}}</span></li>
-    <li class="list-group-item">Tax <span>{{($.slatwall.cart.taxTotal|currency :($.slatwall.cart.currencyCode == 'EUR'?'&euro;':'$'))}}</span></li>
-    <li class="list-group-item" ng-if="$.slatwall.cart.calculatedTotal" ng-class="($.slatwall.cart.subtotal && !$.slatwall.cart.discountTotal && !$.slatwall.cart.taxTotal && !$.slatwall.cart.fulfillmentTotal) ? 'subtotal' : 'total'"><b>TOTAL</b> <span>{{($.slatwall.cart.calculatedTotal|currency :($.slatwall.cart.currencyCode == 'EUR'?'&euro;':'$'))}}</span></li>
+    <li class="list-group-item" ng-if="slatwall.cart.subtotal && slatwall.cart.discountTotal || slatwall.cart.taxTotal || slatwall.cart.fulfillmentTotal" >Subtotal <span>{{slatwall.cart.subtotal|currency :($root.slatwall.cart.currencyCode == 'EUR'?'&euro;':'$')}}</span></li>
+    <li class="list-group-item" ng-if="slatwall.cart.discountTotal">Discount Total <span> -{{(slatwall.cart.discountTotal|currency :($root.slatwall.cart.currencyCode == 'EUR'?'&euro;':'$'))}}</span></li>
+    <li class="list-group-item">Tax <span>{{(slatwall.cart.taxTotal|currency :(slatwall.cart.currencyCode == 'EUR'?'&euro;':'$'))}}</span></li>
+    <li class="list-group-item" ng-if="slatwall.cart.calculatedTotal" ng-class="(slatwall.cart.subtotal && !slatwall.cart.discountTotal && !slatwall.cart.taxTotal && !slatwall.cart.fulfillmentTotal) ? 'subtotal' : 'total'"><b>TOTAL</b> <span>{{(slatwall.cart.calculatedTotal|currency :(slatwall.cart.currencyCode == 'EUR'?'&euro;':'$'))}}</span></li>
 </ul>

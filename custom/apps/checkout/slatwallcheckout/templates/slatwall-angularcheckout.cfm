@@ -176,7 +176,7 @@
                                 <form action="?s=1" method="post">
                                     <input type="hidden" name="sRedirectURL" value="/order-confirmation/" />
                                     <input type="hidden" name="slatAction" value="public:cart.placeOrder" />
-                                    <input type="submit" class="review button" value="{{( slatwall.placeOrderNow ? 'Submitting Order...' : 'Place Order')}}" ng-click="slatwall.placeOrderNow = true">
+                                    <input type="submit" class="review button" value="{{( slatwall.getRequestByAction('placeOrder').loading ? 'Submitting Order...' : 'Place Order')}}">
                                 </form>
                             </div>
 	                    </div>

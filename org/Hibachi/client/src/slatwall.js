@@ -2739,6 +2739,16 @@
 	                return;
 	            return _this.cart.data.orderFulfillments[_this.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation;
 	        };
+	        this.getShippingAddress = function () {
+	            if (!_this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex])
+	                return;
+	            return _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress;
+	        };
+	        this.getEmailFulfillmentAddress = function () {
+	            if (!_this.cart.orderFulfillments[_this.cart.orderFulfillmentWithEmailTypeIndex])
+	                return;
+	            return _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithEmailTypeIndex].emailAddress;
+	        };
 	        this.namelessPickupLocation = function () {
 	            if (!_this.getPickupLocation())
 	                return false;
@@ -2763,6 +2773,9 @@
 	        };
 	        this.orderHasNoPayments = function () {
 	            return !_this.cart.orderPayments.length;
+	        };
+	        this.hasProductNameAndNoSkuName = function (orderItem) {
+	            return !orderItem.sku.skuName && orderItem.sku.product && orderItem.sku.product.productName;
 	        };
 	        this.orderService = orderService;
 	        this.cartService = cartService;
