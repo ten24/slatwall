@@ -1,12 +1,12 @@
 <div class="input-group">
     <div class="input-group-btn search-panel">
-        <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
             <span data-ng-bind="swListingSearch.getSelectedSearchColumnName()"></span> <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" role="menu">
             <li><a href data-ng-click="swListingSearch.selectSearchColumn()">All</a></li>
             <li data-ng-repeat="column in swListingSearch.collectionConfig.columns | orderBy:'title'"
-                data-ng-if="column.isSearchable && (column.ormtype == 'string' || column.ormtype == 'integer' || column.ormtype == 'big_decimal')">
+                data-ng-if="column.isSearchable && column.title.length && (column.ormtype == 'string' || column.ormtype == 'integer' || column.ormtype == 'big_decimal')">
                 <a href data-ng-click="swListingSearch.selectSearchColumn(column)" data-ng-bind="column.title"></a>
             </li>
         </ul>

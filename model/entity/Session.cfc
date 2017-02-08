@@ -84,6 +84,7 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 		if (getNewFlag() && !isNull(getSessionCookieExtendedPSID())){
 			return false;
 		}
+		
 		//If the loggedin dateTime is null, then user is logged out.
 		if ( isNull(getLoggedInDateTime()) && !isNull(getSessionCookieExtendedPSID())){
 			return false;
@@ -94,14 +95,21 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 			return false;
 		}
 		
-		//If the user is an admin, and we exceeded the max login for admins, the user is logged out.
-		if(structKeyExists(variables, "account") && variables.account.getAdminAccountFlag() && !isNull(variables.lastRequestDateTime) && len(getLastRequestDateTime()) && dateDiff("n", getLastRequestDateTime(), now()) >= getHibachiScope().setting("globalAdminAutoLogoutMinutes")) {
-			return false;
-		}
-		
-		//If the user is public and has exceeded the max public inactive time, the user is logged out.
-		if(structKeyExists(variables, "account") && !variables.account.getAdminAccountFlag() && !isNull(variables.lastRequestDateTime) && len(getLastRequestDateTime()) && dateDiff("n", getLastRequestDateTime(), now()) >= getHibachiScope().setting("globalPublicAutoLogoutMinutes")) {
-			return false;
+		if(structKeyExists(variables, "account")){
+			
+			if(!isNull(variables.lastRequestDateTime) && len(getLastRequestDateTime())){
+				if(variables.account.getAdminAccountFlag()){
+					//If the user is an admin, and we exceeded the max login for admins, the user is logged out.
+					if(dateDiff("n", getLastRequestDateTime(), now()) >= getHibachiScope().setting("globalAdminAutoLogoutMinutes")) {
+						return false;
+					}
+				}else{
+					//If the user is public and has exceeded the max public inactive time, the user is logged out.
+					if(dateDiff("n", getLastRequestDateTime(), now()) >= getHibachiScope().setting("globalPublicAutoLogoutMinutes")) {
+						return false;
+					}
+				}
+			}
 		}
 		
 		return true;

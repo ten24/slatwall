@@ -243,7 +243,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						if(directoryExists("#getApplicationValue("applicationRootMappingPath")#/integrationServices/#integrationPackage#/model/entity")){
 							var modelList = directoryList( expandPath("/Slatwall") & "/integrationServices/#integrationPackage#/model/entity" );
 							for(var modelFilePath in modelList){
-								var beanCFC = listLast(modelFilePath,'/');
+								var beanCFC = listLast(replace(modelFilePath,"\","/","all"),'/');
 								var beanName = listFirst(beanCFC,'.');
 								var modelDestinationPath = expandPath("/Slatwall") & "/model/entity/" & beanCFC;
 								FileCopy(modelFilePath,modelDestinationPath);

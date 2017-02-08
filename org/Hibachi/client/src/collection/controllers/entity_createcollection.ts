@@ -20,7 +20,7 @@ class CollectionCreateController {
 
         //on select change get collection
         this.$scope.entity_createcollectionCtrl.collectionObjectChanged = ()=>{
-            console.log(this.$scope.entity_createcollectionCtrl.selectedOption);
+
             this.getBaseCollections(this.$scope.entity_createcollectionCtrl.selectedOption);
         }
 

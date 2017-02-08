@@ -93,6 +93,7 @@ component extends="FW1.framework" {
 	variables.framework.hibachi.noaccessDefaultItem = 'noaccess';
 	variables.framework.hibachi.sessionCookieDomain = "";
 	variables.framework.hibachi.lineBreakStyle = SERVER.OS.NAME;
+	variables.framework.hibachi.disableFullUpdateOnServerStartup = false;
 
 	// Allow For Application Config
 	try{include "../../config/configFramework.cfm";}catch(any e){}
@@ -235,7 +236,7 @@ component extends="FW1.framework" {
 					getHibachiScope().getSession().setAccount( accessKeyAccount );
 					AuthToken = 'Bearer '& getHibachiScope().getService('HibachiJWTService').createToken();
 				}
-			}
+			} 
 
 			//check if we have the authorization header
 			if(len(AuthToken)){
@@ -254,14 +255,7 @@ component extends="FW1.framework" {
 						getHibachiScope().getSession().setAccount( jwtAccount );
 					}
 				}
-			// If there is no account on the session, then we can look for an authToken to setup that account for this one request
-			}else if(!getHibachiScope().getLoggedInFlag() && structKeyExists(request, "context") && structKeyExists(request.context, "authToken") && len(request.context.authToken)) {
-				try{
-				var authTokenAccount = getHibachiScope().getDAO('hibachiDAO').getAccountByAuthToken(authToken=request.context.authToken);
-				if(!isNull(authTokenAccount)) {
-					getHibachiScope().getSession().setAccount( authTokenAccount );
-				}
-				}catch(any e){}//supress errors here.
+		
 			}
 			
 			// Call the onEveryRequest() Method for the parent Application.cfc
@@ -595,7 +589,7 @@ component extends="FW1.framework" {
 						coreBF.declareBean("hibachiEntityParser", "#variables.framework.applicationKey#.org.Hibachi.hibachiEntityParser",false);
 					}
 					if(!coreBF.containsBean("hibachiRecaptcha")){
-						coreBF.declareBean("hibachiRecaptcha", "#variables.framework.applicationKey#.org.Hibachi.hibachiRecaptcha",false);
+						coreBF.declareBean("hibachiRecaptcha", "#variables.framework.applicationKey#.org.Hibachi.HibachiRecaptcha",false);
 					}
 
 					// Setup the custom bean factory
@@ -647,9 +641,23 @@ component extends="FW1.framework" {
 					//===================== END: EVENT HANDLER SETUP =========================
 
 					// ============================ FULL UPDATE =============================== (this is only run when updating, or explicitly calling it by passing update=true as a url key)
-					if(!fileExists(expandPath('/#variables.framework.applicationKey#/custom/config') & '/lastFullUpdate.txt.cfm') || (structKeyExists(url, variables.framework.hibachi.fullUpdateKey) && url[ variables.framework.hibachi.fullUpdateKey ] == variables.framework.hibachi.fullUpdatePassword)){
+					
+					var runFullUpdate = !variables.framework.hibachi.disableFullUpdateOnServerStartup 
+						&& (
+							!structKeyExists(server,'runFullUpdate') 
+							|| (structKeyExists(server,'runFullUpdate') && server.runFullUpdate
+						)
+					);
+					if(
+						!fileExists(expandPath('/#variables.framework.applicationKey#/custom/config') & '/lastFullUpdate.txt.cfm') 
+						|| (
+							structKeyExists(url, variables.framework.hibachi.fullUpdateKey) 
+							&& url[ variables.framework.hibachi.fullUpdateKey ] == variables.framework.hibachi.fullUpdatePassword
+						)
+						|| runFullUpdate
+					){
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - Full Update Initiated");
-
+						server.runFullUpdate = false;
 						//Update custom properties
 
 						var success = getHibachiScope().getService('updateService').updateEntitiesWithCustomProperties();

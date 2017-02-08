@@ -18,6 +18,7 @@
                             <sw-listing-column 
                                 data-property-identifier="skuCode" 
                                 data-fallback-property-identifiers="skuCode,bundledSku_skuCode" 
+                                data-cell-view="swSkuCodeEdit"
                                 tdclass="primary">
                             </sw-listing-column>
                             <sw-listing-column 
@@ -34,7 +35,7 @@
                             </sw-listing-column>
                             <sw-listing-column
                                 data-property-identifier="calculatedQOH"
-                                data-is-visible="{{swPricingManager.trackInventory}}"
+                                data-is-visible="swPricingManager.trackInventory"
                                 data-cell-view="swSkuStockAdjustmentModalLauncher">
                             </sw-listing-column>
                             <sw-listing-column
@@ -48,7 +49,9 @@
                                 data-property-identifier="defaultSku"
                                 data-title="Default"
                                 data-is-visible="true"
-                                data-cell-view="swDefaultSkuRadio">
+                                data-cell-view="swDefaultSkuRadio"
+                                tdclass="s-table-select"
+                                >
                             </sw-listing-column>   
                         </sw-listing-columns>
                         
@@ -65,7 +68,7 @@
                                     <sw-collection-column data-property-identifier="calculatedSkuDefinition" data-is-searchable="true"></sw-collection-column>
                                     <sw-collection-column data-property-identifier="calculatedQATS" data-is-searchable="false"></sw-collection-column>
                                     <sw-collection-column data-property-identifier="calculatedQOH" data-is-searchable="false"></sw-collection-column>
-                                    <sw-collection-column data-property-identifier="price" data-is-searchabled="false"></sw-collection-column>
+                                    <sw-collection-column data-property-identifier="price" data-is-searchable="false"></sw-collection-column>
                                     <sw-collection-column data-property-identifier="product.productID"></sw-collection-column>
                                     <sw-collection-column data-property-identifier="product.defaultSku.skuID"></sw-collection-column>
                                     <sw-collection-column data-property-identifier="imageFileName" data-is-searchable="false"></sw-collection-column>
@@ -112,6 +115,10 @@
                                                       data-filter-comparison-value="null">
                             </sw-listing-disable-rule>
                         </sw-disabled-row-rules> 
+                        <sw-listing-save-action>
+                            <sw-listing-row-save>
+                            </sw-listing-row-save>
+                        </sw-listing-save-action>
                 </sw-listing-display>
            </sw-tab-content>
            <sw-tab-content data-name="Pricing">  

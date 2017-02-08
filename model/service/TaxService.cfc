@@ -52,7 +52,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="hibachiValidationService" type="any";
 	property name="integrationService" type="any";
 	property name="settingService" type="any";
-	
+
 	public void function updateOrderAmountsWithTaxes(required any order) {
 
 		var ratesResponseBeans = {};
@@ -66,7 +66,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// Next Loop over the taxIntegrationArray to call getTaxRates on each
 		for(var integration in taxIntegrationArr) {
-			
+
 			if(integration.getActiveFlag()) {
 				var taxRatesRequestBean = generateTaxRatesRequestBeanForIntegration(arguments.order, integration);
 
@@ -114,7 +114,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 					// Setup the orderItem level taxShippingAddress
 					structDelete(taxAddresses, "taxShippingAddress");
-					if(!isNull(orderItem.getOrderFulfillment()) && !getHibachiValidationService().validate(object=orderItem.getOrderFulfillment().getShippingAddress(), context="full", setErrors=false).hasErrors()) {
+					if(!isNull(orderItem.getOrderFulfillment()) && orderItem.getOrderFulfillment().getFulfillmentMethodType() == 'pickup' && !isNull(orderItem.getOrderFulfillment().getPickupLocation()) && !isNull(orderItem.getOrderFulfillment().getPickupLocation().getPrimaryAddress()) ) {
+						taxAddresses.taxShippingAddress = orderItem.getOrderFulfillment().getPickupLocation().getPrimaryAddress().getAddress();
+					} else if(!isNull(orderItem.getOrderFulfillment()) && !getHibachiValidationService().validate(object=orderItem.getOrderFulfillment().getShippingAddress(), context="full", setErrors=false).hasErrors()) {
 						taxAddresses.taxShippingAddress = orderItem.getOrderFulfillment().getShippingAddress();
 					}
 
@@ -176,7 +178,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 							// Else if there is no itegration or if there was supposed to be a response bean but we didn't get one, then just calculate based on this rate data store in our DB
 							} else {
-								
+
 								// if account is tax exempt return after removing any tax previously applied to order
 								if(!isNull(arguments.order.getAccount()) && !isNull(arguments.order.getAccount().getTaxExemptFlag()) && arguments.order.getAccount().getTaxExemptFlag()) {
 									continue;
@@ -381,7 +383,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 				// Setup the orderItem level taxShippingAddress
 				structDelete(taxAddresses, "taxShippingAddress");
-				if(!isNull(orderItem.getOrderFulfillment()) && !getHibachiValidationService().validate(object=orderItem.getOrderFulfillment().getShippingAddress(), context="full", setErrors=false).hasErrors()) {
+				if(!isNull(orderItem.getOrderFulfillment()) && orderItem.getOrderFulfillment().getFulfillmentMethodType() eq 'pickup' && !isNull(orderItem.getOrderFulfillment().getPickupLocation()) && !isNull(orderItem.getOrderFulfillment().getPickupLocation().getPrimaryAddress()) ) {
+					taxAddresses.taxShippingAddress = orderItem.getOrderFulfillment().getPickupLocation().getPrimaryAddress().getAddress();
+				} else if(!isNull(orderItem.getOrderFulfillment()) && !getHibachiValidationService().validate(object=orderItem.getOrderFulfillment().getShippingAddress(), context="full", setErrors=false).hasErrors()) {
 					taxAddresses.taxShippingAddress = orderItem.getOrderFulfillment().getShippingAddress();
 				}
 

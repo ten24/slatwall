@@ -142,7 +142,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			getHibachiScope().getSession().setOrder( cart );
 
 			// Make sure that the session is persisted
-			getHibachiSessionService().persistSession();
+			getHibachiSessionService().persistSession(updateLoginCookies=true);
 
 		}
 	}

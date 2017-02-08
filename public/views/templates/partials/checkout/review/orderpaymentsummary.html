@@ -1,0 +1,21 @@
+<span ng-init="$.slatwall = $root.slatwall"></span>
+<div class="alert alert-warning" ng-if="$.slatwall.cart.data.orderPayments[''+$.slatwall.cart.data.orderPayments.length-1].nameOnCreditCard">
+    <i class="fa fa-check-circle fa-2x addressCheck" aria-hidden="true"></i>
+    <address>
+        <span ng-if="$.slatwall.cart.data.orderPayments[''+$.slatwall.cart.data.orderPayments.length-1].nameOnCreditCard">{{$.slatwall.cart.data.orderPayments[''+$.slatwall.cart.data.orderPayments.length-1].nameOnCreditCard}}<br></span>
+        <span ng-if="$.slatwall.cart.data.orderPayments[''+$.slatwall.cart.data.orderPayments.length-1].billingAddress.streetAddress">{{$.slatwall.cart.data.orderPayments[''+$.slatwall.cart.data.orderPayments.length-1].billingAddress.streetAddress}}<br></span>
+        <span ng-if="$.slatwall.cart.data.orderPayments[''+$.slatwall.cart.data.orderPayments.length-1].billingAddress.street2Address">{{$.slatwall.cart.data.orderPayments[''+$.slatwall.cart.data.orderPayments.length-1].billingAddress.street2Address}}<br></span>
+        <span ng-if="$.slatwall.cart.data.orderPayments[''+$.slatwall.cart.data.orderPayments.length-1].billingAddress.city">{{$.slatwall.cart.data.orderPayments[''+$.slatwall.cart.data.orderPayments.length-1].billingAddress.city}}</span>, <span ng-if="$.slatwall.cart.data.orderPayments[''+$.slatwall.cart.data.orderPayments.length-1].billingAddress.statecode">{{$.slatwall.cart.data.orderPayments[''+$.slatwall.cart.data.orderPayments.length-1].billingAddress.statecode}}</span> <span ng-if="$.slatwall.cart.data.orderPayments[''+$.slatwall.cart.data.orderPayments.length-1].billingAddress.postalcode">{{$.slatwall.cart.data.orderPayments[''+$.slatwall.cart.data.orderPayments.length-1].billingAddress.postalcode}}</span><br>
+        <span ng-if="$.slatwall.cart.data.orderPayments[''+$.slatwall.cart.data.orderPayments.length-1].billingAddress.countrycode">{{$.slatwall.cart.data.orderPayments[''+$.slatwall.cart.data.orderPayments.length-1].billingAddress.countrycode}}</span>
+    </address>
+    <hr>
+    <i class="fa fa-credit-card fa-lg" aria-hidden="true"></i>
+    **** {{$.slatwall.cart.data.orderPayments[''+$.slatwall.cart.data.orderPayments.length-1].creditCardLastFour}}
+    <a href="#" ng-click="$.slatwall.edit = 'payment';$('#payment').animatedScroll({easing: 'easeOutExpo'});" class="edit">
+        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+    </a>
+</div>
+
+<div class="alert alert-warning" ng-if="!$.slatwall.cart.data.orderPayments[''+$.slatwall.cart.data.orderPayments.length-1].nameOnCreditCard">
+    <i class="fa fa-info-circle"></i> Add payment information to continue.
+</div>

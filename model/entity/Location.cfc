@@ -196,7 +196,7 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	public string function getSimpleRepresentation() {
 		
 		if(!isNull(getParentLocation())) {
-			return getParentLocation().getSimpleRepresentation() & " &raquo; " & getLocationName();
+			return getParentLocation().getSimpleRepresentation() & " » " & getLocationName();
 		}
 		
 		if(!isNull(getLocationName())){

@@ -16,28 +16,35 @@ class SWTypeaheadInputFieldController {
     public propertyToShow;
     public initialEntityId:string; 
     public searchText:string;
-    public validateRequired:boolean; 
+    public validateRequired:boolean;
+    private collectionConfig;
     
     // @ngInject
-	constructor(private $scope, 
-                private $q, 
-                private $transclude, 
-                private $hibachi, 
-                private $timeout:ng.ITimeoutService, 
-                private utilityService, 
+	constructor(private $scope,
+                private $transclude,
                 private collectionConfigService
     ){
         
-        if(angular.isDefined(this.entityName)){
-            this.typeaheadCollectionConfig = collectionConfigService.newCollectionConfig(this.entityName); 
+        
+        if( angular.isUndefined(this.typeaheadCollectionConfig)){
+            if(angular.isDefined(this.entityName)){
+                this.typeaheadCollectionConfig = collectionConfigService.newCollectionConfig(this.entityName);
+            } else {
+                throw("You did not pass the correct collection config data to swTypeaheadInputField");
+            }
         }
+        
+        if(angular.isUndefined(this.validateRequired)){
+            this.validateRequired = false;
+        }
+
+        //get the collection config
+        this.$transclude($scope,()=>{});
+
         if(angular.isUndefined(this.propertyToSave)){
             throw("You must select a property to save for the input field directive")
         }
-                  
-        //get the collection config
-        this.$transclude($scope,()=>{});
-           
+
         if(angular.isDefined(this.propertiesToLoad)){
             this.typeaheadCollectionConfig.addDisplayProperty(this.propertiesToLoad);
         }
@@ -67,17 +74,19 @@ class SWTypeaheadInputField implements ng.IDirective{
     public transclude=true; 
 	public restrict = "EA";
 	public scope = {};
-    public priority = 100;
 
 	public bindToController = {
         fieldName:"@",
         entityName:"@",
+        typeaheadCollectionConfig:"=?",
         propertiesToLoad:"@?",
         placeholderRbKey:"@?",
         propertyToShow:"@",
         propertyToSave:"@",
         initialEntityId:"@",
-        validateRequired:"@?"
+        allRecords:"=?",
+        validateRequired:"=?", 
+        maxRecords:"@"
 	};
 	public controller=SWTypeaheadInputFieldController;
 	public controllerAs="swTypeaheadInputField";

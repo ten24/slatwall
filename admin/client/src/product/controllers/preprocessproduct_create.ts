@@ -49,21 +49,26 @@ class ProductCreateController{
 
                 productTypePromise.then(
                         ()=>{
-                                var collectionConfig = this.collectionConfigService.newCollectionConfig('Option');
-                                collectionConfig.setDisplayProperties('optionGroup.optionGroupName,optionName',undefined,{isVisible:true});
-                                collectionConfig.setDisplayProperties('optionID',undefined,{isVisible:false});
-                                //this.collectionConfig.addFilter('optionGroup.optionGroupID',$('input[name="currentOptionGroups"]').val(),'NOT IN')
-                                collectionConfig.addFilter('optionGroup.globalFlag',1,'=');
-                                var productTypeIDArray = this.$scope.productTypeIDPaths[this.$scope.preprocessproduct_createCtrl.selectedOption.value].split(","); 
-                                for(var j = 0 ; j < productTypeIDArray.length; j++){
-                                        collectionConfig.addFilter('optionGroup.productTypes.productTypeID',productTypeIDArray[j],'=','OR');
+                                 if(this.$scope.productTypeIDPaths[this.$scope.preprocessproduct_createCtrl.selectedOption.value]){
+                                    var collectionConfig = this.collectionConfigService.newCollectionConfig('Option');
+                                    collectionConfig.setDisplayProperties('optionGroup.optionGroupName,optionName',undefined,{isVisible:true});
+                                    collectionConfig.setDisplayProperties('optionID',undefined,{isVisible:false});
+                                    //this.collectionConfig.addFilter('optionGroup.optionGroupID',$('input[name="currentOptionGroups"]').val(),'NOT IN')
+                                    collectionConfig.addFilter('optionGroup.globalFlag',1,'=');
+                                   
+                                        
+                                        var productTypeIDArray = this.$scope.productTypeIDPaths[this.$scope.preprocessproduct_createCtrl.selectedOption.value].split(","); 
+                                        for(var j = 0 ; j < productTypeIDArray.length; j++){
+                                                collectionConfig.addFilter('optionGroup.productTypes.productTypeID',productTypeIDArray[j],'=','OR');
+                                        }
+                                    
+                                    collectionConfig.setOrderBy('optionGroup.sortOrder|ASC,sortOrder|ASC');
+                                    this.$scope.preprocessproduct_createCtrl.collectionListingPromise = collectionConfig.getEntity();
+                                    this.$scope.preprocessproduct_createCtrl.collectionListingPromise.then((data)=>{
+                                            this.$scope.preprocessproduct_createCtrl.collection = data;    
+                                            this.$scope.preprocessproduct_createCtrl.collection.collectionConfig = collectionConfig;
+                                    });
                                 }
-                                collectionConfig.setOrderBy('optionGroup.sortOrder|ASC,sortOrder|ASC');
-                                this.$scope.preprocessproduct_createCtrl.collectionListingPromise = collectionConfig.getEntity();
-                                this.$scope.preprocessproduct_createCtrl.collectionListingPromise.then((data)=>{
-                                        this.$scope.preprocessproduct_createCtrl.collection = data;    
-                                        this.$scope.preprocessproduct_createCtrl.collection.collectionConfig = collectionConfig;
-                                });
                         },
                         ()=>{
                                 throw("ProductCreateController was unable to resolve the product type.");
@@ -106,7 +111,8 @@ class ProductCreateController{
             } else {
                 this.$scope.preprocessproduct_createCtrl.selectedOption.value = "";
             }
-          
+
+            this.$scope.preprocessproduct_createCtrl.getCollection();
         }
 
 }

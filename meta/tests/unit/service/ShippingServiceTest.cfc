@@ -55,6 +55,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.integrationService = request.slatwallScope.getBean("integrationService");
 	}
 	
+	public void function calculateShippingRateAdjustmentTest(){
+		
+	}
 	
 }
 

@@ -163,7 +163,7 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 			//Check for defined conversion rate 
 			var currencyRate = getService("currencyService").getCurrencyDAO().getCurrentCurrencyRateByCurrencyCodes(originalCurrencyCode=getCurrencyCode(), convertToCurrencyCode=arguments.currencyCode, conversionDateTime=now());
 			if(!isNull(currencyRate)) {
-				return precisionEvaluate(currencyRate.getConversionRate()*getAmount());
+				return getService('HibachiUtilityService').precisionCalculate(currencyRate.getConversionRate()*getAmount());
 			}
 		
 		}

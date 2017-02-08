@@ -1,3 +1,5 @@
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 export class SkuPriceService { 
 
     private currencies:{}; 
@@ -321,8 +323,9 @@ export class SkuPriceService {
     }
 
     private isQuantityRangeSkuPrice = (skuPriceData, minQuantity, maxQuantity) =>{
-        return ( parseInt(skuPriceData.minQuantity) == parseInt(minQuantity) &&
-                 parseInt(skuPriceData.maxQuantity) == parseInt(maxQuantity))
+         var minQuantityMatch = (parseInt(skuPriceData.minQuantity) == parseInt(minQuantity)); 
+         var maxQuantityMatch = (parseInt(skuPriceData.maxQuantity) == parseInt(maxQuantity));
+         return minQuantityMatch && maxQuantityMatch;
     }
 
     public sortSkuPrices = (skuPriceSet)=>{

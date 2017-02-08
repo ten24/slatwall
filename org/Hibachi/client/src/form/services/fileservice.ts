@@ -4,8 +4,24 @@ class FileService {
     private fileReader;
     
     //@ngInject
-    constructor(private $q, private observerService){
+    constructor(public $q, public observerService){
       
+    }
+
+    public imageExists = (src) =>{
+
+        var deferred = this.$q.defer();
+
+        var image = new Image();
+        image.onerror = function() {
+            deferred.reject();
+        };
+        image.onload = function() {
+            deferred.resolve();
+        };
+        image.src = src;
+
+        return deferred.promise;
     }
     
     public uploadFile = (file:any,object:any,property:string) => {

@@ -65,7 +65,7 @@ component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true acces
 	//temporarily omitted
 	//property name="priceRule" cfc="PriceRule" fieldtype="many-to-one" fkcolumn="priceRuleID";
 	property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID";
-	property name="promotionReward" cfc="promotionReward" fieldtype="many-to-one" fkcolumn="promotionRewardID";
+	property name="promotionReward" cfc="PromotionReward" fieldtype="many-to-one" fkcolumn="promotionRewardID";
 
 	// Remote properties
 	property name="remoteID" ormtype="string";
@@ -77,6 +77,14 @@ component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true acces
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non-Persistent Properties
-
-
+	property name="hasValidQuantityConfiguration" persistent="false"; 
+ 	
+ 	public boolean function hasValidQuantityConfiguration(){
+ 		if(!(isNull(this.getMinQuantity()) && isNull(this.getMaxQuantity())) && (isNull(this.getMinQuantity()) || isNull(this.getMaxQuantity()))){ 
+ 			return false; 
+ 		} else if(this.getMinQuantity() >= this.getMaxQuantity()){
+ 			return false;
+ 		} 
+ 		return true; 
+ 	} 
 }

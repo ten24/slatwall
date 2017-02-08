@@ -160,18 +160,21 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(companyName&'-1',account2.getAccountCode());
 	}
 	
-	public void function deleteAccountTest_ifyouareOwner(){
+	public void function deleteAccountTest_slatwallScopeOwnerTest(){
+		request.slatwallScope.getAccount().setSuperUserFlag(false);
 		var childAccountData = {
-			accountID="",
-			ownerAccount={
-				accountID=request.slatwallScope.getAccount().getAccountID()
-			}
+			accountID=""
 		};
 		
 		var childAccount = createPersistedTestEntity('account',childAccountData);
-		
+		childAccount.setOwnerAccount(request.slatwallScope.getAccount());
 		var deleteOK = variables.service.deleteAccount(childAccount);
-		assert(deleteOK);
+		request.slatwallScope.getAccount().setSuperUserFlag(true);
+	}
+	
+	public void function deleteAccountTest_ifyouareOwner(){
+		request.slatwallScope.getAccount().setSuperUserFlag(false);
+		
 		
 		var ownerAccountData ={
 			accountID="",
@@ -184,9 +187,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		var childAccountData2 = {
 			accountID="",
-			ownerAccount={
-				accountID=ownerAccount.getAccountID()
-			},
+			
 			primaryEmailAddress={
 				accountEmailAddressID="",
 				emailAddress="test"&createUUID()&"@aol.com"
@@ -194,16 +195,17 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		
 		var childAccount2 = createPersistedTestEntity('account',childAccountData2);
+		childAccount2.setOwnerAccount(ownerAccount);
 		
 		var accountRelationshipData = {
 			accountRelationshipID=""
 			
 		};
 		var accountRelationship = createPersistedTestEntity('accountRelationship',accountRelationshipData);
-		
 		deleteOK = variables.service.deleteAccount(childAccount2);
 		assertFalse(deleteOK);
 		assert(structKeyExists(childAccount2.getErrors(),'ownerAccount'));
+		request.slatwallScope.getAccount().setSuperUserFlag(true);
 	}
 	
 	
