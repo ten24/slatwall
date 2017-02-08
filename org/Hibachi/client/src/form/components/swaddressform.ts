@@ -17,6 +17,7 @@ class SWAddressFormController {
     public param:string = "?slataction=";
     public showAlerts:string = "true";
     public eventListeners:any;
+    public submitOnEnter:boolean;
 
 	//@ngInject
     constructor(
@@ -73,8 +74,14 @@ class SWAddressFormController {
                 return formData || "";
             }
         }
-
-
+        if(!this.eventListeners){
+            this.eventListeners = {};
+        }
+        console.log("subit on enter", this.submitOnEnter);
+        if(this.submitOnEnter){
+            this.eventListeners.keyup = this.submitKeyCheck;
+        }
+        console.log("event listeners", this.eventListeners);
        if(this.eventListeners){
             for(var key in this.eventListeners){
                 observerService.attach(this.eventListeners[key], key)
@@ -101,6 +108,13 @@ class SWAddressFormController {
 		return false;
 	}
 
+    public submitKeyCheck = (event) => {
+        if(event.form.$name == this.addressName &&
+            event.event.keyCode == 13){
+            event.swForm.submit(event.swForm.action);
+        }
+    }
+
 } 
 
 class SWAddressForm implements ng.IComponentOptions {
@@ -126,7 +140,8 @@ class SWAddressForm implements ng.IComponentOptions {
         showCountrySelect: "@",
         showSubmitButton: "@",
         showAlerts: "@",
-        eventListeners:"="
+        eventListeners:"=",
+        submitOnEnter:"@"
     };
     public scope={};
     /**

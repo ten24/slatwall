@@ -25,7 +25,8 @@
 				data-action="updateAddress,addOrderShippingAddress"
 				data-action-text="Save and Continue"
 				data-show-address-book-select="false" 
-				data-event-listeners="{updateAddressSuccess:slatwall.hideAccountAddressForm}">
+				data-event-listeners="{updateAddressSuccess:slatwall.hideAccountAddressForm}"
+				data-submit-on-enter="true">
 			</sw-address-form>
 		</div>
 		
@@ -46,6 +47,7 @@
 				data-action-text="Save and Continue"
 				show-close-button="true"
 				close-button-text="CLOSE"
+				data-submit-on-enter="true"
 				data-event-listeners="{addShippingAddressUsingAccountAddressSuccess:slatwall.hideAccountAddressForm}">
 			</sw-address-form>
 		</div>

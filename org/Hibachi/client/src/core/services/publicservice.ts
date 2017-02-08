@@ -1041,8 +1041,14 @@ class PublicService {
            this.cart.orderFulfillments &&
            this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex] &&
            this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress){
-            return this.account.accountAddresses[key].address.addressID === this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.addressID
-        }
+            return (
+                this.account.accountAddresses[key].address.streetAddress === this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.streetAddress &&
+                this.account.accountAddresses[key].address.street2Address === this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.street2Address &&
+                this.account.accountAddresses[key].address.city === this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.city &&
+                this.account.accountAddresses[key].address.statecode === this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.statecode &&
+                this.account.accountAddresses[key].address.postalcode === this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.postalcode &&
+                this.account.accountAddresses[key].address.countrycode === this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.countrycode)
+        }        
         return false;
     }
 

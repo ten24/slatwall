@@ -501,15 +501,14 @@ component extends="HibachiService"  accessors="true" output="false"
     public any function addOrderShippingAddress(required data){
         param name="data.saveAsAccountAddressFlag" default="0";
         param name="data.saveShippingAsBilling" default="1";
-        
         /** add a shipping address */
         var shippingAddress = {};
         if (!isNull(data)){
             //if we have that data and don't have any suggestions to make, than try to populate the address
-            shippingAddress = getService('AddressService').newAddress();    
+            shippingAddress = getService('AddressService').newAddress();   
             //get a new address populated with the data.
             var savedAddress = getService('AddressService').saveAddress(shippingAddress, data, "full");
-            
+
             if (isObject(savedAddress) && !savedAddress.hasErrors()){
                 //save the address at the order level.
                 var order = getHibachiScope().cart();
@@ -531,7 +530,6 @@ component extends="HibachiService"  accessors="true" output="false"
                  	accountAddress.setAddress(shippingAddress);
                  	accountAddress.setAccount(getHibachiScope().getAccount());
                  	var savedAccountAddress = getService("AccountService").saveAccountAddress(accountAddress);
-                  getHibachiScope().addActionResult( "public:cart.addShippingAddress", savedAccountAddress.hasErrors());
                  	if (!savedAddress.hasErrors()){
                  		getDao('hibachiDao').flushOrmSession();
                  	}
@@ -539,7 +537,7 @@ component extends="HibachiService"  accessors="true" output="false"
                 }
                 
                 getOrderService().saveOrder(order);
-
+                getHibachiScope().addActionResult( "public:cart.addShippingAddress", order.hasErrors());
                 
             }else{
                     

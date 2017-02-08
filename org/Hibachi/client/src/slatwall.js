@@ -2727,7 +2727,12 @@
 	                _this.cart.orderFulfillments &&
 	                _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex] &&
 	                _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress) {
-	                return _this.account.accountAddresses[key].address.addressID === _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.addressID;
+	                return (_this.account.accountAddresses[key].address.streetAddress === _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.streetAddress &&
+	                    _this.account.accountAddresses[key].address.street2Address === _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.street2Address &&
+	                    _this.account.accountAddresses[key].address.city === _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.city &&
+	                    _this.account.accountAddresses[key].address.statecode === _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.statecode &&
+	                    _this.account.accountAddresses[key].address.postalcode === _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.postalcode &&
+	                    _this.account.accountAddresses[key].address.countrycode === _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.countrycode);
 	            }
 	            return false;
 	        };
@@ -20694,6 +20699,12 @@
 	            }
 	            return false;
 	        };
+	        this.submitKeyCheck = function (event) {
+	            if (event.form.$name == _this.addressName &&
+	                event.event.keyCode == 13) {
+	                event.swForm.submit(event.swForm.action);
+	            }
+	        };
 	        //if exists, just name it slatwall.
 	        if (angular.isDefined(this.slatwallScope)) {
 	            this.slatwall = this.slatwallScope;
@@ -20742,6 +20753,14 @@
 	                return formData || "";
 	            };
 	        }
+	        if (!this.eventListeners) {
+	            this.eventListeners = {};
+	        }
+	        console.log("subit on enter", this.submitOnEnter);
+	        if (this.submitOnEnter) {
+	            this.eventListeners.keyup = this.submitKeyCheck;
+	        }
+	        console.log("event listeners", this.eventListeners);
 	        if (this.eventListeners) {
 	            for (var key in this.eventListeners) {
 	                observerService.attach(this.eventListeners[key], key);
@@ -20775,7 +20794,8 @@
 	            showCountrySelect: "@",
 	            showSubmitButton: "@",
 	            showAlerts: "@",
-	            eventListeners: "="
+	            eventListeners: "=",
+	            submitOnEnter: "@"
 	        };
 	        this.scope = {};
 	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.coreFormPartialsPath) + "addressform.html";
