@@ -195,16 +195,16 @@
 				    </div>
 
 				    <!--- If we want to render the submit button. --->
-			  		<div class="row" ng-show="SwAddressForm.showSubmitButton == 'true'" style="padding-top:20px">
+			  		<div class="row" ng-show="SwAddressForm.showSubmitButton == 'true' || SwAddressForm.showCloseButton == 'true'" style="padding-top:20px">
 				  		<div class="col-xs-5" >
-					    	<sw-action-caller
+					    	<sw-action-caller ng-if="SwAddressForm.showSubmitButton == 'true'"
 								data-modal="false" 
 								data-type="button" 
 								data-class="btn-yellow"
 								data-text="{{(slatwall.getRequestByAction(SwAddressForm.action).loading ? 'LOADING' : SwAddressForm.actionText || 'SAVE &amp; CONTINUE')}}">
 							</sw-action-caller>
-							<button 
-			                    ng-click="slatwall.accountAddressEditFormIndex=undefined;"
+							<button
+			                    ng-click="slatwall.accountAddressEditFormIndex=undefined; slatwall.billingAddressEditFormIndex = undefined"
 			                    class="btn btn-white">
 			                    Close
 			                </button>

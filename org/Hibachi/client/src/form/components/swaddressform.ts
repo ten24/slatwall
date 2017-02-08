@@ -141,6 +141,7 @@ class SWAddressForm implements ng.IComponentOptions {
         showAddressBookSelect: "@",
         showCountrySelect: "@",
         showSubmitButton: "@",
+        showCloseButton: "@",
         showAlerts: "@",
         eventListeners:"=?",
         submitOnEnter:"@"

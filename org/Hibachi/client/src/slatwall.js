@@ -20796,6 +20796,7 @@
 	            showAddressBookSelect: "@",
 	            showCountrySelect: "@",
 	            showSubmitButton: "@",
+	            showCloseButton: "@",
 	            showAlerts: "@",
 	            eventListeners: "=?",
 	            submitOnEnter: "@"
