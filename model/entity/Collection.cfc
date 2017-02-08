@@ -1467,6 +1467,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return 'SELECT COUNT(DISTINCT #getCollectionConfigStruct().baseEntityAlias#.id) ';
 	}
 
+	public string function getColumnAlias(required any column){
+		var columnAlias = Replace(Replace(arguments.column.propertyIdentifier,'.','_','all'),'_'&lcase(Replace(getCollectionObject(),'#getDao('hibachiDAO').getApplicationKey()#',''))&'_','');
+		return columnAlias;
+	}
 
 	private any function getSelectionsHQL(required array columns, boolean isDistinct=false, boolean forExport=false){
 		var isDistinctValue = '';
@@ -1485,67 +1489,67 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		var startMapHQL = ' new Map(';
 		var columnsHQL = '';
-			for(var i = 1; i <= columnCount; i++){
-				var column = arguments.columns[i];
-				if(!arguments.forExport || (arguments.forExport && structKeyExists(column,'isExportable') && column.isExportable)){
-					var currentAlias = '';
-					var currentAliasStepped = '';
-					var columnPropertyIdentiferArray = listToArray(column.propertyIdentifier,'.');
-					var columnPropertyIdentiferArrayCount = arrayLen(columnPropertyIdentiferArray);
+		for(var i = 1; i <= columnCount; i++){
+			var column = arguments.columns[i];
+			if(!arguments.forExport || (arguments.forExport && structKeyExists(column,'isExportable') && column.isExportable)){
+				var currentAlias = '';
+				var currentAliasStepped = '';
+				var columnPropertyIdentiferArray = listToArray(column.propertyIdentifier,'.');
+				var columnPropertyIdentiferArrayCount = arrayLen(columnPropertyIdentiferArray);
 
-					for(var j = 1; j <= columnPropertyIdentiferArrayCount;j++){
-						if(columnPropertyIdentiferArrayCount > 2){
-							if(j != 1 && j != columnPropertyIdentiferArrayCount){
-								var dotNeeded = '';
-								if(j >= 3){
-									dotNeeded = '.';
-								}
-
-								var join = {
-										associationName=currentAliasStepped&dotNeeded&columnPropertyIdentiferArray[j],
-										alias=currentAlias&'_'&columnPropertyIdentiferArray[j]
-								};
-
-
-								currentAlias = currentAlias&'_'&columnPropertyIdentiferArray[j];
-								currentAliasStepped = currentAliasStepped &dotNeeded& columnPropertyIdentiferArray[j];
-
-								addJoin(join);
-
+				for(var j = 1; j <= columnPropertyIdentiferArrayCount;j++){
+					if(columnPropertyIdentiferArrayCount > 2){
+						if(j != 1 && j != columnPropertyIdentiferArrayCount){
+							var dotNeeded = '';
+							if(j >= 3){
+								dotNeeded = '.';
 							}
-							if(j == columnPropertyIdentiferArrayCount){
-								column.propertyIdentifier = currentAlias&'.'&columnPropertyIdentiferArray[j];
 
-							}
+							var join = {
+									associationName=currentAliasStepped&dotNeeded&columnPropertyIdentiferArray[j],
+									alias=currentAlias&'_'&columnPropertyIdentiferArray[j]
+							};
+
+
+							currentAlias = currentAlias&'_'&columnPropertyIdentiferArray[j];
+							currentAliasStepped = currentAliasStepped &dotNeeded& columnPropertyIdentiferArray[j];
+
+							addJoin(join);
+
 						}
-						if(!len(currentAlias)){
-							currentAlias = columnPropertyIdentiferArray[1];
+						if(j == columnPropertyIdentiferArrayCount){
+							column.propertyIdentifier = currentAlias&'.'&columnPropertyIdentiferArray[j];
+
 						}
 					}
-					if(structKeyExists(column,'attributeID')){
-						columnsHQL &= getColumnAttributeHQL(column);
+					if(!len(currentAlias)){
+						currentAlias = columnPropertyIdentiferArray[1];
+					}
+				}
+				if(structKeyExists(column,'attributeID')){
+					columnsHQL &= getColumnAttributeHQL(column);
+				}else{
+					//check if we have an aggregate
+					if(!isnull(column.aggregate))
+					{
+						//if we have an aggregate then put wrap the identifier
+						if(structKeyExists(column,'propertyIdentifier') && len(column.propertyIdentifier)){
+							columnsHQL &= getAggregateHQL(column.aggregate,column.propertyIdentifier);	
+						}
 					}else{
-						//check if we have an aggregate
-						if(!isnull(column.aggregate))
-						{
-							//if we have an aggregate then put wrap the identifier
-							if(structKeyExists(column,'propertyIdentifier') && len(column.propertyIdentifier)){
-								columnsHQL &= getAggregateHQL(column.aggregate,column.propertyIdentifier);	
-							}
-						}else{
-							var columnAlias = Replace(Replace(column.propertyIdentifier,'.','_','all'),'_'&lcase(Replace(getCollectionObject(),'#getDao('hibachiDAO').getApplicationKey()#',''))&'_','');
-							if(structKeyExists(column,'propertyIdentifier') && len(column.propertyIdentifier)){
-								columnsHQL &= ' #column.propertyIdentifier# as #columnAlias#';								
-							}
+						if(structKeyExists(column,'propertyIdentifier') && len(column.propertyIdentifier)){
+							var columnAlias = getColumnAlias(column);
+							columnsHQL &= ' #column.propertyIdentifier# as #columnAlias#';								
 						}
 					}
+				}
 
-					//check whether a comma is needed
-					if(i != columnCount){
-						columnsHQL &= ',';
-					}//<--end if
-				}//<--end exportable
-			}//<--end for loop
+				//check whether a comma is needed
+				if(i != columnCount){
+					columnsHQL &= ',';
+				}//<--end if
+			}//<--end exportable
+		}//<--end for loop
 
 		if(right(columnsHQL,1) == ','){
 			columnsHQL &= left(columnsHQL,len(columnsHQL)-1);

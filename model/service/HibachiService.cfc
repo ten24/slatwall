@@ -47,7 +47,6 @@ Notes:
 
 */
 component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiService" {
-
 	public any function getSlatwallScope() {
 		return getHibachiScope();
 	} 
