@@ -22,7 +22,8 @@ class SWAddressFormController {
     constructor(
         private $scope,
         private $log,
-        private observerService) {
+        private observerService,
+        private $rootScope) {
 		//if exists, just name it slatwall.
 		if (angular.isDefined(this.slatwallScope)){
 			this.slatwall = this.slatwallScope;
@@ -40,6 +41,9 @@ class SWAddressFormController {
 		if (this.action == undefined) {
 			this.showSubmitButton = false;
 		}
+        if($rootScope.slatwall && !$scope.slatwall){
+            $scope.slatwall = $rootScope.slatwall;
+        }
 
         let addressName = this.addressName;
         if(this.address){

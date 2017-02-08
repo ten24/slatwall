@@ -20668,11 +20668,12 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWAddressFormController = (function () {
 	    //@ngInject
-	    function SWAddressFormController($scope, $log, observerService) {
+	    function SWAddressFormController($scope, $log, observerService, $rootScope) {
 	        var _this = this;
 	        this.$scope = $scope;
 	        this.$log = $log;
 	        this.observerService = observerService;
+	        this.$rootScope = $rootScope;
 	        this.showAddressBookSelect = false;
 	        this.showCountrySelect = true;
 	        this.showSubmitButton = true;
@@ -20708,6 +20709,9 @@
 	        }
 	        if (this.action == undefined) {
 	            this.showSubmitButton = false;
+	        }
+	        if ($rootScope.slatwall && !$scope.slatwall) {
+	            $scope.slatwall = $rootScope.slatwall;
 	        }
 	        var addressName = this.addressName;
 	        if (this.address) {
