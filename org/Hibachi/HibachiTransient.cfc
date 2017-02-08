@@ -389,6 +389,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 				&& structKeyExists(currentProperty, "hb_fileAcceptMIMEType") 
 				&& len(arguments.data[ currentProperty.name ]) 
 				&& structKeyExists(form, currentProperty.name) 
+				&& len(form[currentProperty.name])
 			) {
 				// Wrap in try/catch to add validation error based on fileAcceptMIMEType
 				try {

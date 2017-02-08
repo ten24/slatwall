@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,20 +45,30 @@
 
 Notes:
 
---->
-<?xml version="1.0" encoding="UTF-8"?>
-<cfoutput>
-<Request>
-	<MarkForCapture>
-		<OrbitalConnectionUsername>#setting('username')#</OrbitalConnectionUsername>
-		<OrbitalConnectionPassword>#setting('password')#</OrbitalConnectionPassword>
-		<OrderID>#arguments.requestBean.getOrder().getShortReferenceID( true )#</OrderID>
-		<Amount>#getHibachiScope().getService('HibachiUtilityService').precisionCalculate(numberFormat(arguments.requestBean.getTransactionAmount(),'.00')*100)#</Amount>
-		<BIN>#setting('bin')#</BIN>
-		<MerchantID>#getMerchantIDByCurrencyCode( arguments.requestBean.getTransactionCurrencyCode() )#</MerchantID>
-		<TerminalID>#setting('terminalID')#</TerminalID>
-		<TxRefNum>#arguments.requestBean.getPreAuthorizationProviderTransactionID()#</TxRefNum>
-	</MarkForCapture>
-</Request>
-</cfoutput>
+*/
+component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
+
+	// @hint put things in here that you want to run befor EACH test
+	public void function setUp() {
+		super.setup();
+		variables.entity = request.slatwallScope.getService("priceGroupService").newPriceGroupRate();
+	}
+	
+	public void function getAppliesToTest_ListCreation(){
+		var product = createPersistedTestEntity('Product', {productID="",productName='TestProduct',productCode='testproduct'&createUUID()});
+		var data = {
+			priceGroupRateID=''
+		};
+		var priceGroupRate = createPersistedTestEntity('PriceGroupRate', data);
+		priceGroupRate.addProduct(product);
+		var appliesTo = priceGroupRate.getAppliesTo();
+		assert(appliesTo == 'Including: 1 Product');
+		
+		var product2 = createPersistedTestEntity('Product', {productName='TestProduct2'});
+		priceGroupRate.addProduct(product2);
+		appliesTo = priceGroupRate.getAppliesTo();
+		assert(appliesTo == 'Including: 2 Products');
+	}
+}
+
 

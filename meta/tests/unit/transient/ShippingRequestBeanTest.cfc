@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,20 +45,22 @@
 
 Notes:
 
---->
-<?xml version="1.0" encoding="UTF-8"?>
-<cfoutput>
-<Request>
-	<MarkForCapture>
-		<OrbitalConnectionUsername>#setting('username')#</OrbitalConnectionUsername>
-		<OrbitalConnectionPassword>#setting('password')#</OrbitalConnectionPassword>
-		<OrderID>#arguments.requestBean.getOrder().getShortReferenceID( true )#</OrderID>
-		<Amount>#getHibachiScope().getService('HibachiUtilityService').precisionCalculate(numberFormat(arguments.requestBean.getTransactionAmount(),'.00')*100)#</Amount>
-		<BIN>#setting('bin')#</BIN>
-		<MerchantID>#getMerchantIDByCurrencyCode( arguments.requestBean.getTransactionCurrencyCode() )#</MerchantID>
-		<TerminalID>#setting('terminalID')#</TerminalID>
-		<TxRefNum>#arguments.requestBean.getPreAuthorizationProviderTransactionID()#</TxRefNum>
-	</MarkForCapture>
-</Request>
-</cfoutput>
+*/
+component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
+	public void function setUp() {
+		super.setup();
+		
+		variables.transient = request.slatwallScope.getBean("ShippingRequestBean");
+	}
+	
+	// getEntity()
+	public void function getTotalWeightTest() {
+//		var shippingItemRequestBean = request.slatwallScope.getBean("ShippingItemRequestBean");
+//		shippingItemRequestBean.setQuantity(5);
+//		variables.transient.
+//		request.debug(variables.transient.getTotalWeight());
+	}
+	
+}
+
 

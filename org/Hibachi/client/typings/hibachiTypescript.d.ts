@@ -106,6 +106,7 @@
 /// <reference path="../src/core/filters/percentage.ts" />
 /// <reference path="../src/core/filters/swcurrency.ts" />
 /// <reference path="../src/core/filters/swtrim.ts" />
+/// <reference path="../src/core/filters/swunique.ts" />
 /// <reference path="../src/core/model/baseobject.ts" />
 /// <reference path="../src/core/services/accountservice.ts" />
 /// <reference path="../src/core/services/baseentityservice.ts" />

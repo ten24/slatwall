@@ -6,8 +6,8 @@ component accessors="true" output="false" extends="HibachiService" {
 		return getHibachiDAO().isUniqueProperty(argumentcollection=arguments);
 	}
 
-	public any function loadQueryFromCSVFileWithColumnTypeList(required string pathToCSV, required string ColumnTypeList, boolean useHeaderRow=true, string columnList){
-		var csvFile = FileOpen(ExpandPath(pathToCSV));
+	public any function loadQueryFromCSVFileWithColumnTypeList(required string pathToCSV, required string columnTypeList, boolean useHeaderRow=true, string columnsList){
+		var csvFile = FileOpen(pathToCSV);
 		var i = 1;
 		while(!FileisEOF(csvFile)){ 
 			var line = FileReadLine(csvFile);
@@ -15,24 +15,108 @@ component accessors="true" output="false" extends="HibachiService" {
 				if(arguments.useHeaderRow){
 					arguments.columnsList  = REReplaceNoCase(line, "[^a-zA-Z\d,]", "", "all");
 				}
-				var csvQuery = QueryNew(arguments.columnsList, arguments.listColumnTypes);
+				this.logHibachi("HibachiDataService loading CSV  with columns: " & arguments.columnsList, true );
+				this.logHibachi("HibachiDataService loading CSV  with ## of columns: " & listLen(arguments.columnsList), true );
+				this.logHibachi("HibachiDataService loading CSV  with ## of column types: " & listLen(arguments.columnTypeList), true );
+				
+				var csvQuery = QueryNew(arguments.columnsList, arguments.columnTypeList);
 				var numberOfColumns = listlen(line, ',', true); 
-			}
-			if(i > 1 && numberOfColumns == listLen(line, ',', true)){
-				var row = listToArray(line, ",", true);
-				for(var i = 1; i <= ArrayLen(row); i++){
-					if(len(row[i]) == 0){
-						row[i] = javaCast('null',''); 
+			} else {
+				var row = []; 
+				var capture = false;
+				var isText = false;  
+				var capturedText = ''; 
+				for(var j = 1; j <= Len(line); j++){
+					var currentChar = mid(line, j, 1);
+					if(j + 1 <= len(line)){
+						var nextChar = mid(line, j+1, 1); 
+					}
+					if(currentChar == ',' && !capture){
+						arrayAppend(row, capturedText); 
+						capturedText = ''; 
+						isText = false; 
+						if(!isNull(nextChar) && nextChar != '"' && nextChar != ','){
+							capture = true; 
+						} 
+					} else if(currentChar == '"'){
+						isText = true; 
+						capture = !capture; 
+					} else if (capture){
+						capturedText = capturedText & currentChar; 
+						if(!isText && !isNull(nextChar) && nextChar == ','){
+							capture = false; 
+						}	
+					} else if(isNull(nextChar)){
+						capturedText = capturedText & currentChar;
 					} 
 				}
-				QueryAddRow(csvQuery, row);
-			} else { 
-				this.logHibachi('HibachiDataDAO could not convert row: ' & i & ' in CSV: ' & pathToCSV);	
-			} 
+				arrayAppend(row, capturedText);
+				if(ArrayLen(row) == numberOfColumns){
+					QueryAddRow(csvQuery, row);
+				} else {
+					throw("HibachiDataService could not create query from CSV because it is improperly formed at line: " & i);
+				}	
+			}
 			i++; 
 		}
+		FileClose(csvFile);
 		return csvQuery; 
 	}	
+
+	public array function validateCSVFile(required string pathToCSV, string expectedColumnHeaders){
+		var csvFile = FileOpen(pathToCSV);
+		var i = 1;
+		var problemLines = []; 
+		while(!FileisEOF(csvFile)){ 
+			var line = FileReadLine(csvFile);
+			if(i == 1){
+				var columnsList  = REReplaceNoCase(line, "[^a-zA-Z\d,]", "", "all");
+				if(structKeyExists(arguments, "expectedColumnHeaders")){
+					arguments.expectedColumnHeaders = REReplaceNoCase(arguments.expectedColumnHeaders, "[^a-zA-Z\d,]", "", "all");
+					if(columnsList != arguments.expectedColumnHeaders){
+						arrayAppend(problemLines, i); 
+					} 
+				} 
+				var numberOfColumns = listlen(line, ',', true); 
+			} else {
+				var row = []; 
+				var capture = false; 
+				var isText = false; 
+				var capturedText = ''; 
+				for(var j = 1; j <= Len(line); j++){
+					var currentChar = mid(line, j, 1);
+					if(j + 1 <= len(line)){
+						var nextChar = mid(line, j+1, 1); 
+					}
+					if(currentChar == ',' && !capture){
+						arrayAppend(row, capturedText); 
+						capturedText = '';
+						isText = false; 
+						if(!isNull(nextChar) && nextChar != '"' && nextChar != ','){
+							capture = true; 
+						} 
+					} else if(currentChar == '"'){
+						isText = true; 
+						capture = !capture; 
+					} else if (capture){
+						capturedText = capturedText & currentChar; 
+						if(!isText && !isNull(nextChar) && nextChar == ','){
+							capture = false; 
+						}	
+					} else if(isNull(nextChar)){
+						capturedText = capturedText & currentChar;
+					} 
+				}
+				arrayAppend(row, capturedText);
+				if(ArrayLen(row) != numberOfColumns){
+					arrayAppend(problemLines, i); 
+				}
+			}
+			i++; 
+		}
+		FileClose(csvFile);
+		return problemLines; 	
+	}
 
 	public boolean function loadDataFromXMLDirectory(required string xmlDirectory, boolean ignorePreviouslyInserted=true) {
 		var dirList = directoryList(arguments.xmlDirectory);
@@ -193,16 +277,9 @@ component accessors="true" output="false" extends="HibachiService" {
 			var thisEntityName = getLastEntityNameInPropertyIdentifier(config["baseEntity"], mapping["propertyIdentifier"]);
 
 			// add this table to tables struct if it doesn't exists
-			if(!StructKeyExists(tables, thisTableName)) {
-				tables[ thisTableName ] = {};
-				tables[ thisTableName ]["idColumns"] = "";
-				tables[ thisTableName ]["attributes"] = {};
+			initializeTableStruct(tables, thisTableName);
 				tables[ thisTableName ]["tableType"] = columnInfo["tableType"];
-				tables[ thisTableName ]["sourceIDColumns"] = "";
-				tables[ thisTableName ]["columns"] = {};
-				tables[ thisTableName ]["circularColumns"] = {};
-				tables[ thisTableName ]["compositeKeyOperator"] = "";
-			}
+
 			// get table primary key
 			tables[ thisTableName ]["primaryKeyColumn"] = getPrimaryIDPropertyNameByEntityName(thisEntityName);
 			//set table depth
@@ -226,6 +303,9 @@ component accessors="true" output="false" extends="HibachiService" {
 				tableMetaData["dataType"] = columnInfo["dataType"];
 				if(structKeyExists(mapping, "formatType")) {
 					tableMetaData["formatType"] = mapping["formatType"];
+				}
+				if(structKeyExists(mapping, "sourceColumnDataGenerator")) {
+					tableMetaData["sourceColumnDataGenerator"] = mapping["sourceColumnDataGenerator"];
 				}
 				if(structKeyExists(mapping, "updateFlag")) {
 					tableMetaData["updateFlag"] = mapping["updateFlag"];
@@ -265,22 +345,14 @@ component accessors="true" output="false" extends="HibachiService" {
 					var newTableName = newColumnInfo["tableName"];
 					var newEntityName = getLastEntityNameInPropertyIdentifier(config["baseEntity"], thisPropertyIdentifier);
 
-					if(!StructKeyExists(tables, newTableName)) {
-						tables[ newTableName ] = {};
-						tables[ newTableName ]["idColumns"] = "";
-						tables[ newTableName ]["attributes"] = {};
-						tables[ newTableName ]["tableType"] = newColumnInfo["tableType"];
-						tables[ newTableName ]["sourceIDColumns"] = "";
-						tables[ newTableName ]["columns"] = {};
-						tables[ newTableName ]["circularColumns"] = {};
-						tables[ newTableName ]["depth"] = listLen(thisPropertyIdentifier, ".");
-						tables[ newTableName ]["compositeKeyOperator"] = "";
-					}
+					initializeTableStruct(tables, newTableName);
+					tables[ newTableName ]["tableType"] = newColumnInfo["tableType"];
+					tables[ newTableName ]["depth"] = listLen(thisPropertyIdentifier, ".");
 					tables[ newTableName ]["primaryKeyColumn"] = getPrimaryIDPropertyNameByEntityName(newEntityName);
 
 					// many-to-many and one-to-many need to get added after the main object so, set a lower depth
 					if(newColumnInfo["fieldType"] == "many-to-many") {
-						tables[ newTableName ]["depth"] -= .1;
+						tables[ newTableName ]["depth"] -= 0.1;
 						tables[ newTableName ]["idColumns"] = "#tables[ newTableName ]["primaryKeyColumn"]#,#newColumnName#";
 					} else if(newColumnInfo["fieldType"] == "one-to-many" && tables[ parentTableName ]["depth"] > 0) {
 						// one-to-many depth needs to be lower than it's parent
@@ -320,9 +392,27 @@ component accessors="true" output="false" extends="HibachiService" {
 				} while(len(thisPropertyIdentifier) GT 1);
 			}
 		}
+		if(structKeyExists(config,'depth')) {
+			for (var depth in config.depth) {
+				tables[ depth.tableName ]["depth"] = depth.depth;
+			}
+		}
 
 		return {tables=tables, addedColumns=addedColumns};
 
+	}
+
+	public any function initializeTableStruct(required struct tables, required string tableName) {
+		if(!structKeyExists(arguments.tables, arguments.tableName)) {
+			tables[ arguments.tableName ] = {};
+			tables[ arguments.tableName ]["idColumns"] = "";
+			tables[ arguments.tableName ]["attributes"] = {};
+			tables[ arguments.tableName ]["tableType"] = "";
+			tables[ arguments.tableName ]["sourceIDColumns"] = "";
+			tables[ arguments.tableName ]["columns"] = {};
+			tables[ arguments.tableName ]["circularColumns"] = {};
+			tables[ arguments.tableName ]["compositeKeyOperator"] = "";
+		}
 	}
 
 	public void function loadDataFromQuery(required any query, required any configJSON) {
@@ -345,6 +435,13 @@ component accessors="true" output="false" extends="HibachiService" {
 
 			for(var tableName in tableSortedArray) {
 				var thisTableColumnList = structKeyList(tables[ tableName ]["columns"]);
+				for (var column in tables[ tableName ]["columns"]) {
+					//check if "sourceColumnDataGenerator" exists and bind to the query select
+					if (structKeyExists(tables[ tableName ]["columns"][ column ][1], "sourceColumnDataGenerator") && !ListFindNoCase(arguments.query.ColumnList, column)) {
+						var qry = new Query(sql = "SELECT *, #tables[ tableName ]["columns"][ column ][1]["sourceColumnDataGenerator"]# as #column# FROM query", query = arguments.query, dbtype = "query");
+						arguments.query = qry.execute().getResult();
+					}
+				}
 				var thisTableAttributeList = structKeyList(tables[ tableName ]["attributes"]);
 				var selectList = thisTableColumnList;
 
@@ -424,15 +521,27 @@ component accessors="true" output="false" extends="HibachiService" {
 							tableData[ tableName ].updateData[ tables[ tableName ][ "primaryKeyColumn" ] ] = {value = thisTableData[ "#tables[ tableName ][ "primaryKeyColumn" ]#_new" ][r], dataType = 'varchar'};
 							getHibachiDAO().recordUpdate(tableName, tableData[tableName].idColumns, tableData[tableName].updateData, tableData[tableName].insertData, false);
 						} else {
-							// make sure all ID keys have value
-							var okToImport = true;
-							for(var key in listToArray(tableData[tableName].idColumns)) {
-								if(!len(trim(tableData[tableName].updateData[key].value))) {
-									okToImport = false;
-									break;
+						    //if compositeKeyOperator == OR check if there is at least one Key with value otherwise all keys need to have value
+							if(structKeyExists(tables[ tableName ],"compositeKeyOperator") && uCase(tables[ tableName ][ "compositeKeyOperator" ]) == 'OR'){
+								var okToImport = false;
+								for(var key in listToArray(tableData[tableName].idColumns)) {
+									if (len(trim(tableData[tableName].updateData[key].value)))  {
+										okToImport = true;
+										break;
+									}
+								}
+							}else{
+								var okToImport = true;
+								for(var key in listToArray(tableData[tableName].idColumns)) {
+									if(!len(trim(tableData[tableName].updateData[key].value))) {
+										okToImport = false;
+										break;
+									}
 								}
 							}
-							if(okToImport) {
+
+						if(okToImport && len(tableData[tableName].idcolumns)) {
+
 								// set the primary key ID for insert
 								primaryKeyValue = getHibachiScope().createHibachiUUID();
 								tableData[ tableName ].insertData[ tables[ tableName ][ "primaryKeyColumn" ] ] = {value = primaryKeyValue, dataType = 'varchar'};
@@ -447,7 +556,7 @@ component accessors="true" output="false" extends="HibachiService" {
 							var idKeyList = "";
 							for(var sourceIDColumn in listToArray(tables[ tableName ].sourceIDColumns)) {
 								if(thisTableData[ sourceIDColumn ][r] != "") {
-									idKeyList = listAppend(idKeyList, reReplace(thisTableData[ sourceIDColumn ][r],"[^0-9A-Za-z]","_","all"), ".");
+									idKeyList = listAppend(idKeyList, reReplace(trim(thisTableData[ sourceIDColumn ][r]),"[^0-9A-Za-z]","_","all"), ".");
 								} else {
 									idKeyList = listAppend(idKeyList, "null", ".");
 								}
@@ -516,7 +625,7 @@ component accessors="true" output="false" extends="HibachiService" {
 							// loop through each source column and create keyvalue list
 							for(var sourceIDColumn in listToArray(tables[ tableName ].sourceIDColumns)) {
 								if(arguments.query[ sourceIDColumn ][j] != "") {
-									idKeyList = listAppend(idKeyList, reReplace(arguments.query[ sourceIDColumn ][j],"[^0-9A-Za-z]","_","all"), ".");
+									idKeyList = listAppend(idKeyList, reReplace(trim(arguments.query[ sourceIDColumn ][j]),"[^0-9A-Za-z]","_","all"), ".");
 								} else {
 									// if source column value is blank use "null" as structkey
 									idKeyList = listAppend(idKeyList, "null", ".");

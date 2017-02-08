@@ -589,7 +589,7 @@ component extends="FW1.framework" {
 						coreBF.declareBean("hibachiEntityParser", "#variables.framework.applicationKey#.org.Hibachi.hibachiEntityParser",false);
 					}
 					if(!coreBF.containsBean("hibachiRecaptcha")){
-						coreBF.declareBean("hibachiRecaptcha", "#variables.framework.applicationKey#.org.Hibachi.hibachiRecaptcha",false);
+						coreBF.declareBean("hibachiRecaptcha", "#variables.framework.applicationKey#.org.Hibachi.HibachiRecaptcha",false);
 					}
 
 					// Setup the custom bean factory

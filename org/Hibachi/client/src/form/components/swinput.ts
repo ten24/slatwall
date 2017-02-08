@@ -361,13 +361,14 @@ class SWInputController{
 		if (this.object && this.object.metaData && this.object.metaData.className != undefined){
  			var eventNameForUpdateBindingsID = this.object.metaData.className.split('_')[0]+this.propertyIdentifier+'updateBindings';
  		}else{
- 			var eventNameForUpdateBindingsID = this.propertyIdentifier+this.propertyIdentifier+'updateBindings';
+ 			var eventNameForUpdateBindingsID = this.propertyIdentifier+'updateBindings';
  		}
         var eventNameForPullBindings = 'pullBindings';
         if (this.object && this.object.metaData && this.object.metaData.className != undefined){
          	var eventNameForPullBindingsID = this.object.metaData.className.split('_')[0]+this.propertyIdentifier+'pullBindings';
 		}else{
- 			var eventNameForPullBindingsID = this.propertyIdentifier+this.propertyIdentifier+'pullBindings';
+ 			var eventNameForPullBindingsID = this.propertyIdentifier+'pullBindings';
+
  		}
 		//attach a successObserver
 		if(this.object){

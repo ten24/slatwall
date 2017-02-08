@@ -17,7 +17,12 @@
 		};
 		variables.antisamyConfig.classLoader = CreateObject("component", "Slatwall.org.Hibachi.antisamy.lib.javaloader.JavaLoader").init(variables.antisamyConfig.jarArray);
 		variables.antiSamy = variables.antisamyConfig.classLoader.create("org.owasp.validator.html.AntiSamy").init();
-
+		
+		public any function precisionCalculate(required numeric value, numeric scale=2){
+			var roundingmode = createObject('java','java.math.RoundingMode');
+			return javacast('bigdecimal',arguments.value).setScale(arguments.scale,roundingmode.HALF_EVEN);
+		}
+		
 		/**
 		* Sorts an array of structures based on a key in the structures.
 		*
@@ -231,6 +236,10 @@
   			}
 
 			return result.toString().toUppercase();
+  		}
+
+  		public any function hibachiTernary(required any condition, required any expression1, required any expression2){
+  			return (arguments.condition) ? arguments.expression1 : arguments.expression2;
   		}
 
 		public any function buildPropertyIdentifierListDataStruct(required any object, required string propertyIdentifierList, required string availablePropertyIdentifierList) {
@@ -1223,7 +1232,7 @@
 		<cfreturn signature>
 	</cffunction>
 
-	<cffunction name="uploadToS3" access="public" output="false" returntype="string" 
+	<cffunction name="uploadToS3" access="public" output="false" returntype="boolean"
 					description="Puts an object into a bucket.">
 		<cfargument name="bucketName" type="string" required="true">
 		<cfargument name="fileName" type="string" required="true">
@@ -1266,14 +1275,9 @@
 				<cfhttpparam type="header" name="Cache-Control" value="max-age=2592000">
 				<cfhttpparam type="header" name="Expires" value="#DateFormat(now()+arguments.cacheDays,'ddd, dd mmm yyyy')# #TimeFormat(now(),'H:MM:SS')# GMT">
 			</cfif>
-		</cfhttp>		
-		
-		<cftry>
-			<cfset versionID = cfhttp.responseHeader['x-amz-version-id']>
-			<cfcatch></cfcatch>
-		</cftry>
-		
-		<cfreturn versionID>
+		</cfhttp>
+
+		<cfreturn !isNull(cfhttp) AND structKeyExists(cfhttp.responseHeader, 'Status_Code') AND cfhttp.responseHeader['Status_Code'] EQ 200>
 	</cffunction>
 
 </cfcomponent>

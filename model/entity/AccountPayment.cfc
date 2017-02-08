@@ -228,7 +228,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		var totalAmt = 0;
 		
 		for(var i=1; i<=arrayLen(getAppliedAccountPayments()); i++) {
-			totalAmt = val(precisionEvaluate(totalAmt + getAppliedAccountPayments()[i].getAmount()));
+			totalAmt = getService('HibachiUtilityService').precisionCalculate(totalAmt + getAppliedAccountPayments()[i].getAmount());
 		}
 		
 		return totalAmt;
@@ -241,7 +241,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		if( getAccountPaymentType().getSystemCode() == "aptCharge" ) {
 			
 			for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
-				amountReceived = val(precisionEvaluate(amountReceived + getPaymentTransactions()[i].getAmountReceived()));
+				amountReceived = getService('HibachiUtilityService').precisionCalculate(amountReceived + getPaymentTransactions()[i].getAmountReceived());
 			}
 			
 		}
@@ -256,7 +256,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		if( getAccountPaymentType().getSystemCode() == "aptCredit" ) {
 			
 			for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
-				amountCredited = val(precisionEvaluate(amountCredited + getPaymentTransactions()[i].getAmountCredited()));
+				amountCredited = getService('HibachiUtilityService').precisionCalculate(amountCredited + getPaymentTransactions()[i].getAmountCredited());
 			}
 			
 		}
@@ -271,7 +271,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		if( getAccountPaymentType().getSystemCode() == "aptCharge" ) {
 			for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
 				if(isNull(getPaymentTransactions()[i].getAuthorizationCodeInvalidFlag()) || !getPaymentTransactions()[i].getAuthorizationCodeInvalidFlag()) {
-					amountAuthorized = val(precisionEvaluate(amountAuthorized + getPaymentTransactions()[i].getAmountAuthorized()));
+					amountAuthorized = getService('HibachiUtilityService').precisionCalculate(amountAuthorized + getPaymentTransactions()[i].getAmountAuthorized());
 				}
 			}
 		}
@@ -283,7 +283,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		var unauthroized = 0;
 		
 		if ( getOrderPaymentType().getSystemCode() == "optCharge" ) {
-			unauthroized = val(precisionEvaluate(getAmount() - getAmountReceived() - getAmountAuthorized()));
+			unauthroized = getService('HibachiUtilityService').precisionCalculate(getAmount() - getAmountReceived() - getAmountAuthorized());
 		}
 		
 		return unauthroized;
@@ -293,7 +293,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		var uncaptured = 0;
 		
 		if ( getOrderPaymentType().getSystemCode() == "optCharge" ) {
-			uncaptured = val(precisionEvaluate(getAmountAuthorized() - getAmountReceived()));
+			uncaptured = getService('HibachiUtilityService').precisionCalculate(getAmountAuthorized() - getAmountReceived());
 		}
 		
 		return uncaptured;
@@ -303,7 +303,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		var unreceived = 0;
 		
 		if ( getOrderPaymentType().getSystemCode() == "optCharge" ) {
-			unreceived = val(precisionEvaluate(getAmount() - getAmountReceived()));
+			unreceived = getService('HibachiUtilityService').precisionCalculate(getAmount() - getAmountReceived());
 		}
 		
 		return unreceived;
@@ -313,7 +313,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		var uncredited = 0;
 		
 		if ( getOrderPaymentType().getSystemCode() == "optCredit" ) {
-			uncredited = val(precisionEvaluate(getAmount() - getAmountCredited()));
+			uncredited = getService('HibachiUtilityService').precisionCalculate(getAmount() - getAmountCredited());
 		}
 		
 		return uncredited;
@@ -325,9 +325,14 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		for(var accountPaymentApplied in getAppliedAccountPayments()) {
 			if(isNull(accountPaymentApplied.getOrderPayment())) {
 				if(accountPaymentApplied.getAccountPaymentType().getSystemCode() == "aptCharge") {
-					amountUnassigned = val(precisionEvaluate(amountUnassigned + accountPaymentApplied.getAmount()));
+					if(getAmountReceived()>0){
+						amountUnassigned = getService('HibachiUtilityService').precisionCalculate(amountUnassigned + accountPaymentApplied.getAmount());
+					}
+							
 				} else {
-					amountUnassigned = val(precisionEvaluate(amountUnassigned - accountPaymentApplied.getAmount()));
+					if(getAMountCredited() > 0){
+						amountUnassigned = getService('HibachiUtilityService').precisionCalculate(amountUnassigned - accountPaymentApplied.getAmount());	
+					}
 				}
 			}
 		}

@@ -146,7 +146,7 @@ Notes:
 		<cfset var email = "" />
 
 		<!--- Loop over the queue --->
-		<cfloop array="#getHibachiScope().getEmailQueue()#" index="queueData">
+		<cfloop array="#getHibachiScope().getEmailQueue()#" index="local.queueData">
 
 			<!--- Send the email --->
 			<cfset sendEmail(argumentcollection="#queueData#") />

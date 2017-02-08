@@ -263,7 +263,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	                }
 	                break;
 	            case "percentage":
-	                amount = val(precisionEvaluate(precisionEvaluate(amount * variables.redemptionAmount)/100));
+	                amount = getService('HibachiUtilityService').precisionCalculate(getService('HibachiUtilityService').precisionCalculate(amount * variables.redemptionAmount)/100);
 	                break;
 	        }
 	    }else{

@@ -1358,6 +1358,7 @@
 	var percentage_1 = __webpack_require__(63);
 	var entityrbkey_1 = __webpack_require__(64);
 	var swtrim_1 = __webpack_require__(65);
+	var swunique_1 = __webpack_require__(219);
 	var datefilter_1 = __webpack_require__(66);
 	//directives
 	//  components
@@ -1538,6 +1539,7 @@
 	    .filter('trim', [swtrim_1.SWTrim.Factory])
 	    .filter('entityRBKey', ['rbkeyService', entityrbkey_1.EntityRBKey.Factory])
 	    .filter('swdate', ['$filter', datefilter_1.DateFilter.Factory])
+	    .filter('unique', [swunique_1.SWUnique.Factory])
 	    .directive('swCollectionConfig', swcollectionconfig_1.SWCollectionConfig.Factory())
 	    .directive('swCollectionColumn', swcollectioncolumn_1.SWCollectionColumn.Factory())
 	    .directive('swCollectionFilter', swcollectionfilter_1.SWCollectionFilter.Factory())
@@ -2013,14 +2015,14 @@
 	            if (!action) {
 	                throw "Action is required exception";
 	            }
+	            var urlBase = "";
 	            //check if the caller is defining a path to hit, otherwise use the public scope.
 	            if (action.indexOf(":") !== -1) {
-	                _this.baseActionPath = action; //any path
+	                urlBase = action; //any path
 	            }
 	            else {
-	                _this.baseActionPath = "/index.cfm/api/scope/" + action; //public path
+	                urlBase = "/index.cfm/api/scope/" + action; //public path
 	            }
-	            var urlBase = _this.appConfig.baseURL + _this.baseActionPath;
 	            if (data) {
 	                method = "post";
 	                data.returnJsonObjects = "cart,account";
@@ -2613,6 +2615,50 @@
 	            var request = _this.requestService.newPublicRequest(urlString)
 	                .then(function (result) {
 	                _this.rates = result.data;
+	            });
+	        };
+	        /** Returns the state from the list of states by stateCode */
+	        this.getStateByStateCode = function (stateCode) {
+	            for (var state in _this.states.stateCodeOptions) {
+	                if (_this.states.stateCodeOptions[state].value == stateCode) {
+	                    return _this.states.stateCodeOptions[state];
+	                }
+	            }
+	        };
+	        /** Returns the state from the list of states by stateCode */
+	        this.resetRequests = function (request) {
+	            delete _this.requests[request];
+	        };
+	        /** Returns true if the addresses match. */
+	        this.addressesMatch = function (address1, address2) {
+	            if (angular.isDefined(address1) && angular.isDefined(address2)) {
+	                if ((address1.streetAddress == address2.streetAddress &&
+	                    address1.street2Address == address2.street2Address &&
+	                    address1.city == address2.city &&
+	                    address1.postalcode == address2.postalcode &&
+	                    address1.countrycode == address2.countrycode)) {
+	                    return true;
+	                }
+	            }
+	            return false;
+	        };
+	        /** Should be pushed down into core. Returns the profile image by name. */
+	        this.getResizedImageByProfileName = function (profileName, skuIDList) {
+	            _this.imagePath = {};
+	            if (profileName == undefined) {
+	                profileName = "medium";
+	            }
+	            _this.$http.get("/index.cfm/api/scope/?context=getResizedImageByProfileName&profileName=" + profileName + "&skuIds=" + skuIDList).success(function (result) {
+	                _this.imagePath[skuIDList] = "";
+	                result = angular.fromJson(result);
+	                if (angular.isDefined(result.resizedImagePaths) && angular.isDefined(result.resizedImagePaths.resizedImagePaths) && result.resizedImagePaths.resizedImagePaths[0] != undefined) {
+	                    _this.imagePath[skuIDList] = result.resizedImagePaths.resizedImagePaths[0];
+	                    _this.loading = false;
+	                    return _this.imagePath[skuIDList];
+	                }
+	                else {
+	                    return "";
+	                }
 	            });
 	        };
 	        /**
@@ -5770,18 +5816,23 @@
 	            if (!entityName) {
 	                throw ('No entity name was supplied to getLastEntityNameInPropertyIdentifier in hibachi service.');
 	            }
-	            //strip alias if it exists
+	            //strip alias if it exists and convert everything to be periods
 	            if (propertyIdentifier.charAt(0) === '_') {
-	                propertyIdentifier = _this.utilityService.listRest(propertyIdentifier, '.');
+	                propertyIdentifier = _this.utilityService.listRest(propertyIdentifier.replace(/_/g, '.'), '.');
 	            }
-	            if (propertyIdentifier.split('.').length > 1) {
+	            var propertyIdentifierArray = propertyIdentifier.split('.');
+	            if (propertyIdentifierArray[0] === entityName.toLowerCase()) {
+	                propertyIdentifierArray.shift();
+	            }
+	            if (propertyIdentifierArray.length > 1) {
 	                var propertiesStruct = _this.getEntityMetaData(entityName);
-	                if (!propertiesStruct[_this.utilityService.listFirst(propertyIdentifier, '.')]
-	                    || !propertiesStruct[_this.utilityService.listFirst(propertyIdentifier, '.')].cfc) {
+	                var currentProperty = propertyIdentifierArray.shift();
+	                if (!propertiesStruct[currentProperty] ||
+	                    !propertiesStruct[currentProperty].cfc) {
 	                    throw ("The Property Identifier " + propertyIdentifier + " is invalid for the entity " + entityName);
 	                }
-	                var currentEntityName = _this.utilityService.listLast(propertiesStruct[_this.utilityService.listFirst(propertyIdentifier, '.')].cfc, '.');
-	                var currentPropertyIdentifier = _this.utilityService.right(propertyIdentifier, propertyIdentifier.length - (_this.utilityService.listFirst(propertyIdentifier, '.').length + 1));
+	                var currentEntityName = propertiesStruct[currentProperty].cfc;
+	                var currentPropertyIdentifier = propertyIdentifierArray.join('.');
 	                return _this.getLastEntityNameInPropertyIdentifier(currentEntityName, currentPropertyIdentifier);
 	            }
 	            return entityName;
@@ -5931,8 +5982,8 @@
 	            return request.promise;
 	        };
 	        this.getResizedImageByProfileName = function (profileName, skuIDs) {
-	            var urlString = _this.getUrlWithActionPrefix() + 'api:main.getResizedImageByProfileName&profileName=' + profileName + '&skuIDs=' + skuIDs;
-	            var request = _this.requestService.newAdminRequest(urlString);
+	            var urlString = _this.getUrlWithActionPrefix() + '/index.cfm/api/scope/?context=getResizedImageByProfileName&profileName=' + profileName + '&skuIDs=' + skuIDs;
+	            var request = _this.requestService.newPublicRequest(urlString);
 	            return request.promise;
 	        };
 	        this.getEventOptions = function (entityName) {
@@ -14567,7 +14618,11 @@
 	        //export action
 	        $scope.exportCollection = function () {
 	            var url = '/?' + appConfig.action + '=main.collectionExport&collectionExportID=' + $scope.collectionID + '&downloadReport=1';
-	            var data = { "ids": selectionService.getSelections('collectionSelection') };
+	            var data = {
+	                "ids": selectionService.getSelections('collectionSelection'),
+	                "keywords": $scope.keywords
+	            };
+	            console.log('exportData', data);
 	            var target = "downloadCollection";
 	            $('body').append('<form action="' + url + '" method="post" target="' + target + '" id="postToIframe"></form>');
 	            $.each(data, function (n, v) {
@@ -19557,14 +19612,14 @@
 	                var eventNameForUpdateBindingsID = _this.object.metaData.className.split('_')[0] + _this.propertyIdentifier + 'updateBindings';
 	            }
 	            else {
-	                var eventNameForUpdateBindingsID = _this.propertyIdentifier + _this.propertyIdentifier + 'updateBindings';
+	                var eventNameForUpdateBindingsID = _this.propertyIdentifier + 'updateBindings';
 	            }
 	            var eventNameForPullBindings = 'pullBindings';
 	            if (_this.object && _this.object.metaData && _this.object.metaData.className != undefined) {
 	                var eventNameForPullBindingsID = _this.object.metaData.className.split('_')[0] + _this.propertyIdentifier + 'pullBindings';
 	            }
 	            else {
-	                var eventNameForPullBindingsID = _this.propertyIdentifier + _this.propertyIdentifier + 'pullBindings';
+	                var eventNameForPullBindingsID = _this.propertyIdentifier + 'pullBindings';
 	            }
 	            //attach a successObserver
 	            if (_this.object) {
@@ -23947,6 +24002,54 @@
 	    return SWFDirective;
 	}());
 	exports.SWFDirective = SWFDirective;
+
+
+/***/ },
+/* 219 */
+/***/ function(module, exports) {
+
+	"use strict";
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWUnique = (function () {
+	    function SWUnique() {
+	    }
+	    //@ngInject
+	    SWUnique.Factory = function () {
+	        var filterStub;
+	        filterStub = function (items, filterOn) {
+	            if (filterOn === false) {
+	                return items;
+	            }
+	            if ((filterOn || angular.isUndefined(filterOn)) && angular.isArray(items)) {
+	                var hashCheck = {}, newItems = [];
+	                var extractValueToCompare = function (item) {
+	                    if (angular.isDefined(item) && item[filterOn] != null) {
+	                        return item[filterOn];
+	                    }
+	                    return item;
+	                };
+	                angular.forEach(items, function (item) {
+	                    var isDuplicate = false;
+	                    for (var i = 0; i < newItems.length; i++) {
+	                        if (extractValueToCompare(newItems[i]) == extractValueToCompare(item)) {
+	                            isDuplicate = true;
+	                            break;
+	                        }
+	                    }
+	                    if (!isDuplicate) {
+	                        newItems.push(item);
+	                    }
+	                });
+	            }
+	            return newItems;
+	        };
+	        //filterStub.$stateful = true;
+	        return filterStub;
+	    };
+	    return SWUnique;
+	}());
+	exports.SWUnique = SWUnique;
 
 
 /***/ }
