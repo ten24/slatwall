@@ -256,16 +256,16 @@ class SWInputController{
                 inputType="text";
             }
 			template = currencyTitle + '<input type="' + inputType + '" class="' + this.class + '" '+
-				'ng-model="swInput.value" '+
-				'ng-disabled="swInput.editable === false" '+
-				'ng-show="swInput.editing" '+
-				`ng-class="{'form-control':swInput.inListingDisplay, 'input-xs':swInput.inListingDisplay}"` +
-				'name="'+this.property+'" ' +
-				'placeholder="'+placeholder+'" '+
+				' ng-model="swInput.value" '+
+				' ng-disabled="swInput.editable === false" '+
+				' ng-show="swInput.editing" '+
+				` ng-class="{'form-control':swInput.inListingDisplay, 'input-xs':swInput.inListingDisplay} "` +
+				' name="'+this.property+'" ' +
+				' placeholder="'+placeholder+'" '+
 				validations + currencyFormatter +
-				'id="swinput'+this.swForm.name+this.name+'" '+
-				'style="'+style+'"'+
-				this.inputAttributes+
+				' id="swinput'+this.swForm.name+this.name+'" '+
+				' style="' + style + '" ' + " " +
+	            this.inputAttributes + " " +
 				this.eventHandlerTemplate;
 		}
 

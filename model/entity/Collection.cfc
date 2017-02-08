@@ -1919,6 +1919,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return 'SELECT COUNT(DISTINCT #getCollectionConfigStruct().baseEntityAlias#.id) ';
 	}
 
+	public string function getColumnAlias(required any column){
+		var columnAlias = Replace(Replace(arguments.column.propertyIdentifier,'.','_','all'),'_'&lcase(Replace(getCollectionObject(),'#getDao('hibachiDAO').getApplicationKey()#',''))&'_','');
+		return columnAlias;
+	}
 
 	private any function getSelectionsHQL(required array columns, boolean isDistinct=false, boolean forExport=false){
 		var isDistinctValue = '';
@@ -1934,7 +1938,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			columnCount = arraylen(arguments.columns);
 		}
 
-
+ 
 		var startMapHQL = ' new Map(';
 		var columnsHQL = '';
 		for(var i = 1; i <= columnCount; i++){

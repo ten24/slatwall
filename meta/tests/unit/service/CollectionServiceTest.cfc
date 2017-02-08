@@ -171,6 +171,90 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertTrue(arraylen(formattedPageRecords['pageRecords']));
 	}
 
+	public void function collectionsExportTest(){
+		var collectionConfig = '{
+			"baseEntityName":"Account",
+			"baseEntityAlias":"_account",
+			"columns":[{"isDeletable":false,"isSearchable":true,"title":"accountID","isVisible":false,"ormtype":"id","propertyIdentifier":"_account.accountID","isExportable":true},{"isDeletable":true,"isSearchable":true,"title":"Super User","isVisible":true,"ormtype":"boolean","propertyIdentifier":"_account.superUserFlag","isExportable":true},{"isDeletable":true,"isSearchable":true,"title":"First Name","isVisible":true,"ormtype":"string","propertyIdentifier":"_account.firstName","isExportable":true},{"isDeletable":true,"isSearchable":true,"title":"Last Name","isVisible":true,"ormtype":"string","propertyIdentifier":"_account.lastName","isExportable":true},{"isDeletable":true,"isSearchable":true,"title":"Company","isVisible":true,"ormtype":"string","propertyIdentifier":"_account.company","isExportable":true},{"isDeletable":true,"isSearchable":true,"title":"Account Locked","isVisible":true,"ormtype":"timestamp","propertyIdentifier":"_account.loginLockExpiresDateTime","isExportable":true},{"isDeletable":true,"isSearchable":true,"title":"Failed Login Attempts","isVisible":true,"ormtype":"integer","propertyIdentifier":"_account.failedLoginAttemptCount","isExportable":true},{"isDeletable":true,"isSearchable":true,"title":"Tax Exempt","isVisible":true,"ormtype":"boolean","propertyIdentifier":"_account.taxExemptFlag","isExportable":true},{"isDeletable":true,"isSearchable":true,"title":"URL Title","isVisible":true,"ormtype":"string","propertyIdentifier":"_account.urlTitle","isExportable":true}]
+		}';
+		var collectionData={
+			collectionID="",
+			collectionConfig=collectionConfig,
+			collectionObject="Account"
+		};
+		var collectionEntity = createPersistedTestEntity('Collection',collectionData);
+		var data = {
+			collectionExportID=collectionEntity.getCollectionID()
+		};
+		var hibachiServiceFake = {};
+		hibachiSerivceFake.export = exportFake;
+		variables.service.setHibachiService(hibachiSerivceFake);
+		variables.service.collectionsExport(data);
+	}
+	
+	
+	
+	private void function exportFake(){
+		return;
+	}
+	
+	public void function getExportableColumnsByCollectionConfigTest(){
+		var collectionConfig = '{
+			"baseEntityName":"Account",
+			"baseEntityAlias":"_account",
+			"columns":[
+				{"isDeletable":false,"isSearchable":true,"title":"accountID","isVisible":false,"ormtype":"id","propertyIdentifier":"_account.accountID","isExportable":true},
+				{"isDeletable":true,"isSearchable":true,"title":"Super User","isVisible":true,"ormtype":"boolean","propertyIdentifier":"_account.superUserFlag","isExportable":true},
+				{"isDeletable":true,"isSearchable":true,"title":"First Name","isVisible":true,"ormtype":"string","propertyIdentifier":"_account.firstName","isExportable":true},
+				{"isDeletable":true,"isSearchable":true,"title":"Last Name","isVisible":true,"ormtype":"string","propertyIdentifier":"_account.lastName","isExportable":true},
+				{"isDeletable":true,"isSearchable":true,"title":"Failed Login Attempts","isVisible":true,"ormtype":"integer","propertyIdentifier":"_account.failedLoginAttemptCount","isExportable":true},
+				{"isDeletable":true,"isSearchable":true,"title":"Tax Exempt","isVisible":true,"ormtype":"boolean","propertyIdentifier":"_account.taxExemptFlag","isExportable":true},
+				{"isDeletable":true,"isSearchable":true,"title":"URL Title","isVisible":true,"ormtype":"string","propertyIdentifier":"_account.urlTitle","isExportable":true},
+				
+				{"isDeletable":true,"isSearchable":true,"title":"Company","isVisible":true,"ormtype":"string","propertyIdentifier":"_account.company","isExportable":false},
+				{"isDeletable":true,"isSearchable":true,"title":"Account Locked","isVisible":true,"ormtype":"timestamp","propertyIdentifier":"_account.loginLockExpiresDateTime","isExportable":false}
+			]
+		}';
+		var collectionData={
+			collectionID="",
+			collectionConfig=collectionConfig
+		};
+		var collectionEntity = createPersistedTestEntity('Collection',collectionData);
+		var exportableColumns = variables.service.getExportableColumnsByCollectionConfig(collectionEntity.getCollectionConfigStruct());
+		for(var column in exportableColumns){
+			assert(column.propertyIdentifier != '_account.company' && column.propertyIdentifier != '_account.loginLockExpiresDateTime');
+		}
+		
+	}
+	
+	public void function getHeadersListByCollectionConfigColumnsTest(){
+		var columns = [
+			{"isDeletable"=false,"isSearchable"=true,"title"="accountID","isVisible"=false,"ormtype"="id","propertyIdentifier"="_account.accountID","isExportable"=true},
+			{"isDeletable"=true,"isSearchable"=true,"title"="Super User","isVisible"=true,"ormtype"="boolean","propertyIdentifier"="_account.superUserFlag","isExportable"=true},
+			{"isDeletable"=true,"isSearchable"=true,"title"="First Name","isVisible"=true,"ormtype"="string","propertyIdentifier"="_account.firstName","isExportable"=true},
+			{"isDeletable"=true,"isSearchable"=true,"title"="Last Name","isVisible"=true,"ormtype"="string","propertyIdentifier"="_account.lastName","isExportable"=true},
+			{"isDeletable"=true,"isSearchable"=true,"title"="Failed Login Attempts","isVisible"=true,"ormtype"="integer","propertyIdentifier"="_account.failedLoginAttemptCount","isExportable"=true},
+			{"isDeletable"=true,"isSearchable"=true,"title"="Tax Exempt","isVisible"=true,"ormtype"="boolean","propertyIdentifier"="_account.taxExemptFlag","isExportable"=true},
+			{"isDeletable"=true,"isSearchable"=true,"title"="URL Title","isVisible"=true,"ormtype"="string","propertyIdentifier"="_account.urlTitle","isExportable"=true},
+			
+			{"isDeletable"=true,"isSearchable"=true,"title"="Company","isVisible"=true,"ormtype"="string","propertyIdentifier"="_account.company","isExportable"=false},
+			{"isDeletable"=true,"isSearchable"=true,"title"="Account Locked","isVisible"=true,"ormtype"="timestamp","propertyIdentifier"="_account.loginLockExpiresDateTime","isExportable"=false}
+		];
+		var collectionConfig = '{
+			"baseEntityName":"Account",
+			"baseEntityAlias":"_account"
+		}';
+		var collectionData={
+			collectionID="",
+			collectionConfig=collectionConfig,
+			collectionObject="Account"
+		};
+		var collectionEntity = createPersistedTestEntity('Collection',collectionData);
+		collectionEntity.getCollectionConfigStruct().columns = columns;
+		
+		assertEquals(variables.service.getHeadersListByCollection(collectionEntity),'accountID,superUserFlag,firstName,lastName,failedLoginAttemptCount,taxExemptFlag,urlTitle,company,loginLockExpiresDateTime');
+	}
+	
 	public void function getPropertyIdentifiersListTest(){
 		var entityName = 'product';
 		var entityProperties = variables.service.getPropertiesByEntityName( entityName );
