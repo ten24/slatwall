@@ -70,7 +70,7 @@
                 <label for="useShipping">Use Shipping Address as Billing Address</label>
                 <input type="checkbox" name="useShipping" ng-model="slatwall.useShippingAsBilling">
             </div>
-            <swf-directive partial-path="{{$root.customTemplateFolder}}" partial-name="addbillingbyaccountaddresspartial" ng-show="slatwall.showBillingAccountAddresses()"></swf-directive>
+            <swf-directive partial-name="addbillingbyaccountaddresspartial" ng-show="slatwall.showBillingAccountAddresses()"></swf-directive>
             <sw-address-form ng-if="slatwall.showNewBillingAddressForm()"
                 data-field-list="countryCode,streetAddress,street2Address,locality,city,stateCode,postalCode"
                 data-slatwall-scope="slatwall"

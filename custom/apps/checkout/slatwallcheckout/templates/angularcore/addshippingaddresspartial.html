@@ -2,10 +2,10 @@
 <div ng-init="slatwall.OrderAddShippingObj = {}"></div>
 <h4>Shipping</h4>
 <!-- Displays all addresses from the addess book and lets you select one to use as the shipping address. -->
-<swf-directive partial-path="{{customTemplateFolder}}" partial-name="addshippingbyaccountaddresspartial" ng-show="slatwall.accountAddressEditFormIndex == undefined"></swf-directive>
+<swf-directive partial-name="addshippingbyaccountaddresspartial" ng-show="slatwall.accountAddressEditFormIndex == undefined"></swf-directive>
 
 <!-- Displays available shipping methods. -->
-<swf-directive partial-path="{{customTemplateFolder}}" partial-name="shippingmethodoptiondisplay"  ng-show="slatwall.accountAddressEditFormIndex == undefined"></swf-directive>
+<swf-directive partial-name="shippingmethodoptiondisplay"  ng-show="slatwall.accountAddressEditFormIndex == undefined"></swf-directive>
 
 <!-- When an address needs to be saved. -->
 <div id="editaddress">

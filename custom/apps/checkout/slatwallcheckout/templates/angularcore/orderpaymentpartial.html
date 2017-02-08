@@ -16,12 +16,12 @@
     <div class="alert alert-danger error" ng-show="slatwall.cart['errors']['addOrderPayment']" ng-if="slatwall.cart['errors']['addOrderPayment']"><i class="fa fa-info-circle"></i> {{slatwall.cart['errors']['addOrderPayment'][0]}}</div>
 
 	<!--- Display Order Payment Errors --->
-	<swf-directive partial-path="{{customTemplateFolder}}" partial-name="ordererrors"></swf-directive>
+	<swf-directive partial-name="ordererrors"></swf-directive>
 
 	<!--- The form without shipping address block --->
-	<swf-directive partial-path="{{customTemplateFolder}}"" partial-name="orderpaymentformfull"></swf-directive>
+	<swf-directive partial-name="orderpaymentformfull"></swf-directive>
 
 	<!--- Pleace Order / Review Order / Save Buttons --->
-	<swf-directive partial-path="{{customTemplateFolder}}" partial-name="orderbuttons"></swf-directive>
+	<swf-directive partial-name="orderbuttons"></swf-directive>
 
 </swform>

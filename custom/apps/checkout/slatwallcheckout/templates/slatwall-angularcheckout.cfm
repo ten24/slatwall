@@ -7,8 +7,6 @@
 <!--- In you use the default, you can style it using the CSS wrapper that wraps the template using the name of the directive. --->
 <!--- For example: To style the default <swPublicLogin></swPublicLogin> directive use the CSS wrapper sw-public-login-wrapper --->
 
-<!--- Sets the custom template folder --->
-<span ng-init="customTemplateFolder = '/custom/apps/checkout/slatwallcheckout/templates/angularcore/'"></span>
 <!--- Sets a default for create account toggle --->
 <span ng-init="slatwall.showCreateAccount = true"></span>
 <!--- Sets a default for editPayment toggle --->
