@@ -2265,6 +2265,11 @@
 	            if (Object.keys(newOrderPaymentErrors).length) {
 	            }
 	        };
+	        this.orderPaymentKeyCheck = function (event) {
+	            if (event.event.keyCode == 13) {
+	                _this.setOrderPaymentInfo();
+	            }
+	        };
 	        // Prepare swAddressForm billing address / card info to be passed to addOrderPayment
 	        this.setOrderPaymentInfo = function () {
 	            var billingAddress;
@@ -2286,6 +2291,7 @@
 	                billingAddress[key] = _this.newCardInfo[key];
 	            }
 	            _this.newBillingAddress = billingAddress;
+	            _this.addOrderPayment({});
 	        };
 	        /** Allows an easy way to calling the service addOrderPayment.
 	        */
@@ -2304,12 +2310,6 @@
 	            var accountLast = _this.account.lastName;
 	            var data = {};
 	            var processObject = _this.orderService.newOrder_AddOrderPayment();
-	            // processObject.newBillingAddress = this.newBillingAddress;
-	            // processObject.newBillingAddress.expirationMonth = formdata.month;
-	            // processObject.newBillingAddress.expirationYear = formdata.year;
-	            // processObject.newBillingAddress.billingAddress.country = formdata.country || processObject.data.newOrderPayment.billingAddress.country;
-	            // processObject.newBillingAddress.billingAddress.statecode = formdata.state || processObject.data.newOrderPayment.billingAddress.statecode;
-	            // processObject.newBillingAddress.saveShippingAsBilling=(this.saveShippingAsBilling == true);
 	            data = {
 	                'newOrderPayment.billingAddress.addressID': '',
 	                'newOrderPayment.billingAddress.streetAddress': billingAddress.streetAddress,
@@ -20727,8 +20727,9 @@
 	        var addressName = this.addressName;
 	        if (this.address) {
 	            this.address.getData = function () {
-	                var formData = this.address;
-	                var form = this.forms[addressName];
+	                console.log("this: ", _this);
+	                var formData = _this.address || {};
+	                var form = _this.address.forms[addressName];
 	                for (var key_1 in form) {
 	                    var val = form[key_1];
 	                    if (typeof val === 'object' && val.hasOwnProperty('$modelValue')) {
@@ -20737,6 +20738,9 @@
 	                        }
 	                        else if (val.$viewValue) {
 	                            val = val.$viewValue;
+	                        }
+	                        else if (val.$dirty) {
+	                            val = "";
 	                        }
 	                        if (angular.isString(val)) {
 	                            formData[key_1] = val;
@@ -20756,7 +20760,6 @@
 	        if (!this.eventListeners) {
 	            this.eventListeners = {};
 	        }
-	        console.log("subit on enter", this.submitOnEnter);
 	        if (this.submitOnEnter) {
 	            this.eventListeners.keyup = this.submitKeyCheck;
 	        }
@@ -20794,7 +20797,7 @@
 	            showCountrySelect: "@",
 	            showSubmitButton: "@",
 	            showAlerts: "@",
-	            eventListeners: "=",
+	            eventListeners: "=?",
 	            submitOnEnter: "@"
 	        };
 	        this.scope = {};

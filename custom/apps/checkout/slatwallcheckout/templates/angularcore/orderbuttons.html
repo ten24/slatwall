@@ -2,4 +2,4 @@
 	<span ng-init="slatwall.edit='review'"></span>
 </span>
 <!--<input type="submit" value="{{(slatwall.getRequestByAction('addOrderPayment').loading)?'Submitting Order...':'Place Order'}}" class="button"      ng-click="slatwall.addOrderPaymentAndPlaceOrder({'month':slatwall.selectedMonth.value,'year':slatwall.selectedYear,'country':slatwall.selectedBillingCountry.value,'state':selectedBillingState.value,'saveShippingAsBilling':slatwall.saveShippingAsBilling})" />-->
-<input type="submit" value="{{(slatwall.getRequestByAction('addOrderPayment').loading)?'LOADING...':'Add Payment Method'}}" class="button" ng-click="slatwall.setOrderPaymentInfo(); slatwall.addOrderPayment({'month':slatwall.selectedMonth,'year':slatwall.selectedYear,'country':slatwall.selectedBillingCountry.value,'state':selectedBillingState.value,'saveShippingAsBilling':slatwall.saveShippingAsBilling})" ng-disabled="slatwall.hasNoCardInfo()"/>
+<input type="submit" value="{{(slatwall.getRequestByAction('addOrderPayment').loading)?'LOADING...':'Add Payment Method'}}" class="button" ng-click="slatwall.setOrderPaymentInfo()" ng-disabled="slatwall.hasNoCardInfo()"/>

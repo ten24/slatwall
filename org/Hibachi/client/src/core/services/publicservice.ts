@@ -509,6 +509,12 @@ class PublicService {
         }
     }
 
+    public orderPaymentKeyCheck = (event) =>{
+        if(event.event.keyCode == 13 ){
+            this.setOrderPaymentInfo();
+        }
+    }
+
     // Prepare swAddressForm billing address / card info to be passed to addOrderPayment
     public setOrderPaymentInfo = () => {
         let billingAddress;
@@ -536,6 +542,7 @@ class PublicService {
         }
         
         this.newBillingAddress = billingAddress;
+        this.addOrderPayment({});
     }
 
     /** Allows an easy way to calling the service addOrderPayment.
@@ -557,14 +564,6 @@ class PublicService {
         var data = {};
 
         var processObject = this.orderService.newOrder_AddOrderPayment();
-
-        // processObject.newBillingAddress = this.newBillingAddress;
-        // processObject.newBillingAddress.expirationMonth = formdata.month;
-        // processObject.newBillingAddress.expirationYear = formdata.year;
-        // processObject.newBillingAddress.billingAddress.country = formdata.country || processObject.data.newOrderPayment.billingAddress.country;
-        // processObject.newBillingAddress.billingAddress.statecode = formdata.state || processObject.data.newOrderPayment.billingAddress.statecode;
-        // processObject.newBillingAddress.saveShippingAsBilling=(this.saveShippingAsBilling == true);
-
         data = {
             'newOrderPayment.billingAddress.addressID':'',
             'newOrderPayment.billingAddress.streetAddress': billingAddress.streetAddress,

@@ -48,9 +48,10 @@ class SWAddressFormController {
 
         let addressName = this.addressName;
         if(this.address){
-            this.address.getData = function(){
-                let formData = this.address;
-                let form = this.forms[addressName];
+            this.address.getData = () => {
+                console.log("this: ", this);
+                let formData = this.address || {};
+                let form = this.address.forms[addressName];
                 for(let key in form){
                     let val = form[key];
                     if(typeof val === 'object' && val.hasOwnProperty('$modelValue')){
@@ -58,6 +59,8 @@ class SWAddressFormController {
                             val = val.$modelValue;
                         }else if(val.$viewValue){
                             val = val.$viewValue;
+                        }else if(val.$dirty){
+                            val="";
                         }
 
                         if(angular.isString(val)){
@@ -77,7 +80,6 @@ class SWAddressFormController {
         if(!this.eventListeners){
             this.eventListeners = {};
         }
-        console.log("subit on enter", this.submitOnEnter);
         if(this.submitOnEnter){
             this.eventListeners.keyup = this.submitKeyCheck;
         }
@@ -140,7 +142,7 @@ class SWAddressForm implements ng.IComponentOptions {
         showCountrySelect: "@",
         showSubmitButton: "@",
         showAlerts: "@",
-        eventListeners:"=",
+        eventListeners:"=?",
         submitOnEnter:"@"
     };
     public scope={};
