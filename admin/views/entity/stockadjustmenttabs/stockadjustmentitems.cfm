@@ -62,7 +62,7 @@ Notes:
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="fromstock.sku.skucode" />
 		<hb:HibachiListingColumn propertyIdentifier="fromstock.sku.product.brand.brandName" />
 		<hb:HibachiListingColumn propertyIdentifier="fromstock.sku.product.productName" />
-		<hb:HibachiListingColumn propertyIdentifier="fromstock.sku.skuDefinition" sort="false" />
+		<hb:HibachiListingColumn propertyIdentifier="fromstock.sku.calculatedSkuDefinition" sort="false" />
 		<hb:HibachiListingColumn propertyIdentifier="fromstock.location.locationName" title="#$.slatwall.rbKey('admin.warehouse.detailstockadjustment.fromlocationname')#" />
 		<cfif rc.stockAdjustment.getStockAdjustmentType().getSystemCode() eq "satLocationTransfer">
 			<hb:HibachiListingColumn propertyIdentifier="tostock.location.locationName" title="#$.slatwall.rbKey('admin.warehouse.detailstockadjustment.tolocationname')#" />
@@ -71,7 +71,7 @@ Notes:
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="tostock.sku.skucode" />
 		<hb:HibachiListingColumn propertyIdentifier="tostock.sku.product.brand.brandName" />
 		<hb:HibachiListingColumn propertyIdentifier="tostock.sku.product.productName" />
-		<hb:HibachiListingColumn propertyIdentifier="tostock.sku.skuDefinition" sort="false" />
+		<hb:HibachiListingColumn propertyIdentifier="tostock.sku.calculatedSkuDefinition" sort="false" />
 		<hb:HibachiListingColumn propertyIdentifier="tostock.location.locationName" title="#$.slatwall.rbKey('admin.warehouse.detailstockadjustment.tolocationname')#" />
 	</cfif>
 	
@@ -96,6 +96,7 @@ Notes:
 			<hb:HibachiListingColumn propertyIdentifier="sku.product.productCode" />
 			<hb:HibachiListingColumn propertyIdentifier="sku.product.brand.brandName" />
 			<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="sku.product.productName" />
+			<hb:HibachiListingColumn propertyIdentifier="sku.calculatedSkuDefinition" />
 			<hb:HibachiListingColumn propertyIdentifier="sku.product.productType.productTypeName" />
 			<hb:HibachiListingColumn propertyIdentifier="calculatedQNC" />
 		<cfelse>
@@ -103,6 +104,7 @@ Notes:
 			<hb:HibachiListingColumn propertyIdentifier="product.productCode" />
 			<hb:HibachiListingColumn propertyIdentifier="product.brand.brandName" />
 			<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="product.productName" />
+			<hb:HibachiListingColumn propertyIdentifier="calculatedSkuDefinition" />
 			<hb:HibachiListingColumn propertyIdentifier="product.productType.productTypeName" />
 		</cfif>					    
 		

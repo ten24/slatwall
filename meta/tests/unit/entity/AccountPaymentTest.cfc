@@ -65,6 +65,197 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(arrayLen(variables.entity.getExpirationYearOptions()), 20);
 	}
 	
+	public void function isValidTest(){
+		var accountPaymentData={
+			accountPaymentID=""
+		};
+		var accountPayment = createPersistedTestEntity('AccountPayment',accountPaymentData);
+		accountPayment.validate('save');
+		assert(accountPayment.hasErrors());		
+	}
+	
+	public void function getAmountTest(){
+		var accountPaymentData={
+			accountPaymentID=""
+		};
+		var accountPayment = createPersistedTestEntity('AccountPayment',accountPaymentData);
+		
+		var AccountPaymentAppliedData = {
+			accountPaymentAppliedID="",
+			amount = 7.5323,
+			accountPayment={
+				accountPaymentID=accountPayment.getAccountPaymentID()
+			}
+		};
+		var accountPaymentApplied = createTestEntity('AccountPaymentApplied',accountPaymentAppliedData);
+		
+		var AccountPaymentAppliedData2 = {
+			accountPaymentAppliedID="",
+			amount = 7.5643,
+			accountPayment={
+				accountPaymentID=accountPayment.getAccountPaymentID()
+			}
+		};
+		var accountPaymentApplied2 = createTestEntity('AccountPaymentApplied',accountPaymentAppliedData2);
+		
+		assertEquals(15.09,accountPayment.getAmount());
+	}
+	
+	public void function getAmountReceivedTest(){
+		var accountPaymentData={
+			accountPaymentID="",
+			accountPaymentType={
+				//charge
+				typeID="444df32dd2b0583d59a19f1b77869025"
+			}
+		};
+		var accountPayment = createPersistedTestEntity('AccountPayment',accountPaymentData);
+		var PaymentTransactionData={
+			PaymentTransactionID="",
+			accountPayment={
+				accountPaymentID=accountPayment.getAccountPaymentID()
+				
+			},
+			amountReceived=7.345
+		};
+		var PaymentTransaction = createPersistedTestEntity('PaymentTransaction',PaymentTransactionData);
+		
+		var PaymentTransactionData2={
+			PaymentTransactionID="",
+			accountPayment={
+				accountPaymentID=accountPayment.getAccountPaymentID()
+				
+			},
+			amountReceived=1.2123
+		};
+		var PaymentTransaction2 = createPersistedTestEntity('PaymentTransaction',PaymentTransactionData2);
+		
+		assertEquals(8.55,accountPayment.getAmountReceived());
+	}
+	
+	public void function getAmountCreditedTest(){
+		var accountPaymentData={
+			accountPaymentID="",
+			accountPaymentType={
+				//credit
+				typeID="444df32e9b448ea196c18c66e1454c46"
+			}
+		};
+		var accountPayment = createPersistedTestEntity('AccountPayment',accountPaymentData);
+		var PaymentTransactionData={
+			PaymentTransactionID="",
+			accountPayment={
+				accountPaymentID=accountPayment.getAccountPaymentID()
+				
+			},
+			amountCredited=7.345
+		};
+		var PaymentTransaction = createPersistedTestEntity('PaymentTransaction',PaymentTransactionData);
+		
+		var PaymentTransactionData2={
+			PaymentTransactionID="",
+			accountPayment={
+				accountPaymentID=accountPayment.getAccountPaymentID()
+				
+			},
+			amountCredited=1.2123
+		};
+		var PaymentTransaction2 = createPersistedTestEntity('PaymentTransaction',PaymentTransactionData2);
+		
+		assertEquals(8.55,accountPayment.getAmountCredited());
+	}
+	
+	public void function getAmountAuthorizedTest(){
+		var accountPaymentData={
+			accountPaymentID="",
+			accountPaymentType={
+				//charge
+				typeID="444df32dd2b0583d59a19f1b77869025"
+			}
+		};
+		var accountPayment = createPersistedTestEntity('AccountPayment',accountPaymentData);
+		var PaymentTransactionData={
+			PaymentTransactionID="",
+			accountPayment={
+				accountPaymentID=accountPayment.getAccountPaymentID()
+				
+			},
+			amountAuthorized=7.345
+		};
+		var PaymentTransaction = createPersistedTestEntity('PaymentTransaction',PaymentTransactionData);
+		
+		var PaymentTransactionData2={
+			PaymentTransactionID="",
+			accountPayment={
+				accountPaymentID=accountPayment.getAccountPaymentID()
+				
+			},
+			amountAuthorized=1.2123
+		};
+		var PaymentTransaction2 = createPersistedTestEntity('PaymentTransaction',PaymentTransactionData2);
+		
+		assertEquals(8.55,accountPayment.getAmountAuthorized());
+	}
+	
+//	public void function getAmountUnassignedTest(){
+//		var accountPaymentData={
+//			accountPaymentID="",
+//			
+//			
+//			accountPaymentType={
+//				//charge
+//				typeID="444df32dd2b0583d59a19f1b77869025"
+//			}
+//		};
+//		var accountPayment = createPersistedTestEntity('AccountPayment',accountPaymentData);
+//		var AccountPaymentAppliedData = {
+//			accountPaymentAppliedID="",
+//			amount = 7.5323,
+//			accountPayment={
+//				accountPaymentID=accountPayment.getAccountPaymentID()
+//			},
+//			accountPaymentType={
+//				//charge
+//				typeID="444df32dd2b0583d59a19f1b77869025"
+//			}
+//		};
+//		var accountPaymentApplied = createTestEntity('AccountPaymentApplied',accountPaymentAppliedData);
+//		
+//		var AccountPaymentAppliedData2 = {
+//			accountPaymentAppliedID="",
+//			amount = 7.5643,
+//			accountPayment={
+//				accountPaymentID=accountPayment.getAccountPaymentID()
+//			},
+//			accountPaymentType={
+//				//charge
+//				typeID="444df32dd2b0583d59a19f1b77869025"
+//			}
+//		};
+//		var accountPaymentApplied2 = createTestEntity('AccountPaymentApplied',accountPaymentAppliedData2);
+//		
+//		var PaymentTransactionData={
+//			PaymentTransactionID="",
+//			accountPayment={
+//				accountPaymentID=accountPayment.getAccountPaymentID()
+//				
+//			},
+//			amountCredited=7.345
+//		};
+//		var PaymentTransaction = createPersistedTestEntity('PaymentTransaction',PaymentTransactionData);
+//		
+//		var PaymentTransactionData={
+//			PaymentTransactionID="",
+//			accountPayment={
+//				accountPaymentID=accountPayment.getAccountPaymentID()
+//				
+//			},
+//			amountRecieved=5.3234324
+//		};
+//		var PaymentTransaction = createPersistedTestEntity('PaymentTransaction',PaymentTransactionData);
+//		
+//		request.debug(accountPayment.getAmountUnassigned());
+//	}
 	
 }
 

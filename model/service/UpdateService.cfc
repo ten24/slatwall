@@ -193,8 +193,7 @@ Notes:
 
 	<cffunction name="runScripts">
 		<cfset var scripts = this.listUpdateScriptOrderByLoadOrder() />
-		<cfset var script = "" />
-		<cfloop array="#scripts#" index="script">
+		<cfloop array="#scripts#" index="local.script">
 			<cfif isNull(script.getSuccessfulExecutionCount())>
 				<cfset script.setSuccessfulExecutionCount(0) />
 			</cfif>
@@ -213,7 +212,7 @@ Notes:
 						<cfelseif fileExists(expandPath("/Slatwall/config/scripts/#script.getScriptPath()#"))>
 							<cfinclude template="#getHibachiScope().getBaseURL()#/config/scripts/#script.getScriptPath()#" />
 						<cfelse>
-							<cfthrow message="update script file doesn't exist" />
+							<cfthrow message="update script file doesn't exist #getHibachiScope().getBaseURL()#/config/scripts/#script.getScriptPath()#" />
 						</cfif>
 					</cfif>
 					<cfset script.setSuccessfulExecutionCount(script.getSuccessfulExecutionCount()+1) />
@@ -223,7 +222,8 @@ Notes:
 					</cfcatch>
 				</cftry>
 				<cfset script.setLastExecutedDateTime(now()) />
-				<cfset this.saveUpdateScript(script) />
+				<cfset getDao('HibachiDao').save(script) />
+				<cfset getDao('HibachiDao').flushORMSession()/>
 			</cfif>
 		</cfloop>
 	</cffunction>
@@ -338,7 +338,7 @@ Notes:
 						if(arguments.baseMeta.properties[j].name == arguments.customMeta.properties[i].name) {
 							writeLog(
 								file="Slatwall",
-								text="Custom property names can't be same as core property names"
+								text="Custom property names can't be same as core property names: #arguments.customMeta.properties[i].name#"
 							);
 						}
 					}
@@ -346,16 +346,19 @@ Notes:
 			}
 		}
 		
-		public any function mergeEntityParsers(required any coreEntityParser, required any customEntityParser){
+		public any function mergeEntityParsers(required any coreEntityParser, required any customEntityParser, boolean purgeCustomProperties=false){
 			var conditionalLineBreak = variables.conditionLineBreak;
 			
 			if(lcase(getApplicationValue("lineBreakStyle")) == 'windows'){
 				conditionalLineBreak = "";
 			}
-			
 			var newContent = "";
 			//add properties
 			if(len(arguments.customEntityParser.getPropertyString())){
+				if(arguments.coreEntityParser.hasCustomProperties() && arguments.purgeCustomProperties){
+					arguments.coreEntityParser.setFileContent(replace(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomPropertyContent(),''));
+				}
+				
 				if(arguments.coreEntityParser.hasCustomProperties()){
 					var customPropertyStartPos = arguments.coreEntityParser.getCustomPropertyStartPosition();
 					var customPropertyEndPos = arguments.coreEntityParser.getCustomPropertyEndPosition();
@@ -369,16 +372,18 @@ Notes:
 					}
 				}else{
 					var customPropertyString = arguments.customEntityParser.getCustomPropertyStringByPropertyString();
-	
 					newContent = 	left(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getPropertyEndPos()-variables.paddingCount) 
 									& conditionalLineBreak & chr(9) & customPropertyString & chr(9) & 
 									right(arguments.coreEntityParser.getFileContent(),len(arguments.coreEntityParser.getFileContent()) -arguments.coreEntityParser.getPropertyEndPos())
 					;
 					arguments.coreEntityParser.setFileContent(newContent);
-				}
+				} 
 			}
 			//add functions
 			if(len(arguments.customEntityParser.getFunctionString())){
+				if(arguments.purgeCustomProperties && arguments.coreEntityParser.hasCustomFunctions()){
+					arguments.coreEntityParser.setFileContent(replace(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomFunctionContent(),''));	
+				}	
 				
 				if(arguments.coreEntityParser.hasCustomFunctions()){
 					var customFunctionStartPos = arguments.coreEntityParser.getCustomFunctionStartPosition();
@@ -409,10 +414,8 @@ Notes:
 			//declared file paths
 			var coreEntityParser = getTransient('HibachiEntityParser');
 			coreEntityParser.setFilePath("model/entity/#arguments.fileName#");
-			
-			checkIfCustomPropertiesExistInBase(customEntityParser.getMetaData(),coreEntityParser.getMetaData());
 
-			mergeEntityParsers(coreEntityParser,customEntityParser);
+			mergeEntityParsers(coreEntityParser,customEntityParser,true);
 
 			return coreEntityParser.getFileContent();
 		</cfscript>

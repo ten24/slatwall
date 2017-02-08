@@ -16,6 +16,7 @@
                 <h2 data-ng-bind="swListingDisplay.title"></h2>
             </div>
             <sw-listing-controls data-ng-if="swListingDisplay.hasSearch !== false && swListingDisplay.collectionConfig != null && !swListingDisplay.customListingControls"
+                    data-table-id="swListingDisplay.tableID"
                     data-collection-config="swListingDisplay.collectionConfig"
                     data-get-collection="swListingDisplay.getCollection"
                     data-paginator="swListingDisplay.paginator"
@@ -149,7 +150,7 @@
                                 		ng-if="swListingDisplay.multiselectable"
                                         data-id="pageRecord[swListingDisplay.exampleEntity.$$getIDName()]"
                                         data-is-radio="swListingDisplay.isRadio"
-                                        data-selectionid="{{swListingDisplay.name || 'ListingDisplay'}}"
+                                        data-selectionid="{{swListingDisplay.tableID}}"
                                         data-selection="pageRecord[swListingDisplay.exampleEntity.$$getIDName()]"
                                         data-name="{{swListingDisplay.multiselectFieldName+'selection'}}"
                                         data-disabled="swListingDisplay.edit === false">

@@ -158,6 +158,127 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assert(isArray(pageRecords));
 		
 	}
+	
+	public void function applyDataTest_pageShowTest(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+		
+		var data = {};
+		data['p:show'] =2;
+		
+		collectionEntity.applyData(data);
+		
+		assertEquals(collectionEntity.getPageRecordsShow(),2);
+	}
+	
+	public void function applyDataTest_pageShowTest_queryString(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+		
+		var queryString = '?p:show=2&p:current=3';
+		
+		collectionEntity.applyData(queryString);
+		
+		assertEquals(collectionEntity.getPageRecordsShow(),2);
+		assertEquals(collectionEntity.getCurrentPageDeclaration(),3);
+	}
+	
+	public void function applyDataTest_filterTest_queryString(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+		
+		var queryString = '?f:firstName:eq=Ryan';
+		
+		collectionEntity.applyData(queryString);
+		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
+		assert(filter.propertyIdentifier == '_account.firstName');
+		assert(filter.comparisonOperator == '=');
+		assert(filter.value == 'Ryan');
+		assert(collectionEntity.getHQL() Contains '_account.firstName = ');
+	}
+	
+	public void function applyDataTest_currentPageTest(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+		var data = {};
+		data['p:current'] = 72;
+		collectionEntity.applyData(data);
+		assertEquals(collectionEntity.getCurrentPageDeclaration(),72);
+	}
+	
+	public void function applyData_filterEqualsTest(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+		var data = {};
+		data['f:firstName:eq']='Ryan';
+		collectionEntity.applyData(data);
+		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
+		assert(filter.propertyIdentifier == '_account.firstName');
+		assert(filter.comparisonOperator == '=');
+		assert(filter.value == 'Ryan');
+		assert(collectionEntity.getHQL() Contains '_account.firstName = ');
+	}
+	
+	public void function applyDataTest_filterRangeTest_queryString(){
+		var collectionEntity = variables.entityService.getSkuCollectionList();
+		
+		var queryString = '?r:price=20^100';
+		
+		collectionEntity.applyData(queryString);
+		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[2].filterGroup[1];
+		assertEquals(filter.propertyIdentifier,'_sku.price');
+		assertEquals(filter.comparisonOperator,'BETWEEN');
+		assertEquals(filter.value,'20-100');
+		assert(collectionEntity.getHQL() CONTAINS '_sku.price BETWEEN ');
+	}
+	
+	public void function applyDataTest_filterStartRangeTest_queryString(){
+		var collectionEntity = variables.entityService.getSkuCollectionList();
+		
+		var queryString = '?r:price=20^';
+		
+		collectionEntity.applyData(queryString);
+		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[2].filterGroup[1];
+		assertEquals(filter.propertyIdentifier,'_sku.price');
+		assertEquals(filter.comparisonOperator,'BETWEEN');
+		assertEquals(filter.value,'20-');
+		assert(collectionEntity.getHQL() CONTAINS '_sku.price BETWEEN ');
+		
+	}
+	
+	public void function applyDataTest_filterEndRangeTest_queryString(){
+		var collectionEntity = variables.entityService.getSkuCollectionList();
+		
+		var queryString = '?r:price=^100';
+		
+		collectionEntity.applyData(queryString);
+		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[2].filterGroup[1];
+		assertEquals(filter.propertyIdentifier,'_sku.price');
+		assertEquals(filter.comparisonOperator,'BETWEEN');
+		assertEquals(filter.value,'-100');
+		assert(collectionEntity.getHQL() CONTAINS '_sku.price BETWEEN ');
+	}
+	
+	public void function applyDataTest_orderByTest_queryString(){
+		var collectionEntity = variables.entityService.getSkuCollectionList();
+		
+		var queryString = '?orderby=price|DESC,skuName|ASC';
+		collectionEntity.applyData(queryString);
+		
+		var orderBy = collectionEntity.getCollectionConfigStruct().orderBy;
+		assertEquals(orderBy[1].propertyIdentifier,'_sku.price');
+		assertEquals(orderBy[1].direction,'DESC');
+		
+		assertEquals(orderBy[2].propertyIdentifier,'_sku.skuName');
+		assertEquals(orderBy[2].direction,'ASC');
+		assert(collectionEntity.getHQL() CONTAINS 'ORDER BY _sku.price DESC ,_sku.skuName ASC');
+	}
+	
+	public void function applyData_removeFilterTest_queryString(){
+		var collectionEntity = variables.entityService.getSkuCollectionList();
+		collectionEntity.addFilter('price',1);
+		//make sure filter was added
+		assertTrue(arrayLen(collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup));
+		var queryString = "?fr:price:eq=1";
+		collectionEntity.applyData(queryString);
+		//make sure filter was removed
+		assertFalse(arrayLen(collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup));
+	}
 
 	public void function addFilterTest(){
 
@@ -196,8 +317,65 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		assertTrue(arrayLen(pageRecords) == 1, "Wrong amount of products returned! Expecting 1 record but returned #arrayLen(pageRecords)#");
 
-	}
+	}	
+	
+	public void function addFilterToFilterGroupsTest(){
 
+		var uniqueNumberForTest = createUUID();
+
+		var productActiveData = {
+			productID = '',
+			productName = 'FilterGroupProduct1',
+			productCode = "FGP1",
+			productDescription = uniqueNumberForTest
+		};
+		//By default Active flag is true.
+		var product = createPersistedTestEntity('product', productActiveData);
+
+		var productNotActiveData = {
+			productID = '',
+			productName = 'FilterGroupProduct2',
+			productCode = "FGP2",
+			productDescription = uniqueNumberForTest,
+			activeFlag = 'false'
+		};
+		var product = createPersistedTestEntity('product', productNotActiveData);
+
+		var myProductCollection = variables.entityService.getProductCollectionList();
+		myProductCollection.setDisplayProperties('productName,productDescription');
+		myProductCollection.addFilter('productDescription',uniqueNumberForTest);
+		var pageRecords = myProductCollection.getPageRecords();
+
+		assertTrue(arrayLen(pageRecords) == 2, "Wrong amount of products returned! Expecting 2 records but returned #arrayLen(pageRecords)#");
+
+		myProductCollection = variables.entityService.getProductCollectionList();
+		myProductCollection.setDisplayProperties('productName,productDescription');
+		myProductCollection.addFilter('productDescription',uniqueNumberForTest);
+		myProductCollection.addFilter('productCode','FGP1', "=", "OR", "", "productCodeFilterGroup");
+		myProductCollection.addFilter('productCode','FGP2', "=", "OR", "", "productCodeFilterGroup");
+		var pageRecords = myProductCollection.getPageRecords();
+
+		assertTrue(arrayLen(pageRecords) == 2, "Wrong amount of products returned! Expecting 2 record but returned #arrayLen(pageRecords)#");
+
+		myProductCollection = variables.entityService.getProductCollectionList();
+		myProductCollection.setDisplayProperties('productName,productDescription');
+		myProductCollection.addFilter('productDescription',uniqueNumberForTest);
+		myProductCollection.addFilter('productCode','FGP1', "=", "OR", "", "productCodeFilterGroup1");
+		myProductCollection.addFilter('productCode','FGP2', "=", "OR", "", "productCodeFilterGroup2", "OR");
+		var pageRecords = myProductCollection.getPageRecords();
+		
+		assertTrue(arrayLen(pageRecords) == 2, "Wrong amount of products returned! Expecting 2 record but returned #arrayLen(pageRecords)#");
+		
+		myProductCollection = variables.entityService.getProductCollectionList();
+		myProductCollection.setDisplayProperties('productName,productDescription');
+		myProductCollection.addFilter('productDescription',uniqueNumberForTest);
+		myProductCollection.addFilter('productCode','FGP1', "=", "OR", "", "productCodeFilterGroup1");
+		myProductCollection.addFilter('productCode','FGP2', "=", "OR", "", "productCodeFilterGroup2");//AND is the default filter group comparison operator
+		var pageRecords = myProductCollection.getPageRecords();
+		
+		assertTrue(arrayLen(pageRecords) == 0, "Wrong amount of products returned! Expecting 0 record but returned #arrayLen(pageRecords)#");
+		
+	}
 	public void function addFilterOneToManyTest(){
 
 		var uniqueNumberForDescription = createUUID();
@@ -490,6 +668,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var productWithSkusData = {
 			productID = '',
 			productName = 'ProductUnitTest',
+			productCode = 'ProductUnitTest'&createUUID(),
 			productDescription = uniqueNumberForDescription,
 			skus = [
 				{
@@ -519,6 +698,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var productWithSkusData = {
 			productID = '',
 			productName = 'ProductUnitTest',
+			productCode = 'ProductUnitTest'&createUUID(),
 			productDescription = uniqueNumberForDescription,
 			skus = [
 				{
@@ -555,6 +735,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var productWithSkusData = {
 			productID = '',
 			productName = 'ProductUnitTest',
+			productCode = 'ProductUnitTest'&createUUID(),
 			productDescription = uniqueNumberForDescription,
 			skus = [
 				{
@@ -591,6 +772,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var productWithSkusData = {
 			productID = '',
 			productName = 'ProductUnitTest',
+			productCode = 'ProductUnitTest'&createUUID(),
 			productDescription = uniqueNumberForDescription,
 			skus = [
 				{
@@ -627,6 +809,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var productWithSkusData = {
 			productID = '',
 			productName = 'ProductUnitTest',
+			productCode = 'ProductUnitTest'&createUUID(),
 			productDescription = uniqueNumberForDescription,
 			skus = [
 			{
@@ -729,6 +912,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var productWithSkusData1 = {
 			productID = '',
 			productName = 'ProductUnitTest1',
+			productCode = 'ProductUnitTest'&createUUID(),
 			productDescription = uniqueNumberForDescription,
 			skus = [
 				{
@@ -1707,6 +1891,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var collectionData = {
 			collectionid = '',
 			collectionName='dateInRange',
+			collectionObject = 'SlatwallAccount',
 			collectionConfig = '
 				{
 				   "baseEntityName":"SlatwallAccount",
@@ -1932,14 +2117,14 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				}
 			'
 		};
-		var collectionEntity = createPersistedTestEntity('collection',collectionData);
-		//addToDebug(collectionEntity.getPageRecords());
+		var collectionEntity = createPersistedTestEntity('Collection',collectionData);
+		assert(REFind('_account\.createdDateTime BETWEEN :P[a-f0-9]{32} AND :P[a-f0-9]{32}', collectionEntity.getHQL()) > 0);
 	}
 
 	public void function getHQLTest_Contains(){
 		var collectionBestAcountEmailAddressesData = {
 			collectionid = '',
-			collectionCode = 'BestAccountEmailAddresses',
+			collectionCode = 'BestAccountEmailAddresses'&createUUID(),
 			collectionObject="Account",
 			collectionConfig = '
 				{
@@ -1971,7 +2156,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	public void function getHQLTest_dateFilter(){
 		var collectionBestAcountEmailAddressesData = {
 		collectionid = '',
-		collectionCode = 'BestAccountEmailAddresses',
+		collectionCode = 'BestAccountEmailAddresses'&createUUID(),
 		baseEntityName="Account",
 		collectionConfig = '{
 			  "baseEntityName": "SlatwallAccount",

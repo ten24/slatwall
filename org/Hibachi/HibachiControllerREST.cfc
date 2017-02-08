@@ -171,7 +171,8 @@ component output="false" accessors="true" extends="HibachiController" {
 
     public any function getDetailTabs(required struct rc){
         var detailTabs = [];
-        var tabsDirectory = expandPath( '/#getApplicationValue('applicationKey')#' ) & '/org/Hibachi/client/src/entity/components/#lcase(rc.entityName)#/';
+        var entityFolderName = getService('HibachiService').getProperlyCasedShortEntityName(arguments.rc.entityName);
+        var tabsDirectory = expandPath( '/#getApplicationValue('applicationKey')#' ) & '/org/Hibachi/client/src/entity/components/#entityFolderName#/';
 	    if(FileExists(tabsDirectory & 'tabsConfig.json')){
 		    detailTabs =  DeserializeJSON(FileRead(tabsDirectory & 'tabsConfig.json'));
 	    }else{
@@ -226,13 +227,18 @@ component output="false" accessors="true" extends="HibachiController" {
 
         var service = getHibachiScope().getService("hibachiValidationService");
         var objectName = arguments.rc.object;
+		var entityService = getService("hibachiService").getServiceByEntityName(entityName=objectName); 
         var propertyIdentifier = arguments.rc.propertyIdentifier;
         var value = arguments.rc.value;
-        var entity = getService('hibachiService').invokeMethod('new#objectName#');
-        entity.invokeMethod('set#propertyIdentifier#',{1=value});
-
-
-        var response["uniqueStatus"] = service.validate_unique(entity, propertyIdentifier);
+	
+		if(structKeyExists(arguments.rc, "objectID")){
+			var entity = entityService.invokeMethod('get#objectName#', {1=arguments.rc.objectID});
+		}  
+		if(isNull(entity)){
+			var entity = getService('hibachiService').invokeMethod('new#objectName#');
+		}
+		entity.invokeMethod('set#propertyIdentifier#',{1=value});
+		var response["uniqueStatus"] = service.validate_unique(entity, propertyIdentifier);
         arguments.rc.apiResponse.content = response;
 
     }
@@ -635,6 +641,8 @@ component output="false" accessors="true" extends="HibachiController" {
             handle accessing collections by id
         */
         param name="arguments.rc.propertyIdentifiers" default="";
+        
+        
         //first check if we have an entityName value
         if(!structKeyExists(arguments.rc, "entityName")) {
             arguments.rc.apiResponse.content['account'] = getHibachiScope().invokeMethod("getAccountData");
@@ -643,18 +651,20 @@ component output="false" accessors="true" extends="HibachiController" {
             
             //considering using all url variables to create a transient collectionConfig for api response
             if(!structKeyExists(arguments.rc,'entityID')){
+            	
                 //should be able to add select and where filters here
                 var result = getService('hibachiCollectionService').getAPIResponseForEntityName( arguments.rc.entityName,
 																								 arguments.rc);
 
                 structAppend(arguments.rc.apiResponse.content,result);
             }else{
-
+				
                 var collectionEntity = getService('hibachiCollectionService').getCollectionByCollectionID( arguments.rc.entityID );
+                
                 //figure out if we have a collection or a basic entity
                 if(isNull(collectionEntity)){
                     //should only be able to add selects (&propertyIdentifier=)
-                    var result = getService('hibachiCollectionService').getAPIResponseForBasicEntityWithID( arguments.rc.entityName,
+                    var result = getService('HibachiCollectionService').getAPIResponseForBasicEntityWithID( arguments.rc.entityName,
 																										    arguments.rc.entityID,
 																										    arguments.rc );
                     structAppend(arguments.rc.apiResponse.content,result);

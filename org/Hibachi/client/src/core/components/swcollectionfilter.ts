@@ -16,7 +16,7 @@ class SWCollectionFilter implements ng.IDirective{
     };
     public controller=SWCollectionFilterController;
     public controllerAs="SWCollectionFilter";
-    template
+    public template = "";
 
     public static Factory(){
         var directive:ng.IDirectiveFactory=(
@@ -44,7 +44,6 @@ class SWCollectionFilter implements ng.IDirective{
                 logicalOperator:scope.SWCollectionFilter.logicalOperator,
                 hidden:scope.SWCollectionFilter.hidden
         };
-        
         var currentScope = this.scopeService.getRootParentScope(scope, "swCollectionConfig");
        
         if(angular.isDefined(currentScope.swCollectionConfig)){ 

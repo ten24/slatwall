@@ -40,6 +40,7 @@ import {GlobalSearchController} from "./controllers/globalsearch";
 import {PercentageFilter} from "./filters/percentage";
 import {EntityRBKey} from "./filters/entityrbkey";
 import {SWTrim} from "./filters/swtrim";
+import {SWUnique} from "./filters/swunique";
 import {DateFilter} from "./filters/datefilter";
 //directives
 //  components
@@ -51,6 +52,7 @@ import {SWTypeaheadSearchLineItem} from "./components/swtypeaheadsearchlineitem"
 import {SWTypeaheadRemoveSelection} from "./components/swtypeaheadremoveselection";
 import {SWCollectionConfig} from "./components/swcollectionconfig";
 import {SWCollectionFilter} from "./components/swcollectionfilter";
+import {SWCollectionOrderBy} from "./components/swcollectionorderby";
 import {SWCollectionColumn} from "./components/swcollectioncolumn";
 import {SWActionCallerDropdown} from "./components/swactioncallerdropdown";
 import {SWColumnSorter} from "./components/swcolumnsorter";
@@ -224,10 +226,12 @@ var coremodule = angular.module('hibachi.core',[
 .filter('trim', [SWTrim.Factory])
 .filter('entityRBKey',['rbkeyService',EntityRBKey.Factory])
 .filter('swdate',['$filter',DateFilter.Factory])
+.filter('unique',[SWUnique.Factory])
 //directives
 .directive('swCollectionConfig',SWCollectionConfig.Factory())
 .directive('swCollectionColumn',SWCollectionColumn.Factory())
 .directive('swCollectionFilter',SWCollectionFilter.Factory())
+.directive('swCollectionOrderBy',SWCollectionOrderBy.Factory())
 .directive('swTypeaheadSearch',SWTypeaheadSearch.Factory())
 .directive('swTypeaheadInputField',SWTypeaheadInputField.Factory())
 .directive('swTypeaheadMultiselect', SWTypeaheadMultiselect.Factory())

@@ -953,10 +953,13 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 			accountPaymentID = "",
 			account = {
 				accountID = mockAccount1.getAccountID()
+			},
+			accountPaymentType = {
+					typeID="444df32dd2b0583d59a19f1b77869025" //aptCharge
 			}
 		};
 		var accountPayment1 = createPersistedTestEntity("AccountPayment", accountPaymentData);
-		
+		//will not factor in without a received amount as it isn't a term payment
 		var accountPaymentAppliedData = {
 			accountPaymentAppliedID = "",
 			amount = 10.00,
@@ -969,7 +972,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		};
 		var accountPaymentApplied1 = createPersistedTestEntity("AccountPaymentApplied", accountPaymentAppliedData);
 
-		assertEquals(2290, mockAccount1.getTermAccountBalance());
+		assertEquals(2300, mockAccount1.getTermAccountBalance());
 	}
 	
 	public void function getTermAccountBalance_UnreceivedOpenOrderPayment_Test() {
@@ -1037,10 +1040,13 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 			accountPaymentID = "",
 			account = {
 				accountID = mockAccount1.getAccountID()
+			},
+			accountPaymentType = {
+					typeID="444df32dd2b0583d59a19f1b77869025" //aptCharge
 			}
 		};
 		var accountPayment1 = createPersistedTestEntity("AccountPayment", accountPaymentData);
-		
+		//won't factor in as it isn't a term payment and therefore requires a recieved amount
 		var accountPaymentAppliedData = {
 			accountPaymentAppliedID = "",
 			amount = 10.00,
@@ -1053,7 +1059,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		};
 		var accountPaymentApplied1 = createPersistedTestEntity("AccountPaymentApplied", accountPaymentAppliedData);
 
-		assertEquals(-10, mockAccount1.getTermAccountBalance());
+		assertEquals(0, mockAccount1.getTermAccountBalance());
 	}
 	
 	
@@ -1154,10 +1160,14 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 			accountPaymentID = "",
 			account = {
 				accountID = mockAccount1.getAccountID()
+			},
+			accountPaymentType={
+				//systemCode="aptCharge"
+			 	typeID="444df32dd2b0583d59a19f1b77869025"
 			}
 		};
 		var accountPayment1 = createPersistedTestEntity("AccountPayment", accountPaymentData);
-		
+		//will not factor this in because it is not term and therefore needs a recieved amount
 		var accountPaymentAppliedData = {
 			accountPaymentAppliedID = "",
 			amount = 50.00,
@@ -1177,7 +1187,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 			settingValue = -1000
 		};
 		var settingEntity = createPersistedTestEntity('Setting',settingData);
-		assertEquals(-1250, mockAccount1.getTermAccountAvailableCredit());
+		assertEquals(-1300, mockAccount1.getTermAccountAvailableCredit());
 	}
 	
 	public void function getGuestAccountFlagTest() {

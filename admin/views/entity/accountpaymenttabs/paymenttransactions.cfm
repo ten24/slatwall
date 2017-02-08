@@ -46,25 +46,24 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-
-<cfparam name="rc.eventTrigger" type="any">
-<cfparam name="rc.edit" type="boolean">
+<cfparam name="rc.accountPayment" type="any" />
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.eventTrigger#" edit="#rc.edit#" sRedirectAction="admin:entity.editeventtrigger">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.eventTrigger#" />
+	<hb:HibachiListingDisplay smartList="#rc.accountPayment.getPaymentTransactionsSmartList()#"
+			recordDetailAction="admin:entity.detailpaymenttransaction"
+			recordDetailModal="true">
 		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.eventTrigger#" property="eventTriggerName" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.eventTrigger#" property="eventTriggerType" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.eventTrigger#" property="eventTriggerObject" edit="#rc.edit#">
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-
-	</hb:HibachiEntityDetailForm>
+		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />		
+		<hb:HibachiListingColumn propertyIdentifier="transactionType" />
+		<hb:HibachiListingColumn propertyIdentifier="transactionSuccessFlag" />
+		<hb:HibachiListingColumn propertyIdentifier="authorizationCode" />
+		<hb:HibachiListingColumn propertyIdentifier="authorizationCodeUsed" />
+		<hb:HibachiListingColumn propertyIdentifier="amountAuthorized" />
+		<hb:HibachiListingColumn propertyIdentifier="amountReceived" />
+		<hb:HibachiListingColumn propertyIdentifier="amountCredited" />
+		
+	</hb:HibachiListingDisplay>
 </cfoutput>
-

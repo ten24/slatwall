@@ -1,8 +1,8 @@
 <div class="thumbnail">
-    <div class="s-image">
-        <img src="{{swSkuThumbnail.skuData.imagePath}}" class="s-responsive-image"/>
+    <div class="s-image" style="background-image: URL({{swSkuThumbnail.skuData.imagePath}})">
+        
     </div>
-    <div class="caption" ng-show="!swSkuThumbnail.imageOnly">
+    <div class="caption" ng-show="!swSkuThumbnail.imageOnly" ng-if="swSkuThumbnail.skuData.skuCode.length || swSkuThumbnail.skuData.skuDescription.length">
         <h5><span ng-bind="swSkuStockAdjustmentModalLauncher.sku.skuName"></span></h5>
         <ul class="list-unstyled">
             <!-- RB KEYS -->

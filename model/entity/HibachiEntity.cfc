@@ -149,10 +149,12 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	
 	// @hint helper function to return the details of a setting
 	public any function getSettingValueFormatted(any settingName, array filterEntities=[]) {
-		if(!structKeyExists(variables,'settingValueFormatted')){
-			variables.settingValueFormatted = getService("settingService").getSettingValueFormatted(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities);
+		if(structKeyExists(arguments,'settingName') && !isNull(arguments.settingName)){
+			if(!structKeyExists(variables,'settingValueFormatted')){
+				variables.settingValueFormatted = getService("settingService").getSettingValueFormatted(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities);
+			}
+			return variables.settingValueFormatted;
 		}
-		return variables.settingValueFormatted;
 	}
 
 	// Attribute Value

@@ -117,7 +117,7 @@
 		<cfset var accountAuthentication = "" />
 		
 		<!--- Loop over the authentications, and call delete on the authentication for gigya.  This will call the delete event, which will in turn call the socializeAPI --->
-		<cfloop array="#arguments.entity.getAccountAuthentications()#" index="accountAuthentication">
+		<cfloop array="#arguments.entity.getAccountAuthentications()#" index="local.accountAuthentication">
 			
 			<cfif !isNull(accountAuthentication.getIntegration()) and accountAuthentication.getIntegration().getIntegrationPackage() eq 'gigya'>
 			

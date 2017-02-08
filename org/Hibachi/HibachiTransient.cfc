@@ -389,6 +389,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 				&& structKeyExists(currentProperty, "hb_fileAcceptMIMEType") 
 				&& len(arguments.data[ currentProperty.name ]) 
 				&& structKeyExists(form, currentProperty.name) 
+				&& len(form[currentProperty.name])
 			) {
 				// Wrap in try/catch to add validation error based on fileAcceptMIMEType
 				try {
@@ -521,6 +522,16 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 		}
 
 		return "";
+	}
+
+	public string function getOrmTypeByPropertyIdentifier( required string propertyIdentifier ) {
+		var entityName = getService('HibachiService').getLastEntityNameInPropertyIdentifier(entityName=this.getClassName(), propertyIdentifier=arguments.propertyIdentifier );
+		var object = getService('HibachiService').getEntityObject(entityName);
+		var propertyName = listLast(arguments.propertyIdentifier,'.');
+		
+		if(!isNull(object) && !isSimpleValue(object)) {
+			return object.getPropertyMetaData( propertyName ).ormtype;
+		}
 	}
 
 	public any function getLastObjectByPropertyIdentifier(required string propertyIdentifier) {

@@ -97,7 +97,7 @@ Notes:
 		<cfset var relatedComments = getRelatedCommentsForEntity(argumentcollection=arguments) />
 		<cfset var relatedComment = "" />
 		
-		<cfloop array="#relatedComments#" index="relatedComment" >
+		<cfloop array="#relatedComments#" index="local.relatedComment" >
 			<cfset var results = ormExecuteQuery("DELETE SlatwallCommentRelationship WHERE commentRelationshipID = ?", [relatedComment["commentRelationshipID"]]) />
 			
 			<cfif not relatedComment["referencedRelationshipFlag"]>
