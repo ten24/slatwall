@@ -1000,16 +1000,30 @@ class PublicService {
         return !this.hasAccount() && !this.showCreateAccount;
     }
 
+    public loginError = () => {
+        if(this.account.processObjects && this.account.processObjects.login && this.account.processObjects.login.hasErrors){
+            return this.account.processObjects.login.errors.emailAddress['0'];
+        };
+    }
+
+    public createAccountError = () =>{
+        if(this.account.processObjects && this.account.processObjects.create && this.account.processObjects.create.hasErrors){
+            return this.account.processObjects.create.errors;
+        }
+    }
+
     public forgotPasswordNotSubmitted = () =>{
         return !this.account.processObjects || (!this.account.hasErrors && !this.account.processObjects.forgotPassword);
     }
-
+    public forgotPasswordSubmitted = () =>{
+        return this.account.processObjects && this.account.processObjects.forgotPassword;
+    }
     public forgotPasswordHasNoErrors = ()=>{
         return this.account.processObjects && this.account.processObjects.forgotPassword && !this.account.processObjects.forgotPassword.hasErrors
     }
 
     public forgotPasswordError = ()=>{
-        if(!this.forgotPasswordNotSubmitted() && !this.forgotPasswordHasNoErrors()){
+        if(this.forgotPasswordSubmitted() && !this.forgotPasswordHasNoErrors()){
             return this.account.processObjects.forgotPassword.errors.emailAddress['0']
         }
     }

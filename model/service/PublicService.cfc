@@ -230,7 +230,7 @@ component extends="HibachiService"  accessors="true" output="false"
         getHibachiScope().addActionResult( "public:account.create", account.hasErrors() );
         
         if(account.hasErrors()){
-            addErrors(data, getHibachiScope().getAccount().getProcessObject("create").getErrors());
+            addErrors(account, getHibachiScope().getAccount().getProcessObject("create").getErrors());
         }
     }
     

@@ -1,6 +1,9 @@
 <div ng-init="Account_LoginObj = slatwall.getProcessObject('Account_Login') "></div>
 
 <div id="loginForm" class="row" ng-show="!slatwall.showForgotPassword">
+		<div class="msg" ng-show="slatwall.loginError()">
+	        <div class="alert alert-danger"><i class="fa fa-info-circle"></i> {{slatwall.loginError()}}</div>
+	    </div>
 	    <div class="col-sm-7">
 			<sw-form
 			    data-is-process-form="true"

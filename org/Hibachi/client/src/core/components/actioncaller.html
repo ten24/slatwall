@@ -36,5 +36,6 @@
 	ng-attr-class="{{swActionCaller.class}}" 
 	ng-attr-title="{{swActionCaller.title}}"
 	ng-click="swActionCaller.submit()"
+	ng-disabled="swActionCaller.disabled"
 	><i ng-show="swActionCaller.icon && swActionCaller.icon.length" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i><span ng-bind="swActionCaller.text"></span>
 </button>

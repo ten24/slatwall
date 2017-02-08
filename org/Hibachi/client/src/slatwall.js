@@ -2695,14 +2695,28 @@
 	        this.isSigningIn = function () {
 	            return !_this.hasAccount() && !_this.showCreateAccount;
 	        };
+	        this.loginError = function () {
+	            if (_this.account.processObjects && _this.account.processObjects.login && _this.account.processObjects.login.hasErrors) {
+	                return _this.account.processObjects.login.errors.emailAddress['0'];
+	            }
+	            ;
+	        };
+	        this.createAccountError = function () {
+	            if (_this.account.processObjects && _this.account.processObjects.create && _this.account.processObjects.create.hasErrors) {
+	                return _this.account.processObjects.create.errors;
+	            }
+	        };
 	        this.forgotPasswordNotSubmitted = function () {
 	            return !_this.account.processObjects || (!_this.account.hasErrors && !_this.account.processObjects.forgotPassword);
+	        };
+	        this.forgotPasswordSubmitted = function () {
+	            return _this.account.processObjects && _this.account.processObjects.forgotPassword;
 	        };
 	        this.forgotPasswordHasNoErrors = function () {
 	            return _this.account.processObjects && _this.account.processObjects.forgotPassword && !_this.account.processObjects.forgotPassword.hasErrors;
 	        };
 	        this.forgotPasswordError = function () {
-	            if (!_this.forgotPasswordNotSubmitted() && !_this.forgotPasswordHasNoErrors()) {
+	            if (_this.forgotPasswordSubmitted() && !_this.forgotPasswordHasNoErrors()) {
 	                return _this.account.processObjects.forgotPassword.errors.emailAddress['0'];
 	            }
 	        };
