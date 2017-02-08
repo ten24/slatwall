@@ -557,17 +557,12 @@ component output="false" accessors="true" extends="HibachiService" {
 		var currentPage = 1;
 		if(structKeyExists(arguments.data,'P:Current')){
 			currentPage = arguments.data['P:Current'];
-		}else if(structKeyExists(arguments.data, 'currentPage')){
-			currentPage = arguments.data['currentPage'];
-		}
+		}		
 		var pageShow = 10;
 		
 		if(structKeyExists(arguments.data,'P:Show')){
 			pageShow = arguments.data['P:Show'];
-		} else if(structKeyExists(arguments.data, 'pageShow')){
-			pageShow = arguments.data['pageShow'];
-		}
-
+		} 
 		var keywords = "";
 		if(structKeyExists(arguments.data,'keywords')){
 			keywords = arguments.data['keywords'];
