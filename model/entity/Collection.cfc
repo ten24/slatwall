@@ -1467,9 +1467,51 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return 'SELECT COUNT(DISTINCT #getCollectionConfigStruct().baseEntityAlias#.id) ';
 	}
 
-	public string function getColumnAlias(required any column){
-		var columnAlias = Replace(Replace(arguments.column.propertyIdentifier,'.','_','all'),'_'&lcase(Replace(getCollectionObject(),'#getDao('hibachiDAO').getApplicationKey()#',''))&'_','');
-		return columnAlias;
+	public string function getColumnAlias(required struct column){
+		if(structKeyExists(column,'attributeID')){
+			return listLast(column.propertyIdentifier,'.');
+		}else{
+			if(structKeyExists(column,'aggregate')){
+				return arguments.aggregate.aggregateAlias;
+			}else{
+				var currentAlias = '';
+				var currentAliasStepped = '';
+				var columnPropertyIdentiferArray = listToArray(arguments.column.propertyIdentifier,'.');
+				var columnPropertyIdentiferArrayCount = arrayLen(columnPropertyIdentiferArray);
+		
+				for(var j = 1; j <= columnPropertyIdentiferArrayCount;j++){
+					if(columnPropertyIdentiferArrayCount > 2){
+						if(j != 1 && j != columnPropertyIdentiferArrayCount){
+							var dotNeeded = '';
+							if(j >= 3){
+								dotNeeded = '.';
+							}
+		
+							var join = {
+									associationName=currentAliasStepped&dotNeeded&columnPropertyIdentiferArray[j],
+									alias=currentAlias&'_'&columnPropertyIdentiferArray[j]
+							};
+		
+		
+							currentAlias = currentAlias&'_'&columnPropertyIdentiferArray[j];
+							currentAliasStepped = currentAliasStepped &dotNeeded& columnPropertyIdentiferArray[j];
+		
+							addJoin(join);
+		
+						}
+						if(j == columnPropertyIdentiferArrayCount){
+							arguments.column.propertyIdentifier = currentAlias&'.'&columnPropertyIdentiferArray[j];
+		
+						}
+					}
+					if(!len(currentAlias)){
+						currentAlias = columnPropertyIdentiferArray[1];
+					}
+				}
+				return Replace(Replace(arguments.column.propertyIdentifier,'.','_','all'),'_'&lcase(Replace(getCollectionObject(),'#getDao('hibachiDAO').getApplicationKey()#',''))&'_','');
+			}
+		} 
+					
 	}
 
 	private any function getSelectionsHQL(required array columns, boolean isDistinct=false, boolean forExport=false){
@@ -1486,61 +1528,38 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			columnCount = arraylen(arguments.columns);
 		}
 
-
+ 
 		var startMapHQL = ' new Map(';
 		var columnsHQL = '';
 		for(var i = 1; i <= columnCount; i++){
 			var column = arguments.columns[i];
 			if(!arguments.forExport || (arguments.forExport && structKeyExists(column,'isExportable') && column.isExportable)){
-				var currentAlias = '';
-				var currentAliasStepped = '';
-				var columnPropertyIdentiferArray = listToArray(column.propertyIdentifier,'.');
-				var columnPropertyIdentiferArrayCount = arrayLen(columnPropertyIdentiferArray);
-
-				for(var j = 1; j <= columnPropertyIdentiferArrayCount;j++){
-					if(columnPropertyIdentiferArrayCount > 2){
-						if(j != 1 && j != columnPropertyIdentiferArrayCount){
-							var dotNeeded = '';
-							if(j >= 3){
-								dotNeeded = '.';
-							}
-
-							var join = {
-									associationName=currentAliasStepped&dotNeeded&columnPropertyIdentiferArray[j],
-									alias=currentAlias&'_'&columnPropertyIdentiferArray[j]
-							};
-
-
-							currentAlias = currentAlias&'_'&columnPropertyIdentiferArray[j];
-							currentAliasStepped = currentAliasStepped &dotNeeded& columnPropertyIdentiferArray[j];
-
-							addJoin(join);
-
-						}
-						if(j == columnPropertyIdentiferArrayCount){
-							column.propertyIdentifier = currentAlias&'.'&columnPropertyIdentiferArray[j];
-
-						}
-					}
-					if(!len(currentAlias)){
-						currentAlias = columnPropertyIdentiferArray[1];
-					}
-				}
 				if(structKeyExists(column,'attributeID')){
 					columnsHQL &= getColumnAttributeHQL(column);
 				}else{
 					//check if we have an aggregate
-					if(!isnull(column.aggregate))
+					if(!isNull(column.aggregate))
 					{
 						//if we have an aggregate then put wrap the identifier
 						if(structKeyExists(column,'propertyIdentifier') && len(column.propertyIdentifier)){
-							columnsHQL &= getAggregateHQL(column.aggregate,column.propertyIdentifier);	
+							columnsHQL &= getAggregateHQL(column.aggregate,column.propertyIdentifier);
+						}
+						if( ( !structKeyExists(variables, "groupByRequired") || !variables.groupByRequired ) &&
+							  structKeyExists(column.aggregate, "aggregateFunction") &&
+						   ( column.aggregate.aggregateFunction == 'min' ||
+							 column.aggregate.aggregateFunction == 'max' )
+						){
+							variables.groupByRequired = false;
+							variables.orderByRequired = false;
+						} else {
+							variables.groupByRequired = true;
+							variables.orderByRequired = true;
 						}
 					}else{
-						if(structKeyExists(column,'propertyIdentifier') && len(column.propertyIdentifier)){
-							var columnAlias = getColumnAlias(column);
-							columnsHQL &= ' #column.propertyIdentifier# as #columnAlias#';								
-						}
+						variables.groupByRequired = true;
+						variables.orderByRequired = true;
+						var columnAlias = getColumnAlias(column);
+						columnsHQL &= ' #column.propertyIdentifier# as #columnAlias#';
 					}
 				}
 
