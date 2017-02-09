@@ -1,25 +1,27 @@
-<div class="alert alert-warning" ng-repeat="payment in slatwall.cart.orderPayments">
-    <div ng-if="payment.nameOnCreditCard">
-        <address>
-            <span ng-if="payment.nameOnCreditCard">{{payment.nameOnCreditCard}}<br></span>
-            <span ng-if="payment.billingAddress.streetAddress">{{payment.billingAddress.streetAddress}}<br></span>
-            <span ng-if="payment.billingAddress.street2Address">{{payment.billingAddress.street2Address}}<br></span>
-            <span ng-if="payment.billingAddress.city">{{payment.billingAddress.city}}</span>, <span ng-if="payment.billingAddress.statecode">{{payment.billingAddress.statecode}}</span> <span ng-if="payment.billingAddress.postalcode">{{payment.billingAddress.postalcode}}</span><br>
-            <span ng-if="payment.billingAddress.countrycode">{{payment.billingAddress.countrycode}}</span>
-        </address>
-        <hr>
-        <i class="fa fa-credit-card fa-lg" aria-hidden="true"></i>
-        ****{{payment.creditCardLastFour}}
-        <a href="#" ng-click="slatwall.edit = 'payment'" class="edit">
-            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-        </a>
+<div ng-repeat="payment in slatwall.cart.orderPayments">
+    <div class="alert alert-warning" ng-show="payment.amount">
+        <div ng-if="payment.nameOnCreditCard">
+            <address>
+                <span ng-if="payment.nameOnCreditCard">{{payment.nameOnCreditCard}}<br></span>
+                <span ng-if="payment.billingAddress.streetAddress">{{payment.billingAddress.streetAddress}}<br></span>
+                <span ng-if="payment.billingAddress.street2Address">{{payment.billingAddress.street2Address}}<br></span>
+                <span ng-if="payment.billingAddress.city">{{payment.billingAddress.city}}</span>, <span ng-if="payment.billingAddress.statecode">{{payment.billingAddress.statecode}}</span> <span ng-if="payment.billingAddress.postalcode">{{payment.billingAddress.postalcode}}</span><br>
+                <span ng-if="payment.billingAddress.countrycode">{{payment.billingAddress.countrycode}}</span>
+            </address>
+            <hr>
+            <i class="fa fa-credit-card fa-lg" aria-hidden="true"></i>
+            ****{{payment.creditCardLastFour}}
+            <a href="#" ng-click="slatwall.edit = 'payment'" class="edit">
+                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+            </a>
+        </div>
+        <div ng-if="slatwall.isGiftCardPayment(payment)">
+            <i class="fa fa-credit-card fa-lg" aria-hidden="true"></i>
+            <span>Gift Card: {{payment.giftCard.giftCardCode}}</span><br>
+            <span>Remaining Balance: {{payment.giftCard.balanceAmount}}</span>
+        </div>
+        <span>Payment Amount: {{payment.amount | currency}}</span>
     </div>
-    <div ng-if="slatwall.isGiftCardPayment(payment)">
-        <i class="fa fa-credit-card fa-lg" aria-hidden="true"></i>
-        <span>Gift Card: {{payment.giftCard.giftCardCode}}</span><br>
-        <span>Remaining Balance: {{payment.giftCard.balanceAmount}}</span>
-    </div>
-    <span>Payment Amount: {{payment.amount | currency}}
 </div>
 
 <div class="alert alert-danger" ng-if="slatwall.orderHasNoPayments()">

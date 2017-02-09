@@ -1866,7 +1866,7 @@
 	var PublicService = (function () {
 	    ///index.cfm/api/scope/
 	    //@ngInject
-	    function PublicService($http, $q, $window, $location, $hibachi, $injector, requestService, accountService, cartService, orderService, observerService, appConfig) {
+	    function PublicService($http, $q, $window, $location, $hibachi, $injector, requestService, accountService, cartService, orderService, observerService, appConfig, $timeout) {
 	        var _this = this;
 	        this.$http = $http;
 	        this.$q = $q;
@@ -1880,6 +1880,7 @@
 	        this.orderService = orderService;
 	        this.observerService = observerService;
 	        this.appConfig = appConfig;
+	        this.$timeout = $timeout;
 	        this.requests = {};
 	        this.errors = {};
 	        this.baseActionPath = "";
@@ -2060,6 +2061,7 @@
 	            _this.account.request = request;
 	            _this.cart.populate(response.cart);
 	            _this.cart.request = request;
+	            _this.errors = response.errors;
 	            //if the action that was called was successful, then success is true.
 	            if (request.hasSuccessfulAction()) {
 	                for (var action in request.successfulActions) {
@@ -2359,7 +2361,6 @@
 	            _this.cart.hasErrors = false;
 	            _this.cart.orderPayments.errors = {};
 	            _this.cart.orderPayments.hasErrors = false;
-	            _this.finding = true;
 	            //Grab all the data
 	            var giftCards = [];
 	            if (angular.isDefined(_this.account.giftCards)) {
@@ -2372,7 +2373,7 @@
 	            };
 	            //add the amounts from the gift cards
 	            for (var card in giftCards) {
-	                if (giftCards[card].applied == true) {
+	                if (giftCards[card].applied != true) {
 	                    //If the amount on the card is not enough to cover the balance, then use the full balance.
 	                    //find the orderAmountNeeded
 	                    if (_this.cart.orderPayments.length) {
@@ -2407,6 +2408,9 @@
 	                                _this.cart.hasErrors = true;
 	                                _this.readyToPlaceOrder = false;
 	                                _this.edit = '';
+	                            }
+	                            else {
+	                                giftCards[card].applied = true;
 	                            }
 	                        }
 	                        else {
@@ -2505,15 +2509,12 @@
 	        };
 	        //Applies a giftcard from the user account onto the payment.
 	        this.applyGiftCard = function (giftCardCode) {
-	            _this.finding = true;
-	            //set the card to applied
 	            var giftCard = {
 	                "giftCardCode": giftCardCode,
-	                "applied": true
+	                "applied": false
 	            };
 	            _this.account.giftCards.push(giftCard);
 	            _this.addGiftCardOrderPayments(true);
-	            _this.finding = false;
 	        };
 	        this.formatPaymentMethod = function (paymentMethod) {
 	            return paymentMethod.nameOnCreditCard + ' - ' + paymentMethod.creditCardType + ' *' + paymentMethod.creditCardLastFour + ' exp. ' + ('0' + paymentMethod.expirationMonth).slice(-2) + '/' + paymentMethod.expirationYear.toString().slice(-2);
@@ -2624,6 +2625,17 @@
 	                    return _this.states.stateCodeOptions[state];
 	                }
 	            }
+	        };
+	        this.getAddressEntity = function (address) {
+	            var addressEntity = _this.$hibachi.newAddress();
+	            if (address) {
+	                for (var key in address) {
+	                    if (address.hasOwnProperty(key)) {
+	                        addressEntity[key] = address[key];
+	                    }
+	                }
+	            }
+	            return addressEntity;
 	        };
 	        /** Returns the state from the list of states by stateCode */
 	        this.resetRequests = function (request) {
@@ -2766,6 +2778,20 @@
 	                return _this.account.processObjects.forgotPassword.errors.emailAddress['0'];
 	            }
 	        };
+	        this.placeOrderError = function () {
+	            if (_this.cart.hasErrors && _this.cart.errors.runPlaceOrderTransaction) {
+	                return _this.cart.errors.runPlaceOrderTransaction;
+	            }
+	        };
+	        // public addShippingAddressErrors = ()=>{
+	        //     this.shippingAddressErrors = this.errors;
+	        //     var key = this.accountAddressEditFormIndex;
+	        //     this.accountAddressEditFormIndex = undefined;
+	        //     this.$timeout(()=>{this.accountAddressEditFormIndex = key});
+	        // }
+	        // public clearShippingAddressErrors = ()=>{
+	        //     this.shippingAddressErrors = undefined;
+	        // }
 	        this.hideAccountAddressForm = function () {
 	            _this.accountAddressEditFormIndex = undefined;
 	        };
@@ -2859,6 +2885,7 @@
 	        this.cart = this.cartService.newCart();
 	        this.account = this.accountService.newAccount();
 	        this.observerService = observerService;
+	        this.$timeout = $timeout;
 	    }
 	    return PublicService;
 	}());
@@ -13268,6 +13295,7 @@
 	    .run(['$rootScope', '$hibachi', 'publicService', 'hibachiPathBuilder', 'entityService', '$window', function ($rootScope, $hibachi, publicService, hibachiPathBuilder, entityService, $window) {
 	        $rootScope.slatwall = $rootScope.hibachiScope;
 	        $rootScope.slatwall.getProcessObject = entityService.newProcessObject;
+	        $rootScope.slatwall.getEntity = entityService.newEntity;
 	        $rootScope.slatwall.$hibachi.appConfig.apiSubsystemName = hibachiPathBuilder.apiSubsystemName;
 	    }])
 	    .controller('frontendController', frontend_1.FrontendController)
@@ -19996,6 +20024,7 @@
 	        /** returns all the data from the form by iterating the form elements */
 	        this.getFormData = function () {
 	            var iterable = _this.formCtrl;
+	            console.log(_this.object);
 	            angular.forEach(iterable, function (val, key) {
 	                if (key === "name")
 	                    console.log("name - ", _this.object.forms[_this.name][key]);

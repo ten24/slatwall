@@ -474,8 +474,12 @@ component extends="HibachiService"  accessors="true" output="false"
      	if (!isNull(newAddress) && !newAddress.hasErrors()){
      	    newAddress = getService("AddressService").saveAddress(newAddress, data, "full");
       		//save the order.
-  	     	getService("OrderService").saveOrder(getHibachiScope().getCart());
-  	     	getHibachiScope().addActionResult( "public:cart.updateAddress", false ); 
+          if(!newAddress.hasErrors()){
+  	     	   getService("OrderService").saveOrder(getHibachiScope().getCart());
+           }else{
+            this.addErrors(data, newAddress.getErrors());
+           }
+  	     	getHibachiScope().addActionResult( "public:cart.updateAddress", newAddress.hasErrors() ); 
     	}else{
         getHibachiScope().addActionResult( "public:cart.updateAddress", true );
       }

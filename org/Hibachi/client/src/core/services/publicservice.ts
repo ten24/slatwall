@@ -40,6 +40,8 @@ class PublicService {
     public billingAddressEditFormIndex:any;
     public selectedBillingAddress:any;
     public editBillingAddress:any;
+    public shippingAddressErrors:any;
+    public billingAddressErrors:any;
     public paymentMethods:any;
     public orderPlaced:boolean;
     public useShippingAsBilling:boolean;
@@ -66,7 +68,8 @@ class PublicService {
         public cartService,
         public orderService,
         public observerService,
-        public appConfig
+        public appConfig,
+        public $timeout
     ) {
         this.orderService = orderService;
         this.cartService = cartService;
@@ -85,6 +88,7 @@ class PublicService {
         this.cart = this.cartService.newCart();
         this.account = this.accountService.newAccount();
         this.observerService = observerService;
+        this.$timeout = $timeout;
     }
 
     // public hasErrors = ()=>{
@@ -275,7 +279,7 @@ class PublicService {
         this.account.request = request;
         this.cart.populate(response.cart);
         this.cart.request = request;
-
+        this.errors = response.errors;
         //if the action that was called was successful, then success is true.
         if (request.hasSuccessfulAction()){
             for (var action in request.successfulActions){
@@ -614,7 +618,6 @@ class PublicService {
         this.cart.hasErrors=false;
         this.cart.orderPayments.errors = {};
         this.cart.orderPayments.hasErrors = false;
-        this.finding = true;
         
         //Grab all the data
         var giftCards = [];
@@ -631,7 +634,7 @@ class PublicService {
         
         //add the amounts from the gift cards
         for (var card in giftCards){
-            if (giftCards[card].applied == true){
+            if (giftCards[card].applied != true){
                 
                 //If the amount on the card is not enough to cover the balance, then use the full balance.
                 
@@ -671,6 +674,8 @@ class PublicService {
                             this.cart.hasErrors = true;
                             this.readyToPlaceOrder = false;
                             this.edit = '';
+                        }else{
+                            giftCards[card].applied = true;
                         }
                     }else{
                         
@@ -778,15 +783,12 @@ class PublicService {
 
     //Applies a giftcard from the user account onto the payment.
     public applyGiftCard = (giftCardCode)=>{
-        this.finding = true;
-        //set the card to applied
         var giftCard = {
             "giftCardCode":giftCardCode,
-            "applied":true
+            "applied":false
         };
         this.account.giftCards.push(giftCard);
         this.addGiftCardOrderPayments(true);
-        this.finding = false;
     };
 
     public formatPaymentMethod = (paymentMethod) =>{
@@ -926,6 +928,18 @@ class PublicService {
      			return this.states.stateCodeOptions[state];
      		}
      	}
+    }
+
+    public getAddressEntity = (address) =>{
+        let addressEntity = this.$hibachi.newAddress();
+        if(address){
+            for(let key in address){
+                if(address.hasOwnProperty(key)){
+                    addressEntity[key] = address[key];
+                }
+            }
+        }
+        return addressEntity;
     }
      
     /** Returns the state from the list of states by stateCode */
@@ -1082,6 +1096,23 @@ class PublicService {
             return this.account.processObjects.forgotPassword.errors.emailAddress['0']
         }
     }
+
+    public placeOrderError = () =>{
+        if(this.cart.hasErrors && this.cart.errors.runPlaceOrderTransaction){
+            return this.cart.errors.runPlaceOrderTransaction;
+        }
+    }
+
+    // public addShippingAddressErrors = ()=>{
+    //     this.shippingAddressErrors = this.errors;
+    //     var key = this.accountAddressEditFormIndex;
+    //     this.accountAddressEditFormIndex = undefined;
+    //     this.$timeout(()=>{this.accountAddressEditFormIndex = key});
+    // }
+
+    // public clearShippingAddressErrors = ()=>{
+    //     this.shippingAddressErrors = undefined;
+    // }
 
     public hideAccountAddressForm = ()=>{
         this.accountAddressEditFormIndex = undefined;

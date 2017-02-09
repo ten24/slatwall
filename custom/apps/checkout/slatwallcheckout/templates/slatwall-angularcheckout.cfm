@@ -11,8 +11,6 @@
 <span ng-init="slatwall.showCreateAccount = true"></span>
 <!--- Sets a default for editPayment toggle --->
 <span ng-init="slatwall.editPayment = false"></span>
-<!--- Tab statuses --->
-<span ng-if="slatwall.hasAccount()" ng-init="slatwall.edit = 'fulfillment'"></span>
 
 <!--- Begin Angular Based Checkout. --->
 <section>
@@ -50,7 +48,7 @@
 	            <div class="panel panel-default panel-body" ng-cloak ng-show="slatwall.hasAccount()">
 	                <h3>
 	                <a href="##" class="pull-right" ng-click="slatwall.edit = 'fulfillment'"><i class="fa fa-pencil-square-o" ng-if="!slatwall.fulfillmentTabIsActive()" aria-hidden="true"></i></a>
-					<a href="##" class="pull-right" ng-if="slatwall.edit=='fulfillment'" ng-click="slatwall.edit = ''"><i class="fa fa-check-circle"></i></a>
+					<a href="##" class="pull-right" ng-if="slatwall.fulfillmentTabIsActive()" ng-click="slatwall.edit = ''"><i class="fa fa-check-circle"></i></a>
 					Fulfillment Information</h3>
 	                <div ng-show="slatwall.fulfillmentTabIsActive()">
 	                    <div class="details" ng-show="slatwall.hasShippingFulfillmentMethod()">
@@ -95,6 +93,30 @@
 												</div>
 											</div>
 			                            </div>
+			                        </div>
+			                    </div>
+			                    <div class="panel panel-default">
+			                        <div class="panel-heading" >
+			                            <h4 class="panel-title">
+			                                <a class="collapsed" data-toggle="collapse" data-parent="##accordion" href="##cashiersCheck" aria-expanded="false" aria-controls="cashiersCheck">
+			                                    <span class="dot"></span> Money Order or Cashiers Check
+			                                </a>
+			                            </h4>
+			                        </div>
+			                        <div id="cashiersCheck" class="panel-collapse collapse" role="tabpanel" aria-labelledby="cashiersCheck" aria-expanded="false">
+										<!--- Money order component --->
+				                        <!--- #$.renderContent( '5124bffa549dfdb10154a0f231f802b7' , 'contentBody')# --->
+										<h5 style="margin-bottom: 0px;">Please make your check or money order payable to:</h5>
+										<p>Gus Erickson</p>
+										
+										<h5 style="margin-bottom: 0px;">Mail your payment to:</h5>
+										<p>
+											Gus Erickson<br/>
+											PO Box 9000<br/>
+											Woosta
+										</p>
+										<p>*Your order will not ship until we receive payment.</p>
+										
 			                        </div>
 			                    </div>
 			                    <div class="panel panel-default">
@@ -171,12 +193,29 @@
 							</div>
 
                             <div class="reviewtotal">
-                                <form action="?s=1" method="post">
-                                    <input type="hidden" name="sRedirectURL" value="/order-confirmation/" />
-                                    <input type="hidden" name="slatAction" value="public:cart.placeOrder" />
-                                    <input type="submit" class="review button" value="{{( slatwall.getRequestByAction('placeOrder').loading ? 'Submitting Order...' : 'Place Order')}}">
-                                </form>
+                                <sw-form
+							    	data-is-process-form="true"
+								    data-object="slatwall.cart"
+								    data-form-class=""
+								    data-error-class="error"
+								    data-action="placeOrder"
+								    data-name="PlaceOrder">
+                                    <div class="form-group">
+									    <sw-action-caller
+									        data-modal="false"
+									        data-type="button"
+									        data-class="button blue"
+									        data-error-class="error"
+									        data-text="{{(slatwall.getRequestByAction('placeOrder').loading ? 'LOADING...' : 'Place Order')}}">
+									    </sw-action-caller>
+									</div>
+                                </sw-form>
                             </div>
+                            <div ng-show="slatwall.placeOrderError()">
+							    <div class="msg" ng-repeat="error in slatwall.placeOrderError()">
+							        <div class="alert alert-danger"><i class="fa fa-info-circle"></i> {{error}}</div>
+							    </div>
+							</div>
 	                    </div>
 	                </div>
 	            </div>

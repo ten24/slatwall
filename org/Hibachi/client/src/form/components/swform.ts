@@ -233,7 +233,7 @@ class SWFormController {
     public getFormData = ()=>
     {
         var iterable = this.formCtrl;
- 
+         console.log(this.object);
         angular.forEach(iterable, (val, key) => {
             if(key==="name") console.log("name - ", this.object.forms[this.name][key]);
             if(typeof val === 'object' && val.hasOwnProperty('$modelValue')){
