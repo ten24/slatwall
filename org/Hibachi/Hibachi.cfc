@@ -35,13 +35,13 @@ component extends="FW1.framework" {
 	variables.framework.subsystemDelimiter = ':';
 	variables.framework.siteWideLayoutSubsystem = 'common';
 	variables.framework.home = 'admin:main.default';
-  variables.framework.error = 'admin:error.default';
-  variables.framework.reload = 'reload';
-  variables.framework.password = 'true';
-  variables.framework.reloadApplicationOnEveryRequest = false;
-  variables.framework.generateSES = false;
-  variables.framework.SESOmitIndex = false;
-  variables.framework.suppressImplicitService = true;
+	variables.framework.error = 'admin:error.default';
+	variables.framework.reload = 'reload';
+	variables.framework.password = 'true';
+	variables.framework.reloadApplicationOnEveryRequest = false;
+	variables.framework.generateSES = false;
+	variables.framework.SESOmitIndex = false;
+	variables.framework.suppressImplicitService = true;
 	variables.framework.unhandledExtensions = 'cfc';
 	variables.framework.unhandledPaths = '/flex2gateway';
 	variables.framework.unhandledErrorCaught = false;
@@ -209,6 +209,10 @@ component extends="FW1.framework" {
 
 			// Verify that the application is setup
 			verifyApplicationSetup();
+			
+			if(getHibachiScope().getService('hibachiCacheService').isServerInstanceCacheExpired(getServerInstanceIPAddress())){
+				verifyApplicationSetup(reloadByServerInstance=true);
+			}
 			// Verify that the session is setup
 			getHibachiScope().getService("hibachiSessionService").setProperSession();
 
@@ -443,9 +447,15 @@ component extends="FW1.framework" {
 		// Announce the applicatoinRequestStart event
 		getHibachiScope().getService("hibachiEventService").announceEvent(eventName="onApplicationRequestStart");
 	}
-
-	public void function verifyApplicationSetup() {
-		if(structKeyExists(url, variables.framework.reload) && url[variables.framework.reload] == variables.framework.password) {
+	
+	public void function verifyApplicationSetup(reloadByServerInstance=false) {
+		
+		if(
+			(
+				structKeyExists(url, variables.framework.reload) 
+				&& url[variables.framework.reload] == variables.framework.password
+			) || reloadByServerInstance
+		) {
 			getHibachiScope().setApplicationValue("initialized", false);
 		}
 
@@ -690,7 +700,21 @@ component extends="FW1.framework" {
 					getBeanFactory().getBean('hibachiJsonService').createJson();
 
 					//===================== END: JSON BUILD SETUP =========================
-
+					
+					//==================== START: UPDATE SERVER INSTANCE CACHE STATUS ========================
+					
+					//only run the update if it wasn't initiated by serverside cache being expired
+					if(!arguments.reloadByServerInstance){
+						getBeanFactory().getBean('hibachiCacheService').updateServerInstanceCache(getServerInstanceIPAddress());						
+					}else{
+						
+						var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getServerInstanceIPAddress(),true);
+						serverInstance.setServerInstanceExpired(false);
+						getBeanFactory().getBean('hibachiCacheService').saveServerInstance(serverInstance);
+					}
+					
+					//==================== END: UPDATE SERVER INSTANCE CACHE STATUS ========================
+					
 					// Application Setup Ended
 					getHibachiScope().setApplicationValue("initialized", true);
 					writeLog(file="#variables.framework.applicationKey#", text="General Log - Application Setup Complete");
@@ -716,6 +740,15 @@ component extends="FW1.framework" {
 				response.setHeader(header,request.context.headers[header]);
 			}
 		}
+	}
+	
+	public string function getServerInstanceIPAddress(){
+		var serverInstanceIPAddress = cgi.remote_addr&":"&cgi.SERVER_PORT;
+		var clientHeaders = GetHttpRequestData().headers;
+		if(structKeyExists(clientHeaders,"X-Forwarded-For")){
+			serverInstanceIPAddress = clientHeaders["X-Forwarded-For"]&':'&clientHeaders["X-Forwarded-Port"];
+		}
+		return serverInstanceIPAddress;
 	}
 
 	public void function renderApiResponse(){
