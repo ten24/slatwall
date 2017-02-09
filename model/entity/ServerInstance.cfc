@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="ServerInstance" entityname="SlatwallServerInstance" table="SwServerInstance" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="hibachiCacheService" hb_permission="this"  {
+component displayname="ServerInstance" entityname="SlatwallServerInstance" table="SwServerInstance" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="hibachiCacheService" hb_permission="this" hb_auditable="false"  {
 
 	// Persistent Properties
 	property name="serverInstanceID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
