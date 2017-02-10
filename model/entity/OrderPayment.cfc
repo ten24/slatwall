@@ -289,7 +289,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	// ============ START: Non-Persistent Property Methods =================
 
 	public boolean function getDynamicAmountFlag() {
-		if(isNull(variables.amount)) {
+		if(isNull(variables.amount) && !this.hasGiftCard()) {
 			return true;
 		}
 		return false;
@@ -300,7 +300,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 
 		for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
 			if(!isNull(getPaymentTransactions()[i].getAmountReceived())) {
-				amountReceived = precisionEvaluate(amountReceived + getPaymentTransactions()[i].getAmountReceived());
+				amountReceived = getService('HibachiUtilityService').precisionCalculate(amountReceived + getPaymentTransactions()[i].getAmountReceived());
 			}
 		}
 
@@ -312,7 +312,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 
 		for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
 			if(!isNull(getPaymentTransactions()[i].getAmountCredited())) {
-				amountCredited = precisionEvaluate(amountCredited + getPaymentTransactions()[i].getAmountCredited());
+				amountCredited = getService('HibachiUtilityService').precisionCalculate(amountCredited + getPaymentTransactions()[i].getAmountCredited());
 			}
 		}
 
@@ -325,7 +325,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 
 		for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
 			if(isNull(getPaymentTransactions()[i].getAuthorizationCodeInvalidFlag()) || !getPaymentTransactions()[i].getAuthorizationCodeInvalidFlag()) {
-				amountAuthorized = precisionEvaluate(amountAuthorized + getPaymentTransactions()[i].getAmountAuthorized());
+				amountAuthorized = getService('HibachiUtilityService').precisionCalculate(amountAuthorized + getPaymentTransactions()[i].getAmountAuthorized());
 			}
 		}
 
@@ -336,7 +336,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		var unauthroized = 0;
 
 		if ( getOrderPaymentType().getSystemCode() == "optCharge" ) {
-			unauthroized = precisionEvaluate(getAmount() - getAmountAuthorized());
+			unauthroized = getService('HibachiUtilityService').precisionCalculate(getAmount() - getAmountAuthorized());
 		}
 
 		return unauthroized;
@@ -346,7 +346,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		var uncaptured = 0;
 
 		if ( getOrderPaymentType().getSystemCode() == "optCharge" ) {
-			uncaptured = precisionEvaluate(getAmountAuthorized() - getAmountReceived());
+			uncaptured = getService('HibachiUtilityService').precisionCalculate(getAmountAuthorized() - getAmountReceived());
 		}
 
 		return uncaptured;
@@ -356,7 +356,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		var unreceived = 0;
 
 		if ( getOrderPaymentType().getSystemCode() == "optCharge" ) {
-			unreceived = precisionEvaluate(getAmount() - getAmountReceived());
+			unreceived = getService('HibachiUtilityService').precisionCalculate(getAmount() - getAmountReceived());
 		}
 
 		return unreceived;
@@ -366,9 +366,9 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		var uncredited = 0;
 
 		if ( getOrderPaymentType().getSystemCode() == "optCredit" ) {
-			uncredited = precisionEvaluate(getAmount() - getAmountCredited());
+			uncredited = getService('HibachiUtilityService').precisionCalculate(getAmount() - getAmountCredited());
 		} else if ( getOrderPaymentType().getSystemCode() == "optCharge" ) {
-			uncredited = precisionEvaluate(getAmountReceived() - getAmountCredited());
+			uncredited = getService('HibachiUtilityService').precisionCalculate(getAmountReceived() - getAmountCredited());
 		}
 
 		return uncredited;
@@ -402,12 +402,34 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		return yearOptions;
 	}
 
+	public boolean function hasGiftCard(){
+		if(!isNull(this.getGiftCard())){
+			return true;
+		}
+		return false;
+	}
+
 	public any function getGiftCard(){
 		if(!isNull(this.getGiftCardNumberEncrypted())){
 			return getService("GiftCardService").getGiftCard(getDAO("GiftCardDAO").getIDbyCode(this.getGiftCardNumberEncrypted()));
 		}
 		return;
 	}
+
+	public boolean function giftCardNotAppliedToOrder(){
+ 		var orderPayments = getOrder().getOrderPayments();
+ 		if(this.hasGiftCard()){	
+ 			for(var payment in orderPayments){
+ 				if( payment.getOrderPaymentID() != this.getOrderPaymentID() &&
+ 					this.getGiftCard().getGiftCardCode() == payment.getGiftCardNumberEncrypted() &&
+ 				    payment.getStatusCode() == 'opstActive'
+ 				){
+ 					return false; 
+ 				}
+ 			}	
+ 		}
+ 		return true; 
+ 	}
 
 	public string function getPaymentMethodType() {
 		if(!isNull(getPaymentMethod())) {
@@ -521,7 +543,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 			var total = getOrder().getTotal();
 			var paymentTotal = getService("orderService").getOrderPaymentNonNullAmountTotal(orderID=getOrder().getOrderID());
 
-			variables.orderAmountNeeded = precisionEvaluate(total - paymentTotal);
+			variables.orderAmountNeeded = getService('HibachiUtilityService').precisionCalculate(total - paymentTotal);
 		}
 
 		return variables.orderAmountNeeded;
@@ -548,18 +570,18 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		if(!isNull(getPaymentMethod())) {
 
 			var maxPercent = getPaymentMethod().setting('paymentMethodMaximumOrderTotalPercentageAmount');
-			var maxAmountOfTotal = precisionEvaluate(getOrder().getTotal() * (maxPercent/100));
+			var maxAmountOfTotal = getService('HibachiUtilityService').precisionCalculate(getOrder().getTotal() * (maxPercent/100));
 			var previouslyAppliedPaymentAmountByMethod = getOrder().getPaymentAmountTotalByPaymentMethod(getPaymentMethod(), this);
 
 			if(getOrderPaymentType().getSystemCode() eq 'optCredit') {
-				maxAmountOfTotal = precisionEvaluate(maxAmountOfTotal * -1);
+				maxAmountOfTotal = getService('HibachiUtilityService').precisionCalculate(maxAmountOfTotal * -1);
 				if(maxAmountOfTotal lt previouslyAppliedPaymentAmountByMethod) {
 					return previouslyAppliedPaymentAmountByMethod;
 				} else {
-					return precisionEvaluate(maxAmountOfTotal + previouslyAppliedPaymentAmountByMethod);
+					return getService('HibachiUtilityService').precisionCalculate(maxAmountOfTotal + previouslyAppliedPaymentAmountByMethod);
 				}
 			} else {
-				return precisionEvaluate(maxAmountOfTotal - previouslyAppliedPaymentAmountByMethod);
+				return getService('HibachiUtilityService').precisionCalculate(maxAmountOfTotal - previouslyAppliedPaymentAmountByMethod);
 			}
 		}
 	}

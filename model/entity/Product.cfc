@@ -65,6 +65,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="calculatedQATS" ormtype="integer" description="Stores the latest calculation of the dynamic 'qats' property which in turn calculates from the defaultSku's dynamic qats property.";
 	property name="calculatedAllowBackorderFlag" ormtype="boolean" description="Stores the value of the 'Allow Backorder' setting.  This is commonly used to drive dynamic product lists on the frontend where availability is important." deprecated="true" deprecatedDescription="Because the calculatedQATS propert takes into account if a product is able to be backordered, this property is no longer needed and will be removed in a future release for performance reasons.";
 	property name="calculatedTitle" ormtype="string" description="Stores the latest calculation of the products marketing 'Title' which is generated based on a dynamic string template in the products settings.";
+	property name="calculatedProductRating" ormtype="big_decimal" description="Stores the latest calculation of the products Rating which is generated based on the average rating of productReviews.";
 
 	// Related Object Properties (many-to-one)
 	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID" hb_optionsNullRBKey="define.none" fetch="join";
@@ -73,6 +74,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="renewalSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="renewalSkuID" cascade="delete" fetch="join";
 
 	// Related Object Properties (one-to-many)
+	property name="listingPages" singularname="listingPage" cfc="ProductListingPage" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	property name="skus" type="array" cfc="Sku" singularname="sku" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	property name="productImages" type="array" cfc="Image" singularname="productImage" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
@@ -80,7 +82,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="productSchedules" singularName="productSchedule" cfc="ProductSchedule" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 
 	// Related Object Properties (many-to-many - owner)
-	property name="listingPages" singularname="listingPage" cfc="Content" fieldtype="many-to-many" linktable="SwProductListingPage" fkcolumn="productID" inversejoincolumn="contentID";
 	property name="categories" singularname="category" cfc="Category" fieldtype="many-to-many" linktable="SwProductCategory" fkcolumn="productID" inversejoincolumn="categoryID";
 	property name="relatedProducts" singularname="relatedProduct" cfc="Product" type="array" fieldtype="many-to-many" linktable="SwRelatedProduct" fkcolumn="productID" inversejoincolumn="relatedProductID";
 
@@ -100,7 +101,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	// Remote Properties
 	property name="remoteID" ormtype="string";
 
-	// Audit Properties
+	// Audit Properties 
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -114,6 +115,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="brandName" type="string" persistent="false";
 	property name="brandOptions" type="array" persistent="false";
 	property name="bundleSkusSmartList" persistent="false";
+	property name="eligibleCurrencyCodeList" persistent="false";
 	property name="estimatedReceivalDetails" type="struct" persistent="false";
 	property name="eventConflictExistsFlag" type="boolean" persistent="false";
 	property name="eventRegistrations" type="array" persistent="false";
@@ -130,6 +132,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="unusedProductOptions" type="array" persistent="false";
 	property name="unusedProductOptionGroups" type="array" persistent="false";
 	property name="unusedProductSubscriptionTerms" type="array" persistent="false";
+	property name="productRating" type="numeric" persistent="false";
 
 	// Non-Persistent Properties - Delegated to default sku
 	property name="currentAccountPrice" hb_formatType="currency" persistent="false";
@@ -147,23 +150,23 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		if(!structKeyExists(variables, "availableToPurchaseFlag")) {
 			// If purchase start dates not existed, or before now(), the start date is valid
 			// If purchase end   date  not existed, or after  now(), the end   date is valid
-			if ( 
+			if (
 					(
 						isNull(this.getPurchaseStartDateTime())
 						||
-						( !isNull(this.getPurchaseStartDateTime()) && dateCompare(now(),this.getPurchaseStartDateTime(),"s") == 1 )					 
+						( !isNull(this.getPurchaseStartDateTime()) && dateCompare(now(),this.getPurchaseStartDateTime(),"s") == 1 )
 					)
 					&&
 					(
 						isNull(this.getPurchaseEndDateTime())
 						||
-						( !isNull(this.getPurchaseEndDateTime()) && dateCompare(now(),this.getPurchaseEndDateTime(),"s") == -1 )					 
-					) 
+						( !isNull(this.getPurchaseEndDateTime()) && dateCompare(now(),this.getPurchaseEndDateTime(),"s") == -1 )
+					)
 			) {
 				variables.availableToPurchaseFlag = true;
 			} else {
 				variables.availableToPurchaseFlag = false;
-			}				
+			}
 		}
 
 		return variables.availableToPurchaseFlag;
@@ -184,7 +187,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			variables.productTypeOptions = [];
 
 			if(arrayLen(records) > 1){
-				arrayAppend(variables.productTypeOptions, {name=getHibachiScope().getRbKey('processObject.Product_Create.selectProductType'),value=""});
+				arrayAppend(variables.productTypeOptions, {name=getHibachiScope().RBKey('processObject.Product_Create.selectProductType'),value=""});
 			}
 
 			for(var i=1; i<=arrayLen(records); i++) {
@@ -198,6 +201,14 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return variables.productTypeOptions;
 	}
 
+	public boolean function hasContent(required string contentID){
+        for(var listingPage in this.getListingPages()){
+            if(listingPage.getContent().getContentID() == contentID){
+                   return true;
+            }
+        }
+        return false;
+    } 
 
     public any function getListingPagesOptionsSmartList() {
 		if(!structKeyExists(variables, "listingPagesOptionsSmartList")) {
@@ -244,13 +255,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 	}
 
-	public any function getTemplateOptions() {
-		if(!isDefined("variables.templateOptions")){
-			variables.templateOptions = getService("ProductService").getProductTemplates();
-		}
-		return variables.templateOptions;
-	}
-
+	//TODO: unused function
 	public any function getImages() {
 		return variables.productImages;
 	}
@@ -259,12 +264,19 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return this.getProductImagesCount() + this.getDefaultProductImageFilesCount();
 	}
 
+	/**
+	* @Suppress
+	*/
 	public struct function getSkuSalePriceDetails( required any skuID) {
 		if(structKeyExists(getSalePriceDetailsForSkus(), arguments.skuID)) {
 			return getSalePriceDetailsForSkus()[ arguments.skuID ];
 		}
 		return {};
 	}
+
+	/**
+	* @Suppress
+	*/
 	public struct function getSkuSalePriceDetailsByCurrencyCode( required any skuID, string currencyCode='') {
 		if(structKeyExists(getSalePriceDetailsForSkusByCurrencyCode(currencyCode=arguments.currencyCode), arguments.skuID)) {
 			return getSalePriceDetailsForSkusByCurrencyCode(currencyCode=arguments.currencyCode)[ arguments.skuID ];
@@ -277,14 +289,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  		return this.getOptionGroupCount() gt 0 || this.getSkusCount() eq 1;
  	}
 
-	public string function getPageIDs() {
-		var pageIDs = "";
-		for( var i=1; i<= arrayLen(getPages()); i++ ) {
-			pageIDs = listAppend(pageIDs,getPages()[i].getPageID());
-		}
-		return pageIDs;
-	}
-
+	//TODO: Unused function 
 	public string function getCategoryIDs() {
 		var categoryIDs = "";
 		for( var i=1; i<= arrayLen(getCategories()); i++ ) {
@@ -357,50 +362,89 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return arrayLen(getOptionGroups());
 	}
 
-	public array function getImageGalleryArray(array resizeSizes=[{size='s'},{size='m'},{size='l'}]) {
+	public array function getImageGalleryArray(array resizeSizes=[{size='s'},{size='m'},{size='l'}],boolean defaultSkuOnlyFlag=false) {
 		var imageGalleryArray = [];
-		var filenames = "";
-
+		var filenames = [];
+		var skuCollection = this.getSkusCollectionList();
+		skuCollection.setDisplayProperties('skuID,imageFile');
+		if(arguments.defaultSkuOnlyFlag) {
+			skuCollection.addFilter("skuID",getDefaultSku().getSkuID());
+		}
+		var skuCollectionRecords = skuCollection.getRecords();
+		
 		// Add all skus's default images
-		for(var i=1; i<=arrayLen(getSkus()); i++) {
-			if( !listFind(filenames, getSkus()[i].getImageFile()) ) {
-				filenames = listAppend(filenames, getSkus()[i].getImageFile());
+		var missingImagePath = setting('imageMissingImagePath');
+		var imageAltString = stringReplace(setting('imageAltString'));
+		
+		var skuCollectionRecordsCount = arrayLen(skuCollectionRecords);
+		for(var i=1; i<=skuCollectionRecordsCount; i++) {
+			var skuData = skuCollectionRecords[i];
+			if(ArrayFind(filenames, skuData['imageFile']) ==0) {
+				ArrayAppend(filenames, skuData['imageFile']);
+				
 				var thisImage = {};
-				thisImage.originalFilename = getSkus()[i].getImageFile();
-				thisImage.originalPath = getSkus()[i].getImagePath();
+				thisImage.originalFilename = skuData['imageFile'];
+				thisImage.originalPath = getService('imageService').getProductImagePathByImageFile(skuData['imageFile']);
 				thisImage.type = "skuDefaultImage";
 				thisImage.productID = getProductID();
 				thisImage.name = getTitle();
 				thisImage.description = getProductDescription();
 				thisImage.resizedImagePaths = [];
-				for(var s=1; s<=arrayLen(arguments.resizeSizes); s++) {
-					arrayAppend(thisImage.resizedImagePaths, getSkus()[i].getResizedImagePath(argumentCollection = arguments.resizeSizes[s]));
+				var resizeSizesCount = arrayLen(arguments.resizeSizes);
+				for(var s=1; s<=resizeSizesCount; s++) {
+					
+					var resizeImageData = arguments.resizeSizes[s];
+					resizeImageData.imagePath = getService('imageService').getProductImagePathByImageFile(skuData['imageFile']);
+					
+					arrayAppend(
+						thisImage.resizedImagePaths, 
+						getService("imageService").getResizedImagePath(argumentCollection=resizeImageData)
+					);
 				}
 				arrayAppend(imageGalleryArray, thisImage);
 			}
 		}
 
 		// Add all alternate image paths
-		for(var i=1; i<=arrayLen(getImages()); i++) {
-			if( !listFind(filenames, getImages()[i].getImageID()) ) {
-				filenames = listAppend(filenames, getImages()[i].getImageID());
+		var productImagesCollection = this.getProductImagesCollectionList();
+		productImagesCollection.setDisplayProperties('imageID,imageFile,imageName,imageDescription,directory');
+		
+		var productImagesRecords = productImagesCollectionList.getRecords();
+		var productImagesRecordsCount = arrayLen(productImagesRecords);
+		for(var i=1; i<=productImagesRecordsCount; i++) {
+			var productImageData = productImagesRecords[i];
+			if( ArrayFind(filenames, productImageData['imageID'])==0 ) {
+				ArrayAppend(filenames, productImageData['imageID']);
+				
 				var thisImage = {};
-				thisImage.originalFilename = getImages()[i].getImageFile();
-				thisImage.originalPath = getImages()[i].getImagePath();
+				thisImage.originalFilename = productImageData['imageFile'];
+				thisImage.originalPath = getService('imageService').getImagePathByImageFileAndDirectory(productImageData['imageFile'],productImageData['directory']);
 				thisImage.type = "productAlternateImage";
 				thisImage.skuID = "";
 				thisImage.productID = getProductID();
 				thisImage.name = "";
-				if(!isNull(getImages()[i].getImageName())) {
-					thisImage.name = getImages()[i].getImageName();
+				if(structKeyExists(productImageData,'imageName') && productImageData['imageName'] != '') {
+					thisImage.name = productImageData['imageName'];
 				}
 				thisImage.description = "";
-				if(!isNull(getImages()[i].getImageDescription())) {
-					thisImage.name = getImages()[i].getImageDescription();
+				if(structKeyExists(productImageData,'imageDescription') && productImageData['imageDescription'] != '') {
+					thisImage.description = productImageData['imageDescription'];
 				}
 				thisImage.resizedImagePaths = [];
-				for(var s=1; s<=arrayLen(arguments.resizeSizes); s++) {
-					arrayAppend(thisImage.resizedImagePaths, getImages()[i].getResizedImagePath(argumentCollection = arguments.resizeSizes[s]));
+		
+				var resizesCount = arrayLen(arguments.resizeSizes);
+				for(var s=1; s<=resizesCount; s++) {
+					
+					var resizeImageData = arguments.resizeSizes[s];
+					resizeImageData.alt = imageAltString;
+					resizeImageData.missingImagePath = missingImagePath;
+					resizeImageData.imagePath = getService('imageService').getImagePathByImageFileAndDirectory(productImageData['imageFile'],productImageData['directory']);
+
+					arrayAppend(
+						thisImage.resizedImagePaths,
+						getService("imageService").getResizedImagePath(argumentCollection=resizeImageData) 
+					);
+						
 				}
 				arrayAppend(imageGalleryArray, thisImage);
 			}
@@ -484,97 +528,105 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return getService("productService").getProductSkusBySelectedOptions(arguments.selectedOptions,this.getProductID());
 	}
 
-	public any function getSkuOptionDetails(string selectedOptionIDList="") {
+	public any function getSkuOptionDetails(string selectedOptionIDList="", boolean activeFlag=true, boolean publishedFlag=true) {
 
 		// Setup return structure
 		var skuOptionDetails = {};
 
-		// Get all the skus for this product with options fetched
-		var skus = getService("skuService").getProductSkus(product=this, sorted=false, fetchOptions=true);
-
-
 		// Get the selected options by optionGroup
 		var selectedOptionGroupsByOptionID = {};
 
+		var optionCollection = getService('optionService').getOptionCollectionList();
+		optionCollection.setDisplayProperties('
+			optionID,
+			optionName,
+			optionCode,
+			optionDescription,
+			sortOrder,
+			optionGroup.optionGroupName,
+			optionGroup.optionGroupCode,
+			optionGroup.optionGroupID,
+			optionGroup.sortOrder,
+			skus.calculatedQATS,
+			skus.skuID
+		');
+		optionCollection.addFilter('skus.product.productID',this.getProductID());
+		optionCollection.addFilter('skus.calculatedQATS',0,'>');
+		optionCollection.addFilter('skus.activeFlag',1);
+		var optionRecords = optionCollection.getRecords();
 		// Create an array of the selectOptions
 		if(listLen(arguments.selectedOptionIDList)) {
-			for(var sku in skus) {
-				for(var option in sku.getOptions()) {
-					if(listFindNoCase(arguments.selectedOptionIDList, option.getOptionID())) {
-						selectedOptionGroupsByOptionID[ option.getOptionID() ] = option.getOptionGroup().getOptionGroupID();
-					}
+			for(var optionData in optionRecords) {
+				if(listFindNoCase(arguments.selectedOptionIDList, optionData['optionID'])) {
+					selectedOptionGroupsByOptionID[ optionData['optionID'] ] = optionData['optionGroup_optionGroupID'];
 				}
-				if(structCount(selectedOptionGroupsByOptionID) == listLen(arguments.selectedOptionIDList)) {
-					break;
-				}
+			}
+			if(structCount(selectedOptionGroupsByOptionID) == listLen(arguments.selectedOptionIDList)) {
+				break;
 			}
 		}
 
-		// Loop over the skus
-		for(var sku in skus) {
+		var skuOptionIDArray = [];
+		for(var optionData in optionRecords) {
+			arrayAppend(skuOptionIDArray, optionData['optionID']);
+		}
 
-			var skuOptionIDArray = [];
-			for(var option in sku.getOptions()) {
-				arrayAppend(skuOptionIDArray, option.getOptionID());
+		// Loop over the options for this sku
+		for(var optionData in optionRecords) {
+
+			var allSelectedInSku = true;
+			var selectedOptionIDArray = listToArray(arguments.selectedOptionIDList);
+			for(var selected in selectedOptionIDArray) {
+				if(selectedOptionGroupsByOptionID[ selected ] != optionData['optionGroup_optionGroupID'] && !arrayFindNoCase(skuOptionIDArray, selected)) {
+					allSelectedInSku = false;
+					break;
+				}
 			}
 
-			// Loop over the options for this sku
-			for(var option in sku.getOptions()) {
+			// Created Shortended Variables
+			var ogCode = optionData['optionGroup_optionGroupCode'];
 
-				var allSelectedInSku = true;
-				for(var selected in listToArray(arguments.selectedOptionIDList)) {
-					if(selectedOptionGroupsByOptionID[ selected ] != option.getOptionGroup().getOptionGroupID() && !arrayFindNoCase(skuOptionIDArray, selected)) {
-						allSelectedInSku = false;
-						break;
-					}
-				}
+			// Create a struct for this optionGroup if it doesn't exist
+			if(!structKeyExists(skuOptionDetails, trim(ogCode))) {
+				skuOptionDetails[ ogCode ] = {};
+				skuOptionDetails[ ogCode ][ "options" ] = [];
+				skuOptionDetails[ ogCode ][ "optionGroupName" ] = optionData['optionGroup_optionGroupName'];
+				skuOptionDetails[ ogCode ][ "optionGroupCode" ] = optionData['optionGroup_optionGroupCode'];
+				skuOptionDetails[ ogCode ][ "optionGroupID" ] = optionData['optionGroup_optionGroupID'];
+				skuOptionDetails[ ogCode ][ "sortOrder" ] = optionData['optionGroup_sortOrder'];
+			}
 
-				// Created Shortended Variables
-				var ogCode = option.getOptionGroup().getOptionGroupCode();
-
-				// Create a struct for this optionGroup if it doesn't exist
-				if(!structKeyExists(skuOptionDetails, ogCode)) {
-					skuOptionDetails[ ogCode ] = {};
-					skuOptionDetails[ ogCode ][ "options" ] = [];
-					skuOptionDetails[ ogCode ][ "optionGroupName" ] = option.getOptionGroup().getOptionGroupName();
-					skuOptionDetails[ ogCode ][ "optionGroupCode" ] = option.getOptionGroup().getOptionGroupCode();
-					skuOptionDetails[ ogCode ][ "optionGroupID" ] = option.getOptionGroup().getOptionGroupID();
-					skuOptionDetails[ ogCode ][ "sortOrder" ] = option.getOptionGroup().getSortOrder();
-				}
-
-				// Create a struct for this option if one doesn't exist
-				var existingOptionFound = false;
-				for(var existingOption in skuOptionDetails[ ogCode ][ "options" ]) {
-					if( existingOption.optionID == option.getOptionID() ) {
-						existingOption['totalQATS'] += sku.getQuantity("QATS");
-						if(allSelectedInSku) {
-							existingOption['selectedQATS'] += sku.getQuantity("QATS");
-						}
-						existingOptionFound = true;
-						break;
-					}
-				}
-				if(!existingOptionFound) {
-					var newOption = {};
-					newOption['optionID'] = option.getOptionID();
-					newOption['optionCode'] = option.getOptionCode();
-					newOption['optionName'] = option.getOptionName();
-					newOption['name'] = option.getOptionName();
-					newOption['value'] = option.getOptionID();
-					newOption['sortOrder'] = option.getSortOrder();
-					newOption['totalQATS'] = sku.getQuantity("QATS");
-					newOption['selectedQATS'] = 0;
+			// Create a struct for this option if one doesn't exist
+			var existingOptionFound = false;
+			for(var existingOption in skuOptionDetails[ ogCode ][ "options" ]) {
+				if( existingOption['optionID'] == optionData['optionID'] ) {
+					existingOption['totalQATS'] += optionData['skus_calculatedQATS'];
 					if(allSelectedInSku) {
-						newOption['selectedQATS'] = sku.getQuantity("QATS");
+						existingOption['selectedQATS'] += optionData['skus_calculatedQATS'];
 					}
-					arrayAppend(skuOptionDetails[ ogCode ].options, newOption);
+					existingOptionFound = true;
+					break;
 				}
+			}
+			if(!existingOptionFound) {
+				var newOption = {};
+				newOption['optionID'] = optionData['optionID'];
+				newOption['optionCode'] = optionData['optionCode'];
+				newOption['optionName'] = optionData['optionName'];
+				newOption['name'] = optionData['optionName'];
+				newOption['value'] = optionData['optionID'];
+				newOption['sortOrder'] = optionData['sortOrder'];
+				newOption['totalQATS'] = optionData['skus_calculatedQATS'];
+				newOption['selectedQATS'] = 0;
+				if(allSelectedInSku) {
+					newOption['selectedQATS'] = optionData['skus_calculatedQATS'];
+				}
+				arrayAppend(skuOptionDetails[ ogCode ].options, newOption);
 			}
 		}
 		for(var ogCode in skuOptionDetails){
 			skuOptionDetails[ ogCode ].options = getService("HibachiUtilityService").structArraySort(skuOptionDetails[ ogCode ].options, "sortOrder");
 		}
-
 		return skuOptionDetails;
 	}
 
@@ -690,7 +742,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		// If we have a locationID
 		if( structKeyExists( arguments, "locationID") ) {
 			if( structKeyExists(variables[ arguments.quantityType ].locations, arguments.locationID) ) {
-				variables[ arguments.quantityType ].locations[ arguments.locationID ];
+				return variables[ arguments.quantityType ].locations[ arguments.locationID ];
 			}
 			return 0;
 		}
@@ -722,6 +774,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 			var sl = getService('skuService').getSkuSmartList();
 			sl.addSelect('skuID','skuID');
+			sl.addSelect('skuCode','skuCode');
 			sl.addSelect('imageFile','imageFile');
 			sl.addSelect('product.productType.productTypeIDPath','productTypeIDPath');
 			sl.addFilter('imageFile','NOT NULL');
@@ -730,23 +783,25 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			var skusStructs = sl.getRecords();
 
 			for(var sku in skusStructs) {
-				var imageAlreadyIncluded = false;
-				for(var image in variables.defaultProductImageFiles){
-					if(image.imageFile == sku['imageFile']){
-						imageAlreadyIncluded = true;
-					}
-				}
 
-				if(!imageAlreadyIncluded){
-					var imageFileStruct = {};
-					imageFileStruct['imageFile'] = sku['imageFile'];
-					
-					imageFileStruct['skuDefinition'] = getService('skuService').getSkuDefinitionBySkuIDAndBaseProductTypeID(
-						sku['skuID'],
-						listFirst(sku['productTypeIDPath'])
-					);
-					arrayAppend(variables.defaultProductImageFiles, imageFileStruct);
-				}
+					var imageAlreadyIncluded = false;
+					for(var image in variables.defaultProductImageFiles){
+						if(image.imageFile == sku['imageFile']){
+							imageAlreadyIncluded = true;
+						}
+					}
+
+					if(!imageAlreadyIncluded){
+						var imageFileStruct = {};
+						imageFileStruct['imageFile'] = sku['imageFile'];
+
+						imageFileStruct['skuDefinition'] = getService('skuService').getSkuDefinitionBySkuIDAndBaseProductTypeID(
+							sku['skuID'],
+							listFirst(sku['productTypeIDPath'])
+						);
+						arrayAppend(variables.defaultProductImageFiles, imageFileStruct);
+					}
+
 			}
 		}
 		return variables.defaultProductImageFiles;
@@ -763,14 +818,18 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 		return variables.defaultProductImageFilesCount;
 	}
-
+	/**
+	* @Suppress
+	*/
 	public struct function getSalePriceDetailsForSkus() {
 		if(!structKeyExists(variables, "salePriceDetailsForSkus")) {
 			variables.salePriceDetailsForSkus = getService("promotionService").getSalePriceDetailsForProductSkus(productID=getProductID());
 		}
 		return variables.salePriceDetailsForSkus;
 	}
-
+	/**
+	* @Suppress
+	*/
 	public struct function getSalePriceDetailsForSkusByCurrencyCode(required string currencyCode) {
 		if(!structKeyExists(variables, "getSalePriceDetailsForSkusByCurrencyCode_#arguments.currencyCode#")) {
 			variables["getSalePriceDetailsForSkusByCurrencyCode_#arguments.currencyCode#"] = getService("promotionService").getSalePriceDetailsForProductSkus(productID=getProductID(),currencyCode=arguments.currencyCode);
@@ -787,11 +846,22 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 		return variables.brandName;
 	}
-	
+
 	public array function getBrandOptions() {
-		var options = getPropertyOptions( "brand" );
-		options[1]['name'] = rbKey('define.none');
-		return options;
+		if(!structKeyExists(variables, "brandOptions")) {
+
+			var smartList = getPropertyOptionsSmartList( "brand" );
+			smartList.addOrder("brandName|asc");
+			smartList.addSelect("brandID", "value");
+			smartList.addSelect("brandName", "name");
+
+			variables.brandOptions = smartList.getRecords();
+
+			arrayPrepend(variables.brandOptions, {name=rbKey('define.none'),value=""});
+
+		}
+
+		return variables.brandOptions;
 	}
 
 	public string function getNextSkuCodeCount() {
@@ -829,14 +899,20 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			return getDefaultSku().getCurrencyCode();
 		}
 	}
-	
-	
+
+
+
+	public any function getEligibleCurrencyCodeList(){
+		if( structKeyExists(variables, "defaultSku") ) {
+			return getDefaultSku().getEligibleCurrencyCodeList();
+		}
+	}
 
 	public any function getEventConflictExistsFlag() {
 		if( structKeyExists(variables, "eventConflictExistsFlag") ) {
 			return variables.eventConflictExistsFlag;
 		} else {
-			
+
 			variables.eventConflictExistsFlag = false;
 			for(sku in getSkus()) {
 				if(sku.getEventConflictExistsFlag()) {
@@ -859,6 +935,9 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return 0;
 	}
 
+	/**
+	* @Suppress
+	*/
 	public any function getPriceByCurrencyCode(required string currencyCode) {
 		if( structKeyExists(variables, "defaultSku") ) {
 			return getDefaultSku().getPriceByCurrencyCode(arguments.currencyCode);
@@ -873,6 +952,9 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 	}
 
+	/**
+	* @Suppress
+	*/
 	public any function getRenewalPriceByCurrencyCode(required string currencyCode) {
 		if( structKeyExists(variables, "defaultSku") ) {
 			return getDefaultSku().getRenewalPriceByCurrencyCode(arguments.currencyCode);
@@ -885,29 +967,45 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 	}
 
+	/**
+	* @Suppress
+	*/
 	public any function getListPriceByCurrencyCode(required string currencyCode) {
 		if( structKeyExists(variables,"defaultSku") ) {
 			return getDefaultSku().getListPriceByCurrencyCode(arguments.currencyCode);
 		}
 	}
 
+	/**
+	* @Suppress
+	*/
 	public any function getLivePrice() {
 		if( structKeyExists(variables,"defaultSku") ) {
 			return getDefaultSku().getLivePrice();
 		}
 	}
+
+	/**
+	* @Suppress
+	*/
 	public any function getLivePriceByCurrencyCode(required string currencyCode){
 		if( structKeyExists(variables,"defaultSku") ) {
 			return getDefaultSku().getLivePriceByCurrencyCode(arguments.currencyCode);
 	 	}
 	}
 
+	/**
+	* @Suppress
+	*/
 	public any function getCurrentAccountPrice() {
 		if( structKeyExists(variables,"defaultSku") ) {
 			return getDefaultSku().getCurrentAccountPrice();
 		}
 	}
 
+	/**
+	* @Suppress
+	*/
 	public any function getCurrentAccountPriceByCurrencyCode(required string currencyCode) {
 		if( structKeyExists(variables,"defaultSku") ) {
 			return getDefaultSku().getCurrentAccountPriceByCurrencyCode(arguments.currencyCode);
@@ -918,17 +1016,16 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		if( structKeyExists(variables,"defaultSku") ) {
 			return getDefaultSku().getSalePrice();
 		} else if (arrayLen(getSkus())) {
-			getSkus()[1].getSalePrice();
+			return getSkus()[1].getSalePrice();
 		}
 		return 0;
 	}
 
-
-	public any function getSalePriceByCurrencyCode() {
+	public any function getSalePriceByCurrencyCode(required string currencyCode) {
 		if( structKeyExists(variables,"defaultSku") ) {
 			return getDefaultSku().getSalePriceByCurrencyCode(arguments.currencyCode);
 		} else if (arrayLen(getSkus())) {
-			getSkus()[1].getSalePriceByCurrencyCode(arguments.currencyCode);
+			return getSkus()[1].getSalePriceByCurrencyCode(arguments.currencyCode);
 		}
 		return 0;
 	}
@@ -947,12 +1044,15 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		if(!structKeyExists(variables, "salePriceExpirationDateTime")) {
 			variables.salePriceExpirationDateTime = now();
 			if( structKeyExists(variables,"defaultSku") ) {
-				variables.salePriceExpirationDateTime = getDefaultSku().getSalePricExpirationDateTime();
+				variables.salePriceExpirationDateTime = getDefaultSku().getSalePriceExpirationDateTime();
 			}
 		}
 		return variables.salePriceExpirationDateTime;
 	}
 
+	/**
+	* @Suppress
+	*/
 	public boolean function getTransactionExistsFlag() {
 		if(!structKeyExists(variables, "transactionExistsFlag")) {
 			variables.transactionExistsFlag = getService("skuService").getTransactionExistsFlag( productID=this.getProductID() );
@@ -960,25 +1060,13 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return variables.transactionExistsFlag;
 	}
 
-	public array function getProductOptionsByGroup(){
-		return getService('productService').getProductOptionsByGroup( this );
-	}
-
 	public boolean function hasUnusedProductOptionCombinations(){
-
-		var optionGroups = [];
-		var usedOptions = [];
-
 		return this.getNumberOfUnusedProductOptionCombinations() > 0;
 	}
 
 	public any function getNumberOfUnusedProductOptionCombinations(){
-
-		var optionGroups = [];
-		var unusedOptions = [];
-		var first = true;
-
 		var optionGroupIDs = getDAO("OptionDAO").getAllUsedProductOptionGroupIDs(this.getProductID());
+
 		var numberOfUsedProductOptions = getDAO("OptionDAO").getNumberOfUsedProductOptions(this.getProductID());
 
 		if(ArrayLen(optionGroupIDs) > 0){
@@ -997,9 +1085,12 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return possibilities - usedCombinations;
 	}
 
+	/**
+	* @Suppress
+	*/
 	public array function getUnusedProductOptionGroups() {
 		if( !structKeyExists(variables, "unusedProductOptionGroups") ) {
-			variables.unusedProductOptionGroups = getService('optionService').getUnusedProductOptionGroups( getProductType().getProductTypeID(), structKeyList(getOptionGroupsStruct()) );
+			variables.unusedProductOptionGroups = getService('optionService').getUnusedProductOptionGroups( getProductType().getProductTypeIDPath(), structKeyList(getOptionGroupsStruct()) );
 		}
 		return variables.unusedProductOptionGroups;
 	}
@@ -1060,6 +1151,14 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public void function removeAttributeValue(required any attributeValue) {
 		arguments.attributeValue.removeProduct( this );
 	}
+	
+	// Product Listing Pages (one-to-many)
+	public void function addListingPage(required any productListingPage) {
+		arguments.productListingPage.setProduct( this );
+	}
+	public void function removeListingPage(required any productListingPage) {
+		arguments.productListingPage.removeProduct( this );
+	}
 
 	// Product Images (one-to-many)
 	public void function addProductImage(required any productImage) {
@@ -1092,24 +1191,24 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		arguments.productReview.removeProduct( this );
 	}
 
-	// Listing Pages (many-to-many - owner)
-	public void function addListingPage(required any listingPage) {
-		if(isNew() or !hasListingPage(arguments.listingPage)) {
-			arrayAppend(variables.listingPages, arguments.listingPage);
-		}
-		if(arguments.listingPage.isNew() or !arguments.listingPage.hasListingProduct( this )) {
-			arrayAppend(arguments.listingPage.getListingProducts(), this);
-		}
-	}
-	public void function removeListingPage(required any listingPage) {
-		var thisIndex = arrayFind(variables.listingPages, arguments.listingPage);
-		if(thisIndex > 0) {
-			arrayDeleteAt(variables.listingPages, thisIndex);
-		}
-		var thatIndex = arrayFind(arguments.listingPage.getListingProducts(), this);
-		if(thatIndex > 0) {
-			arrayDeleteAt(arguments.listingPage.getListingProducts(), thatIndex);
-		}
+	//  (many-to-many - owner)
+ 	public void function addCategory(required any category) {
+ 		if(isNew() or !hasCategory(arguments.category)) {
+ 			arrayAppend(variables.categories, arguments.category);
+ 		}
+ 		if(arguments.category.isNew() or !arguments.category.hasProduct( this )) {
+ 			arrayAppend(arguments.category.getProducts(), this);
+ 		}
+ 	}
+ 	public void function removeCategory(required any category) {
+ 		var thisIndex = arrayFind(variables.categories, arguments.category);
+ 		if(thisIndex > 0) {
+ 			arrayDeleteAt(variables.categories, thisIndex);
+ 		}
+ 		var thatIndex = arrayFind(arguments.category.getProducts(), this);
+ 		if(thatIndex > 0) {
+ 			arrayDeleteAt(arguments.category.getProducts(), thatIndex);
+ 		}
 	}
 
 	// Promotion Rewards (many-to-many - inverse)
@@ -1209,8 +1308,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return "productName";
 	}
 
-	public any function getAssignedAttributeSetSmartList(){
-		if(!structKeyExists(variables, "assignedAttributeSetSmartList")) {
+	public any function getAssignedAttributeSetSmartList(boolean refresh=false){
+		if(!structKeyExists(variables, "assignedAttributeSetSmartList") || arguments.refresh == true) {
 
 			variables.assignedAttributeSetSmartList = getService("attributeService").getAttributeSetSmartList();
 
@@ -1249,7 +1348,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	// ================== START: Deprecated Methods ========================
 
 	public array function getAttributeSets(array attributeSetTypeCode=[]){
-		var smartList = getAssignedAttributeSetSmartList();
+		var smartList = getAssignedAttributeSetSmartList(true);
 		if(arrayFind(arguments.attributeSetTypeCode, "astProductCustomization") || arrayFind(arguments.attributeSetTypeCode, "astOrderItem")) {
 			smartList.addFilter('attributeSetObject', 'OrderItem');
 		}

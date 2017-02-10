@@ -68,8 +68,8 @@ class SWWorkflowTriggers{
                             if(angular.isDefined(newValue.data.scheduleCollection)){
                                 scope.selectedCollection = newValue.data.scheduleCollection.data.collectionName;
                             }
-                        }else if(newValue.data.triggerEventTitle) {
-                            scope.searchEvent.name = newValue.data.triggerEventTitle;
+                        }else{
+                            scope.searchEvent.name = scope.workflowTriggers.selectedTrigger.triggerEventTitle;
                         }
                     }
                 });
@@ -83,6 +83,7 @@ class SWWorkflowTriggers{
                     scope.collectionCollectionConfig.addFilter("collectionObject",item.value);
                     scope.eventOptions = [];
                 },'WorkflowWorkflowObjectOnChange');
+                
 
                 scope.scheduleCollectionConfig = collectionConfigService.newCollectionConfig("Schedule");
                 scope.scheduleCollectionConfig.setDisplayProperties("scheduleID,scheduleName,daysOfMonthToRun,daysOfWeekToRun,recuringType,frequencyStartTime,frequencyEndTime,frequencyInterval");
@@ -201,17 +202,24 @@ class SWWorkflowTriggers{
 				 * Changes the selected trigger value.
 				 */
 				scope.selectEvent = function(eventOption){
-					//Needs to clear old and set new.
-					scope.workflowTriggers.selectedTrigger.data.triggerEventTitle = eventOption.name;
+                    //Needs to clear old and set new.
+                    scope.workflowTriggers.selectedTrigger.data.triggerEventTitle = eventOption.name;
                     scope.workflowTriggers.selectedTrigger.data.triggerEvent = eventOption.value;
-					if(eventOption.entityName == scope.workflow.data.workflowObject){
-						scope.workflowTriggers.selectedTrigger.data.objectPropertyIdentifier = '';
+                    if(eventOption.entityName == scope.workflow.data.workflowObject){
+                        scope.workflowTriggers.selectedTrigger.data.objectPropertyIdentifier = '';
 
                     }else{
-						scope.workflowTriggers.selectedTrigger.data.objectPropertyIdentifier = eventOption.entityName;
-					}
-					scope.searchEvent.name = eventOption.name;
-                    scope.showEventOptions = false;
+                        scope.workflowTriggers.selectedTrigger.data.objectPropertyIdentifier = eventOption.entityName;
+                    }
+                    
+                    scope.searchEvent.name = eventOption.name;
+                    scope.showEventOptions = false;  
+                    observerService.notifyById('pullBindings','WorkflowTriggertriggerEventpullBindings').then(function(){
+                          
+                    });
+                    observerService.notifyById('pullBindings','WorkflowTriggertriggerEventTitlepullBindings').then(function(){
+                          
+                    });
 				};
 
 				/**
@@ -233,10 +241,16 @@ class SWWorkflowTriggers{
 				};
 
 				scope.setAsEvent = function(workflowTrigger){
+                    if(!workflowTrigger.$$isPersisted()){
+                        workflowTrigger.data.saveTriggerHistoryFlag = 0;
+                    }
 					//add event,  clear schedule
 				};
 
 				scope.setAsSchedule = function(workflowTrigger){
+                    if(!workflowTrigger.$$isPersisted()){
+                        workflowTrigger.data.saveTriggerHistoryFlag = 1;
+                    }
 				};
 
 				/**

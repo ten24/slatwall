@@ -1,0 +1,30 @@
+{
+	"conditions":{
+	},
+	"properties":{
+	    "price": [{
+	        "contexts":"save",
+	        "required":"true",
+	        "dataType":"numeric", 
+	        "minValue":"0"
+	    }],
+	    "minQuantity" : [{
+	        "contexts":"save",
+	        "required":"false",
+	        "dataType":"numeric",
+	        "minValue":"0",
+			"method" : "hasValidQuantityConfiguration"
+        }],
+	    "maxQuantity" : [{
+	        "contexts":"save",
+	        "required":"false",
+	        "dataType":"numeric",
+	        "minValue":"0",
+			"method" : "hasValidQuantityConfiguration"
+        }],
+        "currencyCode" : [{
+            "contexts":"save",
+            "required":"true"
+        }]
+	}
+}

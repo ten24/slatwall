@@ -141,6 +141,22 @@ Notes:
 
 	</cffunction>
 
+	<cffunction name="removeAccountAddressFromSubscriptionUsages">
+		<cfargument name="accountAddressID" type="string" required="true" >
+
+		<cfset var rs = "" />
+
+		<cfquery name="rs">
+			UPDATE
+				SwSubsUsage
+			SET
+				shippingAccountAddressID = null
+			WHERE
+				shippingAccountAddressID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountAddressID#" />
+		</cfquery>
+
+	</cffunction>
+	
 	<cffunction name="removeAccountPaymentMethodFromOrderPayments">
 		<cfargument name="accountPaymentMethodID" type="string" required="true" >
 
@@ -178,7 +194,7 @@ Notes:
 	<cffunction name="getActivePasswordByEmailAddress" returntype="any" access="public">
 		<cfargument name="emailAddress" required="true" type="string" />
 
-		<cfreturn ormExecuteQuery("SELECT aa FROM #getApplicationKey()#AccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE aa.password is not null AND aa.integration.integrationID is null AND lower(pea.emailAddress)=:emailAddress AND aa.activeFlag = true", {emailAddress=lcase(arguments.emailAddress)}, true) />
+		<cfreturn ormExecuteQuery("SELECT aa FROM #getApplicationKey()#AccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE aa.password is not null AND aa.integration.integrationID is null AND lower(pea.emailAddress)=:emailAddress AND aa.activeFlag = true ORDER BY aa.createdDateTime DESC", {emailAddress=lcase(arguments.emailAddress)}, true, {maxResults=1}) />
 	</cffunction>
 
 	<cffunction name="getActivePasswordByAccountID" returntype="any" access="public">

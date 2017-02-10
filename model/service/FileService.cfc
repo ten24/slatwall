@@ -57,7 +57,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if (!file.getNewFlag() && fileExists(file.getFilePath())) {
 			// Download file
 			try {
-				getService("hibachiUtilityService").downloadFile(fileType=file.getFileType(),fileName=file.getURLTitle(), filePath=file.getFilePath(), contentType=file.getMimeType(), deleteFile=false);
+				getService("hibachiUtilityService").downloadFile(fileName=file.getURLTitle()&'.'&file.getFileType(), filePath=file.getFilePath(), contentType=file.getMimeType(), deleteFile=false);
 			} catch (any error) {
 				file.addError("fileDownload", rbKey("entity.file.download.fileDownloadError"));
 			}

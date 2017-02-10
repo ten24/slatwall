@@ -2,14 +2,20 @@
 
 # Functions for increasing the version number
 function format3Digit( ) {
-  if [ ${#micro} = 1 ]
+  if [ ${#micro} = 0 ]
+    then
+      micro=000
+  elif [ ${#micro} = 1 ]
     then
       micro=00$micro
   elif [ ${#micro} = 2 ]
     then
       micro=0$micro
   fi
-  if [ ${#build} = 1 ]
+  if [ ${#build} = 0 ]
+    then
+      build=000
+  elif [ ${#build} = 1 ]
     then
       build=00$build
   elif [ ${#build} = 2 ]
@@ -81,7 +87,7 @@ changedFiles=$(git diff --name-only)
 if [ "$changedFiles" = "" ]; then
     # no changes
     echo "No Changes To Push"
-else
+elif [ $CIRCLE_BRANCH = "master" ] || [ $CIRCLE_BRANCH = "develop" ]; then
     # changes
     echo "Build/Version Changes Found"
     git commit -a -m "CI build passed, auto-built files commit - $CIRCLE_BUILD_URL [ci skip]"
@@ -117,6 +123,16 @@ else
       aws s3 cp slatwall-be.zip s3://slatwall-releases/slatwall-be.zip
       aws s3 cp slatwall-be.md5.txt s3://slatwall-releases/slatwall-be.md5.txt
     fi
+
+
+fi
+
+# If this is the develop branch then we can push up BE Release to S3
+if [ $CIRCLE_BRANCH = "hotfix" ]; then
+  git archive --format=zip HEAD > slatwall-hotfix.zip
+  md5sum slatwall-hotfix.zip > slatwall-hotfix.md5.txt
+  aws s3 cp slatwall-hotfix.zip s3://slatwall-releases/slatwall-hotfix.zip
+  aws s3 cp slatwall-hotfix.md5.txt s3://slatwall-releases/slatwall-hotfix.md5.txt
 fi
 
 # If this was a master branch change, we need to try and merge into develop, and then push develop

@@ -541,7 +541,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 					// Process event registration changes to 'pending confirmation'
 					for(i=1;i<=changeToConfirmCount;i++) {
-						getEventService().processEventRegistration( waitlistedRegistrants[i], {}, "confirm");
+						getService("EventRegistrationService").processEventRegistration( waitlistedRegistrants[i], {}, "confirm");
 					}
 
 				}
@@ -559,6 +559,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ====================== START: Save Overrides ===========================
 
 	public any function saveSku(required any sku, required struct data={}){
+		var previousActiveState = arguments.sku.getActiveFlag();
 		if(arguments.sku.getProduct().getBaseProductType() == "subscription"){
 			if(structKeyExists(arguments.data,"renewalMethod")){
 				if(arguments.data.renewalMethod == "renewalsku"){
@@ -573,10 +574,39 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 		}
-		return super.save(entity=arguments.sku, data=arguments.data);
+		arguments.sku = super.save(entity=arguments.sku, data=arguments.data);
+		
+		if(!sku.hasErrors()){
+			if(!arguments.sku.isNew() && previousActiveState == 1 && arguments.sku.getActiveFlag() == 0){
+				sku.setPublishedFlag(false);
+			}
+		}
+		
+		return arguments.sku;
 	}
 
 	// ======================  END: Save Overrides ============================
+	
+	// ====================== START: Delete Overrides =========================
+	
+	public boolean function deleteSku(required any sku) {
+
+		// Check delete validation
+		if(arguments.sku.isDeletable() && !isNull(arguments.sku.getProductSchedule())) {
+
+			var productSchedule = arguments.sku.getProductSchedule();
+			//If this is the only sku associated to the product schedule, remove it from the schedule and delete the sku
+			if (productSchedule.getSkusCount() == 1){
+				getService("ProductScheduleService").deleteProductSchedule(productSchedule);
+			}
+		
+		}
+
+		return delete( arguments.sku );
+	}
+	
+	// ======================  END: Delete Overrides ==========================
+
 
 	// ==================== START: Smart List Overrides =======================
 
@@ -593,6 +623,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		smartList.addKeywordProperty(propertyIdentifier="publishedFlag", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="product.productName", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="product.productType.productTypeName", weight=1);
+
+		smartList.addOrder('skuCode|ASC');
 
 		return smartList;
 	}
@@ -620,30 +652,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// @hint Retrieve Smartlist of available locations based on event start and end dates, and an optional unavailableLocationsList
 	public any function getAvailableLocationsSmartList(required eventStartDateTime, required eventEndDateTime, required quantity=0, string unavailableLocationsList="") {
 
-		// Get skus that have datetimes that overlap with current sku
-		var skuSmartList = getService("SkuService").getSkuSmartList();
-		skuSmartList.addWhereCondition("(aslatwallsku.eventStartDateTime BETWEEN :thisStartDateTime AND :thisEndDateTime) OR (aslatwallsku.eventEndDateTime BETWEEN :thisStartDateTime AND :thisEndDateTime)",{thisStartDateTime=arguments.eventStartDateTime,thisEndDateTime=arguments.eventEndDateTime});
-
-		// Build list of unavailable locations from sku list
-		var concurrentSkus = skuSmartList.getRecords();
-		for( var thisSku in concurrentSkus ) {
-			if(arrayLen(thisSku.getLocationConfigurations())) {
-				for( var thisLocation in thisSku.getLocations()) {
-					if(listFind(arguments.unavailableLocationsList,thisLocation.getLocationID()) == 0) {
-						if(listLen(arguments.unavailableLocationsList)) {
-							arguments.unavailableLocationsList = listAppend(arguments.unavailableLocationsList,thisLocation.getLocationID() );
-						} else {
-							arguments.unavailableLocationsList = thisLocation.getLocationID();
-						}
-					}
-				}
-			}
-		}
-
-		arguments.unavailableLocationsList = listQualify(arguments.unavailableLocationsList,"'",",","char" );
+		arguments.unavailableLocationsList = listAppend(arguments.unavailableLocationsList, getSkuDAO().getUsedLocationIdsByEventDates(eventStartDateTime,eventEndDateTime) );
+		arguments.unavailableLocationsList = listQualify(arguments.unavailableLocationsList, "'");
+ 
 		// Get non-conflicting location configurations
 		var availableLocationsSmartList = getService("LocationConfigurationService").getLocationConfigurationSmartList();
-		//availableLocationsSmartList.addKeywordProperty(propertyIdentifier="locationCapacity", weight=1);
 
 		if(listLen(arguments.unavailableLocationsList) > 0) {
 			availableLocationsSmartList.addWhereCondition("aslatwalllocationconfiguration.location.locationID NOT IN (#arguments.unavailableLocationsList#)");
@@ -665,6 +678,37 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		smartlist.addWhereCondition("aslatwallsku.eventStartDateTime > #currentDateTime#");
 		smartlist.addWhereCondition("aslatwallsku.purchaseStartDateTime > #currentDateTime#");
 		return smartList;
+	}
+	
+	// @help Compile smartlist of conflicting events based on location and event dates
+	public any function getEventConflictsSmartList( required sku ) {
+		var locationConfigurationIDList = "";
+		
+		// Build list of this Sku's locations
+		var locationIDList = "";
+		for(var lc in arguments.sku.getLocationConfigurations()) {
+			if( !listFind( locationIDList,lc.getLocationID() ) ) {
+				locationIDList = listAppend(locationIDList,lc.getLocationID(),",");
+			}
+		}
+		
+		// Build smartlist that will return sku events occurring at the same time and location as this event
+		var eventConflictsSmartList = getService("skuService").getSkuSmartlist();
+		eventConflictsSmartList.joinRelatedProperty("SlatwallSku", "locationConfigurations", "Inner");
+		eventConflictsSmartList.joinRelatedProperty("SlatwallLocationConfiguration", "location", "Inner");
+		if( len(locationIDList) ) {
+			eventConflictsSmartList.addWhereCondition("aslatwalllocation.locationID IN (:lcIDs)",{lcIDs=locationIDList});
+		}
+		if( len(arguments.sku.getSkuID()) ) {
+			eventConflictsSmartList.addWhereCondition("aslatwallsku.skuID <> :thisSkuID",{thisSkuID=arguments.sku.getSkuID()});
+		}
+		eventConflictsSmartList.addfilter("bundleFlag","0");
+		eventConflictsSmartList.addWhereCondition("((aslatwallsku.eventStartDateTime >= :thisStartDateTime and aslatwallsku.eventStartDateTime <= :thisEndDateTime) OR (aslatwallsku.eventEndDateTime >= :thisStartDateTime and aslatwallsku.eventEndDateTime <= :thisEndDateTime) OR (aslatwallsku.eventStartDateTime < :thisStartDateTime and aslatwallsku.eventEndDateTime > :thisEndDateTime))",{thisStartDateTime=arguments.sku.getEventStartDateTime(),thisEndDateTime=arguments.sku.getEventEndDateTime()});
+	
+		eventConflictsSmartList.addOrder("eventStartDateTime|ASC");
+		
+		return eventConflictsSmartList;
+		
 	}
 
 	// ====================  END: Smart List Overrides ========================

@@ -47,19 +47,27 @@ Notes:
 
 */
 component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiService" {
-
 	public any function getSlatwallScope() {
 		return getHibachiScope();
 	} 
 	
 	// @hint leverages the getEntityHasAttributeByEntityName() by traverses a propertyIdentifier first using getLastEntityNameInPropertyIdentifier()
 	public boolean function getHasAttributeByEntityNameAndPropertyIdentifier( required string entityName, required string propertyIdentifier ) {
-		return getEntityHasAttributeByEntityName( entityName=getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier), attributeCode=listLast(arguments.propertyIdentifier, ".") );
+		
+		
+		return getEntityHasAttributeByEntityName( 
+			entityName=getLastEntityNameInPropertyIdentifier(
+				arguments.entityName, 
+				arguments.propertyIdentifier
+			), 
+			attributeCode=listLast(arguments.propertyIdentifier, ".") 
+		);
 	}
 	
 	// @hint returns true or false based on an entityName, and checks if that entity has an extended attribute with that attributeCode
 	public boolean function getEntityHasAttributeByEntityName( required string entityName, required string attributeCode ) {
 		var attributeCodesList = getHibachiCacheService().getOrCacheFunctionValue("attributeService_getAttributeCodesListByAttributeSetObject_#getProperlyCasedShortEntityName(arguments.entityName)#", "attributeService", "getAttributeCodesListByAttributeSetObject", {1=getProperlyCasedShortEntityName(arguments.entityName)});
+		
 		if(listFindNoCase(attributeCodesList, arguments.attributeCode)) {
 			return true;
 		}
@@ -97,7 +105,7 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 		arguments.entity = super.save(argumentcollection=arguments);
 		
 		// If an entity was saved and the activeFlag is now 0 it needs to be removed from all setting values
-		if(!arguments.entity.hasErrors() && arguments.entity.hasProperty('activeFlag')) {
+		if(!arguments.entity.hasErrors() && arguments.entity.hasProperty('activeFlag') && !isNull(arguments.entity.getActiveFlag())) {
 			
 			var settingsRemoved = 0;
 			if(!arguments.entity.getActiveFlag()) {
@@ -135,9 +143,9 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 		return getEntityObject( arguments.entityName ).getAttributesProperties();
 	}
 	
-	public any function getPropertiesWithAttributesByEntityName(required string entityName){
+	public any function getPropertiesWithAttributesByEntityName(required string entityName, boolean includeNonPersistent = false){
 		var entityObject = getEntityObject( arguments.entityName );
-		var properties = entityObject.getFilterProperties();
+		var properties = entityObject.getFilterProperties("","", includeNonPersistent);
 		
 		return properties;
 	}

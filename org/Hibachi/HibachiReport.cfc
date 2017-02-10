@@ -200,7 +200,7 @@
 
 		<cfset var metricDefinition = {} />
 
-		<cfloop array="#getMetricDefinitions()#" index="metricDefinition">
+		<cfloop array="#getMetricDefinitions()#" index="local.metricDefinition">
 			<cfif metricDefinition.alias eq arguments.alias and structKeyExists(metricDefinition, 'title')>
 				<cfreturn metricDefinition.title />
 			</cfif>
@@ -214,7 +214,7 @@
 
 		<cfset var dimensionDefinition = {} />
 
-		<cfloop array="#getDimensionDefinitions()#" index="dimensionDefinition">
+		<cfloop array="#getDimensionDefinitions()#" index="local.dimensionDefinition">
 			<cfif dimensionDefinition.alias eq arguments.alias and structKeyExists(dimensionDefinition, 'title')>
 		 		<cfreturn dimensionDefinition.title />
 			</cfif>
@@ -228,7 +228,7 @@
 
 		<cfset var reportDateTimeDefinition = {} />
 
-		<cfloop array="#getReportDateTimeDefinitions()#" index="reportDateTimeDefinition">
+		<cfloop array="#getReportDateTimeDefinitions()#" index="local.reportDateTimeDefinition">
 			<cfif reportDateTimeDefinition.alias eq arguments.alias and structKeyExists(reportDateTimeDefinition, 'title')>
 		 		<cfreturn reportDateTimeDefinition.title />
 			</cfif>
@@ -258,7 +258,7 @@
 
 		<cfset var metricDefinition = structNew() />
 
-		<cfloop array="#getMetricDefinitions()#" index="metricDefinition">
+		<cfloop array="#getMetricDefinitions()#" index="local.metricDefinition">
 			<cfif metricDefinition.alias eq arguments.alias>
 				<cfreturn metricDefinition />
 			</cfif>
@@ -272,7 +272,7 @@
 
 		<cfset var dimensionDefinition = structNew() />
 
-		<cfloop array="#getDimensionDefinitions()#" index="dimensionDefinition">
+		<cfloop array="#getDimensionDefinitions()#" index="local.dimensionDefinition">
 			<cfif dimensionDefinition.alias eq arguments.alias>
 				<cfreturn dimensionDefinition />
 			</cfif>
@@ -286,7 +286,7 @@
 
 		<cfset var reportDateTimeDefinition = structNew() />
 
-		<cfloop array="#getReportDateTimeDefinitions()#" index="reportDateTimeDefinition">
+		<cfloop array="#getReportDateTimeDefinitions()#" index="local.reportDateTimeDefinition">
 			<cfif reportDateTimeDefinition.alias eq arguments.alias>
 				<cfreturn reportDateTimeDefinition />
 			</cfif>
@@ -383,7 +383,7 @@
 				</cfif>
 				<cfquery name="variables.sortedPieAndBarChartData" dbtype="query" maxrows="#variables.limitResults#">
 					SELECT
-						<cfloop from="1" to="#listLen(getDimensions())#" step="1" index="d">
+						<cfloop from="1" to="#listLen(getDimensions())#" step="1" index="local.d">
 							<cfset var dimensionDefinition = getDimensionDefinition( listGetAt(getDimensions(), d) ) />
 							<cfif d GT "1">,</cfif>
 							#dimensionDefinition.alias#, count(#dimensionDefinition.alias#) AS #dimensionDefinition.alias#Total
@@ -394,7 +394,7 @@
 					AND
 				 	 	reportDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#reportEndDateTimePlusOne#" />
 					GROUP BY
-						<cfloop from="1" to="#listLen(getDimensions())#" step="1" index="d">
+						<cfloop from="1" to="#listLen(getDimensions())#" step="1" index="local.d">
 							<cfset var dimensionDefinition = getDimensionDefinition( listGetAt(getDimensions(), d) ) />
 							<cfif d gt 1>,</cfif>
 							#dimensionDefinition.alias#
@@ -411,7 +411,7 @@
 
 			<cfquery name="variables.chartDataQuery" dbtype="query">
 				SELECT
-					<cfloop from="1" to="#listLen(getMetrics())#" step="1" index="m">
+					<cfloop from="1" to="#listLen(getMetrics())#" step="1" index="local.m">
 						<cfset var metricDefinition = getMetricDefinition( listGetAt(getMetrics(), m) ) />
 						<cfif m gt 1>,</cfif>
 						<cfif structKeyExists(metricDefinition, "calculation")>
@@ -488,7 +488,7 @@
 
 			<cfquery name="variables.chartCompareDataQuery" dbtype="query">
 				SELECT
-					<cfloop from="1" to="#listLen(getMetrics())#" step="1" index="m">
+					<cfloop from="1" to="#listLen(getMetrics())#" step="1" index="local.m">
 						<cfset var metricDefinition = getMetricDefinition( listGetAt(getMetrics(), m) ) />
 						<cfif m gt 1>,</cfif>
 						<cfif structKeyExists(metricDefinition, "calculation")>
@@ -644,7 +644,7 @@
 				<cfset xAxisData["type"] = "datetime" />
 				<cfset xAxisData["opposite"] = true />
 				<cfset arrayAppend(variables.chartData["xAxis"], xAxisData) />
-				<cfloop from="1" to="#listLen(getMetrics())#" step="1" index="m">
+				<cfloop from="1" to="#listLen(getMetrics())#" step="1" index="local.m">
 
 					<cfset var metricDefinition = getMetricDefinition( listGetAt(getMetrics(), m) ) />
 
@@ -780,7 +780,7 @@
 
 			<cfquery name="variables.totalsQuery" dbtype="query">
 				SELECT
-					<cfloop from="1" to="#listLen(getMetrics())#" step="1" index="m">
+					<cfloop from="1" to="#listLen(getMetrics())#" step="1" index="local.m">
 						<cfset var metricDefinition = getMetricDefinition( listGetAt(getMetrics(), m) ) />
 						<cfif m gt 1>,</cfif>
 						<cfif structKeyExists(metricDefinition, "calculation")>
@@ -810,7 +810,7 @@
 
 			<cfquery name="variables.compareTotalsQuery" dbtype="query">
 				SELECT
-					<cfloop from="1" to="#listLen(getMetrics())#" step="1" index="m">
+					<cfloop from="1" to="#listLen(getMetrics())#" step="1" index="local.m">
 						<cfset var metricDefinition = getMetricDefinition( listGetAt(getMetrics(), m) ) />
 						<cfif m gt 1>,</cfif>
 						<cfif structKeyExists(metricDefinition, "calculation")>
@@ -847,7 +847,7 @@
 			<cfset var reportEndDateTimePlusOne = dateAdd("d", 1, getReportEndDateTime()) />
 			<cfquery name="unsortedData" dbtype="query">
 				SELECT
-					<cfloop from="1" to="#listLen(getMetrics())#" step="1" index="m">
+					<cfloop from="1" to="#listLen(getMetrics())#" step="1" index="local.m">
 						<cfset var metricDefinition = getMetricDefinition( listGetAt(getMetrics(), m) ) />
 						<cfif m gt 1>,</cfif>
 						<cfif structKeyExists(metricDefinition, "calculation")>
@@ -856,7 +856,7 @@
 							#metricDefinition.function#(#metricDefinition.alias#) as #metricDefinition.alias#
 						</cfif>
 					</cfloop>
-					<cfloop from="1" to="#listLen(getDimensions())#" step="1" index="d">
+					<cfloop from="1" to="#listLen(getDimensions())#" step="1" index="local.d">
 						<cfset var dimensionDefinition = getDimensionDefinition( listGetAt(getDimensions(), d) ) />
 						,#dimensionDefinition.alias#
 						<cfif structKeyExists(dimensionDefinition, "filterAlias")>
@@ -870,7 +870,7 @@
 				  AND
 				  	reportDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#reportEndDateTimePlusOne#" />
 				GROUP BY
-					<cfloop from="1" to="#listLen(getDimensions())#" step="1" index="d">
+					<cfloop from="1" to="#listLen(getDimensions())#" step="1" index="local.d">
 						<cfset var dimensionDefinition = getDimensionDefinition( listGetAt(getDimensions(), d) ) />
 						<cfif d gt 1>,</cfif>
 						#dimensionDefinition.alias#
@@ -886,7 +886,7 @@
 
 				<cfquery name="unsortedCompareData" dbtype="query">
 					SELECT
-						<cfloop from="1" to="#listLen(getMetrics())#" step="1" index="m">
+						<cfloop from="1" to="#listLen(getMetrics())#" step="1" index="local.m">
 							<cfset var metricDefinition = getMetricDefinition( listGetAt(getMetrics(), m) ) />
 							<cfif m gt 1>,</cfif>
 							<cfif structKeyExists(metricDefinition, "calculation")>
@@ -895,7 +895,7 @@
 								#metricDefinition.function#(#metricDefinition.alias#) as #metricDefinition.alias#Compare
 							</cfif>
 						</cfloop>
-						<cfloop from="1" to="#listLen(getDimensions())#" step="1" index="d">
+						<cfloop from="1" to="#listLen(getDimensions())#" step="1" index="local.d">
 							<cfset var dimensionDefinition = getDimensionDefinition( listGetAt(getDimensions(), d) ) />
 							,#dimensionDefinition.alias#
 							<cfif structKeyExists(dimensionDefinition, "filterAlias")>
@@ -909,7 +909,7 @@
 					  AND
 					  	reportDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#reportCompareEndDateTimePlusOne#" />
 					GROUP BY
-						<cfloop from="1" to="#listLen(getDimensions())#" step="1" index="d">
+						<cfloop from="1" to="#listLen(getDimensions())#" step="1" index="local.d">
 							<cfset var dimensionDefinition = getDimensionDefinition( listGetAt(getDimensions(), d) ) />
 							<cfif d gt 1>,</cfif>
 							#dimensionDefinition.alias#
@@ -921,13 +921,13 @@
 
 				<cfquery name="allDimensions" dbtype="query">
 					SELECT DISTINCT
-						<cfloop from="1" to="#listLen(getMetrics())#" step="1" index="m">
+						<cfloop from="1" to="#listLen(getMetrics())#" step="1" index="local.m">
 							<cfset var metricDefinition = getMetricDefinition( listGetAt(getMetrics(), m) ) />
 							<cfif m gt 1>,</cfif>
 							0 as #metricDefinition.alias#
 							,0 as #metricDefinition.alias#Compare
 						</cfloop>
-						<cfloop from="1" to="#listLen(getDimensions())#" step="1" index="d">
+						<cfloop from="1" to="#listLen(getDimensions())#" step="1" index="local.d">
 							<cfset var dimensionDefinition = getDimensionDefinition( listGetAt(getDimensions(), d) ) />
 							,#dimensionDefinition.alias#
 							<cfif structKeyExists(dimensionDefinition, "filterAlias")>
@@ -939,7 +939,7 @@
 				</cfquery>
 
 				<cfloop query="allDimensions">
-					<cfloop from="1" to="#listLen(getMetrics())#" step="1" index="m">
+					<cfloop from="1" to="#listLen(getMetrics())#" step="1" index="local.m">
 						<cfset var metricDefinition = getMetricDefinition( listGetAt(getMetrics(), m) ) />
 
 						<cfquery name="dataValue" dbtype="query">
@@ -948,7 +948,7 @@
 							FROM
 								unsortedData
 							WHERE
-								<cfloop from="1" to="#listLen(getDimensions())#" step="1" index="d">
+								<cfloop from="1" to="#listLen(getDimensions())#" step="1" index="local.d">
 									<cfset var dimensionDefinition = getDimensionDefinition( listGetAt(getDimensions(), d) ) />
 									<cfif d gt 1>AND</cfif>
 									unsortedData.#dimensionDefinition.alias# = '#allDimensions[ dimensionDefinition.alias ][ allDimensions.currentRow ]#'
@@ -964,7 +964,7 @@
 							FROM
 								unsortedCompareData
 							WHERE
-								<cfloop from="1" to="#listLen(getDimensions())#" step="1" index="d">
+								<cfloop from="1" to="#listLen(getDimensions())#" step="1" index="local.d">
 									<cfset var dimensionDefinition = getDimensionDefinition( listGetAt(getDimensions(), d) ) />
 									<cfif d gt 1>AND</cfif>
 									unsortedCompareData.#dimensionDefinition.alias# = '#allDimensions[ dimensionDefinition.alias ][ allDimensions.currentRow ]#'
@@ -997,12 +997,12 @@
 					allUnsortedData
 				ORDER BY
 				<cfif getOrderByType() EQ "dimensions">
-					<cfloop from="1" to="#listLen(getDimensions())#" step="1" index="d">
+					<cfloop from="1" to="#listLen(getDimensions())#" step="1" index="local.d">
 						<cfset var dimensionDefinition = getDimensionDefinition( listGetAt(getDimensions(), d) ) />
 						<cfif d gt 1>,</cfif>#dimensionDefinition.alias# DESC
 					</cfloop>
 				<cfelse>
-					<cfloop from="1" to="#listLen(getMetrics())#" step="1" index="m">
+					<cfloop from="1" to="#listLen(getMetrics())#" step="1" index="local.m">
 						<cfset var metricDefinition = getMetricDefinition( listGetAt(getMetrics(), m) ) />
 						<cfif m gt 1>,</cfif>#metricDefinition.alias# DESC
 					</cfloop>
@@ -1047,14 +1047,14 @@
 		<cfset var headers = "" />
 		<cfset var i = "" />
 
-		<cfloop list="#getDimensions()#" index="i">
+		<cfloop list="#getDimensions()#" index="local.i">
 			<cfif arguments.includeQuotes>
 				<cfset headers = listAppend(headers, '"#getDimensionTitle(i)#"') />
 			<cfelse>
 				<cfset headers = listAppend(headers, getDimensionTitle(i)) />
 			</cfif>
 		</cfloop>
-		<cfloop list="#getMetrics()#" index="i">
+		<cfloop list="#getMetrics()#" index="local.i">
 			<cfif arguments.includeQuotes>
 				<cfset headers = listAppend(headers, '"#getMetricTitle(i)#"') />
 			<cfelse>
@@ -1074,10 +1074,10 @@
 		<cfset var headerCompare = "" />
 		<cfset var i = "" />
 
-		<cfloop list="#getDimensions()#" index="i">
+		<cfloop list="#getDimensions()#" index="local.i">
 			<cfset headerCompare = listAppend(headerCompare, ' ') />
 		</cfloop>
-		<cfloop list="#getMetrics()#" index="i">
+		<cfloop list="#getMetrics()#" index="local.i">
 			<cfif arguments.includeQuotes>
 				<cfset headerCompare = listAppend(headerCompare, '"#dateFormat(getReportStartDateTime(), 'yyyy/mm/dd')# - #dateFormat(getReportEndDateTime(), 'yyyy/mm/dd')#"') />
 				<cfset headerCompare = listAppend(headerCompare, '"#dateFormat(getReportCompareStartDateTime(), 'yyyy/mm/dd')# - #dateFormat(getReportCompareEndDateTime(), 'yyyy/mm/dd')#"') />
@@ -1101,10 +1101,10 @@
 			<cfset var totalsCompareQuery = getCompareTotalsQuery() />
 		</cfif>
 
-		<cfloop list="#getDimensions()#" index="i">
+		<cfloop list="#getDimensions()#" index="local.i">
 			<cfset totals = listAppend(totals, ' ') />
 		</cfloop>
-		<cfloop list="#getMetrics()#" index="i">
+		<cfloop list="#getMetrics()#" index="local.i">
 			<cfif arguments.includeQuotes>
 				<cfset totals = listAppend(totals, '"#totalsQuery[ i ][1]#"' ) />
 			<cfelse>
@@ -1129,10 +1129,10 @@
 
 		<cfquery name="data" dbtype="query">
 			SELECT
-				<cfloop from="1" to="#listLen(getDimensions())#" index="i">
+				<cfloop from="1" to="#listLen(getDimensions())#" index="local.i">
 					<cfif i gt 1>,</cfif>#listGetAt(getDimensions(), i)#
 				</cfloop>
-				<cfloop from="1" to="#listLen(getMetrics())#" index="i">
+				<cfloop from="1" to="#listLen(getMetrics())#" index="local.i">
 					,#listGetAt(getMetrics(), i)#
 					<cfif getReportCompareFlag()>
 						,#listGetAt(getMetrics(), i)#Compare
@@ -1194,7 +1194,7 @@
 			<cfif getReportCompareFlag()>
 				<cfset var i = 1 />
 
-				<cfloop from="1" to="#listLen(getMetrics())#" index="i">
+				<cfloop from="1" to="#listLen(getMetrics())#" index="local.i">
 					<cfset var startColumn = (listLen(getDimensions()) + (i*2)) - 1 />
 					<cfset spreadsheetMergeCells(spreadsheet, 1, 1, startColumn, startColumn + 1 ) />
 				</cfloop>
@@ -1225,7 +1225,7 @@
 			<!--- Add Totals border --->
 			<cfset spreadsheetFormatCellRange (spreadsheet, {topborder='thin'}, spreadsheetrowcount, 1, spreadsheetrowcount, totalColumns) />
 
-			<cfset spreadsheetWrite( spreadsheet, fullFilename ) />
+			<cfset spreadsheetWrite( spreadsheet, fullFilename, true ) />
 			<cfset getService("hibachiUtilityService").downloadFile( filename, fullFilename, "application/msexcel", true ) />
 			<cfcatch>
 				<cfif (structKeyExists(server, "railo") or structKeyExists(server, "lucee")) and cfcatch.message eq "No matching function [SPREADSHEETADDROW] found">
@@ -1246,10 +1246,10 @@
 		<cfset var fields = "" />
 		<cfset var i = "" />
 
-		<cfloop list="#getDimensions()#" index="i">
+		<cfloop list="#getDimensions()#" index="local.i">
 			<cfset fields = listAppend(fields, i) />
 		</cfloop>
-		<cfloop list="#getMetrics()#" index="i">
+		<cfloop list="#getMetrics()#" index="local.i">
 			<cfset fields = listAppend(fields, i) />
 			<cfif getReportCompareFlag()>
 				<cfset fields = listAppend(fields, '#i#Compare') />

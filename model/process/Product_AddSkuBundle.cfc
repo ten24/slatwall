@@ -58,6 +58,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Data Properties (ID's)
 
 	// Data Properties (Inputs)
+	property name="skuName" hb_rbKey="entity.sku.skuName";
 	property name="skuCode" hb_rbKey="entity.sku.skuCode";
 	property name="price" hb_rbKey="entity.sku.price";
 	property name="skus" hb_rbKey="entity.sku_plural";

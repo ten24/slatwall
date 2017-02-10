@@ -49,7 +49,9 @@ Notes:
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 
 	property name="addressService" type="any";
+	property name="hibachiUtilityService" type="any";
 	property name="integrationService" type="any";
+	property name="orderService" type="any"; 
 	property name="settingService" type="any";
 
 	public array function getShippingMethodRatesByOrderFulfillmentAndShippingMethod(required any orderFulfillment, required any shippingMethod){
@@ -61,6 +63,43 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.maximumShipmentWeight,100000000) >= #arguments.orderFulfillment.getTotalShippingWeight()#');
 		return shippingMethodRatesSmartList.getRecords(); 
 	}
+
+	public boolean function getOrderFulfillmentCanBeSplitShipped(required any orderFulfillment, required numeric splitShipmentWeight){
+		var orderFulfillmentItems = arguments.orderFulfillment.getOrderFulfillmentItems(); 
+		for(var j=1; j<=arrayLen(orderFulfillmentItems); j++){
+			if(orderFulfillmentItems[j].getSku().getWeight() > arguments.splitShipmentWeight){
+				return false; 
+			}
+		} 
+		return true; 
+	} 
+
+	public any function mergeRateResponseBeansAndSplitShipments(required array rateResponseBeans, required array shippingMethodOptionSplitShipments){
+		var mergedRatesResponseBean = new Slatwall.model.transient.fulfillment.ShippingRatesResponseBean();
+		mergedRatesResponseBean.setShippingMethodOptionSplitShipments(arguments.shippingMethodOptionSplitShipments); 
+		var shippingMethodStruct = {}; 
+		for(var j=1; j<=arrayLen(rateResponseBeans); j++){
+			var responseBean = rateResponseBeans[j]; 
+			for(var k=1; k<=arrayLen(responseBean.getShippingMethodResponseBeans()); k++){
+				var shippingMethodResponseBean = responseBean.getShippingMethodResponseBeans()[k]; 	
+				var shippingProviderMethod = shippingMethodResponseBean.getShippingProviderMethod(); 
+				if(!structKeyExists(shippingMethodStruct, shippingProviderMethod)){
+					shippingMethodStruct[shippingProviderMethod] = {}; 	
+					shippingMethodStruct[shippingProviderMethod].shippingProviderMethod = shippingMethodResponseBean.getShippingProviderMethod(); 
+					shippingMethodStruct[shippingProviderMethod].totalCharge = shippingMethodResponseBean.getTotalCharge();
+				} else { 
+					shippingMethodStruct[shippingProviderMethod].totalCharge = val(getService('HibachiUtilityService').precisionCalculate(shippingMethodStruct[shippingProviderMethod].totalCharge + shippingMethodResponseBean.getTotalCharge()));
+				} 
+			} 			
+		}
+		for( var key in shippingMethodStruct ){
+			mergedRatesResponseBean.addShippingMethod(
+				shippingProviderMethod=shippingMethodStruct[key].shippingProviderMethod,
+				totalCharge=shippingMethodStruct[key].totalCharge
+			); 
+		}
+		return mergedRatesResponseBean;	
+	} 
 	
 	public struct function getShippingMethodRatesResponseBeansByIntegrationsAndOrderFulfillment(required array integrations, required any orderFulfillment){
 		var responseBeans = {};
@@ -74,10 +113,56 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var ratesRequestBean = getTransient("ShippingRatesRequestBean");
 			ratesRequestBean.populateWithOrderFulfillment(arguments.orderFulfillment);
 
+			var splitShipmentFlag = false;
+			var splitShipmentWeights = [];  
+			var splitShippingMethodRates = []; 
+			if(ArrayLen(integrationShippingAPI.getEligibleShippingMethodRates())){
+				for(var j = 1; j <= ArrayLen(integrationShippingAPI.getEligibleShippingMethodRates()); j++){
+					var shippingMethodRate = integrationShippingAPI.getEligibleShippingMethodRates()[j];
+					
+					if( !isNull(shippingMethodRate.getSplitShipmentWeight()) && 
+						ratesRequestBean.getTotalWeight() > shippingMethodRate.getSplitShipmentWeight() &&
+						this.getOrderFulfillmentCanBeSplitShipped(arguments.orderFulfillment, shippingMethodRate.getSplitShipmentWeight())
+					){ 
+						var splitShipmentFlag = true; 
+						ArrayAppend(splitShipmentWeights, shippingMethodRate.getSplitShipmentWeight()); 
+						ArrayAppend(splitShippingMethodRates, shippingMethodRate); 
+					} 
+				}		
+			}
+
 			logHibachi('#arguments.integrations[i].getIntegrationName()# Shipping Integration Rates Request - Started');
-			// Inside of a try/catch call the 'getRates' method of the integraion
+			
 			try {
-				responseBeans[ arguments.integrations[i].getIntegrationID() ] = integrationShippingAPI.getRates( ratesRequestBean );
+				if(splitShipmentFlag){
+					
+					logHibachi('#arguments.integrations[i].getIntegrationName()# Shipping Integration Rates Request - Splitting Shipment');
+					
+					var rateResponseBeans = []; 
+					var shippingMethodOptionSplitShipments = []; 
+					for(var j=1; j<=arrayLen(splitShipmentWeights); j++){
+						var splitShipmentWeight = splitShipmentWeights[j]; 
+						var splitShippingMethodRate = splitShippingMethodRates[j];  
+						var orderFulfillmentItems = getHibachiUtilityService().arrayConcat([], arguments.orderFulfillment.getOrderFulfillmentItems());//don't directly access the order fulfillment items
+
+						while(arrayLen(orderFulfillmentItems)){
+							var shippingMethodOptionSplitShipment = this.newShippingMethodOptionSplitShipment();
+							orderFulfillmentItems = splitOrderFulfillmentItems(orderFulfillmentItems, splitShipmentWeight, shippingMethodOptionSplitShipment); 	
+							shippingMethodOptionSplitShipment = this.saveShippingMethodOptionSplitShipment(shippingMethodOptionSplitShipment); 
+							ArrayAppend(shippingMethodOptionSplitShipments, shippingMethodOptionSplitShipment); 
+							ratesRequestBean.populateShippingItemsWithOrderFulfillmentItems(shippingMethodOptionSplitShipment.getShipmentOrderItems(), true); 
+							
+							var responseBean = integrationShippingAPI.getRates(ratesRequestBean); 
+							ArrayAppend(rateResponseBeans, responseBean); 
+						} 	
+					}
+					var rateResponseBean = this.mergeRateResponseBeansAndSplitShipments(rateResponseBeans, shippingMethodOptionSplitShipments); 
+				} else { 
+					var rateResponseBean = integrationShippingAPI.getRates( ratesRequestBean );
+				} 
+				
+				responseBeans[ arguments.integrations[i].getIntegrationID() ] = rateResponseBean; 
+			
 			} catch(any e) {
 
 				logHibachi('An error occured with the #arguments.integrations[i].getIntegrationName()# integration when trying to call getRates()', true);
@@ -90,6 +175,40 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			logHibachi('#arguments.integrations[i].getIntegrationName()# Shipping Integration Rates Request - Finished');
 		}
 		return responseBeans;
+	}
+	
+	/* do not add orderFulfillmentItmes directley from an orm getter to this function because it will delete them from the data base via array delete at
+		instead use: var orderFulfillmentItems = getHibachiUtilityService().arrayConcat([], arguments.orderFulfillment.getOrderFulfillmentItems());
+	*/
+	private array function splitOrderFulfillmentItems(required array orderFulfillmentItems, required numeric splitShipmentWeight, required any shippingMethodOptionSplitShipment){
+		var currentWeight = 0; 
+		while(ArrayLen(orderFulfillmentItems)){
+			var orderFulfillmentItem = arguments.orderFulfillmentItems[1]; 
+			
+			if( orderFulfillmentItem.getTotalWeight() + currentWeight <= arguments.splitShipmentWeight){
+				
+				arguments.shippingMethodOptionSplitShipment.addShipmentOrderItem(orderFulfillmentItem); 
+				currentWeight += orderFulfillmentItem.getTotalWeight(); 
+				arguments.shippingMethodOptionSplitShipment.setShipmentWeight(currentWeight);
+			
+			} else if( orderFulfillmentItem.getTotalWeight() > arguments.splitShipmentWeight && 
+				       orderFulfillmentItem.getQuantity() > 1
+			){
+				
+				for(var j=1; j<=orderFulfillmentItem.getQuantity(); j++){
+					splitOrderFulfillmentItem = getOrderService().copyToNewOrderItem(orderFulfillmentItem);
+					splitOrderFulfillmentItem.setQuantity(1);
+					//save in this way to prevent order service from rerunning this calculation
+					getHibachiDAO().save(splitOrderFulfillmentItem);  
+					arrayAppend(arguments.orderFulfillmentItems, splitOrderFulfillmentItem); 
+				}
+
+			} else { 
+				break;
+			} 
+			ArrayDeleteAt(arguments.orderFulfillmentItems, 1); 
+		} 			
+		return arguments.orderFulfillmentItems; 
 	}
 
 	public any function getIntegrationByOrderFulfillmentAndShippingMethodRate(
@@ -129,26 +248,34 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// check to make sure that this rate applies to the current orderFulfillment
 				if(!isNull(shippingMethodRate.getShippingIntegration()) && shippingMethodRate.getShippingIntegration().getActiveFlag()){
 					var shippingIntegration = getIntegrationByOrderFulfillmentAndShippingMethodRate(arguments.orderFulfillment,shippingMethodRate);
-					if(!arrayFind(integrations, shippingIntegration)){
+					if (!isNull(shippingIntegration)){
+						shippingIntegration.getIntegrationCFC("shipping").addEligibleShippingMethodRate(shippingMethodRate);
+					}
+					if(!isNull(shippingIntegration) && !arrayFind(integrations, shippingIntegration)){
 						arrayAppend(integrations,shippingIntegration);
 					}
 				} 
 			}
 		}
+		//set this to determine split shipping when calling getRates
 		return integrations;
 	}
 	
-	public struct function newQualifiedRateOption(required any shippingMethodRate, required numeric totalCharge, required boolean integrationFailed=false){
-		return {
+	public struct function newQualifiedRateOption(required any shippingMethodRate, required numeric totalCharge, required boolean integrationFailed=false, any responseBean){
+		var qualifiedRateOption = {
 			shippingMethodRate=arguments.shippingMethodRate,
 			totalCharge=arguments.totalCharge,
 			integrationFailed=arguments.integrationFailed
 		};
+		if(structKeyExists(arguments, "responseBean")){
+			qualifiedRateOption.responseBean = arguments.responseBean; 
+		} 
+		return qualifiedRateOption; 
 	}
 	
 	public numeric function getChargeAmountByShipmentItemMultiplierAndRateMultiplierAmount(required numeric defaultAmount, required numeric shipmentItemMultiplier, required numeric rateMultiplierAmount){
 		
-		var chargeAmount = arguments.defaultAmount + (arguments.rateMultiplierAmount * arguments.shipmentItemMultiplier);
+		var chargeAmount = val(getService('HibachiUtilityService').precisionCalculate(arguments.defaultAmount + (arguments.rateMultiplierAmount * arguments.shipmentItemMultiplier)));
 		return chargeAmount;
 	}
 	
@@ -165,6 +292,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var shippingMethodRate = shippingMethodRates[r];
 			// If this rate is a manual one, then use the default amount
 			if(isNull(shippingMethodRate.getShippingIntegration())) {
+				
 				var shipmentItemMultiplier = 0;
 				if(!isNull(shippingMethodRate.getRateMultiplierAmount())){
 					shipmentItemMultiplier = arguments.orderFulfillment.getShipmentItemMultiplier();
@@ -175,14 +303,30 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					shipmentItemMultiplier,
 					nullReplace(shippingMethodRate.getRateMultiplierAmount(),0)
 				);
+				//make sure the manual rate is usable
+				var priceGroups = [];
+				if(!isNull(arguments.orderFulfillment.getOrder().getAccount())){
+					priceGroups = arguments.orderFulfillment.getOrder().getAccount().getPriceGroups();
+				}
+				if (isShippingMethodRateUsable(
+						shippingMethodRate,
+						arguments.orderFulfillment.getShippingAddress(), 
+						arguments.orderFulfillment.getTotalShippingWeight(), 
+						arguments.orderFulfillment.getSubtotalAfterDiscounts(), 
+						arguments.orderFulfillment.getTotalShippingQuantity(), 
+						priceGroups)){
+							
+							var qualifiedRateOption = newQualifiedRateOption(shippingMethodRate, chargeAmount);
+							arrayAppend(qualifiedRateOptions, qualifiedRateOption);
+				}
 				
-				var qualifiedRateOption = newQualifiedRateOption(shippingMethodRate,chargeAmount);
-				arrayAppend(qualifiedRateOptions, qualifiedRateOption);
 			// If we got a response bean from the shipping integration then find those details inside the response
 			}else{
 				
 				var shippingIntegration = getIntegrationByOrderFulfillmentAndShippingMethodRate(arguments.orderFulfillment,shippingMethodRate);
+				
 				if (
+					!isNull(shippingIntegration) &&
 					structKeyExists(arguments.shippingMethodRatesResponseBeans, shippingIntegration.getIntegrationID())
 				) {
 					var thisResponseBean = arguments.shippingMethodRatesResponseBeans[ shippingIntegration.getIntegrationID() ];
@@ -190,28 +334,46 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					for(var b=1; b<=shippingMethodResponseBeansCount; b++) {
 
 						var methodResponse = thisResponseBean.getShippingMethodResponseBeans()[b];
-
+						
 						if(methodResponse.getShippingProviderMethod() == shippingMethodRate.getShippingIntegrationMethod()) {
 							var qualifiedRateOption = newQualifiedRateOption(
 								shippingMethodRate,
-								calculateShippingRateAdjustment(methodResponse.getTotalCharge(), shippingMethodRate)
+								calculateShippingRateAdjustment(methodResponse.getTotalCharge(), shippingMethodRate),
+								false, 
+								thisResponseBean
 							);
 							arrayAppend(qualifiedRateOptions, qualifiedRateOption);
 
 							break;
 						}
 					}
-				// If we should have gotten a response bean from the shipping integration but didn't then use the default amount
+				// If we should have gotten a response bean from the shipping integration but didn't then use the default amount if and only if
+				// we should be using this in the first place.
 				} else if (!isNull(shippingMethodRate.getDefaultAmount())) {
-					var qualifiedRateOption = newQualifiedRateOption(
+					
+					var priceGroups = [];
+					if(!isNull(arguments.orderFulfillment.getOrder().getAccount())){
+						priceGroups = arguments.orderFulfillment.getOrder().getAccount().getPriceGroups();
+					}
+					// check to make sure that this rate applies to the current orderFulfillment
+					if (isShippingMethodRateUsable(
 						shippingMethodRate,
-						nullReplace(shippingMethodRate.getDefaultAmount(), 0),
-						true
-					);
-					arrayAppend(qualifiedRateOptions, qualifiedRateOption);
+						arguments.orderFulfillment.getShippingAddress(), 
+						arguments.orderFulfillment.getTotalShippingWeight(), 
+						arguments.orderFulfillment.getSubtotalAfterDiscounts(), 
+						arguments.orderFulfillment.getTotalShippingQuantity(), 
+						priceGroups)){
+							
+							var qualifiedRateOption = newQualifiedRateOption(
+							shippingMethodRate,
+							nullReplace(shippingMethodRate.getDefaultAmount(), 0),
+							true);
+							arrayAppend(qualifiedRateOptions, qualifiedRateOption);
+					}
 				}
 			} 
 		}
+		
 		return qualifiedRateOptions;
 	}
 
@@ -227,7 +389,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		smsl.addFilter('activeFlag', '1');
 		smsl.addOrder("sortOrder|ASC");
 		var shippingMethods = smsl.getRecords();
-		
 		var integrations = getIntegrationsByOrderFulfillmentAndShippingMethods(arguments.orderFulfillment, shippingMethods);
 
 		// Loop over all of the shipping integrations and add thier rates response to the 'responseBeans' struct that is key'd by integrationID
@@ -287,17 +448,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// If this method already exists in the fulfillment, then just update it and set optionUpdated to true so that we don't create a new one
 				var fullfillmentShippingMethodOptionsCount = arrayLen(arguments.orderFulfillment.getFulfillmentShippingMethodOptions());
 				for(var e=1; e<=fullfillmentShippingMethodOptionsCount; e++) {
-					if(arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[e].getShippingMethodRate().getShippingMethod().getShippingMethodID() == rateToUse.shippingMethodRate.getShippingMethod().getShippingMethodID()) {
+					var fulfillmentShippingMethodOption = arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[e]; 
+					if(fulfillmentShippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodID() == rateToUse.shippingMethodRate.getShippingMethod().getShippingMethodID()) {
 						optionUpdated = true;
 
-						arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[e].setTotalCharge( rateToUse.totalCharge );
-						arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[e].setTotalShippingWeight( arguments.orderFulfillment.getTotalShippingWeight() );
-						arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[e].setTotalShippingItemPrice( arguments.orderFulfillment.getSubtotalAfterDiscounts() );
-						arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[e].setShipToPostalCode( arguments.orderFulfillment.getShippingAddress().getPostalCode() );
-						arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[e].setShipToStateCode( arguments.orderFulfillment.getShippingAddress().getStateCode() );
-						arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[e].setShipToCountryCode( arguments.orderFulfillment.getShippingAddress().getCountryCode() );
-						arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[e].setShipToCity( arguments.orderFulfillment.getShippingAddress().getCity() );
-						arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[e].setShippingMethodRate( rateToUse.shippingMethodRate );
+						if(structKeyExists(rateToUse, "responseBean") && rateToUse.responseBean.hasShippingMethodOptionSplitShipments()){
+							setShippingMethodOptionOnShippingMethodOptionSplitShipments(fulfillmentShippingMethodOption, rateToUse.responseBean.getShippingMethodOptionSplitShipments()); 
+						} 
+
+						fulfillmentShippingMethodOption.setTotalCharge( rateToUse.totalCharge );
+						fulfillmentShippingMethodOption.setTotalShippingWeight( arguments.orderFulfillment.getTotalShippingWeight() );
+						fulfillmentShippingMethodOption.setTotalShippingItemPrice( arguments.orderFulfillment.getSubtotalAfterDiscounts() );
+						fulfillmentShippingMethodOption.setShipToPostalCode( arguments.orderFulfillment.getShippingAddress().getPostalCode() );
+						fulfillmentShippingMethodOption.setShipToStateCode( arguments.orderFulfillment.getShippingAddress().getStateCode() );
+						fulfillmentShippingMethodOption.setShipToCountryCode( arguments.orderFulfillment.getShippingAddress().getCountryCode() );
+						fulfillmentShippingMethodOption.setShipToCity( arguments.orderFulfillment.getShippingAddress().getCity() );
+						fulfillmentShippingMethodOption.setShippingMethodRate( rateToUse.shippingMethodRate );
 					}
 				}
 
@@ -317,7 +483,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 					arguments.orderFulfillment.addFulfillmentShippingMethodOption( newOption );
 
-					getHibachiDAO().save(newOption);
+					var shippingMethodOption = this.saveShippingMethodOption(newOption);
+					
+					if(structKeyExists(rateToUse, "responseBean") && rateToUse.responseBean.hasShippingMethodOptionSplitShipments()){
+						this.setShippingMethodOptionOnShippingMethodOptionSplitShipments(shippingMethodOption, rateToUse.responseBean.getShippingMethodOptionSplitShipments()); 
+					}
 				}
 
 			}
@@ -338,14 +508,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				arguments.orderFulfillment.removeFulfillmentShippingMethodOption( arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[c] );
 
 			// Else if this method option is the same shipping method that the user previously selected, then we can just update the fulfillmentCharge, as long as this wasn't set manually.
-			} else if (!isNull(arguments.orderFulfillment.getShippingMethod()) && arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[c].getShippingMethodRate().getShippingMethod().getShippingMethodID() == arguments.orderFulfillment.getShippingMethod().getShippingMethodID() && !arguments.orderFulfillment.getManualFulfillmentChargeFlag()) {
+			} else if (!isNull(arguments.orderFulfillment.getShippingMethod()) && 
+					   arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[c].getShippingMethodRate().getShippingMethod().getShippingMethodID() == arguments.orderFulfillment.getShippingMethod().getShippingMethodID() && 
+					   !arguments.orderFulfillment.getManualFulfillmentChargeFlag()
+			) {
 				arguments.orderFulfillment.setFulfillmentCharge( arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[c].getTotalCharge() );
-
 			}
 		}
 
-		// Now if there is no method yet selected, and only one shippingMethod as an option, we can automatically just select it.
-		if(isNull(arguments.orderFulfillment.getShippingMethod()) && arrayLen(arguments.orderFulfillment.getFulfillmentShippingMethodOptions()) == 1) {
+		// Now if there is no method yet selected, and one shippingMethod exists as an option, we can automatically just select it.
+		if(isNull(arguments.orderFulfillment.getShippingMethod()) && arrayLen(arguments.orderFulfillment.getFulfillmentShippingMethodOptions()) >= 1) {
 
 			// Set the method
 			arguments.orderFulfillment.setShippingMethod( arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[1].getShippingMethodRate().getShippingMethod() );
@@ -356,6 +528,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 	}
+
+	public void function setShippingMethodOptionOnShippingMethodOptionSplitShipments(required any shippingMethodOption, required array shippingMethodOptionSplitShipments){
+		for(var j = 1; j <= ArrayLen(arguments.shippingMethodOptionSplitShipments); j++){ 
+			var shippingMethodOptionSplitShipment = arguments.shippingMethodOptionSplitShipments[j];
+			shippingMethodOptionSplitShipment.setShippingMethodOption(arguments.shippingMethodOption);
+			this.saveShippingMethodOptionSplitShipment(shippingMethodOptionSplitShipment);  
+		} 
+	} 
 
 	public boolean function verifyOrderFulfillmentShippingMethodRate(required any orderFulfillment) {
 
@@ -387,6 +567,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!isNull(shippingMethodRate.getActiveFlag()) && isBoolean(shippingMethodRate.getActiveFlag()) && !shippingMethodRate.getActiveFlag()) {
 			return false;
 		}
+
+		if(!isNull(shippingMethodRate.getSplitShipmentWeight())){
+			return true; 
+		} 
 
 		// Make sure that the orderFulfillment Item Price is within the min and max of rate
 		var lowerPrice = 0;
@@ -450,10 +634,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         		return false;
         	}
         }
+        
         // Make sure that the address is in the address zone
 		if(!isNull(arguments.shippingMethodRate.getAddressZone()) && !getAddressService().isAddressInZone(arguments.shipToAddress, arguments.shippingMethodRate.getAddressZone())) {
 			return false;
 		}
+		
 		// If we have not returned false by now, then return true
 		return true;
 	}
@@ -465,16 +651,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			switch(arguments.shippingMethodRate.setting('shippingMethodRateAdjustmentType')) {
 				case "increasePercentage":
-					returnAmount = precisionEvaluate(arguments.originalAmount + (arguments.originalAmount * shippingMethodRateAdjustmentAmount));
+					returnAmount = val(getService('HibachiUtilityService').precisionCalculate(arguments.originalAmount + (arguments.originalAmount * shippingMethodRateAdjustmentAmount)));
 					break;
 				case "decreasePercentage":
-					returnAmount = precisionEvaluate(arguments.originalAmount - (arguments.originalAmount * shippingMethodRateAdjustmentAmount));
+					returnAmount = val(getService('HibachiUtilityService').precisionCalculate(arguments.originalAmount - (arguments.originalAmount * shippingMethodRateAdjustmentAmount)));
 					break;
 				case "increaseAmount":
-					returnAmount = precisionEvaluate(arguments.originalAmount + shippingMethodRateAdjustmentAmount);
+					returnAmount = val(getService('HibachiUtilityService').precisionCalculate(arguments.originalAmount + shippingMethodRateAdjustmentAmount));
 					break;
 				case "decreaseAmount":
-					returnAmount = precisionEvaluate(arguments.originalAmount - shippingMethodRateAdjustmentAmount);
+					returnAmount = val(getService('HibachiUtilityService').precisionCalculate(arguments.originalAmount - shippingMethodRateAdjustmentAmount));
 					break;
 			}
 		}

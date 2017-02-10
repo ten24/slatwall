@@ -59,22 +59,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getSettingService().getSettingRecordExistsFlag(settingName="contentRestrictAccessFlag", settingValue=1);
 	}
 
-	public any function processContent_create(required any content, required any processObject){
-		// Call save on the content
-		arguments.content.setSite(arguments.processObject.getSite());
-		arguments.content.setParentContent(arguments.processObject.getParentContent());
-		if(
-			(isNull(arguments.data.urlTitle) || (!isNull(arguments.data.urlTitle) && !len(arguments.data.urlTitle)))
-			&& !isNull(arguments.content.getParentContent())
-		){
-			arguments.data.urlTitle = arguments.data.title;
-		}
-
-		arguments.data.urlTitle = getService("HibachiUtilityService").createSEOString(arguments.data.urlTitle);
-		arguments.content = this.saveContent(arguments.content,arguments.data);
-		return arguments.content;
-	}
-
 	public any function getCMSTemplateOptions(required any content){
 		var templateDirectory = arguments.content.getSite().getTemplatesPath();
 		if(directoryExists(templateDirectory)) {
@@ -109,13 +93,54 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function saveContent(required any content, struct data={}){
 		arguments.content = super.save(arguments.content, arguments.data);
+
+		if(structKeyExists(data, "assignedProductIDList")){
+			var contentExistingListingPages = arguments.content.getListingPages();
+			var pagesToDelete = [];
+			for(var page in contentExistingListingPages){
+				if(listFind(data.assignedProductIDList, page.getProduct().getProductID()) == 0){
+					ArrayAppend(pagesToDelete, page);
+				}
+			}
+
+			for(var page in pagesToDelete){
+				page.getProduct().removeListingPage(page);
+				arguments.content.removeListingPage(page);
+				this.getProductService().deleteProductListingPage(page);
+			}
+
+			var assignedProductIDArray = ListToArray(data.assignedProductIDList);
+
+			for(var productID in assignedProductIDArray){
+				if(!this.getContentDAO().getContentHasProduct(arguments.content.getContentID(),productID)){
+					var newListingPage = this.getProductService().newProductListingPage();
+					if(structKeyExists(data, "productListingPageSortOrder") && structKeyExists(deserializeJSON(data.productListingPageSortOrder),productID)){
+						newListingPage.setSortOrder = deserializeJSON(data.productListingPageSortOrder)[productID];
+					}
+					newListingPage.setContent(arguments.content);
+					newListingPage.setProduct(this.getProductService().getProduct(productID));
+					this.getProductService().saveProductListingPage(newListingPage);
+				}
+			}
+		}
+
+		if(structKeyExists(data, "productListingPageSortOrder")){
+			var productListingPageSortOrderStruct = deserializeJSON(data.productListingPageSortOrder);
+			for(var key in productListingPageSortOrderStruct){
+				var productListingPage = this.getProductService().getProductListingPage(key);
+				if(!isNull(productListingPage)){
+					productListingPage.setSortOrder(productListingPageSortOrderStruct[key]);
+					this.getProductService().saveProductListingPage(productListingPage);
+				}
+			}
+		}
 		if(!arguments.content.hasErrors()){
 			if(structKeyExists(arguments.data,'urlTitle')){
 				arguments.data.urlTitle = getService("HibachiUtilityService").createSEOString(arguments.data.urlTitle);
 				arguments.content.setUrlTitle(arguments.data.urlTitle);
 			}
 		}
-
+		arguments.content = super.save(arguments.content, arguments.data);
 		return arguments.content;
 	}
 
@@ -153,11 +178,27 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function getCategoryByCMSCategoryIDAndCMSSiteID( required string cmsCategoryID, required string cmsSiteID ) {
 		return getContentDAO().getCategoryByCMSCategoryIDAndCMSSiteID( argumentCollection=arguments );
 	}
-	
+
 	// ===================== END: DAO Passthrough ===========================
-	
+
 
 	// ===================== START: Process Methods ===========================
+
+	public any function processContent_create(required any content, required any processObject){
+		// Call save on the content
+		arguments.content.setSite(arguments.processObject.getSite());
+		arguments.content.setParentContent(arguments.processObject.getParentContent());
+		if(
+			(isNull(arguments.data.urlTitle) || (!isNull(arguments.data.urlTitle) && !len(arguments.data.urlTitle)))
+			&& !isNull(arguments.content.getParentContent())
+		){
+			arguments.data.urlTitle = arguments.data.title;
+		}
+
+		arguments.data.urlTitle = getService("HibachiUtilityService").createSEOString(arguments.data.urlTitle);
+		arguments.content = this.saveContent(arguments.content,arguments.data);
+		return arguments.content;
+	}
 
 	public any function processContent_CreateSku(required any content, required any processObject) {
 
@@ -208,6 +249,34 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.content;
 	}
 
+	public any function processContent_duplicateContent(required any content, required any processObject){
+		
+		arguments.processObject.setNewContent(arguments.content.duplicate(onlyPersistent=true));
+		var data = {};
+		data['title']=arguments.processObject.getTitle();
+		data['urlTitle']=arguments.processObject.getUrlTitle();
+		this.saveContent(arguments.processObject.getNewContent(),data);
+		//get all settings that exist on the object
+		var settingCollectionList = this.getSettingCollectionList();
+		settingCollectionList.addFilter('content.contentID',arguments.content.getContentID());
+		var settingsData = settingCollectionList.getRecords();
+		
+		for(var settingData in settingsData){
+			var contentSetting = getService("settingService").newSetting();
+			contentSetting.setSettingName( settingData['settingName'] );
+			contentSetting.setSettingValue( settingData['settingValue'] );
+			contentSetting.setContent( arguments.processObject.getNewContent() );
+			getService("settingService").saveSetting( contentSetting );
+		}
+		
+		//Copy Content Attribtes
+		for(var attributeValue in arguments.content.getAttributeValues()) {
+			arguments.processObject.getNewContent().setAttributeValue( attributeValue.getAttribute().getAttributeCode(), attributeValue.getAttributeValue() );
+		}
+		
+		return arguments.processObject.getNewContent();
+	}
+
 	// =====================  END: Process Methods ============================
 
 	// ====================== START: Save Overrides ===========================
@@ -235,6 +304,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		return false;
+	}
+
+	public void function deleteCategoryByCMSCategoryID(required string cmsCategoryID){
+		getContentDao().deleteCategoryByCMSCategoryID(argumentCollection=arguments);
 	}
 
 	// =====================  END: Delete Overrides ===========================

@@ -64,6 +64,7 @@ component entityname="SlatwallShippingMethodOption" table="SwShippingMethodOptio
 	property name="orderFulfillment" cfc="OrderFulfillment" fieldtype="many-to-one" fkcolumn="orderFulfillmentID";
 
 	// Related Object Properties (one-to-many)
+	property name="shippingMethodOptionSplitShipments" singularname="shippingMethodOptionSplitShipment" cfc="ShippingMethodOptionSplitShipment" fieldtype="one-to-many" fkcolumn="shippingMethodOptionID"; 
 
 	// Related Object Properties (many-to-many - owner)
 
@@ -89,7 +90,7 @@ component entityname="SlatwallShippingMethodOption" table="SwShippingMethodOptio
 	}
 
 	public numeric function getTotalChargeAfterDiscount() {
-		return precisionEvaluate(getTotalCharge() - getDiscountAmount());
+return getService('HibachiUtilityService').precisionCalculate(getTotalCharge() - getDiscountAmount());
 	}
 
 	// ============ START: Non-Persistent Property Methods =================
@@ -116,6 +117,13 @@ component entityname="SlatwallShippingMethodOption" table="SwShippingMethodOptio
 		structDelete(variables, "orderFulfillment");
 	}
 
+	// Shipping Method Option Split Shipment (one-to-many)
+	public void function addShippingMethodOptionSplitShipment(required any shippingMethodOptionSplitShipment) {
+		arguments.shippingMethodOptionSplitShipment.setOrderFulfillment( this );
+	}
+	public void function removeShippingMethodOptionSplitShipment(required any shippingMethodOptionSplitShipment) {
+		arguments.shippingMethodOptionSplitShipment.removeOrderFulfillment( this );
+	}
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// =============== START: Custom Validation Methods ====================

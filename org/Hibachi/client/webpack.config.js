@@ -80,5 +80,5 @@ appConfig
     .addVendor('angularjs-datetime-picker','angularjs-datetime-picker/angularjs-datetime-picker.js')
     
     
-;
+; 
 module.exports = appConfig;

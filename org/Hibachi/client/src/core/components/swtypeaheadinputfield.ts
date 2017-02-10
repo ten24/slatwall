@@ -4,8 +4,8 @@
 
 class SWTypeaheadInputFieldController {
     
-    public fieldName; 
-    public entityName;
+    public fieldName:string; 
+    public entityName:string;
     public typeaheadCollectionConfig; 
     public modelValue; 
     public columns = []; 
@@ -13,40 +13,38 @@ class SWTypeaheadInputFieldController {
     public propertiesToLoad; 
     public placeholderRbKey;
     public propertyToSave;
-    public allRecords;
-    public maxRecords; 
     public propertyToShow;
+    public initialEntityId:string; 
+    public searchText:string;
+    public validateRequired:boolean;
+    private collectionConfig;
     
     // @ngInject
-	constructor(private $scope, 
-                private $q, 
-                private $transclude, 
-                private $hibachi, 
-                private $timeout:ng.ITimeoutService, 
-                private utilityService, 
+	constructor(private $scope,
+                private $transclude,
                 private collectionConfigService
     ){
         
-        if(angular.isUndefined(this.allRecords)){
-            this.allRecords = false; 
+        
+        if( angular.isUndefined(this.typeaheadCollectionConfig)){
+            if(angular.isDefined(this.entityName)){
+                this.typeaheadCollectionConfig = collectionConfigService.newCollectionConfig(this.entityName);
+            } else {
+                throw("You did not pass the correct collection config data to swTypeaheadInputField");
+            }
         }
         
-        if(angular.isUndefined(this.maxRecords)){
-            this.maxRecords = 100; 
+        if(angular.isUndefined(this.validateRequired)){
+            this.validateRequired = false;
         }
-        
-        if(angular.isUndefined(this.entityName)){
-            throw("The typeahead input field directive requires an entity name.");
-        }
+
+        //get the collection config
+        this.$transclude($scope,()=>{});
+
         if(angular.isUndefined(this.propertyToSave)){
             throw("You must select a property to save for the input field directive")
         }
-               
-        this.typeaheadCollectionConfig = collectionConfigService.newCollectionConfig(this.entityName); 
-        
-        //populate the display list
-        this.$transclude($scope,()=>{});
-           
+
         if(angular.isDefined(this.propertiesToLoad)){
             this.typeaheadCollectionConfig.addDisplayProperty(this.propertiesToLoad);
         }
@@ -58,6 +56,10 @@ class SWTypeaheadInputFieldController {
         angular.forEach(this.filters, (filter)=>{
                 this.typeaheadCollectionConfig.addFilter(filter.propertyIdentifier, filter.comparisonValue, filter.comparisonOperator, filter.logicalOperator, filter.hidden);
         }); 
+        
+        if(angular.isDefined(this.initialEntityId) && this.initialEntityId.length){
+            this.modelValue = this.initialEntityId;
+        }
     }
     
     public addFunction = (value:any) => {
@@ -72,17 +74,19 @@ class SWTypeaheadInputField implements ng.IDirective{
     public transclude=true; 
 	public restrict = "EA";
 	public scope = {};
-    public priority = 100;
 
 	public bindToController = {
         fieldName:"@",
         entityName:"@",
-        allRecords:"=?",
-        maxRecords:"@",
+        typeaheadCollectionConfig:"=?",
         propertiesToLoad:"@?",
         placeholderRbKey:"@?",
         propertyToShow:"@",
-        propertyToSave:"@"
+        propertyToSave:"@",
+        initialEntityId:"@",
+        allRecords:"=?",
+        validateRequired:"=?", 
+        maxRecords:"@"
 	};
 	public controller=SWTypeaheadInputFieldController;
 	public controllerAs="swTypeaheadInputField";

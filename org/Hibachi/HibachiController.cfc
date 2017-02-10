@@ -5,7 +5,6 @@ component output="false" accessors="true" extends="HibachiObject" {
 	this.publicMethods = "";
 	this.anyAdminMethods = "";
 	this.anyLoginMethods = "";
-	this.publicMethods = "";
 	this.secureMethods = "";
 	this.entityController = false;
 	this.restController = false;

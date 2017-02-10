@@ -114,6 +114,14 @@ component persistent="false" extends="HibachiService" output="false" accessors="
         }
         return resizedImagePaths;
     }
+    
+    public string function getProductImagePathByImageFile(required string imageFile) {
+   	 	return "#getHibachiScope().getBaseImageURL()#/product/default/#arguments.imageFile#";
+    }
+    
+    public string function getImagePathByImageFileAndDirectory(required string imageFile, required string directory){
+		return "#getHibachiScope().getBaseImageURL()#/#arguments.directory#/#arguments.imageFile#";
+	}
 
 	// Image File Methods
 	public string function getResizedImagePath(required string imagePath, numeric width, numeric height, string resizeMethod="scale", string cropLocation="center", numeric cropX, numeric cropY, numeric scaleWidth, numeric scaleHeight, string missingImagePath, string canvasColor="") {
@@ -124,7 +132,7 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 			//look if the path was supplied
 			if(structKeyExists(arguments, "missingImagePath") && fileExists(expandPath(arguments.missingImagePath))) {
 			
-				arguments.imagePath = arguments.missingImagePath;
+				arguments.imagePath = "#getApplicationValue('baseURL')##arguments.missingImagePath#";
 				
 		    //look if this has been supplied at the site level.
 			} else if (!isNull(getService('siteService').getCurrentRequestSite()) && !isNull(getService('siteService').getCurrentRequestSite().setting('siteMissingImagePath'))) {
@@ -136,10 +144,10 @@ component persistent="false" extends="HibachiService" output="false" accessors="
                
                 arguments.imagePath = "#getApplicationValue('baseURL')#/custom/assets/images/missingimage.jpg";
                 
-			//check the global location
-			} else if ( fileExists(expandPath(getHibachiScope().setting('globalMissingImagePath'))) ) {
+            //Check settings location
+			}else if( fileExists(expandPath(getHibachiScope().setting('imageMissingImagePath'))) ){
                
-                arguments.imagePath = getHibachiScope().setting('globalMissingImagePath');
+				arguments.imagePath = "#getApplicationValue('baseURL')##getHibachiScope().setting('imageMissingImagePath')#";			
             
             //check the default location
             } else {

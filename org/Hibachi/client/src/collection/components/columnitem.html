@@ -1,17 +1,25 @@
 
   <div class="row" ng-if="column">
-    <div class="col-xs-5 s-pannel-name" j-column-index="{{columnIndex}}" data-test="$index">
+    <div class="col-xs-5 col-md-8 s-pannel-name" j-column-index="{{columnIndex}}" data-test="$index">
       <span ng-bind="columnIndex + 1"></span>
       <i class="fa fa-arrows-v"></i>
-      <span class="s-pannel-title" title="{{column.title}}" ng-bind="column.displayTitle || column.title"></span>
-      <a class="s-pannel-title-edit" ng-click="editDisplayTitle()">edit</a>
-      <span class="s-title-edit-menu" ng-show="editingDisplayTitle">
-          <input type="text" class="form-control" ng-model="column.displayTitle">
-          <button ng-click="saveDisplayTitle()" type="button" class="btn btn-xs btn-primary s-save-btn">Save</button>
-          <button ng-click="cancelDisplayTitle()" type="button" class="btn btn-xs btn-default s-cancel-btn">Cancel</button>
+      <div class="s-title-wrapper">
+          <span class="s-edit-mode" ng-show="editingDisplayTitle">
+              <input type="text" class="form-control input-sm" ng-model="column.displayTitle">
+              <span class="s-controlls">
+                  <a href="#" ng-click="saveDisplayTitle()" type="button" class="btn btn-xs btn-primary s-save-btn">Save</a>
+                  <a href="#" ng-click="cancelDisplayTitle()" type="button" class="btn btn-xs btn-default s-cancel-btn">Cancel</a>
+              </span>
+          </span>
+          <span class="s-view-mode" ng-show="!editingDisplayTitle">
+              <span class="s-pannel-title" title="{{column.title}}" ng-bind="(column.displayTitle || column.title) | pretruncate:140:true"></span>
+              <span class="s-controlls">
+                  <a href="#" class="s-pannel-title-edit" ng-click="editDisplayTitle()">edit</a>
+              </span>      
       </span>
     </div>
-    <div class="col-xs-7 s-pannel-body">
+    </div>
+    <div class="col-xs-7 col-md-4 s-pannel-body">
 
       <div class="btn-group">
        <span class="s-sort-num">

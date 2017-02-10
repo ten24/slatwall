@@ -63,6 +63,7 @@ Notes:
 		<swa:SlatwallSetting settingName="skuEligibleOrderOrigins" />
 		<swa:SlatwallSetting settingName="skuEligiblePaymentMethods" />
 		<swa:SlatwallSetting settingName="skuEmailFulfillmentTemplate" />
+		<swa:SlatwallSetting settingName="skuEventEnforceConflicts" />
 		<swa:SlatwallSetting settingName="skuGiftCardEmailFulfillmentTemplate" />
 		<swa:SlatwallSetting settingName="skuGiftCardAutoGenerateCode" />
 		<swa:SlatwallSetting settingName="skuGiftCardCodeLength" />
@@ -70,6 +71,7 @@ Notes:
 		<swa:SlatwallSetting settingName="skuHoldBackQuantity" />
 		<swa:SlatwallSetting settingName="skuOrderMinimumQuantity" />
 		<swa:SlatwallSetting settingName="skuOrderMaximumQuantity" />
+		<swa:SlatwallSetting settingName="skuMinimumPercentageAmountRecievedRequiredToPlaceOrder" />
 		<swa:SlatwallSetting settingName="skuRegistrationApprovalRequiredFlag" />
 		<swa:SlatwallSetting settingName="skuShippingWeight" />
 		<swa:SlatwallSetting settingName="skuShippingWeightUnitCode" />

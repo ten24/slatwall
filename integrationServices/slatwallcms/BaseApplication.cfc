@@ -58,7 +58,7 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 	this.mappings[ "/Slatwall" ] = replace(replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all"), "/meta/sample/", "");
 
 	this.ormEnabled = true;
-	this.ormSettings.cfclocation = ["/Slatwall/model/entity","/Slatwall/integrationServices"];
+	this.ormSettings.cfclocation = ["/Slatwall/model/entity"];
 	this.ormSettings.dbcreate = "update";
 	this.ormSettings.flushAtRequestEnd = false;
 	this.ormsettings.eventhandling = true;
@@ -106,33 +106,42 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 		var contentPath = '';
 		var templateBody = '';
 		if(!isNull(site.getResetSettingCache()) && site.getResetSettingCache()){
-			arguments.slatwallScope.getService('hibachiCacheService').resetCachedByPrefix('content');	
-			var cacheList = "globalURLKeyBrand,
+			arguments.slatwallScope.getService('HibachiCacheService').resetCachedKeyByPrefix('content');
+			var cacheList = 
+			   "globalURLKeyBrand,
 				globalURLKeyProduct,
 				globalURLKeyProductType,
+				globalURLKeyAccount,
+				globalURLKeyAddress,
+				
 				productDisplayTemplate,
 				productTypeDisplayTemplate,
-				brandDisplayTemplate"
+				brandDisplayTemplate,
+				accountDisplayTemplate,
+				addressDisplayTemplate"
 			;
 			var cacheArray = listToArray(cacheList);
 			for(var cacheItem in cacheArray){
-				arguments.slatwallScope.getService('hibachiCacheService').resetCachedKey(cache);
+				arguments.slatwallScope.getService('HibachiCacheService').resetCachedKey(cacheItem);
 			}
 			site.setResetSettingCache(false);
 		}
-		
-		
+
+
 		if(!isNull(arguments.entityURL)){
 			var isBrandURLKey = arguments.slatwallScope.setting('globalURLKeyBrand') == arguments.entityURL;
 			var isProductURLKey = arguments.slatwallScope.setting('globalURLKeyProduct') == arguments.entityURL;
 			var isProductTypeURLKey = arguments.slatwallScope.setting('globalURLKeyProductType') == arguments.entityURL;
+			var isAddressURLKey = arguments.slatwallScope.setting('globalURLKeyAddress') == arguments.entityURL;
+			var isAccountURLKey = arguments.slatwallScope.setting('globalURLKeyAccount') == arguments.entityURL;
+			
 			var entityName = '';
 
 			// First look for the Brand URL Key
 			if (isBrandURLKey) {
 				var brand = arguments.slatwallScope.getService("brandService").getBrandByURLTitle(arguments.contenturlTitlePath, true);
 				if(isNull(brand)){
-					content = render404(arguments.slatwallScope,site);
+					var content = render404(arguments.slatwallScope,site);
 				}
 				arguments.slatwallScope.setBrand( brand );
 				entityName = 'brand';
@@ -142,7 +151,7 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 			if(isProductURLKey) {
 				var product = arguments.slatwallScope.getService("productService").getProductByURLTitle(arguments.contenturlTitlePath, true);
 				if(isNull(product)){
-					content = render404(arguments.slatwallScope,site);
+					var content = render404(arguments.slatwallScope, site);
 				}
 				arguments.slatwallScope.setProduct( product );
 				entityName = 'product';
@@ -152,13 +161,32 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 			if (isProductTypeURLKey) {
 				var productType = arguments.slatwallScope.getService("productService").getProductTypeByURLTitle(arguments.contenturlTitle, true);
 				if(isNull(productType)){
-					content = render404(arguments.slatwallScope,site);
+					var content = render404(arguments.slatwallScope, site);
 				}
 				arguments.slatwallScope.setProductType( productType );
 				entityName = 'productType';
 			}
+			// Look for the Address URL Key
+			if (isAddressURLKey) {
+				var address = arguments.slatwallScope.getService("addressService").getAddressByURLTitle(arguments.contenturlTitle, true);
+				if(isNull(address)){
+					var content = render404(arguments.slatwallScope, site);
+				}
+				arguments.slatwallScope.setRouteEntity( "address", address );
+				entityName = 'address';
+			}
+			// Look for the Address URL Key
+			if (isAccountURLKey) {
+				var account = arguments.slatwallScope.getService("accountService").getAccountByURLTitle(arguments.contenturlTitle, true);
+				if(isNull(account)){
+					var content = render404(arguments.slatwallScope, site);
+				}
+				arguments.slatwallScope.setRouteEntity(  "account", account );
+				entityName = 'account';
+			}
+			
 			var entityDisplayTemplateSetting = arguments.slatwallScope.invokeMethod('get#entityName#').setting('#entityName#DisplayTemplate', [site]);
-			var entityTemplateContent = arguments.slatwallScope.getService("contentService").getContent( entityDisplayTemplateSetting );;
+			var entityTemplateContent = arguments.slatwallScope.getService("contentService").getContent( entityDisplayTemplateSetting );
 			if(!isnull(entityTemplateContent)){
 				arguments.slatwallScope.setContent( entityTemplateContent );
 				var contentTemplateFile = entityTemplateContent.setting('contentTemplateFile',[entityTemplateContent]);
@@ -186,7 +214,7 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 			}
 
 			if(isNull(content)){
-				content = render404(arguments.slatwallScope,site);
+				var content = render404(arguments.slatwallScope,site);
 				//throw('content does not exists for #arguments.contenturlTitlePath#');
 			}
 			//now that we have the content, get the file name so that we can retrieve it form the site's template directory
@@ -200,13 +228,68 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 		savecontent variable="local.templateData"{
 			include "#contentPath#";
 		}
-		templateBody = arguments.slatwallScope.getService('hibachiUtilityService').replaceStringTemplate(arguments.slatwallScope.getService('hibachiUtilityService').replaceStringEvaluateTemplate(templateData),arguments.slatwallScope.getContent());
-
+		templateBody = arguments.slatwallScope.getService('hibachiUtilityService').replaceStringTemplate(templateData,arguments.slatwallScope.getContent());
+		templateBody = arguments.slatwallScope.getService('hibachiUtilityService').replaceStringEvaluateTemplate(template=templateBody,object=this);
 		writeOutput(templateBody);
 		abort;
 	}
 
+	function checkForRewrite(required any slatwallScope, required any site){
+		//overrride is intended to handle IIS redirects
+		var rewriteConfigPath = arguments.site.getSitePath() &'config/rewritemaps.json';
+		if(fileExists(rewriteConfigPath)){
+			
+			if ( len( getContextRoot() ) ) {
+				var cgiScriptName = replace( CGI.SCRIPT_NAME, getContextRoot(), '' );
+				var cgiPathInfo = replace( CGI.PATH_INFO, getContextRoot(), '' );
+			} else {
+				var cgiScriptName = CGI.SCRIPT_NAME;
+				var cgiPathInfo = CGI.PATH_INFO;
+			}
+			var pathInfo = cgiPathInfo;
+			 if ( len( pathInfo ) > len( cgiScriptName ) && left( pathInfo, len( cgiScriptName ) ) == cgiScriptName ) {
+	            // canonicalize for IIS:
+	            pathInfo = right( pathInfo, len( pathInfo ) - len( cgiScriptName ) );
+	        } else if ( len( pathInfo ) > 0 && pathInfo == left( cgiScriptName, len( pathInfo ) ) ) {
+	            // pathInfo is bogus so ignore it:
+	            pathInfo = '';
+	        }
+	        //take path and  parse it
+	        var pathArray = listToArray(pathInfo,'/');
+	        var pathArrayLen = arrayLen(pathArray);
+	
+	        var urlTitlePathStartPosition = 1;
+    		
+    		arguments.contenturlTitlePath = '';
+    		for(var i = 1;i <= arraylen(pathArray);i++){
+    			if(i == arrayLen(pathArray)){
+    				arguments.contenturlTitlePath &= pathArray[i];
+    			}else{
+    				arguments.contenturlTitlePath &= pathArray[i] & '/';
+    			}
+    		}
+			
+			var rewriteFileContent = fileRead(rewriteConfigPath);
+			var redirectableList = {};
+			if(isJSON(rewriteFileContent)){
+				redirectableList = deserializeJson(rewriteFileContent);	
+			}else{
+				throw('file must be json');
+			}
+			var key = '/'&arguments.contenturlTitlePath;
+			if(structKeyExists(redirectableList,'/'&arguments.contenturlTitlePath)){
+				
+				location(redirectableList[key],false,302);
+				
+			}
+			
+		}
+	}
+	
 	function render404(required any slatwallScope, required any site){
+		
+		checkForRewrite(argumentCollection=arguments);
+		
 		var context = getPageContext();
 		context.getOut().clearBuffer();
 		var response = context.getResponse();
@@ -255,17 +338,13 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 
 	public string function dspForm(
 		required string formCode,
-		string sRedirectUrl
+		string sRedirectUrl="/"
 	){
 		request.context.newFormResponse = getHibachiScope().getService('formService').newFormResponse();
 		request.context.requestedForm = getHibachiScope().getService('formService').getFormByFormCode(arguments.formCode);
 		var currentSite = getHibachiScope().getService('siteService').getCurrentRequestSite();
 		var specificFormTemplateFileName = "form_"  & formCode & ".cfm";
 		var defaultFormTemplateFileName = "slatwall-form.cfm";
-
-		if(!structKeyExists(arguments, "sRedirectUrl")){
-			arguments.sRedirectUrl = "/";
-		}
 
 		var specificFormTemplateFilePath =  currentSite.getTemplatesPath() & specificFormTemplateFileName;
 		var baseTemplatePath = currentSite.getApp().getAppRootPath() & "/" & currentSite.getSiteCode() & "/templates/";
@@ -276,7 +355,7 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 			var templatePath = baseTemplatePath & defaultFormTemplateFileName;
 		}
 
-		savecontent variable="formHTML"{
+		savecontent variable="local.formHTML"{
 			include templatePath;
 		};
 
@@ -358,7 +437,7 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 			arguments.content
 		);
 
-		link='<a href="/#href#"#iif(len(arguments.target) and arguments.target neq '_self',de(' target="#arguments.target#"'),de(""))##iif(len(theClass),de(' class="#theClass#"'),de(""))##iif(len(arguments.navId),de(' id="#arguments.navId#"'),de(""))##iif(arguments.showCurrent,de(' #replace(arguments.aActiveAttributes,"##","####","all")#'),de(""))##iif(arguments.content.hasChildContent() and len(arguments.aKidsAttributes),de(' #replace(arguments.aKidsAttributes,"##","####","all")#'),de(""))#>#HTMLEditFormat(arguments.title)#</a>';
+		link='<a href="/#href#"#getHibachiScope().getService('hibachiUtilityService').hibachiTernary(len(arguments.target) and arguments.target neq '_self',' target="#arguments.target#"',"")##getHibachiScope().getService('hibachiUtilityService').hibachiTernary(len(theClass),' class="#theClass#"',"")##getHibachiScope().getService('hibachiUtilityService').hibachiTernary(len(arguments.navId),' id="#arguments.navId#"',"")##getHibachiScope().getService('hibachiUtilityService').hibachiTernary(arguments.showCurrent,' #replace(arguments.aActiveAttributes,"##","####","all")#',"")##getHibachiScope().getService('hibachiUtilityService').hibachiTernary(arguments.content.hasChildContent() and len(arguments.aKidsAttributes),' #replace(arguments.aKidsAttributes,"##","####","all")#',"")#>#HTMLEditFormat(arguments.title)#</a>';
 		return link;
 	}
 

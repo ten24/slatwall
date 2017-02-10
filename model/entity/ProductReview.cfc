@@ -195,6 +195,11 @@ component displayname="Product Review" entityname="SlatwallProductReview" table=
 	public string function getSimpleRepresentationPropertyName() {
 		return "reviewTitle";
 	}
+	
+	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,remoteID,remoteEmployeeID,remoteCustomerID,remoteContactID,cmsAccountID,cmsContentID,cmsSiteID"){
+		
+		return super.getDefaultCollectionProperties(argumentCollection=arguments);
+	}
 
 	// ==================  END:  Overridden Methods ========================
 

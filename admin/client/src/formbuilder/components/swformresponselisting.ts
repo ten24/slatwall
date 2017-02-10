@@ -7,13 +7,18 @@ class SWFormResponseListingController {
     private columns; 
     private pageRecords; 
     private paginator; 
+    private dateFilter; 
     
     //@ngInject
     constructor(
+        private $filter,
         private $http,
         private $hibachi,
-        private paginationService
+        private paginationService,
+        private requestService
     ){
+        
+        this.dateFilter = $filter("dateFilter");
         this.init();
     }
     
@@ -21,6 +26,7 @@ class SWFormResponseListingController {
         if(angular.isUndefined(this.formId)){
             throw("Form ID is required for swFormResponseListing");
         }
+
         
         this.paginator = this.paginationService.createPagination();
         this.paginator.getCollection = this.updateFormResponses;
@@ -29,14 +35,20 @@ class SWFormResponseListingController {
     }
     
     export = () => {
-        $('body').append('<form action="' 
-              + this.$hibachi.getUrlWithActionPrefix() 
-              + 'api:main.exportformresponses&formID=' + this.formId  
-              + '" method="post" id="formExport"></form>');
-              
-        $('#formExport')
-            .submit()
-            .remove();
+        var exportFormResponseRequest = this.requestService.newAdminRequest(
+            this.$hibachi.getUrlWithActionPrefix() + 'api:main.exportformresponses&formID=' + this.formId,
+            {},
+            'GET'
+        ); 
+
+        exportFormResponseRequest.promise.then((response)=>{
+            var anchor = angular.element('<a/>');
+            anchor.attr({
+                href: 'data:attachment/csv;charset=utf-8,' + encodeURI(response),
+                target: '_blank',
+                download: 'formresponses' + this.formId + '.csv'
+            })[0].click();
+        });
     }
     
     updateFormResponses = () => {
@@ -59,6 +71,11 @@ class SWFormResponseListingController {
             this.paginator.totalPages = response.data.totalPages;
             this.paginator.pageStart = response.data.pageRecordsStart; 
             this.paginator.pageEnd = response.data.pageRecordsEnd;
+            for(var i = 0; i < this.pageRecords.length; i++){
+                if(angular.isDefined(this.pageRecords[i].createdDateTime)){
+                    this.pageRecords[i].createdDateTime = this.dateFilter(this.pageRecords[i].createdDateTime,"MMM dd, yyyy - hh:mm a");
+                }
+            }
         }, (response)=>{
             throw("There was a problem collecting the form responses");
         });

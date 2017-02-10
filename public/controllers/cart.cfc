@@ -142,11 +142,20 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			getHibachiScope().getSession().setOrder( cart );
 
 			// Make sure that the session is persisted
-			getHibachiSessionService().persistSession();
+			getHibachiSessionService().persistSession(updateLoginCookies=true);
 
 		}
 	}
-
+	
+ 	// Add Order Items
+  	public void function addOrderItems(required any rc) {
+  		param name="data.skuIds" default="";
+      	param name="data.skuCodes" default="";
+  		
+  		getService("PublicService").addOrderItems(rc);
+  		
+  	}
+ 	
 	// Guest Account
 	public void function guestAccount(required any rc) {
 		param name="arguments.rc.createAuthenticationFlag" default="0";

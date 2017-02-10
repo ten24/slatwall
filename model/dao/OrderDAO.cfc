@@ -133,15 +133,14 @@ Notes:
 
 	<cffunction name="getGiftCardOrderPaymentAmount" access="public" returntype="numeric" output="false">
 
-		<cfargument name="referencedOrderID" required="true">
+		<cfargument name="orderID" required="true">
 
 		<cfquery name="local.giftCardOrderPayment">
-			SELECT SUM(gct.debitAmount) amount FROM SwGiftCardTransaction gct
-			    LEFT JOIN SwOrderPayment op on gct.orderPaymentID=op.orderPaymentID
+			SELECT SUM(op.amount) amount FROM SwOrderPayment op
 			WHERE
 				op.paymentMethodID=<cfqueryparam cfsqltype="cf_sql_varchar" value="50d8cd61009931554764385482347f3a" />
 			AND
-				op.orderID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.referencedOrderID#" />
+				op.orderID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
 		</cfquery>
 		<cfif local.giftCardOrderPayment.amount[1] eq "">
 			<cfreturn 0 />
@@ -150,6 +149,25 @@ Notes:
 
 	</cffunction>
 
+	<cffunction name="getGiftCardOrderPaymentAmountReceived">
+        <cfargument name="orderID" required="true"> 
+
+        <cfquery name="local.giftCardOrderPaymentAmountReceived">
+            SELECT SUM(pt.amountReceived) amountReceived FROM SwPaymentTransaction pt
+            LEFT JOIN SwOrderPayment op on pt.orderPaymentID=op.orderPaymentID
+            LEFT JOIN SwOrder o on o.orderID=op.orderID
+            WHERE
+                op.paymentMethodID=<cfqueryparam cfsqltype="cf_sql_varchar" value="50d8cd61009931554764385482347f3a">
+            AND
+                o.orderID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#">
+        </cfquery>
+        <cfif local.giftCardOrderPaymentAmountReceived.amountReceived[1] eq "">
+            <cfreturn 0 />
+        </cfif> 
+        <cfreturn local.giftCardOrderPaymentAmountReceived.amountReceived[1] /> 
+
+	</cffunction>
+	
 	<cffunction name="getOrderPaymentNonNullAmountTotal" access="public" returntype="numeric" output="false">
 		<cfargument name="orderID" type="string" required="true" />
 
@@ -174,9 +192,9 @@ Notes:
 
 		<cfloop query="rs">
 			<cfif rs.systemCode eq "optCharge">
-				<cfset total = precisionEvaluate(total + rs.amount) />
+				<cfset total = getService('HibachiUtilityService').precisionCalculate(total + rs.amount) />
 			<cfelse>
-				<cfset total = precisionEvaluate(total - rs.amount) />
+				<cfset total = getService('HibachiUtilityService').precisionCalculate(total - rs.amount) />
 			</cfif>
 		</cfloop>
 

@@ -1,0 +1,7 @@
+{
+    "properties":{
+		"emailTo":	[{"contexts":"save","required":true,"dataType":"email"}],
+		"formCode":	[{"contexts":"save","required":true,"unique":true,"regex":"^[a-zA-Z0-9-_.|:~^]+$"}], 
+		"formName":	[{"contexts":"save","required":true}]
+	}
+}

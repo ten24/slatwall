@@ -110,9 +110,11 @@ class HibachiInterceptor implements IInterceptor{
         if(config.url.charAt(0) !== '/'){
             return config;
         }
-        if(config.method == 'GET' && config.url.indexOf('.html') > 0 && config.url.indexOf('admin/client/partials') > 0) {
+
+        if(config.method == 'GET' && config.url.indexOf('.html') >= 0 && config.url.indexOf('/') >= 0)  {
             //all partials are bound to instantiation key
-            config.url = config.url + '?instantiationKey='+$.hibachi.getConfig().instantiationKey;
+            config.url = config.url + '?instantiationKey='+this.appConfig.instantiationKey;
+
             return config;
         }
         config.cache = true;
@@ -174,11 +176,11 @@ class HibachiInterceptor implements IInterceptor{
 					//open dialog
 					this.dialogService.addPageDialog(this.hibachiPathBuilder.buildPartialsPath('preprocesslogin'),{} );
 				}else if(rejection.data.messages[0].message === 'invalid_token'){
-                    return $http.get(this.baseUrl+'/index.cfm/api/auth/login').then((loginResponse:IHibachiInterceptorPromise<any>)=>{
+                    return $http.get(this.baseUrl+'?slataction=api:main.login').then((loginResponse:IHibachiInterceptorPromise<any>)=>{
                         if(loginResponse.status === 200){
-                        this.localStorageService.setItem('token',loginResponse.data.token);
+                            this.localStorageService.setItem('token',loginResponse.data.token);
                             rejection.config.headers = rejection.config.headers || {};
-                            rejection.config.headers['Auth-Token'] = 'Bearer ' + this.localStorageService.getItem('token');
+                            rejection.config.headers['Auth-Token'] = 'Bearer ' + loginResponse.data.token;
                             return $http(rejection.config).then(function(response) {
                                return response;
                             });

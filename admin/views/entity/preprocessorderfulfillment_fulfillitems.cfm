@@ -72,8 +72,11 @@ Notes:
 				</cfif>
 
 				<!--- Location --->
-				<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('entity.location')#" fieldName="location.locationID" valueOptions="#$.slatwall.getService('locationService').getLocationOptions()#" fieldType="select" edit="true" />
-
+				<cfif rc.orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "pickup">
+					<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="pickupLocation" fieldName="location.locationID" edit="#rc.edit#">
+				<cfelse>
+					<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('entity.location')#" fieldName="location.locationID" valueOptions="#$.slatwall.getService('locationService').getLocationOptions()#" fieldType="select" edit="true" />
+				</cfif>
 				<hr />
 
 				<!--- Items Selector --->
@@ -100,7 +103,7 @@ Notes:
 							<td>#orderItem.getQuantity()#</td>
 							<td>#orderItem.getQuantityUndelivered()#</td>
 							<td>#orderItem.getQuantityDelivered()#</td>
-							<td><input type="text" name="orderDeliveryItems[#orderItemIndex#].quantity" value="" class="span1" /></td>
+							<td><input type="text" name="orderDeliveryItems[#orderItemIndex#].quantity" value="0" class="span1" /></td>
 						</tr>
 					</cfloop>
 				</table>

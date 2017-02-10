@@ -10,6 +10,7 @@ import {optiongroupmodule} from "../optiongroup/optiongroup.module";
 import {orderitemmodule} from "../orderitem/orderitem.module";
 import {productmodule} from "../product/product.module";
 import {productbundlemodule} from "../productbundle/productbundle.module";
+import {skumodule} from "../sku/sku.module";
 
 //constant
 import {SlatwallPathBuilder} from "./services/slatwallpathbuilder";
@@ -34,6 +35,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
   orderitemmodule.name,
   productmodule.name,
   productbundlemodule.name,
+  skumodule.name, 
   workflowmodule.name
 ])
 .constant("baseURL", $.slatwall.getConfig().baseURL)
@@ -67,21 +69,83 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
             dialogService.removePageDialog( index );
         };
 
-        // $rootScope.loadedResourceBundle = false;
-        // $rootScope.loadedResourceBundle = $hibachi.hasResourceBundle();
         $rootScope.createID = utilityService.createID;
 
-        // var rbListener = $rootScope.$watch('loadedResourceBundle',function(newValue,oldValue){
-        //     if(newValue !== oldValue){
-        //         $rootScope.$broadcast('hasResourceBundle');
-        //         rbListener();
-        //     }
-        // });
-
+        $rootScope.slatwall = $rootScope.hibachiScope;
+        $rootScope.slatwall.getProcessObject = $hibachi.newEntity;
     }])
  //services
 //directives
 .directive('swCurrencyFormatter',SWCurrencyFormatter.Factory())
+//controllers
+.controller('preprocessaccount_addaccountpayment', ['$scope', '$compile',function($scope:any, $compile) {
+    //Define the different payment types used here
+    var paymentType = {aptCharge:"444df32dd2b0583d59a19f1b77869025",aptCredit:"444df32e9b448ea196c18c66e1454c46", aptAdjustment:"68e3fb57d8102b47acc0003906d16ddd"};
+    
+    $scope.totalAmountToApply = 0; //Default value to show on new form
+    $scope.paymentTypeName = $.slatwall.rbKey('define.charge'); //Default payment type
+    $scope.paymentTypeLock = true; //Used to lock down the order payment type dropdowns
+    $scope.amount = 0;
+    
+    $scope.updatePaymentType = function() {
+        //Change all order payment types here
+        angular.forEach($scope.appliedOrderPayment, function(obj, key) {
+            //Only change the payment type if the type isn't adjustment'
+            if($scope.paymentType!=paymentType.aptAdjustment)
+                obj.paymentType=$scope.paymentType;
+        });
+        
+        if($scope.paymentType==paymentType.aptCharge) {
+            $scope.paymentTypeName = $.slatwall.rbKey('define.charge');
+            $scope.paymentTypeLock = true;
+        } else if($scope.paymentType==paymentType.aptCredit) {
+            $scope.paymentTypeName = $.slatwall.rbKey('define.credit');
+            $scope.paymentTypeLock = true;
+        } else if($scope.paymentType==paymentType.aptAdjustment) {
+            $scope.paymentTypeLock = false;
+            $scope.paymentTypeName = $.slatwall.rbKey('define.adjustment');
+            $scope.amount = 0;
+        }
+        
+        //Update the subtotal now that we changed the payment type
+        $scope.updateSubTotal();
+    }
+
+    $scope.updateSubTotal = function() {
+        $scope.totalAmountToApply = 0; //Reset the subtotal before we loop
+        
+        //Loop through all the amount fields and create a running subtotal
+        angular.forEach($scope.appliedOrderPayment, function(obj, key) {
+            //Don't count the field if its undefied or not a number
+            if(obj.amount != undefined && !isNaN(obj.amount)) {
+                //Charge / adjustment condition for subtotal
+                if($scope.paymentType==paymentType.aptCharge || $scope.paymentType == paymentType.aptAdjustment) {
+                    if(obj.paymentType==paymentType.aptCharge)
+                        $scope.totalAmountToApply += parseFloat(obj.amount);
+                    else if(obj.paymentType==paymentType.aptCredit)
+                        $scope.totalAmountToApply -= parseFloat(obj.amount);
+
+                //Credit condition for subtotal
+                } else if($scope.paymentType==paymentType.aptCredit) {
+                    if(obj.paymentType==paymentType.aptCharge)
+                        $scope.totalAmountToApply -= parseFloat(obj.amount);
+                    else if(obj.paymentType==paymentType.aptCredit)
+                        $scope.totalAmountToApply += parseFloat(obj.amount);
+                }
+            }
+        });
+
+        //The amount not applied to an order
+        $scope.amountUnapplied = (Math.round(($scope.amount - $scope.totalAmountToApply) * 100) / 100);
+        $scope.accountBalanceChange = parseFloat($scope.amount);
+        
+        //Switch the account balance display amount to a negative if you are doing a charge
+        if($scope.paymentType==paymentType.aptCharge)
+            $scope.accountBalanceChange = parseFloat(($scope.accountBalanceChange * -1).toString()); //If charge, change to neg since we are lowering account balance
+        else if($scope.paymentType==paymentType.aptAdjustment)
+            $scope.accountBalanceChange += parseFloat($scope.amountUnapplied); //If adjustment, use the amount unapplied to determine the balance change
+    }
+}])
 //filters
 
 .filter('swcurrency',['$sce','$log','$hibachi',SWCurrency.Factory])

@@ -109,7 +109,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			rc.$.slatwall.showMessageKey( 'admin.metaexists_error' );
 		}
 	}
-
+	//TODO: deprecate ,  getImageDirectory()
 	public void function saveImage(required struct rc){
 
 		var image = getImageService().getImage(rc.imageID, true);
@@ -174,8 +174,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 		if(rc.process) {
 			logHibachi("Update Called", true);
-
-			getUpdateService().update(branch=rc.updateBranch);
+			if(rc.branchType eq "custom"){
+				getUpdateService().update(branch=rc.customBranch);
+			}else{
+				getUpdateService().update(branch=rc.updateBranch);
+			}
+			
 
 			logHibachi("Update Finished, Now Calling Reload", true);
 
@@ -188,6 +192,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var versions = getUpdateService().getAvailableVersions();
 		rc.availableDevelopVersion = versions.develop;
 		rc.availableMasterVersion = versions.master;
+		rc.availableHotfixVersion = versions.hotfix;
 
 		rc.currentVersion = getApplicationValue('version');
 		if(listLen(rc.currentVersion, '.') > 3) {

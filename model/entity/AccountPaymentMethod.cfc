@@ -100,6 +100,9 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	property name="paymentMethodOptionsSmartList" persistent="false";
 
 	public string function getPaymentMethodType() {
+		if(isNull(getPaymentMethod())){
+			return "";
+		}
 		return getPaymentMethod().getPaymentMethodType();
 	}
 
@@ -257,6 +260,10 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		}
 	}
 
+	public boolean function hasOnlyGenerateTokenTransactions() {
+		return getDAO("paymentDAO").getAccountPaymentMethodNonGenerateTokenTransactionCount( accountPaymentMethodID = this.getAccountPaymentMethodID() ) eq 0;
+	}
+
 	// ============ START: Non-Persistent Property Methods =================
 
 	public any function getPaymentMethodOptionsSmartList() {
@@ -303,7 +310,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		if(!isNull(this.getGiftCardBalanceAmount())){
 			return getService("HibachiUtilityService").formatValue_currency(this.getGiftCardBalanceAmount(), {currencyCode=this.getGiftCard().getCurrencyCode()});
 		}
-		return ""; 
+		return "";
 	}
 
 	// ============  END:  Non-Persistent Property Methods =================
@@ -414,7 +421,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 				rep = listAppend(rep, " #getGiftCardNumber()#", "|");
 			}
 		}
-		if(isExpired()){
+		if(getPaymentMethodType() == "creditCard" && isExpired()){
 			rep = rep & ' (' & rbkey('define.expired') & ')';
 		}
 		return rep;

@@ -72,7 +72,10 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
         // determine which authentication keys to use based on test mode setting
         var activePublicKey = setting("testPublicKey");
         var activeSecretKey = setting("testSecretKey");
-        if (!setting("testMode"))
+        
+        var testMode = getTestModeFlag(arguments.requestBean,'testMode');
+        
+        if (!testMode)
         {
             activePublicKey = setting("livePublicKey");
             activeSecretKey = setting("liveSecretKey");
@@ -169,7 +172,7 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
             }
             
             //get the setting for statement_descriptor
-            if (!isNull(requestBean.getOrder().getOrderCreatedSite()) && len(requestBean.getOrder().getOrderCreatedSite().getSiteCode())){
+            if (!isNull(requestBean.getOrder()) && !isNull(requestBean.getOrder().getOrderCreatedSite()) && len(requestBean.getOrder().getOrderCreatedSite().getSiteCode())){
                 var siteCode = requestBean.getOrder().getOrderCreatedSite().getSiteCode();
                 try{
                     var statementDescriptionSettingValue = getHibachiScope().getService('SettingService').getSettingValue('integration#siteCode#StatementDescription');
@@ -300,7 +303,7 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
                 responseBean.setAuthorizationCode(responseData.result.id);
                 
                 var amount = 0;
-                for ( refund in responseData.result.refunds ) {
+                for (var refund in responseData.result.refunds ) {
                     amount += refund.amount;
                 }
                 responseBean.setAmountCredited(amount / 100); // need to convert back to decimal from integer
@@ -384,7 +387,7 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
             httpRequest.addParam(type="formfield", name="metadata[billing_name]", value="#requestBean.getBillingName()#");
         }
         //Additional order data.
-        if(len(requestBean.getOrder().getOrderID())) {
+        if(!isNull(requestBean.getOrder()) && !isNull(requestBean.getOrder().getOrderID()) && len(requestBean.getOrder().getOrderID())) {
             httpRequest.addParam(type="formfield", name="metadata[order_id]", value="#requestBean.getOrder().getOrderID()#");
             var orderItemCount = 0;
             for (var orderItem in requestBean.getOrder().getOrderItems()){
@@ -441,7 +444,7 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
     {
         var productNameList = "";
         
-        if(len(requestBean.getOrder().getOrderID())) {
+        if(!isNull(requestBean.getOrder()) && !isNull(requestBean.getOrder().getOrderID()) && len(requestBean.getOrder().getOrderID())) {
             for (var orderItem in requestBean.getOrder().getOrderItems()){
             	var description = orderItem.getSku().getSkuCode() & " - " & orderItem.getSku().getProduct().getProductName();
                 productNameList = listAppend(productNameList, description);

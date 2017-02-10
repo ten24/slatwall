@@ -1,42 +1,13 @@
 <div class="s-table-inner-nav s-detail-hidden-content">
     <div class="s-search-wrapper">
-        <div class="input-group">
-            <div class="input-group-btn search-panel">
-                <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">
-                    <span data-ng-bind="swListingControls.getSelectedSearchColumnName()"></span> <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href data-ng-click="swListingControls.selectSearchColumn()">All</a></li>
-                    <li data-ng-repeat="column in swListingControls.collectionConfig.columns | orderBy:'title'"
-                        data-ng-if="column.isSearchable   && (column.ormtype == 'string' || column.ormtype == 'integer' || column.ormtype == 'big_decimal')">
-                        <a href data-ng-click="swListingControls.selectSearchColumn(column)" data-ng-bind="column.title"></a>
-                    </li>
-                </ul>
-            </div>
-
-            <span class="s-search">
-                <input type="text" class="form-control s-search" name="" placeholder="Search results..."
-                       data-ng-model="swListingControls.searchText"
-                       data-ng-model-options='{ debounce: 500 }'
-                       data-ng-change="swListingControls.search()">
-                <buttom class="btn btn-xs btn-default s-add-search-param"
-                        data-ng-if="swListingControls.selectedSearchColumn && swListingControls.searchText"
-                        data-ng-disabled="!swListingControls.selectedSearchColumn"
-                        data-ng-click="swListingControls.addSearchFilter()">
-                        <i class="glyphicon glyphicon-plus"></i>
-                </buttom>
-            </span>
-            <span class="input-group-btn s-action">
-                <button class="btn btn-sm btn-default" type="button" data-ng-click="swListingControls.toggleFilters()">
-                    <i class="fa fa-filter"></i>
-                </button>
-            </span>
-            <span class="input-group-btn s-action">
-                <button class="btn btn-sm btn-default" type="button" data-ng-click="swListingControls.toggleDisplayOptions()">
-                    <i class="fa fa-th"></i>
-                </button>
-            </span>
-        </div>
+        <span sw-listing-search data-collection-config="swListingControls.collectionConfig"
+                               data-paginator="swListingControls.paginator"
+                               data-get-collection="swListingControls.getCollection"
+                               data-toggle-filters="swListingControls.toggleFilters()"
+                               data-toggle-display-options="swListingControls.toggleDisplayOptions()"
+                               data-show-toggle-filters="swListingControls.showToggleFilters"
+                               data-show-toggle-display-options="swListingControls.showToggleDisplayOptions"
+         ></span>    
         <!-- DISPLAY OPTIONS -->
         <div data-collapse="swListingControls.displayOptionsClosed" id="j-display-options">
             <div class="s-display-options">
@@ -53,6 +24,7 @@
                         data-base-entity-name="swListingControls.collectionConfig.baseEntityName">
                     <li class="list-group-item"
                         ng-repeat="column in swListingControls.collectionConfig.columns"
+                        ng-if="swListingControls.canDisplayColumn(column)"
                         sw-column-item
                         data-column="column"
                         data-columns="swListingControls.collectionConfig.columns"
@@ -80,7 +52,7 @@
         </div>
         <!--  //ADD FILTER -->
     </div>
-    <div class="s-filter-wrapper">
+    <div class="s-filter-wrapper"  ng-show="swListingControls.showFilters">
         <div class="s-filters">
             <!-- Filter -->
             <div class="btn-group"

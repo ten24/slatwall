@@ -57,7 +57,7 @@ Notes:
 		<cfset local.defaultSkuID = rc.product.getDefaultSku().getSkuID() />
 	</cfif>
 
-	<!--- If there are sku bundles then we can display them seperately here --->
+	<!--- If there are sku bundles then we can display them seperately here
 	<cfif local.bundleSkusSmartList.getRecordsCount()>
 		<hb:HibachiListingDisplay smartList="#local.bundleSkusSmartList#" title="#$.slatwall.rbKey('entity.SkuBundle_plural')#"
 							   recordDetailAction="admin:entity.detailsku"
@@ -68,7 +68,7 @@ Notes:
 				<hb:HibachiListingColumn propertyIdentifier="skuName" />
 			</cfif>
 			<hb:HibachiListingColumn propertyIdentifier="skuCode" />
-			<hb:HibachiListingColumn propertyIdentifier="skuDefinition" />
+			<hb:HibachiListingColumn propertyIdentifier="calculatedSkuDefinition" />
 			<hb:HibachiListingColumn propertyIdentifier="imageFile" />
 			<hb:HibachiListingColumn propertyIdentifier="listPrice" />
 			<hb:HibachiListingColumn propertyIdentifier="price" />
@@ -99,7 +99,7 @@ Notes:
 				<hb:HibachiListingColumn propertyIdentifier="skuName" />
 			</cfif>
 			<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="skuCode" />
-			<hb:HibachiListingColumn propertyIdentifier="skuDefinition" />
+			<hb:HibachiListingColumn propertyIdentifier="calculatedSkuDefinition" title="#getHibachiScope().rbKey('entity.sku.skuDefinition')#" />
 			<cfif rc.product.getBaseProductType() eq "event">
 				<hb:HibachiListingColumn propertyIdentifier="eventStartDateTime" />
 				<hb:HibachiListingColumn propertyIdentifier="eventEndDateTime" />
@@ -118,6 +118,12 @@ Notes:
 			</cfif>
 		</hb:HibachiListingDisplay>
 	</cfif>
+	--->
+
+	<sw-pricing-manager data-product-id="#rc.product.getProductID()#" 
+						data-track-inventory="#getHibachiScope().getService('settingService').getSettingValue('skuTrackInventoryFlag', rc.product)#">
+
+	</sw-pricing-manager>
 
 	<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addEventSchedule" class="btn btn-primary" modal="false" />
 	<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addSku" class="btn btn-primary" modal="true" />

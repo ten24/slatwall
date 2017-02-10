@@ -76,7 +76,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="account.lastName" />
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="account.company" />
 		<hb:HibachiListingColumn propertyIdentifier="orderType.typeName" sort=true title="#$.slatwall.rbKey('entity.order.orderType')#"/>
-		<hb:HibachiListingColumn propertyIdentifier="orderStatusType.typeName" title="#$.slatwall.rbKey('define.status')#" sort=true/>
+		<hb:HibachiListingColumn propertyIdentifier="orderStatusType.typeName" title="#$.slatwall.rbKey('define.status')#" filter="true" sort="true" />
 		<hb:HibachiListingColumn propertyIdentifier="orderOrigin.orderOriginName" />
 		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
 		<hb:HibachiListingColumn propertyIdentifier="calculatedTotal" />

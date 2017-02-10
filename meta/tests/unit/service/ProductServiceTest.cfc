@@ -52,7 +52,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		super.setup();
 		variables.service = request.slatwallScope.getService("productService");
 	}
-	
+
 	public void function getProductCollectionListTest(){
 		var collection = variables.service.getProductCollectionList();
 		assertEquals(collection.getCollectionObject(),'Product');
@@ -135,6 +135,120 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		assertEquals(yetAnotherProduct.getDefaultSku().getRedemptionAmountType(),'percentage');
 		assertEquals(yetAnotherProduct.getDefaultSku().getRedemptionAmount(),2);
+	}
+
+	public void function saveProductTest_checkifSkusAreSetToInactive(){
+		var productData = {
+			productID="",
+			productName="myproduct"& createUUID(),
+			productCode="myproductcode" & createUUID(),
+			activeFlag=1,
+			publishedFlag=1,
+			productType={
+				productTypeID='444df2f7ea9c87e60051f3cd87b435a1'
+			}
+		};
+		var product = createPersistedTestEntity('Product',productData);
+
+
+		//start of with an active product
+		assert(product.getActiveFlag());
+		assert(product.getPublishedFlag());
+
+		//add some active skus
+		var skuData = {
+			skuID="",
+			skuCode="skucode"&createUUID(),
+			activeFlag=1,
+			publishedFlag=1,
+			product={
+				productID=product.getProductID()
+			}
+		};
+		var sku = createPersistedTestEntity('Sku',skuData);
+
+		var skuData2 = {
+			skuID="",
+			skuCode="skucode"&createUUID(),
+			activeFlag=1,
+			publishedFlag=1,
+			product={
+				productID=product.getProductID()
+			}
+		};
+		var sku2 = createPersistedTestEntity('Sku',skuData2);
+
+		//assert that all skus are active
+		var skus = product.getSkus();
+		for(var sku in skus){
+			assert(sku.getActiveFlag());
+		}
+
+		//set the product as inactive via the service
+		product = variables.service.saveProduct(product,{activeFlag=0});
+
+		//assert that we set it as inactive
+		assertFalse(product.getActiveFlag());
+
+		assertFalse(product.getPublishedFlag());
+
+		//and therefore we should be able to asssume that all skus were set to inactive as well if there were no validation errors
+		//because the dao does the update we need to retrieve the data via dao method as well
+		var skusquery = new Query();
+		skusquery.addParam(name="productID",value=product.getProductID(),cfsqltype="cf_sql_varchar");
+		var skus = skusquery.execute(
+			sql='select s.activeFlag,s.publishedFlag from SwSku s where s.productID=:productID'
+		).getResult();
+
+
+		for(var sku in skus){
+			assertFalse(sku.activeFlag);
+			assertFalse(sku.publishedFlag);
+		}
+	}
+
+	public void function saveProductWithProductListingPages(){
+
+		var productData = {
+			productID= '',
+			productName="product"& createUUID(),
+			productCode="productcode" & createUUID(),
+			activeFlag=1,
+			publishedFlag=1,
+			productType={
+				productTypeID='444df2f7ea9c87e60051f3cd87b435a1'
+			}
+		};
+		var product = createPersistedTestEntity('Product',productData);
+
+		var contentData1 = {
+			contentID=''
+		};
+		var content1 = createPersistedTestEntity('Content',contentData1);
+		var contentData2 = {
+			contentID=''
+		};
+		var content2 = createPersistedTestEntity('Content',contentData2);
+		var contentData3 = {
+			contentID=''
+		};
+		var content3 = createPersistedTestEntity('Content',contentData3);
+
+		var serviceData = {
+			assignedContentIDList=ArrayToList([content1.getContentID(), content2.getContentID(), content3.getContentID()])
+		};
+
+		var productToAssert = variables.service.saveProduct(product, serviceData);
+
+		assert(arrayLen(productToAssert.getListingPages()), 3);
+
+		var serviceData2 = {
+			assignedContentIDList=ArrayToList([content1.getContentID(), content2.getContentID()])
+		};
+
+		var productToAssert2 = variables.service.saveProduct(product, serviceData2);
+
+		assert(arrayLen(productToAssert2.getListingPages()), 3);
 	}
 }
 

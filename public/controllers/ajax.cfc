@@ -59,6 +59,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	public void function before() {
 		getFW().setView("public:main.blank");
+		arguments.rc.ajaxRequest = true;
 	}
 
 	public void function account( struct rc ) {
@@ -78,11 +79,34 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 		var country = getAddressService().getCountry(rc.countryCode);
 
-		// Make sure that the stateCodeOptions are in the variables scope
-		country.getStateCodeOptions();
-
 		if(!isNull(country)) {
-			rc.ajaxResponse["country"] = country;
+			rc.ajaxResponse["country"] = {};
+			rc.ajaxResponse["country"]["countryCode"] = country.getcountryCode();
+			rc.ajaxResponse["country"]["countryCode3Digit"] = country.getcountryCode3Digit();
+			rc.ajaxResponse["country"]["countryISONumber"] = country.getcountryISONumber();
+			rc.ajaxResponse["country"]["countryName"] = country.getcountryName();
+			rc.ajaxResponse["country"]["activeFlag"] = country.getactiveFlag();
+			rc.ajaxResponse["country"]["streetAddressLabel"] = country.getstreetAddressLabel();
+			rc.ajaxResponse["country"]["streetAddressShowFlag"] = country.getstreetAddressShowFlag();
+			rc.ajaxResponse["country"]["streetAddressRequiredFlag"] = country.getstreetAddressRequiredFlag();
+			rc.ajaxResponse["country"]["street2AddressLabel"] = country.getstreet2AddressLabel();
+			rc.ajaxResponse["country"]["street2AddressShowFlag"] = country.getstreet2AddressShowFlag();
+			rc.ajaxResponse["country"]["street2AddressRequiredFlag"] = country.getstreet2AddressRequiredFlag();
+			rc.ajaxResponse["country"]["localityLabel"] = country.getlocalityLabel();
+			rc.ajaxResponse["country"]["localityShowFlag"] = country.getlocalityShowFlag();
+			rc.ajaxResponse["country"]["localityRequiredFlag"] = country.getlocalityRequiredFlag();
+			rc.ajaxResponse["country"]["cityLabel"] = country.getcityLabel();
+			rc.ajaxResponse["country"]["cityShowFlag"] = country.getcityShowFlag();
+			rc.ajaxResponse["country"]["cityRequiredFlag"] = country.getcityRequiredFlag();
+			rc.ajaxResponse["country"]["stateCodeLabel"] = country.getstateCodeLabel();
+			rc.ajaxResponse["country"]["stateCodeShowFlag"] = country.getstateCodeShowFlag();
+			rc.ajaxResponse["country"]["stateCodeRequiredFlag"] = country.getstateCodeRequiredFlag();
+			rc.ajaxResponse["country"]["postalCodeLabel"] = country.getpostalCodeLabel();
+			rc.ajaxResponse["country"]["postalCodeShowFlag"] = country.getpostalCodeShowFlag();
+			rc.ajaxResponse["country"]["postalCodeRequiredFlag"] = country.getpostalCodeRequiredFlag();
+			// Make sure that the stateCodeOptions are in the variables scope
+			rc.ajaxResponse["country"]["stateCodeOptions"] = country.getStateCodeOptions();
+			rc.ajaxResponse["country"]["defaultCurrencyOptions"] = country.getDefaultCurrencyOptions();
 		}
 	}
 

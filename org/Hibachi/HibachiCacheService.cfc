@@ -19,7 +19,7 @@ component accessors="true" output="false" extends="HibachiService" {
 		
 		return super.init();
 	}
-
+	
 	public any function hasCachedValue( required string key ) {
 		// If using the internal cache, then check there
 		if( getInternalCacheFlag() && structKeyExists(getCache(), arguments.key) && structKeyExists(getCache()[ arguments.key ], "reset") && !getCache()[ arguments.key ].reset ) {
@@ -43,6 +43,22 @@ component accessors="true" output="false" extends="HibachiService" {
 		// By default return false
 		return false;
 	}
+	
+	public void function updateServerInstanceCache(required string serverInstanceIPAddress){
+		var serverInstance = this.getServerInstanceByServerInstanceIPAddress(arguments.serverInstanceIPAddress);
+		if(isNull(serverInstance)){
+			serverInstance = this.newServerInstance();
+			serverInstance.setServerInstanceIPAddress(arguments.serverInstanceIPAddress);
+			serverInstance.setServerInstanceExpired(false);
+			this.saveServerInstance(serverInstance); 
+		}
+		
+		getDao('hibachiCacheDao').updateServerInstanceCache(serverInstance);
+	}
+	
+	public boolean function isServerInstanceCacheExpired(required string serverInstanceIPAddress){
+		return getDao('hibachiCacheDao').isServerInstanceCacheExpired(arguments.serverInstanceIPAddress);
+	} 
 	
 	public any function getCachedValue( required string key ) {
 		// If using the internal cache, then check there
@@ -97,10 +113,10 @@ component accessors="true" output="false" extends="HibachiService" {
 		}
 	}
 	
-	public any function resetCachedKeyByPrefix( required string keyPrefix ) {
+	public any function resetCachedKeyByPrefix( required string keyPrefix, boolean waitForThreadComplete=false ) {
 		// Because there could be lots of keys potentially we do this in a thread
-		thread name="hibachiCacheService_resetCachedKeyByPrefix_#createUUID()#" keyPrefix=arguments.keyPrefix {
-			
+		var threadName="hibachiCacheService_resetCachedKeyByPrefix_#replace(createUUID(),'-','','ALL')#";
+		thread name="#threadName#" keyPrefix=arguments.keyPrefix {
 			if(getInternalCacheFlag()) {
 				
 				var allKeysArray = listToArray(structKeyList(getCache()));
@@ -123,7 +139,13 @@ component accessors="true" output="false" extends="HibachiService" {
 			}
 			
 		}
+		if(arguments.waitForThreadComplete){
+			threadJoin(threadName);	
+		}
+		
+		return evaluate(threadName);
 	}
+	
 	
 	public any function getOrCacheFunctionValue(required string key, required any fallbackObject, required any fallbackFunction, struct fallbackArguments={}) {
 		// Check to see if this cache key already exists, and if so just return the cached value

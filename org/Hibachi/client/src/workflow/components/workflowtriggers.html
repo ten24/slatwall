@@ -1,10 +1,10 @@
 <div data-ng-show="!workflowTriggers.length" class="alert alert-info" role="alert" sw-rbkey="'entity.WorkflowTrigger.norecordsfound'"><!-- Message created by rb key --></div>
 
 <div class="s-bundle-add-items s-workflow-objs" data-ng-repeat="workflowTrigger in workflowTriggers">
-	
 
-	<div class="list-unstyled s-order-item-options" > 
-		<span  		
+
+	<div class="list-unstyled s-order-item-options" >
+		<span
 			sw-workflow-trigger
 			data-ng-if="workflowTrigger.$$isPersisted()"
 			data-workflow-trigger="workflowTrigger"
@@ -17,28 +17,29 @@
 
 <!--- Edit Filter Box --->
 <div data-ng-if="workflowTriggers.selectedTrigger" class="col-xs-12  s-add-filter" id="j-create-new-trigger">
-		<sw-form name="selectedTrigger" 
-			data-object="workflowTriggers.selectedTrigger"	
+		<sw-form name="selectedTrigger"
+			data-object="workflowTriggers.selectedTrigger"
 			data-context="save"
 		>
 			<div class="row">
-				<h4 class="s-heading"> 
+				<h4 class="s-heading">
 					<span data-ng-show="workflowTriggers.selectedTrigger.$$isPersisted()">Edit</span>
 					<span data-ng-show="!workflowTriggers.selectedTrigger.$$isPersisted()">New</span>
-					 Trigger 
-					 <i class="fa fa-times" 
-					 	data-toggle="collapse" 
+					 Trigger
+					 <i class="fa fa-times"
+					 	data-toggle="collapse"
 					 	data-target="#j-create-new-trigger"
                         data-ng-click="closeTrigger()"
 					 ></i>
 				</h4>
 				<div class="col-xs-12">
-	
+
 					<div class="row">
 						<div class="col-xs-3">
-							
+
 							<div class="s-create-obj-window">
 								<h4>Trigger Type:</h4>
+
 								<div class="form-group">
 									<div class="radio">
 										<input  type="radio" name="triggerType" id="radioEvent{{$index}}"
@@ -78,13 +79,7 @@
                                       data-editable="true">
                                                                 </span>
 							</div>
-							<sw-property-display
-									style="display:none"
-									data-object="workflowTriggers.selectedTrigger"
-									data-property="triggerType"
-									data-editing="true"
-									data-is-dirty="true"
-							></sw-property-display> 
+
 							<sw-property-display
 									style="display:none"
 									data-object="workflowTriggers.selectedTrigger"
@@ -106,18 +101,18 @@
 									data-property="objectPropertyIdentifier"
 									data-editing="true"
 									data-is-dirty="true"
-							></sw-property-display> 
+							></sw-property-display>
 						</div>
 						<div class="col-xs-6 s-criteria">
 							<span data-ng-if="workflowTriggers.selectedTrigger.data.triggerType === 'Event'">
 								<h4>Select Trigger Event:</h4>
 								<!--- Filter Criteria Start --->
-		
+
 								<div class="s-filter-group-item">
 									<div class="form-group form-group-sm">
 										<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">{{workflow.data.workflowObject}}:</label>
 										<div class="col-sm-12 s-no-paddings">
-	
+
 											<!--- search --->
 											<div class="s-select-list-wrapper s-search">
 												<div class="form-group">
@@ -128,35 +123,44 @@
 															<input type="search" class="form-control" placeholder="Search&hellip;" data-ng-model="searchEvent.name">
 <!--														<!--<span class="glyphicon glyphicon-remove"></span>-->
 															<!--<i class="fa fa-refresh fa-spin"></i>--><!-- Loading Icon -->
-															
+
 														</div>
 														<div class="input-group-btn" data-ng-if="workflow.data.workflowObject">
 															<button class="btn btn-sm btn-default" data-ng-click="getEventOptions(workflow.data.workflowObject);"><i class="fa fa-caret-down"></i></button>
 														</div>
 													</div>
 												</div>
-												<!-- Dropdown wrapper --> 
+												<!-- Dropdown wrapper -->
 												<div class="dropdown s-search-results-wrapper" data-ng-show="showEventOptions">
 													<ul class="dropdown-menu">
-														<li data-ng-repeat="eventOption in eventOptions | filter:searchEvent.name">
-															<a data-ng-click="selectEvent(eventOption)">{{eventOption.name}}</a>
+														<li data-ng-repeat="eventOption in eventOptions | filter:searchEvent.name" data-ng-click="selectEvent(eventOption)">
+															<a >{{eventOption.name}}</a>
 														</li>
 														<li data-ng-show="(eventOptions | filter:searchEvent.name).length == 0">
-															<a sw-rbkey="'admin.entity.workflowtabs.triggers.norecordsfound'"><!-- Message created by rb key --></a>		
+															<a sw-rbkey="'admin.entity.workflowtabs.triggers.norecordsfound'"><!-- Message created by rb key --></a>
 														</li>
 													</ul>
 												</div>
-												
+
 											</div>
 											<!--- // search --->
-	
+
 										</div>
+
+                                        <div class="form-group">
+                                            <sw-property-display
+                                                    data-object="workflowTriggers.selectedTrigger"
+                                                    data-property="saveTriggerHistoryFlag"
+                                                    data-editable="true"
+                                                    data-editing="true"
+                                                    ></sw-property-display>
+                                        </div>
 										<div class="clearfix"></div>
 									</div>
 									<div class="form-group form-group-sm" id="j-placeholder-trigger-select" style="display:none;">
 										<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">On Order Item Event:</label>
 										<div class="col-sm-12 s-no-paddings">
-	
+
 											<!--- search --->
 											<div class="s-search-filter">
 												<div class="input-group">
@@ -195,7 +199,7 @@
 												</div>
 											</div>
 											<!--- // search --->
-	
+
 										</div>
 										<div class="clearfix"></div>
 									</div>
@@ -206,7 +210,7 @@
 								<h4>Select Trigger Schedule:</h4>
 								<!--- Filter Criteria Start --->
 								<div class="s-filter-group-item">
-	
+
 									<div class="form-group form-group-sm">
 										<!-- <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">{{workflowTriggers.selectedTrigger.data.workflow.data.workflowObject}} Collection:</label> -->
 										<div class="col-sm-12 s-no-paddings">
@@ -225,7 +229,7 @@
                                                 </div>
                                             </div>
 
-	
+
 											<!--- search --->
 											<!--<div class="s-search-filter">-->
 												<!--<sw-property-display-->
@@ -239,14 +243,14 @@
 	<!-- -->
 											<!--</div>-->
 											<!--- // search --->
-	
+
 										</div>
 										<div class="clearfix"></div>
 									</div>
-	
+
 									<div class="form-group form-group-sm">
 										<div class="col-sm-12 s-no-paddings">
-	
+
 											<!--- search --->
 											<div class="s-search-filter">
 												<!--<sw-property-display-->
@@ -397,6 +401,14 @@
 											</div>
 											<!--- // search --->
 										</div>
+                                        <div class="form-group">
+                                            <sw-property-display
+                                                    data-object="workflowTriggers.selectedTrigger"
+                                                    data-property="saveTriggerHistoryFlag"
+                                                    data-editable="true"
+                                                    data-editing="true"
+                                                    ></sw-property-display>
+                                        </div>
 										<div class="clearfix"></div>
 									</div>
 								</div>
@@ -405,15 +417,15 @@
 						</div>
 						<div class="col-xs-3">
 
-	
+
 							<div class="s-button-select-group" data-ng-if="workflowTriggers.selectedTrigger.data.triggerType">
-								<button 
-										type="button" 
+								<button
+										type="button"
 										class="btn btn-sm s-btn-ten24 s-width-100"
                                         data-ng-click="saveWorkflowTrigger('finish')">
 									Save Trigger
 								</button>
-								
+
 							</div>
                             <div class="s-default-list" data-ng-if="workflowTriggers.selectedTrigger.data.triggerType === 'Schedule'">
                                 <h4>Schedule Preview:</h4>
@@ -426,7 +438,7 @@
 		</sw-form>
 	</div>
 	<!--- //Edit Filter Box --->
-	
+
 	<button class="btn btn-xs btn-primary"
 		    data-target="#j-create-new-trigger"
 		    data-toggle="collapse"

@@ -56,7 +56,6 @@ Notes:
 
 <cfoutput>
 	<hb:HibachiEntityProcessForm entity="#rc.account#" edit="#rc.edit#">
-		
 		<hb:HibachiEntityActionBar type="preprocess" object="#rc.account#">
 		</hb:HibachiEntityActionBar>
 		
@@ -76,6 +75,17 @@ Notes:
 					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="password" edit="#rc.edit#">
 					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="passwordConfirm" edit="#rc.edit#">
 				</hb:HibachiDisplayToggle>
+				
+				<!--- Parent Account --->
+				<cfif structKeyExists(rc,'parentAccountID')>
+					<input type="hidden" name="parentAccountID" value="#rc.parentAccountID#" />
+					<input type="hidden" name="sRedirectAction" value="admin:entity.detailAccount" />
+					<input type="hidden" name="sRedirectQS" value="accountID=#rc.parentAccountID#" />
+				</cfif>
+				<!--- Child Account --->
+				<cfif structKeyExists(rc,'childAccountID')>
+					<input type="hidden" name="childAccountID" value="#rc.childAccountID#" />
+				</cfif>
 				
 				<!--- Account Custom Attributes --->
 				<cfloop array="#rc.account.getAttributeSets()#" index="attributeSet">

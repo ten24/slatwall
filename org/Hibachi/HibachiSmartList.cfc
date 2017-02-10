@@ -581,8 +581,13 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	public string function getHQLWhere(boolean suppressWhere=false, searchOrder=false) {
 		var hqlWhere = "";
 		variables.hqlParams = {};
-		
-		
+						
+		// Add formatter based on dbtype
+ 		var formatter = '';
+ 		if(getHibachiScope().getApplicationValue("databaseType")=="Oracle10g"){
+ 			formatter = "LOWER";
+ 		}
+ 
 		// Loop over where groups
 		for(var i=1; i<=arrayLen(variables.whereGroups); i++) {
 			if( structCount(variables.whereGroups[i].filters) || structCount(variables.whereGroups[i].likeFilters) || structCount(variables.whereGroups[i].inFilters) || structCount(variables.whereGroups[i].ranges) ) {
@@ -635,13 +640,13 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 						for(var ii=1; ii<=listLen(variables.whereGroups[i].likeFilters[likeFilter], variables.valueDelimiter); ii++) {
 							var paramID = "LF#replace(likeFilter, ".", "", "all")##i##ii#";
 							addHQLParam(paramID, lcase(listGetAt(variables.whereGroups[i].likeFilters[likeFilter], ii, variables.valueDelimiter)));
-							hqlWhere &= " LOWER(#likeFilter#) LIKE :#paramID# OR";
+							hqlWhere &= " #formatter#(#likeFilter#) LIKE :#paramID# OR";
 						}
 						hqlWhere = left(hqlWhere, len(hqlWhere)-2) & ") AND";
 					} else {
 						var paramID = "LF#replace(likeFilter, ".", "", "all")##i#";
 						addHQLParam(paramID, lcase(variables.whereGroups[i].likeFilters[likeFilter]));
-						hqlWhere &= " LOWER(#likeFilter#) LIKE :#paramID# AND";
+						hqlWhere &= " #formatter#(#likeFilter#) LIKE :#paramID# AND";
 					}
 				}
 				
@@ -713,7 +718,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 				hqlWhere &= " (";
 				for(var keywordProperty in variables.keywordProperties) {
 					
-					hqlWhere &= " LOWER(#keywordProperty#) LIKE :#paramID# OR";
+					hqlWhere &= " #formatter#(#keywordProperty#) LIKE :#paramID# OR";
 				}
 				
 				//Loop over all attributes and find any matches
@@ -803,6 +808,14 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 			variables.pageRecords = ormExecuteQuery(getHQL(), getHQLParams(), false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
 		}
 		return variables.pageRecords;
+	}
+	
+	public any function getFirstRecord(boolean refresh=false) {
+		if( !structKeyExists(variables, "firstRecord") || arguments.refresh == true) {
+			saveState();
+			variables.firstRecord = ormExecuteQuery(getHQL(), getHQLParams(), true, {maxresults=1, ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
+		}
+		return variables.firstRecord;
 	}
 	
 	public void function clearRecordsCount() {
@@ -974,9 +987,17 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		return exists;
 	}
 	
-	public array function getFilterOptions(required string valuePropertyIdentifier, required string namePropertyIdentifier) {
+	public array function getFilterOptions(
+		required string valuePropertyIdentifier, 
+		required string namePropertyIdentifier,
+		string parentPropertyIdentifier
+	) {
 		var nameProperty = getAliasedProperty(propertyIdentifier=arguments.namePropertyIdentifier);
 		var valueProperty = getAliasedProperty(propertyIdentifier=arguments.valuePropertyIdentifier);
+		
+		if(structKeyExists(arguments,'parentPropertyIdentifier')){
+			 var parentProperty = getAliasedProperty(propertyIdentifier=arguments.parentPropertyIdentifier);
+		}
 		
 		var originalWhereGroup = duplicate(variables.whereGroups);
 		
@@ -988,21 +1009,34 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 			}
 		}
 			
-		var results = ormExecuteQuery("SELECT NEW MAP(
+		var hql = "SELECT NEW MAP(
 			#nameProperty# as name,
 			#valueProperty# as value,
 			count(#nameProperty#) as count
-			)
-		#getHQLFrom(allowFetch=false)#
-		#getHQLWhere()# #IIF(len(getHQLWhere()), DE('AND'), DE('WHERE'))#
+			";
+		
+		if(structKeyExists(arguments,'parentPropertyIdentifier')){
+			hql &= ", #parentProperty# as parentValue";
+		}
+		hql &=")";
+		
+		hql &="#getHQLFrom(allowFetch=false)#
+		#getHQLWhere()# #getHibachiScope().getService('hibachiUtilityService').hibachiTernary(len(getHQLWhere()), 'AND', 'WHERE')#
 				#nameProperty# IS NOT NULL
 			AND
 				#valueProperty# IS NOT NULL
 		GROUP BY
 			#nameProperty#,
-			#valueProperty#
+			#valueProperty#";
+			
+		if(structKeyExists(arguments,'parentPropertyIdentifier')){
+			hql &= ", #parentProperty#";
+		}
+			
+		hql &= "
 		ORDER BY
-			#nameProperty# ASC", getHQLParams());
+			#nameProperty# ASC";
+		var results = ormExecuteQuery(hql, getHQLParams());
 		
 		variables.whereGroups = originalWhereGroup;
 		

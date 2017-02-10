@@ -69,8 +69,12 @@ component extends="HibachiService" accessors="true" output="false" {
 
 	// ===================== START: DAO Passthrough ===========================
 
-	public array function getUnusedProductOptionGroups(required string productTypeID, required string existingOptionGroupIDList){
+	public array function getUnusedProductOptionGroups(required string productTypeIDPath, required string existingOptionGroupIDList){
 		return getOptionDAO().getUnusedProductOptionGroups(argumentCollection=arguments);
+	}
+
+	public void function addOptionGroupByOptionGroupIDAndProductID(required any optionGroupID,required any productID){
+		getOptionDAO().addOptionGroupByOptionGroupIDAndProductID(arguments.optionGroupID,arguments.productID);
 	}
 
 	// ===================== START: DAO Passthrough ===========================
@@ -105,4 +109,3 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ======================  END: Get Overrides =============================
 
 }
-

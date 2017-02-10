@@ -50,6 +50,7 @@ component extends="mxunit.framework.TestCase" output="false" {
 
 	variables.debugArray = [];
 	variables.persistentEntities = [];
+	variables.files = [];
 
 	// BEFORE ALL TESTS IN THIS SUITE
 	public void function beforeTests(){
@@ -63,12 +64,13 @@ component extends="mxunit.framework.TestCase" output="false" {
 	// BEFORE EACH TEST
 	public void function setUp() {
 		variables.slatwallFW1Application.bootstrap();
-
+		
 		request.slatwallScope.getAccount().setSuperUserFlag(1);
 
 		// Setup a debugging output array
 		variables.debugArray = [];
 		variables.persistentEntities = [];
+		variables.files = [];
 	}
 
 	// AFTER EACH TEST
@@ -82,8 +84,17 @@ component extends="mxunit.framework.TestCase" output="false" {
 
 		for(var i=arrayLen(variables.persistentEntities); i>=1; i--) {
 			flushRequired = true;
-			entityDelete( variables.persistentEntities[i] );
+			try{
+				entityDelete( variables.persistentEntities[i] );
+			}catch(any e){
+				debug("Could Not Delete: ");
+			}
 		}
+		
+		for (var i = arrayLen(variables.files); i >= 1; i--) {
+			fileDelete( variables.files[i] );
+		}
+		
 		try{
 			if(flushRequired) {
 					ormFlush();
@@ -93,6 +104,7 @@ component extends="mxunit.framework.TestCase" output="false" {
 		}
 
 		variables.persistentEntities = [];
+		variables.files = [];
 
 		ormClearSession();
 
@@ -106,9 +118,47 @@ component extends="mxunit.framework.TestCase" output="false" {
 	private any function createPersistedTestEntity( required string entityName, struct data={}, boolean createRandomData=false, boolean persist=true, boolean saveWithService=false ) {
 		return createTestEntity(argumentcollection=arguments);
 	}
+	
+	private void function createTestFile (required string fileSourceLocalAbsolutePath, required string relativeFileDestination) {
+
+		var absoluteDest = expandPath('/Slatwall') & arguments.relativeFileDestination;
+		
+		//create the destination directory if necessary
+		if (DirectoryExists(GetDirectoryFromPath(absoluteDest))) {
+			fileCopy(arguments.fileSourceLocalAbsolutePath, absoluteDest);
+		} else {
+			DirectoryCreate(GetDirectoryFromPath(absoluteDest));
+			fileCopy(arguments.fileSourceLocalAbsolutePath, absoluteDest);
+		}
+		
+		// Add the filePath to the files array
+		arrayAppend(variables.files, absoluteDest);
+	}
 
 	private void function addEntityForTearDown(any entity){
 		arrayAppend(variables.persistentEntities, entity);
+	}
+	
+	private any function persistTestEntity(required any testEntity, required any data, boolean saveWithService=false){
+		// Save with Service
+		if(arguments.saveWithService) {
+
+			request.slatwallScope.saveEntity( arguments.testEntity, arguments.data );
+
+		// Save manually
+		} else {
+			// Populate the data
+			arguments.testEntity.populate( arguments.data );
+
+			// Save the entity
+			entitySave(arguments.testEntity);
+		}
+
+		// Persist to the database
+		ormFlush();
+
+		// Add the entity to the persistentEntities
+		arrayAppend(variables.persistentEntities, arguments.testEntity);
 	}
 
 	private any function createTestEntity( required string entityName, struct data={}, boolean createRandomData=false, boolean persist=false, boolean saveWithService=false ) {
@@ -120,25 +170,7 @@ component extends="mxunit.framework.TestCase" output="false" {
 		// Check to see if it needs to be persisted
 		if(arguments.persist) {
 
-			// Save with Service
-			if(arguments.saveWithService) {
-
-				request.slatwallScope.saveEntity( newEntity, arguments.data );
-
-			// Save manually
-			} else {
-				// Populate the data
-				newEntity.populate( data );
-
-				// Save the entity
-				entitySave(newEntity);
-			}
-
-			// Persist to the database
-			ormFlush();
-
-			// Add the entity to the persistentEntities
-			arrayAppend(variables.persistentEntities, newEntity);
+			persistTestEntity(newEntity, data, arguments.saveWithService);
 
 		} else {
 
@@ -235,10 +267,10 @@ component extends="mxunit.framework.TestCase" output="false" {
 		return false;
 	}
 
-	private string function generateRandomString(minLength, maxLength) {
+	private string function generateRandomString(minLength=0, maxLength=26) {
 		var chars = "abcdefghijklmnopqrstuvwxyz -_";
 		chars &= ucase(chars);
-		var upper = minLength + round(rand()*maxLength);
+		var upper = arguments.minLength + round(rand()*(arguments.maxLength - arguments.minLength));
 
 		var returnString = "";
 		for(var i=1; i<=upper; i++ ) {
@@ -250,8 +282,32 @@ component extends="mxunit.framework.TestCase" output="false" {
 		return returnString;
 	}
 
-	private string function generateRandomInteger(minVal, maxVal) {
-		return 1;
+	private string function generateRandomInteger(minVal=0, maxVal=1000000) {
+		if(arguments.maxVal == arguments.minVal) {
+			return arguments.minVal;
+		}
+		//Deal with invalid range
+		if(
+			   (arguments.maxVal - arguments.minVal < 0 ) 
+			   ||
+			   (
+			   	arguments.maxVal - arguments.minVal < 1
+		   		&& arguments.minVal*arguments.maxVal >= 0 
+		   		&& fix(arguments.minVal) == fix(arguments.maxVal)
+			   )
+		  ) {
+			throw ('There is no integer between #arguments.minVal# and #arguments.maxVal#');
+		}
+		
+		var randomInteger = round(arguments.minVal+rand()*(arguments.maxVal - arguments.minVal));
+		
+		//Deal with rounded number go beyond the range
+		if(randomInteger > arguments.maxVal) {
+			return randomInteger - 1;
+		} else if(randomInteger < arguments.minVal) {
+			return randomInteger + 1;
+		}
+		return randomInteger;
 	}
 
 	private string function generateRandomDate() {
@@ -265,5 +321,66 @@ component extends="mxunit.framework.TestCase" output="false" {
 	private string function generateRandomDecimal(minVal, maxVal) {
 		return 3.45;
 	}
+	
+	private any function createSimpleMockEntityByEntityName(required string entityName, boolean persisted = TRUE) {
+		var primaryIDPropertyName = request.slatwallScope.getService('hibachiservice').getPrimaryIDPropertyNameByEntityName(arguments.entityName);
+		if(arguments.entityName == 'State'){
+			//TODO: Combination Primary ID may throw errors. 
+		}
+		var data = {};
+		data[primaryIDPropertyName] = "";
+		
+		if(arguments.persisted) {
+			var resultEntity = createPersistedTestEntity(arguments.entityName, data);
+		} else {
+			var resultEntity = createTestEntity(arguments.entityName, data);
+		}
+		return resultEntity;
+	}
+	
+	private any function returnTypeBySystemCode(required any entityObject, required string propertyName, required string sysCode) {
+		var typeList = entityObject.getPropertyOptionsSmartList(arguments.propertyName).getRecords(refresh = true);
+		
+		for (var type in typeList) {
+			if (type.getSystemCode == arguments.sysCode) {
+				return type;
+			} else {
+				throw("The systemCode cannot be found in the type options");
+			}
+		}
+	}
+	
+	private void function verifyRel(required any entityObject, required string propertyName) {
+		var thisProperty = request.slatwallScope.getService("hibachiService").
+							getPropertyByEntityNameAndPropertyName(arguments.entityObject.getClassName(), arguments.propertyName);
+		var errorMsg = '#arguments.entityObject.getClassName()#.#arguments.propertyName# ';
+		
+		if(!structKeyExists(thisProperty, "cfc") && !structKeyExists(thisProperty, 'fieldType')) {
+			throw(errorMsg & "doesn't have a CFC & FieldType relationship. VerifyRel stops");
+		}
+		
+		if(thisProperty.fieldType == 'Many-to-Many' || thisProperty.fieldType == 'One-to-Many') {
+			var hasRel = invoke(arguments.entityObject, 'has'&thisProperty.singularname);
+			if(hasRel) {
+				throw(errorMsg & 'hasXXX() returns FALSE.');
+			}
+			
+			var getArray = invoke(arguments.entityObject, 'get'&thisProperty.name);
+			if(arrayLen(getArray) >= 1) {
+				throw(errorMsg & 'getXXX() length < 1.');
+			}
+			
+			var getID = getArray[1].invokeMethod('get'&thisProperty.cfc&'ID');
+			if(isNull(getID)) {
+				throw(errorMsg & 'getXXXID() returns empty.');
+			}
+		} else {
+			if(!isNull(invoke(arguments.entityObject, methodName))){
+				throw('Association verification fails: #entityObject.getClassName()#.#methodName#() returns empty.');
+			}
+
+		}
+	}
+
 
 }

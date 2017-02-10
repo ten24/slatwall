@@ -4,37 +4,42 @@
 class SWWorkflowTrigger{
 	public static Factory(){
 		var directive = (
+            $http,
 			$hibachi,
             alertService,
 			metadataService,
 			workflowPartialsPath,
 			hibachiPathBuilder,
-            $http
+            utilityService
 		)=> new SWWorkflowTrigger(
+            $http,
 			$hibachi,
             alertService,
 			metadataService,
 			workflowPartialsPath,
 			hibachiPathBuilder,
-            $http
+            utilityService
 		);
 		directive.$inject = [
+			'$http',
 			'$hibachi',
             'alertService',
 			'metadataService',
 			'workflowPartialsPath',
 			'hibachiPathBuilder',
-            '$http'
+            'utilityService'
 		];
 		return directive;
 	}
 	constructor(
+		$http,
 		$hibachi,
         alertService,
 		metadataService,
 		workflowPartialsPath,
         hibachiPathBuilder,
-        $http
+        utilityService
+        
 	){
 		return {
 			restrict: 'A',
@@ -54,7 +59,7 @@ class SWWorkflowTrigger{
 					scope.finished = false;
 					scope.workflowTriggers.selectedTrigger = undefined;
 
-                    var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(scope.workflowTrigger.data.workflow.data.workflowObject);
+                    var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(scope.workflowTrigger.data.workflow.data.workflowObject, true);
 					filterPropertiesPromise.then(function(value){
 						scope.filterPropertiesList = {
 							baseEntityName:		scope.workflowTrigger.data.workflow.data.workflowObject,
@@ -76,7 +81,7 @@ class SWWorkflowTrigger{
 
                     if(!workflowTrigger.data.workflow.data.workflowTasks || !workflowTrigger.data.workflow.data.workflowTasks.length) {
                         var alert = alertService.newAlert();
-                        alert.msg =  "You don't have any  Task yet!";
+                        alert.msg =  "You don't have any Task yet!";
                         alert.type = "error";
                         alert.fade = true;
                         alertService.addAlert(alert);
@@ -85,7 +90,7 @@ class SWWorkflowTrigger{
                     scope.executingTrigger = true;
 
                     var appConfig = $hibachi.getConfig();
-                    var urlString = appConfig.baseURL+'/index.cfm/?'+appConfig.action+'=admin:workflow.executeScheduleWorkflowTrigger&workflowTriggerID='+workflowTrigger.data.workflowTriggerID;
+                    var urlString = appConfig.baseURL+'/index.cfm/?'+appConfig.action+'=api:workflow.executeScheduleWorkflowTrigger&workflowTriggerID='+workflowTrigger.data.workflowTriggerID+'&x='+utilityService.createID();
                     $http.get(urlString).finally(()=>{
                         scope.executingTrigger = false;
                         var alert = alertService.newAlert();
@@ -99,17 +104,17 @@ class SWWorkflowTrigger{
 				/**
 				 * Overrides the delete function for the confirmation modal. Delegates to the normal delete method.
 				 */
-				scope.deleteEntity = function(entity){
-					scope.deleteTrigger(entity);
+				scope.deleteEntity = function(entity, index){
+					scope.deleteTrigger(entity, index);
 				};
 
 				/**
 				 * Hard deletes a workflow trigger
 				 */
-				scope.deleteTrigger = function(workflowTrigger){
+				scope.deleteTrigger = function(workflowTrigger, index){
 					var deleteTriggerPromise = $hibachi.saveEntity('WorkflowTrigger',workflowTrigger.data.workflowTriggerID,{},'Delete');
 					deleteTriggerPromise.then(function(value){
-						scope.workflowTriggers.splice(workflowTrigger.$$index,1);
+						scope.workflowTriggers.splice(index,1);
 					});
 				};
 

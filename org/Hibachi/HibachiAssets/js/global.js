@@ -54,40 +54,45 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		}
 	
 		// Datetime Picker
-		jQuery( scopeSelector ).find(jQuery('.datetimepicker')).datetimepicker({
-			dateFormat: convertedDateFormat,
-			timeFormat: convertedTimeFormat,
-			ampm: ampm,
-			onSelect: function(dateText, inst) {
-	
-				// Listing Display Updates
-				if(jQuery(inst.input).hasClass('range-filter-lower')) {
-					var data = {};
-					data[ jQuery(inst.input).attr('name') ] = jQuery(inst.input).val() + '^' + jQuery(inst.input).closest('ul').find('.range-filter-upper').val();
-					listingDisplayUpdate( jQuery(inst.input).closest('.table').attr('id'), data);
-				} else if (jQuery(inst.input).hasClass('range-filter-upper')) {
-					var data = {};
-					data[ jQuery(inst.input).attr('name') ] = jQuery(inst.input).closest('ul').find('.range-filter-lower').val() + '^' + jQuery(inst.input).val();
-					listingDisplayUpdate( jQuery(inst.input).closest('.table').attr('id'), data);
+		if(typeof jQuery( scopeSelector ).find(jQuery('.datetimepicker')).datetimepicker === "function"){
+			jQuery( scopeSelector ).find(jQuery('.datetimepicker')).datetimepicker({
+				dateFormat: convertedDateFormat,
+				timeFormat: convertedTimeFormat,
+				ampm: ampm,
+				onSelect: function(dateText, inst) {
+		
+					// Listing Display Updates
+					if(jQuery(inst.input).hasClass('range-filter-lower')) {
+						var data = {};
+						data[ jQuery(inst.input).attr('name') ] = jQuery(inst.input).val() + '^' + jQuery(inst.input).closest('ul').find('.range-filter-upper').val();
+						listingDisplayUpdate( jQuery(inst.input).closest('.table').attr('id'), data);
+					} else if (jQuery(inst.input).hasClass('range-filter-upper')) {
+						var data = {};
+						data[ jQuery(inst.input).attr('name') ] = jQuery(inst.input).closest('ul').find('.range-filter-lower').val() + '^' + jQuery(inst.input).val();
+						listingDisplayUpdate( jQuery(inst.input).closest('.table').attr('id'), data);
+					}
+		
 				}
-	
-			}
-		});
+			});
+		}
 		// Setup datetimepicker to stop propigation so that id doesn't close dropdowns
 		jQuery( scopeSelector ).find(jQuery('#ui-datepicker-div')).click(function(e){
 			e.stopPropagation();
 		});
 	
 		// Date Picker
-		jQuery( scopeSelector ).find(jQuery('.datepicker')).datepicker({
-			dateFormat: convertedDateFormat
-		});
+		if(typeof jQuery( scopeSelector ).find(jQuery('.datepicker')).timepicker === "function"){
+			jQuery( scopeSelector ).find(jQuery('.datepicker')).datepicker({
+				dateFormat: convertedDateFormat
+			});
+		}
 	
-		// Time Picker
-		jQuery( scopeSelector ).find(jQuery('.timepicker')).timepicker({
-			timeFormat: convertedTimeFormat,
-			ampm: ampm
-		});
+		if(typeof jQuery( scopeSelector ).find(jQuery('.timepicker')).timepicker === "function"){
+			jQuery( scopeSelector ).find(jQuery('.timepicker')).timepicker({
+				timeFormat: convertedTimeFormat,
+				ampm: ampm
+			});
+		}
 	
 		// Dragable
 		jQuery( scopeSelector ).find(jQuery('.draggable')).draggable();
@@ -975,7 +980,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 			jQuery('.panel-collapse:not(".in")').collapse('show');
 		});
 		
-		//function to check form imputs for values and show or hide label text
+		//ADMIN LOGIN: function to check form imputs for values and show or hide label text
 		function checkFields(targetObj){
 			if( targetObj.value !== '') {
 				$(targetObj).closest('.form-group').find('.control-label').addClass('s-slide-out');
@@ -984,30 +989,39 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 			}
 		};
 		
-		//check all inputs on page load and show or hide label
+		//ADMIN LOGIN: check all inputs on page load and show or hide label
 		$('.s-login-wrapper .s-form-signin input').each(function(){
 			checkFields(this);
 		});
 		
-		//check input on keyup and show or hide label
+		//ADMIN LOGIN: check input on keyup and show or hide label
 		$('.s-login-wrapper .s-form-signin input').keyup(function(){	
 			var getIDVal = $(this).attr('id');
 			checkFields(this);
 		});
 		
-		//Hide login and show forgot password
+		//ADMIN LOGIN: Function to toggle show password on login
+		var togglePasswordLogin = function(){
+			$('#j-forgot-password-wrapper').toggle();
+			$('#j-login-wrapper').toggle();
+		};
+		
+		//ADMIN LOGIN: Hide login and show forgot password
 		$('#j-forgot-password').click(function(e){
 			e.preventDefault();
-			$('#j-forgot-password-wrapper').show();
-			$('#j-login-wrapper').hide();
+			togglePasswordLogin();
 		});
 		
-		//Show login and hide forgot password
+		//ADMIN LOGIN: Show login and hide forgot password
 		$('#j-back-to-login').click(function(e){
 			e.preventDefault();
-			$('#j-forgot-password-wrapper').hide();
-			$('#j-login-wrapper').show();
+			togglePasswordLogin();
 		});
+		
+		//ADMIN LOGIN: If forgot password error, show forgot password
+		if( $('#j-forgot-password-wrapper label.error').length ){
+			togglePasswordLogin();
+		}
 	
 		//[TODO]: Change Up JS
 		jQuery('.panel-collapse.in').parent().find('.s-accordion-toggle-icon').addClass('s-opened');
@@ -1392,7 +1406,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		
 						// Update the paging nav
 		
-						jQuery('div[class="j-pagination"][data-tableid="' + tableID + '"]').html(buildPagingNav(r["currentPage"], r["totalPages"], r["pageRecordsStart"], r["pageRecordsEnd"], r["recordsCount"]));
+						jQuery('div[class="j-pagination"][data-tableid="' + tableID + '"]').html(buildPagingNav(r["currentPage"], r["totalPages"], r["pageRecordsStart"], r["pageRecordsEnd"], r["recordsCount"], r["globalSmartListGetAllRecordsLimit"]));
 						pagingShowToggleDefaultHidden();
 						// Update the saved state ID of the table
 						jQuery('#' + tableID).data('savedstateid', r["savedStateID"]);
@@ -1445,7 +1459,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	}
 	
 	
-	function buildPagingNav(currentPage, totalPages, pageRecordStart, pageRecordEnd, recordsCount) {
+	function buildPagingNav(currentPage, totalPages, pageRecordStart, pageRecordEnd, recordsCount, globalSmartListGetAllRecordsLimit) {
 		var nav = '';
 	
 		currentPage = parseInt(currentPage);
@@ -1453,6 +1467,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		pageRecordStart = parseInt(pageRecordStart);
 		pageRecordEnd = parseInt(pageRecordEnd);
 		recordsCount = parseInt(recordsCount);
+		globalSmartListGetAllRecordsLimit = parseInt(globalSmartListGetAllRecordsLimit);
 	
 		if(totalPages > 1){
 			nav = '<ul class="pagination">';
@@ -1475,10 +1490,15 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 			nav += '<li><a href="##" class="show-option" data-show="10">10</a></li>';
 			nav += '<li><a href="##" class="show-option" data-show="25">25</a></li>';
 			nav += '<li><a href="##" class="show-option" data-show="50">50</a></li>';
-			nav += '<li><a href="##" class="show-option" data-show="100">100</a></li>';
-			nav += '<li><a href="##" class="show-option" data-show="500">500</a></li>';
-			nav += '<li><a href="##" class="show-option" data-show="ALL">ALL</a></li>';
-		
+			if(globalSmartListGetAllRecordsLimit >= 100 || globalSmartListGetAllRecordsLimit === 0){
+				nav += '<li><a href="##" class="show-option" data-show="100">100</a></li>';	
+			}
+			if(globalSmartListGetAllRecordsLimit >= 250 || globalSmartListGetAllRecordsLimit === 0){
+				nav += '<li><a href="##" class="show-option" data-show="250">250</a></li>';
+			}
+			if(globalSmartListGetAllRecordsLimit >= recordsCount || globalSmartListGetAllRecordsLimit === 0){
+				nav += '<li><a href="##" class="show-option" data-show="ALL">ALL</a></li>';
+			}
 			if(currentPage > 1) {
 				nav += '<li><a href="#" class="listing-pager page-option prev" data-page="' + (currentPage - 1) + '">&laquo;</a></li>';
 			} else {
@@ -1560,9 +1580,6 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	
 		if(inputValue !== undefined && inputValue.length > 0) {
 			jQuery.each(inputValue.split(','), function(vi, vv) {
-				console.log(inputValue);
-				console.log(vi);
-				console.log(vv);
 				jQuery(jQuery('table[data-multiselectfield="' + multiselectField  + '"]').find('tr[id=' + vv + '] .hibachi-ui-checkbox').addClass('hibachi-ui-checkbox-checked')).removeClass('hibachi-ui-checkbox');
 			});
 		}

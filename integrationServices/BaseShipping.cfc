@@ -52,7 +52,8 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 	property name="productionUrl" type="string";
 	property name="shippingMethods" type="struct";
 	property name="trackingURL" type="string";
-
+	property name="eligibleShippingMethodRates" type="array"; 
+	
 	public any function init() {
 		variables.shippingMethods = {};
 		variables.trackingURL = "";
@@ -67,15 +68,24 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 		return variables.trackingURL;
 	}
 	
+	public void function addEligibleShippingMethodRate(required any shippingMethodRate){
+		arrayAppend(getEligibleShippingMethodRates(), shippingMethodRate); 
+	}
 	
+	public array function getEligibleShippingMethodRates(){
+		if(!structKeyExists(variables, 'eligibleShippingMethodRates')){
+			variables.eligibleShippingMethodRates = []; 
+		}
+		return variables.eligibleShippingMethodRates; 
+	} 	
 	
-	private any function getResponse(required string requestPacket, required string url, required string format="xml"){
+	private any function getResponse(required string requestPacket, required string urlString, required string format="xml"){
 		// Setup Request to push to FedEx
         var httpRequest = new http();
         httpRequest.setMethod("POST");
 		httpRequest.setPort("443");
 		httpRequest.setTimeout(45);
-		httpRequest.setUrl(arguments.url);
+		httpRequest.setUrl(arguments.urlString);
 		httpRequest.setResolveurl(false);
 		if(arguments.format == 'xml'){
 			httpRequest.addParam(type="XML", name="name",value=trim(arguments.requestPacket));
@@ -115,4 +125,14 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 		return lcase(listGetAt(getClassFullname(), listLen(getClassFullname(), '.') - 1, '.'));
 	}
 	
+	public any function testIntegration() {
+		var requestBean = new Slatwall.model.transient.fulfillment.ShippingRatesRequestBean();
+		var testAddress = getHibachiScope().getAccount().getAddress();
+		requestbean.setShipToStreetAddress(testAddress.getStreetAddress());
+		requestbean.setShipToCity(testAddress.getCity());
+		requestbean.setShipToStateCode(testAddress.getStateCode());
+		requestbean.setShipToPostalCode(testAddress.getPostalCode());
+		requestbean.setShipToCountryCode(testAddress.getCountryCode());
+		return getRates(requestBean);
+	}
 }

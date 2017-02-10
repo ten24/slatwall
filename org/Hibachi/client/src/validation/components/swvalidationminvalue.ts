@@ -3,32 +3,29 @@
 /**
  * Returns true if the user value is greater than the minimum value.
  */
+import {ValidationService} from "../services/validationservice";
 class SWValidationMinValue{
-    constructor(){
+    constructor(validationService:ValidationService){
         return {
             restrict: "A",
             require: "^ngModel",
             link: function(scope, element, attributes, ngModel) {
-                    ngModel.$validators.swvalidationminvalue = 
-                    function(modelValue, viewValue) {
-                            var constraintValue = attributes.swvalidationminvalue;
-                            var userValue = viewValue || 0;
-                            if (parseInt(modelValue) >= parseInt(constraintValue))
-                            {
-                                return true;
-                            }
-                        return false;
-                        
-                    };
+                ngModel.$validators.swvalidationminvalue =
+                (modelValue, viewValue)=> {
+                    if(viewValue == null){
+                        return true; 
+                    }
+                    return validationService.validateMinValue(viewValue,attributes.swvalidationminvalue);
+                };
             }
         };
     }
     public static Factory(){
-        var directive = ()=> new SWValidationMinValue();
-        directive.$inject = [];
+        var directive = (validationService)=> new SWValidationMinValue(validationService);
+        directive.$inject = ['validationService'];
         return directive;
     }
 }
 export{
-    SWValidationMinValue  
+    SWValidationMinValue
 }

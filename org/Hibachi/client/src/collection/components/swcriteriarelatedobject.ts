@@ -49,7 +49,7 @@ class SWCriteriaRelatedObject{
             link: function(scope, element, attrs){
                 var getRelatedObjectOptions = function(){
                     var relatedObjectOptions = {
-                        drillEntity:{},
+                        drillEntity:null,
                         hasEntity:{
                             display:"Defined",
                             comparisonOperator:"is not",
@@ -59,9 +59,21 @@ class SWCriteriaRelatedObject{
                             display:"Not Defined",
                             comparisonOperator:"is",
                             value:"null"
+                        },
+                        aggregate : {
+                            aggregate : ""
                         }
                     };
                     return relatedObjectOptions;
+                };
+
+                scope.aggegate ={};
+                scope.aggegate.selectedAggregate = '';
+
+                scope.aggregateOptions = [ 'Average', 'Count', 'Sum'];
+
+                scope.selectAggregate = function (aggregate) {
+                    scope.selectedFilterProperty.selectedCriteriaType.aggregate = aggregate;
                 };
                 scope.relatedObjectOptions = getRelatedObjectOptions();
                 scope.conditionOptions = getRelatedObjectOptions();
@@ -81,12 +93,7 @@ class SWCriteriaRelatedObject{
                         });
                     }
 
-                    scope.selectedCriteriaChanged = function(selectedCriteria){
-                        $log.debug(selectedCriteria);
-                        $log.debug('changed');
-                        //update breadcrumbs as array of filterpropertylist keys
-                        $log.debug(scope.selectedFilterProperty);
-
+                    scope.selectedCriteriaChanged = function(selectedCriteria, selectedAggregate?){
                         var breadCrumb = {
                             entityAlias:scope.selectedFilterProperty.name,
                             cfc:scope.selectedFilterProperty.cfc,
@@ -98,6 +105,10 @@ class SWCriteriaRelatedObject{
                         $log.debug(scope.filterItem.breadCrumbs);
                         scope.filterItem.breadCrumbs.push(breadCrumb);
 
+                        if(selectedAggregate){
+                            scope.selectedFilterProperty.selectedCriteriaType.ormtype = 'integer';
+                            scope.selectedFilterProperty.selectedCriteriaType.aggregate = selectedAggregate;
+                        }
                         //populate editfilterinfo with the current level of the filter property we are inspecting by pointing to the new scope key
                         scope.selectedFilterPropertyChanged({selectedFilterProperty:scope.selectedFilterProperty.selectedCriteriaType});
                         //update criteria to display the condition of the new critera we have selected

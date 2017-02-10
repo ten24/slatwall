@@ -164,7 +164,7 @@ class SWWorkflowTaskActionsController {
             this.$log.debug(workflowTaskAction);
             this.finished = false;
             this.workflowTaskActions.selectedTaskAction = undefined;
-            var filterPropertiesPromise = this.$hibachi.getFilterPropertiesByBaseEntityName(this.workflowTask.data.workflow.data.workflowObject);
+            var filterPropertiesPromise = this.$hibachi.getFilterPropertiesByBaseEntityName(this.workflowTask.data.workflow.data.workflowObject, true);
             filterPropertiesPromise.then( (value) =>{
                 this.filterPropertiesList = {
                     baseEntityName: this.workflowTask.data.workflow.data.workflowObject,
@@ -225,7 +225,7 @@ class SWWorkflowTaskActionsController {
          * Watches for changes in the proccess
          */
         this.showProcessOptions = false;
-        this.processOptions = {};
+        this.processOptions = [];
         //this.$scope.$watch('swWorkflowTaskActions.searchProcess.name', (newValue, oldValue)=>{
         //    if(newValue !== oldValue){
         //        this.getProcessOptions(this.workflowTask.data.workflow.data.workflowObject);

@@ -62,9 +62,10 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 
 	// Related Object Properties (many-to-one)
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
-	property name="accountPaymentMethod" cfc="AccountPaymentMethod" fieldtype="many-to-one" fkcolumn="accountPaymentMethodID";
+	property name="accountPaymentMethod" hb_populateEnabled="public" cfc="AccountPaymentMethod" fieldtype="many-to-one" fkcolumn="accountPaymentMethodID";
 	property name="gracePeriodTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="gracePeriodTermID";
 	property name="initialTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="initialTermID";
+	property name="initialOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="initialOrderItemID";
 	property name="renewalSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="renewalSkuID";
 	property name="renewalTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="renewalTermID";
 	property name="subscriptionTerm" cfc="SubscriptionTerm" fieldtype="many-to-one" fkcolumn="subscriptionTermID";
@@ -81,6 +82,9 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 
 	// Related Object Properties (many-to-many)
 
+	// Calculated Properts
+	property name="calculatedCurrentStatus" cfc="SubscriptionStatus" fieldtype="many-to-one" fkcolumn="currentSubscriptionStatusID";
+
 	// Remote Properties
 	property name="remoteID" ormtype="string";
 
@@ -96,8 +100,6 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	property name="currentStatusCode" persistent="false";
 	property name="currentStatusType" persistent="false";
 	property name="subscriptionOrderItemName" persistent="false";
-	property name="initialSubscriptionOrderItem" persistent="false";
-	property name="initialOrderItem" persistent="false";
 	property name="initialOrder" persistent="false";
 	property name="initialSku" persistent="false";
 	property name="initialProduct" persistent="false";
@@ -115,7 +117,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 			return false;
 		}
 	}
-	
+
 	public void function setFirstReminderEmailDateBasedOnNextBillDate() {
 		// Setup the next Reminder email
 		if( len(this.setting('subscriptionUsageRenewalReminderDays')) ) {
@@ -138,9 +140,17 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	public void function copyOrderItemInfo(required any orderItem) {
 
 		var currencyCode = arguments.orderItem.getCurrencyCode();
-		var renewalPrice = arguments.orderItem.getSku().getRenewalPriceByCurrencyCode( currencyCode );
-		setRenewalPrice( renewalPrice );
 		setCurrencyCode( arguments.orderItem.getCurrencyCode() );
+		
+		//if we have a renewal sku, then use that to get the renewal price (still by currency code)
+		if (!isNull(arguments.orderItem.getSku().getRenewalSku())){
+			setRenewalSku(arguments.orderItem.getSku().getRenewalSku());
+			setRenewalPrice(arguments.orderItem.getSku().getRenewalSku().getRenewalPriceByCurrencyCode( currencyCode ));
+		//otherwise, if we have a renewal price on the sku, then use the renewal price from the sku.
+		}else{
+			var renewalPrice = arguments.orderItem.getSku().getRenewalPriceByCurrencyCode( currencyCode );
+			setRenewalPrice( renewalPrice );
+		}
 
 		// Copy all the info from subscription term
 		var subscriptionTerm = orderItem.getSku().getSubscriptionTerm();
@@ -178,8 +188,13 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	}
 
 	public numeric function getRenewalPrice(){
-		if(!structKeyExists(variables, "renewalPrice") && !isNull(this.getRenewalSku())){
+		//if we have a renewal price, then use it.
+		if (structKeyExists(variables, "renewalPrice")){
+			return variables.renewalPrice;
+		//otherwise check if we have a renewal sku.
+		}else if(!structKeyExists(variables, "renewalPrice") && !isNull(this.getRenewalSku())){
 			variables.renewalPrice = this.getRenewalSku().getRenewalPrice();
+		//else just use 0.
 		}else{
 			variables.renewalPrice = 0;
 		}
@@ -220,26 +235,6 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 		return false;
 	}
 
-	public any function getInitialSubscriptionOrderItem(){
-		if( hasSubscriptionOrderItems() ){
-			var subscriptionSmartList = getService('SubscriptionService').getSubscriptionOrderItemSmartList();
-			subscriptionSmartList.addFilter("subscriptionOrderItemType.systemCode", "soitInitial");
-			return subscriptionSmartList.getRecords();
-		}
-	}
-
-	public any function getInitialOrderItem(){
-
-		if( hasSubscriptionOrderItems() ){
-			var initialSubscriptionOrderItem = getInitialSubscriptionOrderItem();
-
-			if(!isNull(initialSubscriptionOrderItem)){
-				var orderitem = initialSubscriptionOrderItem[1].getOrderItem();
-				return orderitem;
-			}
-		}
-	}
-
 	public any function getInitialSku(){
 		var subscriptionOrderItemSmartList = getService("subscriptionService").getSubscriptionOrderItemSmartList();
 		subscriptionOrderItemSmartList.addFilter('subscriptionUsage.subscriptionUsageID', this.getSubscriptionUsageID());
@@ -275,29 +270,21 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 
 	public any function getMostRecentSubscriptionOrderItem(){
 		if( hasSubscriptionOrderItems() ){
-			var subscriptionSmartList = getService('SubscriptionService').getSubscriptionOrderItemSmartList();
+			var subscriptionSmartList = this.getSubscriptionOrderItemSmartList();
 			subscriptionSmartList.addOrder("createdDateTime|DESC");
-			return subscriptionSmartList.getRecords()[1];
+			return subscriptionSmartList.getFirstRecord();
 		}
 	}
 
 	public any function getMostRecentOrderItem(){
-		if( hasSubscriptionOrderItems() && getTotalNumberOfSubscriptionOrderItems() > 1){
+		if( hasSubscriptionOrderItems() && getSubscriptionOrderItemsCount() > 1){
 			return getMostRecentSubscriptionOrderItem().getOrderItem();
 		}
 	}
 
 	public any function getMostRecentOrder(){
-		if( hasSubscriptionOrderItems() && getTotalNumberOfSubscriptionOrderItems() > 1){
+		if( hasSubscriptionOrderItems() && getSubscriptionOrderItemsCount() > 1){
 			return getMostRecentOrderItem().getOrder();
-		}
-	}
-
-	public any function getTotalNumberOfSubscriptionOrderItems(){
-		if( hasSubscriptionOrderItems() ){
-			return arrayLen( getSubscriptionOrderItems() );
-		}else{
-			return 0;
 		}
 	}
 

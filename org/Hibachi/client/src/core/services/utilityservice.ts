@@ -3,10 +3,81 @@
 /*services return promises which can be handled uniquely based on success or failure by the controller*/
 import {BaseService} from "./baseservice";
 class UtilityService extends BaseService{
-
-    constructor(){
+    //@ngInject
+    constructor(
+        public $parse
+    ){
         super();
 
+    }
+    
+    public structKeyExists = (struct,key) =>{
+        return key in struct; 
+    }
+    
+    public keyToAttributeString = (key)=> {
+        var attributeString = "data-"; 
+        for(var i=0; i<key.length; i++){
+            if(key.charAt(i) == "_"){ 
+                attributeString += "-"
+            } else if(this.isUpperCase(key.charAt(i))){
+                //special case for ID and Acronyms because it doesn't follow naming conventions
+                if(i+1 <= key.length && this.isUpperCase(key.charAt(i+1))){
+                    if(key.charAt(i) + key.charAt(i+1) == "ID"){
+                        attributeString += "-id";
+                        i++;//skip ahead
+                    } else if(this.isUpperCase(key.charAt(i+1))) {
+                        attributeString += "-"; 
+                        //this handles acronyms IE QATS 
+                        while( i+1 <= key.length && this.isUpperCase(key.charAt(i+1))){
+                            attributeString += key.charAt(i).toLowerCase();
+                            i++; 
+                        }
+                    }
+                } else { 
+                    attributeString += "-" + key.charAt(i).toLowerCase(); 
+                } 
+            } else { 
+                attributeString += key.charAt(i); 
+            }
+        }
+        return attributeString; 
+    }
+    
+    public isUpperCase = (character)=>{
+        return character == character.toUpperCase()
+    }
+    
+     public isLowerCase = (character)=>{
+        return character == character.toLowerCase()
+    }
+
+    public snakeToCapitalCase = (s)=>{
+        return s.charAt(0).toUpperCase() + s.replace(/(\-\w)/g, function(m){return m[1].toUpperCase();}).slice(1);
+    }
+
+    public camelCaseToSnakeCase = (s)=>{
+        return s.replace(/([A-Z])/g, function($1){return "-"+$1.toLowerCase();});
+    }
+
+    public replaceStringWithProperties = (stringItem:string, context:any) =>{
+        var properties = this.getPropertiesFromString(stringItem);
+        if(!properties) return;
+        var data = [];
+        angular.forEach(properties, (property)=>{
+            if(property.indexOf('.') != -1){
+                property = property.replace('.','_');
+            }
+            var parseFunction = this.$parse(property);
+            data.push(parseFunction(context));
+        });
+        return this.replacePropertiesWithData(stringItem, data);
+    }
+
+    //used to do inheritance at runtime
+    public extend = (ChildClass, ParentClass)=> {
+        ChildClass.prototype = new ParentClass();
+        ChildClass.prototype.constructor = ChildClass;
     }
 
     public getQueryParamsFromUrl = (url) =>{
@@ -167,30 +238,30 @@ class UtilityService extends BaseService{
         var end = start + count;
         return stringItem.substring(start,end);
     };
-    
+
     public getPropertiesFromString = (stringItem:string):Array<string> =>{
-            if(!stringItem) return;
-            var capture = false;
-            var property = '';
-            var results = [];
-            for(var i=0; i < stringItem.length; i++){
-                if(!capture && stringItem.substr(i,2) == "${"){
-                    property = '';
-                    capture = true;
-                    i = i+1;//skip the ${
-                } else if(capture && stringItem[i] != '}'){
-                    property = property.concat(stringItem[i]);
-                } else if(capture) {
-                    results.push(property);
-                    capture = false;
-                }
+        if(!stringItem) return;
+        var capture = false;
+        var property = '';
+        var results = [];
+        for(var i=0; i < stringItem.length; i++){
+            if(!capture && stringItem.substr(i,2) == "${"){
+                property = '';
+                capture = true;
+                i = i+1;//skip the ${
+            } else if(capture && stringItem[i] != '}'){
+                property = property.concat(stringItem[i]);
+            } else if(capture) {
+                results.push(property);
+                capture = false;
             }
-            return results;
+        }
+        return results;
     };
 
         public replacePropertiesWithData = (stringItem:string, data)=>{
             var results = this.getPropertiesFromString(stringItem);
-            for(var i=0; i < results.length; i++){ 
+            for(var i=0; i < results.length; i++){
                 stringItem = stringItem.replace('${'+results[i]+'}', data[i]);
             }
             return stringItem;
@@ -208,10 +279,19 @@ class UtilityService extends BaseService{
           var count = count || 26;
 
           var text = "";
-          var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+          var firstPossibleCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";  
+          var nextPossibleCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+          var currentPossibleCharacters="";
 
-          for( var i=0; i < count; i++ )
-              text += possible.charAt(Math.floor(Math.random() * possible.length));
+          for( var i=0; i < count; i++ ){
+              if(i === 0){
+                  currentPossibleCharacters=firstPossibleCharacters
+              }else{
+                  currentPossibleCharacters=nextPossibleCharacters
+              }
+              text += currentPossibleCharacters.charAt(Math.floor(Math.random() * currentPossibleCharacters.length));
+          }
+              
 
           return text;
     };
@@ -224,8 +304,48 @@ class UtilityService extends BaseService{
               return array.join();
           }
     };
-      
-      public isDescendantElement = (parent, child) => {
+
+
+    public getPropertyValue=(object, propertyIdentifier)=> {
+        var keys = propertyIdentifier.split('.'), obj = object, keyPart;
+        while ((keyPart = keys.shift()) && keys.length) {
+            obj = obj[keyPart];
+        }
+        return obj[keyPart];
+
+    }
+
+    public setPropertyValue=(object, propertyIdentifier,value):void=> {
+
+        var keys = propertyIdentifier.split('.'), obj = object, keyPart;
+
+
+        while ((keyPart = keys.shift()) && keys.length) {
+            if(!obj[keyPart]){
+                obj[keyPart] = {};
+            }
+            obj = obj[keyPart];
+
+        }
+        obj[keyPart] = value;
+
+
+
+    };
+
+    public nvpToObject=(NVPData):{}=>{
+        var object = {};
+        for(var key in NVPData){
+            var value = NVPData[key];
+            var propertyIdentitifer = key.replace(/\_/g,'.');
+            this.setPropertyValue(object,propertyIdentitifer,value);
+
+
+        }
+        return object;
+    };
+
+    public isDescendantElement = (parent, child) => {
         var node = child.parentNode;
         while (node != null) {
             if (node == parent) {
@@ -235,6 +355,21 @@ class UtilityService extends BaseService{
         }
         return false;
     };
+
+    //utility service toJson avoids circular references
+    public toJson = (obj) =>{
+        var seen = [];
+
+        return JSON.stringify(obj, (key, val)=>{
+            if (val != null && typeof val == "object") {
+                if (seen.indexOf(val) >= 0) {
+                    return;
+                }
+                seen.push(val);
+            }
+            return val;
+        });
+    }
 
     public listFind = (list: string = '', value: string = '', delimiter: string = ','): number => {
           var splitString = list.split(delimiter);

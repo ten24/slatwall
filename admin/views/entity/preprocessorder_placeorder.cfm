@@ -53,7 +53,7 @@ Notes:
 <cfparam name="rc.order" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
-<cfset rc.placeOrderNeedsFulifllmentCharge = false />
+<cfset rc.placeOrderNeedsFulfillmentCharge = false />
 
 <cfoutput>
 	<hb:HibachiEntityProcessForm entity="#rc.order#" edit="#rc.edit#" forceSSLFlag="#$.slatwall.setting('globalForceCreditCardOverSSL')#">
@@ -87,14 +87,14 @@ Notes:
 							<cfelseif orderFulfillment.getFulfillmentMethodType() eq "pickup">
 								<hb:HibachiPropertyDisplay object="#orderFulfillment#" property="pickupLocation" fieldName="orderFulfillments[#ofIndex#].pickupLocation.locationID" fieldClass="required" edit="#rc.edit#" />
 
-							<!--- Shippint --->
+							<!--- Shipping --->
 							<cfelseif orderFulfillment.getFulfillmentMethodType() eq "shipping">
 								<cfif structKeyExists(thisErrorBean.getErrors(), "shippingMethod")>
-									<cfset rc.placeOrderNeedsFulifllmentCharge = true />
+									<cfset rc.placeOrderNeedsFulfillmentCharge = true />
 									<hb:HibachiPropertyDisplay object="#orderFulfillment#" property="shippingMethod" fieldName="orderFulfillments[#ofIndex#].shippingMethod.shippingMethodID" fieldClass="required" edit="#rc.edit#" />
 								</cfif>
-								<cfif structKeyExists(thisErrorBean.getErrors(), "shippingAddress")>
-									<swa:SlatwallAdminAddressDisplay address="#orderFulfillment.getAddress()#" fieldNamePrefix="orderFulfillments[#ofIndex#].shippingAddress" edit="#rc.edit#" />
+								<cfif structKeyExists(thisErrorBean.getErrors(), "shippingAddress") || structKeyExists(thisErrorBean.getErrors(), "requiredShippingInfoExistsFlag")>
+									<swa:SlatwallAdminAddressDisplay address="#orderFulfillment.getAddress()#" fieldNamePrefix="orderFulfillments[#ofIndex#].shippingAddress." edit="#rc.edit#" />
 								</cfif>
 							</cfif>
 							<hr />
@@ -115,8 +115,8 @@ Notes:
 						<input type="hidden" name="newOrderPayment.order.orderID" value="#rc.order.getOrderID()#" />
 
 						<!--- Display the amount that is going to be used --->
-						<cfset amountToChargeDisplay = $.slatwall.formatValue(rc.order.getAddPaymentRequirementDetails().amount, 'currency', {currencyCode=rc.order.getCurrencyCode()}) />
-						<cfif rc.placeOrderNeedsFulifllmentCharge>
+						<cfset amountToChargeDisplay = $.slatwall.formatValue(rc.order.getOrderPaymentChargeAmountNeeded(), 'currency', {currencyCode=rc.order.getCurrencyCode()}) />
+						<cfif rc.placeOrderNeedsFulfillmentCharge>
 							<cfset amountToChargeDisplay &= " + #$.slatwall.rbKey('entity.orderFulfillment.fulfillmentCharge')#" />
 						</cfif>
 						<hb:HibachiPropertyDisplay object="#rc.addOrderPaymentProcessObject.getNewOrderPayment()#" property="amount" value="#amountToChargeDisplay#" edit="false">

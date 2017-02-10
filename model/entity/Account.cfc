@@ -57,6 +57,11 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="loginLockExpiresDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="failedLoginAttemptCount" hb_populateEnabled="false" ormtype="integer" hb_auditable="false";
 	property name="taxExemptFlag" ormtype="boolean";
+	property name="organizationFlag" ormtype="boolean";
+	property name="testAccountFlag" ormtype="boolean";
+	property name="accountCode" ormtype="string" hb_populateEnabled="public" index="PI_ACCOUNTCODE";
+	//calucluated property
+	property name="calculatedFullName" ormtype="string";
 	// CMS Properties
 	property name="cmsAccountID" ormtype="string" hb_populateEnabled="false" index="RI_CMSACCOUNTID";
 
@@ -68,11 +73,16 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="primaryPaymentMethod" hb_populateEnabled="public" cfc="AccountPaymentMethod" fieldtype="many-to-one" fkcolumn="primaryPaymentMethodID";
 	property name="primaryShippingAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="primaryShippingAddressID";
 	property name="accountCreatedSite" hb_populateEnabled="public" cfc="Site" fieldtype="many-to-one" fkcolumn="accountCreatedSiteID";
+	property name="ownerAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="ownerAccountID";
+	
 
 	// Related Object Properties (one-to-many)
+	property name="childAccountRelationships" singularname="childAccountRelationship" fieldType="one-to-many" type="array" fkcolumn="parentAccountID" cfc="AccountRelationship";
+	property name="parentAccountRelationships" singularname="parentAccountRelationship" fieldType="one-to-many" type="array" fkcolumn="childAccountID"   cfc="AccountRelationship";
 	property name="accountAddresses" hb_populateEnabled="public" singularname="accountAddress" fieldType="one-to-many" type="array" fkColumn="accountID" cfc="AccountAddress" inverse="true" cascade="all-delete-orphan";
 	property name="accountAuthentications" singularname="accountAuthentication" cfc="AccountAuthentication" type="array" fieldtype="one-to-many" fkcolumn="accountID" cascade="all-delete-orphan" inverse="true";
 	property name="accountContentAccesses" hb_populateEnabled="false" singularname="accountContentAccess" cfc="AccountContentAccess" type="array" fieldtype="one-to-many" fkcolumn="accountID" inverse="true" cascade="all-delete-orphan";
+	property name="accountCollections" hb_populateEnabled="false" singularname="accountCollection" cfc="AccountCollection" type="array" fieldtype="one-to-many" fkcolumn="accountID" inverse="true" cascade="all-delete-orphan";
 	property name="accountEmailAddresses" hb_populateEnabled="public" singularname="accountEmailAddress" type="array" fieldtype="one-to-many" fkcolumn="accountID" cfc="AccountEmailAddress" cascade="all-delete-orphan" inverse="true";
 	property name="accountLoyalties" singularname="accountLoyalty" type="array" fieldtype="one-to-many" fkcolumn="accountID" cfc="AccountLoyalty" cascade="all-delete-orphan" inverse="true";
 	property name="accountPaymentMethods" hb_populateEnabled="public" singularname="accountPaymentMethod" cfc="AccountPaymentMethod" type="array" fieldtype="one-to-many" fkcolumn="accountID" inverse="true" cascade="all-delete-orphan";
@@ -128,12 +138,21 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="unenrolledAccountLoyaltyOptions" persistent="false";
 	property name="termOrderPaymentsByDueDateSmartList" persistent="false";
 	property name="jwtToken" persistent="false";
-
+	property name="urlTitle" ormtype="string"; //allows this entity to be found via a url title.
+	
 	public boolean function isPriceGroupAssigned(required string  priceGroupId) {
 		return structKeyExists(this.getPriceGroupsStruct(), arguments.priceGroupID);
 	}
 
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public boolean function canDeleteByOwner(){
+		return isNull(getOwnerAccount()) 
+		|| (
+			!isNull(getHibachiScope().getAccount().getSuperUserFlag())
+			&& getHibachiScope().getAccount().getSuperUserFlag()
+		) || getHibachiScope().getAccount().getAccountID() == this.getOwnerAccount().getAccountID();
+	}
 
 	public any function getPrimaryEmailAddressesNotInUseFlag() {
 		if(!structKeyExists(variables, "primaryEmailAddressNotInUseFlag")) {
@@ -144,6 +163,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 				} else {
 					variables.primaryEmailAddressNotInUseFlag = getService("accountService").getPrimaryEmailAddressNotInUseFlag( emailAddress=getEmailAddress(), accountID=getAccountID() );
 				}
+				
 			}
 		}
 		return variables.primaryEmailAddressNotInUseFlag;
@@ -207,7 +227,17 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	}
 
 	public string function getFullName() {
-		return "#getFirstName()# #getLastName()#";
+		var fullName = "";
+		if(!isNull(getFirstName())){
+			fullName &= getFirstName();
+		}
+		if(len(fullName)){
+			fullName &= ' ';
+		}
+		if(!isNull(getLastName())){
+			fullName &= getLastName();
+		}
+		return fullName;
 	}
 
 	public string function getGravatarURL(numeric size=80) {
@@ -275,6 +305,10 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		}
 		return variables.slatwallAuthenticationExistsFlag;
 	}
+	
+	public void function setSlatwallAuthenticationExistsFlag(required boolean slatwallAuthenticationExistsFlag){
+		variables.slatwallAuthenticationExistsFlag = arguments.slatwallAuthenticationExistsFlag;
+	}
 
 
 	public any function getPaymentMethodOptionsSmartList() {
@@ -289,7 +323,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	public numeric function getTermAccountAvailableCredit() {
 		var termAccountAvailableCredit = setting('accountTermCreditLimit');
 
-		termAccountAvailableCredit = precisionEvaluate(termAccountAvailableCredit - getTermAccountBalance());
+		termAccountAvailableCredit = val(precisionEvaluate(termAccountAvailableCredit - getTermAccountBalance()));
 
 		return termAccountAvailableCredit;
 	}
@@ -300,13 +334,13 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		// First look at all the unreceived open order payment
 		for(var termAccountOrderPayment in getTermAccountOrderPayments()) {
 			if(!termAccountOrderPayment.getNewFlag()){
-				termAccountBalance = precisionEvaluate(termAccountBalance + termAccountOrderPayment.getAmountUnreceived());
+				termAccountBalance = getService('HibachiUtilityService').precisionCalculate(termAccountBalance + termAccountOrderPayment.getAmountUnreceived());
 			}
 		}
 
 		// Now look for the unassigned payment amount
 		for(var accountPayment in getAccountPayments()) {
-			termAccountBalance = precisionEvaluate(termAccountBalance - accountPayment.getAmountUnassigned());
+			termAccountBalance = getService('HibachiUtilityService').precisionCalculate(termAccountBalance - accountPayment.getAmountUnassigned());
 		}
 
 		return termAccountBalance;
@@ -712,5 +746,9 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	}
 
 	// ==================  END:  Deprecated Methods ========================
+	public string function getAccountURL() {
+		return "/#setting('globalUrlKeyAccount')#/#getUrlTitle()#/";
+	}
 
+	
 }

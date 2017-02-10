@@ -130,6 +130,46 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(resultMissingStructure, '<div></div>,');
 	}
 	
+	/**
+	*function tested under Model -> Service -> HibachiUtilityService <br>
+	* 3 Tests: IsPrimaryKey, NotPrimaryKey, NotExist
+	*
+	*
+	*/
+	public void function queryToStructOfStructuresTest_IsPrimaryKey() {
+		//testing returns if PK
+		var testQuery = queryNew("id,name,sex", "Integer,Varchar,Varchar", 
+				[ 
+					[1, "One", "F"], 
+					[2, "Two", "M"] ,
+					[3, "Three", "MF"]
+				]); 
+		var expectedStructure = {
+			1 = '',
+			2 = '',
+			3 = ''
+		}; 
+		var resultStructure = variables.service.queryToStructOfStructures(testQuery, "id");
+		assertEquals(resultStructure, expectedStructure);
+	}
+	public void function queryToStructOfStructuresTest_NotPrimaryKey() {
+		//testing returns if not the PK
+		var testQuery = queryNew("id,name,sex", "Integer,Varchar,Varchar", 
+				[ 
+					[1, "One", "F"], 
+					[2, "Two", "M"] ,
+					[3, "Three", "MF"]
+				]); 
+		var expectedStructure = {
+			one = 'fdf',
+			two = '',
+			Three = ''
+		}; 
+		var resultStructure = variables.service.queryToStructOfStructures(testQuery, "Name");
+
+		assertEquals(expectedStructure, resultStructure);
+		//Skip testing the non-existed attribute 
+	}	
 	
 	public void function lcaseStructKeys_lcases_structure_keys_at_top_level() {
 		var data = {};
@@ -320,6 +360,51 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//assertResults
 		
 		assertEquals( serializeJson(result), serializejson(mockExpectedResultForDescending));
+		
+	}
+	
+	private string function returnTrueMessage(){
+		var trueMessage = "Condition is true";
+		return trueMessage;
+	}
+	private string function returnFalseMessage(){
+		var falseMessage = "Condition is false";
+		return falseMessage;
+	}
+	
+	public function hibachiTernary_equalsIIFbutWithoutStrings(){
+		var a = 2;
+		var b = 3;
+		var condition1 = a < b;
+		var condition2 = a > b;
+		
+		var hibachiTernary = service.hibachiTernary;
+		var hResult = hibachiTernary(a<b, returnTrueMessage(), returnFalseMessage());
+		assert(hResult == "Condition is true");
+		var iResult = IIF(condition1, 'returnTrueMessage()', 'returnFalseMessage()');
+		assert(iResult == hResult);
+		
+		var hResult2 = hibachiTernary(condition2, returnTrueMessage(), returnFalseMessage());
+		assert(hResult2 == "Condition is false");
+		var iResult2 = IIF(a>b, 'returnTrueMessage()', 'returnFalseMessage()');
+		assert(iResult2 == hResult2);
+		
+		hResult = hibachiTernary(condition1, returnTrueMessage(), returnFalseMessage());
+		iResult = IIF(condition1, de(returnTrueMessage()), de(returnFalseMessage()));
+		assert(iResult == hResult);
+		
+		hResult = hibachiTernary(condition1, true, false);
+		iResult = IIF(condition1, true, false);
+		assert(iResult == hResult);
+	}
+	
+	public function hibachiTernary_handlesArgumentsCorrectly(){
+		var hibachiTernary = service.hibachiTernary;
+		var result1 = hibachiTernary(true, 'returnTrueMessage()', returnFalseMessage());
+		assert(result1 == 'returnTrueMessage()');
+		
+		var result2 = hibachiTernary(true, "writeOutput('yay')", returnFalseMessage());
+		assert(result2 == "writeOutput('yay')");
 		
 	}
 }

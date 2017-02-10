@@ -52,8 +52,10 @@ Notes:
 <cfparam name="rc.orderPayment" type="any" />
 
 <cfoutput>
-
-	<hb:HibachiListingDisplay smartList="#rc.orderPayment.getAppliedAccountPaymentsSmartList()#"
+	<cfset appliedAccountPaymentsSmartList = rc.orderPayment.getAppliedAccountPaymentsSmartList()/>
+	<cfset appliedAccountPaymentsSmartList.setSelectDistinctFlag(1)/>
+	<cfset appliedAccountPaymentsSmartList.addFilter('accountPayment.paymentTransactions.transactionSuccessFlag','1')/>
+	<hb:HibachiListingDisplay smartList="#appliedAccountPaymentsSmartList#"
 			recordDetailAction="admin:entity.detailaccountpaymentapplied"
 			recordDetailModal="true">
 			

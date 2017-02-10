@@ -52,10 +52,123 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		super.setup();
 		
 		variables.service = request.slatwallScope.getService("updateService");
+		
+		var filePathWith = expandPath('/Slatwall')&"/meta/tests/unit/resources/updateService/AccountWithoutCustomProperties.txt";
+		variables.fileContentForAccountWithoutCustomPropeties = fileRead(filePathWith);
+		
+		
+		var filePathWithout = expandPath('/Slatwall')&"/meta/tests/unit/resources/updateService/AccountWithCustomProperties.txt";
+		variables.fileContentForAccountWithCustomPropeties = fileRead(filePathWithout);
+		
+		var customFilePath = expandPath('/Slatwall')&"/meta/tests/unit/resources/updateService/customProperties.txt";
+		variables.customFileContent = fileRead(customFilePath);
+		
 	}
 	
 	public void function updateCMSApplicationsTest(){
 		variables.service.updateCMSApplications();
+	}
+	
+	public void function allScriptsSucceededTest(){
+		var updateScripts = variables.service.listUpdateScript();
+		for(var updateScript in updateScripts){
+			assert(updateScript.getSuccessfulExecutionCount() > 0,'script: #updateScript.getscriptPath()# failed');
+		}
+	}
+	
+	
+	public void function mergeEntityParsersTest_withoutCustomPropertiesInitially(){
+		
+		var coreEntityParser = request.slatwallScope.getTransient('hibachiEntityParser');
+		
+		coreEntityParser.setFileContent(variables.fileContentForAccountWithoutCustomPropeties);
+		
+		var customEntityParser = request.slatwallScope.getTransient('hibachiEntityParser');
+		customEntityParser.setFileContent(variables.customFileContent);
+		variables.service.mergeEntityParsers(coreEntityParser,customEntityParser);
+		
+		assert(len(coreEntityParser.getCustomPropertyContent()));
+		assertEquals(trim(coreEntityParser.getCustomPropertyContent()),trim(customEntityParser.getPropertyString()));
+		assertEquals(trim(coreEntityParser.getCustomFunctionContent()),trim(customEntityParser.getFunctionString()));
+		assertEquals(trim("public void function testFunc(){
+		return '';
+	}
+	
+	private void function testFunc3(){
+		return '';
+	}
+	
+	public void function testFunc2(){
+		return '';
+	}
+	
+	private void function testFunc4(){
+		return '';
+	}"), trim(coreEntityParser.getCustomFunctionContent()));
+		
+	}
+	
+	
+	public void function mergeEntityParsersTest_withCustomPropertiesInitially_andPurge(){
+		
+		var coreEntityParser = request.slatwallScope.getTransient('hibachiEntityParser');
+		
+		coreEntityParser.setFileContent(variables.fileContentForAccountWithCustomPropeties);
+		
+		var customEntityParser = request.slatwallScope.getTransient('hibachiEntityParser');
+		customEntityParser.setFileContent(variables.customFileContent);
+		variables.service.mergeEntityParsers(coreEntityParser,customEntityParser, true);
+		
+		assert(len(coreEntityParser.getCustomPropertyContent()));
+		assertEquals(trim(coreEntityParser.getCustomPropertyContent()),trim(customEntityParser.getPropertyString()));
+		assertEquals(trim(coreEntityParser.getCustomFunctionContent()),trim(customEntityParser.getFunctionString()));
+		assertEquals(trim("public void function testFunc(){
+		return '';
+	}
+	
+	private void function testFunc3(){
+		return '';
+	}
+	
+	public void function testFunc2(){
+		return '';
+	}
+	
+	private void function testFunc4(){
+		return '';
+	}"), trim(coreEntityParser.getCustomFunctionContent()));
+		
+	}
+	
+	public void function mergeEntityParsersTest_withCustomPropertiesInitially(){
+		
+		var coreEntityParser = request.slatwallScope.getTransient('hibachiEntityParser');
+		
+		coreEntityParser.setFileContent(variables.fileContentForAccountWithCustomPropeties);
+		
+		var customEntityParser = request.slatwallScope.getTransient('hibachiEntityParser');
+		customEntityParser.setFileContent(variables.customFileContent);
+		
+		variables.service.mergeEntityParsers(coreEntityParser,customEntityParser);
+		
+		assert(len(customEntityParser.getPropertyString()));
+		assert(coreEntityParser.getCustomPropertyContent() CONTAINS customEntityParser.getPropertyString());
+		assert(coreEntityParser.getCustomFunctionContent() CONTAINS customEntityParser.getFunctionString());
+		assertEquals(trim("public void function testFunc(){
+		return '';
+	}
+	
+	private void function testFunc3(){
+		return '';
+	}
+	
+	public void function testFunc2(){
+		return '';
+	}
+	
+	private void function testFunc4(){
+		return '';
+	}"), trim(customEntityParser.getFunctionString()));
 	}
 }
 

@@ -15,7 +15,11 @@ import {UtilityService} from "./utilityservice";
 class ObserverService extends BaseService{
     private observers;
     //@ngInject
-    constructor(private utilityService){
+    constructor(
+        public  $timeout, 
+        private historyService, 
+        private utilityService
+    ){
         /**
          * @ngdoc property
          * @name ObserverService#observers
@@ -40,15 +44,17 @@ class ObserverService extends BaseService{
         if(!id){
             id = this.utilityService.createID();
         }
+        event = event.toLowerCase();
+        id = id.toLowerCase();
         if (!this.observers[event]) {
-          this.observers[event] = {};
+            this.observers[event] = {};
         }
 
         if(!this.observers[event][id])
-          this.observers[event][id] = [];
+            this.observers[event][id] = [];
 
         this.observers[event][id].push(callback);
-    }
+    };
 
     /**
      * @ngdoc method
@@ -58,10 +64,10 @@ class ObserverService extends BaseService{
      * @description removes all events for a specific id from the observers object
      */
     detachById = (id:string):void => {
-      for(var event in this.observers)
-      {
-        this.detachByEventAndId(event, id);
-      }
+        id = id.toLowerCase();
+        for(var event in this.observers) {
+            this.detachByEventAndId(event, id);
+        }
     };
 
     /**
@@ -72,9 +78,10 @@ class ObserverService extends BaseService{
      * @description removes removes all the event from the observer object
      */
     detachByEvent = (event:string):void => {
-      if(event in this.observers) {
-        delete this.observers[event];
-      }
+        event = event.toLowerCase();
+        if(event in this.observers) {
+            delete this.observers[event];
+        }
     };
 
     /**
@@ -86,35 +93,62 @@ class ObserverService extends BaseService{
      * @description removes removes all callbacks for an id in a specific event from the observer object
      */
     detachByEventAndId = (event:string, id:string):void => {
-      if(event in this.observers) {
-        if(id in this.observers[event]) {
-          delete this.observers[event][id];
+        event = event.toLowerCase();
+        id = id.toLowerCase();
+        if(event in this.observers) {
+            if(id in this.observers[event]) {
+                delete this.observers[event][id];
+            }
         }
-      }
-    }
+    };
 
     /**
      * @ngdoc method
      * @name ObserverService#notify
      * @methodOf sdt.models:ObserverService
      * @param {string} event name of the event
-     * @param {string|object|array|number} parameters pass whatever your listener is expecting
+     * @param {string|object|Array|number} parameters pass whatever your listener is expecting
      * @description notifies all observers of a specific event
      */
-    notify = (event:string, parameters:any):void => {
-      for(var id in this.observers[event]) {
-        angular.forEach(this.observers[event][id], function (callback) {
-          callback(parameters);
+    notify = (event:string, parameters?:any):any => {
+        console.warn(event); 
+        event = event.toLowerCase();
+        return this.$timeout(()=>{
+            for(var id in this.observers[event]) {
+                for(var callback of this.observers[event][id]) {
+                    callback(parameters);
+                }
+            }
         });
-      }
+    };
+
+    /**
+     * @ngdoc method
+     * @name ObserverService#notifyById
+     * @methodOf sdt.models:ObserverService
+     * @param {string} event name of the event
+     * @param {string} eventId unique id for the object that is listening i.e. namespace
+     * @param {string|object|Array|number} parameters pass whatever your listener is expecting
+     * @description notifies observers of a specific event by id
+     */
+    notifyById = (event:string, eventId:string ,parameters:any):any => {
+        event = event.toLowerCase();
+        eventId = eventId.toLowerCase();
+        return this.$timeout(()=>{
+            for(var id in this.observers[event]) {
+                if(id != eventId) continue;
+                angular.forEach(this.observers[event][id], function (callback) {
+                    callback(parameters);
+                });
+            }
+        });
     }
-	notifyById = (event:string, eventId:string ,parameters:any):void => {
-        for(var id in this.observers[event]) {
-            if(id != eventId) continue;
-            angular.forEach(this.observers[event][id], function (callback) {
-                callback(parameters);
-            });
+    notifyAndRecord = (event:string, parameters:any):any => { 
+      return this.notify(event, parameters).then(
+        ()=>{
+            this.historyService.recordHistory(event,parameters,true);
         }
+      ); 
     }
 }
 export {ObserverService};

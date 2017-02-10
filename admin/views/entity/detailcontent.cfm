@@ -63,11 +63,14 @@ Notes:
 			showDelete="#!rc.content.hasChildContent()#"
 			deleteQueryString="?ngRedirectQS=/entity/Content/"
 			
-		/>
+		>
+			<!---<hb:HibachiProcessCaller entity="#rc.content#" action="admin:entity.preprocesscontent" processContext="create" type="list" modal="true" />--->
+			<hb:HibachiProcessCaller entity="#rc.content#" action="admin:entity.preprocesscontent" processContext="duplicateContent" type="list" modal="true" />
+		</hb:HibachiEntityActionBar>
 		<hb:HibachiEntityDetailGroup object="#rc.content#">
 			<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
 			<cfif rc.content.getProductListingPageFlag()>
-				<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/products">
+				<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/products" count="#rc.content.getListingPagesCount()#">
 			</cfif>
 			<cfif !isNull(rc.content.getSite()) && !isNull(rc.content.getSite().getApp())>
 				<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/content">

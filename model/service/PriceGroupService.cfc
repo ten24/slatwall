@@ -219,7 +219,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 	}
 
-	public numeric function calculateSkuPriceBasedOnCurrentAccountAndCurrencyCode(required any sku, required string currencyCode) {
+	public any function calculateSkuPriceBasedOnCurrentAccountAndCurrencyCode(required any sku, required string currencyCode) {
 		if(getSlatwallScope().getLoggedInFlag()) {
 			return calculateSkuPriceBasedOnAccountAndCurrencyCode(sku=arguments.sku, account=getHibachiScope().getAccount(),currencyCode=arguments.currencyCode);
 		} else {
@@ -257,11 +257,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return prices[1];
 	}
 
-	public numeric function calculateSkuPriceBasedOnAccountAndCurrencyCode(required any sku, required any account,required string currencyCode) {
-
-		// Create a new array, and add the skus price as the first entry
-		var prices = [sku.getPriceByCurrencyCode(arguments.currencyCode)];
-
+	public any function calculateSkuPriceBasedOnAccountAndCurrencyCode(required any sku, required any account,required string currencyCode) {
+		var price = sku.getPriceByCurrencyCode(arguments.currencyCode);
+		
 		var priceGroups = account.getPriceGroups();
 		var accountSubscriptionPriceGroups = getPriceGroupDAO().getAccountSubscriptionPriceGroups(arguments.account.getAccountID());
 
@@ -274,16 +272,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// Loop over each of the price groups of this account, and get the price based on that pricegroup
 		for(var i=1; i<=arrayLen(priceGroups); i++) {
-
-			// Add this price groups price to the prices array
-			arrayAppend(prices, calculateSkuPriceBasedOnPriceGroupAndCurrencyCode(sku=arguments.sku, priceGroup=priceGroups[i],currencyCode=arguments.currencyCode));
+			var calculatedSkuPrice = calculateSkuPriceBasedOnPriceGroupAndCurrencyCode(sku=arguments.sku, priceGroup=priceGroups[i],currencyCode=arguments.currencyCode);
+			// Sort the array by lowest price
+			if(price > calculatedSkuPrice){
+				price = calculatedSkuPrice;
+			}
 		}
-
-		// Sort the array by lowest price
-		arraySort(prices, "numeric", "asc");
-
-		// Return the lowest price
-		return prices[1];
+		if(!isNull(price)){
+			return price;
+		}
+		
 	}
 
 	// Simple method that gets the appopriate rate to use for this sku no matter where it comes from, and then calculates the correct value.  If no rate is found, it is just a passthough of sku.getPrice()
@@ -325,7 +323,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		switch(arguments.priceGroupRate.getAmountType()) {
 			case "percentageOff" :
-				var newPrice = precisionEvaluate(arguments.sku.getPrice() - (arguments.sku.getPrice() * (arguments.priceGroupRate.getAmount() / 100)));
+				var newPrice = val(getService('HibachiUtilityService').precisionCalculate(arguments.sku.getPrice() - (arguments.sku.getPrice() * (arguments.priceGroupRate.getAmount() / 100))));
 
 				// If a rounding rule is in place for this rate, take this newly formated price and apply the rounding rule to it
 				if(!isNull(arguments.priceGroupRate.getRoundingRule())) {
@@ -333,7 +331,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 				break;
 			case "amountOff" :
-				var newPrice = precisionEvaluate(arguments.sku.getPrice() - arguments.priceGroupRate.getAmount());
+				var newPrice = val(getService('HibachiUtilityService').precisionCalculate(arguments.sku.getPrice() - arguments.priceGroupRate.getAmount()));
 				break;
 			case "amount" :
 				var newPrice = arguments.priceGroupRate.getAmount();
@@ -351,7 +349,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		switch(arguments.priceGroupRate.getAmountType()) {
 			case "percentageOff" :
-				var newPrice = precisionEvaluate(arguments.sku.getPriceByCurrencyCode(arguments.currencyCode) - (arguments.sku.getPriceByCurrencyCode(arguments.currencyCode) * (arguments.priceGroupRate.getAmount() / 100)));
+				var newPrice = val(getService('HibachiUtilityService').precisionCalculate(arguments.sku.getPriceByCurrencyCode(arguments.currencyCode) - (arguments.sku.getPriceByCurrencyCode(arguments.currencyCode) * (arguments.priceGroupRate.getAmount() / 100))));
 
 				// If a rounding rule is in place for this rate, take this newly formated price and apply the rounding rule to it
 				if(!isNull(arguments.priceGroupRate.getRoundingRule())) {
@@ -359,7 +357,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 				break;
 			case "amountOff" :
-				var newPrice = precisionEvaluate(arguments.sku.getPriceByCurrencyCode(arguments.currencyCode) - arguments.priceGroupRate.getAmountByCurrencyCode(arguments.currencyCode));
+				var newPrice = val(getService('HibachiUtilityService').precisionCalculate(arguments.sku.getPriceByCurrencyCode(arguments.currencyCode) - arguments.priceGroupRate.getAmountByCurrencyCode(arguments.currencyCode)));
 				break;
 			case "amount" :
 				var newPrice = arguments.priceGroupRate.getAmountByCurrencyCode(arguments.currencyCode);
@@ -420,7 +418,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public void function updateOrderAmountsWithPriceGroups(required any order) {
 		if( !isNull(arguments.order.getAccount()) && arrayLen(arguments.order.getAccount().getPriceGroups()) ) {
-			for(orderItem in arguments.order.getOrderItems()){
+			for(var orderItem in arguments.order.getOrderItems()){
 				if(arrayLen(getService("currencyService").getCurrencyOptions()) > 1){
 					var priceGroupDetails = getBestPriceGroupDetailsBasedOnSkuAndAccountAndCurrencyCode(orderItem.getSku(), arguments.order.getAccount(),arguments.order.getCurrencyCode());
 					if(priceGroupDetails.price < orderItem.getPrice() && isObject(priceGroupDetails.priceGroup)) {

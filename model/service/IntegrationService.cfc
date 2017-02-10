@@ -56,6 +56,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	variables.shippingIntegrationCFCs = {};
 	variables.authenticationIntegrationCFCs = {};
 	variables.taxIntegrationCFCs = {};
+	variables.dataIntegrationCFCs = {};
 	variables.jsObjectAdditions = '';
 	
 	public void function clearActiveFW1Subsystems() {
@@ -134,6 +135,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		return variables.shippingIntegrationCFCs[ arguments.integration.getIntegrationPackage() ];
 	}
+	
+	public any function getDataIntegrationCFC(required any integration) {
+		if(!structKeyExists(variables.dataIntegrationCFCs, arguments.integration.getIntegrationPackage())) {
+			var integrationCFC = createObject("component", "Slatwall.integrationServices.#arguments.integration.getIntegrationPackage()#.Data").init();
+			variables.dataIntegrationCFCs[ arguments.integration.getIntegrationPackage() ] = integrationCFC;
+		}
+		return variables.dataIntegrationCFCs[ arguments.integration.getIntegrationPackage() ];
+	}
 
 	public any function getTaxIntegrationCFC(required any integration) {
 		if(!structKeyExists(variables.taxIntegrationCFCs, arguments.integration.getIntegrationPackage())) {
@@ -143,7 +152,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return variables.taxIntegrationCFCs[ arguments.integration.getIntegrationPackage() ];
 	}
 	
-	public any function updateIntegrationsFromDirectory( required any beanFactory ) {
+	public any function updateIntegrationsFromDirectory() {
 		var dirList = directoryList( expandPath("/Slatwall/integrationServices") );
 		var integrationList = this.listIntegration();
 		var installedIntegrationList = "";
@@ -151,79 +160,130 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Loop over each integration in the integration directory
 		for(var i=1; i<= arrayLen(dirList); i++) {
 			
-			var fileInfo = getFileInfo(dirList[i]);
-			
-			if(fileInfo.type == "directory" && fileExists("#fileInfo.path#/Integration.cfc") ) {
-				
-				var integrationPackage = listLast(dirList[i],"\/");
-				var integrationCFC = createObject("component", "Slatwall.integrationServices.#integrationPackage#.Integration").init();
-				var integrationMeta = getMetaData(integrationCFC);
-				
-				if(structKeyExists(integrationMeta, "Implements") && structKeyExists(integrationMeta.implements, "Slatwall.integrationServices.IntegrationInterface")) {
-					
-					installedIntegrationList = listAppend(installedIntegrationList, integrationPackage);
-					
-					var integration = this.getIntegrationByIntegrationPackage(integrationPackage, true);
-					if(integration.getNewFlag()) {
-						integration.setActiveFlag(0);	
-					}
-					integration.setInstalledFlag(1);
-					integration.setIntegrationPackage(integrationPackage);
-					integration.setIntegrationName(integrationCFC.getDisplayName());
-					integration.setIntegrationTypeList( integrationCFC.getIntegrationTypes() );
-
-					
-					// Call Entity Save so that any new integrations get persisted
-					getHibachiDAO().save( integration );
-					getHibachiDAO().flushORMSession();
-					
-					// If this integration is active lets register all of its event handlers, and decorate the beanFactory with it
-					if( integration.getEnabledFlag() ) {
-						
-						for(var e=1; e<=arrayLen(integrationCFC.getEventHandlers()); e++) {
-							getHibachiEventService().registerEventHandler( integrationCFC.getEventHandlers()[e] );
-						}
-						
-						if(arrayLen(integrationCFC.getEventHandlers())) {
-							logHibachi("The Integration: #integrationPackage# has had #arrayLen(integrationCFC.getEventHandlers())# eventHandler(s) registered");	
-						}
-						
-						if(directoryExists("#getApplicationValue("applicationRootMappingPath")#/integrationServices/#integrationPackage#/model")) {
-							var integrationBF = new Slatwall.org.Hibachi.DI1.ioc("/Slatwall/integrationServices/#integrationPackage#/model", {
-								transients=["process", "transient", "report"],
-								exclude=["entity"]
-							});
-							
-							var integrationBFBeans = integrationBF.getBeanInfo();
-							for(var beanName in integrationBFBeans.beanInfo) {
-								if(isStruct(integrationBFBeans.beanInfo[beanName]) && structKeyExists(integrationBFBeans.beanInfo[beanName], "cfc") && structKeyExists(integrationBFBeans.beanInfo[beanName], "isSingleton")) {
-									if(len(beanName) > len(integrationPackage) && left(beanName, len(integrationPackage)) eq integrationPackage) {
-										arguments.beanFactory.declareBean( beanName, integrationBFBeans.beanInfo[ beanName ].cfc, integrationBFBeans.beanInfo[ beanName ].isSingleton );
-									} else {
-										arguments.beanFactory.declareBean( "#integrationPackage##beanName#", integrationBFBeans.beanInfo[ beanName ].cfc, integrationBFBeans.beanInfo[ beanName ].isSingleton );	
-									}
-								}
-							}
-						}
-					}
-				}
+			var installedIntegration = updateIntegrationFromDirectory(dirList[i]);
+			if(len(installedIntegration)){
+				installedIntegrationList = listAppend(installedIntegrationList,installedIntegration);
 			}
 		}
 		
 		// Turn off the installed and ready flags on any previously setup integration entities
 		for(var integrationEntity in integrationList) {
-			
 			if(!listFindNoCase(installedIntegrationList, integrationEntity.getIntegrationPackage())) {
 				integrationEntity.setInstalledFlag(0);
 				integrationEntity.setActiveFlag(0);
 				
 				getHibachiDAO().flushORMSession();
 			}
-			
-			
 		}
 		
-		return arguments.beanFactory;
+		return getBeanFactory();
+	}
+	
+	public void function loadDataFromIntegrations(){
+
+		var integrationCollectionList = getService('hibachiService').getIntegrationCollectionList();
+		integrationCollectionList.addFilter('activeFlag',1);
+		integrationCollectionList.setDisplayProperties('integrationPackage');
+		var integrations = integrationCollectionList.getRecords();
+		for(var integrationData in integrations){
+			var integrationPath = expandPath('/Slatwall') & "/integrationServices/#integrationData['integrationPackage']#";
+			if(directoryExists(integrationPath)){
+				var integrationDbDataPath = integrationPath & '/config/dbdata';
+				if(directoryExists(integrationDbDataPath)){
+					getService("hibachiDataService").loadDataFromXMLDirectory(xmlDirectory = integrationDbDataPath);
+				}
+			}
+		}
+		
+	}
+	
+	public string function updateIntegrationFromDirectory(required string directoryList, any integrationEntity){
+		var fileInfo = getFileInfo(arguments.directoryList);
+		
+		if(fileInfo.type == "directory" && fileExists("#fileInfo.path#/Integration.cfc") ) {
+			
+			var integrationPackage = listLast(arguments.directoryList,"\/");
+			var integrationCFC = createObject("component", "Slatwall.integrationServices.#integrationPackage#.Integration").init();
+			var integrationMeta = getMetaData(integrationCFC);
+			
+			if(structKeyExists(integrationMeta, "Implements") && structKeyExists(integrationMeta.implements, "Slatwall.integrationServices.IntegrationInterface")) {
+				if(isNull(arguments.integration)){
+					var integration = this.getIntegrationByIntegrationPackage(integrationPackage, true);	
+				}else{
+					var integration = arguments.integrationEntity;
+				}
+				
+				if(integration.getNewFlag()) {
+					integration.setActiveFlag(0);	
+				}
+				integration.setInstalledFlag(1);
+				integration.setIntegrationPackage(integrationPackage);
+				integration.setIntegrationName(integrationCFC.getDisplayName());
+				integration.setIntegrationTypeList( integrationCFC.getIntegrationTypes() );
+
+				
+				// Call Entity Save so that any new integrations get persisted
+				getHibachiDAO().save( integration );
+				getHibachiDAO().flushORMSession();
+				
+				// If this integration is active lets register all of its event handlers, and decorate the getBeanFactory() with it
+				if( integration.getEnabledFlag() ) {
+					
+					for(var e=1; e<=arrayLen(integrationCFC.getEventHandlers()); e++) {
+						getHibachiEventService().registerEventHandler( integrationCFC.getEventHandlers()[e] );
+					}
+					
+					if(arrayLen(integrationCFC.getEventHandlers())) {
+						logHibachi("The Integration: #integrationPackage# has had #arrayLen(integrationCFC.getEventHandlers())# eventHandler(s) registered");	
+					}
+					
+					if(directoryExists("#getApplicationValue("applicationRootMappingPath")#/integrationServices/#integrationPackage#/model")) {
+						var beanFactory = getBeanFactory();
+						//if we have entities then copy them into root model/entity
+						if(directoryExists("#getApplicationValue("applicationRootMappingPath")#/integrationServices/#integrationPackage#/model/entity")){
+							var modelList = directoryList( expandPath("/Slatwall") & "/integrationServices/#integrationPackage#/model/entity" );
+							for(var modelFilePath in modelList){
+								var beanCFC = listLast(replace(modelFilePath,"\","/","all"),'/');
+								var beanName = listFirst(beanCFC,'.');
+								var modelDestinationPath = expandPath("/Slatwall") & "/model/entity/" & beanCFC;
+								FileCopy(modelFilePath,modelDestinationPath);
+								if(!beanFactory.containsBean(beanName)){
+									beanFactory.declareBean(beanName, "#getHibachiDao().getApplicationValue('applicationKey')#.model.entity.#beanName#",false);
+								}
+							}
+						}
+						
+						var integrationBF = new Slatwall.org.Hibachi.DI1.ioc("/Slatwall/integrationServices/#integrationPackage#/model", {
+							transients=["process", "transient", "report"],
+							exclude=["entity"]
+						});
+						
+						var integrationBFBeans = integrationBF.getBeanInfo();
+						for(var beanName in integrationBFBeans.beanInfo) {
+							if(
+								isStruct(integrationBFBeans.beanInfo[beanName]) 
+								&& structKeyExists(integrationBFBeans.beanInfo[beanName], "cfc") 
+								&& structKeyExists(integrationBFBeans.beanInfo[beanName], "isSingleton")
+							) {
+								if(len(beanName) > len(integrationPackage) && left(beanName, len(integrationPackage)) eq integrationPackage) {
+									beanFactory.declareBean( beanName, integrationBFBeans.beanInfo[ beanName ].cfc, integrationBFBeans.beanInfo[ beanName ].isSingleton );
+								} else {
+									beanFactory.declareBean( "#integrationPackage##beanName#", integrationBFBeans.beanInfo[ beanName ].cfc, integrationBFBeans.beanInfo[ beanName ].isSingleton );
+								}
+
+							}
+							
+						}
+						setBeanFactory(beanFactory);
+					}
+
+				}
+				
+			}
+			
+			return integrationPackage;
+		}
+		return '';
 	}
 	
 	
@@ -299,16 +359,60 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// ===================== START: Process Methods ===========================
 	
+	public any function processIntegration_test(required any integration) {
+		var integrationTypes = getIntegrationCFC(arguments.integration).getIntegrationTypes();
+		for(var integrationType in integrationTypes) {
+			var integrationCFC = arguments.integration.getIntegrationCFC(integrationType);
+			if(structKeyExists(integrationCFC, "testIntegration")) {
+				var result = integrationCFC.testIntegration();
+				arguments.integration.addError(errorName="TestResult", errorMessage="#serializeJSON(result.getData())#");
+			} else {
+				arguments.integration.addError(errorName="TestResult", errorMessage="#rbKey('define.test_not_implemented')#");
+			}
+		}
+
+		return arguments.integration;
+	}
+	
 	// =====================  END: Process Methods ============================
 	
 	// ====================== START: Save Overrides ===========================
 	
-	public any function saveIntegration() {
-		if( structKeyExists(variables, "activeFW1Subsystems") ) {
-			structDelete(variables, "activeFW1Subsystems");
+	public any function saveIntegration(required any entity, struct data) {
+		arguments.entity = super.save(argumentCollection=arguments);
+		
+		if(!arguments.entity.hasErrors()){
+			if( structKeyExists(variables, "activeFW1Subsystems") ) {
+				structDelete(variables, "activeFW1Subsystems");
+			}
+			
+			getHibachiAuthenticationService().clearActionPermissionDetails();
+			
+			if(arguments.entity.getEnabledFlag()){
+				getHibachiScope().setApplicationValue("initialized",false);
+			}
+			
 		}
-		getHibachiAuthenticationService().clearActionPermissionDetails();
-		return super.save(argumentCollection=arguments);
+		
+		return arguments.entity;
+	}
+	
+	public any function processIntegration_pullData(required any integration, required any processObject) {
+		
+		if(arguments.integration.getActiveFlag()){
+			integration.getIntegrationCFC('data').pullData();	
+		}
+		
+		return arguments.integration;
+	}
+	
+	public any function processIntegration_pushData(required any integration, required any processObject) {
+		
+		if(arguments.integration.getActiveFlag()){
+			integration.getIntegrationCFC('data').pushData();	
+		}
+		
+		return arguments.integration;
 	}
 	
 	// ======================  END: Save Overrides ============================

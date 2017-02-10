@@ -118,6 +118,10 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 		return variables.locationPathName;
 	}
 	
+	public any function getLocationOptions(){
+		return getService("locationService").getLocationOptions(this.getLocationID());
+	}
+	
 	// ============  END:  Non-Persistent Property Methods =================
 	
 	// ============= START: Bidirectional Helper Methods ===================
@@ -190,11 +194,17 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	}
 	
 	public string function getSimpleRepresentation() {
+		
 		if(!isNull(getParentLocation())) {
-			return getParentLocation().getSimpleRepresentation() & " &raquo; " & getLocationName();
+			return getParentLocation().getSimpleRepresentation() & " » " & getLocationName();
 		}
-		return getLocationName();
+		
+		if(!isNull(getLocationName())){
+			return getLocationName();	
+		}
+		return '';
 	}
+	
 	
 	// ==================  END:  Overridden Methods ========================
 		
@@ -206,7 +216,7 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	}
 	
 	public void function preUpdate(struct oldData){
-		setLocationIDPath( buildIDPathList( "parentLocation" ) );;
+		setLocationIDPath( buildIDPathList( "parentLocation" ) );
 		super.preUpdate(argumentcollection=arguments);
 	}
 	

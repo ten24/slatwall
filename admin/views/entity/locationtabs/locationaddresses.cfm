@@ -67,6 +67,8 @@ Notes:
 									  edit="#rc.edit#">
 						
 				<hb:HibachiListingColumn propertyIdentifier="address.name" />
+			    <hb:HibachiListingColumn propertyIdentifier="address.phoneNumber" />
+			    <hb:HibachiListingColumn propertyIdentifier="address.emailAddress" />
 				<hb:HibachiListingColumn propertyIdentifier="address.streetAddress" />
 				<hb:HibachiListingColumn propertyIdentifier="address.street2Address" />
 				<hb:HibachiListingColumn propertyIdentifier="address.city" />

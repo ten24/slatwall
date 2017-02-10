@@ -1,0 +1,17 @@
+<!-- Add Shipping Address By Selecting an Account Address -->
+<span ng-init="$.slatwall = $root.slatwall"></span>
+<div ng-init="OrderAddShippingObj = {}"></div>
+<!--- When an address has already been saved. --->
+<div class="existing_user">
+    <div class="address" ng-repeat="(key, value) in $.slatwall.account.accountAddresses" ng-click="$.slatwall.doAction('addShippingAddressUsingAccountAddress', {'accountAddressID': value.accountAddressID ,'saveAsAccountAddressFlag':'true'});$.slatwall.selectedAddress=value.address;thisSelected=true;$.slatwall.hasShippingAddressAndMethod = false">
+        <input type="radio" id="selectedAccountAddress{{key}}" name="selectedAccountAddress{{key}}" ng-checked="(thisSelected == key)?true:false"/>
+        <label for="selectedAccountAddress{{key}}" ng-init="$.slatwall.saveShippingAsBilling = true">
+            <span ng-if="$.slatwall.account.accountAddresses[key].address.name">{{$.slatwall.account.accountAddresses[key].address.name}}<br></span>
+            <span ng-if="$.slatwall.account.accountAddresses[key].address.streetAddress">{{$.slatwall.account.accountAddresses[key].address.streetAddress}}<br></span>
+            <span ng-if="$.slatwall.account.accountAddresses[key].address.street2address">{{$.slatwall.account.accountAddresses[key].address.street2Address}}<br></span>
+            <span ng-if="$.slatwall.account.accountAddresses[key].address.city">{{$.slatwall.account.accountAddresses[key].address.city}}</span>, <span ng-if="$.slatwall.account.accountAddresses[key].address.statecode">{{$.slatwall.account.accountAddresses[key].address.statecode}}</span> <span ng-if="$.slatwall.account.accountAddresses[key].address.postalcode">{{$.slatwall.account.accountAddresses[key].address.postalcode}}<br></span>
+            <span ng-if="$.slatwall.account.accountAddresses[key].address.countrycode">{{$.slatwall.account.accountAddresses[key].address.countrycode}}<br></span>
+            <a href="tel:{{$.slatwall.account.accountAddresses[key].address.phoneNumber}}" class="tel" ng-if="$.slatwall.account.accountAddresses[key].address.phoneNumber">{{$.slatwall.account.accountAddresses[key].address.phoneNumber}}</a><br>   
+        </label>
+   </div>
+</div>

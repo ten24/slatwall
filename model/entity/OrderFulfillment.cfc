@@ -101,6 +101,8 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="orderStatusCode" type="numeric" persistent="false";
 	property name="quantityUndelivered" type="numeric" persistent="false";
 	property name="quantityDelivered" type="numeric" persistent="false";
+	property name="selectedShippingMethodOption" type="any" persistent="false";
+	property name="eligibleShippingMethodRates" type="any" persistent="false"; 
 	property name="shippingMethodRate" type="array" persistent="false";
 	property name="shippingMethodOptions" type="array" persistent="false";
 	property name="subtotal" type="numeric" persistent="false" hb_formatType="currency";
@@ -229,25 +231,28 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     public any function getAccountAddressOptions() {
     	if( !structKeyExists(variables, "accountAddressOptions")) {
     		variables.accountAddressOptions = [];
-			var s = getService("accountService").getAccountAddressSmartList();
-			s.addFilter(propertyIdentifier="account.accountID",value=getOrder().getAccount().getAccountID(),fetch="false");
-			s.addOrder("accountAddressName|ASC");
-			var r = s.getRecords();
-			for(var i=1; i<=arrayLen(r); i++) {
-				arrayAppend(variables.accountAddressOptions, {name=r[i].getSimpleRepresentation(), value=r[i].getAccountAddressID()});
+			if(!isNull(getOrder().getAccount())){
+				var s = getService("accountService").getAccountAddressSmartList();
+				s.addFilter(propertyIdentifier="account.accountID",value=getOrder().getAccount().getAccountID(),fetch="false");
+				s.addOrder("accountAddressName|ASC");
+				var r = s.getRecords();
+				for(var i=1; i<=arrayLen(r); i++) {
+					arrayAppend(variables.accountAddressOptions, {name=r[i].getSimpleRepresentation(), value=r[i].getAccountAddressID()});
+				}
 			}
+			arrayPrepend(variables.accountAddressOptions, {name=rbKey("define.none"), value=""});
 		}
 		return variables.accountAddressOptions;
 	}
 
 	public numeric function getChargeAfterDiscount() {
-		return precisionEvaluate(getFulfillmentCharge() - getDiscountAmount());
+		return getService('HibachiUtilityService').precisionCalculate(getFulfillmentCharge() - getDiscountAmount());
 	}
 
 	public numeric function getDiscountAmount() {
 		discountAmount = 0;
 		for(var i=1; i<=arrayLen(getAppliedPromotions()); i++) {
-			discountAmount = precisionEvaluate(discountAmount + getAppliedPromotions()[i].getDiscountAmount());
+			discountAmount = getService('HibachiUtilityService').precisionCalculate(discountAmount + getAppliedPromotions()[i].getDiscountAmount());
 		}
 		return discountAmount;
 	}
@@ -257,14 +262,14 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	}
 
     public numeric function getFulfillmentTotal() {
-    	return precisionEvaluate(getSubtotalAfterDiscountsWithTax() + getChargeAfterDiscount());
+    	return getService('HibachiUtilityService').precisionCalculate(getSubtotalAfterDiscountsWithTax() + getChargeAfterDiscount());
     }
 
    	public numeric function getItemDiscountAmountTotal() {
    		if(!structKeyExists(variables, "itemDiscountAmountTotal")) {
    			variables.itemDiscountAmountTotal = 0;
    			for(var i=1; i<=arrayLen(getOrderFulfillmentItems()); i++) {
-				variables.itemDiscountAmountTotal = precisionEvaluate(variables.itemDiscountAmountTotal + getOrderFulfillmentItems()[i].getDiscountAmount());
+				variables.itemDiscountAmountTotal = getService('HibachiUtilityService').precisionCalculate(variables.itemDiscountAmountTotal + getOrderFulfillmentItems()[i].getDiscountAmount());
 			}
    		}
 		return variables.itemDiscountAmountTotal;
@@ -348,10 +353,8 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     public any function getShippingMethodOptions() {
     	if( !structKeyExists(variables, "shippingMethodOptions")) {
 
-    		// If there aren't any shippingMethodOptions available, then try to populate this fulfillment
-    		if( !arrayLen(getFulfillmentShippingMethodOptions()) ) {
-    			getService("shippingService").updateOrderFulfillmentShippingMethodOptions( this );
-    		}
+			//update the shipping method options with the shipping service to insure qualifiers are re-evaluated    		
+			getService("shippingService").updateOrderFulfillmentShippingMethodOptions( this );
 
     		// At this point they have either been populated just before, or there were already options
     		var optionsArray = [];
@@ -372,37 +375,64 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
     			for(var i=1; i<=arrayLen(optionsArray); i++) {
     				var thisExistingOption = optionsArray[i];
-
-    				if( (sortType eq 'price' && thisOption.totalCharge < thisExistingOption.totalCharge)
-    				  	||
-    					(sortType eq 'sortOrder' && thisOption.shippingMethodSortOrder < thisExistingOption.shippingMethodSortOrder) ) {
-
+					
+					if( (!this.hasOption(optionsArray, thisOption)) && 
+    					(sortType eq 'price' && thisOption.totalCharge < thisExistingOption.totalCharge) ||
+    					(sortType eq 'sortOrder' && thisOption.shippingMethodSortOrder < thisExistingOption.shippingMethodSortOrder)) {
+						
     					arrayInsertAt(optionsArray, i, thisOption);
     					inserted = true;
     					break;
     				}
+    				
     			}
 
-    			if(!inserted) {
+    			if(!inserted && !this.hasOption(optionsArray, thisOption)) {
+    				
     				arrayAppend(optionsArray, thisOption);
     			}
 
     		}
 
     		if(!arrayLen(optionsArray)) {
-    			arrayPrepend(optionsArray, {name=rbKey('define.none'), value=''});
+    			arrayPrepend(optionsArray, {name=rbKey('define.select'), value=''});
     		}
 
     		variables.shippingMethodOptions = optionsArray;
     	}
     	return variables.shippingMethodOptions;
     }
+	
+	public any function hasOption(optionsArray, option){
+		var found = false;
+		for(var i=1; i<=arrayLen(optionsArray); i++) {
+			var thisExistingOption = optionsArray[i];
+			if (option.value == thisExistingOption.value){
+				found = true;
+				break;
+			}
+		}
+		return found;
+	}
 
 	public any function getShippingMethodRate() {
     	if(!isNull(getSelectedShippingMethodOption())) {
     		return getSelectedShippingMethodOption().getShippingMethodRate();
     	}
     }
+
+	public string function getShippingIntegrationName() { 
+		if(!isNull(getShippingIntegration())){
+			return getShippingIntegration().getIntegrationName(); 
+		}
+		return ''; 
+	} 
+
+	public any function getShippingIntegration() { 
+		if(!isNull(getShippingMethodRate()) && !isNull(getShippingMethodRate().getShippingIntegration())){
+				return getShippingMethodRate().getShippingIntegration(); 
+		} 
+	}	
 
     public any function getSelectedShippingMethodOption() {
     	if(!structKeyExists(variables, "selectedShippingMethodOption")) {
@@ -433,25 +463,27 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
   		if( !structKeyExists(variables,"subtotal") ) {
 	    	variables.subtotal = 0;
 	    	for( var i=1; i<=arrayLen(getOrderFulfillmentItems()); i++ ) {
-	    		variables.subtotal = precisionEvaluate(variables.subtotal + getOrderFulfillmentItems()[i].getExtendedPrice());
+				if(getOrderFulfillmentItems()[i].isRootOrderItem()){
+				    variables.subtotal = getService('HibachiUtilityService').precisionCalculate(variables.subtotal + getOrderFulfillmentItems()[i].getExtendedPrice());	    	
+	    		}
 	    	}
   		}
     	return variables.subtotal;
     }
 
     public numeric function getSubtotalAfterDiscounts() {
-    	return precisionEvaluate(getSubtotal() - getItemDiscountAmountTotal());
+    	return getService('HibachiUtilityService').precisionCalculate(getSubtotal() - getItemDiscountAmountTotal());
     }
 
     public numeric function getSubtotalAfterDiscountsWithTax() {
-    	return precisionEvaluate(getSubtotal() - getItemDiscountAmountTotal() + getTaxAmount());
+    	return getService('HibachiUtilityService').precisionCalculate(getSubtotal() - getItemDiscountAmountTotal() + getTaxAmount());
     }
 
     public numeric function getTaxAmount() {
     	if( !structkeyExists(variables, "taxAmount") ) {
     		variables.taxAmount = 0;
 	    	for( var i=1; i<=arrayLen(getOrderFulfillmentItems()); i++ ) {
-	    		variables.taxAmount = precisionEvaluate(variables.taxAmount + getOrderFulfillmentItems()[i].getTaxAmount());
+	    		variables.taxAmount = getService('HibachiUtilityService').precisionCalculate(variables.taxAmount + getOrderFulfillmentItems()[i].getTaxAmount());
 	    	}
     	}
     	return variables.taxAmount;
@@ -462,7 +494,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
     	for( var orderItem in getOrderFulfillmentItems()) {
     		var convertedWeight = getService("measurementService").convertWeightToGlobalWeightUnit(orderItem.getSku().setting('skuShippingWeight'), orderItem.getSku().setting('skuShippingWeightUnitCode'));
-    		totalShippingWeight = precisionEvaluate(totalShippingWeight + (convertedWeight * orderItem.getQuantity()));
+    		totalShippingWeight = getService('HibachiUtilityService').precisionCalculate(totalShippingWeight + (convertedWeight * orderItem.getQuantity()));
     	}
 
     	return totalShippingWeight;
@@ -475,7 +507,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     				  		|| (
 		    				  	!isNull(this.getFulfillmentMethod())
 		    				  	&& this.getFulfillmentMethod().setting('fulfillmentMethodAutoMinReceivedPercentage')
-		    						<= precisionEvaluate( this.getOrder().getPaymentAmountReceivedTotal() * 100 / this.getOrder().getTotal() )
+		    						<= getService('HibachiUtilityService').precisionCalculate( this.getOrder().getPaymentAmountReceivedTotal() * 100 / this.getOrder().getTotal() )
 		    				)
     				  )
     			);
@@ -744,7 +776,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     }
 
 	public numeric function getDiscountTotal() {
-		return precisionEvaluate(getDiscountAmount() + getItemDiscountAmountTotal());
+		return getService('HibachiUtilityService').precisionCalculate(getDiscountAmount() + getItemDiscountAmountTotal());
 	}
 
 	public numeric function getShippingCharge() {

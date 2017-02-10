@@ -157,27 +157,68 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		httpRequest.addParam(type="formfield", name="signature", value=arguments.paymentMethod.getIntegration().setting('paypalAccountSignature'));
 		httpRequest.addParam(type="formfield", name="version", value="98.0");
 
-		// line items
+		// line items - don't send child orderitems as lineitems because the sum amount of line items will not match the order total.
 		for( var i=1; i <= arrayLen(arguments.order.getOrderItems()); ++i){
 			var orderItem = arguments.order.getOrderItems()[i];
-			httpRequest.addParam(type="formfield", name="L_PAYMENTREQUEST_0_NAME#i-1#", value="#orderItem.getSku().getProduct().getTitle()#");
-			httpRequest.addParam(type="formfield", name="L_PAYMENTREQUEST_0_NUMBER#i-1#", value="#orderItem.getSku().getSkuCode()#");
-			httpRequest.addParam(type="formfield", name="L_PAYMENTREQUEST_0_AMT#i-1#", value="#orderItem.getPrice()#");
-			httpRequest.addParam(type="formfield", name="L_PAYMENTREQUEST_0_QTY#i-1#", value="#orderItem.getQuantity()#");
+			
+			//don't run this logic for child order items.
+			if (isNull(orderItem.getParentOrderItem())){
+					
+				httpRequest.addParam(type="formfield", name="L_PAYMENTREQUEST_0_NAME#i-1#", value="#orderItem.getSku().getProduct().getTitle()#");
+				httpRequest.addParam(type="formfield", name="L_PAYMENTREQUEST_0_NUMBER#i-1#", value="#orderItem.getSku().getSkuCode()#");
+				
+				//if this is a product bundle orderitem, send the product bundle price
+				if(!isNull(orderItem.getChildOrderItems()) && arrayLen(orderItem.getChildOrderItems())){
+					httpRequest.addParam(type="formfield", name="L_PAYMENTREQUEST_0_AMT#i-1#", value="#orderItem.getProductBundlePrice()#");
+				//send the regular orderitem price.
+				} else {
+					httpRequest.addParam(type="formfield", name="L_PAYMENTREQUEST_0_AMT#i-1#", value="#orderItem.getPrice()#");
+				}
+				httpRequest.addParam(type="formfield", name="L_PAYMENTREQUEST_0_QTY#i-1#", value="#orderItem.getQuantity()#");
+			}
+		}
+		
+		// add a line item for discount
+		if(arguments.order.getDiscountTotal() > 0){
+			httpRequest.addParam(type="formfield", name="L_PAYMENTREQUEST_0_NAME#i#", value="Discount");
+			httpRequest.addParam(type="formfield", name="L_PAYMENTREQUEST_0_NUMBER#i#", value="DISCOUNT");
+			httpRequest.addParam(type="formfield", name="L_PAYMENTREQUEST_0_AMT#i#", value="-#arguments.order.getDiscountTotal()#");
+			httpRequest.addParam(type="formfield", name="L_PAYMENTREQUEST_0_QTY#i#", value="1");
 		}
 
+		var itemSubTotal = arguments.order.getSubTotalAfterItemDiscounts();
+		if(arguments.order.getOrderDiscountAmountTotal() > 0){
+			itemSubTotal -= arguments.order.getOrderDiscountAmountTotal();
+		} 
+
+		var total = arguments.order.getTotal(); 
+		
+		if(arguments.order.hasGiftCardOrderPaymentAmount()){
+			i++; 
+			httpRequest.addParam(type="formfield", name="L_PAYMENTREQUEST_0_NAME#i#", value="Gift Card Payment");
+			httpRequest.addParam(type="formfield", name="L_PAYMENTREQUEST_0_NUMBER#i#", value="DISCOUNT");
+			httpRequest.addParam(type="formfield", name="L_PAYMENTREQUEST_0_AMT#i#", value="-#arguments.order.getGiftCardOrderPaymentAmount()#");
+			httpRequest.addParam(type="formfield", name="L_PAYMENTREQUEST_0_QTY#i#", value="1");
+			itemSubTotal -= arguments.order.getGiftCardOrderPaymentAmount();
+			total -= arguments.order.getGiftCardOrderPaymentAmount(); 
+		}	
+		
 		// cart totals
 		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_PAYMENTACTION", value="SALE");
-		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_ITEMAMT", value="#arguments.order.getSubTotalAfterItemDiscounts()#");
+		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_ITEMAMT", value="#itemSubTotal#");
 		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_TAXAMT", value="#arguments.order.getTaxTotal()#");
 		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_SHIPPINGAMT", value="#arguments.order.getfulfillmentChargeAfterDiscountTotal()#");
-		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_AMT", value="#arguments.order.getTotal()#");
+		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_AMT", value="#total#");
 		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_CURRENCYCODE", value="#arguments.order.getCurrencyCode()#");
-
+		
 		//httpRequest.addParam(type="formfield", name="noShipping", value="0");
 		httpRequest.addParam(type="formfield", name="allowNote", value="0");
 		httpRequest.addParam(type="formfield", name="hdrImg", value=arguments.paymentMethod.getIntegration().setting('paypalHeaderImage'));
-		httpRequest.addParam(type="formfield", name="email", value=arguments.order.getAccount().getEmailAddress());
+		
+		if (!isNull(arguments.order) && !isNull(arguments.order.getAccount()) && !isNull(arguments.order.getAccount().getEmailAddress())){
+ 			httpRequest.addParam(type="formfield", name="email", value=arguments.order.getAccount().getEmailAddress());
+ 		}
+		
 		httpRequest.addParam(type="formfield", name="returnURL", value="#returnURL#");
 		httpRequest.addParam(type="formfield", name="cancelURL", value=paymentMethod.getIntegration().setting('cancelURL'));
 

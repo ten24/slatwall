@@ -124,6 +124,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var subscriptionUsage = this.newSubscriptionUsage();
 
 		//copy all the info from order items to subscription usage if it's initial order item
+		subscriptionUsage.setInitialOrderItem(arguments.orderItem); 
 		subscriptionUsage.copyOrderItemInfo(arguments.orderItem);
 
 		// set account
@@ -140,20 +141,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		subscriptionUsage.setExpirationDate( arguments.orderItem.getSku().getSubscriptionTerm().getInitialTerm().getEndDate() );
 		subscriptionUsage.setNextBillDate( subscriptionUsage.getExpirationDate() );
 		subscriptionUsage.setFirstReminderEmailDateBasedOnNextBillDate();
-		subscriptionUsage.setRenewalSku(arguments.orderItem.getSku().getRenewalSku());
-
+		
 		// add active status to subscription usage
 		setSubscriptionUsageStatus(subscriptionUsage, 'sstActive');
-
+		
 		// create new subscription orderItem
 		var subscriptionOrderItem = this.newSubscriptionOrderItem();
 		subscriptionOrderItem.setOrderItem(arguments.orderItem);
 		subscriptionOrderItem.setSubscriptionOrderItemType(getTypeService().getTypeBySystemCode(subscriptionOrderItemType));
 		subscriptionOrderItem.setSubscriptionUsage(subscriptionUsage);
-
+		
 		// call save on this entity to make it persistent so we can use it for further lookup
 		this.saveSubscriptionUsage(subscriptionUsage);
-
+		
 		// copy all the subscription benefits
 		for(var subscriptionBenefit in arguments.orderItem.getSku().getSubscriptionBenefits()) {
 			var subscriptionUsageBenefit = this.getSubscriptionUsageBenefitBySubscriptionBenefitANDSubscriptionUsage([subscriptionBenefit,subscriptionUsage],true);
@@ -345,7 +345,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// =====================  END: Logical Methods ============================
 
 	// ===================== START: DAO Passthrough ===========================
-
+	
+	//@SuppressCodeCoverage
 	public array function getUnusedProductSubscriptionTerms( required string productID ){
 		return getSubscriptionDAO().getUnusedProductSubscriptionTerms( argumentCollection=arguments );
 	}

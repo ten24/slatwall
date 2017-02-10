@@ -70,6 +70,7 @@ Notes:
 		<swa:SlatwallSetting settingName="skuEligiblePaymentMethods" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuHoldBackQuantity" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuOrderMinimumQuantity" settingObject="#rc.sku#" />
+		<swa:SlatwallSetting settingName="skuMinimumPercentageAmountRecievedRequiredToPlaceOrder" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuOrderMaximumQuantity" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuShippingWeight" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuShippingWeightUnitCode" settingObject="#rc.sku#" />
@@ -79,8 +80,11 @@ Notes:
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROSAFlag" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuTaxCategory" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuShippingCostExempt" settingObject="#rc.sku#" />
+		
 		<cfif rc.sku.getProduct().getProductType().getBaseProductType() eq "merchandise">
 			<!--- Wrap this arround settings if you want to disable them for certain product types --->
+		<cfelseif  rc.sku.getProduct().getProductType().getBaseProductType() eq "event">
+			<swa:SlatwallSetting settingName="skuEventEnforceConflicts" settingObject="#rc.sku#" />
 		</cfif>
 	</swa:SlatwallSettingTable>
 </cfoutput>

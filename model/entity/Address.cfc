@@ -68,7 +68,14 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	
 	property name="phoneNumber" hb_populateEnabled="public" ormtype="string";
 	property name="emailAddress" hb_populateEnabled="public" ormtype="string";
+	property name="urlTitle" hb_populateEnabled="public" ormtype="string";
 	
+	//Calculated Properties
+	property name="calculatedAddressName" ormtype="string" length="1024"; 
+	
+	//one-to-many
+  	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="addressID" cascade="all-delete-orphan" inverse="true";
+ 
 	// Remote properties
 	property name="remoteID" ormtype="string";
 	
@@ -83,6 +90,7 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	property name="countryCodeOptions" persistent="false" type="array";
 	property name="salutationOptions" persistent="false" type="array";
 	property name="stateCodeOptions" persistent="false" type="array";
+	property name="addressName" persistent="false" type="string";
 	
 	// ==================== START: Logical Methods =========================
 	
@@ -191,9 +199,44 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
+	
+	public string function getAddressName(){
+		if(!structKeyExists(variables,'addressName')){
+			var name = "";
+			if( !isNull(getStreetAddress()) ) {
+				name =  listAppend(name, " #getStreetAddress()#" );
+			}
+			if( !isNull(getStreet2Address()) ) {
+				name = listAppend(name, " #getStreet2Address()#" );
+			}
+			if( !isNull(getCity()) ) {
+				name = listAppend(name, " #getCity()#" );
+			}
+			if( !isNull(getStateCode()) ) {
+				name = listAppend(name, " #getStateCode()#" );
+			}
+			if( !isNull(getPostalCode()) ) {
+				name = listAppend(name, " #getPostalCode()#" );
+			}
+			if( !isNull(getCountryCode()) ) {
+				name = listAppend(name, " #getCountryCode()#" );
+			}
+			variables.addressName = name; 
+		}
+		
+		return variables.addressName;
+	}
 		
 	// ============= START: Bidirectional Helper Methods ===================
 	
+	// Attribute Values (one-to-many)    
+ 	public void function addAttributeValue(required any attributeValue) {    
+  		arguments.attributeValue.setAddress( this );    
+  	}    
+  	public void function removeAttributeValue(required any attributeValue) {    
+  		arguments.attributeValue.removeAddress( this );    
+  	}
+  	
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// =============== START: Custom Validation Methods ====================
@@ -237,27 +280,8 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 
 	// ================== START: Overridden Methods ========================
 	
-	public string function getSimpleRepresentation() {
-		var simpleRepresentation = "";
-		if( !isNull(getStreetAddress()) ) {
-			simpleRepresentation = listAppend(simpleRepresentation, " #getStreetAddress()#" );
-		}
-		if( !isNull(getStreet2Address()) ) {
-			simpleRepresentation = listAppend(simpleRepresentation, " #getStreet2Address()#" );
-		}
-		if( !isNull(getCity()) ) {
-			simpleRepresentation = listAppend(simpleRepresentation, " #getCity()#" );
-		}
-		if( !isNull(getStateCode()) ) {
-			simpleRepresentation = listAppend(simpleRepresentation, " #getStateCode()#" );
-		}
-		if( !isNull(getPostalCode()) ) {
-			simpleRepresentation = listAppend(simpleRepresentation, " #getPostalCode()#" );
-		}
-		if( !isNull(getCountryCode()) ) {
-			simpleRepresentation = listAppend(simpleRepresentation, " #getCountryCode()#" );
-		}
-		return simpleRepresentation;
+	public string function getSimpleRepresentationPropertyName() {
+		return 'calculatedAddressName';
 	}
 	
 	// ==================  END:  Overridden Methods ========================
@@ -276,6 +300,9 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	}
 	
 	// ==================  END:  Deprecated Methods ========================
+	public string function getAddressURL() {
+		return "/#setting('globalUrlKeyAddress')#/#getUrlTitle()#/";
+	}
 	
 }
 

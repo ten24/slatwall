@@ -52,7 +52,7 @@ component  extends="HibachiService" accessors="true" {
 	property name="hibachiDataService" type="any";  
 	property name="contentService" type="any";
 	property name="optionService" type="any";
-	
+	property name="productDAO" type="any";
 
 	// ===================== START: Logical Methods ===========================
 	
@@ -162,6 +162,10 @@ component  extends="HibachiService" accessors="true" {
 	// =====================  END: Logical Methods ============================
 	
 	// ===================== START: DAO Passthrough ===========================
+	
+	public any function getFirstScheduledSku(required string productScheduleID){
+		return getProductDAO().getFirstScheduledSku(arguments.productScheduleID);
+	}
 	
 	// ===================== START: DAO Passthrough ===========================
 	

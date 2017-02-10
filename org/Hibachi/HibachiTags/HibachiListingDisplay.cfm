@@ -243,17 +243,17 @@
 					<cfset thisPropertyMeta = attributes.hibachiScope.getService("hibachiService").getPropertyByEntityNameAndPropertyName( thisEntityName, thisPropertyName ) />
 
 					<!--- Setup automatic search, sort, filter & range --->
-					<cfif not len(column.search) && (!structKeyExists(thisPropertyMeta, "persistent") || thisPropertyMeta.persistent) && (!structKeyExists(thisPropertyMeta, "ormType") || thisPropertyMeta.ormType eq 'string')>
+					<cfif !isNull(thisPropertyMeta) && not len(column.search) && (!structKeyExists(thisPropertyMeta, "persistent") || thisPropertyMeta.persistent) && (!structKeyExists(thisPropertyMeta, "ormType") || thisPropertyMeta.ormType eq 'string')>
 						<cfset column.search = true />
 					<cfelseif !isBoolean(column.search)>
 						<cfset column.search = false />
 					</cfif>
-					<cfif not len(column.sort) && (!structKeyExists(thisPropertyMeta, "persistent") || thisPropertyMeta.persistent)>
+					<cfif !isNull(thisPropertyMeta) && not len(column.sort) && (!structKeyExists(thisPropertyMeta, "persistent") || thisPropertyMeta.persistent)>
 						<cfset column.sort = true />
 					<cfelseif !isBoolean(column.sort)>
 						<cfset column.sort = false />
 					</cfif>
-					<cfif not len(column.filter) && (!structKeyExists(thisPropertyMeta, "persistent") || thisPropertyMeta.persistent)>
+					<cfif !isNull(thisPropertyMeta) && not len(column.filter) && (!structKeyExists(thisPropertyMeta, "persistent") || thisPropertyMeta.persistent)>
 						<cfset column.filter = false />
 
 						<cfif structKeyExists(thisPropertyMeta, "ormtype") && thisPropertyMeta.ormtype eq 'boolean'>
@@ -275,7 +275,7 @@
 					<cfelseif !isBoolean(column.filter)>
 						<cfset column.filter = false />
 					</cfif>
-					<cfif not len(column.range) && (!structKeyExists(thisPropertyMeta, "persistent") || thisPropertyMeta.persistent) && structKeyExists(thisPropertyMeta, "ormType") && (thisPropertyMeta.ormType eq 'integer' || thisPropertyMeta.ormType eq 'big_decimal' || thisPropertyMeta.ormType eq 'timestamp')>
+					<cfif !isNull(thisPropertyMeta) && not len(column.range) && (!structKeyExists(thisPropertyMeta, "persistent") || thisPropertyMeta.persistent) && structKeyExists(thisPropertyMeta, "ormType") && (thisPropertyMeta.ormType eq 'integer' || thisPropertyMeta.ormType eq 'big_decimal' || thisPropertyMeta.ormType eq 'timestamp')>
 						<cfset column.range = true />
 					<cfelseif !isBoolean(column.range)>
 						<cfset column.range = false />
@@ -401,7 +401,7 @@
 									<div class="dropdown">
 										<a href="##" class="dropdown-toggle" data-toggle="dropdown">&nbsp;<i class="glyphicon glyphicon-check"></i> </a>
 										<ul class="dropdown-menu nav">
-											<li><a href="##" class="multiselect-checked-filter"><i class="hibachi-ui-checkbox#IIF(attributes.edit, DE(''), DE('-checked'))#"></i> Show Selected</a></li>
+											<li><a href="##" class="multiselect-checked-filter"><i class="hibachi-ui-checkbox#attributes.hibachiScope.getService('hibachiUtilityService').hibachiTernary(attributes.edit, '', '-checked')#"></i> Show Selected</a></li>
 										</ul>
 									</div>
 								<cfelse>
@@ -494,11 +494,11 @@
 						<tr id="#record.getPrimaryIDValue()#" <cfif thistag.expandable>idPath="#record.getValueByPropertyIdentifier( propertyIdentifier="#thistag.exampleEntity.getPrimaryIDPropertyName()#Path" )#"</cfif>>
 							<!--- Selectable --->
 							<cfif thistag.selectable>
-								<td class="s-table-select"><a href="##" class="table-action-select#IIF(attributes.edit, DE(""), DE(" disabled"))#" data-idvalue="#record.getPrimaryIDValue()#"><i class="hibachi-ui-radio"></i></a></td>
+								<td class="s-table-select"><a href="##" class="table-action-select#attributes.hibachiScope.getService('hibachiUtilityService').hibachiTernary(attributes.edit, "", " disabled")#" data-idvalue="#record.getPrimaryIDValue()#"><i class="hibachi-ui-radio"></i></a></td>
 							</cfif>
 							<!--- Multiselectable --->
 							<cfif thistag.multiselectable>
-								<td class="s-table-checkbox"><a href="##" class="table-action-multiselect#IIF(attributes.edit, DE(""), DE(" disabled"))#" data-idvalue="#record.getPrimaryIDValue()#"><i class="hibachi-ui-checkbox"></i></a></td>
+								<td class="s-table-checkbox"><a href="##" class="table-action-multiselect#attributes.hibachiScope.getService('hibachiUtilityService').hibachiTernary(attributes.edit, "", " disabled")#" data-idvalue="#record.getPrimaryIDValue()#"><i class="hibachi-ui-checkbox"></i></a></td>
 							</cfif>
 							<!--- Sortable --->
 							<cfif thistag.sortable>
@@ -507,11 +507,22 @@
 							<cfloop array="#thistag.columns#" index="column">
 								<!--- Expandable Check --->
 								<cfif column.tdclass eq "primary" and thistag.expandable>
-									<td class="#column.tdclass#"><a href="##" class="table-action-expand depth0" data-depth="0"><i class="glyphicon glyphicon-plus"></i></a> #record.getValueByPropertyIdentifier( propertyIdentifier=column.propertyIdentifier, formatValue=true )#</td>
+									<td class="#column.tdclass#"><a href="##" class="table-action-expand depth0" data-depth="0"><i class="glyphicon glyphicon-plus"></i></a> 
+										<cfif record.getFieldTypeByPropertyIdentifier(column.propertyIdentifier) eq 'wysiwyg'>
+											#record.getValueByPropertyIdentifier( propertyIdentifier=column.propertyIdentifier, formatValue=true )#
+										<cfelse>
+											#attributes.hibachiScope.hibachiHTMLEditFormat(record.getValueByPropertyIdentifier( propertyIdentifier=column.propertyIdentifier, formatValue=true ))#
+										</cfif>
+										
+									</td>
 								<cfelse>
 									<td class="#column.tdclass#">
 										<cfif len(column.propertyIdentifier)>
+											<cfif record.getFieldTypeByPropertyIdentifier(column.propertyIdentifier) eq 'wysiwyg'>
 											#record.getValueByPropertyIdentifier( propertyIdentifier=column.propertyIdentifier, formatValue=true )#
+											<cfelse>
+												#attributes.hibachiScope.hibachiHTMLEditFormat(record.getValueByPropertyIdentifier( propertyIdentifier=column.propertyIdentifier, formatValue=true ))#
+											</cfif>
 										<cfelseif len(column.processObjectProperty)>
 											<cfset attData = duplicate(column) />
 											<cfset attData.object = thisRecordProcessObject />
@@ -627,9 +638,12 @@
 				<li><a href="##" class="show-option" data-show="25">25</a></li>
 				<li><a href="##" class="show-option" data-show="50">50</a></li>
 				<li><a href="##" class="show-option" data-show="100">100</a></li>
-				<li><a href="##" class="show-option" data-show="500">500</a></li>
-				<li><a href="##" class="show-option" data-show="ALL">ALL</a></li>
-
+				<li><a href="##" class="show-option" data-show="250">250</a></li>
+				<cfif attributes.hibachiScope.setting('globalSmartListGetAllRecordsLimit') eq 0 
+					|| attributes.hibachiScope.setting('globalSmartListGetAllRecordsLimit') gte attributes.smartList.getRecordsCount()
+				>
+					<li><a href="##" class="show-option" data-show="ALL">ALL</a></li>
+				</cfif>
 				<cfif attributes.smartList.getCurrentPage() gt 1>
 					<li><a href="##" class="listing-pager page-option prev" data-page="#attributes.smartList.getCurrentPage() - 1#">&laquo;</a></li>
 				<cfelse>

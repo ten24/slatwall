@@ -69,6 +69,7 @@ component  extends="HibachiService" accessors="true" {
 				currentFormResponseID = row["formResponseID"];
 				responseStruct = {};
 				responseStruct["formResponseID"] = row["formResponseID"];
+				responseStruct["createdDateTime"] = row["formResponsePostedDateTime"];
 			}
 			responseStruct[row["questionID"]] = row["response"];
     	}
@@ -105,15 +106,15 @@ component  extends="HibachiService" accessors="true" {
 				this.saveFormResponse(response);
 			}
 		}
-
+		
 		return this.saveForm(arguments.form);
 	}
 
 	public any function processForm_addFormResponse(required any form, required any processObject ){
-
-		arguments.form.addFormResponse(processObject.getNewFormResponse());
-
-		return this.saveForm(arguments.form);
+		var formResponse = processObject.getNewFormResponse();
+		formResponse.setForm(arguments.form);
+		formResponse = this.saveFormResponse(formResponse);
+		return formResponse;
 	}
 
 	// =====================  END: Process Methods ============================

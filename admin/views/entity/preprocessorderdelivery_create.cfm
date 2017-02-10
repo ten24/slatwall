@@ -77,10 +77,9 @@ Notes:
 				</cfif>
 				
 				<!--- Shipping - Inputs --->
-				
 				<cfif rc.processObject.getOrderFulfillment().getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">
 					<cfset hasShippingIntegration = rc.processObject.getUseShippingIntegrationForTrackingNumber()>
-					<cfif hasShippingIntegration>
+					<cfif hasShippingIntegration && getHibachiScope().setting('globalUseShippingIntegrationForTrackingNumberOption')>
 						<hb:HibachiDisplayToggle selector="input[name='trackingNumber']" showValues="0" loadVisable="#hasShippingIntegration#">
 							<hb:HibachiPropertyDisplay 
 								object="#rc.processObject#" 
@@ -108,17 +107,7 @@ Notes:
 
 				</cfif>
 
-				<!---Loop through order payments to see if we paid with a credit card--->
-				<cfset orderPayments = #rc.processObject.getOrder().getOrderPayments()# />
-				<cfset foundCredit = false />
-				<cfloop array='#orderPayments#' index="payment">
-					<cfif payment.getPaymentMethodType() eq 'creditCard'>
-						<cfset foundCredit = true />
-						<cfbreak>
-					</cfif>
-				</cfloop>
-
-				<cfif rc.processObject.getCapturableAmount() gt 0 AND foundCredit>
+				<cfif rc.processObject.getCapturableAmount() gt 0 AND rc.processObject.getOrder().hasCreditCardPaymentMethod()>
 					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="captureAuthorizedPaymentsFlag" edit="true" />
 					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="capturableAmount" edit="false" />
 				</cfif>
@@ -156,7 +145,7 @@ Notes:
 							<cfif IsNumeric(recordData.quantity) && thisQuantity gt 0>
 								<td>#thisQuantity#</td>
 							<cfelse>
-								<td style="color:##cc0000;">#$.slatwall.rbKey('define.quantitymustbegreaterthanzero')#</td>
+								<td style="color:##cc0000;">#$.slatwall.rbKey('entity.orderDelivery.process.create.cannotfulfillitem')#</td>
 							</cfif>
 
 							<input type="hidden" name="orderDeliveryItems[#orderItemIndex#].orderItem.orderItemID" value="#recordData.orderItem.orderItemID#" />

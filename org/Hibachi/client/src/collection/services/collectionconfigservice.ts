@@ -92,8 +92,10 @@ class CollectionConfig {
         public  observerService,
         public  baseEntityName?:string,
         public  baseEntityAlias?:string,
-        public columns?:Column[],
+        public  columns?:Column[],
+        public  keywordColumns:Column[]=[],
         private filterGroups:Array<any>=[{filterGroup: []}],
+        private keywordFilterGroups:Array<any>=[{filterGroup: []}],
         private joins?:Join[],
         private orderBy?:OrderBy[],
         private groupBys?:string,
@@ -102,6 +104,7 @@ class CollectionConfig {
         private pageShow:number = 10,
         private keywords:string = '',
         private allRecords:boolean = false,
+        private dirtyRead:boolean = false,
         private isDistinct:boolean = false
 
     ){
@@ -117,6 +120,7 @@ class CollectionConfig {
 
     public clearFilterGroups=():CollectionConfig=>{
         this.filterGroups = [{filterGroup: []}];
+        this.keywordFilterGroups = [{filterGroup: []}];
         return this;
     };
 
@@ -126,7 +130,8 @@ class CollectionConfig {
 
     public loadJson= (jsonCollection):any =>{
         //if json then make a javascript object else use the javascript object
-        if(angular.isString(jsonCollection)){
+        //if coldfusion has double encoded the json keep calling fromJson until it becomes an object
+        while(angular.isString(jsonCollection)){
             jsonCollection = angular.fromJson(jsonCollection);
         }
 
@@ -143,12 +148,19 @@ class CollectionConfig {
         this.groupBys = jsonCollection.groupBys;
         this.pageShow = jsonCollection.pageShow;
         this.allRecords = jsonCollection.allRecords;
+        if(jsonCollection.dirtyRead){
+            this.dirtyRead = jsonCollection.dirtyRead;
+        }
         this.isDistinct = jsonCollection.isDistinct;
         this.currentPage = jsonCollection.currentPage || 1;
         this.pageShow = jsonCollection.pageShow || 10;
         this.keywords = jsonCollection.keywords;
         return this;
     };
+
+    public clone= () =>{
+        return this.newCollectionConfig(this.baseEntityName, this.baseEntityAlias).loadJson(JSON.parse(JSON.stringify(this.getCollectionConfig())));
+    }
 
     public loadFilterGroups= (filterGroupsConfig:Array<any>=[{filterGroup: []}]):CollectionConfig =>{
         this.filterGroups = filterGroupsConfig;
@@ -166,6 +178,7 @@ class CollectionConfig {
             baseEntityAlias: this.baseEntityAlias,
             baseEntityName: this.baseEntityName,
             columns: this.columns,
+            keywordColumns: this.keywordColumns,
             filterGroups: this.filterGroups,
             joins: this.joins,
             groupBys: this.groupBys,
@@ -174,6 +187,7 @@ class CollectionConfig {
             keywords: this.keywords,
             defaultColumns: (!this.columns || !this.columns.length),
             allRecords: this.allRecords,
+            dirtyRead: this.dirtyRead,
             isDistinct: this.isDistinct,
             orderBy:this.orderBy
         };
@@ -185,9 +199,20 @@ class CollectionConfig {
 
     public getOptions= (): Object =>{
         this.validateFilter(this.filterGroups);
+        if(this.keywords && this.keywords.length && this.keywordColumns.length > 0){
+
+            var columns = this.keywordColumns;
+        } else {
+            var columns = this.columns;
+        }
+        if(this.keywords && this.keywords.length && this.keywordFilterGroups[0].filterGroup.length > 0){
+            var filters = this.keywordFilterGroups;
+        } else {
+            var filters = this.filterGroups
+        }
         var options= {
-            columnsConfig: angular.toJson(this.columns),
-            filterGroupsConfig: angular.toJson(this.filterGroups),
+            columnsConfig: angular.toJson(columns),
+            filterGroupsConfig: angular.toJson(filters),
             joinsConfig: angular.toJson(this.joins),
             orderByConfig:angular.toJson(this.orderBy),
             groupBysConfig: angular.toJson(this.groupBys),
@@ -196,6 +221,7 @@ class CollectionConfig {
             keywords: this.keywords,
             defaultColumns: (!this.columns || !this.columns.length),
             allRecords: this.allRecords,
+            dirtyRead: this.dirtyRead,
             isDistinct: this.isDistinct
         };
         if(angular.isDefined(this.id)){
@@ -272,42 +298,56 @@ class CollectionConfig {
     };
 
     public addColumn= (column: string, title: string = '', options:any = {}):CollectionConfig =>{
-        if(!this.columns || this.utilityService.ArrayFindByPropertyValue(this.columns,'propertyIdentifier',column) === -1){
+        if(!this.columns || options.aggregate != null || this.utilityService.ArrayFindByPropertyValue(this.columns,'propertyIdentifier',column) === -1){
             var isVisible = true,
                 isDeletable = true,
                 isSearchable = true,
                 isExportable = true,
                 persistent ,
                 ormtype = 'string',
-                lastProperty=column.split('.').pop()
+                lastProperty=column.split('.').pop(),
+                isKeywordColumn=true,
+                isOnlyKeywordColumn=false
                 ;
             var lastEntity = this.$hibachi.getEntityExample(this.$hibachi.getLastEntityNameInPropertyIdentifier(this.baseEntityName,column));
             if(angular.isUndefined(lastEntity)){
                 throw("You have passed an incorrect entity name to a collection config");
             }
-            
+
             if(angular.isUndefined(this.columns)){
                 this.columns = [];
             }
-            if(!angular.isUndefined(options['isVisible'])){
+            //hide id columns
+            if(angular.isDefined(options['isVisible'])){
                 isVisible = options['isVisible'];
             }
-            if(!angular.isUndefined(options['isDeletable'])){
+            if( angular.isUndefined(options.isVisible) &&
+                column.substring(column.length - 2) === "ID"
+            ){
+                isVisible = false;
+            }
+            if(angular.isDefined(options['isDeletable'])){
                 isDeletable = options['isDeletable'];
             }
-            if(!angular.isUndefined(options['isSearchable'])){
+            if(angular.isDefined(options['isSearchable'])){
                 isSearchable = options['isSearchable'];
             }
-            if(!angular.isUndefined(options['isExportable'])){
+            if(angular.isDefined(options['isExportable'])){
                 isExportable = options['isExportable'];
             }
             if(angular.isUndefined(options['isExportable']) && !isVisible){
                 isExportable = false;
             }
-            if(!angular.isUndefined(options['ormtype'])){
+            if(angular.isDefined(options['ormtype'])){
                 ormtype = options['ormtype'];
             }else if(lastEntity.metaData[lastProperty] && lastEntity.metaData[lastProperty].ormtype){
                 ormtype = lastEntity.metaData[lastProperty].ormtype;
+            }
+            if(angular.isDefined(options['isKeywordColumn'])){
+                isKeywordColumn = options['isKeywordColumn']
+            }
+             if(angular.isDefined(options['isOnlyKeywordColumn'])){
+                isOnlyKeywordColumn = options['isOnlyKeywordColumn']
             }
 
             if(angular.isDefined(lastEntity.metaData[lastProperty])){
@@ -337,8 +377,12 @@ class CollectionConfig {
                 }
             }
 
-
-            this.columns.push(columnObject);
+            if(!isOnlyKeywordColumn){
+                this.columns.push(columnObject);
+            }
+            if(isKeywordColumn){
+                this.keywordColumns.push(columnObject);
+            }
         }
         return this;
     };
@@ -391,11 +435,20 @@ class CollectionConfig {
         return this;
     };
 
-    public addFilter= (propertyIdentifier: string, value: any, comparisonOperator: string = '=', logicalOperator?: string, hidden:boolean=false):CollectionConfig =>{
-        //create filter
+    public addFilter= (propertyIdentifier: string, value: any, comparisonOperator: string = '=', logicalOperator?: string, hidden:boolean=false, isKeywordFilter=true, isOnlyKeywordFilter=false):CollectionConfig =>{
+        if(!this.filterGroups[0].filterGroup.length){
+            logicalOperator = undefined;
+        }
+
+		//create filter
         var filter = this.createFilter(propertyIdentifier, value, comparisonOperator, logicalOperator, hidden);
 
-        this.filterGroups[0].filterGroup.push(filter);
+        if(!isOnlyKeywordFilter){
+            this.filterGroups[0].filterGroup.push(filter);
+        }
+        if(isKeywordFilter){
+            this.keywordFilterGroups[0].filterGroup.push(filter);
+        }
         return this;
     };
 
@@ -478,6 +531,24 @@ class CollectionConfig {
         return this;
     };
 
+    public removeFilterByDisplayPropertyIdentifier = (displayPropertyIdentifier) =>{
+        this.removeFromFilterGroupsByPropertyIdentifier(this.filterGroups, displayPropertyIdentifier);
+        this.removeFromFilterGroupsByPropertyIdentifier(this.keywordFilterGroups, displayPropertyIdentifier);
+    }
+
+    private removeFromFilterGroupsByPropertyIdentifier = (filterGroups, displayPropertyIdentifier) =>{
+        for( var j = 0; j < filterGroups.length; j++){
+            var filterGroup = filterGroups[j].filterGroup;
+            for( var i = 0; i < filterGroup.length; i++){
+                var filter = filterGroup[i];
+                if(filter.displayPropertyIdentifier == displayPropertyIdentifier){
+                    filterGroup.splice(i, 1);
+                    i--;
+                }
+            }
+        }
+    }
+
     public removeFilterHelper = (filter:any, propertyIdentifier:string, value:any, comparisonOperator:string, currentGroup?)=>{
         if(angular.isUndefined(currentGroup)){
             currentGroup = filter;
@@ -519,6 +590,10 @@ class CollectionConfig {
         });
         return this;
     };
+
+    public clearOrderBy=() =>{
+        this.orderBy = [];
+    }
 
     public addOrderBy = (orderByString, formatPropertyIdentifier:boolean = true):void=>{
         if(!this.orderBy){
@@ -608,6 +683,11 @@ class CollectionConfig {
         return this;
     };
 
+    public setDirtyRead = (flag:boolean=false)=>{
+        this.dirtyRead = flag;
+        return this;
+    }
+
     public setKeywords= (keyword) =>{
         this.keywords = keyword;
         return this;
@@ -623,7 +703,7 @@ class CollectionConfig {
     };
 
     public hasColumns=():boolean=>{
-        return (this.columns.length > 0);
+        return this.columns != null && this.columns.length > 0;
     };
 
     public clearFilters=():CollectionConfig =>{
