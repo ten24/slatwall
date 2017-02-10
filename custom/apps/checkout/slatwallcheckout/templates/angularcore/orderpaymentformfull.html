@@ -66,7 +66,7 @@
 
     <fieldset>
         <legend>Billing Information</legend>
-            <div class="row">
+            <div class="row" ng-if="slatwall.hasShippingAddress()">
                 <label for="useShipping">Use Shipping Address as Billing Address</label>
                 <input type="checkbox" name="useShipping" ng-model="slatwall.useShippingAsBilling">
             </div>

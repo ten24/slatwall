@@ -2136,6 +2136,12 @@
 	        this.hasShippingFulfillmentMethod = function () {
 	            return _this.hasFulfillmentMethod("Shipping");
 	        };
+	        this.hasShippingAddress = function () {
+	            return (_this.hasShippingFulfillmentMethod &&
+	                _this.cart.orderFulfillments &&
+	                _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingTypeIndex] &&
+	                _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingTypeIndex].data.shippingAddress);
+	        };
 	        this.hasEmailFulfillmentMethod = function () {
 	            return _this.hasFulfillmentMethod("Email");
 	        };
@@ -2279,7 +2285,7 @@
 	            var billingAddress;
 	            //if selected, pass shipping address as billing address
 	            if (_this.useShippingAsBilling) {
-	                billingAddress = _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress;
+	                billingAddress = _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingTypeIndex].data.shippingAddress;
 	            }
 	            else if (!_this.billingAddressEditFormIndex || _this.billingAddressEditFormIndex == '') {
 	                billingAddress = _this.selectedBillingAddress;

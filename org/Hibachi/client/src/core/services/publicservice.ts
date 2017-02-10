@@ -364,6 +364,14 @@ class PublicService {
         return this.hasFulfillmentMethod("Shipping");
     }
 
+    public hasShippingAddress = () => {
+        return (
+            this.hasShippingFulfillmentMethod && 
+            this.cart.orderFulfillments &&
+            this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingTypeIndex] &&
+            this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingTypeIndex].data.shippingAddress;
+    }
+
     public hasEmailFulfillmentMethod = ()=>{
         return this.hasFulfillmentMethod("Email");
     }
@@ -525,7 +533,7 @@ class PublicService {
         
         //if selected, pass shipping address as billing address
         if(this.useShippingAsBilling){
-            billingAddress = this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress;
+            billingAddress = this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingTypeIndex].data.shippingAddress;
         
         //If account address selected, use that
         }else if(!this.billingAddressEditFormIndex || this.billingAddressEditFormIndex == ''){
