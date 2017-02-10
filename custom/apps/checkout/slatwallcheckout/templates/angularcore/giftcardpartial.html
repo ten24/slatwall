@@ -28,7 +28,7 @@
                     </swf-property-display>
                 </div>
                 <div class="col-sm-4 form-group">
-                    <button type="button" name="button" class="btn btn-block" ng-click="slatwall.applyGiftCardKeyCheck($event, $parent.swForm);">{{(slatwall.finding)?'Finding':'Add Gift Card'}}</button>
+                    <button type="button" name="button" class="btn btn-block" ng-click="slatwall.applyGiftCardKeyCheck($event, $parent.swForm);">{{(slatwall.findingGiftCard)?'Searching...':'Add Gift Card'}}</button>
                 </div>
             </sw-form>
         </div>
@@ -38,7 +38,7 @@
                 <div class="col-xs-6 left-side">
                     <span>
                         <i class="fa fa-credit-card"></i>
-                        <a role="button" ng-click="slatwall.doAction('removeOrderPayment', {orderPaymentID:payment.orderPaymentID})">Remove</a>
+                        <a role="button" ng-click="slatwall.doAction('removeOrderPayment', {orderPaymentID:payment.orderPaymentID})">{{(slatwall.getRequestByAction('removeOrderPayment').loading) ? 'Removing...' : 'Remove'}}</a>
                     </span>
                     <span class="card-info">
                         <div class="card-number">

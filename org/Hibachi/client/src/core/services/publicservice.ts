@@ -676,6 +676,7 @@ class PublicService {
                     }else{
                         
                     }
+                    this.findingGiftCard = false;
                 });   
             }
         }
@@ -794,6 +795,7 @@ class PublicService {
 
     //Applies a giftcard from the user account onto the payment.
     public applyGiftCard = (giftCardCode)=>{
+        this.findingGiftCard = true;
         var giftCard = {
             "giftCardCode":giftCardCode,
             "applied":false
@@ -891,7 +893,8 @@ class PublicService {
         //
         var total = 0;
         for (var payment in this.cart.orderPayments){
-            if (this.cart.orderPayments[payment].giftCardNumber != ""){
+            if (this.cart.orderPayments[payment].giftCardNumber != "" &&
+                !isNaN(parseInt(payment))){
                 total = total + Number(this.cart.orderPayments[payment]['amount'].toFixed(2));
             }
         }

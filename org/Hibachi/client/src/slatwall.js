@@ -2410,6 +2410,7 @@
 	                        }
 	                        else {
 	                        }
+	                        _this.findingGiftCard = false;
 	                    });
 	                }
 	            }
@@ -2519,6 +2520,7 @@
 	        };
 	        //Applies a giftcard from the user account onto the payment.
 	        this.applyGiftCard = function (giftCardCode) {
+	            _this.findingGiftCard = true;
 	            var giftCard = {
 	                "giftCardCode": giftCardCode,
 	                "applied": false
@@ -2596,7 +2598,8 @@
 	            //
 	            var total = 0;
 	            for (var payment in _this.cart.orderPayments) {
-	                if (_this.cart.orderPayments[payment].giftCardNumber != "") {
+	                if (_this.cart.orderPayments[payment].giftCardNumber != "" &&
+	                    !isNaN(parseInt(payment))) {
 	                    total = total + Number(_this.cart.orderPayments[payment]['amount'].toFixed(2));
 	                }
 	            }
