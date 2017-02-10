@@ -52,7 +52,7 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 	
 	public struct function getSettings() {
 		var settings = {
-			customerFoundMessage = {fieldType="text", defaultValue="Email Found!"},
+			customerFoundMessage = {fieldType="text", defaultValue="Email Found!"}
 		};
 		
 		return settings;

@@ -1355,7 +1355,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 						// Setup a value to log the amount received, credited or authorized.  If any of these exists then we need to place the order
 						var amountAuthorizeCreditReceive = 0;
-
 						// Process All Payments and Save the ones that were successful
 						for(var orderPayment in arguments.order.getOrderPayments()) {
 							// As long as this orderPayment is active then we can run the place order transaction
@@ -1365,7 +1364,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 						}
 
-						
 						
 						// Loop over the orderItems looking for any skus that are 'event' skus, and setting their registration value 
 						for(var orderitem in arguments.order.getOrderItems()) {

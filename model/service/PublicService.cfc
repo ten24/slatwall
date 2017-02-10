@@ -1174,7 +1174,7 @@ component extends="HibachiService"  accessors="true" output="false"
      @ProcessMethod Order_PlaceOrder
      */
     public void function placeOrder(required any data) {
-        
+
         // Insure that all items in the cart are within their max constraint
         if(!getHibachiScope().cart().hasItemsQuantityWithinMaxOrderQuantity()) {
             getOrderService().processOrder(getHibachiScope().cart(), 'forceItemQuantityUpdate');
