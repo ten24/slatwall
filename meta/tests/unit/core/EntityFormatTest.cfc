@@ -102,7 +102,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var entitiesThatDontHaveAuditPropertiesArray = [];
 
 		// Exception Entities with no properties
-		var entitiesWithNoAuditPropsRequired = "SlatwallCommentRelationship,SlatwallAudit,SlatwallUpdateScript";
+		var entitiesWithNoAuditPropsRequired = "SlatwallCommentRelationship,SlatwallAudit,SlatwallUpdateScript,SlatwallServerInstance";
 
 		// Exception Entities that only require the createdByAccountID & createdDateTime
 		var entitiesWithCreatedOnlyProperties = "SlatwallComment,SlatwallEmail,SlatwallInventory,SlatwallPrint,SlatwallShippingMethodOption,SlatwallShippingMethodOptionSplitShipment,SlatwallStockReceiverItem,SlatwallEmailBounce";

@@ -19,7 +19,7 @@ component accessors="true" output="false" extends="HibachiService" {
 		
 		return super.init();
 	}
-
+	
 	public any function hasCachedValue( required string key ) {
 		// If using the internal cache, then check there
 		if( getInternalCacheFlag() && structKeyExists(getCache(), arguments.key) && structKeyExists(getCache()[ arguments.key ], "reset") && !getCache()[ arguments.key ].reset ) {
@@ -43,6 +43,22 @@ component accessors="true" output="false" extends="HibachiService" {
 		// By default return false
 		return false;
 	}
+	
+	public void function updateServerInstanceCache(required string serverInstanceIPAddress){
+		var serverInstance = this.getServerInstanceByServerInstanceIPAddress(arguments.serverInstanceIPAddress);
+		if(isNull(serverInstance)){
+			serverInstance = this.newServerInstance();
+			serverInstance.setServerInstanceIPAddress(arguments.serverInstanceIPAddress);
+			serverInstance.setServerInstanceExpired(false);
+			this.saveServerInstance(serverInstance); 
+		}
+		
+		getDao('hibachiCacheDao').updateServerInstanceCache(serverInstance);
+	}
+	
+	public boolean function isServerInstanceCacheExpired(required string serverInstanceIPAddress){
+		return getDao('hibachiCacheDao').isServerInstanceCacheExpired(arguments.serverInstanceIPAddress);
+	} 
 	
 	public any function getCachedValue( required string key ) {
 		// If using the internal cache, then check there
