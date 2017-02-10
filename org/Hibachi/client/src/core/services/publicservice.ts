@@ -247,6 +247,7 @@ class PublicService {
              console.log('urlBase', urlBase, 'data', data, 'method', method);
             //post
             let request:PublicRequest = this.requestService.newPublicRequest(urlBase,data,method)
+            console.log('requesting')
             request.promise.then((result:any)=>{
                 this.processAction(result,request);
             }).catch((response)=>{

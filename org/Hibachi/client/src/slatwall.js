@@ -2036,6 +2036,7 @@
 	                console.log('urlBase', urlBase, 'data', data, 'method', method);
 	                //post
 	                var request_1 = _this.requestService.newPublicRequest(urlBase, data, method);
+	                console.log('requesting');
 	                request_1.promise.then(function (result) {
 	                    _this.processAction(result, request_1);
 	                }).catch(function (response) {

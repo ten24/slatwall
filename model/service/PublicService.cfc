@@ -1162,7 +1162,8 @@ component extends="HibachiService"  accessors="true" output="false"
      * @description Remove Order Payment 
      */
     public void function removeOrderPayment(required any data) {
-        var cart = getOrderService().processOrder( getHibachiScope().cart(), arguments.data, 'removeOrderPayment');
+        var cart = getHibachiScope().getCart();
+        cart = getOrderService().processOrder( cart, arguments.data, 'removeOrderPayment');
         
         getHibachiScope().addActionResult( "public:cart.removeOrderPayment", cart.hasErrors() );
     }

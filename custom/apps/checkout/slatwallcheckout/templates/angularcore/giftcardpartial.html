@@ -13,10 +13,11 @@
         </div>
         
         <div class="selected-gift-cards-wrapper" ng-repeat="payment in slatwall.cart.orderPayments track by $index">
-            <div class="selected-gift-card" ng-show="slatwall.cart.orderPayments[$index].giftCard.giftCardCode">
+            <div class="selected-gift-card" ng-show="payment.giftCard.giftCardCode">
                 <div class="col-xs-6 left-side">
                     <span>
                         <i class="fa fa-credit-card"></i>
+                        <a role="button" ng-click="slatwall.doAction('removeOrderPayment', {orderPaymentID:payment.orderPaymentID})">Remove</a>
                     </span>
                     <span class="card-info">
                         <div class="card-number">

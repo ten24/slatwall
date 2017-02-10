@@ -1577,7 +1577,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 					if(orderPayment.isDeletable()) {
 						arguments.order.removeOrderPayment( orderPayment );
-						this.deleteOrderPayment( orderPayment );
+						this.deleteOrderPayment( arguments.order , orderPayment );
 					} else {
 						orderPayment.setOrderPaymentStatusType( getTypeService().getTypeBySystemCode('opstRemoved') );
 					}
@@ -2981,15 +2981,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return false;
 	}
 
-	public any function deleteOrderPayment( required any orderPayment ) {
+	public any function deleteOrderPayment( required any order, required any orderPayment ) {
 
 		// Check delete validation
 		if(arguments.orderPayment.isDeletable()) {
 
 			// Remove the primary fields so that we can delete this entity
-			var order = arguments.orderPayment.getOrder();
-
-			order.removeOrderPayment( arguments.orderPayment );
+			arguments.order.removeOrderPayment( arguments.orderPayment );
 
 			// Actually delete the entity
 			getHibachiDAO().delete( arguments.orderPayment );
