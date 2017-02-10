@@ -72,6 +72,7 @@ Notes:
 	            action:'slatAction'
 				,basePartialsPath: '/org/Hibachi/client/src/'
 				,customPartialsPath:'/custom/apps/checkout/slatwallcheckout/templates/angularcore/'
+				,apiSubsystemName:'customsite'
 	        };
 	    </script>
 	</head>
