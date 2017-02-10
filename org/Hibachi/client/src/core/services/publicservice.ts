@@ -1125,16 +1125,14 @@ class PublicService {
         }
     }
 
-    // public addShippingAddressErrors = ()=>{
-    //     this.shippingAddressErrors = this.errors;
-    //     var key = this.accountAddressEditFormIndex;
-    //     this.accountAddressEditFormIndex = undefined;
-    //     this.$timeout(()=>{this.accountAddressEditFormIndex = key});
-    // }
+    public addShippingAddressErrors = ()=>{
+        this.shippingAddressErrors = this.errors;
+        this.hideAccountAddressForm();
+    }
 
-    // public clearShippingAddressErrors = ()=>{
-    //     this.shippingAddressErrors = undefined;
-    // }
+    public clearShippingAddressErrors = ()=>{
+        this.shippingAddressErrors = undefined;
+    }
 
     public hideAccountAddressForm = ()=>{
         this.accountAddressEditFormIndex = undefined;

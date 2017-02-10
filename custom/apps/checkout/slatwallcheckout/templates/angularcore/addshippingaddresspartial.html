@@ -1,18 +1,23 @@
 <!-- Add Shipping Address Obj just to control state -->
 <div ng-init="slatwall.OrderAddShippingObj = {}"></div>
+
 <h4>Shipping</h4>
+
+<div class="row" ng-show="slatwall.shippingAddressErrors && slatwall.errors">
+	<div class="col-sm-12">
+	    <div class="msg" ng-repeat="(key, errors) in slatwall.shippingAddressErrors">
+	        <div class="alert alert-danger"><i class="fa fa-info-circle"></i> {{errors[0]}}</div>
+	    </div>
+    </div>
+</div>
 <!-- Displays all addresses from the addess book and lets you select one to use as the shipping address. -->
+
 <swf-directive partial-name="addshippingbyaccountaddresspartial" ng-show="slatwall.accountAddressEditFormIndex == undefined"></swf-directive>
 
 <!-- Displays available shipping methods. -->
 <swf-directive partial-name="shippingmethodoptiondisplay"  ng-show="slatwall.accountAddressEditFormIndex == undefined"></swf-directive>
 
 <!-- When an address needs to be saved. -->
-<div ng-show="slatwall.shippingAddressErrors && slatwall.errors">
-    <div class="msg" ng-repeat="(key, errors) in slatwall.shippingAddressErrors">
-        <div class="alert alert-danger"><i class="fa fa-info-circle"></i> {{errors[0]}}</div>
-    </div>
-</div>
 <div id="editaddress">
 		<div ng-if="slatwall.showEditAccountAddressForm()">
 			<span ng-init="slatwall.account.accountAddresses[slatwall.accountAddressEditFormIndex].address = slatwall.getAddressEntity(slatwall.account.accountAddresses[slatwall.accountAddressEditFormIndex].address)"></span>

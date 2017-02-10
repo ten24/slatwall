@@ -2803,15 +2803,13 @@
 	                return _this.cart.processObjects.addOrderPayment.errors.giftCardID[0];
 	            }
 	        };
-	        // public addShippingAddressErrors = ()=>{
-	        //     this.shippingAddressErrors = this.errors;
-	        //     var key = this.accountAddressEditFormIndex;
-	        //     this.accountAddressEditFormIndex = undefined;
-	        //     this.$timeout(()=>{this.accountAddressEditFormIndex = key});
-	        // }
-	        // public clearShippingAddressErrors = ()=>{
-	        //     this.shippingAddressErrors = undefined;
-	        // }
+	        this.addShippingAddressErrors = function () {
+	            _this.shippingAddressErrors = _this.errors;
+	            _this.hideAccountAddressForm();
+	        };
+	        this.clearShippingAddressErrors = function () {
+	            _this.shippingAddressErrors = undefined;
+	        };
 	        this.hideAccountAddressForm = function () {
 	            _this.accountAddressEditFormIndex = undefined;
 	        };
