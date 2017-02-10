@@ -18,7 +18,7 @@
         <div ng-if="slatwall.isGiftCardPayment(payment)">
             <i class="fa fa-credit-card fa-lg" aria-hidden="true"></i>
             <span>Gift Card: {{payment.giftCard.giftCardCode}}</span><br>
-            <span>Remaining Balance: {{payment.giftCard.balanceAmount}}</span>
+            <span>Current Balance: {{payment.giftCard.balanceAmount | currency}}</span>
         </div>
         <span>Payment Amount: {{payment.amount | currency}}</span>
     </div>

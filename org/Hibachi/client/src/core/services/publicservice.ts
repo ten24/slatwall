@@ -994,7 +994,7 @@ class PublicService {
      */
     public showFulfillmentTabBody = ()=> {
         if(!this.hasAccount()) return false;
-        if ((this.cart.orderRequirementsList.indexOf('account') == -1) && this.account.accountID &&
+        if ((this.cart.orderRequirementsList.indexOf('account') == -1) &&
             (this.cart.orderRequirementsList.indexOf('fulfillment') != -1) ||
             (this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
                 (this.edit == 'fulfillment')) {
@@ -1011,11 +1011,10 @@ class PublicService {
    
     public showPaymentTabBody = ()=> {
         if(!this.hasAccount()) return false;
-        if ((this.cart.orderRequirementsList.indexOf('account') == -1) && this.account.accountID &&
+        if ((this.cart.orderRequirementsList.indexOf('account') == -1) &&
             (this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
-            (this.cart.orderRequirementsList.indexOf('payment') != -1) && this.edit == '' ||
-            (this.cart.orderRequirementsList.indexOf('payment') == -1) &&
-                (this.edit == 'payment')) {
+            (this.cart.orderRequirementsList.indexOf('payment') != -1) && !this.edit ||
+            (this.edit == 'payment')) {
             return true;
         }
         return false;
@@ -1028,10 +1027,10 @@ class PublicService {
      */
     public showReviewTabBody = ()=> {
         if(!this.hasAccount()) return false;
-        if ((this.cart.orderRequirementsList.indexOf('account') == -1) && this.account.accountID &&
+        if ((this.cart.orderRequirementsList.indexOf('account') == -1) &&
             (this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
             (this.cart.orderRequirementsList.indexOf('payment') == -1) &&
-            (this.edit == '') || (this.edit == 'review')) {
+            (!this.edit) || (this.edit == 'review')) {
             return true;
         }
         return false;
@@ -1041,7 +1040,7 @@ class PublicService {
         if(!this.hasAccount()) return false;
 
         if ((this.edit == 'fulfillment') ||
-            (this.edit == '' && ((this.cart.orderRequirementsList.indexOf('account') == -1) && this.account.accountID) &&
+            (!this.edit && ((this.cart.orderRequirementsList.indexOf('account') == -1) && this.account.accountID) &&
                 (this.cart.orderRequirementsList.indexOf('fulfillment') != -1))) {
             return true;
         }
@@ -1052,7 +1051,7 @@ class PublicService {
     public paymentTabIsActive = ()=> {
         if(!this.hasAccount()) return false;
         if ((this.edit == 'payment') ||
-            (this.edit == '' &&
+            (!this.edit &&
                 (this.cart.orderRequirementsList.indexOf('account') == -1) && this.account.accountID &&
                 (this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
                 (this.cart.orderRequirementsList.indexOf('payment') != -1))) {

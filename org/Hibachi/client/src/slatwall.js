@@ -2681,7 +2681,7 @@
 	        this.showFulfillmentTabBody = function () {
 	            if (!_this.hasAccount())
 	                return false;
-	            if ((_this.cart.orderRequirementsList.indexOf('account') == -1) && _this.account.accountID &&
+	            if ((_this.cart.orderRequirementsList.indexOf('account') == -1) &&
 	                (_this.cart.orderRequirementsList.indexOf('fulfillment') != -1) ||
 	                (_this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
 	                    (_this.edit == 'fulfillment')) {
@@ -2698,11 +2698,10 @@
 	        this.showPaymentTabBody = function () {
 	            if (!_this.hasAccount())
 	                return false;
-	            if ((_this.cart.orderRequirementsList.indexOf('account') == -1) && _this.account.accountID &&
+	            if ((_this.cart.orderRequirementsList.indexOf('account') == -1) &&
 	                (_this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
-	                (_this.cart.orderRequirementsList.indexOf('payment') != -1) && _this.edit == '' ||
-	                (_this.cart.orderRequirementsList.indexOf('payment') == -1) &&
-	                    (_this.edit == 'payment')) {
+	                (_this.cart.orderRequirementsList.indexOf('payment') != -1) && !_this.edit ||
+	                (_this.edit == 'payment')) {
 	                return true;
 	            }
 	            return false;
@@ -2715,10 +2714,10 @@
 	        this.showReviewTabBody = function () {
 	            if (!_this.hasAccount())
 	                return false;
-	            if ((_this.cart.orderRequirementsList.indexOf('account') == -1) && _this.account.accountID &&
+	            if ((_this.cart.orderRequirementsList.indexOf('account') == -1) &&
 	                (_this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
 	                (_this.cart.orderRequirementsList.indexOf('payment') == -1) &&
-	                (_this.edit == '') || (_this.edit == 'review')) {
+	                (!_this.edit) || (_this.edit == 'review')) {
 	                return true;
 	            }
 	            return false;
@@ -2728,7 +2727,7 @@
 	            if (!_this.hasAccount())
 	                return false;
 	            if ((_this.edit == 'fulfillment') ||
-	                (_this.edit == '' && ((_this.cart.orderRequirementsList.indexOf('account') == -1) && _this.account.accountID) &&
+	                (!_this.edit && ((_this.cart.orderRequirementsList.indexOf('account') == -1) && _this.account.accountID) &&
 	                    (_this.cart.orderRequirementsList.indexOf('fulfillment') != -1))) {
 	                return true;
 	            }
@@ -2739,7 +2738,7 @@
 	            if (!_this.hasAccount())
 	                return false;
 	            if ((_this.edit == 'payment') ||
-	                (_this.edit == '' &&
+	                (!_this.edit &&
 	                    (_this.cart.orderRequirementsList.indexOf('account') == -1) && _this.account.accountID &&
 	                    (_this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
 	                    (_this.cart.orderRequirementsList.indexOf('payment') != -1))) {

@@ -59,7 +59,12 @@
 	                    </div>
 	                    <div class="details" ng-show="slatwall.hasPickupFulfillmentMethod()">
 	                        <swf-directive partial-name="deliverystorepickup"></swf-directive>
-	                    </div>
+	                    </div><br>
+	                    <div class="row">
+							<span class="next-step-btn" style="padding:20px">
+						    	<input type="submit" class="btn-yellow" value="Continue to Payment" ng-click="slatwall.edit = 'payment'"/>
+							</span>
+						</div>
 	                </div>
 	            </div>
 
@@ -170,7 +175,7 @@
 									</fieldset>
 		                        </div>
 								<!--- Shipping --->
-								<div class="shipping_info col-sm-4" ng-if="slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex >= 0">
+								<div class="shipping_info col-sm-4" ng-if="slatwall.cart.orderFulfillmentWithShippingTypeIndex >= 0">
 									<fieldset>
 										<legend>Shipping</legend>
 										<swf-directive partial-name="review/ordershippingsummary"></swf-directive>
