@@ -87,6 +87,11 @@ class SWFormController {
                 this.entityName = "Cart"
             };
         }
+        if(this.eventListeners){
+            for(var key in this.eventListeners){
+                this.observerService.attach(this.eventListeners[key], key)
+            }
+        }
 
     }
 

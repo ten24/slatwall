@@ -1,15 +1,36 @@
 <div>
+    
     <div class="col-md-8">
-
         <h4>Enter Gift Card</h4>
+        <div ng-show="slatwall.giftCardError()">
+            <div class="msg">
+                <div class="alert alert-danger"><i class="fa fa-info-circle"></i> {{slatwall.giftCardError()}}</div>
+            </div>
+        </div>
         <div class="row">
-            <div class="col-sm-8 form-group">
-                <input type="text" class="form-control" ng-model="giftCardCodeToApply">
-                <span class="error" ng-if="slatwall.cart.orderPayments[0].errors['giftCard']">{{slatwall.cart.orderPayments[0].errors['giftCard']}}</span>
-            </div>
-            <div class="col-sm-4 form-group">
-                <button type="button" name="button" class="btn btn-block" ng-click="slatwall.applyGiftCard(giftCardCodeToApply);">{{(slatwall.finding)?'Finding':'Add Gift Card'}}</button>
-            </div>
+            <span ng-init="giftCard = {}"></span>
+            <sw-form
+                data-is-process-form="true"
+                data-object="giftCard"
+                data-form-class=""
+                data-error-class="error"
+                data-name="addGiftCard"
+                data-event-announcers="keyup"
+                data-event-listeners="{addGiftCardkeyup:slatwall.applyGiftCardKeyCheck}">
+                <div class="col-sm-8 form-group">
+                    <swf-property-display
+                        data-name="giftCardCodeToApply"
+                        data-field-type="text"
+                        data-property-identifier="giftCardCodeToApply"
+                        data-class="form-control"
+                        data-editing="true"
+                        >
+                    </swf-property-display>
+                </div>
+                <div class="col-sm-4 form-group">
+                    <button type="button" name="button" class="btn btn-block" ng-click="slatwall.applyGiftCardKeyCheck($event, $parent.swForm);">{{(slatwall.finding)?'Finding':'Add Gift Card'}}</button>
+                </div>
+            </sw-form>
         </div>
         
         <div class="selected-gift-cards-wrapper" ng-repeat="payment in slatwall.cart.orderPayments track by $index">

@@ -247,7 +247,6 @@ class PublicService {
              console.log('urlBase', urlBase, 'data', data, 'method', method);
             //post
             let request:PublicRequest = this.requestService.newPublicRequest(urlBase,data,method)
-            console.log('requesting')
             request.promise.then((result:any)=>{
                 this.processAction(result,request);
             }).catch((response)=>{
@@ -671,11 +670,7 @@ class PublicService {
                     var serverData
                     if (angular.isDefined(result)){
                         serverData = result;
-                        if (serverData.cart.hasErrors){                            
-                            this.cart.hasErrors = true;
-                            this.readyToPlaceOrder = false;
-                            this.edit = '';
-                        }else{
+                        if (!serverData.cart.hasErrors){
                             giftCards[card].applied = true;
                         }
                     }else{
@@ -781,6 +776,21 @@ class PublicService {
         });
 
     };
+
+    public applyGiftCardKeyCheck = (event, swForm) =>{
+        if(event.type == 'click'){
+            let code = swForm.getFormData().giftCardCodeToApply;
+            if(code){
+                this.applyGiftCard(code);
+            }
+        }else if(event.event.keyCode == 13){
+            let swForm = event.swForm;
+            let code = swForm.getFormData().giftCardCodeToApply;
+            if(code){
+                this.applyGiftCard(code);
+            }
+        }
+    }
 
     //Applies a giftcard from the user account onto the payment.
     public applyGiftCard = (giftCardCode)=>{
@@ -1100,6 +1110,15 @@ class PublicService {
     public placeOrderError = () =>{
         if(this.cart.hasErrors && this.cart.errors.runPlaceOrderTransaction){
             return this.cart.errors.runPlaceOrderTransaction;
+        }
+    }
+
+    public giftCardError = () =>{
+        if(this.cart.processObjects && 
+            this.cart.processObjects.addOrderPayment &&
+            this.cart.processObjects.addOrderPayment.errors &&
+            this.cart.processObjects.addOrderPayment.errors.giftCardID){
+            return this.cart.processObjects.addOrderPayment.errors.giftCardID[0];
         }
     }
 

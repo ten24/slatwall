@@ -2036,7 +2036,6 @@
 	                console.log('urlBase', urlBase, 'data', data, 'method', method);
 	                //post
 	                var request_1 = _this.requestService.newPublicRequest(urlBase, data, method);
-	                console.log('requesting');
 	                request_1.promise.then(function (result) {
 	                    _this.processAction(result, request_1);
 	                }).catch(function (response) {
@@ -2405,12 +2404,7 @@
 	                        var serverData;
 	                        if (angular.isDefined(result)) {
 	                            serverData = result;
-	                            if (serverData.cart.hasErrors) {
-	                                _this.cart.hasErrors = true;
-	                                _this.readyToPlaceOrder = false;
-	                                _this.edit = '';
-	                            }
-	                            else {
+	                            if (!serverData.cart.hasErrors) {
 	                                giftCards[card].applied = true;
 	                            }
 	                        }
@@ -2507,6 +2501,21 @@
 	                    _this.edit = '';
 	                }
 	            });
+	        };
+	        this.applyGiftCardKeyCheck = function (event, swForm) {
+	            if (event.type == 'click') {
+	                var code = swForm.getFormData().giftCardCodeToApply;
+	                if (code) {
+	                    _this.applyGiftCard(code);
+	                }
+	            }
+	            else if (event.event.keyCode == 13) {
+	                var swForm_1 = event.swForm;
+	                var code = swForm_1.getFormData().giftCardCodeToApply;
+	                if (code) {
+	                    _this.applyGiftCard(code);
+	                }
+	            }
 	        };
 	        //Applies a giftcard from the user account onto the payment.
 	        this.applyGiftCard = function (giftCardCode) {
@@ -2781,6 +2790,14 @@
 	        this.placeOrderError = function () {
 	            if (_this.cart.hasErrors && _this.cart.errors.runPlaceOrderTransaction) {
 	                return _this.cart.errors.runPlaceOrderTransaction;
+	            }
+	        };
+	        this.giftCardError = function () {
+	            if (_this.cart.processObjects &&
+	                _this.cart.processObjects.addOrderPayment &&
+	                _this.cart.processObjects.addOrderPayment.errors &&
+	                _this.cart.processObjects.addOrderPayment.errors.giftCardID) {
+	                return _this.cart.processObjects.addOrderPayment.errors.giftCardID[0];
 	            }
 	        };
 	        // public addShippingAddressErrors = ()=>{
@@ -20099,6 +20116,11 @@
 	                this.entityName = "Cart";
 	            }
 	            ;
+	        }
+	        if (this.eventListeners) {
+	            for (var key in this.eventListeners) {
+	                this.observerService.attach(this.eventListeners[key], key);
+	            }
 	        }
 	    }
 	    return SWFormController;
