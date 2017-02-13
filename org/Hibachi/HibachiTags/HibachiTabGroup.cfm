@@ -96,7 +96,7 @@
 								<hb:HibachiPropertyList>
 									<hb:HibachiPropertyDisplay object="#attributes.object#" property="#attributes.object.getPrimaryIDPropertyName()#" />
 									<cfif attributes.object.hasProperty('remoteID')>
-										<hb:HibachiPropertyDisplay object="#attributes.object#" property="remoteID" edit="#iif(request.context.edit && attributes.hibachiScope.setting('globalRemoteIDEditFlag'), true, false)#" />
+										<hb:HibachiPropertyDisplay object="#attributes.object#" property="remoteID" edit="#attributes.hibachiScope.getService('hibachiUtilityService').hibachiTernary(request.context.edit && attributes.hibachiScope.setting('globalRemoteIDEditFlag'), true, false)#" />
 									</cfif>
 									<cfif !attributes.object.getAuditSmartList().getRecordsCount()>
 										<cfif attributes.object.hasProperty('createdDateTime')>
