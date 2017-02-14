@@ -106,6 +106,12 @@ Notes:
 				</cfloop>
 			</cfif>
 		</cfif>
+		<cfquery name="local.removeCategoryFromContentAssociation">
+			DELETE FROM SwContentCategory WHERE categoryID =<cfqueryparam list="true" cfsqltype="cf_sql_varchar" value="#local.getSlatwallCategoryID.categoryID#" />
+		</cfquery>
+		<cfquery name="rs">
+			DELETE FROM SwProductCategory WHERE categoryID = <cfqueryparam list="true" cfsqltype="cf_sql_varchar" value="#local.getSlatwallCategoryID.categoryID#" /> 
+		</cfquery>
 		<cfquery name="local.deleteCategory">
 			DELETE FROM SwCategory where categoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getSlatwallCategoryID.categoryID#" />
 		</cfquery>
