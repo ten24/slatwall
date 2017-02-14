@@ -7,11 +7,11 @@
 	<!--- Required --->
 	<cfparam name="attributes.smartList" type="any" />
 	<cfparam name="attributes.edit" type="boolean" default="#request.context.edit#" />
+	<cfparam name="attributes.expandable" type="boolean" default="true" /> <!--- Although this defaults to true, the listing will only be expandable if hb_parentProperty is specified at the entity level--->
+
 
 	<!--- Optional --->
 	<cfparam name="attributes.title" type="string" default="" />
-
-	<cfparam name="attributes.expandable" type="boolean" default="true" /> <!--- Although this defaults to true, the listing will only be expandable if hb_parentProperty is specified at the entity level--->
 
 	<!--- Admin Actions --->
 	<cfparam name="attributes.recordEditAction" type="string" default="" />
@@ -403,7 +403,7 @@
 									<div class="dropdown">
 										<a href="##" class="dropdown-toggle" data-toggle="dropdown">&nbsp;<i class="glyphicon glyphicon-check"></i> </a>
 										<ul class="dropdown-menu nav">
-											<li><a href="##" class="multiselect-checked-filter"><i class="hibachi-ui-checkbox#IIF(attributes.edit, DE(''), DE('-checked'))#"></i> Show Selected</a></li>
+											<li><a href="##" class="multiselect-checked-filter"><i class="hibachi-ui-checkbox#attributes.hibachiScope.getService('hibachiUtilityService').hibachiTernary(attributes.edit, '', '-checked')#"></i> Show Selected</a></li>
 										</ul>
 									</div>
 								<cfelse>
@@ -496,11 +496,11 @@
 						<tr id="#record.getPrimaryIDValue()#" <cfif thistag.expandable>idPath="#record.getValueByPropertyIdentifier( propertyIdentifier="#thistag.exampleEntity.getPrimaryIDPropertyName()#Path" )#"</cfif>>
 							<!--- Selectable --->
 							<cfif thistag.selectable>
-								<td class="s-table-select"><a href="##" class="table-action-select#IIF(attributes.edit, DE(""), DE(" disabled"))#" data-idvalue="#record.getPrimaryIDValue()#"><i class="hibachi-ui-radio"></i></a></td>
+								<td class="s-table-select"><a href="##" class="table-action-select#attributes.hibachiScope.getService('hibachiUtilityService').hibachiTernary(attributes.edit, "", " disabled")#" data-idvalue="#record.getPrimaryIDValue()#"><i class="hibachi-ui-radio"></i></a></td>
 							</cfif>
 							<!--- Multiselectable --->
 							<cfif thistag.multiselectable>
-								<td class="s-table-checkbox"><a href="##" class="table-action-multiselect#IIF(attributes.edit, DE(""), DE(" disabled"))#" data-idvalue="#record.getPrimaryIDValue()#"><i class="hibachi-ui-checkbox"></i></a></td>
+								<td class="s-table-checkbox"><a href="##" class="table-action-multiselect#attributes.hibachiScope.getService('hibachiUtilityService').hibachiTernary(attributes.edit, "", " disabled")#" data-idvalue="#record.getPrimaryIDValue()#"><i class="hibachi-ui-checkbox"></i></a></td>
 							</cfif>
 							<!--- Sortable --->
 							<cfif thistag.sortable>
