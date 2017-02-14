@@ -11,8 +11,8 @@
 		}
 	},
 	"properties":{
-		"firstName":							[{"contexts":"save","required":true}],
-		"lastName":								[{"contexts":"save","required":true}],
+		"firstName":							[{"conditions":"isNotOrganizationAccount","contexts":"save","required":true}],
+		"lastName":								[{"conditions":"isNotOrganizationAccount","contexts":"save","required":true}],
 		"accountCode":	    [
 			{
 				"conditions":"isOrganizationAccount",
