@@ -168,7 +168,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		genericDetailMethod(entityName="Integration", rc=arguments.rc);
 		var detailViewDirectory = expandPath('/Slatwall') & '/integrationServices/#rc.integration.getIntegrationPackage()#/views/entity/detailintegration.cfm';
 		if(fileExists(detailViewDirectory)){
-			getFW().setView('quickbooks:entity.detailIntegration');	
+			getFW().setView('#rc.integration.getIntegrationPackage()#:entity.detailIntegration');	
 		}
 		
 	} 
@@ -179,9 +179,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var editViewDirectory = expandPath('/Slatwall') & '/integrationServices/#rc.integration.getIntegrationPackage()#/views/entity/editintegration.cfm';
 		var detailViewDirectory = expandPath('/Slatwall') & '/integrationServices/#rc.integration.getIntegrationPackage()#/views/entity/detailintegration.cfm';
 		if(fileExists(editViewDirectory)){
-			getFW().setView('quickbooks:entity.editIntegration');	
+			getFW().setView('#rc.integration.getIntegrationPackage()#:entity.editIntegration');	
 		}else if(fileExists(detailViewDirectory)){
-			getFW().setView('quickbooks:entity.detailIntegration');	
+			getFW().setView('#rc.integration.getIntegrationPackage()#:entity.detailIntegration');	
 		}
 		
 	} 
