@@ -162,7 +162,30 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	public void function detailMeasurementUnit(required struct rc) {
 		rc.measurementUnit = getMeasurementService().getMeasurementUnit(rc.unitCode);
 	}
+	
+	//Integration
+	public void function detailIntegration(required struct rc){
+		genericDetailMethod(entityName="Integration", rc=arguments.rc);
+		var detailViewDirectory = expandPath('/Slatwall') & '/integrationServices/#rc.integration.getIntegrationPackage()#/views/entity/detailintegration.cfm';
+		if(fileExists(detailViewDirectory)){
+			getFW().setView('#rc.integration.getIntegrationPackage()#:entity.detailIntegration');	
+		}
+		
+	} 
 
+	public void function editIntegration(required struct rc){
+		genericEditMethod(entityName="Integration", rc=arguments.rc);
+		
+		var editViewDirectory = expandPath('/Slatwall') & '/integrationServices/#rc.integration.getIntegrationPackage()#/views/entity/editintegration.cfm';
+		var detailViewDirectory = expandPath('/Slatwall') & '/integrationServices/#rc.integration.getIntegrationPackage()#/views/entity/detailintegration.cfm';
+		if(fileExists(editViewDirectory)){
+			getFW().setView('#rc.integration.getIntegrationPackage()#:entity.editIntegration');	
+		}else if(fileExists(detailViewDirectory)){
+			getFW().setView('#rc.integration.getIntegrationPackage()#:entity.detailIntegration');	
+		}
+		
+	} 
+	
 
 	// Order
 	public void function detailOrder(required struct rc) {

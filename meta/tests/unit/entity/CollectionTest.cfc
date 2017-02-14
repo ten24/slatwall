@@ -508,7 +508,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		mySkuCollection.addFilter('product.productDescription',uniqueNumberForDescription);
 		var pageRecords = mySkuCollection.getPageRecords();
 
-		assertTrue(arrayLen(pageRecords) == 4, "Wrong amount of products returned! Expecting 1 record but returned #arrayLen(pageRecords)#");
+		assertTrue(arrayLen(pageRecords) == 4, "Wrong amount of products returned! Expecting 4 records but returned #arrayLen(pageRecords)#");
 
 	}
 
@@ -613,6 +613,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myCollection.addFilter('productDescription',uniqueNumberForDescription);
 		myCollection.setOrderBy('productName|asc');
 
+
+		var collectionConfigStruct = myCollection.getCollectionConfigStruct();
+
 		var pageRecords = myCollection.getPageRecords();
 
 		assertTrue(arraylen(pageRecords) == 4,  "Wrong amount of products returned! Expecting 4 records but returned #arrayLen(pageRecords)#");
@@ -622,6 +625,41 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(pageRecords[3]['productName'] == 'cProduct', "'cProduct' was expected in the 3rd record");
 		assertTrue(pageRecords[4]['productName'] == 'dProduct', "'dProduct' was expected in the 4rt record");
 
+	}
+
+
+	public void function addOrderByAliasTest(){
+
+		var myCollection = variables.entityService.getProductCollectionList();
+		myCollection.setDisplayProperties('productName');
+		myCollection.setOrderBy('productName|asc');
+
+		var collectionConfigStruct = myCollection.getCollectionConfigStruct();
+
+		assertTrue(collectionConfigStruct.orderBy[1]['propertyIdentifier'] == '_product.productName', "Wrong Order by Alias! Expecting '_product.productName' but returned #collectionConfigStruct.orderBy[1]['propertyIdentifier']#");
+	}
+
+
+	public void function addOrderByAlias2Test(){
+
+		var myCollection = variables.entityService.getProductCollectionList();
+		myCollection.setDisplayProperties('productName');
+		myCollection.setOrderBy('_product.productName|asc');
+
+		var collectionConfigStruct = myCollection.getCollectionConfigStruct();
+
+		assertTrue(collectionConfigStruct.orderBy[1]['propertyIdentifier'] == '_product.productName', "Wrong Order by Alias! Expecting '_product.productName' but returned #collectionConfigStruct.orderBy[1]['propertyIdentifier']#");
+	}
+
+	public void function addOrderByAliasFromRelatedObjectTest(){
+
+		var myCollection = variables.entityService.getProductCollectionList();
+		myCollection.setDisplayProperties('productName');
+		myCollection.setOrderBy('brand.brandName|asc');
+
+		var collectionConfigStruct = myCollection.getCollectionConfigStruct();
+
+		assertTrue(collectionConfigStruct.orderBy[1]['propertyIdentifier'] == '_product_brand.brandName', "Wrong Order by Alias! Expecting '_product_brand.brandName' but returned #collectionConfigStruct.orderBy[1]['propertyIdentifier']#");
 	}
 
 	public void function addDisplayAggregateCOUNTTest(){
@@ -1381,7 +1419,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myCollection.setDisplayProperties('productID,productName');
 		myCollection.addFilter('productDescription',uniqueNumberForDescription);
 		myCollection.addGroupBy('productID,productName');
-		myCollection.setOrderBy('_product.productName|asc');
+		myCollection.setOrderBy('productName|asc');
 
 		var recordsCount = myCollection.getRecordsCount();
 
@@ -2795,22 +2833,22 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		makePublic(variables.entity,"getOrderByHQL");
 		var orderBy = [
 			{
-				propertyIdentifier="Account.lastName",
+				propertyIdentifier="_account.lastName",
 				direction="DESC"
 			},
 			{
-				propertyIdentifier="Account.company",
+				propertyIdentifier="_account.company",
 				direction="DESC"
 			},
 			{
-				propertyIdentifier="Account.firstName",
+				propertyIdentifier="_account.firstName",
 				direction="ASC"
 			}
 		];
 
 		var orderByHQL = variables.entity.getOrderByHQL(orderBy);
 		//not truly false, using Compare to test case-sensitive strings 1 is greater, 0 is equal, -1 is less than. Coldfusion saying 0 is equal, i know awesome! :)
-		assertFalse(Compare(" ORDER BY Account.lastName DESC ,Account.company DESC ,Account.firstName ASC ",orderByHQL));
+		assertFalse(Compare(" ORDER BY _account.lastName DESC ,_account.company DESC ,_account.firstName ASC ",orderByHQL));
 
 		//addToDebug(orderByHQL);
 	}
