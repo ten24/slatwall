@@ -61,6 +61,41 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var product = createPersistedTestEntity( 'Product' );
 		var category = createPersistedTestEntity( 'Category' );
 		var parentCategory = createPersistedTestEntity( 'Category' );
+		var childCategory = createPersistedTestEntity( 'Category' );
+		// Add the Many-to-Many relationship
+		parentCategory.addChildCategory(category);
+		category.setParentCategory(parentCategory);
+		
+		content.addCategory( category );
+		category.addContent( content );
+		product.addCategory( category );
+		category.addProduct( product );
+		
+		category.addChildCategory(childCategory);
+		childCategory.SetParentCategory(category);
+		
+		content.addCategory( parentCategory );
+		parentCategory.addContent( content );
+		product.addCategory( parentCategory );
+		parentCategory.addProduct( product );
+		// Persist the relationship
+		ormFlush();
+		
+		var deleteOK = variables.service.deleteCategory( category );
+		
+		assert(deleteOK);
+	}
+	
+	
+	public void function deleteCategoryByCMSCategoryID_removes_content_assignments() {
+		
+		// Create a content & category
+		var content = createPersistedTestEntity( 'Content' );
+		var product = createPersistedTestEntity( 'Product' );
+		var category = createPersistedTestEntity( 'Category' );
+		var parentCategory = createPersistedTestEntity( 'Category' );
+		
+		category.setCMSCategoryID('123');
 		
 		// Add the Many-to-Many relationship
 		category.setParentCategory(parentCategory);
@@ -76,9 +111,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		// Persist the relationship
 		ormFlush();
 		
-		var deleteOK = variables.service.deleteCategory( category );
+		variables.service.deleteCategoryByCMSCategoryID( '123' );
 		
-		assert(deleteOK);
 	}
 	
 //	public void function processContent_duplicateContent_Test(){
