@@ -58,12 +58,21 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		// Create a content & category
 		var content = createPersistedTestEntity( 'Content' );
+		var product = createPersistedTestEntity( 'Product' );
 		var category = createPersistedTestEntity( 'Category' );
+		var parentCategory = createPersistedTestEntity( 'Category' );
 		
 		// Add the Many-to-Many relationship
+		category.setParentCategory(parentCategory);
 		content.addCategory( category );
 		category.addContent( content );
+		product.addCategory( category );
+		category.addProduct( product );
 		
+		content.addCategory( parentCategory );
+		parentCategory.addContent( content );
+		product.addCategory( parentCategory );
+		parentCategory.addProduct( product );
 		// Persist the relationship
 		ormFlush();
 		
