@@ -13,6 +13,7 @@
 	"properties":{
 		"firstName":							[{"conditions":"isNotOrganizationAccount","contexts":"save","required":true}],
 		"lastName":								[{"conditions":"isNotOrganizationAccount","contexts":"save","required":true}],
+		"company":								[{"conditions":"isOrganizationAccount","contexts":"save","required":true}], 
 		"accountCode":	    [
 			{
 				"conditions":"isOrganizationAccount",
