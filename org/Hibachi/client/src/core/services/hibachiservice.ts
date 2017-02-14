@@ -284,7 +284,7 @@ class HibachiService{
 
 	};
 	getResizedImageByProfileName = (profileName, skuIDs) => {
-		var urlString = this.getUrlWithActionPrefix()+'api:public.get&context=getResizedImageByProfileName&profileName=' + profileName + '&skuIDs=' + skuIDs;
+		var urlString = this.getUrlWithActionPrefix()+'api:main.getResizedImageByProfileName&context=getResizedImageByProfileName&profileName=' + profileName + '&skuIDs=' + skuIDs;
 		let request = this.requestService.newPublicRequest(urlString);
 
 		return request.promise;
