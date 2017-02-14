@@ -111,9 +111,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		// Persist the relationship
 		ormFlush();
 		
-		var deleteOK = variables.service.deleteCategoryByCMSCategoryID( '123' );
+		variables.service.deleteCategoryByCMSCategoryID( '123' );
 		
-		assert(deleteOK);
 	}
 	
 //	public void function processContent_duplicateContent_Test(){
