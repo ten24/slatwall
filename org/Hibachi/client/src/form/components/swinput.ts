@@ -4,7 +4,7 @@
  * This validate directive will look at the current element, figure out the context (save, edit, delete) and
  * validate based on that context as defined in the validation properties object.
  */
-import {SWFormController} from "./swForm";
+import {SWFormController} from "./swform";
 import {SWPropertyDisplayController} from "./swpropertydisplay";
 import {SWFPropertyDisplayController} from "./swfpropertydisplay";
 import {SWFormFieldController} from "./swformfield";
@@ -203,7 +203,7 @@ class SWInputController{
 			validations = this.getValidationDirectives();
 		}
 
-		if(this.object.metaData.$$getPropertyFormatType(this.property) == "currency"){
+		if(this.object.metaData && this.object.metaData.$$getPropertyFormatType(this.property) == "currency"){
 			currency = 'sw-currency-formatter ';
 			if(angular.isDefined(this.object.data.currencyCode)){
 				currency = currency + 'data-currency-code="' + this.object.data.currencyCode + '" ';
@@ -228,16 +228,16 @@ class SWInputController{
             if(this.fieldType === 'time'){
                 inputType="text";
             }
-			template = '<input type="'+this.inputType+'" class="'+this.class+'" '+
-				'ng-model="swInput.value" '+
-				'ng-disabled="swInput.editable === false" '+
-				'ng-show="swInput.editing" '+
-				'name="'+this.property+'" ' +
-				'placeholder="'+placeholder+'" '+
+			template = '<input type="'+inputType+'" class="'+this.class+'" '+
+				' ng-model="swInput.value" '+
+				' ng-disabled="swInput.editable === false" '+
+				' ng-show="swInput.editing" '+
+				' name="'+this.property+'" ' +
+				' placeholder="'+placeholder+'" '+
 				validations + currency +
-				'id="swinput'+this.swForm.name+this.name+'" '+
-				'style="'+style+'"'+
-				this.inputAttributes+
+				' id="swinput'+this.swForm.name+this.name+'" '+
+				' style="' + style + '" ' + " " +
+	            this.inputAttributes + " " +
 				this.eventHandlerTemplate;
 		}
 
@@ -312,14 +312,25 @@ class SWInputController{
             }
 		}
 
-		this.eventNameForObjectSuccess = this.object.metaData.className.split('_')[0]+this.context.charAt(0).toUpperCase()+this.context.slice(1)+'Success'
-		var eventNameForObjectSuccessID = this.eventNameForObjectSuccess+this.property;
+		if (angular.isDefined(this.object.metaData) && angular.isDefined(this.object.metaData.className)){
+ 			this.eventNameForObjectSuccess = this.object.metaData.className.split('_')[0]+this.context.charAt(0).toUpperCase()+this.context.slice(1)+'Success';
+ 		}else{
+ 			this.eventNameForObjectSuccess = this.context.charAt(0).toUpperCase()+this.context.slice(1)+'Success';
+ 		}
+ 		var eventNameForObjectSuccessID = this.eventNameForObjectSuccess+this.property;
 
 		var eventNameForUpdateBindings = 'updateBindings';
-		var eventNameForUpdateBindingsID = this.object.metaData.className.split('_')[0]+this.property+'updateBindings';
-        
+		if (angular.isDefined(this.object.metaData) && angular.isDefined(this.object.metaData.className)){
+ 			var eventNameForUpdateBindingsID = this.object.metaData.className.split('_')[0]+this.property+'updateBindings';
+ 		}else{
+ 			var eventNameForUpdateBindingsID = this.property+'updateBindings';
+ 		}
         var eventNameForPullBindings = 'pullBindings';
-        var eventNameForPullBindingsID = this.object.metaData.className.split('_')[0]+this.property+'pullBindings';
+        if (angular.isDefined(this.object.metaData) && angular.isDefined(this.object.metaData.className)){
+         	var eventNameForPullBindingsID = this.object.metaData.className.split('_')[0]+this.property+'pullBindings';
+ 		}else{
+ 			var eventNameForPullBindingsID = this.property+'pullBindings'
+ 		}
 		//attach a successObserver
 		if(this.object){
 			//update bindings on save success

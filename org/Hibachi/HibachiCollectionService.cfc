@@ -1,4 +1,6 @@
 component output="false" accessors="true" extends="HibachiService" {
+	property name="hibachiService" type="any";
+	
 	// ===================== START: Logical Methods ===========================
 	public string function getCollectionObjectByCasing(required collection, required string casing){
 		switch(arguments.casing){
@@ -664,12 +666,22 @@ component output="false" accessors="true" extends="HibachiService" {
 		};
 		return columnStruct;
 	}
+	
+	public array function getExportableColumnsByCollectionConfig(required struct collectionConfig){
+		var exportableColumns = [];
+		for(var column in arguments.collectionConfig.columns){
+			if(StructKeyExists(column, "isExportable") && column.isExportable == true){
+				ArrayAppend(exportableColumns, column);
+			}
+		}
+		return exportableColumns;
+	}
 
 	public void function collectionsExport(required struct data) {
 			param name="data.date" default="#dateFormat(now(), 'mm/dd/yyyy')#"; 							//<--The fileName of the report to export.
 			param name="data.collectionExportID" default="" type="string"; 											//<--The collection to export ID
 			var collectionEntity = this.getCollectionByCollectionID("#arguments.data.collectionExportID#");
-
+			
 			if(structKeyExists(arguments.data,'ids') && !isNull(arguments.data.ids) && arguments.data.ids != 'undefined' && arguments.data.ids != ''){
 				var propertyIdentifier = '_' & getService('hibachiCollectionService').getCollectionObjectByCasing(collectionEntity,'camel') & '.' & getService('hibachiService').getPrimaryIDPropertyNameByEntityName(collectionEntity.getCollectionObject());
 				var filterGroup = {
@@ -687,31 +699,39 @@ component output="false" accessors="true" extends="HibachiService" {
 				arrayAppend(collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup,filterGroup);
 
 			}
-			var collectionData = collectionEntity.getRecords(forExport=true, formatRecords=false);
-			var headers = StructKeyList(collectionData[1]);
-			getService('hibachiService').export( collectionData, headers, headers, "ExportCollection", "csv" );
+			var exportCollectionConfigData = {};
+			exportCollectionConfigData['collectionConfig']=serializeJson(collectionEntity.getCollectionConfigStruct());
+			if(structKeyExists(arguments.data,'keywords')){
+				exportCollectionConfigData['keywords']=arguments.data.keywords;
+			}
+			this.collectionConfigExport(exportCollectionConfigData);
 	}//<--end function
-
+	
 	public void function collectionConfigExport(required struct data) {
 		param name="arguments.data.collectionConfig" type="string" pattern="^{.*}$";
 
 		arguments.data.collectionConfig = DeserializeJSON(arguments.data.collectionConfig);
 
 		var collectionEntity = getCollectionList(arguments.data.collectionConfig.baseEntityName);
-
-		var exportableColumns = [];
-		for(var column in arguments.data.collectionConfig.columns){
-			if(StructKeyExists(column, "isExportable") && column.isExportable == true){
-				ArrayAppend(exportableColumns, column);
-			}
+		if(structKeyExists(arguments.data,'keywords')){
+			collectionEntity.setKeywords(arguments.data.keywords);
 		}
-		arguments.data.collectionConfig.columns = exportableColumns;
+		
+		arguments.data.collectionConfig.columns = getExportableColumnsByCollectionConfig(arguments.data.collectionConfig);
 		arguments.data.collectionConfig["allRecords"] = true;
 		collectionEntity.setCollectionConfig(serializeJSON(arguments.data.collectionConfig));
 		var collectionData = collectionEntity.getRecords(forExport=true,formatRecords=false);
-		var headers = StructKeyList(collectionData[1]);
-		getService('hibachiService').export( collectionData, headers, headers, arguments.data.collectionConfig.baseEntityName, "csv" );
-
+		var headers = getHeadersListByCollection(collectionEntity);
+		getHibachiService().export( collectionData, headers, headers, arguments.data.collectionConfig.baseEntityName, "csv" );
+	}
+	
+	public string function getHeadersListByCollection(required any collectionEntity){
+		var headersList = '';
+		var columns = arguments.collectionEntity.getCollectionConfigStruct().columns;
+		for(var column in columns){
+			headersList = listAppend(headersList,arguments.collectionEntity.getColumnAlias(column));
+		}
+		return headersList;
 	}
 
 	// =====================  END: Logical Methods ============================

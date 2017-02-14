@@ -90,7 +90,7 @@ component  extends="HibachiService" accessors="true" {
 	}
 	
 	public numeric function convertCurrency(required numeric amount, required originalCurrencyCode, required convertToCurrencyCode, conversionDateTime=now()) {
-		return round(precisionEvaluate(arguments.amount * getCurrencyConversionRate(originalCurrencyCode=originalCurrencyCode, convertToCurrencyCode=convertToCurrencyCode, conversionDateTime=arguments.conversionDateTime))*100)/100;
+		return round(getService('HibachiUtilityService').precisionCalculate(arguments.amount * getCurrencyConversionRate(originalCurrencyCode=originalCurrencyCode, convertToCurrencyCode=convertToCurrencyCode, conversionDateTime=arguments.conversionDateTime))*100)/100;
 	}
 	
 	public numeric function getCurrencyConversionRate(required originalCurrencyCode, required convertToCurrencyCode, conversionDateTime=now()) {
@@ -100,7 +100,7 @@ component  extends="HibachiService" accessors="true" {
 			if(currencyRate.getConversionCurrencyCode() == arguments.convertToCurrencyCode) {
 				return currencyRate.getConversionRate();
 			} else if (currencyRate.getCurrencyCode() == arguments.convertToCurrencyCode) {
-				return precisionEvaluate(1 / currencyRate.getConversionRate());
+				return getService('HibachiUtilityService').precisionCalculate(1 / currencyRate.getConversionRate());
 			}
 		}
 		
