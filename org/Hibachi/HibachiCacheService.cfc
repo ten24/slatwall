@@ -63,10 +63,6 @@ component accessors="true" output="false" extends="HibachiService" {
 		return getDao('hibachiCacheDao').isServerInstanceCacheExpired(arguments.serverInstanceIPAddress);
 	}
 
-	// IMPORTANT, WE NEED TO PREFIX THE HAS / GET / SET
-	// getHibachiInstanceApplicationScopeKey()
-	//
-	//
 	public any function getCachedValue( required string key ) {
 		// Make the key application specific so that we can use one shared cache for multiple applications
 		arguments.key = getHibachiInstanceApplicationScopeKey() & "-" & arguments.key;
