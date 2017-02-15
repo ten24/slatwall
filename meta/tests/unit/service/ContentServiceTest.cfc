@@ -81,9 +81,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		// Persist the relationship
 		ormFlush();
 		
-		var deleteOK = variables.service.deleteCategory( category );
-		
-		assert(deleteOK);
+		variables.service.deleteCategory( category );
 	}
 	
 	
