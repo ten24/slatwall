@@ -17,7 +17,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="auditsToCommitStruct" type="struct";
 	property name="modifiedEntities" type="array";
 	property name="hibachiAuthenticationService" type="any";
-	
+
 	public any function init() {
 		setORMHasErrors( false );
 		setRBLocale( "en_us" );
@@ -31,58 +31,43 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		setFailureActions( [] );
 		setAuditsToCommitStruct( {} );
 		setModifiedEntities( [] );
-		
+
 		return super.init();
 	}
-	
+
 	public any function getHibachiAuthenticationService(){
 		if(!structKeyExists(variables,'hibachiAuthenticationService')){
-			variables.hibachiAuthenticationService = getService('hibachiAuthenticationService');	
+			variables.hibachiAuthenticationService = getService('hibachiAuthenticationService');
 		}
 		return variables.hibachiAuthenticationService;
-	} 
-	
+	}
+
 	public void function setHibachiAuthenticationService(required any hibachiAuthenticationService){
 		variables.hibachiAuthenticationService = arguments.hibachiAuthenticationService;
 	}
-	
+
 	// @hint facade method to check the application scope for a value
 	public boolean function hasSessionValue(required any key) {
-		param name="session" default="#structNew()#";
-		if( structKeyExists(session, getHibachiInstanceApplicationScopeKey()) && structKeyExists(session[ getHibachiInstanceApplicationScopeKey() ], arguments.key)) {
-			return true;
-		}
-		
-		return false;
+		var cacheKey = getSession().getSessionCookieNPSID() & "-" & arguments.key;
+		return getService("HibachiCacheService").hasCachedValue(cacheKey);
 	}
-	
+
 	// @hint facade method to get values from the application scope
 	public any function getSessionValue(required any key) {
-		if( structKeyExists(session, getHibachiInstanceApplicationScopeKey()) && structKeyExists(session[ getHibachiInstanceApplicationScopeKey() ], arguments.key)) {
-			return session[ getHibachiInstanceApplicationScopeKey() ][ arguments.key ];
+		var cacheKey = getSession().getSessionCookieNPSID() & "-" & arguments.key;
+		if(getService("HibachiCacheService").hasCachedValue(cacheKey)){
+				return getService("HibachiCacheService").getCachedValue(cacheKey);
 		}
-		
+
 		throw("You have requested a value for '#arguments.key#' from the core application that is not setup.  This may be because the verifyApplicationSetup() method has not been called yet")
 	}
-	
-	// @hint facade method to set values in the application scope 
+
+	// @hint facade method to set values in the application scope
 	public void function setSessionValue(required any key, required any value) {
-		var sessionKey = "";
-		if(structKeyExists(COOKIE, "JSESSIONID")) {
-			sessionKey = COOKIE.JSESSIONID;
-		} else if (structKeyExists(COOKIE, "CFTOKEN")) {
-			sessionKey = COOKIE.CFTOKEN;
-		} else if (structKeyExists(COOKIE, "CFID")) {
-			sessionKey = COOKIE.CFID;
-		}
-		lock name="#sessionKey#_#getHibachiInstanceApplicationScopeKey()#_#arguments.key#" timeout="10" {
-			if(!structKeyExists(session, getHibachiInstanceApplicationScopeKey())) {
-				session[ getHibachiInstanceApplicationScopeKey() ] = {};
-			}
-			session[ getHibachiInstanceApplicationScopeKey() ][ arguments.key ] = arguments.value;
-		}
+		var cacheKey = getSession().getSessionCookieNPSID() & "-" & arguments.key;
+		getService("HibachiCacheService").setCachedValue(cacheKey, arguments.value);
 	}
-	
+
 	public string function renderJSObject() {
 		var config = getService('HibachiSessionService').getConfig();
 		var returnHTML = '';
@@ -90,43 +75,43 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		returnHTML &= '<script type="text/javascript">(function( $ ){$.#lcase(getApplicationValue('applicationKey'))# = new Hibachi(#serializeJSON(config)#);})( jQuery );</script>';
 		return returnHTML;
 	}
-	
+
 	public void function addModifiedEntity( required any entity ) {
 		arrayAppend(getModifiedEntities(), arguments.entity);
 	}
-	
+
 	public void function clearModifiedEntities() {
 		setModifiedEntities([]);
 	}
-	
+
 	public void function clearAuditsToCommitStruct() {
 		setAuditsToCommitStruct({});
 	}
-	
-	/** This checks if the user is logged in by checking whether or not the user has manually logged out or has timed out.  
-	 *  This method should return as it always has. 
+
+	/** This checks if the user is logged in by checking whether or not the user has manually logged out or has timed out.
+	 *  This method should return as it always has.
 	 */
 	public boolean function getLoggedInFlag() {
 		return getSession().getLoggedInFlag();
 	}
-	
+
 	/**
 	 * Because we are not removing the account from the session, logged in flag needs to
 	 * be checked before checking if they are an admin account.
 	 */
 	public boolean function getLoggedInAsAdminFlag() {
 		if(!isNull(getSession()) &&
-			getSession().getLoggedInFlag() && 
-		   !isNull(getSession().getAccount()) && 
-		   !isNull(getSession().getAccount().getAdminAccountFlag()) &&  
+			getSession().getLoggedInFlag() &&
+		   !isNull(getSession().getAccount()) &&
+		   !isNull(getSession().getAccount().getAdminAccountFlag()) &&
 			getSession().getAccount().getAdminAccountFlag()) {
-				
+
 			return true;
-			
+
 		}
 		return false;
 	}
-	
+
 	public string function getURL() {
 		if(!structKeyExists(variables, "url")) {
 			variables.url = getPageContext().getRequest().GetRequestUrl().toString();
@@ -136,23 +121,23 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		}
 		return variables.url;
 	}
-	
+
 	// ==================== GENERAL API METHODS ===============================
-	
+
 	// Action Methods ===
 	public string function doAction( required string action, struct data={} ) {
 		arrayAppend(getCalledActions(), arguments.action);
 		return getApplicationValue('application').doAction( arguments.action, arguments.data );
 	}
-	
+
 	public boolean function hasSuccessfulAction( required string action ) {
 		return arrayFindNoCase(getSuccessfulActions(), arguments.action) > 0;
 	}
-	
+
 	public boolean function hasFailureAction( required string action ) {
 		return arrayFindNoCase(getFailureActions(), arguments.action) > 0;
 	}
-	
+
 	public void function addActionResult( required string action, required failure=false ) {
 		if(arguments.failure) {
 			arrayAppend(getFailureActions(), arguments.action);
@@ -160,82 +145,82 @@ component output="false" accessors="true" extends="HibachiTransient" {
 			arrayAppend(getSuccessfulActions(), arguments.action);
 		}
 	}
-	
+
 	// Simple API Methods ===
 	public any function newEntity(required string entityName) {
 		var entityService = getService( "hibachiService" ).getServiceByEntityName( arguments.entityName );
-		
+
 		return entityService.invokeMethod("new#arguments.entityName#");
 	}
-	
+
 	public any function getEntity(required string entityName, any entityID="", boolean isReturnNewOnNotFound=false) {
 		var entityService = getService( "hibachiService" ).getServiceByEntityName( arguments.entityName );
-		
+
 		return entityService.invokeMethod("get#arguments.entityName#", {1=arguments.entityID, 2=arguments.isReturnNewOnNotFound});
 	}
-	
+
 	public any function saveEntity(required any entity, struct data={}) {
 		var entityService = getService( "hibachiService" ).getServiceByEntityName( arguments.entity.getClassName() );
-		
+
 		return entityService.invokeMethod("save#arguments.entity.getClassName()#", {1=arguments.entity, 2=arguments.data});
 	}
-	
+
 	public any function deleteEntity(required any entity) {
 		var entityService = getService( "hibachiService" ).getServiceByEntityName( arguments.entity.getClassName() );
-		
+
 		return entityService.invokeMethod("delete#arguments.entity.getClassName()#", {1=arguments.entity});
 	}
-	
+
 	public any function getSmartList(required string entityName, struct data={}) {
 		var entityService = getService( "hibachiService" ).getServiceByEntityName( arguments.entityName );
-		
+
 		return entityService.invokeMethod("get#arguments.entityName#SmartList", {1=arguments.data});
 	}
-	
+
 	public void function flushORMSession(){
 		if(!getORMHasErrors()) {
 			getDAO( "hibachiDAO" ).flushORMSession();
 		}
 	}
-	
+
 	// ==================== SESSION / ACCOUNT SETUP ===========================
-	
+
 	public any function getSession() {
 		if(!structKeyExists(variables, "session")) {
 			getService("hibachiSessionService").setProperSession();
 		}
 		return variables.session;
 	}
-	
+
 	public any function getAccount() {
 		return getSession().getAccount();
 	}
-	
+
 	// ==================== REQUEST CACHING METHODS ===========================
-	
+
 	public boolean function hasValue(required string key) {
 		return structKeyExists(variables, arguments.key);
 	}
 
 	public any function getValue(required string key) {
 		if(hasValue( arguments.key )) {
-			return variables[ arguments.key ]; 
+			return variables[ arguments.key ];
 		}
-		
+
 		throw("You have requested '#arguments.key#' as a value in the #getApplicationValue('applicationKey')# scope, however that value has not been set in the request.  In the futuer you should check for it's existance with hasValue().");
 	}
-	
+
 	public void function setValue(required string key, required any value) {
 		variables[ arguments.key ] = arguments.value;
 	}
-	
-	
+
+
 	// ==================== RENDERING HELPERS ================================
-	
+
 	public void function showMessageKey(required any messageKey) {
 		var messageType = listLast(messageKey, "_");
 		var message = rbKey(arguments.messageKey);
-		
+
 		if(right(message, 8) == "_missing") {
 			if(left(listLast(arguments.messageKey, "."), 4) == "save") {
 				var entityName = listFirst(right(listLast(arguments.messageKey, "."), len(listLast(arguments.messageKey, "."))-4), "_");
@@ -253,7 +238,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		}
 		showMessage(message=message, messageType=messageType);
 	}
-	
+
 	public void function showMessage(string message="", string messageType="info") {
 		param name="request.context['messages']" default="#arrayNew(1)#";
 		arguments.message=getService('HibachiUtilityService').replaceStringTemplate(arguments.message,request.context);
@@ -262,13 +247,13 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		messageStruct['messageType'] = arguments.messageType;
 		arrayAppend(request.context['messages'], messageStruct);
 	}
-	
+
 	// ========================== HELPER DELIGATION METHODS ===============================
-	
+
 	public string function hibachiHTMLEditFormat(required string html){
 		return getService('hibachiUtilityService').hibachiHTMLEditFormat(arguments.html);
 	}
-	
+
 	// @hint helper function to return the RB Key from RB Factory in any component
 	public string function rbKey(required string key, struct replaceStringData) {
 		var keyValue = getService("hibachiRBService").getRBKey(arguments.key, getRBLocale());
@@ -277,11 +262,11 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		}
 		return keyValue;
 	}
-	
+
 	public string function getRBKey(required string key, struct replaceStringData) {
 		return rbKey(argumentcollection=arguments);
 	}
-	
+
 	public boolean function authenticateAction( required string action ) {
 		return getHibachiAuthenticationService().authenticateActionByAccount( action=arguments.action, account=getAccount() );
 	}
@@ -289,15 +274,15 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	public boolean function authenticateEntity( required string crudType, required string entityName ) {
 		return getHibachiAuthenticationService().authenticateEntityCrudByAccount( crudType=arguments.crudType, entityName=arguments.entityName, account=getAccount() );
 	}
-	
+
 	public boolean function authenticateEntityProperty( required string crudType, required string entityName, required string propertyName ) {
 		return getHibachiAuthenticationService().authenticateEntityPropertyCrudByAccount( crudType=arguments.crudType, entityName=arguments.entityName, propertyName=arguments.propertyName, account=getAccount() );
 	}
-	
+
 	public boolean function authenticateCollection(required string crudType, required any collection){
 		return getHibachiAuthenticationService().authenticateCollectionCrudByAccount( crudType=arguments.crudType, collection=arguments.collection, account=getAccount() );
 	}
-	
+
 	public boolean function authenticateCollectionPropertyIdentifier(required string crudType, required any collection, required string propertyIdentifier){
 		return getHibachiAuthenticationService().authenticateCollectionPropertyIdentifierCrudByAccount( crudType=arguments.crudType, collection=arguments.collection, propertyIdentifier=arguments.propertyIdentifier, account=getAccount() );
 	}
