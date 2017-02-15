@@ -61,7 +61,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var product = createPersistedTestEntity( 'Product' );
 		var category = createPersistedTestEntity( 'Category' );
 		var parentCategory = createPersistedTestEntity( 'Category' );
-		var childCategory = createPersistedTestEntity( 'Category' );
 		// Add the Many-to-Many relationship
 		parentCategory.addChildCategory(category);
 		category.setParentCategory(parentCategory);
@@ -71,8 +70,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		product.addCategory( category );
 		category.addProduct( product );
 		
-		category.addChildCategory(childCategory);
-		childCategory.SetParentCategory(category);
 		
 		content.addCategory( parentCategory );
 		parentCategory.addContent( content );
@@ -83,7 +80,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		var deleteOK = variables.service.deleteCategory( category );
 		
-		assert(deleteOK);
 	}
 	
 	
