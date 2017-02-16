@@ -9329,7 +9329,6 @@
 	                isKeywordColumn: scope.swCollectionColumn.isKeywordColumn,
 	                isOnlyKeywordColumn: scope.swCollectionColumn.isOnlyKeywordColumn
 	            };
-	            console.log("column", column);
 	            var currentScope = _this.scopeService.getRootParentScope(scope, "swCollectionConfig");
 	            if (angular.isDefined(currentScope.swCollectionConfig)) {
 	                //push directly here because we've already built the column object

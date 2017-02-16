@@ -1,0 +1,41 @@
+<span ng-init="purchaseOrder = {}"></span>
+<sw-form
+	data-is-process-form="true"
+	data-object="purchaseOrder"
+	data-form-class=""
+	data-error-class="error"
+	data-action="addOrderPayment"
+	data-name="purchaseOrder"
+	data-event-announcers="keyup">
+	<div class="form-group">
+		<swf-property-display
+			data-name="purchaseOrderNumber"
+			data-field-type="text"
+			data-property-identifier="purchaseOrderNumber"
+			data-label-text="Purchase Order Number"
+			data-class="form-control"
+			data-editing="true"
+			data-required="true">
+		</swf-property-display>
+	</div>
+	<div class="form-group">
+		<swf-property-display
+			data-name="paymentMethodID"
+			data-field-type="text"
+			data-property-identifier="paymentMethodID"
+			data-class="hidden"
+			data-value="2c9280825a29cb2e015a29e58ded000c"
+			data-required="true">
+		</swf-property-display>
+	</div>
+	<div class="form-group">
+		<sw-action-caller
+	        data-modal="false"
+	        data-type="button"
+	        data-class="button blue"
+	        data-error-class="error"
+	        data-text="{{(slatwall.getRequestByAction('addOrderPayment').loading ? 'LOADING...' : 'Add Order Payment')}}"
+	        data-event-listeners="{purchaseOrderkeyup:$parent.swForm.submitKeyCheck}">
+	    </sw-action-caller>
+	</div>
+</sw-form>

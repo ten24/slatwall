@@ -103,25 +103,20 @@
 			                    <div class="panel panel-default">
 			                        <div class="panel-heading" >
 			                            <h4 class="panel-title">
-			                                <a class="collapsed" data-toggle="collapse" data-parent="##accordion" href="##cashiersCheck" aria-expanded="false" aria-controls="cashiersCheck">
-			                                    <span class="dot"></span> Money Order or Cashiers Check
+			                                <a class="collapsed" data-toggle="collapse" data-parent="##accordion" href="##purchaseOrder" aria-expanded="false" aria-controls="purchaseOrder">
+			                                    <span class="dot"></span> Purchase Order
 			                                </a>
 			                            </h4>
 			                        </div>
-			                        <div id="cashiersCheck" class="panel-collapse collapse" role="tabpanel" aria-labelledby="cashiersCheck" aria-expanded="false">
-										<!--- Money order component --->
-				                        <!--- #$.renderContent( '5124bffa549dfdb10154a0f231f802b7' , 'contentBody')# --->
-										<h5 style="margin-bottom: 0px;">Please make your check or money order payable to:</h5>
-										<p>Gus Erickson</p>
-										
-										<h5 style="margin-bottom: 0px;">Mail your payment to:</h5>
-										<p>
-											Gus Erickson<br/>
-											PO Box 9000<br/>
-											Woosta
-										</p>
-										<p>*Your order will not ship until we receive payment.</p>
-										
+			                        <div id="purchaseOrder" class="panel-collapse collapse" role="tabpanel" aria-labelledby="purchaseOrder" aria-expanded="false">
+			                        	<div class="panel-body">
+			                        		<div class="row">
+			                        			<div class="col-md-12">
+			                        				<!--- Purchase Order --->
+			                        				<swf-directive partial-name="purchaseorderpartial"></swf-directive>
+			                        			</div>
+			                        		</div>
+			                        	</div>
 			                        </div>
 			                    </div>
 			                    <div class="panel panel-default">
@@ -227,39 +222,29 @@
           	</div>
 
 		  
-		  <div class="col-sm-4" ng-show="slatwall.hasAccount()">
+		  	<div class="col-sm-4" ng-show="slatwall.hasAccount()">
 			  
 
 			  <!--- CART SUMMARY --->
-			  <div class="cart_product">
-				  <h4>In Your Cart <a href="/shopping-cart" class="pull-right edit"></a></h4>
-				  <div class="info">
-					  <swf-directive partial-name="inyourcartpartial"></swf-directive>
-				  </div>
-			  </div>
+			  	<div class="cart_product">
+				  	<h4>In Your Cart <a href="/shopping-cart" class="pull-right edit"></a></h4>
+				  	<div class="info">
+					  	<swf-directive partial-name="inyourcartpartial"></swf-directive>
+				  	</div>
+			  	</div>
 
 			  <!--- ORDER SUMMARY --->
-			  <div class="order">
-				  <h4>Order Summary</h4>
-				  <div class="info">
-					  <swf-directive partial-name="carttotaldisplay"></swf-directive>
-				  </div>
-			  </div>
-
-			  <!--- <div class="row">
-				  <div class="col-sm-12">
-				    #$.renderContent($.getContentByUrlTitlePath('components/checkout-sidebar').getContentID(), 'contentBody')#
-				  </div>
-			  </div> --->
-		  </div>
+			  	<div class="order">
+				  	<h4>Order Summary</h4>
+				  	<div class="info">
+					  	<swf-directive partial-name="carttotaldisplay"></swf-directive>
+				  	</div>
+			  	</div>
+		  	</div>
 
 
 
        	</div>
-
-	    <div ng-if="!slatwall.getRequestByAction('getCart').loading && slatwall.hasAccount() && slatwall.cart && slatwall.cart.orderItems && !slatwall.cart.orderItems.length && !slatwall.loading && !slatwall.orderPlaced" class="alert alert-warning ng-cloak">
-	        <i class="fa fa-info-circle"></i> There are no items in your cart.
-	    </div>
 	</div>
     </section>
     <!--- End main checkout --->

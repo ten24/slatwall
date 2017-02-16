@@ -5,10 +5,10 @@
 		<span>
 			<h5>Your selected store: <span ng-if="slatwall.getPickupLocation().locationName != undefined">
 				<span ng-if="slatwall.getPickupLocation().locationName != undefined">
-					{{slatwall.getPickupLocation().locationName}}
+					{{(slatwall.getRequestByAction('addPickupFulfillmentLocation').loading) ? 'Loading...' : slatwall.getPickupLocation().locationName}}
 				</span>
 				<span ng-if="slatwall.namelessPickupLocation()">
-					{{slatwall.getPickupLocation().primaryAddress.address.streetAddress}} {{slatwall.getPickupLocation().primaryAddress.address.city}}</span>
+					{{(slatwall.getRequestByAction('addPickupFulfillmentLocation').loading) ? 'Loading...' : slatwall.getPickupLocation().primaryAddress.address.streetAddress + ' ' + slatwall.getPickupLocation().primaryAddress.address.city}}</span>
 				</span>
 				<span ng-if="slatwall.noPickupLocation()">None</span></h5>
 			<a href="#" ng-click="slatwall.stores = !slatwall.stores;" ng-if="slatwall.getPickupLocation().primaryAddress != undefined">Change store</a>

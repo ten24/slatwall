@@ -59,7 +59,11 @@ Notes:
 
 		<!--- This creates a client side object for Slatwall so that $.slatwall API works from the client side --->
 		<cfoutput>#$.slatwall.renderJSObject( subsystem="public" )#</cfoutput>
-
+		<style>
+			[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+			  display: none !important;
+			}
+		</style>
 		<!--- Bootstrap is just included for demo / example purposes.  Removing it will not stop Slatwall from working --->
 		<!-- Latest compiled and minified CSS -->
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
