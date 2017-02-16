@@ -1,8 +1,8 @@
 {
 	"conditions":{
-	    "slatwallAuthenticatedAccount":{
-	        "slatwallAuthenticationExistsFlag":{"eq":true}
-	    },
+    "slatwallAuthenticatedAccount":{
+        "slatwallAuthenticationExistsFlag":{"eq":true}
+    },
 		"isOrganizationAccount":{
 			"organizationFlag":{"eq":true}
 		},
@@ -11,8 +11,7 @@
 		}
 	},
 	"properties":{
-		"firstName":							[{"contexts":"save","required":true}],
-		"lastName":								[{"contexts":"save","required":true}],
+		"fullName":								[{"contexts":"save","minLenght":1}],
 		"accountCode":	    [
 			{
 				"conditions":"isOrganizationAccount",
