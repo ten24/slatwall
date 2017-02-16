@@ -116,7 +116,6 @@ Notes:
 						  	orderItem.orderItemType.systemCode = 'oitSale'
 						  AND 
 							orderItem.sku.product.productID = :productID
-						 
 						GROUP BY
 							orderItem.sku.skuID,
 							stock.stockID,
@@ -137,13 +136,13 @@ Notes:
 			var params = {productID=arguments.productID};
 			
 			var stockAdjustmentItemQuantityHql = "SELECT COALESCE(sum(stockAdjustmentItem.quantity),0)
-									FROM SlatwallStockAdjustmentItem stockAdjustmentItem
-										LEFT JOIN
-										stockAdjustmentItem.fromStock fromStock
-									WHERE
-										stockAdjustmentItem.stockAdjustment.stockAdjustmentStatusType.systemCode != 'sastClosed'
-									  AND
-										fromStock.sku.product.productID = :productID
+							FROM SlatwallStockAdjustmentItem stockAdjustmentItem
+								LEFT JOIN
+								stockAdjustmentItem.fromStock fromStock
+							WHERE
+								stockAdjustmentItem.stockAdjustment.stockAdjustmentStatusType.systemCode != 'sastClosed'
+							  AND
+								fromStock.sku.product.productID = :productID
 									";
 			
 			var stockAdjustmentItemQuantitySum = ORMExecuteQuery(stockAdjustmentItemQuantityHql,params,true);
@@ -223,26 +222,11 @@ Notes:
 			return ormExecuteQuery(hql, params);
 		}
 		
-		// Quantity not received on vendor order
-		public array function getQNROVO(required string productID, string productRemoteID) {
+		public array function getQROVO(required string productID, string productRemoteID){
 			
 			var params = {productID=arguments.productID};
-			var vendorOrderItemQuantityHQL = "SELECT COALESCE(sum(vendorOrderItem.quantity),0)
-								FROM SlatwallVendorOrderItem vendorOrderItem
-									WHERE
-										vendorOrderItem.vendorOrder.vendorOrderStatusType.systemCode != 'ostClosed'
-							 		AND
-							  			vendorOrderItem.vendorOrder.vendorOrderType.systemCode = 'votPurchaseOrder'
-							  		AND
-										vendorOrderItem.stock.sku.product.productID = :productID
-									";
-			
-			var vendorOrderItemQuantitySum = ORMExecuteQuery(vendorOrderItemQuantityHQL,params,true);
-			params['vendorOrderItemQuantitySum'] = vendorOrderItemQuantitySum;
-			
 			var hql = "SELECT NEW MAP(
-							:vendorOrderItemQuantitySum 
-							- coalesce( sum(stockReceiverItem.quantity), 0 ) as QNROVO, 
+							coalesce( sum(stockReceiverItem.quantity), 0 ) as QROVO, 
 							stock.sku.skuID as skuID, 
 							stock.stockID as stockID, 
 							location.locationID as locationID, 
@@ -256,6 +240,8 @@ Notes:
 					  	  	vendorOrderItem.stock stock
 					  	  LEFT JOIN
 					  	  	stock.location location
+					  	  LEFT JOIN 
+					  	  	stock.sku sku
 						WHERE
 							vendorOrderItem.vendorOrder.vendorOrderStatusType.systemCode != 'ostClosed'
 						  AND
@@ -269,6 +255,64 @@ Notes:
 							location.locationIDPath";
 			
 			return ormExecuteQuery(hql, params);
+		}
+		
+		public array function getQOVO(required string productID, string productRemoteID) {
+				
+			var params = {productID=arguments.productID};
+			var hql = "SELECT NEW MAP(
+							sum(vendorOrderItem.quantity) as QOVO, 
+							stock.sku.skuID as skuID, 
+							stock.stockID as stockID, 
+							location.locationID as locationID, 
+							location.locationIDPath as locationIDPath
+						)
+						FROM
+							SlatwallVendorOrderItem vendorOrderItem
+					  	  LEFT JOIN
+					  	  	vendorOrderItem.stock stock
+					  	  LEFT JOIN
+					  	  	stock.location location
+					  	  LEFT JOIN 
+					  	  	stock.sku sku
+						WHERE
+							vendorOrderItem.vendorOrder.vendorOrderStatusType.systemCode != 'ostClosed'
+						  AND
+						  	vendorOrderItem.vendorOrder.vendorOrderType.systemCode = 'votPurchaseOrder'
+						  AND
+							vendorOrderItem.stock.sku.product.productID = :productID
+						GROUP BY
+							stock.sku.skuID,
+							stock.stockID,
+							location.locationID,
+							location.locationIDPath";
+			return ormExecuteQuery(hql, params);
+		}
+		
+		// Quantity not received on vendor order
+		public array function getQNROVO(required string productID, string productRemoteID) {
+			var QROVO = getQROVO(productID=arguments.productID);
+			var QROVOHashMap = {};
+			for(var i=1;i <= arrayLen(QROVO);i++){
+				QROVOHashMap["#QROVO[i]['skuID']#"] = QROVO[i]; 
+			}
+			var QNROVO = [];
+			
+			var QOVO = getQOVO(productID=arguments.productID);
+			for(var QOVOData in QOVO){
+				var record = {};
+				record['skuID'] = QOVOData['skuID'];
+				record['stockID'] = QOVOData['skuID'];
+				record['locationID'] = QOVOData['skuID'];
+				record['locationIDPath'] = QOVOData['skuID'];
+				var quantityReceived = 0;
+				if(structKeyExists(QROVOHashMap,'#QOVOData['skuID']#')){
+					quantityReceived = QROVOHashMap['#QOVOData['skuID']#']['QROVO'];
+				}
+				record['QNROVO'] = QOVOData['QOVO'] - quantityReceived;
+				arrayAppend(QNROVO,record);
+			}
+			return QNROVO;
 		}
 		
 		// Quantity not received on stock adjustment

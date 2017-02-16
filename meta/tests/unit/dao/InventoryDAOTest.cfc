@@ -101,6 +101,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var mockProduct = createMockProduct();
 		var mockLocation = createMockLocation();
 		var mockSku = createMockSku(mockProduct.getProductID());
+		var mockSku2 = createMockSku(mockProduct.getProductID());
 		
 		var stockData = {
 			stockID = '',
@@ -112,6 +113,17 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			}
 		};
 		var mockStock = createPersistedTestEntity('Stock', stockData);
+		
+		var stockData2 = {
+			stockID = '',
+			sku = {
+				skuID = mockSku2.getSkuID()
+			},
+			location = {
+				locationID = mockLocation.getLocationID()
+			}
+		};
+		var mockStock2 = createPersistedTestEntity('Stock', stockData2);
 		
 		var inventoryData1 = {
 			inventoryID = '',
@@ -133,7 +145,18 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var mockInventory2 = createPersistedTestEntity('Inventory', inventoryData2);
 		
+		var inventoryData3 = {
+			inventoryID = '',
+			stock =  {
+				stockID = mockStock2.getStockID()
+			},
+			quantityIn = 22,
+			quantityOut = 11
+		};
+		var mockInventory3 = createPersistedTestEntity('Inventory', inventoryData3);
+		
 		var result = variables.dao.getQOH(mockProduct.getProductID());
+		request.debug(result);
 		assertEquals(250, result[1].QOH, 'It should be (100 + 200) - (30 + 20) = 250');
 	}
 	
@@ -348,6 +371,452 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var result = variables.dao.getQNDOSA(mockProduct.getProductID());
 		assertEquals(70, result[1].QNDOSA, 'Should be 100 - (10 + 20) = 70');
 
+	}
+	
+	public void function getQNROVOTest_mulitipleSkus() {
+		var productData = {
+			productID="",
+			productCode='test'&createUUID()
+		};
+		var product = createPersistedTestEntity('Product',productData);
+		
+		var skuData = {
+			skuID="",
+			skuCode="test"&createUUID(),
+			product={
+				productID=product.getProductID()
+			}
+		};
+		var sku = createPersistedTestEntity('Sku',skuData);
+		
+		var skuData2 = {
+			skuID="",
+			skuCode="test"&createUUID(),
+			product={
+				productID=product.getProductID()
+			}
+		};
+		var sku2 = createPersistedTestEntity('Sku',skuData2);
+		
+		var skuData3 = {
+			skuID="",
+			skuCode="test"&createUUID(),
+			product={
+				productID=product.getProductID()
+			}
+		};
+		var sku3 = createPersistedTestEntity('Sku',skuData3);
+		
+		var locationEntity = createMockLocation();
+		
+		var stockData = {
+			stockID = '',
+			sku = {
+				skuID = sku.getSkuID()
+			},
+			location = {
+				locationID = locationEntity.getLocationID()
+			}
+		};
+		var stock = createPersistedTestEntity('Stock', stockData);
+		
+		var stockData2 = {
+			stockID = '',
+			sku = {
+				skuID = sku2.getSkuID()
+			},
+			location = {
+				locationID = locationEntity.getLocationID()
+			}
+		};
+		var stock2 = createPersistedTestEntity('Stock', stockData2);
+		
+		var stockData3 = {
+			stockID = '',
+			sku = {
+				skuID = sku3.getSkuID()
+			},
+			location = {
+				locationID = locationEntity.getLocationID()
+			}
+		};
+		var stock3 = createPersistedTestEntity('Stock', stockData3);
+		
+		var vendorOrderData = {
+			vendorOrderID = '',
+			vendorOrderStatusType = {
+				typeID = '444df2b5c8f9b37338229d4f7dd84ad1'//ostNew
+			},
+			vendorOrderType = {
+				typeID = '444df2dbfde8c38ab64bb21c724d46e0'//votPurchaseOrder
+			}
+		};
+		var vendorOrder = createPersistedTestEntity('VendorOrder', vendorOrderData);
+		
+		var vendorOrderItemData = {
+			vendorOrderItemID = '',
+			quantity = 100,
+			vendorOrder = {
+				vendorOrderID = vendorOrder.getVendorOrderID()
+			},
+			stock = {
+				stockID = stock.getStockID()
+			}
+		};
+		var vendorOrderItem = createPersistedTestEntity('VendorOrderItem', vendorOrderItemData);
+		
+		var vendorOrderItemData2 = {
+			vendorOrderItemID = '',
+			quantity = 200,
+			vendorOrder = {
+				vendorOrderID = vendorOrder.getVendorOrderID()
+			},
+			stock = {
+				stockID = stock.getStockID()
+			}
+		};
+		var vendorOrderItem2 = createPersistedTestEntity('VendorOrderItem', vendorOrderItemData2);
+		
+		//vo for second sku
+		var vendorOrderItemData3 = {
+			vendorOrderItemID = '',
+			quantity = 155,
+			vendorOrder = {
+				vendorOrderID = vendorOrder.getVendorOrderID()
+			},
+			stock = {
+				stockID = stock2.getStockID()
+			}
+		};
+		var vendorOrderItem3 = createPersistedTestEntity('VendorOrderItem', vendorOrderItemData3);
+		
+		var vendorOrderItemData4 = {
+			vendorOrderItemID = '',
+			quantity = 100,
+			vendorOrder = {
+				vendorOrderID = vendorOrder.getVendorOrderID()
+			},
+			stock = {
+				stockID = stock3.getStockID()
+			}
+		};
+		var vendorOrderItem4 = createPersistedTestEntity('VendorOrderItem', vendorOrderItemData4);
+		
+		var stockReceiverItemData = {
+			stockReceiverItemID = '',
+			quantity = 10,
+			vendorOrderItem = {
+				vendorOrderItemID = vendorOrderItem.getVendorOrderItemID()
+			}
+		};
+		var stockReceiverItem = createTestEntity('StockReceiverItem', stockReceiverItemData);
+		
+		injectMethod(stockReceiverItem, this, 'returnVoid', 'preInsert');
+		persistTestEntity(stockReceiverItem, stockReceiverItemData);
+		
+		var stockReceiverItemData2 = {
+			stockReceiverItemID = '',
+			quantity = 20,
+			vendorOrderItem = {
+				vendorOrderItemID = vendorOrderItem.getVendorOrderItemID()
+			}
+		};
+		var stockReceiverItem2 = createTestEntity('StockReceiverItem', stockReceiverItemData2);
+		
+		injectMethod(stockReceiverItem2, this, 'returnVoid', 'preInsert');
+		persistTestEntity(stockReceiverItem2, stockReceiverItemData2);
+		
+		
+		var stockReceiverItemData3 = {
+			stockReceiverItemID = '',
+			quantity = 40,
+			vendorOrderItem = {
+				vendorOrderItemID = vendorOrderItem2.getVendorOrderItemID()
+			}
+		};
+		var stockReceiverItem3 = createTestEntity('StockReceiverItem', stockReceiverItemData3);
+		
+		vendorOrderItem.addStockReceiverItem(stockReceiverItem);
+		vendorOrderItem.addStockReceiverItem(stockReceiverItem2);
+		vendorOrderItem2.addStockReceiverItem(stockReceiverItem3);
+		
+		var stockReceiverItemData4 = {
+			stockReceiverItemID = '',
+			quantity = 35,
+			vendorOrderItem = {
+				vendorOrderItemID = vendorOrderItem3.getVendorOrderItemID()
+			}
+		};
+		var stockReceiverItem4 = createTestEntity('StockReceiverItem', stockReceiverItemData4);
+		vendorOrderItem3.addStockReceiverItem(stockReceiverItem4);
+		
+		var result = variables.dao.getQNROVO(product.getProductID());
+		request.debug(result);
+		assertEquals(270, result[1].QNROVO, 'QNROVO should be (100+200) - (10+20+40) = 230');
+		assertEquals(270, result[2].QNROVO, 'QNROVO should be (100+200) - (10+20+40) = 230');
+	}
+	
+	public void function getQOVOTest_mulitipleSkus() {
+		var productData = {
+			productID="",
+			productCode='test'&createUUID()
+		};
+		var product = createPersistedTestEntity('Product',productData);
+		
+		var skuData = {
+			skuID="",
+			skuCode="test"&createUUID(),
+			product={
+				productID=product.getProductID()
+			}
+		};
+		var sku = createPersistedTestEntity('Sku',skuData);
+		
+		var skuData2 = {
+			skuID="",
+			skuCode="test"&createUUID(),
+			product={
+				productID=product.getProductID()
+			}
+		};
+		var sku2 = createPersistedTestEntity('Sku',skuData2);
+		
+		var locationEntity = createMockLocation();
+		
+		var stockData = {
+			stockID = '',
+			sku = {
+				skuID = sku.getSkuID()
+			},
+			location = {
+				locationID = locationEntity.getLocationID()
+			}
+		};
+		var stock = createPersistedTestEntity('Stock', stockData);
+		
+		var stockData2 = {
+			stockID = '',
+			sku = {
+				skuID = sku2.getSkuID()
+			},
+			location = {
+				locationID = locationEntity.getLocationID()
+			}
+		};
+		var stock2 = createPersistedTestEntity('Stock', stockData2);
+		
+		var vendorOrderData = {
+			vendorOrderID = '',
+			vendorOrderStatusType = {
+				typeID = '444df2b5c8f9b37338229d4f7dd84ad1'//ostNew
+			},
+			vendorOrderType = {
+				typeID = '444df2dbfde8c38ab64bb21c724d46e0'//votPurchaseOrder
+			}
+		};
+		var vendorOrder = createPersistedTestEntity('VendorOrder', vendorOrderData);
+		
+		var vendorOrderItemData = {
+			vendorOrderItemID = '',
+			quantity = 1070,
+			vendorOrder = {
+				vendorOrderID = vendorOrder.getVendorOrderID()
+			},
+			stock = {
+				stockID = stock.getStockID()
+			}
+		};
+		var vendorOrderItem = createPersistedTestEntity('VendorOrderItem', vendorOrderItemData);
+		
+		var vendorOrderItemData2 = {
+			vendorOrderItemID = '',
+			quantity = 2030,
+			vendorOrder = {
+				vendorOrderID = vendorOrder.getVendorOrderID()
+			},
+			stock = {
+				stockID = stock2.getStockID()
+			}
+		};
+		var vendorOrderItem2 = createPersistedTestEntity('VendorOrderItem', vendorOrderItemData2);
+		
+		var stockReceiverItemData = {
+			stockReceiverItemID = '',
+			quantity = 10,
+			vendorOrderItem = {
+				vendorOrderItemID = vendorOrderItem.getVendorOrderItemID()
+			}
+		};
+		var stockReceiverItem = createTestEntity('StockReceiverItem', stockReceiverItemData);
+		
+		injectMethod(stockReceiverItem, this, 'returnVoid', 'preInsert');
+		persistTestEntity(stockReceiverItem, stockReceiverItemData);
+		
+		var stockReceiverItemData2 = {
+			stockReceiverItemID = '',
+			quantity = 20,
+			vendorOrderItem = {
+				vendorOrderItemID = vendorOrderItem.getVendorOrderItemID()
+			}
+		};
+		var stockReceiverItem2 = createTestEntity('StockReceiverItem', stockReceiverItemData2);
+		
+		injectMethod(stockReceiverItem2, this, 'returnVoid', 'preInsert');
+		persistTestEntity(stockReceiverItem2, stockReceiverItemData2);
+		
+		
+		var stockReceiverItemData3 = {
+			stockReceiverItemID = '',
+			quantity = 40,
+			vendorOrderItem = {
+				vendorOrderItemID = vendorOrderItem2.getVendorOrderItemID()
+			}
+		};
+		var stockReceiverItem3 = createTestEntity('StockReceiverItem', stockReceiverItemData3);
+		
+		injectMethod(stockReceiverItem3, this, 'returnVoid', 'preInsert');
+		persistTestEntity(stockReceiverItem3, stockReceiverItemData3);
+		
+		vendorOrderItem.addStockReceiverItem(stockReceiverItem);
+		vendorOrderItem.addStockReceiverItem(stockReceiverItem2);
+		vendorOrderItem2.addStockReceiverItem(stockReceiverItem3);
+		
+		var result = variables.dao.getQOVO(product.getProductID());
+		request.debug(result);
+		assertEquals(1070, result[1].QOVO );
+		assertEquals(2030, result[2].QOVO);
+	}
+	
+	public void function getQROVOTest_mulitipleSkus() {
+		var productData = {
+			productID="",
+			productCode='test'&createUUID()
+		};
+		var product = createPersistedTestEntity('Product',productData);
+		
+		var skuData = {
+			skuID="",
+			skuCode="test"&createUUID(),
+			product={
+				productID=product.getProductID()
+			}
+		};
+		var sku = createPersistedTestEntity('Sku',skuData);
+		
+		var skuData2 = {
+			skuID="",
+			skuCode="test"&createUUID(),
+			product={
+				productID=product.getProductID()
+			}
+		};
+		var sku2 = createPersistedTestEntity('Sku',skuData2);
+		
+		var locationEntity = createMockLocation();
+		
+		var stockData = {
+			stockID = '',
+			sku = {
+				skuID = sku.getSkuID()
+			},
+			location = {
+				locationID = locationEntity.getLocationID()
+			}
+		};
+		var stock = createPersistedTestEntity('Stock', stockData);
+		
+		var stockData2 = {
+			stockID = '',
+			sku = {
+				skuID = sku2.getSkuID()
+			},
+			location = {
+				locationID = locationEntity.getLocationID()
+			}
+		};
+		var stock2 = createPersistedTestEntity('Stock', stockData2);
+		
+		var vendorOrderData = {
+			vendorOrderID = '',
+			vendorOrderStatusType = {
+				typeID = '444df2b5c8f9b37338229d4f7dd84ad1'//ostNew
+			},
+			vendorOrderType = {
+				typeID = '444df2dbfde8c38ab64bb21c724d46e0'//votPurchaseOrder
+			}
+		};
+		var vendorOrder = createPersistedTestEntity('VendorOrder', vendorOrderData);
+		
+		var vendorOrderItemData = {
+			vendorOrderItemID = '',
+			quantity = 100,
+			vendorOrder = {
+				vendorOrderID = vendorOrder.getVendorOrderID()
+			},
+			stock = {
+				stockID = stock.getStockID()
+			}
+		};
+		var vendorOrderItem = createPersistedTestEntity('VendorOrderItem', vendorOrderItemData);
+		
+		var vendorOrderItemData2 = {
+			vendorOrderItemID = '',
+			quantity = 200,
+			vendorOrder = {
+				vendorOrderID = vendorOrder.getVendorOrderID()
+			},
+			stock = {
+				stockID = stock2.getStockID()
+			}
+		};
+		var vendorOrderItem2 = createPersistedTestEntity('VendorOrderItem', vendorOrderItemData2);
+		
+		var stockReceiverItemData = {
+			stockReceiverItemID = '',
+			quantity = 10,
+			vendorOrderItem = {
+				vendorOrderItemID = vendorOrderItem.getVendorOrderItemID()
+			}
+		};
+		var stockReceiverItem = createTestEntity('StockReceiverItem', stockReceiverItemData);
+		
+		injectMethod(stockReceiverItem, this, 'returnVoid', 'preInsert');
+		persistTestEntity(stockReceiverItem, stockReceiverItemData);
+		
+		var stockReceiverItemData2 = {
+			stockReceiverItemID = '',
+			quantity = 20,
+			vendorOrderItem = {
+				vendorOrderItemID = vendorOrderItem.getVendorOrderItemID()
+			}
+		};
+		var stockReceiverItem2 = createTestEntity('StockReceiverItem', stockReceiverItemData2);
+		
+		injectMethod(stockReceiverItem2, this, 'returnVoid', 'preInsert');
+		persistTestEntity(stockReceiverItem2, stockReceiverItemData2);
+		
+		
+		var stockReceiverItemData3 = {
+			stockReceiverItemID = '',
+			quantity = 40,
+			vendorOrderItem = {
+				vendorOrderItemID = vendorOrderItem2.getVendorOrderItemID()
+			}
+		};
+		var stockReceiverItem3 = createTestEntity('StockReceiverItem', stockReceiverItemData3);
+		
+		injectMethod(stockReceiverItem3, this, 'returnVoid', 'preInsert');
+		persistTestEntity(stockReceiverItem3, stockReceiverItemData3);
+		
+		vendorOrderItem.addStockReceiverItem(stockReceiverItem);
+		vendorOrderItem.addStockReceiverItem(stockReceiverItem2);
+		vendorOrderItem2.addStockReceiverItem(stockReceiverItem3);
+		
+		var result = variables.dao.getQROVO(product.getProductID());
+		request.debug(arraylen(result));
+		request.debug(result);
+		assertEquals(30, result[1].QROVO, 'QROVO should be (10+20) = 30');
+		assertEquals(40, result[2].QROVO, 'QROVO should be (40) = 40');
 	}
 	
 	public void function getQNROVOTest() {
