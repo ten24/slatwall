@@ -156,7 +156,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var mockInventory3 = createPersistedTestEntity('Inventory', inventoryData3);
 		
 		var result = variables.dao.getQOH(mockProduct.getProductID());
-		request.debug(result);
 		assertEquals(250, result[1].QOH, 'It should be (100 + 200) - (30 + 20) = 250');
 	}
 	
@@ -164,6 +163,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var mockProduct = createMockProduct();
 		var mockLocation = createMockLocation();
 		var mockSku = createMockSku(mockProduct.getProductID());
+		var mockSku2 = createMockSku(mockProduct.getProductID());
 		
 		var stockData = {
 			stockID = '',
@@ -176,6 +176,19 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var mockStock = createPersistedTestEntity('Stock', stockData);
 		
+		var stockData2 = {
+			stockID = '',
+			sku = {
+				skuID = mockSku2.getSkuID()
+			},
+			location = {
+				locationID = mockLocation.getLocationID()
+			}
+		};
+		var mockStock2 = createPersistedTestEntity('Stock', stockData2);
+		
+		
+		//first order
 		var orderItemData = {
 			orderItemID = '',
 			orderItemType = {
@@ -228,6 +241,51 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		mockOrderItem.addOrderDeliveryItem(mockOrderDeliveryItem1);
 		mockOrderItem.addOrderDeliveryItem(mockOrderDeliveryItem2);
 		mockOrderItem.setOrder(mockOrder);
+		
+		
+		//second order
+		var orderItemData3 = {
+			orderItemID = '',
+			orderItemType = {
+				typeID = '444df2e9a6622ad1614ea75cd5b982ce'//oitSale
+			},
+			quantity = 10,
+			sku = {
+				skuID = mockSku2.getSkuID()
+			},
+			stock = {
+				stockID = mockStock2.getStockID()
+			}
+		};
+		var mockOrderItem3 = createPersistedTestEntity('OrderItem', orderItemData3);
+		
+		var orderDeliveryItemData3 = {
+			orderDeliveryItemID = '',
+			quantity = 1,
+			orderItem = {
+				orderItemID = mockOrderItem.getOrderItemID()
+			}
+		};
+		var mockOrderDeliveryItem3 = createTestEntity('OrderDeliveryItem', orderDeliveryItemData3);
+		injectMethod(mockOrderDeliveryItem3, this, 'returnVoid', 'preInsert');
+		persistTestEntity(mockOrderDeliveryItem3, orderDeliveryItemData3);
+		
+		var orderData2 = {
+			orderID = '',
+			orderStatusType = {
+				typeID = '444df2b6b8b5d1ccfc14a4ab38aa0a4c'//ostProcessing
+			},
+			orderItems = [{
+				orderItemID = mockOrderItem3.getOrderItemID()
+			}]
+		};
+		var mockOrder2 = createPersistedTestEntity('Order', orderData2);
+		
+		mockOrderItem3.addOrderDeliveryItem(mockOrderDeliveryItem3);
+		mockOrderItem3.addOrderDeliveryItem(mockOrderDeliveryItem3);
+		mockOrderItem3.setOrder(mockOrder2);
+		
+		
 		
 		var result = variables.dao.getQNDOO(mockProduct.getProductID());
 		assertEquals(7, result[1].QNDOO, 'Should be 10 - (1 + 2) = 7');
@@ -551,7 +609,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		vendorOrderItem3.addStockReceiverItem(stockReceiverItem4);
 		
 		var result = variables.dao.getQNROVO(product.getProductID());
-		request.debug(result);
 		assertEquals(270, result[1].QNROVO, 'QNROVO should be (100+200) - (10+20+40) = 230');
 		assertEquals(270, result[2].QNROVO, 'QNROVO should be (100+200) - (10+20+40) = 230');
 	}
@@ -682,7 +739,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		vendorOrderItem2.addStockReceiverItem(stockReceiverItem3);
 		
 		var result = variables.dao.getQOVO(product.getProductID());
-		request.debug(result);
 		assertEquals(1070, result[1].QOVO );
 		assertEquals(2030, result[2].QOVO);
 	}
@@ -813,8 +869,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		vendorOrderItem2.addStockReceiverItem(stockReceiverItem3);
 		
 		var result = variables.dao.getQROVO(product.getProductID());
-		request.debug(arraylen(result));
-		request.debug(result);
 		assertEquals(30, result[1].QROVO, 'QROVO should be (10+20) = 30');
 		assertEquals(40, result[2].QROVO, 'QROVO should be (40) = 40');
 	}
