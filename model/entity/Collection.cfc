@@ -1697,14 +1697,17 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return variables.recordsCount;
 	}
 
-	public array function getPrimaryIDs(){
+	public array function getPrimaryIDs(string recordCount){
+		if(!structKeyExists(arguments, 'recordCount') || arguments.recordCount == ""){
+			arguments.recordCount = 0;
+		}
 		var baseEntityObject = getService('hibachiService').getEntityObject( getCollectionObject() );
 		var primaryIDName = baseEntityObject.getPrimaryIDPropertyName();
 		
-		return getPropertyNameValues(primaryIDName);
+		return getPropertyNameValues(primaryIDName, arguments.recordCount);
 	}
 	
-	public array function getPropertyNameValues(required string propertyName){
+	public array function getPropertyNameValues(required string propertyName, string recordCount){
 		var baseEntityObject = getService('hibachiService').getEntityObject( getCollectionObject() );
 		var propertyMetaData = baseEntityObject.getPropertyMetaData(arguments.propertyName);
 		var column = {
@@ -1719,7 +1722,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		column['propertyIdentifier'] = "_#lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject()))#.#arguments.propertyName#";
 		
 		this.getCollectionConfigStruct().columns = [column];
-		return getRecords(formatRecords=false);
+		if(structKeyExists(arguments, 'recordCount') && arguments.recordCount > 0){
+			setPageRecordsShow(arguments.recordCount);
+			return getPageRecords(formatRecords=false);
+		}else{
+			return getRecords(formatRecords=false);
+		}
+
 	}
 	//trasforms [{id:'idvalue',otherproperty;'value'}] into {'idvalue':'value'} via transformRecordsToNVP('id','otherproperty')
 	public struct function transformRecordsToNVP(required string keyPropertyValue,required string valuePropertyValue){
