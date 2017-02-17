@@ -78,26 +78,41 @@ Notes:
 			return 0;
 		}
 		
-		// Quantity Not Delivered on Order 
-		public array function getQNDOO(required string productID, string productRemoteID) {
+		//Quantity on Order
+		public array function getQOO(required string productID, string productRemoteID){
 			var params = { productID = arguments.productID };
-			
-			var orderItemQuantityHql = "SELECT COALESCE(sum(orderItem.quantity),0)
-									FROM SlatwallOrderItem orderItem
-									WHERE
+			var hql = "SELECT NEW MAP(
+							COALESCE(sum(orderItem.quantity),0) as QOO, 
+							orderItem.sku.skuID as skuID, 
+							stock.stockID as stockID, 
+							location.locationID as locationID, 
+							location.locationIDPath as locationIDPath
+						)
+						FROM SlatwallOrderItem orderItem
+					  	  LEFT JOIN
+					  	  	orderItem.stock stock
+					  	  LEFT JOIN 
+					  	  	stock.location location
+						WHERE
 										orderItem.order.orderStatusType.systemCode NOT IN ('ostNotPlaced','ostClosed','ostCanceled')
 						  			AND
 						  				orderItem.orderItemType.systemCode = 'oitSale'
 						  			AND 
 										orderItem.sku.product.productID = :productID
-									";
-			var orderItemQuantitySum = ORMExecuteQuery(orderItemQuantityHql,params,true);								
-			
+						GROUP BY
+						orderItem.sku.skuID, 
+						stock.stockID, 
+						location.locationID, 
+						location.locationIDPath
+					  	 ";
+			var QOO = ORMExecuteQuery(hql,params);	
+			return QOO;
+		}	
+		
+		//Quantity Delivered on Order
+		public array function getQDOO(required string productID, string productRemoteID){
 			var hql = "SELECT NEW MAP(
-									
-								:orderItemQuantitySum
-								
-								- coalesce( sum(orderDeliveryItem.quantity), 0 ) as QNDOO, 
+							coalesce( sum(orderDeliveryItem.quantity), 0 ) as QDOO, 
 							orderItem.sku.skuID as skuID, 
 							stock.stockID as stockID, 
 							location.locationID as locationID, 
@@ -121,7 +136,40 @@ Notes:
 							stock.stockID,
 							location.locationID,
 							location.locationIDPath";
-			return ormExecuteQuery(hql, {productID=arguments.productID,orderItemQuantitySum=orderItemQuantitySum});	
+			var QDOO = ormExecuteQuery(hql, {productID=arguments.productID});	
+			return QDOO;
+		}	
+		
+		// Quantity Not Delivered on Order 
+		public array function getQNDOO(required string productID, string productRemoteID) {
+			var QNDOO = [];
+			
+			var params = { productID = arguments.productID };
+			
+			var QDOO = getQDOO(productID=arguments.productID);
+			var QDOOHashMap = {};
+			for(var i=1;i <= arrayLen(QDOO);i++){
+				QDOOHashMap["#QDOO[i]['skuID']#"] = QDOO[i]; 
+			}
+			
+			var QOO = getQOO(productID=arguments.productID);
+			
+			for(var QOOData in QOO){
+				var record = {};
+				record['skuID'] = QOOData['skuID'];
+				record['stockID'] = QOOData['skuID'];
+				record['locationID'] = QOOData['skuID'];
+				record['locationIDPath'] = QOOData['skuID'];
+				var quantityReceived = 0;
+				if(structKeyExists(QDOOHashMap,'#QOOData['skuID']#')){
+					quantityReceived = QDOOHashMap['#QOOData['skuID']#']['QDOO'];
+				}
+				record['QNDOO'] = QOOData['QOO'] - quantityReceived;
+				arrayAppend(QNDOO,record);
+			}
+			
+			
+			return QNDOO;	
 		}
 		
 		// Quantity not delivered on return vendor order 

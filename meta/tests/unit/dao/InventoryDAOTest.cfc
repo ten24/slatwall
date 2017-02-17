@@ -159,6 +159,309 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(250, result[1].QOH, 'It should be (100 + 200) - (30 + 20) = 250');
 	}
 	
+	public void function getQDOOTest(){
+		var mockProduct = createMockProduct();
+		var mockLocation = createMockLocation();
+		var mockSku = createMockSku(mockProduct.getProductID());
+		var mockSku2 = createMockSku(mockProduct.getProductID());
+		
+		var stockData = {
+			stockID = '',
+			sku = {
+				skuID = mockSku.getSkuID()
+			},
+			location = {
+				locationID = mockLocation.getLocationID()
+			}
+		};
+		var mockStock = createPersistedTestEntity('Stock', stockData);
+		
+		var stockData2 = {
+			stockID = '',
+			sku = {
+				skuID = mockSku2.getSkuID()
+			},
+			location = {
+				locationID = mockLocation.getLocationID()
+			}
+		};
+		var mockStock2 = createPersistedTestEntity('Stock', stockData2);
+		
+		
+		//first order
+		var orderItemData = {
+			orderItemID = '',
+			orderItemType = {
+				typeID = '444df2e9a6622ad1614ea75cd5b982ce'//oitSale
+			},
+			quantity = 12,
+			sku = {
+				skuID = mockSku.getSkuID()
+			},
+			stock = {
+				stockID = mockStock.getStockID()
+			}
+		};
+		var mockOrderItem = createPersistedTestEntity('OrderItem', orderItemData);
+		
+		var orderDeliveryItemData1 = {
+			orderDeliveryItemID = '',
+			quantity = 1,
+			orderItem = {
+				orderItemID = mockOrderItem.getOrderItemID()
+			}
+		};
+		var mockOrderDeliveryItem1 = createTestEntity('OrderDeliveryItem', orderDeliveryItemData1);
+		injectMethod(mockOrderDeliveryItem1, this, 'returnVoid', 'preInsert');
+		persistTestEntity(mockOrderDeliveryItem1, orderDeliveryItemData1);
+		
+		var orderDeliveryItemData2 = {
+			orderDeliveryItemID = '',
+			quantity = 2,
+			orderItem = {
+				orderItemID = mockOrderItem.getOrderItemID()
+			}
+		};
+		var mockOrderDeliveryItem2 = createTestEntity('OrderDeliveryItem', orderDeliveryItemData2);
+		
+		injectMethod(mockOrderDeliveryItem2, this, 'returnVoid', 'preInsert');
+		persistTestEntity(mockOrderDeliveryItem2, orderDeliveryItemData2);
+		
+		var orderData = {
+			orderID = '',
+			orderStatusType = {
+				typeID = '444df2b6b8b5d1ccfc14a4ab38aa0a4c'//ostProcessing
+			},
+			orderItems = [{
+				orderItemID = mockOrderItem.getOrderItemID()
+			}]
+		};
+		var mockOrder = createPersistedTestEntity('Order', orderData);
+		
+		mockOrderItem.addOrderDeliveryItem(mockOrderDeliveryItem1);
+		mockOrderItem.addOrderDeliveryItem(mockOrderDeliveryItem2);
+		mockOrderItem.setOrder(mockOrder);
+		
+		
+		//second order
+		var orderItemData3 = {
+			orderItemID = '',
+			orderItemType = {
+				typeID = '444df2e9a6622ad1614ea75cd5b982ce'//oitSale
+			},
+			quantity = 15,
+			sku = {
+				skuID = mockSku2.getSkuID()
+			},
+			stock = {
+				stockID = mockStock2.getStockID()
+			}
+		};
+		var mockOrderItem3 = createPersistedTestEntity('OrderItem', orderItemData3);
+		var orderItemData4 = {
+			orderItemID = '',
+			orderItemType = {
+				typeID = '444df2e9a6622ad1614ea75cd5b982ce'//oitSale
+			},
+			quantity = 17,
+			sku = {
+				skuID = mockSku2.getSkuID()
+			},
+			stock = {
+				stockID = mockStock2.getStockID()
+			}
+		};
+		var mockOrderItem4 = createPersistedTestEntity('OrderItem', orderItemData4);
+		
+		var orderDeliveryItemData3 = {
+			orderDeliveryItemID = '',
+			quantity = 1,
+			orderItem = {
+				orderItemID = mockOrderItem3.getOrderItemID()
+			}
+		};
+		var mockOrderDeliveryItem3 = createTestEntity('OrderDeliveryItem', orderDeliveryItemData3);
+		injectMethod(mockOrderDeliveryItem3, this, 'returnVoid', 'preInsert');
+		persistTestEntity(mockOrderDeliveryItem3, orderDeliveryItemData3);
+		
+		var orderData2 = {
+			orderID = '',
+			orderStatusType = {
+				typeID = '444df2b6b8b5d1ccfc14a4ab38aa0a4c'//ostProcessing
+			},
+			orderItems = [{
+				orderItemID = mockOrderItem3.getOrderItemID()
+			},
+			{
+				orderItemID = mockOrderItem4.getOrderItemID()
+			}]
+		};
+		var mockOrder2 = createPersistedTestEntity('Order', orderData2);
+		
+		mockOrderItem3.addOrderDeliveryItem(mockOrderDeliveryItem3);
+		mockOrderItem3.addOrderDeliveryItem(mockOrderDeliveryItem3);
+		mockOrderItem3.setOrder(mockOrder2);
+		mockOrderItem4.setOrder(mockOrder2);
+		
+		
+		
+		var result = variables.dao.getQDOO(mockProduct.getProductID());
+		request.debug(result);
+		assertEquals(3, result[1].QDOO,'should be 1+2=3');
+		assertEquals(1, result[2].QDOO);
+	}
+	
+	public void function getQOOTest(){
+		var mockProduct = createMockProduct();
+		var mockLocation = createMockLocation();
+		var mockSku = createMockSku(mockProduct.getProductID());
+		var mockSku2 = createMockSku(mockProduct.getProductID());
+		
+		var stockData = {
+			stockID = '',
+			sku = {
+				skuID = mockSku.getSkuID()
+			},
+			location = {
+				locationID = mockLocation.getLocationID()
+			}
+		};
+		var mockStock = createPersistedTestEntity('Stock', stockData);
+		
+		var stockData2 = {
+			stockID = '',
+			sku = {
+				skuID = mockSku2.getSkuID()
+			},
+			location = {
+				locationID = mockLocation.getLocationID()
+			}
+		};
+		var mockStock2 = createPersistedTestEntity('Stock', stockData2);
+		
+		
+		//first order
+		var orderItemData = {
+			orderItemID = '',
+			orderItemType = {
+				typeID = '444df2e9a6622ad1614ea75cd5b982ce'//oitSale
+			},
+			quantity = 12,
+			sku = {
+				skuID = mockSku.getSkuID()
+			},
+			stock = {
+				stockID = mockStock.getStockID()
+			}
+		};
+		var mockOrderItem = createPersistedTestEntity('OrderItem', orderItemData);
+		
+		var orderDeliveryItemData1 = {
+			orderDeliveryItemID = '',
+			quantity = 1,
+			orderItem = {
+				orderItemID = mockOrderItem.getOrderItemID()
+			}
+		};
+		var mockOrderDeliveryItem1 = createTestEntity('OrderDeliveryItem', orderDeliveryItemData1);
+		injectMethod(mockOrderDeliveryItem1, this, 'returnVoid', 'preInsert');
+		persistTestEntity(mockOrderDeliveryItem1, orderDeliveryItemData1);
+		
+		var orderDeliveryItemData2 = {
+			orderDeliveryItemID = '',
+			quantity = 2,
+			orderItem = {
+				orderItemID = mockOrderItem.getOrderItemID()
+			}
+		};
+		var mockOrderDeliveryItem2 = createTestEntity('OrderDeliveryItem', orderDeliveryItemData2);
+		
+		injectMethod(mockOrderDeliveryItem2, this, 'returnVoid', 'preInsert');
+		persistTestEntity(mockOrderDeliveryItem2, orderDeliveryItemData2);
+		
+		var orderData = {
+			orderID = '',
+			orderStatusType = {
+				typeID = '444df2b6b8b5d1ccfc14a4ab38aa0a4c'//ostProcessing
+			},
+			orderItems = [{
+				orderItemID = mockOrderItem.getOrderItemID()
+			}]
+		};
+		var mockOrder = createPersistedTestEntity('Order', orderData);
+		
+		mockOrderItem.addOrderDeliveryItem(mockOrderDeliveryItem1);
+		mockOrderItem.addOrderDeliveryItem(mockOrderDeliveryItem2);
+		mockOrderItem.setOrder(mockOrder);
+		
+		
+		//second order
+		var orderItemData3 = {
+			orderItemID = '',
+			orderItemType = {
+				typeID = '444df2e9a6622ad1614ea75cd5b982ce'//oitSale
+			},
+			quantity = 15,
+			sku = {
+				skuID = mockSku2.getSkuID()
+			},
+			stock = {
+				stockID = mockStock2.getStockID()
+			}
+		};
+		var mockOrderItem3 = createPersistedTestEntity('OrderItem', orderItemData3);
+		var orderItemData4 = {
+			orderItemID = '',
+			orderItemType = {
+				typeID = '444df2e9a6622ad1614ea75cd5b982ce'//oitSale
+			},
+			quantity = 17,
+			sku = {
+				skuID = mockSku2.getSkuID()
+			},
+			stock = {
+				stockID = mockStock2.getStockID()
+			}
+		};
+		var mockOrderItem4 = createPersistedTestEntity('OrderItem', orderItemData4);
+		
+		var orderDeliveryItemData3 = {
+			orderDeliveryItemID = '',
+			quantity = 1,
+			orderItem = {
+				orderItemID = mockOrderItem.getOrderItemID()
+			}
+		};
+		var mockOrderDeliveryItem3 = createTestEntity('OrderDeliveryItem', orderDeliveryItemData3);
+		injectMethod(mockOrderDeliveryItem3, this, 'returnVoid', 'preInsert');
+		persistTestEntity(mockOrderDeliveryItem3, orderDeliveryItemData3);
+		
+		var orderData2 = {
+			orderID = '',
+			orderStatusType = {
+				typeID = '444df2b6b8b5d1ccfc14a4ab38aa0a4c'//ostProcessing
+			},
+			orderItems = [{
+				orderItemID = mockOrderItem3.getOrderItemID()
+			},
+			{
+				orderItemID = mockOrderItem4.getOrderItemID()
+			}]
+		};
+		var mockOrder2 = createPersistedTestEntity('Order', orderData2);
+		
+		mockOrderItem3.addOrderDeliveryItem(mockOrderDeliveryItem3);
+		mockOrderItem3.addOrderDeliveryItem(mockOrderDeliveryItem3);
+		mockOrderItem3.setOrder(mockOrder2);
+		mockOrderItem4.setOrder(mockOrder2);
+		
+		
+		
+		var result = variables.dao.getQOO(mockProduct.getProductID());
+		assertEquals(12, result[1].QOO);
+		assertEquals(32, result[2].QOO,'should be 17+15=32');
+	}
+	
 	public void function getQNDOOTest() {
 		var mockProduct = createMockProduct();
 		var mockLocation = createMockLocation();
@@ -263,7 +566,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			orderDeliveryItemID = '',
 			quantity = 1,
 			orderItem = {
-				orderItemID = mockOrderItem.getOrderItemID()
+				orderItemID = mockOrderItem3.getOrderItemID()
 			}
 		};
 		var mockOrderDeliveryItem3 = createTestEntity('OrderDeliveryItem', orderDeliveryItemData3);
@@ -286,9 +589,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		mockOrderItem3.setOrder(mockOrder2);
 		
 		
-		
 		var result = variables.dao.getQNDOO(mockProduct.getProductID());
+		request.debug(result);
 		assertEquals(7, result[1].QNDOO, 'Should be 10 - (1 + 2) = 7');
+		assertEquals(9, result[2].QNDOO, 'Should be 10 - (1) = 9');
 	}
 	
 	public void function getQNROROTest() {
