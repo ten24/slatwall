@@ -1866,7 +1866,7 @@
 	var PublicService = (function () {
 	    ///index.cfm/api/scope/
 	    //@ngInject
-	    function PublicService($http, $q, $window, $location, $hibachi, $injector, requestService, accountService, cartService, orderService, observerService, appConfig, $timeout) {
+	    function PublicService($http, $q, $window, $location, $hibachi, $injector, requestService, accountService, cartService, orderService, observerService, appConfig, $timeout, $rootScope) {
 	        var _this = this;
 	        this.$http = $http;
 	        this.$q = $q;
@@ -1881,6 +1881,7 @@
 	        this.observerService = observerService;
 	        this.appConfig = appConfig;
 	        this.$timeout = $timeout;
+	        this.$rootScope = $rootScope;
 	        this.requests = {};
 	        this.errors = {};
 	        this.baseActionPath = "";
@@ -2811,7 +2812,11 @@
 	        };
 	        this.addShippingAddressErrors = function () {
 	            _this.shippingAddressErrors = _this.errors;
-	            _this.hideAccountAddressForm();
+	            if (_this.accountAddressEditFormIndex) {
+	                var key = _this.accountAddressEditFormIndex;
+	                _this.accountAddressEditFormIndex = undefined;
+	                _this.$timeout(function () { return _this.accountAddressEditFormIndex = key; }, 0);
+	            }
 	        };
 	        this.clearShippingAddressErrors = function () {
 	            _this.shippingAddressErrors = undefined;
@@ -2910,6 +2915,7 @@
 	        this.account = this.accountService.newAccount();
 	        this.observerService = observerService;
 	        this.$timeout = $timeout;
+	        this.root = $rootScope;
 	    }
 	    return PublicService;
 	}());

@@ -21,7 +21,6 @@
 <div id="editaddress">
 		<div ng-if="slatwall.showEditAccountAddressForm()">
 			<span ng-init="slatwall.account.accountAddresses[slatwall.accountAddressEditFormIndex].address = slatwall.getAddressEntity(slatwall.account.accountAddresses[slatwall.accountAddressEditFormIndex].address)"></span>
-			<span ng-init="slatwall.clearShippingAddressErrors()"></span>
 			<h4>Edit Your Address:</h4>
 			<sw-address-form
 				data-field-list="countryCode,name,company,streetAddress,street2Address,locality,city,stateCode,postalCode,phoneNumber"

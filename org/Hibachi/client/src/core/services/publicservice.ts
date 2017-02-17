@@ -69,7 +69,8 @@ class PublicService {
         public orderService,
         public observerService,
         public appConfig,
-        public $timeout
+        public $timeout,
+        public $rootScope
     ) {
         this.orderService = orderService;
         this.cartService = cartService;
@@ -89,6 +90,7 @@ class PublicService {
         this.account = this.accountService.newAccount();
         this.observerService = observerService;
         this.$timeout = $timeout;
+        this.root = $rootScope;
     }
 
     // public hasErrors = ()=>{
@@ -1135,7 +1137,11 @@ class PublicService {
 
     public addShippingAddressErrors = ()=>{
         this.shippingAddressErrors = this.errors;
-        this.hideAccountAddressForm();
+        if(this.accountAddressEditFormIndex){
+            var key = this.accountAddressEditFormIndex;
+            this.accountAddressEditFormIndex = undefined;
+            this.$timeout(()=>this.accountAddressEditFormIndex = key, 0);
+        }
     }
 
     public clearShippingAddressErrors = ()=>{
