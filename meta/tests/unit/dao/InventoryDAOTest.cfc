@@ -306,7 +306,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		
 		var result = variables.dao.getQDOO(mockProduct.getProductID());
-		request.debug(result);
 		assertEquals(3, result[1].QDOO,'should be 1+2=3');
 		assertEquals(1, result[2].QDOO);
 	}
@@ -590,7 +589,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		
 		var result = variables.dao.getQNDOO(mockProduct.getProductID());
-		request.debug(result);
 		assertEquals(7, result[1].QNDOO, 'Should be 10 - (1 + 2) = 7');
 		assertEquals(9, result[2].QNDOO, 'Should be 10 - (1) = 9');
 	}
