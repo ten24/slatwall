@@ -48,15 +48,13 @@ component output="false" accessors="true" extends="HibachiTransient" {
 
 	// @hint facade method to check the application scope for a value
 	public boolean function hasSessionValue(required any key) {
-		var cacheKey = getSession().getSessionCookieNPSID() & "-" & arguments.key;
-		return getService("HibachiCacheService").hasCachedValue(cacheKey);
+		return getService("HibachiCacheService").hasCachedValue(key=arguments.key, sessionFlag=true);
 	}
 
 	// @hint facade method to get values from the application scope
 	public any function getSessionValue(required any key) {
-		var cacheKey = getSession().getSessionCookieNPSID() & "-" & arguments.key;
-		if(getService("HibachiCacheService").hasCachedValue(cacheKey)){
-				return getService("HibachiCacheService").getCachedValue(cacheKey);
+		if(getService("HibachiCacheService").hasCachedValue(key=arguments.key, sessionFlag=true)){
+				return getService("HibachiCacheService").getCachedValue(key=arguments.key, sessionFlag=ture);
 		}
 
 		throw("You have requested a value for '#arguments.key#' from the core application that is not setup.  This may be because the verifyApplicationSetup() method has not been called yet")
@@ -64,8 +62,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 
 	// @hint facade method to set values in the application scope
 	public void function setSessionValue(required any key, required any value) {
-		var cacheKey = getSession().getSessionCookieNPSID() & "-" & arguments.key;
-		getService("HibachiCacheService").setCachedValue(cacheKey, arguments.value);
+		getService("HibachiCacheService").setCachedValue(key=arguments.key, value=arguments.value, sessionFlag=true);
 	}
 
 	public string function renderJSObject() {

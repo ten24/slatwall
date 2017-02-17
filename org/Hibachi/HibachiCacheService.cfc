@@ -6,45 +6,28 @@ component accessors="true" output="false" extends="HibachiService" {
 
 	public any function init() {
 		setCache( {} );
-		setInternalCacheFlag( true );
+		setInternalCacheFlag( false );
 		setRailoFlag( false );
 
-		var hibachiConfig = getApplicationValue('hibachiConfig');
-		if(structKeyExists(hibachiConfig, "useCachingEngineFlag") && hibachiConfig.useCachingEngineFlag) {
-			setInternalCacheFlag( false );
-		}
 		if(structKeyExists(server,"railo") || structKeyExists(server,'lucee')) {
 			setRailoFlag( true );
+
+			try {
+				cachePut('railo-cache-enabled', 'true');
+			} catch(any e) {
+				setInternalCacheFlag( true );
+			}
 		}
 
 		return super.init();
 	}
 
-	public any function hasCachedValue( required string key ) {
-		// Make the key application specific so that we can use one shared cache for multiple applications
-		arguments.key = getHibachiInstanceApplicationScopeKey() & "-" & arguments.key;
-
-		// If using the internal cache, then check there
-		if( getInternalCacheFlag() && structKeyExists(getCache(), arguments.key) && structKeyExists(getCache()[ arguments.key ], "reset") && !getCache()[ arguments.key ].reset ) {
-			return true;
-
-		// If using the external cache, then check there
-		} else if ( !getInternalCacheFlag() && getRailoFlag() && cacheKeyExists(arguments.key) ) {
-			var fullValue = cacheGet( arguments.key );
-			if(!isNull(fullValue) && isStruct(fullValue) && structKeyExists(fullValue, "reset") && !fullValue.reset && structKeyExists(fullValue, "value")) {
-				return true;
-			}
-
-		} else if ( !getInternalCacheFlag() ) {
-			var fullValue = cacheGet( arguments.key );
-			if(!isNull(fullValue) && isStruct(fullValue) && structKeyExists(fullValue, "reset") && !fullValue.reset && structKeyExists(fullValue, "value")) {
-				return true;
-			}
-
+  // Returns an internal application scoped, or session scoped struct for storing cached values
+	public any function getCache(boolean sessionFlag=false) {
+		if(arguments.sessionFlag) {
+			return session;
 		}
-
-		// By default return false
-		return false;
+		return variables.cache;
 	}
 
 	public void function updateServerInstanceCache(required string serverInstanceIPAddress){
@@ -63,35 +46,78 @@ component accessors="true" output="false" extends="HibachiService" {
 		return getDao('hibachiCacheDao').isServerInstanceCacheExpired(arguments.serverInstanceIPAddress);
 	}
 
-	public any function getCachedValue( required string key ) {
+	public string function getCacheContext() {
+		return getApplicationValue('applicationName');
+	}
+
+	public string function buildCacheKey( required string key, boolean sessionFlag=false) {
 		// Make the key application specific so that we can use one shared cache for multiple applications
-		arguments.key = getHibachiInstanceApplicationScopeKey() & "-" & arguments.key;
+		var cacheKey = "#getCacheContext()#-";
+
+		// If this is a session cached value add the sessionID to the key
+		if(arguments.sessionFlag) {
+			cacheKey &= "#getHibachiObject().getSession().getSessionCookieNPSID()#-";
+		}
+
+		// Add the unique key itself
+		cacheKey &= arguments.key;
+
+		return cacheKey;
+	}
+
+	public any function hasCachedValue( required string key, boolean sessionFlag=false  ) {
+		var cacheKey = buildCacheKey(key=arguments.key, sessionFlag=arguments.sessionFlag);
 
 		// If using the internal cache, then check there
-		if(getInternalCacheFlag() && structKeyExists(getCache(), key) ) {
-			return getCache()[ arguments.key ].value;
+		if( getInternalCacheFlag() && structKeyExists(getCache(sessionFlag=arguments.sessionFlag), cacheKey) && structKeyExists(getCache(sessionFlag=arguments.sessionFlag)[ cacheKey ], "reset") && !getCache(sessionFlag=arguments.sessionFlag)[ cacheKey ].reset ) {
+			return true;
+
+		// If using the external cache, then check there
+		} else if ( !getInternalCacheFlag() && getRailoFlag() && cacheKeyExists(arguments.key) ) {
+			var fullValue = cacheGet( cacheKey );
+			if(!isNull(fullValue) && isStruct(fullValue) && structKeyExists(fullValue, "reset") && !fullValue.reset && structKeyExists(fullValue, "value")) {
+				return true;
+			}
+
+		} else if ( !getInternalCacheFlag() ) {
+			var fullValue = cacheGet( cacheKey );
+			if(!isNull(fullValue) && isStruct(fullValue) && structKeyExists(fullValue, "reset") && !fullValue.reset && structKeyExists(fullValue, "value")) {
+				return true;
+			}
+
+		}
+
+		// By default return false
+		return false;
+	}
+
+	public any function getCachedValue( required string key, boolean sessionFlag=false  ) {
+		var cacheKey = buildCacheKey(key=arguments.key, sessionFlag=arguments.sessionFlag);
+
+		// If using the internal cache, then check there
+		if(getInternalCacheFlag() && structKeyExists(getCache(sessionFlag=arguments.sessionFlag), key) ) {
+			return getCache(sessionFlag=arguments.sessionFlag)[ cacheKey ].value;
 
 		// If using the external cache, then check there
 		} else if (!getInternalCacheFlag() && !isNull(cacheGet( arguments.key )) ) {
-			return cacheGet( arguments.key ).value;
+			return cacheGet( cacheKey ).value;
 
 		}
 	}
 
-	public any function setCachedValue( required string key, required any value ) {
-		// Make the key application specific so that we can use one shared cache for multiple applications
-		arguments.key = getHibachiInstanceApplicationScopeKey() & "-" & arguments.key;
+	public any function setCachedValue( required string key, required any value, boolean sessionFlag=false ) {
+		var cacheKey = buildCacheKey(key=arguments.key, sessionFlag=arguments.sessionFlag);
 
 		// If using the internal cache, then set value there
 		if(getInternalCacheFlag()) {
-			getCache()[ arguments.key ] = {
+			getCache(sessionFlag=arguments.sessionFlag)[ cacheKey ] = {
 				value = arguments.value,
 				reset = false
 			};
 
 		// If using the external cache, then set value there
 		} else if (!getInternalCacheFlag()) {
-			cachePut( arguments.key, {
+			cachePut( cacheKey, {
 				value = arguments.value,
 				reset = false
 			});
@@ -99,13 +125,15 @@ component accessors="true" output="false" extends="HibachiService" {
 		}
 	}
 
-	public any function resetCachedKey( required string key ) {
+	public any function resetCachedKey( required string key, boolean sessionFlag=false ) {
+		var cacheKey = buildCacheKey(key=arguments.key, sessionFlag=arguments.sessionFlag);
+
 		// If using the internal cache, then reset there
 		if(getInternalCacheFlag()) {
-			if(!structKeyExists(getCache(), arguments.key)) {
-				getCache()[ arguments.key ] = {};
+			if(!structKeyExists(getCache(sessionFlag=arguments.sessionFlag), arguments.key)) {
+				getCache(sessionFlag=arguments.sessionFlag)[ arguments.key ] = {};
 			}
-			getCache()[ arguments.key ].reset = true;
+			getCache(sessionFlag=arguments.sessionFlag)[ arguments.key ].reset = true;
 
 		// If using the external cache, then reset there
 		} else if (!getInternalCacheFlag()) {
@@ -128,13 +156,13 @@ component accessors="true" output="false" extends="HibachiService" {
 		thread name="#threadName#" keyPrefix=arguments.keyPrefix {
 			if(getInternalCacheFlag()) {
 
-				var allKeysArray = listToArray(structKeyList(getCache()));
+				var allKeysArray = listToArray(structKeyList(getCache(sessionFlag=arguments.sessionFlag)));
 
 				var prefixLen = len(keyPrefix);
 
 				for(var key in allKeysArray) {
 					if(left(key, prefixLen) eq keyPrefix) {
-						getCache()[ key ].reset = true;
+						getCache(sessionFlag=arguments.sessionFlag)[ key ].reset = true;
 					}
 				}
 			} else {
@@ -156,7 +184,9 @@ component accessors="true" output="false" extends="HibachiService" {
 	}
 
 
-	public any function getOrCacheFunctionValue(required string key, required any fallbackObject, required any fallbackFunction, struct fallbackArguments={}) {
+	public any function getOrCacheFunctionValue(required string key, required any fallbackObject, required any fallbackFunction, struct fallbackArguments={}, boolean sessionFlag=false) {
+		var cacheKey = buildCacheKey(key=arguments.key, sessionFlag=arguments.sessionFlag);
+
 		// Check to see if this cache key already exists, and if so just return the cached value
 		if(hasCachedValue(arguments.key)) {
 			return getCachedValue(arguments.key);
