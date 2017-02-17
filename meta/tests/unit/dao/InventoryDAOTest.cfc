@@ -889,12 +889,14 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		var stockReceiverItemData3 = {
 			stockReceiverItemID = '',
-			quantity = 40,
+			quantity = 47,
 			vendorOrderItem = {
-				vendorOrderItemID = vendorOrderItem2.getVendorOrderItemID()
+				vendorOrderItemID = vendorOrderItem3.getVendorOrderItemID()
 			}
 		};
 		var stockReceiverItem3 = createTestEntity('StockReceiverItem', stockReceiverItemData3);
+		injectMethod(stockReceiverItem3, this, 'returnVoid', 'preInsert');
+		persistTestEntity(stockReceiverItem3, stockReceiverItemData3);
 		
 		vendorOrderItem.addStockReceiverItem(stockReceiverItem);
 		vendorOrderItem.addStockReceiverItem(stockReceiverItem2);
@@ -911,8 +913,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		vendorOrderItem3.addStockReceiverItem(stockReceiverItem4);
 		
 		var result = variables.dao.getQNROVO(product.getProductID());
+		request.debug(result);
 		assertEquals(270, result[1].QNROVO, 'QNROVO should be (100+200) - (10+20+40) = 230');
-		assertEquals(270, result[2].QNROVO, 'QNROVO should be (100+200) - (10+20+40) = 230');
+		assertEquals(108, result[2].QNROVO, 'QNROVO should be (155) - (47) = 108');
+		assertEquals(100, result[3].QNROVO);
 	}
 	
 	public void function getQOVOTest_mulitipleSkus() {
