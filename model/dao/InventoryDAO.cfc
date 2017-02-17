@@ -157,9 +157,9 @@ Notes:
 			for(var QOOData in QOO){
 				var record = {};
 				record['skuID'] = QOOData['skuID'];
-				record['stockID'] = QOOData['skuID'];
-				record['locationID'] = QOOData['skuID'];
-				record['locationIDPath'] = QOOData['skuID'];
+				record['stockID'] = QOOData['stockID'];
+				record['locationID'] = QOOData['locationID'];
+				record['locationIDPath'] = QOOData['locationIDPath'];
 				var quantityReceived = 0;
 				if(structKeyExists(QDOOHashMap,'#QOOData['skuID']#')){
 					quantityReceived = QDOOHashMap['#QOOData['skuID']#']['QDOO'];
@@ -178,27 +178,11 @@ Notes:
 			return 0;
 		}
 		
-		// Quantity not delivered on stock adjustment
-		public array function getQNDOSA(required string productID, string productRemoteID) {
-			
-			var params = {productID=arguments.productID};
-			
-			var stockAdjustmentItemQuantityHql = "SELECT COALESCE(sum(stockAdjustmentItem.quantity),0)
-							FROM SlatwallStockAdjustmentItem stockAdjustmentItem
-								LEFT JOIN
-								stockAdjustmentItem.fromStock fromStock
-							WHERE
-								stockAdjustmentItem.stockAdjustment.stockAdjustmentStatusType.systemCode != 'sastClosed'
-							  AND
-								fromStock.sku.product.productID = :productID
-									";
-			
-			var stockAdjustmentItemQuantitySum = ORMExecuteQuery(stockAdjustmentItemQuantityHql,params,true);
-			params['stockAdjustmentItemQuantitySum'] = stockAdjustmentItemQuantitySum;
-			
+		//Quantity delivered on stock adjustment
+		public array function getQDOSA(required string productID, string productRemoteID) {
+			var params = {productiD=arguments.productID};
 			var hql = "SELECT NEW MAP(
-					:stockAdjustmentItemQuantitySum
-					- coalesce( sum(stockAdjustmentDeliveryItem.quantity), 0 ) as QNDOSA, 
+					coalesce( sum(stockAdjustmentDeliveryItem.quantity), 0 ) as QDOSA, 
 						fromStock.sku.skuID as skuID, 
 						fromStock.stockID as stockID, 
 						location.locationID as locationID, 
@@ -222,6 +206,62 @@ Notes:
 						location.locationIDPath";
 			
 			return ormExecuteQuery(hql, params);
+		}
+		//Quantity on stock adjustment
+		public array function getQOSA(required string productID, string direction) {
+			var params = {productID=arguments.productID};
+			var stockDirection = "#arguments.direction#Stock";
+			var stockAdjustmentItemQuantityHql = "SELECT NEW MAP(
+								COALESCE(sum(stockAdjustmentItem.quantity),0) as QOSA,
+								#stockDirection#.sku.skuID as skuID, 
+								#stockDirection#.stockID as stockID, 
+								location.locationID as locationID, 
+								location.locationIDPath as locationIDPath
+							)
+							FROM SlatwallStockAdjustmentItem stockAdjustmentItem
+								 LEFT JOIN
+								  	stockAdjustmentItem.#stockDirection# #stockDirection#
+								  LEFT JOIN
+								  	#stockDirection#.location location
+							WHERE
+								stockAdjustmentItem.stockAdjustment.stockAdjustmentStatusType.systemCode != 'sastClosed'
+							  AND
+								#stockDirection#.sku.product.productID = :productID
+							GROUP BY
+								#stockDirection#.sku.skuID,
+								#stockDirection#.stockID,
+								location.locationID,
+								location.locationIDPath
+									";
+			
+			return ORMExecuteQuery(stockAdjustmentItemQuantityHql,params);
+		}
+		// Quantity not delivered on stock adjustment
+		public array function getQNDOSA(required string productID, string productRemoteID) {
+			var QNDOSA = [];
+			
+			var QDOSA = getQDOSA(productID=arguments.productID);
+			var QDOSAHashMap = {};
+			for(var i=1;i <= arrayLen(QDOSA);i++){
+				QDOSAHashMap["#QDOSA[i]['skuID']#"] = QDOSA[i]; 
+			}
+			
+			var QOSA = getQOSA(productID=arguments.productID,direction='from');
+			for(var QOSAData in QOSA){
+				var record = {};
+				record['skuID'] = QOSAData['skuID'];
+				record['stockID'] = QOSAData['stockID'];
+				record['locationID'] = QOSAData['locationID'];
+				record['locationIDPath'] = QOSAData['locationIDPath'];
+				var quantityReceived = 0;
+				if(structKeyExists(QDOSAHashMap,'#QOSAData['skuID']#')){
+					quantityReceived = QDOSAHashMap['#QOSAData['skuID']#']['QDOSA'];
+				}
+				record['QNDOSA'] = QOSAData['QOSA'] - quantityReceived;
+				arrayAppend(QNDOSA,record);
+			}
+			
+			return QNDOSA;
 		}
 		//Quantity Received on return order
 		public array function getQRORO(required string productID, string productRemoteID){
@@ -296,9 +336,9 @@ Notes:
 			for(var QOROData in QORO){
 				var record = {};
 				record['skuID'] = QOROData['skuID'];
-				record['stockID'] = QOROData['skuID'];
-				record['locationID'] = QOROData['skuID'];
-				record['locationIDPath'] = QOROData['skuID'];
+				record['stockID'] = QOROData['stockID'];
+				record['locationID'] = QOROData['locationID'];
+				record['locationIDPath'] = QOROData['locationIDPath'];
 				var quantityReceived = 0;
 				if(structKeyExists(QROROHashMap,'#QOROData['skuID']#')){
 					quantityReceived = QROROHashMap['#QOROData['skuID']#']['QRORO'];
@@ -390,9 +430,9 @@ Notes:
 			for(var QOVOData in QOVO){
 				var record = {};
 				record['skuID'] = QOVOData['skuID'];
-				record['stockID'] = QOVOData['skuID'];
-				record['locationID'] = QOVOData['skuID'];
-				record['locationIDPath'] = QOVOData['skuID'];
+				record['stockID'] = QOVOData['stockID'];
+				record['locationID'] = QOVOData['locationID'];
+				record['locationIDPath'] = QOVOData['locationIDPath'];
 				var quantityReceived = 0;
 				if(structKeyExists(QROVOHashMap,'#QOVOData['skuID']#')){
 					quantityReceived = QROVOHashMap['#QOVOData['skuID']#']['QROVO'];
@@ -403,27 +443,12 @@ Notes:
 			return QNROVO;
 		}
 		
-		// Quantity not received on stock adjustment
-		public array function getQNROSA(required string productID, string productRemoteID) {
-			
+		//Quantity received on stock adjustment
+		
+		public array function getQROSA(required string productID, string productRemoteID) {
 			var params = {productID = arguments.productID };
-			var stockAdjustmentItemQuantityHQL = "SELECT COALESCE(sum(stockAdjustmentItem.quantity),0)
-									FROM 
-										SlatwallStockAdjustmentItem stockAdjustmentItem
-									  LEFT JOIN
-										stockAdjustmentItem.toStock toStock
-									WHERE
-										stockAdjustmentItem.stockAdjustment.stockAdjustmentStatusType.systemCode != 'sastClosed'
-						  			  AND 
-										toStock.sku.product.productID = :productID
-									";
-			
-			var stockAdjustmentItemQuantitySum = ORMExecuteQuery(stockAdjustmentItemQuantityHQL,params,true);
-			params['stockAdjustmentItemQuantitySum'] = stockAdjustmentItemQuantitySum;
-			
 			var hql = "SELECT NEW MAP(
-							:stockAdjustmentItemQuantitySum 
-							- coalesce( sum(stockReceiverItem.quantity), 0 ) as QNROSA, 
+							coalesce( sum(stockReceiverItem.quantity), 0 ) as QROSA, 
 							toStock.sku.skuID as skuID, 
 							toStock.stockID as stockID, 
 							location.locationID as locationID, 
@@ -447,6 +472,35 @@ Notes:
 							location.locationIDPath";
 			
 			return ormExecuteQuery(hql, params);
+		}
+		
+		// Quantity not received on stock adjustment
+		public array function getQNROSA(required string productID, string productRemoteID) {
+			
+			var QNROSA = [];
+			
+			var QROSA = getQROSA(productID=arguments.productID);
+			var QROSAHashMap = {}; 
+			for(var i=1;i <= arrayLen(QROSA);i++){
+				QROSAHashMap["#QROSA[i]['skuID']#"] = QROSA[i]; 
+			}
+			
+			var QOSA = getQOSA(productID=arguments.productID,direction='to');
+			for(var QOSAData in QOSA){
+				var record = {};
+				record['skuID'] = QOSAData['skuID'];
+				record['stockID'] = QOSAData['stockID'];
+				record['locationID'] = QOSAData['locationID'];
+				record['locationIDPath'] = QOSAData['locationIDPath'];
+				var quantityReceived = 0;
+				if(structKeyExists(QROSAHashMap,'#QOSAData['skuID']#')){
+					quantityReceived = QROSAHashMap['#QOSAData['skuID']#']['QROSA'];
+				}
+				record['QNROSA'] = QOSAData['QOSA'] - quantityReceived;
+				arrayAppend(QNROSA,record);
+			}
+			
+			return QNROSA;
 		}
 		
 		// Quantity received
