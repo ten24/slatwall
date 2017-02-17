@@ -178,7 +178,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			var triggerCollectionResult = arguments.workflowTrigger.getScheduleCollection().getPrimaryIDs();
 
 			//Loop Collection Data
-			for(i=1; i <= ArrayLen(triggerCollectionResult); i++){
+			for(var i=1; i <= ArrayLen(triggerCollectionResult); i++){
 				//get current ObjectID
 				var workflowTriggerID = arguments.workflowTrigger.getWorkflowTriggerID();
 				var currentObjectID = triggerCollectionResult[i][structKeyArray(triggerCollectionResult[i])[1]];
