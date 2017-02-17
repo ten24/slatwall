@@ -75,10 +75,35 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 
 	public void function varScoperTest(){
-		var fileText = fileRead(expandPath('/Slatwall') & '/meta/varscoper/testCaseCFC.cfc');
-		var varscoper = createObject("component","Slatwall.meta.varscoper.varScoper").init(fileText,false,true,true);
-		varscoper.runVarscoper();
-		request.debug(varscoper.getResultsArray());
+		var modelDirectoryPath = expandPath('/Slatwall');
+		var modelDirectory = directoryList(modelDirectoryPath,true,'query');
+		var hasUnscopedVars = false;
+		
+		for(var record in modelDirectory){
+			if(
+				listLast(record.name,'.') == 'cfc' 
+				&& record.directory DOES NOT CONTAIN 'mxunit'
+				&& record.directory DOES NOT CONTAIN '.history'
+				&& record.directory DOES NOT CONTAIN 'WEB-INF'
+				&& record.directory DOES NOT CONTAIN 'varscoper'
+				&& record.directory DOES NOT CONTAIN 'ckfinder'
+				&& record.directory DOES NOT CONTAIN 'javaloader'
+				&& record.directory DOES NOT CONTAIN 'taffy'
+				&& fileExists(record.directory&'/#record.name#')
+			){
+				var fileText = fileRead(record.directory&'/#record.name#');
+				var varscoper = createObject("component","Slatwall.meta.varscoper.varScoper").init(fileText,true,true,true);
+				varscoper.runVarscoper();
+				if(arraylen(varscoper.getResultsArray())){
+					hasUnscopedVars = true;
+					addToDebug(record.directory&'/#record.name# has unscoped var');
+					addToDebug(varscoper.getResultsArray());
+				}
+				
+				
+			}
+		}
+		assertFalse(hasUnscopedVars);
 	}
 	
 	

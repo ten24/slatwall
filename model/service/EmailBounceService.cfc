@@ -121,12 +121,12 @@ Notes:
 					report &= "<br>";
 
 					//todo create a bounced email record
-					var header = emails.header[i];
+					var emailHeader = emails.header[i];
 					var emailBounce = this.newEmailBounce();
 
-					if(getHeaderValue(header, "Related-Object") NEQ ""){
-						emailBounce.setRelatedObject(getHeaderValue(header, "Related-Object"));
-						emailBounce.setRelatedObjectID(getHeaderValue(header, "Related-Object-ID"));
+					if(getHeaderValue(emailHeader, "Related-Object") NEQ ""){
+						emailBounce.setRelatedObject(getHeaderValue(emailHeader, "Related-Object"));
+						emailBounce.setRelatedObjectID(getHeaderValue(emailHeader, "Related-Object-ID"));
 						giftCardBounce = true;
 					} else {
 
@@ -148,8 +148,8 @@ Notes:
 						}
 					}
 
-					if(getHeaderValue(header, "X-Failed-Recipients") NEQ ""){
-						emailBounce.setRejectedEmailTo(getHeaderValue(header, "X-Failed-Recipients"));
+					if(getHeaderValue(emailHeader, "X-Failed-Recipients") NEQ ""){
+						emailBounce.setRejectedEmailTo(getHeaderValue(emailHeader, "X-Failed-Recipients"));
 
 						var failedRecipient = true;
 					} else {

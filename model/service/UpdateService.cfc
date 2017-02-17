@@ -112,7 +112,7 @@ Notes:
 				<cfif (downloadedZipHash eq hashFileValue)>
 					<!--- now read and unzip the downloaded file --->
 					<cfset var dirList = "" />
-					<cfset unzipDirectoryName = "#getTempDirectory()#"&zipName/>
+					<cfset var unzipDirectoryName = "#getTempDirectory()#"&zipName/>
 					<cfset directoryCreate(unzipDirectoryName)/>
 					<cfzip action="unzip" destination="#unzipDirectoryName#" file="#getTempDirectory()##downloadFileName#" >
 					<cfzip action="list" file="#getTempDirectory()##downloadFileName#" name="dirList" >
@@ -160,7 +160,7 @@ Notes:
 	<cffunction name="updateCMSApplications">
 		<!--- Overwrite all CMS Application.cfc's with the latest from the skeletonApp --->
 		<cfset var apps = this.getAppSmartList().getRecords()>
-		<cfloop array="#apps#" index="app">
+		<cfloop array="#apps#" index="local.app">
 			<cfset getService('appService').updateCMSApp(app)>
 		</cfloop>
 	</cffunction>

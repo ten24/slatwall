@@ -50,7 +50,7 @@
 	
 	
 	<cffunction name="getProductFeedQuery" access="public" output="false" returntype="Query">
-		<cfset rs = "" />
+		<cfset var rs = "" />
 		
 		<cfquery name="rs">
 			SELECT

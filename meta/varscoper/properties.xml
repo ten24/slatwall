@@ -2,7 +2,6 @@
 <properties>
 	<!-- relative folder paths (Example: com,services, WEB-INF) -->
 	<directoryexcludelist>
-		
 	</directoryexcludelist>
 	
 	<!-- relative file paths (Example: testCaseCFC.cfc,testCaseCFC2.cfc) -->
