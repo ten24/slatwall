@@ -2014,6 +2014,8 @@
 	        *  @return a deferred promise that resolves server response or error. also includes updated account and cart.
 	        */
 	        this.doAction = function (action, data, method) {
+	            if (_this.getRequestByAction(action) && _this.getRequestByAction(action).loading)
+	                return _this.$q.when();
 	            if (!action) {
 	                throw "Action is required exception";
 	            }
@@ -2638,14 +2640,6 @@
 	                _this.rates = result.data;
 	            });
 	        };
-	        /** Returns the state from the list of states by stateCode */
-	        this.getStateByStateCode = function (stateCode) {
-	            for (var state in _this.states.stateCodeOptions) {
-	                if (_this.states.stateCodeOptions[state].value == stateCode) {
-	                    return _this.states.stateCodeOptions[state];
-	                }
-	            }
-	        };
 	        this.getAddressEntity = function (address) {
 	            var addressEntity = _this.$hibachi.newAddress();
 	            if (address) {
@@ -2673,25 +2667,6 @@
 	                }
 	            }
 	            return false;
-	        };
-	        /** Should be pushed down into core. Returns the profile image by name. */
-	        this.getResizedImageByProfileName = function (profileName, skuIDList) {
-	            _this.imagePath = {};
-	            if (profileName == undefined) {
-	                profileName = "medium";
-	            }
-	            _this.$http.get("/index.cfm/api/scope/?context=getResizedImageByProfileName&profileName=" + profileName + "&skuIds=" + skuIDList).success(function (result) {
-	                _this.imagePath[skuIDList] = "";
-	                result = angular.fromJson(result);
-	                if (angular.isDefined(result.resizedImagePaths) && angular.isDefined(result.resizedImagePaths.resizedImagePaths) && result.resizedImagePaths.resizedImagePaths[0] != undefined) {
-	                    _this.imagePath[skuIDList] = result.resizedImagePaths.resizedImagePaths[0];
-	                    _this.loading = false;
-	                    return _this.imagePath[skuIDList];
-	                }
-	                else {
-	                    return "";
-	                }
-	            });
 	        };
 	        /**
 	       *  Returns true when the fulfillment body should be showing
@@ -2823,6 +2798,7 @@
 	        };
 	        this.hideAccountAddressForm = function () {
 	            _this.accountAddressEditFormIndex = undefined;
+	            _this.clearShippingAddressErrors();
 	        };
 	        this.showEditAccountAddressForm = function () {
 	            return _this.accountAddressEditFormIndex != undefined && _this.accountAddressEditFormIndex != 'new';
@@ -2890,6 +2866,9 @@
 	        };
 	        this.isGiftCardPayment = function (payment) {
 	            return payment.giftCard && payment.giftCard.giftCardCode;
+	        };
+	        this.isPurchaseOrderPayment = function (payment) {
+	            return payment.purchaseOrderNumber;
 	        };
 	        this.orderHasNoPayments = function () {
 	            return !_this.cart.orderPayments.length;

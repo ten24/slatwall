@@ -1,4 +1,4 @@
-<span ng-init="purchaseOrder = {}"></span>
+<span ng-init="purchaseOrder = {newOrderPayment:{paymentMethod:{paymentMethodID:'2c9280825a29cb2e015a29e58ded000c'}}}"></span>
 <sw-form
 	data-is-process-form="true"
 	data-object="purchaseOrder"
@@ -11,7 +11,7 @@
 		<swf-property-display
 			data-name="purchaseOrderNumber"
 			data-field-type="text"
-			data-property-identifier="purchaseOrderNumber"
+			data-property-identifier="newOrderPayment.purchaseOrderNumber"
 			data-label-text="Purchase Order Number"
 			data-class="form-control"
 			data-editing="true"
@@ -22,9 +22,8 @@
 		<swf-property-display
 			data-name="paymentMethodID"
 			data-field-type="text"
-			data-property-identifier="paymentMethodID"
+			data-property-identifier="newOrderPayment.paymentMethod.paymentMethodID"
 			data-class="hidden"
-			data-value="2c9280825a29cb2e015a29e58ded000c"
 			data-required="true">
 		</swf-property-display>
 	</div>

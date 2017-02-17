@@ -225,7 +225,7 @@ class PublicService {
     *  @return a deferred promise that resolves server response or error. also includes updated account and cart.
     */
     public doAction=(action:string, data?:any, method?:any) => {
-
+        if(this.getRequestByAction(action) && this.getRequestByAction(action).loading) return this.$q.when();
         if (!action) {throw "Action is required exception";}
 
         var urlBase = "";
@@ -944,16 +944,6 @@ class PublicService {
         });
     }
 
-    
-    /** Returns the state from the list of states by stateCode */
-    public getStateByStateCode = (stateCode) => {
-     	for (var state in this.states.stateCodeOptions){
-     		if (this.states.stateCodeOptions[state].value == stateCode){
-     			return this.states.stateCodeOptions[state];
-     		}
-     	}
-    }
-
     public getAddressEntity = (address) =>{
         let addressEntity = this.$hibachi.newAddress();
         if(address){
@@ -984,32 +974,6 @@ class PublicService {
         }
         return false;
     }
-    
-    /** Should be pushed down into core. Returns the profile image by name. */
-   	public getResizedImageByProfileName = (profileName, skuIDList) => {
-   		this.imagePath = {};
-   		
-   		if (profileName == undefined){
-   			profileName = "medium";
-   		}
-   		
-   		this.$http.get("/index.cfm/api/scope/?context=getResizedImageByProfileName&profileName="+profileName+"&skuIds="+skuIDList).success((result:any)=>{
-   		 	
-   		 	this.imagePath[skuIDList] = "";
-   		 	
-   		 	result = <any>angular.fromJson(result);
-   		 	if (angular.isDefined(result.resizedImagePaths) && angular.isDefined(result.resizedImagePaths.resizedImagePaths) && result.resizedImagePaths.resizedImagePaths[0] != undefined){
-   		 		
-   		 		this.imagePath[skuIDList] = result.resizedImagePaths.resizedImagePaths[0];
-   		 		this.loading = false;
-   		 		return this.imagePath[skuIDList];
-   		 		
-   		 	}else{
-   		 		return "";
-   		 	}
-   		 	
-   		}); 
-   	}
 
       /**
      *  Returns true when the fulfillment body should be showing
@@ -1150,6 +1114,7 @@ class PublicService {
 
     public hideAccountAddressForm = ()=>{
         this.accountAddressEditFormIndex = undefined;
+        this.clearShippingAddressErrors();
     }
 
     public showEditAccountAddressForm = ()=>{
@@ -1227,6 +1192,10 @@ class PublicService {
 
     public isGiftCardPayment = (payment) =>{
         return payment.giftCard && payment.giftCard.giftCardCode;
+    }
+
+    public isPurchaseOrderPayment = (payment) =>{
+        return payment.purchaseOrderNumber;
     }
 
     public orderHasNoPayments = () =>{

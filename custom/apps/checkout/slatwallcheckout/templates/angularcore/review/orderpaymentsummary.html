@@ -20,6 +20,9 @@
             <span>Gift Card: {{payment.giftCard.giftCardCode}}</span><br>
             <span>Current Balance: {{payment.giftCard.balanceAmount | currency}}</span>
         </div>
+        <div ng-if="slatwall.isPurchaseOrderPayment(payment)">
+            <span>Purchase Order Number: {{payment.purchaseOrderNumber}}</span>
+        </div>
         <span>Payment Amount: {{payment.amount | currency}}</span>
     </div>
 </div>
