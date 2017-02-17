@@ -223,27 +223,11 @@ Notes:
 			
 			return ormExecuteQuery(hql, params);
 		}
-		
-		// Quantity not received on return order
-		public array function getQNRORO(required string productID, string productRemoteID) {
-			
-			var params = { productID=arguments.productID };
-			var orderItemQuantityHQL = "SELECT COALESCE(sum(orderItem.quantity),0)
-									FROM SlatwallOrderItem orderItem
-									WHERE
-										orderItem.order.orderStatusType.systemCode NOT IN ('ostNotPlaced','ostClosed','ostCanceled')
-					 				 AND
-					  					orderItem.orderItemType.systemCode = 'oitReturn'
-					  				 AND
-										orderItem.sku.product.productID = :productID
-									";
-			
-			var orderItemQuantitySum = ORMExecuteQuery(orderItemQuantityHQL,params,true);
-			params['orderItemQuantitySum'] = orderItemQuantitySum;
-			
+		//Quantity Received on return order
+		public array function getQRORO(required string productID, string productRemoteID){
+			var params = {productID=arguments.productID};			
 			var hql = "SELECT NEW MAP(
-								:orderItemQuantitySum
-								- coalesce( sum(stockReceiverItem.quantity), 0 ) as QNRORO, 
+							coalesce( sum(stockReceiverItem.quantity), 0 ) as QRORO, 
 							orderItem.sku.skuID as skuID, 
 							stock.stockID as stockID, 
 							location.locationID as locationID, 
@@ -268,6 +252,62 @@ Notes:
 							location.locationID,
 							location.locationIDPath";
 			return ormExecuteQuery(hql, params);
+		}
+		//Quantity on return order
+		public array function getQORO(required string productID, string productRemoteID){
+			var params = { productID=arguments.productID };
+			var orderItemQuantityHQL = "SELECT New Map(COALESCE(sum(orderItem.quantity),0) as QORO,
+										orderItem.sku.skuID as skuID, 
+										stock.stockID as stockID, 
+										location.locationID as locationID, 
+										location.locationIDPath as locationIDPath)
+									FROM SlatwallOrderItem orderItem
+									LEFT JOIN
+								  	  	orderItem.stock stock
+								  	  LEFT JOIN
+								  	  	stock.location location
+									WHERE
+										orderItem.order.orderStatusType.systemCode NOT IN ('ostNotPlaced','ostClosed','ostCanceled')
+					 				 AND
+					  					orderItem.orderItemType.systemCode = 'oitReturn'
+					  				 AND
+										orderItem.sku.product.productID = :productID
+									GROUP BY
+									orderItem.sku.skuID,
+									stock.stockID,
+									location.locationID,
+									location.locationIDPath
+									";
+			
+			return ORMExecuteQuery(orderItemQuantityHQL,params);
+		}
+		
+		// Quantity not received on return order
+		public array function getQNRORO(required string productID, string productRemoteID) {
+			var QNRORO = [];
+			
+			var QRORO = getQRORO(productID=arguments.productID);
+			var QROROHashMap = {};
+			for(var i=1;i <= arrayLen(QRORO);i++){
+				QROROHashMap["#QRORO[i]['skuID']#"] = QRORO[i]; 
+			}
+			
+			var QORO = getQORO(productID=arguments.productID);
+			for(var QOROData in QORO){
+				var record = {};
+				record['skuID'] = QOROData['skuID'];
+				record['stockID'] = QOROData['skuID'];
+				record['locationID'] = QOROData['skuID'];
+				record['locationIDPath'] = QOROData['skuID'];
+				var quantityReceived = 0;
+				if(structKeyExists(QROROHashMap,'#QOROData['skuID']#')){
+					quantityReceived = QROROHashMap['#QOROData['skuID']#']['QRORO'];
+				}
+				record['QNRORO'] = QOROData['QORO'] - quantityReceived;
+				arrayAppend(QNRORO,record);
+			}
+			
+			return QNRORO;
 		}
 		
 		public array function getQROVO(required string productID, string productRemoteID){
