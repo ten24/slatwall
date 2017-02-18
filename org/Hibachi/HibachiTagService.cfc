@@ -19,25 +19,25 @@
 	
 	<cffunction name="cfimap">
 		<cfargument name="action" default="GetHeaderOnly"/>
-		<cfargument name="attachmentpath" />
-		<cfargument name="Connection"/>
-		<cfargument name="Folder"/>
-		<cfargument name="GenerateUniqueFilenames"/>
-		<cfargument name="MaxRows"/>
-		<cfargument name="MessageNumber"/>
-		<cfargument name="Name"/>
-		<cfargument name="NewFolder"/>
-		<cfargument name="Password"/>
-		<cfargument name="Port"/>
-		<cfargument name="Recurse"/>
-		<cfargument name="Secure"/>
-		<cfargument name="Server"/>
-		<cfargument name="StartRow"/>
-		<cfargument name="StopOnError"/>
-		<cfargument name="Timeout"/>
-		<cfargument name="Uid"/>
-		<cfargument name="Username"/>
-		<cfargument name="delimiter"/>
+		<cfargument name="attachmentpath" default=""/>
+		<cfargument name="Connection" default=""/>
+		<cfargument name="Folder" default=""/>
+		<cfargument name="GenerateUniqueFilenames" default=""/>
+		<cfargument name="MaxRows" default=""/>
+		<cfargument name="MessageNumber" default=""/>
+		<cfargument name="Name" default=""/>
+		<cfargument name="NewFolder" default=""/>
+		<cfargument name="Password" default=""/>
+		<cfargument name="Port" default=""/>
+		<cfargument name="Recurse" default=""/>
+		<cfargument name="Secure" default=""/>
+		<cfargument name="Server" default=""/>
+		<cfargument name="StartRow" default=""/>
+		<cfargument name="StopOnError" default=""/>
+		<cfargument name="Timeout" default=""/>
+		<cfargument name="Uid" default=""/>
+		<cfargument name="Username" default=""/>
+		<cfargument name="delimiter" default=""/>
 		<cfimap attributeCollection="#arguments#" />
 	</cffunction>
 	
