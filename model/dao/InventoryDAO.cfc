@@ -157,9 +157,21 @@ Notes:
 			for(var QOOData in QOO){
 				var record = {};
 				record['skuID'] = QOOData['skuID'];
-				record['stockID'] = QOOData['stockID'];
-				record['locationID'] = QOOData['locationID'];
-				record['locationIDPath'] = QOOData['locationIDPath'];
+				if(structKeyExists(QOOData,'stockID')){
+					record['stockID'] = QOOData['stockID'];
+				}else{
+					record['stockID'] = javacast('null','');
+				}
+				if(structKeyExists(QOOData,'locationID')){
+					record['locationID'] = QOOData['locationID'];	
+				}else{
+					record['locationID'] = javacast('null','');
+				}
+				if(structKeyExists(QOOData,'locationIDPath')){
+					record['locationIDPath'] = QOOData['locationIDPath'];
+				}else{
+					record['locationIDPath'] = javacast('null','');
+				}
 				var quantityReceived = 0;
 				if(structKeyExists(QDOOHashMap,'#QOOData['skuID']#')){
 					quantityReceived = QDOOHashMap['#QOOData['skuID']#']['QDOO'];
@@ -250,9 +262,22 @@ Notes:
 			for(var QOSAData in QOSA){
 				var record = {};
 				record['skuID'] = QOSAData['skuID'];
-				record['stockID'] = QOSAData['stockID'];
-				record['locationID'] = QOSAData['locationID'];
-				record['locationIDPath'] = QOSAData['locationIDPath'];
+				if(structKeyExists(QOSAData,'stockID')){
+					record['stockID'] = QOSAData['stockID'];
+				}else{
+					record['stockID'] = javacast('null','');
+				}
+				if(structKeyExists(QOSAData,'locationID')){
+					record['locationID'] = QOSAData['locationID'];
+				}else{
+					record['locationID'] = javacast('null','');
+				}
+				if(structKeyExists(QOSAData,'locationIDPath')){
+					record['locationIDPath'] = QOSAData['locationIDPath'];	
+				}else{
+					record['locationIDPath'] = javacast('null','');
+				}
+				
 				var quantityReceived = 0;
 				if(structKeyExists(QDOSAHashMap,'#QOSAData['skuID']#')){
 					quantityReceived = QDOSAHashMap['#QOSAData['skuID']#']['QDOSA'];
@@ -336,9 +361,21 @@ Notes:
 			for(var QOROData in QORO){
 				var record = {};
 				record['skuID'] = QOROData['skuID'];
-				record['stockID'] = QOROData['stockID'];
-				record['locationID'] = QOROData['locationID'];
-				record['locationIDPath'] = QOROData['locationIDPath'];
+				if(structKeyExists(QOROData,'stockID')){
+					record['stockID'] = QOROData['stockID'];
+				}else{
+					record['stockID'] = javacast('null','');
+				}
+				if(structKeyExists(QOROData,'locationID')){
+					record['locationID'] = QOROData['locationID'];
+				}else{
+					record['locationID'] = javacast('null','');
+				}
+				if(structKeyExists(QOROData,'locationIDPath')){
+					record['locationIDPath'] = QOROData['locationIDPath'];
+				}else{
+					record['locationIDPath'] = javacast('null','');
+				}
 				var quantityReceived = 0;
 				if(structKeyExists(QROROHashMap,'#QOROData['skuID']#')){
 					quantityReceived = QROROHashMap['#QOROData['skuID']#']['QRORO'];
@@ -430,9 +467,22 @@ Notes:
 			for(var QOVOData in QOVO){
 				var record = {};
 				record['skuID'] = QOVOData['skuID'];
-				record['stockID'] = QOVOData['stockID'];
-				record['locationID'] = QOVOData['locationID'];
-				record['locationIDPath'] = QOVOData['locationIDPath'];
+				if(structKeyExists(QOVOData,'stockID')){
+					record['stockID'] = QOVOData['stockID'];
+				}else{
+					record['stockID'] = javacast('null','');
+				}
+				if(structKeyExists(QOVOData,'locationID')){
+					record['locationID'] = QOVOData['locationID'];
+				}else{
+					record['locationID'] = javacast('null','');
+				}
+				if(structKeyExists(QOVOData,'locationIDPath')){
+					record['locationIDPath'] = QOVOData['locationIDPath'];
+				}else{
+					record['locationIDPath'] = javacast('null','');
+				}
+				
 				var quantityReceived = 0;
 				if(structKeyExists(QROVOHashMap,'#QOVOData['skuID']#')){
 					quantityReceived = QROVOHashMap['#QOVOData['skuID']#']['QROVO'];
@@ -489,9 +539,21 @@ Notes:
 			for(var QOSAData in QOSA){
 				var record = {};
 				record['skuID'] = QOSAData['skuID'];
-				record['stockID'] = QOSAData['stockID'];
-				record['locationID'] = QOSAData['locationID'];
-				record['locationIDPath'] = QOSAData['locationIDPath'];
+				if(structKeyExists(QOSAData,'stockID')){
+					record['stockID'] = QOSAData['stockID'];
+				}else{
+					record['stockID'] = javacast('null','');
+				}
+				if(structKeyExists(QOSAData,'locationID')){
+					record['locationID'] = QOSAData['locationID'];
+				}else{
+					record['locationID'] = javacast('null','');
+				}
+				if(structKeyExists(QOSAData,'locationIDPath')){
+					record['locationIDPath'] = QOSAData['locationIDPath'];					
+				}else{
+					record['locationIDPath'] = javacast('null','');
+				}
 				var quantityReceived = 0;
 				if(structKeyExists(QROSAHashMap,'#QOSAData['skuID']#')){
 					quantityReceived = QROSAHashMap['#QOSAData['skuID']#']['QROSA'];

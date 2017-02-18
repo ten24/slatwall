@@ -109,7 +109,7 @@ Notes:
 		<cfquery name="local.removeCategoryFromContentAssociation">
 			DELETE FROM SwContentCategory WHERE categoryID =<cfqueryparam  cfsqltype="cf_sql_varchar" value="#local.getSlatwallCategoryID.categoryID#" />
 		</cfquery>
-		<cfquery name="rs">
+		<cfquery name="local.rs">
 			DELETE FROM SwProductCategory WHERE categoryID = <cfqueryparam  cfsqltype="cf_sql_varchar" value="#local.getSlatwallCategoryID.categoryID#" /> 
 		</cfquery>
 		<cfquery name="local.deleteCategory">

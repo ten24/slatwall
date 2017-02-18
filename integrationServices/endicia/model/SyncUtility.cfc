@@ -67,7 +67,7 @@
 		<cfset orderFulfillmentSmartList.addInFilter("order.orderStatusType.systemCode", "ostNew,ostProcessing,ostOnHold") />
 		
 		<!--- Setup Local File Name --->
-		<cfset localFullFilePath = getTempDirectory() & "endiciaPush.txt" />
+		<cfset var localFullFilePath = getTempDirectory() & "endiciaPush.txt" />
 		
 		<!--- Create a line Array that will be used to write to the file --->
 		<cfset var lineArray = arrayNew(1) />

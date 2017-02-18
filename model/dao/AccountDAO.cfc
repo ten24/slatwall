@@ -61,7 +61,7 @@ Notes:
 	<cffunction name="getAccountIDByPrimaryEmailAddress">
 		<cfargument name="emailAddress" required="true" type="string" />
 
-		<cfquery name="getAccountIDByPrimaryEmailAddress" maxrows="1">
+		<cfquery name="local.getAccountIDByPrimaryEmailAddress" maxrows="1">
 			SELECT a.accountID FROM SwAccount AS a LEFT JOIN SwAccountEmailAddress AS aea ON aea.accountID=a.accountID
 			WHERE emailAddress = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.emailAddress#" />
 		</cfquery>
