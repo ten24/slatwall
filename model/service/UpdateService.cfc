@@ -112,7 +112,7 @@ Notes:
 				<cfif (downloadedZipHash eq hashFileValue)>
 					<!--- now read and unzip the downloaded file --->
 					<cfset var dirList = "" />
-					<cfset unzipDirectoryName = "#getTempDirectory()#"&zipName/>
+					<cfset var unzipDirectoryName = "#getTempDirectory()#"&zipName/>
 					<cfset directoryCreate(unzipDirectoryName)/>
 					<cfzip action="unzip" destination="#unzipDirectoryName#" file="#getTempDirectory()##downloadFileName#" >
 					<cfzip action="list" file="#getTempDirectory()##downloadFileName#" name="dirList" >
@@ -160,7 +160,7 @@ Notes:
 	<cffunction name="updateCMSApplications">
 		<!--- Overwrite all CMS Application.cfc's with the latest from the skeletonApp --->
 		<cfset var apps = this.getAppSmartList().getRecords()>
-		<cfloop array="#apps#" index="app">
+		<cfloop array="#apps#" index="local.app">
 			<cfset getService('appService').updateCMSApp(app)>
 		</cfloop>
 	</cffunction>
@@ -233,9 +233,8 @@ Notes:
 	<cffunction name="getMetaFolderExistsFlag">
 		<cfreturn directoryExists( expandPath('/Slatwall/meta') ) >
 	</cffunction>
-
-	<cffunction name="updateEntitiesWithCustomProperties" returntype="boolean">
-		 <cfscript>
+	<cfscript>
+		 public boolean function updateEntitiesWithCustomProperties(){
 			try{
 				var path = "#ExpandPath('/Slatwall/')#" & "model/entity";
 				var pathCustom = "#ExpandPath('/Slatwall/')#" & "custom/model/entity";
@@ -272,8 +271,8 @@ Notes:
 				return false;
 			}
 			return true;
-		</cfscript>
-	</cffunction>
+		}
+	</cfscript>
 	<cffunction name="migrateAttributeToCustomProperty" returntype="void">
 		<cfargument name="entityName"/>
 		<cfargument name="customPropertyName"/>
@@ -300,9 +299,8 @@ Notes:
 		</cfquery>
 	</cffunction>
 	
-	<cffunction name="mergeProperties" returntype="any">
-	  <cfargument name="fileName" type="String">
-		<cfscript>
+	<cfscript>
+		public any function mergeProperties(string filename){ 
 			var lineBreak = getHibachiUtilityService().getLineBreakByEnvironment(getApplicationValue("lineBreakStyle"));
 			var paddingCount = 2;
 			var conditionalLineBreak="";
@@ -449,8 +447,8 @@ Notes:
 			}
 
 			return newContent;
-		</cfscript>
-	</cffunction>
+		}
+	</cfscript>
 	<cffunction name="addPropertiesToFile" returntype="String">
 	</cffunction>
 

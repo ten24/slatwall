@@ -242,7 +242,7 @@ Notes:
 		<cfargument name="eventStartDateTime" type="date" />
 		<cfargument name="eventEndDateTime" type="date" />
 	 
-		<cfquery name="getUsedLocationIdsByEventDates" >
+		<cfquery name="local.getUsedLocationIdsByEventDates" >
 			SELECT
 				DISTINCT lc.LocationID 
 			FROM 

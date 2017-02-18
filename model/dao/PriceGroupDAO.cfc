@@ -121,7 +121,7 @@ Notes:
 		<cfargument name="skuID" type="string">
 
 		<!--- The results should be unique but previous code made me unsure if that is true. --->
-		<cfset results = ormExecuteQuery("SELECT pgr FROM SlatwallPriceGroupRate pgr INNER JOIN FETCH pgr.skus pgrs WHERE pgr.priceGroup.activeFlag=:activeFlag AND pgr.priceGroup.priceGroupID=:priceGroupID AND pgrs.skuID=:skuID", {activeFlag=1,priceGroupID=arguments.priceGroupID, skuID=arguments.skuID}, false, {maxresults=1} ) />
+		<cfset var results = ormExecuteQuery("SELECT pgr FROM SlatwallPriceGroupRate pgr INNER JOIN FETCH pgr.skus pgrs WHERE pgr.priceGroup.activeFlag=:activeFlag AND pgr.priceGroup.priceGroupID=:priceGroupID AND pgrs.skuID=:skuID", {activeFlag=1,priceGroupID=arguments.priceGroupID, skuID=arguments.skuID}, false, {maxresults=1} ) />
 
 		<cfif arraylen(results)>
 			<cfreturn results[1] >
@@ -136,7 +136,7 @@ Notes:
 		<cfargument name="productID" type="string">
 
 		<!--- The results should be unique but previous code made me unsure if that is true. --->
-		<cfset results = ormExecuteQuery("SELECT pgr FROM SlatwallPriceGroupRate pgr INNER JOIN FETCH pgr.products pgrp WHERE pgr.priceGroup.activeFlag=:activeFlag AND pgr.priceGroup.priceGroupID=:priceGroupID AND pgrp.productID=:productID", {activeFlag=1,priceGroupID=arguments.priceGroupID,productID=arguments.productID}, false, {maxresults=1}) />
+		<cfset var results = ormExecuteQuery("SELECT pgr FROM SlatwallPriceGroupRate pgr INNER JOIN FETCH pgr.products pgrp WHERE pgr.priceGroup.activeFlag=:activeFlag AND pgr.priceGroup.priceGroupID=:priceGroupID AND pgrp.productID=:productID", {activeFlag=1,priceGroupID=arguments.priceGroupID,productID=arguments.productID}, false, {maxresults=1}) />
 
 		<cfif arraylen(results)>
 			<cfreturn results[1] >
@@ -151,7 +151,7 @@ Notes:
 		<cfargument name="productTypeID" type="string">
 
 		<!--- The results should be unique but previous code made me unsure if that is true. --->
-		<cfset results = ormExecuteQuery("SELECT pgr FROM SlatwallPriceGroupRate pgr INNER JOIN FETCH pgr.productTypes pgrpt WHERE pgr.priceGroup.activeFlag=:activeFlag AND pgr.priceGroup.priceGroupID=:priceGroupID AND pgrpt.productTypeID=:productTypeID", {activeFlag=1,priceGroupID=arguments.priceGroupID, productTypeID=arguments.productTypeID}, false, {maxresults=1}) />
+		<cfset var results = ormExecuteQuery("SELECT pgr FROM SlatwallPriceGroupRate pgr INNER JOIN FETCH pgr.productTypes pgrpt WHERE pgr.priceGroup.activeFlag=:activeFlag AND pgr.priceGroup.priceGroupID=:priceGroupID AND pgrpt.productTypeID=:productTypeID", {activeFlag=1,priceGroupID=arguments.priceGroupID, productTypeID=arguments.productTypeID}, false, {maxresults=1}) />
 
 		<cfif arraylen(results)>
 			<cfreturn results[1] >
@@ -164,7 +164,7 @@ Notes:
 		<cfargument name="priceGroupID" type="string">
 
 		<!--- The results should be unique but previous code made me unsure if that is true. --->
-		<cfset results = ormExecuteQuery("SELECT pgr FROM SlatwallPriceGroupRate pgr WHERE pgr.priceGroup.activeFlag=:activeFlag AND pgr.priceGroup.priceGroupID=:priceGroupID AND pgr.globalFlag=1", {activeFlag=1,priceGroupID=arguments.priceGroupID}, false, {maxresults=1}) />
+		<cfset var results = ormExecuteQuery("SELECT pgr FROM SlatwallPriceGroupRate pgr WHERE pgr.priceGroup.activeFlag=:activeFlag AND pgr.priceGroup.priceGroupID=:priceGroupID AND pgr.globalFlag=1", {activeFlag=1,priceGroupID=arguments.priceGroupID}, false, {maxresults=1}) />
 
 		<cfif arraylen(results)>
 			<cfreturn results[1] >

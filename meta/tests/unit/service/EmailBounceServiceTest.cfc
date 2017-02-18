@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -43,34 +43,15 @@
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
 
-	Notes:
-	
---->
-<cfcomponent accessors="true" output="false">
-	
-	
-	<cffunction name="getProductFeedQuery" access="public" output="false" returntype="Query">
-		<cfset var rs = "" />
+Notes:
+
+*/
+component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
+
+	public void function setUp() {
+		super.setup();
 		
-		<cfquery name="rs">
-			SELECT
-				SwSku.skuCode,
-				SwProduct.calculatedTitle,
-				
-			FROM
-				SwSku
-			  INNER JOIN
-			  	SwProduct
-			WHERE
-				SwSku.activeFlag = 1
-			  AND
-			  	SwProduct.activeFlag = 1
-			  AND
-			  	SwProduct.publishedFlag = 1
-			  AND
-			  	SwProduct.calculatedQATS > 0
-		</cfquery>
-		
-		<cfreturn rs />
-	</cffunction>
-</cfcomponent>
+		variables.service = request.slatwallScope.getBean("emailBounceService");
+	}
+
+}
