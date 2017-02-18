@@ -23,7 +23,7 @@
 					  <meta name="viewport" content="width=device-width,initial-scale=1.0">
 
 						<cfif CGI.HTTP_USER_AGENT CONTAINS "MSIE 9">
-							<cfset baseHREF=request.slatwallScope.getBaseURL() />
+							<cfset var baseHREF=request.slatwallScope.getBaseURL() />
 							<cfif len(baseHREF) gt 1>
 								<cfset baseHREF = right(baseHREF, len(baseHREF)-1) & '/index.cfm/'>
 							<cfelse>
