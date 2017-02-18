@@ -76,19 +76,19 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 	public void function varScoperTest(){
 		var modelDirectoryPath = expandPath('/Slatwall');
-		var modelDirectory = directoryList(modelDirectoryPath,true,'query');
+		var modelDirectory = directoryList(modelDirectoryPath,true,'query','*.cfc');
 		var hasUnscopedVars = false;
 		
 		for(var record in modelDirectory){
 			if(
-				listLast(record.name,'.') == 'cfc' 
-				&& record.directory DOES NOT CONTAIN 'mxunit'
+				record.directory DOES NOT CONTAIN 'mxunit'
 				&& record.directory DOES NOT CONTAIN '.history'
 				&& record.directory DOES NOT CONTAIN 'WEB-INF'
 				&& record.directory DOES NOT CONTAIN 'varscoper'
 				&& record.directory DOES NOT CONTAIN 'ckfinder'
 				&& record.directory DOES NOT CONTAIN 'javaloader'
 				&& record.directory DOES NOT CONTAIN 'taffy'
+				//can't analyze because it blends cfml and cfscript on a function
 				&& fileExists(record.directory&'/#record.name#')
 			){
 				var fileText = fileRead(record.directory&'/#record.name#');

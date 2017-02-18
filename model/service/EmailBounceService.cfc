@@ -50,9 +50,9 @@ Notes:
 
 	<cfproperty name="orderService" />
 
-<cffunction name="processBouncedEmails" access="public" returntype="void">
 
-		<cfscript>
+	<cfscript>
+		public void function processBouncedEmails(){
 			var mailServer = getService("SettingService").getSettingValue("emailIMAPServer");
 			var mailServerPort = getService("SettingService").getSettingValue("emailIMAPServerPort");
 			var mailServerUsername = getService("SettingService").getSettingValue("emailIMAPServerUsername");
@@ -84,25 +84,21 @@ Notes:
 			if(!structKeyExists(server, "railo") && !structKeyExists(server, "lucee")){
 				imapAttributes.secure="true";
 			}
-		</cfscript>
-		<cftry>
-
-			<cfimap attributeCollection="#imapAttributes#" />
-
-			<cfscript>
-
+			try{
+				getService('HibachiTagService').cfimap(argumentCollection=imapAttributes);
+			
 				var fromAddress = "";
 				var emailSubject = "";
 				var emailBody = "";
-
+	
 				for(var i=1; i <= emails.recordcount; i++){
-
+	
 					fromAddress = emails.from[i];
 					emailSubject = emails.subject[i];
 					report &= "From: " & fromAddress & " Subject: " & emailSubject & "<br>";
-
+	
 					emailBody = emails.body[i];
-
+	
 					// read all the attachments as well
 					if(trim(emails.attachmentfiles[i]) NEQ ""){
 						var attachmentArray = listToArray(emails.attachmentfiles[i],"#chr(9)#") ;
@@ -119,123 +115,114 @@ Notes:
 						report &= "Status: Not processed [From Allowed: #isAllowedFromAddress#, Subject Allowed: #isAllowedSubject#]" & "<br>";
 					}
 					report &= "<br>";
-
+	
 					//todo create a bounced email record
 					var emailHeader = emails.header[i];
 					var emailBounce = this.newEmailBounce();
-
+	
 					if(getHeaderValue(emailHeader, "Related-Object") NEQ ""){
 						emailBounce.setRelatedObject(getHeaderValue(emailHeader, "Related-Object"));
 						emailBounce.setRelatedObjectID(getHeaderValue(emailHeader, "Related-Object-ID"));
 						giftCardBounce = true;
 					} else {
-
+	
 						if(FindNoCase("Gift Card Code:", emailBody)){
-
+	
 							var startingIndex = FindNoCase("Gift Card Code:", emailBody);
 							startingIndex = startingIndex + 16;
-
+	
 							var giftCardCode = Mid(emailBody, startingIndex, getService("SettingService").getSettingValue("skuGiftCardCodeLength")+1);
-
+	
 							var giftCardID = getDAO("GiftCardDAO").getIDbyCode(giftCardCode);
-
+	
 							if(giftCardID NEQ false){
 								emailBounce.setRelatedObject("giftCard");
 								emailBounce.setRelatedObjectID(giftCardID);
 							}
-
+	
 							giftCardBounce = true;
 						}
 					}
-
+	
 					if(getHeaderValue(emailHeader, "X-Failed-Recipients") NEQ ""){
 						emailBounce.setRejectedEmailTo(getHeaderValue(emailHeader, "X-Failed-Recipients"));
-
+	
 						var failedRecipient = true;
 					} else {
-
+	
 						if(FindNoCase("To:", emailBody)){
-
+	
 							var startingIndex = FindNoCase("To:", emailBody);
 							startingIndex = startingIndex + 4;
-
+	
 							var parsing = true;
 							var toEmail = "";
-
+	
 							while(Mid(emailBody, startingIndex, 1) NEQ Chr(10)){
 								toEmail &= Mid(emailBody, startingIndex, 1);
 								startingIndex++;
 							}
-
+	
 							emailBounce.setRejectedEmailTo(toEmail);
-
+	
 							var failedRecipient = true;
-
+	
 						}
-
+	
 					}
-
+	
 					emailBounce.setRejectedEmailFrom(emails.from[i]);
 					emailBounce.setRejectedEmailSubject(emails.subject[i]);
 					emailBounce.setRejectedEmailSendTime(emails.sentdate[i]);
 					emailBounce.setRejectedEmailBody(emailBody);
 					emailBounce = this.saveEmailBounce(emailBounce);
-
-
+	
+	
 					if(failedRecipient){
 						report &= "Failed Recipient: " & emailBounce.getRejectedEmailTo() & " ";
 						deleteMsgIds = listAppend(deleteMsgIds,emails.uid[i]);
 					}
-
+	
 					if(giftCardBounce){
 						report &= "Gift Card Bounce " & emailBounce.getRelatedObjectID() & " ";
-
+	
 						var giftCard = getGiftCard(emailBounce.getRelatedObjectID());
 						var processObject = giftCard.getOrder().getProcessObject("failedGiftRecipient");
 						processObject.setGiftCard(giftCard);
 						getOrderService().process(giftCard.getOrder(), processObject);
-
+	
 					}
-
+	
 					if(emailBounce.hasErrors()){
 						report &= "Email Bounce Save Errors" &  emailBounce.getErrors() & "<br>";
 					} else {
 						report &= "Email Bounce Save Success" & "<br>";
 					}
-
 				}
-			</cfscript>
+			}catch(any e){
+				report &="Error Reading Mailbox";
+			}
 
-			<cfcatch type="Any">
-				<cfset report &= "Error Reading Mailbox" />
-			</cfcatch>
-		</cftry>
-
-		<cfscript>
 			imap.action="delete";
 			imap.uid=deleteMsgIds;
-		</cfscript>
+			
+			try{
+				getService('HibachiTagService').cfimap(argumentCollection=imapAttributes);
+			}catch(any e){
+				report &= "Error Deleting Mailbox";
+			}
+			getService('hibachiTagService').cfmail(
+				to="#getService("SettingService").getSettingValue("emailToAddress")#",
+				from="#getService("SettingService").getSettingValue("emailFromAddress")#",
+				subject="Bounced Email Processing Report",
+				cc="#getService("SettingService").getSettingValue("emailCCAddress")#",
+				bcc="#getService("SettingService").getSettingValue("emailBCCAddress")#",
+				body=writeoutput(report),
+				charset="utf-8"
+			);
 
-		<cftry>
-
-			<cfimap attributeCollection="#imapAttributes#" />
-
-			<cfcatch type="Any">
-				<cfset report &= "Error Deleting Mailbox" />
-			</cfcatch>
-
-		</cftry>
-
-		<cfmail to="#getService("SettingService").getSettingValue("emailToAddress")#"
-			from="#getService("SettingService").getSettingValue("emailFromAddress")#"
-			subject="Bounced Email Processing Report"
-			cc="#getService("SettingService").getSettingValue("emailCCAddress")#"
-			bcc="#getService("SettingService").getSettingValue("emailBCCAddress")#"
-			charset="utf-8">
-			<cfoutput>#writeoutput(report)#</cfoutput>
-		</cfmail>
-
-	</cffunction>
+		}
+	</cfscript>
 
 	<cffunction name="getHeaderValue" access="private" output="false" returntype="string">
 		<cfargument name="fullHeader" required="yes" type="string">
@@ -246,7 +233,7 @@ Notes:
 
 		<cfset headerValues = ListToArray(arguments.fullHeader, chr(10))>
 
-		<cfloop from="1" to="#ArrayLen(headerValues)#" index="value">
+		<cfloop from="1" to="#ArrayLen(headerValues)#" index="local.value">
 			<cfif Left(headerValues[value], Len(arguments.headerKey)) IS arguments.headerKey>
 				<cfset currentHeaderValue = Mid(headerValues[value], Len(arguments.headerKey) + 3, Len(headerValues[value]))>
 				<cfbreak>

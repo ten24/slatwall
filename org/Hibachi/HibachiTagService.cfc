@@ -17,6 +17,30 @@
 		<cfcookie attributeCollection="#arguments#" />
 	</cffunction>
 	
+	<cffunction name="cfimap">
+		<cfargument name="action" default="GetHeaderOnly"/>
+		<cfargument name="attachmentpath" />
+		<cfargument name="Connection"/>
+		<cfargument name="Folder"/>
+		<cfargument name="GenerateUniqueFilenames"/>
+		<cfargument name="MaxRows"/>
+		<cfargument name="MessageNumber"/>
+		<cfargument name="Name"/>
+		<cfargument name="NewFolder"/>
+		<cfargument name="Password"/>
+		<cfargument name="Port"/>
+		<cfargument name="Recurse"/>
+		<cfargument name="Secure"/>
+		<cfargument name="Server"/>
+		<cfargument name="StartRow"/>
+		<cfargument name="StopOnError"/>
+		<cfargument name="Timeout"/>
+		<cfargument name="Uid"/>
+		<cfargument name="Username"/>
+		<cfargument name="delimiter"/>
+		<cfimap attributeCollection="#arguments#" />
+	</cffunction>
+	
 	<cffunction name="removeNullStructValues" returntype="struct" >
 		<cfargument name="oldStruct" type="struct">
 		<cfset var newStruct = {}/>
@@ -58,6 +82,9 @@
 		<cfargument name="to" type="string" required="true" />
 		<cfargument name="subject" default="" />
 		<cfargument name="body" default="" />
+		<cfargument name="cc" default="" />
+		<cfargument name="bcc" default="" />
+		<cfargument name="charset" default="" />
 		<cfargument name="type" default="html" />
 		
 		<cftry>
