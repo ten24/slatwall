@@ -188,6 +188,34 @@ Notes:
 		return skus;
 	}
 	
+	public any function getAverageCost(required string skuID){
+			
+			return ORMExecuteQuery(
+				'SELECT COALESCE(AVG(i.cost/i.quantityIn),0)
+				FROM SlatwallInventory i 
+				LEFT JOIN i.stock stock
+				LEFT JOIN stock.sku sku
+				WHERE sku.skuID=:skuID
+				',
+				{skuID=arguments.skuID},
+				true
+			);
+		}
+		
+		public any function getAverageLandedCost(required string skuID){
+			
+			return ORMExecuteQuery(
+				'SELECT COALESCE(AVG(i.landedCost/i.quantityIn),0)
+				FROM SlatwallInventory i 
+				LEFT JOIN i.stock stock
+				LEFT JOIN stock.sku sku
+				WHERE sku.skuID = :skuID
+				',
+				{skuID=arguments.skuID},
+				true
+			);
+		}
+	
 	</cfscript>
 
 	<cffunction name="getSortedProductSkusID">

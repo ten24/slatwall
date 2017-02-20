@@ -61,7 +61,7 @@ Notes:
 
 	<cfscript>
 		
-		public any function getAverageCost(required any stock){
+		public any function getAverageCost(required string stockID){
 			
 			return ORMExecuteQuery(
 				'SELECT COALESCE(AVG(i.cost/i.quantityIn),0)
@@ -69,7 +69,20 @@ Notes:
 				LEFT JOIN i.stock s
 				WHERE s.stockID=:stockID
 				',
-				{stockID=arguments.stock.getStockID()},
+				{stockID=arguments.stockID},
+				true
+			);
+		}
+		
+		public any function getAverageLandedCost(required string stockID){
+			
+			return ORMExecuteQuery(
+				'SELECT COALESCE(AVG(i.landedCost/i.quantityIn),0)
+				FROM SlatwallInventory i 
+				LEFT JOIN i.stock s
+				WHERE s.stockID=:stockID
+				',
+				{stockID=arguments.stockID},
 				true
 			);
 		}

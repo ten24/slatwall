@@ -179,4 +179,71 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var resultStockAdjustmentItem = variables.dao.getTransactionExistsFlag("", mockSku.getSkuID());
 		assertTrue(resultStockAdjustmentItem);
 	}
+	
+	public void function getAverageCostTest(){
+		var skuData = {
+			skuID=""
+		};
+		var sku = createPersistedTestEntity('Sku',skuData);
+		
+		var stockData = {
+			stockID="",
+			sku={
+				skuID=sku.getSkuID()
+			}
+		};
+		var stock = createPersistedTestEntity('Stock',stockData);
+		
+		var inventoryData ={
+			inventoryID="",
+			cost=50,
+			quantityin=5,
+			stock={
+				stockID=stock.getStockID()
+			}
+		};
+		var inventory = createPersistedTestEntity('Inventory',inventoryData);
+		
+		var averageCost = variables.dao.getAverageCost(sku.getSkuID());
+		assertEquals(10,averageCost);
+		
+		var inventoryData2 = {
+			inventoryID="",
+			cost=35,
+			quantityin=5,
+			stock={
+				stockID=stock.getStockID()
+			}
+		};
+		var inventory2 = createPersistedTestEntity('Inventory',inventoryData2);
+		
+		averageCost = variables.dao.getAverageCost(sku.getSkuID());
+		assertEquals(8.5,averageCost);
+		
+		//second stock
+		var stockData2 = {
+			stockID="",
+			sku={
+				skuID=sku.getSkuID()
+			}
+		};
+		var stock2 = createPersistedTestEntity('Stock',stockData2);
+		
+		var inventoryData3 ={
+			inventoryID="",
+			cost=100,
+			quantityin=5,
+			stock={
+				stockID=stock.getStockID()
+			}
+		};
+		var inventory3 = createPersistedTestEntity('Inventory',inventoryData3);
+		
+		averageCost = variables.dao.getAverageCost(sku.getSkuID());
+		assertEquals(12.3333333333,averageCost);
+	}
+	
+	public void function getAverageLandedCostTest(){
+		
+	}
 }

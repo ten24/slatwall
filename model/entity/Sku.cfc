@@ -1151,12 +1151,11 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	}
 	
 	public any function getAverageCost(){
-		
-		return 0;
+		return getDao('skuDao').getAverageCost(this.getSkuID());
 	}
 	
 	public any function getAverageLandedCost(){
-		return 0;
+		return getDao('skuDao').getAverageLandedCost(this.getSkuID());
 	}
 
 

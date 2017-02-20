@@ -104,11 +104,11 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	// ============ START: Non-Persistent Property Methods =================
 	
 	public any function getAverageCost(){
-		return getDao('stockDao').getAverageCost(this);
+		return getDao('stockDao').getAverageCost(this.getStockID());
 	}
 	
 	public any function getAverageLandedCost(){
-		return 0;
+		return getDao('stockDao').getAverageLandedCost(this.getStockID());
 	}
 
 	public any function getQATS() {
