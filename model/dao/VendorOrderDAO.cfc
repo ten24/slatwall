@@ -126,16 +126,16 @@ component extends="HibachiDAO" {
 		return result;
 	}
 	
-	public numeric function getQuantity(required any vendorOrder){
+	public numeric function getTotalQuantity(required any vendorOrder){
 		return ORMExecuteQuery('SELECT COALESCE(sum(quantity),0) FROM SlatwallVendorOrderItem where vendorOrder=:vendorOrder',{vendorOrder=arguments.vendorOrder},true);
 	}
 	
 	public numeric function getTotalWeight(required any vendorOrder){
-		return ORMExecuteQuery('SELECT COALESCE(sum(shippingWeight),0) FROM SlatwallVendorOrderItem where vendorOrder=:vendorOrder',{vendorOrder=arguments.vendorOrder},true);
+		return ORMExecuteQuery('SELECT COALESCE(sum(shippingWeight*quantity),0) FROM SlatwallVendorOrderItem where vendorOrder=:vendorOrder',{vendorOrder=arguments.vendorOrder},true);
 	}
 	
 	public numeric function getTotalCost(required any vendorOrder){
-		return ORMExecuteQuery('SELECT COALESCE(sum(cost),0) FROM SlatwallVendorOrderItem where vendorOrder=:vendorOrder',{vendorOrder=arguments.vendorOrder},true);
+		return ORMExecuteQuery('SELECT COALESCE(sum(cost*quantity),0) FROM SlatwallVendorOrderItem where vendorOrder=:vendorOrder',{vendorOrder=arguments.vendorOrder},true);
 	}
 	
 	

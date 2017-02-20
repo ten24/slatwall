@@ -55,7 +55,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		variables.entity = request.slatwallScope.getService("vendorOrderService").newVendorOrder();
 	}
 
-	public void function getPerQuantityLandingAmountTest(){
+	public void function getLandingAmountByQuantityTest(){
 		var vendorOrderData = {
 			vendorOrderID="",
 			shippingAndHandlingCost=100
@@ -80,7 +80,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		var vendorOrderItem2 = createPersistedTestEntity('VendorOrderItem',vendorOrderItemData2);
 		
-		assert(6.25,vendorOrder.getQuantity);
+		assert(6.25,vendorOrder.getQuantity());
 	}
 	
 	public void function getTotalWeightTest(){

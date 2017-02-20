@@ -83,15 +83,8 @@ component entityname="SlatwallVendorOrder" table="SwVendorOrder" persistent="tru
 	property name="total" persistent="false" hb_formatType="currency"; 
 	property name="costDistributionTypeOptions" persistent="false";
 	
-	public any function getPerQuantityLandingAmount(){
-		if(getQuantity()){
-			return val(precisionEvaluate(getShippingAndHandlingCost()/getQuantity()));	
-		}
-		return 0;
-	}
-	
-	public numeric function getQuantity(){
-		return getDao('VendorOrderDao').getQuantity(this);
+	public numeric function getTotalQuantity(){
+		return getDao('VendorOrderDao').getTotalQuantity(this);
 	}
 	
 	public numeric function getTotalWeight(){
@@ -102,20 +95,6 @@ component entityname="SlatwallVendorOrder" table="SwVendorOrder" persistent="tru
 		return getDao('VendorOrderDao').getTotalCost(this);
 	}
 	
-	public numeric function getCostDistribution(){
-		if(!isNull(getCostDistributionType())){
-			switch(LCASE(getCostDistributionType())){
-				case "quantity":
-					break;
-				case "cost":
-					break;
-				case "weight":
-					break;
-			}
-			
-		}
-	}
-		
 	public array function getCostDistributionTypeOptions() {
 		//quantity | cost | weight 
 		var costDistributionTypeOptions = [];

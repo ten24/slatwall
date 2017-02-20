@@ -69,7 +69,10 @@ component entityname="SlatwallStockReceiverItem" table="SwStockReceiverItem" per
 	
 	
 	public any function getLandedCost(){
-		return getCost() + getLandingAmount();
+		if(!isNull(getVendorOrderItem())){
+			return getCost() + getLandingAmount();	
+		}
+		return 0;
 	}
 	
 	public any function getLandingAmount(){
@@ -89,11 +92,15 @@ component entityname="SlatwallStockReceiverItem" table="SwStockReceiverItem" per
 	}
 	
 	public numeric function getLandingAmountByQuantity(){
-		return getVendorOrderItem().getVendorOrder().getLandingAmountByQuantity();
+		return getVendorOrderItem().getLandingAmountByQuantity();
 	}
 	
 	public numeric function getLandingAmountByCost(){
 		return getVendorOrderItem().getLandingAmountByCost();
+	}
+	
+	public numeric function getLandingAmountByWeight(){
+		return getVendorOrderItem().getLandingAmounByWeight();
 	}
 	
 	private boolean function hasOneAndOnlyOneRelatedItem() {
