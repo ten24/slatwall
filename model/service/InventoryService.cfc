@@ -72,9 +72,8 @@ component extends="HibachiService" accessors="true" output="false" {
 			inventory.setStockReceiverItem(arguments.stockReceiverItem);
 			if(arguments.stockReceiverItem.getStockReceiver().getReceiverType() == 'vendororderitem'){
 				inventory.setCost(arguments.stockReceiverItem.getCost());
-//				inventory.setLandedCost();
-//				var arguments.stockReceiverItem.getVendorOrderItem().getShippingAndHandlingCost()/;
-//				inventory.setLandingAmount();	
+				inventory.setLandedCost(arguments.stockReceiverItem.getLandedCost());
+				inventory.setLandedAmount(arguments.stockReceiverItem.getLandedAmount());
 			}
 			
 			//calculate Landed Cost

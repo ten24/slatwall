@@ -76,18 +76,21 @@ component entityname="SlatwallStockReceiverItem" table="SwStockReceiverItem" per
 	}
 	
 	public any function getLandingAmount(){
-		
-		switch(getVendorOrderItem().getVendorOrder().getCostDistributionType()){
-			case "quantity":
-				return getLandingAmountByQuantity();
-				break;
-			case "cost":
-				return getLandingAmountByCost();
-				break;
-			case "weight":
-				return getLandingAmountByWeight();
-				break;
+		if(
+			!isNull(getVendorOrderItem()) 
+			&& !isNull(getVendorOrderItem().getVendorOrder())
+			&& !isNull(getVendorOrderItem().getVendorOrder().getCostDistributionType())
+		){
+			switch(getVendorOrderItem().getVendorOrder().getCostDistributionType()){
+				case "quantity":
+					return getLandingAmountByQuantity();
+				case "cost":
+					return getLandingAmountByCost();
+				case "weight":
+					return getLandingAmountByWeight();
+			}
 		}
+		
 		return 0;
 	}
 	

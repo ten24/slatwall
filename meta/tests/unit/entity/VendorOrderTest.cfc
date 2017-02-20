@@ -80,7 +80,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		var vendorOrderItem2 = createPersistedTestEntity('VendorOrderItem',vendorOrderItemData2);
 		
-		assert(6.25,vendorOrder.getQuantity());
+		assert(6.25,vendorOrder.getTotalQuantity());
 	}
 	
 	public void function getTotalWeightTest(){
