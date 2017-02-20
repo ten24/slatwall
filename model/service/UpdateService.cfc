@@ -138,7 +138,7 @@ Notes:
 				<cfif (downloadedZipHash eq hashFileValue)>
 					<!--- now read and unzip the downloaded file --->
 					<cfset var dirList = "" />
-					<cfset unzipDirectoryName = "#getTempDirectory()#"&zipName/>
+					<cfset var unzipDirectoryName = "#getTempDirectory()#"&zipName/>
 					<cfset directoryCreate(unzipDirectoryName)/>
 					<cfzip action="unzip" destination="#unzipDirectoryName#" file="#getTempDirectory()##downloadFileName#" >
 					<cfzip action="list" file="#getTempDirectory()##downloadFileName#" name="dirList" >
@@ -186,7 +186,7 @@ Notes:
 	<cffunction name="updateCMSApplications">
 		<!--- Overwrite all CMS Application.cfc's with the latest from the skeletonApp --->
 		<cfset var apps = this.getAppSmartList().getRecords()>
-		<cfloop array="#apps#" index="app">
+		<cfloop array="#apps#" index="local.app">
 			<cfset getService('appService').updateCMSApp(app)>
 		</cfloop>
 	</cffunction>
@@ -260,9 +260,8 @@ Notes:
 	<cffunction name="getMetaFolderExistsFlag">
 		<cfreturn directoryExists( expandPath('/Slatwall/meta') ) >
 	</cffunction>
-
-	<cffunction name="updateEntitiesWithCustomProperties" returntype="boolean">
-		 <cfscript>
+	<cfscript>
+		 public boolean function updateEntitiesWithCustomProperties(){
 			try{
 				var path = "#ExpandPath('/Slatwall/')#" & "model/entity";
 				var pathCustom = "#ExpandPath('/Slatwall/')#" & "custom/model/entity";
@@ -300,8 +299,8 @@ Notes:
 				return false;
 			}
 			return true;
-		</cfscript>
-	</cffunction>
+		}
+	</cfscript>
 	<cffunction name="migrateAttributeToCustomProperty" returntype="void">
 		<cfargument name="entityName"/>
 		<cfargument name="customPropertyName"/>
@@ -330,6 +329,7 @@ Notes:
 	
 
 	<cfscript>
+		
 		public void function checkIfCustomPropertiesExistInBase(required any customMeta, required any baseMeta){
 			// check duplicate properties and if there is a duplicate then write it to log
 			if(structKeyExists(arguments.customMeta,'properties')){
@@ -403,11 +403,10 @@ Notes:
 				}
 			}
 		}
-	</cfscript>
 	
-	<cffunction name="mergeProperties" returntype="any">
-	  <cfargument name="fileName" type="String">
-		<cfscript>
+		public any function mergeProperties(string filename){ 
+	
+		
 			var customEntityParser = getTransient('HibachiEntityParser');
 			customEntityParser.setFilePath("custom/model/entity/#arguments.fileName#");
 			
@@ -418,7 +417,8 @@ Notes:
 			mergeEntityParsers(coreEntityParser,customEntityParser,true);
 
 			return coreEntityParser.getFileContent();
-		</cfscript>
-	</cffunction>
+		
+		}
+	</cfscript>
 	 
 </cfcomponent>

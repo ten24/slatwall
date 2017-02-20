@@ -178,7 +178,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			var triggerCollectionResult = arguments.workflowTrigger.getScheduleCollection().getPrimaryIDs();
 
 			//Loop Collection Data
-			for(i=1; i <= ArrayLen(triggerCollectionResult); i++){
+			for(var i=1; i <= ArrayLen(triggerCollectionResult); i++){
 				//get current ObjectID
 				var workflowTriggerID = arguments.workflowTrigger.getWorkflowTriggerID();
 				var currentObjectID = triggerCollectionResult[i][structKeyArray(triggerCollectionResult[i])[1]];
@@ -211,7 +211,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 				//if there was any errors inside of the thread, propagate to catch
 				if(structKeyExists(evaluate(currentThreadName), 'error')){
-					writedump(evaluate(currentThreadName).error)
+					writedump(evaluate(currentThreadName).error);
 					throw(evaluate(currentThreadName).error.message);
 					break;
 				}

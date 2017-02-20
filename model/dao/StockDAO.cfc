@@ -51,7 +51,7 @@ Notes:
 	<cffunction name="updateStockLocation" hint="Moves all stock from one location to another">
 		<cfargument name="fromLocationID" type="string" required="true" >
 		<cfargument name="toLocationID" type="string" required="true" >
-		<cfquery name="updatestock" >
+		<cfquery name="local.updatestock" >
 			UPDATE SwStock 
 			SET locationID = <cfqueryparam value="#arguments.toLocationID#" cfsqltype="cf_sql_varchar" >
 			WHERE locationID = <cfqueryparam value="#arguments.fromLocationID#" cfsqltype="cf_sql_varchar" >

@@ -56,7 +56,7 @@ Notes:
 	<cffunction name="sendEmail" returntype="void" access="public">
 		<cfargument name="email" type="any" required="true" />
 
-		<cfset cfmailAttributes = structNew() />
+		<cfset var cfmailAttributes = structNew() />
 		<cfset cfmailAttributes["from"] = arguments.email.getEmailFrom() />
 		<cfset cfmailAttributes["subject"] = arguments.email.getEmailSubject() />
 		<cfset cfmailAttributes["to"] = arguments.email.getEmailTo() />
