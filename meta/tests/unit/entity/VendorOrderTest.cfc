@@ -109,7 +109,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}
 		};
 		var vendorOrderItem2 = createPersistedTestEntity('VendorOrderItem',vendorOrderItemData2);
-		request.debug(vendorOrder.getTotalWeight());
+		assertEquals(42,vendorOrder.getTotalWeight(),'(6*2) + (10*3) = 42');
 	}
 	
 	public void function getTotalCostTest(){
@@ -140,7 +140,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}
 		};
 		var vendorOrderItem2 = createPersistedTestEntity('VendorOrderItem',vendorOrderItemData2);
-		assertEquals(16,vendorOrder.getTotalCost());
+		assertEquals(132,vendorOrder.getTotalCost(),'(10*9)+(6*7)=132');
 	}
 }
 
