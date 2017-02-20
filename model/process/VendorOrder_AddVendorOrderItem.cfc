@@ -60,6 +60,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="price";
 	property name="cost";
 	property name="quantity";
+	property name="shippingWeight";
 	property name="vendorOrderItemTypeSystemCode";
 	property name="deliverToLocationID" hb_formFieldType="select";
 	
@@ -97,6 +98,12 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			variables.quantity = 1;
 		}
 		return variables.quantity;
+	}
+	
+	public any function getShippingWeight(){
+		if(!isNull(getSku())){
+			getSku().getWeight();
+		}
 	}
 	
 	public any function getVendorOrderItemTypeSystemCode() {

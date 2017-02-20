@@ -58,7 +58,5 @@ component extends="HibachiDAO" {
 		return ormExecuteQuery(hql, params);
 	}	
 	
-	
-	
 }
 

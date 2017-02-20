@@ -91,15 +91,29 @@ component entityname="SlatwallVendorOrder" table="SwVendorOrder" persistent="tru
 	}
 	
 	public numeric function getQuantity(){
-		return ORMExecuteQuery('SELECT COALESCE(sum(quantity),0) FROM SlatwallVendorOrderItem where vendorOrder=:vendorOrder',{vendorOrder=this},true);
+		return getDao('VendorOrderDao').getQuantity(this);
 	}
 	
 	public numeric function getTotalWeight(){
-		return ORMExecuteQuery('SELECT COALESCE(sum(stock.sku.weight),0) FROM SlatwallVendorOrderItem where vendorOrder=:vendorOrder',{vendorOrder=this},true);
+		return getDao('VendorOrderDao').getTotalWeight(this);
 	}
 	
 	public numeric function getTotalCost(){
-		return ORMExecuteQuery('SELECT COALESCE(sum(cost),0) FROM SlatwallVendorOrderItem where vendorOrder=:vendorOrder',{vendorOrder=this},true);
+		return getDao('VendorOrderDao').getTotalCost(this);
+	}
+	
+	public numeric function getCostDistribution(){
+		if(!isNull(getCostDistributionType())){
+			switch(LCASE(getCostDistributionType())){
+				case "quantity":
+					break;
+				case "cost":
+					break;
+				case "weight":
+					break;
+			}
+			
+		}
 	}
 		
 	public array function getCostDistributionTypeOptions() {

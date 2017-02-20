@@ -62,6 +62,7 @@ Notes:
 	<cfscript>
 		
 		public any function getAverageCost(required any stock){
+			
 			return ORMExecuteQuery(
 				'SELECT COALESCE(AVG(i.cost/i.quantityIn),0)
 				FROM SlatwallInventory i 

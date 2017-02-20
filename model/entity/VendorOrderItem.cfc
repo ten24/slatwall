@@ -52,6 +52,7 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 	property name="vendorOrderItemID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="quantity" ormtype="integer" default=0;
 	property name="cost" ormtype="big_decimal" hb_formatType="currency";
+	property name="shippingWeight" ormtype="big_decimal";
 	property name="currencyCode" ormtype="string" length="3";
 	property name="estimatedReceivalDateTime" ormtype="timestamp";
 
@@ -92,11 +93,9 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 	
 	public numeric function getExtendedWeight() {
 		if(
-			!isNull(getStock())
-			&& !isNull(getStock().getSku())
-			&& !isNull(getStock().getSku().getWeight())
+			!isNull(getShippingWeight())
 		) {
-			return getStock().getSku().getWeight() * getQuantity();
+			return getShippingWeight() * getQuantity();
 		}
 		return 0;
 	}
