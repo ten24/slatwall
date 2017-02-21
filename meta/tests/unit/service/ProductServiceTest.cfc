@@ -137,6 +137,39 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(yetAnotherProduct.getDefaultSku().getRedemptionAmount(),2);
 	}
 
+	public void function saveProductTest_generateVendorSku(){
+		var vendorData={
+			vendorID=""
+		};
+		var vendor = createPersistedTestEntity('Vendor',vendorData);
+		
+		var skuData={
+			skuID="",
+			skuCode='test'&createUUID()
+		};
+		var sku = createPersistedTestEntity('Sku',skuData);
+		
+		var saveProductData = {
+			activeFlag=1,
+			productType={
+				productTypeID='ff8080815a3dc977015a437a216000d2'
+			},
+			productCode='test'&createUUID(),
+			productName="test"&createUUID(),
+			urltitle='test'&createUUID(),
+			vendors=vendor.getVendorID(),
+			usePublicAPI=false
+		};
+		var product = createTestEntity('Product',{
+			skus=[{skuID=sku.getSkuID()}]
+		});
+		product = variables.service.saveProduct(product,saveProductData);
+		persistTestEntity(product,{});
+		assertEquals(arrayLen(product.getVendors()),1);
+		//assert that the vendor sku was created
+		assertEquals(1,arrayLen(product.getVendors()[1].getVendorSkusSmartList().getRecords()));
+	}
+
 	public void function saveProductTest_checkifSkusAreSetToInactive(){
 		var productData = {
 			productID="",

@@ -1034,7 +1034,6 @@ component extends="HibachiService" accessors="true" {
 	// ====================== START: Save Overrides ===========================
 
 	public any function saveProduct(required any product, struct data={}){
-
 		var previousActiveFlag = arguments.product.getActiveFlag();
 
 		if( (isNull(arguments.product.getURLTitle()) || !len(arguments.product.getURLTitle())) && (!structKeyExists(arguments.data, "urlTitle") || !len(arguments.data.urlTitle)) ) {
@@ -1085,6 +1084,17 @@ component extends="HibachiService" accessors="true" {
 			if(!arguments.product.isNew() && previousActiveFlag == 1 && arguments.product.getActiveFlag() == 0){
 				getDao('productDao').setSkusAsInactiveByProduct(arguments.product);
 				arguments.product.setPublishedFlag(false);
+			}
+			for(var vendor in arguments.product.getVendors()){
+				for(var sku in arguments.product.getSkus()){
+					var vendorSku = getService('vendorService').getVendorSkuByVendorAndSku(vendor,sku);
+					if(isNull(vendorSku)){
+						vendorSku = this.newVendorSku();
+					}
+					vendorSku.setSku(sku);
+					vendorSku.setVendor(vendor);
+					this.saveVendorSku(vendorSku);
+				}	
 			}
 		}
 		return arguments.product;

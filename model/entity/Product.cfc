@@ -153,6 +153,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public any function getAverageLandedCost(){
 		return getDao('productDao').getAverageLandedCost(this.getProductID());
 	}
+	
 
 	public any function getAvailableForPurchaseFlag() {
 		if(!structKeyExists(variables, "availableToPurchaseFlag")) {
