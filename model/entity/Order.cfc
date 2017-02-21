@@ -978,11 +978,15 @@ totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(t
  	}
 
 	public boolean function isAllowedToPlaceOrderWithoutPayment(){
-		if(getTotalDepositAmount() > 0){
-			return false;
-		}
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			if(!getOrderItems()[i].getSku().setting("skuAllowPlaceOrderWithoutPaymentIfMinimumPercentageAmountReceivedRequiredIsZero")){
+			if(
+				isNull(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) ||
+				(
+					!isNull(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) &&
+					getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder") > 0
+				)
+			){
+
 				return false;
 			}
 		}

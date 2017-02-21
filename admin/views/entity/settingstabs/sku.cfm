@@ -72,7 +72,6 @@ Notes:
 		<swa:SlatwallSetting settingName="skuOrderMinimumQuantity" />
 		<swa:SlatwallSetting settingName="skuOrderMaximumQuantity" />
 		<swa:SlatwallSetting settingName="skuMinimumPercentageAmountRecievedRequiredToPlaceOrder" />
-        <swa:SlatwallSetting settingName="skuAllowPlaceOrderWithoutPaymentIfMinimumPercentageAmountReceivedRequiredIsZero" />
 		<swa:SlatwallSetting settingName="skuRegistrationApprovalRequiredFlag" />
 		<swa:SlatwallSetting settingName="skuShippingWeight" />
 		<swa:SlatwallSetting settingName="skuShippingWeightUnitCode" />

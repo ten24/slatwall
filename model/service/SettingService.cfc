@@ -306,7 +306,6 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuOrderMinimumQuantity = {fieldType="text", defaultValue=1},
 			skuOrderMaximumQuantity = {fieldType="text", defaultValue=1000},
 			skuMinimumPercentageAmountRecievedRequiredToPlaceOrder = {fieldType="text", formatType="percentage"},
-			skuAllowPlaceOrderWithoutPaymentIfMinimumPercentageAmountReceivedRequiredIsZero = {fieldType="yesno", defaultValue=0},
 			skuQATSIncludesQNROROFlag = {fieldType="yesno", defaultValue=0},
 			skuQATSIncludesQNROVOFlag = {fieldType="yesno", defaultValue=0},
 			skuQATSIncludesQNROSAFlag = {fieldType="yesno", defaultValue=0},
