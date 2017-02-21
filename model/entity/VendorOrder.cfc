@@ -186,7 +186,7 @@ component entityname="SlatwallVendorOrder" table="SwVendorOrder" persistent="tru
 		if(!structKeyExists(variables, "addVendorOrderItemSkuOptionsSmartList")) {
 			variables.addVendorOrderItemSkuOptionsSmartList = getService("skuService").getSkuSmartList();
 			//filter by vendorSkus
-			//variables.addVendorOrderItemSkuOptionsSmartList.addFilter('vendor')
+			variables.addVendorOrderItemSkuOptionsSmartList.addFilter('product.vendors.vendorID',this.getVendorID());
 		}
 		return variables.addVendorOrderItemSkuOptionsSmartList;
 	}
