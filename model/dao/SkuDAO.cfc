@@ -215,6 +215,21 @@ Notes:
 			true
 		);
 	}
+	
+	public numeric function getAveragePriceSold(required string skuID){
+		 
+		//var QDOOForSku = getDao('inventoryDao').getQDOO()
+		
+		return ORMExecuteQuery('
+			SELECT COALESCE(avg(oi.price *),0)
+			FROM SlatwallOrderDeliveryItem odi
+			LEFT JOIN odi.orderItem oi
+			LEFT JOIN oi.sku sku
+			LEFT JOIN odi.orderDelivery od 
+			WHERE sku.skuID = :skuID
+			AND od.
+		',{skuID=arguments.skuID},true);
+	}
 
 	</cfscript>
 

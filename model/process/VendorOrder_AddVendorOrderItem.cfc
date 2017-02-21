@@ -73,7 +73,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		var emptyOption = {name=rbkey('define.none'),value=""};
 		var vendorSkuIDOptions = vendorSkuSmartList.getRecords();
 		arrayPrepend(vendorSkuIDOptions,emptyOption);
-		return vendorSkuIDOptions.getRecords();
+		return vendorSkuIDOptions;
 	}
 	
 	public any function init() {

@@ -181,11 +181,16 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="formattedRedemptionAmount" persistent="false";
 	property name="weight" persistent="false"; 
 	property name="allowWaitlistedRegistrations" persistent="false";
+	property name="averagePriceSold" persistent="false";
 	
 	// Deprecated Properties
 
 
 	// ==================== START: Logical Methods =========================
+	
+	public numeric function getAveragePriceSold(){
+		return getDao('skuDao').getAveragePriceSold(skuID=this.getSkuID());
+	}
 
 	public array function getGiftCardExpirationTermOptions(){
 		if(!structKeyExists(variables,'giftCardExpirationTermIDOptions')){
