@@ -145,6 +145,14 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="livePrice" hb_formatType="currency" persistent="false";
 	property name="salePrice" hb_formatType="currency" persistent="false";
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
+	
+	public any function getAverageCost(){
+		return getDao('productDao').getAverageCost(this.getProductID());
+	}
+	
+	public any function getAverageLandedCost(){
+		return getDao('productDao').getAverageLandedCost(this.getProductID());
+	}
 
 	public any function getAvailableForPurchaseFlag() {
 		if(!structKeyExists(variables, "availableToPurchaseFlag")) {
