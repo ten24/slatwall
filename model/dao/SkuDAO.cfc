@@ -218,17 +218,27 @@ Notes:
 	
 	public numeric function getAveragePriceSold(required string skuID){
 		 
-		//var QDOOForSku = getDao('inventoryDao').getQDOO()
-		
-		return ORMExecuteQuery('
-			SELECT COALESCE(avg(oi.price *),0)
-			FROM SlatwallOrderDeliveryItem odi
-			LEFT JOIN odi.orderItem oi
-			LEFT JOIN oi.sku sku
-			LEFT JOIN odi.orderDelivery od 
-			WHERE sku.skuID = :skuID
-			AND od.
-		',{skuID=arguments.skuID},true);
+		var hql = "SELECT NEW MAP(
+							COALESCE( sum(orderDeliveryItem.quantity), 0 ) as QDOO, 
+							COALESCE( sum(orderDeliveryItem.quantity*orderDeliveryItem.orderItem.price),0) as totalEarned 
+						) 
+						FROM
+							SlatwallOrderDeliveryItem orderDeliveryItem
+						  LEFT JOIN
+					  		orderDeliveryItem.orderItem orderItem
+						WHERE
+							orderDeliveryItem.orderItem.order.orderStatusType.systemCode NOT IN ('ostNotPlaced','ostClosed','ostCanceled')
+						  AND
+						  	orderDeliveryItem.orderItem.orderItemType.systemCode = 'oitSale'
+						  AND 
+							orderDeliveryItem.orderItem.sku.skuID = :skuID
+						";
+		var QDOODetails = ormExecuteQuery(hql, {skuID=arguments.skuID},true);	
+		if(QDOODetails['QDOO']==0){
+			return 0;
+		}
+		var averagePriceSold = getService('hibachiUtilityService').precisionCalculate(QDOODetails['totalEarned']/QDOODetails['QDOO']);
+		return averagePriceSold;
 	}
 
 	</cfscript>
