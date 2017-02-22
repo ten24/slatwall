@@ -55,19 +55,22 @@ Notes:
 			var params = [arguments.productID];
 			
 			var hql = "SELECT NEW MAP(coalesce( sum(inventory.quantityIn), 0 ) - coalesce( sum(inventory.quantityOut), 0 ) as QOH, 
-							inventory.stock.sku.skuID as skuID, 
-							inventory.stock.stockID as stockID, 
-							inventory.stock.location.locationID as locationID, 
-							inventory.stock.location.locationIDPath as locationIDPath)
+							sku.skuID as skuID, 
+							stock.stockID as stockID, 
+							location.locationID as locationID, 
+							location.locationIDPath as locationIDPath)
 						FROM
 							SlatwallInventory inventory
+							LEFT JOIN inventory.stock stock
+							LEFT JOIN stock.sku sku
+							LEFT JOIN stock.location location
 						WHERE
-							inventory.stock.sku.product.productID = ?
+							sku.product.productID = ?
 						GROUP BY
-							inventory.stock.sku.skuID,
-							inventory.stock.stockID,
-							inventory.stock.location.locationID,
-							inventory.stock.location.locationIDPath";
+							sku.skuID,
+							stock.stockID,
+							location.locationID,
+							location.locationIDPath";
 			
 			return ormExecuteQuery(hql, params);
 		}
