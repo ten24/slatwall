@@ -49,6 +49,15 @@ Notes:
 <cfcomponent accessors="true" extends="HibachiDAO">
 	
 	<cfscript>
+		public numeric function getCurrentMargin(required string productID){
+			return ORMExecuteQuery('
+				SELECT COALESCE((COALESCE(sku.price,0) - COALESCE(product.calculatedAverageCost,0)) / COALESCE(sku.price,0),0)
+				FROM SlatwallSku sku
+				LEFT JOIN sku.product product
+				WHERE product.productID=:productID
+			',{productID=arguments.productID},true);
+		}
+		
 		public any function getAverageCost(required string productID){
 				
 			return ORMExecuteQuery(
