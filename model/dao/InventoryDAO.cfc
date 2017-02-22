@@ -50,6 +50,25 @@ Notes:
 	
 	<cfscript>
 		
+		public array function getQOHbyProductTypeID(required string productTypeID){
+			var params = [arguments.productTypeID];
+			var hql = "SELECT NEW MAP(coalesce( sum(inventory.quantityIn), 0 ) - coalesce( sum(inventory.quantityOut), 0 ) as QOH)
+						FROM
+							SlatwallInventory inventory
+							LEFT JOIN inventory.stock stock
+							LEFT JOIN stock.sku sku
+							LEFT JOIN stock.location location
+						WHERE
+							sku.product.productType.productTypeID = ?
+						GROUP BY
+							sku.skuID,
+							stock.stockID,
+							location.locationID,
+							location.locationIDPath";
+
+			return ormExecuteQuery(hql, params);
+		}
+		
 		// Quantity on hand. Physically at any location
 		public array function getQOH(required string productID, string productRemoteID) {
 			var params = [arguments.productID];

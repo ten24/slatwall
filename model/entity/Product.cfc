@@ -710,7 +710,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 		return [];
 	}
-
+	
 	// Quantity
 	public numeric function getQuantity(required string quantityType, string skuID, string locationID, string stockID) {
 
@@ -906,6 +906,10 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 	public numeric function getQATS() {
 		return getQuantity("QATS");
+	}
+	
+	public numeric function getQOH(){
+		return getQuantity("QOH");
 	}
 
 	public numeric function getAllowBackorderFlag() {
