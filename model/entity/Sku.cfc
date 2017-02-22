@@ -191,6 +191,22 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public numeric function getAveragePriceSold(){
 		return getDao('skuDao').getAveragePriceSold(skuID=this.getSkuID());
 	}
+	
+//	public numeric function getTotalIncome(){
+//		return getDao('skuDao').getNetIncome(skuID=this.getSkuID());
+//	}
+//	
+//	public numeric function getTotalSales(){
+//		return getDao('skuDao').getNetIncome(skuID=this.getSkuID());
+//	}
+//	
+//	public numeric function getTotalIncome(){
+//		return getDao('skuDao').getNetIncome(skuID=this.getSkuID());
+//	}
+//	
+//	public numeric function getTotalSales(){
+//		return getDao('skuDao').getNetIncome(skuID=this.getSkuID());
+//	}
 
 	public array function getGiftCardExpirationTermOptions(){
 		if(!structKeyExists(variables,'giftCardExpirationTermIDOptions')){

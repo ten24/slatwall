@@ -216,6 +216,7 @@ Notes:
 		);
 	}
 	
+	
 	public numeric function getAveragePriceSold(required string skuID){
 		 
 		var hql = "SELECT NEW MAP(
