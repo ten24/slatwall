@@ -321,7 +321,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		persistTestEntity(orderDeliveryItem2, orderDeliveryItemData2);
 		
 		var averagePriceSold = variables.dao.getAveragePriceSold(sku.getSkuID());
-		assertEquals(averagePriceSold,6.67,'((2*2)+ (8*7)) /9 )')
+		assertEquals(averagePriceSold,6.67,'((2*2)+ (8*7)) /9 )');
 	}
 	
 	private  void function returnVoid() {
