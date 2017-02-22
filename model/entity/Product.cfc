@@ -180,6 +180,10 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 		return variables.availableToPurchaseFlag;
 	}
+	
+	public numeric function getCurrentAssetValue(){
+		return getQOH() * getAverageCost();
+	}
 
 	public any function getProductTypeOptions( string baseProductType ) {
 		if(!structKeyExists(variables, "productTypeOptions")) {

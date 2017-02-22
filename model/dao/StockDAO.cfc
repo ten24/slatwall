@@ -60,6 +60,14 @@ Notes:
 		
 
 	<cfscript>
+		public numeric function getCurrentMargin(required string stockID){
+			return ORMExecuteQuery("
+				SELECT COALESCE((COALESCE(sku.price,0) - COALESCE(stock.calculatedAverageCost,0)) / COALESCE(sku.price,0),0)
+				FROM SlatwallStock stock
+				LEFT JOIN stock.sku sku
+				WHERE stock.stockID=:stockID
+			",{stockID=arguments.stockID},true);
+		}
 		
 		public numeric function getAverageCost(required string stockID){
 			
