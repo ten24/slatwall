@@ -108,6 +108,10 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 		return getDao('stockDao').getCurrentMargin(this.getStockID());
 	}
 	
+	public numeric function getCurrentLandedMargin(){
+		return getDao('stockDao').getCurrentLandedMargin(this.getStockID());
+	}
+	
 	public numeric function getAverageCost(){
 		return getDao('stockDao').getAverageCost(this.getStockID());
 	}
