@@ -89,6 +89,7 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 
 	// Quantity
 	public numeric function getQuantity(required string quantityType) {
+		
 		if( !structKeyExists(variables, arguments.quantityType) ) {
 			if(listFindNoCase("QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA", arguments.quantityType)) {
 				return getSku().getQuantity(quantityType=arguments.quantityType, stockID=this.getStockID());
@@ -103,12 +104,16 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 
 	// ============ START: Non-Persistent Property Methods =================
 	
-	public any function getAverageCost(){
+	public numeric function getAverageCost(){
 		return getDao('stockDao').getAverageCost(this.getStockID());
 	}
 	
-	public any function getAverageLandedCost(){
+	public numeric function getAverageLandedCost(){
 		return getDao('stockDao').getAverageLandedCost(this.getStockID());
+	}
+	
+	public numeric function getCurrentAssetValue(){
+		return getQOH() * getAverageCost();
 	}
 
 	public any function getQATS() {
@@ -116,6 +121,7 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	}
 
 	public any function getQOH() {
+		
 		return getQuantity("QOH");
 	}
 

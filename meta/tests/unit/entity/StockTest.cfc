@@ -78,4 +78,43 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 	}
 	
+	public void function getCurrentAssetValueTest(){
+		var productData = {
+			productID=""
+		};
+		var product = createPersistedTestEntity('Product',productData);
+		
+		var skuData = {
+			skuID="",
+			product={
+				productID=product.getProductID()
+			}
+		};
+		var sku = createPersistedTestEntity('Sku',skuData);
+		
+		var stockData = {
+			stockID="",
+			sku={
+				skuID=sku.getSkuID()
+			}
+		};
+		var stock = createPersistedTestEntity('Stock',stockData);
+		arrayAppend(sku.getStocks(),stock);
+		
+		var inventoryData = {
+			inventoryID="",
+			cost=25.00,
+			quantityIn=5,
+			stock={
+				stockID=stock.getStockID()
+			}
+		};
+		var inventory = createPersistedTestEntity('inventory',inventoryData);	
+		stock.addInventory(inventory);
+		
+		assertEquals(stock.getQOH(),5);		
+		assertEquals(stock.getAverageCost(),5);
+		assertEquals(stock.getCurrentAssetValue(),25);
+	}
+	
 }

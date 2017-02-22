@@ -61,7 +61,7 @@ Notes:
 
 	<cfscript>
 		
-		public any function getAverageCost(required string stockID){
+		public numeric function getAverageCost(required string stockID){
 			
 			return ORMExecuteQuery(
 				'SELECT COALESCE(AVG(i.cost/i.quantityIn),0)
@@ -74,7 +74,7 @@ Notes:
 			);
 		}
 		
-		public any function getAverageLandedCost(required string stockID){
+		public numeric function getAverageLandedCost(required string stockID){
 			
 			return ORMExecuteQuery(
 				'SELECT COALESCE(AVG(i.landedCost/i.quantityIn),0)
