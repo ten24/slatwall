@@ -216,6 +216,13 @@ Notes:
 		);
 	}
 	
+	public numeric function getCurrentMargin(required string skuID){
+			return ORMExecuteQuery("
+				SELECT COALESCE((COALESCE(sku.price,0) - COALESCE(sku.calculatedAverageCost,0)) / COALESCE(sku.price,0),0)
+				FROM SlatwallSku sku
+				WHERE sku.skuID=:skuID
+			",{skuID=arguments.skuID},true);
+		}
 	
 	public numeric function getAveragePriceSold(required string skuID){
 		 

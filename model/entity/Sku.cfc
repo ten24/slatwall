@@ -211,6 +211,10 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public numeric function getCurrentAssetValue(){
 		return getQOH() * getAverageCost();
 	}
+	
+	public numeric function getCurrentMargin(){
+		return getDao('skuDao').getCurrentMargin(this.getSkuID());
+	}
 
 	public array function getGiftCardExpirationTermOptions(){
 		if(!structKeyExists(variables,'giftCardExpirationTermIDOptions')){
