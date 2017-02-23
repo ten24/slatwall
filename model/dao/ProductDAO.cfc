@@ -65,7 +65,7 @@ Notes:
 				FROM SlatwallInventory i 
 				LEFT JOIN i.stock stock
 				LEFT JOIN stock.sku sku
-				LEFT JOIN sku.proudct product
+				LEFT JOIN sku.product product
 				WHERE product.productID=:productID
 				',
 				{productID=arguments.productID},
