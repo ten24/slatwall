@@ -17,6 +17,7 @@ class SWAddSkuPriceModalLauncherController{
     public listingID:string;  
     public disableAllFieldsButPrice:boolean;
     public currencyCodeOptions; 
+    public saveSuccess:boolean=true; 
     
     //@ngInject
     constructor(
@@ -68,6 +69,7 @@ class SWAddSkuPriceModalLauncherController{
         var savePromise = this.skuPrice.$$save();
         savePromise.then(
             (response)=>{ 
+               this.saveSuccess = true; 
                this.observerService.notify('skuPricesUpdate',{skuID:this.sku.data.skuID,refresh:true});
                 //temporarily overriding for USD need to get this setting accessable to client side
                 if( angular.isDefined(this.listingID) && 
@@ -99,7 +101,6 @@ class SWAddSkuPriceModalLauncherController{
                                     skuPriceForListing["sku_skuCode"] = this.sku.skuCode;
                                     skuPriceForListing["sku_skuDefinition"] = this.sku.skuDefinition;
                                     pageRecords.splice(index+1,0,skuPriceForListing);
-
                                     break; 
                                 }  
                                 index++; 
@@ -110,16 +111,19 @@ class SWAddSkuPriceModalLauncherController{
             },
             (reason)=>{
                 //error callback
+                this.saveSuccess = false; 
             }
         ).finally(()=>{
-            for(var key in this.skuPrice.data){
-                this.skuPrice.data[key] = null;
+            if(this.saveSuccess){
+                for(var key in this.skuPrice.data){
+                    this.skuPrice.data[key] = null;
+                }
+                this.initData();
+                if(firstSkuPriceForSku){
+                    this.listingService.getCollection(this.listingID); 
+                }
+                this.listingService.notifyListingPageRecordsUpdate(this.listingID);
             }
-            this.initData();
-            if(firstSkuPriceForSku){
-                this.listingService.getCollection(this.listingID); 
-            }
-            this.listingService.notifyListingPageRecordsUpdate(this.listingID);
         });
         return savePromise; 
     }
