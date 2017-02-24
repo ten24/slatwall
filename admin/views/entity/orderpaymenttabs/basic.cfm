@@ -25,6 +25,7 @@
 			</cfif>
 		</hb:HibachiPropertyList>
 		<hb:HibachiPropertyList divClass="col-md-6">
+			<hb:HibachiPropertyDisplay object="#rc.orderPayment#" property="purchaseOrderNumber" edit="#rc.edit#"/>
 			<hb:HibachiPropertyDisplay object="#rc.orderPayment#" property="dynamicAmountFlag" edit="false" />
 			<hb:HibachiPropertyDisplay object="#rc.orderPayment#" property="orderPaymentType" />
 			<hb:HibachiPropertyDisplay object="#rc.orderPayment#" property="amount" edit="#rc.edit and not rc.orderPayment.getDynamicAmountFlag()#" />
