@@ -743,12 +743,7 @@ component extends="FW1.framework" {
 	}
 	
 	public string function getServerInstanceIPAddress(){
-		var serverInstanceIPAddress = cgi.remote_addr&":"&cgi.SERVER_PORT;
-		var clientHeaders = GetHttpRequestData().headers;
-		if(structKeyExists(clientHeaders,"X-Forwarded-For")){
-			serverInstanceIPAddress = clientHeaders["X-Forwarded-For"]&':'&clientHeaders["X-Forwarded-Port"];
-		}
-		return serverInstanceIPAddress;
+		return createObject("java", "java.net.InetAddress").localhost.getHostAddress();
 	}
 
 	public void function renderApiResponse(){
