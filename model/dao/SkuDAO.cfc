@@ -59,6 +59,7 @@ Notes:
 			optionSmartList.addSelect('optionGroup.optionGroupName','optionGroupName');
 			optionSmartList.addSelect('optionName','optionName');
 			optionSmartList.addFilter('skus.skuID',arguments.skuID);
+			optionSmartList.addOrder('optionGroup.sortOrder');
 			optionSmartList.setSelectDistinctFlag(true);
 			
 			for(var item in optionSmartList.getRecords()) {
