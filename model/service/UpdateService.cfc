@@ -66,7 +66,7 @@ Notes:
 				variables.paddingCount = 3;
 				variables.conditionLineBreak=variables.lineBreak;
 			}
-			if(lcase(getApplicationValue("lineBreakStyle")) == 'mac'){
+			if(lcase(getApplicationValue("lineBreakStyle")) == 'mac' || lcase(getApplicationValue("lineBreakStyle")) == 'unix'){
 				variables.paddingCount = 3;
 				variables.conditionLineBreak=variables.lineBreak;
 			}
@@ -262,10 +262,8 @@ Notes:
 	</cffunction>
 	<cfscript>
 		 public boolean function updateEntitiesWithCustomProperties(){
-			try{
 				var path = "#ExpandPath('/Slatwall/')#" & "model/entity";
 				var pathCustom = "#ExpandPath('/Slatwall/')#" & "custom/model/entity";
-				var compiledPath = "#ExpandPath('/Slatwall/')#" & "model/entity";
 
 				var directoryList = directoryList(path, false, "path", "*.cfc", "directory ASC");
 				var directoryListByName = directoryList(path, false, "name", "*.cfc", "directory ASC");
@@ -287,16 +285,14 @@ Notes:
 					return true;
 				}
 
-				//iterate over overrides and merge them
-				for (var match in matchArray){
+			//iterate over overrides and merge them
+			for (var match in matchArray) {
+				try {
 					var results = mergeProperties("#match#");
-					filewrite(compiledPath & '/#match#',results);
+					filewrite(path & '/#match#', results);
+				} catch (any e){
+					writeLog(file = "Slatwall", text = "Error reading from the file system while updating properties: #e#!!!!!");
 				}
-				
-				return true;
-			}catch(any e){
-				writeLog(file="Slatwall", text="Error reading from the file system while updating properties: #e#");
-				return false;
 			}
 			return true;
 		}
