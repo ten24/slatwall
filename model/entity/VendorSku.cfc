@@ -84,15 +84,15 @@ component entityname="SlatwallVendorSku" table="SwVendorSku" persistent="true" a
 	// ============ START: Non-Persistent Property Methods =================
 
 	public any function getLastCostCurrencyCode(){
-
+		return getLastVendorOrderItem().getCurrencyCode();
 	}
 
-	public any function getLastCost(){
-
+	public numeric function getLastCost(){
+		return getLastVendorOrderItem().getCost();
 	}
 
-	public any function getQuantity(){
-
+	public numeric function getQuantity(){
+		return getLastVendorOrderItem().getQuantity();
 	}
 
 	// ============  END:  Non-Persistent Property Methods =================

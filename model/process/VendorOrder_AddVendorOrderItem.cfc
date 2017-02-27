@@ -56,25 +56,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	// Data Properties
 	property name="skuID";
-	property name="vendorSkuID" hb_formFieldType="select";
+	property name="vendorSkuCode";
 	property name="price";
 	property name="cost";
 	property name="quantity";
 	property name="shippingWeight";
 	property name="vendorOrderItemTypeSystemCode";
 	property name="deliverToLocationID" hb_formFieldType="select";
-	
-	public array function getVendorSkuIDOptions(){
-		var vendorSkuSmartList = getService('vendorService').getVendorSkuSmartList();
-		vendorSkuSmartList.addSelect('vendor.vendorName','name');
-		vendorSkuSmartList.addSelect('vendorSkuID','value');
-		vendorSkuSmartList.addFilter('sku.skuID',this.getSkuID());
-		
-		var emptyOption = {name=rbkey('define.none'),value=""};
-		var vendorSkuIDOptions = vendorSkuSmartList.getRecords();
-		arrayPrepend(vendorSkuIDOptions,emptyOption);
-		return vendorSkuIDOptions;
-	}
 	
 	public any function init() {
 		return super.init();

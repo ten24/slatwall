@@ -80,6 +80,13 @@ component extends="HibachiDAO" {
 		}
 	}*/
 	
+	public any function getVendorSkuByVendorSkuCode(required string vendorSkuCode){
+		var hql = "	FROM SlatwallVendorSku vs
+					WHERE vs.vendorAlternateSkuCode.alternateSkuCode = :alternateSkuCode
+		";
+		return ORMExecuteQuery(hql,{alternateSkuCode=arguments.vendorSkuCode},true);
+	}
+	
 	public numeric function getQuantityOfStockAlreadyOnOrder(required any vendorOrderID, required any skuID, required any locationID) {
 		var params = [arguments.vendorOrderID, arguments.skuID, arguments.locationID];	
 		var hql = " SELECT new map(

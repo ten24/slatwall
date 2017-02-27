@@ -122,7 +122,7 @@ Notes:
 			<hb:HibachiListingColumn propertyidentifier="extendedCost" />
 			<hb:HibachiListingColumn propertyidentifier="extendedWeight" />
 			<hb:HibachiListingColumn propertyidentifier="estimatedReceivalDateTime" />
-			
+			<hb:HibachiListingColumn propertyidentifier="vendorSku.alternateSkuCode.alternateSkuCode" />
 		</hb:HibachiListingDisplay>
 		
 		<cfif rc.edit and listFindNoCase("vostNew", rc.vendorOrder.getVendorOrderStatusType().getSystemCode())>
@@ -147,7 +147,7 @@ Notes:
 				<hb:HibachiListingColumn processObjectProperty="deliverToLocationID" title="#$.slatwall.rbKey('process.vendorOrder_AddVendorOrderItem.deliverToLocationID')#" fieldClass="span2" value="#rc.vendorOrder.getBillToLocation().getLocationID()#" />
 				<hb:HibachiListingColumn processObjectProperty="quantity" title="#$.slatwall.rbKey('define.quantity')#" fieldClass="span1" />
 				<hb:HibachiListingColumn processObjectProperty="cost" title="#$.slatwall.rbKey('define.cost')#" fieldClass="span1" />
-				<hb:HibachiListingColumn processObjectProperty="vendorSkuID" fieldClass="span1" title="#$.slatwall.rbKey('process.vendorOrder_AddVendorOrderItem.vendorSkuID')#"/>
+				<hb:HibachiListingColumn processObjectProperty="vendorSkuCode" title="#$.slatwall.rbKey('process.vendorOrder_AddVendorOrderItem.vendorSkuCode')#" fieldClass="span1" />
 				
 			</hb:HibachiListingDisplay>
 		</cfif>

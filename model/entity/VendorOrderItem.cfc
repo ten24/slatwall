@@ -60,6 +60,7 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 	property name="vendorOrderItemType" cfc="Type" fieldtype="many-to-one" fkcolumn="vendorOrderItemTypeID" hb_optionsSmartListData="f:parentType.systemCode=vendorOrderItemType";
 	property name="stock" cfc="Stock" fieldtype="many-to-one" fkcolumn="stockID";
 	property name="vendorOrder" cfc="VendorOrder" fieldtype="many-to-one" fkcolumn="vendorOrderID";
+	property name="vendorAlternateSkuCode" cfc="AlternateSkuCode" fieldtype="many-to-one" fkcolumn="vendorAlternateSkuCodeID";
 
 	// Related Object Properties (One-to-Many)
 	property name="stockReceiverItems" singularname="stockReceiverItem" cfc="StockReceiverItem" type="array" fieldtype="one-to-many" fkcolumn="vendorOrderItemID" cascade="all-delete-orphan" inverse="true";

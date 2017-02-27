@@ -100,6 +100,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getVenderOrderDAO().getSkusOrdered(arguments.vendorOrderId);
 	}
 	
+	public any function getVendorSkuByVendorSkuCode(required string vendorSkuCode){
+		return getDao('vendorOrderDao').getVendorSkuByVendorSkuCode(arguments.vendorSkuCode);
+	}
+	
 	// ===================== START: Logical Methods ===========================
 	
 	// =====================  END: Logical Methods ============================
@@ -122,6 +126,31 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newVendorOrderItem.setStock( deliverToLocation );
 		newVendorOrderItem.setQuantity( arguments.processObject.getQuantity() );
 		newVendorOrderItem.setCost( arguments.processObject.getCost() );
+		
+		//if vendor sku code was provided then find existing Vendor Sku or create one
+		if(!isNull(arguments.processObject.getVendorSkuCode())){
+			var vendorSku = getVendorSkuByVendorSkuCode(arguments.processObject.getVendorSkuCode());
+			if(isNull(vendorSku)){
+				vendorSku = this.newVendorSku();
+				vendorSku.setVendor(arguments.vendorOrder.getVendor());
+				vendorSku.setSku(arguments.vendorOrderItem.getStock().getSku());
+				
+				//get alternateSkuCode and if it's new then set it up
+				var alternateSkuCode = getService('skuService').getAlternateSkuCodeByAlternateSkuCode(arguments.processObject.getVendorSkuCode(),true);
+				if(alternateSkuCode.getNewFlag()){
+					alternateSkuCode.setSku(arguments.vendorOrderItem.getStock().getSku());
+					//type of vendor sku
+					var vendorSkuType = getService('TypeService').getType('444df2cad53c6edae52df82f27efe892');
+					alternateSkuCode.alternateSkuCodeType(vendorSkuType);
+				}
+				vendorSku.setAlternateSkuCode(alternateSkuCode);
+				
+			}
+			
+			
+			//set last vendorOrderItem on the vendorSku
+			vendorSku.setLastVendorOrderItem(arguments.vendorOrderItem);
+		}
 		
 		return arguments.vendorOrder;
 	}
