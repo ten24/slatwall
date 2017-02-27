@@ -100,6 +100,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 
+		if(arguments.order.getPaymentAmountTotal() == 0 && arguments.order.isAllowedToPlaceOrderWithoutPayment()){
+			//If is allowed to place order without payment and there is no payment, skip payment order
+			return orderRequirementsList;
+		}
+
 		if(arguments.order.getPaymentAmountTotal() != arguments.order.getTotal()) {
 			orderRequirementsList = listAppend(orderRequirementsList, "payment");
 
@@ -1322,15 +1327,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						arguments.order.setOrderPlacedSite(getHibachiScope().getSite());
 					}
 
-					// If the orderTotal is less than the orderPaymentTotal, then we can look in the data for a "newOrderPayment" record, and if one exists then try to add that orderPayment
-					if(arguments.order.getTotal() != arguments.order.getPaymentAmountTotal()
+					//check if is payment is needed to place order and addPayment
+					if(!arguments.order.isAllowedToPlaceOrderWithoutPayment() ||
+						( arguments.order.isAllowedToPlaceOrderWithoutPayment() && arguments.order.getPaymentAmountTotal() > 0)
+					){
+						// If the orderTotal is less than the orderPaymentTotal, then we can look in the data for a "newOrderPayment" record, and if one exists then try to add that orderPayment
+						if (arguments.order.getTotal() != arguments.order.getPaymentAmountTotal()
 						|| (
 							arguments.order.hasSavableOrderPaymentAndSubscriptionWithAutoPay()
 							&& !arguments.order.hasSavedAccountPaymentMethod()
 						)
-					) {
-						arguments.order = this.processOrder(arguments.order, arguments.data, 'addOrderPayment');
+						) {
+							arguments.order = this.processOrder(arguments.order, arguments.data, 'addOrderPayment');
+						}
 					}
+
+
 
 					if(!arguments.order.hasSavedAccountPaymentMethod() && arguments.order.hasSubscriptionWithAutoPay()){
 						arguments.order.addError('placeOrder',rbKey('entity.order.process.placeOrder.hasSubscriptionWithAutoPayFlagWithoutOrderPaymentWithAccountPaymentMethod_info'));
@@ -1402,7 +1414,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						}
 
 						// After all of the processing, double check that the order does not have errors.  If one of the payments didn't go through, then an error would have been set on the order.
-						if((!arguments.order.hasErrors() || amountAuthorizeCreditReceive gt 0) && arguments.order.getOrderPaymentAmountNeeded() == 0) {
+						if((!arguments.order.hasErrors() || amountAuthorizeCreditReceive gt 0) && (arguments.order.getOrderPaymentAmountNeeded() == 0 || (arguments.order.getPaymentAmountTotal() == 0 && arguments.order.isAllowedToPlaceOrderWithoutPayment()))) {
 
 							if(arguments.order.hasErrors()) {
 								arguments.order.addMessage('paymentProcessedMessage', rbKey('entity.order.process.placeOrder.paymentProcessedMessage'));

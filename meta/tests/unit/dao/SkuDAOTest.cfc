@@ -72,6 +72,60 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 	}
 	
+	public void function getSkuDefinitionForMerchandiseBySkuIDTest(){
+		var skuData = {
+			skuID=""
+		};
+		var sku = createPersistedTestEntity('Sku',skuData);
+		
+		var optionGroupData={
+			optionGroupID="",
+			optionGroupName='optionGroupNameb'&createUUID()
+		};
+		var optionGroup = createPersistedTestEntity('OptionGroup',optionGroupData);
+		optionGroup.setSortOrder(7);
+		
+		var optionGroupData2={
+			optionGroupID="",
+			optionGroupName='optionGroupNamea'&createUUID()
+		};
+		var optionGroup2 = createPersistedTestEntity('OptionGroup',optionGroupData2);
+		optionGroup2.setSortOrder(8);
+		var optionData = {
+			optionID="",
+			optionName="optionName"&createUUID(),
+			skus=[{
+				skuID=sku.getSkuID()
+			}],
+			optionGroup={
+				optionGroupID=optionGroup.getOptionGroupID()
+			}
+		};
+		var option = createPersistedTestEntity('option',optionData);
+		
+		var optionData2 = {
+			optionID="",
+			optionName="optionNamec"&createUUID(),
+			skus=[{
+				skuID=sku.getSkuID()
+			}],
+			optionGroup={
+				optionGroupID=optionGroup2.getOptionGroupID()
+			}
+		};
+		var option2 = createPersistedTestEntity('option',optionData2);
+		
+		var skuDefinition = variables.dao.getSkuDefinitionForMerchandiseBySkuID(sku.getSkuID());
+		
+		assertEquals(trim(skuDefinition),'#optionGroup.getOptionGroupName()#: #option.getOptionName()#, #optionGroup2.getOptionGroupName()#: #option2.getOptionName()#');
+		optionGroup2.setSortOrder(1);
+		persistTestEntity(optionGroup2,{});
+		
+		var skuDefinition2 = variables.dao.getSkuDefinitionForMerchandiseBySkuID(sku.getSkuID());
+		assertEquals(trim(skuDefinition2),'#optionGroup2.getOptionGroupName()#: #option2.getOptionName()#, #optionGroup.getOptionGroupName()#: #option.getOptionName()#');
+		
+	}
+	
 	public void function getTransactionExistsFlagTest_Arguments() {
 		//Testing the flag without any where-exists in hql
 		var mockSku1 = createMockSku();

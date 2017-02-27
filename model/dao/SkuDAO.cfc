@@ -55,14 +55,12 @@ Notes:
 		
 		<cfscript>
 			var skuDefinition = "";
-			var optionSmartList = getService('optionService').getOptionSmartList();
-			optionSmartList.addSelect('optionGroup.optionGroupName','optionGroupName');
-			optionSmartList.addSelect('optionName','optionName');
-			optionSmartList.addFilter('skus.skuID',arguments.skuID);
-			optionSmartList.setSelectDistinctFlag(true);
-			
-			for(var item in optionSmartList.getRecords()) {
-				skuDefinition = listAppend(skuDefinition, " #item['optionGroupName']#: #item['optionName']#", ",");
+			var optionCollectionList = getService('optionService').getOptionCollectionList();
+			optionCollectionList.setDisplayProperties('optionGroup.optionGroupName,optionName,optionGroup.sortOrder');
+			optionCollectionList.addFilter('skus.skuID',arguments.skuID);
+			optionCollectionList.setOrderBy('optionGroup.sortOrder');
+			for(var item in optionCollectionList.getRecords()) {
+				skuDefinition = listAppend(skuDefinition, " #item['optionGroup_optionGroupName']#: #item['optionName']#", ",");
 			}
 			
 			return skuDefinition;

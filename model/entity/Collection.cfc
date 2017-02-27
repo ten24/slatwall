@@ -2051,7 +2051,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	){
 		var HQL = "";
 		var collectionConfig = arguments.collectionObject.getCollectionConfigStruct();
-
+ 
 
 		if(!isNull(collectionConfig.baseEntityName)){
 			var selectHQL = "";

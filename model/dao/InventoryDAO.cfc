@@ -49,7 +49,7 @@ Notes:
 <cfcomponent extends="HibachiDAO">
 	
 	<cfscript>
-		
+		 
 		public array function getQOHbyProductTypeID(required string productTypeID){
 			var params = [arguments.productTypeID];
 			var hql = "SELECT NEW MAP(coalesce( sum(inventory.quantityIn), 0 ) - coalesce( sum(inventory.quantityOut), 0 ) as QOH)
