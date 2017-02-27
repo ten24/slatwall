@@ -128,7 +128,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newVendorOrderItem.setCost( arguments.processObject.getCost() );
 		
 		//if vendor sku code was provided then find existing Vendor Sku or create one
-		if(!isNull(arguments.processObject.getVendorSkuCode())){
+		if(!isNull(arguments.processObject.getVendorSkuCode()) && len(arguments.processObject.getVendorSkuCode())){
 			var vendorSku = getVendorSkuByVendorSkuCode(arguments.processObject.getVendorSkuCode());
 			if(isNull(vendorSku)){
 				vendorSku = this.newVendorSku();
