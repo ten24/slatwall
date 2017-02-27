@@ -53,6 +53,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	// Injected From Smart List
 	property name="sku";
+	property name="vendorSku";
 
 	// Data Properties
 	property name="skuID";
@@ -75,6 +76,28 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return variables.sku;
 	}
 	
+	public any function getVendorSkuCode(){
+		if(!structKeyExists(variables,'vendorSkuCode')){
+			variables.vendorSkuCode = "";
+			if(!isNull(getVendorSku()) && !isNull(getVendorSku().getAlternateSkuCode())){
+				variables.vendorSkuCode = getVendorSku().getAlternateSkuCode().getAlternateSkuCode();	
+			}
+		}
+		return variables.vendorSkuCode;
+	}
+	
+	public any function getVendorSku(){
+		if(!structKeyExists(variables,'vendorSku')){
+			if(!isNull(getSku())){
+				variables.vendorSku = getService('vendorOrderService').getVendorSkuBySku(getSku());
+			}
+		}
+		if(!structKeyExists(variables,'vendorSku')){
+			return javacast('null','');
+		}
+		return variables.vendorSku;
+	}
+	
 	public any function getPrice() {
 		if(!structKeyExists(variables, "price")) {
 			variables.price = 0;
@@ -88,6 +111,9 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	public any function getCost() {
 		if(!structKeyExists(variables, "cost")) {
 			variables.cost = 0;
+			if(!isNull(getVendorSku()) && !isNull(getVendorSku().getLastVendorOrderItem())){
+				variables.cost = getVendorSku().getLastVendorOrderItem().getCost();
+			}
 		}
 		return variables.cost;
 	}
@@ -96,6 +122,9 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	public any function getQuantity() {
 		if(!structKeyExists(variables, "quantity")) {
 			variables.quantity = 1;
+			if(!isNull(getVendorSku()) && !isNull(getVendorSku().getLastVendorOrderItem())){
+				variables.quantity = getVendorSku().getLastVendorOrderItem().getQuantity();
+			}
 		}
 		return variables.quantity;
 	}
