@@ -379,14 +379,41 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 
 		var propertyIdentifier = listFirst(arguments.orderByString,'|');
+		
 		var direction = 'ASC';
 		if(listLen(arguments.orderByString,"|") > 1){
 			direction = listLast(arguments.orderByString,'|');	
 		}
-		
+
+		if(left(propertyIdentifier, 1) == '_'){
+			_propertyIdentifier = propertyIdentifier;
+		} else {
+
+			var alias = collectionConfig.baseEntityAlias;
+			var _propertyIdentifier = '';
+			var propertyIdentifierParts = ListToArray(propertyIdentifier, '.');
+			var current_object = getService('hibachiService').getPropertiesStructByEntityName(getCollectionObject());
+
+			for (var i = 1; i <= arraylen(propertyIdentifierParts); i++) {
+				if (structKeyExists(current_object, propertyIdentifierParts[i]) && structKeyExists(current_object[propertyIdentifierParts[i]], 'cfc')) {
+					if (structKeyExists(current_object[propertyIdentifierParts[i]], 'singularname')) {
+						setHasManyRelationFilter(true);
+					}
+					current_object = getService('hibachiService').getPropertiesStructByEntityName(current_object[propertyIdentifierParts[i]]['cfc']);
+					_propertyIdentifier &= '_' & propertyIdentifierParts[i];
+					addJoin({
+						'associationName' = RemoveChars(rereplace(_propertyIdentifier, '_([^_]+)$', '.\1'), 1, 1),
+						'alias' = alias & _propertyIdentifier
+					});
+				} else {
+					_propertyIdentifier &= '.' & propertyIdentifierParts[i];
+				}
+			}
+			_propertyIdentifier = alias & _propertyIdentifier;
+		}
 
 		var orderBy = {
-			"propertyIdentifier"=propertyIdentifier,
+			"propertyIdentifier"= _propertyIdentifier,
 			"direction"=direction
 		};
 
@@ -1144,6 +1171,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return variables.nonPersistentColumn;
 	}
 
+	public string function convertPropertyIdentifierToAlias(required string propertyIdentifier){
+		if(left(arguments.propertyIdentifier,1) == '_'){
+			arguments.propertyIdentifier = listRest(arguments.propertyIdentifier,'.');
+		}
+		return Replace(arguments.propertyIdentifier,'.','_','all');
+	}
+		
+
 	// Paging Methods
 	public array function getPageRecords(boolean refresh=false, formatRecords=true) {
 
@@ -1172,9 +1207,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 								var listRest = ListRest(column.propertyIdentifier,'.');
 								if(structKeyExists(column,'setting') && column.setting == true){
 									var listRest = ListRest(column.propertyIdentifier,'.');
-									pageRecord[Replace(listRest(column.propertyIdentifier,'.'),'.','_','all')] = getSettingValueFormattedByPropertyIdentifier(listRest,entity);
+										pageRecord[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = getSettingValueFormattedByPropertyIdentifier(listRest,entity);
 								}else{
-									pageRecord[Replace(listRest(column.propertyIdentifier,'.'),'.','_','all')] = entity.getValueByPropertyIdentifier(listRest);
+										pageRecord[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = entity.getValueByPropertyIdentifier(listRest);
 								}
 							}
 							arrayAppend(variables.pageRecords,pageRecord);
