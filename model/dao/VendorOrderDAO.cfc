@@ -82,7 +82,7 @@ component extends="HibachiDAO" {
 	
 	public any function getVendorSkuByVendorSkuCode(required string vendorSkuCode){
 		var hql = "	FROM SlatwallVendorSku vs
-					WHERE vs.vendorAlternateSkuCode.alternateSkuCode = :alternateSkuCode
+					WHERE vs.alternateSkuCode.alternateSkuCode = :alternateSkuCode
 		";
 		return ORMExecuteQuery(hql,{alternateSkuCode=arguments.vendorSkuCode},true);
 	}

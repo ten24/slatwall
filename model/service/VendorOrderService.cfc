@@ -133,24 +133,30 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(isNull(vendorSku)){
 				vendorSku = this.newVendorSku();
 				vendorSku.setVendor(arguments.vendorOrder.getVendor());
-				vendorSku.setSku(arguments.vendorOrderItem.getStock().getSku());
+				vendorSku.setSku(arguments.processObject.getSku());
 				
 				//get alternateSkuCode and if it's new then set it up
 				var alternateSkuCode = getService('skuService').getAlternateSkuCodeByAlternateSkuCode(arguments.processObject.getVendorSkuCode(),true);
 				if(alternateSkuCode.getNewFlag()){
-					alternateSkuCode.setSku(arguments.vendorOrderItem.getStock().getSku());
+					alternateSkuCode.setSku(arguments.processObject.getSku());
 					//type of vendor sku
 					var vendorSkuType = getService('TypeService').getType('444df2cad53c6edae52df82f27efe892');
-					alternateSkuCode.alternateSkuCodeType(vendorSkuType);
+					alternateSkuCode.setAlternateSkuCodeType(vendorSkuType);
+					alternateSkuCode.setAlternateSkuCode(arguments.processObject.getVendorSkuCode());
+					getService('skuService').saveAlternateSkuCode(alternateSkuCode);
 				}
 				vendorSku.setAlternateSkuCode(alternateSkuCode);
 				
 			}
-			
-			
 			//set last vendorOrderItem on the vendorSku
-			vendorSku.setLastVendorOrderItem(arguments.vendorOrderItem);
+			vendorSku.setLastVendorOrderItem(newVendorOrderItem);
+			newVendorOrderItem.setVendorAlternateSkuCode(vendorSku.getAlternateSkuCode());
+			this.saveVendorSku(vendorSku);
 		}
+		
+		newVendorOrderItem.setVendorOrder(arguments.vendorOrder);
+		
+		this.saveVendorOrderItem(newVendorOrderItem);
 		
 		return arguments.vendorOrder;
 	}

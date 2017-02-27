@@ -122,7 +122,7 @@ Notes:
 			<hb:HibachiListingColumn propertyidentifier="extendedCost" />
 			<hb:HibachiListingColumn propertyidentifier="extendedWeight" />
 			<hb:HibachiListingColumn propertyidentifier="estimatedReceivalDateTime" />
-			<hb:HibachiListingColumn propertyidentifier="vendorSku.alternateSkuCode.alternateSkuCode" />
+			<hb:HibachiListingColumn propertyidentifier="vendorAlternateSkuCode.alternateSkuCode" />
 		</hb:HibachiListingDisplay>
 		
 		<cfif rc.edit and listFindNoCase("vostNew", rc.vendorOrder.getVendorOrderStatusType().getSystemCode())>
