@@ -105,6 +105,7 @@ Notes:
 				<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/shippingMethods" />
 				<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/shippingAddressZones" />
 			</cfif>
+			<hb:HibachiEntityDetailItem property="eligiblePriceGroups" />
 		</hb:HibachiEntityDetailGroup>
 
 	</hb:HibachiEntityDetailForm>
