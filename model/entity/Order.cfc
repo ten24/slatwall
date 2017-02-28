@@ -1390,15 +1390,6 @@ totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(t
 		return hasSubscriptionWithAutoPay;
 	}
 
-	public boolean function hasSubscription(){
-		for (var orderItem in getOrderItems()){
-			if (orderItem.getSku().getBaseProductType() == "subscription"){
-				return true; 
-			}
-		}
-		return false; 
-	}
-
 	public boolean function hasSavableOrderPaymentAndSubscriptionWithAutoPay(){
 		return this.hasSubscriptionWithAutoPay() && this.hasOrderPaymentWithSavablePaymentMethod();
 	}
