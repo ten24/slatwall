@@ -95,8 +95,19 @@ component entityname="SlatwallLedgerAccount" table="SwLedgerAccount" persistent=
 	}
 	
 	public string function getInventoryProperty(){
-		var caseInsensitiveInventoryProperty = right(this.getLedgerAccountType().getSystemCode(),len(this.getLedgerAccountType().getSystemCode())-3) & 'LedgerAccount';
-		return getService('hibachiService').getPropertyByEntityNameAndPropertyName('Inventory',caseInsensitiveInventoryProperty).name; 
+		var inventoryProperty = "";
+		var systemCode = this.getLedgerAccountType().getSystemCode();
+		switch(systemCode){
+			case 'latAsset':
+				inventoryProperty = 'inventoryLedgerAccount';
+				break;
+			default:
+				var caseInsensitiveInventoryProperty = right(systemCode,len(this.getLedgerAccountType().getSystemCode())-3) & 'LedgerAccount';
+				inventoryProperty = getService('hibachiService').getPropertyByEntityNameAndPropertyName('Inventory',caseInsensitiveInventoryProperty).name;	
+				break;
+		}
+		
+		return inventoryProperty; 
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================

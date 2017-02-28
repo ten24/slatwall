@@ -66,15 +66,17 @@ Notes:
 
 	</hb:HibachiEntityDetailForm>
 	<!--- ledger account inventory listing --->
-	<hb:HibachiListingDisplay smartList="#rc.ledgerAccount.getInventorySmartList()#"
-	>
-		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
-        <hb:HibachiListingColumn propertyIdentifier="quantityIN" />
-        <hb:HibachiListingColumn propertyIdentifier="quantityOUT" />
-        <hb:HibachiListingColumn propertyIdentifier="stockReceiverItem.stockReceiverItemID" />
-        <hb:HibachiListingColumn propertyIdentifier="orderDeliveryItem.orderItem.order.orderNumber" />
-        <hb:HibachiListingColumn propertyIdentifier="stockAdjustmentDeliveryItem.stockAdjustmentItem.stockAdjustment.stockAdjustmentID" />
-		
-	</hb:HibachiListingDisplay>
+	<cfif ListFindNoCase('latAsset,latExpense,latRevenue,latCogs',rc.ledgerAccount.getLedgerAccountType().getSystemCode())>
+		<hb:HibachiListingDisplay smartList="#rc.ledgerAccount.getInventorySmartList()#"
+		>
+			<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
+	        <hb:HibachiListingColumn propertyIdentifier="quantityIN" />
+	        <hb:HibachiListingColumn propertyIdentifier="quantityOUT" />
+	        <hb:HibachiListingColumn propertyIdentifier="stockReceiverItem.stockReceiverItemID" />
+	        <hb:HibachiListingColumn propertyIdentifier="orderDeliveryItem.orderItem.order.orderNumber" />
+	        <hb:HibachiListingColumn propertyIdentifier="stockAdjustmentDeliveryItem.stockAdjustmentItem.stockAdjustment.stockAdjustmentID" />
+			
+		</hb:HibachiListingDisplay>
+    </cfif>
 
 </cfoutput>
