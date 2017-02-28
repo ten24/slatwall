@@ -187,26 +187,15 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 
 	// ==================== START: Logical Methods =========================
+	public any function getVendorSkusSmartList(){
+		var vendorSkuSmartList = getService('VendorOrderService').getVendorSkuSmartList();
+		vendorSkuSmartList.addFilter('sku.skuID',this.getSkuID());
+		return vendorSkuSmartList;
+	}
 	
 	public numeric function getAveragePriceSold(){
 		return getDao('skuDao').getAveragePriceSold(skuID=this.getSkuID());
 	}
-	
-//	public numeric function getTotalIncome(){
-//		return getDao('skuDao').getNetIncome(skuID=this.getSkuID());
-//	}
-//	
-//	public numeric function getTotalSales(){
-//		return getDao('skuDao').getNetIncome(skuID=this.getSkuID());
-//	}
-//	
-//	public numeric function getTotalIncome(){
-//		return getDao('skuDao').getNetIncome(skuID=this.getSkuID());
-//	}
-//	
-//	public numeric function getTotalSales(){
-//		return getDao('skuDao').getNetIncome(skuID=this.getSkuID());
-//	}
 
 	public numeric function getCurrentAssetValue(){
 		return getQOH() * getAverageCost();
