@@ -81,7 +81,7 @@ Notes:
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROSAFlag" />
 		<swa:SlatwallSetting settingName="skuTaxCategory" />
 		<swa:SlatwallSetting settingName="skuShippingCostExempt" />
-		
+		<swa:SlatwallSetting settingName="skuExpenseLedgerAccount"/>
 		<swa:SlatwallSetting settingName="skuRevenueLedgerAccount"/>
 		<swa:SlatwallSetting settingName="skuCogsLedgerAccount"/>
 		<swa:SlatwallSetting settingName="skuAssetLedgerAccount"/>

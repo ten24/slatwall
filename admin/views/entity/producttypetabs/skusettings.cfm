@@ -78,6 +78,7 @@ Notes:
 			<swa:SlatwallSetting settingName="skuEventEnforceConflicts" settingObject="#rc.productType#" />
 		</cfif>
 		<cfif rc.productType.getBaseProductType() neq "gift-card">
+			<swa:SlatwallSetting settingName="skuExpenseLedgerAccount" settingObject="#rc.productType#"/>
 			<swa:SlatwallSetting settingName="skuRevenueLedgerAccount" settingObject="#rc.productType#"/>
 			<swa:SlatwallSetting settingName="skuCogsLedgerAccount" settingObject="#rc.productType#"/>
 			<swa:SlatwallSetting settingName="skuAssetLedgerAccount" settingObject="#rc.productType#"/>

@@ -335,6 +335,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuAssetLedgerAccount = {fieldType="select", defaultValue=""},
 			skuLiabilityLedgerAccount = {fieldType="select", defaultValue=""},
 			skuDeferredRevenueLedgerAccount = {fieldType="select", defaultValue=""},
+			skuExpenseLedgerAccount = {fieldType="select", defaultValue=""},
 
 			// Subscription Term
 			subscriptionUsageAutoRetryPaymentDays = {fieldType="text", defaultValue=""},
@@ -517,6 +518,9 @@ component extends="HibachiService" output="false" accessors="true" {
 				var optionsSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latLiability');
 			case "skuDeferredRevenueLedgerAccount":
 				var optionsSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latLiability');
+				return optionsSL.getRecords();
+			case "skuExpenseLedgerAccount":
+				var optionsSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latExpense');
 				return optionsSL.getRecords();
 			case "subscriptionUsageRenewalReminderEmailTemplate":
 				return getEmailService().getEmailTemplateOptions( "SubscriptionUsage" );

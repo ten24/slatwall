@@ -83,6 +83,7 @@ Notes:
 	</cfif>
 	
 	<cfif rc.product.getProductType().getBaseProductType() neq "gift-card">
+		<swa:SlatwallSetting settingName="skuExpenseLedgerAccount" settingObject="#rc.product#"/>
 		<swa:SlatwallSetting settingName="skuRevenueLedgerAccount" settingObject="#rc.product#"/>
 		<swa:SlatwallSetting settingName="skuCogsLedgerAccount" settingObject="#rc.product#"/>
 		<swa:SlatwallSetting settingName="skuAssetLedgerAccount" settingObject="#rc.product#"/>
