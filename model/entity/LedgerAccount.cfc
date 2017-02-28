@@ -74,6 +74,31 @@ component entityname="SlatwallLedgerAccount" table="SwLedgerAccount" persistent=
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
+	public any function getInventorySmartList(){
+	/*
+		systemCode="latAsset"
+		systemCode="latCogs"
+		systemCode="latExpense"
+		systemCode="latRevenue"
+		systemCode="latLiability" 
+		
+		property name="cogsLedgerAccount" cfc="LedgerAccount" fieldtype="many-to-one" fkcolumn="cogsLedgerAccountID";
+		property name="expensesLedgerAccount" cfc="LedgerAccount" fieldtype="many-to-one" fkcolumn="expensesLedgerAccountID";
+		property name="inventoryLedgerAccount" cfc="LedgerAccount" fieldtype="many-to-one" fkcolumn="inventoryLedgerAccountID";
+		property name="revenueLedgerAccount" cfc="LedgerAccount" fieldtype="many-to-one" fkcolumn="revenueLedgerAccountID";
+	*/		
+		var inventorySmartlist = getService('inventoryService').getInventorySmartList();
+		
+		inventorySmartlist.addFilter(getInventoryProperty()&'.ledgerAccountID',this.getLedgerAccountID());
+		
+		return inventorySmartList;
+	}
+	
+	public string function getInventoryProperty(){
+		var caseInsensitiveInventoryProperty = right(this.getLedgerAccountType().getSystemCode(),len(this.getLedgerAccountType().getSystemCode())-3) & 'LedgerAccount';
+		return getService('hibachiService').getPropertyByEntityNameAndPropertyName('Inventory',caseInsensitiveInventoryProperty).name; 
+	}
+	
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================

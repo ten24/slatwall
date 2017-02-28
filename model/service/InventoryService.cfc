@@ -74,6 +74,10 @@ component extends="HibachiService" accessors="true" output="false" {
 				inventory.setCost(arguments.stockReceiverItem.getCost());
 				inventory.setLandedCost(arguments.stockReceiverItem.getLandedCost());
 				inventory.setLandedAmount(arguments.stockReceiverItem.getLandedAmount());
+				if(arguments.entity.getStock().getSku().getProduct().getProductType().getSystemCode() != 'gift-card'){
+					//set the cogs ledger account 
+					inventory.setCogsLedgerAccount(arguments.entity.getStock.getSku().setting('skuCogsLedgerAccount'));
+				}
 			}
 			
 			//calculate Landed Cost
@@ -111,6 +115,13 @@ component extends="HibachiService" accessors="true" output="false" {
 					inventory.setQuantityOut( arguments.entity.getQuantity() );
 					inventory.setStock( arguments.entity.getStock() );
 					inventory.setOrderDeliveryItem( arguments.entity );
+					
+					if(arguments.entity.getStock().getSku().getProduct().getProductType().getSystemCode() != 'gift-card'){
+						//set the revenue ledger account 
+						inventory.setRevenueLedgerAccount(arguments.entity.getStock.getSku().setting('skuRevenueLedgerAccount'));
+					}
+					
+					
 					getHibachiDAO().save( inventory );	
 					
 				}
@@ -122,6 +133,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					inventory.setQuantityOut(arguments.entity.getQuantity());
 					inventory.setStock(arguments.entity.getStock());
 					inventory.setVendorOrderDeliveryItem(arguments.entity);
+					
 					getHibachiDAO().save( inventory );
 				}
 				break;
@@ -132,6 +144,10 @@ component extends="HibachiService" accessors="true" output="false" {
 					inventory.setQuantityOut(arguments.entity.getQuantity());
 					inventory.setStock(arguments.entity.getStock());
 					inventory.setStockAdjustmentDeliveryItem(arguments.entity);
+					if(arguments.entity.getStock().getSku().getProduct().getProductType().getSystemCode() != 'gift-card'){
+						//set the inventory ledger account 
+						inventory.setInventoryLedgerAccount(arguments.entity.getStock.getSku().setting('skuInventoryLedgerAccount'));
+					}
 					getHibachiDAO().save( inventory );
 				}
 				break;
