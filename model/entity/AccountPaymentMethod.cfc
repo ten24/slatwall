@@ -260,6 +260,15 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		}
 	}
 
+	public boolean function hasNoSubscriptionUsageOrders() { 
+		for(var orderPayment in this.getOrderPayments()){
+			if(orderPayment.getOrder().hasSubscription()){
+				return false; 
+			} 
+		} 
+		return true; 
+	} 
+
 	public boolean function hasOnlyGenerateTokenTransactions() {
 		return getDAO("paymentDAO").getAccountPaymentMethodNonGenerateTokenTransactionCount( accountPaymentMethodID = this.getAccountPaymentMethodID() ) eq 0;
 	}
