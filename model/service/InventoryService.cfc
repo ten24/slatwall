@@ -76,7 +76,8 @@ component extends="HibachiService" accessors="true" output="false" {
 				inventory.setLandedAmount(arguments.stockReceiverItem.getLandedAmount());
 				if(arguments.entity.getStock().getSku().getProduct().getProductType().getSystemCode() != 'gift-card'){
 					//set the cogs ledger account 
-					inventory.setCogsLedgerAccount(arguments.entity.getStock.getSku().setting('skuCogsLedgerAccount'));
+					var cogsLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.entity.getStock().getSku().setting('skuCogsLedgerAccount'));
+					inventory.setCogsLedgerAccount(cogsLedgerAccount);
 				}
 			}
 			
@@ -118,7 +119,8 @@ component extends="HibachiService" accessors="true" output="false" {
 					
 					if(arguments.entity.getStock().getSku().getProduct().getProductType().getSystemCode() != 'gift-card'){
 						//set the revenue ledger account 
-						inventory.setRevenueLedgerAccount(arguments.entity.getStock.getSku().setting('skuRevenueLedgerAccount'));
+						var revenueLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.entity.getStock().getSku().setting('skuRevenueLedgerAccount'));
+						inventory.setRevenueLedgerAccount(revenueLedgerAccount);
 					}
 					
 					
@@ -146,7 +148,8 @@ component extends="HibachiService" accessors="true" output="false" {
 					inventory.setStockAdjustmentDeliveryItem(arguments.entity);
 					if(arguments.entity.getStock().getSku().getProduct().getProductType().getSystemCode() != 'gift-card'){
 						//set the inventory ledger account 
-						inventory.setInventoryLedgerAccount(arguments.entity.getStock.getSku().setting('skuInventoryLedgerAccount'));
+						var inventoryLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.entity.getStock().getSku().setting('skuInventoryLedgerAccount'));
+						inventory.setInventoryLedgerAccount(inventoryLedgerAccount);
 					}
 					getHibachiDAO().save( inventory );
 				}
