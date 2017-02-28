@@ -82,17 +82,29 @@ component entityname="SlatwallVendorOrder" table="SwVendorOrder" persistent="tru
 	property name="subTotal" persistent="false" hb_formatType="currency";
 	property name="total" persistent="false" hb_formatType="currency"; 
 	property name="costDistributionTypeOptions" persistent="false";
+	property name="totalCost" persistent="false" hb_formatType="currency"; 
+	property name="totalQuantity" persistent="false" hb_formatType="currency"; 
+	property name="totalWeight" persistent="false" hb_formatType="currency"; 
 	
 	public numeric function getTotalQuantity(){
-		return getDao('VendorOrderDao').getTotalQuantity(this);
+		if(!structKeyExists(variables,'totalQuantity')){
+			variables.totalQuantity = getDao('VendorOrderDao').getTotalQuantity(this);
+		}
+		return variables.totalQuantity;
 	}
 	
 	public numeric function getTotalWeight(){
-		return getDao('VendorOrderDao').getTotalWeight(this);
+		if(!structKeyExists(variables,'totalWeight')){
+			variables.totalWeight = getDao('VendorOrderDao').getTotalWeight(this);
+		}
+		return variables.totalWeight;
 	}
 	
 	public numeric function getTotalCost(){
-		return getDao('VendorOrderDao').getTotalCost(this);
+		if(!structKeyExists(variables,'totalCost')){
+			variables.totalCost = getDao('VendorOrderDao').getTotalCost(this);
+		}
+		return variables.totalCost;
 	}
 	
 	public array function getCostDistributionTypeOptions() {

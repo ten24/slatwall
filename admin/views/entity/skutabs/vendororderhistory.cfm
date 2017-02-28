@@ -58,12 +58,18 @@ Notes:
 			recorddetailaction="admin:entity.detailvendororderitem">
 		<hb:HibachiListingColumn propertyIdentifier="vendorOrder.vendor.vendorName" />
 		<hb:HibachiListingColumn propertyIdentifier="vendorOrder.vendor.accountNumber" />
+		<hb:HibachiListingColumn propertyIdentifier="vendorOrder.createdDateTime" />
+		<hb:HibachiListingColumn propertyIdentifier="vendorOrder.estimatedReceivalDateTime" />
 		<hb:HibachiListingColumn propertyIdentifier="vendorOrder.vendorOrderNumber" />
 		<hb:HibachiListingColumn propertyIdentifier="vendorOrder.vendorOrderStatusType.typeName" />
 		<hb:HibachiListingColumn propertyIdentifier="vendorOrder.billToLocation.locationName" />
 		<hb:HibachiListingColumn propertyIdentifier="stock.sku.product.productName" />
 		<hb:HibachiListingColumn propertyIdentifier="stock.sku.skuCode" />
 		<hb:HibachiListingColumn propertyIdentifier="stock.sku.skudefinition" />
+		<hb:HibachiListingColumn propertyIdentifier="quantityReceived" />
+		<hb:HibachiListingColumn propertyIdentifier="quantityUnReceived" />
+		<hb:HibachiListingColumn propertyIdentifier="vendorOrder.totalCost" />
+		
 	</hb:HibachiListingDisplay>
 
 </cfoutput>
