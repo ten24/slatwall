@@ -62,6 +62,19 @@ Notes:
 			<hb:HibachiEntityDetailItem view="admin:entity/ledgeraccounttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
 
 		</hb:HibachiEntityDetailGroup>
+		
 
 	</hb:HibachiEntityDetailForm>
+	<!--- ledger account inventory listing --->
+	<hb:HibachiListingDisplay smartList="#rc.ledgerAccount.getInventorySmartList()#"
+	>
+		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
+        <hb:HibachiListingColumn propertyIdentifier="quantityIN" />
+        <hb:HibachiListingColumn propertyIdentifier="quantityOUT" />
+        <hb:HibachiListingColumn propertyIdentifier="stockReceiverItem.stockReceiverItemID" />
+        <hb:HibachiListingColumn propertyIdentifier="orderDeliveryItem.orderItem.order.orderNumber" />
+        <hb:HibachiListingColumn propertyIdentifier="stockAdjustmentDeliveryItem.stockAdjustmentItem.stockAdjustment.stockAdjustmentID" />
+		
+	</hb:HibachiListingDisplay>
+
 </cfoutput>
