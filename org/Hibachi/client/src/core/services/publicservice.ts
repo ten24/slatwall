@@ -24,6 +24,7 @@ class PublicService {
     public countryDataPromise:any;
     public stateDataPromise:any;
     public lastSelectedShippingMethod:any;
+    public findingGiftCard:boolean;
 
     public http:ng.IHttpService;
     public confirmationUrl:string;
@@ -816,56 +817,6 @@ class PublicService {
     public formatPaymentMethod = (paymentMethod) =>{
         return paymentMethod.nameOnCreditCard + ' - ' + paymentMethod.creditCardType + ' *' + paymentMethod.creditCardLastFour + ' exp. ' + ('0' + paymentMethod.expirationMonth).slice(-2) + '/' + paymentMethod.expirationYear.toString().slice(-2)
     }
-
-    public setLocationPreference = (storeData)=>{
-                
-                this.loading = true;
-                this.tempStoreData = storeData;
-                //send here if we are updating the value on the order, account, and orderFulfillment.
-                var url = this.getUrl();
-                if (url.indexOf('my-account') == -1){
-                    var params = "/?slataction=totalwine:ajax.setLocationPreference&ajaxRequest=1&returnJsonObject=account&locationID=" + storeData;
-                    
-                    //if we also want to set this on the account, then set this flag.
-                    if (url.indexOf('checkout') > 0){
-                        params = params + "&setPreferenceOnAccountFlag=true";
-                    }
-                    
-                    this.$http.get(params).then((result)=>{
-                        
-                        this.stores = undefined;
-                        if (result.data.account != undefined){
-                            this.account.data.preferredLocation = result.data.account.preferredLocation;
-
-                        }
-                        if (result.data.cart != undefined){
-                            this.cart.data.orderFulfillments = result.data.cart.orderFulfillments;
-                            this.cart.data = result.data.cart;
-                        }
-                        this.loading = false;
-                    });
-                
-                //send here if we are just updating the value on the account. /my-account
-                } else {
-                    if (this.account.accountID != undefined && this.account.accountID != ""){
-                        this.$http.get("/?slataction=totalwine:ajax.setLocationPreferenceOnAccount&ajaxRequest=1&returnJsonObject=account&locationID=" + storeData).then((result)=>{
-                            
-                                this.stores = undefined;
-                                if (result.data.account != undefined){
-                                    this.account.data.preferredLocation = result.data.account.preferredLocation;
-                                }
-                        });
-                    }
-                    this.loading = false;
-                }
-               
-            $(window).load(()=>{
-                $('#locationModal').modal('hide');
-            });
-            this.showLocationModal = false;
-               this.resumeAddOrderItems();
-                
-           };
 
     public getResizedImageByProfileName = (profileName, skuIDList)=>{
                
