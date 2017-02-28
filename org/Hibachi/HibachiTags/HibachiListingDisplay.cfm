@@ -7,6 +7,8 @@
 	<!--- Required --->
 	<cfparam name="attributes.smartList" type="any" />
 	<cfparam name="attributes.edit" type="boolean" default="#request.context.edit#" />
+	<cfparam name="attributes.expandable" type="boolean" default="true" /> <!--- Although this defaults to true, the listing will only be expandable if hb_parentProperty is specified at the entity level--->
+
 
 	<!--- Optional --->
 	<cfparam name="attributes.title" type="string" default="" />
@@ -123,7 +125,7 @@
 		</cfif>
 
 		<!--- Setup Hierarchy Expandable --->
-		<cfif len(attributes.parentPropertyName) && attributes.parentPropertyName neq 'false'>
+		<cfif len(attributes.parentPropertyName) && attributes.parentPropertyName neq 'false' && (isNull(attributes.expandable) || attributes.expandable)>
 			<cfset thistag.expandable = true />
 
 			<cfset attributes.tableclass = listAppend(attributes.tableclass, 'table-expandable', ' ') />

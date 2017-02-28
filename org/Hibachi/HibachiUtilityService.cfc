@@ -1192,7 +1192,7 @@
     	<cfset var myImage = ImageReadBase64("data:image/gif;base64,#arguments.base64GIF#")>
     	<cfset var tempDirectory = getTempDirectory()&'/newimage.gif'>
     	<cfset imageWrite(myImage,tempDirectory)>
-		<cfdocument name="newpdf" format="pdf" localUrl="yes">
+		<cfdocument name="local.newpdf" format="pdf" localUrl="yes">
 			<cfoutput>
 				<img src="file:///#tempDirectory#" />
 			</cfoutput>
