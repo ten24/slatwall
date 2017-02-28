@@ -74,7 +74,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	property name="paymentTerm" hb_populateEnabled="public" cfc="PaymentTerm" fieldtype="many-to-one" fkcolumn="paymentTermID" fetch="join";
 
 	// Related Object Properties (one-to-many)
-	property name="subscriptionUsages" singularname="subscriptionUsage" hb_populateEnabled="public" cfc="SubscriptionUsage" fieldtype="one-to-many" fkcolumn="accountPaymentMethodID";
+	property name="subscriptionUsages" singularname="subscriptionUsage" hb_populateEnabled="public" cfc="SubscriptionUsage" fieldtype="one-to-many" fkcolumn="accountPaymentMethodID" cascade="all";
 	property name="orderPayments" singularname="orderPayment" cfc="OrderPayment" fieldtype="one-to-many" fkcolumn="accountPaymentMethodID" cascade="all" inverse="true" lazy="extra";
 	property name="paymentTransactions" singularname="paymentTransaction" cfc="PaymentTransaction" type="array" fieldtype="one-to-many" fkcolumn="accountPaymentMethodID" cascade="all" inverse="true";
 
@@ -260,10 +260,6 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 			encryptProperty('creditCardNumber');
 		}
 	}
-
-	public boolean function hasNoSubscriptionUsage() { 
-		return isNull(this.getSubscriptionUsage());
-	} 
 
 	public boolean function hasOnlyGenerateTokenTransactions() {
 		return getDAO("paymentDAO").getAccountPaymentMethodNonGenerateTokenTransactionCount( accountPaymentMethodID = this.getAccountPaymentMethodID() ) eq 0;
