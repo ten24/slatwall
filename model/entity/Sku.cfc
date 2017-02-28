@@ -1061,6 +1061,16 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 		return variables.placedOrderItemsSmartList;
 	}
+	
+	public any function getPlacedVendorOrderItemsSmartList() {
+		if(!structKeyExists(variables, "placedVendorOrderItemsSmartList")) {
+			variables.placedVendorOrderItemsSmartList = getService("VendorOrderService").getVendorOrderItemSmartList();
+			variables.placedVendorOrderItemsSmartList.addFilter('stock.sku.skuID', getSkuID());
+			variables.placedVendorOrderItemsSmartList.addInFilter('vendorOrder.vendorOrderStatusType.systemCode','vostNew,vostPartiallyReceived,vostClosed');
+		}
+
+		return variables.placedVendorOrderItemsSmartList;
+	}
 
 	public any function getQATS() {
 		return getQuantity("QATS");
