@@ -44,7 +44,6 @@
 		<div ng-if="slatwall.showNewAccountAddressForm()">
 			<h4>Create A New Address:</h4>
 			<span ng-init="slatwall.newAddress = slatwall.$hibachi.newAddress()"></span>
-			<span ng-init="slatwall.clearShippingAddressErrors()"></span>
 			<sw-address-form
 				data-field-list="countryCode,name,company,streetAddress,street2Address,locality,city,stateCode,postalCode,phoneNumber,accountAddressName"
 				data-slatwall-scope="slatwall"

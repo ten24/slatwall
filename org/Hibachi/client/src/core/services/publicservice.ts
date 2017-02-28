@@ -23,6 +23,7 @@ class PublicService {
     public cartDataPromise:any;
     public countryDataPromise:any;
     public stateDataPromise:any;
+    public lastSelectedShippingMethod:any;
 
     public http:ng.IHttpService;
     public confirmationUrl:string;
@@ -69,8 +70,7 @@ class PublicService {
         public orderService,
         public observerService,
         public appConfig,
-        public $timeout,
-        public $rootScope
+        public $timeout
     ) {
         this.orderService = orderService;
         this.cartService = cartService;
@@ -90,7 +90,6 @@ class PublicService {
         this.account = this.accountService.newAccount();
         this.observerService = observerService;
         this.$timeout = $timeout;
-        this.root = $rootScope;
     }
 
     // public hasErrors = ()=>{
@@ -371,7 +370,7 @@ class PublicService {
             this.hasShippingFulfillmentMethod && 
             this.cart.orderFulfillments &&
             this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingTypeIndex] &&
-            this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingTypeIndex].data.shippingAddress;
+            this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingTypeIndex].data.shippingAddress);
     }
 
     public hasEmailFulfillmentMethod = ()=>{
@@ -1101,10 +1100,10 @@ class PublicService {
 
     public addShippingAddressErrors = ()=>{
         this.shippingAddressErrors = this.errors;
-        if(this.accountAddressEditFormIndex){
+        if(this.accountAddressEditFormIndex != undefined){
             var key = this.accountAddressEditFormIndex;
             this.accountAddressEditFormIndex = undefined;
-            this.$timeout(()=>this.accountAddressEditFormIndex = key, 0);
+            this.$timeout(()=>this.accountAddressEditFormIndex = key);
         }
     }
 
@@ -1126,11 +1125,11 @@ class PublicService {
     }
 
     public showNewBillingAddressForm = ()=>{
-        return !this.useShippingAsBilling && this.billingAddressEditFormIndex == 'new'
+        return !this.useShippingAsBilling && this.billingAddressEditFormIndex == 'new';
     }
 
     public showEditBillingAddressForm = ()=>{
-        return !this.useShippingAsBilling && this.billingAddressEditFormIndex && this.billingAddressEditFormIndex != 'new'
+        return !this.useShippingAsBilling && this.billingAddressEditFormIndex && this.billingAddressEditFormIndex != 'new';
     }
 
     public accountAddressIsSelectedShippingAddress = (key) =>{

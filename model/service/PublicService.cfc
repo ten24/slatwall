@@ -458,6 +458,7 @@ component extends="HibachiService"  accessors="true" output="false"
             data.accountAddressID = savedAccountAddress.getAccountAddressID();
    	     	}
       	}else{
+          this.addErrors(data, newAddress.getErrors());
           getHibachiScope().addActionResult("public:account.addNewAccountAddress", newAddress.hasErrors());
         }
      }
