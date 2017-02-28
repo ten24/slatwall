@@ -11,7 +11,7 @@
 		<Record ledgerAccountID="54cd90d6dd39c2e90c99cdb675371a05" typeID="a54668fdc129db6427f2d597da3163d7" ledgerAccountName="Cost Of Goods" ledgerAccountCode="Cogs" />
 		<Record ledgerAccountID="54ce88cfbe2ae9636311ce9c189d9c18" typeID="a54668fef238c6cd354e1d9b371700ea" ledgerAccountName="Expense" ledgerAccountCode="Expense"  />
 		<Record ledgerAccountID="54cf9c67d219bd4eddc6aa7dfe32aa02" typeID="a54668fbcafa5275c59482d98a1497bd" ledgerAccountName="Revenue" ledgerAccountCode="Revenue" />
-		<Record ledgerAccountID="54d093ffb88d0185aea97fb735890055" typeID="a54668fbcafa5275c59482d98a1497bc" ledgerAccountName="Liability" ledgerAccountCode="Liabilty" />
+		<Record ledgerAccountID="54d093ffb88d0185aea97fb735890055" typeID="a54668fbcafa5275c59482d98a1497bc" ledgerAccountName="Liability" ledgerAccountCode="Liability" />
 	</Records>
 </Table>
 

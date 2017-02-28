@@ -330,12 +330,12 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuTrackInventoryFlag = {fieldType="yesno", defaultValue=0},
 			skuShippingCostExempt = {fieldType="yesno", defaultValue=0},
 			
-			skuRevenueLedgerAccount = {fieldType="select", defaultValue=""},
-			skuCogsLedgerAccount = {fieldType="select", defaultValue=""},
-			skuAssetLedgerAccount = {fieldType="select", defaultValue=""},
-			skuLiabilityLedgerAccount = {fieldType="select", defaultValue=""},
+			skuRevenueLedgerAccount = {fieldType="select", defaultValue="54cf9c67d219bd4eddc6aa7dfe32aa02"},
+			skuCogsLedgerAccount = {fieldType="select", defaultValue="54cd90d6dd39c2e90c99cdb675371a05"},
+			skuAssetLedgerAccount = {fieldType="select", defaultValue="54cae22ca5a553fe209cf183fac8f8dc"},
+			skuLiabilityLedgerAccount = {fieldType="select", defaultValue="54d093ffb88d0185aea97fb735890055"},
 			skuDeferredRevenueLedgerAccount = {fieldType="select", defaultValue=""},
-			skuExpenseLedgerAccount = {fieldType="select", defaultValue=""},
+			skuExpenseLedgerAccount = {fieldType="select", defaultValue="54ce88cfbe2ae9636311ce9c189d9c18"},
 
 			// Subscription Term
 			subscriptionUsageAutoRetryPaymentDays = {fieldType="text", defaultValue=""},
@@ -516,6 +516,7 @@ component extends="HibachiService" output="false" accessors="true" {
 				return optionsSL.getRecords();
 			case "skuLiabilityLedgerAccount":
 				var optionsSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latLiability');
+				return optionsSL.getRecords();
 			case "skuDeferredRevenueLedgerAccount":
 				var optionsSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latLiability');
 				return optionsSL.getRecords();
