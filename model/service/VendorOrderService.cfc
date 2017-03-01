@@ -154,7 +154,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			this.saveVendorSku(vendorSku);
 		}
 		
-		newVendorOrderItem.setVendorOrder(arguments.vendorOrder);
 		
 		this.saveVendorOrderItem(newVendorOrderItem);
 		

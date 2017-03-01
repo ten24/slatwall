@@ -212,7 +212,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var vendorOrder = createTestEntity('VendorOrder',{});
 		
 		vendorOrder = variables.vendorOrderService.saveVendorORder(vendorOrder,vendorOrderData);
-		request.slatwallScope.flushORMSession(true);
+		//request.slatwallScope.flushORMSession(true);
 		
 		//ADD VENDOR ORDER ITEM / PLACE THE VENDOR ORDER
 		var vendorOrder_addOrderItemData = {
@@ -224,11 +224,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			cost=50
 			//,vendorSkuID=1
 		};
-		
-		
 		vendorOrder = variables.vendorOrderService.process(vendorOrder,vendorOrder_addOrderItemData,'AddVendorOrderItem');
-		request.slatwallScope.flushORMSession(true);
-		assert(arraylen(vendorOrder.getVendorOrderItems())==1);
+		//request.slatwallScope.flushORMSession(true);
+		
+		assertEquals(arraylen(vendorOrder.getVendorOrderItems()),1);
 		
 		//RECEIVE VENDOR ORDER PARTIALLY  / INCREMENT THE STOCK by 2
 		var vendorOrder_receiveData={
