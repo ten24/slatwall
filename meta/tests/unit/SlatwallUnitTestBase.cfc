@@ -46,7 +46,7 @@
 Notes:
 
 */
-component extends="mxunit.framework.TestCase" output="false" {
+component displayName="mytestcase" extends="testbox.system.compat.framework.TestCase"  {
 
 	variables.debugArray = [];
 	variables.persistentEntities = [];
@@ -54,11 +54,9 @@ component extends="mxunit.framework.TestCase" output="false" {
 
 	// BEFORE ALL TESTS IN THIS SUITE
 	public void function beforeTests(){
-
+		
 		// Setup Components
 		variables.slatwallFW1Application = createObject("component", "Slatwall.Application");
-
-		super.beforeTests();
 	}
 
 	// BEFORE EACH TEST
