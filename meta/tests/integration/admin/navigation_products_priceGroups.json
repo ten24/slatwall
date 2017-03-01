@@ -1,0 +1,76 @@
+{
+  "type": "script",
+  "seleniumVersion": "2",
+  "formatVersion": 2,
+  "steps": [
+    {
+      "type": "get",
+      "url": "http://localhost/"
+    },
+    {
+      "type": "setElementText",
+      "locator": {
+        "type": "name",
+        "value": "emailAddress"
+      },
+      "text": "qa@mailinator.com"
+    },
+    {
+      "type": "setElementText",
+      "locator": {
+        "type": "name",
+        "value": "password"
+      },
+      "text": "QaPa33word"
+    },
+    {
+      "type": "clickElement",
+      "locator": {
+        "type": "xpath",
+        "value": "//form[@id='j-login-wrapper']//button[.='Login']"
+      }
+    },
+    {
+      "type": "waitForElementPresent",
+      "locator": {
+        "type": "link text",
+        "value": "Products"
+      }
+    },
+    {
+      "type": "clickElement",
+      "locator": {
+        "type": "link text",
+        "value": "Products"
+      }
+    },
+    {
+      "type": "waitForElementPresent",
+      "locator": {
+        "type": "link text",
+        "value": "Price Groups"
+      }
+    },
+    {
+      "type": "clickElement",
+      "locator": {
+        "type": "link text",
+        "value": "Price Groups"
+      }
+    },
+    {
+      "type": "waitForTextPresent",
+      "text": "Price Groups"
+    },
+    {
+      "type": "verifyTextPresent",
+      "text": "Price Groups"
+    }
+  ],
+  "data": {
+    "configs": {},
+    "source": "none"
+  },
+  "inputs": [],
+  "timeoutSeconds": 60
+}
