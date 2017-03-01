@@ -126,6 +126,7 @@ component extends="HibachiDAO" {
 					INNER JOIN voi.stock s
 					WHERE s.sku.skuID = sk.skuID
 					AND vo.vendorOrderID = ?
+					AND vo.
 					                ";              
 	
 		var result = ormExecuteQuery(hql, params);

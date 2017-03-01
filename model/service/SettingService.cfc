@@ -258,7 +258,7 @@ component extends="HibachiService" output="false" accessors="true" {
 				}],
 				defaultValue=getLedgerAccountService().getExpenseLedgerAccountIDList()
 			},
-			physicalDefaultExpenseLedgerAccount = {fieldType="select", defaultValue=""},
+			physicalDefaultExpenseLedgerAccount = {fieldType="select", defaultValue="54ce88cfbe2ae9636311ce9c189d9c18"},
 
 			// Product
 			productDisplayTemplate = {fieldType="select"},

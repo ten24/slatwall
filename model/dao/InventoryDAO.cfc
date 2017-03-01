@@ -205,12 +205,6 @@ Notes:
 			return QNDOO;	
 		}
 		
-		// Quantity not delivered on return vendor order 
-		public numeric function getQNDORVO(required string productID, string productRemoteID) {
-			// TODO: Impliment this later when we add return vendor orders
-			return 0;
-		}
-		
 		//Quantity delivered on stock adjustment
 		public array function getQDOSA(required string productID, string productRemoteID) {
 			var params = {productiD=arguments.productID};
@@ -406,6 +400,59 @@ Notes:
 			}
 			
 			return QNRORO;
+		}
+		
+		public numeric function getQDORVO(required string productID, string productRemoteID){
+			
+		}
+		
+		public numeric function getQORVO(required string productID, string productRemoteID){
+			
+		}
+		
+		// Quantity not delivered on return vendor order 
+		public numeric function getQNDORVO(required string productID, string productRemoteID) {
+			// TODO: Impliment this later when we add return vendor orders
+			var QNDORVO = [];
+			
+			var params = { productID = arguments.productID };
+			
+			var QDORVO = getQDORVO(productID=arguments.productID);
+			var QDORVOHashMap = {};
+			for(var i=1;i <= arrayLen(QDORVO);i++){
+				QDORVOHashMap["#QDORVO[i]['skuID']#"] = QDORVO[i]; 
+			}
+			
+			var QORVO = getQORVO(productID=arguments.productID);
+			
+			for(var QORVOData in QORVO){
+				var record = {};
+				record['skuID'] = QORVOData['skuID'];
+				if(structKeyExists(QORVOData,'stockID')){
+					record['stockID'] = QORVOData['stockID'];
+				}else{
+					record['stockID'] = javacast('null','');
+				}
+				if(structKeyExists(QORVOData,'locationID')){
+					record['locationID'] = QORVOData['locationID'];	
+				}else{
+					record['locationID'] = javacast('null','');
+				}
+				if(structKeyExists(QORVOData,'locationIDPath')){
+					record['locationIDPath'] = QORVOData['locationIDPath'];
+				}else{
+					record['locationIDPath'] = javacast('null','');
+				}
+				var quantityReceived = 0;
+				if(structKeyExists(QDORVOHashMap,'#QORVOData['skuID']#')){
+					quantityReceived = QDORVOHashMap['#QORVOData['skuID']#']['QDORVO'];
+				}
+				record['QNDORVO'] = QORVOData['QORVO'] - quantityReceived;
+				arrayAppend(QNDORVO,record);
+			}
+			
+			
+			return QNDORVO;
 		}
 		
 		public array function getQROVO(required string productID, string productRemoteID){

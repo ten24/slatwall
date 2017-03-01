@@ -62,7 +62,12 @@ Notes:
 		<hb:HibachiEntityDetailGroup object="#rc.vendorOrder#">
 			<hb:HibachiEntityDetailItem view="admin:entity/vendorordertabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<hb:HibachiEntityDetailItem property="vendorOrderItems" />
-			<hb:HibachiEntityDetailItem view="admin:entity/vendorordertabs/stockreceivers" />
+			
+			<cfif rc.vendorOrder.getVendorOrderType().getSystemCode() eq 'votPurchaseOrder'>
+				<hb:HibachiEntityDetailItem view="admin:entity/vendorordertabs/stockreceivers" />
+			<!---<cfelseif rc.vendorOrder.getOrderStatusType() eq 'votReturnOrder'>
+				<hb:HibachiEntityDetailItem view="admin:entity/vendorordertabs/orderfulfillments" />--->
+			</cfif>
 			
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.vendorOrder.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">

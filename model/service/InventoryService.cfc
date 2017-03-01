@@ -70,6 +70,8 @@ component extends="HibachiService" accessors="true" output="false" {
 			inventory.setQuantityIn(arguments.stockReceiverItem.getQuantity());
 			inventory.setStock(arguments.stockReceiverItem.getStock());
 			inventory.setStockReceiverItem(arguments.stockReceiverItem);
+			
+			//vendorOrderItem logic
 			if(arguments.stockReceiverItem.getStockReceiver().getReceiverType() == 'vendororderitem'){
 				inventory.setCost(arguments.stockReceiverItem.getCost());
 				inventory.setLandedCost(arguments.stockReceiverItem.getLandedCost());
@@ -79,6 +81,19 @@ component extends="HibachiService" accessors="true" output="false" {
 					var cogsLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.entity.getStock().getSku().setting('skuCogsLedgerAccount'));
 					inventory.setCogsLedgerAccount(cogsLedgerAccount);
 				}
+			}
+			
+			//Physical logic
+			if(!isNull(arguments.stockReceiverItem.getStockReceiver().getStockAdjustment()) && !isNull(arguments.stockReceiverItem.getStockReceiver().getStockAdjustment().getPhysical())){
+				//set the expense ledger account by physical ledger account 
+				if(!isNull(arguments.stockReceiverItem.getStockReceiver().getStockAdjustment().getPhysical().getExpenseLedgerAccount())){
+					var expenseLedgerAccount = arguments.stockReceiverItem.getStockReceiver().getStockAdjustment().getPhysical().getExpenseLedgerAccount();
+				}else{
+					var ledgerAccountID = arguments.stockReceiverItem.getStockReceiver().getStockAdjustment().getPhysical().setting('physicalDefaultExpenseLedgerAccount');
+					var expenseLedgerAccount = getService('LedgerAccountService').getLedgerAccount(ledgerAccountID);
+				}
+				
+				inventory.setExpenseLedgerAccount(expenseLedgerAccount);
 			}
 			
 			//calculate Landed Cost
@@ -148,7 +163,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					inventory.setStockAdjustmentDeliveryItem(arguments.entity);
 					if(arguments.entity.getStock().getSku().getProduct().getProductType().getSystemCode() != 'gift-card'){
 						//set the inventory ledger account 
-						var inventoryLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.entity.getStock().getSku().setting('skuInventoryLedgerAccount'));
+						var inventoryLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.entity.getStock().getSku().setting('skuAssetLedgerAccount'));
 						inventory.setInventoryLedgerAccount(inventoryLedgerAccount);
 					}
 					getHibachiDAO().save( inventory );

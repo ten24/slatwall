@@ -310,6 +310,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(1, result[2].QDOO);
 	}
 	
+	
+	
 	public void function getQOOTest(){
 		var mockProduct = createMockProduct();
 		var mockLocation = createMockLocation();
@@ -1362,6 +1364,61 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		mockVendorOrderItem1.addStockReceiverItem(mockStockReceiverItem1);
 		mockVendorOrderItem1.addStockReceiverItem(mockStockReceiverItem2);
 		mockVendorOrderItem2.addStockReceiverItem(mockStockReceiverItem3);
+		
+		var result = variables.dao.getQNROVO(mockProduct.getProductID());
+		assertEquals(230, result[1].QNROVO, 'QNROVO should be (100+200) - (10+20+40) = 230');
+	}
+	
+	public void function getQNDORVOTest() {
+		var mockProduct = createMockProduct();
+		var mockLocation = createMockLocation();
+		var mockSku = createMockSku(mockProduct.getProductID());
+		
+		var stockData = {
+			stockID = '',
+			sku = {
+				skuID = mockSku.getSkuID()
+			},
+			location = {
+				locationID = mockLocation.getLocationID()
+			}
+		};
+		var mockStock = createPersistedTestEntity('Stock', stockData);
+		
+		var vendorOrderData = {
+			vendorOrderID = '',
+			vendorOrderStatusType = {
+				typeID = '444df2b5c8f9b37338229d4f7dd84ad1'//ostNew
+			},
+			vendorOrderType = {
+				typeID = '444df2dc91afb63f25074c7d9512248b'//votReturnOrder
+			}
+		};
+		var mockVendorOrder = createPersistedTestEntity('VendorOrder', vendorOrderData);
+		var vendorOrderItemData1 = {
+			vendorOrderItemID = '',
+			quantity = 100,
+			vendorOrder = {
+				vendorOrderID = mockVendorOrder.getVendorOrderID()
+			},
+			stock = {
+				stockID = mockStock.getStockID()
+			}
+		};
+		var mockVendorOrderItem1 = createPersistedTestEntity('VendorOrderItem', vendorOrderItemData1);
+		
+		var vendorOrderItemData2 = {
+			vendorOrderItemID = '',
+			quantity = 200,
+			vendorOrder = {
+				vendorOrderID = mockVendorOrder.getVendorOrderID()
+			},
+			stock = {
+				stockID = mockStock.getStockID()
+			}
+		};
+		var mockVendorOrderItem2 = createPersistedTestEntity('VendorOrderItem', vendorOrderItemData2);
+		
 		
 		var result = variables.dao.getQNROVO(mockProduct.getProductID());
 		assertEquals(230, result[1].QNROVO, 'QNROVO should be (100+200) - (10+20+40) = 230');
