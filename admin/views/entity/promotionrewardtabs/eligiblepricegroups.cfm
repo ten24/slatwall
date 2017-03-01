@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,45 +45,19 @@
 
 Notes:
 
-*/
-component accessors="true" output="false" extends="Slatwall.integrationServices.BaseIntegration" implements="Slatwall.integrationServices.IntegrationInterface" {
-	
-	public any function init() {
-		return this;
-	}
-	
-	public string function getIntegrationTypes() {
-		return "tax";
-	}
-	
-	public string function getDisplayName() {
-		return "Avatax";
-	}
-	
-	public struct function getSettings() {
-		var settings = {
-			accessKey = {fieldType="password", encryptValue=true},
-			accountNo = {fieldType="text"},
-			sourceStreetAddress = {fieldType="text"},
-			sourceStreetAddress2 = {fieldType="text"},
-			sourceCity = {fieldType="text"},
-			sourceRegion = {fieldType="text"},
-			sourceCountry = {fieldType="text"},
-			sourcePostalCode = {fieldType="text"},
-			testingFlag = {fieldType="yesno", defaultValue="1"},
-			taxExemptPropertyIdentifier = {fieldType="text"},
-			taxExemptRequiresCompanyPaymentMethodFlag = {fieldType="yesno", defaultValue="0"},
-			commitTaxDocumentFlag = {fieldType="yesno", defaultValue="0"},
-			companyCode = {fieldType="text"},
-			customerUsageTypePropertyIdentifier = {fieldType="text"},
-			taxExemptNumberPropertyIdentifier = {fieldType="text"}
-		};
+--->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-		return settings;
-	}
-	
-	public array function getEventHandlers() {
-		return ["Slatwall.integrationServices.avatax.model.handler.AvataxEventHandler"];
-	}
-	
-}
+
+<cfset selectedPriceGroups = rc.promotionReward.getEligiblePriceGroups() />
+<cfset selectedPriceGroupIDs = "" />
+<cfloop array="#selectedPriceGroups#" index="pg">
+    <cfset selectedPriceGroupIDs = listAppend(selectedPriceGroupIDs, pg.getPrimaryIDValue()) />
+</cfloop>
+
+
+<hb:HibachiListingDisplay smartList="#rc.promotionReward.getEligiblePriceGroupsOptionsSmartList()#" multiselectFieldName="priceGroups" multiselectPropertyIdentifier="priceGroupID" multiselectValues="#selectedPriceGroupIDs#" edit="#rc.edit#">
+    <hb:HibachiListingColumn tdclass="primary" propertyIdentifier="priceGroupName" />
+</hb:HibachiListingDisplay>
+
