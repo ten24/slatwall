@@ -1085,17 +1085,6 @@ component extends="HibachiService" accessors="true" {
 				getDao('productDao').setSkusAsInactiveByProduct(arguments.product);
 				arguments.product.setPublishedFlag(false);
 			}
-			for(var vendor in arguments.product.getVendors()){
-				for(var sku in arguments.product.getSkus()){
-					var vendorSku = getService('vendorService').getVendorSkuByVendorAndSku(vendor,sku);
-					if(isNull(vendorSku)){
-						vendorSku = this.newVendorSku();
-					}
-					vendorSku.setSku(sku);
-					vendorSku.setVendor(vendor);
-					this.saveVendorSku(vendorSku);
-				}	
-			}
 		}
 		return arguments.product;
 	}
