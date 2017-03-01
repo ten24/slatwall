@@ -64,6 +64,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="shippingWeight";
 	property name="vendorOrderItemTypeSystemCode";
 	property name="deliverToLocationID" hb_formFieldType="select";
+	property name="deliverFromLocationID" hb_formFieldType="select";
 	
 	public any function init() {
 		return super.init();
@@ -137,17 +138,37 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	public any function getVendorOrderItemTypeSystemCode() {
 		if(!structKeyExists(variables, "vendorOrderItemTypeSystemCode")) {
-			variables.vendorOrderItemTypeSystemCode = "voitPurchase";
+			var systemCode = getVendorOrder().getVendorOrderType().getSystemCode();
+			if(systemCode == 'votPurchaseOrder'){
+				variables.vendorOrderItemTypeSystemCode = "voitPurchase";	
+			}else if(systemCode == 'votReturnOrder'){
+				variables.vendorOrderItemTypeSystemCode = 'voitReturn';
+			}
+			
 		}
 		return variables.vendorOrderItemTypeSystemCode;
 	}
 	
-	public any function getDeliverToLocationIDOptions() {
-		if(!structKeyExists(variables, "deliveryToLocationIDOptions")) {
+	public any function getDeliverFromLocationIDOptions(){
+		if(!structKeyExists(variables, "deliveryFromLocatonIDOptions")) {
+			variables.deliveryFromLocatonIDOptions = getDeliveryLocationIDOptions();
+		}
+		return variables.deliveryFromLocatonIDOptions;
+	}
+	
+	public any function getDeliveryLocationIDOptions(){
+		if(!structKeyExists(variables,'deliveryLocationIDOptions')){
 			sl = getService("locationService").getLocationSmartList();
 			sl.addSelect('locationName', 'name');
 			sl.addSelect('locationID', 'value');
-			variables.deliveryToLocationIDOptions = sl.getRecords();
+			variables.deliveryLocationIDOptions = sl.getRecords();
+		}
+		return variables.deliveryLocationIDOptions;
+	}
+	
+	public any function getDeliverToLocationIDOptions() {
+		if(!structKeyExists(variables, "deliveryToLocationIDOptions")) {
+			variables.deliveryToLocationIDOptions = getDeliveryLocationIDOptions();
 		}
 		return variables.deliveryToLocationIDOptions;
 	}

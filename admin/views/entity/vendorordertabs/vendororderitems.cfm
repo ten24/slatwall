@@ -75,7 +75,7 @@ Notes:
 			<hb:HibachiListingColumn propertyidentifier="cost" />
 			<hb:HibachiListingColumn propertyidentifier="extendedCost" />
 			<hb:HibachiListingColumn propertyidentifier="extendedWeight" />
-			<hb:HibachiListingColumn propertyidentifier="estimatedReceivalDateTime" />
+			<!---<hb:HibachiListingColumn propertyidentifier="estimatedReceivalDateTime" />--->
 			
 		</hb:HibachiListingDisplay>
 		
@@ -93,6 +93,7 @@ Notes:
 				<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="product.productName" />
 				<hb:HibachiListingColumn propertyIdentifier="calculatedSkuDefinition" />
 				<hb:HibachiListingColumn propertyIdentifier="product.productType.productTypeName" />
+				<hb:HibachiListingColumn processObjectProperty="deliverFromLocationID" title="#$.slatwall.rbKey('process.vendorOrder_AddVendorOrderItem.deliverFromLocationID')#" fieldClass="span2" value="#rc.vendorOrder.getBillToLocation().getLocationID()#" />
 				<hb:HibachiListingColumn processObjectProperty="quantity" title="#$.slatwall.rbKey('define.quantity')#" fieldClass="span1" />
 			</hb:HibachiListingDisplay>
 		</cfif>

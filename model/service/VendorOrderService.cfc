@@ -117,16 +117,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function processVendorOrder_addVendorOrderItem(required any vendorOrder, required any processObject){
 		
 		var vendorOrderItemType = getTypeService().getTypeBySystemCode( arguments.processObject.getVendorOrderItemTypeSystemCode() );
-		var deliverToLocation = getStockService().getStockBySkuAndLocation(arguments.processObject.getSku(),getLocationService().getLocation(arguments.processObject.getDeliverToLocationID()));
-		
 		var newVendorOrderItem = this.newVendorOrderItem();
 		newVendorOrderItem.setVendorOrderItemType( vendorOrderItemType );
 		newVendorOrderItem.setVendorOrder( arguments.vendorOrder );
 		newVendorOrderItem.setCurrencyCode( arguments.vendorOrder.getCurrencyCode() );
-		newVendorOrderItem.setStock( deliverToLocation );
-		newVendorOrderItem.setQuantity( arguments.processObject.getQuantity() );
-		newVendorOrderItem.setCost( arguments.processObject.getCost() );
 		
+		if(arguments.processObject.getVendorOrderItemTypeSystemCode() == 'voitReturn'){
+			var deliverFromLocation = getStockService().getStockBySkuAndLocation(arguments.processObject.getSku(),getLocationService().getLocation(arguments.processObject.getDeliverFromLocationID()));
+			newVendorOrderItem.setStock( deliverFromLocation );
+		}
+		
+		if(arguments.processObject.getVendorOrderItemTypeSystemCode() == 'voitPurchase'){
+			var deliverToLocation = getStockService().getStockBySkuAndLocation(arguments.processObject.getSku(),getLocationService().getLocation(arguments.processObject.getDeliverToLocationID()));
+			newVendorOrderItem.setStock( deliverToLocation );
+		}
+		
+		newVendorOrderItem.setCost( arguments.processObject.getCost() );
+			
 		//if vendor sku code was provided then find existing Vendor Sku or create one
 		if(!isNull(arguments.processObject.getVendorSkuCode()) && len(arguments.processObject.getVendorSkuCode())){
 			var vendorSku = getVendorSkuByVendorSkuCode(arguments.processObject.getVendorSkuCode());
@@ -154,6 +161,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			this.saveVendorSku(vendorSku);
 		}
 		
+		newVendorOrderItem.setQuantity( arguments.processObject.getQuantity() );
 		
 		this.saveVendorOrderItem(newVendorOrderItem);
 		
