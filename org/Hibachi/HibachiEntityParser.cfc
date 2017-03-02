@@ -18,7 +18,11 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	
 	public string function getFileContent(){
 		if(!structKeyExists(variables,'fileContent')){
-			variables.fileContent = ReReplace(fileRead(expandPath(getFilePath())),'\r','','All');
+			try {
+				variables.fileContent =fileRead( "#ExpandPath('/Slatwall/')#" & getFilePath());
+			}catch(any e){
+				writeLog(file="Slatwall", text="Error reading this file: #e#");
+			}
 		}
 		return variables.fileContent;
 	}
