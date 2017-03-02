@@ -47,7 +47,7 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
 	
 
      <!-- <THE URL TO THE RUNNER, PLEASE CHANGE ACCORDINGLY-->
-     <property name="url.runner"             value="slatwall:8902${slatwall.test.runner}"/>
+     <property name="url.runner"             value="${slatwall.test.server}:${slatwall.test.serverport}${slatwall.test.runner}"/>
      <!-- <FILL OUT THE BUNDLES TO TEST, CAN BE A LIST OF CFC PATHS -->
      <property name="test.bundles"      value="" />
     <!-- <FILL OUT THE DIRECTORY MAPPING TO TEST -->
@@ -69,6 +69,34 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
           </tstamp>
           <concat destfile="${report.dir}/latestrun.log">Tests ran at ${start.TODAY}</concat>
      </target>
+     
+     <target name="buildDocsAndTests" depends="init">
+
+		<!-- Setup test output directory -->
+		<delete dir="${slatwall.test.output.xml}/build" failonerror="false"/>
+		<mkdir dir="${slatwall.test.output.xml}/build" />
+		<delete dir="${slatwall.test.output.html}/build" failonerror="false"/>
+		<mkdir dir="${slatwall.test.output.html}/build" />
+
+		<!-- Run the tests -->
+		<runTestDirectory directoryName="build" excludes=""/>
+
+		<!-- Update test reports -->
+		<junitreport todir="${slatwall.test.output.html}/build">
+		  <fileset dir="${slatwall.test.output.xml}/build">
+		    <include name="*.xml"/>
+		  </fileset>
+		  <report format="frames" todir="${slatwall.test.output.html}/build"/>
+		</junitreport>
+
+		<!-- Fail Build if not all unit tests pass -->
+		<fail message="Not All Unit Tests Passed">
+			<condition>
+				<istrue value="${tests.bombed}"/>
+			</condition>
+		</fail>
+
+	</target>
 
      <target name="run" depends="init" description="Run our tests and produce awesome results">
 
