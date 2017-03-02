@@ -69,8 +69,6 @@ Notes:
 			
 			<cfif rc.vendorOrder.getVendorOrderType().getSystemCode() eq 'votPurchaseOrder'>
 				<hb:HibachiEntityDetailItem view="admin:entity/vendorordertabs/stockreceivers" />
-			<!---<cfelseif rc.vendorOrder.getOrderStatusType() eq 'votReturnOrder'>
-				<hb:HibachiEntityDetailItem view="admin:entity/vendorordertabs/orderfulfillments" />--->
 			</cfif>
 			
 			<!--- Custom Attributes --->

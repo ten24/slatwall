@@ -83,7 +83,7 @@ Notes:
 				<th>#$.slatwall.rbKey('entity.vendorOrderItem.extendedWeight')#</th>
 				<th>#$.slatwall.rbKey('entity.vendorOrderItem.quantity')#</th>
 				<th>#$.slatwall.rbKey('entity.vendorOrderItem.quantityDelivered')#</th>
-				<th>#$.slatwall.rbKey('entity.vendorOrderItem.quantityNotDelivered')#</th>
+				<th>#$.slatwall.rbKey('entity.vendorOrderItem.quantityUnDelivered')#</th>
 				<th>#$.slatwall.rbKey('define.qty')#</th>
 			</tr>
 			
@@ -104,7 +104,7 @@ Notes:
 					<td>#vendorOrderItem.getExtendedWeight()#</td>
 					<td>#vendorOrderItem.getQuantity()#</td>
 					<td>#vendorOrderItem.getQuantityDelivered()#</td>
-					<td>#vendorOrderItem.getQuantityNotDelivered()#</td>
+					<td>#vendorOrderItem.getQuantityUnDelivered()#</td>
 					
 					<td><input type="text" name="vendorOrderItems[#vendorOrderItemIndex#].quantity" value="" class="span1" /></td>
 				</tr>

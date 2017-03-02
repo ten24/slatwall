@@ -132,14 +132,14 @@ component entityname="SlatwallVendorOrder" table="SwVendorOrder" persistent="tru
 		}
 	}
 
-	public numeric function getQuantityNotDelivered() {
-		var quantityNotDelivered = 0;
+	public numeric function getQuantityUnDelivered() {
+		var quantityUnDelivered = 0;
 		for(var vendorOrderItem in getVendorOrderItems()){
-			if(!isNull(vendorOrderItem.getQuantityNotDelivered())){
-				quantityNotDelivered += vendorOrderItem.getQuantityNotDelivered();
+			if(!isNull(vendorOrderItem.getQuantityUnDelivered())){
+				quantityUnDelivered += vendorOrderItem.getQuantityUnDelivered();
 			}
 		}
-		return quantityNotDelivered;
+		return quantityUnDelivered;
 	}
 
 	public numeric function getQuantityUnReceived() {

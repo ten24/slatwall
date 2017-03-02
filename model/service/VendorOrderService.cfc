@@ -141,11 +141,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!listFindNoCase("vostClosed", arguments.vendorOrder.getVendorOrderStatusType().getSystemCode())) {
 
 			if(
-				arguments.vendorOrder.getQuantityNotdelivered() == 0
+				arguments.vendorOrder.getQuantityUndelivered() == 0
 			){
 				arguments.vendorOrder.setVendorOrderStatusType(  getTypeService().getTypeBySystemCode("vostClosed") );
 			//if some of the items are not delivered then set the status
-			} else if(arguments.vendorOrder.getQuantityNotdelivered() >= 1){
+			} else if(arguments.vendorOrder.getQuantityUndelivered() >= 1){
 				arguments.vendorOrder.setVendorOrderStatusType( getTypeService().getTypeBySystemCode("vostPartiallyDelivered") );
 			}
 
@@ -160,7 +160,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			var vendorOrderItem = this.getVendorOrderItem(vendorOrderItemData.vendorOrderItem.vendorOrderItemID);
 			
-			if(vendorOrderItem.getQuantityNotdelivered()) {
+			if(vendorOrderItem.getQuantityUndelivered()) {
 				if(isNumeric(vendorOrderItemData['quantity']) && vendorOrderItemData['quantity'] > 0){
 					var vendorOrderDeliveryItem = this.newVendorOrderDeliveryItem();
 					vendorOrderDeliveryItem.setQuantity(vendorOrderItemData['quantity']);

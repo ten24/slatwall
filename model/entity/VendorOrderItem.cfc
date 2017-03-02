@@ -81,7 +81,7 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 	property name="quantityReceived" persistent="false";
 	property name="quantityUnreceived" persistent="false";
 	property name="quantityDelivered" persistent="false";
-	property name="quantityNotDelivered" persistent="false";
+	property name="quantityUnDelivered" persistent="false";
 
 	// ============ START: Non-Persistent Property Methods =================
 	
@@ -143,7 +143,7 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 		return getQuantity() - getQuantityReceived();
 	}
 	
-	public numeric function getQuantityNotDelivered() {
+	public numeric function getQuantityUnDelivered() {
 		return getQuantity() - getQuantityDelivered();
 	}
 	
