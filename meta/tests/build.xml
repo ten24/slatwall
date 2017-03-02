@@ -30,8 +30,8 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
 	<property name="slatwall.test.cfcpath" value="Slatwall.meta.tests" />
 
 	<!-- what server and port should your tests run against? These defaults only apply if the properties are not set in $user.name}.properties -->
-	<property name="slatwall.test.server" value="${computer.hostname}" />
-	<property name="slatwall.test.serverport" value="8888" />
+	<property name="slatwall.test.server" value="slatwall" />
+	<property name="slatwall.test.serverport" value="8904" />
 	<property name="slatwall.test.datasource" value="Slatwall" />
 
 	<!-- what "runner" URL should the tests hit. In this example, you'd be hitting http://localhost:80/DirectoryNameOfYourProject/test/HttpAntRunner.cfc  Simply copy mxunit/samples/HttpAntRunner.cfc into your test directory! -->
