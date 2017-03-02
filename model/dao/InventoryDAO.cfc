@@ -402,12 +402,12 @@ Notes:
 			return QNRORO;
 		}
 		
-		public numeric function getQDORVO(required string productID, string productRemoteID){
+		public array function getQDORVO(required string productID, string productRemoteID){
 			var hql = "SELECT NEW MAP(
 							coalesce( sum(vendorOrderDeliveryItem.quantity), 0 ) as QDORVO, 
 							sku.skuID as skuID, 
 							stock.stockID as stockID, 
-							location.locationID as locationID, 
+							location.locationID as locationID,
 							location.locationIDPath as locationIDPath)
 						FROM
 							SlatwallVendorOrderItem vendorOrderItem
@@ -420,7 +420,7 @@ Notes:
 					  	  LEFT JOIN 
 					  	  	stock.location location
 						WHERE
-							vendorOrderItem.vendorOrder.vendorOrderStatusType.systemCode NOT IN ('ostPartiallyReceived','ostNew')
+							vendorOrderItem.vendorOrder.vendorOrderStatusType.systemCode NOT IN ('vostPartiallyReceived','vostNew')
 						  AND
 						  	vendorOrderItem.vendorOrder.vendorOrderType = 'votReturn'
 						  AND 
@@ -434,40 +434,41 @@ Notes:
 			return QDORVO;
 		}
 		
-		public numeric function getQORVO(required string productID, string productRemoteID){
+		public array function getQORVO(required string productID, string productRemoteID){
 			var params = { productID = arguments.productID };
-			var hql = "SELECT NEW MAP(
-							COALESCE(sum(vendorOrderItem.quantity),0) as QORVO, 
+			var hql = "
+						SELECT NEW MAP(
+							COALESCE(sum(vendorOrderItem.quantity),0) as QORVO,
 							sku.skuID as skuID, 
-							stock.stockID as stockID, 
-							location.locationID as locationID, 
+							stock.stockID as stockID,
+							location.locationID as locationID,
 							location.locationIDPath as locationIDPath
 						)
 						FROM SlatwallVendorOrderItem vendorOrderItem
 					  	  LEFT JOIN
-					  	  	orderItem.stock stock
+					  	  	vendorOrderItem.stock stock
 					  	  LEFT JOIN
 					  	  	stock.sku sku
 					  	  LEFT JOIN 
 					  	  	stock.location location
-						WHERE
-										vendorOrderItem.vendorOrder.vendorOrderStatusType.systemCode NOT IN ('ostNew','ostPartiallyReceived')
-						  			AND
-						  				vendorOrderItem.vendorOrder.vendorOrderType.systemCode = 'votReturn'
-						  			AND 
-										sku.product.productID = :productID
-						GROUP BY
-						sku.skuID, 
-						stock.stockID, 
-						location.locationID, 
-						location.locationIDPath
+					  	  WHERE 
+					  	  		vendorOrderItem.vendorOrder.vendorOrderType.systemCode = 'votReturnOrder'
+					  	  	AND
+					  	  		vendorOrderItem.vendorOrder.vendorOrderStatusType.systemCode NOT IN ('vostClosed','vostPartiallyReceived')
+					  	  	AND
+					  	  		sku.product.productID = :productID
+					  	  GROUP BY
+					  	  	sku.skuID,
+					  	  	stock.stockID,
+					  	  	location.locationID,
+					  	  	location.locationIDPath
 					  	 ";
 			var QORVO = ORMExecuteQuery(hql,params);	
 			return QORVO;
 		}
 		
 		// Quantity not delivered on return vendor order 
-		public numeric function getQNDORVO(required string productID, string productRemoteID) {
+		public array function getQNDORVO(required string productID, string productRemoteID) {
 			// TODO: Impliment this later when we add return vendor orders
 			var QNDORVO = [];
 			

@@ -74,7 +74,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 	// Ensure getQNDORVO executes without error
 	public any function getQNDORVO_runs_without_error() {
-		assertEquals(0,variables.dao.getQNDORVO(productID="1", productRemoteID="1"));
+		assertEquals([],variables.dao.getQNDORVO(productID="1", productRemoteID="1"));
 	}	
 		
 	// Ensure getQNDOSA executes without error
@@ -1420,9 +1420,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var mockVendorOrderItem2 = createPersistedTestEntity('VendorOrderItem', vendorOrderItemData2);
 		
 		
-		var result = variables.dao.getQNROVO(mockProduct.getProductID());
-		assertEquals(230, result[1].QNROVO, 'QNROVO should be (100+200) - (10+20+40) = 230');
+		var result = variables.dao.getQNDORVO(mockProduct.getProductID());
+		assertEquals(300, result[1].QNDORVO, 'QNDORVO should be (100+200) = 300');
 	}
+	
 	
 	public void function getQNROSATest() {
 		var mockProduct = createMockProduct();
