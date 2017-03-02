@@ -20,30 +20,30 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
 
 	<exec executable="hostname" outputproperty="computer.hostname"/>
 
-		<!-- what's the name of the directory where your tests live? Note: this is just the name of the directory, not the full path-->
-		<property name="slatwall.test.dir.name" value="meta/tests/test-runner" />
+	<!-- what's the name of the directory where your tests live? Note: this is just the name of the directory, not the full path-->
+	<property name="slatwall.test.dir.name" value="meta/tests/test-runner" />
 
-		<!-- where do your tests live, relative to this build file? test.dir.location will be a full path to a directory -->
-		<property name="slatwall.test.dir.location" location="./" />
+	<!-- where do your tests live, relative to this build file? test.dir.location will be a full path to a directory -->
+	<property name="slatwall.test.dir.location" location="./" />
 
-		<!-- what is the cfc dot-notation path to that directory, as ColdFusion sees it? -->
-		<property name="slatwall.test.cfcpath" value="Slatwall.meta.tests" />
+	<!-- what is the cfc dot-notation path to that directory, as ColdFusion sees it? -->
+	<property name="slatwall.test.cfcpath" value="Slatwall.meta.tests" />
 
-		<!-- what server and port should your tests run against? These defaults only apply if the properties are not set in $user.name}.properties -->
-		<property name="slatwall.test.server" value="${computer.hostname}" />
-		<property name="slatwall.test.serverport" value="8888" />
-		<property name="slatwall.test.datasource" value="Slatwall" />
+	<!-- what server and port should your tests run against? These defaults only apply if the properties are not set in $user.name}.properties -->
+	<property name="slatwall.test.server" value="${computer.hostname}" />
+	<property name="slatwall.test.serverport" value="8888" />
+	<property name="slatwall.test.datasource" value="Slatwall" />
 
-		<!-- what "runner" URL should the tests hit. In this example, you'd be hitting http://localhost:80/DirectoryNameOfYourProject/test/HttpAntRunner.cfc  Simply copy mxunit/samples/HttpAntRunner.cfc into your test directory! -->
-		<property name="slatwall.test.runner" value="/${slatwall.test.dir.name}/index.cfm" />
+	<!-- what "runner" URL should the tests hit. In this example, you'd be hitting http://localhost:80/DirectoryNameOfYourProject/test/HttpAntRunner.cfc  Simply copy mxunit/samples/HttpAntRunner.cfc into your test directory! -->
+	<property name="slatwall.test.runner" value="/${slatwall.test.dir.name}/index.cfm" />
 
-		<!-- this is where the xml and html will live for the report generator and Jenkins -->
-		<property name="slatwall.test.output" location="testresults" />
-		<property name="slatwall.test.output.xml" location="${slatwall.test.output}/xml" />
-		<property name="slatwall.test.output.html" location="${slatwall.test.output}/html" />
+	<!-- this is where the xml and html will live for the report generator and Jenkins -->
+	<property name="slatwall.test.output" location="testresults" />
+	<property name="slatwall.test.output.xml" location="${slatwall.test.output}/xml" />
+	<property name="slatwall.test.output.html" location="${slatwall.test.output}/html" />
 
-		<!-- dump the properties -->
-		<echoproperties />
+	<!-- dump the properties -->
+	<echoproperties />
 	
 
      <!-- <THE URL TO THE RUNNER, PLEASE CHANGE ACCORDINGLY-->
