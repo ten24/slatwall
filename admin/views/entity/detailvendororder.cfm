@@ -56,7 +56,11 @@ Notes:
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.vendorOrder#" edit="#rc.edit#" sRedirectAction="admin:entity.editvendororder">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.vendorOrder#" edit="#rc.edit#">
-			<hb:HibachiProcessCaller entity="#rc.vendorOrder#" action="admin:entity.preprocessvendororder" processContext="receive" type="list" />
+			<cfif rc.vendorOrder.getVendorOrderType().getSystemCode() eq 'votPurchaseOrder'>
+				<hb:HibachiProcessCaller entity="#rc.vendorOrder#" action="admin:entity.preprocessvendororder" processContext="receive" type="list" />
+			<cfelseif rc.vendorOrder.getVendorOrderType().getSystemCode() eq 'votReturnOrder'>
+				<hb:HibachiProcessCaller entity="#rc.vendorOrder#" action="admin:entity.preprocessvendororder" processContext="fulfill" type="list" />
+			</cfif>
 			<hb:HibachiActionCaller action="admin:entity.createcomment" querystring="vendorOrderID=#rc.vendorOrder.getVendorOrderID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
 		</hb:HibachiEntityActionBar>
 		<hb:HibachiEntityDetailGroup object="#rc.vendorOrder#">

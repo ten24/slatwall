@@ -64,7 +64,8 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 
 	// Related Object Properties (One-to-Many)
 	property name="stockReceiverItems" singularname="stockReceiverItem" cfc="StockReceiverItem" type="array" fieldtype="one-to-many" fkcolumn="vendorOrderItemID" cascade="all-delete-orphan" inverse="true";
-
+	property name="vendorOrderDeliveryItems" singularname="vendorOrderDeliveryItem" cfc="VendorOrderDeliveryItem" fieldtype="one-to-many" fkcolumn="vendorOrderItemID" inverse="true" cascade="delete-orphan";
+	
 	// Remote Properties
 	property name="remoteID" ormtype="string";
 
@@ -74,13 +75,13 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
-
 	// Non-persistent properties
 	property name="extendedCost" persistent="false" hb_formatType="currency";
 	property name="extendedWeight" persistent="false";
 	property name="quantityReceived" persistent="false";
 	property name="quantityUnreceived" persistent="false";
-	
+	property name="quantityDelivered" persistent="false";
+	property name="quantityNotDelivered" persistent="false";
 
 	// ============ START: Non-Persistent Property Methods =================
 	
@@ -140,6 +141,20 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 
 	public numeric function getQuantityUnreceived() {
 		return getQuantity() - getQuantityReceived();
+	}
+	
+	public numeric function getQuantityNotDelivered() {
+		return getQuantity() - getQuantityDelivered();
+	}
+	
+	public numeric function getQuantityDelivered() {
+		var quantityDelivered = 0;
+
+		for( var i=1; i<=arrayLen(getVendorOrderDeliveryItems()); i++){
+			quantityDelivered += getVendorOrderDeliveryItems()[1].getQuantity();
+		}
+
+		return quantityDelivered;
 	}
 
 	// ============  END:  Non-Persistent Property Methods =================
