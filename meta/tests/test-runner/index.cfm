@@ -27,10 +27,10 @@ if( url.opt_run ){
 				case "xml" : case "json" : case "text" : case "tap" : {
 					writeOutput( "<textarea name='tb-results-data' id='tb-results-data' rows='20' cols='100'>#results#</textarea>" );break;
 				}
-				default: { writeOutput( results ); }
+				default: { writeOutput( trim(results) ); }
 			}
 		} else {
-			writeDump( results );
+			writeDump( trim(results) );
 		}
 	} else {
 		writeOutput( '<h2>No tests selected for running!</h2>' );
