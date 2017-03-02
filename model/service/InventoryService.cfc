@@ -199,8 +199,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	// Quantity Not Delivered On Return Vendor Order
 	public struct function getQNDORVO(string productID, string productRemoteID) {
-		return {skus={},stocks={},locations={},QNDORVO=0};
-		//return createInventoryDataStruct( getInventoryDAO().getQNDORVO(argumentCollection=arguments), "QNDORVO" );
+		return createInventoryDataStruct( getInventoryDAO().getQNDORVO(argumentCollection=arguments), "QNDORVO" );
 	}
 	
 	// Quantity Not Delivered On Stock Adjustment

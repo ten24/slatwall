@@ -403,11 +403,67 @@ Notes:
 		}
 		
 		public numeric function getQDORVO(required string productID, string productRemoteID){
-			
+			var hql = "SELECT NEW MAP(
+							coalesce( sum(vendorOrderDeliveryItem.quantity), 0 ) as QDORVO, 
+							sku.skuID as skuID, 
+							stock.stockID as stockID, 
+							location.locationID as locationID, 
+							location.locationIDPath as locationIDPath)
+						FROM
+							SlatwallVendorOrderItem vendorOrderItem
+						  LEFT JOIN
+					  		vendorOrderItem.vendorOrderDeliveryItems vendorOrderDeliveryItem
+					  	  LEFT JOIN
+					  	  	vendorOrderItem.stock stock
+					  	  LEFT JOIN
+					  	  	stock.sku sku
+					  	  LEFT JOIN 
+					  	  	stock.location location
+						WHERE
+							vendorOrderItem.vendorOrder.vendorOrderStatusType.systemCode NOT IN ('ostPartiallyReceived','ostNew')
+						  AND
+						  	vendorOrderItem.vendorOrder.vendorOrderType = 'votReturn'
+						  AND 
+							vendorOrderItem.stock.sku.product.productID = :productID
+						GROUP BY
+							sku.skuID,
+							stock.stockID,
+							location.locationID,
+							location.locationIDPath";
+			var QDORVO = ormExecuteQuery(hql, {productID=arguments.productID});	
+			return QDORVO;
 		}
 		
 		public numeric function getQORVO(required string productID, string productRemoteID){
-			
+			var params = { productID = arguments.productID };
+			var hql = "SELECT NEW MAP(
+							COALESCE(sum(vendorOrderItem.quantity),0) as QORVO, 
+							sku.skuID as skuID, 
+							stock.stockID as stockID, 
+							location.locationID as locationID, 
+							location.locationIDPath as locationIDPath
+						)
+						FROM SlatwallVendorOrderItem vendorOrderItem
+					  	  LEFT JOIN
+					  	  	orderItem.stock stock
+					  	  LEFT JOIN
+					  	  	stock.sku sku
+					  	  LEFT JOIN 
+					  	  	stock.location location
+						WHERE
+										vendorOrderItem.vendorOrder.vendorOrderStatusType.systemCode NOT IN ('ostNew','ostPartiallyReceived')
+						  			AND
+						  				vendorOrderItem.vendorOrder.vendorOrderType.systemCode = 'votReturn'
+						  			AND 
+										sku.product.productID = :productID
+						GROUP BY
+						sku.skuID, 
+						stock.stockID, 
+						location.locationID, 
+						location.locationIDPath
+					  	 ";
+			var QORVO = ORMExecuteQuery(hql,params);	
+			return QORVO;
 		}
 		
 		// Quantity not delivered on return vendor order 
@@ -443,11 +499,11 @@ Notes:
 				}else{
 					record['locationIDPath'] = javacast('null','');
 				}
-				var quantityReceived = 0;
+				var quantityDelivered = 0;
 				if(structKeyExists(QDORVOHashMap,'#QORVOData['skuID']#')){
-					quantityReceived = QDORVOHashMap['#QORVOData['skuID']#']['QDORVO'];
+					quantityDelivered = QDORVOHashMap['#QORVOData['skuID']#']['QDORVO'];
 				}
-				record['QNDORVO'] = QORVOData['QORVO'] - quantityReceived;
+				record['QNDORVO'] = QORVOData['QORVO'] - quantityDelivered;
 				arrayAppend(QNDORVO,record);
 			}
 			
