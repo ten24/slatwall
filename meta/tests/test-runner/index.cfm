@@ -27,6 +27,12 @@ if( url.opt_run ){
 				case "xml" : case "json" : case "text" : case "tap" : {
 					writeOutput( "<textarea name='tb-results-data' id='tb-results-data' rows='20' cols='100'>#results#</textarea>" );break;
 				}
+				case "junit":{
+					xmlReport = xmlParse( results );
+				     for( thisSuite in xmlReport.testsuites.XMLChildren ){
+				          fileWrite( expandPath('/meta/tests/unit/testresults/xml') & "/TEST-" & thisSuite.XMLAttributes.name & ".xml", toString( thisSuite ) );
+				     }
+				}
 				default: { writeOutput( trim(results) ); }
 			}
 		} else {

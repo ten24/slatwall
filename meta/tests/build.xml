@@ -160,14 +160,14 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
            -->
 
           <!-- <Create fancy junit reports -->
-          <junitreport todir="${slatwall.test.output.xml}/unit">
+          <!--<junitreport todir="${slatwall.test.output.xml}/unit">
                <fileset dir="${slatwall.test.output.xml}/unit">
                     <include name="TEST-*.xml"/>
                </fileset>
                <report format="frames" todir="${slatwall.test.output.xml}/unit">
                     <param name="TITLE" expression="My Awesome TestBox Results"/>
                </report>
-          </junitreport>
+          </junitreport>-->
 
      </target>
      
