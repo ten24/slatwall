@@ -42,7 +42,6 @@ if( url.opt_run ){
 				     for( thisSuite in xmlReport.testsuites.XMLChildren ){
 				          fileWrite( reportdestination & "/TEST-" & thisSuite.XMLAttributes.name & ".xml", toString( thisSuite ) );
 				     }
-				     writeOutput( trim(results) );
 				     break;
 				}
 				default: { writeOutput( trim(results) ); }
