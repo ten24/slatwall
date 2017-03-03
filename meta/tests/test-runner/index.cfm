@@ -27,19 +27,12 @@ if( url.opt_run ){
 				case "xml" : case "json" : case "text" : case "tap" : {
 					writeOutput( "<textarea name='tb-results-data' id='tb-results-data' rows='20' cols='100'>#results#</textarea>" );break;
 				}
-				case "junit": {
+				case "junit":  {
 					xmlReport = xmlParse( results );
-					reportdestination = expandPath('/Slatwall/meta/tests/unit/testresults/xml');
-					if(!directoryExists(expandPath('/Slatwall/meta/tests/unit/testresults'))){
-						directoryCreate(expandPath('/Slatwall/meta/tests/unit/testresults'));
-					}
-					if(!directoryExists(reportdestination)){
-						directoryCreate(reportdestination);
-					}
-					
+					reportdestination = expandPath('/Slatwall/meta/tests/testresults/xml/unit/');
 
 				     for( thisSuite in xmlReport.testsuites.XMLChildren ){
-				          fileWrite( reportdestination & "/TEST-" & thisSuite.XMLAttributes.name & ".xml", toString( thisSuite ) );
+				          fileWrite( reportdestination & "results.xml", toString( thisSuite ) );
 				     }
 				     break;
 				}
