@@ -4,7 +4,6 @@
 <cfparam name="url.labels"		default="">
 <cfparam name="url.opt_run"		default="false">
 <cfscript>
-	
 // create testbox
 testBox = new testbox.system.TestBox();		
 // create reporters
