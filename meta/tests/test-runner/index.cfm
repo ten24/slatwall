@@ -4,6 +4,7 @@
 <cfparam name="url.labels"		default="">
 <cfparam name="url.opt_run"		default="false">
 <cfscript>
+	
 // create testbox
 testBox = new testbox.system.TestBox();		
 // create reporters
@@ -23,15 +24,26 @@ if( url.opt_run ){
 			results = testBox.run( directory={ mapping=url.target, recurse=url.opt_recurse }, reporter=url.reporter, labels=url.labels );
 		}
 		if( isSimpleValue( results ) ){
-			switch( url.reporter ){
+			switch( lcase(url.reporter) ){
 				case "xml" : case "json" : case "text" : case "tap" : {
 					writeOutput( "<textarea name='tb-results-data' id='tb-results-data' rows='20' cols='100'>#results#</textarea>" );break;
 				}
-				case "junit":{
+				case "junit": {
 					xmlReport = xmlParse( results );
+					reportdestination = expandPath('/Slatwall/meta/tests/unit/testresults/xml');
+					if(!directoryExists(expandPath('/Slatwall/meta/tests/unit/testresults'))){
+						directoryCreate(expandPath('/Slatwall/meta/tests/unit/testresults'));
+					}
+					if(!directoryExists(reportdestination)){
+						directoryCreate(reportdestination);
+					}
+					
+
 				     for( thisSuite in xmlReport.testsuites.XMLChildren ){
-				          fileWrite( expandPath('/meta/tests/unit/testresults/xml') & "/TEST-" & thisSuite.XMLAttributes.name & ".xml", toString( thisSuite ) );
+				          fileWrite( reportdestination & "/TEST-" & thisSuite.XMLAttributes.name & ".xml", toString( thisSuite ) );
 				     }
+				     writeOutput( trim(results) );
+				     break;
 				}
 				default: { writeOutput( trim(results) ); }
 			}
