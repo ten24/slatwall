@@ -143,7 +143,7 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
                 - ReportPath : The path where reports will be stored, by default it is the ${report.dir} directory.
           -->
           <get dest="${slatwall.test.output.xml}/unit/results.xml"
-                src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}&amp;recurse=${test.recurse}&amp;reporter=${test.reporter}&amp;labels=${test.labels}"
+                src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}&amp;recurse=${test.recurse}&amp;reporter=xml&amp;labels=${test.labels}"
                 verbose="true"/>
 
          <!-- <Bundles Runner
@@ -160,14 +160,14 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
            -->
 
           <!-- <Create fancy junit reports -->
-          <!--<junitreport todir="${slatwall.test.output.xml}/unit">
-               <fileset dir="${slatwall.test.output.xml}/unit">
+          <junitreport todir="unit/testresults/xml">
+               <fileset dir="unit/testresults/xml">
                     <include name="TEST-*.xml"/>
                </fileset>
-               <report format="frames" todir="${slatwall.test.output.xml}/unit">
+               <report format="frames" todir="unit/testresults/xml">
                     <param name="TITLE" expression="My Awesome TestBox Results"/>
                </report>
-          </junitreport>-->
+          </junitreport>
 
      </target>
      
