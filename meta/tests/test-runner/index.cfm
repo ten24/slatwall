@@ -34,7 +34,6 @@ if( url.opt_run ){
 				     for( thisSuite in xmlReport.testsuites.XMLChildren ){
 				          fileWrite( reportdestination & "results.xml", toString( thisSuite ) );
 				     }
-				     break;
 				}
 				default: { writeOutput( trim(results) ); }
 			}
