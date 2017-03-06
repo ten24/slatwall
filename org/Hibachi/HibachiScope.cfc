@@ -192,9 +192,9 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		return entityService.invokeMethod("get#arguments.entityName#SmartList", {1=arguments.data});
 	}
 	
-	public void function flushORMSession(){
+	public void function flushORMSession(boolean runCalculatedPropertiesAgain=false){
 		if(!getORMHasErrors()) {
-			getDAO( "hibachiDAO" ).flushORMSession();
+			getDAO( "hibachiDAO" ).flushORMSession(argumentCollection=arguments);
 		}
 	}
 	

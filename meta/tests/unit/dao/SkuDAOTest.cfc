@@ -233,4 +233,152 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var resultStockAdjustmentItem = variables.dao.getTransactionExistsFlag("", mockSku.getSkuID());
 		assertTrue(resultStockAdjustmentItem);
 	}
+	
+	public void function getAverageCostTest(){
+		var skuData = {
+			skuID=""
+		};
+		var sku = createPersistedTestEntity('Sku',skuData);
+		
+		var stockData = {
+			stockID="",
+			sku={
+				skuID=sku.getSkuID()
+			}
+		};
+		var stock = createPersistedTestEntity('Stock',stockData);
+		
+		var inventoryData ={
+			inventoryID="",
+			cost=50,
+			quantityin=5,
+			stock={
+				stockID=stock.getStockID()
+			}
+		};
+		var inventory = createPersistedTestEntity('Inventory',inventoryData);
+		
+		var averageCost = variables.dao.getAverageCost(sku.getSkuID());
+		assertEquals(10,averageCost);
+		
+		var inventoryData2 = {
+			inventoryID="",
+			cost=35,
+			quantityin=5,
+			stock={
+				stockID=stock.getStockID()
+			}
+		};
+		var inventory2 = createPersistedTestEntity('Inventory',inventoryData2);
+		
+		averageCost = variables.dao.getAverageCost(sku.getSkuID());
+		assertEquals(8.5,averageCost);
+		
+		//second stock
+		var stockData2 = {
+			stockID="",
+			sku={
+				skuID=sku.getSkuID()
+			}
+		};
+		var stock2 = createPersistedTestEntity('Stock',stockData2);
+		
+		var inventoryData3 ={
+			inventoryID="",
+			cost=100,
+			quantityin=5,
+			stock={
+				stockID=stock.getStockID()
+			}
+		};
+		var inventory3 = createPersistedTestEntity('Inventory',inventoryData3);
+		
+		averageCost = variables.dao.getAverageCost(sku.getSkuID());
+		assertEquals(12.3333333333,averageCost);
+	}
+	
+	public void function getAverageLandedCostTest(){
+		
+	}
+	
+	public void function getAveragePriceSold(){
+		var skuData = {
+			skuID=""
+		};
+		var sku = createPersistedTestEntity('Sku',skuData);
+		
+		var orderData = {
+			orderID="",
+			orderStatusType={
+				//ostNew
+				typeID='444df2b5c8f9b37338229d4f7dd84ad1'
+			}
+		};
+		var order = createPersistedTestEntity('Order',orderData);
+		
+		var orderItemData = {
+			orderItemID="",
+			orderItemStatusType={
+				//oitSale
+				typeID='444df2e9a6622ad1614ea75cd5b982ce'
+			},
+			price=8,
+			order={
+				orderID=order.getOrderID()
+			},
+			sku={
+				skuID=sku.getSkuID()
+			}
+		};
+		var orderItem = createPersistedTestEntity('OrderItem',orderItemData);
+		order.addOrderItem(orderItem);
+		orderItem.setOrder(order);
+		
+		var orderItemData2 = {
+			orderItemID="",
+			orderItemStatusType={
+				//oitSale
+				typeID='444df2e9a6622ad1614ea75cd5b982ce'
+			},
+			price=2,
+			order={
+				orderID=order.getOrderID()
+			},
+			sku={
+				skuID=sku.getSkuID()
+			}
+		};
+		var orderItem2 = createPersistedTestEntity('OrderItem',orderItemData2);
+		order.addOrderItem(orderItem2);
+		orderItem2.setOrder(order);
+		
+		var orderDeliveryItemData = {
+			orderDeliveryItemID="",
+			quantity=7,
+			orderItem={
+				orderItemID=orderItem.getOrderItemID()
+			}
+		};
+		var orderDeliveryItem = createTestEntity('OrderDeliveryItem',orderDeliveryItemData);
+		injectMethod(orderDeliveryItem, this, 'returnVoid', 'preInsert');
+		persistTestEntity(orderDeliveryItem, orderDeliveryItemData);
+		
+		var orderDeliveryItemData2 = {
+			orderDeliveryItemID="",
+			quantity=2,
+			orderItem={
+				orderItemID=orderItem2.getOrderItemID()
+			}
+		};
+		var orderDeliveryItem2 = createTestEntity('OrderDeliveryItem',orderDeliveryItemData2);
+		injectMethod(orderDeliveryItem2, this, 'returnVoid', 'preInsert');
+		persistTestEntity(orderDeliveryItem2, orderDeliveryItemData2);
+		
+		var averagePriceSold = variables.dao.getAveragePriceSold(sku.getSkuID());
+		assertEquals(averagePriceSold,6.67,'((2*2)+ (8*7)) /9 )');
+	}
+	
+	private  void function returnVoid() {
+		
+	}
 }
