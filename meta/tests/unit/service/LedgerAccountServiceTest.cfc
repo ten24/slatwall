@@ -194,6 +194,30 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var skuTrackInventorySettingEntity = createPersistedTestEntity('Setting',skuTrackInventorySettingData);
 		
+		//SET UP STOCK 1
+		var stockData1 = {
+			stockID="",
+			location={
+				locationID=newYorkLocation.getLocationID()
+			},
+			sku={
+				skuID=sku.getSkuID()
+			}
+		};
+		var stock1 = createPersistedTestEntity('stock',stockData1);
+		
+		//SET UP STOCK 2
+		var stockData2 = {
+			stockID="",
+			location={
+				locationID=sanDiegoLocation.getLocationID()
+			},
+			sku={
+				skuID=sku.getSkuID()
+			}
+		};
+		var stock2 = createPersistedTestEntity('stock',stockData2);
+		
 		//SET UP VENDOR ORDER
 		var vendorOrderData = {
 			vendorOrderID="",
@@ -226,6 +250,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		vendorOrder = variables.vendorOrderService.process(vendorOrder,vendorOrder_addOrderItemData,'AddVendorOrderItem');
 		//request.slatwallScope.flushORMSession(true);
+		
+		assertEquals(stock1.getAverageCost(),0);
+		assertEquals(stock1.getAverageLandedCost(),0);
 		
 		assertEquals(arraylen(vendorOrder.getVendorOrderItems()),1);
 		
