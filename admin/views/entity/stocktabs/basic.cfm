@@ -14,8 +14,6 @@
 			<hb:HibachiPropertyDisplay object="#rc.sku#" property="userDefinedPriceFlag" >
 			<hb:HibachiPropertyDisplay object="#rc.sku#" property="price">
 			<hb:HibachiPropertyDisplay object="#rc.sku#" property="listPrice" >
-			<hb:HibachiPropertyDisplay object="#rc.stock#" property="calculatedAverageCost" edit="false"/>
-			<hb:HibachiPropertyDisplay object="#rc.stock#" property="calculatedAverageLandedCost" edit="false" />
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </cfoutput>

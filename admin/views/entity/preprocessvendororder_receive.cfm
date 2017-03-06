@@ -65,8 +65,6 @@ Notes:
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="packingSlipNumber" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="boxCount" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="locationID" edit="#rc.edit#" value="#rc.vendorOrder.getBillToLocation().getLocationID()#">
-				<hb:HibachiPropertyDisplay fieldName="vendorOrder.shippingAndHandlingCost" object="#rc.processObject.getVendorOrder()#"  property="shippingAndHandlingCost" edit="#rc.edit#">
-					<hb:HibachiPropertyDisplay fieldName="vendorOrder.costDistributionType" object="#rc.processObject.getVendorOrder()#" property="costDistributionType" edit="#rc.edit#">
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 		
@@ -79,10 +77,6 @@ Notes:
 				<th class="primary">#$.slatwall.rbKey('entity.product.productName')#</th>
 				<th>#$.slatwall.rbKey('entity.sku.skuCode')#</th>
 				<th>#$.slatwall.rbKey('entity.location.locationName')#</th>
-				<th>#$.slatwall.rbKey('entity.sku.weight')#</th>
-				<th>#$.slatwall.rbKey('entity.vendorOrderItem.cost')#</th>
-				<th>#$.slatwall.rbKey('entity.vendorOrderItem.extendedCost')#</th>
-				<th>#$.slatwall.rbKey('entity.vendorOrderItem.extendedWeight')#</th>
 				<th>#$.slatwall.rbKey('entity.vendorOrderItem.quantity')#</th>
 				<th>#$.slatwall.rbKey('entity.vendorOrderItem.quantityReceived')#</th>
 				<th>#$.slatwall.rbKey('entity.vendorOrderItem.quantityUnreceived')#</th>
@@ -100,14 +94,9 @@ Notes:
 					<td>#vendorOrderItem.getStock().getSku().getProduct().getProductName()#</td>
 					<td>#vendorOrderItem.getStock().getSku().getSkuCode()#</td>
 					<td>#vendorOrderItem.getStock().getLocation().getLocationName()#</td>
-					<td>#vendorOrderItem.getStock().getSku().getWeight()#</td>
-					<td>#vendorOrderItem.getCost()#</td>
-					<td>#vendorOrderItem.getExtendedCost()#</td>
-					<td>#vendorOrderItem.getExtendedWeight()#</td>
 					<td>#vendorOrderItem.getQuantity()#</td>
 					<td>#vendorOrderItem.getQuantityReceived()#</td>
 					<td>#vendorOrderItem.getQuantityUnreceived()#</td>
-					
 					<td><input type="text" name="vendorOrderItems[#vendorOrderItemIndex#].quantity" value="" class="span1" /></td>
 				</tr>
 			</cfloop>

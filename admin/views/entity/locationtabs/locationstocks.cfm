@@ -19,7 +19,7 @@
     Linking this program statically or dynamically with other modules is
     making a combined work based on this program.  Thus, the terms and
     conditions of the GNU General Public License cover the whole
-    combination. 
+    combination.
 	
     As a special exception, the copyright holders of this program give you
     permission to combine this program with independent modules and your 
@@ -59,10 +59,8 @@ Notes:
 		<hb:HibachiListingColumn  propertyIdentifier="sku.product.productName" />
 		<hb:HibachiListingColumn  propertyIdentifier="calculatedQOH" />
 		<hb:HibachiListingColumn  propertyIdentifier="calculatedQNC" />
-		<hb:HibachiListingColumn  propertyIdentifier="calculatedAverageCost" />
-		<hb:HibachiListingColumn  propertyIdentifier="calculatedAverageLandedCost" />
 		
 	</hb:HibachiListingDisplay>
 
- 
+
 </cfoutput>

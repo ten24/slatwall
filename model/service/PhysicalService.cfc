@@ -71,17 +71,13 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ===================== START: Process Methods ===========================
 	
 	// Physical 
-	public any function processPhysical_commit(required any physical, any processObject) {
+	public any function processPhysical_commit(required any physical) {
 		
 		// Setup a locations adjustment to only create 1 new stock adjustment per location
 		var locationAdjustments = {};
 		
 		// get the discrepancy records
 		var physicalCountDescrepancies = arguments.physical.getDiscrepancyQuery();
-		
-		if(!isNull(arguments.processObject.getExpenseLedgerAccountID())){
-			arguments.physical.setExpenseLedgerAccount(arguments.processObject.getExpenseLedgerAccount());
-		}
 		
 		// Loop over discrepancy records
 		for(var rowCount=1; rowCount <= physicalCountDescrepancies.recordCount; rowCount++) {

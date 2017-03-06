@@ -53,50 +53,24 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	// Injected From Smart List
 	property name="sku";
-	property name="vendorSku";
 
 	// Data Properties
 	property name="skuID";
-	property name="vendorSkuCode";
 	property name="price";
 	property name="cost";
 	property name="quantity";
-	property name="shippingWeight";
 	property name="vendorOrderItemTypeSystemCode";
 	property name="deliverToLocationID" hb_formFieldType="select";
-	property name="deliverFromLocationID" hb_formFieldType="select";
 	
 	public any function init() {
 		return super.init();
-	} 
+	}
 	
 	public any function getSku() {
 		if(!structKeyExists(variables, "sku")) {
 			variables.sku = getService("skuService").getSku(getSkuID());
 		}
 		return variables.sku;
-	}
-	
-	public any function getVendorSkuCode(){
-		if(!structKeyExists(variables,'vendorSkuCode')){
-			variables.vendorSkuCode = "";
-			if(!isNull(getVendorSku()) && !isNull(getVendorSku().getAlternateSkuCode())){
-				variables.vendorSkuCode = getVendorSku().getAlternateSkuCode().getAlternateSkuCode();	
-			}
-		}
-		return variables.vendorSkuCode;
-	}
-	
-	public any function getVendorSku(){
-		if(!structKeyExists(variables,'vendorSku')){
-			if(!isNull(getSku())){
-				variables.vendorSku = getService('vendorOrderService').getVendorSkuBySku(getSku());
-			}
-		}
-		if(!structKeyExists(variables,'vendorSku')){
-			return javacast('null','');
-		}
-		return variables.vendorSku;
 	}
 	
 	public any function getPrice() {
@@ -112,9 +86,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	public any function getCost() {
 		if(!structKeyExists(variables, "cost")) {
 			variables.cost = 0;
-			if(!isNull(getVendorSku()) && !isNull(getVendorSku().getLastVendorOrderItem())){
-				variables.cost = getVendorSku().getLastVendorOrderItem().getCost();
-			}
 		}
 		return variables.cost;
 	}
@@ -123,56 +94,25 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	public any function getQuantity() {
 		if(!structKeyExists(variables, "quantity")) {
 			variables.quantity = 1;
-			if(!isNull(getVendorSku()) && !isNull(getVendorSku().getLastVendorOrderItem())){
-				variables.quantity = getVendorSku().getLastVendorOrderItem().getQuantity();
-			}
 		}
 		return variables.quantity;
 	}
 	
-	public any function getShippingWeight(){
-		if(!isNull(getSku())){
-			getSku().getWeight();
-		}
-	}
-	
 	public any function getVendorOrderItemTypeSystemCode() {
 		if(!structKeyExists(variables, "vendorOrderItemTypeSystemCode")) {
-			var systemCode = getVendorOrder().getVendorOrderType().getSystemCode();
-			if(systemCode == 'votPurchaseOrder'){
-				variables.vendorOrderItemTypeSystemCode = "voitPurchase";	
-			}else if(systemCode == 'votReturnOrder'){
-				variables.vendorOrderItemTypeSystemCode = 'voitReturn';
-			}
-			
+			variables.vendorOrderItemTypeSystemCode = "voitPurchase";
 		}
 		return variables.vendorOrderItemTypeSystemCode;
 	}
 	
-	public any function getDeliverFromLocationIDOptions(){
-		if(!structKeyExists(variables, "deliveryFromLocatonIDOptions")) {
-			variables.deliveryFromLocatonIDOptions = getDeliveryLocationIDOptions();
-		}
-		return variables.deliveryFromLocatonIDOptions;
-	}
-	
-	public any function getDeliveryLocationIDOptions(){
-		if(!structKeyExists(variables,'deliveryLocationIDOptions')){
+	public any function getDeliverToLocationIDOptions() {
+		if(!structKeyExists(variables, "deliveryToLocationIDOptions")) {
 			sl = getService("locationService").getLocationSmartList();
 			sl.addSelect('locationName', 'name');
 			sl.addSelect('locationID', 'value');
-			variables.deliveryLocationIDOptions = sl.getRecords();
-		}
-		return variables.deliveryLocationIDOptions;
-	}
-	
-	public any function getDeliverToLocationIDOptions() {
-		if(!structKeyExists(variables, "deliveryToLocationIDOptions")) {
-			variables.deliveryToLocationIDOptions = getDeliveryLocationIDOptions();
+			variables.deliveryToLocationIDOptions = sl.getRecords();
 		}
 		return variables.deliveryToLocationIDOptions;
 	}
-	
-	
 	
 }

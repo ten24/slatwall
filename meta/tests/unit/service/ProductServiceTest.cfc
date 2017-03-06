@@ -137,7 +137,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(yetAnotherProduct.getDefaultSku().getRedemptionAmount(),2);
 	}
 
-
 	public void function saveProductTest_checkifSkusAreSetToInactive(){
 		var productData = {
 			productID="",

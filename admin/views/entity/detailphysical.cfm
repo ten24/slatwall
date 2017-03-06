@@ -57,7 +57,7 @@ Notes:
 	<hb:HibachiEntityDetailForm object="#rc.physical#" edit="#rc.edit#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.physical#" edit="#rc.edit#">
 			<hb:HibachiProcessCaller action="admin:entity.preprocessphysical" entity="#rc.physical#" processContext="addPhysicalCount" modal="true" type="list" />
-			<hb:HibachiProcessCaller action="admin:entity.preprocessphysical" entity="#rc.physical#" processContext="commit" type="list" modal="true"/>
+			<hb:HibachiProcessCaller action="admin:entity.processphysical" entity="#rc.physical#" processContext="commit" type="list" />
 		</hb:HibachiEntityActionBar>
 
 		<hb:HibachiEntityDetailGroup object="#rc.physical#">
@@ -73,7 +73,6 @@ Notes:
 			<cfelse>
 				<hb:HibachiEntityDetailItem view="admin:entity/physicaltabs/discrepancies" />
 			</cfif>
-			<hb:HibachiEntityDetailItem view="admin:entity/physicaltabs/physicalsettings" />
 			<swa:SlatwallAdminTabComments object="#rc.physical#" />
 		</hb:HibachiEntityDetailGroup>
 		
