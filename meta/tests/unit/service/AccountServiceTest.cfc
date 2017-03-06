@@ -70,6 +70,141 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		assert(deleteOK);
 	}
+	
+	public void function processAccount_addAccountPayment(){
+		var accountData = {
+			accountID=""
+		};
+		var account = createPersistedTestEntity('Account',accountData);
+
+		var paymentMethodData = {
+			paymentMethodID="",
+			paymentMethodType="termPayment",
+			activeFlag=1
+		};
+		var paymentMethod = createPersistedTestEntity('PaymentMethod',paymentMethodData);
+		
+		var checkPaymentMethodData = {
+			paymentMethodID="",
+			paymentMethodType="check",
+			activeFlag=1
+		};
+		var checkPaymentMethod = createPersistedTestEntity('PaymentMethod',checkPaymentMethodData);
+		
+		var accountPaymentMethodData = {
+			accountPaymentMethodID="",
+			activeFlag=1,
+			paymentMethod={
+				paymentMethodID=paymentMethod.getPaymentMethodID()
+			},
+			paymentTerm={
+				paymentTermID="27f223d1a5b7cba92e783c926e29efc6"
+			},
+			account={
+				accountID=account.getAccountID()
+			}
+		};
+		var accountPaymentMethod = createPersistedTestEntity('AccountPaymentMethod',accountPaymentMethodData);
+		assert(!isNull(accountPaymentMethod.getPaymentMethod()));
+		assert(!isNull(accountPaymentMethod.getPaymentTerm()));
+		assert(!isNull(accountPaymentMethod.getAccount()));
+		
+		var orderData={
+			orderID="",
+			account={
+				accountID=account.getAccountID()
+			},
+			orderType={
+				//Sales Order
+				typeID="444df2df9f923d6c6fd0942a466e84cc"
+			}
+		};
+		var order = createPersistedTestEntity('Order',orderData);
+		
+		var orderItemData = {
+			orderItemID="",
+			
+			order={
+				orderID=order.getOrderID()
+			},
+			price=77.00
+		};
+		var orderItem = createPersistedTestEntity('OrderItem',orderItemData);
+		
+		var orderPaymentData = {
+			orderPaymentID="",
+			order={
+				orderID=order.getOrderID()
+			},
+			accountPaymentMethod={
+				accountPaymentMethodID=accountPaymentMethod.getAccountPaymentMethodID()
+			},
+			paymentMethod={
+				paymentMethodID="444df303dedc6dab69dd7ebcc9b8036a"
+			},
+			orderPaymentType={
+				//charge
+				orderPaymentTypeID="444df2f0fed139ff94191de8fcd1f61b"
+			}
+		};
+		var orderPayment = createPersistedTestEntity('OrderPayment',orderPaymentData);
+		
+		assert(!isNull(orderPayment.getOrder()));
+		assert(!isNull(orderPayment.getAccountPaymentMethod()));
+		assert(!isNull(orderPayment.getOrderPaymentType()));
+		ormflush();
+		var data = {
+			accountAddressID="",
+			billingAddress={
+				addressID="",
+				countryCode='US',
+				name="test",
+				company="test",
+				streetAddress="test",
+				street2Address="test",
+				city="test",
+				statCode="MA",
+				postalCode="01757"
+			},
+			appliedOrderPayments=[
+				{
+					amount=1,
+					orderPaymentID=orderPayment.getOrderPaymentID(),
+					//aptCharge
+					paymentTypeID="444df32dd2b0583d59a19f1b77869025"
+				}
+			],
+			newAccountPayment={
+				accountPaymentID="",
+				amount = 2,
+				currencyCode='USD',
+				paymentMethod={
+					paymentMethodID=checkPaymentMethod.getPaymentMethodID()
+				},
+				account={
+					accountID=account.getAccountID()
+				},
+				accountPaymentType={
+					//aptCharge
+					typeID="444df32dd2b0583d59a19f1b77869025"
+				},
+				getAccountPaymentMethodID="",
+				saveAccountPaymentMethodFlag=0,
+				accountID=account.getAccountID()
+			},
+			preProcessDisplayedFlag=1,
+			processContext="addAccountPayment"
+		};
+		
+		account = variables.service.process(account,data,'addAccountPayment');
+		
+		assert(arraylen(account.getAccountPayments()));
+		assert(arraylen(account.getAccountPayments()[1].getAppliedAccountPayments()));
+		assert(arraylen(account.getAccountPayments()[1].getPaymentTransactions()));
+		assert(account.getAccountPayments()[1].getPaymentTransactions()[1].getTransactionSuccessFlag());
+		
+		assertFalse(account.hasErrors());
+	}
 }
 
 
