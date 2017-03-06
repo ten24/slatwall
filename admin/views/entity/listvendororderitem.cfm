@@ -69,11 +69,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="vendorOrder.vendorOrderStatusType.typeName" />
 		<hb:HibachiListingColumn propertyIdentifier="stock.sku.product.brand.brandName" />
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="stock.sku.product.calculatedTitle" />
-		<hb:HibachiListingColumn propertyIdentifier="stock.sku.skuName" />
 		<hb:HibachiListingColumn propertyIdentifier="stock.sku.skuCode" />
-		<hb:HibachiListingColumn propertyIdentifier="stock.sku.price" />
 		<hb:HibachiListingColumn propertyIdentifier="quantity" />
-		<hb:HibachiListingColumn propertyIdentifier="cost" />
-		
 	</hb:HibachiListingDisplay>
 </cfoutput>

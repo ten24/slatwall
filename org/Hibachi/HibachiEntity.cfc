@@ -50,20 +50,9 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	public string function getFileUrlByPropertyName(required string propertyName){
 		return getURLFromPath(invokeMethod('get#arguments.propertyName#UploadDirectory')) & invokeMethod('get#arguments.propertyName#');
 	}
-	
-	public boolean function getCalculatedUpdateRunFlag(){
-		if(structKeyExists(variables,'calculatedUpdateRunFlag')){
-			return variables.calculatedUpdateRunFlag;	
-		}
-		return false;
-	}
-	
-	public void function setCalculatedUpdateRunFlag(boolean calculatedUpdateRunFlagValue){
-		variables.calculatedUpdateRunFlag = arguments.calculatedUpdateRunFlagValue;
-	}
 
 	/** runs a update calculated properties only once per request unless explicitly set to false before calling. */
-	public void function updateCalculatedProperties(boolean runAgain=false) {
+	public void function updateCalculatedProperties(any runAgain=false) {
         if(!structKeyExists(variables, "calculatedUpdateRunFlag") || runAgain) {
             // Set calculated to true so that this only runs 1 time per request unless explicitly told to run again.
             variables.calculatedUpdateRunFlag = true;

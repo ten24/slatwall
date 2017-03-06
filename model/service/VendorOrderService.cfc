@@ -59,12 +59,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="taxService" type="any";
 	property name="typeService" type="any";
 	
-	// ===================== START: Logical Methods ===========================
-	
-	// =====================  END: Logical Methods ============================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
 	public any function getVendorOrderSmartList(struct data={}) {
 		arguments.entityName = "SlatwallVendorOrder";
 		
@@ -106,124 +100,28 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getVenderOrderDAO().getSkusOrdered(arguments.vendorOrderId);
 	}
 	
-	public any function getVendorSkuByVendorSkuCode(required string vendorSkuCode){
-		return getDao('vendorOrderDao').getVendorSkuByVendorSkuCode(arguments.vendorSkuCode);
-	}
+	// ===================== START: Logical Methods ===========================
+	
+	// =====================  END: Logical Methods ============================
+	
+	// ===================== START: DAO Passthrough ===========================
 	
 	// ===================== START: DAO Passthrough ===========================
 	
 	// ===================== START: Process Methods ===========================
 	
-	public any function processVendorOrder_fulfill(required any vendorOrder, required processObject){
-		var vendorOrderDelivery = this.newVendorOrderDelivery();
-		vendorOrderDelivery.setVendorOrder(arguments.vendorOrder);
-		vendorOrderDelivery.setLocation(arguments.processObject.getLocation());
-		
-		//add items to vendorOrderDelivery
-		addVendorOrderItemsToVendorOrderDelivery(vendorOrderDelivery,arguments.processObject);
-		
-		arguments.vendorOrderDelivery = this.saveVendorOrderDelivery(vendorOrderDelivery);
-		
-			// Update the orderStatus
-		this.processVendorOrder(arguments.vendorOrder, {updateItems=true}, 'updateStatus');
-		
-
-		return arguments.vendorOrder;
-	}
-	
-	public any function processVendorOrder_updateStatus(required any vendorOrder, struct data) {
-		param name="arguments.data.updateItems" default="false";
-
-		// Get the original order status code
-		var originalVendorOrderStatus = arguments.vendorOrder.getVendorOrderStatusType().getSystemCode();
-
-		// First we make sure that this order status is not 'closed' because we cannot automatically update those statuses
-		if(!listFindNoCase("vostClosed", arguments.vendorOrder.getVendorOrderStatusType().getSystemCode())) {
-
-			if(
-				arguments.vendorOrder.getQuantityUndelivered() == 0
-			){
-				arguments.vendorOrder.setVendorOrderStatusType(  getTypeService().getTypeBySystemCode("vostClosed") );
-			//if some of the items are not delivered then set the status
-			} else if(arguments.vendorOrder.getQuantityUndelivered() >= 1){
-				arguments.vendorOrder.setVendorOrderStatusType( getTypeService().getTypeBySystemCode("vostPartiallyDelivered") );
-			}
-
-		}
-		arguments.vendorOrder = this.saveVendorOrder(arguments.vendorOrder);
-
-		return arguments.vendorOrder;
-	}
-	
-	public any function addVendorOrderItemsToVendorOrderDelivery(required vendorOrderDelivery, required any processObject){
-		for(var vendorOrderItemData in arguments.processObject.getVendorOrderItems()){
-			
-			var vendorOrderItem = this.getVendorOrderItem(vendorOrderItemData.vendorOrderItem.vendorOrderItemID);
-			
-			if(vendorOrderItem.getQuantityUndelivered()) {
-				if(isNumeric(vendorOrderItemData['quantity']) && vendorOrderItemData['quantity'] > 0){
-					var vendorOrderDeliveryItem = this.newVendorOrderDeliveryItem();
-					vendorOrderDeliveryItem.setQuantity(vendorOrderItemData['quantity']);
-					vendorOrderDeliveryItem.setVendorOrderItem(vendorOrderItem);
-					vendorOrderDeliveryItem.setVendorOrderDelivery(arguments.vendorOrderDelivery);
-					vendorOrderDeliveryItem.setStock(getStockService().getStockBySkuAndLocation(sku=vendorOrderDeliveryItem.getVendorOrderItem().getStock().getSku(), location=arguments.vendorOrderDelivery.getLocation()));
-					this.saveVendorOrderDeliveryItem(vendorOrderDeliveryItem);
-				}
-			}
-		}
-		return vendorOrderDelivery;
-	}
-	
 	public any function processVendorOrder_addVendorOrderItem(required any vendorOrder, required any processObject){
 		
 		var vendorOrderItemType = getTypeService().getTypeBySystemCode( arguments.processObject.getVendorOrderItemTypeSystemCode() );
+		var deliverToLocation = getStockService().getStockBySkuAndLocation(arguments.processObject.getSku(),getLocationService().getLocation(arguments.processObject.getDeliverToLocationID()));
+		
 		var newVendorOrderItem = this.newVendorOrderItem();
 		newVendorOrderItem.setVendorOrderItemType( vendorOrderItemType );
 		newVendorOrderItem.setVendorOrder( arguments.vendorOrder );
 		newVendorOrderItem.setCurrencyCode( arguments.vendorOrder.getCurrencyCode() );
-		
-		if(arguments.processObject.getVendorOrderItemTypeSystemCode() == 'voitReturn'){
-			var deliverFromLocation = getStockService().getStockBySkuAndLocation(arguments.processObject.getSku(),getLocationService().getLocation(arguments.processObject.getDeliverFromLocationID()));
-			newVendorOrderItem.setStock( deliverFromLocation );
-		}
-		
-		if(arguments.processObject.getVendorOrderItemTypeSystemCode() == 'voitPurchase'){
-			var deliverToLocation = getStockService().getStockBySkuAndLocation(arguments.processObject.getSku(),getLocationService().getLocation(arguments.processObject.getDeliverToLocationID()));
-			newVendorOrderItem.setStock( deliverToLocation );
-		}
-		
-		newVendorOrderItem.setCost( arguments.processObject.getCost() );
-			
-		//if vendor sku code was provided then find existing Vendor Sku or create one
-		if(!isNull(arguments.processObject.getVendorSkuCode()) && len(arguments.processObject.getVendorSkuCode())){
-			var vendorSku = getVendorSkuByVendorSkuCode(arguments.processObject.getVendorSkuCode());
-			if(isNull(vendorSku)){
-				vendorSku = this.newVendorSku();
-				vendorSku.setVendor(arguments.vendorOrder.getVendor());
-				vendorSku.setSku(arguments.processObject.getSku());
-				
-				//get alternateSkuCode and if it's new then set it up
-				var alternateSkuCode = getService('skuService').getAlternateSkuCodeByAlternateSkuCode(arguments.processObject.getVendorSkuCode(),true);
-				if(alternateSkuCode.getNewFlag()){
-					alternateSkuCode.setSku(arguments.processObject.getSku());
-					//type of vendor sku
-					var vendorSkuType = getService('TypeService').getType('444df2cad53c6edae52df82f27efe892');
-					alternateSkuCode.setAlternateSkuCodeType(vendorSkuType);
-					alternateSkuCode.setAlternateSkuCode(arguments.processObject.getVendorSkuCode());
-					getService('skuService').saveAlternateSkuCode(alternateSkuCode);
-				}
-				vendorSku.setAlternateSkuCode(alternateSkuCode);
-				
-			}
-			//set last vendorOrderItem on the vendorSku
-			vendorSku.setLastVendorOrderItem(newVendorOrderItem);
-			newVendorOrderItem.setVendorAlternateSkuCode(vendorSku.getAlternateSkuCode());
-			this.saveVendorSku(vendorSku);
-		}
-		
+		newVendorOrderItem.setStock( deliverToLocation );
 		newVendorOrderItem.setQuantity( arguments.processObject.getQuantity() );
-		
-		this.saveVendorOrderItem(newVendorOrderItem);
+		newVendorOrderItem.setCost( arguments.processObject.getCost() );
 		
 		return arguments.vendorOrder;
 	}
@@ -281,7 +179,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.vendorOrder.setVendorOrderStatusType( getTypeService().getTypeBySystemCode("vostPartiallyReceived") );
 
 		}
-		arguments.vendorOrder = this.saveVendorOrder(arguments.vendorOrder);
+		
 		
 		return arguments.vendorOrder;
 	}

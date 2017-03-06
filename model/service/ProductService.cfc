@@ -1034,6 +1034,7 @@ component extends="HibachiService" accessors="true" {
 	// ====================== START: Save Overrides ===========================
 
 	public any function saveProduct(required any product, struct data={}){
+
 		var previousActiveFlag = arguments.product.getActiveFlag();
 
 		if( (isNull(arguments.product.getURLTitle()) || !len(arguments.product.getURLTitle())) && (!structKeyExists(arguments.data, "urlTitle") || !len(arguments.data.urlTitle)) ) {

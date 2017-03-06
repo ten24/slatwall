@@ -146,18 +146,6 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 		}
 		return variables.parentProductTypeOptions;
 	}
-	
-	public numeric function getQOH(){
-		return getDao('inventoryDao').getQOHbyProductTypeID(this.getProductTypeID());
-	}
-	
-	public numeric function getAverageCost(){
-		return getDao('productTypeDao').getAverageCost(this.getProductTypeID());
-	}
-	
-	public numeric function getAverageLandedCost(){
-		return getDao('productTypeDao').getAverageLandedCost(this.getProductTypeID());
-	}
 
 	// ============  END:  Non-Persistent Property Methods =================
 

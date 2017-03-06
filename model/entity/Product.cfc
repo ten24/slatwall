@@ -145,19 +145,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="livePrice" hb_formatType="currency" persistent="false";
 	property name="salePrice" hb_formatType="currency" persistent="false";
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
-	
-	public any function getAverageCost(){
-		return getDao('productDao').getAverageCost(this.getProductID());
-	}
-	
-	public any function getAverageLandedCost(){
-		return getDao('productDao').getAverageLandedCost(this.getProductID());
-	}
-	
-	public numeric function getCurrentMargin(){
-		return getDao('productDao').getCurrentMargin(this.getProductID());
-	}
-	
 
 	public any function getAvailableForPurchaseFlag() {
 		if(!structKeyExists(variables, "availableToPurchaseFlag")) {
@@ -183,10 +170,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 
 		return variables.availableToPurchaseFlag;
-	}
-	
-	public numeric function getCurrentAssetValue(){
-		return getQOH() * getAverageCost();
 	}
 
 	public any function getProductTypeOptions( string baseProductType ) {
@@ -710,15 +693,15 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 		return [];
 	}
-	
+
 	// Quantity
 	public numeric function getQuantity(required string quantityType, string skuID, string locationID, string stockID) {
 
 		// First we check to see if that quantityType is defined, if not we need to go out an get the specific struct, or value and cache it
 		if(!structKeyExists(variables, arguments.quantityType)) {
+
 			if(listFindNoCase("QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA", arguments.quantityType)) {
 				variables[ arguments.quantityType] = getService("inventoryService").invokeMethod("get#arguments.quantityType#", {productID=getProductID(), productRemoteID=getRemoteID()});
-				
 			} else if(listFindNoCase("QC,QE,QNC,QATS,QIATS", arguments.quantityType)) {
 				variables[ arguments.quantityType ] = getService("inventoryService").invokeMethod("get#arguments.quantityType#", {entity=this});
 			} else {
@@ -750,7 +733,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 		// If we have a skuID
 		if( structKeyExists( arguments, "skuID") ) {
-			
 			if( structKeyExists(variables[ arguments.quantityType ].skus, arguments.skuID) ) {
 				return variables[ arguments.quantityType ].skus[ arguments.skuID ][ arguments.quantityType ];
 			}
@@ -906,10 +888,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 	public numeric function getQATS() {
 		return getQuantity("QATS");
-	}
-	
-	public numeric function getQOH(){
-		return getQuantity("QOH");
 	}
 
 	public numeric function getAllowBackorderFlag() {
@@ -1377,5 +1355,5 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return smartList.getRecords();
 	}
 
-	// ==================  END:  Deprecated Methods ========================	
+	// ==================  END:  Deprecated Methods ========================
 }

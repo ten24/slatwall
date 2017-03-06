@@ -2,9 +2,9 @@
 <Table tableName="SwWorkflowTrigger">
 	<Columns>
 		<column name="workflowTriggerID" fieldtype="id" />
-		<column name="triggerType" update="false"/>
-		<column name="triggerEvent" update="false"/>
-		<column name="startDateTime" update="false"/>
+		<column name="triggerType" />
+		<column name="triggerEvent" />
+		<column name="startDateTime" />
 		<column name="workflowID" fieldtype="id" />
 	</Columns>
 	<Records>
