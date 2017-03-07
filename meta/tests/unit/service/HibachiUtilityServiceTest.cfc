@@ -428,8 +428,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var falseMessage = "Condition is false";
 		return falseMessage;
 	}
-	
-	public function hibachiTernary_equalsIIFbutWithoutStrings(){
+	/*
+	*@test
+	*/
+	public void function hibachiTernary_equalsIIFbutWithoutStrings(){
 		var a = 2;
 		var b = 3;
 		var condition1 = a < b;
@@ -454,8 +456,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		iResult = IIF(condition1, true, false);
 		assert(iResult == hResult);
 	}
-	
-	public function hibachiTernary_handlesArgumentsCorrectly(){
+	/*
+	*@test
+	*/
+	public void function hibachiTernary_handlesArgumentsCorrectly(){
 		var hibachiTernary = service.hibachiTernary;
 		var result1 = hibachiTernary(true, 'returnTrueMessage()', returnFalseMessage());
 		assert(result1 == 'returnTrueMessage()');

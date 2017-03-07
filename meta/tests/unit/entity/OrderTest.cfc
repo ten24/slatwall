@@ -2105,8 +2105,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var resultAccountID = mockOrder.getShippingAccountAddress().getAccount().getAccountID();
 		assertEquals(mockAccount.getAccountID(), resultAccountID, 'The account should be the same account');
 	}
-	
-	public function checkNewShippingAccountAddressSaveTest_SecondIf() {
+	/*
+	*@test
+	*/
+	public void function checkNewShippingAccountAddressSaveTest_SecondIf() {
 		//Mocking data is same with checkNewShippingAccountAddressSaveTest_SecondIf()
 		var mockAccountAuthentication = createSimpleMockEntityByEntityName('accountAuthentication');
 		
