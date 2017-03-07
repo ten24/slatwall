@@ -780,7 +780,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var resultNoOrderItem = mockOrder.hasItemsQuantityWithinMaxOrderQuantity();
 		assertTrue(resultNoOrderItem, 'If no OrderItem involved with the order, shoulds return true');
 	}
-	
+	/**
+	* @test
+	*/
 	 public void function getAddPaymentRequirementDetailsTest_ChargeAmount() {
 	 	var mockOrder = createSimpleMockEntityByEntityName('Order');
 	 	
@@ -794,7 +796,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	restoreMethod(mockOrder, 'getTotal');
 	 	restoreMethod(mockOrder, 'getPaymentAmountTotal');	 	
 	 }
-	 
+	/**
+	* @test
+	*/ 
 	 public void function getAddPaymentRequirementDetailsTest_CreditAmount() {
 	 	var mockOrder = createSimpleMockEntityByEntityName('Order');
 	 	
@@ -806,6 +810,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	assertEquals('optCredit', resultCredit.orderPaymentType.getSystemCode(), 'The requiredAmount < 0 logic returns wrong type');
 	 	
 	 }
+	 /**
+	* @test
+	*/ 
 	 public void function getAddPaymentRequirementDetailsTest_AmountZero() {
 	 	var mockOrder = createSimpleMockEntityByEntityName('Order');
 	 	
@@ -813,7 +820,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	var result = mockOrder.getAddPaymentRequirementDetails();
 	 	assertEquals({}, result, 'When requiredAmount == 0 should return an empty struct');
 	 }
-	 
+	/**
+	* @test
+	*/ 
 	 public void function confirmOrderNumberOpenDateCloseDatePaymentAmountTest_ProcessingAndInternal_testAllSetters() {
 	 	var mockOrderPayment1 = createMockOrderPayment(amount = 1);
 	 	var mockOrderPayment2 = createMockOrderPayment(amount = 2);
@@ -848,7 +857,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	assertEquals(10, mockOrder.getOrderPayments()[2].getAmount(), 'The orderPayment.setAmount() should return 10 same with the injected function returns');
 	 	assertTrue(!isDefined(mockORder.getOrderCloseDateTime()), 'The ostProcessing status type should not have OrderCloseDateTime()');
 	 }
-	 
+	/**
+	* @test
+	*/ 
 	 public void function confirmOrderNumberOpenDateCloseDatePaymentAmountTest_ostClosed() {
 	 	var orderData = {
 	 		orderID = '',
@@ -863,7 +874,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	mockOrder.confirmOrderNumberOpenDateCloseDatePaymentAmount();
 		assertEquals(now(), mockORder.getOrderCloseDateTime(), 'The ostClosed status type should have OrderCloseDateTime()');
 	 }
-	 
+	/**
+	* @test
+	*/ 
 	 public void function isPaidTest() {
 	 	var mockOrder = createSimpleMockEntityByEntityName('Order');
 	 	
@@ -898,7 +911,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	assertEquals(orderItem.getPrice(), result[1].getPrice());
 	 	assertEquals(orderItem.getPrice(), result[2].getPrice());
 	 }
-	 
+	/**
+	* @test
+	*/ 
 	 public void function canCancelTest() {
 	 	var mockOrder = createSimpleMockEntityByEntityName('Order');
 	 	injectMethod(mockOrder, this, 'returnTrue', 'hasGiftCardOrderItems');
@@ -922,7 +937,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	
 	 	return [mockOrderItem1, mockOrderItem2];
 	 }
-	 
+	/**
+	* @test
+	*/ 
 	 public void function hasGiftCardOrderItemsTest_WithArgu() {
 	 	//Mocking data is same with the orderDAO.cfc getGiftCardOrderItemsTest() function
 	 	var productData = {
@@ -974,7 +991,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	assertFalse(resultFakeOIid, 'If the giftCardOrderItem is not same with the arguments, should return False');
 	 	
 	 }
-	 
+	/**
+	* @test
+	*/ 
 	 public void function hasGiftCardOrderItemsTest_NoArgu() {
 	 	//Mocking data is same with the orderDAO.cfc getGiftCardOrderItemsTest() function
 	 	var productData = {
@@ -1032,7 +1051,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	
 	 	
 	 }
-	 
+	/**
+	* @test
+	*/ 
 	 public void function getAllOrderItemGiftRecipientsSmartListTest() {
 	 	var mockOrder = createSimpleMockEntityByEntityName('Order');
 	 	
@@ -1072,7 +1093,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	assertTrue(arrayContains(result, mockOrderItemGiftRecepient1), 'The object should be added in the smartlist but fails');
 	 	assertTrue(arrayContains(result, mockOrderItemGiftRecepient2), 'The object should be added in the smartlist but fails');
 	 }
-	 
+	/**
+	* @test
+	*/ 
 	 public void function getDynamicChargeOrderPaymentTest_general() {
 	 	//Testing the systemCode
 	 	var mockOrderPayment2 = createMockOrderPayment(orderPaymentTypeID='444df2f1cc40d0ea8a2de6f542ab4f1d'); //optCredit
@@ -1141,7 +1164,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	var resultNoOrderPayment = 	mockOrderNoPayment.getDynamicChargeOrderPayment();
 	 	assertTrue(isNULL(resultNoOrderPayment),'The mockOrder without orderPayment should return nulls');
 	 }
-	 
+	/**
+	* @test
+	*/ 
 	 public void function getDynamicCreditOrderPaymentTest_general() {
 	 	//Testing the systemCode
 	 	var mockOrderPayment2 = createMockOrderPayment(orderPaymentTypeID='444df2f0fed139ff94191de8fcd1f61b'); //optCharge
@@ -1210,7 +1235,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	var resultNoOrderPayment = 	mockOrderNoPayment.getDynamicCreditOrderPayment();
 	 	assertTrue(isNULL(resultNoOrderPayment),'The mockOrder without orderPayment should return nulls');
 	 }
-	 
+	/**
+	* @test
+	*/ 
 	 public void function getPaymentMethodOptionsSmartListTest_DefaultPaymentMethods() {
 	 	var mockOrderPayment = createMockOrderPayment();
 	 	
@@ -1230,7 +1257,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	assertEquals('Credit Card', resultSLRecords[1].getPaymentMethodName(),'The first default paymentMethod should be Credit Card');
 	 	assertEquals('Gift Card', resultSLRecords[2].getPaymentMethodName(),'The second default paymentMethod should be Gift Card');
 	 }
-	 
+	/**
+	* @test
+	*/ 
 	 public void function getPaymentMethodOptionsSmartListTest_AddPaymentMethods() {
 	 	var paymentMethodData1 = {
 	 		paymentMethodID = '',
@@ -1274,7 +1303,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	assertTrue(listFind(resultPaymentNameList, 'MyPaymentMethod1') != 0,'The added mockPaymentMethodFlagTrue should be in the smartlist');
 	 	assertTrue(listFind(resultPaymentNameList, 'MyPaymentMethod2') == 0,'The added mockPaymentMethodFlagFalse should not be in the smartlist');
 	 }
-	 
+	/**
+	* @test
+	*/ 
 	 public void function removeAllOrderItemsTest() {
 	 	var mockOrderItem1 = createMockOrderItem();
 	 	var mockOrderItem2 = createMockOrderItem();

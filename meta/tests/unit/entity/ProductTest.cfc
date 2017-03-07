@@ -2423,7 +2423,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 //	}
 //}
 	
-	
+	/**
+	* @test
+	*/
 	 public void function getBrandNameTest() {
 	 	//testing if both brand and brandName existed
 	 	var brandData = {
@@ -2469,7 +2471,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var resultNoBrand = mockProductNoBrand.getBrandName();
 		assertIsEmpty(resultNoBrand);	 	
 	 }
-	 
+	 /**
+	* @test
+	*/
 	 public void function getBrandOptionsTest() {
 	 	//Testing when mockBrand1 is associated with mockProduct
 	 	var brandData1 = {
@@ -2512,7 +2516,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	};
 	 	return createPersistedTestEntity('Sku', skuData);
 	 }
-	 
+	 /**
+	* @test
+	*/
 	 public void function getNextSkuCodeCountTest() {	 	
 	 	var mockSku1 = createMockSKuWithSkuCode('sku');
 	 	var mockSku2 = createMockSKuWithSkuCode('sku-2');
@@ -2565,14 +2571,18 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	assertEquals(2, resultNoSkuCode);
 	 }
 
-
+	/**
+	* @test
+	*/
 	 public void function getQATSTest() {
 	 	var mockProduct = createMockProduct();
 	 	
 	 	var resultDefault = mockProduct.getQATS();
 	 	assertTrue(mockProduct.getQuantity("QATS"), resultDefault);
 	 }
-	 
+	 /**
+	* @test
+	*/
 	 public void function getPlacedOrderItemsSmartListTest() {
 	 	//mockProduct1 -> (Sku) -> MockOrderItem1 -> mockOrder1: ostNew
 	 	//			   -> (Sku) -> MockOrderItem2 -> mockOrder2: ostNotPlaced
@@ -2659,6 +2669,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	
 	 	
 	 }
+	 
+	 /**
+	* @test
+	*/
 	 public void function getBundleSkusSmartListTest() {
 		var productData = {
 			productID = ""
@@ -2691,7 +2705,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 	 
-	 
+	 /**
+	* @test
+	*/
 	 public void function getAllowBackorderFlagTest() {
 	 	//testing default setting
 	 	var mockProduct = createMockProduct();
@@ -2712,7 +2728,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	var resultOverrideSetting = mockProduct2.getAllowBackorderFlag();
 	 	assertTrue(resultOverrideSetting);
 	 }
-	 
+	 /**
+	* @test
+	*/
 	 public void function getTitleTest() {
 	 	//testing if both brandName and productName existed
 	 	var brandData1 = {
@@ -2764,7 +2782,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	assertEquals(mockProductHasName2.getProductName(), resultProductNameOnly);
 	 }
 	 
-	
+	/**
+	* @test
+	*/
 	 public void function getCurrencyCodeTest() {
 	 	//testing default currency code
 		var mockSku = createMockSku();
@@ -2794,12 +2814,16 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		//Potential bug: invalid currencyCode could also be returned; should add validation if not select button frontend
 	 }
-	 
+	 /**
+	* @test
+	*/
 	 public void function getEventConflictExistsFlagTest() {
 	 	//TODO: Wait for Chris' new verstion of the function to test
 	 	//@Suppress to Sku.cfc getEventConflictExistsFlag()
 	 }
-	 
+	 /**
+	* @test
+	*/
 	 public void function getPriceTest() {
 	 	var skuData = {
 	 		skuID = "",
@@ -2842,7 +2866,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	var resultWithSkuNoPrice = mockProductWithSkuNoPrice.getPrice();
 	 	assertEquals(0, resultWithSkuNoPrice);
 	 }
-	 
+	 /**
+	* @test
+	*/
 	 public void function getRenewalPriceTest() {
 	 	var skuData = {
 	 		skuID = "",
@@ -2878,7 +2904,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	var resultWithSkuNoPrice = mockProductWithSkuNoPrice.getRenewalPrice();
 	 	assertEquals(0, resultWithSkuNoPrice);
 	 }
-	 
+	 /**
+	* @test
+	*/
 	 public void function getListPriceTest() {
 	 	var skuData = {
 	 		skuID = "",
@@ -2962,7 +2990,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		return mockProduct;
 	 }
-	 
+	 /**
+	* @test
+	*/
 	 public void function getSalePriceTest() {	
 		var mockProduct = createMockProductAboutSalePrice();
 		
@@ -3082,7 +3112,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		return createPersistedTestEntity(entityName='Sku', data=skuData1);
 	 }
-	 
+	 /**
+	* @test
+	*/
 	 public void function getNumberOfUnusedProductOptionCombinationsTest() {
 		var mockProduct = createMockProduct();
 		
@@ -3108,7 +3140,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var result = mockProduct.getNumberOfUnusedProductOptionCombinations();
 		assertEquals(21-2, result);
 	 }
-	 
+	 /**
+	* @test
+	*/
 	 public void function getUnusedProductSubscriptionTermsTest() {
 	 	var mockProduct = createMockProduct();
 		
@@ -3159,7 +3193,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	}
 	 	return createPersistedTestEntity('EventRegistration', eventRegistrationData);
 	 }
-	 
+	 /**
+	* @test
+	*/
 	 public void function getEventRegistrationsSmartListTest() {
 	 	var mockProduct = createMockProduct();
 
@@ -3182,7 +3218,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	};
 	 	return createPersistedTestEntity('attributeSet', attributeSetData);
 	 }
-	 
+	 /**
+	* @test
+	*/
 	 public void function getAssignedAttributeSetSmartListTest_TwoFilters() {
 		var mockAttributeSet1 = createMockAttributeSet(1,"Product");
 		var mockAttributeSet2 = createMockAttributeSet(0,"Product");
@@ -3249,7 +3287,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	}
 	 	return createPersistedTestEntity('attributeSet', attributeSetData);
 	 }
-	 
+	 /**
+	* @test
+	*/
 	 public void function getAssignedAttributeSetSmartListTest_WhereCondition() {
 	 	//Testing generally if the where conditions work when globalFlag equals to 0
 	 	var attributeSetData = {
@@ -3319,7 +3359,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var resultNoBrand = mockProductNoBrand.getAssignedAttributeSetSmartList(true).getRecords(refresh = true);
 		assertTrue(arrayFind(resultNoBrand, mockAttributeSet2) != 0);
 	 }
-	 
+	 /**
+	* @test
+	*/
 	 public void function getSimpleRepresentationPropertyNameTest() {
 	 	var mockProduct = createMockProduct();
 	 	var result = mockProduct.getSimpleRepresentationPropertyName();
