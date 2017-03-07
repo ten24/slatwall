@@ -66,10 +66,10 @@ test:
 
     # Run Unit Tests
     
-    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwallweb_1)" -- ant -f /var/www/meta/tests/build.xml run-junit:
+    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwallweb_1)" -- ant -f /var/www/meta/tests/build.xml run-junit -Dtest.directory :
         timeout: 1800
         parallel: true
-        Ddirectory: 
+        files: 
           - meta.tests.unit.entity.AccountTest
   post:
     # Kill the Sauce Labs tunnel
