@@ -61,7 +61,7 @@ Notes:
 	<cffunction name="getAccountIDByPrimaryEmailAddress">
 		<cfargument name="emailAddress" required="true" type="string" />
 
-		<cfquery name="getAccountIDByPrimaryEmailAddress" maxrows="1">
+		<cfquery name="local.getAccountIDByPrimaryEmailAddress" maxrows="1">
 			SELECT a.accountID FROM SwAccount AS a LEFT JOIN SwAccountEmailAddress AS aea ON aea.accountID=a.accountID
 			WHERE emailAddress = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.emailAddress#" />
 		</cfquery>
@@ -141,6 +141,22 @@ Notes:
 
 	</cffunction>
 
+	<cffunction name="removeAccountAddressFromSubscriptionUsages">
+		<cfargument name="accountAddressID" type="string" required="true" >
+
+		<cfset var rs = "" />
+
+		<cfquery name="rs">
+			UPDATE
+				SwSubsUsage
+			SET
+				shippingAccountAddressID = null
+			WHERE
+				shippingAccountAddressID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountAddressID#" />
+		</cfquery>
+
+	</cffunction>
+	
 	<cffunction name="removeAccountPaymentMethodFromOrderPayments">
 		<cfargument name="accountPaymentMethodID" type="string" required="true" >
 

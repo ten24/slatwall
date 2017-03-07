@@ -173,36 +173,38 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 
 		}
-
-		// Loop over all account payments and link them to the AccountPaymentApplied object
-		for (var appliedOrderPayment in processObject.getAppliedOrderPayments()) {
-
-			if(IsNumeric(appliedOrderPayment.amount) && appliedOrderPayment.amount > 0) {
-				var orderPayment = getOrderService().getOrderPayment( appliedOrderPayment.orderPaymentID );
-
-				var newAccountPaymentApplied = this.newAccountPaymentApplied();
-				newAccountPaymentApplied.setAccountPayment( newAccountPayment );
-
-				newAccountPaymentApplied.setAmount( appliedOrderPayment.amount );
-
-				// Link to the order payment if the payment is assigned to a term order. Also set the payment type
-				if(!isNull(orderPayment)) {
-					newAccountPaymentApplied.setOrderPayment( orderPayment );
-					newAccountPaymentApplied.setAccountPaymentType( getTypeService().getType( appliedOrderPayment.paymentTypeID  ) );
+		
+		
+		if(!newAccountPayment.hasErrors()) {
+			// Loop over all account payments and link them to the AccountPaymentApplied object
+			for (var appliedOrderPayment in processObject.getAppliedOrderPayments()) {
+				if(IsNumeric(appliedOrderPayment.amount) && appliedOrderPayment.amount > 0) {
+					var orderPayment = getOrderService().getOrderPayment( appliedOrderPayment.orderPaymentID );
+	
+					var newAccountPaymentApplied = this.newAccountPaymentApplied();
+					newAccountPaymentApplied.setAccountPayment( newAccountPayment );
+	
+					newAccountPaymentApplied.setAmount( appliedOrderPayment.amount );
+	
+					// Link to the order payment if the payment is assigned to a term order. Also set the payment type
+					if(!isNull(orderPayment)) {
+						newAccountPaymentApplied.setOrderPayment( orderPayment );
+						newAccountPaymentApplied.setAccountPaymentType( getTypeService().getType( appliedOrderPayment.paymentTypeID  ) );
+					}
+	
+					// Save the account payment applied
+					newAccountPaymentApplied = this.saveAccountPaymentApplied( newAccountPaymentApplied );
 				}
-
-				// Save the account payment applied
-				newAccountPaymentApplied = this.saveAccountPaymentApplied( newAccountPaymentApplied );
 			}
 		}
-
+		
 		// Save the newAccountPayment
 		newAccountPayment = this.saveAccountPayment( newAccountPayment );
-
+		
 		// If there are errors in the newAccountPayment after save, then add them to the account
 		if(newAccountPayment.hasErrors()) {
+			
 			arguments.account.addError('accountPayment', rbKey('admin.entity.order.addAccountPayment_error'));
-
 		// If no errors, then we can process a transaction
 		} else {
 			var transactionData = {
@@ -211,7 +213,11 @@ component extends="HibachiService" accessors="true" output="false" {
 
 			if(newAccountPayment.getAccountPaymentType().getSystemCode() eq "aptCharge") {
 				if(newAccountPayment.getPaymentMethod().getPaymentMethodType() eq "creditCard") {
-					transactionData.transactionType = 'authorizeAndCharge';
+					if(!isNull(newAccountPayment.getPaymentMethod().getIntegration())) {
+						transactionData.transactionType = 'authorizeAndCharge';	
+					} else {
+						transactionData.transactionType = 'receiveOffline';	
+					}
 				} else {
 					transactionData.transactionType = 'receive';
 				}
@@ -220,21 +226,35 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 
 			newAccountPayment = this.processAccountPayment(newAccountPayment, transactionData, 'createTransaction');
-
 			//Loop over the newaccountpayment.getAppliedPayments
-			for (var appliedAccountPayment in newAccountPayment.getAppliedAccountPayments()) {
-				if(!IsNull(appliedAccountPayment.getOrderPayment())) {
-					transactionData = {
-						amount = appliedAccountPayment.getAmount()
-					};
-
-					if(newAccountPayment.getAccountPaymentType().getSystemCode() eq "aptCharge") {
-						transactionData.transactionType = 'receive';
-					} else {
-						transactionData.transactionType = 'credit';
+			if(newAccountPayment.hasErrors()){
+				for(var errorKey in newAccountPayment.getErrors()){
+					arguments.account.addError(errorKey, newAccountPayment.getErrors()[errorKey]);	
+				}
+				
+			}else{
+				for (var appliedAccountPayment in newAccountPayment.getAppliedAccountPayments()) {
+					if(!IsNull(appliedAccountPayment.getOrderPayment())) {
+						transactionData = {
+							amount = appliedAccountPayment.getAmount()
+						};
+	
+						if(newAccountPayment.getAccountPaymentType().getSystemCode() eq "aptCharge") {
+							if(newAccountPayment.getPaymentMethod().getPaymentMethodType() eq "creditCard") {
+								if(!isNull(newAccountPayment.getPaymentMethod().getIntegration())) {
+									transactionData.transactionType = 'authorizeAndCharge';	
+								} else {
+									transactionData.transactionType = 'receiveOffline';	
+								}
+							} else {
+								transactionData.transactionType = 'receive';
+							}
+						} else {
+							transactionData.transactionType = 'credit';
+						}
+	
+						getOrderService().processOrderPayment(appliedAccountPayment.getOrderPayment(), transactionData, 'createTransaction');
 					}
-
-					getOrderService().processOrderPayment(appliedAccountPayment.getOrderPayment(), transactionData, 'createTransaction');
 				}
 			}
 		}
@@ -252,64 +272,66 @@ component extends="HibachiService" accessors="true" output="false" {
 
 	public any function processAccount_create(required any account, required any processObject, struct data={}) {
 
-		// Populate the account with the correct values that have been previously validated
-		arguments.account.setFirstName( processObject.getFirstName() );
-		arguments.account.setLastName( processObject.getLastName() );
-
-		// If company was passed in then set that up
-		if(!isNull(processObject.getCompany())) {
-			arguments.account.setCompany( processObject.getCompany() );
-		}
-
-		// If phone number was passed in the add a primary phone number
-		if(!isNull(processObject.getPhoneNumber())) {
-			var accountPhoneNumber = this.newAccountPhoneNumber();
-			accountPhoneNumber.setAccount( arguments.account );
-			accountPhoneNumber.setPhoneNumber( processObject.getPhoneNumber() );
-		}
-
-		// If email address was passed in then add a primary email address
-		if(!isNull(processObject.getEmailAddress())) {
-			var accountEmailAddress = this.newAccountEmailAddress();
-			accountEmailAddress.setAccount( arguments.account );
-			accountEmailAddress.setEmailAddress( processObject.getEmailAddress() );
-
-			arguments.account.setPrimaryEmailAddress( accountEmailAddress );
-		}
+		if(arguments.account.getNewFlag()){
 		
-		if(!arguments.account.hasErrors() && !isNull(processObject.getAccessID())) {
-			var subscriptionUsageBenefitAccountCreated = false;
-			var access = getService("accessService").getAccess(processObject.getAccessID());
-		
-			if(isNull(access)) {
-				//return access code error
-				arguments.account.addError("accessID", rbKey('validate.account.accessID'));
+			// Populate the account with the correct values that have been previously validated
+			arguments.account.setFirstName( processObject.getFirstName() );
+			arguments.account.setLastName( processObject.getLastName() );
+	
+			// If company was passed in then set that up
+			if(!isNull(processObject.getCompany())) {
+				arguments.account.setCompany( processObject.getCompany() );
+			}
+	
+			// If phone number was passed in the add a primary phone number
+			if(!isNull(processObject.getPhoneNumber())) {
+				var accountPhoneNumber = this.newAccountPhoneNumber();
+				accountPhoneNumber.setAccount( arguments.account );
+				accountPhoneNumber.setPhoneNumber( processObject.getPhoneNumber() );
+			}
+	
+			// If email address was passed in then add a primary email address
+			if(!isNull(processObject.getEmailAddress())) {
+				var accountEmailAddress = this.newAccountEmailAddress();
+				accountEmailAddress.setAccount( arguments.account );
+				accountEmailAddress.setEmailAddress( processObject.getEmailAddress() );
+	
+				arguments.account.setPrimaryEmailAddress( accountEmailAddress );
+			}
+			
+			if(!arguments.account.hasErrors() && !isNull(processObject.getAccessID())) {
+				var subscriptionUsageBenefitAccountCreated = false;
+				var access = getService("accessService").getAccess(processObject.getAccessID());
+			
+				if(isNull(access)) {
+					//return access code error
+					arguments.account.addError("accessID", rbKey('validate.account.accessID'));
+				}
+			}
+	
+			// Save & Populate the account so that custom attributes get set
+			arguments.account = this.saveAccount(arguments.account, arguments.data);
+	
+			// If the createAuthenticationFlag was set to true, the add the authentication
+			if(!arguments.account.hasErrors() && processObject.getCreateAuthenticationFlag()) {
+				var accountAuthentication = this.newAccountAuthentication();
+				accountAuthentication.setAccount( arguments.account );
+	
+				// Put the accountAuthentication into the hibernate scope so that it has an id which will allow the hash / salting below to work
+				getHibachiDAO().save(accountAuthentication);
+	
+				// Set the password
+				accountAuthentication.setPassword( getHashedAndSaltedPassword(arguments.processObject.getPassword(), accountAuthentication.getAccountAuthenticationID()) );
+			}
+	
+			// Call save on the account now that it is all setup
+			arguments.account = this.saveAccount(arguments.account);
+			
+			// if all validation passed and setup accounts subscription benefits based on access 
+			if(!arguments.account.hasErrors() && !isNull(access)) {
+				subscriptionUsageBenefitAccountCreated = getService("subscriptionService").createSubscriptionUsageBenefitAccountByAccess(access, arguments.account);
 			}
 		}
-
-		// Save & Populate the account so that custom attributes get set
-		arguments.account = this.saveAccount(arguments.account, arguments.data);
-
-		// If the createAuthenticationFlag was set to true, the add the authentication
-		if(!arguments.account.hasErrors() && processObject.getCreateAuthenticationFlag()) {
-			var accountAuthentication = this.newAccountAuthentication();
-			accountAuthentication.setAccount( arguments.account );
-
-			// Put the accountAuthentication into the hibernate scope so that it has an id which will allow the hash / salting below to work
-			getHibachiDAO().save(accountAuthentication);
-
-			// Set the password
-			accountAuthentication.setPassword( getHashedAndSaltedPassword(arguments.processObject.getPassword(), accountAuthentication.getAccountAuthenticationID()) );
-		}
-
-		// Call save on the account now that it is all setup
-		arguments.account = this.saveAccount(arguments.account);
-		
-		// if all validation passed and setup accounts subscription benefits based on access 
-		if(!arguments.account.hasErrors() && !isNull(access)) {
-			subscriptionUsageBenefitAccountCreated = getService("subscriptionService").createSubscriptionUsageBenefitAccountByAccess(access, arguments.account);
-		}
-
 		return arguments.account;
 	}
 
@@ -1020,7 +1042,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 			for(var a=1; a<=arrayLen(uncapturedAuthorizations); a++) {
 
-				var thisToCharge = precisionEvaluate(arguments.processObject.getAmount() - totalAmountCharged);
+				var thisToCharge = getService('HibachiUtilityService').precisionCalculate(arguments.processObject.getAmount() - totalAmountCharged);
 
 				if(thisToCharge gt uncapturedAuthorizations[a].chargeableAmount) {
 					thisToCharge = uncapturedAuthorizations[a].chargeableAmount;
@@ -1047,7 +1069,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				if(paymentTransaction.hasError('runTransaction')) {
 					arguments.accountPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
 				} else {
-					precisionEvaluate(totalAmountCharged + paymentTransaction.getAmountReceived());
+					getService('HibachiUtilityService').precisionCalculate(totalAmountCharged + paymentTransaction.getAmountReceived());
 				}
 
 			}
@@ -1329,7 +1351,8 @@ component extends="HibachiService" accessors="true" output="false" {
 			getAccountDAO().removeAccountAddressFromOrderFulfillments( accountAddressID = arguments.accountAddress.getAccountAddressID() );
 			getAccountDAO().removeAccountAddressFromOrderPayments( accountAddressID = arguments.accountAddress.getAccountAddressID() );
 			getAccountDAO().removeAccountAddressFromOrders( accountAddressID = arguments.accountAddress.getAccountAddressID() );
-
+			getAccountDAO().removeAccountAddressFromSubscriptionUsages( accountAddressID = arguments.accountAddress.getAccountAddressID() );
+		   
 		    arguments.accountAddress.removeAccount();
             arguments.accountAddress.setAddress(javaCast("null","")); 
 

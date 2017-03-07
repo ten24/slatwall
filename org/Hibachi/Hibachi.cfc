@@ -93,6 +93,7 @@ component extends="FW1.framework" {
 	variables.framework.hibachi.noaccessDefaultItem = 'noaccess';
 	variables.framework.hibachi.sessionCookieDomain = "";
 	variables.framework.hibachi.lineBreakStyle = SERVER.OS.NAME;
+	variables.framework.hibachi.disableFullUpdateOnServerStartup = false;
 	
 	// Allow For Application Config
 	try{include "../../config/configFramework.cfm";}catch(any e){}
@@ -211,6 +212,11 @@ component extends="FW1.framework" {
 			// Verify that the session is setup
 			getHibachiScope().getService("hibachiSessionService").setProperSession();
 			
+			var AuthToken = "";
+			if(structKeyExists(GetHttpRequestData().Headers,'Auth-Token')){
+				AuthToken = GetHttpRequestData().Headers['Auth-Token'];
+			}
+			
 			// If there is no account on the session, then we can look for an Access-Key, Access-Key-Secret, to setup that account for this one request.
 			if(!getHibachiScope().getLoggedInFlag() &&
 				structKeyExists(httpRequestData, "headers") &&
@@ -222,19 +228,21 @@ component extends="FW1.framework" {
 				var accessKey 		= httpRequestData.headers["Access-Key"];
 				var accessKeySecret = httpRequestData.headers["Access-Key-Secret"];
 
-				// Attempt to find an account by accessKey & accessKeySecret
+				// Attempt to find an account by accessKey & accessKeySecret and set a default JWT if found.
 				var account = getHibachiScope().getService("AccountService").getAccountByAccessKeyAndSecret( accessKey=accessKey, accessKeySecret=accessKeySecret );
-
+				
 				// If an account was found, then set that account in the session for this request.  This should not persist
 				if (!isNull(account)){
 					getHibachiScope().getSession().setAccount( account );
+					AuthToken = 'Bearer '& getHibachiScope().getService('HibachiJWTService').createToken();
 				}
+				
 			}
 			
 			//check if we have the authorization header
-			if(structKeyExists(GetHttpRequestData().Headers,'Auth-Token')){
+			if(len(AuthToken)){
 				
-				var authorizationHeader = GetHttpRequestData().Headers['Auth-Token'];
+				var authorizationHeader = AuthToken;
 				var prefix = 'Bearer ';
 				//get token by stripping prefix
 				var token = right(authorizationHeader,len(authorizationHeader) - len(prefix));
@@ -247,14 +255,8 @@ component extends="FW1.framework" {
 						getHibachiScope().getSession().setAccount( account );
 					}
 				}
-			// If there is no account on the session, then we can look for an authToken to setup that account for this one request
-			}else if(!getHibachiScope().getLoggedInFlag() && structKeyExists(request, "context") && structKeyExists(request.context, "authToken") && len(request.context.authToken)) {
-				var authTokenAccount = getHibachiScope().getDAO('hibachiDAO').getAccountByAuthToken(authToken=request.context.authToken);
-				if(!isNull(authTokenAccount)) {
-					getHibachiScope().getSession().setAccount( authTokenAccount );
-				}
-			}
 			
+			}
 			// Call the onEveryRequest() Method for the parent Application.cfc
 			onEveryRequest();
 		}
@@ -579,7 +581,7 @@ component extends="FW1.framework" {
 						coreBF.declareBean("hibachiJWT", "#variables.framework.applicationKey#.org.Hibachi.HibachiJWT",false);
 					}
 					if(!coreBF.containsBean("hibachiRecaptcha")){
-						coreBF.declareBean("hibachiRecaptcha", "#variables.framework.applicationKey#.org.Hibachi.hibachiRecaptcha",false);
+						coreBF.declareBean("hibachiRecaptcha", "#variables.framework.applicationKey#.org.Hibachi.HibachiRecaptcha",false);
 					}
 					
 					
@@ -624,10 +626,23 @@ component extends="FW1.framework" {
 					// Call the onFirstRequest() Method for the parent Application.cfc
 					onFirstRequest();
 					
+					var runFullUpdate = !variables.framework.hibachi.disableFullUpdateOnServerStartup 
+						&& (
+							!structKeyExists(server,'runFullUpdate') 
+							|| (structKeyExists(server,'runFullUpdate') && server.runFullUpdate
+						)
+					);
 					// ============================ FULL UPDATE =============================== (this is only run when updating, or explicitly calling it by passing update=true as a url key)
-					if(!fileExists(expandPath('/#variables.framework.applicationKey#/custom/config') & '/lastFullUpdate.txt.cfm') || (structKeyExists(url, variables.framework.hibachi.fullUpdateKey) && url[ variables.framework.hibachi.fullUpdateKey ] == variables.framework.hibachi.fullUpdatePassword)){
+					if(
+						!fileExists(expandPath('/#variables.framework.applicationKey#/custom/config') & '/lastFullUpdate.txt.cfm') 
+						|| (
+							structKeyExists(url, variables.framework.hibachi.fullUpdateKey) 
+							&& url[ variables.framework.hibachi.fullUpdateKey ] == variables.framework.hibachi.fullUpdatePassword
+						)
+						|| runFullUpdate
+					){
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - Full Update Initiated");
-						
+						server.runFullUpdate = false;
 						//Update custom properties
 						var success = getHibachiScope().getService('updateService').updateEntitiesWithCustomProperties();
 						if (success){
@@ -635,11 +650,12 @@ component extends="FW1.framework" {
 						}else{
 							writeLog(file="Slatwall", text="General Log - Error updating entities with custom properties");
 						}
+						
 						// Reload ORM
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() started");
 						ormReload();
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() was successful"); 
-							
+						
 						onUpdateRequest();
 						
 						// Write File

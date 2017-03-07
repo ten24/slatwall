@@ -14,6 +14,7 @@ class ProductCreateController{
                 private selectionService,
                 private rbkeyService
         ){
+            
             //on select change get collection
             this.$scope.preprocessproduct_createCtrl.productTypeChanged = (selectedOption)=>{
                     this.$scope.preprocessproduct_createCtrl.selectedOption = selectedOption;
@@ -100,9 +101,9 @@ class ProductCreateController{
             });
             
             this.$scope.preprocessproduct_createCtrl.selectedOption = {};
-            
             if(angular.isDefined(this.$scope.preprocessproduct_createCtrl.options[0]) && angular.isDefined(this.$scope.preprocessproduct_createCtrl.options[0].value)){
                 this.$scope.preprocessproduct_createCtrl.selectedOption.value = this.$scope.preprocessproduct_createCtrl.options[0].value;
+                this.$scope.preprocessproduct_createCtrl.productTypeChanged(this.$scope.preprocessproduct_createCtrl.selectedOption);
             } else {
                 this.$scope.preprocessproduct_createCtrl.selectedOption.value = "";
             }

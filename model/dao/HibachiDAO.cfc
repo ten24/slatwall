@@ -51,11 +51,10 @@
 	<cffunction name="createSlatwallUUID" returntype="string" access="public">
 		<cfreturn createHibachiUUID() />
 	</cffunction>
-	
-	<cffunction name="reencryptData" returntype="void" access="public">
-		<cfargument name="batchSizeLimit" default="0" type="numeric" />
+	<cfscript>
+		public void function reencryptData(numeric batchSizeLimit=0){
 		
-		<cfscript>
+		
 			var batchSizeLimitFlag = arguments.batchSizeLimit > 0;
 			var batchSizeLimitReachedFlag = false;
 			
@@ -202,9 +201,8 @@
 			for (var hqlStatement in updateStatements) {
 				ormExecuteQuery(hqlStatement, {nowDateTime=nowDateTime});
 			}
-
-		</cfscript>
-	</cffunction>
+	}
+	</cfscript>
 	
 	<cffunction name="verifyUniqueTableValue" returntype="boolean">
 		<cfargument name="tableName" type="string" required="true" />

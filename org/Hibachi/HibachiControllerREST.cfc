@@ -166,7 +166,8 @@ component output="false" accessors="true" extends="HibachiController" {
 
     public any function getDetailTabs(required struct rc){
         var detailTabs = [];
-        var tabsDirectory = expandPath( '/#getApplicationValue('applicationKey')#' ) & '/org/Hibachi/client/src/entity/components/#lcase(rc.entityName)#/';
+        var entityFolderName = getService('HibachiService').getProperlyCasedShortEntityName(arguments.rc.entityName);
+        var tabsDirectory = expandPath( '/#getApplicationValue('applicationKey')#' ) & '/org/Hibachi/client/src/entity/components/#entityFolderName#/';
 	    if(FileExists(tabsDirectory & 'tabsConfig.json')){
 		    detailTabs =  DeserializeJSON(FileRead(tabsDirectory & 'tabsConfig.json'));
 	    }else{

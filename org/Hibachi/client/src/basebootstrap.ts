@@ -21,61 +21,34 @@ export class BaseBootStrapper{
             this.$http = $http;
             this.$q = $q;
 
-            var cacheState = {
-                instantiationKey:false,
-                attributeCacheKey:false
-            }
 
-            if(
-                localStorage.getItem('appConfig')
-                && localStorage.getItem('appConfig') !== 'undefined'
-                && localStorage.getItem('resourceBundles')
-                && localStorage.getItem('resourceBundles') !== 'undefined'
-                && localStorage.getItem('attributeMetaData')
-                && localStorage.getItem('attributeMetaData') !== 'undefined'
-            ){
-                 var baseURL = hibachiConfig.baseURL;
-                 if(baseURL.length && baseURL.slice(-1) !== '/'){
-                    baseURL += '/';
-                 }
-                 return $http.get(baseURL+'?'+hibachiConfig.action+'=api:main.getInstantiationKey')
+             var baseURL = hibachiConfig.baseURL;
+             if(baseURL.length && baseURL.slice(-1) !== '/'){
+                baseURL += '/';
+             }
+             return $http.get(baseURL+'?'+hibachiConfig.action+'=api:main.getInstantiationKey')
 
-                .then( (resp)=> {
+            .then( (resp)=> {
+                this.instantiationKey = resp.data.data.instantiationKey;
 
-                    var appConfig = JSON.parse(localStorage.getItem('appConfig'));
-                    var attributeMetaData = JSON.parse(localStorage.getItem('attributeMetaData'));
-                    var invalidCache = [];
-                    for(var key in resp.data.data){
-                        if(key==='attributeCacheKey'){
-
-                            var hashedData = md5(localStorage.getItem('attributeMetaData'));
-                            if(resp.data.data[key] === hashedData.toUpperCase()){
-                                coremodule.constant('attributeMetaData',JSON.parse(localStorage.getItem('attributeMetaData')));
-                            }else{
-                                invalidCache.push(key);
-                            }
-
-                        }else if (key === 'instantiationKey'){
-
-                            this.instantiationKey = resp.data.data[key];
-                            if(resp.data.data[key] === appConfig[key]){
-                                coremodule.constant('appConfig',appConfig)
-                                .constant('resourceBundles',JSON.parse(localStorage.getItem('resourceBundles')));
-                            }else{
-                                invalidCache.push(key);
-                            }
-                        }
+                var invalidCache = [];
+                try{
+                    var hashedData = md5(localStorage.getItem('attributeMetaData'));
+                    
+                    if(resp.data.data['attributeCacheKey'] === hashedData.toUpperCase()){
+                        coremodule.constant('attributeMetaData',JSON.parse(localStorage.getItem('attributeMetaData')));
+                    }else{
+                        invalidCache.push('attributeCacheKey');
                     }
+                }catch(e){
+                    invalidCache.push('attributeCacheKey');
+                }
+                
+                invalidCache.push('instantiationKey');
 
-                    if( invalidCache.length > 0 ){
-                        return this.getData(invalidCache);
-                    }
-
-                });
-            }else{
-                var invalidCache = Object.keys(cacheState);
-                return this.getData(invalidCache);
-            }
+               return this.getData(invalidCache);
+            });
+            
         }])
         .loading(function(){
             //angular.element('#loading').show();
@@ -104,19 +77,19 @@ export class BaseBootStrapper{
 
     getAttributeCacheKeyData = ()=>{
 
-        
+
         var urlString = "";
-        
+
         if(!hibachiConfig){
-            hibachiConfig = {};    
+            hibachiConfig = {};
         }
-        
+
         if(!hibachiConfig.baseURL){
             hibachiConfig.baseURL = '';
         }
         urlString += hibachiConfig.baseURL;
-        
-        
+
+
          if(urlString.length && urlString.slice(-1) !== '/'){
             urlString += '/';
          }
@@ -124,7 +97,10 @@ export class BaseBootStrapper{
         return this.$http.get(urlString+'?'+hibachiConfig.action+'=api:main.getAttributeModel')
         .then( (resp:any)=> {
             coremodule.constant('attributeMetaData',resp.data.data);
-            localStorage.setItem('attributeMetaData',JSON.stringify(resp.data.data));
+            //for safari private mode which has no localStorage
+            try{
+                localStorage.setItem('attributeMetaData',JSON.stringify(resp.data.data));
+            }catch(e){}
             this.attributeMetaData = resp.data.data;
         },(response:any) => {
 
@@ -138,13 +114,13 @@ export class BaseBootStrapper{
             var n = d.getTime();
             this.instantiationKey = n.toString();
         }
-        
+
         var urlString = "";
-        
+
         if(!hibachiConfig){
-            hibachiConfig = {};    
+            hibachiConfig = {};
         }
-        
+
         if(!hibachiConfig.baseURL){
             hibachiConfig.baseURL = '';
         }
@@ -152,11 +128,10 @@ export class BaseBootStrapper{
         if(hibachiConfig.baseURL.length && hibachiConfig.baseURL.charAt(hibachiConfig.baseURL.length-1) != '/'){
             urlString+='/';
         }
-        
+
         return this.$http.get(urlString+'custom/config/config.json?instantiationKey='+this.instantiationKey)
         .then( (resp:any)=> {
             coremodule.constant('appConfig',resp.data.data);
-            localStorage.setItem('appConfig',JSON.stringify(resp.data.data));
             this.appConfig = resp.data.data;
             return this.getResourceBundles();
 
@@ -199,9 +174,6 @@ export class BaseBootStrapper{
     }
 
     getResourceBundles= () => {
-        ////$log.debug('hasResourceBundle');
-        ////$log.debug(this._loadedResourceBundle);
-        //$log.debug(this.getConfigValue('rbLocale').split('_'));
         var rbLocale = this.appConfig.rbLocale.split('_');
         var localeListArray = rbLocale;
         var rbPromise;
@@ -220,12 +192,10 @@ export class BaseBootStrapper{
         }
         var resourceBundlePromises = this.$q.all(rbPromises).then((data) => {
             coremodule.constant('resourceBundles',this._resourceBundle);
-            localStorage.setItem('resourceBundles',JSON.stringify(this._resourceBundle));
 
         },(error) =>{
             //can enterhere due to 404
             coremodule.constant('resourceBundles',this._resourceBundle);
-            localStorage.setItem('resourceBundles',JSON.stringify(this._resourceBundle));
         });
         return resourceBundlePromises;
 

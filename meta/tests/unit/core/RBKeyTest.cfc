@@ -47,6 +47,73 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
+	
+	
+	
+	public void function allValidationsHaveRBkeys(){
+		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
+		var allFound = true;
+		
+		for(var entityName in allEntities) {
+			var thisEntityName = replace(entityName, "Slatwall","","all");
+			var exampleEntity = request.slatwallScope.newEntity( thisEntityName );
+			var validationStruct = request.slatwallScope.getService('HibachiValidationService').getValidationStruct(exampleEntity);
+			if(structKeyExists(validationStruct,'properties')){
+				for(var propertyName in validationStruct.properties){
+					var validationPropertyDetails = validationStruct.properties[propertyName];
+					for(var validationPropertyDetail in validationPropertyDetails){
+						var contexts = ["save"];
+						if(structKeyExists(validationPropertyDetail,'contexts')){
+							contexts = listToArray(validationPropertyDetail.contexts);
+						}
+						for(var context in contexts){
+							for(var key in validationPropertyDetail){
+								//'validate.delete.Account.ownerAccount.canDeleteByOwner'
+								
+								if(key != 'contexts' && key != 'conditions'){
+									
+									var validationTypeName = key;
+									if(key == 'method'){
+										validationTypeName = validationPropertyDetail[key];
+									}
+									
+									var rbkey = 'validate.#context#.#thisEntityName#.#propertyName#.#validationTypeName#';
+									if(key == 'dataType'){
+										rbkey &= ".#validationPropertyDetail[key]#";	
+									}else if (listFindNoCase("lteProperty,ltProperty,gteProperty,gtProperty", key)) {
+										var rbkeyFallback = rbkey;
+										rbkey &= ".#validationPropertyDetail[key]#,#rbkeyFallback#";	
+									}
+									
+									//exclude attribute message based regex validation
+									if(rbkey != 'validate.save.AttributeValue.attributeValue.regexMatches'){
+										var keyValue = request.slatwallScope.rbKey(rbkey,{propertyName=propertyName,className=exampleEntity.getClassName()});
+										if(right(keyValue,8) == '_missing') {
+											//if object doesn't have rbkey then check if the processObject has one
+											if(exampleEntity.hasProcessObject(context)){
+												var processObject = exampleEntity.getProcessObject(context);
+												rbkey = "validate.#processObject.getClassName()#.#propertyName#.#validationTypeName#";
+												keyValue = request.slatwallScope.rbKey(rbkey,{propertyName=propertyName,className=exampleEntity.getClassName()});						
+												if(right(keyValue,8) == '_missing') {
+													addToDebug(keyValue);
+													allFound = false;
+												}
+											}else{
+												addToDebug(keyValue);
+												allFound = false;	
+											}
+										}
+									
+									}
+								}
+							}
+						}
+					}
+				}	
+			}
+		}
+		assert(allFound, ArrayToList(variables.debugArray, chr(13) & chr(10)));
+	}
 
 	public void function all_entity_properties_have_keys() {
 		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));

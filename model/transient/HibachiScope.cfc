@@ -294,12 +294,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 
 	public any function getAvailableCartPropertyList() {
 		return "orderID,orderOpenDateTime,calculatedTotal,subtotal,taxTotal,fulfillmentTotal,fulfillmentChargeAfterDiscountTotal,promotionCodeList,discountTotal,
-			orderitems.orderItemID,orderitems.price,orderitems.skuPrice,orderitems.currencyCode,orderitems.quantity,orderitems.extendedPrice,orderitems.extendedPriceAfterDiscount,orderitems.taxAmount,orderItems.taxLiabilityAmount,orderItems.parentOrderItemID,orderItems.productBundleGroupID,
-			orderitems.orderFulfillment.orderFulfillmentID,
-			orderitems.sku.skuID,orderitems.sku.skuCode,orderItems.sku.imagePath,orderItems.sku.imageFile,
-			orderitems.sku.product.productID,orderitems.sku.product.productName,orderitems.sku.product.productCode,orderitems.sku.product.urltitle,orderitems.sku.product.baseProductType,
-			orderitems.sku.product.brand.brandName,
-			orderitems.sku.product.productType.productTypeName,
+			orderItems.orderItemID,orderItems.price,orderItems.skuPrice,orderItems.currencyCode,orderItems.quantity,orderItems.extendedPrice,orderItems.extendedPriceAfterDiscount,orderItems.taxAmount,orderItems.taxLiabilityAmount,orderItems.parentOrderItemID,orderItems.productBundleGroupID,
+			orderItems.orderFulfillment.orderFulfillmentID,
+			orderItems.sku.skuID,orderItems.sku.skuCode,orderItems.sku.imagePath,orderItems.sku.imageFile,
+			orderItems.sku.product.productID,orderItems.sku.product.productName,orderItems.sku.product.productCode,orderItems.sku.product.urltitle,orderItems.sku.product.baseProductType,
+			orderItems.sku.product.brand.brandName,
+			orderItems.sku.product.productType.productTypeName,
 			orderFulfillments.orderFulfillmentID,orderFulfillments.fulfillmentCharge,orderFulfillments.currencyCode,
 			orderFulfillments.fulfillmentMethod.fulfillmentMethodID,orderFulfillments.fulfillmentMethod.fulfillmentMethodName,
 			orderFulfillments.shippingMethod.shippingMethodID,orderFulfillments.shippingMethod.shippingMethodName,

@@ -59,7 +59,6 @@ class HibachiServiceDecorator{
                             entityInstance.processObject = processObjectInstance;
                         }else{
                             if(entityInstance.populate){
-
                                 entityInstance.populate(response);
 
                             }else{
@@ -258,7 +257,7 @@ class HibachiServiceDecorator{
 
                 angular.forEach(entity,function(property){
                     if(angular.isObject(property) && angular.isDefined(property.name)){
-                        if(angular.isUndefined(property.persistent)){
+                        //if(angular.isUndefined(property.persistent)){
                             if(angular.isDefined(property.fieldtype)){
                                 if(['many-to-one'].indexOf(property.fieldtype) >= 0){
 
@@ -379,7 +378,7 @@ class HibachiServiceDecorator{
                                             enumerable:false,
 
                                             get: function() {
-                                                if(this.data[attribute.attributeCode] == null){
+                                                if(this.data[property.name] == null){
                                                     return undefined;
                                                 }
 
@@ -483,7 +482,7 @@ class HibachiServiceDecorator{
                                         enumerable:false,
 
                                         get: function() {
-                                            if(attribute && attribute.attributeCode && this.data[attribute.attributeCode] == null){
+                                            if(this.data[property.name] == null){
                                                 return undefined;
                                             }
                                             return this.data[property.name];
@@ -528,7 +527,7 @@ class HibachiServiceDecorator{
                                             enumerable:false,
 
                                             get: function() {
-                                                if(attribute && attribute.attributeCode && this.data[attribute.attributeCode] == null){
+                                                if(this.data[property.name] == null){
                                                     return undefined;
                                                 }
                                                 return this.data[property.name];
@@ -571,7 +570,7 @@ class HibachiServiceDecorator{
                                     return this.data[property.name];
                                 };
                             }
-                        }
+                        //}
                     }
                 });
 

@@ -78,7 +78,7 @@
 				<cfif authenticationCFC.getUserSignatureValidFlag( uid=arguments.data.gigyaUID, uidSignature=arguments.data.gigyaUIDSignature, signatureTimestamp=arguments.data.gigyaSignatureTimestamp )>
 					
 					<!--- Check for a legacy UID to match up --->
-					<cfset var oldID = "" />
+					<cfset var oldUID = "" />
 					<cfif len(gigyaIntegration.setting('legacyUIDPropertyIdentifier'))>
 						<cfset oldUID = arguments.account.getValueByPropertyIdentifier( gigyaIntegration.setting('legacyUIDPropertyIdentifier') ) />
 					</cfif>
@@ -117,7 +117,7 @@
 		<cfset var accountAuthentication = "" />
 		
 		<!--- Loop over the authentications, and call delete on the authentication for gigya.  This will call the delete event, which will in turn call the socializeAPI --->
-		<cfloop array="#arguments.entity.getAccountAuthentications()#" index="accountAuthentication">
+		<cfloop array="#arguments.entity.getAccountAuthentications()#" index="local.accountAuthentication">
 			
 			<cfif !isNull(accountAuthentication.getIntegration()) and accountAuthentication.getIntegration().getIntegrationPackage() eq 'gigya'>
 			

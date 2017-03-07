@@ -16,6 +16,7 @@ class PublicService {
     public requests:{ [action: string]: PublicRequest; }={};
     public errors:{[key:string]:any}={};
     public newBillingAddress:any;
+    public loading:boolean;
 
     public http:ng.IHttpService;
     public confirmationUrl:string;
@@ -34,6 +35,8 @@ class PublicService {
     public readyToPlaceOrder:boolean;
     public edit:String;
     public editPayment:boolean;
+    public imagePath:{[key:string]:any}={};
+    
     ///index.cfm/api/scope/
 
     //@ngInject
@@ -96,7 +99,7 @@ class PublicService {
         var baseDate = new Date();
         var today = baseDate.getFullYear();
         var start = today;
-        for (var i = 0; i<= 5; i++){
+        for (var i = 0; i<= 15; i++){
             this.years.push(start + i);
         }
     }
@@ -145,7 +148,7 @@ class PublicService {
 
             if(setter == 'cart'||setter=='account'){
                 //cart and account return cart and account info flat
-                this[setter].populate(result)
+                this[setter].populate(result);
 
             }else{
                 //other functions reutrn cart,account and then data
@@ -179,14 +182,14 @@ class PublicService {
 
         if (!action) {throw "Action is required exception";}
 
+        var urlBase = "";
+		
         //check if the caller is defining a path to hit, otherwise use the public scope.
         if (action.indexOf(":") !== -1){
-            this.baseActionPath = action; //any path
+            urlBase = action; //any path
         }else{
-            this.baseActionPath = "/index.cfm/api/scope/" + action;//public path
+            urlBase = "/index.cfm/api/scope/" + action;//public path
         }
-
-        let urlBase = this.baseActionPath;
 
         if(data){
             method = "post";
@@ -478,9 +481,11 @@ class PublicService {
 
 
         data = {
+            'newOrderPayment.billingAddress.addressID':'',
             'newOrderPayment.billingAddress.streetAddress': billingAddress.streetAddress,
             'newOrderPayment.billingAddress.street2Address': billingAddress.street2Address,
             'newOrderPayment.nameOnCreditCard': billingAddress.nameOnCreditCard,
+            'newOrderPayment.billingAddress.name': billingAddress.nameOnCreditCard,
             'newOrderPayment.expirationMonth': expirationMonth,
             'newOrderPayment.expirationYear': expirationYear,
             'newOrderPayment.billingAddress.countrycode': country || billingAddress.countrycode,
@@ -732,7 +737,143 @@ class PublicService {
             this.rates = result.data;
         });
     }
+    
+    /** Returns the state from the list of states by stateCode */
+    public getStateByStateCode = (stateCode) => {
+     	for (var state in this.states.stateCodeOptions){
+     		if (this.states.stateCodeOptions[state].value == stateCode){
+     			return this.states.stateCodeOptions[state];
+     		}
+     	}
+    }
+     
+    /** Returns the state from the list of states by stateCode */
+    public resetRequests = (request) => {
+     	delete this.requests[request];
+    }
+    
+    /** Returns true if the addresses match. */
+    public addressesMatch = (address1, address2) => {
+    	if (angular.isDefined(address1) && angular.isDefined(address2)){
+        	if ( (address1.streetAddress == address2.streetAddress && 
+	            address1.street2Address == address2.street2Address &&
+	            address1.city == address2.city &&
+	            address1.postalcode == address2.postalcode &&
+	            address1.countrycode == address2.countrycode)){
+            	return true;
+            }
+        }
+        return false;
+    }
+    
+    /** Should be pushed down into core. Returns the profile image by name. */
+   	public getResizedImageByProfileName = (profileName, skuIDList) => {
+   		this.imagePath = {};
+   		
+   		if (profileName == undefined){
+   			profileName = "medium";
+   		}
+   		
+   		this.$http.get("/index.cfm/api/scope/?context=getResizedImageByProfileName&profileName="+profileName+"&skuIds="+skuIDList).success((result:any)=>{
+   		 	
+   		 	this.imagePath[skuIDList] = "";
+   		 	
+   		 	result = <any>angular.fromJson(result);
+   		 	if (angular.isDefined(result.resizedImagePaths) && angular.isDefined(result.resizedImagePaths.resizedImagePaths) && result.resizedImagePaths.resizedImagePaths[0] != undefined){
+   		 		
+   		 		this.imagePath[skuIDList] = result.resizedImagePaths.resizedImagePaths[0];
+   		 		this.loading = false;
+   		 		return this.imagePath[skuIDList];
+   		 		
+   		 	}else{
+   		 		return "";
+   		 	}
+   		 	
+   		}); 
+   	}
 
+	
+    /**
+     *  Returns true when the fulfillment body should be showing
+     *  Show if we don't need an account but do need a fulfillment
+     *
+     */
+    public showFulfillmentTabBody = ()=> {
+        if ((this.cart.orderRequirementsList.indexOf('account') == -1) && this.account.accountID &&
+            (this.cart.orderRequirementsList.indexOf('fulfillment') != -1) ||
+            (this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
+                (this.edit == 'fulfillment')) {
+            return true;
+        }
+        return false;
+    };
+    /**
+     *  Returns true when the fulfillment body should be showing
+     *  Show if we don't need an account,fulfillment, and don't have a payment - or
+     *  we have a payment but are editting the payment AND nothing else is being edited
+     *
+     */
+    public showPaymentTabBody = ()=> {
+        if ((this.cart.orderRequirementsList.indexOf('account') == -1) && this.account.accountID &&
+            (this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
+            (this.cart.orderRequirementsList.indexOf('payment') != -1) && this.edit == '' ||
+            (this.cart.orderRequirementsList.indexOf('payment') == -1) &&
+                (this.edit == 'payment')) {
+            return true;
+        }
+        return false;
+    };
+    
+    /**
+     *  Returns true if the review tab body should be showing.
+     *  Show if we don't need an account,fulfillment,payment, but not if something else is being edited
+     *
+     */
+    public showReviewTabBody = ()=> {
+        if ((this.cart.orderRequirementsList.indexOf('account') == -1) && this.account.accountID &&
+            (this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
+            (this.cart.orderRequirementsList.indexOf('payment') == -1) &&
+            (this.edit == '') || (this.edit == 'review')) {
+            return true;
+        }
+        return false;
+    };
+    
+    /** Returns true if the fulfillment tab should be active */
+    public fulfillmentTabIsActive = ()=> {
+        if ((this.edit == 'fulfillment') ||
+            (this.edit == '' && ((this.cart.orderRequirementsList.indexOf('account') == -1) && this.account.accountID) &&
+                (this.cart.orderRequirementsList.indexOf('fulfillment') != -1))) {
+            return true;
+        }
+        return false;
+    };
+    
+    /** Returns true if the payment tab should be active */
+    public paymentTabIsActive = ()=> {
+        if ((this.edit == 'payment') ||
+            (this.edit == '' &&
+                (this.cart.orderRequirementsList.indexOf('account') == -1) && this.account.accountID &&
+                (this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
+                (this.cart.orderRequirementsList.indexOf('payment') != -1))) {
+            return true;
+        }
+        return false;
+    };
+    
+    /** Returns true if the review tab should be active */
+    public reviewTabIsActive =  ()=> {
+        if ((this.edit == 'review' ||
+            (this.edit == '' &&
+                (this.cart.orderRequirementsList.indexOf('account') == -1) && this.account.accountID &&
+                (this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
+                (this.cart.orderRequirementsList.indexOf('payment') == -1)))) {
+            return true;
+        }
+        return false;
+    };
+
+	
+	
 }
 export {PublicService};
-

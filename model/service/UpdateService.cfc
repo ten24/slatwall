@@ -112,7 +112,7 @@ Notes:
 				<cfif (downloadedZipHash eq hashFileValue)>
 					<!--- now read and unzip the downloaded file --->
 					<cfset var dirList = "" />
-					<cfset unzipDirectoryName = "#getTempDirectory()#"&zipName/>
+					<cfset var unzipDirectoryName = "#getTempDirectory()#"&zipName/>
 					<cfset directoryCreate(unzipDirectoryName)/>
 					<cfzip action="unzip" destination="#unzipDirectoryName#" file="#getTempDirectory()##downloadFileName#" >
 					<cfzip action="list" file="#getTempDirectory()##downloadFileName#" name="dirList" >
@@ -160,15 +160,14 @@ Notes:
 	<cffunction name="updateCMSApplications">
 		<!--- Overwrite all CMS Application.cfc's with the latest from the skeletonApp --->
 		<cfset var apps = this.getAppSmartList().getRecords()>
-		<cfloop array="#apps#" index="app">
+		<cfloop array="#apps#" index="local.app">
 			<cfset getService('appService').updateCMSApp(app)>
 		</cfloop>
 	</cffunction>
 
 	<cffunction name="runScripts">
 		<cfset var scripts = this.listUpdateScriptOrderByLoadOrder() />
-		<cfset var script = "" />
-		<cfloop array="#scripts#" index="script">
+		<cfloop array="#scripts#" index="local.script">
 			<cfif isNull(script.getSuccessfulExecutionCount())>
 				<cfset script.setSuccessfulExecutionCount(0) />
 			</cfif>
@@ -234,9 +233,8 @@ Notes:
 	<cffunction name="getMetaFolderExistsFlag">
 		<cfreturn directoryExists( expandPath('/Slatwall/meta') ) >
 	</cffunction>
-
-	<cffunction name="updateEntitiesWithCustomProperties" returntype="boolean">
-		 <cfscript>
+	<cfscript>
+		 public boolean function updateEntitiesWithCustomProperties(){
 			try{
 				var path = "#ExpandPath('/Slatwall/')#" & "model/entity";
 				var pathCustom = "#ExpandPath('/Slatwall/')#" & "custom/model/entity";
@@ -273,8 +271,8 @@ Notes:
 				return false;
 			}
 			return true;
-		</cfscript>
-	</cffunction>
+		}
+	</cfscript>
 	<cffunction name="migrateAttributeToCustomProperty" returntype="void">
 		<cfargument name="entityName"/>
 		<cfargument name="customPropertyName"/>
@@ -301,9 +299,8 @@ Notes:
 		</cfquery>
 	</cffunction>
 	
-	<cffunction name="mergeProperties" returntype="any">
-	  <cfargument name="fileName" type="String">
-		<cfscript>
+	<cfscript>
+		public any function mergeProperties(string filename){ 
 			var lineBreak = getHibachiUtilityService().getLineBreakByEnvironment(getApplicationValue("lineBreakStyle"));
 			var paddingCount = 2;
 			var conditionalLineBreak="";
@@ -374,8 +371,8 @@ Notes:
 
 			//declare custom positions
 			var propertyStartPos = findNoCase("property name=", customFileContent) ;
-			var privateFunctionLineStartPos = reFindNoCase('\private(.*?)function',customFileContent) ;
-			var publicFunctionLineStartPos = reFindNoCase('\public(.*?)function',customFileContent) ;
+			var privateFunctionLineStartPos = reFindNoCase('\private[^"].*function.*\(.*\)',customFileContent) ;
+			var publicFunctionLineStartPos = reFindNoCase('\public[^"].*function.*\(.*\)',customFileContent) ;
 
 			var functionLineStartPos = 0;
 			if(privateFunctionLineStartPos && publicFunctionLineStartPos){
@@ -406,7 +403,6 @@ Notes:
 			if(propertyStartPos){
 				propertyString = mid(customFileContent, propertyStartPos, abs(propertyEndPos-propertyStartPos));
 			}
-
 			var newContent = fileContent;
 
 			//add properties
@@ -451,8 +447,8 @@ Notes:
 			}
 
 			return newContent;
-		</cfscript>
-	</cffunction>
+		}
+	</cfscript>
 	<cffunction name="addPropertiesToFile" returntype="String">
 	</cffunction>
 
