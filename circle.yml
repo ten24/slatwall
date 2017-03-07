@@ -69,7 +69,8 @@ test:
     - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwallweb_1)" -- ant -f /var/www/meta/tests/build.xml run-junit:
         timeout: 1800
         parallel: true
-      
+        Ddirectory: 
+          - meta.tests.unit.entity.AccountTest
   post:
     # Kill the Sauce Labs tunnel
     #- if [[ ! -z $SAUCE_USERNAME ]] ; then cd sc-*-linux && kill $(cat sc.pid); fi
