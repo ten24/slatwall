@@ -68,8 +68,6 @@ test:
     - case $CIRCLE_NODE_INDEX in 0) sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwallweb_1)" -- ant -f /var/www/meta/tests/build.xml run-junit -Dtest.directory "meta.tests.unit.entity.AccountTest";; 1) sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwallweb_2)" -- ant -f /var/www/meta/tests/build.xml run-junit -Dtest.directory "meta.tests.unit.entity.AddressTest" ;; esac:
         timeout: 1800
         parallel: true
-        environment:
-        	- test:1
         
   post:
     # Kill the Sauce Labs tunnel
