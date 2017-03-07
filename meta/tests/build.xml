@@ -33,7 +33,7 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
 	<property name="slatwall.test.server" value="${computer.hostname}" />
 	<property name="slatwall.test.serverport" value="8888" />
 	<property name="slatwall.test.datasource" value="Slatwall" />
-	<property name="slatwall.outputfile" value="results.xml"/>
+	<property name="slatwall.outputfile" value="results"/>
 	
 
 	<!-- what "runner" URL should the tests hit. In this example, you'd be hitting http://localhost:80/DirectoryNameOfYourProject/test/HttpAntRunner.cfc  Simply copy mxunit/samples/HttpAntRunner.cfc into your test directory! -->
@@ -160,7 +160,8 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
                 src="${url.runner}&amp;bundles=${test.bundles}&amp;reporter=${test.reporter}&amp;labels=${test.labels}"
                 verbose="true"/>
            -->
-
+           
+			
           <!-- <Create fancy junit reports -->
           <junitreport todir="${slatwall.test.output.xml}/unit">
                <fileset dir="${slatwall.test.output.xml}/unit">
@@ -170,5 +171,12 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
                     <param name="TITLE" expression="My Awesome TestBox Results"/>
                </report>
           </junitreport>
+          
+          <loadfile property="filecontent"
+      			srcFile="${slatwall.test.output.xml}/unit/${slatwall.outputfile}.xml"/>
+          <condition property="tests.bombed">
+			    <matches pattern='failures="0"' string='${filecontent}'/>
+			</condition>
+			<fail message="Not All Unit Tests Passed" if="tests.bombed"/>
      </target>
 </project>
