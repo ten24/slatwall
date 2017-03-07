@@ -3,6 +3,7 @@
 <cfparam name="url.opt_recurse" default="true">
 <cfparam name="url.labels"		default="">
 <cfparam name="url.opt_run"		default="false">
+<cfsetting requesttimeout="3600">
 <cfscript>
 // create testbox
 testBox = new testbox.system.TestBox();		
