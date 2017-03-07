@@ -47,7 +47,10 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-	
+		
+	/*
+	*@test
+	*/
 	public void function all_entity_properties_with_tomany_has_singularname() {
 		//holds all errors
 		var entitiesThatDontHaveSingularNameArray = [];
@@ -73,7 +76,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		assert(!arrayLen(entitiesThatDontHaveSingularNameArray));
 	}
-	
+		
+	/*
+	*@test
+	*/
 	public void function allcfcPropertiesAreCaseSensitive(){
 		var allSpelledProperly = true;
 		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
@@ -94,7 +100,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(allSpelledProperly);
 	}
 
-	//Entity Audit Properties Test
+	//Entity Audit Properties Test	
+	/*
+	*@test
+	*/
 	public void function all_entity_properties_have_audit_properties() {
 
 		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
@@ -153,7 +162,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(!arrayLen(entitiesThatDontHaveAuditPropertiesArray));
 	}
 
-	//Misspell persistent Test
+	//Misspell persistent Test	
+	/*
+	*@test
+	*/
 	public void function all_entity_properties_didnt_mispell_persistent() {
 
 		var misspellCount = 0;
@@ -179,7 +191,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(misspellCount EQ 0);
 	}
 
-	//Misspell persistent Test
+	//Misspell persistent Test	
+	/*
+	*@test
+	*/
 	public void function all_calculated_properties_are_setup_correctly() {
 
 		var calculatedErrors = 0;
@@ -226,7 +241,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(calculatedErrors EQ 0);
 	}
 
-	// Oracle Naming tests
+	// Oracle Naming tests	
+	/*
+	*@test
+	*/
 	public void function oracle_entity_table_name_max_len_30() {
 		var ormClassMetaData = ORMGetSessionFactory().getAllClassMetadata();
 		var ormEntityNames = listToarray(structKeyList(ormClassMetaData));
@@ -242,7 +260,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		assert(pass);
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function oracle_entity_table_name_many_to_many_link_table_max_len_30() {
 		var ormClassMetaData = ORMGetSessionFactory().getAllClassMetadata();
 		var ormEntityNames = listToarray(structKeyList(ormClassMetaData));
@@ -262,7 +283,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		assert(pass);
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function oracle_entity_column_name_max_len_30() {
 		var ormClassMetaData = ORMGetSessionFactory().getAllClassMetadata();
 		var ormEntityNames = listToarray(structKeyList(ormClassMetaData));
@@ -305,7 +329,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(pass);
 	}
 
-	// Table Name Prefixes
+	// Table Name Prefixes	
+	/*
+	*@test
+	*/
 	public void function table_name_starts_with_sw() {
 		var ormClassMetaData = ORMGetSessionFactory().getAllClassMetadata();
 		var ormEntityNames = listToarray(structKeyList(ormClassMetaData));
@@ -315,7 +342,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			assert(left(getMetaData(entity).table,2) == "Sw", "The table name for the #entityName# entity is longer than 30 characters in length which would break oracle support.  Table Name: #getMetaData(entity).table# Length:#len(getMetaData(entity).table)#");
 		}
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function table_name_starts_with_sw_on_many_to_many_link_table() {
 		var ormClassMetaData = ORMGetSessionFactory().getAllClassMetadata();
 		var ormEntityNames = listToarray(structKeyList(ormClassMetaData));
@@ -330,7 +360,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		}
 	}
 
-	// Bi Directional Helpers
+	// Bi Directional Helpers	
+	/*
+	*@test
+	*/
 	public void function extra_lazy_properties_have_no_bidirectional_helpers() {
 		var ormClassMetaData = ORMGetSessionFactory().getAllClassMetadata();
 		var ormEntityNames = listToarray(structKeyList(ormClassMetaData));
@@ -382,7 +415,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		assert(pass);
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function all_smart_list_search_dont_have_errors() {
 		// Get all entities
 		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
@@ -412,7 +448,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		assert(!arrayLen(exceptionErrorEntities));
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function all_smart_list_search_return_no_results_with_invalid_keywords() {
 		// Get all entities
 		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
@@ -440,7 +479,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(!arrayLen(nonFilteredEntities));
 	}
 	
-	//this function makes sure that many-to-many relationships are not using cascade delete. 
+	//this function makes sure that many-to-many relationships are not using cascade delete. 	
+	/*
+	*@test
+	*/
 	public void function check_delete_cascade_of_many_to_many_associations() {
 		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
 		
@@ -470,7 +512,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 	}
 	
-	//This function checks if a persistant property (not cfc) uses type instead of ormtype to define the datatype
+	//This function checks if a persistant property (not cfc) uses type instead of ormtype to define the datatype	
+	/*
+	*@test
+	*/
 	public void function check_persistant_nonCFC_properties_that_use_type() {
 		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
 		

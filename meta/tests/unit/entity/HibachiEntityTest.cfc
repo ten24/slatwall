@@ -48,13 +48,16 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
-	// @hint put things in here that you want to run befor EACH test
+	// @hint put things in here that you want to run befor EACH test	
 	public void function setUp() {
 		super.setup();
 		
 		variables.entity = request.slatwallScope.newEntity('product');
 	}
-	
+		
+	/*
+	*@test
+	*/
 	public void function getDefaultCollectionPropertiesTest(){
 		var defaultProperties = variables.entity.getDefaultCollectionProperties();
 		for(defaultProperty in defaultProperties){

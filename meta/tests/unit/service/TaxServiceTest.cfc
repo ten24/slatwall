@@ -47,14 +47,17 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+	
 	public void function setUp() {
 		super.setup();
 		
 		variables.service = request.slatwallScope.getService("taxService");
 	}
 	
-	// generateTaxRatesRequestBeanForIntegration()
+	// generateTaxRatesRequestBeanForIntegration()	
+	/*
+	*@test
+	*/
 	public void function generateTaxRatesRequestBeanForIntegration_works_with_no_account_on_order() {
 		var order = request.slatwallScope.newEntity("order");
 		var integration = request.slatwallScope.newEntity("integration");
@@ -63,7 +66,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert( isObject(requestBean) );
 	}
 
-	// Tests for addTaxAddressesStructBillingAddressKey()
+	// Tests for addTaxAddressesStructBillingAddressKey()	
+	/*
+	*@test
+	*/
 	public void function addTaxAddressesStructBillingAddressKey_returns_empty_struct_if_no_billingInfo_on_order(){
 		//Creates new order then passes new order into addTaxAddressesStructBillingAddressKey() and saves the return data
 		var newOrder = request.slatwallScope.newEntity('Order');
@@ -72,7 +78,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//Asserts that the struct that returns is empty
 		assert(structIsEmpty(taxAddressesStruct));
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function addTaxAddressesStructBillingAddressKey_sets_struct_billingAddress_key_from_order_billingAddress(){
 		//Creates a new Address and a new Order then sets the address to the order's billing address
 		var address = request.slatwallScope.newEntity("Address");
@@ -92,7 +101,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//Asserts that the struct returned as the key 'taxBillingAddress'
 		assert(structKeyExists(taxAddressesStruct, 'taxBillingAddress'));	
 	}
-	
+		
+	/*
+	*@test
+	*/
 	public void function addTaxAddressesStructBillingAddressKey_doesNOT_sets_struct_billingAddress_key_from_order_orderPayments_where_systemCode_NOT_Active(){
 		//Creates new order and orderPayment then adds the orderPayment to the order
 		var newOrder = request.slatwallScope.newEntity('Order');
@@ -108,7 +120,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertFalse(structKeyExists(taxAddressesStruct, 'taxBillingAddress'));
 	}
 	
-	// Tests for removeTaxesFromAllOrderItems()
+	// Tests for removeTaxesFromAllOrderItems()	
+	/*
+	*@test
+	*/
 	public void function removeTaxesFromAllOrderItems_iterates_over_orderItems_in_order_and_removes_taxes(){
 		var data = {
 			orderItems = [
@@ -139,7 +154,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 	}
 	
-	// Tests for removeTaxesFromAllOrderItems()
+	// Tests for removeTaxesFromAllOrderItems()	
+	/*
+	*@test
+	*/
 	public void function removeTaxesFromAllOrderItems_removes_relationship_from_both_sides(){
 		var data = {
 			orderItems = [
@@ -169,7 +187,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(isNull(firstAppTax.getOrderItem()));
 	}
 	
-	//Tests for generateTaxIntegrationArray()
+	//Tests for generateTaxIntegrationArray()	
+	/*
+	*@test
+	*/
 	public void function generateTaxIntegrationArray_returns_empty_array_if_taxCategoryRate_has_NO_taxIntegration(){
 		//Creates new order then passes new order into addTaxAddressesStructBillingAddressKey() and saves the return data
 		var newOrder = request.slatwallScope.newEntity('Order');

@@ -47,7 +47,7 @@ Notes:
 
 */ 
 component  extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" hint="Tests that the crypto for comparing signatures for API are valid."
-{
+{	
 	public void function setUp() {
 		super.setup();
 		variables.service = request.slatwallScope.getService("HibachiJWTService");
@@ -60,19 +60,28 @@ component  extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" hint="Tests t
 		variables.testTokenInvalid = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0cyI6IkZlYnJ1YXJ5LCAwNSAyMDE0IDEyOjA4OjA1IiwidXNlcmlkIjoiamRvZSJ9.mL2-sQ2xeC4PidmV-uEvlINiI0mlpq5KRKsmO9EDTYx";
 	
 	}
-	
+		
+	/*
+	*@test
+	*/
 	public void function setupTest(){
 		addToDebug(variables.jwt);
 	}
 	
-	
+		
+	/*
+	*@test
+	*/
 	public void function encodeTest(){
 
 		var token = variables.jwt.encode(variables.payload);
 		
 		assert(listLen(token,".") eq 3);
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function decodeTest(){
 		
 		var token = variables.jwt.encode(variables.payload);
@@ -82,7 +91,10 @@ component  extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" hint="Tests t
 		var result = variables.jwt.decode();
 		
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function decodeInvalidSignitureTest(){
 		variables.jwt.setTokenString(variables.testTokenInvalid);
 		try{
@@ -91,12 +103,18 @@ component  extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" hint="Tests t
 			assert(e.message == 'signature verification failed');
 		}
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function verifyTest(){
 		var token = variables.jwt.encode(variables.payload);
 		var result = variables.jwt.verify(token);
 		
-	}
+	}	
+	/*
+	*@test
+	*/
 	public void function verifyInvalidTokenTest(){
 		
 		var result = variables.jwt.verify(variables.testTokenInvalid);

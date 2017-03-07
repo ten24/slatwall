@@ -47,13 +47,16 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+	
 	public void function setUp() {
 		super.setup();
 		
 		variables.service = request.slatwallScope.getBean("giftCardService");
 	}
-	
+		
+	/*
+	*@test
+	*/
 	public void function processGiftCard_addCreditTest(){
 		var giftCardData = {
 			giftCardID="",
@@ -69,7 +72,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(giftCard.getCalculatedBalanceAmount() EQ 15);
 		
 	}
-	
+		
+	/*
+	*@test
+	*/
 	public void function processGiftCard_addDebitTest(){
 		var giftCardData = {
 			giftCardID="",
@@ -93,7 +99,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(giftCard.getBalanceAmount() EQ 7);
 		assert(giftCard.getCalculatedBalanceAmount() EQ 7);
 	}
-	
+		
+	/*
+	*@test
+	*/
 	public void function processGiftCard_offlineTransactionTest_credit(){
 		var giftCardData = {
 			giftCardID="",
@@ -111,7 +120,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(giftCard.getCalculatedBalanceAmount() EQ 20);
 		
 	}	
-	
+		
+	/*
+	*@test
+	*/
 	public void function processGiftCard_offlineTransactionTest_debit(){
 		var giftCardData = {
 			giftCardID="",

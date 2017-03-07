@@ -48,13 +48,16 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
-
+	
 	public void function setUp() {
 		super.setup();
 		
 		variables.dao = request.slatwallScope.getDAO("skuDAO");
 	}
-	
+		
+	/*
+	*@test
+	*/
 	public void function inst_ok() {
 		assert(isObject(variables.dao));
 	}
@@ -71,7 +74,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			productID = ""
 		};
 	}
-	
+		
+	/*
+	*@test
+	*/
 	public void function getSkuDefinitionForMerchandiseBySkuIDTest(){
 		var skuData = {
 			skuID=""
@@ -125,7 +131,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(trim(skuDefinition2),'#optionGroup2.getOptionGroupName()#: #option2.getOptionName()#, #optionGroup.getOptionGroupName()#: #option.getOptionName()#');
 		
 	}
-	
+		
+	/*
+	*@test
+	*/
 	public void function getTransactionExistsFlagTest_Arguments() {
 		//Testing the flag without any where-exists in hql
 		var mockSku1 = createMockSku();
@@ -153,7 +162,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var resultSkuArgu = variables.dao.getTransactionExistsFlag("", mockSku1.getSkuID());
 		assertFalse(resultSkuArgu);
 	}
-	
+		
+	/*
+	*@test
+	*/
 	public void function getTransactionExistsFlagTest_OrderItem() {
 		//Testing then the orderItem exists
 		var mockSku = createMockSku();
@@ -181,7 +193,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		}
 		return createPersistedTestEntity('Stock', stockData);
 	}
-	
+		
+	/*
+	*@test
+	*/
 	public void function getTransactionExistsFlagTest_InventoryID() {
 		var mockSku = createMockSKu();
 		var mockStock = createMockStock(mockSku.getSkuID());
@@ -197,7 +212,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var resultInventory = variables.dao.getTransactionExistsFlag("", mockSku.getSkuID());
 		assertTrue(resultInventory);	
 	}
-	
+		
+	/*
+	*@test
+	*/
 	public void function getTransactionExistsFlagTest_PhysicalCountItemID() {
 		var mockSku = createMockSKu();
 		var mockStock = createMockStock(mockSku.getSkuID());
@@ -213,7 +231,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var resultPhysicalCountItem = variables.dao.getTransactionExistsFlag("", mockSku.getSkuID());
 		assertTrue(resultPhysicalCountItem);
 	}
-	
+		
+	/*
+	*@test
+	*/
 	public void function getTransactionExistsFlagTest_StockAdjustmentItem() {
 		var mockSku = createMockSKu();
 		var mockStock1 = createMockStock(mockSku.getSkuID());

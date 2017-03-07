@@ -47,14 +47,17 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+	
 	public void function setUp() {
 		super.setup();
 		
 		variables.service = request.slatwallScope.getBean("siteService");
 		variables.integrationService = request.slatwallScope.getBean("integrationService");
 	}
-	
+		
+	/*
+	*@test
+	*/
 	public void function deploy_SiteTest(){
 		
 		var integration = request.slatwallScope.getService('integrationService').getIntegrationByIntegrationPackage('slatwallcms');

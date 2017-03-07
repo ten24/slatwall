@@ -47,17 +47,23 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+	
 	public void function setUp() {
 		super.setup();
 		
 		variables.service = request.slatwallScope.getBean("accountService");
 	}
-	
+		
+	/*
+	*@test
+	*/
 	public void function defaults_are_correct() {
 		assertTrue( isObject(variables.service.getEmailService()) );
 	}
-	
+		
+	/*
+	*@test
+	*/
 	public void function deleteAccountAddress_removes_account_address_from_all_order_relationships() {
 		var accountAddress = request.slatwallScope.newEntity('accountAddress');
 		var account = request.slatwallScope.newEntity('account');

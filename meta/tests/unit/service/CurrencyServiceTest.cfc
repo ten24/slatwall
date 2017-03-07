@@ -47,13 +47,16 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+	
 	public void function setUp() {
 		super.setup();
 		
 		variables.service = request.slatwallScope.getBean("currencyService");
 	}
-	
+		
+	/*
+	*@test
+	*/
 	public void function convertCurrency_returns_an_amount() {
 		var convertedAmount = variables.service.convertCurrency(amount=100, originalCurrencyCode='USD', convertToCurrencyCode='CAD');
 		

@@ -52,14 +52,14 @@ component displayName="mytestcase" extends="testbox.system.compat.framework.Test
 	variables.persistentEntities = [];
 	variables.files = [];
 
-	// BEFORE ALL TESTS IN THIS SUITE
+	// BEFORE ALL TESTS IN THIS SUITE	
 	public void function beforeTests(){
 		
 		// Setup Components
 		variables.slatwallFW1Application = createObject("component", "Slatwall.Application");
 	}
 
-	// BEFORE EACH TEST
+	// BEFORE EACH TEST	
 	public void function setUp() {
 		variables.slatwallFW1Application.bootstrap();
 
@@ -71,7 +71,7 @@ component displayName="mytestcase" extends="testbox.system.compat.framework.Test
 		variables.files = [];
 	}
 
-	// AFTER EACH TEST
+	// AFTER EACH TEST	
 	public void function tearDown() {
 		debug(variables.debugArray);
 

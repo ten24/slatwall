@@ -47,14 +47,17 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+	
 	public void function setUp() {
 		super.setup();
 		variables.service = request.slatwallScope.getService("skuService");
 	}
 	
 	
-	
+		
+	/*
+	*@test
+	*/
 	public void function saveSkuTest_setPublishedFalseIfInactive(){
 		var productData = {
 			productID="",

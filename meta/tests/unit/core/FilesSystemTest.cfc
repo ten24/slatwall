@@ -47,7 +47,10 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+	
+	/*
+	*@test
+	*/
 	public void function makeSureAllViewFilesAreLowerCased() {
 		var path = expandPath('/Slatwall');
 		var adminFiles = directoryList(path&'/admin',true,'path','*.cfm|*.ts|*.js');
@@ -73,7 +76,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(allLowercaseFileNames,offenders);
 
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function varScoperTest(){
 		var modelDirectoryPath = expandPath('/Slatwall');
 		var modelDirectory = directoryList(modelDirectoryPath,true,'query','*.cfc');

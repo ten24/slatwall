@@ -47,47 +47,71 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+	
 	public void function setUp() {
 		super.setup();
 		
 		variables.service = request.slatwallScope.getService("hibachiService");
 	}
 	
-	// getProperlyCasedShortEntityName()
+	// getProperlyCasedShortEntityName()	
+	/*
+	*@test
+	*/
 	public void function getProperlyCasedShortEntityName_returns_entity_name_correctly() {
 		assertEquals("OrderItem", variables.service.getProperlyCasedShortEntityName("SLATWALLORDERITEM"));
 	}
 	
 	
-	// getProperlyCasedFullEntityName()
+	// getProperlyCasedFullEntityName()	
+	/*
+	*@test
+	*/
 	public void function getProperlyCasedFullEntityName_returns_entity_name_correctly_if_CAPS() {
 		assertEquals("SlatwallOrderItem", variables.service.getProperlyCasedFullEntityName("ORDERITEM"));
 	}
-	
+		
+	/*
+	*@test
+	*/
 	public void function getProperlyCasedFullEntityName_returns_entity_name_correctly_if_mixed() {
 		assertEquals("SlatwallOrderItem", variables.service.getProperlyCasedFullEntityName("SlaTWAllOrderItEM"));
 	}
 	
-	// getProperlyCasedFullClassNameByEntityName()
+	// getProperlyCasedFullClassNameByEntityName()	
+	/*
+	*@test
+	*/
 	public void function getProperlyCasedFullClassNameByEntityName() {
 		assertEquals("Slatwall.model.entity.OrderItem", variables.service.getProperlyCasedFullClassNameByEntityName("SlaTWAllOrderItEM"));
 	}
 	
 	
-	// getHasPropertyByEntityNameAndPropertyIdentifier()
+	// getHasPropertyByEntityNameAndPropertyIdentifier()	
+	/*
+	*@test
+	*/
 	public void function getHasPropertyByEntityNameAndPropertyIdentifier_returns_true_when_property_exists() {
 		assertTrue(variables.service.getHasPropertyByEntityNameAndPropertyIdentifier("SlatwallSku", "product.brand.brandName"));
 	}
-	
+		
+	/*
+	*@test
+	*/
 	public void function getHasPropertyByEntityNameAndPropertyIdentifier_returns_false_when_property_doesnt_exists() {
 		assertFalse(variables.service.getHasPropertyByEntityNameAndPropertyIdentifier("SlatwallSku", "product.brand.notRealProperty"));
 	}
-	
+		
+	/*
+	*@test
+	*/
 	public void function getHasPropertyByEntityNameAndPropertyIdentifier_returns_false_when_entity_chain_is_invalid() {
 		assertFalse(variables.service.getHasPropertyByEntityNameAndPropertyIdentifier("SlatwallSku", "product.brokenChain.notRealProperty"));
 	}
-	
+		
+	/*
+	*@test
+	*/
 	public void function getPropertyIsObjectByEntityNameAndPropertyIdentifierTest(){
 		assertTrue(variables.service.getPropertyIsObjectByEntityNameAndPropertyIdentifier('sku','product.brand'));
 		assertFalse(variables.service.getPropertyIsObjectByEntityNameAndPropertyIdentifier('sku','product.brand.brandID'));

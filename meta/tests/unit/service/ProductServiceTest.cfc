@@ -47,17 +47,23 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+	
 	public void function setUp() {
 		super.setup();
 		variables.service = request.slatwallScope.getService("productService");
 	}
-	
+		
+	/*
+	*@test
+	*/
 	public void function getProductCollectionListTest(){
 		var collection = variables.service.getProductCollectionList();
 		assertEquals(collection.getCollectionObject(),'Product');
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function createSingleSkuTest(){
 		var productData = {
 			productID="",
@@ -71,7 +77,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//assert a single sku was created
 		assertEquals(arrayLen(product.getSkus()),1);
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function createGiftCardProduct_sameAsPrice(){
 
 		var productData = {
@@ -94,7 +103,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(product.getDefaultSku().getRedemptionAmount(),20);
 
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function createGiftCardProduct_fixedAmount(){
 		var someMoreProductData = {
 			productID="",
@@ -115,7 +127,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(anotherProduct.getDefaultSku().getRedemptionAmountType(),'fixedAmount');
 		assertEquals(anotherProduct.getDefaultSku().getRedemptionAmount(),10);
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function createGiftCardProduct_percentage(){
 		var evenMoreProductData = {
 			productID="",
@@ -136,7 +151,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(yetAnotherProduct.getDefaultSku().getRedemptionAmountType(),'percentage');
 		assertEquals(yetAnotherProduct.getDefaultSku().getRedemptionAmount(),2);
 	}
-	
+		
+	/*
+	*@test
+	*/
 	public void function saveProductTest_checkifSkusAreSetToInactive(){
 		var productData = {
 			productID="",

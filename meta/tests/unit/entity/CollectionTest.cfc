@@ -48,7 +48,7 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
-	// @hint put things in here that you want to run befor EACH test
+	// @hint put things in here that you want to run befor EACH test	
 	public void function setUp() {
 		super.setup();
 
@@ -56,7 +56,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		variables.entity = variables.entityService.newCollection();
 		variables.entity.setCollectionObject('Account');
 	}
-	
+		
+	/*
+	*@test
+	*/
 	public void function fixBadCollectionConfigTest(){
 		var collectionEntityData = {
 			collectionid = '',
@@ -131,7 +134,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assert(isArray(pageRecords));
 		
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function addFilterTest(){
 
 		var uniqueNumberForDescription = createUUID();
@@ -170,7 +176,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(arrayLen(pageRecords) == 1, "Wrong amount of products returned! Expecting 1 record but returned #arrayLen(pageRecords)#");
 
 	}	
-	
+		
+	/*
+	*@test
+	*/
 	public void function addFilterToFilterGroupsTest(){
 
 		var uniqueNumberForTest = createUUID();
@@ -227,7 +236,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		assertTrue(arrayLen(pageRecords) == 0, "Wrong amount of products returned! Expecting 0 record but returned #arrayLen(pageRecords)#");
 		
-	}
+	}	
+	/*
+	*@test
+	*/
 	public void function addFilterOneToManyTest(){
 
 		var uniqueNumberForDescription = createUUID();
@@ -295,7 +307,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(arrayLen(pageRecords) == 1, "Wrong amount of products returned! Expecting 1 record but returned #arrayLen(pageRecords)#");
 
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function addFilterManyToOneTest(){
 
 		var uniqueNumberForDescription = createUUID();
@@ -363,7 +378,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(arrayLen(pageRecords) == 4, "Wrong amount of products returned! Expecting 1 record but returned #arrayLen(pageRecords)#");
 
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function displayPropertyTest(){
 
 		var uniqueNumberForDescription = createUUID();
@@ -389,7 +407,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(len(trim(pageRecords[1]['productDescription'])) == 0, "The collection returned value for non requested property");
 
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function displayPropertyManyToOneTest(){
 
 		var uniqueNumberForDescription = createUUID();
@@ -426,7 +447,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(len(trim(pageRecords[1]['product_productName'])) > 0, "The collection didn't returned value for requested property");
 
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function addOrderByTest(){
 
 		var uniqueNumberForDescription = createUUID();
@@ -475,7 +499,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(pageRecords[4]['productName'] == 'dProduct', "'dProduct' was expected in the 4rt record");
 
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function addDisplayAggregateCOUNTTest(){
 		var uniqueNumberForDescription = createUUID();
 
@@ -504,7 +531,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var pageRecords = myCollection.getPageRecords();
 		assertTrue(pageRecords[1]['skuCount'] == 2);
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function addDisplayAggregateSUMTest(){
 		var uniqueNumberForDescription = createUUID();
 
@@ -540,7 +570,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var pageRecords = myCollection.getPageRecords();
 		assertTrue(pageRecords[1]['skuPriceSum'] == '60');
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function addDisplayAggregateAVGTest(){
 		var uniqueNumberForDescription = createUUID();
 
@@ -576,7 +609,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var pageRecords = myCollection.getPageRecords();
 		assertTrue(pageRecords[1]['skuPriceAvg'] == '20');
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function addDisplayAggregateMINTest(){
 		var uniqueNumberForDescription = createUUID();
 
@@ -612,7 +648,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var pageRecords = myCollection.getPageRecords();
 		assertTrue(pageRecords[1]['skuPriceMin'] == '10');
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function addDisplayAggregateMAXTest(){
 		var uniqueNumberForDescription = createUUID();
 
@@ -648,7 +687,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var pageRecords = myCollection.getPageRecords();
 		assertTrue(pageRecords[1]['skuPriceMax'] == '30');
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function addFilterSUMAggregateTest(){
 
 	var uniqueNumberForDescription = createUUID();
@@ -712,7 +754,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	assert(arraylen(pageRecords) == 1 && pageRecords[1]['productName'] == 'ProductUnitTest1');
 }
-
+	
+	/*
+	*@test
+	*/
 	public void function addFilterAVGAggregateTest(){
 
 		var uniqueNumberForDescription = createUUID();
@@ -775,7 +820,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var pageRecords = myProductCollection.getPageRecords();
 		assert(arraylen(pageRecords) == 1 && pageRecords[1]['productName'] == 'ProductUnitTest2');
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function addFilterMINAggregateTest(){
 
 		var uniqueNumberForDescription = createUUID();
@@ -838,7 +886,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var pageRecords = myProductCollection.getPageRecords();
 		assert(arraylen(pageRecords) == 1 && pageRecords[1]['productName'] == 'ProductUnitTest2');
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function addFilterMAXAggregateTest(){
 
 		var uniqueNumberForDescription = createUUID();
@@ -896,7 +947,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var pageRecords = myProductCollection.getPageRecords();
 		assert(arraylen(pageRecords) == 1 && pageRecords[1]['productName'] == 'ProductUnitTest1');
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function addFilterCOUNTAggregateTest(){
 
 		var uniqueNumberForDescription = createUUID();
@@ -960,7 +1014,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		assert(arraylen(pageRecords) == 1 && pageRecords[1]['productName'] == 'ProductUnitTest2');
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function getAggregateHQLTest(){
 		makePublic(variables.entity,"getAggregateHQL");
 		var propertyIdentifier = "Account.firstName";
@@ -973,7 +1030,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//addToDebug(aggregateHQL);
 		assertFalse(Compare("COUNT(DISTINCT Account.firstName) as Account_firstName",trim(aggregateHQL)));
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function addHQLParamTest(){
 		var collectionEntityData = {
 			collectionid = '',
@@ -991,7 +1051,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(structKeyExists(HQLParams,'testKey'));
 		assertEquals(HQLParams['testKey'],'testValue');
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function exactDateFilter(){
 
 		var uniqueNumberForDescription = createUUID();
@@ -1110,7 +1173,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function addHQLParamsFromNestedCollectionTest(){
 
 		var collectionEntityData = {
@@ -1147,7 +1213,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(2,structCount(collectionEntity.getHQLParams()));
 		assertEquals(4,structCount(collectionEntity2.getHQLParams()));
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function getRecordsCountTest(){
 		var uniqueNumberForDescription = createUUID();
 
@@ -1176,7 +1245,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(recordsCount == 2,  "Wrong amount of products returned! Expecting 2 records but returned #recordsCount#");
 
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function getRecordsCountWithGroupByTest(){
 		var uniqueNumberForDescription = createUUID();
 
@@ -1205,7 +1277,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(recordsCount == 1,  "Wrong amount of products returned! Expecting 1 record but returned #recordsCount#");
 
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function getRecordsCountWithGroupBy2Test(){
 		var uniqueNumberForDescription = createUUID();
 
@@ -1234,7 +1309,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(recordsCount == 2,  "Wrong amount of products returned! Expecting 2 record but returned #recordsCount#");
 
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function getRecordsCountWithAggregateTest(){
 
 		var uniqueNumberForDescription = createUUID();
@@ -1317,7 +1395,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		assert(recordsCount == 2, "Wrong amount of products returned! Expecting 2 records but returned #recordsCount#");
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function getRecordsTest(){
 		var uniqueNumberForDescription = createUUID();
 
@@ -1347,7 +1428,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		//addToDebug(records);
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function deserializeCollectionConfigTest(){
 		makePublic(variables.entity,'deserializeCollectionConfig');
 		var collectionEntityData = {
@@ -1405,7 +1489,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertFalse(isJSON(deserializedCollectionConfig));
 		assertTrue(isStruct(deserializedCollectionConfig));
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function getHQLFilteringWithOtherCollectionTest(){
 		var collectionEntityData = {
 			collectionid = '',
@@ -1542,7 +1629,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(10,arrayLen(pageRecords));
 		//addToDebug(pageRecords);
 	}*/
-
+	
+	/*
+	*@test
+	*/
 	public void function getHQLNestedFilterTest(){
 
 		var collectionEntityData = {
@@ -1694,7 +1784,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}*/
 
 
-
+	
+	/*
+	*@test
+	*/
 	public void function getHQLTest_date_in_range(){
 		var collectionData = {
 			collectionid = '',
@@ -1928,7 +2021,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var collectionEntity = createPersistedTestEntity('Collection',collectionData);
 		assert(REFind('_account\.createdDateTime BETWEEN :P[a-f0-9]{32} AND :P[a-f0-9]{32}', collectionEntity.getHQL()) > 0);
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function getHQLTest_Contains(){
 		var collectionBestAcountEmailAddressesData = {
 			collectionid = '',
@@ -1960,7 +2056,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		//addToDebug(collectionBestAcountEmailAddresses.getPageRecords());
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function getHQLTest_dateFilter(){
 		var collectionBestAcountEmailAddressesData = {
 		collectionid = '',
@@ -2004,7 +2103,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var collectionBestAcountEmailAddresses = createPersistedTestEntity('collection',collectionBestAcountEmailAddressesData);
 		var items = ormExecuteQUery("FROM SlatwallAccount as Account where ( Account.superUserFlag = true OR Account.firstName = 'Ryan' AND Account.createdDateTime BETWEEN 1407556800000 AND 1407643199999 )");
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function getHQLTest(){
 		/*var collectionBestAcountEmailAddressesData = {
 			collectionid = '',
@@ -2065,7 +2167,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function getHQLTest_exists_in_collection(){
 
 
@@ -2095,7 +2200,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function getHQLTest_list(){
 
 
@@ -2123,7 +2231,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function getHQLTest_keywords_with_filterGroup(){
 
 		//acount data
@@ -2186,7 +2297,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//addToDebug(collectionEntity.getHQL());
 		addToDebug(collectionEntity.getRecords());
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function getHQLTest_keywords_without_filterGroup(){
 
 		//acount data
@@ -2229,7 +2343,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		collectionEntity.setKeywords('Ryan Marchand');
 		addToDebug(collectionEntity.getHQL());
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function getHQLTest_keywords_without_defaultColumns(){
 
 		//acount data
@@ -2253,7 +2370,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		collectionEntity.setKeywords('Miguel Targa');
 		addToDebug(collectionEntity.getHQL());
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function getHQLTest_keywords_without_ormtype(){
 
 		//acount data
@@ -2294,7 +2414,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		collectionEntity.setKeywords('Ryan Marchand');
 		addToDebug(collectionEntity.getHQL());
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function getHQLTest_notpersistent(){
 
 		var collectionEntityData = {
@@ -2353,7 +2476,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
 		//addToDebug(collectionEntity.getPageRecords());
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function hasNonPersistentColumn(){
 
 		var collectionEntityData = {
@@ -2405,7 +2531,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		//addToDebug(collectionEntity.getNonPersistentColumn());
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function removeFilterTest(){
 		var accountCollectionList = variables.entityService.getCollectionList('Account');
 		accountCollectionList.addFilter('accountID','test');
@@ -2418,7 +2547,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assert(accountCollectionList.getCollectionConfigStruct().filterGroups[1].filterGroup[2].value == 'tester');
 
 	}
-	
+		
+	/*
+	*@test
+	*/
 	public void function getHQLTest_emptyFilterGroup(){
 		var collectionBestAcountEmailAddressesData = {
 			collectionid = '',
@@ -2465,7 +2597,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		////addToDebug(collectionEntity.getHQL());
 
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function getHQLTest_joins(){
 
 		var collectionEntityData = {
@@ -2497,7 +2632,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//addToDebug(collectionEntity.getPageRecords());
 
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function getSelectionsHQLTest(){
 		MakePublic(variables.entity,'getSelectionsHQL');
 		var selectionsJSON = '	[
@@ -2516,7 +2654,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertFalse(Compare("SELECT  new Map( firstName as firstName, accountID as accountID)",trim(selectionsHQL)));
 
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function getFilterHQLTest(){
 		MakePublic(variables.entity,'getFilterHQL');
 		var filterGroupsJSON = '	[
@@ -2558,7 +2699,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var filterHQL = variables.entity.getFilterHQL(filterGroups);
 		//addToDebug(filterHQL);
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function getFilterGroupHQLTest(){
 		MakePublic(variables.entity,'getFilterGroupHQL');
 		var filterGroupJSON = '	[
@@ -2611,7 +2755,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		var filterGroupHQL = variables.entity.getFilterGroupHQL(filterGroup);
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function getFilterGroupsHQLTest(){
 		MakePublic(variables.entity,'getFilterGroupsHQL');
 		var filterGroupsJSON = '	[
@@ -2636,7 +2783,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		var filterGroupsHQL = variables.entity.getFilterGroupsHQL(filterGroups);
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function getOrderByHQLTest(){
 		makePublic(variables.entity,"getOrderByHQL");
 		var orderBy = [
@@ -2660,7 +2810,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		//addToDebug(orderByHQL);
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function addJoinHQLTest(){
 		makePublic(variables.entity,'addJoinHQL');
 		var joinJSON = '
@@ -2750,7 +2903,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var collectionEntity = createPersistedTestEntity('collection',CollectionEntityData);
 		//addToDebug(collectionEntity.getHQL());
 	}*/
-
+	
+	/*
+	*@test
+	*/
 	public void function HQLTestJoins(){
 
 		var CollectionEntityData = {
@@ -2785,7 +2941,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var collectionEntity = createPersistedTestEntity('collection',CollectionEntityData);
 		//addToDebug(collectionEntity.getPageRecords());
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function getHQLWithSettingTest(){
 		var CollectionEntityData = {
 			collectionid = '',
@@ -2812,7 +2971,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var collectionEntity = createPersistedTestEntity('collection',CollectionEntityData);
 		//addToDebug(collectionEntity.getPageRecords());
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function getHQLForCollectionFilterSkuTest(){
 		var collectionBestSkuData = {
 			collectionid = '',
@@ -2844,7 +3006,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var HQL = variables.entity.getHQLForCollectionFilter(filter);
 		addToDebug(HQL);
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function getHQLForCollectionFilterManyToManyTest(){
 		var collectionPromotionRewardData = {
 			collectionid = '',
@@ -2895,7 +3060,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		HQL = variables.entity.getHQLForCollectionFilter(filter);
 		addToDebug(HQL);
 	}
-
+	
+	/*
+	*@test
+	*/
 	public void function getHQLForCollectionFilterOneToManyTest(){
 
 		var collectionBestAcountEmailAddressesData = {

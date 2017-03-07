@@ -47,7 +47,7 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+	
 	public void function setUp() {
 		super.setup();
 		//Setup the audit
@@ -57,7 +57,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertTrue(isObject(audit)); //Make sure we are creating the audit
 	}
 	
-	// addAuditToCommit()
+	// addAuditToCommit()	
+	/*
+	*@test
+	*/
 	public void function addAuditToCommit() {
 		
 		var auditID = "";
@@ -132,7 +135,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(errors == true, "There was an error committing the audit to the committed audits struct.");
 	}//<---end Add Audit To Commit
 	
-	//logEntityDelete()
+	//logEntityDelete()	
+	/*
+	*@test
+	*/
 	public void function logEntityDelete() {
 		//Setup a workflow enity
 	 	var workflowTask = request.slatwallScope.newEntity('WorkflowTask');

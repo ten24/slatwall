@@ -48,12 +48,15 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
-	// @hint put things in here that you want to run befor EACH test
+	// @hint put things in here that you want to run befor EACH test	
 	public void function setUp() {
 		super.setup();
 		variables.testApplication = createObject('component','Slatwall.integrationServices.slatwallcms.BaseApplication');
 	}
-	
+		
+	/*
+	*@test
+	*/
 	public void function addLinkTest(){
 		var contentEntity = createPersistedTestEntity('Content',{
 			contentID="abc",
