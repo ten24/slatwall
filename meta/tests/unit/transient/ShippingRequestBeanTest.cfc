@@ -54,8 +54,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	// getEntity()	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getTotalWeightTest() {
 //		var shippingItemRequestBean = request.slatwallScope.getBean("ShippingItemRequestBean");

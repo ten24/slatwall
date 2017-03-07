@@ -56,8 +56,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		variables.entity = request.slatwallScope.getService( variables.entityService ).newAccount();
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getRecuringTypeOptionsTest()
 	{
@@ -80,8 +80,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	    assertTrue(testVariable=="Daily");      // asserting the result
 	
 	}	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getDaysOfMonthToRunOptionsTest(){
 		
@@ -98,8 +98,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 	
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getNextTimeSlotTest()
 	{
@@ -115,8 +115,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 		
 			
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getNextTimeSlotTest2()
 	    {
@@ -130,8 +130,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		assertEquals(expectedOutputAfterAddingInterval, resultForElse ); //assert the rsult for else
 	}	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getDaysOfWeekToRunOptionsTest(){
 		
@@ -144,8 +144,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals("Monday", result[2].name);
 		assertEquals("3", result[3].value);	
 	}	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function isBetweenHoursTest(){
 		var scheduleData={

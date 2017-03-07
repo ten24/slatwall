@@ -74,8 +74,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		return createPersistedTestEntity('Product', productData);
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getUnusedProductSubscriptionTermsTest() {
 		var mockProduct = createMockProduct();

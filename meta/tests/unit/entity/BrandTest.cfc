@@ -55,8 +55,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		variables.entity = request.slatwallScope.getService("brandService").newBrand();
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function defaults_are_correct() {
 		assertEquals(variables.entity.getProducts(), []);

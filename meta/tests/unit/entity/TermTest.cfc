@@ -55,8 +55,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		variables.entity = request.slatwallScope.newEntity( 'Term' );
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function test_gift_card_relation(){ 
 		var termData = {

@@ -54,8 +54,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.service = request.slatwallScope.getService("hibachiUtilityService");
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function hibachiHTMLEditFormatTest(){
 		var angularTamperableString = 'this is a string where it is {{vulnerable}}';
@@ -64,8 +64,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(resultString,'this is a string where it is {'&chr(002)&'{'&chr(002)&'vulnerable}}');
 	}
 				
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getTemplateKeysTest() {
 		var mockTemplate = '<div>${anything}</div>${anotherTemplateKey},${onemoreTemplateKey}';
@@ -82,8 +82,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function replaceStringTemplate_withObject_Test(){
 		//testing with an object
@@ -94,8 +94,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(resultStringResult,'<div>Yuqing</div>');
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function replaceStringTemplate_withObjectMissingKey_Test(){
 		//testing Missing Object
@@ -105,8 +105,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(resultMissingObject,'<div></div>');
 		
 	}	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function replaceStringTemplate_withObjectMissingKeyRemoveMissingKey_Test(){
 		//testing Missing Object with RemoveMissingKey True
@@ -117,8 +117,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function replaceStringTemplate_withStructure_Test(){
 		//testing with a structure
@@ -132,8 +132,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(resultStringResult,'<div>value</div>othervalue,onemorevalue');
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function replaceStringTemplate_withStructureMissingKey_Test(){
 		//testing Missing Structure
@@ -143,8 +143,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(resultMissingStructure, '<div>${anything}</div>${anotherTemplateKey},${onemoreTemplateKey}');
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function replaceStringTemplate_withStructureMissingKeyRemoveMissingKey_Test(){
 		//testing Missing Structure with RemoveMissingKey True
@@ -160,8 +160,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	*
 	*
 	*/	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function queryToStructOfStructuresTest_IsPrimaryKey() {
 		//testing returns if PK
@@ -179,8 +179,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var resultStructure = variables.service.queryToStructOfStructures(testQuery, "id");
 		assertEquals(resultStructure, expectedStructure);
 	}	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function queryToStructOfStructuresTest_NotPrimaryKey() {
 		//testing returns if not the PK
@@ -201,8 +201,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//Skip testing the non-existed attribute 
 	}	
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function lcaseStructKeys_lcases_structure_keys_at_top_level() {
 		var data = {};
@@ -220,8 +220,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(0, compare(ska[3], 'key3'));
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function lcaseStructKeys_lcases_structure_keys_at_nested_array_level() {
 		var data = {};
@@ -248,8 +248,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function lcaseStructKeys_works_on_complex_nested_data() {
 		
@@ -263,8 +263,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(0, compare(peaStructKeyArray[1], 'accountemailaddressid'));
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function lcaseStructKeys_lcases_structure_keys_with_null_values() {
 		
@@ -292,8 +292,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	*/
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function decryptValue_using_password_derived_and_legacy_keys() {
 		var plaintext = "my secret key";
@@ -308,8 +308,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var decryptedResultMixed = variables.service.decryptValue(value=encryptedResultLegacy);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function decryptValue_using_password_derived_keys() {
 		var plaintext = "my secret key";
@@ -324,8 +324,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(plaintext, actualDecryptedResult);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function decryption_behavior_does_not_error_with_incorrect_key() {
 		var plaintext = "my secret key";
@@ -359,8 +359,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	/**
 	* @mxunit:dataprovider titleStrings
 	*/	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getUrlTitle(titleString) {
 		
@@ -373,8 +373,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(expectedTitle, urlTitle, "title string #arguments.titleString#, position #arguments.index# failed");
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function arrayOfStructsSortTest(){
 		var mockArrayOfStructures= [
@@ -428,8 +428,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var falseMessage = "Condition is false";
 		return falseMessage;
 	}
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function hibachiTernary_equalsIIFbutWithoutStrings(){
 		var a = 2;
@@ -456,8 +456,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		iResult = IIF(condition1, true, false);
 		assert(iResult == hResult);
 	}
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function hibachiTernary_handlesArgumentsCorrectly(){
 		var hibachiTernary = service.hibachiTernary;

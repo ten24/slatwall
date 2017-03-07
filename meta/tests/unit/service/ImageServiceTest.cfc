@@ -54,8 +54,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.service = request.slatwallScope.getBean("imageService");
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function saveImageTest(){
 		var productData = {
@@ -87,8 +87,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}	
 	
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function missingImageSettingTest_imageMissingImagePath(){
 		
@@ -97,8 +97,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(imagePath EQ "#variables.service.getApplicationValue('baseUrl')##variables.service.getHibachiScope().setting('imageMissingImagePath')#"	);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function missingImageSettingTest_customMissingImageFile(){
 		//Test custom file, should hit custom assertion
@@ -107,8 +107,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(imagePath EQ "#variables.service.getApplicationValue('baseUrl')#/custom/assets/images/missingimage.jpg");
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function missingImageSettingTest_siteMissingImagePath(){
 		var siteService = request.slatwallScope.getService('siteService');

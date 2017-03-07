@@ -55,8 +55,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		variables.entity = request.slatwallScope.getService("productService").newProduct();
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function productUrlIsCorrectlyFormatted() {
 		variables.entity.setURLTitle("nike-air-jorden");
@@ -64,8 +64,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals("/#request.slatwallScope.setting('globalURLKeyProduct')#/nike-air-jorden/", variables.entity.getProductURL());
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getProductRatingTest(){
 		var productData = {
@@ -97,8 +97,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(productRating, 3.3333, 'Calculation result is wrong');
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getUnusedProductOptionsTest_CaseHasUnusedOptions(){
 
@@ -191,8 +191,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(product.hasUnusedProductOptionCombinations());
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getUnusedProductOptionsTestCaseNoOptions(){
 
@@ -407,8 +407,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
    //================== End Of Private Helper Functions =========================================
 	
 	//============Start From Here	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getAvailableForPurchaseFlagTest() {
 		//testing startDate < now() < endDate
@@ -453,8 +453,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(resultExistedStartDateEmptyEndDate);
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getListingPagesOptionsSmartListTest() {
 		//mockContent 1-4 to test order, and 1&5 to test the activeFlag filter
@@ -497,8 +497,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getProductBundleGroupsCountTest_CorrectCount() {
 		//Mocking data: mockProduct -> mockSku1 -> mockProductBundleGroup1 & mockProductBundleGroup2
@@ -559,8 +559,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(3, result);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getProductBundleGroupsCountTest_NoSku() {
 		//testing if no SKU entity created
@@ -583,8 +583,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(0, result);	 
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getProductBundleGroupsCountTest_NoProductBundleGroup() {
 		//testing if no ProductBundleGroups entity created in SKU 
@@ -598,8 +598,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getSubscriptionSkuSmartListTest() {
 		//testing the inner join works and where condition works
@@ -659,8 +659,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(0, arrayFind(result, mockSku3));
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getSkusTest_NoArgument() {
 		var skuData1 = {
@@ -700,8 +700,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(arrayFind(result, mockSku3));
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getSkusTest_SortedFetchOptionBothTrue() {
 		//Potential Bug: based on the function in SkuService.cfc, if we pass arguments, fetchOptions must be true, 
@@ -764,8 +764,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getProductTypeOptionsTest_noArgument() {
 		//testing the function without the argument, should return child-types below the mockProduct's baseProductType
@@ -794,8 +794,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(arrayFind(resultValues, mockProductType6.getProductTypeID()));		
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getProductTypeOptionsTest_argumentSameWithProductType() {
 		//testing the argument passed in, is same with mockProduct's baseProductType
@@ -820,8 +820,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertFalse(arrayFind(resultValues, mockProductType4.getProductTypeID()));
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getProductTypeOptionsTest_argumentDifferentFromProductType() {
 		//testing the argument passed in, is different with mockProduct's baseProductType, 
@@ -847,8 +847,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(arrayFind(resultValues, mockProductType4.getProductTypeID()));
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getSkuByIDTest() {
 		var mockSku1 = createMockSku();
@@ -885,8 +885,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(isNull(resultRandomString));
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getImagesTest() {
 		var mockImage1 = createMockImage();
@@ -914,8 +914,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(0, arrayLen(resultNotExist));	
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getTotalImageCountTest() {
 		var mockImage1 = createMockImage();
@@ -948,8 +948,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(0 + 0, mockProductNoImages.getTotalImageCount());
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getTemplateOptionsTest() {
 		//Never been used elsewhere. Skip the test.
@@ -997,8 +997,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		return mockProduct;
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getOptionGroupsTest() {				
 		var optionGroupsData1 = {
@@ -1026,8 +1026,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(mockOptionGroup1.getOptionGroupID() < mockOptionGroup2.getOptionGroupID(), indexOfMockOptionGroup1 < indexOfMockOptionGroup2);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getOptionGroupsStructTest() {		
 		var optionGroupsData1 = {
@@ -1050,8 +1050,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(mockOptionGroup2.getOptionGroupID(), resultOptionGroupsStruct[mockOptionGroup2.getOptionGroupID()].getOptionGroupID());
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getOptionGroupsAsListTest() {
 
@@ -1072,8 +1072,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(listFind(resultOptionGroupsList, mockOptionGroup1.getOptionGroupID()) != 0);		
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getOptionGroupCountTest() {
 		var optionGroupsData1 = {
@@ -1090,8 +1090,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(2, mockProduct.getOptionGroupCount());
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getAllowAddOptionGroupFlagTest_OneSkuTwoOptionGroups() {
 		//Testing the mock Data from the private helper 
@@ -1109,8 +1109,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var resultAllowFlag = mockProduct.getAllowAddOptionGroupFlag();
 		assertTrue(resultAllowFlag);
 	}	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getAllowAddOptionGroupFlagTest_MultipleSkus() {
 		//Testing when getSkus returns more then one Sku
@@ -1155,8 +1155,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var resultMultiSku = mockProduct.getAllowAddOptionGroupFlag();
 		assertTrue(resultMultiSku);
 	}	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getAllowAddOptionGroupFlagTest_NoOptionGroup() {
 		//testing product with one Sku but 0 OptionGroup
@@ -1186,8 +1186,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var resultNoOptionGroup = mockProduct.getAllowAddOptionGroupFlag();
 		assertTrue(resultNoOptionGroup);		
 	}	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getCategoryIDsTest() {		
 		var categoryData1 = {
@@ -1228,8 +1228,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(Len(resultNoCategory) == 0);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getTemplateTest_ContentTemplateTypeIsCttProduct() {
 		//testing product associate w/ content and ContentTemplateType is cttProduct
@@ -1258,8 +1258,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getTemplateTest_ContentTemplateTypeNotCttProduct() {
 		//testing product Template with mockContent
@@ -1288,8 +1288,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getTemplateTest_GlobalSettingNoContents() {
 		//testing product Template with no mockContent
@@ -1311,8 +1311,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getAlternateImageDirectoryTest() {
 		var mockProduct = createMockProduct();
@@ -1334,8 +1334,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		return createPersistedTestEntity('ProductReview', productReviewData);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getProductRatingTest2() {
 		var mockProductReview1 = createMockProductReviewWithRating(10);
@@ -1400,8 +1400,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(0, resultWithoutProductReview);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getImageGalleryArrayTest_StructValues() {
 		//testing if the struct values works well		 	
@@ -1458,8 +1458,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(!isNull(resultImageGalleryArray[2].resizedImagePaths[2]));
 		assertTrue(!isNull(resultImageGalleryArray[2].resizedImagePaths[3]));		
 	}	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getImageGalleryArrayTest_SkuImagesAssociation() {
 		//Testing the associatino
@@ -1501,8 +1501,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(5, arrayLen(resultImageGalleryArray));
 	}	
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getProductURLTest() {
 		//testing if the urlTitle exists
@@ -1525,8 +1525,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals("/sp//", resultNoProductURL);
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getListingProductURLTest() {
 		//testing if the urlTitle exists
@@ -1591,8 +1591,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getImageDirectoryTest() {
 		//TODO: deprecate method getImageDirectory() is undefined in sku.cfc
@@ -1604,8 +1604,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var mockProductWithoutDefaultSku = createMockDataWithoutDefaultSku();				
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getImagePathTest() {
 		//Testing the PRODUCT with defaultSKU
@@ -1622,8 +1622,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getImageTest() {
 		//Testing the PRODUCT with defaultSKU
@@ -1639,8 +1639,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals('<img src="/assets/images/missingimage.jpg" />', resultImageWithoutDefaultSKU);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getResizedImagePathTest() {
 		//Testing the PRODUCT with defaultSKU
@@ -1656,8 +1656,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals("/assets/images/missingimage.jpg", resultResizedPathWithoutDefaultSKU);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getImageExistsFlagTest() {
 		createTestFile (expandPath('/Slatwall') & '/assets/images/admin.logo.png', 
@@ -1676,8 +1676,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertFalse(resultFlagWithoutDefaultSKU);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getOptionsByOptionGroupTest() {
 		var mockOptionGroup1 = createMockOptionGroup();		
@@ -1752,8 +1752,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(indexOfMockOption1<indexOfMockOption2, mockOption1.getOptionID() < mockOption2.getOptionID());
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getRenewalMethodOptionsTest() {
 		//Testing returns of the rbKey values
@@ -1766,8 +1766,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals("custom", resultOptions[2].value);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getSkuBySelectedOptionsTest() {
 		var mockOption1 = createMockOption();
@@ -1848,8 +1848,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			assertTrue(find( "No Skus are found for these selected options: ", e.message) != 0);
 		}
 	}	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getSkusBySelectedOptionsTest() {
 		var mockOption1 = createMockOption();
@@ -1915,8 +1915,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(arrayFind(resultSkusWithOption4, mockSku2));	
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getSkuOptionDetailsTest() {
 		var mockOptionGroup1 = createMockOptionGroup("optionGroupName1", "ogCodeA");		
@@ -2002,8 +2002,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(0, structCount(resultNoSkuWithMatchArgu));
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getCrumbDataTest() {
 		var mockPath = "HelloPath";
@@ -2092,8 +2092,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		return mockProduct;
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getEstimatedReceivalDatesTest_NoArgument() {
 		//Using the mock data from getEstimatedReceivalDetailsTest()
@@ -2104,8 +2104,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(1000, result[1].quantity);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getEstimatedReceivalDatesTest_WithArgument() {
 		//Copy the mock data from getEstimatedReceivalDetailsTest()
@@ -2185,8 +2185,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(1000, resultArgusSkuLocation[1].quantity);		
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getQuantityTest() {
 		//@Suppress the tests of different quantity types.
@@ -2252,8 +2252,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
    
 	// ============ START: Non-Persistent Property Methods =================
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getBaseProductTypeTest_ExistedSystemCode() {
 		//testing if the productType already has a systemCode
@@ -2284,8 +2284,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals('Hellokitty', result);	
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getBaseProductTypeTest_NoSystemCodeButHasParentProductType() {
 		//testing if the productType has no systemCode, but parentProductType has one
@@ -2315,8 +2315,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals('merchandise', result);			
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getBaseProductTypeTest_NullProductType() {
 		//testing if ProductType is undefined
@@ -2982,8 +2982,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(7, resultDefaultCode);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getSalePriceByCurrencyCodeTest_ResetCurrencyCode() {		
 		//Mocking data similar with the private helper createMockProductAboutSalePrice()
@@ -3047,15 +3047,15 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		}			
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getSalePriceDiscountTypeTest() {
 		//Too much data to mock, skip it
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getSalePriceExpirationDateTimeTest() {
 		//Test the circumstance without defaultSku defined
@@ -3290,8 +3290,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var result = mockProduct.getAssignedAttributeSetSmartList(true).getRecords(refresh = true);
 		assertTrue(arrayFind(result, mockAttributeSet1) != 0);
 	}	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getAssignedAttributeSetSmartListTest_NoBrand() {		
 		//Testing if no brandID involved
@@ -3329,8 +3329,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 
 	 // ================== START: Deprecated Methods ========================
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getAttributeSetsTest_NoArgu(){
 		var mockAttributeSet1 = createMockAttributeSet(1,"Product");
@@ -3373,8 +3373,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(arrayFind(result, mockAttributeSet3) == 0);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getAttributeSetsTest_WithArgu(){
 		var mockAttributeSet1 = createMockAttributeSet(1,"Product");

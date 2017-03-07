@@ -95,8 +95,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		ormflush();	
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getSalePricePromotionRewardsQueryTest(){
 		var productData = {
@@ -162,8 +162,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getSalePricePromotionRewardsQueryTest_with_explicit_currency_conversion_on_reward(){
 
@@ -277,8 +277,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getSalePricePromotionRewardsQueryTest_without_explicit_currency_conversion_on_reward(){
 
@@ -391,8 +391,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 
 	//This test is dependent on no pre-exisitng promotionReward data. All promotionReward data is generated for this test	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getActivePromotionRewardsTest(){
 		
@@ -441,8 +441,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getPromotionPeriodUseCountTest(){
 		//requires promotion period
@@ -500,8 +500,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getPromotionCodeUseCount(){
 		
@@ -527,8 +527,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(1,PromotionCodeCount);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getPromotionCodeAccountUseCount(){
 		

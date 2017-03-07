@@ -55,24 +55,24 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	// addAuditToCommit()	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function loadYamlTest() {
 		var yamlStruct = variables.service.loadYamlFile(expandPath( '/Slatwall/org/Hibachi/yaml/examples/test.yaml' ) );
 		assert(isStruct(yamlStruct));
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getYamlTest(){
 		var yaml = variables.service.getYaml();
 		assert(isObject(yaml));
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function dumpYamlTest(){
 		var yamlStruct = variables.service.loadYamlFile(expandPath( '/Slatwall/org/Hibachi/yaml/examples/test.yaml' ) );
@@ -80,8 +80,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(len(dumpYaml));
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function writeYamlTest(){
 		var yamlStruct = variables.service.loadYamlFile(expandPath( '/Slatwall/org/Hibachi/yaml/examples/test.yaml' ) );

@@ -55,8 +55,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	//Ensure we get results from getLocationOptions without passing a location.	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getLocationOptions_returns_location_options() {
 		assertTrue(arrayLen(variables.service.getLocationOptions()),"Ensure we get results from getLocationOptions without passing a location.");

@@ -57,8 +57,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function test_order_item_relation(){
 
@@ -83,8 +83,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertFalse(orderItem.hasGiftCard(giftCard));
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function test_gift_card_transaction(){
 
@@ -111,8 +111,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function test_term_relation(){
 		var termData = {
@@ -136,8 +136,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function test_owner_account_relation(){
 		var giftCardData = {
@@ -158,8 +158,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertFalse(giftCard.hasOwnerAccount());
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function test_balance(){
 		var giftCardData = {

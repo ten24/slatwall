@@ -57,8 +57,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		variables.entity.setCollectionObject('Account');
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function fixBadCollectionConfigTest(){
 		var collectionEntityData = {
@@ -135,8 +135,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function addFilterTest(){
 
@@ -177,8 +177,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	}	
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function addFilterToFilterGroupsTest(){
 
@@ -237,8 +237,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(arrayLen(pageRecords) == 0, "Wrong amount of products returned! Expecting 0 record but returned #arrayLen(pageRecords)#");
 		
 	}	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function addFilterOneToManyTest(){
 
@@ -308,8 +308,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function addFilterManyToOneTest(){
 
@@ -379,8 +379,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function displayPropertyTest(){
 
@@ -408,8 +408,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function displayPropertyManyToOneTest(){
 
@@ -448,8 +448,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function addOrderByTest(){
 
@@ -500,8 +500,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function addDisplayAggregateCOUNTTest(){
 		var uniqueNumberForDescription = createUUID();
@@ -532,8 +532,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(pageRecords[1]['skuCount'] == 2);
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function addDisplayAggregateSUMTest(){
 		var uniqueNumberForDescription = createUUID();
@@ -571,8 +571,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(pageRecords[1]['skuPriceSum'] == '60');
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function addDisplayAggregateAVGTest(){
 		var uniqueNumberForDescription = createUUID();
@@ -610,8 +610,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(pageRecords[1]['skuPriceAvg'] == '20');
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function addDisplayAggregateMINTest(){
 		var uniqueNumberForDescription = createUUID();
@@ -649,8 +649,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(pageRecords[1]['skuPriceMin'] == '10');
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function addDisplayAggregateMAXTest(){
 		var uniqueNumberForDescription = createUUID();
@@ -688,8 +688,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(pageRecords[1]['skuPriceMax'] == '30');
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function addFilterSUMAggregateTest(){
 
@@ -755,8 +755,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	assert(arraylen(pageRecords) == 1 && pageRecords[1]['productName'] == 'ProductUnitTest1');
 }
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function addFilterAVGAggregateTest(){
 
@@ -821,8 +821,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assert(arraylen(pageRecords) == 1 && pageRecords[1]['productName'] == 'ProductUnitTest2');
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function addFilterMINAggregateTest(){
 
@@ -887,8 +887,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assert(arraylen(pageRecords) == 1 && pageRecords[1]['productName'] == 'ProductUnitTest2');
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function addFilterMAXAggregateTest(){
 
@@ -948,8 +948,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assert(arraylen(pageRecords) == 1 && pageRecords[1]['productName'] == 'ProductUnitTest1');
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function addFilterCOUNTAggregateTest(){
 
@@ -1015,8 +1015,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assert(arraylen(pageRecords) == 1 && pageRecords[1]['productName'] == 'ProductUnitTest2');
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getAggregateHQLTest(){
 		makePublic(variables.entity,"getAggregateHQL");
@@ -1031,8 +1031,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertFalse(Compare("COUNT(DISTINCT Account.firstName) as Account_firstName",trim(aggregateHQL)));
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function addHQLParamTest(){
 		var collectionEntityData = {
@@ -1052,8 +1052,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(HQLParams['testKey'],'testValue');
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function exactDateFilter(){
 
@@ -1174,8 +1174,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function addHQLParamsFromNestedCollectionTest(){
 
@@ -1214,8 +1214,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(4,structCount(collectionEntity2.getHQLParams()));
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getRecordsCountTest(){
 		var uniqueNumberForDescription = createUUID();
@@ -1246,8 +1246,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getRecordsCountWithGroupByTest(){
 		var uniqueNumberForDescription = createUUID();
@@ -1278,8 +1278,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getRecordsCountWithGroupBy2Test(){
 		var uniqueNumberForDescription = createUUID();
@@ -1310,8 +1310,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getRecordsCountWithAggregateTest(){
 
@@ -1396,8 +1396,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assert(recordsCount == 2, "Wrong amount of products returned! Expecting 2 records but returned #recordsCount#");
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getRecordsTest(){
 		var uniqueNumberForDescription = createUUID();
@@ -1429,8 +1429,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//addToDebug(records);
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function deserializeCollectionConfigTest(){
 		makePublic(variables.entity,'deserializeCollectionConfig');
@@ -1490,8 +1490,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(isStruct(deserializedCollectionConfig));
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getHQLFilteringWithOtherCollectionTest(){
 		var collectionEntityData = {
@@ -1630,8 +1630,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//addToDebug(pageRecords);
 	}*/
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getHQLNestedFilterTest(){
 
@@ -1785,8 +1785,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getHQLTest_date_in_range(){
 		var collectionData = {
@@ -2022,8 +2022,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assert(REFind('_account\.createdDateTime BETWEEN :P[a-f0-9]{32} AND :P[a-f0-9]{32}', collectionEntity.getHQL()) > 0);
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getHQLTest_Contains(){
 		var collectionBestAcountEmailAddressesData = {
@@ -2057,8 +2057,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//addToDebug(collectionBestAcountEmailAddresses.getPageRecords());
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getHQLTest_dateFilter(){
 		var collectionBestAcountEmailAddressesData = {
@@ -2104,8 +2104,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var items = ormExecuteQUery("FROM SlatwallAccount as Account where ( Account.superUserFlag = true OR Account.firstName = 'Ryan' AND Account.createdDateTime BETWEEN 1407556800000 AND 1407643199999 )");
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getHQLTest(){
 		/*var collectionBestAcountEmailAddressesData = {
@@ -2168,8 +2168,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getHQLTest_exists_in_collection(){
 
@@ -2201,8 +2201,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getHQLTest_list(){
 
@@ -2232,8 +2232,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getHQLTest_keywords_with_filterGroup(){
 
@@ -2298,8 +2298,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		addToDebug(collectionEntity.getRecords());
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getHQLTest_keywords_without_filterGroup(){
 
@@ -2344,8 +2344,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		addToDebug(collectionEntity.getHQL());
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getHQLTest_keywords_without_defaultColumns(){
 
@@ -2371,8 +2371,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		addToDebug(collectionEntity.getHQL());
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getHQLTest_keywords_without_ormtype(){
 
@@ -2415,8 +2415,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		addToDebug(collectionEntity.getHQL());
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getHQLTest_notpersistent(){
 
@@ -2477,8 +2477,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//addToDebug(collectionEntity.getPageRecords());
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function hasNonPersistentColumn(){
 
@@ -2532,8 +2532,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//addToDebug(collectionEntity.getNonPersistentColumn());
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function removeFilterTest(){
 		var accountCollectionList = variables.entityService.getCollectionList('Account');
@@ -2548,8 +2548,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getHQLTest_emptyFilterGroup(){
 		var collectionBestAcountEmailAddressesData = {
@@ -2598,8 +2598,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getHQLTest_joins(){
 
@@ -2633,8 +2633,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getSelectionsHQLTest(){
 		MakePublic(variables.entity,'getSelectionsHQL');
@@ -2655,8 +2655,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getFilterHQLTest(){
 		MakePublic(variables.entity,'getFilterHQL');
@@ -2700,8 +2700,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//addToDebug(filterHQL);
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getFilterGroupHQLTest(){
 		MakePublic(variables.entity,'getFilterGroupHQL');
@@ -2756,8 +2756,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var filterGroupHQL = variables.entity.getFilterGroupHQL(filterGroup);
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getFilterGroupsHQLTest(){
 		MakePublic(variables.entity,'getFilterGroupsHQL');
@@ -2784,8 +2784,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var filterGroupsHQL = variables.entity.getFilterGroupsHQL(filterGroups);
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getOrderByHQLTest(){
 		makePublic(variables.entity,"getOrderByHQL");
@@ -2811,8 +2811,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//addToDebug(orderByHQL);
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function addJoinHQLTest(){
 		makePublic(variables.entity,'addJoinHQL');
@@ -2904,8 +2904,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//addToDebug(collectionEntity.getHQL());
 	}*/
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function HQLTestJoins(){
 
@@ -2942,8 +2942,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//addToDebug(collectionEntity.getPageRecords());
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getHQLWithSettingTest(){
 		var CollectionEntityData = {
@@ -2972,8 +2972,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//addToDebug(collectionEntity.getPageRecords());
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getHQLForCollectionFilterSkuTest(){
 		var collectionBestSkuData = {
@@ -3007,8 +3007,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		addToDebug(HQL);
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getHQLForCollectionFilterManyToManyTest(){
 		var collectionPromotionRewardData = {
@@ -3061,8 +3061,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		addToDebug(HQL);
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getHQLForCollectionFilterOneToManyTest(){
 

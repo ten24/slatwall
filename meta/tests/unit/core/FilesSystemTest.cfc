@@ -48,8 +48,8 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function makeSureAllViewFilesAreLowerCased() {
 		var path = expandPath('/Slatwall');
@@ -77,8 +77,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function varScoperTest(){
 		var modelDirectoryPath = expandPath('/Slatwall');

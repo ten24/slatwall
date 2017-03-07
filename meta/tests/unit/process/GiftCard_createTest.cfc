@@ -54,8 +54,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function test_creating_card(){
 

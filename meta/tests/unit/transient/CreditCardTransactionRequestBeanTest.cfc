@@ -55,8 +55,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.object = request.slatwallScope.getTransient("CreditCardTransactionRequestBean");
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function defaults_are_correct() {
 		assert(isNull(variables.object.getTransactionID()));

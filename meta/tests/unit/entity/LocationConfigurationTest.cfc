@@ -49,8 +49,8 @@ Notes:
 component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function setUp() 
 	{

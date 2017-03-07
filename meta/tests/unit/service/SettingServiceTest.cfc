@@ -55,16 +55,16 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	// getSettingRecordCount()	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getSettingRecordExistsFlag_returns_boolean() {
 		var count = variables.service.getSettingRecordExistsFlag(settingName="contentRestrictAccessFlag");
 		assert(isBoolean(count));
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getSettingPrefixTest(){
 		var settingName = 'emailFromEmailAddress';

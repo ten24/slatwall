@@ -53,16 +53,16 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.dao = request.slatwallScope.getDAO("stockDAO");
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function inst_ok() {
 		assert(isObject(variables.dao));
 	}
 	
 	// Ensure that updateStockLocation will accept arguments and run query. 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function updateStockLocation_has_no_errors() {
 		variables.dao.updateStockLocation(toLocationID="1",fromLocationID="1");

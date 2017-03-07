@@ -54,32 +54,32 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.dao = request.slatwallScope.getDAO("typeDAO");
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function inst_ok() {
 		assert(isObject(variables.dao));
 	}
 	
 	// getSystemCodeTypeCount()	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getSystemCodeTypeCount_returns_numeric_value_of_one_for_top_level_type() {
 		
 		assertEquals(1, variables.dao.getSystemCodeTypeCount( systemCode="orderStatusType" ));
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getSystemCodeTypeCount_returns_numeric_value_of_zero_for_fake() {
 		
 		assertEquals(0, variables.dao.getSystemCodeTypeCount( systemCode="my-fake-system-code" ));
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getTypeBySystemCodeTest() {
 		

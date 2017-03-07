@@ -54,8 +54,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		variables.entity = request.slatwallScope.getService("priceGroupService").newPriceGroupRate();
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getAppliesToTest_ListCreation(){
 		var product = createPersistedTestEntity('Product', {productID="",productName='TestProduct',productCode='testproduct'&createUUID()});

@@ -49,31 +49,31 @@ Notes:
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 	// getEntity()	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getEntity_works() {
 		assert(!isNull(request.slatwallScope.getEntity('SlatwallCountry', 'US')));
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getEntity_works_with_struct() {
 		assert(!isNull(request.slatwallScope.getEntity('Country', {countryCode='US'})));
 	}
 	
 	// getAccountData() 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getAccountData_returns_valid_struct() {
 		var ad = request.slatwallScope.getAccountData();
 		assert(isStruct(ad));
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getAccountData_without_any_propertyList_returns_all_available_properties() {
 		var ad = request.slatwallScope.getAccountData();
@@ -81,8 +81,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(structCount(ad), 12);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getAccountData_returns_errors_set_on_account() {
 		request.slatwallScope.getAccount().addError( 'firstName', 'The First Name is Required' );
@@ -106,8 +106,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(ad.errors.lastName[2], "The Last Name must be xyz", "The correct error message exists");
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getAccountData_always_includes_hasErrors_and_errors_and_processObjects() {
 		var ad = request.slatwallScope.getAccountData( 'accountID' );
@@ -125,8 +125,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(isStruct(ad.processObjects), "The data in the 'processObjects' key isn't a structure");
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getAccountData_with_specific_propertyList_returns_only_those_keys() {
 		var ad = request.slatwallScope.getAccountData( 'accountID,firstName,lastName' );
@@ -135,8 +135,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(structCount(ad), 6);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getAccountData_with_specific_propertyList_returns_correct_values() {
 		request.slatwallScope.getAccount().setFirstName( 'test-first' );
@@ -157,8 +157,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(ad.lastName, 'test-last');
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getAccountData_passing_invalid_property_wont_add_to_return() {
 		var ad = request.slatwallScope.getAccountData( 'accountID,firstName,lastName,createdDateTime' );
@@ -169,16 +169,16 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	// getCartData()	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getCartData_returns_valid_struct() {
 		var cd = request.slatwallScope.getCartData();
 		assert(isStruct(cd));
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getCartData_without_any_propertyList_returns_all_available_properties() {
 		var cd = request.slatwallScope.getCartData();
@@ -187,8 +187,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getCartData_returns_errors_set_on_cart() {
 		request.slatwallScope.getCart().addError( 'addOrderPayment', 'The order payment could not be added' );
@@ -207,8 +207,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getCartData_always_includes_hasErrors_and_errors() {
 		var cd = request.slatwallScope.getCartData( 'orderid' );
@@ -226,8 +226,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(0, structCount(cd.errors), "The error keys come back as an empty struct by default");
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getCartData_with_specific_propertyList_returns_only_those_keys() {
 		var cd = request.slatwallScope.getCartData( 'orderid' );
@@ -236,8 +236,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals( 4, structCount(cd));
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getCartData_passing_invalid_property_wont_add_to_return() {
 		var cd = request.slatwallScope.getCartData( 'orderID,hushpuppy' );

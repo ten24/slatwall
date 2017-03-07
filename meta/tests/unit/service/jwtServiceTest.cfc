@@ -61,16 +61,16 @@ component  extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" hint="Tests t
 	
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function setupTest(){
 		addToDebug(variables.jwt);
 	}
 	
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function encodeTest(){
 
@@ -79,8 +79,8 @@ component  extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" hint="Tests t
 		assert(listLen(token,".") eq 3);
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function decodeTest(){
 		
@@ -92,8 +92,8 @@ component  extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" hint="Tests t
 		
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function decodeInvalidSignitureTest(){
 		variables.jwt.setTokenString(variables.testTokenInvalid);
@@ -104,16 +104,16 @@ component  extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" hint="Tests t
 		}
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function verifyTest(){
 		var token = variables.jwt.encode(variables.payload);
 		var result = variables.jwt.verify(token);
 		
 	}	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function verifyInvalidTokenTest(){
 		

@@ -54,15 +54,15 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		variables.entity = request.slatwallScope.newEntity( 'Image' );
 	}
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getResizedImagePathGetsMissingImagePath(){
 		var imagePath = variables.entity.getResizedImagePath();
 		assert(fileExists(expandPath(imagePath)));
 	}
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getResizedImageCreatesImgElementWithMissingPath(){
 		var imagePath = variables.entity.getResizedImagePath();

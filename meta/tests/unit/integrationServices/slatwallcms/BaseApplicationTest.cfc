@@ -54,8 +54,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.testApplication = createObject('component','Slatwall.integrationServices.slatwallcms.BaseApplication');
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function addLinkTest(){
 		var contentEntity = createPersistedTestEntity('Content',{

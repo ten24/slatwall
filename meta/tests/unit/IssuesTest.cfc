@@ -48,8 +48,8 @@ Notes:
 */
 component extends="SlatwallUnitTestBase" {
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function issue_1296() {
 		
@@ -68,8 +68,8 @@ component extends="SlatwallUnitTestBase" {
 		}
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function issue_1329() {
 		
@@ -81,8 +81,8 @@ component extends="SlatwallUnitTestBase" {
 		
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function issue_1331() {
 		
@@ -95,8 +95,8 @@ component extends="SlatwallUnitTestBase" {
 	
 
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function issue_1348() {
 		var product = entityNew("SlatwallProduct");
@@ -112,8 +112,8 @@ component extends="SlatwallUnitTestBase" {
 		assert( right( sku.getError('price')[1], 8) neq "_missing");
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function two_accounts_with_same_primary_email_cannot_be_saved() {
 		//GH issue 1376
@@ -158,8 +158,8 @@ component extends="SlatwallUnitTestBase" {
 		assert(account2HasErrors);
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function issue_1604() {
 		
@@ -170,8 +170,8 @@ component extends="SlatwallUnitTestBase" {
 		assert(!isNull(order));
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function issue_1690() {
 		
@@ -184,8 +184,8 @@ component extends="SlatwallUnitTestBase" {
 		}
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function issue_1690_2() {
 		var product  = request.slatwallScope.newEntity("Product");

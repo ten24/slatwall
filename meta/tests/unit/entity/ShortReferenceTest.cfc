@@ -55,8 +55,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		variables.entity = request.slatwallScope.getService("skuService").newSkuCurrency();
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getSimpleRepresentation_exists_and_is_simple() {
 		
@@ -71,8 +71,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assert(isSimpleValue(variables.entity.getSimpleRepresentation()));
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function skuCurrency_should_not_save_with_negative_price() {
 		//issue 1335

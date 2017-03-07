@@ -53,16 +53,16 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function inst_ok() {
 		assert(isObject(variables.dao));
 	}
 
 	//getPeerOrderPaymentNullAmountExistsFlag()	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getPeerOrderPaymentNullAmountExistsFlagTest(){
 		var orderTrueData = {
@@ -114,8 +114,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		return createPersistedTestEntity('OrderReturn', orderReturnData);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getPreviouslyReturnedFulfillmentTotalTest() {
 		var mockOrderReturn1 = createOrderReturn(100);
@@ -155,8 +155,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(0, resultInvalidArgu);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getGiftCardOrderItemsTest() {
 		var productData = {

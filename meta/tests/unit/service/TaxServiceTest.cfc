@@ -55,8 +55,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	// generateTaxRatesRequestBeanForIntegration()	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function generateTaxRatesRequestBeanForIntegration_works_with_no_account_on_order() {
 		var order = request.slatwallScope.newEntity("order");
@@ -67,8 +67,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 
 	// Tests for addTaxAddressesStructBillingAddressKey()	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function addTaxAddressesStructBillingAddressKey_returns_empty_struct_if_no_billingInfo_on_order(){
 		//Creates new order then passes new order into addTaxAddressesStructBillingAddressKey() and saves the return data
@@ -79,8 +79,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(structIsEmpty(taxAddressesStruct));
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function addTaxAddressesStructBillingAddressKey_sets_struct_billingAddress_key_from_order_billingAddress(){
 		//Creates a new Address and a new Order then sets the address to the order's billing address
@@ -102,8 +102,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(structKeyExists(taxAddressesStruct, 'taxBillingAddress'));	
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function addTaxAddressesStructBillingAddressKey_doesNOT_sets_struct_billingAddress_key_from_order_orderPayments_where_systemCode_NOT_Active(){
 		//Creates new order and orderPayment then adds the orderPayment to the order
@@ -121,8 +121,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	// Tests for removeTaxesFromAllOrderItems()	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function removeTaxesFromAllOrderItems_iterates_over_orderItems_in_order_and_removes_taxes(){
 		var data = {
@@ -155,8 +155,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	// Tests for removeTaxesFromAllOrderItems()	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function removeTaxesFromAllOrderItems_removes_relationship_from_both_sides(){
 		var data = {
@@ -188,8 +188,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	//Tests for generateTaxIntegrationArray()	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function generateTaxIntegrationArray_returns_empty_array_if_taxCategoryRate_has_NO_taxIntegration(){
 		//Creates new order then passes new order into addTaxAddressesStructBillingAddressKey() and saves the return data

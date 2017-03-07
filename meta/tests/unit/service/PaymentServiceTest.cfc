@@ -55,8 +55,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	// getUncapturedPreAuthorizations()	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getUncapturedPreAuthorizations_returns_empty_array_with_no_history() {
 		var payment = entityNew('SlatwallOrderPayment');
@@ -67,8 +67,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	// getUncapturedPreAuthorizations()	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getUncapturedPreAuthorizations_returns_correctly_sorted_auth_amounts() {
 		var payment = entityNew('SlatwallOrderPayment');

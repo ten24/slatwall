@@ -55,8 +55,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		variables.entity = request.slatwallScope.getService("orderService").newOrderPayment();
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function defaults_are_correct() {
 		super.defaults_are_correct();
@@ -64,15 +64,15 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(variables.entity.getReferencingOrderPayments(), []);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getSucessfulPaymentTransactionExistsFlag_returns_false_by_default() {
 		assertFalse(variables.entity.getSucessfulPaymentTransactionExistsFlag());
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getSucessfulPaymentTransactionExistsFlag_returns_true_when_should() {
 		var paymentTransaction = request.slatwallScope.newEntity('paymentTransaction');
@@ -82,8 +82,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assert(variables.entity.getSucessfulPaymentTransactionExistsFlag());
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getPeerOrderPaymentNullAmountExistsFlag_returns_true_when_should(){ 
 		var orderTrueData = { 
@@ -124,8 +124,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertFalse(order2.getOrderPayments()[1].getPeerOrderPaymentNullAmountExistsFlag()); 
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function setBillingAccountAddress_updates_billingAddress() {
 		
@@ -154,8 +154,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function setBillingAccountAddress_updates_billingAddress_without_creating_a_new_one() {
 		addressDataOne = {
@@ -181,8 +181,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals( billingAddress.getAddressID(), variables.entity.getBillingAddress().getAddressID() );
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function setBillingAccountAddress_doesnt_updates_billingAddress_when_same_aa_as_before() {
 		var accountAddressDataOne = {
@@ -206,8 +206,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function test_gift_card_transaction_relation(){ 
 		var orderPaymentData = { 
@@ -252,8 +252,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	return createPersistedTestEntity('OrderPayment', orderPaymentData);
 	 }
 	 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getDynamicAmountFlagTest() {
 		//Testing the true

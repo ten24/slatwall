@@ -57,22 +57,22 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getExpirationMonthOptions_returns_a_12_index_array() {
 		assert(arrayLen(variables.entity.getExpirationMonthOptions()) eq 12);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getExpirationYearOptions_returns_a_20_index_array() {
 		assertEquals(arrayLen(variables.entity.getExpirationYearOptions()), 20);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function isValidTest(){
 		var accountPaymentData={
@@ -83,8 +83,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assert(accountPayment.hasErrors());		
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getAmountTest(){
 		var accountPaymentData={
@@ -113,8 +113,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(15.09,accountPayment.getAmount());
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getAmountReceivedTest(){
 		var accountPaymentData={
@@ -148,8 +148,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(8.55,accountPayment.getAmountReceived());
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getAmountCreditedTest(){
 		var accountPaymentData={
@@ -183,8 +183,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(8.55,accountPayment.getAmountCredited());
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getAmountAuthorizedTest(){
 		var accountPaymentData={

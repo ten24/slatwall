@@ -55,8 +55,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		variables.entity = request.slatwallScope.newEntity("AccountPaymentMethod");
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function setBillingAccountAddress_updates_billingAddress() {
 		
@@ -85,8 +85,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function setBillingAccountAddress_updates_billingAddress_without_creating_a_new_one() {
 		addressDataOne = {
@@ -112,8 +112,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals( billingAddress.getAddressID(), variables.entity.getBillingAddress().getAddressID() );
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function setBillingAccountAddress_doesnt_updates_billingAddress_when_same_aa_as_before() {
 		var accountAddressDataOne = {
@@ -137,8 +137,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function isValidTest(){
 		var accountPaymentMethodData={

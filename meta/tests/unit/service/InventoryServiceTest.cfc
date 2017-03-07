@@ -54,8 +54,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.service = request.slatwallScope.getBean("inventoryService");
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getQIATSTest() {
 		//Testing when the function is called w/ stock argument
@@ -81,8 +81,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	
 	
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getQATSTest_Arguments() {
 		//Testing when argument is stock entity
@@ -112,8 +112,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(1000, resultProductQATS, 'The result should be orderMaximumQuantity because of trackInventory and backorder values');
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getQATSTest_ifLogics() {
 		var productData = {

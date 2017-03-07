@@ -55,15 +55,15 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	// hasCachedValue()	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function hasCachedValue_returns_false() {
 		assertFalse( variables.service.hasCachedValue("test-cache-key-never-set") );
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function hasCachedValue_returns_true_if_exists() {
 		variables.service.setCachedValue("test-cache-key-set", "valid-value");
@@ -71,15 +71,15 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	// getCachedValue()	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getCachedValue_returns_null_when_not_exists() {
 		assert( isNull(variables.service.getCachedValue('test-cache-key-never-set')) );
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getCachedValue_returns_correct_value_when_set() {
 		variables.service.setCachedValue("test-cache-key-set", "valid-value");
@@ -87,8 +87,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	// resetCachedKey()	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function resetCachedKey_makes_hasCacheValue_false() {
 		variables.service.setCachedValue("test-cache-key-set", "valid-value");
@@ -96,8 +96,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertFalse( variables.service.hasCachedValue("test-cache-key-set") );
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function resetCachedKey_makes_getCacheValue_return_value() {
 		variables.service.setCachedValue("test-cache-key-set", "valid-value");

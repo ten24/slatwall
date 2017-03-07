@@ -54,8 +54,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.service = request.slatwallScope.getService("updateService");
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function updateCMSApplicationsTest(){
 		variables.service.updateCMSApplications();

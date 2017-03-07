@@ -118,8 +118,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		return collectionOptions;
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getHibachiPropertyIdentifierByCollectionPropertyIdentifierTest(){
 		var collectionPropertyIdentifier = '_sku_product.brand.brandID';
@@ -131,8 +131,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getCapitalCaseTest(){
 		MakePublic(variables.service,'capitalCase');
@@ -141,8 +141,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals('Testingword',word);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getTransientCollectionByEntityNameTest(){
 		var entityName = 'product';
@@ -153,8 +153,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getFormattedPageRecordsTest(){
 		//need product to be able to get in a paginated list
@@ -183,8 +183,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertTrue(arraylen(formattedPageRecords['pageRecords']));
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function collectionsExportTest(){
 		var collectionConfig = '{
@@ -213,8 +213,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		return;
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getExportableColumnsByCollectionConfigTest(){
 		var collectionConfig = '{
@@ -245,8 +245,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getHeadersListByCollectionConfigColumnsTest(){
 		var columns = [
@@ -276,8 +276,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(variables.service.getHeadersListByCollection(collectionEntity),'accountID,superUserFlag,firstName,lastName,failedLoginAttemptCount,taxExemptFlag,urlTitle,company,loginLockExpiresDateTime');
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getPropertyIdentifiersListTest(){
 		var entityName = 'product';
@@ -324,8 +324,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 //		assert(isArray(collectionEntityProperties));
 //	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getAPIResponseForEntityNameTest(){
 		var accountData = {
@@ -341,8 +341,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(isStruct(apiResponse));
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getAPIResponseForEntityNameTest_with_propertyIdentifier_parameters(){
 		var accountData = {
@@ -358,8 +358,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertTrue(isStruct(apiResponse));
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getAPIResponseForBasicEntityWIthIDTest(){
 		var accountData = {
@@ -388,8 +388,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertTrue(isStruct(apiResponse));
 	}*/
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getAPIResponseForCollectionTest(){
 		var accountData = {
@@ -418,8 +418,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//addToDebug(apiResponse);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getAPIResponseForCollectionTest_with_propertyIdentifier_parameters(){
 		var accountData = {

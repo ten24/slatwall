@@ -55,8 +55,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		variables.entity = request.slatwallScope.newEntity( 'OrderItem' );
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getProductBundlePrice_fixed_none(){
 		var productData = {
@@ -123,8 +123,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(orderItem.getProductBundlePrice(),9.25);
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getProductBundlePrice_increase_decrease_skuPrice(){
 		var productData = {
@@ -206,8 +206,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getProductBundlePrice_package_quantity() {
 		var productData = {
@@ -311,8 +311,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(380, orderItem.getExtendedPrice());
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getExtendedPriceTest(){
 		var productData = {
@@ -344,8 +344,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(orderItem.getExtendedPrice(),199.98);
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function test_quantity_and_bundleItemQuantity() {
 		var	orderItemData = {
@@ -393,23 +393,23 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function validate_as_save_for_a_new_instance_doesnt_pass() {
 
 	}
 
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getSimpleRepresentation_exists_and_is_simple() {
 
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function test_set_and_remove_gift_card() {
 
@@ -485,8 +485,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		return createPersistedTestEntity('Sku', skuData);
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function hasQuantityWithinMaxOrderQuantityTest_OrderItemType() {
 		var mockSku = createMockSku();
@@ -512,8 +512,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(resultOITReturn, 'For orderITem types other than oitSale, should return the TRUE after the if statements');
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function hasQuantityWithinMaxOrderQuantityTest_QuantityComparision() {
 		var mockSku = createMockSku();
@@ -546,8 +546,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertFalse(resultSale2, 'The quantity of mockOrder2 should be 1040 in total, which is more than getMaximumOrderQuantity(), should return false');
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function hasQuantityWithinMaxOrderQuantityTest_getSkuIsNull() {
 		var mockSku = createMockSku();
@@ -576,8 +576,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(resultOrderOneSkuOneNot, 'quantity should still be 1000, the mockOrderItemNoSku should not be added in quantity formula');
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function hasQuantityWithinMinOrderQuantityTest_OrderItemType() {
 		var mockSku = createMockSku();
@@ -604,8 +604,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function hasQuantityWithinMinOrderQuantityTest_QuantityComparision() {
 		var mockSku = createMockSku();
@@ -643,8 +643,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertFalse(resultSale2, 'The quantity of mockOrder2 should be 0 in total, which is less than min, should return false');
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function hasQuantityWithinMinOrderQuantityTest_getSkuIsNull() {
 		var mockSku = createMockSku();

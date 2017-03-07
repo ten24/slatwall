@@ -55,8 +55,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		variables.entity = request.slatwallScope.newEntity('skuCurrency');
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getShortReferenceID_on_new_entity_does_not_error() {
 		var value = variables.entity.getShortReferenceID();

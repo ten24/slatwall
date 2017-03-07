@@ -55,8 +55,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 
 	//test is incomplete as it bypasses the currencyconverions,promotion, and tax intergration update amounts code	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function processOrder_addAndRemoveOrderItem_addOrderItems(){
 		//set up data
@@ -167,8 +167,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//addToDebug(orderReturn.getOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getQuantity());
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function process_order_add_gift_card_order_item(){
 		var productData = {
@@ -251,8 +251,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(0, numOfUnassignedGiftCards);
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function duplicate_order_with_child_order_items(){
 		//set up order
@@ -323,8 +323,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function processOrder_placeOrder_TermPayment(){
 		//adding a test shippingMethod
@@ -546,8 +546,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(orderDelivery.getOrderDeliveryItems()[1].getQuantity(),1);
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getOrderRequirementsListTest_failsOrderfulfillment(){
 		var accountData = {
@@ -581,8 +581,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(orderRequirementsList,'fulfillment');
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getOrderRequirementsListTest_failsOrderReturn(){
 		var accountData = {
@@ -611,8 +611,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(orderRequirementsList,'return');
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getOrderRequirementsListTest_failsPayment(){
 		var accountData = {
@@ -648,8 +648,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(orderRequirementsList,'payment');
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getOrderRequirementsListTest_failsAccount(){
 		var orderData = {

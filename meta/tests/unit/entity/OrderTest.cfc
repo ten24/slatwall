@@ -55,16 +55,16 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 
 	// Orders are alowed to be saved with no data	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function validate_as_save_for_a_new_instance_doesnt_pass() {
 		variables.entity.validate(context="save");
 		assertFalse( variables.entity.hasErrors() );
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function hasCreditCardPaymentMethodTest(){
 		var orderData ={
@@ -93,8 +93,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertFalse(order.hasCreditCardPaymentMethod());
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function validate_billingAddress_as_full_fails_when_not_fully_populated() {
 		var populateData = {
@@ -114,8 +114,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assert( variables.entity.hasErrors(), "The order doesn't show that it has errors when it should because the billing address was not fully populated" );
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function validate_billingAddress_as_full_passes_when_fully_populated() {
 		var populateData = {
@@ -139,8 +139,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertFalse( variables.entity.hasErrors(), "The order shows that it has errors event when it was populated" );
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function validate_shippingAddress_as_full_fails_when_not_fully_populated() {
 		var populateData = {
@@ -160,8 +160,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assert( variables.entity.hasErrors(), "The order doesn't show that it has errors when it should because the billing address was not fully populated" );
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function validate_shippingAddress_as_full_passes_when_fully_populated() {
 		var populateData = {
@@ -185,8 +185,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertFalse( variables.entity.hasErrors(), "The order shows that it has errors event when it was populated" );
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function setBillingAccountAddress_updates_billingAddress() {
 
@@ -215,8 +215,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function setBillingAccountAddress_updates_billingAddress_without_creating_a_new_one() {
 		addressDataOne = {
@@ -242,8 +242,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals( billingAddress.getAddressID(), variables.entity.getBillingAddress().getAddressID() );
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function setBillingAccountAddress_doesnt_updates_billingAddress_when_same_aa_as_before() {
 		var accountAddressDataOne = {
@@ -267,8 +267,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function setShippingAccountAddress_updates_shippingAddress() {
 
@@ -297,8 +297,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function setShippingAccountAddress_updates_shippingAddress_without_creating_a_new_one() {
 		addressDataOne = {
@@ -324,8 +324,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals( shippingAddress.getAddressID(), variables.entity.getShippingAddress().getAddressID() );
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function setShippingAccountAddress_doesnt_updates_shippingAddress_when_same_aa_as_before() {
 		var accountAddressDataOne = {
@@ -508,8 +508,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	
 	 
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getOrderTypeTest() {
 		var mockOrder = createMockOrder();
@@ -519,8 +519,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals('sales order', result.getTypeName());
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getOrderStatusType() {
 		var mockOrder = createMockOrder();
@@ -530,8 +530,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals('not placed', result.getTypeName());
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getStatusTest() {
 		var mockOrder = createMockOrder();
@@ -540,8 +540,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals('not placed', result);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getStatusCodeTest() {
 		var mockOrder = createMockOrder();
@@ -550,8 +550,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals('ostNotPlaced', result);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getTypeTest() {
 		var mockOrder = createMockOrder();
@@ -560,8 +560,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals('Sales Order', result);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getTypeCodeTest() {
 		var mockOrder = createMockOrder();
@@ -571,8 +571,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getSaleItemSmartListTest() {
 		var mockOrderItem1 = createMockOrderItem('444df2e9a6622ad1614ea75cd5b982ce');//oitSale
@@ -598,8 +598,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(arrayFind(resultOrderItemSmartList2, mockOrderItem4) != 0);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getReturnItemSmartListTest() {
 		var mockOrderItem1 = createMockOrderItem('444df2e9a6622ad1614ea75cd5b982ce');//oitSale
@@ -625,8 +625,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(arrayFind(resultOrderItemSmartList2, mockOrderItem5) != 0);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getDepositItemSmartListTest() {
 		var mockOrderItem1 = createMockOrderItem('444df2e9a6622ad1614ea75cd5b982ce');//oitSale
@@ -650,8 +650,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(arrayFind(resultOrderItemSmartList2, mockOrderItem4) != 0);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getOrderTypeOptionsTest_OrderTypeFilter() {
 		var mockOrderItem1 = createMockOrderItem('444df2e9a6622ad1614ea75cd5b982ce');//oitSale
@@ -688,8 +688,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(arrayFind(resultOrder2, ExchangeStruct) != 0);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getOrderTypeOptionsTest_IfStatements() {
 		var mockOrderItem1 = createMockOrderItem('444df2e9a6622ad1614ea75cd5b982ce');//oitSale
@@ -743,8 +743,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(arrayFind(resultOrder3, ExchangeStruct) != 0);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function hasItemsQuantityWithinMaxOrderQuantityTest() {
 		var skuData = {
@@ -1298,8 +1298,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 }
 	
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getPreviouslyReturnedFulfillmentTotalTest() {
 		var orderData = {
@@ -1315,8 +1315,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(30, result, 'The dependency function result is not returned properly.');
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function hasGiftCardOrderPaymentAmountTest() {
 		var mockOrder = createSimpleMockEntityByEntityName('Order');
@@ -1345,8 +1345,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertFalse(resultLessThanZero, 'The condition that amount get from orderDAO < 0 fails');
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getOrderPaymentAmountNeededTest_DynamicCreditOrderPaymentNotNull() {
 		var orderData = {
@@ -1365,8 +1365,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var resultZero = mockOrder.getOrderPaymentAmountNeeded();
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getORderPaymentAmountNeededTest_DynamicChargeOrderPaymentNotNull() {
 		var orderData = {
@@ -1386,8 +1386,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var resultZero = mockOrder.getOrderPaymentAmountNeeded();
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getOrderPaymentAmountNeededTest() {
 		var orderData = {
@@ -1426,8 +1426,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getDynamicChargeOrderPaymentAmountTest() {
 		var orderData = {
@@ -1456,8 +1456,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(0, resultNegativeNumber, 'The case when orderPaymentAmountNeeded is -690 fails');
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getDynamicCreditOrderPaymentAmountTest() {
 		var orderData = {
@@ -1486,8 +1486,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(690, resultNegativeNumber, 'The case when orderPaymentAmountNeeded is -690 fails');
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getDynamicChargeOrderPaymentTest_ifsInForLoop() {
 		// These mock entities, getStatusCode() is set to 'opstActive' by default
@@ -1540,8 +1540,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getDynamicChargeOrderPaymentTest_emptyReturn() {
 		var orderPaymentData = {
@@ -1570,8 +1570,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(isNull(result));
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getDynamicCreditOrderPaymentTest_ifsInForLoop() {
 		// These mock entities, getStatusCode() is set to 'opstActive' by default
@@ -1624,8 +1624,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getDynamicCreditOrderPaymentTest_emptyReturn() {
 		var orderPaymentData = {
@@ -1654,8 +1654,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(isNull(result));
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getPaymentAmountTotalTest() {
 		// These mock entities, getStatusCode() == 'opstActive' by default
@@ -1709,8 +1709,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(9.5, result, 'The result should be 10 - 0.5 = 9.5');
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getPaymentAmountDueTest() {
 		var orderData1 = {
@@ -1741,8 +1741,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getPaymentAmountAuthorizedTotalTest() {
 		//Testing when the statusCode == opstActive
@@ -1777,8 +1777,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(0, result, 'When status type not opstActive, should return 0');
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getPaymentAmountReceivedTotalTest() {
 		//Testing when the statusCode == opstActive
@@ -1813,8 +1813,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(0, result, 'When status type not opstActive, should return 0');
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getPaymentAmountTotalByPaymentMethodTest_ifLogic() {
 		// These mock entities, getStatusCode() == 'opstActive' by default
@@ -1900,8 +1900,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(8, result, 'The result should be 10 - 2 = 8');
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getPaymentAmountTotalByPaymentMethodTest_Arguments() {
 		var mockPaymentMethod1 = createSimpleMockEntityByEntityName('PaymentMethod');
@@ -1978,8 +1978,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(9, result, 'The result should be 1 + 8 = 9');
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function checkNewBillingAccountAddressSaveTest_SkipSecondIf() {
 		//Mocking data is same with checkNewBillingAccountAddressSaveTest_SecondIf()
@@ -2021,8 +2021,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(mockAccount.getAccountID(), resultAccountID, 'The account should be the same account');
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function checkNewBillingAccountAddressSaveTest_secondIf() {
 		//Mocking data is same with checkNewBillingAccountAddressSaveTest_SkipSecondIf()
@@ -2063,8 +2063,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals('OneString', resultAddressName, 'when getSaveBillingAccountAddressName() exists, should return the addressName');
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function checkNewShippingAccountAddressSaveTest_SkipSecondIf() {
 		//Mocking data is same with checkNewShippingAccountAddressSaveTest_SkipSecondIf()
@@ -2105,8 +2105,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var resultAccountID = mockOrder.getShippingAccountAddress().getAccount().getAccountID();
 		assertEquals(mockAccount.getAccountID(), resultAccountID, 'The account should be the same account');
 	}
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function checkNewShippingAccountAddressSaveTest_SecondIf() {
 		//Mocking data is same with checkNewShippingAccountAddressSaveTest_SecondIf()
@@ -2146,8 +2146,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals('OneString', resultAddressName, 'when getSaveShippingAccountAddressName() exists, should return the addressName');
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getAddOrderItemSkuOptionsSmartListTest() {
 		

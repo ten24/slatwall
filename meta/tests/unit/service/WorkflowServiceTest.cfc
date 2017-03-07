@@ -121,8 +121,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		////addToDebug(workflowEntity.getWorkflowID());
 	}*/
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function entityPassesAllWorkflowTaskConditionsTest(){
 		var productData = {
@@ -269,8 +269,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		addToDebug(evalString);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getWOrkflowConditionGroupStringTest(){
 		var productData = {
@@ -410,8 +410,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		addToDebug(conditionsGroupString);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getValidationValue(){
 		var productData = {
@@ -432,8 +432,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		addToDebug(test);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getWorkflowConditionGroupsStringTest(){
 		var productData = {

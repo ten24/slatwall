@@ -57,8 +57,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		
 			
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function test_order_payment_relation(){ 
 		var orderPaymentData = { 
@@ -83,8 +83,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertFalse(giftCardTransaction.hasOrderPayment());
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function test_gift_card_transaction(){ 
 		

@@ -55,8 +55,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		variables.entity = request.slatwallScope.newEntity( 'OrderItemGiftRecipient' );
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function itest_order_item_relation(){ 
 		var orderItemGiftRecipientData = { 

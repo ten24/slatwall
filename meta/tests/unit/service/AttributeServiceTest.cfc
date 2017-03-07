@@ -53,8 +53,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.service = request.slatwallScope.getBean("attributeService");
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function saveAttributeTest_cacheClearedOnAttributeSave(){
 		var attributeSetData = {
@@ -101,8 +101,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertFalse(request.slatwallScope.getService('hibachiCacheService').hasCachedValue('attribtueService_getAttributeModel_#attributeSet.getAttributeSetObject()#_#attributeSet.getAttributeSetCode()#') == true);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getAttributeModelTest(){
 		

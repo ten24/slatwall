@@ -56,8 +56,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		variables.entity = request.slatwallScope.getService( variables.entityService ).newContent();
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getSiteOptions_test(){
 		var siteOptions = variables.entity.getSiteOptions();

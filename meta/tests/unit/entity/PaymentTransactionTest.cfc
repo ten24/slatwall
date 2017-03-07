@@ -55,8 +55,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		variables.entity = request.slatwallScope.getService("paymentService").newPaymentTransaction();
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function defaults_are_correct() {
 		super.defaults_are_correct();

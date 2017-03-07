@@ -53,8 +53,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		super.setup();
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function tagTest(){
 		var templatePath = '/Slatwall/integrationServices/slatwallcms/skeletonsite/tags/AddressForm.cfm';

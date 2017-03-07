@@ -55,8 +55,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		variables.entity = request.slatwallScope.getService("skuService").newSku();
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getRenewalPriceByCurrencyCode_test(){
 		var skuData = {
@@ -69,8 +69,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(renewalPrice,0);
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getRedemptionAmountType_test(){
 		var skuData = {
@@ -151,8 +151,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(userDefinedSameAsPrice.getRedemptionAmount(5), 5);
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function validate_as_save_for_a_new_instance_doesnt_pass() {
 	}
@@ -163,15 +163,15 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		return createPersistedTestEntity('Location', locationData);
 	}
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getResizedImagePath_GetsMissingImagePath(){
 		var imagePath = variables.entity.getResizedImagePath();
 		assert(fileExists(expandPath(imagePath)));
 	}
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getResizedImage_CreatesImgElementWithMissingPath(){
 		var imagePath = variables.entity.getResizedImagePath();
@@ -383,8 +383,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(mockSkuLinkedLocationConfig.getSkuID(), result[1].getSkuID());
 	}
 */		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getEventConflictExistsFlagTest() {
 		//Testing the normal condition that meet all requirements
@@ -440,8 +440,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertFalse(resultNoConflict);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getPriceByCurrencyCodeTest() {
 		//Testing the default currencyCode in SKU
@@ -466,8 +466,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//@Suppress See other currencyCode types tests in getCurrencyDetailsTest()
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getListPriceByCurrencyCodeTest() {
 		//Testing the default currencyCode in SKU
@@ -492,8 +492,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//@Suppress See other currencyCode types tests in getCurrencyDetailsTest()
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getRenewalPriceByCurrencyCodeTest() {
 		//Testing the default currencyCode in SKU
@@ -518,8 +518,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//@Suppress See the test on other currencyCode types in getCurrencyDetailsTest()
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getCurrencyDetailsTest() {
 		//Testing the normal circumstances
@@ -549,8 +549,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		return createPersistedTestEntity('Product', productData);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getLivePriceTest() {
 		var mockProduct = createMockProduct();

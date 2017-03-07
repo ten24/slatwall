@@ -58,8 +58,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	// addAuditToCommit()	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function addAuditToCommit() {
 		
@@ -136,8 +136,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}//<---end Add Audit To Commit
 	
 	//logEntityDelete()	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function logEntityDelete() {
 		//Setup a workflow enity

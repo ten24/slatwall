@@ -55,8 +55,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	// validate_dataType()	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function validate_dataType_creditCardNumber_returns_true_when_null() {
 		var orderPayment = request.slatwallScope.newEntity('OrderPayment');
@@ -64,8 +64,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert( variables.service.validate_dataType(orderPayment, 'creditCardNumber', 'creditCardNumber') );
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function validate_dataType_creditCardNumber_returns_true_when_valid_card() {
 		var orderPayment = request.slatwallScope.newEntity('OrderPayment');
@@ -74,8 +74,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert( variables.service.validate_dataType(orderPayment, 'creditCardNumber', 'creditCardNumber') );
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function validate_dataType_creditCardNumber_returns_false_when_empty_string() {
 		var orderPayment = request.slatwallScope.newEntity('OrderPayment');
@@ -84,8 +84,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertFalse( variables.service.validate_dataType(orderPayment, 'creditCardNumber', 'creditCardNumber') );
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function validate_dataType_creditCardNumber_returns_false_when_non_numeric() {
 		var orderPayment = request.slatwallScope.newEntity('OrderPayment');
@@ -94,8 +94,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertFalse( variables.service.validate_dataType(orderPayment, 'creditCardNumber', 'creditCardNumber') );
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getValidationStructTest(){
 		var order = request.slatwallScope.newEntity('Order');

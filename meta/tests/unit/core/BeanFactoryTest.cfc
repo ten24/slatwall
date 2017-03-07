@@ -57,8 +57,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		});
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function inst_factory() {
 		assertTrue(isObject(variables.factory));

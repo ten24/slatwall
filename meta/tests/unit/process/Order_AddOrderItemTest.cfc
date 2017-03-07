@@ -53,8 +53,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		super.setup();
 
 	}	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function matchesOrderItem(){
 
@@ -149,8 +149,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function test_gift_card_add_order_item(){
 

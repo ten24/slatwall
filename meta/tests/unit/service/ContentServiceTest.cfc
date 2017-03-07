@@ -54,8 +54,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.service = request.slatwallScope.getBean("contentService");
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function deleteCategory_removes_content_assignments() {
 		
@@ -86,8 +86,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function deleteCategoryByCMSCategoryID_removes_content_assignments() {
 		

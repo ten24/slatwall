@@ -55,8 +55,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.integrationService = request.slatwallScope.getBean("integrationService");
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function deploy_SiteTest(){
 		

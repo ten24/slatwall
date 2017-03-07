@@ -53,8 +53,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.dao = request.slatwallScope.getDAO("inventoryDAO");
 	}
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function inst_ok() {
 		assert(isObject(variables.dao));
@@ -162,8 +162,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(250, result[1].QOH, 'It should be (100 + 200) - (30 + 20) = 250');
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getQDOOTest(){
 		var mockProduct = createMockProduct();
@@ -316,8 +316,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(1, result[2].QDOO);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getQOOTest(){
 		var mockProduct = createMockProduct();
@@ -470,8 +470,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(32, result[2].QOO,'should be 17+15=32');
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getQNDOOTest() {
 		var mockProduct = createMockProduct();
@@ -605,8 +605,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(9, result[2].QNDOO, 'Should be 10 - (1) = 9');
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getQNROROTest() {
 		var mockProduct = createMockProduct();
@@ -724,8 +724,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(9, result[2].QNRORO, 'Should be 10 - (1) = 9');
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getQNDOSATest() {
 		var mockProduct = createMockProduct();
@@ -842,8 +842,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getQNROVOTest_mulitipleSkus() {
 		var productData = {
@@ -1030,8 +1030,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(100, result[3].QNROVO);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getQOVOTest_mulitipleSkus() {
 		var productData = {
@@ -1163,8 +1163,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(2030, result[2].QOVO);
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getQROVOTest_mulitipleSkus() {
 		var productData = {
@@ -1296,8 +1296,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(40, result[2].QROVO, 'QROVO should be (40) = 40');
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getQNROVOTest() {
 		var mockProduct = createMockProduct();
@@ -1397,8 +1397,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(230, result[1].QNROVO, 'QNROVO should be (100+200) - (10+20+40) = 230');
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getQNROSATest() {
 		var mockProduct = createMockProduct();

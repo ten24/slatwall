@@ -55,8 +55,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	
 	
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function saveSkuTest_setPublishedFalseIfInactive(){
 		var productData = {

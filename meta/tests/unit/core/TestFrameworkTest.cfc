@@ -48,8 +48,8 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function createTestEntityData_sets_up_data_for_all_properties() {
 		var brand = request.slatwallScope.newEntity('Brand');

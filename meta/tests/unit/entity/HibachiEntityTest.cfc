@@ -55,8 +55,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		variables.entity = request.slatwallScope.newEntity('product');
 	}
 		
-	/*
-	*@test
+	/**
+	* @test
 	*/
 	public void function getDefaultCollectionPropertiesTest(){
 		var defaultProperties = variables.entity.getDefaultCollectionProperties();
