@@ -165,7 +165,7 @@ if( url.opt_run ){
 		<h1>TestBox Global Runner</h1>
 		<p>Please use the form below to run test bundle(s), directories and more.</p>
 
-			<input type="text" name="target" value="#trim( url.target )#" size="50" placeholder="Bundle(s) or Directory Mapping"/>
+			<input type="text" name="target" value="#trim( url.target )#" size="50" value="meta/tests/unit/" placeholder="Bundle(s) or Directory Mapping"/>
 			<label title="Enable directory recursion for directory runner">
 				<input name="opt_recurse" id="opt_recurse" type="checkbox" value="true" <cfif url.opt_recurse>checked="true"</cfif> /> Recurse Directories
 			</label>
