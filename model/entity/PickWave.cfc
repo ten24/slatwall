@@ -46,26 +46,20 @@
 Notes:
 
 */
-component displayname="Fulfillment Batch Item" entityname="SlatwallFulfillmentBatchItem" table="SwFulfillmentBatchItem" persistent="true" output="false" accessors="true" extends="HibachiEntity"cacheuse="transactional" hb_serviceName="fulfillmentService" hb_permission="this" {
+component displayname="Pickwave" entityname="SlatwallPickWave" table="SwPickWave" persistent="true" output="false" accessors="true" extends="HibachiEntity"cacheuse="transactional" hb_serviceName="fulfillmentService" hb_permission="this" {
 
 	// Persistent Properties
-	property name="fulfillmentBatchItemID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-
-	property name="quantityOnBatch" ormtype="integer";
-	property name="quantityPicked" ormtype="integer";
-	property name="quantityFulfilled" ormtype="integer";
+	property name="pickWaveID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 
 	// Related Object Properties (many-to-one)
-	property name="stock" cfc="Stock" fieldtype="many-to-one" fkcolumn="stockID";
 	property name="fulfillmentBatch" cfc="FulfillmentBatch" fieldtype="many-to-one" fkcolumn="fulfillmentBatchID";
-	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID";
-	property name="pickWave" cfc="PickWave" fieldtype="many-to-one" fkcolumn="pickWaveID";
-	property name="orderFulfillment" cfc="OrderFulfillment" fieldtype="many-to-one" fkcolumn="OrderFulfillmentID";
-	property name="orderDeliveryItem" cfc="OrderDeliveryItem" fieldtype="many-to-one" fkcolumn="orderDeliveryItemID";
+	property name="assignedAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="assignedAccountID";
 	
 	// Related Object Properties (one-to-many)
-	
+	property name="fulfillmentBatchItems" singularname="fulfillmentBatchItem" cfc="FulfillmentBatchItem" fieldtype="one-to-many" fkcolumn="pickWaveID" cascade="all-delete-orphan" inverse="true";
+
 	// Related Object Properties (many-to-many - owner)
+	property name="locations" singularname="location" cfc="Location" fieldtype="many-to-many" linktable="SwLocationPickWave" fkcolumn="pickWaveID" inversejoincolumn="locationID";
 	
 	// Related Object Properties (many-to-many - inverse)
 	
@@ -82,6 +76,22 @@ component displayname="Fulfillment Batch Item" entityname="SlatwallFulfillmentBa
 
 	// ============= START: Bidirectional Helper Methods ===================
 	
+	// Fulfillment Batch Items (one-to-many)
+	public void function addFulfillmentBatchItem(required any fulfillmentBatchItem) {
+		arguments.fulfillmentBatchItem.setPickWave( this );
+	}
+	public void function removeFulfillmentBatchItem(required any fulfillmentBatchItem) {
+		arguments.fulfillmentBatchItem.removePickWave( this );
+	}
+	
+	// Location (many-to-many - inverse)
+	public void function addLocation(required any location) {
+		arguments.location.addPickWave( this );
+	}
+	public void function removelocation(required any location) {
+		arguments.location.removePickWave( this );
+	}
+
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// ================== START: Overridden Methods ========================
