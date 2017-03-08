@@ -63,7 +63,10 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 	// Related Object Properties (One-To-Many)
 	property name="orderDeliveryItems" singularname="orderDeliveryItem" cfc="OrderDeliveryItem" fieldtype="one-to-many" fkcolumn="orderDeliveryID" cascade="all-delete-orphan" inverse="true";
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="orderDeliveryID" cascade="all-delete-orphan" inverse="true";
-
+	
+	// Related Object Properties (many-to-many - owner)
+	property name="shippingLabelFiles" singularname="shippingLabelFile" cfc="File" fieldtype="many-to-many" linktable="SwOrderDeliveryFile" fkcolumn="orderDeliveryID" inversejoincolumn="fileID";
+	
 	// Remote properties
 	property name="remoteID" ormtype="string";
 
@@ -136,6 +139,15 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
  	public void function removeAttributeValue(required any attributeValue) {
  		arguments.attributeValue.removeOrderDelivery( this );
  	}
+ 	
+ 	// Location (many-to-many - inverse)
+	public void function addShippingLabelFile(required any shippingLabelFile) {
+		arguments.shippingLabelFile.addOrderDelivery( this );
+	}
+	public void function removeShippingLabelFile(required any shippingLabelFile) {
+		arguments.shippingLabelFile.removeOrderDelivery( this );
+	}
+
 
 	// =============  END:  Bidirectional Helper Methods ===================
 
