@@ -33,29 +33,29 @@ class SWListingRowSave implements ng.IDirective{
     public static Factory(){
         var directive:ng.IDirectiveFactory=(
             hibachiPathBuilder,
-            corePartialsPath,
+            listingPartialPath,
             utilityService,
             scopeService
         )=>new SWListingRowSave(
             hibachiPathBuilder,
-            corePartialsPath,
+            listingPartialPath,
             utilityService,
             scopeService
         );
         directive.$inject = [
             'hibachiPathBuilder',
-            'corePartialsPath',
+            'listingPartialPath',
             'utilityService',
             'scopeService'
         ];
         return directive;
     }
     constructor(private hibachiPathBuilder, 
-                private corePartialsPath, 
+                private listingPartialPath, 
                 private utilityService,
                 private scopeService
     ){
-       this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.corePartialsPath)+'listingrowsave.html';
+       this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingrowsave.html';
     }
 
     public link:ng.IDirectiveLinkFn = ($scope:any, element:any, attrs:any) =>{
