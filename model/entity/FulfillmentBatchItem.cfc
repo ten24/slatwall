@@ -60,7 +60,7 @@ component displayname="Fulfillment Batch Item" entityname="SlatwallFulfillmentBa
 	property name="fulfillmentBatch" cfc="FulfillmentBatch" fieldtype="many-to-one" fkcolumn="fulfillmentBatchID";
 	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID";
 	property name="pickWave" cfc="PickWave" fieldtype="many-to-one" fkcolumn="pickWaveID";
-	property name="orderFulfillment" cfc="OrderFulfillment" fieldtype="many-to-one" fkcolumn="OrderFulfillmentID";
+	property name="orderFulfillment" cfc="OrderFulfillment" fieldtype="many-to-one" fkcolumn="orderFulfillmentID";
 	property name="orderDeliveryItem" cfc="OrderDeliveryItem" fieldtype="many-to-one" fkcolumn="orderDeliveryItemID";
 	
 	// Related Object Properties (one-to-many)

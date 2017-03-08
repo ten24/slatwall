@@ -69,7 +69,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ===================== START: DAO Passthrough ===========================
 	
 	// ===================== START: Process Methods ===========================
-	
+	// Process: FulfillmentBatch
+	public any function processFulfillmentBatch_create(required any fulfillmentBatch, required any processObject){
+		//stub method for the processing a fulfillment batch create.
+	}
 	// =====================  END: Process Methods ============================
 	
 	// ====================== START: Save Overrides ===========================
