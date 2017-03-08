@@ -62,7 +62,7 @@ component displayname="Fulfillment Batch" entityname="SlatwallFulfillmentBatch" 
 	property name="fulfillmentBatchItems" singularname="fulfillmentBatchItem" cfc="FulfillmentBatchItem" fieldtype="one-to-many" fkcolumn="fulfillmentBatchID" cascade="all-delete-orphan" inverse="true";
 
 	// Related Object Properties (many-to-many - owner)
-	property name="locations" singularname="location" cfc="Location" fieldtype="many-to-many" linktable="SwLocationFulfillmentBatch" fkcolumn="fulfillmentBatchID" inversejoincolumn="locationID";
+	property name="locations" singularname="location" cfc="Location" fieldtype="many-to-many" linktable="SwFulfillmentBatchLocation" fkcolumn="fulfillmentBatchID" inversejoincolumn="locationID";
 	
 	// Related Object Properties (many-to-many - inverse)
 	

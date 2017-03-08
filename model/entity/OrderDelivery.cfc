@@ -65,7 +65,7 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="orderDeliveryID" cascade="all-delete-orphan" inverse="true";
 	
 	// Related Object Properties (many-to-many - owner)
-	property name="shippingLabelFiles" singularname="shippingLabelFile" cfc="File" fieldtype="many-to-many" linktable="SwOrderDeliveryFile" fkcolumn="orderDeliveryID" inversejoincolumn="fileID";
+	property name="shippingLabelFiles" singularname="shippingLabelFile" cfc="File" fieldtype="many-to-many" linktable="SwOrderDeliveryShippingLabelFile" fkcolumn="orderDeliveryID" inversejoincolumn="fileID";
 	
 	// Remote properties
 	property name="remoteID" ormtype="string";
