@@ -46,23 +46,26 @@
 Notes:
 
 */
-component displayname="Fulfillment Batch" entityname="SlatwallFulfillmentBatch" table="SwFulfillmentBatch" persistent="true" output="false" accessors="true" extends="HibachiEntity"cacheuse="transactional" hb_serviceName="fulfillmentService" hb_permission="this" {
+component displayname="Fulfillment Batch" entityname="SlatwallfulfillmentBatchItem" table="SwfulfillmentBatchItem" persistent="true" output="false" accessors="true" extends="HibachiEntity"cacheuse="transactional" hb_serviceName="fulfillmentService" hb_permission="this" {
 
 	// Persistent Properties
-	property name="fulfillmentBatchID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="fulfillmentBatchDescription" ormtype="string" length="500";
-	property name="fulfillmentBatchName" ormtype="string";
-	property name="fulfillmentBatchNumber" ormtype="integer";
+	property name="fulfillmentBatchItemID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+
+	property name="quantityOnBatch" ormtype="integer";
+	property name="quantityPicked" ormtype="integer";
+	property name="quantityFulfilled" ormtype="integer";
 
 	// Related Object Properties (many-to-one)
-	property name="assignedAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="assignedAccountID";
+	property name="stock" cfc="Stock" fieldtype="many-to-one" fkcolumn="stockID";
+	property name="fulfillmentBatch" cfc="FulfillmentBatch" fieldtype="many-to-one" fkcolumn="fulfillmentBatchID";
+	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID";
+	property name="pickWave" cfc="PickWave" fieldtype="many-to-one" fkcolumn="pickWaveID";
+	property name="orderFulfillment" cfc="OrderFulfillment" fieldtype="many-to-one" fkcolumn="OrderFulfillmentID";
+	property name="orderDeliveryItem" cfc="OrderDeliveryItem" fieldtype="many-to-one" fkcolumn="orderDeliveryItemID";
 	
 	// Related Object Properties (one-to-many)
-	property name="comments" singularname="comment" cfc="Comment" type="array" fieldtype="one-to-many" fkcolumn="fulfillmentBatchID" cascade="all-delete-orphan" inverse="true";
-	property name="fulfillmentBatchItems" singularname="fulfillmentBatchItem" cfc="FulfillmentBatchItem" fieldtype="one-to-many" fkcolumn="fulfillmentBatchID" cascade="all-delete-orphan" inverse="true";
-
+	
 	// Related Object Properties (many-to-many - owner)
-	property name="locations" singularname="location" cfc="Location" fieldtype="many-to-many" linktable="SwLocationFulfillmentBatch" fkcolumn="fulfillmentBatchID" inversejoincolumn="locationID";
 	
 	// Related Object Properties (many-to-many - inverse)
 	
@@ -79,30 +82,6 @@ component displayname="Fulfillment Batch" entityname="SlatwallFulfillmentBatch" 
 
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	// Comments (one-to-many)
-	public void function addComment(required any comment) {
-		arguments.comment.setFulfillmentBatch( this );
-	}
-	public void function removeComment(required any comment) {
-		arguments.comment.removeFulfillmentBatch( this );
-	}
-	
-	// Fulfillment Batch Items (one-to-many)
-	public void function addFulfillmentBatchItem(required any fulfillmentBatchItem) {
-		arguments.fulfillmentBatchItem.setFulfillmentBatch( this );
-	}
-	public void function removeFulfillmentBatchItem(required any fulfillmentBatchItem) {
-		arguments.fulfillmentBatchItem.removeFulfillmentBatch( this );
-	}
-	
-	// Location (many-to-many - inverse)
-	public void function addLocation(required any location) {
-		arguments.location.addFulfillmentBatch( this );
-	}
-	public void function removelocation(required any location) {
-		arguments.location.removeFulfillmentBatch( this );
-	}
-
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// ================== START: Overridden Methods ========================
