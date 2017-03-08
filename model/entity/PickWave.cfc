@@ -69,7 +69,6 @@ component displayname="Pickwave" entityname="SlatwallPickWave" table="SwPickWave
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
-
 	// ============ START: Non-Persistent Property Methods =================
 
 	// ============  END:  Non-Persistent Property Methods =================
