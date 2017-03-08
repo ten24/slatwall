@@ -20,14 +20,14 @@ class SWListingDisplayCellController{
 
     //@ngInject
     constructor(
-        public corePartialsPath,
+        public listingPartialPath,
         public hibachiPathBuilder,
         public listingService, 
         public utilityService,
         public $scope
     ){
         this.hibachiPathBuilder = hibachiPathBuilder;
-        this.corePartialsPath = corePartialsPath;
+        this.listingPartialPath = listingPartialPath;
         this.$scope = $scope;
         this.value = this.listingService.getPageRecordValueByColumn(this.pageRecord, this.column);        
         
@@ -72,21 +72,21 @@ class SWListingDisplayCellController{
 
     public getDirectiveTemplate = ()=>{
 
-        var templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.corePartialsPath)+'listingdisplaycell.html';
+        var templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingdisplaycell.html';
         
         if(this.expandable || (this.swListingDisplay.expandable && this.column.tdclass && this.column.tdclass === 'primary')){
-            templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.corePartialsPath)+'listingdisplayselectablecellexpandable.html';
+            templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingdisplayselectablecellexpandable.html';
         }
 
         if(!this.swListingDisplay.expandable || !this.column.tdclass || this.column.tdclass !== 'primary'){
             if(this.column.ormtype === 'timestamp'){
-                templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.corePartialsPath)+'listingdisplaycelldate.html';
+                templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingdisplaycelldate.html';
             }else if(this.column.type==='currency'){
 
-                templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.corePartialsPath)+'listingdisplaycellcurrency.html';
+                templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingdisplaycellcurrency.html';
             }else if(this.column.aggregate){
                 this.value = this.pageRecord[this.swListingDisplay.getPageRecordKey(this.column.aggregate.aggregateAlias)];
-                templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.corePartialsPath)+'listingdisplaycellaggregate.html';
+                templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingdisplaycellaggregate.html';
             }
         }
 

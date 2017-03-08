@@ -557,25 +557,25 @@ class SWListingDisplay implements ng.IDirective{
 
     public static Factory(){
         var directive:ng.IDirectiveFactory=(
-            corePartialsPath,
+            listingPartialPath,
             hibachiPathBuilder
         ) => new SWListingDisplay(
-            corePartialsPath,
+            listingPartialPath,
             hibachiPathBuilder
         );
         directive.$inject =[
-            'corePartialsPath',
+            'listingPartialPath',
             'hibachiPathBuilder'
         ];
         return directive;
     }
     //@ngInject
     constructor(
-        public corePartialsPath,
+        public listingPartialPath,
         public hibachiPathBuilder
     ){
-        this.corePartialsPath = corePartialsPath;
-        this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.corePartialsPath)+'listingdisplay.html';
+        this.listingPartialPath = listingPartialPath;
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingdisplay.html';
     }
 
     public compile = (element: JQuery, attrs: angular.IAttributes) => {

@@ -139,7 +139,7 @@ class SWListingControlsController {
 
 class SWListingControls  implements ng.IDirective{
 
-    public static $inject = ['corePartialsPath', 'hibachiPathBuilder'];
+    public static $inject = ['listingPartialPath', 'hibachiPathBuilder'];
     public templateUrl;
     public restrict = 'E';
     public scope = {};
@@ -165,13 +165,13 @@ class SWListingControls  implements ng.IDirective{
 
     public static Factory(){
         var directive = (
-            corePartialsPath,
+            listingPartialPath,
             hibachiPathBuilder
         )=> new SWListingControls(
-            corePartialsPath,
+            listingPartialPath,
             hibachiPathBuilder
         );
-        directive.$inject = [ 'corePartialsPath', 'hibachiPathBuilder'];
+        directive.$inject = [ 'listingPartialPath', 'hibachiPathBuilder'];
         return directive;
     }
 }

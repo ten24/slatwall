@@ -120,14 +120,14 @@ class SWListingSearch  implements ng.IDirective{
     public static Factory(){
         var directive = (
             scopeService,
-            corePartialsPath,
+            listingPartialPath,
             hibachiPathBuilder
         )=> new SWListingSearch(
             scopeService, 
-            corePartialsPath,
+            listingPartialPath,
             hibachiPathBuilder
         );
-        directive.$inject = [ 'scopeService', 'corePartialsPath', 'hibachiPathBuilder'];
+        directive.$inject = [ 'scopeService', 'listingPartialPath', 'hibachiPathBuilder'];
         return directive;
     }
 
