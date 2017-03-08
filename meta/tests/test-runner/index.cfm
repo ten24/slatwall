@@ -3,6 +3,10 @@
 <cfparam name="url.opt_recurse" default="true">
 <cfparam name="url.labels"		default="">
 <cfparam name="url.opt_run"		default="false">
+<cfif structKeyExists(url,'testBundles')>
+	<cfset url.target = url.testBundles/>
+	<cfset url.opt_run = true/>
+</cfif>
 <cfsetting requesttimeout="3600">
 <cfscript>
 // create testbox
