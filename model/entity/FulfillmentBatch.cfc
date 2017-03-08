@@ -50,7 +50,7 @@ component displayname="Fulfillment Batch" entityname="SlatwallFulfillmentBatch" 
 
 	// Persistent Properties
 	property name="fulfillmentBatchID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="fulfillmentBatchDescription" ormtype="string" length="500";
+	property name="description" ormtype="string" length="500";
 	property name="fulfillmentBatchName" ormtype="string";
 	property name="fulfillmentBatchNumber" ormtype="integer";
 

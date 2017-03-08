@@ -48,12 +48,14 @@ Notes:
 */
 component output="false" accessors="true" extends="HibachiProcess" {
 
-	// Injected Entity
-	property name="location";
-
+	// Injected Entities
+	property name="fulfillmentBatch";
+	
 	// Data Properties
 	property name="accountID" hb_rbKey="entity.account" hb_formFieldType="textautocomplete" cfc="Account";
 	property name="description" hb_rbKey="entity.fulfillmentBatch.description";
+	property name="location";
+	property name="fulfillmentBatchItems";
 	
 	
 }
