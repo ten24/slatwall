@@ -437,7 +437,7 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 			arguments.content
 		);
 
-		link='<a href="/#href#"#iif(len(arguments.target) and arguments.target neq '_self',de(' target="#arguments.target#"'),de(""))##iif(len(theClass),de(' class="#theClass#"'),de(""))##iif(len(arguments.navId),de(' id="#arguments.navId#"'),de(""))##iif(arguments.showCurrent,de(' #replace(arguments.aActiveAttributes,"##","####","all")#'),de(""))##iif(arguments.content.hasChildContent() and len(arguments.aKidsAttributes),de(' #replace(arguments.aKidsAttributes,"##","####","all")#'),de(""))#>#HTMLEditFormat(arguments.title)#</a>';
+		link='<a href="/#href#"#getHibachiScope().getService('hibachiUtilityService').hibachiTernary(len(arguments.target) and arguments.target neq '_self',' target="#arguments.target#"',"")##getHibachiScope().getService('hibachiUtilityService').hibachiTernary(len(theClass),' class="#theClass#"',"")##getHibachiScope().getService('hibachiUtilityService').hibachiTernary(len(arguments.navId),' id="#arguments.navId#"',"")##getHibachiScope().getService('hibachiUtilityService').hibachiTernary(arguments.showCurrent,' #replace(arguments.aActiveAttributes,"##","####","all")#',"")##getHibachiScope().getService('hibachiUtilityService').hibachiTernary(arguments.content.hasChildContent() and len(arguments.aKidsAttributes),' #replace(arguments.aKidsAttributes,"##","####","all")#',"")#>#HTMLEditFormat(arguments.title)#</a>';
 		return link;
 	}
 

@@ -99,6 +99,14 @@ component displayname="Category" entityname="SlatwallCategory" table="SwCategory
 		arguments.childCategory.removeParentCategory( this );    
 	}
 	
+	// Products (many-to-many - inverse)
+ 	public void function addProduct(required any product) {
+ 		arguments.product.addCategory( this );
+ 	}
+ 	public void function removeProduct(required any product) {
+ 		arguments.product.removeCategory( this );
+ 	}
+
 	// Parent Category (many-to-one)
 	public void function setParentCategory(any parentCategory) {
 		

@@ -16,7 +16,8 @@
 	    },
 	    "fulfillmentTypeShippingWithoutRateOverride":{
 	        "fulfillmentMethodType":	{"eq":"shipping"},
-	        "accountAddress":			{"null":true}
+	        "accountAddress":			{"null":true},
+	        "manualFulfillmentChargeFlag": {"eq":false}
 	    }
 	},
 	"properties":{

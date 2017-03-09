@@ -229,15 +229,15 @@ class SWInputController{
                 inputType="text";
             }
 			template = '<input type="'+inputType+'" class="'+this.class+'" '+
-				'ng-model="swInput.value" '+
-				'ng-disabled="swInput.editable === false" '+
-				'ng-show="swInput.editing" '+
-				'name="'+this.property+'" ' +
-				'placeholder="'+placeholder+'" '+
+				' ng-model="swInput.value" '+
+				' ng-disabled="swInput.editable === false" '+
+				' ng-show="swInput.editing" '+
+				' name="'+this.property+'" ' +
+				' placeholder="'+placeholder+'" '+
 				validations + currency +
-				'id="swinput'+this.swForm.name+this.name+'" '+
-				'style="'+style+'"'+
-				this.inputAttributes+
+				' id="swinput'+this.swForm.name+this.name+'" '+
+				' style="' + style + '" ' + " " +
+	            this.inputAttributes + " " +
 				this.eventHandlerTemplate;
 		}
 

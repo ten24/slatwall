@@ -459,7 +459,7 @@ Notes:
 	<cffunction name="updateProductProductType" hint="Moves all products from one product type to another">
 		<cfargument name="fromProductTypeID" type="string" required="true" >
 		<cfargument name="toProductTypeID" type="string" required="true" >
-		<cfquery name="updateProduct" >
+		<cfquery name="local.updateProduct" >
 			UPDATE SwProduct 
 			SET productTypeID = <cfqueryparam value="#arguments.toProductTypeID#" cfsqltype="cf_sql_varchar" >
 			WHERE productTypeID = <cfqueryparam value="#arguments.fromProductTypeID#" cfsqltype="cf_sql_varchar" >
