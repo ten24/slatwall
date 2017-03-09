@@ -46,12 +46,16 @@
 						<hb:HibachiListingColumn propertyIdentifier="skuName" />
 						<hb:HibachiListingColumn propertyIdentifier="subscriptionTerm.subscriptionTermName" title="#$.slatwall.getRBKey('define.renewalTerm')#"/>
 						<hb:HibachiListingColumn propertyIdentifier="renewalPrice" />
+						
 					</hb:HibachiListingDisplay>
 				</hb:HibachiDisplayToggle>
+				
 			<cfelseif !isNull(rc.subscriptionUsage.getRenewalSku())>
 				<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage.getRenewalSku()#" fieldname="renewalSku.skuCode" property="skuCode" edit="#rc.edit#" title="#$.slatwall.getRBKey('define.renewalSku')#" valuelink="#$.slatwall.buildURL(action='admin:entity.detailsku',querystring='skuID=#rc.subscriptionUsage.getRenewalSku().getSkuID()#')#"/>
 			</cfif>
+			
 			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="renewalPrice" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="fulfillmentCharge" edit="#rc.edit#">
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 
