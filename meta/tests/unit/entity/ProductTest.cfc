@@ -2027,8 +2027,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}	
 
 	//End testing: functions that delegate to the default sku
-	
-	public any function getEstimatedReceivalDetailsTest() {
+	/**
+	* @test
+	*/
+	public void function getEstimatedReceivalDetailsTest() {
 		var locationData = {
 			locationID = ""
 		};

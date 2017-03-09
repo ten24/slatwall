@@ -61,45 +61,72 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	// Ensure getQOH executes without error
+	/**
+	* @test
+	*/
 	public any function getQOH_runs_without_error() {
 		assertEquals([],variables.dao.getQOH(productID="1", productRemoteID="1"));
 	}	
 	
 	// Ensure getQOSH executes without error
+	/**
+	* @test
+	*/
 	public any function getQOSH_runs_without_error() {
 		assertEquals(0,variables.dao.getQOSH(productID="1", productRemoteID="1"));
 	}
 		
 	// Ensure getQNDOO executes without error
+	/**
+	* @test
+	*/
 	public any function getQNDOO_runs_without_error() {
 		assertEquals([],variables.dao.getQNDOO(productID="1", productRemoteID="1"));
 	}	
 		
 	// Ensure getQNDORVO executes without error
+	/**
+	* @test
+	*/
 	public any function getQNDORVO_runs_without_error() {
 		assertEquals(0,variables.dao.getQNDORVO(productID="1", productRemoteID="1"));
 	}	
 		
 	// Ensure getQNDOSA executes without error
+	/**
+	* @test
+	*/
 	public any function getQNDOSA_runs_without_error() {
 		assertEquals([],variables.dao.getQNDOSA(productID="1", productRemoteID="1"));
 	}	
 		
 	// Ensure getQNROVO executes without error
+	/**
+	* @test
+	*/
 	public any function getQNROVO_runs_without_error() {
 		assertEquals([],variables.dao.getQNROVO(productID="1", productRemoteID="1"));
 	}	
 		
 	// Ensure getQNRORO executes without error
+	/**
+	* @test
+	*/
 	public any function getQNRORO_runs_without_error() {
 		assertEquals([],variables.dao.getQNRORO(productID="1", productRemoteID="1"));
 	}	
 		
 	// Ensure getQNROSA executes without error
+	/**
+	* @test
+	*/
 	public any function getQNROSA_runs_without_error() {
 		assertEquals([],variables.dao.getQNROSA(productID="1", productRemoteID="1"));
-	}	
-	
+	}
+		
+	/**
+	* @test
+	*/
 	public any function getQOHTest() {
 		var mockProduct = createMockProduct();
 		var mockLocation = createMockLocation();

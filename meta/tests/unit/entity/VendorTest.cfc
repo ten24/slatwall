@@ -54,8 +54,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		variables.entity = request.slatwallScope.getService("vendorService").newVendor();
 	}
-	
-	public any function defaults_are_correct() {
+	/**
+	* @test
+	*/
+	public void function defaults_are_correct() {
 		assertEquals(variables.entity.getVendorOrders(), []);
 	}
 	
