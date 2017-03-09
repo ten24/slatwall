@@ -47,7 +47,10 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+	
+	/**
+	* @test
+	*/
 	public void function makeSureAllViewFilesAreLowerCased() {
 		var path = expandPath('/Slatwall');
 		var adminFiles = directoryList(path&'/admin',true,'path','*.cfm|*.ts|*.js');
@@ -73,7 +76,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(allLowercaseFileNames,offenders);
 
 	}
-
+	
+	/**
+	* @test
+	*/
 	public void function varScoperTest(){
 		var modelDirectoryPath = expandPath('/Slatwall');
 		var modelDirectory = directoryList(modelDirectoryPath,true,'query','*.cfc');
@@ -88,6 +94,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				&& record.directory DOES NOT CONTAIN 'ckfinder'
 				&& record.directory DOES NOT CONTAIN 'javaloader'
 				&& record.directory DOES NOT CONTAIN 'taffy'
+				&& record.directory DOES NOT CONTAIN 'testbox'
+				&& record.directory DOES NOT CONTAIN 'testresults'
+				&& record.directory DOES NOT CONTAIN 'test-browser'
+				&& record.directory DOES NOT CONTAIN 'test-runner'
 				//can't analyze because it blends cfml and cfscript on a function
 				&& fileExists(record.directory&'/#record.name#')
 			){
@@ -105,83 +115,5 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		}
 		assertFalse(hasUnscopedVars);
 	}
-	
-	
-
-//	private void function processDirectory(required string startingDirectory, string recursive=false){
-//
-//		var fileQuery = "";
-//		var scoperFileName = "";
-//		var xmlDoc = "";
-//		var xmlDocData = "";
-//		var directoryexcludelistXML = arrayNew(1);
-//		var directoryexcludelist = "";
-//		var fileexcludelistXML = arrayNew(1);
-//		var fileexcludelist = "";
-//		var pathsep = "/";
-//
-//		/* get properties */
-//		if(fileExists("#expandPath('/Slatwall')#/meta/varscoper/properties.xml")){
-//			/* read xml file */
-//			var xmlDocData = fileread("#expandPath('/Slatwall')#/meta/varscoper/properties.xml");
-//				/* get file to parse */
-//			xmlDoc = XmlParse(xmlDocData);
-//
-//			/* get directory exclusion list */
-//			directoryexcludelistXML = XmlSearch(xmlDoc, "/properties/directoryexcludelist");
-//			/* if array size GT 0 the get the value */
-//			if(arrayLen(directoryexcludelistXML) GT 0){
-//				directoryexcludelist = trim(directoryexcludelistXML[1].XmlText);
-//			}
-//			/* get file exclusion list */
-//			fileexcludelistXML = XmlSearch(xmlDoc, "/properties/fileexcludelist");
-//			/* if array size GT 0 the get the value */
-//			if(arrayLen(fileexcludelistXML) GT 0){
-//				fileexcludelist = trim(fileexcludelistXML[1].XmlText);
-//			}
-//		}
-//
-//		fileQuery = DirectoryList(arguments.startingDirectory,false,"query");
-//
-//		for (var i = 1 ;i <= fileQuery.RecordCount ;i++){
-//			/* check to see if we want to exclude the diretory or file (from properties file) */
-//			if(
-//				NOT listFindNoCase(directoryExcludeList, listLast(replace(arguments.startingDirectory, "\", "/", "ALL"), pathsep))
-//				AND NOT listFindNoCase(fileExcludeList, "#name#")
-//			){
-//				scoperFileName = "#arguments.startingDirectory##pathsep##name#";
-//			}
-//			if(listFind("cfc,cfm",right(fileQuery.name,3)) NEQ 0 and type IS "file"){
-//				variables.totalFiles = variables.totalFiles + 1;
-//				include "../../../varscoper/varScoperDisplay.cfm";
-//			}else if(type IS "Dir" and arguments.recursive){
-//				processDirectory(startingDirectory:scoperFileName, recursive:true);
-//			}
-//		}
-//	}
-
-
-//	public void function parsestringTobigDecimalTest(){
-//
-//		precisionEvaluateTest(1223.23 * 100 / 1234.23,getMaxScale(discountAmount,getApplied(),c,d));
-//	}
-
-//	private any function precisionEvaluateTest(value,scale=2){
-//		addToDebug(precisionEvaluate(59.999 * 100.0001)& ' precisionEvaluate ');
-//
-//		addToDebug(toString(59.99*100));
-//
-//		var roundingmode = createObject('java','java.math.RoundingMode');
-//
-//		AddToDebug(arguments.value & ' value ');
-//		var scaledvalue = javacast('bigdecimal',arguments.value).setScale(20);
-//		AddToDebug(
-//			scaledvalue & ' scaledvalue '
-//		);
-//
-//		AddToDebug(javacast('bigdecimal',1223.23).multiply(javacast('bigdecimal',100)).divide(javacast('bigdecimal',1234.23),2,roundingmode.HALF_EVEN));
-//
-//		return scaledvalue;
-//	}
 
 }

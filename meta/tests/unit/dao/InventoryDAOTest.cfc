@@ -47,12 +47,15 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+	
 	public void function setUp() {
 		super.setup();
 		variables.dao = request.slatwallScope.getDAO("inventoryDAO");
 	}
-
+	
+	/**
+	* @test
+	*/
 	public void function inst_ok() {
 		assert(isObject(variables.dao));
 	}
@@ -158,7 +161,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var result = variables.dao.getQOH(mockProduct.getProductID());
 		assertEquals(250, result[1].QOH, 'It should be (100 + 200) - (30 + 20) = 250');
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getQDOOTest(){
 		var mockProduct = createMockProduct();
 		var mockLocation = createMockLocation();
@@ -309,7 +315,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(3, result[1].QDOO,'should be 1+2=3');
 		assertEquals(1, result[2].QDOO);
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getQOOTest(){
 		var mockProduct = createMockProduct();
 		var mockLocation = createMockLocation();
@@ -460,7 +469,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(12, result[1].QOO);
 		assertEquals(32, result[2].QOO,'should be 17+15=32');
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getQNDOOTest() {
 		var mockProduct = createMockProduct();
 		var mockLocation = createMockLocation();
@@ -592,7 +604,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(7, result[1].QNDOO, 'Should be 10 - (1 + 2) = 7');
 		assertEquals(9, result[2].QNDOO, 'Should be 10 - (1) = 9');
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getQNROROTest() {
 		var mockProduct = createMockProduct();
 		var mockLocation = createMockLocation();
@@ -708,7 +723,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(7, result[1].QNRORO, 'Should be 10 - (1 + 2) = 7');
 		assertEquals(9, result[2].QNRORO, 'Should be 10 - (1) = 9');
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getQNDOSATest() {
 		var mockProduct = createMockProduct();
 		var mockLocation = createMockLocation();
@@ -823,7 +841,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(1290, result[2].QNDOSA, 'Should be 1300 - (10) = 1290');
 
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getQNROVOTest_mulitipleSkus() {
 		var productData = {
 			productID="",
@@ -1008,7 +1029,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(108, result[2].QNROVO, 'QNROVO should be (155) - (47) = 108');
 		assertEquals(100, result[3].QNROVO);
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getQOVOTest_mulitipleSkus() {
 		var productData = {
 			productID="",
@@ -1138,7 +1162,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(1070, result[1].QOVO );
 		assertEquals(2030, result[2].QOVO);
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getQROVOTest_mulitipleSkus() {
 		var productData = {
 			productID="",
@@ -1268,7 +1295,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(30, result[1].QROVO, 'QROVO should be (10+20) = 30');
 		assertEquals(40, result[2].QROVO, 'QROVO should be (40) = 40');
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getQNROVOTest() {
 		var mockProduct = createMockProduct();
 		var mockLocation = createMockLocation();
@@ -1366,7 +1396,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var result = variables.dao.getQNROVO(mockProduct.getProductID());
 		assertEquals(230, result[1].QNROVO, 'QNROVO should be (100+200) - (10+20+40) = 230');
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getQNROSATest() {
 		var mockProduct = createMockProduct();
 		var mockLocation = createMockLocation();

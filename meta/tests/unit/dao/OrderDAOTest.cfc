@@ -45,19 +45,25 @@
 Notes:
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+	
 	public void function setUp() {
 		super.setup();
 
 		variables.dao = request.slatwallScope.getDAO("orderDAO");
 
 	}
-
+	
+	/**
+	* @test
+	*/
 	public void function inst_ok() {
 		assert(isObject(variables.dao));
 	}
 
-	//getPeerOrderPaymentNullAmountExistsFlag()
+	//getPeerOrderPaymentNullAmountExistsFlag()	
+	/**
+	* @test
+	*/
 	public void function getPeerOrderPaymentNullAmountExistsFlagTest(){
 		var orderTrueData = {
 			orderID = '',
@@ -107,7 +113,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		}
 		return createPersistedTestEntity('OrderReturn', orderReturnData);
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getPreviouslyReturnedFulfillmentTotalTest() {
 		var mockOrderReturn1 = createOrderReturn(100);
 		var mockOrderReturn2 = createOrderReturn(10);
@@ -145,7 +154,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var resultInvalidArgu = variables.dao.getPreviouslyReturnedFulfillmentTotal('SomeFakeParentORdrID');
 		assertEquals(0, resultInvalidArgu);
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getGiftCardOrderItemsTest() {
 		var productData = {
 			productID = '',

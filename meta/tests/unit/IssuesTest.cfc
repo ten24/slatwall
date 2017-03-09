@@ -47,7 +47,10 @@ Notes:
 
 */
 component extends="SlatwallUnitTestBase" {
-	
+		
+	/**
+	* @test
+	*/
 	public void function issue_1296() {
 		
 		var smartList = request.slatwallScope.getService("productService").getProductSmartList();
@@ -64,7 +67,10 @@ component extends="SlatwallUnitTestBase" {
 			assert(productOne.getProductID() neq productTwo.getProductID());	
 		}
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function issue_1329() {
 		
 		var smartList = request.slatwallScope.getService("productService").getProductSmartList();
@@ -74,7 +80,10 @@ component extends="SlatwallUnitTestBase" {
 		smartList.getPageRecords();
 		
 	}
-
+	
+	/**
+	* @test
+	*/
 	public void function issue_1331() {
 		
 		var product = request.slatwallScope.getService("productService").newProduct();
@@ -85,7 +94,10 @@ component extends="SlatwallUnitTestBase" {
 	}
 	
 
-	
+		
+	/**
+	* @test
+	*/
 	public void function issue_1348() {
 		var product = entityNew("SlatwallProduct");
 		var sku = entityNew("SlatwallSku");
@@ -99,7 +111,10 @@ component extends="SlatwallUnitTestBase" {
 		assert( sku.hasError('price') );
 		assert( right( sku.getError('price')[1], 8) neq "_missing");
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function two_accounts_with_same_primary_email_cannot_be_saved() {
 		//GH issue 1376
 		var accountService = request.slatwallScope.getService("accountService");
@@ -142,7 +157,10 @@ component extends="SlatwallUnitTestBase" {
 		assertFalse(accountHasErrors);
 		assert(account2HasErrors);
 	}
-
+	
+	/**
+	* @test
+	*/
 	public void function issue_1604() {
 		
 		var order = request.slatwallScope.getCart();
@@ -151,7 +169,10 @@ component extends="SlatwallUnitTestBase" {
 			
 		assert(!isNull(order));
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function issue_1690() {
 		
 		var product  = request.slatwallScope.newEntity("Product");
@@ -162,7 +183,10 @@ component extends="SlatwallUnitTestBase" {
 			request.slatwallScope.saveEntity( product );
 		}
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function issue_1690_2() {
 		var product  = request.slatwallScope.newEntity("Product");
 		request.slatwallScope.saveEntity( product );

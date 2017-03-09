@@ -48,11 +48,14 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
-	// @hint put things in here that you want to run befor EACH test
+	// @hint put things in here that you want to run befor EACH test	
 	public void function setUp() {
 		super.setup();
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function tagTest(){
 		var templatePath = '/Slatwall/integrationServices/slatwallcms/skeletonsite/tags/AddressForm.cfm';
 		var address = createTestEntity('Address',{});

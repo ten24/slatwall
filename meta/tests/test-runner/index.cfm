@@ -3,6 +3,11 @@
 <cfparam name="url.opt_recurse" default="true">
 <cfparam name="url.labels"		default="">
 <cfparam name="url.opt_run"		default="false">
+<cfif structKeyExists(url,'testBundles')>
+	<cfset url.target = url.testBundles/>
+	<cfset url.opt_run = true/>
+</cfif>
+<cfsetting requesttimeout="3600">
 <cfscript>
 // create testbox
 testBox = new testbox.system.TestBox();		
@@ -23,14 +28,23 @@ if( url.opt_run ){
 			results = testBox.run( directory={ mapping=url.target, recurse=url.opt_recurse }, reporter=url.reporter, labels=url.labels );
 		}
 		if( isSimpleValue( results ) ){
-			switch( url.reporter ){
-				case "xml" : case "junit" : case "json" : case "text" : case "tap" : {
+			switch( lcase(url.reporter) ){
+				case "xml" : case "json" : case "text" : case "tap" : {
 					writeOutput( "<textarea name='tb-results-data' id='tb-results-data' rows='20' cols='100'>#results#</textarea>" );break;
 				}
-				default: { writeOutput( results ); }
+				case "junit":  {
+					xmlReport = xmlParse( results );
+					reportdestination = expandPath('/Slatwall/meta/tests/testresults/xml/unit/');
+
+				     for( thisSuite in xmlReport.testsuites.XMLChildren ){
+				          fileWrite( reportdestination & "results.xml", toString( thisSuite ) );
+				     }
+				     break;
+				}
+				default: { writeOutput( trim(results) ); }
 			}
 		} else {
-			writeDump( results );
+			writeDump( trim(results) );
 		}
 	} else {
 		writeOutput( '<h2>No tests selected for running!</h2>' );
@@ -150,8 +164,12 @@ if( url.opt_run ){
 	<div id="tb-right">
 		<h1>TestBox Global Runner</h1>
 		<p>Please use the form below to run test bundle(s), directories and more.</p>
-
-			<input type="text" name="target" value="#trim( url.target )#" size="50" placeholder="Bundle(s) or Directory Mapping"/>
+			<cfset inputValue = "meta/tests/unit/"/>
+			<cfif len(url.target)>
+				<cfset inputValue = url.target/>
+			</cfif>
+				
+			<input type="text" name="target" value="#trim( inputValue )#" size="50"  placeholder="Bundle(s) or Directory Mapping"/>
 			<label title="Enable directory recursion for directory runner">
 				<input name="opt_recurse" id="opt_recurse" type="checkbox" value="true" <cfif url.opt_recurse>checked="true"</cfif> /> Recurse Directories
 			</label>

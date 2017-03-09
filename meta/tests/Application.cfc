@@ -46,7 +46,7 @@
 Notes:
 
 */
-component extends="Slatwall.meta.testbox.Application"{
+component extends="meta.testbox.Application"{
 
 	// Allow For Application Config
 	try{include "../../config/configApplication.cfm";}catch(any e){}

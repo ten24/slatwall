@@ -47,7 +47,7 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+	
 	public void function setUp() {
 		super.setup();
 		
@@ -120,7 +120,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		////addToDebug(workflowEntity.getWorkflowID());
 	}*/
-	
+		
+	/**
+	* @test
+	*/
 	public void function entityPassesAllWorkflowTaskConditionsTest(){
 		var productData = {
 			productid = '',
@@ -265,7 +268,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var evalString = variables.service.entityPassesAllWorkflowTaskConditions(product, workflowTasksConditionsConfigStruct);
 		addToDebug(evalString);
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getWOrkflowConditionGroupStringTest(){
 		var productData = {
 			productid = '',
@@ -403,7 +409,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var conditionsGroupString = variables.service.getWorkflowConditionGroupString(product,workflowTasksConditionsConfigStruct);	
 		addToDebug(conditionsGroupString);
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getValidationValue(){
 		var productData = {
 			productid = '',
@@ -422,7 +431,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var test = request.slatwallScope.getBean("HibachiValidationService").invokeMethod('validate_eq',{1=product, 2='activeFlag', 3='true'});
 		addToDebug(test);
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getWorkflowConditionGroupsStringTest(){
 		var productData = {
 			productid = '',

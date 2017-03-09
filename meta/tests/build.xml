@@ -33,6 +33,8 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
 	<property name="slatwall.test.server" value="${computer.hostname}" />
 	<property name="slatwall.test.serverport" value="8888" />
 	<property name="slatwall.test.datasource" value="Slatwall" />
+	<property name="slatwall.outputfile" value="results"/>
+	
 
 	<!-- what "runner" URL should the tests hit. In this example, you'd be hitting http://localhost:80/DirectoryNameOfYourProject/test/HttpAntRunner.cfc  Simply copy mxunit/samples/HttpAntRunner.cfc into your test directory! -->
 	<property name="slatwall.test.runner" value="/${slatwall.test.dir.name}/index.cfm" />
@@ -51,7 +53,7 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
      <!-- <FILL OUT THE BUNDLES TO TEST, CAN BE A LIST OF CFC PATHS -->
      <property name="test.bundles"      value="" />
     <!-- <FILL OUT THE DIRECTORY MAPPING TO TEST -->
-     <property name="test.directory"         value="meta.tests.unit.entity.AccountTest" />
+     <property name="test.directory"         value="meta.tests.unit" />
     <!-- <FILL OUT IF YOU WANT THE DIRECTORY RUNNER TO RECURSE OR NOT -->
      <property name="test.recurse"      value="true" />
     <!-- <FILL OUT THE LABELS YOU WANT TO APPLY TO THE TESTS -->
@@ -142,8 +144,8 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
                 - Labels
                 - ReportPath : The path where reports will be stored, by default it is the ${report.dir} directory.
           -->
-          <get dest="${slatwall.test.output.xml}/unit/results.xml"
-                src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}&amp;recurse=${test.recurse}&amp;reporter=${test.reporter}&amp;labels=${test.labels}"
+          <get dest="${slatwall.test.output.xml}/unit/${slatwall.outputfile}.xml"
+                src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
                 verbose="true"/>
 
          <!-- <Bundles Runner
@@ -158,19 +160,23 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
                 src="${url.runner}&amp;bundles=${test.bundles}&amp;reporter=${test.reporter}&amp;labels=${test.labels}"
                 verbose="true"/>
            -->
-
+           
+			
           <!-- <Create fancy junit reports -->
           <junitreport todir="${slatwall.test.output.xml}/unit">
                <fileset dir="${slatwall.test.output.xml}/unit">
-                    <include name="TEST-*.xml"/>
+                    <include name="*.xml"/>
                </fileset>
                <report format="frames" todir="${slatwall.test.output.xml}/unit">
                     <param name="TITLE" expression="My Awesome TestBox Results"/>
                </report>
           </junitreport>
-
+          
+          <loadfile property="filecontent"
+      			srcFile="${slatwall.test.output.xml}/unit/${slatwall.outputfile}.xml"/>
+          <condition property="tests.bombed">
+			    <matches pattern='failures="0"' string='${filecontent}'/>
+			</condition>
+			<fail message="Not All Unit Tests Passed" if="tests.bombed"/>
      </target>
-     
-     
-
 </project>

@@ -47,20 +47,26 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+	
 	public void function setUp() {
 		super.setup();
 		
 		variables.service = request.slatwallScope.getService("hibachiUtilityService");
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function hibachiHTMLEditFormatTest(){
 		var angularTamperableString = 'this is a string where it is {{vulnerable}}';
 		var resultString = variables.service.hibachiHTMLEditFormat(angularTamperableString);
 		//adding ascii character to prevent execution of angular templates
 		assertEquals(resultString,'this is a string where it is {'&chr(002)&'{'&chr(002)&'vulnerable}}');
 	}
-			
+				
+	/**
+	* @test
+	*/
 	public void function getTemplateKeysTest() {
 		var mockTemplate = '<div>${anything}</div>${anotherTemplateKey},${onemoreTemplateKey}';
 		
@@ -75,7 +81,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(resultTemplateKeys,expectedTemplateKeyValues);
 	}
 	
-	
+		
+	/**
+	* @test
+	*/
 	public void function replaceStringTemplate_withObject_Test(){
 		//testing with an object
 		var mockTemplate = '<div>${firstName}</div>';
@@ -84,7 +93,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var resultStringResult = variables.service.replaceStringTemplate(mockTemplate, mockObject);
 		assertEquals(resultStringResult,'<div>Yuqing</div>');
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function replaceStringTemplate_withObjectMissingKey_Test(){
 		//testing Missing Object
 		var mockTemplate = '<div>${firstName}</div>';
@@ -92,7 +104,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var resultMissingObject = variables.service.replaceStringTemplate(mockTemplate, mockObject);
 		assertEquals(resultMissingObject,'<div></div>');
 		
-	}
+	}	
+	/**
+	* @test
+	*/
 	public void function replaceStringTemplate_withObjectMissingKeyRemoveMissingKey_Test(){
 		//testing Missing Object with RemoveMissingKey True
 		var mockTemplate = '<div>${anything}</div>${anotherTemplateKey},${onemoreTemplateKey}';
@@ -101,7 +116,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(resultMissingObject, '<div></div>,');
 	}
 	
-	
+		
+	/**
+	* @test
+	*/
 	public void function replaceStringTemplate_withStructure_Test(){
 		//testing with a structure
 		var mockTemplate = '<div>${anything}</div>${anotherTemplateKey},${onemoreTemplateKey}';
@@ -113,7 +131,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var resultStringResult = variables.service.replaceStringTemplate(mockTemplate, mockStructure);
 		assertEquals(resultStringResult,'<div>value</div>othervalue,onemorevalue');
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function replaceStringTemplate_withStructureMissingKey_Test(){
 		//testing Missing Structure
 		var mockTemplate = '<div>${anything}</div>${anotherTemplateKey},${onemoreTemplateKey}';
@@ -121,7 +142,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var resultMissingStructure = variables.service.replaceStringTemplate(mockTemplate, mockStructure);
 		assertEquals(resultMissingStructure, '<div>${anything}</div>${anotherTemplateKey},${onemoreTemplateKey}');
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function replaceStringTemplate_withStructureMissingKeyRemoveMissingKey_Test(){
 		//testing Missing Structure with RemoveMissingKey True
 		var mockTemplate = '<div>${anything}</div>${anotherTemplateKey},${onemoreTemplateKey}';
@@ -135,6 +159,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	* 3 Tests: IsPrimaryKey, NotPrimaryKey, NotExist
 	*
 	*
+	*/	
+	/**
+	* @test
 	*/
 	public void function queryToStructOfStructuresTest_IsPrimaryKey() {
 		//testing returns if PK
@@ -151,7 +178,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		}; 
 		var resultStructure = variables.service.queryToStructOfStructures(testQuery, "id");
 		assertEquals(resultStructure, expectedStructure);
-	}
+	}	
+	/**
+	* @test
+	*/
 	public void function queryToStructOfStructuresTest_NotPrimaryKey() {
 		//testing returns if not the PK
 		var testQuery = queryNew("id,name,sex", "Integer,Varchar,Varchar", 
@@ -170,7 +200,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(expectedStructure, resultStructure);
 		//Skip testing the non-existed attribute 
 	}	
-	
+		
+	/**
+	* @test
+	*/
 	public void function lcaseStructKeys_lcases_structure_keys_at_top_level() {
 		var data = {};
 		data['KEY1'] = 1;
@@ -186,7 +219,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(0, compare(ska[2], 'key2'));
 		assertEquals(0, compare(ska[3], 'key3'));
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function lcaseStructKeys_lcases_structure_keys_at_nested_array_level() {
 		var data = {};
 		data['ARRAY1'] = [];
@@ -211,7 +247,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		}
 		
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function lcaseStructKeys_works_on_complex_nested_data() {
 		
 		var data = request.slatwallScope.getAccountData();
@@ -223,7 +262,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		assertEquals(0, compare(peaStructKeyArray[1], 'accountemailaddressid'));
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function lcaseStructKeys_lcases_structure_keys_with_null_values() {
 		
 		var data = {};
@@ -235,7 +277,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(2, structCount(data));
 	}
 	
-	/*
+	/*	
 	public void function createPasswordBasedEncryptionKey_runs_with_defaults() {
 		var password = "this is my custom seed name";
 		var entityID = "30E69FFF9067343922F6FF15BD9434A139AEEAB5";
@@ -249,7 +291,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(expectedValue, resultDecrypt, "Expected the decrypted value to match the initial value.");
 	}
 	*/
-	
+		
+	/**
+	* @test
+	*/
 	public void function decryptValue_using_password_derived_and_legacy_keys() {
 		var plaintext = "my secret key";
 		
@@ -262,7 +307,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		// Decrypt using mix mode of password derived keys and legacy key
 		var decryptedResultMixed = variables.service.decryptValue(value=encryptedResultLegacy);
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function decryptValue_using_password_derived_keys() {
 		var plaintext = "my secret key";
 		var entityID = "30E69FFF9067343922F6FF15BD9434A139AEEAB5";
@@ -275,7 +323,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		assertEquals(plaintext, actualDecryptedResult);
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function decryption_behavior_does_not_error_with_incorrect_key() {
 		var plaintext = "my secret key";
 		var correctEncoding = 'Base64';
@@ -307,6 +358,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	
 	/**
 	* @mxunit:dataprovider titleStrings
+	*/	
+	/**
+	* @test
 	*/
 	public void function getUrlTitle(titleString) {
 		
@@ -318,7 +372,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		urlTitle = variables.service.createUniqueURLTitle(titleString=ucase(arguments.titleString), tableName="SwProduct");
 		assertEquals(expectedTitle, urlTitle, "title string #arguments.titleString#, position #arguments.index# failed");
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function arrayOfStructsSortTest(){
 		var mockArrayOfStructures= [
 			{
@@ -371,8 +428,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var falseMessage = "Condition is false";
 		return falseMessage;
 	}
-	
-	public function hibachiTernary_equalsIIFbutWithoutStrings(){
+	/**
+	* @test
+	*/
+	public void function hibachiTernary_equalsIIFbutWithoutStrings(){
 		var a = 2;
 		var b = 3;
 		var condition1 = a < b;
@@ -397,8 +456,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		iResult = IIF(condition1, true, false);
 		assert(iResult == hResult);
 	}
-	
-	public function hibachiTernary_handlesArgumentsCorrectly(){
+	/**
+	* @test
+	*/
+	public void function hibachiTernary_handlesArgumentsCorrectly(){
 		var hibachiTernary = service.hibachiTernary;
 		var result1 = hibachiTernary(true, 'returnTrueMessage()', returnFalseMessage());
 		assert(result1 == 'returnTrueMessage()');

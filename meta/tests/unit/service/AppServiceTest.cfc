@@ -47,13 +47,16 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+	
 	public void function setUp() {
 		super.setup();
 		
 		variables.service = request.slatwallScope.getBean("appService");
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function deploy_AppTest(){
 		var appData = {
 			appID ='',
