@@ -2027,9 +2027,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}	
 
 	//End testing: functions that delegate to the default sku
-	/**
-	* @test
-	*/
+	
 	public void function getEstimatedReceivalDetailsTest() {
 		var locationData = {
 			locationID = ""
@@ -2094,9 +2092,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		return mockProduct;
 	}
 		
-	/**
-	* @test
-	*/
 	public void function getEstimatedReceivalDatesTest_NoArgument() {
 		//Using the mock data from getEstimatedReceivalDetailsTest()
 		var mockProduct = getEstimatedReceivalDetailsTest();
