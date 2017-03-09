@@ -25,21 +25,17 @@ if( url.opt_run ){
 		
 		// directory or CFC, check by existence
 		if( !directoryExists( expandPath( "/#replace( url.target, '.', '/', 'all' )#" ) ) ){
-			thread name="json"{
-				testBox = new testbox.system.TestBox();
-				jsonresults = results = testBox.run( bundles=url.target, reporter='JSON', labels=url.labels );
-				reportdestination = expandPath('/Slatwall/meta/tests/testresults/xml/unit/');
-				fileWrite( reportdestination & "results.json", jsonresults );
-			}
+			testBox = new testbox.system.TestBox();
+			jsonresults = results = testBox.run( bundles=url.target, reporter='JSON', labels=url.labels );
+			reportdestination = expandPath('/Slatwall/meta/tests/testresults/xml/unit/');
+			fileWrite( reportdestination & "results.json", jsonresults );
 			testBox = new testbox.system.TestBox();	
 			results = testBox.run( bundles=url.target, reporter=url.reporter, labels=url.labels );
 		} else {
-			thread name="json"{
-				testBox = new testbox.system.TestBox();
-				jsonresults = results = testBox.run( directory={ mapping=url.target, recurse=url.opt_recurse }, reporter="JSON", labels=url.labels );
-				reportdestination = expandPath('/Slatwall/meta/tests/testresults/xml/unit/');
-				fileWrite( reportdestination & "results.json", jsonresults );
-			}
+			testBox = new testbox.system.TestBox();
+			jsonresults = results = testBox.run( directory={ mapping=url.target, recurse=url.opt_recurse }, reporter="JSON", labels=url.labels );
+			reportdestination = expandPath('/Slatwall/meta/tests/testresults/xml/unit/');
+			fileWrite( reportdestination & "results.json", jsonresults );
 			testBox = new testbox.system.TestBox();	
 			results = testBox.run( directory={ mapping=url.target, recurse=url.opt_recurse }, reporter=url.reporter, labels=url.labels );
 		}
