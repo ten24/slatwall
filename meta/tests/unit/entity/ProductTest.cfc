@@ -2101,9 +2101,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(1000, result[1].quantity);
 	}
 		
-	/**
-	* @test
-	*/
 	public void function getEstimatedReceivalDatesTest_WithArgument() {
 		//Copy the mock data from getEstimatedReceivalDetailsTest()
 		var locationData = {
