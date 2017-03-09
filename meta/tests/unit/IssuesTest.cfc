@@ -46,7 +46,7 @@
 Notes:
 
 */
-component extends="SlatwallUnitTestBase" {
+component extends="SlatwallUnitTestBase"{
 		
 	/**
 	* @test
