@@ -62,8 +62,6 @@ if( url.opt_run ){
 				     	failures += thisSuite.XmlAttributes.failures;
 				     	tests += thisSuite.XmlAttributes.tests;
 				    }
-				     
-				    
 				    
 					fileWrite( filedest, '{failures:#failures#,errors:#errors#}' );
 					writeOutput( trim(results) ); 
