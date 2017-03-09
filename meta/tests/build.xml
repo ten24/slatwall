@@ -49,7 +49,7 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
 	
 
      <!-- <THE URL TO THE RUNNER, PLEASE CHANGE ACCORDINGLY-->
-     <property name="url.runner"             value="cf10.localhost${slatwall.test.runner}"/>
+     <property name="url.runner"             value="${slatwall.test.server}:${slatwall.test.serverport}${slatwall.test.runner}"/>
      <!-- <FILL OUT THE BUNDLES TO TEST, CAN BE A LIST OF CFC PATHS -->
      <property name="test.bundles"      value="" />
     <!-- <FILL OUT THE DIRECTORY MAPPING TO TEST -->
