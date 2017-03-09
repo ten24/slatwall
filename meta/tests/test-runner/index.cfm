@@ -10,7 +10,7 @@
 <cfsetting requesttimeout="3600">
 <cfscript>
 // create testbox
-	
+testBox = new testbox.system.TestBox();
 // create reporters
 reporters = [ "ANTJunit", "Console", "Codexwiki", "Doc", "Dot", "JSON", "JUnit", "Min", "Raw", "Simple", "Tap", "Text", "XML" ];
 
