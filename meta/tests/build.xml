@@ -160,27 +160,27 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
                 - Labels
                 - ReportPath : The path where reports will be stored, by default it is the ${report.dir} directory.
           -->
-          <get dest="${slatwall.test.output.xml}/unit/core${slatwall.outputfile}"
+          <get dest="${slatwall.test.output.xml}/unit/core${slatwall.outputfile}.xml"
                 src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}.core&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
                 verbose="true"/>
                 
-          <get dest="${slatwall.test.output.xml}/unit/entity${slatwall.outputfile}"
+          <get dest="${slatwall.test.output.xml}/unit/entity${slatwall.outputfile}.xml"
                 src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}.entity&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
                 verbose="true"/>
                 
-           <get dest="${slatwall.test.output.xml}/unit/process${slatwall.outputfile}"
+           <get dest="${slatwall.test.output.xml}/unit/process${slatwall.outputfile}.xml"
                 src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}.process&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
                 verbose="true"/>
             
-            <get dest="${slatwall.test.output.xml}/unit/service${slatwall.outputfile}"
+            <get dest="${slatwall.test.output.xml}/unit/service${slatwall.outputfile}.xml"
                 src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}.service&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
                 verbose="true"/>
             
-            <get dest="${slatwall.test.output.xml}/unit/transient${slatwall.outputfile}"
+            <get dest="${slatwall.test.output.xml}/unit/transient${slatwall.outputfile}.xml"
                 src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}.transient&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
                 verbose="true"/>
         	
-        	<get dest="${slatwall.test.output.xml}/unit/${slatwall.outputfile}"
+        	<get dest="${slatwall.test.output.xml}/unit/${slatwall.outputfile}.xml"
                 src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}.entity&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
                 verbose="true"/>
                 
