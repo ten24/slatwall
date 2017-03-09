@@ -48,6 +48,9 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	
+	/**
+	* @test
+	*/
 	public void function all_entity_properties_with_tomany_has_singularname() {
 		//holds all errors
 		var entitiesThatDontHaveSingularNameArray = [];
@@ -74,6 +77,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(!arrayLen(entitiesThatDontHaveSingularNameArray));
 	}
 	
+	/**
+	* @test
+	*/
 	public void function allcfcPropertiesAreCaseSensitive(){
 		var allSpelledProperly = true;
 		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
@@ -95,6 +101,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 
 	//Entity Audit Properties Test
+	/**
+	* @test
+	*/
 	public void function all_entity_properties_have_audit_properties() {
 
 		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
@@ -154,6 +163,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 
 	//Misspell persistent Test
+	/**
+	* @test
+	*/
 	public void function all_entity_properties_didnt_mispell_persistent() {
 
 		var misspellCount = 0;
@@ -180,6 +192,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 
 	//Misspell persistent Test
+	/**
+	* @test
+	*/
 	public void function all_calculated_properties_are_setup_correctly() {
 
 		var calculatedErrors = 0;
@@ -227,6 +242,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 
 	// Oracle Naming tests
+	/**
+	* @test
+	*/
 	public void function oracle_entity_table_name_max_len_30() {
 		var ormClassMetaData = ORMGetSessionFactory().getAllClassMetadata();
 		var ormEntityNames = listToarray(structKeyList(ormClassMetaData));
@@ -243,6 +261,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(pass);
 	}
 
+	/**
+	* @test
+	*/
 	public void function oracle_entity_table_name_many_to_many_link_table_max_len_30() {
 		var ormClassMetaData = ORMGetSessionFactory().getAllClassMetadata();
 		var ormEntityNames = listToarray(structKeyList(ormClassMetaData));
@@ -263,6 +284,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(pass);
 	}
 
+	/**
+	* @test
+	*/
 	public void function oracle_entity_column_name_max_len_30() {
 		var ormClassMetaData = ORMGetSessionFactory().getAllClassMetadata();
 		var ormEntityNames = listToarray(structKeyList(ormClassMetaData));
@@ -306,6 +330,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 
 	// Table Name Prefixes
+	/**
+	* @test
+	*/
 	public void function table_name_starts_with_sw() {
 		var ormClassMetaData = ORMGetSessionFactory().getAllClassMetadata();
 		var ormEntityNames = listToarray(structKeyList(ormClassMetaData));
@@ -316,6 +343,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		}
 	}
 
+	/**
+	* @test
+	*/
 	public void function table_name_starts_with_sw_on_many_to_many_link_table() {
 		var ormClassMetaData = ORMGetSessionFactory().getAllClassMetadata();
 		var ormEntityNames = listToarray(structKeyList(ormClassMetaData));
@@ -331,6 +361,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 
 	// Bi Directional Helpers
+	/**
+	* @test
+	*/
 	public void function extra_lazy_properties_have_no_bidirectional_helpers() {
 		var ormClassMetaData = ORMGetSessionFactory().getAllClassMetadata();
 		var ormEntityNames = listToarray(structKeyList(ormClassMetaData));
@@ -383,6 +416,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(pass);
 	}
 
+	/**
+	* @test
+	*/
 	public void function all_smart_list_search_dont_have_errors() {
 		// Get all entities
 		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
@@ -413,6 +449,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(!arrayLen(exceptionErrorEntities));
 	}
 
+	/**
+	* @test
+	*/
 	public void function all_smart_list_search_return_no_results_with_invalid_keywords() {
 		// Get all entities
 		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
@@ -441,6 +480,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	//this function makes sure that many-to-many relationships are not using cascade delete. 
+	/**
+	* @test
+	*/
 	public void function check_delete_cascade_of_many_to_many_associations() {
 		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
 		
@@ -471,6 +513,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	//This function checks if a persistant property (not cfc) uses type instead of ormtype to define the datatype
+	/**
+	* @test
+	*/
 	public void function check_persistant_nonCFC_properties_that_use_type_instead_of_ormtype() {
 		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
 		

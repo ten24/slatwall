@@ -46,7 +46,7 @@
 Notes:
 
 */
-component {
+component extends="meta.testbox.Application"{
 
 	// Allow For Application Config
 	try{include "../../config/configApplication.cfm";}catch(any e){}
@@ -56,8 +56,8 @@ component {
 	this.sessionManagement = true;
 
 	this.mappings[ "/Slatwall" ] = replace(replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all"), "/meta/tests/", "");
-	this.mappings[ "/mxunit" ] = replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all") & "/mxunit";
-
+	this.mappings[ "/mxunit" ] = expandPath( "/testbox/system/compat" );
+	
 	this.ormEnabled = true;
 	this.ormSettings.cfclocation = ["/Slatwall/model/entity"];
 	this.ormSettings.dbcreate = "update";
@@ -65,6 +65,6 @@ component {
 	this.ormsettings.eventhandling = true;
 	this.ormSettings.automanageSession = false;
 
-
+	
 
 }

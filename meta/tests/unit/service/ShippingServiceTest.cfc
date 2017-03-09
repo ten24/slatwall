@@ -47,14 +47,17 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+	
 	public void function setUp() {
 		super.setup();
 		
 		variables.service = request.slatwallScope.getBean("shippingService");
 		variables.integrationService = request.slatwallScope.getBean("integrationService");
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function calculateShippingRateAdjustmentTest(){
 		
 	}

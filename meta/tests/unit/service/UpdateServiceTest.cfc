@@ -47,7 +47,7 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+	
 	public void function setUp() {
 		super.setup();
 		
@@ -64,7 +64,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.customFileContent = fileRead(customFilePath);
 		
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function updateCMSApplicationsTest(){
 		variables.service.updateCMSApplications();
 	}
