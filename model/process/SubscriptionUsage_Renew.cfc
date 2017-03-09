@@ -102,16 +102,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 
 	public any function getOrder() {
+		for(var subscriptionOrderItem in getSubscriptionUsage().getSubscriptionOrderItems()) {
+ 				if(subscriptionOrderItem.getSubscriptionOrderItemType().getSystemCode() == 'soitRenewal' && subscriptionOrderItem.getOrderItem().getOrder().getStatusCode() != 'ostClosed' && subscriptionOrderItem.getOrderItem().getOrder().getStatusCode() != 'ostCanceled') {
+ 					variables.order = subscriptionOrderItem.getOrderItem().getOrder();
+ 					break;
+ 				}
+ 		}
 		if(!structKeyExists(variables, "order")) {
-			for(var subscriptionOrderItem in getSubscriptionUsage().getSubscriptionOrderItems()) {
-				if(subscriptionOrderItem.getSubscriptionOrderItemType().getSystemCode() == 'soitRenewal' && subscriptionOrderItem.getOrderItem().getOrder().getStatusCode() != 'ostClosed' && subscriptionOrderItem.getOrderItem().getOrder().getStatusCode() != 'ostCanceled') {
-					variables.order = subscriptionOrderItem.getOrderItem().getOrder();
-					break;
-				}
-			}
-			if(!structKeyExists(variables, "order")) {
-				variables.order = getService("orderService").newOrder();
-			}
+			variables.order = getService("orderService").newOrder();
 		}
 		return variables.order;
 	}
