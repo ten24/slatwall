@@ -573,7 +573,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var conditionsGroupString = variables.service.getWorkflowConditionGroupsString(product,workflowTasksConditionsConfigStruct);	
 		addToDebug(conditionsGroupString);
 	}
-	
+	/**
+	* @test
+	*/
 	public void function sendOrderConfirmationOnPlaceOrderTest(){
 		//active afterOrderProcess_placeOrderSuccess send order Confirmation
 		var accountData = {

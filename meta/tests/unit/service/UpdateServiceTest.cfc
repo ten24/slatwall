@@ -71,7 +71,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function updateCMSApplicationsTest(){
 		variables.service.updateCMSApplications();
 	}
-	
+	/**
+	* @test
+	*/
 	public void function allScriptsSucceededTest(){
 		var updateScripts = variables.service.listUpdateScript();
 		for(var updateScript in updateScripts){
@@ -79,7 +81,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		}
 	}
 	
-	
+	/**
+	* @test
+	*/
 	public void function mergeEntityParsersTest_withoutCustomPropertiesInitially(){
 		
 		var coreEntityParser = request.slatwallScope.getTransient('hibachiEntityParser');
@@ -111,7 +115,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 	}
 	
-	
+	/**
+	* @test
+	*/
 	public void function mergeEntityParsersTest_withCustomPropertiesInitially_andPurge(){
 		
 		var coreEntityParser = request.slatwallScope.getTransient('hibachiEntityParser');
@@ -142,7 +148,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}"), trim(coreEntityParser.getCustomFunctionContent()));
 		
 	}
-	
+	/**
+	* @test
+	*/
 	public void function mergeEntityParsersTest_withCustomPropertiesInitially(){
 		
 		var coreEntityParser = request.slatwallScope.getTransient('hibachiEntityParser');

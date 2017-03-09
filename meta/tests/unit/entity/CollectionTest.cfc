@@ -177,7 +177,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		assertEquals(collectionEntity.getPageRecordsShow(),2);
 	}
-	
+	/**
+	* @test
+	*/
 	public void function applyDataTest_pageShowTest_queryString(){
 		var collectionEntity = variables.entityService.getAccountCollectionList();
 		
@@ -188,7 +190,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(collectionEntity.getPageRecordsShow(),2);
 		assertEquals(collectionEntity.getCurrentPageDeclaration(),3);
 	}
-	
+	/**
+	* @test
+	*/
 	public void function applyDataTest_filterTest_queryString(){
 		var collectionEntity = variables.entityService.getAccountCollectionList();
 		
@@ -201,7 +205,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assert(filter.value == 'Ryan');
 		assert(collectionEntity.getHQL() Contains '_account.firstName = ');
 	}
-	
+	/**
+	* @test
+	*/
 	public void function applyDataTest_currentPageTest(){
 		var collectionEntity = variables.entityService.getAccountCollectionList();
 		var data = {};
@@ -209,7 +215,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		collectionEntity.applyData(data);
 		assertEquals(collectionEntity.getCurrentPageDeclaration(),72);
 	}
-	
+	/**
+	* @test
+	*/
 	public void function applyData_filterEqualsTest(){
 		var collectionEntity = variables.entityService.getAccountCollectionList();
 		var data = {};
@@ -221,7 +229,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assert(filter.value == 'Ryan');
 		assert(collectionEntity.getHQL() Contains '_account.firstName = ');
 	}
-	
+	/**
+	* @test
+	*/
 	public void function applyDataTest_filterRangeTest_queryString(){
 		var collectionEntity = variables.entityService.getSkuCollectionList();
 		
@@ -234,7 +244,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(filter.value,'20-100');
 		assert(collectionEntity.getHQL() CONTAINS '_sku.price BETWEEN ');
 	}
-	
+	/**
+	* @test
+	*/
 	public void function applyDataTest_filterStartRangeTest_queryString(){
 		var collectionEntity = variables.entityService.getSkuCollectionList();
 		
@@ -248,7 +260,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assert(collectionEntity.getHQL() CONTAINS '_sku.price BETWEEN ');
 		
 	}
-	
+	/**
+	* @test
+	*/
 	public void function applyDataTest_filterEndRangeTest_queryString(){
 		var collectionEntity = variables.entityService.getSkuCollectionList();
 		
@@ -261,7 +275,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(filter.value,'-100');
 		assert(collectionEntity.getHQL() CONTAINS '_sku.price BETWEEN ');
 	}
-	
+	/**
+	* @test
+	*/
 	public void function applyDataTest_orderByTest_queryString(){
 		var collectionEntity = variables.entityService.getSkuCollectionList();
 		
@@ -276,7 +292,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(orderBy[2].direction,'ASC');
 		assert(collectionEntity.getHQL() CONTAINS 'ORDER BY _sku.price DESC ,_sku.skuName ASC');
 	}
-	
+	/**
+	* @test
+	*/
 	public void function applyData_removeFilterTest_queryString(){
 		var collectionEntity = variables.entityService.getSkuCollectionList();
 		collectionEntity.addFilter('price',1);
@@ -287,7 +305,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//make sure filter was removed
 		assertFalse(arrayLen(collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup));
 	}
-
+	/**
+	* @test
+	*/
 	public void function addFilterTest(){
 
 		var uniqueNumberForDescription = createUUID();

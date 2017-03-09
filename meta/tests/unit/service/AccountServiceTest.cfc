@@ -76,7 +76,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		assert(deleteOK);
 	}
-	
+	/**
+	* @test
+	*/
 	public void function processAccount_CreateTest_accountCodeRequiredForOrganizations(){
 		
 		//case tests if organization flag is flipped that account code is required
@@ -97,7 +99,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(structKeyExists(account.getErrors(),'accountCode'));		
 		
 	}
-	
+	/**
+	* @test
+	*/
 	public void function processAccount_CreateTest_addParentAndChildAccounts(){
 		
 		var childAccountData = {
@@ -134,7 +138,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(1,arraylen(account.getParentAccountRelationships()[1].getParentAccount().getChildAccountRelationships()));
 		assert(arraylen(account.getChildAccountRelationships()));
 	}
-	
+	/**
+	* @test
+	*/
 	public void function processAccount_CreateTest_accountCodeCreatedBasedOnCompany(){
 		var companyName = "testCompanyName"&createUUID();
 		//case tests if organization flag is flipped that account code is required
@@ -165,7 +171,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		assertEquals(companyName&'-1',account2.getAccountCode());
 	}
-	
+	/**
+	* @test
+	*/
 	public void function deleteAccountTest_slatwallScopeOwnerTest(){
 		request.slatwallScope.getAccount().setSuperUserFlag(false);
 		var childAccountData = {
@@ -177,7 +185,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var deleteOK = variables.service.deleteAccount(childAccount);
 		request.slatwallScope.getAccount().setSuperUserFlag(true);
 	}
-	
+	/**
+	* @test
+	*/
 	public void function deleteAccountTest_ifyouareOwner(){
 		request.slatwallScope.getAccount().setSuperUserFlag(false);
 		
@@ -214,7 +224,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		request.slatwallScope.getAccount().setSuperUserFlag(true);
 	}
 	
-	
+	/**
+	* @test
+	*/
 	public void function processAccount_addAccountPayment(){
 		var accountData = {
 			accountID=""
