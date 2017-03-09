@@ -2027,7 +2027,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}	
 
 	//End testing: functions that delegate to the default sku
-	
+	/*
 	public void function getEstimatedReceivalDetailsTest() {
 		var locationData = {
 			locationID = ""
@@ -2177,7 +2177,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var resultArgusSkuLocation = mockProduct.getEstimatedReceivalDates( mockSku.getSkuID(), mockLocation.getLocationID() );
 		assertFalse(isNull(resultArgusSkuLocation[1].estimatedReceivalDateTime));
 		assertEquals(1000, resultArgusSkuLocation[1].quantity);		
-	}
+	}*/
 		
 	/**
 	* @test
