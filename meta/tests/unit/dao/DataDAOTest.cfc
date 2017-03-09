@@ -54,14 +54,14 @@ Notes:
 		<cfset variables.dao = request.slatwallScope.getDAO("hibachiDataDAO") />
 	</cffunction>
 
-	<cffunction name="getShortReferenceID_1">
+	<cffunction name="getShortReferenceID_1Test">
 
 		<cfset var result = variables.dao.getShortReferenceID( referenceObjectID="", referenceObject="fake-test-object" ) />
 		<cfset assert(result eq "") />
 
 	</cffunction>
 
-	<cffunction name="getShortReferenceID_2">
+	<cffunction name="getShortReferenceID_2Test">
 
 		<cfset var result = variables.dao.getShortReferenceID( referenceObjectID="fake-test-reference-id", referenceObject="fake-test-object", createNewFlag=true ) />
 		<cfset assert( isNumeric(result) ) />

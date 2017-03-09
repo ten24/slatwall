@@ -48,12 +48,15 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
-	// @hint put things in here that you want to run befor EACH test
+	// @hint put things in here that you want to run befor EACH test	
 	public void function setUp() {
 		super.setup();
 		variables.entity = request.slatwallScope.getService("priceGroupService").newPriceGroupRate();
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getAppliesToTest_ListCreation(){
 		var product = createPersistedTestEntity('Product', {productID="",productName='TestProduct',productCode='testproduct'&createUUID()});
 		var data = {
