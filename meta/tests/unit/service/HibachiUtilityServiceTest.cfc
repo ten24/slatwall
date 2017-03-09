@@ -359,9 +359,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	/**
 	* @mxunit:dataprovider titleStrings
 	*/	
-	/**
-	* @test
-	*/
 	public void function getUrlTitle(titleString) {
 		
 		var expectedTitle = "gift-card-50";

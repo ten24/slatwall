@@ -793,8 +793,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	assertEquals('optCharge', resultCharge.orderPaymentType.getSystemCode(), 'The requiredAmount > 0 logic returns wrong type');
 	 	assertEquals(690, resultCharge.amount, 'The requiredAmount > 0 logic returns incorrect amount');
 	 	
-	 	restoreMethod(mockOrder, 'getTotal');
-	 	restoreMethod(mockOrder, 'getPaymentAmountTotal');	 	
 	 }
 	/**
 	* @test
@@ -1293,7 +1291,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	
 	 	//Testing the activeFlag filter at the same time
 	 	var resultSL = mockOrder.getPaymentMethodOptionsSmartList(refresh = true);
-	 	assertTrue(resultSL.getRecordsCount() == 3);
+	 	resultSl.addInFilter('paymentMethodID','#mockPaymentMethodFlagTrue.getPaymentMethodID()#,#mockOrderPaymentFalseFlag.getPaymentMethodID()#');
+	 	assertEquals(resultSL.getRecordsCount(),1);
 	 	
 	 	var resultSLRecords = mockOrder.getPaymentMethodOptionsSmartList().getRecords(refresh = true);
 	 	var resultPaymentNameList = '';
