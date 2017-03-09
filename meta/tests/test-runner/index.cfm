@@ -43,7 +43,7 @@ if( url.opt_run ){
 				     }
 				     break;
 				}
-				default: { 
+				case "antjunit": {
 					errors = 0;
 					failures = 0;
 					
@@ -65,6 +65,11 @@ if( url.opt_run ){
 				    }
 				    
 					fileWrite( filedest, '{"failures":#failures#,"errors":#errors#}' );
+					writeOutput( trim(results) ); 
+					break;
+				}
+				default: { 
+					
 					writeOutput( trim(results) ); 
 				}
 			}
