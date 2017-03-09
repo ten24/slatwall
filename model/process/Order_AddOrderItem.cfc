@@ -564,10 +564,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		if(arguments.orderItem.getSku().getSkuID() != this.getSku().getSkuID()){
 			return false;
 		}
-		//check if the price is the same
-		if(arguments.orderItem.getPrice() != this.getPrice()){
+		//check if the price is the same if and only if we are using a custom price
+		if(arguments.orderItem.getPrice() != this.getPrice() && (!isNull(arguments.orderItem.getSku().getUserDefinedPriceFlag()) && arguments.orderItem.getSku().getUserDefinedPriceFlag())){
 			return false;
 		}
+		
 		//check if the instock value is the same
 		if(!isNull(arguments.orderItem.getStock()) && !isNull(this.getStock()) && arguments.orderItem.getStock().getStockID() != this.getStock().getStockID()){
 			return false;
