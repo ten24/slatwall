@@ -1204,4 +1204,72 @@ component extends="HibachiService"  accessors="true" output="false"
         arguments.data.ajaxResponse['countryCodeOptions'] = getAddressService().getCountryCodeOptions();
     }
     
+    /** Given a skuCode and/or address information - returns the estimated shipping rates for that sku. */
+    public any function getEstimatedShippingCostBySkuCode(any data){
+    	if (!isNull(data.skuCode)){
+    		
+    		//data setup.
+    		var orderFulfillment = getService("OrderService").newOrderFulfillment();
+    		var orderItem = getService("OrderService").newOrderItem();
+    		var sku = getService("SkuService").getSkuBySkuCode(data.skuCode);
+    		
+    		if (!isNull(data.address)){
+    			var shippingAddress = orderFulfillment.getShippingAddress();
+    			if (isNull(shippingAddress)){
+    				shippingAddress = getService("ShippingService").newAddress();
+    			}
+    			if (structKeyExists(data.address, "countryCode")){
+    				shippingAddress.setCountryCode(data.address.countryCode);	
+    			}
+    			if (structKeyExists(data.address, "postalCode")){
+    				shippingAddress.setPostalCode(data.address.postalCode);	
+    			}
+    			if (structKeyExists(data.address, "city")){
+    				shippingAddress.setCity(data.address.city);	
+    			}
+    			if (structKeyExists(data.address, "stateCode")){
+    				shippingAddress.setStateCode(data.address.stateCode);	
+    			}
+    			if (structKeyExists(data.address, "streetAddress")){
+    				shippingAddress.setStreetAddress(data.address.streetAddress);	
+    			}
+    			orderFulfillment.setShippingAddress(shippingAddress);
+    		}
+    		
+    		//set the sku so we have data for the rates.
+    		orderItem.setSku(sku);
+    		var shippingMethodOptions = [];
+    		
+    		//set the order so it doesn't stall when updating options.
+    		orderFulfillment.setOrder(getHibachiScope().getCart());
+    		
+    		
+    		var eligibleFulfillmentMethods = listToArray(sku.setting("skuEligibleFulfillmentMethods"));
+    		var options = {};
+    		//orderFulfillment.updateCalculatedProperties(true);
+    		//iterate through getting the options.
+    		for (var eligibleFulfillmentMethod in eligibleFulfillmentMethods){
+    			//get the fulfillment methods for this item.
+    			var fulfillmentMethod = getService("FulfillmentService").getFulfillmentMethod(eligibleFulfillmentMethod);
+    			if (!isNull(fulfillmentMethod) &&!isNull(fulfillmentMethod.getFulfillmentMethodType()) &&  fulfillmentMethod.getFulfillmentMethodType() == "shipping"){
+    				
+    				//set the method so we can update with the options.
+    				orderFulfillment.setFulfillmentMethod(fulfillmentMethod);
+    				getService("ShippingService").updateOrderFulfillmentShippingMethodOptions(orderFulfillment);
+    				if (!isNull(orderFulfillment.getShippingMethodOptions())){
+    					for (var rate in orderFulfillment.getShippingMethodOptions()){
+    						if (structKeyExists(rate, "shippingMEthodCode")){
+    							options['#rate.shippingMethodCode#'] = rate;
+    						}
+    					}
+    				}
+    			}
+    		}
+    		
+    		//remove the orderfulfillment that we used to get the rates because it will disrupt other entities saving.
+    		getService("OrderService").deleteOrderFulfillment(orderFulfillment);
+    		data['ajaxResponse']['estimatedShippingRates'] = options;
+    	}
+    }
+    
 }
