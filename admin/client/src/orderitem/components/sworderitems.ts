@@ -109,6 +109,7 @@ class SWOrderItems{
  					.addFilter('parentOrderItem','null','IS')
  					.setKeywords(scope.keywords)
  					.setPageShow(scope.paginator.getPageShow())
+					.setCurrentPage(scope.paginator.getCurrentPage())
  					;
 
 					//add attributes to the column config

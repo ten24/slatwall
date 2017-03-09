@@ -119,7 +119,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		//only do this check if no payment has been added yet.
 		if (!listFindNoCase(orderRequirementsList, "payment")){
 			//Check if there is subscription with autopay flag without order payment with account payment method.
-			if (arguments.order.hasSubscriptionWithAutoPay() && !arguments.order.hasSavedAccountPaymentMethod()){
+			if (this.validateHasNoSavedAccountPaymentMethodAndSubscriptionWithAutoPay(arguments.order)){
 				orderRequirementsList = listAppend(orderRequirementsList, "payment");
 			}
 		}
@@ -1320,9 +1320,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						arguments.order = this.processOrder(arguments.order, arguments.data, 'addOrderPayment');
 					}
 
-					if(!arguments.order.hasSavedAccountPaymentMethod() && arguments.order.hasSubscriptionWithAutoPay()){
+					//set an error
+					if (this.validateHasNoSavedAccountPaymentMethodAndSubscriptionWithAutoPay(arguments.order)){
 						arguments.order.addError('placeOrder',rbKey('entity.order.process.placeOrder.hasSubscriptionWithAutoPayFlagWithoutOrderPaymentWithAccountPaymentMethod_info'));
 					}
+					
 
 					// Generate the order requirements list, to see if we still need action to be taken
 					var orderRequirementsList = getOrderRequirementsList( arguments.order );
@@ -1438,7 +1440,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return arguments.order;
 	}
-
+	
+	public any function validateHasNoSavedAccountPaymentMethodAndSubscriptionWithAutoPay(order){
+		if(!arguments.order.hasSavedAccountPaymentMethod() && arguments.order.hasSubscriptionWithAutoPay()){
+			return true;
+		}
+		return false;
+	}
+	
 	public any function createOrderDeliveryForAutoFulfillmentMethod(required any orderFulfillment){
 
 		var order = arguments.orderFulfillment.getOrder();
