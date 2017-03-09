@@ -148,9 +148,7 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
                 src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
                 verbose="true"/>
                 
-          <get dest="${slatwall.test.output.xml}/unit/results.json"
-                src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}&amp;recurse=${test.recurse}&amp;reporter=json&amp;labels=${test.labels}"
-                verbose="true"/>
+          
 
          <!-- <Bundles Runner
                You can also run tests for specific bundles by using the runner with the bundles params
@@ -176,14 +174,21 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
                </report>
           </junitreport>
           
-          <loadfile property="filecontent"
-      			srcFile="${slatwall.test.output.xml}/unit/results.json"/>
-          <condition property="tests.bombed">
-          		<not>
-				    <matches pattern='"totalFail":0' string='${filecontent}'/>
-				    <matches pattern='"totalError":0' string='${filecontent}'/>
-				</not>
-			</condition>
-			<fail message="Not All Unit Tests Passed" if="tests.bombed"/>
+		<fail message="Failure Found...failing">
+			
+		    <condition>
+		    	<not>
+		        	<resourcecontains resource="${slatwall.test.output.xml}/unit/results.json" substring='"totalFail":0'/>
+		   		</not>
+		    </condition>
+			    
+		</fail>
+		<fail message="Error Found...failing">
+		    <condition>
+		    	<not>
+		        	<resourcecontains resource="${slatwall.test.output.xml}/unit/results.json" substring='"totalError":0'/>
+		        </not>
+		    </condition>
+		</fail>
      </target>
 </project>

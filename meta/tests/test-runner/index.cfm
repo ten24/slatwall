@@ -10,7 +10,7 @@
 <cfsetting requesttimeout="3600">
 <cfscript>
 // create testbox
-testBox = new testbox.system.TestBox();		
+	
 // create reporters
 reporters = [ "ANTJunit", "Console", "Codexwiki", "Doc", "Dot", "JSON", "JUnit", "Min", "Raw", "Simple", "Tap", "Text", "XML" ];
 
@@ -21,10 +21,26 @@ if( url.opt_run ){
 	}
 	// execute tests
 	if( len( url.target ) ){
+		
+		
 		// directory or CFC, check by existence
 		if( !directoryExists( expandPath( "/#replace( url.target, '.', '/', 'all' )#" ) ) ){
+			thread name="json"{
+				testBox = new testbox.system.TestBox();
+				jsonresults = results = testBox.run( bundles=url.target, reporter='JSON', labels=url.labels );
+				reportdestination = expandPath('/Slatwall/meta/tests/testresults/xml/unit/');
+				fileWrite( reportdestination & "results.json", jsonresults );
+			}
+			testBox = new testbox.system.TestBox();	
 			results = testBox.run( bundles=url.target, reporter=url.reporter, labels=url.labels );
 		} else {
+			thread name="json"{
+				testBox = new testbox.system.TestBox();
+				jsonresults = results = testBox.run( directory={ mapping=url.target, recurse=url.opt_recurse }, reporter="JSON", labels=url.labels );
+				reportdestination = expandPath('/Slatwall/meta/tests/testresults/xml/unit/');
+				fileWrite( reportdestination & "results.json", jsonresults );
+			}
+			testBox = new testbox.system.TestBox();	
 			results = testBox.run( directory={ mapping=url.target, recurse=url.opt_recurse }, reporter=url.reporter, labels=url.labels );
 		}
 		if( isSimpleValue( results ) ){
@@ -34,14 +50,17 @@ if( url.opt_run ){
 				}
 				case "junit":  {
 					xmlReport = xmlParse( results );
-					reportdestination = expandPath('/Slatwall/meta/tests/testresults/xml/unit/');
+					
 
 				     for( thisSuite in xmlReport.testsuites.XMLChildren ){
 				          fileWrite( reportdestination & "results.xml", toString( thisSuite ) );
 				     }
 				     break;
 				}
-				default: { writeOutput( trim(results) ); }
+				default: { 
+					threadJoin();
+					writeOutput( trim(results) ); 
+				}
 			}
 		} else {
 			writeDump( trim(results) );
