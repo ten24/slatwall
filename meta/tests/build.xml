@@ -49,7 +49,7 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
 	
 
      <!-- <THE URL TO THE RUNNER, PLEASE CHANGE ACCORDINGLY-->
-     <property name="url.runner"             value="${slatwall.test.server}:${slatwall.test.serverport}${slatwall.test.runner}"/>
+     <property name="url.runner"             value="cf10.localhost${slatwall.test.runner}"/>
      <!-- <FILL OUT THE BUNDLES TO TEST, CAN BE A LIST OF CFC PATHS -->
      <property name="test.bundles"      value="" />
     <!-- <FILL OUT THE DIRECTORY MAPPING TO TEST -->
@@ -144,8 +144,12 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
                 - Labels
                 - ReportPath : The path where reports will be stored, by default it is the ${report.dir} directory.
           -->
-          <get dest="${slatwall.test.output.xml}/unit/${slatwall.outputfile}.xml"
+          <get dest="${slatwall.test.output.xml}/unit/${slatwall.outputfile}"
                 src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
+                verbose="true"/>
+                
+          <get dest="${slatwall.test.output.xml}/unit/results.json"
+                src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}&amp;recurse=${test.recurse}&amp;reporter=json&amp;labels=${test.labels}"
                 verbose="true"/>
 
          <!-- <Bundles Runner
@@ -165,7 +169,7 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
           <!-- <Create fancy junit reports -->
           <junitreport todir="${slatwall.test.output.xml}/unit">
                <fileset dir="${slatwall.test.output.xml}/unit">
-                    <include name="*.xml"/>
+                    <include name="results.xml"/>
                </fileset>
                <report format="frames" todir="${slatwall.test.output.xml}/unit">
                     <param name="TITLE" expression="My Awesome TestBox Results"/>
@@ -173,9 +177,12 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
           </junitreport>
           
           <loadfile property="filecontent"
-      			srcFile="${slatwall.test.output.xml}/unit/${slatwall.outputfile}.xml"/>
+      			srcFile="${slatwall.test.output.xml}/unit/results.json"/>
           <condition property="tests.bombed">
-			    <matches pattern='failures="0"' string='${filecontent}'/>
+          		<not>
+				    <matches pattern='"totalFail":0' string='${filecontent}'/>
+				    <matches pattern='"totalError":0' string='${filecontent}'/>
+				</not>
 			</condition>
 			<fail message="Not All Unit Tests Passed" if="tests.bombed"/>
      </target>
