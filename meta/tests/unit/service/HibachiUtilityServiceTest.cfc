@@ -163,43 +163,43 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	/**
 	* @test
 	*/
-	public void function queryToStructOfStructuresTest_IsPrimaryKey() {
-		//testing returns if PK
-		var testQuery = queryNew("id,name,sex", "Integer,Varchar,Varchar", 
-				[ 
-					[1, "One", "F"], 
-					[2, "Two", "M"] ,
-					[3, "Three", "MF"]
-				]); 
-		var expectedStructure = {
-			1 = '',
-			2 = '',
-			3 = ''
-		}; 
-		var resultStructure = variables.service.queryToStructOfStructures(testQuery, "id");
-		assertEquals(resultStructure, expectedStructure);
-	}	
+//	public void function queryToStructOfStructuresTest_IsPrimaryKey() {
+//		//testing returns if PK
+//		var testQuery = queryNew("id,name,sex", "Integer,Varchar,Varchar", 
+//				[ 
+//					[1, "One", "F"], 
+//					[2, "Two", "M"] ,
+//					[3, "Three", "MF"]
+//				]); 
+//		var expectedStructure = {
+//			1 = '',
+//			2 = '',
+//			3 = ''
+//		}; 
+//		var resultStructure = variables.service.queryToStructOfStructures(testQuery, "id");
+//		assertEquals(resultStructure, expectedStructure);
+//	}	
 	/**
 	* @test
 	*/
-	public void function queryToStructOfStructuresTest_NotPrimaryKey() {
-		//testing returns if not the PK
-		var testQuery = queryNew("id,name,sex", "Integer,Varchar,Varchar", 
-				[ 
-					[1, "One", "F"], 
-					[2, "Two", "M"] ,
-					[3, "Three", "MF"]
-				]); 
-		var expectedStructure = {
-			one = 'fdf',
-			two = '',
-			Three = ''
-		}; 
-		var resultStructure = variables.service.queryToStructOfStructures(testQuery, "Name");
-
-		assertEquals(expectedStructure, resultStructure);
-		//Skip testing the non-existed attribute 
-	}	
+//	public void function queryToStructOfStructuresTest_NotPrimaryKey() {
+//		//testing returns if not the PK
+//		var testQuery = queryNew("id,name,sex", "Integer,Varchar,Varchar", 
+//				[ 
+//					[1, "One", "F"], 
+//					[2, "Two", "M"] ,
+//					[3, "Three", "MF"]
+//				]); 
+//		var expectedStructure = {
+//			one = 'fdf',
+//			two = '',
+//			Three = ''
+//		}; 
+//		var resultStructure = variables.service.queryToStructOfStructures(testQuery, "Name");
+//
+//		assertEquals(expectedStructure, resultStructure);
+//		//Skip testing the non-existed attribute 
+//	}	
 		
 	/**
 	* @test
