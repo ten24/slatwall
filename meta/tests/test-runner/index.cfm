@@ -50,6 +50,8 @@ if( url.opt_run ){
 					reportdestination = expandPath('/Slatwall/meta/tests/testresults/xml/unit/');
 					filedest = reportdestination & "results.txt";
 					
+//					pc = getpagecontext().getresponse();
+//						pc.setHeader("Content-Type","text/html");
 					if(directoryExists(reportdestination) && fileExists(filedest)){
 						txtData = deserializeJson(fileRead(filedest));
 						errors = txtData.errors;
@@ -60,10 +62,9 @@ if( url.opt_run ){
 				    for( thisSuite in xmlReport.testsuites.XMLChildren ){
 				     	errors += thisSuite.XmlAttributes.errors;
 				     	failures += thisSuite.XmlAttributes.failures;
-				     	tests += thisSuite.XmlAttributes.tests;
 				    }
 				    
-					fileWrite( filedest, '{failures:#failures#,errors:#errors#}' );
+					fileWrite( filedest, '{"failures":#failures#,"errors":#errors#}' );
 					writeOutput( trim(results) ); 
 				}
 			}

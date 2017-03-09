@@ -161,27 +161,27 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
                 - ReportPath : The path where reports will be stored, by default it is the ${report.dir} directory.
           -->
           <get dest="${slatwall.test.output.xml}/unit/core${slatwall.outputfile}"
-                src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}/core&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
+                src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}.core&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
                 verbose="true"/>
                 
           <get dest="${slatwall.test.output.xml}/unit/entity${slatwall.outputfile}"
-                src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}/entity&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
+                src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}.entity&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
                 verbose="true"/>
                 
            <get dest="${slatwall.test.output.xml}/unit/process${slatwall.outputfile}"
-                src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}/process&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
+                src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}.process&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
                 verbose="true"/>
             
             <get dest="${slatwall.test.output.xml}/unit/service${slatwall.outputfile}"
-                src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}/service&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
+                src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}.service&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
                 verbose="true"/>
             
             <get dest="${slatwall.test.output.xml}/unit/transient${slatwall.outputfile}"
-                src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}/transient&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
+                src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}.transient&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
                 verbose="true"/>
         	
         	<get dest="${slatwall.test.output.xml}/unit/${slatwall.outputfile}"
-                src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}/entity&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
+                src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}.entity&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
                 verbose="true"/>
                 
           
@@ -213,7 +213,7 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
 		<fail message="Failure Found...failing">
 		    <condition>
 		    	<not>
-		        	<resourcecontains resource="${slatwall.test.output.xml}/unit/results.txt" substring='{failures:0,errors:0}'/>
+		        	<resourcecontains resource="${slatwall.test.output.xml}/unit/results.txt" substring='{"failures":0,"errors":0}'/>
 		   		</not>
 		    </condition>
 		</fail>
