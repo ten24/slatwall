@@ -131,6 +131,21 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
            -->
 
      </target>
+     
+     <target name="testfile">
+     	<fail message="Failure Found...failing">
+			
+		    <condition>
+		    	<and>
+			    	<not>
+			        	<resourcecontains resource="${slatwall.test.output.xml}/unit/results.txt" substring='failures:0,errors:0'/>
+			   		</not>
+		   		</and>
+		    </condition>
+			    
+		</fail>
+		
+     </target>
 
      <target name="run-junit" depends="init" description="Run our tests and produce ANT JUnit reports">
 

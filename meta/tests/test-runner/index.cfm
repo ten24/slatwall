@@ -25,10 +25,8 @@ if( url.opt_run ){
 		
 		// directory or CFC, check by existence
 		if( !directoryExists( expandPath( "/#replace( url.target, '.', '/', 'all' )#" ) ) ){
-			testBox = new testbox.system.TestBox();	
 			results = testBox.run( bundles=url.target, reporter=url.reporter, labels=url.labels );
 		} else {
-			testBox = new testbox.system.TestBox();	
 			results = testBox.run( directory={ mapping=url.target, recurse=url.opt_recurse }, reporter=url.reporter, labels=url.labels );
 		}
 		if( isSimpleValue( results ) ){
@@ -46,22 +44,20 @@ if( url.opt_run ){
 				     break;
 				}
 				default: { 
-					errors = 0;
-					failures = 0;
-					xmlReport = xmlParse( results );
-//					pc = getpagecontext().getresponse();
-//
-//						pc.setHeader("Content-Type","text/html");
-				     for( thisSuite in xmlReport.testsuites.XMLChildren ){
-				     	errors += thisSuite.XmlAttributes.errors;
-				     	failures += thisSuite.XmlAttributes.failures;
-				     	
-				     	
-				     }
+//					errors = 0;
+//					failures = 0;
+//					tests = 0;
+//					xmlReport = xmlParse( results );
+//				    for( thisSuite in xmlReport.testsuites.XMLChildren ){
+//				     	errors += thisSuite.XmlAttributes.errors;
+//				     	failures += thisSuite.XmlAttributes.failures;
+//				     	tests += thisSuite.XmlAttributes.tests;
+//				    }
 				     
-				     
+				    
 				    reportdestination = expandPath('/Slatwall/meta/tests/testresults/xml/unit/');
-					fileWrite( reportdestination & "results.txt", 'errors:#errors#,failures:#failures#' );
+				    fileWrite( reportdestination & 'report.xml', results);
+					fileWrite( reportdestination & "results.txt", 'tests:#tests#,failures:#failures#,errors:#errors#' );
 					writeOutput( trim(results) ); 
 				}
 			}
