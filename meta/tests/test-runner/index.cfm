@@ -25,17 +25,9 @@ if( url.opt_run ){
 		
 		// directory or CFC, check by existence
 		if( !directoryExists( expandPath( "/#replace( url.target, '.', '/', 'all' )#" ) ) ){
-			testBox = new testbox.system.TestBox();
-			jsonresults = results = testBox.run( bundles=url.target, reporter='JSON', labels=url.labels );
-			reportdestination = expandPath('/Slatwall/meta/tests/testresults/xml/unit/');
-			fileWrite( reportdestination & "results.json", jsonresults );
 			testBox = new testbox.system.TestBox();	
 			results = testBox.run( bundles=url.target, reporter=url.reporter, labels=url.labels );
 		} else {
-			testBox = new testbox.system.TestBox();
-			jsonresults = results = testBox.run( directory={ mapping=url.target, recurse=url.opt_recurse }, reporter="JSON", labels=url.labels );
-			reportdestination = expandPath('/Slatwall/meta/tests/testresults/xml/unit/');
-			fileWrite( reportdestination & "results.json", jsonresults );
 			testBox = new testbox.system.TestBox();	
 			results = testBox.run( directory={ mapping=url.target, recurse=url.opt_recurse }, reporter=url.reporter, labels=url.labels );
 		}
@@ -54,7 +46,22 @@ if( url.opt_run ){
 				     break;
 				}
 				default: { 
-					threadJoin();
+					errors = 0;
+					failures = 0;
+					xmlReport = xmlParse( results );
+//					pc = getpagecontext().getresponse();
+//
+//						pc.setHeader("Content-Type","text/html");
+				     for( thisSuite in xmlReport.testsuites.XMLChildren ){
+				     	errors += thisSuite.XmlAttributes.errors;
+				     	failures += thisSuite.XmlAttributes.failures;
+				     	
+				     	
+				     }
+				     
+				     
+				    reportdestination = expandPath('/Slatwall/meta/tests/testresults/xml/unit/');
+					fileWrite( reportdestination & "results.txt", 'errors:#errors#,failures:#failures#' );
 					writeOutput( trim(results) ); 
 				}
 			}
