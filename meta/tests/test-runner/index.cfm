@@ -44,19 +44,19 @@ if( url.opt_run ){
 				     break;
 				}
 				default: { 
-//					errors = 0;
-//					failures = 0;
-//					tests = 0;
-//					xmlReport = xmlParse( results );
-//				    for( thisSuite in xmlReport.testsuites.XMLChildren ){
-//				     	errors += thisSuite.XmlAttributes.errors;
-//				     	failures += thisSuite.XmlAttributes.failures;
-//				     	tests += thisSuite.XmlAttributes.tests;
-//				    }
+					errors = 0;
+					failures = 0;
+					tests = 0;
+					xmlReport = xmlParse( results );
+				    for( thisSuite in xmlReport.testsuites.XMLChildren ){
+				     	errors += thisSuite.XmlAttributes.errors;
+				     	failures += thisSuite.XmlAttributes.failures;
+				     	tests += thisSuite.XmlAttributes.tests;
+				    }
 				     
 				    
 				    reportdestination = expandPath('/Slatwall/meta/tests/testresults/xml/unit/');
-				    fileWrite( reportdestination & 'report.xml', results);
+//				    fileWrite( reportdestination & 'report.xml', results);
 					fileWrite( reportdestination & "results.txt", 'tests:#tests#,failures:#failures#,errors:#errors#' );
 					writeOutput( trim(results) ); 
 				}
