@@ -55,7 +55,7 @@ component displayname="Fulfillment Batch" entityname="SlatwallFulfillmentBatch" 
 	property name="fulfillmentBatchNumber" ormtype="integer";
 
 	// Related Object Properties (many-to-one)
-	property name="assignedAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="assignedAccountID";
+	property name="assignedAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	
 	// Related Object Properties (one-to-many)
 	property name="comments" singularname="comment" cfc="Comment" type="array" fieldtype="one-to-many" fkcolumn="fulfillmentBatchID" cascade="all-delete-orphan" inverse="true";
