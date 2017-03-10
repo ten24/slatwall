@@ -632,17 +632,12 @@ class PublicService {
 
     /** Allows an easy way to calling the service addOrderPayment.
                     */
-    public addGiftCardOrderPayments = (redeemGiftCardToAccount)=>{
+    public addGiftCardOrderPayments = (giftCardCode, redeemGiftCardToAccount)=>{
+        console.log("ayyyyy")
         //reset the form errors.
         this.cart.hasErrors=false;
         this.cart.orderPayments.errors = {};
         this.cart.orderPayments.hasErrors = false;
-        
-        //Grab all the data
-        var giftCards = [];
-        if (angular.isDefined(this.account.giftCards)){
-            giftCards = this.account.giftCards;    
-         }
         
         var data = {};
         
@@ -651,54 +646,13 @@ class PublicService {
             'newOrderPayment.redeemGiftCardToAccount':redeemGiftCardToAccount,
         };
         
-        //add the amounts from the gift cards
-        for (var card in giftCards){
-            if (giftCards[card].applied != true){
-                
-                //If the amount on the card is not enough to cover the balance, then use the full balance.
-                
-                //find the orderAmountNeeded
-                if (this.cart.orderPayments.length){
-                    for (var payment in this.cart.orderPayments){
-                        if (this.cart.orderPayments[payment].paymentMethod != null &&    
-                            this.cart.orderPayments[payment].paymentMethod.paymentMethodName == "Gift Card"
-                        ){
-                            if (angular.isDefined(this.cart.orderPayments[payment].orderAmountNeeded)){
-                                var remainingBalance = this.cart.orderPayments[payment].orderAmountNeeded;
-                                break;
-                            }
-                        }
-                    }
-                }
-                
-                //Base the balance off of the balanceAmount.
-                if (!angular.isDefined(remainingBalance)){
-                    var remainingBalance = giftCards[card].balanceAmount || giftCards[card].calculatedBalanceAmount;    
-                }
-                
-                if (this.cart.calculatedTotal > remainingBalance){
-                    data['newOrderPayment.amount'] = remainingBalance;
-                }else{
-                    data['newOrderPayment.amount'] = this.cart.calculatedTotal;
-                }
-                data['newOrderPayment.order.account.accountID'] = this.account.accountID;
-                data['newOrderPayment.giftCardNumber'] = giftCards[card].giftCardCode;
-                data['copyFromType'] = "";
-                
-                this.doAction('addOrderPayment', data, 'post').then((result:any)=>{
-                    var serverData
-                    if (angular.isDefined(result)){
-                        serverData = result;
-                        if (!serverData.cart.hasErrors){
-                            giftCards[card].applied = true;
-                        }
-                    }else{
-                        giftCards.splice(giftCards.index)
-                    }
-                    this.findingGiftCard = false;
-                });   
-            }
-        }
+        data['newOrderPayment.order.account.accountID'] = this.account.accountID;
+        data['newOrderPayment.giftCardNumber'] = giftCardCode;
+        data['copyFromType'] = "";
+        
+        this.doAction('addOrderPayment', data, 'post').then((result:any)=>{
+            this.findingGiftCard = false;
+        }); 
               
     };
 
@@ -739,13 +693,21 @@ class PublicService {
 
     //Applies a giftcard from the user account onto the payment.
     public applyGiftCard = (giftCardCode)=>{
+
         this.findingGiftCard = true;
-        var giftCard = {
-            "giftCardCode":giftCardCode,
-            "applied":false
-        };
-        this.account.giftCards.push(giftCard);
-        this.addGiftCardOrderPayments(true);
+
+        let giftCardAlreadyApplied = this.cart.orderPayments.reduce((found, payment)=>{
+            if(!found){
+                return payment.giftCard && payment.giftCard.giftCardCode == giftCardCode;
+            }
+        },false);
+        console.log(giftCardAlreadyApplied);
+        if(!giftCardAlreadyApplied){
+            this.addGiftCardOrderPayments(giftCardCode, true);
+        }else{
+            this.setGiftCardError('This gift card has already been applied to this order.');
+            this.findingGiftCard = false;
+        }
     };
 
     public formatPaymentMethod = (paymentMethod) =>{
@@ -996,6 +958,14 @@ class PublicService {
         }
     }
 
+    public setGiftCardError = (message) =>{
+        this.cart.processObjects = this.cart.processObjects || {};
+        this.cart.processObjects.addOrderPayment = this.cart.processObjects.addOrderPayment || {};
+        this.cart.processObjects.addOrderPayment.errors = this.cart.processObjects.addOrderPayment.errors || {};
+        this.cart.processObjects.addOrderPayment.errors.giftCardID = this.cart.processObjects.addOrderPayment.errors.giftCardID || [];
+        this.cart.processObjects.addOrderPayment.errors.giftCardID[0] = message;
+    }
+
     public addShippingAddressErrors = ()=>{
         this.shippingAddressErrors = this.errors;
         if(this.accountAddressEditFormIndex != undefined){
@@ -1128,7 +1098,7 @@ class PublicService {
 
     //Not particularly robust, needs to be modified for each project
     public isCheckOrMoneyOrderPayment = (payment) =>{
-        return payment.paymentMethodName = "Check or Money Order";
+        return payment.paymentMethodName == "Check or Money Order";
     }
 
     public orderHasNoPayments = () =>{
