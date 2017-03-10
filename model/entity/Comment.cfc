@@ -54,6 +54,7 @@ component displayname="Comment" entityname="SlatwallComment" table="SwComment" p
 	property name="publicFlag" ormtype="boolean";
 	
 	// Related Object Properties (many-to-one)
+	property name="fulfillmentBatch" cfc="FulfillmentBatch" fieldtype="many-to-one" fkcolumn="fulfillmentBatchID";
 	
 	// Related Object Properties (one-to-many)
 	property name="commentRelationships" singularname="commentRelationship" cfc="CommentRelationship" type="array" fieldtype="one-to-many" fkcolumn="commentID" inverse="true" cascade="all-delete-orphan";

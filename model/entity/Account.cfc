@@ -607,18 +607,18 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	
 	// Fulfillment Batches (one-to-many)
 	public void function addFulfillmentBatch(required any fulfillmentBatch) {
-	   arguments.fulfillmentBatch.setAccount(this);
+	   arguments.fulfillmentBatch.setAssignedAccount(this);
 	}
 	public void function removeFulfillmentBatch(required any fulfillmentBatch) {
-	   arguments.fulfillmentBatch.removeAccount(this);
+	   arguments.fulfillmentBatch.removeAssignedAccount(this);
 	}
 	
 	// Pick Wave (one-to-many)
 	public void function addPickWave(required any pickWave) {
-	   arguments.pickWave.setAccount(this);
+	   arguments.pickWave.setAssignedAccount(this);
 	}
 	public void function removePickWave(required any pickWave) {
-	   arguments.pickWave.removeAccount(this);
+	   arguments.pickWave.removeAssignedAccount(this);
 	}
 	
 	// Price Groups (many-to-many - owner)
