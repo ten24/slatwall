@@ -72,7 +72,11 @@ component displayname="Fulfillment Batch" entityname="SlatwallFulfillmentBatch" 
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
-
+	
+	//Non-persistent
+	property name="totalQuantityOnBatch" persistent="false";
+	property name="fulfillmentsCompletedTotal" persistent="false";
+	
 	// ============ START: Non-Persistent Property Methods =================
 
 	// ============  END:  Non-Persistent Property Methods =================
@@ -121,7 +125,6 @@ component displayname="Fulfillment Batch" entityname="SlatwallFulfillmentBatch" 
 	   arguments.pickWave.removeFulfillmentBatch(this);
 	}
 	
-	
 	// Location (many-to-many - inverse)
 	public void function addLocation(required any location) {
 		arguments.location.addFulfillmentBatch( this );
@@ -129,7 +132,25 @@ component displayname="Fulfillment Batch" entityname="SlatwallFulfillmentBatch" 
 	public void function removelocation(required any location) {
 		arguments.location.removeFulfillmentBatch( this );
 	}
-
+	
+	//The total number of fulfillments in this batch.
+	public any function getTotalQuantityOnBatch() {
+		var totalQuantityOnBatch = 0;
+		for (fulfillmentItem in getFulfillmentBatchItems() ){
+			totalQuantityOnBatch += fulfillmentItem.getQuantityOnBatch();
+		}
+		return totalQuantityOnBatch;
+	}
+	
+	//The total number of fulfillments in this batch.
+	public any function getTotalQuantityOnBatchCompleted() {
+		var totalQuantityOnBatchCompleted = 0;
+		for (fulfillmentItem in getFulfillmentBatchItems() ){
+			totalQuantityOnBatchCompleted += fulfillmentItem.getQuantityCompleted();
+		}
+		return totalQuantityOnBatchCompleted;
+	}
+	
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// ================== START: Overridden Methods ========================
