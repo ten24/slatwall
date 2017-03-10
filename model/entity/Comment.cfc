@@ -103,6 +103,25 @@ component displayname="Comment" entityname="SlatwallComment" table="SwComment" p
 		
 	// ============= START: Bidirectional Helper Methods ===================
 	
+	// Fulfillment Batch (many-to-one)
+	public void function setFulfillmentBatch(required any fulfillmentBatch) {
+		variables.fulfillmentBatch = arguments.fulfillmentBatch;
+		if(isNew() or !arguments.fulfillmentBatch.hasComment( this )) {
+			arrayAppend(arguments.fulfillmentBatch.getComments(), this);
+		}
+	}
+	
+	public void function removeFulfillmentBatch(any fulfillmentBatch) {
+		if(!structKeyExists(arguments, "fulfillmentBatch")) {
+			arguments.fulfillmentBatch = variables.fulfillmentBatch;
+		}
+		var index = arrayFind(arguments.fulfillmentBatch.getComments(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.fulfillmentBatch.getComments(), index);
+		}
+		structDelete(variables, "fulfillmentBatch");
+	}
+	
 	// Comment Relationships (one-to-many)
 	public void function addCommentRelationship(required any commentRelationship) {
 		arguments.commentRelationship.setComment( this );
