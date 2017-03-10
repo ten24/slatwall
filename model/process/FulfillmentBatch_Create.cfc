@@ -49,7 +49,7 @@ Notes:
 component output="false" accessors="true" extends="HibachiProcess" {
 
 	// Injected Entities
-	property name="fulfillmentBatch";
+	property name="fulfillmentBatch" hb_rbKey="entity.fulfillmentBatch" cfc="FulfillmentBatch";
 	
 	// Data Properties
 	property name="accountID" hb_rbKey="entity.account" hb_formFieldType="textautocomplete" cfc="Account";
