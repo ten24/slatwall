@@ -88,15 +88,15 @@ component displayname="Fulfillment Batch Item" entityname="SlatwallFulfillmentBa
 		}
 	}
 	
-	public void function removeOrderDeliveryItem(any OrderDeliveryItem) {
-		if(!structKeyExists(arguments, "OrderDeliveryItem")) {
+	public void function removeOrderDeliveryItem(any orderDeliveryItem) {
+		if(!structKeyExists(arguments, "orderDeliveryItem")) {
 			arguments.orderDeliveryItem = variables.orderDeliveryItem;
 		}
 		var index = arrayFind(arguments.orderDeliveryItem.getFulfillmentBatchItems(), this);
 		if(index > 0) {
 			arrayDeleteAt(arguments.orderDeliveryItem.getFulfillmentBatchItems(), index);
 		}
-		structDelete(variables, "OrderDeliveryItem");
+		structDelete(variables, "orderDeliveryItem");
 	}
 	
 	// OrderFulfillment (many-to-one)
