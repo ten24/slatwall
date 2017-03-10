@@ -53,11 +53,11 @@ component displayname="Pickwave" entityname="SlatwallPickWave" table="SwPickWave
 
 	// Related Object Properties (many-to-one)
 	property name="fulfillmentBatch" cfc="FulfillmentBatch" fieldtype="many-to-one" fkcolumn="fulfillmentBatchID";
-	property name="assignedAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="assignedAccountID";
+	property name="assignedAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	
 	// Related Object Properties (one-to-many)
 	property name="fulfillmentBatchItems" singularname="fulfillmentBatchItem" cfc="FulfillmentBatchItem" fieldtype="one-to-many" fkcolumn="pickWaveID" cascade="all-delete-orphan" inverse="true";
-
+	
 	// Related Object Properties (many-to-many - owner)
 	property name="locations" singularname="location" cfc="Location" fieldtype="many-to-many" linktable="SwPickWaveLocation" fkcolumn="pickWaveID" inversejoincolumn="locationID";
 	

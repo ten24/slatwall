@@ -73,7 +73,8 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="fulfillmentShippingMethodOptions" singularname="fulfillmentShippingMethodOption" cfc="ShippingMethodOption" fieldtype="one-to-many" fkcolumn="orderFulfillmentID" cascade="all-delete-orphan" inverse="true";
 	property name="accountLoyaltyTransactions" singularname="accountLoyaltyTransaction" cfc="AccountLoyaltyTransaction" type="array" fieldtype="one-to-many" fkcolumn="orderFulfillmentID" cascade="all" inverse="true";
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="orderFulfillmentID" cascade="all-delete-orphan" inverse="true";
-
+	property name="fulfillmentBatchItems" singularname="fulfillmentBatchItem" fieldType="one-to-many" type="array" fkColumn="orderFulfillmentID" cfc="fulfillmentBatchItem" inverse="true" orderby="createdDateTime asc";
+	
 	// Related Object Properties (many-to-many - owner)
 
 	// Related Object Properties (many-to-many - inverse)
@@ -579,6 +580,15 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	public void function removeAttributeValue(required any attributeValue) {
 		arguments.attributeValue.removeOrderFulfillment( this );
 	}
+	
+	// Fulfillment Batch Items (one-to-many)
+	public void function addFulfillmentBatchItem(required any fulfillmentBatchItem) {
+		arguments.fulfillmentBatchItem.setOrderFulfillment( this );
+	}
+	public void function removeFulfillmentBatchItem(required any fulfillmentBatchItem) {
+		arguments.fulfillmentBatchItem.removeOrderFulfillment( this );
+	}
+	
 
 	// =============  END:  Bidirectional Helper Methods ===================
 

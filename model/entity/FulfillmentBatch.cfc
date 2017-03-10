@@ -60,7 +60,8 @@ component displayname="Fulfillment Batch" entityname="SlatwallFulfillmentBatch" 
 	// Related Object Properties (one-to-many)
 	property name="comments" singularname="comment" cfc="Comment" type="array" fieldtype="one-to-many" fkcolumn="fulfillmentBatchID" cascade="all-delete-orphan" inverse="true";
 	property name="fulfillmentBatchItems" singularname="fulfillmentBatchItem" cfc="FulfillmentBatchItem" fieldtype="one-to-many" fkcolumn="fulfillmentBatchID" cascade="all-delete-orphan" inverse="true";
-
+	property name="pickwaves" singularname="pickwave" cfc="PickWave" fieldtype="one-to-many" fkcolumn="fulfillmentBatchID" cascade="all-delete-orphan" inverse="true";
+	
 	// Related Object Properties (many-to-many - owner)
 	property name="locations" singularname="location" cfc="Location" fieldtype="many-to-many" linktable="SwFulfillmentBatchLocation" fkcolumn="fulfillmentBatchID" inversejoincolumn="locationID";
 	
@@ -93,6 +94,15 @@ component displayname="Fulfillment Batch" entityname="SlatwallFulfillmentBatch" 
 	public void function removeFulfillmentBatchItem(required any fulfillmentBatchItem) {
 		arguments.fulfillmentBatchItem.removeFulfillmentBatch( this );
 	}
+	
+	// Pick Wave (one-to-many)
+	public void function addPickWave(required any pickWave) {
+	   arguments.pickWave.setFulfillmentBatch(this);
+	}
+	public void function removePickWave(required any pickWave) {
+	   arguments.pickWave.removeFulfillmentBatch(this);
+	}
+	
 	
 	// Location (many-to-many - inverse)
 	public void function addLocation(required any location) {

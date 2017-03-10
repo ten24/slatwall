@@ -58,7 +58,8 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	// Related Object Properties (one-to-many). Including this property to allow HQL to do  stock -> vendorOrderItem lookups
 	property name="vendorOrderItems" singularname="vendorOrderItem" cfc="VendorOrderItem" fieldtype="one-to-many" fkcolumn="stockID" inverse="true";
 	property name="inventory" singularname="inventory" cfc="Inventory" fieldtype="one-to-many" fkcolumn="stockID" inverse="true" lazy="extra";
-
+	property name="fulfillmentBatchItems" singularname="fulfillmentBatchItem" fieldType="one-to-many" type="array" fkColumn="stockID" cfc="fulfillmentBatchItem" inverse="true" orderby="createdDateTime asc";
+	
 	//Calculated Properties
 	property name="calculatedQATS" ormtype="integer";
 	property name="calculatedQOH" ormtype="integer";
@@ -122,7 +123,15 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	public void function removeVendorOrderItem(required any vendorOrderItem) {
 		arguments.vendorOrderItem.removeStock( this );
 	}
-
+	
+	// Fulfillment Batches (one-to-many)
+	public void function addFulfillmentBatchItem(required any fulfillmentBatchItem) {
+	   arguments.fulfillmentBatchItem.setStock(this);
+	}
+	public void function removeFulfillmentBatchItem(required any fulfillmentBatchItem) {
+	   arguments.fulfillmentBatchItem.removeStock(this);
+	}
+	
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// ================== START: Overridden Methods ========================

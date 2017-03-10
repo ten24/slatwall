@@ -96,7 +96,8 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="subscriptionUsages" singularname="subscriptionUsage" cfc="SubscriptionUsage" type="array" fieldtype="one-to-many" fkcolumn="accountID" cascade="all-delete-orphan" inverse="true";
 	property name="termAccountOrderPayments" singularname="termAccountOrderPayment" cfc="OrderPayment" type="array" fieldtype="one-to-many" fkcolumn="termPaymentAccountID" cascade="all" inverse="true";
 	property name="giftCards" singularname="giftCard" cfc="GiftCard" type="array" fieldtype="one-to-many" fkcolumn="ownerAccountID" cascade="all" inverse="true";
-	property name="fulfillmentBatches" singularname="fulfillmentBatche" fieldType="one-to-many" type="array" fkColumn="accountID" cfc="fulfillmentBatche" inverse="true" orderby="createdDateTime asc";
+	property name="fulfillmentBatches" singularname="fulfillmentBatch" fieldType="one-to-many" type="array" fkColumn="accountID" cfc="fulfillmentBatch" inverse="true" orderby="createdDateTime asc";
+	property name="pickWaves" singularname="pickWave" fieldType="one-to-many" type="array" fkColumn="accountID" cfc="PickWave" inverse="true" orderby="createdDateTime asc";
 	
 	// Related Object Properties (many-to-many - owner)
 	property name="priceGroups" singularname="priceGroup" cfc="PriceGroup" fieldtype="many-to-many" linktable="SwAccountPriceGroup" fkcolumn="accountID" inversejoincolumn="priceGroupID";
@@ -610,6 +611,14 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	}
 	public void function removeFulfillmentBatch(required any fulfillmentBatch) {
 	   arguments.fulfillmentBatch.removeAccount(this);
+	}
+	
+	// Pick Wave (one-to-many)
+	public void function addPickWave(required any pickWave) {
+	   arguments.pickWave.setAccount(this);
+	}
+	public void function removePickWave(required any pickWave) {
+	   arguments.pickWave.removeAccount(this);
 	}
 	
 	// Price Groups (many-to-many - owner)
