@@ -39,8 +39,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
   workflowmodule.name
 ])
 .constant("baseURL", $.slatwall.getConfig().baseURL)
-.constant('slatwallPathBuilder', new SlatwallPathBuilder())
-.config(["$provide",'$logProvider','$filterProvider','$httpProvider','$routeProvider','$injector','$locationProvider','datepickerConfig', 'datepickerPopupConfig','slatwallPathBuilder','appConfig',
+.constant('slatwallPathBuilder', new SlatwallPathBuilder()).config(["$provide",'$logProvider','$filterProvider','$httpProvider','$routeProvider','$injector','$locationProvider','datepickerConfig', 'datepickerPopupConfig','slatwallPathBuilder','appConfig',
      ($provide, $logProvider,$filterProvider,$httpProvider,$routeProvider,$injector,$locationProvider,datepickerConfig, datepickerPopupConfig,slatwallPathBuilder,appConfig) =>
   {
       //configure partials path properties

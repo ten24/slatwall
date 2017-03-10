@@ -47,17 +47,23 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+	
 	public void function setUp() {
 		super.setup();
 		
 		variables.service = request.slatwallScope.getBean("accountService");
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function defaults_are_correct() {
 		assertTrue( isObject(variables.service.getEmailService()) );
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function deleteAccountAddress_removes_account_address_from_all_order_relationships() {
 		var accountAddress = request.slatwallScope.newEntity('accountAddress');
 		var account = request.slatwallScope.newEntity('account');
@@ -70,7 +76,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		assert(deleteOK);
 	}
-	
+	/**
+	* @test
+	*/
 	public void function processAccount_CreateTest_accountCodeRequiredForOrganizations(){
 		
 		//case tests if organization flag is flipped that account code is required
@@ -91,7 +99,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(structKeyExists(account.getErrors(),'accountCode'));		
 		
 	}
-	
+	/**
+	* @test
+	*/
 	public void function processAccount_CreateTest_addParentAndChildAccounts(){
 		
 		var childAccountData = {
@@ -128,7 +138,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(1,arraylen(account.getParentAccountRelationships()[1].getParentAccount().getChildAccountRelationships()));
 		assert(arraylen(account.getChildAccountRelationships()));
 	}
-	
+	/**
+	* @test
+	*/
 	public void function processAccount_CreateTest_accountCodeCreatedBasedOnCompany(){
 		var companyName = "testCompanyName"&createUUID();
 		//case tests if organization flag is flipped that account code is required
@@ -159,7 +171,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		assertEquals(companyName&'-1',account2.getAccountCode());
 	}
-	
+	/**
+	* @test
+	*/
 	public void function deleteAccountTest_slatwallScopeOwnerTest(){
 		request.slatwallScope.getAccount().setSuperUserFlag(false);
 		var childAccountData = {
@@ -171,7 +185,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var deleteOK = variables.service.deleteAccount(childAccount);
 		request.slatwallScope.getAccount().setSuperUserFlag(true);
 	}
-	
+	/**
+	* @test
+	*/
 	public void function deleteAccountTest_ifyouareOwner(){
 		request.slatwallScope.getAccount().setSuperUserFlag(false);
 		
@@ -208,7 +224,143 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		request.slatwallScope.getAccount().setSuperUserFlag(true);
 	}
 	
-	
+	/**
+	* @test
+	*/
+	public void function processAccount_addAccountPayment(){
+		var accountData = {
+			accountID=""
+		};
+		var account = createPersistedTestEntity('Account',accountData);
+
+		var paymentMethodData = {
+			paymentMethodID="",
+			paymentMethodType="termPayment",
+			activeFlag=1
+		};
+		var paymentMethod = createPersistedTestEntity('PaymentMethod',paymentMethodData);
+		
+		var checkPaymentMethodData = {
+			paymentMethodID="",
+			paymentMethodType="check",
+			activeFlag=1
+		};
+		var checkPaymentMethod = createPersistedTestEntity('PaymentMethod',checkPaymentMethodData);
+		
+		var accountPaymentMethodData = {
+			accountPaymentMethodID="",
+			activeFlag=1,
+			paymentMethod={
+				paymentMethodID=paymentMethod.getPaymentMethodID()
+			},
+			paymentTerm={
+				paymentTermID="27f223d1a5b7cba92e783c926e29efc6"
+			},
+			account={
+				accountID=account.getAccountID()
+			}
+		};
+		var accountPaymentMethod = createPersistedTestEntity('AccountPaymentMethod',accountPaymentMethodData);
+		assert(!isNull(accountPaymentMethod.getPaymentMethod()));
+		assert(!isNull(accountPaymentMethod.getPaymentTerm()));
+		assert(!isNull(accountPaymentMethod.getAccount()));
+		
+		var orderData={
+			orderID="",
+			account={
+				accountID=account.getAccountID()
+			},
+			orderType={
+				//Sales Order
+				typeID="444df2df9f923d6c6fd0942a466e84cc"
+			}
+		};
+		var order = createPersistedTestEntity('Order',orderData);
+		
+		var orderItemData = {
+			orderItemID="",
+			
+			order={
+				orderID=order.getOrderID()
+			},
+			price=77.00
+		};
+		var orderItem = createPersistedTestEntity('OrderItem',orderItemData);
+		
+		var orderPaymentData = {
+			orderPaymentID="",
+			order={
+				orderID=order.getOrderID()
+			},
+			accountPaymentMethod={
+				accountPaymentMethodID=accountPaymentMethod.getAccountPaymentMethodID()
+			},
+			paymentMethod={
+				paymentMethodID="444df303dedc6dab69dd7ebcc9b8036a"
+			},
+			orderPaymentType={
+				//charge
+				orderPaymentTypeID="444df2f0fed139ff94191de8fcd1f61b"
+			}
+		};
+		var orderPayment = createPersistedTestEntity('OrderPayment',orderPaymentData);
+		
+		assert(!isNull(orderPayment.getOrder()));
+		assert(!isNull(orderPayment.getAccountPaymentMethod()));
+		assert(!isNull(orderPayment.getOrderPaymentType()));
+		ormflush();
+		var data = {
+			accountAddressID="",
+			billingAddress={
+				addressID="",
+				countryCode='US',
+				name="test",
+				company="test",
+				streetAddress="test",
+				street2Address="test",
+				city="test",
+				statCode="MA",
+				postalCode="01757"
+			},
+			appliedOrderPayments=[
+				{
+					amount=1,
+					orderPaymentID=orderPayment.getOrderPaymentID(),
+					//aptCharge
+					paymentTypeID="444df32dd2b0583d59a19f1b77869025"
+				}
+			],
+			newAccountPayment={
+				accountPaymentID="",
+				amount = 2,
+				currencyCode='USD',
+				paymentMethod={
+					paymentMethodID=checkPaymentMethod.getPaymentMethodID()
+				},
+				account={
+					accountID=account.getAccountID()
+				},
+				accountPaymentType={
+					//aptCharge
+					typeID="444df32dd2b0583d59a19f1b77869025"
+				},
+				getAccountPaymentMethodID="",
+				saveAccountPaymentMethodFlag=0,
+				accountID=account.getAccountID()
+			},
+			preProcessDisplayedFlag=1,
+			processContext="addAccountPayment"
+		};
+		
+		account = variables.service.process(account,data,'addAccountPayment');
+		
+		assert(arraylen(account.getAccountPayments()));
+		assert(arraylen(account.getAccountPayments()[1].getAppliedAccountPayments()));
+		assert(arraylen(account.getAccountPayments()[1].getPaymentTransactions()));
+		assert(account.getAccountPayments()[1].getPaymentTransactions()[1].getTransactionSuccessFlag());
+		
+		assertFalse(account.hasErrors());
+	}
 	
 }
 

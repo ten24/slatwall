@@ -63,8 +63,6 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	property name="calculatedQATS" ormtype="integer";
 	property name="calculatedQOH" ormtype="integer";
 	property name="calculatedQNC" ormtype="integer";
-	property name="calculatedAverageCost" ormtype="big_decimal";
-	property name="calculatedAverageLandedCost" ormtype="big_decimal";
 
 	// Remote properties
 	property name="remoteID" ormtype="string";
@@ -76,9 +74,6 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non-Persistent Properties
-	
-	property name="averageCost" persistent="false";
-	property name="averageLandedCost" persistent="false";
 
 	property name="QATS" persistent="false";
 	property name="QOH" persistent="false";
@@ -89,7 +84,6 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 
 	// Quantity
 	public numeric function getQuantity(required string quantityType) {
-		
 		if( !structKeyExists(variables, arguments.quantityType) ) {
 			if(listFindNoCase("QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA", arguments.quantityType)) {
 				return getSku().getQuantity(quantityType=arguments.quantityType, stockID=this.getStockID());
@@ -102,34 +96,14 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 		return variables[ arguments.quantityType ];
 	}
 
+
 	// ============ START: Non-Persistent Property Methods =================
-	
-	public numeric function getCurrentMargin(){
-		return getDao('stockDao').getCurrentMargin(this.getStockID());
-	}
-	
-	public numeric function getCurrentLandedMargin(){
-		return getDao('stockDao').getCurrentLandedMargin(this.getStockID());
-	}
-	
-	public numeric function getAverageCost(){
-		return getDao('stockDao').getAverageCost(this.getStockID());
-	}
-	
-	public numeric function getAverageLandedCost(){
-		return getDao('stockDao').getAverageLandedCost(this.getStockID());
-	}
-	
-	public numeric function getCurrentAssetValue(){
-		return getQOH() * getAverageCost();
-	}
 
 	public any function getQATS() {
 		return getQuantity("QATS");
 	}
 
 	public any function getQOH() {
-		
 		return getQuantity("QOH");
 	}
 

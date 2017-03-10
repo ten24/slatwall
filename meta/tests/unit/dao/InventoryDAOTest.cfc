@@ -47,56 +47,86 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+	
 	public void function setUp() {
 		super.setup();
 		variables.dao = request.slatwallScope.getDAO("inventoryDAO");
 	}
-
+	
+	/**
+	* @test
+	*/
 	public void function inst_ok() {
 		assert(isObject(variables.dao));
 	}
 	
 	// Ensure getQOH executes without error
+	/**
+	* @test
+	*/
 	public any function getQOH_runs_without_error() {
 		assertEquals([],variables.dao.getQOH(productID="1", productRemoteID="1"));
 	}	
 	
 	// Ensure getQOSH executes without error
+	/**
+	* @test
+	*/
 	public any function getQOSH_runs_without_error() {
 		assertEquals(0,variables.dao.getQOSH(productID="1", productRemoteID="1"));
 	}
 		
 	// Ensure getQNDOO executes without error
+	/**
+	* @test
+	*/
 	public any function getQNDOO_runs_without_error() {
 		assertEquals([],variables.dao.getQNDOO(productID="1", productRemoteID="1"));
 	}	
 		
 	// Ensure getQNDORVO executes without error
+	/**
+	* @test
+	*/
 	public any function getQNDORVO_runs_without_error() {
-		assertEquals([],variables.dao.getQNDORVO(productID="1", productRemoteID="1"));
+		assertEquals(0,variables.dao.getQNDORVO(productID="1", productRemoteID="1"));
 	}	
 		
 	// Ensure getQNDOSA executes without error
+	/**
+	* @test
+	*/
 	public any function getQNDOSA_runs_without_error() {
 		assertEquals([],variables.dao.getQNDOSA(productID="1", productRemoteID="1"));
 	}	
 		
 	// Ensure getQNROVO executes without error
+	/**
+	* @test
+	*/
 	public any function getQNROVO_runs_without_error() {
 		assertEquals([],variables.dao.getQNROVO(productID="1", productRemoteID="1"));
 	}	
 		
 	// Ensure getQNRORO executes without error
+	/**
+	* @test
+	*/
 	public any function getQNRORO_runs_without_error() {
 		assertEquals([],variables.dao.getQNRORO(productID="1", productRemoteID="1"));
 	}	
 		
 	// Ensure getQNROSA executes without error
+	/**
+	* @test
+	*/
 	public any function getQNROSA_runs_without_error() {
 		assertEquals([],variables.dao.getQNROSA(productID="1", productRemoteID="1"));
-	}	
-	
+	}
+		
+	/**
+	* @test
+	*/
 	public any function getQOHTest() {
 		var mockProduct = createMockProduct();
 		var mockLocation = createMockLocation();
@@ -158,7 +188,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var result = variables.dao.getQOH(mockProduct.getProductID());
 		assertEquals(250, result[1].QOH, 'It should be (100 + 200) - (30 + 20) = 250');
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getQDOOTest(){
 		var mockProduct = createMockProduct();
 		var mockLocation = createMockLocation();
@@ -309,9 +342,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(3, result[1].QDOO,'should be 1+2=3');
 		assertEquals(1, result[2].QDOO);
 	}
-	
-	
-	
+		
+	/**
+	* @test
+	*/
 	public void function getQOOTest(){
 		var mockProduct = createMockProduct();
 		var mockLocation = createMockLocation();
@@ -462,7 +496,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(12, result[1].QOO);
 		assertEquals(32, result[2].QOO,'should be 17+15=32');
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getQNDOOTest() {
 		var mockProduct = createMockProduct();
 		var mockLocation = createMockLocation();
@@ -594,7 +631,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(7, result[1].QNDOO, 'Should be 10 - (1 + 2) = 7');
 		assertEquals(9, result[2].QNDOO, 'Should be 10 - (1) = 9');
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getQNROROTest() {
 		var mockProduct = createMockProduct();
 		var mockLocation = createMockLocation();
@@ -710,7 +750,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(7, result[1].QNRORO, 'Should be 10 - (1 + 2) = 7');
 		assertEquals(9, result[2].QNRORO, 'Should be 10 - (1) = 9');
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getQNDOSATest() {
 		var mockProduct = createMockProduct();
 		var mockLocation = createMockLocation();
@@ -825,7 +868,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(1290, result[2].QNDOSA, 'Should be 1300 - (10) = 1290');
 
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getQNROVOTest_mulitipleSkus() {
 		var productData = {
 			productID="",
@@ -1010,7 +1056,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(108, result[2].QNROVO, 'QNROVO should be (155) - (47) = 108');
 		assertEquals(100, result[3].QNROVO);
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getQOVOTest_mulitipleSkus() {
 		var productData = {
 			productID="",
@@ -1140,7 +1189,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(1070, result[1].QOVO );
 		assertEquals(2030, result[2].QOVO);
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getQROVOTest_mulitipleSkus() {
 		var productData = {
 			productID="",
@@ -1270,7 +1322,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(30, result[1].QROVO, 'QROVO should be (10+20) = 30');
 		assertEquals(40, result[2].QROVO, 'QROVO should be (40) = 40');
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getQNROVOTest() {
 		var mockProduct = createMockProduct();
 		var mockLocation = createMockLocation();
@@ -1368,63 +1423,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var result = variables.dao.getQNROVO(mockProduct.getProductID());
 		assertEquals(230, result[1].QNROVO, 'QNROVO should be (100+200) - (10+20+40) = 230');
 	}
-	
-	public void function getQNDORVOTest() {
-		var mockProduct = createMockProduct();
-		var mockLocation = createMockLocation();
-		var mockSku = createMockSku(mockProduct.getProductID());
 		
-		var stockData = {
-			stockID = '',
-			sku = {
-				skuID = mockSku.getSkuID()
-			},
-			location = {
-				locationID = mockLocation.getLocationID()
-			}
-		};
-		var mockStock = createPersistedTestEntity('Stock', stockData);
-		
-		var vendorOrderData = {
-			vendorOrderID = '',
-			vendorOrderStatusType = {
-				typeID = '444df2b5c8f9b37338229d4f7dd84ad1'//ostNew
-			},
-			vendorOrderType = {
-				typeID = '444df2dc91afb63f25074c7d9512248b'//votReturnOrder
-			}
-		};
-		var mockVendorOrder = createPersistedTestEntity('VendorOrder', vendorOrderData);
-		var vendorOrderItemData1 = {
-			vendorOrderItemID = '',
-			quantity = 100,
-			vendorOrder = {
-				vendorOrderID = mockVendorOrder.getVendorOrderID()
-			},
-			stock = {
-				stockID = mockStock.getStockID()
-			}
-		};
-		var mockVendorOrderItem1 = createPersistedTestEntity('VendorOrderItem', vendorOrderItemData1);
-		
-		var vendorOrderItemData2 = {
-			vendorOrderItemID = '',
-			quantity = 200,
-			vendorOrder = {
-				vendorOrderID = mockVendorOrder.getVendorOrderID()
-			},
-			stock = {
-				stockID = mockStock.getStockID()
-			}
-		};
-		var mockVendorOrderItem2 = createPersistedTestEntity('VendorOrderItem', vendorOrderItemData2);
-		
-		
-		var result = variables.dao.getQNDORVO(mockProduct.getProductID());
-		assertEquals(300, result[1].QNDORVO, 'QNDORVO should be (100+200) = 300');
-	}
-	
-	
+	/**
+	* @test
+	*/
 	public void function getQNROSATest() {
 		var mockProduct = createMockProduct();
 		var mockLocation = createMockLocation();

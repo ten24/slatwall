@@ -47,30 +47,42 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+	
 	public void function setUp() {
 		super.setup();
 		//Setup the Yaml service
 		variables.service = request.slatwallScope.getService("hibachiYamlService");
 	}
 	
-	// addAuditToCommit()
+	// addAuditToCommit()	
+	/**
+	* @test
+	*/
 	public void function loadYamlTest() {
 		var yamlStruct = variables.service.loadYamlFile(expandPath( '/Slatwall/org/Hibachi/yaml/examples/test.yaml' ) );
 		assert(isStruct(yamlStruct));
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getYamlTest(){
 		var yaml = variables.service.getYaml();
 		assert(isObject(yaml));
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function dumpYamlTest(){
 		var yamlStruct = variables.service.loadYamlFile(expandPath( '/Slatwall/org/Hibachi/yaml/examples/test.yaml' ) );
 		var dumpYaml = variables.service.dumpYaml(yamlStruct);
 		assert(len(dumpYaml));
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function writeYamlTest(){
 		var yamlStruct = variables.service.loadYamlFile(expandPath( '/Slatwall/org/Hibachi/yaml/examples/test.yaml' ) );
 		var applicationKey = request.slatwallScope.getDao('hibachiDao').getApplicationKey();

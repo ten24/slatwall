@@ -47,96 +47,27 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+	
 	public void function setUp() {
 		super.setup();
 		variables.dao = request.slatwallScope.getDAO("stockDAO");
 	}
-
+	
+	/**
+	* @test
+	*/
 	public void function inst_ok() {
 		assert(isObject(variables.dao));
 	}
 	
-	// Ensure that updateStockLocation will accept arguments and run query. 
+	// Ensure that updateStockLocation will accept arguments and run query. 	
+	/**
+	* @test
+	*/
 	public void function updateStockLocation_has_no_errors() {
 		variables.dao.updateStockLocation(toLocationID="1",fromLocationID="1");
 	}
 	
-	public void function getAverageCostTest(){
-		var stockData = {
-			stockID=""
-		};
-		var stock = createPersistedTestEntity('Stock',stockData);
-		
-		var inventoryData ={
-			inventoryID="",
-			cost=50,
-			quantityin=5,
-			stock={
-				stockID=stock.getStockID()
-			}
-		};
-		var inventory = createPersistedTestEntity('Inventory',inventoryData);
-		
-		var averageCost = variables.dao.getAverageCost(stock.getStockID());
-		assertEquals(10,averageCost);
-		
-		var inventoryData2 = {
-			inventoryID="",
-			cost=35,
-			quantityin=5,
-			stock={
-				stockID=stock.getStockID()
-			}
-		};
-		var inventory2 = createPersistedTestEntity('Inventory',inventoryData2);
-		
-		averageCost = variables.dao.getAverageCost(stock.getStockID());
-		assertEquals(8.5,averageCost);
-	}
-	
-	public void function getCurrentMarginTest(){
-		var skuData = {
-			skuID="",
-			price=77
-			
-		};
-		var sku = createPersistedTestEntity('Sku',skuData);
-		
-		var stockData = {
-			stockID="",
-			calculatedAverageCost=11,
-			sku={
-				skuID=sku.getSkuID()
-			}
-		};
-		var stock = createPersistedTestEntity('Stock',stockData);
-		
-		var inventoryData ={
-			inventoryID="",
-			cost=50,
-			quantityin=5,
-			stock={
-				stockID=stock.getStockID()
-			}
-		};
-		var inventory = createPersistedTestEntity('Inventory',inventoryData);
-		
-		var averageCost = variables.dao.getAverageCost(stock.getStockID());
-		assertEquals(10,averageCost);
-		
-		var inventoryData2 = {
-			inventoryID="",
-			cost=35,
-			quantityin=5,
-			stock={
-				stockID=stock.getStockID()
-			}
-		};
-		var inventory2 = createPersistedTestEntity('Inventory',inventoryData2);
-		var currentMargin = variables.dao.getCurrentMargin(stock.getStockID());
-		assertEquals(0.857143,currentMargin,'(77-11)/77');
-	}
 	
 	
 }

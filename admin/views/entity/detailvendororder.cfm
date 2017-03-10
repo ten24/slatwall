@@ -56,20 +56,14 @@ Notes:
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.vendorOrder#" edit="#rc.edit#" sRedirectAction="admin:entity.editvendororder">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.vendorOrder#" edit="#rc.edit#">
-			<cfif rc.vendorOrder.getVendorOrderType().getSystemCode() eq 'votPurchaseOrder'>
-				<hb:HibachiProcessCaller entity="#rc.vendorOrder#" action="admin:entity.preprocessvendororder" processContext="receive" type="list" />
-			<cfelseif rc.vendorOrder.getVendorOrderType().getSystemCode() eq 'votReturnOrder'>
-				<hb:HibachiProcessCaller entity="#rc.vendorOrder#" action="admin:entity.preprocessvendororder" processContext="fulfill" type="list" />
-			</cfif>
+			<hb:HibachiProcessCaller entity="#rc.vendorOrder#" action="admin:entity.preprocessvendororder" processContext="receive" type="list" />
 			<hb:HibachiActionCaller action="admin:entity.createcomment" querystring="vendorOrderID=#rc.vendorOrder.getVendorOrderID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
 		</hb:HibachiEntityActionBar>
+
 		<hb:HibachiEntityDetailGroup object="#rc.vendorOrder#">
 			<hb:HibachiEntityDetailItem view="admin:entity/vendorordertabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<hb:HibachiEntityDetailItem property="vendorOrderItems" />
-			
-			<cfif rc.vendorOrder.getVendorOrderType().getSystemCode() eq 'votPurchaseOrder'>
-				<hb:HibachiEntityDetailItem view="admin:entity/vendorordertabs/stockreceivers" />
-			</cfif>
+			<hb:HibachiEntityDetailItem view="admin:entity/vendorordertabs/stockreceivers" />
 			
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.vendorOrder.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">

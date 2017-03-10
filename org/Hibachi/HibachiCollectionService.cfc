@@ -440,7 +440,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		}*/
 
 		return collectionConfigStruct;
-	}
+	} 
 	
 	/** 
 		Examples of each type of filter: 

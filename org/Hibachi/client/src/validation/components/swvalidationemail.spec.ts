@@ -1,7 +1,7 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
-require("angular-mocks");
+
 import {SWValidationEmail} from "./swvalidationemail";
 
 class test{

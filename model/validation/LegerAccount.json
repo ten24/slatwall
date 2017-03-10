@@ -1,6 +1,0 @@
-{
-	"properties":{
-		"ledgerAccountName":[{"contexts":"save","required":true}],
-		"ledgerAccountCode":					[{"contexts":"save","required":true,"unique":true,"regex":"^[a-zA-Z0-9-_.|:~^]+$"}]
-	}
-}

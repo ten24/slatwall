@@ -1,11 +1,11 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-require("angular-mocks");
+
 import {AlertService} from "./alertservice";
 import {Alert} from "../model/alert";
 
 describe('alertService Test',()=>{
-var alertService:AlertService;
+    var alertService:AlertService;
     beforeEach(angular.mock.module('hibachi.alert'));
     beforeEach(inject((_alertService_)=>{
         alertService = _alertService_;

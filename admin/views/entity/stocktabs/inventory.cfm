@@ -68,8 +68,6 @@ Notes:
 			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qnc.full')#">#$.slatwall.rbKey('define.qnc')#</div></th>
 			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qats.full')#">#$.slatwall.rbKey('define.qats')#</div></th>
 			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qiats.full')#">#$.slatwall.rbKey('define.qiats')#</div></th>
-			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.averageCost')#">#$.slatwall.rbKey('define.averageCost')#</div></th>
-			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.averageLandedCost')#">#$.slatwall.rbKey('define.averageLandedCost')#</div></th>
 		</tr>
 		<tr class="sku">
 			<td><a href="##" class="update-inventory-plus depth0" data-depth="0" data-locationid="" data-locationidpath="path" data-skuid="#rc.stock.getskuID()#"><i class="glyphicon glyphicon-plus"></i></a> <strong>All Locations</strong></td>
@@ -86,8 +84,6 @@ Notes:
 			<td>#rc.stock.getQuantity('QNC')#</td>
 			<td>#rc.stock.getQuantity('QATS')#</td>
 			<td>#rc.stock.getQuantity('QIATS')#</td>
-			<td>#rc.stock.getAverageCost()#</td>
-			<td>#rc.stock.getAverageLandedCost()#</td>
 		</tr>
 	</table>
 
