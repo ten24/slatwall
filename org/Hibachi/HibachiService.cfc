@@ -798,6 +798,16 @@
 			// Pull the meta data from the object (which in turn will cache it in the application for the next time)
 			return getEntityObject( arguments.entityName ).getPropertiesStruct();
 		}
+		
+		public any function getPropertyIsPersistentByEntityNameAndPropertyIdentifier(required string entityName, required string propertyIdentifier){
+			var propertyMetaData = getPropertiesStructByEntityName(
+				getLastEntityNameInPropertyIdentifier(
+					arguments.entityName,
+					arguments.propertyIdentifier
+				)
+			)[listLast(arguments.propertyIdentifier, ".")];
+			return !structKeyExists(propertyMetaData,'persistent') || propertyMetaData.persistent; 
+		}
 
 		// @hint returns a property of a given entity
 		public any function getPropertyByEntityNameAndPropertyName( required string entityName, required string propertyName ) {
