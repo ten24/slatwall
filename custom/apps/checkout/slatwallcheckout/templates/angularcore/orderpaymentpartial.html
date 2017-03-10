@@ -9,14 +9,8 @@
     data-form-class="cssform"
     data-error-class="error"
     data-object="slatwall.newBillingAddress"
-    data-on-success="Hide:AddOrderPayment"
     data-class="new_address"
     data-name="addOrderPayment">
-
-    <div class="alert alert-danger error" ng-show="slatwall.cart['errors']['addOrderPayment']" ng-if="slatwall.cart['errors']['addOrderPayment']"><i class="fa fa-info-circle"></i> {{slatwall.cart['errors']['addOrderPayment'][0]}}</div>
-
-	<!--- Display Order Payment Errors --->
-	<swf-directive partial-name="ordererrors"></swf-directive>
 
 	<!--- The form without shipping address block --->
 	<swf-directive partial-name="orderpaymentformfull"></swf-directive>

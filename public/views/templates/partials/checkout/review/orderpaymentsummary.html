@@ -1,4 +1,4 @@
-<div class="alert alert-warning" ng-repeat="payment in $root.slatwall.cart.data.orderPayments">
+<div class="alert alert-warning" ng-repeat="payment in $root.slatwall.cart.data.orderPayments" ng-show="!payment.hasErrors">
     <i class="fa fa-check-circle fa-2x addressCheck" aria-hidden="true"></i>
     <address ng-if="payment.nameOnCreditCard">
         <span ng-if="$root.slatwall.cart.data.orderPayments[''+$root.slatwall.cart.data.orderPayments.length-1].nameOnCreditCard">{{$root.slatwall.cart.data.orderPayments[''+$root.slatwall.cart.data.orderPayments.length-1].nameOnCreditCard}}<br></span>

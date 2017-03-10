@@ -1,5 +1,5 @@
 <div ng-repeat="payment in slatwall.cart.orderPayments">
-    <div class="alert alert-warning" ng-show="payment.amount">
+    <div class="alert alert-warning" ng-show="payment.amount && !payment.hasErrors">
         <div ng-if="payment.nameOnCreditCard">
             <address>
                 <span ng-if="payment.nameOnCreditCard">{{payment.nameOnCreditCard}}<br></span>
@@ -22,6 +22,9 @@
         </div>
         <div ng-if="slatwall.isPurchaseOrderPayment(payment)">
             <span>Purchase Order Number: {{payment.purchaseOrderNumber}}</span>
+        </div>
+        <div ng-if="slatwall.isCheckOrMoneyOrderPayment(payment)">
+            <span>{{payment.paymentMethod.paymentMethodName}}</span>
         </div>
         <span>Payment Amount: {{payment.amount | currency}}</span>
     </div>

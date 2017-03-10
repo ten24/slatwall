@@ -1371,6 +1371,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						for(var orderPayment in arguments.order.getOrderPayments()) {
 							// As long as this orderPayment is active then we can run the place order transaction
 							if(orderPayment.getStatusCode() == 'opstActive') {
+
 								orderPayment = this.processOrderPayment(orderPayment, {}, 'runPlaceOrderTransaction');
 								amountAuthorizeCreditReceive = val(getService('HibachiUtilityService').precisionCalculate(amountAuthorizeCreditReceive + orderPayment.getAmountAuthorized() + orderPayment.getAmountReceived() + orderPayment.getAmountCredited()));
 							}

@@ -670,7 +670,7 @@ component extends="HibachiService"  accessors="true" output="false"
     /** adds a billing address to an order. 
     @ProcessMethod Address_Save
     */
-    public void function addBillingAddress(required data){
+    public any function addBillingAddress(required data){
         param name="data.saveAsAccountAddressFlag" default="0"; 
         //if we have that data and don't have any suggestions to make, than try to populate the address
             billingAddress = getService('AddressService').newAddress();    
@@ -686,9 +686,10 @@ component extends="HibachiService"  accessors="true" output="false"
                 getOrderService().saveOrder(order);
             }
             if(savedAddress.hasErrors()){
-                    this.addErrors(arguments.data, savedAddress.getErrors()); //add the basic errors
-            	    getHibachiScope().addActionResult( "public:cart.AddBillingAddress", true);
+                  this.addErrors(arguments.data, savedAddress.getErrors()); //add the basic errors
+            	    getHibachiScope().addActionResult( "public:cart.addBillingAddress", true);
             }
+            return savedAddress;
     }
     
     /** 
@@ -1125,7 +1126,7 @@ component extends="HibachiService"  accessors="true" output="false"
     public void function addOrderPayment(required any data) {
         param name="data.newOrderPayment" default="#structNew()#";
         param name="data.newOrderPayment.orderPaymentID" default="";
-        param name="data.newOrderPayment.saveShippingAsBilling" default="0";
+        param name="data.newOrderPayment.requireBillingAddress" default="0";
         param name="data.accountAddressID" default="";
         param name="data.accountPaymentMethodID" default="";
         param name="data.newOrderPayment.paymentMethod.paymentMethodID" default="444df303dedc6dab69dd7ebcc9b8036a";
@@ -1137,26 +1138,18 @@ component extends="HibachiService"  accessors="true" output="false"
                 data.newOrderPayment.orderPaymentID = "";
             }
         }
-        
-        if (data.newOrderPayment.saveShippingAsBilling == true){
+        if(data.newOrderPayment.requireBillingAddress){
             //use this billing information
-            this.addBillingAddress(data.newOrderPayment.billingAddress, "billing");
+          var newBillingAddress = this.addBillingAddress(data.newOrderPayment.billingAddress, "billing");
         }
-        
+
+        if(!isNull(newBillingAddress) && newBillingAddress.hasErrors()){
+          this.addErrors(arguments.data, newBillingAddress.getErrors());
+        }
+
         var addOrderPayment = getService('OrderService').processOrder( getHibachiScope().cart(), arguments.data, 'addOrderPayment');
         getHibachiScope().addActionResult( "public:cart.addOrderPayment", addOrderPayment.hasErrors() );
     }
-    /**
-     Adds an order payment and then calls place order.
-    */
-    public void function addOrderPaymentAndPlaceOrder(required any data) {
-        addOrderPayment(arguments.data);
-        if (!getHibachiScope().cart().hasErrors()){
-            placeOrder(arguments.data);
-        }
-        
-    }
-    
     
     /** 
      * @http-context removeOrderPayment
@@ -1175,7 +1168,6 @@ component extends="HibachiService"  accessors="true" output="false"
      @ProcessMethod Order_PlaceOrder
      */
     public void function placeOrder(required any data) {
-
         // Insure that all items in the cart are within their max constraint
         if(!getHibachiScope().cart().hasItemsQuantityWithinMaxOrderQuantity()) {
             getOrderService().processOrder(getHibachiScope().cart(), 'forceItemQuantityUpdate');
@@ -1186,7 +1178,6 @@ component extends="HibachiService"  accessors="true" output="false"
                 param name="data.newOrderPayment.orderPaymentID" default="";
                 param name="data.accountAddressID" default="";
                 param name="data.accountPaymentMethodID" default="";
-                
                 // Make sure that someone isn't trying to pass in another users orderPaymentID
                 if(len(data.newOrderPayment.orderPaymentID)) {
                     var orderPayment = getOrderService().getOrderPayment(data.newOrderPayment.orderPaymentID);
@@ -1194,20 +1185,19 @@ component extends="HibachiService"  accessors="true" output="false"
                         data.newOrderPayment.orderPaymentID = "";
                     }
                 }
-                
                 data.newOrderPayment.order.orderID = getHibachiScope().cart().getOrderID();
                 data.newOrderPayment.orderPaymentType.typeID = '444df2f0fed139ff94191de8fcd1f61b';
             }
-            
             var order = getOrderService().processOrder( getHibachiScope().cart(), arguments.data, 'placeOrder');
-            
             getHibachiScope().addActionResult( "public:cart.placeOrder", order.hasErrors() );
             
             if(!order.hasErrors()) {
                 getHibachiScope().setSessionValue('confirmationOrderID', order.getOrderID());
                 getHibachiScope().getSession().setLastPlacedOrderID( order.getOrderID() );
             }
+
         }
+
     
     }
     

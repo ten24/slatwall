@@ -51,19 +51,21 @@
 					<a href="##" class="pull-right" ng-if="slatwall.fulfillmentTabIsActive()" ng-click="slatwall.edit = ''"><i class="fa fa-check-circle"></i></a>
 					Fulfillment Information</h3>
 	                <div ng-show="slatwall.fulfillmentTabIsActive()">
-	                    <div class="details" ng-show="slatwall.hasShippingFulfillmentMethod()">
-	                        <swf-directive partial-name="addshippingaddresspartial"></swf-directive>
-	                    </div>
-	                    <div class="details" ng-show="slatwall.hasEmailFulfillmentMethod()">
-	                    	<swf-directive partial-name="addemailfulfillmentaddresspartial"></swf-directive>
-	                    </div>
-	                    <div class="details" ng-show="slatwall.hasPickupFulfillmentMethod()">
-	                        <swf-directive partial-name="deliverystorepickup"></swf-directive>
-	                    </div><br>
-	                    <div class="row">
-							<span class="next-step-btn" style="padding:20px">
-						    	<input type="submit" class="btn-yellow" value="Continue to Payment" ng-click="slatwall.edit = 'payment'"/>
-							</span>
+                		<div class="col-md-12">
+		                    <div class="details row" ng-show="slatwall.hasShippingFulfillmentMethod()">
+		                        <swf-directive partial-name="addshippingaddresspartial"></swf-directive>
+		                    </div>
+		                    <div class="details row" ng-show="slatwall.hasEmailFulfillmentMethod()">
+		                    	<swf-directive partial-name="addemailfulfillmentaddresspartial"></swf-directive>
+		                    </div>
+		                    <div class="details row" ng-show="slatwall.hasPickupFulfillmentMethod()">
+		                        <swf-directive partial-name="deliverystorepickup"></swf-directive>
+		                    </div><br>
+		                    <div class="row">
+								<span class="next-step-btn" style="padding:20px">
+							    	<input type="submit" class="btn-yellow" value="Continue to Payment" ng-click="slatwall.edit = 'payment'"/>
+								</span>
+							</div>
 						</div>
 	                </div>
 	            </div>
@@ -79,6 +81,8 @@
 					</div>
 					<div ng-show="slatwall.showPaymentTabBody()">
 						<div class="col-sm-12">
+							<!--- Display Order Payment Errors --->
+							<swf-directive partial-name="ordererrors"></swf-directive>
 							<swf-directive partial-name="savedcreditcards"></swf-directive>
 							<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 			                    <div class="panel radio panel-default" ng-cloak>
@@ -120,6 +124,25 @@
 			                        </div>
 			                    </div>
 			                    <div class="panel panel-default">
+			                        <div class="panel-heading" >
+			                            <h4 class="panel-title">
+			                                <a class="collapsed" data-toggle="collapse" data-parent="##accordion" href="##moneyOrder" aria-expanded="false" aria-controls="moneyOrder">
+			                                    <span class="dot"></span> Check/Money Order
+			                                </a>
+			                            </h4>
+			                        </div>
+			                        <div id="moneyOrder" class="panel-collapse collapse" role="tabpanel" aria-labelledby="moneyOrder" aria-expanded="false">
+			                        	<div class="panel-body">
+			                        		<div class="row">
+			                        			<div class="col-md-12">
+			                        				<!--- Purchase Order --->
+			                        				<swf-directive partial-name="checkpartial"></swf-directive>
+			                        			</div>
+			                        		</div>
+			                        	</div>
+			                        </div>
+			                    </div>
+			                    <div class="panel panel-default">
 			                        <div class="panel-heading" role="tab" id="headingTwo">
 			                            <h4 class="panel-title">
 			                                <a class="collapsed" data-toggle="collapse" data-parent="##accordion" href="##collapse2" aria-expanded="false" aria-controls="collapseTwo">
@@ -134,7 +157,7 @@
 												<div class="col-xs-8">
 													
 													<!--- Checkout with paypal --->
-													<a href="?slatAction=paypalexpress:main.initiatepayment&paymentMethodID=5124bffa549dfdb10154a18a157504d3">
+													<a href="?slatAction=paypalexpress:main.initiatepayment&paymentMethodID=2c9280845aaf10bf015ab462d52400de">
 														<img src="//www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-large.png" alt="Check out with PayPal" />
 													</a>
 													

@@ -800,8 +800,10 @@ component extends="FW1.framework" {
 		if(request.context.apiRequest) {
 			renderApiResponse();
 		}
+
 		// Check for an Ajax Response
 		if(request.context.ajaxRequest && !structKeyExists(request, "exception")) {
+			writeDump('Not much, booshette');
 			populateAPIHeaders();
 			if(isStruct(request.context.ajaxResponse)){
 				if(structKeyExists(request.context, "messages")) {

@@ -45,11 +45,12 @@
                             {{payment.giftCard.giftCardCode}}
                         </div>
                         <div>
-                            Payment Amount: {{payment.amount | currency}}
-                        </div>
-                        <div class="card-balance-wrapper">
                             Card Balance: <span class="card-balance">{{payment.giftCard.balanceAmount | currency}}</span>
                         </div>
+                        <div>
+                            Payment Amount: {{payment.amount | currency}}
+                        </div>
+                        
                     </span>
                 </div>
             </div>

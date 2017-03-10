@@ -225,7 +225,9 @@ class PublicService {
     *  @return a deferred promise that resolves server response or error. also includes updated account and cart.
     */
     public doAction=(action:string, data?:any, method?:any) => {
+        //Prevent sending the same request multiple times in parallel
         if(this.getRequestByAction(action) && this.getRequestByAction(action).loading) return this.$q.when();
+
         if (!action) {throw "Action is required exception";}
 
         var urlBase = "";
@@ -275,8 +277,10 @@ class PublicService {
     }
 
     private processAction = (response,request:PublicRequest)=>{
-        /** update the account and the cart */
+        //Remove any added order payments that have errors
+        this.removeInvalidOrderPayments(response.cart);
 
+        /** update the account and the cart */
         this.account.populate(response.account);
         this.account.request = request;
         this.cart.populate(response.cart);
@@ -317,6 +321,10 @@ class PublicService {
         });
         this.requests[request.getAction()]=request;
     };
+
+    public removeInvalidOrderPayments = (cart) =>{
+        cart.orderPayments = cart.orderPayments.filter((payment)=>!payment.hasErrors);
+    }
 
     /**
      * Given a payment method name, returns the id.
@@ -593,7 +601,7 @@ class PublicService {
             'newOrderPayment.billingAddress.postalcode': billingAddress.postalcode,
             'newOrderPayment.securityCode': billingAddress.cvv,
             'newOrderPayment.creditCardNumber': billingAddress.cardNumber,
-            'newOrderPayment.saveShippingAsBilling':(this.saveShippingAsBilling == true),
+            'newOrderPayment.requireBillingAddress':true,
             'newOrderPayment.creditCardLastFour': billingAddress.cardNumber ? billingAddress.cardNumber.slice(-4) : '',
             'accountPaymentMethodID': billingAddress.accountPaymentMethodID,
             'copyFromType': billingAddress.copyFromType,
@@ -609,6 +617,7 @@ class PublicService {
 
         //Post the new order payment and set errors as needed.
         this.doAction('addOrderPayment', data, 'post').then((result)=>{
+            if(!result) return;
             var serverData = result;
 
             if (serverData.cart.hasErrors || angular.isDefined(this.cart.orderPayments[this.cart.orderPayments.length-1]['errors']) && !this.cart.orderPayments[this.cart.orderPayments.length-1]['errors'].hasErrors){
@@ -684,7 +693,7 @@ class PublicService {
                             giftCards[card].applied = true;
                         }
                     }else{
-                        
+                        giftCards.splice(giftCards.index)
                     }
                     this.findingGiftCard = false;
                 });   
@@ -712,81 +721,6 @@ class PublicService {
         }
         return false;
     }
-
-    /** Allows an easy way to calling the service addOrderPayment.
-    */
-    public addOrderPaymentAndPlaceOrder = (formdata)=>{
-        //reset the form errors.
-        this.orderPlaced = false;
-        //Grab all the data
-        var billingAddress  = this.newBillingAddress;
-        var expirationMonth = formdata.month;
-        var expirationYear  = formdata.year;
-        var country         = formdata.country;
-        var state           = formdata.state;
-        var accountFirst    = this.account.firstName;
-        var accountLast     = this.account.lastName;
-        var data = {};
-
-        data = {
-            'orderid':this.cart.orderID,
-            'newOrderPayment.billingAddress.streetAddress': billingAddress.streetAddress,
-            'newOrderPayment.billingAddress.street2Address': billingAddress.street2Address,
-            'newOrderPayment.nameOnCreditCard': billingAddress.nameOnCard || accountFirst + ' ' +accountLast,
-            'newOrderPayment.expirationMonth': expirationMonth,
-            'newOrderPayment.expirationYear': expirationYear,
-            'newOrderPayment.billingAddress.countrycode': country || billingAddress.countrycode,
-            'newOrderPayment.billingAddress.city': '' + billingAddress.city,
-            'newOrderPayment.billingAddress.statecode': state || billingAddress.statecode,
-            'newOrderPayment.billingAddress.locality': billingAddress.locality || '',
-            'newOrderPayment.billingAddress.postalcode': billingAddress.postalcode,
-            'newOrderPayment.securityCode': billingAddress.cvv,
-            'newOrderPayment.creditCardNumber': billingAddress.cardNumber,
-            'newOrderPayment.saveShippingAsBilling':(this.saveShippingAsBilling == true),
-        };
-
-        //Make sure we have required fields for a newOrderPayment.
-        //this.validateNewOrderPayment( data );
-        if ( this.cart.orderPayments.hasErrors && Object.keys(this.cart.orderPayments.errors).length ){
-
-            return -1;
-        }
-
-        //Post the new order payment and set errors as needed.
-        this.$q.all([this.doAction('addOrderPayment,placeOrder', data, 'post')]).then((result)=>{
-            var serverData
-            if (angular.isDefined(result['0'])){
-                serverData = result['0'].data;
-            }else{
-
-            }//|| angular.isDefined(serverData.cart.orderPayments[serverData.cart.orderPayments.length-1]['errors']) && slatwall.cart.orderPayments[''+slatwall.cart.orderPayments.length-1]['errors'].hasErrors
-            if (serverData.cart.hasErrors || (angular.isDefined(serverData.failureActions) && serverData.failureActions.length && serverData.failureActions[0] == "public:cart.addOrderPayment")){
-                if (serverData.failureActions.length){
-                    for (var action in serverData.failureActions){
-                        //
-                    }
-                }
-                this.edit = '';
-                return true;
-            } else if (serverData.successfulActions.length) {
-                //
-                this.cart.hasErrors = false;
-                this.editPayment = false;
-                this.edit = '';
-                for (var action in serverData.successfulActions){
-                    //
-                    if (serverData.successfulActions[action].indexOf("placeOrder") != -1){
-                        //if there are no errors then redirect.
-                        this.orderPlaced = true;
-                        this.redirectExact('/order-confirmation/');
-                    }
-                }
-            }else{
-                this.edit = '';
-            }
-        });
-
-    };
 
     public applyGiftCardKeyCheck = (event, swForm) =>{
         if(event.type == 'click'){
@@ -819,7 +753,6 @@ class PublicService {
     }
 
     public getResizedImageByProfileName = (profileName, skuIDList)=>{
-               
        this.loading = true;
        
        if (profileName == undefined){
@@ -866,6 +799,10 @@ class PublicService {
         var total = this.getAppliedGiftCardTotals();
         return this.cart.calculatedTotal - total;
     };
+
+    public paymentsEqualTotalBalance = () =>{
+        return this.getTotalMinusGiftCards() == 0;
+    }
 
     //get estimated shipping rates given a weight, from to zips
     public getEstimatedRates = (zipcode)=>{
@@ -1040,6 +977,16 @@ class PublicService {
         }
     }
 
+    public addOrderPaymentError = () =>{
+        return this.cart.errors.addOrderPayment;
+    }
+
+    public billingAddressError = () =>{
+        if(this.cart.hasErrors && this.cart.errors.addBillingAddress){
+            return this.cart.errors.addBillingAddress;
+        }
+    }
+
     public giftCardError = () =>{
         if(this.cart.processObjects && 
             this.cart.processObjects.addOrderPayment &&
@@ -1058,6 +1005,15 @@ class PublicService {
         }
     }
 
+    public addBillingAddressErrors = ()=>{
+        this.addBillingErrorsToCartErrors();
+        if(this.billingAddressEditFormIndex != undefined){
+            var key = this.billingAddressEditFormIndex;
+            this.billingAddressEditFormIndex = undefined;
+            this.$timeout(()=>this.billingAddressEditFormIndex = key);
+        }
+    }
+
     public clearShippingAddressErrors = ()=>{
         this.shippingAddressErrors = undefined;
     }
@@ -1065,6 +1021,10 @@ class PublicService {
     public hideAccountAddressForm = ()=>{
         this.accountAddressEditFormIndex = undefined;
         this.clearShippingAddressErrors();
+    }
+
+    public hideBillingAddressForm = ()=>{
+        this.billingAddressEditFormIndex = undefined;
     }
 
     public showEditAccountAddressForm = ()=>{
@@ -1081,6 +1041,24 @@ class PublicService {
 
     public showEditBillingAddressForm = ()=>{
         return !this.useShippingAsBilling && this.billingAddressEditFormIndex && this.billingAddressEditFormIndex != 'new';
+    }
+
+    public addBillingErrorsToCartErrors = ()=>{
+        let cartErrors = this.cart.errors;
+        if(cartErrors.addOrderPayment){
+            let deleteIndex = cartErrors.addOrderPayment.indexOf('billingAddress');
+            if(deleteIndex > -1){
+                cartErrors.addOrderPayment.splice(deleteIndex,1);
+            }
+            if(cartErrors.addOrderPayment.length == 0){
+                cartErrors.addOrderPayment = null;
+            }
+        }
+        cartErrors.addBillingAddress = [];
+        console.log(this.errors);
+        for(let key in this.errors){
+            this.cart.errors.addBillingAddress = this.cart.errors.addBillingAddress.concat(this.errors[key]);
+        }
     }
 
     public accountAddressIsSelectedShippingAddress = (key) =>{
@@ -1148,8 +1126,14 @@ class PublicService {
         return payment.purchaseOrderNumber;
     }
 
+    //Not particularly robust, needs to be modified for each project
+    public isCheckOrMoneyOrderPayment = (payment) =>{
+        return payment.paymentMethodName = "Check or Money Order";
+    }
+
     public orderHasNoPayments = () =>{
-        return !this.cart.orderPayments.length
+        let activePayments = this.cart.orderPayments.filter((payment)=> payment.amount != 0);
+        return !activePayments.length;
     }
 
     public hasProductNameAndNoSkuName = (orderItem) =>{

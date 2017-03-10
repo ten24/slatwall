@@ -83,7 +83,7 @@
                 data-action-text="Review Order"
                 data-show-alerts="false"
                 data-show-close-button="true"
-                data-event-listeners="{billingAddresskeyup:slatwall.orderPaymentKeyCheck}"
+                data-event-listeners="{billingAddresskeyup:slatwall.orderPaymentKeyCheck, addBillingAddressFailure:slatwall.addBillingAddressErrors}"
                 ></sw-address-form>
             <sw-address-form ng-if="slatwall.showEditBillingAddressForm()"
                 data-field-list="countryCode,streetAddress,street2Address,locality,city,stateCode,postalCode"
@@ -98,7 +98,7 @@
                 data-action-text="Review Order"
                 data-show-alerts="false"
                 data-show-close-button="true"
-                data-event-listeners="{editBillingAddresskeyup:slatwall.orderPaymentKeyCheck}"
+                data-event-listeners="{editBillingAddresskeyup:slatwall.orderPaymentKeyCheck, addBillingAddressFailure:slatwall.addBillingAddressErrors}"
                 ></sw-address-form>
     </fieldset>
 </div>

@@ -2013,6 +2013,7 @@
 	        *  @return a deferred promise that resolves server response or error. also includes updated account and cart.
 	        */
 	        this.doAction = function (action, data, method) {
+	            //Prevent sending the same request multiple times in parallel
 	            if (_this.getRequestByAction(action) && _this.getRequestByAction(action).loading)
 	                return _this.$q.when();
 	            if (!action) {
@@ -2058,6 +2059,8 @@
 	            }
 	        };
 	        this.processAction = function (response, request) {
+	            //Remove any added order payments that have errors
+	            _this.removeInvalidOrderPayments(response.cart);
 	            /** update the account and the cart */
 	            _this.account.populate(response.account);
 	            _this.account.request = request;
@@ -2093,6 +2096,9 @@
 	                }
 	            });
 	            _this.requests[request.getAction()] = request;
+	        };
+	        this.removeInvalidOrderPayments = function (cart) {
+	            cart.orderPayments = cart.orderPayments.filter(function (payment) { return !payment.hasErrors; });
 	        };
 	        /**
 	         * Given a payment method name, returns the id.
@@ -2337,7 +2343,7 @@
 	                'newOrderPayment.billingAddress.postalcode': billingAddress.postalcode,
 	                'newOrderPayment.securityCode': billingAddress.cvv,
 	                'newOrderPayment.creditCardNumber': billingAddress.cardNumber,
-	                'newOrderPayment.saveShippingAsBilling': (_this.saveShippingAsBilling == true),
+	                'newOrderPayment.requireBillingAddress': true,
 	                'newOrderPayment.creditCardLastFour': billingAddress.cardNumber ? billingAddress.cardNumber.slice(-4) : '',
 	                'accountPaymentMethodID': billingAddress.accountPaymentMethodID,
 	                'copyFromType': billingAddress.copyFromType,
@@ -2351,6 +2357,8 @@
 	            }
 	            //Post the new order payment and set errors as needed.
 	            _this.doAction('addOrderPayment', data, 'post').then(function (result) {
+	                if (!result)
+	                    return;
 	                var serverData = result;
 	                if (serverData.cart.hasErrors || angular.isDefined(_this.cart.orderPayments[_this.cart.orderPayments.length - 1]['errors']) && !_this.cart.orderPayments[_this.cart.orderPayments.length - 1]['errors'].hasErrors) {
 	                    _this.cart.hasErrors = true;
@@ -2417,6 +2425,7 @@
 	                            }
 	                        }
 	                        else {
+	                            giftCards.splice(giftCards.index);
 	                        }
 	                        _this.findingGiftCard = false;
 	                    });
@@ -2440,76 +2449,6 @@
 	                return true;
 	            }
 	            return false;
-	        };
-	        /** Allows an easy way to calling the service addOrderPayment.
-	        */
-	        this.addOrderPaymentAndPlaceOrder = function (formdata) {
-	            //reset the form errors.
-	            _this.orderPlaced = false;
-	            //Grab all the data
-	            var billingAddress = _this.newBillingAddress;
-	            var expirationMonth = formdata.month;
-	            var expirationYear = formdata.year;
-	            var country = formdata.country;
-	            var state = formdata.state;
-	            var accountFirst = _this.account.firstName;
-	            var accountLast = _this.account.lastName;
-	            var data = {};
-	            data = {
-	                'orderid': _this.cart.orderID,
-	                'newOrderPayment.billingAddress.streetAddress': billingAddress.streetAddress,
-	                'newOrderPayment.billingAddress.street2Address': billingAddress.street2Address,
-	                'newOrderPayment.nameOnCreditCard': billingAddress.nameOnCard || accountFirst + ' ' + accountLast,
-	                'newOrderPayment.expirationMonth': expirationMonth,
-	                'newOrderPayment.expirationYear': expirationYear,
-	                'newOrderPayment.billingAddress.countrycode': country || billingAddress.countrycode,
-	                'newOrderPayment.billingAddress.city': '' + billingAddress.city,
-	                'newOrderPayment.billingAddress.statecode': state || billingAddress.statecode,
-	                'newOrderPayment.billingAddress.locality': billingAddress.locality || '',
-	                'newOrderPayment.billingAddress.postalcode': billingAddress.postalcode,
-	                'newOrderPayment.securityCode': billingAddress.cvv,
-	                'newOrderPayment.creditCardNumber': billingAddress.cardNumber,
-	                'newOrderPayment.saveShippingAsBilling': (_this.saveShippingAsBilling == true),
-	            };
-	            //Make sure we have required fields for a newOrderPayment.
-	            //this.validateNewOrderPayment( data );
-	            if (_this.cart.orderPayments.hasErrors && Object.keys(_this.cart.orderPayments.errors).length) {
-	                return -1;
-	            }
-	            //Post the new order payment and set errors as needed.
-	            _this.$q.all([_this.doAction('addOrderPayment,placeOrder', data, 'post')]).then(function (result) {
-	                var serverData;
-	                if (angular.isDefined(result['0'])) {
-	                    serverData = result['0'].data;
-	                }
-	                else {
-	                } //|| angular.isDefined(serverData.cart.orderPayments[serverData.cart.orderPayments.length-1]['errors']) && slatwall.cart.orderPayments[''+slatwall.cart.orderPayments.length-1]['errors'].hasErrors
-	                if (serverData.cart.hasErrors || (angular.isDefined(serverData.failureActions) && serverData.failureActions.length && serverData.failureActions[0] == "public:cart.addOrderPayment")) {
-	                    if (serverData.failureActions.length) {
-	                        for (var action in serverData.failureActions) {
-	                        }
-	                    }
-	                    _this.edit = '';
-	                    return true;
-	                }
-	                else if (serverData.successfulActions.length) {
-	                    //
-	                    _this.cart.hasErrors = false;
-	                    _this.editPayment = false;
-	                    _this.edit = '';
-	                    for (var action in serverData.successfulActions) {
-	                        //
-	                        if (serverData.successfulActions[action].indexOf("placeOrder") != -1) {
-	                            //if there are no errors then redirect.
-	                            _this.orderPlaced = true;
-	                            _this.redirectExact('/order-confirmation/');
-	                        }
-	                    }
-	                }
-	                else {
-	                    _this.edit = '';
-	                }
-	            });
 	        };
 	        this.applyGiftCardKeyCheck = function (event, swForm) {
 	            if (event.type == 'click') {
@@ -2577,6 +2516,9 @@
 	        this.getTotalMinusGiftCards = function () {
 	            var total = _this.getAppliedGiftCardTotals();
 	            return _this.cart.calculatedTotal - total;
+	        };
+	        this.paymentsEqualTotalBalance = function () {
+	            return _this.getTotalMinusGiftCards() == 0;
 	        };
 	        //get estimated shipping rates given a weight, from to zips
 	        this.getEstimatedRates = function (zipcode) {
@@ -2736,6 +2678,14 @@
 	                return _this.cart.errors.runPlaceOrderTransaction;
 	            }
 	        };
+	        this.addOrderPaymentError = function () {
+	            return _this.cart.errors.addOrderPayment;
+	        };
+	        this.billingAddressError = function () {
+	            if (_this.cart.hasErrors && _this.cart.errors.addBillingAddress) {
+	                return _this.cart.errors.addBillingAddress;
+	            }
+	        };
 	        this.giftCardError = function () {
 	            if (_this.cart.processObjects &&
 	                _this.cart.processObjects.addOrderPayment &&
@@ -2752,12 +2702,23 @@
 	                _this.$timeout(function () { return _this.accountAddressEditFormIndex = key; });
 	            }
 	        };
+	        this.addBillingAddressErrors = function () {
+	            _this.addBillingErrorsToCartErrors();
+	            if (_this.billingAddressEditFormIndex != undefined) {
+	                var key = _this.billingAddressEditFormIndex;
+	                _this.billingAddressEditFormIndex = undefined;
+	                _this.$timeout(function () { return _this.billingAddressEditFormIndex = key; });
+	            }
+	        };
 	        this.clearShippingAddressErrors = function () {
 	            _this.shippingAddressErrors = undefined;
 	        };
 	        this.hideAccountAddressForm = function () {
 	            _this.accountAddressEditFormIndex = undefined;
 	            _this.clearShippingAddressErrors();
+	        };
+	        this.hideBillingAddressForm = function () {
+	            _this.billingAddressEditFormIndex = undefined;
 	        };
 	        this.showEditAccountAddressForm = function () {
 	            return _this.accountAddressEditFormIndex != undefined && _this.accountAddressEditFormIndex != 'new';
@@ -2770,6 +2731,23 @@
 	        };
 	        this.showEditBillingAddressForm = function () {
 	            return !_this.useShippingAsBilling && _this.billingAddressEditFormIndex && _this.billingAddressEditFormIndex != 'new';
+	        };
+	        this.addBillingErrorsToCartErrors = function () {
+	            var cartErrors = _this.cart.errors;
+	            if (cartErrors.addOrderPayment) {
+	                var deleteIndex = cartErrors.addOrderPayment.indexOf('billingAddress');
+	                if (deleteIndex > -1) {
+	                    cartErrors.addOrderPayment.splice(deleteIndex, 1);
+	                }
+	                if (cartErrors.addOrderPayment.length == 0) {
+	                    cartErrors.addOrderPayment = null;
+	                }
+	            }
+	            cartErrors.addBillingAddress = [];
+	            console.log(_this.errors);
+	            for (var key in _this.errors) {
+	                _this.cart.errors.addBillingAddress = _this.cart.errors.addBillingAddress.concat(_this.errors[key]);
+	            }
 	        };
 	        this.accountAddressIsSelectedShippingAddress = function (key) {
 	            if (_this.account &&
@@ -2829,8 +2807,13 @@
 	        this.isPurchaseOrderPayment = function (payment) {
 	            return payment.purchaseOrderNumber;
 	        };
+	        //Not particularly robust, needs to be modified for each project
+	        this.isCheckOrMoneyOrderPayment = function (payment) {
+	            return payment.paymentMethodName = "Check or Money Order";
+	        };
 	        this.orderHasNoPayments = function () {
-	            return !_this.cart.orderPayments.length;
+	            var activePayments = _this.cart.orderPayments.filter(function (payment) { return payment.amount != 0; });
+	            return !activePayments.length;
 	        };
 	        this.hasProductNameAndNoSkuName = function (orderItem) {
 	            return !orderItem.sku.skuName && orderItem.sku.product && orderItem.sku.product.productName;
