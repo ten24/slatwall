@@ -1,6 +1,5 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-require("angular-mocks");
 import {AlertController} from "./alertcontroller";
 
 describe('AlertController',()=>{

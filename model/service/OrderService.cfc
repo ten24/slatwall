@@ -124,7 +124,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		//only do this check if no payment has been added yet.
 		if (!listFindNoCase(orderRequirementsList, "payment")){
 			//Check if there is subscription with autopay flag without order payment with account payment method.
-			if (arguments.order.hasSubscriptionWithAutoPay() && !arguments.order.hasSavedAccountPaymentMethod()){
+			if (this.validateHasNoSavedAccountPaymentMethodAndSubscriptionWithAutoPay(arguments.order)){
 				orderRequirementsList = listAppend(orderRequirementsList, "payment");
 			}
 		}
@@ -1338,9 +1338,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 
 
-					if(!arguments.order.hasSavedAccountPaymentMethod() && arguments.order.hasSubscriptionWithAutoPay()){
+					//set an error
+					if (this.validateHasNoSavedAccountPaymentMethodAndSubscriptionWithAutoPay(arguments.order)){
 						arguments.order.addError('placeOrder',rbKey('entity.order.process.placeOrder.hasSubscriptionWithAutoPayFlagWithoutOrderPaymentWithAccountPaymentMethod_info'));
 					}
+					
 
 					// Generate the order requirements list, to see if we still need action to be taken
 					var orderRequirementsList = getOrderRequirementsList( arguments.order );
@@ -1470,7 +1472,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return arguments.order;
 	}
-
+	
+	public any function validateHasNoSavedAccountPaymentMethodAndSubscriptionWithAutoPay(order){
+		if(!arguments.order.hasSavedAccountPaymentMethod() && arguments.order.hasSubscriptionWithAutoPay()){
+			return true;
+		}
+		return false;
+	}
+	
 	public any function createOrderDeliveryForAutoFulfillmentMethod(required any orderFulfillment){
 
 		var order = arguments.orderFulfillment.getOrder();
@@ -3045,7 +3054,69 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return false;
 	}
 	// =====================  END: Delete Overrides ===========================
+	
+	/** Given an orderfulfillment, this will return the shipping method options. */
+	public any function getShippingMethodOptions(any orderFulfillment) {
+		//update the shipping method options with the shipping service to insure qualifiers are re-evaluated    		
+		getService("shippingService").updateOrderFulfillmentShippingMethodOptions( orderFulfillment );
 
+		// At this point they have either been populated just before, or there were already options
+		var optionsArray = [];
+		var sortType = orderFulfillment.getFulfillmentMethod().setting('fulfillmentMethodShippingOptionSortType');
+		for(var shippingMethodOption in orderFulfillment.getFulfillmentShippingMethodOptions()) {
+
+			var thisOption = {};
+			thisOption['name'] = shippingMethodOption.getSimpleRepresentation();
+			thisOption['value'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodID();
+			thisOption['totalCharge'] = shippingMethodOption.getTotalCharge();
+			thisOption['totalChargeAfterDiscount'] = shippingMethodOption.getTotalChargeAfterDiscount();
+			thisOption['shippingMethodSortOrder'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getSortOrder();
+			if( !isNull(shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodCode()) ){
+				thisOption['shippingMethodCode'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodCode();
+			}
+
+			var inserted = false;
+
+			for(var i=1; i<=arrayLen(optionsArray); i++) {
+				var thisExistingOption = optionsArray[i];
+
+				if( ((sortType eq 'price' && thisOption.totalCharge < thisExistingOption.totalCharge)
+				  	||
+					(sortType eq 'sortOrder' && thisOption.shippingMethodSortOrder < thisExistingOption.shippingMethodSortOrder)) && !this.hasOption(optionsArray, thisOption)) {
+					
+					arrayInsertAt(optionsArray, i, thisOption);
+					inserted = true;
+					break;
+				}
+				
+			}
+
+			if(!inserted && !this.hasOption(optionsArray, thisOption)) {
+				
+				arrayAppend(optionsArray, thisOption);
+			}
+
+		}
+
+		if(!arrayLen(optionsArray)) {
+			arrayPrepend(optionsArray, {name=rbKey('define.select'), value=''});
+		}
+    	return optionsArray;
+    }
+	
+	public any function hasOption(optionsArray, option){
+		var found = false;
+		for(var i=1; i<=arrayLen(optionsArray); i++) {
+			var thisExistingOption = optionsArray[i];
+			if (option.value == thisExistingOption.value){
+				found = true;
+				break;
+			}
+		}
+		return found;
+	}
+	
+	
 	// ================== START: Private Helper Functions =====================
 
 	private void function removeOrderItemAndChildItemRelationshipsAndDelete( required any orderItem ) {

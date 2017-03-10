@@ -60,6 +60,7 @@ export class BaseBootStrapper{
         })
         .done(function() {
             //angular.element('#loading').hide();
+
         });
 
     }
@@ -205,5 +206,5 @@ export class BaseBootStrapper{
 }
 
 
- 
+
 

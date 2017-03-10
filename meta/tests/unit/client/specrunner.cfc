@@ -1,20 +1,16 @@
-
-
 <cfcomponent>
-	<cffunction name="test" access="remote" >
-		<cfset var slatwallApplication = createObject("component", "Slatwall.Application") />
+
+	<cffunction name="test" access="remote">
+		<cfset var slatwallApplication = createObject("component", "Slatwall.Application")/>
 
 		<!--- Reload Slatwall --->
-		<cfset slatwallApplication.bootstrap() />
+		<cfset slatwallApplication.bootstrap()/>
 		<cfset request.slatwallScope.getAccount().setSuperUserFlag(1)/>
 		<cfset $.slatwall = request.slatwallScope/>
-		<cfheader
-		    name = "Content-Type"
-		    value = "text/html">
+		<cfheader name="Content-Type" value="text/html">
 		<cfsavecontent variable="local.specrunnerOutput" >
 			<cfoutput>
-				<!DOCTYPE html>
-				<html >
+				<html id="ngApp" ng-strict-di>
 					<head>
 					  <meta charset="utf-8">
 						<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -38,6 +34,7 @@
 
 					  <script src="/node_modules/jasmine-core/lib/jasmine-core/jasmine.js"></script>
 					  <script src="/node_modules/jasmine-core/lib/jasmine-core/jasmine-html.js"></script>
+						<!---<script src="/node_modules/jasmine-core/lib/jasmine-core/boot.js"></script>--->
 
 
 					  <!-- include source files here... -->
@@ -62,15 +59,21 @@
 					</head>
 
 					<body>
+
 						<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/src/testbundle.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" charset="utf-8"></script>
+
 
 					</body>
 				</html>
 			</cfoutput>
 		</cfsavecontent>
+
 		<cfscript>
-			writeoutput(local.specrunnerOutput);abort;
+			writeoutput(local.specrunnerOutput);
+			abort;
 		</cfscript>
+
 	</cffunction>
+
 
 </cfcomponent>

@@ -6,7 +6,7 @@ import {HibachiInterceptor,IHibachi,IHibachiConfig,HibachiJQueryStatic} from "./
 import {HibachiPathBuilder} from "./services/hibachipathbuilder";
 
 //services
-import {CacheService} from "./services/cacheservice"; 
+import {CacheService} from "./services/cacheservice";
 import {PublicService} from "./services/publicservice";
 import {AccountService} from "./services/accountservice";
 import {CartService} from "./services/cartservice";
@@ -17,19 +17,19 @@ import {ObserverService} from "./services/observerservice";
 import {OrderService} from "./services/orderservice";
 import {OrderPaymentService} from "./services/orderpaymentservice";
 import {FormService} from "./services/formservice";
-import {FilterService} from "./services/filterservice"; 
+import {FilterService} from "./services/filterservice";
 import {ExpandableService} from "./services/expandableservice";
-import {ListingService} from "./services/listingservice"; 
+
 import {MetaDataService} from "./services/metadataservice";
 import {RbKeyService} from "./services/rbkeyservice";
 import {TypeaheadService} from "./services/typeaheadservice";
 import {$Hibachi} from "./services/hibachiservice";
-import {HistoryService} from "./services/historyservice"; 
+import {HistoryService} from "./services/historyservice";
 import {LocalStorageService} from "./services/localstorageservice";
 import {HibachiServiceDecorator} from "./services/hibachiservicedecorator";
 import {HibachiScope} from "./services/hibachiscope";
 import {RequestService} from "./services/requestservice";
-import {ScopeService} from "./services/scopeservice"; 
+import {ScopeService} from "./services/scopeservice";
 import {SkuService} from "./services/skuservice";
 import {HibachiValidationService} from "./services/hibachivalidationservice";
 import {EntityService} from "./services/entityservice";
@@ -63,22 +63,9 @@ import {SWEntityActionBar} from "./components/swentityactionbar";
 import {SWEntityActionBarButtonGroup} from "./components/swentityactionbarbuttongroup";
 import {SWExpandableRecord} from "./components/swexpandablerecord";
 import {SWGravatar} from "./components/swgravatar";
-import {SWListingDisplay} from "./components/swlistingdisplay";
-import {SWListingDisplayCell} from "./components/swlistingdisplaycell";
-import {SWListingControls} from "./components/swlistingcontrols";
-import {SWListingAggregate} from "./components/swlistingaggregate";
-import {SWListingColorFilter} from "./components/swlistingcolorfilter";
-import {SWListingColumn} from "./components/swlistingcolumn";
-import {SWListingDisableRule} from "./components/swlistingdisablerule";
-import {SWListingExpandableRule} from "./components/swlistingexpandablerule";
-import {SWListingFilter} from "./components/swlistingfilter";
-import {SWListingFilterGroup} from "./components/swlistingfiltergroup";
-import {SWListingOrderBy} from "./components/swlistingorderby";
-import {SWListingRowSave} from "./components/swlistingrowsave"; 
-import {SWListingSearch} from "./components/swlistingsearch";
 import {SWLogin} from "./components/swlogin";
 import {SWModalLauncher} from "./components/swmodallauncher";
-import {SWModalWindow} from "./components/swmodalwindow"; 
+import {SWModalWindow} from "./components/swmodalwindow";
 import {SWNumbersOnly} from "./components/swnumbersonly";
 import {SWLoading} from "./components/swloading";
 import {SWScrollTrigger} from "./components/swscrolltrigger";
@@ -94,8 +81,11 @@ import {SWExportAction} from "./components/swexportaction";
 import {SWHref} from "./components/swhref";
 import {SWProcessCaller} from "./components/swprocesscaller";
 import {SWSortable} from "./components/swsortable";
-import {SWListingGlobalSearch} from "./components/swlistingglobalsearch";
-import {SWOrderByControls} from "./components/sworderbycontrols"; 
+import {SWOrderByControls} from "./components/sworderbycontrols";
+
+import {alertmodule} from "../alert/alert.module";
+import {dialogmodule} from "../dialog/dialog.module";
+
 
 import {BaseObject} from "./model/baseobject";
 declare var $:any;
@@ -103,10 +93,14 @@ declare var $:any;
 var coremodule = angular.module('hibachi.core',[
   //Angular Modules
   'ngAnimate',
+  'ngRoute',
   'ngSanitize',
   //3rdParty modules
-  'ui.bootstrap'
-]).config(['$httpProvider','$logProvider','$filterProvider','$provide','hibachiPathBuilder','appConfig',($httpProvider,$logProvider,$filterProvider,$provide,hibachiPathBuilder,appConfig)=>{
+  'ui.bootstrap',
+  alertmodule.name,
+  dialogmodule.name
+])
+.config(['$httpProvider','$logProvider','$filterProvider','$provide','hibachiPathBuilder','appConfig',($httpProvider,$logProvider,$filterProvider,$provide,hibachiPathBuilder,appConfig)=>{
     hibachiPathBuilder.setBaseURL(appConfig.baseURL);
     hibachiPathBuilder.setBasePartialsPath('/org/Hibachi/client/src/');
 
@@ -171,7 +165,7 @@ var coremodule = angular.module('hibachi.core',[
     hibachiPathBuilder.setBaseURL(appConfig.baseURL);
     hibachiPathBuilder.setBasePartialsPath('/org/Hibachi/client/src/');
    // $provide.decorator('$hibachi',
-     $httpProvider.interceptors.push('hibachiInterceptor');
+   $httpProvider.interceptors.push('hibachiInterceptor');
 }])
 .run(['$rootScope','$hibachi', '$route', '$location',($rootScope,$hibachi, $route, $location)=>{
     $rootScope.buildUrl = $hibachi.buildUrl;
@@ -209,7 +203,6 @@ var coremodule = angular.module('hibachi.core',[
 .service('hibachiScope',HibachiScope)
 .service('scopeService',ScopeService)
 .service('skuService', SkuService)
-.service('listingService', ListingService)
 .service('localStorageService',LocalStorageService)
 .service('requestService',RequestService)
 .service('accountService',AccountService)
@@ -247,19 +240,6 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swGravatar', SWGravatar.Factory())
 .directive('swDraggable',SWDraggable.Factory())
 .directive('swDraggableContainer', SWDraggableContainer.Factory())
-.directive('swListingDisplay',SWListingDisplay.Factory())
-.directive('swListingControls',SWListingControls.Factory())
-.directive('swListingAggregate',SWListingAggregate.Factory())
-.directive('swListingColorFilter',SWListingColorFilter.Factory())
-.directive('swListingColumn',SWListingColumn.Factory())
-.directive('swListingDisableRule', SWListingDisableRule.Factory())
-.directive('swListingExpandableRule', SWListingExpandableRule.Factory())
-.directive('swListingDisplayCell',SWListingDisplayCell.Factory())
-.directive('swListingFilter',SWListingFilter.Factory())
-.directive('swListingFilterGroup',SWListingFilterGroup.Factory())
-.directive('swListingOrderBy',SWListingOrderBy.Factory())
-.directive('swListingRowSave', SWListingRowSave.Factory())
-.directive('swListingSearch', SWListingSearch.Factory())
 .directive('swLogin',SWLogin.Factory())
 .directive('swModalLauncher',SWModalLauncher.Factory())
 .directive('swModalWindow', SWModalWindow.Factory())
@@ -278,7 +258,6 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swHref',SWHref.Factory())
 .directive('swProcessCaller',SWProcessCaller.Factory())
 .directive('sw:sortable',SWSortable.Factory())
-.directive('swListingGlobalSearch',SWListingGlobalSearch.Factory())
 .directive('swOrderByControls', SWOrderByControls.Factory())
 ;
 export{

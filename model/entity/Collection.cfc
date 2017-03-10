@@ -404,7 +404,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			column['attributeSetObject'] = lcase(left(attributeSetObject,1))&right(attributeSetObject,len(attributeSetObject)-1);
 		}else{
 			column['propertyIdentifier'] = collectionConfig.baseEntityAlias & '.' & arguments.displayProperty;
+			//if the property non-persistent?
+			if(
+				!getService('hibachiService').getPropertyIsPersistentByEntityNameAndPropertyIdentifier(getCollectionObject(),arguments.displayProperty)
+			){
+				column['persistent'] = false;
+			}
 		}
+		
 
 		arrayAppend(collectionConfig.columns,column);
 		this.setCollectionConfigStruct(collectionConfig);

@@ -118,6 +118,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		return collectionOptions;
 	}
 
+	/**
+	* @test
+	*/
 	public void function getHibachiPropertyIdentifierByCollectionPropertyIdentifierTest(){
 		var collectionPropertyIdentifier = '_sku_product.brand.brandID';
 		var hibachiPropertyIdentifier = variables.service.getHibachiPropertyIdentifierByCollectionPropertyIdentifier(collectionPropertyIdentifier);
@@ -128,6 +131,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 	}
 
+	/**
+	* @test
+	*/
 	public void function getCapitalCaseTest(){
 		MakePublic(variables.service,'capitalCase');
 		var word = 'testingword';
@@ -135,6 +141,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals('Testingword',word);
 	}
 
+	/**
+	* @test
+	*/
 	public void function getTransientCollectionByEntityNameTest(){
 		var entityName = 'product';
 		var collectionEntity = variables.service.getTransientCollectionByEntityName(entityName,variables.defaultCollectionOptions);
@@ -144,6 +153,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 
 
+	/**
+	* @test
+	*/
 	public void function getFormattedPageRecordsTest(){
 		//need product to be able to get in a paginated list
 		var productData = {
@@ -171,6 +183,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertTrue(arraylen(formattedPageRecords['pageRecords']));
 	}
 
+	/**
+	* @test
+	*/
 	public void function collectionsExportTest(){
 		var collectionConfig = '{
 			"baseEntityName":"Account",
@@ -198,6 +213,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		return;
 	}
 	
+	/**
+	* @test
+	*/
 	public void function getExportableColumnsByCollectionConfigTest(){
 		var collectionConfig = '{
 			"baseEntityName":"Account",
@@ -227,6 +245,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 	}
 	
+	/**
+	* @test
+	*/
 	public void function getHeadersListByCollectionConfigColumnsTest(){
 		var columns = [
 			{"isDeletable"=false,"isSearchable"=true,"title"="accountID","isVisible"=false,"ormtype"="id","propertyIdentifier"="_account.accountID","isExportable"=true},
@@ -255,6 +276,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(variables.service.getHeadersListByCollection(collectionEntity),'accountID,superUserFlag,firstName,lastName,failedLoginAttemptCount,taxExemptFlag,urlTitle,company,loginLockExpiresDateTime');
 	}
 	
+	/**
+	* @test
+	*/
 	public void function getPropertyIdentifiersListTest(){
 		var entityName = 'product';
 		var entityProperties = variables.service.getPropertiesByEntityName( entityName );
@@ -300,6 +324,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 //		assert(isArray(collectionEntityProperties));
 //	}
 
+	/**
+	* @test
+	*/
 	public void function getAPIResponseForEntityNameTest(){
 		var accountData = {
 			accountid = "",
@@ -314,6 +341,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(isStruct(apiResponse));
 	}
 
+	/**
+	* @test
+	*/
 	public void function getAPIResponseForEntityNameTest_with_propertyIdentifier_parameters(){
 		var accountData = {
 			accountid = "",
@@ -328,6 +358,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertTrue(isStruct(apiResponse));
 	}
 
+	/**
+	* @test
+	*/
 	public void function getAPIResponseForBasicEntityWIthIDTest(){
 		var accountData = {
 			accountid = "",
@@ -355,6 +388,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertTrue(isStruct(apiResponse));
 	}*/
 
+	/**
+	* @test
+	*/
 	public void function getAPIResponseForCollectionTest(){
 		var accountData = {
 			accountid = "",
@@ -382,6 +418,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//addToDebug(apiResponse);
 	}
 
+	/**
+	* @test
+	*/
 	public void function getAPIResponseForCollectionTest_with_propertyIdentifier_parameters(){
 		var accountData = {
 			accountid = "",

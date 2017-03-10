@@ -664,7 +664,7 @@ component output="false" accessors="true" extends="HibachiController" {
                     //should only be able to add selects (&propertyIdentifier=)
                     var result = getService('HibachiCollectionService').getAPIResponseForBasicEntityWithID( arguments.rc.entityName,
 																										    arguments.rc.entityID,
-																										    arguments.rc );
+																		 								    arguments.rc );
                     structAppend(arguments.rc.apiResponse.content,result);
                 }else{
                     //should be able to add select and where filters here
