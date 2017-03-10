@@ -60,7 +60,7 @@ component displayname="Fulfillment Batch" entityname="SlatwallFulfillmentBatch" 
 	// Related Object Properties (one-to-many)
 	property name="comments" singularname="comment" cfc="Comment" type="array" fieldtype="one-to-many" fkcolumn="fulfillmentBatchID" cascade="all-delete-orphan" inverse="true";
 	property name="fulfillmentBatchItems" singularname="fulfillmentBatchItem" cfc="FulfillmentBatchItem" fieldtype="one-to-many" fkcolumn="fulfillmentBatchID" cascade="all-delete-orphan" inverse="true";
-	property name="pickwaves" singularname="pickwave" cfc="PickWave" fieldtype="one-to-many" fkcolumn="fulfillmentBatchID" cascade="all-delete-orphan" inverse="true";
+	property name="pickWaves" singularname="pickWave" cfc="PickWave" fieldtype="one-to-many" fkcolumn="fulfillmentBatchID" cascade="all-delete-orphan" inverse="true";
 	
 	// Related Object Properties (many-to-many - owner)
 	property name="locations" singularname="location" cfc="Location" fieldtype="many-to-many" linktable="SwFulfillmentBatchLocation" fkcolumn="fulfillmentBatchID" inversejoincolumn="locationID";
@@ -78,6 +78,24 @@ component displayname="Fulfillment Batch" entityname="SlatwallFulfillmentBatch" 
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================
+	// Assigned Account (many-to-one)
+	public void function setAssignedAccount(required any account) {
+		variables.assignedAccount = arguments.account;
+		if(isNew() or !arguments.account.hasFulfillmentBatch( this )) {
+			arrayAppend(arguments.account.getFulfillmentBatches(), this);
+		}
+	}
+	
+	public void function removeAssignedAccount(any account) {
+		if(!structKeyExists(arguments, "account")) {
+			arguments.account = variables.assignedAccount;
+		}
+		var index = arrayFind(arguments.account.getFulfillmentBatches(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.account.getFulfillmentBatches(), index);
+		}
+		structDelete(variables, "OrderDeliveryItem");
+	}
 	
 	// Comments (one-to-many)
 	public void function addComment(required any comment) {

@@ -80,6 +80,119 @@ component displayname="Fulfillment Batch Item" entityname="SlatwallFulfillmentBa
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================
+	// OrderDeliveryItem (many-to-one)
+	public void function setOrderDeliveryItem(required any orderDeliveryItem) {
+		variables.orderDeliveryItem = arguments.orderDeliveryItem;
+		if(isNew() or !arguments.orderDeliveryItem.hasFulfillmentBatchItem( this )) {
+			arrayAppend(arguments.orderDeliveryItem.getFulfillmentBatchItems(), this);
+		}
+	}
+	
+	public void function removeOrderDeliveryItem(any OrderDeliveryItem) {
+		if(!structKeyExists(arguments, "OrderDeliveryItem")) {
+			arguments.orderDeliveryItem = variables.orderDeliveryItem;
+		}
+		var index = arrayFind(arguments.orderDeliveryItem.getFulfillmentBatchItems(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.orderDeliveryItem.getFulfillmentBatchItems(), index);
+		}
+		structDelete(variables, "OrderDeliveryItem");
+	}
+	
+	// OrderFulfillment (many-to-one)
+	public void function setOrderFulfillment(required any orderFulfillment) {
+		variables.orderFulfillment = arguments.orderFulfillment;
+		if(isNew() or !arguments.orderFulfillment.hasFulfillmentBatchItem( this )) {
+			arrayAppend(arguments.orderFulfillment.getFulfillmentBatchItems(), this);
+		}
+	}
+	
+	public void function removeOrderFulfillment(any orderFulfillment) {
+		if(!structKeyExists(arguments, "orderFulfillment")) {
+			arguments.orderFulfillment = variables.orderFulfillment;
+		}
+		var index = arrayFind(arguments.orderFulfillment.getFulfillmentBatchItems(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.orderFulfillment.getFulfillmentBatchItems(), index);
+		}
+		structDelete(variables, "orderFulfillment");
+	}
+	
+	// PickWave (many-to-one)
+	public void function setPickWave(required any pickWave) {
+		variables.pickWave = arguments.pickWave;
+		if(isNew() or !arguments.pickWave.hasFulfillmentBatchItem( this )) {
+			arrayAppend(arguments.pickWave.getFulfillmentBatchItems(), this);
+		}
+	}
+	
+	public void function removePickWave(any pickWave) {
+		if(!structKeyExists(arguments, "pickWave")) {
+			arguments.pickWave = variables.pickWave;
+		}
+		var index = arrayFind(arguments.pickWave.getFulfillmentBatchItems(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.pickWave.getFulfillmentBatchItems(), index);
+		}
+		structDelete(variables, "pickWave");
+	}
+	
+	// OrderItem (many-to-one)
+	public void function setOrderItem(required any orderItem) {
+		variables.orderItem = arguments.orderItem;
+		if(isNew() or !arguments.orderItem.hasFulfillmentBatchItem( this )) {
+			arrayAppend(arguments.orderItem.getFulfillmentBatchItems(), this);
+		}
+	}
+	
+	public void function removeOrderItem(any orderItem) {
+		if(!structKeyExists(arguments, "orderItem")) {
+			arguments.orderItem = variables.orderItem;
+		}
+		var index = arrayFind(arguments.orderItem.getFulfillmentBatchItems(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.orderItem.getFulfillmentBatchItems(), index);
+		}
+		structDelete(variables, "orderItem");
+	}
+	
+	// FulfillmentBatch (many-to-one)
+	public void function setFulfillmentBatch(required any fulfillmentBatch) {
+		variables.fulfillmentBatch = arguments.fulfillmentBatch;
+		if(isNew() or !arguments.fulfillmentBatch.hasFulfillmentBatchItem( this )) {
+			arrayAppend(arguments.fulfillmentBatch.getFulfillmentBatchItems(), this);
+		}
+	}
+	
+	public void function removeFulfillmentBatch(any fulfillmentBatch) {
+		if(!structKeyExists(arguments, "FulfillmentBatch")) {
+			arguments.fulfillmentBatch = variables.fulfillmentBatch;
+		}
+		var index = arrayFind(arguments.fulfillmentBatch.getFulfillmentBatchItems(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.fulfillmentBatch.getFulfillmentBatchItems(), index);
+		}
+		structDelete(variables, "fulfillmentBatch");
+	}
+	
+	// Stock (many-to-one)
+	public void function setStock(required any stock) {
+		variables.stock = arguments.stock;
+		if(isNew() or !arguments.stock.hasFulfillmentBatchItem( this )) {
+			arrayAppend(arguments.stock.getFulfillmentBatchItems(), this);
+		}
+	}
+	
+	public void function removeStock(any stock) {
+		if(!structKeyExists(arguments, "stock")) {
+			arguments.account = variables.account;
+		}
+		var index = arrayFind(arguments.account.getAccountPaymentMethods(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.account.getFulfillmentBatchItems(), index);
+		}
+		structDelete(variables, "stock");
+	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
 

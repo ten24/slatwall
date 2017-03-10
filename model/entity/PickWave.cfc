@@ -74,6 +74,43 @@ component displayname="Pickwave" entityname="SlatwallPickWave" table="SwPickWave
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================
+	// Fulfillment Batch (many-to-one)
+	public void function setFulfillmentBatch(required any fulfillmentBatch) {
+		variables.fulfillmentBatch = arguments.fulfillmentBatch;
+		if(isNew() or !arguments.fulfillmentBatch.hasPickWave( this )) {
+			arrayAppend(arguments.fulfillmentBatch.getPickWaves(), this);
+		}
+	}
+	
+	public void function removeFulfillmentBatch(any fulfillmentBatch) {
+		if(!structKeyExists(arguments, "fulfillmentBatch")) {
+			arguments.fulfillmentBatch = variables.fulfillmentBatch;
+		}
+		var index = arrayFind(arguments.fulfillmentBatch.getPickWaves(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.fulfillmentBatch.getPickWaves(), index);
+		}
+		structDelete(variables, "fulfillmentBatch");
+	}
+	
+	// Assigned Account (many-to-one)
+	public void function setAssignedAccount(required any account) {
+		variables.assignedAccount = arguments.account;
+		if(isNew() or !arguments.account.hasPickWave( this )) {
+			arrayAppend(arguments.account.getPickWaves(), this);
+		}
+	}
+	
+	public void function removeAssignedAccount(any account) {
+		if(!structKeyExists(arguments, "account")) {
+			arguments.account = variables.assignedAccount;
+		}
+		var index = arrayFind(arguments.account.getPickWaves(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.account.getPickWaves(), index);
+		}
+		structDelete(variables, "assignedAccount");
+	}
 	
 	// Fulfillment Batch Items (one-to-many)
 	public void function addFulfillmentBatchItem(required any fulfillmentBatchItem) {
