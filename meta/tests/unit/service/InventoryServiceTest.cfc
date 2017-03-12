@@ -53,6 +53,66 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		variables.service = request.slatwallScope.getBean("inventoryService");
 	}
+	/**
+	*
+	*/
+	public void function createInventoryByStockReceiverItemTest(){
+		var vendorOrderItemData = {
+			vendorOrderItemID=""
+		};
+		var vendorOrderItem = createPersistedTestEntity('vendorOrderItem',vendorOrderItemData);
+		
+		var skuData = {
+			skuID=""
+		};
+		var sku = createPersistedTestEntity('sku',skuData);
+		
+		var settingData = {
+			settingID="",
+			settingName="skuTrackInventoryFlag",
+			settingValue="1",
+			sku={
+				skuID=sku.getSkuID()
+			}
+		};
+		var settingEntity = createPersistedTestEntity('setting',settingData);
+		
+		var stockData = {
+		};
+		var stock = createPersistedTestEntity('stock',stockData);
+		stock.setSku(sku);
+		sku.addStock(stock);
+		
+		var stockReceiverData ={
+			stockReceiverID="",
+			receiverType = 'vendorOrder'
+		};
+		var stockReceiver = createPersistedTestEntity('stockReceiver',stockReceiverData);
+		
+		assertEquals(stock.getSku().setting('skuTrackInventoryFlag'),1);
+		
+		var stockReceiverItemData={
+			stockReceiverItemID="",
+			vendorOrderItem={
+				vendorOrderItemID=vendorOrderItem.getVendorOrderItemID()
+			},
+			stockReceiver={
+				stockReceiverID=stockReceiver.getStockReceiverID()
+			},
+			stock={
+				stockID=stock.getStockID()
+			},
+			quantity=7
+		};
+		var stockReceiverItem = createPersistedTestEntity('stockReceiverItem',stockReceiverItemData);
+		//inventory gets created via the preinsert of stock Receiver
+		//should createInventory related to stock and stockReceiverITem with a quantityIn of the stockReceiver quantity
+		var inventory = ormexecuteQuery('FROM SlatwallInventory i where i.stock.stockID=:stockID',{stockID=stock.getStockID()},true);
+		assertEquals(inventory.getQuantityIn(),7);
+		assertEquals(inventory.getStock().getStockID(),stock.getStockID());
+		assertEquals(inventory.getStockReceiverItem().getStockReceiverItemID(),stockReceiverItem.getStockReceiverITemID());
+		
+	}
 		
 	/**
 	* @test

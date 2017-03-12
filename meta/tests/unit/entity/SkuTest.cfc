@@ -566,6 +566,66 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var result = mockSku.getLivePrice();
 		assertEquals(200, result);
 	}
+	
+	public void function getCurrentAssetValueTest(){
+		var productData = {
+			productID=""
+		};
+		var product = createPersistedTestEntity('Product',productData);
+		
+		var skuData = {
+			skuID="",
+			product={
+				productID=product.getProductID()
+			}
+		};
+		var sku = createPersistedTestEntity('Sku',skuData);
+		
+		var stockData = {
+			stockID="",
+			sku={
+				skuID=sku.getSkuID()
+			}
+		};
+		var stock = createPersistedTestEntity('Stock',stockData);
+		arrayAppend(sku.getStocks(),stock);
+		
+		var inventoryData = {
+			inventoryID="",
+			cost=25.00,
+			quantityIn=5,
+			stock={
+				stockID=stock.getStockID()
+			}
+		};
+		var inventory = createPersistedTestEntity('inventory',inventoryData);	
+		stock.addInventory(inventory);
+		//2nd set of data to product
+		
+		var stockData2 = {
+			stockID="",
+			sku={
+				skuID=sku.getSkuID()
+			}
+		};
+		var stock2 = createPersistedTestEntity('Stock',stockData2);
+		arrayAppend(sku.getStocks(),stock2);
+		
+		var inventoryData2 = {
+			inventoryID="",
+			cost=100.00,
+			quantityIn=7,
+			stock={
+				stockID=stock2.getStockID()
+			}
+		};
+		var inventory2 = createPersistedTestEntity('inventory',inventoryData2);	
+		stock2.addInventory(inventory2);
+		
+		assertEquals(sku.getQOH(),12,'(5+7)=12');		
+		assertEquals(sku.getAverageCost(),9.6428571425,'((100/7)+(25/5))/2');
+		assertEquals(sku.getCurrentAssetValue(),9.6428571425 * 12,'9.6428571425 * 12');
+	}
 }
 
 
