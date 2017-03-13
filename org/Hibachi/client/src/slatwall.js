@@ -2377,9 +2377,11 @@
 	            data['newOrderPayment.order.account.accountID'] = _this.account.accountID;
 	            data['newOrderPayment.giftCardNumber'] = giftCardCode;
 	            data['copyFromType'] = "";
-	            _this.doAction('addOrderPayment', data, 'post').then(function (result) {
+	            var action = _this.doAction('addOrderPayment', data, 'post');
+	            action.then(function (result) {
 	                _this.findingGiftCard = false;
 	            });
+	            return action;
 	        };
 	        this.removeGiftCard = function (payment, index) {
 	            _this.doAction('removeOrderPayment', { orderPaymentID: payment.orderPaymentID });
@@ -2400,28 +2402,31 @@
 	            if (event.type == 'click') {
 	                var code = swForm.getFormData().giftCardCodeToApply;
 	                if (code) {
-	                    _this.applyGiftCard(code);
+	                    _this.applyGiftCard(code, swForm);
 	                }
 	            }
 	            else if (event.event.keyCode == 13) {
 	                var swForm_1 = event.swForm;
 	                var code = swForm_1.getFormData().giftCardCodeToApply;
 	                if (code) {
-	                    _this.applyGiftCard(code);
+	                    _this.applyGiftCard(code, swForm_1);
 	                }
 	            }
 	        };
 	        //Applies a giftcard from the user account onto the payment.
-	        this.applyGiftCard = function (giftCardCode) {
+	        this.applyGiftCard = function (giftCardCode, swForm) {
 	            _this.findingGiftCard = true;
 	            var giftCardAlreadyApplied = _this.cart.orderPayments.reduce(function (found, payment) {
 	                if (!found) {
 	                    return payment.giftCard && payment.giftCard.giftCardCode == giftCardCode;
 	                }
 	            }, false);
-	            console.log(giftCardAlreadyApplied);
 	            if (!giftCardAlreadyApplied) {
-	                _this.addGiftCardOrderPayments(giftCardCode, true);
+	                _this.addGiftCardOrderPayments(giftCardCode, true).then(function (result) {
+	                    if (result.successfulActions.length) {
+	                        swForm.clear();
+	                    }
+	                });
 	            }
 	            else {
 	                _this.setGiftCardError('This gift card has already been applied to this order.');

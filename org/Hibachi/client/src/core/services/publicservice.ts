@@ -671,10 +671,11 @@ class PublicService {
         data['newOrderPayment.order.account.accountID'] = this.account.accountID;
         data['newOrderPayment.giftCardNumber'] = giftCardCode;
         data['copyFromType'] = "";
-        
-        this.doAction('addOrderPayment', data, 'post').then((result:any)=>{
+        let action = this.doAction('addOrderPayment', data, 'post');
+        action.then((result:any)=>{
             this.findingGiftCard = false;
-        }); 
+        });
+        return action;
               
     };
 
@@ -700,19 +701,19 @@ class PublicService {
         if(event.type == 'click'){
             let code = swForm.getFormData().giftCardCodeToApply;
             if(code){
-                this.applyGiftCard(code);
+                this.applyGiftCard(code, swForm);
             }
         }else if(event.event.keyCode == 13){
             let swForm = event.swForm;
             let code = swForm.getFormData().giftCardCodeToApply;
             if(code){
-                this.applyGiftCard(code);
+                this.applyGiftCard(code,swForm);
             }
         }
     }
 
     //Applies a giftcard from the user account onto the payment.
-    public applyGiftCard = (giftCardCode)=>{
+    public applyGiftCard = (giftCardCode, swForm)=>{
 
         this.findingGiftCard = true;
 
@@ -721,9 +722,13 @@ class PublicService {
                 return payment.giftCard && payment.giftCard.giftCardCode == giftCardCode;
             }
         },false);
-        console.log(giftCardAlreadyApplied);
+
         if(!giftCardAlreadyApplied){
-            this.addGiftCardOrderPayments(giftCardCode, true);
+            this.addGiftCardOrderPayments(giftCardCode, true).then((result)=>{
+                if(result.successfulActions.length){
+                    swForm.clear();
+                }
+            })
         }else{
             this.setGiftCardError('This gift card has already been applied to this order.');
             this.findingGiftCard = false;
