@@ -11,6 +11,6 @@
     <a href="#" ng-click="slatwall.edit = 'fulfillment'" class="edit">Edit</a>
 </div>
 
-<div class="alert alert-warning" ng-if="slatwall.orderRequirementsList.indexOf('fulfillment') > -1">
+<div class="alert alert-warning" ng-if="!slatwall.getShippingAddress().addressID">
     <i class="fa fa-info-circle"></i> Select shipping options to continue.
 </div>

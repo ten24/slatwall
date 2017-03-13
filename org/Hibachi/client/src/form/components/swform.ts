@@ -27,6 +27,7 @@ class SWFormController {
     public formData = {};
     public inputAttributes:string;
     public eventListeners;
+    public submitOnEnter;
     /**
      * This controller handles most of the logic for the swFormDirective when more complicated self inspection is needed.
      */
@@ -87,6 +88,11 @@ class SWFormController {
                 this.entityName = "Cart"
             };
         }
+        if(this.submitOnEnter){
+            this.eventListeners = this.eventListeners || {};
+            this.eventListeners.keyup = this.submitKeyCheck;
+        }
+
         if(this.eventListeners){
             for(var key in this.eventListeners){
                 this.observerService.attach(this.eventListeners[key], key)
@@ -118,8 +124,6 @@ class SWFormController {
     public submitKeyCheck = (event) => {
         if(event.form.$name == this.name &&
             event.event.keyCode == 13){
-            console.log("this", this);
-            console.log("Doing action: ", event.swForm.action)
             this.submit(event.swForm.action);
         }
     }
@@ -231,14 +235,24 @@ class SWFormController {
     }
     /** clears this directive on event */
     public clear  = (params) =>{
-       //stub
+        var iterable = this.formCtrl;
+        angular.forEach(iterable, (val, key) => {
+            if(typeof val === 'object' && val.hasOwnProperty('$modelValue')){
+                if(this.object.forms[this.name][key].$viewValue){
+                    this.object.forms[this.name][key].$setViewValue("");
+                    this.object.forms[this.name][key].$render();
+                }
+            }else{
+                val = "";
+            }
+        });
     }
 
     /** returns all the data from the form by iterating the form elements */
     public getFormData = ()=>
     {
         var iterable = this.formCtrl;
-         console.log(this.object);
+
         angular.forEach(iterable, (val, key) => {
             if(key==="name") console.log("name - ", this.object.forms[this.name][key]);
             if(typeof val === 'object' && val.hasOwnProperty('$modelValue')){
@@ -296,7 +310,8 @@ class SWForm implements ng.IDirective {
             isDirty:"=?",
             inputAttributes:"@?",
             eventListeners:"=?",
-            eventAnnouncers:"@"
+            eventAnnouncers:"@",
+            submitOnEnter:"@"
     };
 
     /**

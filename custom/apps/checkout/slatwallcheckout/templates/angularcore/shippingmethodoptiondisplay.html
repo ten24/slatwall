@@ -8,11 +8,10 @@
 			    <!-- Add save shipping method to API and add public service method in slatwall... -->
 			    <p class="shippingMethodOption" 
 			    ng-repeat="option in slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethodOptions track by $index" 
-			    ng-click="slatwall.doAction('addShippingMethodUsingShippingMethodID', {'shippingMethodID': option.value , 'orderFulfillmentWithShippingMethodOptionsIndex':slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex});
-			    rememberMe[$index] = true;">
+			    ng-click="slatwall.selectShippingMethod(option)">
 			    	<input type="radio" name="cb{{option.shippingMethodCode}}" id="check{{optionValue}}"
-			    	ng-model="rememberMe[$index]" 
-			    	ng-checked="(option.value == slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethod.shippingMethodID) || slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethodOptions.length == 1"/>
+
+			    	ng-checked="slatwall.isSelectedShippingMethod(option)"/>
 			        <label for="cb{{option.shippingMethodCode}}">{{option.name}}</label>
 				</p>
 				<div class="loader-wrapper" ng-show="slatwall.getRequestByAction('addShippingMethodUsingShippingMethodID').loading">

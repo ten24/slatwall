@@ -53,6 +53,10 @@ class PublicService {
     public edit:String;
     public editPayment:boolean;
     public showCreateAccount:boolean;
+    public showStoreSelector:boolean;
+    public showEmailSelector:boolean;
+    public lastRemovedPromoCode;
+    public lastRemovedGiftCard;
     public imagePath:{[key:string]:any}={};
 
     ///index.cfm/api/scope/
@@ -463,13 +467,21 @@ class PublicService {
 
      /** returns true if the shipping method is the selected shipping method
      */
-     public isSelectedShippingMethod = (index, value)=>{
-        if (this.cart.fulfillmentTotal &&
-              value == this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingMethod.shippingMethodID ||
-              this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingMethodOptions.length == 1){
-                return true;
-              }
-              return false;
+     public isSelectedShippingMethod = (option) =>{
+         return this.cart.fulfillmentTotal && 
+         ((option.value == this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethod.shippingMethodID) || 
+        (this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethodOptions.length == 1));
+     }
+
+     /** Select a shipping method - temporarily changes the selected method on the front end while awaiting official change from server
+     */
+     public selectShippingMethod = (option) =>{
+         let data = {
+             'shippingMethodID': option.value,
+             'orderFulfillmentWithShippingMethodOptionsIndex':this.cart.orderFulfillmentWithShippingMethodOptionsIndex
+         };
+         this.doAction('addShippingMethodUsingShippingMethodID', data);
+         this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethod.shippingMethodID = option.value;
      }
 
      /** returns the index of the selected shipping method.
@@ -480,6 +492,17 @@ class PublicService {
                 return i;
             }
         }
+     }
+
+     /** Removes promotional code from order
+     */
+     public removePromoCode = (code, index)=>{
+         this.doAction('removePromotionCode', {promotionCode:code});
+         this.lastRemovedPromoCode = index;
+     }
+
+     public removingPromoCode = (index) =>{
+         return this.getRequestByAction('removePromotionCode') && this.getRequestByAction('removePromotionCode').loading && this.lastRemovedPromoCode == index;
      }
 
      /** simple validation just to ensure data is present and accounted for.
@@ -633,7 +656,6 @@ class PublicService {
     /** Allows an easy way to calling the service addOrderPayment.
                     */
     public addGiftCardOrderPayments = (giftCardCode, redeemGiftCardToAccount)=>{
-        console.log("ayyyyy")
         //reset the form errors.
         this.cart.hasErrors=false;
         this.cart.orderPayments.errors = {};
@@ -656,15 +678,13 @@ class PublicService {
               
     };
 
-    /** returns the index of the last selected shipping method. This is used to get rid of the delay.
-    */
-    public selectShippingMethod = (index)=>{
-        for (var method in this.lastSelectedShippingMethod){
-            if (method != index){
-                this.lastSelectedShippingMethod[method] = 'false';
-            }
-        }
-        this.lastSelectedShippingMethod[index] = 'true';
+    public removeGiftCard = (payment, index) =>{
+        this.doAction('removeOrderPayment', {orderPaymentID:payment.orderPaymentID});
+        this.lastRemovedGiftCard = index;
+    }
+
+    public removingGiftCard = (index) =>{
+        return this.getRequestByAction('removeOrderPayment') && this.getRequestByAction('removeOrderPayment').loading && this.lastRemovedGiftCard == index;
     }
 
     /** returns true if this was the last selected method
@@ -949,6 +969,13 @@ class PublicService {
         }
     }
 
+    public promoCodeError = () =>{
+        if(this.errors &&
+            this.errors.promotionCode){
+            return this.errors.promotionCode[0];
+        }
+    }
+
     public giftCardError = () =>{
         if(this.cart.processObjects && 
             this.cart.processObjects.addOrderPayment &&
@@ -1098,7 +1125,7 @@ class PublicService {
 
     //Not particularly robust, needs to be modified for each project
     public isCheckOrMoneyOrderPayment = (payment) =>{
-        return payment.paymentMethodName == "Check or Money Order";
+        return payment.paymentMethod.paymentMethodName == "Check or Money Order";
     }
 
     public orderHasNoPayments = () =>{
@@ -1110,6 +1137,21 @@ class PublicService {
         return !orderItem.sku.skuName && orderItem.sku.product && orderItem.sku.product.productName
     }
 
+    public cartHasNoItems = () =>{
+        return !this.getRequestByAction('getCart').loading && this.hasAccount() && this.cart && this.cart.orderItems && !this.cart.orderItems.length && !this.loading && !this.orderPlaced;
+    }
+
+    public hasAccountAndCartItems = () =>{
+        return this.hasAccount() && !this.cartHasNoItems();
+    }
+
+    public hideStoreSelector = () =>{
+        this.showStoreSelector = false;
+    }
+
+    public hideEmailSelector = () =>{
+        this.showEmailSelector = false;
+    }
 }
 export {PublicService};
 

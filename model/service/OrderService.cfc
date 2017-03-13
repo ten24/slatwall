@@ -1591,10 +1591,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			// Loop over all of the items in this order
 			for(var orderPayment in arguments.order.getOrderPayments())	{
-
 				// Check to see if this item is the same ID as the one passed in to remove
 				if(orderPayment.getOrderPaymentID() == arguments.data.orderPaymentID) {
-
 					if(orderPayment.isDeletable()) {
 						arguments.order.removeOrderPayment( orderPayment );
 						this.deleteOrderPayment( arguments.order , orderPayment );
@@ -1605,7 +1603,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					break;
 				}
 			}
-
 		}
 
 		return arguments.order;

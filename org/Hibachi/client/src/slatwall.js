@@ -2196,13 +2196,20 @@
 	        };
 	        /** returns true if the shipping method is the selected shipping method
 	        */
-	        this.isSelectedShippingMethod = function (index, value) {
-	            if (_this.cart.fulfillmentTotal &&
-	                value == _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingMethod.shippingMethodID ||
-	                _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingMethodOptions.length == 1) {
-	                return true;
-	            }
-	            return false;
+	        this.isSelectedShippingMethod = function (option) {
+	            return _this.cart.fulfillmentTotal &&
+	                ((option.value == _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethod.shippingMethodID) ||
+	                    (_this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethodOptions.length == 1));
+	        };
+	        /** Select a shipping method - temporarily changes the selected method on the front end while awaiting official change from server
+	        */
+	        this.selectShippingMethod = function (option) {
+	            var data = {
+	                'shippingMethodID': option.value,
+	                'orderFulfillmentWithShippingMethodOptionsIndex': _this.cart.orderFulfillmentWithShippingMethodOptionsIndex
+	            };
+	            _this.doAction('addShippingMethodUsingShippingMethodID', data);
+	            _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethod.shippingMethodID = option.value;
 	        };
 	        /** returns the index of the selected shipping method.
 	        */
@@ -2212,6 +2219,15 @@
 	                    return i;
 	                }
 	            }
+	        };
+	        /** Removes promotional code from order
+	        */
+	        this.removePromoCode = function (code, index) {
+	            _this.doAction('removePromotionCode', { promotionCode: code });
+	            _this.lastRemovedPromoCode = index;
+	        };
+	        this.removingPromoCode = function (index) {
+	            return _this.getRequestByAction('removePromotionCode') && _this.getRequestByAction('removePromotionCode').loading && _this.lastRemovedPromoCode == index;
 	        };
 	        /** simple validation just to ensure data is present and accounted for.
 	        */
@@ -2349,7 +2365,6 @@
 	        /** Allows an easy way to calling the service addOrderPayment.
 	                        */
 	        this.addGiftCardOrderPayments = function (giftCardCode, redeemGiftCardToAccount) {
-	            console.log("ayyyyy");
 	            //reset the form errors.
 	            _this.cart.hasErrors = false;
 	            _this.cart.orderPayments.errors = {};
@@ -2366,15 +2381,12 @@
 	                _this.findingGiftCard = false;
 	            });
 	        };
-	        /** returns the index of the last selected shipping method. This is used to get rid of the delay.
-	        */
-	        this.selectShippingMethod = function (index) {
-	            for (var method in _this.lastSelectedShippingMethod) {
-	                if (method != index) {
-	                    _this.lastSelectedShippingMethod[method] = 'false';
-	                }
-	            }
-	            _this.lastSelectedShippingMethod[index] = 'true';
+	        this.removeGiftCard = function (payment, index) {
+	            _this.doAction('removeOrderPayment', { orderPaymentID: payment.orderPaymentID });
+	            _this.lastRemovedGiftCard = index;
+	        };
+	        this.removingGiftCard = function (index) {
+	            return _this.getRequestByAction('removeOrderPayment') && _this.getRequestByAction('removeOrderPayment').loading && _this.lastRemovedGiftCard == index;
 	        };
 	        /** returns true if this was the last selected method
 	        */
@@ -2627,6 +2639,12 @@
 	                return _this.cart.errors.addBillingAddress;
 	            }
 	        };
+	        this.promoCodeError = function () {
+	            if (_this.errors &&
+	                _this.errors.promotionCode) {
+	                return _this.errors.promotionCode[0];
+	            }
+	        };
 	        this.giftCardError = function () {
 	            if (_this.cart.processObjects &&
 	                _this.cart.processObjects.addOrderPayment &&
@@ -2757,7 +2775,7 @@
 	        };
 	        //Not particularly robust, needs to be modified for each project
 	        this.isCheckOrMoneyOrderPayment = function (payment) {
-	            return payment.paymentMethodName == "Check or Money Order";
+	            return payment.paymentMethod.paymentMethodName == "Check or Money Order";
 	        };
 	        this.orderHasNoPayments = function () {
 	            var activePayments = _this.cart.orderPayments.filter(function (payment) { return payment.amount != 0; });
@@ -2765,6 +2783,18 @@
 	        };
 	        this.hasProductNameAndNoSkuName = function (orderItem) {
 	            return !orderItem.sku.skuName && orderItem.sku.product && orderItem.sku.product.productName;
+	        };
+	        this.cartHasNoItems = function () {
+	            return !_this.getRequestByAction('getCart').loading && _this.hasAccount() && _this.cart && _this.cart.orderItems && !_this.cart.orderItems.length && !_this.loading && !_this.orderPlaced;
+	        };
+	        this.hasAccountAndCartItems = function () {
+	            return _this.hasAccount() && !_this.cartHasNoItems();
+	        };
+	        this.hideStoreSelector = function () {
+	            _this.showStoreSelector = false;
+	        };
+	        this.hideEmailSelector = function () {
+	            _this.showEmailSelector = false;
 	        };
 	        this.orderService = orderService;
 	        this.cartService = cartService;
@@ -7767,12 +7797,13 @@
 	"use strict";
 	var SWTypeaheadInputFieldController = (function () {
 	    // @ngInject
-	    function SWTypeaheadInputFieldController($scope, $transclude, collectionConfigService, $rootScope) {
+	    function SWTypeaheadInputFieldController($scope, $transclude, collectionConfigService, $rootScope, observerService) {
 	        var _this = this;
 	        this.$scope = $scope;
 	        this.$transclude = $transclude;
 	        this.collectionConfigService = collectionConfigService;
 	        this.$rootScope = $rootScope;
+	        this.observerService = observerService;
 	        this.columns = [];
 	        this.filters = [];
 	        this.addFunction = function (value) {
@@ -7812,6 +7843,11 @@
 	        if (angular.isDefined(this.initialEntityId) && this.initialEntityId.length) {
 	            this.modelValue = this.initialEntityId;
 	        }
+	        if (this.eventListeners) {
+	            for (var key in this.eventListeners) {
+	                observerService.attach(this.eventListeners[key], key);
+	            }
+	        }
 	    }
 	    return SWTypeaheadInputFieldController;
 	}());
@@ -7835,7 +7871,8 @@
 	            allRecords: "=?",
 	            validateRequired: "=?",
 	            maxRecords: "@",
-	            action: "@"
+	            action: "@",
+	            eventListeners: '=?'
 	        };
 	        this.controller = SWTypeaheadInputFieldController;
 	        this.controllerAs = "swTypeaheadInputField";
@@ -19915,8 +19952,6 @@
 	        this.submitKeyCheck = function (event) {
 	            if (event.form.$name == _this.name &&
 	                event.event.keyCode == 13) {
-	                console.log("this", _this);
-	                console.log("Doing action: ", event.swForm.action);
 	                _this.submit(event.swForm.action);
 	            }
 	        };
@@ -20019,12 +20054,22 @@
 	        };
 	        /** clears this directive on event */
 	        this.clear = function (params) {
-	            //stub
+	            var iterable = _this.formCtrl;
+	            angular.forEach(iterable, function (val, key) {
+	                if (typeof val === 'object' && val.hasOwnProperty('$modelValue')) {
+	                    if (_this.object.forms[_this.name][key].$viewValue) {
+	                        _this.object.forms[_this.name][key].$setViewValue("");
+	                        _this.object.forms[_this.name][key].$render();
+	                    }
+	                }
+	                else {
+	                    val = "";
+	                }
+	            });
 	        };
 	        /** returns all the data from the form by iterating the form elements */
 	        this.getFormData = function () {
 	            var iterable = _this.formCtrl;
-	            console.log(_this.object);
 	            angular.forEach(iterable, function (val, key) {
 	                if (key === "name")
 	                    console.log("name - ", _this.object.forms[_this.name][key]);
@@ -20100,6 +20145,10 @@
 	            }
 	            ;
 	        }
+	        if (this.submitOnEnter) {
+	            this.eventListeners = this.eventListeners || {};
+	            this.eventListeners.keyup = this.submitKeyCheck;
+	        }
 	        if (this.eventListeners) {
 	            for (var key in this.eventListeners) {
 	                this.observerService.attach(this.eventListeners[key], key);
@@ -20139,7 +20188,8 @@
 	            isDirty: "=?",
 	            inputAttributes: "@?",
 	            eventListeners: "=?",
-	            eventAnnouncers: "@"
+	            eventAnnouncers: "@",
+	            submitOnEnter: "@"
 	        };
 	        /**
 	            * Sets the context of this form
@@ -21136,6 +21186,7 @@
 	            errorClass: "@?",
 	            formTemplate: "@?",
 	            eventAnnouncers: "@",
+	            hideErrors: '=?',
 	            //swpropertyscope
 	            property: "@?",
 	            object: "=?",

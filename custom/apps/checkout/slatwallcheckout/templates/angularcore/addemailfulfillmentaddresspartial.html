@@ -10,7 +10,9 @@
 			        data-error-class="error"
 			        data-name="Email_Fulfillment"
 			        data-event-announcers="keyup"
-			        data-action="addEmailFulfillmentAddress">
+			        data-action="addEmailFulfillmentAddress"
+			        data-event-listeners="{addEmailFulfillmentAddressSuccess:slatwall.hideEmailSelector}"
+			        ng-show="slatwall.showEmailSelector || !slatwall.hasEmailFulfillmentAddress()">
 					<div class="form-group">
 				        <swf-property-display
 				                data-name="emailAddress"
@@ -34,6 +36,8 @@
 			    </sw-form>
 			    <div ng-show="slatwall.hasEmailFulfillmentAddress()">
 			    	<p>Selected Email: {{slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithEmailTypeIndex].emailAddress}}</p>
+			    	<a href="#" ng-click="slatwall.showEmailSelector = !slatwall.showEmailSelector">{{slatwall.showEmailSelector ? 'Cancel' : 'Select Email Address'</a>
 			    </div>
+
 		    </div>
     </div>

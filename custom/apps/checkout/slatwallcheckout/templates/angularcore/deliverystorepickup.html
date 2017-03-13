@@ -11,10 +11,10 @@
 					{{(slatwall.getRequestByAction('addPickupFulfillmentLocation').loading) ? 'Loading...' : slatwall.getPickupLocation().primaryAddress.address.streetAddress + ' ' + slatwall.getPickupLocation().primaryAddress.address.city}}</span>
 				</span>
 				<span ng-if="slatwall.noPickupLocation()">None</span></h5>
-			<a href="#" ng-click="slatwall.stores = !slatwall.stores;" ng-if="slatwall.getPickupLocation().primaryAddress != undefined">Change store</a>
+			<a href="#" ng-click="slatwall.showStoreSelector = !slatwall.showStoreSelector;" ng-if="slatwall.getPickupLocation().primaryAddress != undefined">Change store</a>
 		</span>
 
-		<div ng-if="slatwall.stores || !slatwall.getPickupLocation().primaryAddress" style="padding-top:30px">
+		<div ng-if="slatwall.showStoreSelector || !slatwall.getPickupLocation().primaryAddress" style="padding-top:30px">
 			<span ng-if="slatwall.loading || slatwall.getRequestByAction('getAccount').loading">Loading Stores...</span>
 
 			<div>
@@ -29,7 +29,8 @@
 					data-placeholder-text="Search Stores..."
 					data-multiselect-mode="false"
 					data-action="addPickupFulfillmentLocation"
-					data-selected-format-string="${locationName}&nbsp;${primaryAddress_address_city}&nbsp;${primaryAddress_address_stateCode}&nbsp;${primaryAddress_address_postalCode}">
+					data-selected-format-string="${locationName}&nbsp;${primaryAddress_address_city}&nbsp;${primaryAddress_address_stateCode}&nbsp;${primaryAddress_address_postalCode}"
+					data-event-listeners="{addPickupFulfillmentLocationSuccess:slatwall.hideStoreSelector}">
 					
 					<sw-collection-config
 	                      data-entity-name="Location"

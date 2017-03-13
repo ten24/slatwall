@@ -49,6 +49,7 @@ class SWPropertyDisplayController {
 
     //swfproperty display properties
 	public class;
+    public hideErrors;
 	public fieldAttributes;
 	public valueObject;
 	public label;
@@ -320,6 +321,7 @@ class SWPropertyDisplay implements ng.IDirective{
         errorClass: "@?",
         formTemplate: "@?",
         eventAnnouncers:"@",
+        hideErrors:'=?',
 
         //swpropertyscope
 

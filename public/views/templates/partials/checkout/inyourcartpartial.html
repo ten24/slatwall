@@ -1,7 +1,6 @@
 <!-- Example of using the cart directive to list various items and well as modify -->
-<span ng-init="$.slatwall = $root.slatwall"></span>
 <table class="table table-condensed">
-    <tr ng-repeat="orderItem in $.slatwall.cart.orderitems">
+    <tr ng-repeat="orderItem in slatwall.cart.orderitems">
         <td class="text-center">
             <a href="#"><img src="{{orderItem.sku.imagePath}}" style="height: 100px;"></a>
         </td>
@@ -10,7 +9,7 @@
                 <span ng-if="orderItem.sku.skuName == '' && orderItem.sku.product.productName != ''">{{orderItem.sku.product.productName}}</span>
                 <span ng-if="orderItem.sku.skuName != ''">{{orderItem.sku.skuName}}</span>
             </h5>
-            {{orderItem.price |currency :($.slatwall.cart.currencyCode == 'EUR'?'&euro;':'$')}}<br>
+            {{orderItem.price |currency :(slatwall.cart.currencyCode == 'EUR'?'&euro;':'$')}}<br>
             Quantity: {{orderItem.quantity}}
         </td>
     </tr>

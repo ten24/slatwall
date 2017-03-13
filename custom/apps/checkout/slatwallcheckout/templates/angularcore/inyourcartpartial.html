@@ -20,6 +20,6 @@
         </td>
     </tr>
 </table>
-<div ng-if="!slatwall.getRequestByAction('getCart').loading && slatwall.hasAccount() && slatwall.cart && slatwall.cart.orderItems && !slatwall.cart.orderItems.length && !slatwall.loading && !slatwall.orderPlaced" class="alert alert-warning ng-cloak">
+<div ng-if="slatwall.cartHasNoItems()" class="alert alert-warning ng-cloak">
     <i class="fa fa-info-circle"></i> There are no items in your cart.
 </div>

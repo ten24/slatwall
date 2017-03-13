@@ -1,0 +1,43 @@
+<div ng-show="slatwall.promoCodeError()">
+    <div class="msg">
+        <div class="alert alert-danger"><i class="fa fa-info-circle"></i> {{slatwall.promoCodeError()}}</div>
+    </div>
+</div>
+<sw-form
+    data-is-process-form="true"
+    data-object="'Order_AddPromotionCode'"
+    data-submit-on-enter="true"
+    data-form-class="cssform"
+    data-name="AddPromotionCode"
+    data-action="addPromotionCode"
+    class="row">
+    <div class="col-md-9">
+        <swf-property-display
+            data-name="promotionCode"
+            data-field-type="text"
+            data-label-text=""
+            data-hide-errors="true"
+            data-property-identifier="promotionCode"
+            data-class="form-control"
+            data-editing="true"
+            data-event-announcers="keyup"
+            >
+        </swf-property-display>
+    </div>
+    <div class="col-md-3">
+        <sw-action-caller 
+            data-event-listeners="{addPromotionCodeSuccess:$parent.swForm.clear}"
+            data-modal="false" 
+            data-type="button"
+            data-class="Apply" 
+            data-text="{{(slatwall.getRequestByAction('addPromotionCode').loading)?'Loading':'Apply'}}">
+        </sw-action-caller>
+    </div>
+    
+</sw-form>
+
+<ul class="list-group" ng-if="slatwall.cart.promotionCodeList && slatwall.cart.promotionCodeList.length">
+    <li class="list-group-item" ng-repeat="code in slatwall.cart.promotionCodeList.split(',') track by $index">
+    {{code}} - <a href="#" ng-click="slatwall.removePromoCode(code, $index)">{{(slatwall.removingPromoCode($index) ? 'Removing' : 'Remove')}}</a>
+    </li>
+</ul>

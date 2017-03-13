@@ -45,7 +45,7 @@
 	            </div>
 
 	            <!-- Tab heading 2 - Fulfillment / Method / Edit -->
-	            <div class="panel panel-default panel-body" ng-cloak ng-show="slatwall.hasAccount()">
+	            <div class="panel panel-default panel-body" ng-cloak ng-show="slatwall.hasAccountAndCartItems()">
 	                <h3>
 	                <a href="##" class="pull-right" ng-click="slatwall.edit = 'fulfillment'"><i class="fa fa-pencil-square-o" ng-if="!slatwall.fulfillmentTabIsActive()" aria-hidden="true"></i></a>
 					<a href="##" class="pull-right" ng-if="slatwall.fulfillmentTabIsActive()" ng-click="slatwall.edit = ''"><i class="fa fa-check-circle"></i></a>
@@ -71,7 +71,7 @@
 	            </div>
 
 	            <!--- Tab heading 3 - Order Payment / Billing Address / Place Order / Edit --->
-	            <div class="panel panel-default panel-body" ng-show="slatwall.hasAccount()">
+	            <div class="panel panel-default panel-body" ng-show="slatwall.hasAccountAndCartItems()">
 					<div class="">
 						<h3>
 			                <a href="##" class="pull-right" ng-click="slatwall.edit = 'payment'"><i class="fa fa-pencil-square-o" ng-if="!slatwall.paymentTabIsActive()" aria-hidden="true"></i></a>
@@ -179,7 +179,7 @@
 				</div>
 
 	            <!--- Tab heading 4 - Review / Place Order --->
-	            <div class="panel panel-default panel-body" ng-cloak ng-show="slatwall.hasAccount()">
+	            <div class="panel panel-default panel-body" ng-cloak ng-show="slatwall.hasAccountAndCartItems()">
 	                <h3 ng-class="(slatwall.reviewTabIsActive() ? 'active' : '')">
 	                <a href="##" class="pull-right" ng-click="slatwall.edit = 'review'" ng-if="!slatwall.showReviewTabBody()"><i class="fa fa-eye"></i></a>Review Order</h3>
 
@@ -253,6 +253,14 @@
 				  	<h4>In Your Cart <a href="/shopping-cart" class="pull-right edit"></a></h4>
 				  	<div class="info">
 					  	<swf-directive partial-name="inyourcartpartial"></swf-directive>
+				  	</div>
+			  	</div>
+
+		  	<!--- PROMOTIONS --->
+			  	<div class="promo">
+			  		<h4>Promotion Code</h4>
+				  	<div class="info">
+					  	<swf-directive partial-name="promopartial"></swf-directive>
 				  	</div>
 			  	</div>
 
