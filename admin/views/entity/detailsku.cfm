@@ -109,6 +109,8 @@ Notes:
 			</cfif>
 			<hb:HibachiEntityDetailItem property="skuDescription" />
 			<hb:HibachiEntityDetailItem view="admin:entity/skutabs/saleshistory" />
+			<hb:HibachiEntityDetailItem view="admin:entity/skutabs/vendorskus" />			
+			<hb:HibachiEntityDetailItem view="admin:entity/skutabs/vendororderhistory" />
 			<hb:HibachiEntityDetailItem view="admin:entity/skutabs/currencies" />
 			<hb:HibachiEntityDetailItem view="admin:entity/skutabs/alternateskucodes" />
 			<hb:HibachiEntityDetailItem view="admin:entity/skutabs/skusettings" />

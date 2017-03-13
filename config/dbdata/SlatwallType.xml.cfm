@@ -119,10 +119,11 @@
 		<Record typeID="444df2dafc8a46af86aedf6aa15bb35a" typeIDPath="444df2dafc8a46af86aedf6aa15bb35a" parentTypeID="NULL" typeName="Vendor Order Types" systemCode="vendorOrderType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="444df2dbfde8c38ab64bb21c724d46e0" typeIDPath="444df2dafc8a46af86aedf6aa15bb35a,444df2dbfde8c38ab64bb21c724d46e0" parentTypeID="444df2dafc8a46af86aedf6aa15bb35a" typeName="Purchase Order" systemCode="votPurchaseOrder" sortOrder="1" />
 		<Record typeID="444df2dc91afb63f25074c7d9512248b" typeIDPath="444df2dafc8a46af86aedf6aa15bb35a,444df2dc91afb63f25074c7d9512248b" parentTypeID="444df2dafc8a46af86aedf6aa15bb35a" typeName="Return Order" systemCode="votReturnOrder" sortOrder="2" />
-
+		
 		<Record typeID="723ada44efad4ce090a46479ba9c57ae" typeIDPath="723ada44efad4ce090a46479ba9c57ae" parentTypeID="NULL" typeName="Vendor Order Status Types" systemCode="vendorOrderStatusType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="ee9669f448c949a98a8b1d4d988afe1a" typeIDPath="723ada44efad4ce090a46479ba9c57ae,ee9669f448c949a98a8b1d4d988afe1a" parentTypeID="723ada44efad4ce090a46479ba9c57ae" typeName="New" systemCode="vostNew" sortOrder="1" />
 		<Record typeID="6b0f53eb598e42dcb995ed333cc8464a" typeIDPath="723ada44efad4ce090a46479ba9c57ae,6b0f53eb598e42dcb995ed333cc8464a" parentTypeID="723ada44efad4ce090a46479ba9c57ae" typeName="Partially Received" systemCode="vostPartiallyReceived" sortOrder="2" />
+		<Record typeID="6b0f53eb598e42dcb995ed333cc94642" typeIDPath="723ada44efad4ce090a46479ba9c57ae,6b0f53eb598e42dcb995ed333cc94642" parentTypeID="723ada44efad4ce090a46479ba9c57ae" typeName="Partially Delivered" systemCode="vostPartiallyDelivered" sortOrder="2" />
 		<Record typeID="9b038283edff412a8c4e3d10a6a7b738" typeIDPath="723ada44efad4ce090a46479ba9c57ae,9b038283edff412a8c4e3d10a6a7b738" parentTypeID="723ada44efad4ce090a46479ba9c57ae" typeName="Closed" systemCode="vostClosed" sortOrder="3" />
 
 		<Record typeID="444df2ac94eaa8a4881d4cbb3c2e0b98" typeIDPath="444df2ac94eaa8a4881d4cbb3c2e0b98" parentTypeID="NULL" typeName="Validation Types" systemCode="validationType" childRequiresSystemCodeFlag="1" />
@@ -150,7 +151,13 @@
 		<Record typeID="444df32200452ec23641f213a07c1dda" typeIDPath="444df32200452ec23641f213a07c1dda" parentTypeID="NULL" typeName="Subscription Status Change Reason Type" systemCode="subscriptionStatusChangeReasonType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="444df323c807edf43d3105d43f9f4eef" typeIDPath="444df32200452ec23641f213a07c1dda,444df323c807edf43d3105d43f9f4eef" parentTypeID="444df32200452ec23641f213a07c1dda" typeName="Payment Failed" systemCode="sscrtPaymentFailed" sortOrder="1" />
 		<Record typeID="444df324fc56d5fbf8908ba071bc52ca" typeIDPath="444df32200452ec23641f213a07c1dda,444df324fc56d5fbf8908ba071bc52ca" parentTypeID="444df32200452ec23641f213a07c1dda" typeName="User Initiated" systemCode="sscrtUserInitiated" sortOrder="2" />
-
+		
+		<Record typeID="a5380924cb4a3d53eb096ed36bf5b825" typeIDPath="a5380924cb4a3d53eb096ed36bf5b825" parentTypeID="NULL" typeName="Ledger Account Type" systemCode="ledgerAccountType" childRequiresSystemCodeFlag="1" />
+		<Record typeID="a54668fcc2ff2c8413c7b85b6927a850" typeIDPath="a5380924cb4a3d53eb096ed36bf5b825,a54668fcc2ff2c8413c7b85b6927a850" parentTypeID="a5380924cb4a3d53eb096ed36bf5b825" typeName="Asset" systemCode="latAsset" sortOrder="1" />
+		<Record typeID="a54668fdc129db6427f2d597da3163d7" typeIDPath="a5380924cb4a3d53eb096ed36bf5b825,a54668fdc129db6427f2d597da3163d7" parentTypeID="a5380924cb4a3d53eb096ed36bf5b825" typeName="Cost Of Goods" systemCode="latCogs" sortOrder="1" />
+		<Record typeID="a54668fef238c6cd354e1d9b371700ea" typeIDPath="a5380924cb4a3d53eb096ed36bf5b825,a54668fef238c6cd354e1d9b371700ea" parentTypeID="a5380924cb4a3d53eb096ed36bf5b825" typeName="Expense" systemCode="latExpense" sortOrder="1" />
+		<Record typeID="a54668fbcafa5275c59482d98a1497bd" typeIDPath="a5380924cb4a3d53eb096ed36bf5b825,a54668fbcafa5275c59482d98a1497bd" parentTypeID="a5380924cb4a3d53eb096ed36bf5b825" typeName="Revenue" systemCode="latRevenue" sortOrder="1" />
+		<Record typeID="a54668fbcafa5275c59482d98a1497bc" typeIDPath="a5380924cb4a3d53eb096ed36bf5b825,a54668fbcafa5275c59482d98a1497bc" parentTypeID="a5380924cb4a3d53eb096ed36bf5b825" typeName="Liability" systemCode="latLiability" sortOrder="1" />
 	</Records>
 </Table>
 

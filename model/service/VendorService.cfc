@@ -71,6 +71,10 @@ component extends="HibachiService" accessors="true" output="false" {
 		return smartList;
 	}
 	
+	public any function getVendorSkuByVendorAndSku(required any vendor, required any sku){
+		return getDao('vendorDao').getVendorSkuByVendorAndSku(vendorID=arguments.vendor.getVendorID(),skuID=arguments.sku.getSkuID());
+	}
+	
 	// =====================  END: Logical Methods ============================
 	
 	// ===================== START: DAO Passthrough ===========================
