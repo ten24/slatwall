@@ -1,0 +1,11 @@
+.settings
+.project
+settings.xml
+cpu.json
+tests/results
+tests/results-mb
+WEB-INF
+build/build.number
+artifacts
+apidocs/docbox
+build-testbox/*
