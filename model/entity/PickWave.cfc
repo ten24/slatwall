@@ -46,92 +46,88 @@
 Notes:
 
 */
-component displayname="Stock" entityname="SlatwallStock" table="SwStock" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="stockService" {
+component displayname="Pickwave" entityname="SlatwallPickWave" table="SwPickWave" persistent="true" output="false" accessors="true" extends="HibachiEntity"cacheuse="transactional" hb_serviceName="fulfillmentService" hb_permission="this" {
 
 	// Persistent Properties
-	property name="stockID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="pickWaveID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 
 	// Related Object Properties (many-to-one)
-	property name="location" fieldtype="many-to-one" fkcolumn="locationID" cfc="Location";
-	property name="sku" fieldtype="many-to-one" fkcolumn="skuID" cfc="Sku" hb_cascadeCalculate="true"; // We always want sku when we get a stock
-
-	// Related Object Properties (one-to-many). Including this property to allow HQL to do  stock -> vendorOrderItem lookups
-	property name="vendorOrderItems" singularname="vendorOrderItem" cfc="VendorOrderItem" fieldtype="one-to-many" fkcolumn="stockID" inverse="true";
-	property name="inventory" singularname="inventory" cfc="Inventory" fieldtype="one-to-many" fkcolumn="stockID" inverse="true" lazy="extra";
-	property name="fulfillmentBatchItems" singularname="fulfillmentBatchItem" fieldType="one-to-many" type="array" fkColumn="stockID" cfc="FulfillmentBatchItem" inverse="true";
+	property name="fulfillmentBatch" cfc="FulfillmentBatch" fieldtype="many-to-one" fkcolumn="fulfillmentBatchID";
+	property name="assignedAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	
-	//Calculated Properties
-	property name="calculatedQATS" ormtype="integer";
-	property name="calculatedQOH" ormtype="integer";
-	property name="calculatedQNC" ormtype="integer";
-
-	// Remote properties
-	property name="remoteID" ormtype="string";
-
+	// Related Object Properties (one-to-many)
+	property name="fulfillmentBatchItems" singularname="fulfillmentBatchItem" cfc="FulfillmentBatchItem" fieldtype="one-to-many" fkcolumn="pickWaveID" cascade="all-delete-orphan" inverse="true";
+	
+	// Related Object Properties (many-to-many - owner)
+	property name="locations" singularname="location" cfc="Location" fieldtype="many-to-many" linktable="SwPickWaveLocation" fkcolumn="pickWaveID" inversejoincolumn="locationID";
+	
+	// Related Object Properties (many-to-many - inverse)
+	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
-	// Non-Persistent Properties
-
-	property name="QATS" persistent="false";
-	property name="QOH" persistent="false";
-	property name="QNC" persistent="false";
-
-	//Derived Properties
-	//property name="derivedQOH" formula="select COALESCE( SUM(inventory.quantityIn), 0 ) - COALESCE( SUM(inventory.quantityOut), 0 ) from swInventory as inventory where inventory.stockID= stockID";
-
-	// Quantity
-	public numeric function getQuantity(required string quantityType) {
-		if( !structKeyExists(variables, arguments.quantityType) ) {
-			if(listFindNoCase("QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA", arguments.quantityType)) {
-				return getSku().getQuantity(quantityType=arguments.quantityType, stockID=this.getStockID());
-			} else if(listFindNoCase("QC,QE,QNC,QATS,QIATS", arguments.quantityType)) {
-				variables[ arguments.quantityType ] = getService("inventoryService").invokeMethod("get#arguments.quantityType#", {entity=this});
-			} else {
-				throw("The quantity type you passed in '#arguments.quantityType#' is not a valid quantity type.  Valid quantity types are: QOH, QOSH, QNDOO, QNDORVO, QNDOSA, QNRORO, QNROVO, QNROSA, QC, QE, QNC, QATS, QIATS");
-			}
-		}
-		return variables[ arguments.quantityType ];
-	}
-
-
 	// ============ START: Non-Persistent Property Methods =================
-
-	public any function getQATS() {
-		return getQuantity("QATS");
-	}
-
-	public any function getQOH() {
-		return getQuantity("QOH");
-	}
-
-	public any function getQNC() {
-		return getQuantity("QNC");
-	}
 
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================
-
-	// Vendor Order Items (one-to-many)
-	public void function addVendorOrderItem(required any vendorOrderItem) {
-		arguments.vendorOrderItem.setStock( this );
-	}
-	public void function removeVendorOrderItem(required any vendorOrderItem) {
-		arguments.vendorOrderItem.removeStock( this );
+	// Fulfillment Batch (many-to-one)
+	public void function setFulfillmentBatch(required any fulfillmentBatch) {
+		variables.fulfillmentBatch = arguments.fulfillmentBatch;
+		if(isNew() or !arguments.fulfillmentBatch.hasPickWave( this )) {
+			arrayAppend(arguments.fulfillmentBatch.getPickWaves(), this);
+		}
 	}
 	
-	// Fulfillment Batches (one-to-many)
+	public void function removeFulfillmentBatch(any fulfillmentBatch) {
+		if(!structKeyExists(arguments, "fulfillmentBatch")) {
+			arguments.fulfillmentBatch = variables.fulfillmentBatch;
+		}
+		var index = arrayFind(arguments.fulfillmentBatch.getPickWaves(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.fulfillmentBatch.getPickWaves(), index);
+		}
+		structDelete(variables, "fulfillmentBatch");
+	}
+	
+	// Assigned Account (many-to-one)
+	public void function setAssignedAccount(required any account) {
+		variables.assignedAccount = arguments.account;
+		if(isNew() or !arguments.account.hasPickWave( this )) {
+			arrayAppend(arguments.account.getPickWaves(), this);
+		}
+	}
+	
+	public void function removeAssignedAccount(any account) {
+		if(!structKeyExists(arguments, "account")) {
+			arguments.account = variables.assignedAccount;
+		}
+		var index = arrayFind(arguments.account.getPickWaves(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.account.getPickWaves(), index);
+		}
+		structDelete(variables, "assignedAccount");
+	}
+	
+	// Fulfillment Batch Items (one-to-many)
 	public void function addFulfillmentBatchItem(required any fulfillmentBatchItem) {
-	   arguments.fulfillmentBatchItem.setStock(this);
+		arguments.fulfillmentBatchItem.setPickWave( this );
 	}
 	public void function removeFulfillmentBatchItem(required any fulfillmentBatchItem) {
-	   arguments.fulfillmentBatchItem.removeStock(this);
+		arguments.fulfillmentBatchItem.removePickWave( this );
 	}
 	
+	// Location (many-to-many - inverse)
+	public void function addLocation(required any location) {
+		arguments.location.addPickWave( this );
+	}
+	public void function removelocation(required any location) {
+		arguments.location.removePickWave( this );
+	}
+
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// ================== START: Overridden Methods ========================

@@ -46,46 +46,38 @@
 Notes:
 
 */
-component extends="HibachiService" persistent="false" accessors="true" output="false" {
+component output="false" accessors="true" extends="HibachiProcess" {
 
-	// ===================== START: Logical Methods ===========================
+	// Injected Entities
+	property name="fulfillmentBatch" hb_rbKey="entity.fulfillmentBatch" cfc="FulfillmentBatch";
+	property name="assignedAccount" hb_rbKey="entity.fulfillmentBatch.assignedAccount" cfc="Account";
+	property name="location" hb_rbKey="entity.fulfillmentBatch.location" cfc="Location";
+	property name="fulfillmentBatchItems" cfc="FulfillmentBatch";
 	
-	public string function getAllActiveFulfillmentMethodIDList() {
-		var returnList = "";
-		var apmSL = this.getFulfillmentMethodSmartList();
-		apmSL.addFilter('activeFlag', 1);
-		apmSL.addSelect('fulfillmentMethodID', 'fulfillmentMethodID');
-		var records = apmSL.getRecords();
-		for(var i=1; i<=arrayLen(records); i++) {
-			returnList = listAppend(returnList, records[i]['fulfillmentMethodID']);
+	// Data Properties
+	property name="assignedAccountID" hb_rbKey="entity.fulfillmentBatch.assignedAccount" cfc="Account";
+	property name="description" hb_rbKey="entity.fulfillmentBatch.description";
+	property name="locationID" hb_rbKey="entity.fulfillmentBatch.location" cfc="Location";
+	
+	public any function getAssignedAccount(){
+		if(!structKeyExists(variables,'assignedAccount')){
+			if(!isNull(getAssignedAccountID())){
+				variables.assignedAccount = getService('accountService').getAccount(getAssignedAccountID());	
+			}else{
+				return;
+			}
 		}
-		return returnList;
+		return variables.assignedAccount;
 	}
 	
-	// =====================  END: Logical Methods ============================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: Process Methods ===========================
-	// Process: FulfillmentBatch
-	public any function processFulfillmentBatch_create(required any fulfillmentBatch, required any processObject){
-		//stub method for the processing a fulfillment batch create.
-		return fulfillmentBatch;
+	public any function getLocation(){
+		if(!structKeyExists(variables,'locationID')){
+			if(!isNull(getLocationID())){
+				variables.location = getService('locationService').getLocation(getLocationID());	
+			}else{
+				return;
+			}
+		}
+		return variables.location;
 	}
-	// =====================  END: Process Methods ============================
-	
-	// ====================== START: Save Overrides ===========================
-	
-	// ======================  END: Save Overrides ============================
-	
-	// ==================== START: Smart List Overrides =======================
-	
-	// ====================  END: Smart List Overrides ========================
-	
-	// ====================== START: Get Overrides ============================
-	
-	// ======================  END: Get Overrides =============================
-
 }
