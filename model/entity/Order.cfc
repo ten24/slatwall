@@ -979,12 +979,10 @@ totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(t
 
 	public boolean function isAllowedToPlaceOrderWithoutPayment(){
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
+			
 			if(
-				isNull(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) ||
-				(
-					!isNull(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) &&
-					getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder") > 0
-				)
+				len(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) == 0 ||
+				val(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) > 0
 			){
 
 				return false;
