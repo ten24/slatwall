@@ -58,7 +58,7 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	// Related Object Properties (one-to-many). Including this property to allow HQL to do  stock -> vendorOrderItem lookups
 	property name="vendorOrderItems" singularname="vendorOrderItem" cfc="VendorOrderItem" fieldtype="one-to-many" fkcolumn="stockID" inverse="true";
 	property name="inventory" singularname="inventory" cfc="Inventory" fieldtype="one-to-many" fkcolumn="stockID" inverse="true" lazy="extra";
-	property name="fulfillmentBatchItems" singularname="fulfillmentBatchItem" fieldType="one-to-many" type="array" fkColumn="stockID" cfc="fulfillmentBatchItem" inverse="true" orderby="createdDateTime asc";
+	property name="fulfillmentBatchItems" singularname="fulfillmentBatchItem" fieldType="one-to-many" type="array" fkColumn="stockID" cfc="FulfillmentBatchItem" inverse="true";
 	
 	//Calculated Properties
 	property name="calculatedQATS" ormtype="integer";
