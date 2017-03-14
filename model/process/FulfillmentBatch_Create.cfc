@@ -50,24 +50,24 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	// Injected Entities
 	property name="fulfillmentBatch" hb_rbKey="entity.fulfillmentBatch" cfc="FulfillmentBatch";
-	property name="account" hb_rbKey="entity.account" cfc="Account";
+	property name="assignedAccount" hb_rbKey="entity.fulfillmentBatch.assignedAccount" cfc="Account";
 	property name="location" hb_rbKey="entity.location" cfc="Location";
-	property name="fulfillmentBatchItems" cfc="FulfillmentBatch"  fieldtype="one-to-many" singularname="fulfillmentBatchItem";
+	property name="fulfillmentBatchItems" cfc="FulfillmentBatch";
 	
 	// Data Properties
-	property name="accountID" hb_rbKey="entity.account" hb_formFieldType="textautocomplete" cfc="Account";
+	property name="assignedAccountID" hb_rbKey="entity.fulfillmentBatch.assignedAccount" cfc="Account";
 	property name="description" hb_rbKey="entity.fulfillmentBatch.description";
-	property name="locationID";
+	property name="locationID" hb_rbKey="entity.fulfillmentBatch.location" cfc="Location";
 	
-	public any function getAccount(){
-		if(!structKeyExists(variables,'account')){
-			if(!isNull(getAccountID())){
-				variables.account = getService('accountService').getAccount(getAccountID());	
+	public any function getAssignedAccount(){
+		if(!structKeyExists(variables,'assignedAccount')){
+			if(!isNull(getAssignedAccountID())){
+				variables.assignedAccount = getService('accountService').getAccount(getAssignedAccountID());	
 			}else{
 				return;
 			}
 		}
-		return variables.account;
+		return variables.assignedAccount;
 	}
 	
 	public any function getLocation(){

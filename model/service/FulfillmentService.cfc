@@ -72,6 +72,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// Process: FulfillmentBatch
 	public any function processFulfillmentBatch_create(required any fulfillmentBatch, required any processObject){
 		//stub method for the processing a fulfillment batch create.
+		return fulfillmentBatch;
 	}
 	// =====================  END: Process Methods ============================
 	
