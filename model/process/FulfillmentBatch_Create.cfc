@@ -51,7 +51,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Injected Entities
 	property name="fulfillmentBatch" hb_rbKey="entity.fulfillmentBatch" cfc="FulfillmentBatch";
 	property name="assignedAccount" hb_rbKey="entity.fulfillmentBatch.assignedAccount" cfc="Account";
-	property name="location" hb_rbKey="entity.location" cfc="Location";
+	property name="location" hb_rbKey="entity.fulfillmentBatch.location" cfc="Location";
 	property name="fulfillmentBatchItems" cfc="FulfillmentBatch";
 	
 	// Data Properties
