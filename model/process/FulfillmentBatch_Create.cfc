@@ -50,12 +50,34 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	// Injected Entities
 	property name="fulfillmentBatch" hb_rbKey="entity.fulfillmentBatch" cfc="FulfillmentBatch";
+	property name="account" hb_rbKey="entity.account" cfc="Account";
+	property name="location" hb_rbKey="entity.location" cfc="Location";
+	property name="fulfillmentBatchItems" cfc="FulfillmentBatch"  fieldtype="one-to-many" singularname="fulfillmentBatchItem";
 	
 	// Data Properties
 	property name="accountID" hb_rbKey="entity.account" hb_formFieldType="textautocomplete" cfc="Account";
 	property name="description" hb_rbKey="entity.fulfillmentBatch.description";
-	property name="location";
-	property name="fulfillmentBatchItems";
+	property name="locationID";
 	
+	public any function getAccount(){
+		if(!structKeyExists(variables,'account')){
+			if(!isNull(getAccountID())){
+				variables.account = getService('accountService').getAccount(getAccountID());	
+			}else{
+				return;
+			}
+		}
+		return variables.account;
+	}
 	
+	public any function getLocation(){
+		if(!structKeyExists(variables,'locationID')){
+			if(!isNull(getLocationID())){
+				variables.location = getService('locationService').getLocation(getLocationID());	
+			}else{
+				return;
+			}
+		}
+		return variables.location;
+	}
 }
