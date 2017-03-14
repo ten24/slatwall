@@ -1,0 +1,1616 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="slatwalladmin">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Products | Slatwall</title>
+        <link rel="icon" href="/assets/images/favicon.png" type="image/png">
+        <link rel="shortcut icon" href="/assets/images/favicon.png" type="image/png">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/org/Hibachi/HibachiAssets/css/jquery-ui-1.9.2.custom.css" rel="stylesheet">
+        <link href="/admin/client/css/main.css" rel="stylesheet">
+        <link href="/assets/flags/css/flag-icon.min.css" rel="stylesheet">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,800,700" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+        <link href="/client/lib/metismenu/metismenu.css" rel="stylesheet">
+        <link href="/client/lib/ngTagsInput/ng-tags-input.css" rel="stylesheet">
+        <script type="text/javascript" src="/org/Hibachi/HibachiAssets/js/jquery-1.7.1.min.js"></script>
+        <script type="text/javascript" src="/org/Hibachi/HibachiAssets/js/jquery-ui-1.9.2.custom.min.js"></script>
+        <script type="text/javascript" src="/org/Hibachi/HibachiAssets/js/jquery-ui-timepicker-addon-1.3.1.js"></script>
+        <script type="text/javascript" src="/org/Hibachi/HibachiAssets/js/jquery-validate-1.9.0.min.js"></script>
+        <script type="text/javascript" src="/org/Hibachi/HibachiAssets/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/org/Hibachi/HibachiAssets/js/jquery-typewatch-2.0.js"></script>
+        <script type="text/javascript" src="/client/lib/selectBoxIt/selectBoxIt.min.js"></script>
+        <script type="text/javascript" src="/org/Hibachi/HibachiAssets/js/hibachi-scope.js"></script><script type="text/javascript">(function( $ ){$.slatwall = new Hibachi({"rbLocale":"en_us","timeFormat":"hh:mm tt","instantiationKey":"56F7EDDC-C8DE-E248-23C7259A2EC812D9","debugFlag":true,"action":"slatAction","dateFormat":"mmm dd, yyyy","baseURL":""});})( jQuery );</script> 
+        <script type="text/javascript">
+            var hibachiConfig = $.slatwall.getConfig();
+        </script>
+        <script type="text/javascript" src="/org/Hibachi/HibachiAssets/js/global.js"></script>
+        <script type="text/javascript" src="/assets/js/admin.js"></script>
+        <script type="text/javascript" src="/org/Hibachi/ckeditor/ckeditor.js"></script>
+        <style>.cke{visibility:hidden;}</style>
+        <script type="text/javascript" src="/org/Hibachi/ckeditor/adapters/jquery.js"></script>
+        <script type="text/javascript" src="/org/Hibachi/ckfinder/ckfinder.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+    </head>
+    
+    
+    <body>
+        <span>
+            <div class="navbar navbar-fixed-top navbar-inverse" role="navigation" id="slatwall-navbar">
+                <div class="container-fluid" style="text-align:left;">
+                    <div class="navbar-header">
+                        <a href="/Slatwall" target="_self" class="brand"><img src="/Slatwall/assets/images/admin.logo.png" title="Slatwall"></a>
+                    </div>
+                    <div class="pull-right s-right-nav-content" id="j-mobile-nav">
+                        <ul class="nav navbar-nav">
+                            <li class="divider-vertical"></li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false"><i class="fa fa-tags icon-white"></i> Products </a>
+                                <ul class="dropdown-menu " id="">
+                                    <li><a title="Products" class="adminentitylistproduct " target="_self" href="/Slatwall/?slatAction=entity.listproduct">Products</a></li>
+                                    <li><a title="Product Types" class="adminentitylistproducttype " target="_self" href="/Slatwall/?slatAction=entity.listproducttype">Product Types</a></li>
+                                    <li><a title="Brands" class="adminentitylistbrand " target="_self" href="/Slatwall/?slatAction=entity.listbrand">Brands</a></li>
+                                    <li><a title="Skus" class="adminentitylistsku " target="_self" href="/Slatwall/?slatAction=entity.listsku">Skus</a></li>
+                                    <li><a title="Product Reviews" class="adminentitylistproductreview " target="_self" href="/Slatwall/?slatAction=entity.listproductreview">Product Reviews</a></li>
+                                    <li class="divider"></li>
+                                    <li><a title="Option Groups" class="adminentitylistoptiongroup " target="_self" href="/Slatwall/?slatAction=entity.listoptiongroup">Option Groups</a></li>
+                                    <li><a title="Subscription Terms" class="adminentitylistsubscriptionterm " target="_self" href="/Slatwall/?slatAction=entity.listsubscriptionterm">Subscription Terms</a></li>
+                                    <li><a title="Subscription Benefits" class="adminentitylistsubscriptionbenefit " target="_self" href="/Slatwall/?slatAction=entity.listsubscriptionbenefit">Subscription Benefits</a></li>
+                                    <li><a title="Categories" class="adminentitylistcategory " target="_self" href="/Slatwall/?slatAction=entity.listcategory">Categories</a></li>
+                                    <li><a title="Content" class=" " target="_self" href="/Slatwall/?ng#!/entity/Content">Content</a></li>
+                                    <li class="divider"></li>
+                                    <li><a title="Promotions" class="adminentitylistpromotion " target="_self" href="/Slatwall/?slatAction=entity.listpromotion">Promotions</a></li>
+                                    <li><a title="Price Groups" class="adminentitylistpricegroup " target="_self" href="/Slatwall/?slatAction=entity.listpricegroup">Price Groups</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false"><i class="fa fa-inbox icon-white"></i> Orders </a>
+                                <ul class="dropdown-menu " id="">
+                                    <li><a title="Orders" class="adminentitylistorder " target="_self" href="/Slatwall/?slatAction=entity.listorder">Orders</a></li>
+                                    <li><a title="Carts &amp; Quotes" class="adminentitylistcartandquote " target="_self" href="/Slatwall/?slatAction=entity.listcartandquote">Carts &amp; Quotes</a></li>
+                                    <li><a title="Order Items" class="adminentitylistorderitem " target="_self" href="/Slatwall/?slatAction=entity.listorderitem">Order Items</a></li>
+                                    <li><a title="Order Fulfillments" class="adminentitylistorderfulfillment " target="_self" href="/Slatwall/?slatAction=entity.listorderfulfillment">Order Fulfillments</a></li>
+                                    <li><a title="Order Payments" class="adminentitylistorderpayment " target="_self" href="/Slatwall/?slatAction=entity.listorderpayment">Order Payments</a></li>
+                                    <li><a title="Order Deliveries" class="adminentitylistorderdelivery " target="_self" href="/Slatwall/?slatAction=entity.listorderdelivery">Order Deliveries</a></li>
+                                    <li class="divider"></li>
+                                    <li><a title="Vendor Orders" class="adminentitylistvendororder " target="_self" href="/Slatwall/?slatAction=entity.listvendororder">Vendor Orders</a></li>
+                                    <li><a title="Vendor Order Items" class="adminentitylistvendororderitem " target="_self" href="/Slatwall/?slatAction=entity.listvendororderitem">Vendor Order Items</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user icon-white"></i> Accounts </a>
+                                <ul class="dropdown-menu " id="">
+                                    <li><a title="Accounts" class="adminentitylistaccount " target="_self" href="/Slatwall/?slatAction=entity.listaccount">Accounts</a></li>
+                                    <li><a title="Subscription Usages" class="adminentitylistsubscriptionusage " target="_self" href="/Slatwall/?slatAction=entity.listsubscriptionusage">Subscription Usages</a></li>
+                                    <li><a title="Permission Groups" class="adminentitylistpermissiongroup " target="_self" href="/Slatwall/?slatAction=entity.listpermissiongroup">Permission Groups</a></li>
+                                    <li class="divider"></li>
+                                    <li><a title="Loyalty Programs" class="adminentitylistloyalty " target="_self" href="/Slatwall/?slatAction=entity.listloyalty">Loyalty Programs</a></li>
+                                    <li><a title="Loyalty Terms" class="adminentitylistloyaltyterm " target="_self" href="/Slatwall/?slatAction=entity.listloyaltyterm">Loyalty Terms</a></li>
+                                    <li class="divider"></li>
+                                    <li><a title="Vendors" class="adminentitylistvendor " target="_self" href="/Slatwall/?slatAction=entity.listvendor">Vendors</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false"><i class="fa fa-barcode icon-white"></i> Warehouse </a>
+                                <ul class="dropdown-menu " id="">
+                                    <li><a title="Stock Receivers" class="adminentityliststockreceiver " target="_self" href="/Slatwall/?slatAction=entity.liststockreceiver">Stock Receivers</a></li>
+                                    <li><a title="Stock Adjustments" class="adminentityliststockadjustment " target="_self" href="/Slatwall/?slatAction=entity.liststockadjustment">Stock Adjustments</a></li>
+                                    <li><a title="Physicals" class="adminentitylistphysical " target="_self" href="/Slatwall/?slatAction=entity.listphysical">Physicals</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false"><i class="fa fa-random icon-white"></i> Integrations </a>
+                                <ul class="dropdown-menu " id="">
+                                    <li><a title="Mura" class="muramaindefault " target="_self" href="/Slatwall/?slatAction=mura:main">Mura</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cog icon-white"></i> Config </a>
+                                <ul class="dropdown-menu " id="">
+                                    <li><a title="View A List of Settings" class="adminentitysettings " target="_self" href="/Slatwall/?slatAction=entity.settings">Settings</a></li>
+                                    <li><a title="Attribute Sets" class="adminentitylistattributeset " target="_self" href="/Slatwall/?slatAction=entity.listattributeset">Attribute Sets</a></li>
+                                    <li><a title="Integrations" class="adminentitylistintegration " target="_self" href="/Slatwall/?slatAction=entity.listintegration">Integrations</a></li>
+                                    <li class="divider"></li>
+                                    <li><a title="Applications" class="adminentitylistapp " target="_self" href="/Slatwall/?slatAction=entity.listapp">Applications</a></li>
+                                    <li><a title="Address Zones" class="adminentitylistaddresszone " target="_self" href="/Slatwall/?slatAction=entity.listaddresszone">Address Zones</a></li>
+                                    <li><a title="Collections" class="adminentitylistcollection " target="_self" href="/Slatwall/?slatAction=entity.listcollection">Collections</a></li>
+                                    <li><a title="Countries" class="adminentitylistcountry " target="_self" href="/Slatwall/?slatAction=entity.listcountry">Countries</a></li>
+                                    <li><a title="Currencies" class="adminentitylistcurrency " target="_self" href="/Slatwall/?slatAction=entity.listcurrency">Currencies</a></li>
+                                    <li><a title="Email Templates" class="adminentitylistemailtemplate " target="_self" href="/Slatwall/?slatAction=entity.listemailtemplate">Email Templates</a></li>
+                                    <li><a title="Fulfillment Methods" class="adminentitylistfulfillmentmethod " target="_self" href="/Slatwall/?slatAction=entity.listfulfillmentmethod">Fulfillment Methods</a></li>
+                                    <li><a title="Locations" class="adminentitylistlocation " target="_self" href="/Slatwall/?slatAction=entity.listlocation">Locations</a></li>
+                                    <li><a title="Measurement Units" class="adminentitylistmeasurementunit " target="_self" href="/Slatwall/?slatAction=entity.listmeasurementunit">Measurement Units</a></li>
+                                    <li><a title="Order Origins" class="adminentitylistorderorigin " target="_self" href="/Slatwall/?slatAction=entity.listorderorigin">Order Origins</a></li>
+                                    <li><a title="Payment Methods" class="adminentitylistpaymentmethod " target="_self" href="/Slatwall/?slatAction=entity.listpaymentmethod">Payment Methods</a></li>
+                                    <li><a title="Payment Terms" class="adminentitylistpaymentterm " target="_self" href="/Slatwall/?slatAction=entity.listpaymentterm">Payment Terms</a></li>
+                                    <li><a title="Print Templates" class="adminentitylistprinttemplate " target="_self" href="/Slatwall/?slatAction=entity.listprinttemplate">Print Templates</a></li>
+                                    <li><a title="Rounding Rules" class="adminentitylistroundingrule " target="_self" href="/Slatwall/?slatAction=entity.listroundingrule">Rounding Rules</a></li>
+                                    <li><a title="Sites" class="adminentitylistsite " target="_self" href="/Slatwall/?slatAction=entity.listsite">Sites</a></li>
+                                    <li><a title="Tax Categories" class="adminentitylisttaxcategory " target="_self" href="/Slatwall/?slatAction=entity.listtaxcategory">Tax Categories</a></li>
+                                    <li><a title="Terms" class="adminentitylistterm " target="_self" href="/Slatwall/?slatAction=entity.listterm">Terms</a></li>
+                                    <li><a title="Types" class="adminentitylisttype " target="_self" href="/Slatwall/?slatAction=entity.listtype">Types</a></li>
+                                    <li><a title="Workflows" class=" " target="_self" href="/Slatwall/?ng#!/entity/Workflow">Workflows</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false"><i class="fa fa-magnet icon-white"></i> Tools </a>
+                                <ul class="dropdown-menu " id="">
+                                    <li><a title="Reporting Dashboard" class="adminreport " target="_self" href="/Slatwall/?slatAction=report">Reporting Dashboard</a></li>
+                                    <li><a title="Event Triggers" class="adminentitylisteventtrigger " target="_self" href="/Slatwall/?slatAction=entity.listeventtrigger">Event Triggers</a></li>
+                                    <li><a title="Schedules" class="adminentitylistschedule " target="_self" href="/Slatwall/?slatAction=entity.listschedule">Schedules</a></li>
+                                    <li><a title="Sessions" class="adminentitylistsession " target="_self" href="/Slatwall/?slatAction=entity.listsession">Sessions</a></li>
+                                    <li><a title="Tasks" class="adminentitylisttask " target="_self" href="/Slatwall/?slatAction=entity.listtask">Tasks</a></li>
+                                    <li><a title="Task Histories" class="adminentitylisttaskhistory " target="_self" href="/Slatwall/?slatAction=entity.listtaskhistory">Task Histories</a></li>
+                                    <li><a title="File Manager" class="adminmainckfinder  modalload" target="_self" href="/Slatwall/?slatAction=main.ckfinder" data-toggle="modal" data-target="#adminModal">File Manager</a></li>
+                                    <li><a title="Slatwall Log" class="adminmainlog " target="_self" href="/Slatwall/?slatAction=main.log">Slatwall Log</a></li>
+                                    <li><a title="Audits" class="adminentitylistaudit " target="_self" href="/Slatwall/?slatAction=entity.listaudit">Audits</a></li>
+                                    <li><a title="Update Slatwall" class="adminmainupdate " target="_self" href="/Slatwall/?slatAction=main.update">Update Slatwall</a></li>
+                                    <li><a title="Update Database Encryption Password" class="adminmainencryptionupdatepassword " target="_self" href="/Slatwall/?slatAction=main.encryptionupdatepassword">Update Database Encryption Password</a></li>
+                                    <li><a title="Re-encrypt Database" class="adminmainencryptionreencryptdata " target="_self" href="/Slatwall/?slatAction=main.encryptionreencryptdata">Re-encrypt Database</a></li>
+                                    <li><a title="Reload Slatwall" class="adminmaindefault " target="_self" href="/Slatwall/?reload=true">Reload Slatwall</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <div class="pull-right s-temp-nav">
+                            <ul class="nav navbar-nav">
+                                <li ng-controller="globalSearch" class="ng-scope">
+                                    <form name="search" class="navbar-form navbar-right s-header-search ng-pristine ng-valid" action="/" onsubmit="return false;" autocomplete="off" style="padding: 7px;margin-right: 0px;margin-left: 20px;" novalidate="novalidate">
+                                        <div class="form-group">
+                                            <input type="text" name="search" class="form-control search-query col-xs-2 ng-pristine ng-untouched ng-valid" placeholder="Search" ng-model="keywords" ng-change="updateSearchResults()">
+                                            <a ng-show="searchResultsOpen" class="s-close-icon-search ng-hide" id="s-close-search" href="#" ng-click="hideResults()"><i class="fa fa-times"></i></a>
+                                        </div>
+                                        <div class="row s-search-results ng-hide" style="padding-top:15px;" ng-show="searchResultsOpen">
+                                            <ul class="col-md-12 list-unstyled">
+                                                <!-- ngRepeat: searchResult in searchResults -->
+                                                <li ng-repeat="searchResult in searchResults" ng-show="searchResult.results.length &amp;&amp; resultsFound" class="ng-scope ng-hide">
+                                                    <div class="col-md-4 s-title">
+                                                        <h2 ng-bind="searchResult.title">Accounts</h2>
+                                                    </div>
+                                                    <div class="col-md-8 s-body">
+                                                        <ul class="list-unstyled" id="j-search-results-remove-this">
+                                                            <!-- ngRepeat: result in searchResult.results -->
+                                                        </ul>
+                                                    </div>
+                                                </li>
+                                                <!-- end ngRepeat: searchResult in searchResults -->
+                                                <li ng-repeat="searchResult in searchResults" ng-show="searchResult.results.length &amp;&amp; resultsFound" class="ng-scope ng-hide">
+                                                    <div class="col-md-4 s-title">
+                                                        <h2 ng-bind="searchResult.title"></h2>
+                                                    </div>
+                                                    <div class="col-md-8 s-body">
+                                                        <ul class="list-unstyled" id="j-search-results-remove-this">
+                                                            <!-- ngRepeat: result in searchResult.results -->
+                                                        </ul>
+                                                    </div>
+                                                </li>
+                                                <!-- end ngRepeat: searchResult in searchResults -->
+                                                <li ng-repeat="searchResult in searchResults" ng-show="searchResult.results.length &amp;&amp; resultsFound" class="ng-scope ng-hide">
+                                                    <div class="col-md-4 s-title">
+                                                        <h2 ng-bind="searchResult.title">Products</h2>
+                                                    </div>
+                                                    <div class="col-md-8 s-body">
+                                                        <ul class="list-unstyled" id="j-search-results-remove-this">
+                                                            <!-- ngRepeat: result in searchResult.results -->
+                                                        </ul>
+                                                    </div>
+                                                </li>
+                                                <!-- end ngRepeat: searchResult in searchResults -->
+                                                <li ng-repeat="searchResult in searchResults" ng-show="searchResult.results.length &amp;&amp; resultsFound" class="ng-scope ng-hide">
+                                                    <div class="col-md-4 s-title">
+                                                        <h2 ng-bind="searchResult.title">Vendors</h2>
+                                                    </div>
+                                                    <div class="col-md-8 s-body">
+                                                        <ul class="list-unstyled" id="j-search-results-remove-this">
+                                                            <!-- ngRepeat: result in searchResult.results -->
+                                                        </ul>
+                                                    </div>
+                                                </li>
+                                                <!-- end ngRepeat: searchResult in searchResults -->
+                                                <li ng-hide="resultsFound" class="ng-hide col-md-8 s-body">
+                                                    <ul class="list-unstyled">
+                                                        <li class="s-no-results"><br><em>No Results Found</em></li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                            <div class="spinner ng-hide" ng-show="loading"><i class="fa fa-refresh fa-spin"></i></div>
+                                        </div>
+                                    </form>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cogs icon-white"></i>  </a>
+                                    <ul class="dropdown-menu pull-right s-settings-dropdown" id="j-mobile-nav-remove-this">
+                                        <li><a title="View Account" class="adminentitydetailaccount " target="_self" href="/Slatwall/?slatAction=entity.detailaccount&amp;accountID=3adc427bcca76aaa532395783cc5287d">View Account</a></li>
+                                        <li><a title="Logout" class="adminmainlogout " target="_self" href="/Slatwall/?slatAction=main.logout">Logout</a></li>
+                                        <li class="divider"></li>
+                                        <li><a title="User Docs" href="http://docs.getslatwall.com/#users-administrator-overview" target="_blank">User Guide</a></li>
+                                        <li><a title="Developer Docs" href="http://docs.getslatwall.com/#developer" target="_blank">Developer Docs</a></li>
+                                        <li><a title="About Slatwall" class="adminmainabout " target="_self" href="/Slatwall/?slatAction=main.about">About Slatwall</a></li>
+                                        <li class="divider"></li>
+                                        <li><a title="<i class='flag-icon flag-icon-us'></i> English (US)" class="adminmainchangelanguage " target="_self" href="/Slatwall/?slatAction=main.changelanguage&amp;rbLocale=en_us&amp;redirectURL=http%3A%2F%2Fesiergo%2Ecom%2FSlatwall%2Findex%2Ecfm%3FslatAction%3Dentity%2Eeditproduct%26productID%3D5124bffa420605de01422b75f4d30289"><i class="flag-icon flag-icon-us"></i> English (US)</a></li>
+                                        <li><a title="<i class='flag-icon flag-icon-gb'></i> English (UK)" class="adminmainchangelanguage " target="_self" href="/Slatwall/?slatAction=main.changelanguage&amp;rbLocale=en_gb&amp;redirectURL=http%3A%2F%2Fesiergo%2Ecom%2FSlatwall%2Findex%2Ecfm%3FslatAction%3Dentity%2Eeditproduct%26productID%3D5124bffa420605de01422b75f4d30289"><i class="flag-icon flag-icon-gb"></i> English (UK)</a></li>
+                                        <li><a title="<i class='flag-icon flag-icon-fr'></i> French" class="adminmainchangelanguage " target="_self" href="/Slatwall/?slatAction=main.changelanguage&amp;rbLocale=fr_fr&amp;redirectURL=http%3A%2F%2Fesiergo%2Ecom%2FSlatwall%2Findex%2Ecfm%3FslatAction%3Dentity%2Eeditproduct%26productID%3D5124bffa420605de01422b75f4d30289"><i class="flag-icon flag-icon-fr"></i> French</a></li>
+                                        <li><a title="<i class='flag-icon flag-icon-de'></i> German" class="adminmainchangelanguage " target="_self" href="/Slatwall/?slatAction=main.changelanguage&amp;rbLocale=de_de&amp;redirectURL=http%3A%2F%2Fesiergo%2Ecom%2FSlatwall%2Findex%2Ecfm%3FslatAction%3Dentity%2Eeditproduct%26productID%3D5124bffa420605de01422b75f4d30289"><i class="flag-icon flag-icon-de"></i> German</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <section class="content s-body-margin" id="j-main-content-remove-this">
+                <div class="col-md-12">
+                    <form method="post" action="?s=1" class="ng-pristine ng-valid" enctype="multipart/form-data" id="adminentitysaveproduct" novalidate="novalidate">
+                        <input type="hidden" name="slatAction" value="admin:entity.saveproduct">
+                        <input type="hidden" name="productID" value="5124bffa420605de01422b75f4d30289">
+                        <input type="hidden" name="sRedirectAction" value="admin:entity.detailproduct"> <input type="hidden" name="sRenderItem" value="detailproduct"> <input type="hidden" name="fRenderItem" value="editproduct"> 
+                        <div class="row s-body-nav">
+                            <nav class="navbar navbar-default" role="navigation">
+                                <div class="col-md-6 s-header-info">
+                                    <ul class="list-unstyled list-inline">
+                                    </ul>
+                                    <h1 class="actionbar-title">EDGE</h1>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="btn-toolbar">
+                                        <div class="btn-group btn-group-sm">
+                                            <a title="Products" class="adminentitylistproduct btn btn-default" target="_self" href="/Slatwall/?slatAction=entity.listproduct"><i class="glyphicon glyphicon-arrow-left"></i> Products</a> 
+                                            <button class="btn dropdown-toggle btn-default" data-toggle="dropdown"><i class="icon-list-alt"></i> Actions <span class="caret"></span></button>
+                                            <ul class="dropdown-menu pull-right">
+                                                <li><a title="Update Skus" class="adminentitypreprocessproduct  modalload" target="_self" href="/Slatwall/?slatAction=entity.preprocessproduct&amp;processContext=updateSkus&amp;productID=5124bffa420605de01422b75f4d30289" data-toggle="modal" data-target="#adminModal">Update Skus</a></li>
+                                                <li><a title="Reset Default Image Filenames" class="adminentityprocessproduct  alert-confirm" target="_self" href="/Slatwall/?slatAction=entity.processproduct&amp;processContext=updateDefaultImageFileNames&amp;productID=5124bffa420605de01422b75f4d30289" data-confirm="Are you sure that you want to override the default image filename?  Doing this may remove your existing default images.">Reset Default Image Filenames</a></li>
+                                                <li class="divider"></li>
+                                                <li><a title="Add Option Group" class="adminentitypreprocessproduct  modalload" target="_self" href="/Slatwall/?slatAction=entity.preprocessproduct&amp;processContext=addOptionGroup&amp;productID=5124bffa420605de01422b75f4d30289" data-toggle="modal" data-target="#adminModal">Add Option Group</a></li>
+                                                <li><a title="Add Option" class="adminentitypreprocessproduct  modalload" target="_self" href="/Slatwall/?slatAction=entity.preprocessproduct&amp;processContext=addOption&amp;productID=5124bffa420605de01422b75f4d30289" data-toggle="modal" data-target="#adminModal">Add Option</a></li>
+                                                <li><a title="Add Image" class="adminentitycreateImage  modalload" target="_self" href="/Slatwall/?slatAction=entity.createImage&amp;productID=5124bffa420605de01422b75f4d30289&amp;objectName=product&amp;redirectAction=admin:entity.editproduct" data-toggle="modal" data-target="#adminModal">Add Image</a></li>
+                                                <li><a title="Add File" class="adminentitycreatefile  modalload" target="_self" href="/Slatwall/?slatAction=entity.createfile&amp;baseObject=Product&amp;baseID=5124bffa420605de01422b75f4d30289&amp;redirectAction=admin:entity.editproduct" data-toggle="modal" data-target="#adminModal">Add File</a></li>
+                                                <li><a title="Add Comment" class="adminentitycreatecomment  modalload" target="_self" href="/Slatwall/?slatAction=entity.createcomment&amp;productID=5124bffa420605de01422b75f4d30289&amp;redirectAction=admin:entity.editproduct" data-toggle="modal" data-target="#adminModal">Add Comment</a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="btn-group btn-group-sm">
+                                        </div>
+                                        <div class="btn-group btn-group-sm">
+                                            <a title="Delete" class="adminentitydeleteproduct btn btn-default s-remove alert-confirm" target="_self" href="/Slatwall/?slatAction=entity.deleteproduct&amp;productID=5124bffa420605de01422b75f4d30289" data-confirm="Are you sure you would like to delete this Product?"><i class="glyphicon glyphicon-trash icon-white"></i> Delete</a> <a title="Cancel" class="adminentitydetailproduct btn btn-default" target="_self" href="/Slatwall/?slatAction=entity.detailproduct&amp;productID=5124bffa420605de01422b75f4d30289"><i class="glyphicon glyphicon-remove icon-white"></i> Cancel</a> <button class="adminentitysaveproduct btn btn-success" title="Save" type="submit"><i class="glyphicon glyphicon-ok icon-white"></i> Save</button> 
+                                        </div>
+                                    </div>
+                                </div>
+                            </nav>
+                        </div>
+                        <div class="row s-pannel-control">
+                            <div class="col-md-12 s-toggle-panels">
+                                <a href="#" class="j-openall-remove-this j-tool-tip-item-remove-this" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Expand All"><i class="fa fa-expand"></i></a>
+                                <a href="#" class="j-closeall-remove-this j-tool-tip-item-remove-this" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Collapse All"><i class="fa fa-compress"></i></a>
+                            </div>
+                        </div>
+                        <div class="panel-group s-pannel-group" id="accordion">
+                            
+                            
+                                     
+                            <!--  ///////////////////////
+                            /////////////////////////////
+                            ////////////////////////////
+                            ///////////////////////////
+                            //////////////////////////
+                            /////////////////////////
+                            ////////////////////////
+                            ///////////////////////
+                            //////////////////////
+                            /////////////////////
+                            ////////////////////
+                            ///////////////////
+                            //////////////////
+                            /////////////////
+                            ////////////////
+                            ///////////////
+                            //////////////
+                            /////////////
+                            ////////////
+                            ///////////
+                            //////////
+                            /////////
+                            ////////
+                            ///////
+                            //////
+                            /////
+                            ////
+                            -->
+                            
+                            <!-- Start of content that you should care about in this mock (-:)-->
+                            <div class="j-panel panel panel-default s-detail-content-wrapper">
+                                <a data-toggle="collapse" href="#collapse1">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">
+                                            <span>Assigned Products</span> 
+                                            <span class="badge">3</span>
+                                            <i class="fa fa-caret-left s-accordion-toggle-icon"></i>
+                                        </h4>
+                                    </div>
+                                </a>
+                                <div id="collapse1" class="panel-collapse collapse in">
+                                    <content class="s-body-box">
+
+                                        <!-- First Tab -->
+                                        <div role="tabpanel" class="tab-pane active" id="j-basic">
+                                            <div class="row s-table-inner-nav ">
+                                                
+                                                <div class="row">
+                                                    <div class="col-md-9">
+                                                        <div class="s-search-wrapper">
+                                                            
+                                                            <div class="input-group">
+                                                                <div class="input-group-btn search-panel">
+                                                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                                                    <span>All</span> <span class="caret"></span>
+                                                                    </button>
+                                                                    <ul class="dropdown-menu" role="menu">
+                                                                        <li><a href="#">Name</a></li>
+                                                                        <li><a href="#">Code</a></li>
+                                                                        <li><a href="#">Type</a></li>
+                                                                        <li><a href="#">Active</a></li>
+                                                                        <li><a href="#">Published</a></li>
+                                                                        <li><a href="#">Price </a></li>
+                                                                    </ul>
+                                                                </div>
+                                                                <span class="s-search s-add">
+                                                                    <input type="text" class="form-control input-sm" name="" placeholder="Search & assign product..." style="padding-left: 30px;">
+                                                                    <div class="dropdown s-search-results-wrapper s-selectable" style="display: none;">
+                            									        <ul class="dropdown-menu">
+                                                                            <li class="s-selected"><a href="##">Casio Business Casual Watch <span class="s-right-content">Merchandise > Accessories</span></a></li>
+                            									            <li><a href="##">Casio Classic Black Watch <span class="s-right-content">Merchandise > Accessories</span></a></li>
+                            									            <li class="s-selected"><a href="##">Casio Calculator Watch <span class="s-right-content">Merchandise > Accessories</span></a></li>
+                                                                            <li class="s-selected"><a href="##">Casio Gold Player Special Watch <span class="s-right-content">Merchandise > Accessories</span></a></li>
+                                                                            <li><a href="##">Casio Kids Watch <span class="s-right-content">Merchandise > Accessories</span></a></li>
+                            									            <li><a href="##">Casio Training Day Watch <span class="s-right-content">Merchandise > Accessories</span></a></li>
+                                                                            <li><a href="##">Casio Silver Dress Watch <span class="s-right-content">Merchandise > Accessories</span></a></li>
+                                                                            <li class="s-loading"><a href="##">Casio Silver Player Special Watch <span class="s-right-content">Merchandise > Accessories</span></a></li>
+                            									            <li><a href="##">Casio Surf Tide Watch <span class="s-right-content">Merchandise > Accessories</span></a></li>
+                                                                            <li><a href="##">Casio Underwater Watch <span class="s-right-content">Merchandise > Accessories</span></a></li>
+                            									        </ul>
+                            									    </div>
+                                                                </span>
+                                                            </div>
+                                                            
+                                                        </div>
+                                                        
+                                                    </div>
+                                                    <div class="col-md-3 s-action-right">
+                                                        
+                                                        <div class="s-select-wrapper s-titled-select-wrapper s-sort-by">
+                                                            <span>Sort By:</span>
+                                                            <select class="form-control input-sm">
+                                                                <option value="" disabled selected>Select</option>
+                                                                <option value="" id="for-mock-only-manual-sort">Manual</option>
+                                                                <option value="name">Name</option>
+                                                                <option value="">Code</option>
+                                                                <option value="">Active</option>
+                                                                <option value="">Published</option>
+                                                                <option value="">Type</option>
+                                                                <option value="">Price</option>
+                                                            </select>
+                                                        </div>
+                                                        
+                                                        <div class="btn-group s-option-toggles" style="float: none;vertical-align: top;" role="group" aria-label="...">
+                                                            <button type="button" class="btn btn-default s-selected" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Ascending"><i class="fa fa-sort-alpha-asc" aria-hidden="true"></i></button>
+                                                            <button type="button" class="btn btn-default" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Descending"><i class="fa fa-sort-alpha-desc" aria-hidden="true"></i></button>
+                                                            <button type="button" class="btn btn-default" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Manual"><i class="fa fa-bars" aria-hidden="true"></i></button>
+                                                        </div>
+                                                        
+                                                        <button class="btn btn-default" style="vertical-align: top;margin-left: 5px;" type="button" data-toggle="collapse" data-target="#j-display-options">
+                                                            <i class="fa fa-th"></i>
+                                                        </button>
+                                                        
+                                                        <!-- <div class="s-table-setting">
+                                                            <span class="s-title">Manual Sort</span>
+                                                            <div class="s-toggle-switch">
+                                                                <input id="sampleCheckboxToggle" name="sampleCheckboxToggle" type="checkbox" value="1" />
+                                                                <div class="btn">
+                                                                    <label for="sampleCheckboxToggle">
+                                                                        <div class="s-toggle-switch-on btn btn-success"> 
+                                                                            On
+                                                                        </div>
+                                                                        <div class="s-toggle-switch-handle btn btn-default"></div>
+                                                                        <div class="s-toggle-switch-off btn btn-dgrey">
+                                                                            Off
+                                                                        </div>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div> -->
+                                                    </div>
+                                                    
+                                                </div>
+
+                                                <div class="s-display-options collapse" id="j-display-options">
+                                                    <a href="#" class="s-close" data-toggle="collapse" data-target="#j-display-options">
+                                                        <i class="fa fa-times"></i>
+                                                    </a>
+                                                    <!-- Dragable List group -->
+                                                    <h4>Display Options</h4>
+                                                    
+                                                    <!-- Dragable List group -->
+                                                    <ul id="displayOptionsContainer" sortable="callbacks" class="list-group s-j-draggablePanelList" style="">
+                                                        
+                                                        <li class="list-group-item ng-isolate-scope">
+                                                            <div class="row" ng-if="column">
+                                                                <div class="col-xs-5 s-pannel-name" j-column-index="3">
+                                                                    <span>4</span>
+                                                                    <i class="fa fa-arrows-v"></i>
+                                                                    <span class="s-pannel-title" title="Object">Object</span>
+                                                                    <a class="s-pannel-title-edit">edit</a>
+                                                                    <span class="s-title-edit-menu ng-hide">
+                                                                        <input type="text" class="form-control">
+                                                                        <button type="button" class="btn btn-xs btn-primary s-save-btn">Save</button>
+                                                                        <button type="button" class="btn btn-xs btn-default s-cancel-btn">Cancel</button>
+                                                                    </span>
+                                                                </div>
+                                                                <div class="col-xs-7 s-pannel-body">
+                                                                    <div class="btn-group">
+                                                                        <span class="s-sort-num">
+                                                                            <a class="s-pannel-title j-tool-tip-item j-edit-item s-active" title="Edit">0</a>
+                                                                        </span>
+                                                                        <a class="btn btn-default s-sort j-tool-tip-item" title="Sort Order">
+                                                                            <i class="fa fa-sort s-not-active fa-sort-amount-asc"></i>
+                                                                        </a>
+                                                                        <a class="btn btn-default j-tool-tip-item active" title="Visible">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a>
+                                                                        <a class="btn btn-default j-tool-tip-item active" title="Search">
+                                                                            <i class="fa fa-search"></i>
+                                                                        </a>
+                                                                        <a class="btn btn-default j-tool-tip-item active" title="Export">
+                                                                            <i class="fa fa-download"></i>
+                                                                        </a> 
+                                                                        <a ng-disabled="!column.isDeletable" class="btn btn-default s-remove j-tool-tip-item" title="Remove">
+                                                                            <i class="fa fa-times"></i>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <!-- end ngIf: column -->
+                                                        </li>
+                                                        <!-- end ngRepeat: column in swListingControls.collectionConfig.columns -->
+                                                    </ul>
+                                                    <!-- Message if no items -->
+                                                    <div class="s-none-selected" style="display:none;">There are no fields selected</div>
+                                                    <!-- Button to show create option -->
+                                                    <button type="button" class="btn btn-xs btn-primary" data-target="#j-add-display-field" data-toggle="collapse">
+                                                        Add Display Field
+                                                    </button>
+                                                
+                                                </div>
+                                                
+
+                                            </div>
+                                            <div class="s-detail-notifications s-take-action" style="display: block !important;">
+            									<div class="row">
+            										<div class="col-sm-8 s-message" style="margin-top: 6px;">
+                                                        <span class="s-icon">
+                                                            <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                                        </span>
+            											 <span>You have changed the sorting order.  When you're done re-ordering, click "Update."</span>
+            										</div>
+            										<div class="col-sm-4" style="text-align:right;">
+                                                        <button class="btn btn-primary" type="button">Update</button>                                                                
+            										</div>
+            									</div>
+                                            </div>
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered s-detail-content-table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="s-order-table">
+                                                                
+                                                            </th>
+                                                            <th>
+                                                                <span>Name</span>
+                                                                <!-- <a href="#" class="s-sort-arrows">
+                    												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                    													<g transform="translate(0.5, 0.5)"> 
+                    														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                    														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                    													</g>
+                    												</svg>
+                    											</a> -->
+                                                            </th>
+                                                            <th>
+                                                                <span>Code</span>
+                                                                <!-- <a href="#" class="s-sort-arrows">
+                    												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                    													<g transform="translate(0.5, 0.5)"> 
+                    														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                    														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                    													</g>
+                    												</svg>
+                    											</a> -->
+                                                            </th>
+                                                            <th>
+                                                                <span>Type</span>
+                                                                <!-- <a href="#" class="s-sort-arrows">
+                    												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                    													<g transform="translate(0.5, 0.5)"> 
+                    														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                    														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                    													</g>
+                    												</svg>
+                    											</a> -->
+                                                            </th>
+                                                            <th>
+                                                                <span>Active</span>
+                                                                <!-- <a href="#" class="s-sort-arrows">
+                    												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                    													<g transform="translate(0.5, 0.5)"> 
+                    														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                    														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                    													</g>
+                    												</svg>
+                    											</a> -->
+                                                            </th>
+                                                            <th>
+                                                                <span>Published</span>
+                                                                <!-- <a href="#" class="s-sort-arrows">
+                    												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                    													<g transform="translate(0.5, 0.5)"> 
+                    														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                    														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                    													</g>
+                    												</svg>
+                    											</a> -->
+                                                            </th>
+                                                            <th>
+                                                                <span>Price</span>
+                                                                <!-- <a href="#" class="s-sort-arrows">
+                    												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                    													<g transform="translate(0.5, 0.5)"> 
+                    														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                    														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                    													</g>
+                    												</svg>
+                    											</a> -->
+                                                            </th>
+                                                            <th class="s-actions">
+                                                                
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>    
+                                                        <tr>
+                                                            <td class="s-order-table">
+                                                                <a href="##" title="Move Order" target="_self">
+                                                                    <i class="fa fa-bars" aria-hidden="true"></i>
+                                                                </a>
+                                                            </td>
+                                                            <td>Casio Business Casual Watch </td>
+                                                            <td>6TY86TYU</td>
+                                                            <td>Accessories</td>
+                                                            <td>True</td>
+                                                            <td>True</td>
+                                                            <td>$136.99</td>
+                                                            <td class="s-actions">
+                                                                <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                    <i class="fa fa-eye"></i>
+                                                                </a> 
+                                                                <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                    <i class="fa fa-remove"></i>
+                                                                </a> 
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="s-order-table">
+                                                                <a href="##" title="Move Order" target="_self">
+                                                                    <i class="fa fa-bars" aria-hidden="true"></i>
+                                                                </a>
+                                                            </td>
+                                                            <td>Casio Gold Player Special Watch </td>
+                                                            <td>5TYU7876TYU</td>
+                                                            <td>Accessories</td>
+                                                            <td>True</td>
+                                                            <td>True</td>
+                                                            <td>$149.99</td>
+                                                            <td class="s-actions">
+                                                                <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                    <i class="fa fa-eye"></i>
+                                                                </a> 
+                                                                <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                    <i class="fa fa-remove"></i>
+                                                                </a> 
+                                                            </td>
+                                                        </tr>
+                                                         <tr>
+                                                            <td class="s-order-table">
+                                                                <a href="##" title="Move Order" target="_self">
+                                                                    <i class="fa fa-bars" aria-hidden="true"></i>
+                                                                </a>
+                                                            </td>
+                                                            <td>Casio Calculator Watch </td>
+                                                            <td>9YTUR876TYU</td>
+                                                            <td>Accessories</td>
+                                                            <td>True</td>
+                                                            <td>True</td>
+                                                            <td>$149.99</td>
+                                                            <td class="s-actions">
+                                                                <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                    <i class="fa fa-eye"></i>
+                                                                </a> 
+                                                                <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                    <i class="fa fa-remove"></i>
+                                                                </a> 
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="j-pagination-remove-this" data-tableid="LD9D579B9FCC280BDD7D9FBA9C0B5186CF">
+                                                <ul class="pagination paginationpages12">
+                                                    <li><a href="#" class="paging-show-toggle">Show <span class="details">(1 - 10 of 113)</span></a></li>
+                                                    <li><a href="#" class="show-option" data-show="10" style="display: none;">10</a></li>
+                                                    <li><a href="#" class="show-option" data-show="25" style="display: none;">25</a></li>
+                                                    <li><a href="#" class="show-option" data-show="50" style="display: none;">50</a></li>
+                                                    <li><a href="#" class="show-option" data-show="100" style="display: none;">100</a></li>
+                                                    <li><a href="#" class="show-option" data-show="500" style="display: none;">500</a></li>
+                                                    <li><a href="#" class="show-option" data-show="ALL" style="display: none;">ALL</a></li>
+                                                    <li class="disabled"><a href="#" class="page-option prev">«</a></li>
+                                                    <li class="active"><a href="#" class="listing-pager page-option" data-page="1">1</a></li>
+                                                    <li><a href="#" class="listing-pager page-option" data-page="2">2</a></li>
+                                                    <li><a href="#" class="listing-pager page-option" data-page="3">3</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <!-- ///First Tab -->
+                                        
+                                    </content>
+                                </div>
+                            </div>
+                                                
+                            
+                            <div class="j-panel panel panel-default s-detail-content-wrapper">
+                                <a data-toggle="collapse" href="#collapse2">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">
+                                            <span>Listing Pages</span>
+                                            <span class="badge">3</span> 
+                                            <i class="fa fa-caret-left s-accordion-toggle-icon"></i>
+                                        </h4>
+                                    </div>
+                                </a>
+                                <div id="collapse2" class="panel-collapse collapse in">
+                                    <content class="s-body-box">
+                                        
+                                        <div class="s-tab-table">
+                                            <div class="row s-tabs">
+                                                <ul class="nav nav-tabs" role="tablist"> 
+                                                    <li role="presentation" class="active">
+                                                        <a href="#j-pages-basic" role="tab" data-toggle="tab" aria-controls="basic" aria-expanded="true">Assigned Pages</a>
+                                                    </li> 
+                                                    <li role="presentation">
+                                                        <a href="#j-page-tree-view" role="tab" data-toggle="tab" aria-controls="pricing">Site View</a>
+                                                    </li>
+                                                    <li role="presentation">
+                                                        <a href="#j-page-tree-view-search-view" role="tab" data-toggle="tab" aria-controls="pricing">Site View (search view: demo only)</a>
+                                                    </li>
+                                                </ul> 
+                                            </div>
+                                            <div class="tab-content">
+                                                
+                                                <!-- First Tab -->
+                                                <div role="tabpanel" class="tab-pane active" id="j-pages-basic">
+                                                    <div class="row s-table-inner-nav ">
+                                                        
+                                                        <div class="row">
+                                                            <div class="col-sm-10">
+                                                                <div class="s-search-wrapper">
+                                                                    <div class="input-group">
+                                                                        <div class="input-group-btn search-panel">
+                                                                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                                                            <span>All</span> <span class="caret"></span>
+                                                                            </button>
+                                                                            <ul class="dropdown-menu" role="menu">
+                                                                                <li><a href="#">All</a></li>
+                                                                                <li><a href="#">Page</a></li>
+                                                                                <li><a href="#">Site</a></li>
+                                                                                <li><a href="#">Position</a></li>
+                                                                            </ul>
+                                                                        </div>
+                                                                        <span class="s-search s-add">
+                                                                            <input type="text" class="form-control input-sm" name="" placeholder="Search & assign page..." style="padding-left: 30px;">
+                                                                            <div class="dropdown s-search-results-wrapper s-selectable" style="display: none;">
+                                                                                <ul class="dropdown-menu">
+                                                                                    <li><a href="##">Classic Watches <span class="s-right-content">Classic Watches (Default)</span></a></li>
+                                                                                    <li><a href="##">Green Classic Watches <span class="s-right-content">Classic Watches > Green Classic Watches (Default)</span></a></li>
+                                                                                    <li><a href="##">Red Classic Watches <span class="s-right-content">Classic Watches > Red Classic Watches (Default)</span></a></li>
+                                                                                    <li><a href="##">Black Wathces <span class="s-right-content">Black Wathces (Default)</span></a></li>
+                                                                                    <li class="s-loading"><a href="##">Silver Wathces <span class="s-right-content">Silver Wathces (Popup Store)</span></a></li>
+                                                                                    <li class="s-selected"><a href="##">Water Proof Watches <span class="s-right-content">Water Proof Watches (Popup Store)</span></a></li>
+                                                                                    <li class="s-selected"><a href="##">Army Watches <span class="s-right-content">Army Watches (Popup Store)</span></a></li>
+                                                                                    <li><a href="##">Invisable Watches <span class="s-right-content">Invisable Watches (Popup Store)</span></a></li>
+                                                                                    <li><a href="##">007 Watches  <span class="s-right-content">007 Watches (Default)</span></a></li>
+                                                                                    <li class="s-selected"><a href="##">Special Edition Watches<span class="s-right-content">Special Edition Watches (Default)</span></a></li>
+                                                                                </ul>
+                                                                            </div>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <div class="col-sm-2">
+                                                                
+                                                                <div class="s-select-wrapper s-titled-select-wrapper s-site">
+                                                                    <span>Sites:</span>
+                                                                    <select class="form-control input-sm">
+                                                                        <option value="">All</option>
+                                                                        <option value="" selected>Default</option>
+                                                                        <option value="">Pop Up Shop</option>
+                                                                    </select>
+                                                                </div>
+                                                                
+                                                                    
+                                                            </div>
+                                                            
+                                                        </div>
+                                                        
+                                                    </div>
+                                                    
+                                                    <div class="table-responsive">
+                                                        <table class="table table-bordered s-detail-content-table">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>
+                                                                        <span>Content Title</span>
+                                                                        <!-- <a href="#" class="s-sort-arrows">
+                            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                            													<g transform="translate(0.5, 0.5)"> 
+                            														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                            														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                            													</g>
+                            												</svg>
+                            											</a> -->
+                                                                    </th>
+                                                                    <th>
+                                                                        <span>Content Title Path</span>
+                                                                    </th>
+                                                                    <th>
+                                                                        <span>Site</span>
+                                                                        <!-- <a href="#" class="s-sort-arrows">
+                            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                            													<g transform="translate(0.5, 0.5)"> 
+                            														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                            														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                            													</g>
+                            												</svg>
+                            											</a> -->
+                                                                    </th>
+                                                                    <th>
+                                                                        <span>Active</span>
+                                                                        <!-- <a href="#" class="s-sort-arrows">
+                            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                            													<g transform="translate(0.5, 0.5)"> 
+                            														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                            														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                            													</g>
+                            												</svg>
+                            											</a> -->
+                                                                    </th>
+                                                                    <th>
+                                                                        <span data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Displays the order of the product in the listing page.">Position</span>
+                                                                        <!-- <a href="#" class="s-sort-arrows">
+                            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                            													<g transform="translate(0.5, 0.5)"> 
+                            														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                            														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                            													</g>
+                            												</svg>
+                            											</a> -->
+                                                                    </th>
+                                                                    <th class="s-actions">
+                                                                        
+                                                                    </th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>    
+                                                                <tr>
+                                                                    <td>Water Proof Watches </td>
+                                                                    <td>Home > <strong>Water Proof Watches</strong></td>
+                                                                    <td>Default</td>
+                                                                    <td>False </td>
+                                                                    <td>21/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-remove"></i>
+                                                                        </a> 
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Army Watches </td>
+                                                                    <td>Home > <strong>Army Watches</strong></td>
+                                                                    <td>Default</td>
+                                                                    <td>False </td>
+                                                                    <td>Auto Sort</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-remove"></i>
+                                                                        </a> 
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Special Edition Watches </td>
+                                                                    <td>Home > <strong>Special Edition Watches</strong></td>
+                                                                    <td>Default</td>
+                                                                    <td>True </td>
+                                                                    <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-remove"></i>
+                                                                        </a> 
+                                                                    </td>
+                                                                </tr>
+                                                                
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div class="j-pagination-remove-this" data-tableid="LD9D579B9FCC280BDD7D9FBA9C0B5186CF">
+                                                        <ul class="pagination paginationpages12">
+                                                            <li><a href="#" class="paging-show-toggle">Show <span class="details">(1 - 10 of 113)</span></a></li>
+                                                            <li><a href="#" class="show-option" data-show="10" style="display: none;">10</a></li>
+                                                            <li><a href="#" class="show-option" data-show="25" style="display: none;">25</a></li>
+                                                            <li><a href="#" class="show-option" data-show="50" style="display: none;">50</a></li>
+                                                            <li><a href="#" class="show-option" data-show="100" style="display: none;">100</a></li>
+                                                            <li><a href="#" class="show-option" data-show="500" style="display: none;">500</a></li>
+                                                            <li><a href="#" class="show-option" data-show="ALL" style="display: none;">ALL</a></li>
+                                                            <li class="disabled"><a href="#" class="page-option prev">«</a></li>
+                                                            <li class="active"><a href="#" class="listing-pager page-option" data-page="1">1</a></li>
+                                                            <li><a href="#" class="listing-pager page-option" data-page="2">2</a></li>
+                                                            <li><a href="#" class="listing-pager page-option" data-page="3">3</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <!-- ///First Tab -->
+                                                
+                                                <!-- Second Tab -->
+                                                <div role="tabpanel" class="tab-pane" id="j-page-tree-view">
+                                                    <div class="row s-table-inner-nav ">
+                                                          <div class="row">
+                                                            <div class="col-sm-10">
+                                                                <div class="s-search-wrapper">
+                                                                    <div class="input-group">
+                                                                        <div class="input-group-btn search-panel">
+                                                                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                                                            <span>All</span> <span class="caret"></span>
+                                                                            </button>
+                                                                            <ul class="dropdown-menu" role="menu">
+                                                                                <li><a href="#">All</a></li>
+                                                                                <li><a href="#">Page</a></li>
+                                                                                <li><a href="#">Site</a></li>
+                                                                                <li><a href="#">Position</a></li>
+                                                                            </ul>
+                                                                        </div>
+                                                                        <span class="s-search">
+                                                                            <input type="text" class="form-control s-search input-sm" name="" placeholder="Search page...">
+                                                                            <!-- <buttom class="btn btn-xs btn-default s-add-search-param">Add this filter</buttom> -->
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                             <div class="col-sm-2">
+                                                                
+                                                                 <div class="s-select-wrapper s-titled-select-wrapper s-site">
+                                                                     <span>Sites:</span>
+                                                                     <select class="form-control input-sm">
+                                                                         <option value="">All</option>
+                                                                         <option value="" selected>Default</option>
+                                                                         <option value="">Pop Up Shop</option>
+                                                                     </select>
+                                                                 </div>
+                                                                    
+                                                            </div>
+                                                        </div>     
+                                                    </div>
+                                                    <div class="s-detail-notifications">
+                    									<div class="row">
+                    										<div class="col-sm-12 s-message" style="margin-top: 6px;">
+                    											<span><b>6</b> items are selected.</span> 
+                    		                                    <a href="##">Select all <b>8</b> items</a>
+                    										</div>
+                    									</div>
+                                                    </div>
+                                                    <div class="table-responsive">
+                                                        <table class="table table-bordered s-detail-content-table">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox" id="exampleID">
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </th>
+                                                                    <th>
+                                                                        <span>Content Title</span>
+                                                                        <a href="#" class="s-sort-arrows">
+                            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                            													<g transform="translate(0.5, 0.5)"> 
+                            														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                            														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                            													</g>
+                            												</svg>
+                            											</a>
+                                                                    </th>
+                                                                    <th>
+                                                                        <span>Active</span>
+                                                                        <a href="#" class="s-sort-arrows">
+                            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                            													<g transform="translate(0.5, 0.5)"> 
+                            														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                            														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                            													</g>
+                            												</svg>
+                            											</a>
+                                                                    </th>
+                                                                    <th>
+                                                                        <span>Position</span>
+                                                                        <a href="#" class="s-sort-arrows">
+                            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                            													<g transform="translate(0.5, 0.5)"> 
+                            														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                            														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                            													</g>
+                            												</svg>
+                            											</a>
+                                                                    </th>
+                                                                    <th>
+                                                                        
+                                                                    </th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>    
+                                                                <tr>
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox">
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td class="s-levels">
+                                                                        <div class="s-levels-wrapper">
+                                                                            <i class="fa s-listing-arrow fa-caret-down"></i> 
+                                                                            <span>Classic Watches</span>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>False </td>
+                                                                    <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                        
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox">
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td class="s-levels" style="padding-left: 50px;">
+                                                                        <div> 
+                                                                            <span>Red Classic Watches</span>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>False </td>
+                                                                    <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                        
+                                                                    </td>
+                                                                </tr>
+                                                                 <tr>
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox">
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td class="s-levels" style="padding-left: 50px;">
+                                                                        <div> 
+                                                                            <span>Green Classic Watches</span>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>False </td>
+                                                                    <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                        
+                                                                    </td>
+                                                                </tr>
+                                                                 <tr>
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox">
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td class="s-levels" style="padding-left: 50px;">
+                                                                        <div> 
+                                                                            <span>Yellow Classic Watches</span>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>False </td>
+                                                                    <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                        
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox" id="exampleID">
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>Black Watches </td>
+                                                                    <td>False </td>
+                                                                    <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                        
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox" id="exampleID">
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>Silver Watches </td>
+                                                                    <td>False </td>
+                                                                    <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                    
+                                                                    </td>
+                                                                </tr>
+                                                                <tr class="s-selected-row">
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox" id="exampleID" checked>
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>Water Proof Watches </td>
+                                                                    <td>False </td>
+                                                                    <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                        
+                                                                    </td>
+                                                                </tr>
+                                                                <tr class="s-selected-row">
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox" id="exampleID" checked>
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>Army Watches </td>
+                                                                    <td>False </td>
+                                                                    <td>Auto Sort</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox" id="exampleID">
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>Invisable Watches </td>
+                                                                    <td>False </td>
+                                                                    <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                        
+                                                                    </td>
+                                                                </tr>
+                                                                <tr class="s-selected-row">
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox" id="exampleID" checked>
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>Special Edition Watches </td>
+                                                                    <td>True </td>
+                                                                    <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                        
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox" id="exampleID">
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>007 Watches </td>
+                                                                    <td>False </td>
+                                                                    <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                    </td>
+                                                                </tr>
+                                                                
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div class="j-pagination-remove-this" data-tableid="LD9D579B9FCC280BDD7D9FBA9C0B5186CF">
+                                                        <ul class="pagination paginationpages12">
+                                                            <li><a href="#" class="paging-show-toggle">Show <span class="details">(1 - 10 of 113)</span></a></li>
+                                                            <li><a href="#" class="show-option" data-show="10" style="display: none;">10</a></li>
+                                                            <li><a href="#" class="show-option" data-show="25" style="display: none;">25</a></li>
+                                                            <li><a href="#" class="show-option" data-show="50" style="display: none;">50</a></li>
+                                                            <li><a href="#" class="show-option" data-show="100" style="display: none;">100</a></li>
+                                                            <li><a href="#" class="show-option" data-show="500" style="display: none;">500</a></li>
+                                                            <li><a href="#" class="show-option" data-show="ALL" style="display: none;">ALL</a></li>
+                                                            <li class="disabled"><a href="#" class="page-option prev">«</a></li>
+                                                            <li class="active"><a href="#" class="listing-pager page-option" data-page="1">1</a></li>
+                                                            <li><a href="#" class="listing-pager page-option" data-page="2">2</a></li>
+                                                            <li><a href="#" class="listing-pager page-option" data-page="3">3</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <!-- ///Second Tab -->
+                                                
+                                                <!-- Third Tab -->
+                                                <div role="tabpanel" class="tab-pane" id="j-page-tree-view-search-view">
+                                                    <div class="row s-table-inner-nav ">
+                                                          <div class="row">
+                                                            <div class="col-sm-10">
+                                                                <div class="s-search-wrapper">
+                                                                    <div class="input-group">
+                                                                        <div class="input-group-btn search-panel">
+                                                                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                                                            <span>All</span> <span class="caret"></span>
+                                                                            </button>
+                                                                            <ul class="dropdown-menu" role="menu">
+                                                                                <li><a href="#">All</a></li>
+                                                                                <li><a href="#">Page</a></li>
+                                                                                <li><a href="#">Site</a></li>
+                                                                                <li><a href="#">Position</a></li>
+                                                                            </ul>
+                                                                        </div>
+                                                                        <span class="s-search">
+                                                                            <input type="text" class="form-control s-search input-sm" name="" value="watches" placeholder="Search page...">
+                                                                            <!-- <buttom class="btn btn-xs btn-default s-add-search-param">Add this filter</buttom> -->
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                             <div class="col-sm-2">
+                                                                
+                                                                 <div class="s-select-wrapper s-titled-select-wrapper s-site">
+                                                                     <span>Sites:</span>
+                                                                     <select class="form-control input-sm">
+                                                                         <option value="">All</option>
+                                                                         <option value="" selected>Default</option>
+                                                                         <option value="">Pop Up Shop</option>
+                                                                     </select>
+                                                                 </div>
+                                                                    
+                                                            </div>
+                                                        </div>     
+                                                    </div>
+                                                    <div class="s-detail-notifications">
+                    									<div class="row">
+                    										<div class="col-sm-12 s-message" style="margin-top: 6px;">
+                    											<span><b>6</b> items are selected.</span> 
+                    		                                    <a href="##">Select all <b>8</b> items</a>
+                    										</div>
+                    									</div>
+                                                    </div>
+                                                    <div class="table-responsive">
+                                                        <table class="table table-bordered s-detail-content-table">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox" id="exampleID">
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </th>
+                                                                    <th>
+                                                                        <span>Content Title Path</span>
+                                                                        <a href="#" class="s-sort-arrows">
+                            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                            													<g transform="translate(0.5, 0.5)"> 
+                            														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                            														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                            													</g>
+                            												</svg>
+                            											</a>
+                                                                    </th>
+                                                                    <th>
+                                                                        <span>Active</span>
+                                                                        <a href="#" class="s-sort-arrows">
+                            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                            													<g transform="translate(0.5, 0.5)"> 
+                            														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                            														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                            													</g>
+                            												</svg>
+                            											</a>
+                                                                    </th>
+                                                                    <th>
+                                                                        <span>Position</span>
+                                                                        <a href="#" class="s-sort-arrows">
+                            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                            													<g transform="translate(0.5, 0.5)"> 
+                            														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                            														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                            													</g>
+                            												</svg>
+                            											</a>
+                                                                    </th>
+                                                                    <th class="s-actions">
+                                                                        
+                                                                    </th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>    
+                                                                <tr>
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox">
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>Home > Classic Watches > <strong>Red Classic Watches</strong></td>
+                                                                    
+                                                                    <td>False </td>
+                                                                    <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                    </td>
+                                                                </tr>
+                                                                 <tr>
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox">
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>Home > Classic Watches > <strong>Green Classic Watches</strong></td>
+                                                                    
+                                                                    <td>False </td>
+                                                                    <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                    </td>
+                                                                </tr>
+                                                                 <tr>
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox">
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>Home > Classic Watches > <strong>Yellow Classic Watches</strong></td>
+                                                                    
+                                                                    <td>False </td>
+                                                                    <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox" id="exampleID">
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>Home > <strong>Black Watches</strong> </td>
+                                                                    
+                                                                    <td>False </td>
+                                                                    <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox" id="exampleID">
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>Home > <strong>Silver Watches</strong> </td>
+                                                                    
+                                                                    <td>False </td>
+                                                                    <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                    </td>
+                                                                </tr>
+                                                                <tr class="s-selected-row">
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox" id="exampleID" checked>
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>Home > <strong>Water Proof Watches</strong> </td>
+                                                                    
+                                                                    <td>False </td>
+                                                                    <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                    </td>
+                                                                </tr>
+                                                                <tr class="s-selected-row">
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox" id="exampleID" checked>
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>Home > <strong>Army Watches</strong> </td>
+                                                                    
+                                                                    <td>False </td>
+                                                                    <td>Auto Sort</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox" id="exampleID">
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>Home > <strong>Invisable Watches</strong> </td>
+                                                                    
+                                                                    <td>False </td>
+                                                                    <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                    </td>
+                                                                </tr>
+                                                                <tr class="s-selected-row">
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox" id="exampleID" checked>
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>Home > <strong>Special Edition Watches</strong> </td>
+                                                                    
+                                                                    <td>True </td>
+                                                                    <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="s-table-checkbox">
+                                                                        <div class="s-checkbox">
+                                                                            <input type="checkbox" id="exampleID">
+                                                                            <label for="exampleID"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>Home > <strong>007 Watches</strong> </td>
+                                                                    
+                                                                    <td>False </td>
+                                                                    <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a> 
+                                                                    </td>
+                                                                </tr>
+                                                                
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div class="j-pagination-remove-this" data-tableid="LD9D579B9FCC280BDD7D9FBA9C0B5186CF">
+                                                        <ul class="pagination paginationpages12">
+                                                            <li><a href="#" class="paging-show-toggle">Show <span class="details">(1 - 10 of 113)</span></a></li>
+                                                            <li><a href="#" class="show-option" data-show="10" style="display: none;">10</a></li>
+                                                            <li><a href="#" class="show-option" data-show="25" style="display: none;">25</a></li>
+                                                            <li><a href="#" class="show-option" data-show="50" style="display: none;">50</a></li>
+                                                            <li><a href="#" class="show-option" data-show="100" style="display: none;">100</a></li>
+                                                            <li><a href="#" class="show-option" data-show="500" style="display: none;">500</a></li>
+                                                            <li><a href="#" class="show-option" data-show="ALL" style="display: none;">ALL</a></li>
+                                                            <li class="disabled"><a href="#" class="page-option prev">«</a></li>
+                                                            <li class="active"><a href="#" class="listing-pager page-option" data-page="1">1</a></li>
+                                                            <li><a href="#" class="listing-pager page-option" data-page="2">2</a></li>
+                                                            <li><a href="#" class="listing-pager page-option" data-page="3">3</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <!-- ///Third Tab -->
+                                            
+                                                
+                                            </div>
+                                        </div>
+                                        
+                                    </content>
+                                </div>
+                            </div>
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            <script>
+                                
+                                $('#sampleCheckboxToggle').change(function() {    
+                                    if ($(this).is(':checked')) {
+                                        $('.s-order-table').show();
+                                        $('.s-sort-arrows').hide();
+                                    } else {
+                                        $('.s-order-table').hide();
+                                        $('.s-sort-arrows').show();
+                                    }
+                                });
+                                
+                            </script>
+                            
+                            
+                                <script>
+                                    $('.tab-pane input').keyup(function() { 
+                                        
+                                        var inputLen = $(this).val().length;
+                                        
+                                        if(inputLen > 0){
+                                            $(this).parent().find('.s-search-results-wrapper').show();
+                                        }else{
+                                            $(this).parent().find('.s-search-results-wrapper').hide();
+                                        }
+                                    });
+                                </script>
+                            
+                            
+                             <!--// End of content that you should care about in this mock (-:)-->
+                            <!--  ///////////////////////
+                            /////////////////////////////
+                            ////////////////////////////
+                            ///////////////////////////
+                            //////////////////////////
+                            /////////////////////////
+                            ////////////////////////
+                            ///////////////////////
+                            //////////////////////
+                            /////////////////////
+                            ////////////////////
+                            ///////////////////
+                            //////////////////
+                            /////////////////
+                            ////////////////
+                            ///////////////
+                            //////////////
+                            /////////////
+                            ////////////
+                            ///////////
+                            //////////
+                            /////////
+                            ////////
+                            ///////
+                            //////
+                            /////
+                            ////
+                            -->
+                            
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+    
+            
+        
+        
+        <script>
+            //Remove this
+            $(window).bind("load", function() {
+                $('[data-toggle="popover"]').popover({
+                    html: true
+                });
+                $('body').on('click', function (e) {
+                    $('[data-toggle="popover"]').each(function () {
+                        //the 'is' for buttons that trigger popups
+                        //the 'has' for icons within a button that triggers a popup
+                        if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0 && $(this).next('div.popover:visible').length) {
+                            $(this).click();
+                        }
+                    });
+                });
+                
+                $('[data-toggle="tooltip"]').tooltip()
+
+            });
+        </script>
+        <br/>
+        <br/><br/>
+        
+        
+        <script>
+            (function(){
+                $('.s-option-toggles .btn').click(function(){
+                    $(this).siblings().removeClass('s-selected');
+                    $(this).addClass('s-selected');
+                    if( $(this).find('i').hasClass('fa-bars') ){
+                        $(this).closest('.s-table-inner-nav').siblings('.table-responsive').find('.s-order-table').show();
+                        $(this).closest('.s-action-right').find('.s-titled-select-wrapper').addClass('s-disabled');
+                        $('.s-sort-by select #for-mock-only-manual-sort').show();
+                        $('.s-sort-by select option#for-mock-only-manual-sort').prop('selected', true);
+                        
+                    }else{
+                        $(this).closest('.s-table-inner-nav').siblings('.table-responsive').find('.s-order-table').hide();
+                        $(this).closest('.s-action-right').find('.s-titled-select-wrapper').removeClass('s-disabled');
+                        $('.s-sort-by select #for-mock-only-manual-sort').hide();
+                        $('.s-sort-by select option[value="name"]').prop('selected', true);
+                    }
+                });
+            }());
+        </script>
+        
+        
+        
+    </body>
+</html>

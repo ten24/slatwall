@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<project name="Slatwall" basedir="." default="runUnitTests">
+
+
+	<!--
+	 Jenkins / Hudson Tips:
+
+	 If you stick with the defaults configured in "init", use the following as a guide for populating the Jenkins job configuration for this project
+
+	 1) "Test  Report XMLs" configuration will be something like
+
+	 	DirectoryNameOfYourProject/test/testresults/xml/**/*.xml
+
+	 2) "Archive the artifacts" configuration will be something like
+
+	 	DirectoryNameOfYourProject/deploy/*.zip
+
+	-->
+
+	<target name="init">
+
+		<!-- Get the computers hostname -->
+		<exec executable="hostname" outputproperty="computer.hostname"/>
+
+		<!-- what's the name of the directory where your tests live? Note: this is just the name of the directory, not the full path-->
+		<property name="slatwall.test.dir.name" value="meta/tests" />
+
+		<!-- where do your tests live, relative to this build file? test.dir.location will be a full path to a directory -->
+		<property name="slatwall.test.dir.location" location="./" />
+
+		<!-- what is the cfc dot-notation path to that directory, as ColdFusion sees it? -->
+		<property name="slatwall.test.cfcpath" value="Slatwall.meta.tests" />
+
+		<!-- what server and port should your tests run against? These defaults only apply if the properties are not set in $user.name}.properties -->
+		<property name="slatwall.test.server" value="${computer.hostname}" />
+		<property name="slatwall.test.serverport" value="8888" />
+		<property name="slatwall.test.datasource" value="Slatwall" />
+
+		<!-- what "runner" URL should the tests hit. In this example, you'd be hitting http://localhost:80/DirectoryNameOfYourProject/test/HttpAntRunner.cfc  Simply copy mxunit/samples/HttpAntRunner.cfc into your test directory! -->
+		<property name="slatwall.test.runner" value="/${slatwall.test.dir.name}/HttpAntRunner.cfc" />
+
+		<!-- this is where the xml and html will live for the report generator and Jenkins -->
+		<property name="slatwall.test.output" location="testresults" />
+		<property name="slatwall.test.output.xml" location="${slatwall.test.output}/xml" />
+		<property name="slatwall.test.output.html" location="${slatwall.test.output}/html" />
+
+		<!-- ////////   JAR FILES WE NEED FOR EXTERNAL TASKS -->
+		<!-- where does the mxunit ant jar file live? it's easiest to copy it out of the mxunit install and put it into your app
+			 You can also put any other ant-related jars in this directory; for example, if you want to use svnant, you'll need to put those jars here
+		-->
+		<path id="project.classpath">
+			<fileset dir="lib">
+				<include name="**/*.jar" />
+			</fileset>
+		</path>
+
+		<taskdef name="mxunittask" classname="org.mxunit.ant.MXUnitAntTask" classpathref="project.classpath" />
+
+		<!-- dump the properties -->
+		<echoproperties />
+	</target>
+
+	<target name="buildDocsAndTests" depends="init">
+
+		<!-- Setup test output directory -->
+		<delete dir="${slatwall.test.output.xml}/build" failonerror="false"/>
+		<mkdir dir="${slatwall.test.output.xml}/build" />
+		<delete dir="${slatwall.test.output.html}/build" failonerror="false"/>
+		<mkdir dir="${slatwall.test.output.html}/build" />
+
+		<!-- Run the tests -->
+		<runTestDirectory directoryName="build" excludes=""/>
+
+		<!-- Update test reports -->
+		<junitreport todir="${slatwall.test.output.html}/build">
+		  <fileset dir="${slatwall.test.output.xml}/build">
+		    <include name="*.xml"/>
+		  </fileset>
+		  <report format="frames" todir="${slatwall.test.output.html}/build"/>
+		</junitreport>
+
+		<!-- Fail Build if not all unit tests pass -->
+		<fail message="Not All Unit Tests Passed">
+			<condition>
+				<istrue value="${tests.bombed}"/>
+			</condition>
+		</fail>
+
+	</target>
+
+	<target name="runUnitTests" depends="init">
+
+		<!-- Setup test output directory -->
+		<delete dir="${slatwall.test.output.xml}/unit" failonerror="false"/>
+		<mkdir dir="${slatwall.test.output.xml}/unit" />
+		<delete dir="${slatwall.test.output.html}/unit" failonerror="false"/>
+		<mkdir dir="${slatwall.test.output.html}/unit" />
+
+		<!-- Run the tests -->
+		<runTestDirectory directoryName="unit" excludes=""/>
+
+		<!-- Update test reports -->
+		<junitreport todir="${slatwall.test.output.html}/unit">
+		  <fileset dir="${slatwall.test.output.xml}/unit">
+		    <include name="*.xml"/>
+		  </fileset>
+		  <report format="frames" todir="${slatwall.test.output.html}/unit"/>
+		</junitreport>
+
+		<!-- Fail Build if not all unit tests pass -->
+		<fail message="Not All Unit Tests Passed">
+			<condition>
+				<istrue value="${tests.bombed}"/>
+			</condition>
+		</fail>
+
+	</target>
+
+	<macrodef name="runTestDirectory">
+		<attribute name="directoryName"/>
+		<attribute name="excludes" default=""/>
+		<sequential>
+			<mxunittask server="${slatwall.test.server}" port="${slatwall.test.serverport}" defaultrunner="${slatwall.test.runner}" outputdir="${slatwall.test.output.xml}/@{directoryName}" verbose="false" failureproperty="tests.bombed" errorproperty="tests.bombed">
+				<directory path="${slatwall.test.dir.location}/@{directoryName}" recurse="true" packageName="${slatwall.test.cfcpath}.@{directoryName}" componentPath="${slatwall.test.cfcpath}.@{directoryName}" excludes="@{excludes}" />
+			</mxunittask>
+		</sequential>
+	</macrodef>
+
+</project>
