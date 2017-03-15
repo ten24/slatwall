@@ -26,7 +26,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			if(isJSON( rawCustomJSON )) {
 				return deserializeJSON( rawCustomJSON );
 			} else {
-				logHibachi("The Validation File: #customValidationFile# is not a valid JSON object");
+				throw("The Validation File: #customValidationFile# is not a valid JSON object");
 			}
 		}
 		return {};
