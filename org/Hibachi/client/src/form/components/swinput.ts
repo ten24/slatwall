@@ -259,7 +259,7 @@ class SWInputController{
 				' ng-model="swInput.value" '+
 				' ng-disabled="swInput.editable === false" '+
 				' ng-show="swInput.editing" '+
-				` ng-class="{'form-control':swInput.inListingDisplay, 'input-xs':swInput.inListingDisplay} "` +
+				' ng-class="{'form-control':swInput.inListingDisplay, 'input-xs':swInput.inListingDisplay} "' +
 				' name="'+this.property+'" ' +
 				' placeholder="'+placeholder+'" '+
 				validations + currencyFormatter +
