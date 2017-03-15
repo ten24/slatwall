@@ -668,7 +668,7 @@ class PublicService {
             'newOrderPayment.redeemGiftCardToAccount':redeemGiftCardToAccount,
         };
         
-        data['newOrderPayment.order.account.accountID'] = this.account.accountID;
+        // data['newOrderPayment.order.account.accountID'] = this.account.accountID;
         data['newOrderPayment.giftCardNumber'] = giftCardCode;
         data['copyFromType'] = "";
         let action = this.doAction('addOrderPayment', data, 'post');

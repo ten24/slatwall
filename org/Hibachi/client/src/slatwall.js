@@ -2374,7 +2374,7 @@
 	                'newOrderPayment.paymentMethod.paymentMethodID': '50d8cd61009931554764385482347f3a',
 	                'newOrderPayment.redeemGiftCardToAccount': redeemGiftCardToAccount,
 	            };
-	            data['newOrderPayment.order.account.accountID'] = _this.account.accountID;
+	            // data['newOrderPayment.order.account.accountID'] = this.account.accountID;
 	            data['newOrderPayment.giftCardNumber'] = giftCardCode;
 	            data['copyFromType'] = "";
 	            var action = _this.doAction('addOrderPayment', data, 'post');
