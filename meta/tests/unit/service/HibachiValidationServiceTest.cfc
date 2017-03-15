@@ -102,7 +102,34 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var validation = variables.service.getValidationStruct(order);
 		addToDebug(validation);
 	}
-	
+	/**
+	* @test
+	*/
+	public void function getValidationByCoreAndCustomTest_checkThatOverridesWork(){
+		var coreValidation = variables.service.getCoreValidation('Account');
+		
+		for(var validation in coreValidation.properties.accountCode){
+			if(structKeyExists(validation,'conditions') && validation.conditions == 'isOrganizationFlag'){
+				assertEquals(validation.unique,true);
+				assertEquals(validation.required,true);
+			}	
+		}
+		
+		//get customValidationFile
+		var customValidationFile = expandPath('/Slatwall')&'/meta/tests/unit/resources/validation/Account.json';
+		var rawCustomJSON = fileRead( customValidationFile );
+		var customValidation = deserializeJSON( rawCustomJSON );
+		makePublic(variables.service,'getValidationByCoreAndCustom');
+		var resultingValidation = variables.service.getValidationByCoreAndCustom(coreValidation,customValidation);
+		
+		for(var validation in coreValidation.properties.accountCode){
+			if(structKeyExists(validation,'conditions') && validation.conditions == 'isOrganizationFlag'){
+				assertEquals(validation.unique,false);
+				assertEquals(validation.required,true);
+			}	
+		}
+		
+	}
 }
 
 
