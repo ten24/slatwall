@@ -57,6 +57,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		//Testing adding child order items.
 		var psku = getTestSku('TestSku#createUUID()#');
+		psku.setUserDefinedPriceFlag(true);
 		var pstock = getTestStock();
 		var pstock2 = getTestStock();
 		var porderItem = request.slatwallScope.newEntity( 'orderItem' );
@@ -67,6 +68,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		porderItem.setProductBundleGroup("PBG1");
 
 		var sku = getTestSku('TestSku#createUUID()#');
+		sku.setUserDefinedPriceFlag(true);
 		var stock = getTestStock();
 		var stock2 = getTestStock();
 		var orderItem = request.slatwallScope.newEntity( 'orderItem' );
@@ -78,6 +80,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		orderItem.setProductBundleGroup(pOrderItem);
 
 		var sku2 = getTestSku('TestSku#createUUID()#');
+		sku2.setUserDefinedPriceFlag(true);
 		var stock3 = getTestStock();
 		var stock4 = getTestStock();
 		var orderItem2 = request.slatwallScope.newEntity( 'orderItem' );
