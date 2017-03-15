@@ -147,6 +147,22 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(structKeyExists(coreValidation.conditions,'legalAgeIsChecked'));
 		
 	}
+	
+	/**
+	* @test
+	*/
+	public void function validate_uniqueTest_uniquetrue(){
+		var accountCode = "test"&createUUID();
+		var accountData = {
+			accountID="",
+			accountCode=accountCode
+		};
+		var account = createPersistedTestEntity('Account',accountData);
+		
+		var account = createTestEntity('Account',accountData);
+		account.validate('save');
+		assertEquals(account.getErrors().accountCode[1],'Account Code must be unique or empty');
+	}
 }
 
 
