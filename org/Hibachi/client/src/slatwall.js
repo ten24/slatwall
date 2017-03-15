@@ -2636,17 +2636,12 @@
 	            }
 	        };
 	        this.placeOrderFailure = function () {
-	            console.log('what it is');
-	            if (!_this.cart.errors.runPlaceOrderTransaction) {
-	                _this.cart.errors.runPlaceOrderTransaction = [];
-	            }
-	            console.log(_this.cart.errors);
+	            var errors = [];
 	            for (var key in _this.cart.errors) {
-	                console.log(key);
 	                var errArray = _this.cart.errors[key];
-	                console.log(errArray);
-	                _this.cart.errors.runPlaceOrderTransaction = _this.cart.errors.runPlaceOrderTransaction.concat(errArray);
+	                errors = errors.concat(errArray);
 	            }
+	            _this.cart.errors.runPlaceOrderTransaction = errors;
 	        };
 	        this.placeOrderError = function () {
 	            if (_this.cart.hasErrors && _this.cart.errors.runPlaceOrderTransaction) {

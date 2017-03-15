@@ -965,17 +965,14 @@ class PublicService {
     }
 
     public placeOrderFailure = () =>{
-        console.log('what it is');
-        if(!this.cart.errors.runPlaceOrderTransaction){
-            this.cart.errors.runPlaceOrderTransaction = [];
-        }
-        console.log(this.cart.errors);
+        
+        let errors = [];
         for(let key in this.cart.errors){
-            console.log(key);
             let errArray = this.cart.errors[key];
-            console.log(errArray);
-            this.cart.errors.runPlaceOrderTransaction = this.cart.errors.runPlaceOrderTransaction.concat(errArray);
+            errors = errors.concat(errArray);
         }
+
+        this.cart.errors.runPlaceOrderTransaction = errors;
     }
 
     public placeOrderError = () =>{
