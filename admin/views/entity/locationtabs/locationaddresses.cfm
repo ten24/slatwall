@@ -53,8 +53,7 @@ Notes:
  
 <cfoutput>
 	<hb:HibachiPropertyRow>
-		<hb:HibachiPropertyList divClass="span12">
-			<h5>#$.slatwall.rbKey('entity.locationAddress_plural')#</h5>
+		<hb:HibachiPropertyList divClass="col-md-12">
 			<hb:HibachiListingDisplay smartList="#rc.location.getLocationAddressesSmartList()#"
 									  recordEditAction="admin:entity.editlocationaddress"
 									  recordEditQueryString="locationID=#rc.location.getLocationID()#"
