@@ -105,7 +105,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	/**
 	* @test
 	*/
-	public void function getValidationByCoreAndCustomTest_checkThatOverridesWork(){
+	public void function getValidationByCoreAndCustomTest_checkThatOverridingPropertiesWorks(){
 		var coreValidation = variables.service.getCoreValidation('Account');
 		
 		for(var validation in coreValidation.properties.accountCode){
@@ -128,6 +128,23 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				assertEquals(validation.required,true);
 			}	
 		}
+		
+	}
+	
+	/**
+	* @test
+	*/
+	public void function getValidationByCoreAndCustomTest_checkThatAddingConditionsWorks(){
+		var coreValidation = variables.service.getCoreValidation('Account_Create');
+		
+		assert(!structKeyExists(coreValidation.conditions,'legalAgeIsChecked'));
+		//get customValidationFile
+		var customValidationFile = expandPath('/Slatwall')&'/meta/tests/unit/resources/validation/Account_Create.json';
+		var rawCustomJSON = fileRead( customValidationFile );
+		var customValidation = deserializeJSON( rawCustomJSON );
+		makePublic(variables.service,'getValidationByCoreAndCustom');
+		var resultingValidation = variables.service.getValidationByCoreAndCustom(coreValidation,customValidation);
+		assert(structKeyExists(coreValidation.conditions,'legalAgeIsChecked'));
 		
 	}
 }
