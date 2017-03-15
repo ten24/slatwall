@@ -69,7 +69,7 @@ Notes:
 
 <cfif thisTag.executionMode is "start">
 	<cfoutput>
-		<div class="slatwall-address-container">
+		<div class="slatwall-address-container form-horizontal">
 			<input type="hidden" name="#attributes.fieldNamePrefix#addressID" value="#attributes.address.getAddressID()#" />
 			<cfif attributes.showCountry>
 				<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#countryCode" property="countryCode" fieldType="select" edit="#attributes.edit#" fieldClass="slatwall-address-countryCode" />
