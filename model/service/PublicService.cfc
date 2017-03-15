@@ -1124,6 +1124,7 @@ component extends="HibachiService"  accessors="true" output="false"
      @ProcessMethod Order_AddOrderPayment
      */
     public void function addGiftCardOrderPayment(required any data) {
+        param name="data.newOrderPayment.paymentMethod.paymentMethodID" default="50d8cd61009931554764385482347f3a";
         param name="data.newOrderPayment.redeemGiftCardToAccount" default=true;
         param name="data.copyFromType" default="";
         

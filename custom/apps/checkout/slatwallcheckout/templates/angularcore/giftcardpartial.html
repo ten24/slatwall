@@ -8,7 +8,7 @@
             </div>
         </div>
         <div class="row">
-            <span ng-init="giftCard = {newOrderPayment:{paymentMethod:{paymentMethodID:'50d8cd61009931554764385482347f3a'}}}"></span>
+            <span ng-init="giftCard = {newOrderPayment:{}}"></span>
             <sw-form
                 data-is-process-form="true"
                 data-object="giftCard"
@@ -26,15 +26,6 @@
                         data-class="form-control"
                         data-editing="true"
                         >
-                    </swf-property-display>
-                </div>
-                <div class="form-group">
-                    <swf-property-display
-                        data-name="paymentMethodID"
-                        data-field-type="text"
-                        data-property-identifier="newOrderPayment.paymentMethod.paymentMethodID"
-                        data-class="hidden"
-                        data-required="true">
                     </swf-property-display>
                 </div>
                 <div class="form-group">
