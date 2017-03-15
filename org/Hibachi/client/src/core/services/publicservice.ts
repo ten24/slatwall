@@ -697,7 +697,7 @@ class PublicService {
         return false;
     }
 
-    public applyGiftCardKeyCheck = (event, swForm) =>{
+    public applyGiftCardKeyCheck = (event) =>{
         if(event.type == 'click'){
             let code = swForm.getFormData().giftCardCodeToApply;
             if(code){

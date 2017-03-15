@@ -8,30 +8,65 @@
             </div>
         </div>
         <div class="row">
-            <span ng-init="giftCard = {}"></span>
+            <span ng-init="giftCard = {newOrderPayment:{paymentMethod:{paymentMethodID:'50d8cd61009931554764385482347f3a'},
+            redeemGiftCardToAccount':true}, 'copyFromType':''}"></span>
             <sw-form
                 data-is-process-form="true"
                 data-object="giftCard"
                 data-form-class=""
                 data-error-class="error"
                 data-name="addGiftCard"
-                data-event-announcers="keyup"
-                data-event-listeners="{addGiftCardkeyup:slatwall.applyGiftCardKeyCheck}">
+                data-action="addOrderPayment"
+                data-submit-on-enter="true"
+                data-event-announcers="keyup">
                 <div class="col-sm-8 form-group">
                     <swf-property-display
                         data-name="giftCardCodeToApply"
                         data-field-type="text"
-                        data-property-identifier="giftCardCodeToApply"
+                        data-property-identifier="newOrderPayment.giftCardNumber"
                         data-class="form-control"
                         data-editing="true"
-                        data-event-listeners="{addGiftCardSuccess:$parent.swForm.clear}"
                         >
                     </swf-property-display>
                 </div>
-                <div class="col-sm-4 form-group">
-                    <button type="button" name="button" class="btn btn-block" ng-click="slatwall.applyGiftCardKeyCheck($event, $parent.swForm);">{{(slatwall.findingGiftCard)?'Searching...':'Add Gift Card'}}</button>
+                <div class="form-group">
+                    <swf-property-display
+                        data-name="paymentMethodID"
+                        data-field-type="text"
+                        data-property-identifier="newOrderPayment.paymentMethod.paymentMethodID"
+                        data-class="hidden"
+                        data-required="true">
+                    </swf-property-display>
                 </div>
-            </sw-form>
+                <div class="form-group">
+                    <swf-property-display
+                        data-name="redeemGiftCardToAccount"
+                        data-field-type="text"
+                        data-property-identifier="newOrderPayment.redeemGiftCardToAccount"
+                        data-class="hidden"
+                        data-required="true">
+                    </swf-property-display>
+                </div>
+                <div class="form-group">
+                    <swf-property-display
+                        data-name="redeemGiftCardToAccount"
+                        data-field-type="text"
+                        data-property-identifier="copyFromType"
+                        data-class="hidden"
+                        data-required="true">
+                    </swf-property-display>
+                </div>
+                <div class="form-group">
+                    <sw-action-caller
+                        data-modal="false"
+                        data-type="button"
+                        data-class="button blue"
+                        data-error-class="error"
+                        data-text="{{(slatwall.getRequestByAction('addOrderPayment').loading && slatwall.findingGiftCard? 'LOADING...' : 'Add Gift Card')}}"
+                        data-event-listeners="{addGiftCardSuccess:$parent.swForm.clear}">
+                    </sw-action-caller>
+                </div>
+        </sw-form>
         </div>
         
         <div class="selected-gift-cards-wrapper" ng-repeat="payment in slatwall.cart.orderPayments track by $index">

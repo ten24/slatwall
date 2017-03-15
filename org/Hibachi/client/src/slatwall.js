@@ -2398,7 +2398,7 @@
 	            }
 	            return false;
 	        };
-	        this.applyGiftCardKeyCheck = function (event, swForm) {
+	        this.applyGiftCardKeyCheck = function (event) {
 	            if (event.type == 'click') {
 	                var code = swForm.getFormData().giftCardCodeToApply;
 	                if (code) {
@@ -2406,10 +2406,10 @@
 	                }
 	            }
 	            else if (event.event.keyCode == 13) {
-	                var swForm_1 = event.swForm;
-	                var code = swForm_1.getFormData().giftCardCodeToApply;
+	                var swForm = event.swForm;
+	                var code = swForm.getFormData().giftCardCodeToApply;
 	                if (code) {
-	                    _this.applyGiftCard(code, swForm_1);
+	                    _this.applyGiftCard(code, swForm);
 	                }
 	            }
 	        };
