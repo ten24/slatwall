@@ -8,15 +8,14 @@
             </div>
         </div>
         <div class="row">
-            <span ng-init="giftCard = {newOrderPayment:{paymentMethod:{paymentMethodID:'50d8cd61009931554764385482347f3a'},
-            redeemGiftCardToAccount':true}, 'copyFromType':''}"></span>
+            <span ng-init="giftCard = {newOrderPayment:{paymentMethod:{paymentMethodID:'50d8cd61009931554764385482347f3a'}}}"></span>
             <sw-form
                 data-is-process-form="true"
                 data-object="giftCard"
                 data-form-class=""
                 data-error-class="error"
                 data-name="addGiftCard"
-                data-action="addOrderPayment"
+                data-action="addGiftCardOrderPayment"
                 data-submit-on-enter="true"
                 data-event-announcers="keyup">
                 <div class="col-sm-8 form-group">
@@ -39,34 +38,16 @@
                     </swf-property-display>
                 </div>
                 <div class="form-group">
-                    <swf-property-display
-                        data-name="redeemGiftCardToAccount"
-                        data-field-type="text"
-                        data-property-identifier="newOrderPayment.redeemGiftCardToAccount"
-                        data-class="hidden"
-                        data-required="true">
-                    </swf-property-display>
-                </div>
-                <div class="form-group">
-                    <swf-property-display
-                        data-name="redeemGiftCardToAccount"
-                        data-field-type="text"
-                        data-property-identifier="copyFromType"
-                        data-class="hidden"
-                        data-required="true">
-                    </swf-property-display>
-                </div>
-                <div class="form-group">
                     <sw-action-caller
                         data-modal="false"
                         data-type="button"
                         data-class="button blue"
                         data-error-class="error"
-                        data-text="{{(slatwall.getRequestByAction('addOrderPayment').loading && slatwall.findingGiftCard? 'LOADING...' : 'Add Gift Card')}}"
-                        data-event-listeners="{addGiftCardSuccess:$parent.swForm.clear}">
+                        data-text="{{(slatwall.getRequestByAction('addGiftCardOrderPayment').loading? 'LOADING...' : 'Add Gift Card')}}"
+                        data-event-listeners="{addGiftCardOrderPaymentSuccess:$parent.swForm.clear}">
                     </sw-action-caller>
                 </div>
-        </sw-form>
+            </sw-form>
         </div>
         
         <div class="selected-gift-cards-wrapper" ng-repeat="payment in slatwall.cart.orderPayments track by $index">

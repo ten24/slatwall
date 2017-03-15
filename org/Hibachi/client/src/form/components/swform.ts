@@ -134,6 +134,7 @@ class SWFormController {
         actions = actions || this.action;
         this.clearErrors();
         this.formData = this.getFormData() || "";
+        console.log("formData: ", this.formData);
         this.doActions(actions);
     }
 
@@ -254,9 +255,7 @@ class SWFormController {
         var iterable = this.formCtrl;
 
         angular.forEach(iterable, (val, key) => {
-            if(key==="name") console.log("name - ", this.object.forms[this.name][key]);
             if(typeof val === 'object' && val.hasOwnProperty('$modelValue')){
-                console.log(key)
                  if(this.object.forms[this.name][key].$modelValue){
                     val = this.object.forms[this.name][key].$modelValue;
                 }else if(this.object.forms[this.name][key].$viewValue){
@@ -265,12 +264,12 @@ class SWFormController {
                     val="";
                 }
                 /** Check for form elements that have a name that doesn't start with $ */
-                if (angular.isString(val) || angular.isNumber(val)) {
+                if (angular.isString(val) || angular.isNumber(val) || typeof val == 'boolean') {
                     this.formData[key] = val;
                 }
-                if(val.$modelValue){
+                if(val.$modelValue != undefined){
                     this.formData[key] = val.$modelValue;
-                }else if(val.$viewValue){
+                }else if(val.$viewValue != undefined){
                     this.formData[key] = val.$viewValue;
                 }
             }

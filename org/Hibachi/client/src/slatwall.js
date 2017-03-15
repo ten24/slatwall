@@ -19965,6 +19965,7 @@
 	            actions = actions || _this.action;
 	            _this.clearErrors();
 	            _this.formData = _this.getFormData() || "";
+	            console.log("formData: ", _this.formData);
 	            _this.doActions(actions);
 	        };
 	        //array or comma delimited
@@ -20076,10 +20077,7 @@
 	        this.getFormData = function () {
 	            var iterable = _this.formCtrl;
 	            angular.forEach(iterable, function (val, key) {
-	                if (key === "name")
-	                    console.log("name - ", _this.object.forms[_this.name][key]);
 	                if (typeof val === 'object' && val.hasOwnProperty('$modelValue')) {
-	                    console.log(key);
 	                    if (_this.object.forms[_this.name][key].$modelValue) {
 	                        val = _this.object.forms[_this.name][key].$modelValue;
 	                    }
@@ -20090,13 +20088,13 @@
 	                        val = "";
 	                    }
 	                    /** Check for form elements that have a name that doesn't start with $ */
-	                    if (angular.isString(val) || angular.isNumber(val)) {
+	                    if (angular.isString(val) || angular.isNumber(val) || typeof val == 'boolean') {
 	                        _this.formData[key] = val;
 	                    }
-	                    if (val.$modelValue) {
+	                    if (val.$modelValue != undefined) {
 	                        _this.formData[key] = val.$modelValue;
 	                    }
-	                    else if (val.$viewValue) {
+	                    else if (val.$viewValue != undefined) {
 	                        _this.formData[key] = val.$viewValue;
 	                    }
 	                }

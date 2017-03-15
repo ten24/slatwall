@@ -328,6 +328,19 @@ component output="false" accessors="true" extends="HibachiProcess" {
         return false; 	
 	}
 
+	public boolean function giftCardNotAlreadyApplied(){
+		if(this.hasGiftCard()){
+			var cardID = this.getGiftCard().getGiftCardID();
+			for(var payment in this.getOrder().getOrderPayments()){
+				if(!isNull(payment.getGiftCard()) && payment.getGiftCard().getGiftCardID() == cardID){
+					return false;
+				}
+			}
+			return true;
+		}
+		return false;
+	}
+
 	public boolean function giftCardCurrencyMatches(){
 		if(this.hasGiftCard()){
 			return variables.order.getCurrencyCode() EQ this.getGiftCard().getCurrencyCode();

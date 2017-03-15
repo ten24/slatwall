@@ -1117,13 +1117,26 @@ component extends="HibachiService"  accessors="true" output="false"
         
         getHibachiScope().addActionResult( "public:cart.removePromotionCode", cart.hasErrors() );
     }
+
+    /** 
+     * @http-context addGiftCardOrderPayment
+     * @description Add Gift Card to Order
+     @ProcessMethod Order_AddOrderPayment
+     */
+    public void function addGiftCardOrderPayment(required any data) {
+        param name="data.newOrderPayment.redeemGiftCardToAccount" default=true;
+        param name="data.copyFromType" default="";
+        
+        var addOrderPayment = addOrderPayment(data, true);
+        getHibachiScope().addActionResult('public:cart.addGiftCardOrderPayment', addOrderPayment.hasErrors());
+    }
     
     /** 
      * @http-context addOrderPayment
      * @description Add Order Payment
      @ProcessMethod Order_AddOrderPayment
      */
-    public void function addOrderPayment(required any data) {
+    public any function addOrderPayment(required any data, boolean giftCard=false) {
         param name="data.newOrderPayment" default="#structNew()#";
         param name="data.newOrderPayment.orderPaymentID" default="";
         param name="data.newOrderPayment.requireBillingAddress" default="0";
@@ -1148,7 +1161,12 @@ component extends="HibachiService"  accessors="true" output="false"
         }
 
         var addOrderPayment = getService('OrderService').processOrder( getHibachiScope().cart(), arguments.data, 'addOrderPayment');
-        getHibachiScope().addActionResult( "public:cart.addOrderPayment", addOrderPayment.hasErrors() );
+
+        if(!giftCard){
+          getHibachiScope().addActionResult( "public:cart.addOrderPayment", addOrderPayment.hasErrors() );
+        }
+
+        return addOrderPayment;
     }
     
     /** 
