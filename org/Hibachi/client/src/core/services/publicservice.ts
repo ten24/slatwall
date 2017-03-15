@@ -505,63 +505,14 @@ class PublicService {
          return this.getRequestByAction('removePromotionCode') && this.getRequestByAction('removePromotionCode').loading && this.lastRemovedPromoCode == index;
      }
 
-     /** simple validation just to ensure data is present and accounted for.
-     */
-    public validateNewOrderPayment =  (newOrderPayment)=> {
-        var newOrderPaymentErrors = {};
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.streetAddress')){
-            newOrderPaymentErrors['streetAddress'] = 'Required *';
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.countrycode')){
-            newOrderPaymentErrors['countrycode'] = 'Required *';
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.statecode')){
-            if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.locality')){
-                newOrderPaymentErrors['statecode'] = 'Required *';
-            }
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.city')){
-            if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.city')){
-                newOrderPaymentErrors['city'] = 'Required *';
-            }
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.locality')){
-            if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.statecode')){
-                newOrderPaymentErrors['locality'] = 'Required *';
-            }
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.postalcode')){
-            newOrderPaymentErrors['postalCode'] = 'Required *';
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.nameOnCreditCard')){
-            newOrderPaymentErrors['nameOnCreditCard']= 'Required *';
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.expirationMonth')){
-            newOrderPaymentErrors['streetAddress'] = 'Required *';
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.expirationYear')){
-            newOrderPaymentErrors['expirationYear'] = 'Required *';
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.creditCardNumber')){
-            newOrderPaymentErrors['creditCardNumber'] = 'Required *';
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.securityCode')){
-            newOrderPaymentErrors['securityCode'] = 'Required *';
-        }
-        if (Object.keys(newOrderPaymentErrors).length){
-            // this.cart.orderPayments.hasErrors = true;
-            // this.cart.orderPayments.errors = newOrderPaymentErrors;
-        }
-    }
-
     public orderPaymentKeyCheck = (event) =>{
         if(event.event.keyCode == 13 ){
-            this.setOrderPaymentInfo();
+            this.setCreditCardPaymentInfo();
         }
     }
 
     // Prepare swAddressForm billing address / card info to be passed to addOrderPayment
-    public setOrderPaymentInfo = () => {
+    public setCreditCardPaymentInfo = () => {
         let billingAddress;
         
         //if selected, pass shipping address as billing address
@@ -587,39 +538,28 @@ class PublicService {
         }
         
         this.newBillingAddress = billingAddress;
-        this.addOrderPayment({});
+        this.addCreditCardPayment();
     }
 
     /** Allows an easy way to calling the service addOrderPayment.
     */
-    public addOrderPayment = (formdata)=>{
-        //reset the form errors.
-        // this.cart.hasErrors=false;
-        // this.cart.orderPayments.errors = {};
-        // this.cart.orderPayments.hasErrors = false;
+    public addCreditCardPayment = ()=>{
 
         //Grab all the data
         var billingAddress  = this.newBillingAddress;
-        var expirationMonth = formdata.month;
-        var expirationYear  = formdata.year;
-        var country         = formdata.country;
-        var state           = formdata.state;
-        var accountFirst    = this.account.firstName;
-        var accountLast     = this.account.lastName;
-        var data = {};
 
         var processObject = this.orderService.newOrder_AddOrderPayment();
-        data = {
+        var data = {
             'newOrderPayment.billingAddress.addressID':'',
             'newOrderPayment.billingAddress.streetAddress': billingAddress.streetAddress,
             'newOrderPayment.billingAddress.street2Address': billingAddress.street2Address,
             'newOrderPayment.nameOnCreditCard': billingAddress.nameOnCreditCard,
             'newOrderPayment.billingAddress.name': billingAddress.nameOnCreditCard,
-            'newOrderPayment.expirationMonth': expirationMonth || billingAddress.selectedMonth,
-            'newOrderPayment.expirationYear': expirationYear || billingAddress.selectedYear,
-            'newOrderPayment.billingAddress.countrycode': country || billingAddress.countrycode,
+            'newOrderPayment.expirationMonth': billingAddress.selectedMonth,
+            'newOrderPayment.expirationYear': billingAddress.selectedYear,
+            'newOrderPayment.billingAddress.countrycode': billingAddress.countrycode,
             'newOrderPayment.billingAddress.city': ''+billingAddress.city,
-            'newOrderPayment.billingAddress.statecode': state || billingAddress.statecode,
+            'newOrderPayment.billingAddress.statecode': billingAddress.statecode,
             'newOrderPayment.billingAddress.locality': billingAddress.locality || '',
             'newOrderPayment.billingAddress.postalcode': billingAddress.postalcode,
             'newOrderPayment.securityCode': billingAddress.cvv,
@@ -630,53 +570,9 @@ class PublicService {
             'copyFromType': billingAddress.copyFromType,
             'saveAccountPaymentMethodFlag': this.saveCardInfo
         };
-        //processObject.populate(data);
-
-        //Make sure we have required fields for a newOrderPayment.
-        this.validateNewOrderPayment( data );
-        if ( this.cart.orderPayments.hasErrors && Object.keys(this.cart.orderPayments.errors).length ){
-            return -1;
-        }
 
         //Post the new order payment and set errors as needed.
-        this.doAction('addOrderPayment', data, 'post').then((result)=>{
-            if(!result) return;
-            var serverData = result;
-
-            if (serverData.cart.hasErrors || angular.isDefined(this.cart.orderPayments[this.cart.orderPayments.length-1]['errors']) && !this.cart.orderPayments[this.cart.orderPayments.length-1]['errors'].hasErrors){
-                this.cart.hasErrors = true;
-                this.readyToPlaceOrder = true;
-            }else{
-                this.editPayment = false;
-                this.readyToPlaceOrder = true;
-            }
-        });
-    };
-
-    /** Allows an easy way to calling the service addOrderPayment.
-                    */
-    public addGiftCardOrderPayments = (giftCardCode, redeemGiftCardToAccount)=>{
-        //reset the form errors.
-        this.cart.hasErrors=false;
-        this.cart.orderPayments.errors = {};
-        this.cart.orderPayments.hasErrors = false;
-        
-        var data = {};
-        
-        data = {
-            'newOrderPayment.paymentMethod.paymentMethodID':'50d8cd61009931554764385482347f3a',
-            'newOrderPayment.redeemGiftCardToAccount':redeemGiftCardToAccount,
-        };
-        
-        // data['newOrderPayment.order.account.accountID'] = this.account.accountID;
-        data['newOrderPayment.giftCardNumber'] = giftCardCode;
-        data['copyFromType'] = "";
-        let action = this.doAction('addOrderPayment', data, 'post');
-        action.then((result:any)=>{
-            this.findingGiftCard = false;
-        });
-        return action;
-              
+        this.doAction('addOrderPayment', data, 'post');
     };
 
     public removeGiftCard = (payment, index) =>{
@@ -696,44 +592,6 @@ class PublicService {
         }
         return false;
     }
-
-    public applyGiftCardKeyCheck = (event) =>{
-        if(event.type == 'click'){
-            let code = swForm.getFormData().giftCardCodeToApply;
-            if(code){
-                this.applyGiftCard(code, swForm);
-            }
-        }else if(event.event.keyCode == 13){
-            let swForm = event.swForm;
-            let code = swForm.getFormData().giftCardCodeToApply;
-            if(code){
-                this.applyGiftCard(code,swForm);
-            }
-        }
-    }
-
-    //Applies a giftcard from the user account onto the payment.
-    public applyGiftCard = (giftCardCode, swForm)=>{
-
-        this.findingGiftCard = true;
-
-        let giftCardAlreadyApplied = this.cart.orderPayments.reduce((found, payment)=>{
-            if(!found){
-                return payment.giftCard && payment.giftCard.giftCardCode == giftCardCode;
-            }
-        },false);
-
-        if(!giftCardAlreadyApplied){
-            this.addGiftCardOrderPayments(giftCardCode, true).then((result)=>{
-                if(result.successfulActions.length){
-                    swForm.clear();
-                }
-            })
-        }else{
-            this.setGiftCardError('This gift card has already been applied to this order.');
-            this.findingGiftCard = false;
-        }
-    };
 
     public formatPaymentMethod = (paymentMethod) =>{
         return paymentMethod.nameOnCreditCard + ' - ' + paymentMethod.creditCardType + ' *' + paymentMethod.creditCardLastFour + ' exp. ' + ('0' + paymentMethod.expirationMonth).slice(-2) + '/' + paymentMethod.expirationYear.toString().slice(-2)
@@ -791,10 +649,12 @@ class PublicService {
         return this.getTotalMinusGiftCards() == 0;
     }
 
-    public finalOrderPaymentAdded = () =>{
-        return (this.getRequestByAction('addOrderPayment') && this.getRequestByAction('addOrderPayment').hasSuccessfulAction() || 
+    public checkIfFinalPayment = () =>{
+        if((this.getRequestByAction('addOrderPayment') && this.getRequestByAction('addOrderPayment').hasSuccessfulAction() || 
             this.getRequestByAction('addGiftCardOrderPayment') && this.getRequestByAction('addGiftCardOrderPayment').hasSuccessfulAction()
-            ) && this.paymentsEqualTotalBalance();
+            ) && this.paymentsEqualTotalBalance()){
+            this.edit = 'review';
+        }
     }
 
     //get estimated shipping rates given a weight, from to zips
@@ -1123,6 +983,10 @@ class PublicService {
     public noPickupLocation = () => {
         if(!this.getPickupLocation()) return true;
         return this.getPickupLocation().primaryAddress == undefined && this.getPickupLocation().locationName == undefined
+    }
+
+    public disableContinueToPayment = () =>{
+        return this.cart.orderRequirementsList.indexOf('fulfillment') != -1;
     }
 
     public hasAccountPaymentMethods = () => {

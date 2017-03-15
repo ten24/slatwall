@@ -1,28 +1,21 @@
 <!--- SELECT SHIPPING METHOD --->
-<div class="method col-md-12" ng-if="slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.addressID">
-	<hr/>
+<div class="method col-md-12">
     <div class="row">
-                                            
             <div class="col-md-12 method">
-				<h4>Select Shipping Method</h4>
+				<h5>Select Shipping Method</h5>
 			    <!-- Add save shipping method to API and add public service method in slatwall... -->
 			    <p class="shippingMethodOption" 
 			    ng-repeat="option in slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethodOptions track by $index" 
 			    ng-click="slatwall.selectShippingMethod(option)">
+			    	<span class="loader-wrapper" ng-show="slatwall.getRequestByAction('addShippingMethodUsingShippingMethodID').loading && slatwall.isSelectedShippingMethod(option)">
+						<i class="fa fa-spinner fa-spin fa-fw"></i>
+					</span>
 			    	<input type="radio" name="cb{{option.shippingMethodCode}}" id="check{{optionValue}}"
-
-			    	ng-checked="slatwall.isSelectedShippingMethod(option)"/>
+				    	ng-checked="slatwall.isSelectedShippingMethod(option)"
+				    	ng-hide="slatwall.isSelectedShippingMethod(option) && slatwall.getRequestByAction('addShippingMethodUsingShippingMethodID').loading"/>
 			        <label for="cb{{option.shippingMethodCode}}">{{option.name}}</label>
 				</p>
-				<div class="loader-wrapper" ng-show="slatwall.getRequestByAction('addShippingMethodUsingShippingMethodID').loading">
-					<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
-				</div>
-			</div>
-			<!-- Show a message if the user tries to get to the payment tab before selecting a shipping method -->
-			<div class="col-md-12 checkout-step-btn">
-				<div class="error alert alert-danger" ng-if="slatwall.disableContinueToPayment()">
-					Please select a shipping method before continuing to payment
-			    </div>
+				
 			</div>
 	</div>
 </div>

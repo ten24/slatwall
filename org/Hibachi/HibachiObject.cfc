@@ -135,6 +135,11 @@ component accessors="true" output="false" persistent="false" {
 	public any function invokeMethod(required string methodName, struct methodArguments={}) {
 		if(structKeyExists(this, arguments.methodName)) {
 			var theMethod = this[ arguments.methodName ];
+			if(arguments.methodName == 'deleteOrderPayment'){
+				writeDump(theMethod);
+				writeDump(var=arguments.methodArguments, top=2);
+				writeDump('k');
+			}
 			return theMethod(argumentCollection = methodArguments);
 		}
 		if(structKeyExists(this, "onMissingMethod")) {

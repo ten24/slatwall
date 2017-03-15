@@ -10,7 +10,8 @@
     data-error-class="error"
     data-object="slatwall.newBillingAddress"
     data-class="new_address"
-    data-name="addOrderPayment">
+    data-name="addOrderPayment"
+    data-event-listeners="{addOrderPaymentSuccess:slatwall.checkIfFinalPayment, addGiftCardOrderPaymentSuccess:slatwall.checkIfFinalPayment}">
 
 	<!--- The form without shipping address block --->
 	<swf-directive partial-name="orderpaymentformfull"></swf-directive>

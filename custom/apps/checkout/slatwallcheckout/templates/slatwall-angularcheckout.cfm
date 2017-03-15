@@ -50,7 +50,7 @@
 	                <a href="##" class="pull-right" ng-click="slatwall.edit = 'fulfillment'"><i class="fa fa-pencil-square-o" ng-if="!slatwall.fulfillmentTabIsActive()" aria-hidden="true"></i></a>
 					<a href="##" class="pull-right" ng-if="slatwall.fulfillmentTabIsActive()" ng-click="slatwall.edit = ''"><i class="fa fa-check-circle"></i></a>
 					Fulfillment Information</h3>
-	                <div ng-show="slatwall.fulfillmentTabIsActive()">
+	                <div class="row" ng-show="slatwall.fulfillmentTabIsActive()">
                 		<div class="col-md-12">
 		                    <div class="details row" ng-show="slatwall.hasShippingFulfillmentMethod()">
 		                        <swf-directive partial-name="addshippingaddresspartial"></swf-directive>
