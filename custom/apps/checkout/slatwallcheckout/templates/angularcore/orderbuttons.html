@@ -1,4 +1,4 @@
-<span ng-if="slatwall.getRequestByAction('addOrderPayment').hasSuccessfulAction() && slatwall.paymentsEqualTotalBalance()">
+<span ng-if="slatwall.finalOrderPaymentAdded()">
 	<span ng-init="slatwall.edit='review'"></span>
 </span>
 

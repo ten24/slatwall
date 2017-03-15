@@ -791,6 +791,12 @@ class PublicService {
         return this.getTotalMinusGiftCards() == 0;
     }
 
+    public finalOrderPaymentAdded = () =>{
+        return (this.getRequestByAction('addOrderPayment') && this.getRequestByAction('addOrderPayment').hasSuccessfulAction() || 
+            this.getRequestByAction('addGiftCardOrderPayment') && this.getRequestByAction('addGiftCardOrderPayment').hasSuccessfulAction()
+            ) && this.paymentsEqualTotalBalance();
+    }
+
     //get estimated shipping rates given a weight, from to zips
     public getEstimatedRates = (zipcode)=>{
 
@@ -955,6 +961,20 @@ class PublicService {
     public forgotPasswordError = ()=>{
         if(this.forgotPasswordSubmitted() && !this.forgotPasswordHasNoErrors()){
             return this.account.processObjects.forgotPassword.errors.emailAddress['0']
+        }
+    }
+
+    public placeOrderFailure = () =>{
+        console.log('what it is');
+        if(!this.cart.errors.runPlaceOrderTransaction){
+            this.cart.errors.runPlaceOrderTransaction = [];
+        }
+        console.log(this.cart.errors);
+        for(let key in this.cart.errors){
+            console.log(key);
+            let errArray = this.cart.errors[key];
+            console.log(errArray);
+            this.cart.errors.runPlaceOrderTransaction = this.cart.errors.runPlaceOrderTransaction.concat(errArray);
         }
     }
 

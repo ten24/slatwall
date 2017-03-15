@@ -2478,6 +2478,10 @@
 	        this.paymentsEqualTotalBalance = function () {
 	            return _this.getTotalMinusGiftCards() == 0;
 	        };
+	        this.finalOrderPaymentAdded = function () {
+	            return (_this.getRequestByAction('addOrderPayment') && _this.getRequestByAction('addOrderPayment').hasSuccessfulAction() ||
+	                _this.getRequestByAction('addGiftCardOrderPayment') && _this.getRequestByAction('addGiftCardOrderPayment').hasSuccessfulAction()) && _this.paymentsEqualTotalBalance();
+	        };
 	        //get estimated shipping rates given a weight, from to zips
 	        this.getEstimatedRates = function (zipcode) {
 	            var weight = 0;
@@ -2629,6 +2633,19 @@
 	        this.forgotPasswordError = function () {
 	            if (_this.forgotPasswordSubmitted() && !_this.forgotPasswordHasNoErrors()) {
 	                return _this.account.processObjects.forgotPassword.errors.emailAddress['0'];
+	            }
+	        };
+	        this.placeOrderFailure = function () {
+	            console.log('what it is');
+	            if (!_this.cart.errors.runPlaceOrderTransaction) {
+	                _this.cart.errors.runPlaceOrderTransaction = [];
+	            }
+	            console.log(_this.cart.errors);
+	            for (var key in _this.cart.errors) {
+	                console.log(key);
+	                var errArray = _this.cart.errors[key];
+	                console.log(errArray);
+	                _this.cart.errors.runPlaceOrderTransaction = _this.cart.errors.runPlaceOrderTransaction.concat(errArray);
 	            }
 	        };
 	        this.placeOrderError = function () {

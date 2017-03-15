@@ -82,7 +82,6 @@
 					<div ng-show="slatwall.showPaymentTabBody()">
 						<div class="col-sm-12">
 							<!--- Display Order Payment Errors --->
-							<swf-directive partial-name="ordererrors"></swf-directive>
 							<swf-directive partial-name="savedcreditcards"></swf-directive>
 							<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 			                    <div class="panel radio panel-default" ng-cloak>
@@ -98,6 +97,7 @@
 											<div class="row">
 												<div class="col-md-12">
 													<!--- Credit card --->
+													<swf-directive partial-name="ordererrors"></swf-directive>
 													<swf-directive partial-name="orderpaymentpartial"></swf-directive>
 												</div>
 											</div>
@@ -117,6 +117,7 @@
 			                        		<div class="row">
 			                        			<div class="col-md-12">
 			                        				<!--- Purchase Order --->
+			                        				<swf-directive partial-name="ordererrors"></swf-directive>
 			                        				<swf-directive partial-name="purchaseorderpartial"></swf-directive>
 			                        			</div>
 			                        		</div>
@@ -136,6 +137,7 @@
 			                        		<div class="row">
 			                        			<div class="col-md-12">
 			                        				<!--- Purchase Order --->
+			                        				<swf-directive partial-name="ordererrors"></swf-directive>
 			                        				<swf-directive partial-name="checkpartial"></swf-directive>
 			                        			</div>
 			                        		</div>
@@ -154,6 +156,7 @@
 			                        <div id="collapse2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading2" aria-expanded="false">
 										<div class="panel-body">
 											<div class="row">
+												<swf-directive partial-name="ordererrors"></swf-directive>
 												<div class="col-xs-8">
 													
 													<!--- Checkout with paypal --->
@@ -229,7 +232,8 @@
 									        data-type="button"
 									        data-class="button blue"
 									        data-error-class="error"
-									        data-text="{{(slatwall.getRequestByAction('placeOrder').loading ? 'LOADING...' : 'Place Order')}}">
+									        data-text="{{(slatwall.getRequestByAction('placeOrder').loading ? 'LOADING...' : 'Place Order')}}"
+									        data-event-listeners="{placeOrderFailure:slatwall.placeOrderFailure}">
 									    </sw-action-caller>
 									</div>
                                 </sw-form>
