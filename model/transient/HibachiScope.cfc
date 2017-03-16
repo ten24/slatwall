@@ -263,7 +263,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		return rereplace("accountID,firstName,lastName,company,remoteID,primaryPhoneNumber.accountPhoneNumberID,primaryPhoneNumber.phoneNumber,primaryEmailAddress.accountEmailAddressID,primaryEmailAddress.emailAddress,
 			primaryAddress.accountAddressID,
 			accountAddresses.accountAddressName,accountAddresses.accountAddressID,
-			accountAddresses.address.addressID,accountAddresses.address.streetAddress,accountAddresses.address.street2Address,accountAddresses.address.city,accountAddresses.address.statecode,accountAddresses.address.postalcode,accountAddresses.address.countrycode, accountAddresses.address.name, accountAddresses.address.company, accountAddresses.address.phoneNumber, accountPaymentMethods.accountPaymentMethodID, accountPaymentMethods.creditCardLastFour, accountPaymentMethods.creditCardType, accountPaymentMethods.nameOnCreditCard, accountPaymentMethods.expirationMonth, accountPaymentMethods.expirationYear","\s","","ALL");
+			accountAddresses.address.addressID,accountAddresses.address.streetAddress,accountAddresses.address.street2Address,accountAddresses.address.city,accountAddresses.address.statecode,accountAddresses.address.postalCode,accountAddresses.address.countrycode, accountAddresses.address.name, accountAddresses.address.company, accountAddresses.address.phoneNumber, accountPaymentMethods.accountPaymentMethodID, accountPaymentMethods.creditCardLastFour, accountPaymentMethods.creditCardType, accountPaymentMethods.nameOnCreditCard, accountPaymentMethods.expirationMonth, accountPaymentMethods.expirationYear","\s","","ALL");
 	}
 	
 	public any function getAccountData(string propertyList) {
@@ -304,12 +304,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			orderFulfillments.orderFulfillmentID,orderFulfillments.fulfillmentCharge,orderFulfillments.currencyCode,
 			orderFulfillments.fulfillmentMethod.fulfillmentMethodID,orderFulfillments.fulfillmentMethod.fulfillmentMethodName,orderFulfillments.fulfillmentMethod.fulfillmentMethodType,
 			orderFulfillments.shippingMethod.shippingMethodID,orderFulfillments.shippingMethod.shippingMethodName,
-			orderFulfillments.shippingAddress.addressID,orderFulfillments.shippingAddress.streetAddress,orderFulfillments.shippingAddress.street2Address,orderFulfillments.shippingAddress.city,orderFulfillments.shippingAddress.statecode,orderFulfillments.shippingAddress.postalcode,orderFulfillments.shippingAddress.countrycode,
+			orderFulfillments.shippingAddress.addressID,orderFulfillments.shippingAddress.streetAddress,orderFulfillments.shippingAddress.street2Address,orderFulfillments.shippingAddress.city,orderFulfillments.shippingAddress.statecode,orderFulfillments.shippingAddress.postalCode,orderFulfillments.shippingAddress.countrycode,
 			orderFulfillments.shippingMethodOptions,orderFulfillments.shippingMethodRate.shippingMethodRateID,
 			orderFulfillments.totalShippingWeight,orderFulfillments.taxAmount, orderFulfillments.emailAddress,orderFulfillments.pickupLocation.locationID, orderFulfillments.pickupLocation.locationName, orderFulfillments.pickupLocation.primaryAddress.address.streetAddress, orderFulfillments.pickupLocation.primaryAddress.address.street2Address,
-			orderFulfillments.pickupLocation.primaryAddress.address.city, orderFulfillments.pickupLocation.primaryAddress.address.statecode, orderFulfillments.pickupLocation.primaryAddress.address.postalcode,
+			orderFulfillments.pickupLocation.primaryAddress.address.city, orderFulfillments.pickupLocation.primaryAddress.address.statecode, orderFulfillments.pickupLocation.primaryAddress.address.postalCode,
 			orderPayments.orderPaymentID,orderPayments.amount,orderPayments.currencyCode,orderPayments.creditCardType,orderPayments.expirationMonth,orderPayments.expirationYear,orderPayments.nameOnCreditCard, orderPayments.creditCardLastFour,orderPayments.purchaseOrderNumber,
-			orderPayments.billingAddress.addressID,orderPayments.billingAddress.streetAddress,orderPayments.billingAddress.street2Address,orderPayments.billingAddress.city,orderPayments.billingAddress.statecode,orderPayments.billingAddress.postalcode,orderPayments.billingAddress.countrycode,
+			orderPayments.billingAddress.addressID,orderPayments.billingAddress.streetAddress,orderPayments.billingAddress.street2Address,orderPayments.billingAddress.city,orderPayments.billingAddress.statecode,orderPayments.billingAddress.postalCode,orderPayments.billingAddress.countrycode,
 			orderPayments.paymentMethod.paymentMethodID,orderPayments.paymentMethod.paymentMethodName, orderPayments.giftCard.balanceAmount, orderPayments.giftCard.giftCardCode, promotionCodes.promotionCode","\s","","ALL");
 	}
 	

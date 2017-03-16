@@ -59,7 +59,7 @@ class SWAddressFormController {
                             val = val.$modelValue;
                         }else if(val.$viewValue){
                             val = val.$viewValue;
-                        }else if(val.$dirty){
+                        }else{
                             val="";
                         }
 

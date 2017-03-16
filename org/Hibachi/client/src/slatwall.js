@@ -2012,7 +2012,6 @@
 	            }
 	            if (method == "post") {
 	                data.returnJsonObjects = "cart,account";
-	                console.log('urlBase', urlBase, 'data', data, 'method', method);
 	                //post
 	                var request_1 = _this.requestService.newPublicRequest(urlBase, data, method);
 	                request_1.promise.then(function (result) {
@@ -2313,7 +2312,7 @@
 	                }
 	            });
 	        };
-	        //returns the amount total of giftcards added to this account.
+	        /** Returns the amount total of giftcards added to this order.*/
 	        this.getPaymentTotals = function () {
 	            //
 	            var total = 0;
@@ -2322,40 +2321,21 @@
 	            }
 	            return total;
 	        };
-	        //gets the calcuated total minus the applied gift cards.
+	        /** Gets the calcuated total minus the applied gift cards. */
 	        this.getTotalMinusPayments = function () {
 	            var total = _this.getPaymentTotals();
 	            return _this.cart.calculatedTotal - total;
 	        };
+	        /** Boolean indicating whether the total balance has been accounted for by order payments.*/
 	        this.paymentsEqualTotalBalance = function () {
 	            return _this.getTotalMinusPayments() == 0;
 	        };
+	        /**View logic - Opens review panel if no more payments are due.*/
 	        this.checkIfFinalPayment = function () {
 	            if ((_this.getRequestByAction('addOrderPayment') && _this.getRequestByAction('addOrderPayment').hasSuccessfulAction() ||
 	                _this.getRequestByAction('addGiftCardOrderPayment') && _this.getRequestByAction('addGiftCardOrderPayment').hasSuccessfulAction()) && _this.paymentsEqualTotalBalance()) {
 	                _this.edit = 'review';
 	            }
-	        };
-	        //get estimated shipping rates given a weight, from to zips
-	        this.getEstimatedRates = function (zipcode) {
-	            var weight = 0;
-	            for (var item in _this.cart.orderFulfillments) {
-	                weight += _this.cart.orderFulfillments[item].totalShippingWeight;
-	            }
-	            var shipFromAddress = {
-	                "postalcode": ""
-	            };
-	            var shipToAddress = {
-	                "postalcode": zipcode
-	            };
-	            var totalWeight = weight;
-	            //get the rates.
-	            var urlString = "?slataction=admin:ajax.getEstimatedShippingRates&shipFromAddress=" + JSON.stringify(shipFromAddress)
-	                + "&shipToAddress=" + JSON.stringify(shipToAddress) + "&totalWeight=" + JSON.stringify(weight);
-	            var request = _this.requestService.newPublicRequest(urlString)
-	                .then(function (result) {
-	                _this.rates = result.data;
-	            });
 	        };
 	        this.getAddressEntity = function (address) {
 	            var addressEntity = _this.$hibachi.newAddress();
@@ -2368,7 +2348,7 @@
 	            }
 	            return addressEntity;
 	        };
-	        /** Returns the state from the list of states by stateCode */
+	        /** Removes request from list */
 	        this.resetRequests = function (request) {
 	            delete _this.requests[request];
 	        };
@@ -2379,6 +2359,7 @@
 	                    address1.street2Address == address2.street2Address &&
 	                    address1.city == address2.city &&
 	                    address1.postalcode == address2.postalcode &&
+	                    address1.statecode == address2.statecode &&
 	                    address1.countrycode == address2.countrycode)) {
 	                    return true;
 	                }
@@ -2489,6 +2470,7 @@
 	                return _this.account.processObjects.forgotPassword.errors.emailAddress['0'];
 	            }
 	        };
+	        /** Consolidate response errors on cart.errors.runPlaceOrderTransaction*/
 	        this.placeOrderFailure = function () {
 	            var errors = [];
 	            for (var key in _this.cart.errors) {
@@ -2497,25 +2479,30 @@
 	            }
 	            _this.cart.errors.runPlaceOrderTransaction = errors;
 	        };
+	        /** Returns errors from placeOrder request*/
 	        this.placeOrderError = function () {
 	            if (_this.cart.hasErrors && _this.cart.errors.runPlaceOrderTransaction) {
 	                return _this.cart.errors.runPlaceOrderTransaction;
 	            }
 	        };
+	        /** Returns errors from addOrderPayment request. */
 	        this.addOrderPaymentError = function () {
 	            return _this.cart.errors.addOrderPayment;
 	        };
+	        /** Returns errors from addBillingAddress request. */
 	        this.billingAddressError = function () {
 	            if (_this.cart.hasErrors && _this.cart.errors.addBillingAddress) {
 	                return _this.cart.errors.addBillingAddress;
 	            }
 	        };
+	        /** Returns errors from addPromoCode request. */
 	        this.promoCodeError = function () {
 	            if (_this.errors &&
 	                _this.errors.promotionCode) {
 	                return _this.errors.promotionCode[0];
 	            }
 	        };
+	        /** Returns errors from addGiftCard request. */
 	        this.giftCardError = function () {
 	            if (_this.cart.processObjects &&
 	                _this.cart.processObjects.addOrderPayment &&
@@ -2524,13 +2511,11 @@
 	                return _this.cart.processObjects.addOrderPayment.errors.giftCardID[0];
 	            }
 	        };
-	        this.setGiftCardError = function (message) {
-	            _this.cart.processObjects = _this.cart.processObjects || {};
-	            _this.cart.processObjects.addOrderPayment = _this.cart.processObjects.addOrderPayment || {};
-	            _this.cart.processObjects.addOrderPayment.errors = _this.cart.processObjects.addOrderPayment.errors || {};
-	            _this.cart.processObjects.addOrderPayment.errors.giftCardID = _this.cart.processObjects.addOrderPayment.errors.giftCardID || [];
-	            _this.cart.processObjects.addOrderPayment.errors.giftCardID[0] = message;
+	        this.editAccountAddress = function (key) {
+	            _this.accountAddressEditFormIndex = key;
+	            _this.editingAccountAddress = angular.copy(_this.account.accountAddresses[key].address);
 	        };
+	        /** Sets shippingAddressErrors from response errors, refreshes swAddressForm */
 	        this.addShippingAddressErrors = function () {
 	            _this.shippingAddressErrors = _this.errors;
 	            if (_this.accountAddressEditFormIndex != undefined) {
@@ -2539,6 +2524,7 @@
 	                _this.$timeout(function () { return _this.accountAddressEditFormIndex = key; });
 	            }
 	        };
+	        /** Sets cart addBillingAddress errors from response errors, refreshes swAddressForm */
 	        this.addBillingAddressErrors = function () {
 	            _this.addBillingErrorsToCartErrors();
 	            if (_this.billingAddressEditFormIndex != undefined) {
@@ -2550,6 +2536,7 @@
 	        this.clearShippingAddressErrors = function () {
 	            _this.shippingAddressErrors = undefined;
 	        };
+	        /**Hides shipping address form, clears shipping address errors*/
 	        this.hideAccountAddressForm = function () {
 	            _this.accountAddressEditFormIndex = undefined;
 	            _this.clearShippingAddressErrors();
@@ -2569,6 +2556,7 @@
 	        this.showEditBillingAddressForm = function () {
 	            return !_this.useShippingAsBilling && _this.billingAddressEditFormIndex && _this.billingAddressEditFormIndex != 'new';
 	        };
+	        /** Adds errors from response to cart errors.*/
 	        this.addBillingErrorsToCartErrors = function () {
 	            var cartErrors = _this.cart.errors;
 	            if (cartErrors.addOrderPayment) {
@@ -2581,7 +2569,6 @@
 	                }
 	            }
 	            cartErrors.addBillingAddress = [];
-	            console.log(_this.errors);
 	            for (var key in _this.errors) {
 	                _this.cart.errors.addBillingAddress = _this.cart.errors.addBillingAddress.concat(_this.errors[key]);
 	            }
@@ -2592,15 +2579,11 @@
 	                _this.cart.orderFulfillments &&
 	                _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex] &&
 	                _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress) {
-	                return (_this.account.accountAddresses[key].address.streetAddress === _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.streetAddress &&
-	                    _this.account.accountAddresses[key].address.street2Address === _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.street2Address &&
-	                    _this.account.accountAddresses[key].address.city === _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.city &&
-	                    _this.account.accountAddresses[key].address.statecode === _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.statecode &&
-	                    _this.account.accountAddresses[key].address.postalcode === _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.postalcode &&
-	                    _this.account.accountAddresses[key].address.countrycode === _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.countrycode);
+	                return _this.addressesMatch(_this.account.accountAddresses[key].address, _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress);
 	            }
 	            return false;
 	        };
+	        /** Returns true if order requires email fulfillment and email address has been chosen.*/
 	        this.hasEmailFulfillmentAddress = function () {
 	            return _this.cart.orderFulfillmentWithEmailTypeIndex > -1 && _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithEmailTypeIndex].emailAddress;
 	        };
@@ -2619,11 +2602,13 @@
 	                return;
 	            return _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithEmailTypeIndex].emailAddress;
 	        };
+	        /** Returns true if selected pickup location has no name.*/
 	        this.namelessPickupLocation = function () {
 	            if (!_this.getPickupLocation())
 	                return false;
 	            return _this.getPickupLocation().primaryAddress != undefined && _this.getPickupLocation().locationName == undefined;
 	        };
+	        /** Returns true if no pickup location has been selected.*/
 	        this.noPickupLocation = function () {
 	            if (!_this.getPickupLocation())
 	                return true;
@@ -19861,18 +19846,10 @@
 	            //
 	            var request = _this.$rootScope.hibachiScope.doAction(action, _this.formData)
 	                .then(function (result) {
-	                if (_this.events && _this.events.events) {
-	                    if (result.errors) {
-	                        _this.parseErrors(result.errors);
-	                        //trigger an onError event
-	                        _this.observerService.notify("onError", { "caller": _this.context, "events": _this.events.events || "" });
-	                    }
-	                    else {
-	                        //trigger a on success event
-	                        _this.observerService.notify("onSuccess", { "caller": _this.context, "events": _this.events.events || "" });
-	                    }
+	                if (result.errors) {
+	                    _this.parseErrors(result.errors);
 	                }
-	            }, angular.noop);
+	            });
 	        };
 	        /****
 	             * Handle parsing through the server errors and injecting the error text for that field
@@ -19883,7 +19860,9 @@
 	                angular.forEach(errors, function (val, key) {
 	                    var primaryElement = _this.$element.find("[error-for='" + key + "']");
 	                    _this.$timeout(function () {
-	                        primaryElement.append("<span name='" + key + "Error'>" + errors[key] + "</span>");
+	                        errors[key].forEach(function (error) {
+	                            primaryElement.append("<div name='" + key + "Error'>" + error + "</div>");
+	                        });
 	                    }, 0);
 	                }, _this);
 	            }
@@ -20053,6 +20032,7 @@
 	            actions: "@?",
 	            formClass: "@?",
 	            formData: "=?",
+	            errorClass: '@?',
 	            object: "=?",
 	            onSuccess: "@?",
 	            onError: "@?",
@@ -20764,7 +20744,7 @@
 	                        else if (val.$viewValue) {
 	                            val = val.$viewValue;
 	                        }
-	                        else if (val.$dirty) {
+	                        else {
 	                            val = "";
 	                        }
 	                        if (angular.isString(val)) {

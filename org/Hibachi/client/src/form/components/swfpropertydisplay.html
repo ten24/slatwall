@@ -7,6 +7,6 @@
     <!--- Using the property displat as a configuration, figure out which text of element to display  --->
     <sw-form-field data-property-display="swfPropertyDisplay.propertyDisplay"></sw-form-field>
 
-    <sw-error-display ng-if="!swfPropertyDisplay.hideErrors">
+    <sw-error-display data-error-class="{{swfPropertyDisplay.errorClass}}" ng-if="!swfPropertyDisplay.hideErrors">
     </sw-error-display>
 

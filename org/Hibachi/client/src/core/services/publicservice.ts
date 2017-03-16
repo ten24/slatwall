@@ -41,6 +41,7 @@ class PublicService {
     public billingAddressEditFormIndex:any;
     public selectedBillingAddress:any;
     public editBillingAddress:any;
+    public editingAccountAddress:any;
     public shippingAddressErrors:any;
     public billingAddressErrors:any;
     public paymentMethods:any;
@@ -251,7 +252,6 @@ class PublicService {
 
         if (method == "post"){
              data.returnJsonObjects = "cart,account";
-             console.log('urlBase', urlBase, 'data', data, 'method', method);
             //post
             let request:PublicRequest = this.requestService.newPublicRequest(urlBase,data,method)
             request.promise.then((result:any)=>{
@@ -608,7 +608,7 @@ class PublicService {
         
      };
 
-    //returns the amount total of giftcards added to this account.
+    /** Returns the amount total of giftcards added to this order.*/
     public getPaymentTotals = ()=>{
         //
         var total = 0;
@@ -618,49 +618,24 @@ class PublicService {
         return total;
     };
 
-    //gets the calcuated total minus the applied gift cards.
+    /** Gets the calcuated total minus the applied gift cards. */
     public getTotalMinusPayments = ()=>{
         var total = this.getPaymentTotals();
         return this.cart.calculatedTotal - total;
     };
 
+    /** Boolean indicating whether the total balance has been accounted for by order payments.*/
     public paymentsEqualTotalBalance = () =>{
         return this.getTotalMinusPayments() == 0;
     }
 
+    /**View logic - Opens review panel if no more payments are due.*/
     public checkIfFinalPayment = () =>{
         if((this.getRequestByAction('addOrderPayment') && this.getRequestByAction('addOrderPayment').hasSuccessfulAction() || 
             this.getRequestByAction('addGiftCardOrderPayment') && this.getRequestByAction('addGiftCardOrderPayment').hasSuccessfulAction()
             ) && this.paymentsEqualTotalBalance()){
             this.edit = 'review';
         }
-    }
-
-    //get estimated shipping rates given a weight, from to zips
-    public getEstimatedRates = (zipcode)=>{
-
-        var weight = 0;
-        for (var item in this.cart.orderFulfillments){
-
-            weight += this.cart.orderFulfillments[item].totalShippingWeight;
-        }
-        var shipFromAddress = {
-            "postalcode": ""
-        };
-        var shipToAddress = {
-            "postalcode": zipcode
-        };
-        var totalWeight = weight;
-
-        //get the rates.
-        let urlString = "?slataction=admin:ajax.getEstimatedShippingRates&shipFromAddress="+ JSON.stringify(shipFromAddress)
-        +"&shipToAddress="+ JSON.stringify(shipToAddress) +"&totalWeight=" + JSON.stringify(weight);
-
-        let request = this.requestService.newPublicRequest(urlString)
-        .then((result:any)=>{
-
-            this.rates = result.data;
-        });
     }
 
     public getAddressEntity = (address) =>{
@@ -675,7 +650,7 @@ class PublicService {
         return addressEntity;
     }
      
-    /** Returns the state from the list of states by stateCode */
+    /** Removes request from list */
     public resetRequests = (request) => {
      	delete this.requests[request];
     }
@@ -687,6 +662,7 @@ class PublicService {
 	            address1.street2Address == address2.street2Address &&
 	            address1.city == address2.city &&
 	            address1.postalcode == address2.postalcode &&
+                address1.statecode == address2.statecode &&
 	            address1.countrycode == address2.countrycode)){
             	return true;
             }
@@ -803,33 +779,36 @@ class PublicService {
         }
     }
 
+    /** Consolidate response errors on cart.errors.runPlaceOrderTransaction*/
     public placeOrderFailure = () =>{
-        
         let errors = [];
         for(let key in this.cart.errors){
             let errArray = this.cart.errors[key];
             errors = errors.concat(errArray);
         }
-
         this.cart.errors.runPlaceOrderTransaction = errors;
     }
 
+    /** Returns errors from placeOrder request*/
     public placeOrderError = () =>{
         if(this.cart.hasErrors && this.cart.errors.runPlaceOrderTransaction){
             return this.cart.errors.runPlaceOrderTransaction;
         }
     }
 
+    /** Returns errors from addOrderPayment request. */
     public addOrderPaymentError = () =>{
         return this.cart.errors.addOrderPayment;
     }
 
+    /** Returns errors from addBillingAddress request. */
     public billingAddressError = () =>{
         if(this.cart.hasErrors && this.cart.errors.addBillingAddress){
             return this.cart.errors.addBillingAddress;
         }
     }
 
+    /** Returns errors from addPromoCode request. */
     public promoCodeError = () =>{
         if(this.errors &&
             this.errors.promotionCode){
@@ -837,6 +816,7 @@ class PublicService {
         }
     }
 
+    /** Returns errors from addGiftCard request. */
     public giftCardError = () =>{
         if(this.cart.processObjects && 
             this.cart.processObjects.addOrderPayment &&
@@ -846,14 +826,12 @@ class PublicService {
         }
     }
 
-    public setGiftCardError = (message) =>{
-        this.cart.processObjects = this.cart.processObjects || {};
-        this.cart.processObjects.addOrderPayment = this.cart.processObjects.addOrderPayment || {};
-        this.cart.processObjects.addOrderPayment.errors = this.cart.processObjects.addOrderPayment.errors || {};
-        this.cart.processObjects.addOrderPayment.errors.giftCardID = this.cart.processObjects.addOrderPayment.errors.giftCardID || [];
-        this.cart.processObjects.addOrderPayment.errors.giftCardID[0] = message;
+    public editAccountAddress = (key) =>{
+        this.accountAddressEditFormIndex = key;
+        this.editingAccountAddress = angular.copy(this.account.accountAddresses[key].address);
     }
 
+    /** Sets shippingAddressErrors from response errors, refreshes swAddressForm */
     public addShippingAddressErrors = ()=>{
         this.shippingAddressErrors = this.errors;
         if(this.accountAddressEditFormIndex != undefined){
@@ -863,6 +841,7 @@ class PublicService {
         }
     }
 
+    /** Sets cart addBillingAddress errors from response errors, refreshes swAddressForm */
     public addBillingAddressErrors = ()=>{
         this.addBillingErrorsToCartErrors();
         if(this.billingAddressEditFormIndex != undefined){
@@ -876,6 +855,7 @@ class PublicService {
         this.shippingAddressErrors = undefined;
     }
 
+    /**Hides shipping address form, clears shipping address errors*/
     public hideAccountAddressForm = ()=>{
         this.accountAddressEditFormIndex = undefined;
         this.clearShippingAddressErrors();
@@ -901,6 +881,7 @@ class PublicService {
         return !this.useShippingAsBilling && this.billingAddressEditFormIndex && this.billingAddressEditFormIndex != 'new';
     }
 
+    /** Adds errors from response to cart errors.*/
     public addBillingErrorsToCartErrors = ()=>{
         let cartErrors = this.cart.errors;
         if(cartErrors.addOrderPayment){
@@ -913,7 +894,7 @@ class PublicService {
             }
         }
         cartErrors.addBillingAddress = [];
-        console.log(this.errors);
+
         for(let key in this.errors){
             this.cart.errors.addBillingAddress = this.cart.errors.addBillingAddress.concat(this.errors[key]);
         }
@@ -925,20 +906,16 @@ class PublicService {
            this.cart.orderFulfillments &&
            this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex] &&
            this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress){
-            return (
-                this.account.accountAddresses[key].address.streetAddress === this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.streetAddress &&
-                this.account.accountAddresses[key].address.street2Address === this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.street2Address &&
-                this.account.accountAddresses[key].address.city === this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.city &&
-                this.account.accountAddresses[key].address.statecode === this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.statecode &&
-                this.account.accountAddresses[key].address.postalcode === this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.postalcode &&
-                this.account.accountAddresses[key].address.countrycode === this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.countrycode)
+            return this.addressesMatch(this.account.accountAddresses[key].address, this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress);
         }        
         return false;
     }
 
+    /** Returns true if order requires email fulfillment and email address has been chosen.*/
     public hasEmailFulfillmentAddress = ()=>{
         return this.cart.orderFulfillmentWithEmailTypeIndex > -1 && this.cart.orderFulfillments[this.cart.orderFulfillmentWithEmailTypeIndex].emailAddress
     }
+
     public getPickupLocation = () => {
         if(!this.cart.data.orderFulfillments[this.cart.orderFulfillmentWithPickupTypeIndex]) return;
         return this.cart.data.orderFulfillments[this.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation;
@@ -954,11 +931,13 @@ class PublicService {
         return this.cart.orderFulfillments[this.cart.orderFulfillmentWithEmailTypeIndex].emailAddress;
     }
 
+    /** Returns true if selected pickup location has no name.*/
     public namelessPickupLocation = () => {
         if(!this.getPickupLocation()) return false;
         return this.getPickupLocation().primaryAddress != undefined && this.getPickupLocation().locationName == undefined
     }
 
+    /** Returns true if no pickup location has been selected.*/
     public noPickupLocation = () => {
         if(!this.getPickupLocation()) return true;
         return this.getPickupLocation().primaryAddress == undefined && this.getPickupLocation().locationName == undefined

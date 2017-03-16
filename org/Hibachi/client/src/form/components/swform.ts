@@ -130,7 +130,7 @@ class SWFormController {
 
     /** create the generic submit function */
     public submit = (actions) =>
-    {
+    {   
         actions = actions || this.action;
         this.clearErrors();
         this.formData = this.getFormData() || "";
@@ -160,18 +160,10 @@ class SWFormController {
         //
         let request = this.$rootScope.hibachiScope.doAction(action, this.formData)
         .then( (result) =>{
-            if(this.events && this.events.events){
-                if (result.errors) {
-                    this.parseErrors(result.errors);
-                        //trigger an onError event
-
-                    this.observerService.notify("onError", {"caller" : this.context, "events": this.events.events||""});
-                } else {
-                    //trigger a on success event
-                    this.observerService.notify("onSuccess", {"caller":this.context, "events":this.events.events||""});
-                }
+            if (result.errors) {
+                this.parseErrors(result.errors);
             }
-        }, angular.noop);
+        });
 
     }
 
@@ -181,12 +173,13 @@ class SWFormController {
         ***/
     public parseErrors = (errors)=>
     {
-
         if (angular.isDefined(errors) && errors) {
             angular.forEach(errors, (val, key) => {
                     let primaryElement = this.$element.find("[error-for='" + key + "']");
                     this.$timeout(()=> {
-                        primaryElement.append("<span name='" + key + "Error'>" + errors[key] + "</span>");
+                        errors[key].forEach((error)=>{
+                            primaryElement.append("<div name='" + key + "Error'>" + error + "</div>");
+                        })
                     }, 0);
             }, this);
         }
@@ -302,6 +295,7 @@ class SWForm implements ng.IDirective {
             actions: "@?",
             formClass: "@?",
             formData: "=?",
+            errorClass: '@?',
             object: "=?",
             onSuccess: "@?",
             onError: "@?",

@@ -1,10 +1,4 @@
-<div ng-init="Account_CreateObj = slatwall.getProcessObject('Account_Create') "></div>
-
-<div ng-show="slatwall.createAccountError()">
-    <div class="msg" ng-repeat="(key, errors) in slatwall.createAccountError()">
-        <div class="alert alert-danger"><i class="fa fa-info-circle"></i> {{errors[0]}}</div>
-    </div>
-</div>
+<div ng-init="Account_CreateObj = {} "></div>
 
 <sw-form 
     data-object="Account_CreateObj"

@@ -58,9 +58,9 @@
        </div>
     </div>
     <div class="col-md-4 checkout-help" ng-show="slatwall.hasGiftCardPaymentMethod()">
-        <div class="alert" ng-class="{'alert-danger':slatwall.getTotalMinusGiftCards() > 0, 'alert-success':slatwall.getTotalMinusGiftCards() <= 0}">
-            <h4>Balance Due: {{slatwall.getTotalMinusGiftCards() | currency}}</h4>
-            <p ng-show="slatwall.getTotalMinusGiftCards() > 0">You have a remaining balance of  {{slatwall.getTotalMinusGiftCards() | currency}}.  Please choose an additional payment method to complete your order.</p>
+        <div class="alert" ng-class="{'alert-danger':slatwall.getTotalMinusPayments() > 0, 'alert-success':slatwall.getTotalMinusPayments() <= 0}">
+            <h4>Balance Due: {{slatwall.getTotalMinusPayments() | currency}}</h4>
+            <p ng-show="slatwall.getTotalMinusPayments() > 0">You have a remaining balance of  {{slatwall.getTotalMinusPayments() | currency}}.  Please choose an additional payment method to complete your order.</p>
         </div>
     </div>
 </div>

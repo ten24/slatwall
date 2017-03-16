@@ -2,7 +2,7 @@
 <span   ng-repeat='(key, value) in swErrorDisplay.form[swErrorDisplay.name].$error'
 		ng-show="swErrorDisplay.form[swErrorDisplay.name].$touched || swErrorDisplay.form.$submitted"
 >
-	<span ng-show="key === 'swvalidationrequired' || key === 'required'" class="error help-block" sw-Rbkey="'validation.define.required'"></span><br ng-show="key === 'swvalidationrequired' || key === 'required'">
+	<span ng-show="key === 'swvalidationrequired'" class="error help-block" sw-Rbkey="'validation.define.required'"></span><br ng-show="key === 'swvalidationrequired'">
 	<span ng-show="key === 'swvalidationemail'" class="error help-block" sw-Rbkey="'validation.define.emailrequired'"></span><br ng-show="key === 'swvalidationemail'">
 	<span ng-show="key === 'swvalidationunique'" class="error help-block" sw-Rbkey="'validation.define.unique'"></span><br ng-show="key === 'swvalidationunique'">
 	<span ng-show="key === 'swvalidationuniqueornull'" class="error help-block" sw-Rbkey="'validation.define.uniqueornull'"></span><br ng-show="key === 'swvalidationuniqueornull'">

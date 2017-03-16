@@ -27,17 +27,17 @@
 					data-field-list="countryCode,name,company,streetAddress,street2Address,locality,city,stateCode,postalCode,phoneNumber"
 					data-slatwall-scope="slatwall"
 					data-id="{{slatwall.account.accountAddresses[slatwall.accountAddressEditFormIndex].address.addressID}}" 
-					data-address="slatwall.account.accountAddresses[slatwall.accountAddressEditFormIndex].address" 
+					data-address="slatwall.editingAccountAddress" 
 					data-tab-index="1" 
 					data-address-name="accountAddress" 
-					data-field-name-prefix="accountAddresses[{{slatwall.accountAddressEditFormIndex}}]." 
+					data-field-name-prefix="slatwall.editAddress." 
 					data-show-address-book-select="false" 
 					data-show-country-select="true"
 					data-show-submit-button="true"
 					data-action="updateAddress,addOrderShippingAddress"
 					data-action-text="Save and Continue"
 					data-show-address-book-select="false" 
-					data-event-listeners="{updateAddressSuccess:slatwall.hideAccountAddressForm,updateAddressFailure:slatwall.addShippingAddressErrors}"
+					data-event-listeners="{updateAddressSuccess:slatwall.hideAccountAddressForm}"
 					data-submit-on-enter="true">
 				</sw-address-form>
 			</div>
@@ -60,7 +60,7 @@
 					show-close-button="true"
 					close-button-text="CLOSE"
 					data-submit-on-enter="true"
-					data-event-listeners="{addShippingAddressUsingAccountAddressSuccess:slatwall.hideAccountAddressForm, addShippingAddressUsingAccountAddressFailure:slatwall.addShippingAddressErrors}">
+					data-event-listeners="{addShippingAddressUsingAccountAddressSuccess:slatwall.hideAccountAddressForm}">
 				</sw-address-form>
 			</div>
 

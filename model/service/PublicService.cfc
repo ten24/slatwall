@@ -227,11 +227,12 @@ component extends="HibachiService"  accessors="true" output="false"
         param name="arguments.data.createAuthenticationFlag" default="1";
         
         var account = getAccountService().processAccount( getHibachiScope().getAccount(), arguments.data, 'create');
-        getHibachiScope().addActionResult( "public:account.create", account.hasErrors() );
-        
+
         if(account.hasErrors()){
-            addErrors(account, getHibachiScope().getAccount().getProcessObject("create").getErrors());
+            addErrors(arguments.data, getHibachiScope().getAccount().getProcessObject("create").getErrors());
         }
+
+        getHibachiScope().addActionResult( "public:account.create", account.hasErrors() );
     }
     
     /**
@@ -484,8 +485,6 @@ component extends="HibachiService"  accessors="true" output="false"
     	}else{
         getHibachiScope().addActionResult( "public:cart.updateAddress", true );
       }
-
-
      }
     
     /** 
@@ -516,8 +515,8 @@ component extends="HibachiService"  accessors="true" output="false"
             //if we have that data and don't have any suggestions to make, than try to populate the address
             shippingAddress = getService('AddressService').newAddress();   
             //get a new address populated with the data.
-            var savedAddress = getService('AddressService').saveAddress(shippingAddress, data, "full");
 
+            var savedAddress = getService('AddressService').saveAddress(shippingAddress, data, "full");
             if (isObject(savedAddress) && !savedAddress.hasErrors()){
                 //save the address at the order level.
                 var order = getHibachiScope().cart();
@@ -600,16 +599,19 @@ component extends="HibachiService"  accessors="true" output="false"
         }
       }
 
-      if(!isNull(orderFulfillment) && !orderFulfillment.hasErrors()){
+      if(!isNull(orderFulfillment)){
         orderFulfillment.setEmailAddress(emailAddress);
-        getOrderService().saveOrder(order);
-        getDao('hibachiDao').flushOrmSession();
-        getHibachiScope().addActionResult('public:cart.addEmailFulfillmentAddress', order.hasErrors());
-      }else{
-        if(!isNull(orderFulfillment)){
-          this.addErrors(arguments.data, orderFulfillment.getErrors());
+        orderFulfillment.validate("save");
+        if(!orderFulfillment.hasErrors()){
+
+          getOrderService().saveOrder(order);
+          getDao('hibachiDao').flushOrmSession();
+          getHibachiScope().addActionResult('public:cart.addEmailFulfillmentAddress', order.hasErrors());
+
+        }else{
+            this.addErrors(arguments.data, orderFulfillment.getErrors());
+            getHibachiScope().addActionResult('public:cart.addEmailFulfillmentAddress', orderFulfillment.hasErrors());
         }
-        getHibachiScope().addActionResult('public:cart.addEmailFulfillmentAddress', true);
       }
     }
 
@@ -1245,7 +1247,6 @@ component extends="HibachiService"  accessors="true" output="false"
     }
     
     public any function addErrors( required struct data , errors){
-        
         if (!structKeyExists(arguments.data, "ajaxResponse")){
             arguments.data["ajaxResponse"] = {};
         }

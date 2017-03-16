@@ -17,12 +17,12 @@
                             <li>{{slatwall.account.accountAddresses[key].address.company}}</li>
                             <li>{{slatwall.account.accountAddresses[key].address.streetAddress}}</li>
                             <li>{{slatwall.account.accountAddresses[key].address.street2Address}}</li>
-                            <li>{{slatwall.account.accountAddresses[key].address.city}}, <span ng-if="slatwall.account.accountAddresses[key].address.statecode">{{slatwall.account.accountAddresses[key].address.statecode}}</span><span ng-if="slatwall.account.accountAddresses[key].address.locality">{{slatwall.account.accountAddresses[key].address.locality}}</span> <span ng-if="slatwall.account.accountAddresses[key].address.postalcode">{{slatwall.account.accountAddresses[key].address.postalcode}}</span></li>
+                            <li>{{slatwall.account.accountAddresses[key].address.city}}, <span ng-if="slatwall.account.accountAddresses[key].address.statecode">{{slatwall.account.accountAddresses[key].address.statecode}}</span><span ng-if="slatwall.account.accountAddresses[key].address.locality">{{slatwall.account.accountAddresses[key].address.locality}}</span> <span ng-if="slatwall.account.accountAddresses[key].address.postalCode">{{slatwall.account.accountAddresses[key].address.postalCode}}</span></li>
                             <li>{{slatwall.account.accountAddresses[key].address.countrycode}}</li>
                             <li><a href="tel:{{slatwall.account.accountAddresses[key].address.phoneNumber}}" class="tel">{{slatwall.account.accountAddresses[key].address.phoneNumber}}</a></li>
                             <li>
                             <button type="button" class="btn-yellow" ng-click="slatwall.doAction('addShippingAddressUsingAccountAddress', {'accountAddressID': value.accountAddressID ,'saveAsAccountAddressFlag':'true'});thisSelected=true"><i ng-show="thisSelected" class="fa fa-spinner fa-spin fa-3x fa-fw margin-bottom" style="font-size: 12px;margin:0px;"></i>Select Address</button>
-                            <button type="button" ng-click="slatwall.accountAddressEditFormIndex = key;slatwall.clearShippingAddressErrors()">Edit</button>
+                            <button type="button" ng-click="slatwall.editAccountAddress(key);">Edit</button>
                             </li>
                         </ul>
                     </div>
