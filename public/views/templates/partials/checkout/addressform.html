@@ -4,7 +4,7 @@
     data-is-process-form="true"
     data-form-class="edit"
     data-error-class="error"
-    data-object="SWAddressForm.address"
+    data-object="SwAddressForm.address"
     data-on-success="Hide:"
     data-class="new_address"
     data-name="{{SwAddressForm.addressName}}">
@@ -49,7 +49,6 @@
 	        	class="form-control" 
 	            ng-model="SwAddressForm.address.countryCode"  
 	            ng-init="SwAddressForm.address.countryCode=slatwall.defaultCountryCode;slatwall.selectedCountry.value = slatwall.defaultCountryCode;" />
-	          
 			<span class="error" error-for="countryCode"></span>
     	</div>
     	
@@ -59,12 +58,10 @@
 		    <swf-property-display
 		        data-name="{{SwAddressForm.fieldNamePrefix}}name"
 		        data-type="text"
-		        data-object="SwAddressForm.address"
 		        data-property-identifier="name"
 		        data-label-text="Full Name"
 		        data-class="form-control"
-		        data-editing="true" 
-		        >
+	        	input-attributes="ng-required=true">
 		    </swf-property-display>
 		    <span class="error" error-for="{{SwAddressForm.fieldNamePrefix}}name"></span>
 	    </div>
@@ -72,11 +69,9 @@
 		    <swf-property-display
 		        data-name="{{SwAddressForm.fieldNamePrefix}}company"
 		        data-type="text"
-		        data-object="SwAddressForm.address"
 		        data-property-identifier="company"
 		        data-label-text="Company (optional)"
-		        data-class="form-control"
-		        data-editing="true" >
+		        data-class="form-control">
 		    </swf-property-display>
 		     <span class="error" error-for="{{SwAddressForm.fieldNamePrefix}}company"></span>
 	    </div> 
@@ -89,11 +84,10 @@
     		<swf-property-display
 	        data-name="{{SwAddressForm.fieldNamePrefix}}streetAddress"
 	        data-type="text"
-	        data-object="SwAddressForm.address"
 	        data-property-identifier="streetAddress"
 	        data-label-text="Street "
 	        data-class="form-control"
-	        data-editing="true" input-attributes="ng-required=true">
+			input-attributes="ng-required=true">
 	    	</swf-property-display>
 	        <span class="error" error-for="{{SwAddressForm.fieldNamePrefix}}streetAddress"></span>
 	    </div>
@@ -102,11 +96,9 @@
 	    	<swf-property-display
 	        data-name="{{SwAddressForm.fieldNamePrefix}}street2Address"
 	        data-type="text"
-	        data-object="SwAddressForm.address"
 	        data-property-identifier="street2Address"
 	        data-label-text="Apt./Suite"
-	        data-class="form-control"
-	        data-editing="true" >
+	        data-class="form-control">
 	    	</swf-property-display>
 	    	<span class="error" error-for="{{SwAddressForm.fieldNamePrefix}}street2Address"></span>
    		</div>
@@ -118,11 +110,10 @@
     		<swf-property-display
 	        data-name="{{SwAddressForm.fieldNamePrefix}}city"
 	        data-type="text"
-	        data-object="SwAddressForm.address"
 	        data-property-identifier="city"
 	        data-label-text="City"
 	        data-class="form-control"
-	        data-editing="true" input-attributes="ng-required=true">
+	        input-attributes="ng-required=true">
 	    	</swf-property-display>
 	    	<span class="error" error-for="{{SwAddressForm.fieldNamePrefix}}city"></span>
     	</div>
@@ -142,11 +133,9 @@
 	            <swf-property-display
 			        data-name="{{SwAddressForm.fieldNamePrefix}}locality"
 			        data-type="text"
-			        data-object="SwAddressForm.address"
 			        data-property-identifier="locality"
 			        data-label-text="Locality"
-			        data-class="form-control"
-			        data-editing="true" >
+			        data-class="form-control">
 			    </swf-property-display>
 			    <span class="error" error-for="{{SwAddressForm.fieldNamePrefix}}locality"></span>
         	</div>
@@ -154,11 +143,10 @@
 	        	<swf-property-display
 			        data-name="{{SwAddressForm.fieldNamePrefix}}postalCode"
 			        data-type="text"
-			        data-object="SwAddressForm.address"
 			        data-property-identifier="postalCode"
 			        data-label-text="Zip"
 			        data-class="form-control"
-			        data-editing="true" input-attributes="ng-required=true">
+			        input-attributes="ng-required=true">
 			    </swf-property-display>
 			    <span class="error" error-for="{{SwAddressForm.fieldNamePrefix}}postalCode"></span>
 	         </div>
@@ -173,7 +161,6 @@
 		    	<sw-action-caller 
 					data-action="{{SwAddressForm.action}}"
 					data-action-text="{{SwAddressForm.actionText}}"
-					data-modal="false" 
 					data-type="button" 
 					data-class="col-sm-6 btn"
 					data-text="{{(slatwall.getRequestByAction(SwAddressForm.action).loading ? 'LOADING' : 'SAVE &amp; CONTINUE')}}">

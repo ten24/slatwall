@@ -10,10 +10,7 @@
         <div class="row">
             <span ng-init="giftCard = {newOrderPayment:{}}"></span>
             <sw-form
-                data-is-process-form="true"
                 data-object="giftCard"
-                data-form-class=""
-                data-error-class="error"
                 data-name="addGiftCard"
                 data-action="addGiftCardOrderPayment"
                 data-submit-on-enter="true"
@@ -23,17 +20,13 @@
                         data-name="giftCardCodeToApply"
                         data-field-type="text"
                         data-property-identifier="newOrderPayment.giftCardNumber"
-                        data-class="form-control"
-                        data-editing="true"
-                        >
+                        data-class="form-control">
                     </swf-property-display>
                 </div>
                 <div class="form-group">
                     <sw-action-caller
-                        data-modal="false"
                         data-type="button"
                         data-class="button blue"
-                        data-error-class="error"
                         data-text="{{(slatwall.getRequestByAction('addGiftCardOrderPayment').loading? 'LOADING...' : 'Add Gift Card')}}"
                         data-event-listeners="{addGiftCardOrderPaymentSuccess:$parent.swForm.clear}">
                     </sw-action-caller>

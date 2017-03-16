@@ -4,10 +4,8 @@
     </div>
 </div>
 <sw-form
-    data-is-process-form="true"
     data-object="'Order_AddPromotionCode'"
     data-submit-on-enter="true"
-    data-form-class="cssform"
     data-name="AddPromotionCode"
     data-action="addPromotionCode"
     class="row">
@@ -19,7 +17,6 @@
             data-hide-errors="true"
             data-property-identifier="promotionCode"
             data-class="form-control"
-            data-editing="true"
             data-event-announcers="keyup"
             >
         </swf-property-display>
@@ -27,7 +24,6 @@
     <div class="col-md-3">
         <sw-action-caller 
             data-event-listeners="{addPromotionCodeSuccess:$parent.swForm.clear}"
-            data-modal="false" 
             data-type="button"
             data-class="Apply" 
             data-text="{{(slatwall.getRequestByAction('addPromotionCode').loading)?'Loading':'Apply'}}">

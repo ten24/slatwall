@@ -24,7 +24,6 @@ class PublicService {
     public countryDataPromise:any;
     public stateDataPromise:any;
     public lastSelectedShippingMethod:any;
-    public findingGiftCard:boolean;
 
     public http:ng.IHttpService;
     public confirmationUrl:string;
@@ -298,10 +297,6 @@ class PublicService {
                 }
             }
         }
-        if (!request.hasSuccessfulAction()){
-            //this.hasErrors = true;
-        }
-
     }
 
     public getRequestByAction = (action:string)=>{
@@ -341,6 +336,7 @@ class PublicService {
         }
     }
 
+    /** Returns a boolean indicating whether or not the order has the named payment method.*/
     public hasPaymentMethod = (paymentMethodName)=>{
         for (var payment of this.cart.orderPayments){
             if(payment.paymentMethod.paymentMethodName === paymentMethodName) return true;
@@ -367,6 +363,7 @@ class PublicService {
         return this.hasPaymentMethod("Cash");
     }
 
+    /** Returns a boolean indicating whether or not the order has the named fulfillment method.*/
     public hasFulfillmentMethod = (fulfillmentMethodName) => {
         for (var fulfillment of this.cart.orderFulfillments){
             if(fulfillment.fulfillmentMethod.fulfillmentMethodName === fulfillmentMethodName) return true;
@@ -378,20 +375,22 @@ class PublicService {
         return this.hasFulfillmentMethod("Shipping");
     }
 
-    public hasShippingAddress = () => {
-        return (
-            this.hasShippingFulfillmentMethod && 
-            this.cart.orderFulfillments &&
-            this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingTypeIndex] &&
-            this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingTypeIndex].data.shippingAddress);
-    }
-
     public hasEmailFulfillmentMethod = ()=>{
         return this.hasFulfillmentMethod("Email");
     }
 
     public hasPickupFulfillmentMethod = ()=>{
         return this.hasFulfillmentMethod("Pickup");
+    }
+
+    /** Returns true if the order has a shipping address selected. */
+    public hasShippingAddress = () => {
+        return (
+            this.hasShippingFulfillmentMethod && 
+            this.cart.orderFulfillments &&
+            this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingTypeIndex] &&
+            this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingTypeIndex].data.shippingAddress
+        );
     }
 
     /** Returns true if the order requires a fulfillment */
@@ -424,7 +423,7 @@ class PublicService {
         return false;
     }
 
-    /** Redirects to the order confirmation page if the order placed successfully
+    /** Redirects to the passed in URL
     */
     public redirectExact = (url:string)=>{
         this.$location.url(url);
@@ -465,7 +464,7 @@ class PublicService {
            return false;
      };
 
-     /** returns true if the shipping method is the selected shipping method
+     /** returns true if the shipping method option passed in is the selected shipping method
      */
      public isSelectedShippingMethod = (option) =>{
          return this.cart.fulfillmentTotal && 
@@ -484,23 +483,13 @@ class PublicService {
          this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethod.shippingMethodID = option.value;
      }
 
-     /** returns the index of the selected shipping method.
-     */
-     public getSelectedShippingIndex = (index, value)=>{
-        for (var i = 0; i <= this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingMethodOptions.length; i++){
-            if (this.cart.fulfillmentTotal == this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingMethodOptions[i].totalCharge){
-                return i;
-            }
-        }
-     }
-
-     /** Removes promotional code from order
-     */
+     /** Removes promotional code from order*/
      public removePromoCode = (code, index)=>{
          this.doAction('removePromotionCode', {promotionCode:code});
          this.lastRemovedPromoCode = index;
      }
 
+     /** Returns boolean indicating whether or not the promotional code with the passed in index is currently being removed.*/
      public removingPromoCode = (index) =>{
          return this.getRequestByAction('removePromotionCode') && this.getRequestByAction('removePromotionCode').loading && this.lastRemovedPromoCode == index;
      }
@@ -511,7 +500,7 @@ class PublicService {
         }
     }
 
-    // Prepare swAddressForm billing address / card info to be passed to addOrderPayment
+    /** Prepare swAddressForm billing address / card info to be passed to addOrderPayment */
     public setCreditCardPaymentInfo = () => {
         let billingAddress;
         
@@ -541,8 +530,7 @@ class PublicService {
         this.addCreditCardPayment();
     }
 
-    /** Allows an easy way to calling the service addOrderPayment.
-    */
+    /** Add a credit card order payment.*/
     public addCreditCardPayment = ()=>{
 
         //Grab all the data
@@ -575,24 +563,18 @@ class PublicService {
         this.doAction('addOrderPayment', data, 'post');
     };
 
+    /** Removes a gift card from the order and sets variable tracking which gift card is being removed.*/
     public removeGiftCard = (payment, index) =>{
         this.doAction('removeOrderPayment', {orderPaymentID:payment.orderPaymentID});
         this.lastRemovedGiftCard = index;
     }
 
+    /** Check if the gift card with the passed in index is currently being removed.*/
     public removingGiftCard = (index) =>{
         return this.getRequestByAction('removeOrderPayment') && this.getRequestByAction('removeOrderPayment').loading && this.lastRemovedGiftCard == index;
     }
 
-    /** returns true if this was the last selected method
-    */
-    public isLastSelectedShippingMethod = (index)=>{
-        if (this.lastSelectedShippingMethod[index] === 'true'){
-            return true;
-        }
-        return false;
-    }
-
+    /** Format saved payment method info for display in list*/
     public formatPaymentMethod = (paymentMethod) =>{
         return paymentMethod.nameOnCreditCard + ' - ' + paymentMethod.creditCardType + ' *' + paymentMethod.creditCardLastFour + ' exp. ' + ('0' + paymentMethod.expirationMonth).slice(-2) + '/' + paymentMethod.expirationYear.toString().slice(-2)
     }
@@ -627,26 +609,23 @@ class PublicService {
      };
 
     //returns the amount total of giftcards added to this account.
-    public getAppliedGiftCardTotals = ()=>{
+    public getPaymentTotals = ()=>{
         //
         var total = 0;
-        for (var payment in this.cart.orderPayments){
-            if (this.cart.orderPayments[payment].giftCardNumber != "" &&
-                !isNaN(parseInt(payment))){
-                total = total + Number(this.cart.orderPayments[payment]['amount'].toFixed(2));
-            }
+        for (var index in this.cart.orderPayments){
+            total = total + Number(this.cart.orderPayments[index]['amount'].toFixed(2));
         }
         return total;
     };
 
     //gets the calcuated total minus the applied gift cards.
-    public getTotalMinusGiftCards = ()=>{
-        var total = this.getAppliedGiftCardTotals();
+    public getTotalMinusPayments = ()=>{
+        var total = this.getPaymentTotals();
         return this.cart.calculatedTotal - total;
     };
 
     public paymentsEqualTotalBalance = () =>{
-        return this.getTotalMinusGiftCards() == 0;
+        return this.getTotalMinusPayments() == 0;
     }
 
     public checkIfFinalPayment = () =>{

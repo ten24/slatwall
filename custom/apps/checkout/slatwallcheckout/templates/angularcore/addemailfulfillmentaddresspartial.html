@@ -4,10 +4,7 @@
 		<h4>Email Fulfillment</h4>
 			<div class="col-sm-7">
 			    <sw-form
-			        data-is-process-form="true"
 			        data-object="emailFulfillmentAddress"
-			        data-form-class="cssform"
-			        data-error-class="error"
 			        data-name="Email_Fulfillment"
 			        data-event-announcers="keyup"
 			        data-action="addEmailFulfillmentAddress"
@@ -17,16 +14,13 @@
 				        <swf-property-display
 				                data-name="emailAddress"
 				                data-field-type="email"
-				                data-object="emailFulfillmentAddress"
 				                data-property-identifier="emailAddress"
 				                data-label-text="Email Address"
-				                data-class="form-control"
-				                data-editing="true">
+				                data-class="form-control">
 				        </swf-property-display>
 					</div>
 					<div class="form-group">
 				        <sw-action-caller
-				            data-modal="false"
 				            data-type="button"
 				            data-class="button blue"
 				            data-text="{{(slatwall.getRequestByAction('addEmailFulfillmentAddress').loading ? 'LOADING...' : 'Add Email Address')}}"

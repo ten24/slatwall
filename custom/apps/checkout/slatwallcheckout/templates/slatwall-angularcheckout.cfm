@@ -26,9 +26,7 @@
 	                <p ng-show="slatwall.hasAccount()">Not you? 
 	                	<sw-action-caller
 					        data-action="public:account.logout"
-					        data-modal="false"
 					        data-type="link"
-					        data-error-class="error"
 					        data-text="Logout">
 				    	</sw-action-caller>
 			    	</p>
@@ -61,11 +59,11 @@
 		                    <div class="details row" ng-show="slatwall.hasPickupFulfillmentMethod()">
 		                        <swf-directive partial-name="deliverystorepickup"></swf-directive>
 		                    </div><br>
-		                    <div class="row">
+		                   <!---  <div class="row">
 								<span class="next-step-btn" style="padding:20px">
 							    	<input type="submit" class="btn-yellow" value="Continue to Payment" ng-click="slatwall.edit = 'payment'"/>
 								</span>
-							</div>
+							</div> --->
 						</div>
 	                </div>
 	            </div>
@@ -220,18 +218,13 @@
 
                             <div class="reviewtotal">
                                 <sw-form
-							    	data-is-process-form="true"
 								    data-object="slatwall.cart"
-								    data-form-class=""
-								    data-error-class="error"
 								    data-action="placeOrder"
 								    data-name="PlaceOrder">
                                     <div class="form-group">
 									    <sw-action-caller
-									        data-modal="false"
 									        data-type="button"
 									        data-class="button blue"
-									        data-error-class="error"
 									        data-text="{{(slatwall.getRequestByAction('placeOrder').loading ? 'LOADING...' : 'Place Order')}}"
 									        data-event-listeners="{placeOrderFailure:slatwall.placeOrderFailure}">
 									    </sw-action-caller>

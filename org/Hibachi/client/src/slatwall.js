@@ -2051,8 +2051,6 @@
 	                    }
 	                }
 	            }
-	            if (!request.hasSuccessfulAction()) {
-	            }
 	        };
 	        this.getRequestByAction = function (action) {
 	            return _this.requests[action];
@@ -2086,6 +2084,7 @@
 	                }
 	            }
 	        };
+	        /** Returns a boolean indicating whether or not the order has the named payment method.*/
 	        this.hasPaymentMethod = function (paymentMethodName) {
 	            for (var _i = 0, _a = _this.cart.orderPayments; _i < _a.length; _i++) {
 	                var payment = _a[_i];
@@ -2109,6 +2108,7 @@
 	        this.hasCashPaymentMethod = function () {
 	            return _this.hasPaymentMethod("Cash");
 	        };
+	        /** Returns a boolean indicating whether or not the order has the named fulfillment method.*/
 	        this.hasFulfillmentMethod = function (fulfillmentMethodName) {
 	            for (var _i = 0, _a = _this.cart.orderFulfillments; _i < _a.length; _i++) {
 	                var fulfillment = _a[_i];
@@ -2120,17 +2120,18 @@
 	        this.hasShippingFulfillmentMethod = function () {
 	            return _this.hasFulfillmentMethod("Shipping");
 	        };
-	        this.hasShippingAddress = function () {
-	            return (_this.hasShippingFulfillmentMethod &&
-	                _this.cart.orderFulfillments &&
-	                _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingTypeIndex] &&
-	                _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingTypeIndex].data.shippingAddress);
-	        };
 	        this.hasEmailFulfillmentMethod = function () {
 	            return _this.hasFulfillmentMethod("Email");
 	        };
 	        this.hasPickupFulfillmentMethod = function () {
 	            return _this.hasFulfillmentMethod("Pickup");
+	        };
+	        /** Returns true if the order has a shipping address selected. */
+	        this.hasShippingAddress = function () {
+	            return (_this.hasShippingFulfillmentMethod &&
+	                _this.cart.orderFulfillments &&
+	                _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingTypeIndex] &&
+	                _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingTypeIndex].data.shippingAddress);
 	        };
 	        /** Returns true if the order requires a fulfillment */
 	        this.orderRequiresFulfillment = function () {
@@ -2157,7 +2158,7 @@
 	            }
 	            return false;
 	        };
-	        /** Redirects to the order confirmation page if the order placed successfully
+	        /** Redirects to the passed in URL
 	        */
 	        this.redirectExact = function (url) {
 	            _this.$location.url(url);
@@ -2194,7 +2195,7 @@
 	            }
 	            return false;
 	        };
-	        /** returns true if the shipping method is the selected shipping method
+	        /** returns true if the shipping method option passed in is the selected shipping method
 	        */
 	        this.isSelectedShippingMethod = function (option) {
 	            return _this.cart.fulfillmentTotal &&
@@ -2211,21 +2212,12 @@
 	            _this.doAction('addShippingMethodUsingShippingMethodID', data);
 	            _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethod.shippingMethodID = option.value;
 	        };
-	        /** returns the index of the selected shipping method.
-	        */
-	        this.getSelectedShippingIndex = function (index, value) {
-	            for (var i = 0; i <= _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingMethodOptions.length; i++) {
-	                if (_this.cart.fulfillmentTotal == _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingMethodOptions[i].totalCharge) {
-	                    return i;
-	                }
-	            }
-	        };
-	        /** Removes promotional code from order
-	        */
+	        /** Removes promotional code from order*/
 	        this.removePromoCode = function (code, index) {
 	            _this.doAction('removePromotionCode', { promotionCode: code });
 	            _this.lastRemovedPromoCode = index;
 	        };
+	        /** Returns boolean indicating whether or not the promotional code with the passed in index is currently being removed.*/
 	        this.removingPromoCode = function (index) {
 	            return _this.getRequestByAction('removePromotionCode') && _this.getRequestByAction('removePromotionCode').loading && _this.lastRemovedPromoCode == index;
 	        };
@@ -2234,7 +2226,7 @@
 	                _this.setCreditCardPaymentInfo();
 	            }
 	        };
-	        // Prepare swAddressForm billing address / card info to be passed to addOrderPayment
+	        /** Prepare swAddressForm billing address / card info to be passed to addOrderPayment */
 	        this.setCreditCardPaymentInfo = function () {
 	            var billingAddress;
 	            //if selected, pass shipping address as billing address
@@ -2257,8 +2249,7 @@
 	            _this.newBillingAddress = billingAddress;
 	            _this.addCreditCardPayment();
 	        };
-	        /** Allows an easy way to calling the service addOrderPayment.
-	        */
+	        /** Add a credit card order payment.*/
 	        this.addCreditCardPayment = function () {
 	            //Grab all the data
 	            var billingAddress = _this.newBillingAddress;
@@ -2287,21 +2278,16 @@
 	            //Post the new order payment and set errors as needed.
 	            _this.doAction('addOrderPayment', data, 'post');
 	        };
+	        /** Removes a gift card from the order and sets variable tracking which gift card is being removed.*/
 	        this.removeGiftCard = function (payment, index) {
 	            _this.doAction('removeOrderPayment', { orderPaymentID: payment.orderPaymentID });
 	            _this.lastRemovedGiftCard = index;
 	        };
+	        /** Check if the gift card with the passed in index is currently being removed.*/
 	        this.removingGiftCard = function (index) {
 	            return _this.getRequestByAction('removeOrderPayment') && _this.getRequestByAction('removeOrderPayment').loading && _this.lastRemovedGiftCard == index;
 	        };
-	        /** returns true if this was the last selected method
-	        */
-	        this.isLastSelectedShippingMethod = function (index) {
-	            if (_this.lastSelectedShippingMethod[index] === 'true') {
-	                return true;
-	            }
-	            return false;
-	        };
+	        /** Format saved payment method info for display in list*/
 	        this.formatPaymentMethod = function (paymentMethod) {
 	            return paymentMethod.nameOnCreditCard + ' - ' + paymentMethod.creditCardType + ' *' + paymentMethod.creditCardLastFour + ' exp. ' + ('0' + paymentMethod.expirationMonth).slice(-2) + '/' + paymentMethod.expirationYear.toString().slice(-2);
 	        };
@@ -2328,24 +2314,21 @@
 	            });
 	        };
 	        //returns the amount total of giftcards added to this account.
-	        this.getAppliedGiftCardTotals = function () {
+	        this.getPaymentTotals = function () {
 	            //
 	            var total = 0;
-	            for (var payment in _this.cart.orderPayments) {
-	                if (_this.cart.orderPayments[payment].giftCardNumber != "" &&
-	                    !isNaN(parseInt(payment))) {
-	                    total = total + Number(_this.cart.orderPayments[payment]['amount'].toFixed(2));
-	                }
+	            for (var index in _this.cart.orderPayments) {
+	                total = total + Number(_this.cart.orderPayments[index]['amount'].toFixed(2));
 	            }
 	            return total;
 	        };
 	        //gets the calcuated total minus the applied gift cards.
-	        this.getTotalMinusGiftCards = function () {
-	            var total = _this.getAppliedGiftCardTotals();
+	        this.getTotalMinusPayments = function () {
+	            var total = _this.getPaymentTotals();
 	            return _this.cart.calculatedTotal - total;
 	        };
 	        this.paymentsEqualTotalBalance = function () {
-	            return _this.getTotalMinusGiftCards() == 0;
+	            return _this.getTotalMinusPayments() == 0;
 	        };
 	        this.checkIfFinalPayment = function () {
 	            if ((_this.getRequestByAction('addOrderPayment') && _this.getRequestByAction('addOrderPayment').hasSuccessfulAction() ||
