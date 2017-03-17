@@ -744,11 +744,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 			
 			if(findNoCase('p:show', key)){
-				var globalAPIPageShowLimit = getService("SettingService").getSettingValue("globalAPIPageShowLimit");
 				var pageShow = data[key];
-				if(pageShow > globalAPIPageShowLimit){
-					pageShow = globalAPIPageShowLimit; 
-				} 
 			}
 			
 			if (!isNull(pageShow)){
