@@ -53,6 +53,8 @@ Notes:
 	<swa:SlatwallSettingTable showInheritance="false">
 		<swa:SlatwallSetting settingName="globalAdminDomainNames" />
 		<swa:SlatwallSetting settingName="globalAllowedOutsideRedirectSites" />
+		<swa:SlatwallSetting settingName="globalAPIDirtyRead" />
+		<swa:SlatwallSetting settingName="globalAPIPageShowLimit" />
 		<swa:SlatwallSetting settingName="globalClientSecret" />
 		<swa:SlatwallSetting settingName="globalEncryptionAlgorithm" />
 		<swa:SlatwallSetting settingName="globalEncryptionEncoding" />
