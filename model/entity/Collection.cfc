@@ -604,6 +604,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		//Simple Filters
 		for (var key in data){
 			//handle filters.
+			if(!isSimpleValue(data[key])){
+ 				continue; 
+ 			} 
 			if (left(key, 3) == "fr:"){
 				
 				var prop = key.split(':')[2];
@@ -741,7 +744,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 			
 			if(findNoCase('p:show', key)){
+				var globalAPIPageShowLimit = getService("SettingService").getSettingValue("globalAPIPageShowLimit");
 				var pageShow = data[key];
+				if(pageShow > globalAPIPageShowLimit){
+					pageShow = globalAPIPageShowLimit; 
+				} 
 			}
 			
 			if (!isNull(pageShow)){
