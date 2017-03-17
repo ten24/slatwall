@@ -336,9 +336,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 					return false;
 				}
 			}
-			return true;
 		}
-		return false;
+		return true;
 	}
 
 	public boolean function giftCardCurrencyMatches(){

@@ -1131,6 +1131,9 @@ component extends="HibachiService"  accessors="true" output="false"
         param name="data.copyFromType" default="";
         
         var addOrderPayment = addOrderPayment(data, true);
+        if(addOrderPayment.hasErrors()){
+          addErrors(data, addOrderPayment.getProcessObject('addOrderPayment').getErrors());
+        }
         getHibachiScope().addActionResult('public:cart.addGiftCardOrderPayment', addOrderPayment.hasErrors());
     }
     

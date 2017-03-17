@@ -2,11 +2,6 @@
     
     <div class="col-md-8">
         <h4>Enter Gift Card</h4>
-        <div ng-show="slatwall.giftCardError()">
-            <div class="msg">
-                <div class="alert alert-danger"><i class="fa fa-info-circle"></i> {{slatwall.giftCardError()}}</div>
-            </div>
-        </div>
         <div class="row">
             <span ng-init="giftCard = {newOrderPayment:{}}"></span>
             <sw-form
@@ -17,7 +12,7 @@
                 data-event-announcers="keyup">
                 <div class="col-sm-8 form-group">
                     <swf-property-display
-                        data-name="giftCardCodeToApply"
+                        data-name="giftCardID"
                         data-field-type="text"
                         data-property-identifier="newOrderPayment.giftCardNumber"
                         data-class="form-control">

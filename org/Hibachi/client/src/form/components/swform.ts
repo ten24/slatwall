@@ -158,6 +158,7 @@ class SWFormController {
 
         this.formData = this.formData || {};
         //
+
         let request = this.$rootScope.hibachiScope.doAction(action, this.formData)
         .then( (result) =>{
             if (result.errors) {

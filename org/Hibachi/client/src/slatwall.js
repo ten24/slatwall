@@ -1340,15 +1340,22 @@
 	var expandableservice_1 = __webpack_require__(44);
 	var metadataservice_1 = __webpack_require__(45);
 	var rbkeyservice_1 = __webpack_require__(46);
+<<<<<<< Updated upstream
 	var typeaheadservice_1 = __webpack_require__(47);
 	var hibachiservice_1 = __webpack_require__(48);
 	var historyservice_1 = __webpack_require__(49);
+=======
+	var hibachiservice_1 = __webpack_require__(48);
+>>>>>>> Stashed changes
 	var localstorageservice_1 = __webpack_require__(50);
 	var hibachiservicedecorator_1 = __webpack_require__(51);
 	var hibachiscope_1 = __webpack_require__(52);
 	var requestservice_1 = __webpack_require__(53);
+<<<<<<< Updated upstream
 	var scopeservice_1 = __webpack_require__(57);
 	var skuservice_1 = __webpack_require__(58);
+=======
+>>>>>>> Stashed changes
 	var hibachivalidationservice_1 = __webpack_require__(59);
 	var entityservice_1 = __webpack_require__(60);
 	//controllers
@@ -1357,7 +1364,10 @@
 	var percentage_1 = __webpack_require__(62);
 	var entityrbkey_1 = __webpack_require__(63);
 	var swtrim_1 = __webpack_require__(64);
+<<<<<<< Updated upstream
 	var swunique_1 = __webpack_require__(65);
+=======
+>>>>>>> Stashed changes
 	var datefilter_1 = __webpack_require__(66);
 	//directives
 	//  components
@@ -1380,6 +1390,7 @@
 	var swentityactionbarbuttongroup_1 = __webpack_require__(83);
 	var swexpandablerecord_1 = __webpack_require__(84);
 	var swgravatar_1 = __webpack_require__(85);
+<<<<<<< Updated upstream
 	var swlogin_1 = __webpack_require__(90);
 	var swmodallauncher_1 = __webpack_require__(91);
 	var swmodalwindow_1 = __webpack_require__(92);
@@ -1388,6 +1399,20 @@
 	var swscrolltrigger_1 = __webpack_require__(95);
 	var swtabgroup_1 = __webpack_require__(96);
 	var swtabcontent_1 = __webpack_require__(97);
+=======
+	var swlistingdisplay_1 = __webpack_require__(222);
+	var swlistingcontrols_1 = __webpack_require__(224);
+	var swlistingaggregate_1 = __webpack_require__(225);
+	var swlistingcolorfilter_1 = __webpack_require__(226);
+	var swlistingcolumn_1 = __webpack_require__(227);
+	var swlistingfilter_1 = __webpack_require__(230);
+	var swlistingfiltergroup_1 = __webpack_require__(231);
+	var swlistingorderby_1 = __webpack_require__(232);
+	var swlogin_1 = __webpack_require__(90);
+	var swnumbersonly_1 = __webpack_require__(93);
+	var swloading_1 = __webpack_require__(94);
+	var swscrolltrigger_1 = __webpack_require__(95);
+>>>>>>> Stashed changes
 	var swtooltip_1 = __webpack_require__(98);
 	var swrbkey_1 = __webpack_require__(99);
 	var swoptions_1 = __webpack_require__(100);
@@ -1398,9 +1423,13 @@
 	var swhref_1 = __webpack_require__(105);
 	var swprocesscaller_1 = __webpack_require__(106);
 	var swsortable_1 = __webpack_require__(107);
+<<<<<<< Updated upstream
 	var sworderbycontrols_1 = __webpack_require__(108);
 	var alert_module_1 = __webpack_require__(109);
 	var dialog_module_1 = __webpack_require__(113);
+=======
+	var swlistingglobalsearch_1 = __webpack_require__(235);
+>>>>>>> Stashed changes
 	var coremodule = angular.module('hibachi.core', [
 	    //Angular Modules
 	    'ngAnimate',
@@ -2012,6 +2041,7 @@
 	            }
 	            if (method == "post") {
 	                data.returnJsonObjects = "cart,account";
+	                console.log("Request Data: ", data);
 	                //post
 	                var request_1 = _this.requestService.newPublicRequest(urlBase, data, method);
 	                request_1.promise.then(function (result) {
@@ -2034,9 +2064,12 @@
 	            }
 	        };
 	        this.processAction = function (response, request) {
+<<<<<<< Updated upstream
 	            //Remove any added order payments that have errors
 	            _this.removeInvalidOrderPayments(response.cart);
 	            /** update the account and the cart */
+=======
+>>>>>>> Stashed changes
 	            _this.account.populate(response.account);
 	            _this.account.request = request;
 	            _this.cart.populate(response.cart);
@@ -2050,6 +2083,10 @@
 	                    }
 	                }
 	            }
+	        };
+	        this.runCheckoutAdjustments = function (response) {
+	            _this.filterErrors(response);
+	            _this.removeInvalidOrderPayments(response.cart);
 	        };
 	        this.getRequestByAction = function (action) {
 	            return _this.requests[action];
@@ -2070,12 +2107,15 @@
 	            });
 	            _this.requests[request.getAction()] = request;
 	        };
+<<<<<<< Updated upstream
 	        this.removeInvalidOrderPayments = function (cart) {
 	            cart.orderPayments = cart.orderPayments.filter(function (payment) { return !payment.hasErrors; });
 	        };
 	        /**
 	         * Given a payment method name, returns the id.
 	         */
+=======
+>>>>>>> Stashed changes
 	        this.getPaymentMethodID = function (name) {
 	            for (var method in _this.paymentMethods) {
 	                if (_this.paymentMethods[method].paymentMethodName == name && _this.paymentMethods[method].activeFlag == "Yes ") {
@@ -2211,6 +2251,7 @@
 	            _this.doAction('addShippingMethodUsingShippingMethodID', data);
 	            _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethod.shippingMethodID = option.value;
 	        };
+<<<<<<< Updated upstream
 	        /** Removes promotional code from order*/
 	        this.removePromoCode = function (code, index) {
 	            _this.doAction('removePromotionCode', { promotionCode: code });
@@ -2223,6 +2264,36 @@
 	        this.orderPaymentKeyCheck = function (event) {
 	            if (event.event.keyCode == 13) {
 	                _this.setCreditCardPaymentInfo();
+=======
+	        this.validateNewOrderPayment = function (newOrderPayment) {
+	            var newOrderPaymentErrors = {};
+	            if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.streetAddress')) {
+	                newOrderPaymentErrors['streetAddress'] = 'Required *';
+	            }
+	            if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.countrycode')) {
+	                newOrderPaymentErrors['countrycode'] = 'Required *';
+	            }
+	            if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.statecode')) {
+	                if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.locality')) {
+	                    newOrderPaymentErrors['statecode'] = 'Required *';
+	                }
+	            }
+	            if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.city')) {
+	                if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.city')) {
+	                    newOrderPaymentErrors['city'] = 'Required *';
+	                }
+	            }
+	            if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.locality')) {
+	                if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.statecode')) {
+	                    newOrderPaymentErrors['locality'] = 'Required *';
+	                }
+	            }
+	            if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.postalcode')) {
+	                newOrderPaymentErrors['postalCode'] = 'Required *';
+	            }
+	            if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.nameOnCreditCard')) {
+	                newOrderPaymentErrors['nameOnCreditCard'] = 'Required *';
+>>>>>>> Stashed changes
 	            }
 	        };
 	        /** Prepare swAddressForm billing address / card info to be passed to addOrderPayment */
@@ -2265,7 +2336,7 @@
 	                'newOrderPayment.billingAddress.city': '' + billingAddress.city,
 	                'newOrderPayment.billingAddress.statecode': billingAddress.statecode,
 	                'newOrderPayment.billingAddress.locality': billingAddress.locality || '',
-	                'newOrderPayment.billingAddress.postalcode': billingAddress.postalcode,
+	                'newOrderPayment.billingAddress.postalCode': billingAddress.postalCode,
 	                'newOrderPayment.securityCode': billingAddress.cvv,
 	                'newOrderPayment.creditCardNumber': billingAddress.cardNumber,
 	                'newOrderPayment.requireBillingAddress': true,
@@ -4544,6 +4615,7 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 47 */
 /***/ function(module, exports) {
 
@@ -4749,6 +4821,9 @@
 
 
 /***/ },
+=======
+/* 47 */,
+>>>>>>> Stashed changes
 /* 48 */
 /***/ function(module, exports) {
 
@@ -4838,11 +4913,19 @@
 	            //strip alias if it exists and convert everything to be periods
 	            if (propertyIdentifier.charAt(0) === '_') {
 	                propertyIdentifier = _this.utilityService.listRest(propertyIdentifier.replace(/_/g, '.'), '.');
+<<<<<<< Updated upstream
 	            }
 	            var propertyIdentifierArray = propertyIdentifier.split('.');
 	            if (propertyIdentifierArray[0] === entityName.toLowerCase()) {
 	                propertyIdentifierArray.shift();
 	            }
+=======
+	            }
+	            var propertyIdentifierArray = propertyIdentifier.split('.');
+	            if (propertyIdentifierArray[0] === entityName.toLowerCase()) {
+	                propertyIdentifierArray.shift();
+	            }
+>>>>>>> Stashed changes
 	            if (propertyIdentifierArray.length > 1) {
 	                var propertiesStruct = _this.getEntityMetaData(entityName);
 	                var currentProperty = propertyIdentifierArray.shift();
@@ -5207,6 +5290,7 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 49 */
 /***/ function(module, exports) {
 
@@ -5241,6 +5325,9 @@
 
 
 /***/ },
+=======
+/* 49 */,
+>>>>>>> Stashed changes
 /* 50 */
 /***/ function(module, exports) {
 
@@ -6361,6 +6448,7 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 57 */
 /***/ function(module, exports) {
 
@@ -6424,6 +6512,10 @@
 
 
 /***/ },
+=======
+/* 57 */,
+/* 58 */,
+>>>>>>> Stashed changes
 /* 59 */
 /***/ function(module, exports) {
 
@@ -6976,6 +7068,7 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 65 */
 /***/ function(module, exports) {
 
@@ -7024,6 +7117,9 @@
 
 
 /***/ },
+=======
+/* 65 */,
+>>>>>>> Stashed changes
 /* 66 */
 /***/ function(module, exports) {
 
@@ -9559,6 +9655,7 @@
 	                    _this.hibachiScope.loginDisplayed = false;
 	                    _this.$route.reload();
 	                    _this.dialogService.removeCurrentDialog();
+<<<<<<< Updated upstream
 	                }
 	            }, function (rejection) {
 	            });
@@ -9609,11 +9706,123 @@
 
 /***/ },
 /* 91 */
+=======
+	                }
+	            }, function (rejection) {
+	            });
+	        };
+	        this.$hibachi = $hibachi;
+	        this.$window = $window;
+	        this.$route = $route;
+	        this.hibachiScope = hibachiScope;
+	        this.account_login = $hibachi.newEntity('Account_Login');
+	    }
+	    return SWLoginController;
+	}());
+	var SWLogin = (function () {
+	    //@ngInject
+	    function SWLogin($route, $log, $window, corePartialsPath, $hibachi, dialogService, hibachiPathBuilder) {
+	        this.$route = $route;
+	        this.$log = $log;
+	        this.$window = $window;
+	        this.corePartialsPath = corePartialsPath;
+	        this.$hibachi = $hibachi;
+	        this.dialogService = dialogService;
+	        this.restrict = 'E';
+	        this.scope = {};
+	        this.bindToController = {};
+	        this.controller = SWLoginController;
+	        this.controllerAs = "SwLogin";
+	        this.link = function (scope, element, attrs) {
+	        };
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.corePartialsPath + '/login.html');
+	    }
+	    SWLogin.Factory = function () {
+	        var directive = function ($route, $log, $window, corePartialsPath, $hibachi, dialogService, hibachiPathBuilder) { return new SWLogin($route, $log, $window, corePartialsPath, $hibachi, dialogService, hibachiPathBuilder); };
+	        directive.$inject = [
+	            '$route',
+	            '$log',
+	            '$window',
+	            'corePartialsPath',
+	            '$hibachi',
+	            'dialogService',
+	            'hibachiPathBuilder'
+	        ];
+	        return directive;
+	    };
+	    return SWLogin;
+	}());
+	exports.SWLogin = SWLogin;
+
+
+/***/ },
+/* 91 */,
+/* 92 */,
+/* 93 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	"use strict";
+	var SWNumbersOnly = (function () {
+	    function SWNumbersOnly() {
+	        this.restrict = "A";
+	        this.require = "ngModel";
+	        this.scope = {
+	            ngModel: '=',
+	            minNumber: '=?',
+	            maxNumber: '=?'
+	        };
+	        this.link = function ($scope, element, attrs, modelCtrl) {
+	            modelCtrl.$parsers.unshift(function (inputValue) {
+	                var modelValue = modelCtrl.$modelValue;
+	                if (inputValue != "" && !isNaN(Number(inputValue))) {
+	                    if (angular.isDefined($scope.minNumber)) {
+	                        if (Number(inputValue) >= $scope.minNumber || !angular.isDefined($scope.minNumber)) {
+	                            modelCtrl.$setValidity("minNumber", true);
+	                        }
+	                        else if (angular.isDefined($scope.minNumber)) {
+	                            modelCtrl.$setValidity("minNumber", false);
+	                        }
+	                    }
+	                    if (angular.isDefined($scope.maxNumber)) {
+	                        if (Number(inputValue) <= $scope.maxNumber || !angular.isDefined($scope.maxNumber)) {
+	                            modelCtrl.$setValidity("maxNumber", true);
+	                        }
+	                        else if (angular.isDefined($scope.maxNumber)) {
+	                            modelCtrl.$setValidity("maxNumber", false);
+	                        }
+	                    }
+	                    if (modelCtrl.$valid) {
+	                        modelValue = Number(inputValue);
+	                    }
+	                    else {
+	                        modelValue = $scope.minNumber;
+	                    }
+	                }
+	                return modelValue;
+	            });
+	        };
+	    }
+	    SWNumbersOnly.Factory = function () {
+	        var directive = function () { return new SWNumbersOnly(); };
+	        directive.$inject = [];
+	        return directive;
+	    };
+	    return SWNumbersOnly;
+	}());
+	exports.SWNumbersOnly = SWNumbersOnly;
+
+
+/***/ },
+/* 94 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
+<<<<<<< Updated upstream
 	var SWModalLauncherController = (function () {
 	    // @ngInject
 	    function SWModalLauncherController() {
@@ -9833,11 +10042,7 @@
 
 /***/ },
 /* 94 */
-/***/ function(module, exports) {
-
-	"use strict";
-	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
+=======
 	var SWLoading = (function () {
 	    function SWLoading($log, corePartialsPath, hibachiPathBuilder) {
 	        return {
@@ -9956,178 +10161,8 @@
 
 
 /***/ },
-/* 96 */
-/***/ function(module, exports) {
-
-	"use strict";
-	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWTabGroupController = (function () {
-	    // @ngInject
-	    function SWTabGroupController(utilityService, rbkeyService, observerService) {
-	        var _this = this;
-	        this.utilityService = utilityService;
-	        this.rbkeyService = rbkeyService;
-	        this.observerService = observerService;
-	        this.hasActiveTab = false;
-	        this.initTab = function () {
-	            for (var i = 0; i < _this.tabs.length; i++) {
-	                if (!_this.tabs[i].hide) {
-	                    _this.tabs[i].active = true;
-	                    _this.tabs[i].loaded = true;
-	                    break;
-	                }
-	            }
-	        };
-	        this.switchTab = function (tabToActivate) {
-	            _this.observerService.notify(_this.switchTabGroupEventName);
-	            for (var i = 0; i < _this.tabs.length; i++) {
-	                _this.tabs[i].active = false;
-	            }
-	            tabToActivate.active = true;
-	            tabToActivate.loaded = true;
-	        };
-	        this.getTabByName = function (name) {
-	            for (var i = 0; i < _this.tabs.length; i++) {
-	                if (_this.tabs[i].name == name) {
-	                    return _this.tabs[i];
-	                }
-	            }
-	        };
-	        if (angular.isUndefined(this.tabs)) {
-	            this.tabs = [];
-	        }
-	        this.tabGroupID = "TG" + this.utilityService.createID(30);
-	        this.switchTabGroupEventName = "SwitchTabGroup" + this.tabGroupID;
-	        this.initTabEventName = "InitTabForTabGroup" + this.tabGroupID;
-	        this.observerService.attach(this.initTab, this.initTabEventName);
-	        if (angular.isUndefined(this.switchTabEventName)) {
-	            this.switchTabEventName = this.tabGroupID + "SwitchTabTo";
-	        }
-	        this.observerService.attach(this.switchTab, this.switchTabEventName);
-	    }
-	    return SWTabGroupController;
-	}());
-	exports.SWTabGroupController = SWTabGroupController;
-	var SWTabGroup = (function () {
-	    // @ngInject
-	    function SWTabGroup($compile, corePartialsPath, hibachiPathBuilder) {
-	        this.$compile = $compile;
-	        this.corePartialsPath = corePartialsPath;
-	        this.transclude = true;
-	        this.restrict = "EA";
-	        this.scope = {};
-	        this.bindToController = {
-	            switchTabEventName: "@?"
-	        };
-	        this.controller = SWTabGroupController;
-	        this.controllerAs = "swTabGroup";
-	        this.compile = function (element, attrs, transclude) {
-	            return {
-	                pre: function ($scope, element, attrs) { },
-	                post: function ($scope, element, attrs) { }
-	            };
-	        };
-	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "tabgroup.html";
-	    }
-	    SWTabGroup.Factory = function () {
-	        var directive = function ($compile, corePartialsPath, hibachiPathBuilder) { return new SWTabGroup($compile, corePartialsPath, hibachiPathBuilder); };
-	        directive.$inject = ["$compile", "corePartialsPath",
-	            'hibachiPathBuilder'];
-	        return directive;
-	    };
-	    return SWTabGroup;
-	}());
-	exports.SWTabGroup = SWTabGroup;
-
-
-/***/ },
-/* 97 */
-/***/ function(module, exports) {
-
-	"use strict";
-	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWTabContentController = (function () {
-	    // @ngInject
-	    function SWTabContentController($scope, $q, $transclude, $hibachi, $timeout, utilityService, rbkeyService, collectionConfigService) {
-	        this.$scope = $scope;
-	        this.$q = $q;
-	        this.$transclude = $transclude;
-	        this.$hibachi = $hibachi;
-	        this.$timeout = $timeout;
-	        this.utilityService = utilityService;
-	        this.rbkeyService = rbkeyService;
-	        this.collectionConfigService = collectionConfigService;
-	        if (angular.isUndefined(this.active)) {
-	            this.active = false;
-	        }
-	        if (angular.isUndefined(this.loaded)) {
-	            this.loaded = false;
-	        }
-	        if (angular.isUndefined(this.hide)) {
-	            this.hide = false;
-	        }
-	        if (angular.isUndefined(this.id)) {
-	            this.id = utilityService.createID(16);
-	        }
-	        if (angular.isUndefined(this.name)) {
-	            this.name = this.id;
-	        }
-	        //make a tab service? 
-	    }
-	    return SWTabContentController;
-	}());
-	exports.SWTabContentController = SWTabContentController;
-	var SWTabContent = (function () {
-	    // @ngInject
-	    function SWTabContent($compile, scopeService, observerService, corePartialsPath, hibachiPathBuilder) {
-	        var _this = this;
-	        this.$compile = $compile;
-	        this.scopeService = scopeService;
-	        this.observerService = observerService;
-	        this.corePartialsPath = corePartialsPath;
-	        this.transclude = true;
-	        this.restrict = "EA";
-	        this.scope = {};
-	        this.bindToController = {
-	            active: "=?",
-	            loaded: "=?",
-	            hide: "=?",
-	            name: "@?"
-	        };
-	        this.controller = SWTabContentController;
-	        this.controllerAs = "swTabContent";
-	        this.compile = function (element, attrs, transclude) {
-	            return {
-	                pre: function ($scope, element, attrs) {
-	                },
-	                post: function ($scope, element, attrs) {
-	                    var parentDirective = _this.scopeService.getRootParentScope($scope, "swTabGroup")["swTabGroup"];
-	                    if (angular.isDefined(parentDirective) && angular.isDefined(parentDirective.tabs)) {
-	                        parentDirective.tabs.push($scope.swTabContent);
-	                        _this.observerService.notify(parentDirective.initTabEventName);
-	                    }
-	                }
-	            };
-	        };
-	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "tabcontent.html";
-	    }
-	    SWTabContent.Factory = function () {
-	        var directive = function ($compile, scopeService, observerService, corePartialsPath, hibachiPathBuilder) { return new SWTabContent($compile, scopeService, observerService, corePartialsPath, hibachiPathBuilder); };
-	        directive.$inject = ["$compile",
-	            "scopeService",
-	            "observerService",
-	            "corePartialsPath",
-	            "hibachiPathBuilder"];
-	        return directive;
-	    };
-	    return SWTabContent;
-	}());
-	exports.SWTabContent = SWTabContent;
-
-
-/***/ },
+/* 96 */,
+/* 97 */,
 /* 98 */
 /***/ function(module, exports) {
 
@@ -10211,11 +10246,43 @@
 
 /***/ },
 /* 99 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
+<<<<<<< Updated upstream
+	var SWLoading = (function () {
+	    function SWLoading($log, corePartialsPath, hibachiPathBuilder) {
+	        return {
+	            restrict: 'A',
+	            transclude: true,
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(corePartialsPath) + 'loading.html',
+	            scope: {
+	                swLoading: '='
+	            },
+	            link: function (scope, attrs, element) {
+	            }
+	        };
+	    }
+	    SWLoading.Factory = function () {
+	        var directive = function ($log, corePartialsPath, hibachiPathBuilder) { return new SWLoading($log, corePartialsPath, hibachiPathBuilder); };
+	        directive.$inject = [
+	            '$log',
+	            'corePartialsPath',
+	            'hibachiPathBuilder'
+	        ];
+	        return directive;
+	    };
+	    return SWLoading;
+	}());
+	exports.SWLoading = SWLoading;
+
+
+/***/ },
+/* 95 */
+=======
 	var SWRbKey = (function () {
 	    function SWRbKey($hibachi, observerService, utilityService, $rootScope, $log, rbkeyService) {
 	        return {
@@ -10258,6 +10325,692 @@
 	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWOptions = (function () {
+	    function SWOptions($log, $hibachi, observerService, corePartialsPath, hibachiPathBuilder) {
+	        return {
+	            restrict: 'AE',
+	            scope: {
+	                objectName: '@'
+	            },
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "options.html",
+	            link: function (scope, element, attrs) {
+	                scope.swOptions = {};
+	                scope.swOptions.objectName = scope.objectName;
+	                //sets up drop down options via collections
+	                scope.getOptions = function () {
+	                    scope.swOptions.object = $hibachi['new' + scope.swOptions.objectName]();
+	                    var columnsConfig = [
+	                        {
+	                            "propertyIdentifier": scope.swOptions.objectName.charAt(0).toLowerCase() + scope.swOptions.objectName.slice(1) + 'Name'
+	                        },
+	                        {
+	                            "propertyIdentifier": scope.swOptions.object.$$getIDName()
+	                        }
+	                    ];
+	                    $hibachi.getEntity(scope.swOptions.objectName, { allRecords: true, columnsConfig: angular.toJson(columnsConfig) })
+	                        .then(function (value) {
+	                        scope.swOptions.options = value.records;
+	                        observerService.notify('optionsLoaded');
+	                    });
+	                };
+	                scope.getOptions();
+	                var selectOption = function (option) {
+	                    if (option) {
+	                        scope.swOptions.selectOption(option);
+	                    }
+	                    else {
+	                        scope.swOptions.selectOption(scope.swOptions.options[0]);
+	                    }
+	                };
+	                observerService.attach(selectOption, 'selectOption', 'selectOption');
+	                //use by ng-change to record changes
+	                scope.swOptions.selectOption = function (selectedOption) {
+	                    scope.swOptions.selectedOption = selectedOption;
+	                    observerService.notify('optionsChanged', selectedOption);
+	                };
+	            }
+	        };
+	    }
+	    SWOptions.Factory = function () {
+	        var directive = function ($log, $hibachi, observerService, corePartialsPath, hibachiPathBuilder) { return new SWOptions($log, $hibachi, observerService, corePartialsPath, hibachiPathBuilder); };
+	        directive.$inject = [
+	            '$log',
+	            '$hibachi',
+	            'observerService',
+	            'corePartialsPath',
+	            'hibachiPathBuilder'
+	        ];
+	        return directive;
+	    };
+	    return SWOptions;
+	}());
+	exports.SWOptions = SWOptions;
+
+
+/***/ },
+/* 101 */
+>>>>>>> Stashed changes
+/***/ function(module, exports) {
+
+	"use strict";
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+<<<<<<< Updated upstream
+	var SWScrollTrigger = (function () {
+	    function SWScrollTrigger($rootScope, $window, $timeout) {
+	        return {
+	            link: function (scope, elem, attrs) {
+	                var checkWhenEnabled, handler, scrollDistance, scrollEnabled;
+	                $window = angular.element($window);
+	                scrollDistance = 0;
+	                if (attrs.infiniteScrollDistance != null) {
+	                    scope
+	                        .$watch(attrs.infiniteScrollDistance, function (value) {
+	                        return scrollDistance = parseInt(value, 10);
+	                    });
+	                }
+	                scrollEnabled = true;
+	                checkWhenEnabled = false;
+	                if (attrs.infiniteScrollDisabled != null) {
+	                    scope
+	                        .$watch(attrs.infiniteScrollDisabled, function (value) {
+	                        scrollEnabled = !value;
+	                        if (scrollEnabled
+	                            && checkWhenEnabled) {
+	                            checkWhenEnabled = false;
+	                            return handler();
+	                        }
+	                    });
+	                }
+	                handler = function () {
+	                    var elementBottom, remaining, shouldScroll, windowBottom;
+	                    windowBottom = $window.height()
+	                        + $window.scrollTop();
+	                    elementBottom = elem.offset().top
+	                        + elem.height();
+	                    remaining = elementBottom
+	                        - windowBottom;
+	                    shouldScroll = remaining <= $window
+	                        .height()
+	                        * scrollDistance;
+	                    if (shouldScroll && scrollEnabled) {
+	                        if ($rootScope.$$phase) {
+	                            return scope
+	                                .$eval(attrs.infiniteScroll);
+	                        }
+	                        else {
+	                            return scope
+	                                .$apply(attrs.infiniteScroll);
+	                        }
+	                    }
+	                    else if (shouldScroll) {
+	                        return checkWhenEnabled = true;
+	                    }
+	                };
+	                $window.on('scroll', handler);
+	                scope.$on('$destroy', function () {
+	                    return $window.off('scroll', handler);
+	                });
+	                return $timeout((function () {
+	                    if (attrs.infiniteScrollImmediateCheck) {
+	                        if (scope
+	                            .$eval(attrs.infiniteScrollImmediateCheck)) {
+	                            return handler();
+	                        }
+	                    }
+	                    else {
+	                        return handler();
+	                    }
+	                }), 0);
+	            }
+	        };
+	    }
+	    SWScrollTrigger.Factory = function () {
+	        var directive = function ($rootScope, $window, $timeout) { return new SWScrollTrigger($rootScope, $window, $timeout); };
+	        directive.$inject = [
+	            '$rootScope',
+	            '$window',
+	            '$timeout'
+	        ];
+	        return directive;
+	    };
+	    return SWScrollTrigger;
+	}());
+	exports.SWScrollTrigger = SWScrollTrigger;
+
+
+/***/ },
+/* 96 */
+=======
+	"use strict";
+	var SWSelectionController = (function () {
+	    //@ngInject
+	    function SWSelectionController(selectionService, observerService) {
+	        var _this = this;
+	        this.selectionService = selectionService;
+	        this.observerService = observerService;
+	        this.updateSelectValue = function (res) {
+	            if (res.action == 'clear') {
+	                _this.toggleValue = false;
+	            }
+	            else if (res.action == 'selectAll') {
+	                _this.toggleValue = true;
+	            }
+	            else if (res.selection == _this.selection) {
+	                _this.toggleValue = (res.action == 'check');
+	            }
+	        };
+	        this.toggleSelection = function (toggleValue, selectionid, selection) {
+	            if (_this.isRadio) {
+	                _this.selectionService.radioSelection(selectionid, selection);
+	                _this.toggleValue = toggleValue;
+	            }
+	            else {
+	                if (toggleValue) {
+	                    _this.selectionService.addSelection(selectionid, selection);
+	                }
+	                else {
+	                    _this.selectionService.removeSelection(selectionid, selection);
+	                }
+	            }
+	        };
+	        if (angular.isUndefined(this.name)) {
+	            this.name = 'selection';
+	        }
+	        if (selectionService.isAllSelected(this.selectionid)) {
+	            this.toggleValue = !selectionService.hasSelection(this.selectionid, this.selection);
+	        }
+	        else {
+	            this.toggleValue = selectionService.hasSelection(this.selectionid, this.selection);
+	        }
+	        //attach observer so we know when a selection occurs
+	        observerService.attach(this.updateSelectValue, 'swSelectionToggleSelection');
+	    }
+	    return SWSelectionController;
+	}());
+	var SWSelection = (function () {
+	    function SWSelection(collectionPartialsPath, hibachiPathBuilder) {
+	        this.collectionPartialsPath = collectionPartialsPath;
+	        this.hibachiPathBuilder = hibachiPathBuilder;
+	        this.restrict = 'E';
+	        this.scope = {};
+	        this.bindToController = {
+	            selection: "=",
+	            selectionid: "@",
+	            id: "=",
+	            isRadio: "=",
+	            name: "@",
+	            disabled: "="
+	        };
+	        this.controller = SWSelectionController;
+	        this.controllerAs = 'swSelection';
+	        this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.collectionPartialsPath) + "selection.html";
+	    }
+	    SWSelection.Factory = function () {
+	        var directive = function (corePartialsPath, hibachiPathBuilder) { return new SWSelection(corePartialsPath, hibachiPathBuilder); };
+	        directive.$inject = ['corePartialsPath', 'hibachiPathBuilder'];
+	        return directive;
+	    };
+	    return SWSelection;
+	}());
+	SWSelection.$inject = ['corePartialsPath', 'hibachiPathBuilder'];
+	exports.SWSelection = SWSelection;
+
+
+/***/ },
+/* 102 */
+>>>>>>> Stashed changes
+/***/ function(module, exports) {
+
+	"use strict";
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+<<<<<<< Updated upstream
+	var SWTabGroupController = (function () {
+	    // @ngInject
+	    function SWTabGroupController(utilityService, rbkeyService, observerService) {
+	        var _this = this;
+	        this.utilityService = utilityService;
+	        this.rbkeyService = rbkeyService;
+	        this.observerService = observerService;
+	        this.hasActiveTab = false;
+	        this.initTab = function () {
+	            for (var i = 0; i < _this.tabs.length; i++) {
+	                if (!_this.tabs[i].hide) {
+	                    _this.tabs[i].active = true;
+	                    _this.tabs[i].loaded = true;
+	                    break;
+	                }
+	            }
+	        };
+	        this.switchTab = function (tabToActivate) {
+	            _this.observerService.notify(_this.switchTabGroupEventName);
+	            for (var i = 0; i < _this.tabs.length; i++) {
+	                _this.tabs[i].active = false;
+	            }
+	            tabToActivate.active = true;
+	            tabToActivate.loaded = true;
+	        };
+	        this.getTabByName = function (name) {
+	            for (var i = 0; i < _this.tabs.length; i++) {
+	                if (_this.tabs[i].name == name) {
+	                    return _this.tabs[i];
+	                }
+	            }
+	        };
+	        if (angular.isUndefined(this.tabs)) {
+	            this.tabs = [];
+	        }
+	        this.tabGroupID = "TG" + this.utilityService.createID(30);
+	        this.switchTabGroupEventName = "SwitchTabGroup" + this.tabGroupID;
+	        this.initTabEventName = "InitTabForTabGroup" + this.tabGroupID;
+	        this.observerService.attach(this.initTab, this.initTabEventName);
+	        if (angular.isUndefined(this.switchTabEventName)) {
+	            this.switchTabEventName = this.tabGroupID + "SwitchTabTo";
+	        }
+	        this.observerService.attach(this.switchTab, this.switchTabEventName);
+	    }
+	    return SWTabGroupController;
+	}());
+	exports.SWTabGroupController = SWTabGroupController;
+	var SWTabGroup = (function () {
+	    // @ngInject
+	    function SWTabGroup($compile, corePartialsPath, hibachiPathBuilder) {
+	        this.$compile = $compile;
+	        this.corePartialsPath = corePartialsPath;
+	        this.transclude = true;
+	        this.restrict = "EA";
+	        this.scope = {};
+	        this.bindToController = {
+	            switchTabEventName: "@?"
+	        };
+	        this.controller = SWTabGroupController;
+	        this.controllerAs = "swTabGroup";
+	        this.compile = function (element, attrs, transclude) {
+	            return {
+	                pre: function ($scope, element, attrs) { },
+	                post: function ($scope, element, attrs) { }
+	            };
+	        };
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "tabgroup.html";
+	    }
+	    SWTabGroup.Factory = function () {
+	        var directive = function ($compile, corePartialsPath, hibachiPathBuilder) { return new SWTabGroup($compile, corePartialsPath, hibachiPathBuilder); };
+	        directive.$inject = ["$compile", "corePartialsPath",
+	            'hibachiPathBuilder'];
+	        return directive;
+	    };
+	    return SWTabGroup;
+	}());
+	exports.SWTabGroup = SWTabGroup;
+
+
+/***/ },
+/* 97 */
+=======
+	var SWClickOutside = (function () {
+	    //@ngInject
+	    function SWClickOutside($document, $timeout, utilityService) {
+	        var _this = this;
+	        this.$document = $document;
+	        this.$timeout = $timeout;
+	        this.utilityService = utilityService;
+	        this.restrict = 'A';
+	        this.scope = {
+	            swClickOutside: '&'
+	        };
+	        this.link = function (scope, elem, attr) {
+	            _this.$document.on('click', function (e) {
+	                if (!e || !e.target)
+	                    return;
+	                //check if our element already hidden
+	                if (angular.element(elem).hasClass("ng-hide")) {
+	                    return;
+	                }
+	                if (e.target !== elem && !_this.utilityService.isDescendantElement(elem, e.target)) {
+	                    _this.$timeout(function () {
+	                        scope.swClickOutside();
+	                    });
+	                }
+	            });
+	        };
+	        this.$document = $document;
+	        this.$timeout = $timeout;
+	        this.utilityService = utilityService;
+	    }
+	    SWClickOutside.Factory = function () {
+	        var directive = function ($document, $timeout, utilityService) { return new SWClickOutside($document, $timeout, utilityService); };
+	        directive.$inject = [
+	            '$document', '$timeout', 'utilityService'
+	        ];
+	        return directive;
+	    };
+	    return SWClickOutside;
+	}());
+	exports.SWClickOutside = SWClickOutside;
+
+
+/***/ },
+/* 103 */
+>>>>>>> Stashed changes
+/***/ function(module, exports) {
+
+	"use strict";
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+<<<<<<< Updated upstream
+	var SWTabContentController = (function () {
+	    // @ngInject
+	    function SWTabContentController($scope, $q, $transclude, $hibachi, $timeout, utilityService, rbkeyService, collectionConfigService) {
+	        this.$scope = $scope;
+	        this.$q = $q;
+	        this.$transclude = $transclude;
+	        this.$hibachi = $hibachi;
+	        this.$timeout = $timeout;
+	        this.utilityService = utilityService;
+	        this.rbkeyService = rbkeyService;
+	        this.collectionConfigService = collectionConfigService;
+	        if (angular.isUndefined(this.active)) {
+	            this.active = false;
+	        }
+	        if (angular.isUndefined(this.loaded)) {
+	            this.loaded = false;
+	        }
+	        if (angular.isUndefined(this.hide)) {
+	            this.hide = false;
+	        }
+	        if (angular.isUndefined(this.id)) {
+	            this.id = utilityService.createID(16);
+	        }
+	        if (angular.isUndefined(this.name)) {
+	            this.name = this.id;
+	        }
+	        //make a tab service? 
+	    }
+	    return SWTabContentController;
+	}());
+	exports.SWTabContentController = SWTabContentController;
+	var SWTabContent = (function () {
+	    // @ngInject
+	    function SWTabContent($compile, scopeService, observerService, corePartialsPath, hibachiPathBuilder) {
+	        var _this = this;
+	        this.$compile = $compile;
+	        this.scopeService = scopeService;
+	        this.observerService = observerService;
+	        this.corePartialsPath = corePartialsPath;
+	        this.transclude = true;
+	        this.restrict = "EA";
+	        this.scope = {};
+	        this.bindToController = {
+	            active: "=?",
+	            loaded: "=?",
+	            hide: "=?",
+	            name: "@?"
+	        };
+	        this.controller = SWTabContentController;
+	        this.controllerAs = "swTabContent";
+	        this.compile = function (element, attrs, transclude) {
+	            return {
+	                pre: function ($scope, element, attrs) {
+	                },
+	                post: function ($scope, element, attrs) {
+	                    var parentDirective = _this.scopeService.getRootParentScope($scope, "swTabGroup")["swTabGroup"];
+	                    if (angular.isDefined(parentDirective) && angular.isDefined(parentDirective.tabs)) {
+	                        parentDirective.tabs.push($scope.swTabContent);
+	                        _this.observerService.notify(parentDirective.initTabEventName);
+	                    }
+	                }
+	            };
+=======
+	var SWDirective = (function () {
+	    //@ngInject
+	    function SWDirective($compile) {
+	        return {
+	            restrict: 'A',
+	            replace: true,
+	            scope: {
+	                variables: "=",
+	                directive: "="
+	            },
+	            link: function (scope, element, attrs) {
+	                var template = '<span ' + scope.directive + ' ';
+	                if (angular.isDefined(scope.variables)) {
+	                    angular.forEach(scope.variables, function (value, key) {
+	                        template += ' ' + key + '=' + value + ' ';
+	                    });
+	                }
+	                template += +'>';
+	                template += '</span>';
+	                // Render the template.
+	                element.html('').append($compile(template)(scope));
+	            }
+>>>>>>> Stashed changes
+	        };
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "tabcontent.html";
+	    }
+<<<<<<< Updated upstream
+	    SWTabContent.Factory = function () {
+	        var directive = function ($compile, scopeService, observerService, corePartialsPath, hibachiPathBuilder) { return new SWTabContent($compile, scopeService, observerService, corePartialsPath, hibachiPathBuilder); };
+	        directive.$inject = ["$compile",
+	            "scopeService",
+	            "observerService",
+	            "corePartialsPath",
+	            "hibachiPathBuilder"];
+	        return directive;
+	    };
+	    return SWTabContent;
+	}());
+	exports.SWTabContent = SWTabContent;
+
+
+/***/ },
+/* 98 */
+=======
+	    SWDirective.Factory = function () {
+	        var directive = function ($compile) { return new SWDirective($compile); };
+	        directive.$inject = [
+	            '$compile'
+	        ];
+	        return directive;
+	    };
+	    return SWDirective;
+	}());
+	exports.SWDirective = SWDirective;
+
+
+/***/ },
+/* 104 */
+>>>>>>> Stashed changes
+/***/ function(module, exports) {
+
+	"use strict";
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+<<<<<<< Updated upstream
+	var SWTooltipController = (function () {
+	    // @ngInject
+	    function SWTooltipController(rbkeyService) {
+	        var _this = this;
+	        this.rbkeyService = rbkeyService;
+	        this.showTooltip = false;
+	        this.show = function () {
+	            _this.showTooltip = true;
+	        };
+	        this.hide = function () {
+	            _this.showTooltip = false;
+	        };
+	        if (angular.isDefined(this.rbKey)) {
+	            this.text = rbkeyService.getRBKey(this.rbKey);
+	        }
+	        if (angular.isUndefined(this.position)) {
+	            this.position = "top";
+	        }
+	    }
+	    return SWTooltipController;
+	}());
+	exports.SWTooltipController = SWTooltipController;
+	var SWTooltip = (function () {
+	    // @ngInject
+	    function SWTooltip($document, corePartialsPath, hibachiPathBuilder) {
+	        this.$document = $document;
+	        this.corePartialsPath = corePartialsPath;
+	        this.transclude = true;
+	        this.restrict = "EA";
+	        this.scope = {};
+	        this.bindToController = {
+	            rbKey: "@?",
+	            text: "@?",
+	            position: "@?",
+	            showTooltip: "=?"
+	        };
+	        this.controller = SWTooltipController;
+	        this.controllerAs = "swTooltip";
+	        this.link = function (scope, element, attrs, controller, transclude) {
+	            var tooltip = element.find(".tooltip");
+	            var elementPosition = element.position();
+	            var tooltipStyle = tooltip[0].style;
+	            if (attrs && attrs.position) {
+	                switch (attrs.position.toLowerCase()) {
+	                    case 'top':
+	                        tooltipStyle.top = "0px";
+	                        tooltipStyle.left = "0px";
+	                        break;
+	                    case 'bottom':
+	                        //where the element is rendered to begin with
+	                        break;
+	                    case 'left':
+	                        tooltipStyle.top = (elementPosition.top + element[0].offsetHeight - 5) + "px";
+	                        tooltipStyle.left = (-1 * (elementPosition.left + element[0].offsetLeft - 5)) + "px";
+	                        element.find(".tooltip-inner")[0].style.maxWidth = "none";
+	                        break;
+	                    default:
+	                        //right is the default
+	                        tooltipStyle.top = (elementPosition.top + element[0].offsetHeight - 5) + "px";
+	                        tooltipStyle.left = (elementPosition.left + element[0].offsetWidth - 5) + "px";
+	                }
+=======
+	var SWExportAction = (function () {
+	    //@ngInject
+	    function SWExportAction($log, corePartialsPath, hibachiPathBuilder) {
+	        return {
+	            restrict: 'A',
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(corePartialsPath) + 'exportaction.html',
+	            scope: {},
+	            link: function (scope, element, attrs) {
+>>>>>>> Stashed changes
+	            }
+	        };
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "tooltip.html";
+	    }
+<<<<<<< Updated upstream
+	    SWTooltip.Factory = function () {
+	        var directive = function ($document, corePartialsPath, hibachiPathBuilder) { return new SWTooltip($document, corePartialsPath, hibachiPathBuilder); };
+	        directive.$inject = ["$document", "corePartialsPath", "hibachiPathBuilder"];
+	        return directive;
+	    };
+	    return SWTooltip;
+	}());
+	exports.SWTooltip = SWTooltip;
+
+
+/***/ },
+/* 99 */
+=======
+	    SWExportAction.Factory = function () {
+	        var directive = function ($log, corePartialsPath, hibachiPathBuilder) { return new SWExportAction($log, corePartialsPath, hibachiPathBuilder); };
+	        directive.$inject = [
+	            '$log',
+	            'corePartialsPath',
+	            'hibachiPathBuilder'
+	        ];
+	        return directive;
+	    };
+	    return SWExportAction;
+	}());
+	exports.SWExportAction = SWExportAction;
+
+
+/***/ },
+/* 105 */
+>>>>>>> Stashed changes
+/***/ function(module, exports) {
+
+	"use strict";
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+<<<<<<< Updated upstream
+	var SWRbKey = (function () {
+	    function SWRbKey($hibachi, observerService, utilityService, $rootScope, $log, rbkeyService) {
+	        return {
+	            restrict: 'A',
+	            scope: {
+	                swRbkey: "="
+	            },
+	            link: function (scope, element, attrs) {
+	                var rbKeyValue = scope.swRbkey;
+	                var bindRBKey = function () {
+	                    if (angular.isDefined(rbKeyValue) && angular.isString(rbKeyValue)) {
+	                        element.text(rbkeyService.getRBKey(rbKeyValue));
+	                    }
+	                };
+	                bindRBKey();
+	            }
+	        };
+	    }
+	    SWRbKey.Factory = function () {
+	        var directive = function ($hibachi, observerService, utilityService, $rootScope, $log, rbkeyService) { return new SWRbKey($hibachi, observerService, utilityService, $rootScope, $log, rbkeyService); };
+	        directive.$inject = [
+	            '$hibachi',
+	            'observerService',
+	            'utilityService',
+	            '$rootScope',
+	            '$log',
+	            'rbkeyService'
+	        ];
+	        return directive;
+	    };
+	    return SWRbKey;
+	}());
+	exports.SWRbKey = SWRbKey;
+
+
+/***/ },
+/* 100 */
+=======
+	var SWHref = (function () {
+	    function SWHref() {
+	        return {
+	            restrict: 'A',
+	            scope: {
+	                swHref: "@"
+	            },
+	            link: function (scope, element, attrs) {
+	                /*convert link to use hashbang*/
+	                var hrefValue = attrs.swHref;
+	                hrefValue = '?ng#!' + hrefValue;
+	                element.attr('href', hrefValue);
+	            }
+	        };
+	    }
+	    SWHref.Factory = function () {
+	        var directive = function () { return new SWHref(); };
+	        directive.$inject = [];
+	        return directive;
+	    };
+	    return SWHref;
+	}());
+	exports.SWHref = SWHref;
+
+
+/***/ },
+/* 106 */
+>>>>>>> Stashed changes
+/***/ function(module, exports) {
+
+	"use strict";
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+<<<<<<< Updated upstream
 	var SWOptions = (function () {
 	    function SWOptions($log, $hibachi, observerService, corePartialsPath, hibachiPathBuilder) {
 	        return {
@@ -10411,11 +11164,96 @@
 
 /***/ },
 /* 102 */
+=======
+	"use strict";
+	var SWProcessCallerController = (function () {
+	    //@ngInject
+	    function SWProcessCallerController(rbkeyService, $templateRequest, $compile, corePartialsPath, $scope, $element, $transclude, utilityService, hibachiPathBuilder) {
+	        var _this = this;
+	        this.rbkeyService = rbkeyService;
+	        this.$templateRequest = $templateRequest;
+	        this.$compile = $compile;
+	        this.corePartialsPath = corePartialsPath;
+	        this.$scope = $scope;
+	        this.$element = $element;
+	        this.$transclude = $transclude;
+	        this.$templateRequest = $templateRequest;
+	        this.$compile = $compile;
+	        this.corePartialsPath = corePartialsPath;
+	        this.utilityService = utilityService;
+	        this.type = this.type || 'link';
+	        this.queryString = this.queryString || '';
+	        this.$scope = $scope;
+	        this.$element = $element;
+	        this.$transclude = this.$transclude;
+	        this.$templateRequest(hibachiPathBuilder.buildPartialsPath(this.corePartialsPath) + "processcaller.html").then(function (html) {
+	            var template = angular.element(html);
+	            _this.$element.parent().append(template);
+	            $compile(template)(_this.$scope);
+	        });
+	        if (angular.isDefined(this.titleRbKey)) {
+	            this.title = this.rbkeyService.getRBKey(this.titleRbKey);
+	        }
+	        if (angular.isUndefined(this.text)) {
+	            this.text = this.title;
+	        }
+	    }
+	    return SWProcessCallerController;
+	}());
+	var SWProcessCaller = (function () {
+	    function SWProcessCaller(corePartialsPath, utilityService) {
+	        this.corePartialsPath = corePartialsPath;
+	        this.utilityService = utilityService;
+	        this.restrict = 'E';
+	        this.scope = {};
+	        this.bindToController = {
+	            action: "@",
+	            entity: "@",
+	            processContext: "@",
+	            hideDisabled: "=",
+	            type: "@",
+	            queryString: "@",
+	            text: "@",
+	            title: "@?",
+	            titleRbKey: "@?",
+	            'class': "@",
+	            icon: "=",
+	            iconOnly: "=",
+	            submit: "=",
+	            confirm: "=",
+	            disabled: "=",
+	            disabledText: "@",
+	            modal: "="
+	        };
+	        this.controller = SWProcessCallerController;
+	        this.controllerAs = "swProcessCaller";
+	        this.link = function (scope, element, attrs) {
+	        };
+	        this.corePartialsPath = corePartialsPath;
+	        this.utilityService = utilityService;
+	    }
+	    SWProcessCaller.Factory = function () {
+	        var directive = function (corePartialsPath, utilityService) { return new SWProcessCaller(corePartialsPath, utilityService); };
+	        directive.$inject = [
+	            'corePartialsPath', 'utilityService'
+	        ];
+	        return directive;
+	    };
+	    return SWProcessCaller;
+	}());
+	SWProcessCaller.$inject = ['corePartialsPath', 'utilityService'];
+	exports.SWProcessCaller = SWProcessCaller;
+
+
+/***/ },
+/* 107 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
+<<<<<<< Updated upstream
 	var SWClickOutside = (function () {
 	    //@ngInject
 	    function SWClickOutside($document, $timeout, utilityService) {
@@ -10500,8 +11338,159 @@
 	                // Render the template.
 	                element.html($compile(template)(scope));
 	            }
+=======
+	"use strict";
+	var SWSortable = (function () {
+	    function SWSortable(expression, compiledElement) {
+	        return function (linkElement) {
+	            var scope = this;
+	            linkElement.sortable({
+	                placeholder: "placeholder",
+	                opacity: 0.8,
+	                axis: "y",
+	                update: function (event, ui) {
+	                    // get model
+	                    var model = scope.$apply(expression);
+	                    // remember its length
+	                    var modelLength = model.length;
+	                    // rember html nodes
+	                    var items = [];
+	                    // loop through items in new order
+	                    linkElement.children().each(function (index) {
+	                        var item = $(this);
+	                        // get old item index
+	                        var oldIndex = parseInt(item.attr("sw:sortable-index"), 10);
+	                        // add item to the end of model
+	                        model.push(model[oldIndex]);
+	                        if (item.attr("sw:sortable-index")) {
+	                            // items in original order to restore dom
+	                            items[oldIndex] = item;
+	                            // and remove item from dom
+	                            item.detach();
+	                        }
+	                    });
+	                    model.splice(0, modelLength);
+	                    // restore original dom order, so angular does not get confused
+	                    linkElement.append.apply(linkElement, items);
+	                    // notify angular of the change
+	                    scope.$digest();
+	                }
+	            });
 	        };
 	    }
+	    SWSortable.Factory = function () {
+	        var directive = function (expression, compiledElement) { return new SWSortable(expression, compiledElement); };
+	        directive.$inject = ['expression', 'compiledElement'];
+	        return directive;
+	    };
+	    return SWSortable;
+	}());
+	exports.SWSortable = SWSortable;
+
+
+/***/ },
+/* 108 */,
+/* 109 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	/// <reference path='../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../typings/tsd.d.ts' />
+	//controllers
+	var alertcontroller_1 = __webpack_require__(110);
+	//services
+	var alertservice_1 = __webpack_require__(111);
+	var alertmodule = angular.module('hibachi.alert', [])
+	    .controller('alertController', alertcontroller_1.AlertController)
+	    .service('alertService', alertservice_1.AlertService);
+	exports.alertmodule = alertmodule;
+
+
+/***/ },
+/* 110 */
+/***/ function(module, exports) {
+
+	"use strict";
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var AlertController = (function () {
+	    //@ngInject
+	    function AlertController($scope, alertService) {
+	        $scope.$id = "alertController";
+	        $scope.alerts = alertService.getAlerts();
+	    }
+	    return AlertController;
+	}());
+	exports.AlertController = AlertController;
+
+
+/***/ },
+/* 111 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	"use strict";
+	//import Alert = require('../model/alert');
+	var alert_1 = __webpack_require__(112);
+	var AlertService = (function () {
+	    function AlertService($timeout, alerts) {
+	        var _this = this;
+	        this.$timeout = $timeout;
+	        this.alerts = alerts;
+	        this.newAlert = function () {
+	            return new alert_1.Alert();
+	        };
+	        this.get = function () {
+	            return _this.alerts || [];
+	        };
+	        this.addAlert = function (alert) {
+	            _this.alerts.push(alert);
+	            _this.$timeout(function () {
+	                _this.removeAlert(alert);
+	            }, 3500);
+	        };
+	        this.addAlerts = function (alerts) {
+	            angular.forEach(alerts, function (alert) {
+	                _this.addAlert(alert);
+	            });
+	        };
+	        this.removeAlert = function (alert) {
+	            var index = _this.alerts.indexOf(alert, 0);
+	            if (index != undefined) {
+	                _this.alerts.splice(index, 1);
+	            }
+	        };
+	        this.getAlerts = function () {
+	            return _this.alerts;
+	        };
+	        this.formatMessagesToAlerts = function (messages) {
+	            var alerts = [];
+	            if (messages && messages.length) {
+	                for (var message in messages) {
+	                    var alert = new alert_1.Alert(messages[message].message, messages[message].messageType);
+	                    alerts.push(alert);
+	                    if (alert.type === 'success' || alert.type === 'error') {
+	                        _this.$timeout(function () {
+	                            alert.fade = true;
+	                        }, 3500);
+	                        alert.dismissable = false;
+	                    }
+	                    else {
+	                        alert.fade = false;
+	                        alert.dismissable = true;
+	                    }
+	                }
+	            }
+	            return alerts;
+	        };
+	        this.removeOldestAlert = function () {
+	            _this.alerts.splice(0, 1);
+>>>>>>> Stashed changes
+	        };
+	        this.alerts = [];
+	    }
+<<<<<<< Updated upstream
 	    SWDirective.Factory = function () {
 	        var directive = function ($compile, utilityService) { return new SWDirective($compile, utilityService); };
 	        directive.$inject = [
@@ -10517,11 +11506,23 @@
 
 /***/ },
 /* 104 */
+=======
+	    return AlertService;
+	}());
+	AlertService.$inject = [
+	    '$timeout'
+	];
+	exports.AlertService = AlertService;
+
+
+/***/ },
+/* 112 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
-	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
+<<<<<<< Updated upstream
 	var SWExportAction = (function () {
 	    //@ngInject
 	    function SWExportAction($log, corePartialsPath, hibachiPathBuilder) {
@@ -10567,8 +11568,78 @@
 	                hrefValue = '?ng#!' + hrefValue;
 	                element.attr('href', hrefValue);
 	            }
-	        };
+=======
+	"use strict";
+	//model
+	var Alert = (function () {
+	    function Alert(msg, type, fade, dismissable) {
+	        this.fade = false;
+	        this.dismissable = false;
+	        this.msg = msg;
+	        this.type = type;
+	        this.fade = fade;
+	        this.dismissable = dismissable;
 	    }
+	    return Alert;
+	}());
+	exports.Alert = Alert;
+
+
+/***/ },
+/* 113 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path='../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../typings/tsd.d.ts' />
+	"use strict";
+	//services
+	var dialogservice_1 = __webpack_require__(114);
+	//controllers
+	var pagedialog_1 = __webpack_require__(115);
+	var dialogmodule = angular.module('hibachi.dialog', []).config(function () {
+	})
+	    .service('dialogService', dialogservice_1.DialogService)
+	    .controller('pageDialog', pagedialog_1.PageDialogController)
+	    .constant('dialogPartials', 'dialog/components/');
+	exports.dialogmodule = dialogmodule;
+
+
+/***/ },
+/* 114 */
+/***/ function(module, exports) {
+
+	"use strict";
+	var DialogService = (function () {
+	    function DialogService(hibachiPathBuilder) {
+	        var _this = this;
+	        this.hibachiPathBuilder = hibachiPathBuilder;
+	        this.get = function () {
+	            return _this._pageDialogs || [];
+	        };
+	        this.addPageDialog = function (name, params) {
+	            var newDialog = {
+	                'path': name + '.html',
+	                'params': params
+	            };
+	            _this._pageDialogs.push(newDialog);
+	        };
+	        this.removePageDialog = function (index) {
+	            _this._pageDialogs.splice(index, 1);
+>>>>>>> Stashed changes
+	        };
+	        this.getPageDialogs = function () {
+	            return _this._pageDialogs;
+	        };
+	        this.removeCurrentDialog = function () {
+	            _this._pageDialogs.splice(_this._pageDialogs.length - 1, 1);
+	        };
+	        this.getCurrentDialog = function () {
+	            return _this._pageDialogs[_this._pageDialogs.length - 1];
+	        };
+	        this._pageDialogs = [];
+	        this.hibachiPathBuilder = hibachiPathBuilder;
+	    }
+<<<<<<< Updated upstream
 	    SWHref.Factory = function () {
 	        var directive = function () { return new SWHref(); };
 	        directive.$inject = [];
@@ -10581,10 +11652,23 @@
 
 /***/ },
 /* 106 */
+=======
+	    return DialogService;
+	}());
+	DialogService.$inject = [
+	    'hibachiPathBuilder'
+	];
+	exports.DialogService = DialogService;
+
+
+/***/ },
+/* 115 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
+<<<<<<< Updated upstream
 	"use strict";
 	var SWProcessCallerController = (function () {
 	    //@ngInject
@@ -10723,10 +11807,108 @@
 /***/ },
 /* 108 */
 /***/ function(module, exports) {
+=======
+	var PageDialogController = (function () {
+	    //@ngInject
+	    function PageDialogController($scope, $location, $log, $anchorScroll, $hibachi, dialogService) {
+	        $scope.$id = 'pageDialogController';
+	        //get url param to retrieve collection listing
+	        $scope.pageDialogs = dialogService.getPageDialogs();
+	        $scope.scrollToTopOfDialog = function () {
+	            $location.hash('/#topOfPageDialog');
+	            $anchorScroll();
+	        };
+	        $scope.pageDialogStyle = { "z-index": 3000 };
+	    }
+	    return PageDialogController;
+	}());
+	exports.PageDialogController = PageDialogController;
 
-	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
+
+/***/ },
+/* 116 */
+/***/ function(module, exports, __webpack_require__) {
+
 	"use strict";
+	/// <reference path="../../typings/tsd.d.ts" />
+	/// <reference path="../../typings/hibachiTypescript.d.ts" />
+	//modules
+	var hibachi_module_1 = __webpack_require__(117);
+	//controllers
+	var frontend_1 = __webpack_require__(219);
+	//directives
+	var swfdirective_1 = __webpack_require__(220);
+	//need to inject the public service into the rootscope for use in the directives.
+	//Also, we set the initial value for account and cart.
+	var frontendmodule = angular.module('frontend', [hibachi_module_1.hibachimodule.name])
+	    .config(['hibachiPathBuilder', function (hibachiPathBuilder) {
+	        /** set the baseURL */
+	        hibachiPathBuilder.setBaseURL('/');
+	        if (hibachiConfig && hibachiConfig.basePartialsPath) {
+	            hibachiPathBuilder.setBasePartialsPath(hibachiConfig.basePartialsPath);
+	        }
+	        else {
+	            hibachiPathBuilder.setBasePartialsPath('custom/client/src/');
+	        }
+	    }])
+	    .run(['$rootScope', '$hibachi', 'publicService', 'hibachiPathBuilder', 'entityService', function ($rootScope, $hibachi, publicService, hibachiPathBuilder, entityService) {
+	        $rootScope.slatwall = $rootScope.hibachiScope;
+	        $rootScope.slatwall.getProcessObject = entityService.newProcessObject;
+	    }])
+	    .controller('frontendController', frontend_1.FrontendController)
+	    .directive('swfDirective', swfdirective_1.SWFDirective.Factory());
+	exports.frontendmodule = frontendmodule;
+
+
+/***/ },
+/* 117 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	/// <reference path='../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../typings/tsd.d.ts' />
+	//import alertmodule = require('./alert/alert.module');
+	var alert_module_1 = __webpack_require__(109);
+	var collection_module_1 = __webpack_require__(118);
+	var dialog_module_1 = __webpack_require__(113);
+	var entity_module_1 = __webpack_require__(162);
+	var pagination_module_1 = __webpack_require__(168);
+	var form_module_1 = __webpack_require__(171);
+	var validation_module_1 = __webpack_require__(186);
+	var workflow_module_1 = __webpack_require__(203);
+	//directives
+	var swsaveandfinish_1 = __webpack_require__(218);
+	var hibachimodule = angular.module('hibachi', [
+	    alert_module_1.alertmodule.name,
+	    collection_module_1.collectionmodule.name,
+	    entity_module_1.entitymodule.name,
+	    dialog_module_1.dialogmodule.name,
+	    pagination_module_1.paginationmodule.name,
+	    form_module_1.formmodule.name,
+	    validation_module_1.validationmodule.name,
+	    workflow_module_1.workflowmodule.name
+	]).config([function () {
+	    }])
+	    .run(['$rootScope', 'publicService', function ($rootScope, publicService) {
+	        $rootScope.hibachiScope = publicService;
+	        $rootScope.hasAccount = publicService.hasAccount;
+	        $rootScope.hibachiScope.getAccount();
+	        $rootScope.hibachiScope.getCart();
+	        $rootScope.hibachiScope.getCountries();
+	        $rootScope.hibachiScope.getStates();
+	    }])
+	    .constant('hibachiPartialsPath', 'hibachi/components/')
+	    .directive('swSaveAndFinish', swsaveandfinish_1.SWSaveAndFinish.Factory());
+	exports.hibachimodule = hibachimodule;
+
+
+/***/ },
+/* 118 */
+/***/ function(module, exports, __webpack_require__) {
+>>>>>>> Stashed changes
+
+	"use strict";
+<<<<<<< Updated upstream
 	var SWOrderByControlsController = (function () {
 	    // @ngInject
 	    function SWOrderByControlsController(listingService, observerService, utilityService) {
@@ -11572,6 +12754,362 @@
 	            }
 	            return _this;
 	        };
+=======
+	/// <reference path='../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../typings/tsd.d.ts' />
+	//modules
+	var core_module_1 = __webpack_require__(14);
+	//services
+	var collectionconfigservice_1 = __webpack_require__(119);
+	var collectionservice_1 = __webpack_require__(120);
+	//controllers
+	var collections_1 = __webpack_require__(121);
+	var createcollection_1 = __webpack_require__(122);
+	var confirmationcontroller_1 = __webpack_require__(123);
+	var entity_createcollection_1 = __webpack_require__(124);
+	//directives
+	var swcollection_1 = __webpack_require__(125);
+	var swaddfilterbuttons_1 = __webpack_require__(126);
+	var swdisplayoptions_1 = __webpack_require__(127);
+	var swdisplayitem_1 = __webpack_require__(128);
+	var swdisplayitemaggregate_1 = __webpack_require__(129);
+	var swcollectiontable_1 = __webpack_require__(130);
+	var swcolumnitem_1 = __webpack_require__(131);
+	var swconditioncriteria_1 = __webpack_require__(132);
+	var swcriteria_1 = __webpack_require__(133);
+	var swcriteriaboolean_1 = __webpack_require__(134);
+	var swcriteriadate_1 = __webpack_require__(135);
+	var swcriteriamanytomany_1 = __webpack_require__(136);
+	var swcriteriamanytoone_1 = __webpack_require__(137);
+	var swcriterianumber_1 = __webpack_require__(138);
+	var swcriteriaonetomany_1 = __webpack_require__(139);
+	var swcriteriarelatedobject_1 = __webpack_require__(140);
+	var swcriteriastring_1 = __webpack_require__(141);
+	var sweditfilteritem_1 = __webpack_require__(142);
+	var swfiltergroups_1 = __webpack_require__(143);
+	var swfilteritem_1 = __webpack_require__(144);
+	var swfiltergroupitem_1 = __webpack_require__(145);
+	var collectionmodule = angular.module('hibachi.collection', [core_module_1.coremodule.name])
+	    .config([function () {
+	    }]).run([function () {
+	    }])
+	    .constant('collectionPartialsPath', 'collection/components/')
+	    .controller('collections', collections_1.CollectionController)
+	    .controller('confirmationController', confirmationcontroller_1.ConfirmationController)
+	    .controller('createCollection', createcollection_1.CreateCollection)
+	    .controller('entity_createcollection', entity_createcollection_1.CollectionCreateController)
+	    .factory('collectionConfigService', ['rbkeyService', '$hibachi', 'utilityService', 'observerService', function (rbkeyService, $hibachi, utilityService, observerService) { return new collectionconfigservice_1.CollectionConfig(rbkeyService, $hibachi, utilityService, observerService); }])
+	    .service('collectionService', collectionservice_1.CollectionService)
+	    .directive('swCollection', swcollection_1.SWCollection.Factory())
+	    .directive('swAddFilterButtons', swaddfilterbuttons_1.SWAddFilterButtons.Factory())
+	    .directive('swDisplayOptions', swdisplayoptions_1.SWDisplayOptions.Factory())
+	    .directive('swDisplayItem', swdisplayitem_1.SWDisplayItem.Factory())
+	    .directive('swDisplayItemAggregate', swdisplayitemaggregate_1.SWDisplayItemAggregate.Factory())
+	    .directive('swCollectionTable', swcollectiontable_1.SWCollectionTable.Factory())
+	    .directive('swColumnItem', swcolumnitem_1.SWColumnItem.Factory())
+	    .directive('swConditionCriteria', swconditioncriteria_1.SWConditionCriteria.Factory())
+	    .directive('swCriteria', swcriteria_1.SWCriteria.Factory())
+	    .directive('swCriteriaBoolean', swcriteriaboolean_1.SWCriteriaBoolean.Factory())
+	    .directive('swCriteriaDate', swcriteriadate_1.SWCriteriaDate.Factory())
+	    .directive('swCriteriaManyToMany', swcriteriamanytomany_1.SWCriteriaManyToMany.Factory())
+	    .directive('swCriteriaManyToOne', swcriteriamanytoone_1.SWCriteriaManyToOne.Factory())
+	    .directive('swCriteriaNumber', swcriterianumber_1.SWCriteriaNumber.Factory())
+	    .directive('swCriteriaOneToMany', swcriteriaonetomany_1.SWCriteriaOneToMany.Factory())
+	    .directive('swCriteriaRelatedObject', swcriteriarelatedobject_1.SWCriteriaRelatedObject.Factory())
+	    .directive('swCriteriaString', swcriteriastring_1.SWCriteriaString.Factory())
+	    .directive('swEditFilterItem', sweditfilteritem_1.SWEditFilterItem.Factory())
+	    .directive('swFilterGroups', swfiltergroups_1.SWFilterGroups.Factory())
+	    .directive('swFilterItem', swfilteritem_1.SWFilterItem.Factory())
+	    .directive('swFilterGroupItem', swfiltergroupitem_1.SWFilterGroupItem.Factory());
+	exports.collectionmodule = collectionmodule;
+
+
+/***/ },
+/* 119 */
+/***/ function(module, exports) {
+
+	"use strict";
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var Column = (function () {
+	    function Column(propertyIdentifier, title, isVisible, isDeletable, isSearchable, isExportable, persistent, ormtype, attributeID, attributeSetObject) {
+	        if (isVisible === void 0) { isVisible = true; }
+	        if (isDeletable === void 0) { isDeletable = true; }
+	        if (isSearchable === void 0) { isSearchable = true; }
+	        if (isExportable === void 0) { isExportable = true; }
+	        this.propertyIdentifier = propertyIdentifier;
+	        this.title = title;
+	        this.isVisible = isVisible;
+	        this.isDeletable = isDeletable;
+	        this.isSearchable = isSearchable;
+	        this.isExportable = isExportable;
+	        this.persistent = persistent;
+	        this.ormtype = ormtype;
+	        this.attributeID = attributeID;
+	        this.attributeSetObject = attributeSetObject;
+	    }
+	    return Column;
+	}());
+	exports.Column = Column;
+	var Filter = (function () {
+	    function Filter(propertyIdentifier, value, comparisonOperator, logicalOperator, displayPropertyIdentifier, displayValue, hidden, pattern) {
+	        if (hidden === void 0) { hidden = false; }
+	        this.propertyIdentifier = propertyIdentifier;
+	        this.value = value;
+	        this.comparisonOperator = comparisonOperator;
+	        this.logicalOperator = logicalOperator;
+	        this.displayPropertyIdentifier = displayPropertyIdentifier;
+	        this.displayValue = displayValue;
+	        this.hidden = hidden;
+	        this.pattern = pattern;
+	    }
+	    return Filter;
+	}());
+	exports.Filter = Filter;
+	var CollectionFilter = (function () {
+	    function CollectionFilter(propertyIdentifier, displayPropertyIdentifier, displayValue, collectionID, criteria, fieldtype, readOnly) {
+	        if (readOnly === void 0) { readOnly = false; }
+	        this.propertyIdentifier = propertyIdentifier;
+	        this.displayPropertyIdentifier = displayPropertyIdentifier;
+	        this.displayValue = displayValue;
+	        this.collectionID = collectionID;
+	        this.criteria = criteria;
+	        this.fieldtype = fieldtype;
+	        this.readOnly = readOnly;
+	    }
+	    return CollectionFilter;
+	}());
+	exports.CollectionFilter = CollectionFilter;
+	var Join = (function () {
+	    function Join(associationName, alias) {
+	        this.associationName = associationName;
+	        this.alias = alias;
+	    }
+	    return Join;
+	}());
+	exports.Join = Join;
+	var OrderBy = (function () {
+	    function OrderBy(propertyIdentifier, direction) {
+	        this.propertyIdentifier = propertyIdentifier;
+	        this.direction = direction;
+	    }
+	    return OrderBy;
+	}());
+	exports.OrderBy = OrderBy;
+	var CollectionConfig = (function () {
+	    // @ngInject
+	    function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, filterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, allRecords, isDistinct) {
+	        if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
+	        if (currentPage === void 0) { currentPage = 1; }
+	        if (pageShow === void 0) { pageShow = 10; }
+	        if (keywords === void 0) { keywords = ''; }
+	        if (allRecords === void 0) { allRecords = false; }
+	        if (isDistinct === void 0) { isDistinct = false; }
+	        var _this = this;
+	        this.rbkeyService = rbkeyService;
+	        this.$hibachi = $hibachi;
+	        this.utilityService = utilityService;
+	        this.observerService = observerService;
+	        this.baseEntityName = baseEntityName;
+	        this.baseEntityAlias = baseEntityAlias;
+	        this.columns = columns;
+	        this.filterGroups = filterGroups;
+	        this.joins = joins;
+	        this.orderBy = orderBy;
+	        this.groupBys = groupBys;
+	        this.id = id;
+	        this.currentPage = currentPage;
+	        this.pageShow = pageShow;
+	        this.keywords = keywords;
+	        this.allRecords = allRecords;
+	        this.isDistinct = isDistinct;
+	        this.clearFilterGroups = function () {
+	            _this.filterGroups = [{ filterGroup: [] }];
+	            return _this;
+	        };
+	        this.newCollectionConfig = function (baseEntityName, baseEntityAlias) {
+	            return new CollectionConfig(_this.rbkeyService, _this.$hibachi, _this.utilityService, _this.observerService, baseEntityName, baseEntityAlias);
+	        };
+	        this.loadJson = function (jsonCollection) {
+	            //if json then make a javascript object else use the javascript object
+	            if (angular.isString(jsonCollection)) {
+	                jsonCollection = angular.fromJson(jsonCollection);
+	            }
+	            _this.baseEntityAlias = jsonCollection.baseEntityAlias;
+	            _this.baseEntityName = jsonCollection.baseEntityName;
+	            if (angular.isDefined(jsonCollection.filterGroups)) {
+	                _this.validateFilter(jsonCollection.filterGroups);
+	                _this.filterGroups = jsonCollection.filterGroups;
+	            }
+	            _this.columns = jsonCollection.columns;
+	            _this.joins = jsonCollection.joins;
+	            _this.keywords = jsonCollection.keywords;
+	            _this.orderBy = jsonCollection.orderBy;
+	            _this.groupBys = jsonCollection.groupBys;
+	            _this.pageShow = jsonCollection.pageShow;
+	            _this.allRecords = jsonCollection.allRecords;
+	            _this.isDistinct = jsonCollection.isDistinct;
+	            _this.currentPage = jsonCollection.currentPage || 1;
+	            _this.pageShow = jsonCollection.pageShow || 10;
+	            _this.keywords = jsonCollection.keywords;
+	            return _this;
+	        };
+	        this.loadFilterGroups = function (filterGroupsConfig) {
+	            if (filterGroupsConfig === void 0) { filterGroupsConfig = [{ filterGroup: [] }]; }
+	            _this.filterGroups = filterGroupsConfig;
+	            return _this;
+	        };
+	        this.loadColumns = function (columns) {
+	            _this.columns = columns;
+	            return _this;
+	        };
+	        this.getCollectionConfig = function () {
+	            _this.validateFilter(_this.filterGroups);
+	            return {
+	                baseEntityAlias: _this.baseEntityAlias,
+	                baseEntityName: _this.baseEntityName,
+	                columns: _this.columns,
+	                filterGroups: _this.filterGroups,
+	                joins: _this.joins,
+	                groupBys: _this.groupBys,
+	                currentPage: _this.currentPage,
+	                pageShow: _this.pageShow,
+	                keywords: _this.keywords,
+	                defaultColumns: (!_this.columns || !_this.columns.length),
+	                allRecords: _this.allRecords,
+	                isDistinct: _this.isDistinct,
+	                orderBy: _this.orderBy
+	            };
+	        };
+	        this.getEntityName = function () {
+	            return _this.baseEntityName.charAt(0).toUpperCase() + _this.baseEntityName.slice(1);
+	        };
+	        this.getOptions = function () {
+	            _this.validateFilter(_this.filterGroups);
+	            var options = {
+	                columnsConfig: angular.toJson(_this.columns),
+	                filterGroupsConfig: angular.toJson(_this.filterGroups),
+	                joinsConfig: angular.toJson(_this.joins),
+	                orderByConfig: angular.toJson(_this.orderBy),
+	                groupBysConfig: angular.toJson(_this.groupBys),
+	                currentPage: _this.currentPage,
+	                pageShow: _this.pageShow,
+	                keywords: _this.keywords,
+	                defaultColumns: (!_this.columns || !_this.columns.length),
+	                allRecords: _this.allRecords,
+	                isDistinct: _this.isDistinct
+	            };
+	            if (angular.isDefined(_this.id)) {
+	                options['id'] = _this.id;
+	            }
+	            return options;
+	        };
+	        this.debug = function () {
+	            return _this;
+	        };
+	        this.formatPropertyIdentifier = function (propertyIdentifier, addJoin) {
+	            if (addJoin === void 0) { addJoin = false; }
+	            //if already starts with alias, strip it out
+	            if (propertyIdentifier.lastIndexOf(_this.baseEntityAlias, 0) === 0) {
+	                propertyIdentifier = propertyIdentifier.slice(_this.baseEntityAlias.length + 1);
+	            }
+	            var _propertyIdentifier = _this.baseEntityAlias;
+	            if (addJoin === true) {
+	                _propertyIdentifier += _this.processJoin(propertyIdentifier);
+	            }
+	            else {
+	                _propertyIdentifier += '.' + propertyIdentifier;
+	            }
+	            return _propertyIdentifier;
+	        };
+	        this.processJoin = function (propertyIdentifier) {
+	            var _propertyIdentifier = '', propertyIdentifierParts = propertyIdentifier.split('.'), current_collection = _this.collection;
+	            for (var i = 0; i < propertyIdentifierParts.length; i++) {
+	                if (angular.isDefined(current_collection.metaData[propertyIdentifierParts[i]]) && ('cfc' in current_collection.metaData[propertyIdentifierParts[i]])) {
+	                    current_collection = _this.$hibachi.getEntityExample(current_collection.metaData[propertyIdentifierParts[i]].cfc);
+	                    _propertyIdentifier += '_' + propertyIdentifierParts[i];
+	                    _this.addJoin(new Join(_propertyIdentifier.replace(/_([^_]+)$/, '.$1').substring(1), _this.baseEntityAlias + _propertyIdentifier));
+	                }
+	                else {
+	                    _propertyIdentifier += '.' + propertyIdentifierParts[i];
+	                }
+	            }
+	            return _propertyIdentifier;
+	        };
+	        this.addJoin = function (join) {
+	            if (!_this.joins) {
+	                _this.joins = [];
+	            }
+	            var joinFound = false;
+	            angular.forEach(_this.joins, function (configJoin) {
+	                if (configJoin.alias === join.alias) {
+	                    joinFound = true;
+	                }
+	            });
+	            if (!joinFound) {
+	                _this.joins.push(join);
+	            }
+	            return _this;
+	        };
+	        this.addAlias = function (propertyIdentifier) {
+	            var parts = propertyIdentifier.split('.');
+	            if (parts.length > 1 && parts[0] !== _this.baseEntityAlias) {
+	                return _this.baseEntityAlias + '.' + propertyIdentifier;
+	            }
+	            return propertyIdentifier;
+	        };
+	        this.addColumn = function (column, title, options) {
+	            if (title === void 0) { title = ''; }
+	            if (options === void 0) { options = {}; }
+	            if (!_this.columns || _this.utilityService.ArrayFindByPropertyValue(_this.columns, 'propertyIdentifier', column) === -1) {
+	                var isVisible = true, isDeletable = true, isSearchable = true, isExportable = true, persistent, ormtype = 'string', lastProperty = column.split('.').pop();
+	                var lastEntity = _this.$hibachi.getEntityExample(_this.$hibachi.getLastEntityNameInPropertyIdentifier(_this.baseEntityName, column));
+	                if (angular.isUndefined(lastEntity)) {
+	                    throw ("You have passed an incorrect entity name to a collection config");
+	                }
+	                if (angular.isUndefined(_this.columns)) {
+	                    _this.columns = [];
+	                }
+	                if (!angular.isUndefined(options['isVisible'])) {
+	                    isVisible = options['isVisible'];
+	                }
+	                if (!angular.isUndefined(options['isDeletable'])) {
+	                    isDeletable = options['isDeletable'];
+	                }
+	                if (!angular.isUndefined(options['isSearchable'])) {
+	                    isSearchable = options['isSearchable'];
+	                }
+	                if (!angular.isUndefined(options['isExportable'])) {
+	                    isExportable = options['isExportable'];
+	                }
+	                if (angular.isUndefined(options['isExportable']) && !isVisible) {
+	                    isExportable = false;
+	                }
+	                if (!angular.isUndefined(options['ormtype'])) {
+	                    ormtype = options['ormtype'];
+	                }
+	                else if (lastEntity.metaData[lastProperty] && lastEntity.metaData[lastProperty].ormtype) {
+	                    ormtype = lastEntity.metaData[lastProperty].ormtype;
+	                }
+	                if (angular.isDefined(lastEntity.metaData[lastProperty])) {
+	                    persistent = lastEntity.metaData[lastProperty].persistent;
+	                }
+	                var columnObject = new Column(column, title, isVisible, isDeletable, isSearchable, isExportable, persistent, ormtype, options['attributeID'], options['attributeSetObject']);
+	                if (options['aggregate']) {
+	                    columnObject['aggregate'] = options['aggregate'],
+	                        columnObject['aggregateAlias'] = title;
+	                }
+	                //add any non-conventional options
+	                for (var key in options) {
+	                    if (!columnObject[key]) {
+	                        columnObject[key] = options[key];
+	                    }
+	                }
+	                _this.columns.push(columnObject);
+	            }
+	            return _this;
+	        };
+>>>>>>> Stashed changes
 	        this.setDisplayProperties = function (propertyIdentifier, title, options) {
 	            if (title === void 0) { title = ''; }
 	            if (options === void 0) { options = {}; }
@@ -18174,7 +19712,7 @@
 
 
 /***/ },
-/* 154 */
+/* 143 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -18310,7 +19848,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 156 */
+=======
+/* 144 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -18450,7 +19992,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 159 */
+=======
+/* 145 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -18507,6 +20053,7 @@
 	    };
 	    return SWListingRowSave;
 	}());
+<<<<<<< Updated upstream
 	SWListingRowSave.$inject = ['utilityService'];
 	exports.SWListingRowSave = SWListingRowSave;
 
@@ -18684,6 +20231,28 @@
 
 
 /***/ },
+=======
+	exports.SWFilterGroupItem = SWFilterGroupItem;
+
+
+/***/ },
+/* 146 */,
+/* 147 */,
+/* 148 */,
+/* 149 */,
+/* 150 */,
+/* 151 */,
+/* 152 */,
+/* 153 */,
+/* 154 */,
+/* 155 */,
+/* 156 */,
+/* 157 */,
+/* 158 */,
+/* 159 */,
+/* 160 */,
+/* 161 */,
+>>>>>>> Stashed changes
 /* 162 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -19217,7 +20786,10 @@
 	var swfformfield_1 = __webpack_require__(174);
 	var swform_1 = __webpack_require__(175);
 	var swformfield_1 = __webpack_require__(176);
+<<<<<<< Updated upstream
 	var swformfieldfile_1 = __webpack_require__(177);
+=======
+>>>>>>> Stashed changes
 	var swformfieldjson_1 = __webpack_require__(178);
 	var swformfieldsearchselect_1 = __webpack_require__(179);
 	var swformregistrar_1 = __webpack_require__(180);
@@ -19226,6 +20798,10 @@
 	var swpropertydisplay_1 = __webpack_require__(183);
 	var swfpropertydisplay_1 = __webpack_require__(184);
 	var swformsubscriber_1 = __webpack_require__(185);
+<<<<<<< Updated upstream
+=======
+	var core_module_1 = __webpack_require__(14);
+>>>>>>> Stashed changes
 	var formmodule = angular.module('hibachi.form', ['angularjs-datetime-picker', core_module_1.coremodule.name]).config(function () {
 	})
 	    .constant('coreFormPartialsPath', 'form/components/')
@@ -19247,6 +20823,7 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 172 */
 /***/ function(module, exports) {
 
@@ -19292,6 +20869,9 @@
 
 
 /***/ },
+=======
+/* 172 */,
+>>>>>>> Stashed changes
 /* 173 */
 /***/ function(module, exports) {
 
@@ -19457,6 +21037,7 @@
 	                if (_this.fieldType === 'time') {
 	                    inputType = "text";
 	                }
+<<<<<<< Updated upstream
 	                template = currencyTitle + '<input type="' + inputType + '" class="' + _this.class + '" ' +
 	                    'ng-model="swInput.value" ' +
 	                    'ng-disabled="swInput.editable === false" ' +
@@ -19469,6 +21050,19 @@
 	                    'style="' + style + '"' +
 	                    _this.inputAttributes +
 	                    _this.eventAnnouncerTemplate;
+=======
+	                template = '<input type="' + inputType + '" class="' + _this.class + '" ' +
+	                    ' ng-model="swInput.value" ' +
+	                    ' ng-disabled="swInput.editable === false" ' +
+	                    ' ng-show="swInput.editing" ' +
+	                    ' name="' + _this.property + '" ' +
+	                    ' placeholder="' + placeholder + '" ' +
+	                    validations + currency +
+	                    ' id="swinput' + _this.swForm.name + _this.name + '" ' +
+	                    ' style="' + style + '" ' + " " +
+	                    _this.inputAttributes + " " +
+	                    _this.eventHandlerTemplate;
+>>>>>>> Stashed changes
 	            }
 	            var dateFieldTypes = ['date', 'datetime', 'time'];
 	            if (dateFieldTypes.indexOf(_this.fieldType.toLowerCase()) >= 0) {
@@ -20321,6 +21915,7 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 177 */
 /***/ function(module, exports) {
 
@@ -20367,6 +21962,9 @@
 
 
 /***/ },
+=======
+/* 177 */,
+>>>>>>> Stashed changes
 /* 178 */
 /***/ function(module, exports) {
 
@@ -23852,13 +25450,11 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWFDirectiveController = (function () {
 	    //@ngInject
-	    function SWFDirectiveController($log, $rootScope, $scope) {
+	    function SWFDirectiveController($log, $rootScope) {
 	        this.$log = $log;
 	        this.$rootScope = $rootScope;
-	        this.$scope = $scope;
 	        this.$rootScope = $rootScope;
 	        this.hibachiScope = this.$rootScope.hibachiScope;
-	        $scope.slatwall = $rootScope.slatwall;
 	    }
 	    return SWFDirectiveController;
 	}());
@@ -23920,7 +25516,6 @@
 	        if (!hibachiConfig) {
 	            hibachiConfig = {};
 	        }
-	        console.log('customPartialspath', hibachiConfig.customPartialsPath);
 	        if (!hibachiConfig.customPartialsPath) {
 	            hibachiConfig.customPartialsPath = 'custom/client/src/frontend/';
 	        }
@@ -23939,6 +25534,1267 @@
 	    return SWFDirective;
 	}());
 	exports.SWFDirective = SWFDirective;
+
+
+/***/ },
+/* 221 */,
+/* 222 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	"use strict";
+	var SWListingDisplayController = (function () {
+	    //@ngInject
+	    function SWListingDisplayController($scope, $transclude, $q, $hibachi, utilityService, collectionConfigService, paginationService, selectionService, observerService, rbkeyService) {
+	        var _this = this;
+	        this.$scope = $scope;
+	        this.$transclude = $transclude;
+	        this.$q = $q;
+	        this.$hibachi = $hibachi;
+	        this.utilityService = utilityService;
+	        this.collectionConfigService = collectionConfigService;
+	        this.paginationService = paginationService;
+	        this.selectionService = selectionService;
+	        this.observerService = observerService;
+	        this.rbkeyService = rbkeyService;
+	        /* local state variables */
+	        this.actions = [];
+	        this.allpropertyidentifiers = "";
+	        this.allprocessobjectproperties = "false";
+	        this.aggregates = [];
+	        this.buttonGroup = [];
+	        this.colorFilters = [];
+	        this.columns = [];
+	        this.exampleEntity = "";
+	        this.filters = [];
+	        this.filterGroups = [];
+	        this.multiselectable = false;
+	        this.orderBys = [];
+	        this.orderByStates = {};
+	        this.orderByIndices = {};
+	        this.searching = false;
+	        this.selectable = false;
+	        this.sortable = false;
+	        this.initialSetup = function () {
+	            if (angular.isUndefined(_this.isAngularRoute)) {
+	                _this.isAngularRoute = true;
+	            }
+	            //default search is available
+	            if (angular.isUndefined(_this.hasSearch)) {
+	                _this.hasSearch = true;
+	            }
+	            if (angular.isUndefined(_this.showFilters)) {
+	                _this.showFilters = false;
+	            }
+	            if (angular.isString(_this.showSearch)) {
+	                _this.showSearch = (_this.showSearch.toLowerCase() === 'true');
+	            }
+	            if (angular.isString(_this.showTopPagination)) {
+	                _this.showTopPagination = (_this.showTopPagination.toLowerCase() === 'true');
+	            }
+	            if (angular.isUndefined(_this.name)) {
+	                _this.name = 'ListingDisplay';
+	            }
+	            _this.paginator = _this.paginationService.createPagination();
+	            _this.hasCollectionPromise = false;
+	            if (angular.isUndefined(_this.getChildCount)) {
+	                _this.getChildCount = false;
+	            }
+	            if (!_this.collection || !angular.isString(_this.collection)) {
+	                _this.hasCollectionPromise = true;
+	            }
+	            else {
+	                _this.collectionObject = _this.collection;
+	                _this.collectionConfig = _this.collectionConfigService.newCollectionConfig(_this.collectionObject);
+	            }
+	            if (angular.isDefined(_this.pageShow)) {
+	                _this.collectionConfig.setPageShow(_this.pageShow);
+	            }
+	            _this.setupDefaultCollectionInfo();
+	            //if columns doesn't exist then make it
+	            if (!_this.collectionConfig.columns) {
+	                _this.collectionConfig.columns = [];
+	            }
+	            //if a collectionConfig was not passed in then we can run run swListingColumns
+	            //this is performed early to populate columns with swlistingcolumn info
+	            _this.$transclude(_this.$scope, function () { });
+	            //add filterGroups
+	            angular.forEach(_this.filterGroups, function (filterGroup) {
+	                _this.collectionConfig.addFilterGroup(filterGroup);
+	            });
+	            //add filters
+	            _this.setupColumns();
+	            angular.forEach(_this.filters, function (filter) {
+	                _this.collectionConfig.addFilter(filter.propertyIdentifier, filter.comparisonValue, filter.comparisonOperator, filter.logicalOperator, filter.hidden);
+	            });
+	            //add order bys
+	            angular.forEach(_this.orderBys, function (orderBy) {
+	                _this.collectionConfig.addOrderBy(orderBy.orderBy);
+	            });
+	            angular.forEach(_this.aggregates, function (aggregate) {
+	                _this.collectionConfig.addDisplayAggregate(aggregate.propertyIdentifier, aggregate.aggregateFunction, aggregate.aggregateAlias);
+	            });
+	            //make sure we have necessary properties to make the actions 
+	            angular.forEach(_this.actions, function (action) {
+	                if (angular.isDefined(action.queryString)) {
+	                    var parsedProperties = _this.utilityService.getPropertiesFromString(action.queryString);
+	                    if (parsedProperties && parsedProperties.length) {
+	                        _this.collectionConfig.addDisplayProperty(_this.utilityService.arrayToList(parsedProperties), "", { isVisible: false });
+	                    }
+	                }
+	            });
+	            //also make sure we have necessary color filter properties
+	            angular.forEach(_this.colorFilters, function (colorFilter) {
+	                if (angular.isDefined(colorFilter.propertyToCompare)) {
+	                    _this.collectionConfig.addDisplayProperty(colorFilter.propertyToCompare, "", { isVisible: false });
+	                }
+	            });
+	            _this.exampleEntity = _this.$hibachi.getEntityExample(_this.collectionObject);
+	            if (_this.collectionConfig.hasColumns()) {
+	                _this.collectionConfig.addDisplayProperty(_this.exampleEntity.$$getIDName(), undefined, { isVisible: false });
+	            }
+	            _this.initData();
+	            _this.$scope.$watch('swListingDisplay.collectionPromise', function (newValue, oldValue) {
+	                if (newValue) {
+	                    _this.collectionData = undefined;
+	                    _this.$q.when(_this.collectionPromise).then(function (data) {
+	                        _this.collectionData = data;
+	                        _this.setupDefaultCollectionInfo();
+	                        if (_this.collectionConfig.hasColumns()) {
+	                            _this.setupColumns();
+	                        }
+	                        else {
+	                            _this.collectionConfig.loadJson(data.collectionConfig);
+	                        }
+	                        _this.collectionData.pageRecords = _this.collectionData.pageRecords || _this.collectionData.records;
+	                        _this.paginator.setPageRecordsInfo(_this.collectionData);
+	                        _this.searching = false;
+	                    });
+	                }
+	            });
+	            _this.tableID = 'LD' + _this.utilityService.createID();
+	            //if getCollection doesn't exist then create it
+	            if (angular.isUndefined(_this.getCollection)) {
+	                _this.getCollection = _this.setupDefaultGetCollection();
+	            }
+	            _this.paginator.getCollection = _this.getCollection;
+	            //this.getCollection();
+	            var getCollectioneventID = (_this.name || 'ListingDisplay');
+	            _this.observerService.attach(_this.getCollectionObserver, 'getCollection', getCollectioneventID);
+	            _this.$scope.$on('$destroy', function () {
+	                _this.observerService.detachById(getCollectioneventID);
+	            });
+	        };
+	        this.getCollectionObserver = function (param) {
+	            console.warn("getCollectionObserver", param);
+	            _this.collectionConfig.loadJson(param.collectionConfig);
+	            _this.collectionData = undefined;
+	            _this.getCollection();
+	        };
+	        this.setupDefaultCollectionInfo = function () {
+	            if (_this.hasCollectionPromise) {
+	                _this.collectionObject = _this.collection.collectionObject;
+	                _this.collectionConfig = _this.collectionConfigService.newCollectionConfig(_this.collectionObject);
+	                _this.collectionConfig.loadJson(_this.collection.collectionConfig);
+	            }
+	            //this.collectionConfig.setPageShow(this.paginator.getPageShow());
+	            _this.paginator.setPageShow(_this.collectionConfig.getPageShow());
+	            _this.collectionConfig.setCurrentPage(_this.paginator.getCurrentPage());
+	            //this.collectionConfig.setKeywords(this.paginator.keywords);
+	        };
+	        this.setupDefaultGetCollection = function () {
+	            _this.collectionPromise = _this.collectionConfig.getEntity();
+	            return function () {
+	                _this.collectionConfig.setCurrentPage(_this.paginator.getCurrentPage());
+	                _this.collectionConfig.setPageShow(_this.paginator.getPageShow());
+	                _this.collectionData = undefined;
+	                _this.collectionConfig.getEntity().then(function (data) {
+	                    _this.collectionData = data;
+	                    _this.setupDefaultCollectionInfo();
+	                    //this.setupColumns();
+	                    _this.collectionData.pageRecords = _this.collectionData.pageRecords || _this.collectionData.records;
+	                    _this.paginator.setPageRecordsInfo(_this.collectionData);
+	                });
+	            };
+	        };
+	        this.initData = function () {
+	            _this.collectionConfig.setPageShow(_this.paginator.pageShow);
+	            _this.collectionConfig.setCurrentPage(_this.paginator.currentPage);
+	            //setup export action
+	            if (angular.isDefined(_this.exportAction)) {
+	                _this.exportAction = _this.$hibachi.buildUrl('main.collectionExport') + '&collectionExportID=';
+	            }
+	            //Setup Select
+	            if (_this.selectFieldName && _this.selectFieldName.length) {
+	                _this.selectable = true;
+	                _this.tableclass = _this.utilityService.listAppend(_this.tableclass, 'table-select', ' ');
+	                _this.tableattributes = _this.utilityService.listAppend(_this.tableattributes, 'data-selectfield="' + _this.selectFieldName + '"', ' ');
+	            }
+	            //Setup MultiSelect
+	            if (_this.multiselectFieldName && _this.multiselectFieldName.length) {
+	                _this.multiselectable = true;
+	                _this.tableclass = _this.utilityService.listAppend(_this.tableclass, 'table-multiselect', ' ');
+	                _this.tableattributes = _this.utilityService.listAppend(_this.tableattributes, 'data-multiselectpropertyidentifier="' + _this.multiselectPropertyIdentifier + '"', ' ');
+	                //attach observer so we know when a selection occurs
+	                var selectionToggleEventName = 'swSelectionToggleSelection' + _this.collectionObject;
+	                _this.observerService.attach(_this.updateMultiselectValues, 'swSelectionToggleSelection', selectionToggleEventName);
+	                _this.$scope.$on('$destroy', function () {
+	                    _this.observerService.detachById(selectionToggleEventName);
+	                });
+	                //attach observer so we know when a pagination change occurs
+	                _this.observerService.attach(_this.paginationPageChange, 'swPaginationAction');
+	                _this.$scope.$on('$destroy', function () {
+	                    _this.observerService.detachByEvent('swPaginationAction');
+	                });
+	            }
+	            if (_this.multiselectable && (!_this.columns || !_this.columns.length)) {
+	                //check if it has an active flag and if so then add the active flag
+	                if (_this.exampleEntity.metaData.activeProperty && !_this.hasCollectionPromise) {
+	                    _this.collectionConfig.addFilter('activeFlag', 1, '=', undefined, true);
+	                }
+	            }
+	            //Look for Hierarchy in example entity
+	            if (!_this.parentPropertyName || (_this.parentPropertyName && !_this.parentPropertyName.length)) {
+	                if (_this.exampleEntity.metaData.hb_parentPropertyName) {
+	                    _this.parentPropertyName = _this.exampleEntity.metaData.hb_parentPropertyName;
+	                }
+	            }
+	            if (!_this.childPropertyName || (_this.childPropertyName && !_this.childPropertyName.length)) {
+	                if (_this.exampleEntity.metaData.hb_childPropertyName) {
+	                    _this.childPropertyName = _this.exampleEntity.metaData.hb_childPropertyName;
+	                }
+	            }
+	            //Setup Hierachy Expandable
+	            if (_this.parentPropertyName && _this.parentPropertyName.length && _this.expandable != false) {
+	                if (angular.isUndefined(_this.expandable)) {
+	                    _this.expandable = true;
+	                }
+	                _this.tableclass = _this.utilityService.listAppend(_this.tableclass, 'table-expandable', ' ');
+	                //add parent property root filter
+	                if (!_this.hasCollectionPromise) {
+	                    _this.collectionConfig.addFilter(_this.parentPropertyName + '.' + _this.exampleEntity.$$getIDName(), 'NULL', 'IS', undefined, true);
+	                }
+	                //this.collectionConfig.addDisplayProperty(this.exampleEntity.$$getIDName()+'Path',undefined,{isVisible:false});
+	                //add children column
+	                if (_this.childPropertyName && _this.childPropertyName.length) {
+	                    if (_this.getChildCount || !_this.hasCollectionPromise) {
+	                        _this.collectionConfig.addDisplayAggregate(_this.childPropertyName, 'COUNT', _this.childPropertyName + 'Count');
+	                    }
+	                }
+	                _this.allpropertyidentifiers = _this.utilityService.listAppend(_this.allpropertyidentifiers, _this.exampleEntity.$$getIDName() + 'Path');
+	                _this.tableattributes = _this.utilityService.listAppend(_this.tableattributes, 'data-parentidproperty=' + _this.parentPropertyName + '.' + _this.exampleEntity.$$getIDName(), ' ');
+	            }
+	            //            if(
+	            //                !this.edit
+	            //                && this.multiselectable
+	            //                && (!this.parentPropertyName || !!this.parentPropertyName.length)
+	            //                && (this.multiselectPropertyIdentifier && this.multiselectPropertyIdentifier.length)
+	            //            ){
+	            //                if(this.multiselectValues && this.multiselectValues.length){
+	            //                    this.collectionConfig.addFilter(this.multiselectPropertyIdentifier,this.multiselectValues,'IN');
+	            //                }else{
+	            //                    this.collectionConfig.addFilter(this.multiselectPropertyIdentifier,'_','IN');
+	            //                }
+	            //            }
+	            if (_this.multiselectIdPaths && _this.multiselectIdPaths.length) {
+	                angular.forEach(_this.multiselectIdPaths.split(','), function (value) {
+	                    var id = _this.utilityService.listLast(value, '/');
+	                    _this.selectionService.addSelection(_this.name, id);
+	                });
+	            }
+	            if (_this.multiselectValues && _this.multiselectValues.length) {
+	                //select all owned ids
+	                if (angular.isString(_this.multiselectValues)) {
+	                    _this.multiselectValues = _this.multiselectValues.split(',');
+	                }
+	                angular.forEach(_this.multiselectValues, function (value) {
+	                    _this.selectionService.addSelection(_this.name, value);
+	                });
+	            }
+	            //set defaults if value is not specified
+	            //this.edit = this.edit || $location.edit
+	            _this.processObjectProperties = _this.processObjectProperties || '';
+	            _this.recordProcessButtonDisplayFlag = _this.recordProcessButtonDisplayFlag || true;
+	            //this.collectionConfig = this.collectionConfig || this.collectionData.collectionConfig;
+	            _this.norecordstext = _this.rbkeyService.getRBKey('entity.' + _this.collectionObject + '.norecords');
+	            //Setup Sortability
+	            if (_this.sortProperty && _this.sortProperty.length) {
+	            }
+	            //Setup the admin meta info
+	            _this.administrativeCount = 0;
+	            //Detail
+	            if (_this.recordDetailAction && _this.recordDetailAction.length) {
+	                _this.administrativeCount++;
+	                _this.adminattributes = _this.getAdminAttributesByType('detail');
+	            }
+	            //Edit
+	            if (_this.recordEditAction && _this.recordEditAction.length) {
+	                _this.administrativeCount++;
+	                _this.adminattributes = _this.getAdminAttributesByType('edit');
+	            }
+	            //Delete
+	            if (_this.recordDeleteAction && _this.recordDeleteAction.length) {
+	                _this.administrativeCount++;
+	                _this.adminattributes = _this.getAdminAttributesByType('delete');
+	            }
+	            //Add
+	            if (_this.recordAddAction && _this.recordAddAction.length) {
+	                _this.administrativeCount++;
+	                _this.adminattributes = _this.getAdminAttributesByType('add');
+	            }
+	            //Process
+	            // if(this.recordProcessAction && this.recordProcessAction.length && this.recordProcessButtonDisplayFlag){
+	            //     this.administrativeCount++;
+	            //     this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-processcontext="'+this.recordProcessContext+'"', " ");
+	            //     this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-processentity="'+this.recordProcessEntity.metaData.className+'"', " ");
+	            //     this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-processentityid="'+this.recordProcessEntity.$$getID+'"', " ");
+	            //     this.adminattributes = this.utilityService.listAppend(this.adminattributes, 'data-processaction="'+this.recordProcessAction+'"', " ");
+	            //     this.adminattributes = this.utilityService.listAppend(this.adminattributes, 'data-processcontext="'+this.recordProcessContext+'"', " ");
+	            //     this.adminattributes = this.utilityService.listAppend(this.adminattributes, 'data-processquerystring="'+this.recordProcessQueryString+'"', " ");
+	            //     this.adminattributes = this.utilityService.listAppend(this.adminattributes, 'data-processupdatetableid="'+this.recordProcessUpdateTableID+'"', " ");
+	            // }
+	            //Setup the primary representation column if no columns were passed in
+	            /*
+	            <cfif not arrayLen(thistag.columns)>
+	                <cfset arrayAppend(thistag.columns, {
+	                    propertyIdentifier = thistag.exampleentity.getSimpleRepresentationPropertyName(),
+	                    title = "",
+	                    tdclass="primary",
+	                    search = true,
+	                    sort = true,
+	                    filter = false,
+	                    range = false,
+	                    editable = false,
+	                    buttonGroup = true
+	                }) />
+	            </cfif>
+	            */
+	            //Setup the list of all property identifiers to be used later
+	            angular.forEach(_this.columns, function (column) {
+	                //If this is a standard propertyIdentifier
+	                if (column.propertyIdentifier) {
+	                    //Add to the all property identifiers
+	                    _this.allpropertyidentifiers = _this.utilityService.listAppend(_this.allpropertyidentifiers, column.propertyIdentifier);
+	                    //Check to see if we need to setup the dynamic filters, etc
+	                    //<cfif not len(column.search) || not len(column.sort) || not len(column.filter) || not len(column.range)>
+	                    if (!column.searchable || !!column.searchable.length || !column.sort || !column.sort.length) {
+	                        //Get the entity object to get property metaData
+	                        var thisEntityName = _this.$hibachi.getLastEntityNameInPropertyIdentifier(_this.exampleEntity.metaData.className, column.propertyIdentifier);
+	                        var thisPropertyName = _this.utilityService.listLast(column.propertyIdentifier, '.');
+	                        var thisPropertyMeta = _this.$hibachi.getPropertyByEntityNameAndPropertyName(thisEntityName, thisPropertyName);
+	                    }
+	                }
+	                else if (column.processObjectProperty) {
+	                    column.searchable = false;
+	                    column.sort = false;
+	                    /*
+	                    <cfset column.filter = false />
+	                    <cfset column.range = false />
+	                    */
+	                    _this.allprocessobjectproperties = _this.utilityService.listAppend(_this.allprocessobjectproperties, column.processObjectProperty);
+	                }
+	                if (column.tdclass) {
+	                    var tdclassArray = column.tdclass.split(' ');
+	                    if (tdclassArray.indexOf("primary") >= 0 && _this.expandable) {
+	                        _this.tableattributes = _this.utilityService.listAppend(_this.tableattributes, 'data-expandsortproperty=' + column.propertyIdentifier, " ");
+	                        column.sort = false;
+	                    }
+	                }
+	            });
+	            //Setup a variable for the number of columns so that the none can have a proper colspan
+	            _this.columnCount = (_this.columns) ? _this.columns.length : 0;
+	            if (_this.selectable) {
+	                _this.columnCount++;
+	            }
+	            if (_this.multiselectable) {
+	                _this.columnCount++;
+	            }
+	            if (_this.sortable) {
+	                _this.columnCount++;
+	            }
+	            if (_this.administrativeCount) {
+	                _this.administrativeCount++;
+	            }
+	            //Setup table class
+	            _this.tableclass = _this.tableclass || '';
+	            _this.tableclass = _this.utilityService.listPrepend(_this.tableclass, 'table table-bordered table-hover', ' ');
+	        };
+	        this.setupColumns = function () {
+	            //assumes no alias formatting
+	            angular.forEach(_this.columns, function (column) {
+	                var lastEntity = _this.$hibachi.getLastEntityNameInPropertyIdentifier(_this.collectionObject, column.propertyIdentifier);
+	                if (angular.isUndefined(column.title)) {
+	                    column.title = _this.rbkeyService.getRBKey('entity.' + lastEntity.toLowerCase() + '.' + _this.utilityService.listLast(column.propertyIdentifier, '.'));
+	                }
+	                if (angular.isUndefined(column.isVisible)) {
+	                    column.isVisible = true;
+	                }
+	                var metadata = _this.$hibachi.getPropertyByEntityNameAndPropertyName(lastEntity, _this.utilityService.listLast(column.propertyIdentifier, '.'));
+	                if (angular.isDefined(metadata) && angular.isDefined(metadata.hb_formattype)) {
+	                    column.type = metadata.hb_formattype;
+	                }
+	                else {
+	                    column.type = "none";
+	                }
+	                /* render flat until we have formatting*/
+	                if (column.type === 'email'
+	                    || column.type === 'numeric') {
+	                    column.type = 'none';
+	                }
+	                if (angular.isDefined(column.tooltip)) {
+	                    var parsedProperties = _this.utilityService.getPropertiesFromString(column.tooltip);
+	                    if (parsedProperties && parsedProperties.length) {
+	                        _this.collectionConfig.addDisplayProperty(_this.utilityService.arrayToList(parsedProperties), "", { isVisible: false });
+	                    }
+	                }
+	                else {
+	                    column.tooltip = '';
+	                }
+	                if (angular.isDefined(column.queryString)) {
+	                    var parsedProperties = _this.utilityService.getPropertiesFromString(column.queryString);
+	                    if (parsedProperties && parsedProperties.length) {
+	                        _this.collectionConfig.addDisplayProperty(_this.utilityService.arrayToList(parsedProperties), "", { isVisible: false });
+	                    }
+	                }
+	                _this.columnOrderBy(column);
+	                _this.collectionConfig.addDisplayProperty(column.propertyIdentifier, column.title, column);
+	            });
+	            //if the passed in collection has columns perform some formatting
+	            if (_this.hasCollectionPromise) {
+	                //assumes alias formatting from collectionConfig
+	                angular.forEach(_this.collectionConfig.columns, function (column) {
+	                    var lastEntity = _this.$hibachi.getLastEntityNameInPropertyIdentifier(_this.collectionObject, _this.utilityService.listRest(column.propertyIdentifier, '.'));
+	                    column.title = column.title || _this.rbkeyService.getRBKey('entity.' + lastEntity.toLowerCase() + '.' + _this.utilityService.listLast(column.propertyIdentifier, '.'));
+	                    if (angular.isUndefined(column.isVisible)) {
+	                        column.isVisible = true;
+	                    }
+	                });
+	            }
+	        };
+	        this.getColorFilterNGClassObject = function (pageRecord) {
+	            var classObjectString = "{";
+	            angular.forEach(_this.colorFilters, function (colorFilter, index) {
+	                classObjectString = classObjectString.concat("'" + colorFilter.colorClass + "':" + _this.getColorFilterConditionString(colorFilter, pageRecord));
+	                if (index < _this.colorFilters.length - 1) {
+	                    classObjectString = classObjectString.concat(",");
+	                }
+	            });
+	            return classObjectString + "}";
+	        };
+	        this.getColorFilterConditionString = function (colorFilter, pageRecord) {
+	            if (angular.isDefined(colorFilter.comparisonProperty)) {
+	                return pageRecord[colorFilter.propertyToCompare.replace('.', '_')] + colorFilter.comparisonOperator + pageRecord[colorFilter.comparisonProperty.replace('.', '_')];
+	            }
+	            else {
+	                return pageRecord[colorFilter.propertyToCompare.replace('.', '_')] + colorFilter.comparisonOperator + colorFilter.comparisonValue;
+	            }
+	        };
+	        this.toggleOrderBy = function (column) {
+	            _this.collectionConfig.toggleOrderBy(column.propertyIdentifier, true);
+	            _this.getCollection();
+	        };
+	        this.columnOrderBy = function (column) {
+	            var isfound = false;
+	            angular.forEach(_this.collectionConfig.orderBy, function (orderBy, index) {
+	                if (column.propertyIdentifier == orderBy.propertyIdentifier) {
+	                    isfound = true;
+	                    _this.orderByStates[column.propertyIdentifier] = orderBy.direction;
+	                }
+	            });
+	            if (!isfound) {
+	                _this.orderByStates[column.propertyIdentifier] = '';
+	            }
+	            return _this.orderByStates[column.propertyIdentifier];
+	        };
+	        this.columnOrderByIndex = function (column) {
+	            var isfound = false;
+	            angular.forEach(_this.collectionConfig.orderBy, function (orderBy, index) {
+	                if (column.propertyIdentifier == orderBy.propertyIdentifier) {
+	                    isfound = true;
+	                    _this.orderByIndices[column.propertyIdentifier] = index + 1;
+	                }
+	            });
+	            if (!isfound) {
+	                _this.orderByIndices[column.propertyIdentifier] = '';
+	            }
+	            return _this.orderByIndices[column.propertyIdentifier];
+	        };
+	        this.updateMultiselectValues = function (res) {
+	            _this.multiselectValues = _this.selectionService.getSelections(_this.name);
+	            if (_this.selectionService.isAllSelected(_this.name)) {
+	                _this.multiselectCount = _this.collectionData.recordsCount - _this.selectionService.getSelectionCount(_this.name);
+	            }
+	            else {
+	                _this.multiselectCount = _this.selectionService.getSelectionCount(_this.name);
+	            }
+	            switch (res.action) {
+	                case 'uncheck':
+	                    _this.isCurrentPageRecordsSelected = false;
+	                    break;
+	                case 'selectAll':
+	                    _this.allSelected = true;
+	                    _this.isCurrentPageRecordsSelected = false;
+	                    break;
+	                case 'clear':
+	                    _this.allSelected = false;
+	                    _this.isCurrentPageRecordsSelected = false;
+	                    break;
+	            }
+	        };
+	        this.getPageRecordKey = function (propertyIdentifier) {
+	            if (propertyIdentifier) {
+	                var propertyIdentifierWithoutAlias = '';
+	                if (propertyIdentifier.indexOf('_') === 0) {
+	                    propertyIdentifierWithoutAlias = propertyIdentifier.substring(propertyIdentifier.indexOf('.') + 1, propertyIdentifier.length);
+	                }
+	                else {
+	                    propertyIdentifierWithoutAlias = propertyIdentifier;
+	                }
+	                return _this.utilityService.replaceAll(propertyIdentifierWithoutAlias, '.', '_');
+	            }
+	            return '';
+	        };
+	        this.getAdminAttributesByType = function (type) {
+	            var recordActionName = 'record' + type.toUpperCase() + 'Action';
+	            var recordActionPropertyName = recordActionName + 'Property';
+	            var recordActionQueryStringName = recordActionName + 'QueryString';
+	            var recordActionModalName = recordActionName + 'Modal';
+	            _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'action="' + _this[recordActionName] + '"', " ");
+	            if (_this[recordActionPropertyName] && _this[recordActionPropertyName].length) {
+	                _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'actionproperty="' + _this[recordActionPropertyName] + '"', " ");
+	            }
+	            _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'querystring="' + _this[recordActionQueryStringName] + '"', " ");
+	            _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'modal="' + _this[recordActionModalName] + '"', " ");
+	        };
+	        this.getExportAction = function () {
+	            return _this.exportAction + _this.collectionID;
+	        };
+	        this.exportCurrentList = function (selection) {
+	            if (selection === void 0) { selection = false; }
+	            var exportCollectionConfig = angular.copy(_this.collectionConfig.getCollectionConfig());
+	            if (selection && !angular.isUndefined(_this.selectionService.getSelections(_this.name))
+	                && (_this.selectionService.getSelections(_this.name).length > 0)) {
+	                exportCollectionConfig.filterGroups[0].filterGroup = [
+	                    {
+	                        "displayPropertyIdentifier": _this.rbkeyService.getRBKey("entity." + exportCollectionConfig.baseEntityName.toLowerCase() + "." + _this.exampleEntity.$$getIDName().toLowerCase()),
+	                        "propertyIdentifier": exportCollectionConfig.baseEntityAlias + "." + _this.exampleEntity.$$getIDName(),
+	                        "comparisonOperator": (_this.allSelected) ? "not in" : "in",
+	                        "value": _this.selectionService.getSelections(_this.name).join(),
+	                        "displayValue": _this.selectionService.getSelections(_this.name).join(),
+	                        "ormtype": "string",
+	                        "fieldtype": "id",
+	                        "conditionDisplay": "In List"
+	                    }
+	                ];
+	            }
+	            $('body').append('<form action="/?' + _this.$hibachi.getConfigValue('action') + '=admin:main.collectionConfigExport" method="post" id="formExport"></form>');
+	            $('#formExport')
+	                .append("<input type='hidden' name='collectionConfig' value='" + angular.toJson(exportCollectionConfig) + "' />")
+	                .submit()
+	                .remove();
+	        };
+	        this.paginationPageChange = function (res) {
+	            _this.isCurrentPageRecordsSelected = false;
+	        };
+	        this.selectCurrentPageRecords = function () {
+	            if (!_this.collectionData.pageRecords)
+	                return;
+	            for (var i = 0; i < _this.collectionData.pageRecords.length; i++) {
+	                if (_this.isCurrentPageRecordsSelected == true) {
+	                    _this.selectionService.addSelection(_this.name, _this.collectionData.pageRecords[i][_this.exampleEntity.$$getIDName()]);
+	                }
+	                else {
+	                    _this.selectionService.removeSelection(_this.name, _this.collectionData.pageRecords[i][_this.exampleEntity.$$getIDName()]);
+	                }
+	            }
+	        };
+	        this.clearSelection = function () {
+	            _this.selectionService.clearSelection(_this.name);
+	        };
+	        this.selectAll = function () {
+	            _this.selectionService.selectAll(_this.name);
+	        };
+	        this.initialSetup();
+	    }
+	    return SWListingDisplayController;
+	}());
+	var SWListingDisplay = (function () {
+	    //@ngInject
+	    function SWListingDisplay(corePartialsPath, hibachiPathBuilder) {
+	        this.corePartialsPath = corePartialsPath;
+	        this.hibachiPathBuilder = hibachiPathBuilder;
+	        this.restrict = 'E';
+	        this.scope = {};
+	        this.transclude = true;
+	        this.bindToController = {
+	            isRadio: "=?",
+	            angularLinks: "=?",
+	            isAngularRoute: "=?",
+	            name: "@?",
+	            /*required*/
+	            collection: "=?",
+	            collectionConfig: "=?",
+	            getCollection: "&?",
+	            collectionPromise: "=?",
+	            edit: "=?",
+	            /*Optional*/
+	            title: "@?",
+	            /*Admin Actions*/
+	            actions: "=?",
+	            recordEditAction: "@?",
+	            recordEditActionProperty: "@?",
+	            recordEditQueryString: "@?",
+	            recordEditModal: "=?",
+	            recordEditDisabled: "=?",
+	            recordDetailAction: "@?",
+	            recordDetailActionProperty: "@?",
+	            recordDetailQueryString: "@?",
+	            recordDetailModal: "=?",
+	            recordDeleteAction: "@?",
+	            recordDeleteActionProperty: "@?",
+	            recordDeleteQueryString: "@?",
+	            recordAddAction: "@?",
+	            recordAddActionProperty: "@?",
+	            recordAddQueryString: "@?",
+	            recordAddModal: "=?",
+	            recordAddDisabled: "=?",
+	            recordProcessesConfig: "=?",
+	            /* record processes config is an array of actions. Example:
+	            [
+	            {
+	                recordProcessAction:"@",
+	                recordProcessActionProperty:"@",
+	                recordProcessQueryString:"@",
+	                recordProcessContext:"@",
+	                recordProcessEntity:"=",
+	                recordProcessEntityData:"=",
+	                recordProcessUpdateTableID:"=",
+	                recordProcessButtonDisplayFlag:"=",
+	            }
+	            ]
+	            */
+	            /*Hierachy Expandable*/
+	            parentPropertyName: "@?",
+	            //booleans
+	            expandable: "=?",
+	            expandableOpenRoot: "=?",
+	            /*Searching*/
+	            searchText: "=?",
+	            /*Sorting*/
+	            sortProperty: "@?",
+	            sortContextIDColumn: "@?",
+	            sortContextIDValue: "@?",
+	            /*Single Select*/
+	            selectFiledName: "@?",
+	            selectValue: "@?",
+	            selectTitle: "@?",
+	            /*Multiselect*/
+	            multiselectFieldName: "@?",
+	            multiselectPropertyIdentifier: "@?",
+	            multiselectIdPaths: "@?",
+	            multiselectValues: "@?",
+	            /*Helper / Additional / Custom*/
+	            tableattributes: "@?",
+	            tableclass: "@?",
+	            adminattributes: "@?",
+	            /* Settings */
+	            showheader: "=?",
+	            showFilters: "=?",
+	            showSearch: "=?",
+	            showTopPagination: "=?",
+	            /* Basic Action Caller Overrides*/
+	            createModal: "=?",
+	            createAction: "@?",
+	            createQueryString: "@?",
+	            exportAction: "@?",
+	            getChildCount: "=?",
+	            hasSearch: "=?",
+	            hasActionBar: "=?",
+	            showPagination: "@?",
+	            pageShow: "@?",
+	        };
+	        this.controller = SWListingDisplayController;
+	        this.controllerAs = "swListingDisplay";
+	        this.corePartialsPath = corePartialsPath;
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.corePartialsPath) + 'listingdisplay.html';
+	    }
+	    SWListingDisplay.Factory = function () {
+	        var directive = function (corePartialsPath, hibachiPathBuilder) { return new SWListingDisplay(corePartialsPath, hibachiPathBuilder); };
+	        directive.$inject = [
+	            'corePartialsPath',
+	            'hibachiPathBuilder'
+	        ];
+	        return directive;
+	    };
+	    return SWListingDisplay;
+	}());
+	exports.SWListingDisplay = SWListingDisplay;
+
+
+/***/ },
+/* 223 */,
+/* 224 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	"use strict";
+	var SWListingControlsController = (function () {
+	    //@ngInject
+	    function SWListingControlsController($hibachi, metadataService, collectionService, observerService) {
+	        var _this = this;
+	        this.$hibachi = $hibachi;
+	        this.metadataService = metadataService;
+	        this.collectionService = collectionService;
+	        this.observerService = observerService;
+	        this.displayOptionsClosed = true;
+	        this.filtersClosed = true;
+	        this.filterActions = function (res) {
+	            if (res.action == 'add') {
+	                _this.paginator.setCurrentPage(1);
+	            }
+	            _this.filtersClosed = true;
+	        };
+	        this.selectSearchColumn = function (column) {
+	            _this.selectedSearchColumn = column;
+	            if (_this.searchText) {
+	                _this.search();
+	            }
+	        };
+	        this.getSelectedSearchColumnName = function () {
+	            return (angular.isUndefined(_this.selectedSearchColumn)) ? 'All' : _this.selectedSearchColumn.title;
+	        };
+	        this.search = function () {
+	            if (angular.isDefined(_this.selectedSearchColumn)) {
+	                _this.backupColumnsConfig = angular.copy(_this.collectionConfig.getColumns());
+	                var collectionColumns = _this.collectionConfig.getColumns();
+	                for (var i = 0; i < collectionColumns.length; i++) {
+	                    if (collectionColumns[i].propertyIdentifier != _this.selectedSearchColumn.propertyIdentifier) {
+	                        collectionColumns[i].isSearchable = false;
+	                    }
+	                }
+	                _this.collectionConfig.setKeywords(_this.searchText);
+	                _this.paginator.setCurrentPage(1);
+	                _this.collectionConfig.setColumns(_this.backupColumnsConfig);
+	            }
+	            else {
+	                _this.collectionConfig.setKeywords(_this.searchText);
+	                _this.paginator.setCurrentPage(1);
+	            }
+	        };
+	        this.addSearchFilter = function () {
+	            if (angular.isUndefined(_this.selectedSearchColumn) || !_this.searchText)
+	                return;
+	            var keywords = _this.searchText.split(" ");
+	            for (var i = 0; i < keywords.length; i++) {
+	                _this.collectionConfig.addLikeFilter(_this.selectedSearchColumn.propertyIdentifier, keywords[i], '%w%', undefined, _this.selectedSearchColumn.title);
+	            }
+	            _this.searchText = '';
+	            _this.collectionConfig.setKeywords(_this.searchText);
+	            _this.paginator.setCurrentPage(1);
+	        };
+	        this.toggleDisplayOptions = function (closeButton) {
+	            if (closeButton === void 0) { closeButton = false; }
+	            if (_this.displayOptionsClosed) {
+	                _this.displayOptionsClosed = false;
+	            }
+	            else if (closeButton) {
+	                _this.displayOptionsClosed = true;
+	            }
+	        };
+	        this.setItemInUse = function (booleanValue) {
+	            _this.itemInUse = booleanValue;
+	        };
+	        this.removeFilter = function (array, index, reloadCollection) {
+	            if (reloadCollection === void 0) { reloadCollection = true; }
+	            array.splice(index, 1);
+	            if (reloadCollection) {
+	                _this.paginator.setCurrentPage(1);
+	            }
+	        };
+	        this.toggleFilters = function () {
+	            if (_this.filtersClosed) {
+	                _this.filtersClosed = false;
+	                _this.newFilterPosition = _this.collectionService.newFilterItem(_this.collectionConfig.filterGroups[0].filterGroup, _this.setItemInUse);
+	            }
+	        };
+	        this.selectFilterItem = function (filterItem) {
+	            _this.filtersClosed = false;
+	            _this.collectionService.selectFilterItem(filterItem);
+	        };
+	        this.saveCollection = function () {
+	            _this.getCollection()();
+	        };
+	        this.backupColumnsConfig = this.collectionConfig.getColumns();
+	        this.filterPropertiesList = {};
+	        $hibachi.getFilterPropertiesByBaseEntityName(this.collectionConfig.baseEntityAlias).then(function (value) {
+	            metadataService.setPropertiesList(value, _this.collectionConfig.baseEntityAlias);
+	            _this.filterPropertiesList[_this.collectionConfig.baseEntityAlias] = metadataService.getPropertiesListByBaseEntityAlias(_this.collectionConfig.baseEntityAlias);
+	            metadataService.formatPropertiesList(_this.filterPropertiesList[_this.collectionConfig.baseEntityAlias], _this.collectionConfig.baseEntityAlias);
+	        });
+	        this.observerService.attach(this.filterActions, 'filterItemAction');
+	    }
+	    return SWListingControlsController;
+	}());
+	var SWListingControls = (function () {
+	    function SWListingControls(collectionPartialsPath, hibachiPathBuilder) {
+	        this.collectionPartialsPath = collectionPartialsPath;
+	        this.hibachiPathBuilder = hibachiPathBuilder;
+	        this.restrict = 'E';
+	        this.scope = {};
+	        this.bindToController = {
+	            collectionConfig: "=",
+	            paginator: "=",
+	            getCollection: "&",
+	            showFilters: "=?"
+	        };
+	        this.controller = SWListingControlsController;
+	        this.controllerAs = 'swListingControls';
+	        this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.collectionPartialsPath) + "listingcontrols.html";
+	    }
+	    SWListingControls.Factory = function () {
+	        var directive = function (corePartialsPath, hibachiPathBuilder) { return new SWListingControls(corePartialsPath, hibachiPathBuilder); };
+	        directive.$inject = ['corePartialsPath', 'hibachiPathBuilder'];
+	        return directive;
+	    };
+	    return SWListingControls;
+	}());
+	SWListingControls.$inject = ['corePartialsPath', 'hibachiPathBuilder'];
+	exports.SWListingControls = SWListingControls;
+
+
+/***/ },
+/* 225 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	"use strict";
+	var SWListingAggregateController = (function () {
+	    function SWListingAggregateController() {
+	        var _this = this;
+	        this.init = function () {
+	            _this.editable = _this.editable || false;
+	        };
+	        this.init();
+	    }
+	    return SWListingAggregateController;
+	}());
+	var SWListingAggregate = (function () {
+	    function SWListingAggregate() {
+	        this.restrict = 'EA';
+	        this.scope = true;
+	        this.bindToController = {
+	            propertyIdentifier: "@",
+	            aggregateFunction: "@",
+	            aggregateAlias: "@?"
+	        };
+	        this.controller = SWListingAggregateController;
+	        this.controllerAs = "swListingAggregate";
+	        this.link = function (scope, element, attrs) {
+	            var aggregate = {
+	                propertyIdentifier: scope.swListingAggregate.propertyIdentifier,
+	                aggregateFunction: scope.swListingAggregate.aggregateFunction,
+	                aggregateAlias: scope.swListingAggregate.aggregateAlias,
+	            };
+	            scope.$parent.swListingDisplay.aggregates.push(aggregate);
+	        };
+	    }
+	    SWListingAggregate.Factory = function () {
+	        var directive = function () { return new SWListingAggregate(); };
+	        directive.$inject = [];
+	        return directive;
+	    };
+	    return SWListingAggregate;
+	}());
+	exports.SWListingAggregate = SWListingAggregate;
+
+
+/***/ },
+/* 226 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	"use strict";
+	var SWListingColorFilterController = (function () {
+	    function SWListingColorFilterController() {
+	        this.init = function () {
+	        };
+	        this.init();
+	    }
+	    return SWListingColorFilterController;
+	}());
+	var SWListingColorFilter = (function () {
+	    function SWListingColorFilter(utilityService) {
+	        var _this = this;
+	        this.utilityService = utilityService;
+	        this.restrict = 'EA';
+	        this.scope = true;
+	        this.bindToController = {
+	            propertyToCompare: "@",
+	            comparisonOperator: "@",
+	            comparisonValue: "@",
+	            comparisonProperty: "@",
+	            colorClass: "@",
+	            color: "@"
+	        };
+	        this.controller = SWListingColorFilterController;
+	        this.controllerAs = "swListingColorFilter";
+	        this.link = function (scope, element, attrs) {
+	            var colorFilter = {
+	                propertyToCompare: scope.swListingColorFilter.propertyToCompare,
+	                comparisonOperator: scope.swListingColorFilter.comparisonOperator,
+	                comparisonValue: scope.swListingColorFilter.comparisonValue,
+	                comparisonProperty: scope.swListingColorFilter.comparisonProperty,
+	                colorClass: scope.swListingColorFilter.colorClass,
+	                color: scope.swListingColorFilter.color
+	            };
+	            if (_this.utilityService.ArrayFindByPropertyValue(scope.$parent.swListingDisplay.colorFilters, 'propertyToCompare', colorFilter.propertyToCompare) === -1) {
+	                scope.$parent.swListingDisplay.colorFilters.push(colorFilter);
+	            }
+	        };
+	    }
+	    SWListingColorFilter.Factory = function () {
+	        var directive = function (utilityService) { return new SWListingColorFilter(utilityService); };
+	        directive.$inject = [
+	            'utilityService'
+	        ];
+	        return directive;
+	    };
+	    return SWListingColorFilter;
+	}());
+	exports.SWListingColorFilter = SWListingColorFilter;
+
+
+/***/ },
+<<<<<<< Updated upstream
+/* 216 */
+=======
+/* 227 */
+>>>>>>> Stashed changes
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	"use strict";
+	var SWListingColumnController = (function () {
+	    function SWListingColumnController() {
+	        var _this = this;
+	        this.init = function () {
+	            _this.editable = _this.editable || false;
+	        };
+	        this.init();
+	    }
+	    return SWListingColumnController;
+	}());
+	var SWListingColumn = (function () {
+	    function SWListingColumn(utilityService) {
+	        var _this = this;
+	        this.utilityService = utilityService;
+	        this.restrict = 'EA';
+	        this.scope = true;
+	        this.bindToController = {
+	            propertyIdentifier: "@",
+	            processObjectProperty: "@?",
+	            title: "@?",
+	            tdclass: "@?",
+	            search: "=?",
+	            sort: "=?",
+	            filter: "=?",
+	            range: "=?",
+	            editable: "=?",
+	            buttonGroup: "=?"
+	        };
+	        this.controller = SWListingColumnController;
+	        this.controllerAs = "swListingColumn";
+	        this.link = function (scope, element, attrs) {
+	            var column = {
+	                propertyIdentifier: scope.swListingColumn.propertyIdentifier,
+	                processObjectProperty: scope.swListingColumn.processObjectProperty,
+	                title: scope.swListingColumn.title,
+	                tdclass: scope.swListingColumn.tdclass,
+	                search: scope.swListingColumn.search,
+	                sort: scope.swListingColumn.sort,
+	                filter: scope.swListingColumn.filter,
+	                range: scope.swListingColumn.range,
+	                editable: scope.swListingColumn.editable,
+	                buttonGroup: scope.swListingColumn.buttonGroup
+	            };
+	            if (_this.utilityService.ArrayFindByPropertyValue(scope.$parent.swListingDisplay.columns, 'propertyIdentifier', column.propertyIdentifier) === -1) {
+	                scope.$parent.swListingDisplay.columns.unshift(column);
+	            }
+	        };
+	    }
+	    SWListingColumn.Factory = function () {
+	        var directive = function (utilityService) { return new SWListingColumn(utilityService); };
+	        directive.$inject = [
+	            'utilityService'
+	        ];
+	        return directive;
+	    };
+	    return SWListingColumn;
+	}());
+	SWListingColumn.$inject = ['utilityService'];
+	exports.SWListingColumn = SWListingColumn;
+
+
+/***/ },
+<<<<<<< Updated upstream
+/* 217 */
+=======
+/* 228 */,
+/* 229 */,
+/* 230 */
+>>>>>>> Stashed changes
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	"use strict";
+	var SWListingFilterController = (function () {
+	    function SWListingFilterController() {
+	        this.init = function () {
+	        };
+	        this.init();
+	    }
+	    return SWListingFilterController;
+	}());
+	var SWListingFilter = (function () {
+	    function SWListingFilter() {
+	        this.restrict = 'EA';
+	        this.scope = true;
+	        this.bindToController = {
+	            propertyIdentifier: "@",
+	            comparisonOperator: "@",
+	            comparisonValue: "@",
+	            logicalOperator: "@",
+	            hidden: "@?"
+	        };
+	        this.controller = SWListingFilterController;
+	        this.controllerAs = "swListingFilter";
+	        this.link = function (scope, element, attrs) {
+	            var filter = {
+	                propertyIdentifier: scope.swListingFilter.propertyIdentifier,
+	                comparisonOperator: scope.swListingFilter.comparisonOperator,
+	                comparisonValue: scope.swListingFilter.comparisonValue,
+	                logicalOperator: scope.swListingFilter.logicalOperator,
+	                hidden: false
+	            };
+	            if (angular.isDefined(scope.swListingFilter.hidden)) {
+	                filter['hidden'] = scope.swListingFilter.hidden;
+	            }
+	            if (angular.isDefined(scope.$parent.swListingFilterGroup)) {
+	                scope.$parent.swListingFilterGroup.filters.push(filter);
+	            }
+	            else {
+	                scope.$parent.swListingDisplay.filters.push(filter);
+	            }
+	        };
+	    }
+	    SWListingFilter.Factory = function () {
+	        var directive = function () { return new SWListingFilter(); };
+	        directive.$inject = [];
+	        return directive;
+	    };
+	    return SWListingFilter;
+	}());
+	exports.SWListingFilter = SWListingFilter;
+
+
+/***/ },
+/* 231 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	"use strict";
+	var SWListingFilterGroupController = (function () {
+	    function SWListingFilterGroupController($scope, $transclude) {
+	        this.$scope = $scope;
+	        this.$transclude = $transclude;
+	        this.filters = [];
+	        $transclude($scope, function () { });
+	        $scope.$parent.swListingDisplay.filterGroups.push(this.filters);
+	    }
+	    return SWListingFilterGroupController;
+	}());
+	var SWListingFilterGroup = (function () {
+	    function SWListingFilterGroup() {
+	        this.restrict = 'EA';
+	        this.transclude = true;
+	        this.scope = true;
+	        this.bindToController = {};
+	        this.controller = SWListingFilterGroupController;
+	        this.controllerAs = "swListingFilterGroup";
+	    }
+	    SWListingFilterGroup.Factory = function () {
+	        var directive = function () { return new SWListingFilterGroup(); };
+	        directive.$inject = [];
+	        return directive;
+	    };
+	    return SWListingFilterGroup;
+	}());
+	SWListingFilterGroup.$inject = [];
+	exports.SWListingFilterGroup = SWListingFilterGroup;
+
+
+/***/ },
+<<<<<<< Updated upstream
+/* 218 */
+=======
+/* 232 */
+>>>>>>> Stashed changes
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	"use strict";
+	var SWListingOrderByController = (function () {
+	    //@ngInject
+	    function SWListingOrderByController() {
+	        this.init = function () {
+	        };
+	        this.init();
+	    }
+	    return SWListingOrderByController;
+	}());
+	var SWListingOrderBy = (function () {
+	    //@ngInject
+	    function SWListingOrderBy(utilityService) {
+	        this.utilityService = utilityService;
+	        this.restrict = 'EA';
+	        this.scope = true;
+	        this.bindToController = {
+	            orderBy: "@",
+	        };
+	        this.controller = SWListingOrderByController;
+	        this.controllerAs = "swListingOrderBy";
+	        this.link = function (scope, element, attrs) {
+	            var orderBy = {
+	                orderBy: scope.swListingOrderBy.orderBy,
+	            };
+	            scope.$parent.swListingDisplay.orderBys.push(orderBy);
+	        };
+	    }
+	    SWListingOrderBy.Factory = function () {
+	        var directive = function (utilityService) { return new SWListingOrderBy(utilityService); };
+	        directive.$inject = [
+	            'utilityService'
+	        ];
+	        return directive;
+	    };
+	    return SWListingOrderBy;
+	}());
+	exports.SWListingOrderBy = SWListingOrderBy;
+
+
+/***/ },
+<<<<<<< Updated upstream
+/* 219 */
+=======
+/* 233 */,
+/* 234 */,
+/* 235 */
+>>>>>>> Stashed changes
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	"use strict";
+<<<<<<< Updated upstream
+	var FrontendController = (function () {
+	    function FrontendController($scope, $element, $log, $hibachi, collectionConfigService, selectionService) {
+	        this.$scope = $scope;
+	        this.$element = $element;
+	        this.$log = $log;
+	        this.$hibachi = $hibachi;
+	        this.collectionConfigService = collectionConfigService;
+	        this.selectionService = selectionService;
+	    }
+	    return FrontendController;
+	}());
+	exports.FrontendController = FrontendController;
+
+
+/***/ },
+/* 220 */
+/***/ function(module, exports) {
+
+	"use strict";
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWFDirectiveController = (function () {
+	    //@ngInject
+	    function SWFDirectiveController($log, $rootScope, $scope) {
+	        this.$log = $log;
+	        this.$rootScope = $rootScope;
+	        this.$scope = $scope;
+	        this.$rootScope = $rootScope;
+	        this.hibachiScope = this.$rootScope.hibachiScope;
+	        $scope.slatwall = $rootScope.slatwall;
+=======
+	var SWListingGlobalSearchController = (function () {
+	    //@ngInject
+	    function SWListingGlobalSearchController($timeout) {
+	        var _this = this;
+	        this.$timeout = $timeout;
+	        this.init = function () {
+	            _this.searching = false;
+	        };
+	        this.search = function () {
+	            _this.searching = true;
+	            if (_this._timeoutPromise) {
+	                _this.$timeout.cancel(_this._timeoutPromise);
+	            }
+	            _this._timeoutPromise = _this.$timeout(function () {
+	                _this.getCollection();
+	            }, 500);
+	        };
+	        this.init();
+>>>>>>> Stashed changes
+	    }
+	    return SWListingGlobalSearchController;
+	}());
+	var SWListingGlobalSearch = (function () {
+	    //@ngInject
+	    function SWListingGlobalSearch(utilityService, corePartialsPath, hibachiPathBuilder) {
+	        this.utilityService = utilityService;
+	        this.restrict = 'EA';
+	        this.scope = {};
+	        this.bindToController = {
+	            searching: "=",
+	            searchText: "=",
+	            getCollection: "="
+	        };
+	        this.controller = SWListingGlobalSearchController;
+	        this.controllerAs = "swListingGlobalSearch";
+	        this.link = function (scope, element, attrs) {
+	        };
+<<<<<<< Updated upstream
+	        if (!hibachiConfig) {
+	            hibachiConfig = {};
+	        }
+	        console.log('customPartialspath', hibachiConfig.customPartialsPath);
+	        if (!hibachiConfig.customPartialsPath) {
+	            hibachiConfig.customPartialsPath = 'custom/client/src/frontend/';
+	        }
+	        this.templatePath = hibachiConfig.customPartialsPath;
+	        this.url = hibachiConfig.customPartialsPath + 'swfdirectivepartial.html';
+	        this.$compile = $compile;
+=======
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "listingglobalsearch.html";
+>>>>>>> Stashed changes
+	    }
+	    SWListingGlobalSearch.Factory = function () {
+	        var directive = function (utilityService, corePartialsPath, hibachiPathBuilder) { return new SWListingGlobalSearch(utilityService, corePartialsPath, hibachiPathBuilder); };
+	        directive.$inject = ['utilityService', 'corePartialsPath', 'hibachiPathBuilder'];
+	        return directive;
+	    };
+	    return SWListingGlobalSearch;
+	}());
+	exports.SWListingGlobalSearch = SWListingGlobalSearch;
 
 
 /***/ }

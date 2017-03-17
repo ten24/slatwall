@@ -252,6 +252,7 @@ class PublicService {
 
         if (method == "post"){
              data.returnJsonObjects = "cart,account";
+             console.log("Request Data: ", data);
             //post
             let request:PublicRequest = this.requestService.newPublicRequest(urlBase,data,method)
             request.promise.then((result:any)=>{
@@ -280,8 +281,8 @@ class PublicService {
     }
 
     private processAction = (response,request:PublicRequest)=>{
-        //Remove any added order payments that have errors
-        this.removeInvalidOrderPayments(response.cart);
+        //Run any specific adjustments needed
+        this.runCheckoutAdjustments(response);
 
         /** update the account and the cart */
         this.account.populate(response.account);
@@ -297,6 +298,11 @@ class PublicService {
                 }
             }
         }
+    }
+
+    public runCheckoutAdjustments = (response) =>{
+        this.filterErrors(response);
+        this.removeInvalidOrderPayments(response.cart);
     }
 
     public getRequestByAction = (action:string)=>{
@@ -320,6 +326,14 @@ class PublicService {
         });
         this.requests[request.getAction()]=request;
     };
+
+
+    public filterErrors = (response)=>{
+        let cartErrors = response.cart.errors;
+        if(cartErrors.addOrderPayment){
+            cartErrors.addOrderPayment = cartErrors.addOrderPayment.filter((error)=>error != 'billingAddress');
+        }
+    }
 
     public removeInvalidOrderPayments = (cart) =>{
         cart.orderPayments = cart.orderPayments.filter((payment)=>!payment.hasErrors);
@@ -494,9 +508,13 @@ class PublicService {
          return this.getRequestByAction('removePromotionCode') && this.getRequestByAction('removePromotionCode').loading && this.lastRemovedPromoCode == index;
      }
 
+
     public orderPaymentKeyCheck = (event) =>{
         if(event.event.keyCode == 13 ){
-            this.setCreditCardPaymentInfo();
+            event.swForm.clearErrors();
+            this.setCreditCardPaymentInfo().then((result)=>{
+                event.swForm.parseErrors(result.errors);
+            });
         }
     }
 
@@ -525,9 +543,8 @@ class PublicService {
         for(let key in this.newCardInfo){
             billingAddress[key] = this.newCardInfo[key];
         }
-        
         this.newBillingAddress = billingAddress;
-        this.addCreditCardPayment();
+        return this.addCreditCardPayment();
     }
 
     /** Add a credit card order payment.*/
@@ -549,7 +566,7 @@ class PublicService {
             'newOrderPayment.billingAddress.city': ''+billingAddress.city,
             'newOrderPayment.billingAddress.statecode': billingAddress.statecode,
             'newOrderPayment.billingAddress.locality': billingAddress.locality || '',
-            'newOrderPayment.billingAddress.postalcode': billingAddress.postalcode,
+            'newOrderPayment.billingAddress.postalCode': billingAddress.postalCode,
             'newOrderPayment.securityCode': billingAddress.cvv,
             'newOrderPayment.creditCardNumber': billingAddress.cardNumber,
             'newOrderPayment.requireBillingAddress':true,
@@ -560,7 +577,7 @@ class PublicService {
         };
 
         //Post the new order payment and set errors as needed.
-        this.doAction('addOrderPayment', data, 'post');
+        return this.doAction('addOrderPayment', data, 'post');
     };
 
     /** Removes a gift card from the order and sets variable tracking which gift card is being removed.*/

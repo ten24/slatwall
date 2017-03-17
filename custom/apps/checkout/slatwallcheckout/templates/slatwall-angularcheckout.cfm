@@ -115,7 +115,6 @@
 			                        		<div class="row">
 			                        			<div class="col-md-12">
 			                        				<!--- Purchase Order --->
-			                        				<swf-directive partial-name="ordererrors"></swf-directive>
 			                        				<swf-directive partial-name="purchaseorderpartial"></swf-directive>
 			                        			</div>
 			                        		</div>
@@ -135,7 +134,6 @@
 			                        		<div class="row">
 			                        			<div class="col-md-12">
 			                        				<!--- Purchase Order --->
-			                        				<swf-directive partial-name="ordererrors"></swf-directive>
 			                        				<swf-directive partial-name="checkpartial"></swf-directive>
 			                        			</div>
 			                        		</div>
@@ -154,7 +152,6 @@
 			                        <div id="collapse2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading2" aria-expanded="false">
 										<div class="panel-body">
 											<div class="row">
-												<swf-directive partial-name="ordererrors"></swf-directive>
 												<div class="col-xs-8">
 													
 													<!--- Checkout with paypal --->
