@@ -66,7 +66,11 @@ component accessors="true" output="false" displayname="USPS" extends="Slatwall.i
 			shipFromPostalCode = {fieldType="text"},
 			testingFlag = {fieldType="yesno", defaultValue="1"},
 			liveAPIEndpointURL = {fieldType="text", defaultValue="https://production.shippingapis.com/ShippingAPI.dll"},
-			testAPIEndpointURL = {fieldType="text", defaultValue="http://stg-production.shippingapis.com/ShippingAPI.dll"}
+			testAPIEndpointURL = {fieldType="text", defaultValue="http://stg-production.shippingapis.com/ShippingAPI.dll"},
+			packageLength = {fieldType="text", defaultValue="20"},
+			packageWidth = {fieldType="text", defaultValue="20"}, 
+			packageHeight = {fieldType="text", defaultValue="20"}, 
+			packageGirth = {fieldType="text", defaultValue="80"}
 		};
 		
 		return settings;
