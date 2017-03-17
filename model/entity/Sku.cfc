@@ -1071,7 +1071,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		if(!structKeyExists(variables, "skuDefinition")) {
 			variables.skuDefinition = getSkuDefinitionByBaseProductType(getBaseProductType());
 
-			if(variables.skuDefinition == ""){
+			if(variables.skuDefinition == "" && !isNull(getSkuName())){
 				variables.skuDefinition = getSkuName();
 			}
 		}
