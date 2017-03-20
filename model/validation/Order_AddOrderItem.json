@@ -2,7 +2,7 @@
     "conditions":{
     	"orderItemTypeSale":{
     	    "orderItemTypeSystemCode":{"eq":"oitSale"}
-    	},    
+    	},
     	"orderItemTypeReturn":{
     	    "orderItemTypeSystemCode":{"eq":"oitReturn"}
     	},
@@ -29,10 +29,12 @@
 	        "assignedOrderItemAttributeSets":{"minCollection":1}
 	    },
 	    "itemIsStock":{
-	    	"stock":{"null":false}
+	    	"stock":{"null":false},
+			 "orderItemTypeSystemCode":{"eq":"oitSale"}
 	    },
 	    "itemIsSku":{
-	    	"stock":{"null":true}
+	    	"stock":{"null":true},
+			 "orderItemTypeSystemCode":{"eq":"oitSale"}
 	    }
 
 	},
@@ -42,12 +44,13 @@
 		"sku.activeFlag":               [{"conditions":"orderItemTypeSale","eq":true}],
 		"orderFulfillmentID":			[],
 		"orderReturnID":				[],
-		"quantity":						[{"required":true,"dataType":"numeric","minValue":1},{"conditions":"itemIsSku","lteProperty":"sku.qats"},
-										{"conditions":"itemIsStock","lteProperty":"stock.qats"}
-										],
+		"quantity":						[
+			{"required":true,"dataType":"numeric","minValue":1},{"conditions":"itemIsSku","lteProperty":"sku.qats"},
+			{"conditions":"itemIsStock","lteProperty":"stock.qats"}
+		],
 		"price":						[{"required":true,"dataType":"numeric","minValue":0}],
 		"emailAddress":					[{"dataType":"email"}]
-		
+
 	},
 	"populatedPropertyValidation":{
 	    "shippingAddress":[
