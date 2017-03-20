@@ -481,9 +481,10 @@ class PublicService {
      /** returns true if the shipping method option passed in is the selected shipping method
      */
      public isSelectedShippingMethod = (option) =>{
-         return this.cart.fulfillmentTotal && 
-         ((option.value == this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethod.shippingMethodID) || 
-        (this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethodOptions.length == 1));
+         return this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethod && 
+             (this.cart.fulfillmentTotal && 
+             ((option.value == this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethod.shippingMethodID) || 
+            (this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethodOptions.length == 1)));
      }
 
      /** Select a shipping method - temporarily changes the selected method on the front end while awaiting official change from server

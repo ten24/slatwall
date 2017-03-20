@@ -260,6 +260,7 @@
 				return;
 			}
 			var object = parentObject.invokeMethod("get#listFirst(arguments.propertyIdentifier, '.')#");
+
 			if(!isNull(object) && isObject(object)) {
 				var thisProperty = listFirst(arguments.propertyIdentifier, '.');
 				param name="data[thisProperty]" default="#structNew()#";

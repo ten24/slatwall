@@ -324,7 +324,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		}
 		
 		var data = getService('hibachiUtilityService').buildPropertyIdentifierListDataStruct(getCart(), arguments.propertyList, availablePropertyList);
-		
+
         //Attach some meta for for orderFulfillments
         if(structKeyExists(data, 'orderFulfillments')){
 	        var requiresFulfillment = false;

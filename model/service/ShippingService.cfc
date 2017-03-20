@@ -517,7 +517,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// Now if there is no method yet selected, and one shippingMethod exists as an option, we can automatically just select it.
-		if(isNull(arguments.orderFulfillment.getShippingMethod()) && arrayLen(arguments.orderFulfillment.getFulfillmentShippingMethodOptions()) >= 1) {
+		if(isNull(arguments.orderFulfillment.getShippingMethod()) && arrayLen(arguments.orderFulfillment.getFulfillmentShippingMethodOptions()) == 1) {
 
 			// Set the method
 			arguments.orderFulfillment.setShippingMethod( arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[1].getShippingMethodRate().getShippingMethod() );

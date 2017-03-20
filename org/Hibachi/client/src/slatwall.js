@@ -2208,9 +2208,10 @@
 	        /** returns true if the shipping method option passed in is the selected shipping method
 	        */
 	        this.isSelectedShippingMethod = function (option) {
-	            return _this.cart.fulfillmentTotal &&
-	                ((option.value == _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethod.shippingMethodID) ||
-	                    (_this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethodOptions.length == 1));
+	            return _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethod &&
+	                (_this.cart.fulfillmentTotal &&
+	                    ((option.value == _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethod.shippingMethodID) ||
+	                        (_this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethodOptions.length == 1)));
 	        };
 	        /** Select a shipping method - temporarily changes the selected method on the front end while awaiting official change from server
 	        */
