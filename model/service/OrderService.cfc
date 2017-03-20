@@ -2665,10 +2665,30 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public any function saveOrderFulfillment(required any orderFulfillment, struct data={}, string context="save") {
-
+		//if we have a new account address then override shippingaddress data. This must happen before populate
+		if(
+			(
+				structKeyExists(arguments.data,'accountAddress.accountAddressID')
+				&& len(arguments.data['accountAddress.accountAddressID']) 
+			)
+			&& (
+				isNull(arguments.orderFulfillment.getShippingAddress())
+				|| arguments.data['accountAddress.accountAddressID'] != arguments.orderFulfillment.getShippingAddress().getAddressID()
+			)
+		) {
+			var keyPrefix = 'shippingAddress';
+			for(var key in arguments.data){
+				if((left(key,len(keyPrefix)) == keyPrefix)){
+					structDelete(arguments.data,key);
+				}
+			}
+		}
+		
 		// Call the generic save method to populate and validate
 		arguments.orderFulfillment = save(arguments.orderFulfillment, arguments.data, arguments.context);
-
+		
+		
+		
 		// If there were no errors, and the order is not placed, then we can make necessary implicit updates
 		if(!arguments.orderFulfillment.hasErrors() && arguments.orderFulfillment.getOrder().getStatusCode() == "ostNotPlaced") {
 
