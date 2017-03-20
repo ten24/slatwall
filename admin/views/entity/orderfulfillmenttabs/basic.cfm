@@ -22,7 +22,7 @@
 
 			<!--- Shipping --->
 			<cfelseif rc.orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">
-
+				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="accountAddress" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="shippingMethod" edit="#rc.edit#">
 				<hr />
 				<swa:SlatwallAdminAddressDisplay address="#rc.orderFulfillment.getAddress()#" fieldnameprefix="shippingAddress." edit="#rc.edit#" showPhoneNumber="true">
