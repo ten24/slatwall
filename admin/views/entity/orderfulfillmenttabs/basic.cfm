@@ -25,7 +25,9 @@
 				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="accountAddress" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="shippingMethod" edit="#rc.edit#">
 				<hr />
-				<swa:SlatwallAdminAddressDisplay address="#rc.orderFulfillment.getAddress()#" fieldnameprefix="shippingAddress." edit="#rc.edit#" showPhoneNumber="true">
+				<hb:HibachiDisplayToggle selector="select[name='accountAddress.accountAddressID']" showValues="" loadVisable="#isNull(rc.orderFulfillment.getAccountAddress())#">
+					<swa:SlatwallAdminAddressDisplay address="#rc.orderFulfillment.getAddress()#" fieldnameprefix="shippingAddress." edit="#rc.edit#" showPhoneNumber="true">
+				</hb:HibachiDisplayToggle>
 
 			</cfif>
 
