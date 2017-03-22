@@ -856,8 +856,10 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			smartList.addSelect("brandName", "name");
 
 			variables.brandOptions = smartList.getRecords();
-
-			arrayPrepend(variables.brandOptions, {name=rbKey('define.none'),value=""});
+			var noneOption = {};
+			noneOption['name']=rbKey('define.none');
+			noneOption['value']="";
+			arrayPrepend(variables.brandOptions, noneOption);
 
 		}
 
