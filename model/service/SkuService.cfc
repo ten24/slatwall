@@ -770,6 +770,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					for(var key in optionGroups) {
 						newSku.addOption( optionGroups[key][ currentIndexesByKey[key] ]);
 					}
+
+					newSku.setImageFile(newSku.generateImageFileName());
+
 					if(i < totalCombos) {
 						var indexesUpdated = false;
 						var changeKeyIndex = 1;
