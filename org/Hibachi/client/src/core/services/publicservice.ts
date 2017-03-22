@@ -49,7 +49,7 @@ class PublicService {
     public useShippingAsBilling:boolean;
     public saveShippingAsBilling:boolean;
     public saveCardInfo:boolean;
-    public readyToPlaceOrder:boolean;
+    public creditCardPayment:any;
     public edit:String;
     public editPayment:boolean;
     public showCreateAccount:boolean;
@@ -124,7 +124,10 @@ class PublicService {
         var today = baseDate.getFullYear();
         var start = today;
         for (var i = 0; i<= 15; i++){
-            this.years.push(start + i);
+            this.years.push({
+                name:start + i,
+                value:start + i,
+            });
         }
     }
     /** accessors for account */
@@ -218,9 +221,18 @@ class PublicService {
         this.shippingAddress = shippingAddress;
     }
 
-    /** sets the current shipping address */
-    public setBillingAddress=(billingAddress) => {
-        this.billingAddress = billingAddress;
+    /** sets the current billing address */
+    public selectBillingAddress=(key) => {
+        if(this.creditCardPayment &&
+            this.creditCardPayment.forms['addOrderPayment']){
+            let address = this.account.accountAddresses[key].address
+            for(let property in address){
+                if(this.creditCardPayment.forms['addOrderPayment']['newOrderPayment.billingAddress.'+property] != undefined){
+                    this.creditCardPayment.forms['addOrderPayment']['newOrderPayment.billingAddress.'+property].$setViewValue(address[property]);
+                }
+            }
+            this.creditCardPayment.newOrderPayment.billingAddress = address;
+        }
     }
 
     /** this is the generic method used to call all server side actions.
@@ -528,7 +540,7 @@ class PublicService {
             billingAddress = this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingTypeIndex].data.shippingAddress;
         
         //If account address selected, use that
-        }else if(!this.billingAddressEditFormIndex || this.billingAddressEditFormIndex == ''){
+        }else if(this.billingAddressEditFormIndex == undefined){
             billingAddress = this.selectedBillingAddress;
         
         //If creating new address, get from form
@@ -851,7 +863,8 @@ class PublicService {
 
     public editBillingAddress = (key) =>{
         this.billingAddressEditFormIndex = key;
-        this.editingBillingAddress = this.getAddressEntity(this.account.accountAddresses[key].address);
+        this.selectedBillingAddress = null
+        this.billingAddress = this.getAddressEntity(this.account.accountAddresses[key].address);
     }
 
     /** Sets shippingAddressErrors from response errors, refreshes swAddressForm */
@@ -886,6 +899,7 @@ class PublicService {
 
     public hideBillingAddressForm = ()=>{
         this.billingAddressEditFormIndex = undefined;
+        this.billingAddress = {};
     }
 
     public showEditAccountAddressForm = ()=>{
@@ -901,7 +915,7 @@ class PublicService {
     }
 
     public showEditBillingAddressForm = ()=>{
-        return !this.useShippingAsBilling && this.billingAddressEditFormIndex && this.billingAddressEditFormIndex != 'new';
+        return !this.useShippingAsBilling && this.billingAddressEditFormIndex != undefined && this.billingAddressEditFormIndex != 'new';
     }
 
     /** Adds errors from response to cart errors.*/
@@ -930,6 +944,17 @@ class PublicService {
            this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex] &&
            this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress){
             return this.addressesMatch(this.account.accountAddresses[key].address, this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress);
+        }        
+        return false;
+    }
+
+    public accountAddressIsSelectedBillingAddress = (key) =>{
+        if(this.account && 
+           this.account.accountAddresses &&
+           this.creditCardPayment &&
+           this.creditCardPayment.newOrderPayment &&
+           this.creditCardPayment.newOrderPayment.billingAddress){
+            return this.addressesMatch(this.account.accountAddresses[key].address, this.creditCardPayment.newOrderPayment.billingAddress);
         }        
         return false;
     }
@@ -975,7 +1000,7 @@ class PublicService {
     }
 
     public showBillingAccountAddresses = () =>{
-        return !this.useShippingAsBilling && !this.billingAddressEditFormIndex;
+        return !this.useShippingAsBilling && this.billingAddressEditFormIndex == undefined;
     }
 
     public hasNoCardInfo = () =>{

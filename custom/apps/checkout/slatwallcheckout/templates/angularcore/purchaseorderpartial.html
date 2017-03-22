@@ -1,4 +1,4 @@
-<span ng-init="purchaseOrder = {newOrderPayment:{paymentMethod:{paymentMethodID:'2c9280845a8b1033015a8b13656e0008'}}}"></span>
+<span ng-init="purchaseOrder = {newOrderPayment:{paymentMethod:{paymentMethodID:'2c9280845a8b1033015a8b13656e0008'},requireBillingAddress:0}}"></span>
 <sw-form
 	data-object="purchaseOrder"
 	data-action="addOrderPayment"
@@ -19,6 +19,13 @@
 			data-name="paymentMethodID"
 			data-field-type="text"
 			data-property-identifier="newOrderPayment.paymentMethod.paymentMethodID"
+			data-class="hidden"
+			data-required="true">
+		</swf-property-display>
+		<swf-property-display
+			data-name="requireBillingAddress"
+			data-field-type="text"
+			data-property-identifier="newOrderPayment.requireBillingAddress"
 			data-class="hidden"
 			data-required="true">
 		</swf-property-display>

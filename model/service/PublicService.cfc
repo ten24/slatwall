@@ -1145,7 +1145,7 @@ component extends="HibachiService"  accessors="true" output="false"
     public any function addOrderPayment(required any data, boolean giftCard=false) {
         param name="data.newOrderPayment" default="#structNew()#";
         param name="data.newOrderPayment.orderPaymentID" default="";
-        param name="data.newOrderPayment.requireBillingAddress" default="0";
+        param name="data.newOrderPayment.requireBillingAddress" default="1";
         param name="data.accountAddressID" default="";
         param name="data.accountPaymentMethodID" default="";
         param name="data.newOrderPayment.paymentMethod.paymentMethodID" default="444df303dedc6dab69dd7ebcc9b8036a";
@@ -1158,12 +1158,20 @@ component extends="HibachiService"  accessors="true" output="false"
             }
         }
         if(data.newOrderPayment.requireBillingAddress){
-            //use this billing information
+          if(!structKeyExists(data.newOrderPayment, 'billingAddress')){
+            addErrors(data, {
+              addOrderPayment=['Billing address is required']
+              });
+            getHibachiScope().addActionResult( "public:cart.addOrderPayment", true);
+            return;
+          }
+          //use this billing information
           var newBillingAddress = this.addBillingAddress(data.newOrderPayment.billingAddress, "billing");
         }
 
         if(!isNull(newBillingAddress) && newBillingAddress.hasErrors()){
           this.addErrors(arguments.data, newBillingAddress.getErrors());
+          return;
         }
 
         var addOrderPayment = getService('OrderService').processOrder( getHibachiScope().cart(), arguments.data, 'addOrderPayment');

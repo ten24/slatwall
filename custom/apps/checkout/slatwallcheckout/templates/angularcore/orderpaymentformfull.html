@@ -1,30 +1,42 @@
 <span ng-init="imagePath = '/custom/apps/slatwallcms/projectName/assets/images'"></span>
-<span ng-init="slatwall.billingAddressEditFormIndex = ''"></span>
+<span ng-init="slatwall.billingAddressEditFormIndex = undefined"></span>
 <div ng-cloak>
     <fieldset>
         <legend>Payment Information</legend>
         <div class="row">
             <div class="col-sm-6">
                 <div class="form-group">
-                    <label for="namec">Name on Credit Card</label>
-                    <input type="text" class="form-control"  id="name" name="nameOnCreditCard" ng-model="slatwall.newCardInfo.nameOnCreditCard">
-                    <span class="error" ng-if="slatwall.cart.newOrderPaymentErrors['nameOnCreditCard']">{{slatwall.cart.newOrderPaymentErrors['nameOnCreditCard']}}</span>
+                    <swf-property-display
+                        data-class="form-control"
+                        data-name="nameOnCreditCard"
+                        data-field-type="text"
+                        data-property-identifier="newOrderPayment.nameOnCreditCard"
+                        data-label-text="Name on Credit Card">
+                    </swf-property-display>
                 </div>
             </div>
             <div class="col-sm-6">
                 <div class="row">
                     <div class="col-sm-8">
                         <div class="form-group">
-                            <label for="cardnumber">Card Number</label>
-                            <input type="text" class="form-control"  id="cardnumber" ng-model="slatwall.newCardInfo.cardNumber">
-                            <span class="error" ng-if="slatwall.cart.newOrderPaymentErrors['creditCardNumber']">{{slatwall.cart.newOrderPaymentErrors['creditCardNumber']}}</span>
+                            <swf-property-display
+                                data-class="form-control"
+                                data-name="creditCardNumber"
+                                data-field-type="text"
+                                data-property-identifier="newOrderPayment.creditCardNumber"
+                                data-label-text="Card Number">
+                            </swf-property-display>
                         </div>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">
-                            <label>CVV <!---<a href="#cvvModalContent" class="info cvvModal"><i class="fa fa-question"></i></a>---></label>
-                            <input type="text" id="cvv2" class="form-control width" size="3" max="3" ng-model="slatwall.newCardInfo.cvv">
-                            <span class="error" ng-if="slatwall.cart.newOrderPaymentErrors['cvv']">{{slatwall.cart.newOrderPaymentErrors['cvv']}}</span>
+                            <swf-property-display
+                                data-class="form-control"
+                                data-name="securityCode"
+                                data-field-type="text"
+                                data-property-identifier="newOrderPayment.securityCode"
+                                data-label-text="CVV">
+                            </swf-property-display>
                         </div>
                     </div>
                 </div>
@@ -37,60 +49,123 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label>Expiration Month</label>
-                            <select class="form-control" ng-model="slatwall.newCardInfo.selectedMonth" ng-options="month.value as month.name for month in slatwall.months" ng-init="slatwall.newCardInfo.selectedMonth = slatwall.months[0].value">
-                                <option>Month *</option>
-                            </select>
-                            <span class="error" ng-if="slatwall.cart.newOrderPaymentErrors['expirationMonth']">{{slatwall.cart.newOrderPaymentErrors['expirationMonth'][0]}}</span>
-        					<span class="error" ng-if="slatwall.cart.newOrderPaymentErrors['expirationYear']">{{slatwall.cart.newOrderPaymentErrors['expirationYear'][0]}}</span>
-
+                            <swf-property-display
+                                data-class="form-control"
+                                data-name="expirationMonth"
+                                data-field-type="select"
+                                data-select-type="string"
+                                data-options="slatwall.months"
+                                data-property-identifier="newOrderPayment.expirationMonth"
+                                data-label-text="Expiration Month">
+                            </swf-property-display>
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label>Expiration Year</label>
-                            <select class="form-control" ng-model="slatwall.newCardInfo.selectedYear" ng-options="year for year in slatwall.years" ng-init="slatwall.newCardInfo.selectedYear = slatwall.years[0]">
-                                <option>Year *</option>
-                            </select>
+                            <swf-property-display
+                                data-class="form-control"
+                                data-name="expirationYear"
+                                data-field-type="select"
+                                data-select-type="string"
+                                data-options="slatwall.years"
+                                data-property-identifier="newOrderPayment.expirationYear"
+                                data-label-text="Expiration Year">
+                            </swf-property-display>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-sm-6">
                 <div class="form-group">
-                    <label>Save this card for future orders</label>
-                    <input type="checkbox" ng-model="slatwall.saveCardInfo">
+                    <swf-property-display
+                        data-class="form-control"
+                        data-name="saveAccountPaymentMethodFlag"
+                        data-field-type="checkbox"
+                        data-property-identifier="saveAccountPaymentMethodFlag"
+                        data-label-text="Save this card for future orders">
+                    </swf-property-display>
                 </div>
             </div>
     </fieldset>
 
     <fieldset>
         <legend>Billing Information</legend>
-            <div class="row" ng-if="slatwall.hasShippingAddress()">
-                <label for="useShipping">Use Shipping Address as Billing Address</label>
-                <input type="checkbox" name="useShipping" ng-model="slatwall.useShippingAsBilling">
-            </div>
             <swf-directive partial-name="addbillingbyaccountaddresspartial" ng-show="slatwall.showBillingAccountAddresses()"></swf-directive>
             <sw-address-form ng-if="slatwall.showNewBillingAddressForm()"
-                data-field-list="countryCode,streetAddress,street2Address,locality,city,stateCode,postalCode"
-                data-address="slatwall.billingAddress" 
+                ng-init="slatwall.billingAddress = slatwall.getAddressEntity()"
+                data-context="billing"
+                data-field-list="name,countryCode,streetAddress,street2Address,locality,city,stateCode,postalCode"
+                data-address="slatwall.billingAddress"
                 data-address-name="billingAddress"
                 data-field-name-prefix="slatwall.billingAddress."
-                data-show-submit-button="false"
-                data-action-text="Review Order"
-                data-show-close-button="true"
-                data-event-listeners="{billingAddresskeyup:slatwall.orderPaymentKeyCheck}"
+                data-show-submit-button="true"
+                data-submit-on-enter="true"
+                data-action-text="Add Address"
+                data-action="addNewAccountAddress"
+                data-event-listeners="{addNewAccountAddressSuccess:slatwall.hideBillingAddressForm}"
                 ></sw-address-form>
             <sw-address-form ng-if="slatwall.showEditBillingAddressForm()"
-                data-field-list="countryCode,streetAddress,street2Address,locality,city,stateCode,postalCode"
+                data-field-list="name,countryCode,streetAddress,street2Address,locality,city,stateCode,postalCode"
                 data-id="{{slatwall.account.accountAddresses[slatwall.billingAddressEditFormIndex].address.addressID}}" 
-                data-address="slatwall.editingBillingAddress"
-                data-address-name="editingBillingAddress" 
-                data-field-name-prefix="slatwall.editingBillingAddress." 
-                data-show-submit-button="false"
-                data-action-text="Review Order"
-                data-show-close-button="true"
-                data-event-listeners="{editBillingAddresskeyup:slatwall.orderPaymentKeyCheck}"
+                data-context="billing"
+                data-address="slatwall.billingAddress"
+                data-address-name="billingAddress" 
+                data-field-name-prefix="slatwall.billingAddress." 
+                data-show-submit-button="true"
+                data-submit-on-enter="true"
+                data-action-text="Update Address"
+                data-action="updateAddress"
+                data-event-listeners="{updateAddressSuccess:slatwall.hideBillingAddressForm}"
                 ></sw-address-form>
     </fieldset>
+
+    <!--- Hidden Fields for billing address --->
+    <swf-property-display
+        data-class="hidden"
+        data-name="billingAddress.name"
+        data-field-type="text"
+        data-property-identifier="newOrderPayment.billingAddress.name">
+    </swf-property-display>
+    <swf-property-display
+        data-class="hidden"
+        data-name="billingAddress.streetAddress"
+        data-field-type="text"
+        data-property-identifier="newOrderPayment.billingAddress.streetAddress">
+    </swf-property-display>
+    <swf-property-display
+        data-class="hidden"
+        data-name="billingAddress.street2Address"
+        data-field-type="text"
+        data-property-identifier="newOrderPayment.billingAddress.street2Address">
+    </swf-property-display>
+    <swf-property-display
+        data-class="hidden"
+        data-name="billingAddress.city"
+        data-field-type="text"
+        data-property-identifier="newOrderPayment.billingAddress.city">
+    </swf-property-display>
+    <swf-property-display
+        data-class="hidden"
+        data-name="billingAddress.statecode"
+        data-field-type="text"
+        data-property-identifier="newOrderPayment.billingAddress.statecode">
+    </swf-property-display>
+    <swf-property-display
+        data-class="hidden"
+        data-name="billingAddress.postalCode"
+        data-field-type="text"
+        data-property-identifier="newOrderPayment.billingAddress.postalCode">
+    </swf-property-display>
+    <swf-property-display
+        data-class="hidden"
+        data-name="billingAddress.countrycode"
+        data-field-type="text"
+        data-property-identifier="newOrderPayment.billingAddress.countrycode">
+    </swf-property-display>
+    <swf-property-display
+        data-class="hidden"
+        data-name="billingAddress.locality"
+        data-field-type="text"
+        data-property-identifier="newOrderPayment.billingAddress.locality">
+    </swf-property-display>
 </div>

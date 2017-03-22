@@ -8,21 +8,21 @@
             <div>
                 <div vertilize>
                     <span>
-                        <i ng-if="slatwall.selectedBillingAddress == value.address" class="fa fa-check-circle"></i>
+                        <i ng-if="slatwall.accountAddressIsSelectedBillingAddress(key)" class="fa fa-check-circle"></i>
                     </span>
 
                     <ul class="list-unstyled address-info">
                         <!-- <li><small>Account Address</small></li>  -->
-                        <li ng-if="slatwall.account.accountAddresses[key].accountAddressName">{{slatwall.account.accountAddresses[key].accountAddressName}}&nbsp;</li>
-                        <li>{{slatwall.account.accountAddresses[key].address.name}}&nbsp;</li>
-                        <li>{{slatwall.account.accountAddresses[key].address.company}}</li>
-                        <li>{{slatwall.account.accountAddresses[key].address.streetAddress}}</li>
-                        <li>{{slatwall.account.accountAddresses[key].address.street2Address}}</li>
-                        <li>{{slatwall.account.accountAddresses[key].address.city}}, <span ng-if="slatwall.account.accountAddresses[key].address.statecode">{{slatwall.account.accountAddresses[key].address.statecode}}</span><span ng-if="slatwall.account.accountAddresses[key].address.locality">{{slatwall.account.accountAddresses[key].address.locality}}</span> <span ng-if="slatwall.account.accountAddresses[key].address.postalCode">{{slatwall.account.accountAddresses[key].address.postalCode}}</span></li>
-                        <li>{{slatwall.account.accountAddresses[key].address.countrycode}}</li>
-                        <li><a href="tel:{{slatwall.account.accountAddresses[key].address.phoneNumber}}" class="tel">{{slatwall.account.accountAddresses[key].address.phoneNumber}}</a></li>
+                        <li ng-if="value.accountAddressName">{{value.accountAddressName}}&nbsp;</li>
+                        <li>{{value.address.name}}&nbsp;</li>
+                        <li>{{value.address.company}}</li>
+                        <li>{{value.address.streetAddress}}</li>
+                        <li>{{value.address.street2Address}}</li>
+                        <li>{{value.address.city}}, <span ng-if="value.address.statecode">{{value.address.statecode}}</span><span ng-if="value.address.locality">{{value.address.locality}}</span> <span ng-if="value.address.postalCode">{{value.address.postalCode}}</span></li>
+                        <li>{{value.address.countrycode}}</li>
+                        <li><a href="tel:{{value.address.phoneNumber}}" class="tel">{{value.address.phoneNumber}}</a></li>
                         <li>
-                        <button type="button" ng-click="slatwall.selectedBillingAddress = value.address;slatwall.billingAddressEditFormIndex = ''"><i ng-show="thisSelected" class="fa fa-spinner fa-spin fa-3x fa-fw margin-bottom" style="font-size: 12px;margin:0px;"></i>Select Address</button>
+                        <button type="button" ng-click="slatwall.selectBillingAddress(key)">Select Address</button>
                         <button type="button" class="btn-white" ng-click="slatwall.editBillingAddress(key)">Edit</button>
                         </li>
 
@@ -34,7 +34,7 @@
 </div>
     
 <div class="col-sm-4 content-address existing_user">
-    <button type="button" class="btn-white btn-block address-wrapper address"  ng-click="slatwall.cart.addBillingAddress = !slatwall.cart.addBillingAddress; slatwall.billingAddressEditFormIndex = 'new';slatwall.selectedBillingAddress = null">
+    <button type="button" class="btn-white btn-block address-wrapper address"  ng-click="slatwall.billingAddressEditFormIndex = 'new';slatwall.selectedBillingAddress = null">
 		<i class="fa fa-plus" aria-hidden="true"></i><br/>
 		<span>New Address</span>
 	</button>

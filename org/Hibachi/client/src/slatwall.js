@@ -1886,7 +1886,10 @@
 	            var today = baseDate.getFullYear();
 	            var start = today;
 	            for (var i = 0; i <= 15; i++) {
-	                _this.years.push(start + i);
+	                _this.years.push({
+	                    name: start + i,
+	                    value: start + i,
+	                });
 	            }
 	        };
 	        /** accessors for account */
@@ -1979,9 +1982,18 @@
 	        this.setShippingAddress = function (shippingAddress) {
 	            _this.shippingAddress = shippingAddress;
 	        };
-	        /** sets the current shipping address */
-	        this.setBillingAddress = function (billingAddress) {
-	            _this.billingAddress = billingAddress;
+	        /** sets the current billing address */
+	        this.selectBillingAddress = function (key) {
+	            if (_this.creditCardPayment &&
+	                _this.creditCardPayment.forms['addOrderPayment']) {
+	                var address = _this.account.accountAddresses[key].address;
+	                for (var property in address) {
+	                    if (_this.creditCardPayment.forms['addOrderPayment']['newOrderPayment.billingAddress.' + property] != undefined) {
+	                        _this.creditCardPayment.forms['addOrderPayment']['newOrderPayment.billingAddress.' + property].$setViewValue(address[property]);
+	                    }
+	                }
+	                _this.creditCardPayment.newOrderPayment.billingAddress = address;
+	            }
 	        };
 	        /** this is the generic method used to call all server side actions.
 	        *  @param action {string} the name of the action (method) to call in the public service.
@@ -2247,7 +2259,7 @@
 	            if (_this.useShippingAsBilling) {
 	                billingAddress = _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingTypeIndex].data.shippingAddress;
 	            }
-	            else if (!_this.billingAddressEditFormIndex || _this.billingAddressEditFormIndex == '') {
+	            else if (_this.billingAddressEditFormIndex == undefined) {
 	                billingAddress = _this.selectedBillingAddress;
 	            }
 	            else if (_this.billingAddressEditFormIndex == 'new') {
@@ -2532,7 +2544,8 @@
 	        };
 	        this.editBillingAddress = function (key) {
 	            _this.billingAddressEditFormIndex = key;
-	            _this.editingBillingAddress = _this.getAddressEntity(_this.account.accountAddresses[key].address);
+	            _this.selectedBillingAddress = null;
+	            _this.billingAddress = _this.getAddressEntity(_this.account.accountAddresses[key].address);
 	        };
 	        /** Sets shippingAddressErrors from response errors, refreshes swAddressForm */
 	        this.addShippingAddressErrors = function () {
@@ -2562,6 +2575,7 @@
 	        };
 	        this.hideBillingAddressForm = function () {
 	            _this.billingAddressEditFormIndex = undefined;
+	            _this.billingAddress = {};
 	        };
 	        this.showEditAccountAddressForm = function () {
 	            return _this.accountAddressEditFormIndex != undefined && _this.accountAddressEditFormIndex != 'new';
@@ -2573,7 +2587,7 @@
 	            return !_this.useShippingAsBilling && _this.billingAddressEditFormIndex == 'new';
 	        };
 	        this.showEditBillingAddressForm = function () {
-	            return !_this.useShippingAsBilling && _this.billingAddressEditFormIndex && _this.billingAddressEditFormIndex != 'new';
+	            return !_this.useShippingAsBilling && _this.billingAddressEditFormIndex != undefined && _this.billingAddressEditFormIndex != 'new';
 	        };
 	        /** Adds errors from response to cart errors.*/
 	        this.addBillingErrorsToCartErrors = function () {
@@ -2599,6 +2613,16 @@
 	                _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex] &&
 	                _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress) {
 	                return _this.addressesMatch(_this.account.accountAddresses[key].address, _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress);
+	            }
+	            return false;
+	        };
+	        this.accountAddressIsSelectedBillingAddress = function (key) {
+	            if (_this.account &&
+	                _this.account.accountAddresses &&
+	                _this.creditCardPayment &&
+	                _this.creditCardPayment.newOrderPayment &&
+	                _this.creditCardPayment.newOrderPayment.billingAddress) {
+	                return _this.addressesMatch(_this.account.accountAddresses[key].address, _this.creditCardPayment.newOrderPayment.billingAddress);
 	            }
 	            return false;
 	        };
@@ -2640,7 +2664,7 @@
 	            return _this.account && _this.account.accountPaymentMethods && _this.account.accountPaymentMethods.length;
 	        };
 	        this.showBillingAccountAddresses = function () {
-	            return !_this.useShippingAsBilling && !_this.billingAddressEditFormIndex;
+	            return !_this.useShippingAsBilling && _this.billingAddressEditFormIndex == undefined;
 	        };
 	        this.hasNoCardInfo = function () {
 	            return !_this.newCardInfo || !_this.newCardInfo.nameOnCreditCard || !_this.newCardInfo.cardNumber || !_this.newCardInfo.cvv;
@@ -20859,6 +20883,7 @@
 	        this.saved = false;
 	        this.optionValues = [];
 	        this.$onInit = function () {
+	            console.log("OHHHHHHHHHHHHHHHHHHHHHHH@@@@@", _this.name, _this.options);
 	            var bindToControllerProps = _this.$injector.get('swPropertyDisplayDirective')[0].bindToController;
 	            for (var i in bindToControllerProps) {
 	                if (!_this[i] && _this.swForm && _this.swForm[i]) {
@@ -20951,6 +20976,7 @@
 	                var optionsArray = [];
 	                optionsArray = _this.options.toString().split(",");
 	                angular.forEach(optionsArray, function (o) {
+	                    console.log('OHHHHHHHHHHHHHHHH', o);
 	                    var newOption = {
 	                        name: "",
 	                        value: ""

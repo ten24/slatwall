@@ -1,19 +1,26 @@
 <!-- Add Shipping Address -->
 <span ng-init="slatwall.saveShippingAsBilling = undefined"></span>
-<span ng-init="slatwall.newBillingAddress = slatwall.$hibachi.newOrder_AddOrderPayment()"></span>
-<span ng-init="slatwall.billingAddress = slatwall.$hibachi.newOrder_AddOrderPayment()"></span>
-<span ng-init="slatwall.editBillingAddress = slatwall.$hibachi.newOrder_AddOrderPayment()"></span>
+<span ng-init="slatwall.creditCardPayment = slatwall.$hibachi.newOrder_AddOrderPayment(); slatwall.creditCardPayment.newOrderPayment = {billingAddress:{}}"></span>
 
 <sw-form
-    data-object="slatwall.newBillingAddress"
+    data-object="slatwall.creditCardPayment"
     data-class="new_address"
     data-name="addOrderPayment"
+    data-submit-on-enter="true"
+    data-event-announcers="keyup"
+    data-action="addOrderPayment"
     data-event-listeners="{addOrderPaymentSuccess:slatwall.checkIfFinalPayment, addGiftCardOrderPaymentSuccess:slatwall.checkIfFinalPayment}">
 
 	<!--- The form without shipping address block --->
 	<swf-directive partial-name="orderpaymentformfull"></swf-directive>
 
 	<!--- Pleace Order / Review Order / Save Buttons --->
-	<swf-directive partial-name="orderbuttons"></swf-directive>
-
+	<!--- <swf-directive partial-name="orderbuttons"></swf-directive> --->
+	<div class="form-group">
+	    <sw-action-caller
+	        data-type="button"
+	        data-class="button blue"
+	        data-text="{{(slatwall.getRequestByAction('addOrderPayment').loading ? 'LOADING...' : 'Add Payment')}}">
+	    </sw-action-caller>
+	</div>
 </swform>

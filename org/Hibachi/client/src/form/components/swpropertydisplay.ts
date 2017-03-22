@@ -87,7 +87,7 @@ class SWPropertyDisplayController {
 	}
 
     public $onInit=()=>{
-
+        console.log("OHHHHHHHHHHHHHHHHHHHHHHH@@@@@", this.name, this.options);
         var bindToControllerProps = this.$injector.get('swPropertyDisplayDirective')[0].bindToController;
         for(var i in bindToControllerProps){
 
@@ -196,6 +196,7 @@ class SWPropertyDisplayController {
 			optionsArray = this.options.toString().split(",");
 
 			angular.forEach(optionsArray, (o)=>{
+                console.log('OHHHHHHHHHHHHHHHH', o);
 				let newOption:any = {
 					name:"",
 					value:""
