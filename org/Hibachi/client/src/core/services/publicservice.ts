@@ -831,7 +831,7 @@ class PublicService {
 
     /** Returns errors from addOrderPayment request. */
     public addOrderPaymentError = () =>{
-        return this.cart.errors.addOrderPayment || this.errors['ADDORDERPAYMENT'];
+        return this.cart.errors.addOrderPayment || this.errors && this.errors['ADDORDERPAYMENT'];
     }
 
     /** Returns errors from addBillingAddress request. */

@@ -2517,7 +2517,7 @@
 	        };
 	        /** Returns errors from addOrderPayment request. */
 	        this.addOrderPaymentError = function () {
-	            return _this.cart.errors.addOrderPayment || _this.errors['ADDORDERPAYMENT'];
+	            return _this.cart.errors.addOrderPayment || _this.errors && _this.errors['ADDORDERPAYMENT'];
 	        };
 	        /** Returns errors from addBillingAddress request. */
 	        this.billingAddressError = function () {

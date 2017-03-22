@@ -609,6 +609,7 @@ component extends="HibachiService"  accessors="true" output="false"
           getHibachiScope().addActionResult('public:cart.addEmailFulfillmentAddress', order.hasErrors());
 
         }else{
+            entityReload(orderFulfillment);
             this.addErrors(arguments.data, orderFulfillment.getErrors());
             getHibachiScope().addActionResult('public:cart.addEmailFulfillmentAddress', orderFulfillment.hasErrors());
         }
