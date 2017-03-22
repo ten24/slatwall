@@ -550,6 +550,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return sku;
 	}
 
+	public any function processSku_move(required any sku, any processObject){
+		var originalProduct = arguments.sku.getProduct(); 
+		var isDefaultSku = originalProduct.getDefaultSku().getSkuID() == arguments.sku.getSKuID(); 	
+		
+
+		arguments.sku.setProduct(processObject.getProduct());
+		
+		if(!originalProduct.getSkusCount()){
+			getProductService().deleteProduct(originalProduct); 
+		} else if(isDefaultSku){
+			originalProduct.setDefaultSku(originalProduct.getSkus()[1]); 
+			originalProduct = getProductService().saveProduct(originalProduct); 
+		} 
+		
+		return this.saveSku(arguments.sku);		
+	} 
+
 	// =====================  END: Process Methods ============================
 
 	// ====================== START: Status Methods ===========================
