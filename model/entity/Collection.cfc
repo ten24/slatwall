@@ -1378,15 +1378,15 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				for (var i = 1; i <= arraylen(collectionConfig.columns); i++) {
 					var column = collectionConfig.columns[i];
 					var propertyIdentifier = rereplace(column.propertyIdentifier,'_','.','all');
-					var aliasLength = 1+len(collectionConfig.baseEntityName);
-					if(left(propertyIdentifier,aliasLength)=='.'&collectionConfig.baseEntityName){
-						propertyIdentifier = right(propertyIdentifier,len(propertyIdentifier)-aliasLength);
+					var aliasLength = 1+len(lcase(getCollectionObject()));
+					if(lcase(left(propertyIdentifier,aliasLength))=='.'&lcase(getCollectionObject())){
+						propertyIdentifier = right(propertyIdentifier,len(propertyIdentifier)-aliasLength-1);
 					}
 					
 					if (structKeyExists(column, 'aggregate')
 						|| structKeyExists(column, 'attributeID')
 						|| ListFindNoCase(groupByList, column.propertyIdentifier) > 0
-						|| !getService('HibachiService').getPropertyIsPersistentByEntityNameAndPropertyIdentifier(collectionConfig.baseEntityName,propertyIdentifier)
+						|| !getService('HibachiService').getPropertyIsPersistentByEntityNameAndPropertyIdentifier(getCollectionObject(),propertyIdentifier)
 					) continue;
 
 					groupByList = listAppend(groupByList, column.propertyIdentifier);
@@ -2131,14 +2131,17 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				//add a group by for all selects that are not aggregates
 				for(var column in collectionConfig.columns){
 					var propertyIdentifier = rereplace(column.propertyIdentifier,'_','.','all');
-					var aliasLength = 1+len(collectionConfig.baseEntityName);
-					if(left(propertyIdentifier,aliasLength)=='.'&collectionConfig.baseEntityName){
-						propertyIdentifier = right(propertyIdentifier,len(propertyIdentifier)-aliasLength);
+					var aliasLength = 1+len(lcase(getCollectionObject()));
+					
+					if(lcase(left(propertyIdentifier,aliasLength))=='.'&lcase(getCollectionObject())){
+						
+						propertyIdentifier = right(propertyIdentifier,len(propertyIdentifier)-aliasLength-1);
 					}
+					
 					if(
 						!structKeyExists(column,'aggregate') 
 						&& !structKeyExists(column,'persistent')
-						&& getService('HibachiService').getPropertyIsPersistentByEntityNameAndPropertyIdentifier(collectionConfig.baseEntityName,propertyIdentifier)
+						&& getService('HibachiService').getPropertyIsPersistentByEntityNameAndPropertyIdentifier(getCollectionObject(),propertyIdentifier)
 					){
 						arrayAppend(groupBys,column.propertyIdentifier);
 					}
