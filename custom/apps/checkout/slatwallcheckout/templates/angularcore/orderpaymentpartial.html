@@ -1,8 +1,9 @@
 <!-- Add Shipping Address -->
 <span ng-init="slatwall.saveShippingAsBilling = undefined"></span>
 <span ng-init="slatwall.creditCardPayment = slatwall.$hibachi.newOrder_AddOrderPayment(); slatwall.creditCardPayment.newOrderPayment = {billingAddress:{}}"></span>
-
+<swf-directive partial-name="savedcreditcards"></swf-directive>
 <sw-form
+	ng-if="!slatwall.savedPaymentMethod.accountPaymentMethodID"
     data-object="slatwall.creditCardPayment"
     data-class="new_address"
     data-name="addOrderPayment"

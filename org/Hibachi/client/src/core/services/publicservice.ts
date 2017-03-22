@@ -339,6 +339,9 @@ class PublicService {
         this.requests[request.getAction()]=request;
     };
 
+    public logThis = (item)=>{
+        console.log('LOGGING THIS: ',item);
+    }
 
     public filterErrors = (response)=>{
         let cartErrors = response.cart.errors;
@@ -606,7 +609,7 @@ class PublicService {
 
     /** Format saved payment method info for display in list*/
     public formatPaymentMethod = (paymentMethod) =>{
-        return paymentMethod.nameOnCreditCard + ' - ' + paymentMethod.creditCardType + ' *' + paymentMethod.creditCardLastFour + ' exp. ' + ('0' + paymentMethod.expirationMonth).slice(-2) + '/' + paymentMethod.expirationYear.toString().slice(-2)
+        return (paymentMethod.accountPaymentMethodName || paymentMethod.nameOnCreditCard) + ' - ' + paymentMethod.creditCardType + ' *' + paymentMethod.creditCardLastFour + ' exp. ' + ('0' + paymentMethod.expirationMonth).slice(-2) + '/' + paymentMethod.expirationYear.toString().slice(-2)
     }
 
     public getResizedImageByProfileName = (profileName, skuIDList)=>{
@@ -828,7 +831,7 @@ class PublicService {
 
     /** Returns errors from addOrderPayment request. */
     public addOrderPaymentError = () =>{
-        return this.cart.errors.addOrderPayment;
+        return this.cart.errors.addOrderPayment || this.errors['ADDORDERPAYMENT'];
     }
 
     /** Returns errors from addBillingAddress request. */

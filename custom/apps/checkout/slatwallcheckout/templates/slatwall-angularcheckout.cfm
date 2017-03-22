@@ -79,8 +79,6 @@
 					</div>
 					<div ng-show="slatwall.showPaymentTabBody()">
 						<div class="col-sm-12">
-							<!--- Display Order Payment Errors --->
-							<swf-directive partial-name="savedcreditcards"></swf-directive>
 							<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 			                    <div class="panel radio panel-default" ng-cloak>
 			                        <div class="panel-heading" role="tab" id="headingOne">

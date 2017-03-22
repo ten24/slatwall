@@ -263,7 +263,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		return rereplace("accountID,firstName,lastName,company,remoteID,primaryPhoneNumber.accountPhoneNumberID,primaryPhoneNumber.phoneNumber,primaryEmailAddress.accountEmailAddressID,primaryEmailAddress.emailAddress,
 			primaryAddress.accountAddressID,
 			accountAddresses.accountAddressName,accountAddresses.accountAddressID,
-			accountAddresses.address.addressID,accountAddresses.address.streetAddress,accountAddresses.address.street2Address,accountAddresses.address.city,accountAddresses.address.statecode,accountAddresses.address.postalCode,accountAddresses.address.countrycode, accountAddresses.address.name, accountAddresses.address.company, accountAddresses.address.phoneNumber, accountPaymentMethods.accountPaymentMethodID, accountPaymentMethods.creditCardLastFour, accountPaymentMethods.creditCardType, accountPaymentMethods.nameOnCreditCard, accountPaymentMethods.expirationMonth, accountPaymentMethods.expirationYear","\s","","ALL");
+			accountAddresses.address.addressID,accountAddresses.address.streetAddress,accountAddresses.address.street2Address,accountAddresses.address.city,accountAddresses.address.statecode,accountAddresses.address.postalCode,accountAddresses.address.countrycode, accountAddresses.address.name, accountAddresses.address.company, accountAddresses.address.phoneNumber, accountPaymentMethods.accountPaymentMethodID, accountPaymentMethods.creditCardLastFour, accountPaymentMethods.creditCardType, accountPaymentMethods.nameOnCreditCard, accountPaymentMethods.expirationMonth, accountPaymentMethods.expirationYear, accountPaymentMethods.accountPaymentMethodName","\s","","ALL");
 	}
 	
 	public any function getAccountData(string propertyList) {

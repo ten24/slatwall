@@ -1160,7 +1160,7 @@ component extends="HibachiService"  accessors="true" output="false"
         if(data.newOrderPayment.requireBillingAddress){
           if(!structKeyExists(data.newOrderPayment, 'billingAddress')){
             addErrors(data, {
-              addOrderPayment=['Billing address is required']
+              addOrderPayment=['Billing address is required.']
               });
             getHibachiScope().addActionResult( "public:cart.addOrderPayment", true);
             return;

@@ -2087,6 +2087,9 @@
 	            });
 	            _this.requests[request.getAction()] = request;
 	        };
+	        this.logThis = function (item) {
+	            console.log('LOGGING THIS: ', item);
+	        };
 	        this.filterErrors = function (response) {
 	            var cartErrors = response.cart.errors;
 	            if (cartErrors.addOrderPayment) {
@@ -2315,7 +2318,7 @@
 	        };
 	        /** Format saved payment method info for display in list*/
 	        this.formatPaymentMethod = function (paymentMethod) {
-	            return paymentMethod.nameOnCreditCard + ' - ' + paymentMethod.creditCardType + ' *' + paymentMethod.creditCardLastFour + ' exp. ' + ('0' + paymentMethod.expirationMonth).slice(-2) + '/' + paymentMethod.expirationYear.toString().slice(-2);
+	            return (paymentMethod.accountPaymentMethodName || paymentMethod.nameOnCreditCard) + ' - ' + paymentMethod.creditCardType + ' *' + paymentMethod.creditCardLastFour + ' exp. ' + ('0' + paymentMethod.expirationMonth).slice(-2) + '/' + paymentMethod.expirationYear.toString().slice(-2);
 	        };
 	        this.getResizedImageByProfileName = function (profileName, skuIDList) {
 	            _this.loading = true;
@@ -2514,7 +2517,7 @@
 	        };
 	        /** Returns errors from addOrderPayment request. */
 	        this.addOrderPaymentError = function () {
-	            return _this.cart.errors.addOrderPayment;
+	            return _this.cart.errors.addOrderPayment || _this.errors['ADDORDERPAYMENT'];
 	        };
 	        /** Returns errors from addBillingAddress request. */
 	        this.billingAddressError = function () {
