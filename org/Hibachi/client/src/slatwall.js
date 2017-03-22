@@ -20129,6 +20129,10 @@
 	                _this.form[_this.propertyIdentifier].$dirty = true;
 	                _this.form['selected' + _this.object.metaData.className + _this.propertyIdentifier + _this.selectedRadioFormName].$dirty = false;
 	            }
+	            else if (_this.fieldType == 'checkbox') {
+	                _this.object.data[_this.propertyIdentifier] = option.value;
+	                _this.form[_this.propertyIdentifier].$dirty = true;
+	            }
 	            else if (_this.fieldType === 'select') {
 	                _this.$log.debug('formfieldchanged');
 	                _this.$log.debug(option);
@@ -20883,7 +20887,6 @@
 	        this.saved = false;
 	        this.optionValues = [];
 	        this.$onInit = function () {
-	            console.log("OHHHHHHHHHHHHHHHHHHHHHHH@@@@@", _this.name, _this.options);
 	            var bindToControllerProps = _this.$injector.get('swPropertyDisplayDirective')[0].bindToController;
 	            for (var i in bindToControllerProps) {
 	                if (!_this[i] && _this.swForm && _this.swForm[i]) {
@@ -20976,7 +20979,6 @@
 	                var optionsArray = [];
 	                optionsArray = _this.options.toString().split(",");
 	                angular.forEach(optionsArray, function (o) {
-	                    console.log('OHHHHHHHHHHHHHHHH', o);
 	                    var newOption = {
 	                        name: "",
 	                        value: ""

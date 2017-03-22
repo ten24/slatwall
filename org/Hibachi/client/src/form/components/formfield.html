@@ -56,7 +56,13 @@
 	</sw-form-field-file>
 
 	<textarea ng-switch-when="textarea" class="{{swFormField.class}}"  id="{{swFormField.name}}TextArea" ng-model="swFormField.object[swFormField.name]" name="{{swFormField.name}}"></textarea>
-	<input type="checkbox" ng-switch-when="checkbox" value="{{swFormField.value}}" class="{{swFormField.class}}" name="{{swFormField.name}}"><span></span></input>
+	<span ng-switch-when="checkbox">
+		<input type="checkbox" ng-model="swFormField.object.data[swFormField.propertyIdentifier]" class="{{swFormField.class}}">
+		<input style="display:none"	type="text"
+			ng-model="swFormField.object.data[swFormField.propertyIdentifier]"
+			name="{{swFormField.name}}"
+		/>
+	</span>
 
 	<select ng-switch-when="multiselect" class="{{swFormField.class}}" name="{{swFormField.name}}" multiple="true">
 			<option value="{{option.value}}" ng-repeat="option in swFormField.optionValues" ng-if="option.selected" selected>{{option.name}}</option>
