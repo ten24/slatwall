@@ -40,8 +40,8 @@ class PublicService {
     public accountAddressEditFormIndex:any;
     public billingAddressEditFormIndex:any;
     public selectedBillingAddress:any;
-    public editBillingAddress:any;
     public editingAccountAddress:any;
+    public editingBillingAddress:any;
     public shippingAddressErrors:any;
     public billingAddressErrors:any;
     public paymentMethods:any;
@@ -537,7 +537,7 @@ class PublicService {
         
         //If editing existing account address, get from form
         }else{
-            billingAddress = this.editBillingAddress.getData();
+            billingAddress = this.editingBillingAddress.getData();
         }
 
         //Add card info
@@ -846,7 +846,12 @@ class PublicService {
 
     public editAccountAddress = (key) =>{
         this.accountAddressEditFormIndex = key;
-        this.editingAccountAddress = angular.copy(this.account.accountAddresses[key].address);
+        this.editingAccountAddress = this.getAddressEntity(this.account.accountAddresses[key].address);
+    }
+
+    public editBillingAddress = (key) =>{
+        this.billingAddressEditFormIndex = key;
+        this.editingBillingAddress = this.getAddressEntity(this.account.accountAddresses[key].address);
     }
 
     /** Sets shippingAddressErrors from response errors, refreshes swAddressForm */

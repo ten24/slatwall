@@ -2254,7 +2254,7 @@
 	                billingAddress = _this.billingAddress.getData();
 	            }
 	            else {
-	                billingAddress = _this.editBillingAddress.getData();
+	                billingAddress = _this.editingBillingAddress.getData();
 	            }
 	            //Add card info
 	            for (var key in _this.newCardInfo) {
@@ -2528,7 +2528,11 @@
 	        };
 	        this.editAccountAddress = function (key) {
 	            _this.accountAddressEditFormIndex = key;
-	            _this.editingAccountAddress = angular.copy(_this.account.accountAddresses[key].address);
+	            _this.editingAccountAddress = _this.getAddressEntity(_this.account.accountAddresses[key].address);
+	        };
+	        this.editBillingAddress = function (key) {
+	            _this.billingAddressEditFormIndex = key;
+	            _this.editingBillingAddress = _this.getAddressEntity(_this.account.accountAddresses[key].address);
 	        };
 	        /** Sets shippingAddressErrors from response errors, refreshes swAddressForm */
 	        this.addShippingAddressErrors = function () {
@@ -7141,7 +7145,6 @@
 	                if (_this.form.$valid) {
 	                    _this.formController.submit(_this.action);
 	                }
-	                _this.form.$submitted = true;
 	            });
 	        };
 	        this.getAction = function () {
@@ -19384,7 +19387,7 @@
 	                if (angular.isUndefined(propertyValidations[0].contexts) && _this.object.metaData.isProcessObject) {
 	                    propertyValidations[0].contexts = _this.object.metaData.className.split('_')[1];
 	                }
-	                if (propertyValidations[0].contexts === formContext) {
+	                if (propertyValidations[0].contexts.indexOf(formContext) > -1) {
 	                    _this.$log.debug("Matched");
 	                    for (var prop in propertyValidations[0]) {
 	                        if (prop != "contexts" && prop !== "conditions") {
@@ -19399,6 +19402,7 @@
 	            //get all validations related to the form context;
 	            _this.$log.debug(form);
 	            angular.forEach(validations, function (validation, key) {
+	                console.log('validation ', validation);
 	                if (validation.contexts && _this.utilityService.listFind(validation.contexts.toLowerCase(), _this.swForm.context.toLowerCase()) !== -1) {
 	                    _this.$log.debug("Validations for context");
 	                    _this.$log.debug(validation);
@@ -19834,7 +19838,6 @@
 	            actions = actions || _this.action;
 	            _this.clearErrors();
 	            _this.formData = _this.getFormData() || "";
-	            console.log("formData: ", _this.formData);
 	            _this.doActions(actions);
 	        };
 	        //array or comma delimited
@@ -19861,6 +19864,7 @@
 	            //
 	            var request = _this.$rootScope.hibachiScope.doAction(action, _this.formData)
 	                .then(function (result) {
+	                _this.object.forms[_this.name].$setSubmitted(true);
 	                if (result.errors) {
 	                    _this.parseErrors(result.errors);
 	                }
@@ -19888,7 +19892,6 @@
 	            _this.$timeout(function () {
 	                var errorElements = _this.$element.find("[error-for]");
 	                errorElements.empty();
-	                //vm["formCtrl"][this.context].$setPristine(true);
 	            }, 0);
 	        };
 	        this.eventsHandler = function (params) {
@@ -20804,6 +20807,7 @@
 	        this.bindToController = {
 	            action: '@',
 	            actionText: '@',
+	            context: '@',
 	            customPartial: '@',
 	            slatwallScope: '=',
 	            address: "=",

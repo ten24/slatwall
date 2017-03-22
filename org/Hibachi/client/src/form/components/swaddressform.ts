@@ -129,6 +129,7 @@ class SWAddressForm implements ng.IComponentOptions {
     public bindToController = {
         action: '@',
         actionText: '@',
+        context:'@',
         customPartial:'@',
         slatwallScope: '=',
         address: "=",

@@ -124,7 +124,6 @@ class SWActionCallerController{
             if(this.form.$valid){
                 this.formController.submit(this.action);
             }
-            this.form.$submitted = true;
         });
     }
 

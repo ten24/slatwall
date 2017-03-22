@@ -23,7 +23,7 @@
                         <li><a href="tel:{{slatwall.account.accountAddresses[key].address.phoneNumber}}" class="tel">{{slatwall.account.accountAddresses[key].address.phoneNumber}}</a></li>
                         <li>
                         <button type="button" ng-click="slatwall.selectedBillingAddress = value.address;slatwall.billingAddressEditFormIndex = ''"><i ng-show="thisSelected" class="fa fa-spinner fa-spin fa-3x fa-fw margin-bottom" style="font-size: 12px;margin:0px;"></i>Select Address</button>
-                        <button type="button" class="btn-white" ng-click="slatwall.editBillingAddress = value.address; slatwall.billingAddressEditFormIndex = 'edit';slatwall.selectedBillingAddress = null">Edit</button>
+                        <button type="button" class="btn-white" ng-click="slatwall.editBillingAddress(key)">Edit</button>
                         </li>
 
                     </ul>

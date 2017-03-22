@@ -5,6 +5,7 @@
 		
 			<sw-form
 		    data-is-process-form="true"
+		    data-context="{{SwAddressForm.context}}"
 		    data-form-class="edit"
 		    data-error-class="error"
 		    data-object="SwAddressForm.address"
@@ -49,8 +50,7 @@
 					            data-object="SwAddressForm.address"
 					            data-label-text="Country"
 					            data-options="slatwall.countries.countryCodeOptions"
-					            ng-init="(slatwall.states == undefined)?slatwall.getStates('US'):false;SwAddressForm.address.data.selectedcountrycode = slatwall.countries.countryCodeOptions['234']"
-					            input-attributes="ng-required=true">
+					            ng-init="(slatwall.states == undefined)?slatwall.getStates('US'):false;SwAddressForm.address.data.selectedcountrycode = slatwall.countries.countryCodeOptions['234']">
 			            	</swf-property-display>
 
 							<span class="error" error-for="country"></span>
@@ -118,7 +118,7 @@
 					        data-property-identifier="streetAddress"
 					        data-label-text="Street "
 					        data-class="form-control"
-					        data-edit="true" input-attributes="ng-required=true">
+					        data-edit="true">
 					    	</swf-property-display>
 					        
 					    </div>
@@ -146,7 +146,7 @@
 					        data-property-identifier="city"
 					        data-label-text="City"
 					        data-class="form-control"
-					        data-edit="true" input-attributes="ng-required=true">
+					        data-edit="true">
 					    	</swf-property-display>
 				    	</div>
 				
@@ -164,8 +164,7 @@
 					            data-object="SwAddressForm.address"
 					            data-label-text="State"
 					            data-options="slatwall.states.stateCodeOptions"
-					            ng-init="SwAddressForm.address.data.selectedstatecode = slatwall.getStateByStateCode(SwAddressForm.address.statecode)||''" 
-					            input-attributes="ng-required=true">
+					            ng-init="SwAddressForm.address.data.selectedstatecode = slatwall.getStateByStateCode(SwAddressForm.address.statecode)||''" >
 					            </swf-property-display>
 					        </div>
 					        <div class="col-xs-7" ng-if="SwAddressForm.address.data.selectedcountrycode.value != 'US' && SwAddressForm.address.data.selectedcountrycode.value != 'CA' && SwAddressForm.hasField('locality')">
@@ -187,7 +186,7 @@
 							        data-property-identifier="postalCode"
 							        data-label-text="Zip"
 							        data-class="form-control"
-							        data-edit="true" input-attributes="ng-required=true">
+							        data-edit="true">
 							    </swf-property-display>
 					         </div>
 					      </div>

@@ -1169,6 +1169,9 @@ component extends="HibachiService"  accessors="true" output="false"
         var addOrderPayment = getService('OrderService').processOrder( getHibachiScope().cart(), arguments.data, 'addOrderPayment');
 
         if(!giftCard){
+          for(payment in addOrderPayment.getOrderPayments()){
+            addErrors(data, payment.getErrors());
+          }
           getHibachiScope().addActionResult( "public:cart.addOrderPayment", addOrderPayment.hasErrors() );
         }
 

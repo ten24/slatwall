@@ -134,7 +134,6 @@ class SWFormController {
         actions = actions || this.action;
         this.clearErrors();
         this.formData = this.getFormData() || "";
-        console.log("formData: ", this.formData);
         this.doActions(actions);
     }
 
@@ -161,6 +160,7 @@ class SWFormController {
 
         let request = this.$rootScope.hibachiScope.doAction(action, this.formData)
         .then( (result) =>{
+            this.object.forms[this.name].$setSubmitted(true);
             if (result.errors) {
                 this.parseErrors(result.errors);
             }
@@ -193,7 +193,6 @@ class SWFormController {
         this.$timeout(()=>{
                 let errorElements = this.$element.find("[error-for]");
                 errorElements.empty();
-                //vm["formCtrl"][this.context].$setPristine(true);
         },0);
 
     }

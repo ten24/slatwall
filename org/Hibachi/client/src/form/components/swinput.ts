@@ -145,7 +145,7 @@ class SWInputController{
 				propertyValidations[0].contexts = this.object.metaData.className.split('_')[1];
 			}
 
-			if (propertyValidations[0].contexts === formContext){
+			if (propertyValidations[0].contexts.indexOf(formContext) > -1){
 				this.$log.debug("Matched");
 				for (var prop in propertyValidations[0]){
 						if (prop != "contexts" && prop !== "conditions"){
@@ -164,7 +164,7 @@ class SWInputController{
 		this.$log.debug(form);
 
 		angular.forEach(validations,(validation,key)=>{
-
+			console.log('validation ' , validation);
 			if(validation.contexts && this.utilityService.listFind(validation.contexts.toLowerCase(),this.swForm.context.toLowerCase()) !== -1){
 				this.$log.debug("Validations for context");
 				this.$log.debug(validation);
