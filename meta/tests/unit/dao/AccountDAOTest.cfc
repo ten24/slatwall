@@ -48,13 +48,16 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
-
+	
 	public void function setUp() {
 		super.setup();
 		
 		variables.dao = request.slatwallScope.getDAO("accountDAO");
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function inst_ok() {
 		assert(isObject(variables.dao));
 	}

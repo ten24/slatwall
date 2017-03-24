@@ -48,11 +48,14 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
-	// @hint put things in here that you want to run befor EACH test
+	// @hint put things in here that you want to run befor EACH test	
 	public void function setUp() {
 		super.setup();
 
-	}
+	}	
+	/**
+	* @test
+	*/
 	public void function matchesOrderItem(){
 
 		//Testing adding child order items.
@@ -148,7 +151,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertFalse(foundMatch);
 
 	}
-
+	
+	/**
+	* @test
+	*/
 	public void function test_gift_card_add_order_item(){
 
 		var giftProduct = getTestProduct("TestGiftProduct");
