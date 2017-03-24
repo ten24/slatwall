@@ -140,6 +140,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 	}
 	
+	public void function setParentCollection(required any parentCollection){
+		if(getNewFlag()){
+			var parentCollectionConfigStruct = arguments.parentCollection.getCollectionConfigStruct();
+			parentCollectionConfigStruct.filterGroups = [{}];
+			parentCollectionConfigStruct.filterGroups[1]['filterGroup'] = [{}];
+			setCollectionConfig(serializeJson(parentCollectionConfigStruct));	
+		}
+		
+		variables.parentCollection = arguments.parentCollection;
+	}
 	
 	public array function getAuthorizedProperties(){
 		if(!structKeyExists(variables,'authorizedProperties')){
