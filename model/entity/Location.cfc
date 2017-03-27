@@ -69,7 +69,7 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	
 	// Related Object Properties (many-to-many - inverse)
 	property name="physicals" singularname="physical" cfc="Physical" type="array" fieldtype="many-to-many" linktable="SwPhysicalLocation" fkcolumn="locationID" inversejoincolumn="physicalID" inverse="true";
-	property name="fulfillmentBatches" singularname="fulfillmentBatch" cfc="FulfillmentBatches" type="array" fieldtype="many-to-many" linktable="SwFulfillmentBatchLocation" fkcolumn="locationID" inversejoincolumn="fulfillmentBatchID" inverse="true";
+	property name="fulfillmentBatches" singularname="fulfillmentBatch" cfc="FulfillmentBatch" type="array" fieldtype="many-to-many" linktable="SwFulfillmentBatchLocation" fkcolumn="locationID" inversejoincolumn="fulfillmentBatchID" inverse="true";
 	
 	// Remote Properties
 	property name="remoteID" ormtype="string";
