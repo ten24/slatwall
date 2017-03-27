@@ -164,10 +164,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//Test auto populate using the found data. It should find those entities while populating and put the objects into the process object.
 		
 		var data = {
-			"locationID": location.getLocationID(),
-			"assignedAccountID": account.getAccountID(),
-			"description": "This is another test description",
-			"orderFulfillmentIDList": orderFulfillmentIDList
+			"locationID"= location.getLocationID(),
+			"assignedAccountID"= account.getAccountID(),
+			"description"= "This is another test description",
+			"orderFulfillmentIDList"= orderFulfillmentIDList
 		};
 		
 		//populate the data.

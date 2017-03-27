@@ -108,7 +108,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	 */
 	public any function getFulfillmentBatchItemsByOrderItemIDList(){
 		//If we have a id list.
-		if (structKeyExists(variables, "orderItemIDList") && !arrayLen(variables.fulfillmentBatchItems)){
+		var fulfillmentBatchItems = [];
+		if (structKeyExists(variables, "orderItemIDList") ){
 			for (var orderItemID in variables.orderItemIDList){
 				var orderItem = getService("OrderService").getOrderItemByOrderItemID(orderItemID);
 				var fulfillmentBatchItem = getService("FulfillmentService").newFulfillmentBatchItem();
@@ -128,13 +129,17 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	 */
 	 public any function getFulfillmentBatchItems(){
 	 	if (!structKeyExists(variables, "fulfillmentBatchItems")){
-	 		var fulfillmentBatchItems = getFulfillmentBatchItemsByOrderFulfillmentIDList();
-	 		if (arrayLen(fulfillmentBatchItems)){
-	 			variables.fulfillmentBatchItems = fulfillmentBatchItems;
+	 		var fulfillmentBatchItems = [];
+	 		if (structKeyExists(variables, "orderFulfillmentIDList")){
+		 		var fulfillmentBatchItems = getFulfillmentBatchItemsByOrderFulfillmentIDList();
+		 		
+		 		if (arrayLen(fulfillmentBatchItems) > 0){
+		 			variables.fulfillmentBatchItems = fulfillmentBatchItems;
+		 		}
 	 		}
-	 		var fulfillmentBatchItems = getFulfillmentBatchItemsByOrderItemIDList();
-	 		if (arrayLen(fulfillmentBatchItems)){
-	 			variables.fulfillmentBatchItems = fulfillmentBatchItems;
+	 		if (structKeyExists(variables, "orderItemIDList")){
+		 		fulfillmentBatchItems = getFulfillmentBatchItemsByOrderItemIDList();
+		 		arrayApend(variables.fulfillmentBatchItems, fulfillmentBatchItems); //adds to these in case there are already some there
 	 		}
 	 	}
 	 	return variables.fulfillmentBatchItems;

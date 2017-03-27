@@ -106,8 +106,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		assert(!isNull(fb), "The fulfillmentBatch should not be null");
 		
-		assert(!isNull(fb.getFulfillmentBatchItems()), "It has Fulfillment Batch Items");
-		
 		assertIsArray(fb.getFulfillmentBatchItems(), "The array of batch items exists");
 		
 		assert(arraylen(fb.getFulfillmentBatchItems()) > 0, "It has at least 1 fulfillment batch item");
