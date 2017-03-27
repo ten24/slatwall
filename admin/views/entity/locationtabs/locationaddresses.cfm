@@ -73,8 +73,8 @@ Notes:
 				<hb:HibachiListingColumn propertyIdentifier="address.stateCode" />
 				<hb:HibachiListingColumn propertyIdentifier="address.postalCode" />
 			</hb:HibachiListingDisplay>
-			
-			<hb:HibachiActionCaller action="admin:entity.createlocationaddress" class="btn" icon="plus" queryString="sRedirectAction=admin:entity.detaillocation&locationID=#rc.location.getLocationID()#" modal=true />
+			<cfset queryString = urlEncodedFormat("locationID=#rc.location.getLocationID()#")/>
+			<hb:HibachiActionCaller action="admin:entity.createlocationaddress" class="btn" icon="plus" queryString="sRedirectAction=admin:entity.detaillocation&sRedirectQS=#queryString#&locationID=#rc.location.getLocationID()#" modal=true />
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 	
