@@ -151,6 +151,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.location;
 	}
 	
+	public any function saveLocationAddress(required any locationAddress, required struct data){
+		arguments.locationAddress = super.save(arguments.locationAddress, arguments.data);
+		if(
+			!arguments.locationAddress.hasErrors() 
+			&& !isNull(arguments.locationAddress.getLocation())
+			&& isNull(arguments.locationAddress.getLocation().getPrimaryLocationAddress()) 
+		){
+			arguments.locationAddress.getLocation().setPrimaryLocationAddress(arguments.locationAddress);
+		}
+		return arguments.locationAddress;
+	}
+	
 	// ======================  END: Save Overrides ============================
 
 		// ====================== START: Delete Overrides =========================
