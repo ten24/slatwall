@@ -60,6 +60,49 @@ Notes:
 		
 
 	<cfscript>
+		public numeric function getCurrentMargin(required string stockID){
+			return ORMExecuteQuery("
+				SELECT COALESCE((COALESCE(sku.price,0) - COALESCE(stock.calculatedAverageCost,0)) / COALESCE(sku.price,0),0)
+				FROM SlatwallStock stock
+				LEFT JOIN stock.sku sku
+				WHERE stock.stockID=:stockID
+			",{stockID=arguments.stockID},true);
+		}
+		
+		public numeric function getCurrentLandedMargin(required string stockID){
+			return ORMExecuteQuery("
+				SELECT COALESCE((COALESCE(sku.price,0) - COALESCE(stock.calculatedLandedAverageCost,0)) / COALESCE(sku.price,0),0)
+				FROM SlatwallStock stock
+				LEFT JOIN stock.sku sku
+				WHERE stock.stockID=:stockID
+			",{stockID=arguments.stockID},true);
+		}
+		
+		public numeric function getAverageCost(required string stockID){
+			
+			return ORMExecuteQuery(
+				'SELECT COALESCE(AVG(i.cost/i.quantityIn),0)
+				FROM SlatwallInventory i 
+				LEFT JOIN i.stock s
+				WHERE s.stockID=:stockID
+				',
+				{stockID=arguments.stockID},
+				true
+			);
+		}
+		
+		public numeric function getAverageLandedCost(required string stockID){
+			
+			return ORMExecuteQuery(
+				'SELECT COALESCE(AVG(i.landedCost/i.quantityIn),0)
+				FROM SlatwallInventory i 
+				LEFT JOIN i.stock s
+				WHERE s.stockID=:stockID
+				',
+				{stockID=arguments.stockID},
+				true
+			);
+		}
 		
 		public any function getStockBySkuAndLocation(required any sku, required any location) {
 			return entityLoad("SlatwallStock", {location=arguments.location, sku=arguments.sku}, true);

@@ -3,8 +3,8 @@
 	<Columns>
 		<column name="workflowID" fieldtype="id" />
 		<column name="activeFlag" datatype="bit" />
-		<column name="workflowName" />
-		<column name="workflowObject" />
+		<column name="workflowName" update="false"/>
+		<column name="workflowObject" update="false"/>
 	</Columns>
 	<Records>
 		<Record workflowID="4028289a5507d1dc01557e0718b30808" activeFlag="1" workflowName="New Form Response" workflowObject="FormResponse" />

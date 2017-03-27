@@ -79,6 +79,8 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="calculatedQATS" ormtype="integer";
 	property name="calculatedQOH" ormtype="integer";
 	property name="calculatedSkuDefinition" ormtype="string";
+	property name="calculatedAverageCost" ormtype="big_decimal";
+	property name="calculatedAverageLandedCost" ormtype="big_decimal";
 
 	// Related Object Properties (many-to-one)
 	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID" hb_cascadeCalculate="true";
@@ -135,6 +137,8 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="assignedOrderItemAttributeSetSmartList" persistent="false";
 	property name="availableForPurchaseFlag" persistent="false";
 	property name="availableSeatCount" persistent="false";
+	property name="averageCost" persistent="false";
+	property name="averageLandedCost" persistent="false";
 	property name="baseProductType" persistent="false";
 	property name="currentAccountPrice" type="numeric" hb_formatType="currency" persistent="false";
 	property name="currencyDetails" type="struct" persistent="false";
@@ -177,10 +181,33 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="formattedRedemptionAmount" persistent="false";
 	property name="weight" persistent="false"; 
 	property name="allowWaitlistedRegistrations" persistent="false";
+	property name="averagePriceSold" persistent="false";
+	
 	// Deprecated Properties
 
 
 	// ==================== START: Logical Methods =========================
+	public any function getVendorSkusSmartList(){
+		var vendorSkuSmartList = getService('VendorOrderService').getVendorSkuSmartList();
+		vendorSkuSmartList.addFilter('sku.skuID',this.getSkuID());
+		return vendorSkuSmartList;
+	}
+	
+	public numeric function getAveragePriceSold(){
+		return getDao('skuDao').getAveragePriceSold(skuID=this.getSkuID());
+	}
+
+	public numeric function getCurrentAssetValue(){
+		return getQOH() * getAverageCost();
+	}
+	
+	public numeric function getCurrentMargin(){
+		return getDao('skuDao').getCurrentMargin(this.getSkuID());
+	}
+	
+	public numeric function getCurrentLandedMargin(){
+		return getDao('skuDao').getCurrentLandedMargin(this.getSkuID());
+	}
 
 	public array function getGiftCardExpirationTermOptions(){
 		if(!structKeyExists(variables,'giftCardExpirationTermIDOptions')){
@@ -1023,6 +1050,16 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 		return variables.placedOrderItemsSmartList;
 	}
+	
+	public any function getPlacedVendorOrderItemsSmartList() {
+		if(!structKeyExists(variables, "placedVendorOrderItemsSmartList")) {
+			variables.placedVendorOrderItemsSmartList = getService("VendorOrderService").getVendorOrderItemSmartList();
+			variables.placedVendorOrderItemsSmartList.addFilter('stock.sku.skuID', getSkuID());
+			variables.placedVendorOrderItemsSmartList.addInFilter('vendorOrder.vendorOrderStatusType.systemCode','vostNew,vostPartiallyReceived,vostClosed');
+		}
+
+		return variables.placedVendorOrderItemsSmartList;
+	}
 
 	public any function getQATS() {
 		return getQuantity("QATS");
@@ -1148,6 +1185,14 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			}
 		}
 		return true;
+	}
+	
+	public any function getAverageCost(){
+		return getDao('skuDao').getAverageCost(this.getSkuID());
+	}
+	
+	public any function getAverageLandedCost(){
+		return getDao('skuDao').getAverageLandedCost(this.getSkuID());
 	}
 
 
