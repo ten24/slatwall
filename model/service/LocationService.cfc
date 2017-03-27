@@ -55,6 +55,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getLocationDAO().isLocationBeingUsed(arguments.location);
 	}
 	
+	public numeric function getChildLocationCount(required any location){
+		return getLocationDao().getChildLocationCount(arguments.location.getLocationID());
+	}
+	
 	public numeric function getLocationCount() {
 		return getLocationDAO().getLocationCount();
 	}

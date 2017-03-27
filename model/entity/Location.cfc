@@ -92,6 +92,10 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 		return (arraylen(getchildLocations()) > 0);
 	}
 	
+	public numeric function getChildLocationCount(){
+		return getService('locationService').getChildLocationCount(this);
+	}
+	
 	public any function getPrimaryAddress() {
 		if(isNull(variables.primaryAddress)) {
 			return getService("locationService").newLocationAddress();
