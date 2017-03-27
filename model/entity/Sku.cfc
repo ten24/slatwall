@@ -1126,6 +1126,10 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public string function getSkuDefinition() {
 		if(!structKeyExists(variables, "skuDefinition")) {
 			variables.skuDefinition = getSkuDefinitionByBaseProductType(getBaseProductType());
+
+			if(variables.skuDefinition == "" && !isNull(getSkuName())){
+				variables.skuDefinition = getSkuName();
+			}
 		}
 		return trim(variables.skuDefinition);
 	}
