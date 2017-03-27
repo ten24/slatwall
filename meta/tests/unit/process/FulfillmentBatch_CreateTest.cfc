@@ -193,6 +193,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		processObject.getFulfillmentBatchItemsByOrderFulfillmentIDList();
 		
 		//Should have at least one fulfillmentBatchItem
-		assertEquals(arrayLen(processObject.getFulfillmentBatchItems()) > 0, "Should have at least one fulfillmentBatchItem");
+		assert(arrayLen(processObject.getFulfillmentBatchItems()) > 0, "Should have at least one fulfillmentBatchItem");
 	}
 }
