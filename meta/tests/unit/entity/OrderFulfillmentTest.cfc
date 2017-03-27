@@ -48,7 +48,7 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
-	// @hint put things in here that you want to run befor EACH test
+	// @hint put things in here that you want to run befor EACH test	
 	public void function setUp() {
 		super.setup();
 		
@@ -58,7 +58,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	private numeric function getDiscountAmountFake(){
 		return 75.42;
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getChargeAfterDiscountTest(){
 		var orderfulfillment = createTestEntity('orderFulfillment',{
 			fulfillmentCharge=7
@@ -66,7 +69,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		injectMethod(orderfulfillment,this,'getDiscountAmountFake','getDiscountAmount');
 		assertEquals(-68.42,orderfulfillment.getChargeAfterDiscount());
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getDiscountAmountTest(){
 		var orderfulfillment = createPersistedTestEntity('orderFulfillment',{
 			orderFulfillmentID=""
@@ -99,7 +105,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	private numeric function getChargeAfterDiscountFake(){
 		return 12.23123;
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getFulfillmentTotalTest(){
 		var orderfulfillment = createPersistedTestEntity('orderFulfillment',{
 			orderFulfillmentID=""
@@ -109,7 +118,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		assertEquals(135.35,orderFulfillment.getFulfillmentTotal());
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getItemDiscountAmountTotalTest(){
 		var orderfulfillment = createPersistedTestEntity('orderFulfillment',{
 			orderFulfillmentID=""
@@ -135,7 +147,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		assertEquals(150.84,orderfulfillment.getItemDiscountAmountTotal());
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getSubtotalTest(){
 		var orderfulfillment = createPersistedTestEntity('orderFulfillment',{
 			orderFulfillmentID=""
@@ -161,7 +176,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		assertEquals(6424.64,orderFulfillment.getSubtotal());
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getSubtotalAfterDiscountsTest(){
 		var orderfulfillment = createPersistedTestEntity('orderFulfillment',{
 			orderFulfillmentID=""
@@ -174,7 +192,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	private numeric function getTaxAmountFake(){
 		return 898734.4398;
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getSubtotalAfterDiscountsWithTaxTest(){
 		var orderfulfillment = createPersistedTestEntity('orderFulfillment',{
 			orderFulfillmentID=""
@@ -184,7 +205,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		injectMethod(orderfulfillment,this,'getTaxAmountFake','getTaxAmount');
 		assertEquals(984684.64,orderfulfillment.getSubtotalAfterDiscountsWithTax());
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getTaxAmountTest(){
 		var orderfulfillment = createPersistedTestEntity('orderFulfillment',{
 			orderFulfillmentID=""
@@ -210,7 +234,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		assertEquals(1797468.88,orderFulfillment.getTaxAmount());
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getTotalShippingWeightTest(){
 		var orderfulfillment = createPersistedTestEntity('orderFulfillment',{
 			orderFulfillmentID=""
@@ -224,7 +251,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	private numeric function getTotalFake(){
 		return 875.34;
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function hasOrderWithMinAmountRecievedRequiredForFulfillmentTest(){
 		var orderfulfillment = createPersistedTestEntity('orderFulfillment',{
 			orderFulfillmentID=""
@@ -274,7 +304,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	private numeric function getExtendedPriceFake(){
 		return 3212.32;
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function populate_accountAddress_updates_shippingAddress() {
 		
 		var accountAddressDataOne = {
@@ -312,7 +345,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		assertEquals( accountAddressDataTwo.address.streetAddress, variables.entity.getShippingAddress().getStreetAddress() );
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function setAccountAddress_updates_shippingAddress() {
 		
 		var accountAddressDataOne = {
@@ -339,7 +375,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals( accountAddressDataTwo.address.streetAddress, variables.entity.getShippingAddress().getStreetAddress() );
 
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function setAccountAddress_updates_shippingAddress_without_creating_a_new_one() {
 		addressDataOne = {
 			streetAddress = '123 Main Street'
@@ -363,7 +402,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals( accountAddressDataOne.address.streetAddress, variables.entity.getShippingAddress().getStreetAddress() );
 		assertEquals( shippingAddress.getAddressID(), variables.entity.getShippingAddress().getAddressID() );
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function setAccountAddress_doesnt_updates_shippingAddress_when_same_aa_as_before() {
 		var accountAddressDataOne = {
 			address = {
@@ -386,7 +428,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 	}
 	
-	// getRequiredShippingInfoExistsFlag()
+	// getRequiredShippingInfoExistsFlag()	
+	/**
+	* @test
+	*/
 	public void function getRequiredShippingInfoExistsFlag_returns_false_by_default() {
 		assertFalse(variables.entity.getRequiredShippingInfoExistsFlag());
 	}

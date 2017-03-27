@@ -140,6 +140,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 	}
 	
+	public void function setParentCollection(required any parentCollection){
+		if(getNewFlag()){
+			var parentCollectionConfigStruct = arguments.parentCollection.getCollectionConfigStruct();
+			parentCollectionConfigStruct.filterGroups = [{}];
+			parentCollectionConfigStruct.filterGroups[1]['filterGroup'] = [{}];
+			setCollectionConfig(serializeJson(parentCollectionConfigStruct));	
+		}
+		
+		variables.parentCollection = arguments.parentCollection;
+	}
 	
 	public array function getAuthorizedProperties(){
 		if(!structKeyExists(variables,'authorizedProperties')){
@@ -404,7 +414,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			column['attributeSetObject'] = lcase(left(attributeSetObject,1))&right(attributeSetObject,len(attributeSetObject)-1);
 		}else{
 			column['propertyIdentifier'] = collectionConfig.baseEntityAlias & '.' & arguments.displayProperty;
+			//if the property non-persistent?
+			if(
+				!getService('hibachiService').getPropertyIsPersistentByEntityNameAndPropertyIdentifier(getCollectionObject(),arguments.displayProperty)
+			){
+				column['persistent'] = false;
+			}
 		}
+		
 
 		arrayAppend(collectionConfig.columns,column);
 		this.setCollectionConfigStruct(collectionConfig);
@@ -1244,11 +1261,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return fromHQL;
 	}
 
-	public string function getHQL(boolean excludeSelectAndOrderBy = false, forExport=false, removeOrderBy = false){
+	public string function getHQL(boolean excludeSelectAndOrderBy = false, forExport=false, removeOrderBy = false, excludeGroupBy=false){
 		variables.HQLParams = {};
 		variables.postFilterGroups = [];
 		variables.postOrderBys = [];
-		var HQL = createHQLFromCollectionObject(this, arguments.excludeSelectAndOrderBy, arguments.forExport, arguments.removeOrderBy);
+		var HQL = createHQLFromCollectionObject(this, arguments.excludeSelectAndOrderBy, arguments.forExport, arguments.removeOrderBy,arguments.excludeGroupBy);
+		
+		
 		return HQL;
 	}
 
@@ -1367,12 +1386,20 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			var collectionConfig = getCollectionConfigStruct();
 			if(structKeyExists(collectionConfig, 'columns') && arraylen(collectionConfig.columns) > 0) {
 				for (var i = 1; i <= arraylen(collectionConfig.columns); i++) {
-					if (structKeyExists(collectionConfig.columns[i], 'aggregate')
-						|| structKeyExists(collectionConfig.columns[i], 'attributeID')
-						|| ListFindNoCase(groupByList, collectionConfig.columns[i].propertyIdentifier) > 0
+					var column = collectionConfig.columns[i];
+					var propertyIdentifier = rereplace(column.propertyIdentifier,'_','.','all');
+					var aliasLength = 1+len(lcase(getCollectionObject()));
+					if(lcase(left(propertyIdentifier,aliasLength))=='.'&lcase(getCollectionObject())){
+						propertyIdentifier = right(propertyIdentifier,len(propertyIdentifier)-aliasLength-1);
+					}
+					
+					if (structKeyExists(column, 'aggregate')
+						|| structKeyExists(column, 'attributeID')
+						|| ListFindNoCase(groupByList, column.propertyIdentifier) > 0
+						|| !getService('HibachiService').getPropertyIsPersistentByEntityNameAndPropertyIdentifier(getCollectionObject(),propertyIdentifier)
 					) continue;
 
-					groupByList = listAppend(groupByList, collectionConfig.columns[i].propertyIdentifier);
+					groupByList = listAppend(groupByList, column.propertyIdentifier);
 				}
 			}
 			if(structKeyExists(collectionConfig, 'orderBy') && arraylen(collectionConfig.orderBy) > 0){
@@ -1461,10 +1488,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 	
 	public string function convertPropertyIdentifierToAlias(required string propertyIdentifier){
-		if(left(arguments.propertyIdentifier,1) == '_'){
-			arguments.propertyIdentifier = listRest(arguments.propertyIdentifier,'.');
+		arguments.propertyIdentifier = Replace(arguments.propertyIdentifier,'.','_','all');
+		if(left(arguments.propertyIdentifier,len(getCollectionConfigStruct().baseEntityAlias)) == getCollectionConfigStruct().baseEntityAlias){
+			arguments.propertyIdentifier = right(arguments.propertyIdentifier,len(arguments.propertyIdentifier)-len(getCollectionConfigStruct().baseEntityAlias)-1);
 		}
-		return Replace(arguments.propertyIdentifier,'.','_','all');
+		return arguments.propertyIdentifier;
 	}
 		
 
@@ -1501,7 +1529,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							//prepare page records and possible process objects
 							variables.pageRecords = [];
 							variables.processObjects = [];
-							HQL = 'SELECT _#lcase(this.getCollectionObject())# ' & getHQL();
+							var entityAlias = "_#lcase(this.getCollectionObject())#";
+							HQL = 'SELECT #entityAlias# ' & getHQL(excludeGroupBy=true) & ' GROUP BY #entityAlias#';
 							HQLParams = getHQLParams();
 							var entities = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
 							var columns = getCollectionConfigStruct()["columns"];
@@ -1509,12 +1538,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							for(var entity in entities){
 								var pageRecord = {};
 								for(var column in columns){
-									var listRest = ListRest(column.propertyIdentifier,'.');
+									var propertyIdentifier = rereplace(replace(column.propertyIdentifier,entityAlias,''),'_','.','all');
+									if(left(propertyIdentifier,1) == '.'){
+										propertyIdentifier = right(propertyIdentifier,len(propertyIdentifier)-1);	
+									}
+									
 									if(structKeyExists(column,'setting') && column.setting == true){
-										var listRest = ListRest(column.propertyIdentifier,'.');
-										pageRecord[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = getSettingValueFormattedByPropertyIdentifier(listRest,entity);
+										propertyIdentifier = ListRest(column.propertyIdentifier,'.');
+										pageRecord[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = getSettingValueFormattedByPropertyIdentifier(propertyIdentifier,entity);
 									}else{
-										pageRecord[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = entity.getValueByPropertyIdentifier(listRest);
+										pageRecord[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = entity.getValueByPropertyIdentifier(propertyIdentifier);
 									}
 								}
 								arrayAppend(variables.pageRecords,pageRecord);
@@ -1523,7 +1556,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 									var processObject = entity.getProcessObject(this.getProcessContext());
 									arrayAppend(variables.processObjects,processObject);
 								}
-	
 							}
 						}else{
 							HQL = getHQL();
@@ -2047,7 +2079,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public any function createHQLFromCollectionObject(required any collectionObject,
 		boolean excludeSelectAndOrderBy=false,
 		boolean forExport=false,
-	    boolean removeOrderBy=false
+	    boolean removeOrderBy=false,
+	    boolean excludeGroupBy=false
 	){
 		var HQL = "";
 		var collectionConfig = arguments.collectionObject.getCollectionConfigStruct();
@@ -2107,7 +2140,19 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				var groupBys = [];
 				//add a group by for all selects that are not aggregates
 				for(var column in collectionConfig.columns){
-					if(!structKeyExists(column,'aggregate') && !structKeyExists(column,'persistent')){
+					var propertyIdentifier = rereplace(column.propertyIdentifier,'_','.','all');
+					var aliasLength = 1+len(lcase(getCollectionObject()));
+					
+					if(lcase(left(propertyIdentifier,aliasLength))=='.'&lcase(getCollectionObject())){
+						
+						propertyIdentifier = right(propertyIdentifier,len(propertyIdentifier)-aliasLength-1);
+					}
+					
+					if(
+						!structKeyExists(column,'aggregate') 
+						&& !structKeyExists(column,'persistent')
+						&& getService('HibachiService').getPropertyIsPersistentByEntityNameAndPropertyIdentifier(getCollectionObject(),propertyIdentifier)
+					){
 						arrayAppend(groupBys,column.propertyIdentifier);
 					}
 				}
@@ -2134,7 +2179,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 			if(len(aggregateFilters) > 0){
 				aggregateFilters =  ' HAVING #aggregateFilters#';
-				if(arguments.excludeSelectAndOrderBy == true){
+				if(arguments.excludeSelectAndOrderBy == true && !arguments.excludeGroupBy){
 					groupByHQL = "GROUP BY _#lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject()))#.id";
 				}
 			}
@@ -2159,7 +2204,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				joins = collectionConfig.joins;
 			}
 
-			if(structKeyExists(collectionConfig,'groupBys')){
+			if(structKeyExists(collectionConfig,'groupBys')  && !arguments.excludeGroupBy){
 				groupByHQL = getGroupByHQL(collectionConfig.groupBys);
 			}
 

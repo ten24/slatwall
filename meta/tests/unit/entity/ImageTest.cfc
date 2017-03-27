@@ -48,19 +48,23 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
-	// @hint put things in here that you want to run befor EACH test
+	// @hint put things in here that you want to run befor EACH test	
 	public void function setUp() {
 		super.setup();
 		
 		variables.entity = request.slatwallScope.newEntity( 'Image' );
 	}
-	
-	public function getResizedImagePathGetsMissingImagePath(){
+	/**
+	* @test
+	*/
+	public void function getResizedImagePathGetsMissingImagePath(){
 		var imagePath = variables.entity.getResizedImagePath();
 		assert(fileExists(expandPath(imagePath)));
 	}
-	
-	public function getResizedImageCreatesImgElementWithMissingPath(){
+	/**
+	* @test
+	*/
+	public void function getResizedImageCreatesImgElementWithMissingPath(){
 		var imagePath = variables.entity.getResizedImagePath();
 		var image = variables.entity.getResizedImage();
 		assert(image EQ '<img src="#imagePath#" />');

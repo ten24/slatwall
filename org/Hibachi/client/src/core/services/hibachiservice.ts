@@ -158,17 +158,23 @@ class HibachiService{
 		var entities = [];
 		//loop over all collection data to create objects
 		var hibachiService = this;
-		angular.forEach(collectionData, function(collectionItemData, key){
+		angular.forEach(collectionData, (collectionItemData, key)=>{
 			//create base Entity
 			var entity = hibachiService['new'+collectionConfig.baseEntityName.replace('Slatwall','')]();
 			//populate entity with data based on the collectionConfig
-			angular.forEach(collectionConfig.columns, function(column, key){
+			angular.forEach(collectionConfig.columns, (column, key)=>{
 				//get objects base properties
-				var propertyIdentifier = column.propertyIdentifier.replace(collectionConfig.baseEntityAlias.toLowerCase()+'.','');
+				var propertyIdentifier = column.propertyIdentifier.replace(collectionConfig.baseEntityAlias.toLowerCase(),'');
+                propertyIdentifier = this.utilityService.replaceAll(propertyIdentifier,'_','.');
+                if(propertyIdentifier.charAt(0)==='.'){
+                    propertyIdentifier = propertyIdentifier.slice(1);
+                }
+                console.log(propertyIdentifier);
 				var propertyIdentifierArray = propertyIdentifier.split('.');
 				var propertyIdentifierKey = propertyIdentifier.replace(/\./g,'_');
+                console.log(propertyIdentifierKey);
 				var currentEntity = entity;
-				angular.forEach(propertyIdentifierArray,function(property,key){
+				angular.forEach(propertyIdentifierArray,(property,key)=>{
 					if(key === propertyIdentifierArray.length-1){
 						//if we are on the last item in the array
 						if(angular.isObject(collectionItemData[propertyIdentifierKey]) && currentEntity.metaData[property].fieldtype === 'many-to-one'){

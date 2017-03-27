@@ -54,7 +54,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		variables.entityService = "hibachiSessionService";
 		variables.entity = request.slatwallScope.getService( variables.entityService ).newSession();
 	}
-	
+	/**
+	* @test
+	*/
 	public any function getLoggedInFlagTest(){
 		var sessionData = {
 			sessionID="",

@@ -47,47 +47,122 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+	
 	public void function setUp() {
 		super.setup();
 		
 		variables.service = request.slatwallScope.getService("hibachiValidationService");
 	}
 	
-	// validate_dataType()
+	// validate_dataType()	
+	/**
+	* @test
+	*/
 	public void function validate_dataType_creditCardNumber_returns_true_when_null() {
 		var orderPayment = request.slatwallScope.newEntity('OrderPayment');
 		
 		assert( variables.service.validate_dataType(orderPayment, 'creditCardNumber', 'creditCardNumber') );
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function validate_dataType_creditCardNumber_returns_true_when_valid_card() {
 		var orderPayment = request.slatwallScope.newEntity('OrderPayment');
 		orderPayment.setCreditCardNumber("4111111111111111");
 		
 		assert( variables.service.validate_dataType(orderPayment, 'creditCardNumber', 'creditCardNumber') );
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function validate_dataType_creditCardNumber_returns_false_when_empty_string() {
 		var orderPayment = request.slatwallScope.newEntity('OrderPayment');
 		orderPayment.setCreditCardNumber(" ");
 		
 		assertFalse( variables.service.validate_dataType(orderPayment, 'creditCardNumber', 'creditCardNumber') );
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function validate_dataType_creditCardNumber_returns_false_when_non_numeric() {
 		var orderPayment = request.slatwallScope.newEntity('OrderPayment');
 		orderPayment.setCreditCardNumber("9849579HELLO29874052");
 		
 		assertFalse( variables.service.validate_dataType(orderPayment, 'creditCardNumber', 'creditCardNumber') );
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getValidationStructTest(){
 		var order = request.slatwallScope.newEntity('Order');
 		var validation = variables.service.getValidationStruct(order);
 		addToDebug(validation);
 	}
+	/**
+	* @test
+	*/
+	public void function getValidationByCoreAndCustomTest_checkThatOverridingPropertiesWorks(){
+		var coreValidation = variables.service.getCoreValidation('Account');
+		
+		for(var validation in coreValidation.properties.accountCode){
+			if(structKeyExists(validation,'conditions') && validation.conditions == 'isOrganizationFlag'){
+				assertEquals(validation.unique,true);
+				assertEquals(validation.required,true);
+			}	
+		}
+		
+		//get customValidationFile
+		var customValidationFile = expandPath('/Slatwall')&'/meta/tests/unit/resources/validation/Account.json';
+		var rawCustomJSON = fileRead( customValidationFile );
+		var customValidation = deserializeJSON( rawCustomJSON );
+		makePublic(variables.service,'getValidationByCoreAndCustom');
+		var resultingValidation = variables.service.getValidationByCoreAndCustom(coreValidation,customValidation);
+		
+		for(var validation in coreValidation.properties.accountCode){
+			if(structKeyExists(validation,'conditions') && validation.conditions == 'isOrganizationFlag'){
+				assertEquals(validation.unique,false);
+				assertEquals(validation.required,true);
+			}	
+		}
+		
+	}
 	
+	/**
+	* @test
+	*/
+	public void function getValidationByCoreAndCustomTest_checkThatAddingConditionsWorks(){
+		var coreValidation = variables.service.getCoreValidation('Account_Create');
+		
+		assert(!structKeyExists(coreValidation.conditions,'legalAgeIsChecked'));
+		//get customValidationFile
+		var customValidationFile = expandPath('/Slatwall')&'/meta/tests/unit/resources/validation/Account_Create.json';
+		var rawCustomJSON = fileRead( customValidationFile );
+		var customValidation = deserializeJSON( rawCustomJSON );
+		makePublic(variables.service,'getValidationByCoreAndCustom');
+		var resultingValidation = variables.service.getValidationByCoreAndCustom(coreValidation,customValidation);
+		assert(structKeyExists(coreValidation.conditions,'legalAgeIsChecked'));
+		
+	}
+	
+	/**
+	* @test
+	*/
+	public void function validate_uniqueTest_uniquetrue(){
+		var accountCode = "test"&createUUID();
+		var accountData = {
+			accountID="",
+			accountCode=accountCode
+		};
+		var account = createPersistedTestEntity('Account',accountData);
+		
+		var account = createTestEntity('Account',accountData);
+		account.validate('save');
+		assertEquals(account.getErrors().accountCode[1],'Account Code must be unique or empty');
+	}
 }
 
 

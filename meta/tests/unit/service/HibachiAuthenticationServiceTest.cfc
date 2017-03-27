@@ -47,20 +47,26 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+	
 	public void function setUp() {
 		super.setup();
 		
 		variables.service = request.slatwallScope.getService("hibachiAuthenticationService");
 	}
 	
-	// getAuthenticationSubsystemNamesArray()
+	// getAuthenticationSubsystemNamesArray()	
+	/**
+	* @test
+	*/
 	public void function getAuthenticationSubsystemNamesArray_returns_more_than_three_because_of_integrations() {
 		var subsytemNamesArray = variables.service.getAuthenticationSubsystemNamesArray();
 		assert(arrayLen(subsytemNamesArray) > 3);
 	}
 	
-	// authenticateActionByAccount()
+	// authenticateActionByAccount()	
+	/**
+	* @test
+	*/
 	public void function authenticateActionByAccount_returns_false_for_mura_integration() {
 		assertFalse( variables.service.authenticateActionByAccount('mura:main.default', request.slatwallScope.newEntity('Account')) );
 	}

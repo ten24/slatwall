@@ -47,7 +47,7 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+	
 	public void function setUp() {
 		super.setup();
 		variables.service = request.slatwallScope.getService("orderService");
@@ -107,7 +107,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(order.getTestOrderFlag());
 	}
 
-	//test is incomplete as it bypasses the currencyconverions,promotion, and tax intergration update amounts code
+	//test is incomplete as it bypasses the currencyconverions,promotion, and tax intergration update amounts code	
+	/**
+	* @test
+	*/
 	public void function processOrder_addAndRemoveOrderItem_addOrderItems(){
 		//set up data
 
@@ -216,7 +219,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//addToDebug(orderReturn.getOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getQuantity());
 		//addToDebug(orderReturn.getOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getQuantity());
 	}
-
+	
+	/**
+	* @test
+	*/
 	public void function process_order_add_gift_card_order_item(){
 		var productData = {
 			productName="AGiftCardProductName",
@@ -297,7 +303,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		numOfUnassignedGiftCards = orderItemsAdded[1].getNumberOfUnassignedGiftCards();
 		assertEquals(0, numOfUnassignedGiftCards);
 	}
-
+	
+	/**
+	* @test
+	*/
 	public void function duplicate_order_with_child_order_items(){
 		//set up order
 		var orderData = {
@@ -366,7 +375,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertTrue(ArrayLen(duplicateorderitem.getChildOrderItems()));
 
 	}
-
+	
+	/**
+	* @test
+	*/
 	public void function processOrder_placeOrder_TermPayment(){
 		//adding a test shippingMethod
 		var shippingMethodData ={
@@ -586,7 +598,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		assertEquals(orderDelivery.getOrderDeliveryItems()[1].getQuantity(),1);
 	}
-
+	
+	/**
+	* @test
+	*/
 	public void function getOrderRequirementsListTest_failsOrderfulfillment(){
 		var accountData = {
 			accountID=""
@@ -618,7 +633,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		orderRequirementsList = variables.service.getOrderRequirementsList(order);
 		assertEquals(orderRequirementsList,'fulfillment');
 	}
-
+	
+	/**
+	* @test
+	*/
 	public void function getOrderRequirementsListTest_failsOrderReturn(){
 		var accountData = {
 			accountID=""
@@ -645,7 +663,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		orderRequirementsList = variables.service.getOrderRequirementsList(order);
 		assertEquals(orderRequirementsList,'return');
 	}
-
+	
+	/**
+	* @test
+	*/
 	public void function getOrderRequirementsListTest_failsPayment(){
 		var accountData = {
 			accountID=""
@@ -679,7 +700,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		orderRequirementsList = variables.service.getOrderRequirementsList(order);
 		assertEquals(orderRequirementsList,'payment');
 	}
-
+	
+	/**
+	* @test
+	*/
 	public void function getOrderRequirementsListTest_failsAccount(){
 		var orderData = {
 			orderID=""

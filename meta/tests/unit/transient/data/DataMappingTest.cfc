@@ -75,21 +75,29 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		];
 		variables.object.setData(data);
 	}
-
+	/**
+	* @test
+	*/
 	public void function getMappingBySlatwallEntityNameTest(){
 		
 		assert(variables.object.getMappingBySlatwallEntityName('Account')['slatwallEntity']=='Account');
 	}
-	
+	/**
+	* @test
+	*/
 	public void function getMappingByRemoteEntityNameTest(){
 		
 		assert(variables.object.getMappingByRemoteEntityName('Contact')['remoteEntity']=='Contact');
 	}
-	
+	/**
+	* @test
+	*/
 	public void function getRemoteEntityNameBySlatwallEntityNameTest(){
 		assert(variables.object.getRemoteEntityNameBySlatwallEntityName('Account')=='Contact');
 	}
-	
+	/**
+	* @test
+	*/
 	public void function getSlatwallEntityNameByRemoteEntityNameTest(){
 		assert(variables.object.getSlatwallEntityNameByRemoteEntityName('Contact')=='Account');
 	}

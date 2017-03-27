@@ -48,7 +48,7 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
-
+	
 	public void function setUp() {
 		super.setup();
 		variables.dao = request.slatwallScope.getDAO("promotionDAO");
@@ -94,7 +94,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		ormflush();	
 	}
-
+	
+	/**
+	* @test
+	*/
 	public void function getSalePricePromotionRewardsQueryTest(){
 		var productData = {
 			productID = '',
@@ -158,7 +161,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 	}
 	
-
+	
+	/**
+	* @test
+	*/
 	public void function getSalePricePromotionRewardsQueryTest_with_explicit_currency_conversion_on_reward(){
 
 		setupTestCurrencies();
@@ -270,7 +276,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(salePricePromotionRewardsQuery.SalePrice,10.55);
 
 	}
-
+	
+	/**
+	* @test
+	*/
 	public void function getSalePricePromotionRewardsQueryTest_without_explicit_currency_conversion_on_reward(){
 
 		setupTestCurrencies();
@@ -381,7 +390,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 
 
-	//This test is dependent on no pre-exisitng promotionReward data. All promotionReward data is generated for this test
+	//This test is dependent on no pre-exisitng promotionReward data. All promotionReward data is generated for this test	
+	/**
+	* @test
+	*/
 	public void function getActivePromotionRewardsTest(){
 		
 		//create promotion reward data for the DAO
@@ -428,7 +440,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(promotionCodeList[1].getPromotionRewardID(),promotionReward.getPromotionRewardID());
 		
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getPromotionPeriodUseCountTest(){
 		//requires promotion period
 		
@@ -484,7 +499,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(1,promotionPeriodCount);
 		
 	}
-
+	
+	/**
+	* @test
+	*/
 	public void function getPromotionCodeUseCount(){
 		
 		// Promotion Code Setup
@@ -508,7 +526,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//assert we were able to get our promotionCodeUseCount
 		assertEquals(1,PromotionCodeCount);
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getPromotionCodeAccountUseCount(){
 		
 		// Account Setup

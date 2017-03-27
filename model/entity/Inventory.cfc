@@ -56,6 +56,9 @@ component displayname="Inventory" entityname="SlatwallInventory" table="SwInvent
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
+	
+	// Remote properties
+	property name="remoteID" hb_populateEnabled="false" ormtype="string" hint="Only used when integrated with a remote system";
 
 	// Related Object Properties (many-to-one)
 	property name="stock" fieldtype="many-to-one" fkcolumn="stockID" cfc="Stock";

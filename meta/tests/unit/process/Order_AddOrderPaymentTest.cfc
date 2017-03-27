@@ -48,7 +48,7 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
-	// @hint put things in here that you want to run befor EACH test
+	// @hint put things in here that you want to run befor EACH test	
 	public void function setUp() {
 		super.setup();
 
@@ -56,7 +56,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.ccPaymentMethodID = "444df303dedc6dab69dd7ebcc9b8036a";
 
 	}
-
+	
+	/**
+	* @test
+	*/
 	public void function isReturnWithGiftCardOrderPaymentTest_giftCardPaymentCase(){
 		//ASSERT TRUE CASE GC PAYMENT WITH ORDER RETURN
 
@@ -73,7 +76,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertTrue(processObject.isReturnWithGiftCardOrderPayment());
 
 	}
-
+	
+	/**
+	* @test
+	*/
 	public void function isReturnWithGiftCardOrderPaymentTest_creditCardPaymentCase(){
 		//ASSERT FALSE CC PAYMENT WITH ORDER RETURN
 
@@ -89,7 +95,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		assertFalse(anotherProcessObject.isReturnWithGiftCardOrderPayment());
 	}
-
+	
+	/**
+	* @test
+	*/
 	public void function isReturnWithGiftCardOrderPaymentTest_noOrderReturnCase(){
 		//ASSERT FALSE GC PAYMENT WITH NO ORDER RETURN
 

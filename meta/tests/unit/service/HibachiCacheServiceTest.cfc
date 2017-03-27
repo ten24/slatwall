@@ -47,40 +47,58 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+	
 	public void function setUp() {
 		super.setup();
 		
 		variables.service = request.slatwallScope.getService("hibachiCacheService");
 	}
 	
-	// hasCachedValue()
+	// hasCachedValue()	
+	/**
+	* @test
+	*/
 	public void function hasCachedValue_returns_false() {
 		assertFalse( variables.service.hasCachedValue("test-cache-key-never-set") );
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function hasCachedValue_returns_true_if_exists() {
 		variables.service.setCachedValue("test-cache-key-set", "valid-value");
 		assert( variables.service.hasCachedValue("test-cache-key-set") );
 	}
 	
-	// getCachedValue()
+	// getCachedValue()	
+	/**
+	* @test
+	*/
 	public void function getCachedValue_returns_null_when_not_exists() {
 		assert( isNull(variables.service.getCachedValue('test-cache-key-never-set')) );
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getCachedValue_returns_correct_value_when_set() {
 		variables.service.setCachedValue("test-cache-key-set", "valid-value");
 		assert( variables.service.getCachedValue('test-cache-key-set') eq "valid-value" );
 	}
 	
-	// resetCachedKey()
+	// resetCachedKey()	
+	/**
+	* @test
+	*/
 	public void function resetCachedKey_makes_hasCacheValue_false() {
 		variables.service.setCachedValue("test-cache-key-set", "valid-value");
 		variables.service.resetCachedKey('test-cache-key-set');
 		assertFalse( variables.service.hasCachedValue("test-cache-key-set") );
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function resetCachedKey_makes_getCacheValue_return_value() {
 		variables.service.setCachedValue("test-cache-key-set", "valid-value");
 		variables.service.resetCachedKey('test-cache-key-set');

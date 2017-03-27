@@ -59,7 +59,8 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	property name="nextReminderEmailDate" ormtype="timestamp" hb_formatType="date" hb_formFieldType="date";
 	property name="expirationDate" ormtype="timestamp" hb_formatType="date" hb_formFieldType="date";
 	property name="emailAddress" hb_populateEnabled="public" ormtype="string";
-
+	property name="fulfillmentCharge" ormtype="big_decimal" hb_formatType="currency";
+	
 	// Related Object Properties (many-to-one)
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	property name="accountPaymentMethod" hb_populateEnabled="public" cfc="AccountPaymentMethod" fieldtype="many-to-one" fkcolumn="accountPaymentMethodID";
@@ -165,6 +166,9 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 		//Copy the shipping information from order fulfillment.
 		var orderFulfillment = orderItem.getOrderFulfillment();
 		if (!isNull(orderFulfillment)){
+			if (!isNull(orderFulfillment.getFulfillmentCharge())){
+ 				setFulfillmentCharge( orderFulfillment.getFulfillmentCharge() );
+ 			}
 			setEmailAddress( orderFulfillment.getEmailAddress() );
 			setShippingAccountAddress( orderFulfillment.getAccountAddress() );
 			setShippingMethod( orderFulfillment.getShippingMethod() );
