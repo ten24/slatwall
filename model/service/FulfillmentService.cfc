@@ -71,8 +71,44 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ===================== START: Process Methods ===========================
 	// Process: FulfillmentBatch
 	public any function processFulfillmentBatch_create(required any fulfillmentBatch, required any processObject){
-		//stub method for the processing a fulfillment batch create.
-		return fulfillmentBatch;
+		
+		//populate the fulfillmentbatch with the process data
+		if (isNull(fulfillmentBatch.getAssignedAccount())){
+			arguments.fulfillmentBatch.setAssignedAccount(processObject.getAssignedAccount());
+		}
+		
+		if (!arrayLen(fulfillmentBatch.getLocations())){
+			var location = processObject.getLocation();
+			if (!isNull(location)){
+				arguments.fulfillmentBatch.addLocation(location);
+			}
+		}
+		
+		if (isNull(fulfillmentBatch.getDescription())){
+			arguments.fulfillmentBatch.setDescription(processObject.getDescription());
+		}
+		
+		//If they are trying to pass fulfillments for the fulfillment batch.
+		if (!isNull(processObject.getOrderFulfillmentIDList())){
+			arguments.fulfillmentBatch.setFulfillmentBatchItems(arguments.processObject.getFulfillmentBatchItemsByOrderFulfillmentIDList());
+		}
+		
+		//If they are trying to pass orderItems for the fulfillment batch.
+		if (!isNull(processObject.getOrderItemIDList())){
+			arguments.fulfillmentBatch.setFulfillmentBatchItems(arguments.processObject.getFulfillmentBatchItemsByOrderItemIDList());
+		}
+		
+		return arguments.fulfillmentBatch;
+	}
+	
+	// Stub: FulfillmentBatch Auto fulfill all fulfillment batch items
+	public any function autoFulfill(required any fulfillmentBatch){
+		
+		var fulfillmentBatchItems = fulfillmentBatch.getFulfillmentBatchItems();
+		for (var fulfillmentbatchItem in fulfillmentBatchItems){
+			//fulfill.
+		}
+		return processObject.getFulfillmentBatch();
 	}
 	// =====================  END: Process Methods ============================
 	

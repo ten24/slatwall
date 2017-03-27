@@ -52,12 +52,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="fulfillmentBatch" hb_rbKey="entity.fulfillmentBatch" cfc="FulfillmentBatch";
 	property name="assignedAccount" hb_rbKey="entity.fulfillmentBatch.assignedAccount" cfc="Account";
 	property name="location" hb_rbKey="entity.fulfillmentBatch.location" cfc="Location";
-	property name="fulfillmentBatchItems" cfc="FulfillmentBatch";
+	property name="fulfillmentBatchItems" cfc="FulfillmentBatch" type="array" default="[]";
 	
 	// Data Properties
 	property name="assignedAccountID" hb_rbKey="entity.fulfillmentBatch.assignedAccount" cfc="Account";
 	property name="description" hb_rbKey="entity.fulfillmentBatch.description";
 	property name="locationID" hb_rbKey="entity.fulfillmentBatch.location" cfc="Location";
+	property name="orderFulfillmentIDList" hb_populateEnabled="public" cfc="OrderFulfillment";
+	property name="orderItemIDList" hb_populateEnabled="public" cfc="OrderItem";
 	
 	public any function getAssignedAccount(){
 		if(!structKeyExists(variables,'assignedAccount')){
@@ -71,13 +73,70 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 	
 	public any function getLocation(){
-		if(!structKeyExists(variables,'locationID')){
-			if(!isNull(getLocationID())){
-				variables.location = getService('locationService').getLocation(getLocationID());	
-			}else{
-				return;
+		if(!structKeyExists(variables,'location')){
+			if(structKeyExists(variables, "locationID")){
+				variables.location = getService('locationService').getLocation(variables.locationID);
 			}
 		}
 		return variables.location;
 	}
+	
+	/**
+	 * Turns a list of orderFulfillmentIDs into fulfillmentBatchItems and returns those items.
+	 */
+	public any function getFulfillmentBatchItemsByOrderFulfillmentIDList(){
+		//If we have a id list.
+		if (!structKeyExists(variables, "fulfillmentBatchItems")){
+			var fulfillmentBatchItems = [];
+			if (len(variables.orderFulfillmentIDList)){
+				for (var orderFulfillmentID in variables.orderFulfillmentIDList){
+					var orderFulfillment = getService("FulfillmentService").getOrderFulfillmentByOrderFulfillmentID(orderFulfillmentID);
+					var fulfillmentBatchItem = getService("FulfillmentService").newFulfillmentBatchItem();
+					//Sets the batch on the item
+					fulfillmentBatchItem.setFulfillmentBatch(getFulfillmentBatch());
+					//Sets the orderFulfillment on the item
+					fulfillmentBatchItem.setOrderFulfillment(orderFulfillment);
+					arrayAppend(fulfillmentBatchItems, fulfillmentBatchItem);
+				}
+			}
+		}
+		return fulfillmentBatchItems;
+	}
+	
+	/**
+	 * Turns a list of orderItemIDs into fulfillmentBatchItems and returns those items.
+	 */
+	public any function getFulfillmentBatchItemsByOrderItemIDList(){
+		//If we have a id list.
+		if (structKeyExists(variables, "orderItemIDList") && !arrayLen(variables.fulfillmentBatchItems)){
+			for (var orderItemID in variables.orderItemIDList){
+				var orderItem = getService("OrderService").getOrderItemByOrderItemID(orderItemID);
+				var fulfillmentBatchItem = getService("FulfillmentService").newFulfillmentBatchItem();
+				//Sets the batch on the item
+				fulfillmentBatchItem.setFulfillmentBatch(getFulfillmentBatch());
+				//Sets the orderFulfillment on the item
+				fulfillmentBatchItem.setOrderItem(orderItem);
+				arrayAppend(fulfillmentBatchItems, fulfillmentBatchItem);
+			}
+		}
+		return variables.fulfillmentBatchItems;
+	}
+	
+	
+	/**
+	 * Returns either the injected fulfillmentBatchItems, or generated ones if either orderItemList or orderFulfillment list exists.
+	 */
+	 public any function getFulfillmentBatchItems(){
+	 	if (!structKeyExists(variables, "fulfillmentBatchItems")){
+	 		var fulfillmentBatchItems = getFulfillmentBatchItemsByOrderFulfillmentIDList();
+	 		if (arrayLen(fulfillmentBatchItems)){
+	 			variables.fulfillmentBatchItems = fulfillmentBatchItems;
+	 		}
+	 		var fulfillmentBatchItems = getFulfillmentBatchItemsByOrderItemIDList();
+	 		if (arrayLen(fulfillmentBatchItems)){
+	 			variables.fulfillmentBatchItems = fulfillmentBatchItems;
+	 		}
+	 	}
+	 	return variables.fulfillmentBatchItems;
+	 }
 }
