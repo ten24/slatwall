@@ -147,7 +147,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		//Get some random orderFulfillments from Slatwall to use
 		var orderFulfillmentsForTesting = [];
-		for (var i = 0; i<=5; i++){
+		for (var i = 1; i<=5; i++){
 			data = {
 				orderFulfillmentID: "#now()#12345678-" & i
 			};
@@ -157,7 +157,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//Create the orderFulfillmentIDList;
 		orderFulfillmentIDList = "";
 		for (var orderFulfillment in orderFulfillmentsForTesting){
-			orderFulfillmentIDList = orderFulfillmentIDList & "," & orderFulfillment.getOrderFulfillmentID();
+			orderFulfillmentIDList = listAppend(orderFulfillmentIDList, orderFulfillment.getOrderFulfillmentID());
 		}
 		
 		//*** Don't populate this time as it needs to happen automatically including the idList
@@ -192,7 +192,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//Call to generate the batchItems from the fulfillment list
 		processObject.getFulfillmentBatchItemsByOrderFulfillmentIDList();
 		
-		//Should have at least one fulfillmentBatchItem
-		assert(arrayLen(processObject.getFulfillmentBatchItems()) > 0, "Should have at least one fulfillmentBatchItem");
+		//Should have 5 fulfillmentBatchItem
+		assertEquals(5, arrayLen(processObject.getFulfillmentBatchItems()), "Should have at least one fulfillmentBatchItem");
 	}
 }

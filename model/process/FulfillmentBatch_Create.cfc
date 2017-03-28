@@ -83,21 +83,23 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	/**
 	 * Turns a list of orderFulfillmentIDs into fulfillmentBatchItems and returns those items.
+	 * @returns an array of fulfillmentBatchItems
 	 */
 	public any function getFulfillmentBatchItemsByOrderFulfillmentIDList(){
 		//If we have a id list.
-		if (!structKeyExists(variables, "fulfillmentBatchItems")){
-			var fulfillmentBatchItems = [];
-			if (len(variables.orderFulfillmentIDList)){
-				for (var orderFulfillmentID in variables.orderFulfillmentIDList){
-					var orderFulfillment = getService("FulfillmentService").getOrderFulfillmentByOrderFulfillmentID(orderFulfillmentID);
-					var fulfillmentBatchItem = getService("FulfillmentService").newFulfillmentBatchItem();
-					//Sets the batch on the item
-					fulfillmentBatchItem.setFulfillmentBatch(getFulfillmentBatch());
-					//Sets the orderFulfillment on the item
-					fulfillmentBatchItem.setOrderFulfillment(orderFulfillment);
-					arrayAppend(fulfillmentBatchItems, fulfillmentBatchItem);
+		var fulfillmentBatchItems = [];
+		if (structKeyExists(variables, "orderFulfillmentIDList") && len(variables.orderFulfillmentIDList)){
+			for (var orderFulfillmentID in variables.orderFulfillmentIDList){
+				var orderFulfillment = getService("FulfillmentService").getOrderFulfillmentByOrderFulfillmentID(orderFulfillmentID);
+				if (isNull(orderFulfillment)){
+					continue;
 				}
+				var fulfillmentBatchItem = getService("FulfillmentService").newFulfillmentBatchItem();
+				//Sets the batch on the item
+				fulfillmentBatchItem.setFulfillmentBatch(getFulfillmentBatch());
+				//Sets the orderFulfillment on the item
+				fulfillmentBatchItem.setOrderFulfillment(orderFulfillment);
+				arrayAppend(fulfillmentBatchItems, fulfillmentBatchItem);
 			}
 		}
 		return fulfillmentBatchItems;
@@ -105,13 +107,17 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	/**
 	 * Turns a list of orderItemIDs into fulfillmentBatchItems and returns those items.
+	 * @returns an array of fulfillmentBatchItems
 	 */
 	public any function getFulfillmentBatchItemsByOrderItemIDList(){
 		//If we have a id list.
 		var fulfillmentBatchItems = [];
-		if (structKeyExists(variables, "orderItemIDList") ){
+		if (structKeyExists(variables, "orderItemIDList") && len(variables.orderItemIDList)){
 			for (var orderItemID in variables.orderItemIDList){
 				var orderItem = getService("OrderService").getOrderItemByOrderItemID(orderItemID);
+				if (isNull(orderItem)){
+					continue;
+				}
 				var fulfillmentBatchItem = getService("FulfillmentService").newFulfillmentBatchItem();
 				//Sets the batch on the item
 				fulfillmentBatchItem.setFulfillmentBatch(getFulfillmentBatch());
@@ -120,26 +126,30 @@ component output="false" accessors="true" extends="HibachiProcess" {
 				arrayAppend(fulfillmentBatchItems, fulfillmentBatchItem);
 			}
 		}
-		return variables.fulfillmentBatchItems;
+		return fulfillmentBatchItems;
 	}
 	
 	
 	/**
 	 * Returns either the injected fulfillmentBatchItems, or generated ones if either orderItemList or orderFulfillment list exists.
+	 * @returns array of fulfillmentBatchItems
 	 */
 	 public any function getFulfillmentBatchItems(){
 	 	if (!structKeyExists(variables, "fulfillmentBatchItems")){
-	 		var fulfillmentBatchItems = [];
-	 		if (structKeyExists(variables, "orderFulfillmentIDList")){
-		 		var fulfillmentBatchItems = getFulfillmentBatchItemsByOrderFulfillmentIDList();
-		 		
-		 		if (arrayLen(fulfillmentBatchItems) > 0){
-		 			variables.fulfillmentBatchItems = fulfillmentBatchItems;
-		 		}
+	 		
+	 		//Create the initial array since it doesn't exist.
+	 		variables.fulfillmentBatchItems = arrayNew(1);
+	 		
+	 		//Get batch items by orderFulfillment (of)
+	 		var ofFulfillmentBatchItems = getFulfillmentBatchItemsByOrderFulfillmentIDList();
+	 		if (!isNull(ofFulfillmentBatchItems) && arrayLen(ofFulfillmentBatchItems)){
+	 			variables.fulfillmentBatchItems.addAll(ofFulfillmentBatchItems);
 	 		}
-	 		if (structKeyExists(variables, "orderItemIDList")){
-		 		fulfillmentBatchItems = getFulfillmentBatchItemsByOrderItemIDList();
-		 		arrayApend(variables.fulfillmentBatchItems, fulfillmentBatchItems); //adds to these in case there are already some there
+	 		
+	 		//Get batch items by orderItem (oi)
+	 		var oiFulfillmentBatchItems = getFulfillmentBatchItemsByOrderItemIDList();
+	 		if (!isNull(oiFulfillmentBatchItems) && arrayLen(oiFulfillmentBatchItems)){
+	 			variables.fulfillmentBatchItems.addAll(oiFulfillmentBatchItems);
 	 		}
 	 	}
 	 	return variables.fulfillmentBatchItems;
