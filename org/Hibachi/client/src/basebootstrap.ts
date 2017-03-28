@@ -133,7 +133,7 @@ export class BaseBootStrapper{
         .then( (resp:any)=> {
             var appConfig = resp.data.data;
             if(hibachiConfig.baseURL.length){
-                appConfig.baseURL=hibachiConfig.baseURL;    
+                appConfig.baseURL=urlString;    
             }
             
             coremodule.constant('appConfig',appConfig);
