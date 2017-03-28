@@ -646,16 +646,26 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	// @hint handles decrypting a property based on conventions
 	public string function decryptProperty(required string propertyName) {
 		var encryptedPropertyValue = "";
-		var generatorValue = this.invokeMethod("get#arguments.propertyName#EncryptedGenerator");
+		
+		var isAttributeProperty = getService('hibachiService').getHasAttributeByEntityNameAndPropertyIdentifier(getClassName(),arguments.propertyName);
+		
+		var generatorName = "";
+		var entity = this;
+		if(isAttributeProperty){
+			generatorName = "AttributeValue";
+			entity = this.getAttributeValue(arguments.propertyName,true);
+		}else{
+			generatorName = arguments.propertyName;	
+		}
+		var generatorValue = entity.invokeMethod("get#generatorName#EncryptedGenerator");;
 		param name="generatorValue" default="";
 
 		// Determine the appropriate property to retrieve the encrytped value from
-		if (this.hasProperty("#arguments.propertyName#Encrypted")) {
-			encryptedPropertyValue = this.invokeMethod("get#arguments.propertyName#Encrypted");
+		if (entity.hasProperty("#generatorName#Encrypted")) {
+			encryptedPropertyValue = entity.invokeMethod("get#generatorName#Encrypted");
 		} else {
 			encryptedPropertyValue = variables['#arguments.propertyName#'];
 		}
-
 		return decryptValue(encryptedPropertyValue, generatorValue);
 	}
 
