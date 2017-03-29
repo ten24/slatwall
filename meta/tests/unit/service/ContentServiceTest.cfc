@@ -47,13 +47,16 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+	
 	public void function setUp() {
 		super.setup();
 		
 		variables.service = request.slatwallScope.getBean("contentService");
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function deleteCategory_removes_content_assignments() {
 		
 		// Create a content & category
@@ -82,7 +85,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 	}
 	
-	
+		
+	/**
+	* @test
+	*/
 	public void function deleteCategoryByCMSCategoryID_removes_content_assignments() {
 		
 		// Create a content & category

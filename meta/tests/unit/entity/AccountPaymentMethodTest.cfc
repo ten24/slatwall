@@ -48,13 +48,16 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
-	// @hint put things in here that you want to run befor EACH test
+	// @hint put things in here that you want to run befor EACH test	
 	public void function setUp() {
 		super.setup();
 		
 		variables.entity = request.slatwallScope.newEntity("AccountPaymentMethod");
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function setBillingAccountAddress_updates_billingAddress() {
 		
 		var accountAddressDataOne = {
@@ -81,7 +84,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals( accountAddressDataTwo.address.streetAddress, variables.entity.getBillingAddress().getStreetAddress() );
 
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function setBillingAccountAddress_updates_billingAddress_without_creating_a_new_one() {
 		addressDataOne = {
 			streetAddress = '123 Main Street'
@@ -105,7 +111,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals( accountAddressDataOne.address.streetAddress, variables.entity.getBillingAddress().getStreetAddress() );
 		assertEquals( billingAddress.getAddressID(), variables.entity.getBillingAddress().getAddressID() );
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function setBillingAccountAddress_doesnt_updates_billingAddress_when_same_aa_as_before() {
 		var accountAddressDataOne = {
 			address = {
@@ -127,7 +136,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals( '123 Main Street', variables.entity.getBillingAddress().getStreetAddress() );
 		
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function isValidTest(){
 		var accountPaymentMethodData={
 			accountPaymentMethodID="",

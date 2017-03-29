@@ -47,14 +47,17 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+	
 	public void function setUp() {
 		super.setup();
 		variables.service = request.slatwallScope.getService("orderService");
 
 	}
 
-	//test is incomplete as it bypasses the currencyconverions,promotion, and tax intergration update amounts code
+	//test is incomplete as it bypasses the currencyconverions,promotion, and tax intergration update amounts code	
+	/**
+	* @test
+	*/
 	public void function processOrder_addAndRemoveOrderItem_addOrderItems(){
 		//set up data
 
@@ -163,7 +166,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//addToDebug(orderReturn.getOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getQuantity());
 		//addToDebug(orderReturn.getOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getQuantity());
 	}
-
+	
+	/**
+	* @test
+	*/
 	public void function process_order_add_gift_card_order_item(){
 		var productData = {
 			productName="AGiftCardProductName",
@@ -244,7 +250,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		numOfUnassignedGiftCards = orderItemsAdded[1].getNumberOfUnassignedGiftCards();
 		assertEquals(0, numOfUnassignedGiftCards);
 	}
-
+	
+	/**
+	* @test
+	*/
 	public void function duplicate_order_with_child_order_items(){
 		//set up order
 		var orderData = {
@@ -313,7 +322,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertTrue(ArrayLen(duplicateorderitem.getChildOrderItems()));
 
 	}
-
+	
+	/**
+	* @test
+	*/
 	public void function processOrder_placeOrder_TermPayment(){
 		//adding a test shippingMethod
 		var shippingMethodData ={
@@ -533,7 +545,139 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		assertEquals(orderDelivery.getOrderDeliveryItems()[1].getQuantity(),1);
 	}
+	
+	/**
+	* @test
+	* @description make sure that when we do an exchange that we can add return order items even if we track inventory
+	*/
+	public void function processOrder_addOrderItem_ReturnExchangeTest(){
+		//adding a test shippingMethod
+		var shippingMethodData ={
+			shippingMethodID="",
+			fulfillementMethod={
+				//shipping
+				fulfillmentMethodID='444df2fb93d5fa960ba2966ba2017953'
+			},
+			activeFlag=1,
+			shippingMethodName="testShippingMethod"&createUUID(),
+			shippingMethodCode="testShippingMethod"&createUUID()
+		};
+		var shippingMethod = createPersistedTestEntity('ShippingMethod',shippingMethodData);
 
+		var shippingMethodRateData={
+			shippingMethodRateID="",
+			shippingMethod={
+				shippingMethodID=shippingMethod.getShippingMethodID()
+			},
+			activeFlag=1
+		};
+		var shippingMethodRate = createPersistedTestEntity('ShippingMethodRate',shippingMethodRateData);
+
+		var accountData={
+			accountID="",
+			firstName="test",
+			lastName="test",
+			emailAddress="test@test.com"
+		};
+		var account = createPersistedTestEntity('account',accountData);
+
+
+		//set up an orderable product
+		var productData = {
+			productID="",
+			productCode="testProduct"&createUUID(),
+			productType={
+				//merchandise
+				productTypeID='444df2f7ea9c87e60051f3cd87b435a1'
+			}
+		};
+		var product = createPersistedTestEntity('Product',productData);
+
+		var skuData={
+			skuID="",
+			skuCode="testSku"&createUUID(),
+			product={
+				productID=product.getProductID()
+			}
+		};
+		var sku = createPersistedTestEntity('sku',skuData);
+		
+		//set up track inventory on  sku
+		var settingData={
+			settingID="",
+			settingName="skuTrackInventoryFlag",
+			settingValue=1,
+			sku={
+				skuID=sku.getSkuID()
+			}
+		};
+		var settingEntity = createPersistedTestEntity('Setting',settingData);
+
+
+		var orderData = {
+			orderID="",
+			accountID=account.getAccountID(),
+			currencyCode='USD',
+			orderType={
+				//exchange order
+				typeID='444df2e00b455a2bae38fb55f640c204'
+			},
+			newAccountFlag=0
+
+		};
+		var order = createTestEntity('order',{});
+		order = variables.service.process(order,orderData,'create');
+
+		variables.service.getDao('hibachiDao').flushOrmSession();
+
+		var shippingAddressData={
+			addressID="",
+			firstName="test",
+			lastName="test",
+			streetAddress="test st",
+			company="",
+			city="test",
+			stateCode="MA",
+			countryCode="US",
+			postalCode="01757"
+		};
+		var shippingAddress = createPersistedTestEntity('Address',shippingAddressData);
+
+		var accountAddressData = {
+			accountAddressID="",
+			address={
+				addressID=shippingAddress.getAddressID()
+			},
+			account={
+				accountID=account.getAccountID()
+			}
+		};
+		var accountAddress = createPersistedTestEntity('AccountAddress',accountAddressData);
+
+		var addOrderItemData={
+			skuID=sku.getSkuID(),
+			orderItemTypeSystemCode="oitReturn",
+			quantity=1,
+			price=1.00,
+			orderFulfillmentID="new",
+			//shipping
+			fulfillmentMethodID='444df2fb93d5fa960ba2966ba2017953',
+			//default location
+			pickupLocationID='88e6d435d3ac2e5947c81ab3da60eba2',
+
+			shippingAccountAddressID=accountAddress.getAccountAddressID(),
+			shippingAddress.countryCode='US',
+			saveShippingAccountAddressFlag=1,
+			preProcessDisplayedFlag=1
+		};
+		order = variables.service.process(order,addOrderItemData,'addOrderItem');
+		assert(!order.hasErrors());
+		
+	}
+	
+	/**
+	* @test
+	*/
 	public void function getOrderRequirementsListTest_failsOrderfulfillment(){
 		var accountData = {
 			accountID=""
@@ -565,7 +709,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		orderRequirementsList = variables.service.getOrderRequirementsList(order);
 		assertEquals(orderRequirementsList,'fulfillment');
 	}
-
+	
+	/**
+	* @test
+	*/
 	public void function getOrderRequirementsListTest_failsOrderReturn(){
 		var accountData = {
 			accountID=""
@@ -592,7 +739,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		orderRequirementsList = variables.service.getOrderRequirementsList(order);
 		assertEquals(orderRequirementsList,'return');
 	}
-
+	
+	/**
+	* @test
+	*/
 	public void function getOrderRequirementsListTest_failsPayment(){
 		var accountData = {
 			accountID=""
@@ -626,7 +776,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		orderRequirementsList = variables.service.getOrderRequirementsList(order);
 		assertEquals(orderRequirementsList,'payment');
 	}
-
+	
+	/**
+	* @test
+	*/
 	public void function getOrderRequirementsListTest_failsAccount(){
 		var orderData = {
 			orderID=""

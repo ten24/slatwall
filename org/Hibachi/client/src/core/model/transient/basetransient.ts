@@ -4,8 +4,8 @@
 import {BaseObject} from "../baseobject";
 import {HibachiService} from "../../services/hibachiservice";
 import {HibachiValidationService} from "../../services/hibachivalidationservice";
-import {EntityService} from "../../services/entityService";
-import {UtilityService} from "../../services/utilityService";
+import {EntityService} from "../../services/entityservice";
+import {UtilityService} from "../../services/utilityservice";
 
 abstract class BaseTransient extends BaseObject{
 

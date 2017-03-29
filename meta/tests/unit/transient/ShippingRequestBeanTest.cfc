@@ -46,14 +46,17 @@
 Notes:
 
 */
-component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
+component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {	
 	public void function setUp() {
 		super.setup();
 		
 		variables.transient = request.slatwallScope.getBean("ShippingRequestBean");
 	}
 	
-	// getEntity()
+	// getEntity()	
+	/**
+	* @test
+	*/
 	public void function getTotalWeightTest() {
 //		var shippingItemRequestBean = request.slatwallScope.getBean("ShippingItemRequestBean");
 //		shippingItemRequestBean.setQuantity(5);

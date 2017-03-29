@@ -48,7 +48,7 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
-	// @hint put things in here that you want to run befor EACH test
+	// @hint put things in here that you want to run befor EACH test	
 	public void function setUp() {
 		super.setup();
 		
@@ -56,15 +56,24 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		variables.entity = request.slatwallScope.getService( variables.entityService ).newAccountPayment();
 		
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getExpirationMonthOptions_returns_a_12_index_array() {
 		assert(arrayLen(variables.entity.getExpirationMonthOptions()) eq 12);
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getExpirationYearOptions_returns_a_20_index_array() {
 		assertEquals(arrayLen(variables.entity.getExpirationYearOptions()), 20);
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function isValidTest(){
 		var accountPaymentData={
 			accountPaymentID=""
@@ -73,7 +82,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		accountPayment.validate('save');
 		assert(accountPayment.hasErrors());		
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getAmountTest(){
 		var accountPaymentData={
 			accountPaymentID=""
@@ -100,7 +112,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		assertEquals(15.09,accountPayment.getAmount());
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getAmountReceivedTest(){
 		var accountPaymentData={
 			accountPaymentID="",
@@ -132,7 +147,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		assertEquals(8.55,accountPayment.getAmountReceived());
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getAmountCreditedTest(){
 		var accountPaymentData={
 			accountPaymentID="",
@@ -164,7 +182,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		assertEquals(8.55,accountPayment.getAmountCredited());
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getAmountAuthorizedTest(){
 		var accountPaymentData={
 			accountPaymentID="",
