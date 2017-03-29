@@ -14,7 +14,7 @@ var orderfulfillmentmodule = angular.module('orderFulfillment',[coremodule.name]
 
 }])
 //constants
-.constant('orderFulfillmentPartialsPath','optiongroup/components/')
+.constant('orderFulfillmentPartialsPath','orderFulfillment/components/')
 //controllers
 //directives
 .directive('swOrderFulfillmentList', SWOrderFulfillmentList.Factory());

@@ -295,7 +295,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						}
 
 					}
-
+					
+					//Sets the status type
+					orderFulfillment.setOrderFulfillmentInventoryStatusType(orderFulfillment.getOrderFulfillmentInventoryStatusType());
 					orderFulfillment = this.saveOrderFulfillment( orderFulfillment );
                     //check the fulfillment and display errors if needed.
                     if (orderFulfillment.hasErrors()){

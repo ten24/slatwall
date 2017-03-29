@@ -1,52 +1,87 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
+
 class SWOrderFulfillmentListController {
     
-    
+    private orderFulfillmentCollection:any;
+    private orderCollectionConfig:any;
+    private orderFulfillments:any[];
+    private filters:{};
+    private toggleFilter:any;
+    private refreshCollection:any;
+    public total:number;
+
     
     // @ngInject
     constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private utilityService){
+        //Some setup
+        this.filters = {"unavailable": false, "partial": true, "available": true};
+        this.orderFulfillmentCollection = collectionConfigService.newCollectionConfig("OrderFulfillment");
+        this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentID");
+        this.orderFulfillmentCollection.addDisplayProperty("order.orderNumber");
+        this.orderFulfillmentCollection.addDisplayProperty("order.orderOpenDateTime");
+        this.orderFulfillmentCollection.addDisplayProperty("shippingMethod.shippingMethodName");
+        this.orderFulfillmentCollection.addDisplayProperty("shippingAddress.stateCode");
+        //this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentInventoryStatusType");
+        this.orderFulfillmentCollection.addFilter("order.orderNumber", null, "!=");
         
-        
-        
-        //this.productCollectionConfig = collectionConfigService.newCollectionConfig("Product");
-        //this.productCollectionConfig.addDisplayProperty("productID, productName, productType.productTypeID");
-        
-        /*this.productCollectionConfig.getEntity(this.productId).then((response)=>{
-            
-            this.product = response; 				
-            this.productTypeID = response.productType_productTypeID;
-            
-            this.skuCollectionConfig = collectionConfigService.newCollectionConfig("Sku");
-            this.skuCollectionConfig.addDisplayProperty("skuID, skuCode, product.productID"); 
-            this.skuCollectionConfig.addFilter("product.productID", this.productId);
-            this.skuCollectionConfig.setAllRecords(true);
-            
-            this.usedOptions = [];
-            
-            this.skuCollectionConfig.getEntity().then((response)=>{
-                this.skus = response.records; 	
-                angular.forEach(this.skus, (sku)=>{
-                    
-                    var optionCollectionConfig = collectionConfigService.newCollectionConfig("Option");
-                    
-                    optionCollectionConfig.addDisplayProperty("optionID, optionName, optionCode, optionGroup.optionGroupID");
-                    optionCollectionConfig.setAllRecords(true);
-                    optionCollectionConfig.addFilter("skus.skuID", sku.skuID);
-                    
-                    optionCollectionConfig.getEntity().then((response)=>{
-                        this.usedOptions.push(
-                            utilityService.arraySorter(response.records, ["optionGroup_optionGroupID"])
-                        );
-                    });
-                });
-            }); 
-        }); */
-        
-        //this.observerService.attach(this.validateOptions, "validateOptions");			
+
+        //Toggle the filter
+        this.toggleFilter = (filterName) => {
+            this.filters[filterName] = !this.filters[filterName];
+            if (this.filters[filterName]){
+                addFilter(filterName, true);
+            }
+        }
+
+        var addFilter = (key, value) => {
+            console.log("Add Filter Called With", key, value);
+            if (key == "partial"){
+                this.orderFulfillmentCollection.addFilterGroup([{
+                    propertyIdentifier: "orderFulfillmentInventoryStatusType",
+                    comparisonValue: "fefc92c1d8184017aa65cdc882bdf637",
+                    comparisonOperator: "=",
+                    logicalOperator: "OR",
+                    hidden: "false"
+                }]);
+            }
+            if (key == "available"){
+                this.orderFulfillmentCollection.addFilterGroup([{
+                    propertyIdentifier: "orderFulfillmentInventoryStatusType",
+                    comparisonValue: "b718b6fadf084bdaa01e47f5cc1a8266",
+                    comparisonOperator: "=",
+                    logicalOperator: "OR",
+                    hidden: "false"
+                }]);
+            }
+            if (key == "unavailable"){
+                this.orderFulfillmentCollection.addFilterGroup([{
+                    propertyIdentifier: "orderFulfillmentInventoryStatusType",
+                    comparisonValue: "159118d67de3418d9951fc629688e195",
+                    comparisonOperator: "=",
+                    logicalOperator: "OR",
+                    hidden: "false"
+                }]);
+            }
+            if (key == "location"){
+                this.orderFulfillmentCollection.addFilter("orderFulfillmentItems.stock.location.locationName", value);
+            }
+            this.refreshCollection();
+        }
+
+        /**
+         * Initialized the orderFulfillment collection so that the listingDisplay can you it to display its data.
+         */
+        this.refreshCollection = () => {
+            this.orderFulfillmentCollection.getEntity().then((response)=>{
+                console.log("Records" , response);
+                this.orderFulfillments = response.pageRecords;
+                this.total = response.recordsCount;
+            });
+        }
+        this.refreshCollection();	
     }
-    
 }
 
 class SWOrderFulfillmentList implements ng.IDirective{
@@ -66,14 +101,14 @@ class SWOrderFulfillmentList implements ng.IDirective{
             $timeout, 
             collectionConfigService,
             observerService,
-			optionGroupPartialsPath,
+			orderFulfillmentPartialsPath,
 			slatwallPathBuilder
 		) => new SWOrderFulfillmentList (
             $hibachi, 
             $timeout, 
             collectionConfigService,
             observerService,
-			optionGroupPartialsPath,
+			orderFulfillmentPartialsPath,
 			slatwallPathBuilder
 		);
 		directive.$inject = [
@@ -81,14 +116,14 @@ class SWOrderFulfillmentList implements ng.IDirective{
             '$timeout', 
             'collectionConfigService',
             'observerService',
-			'optionGroupPartialsPath',
+			'orderFulfillmentPartialsPath',
 			'slatwallPathBuilder'
 		];
 		return directive;
 	}
     // @ngInject
-    constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private optionGroupPartialsPath, slatwallPathBuilder){
-        this.templateUrl = slatwallPathBuilder.buildPartialsPath(optionGroupPartialsPath) + "orderfulfillmentlist.html";	
+    constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private orderFulfillmentPartialsPath, slatwallPathBuilder){
+        this.templateUrl = slatwallPathBuilder.buildPartialsPath(orderFulfillmentPartialsPath) + "orderfulfillmentlist.html";	
     }
 
     public link:ng.IDirectiveLinkFn = ($scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{  

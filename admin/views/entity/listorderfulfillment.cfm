@@ -59,12 +59,5 @@ Notes:
 
 <hb:HibachiEntityActionBar type="listing" object="#rc.orderFulfillmentSmartList#" showCreate="false" />
 
+<sw-order-fulfillment-list></sw-order-fulfillment-list>
 
-<hb:HibachiListingDisplay smartList="#rc.orderFulfillmentSmartList#"
-		recorddetailaction="admin:entity.detailorderfulfillment"
-		recordeditaction="admin:entity.editorderfulfillment">
-	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="order.account.fullName" />
-	<hb:HibachiListingColumn propertyIdentifier="fulfillmentMethod.fulfillmentMethodType" />
-	<hb:HibachiListingColumn propertyIdentifier="order.orderNumber" />
-	<hb:HibachiListingColumn propertyIdentifier="order.orderOpenDateTime" />
-</hb:HibachiListingDisplay>

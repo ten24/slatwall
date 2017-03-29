@@ -93,6 +93,11 @@
 		<Record typeID="b718b6fadf084bdaa01e47f5cc1a8265" typeIDPath="af48db70f32b49328d9549d7fcf63589,b718b6fadf084bdaa01e47f5cc1a8265" parentTypeID="af48db70f32b49328d9549d7fcf63589" typeName="Unfulfilled" systemCode="ofstUnfulfilled" sortOrder="1" />
 		<Record typeID="159118d67de3418d9951fc629688e194" typeIDPath="af48db70f32b49328d9549d7fcf63589,159118d67de3418d9951fc629688e194" parentTypeID="af48db70f32b49328d9549d7fcf63589" typeName="Fulfilled" systemCode="ofstFulfilled" sortOrder="2" />
 		<Record typeID="fefc92c1d8184017aa65cdc882bdf636" typeIDPath="af48db70f32b49328d9549d7fcf63589,fefc92c1d8184017aa65cdc882bdf636" parentTypeID="af48db70f32b49328d9549d7fcf63589" typeName="Partially Fulfilled" systemCode="ofstPartiallyFulfilled" sortOrder="3" />
+		
+		<Record typeID="af48db70f32b49328d9549d7fcf63590" typeIDPath="af48db70f32b49328d9549d7fcf63590" parentTypeID="NULL" typeName="Order Fulfillment Inventory Status Types" systemCode="orderFulfillmentInventoryStatusType" childRequiresSystemCodeFlag="1" />
+		<Record typeID="b718b6fadf084bdaa01e47f5cc1a8266" typeIDPath="af48db70f32b49328d9549d7fcf63590,b718b6fadf084bdaa01e47f5cc1a8266" parentTypeID="af48db70f32b49328d9549d7fcf63590" typeName="Available" systemCode="ofisAvailable" sortOrder="1" />
+		<Record typeID="159118d67de3418d9951fc629688e195" typeIDPath="af48db70f32b49328d9549d7fcf63590,159118d67de3418d9951fc629688e195" parentTypeID="af48db70f32b49328d9549d7fcf63590" typeName="Unavailable" systemCode="ofisUnAvailable" sortOrder="2" />
+		<Record typeID="fefc92c1d8184017aa65cdc882bdf637" typeIDPath="af48db70f32b49328d9549d7fcf63590,fefc92c1d8184017aa65cdc882bdf637" parentTypeID="af48db70f32b49328d9549d7fcf63590" typeName="Partial" systemCode="ofisPartial" sortOrder="3" />
 
 		<Record typeID="5accbf4bc2f3ffcf702d75529a6692b6" typeIDPath="5accbf4bc2f3ffcf702d75529a6692b6" parentTypeID="NULL" typeName="Physical Status Types" systemCode="physicalStatusType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="5accbf4cb81693960a8cf9c6ada9d220" typeIDPath="5accbf4bc2f3ffcf702d75529a6692b6,5accbf4cb81693960a8cf9c6ada9d220" parentTypeID="5accbf4bc2f3ffcf702d75529a6692b6" typeName="Open" systemCode="pstOpen" sortOrder="1" />
