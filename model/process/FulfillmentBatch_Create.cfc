@@ -77,7 +77,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			variables.locations = [];
 			if(structKeyExists(variables, "locationIDList")){
 				for (var location in locationIDList){
-					arrayAppend(variables.location, getService('locationService').getLocation(location));	
+					arrayAppend(variables.locations, getService('locationService').getLocation(location));	
 				}
 			}
 		}

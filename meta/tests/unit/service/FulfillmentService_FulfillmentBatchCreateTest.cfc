@@ -88,7 +88,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//***Testing that the service methods are working to populate the final object based on passed in data. 
 		
 		var data = {
-			"locationID": location.getLocationID(),
+			"locationIDList": location.getLocationID(),
 			"assignedAccountID": account.getAccountID(),
 			"description": "This is another test description",
 			"orderFulfillmentIDList": orderFulfillmentIDList
@@ -116,7 +116,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		assertSame(processObject.getAssignedAccount().getAccountID(), data.assignedAccountID, "It should have an assigned account ID and the ids should match");
 		
-		assertSame(fb.getLocations()[1].getLocationID(), data.locationID, "It should have a location id that matches the passed in locationID");
+		assertSame(fb.getLocations()[1].getLocationID(), data.locationIDList, "It should have a location id that matches the passed in locationID");
 		
 	}
 }
