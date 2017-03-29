@@ -160,9 +160,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(
 			!arguments.locationAddress.hasErrors() 
 			&& !isNull(arguments.locationAddress.getLocation())
-			&& isNull(arguments.locationAddress.getLocation().getPrimaryLocationAddress()) 
+			&& isNull(arguments.locationAddress.getLocation().getPrimaryAddress()) 
 		){
-			arguments.locationAddress.getLocation().setPrimaryLocationAddress(arguments.locationAddress);
+			arguments.locationAddress.getLocation().setPrimaryAddress(arguments.locationAddress);
 		}
 		return arguments.locationAddress;
 	}

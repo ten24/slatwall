@@ -97,10 +97,13 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	}
 	
 	public any function getPrimaryAddress() {
-		if(isNull(variables.primaryAddress)) {
-			return getService("locationService").newLocationAddress();
-		} else {
+		if(!isNull(variables.primaryAddress)) {
 			return variables.primaryAddress;
+		} else if (arrayLen(getLocationAddresses())) {
+			variables.primaryAddress = getLocationAddresses()[1];
+			return variables.primaryAddress;
+		} else {
+			return getService("locationService").newLocationAddress();
 		}
 	}
 	

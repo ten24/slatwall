@@ -61,8 +61,8 @@ Notes:
 									  recordEditModal=true
 									  recordDeleteAction="admin:entity.deletelocationaddress"
 									  recordDeleteQueryString="locationID=#rc.location.getLocationID()#&redirectAction=admin:entity.detaillocation"
-									  selectFieldName="primaryLocationAddress.locationAddressID"
-									  selectValue="#rc.location.getPrimaryLocationAddress().getLocationAddressID()#"
+									  selectFieldName="primaryAddress.locationAddressID"
+									  selectValue="#rc.location.getPrimaryAddress().getLocationAddressID()#"
 									  selectTitle="#$.slatwall.rbKey('define.primary')#"
 									  edit="#rc.edit#">
 						
