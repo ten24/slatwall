@@ -23,9 +23,8 @@ class SWOrderFulfillmentListController {
         this.orderFulfillmentCollection.addDisplayProperty("order.orderOpenDateTime");
         this.orderFulfillmentCollection.addDisplayProperty("shippingMethod.shippingMethodName");
         this.orderFulfillmentCollection.addDisplayProperty("shippingAddress.stateCode");
-        //this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentInventoryStatusType");
+        this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentInventoryStatusType.typeName");
         this.orderFulfillmentCollection.addFilter("order.orderNumber", null, "!=");
-        
 
         //Toggle the filter
         this.toggleFilter = (filterName) => {
@@ -39,7 +38,7 @@ class SWOrderFulfillmentListController {
             console.log("Add Filter Called With", key, value);
             if (key == "partial"){
                 this.orderFulfillmentCollection.addFilterGroup([{
-                    propertyIdentifier: "orderFulfillmentInventoryStatusType",
+                    propertyIdentifier: "orderFulfillmentInventoryStatusType.typeID",
                     comparisonValue: "fefc92c1d8184017aa65cdc882bdf637",
                     comparisonOperator: "=",
                     logicalOperator: "OR",
@@ -48,7 +47,7 @@ class SWOrderFulfillmentListController {
             }
             if (key == "available"){
                 this.orderFulfillmentCollection.addFilterGroup([{
-                    propertyIdentifier: "orderFulfillmentInventoryStatusType",
+                    propertyIdentifier: "orderFulfillmentInventoryStatusType.typeID",
                     comparisonValue: "b718b6fadf084bdaa01e47f5cc1a8266",
                     comparisonOperator: "=",
                     logicalOperator: "OR",
@@ -57,7 +56,7 @@ class SWOrderFulfillmentListController {
             }
             if (key == "unavailable"){
                 this.orderFulfillmentCollection.addFilterGroup([{
-                    propertyIdentifier: "orderFulfillmentInventoryStatusType",
+                    propertyIdentifier: "orderFulfillmentInventoryStatusType.typeID",
                     comparisonValue: "159118d67de3418d9951fc629688e195",
                     comparisonOperator: "=",
                     logicalOperator: "OR",
