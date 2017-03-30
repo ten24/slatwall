@@ -95,7 +95,7 @@ component accessors="true" output="false" extends="HibachiService" {
 		var cacheKey = buildCacheKey(key=arguments.key, sessionFlag=arguments.sessionFlag);
 
 		// If using the internal cache, then check there
-		if(getInternalCacheFlag() && structKeyExists(getCache(sessionFlag=arguments.sessionFlag), key) ) {
+		if(getInternalCacheFlag() && structKeyExists(getCache(sessionFlag=arguments.sessionFlag), cacheKey) ) {
 			return getCache(sessionFlag=arguments.sessionFlag)[ cacheKey ].value;
 
 		// If using the external cache, then check there
