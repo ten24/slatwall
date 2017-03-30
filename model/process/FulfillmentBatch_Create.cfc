@@ -51,13 +51,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Injected Entities
 	property name="fulfillmentBatch" hb_rbKey="entity.fulfillmentBatch" cfc="FulfillmentBatch";
 	property name="assignedAccount" hb_rbKey="entity.fulfillmentBatch.assignedAccount" cfc="Account";
-	property name="location" hb_rbKey="entity.fulfillmentBatch.location" cfc="Location";
+	property name="locations" hb_rbKey="entity.fulfillmentBatch.location" cfc="Location" type="array";
 	property name="fulfillmentBatchItems" cfc="FulfillmentBatch" type="array";
 	
 	// Data Properties
 	property name="assignedAccountID" hb_rbKey="entity.fulfillmentBatch.assignedAccount" cfc="Account";
 	property name="description" hb_rbKey="entity.fulfillmentBatch.description";
-	property name="locationID" hb_rbKey="entity.fulfillmentBatch.location" cfc="Location";
+	property name="locationIDList" hb_rbKey="entity.fulfillmentBatch.location" cfc="Location";
 	property name="orderFulfillmentIDList" hb_populateEnabled="public" cfc="OrderFulfillment";
 	property name="orderItemIDList" hb_populateEnabled="public" cfc="OrderItem";
 	
@@ -72,20 +72,23 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return variables.assignedAccount;
 	}
 	
-	public any function getLocation(){
-		if(!structKeyExists(variables,'location')){
-			if(structKeyExists(variables, "locationID")){
-				variables.location = getService('locationService').getLocation(variables.locationID);
+	public array function getLocations(){
+		if(!structKeyExists(variables,'locations')){
+			variables.locations = [];
+			if(structKeyExists(variables, "locationIDList")){
+				for (var location in locationIDList){
+					arrayAppend(variables.locations, getService('locationService').getLocation(location));	
+				}
 			}
 		}
-		return variables.location;
+		return variables.locations;
 	}
 	
 	/**
 	 * Turns a list of orderFulfillmentIDs into fulfillmentBatchItems and returns those items.
 	 * @returns an array of fulfillmentBatchItems
 	 */
-	public any function getFulfillmentBatchItemsByOrderFulfillmentIDList(){
+	public array function getFulfillmentBatchItemsByOrderFulfillmentIDList(){
 		//If we have a id list.
 		var fulfillmentBatchItems = [];
 		if (structKeyExists(variables, "orderFulfillmentIDList") && len(variables.orderFulfillmentIDList)){
@@ -109,7 +112,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	 * Turns a list of orderItemIDs into fulfillmentBatchItems and returns those items.
 	 * @returns an array of fulfillmentBatchItems
 	 */
-	public any function getFulfillmentBatchItemsByOrderItemIDList(){
+	public array function getFulfillmentBatchItemsByOrderItemIDList(){
 		//If we have a id list.
 		var fulfillmentBatchItems = [];
 		if (structKeyExists(variables, "orderItemIDList") && len(variables.orderItemIDList)){
@@ -131,24 +134,24 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	
 	/**
-	 * Returns either the injected fulfillmentBatchItems, or generated ones if either orderItemList or orderFulfillment list exists.
+	 * Returns either the injected fulfillmentBatchItems, or generated ones if either orderItemList or orderFulfillmentlist exists.
 	 * @returns array of fulfillmentBatchItems
 	 */
 	 public any function getFulfillmentBatchItems(){
 	 	if (!structKeyExists(variables, "fulfillmentBatchItems")){
 	 		
 	 		//Create the initial array since it doesn't exist.
-	 		variables.fulfillmentBatchItems = arrayNew(1);
+	 		variables.fulfillmentBatchItems = [];
 	 		
 	 		//Get batch items by orderFulfillment (of)
 	 		var ofFulfillmentBatchItems = getFulfillmentBatchItemsByOrderFulfillmentIDList();
-	 		if (!isNull(ofFulfillmentBatchItems) && arrayLen(ofFulfillmentBatchItems)){
+	 		if (!arrayIsEmpty(ofFulfillmentBatchItems)){
 	 			variables.fulfillmentBatchItems.addAll(ofFulfillmentBatchItems);
 	 		}
 	 		
 	 		//Get batch items by orderItem (oi)
 	 		var oiFulfillmentBatchItems = getFulfillmentBatchItemsByOrderItemIDList();
-	 		if (!isNull(oiFulfillmentBatchItems) && arrayLen(oiFulfillmentBatchItems)){
+	 		if (!arrayIsEmpty(oiFulfillmentBatchItems)){
 	 			variables.fulfillmentBatchItems.addAll(oiFulfillmentBatchItems);
 	 		}
 	 	}

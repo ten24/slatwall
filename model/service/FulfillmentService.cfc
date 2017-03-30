@@ -77,13 +77,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.fulfillmentBatch.setAssignedAccount(processObject.getAssignedAccount());
 		}
 		
+		//Add the locations
 		if (!arrayLen(fulfillmentBatch.getLocations())){
-			var location = processObject.getLocation();
-			if (!isNull(location)){
-				arguments.fulfillmentBatch.addLocation(location);
+			var locations = processObject.getLocations();
+			for (var location in locations){
+				if (!isNull(location) && !fulfillmentBatch.hasLocation(location)){
+					arguments.fulfillmentBatch.addLocation(location);
+				}
 			}
 		}
-		
+		//Set the description
 		if (isNull(fulfillmentBatch.getDescription())){
 			arguments.fulfillmentBatch.setDescription(processObject.getDescription());
 		}

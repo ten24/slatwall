@@ -104,7 +104,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//Test auto populate using the found data. It should find those entities while populating and put the objects into the process object.
 		
 		var data = {
-			"locationID": location.getLocationID(),
+			"locationIDList": location.getLocationID(),
 			"assignedAccountID": account.getAccountID(),
 			"description": "This is another test description"
 		};
@@ -116,13 +116,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(processObject.getDescription(), data.description);
 		
 		//Has a populated simple location
-		assertEquals(processObject.getLocationID(), data.locationID);
+		assertEquals(processObject.getLocationIDList(), data.locationIDList);
 		
 		//Has an assigned simple account
 		assertEquals(processObject.getAssignedAccountID(), data.assignedAccountID);
 		
 		//Has a populated object based location
-		assertEquals(processObject.getLocation().getLocationID(), data.locationID);
+		assertEquals(processObject.getLocations()[1].getLocationID(), data.locationIDList);
 		
 		//Has an assigned object based account so auto populated
 		assertEquals(processObject.getAssignedAccount().getAccountID(), data.assignedAccountID);
@@ -164,7 +164,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//Test auto populate using the found data. It should find those entities while populating and put the objects into the process object.
 		
 		var data = {
-			"locationID"= location.getLocationID(),
+			"locationIDList"= location.getLocationID(),
 			"assignedAccountID"= account.getAccountID(),
 			"description"= "This is another test description",
 			"orderFulfillmentIDList"= orderFulfillmentIDList
@@ -178,13 +178,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(processObject.getDescription(), data.description);
 		
 		//Has a populated simple location
-		assertEquals(processObject.getLocationID(), data.locationID);
+		assertEquals(processObject.getLocationIDList(), data.locationIDList);
 		
 		//Has an assigned simple account
 		assertEquals(processObject.getAssignedAccountID(), data.assignedAccountID);
 		
 		//Has a populated object based location
-		assertEquals(processObject.getLocation().getLocationID(), data.locationID);
+		assertEquals(processObject.getLocations()[1].getLocationID(), data.locationIDList);
 		
 		//Has an assigned object based account so auto populated
 		assertEquals(processObject.getAssignedAccount().getAccountID(), data.assignedAccountID);
