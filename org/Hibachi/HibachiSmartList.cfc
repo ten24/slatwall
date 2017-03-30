@@ -40,8 +40,6 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	
 	public any function setup(required string entityName, struct data={}, numeric pageRecordsStart=1, numeric pageRecordsShow=10, string currentURL="") {
 		// Make sure that the containers for smart list saved states are in place
-		param name="session.entitySmartList" type="struct" default="#structNew()#";
-		param name="session.entitySmartList.savedStates" type="array" default="#arrayNew(1)#";
 		
 		// Set defaults for the main properties
 		setEntities({});
@@ -824,16 +822,34 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	
 	public numeric function getRecordsCount() {
 		if(!structKeyExists(variables, "recordsCount")) {
-			if(getCacheable() && structKeyExists(application.entitySmartList, getCacheName()) && structKeyExists(application.entitySmartList[getCacheName()], "recordsCount")) {
-				variables.recordsCount = application.entitySmartList[ getCacheName() ].recordsCount;
+			//retrieve from cache
+			if(
+				getCacheable() 
+				&& !isNull(getService('HibachiCacheService').getApplicationCacheByApplicationCacheKey('entitySmartList' & getCacheName()))
+			) {
+				var cacheKey = getHibachiScope().getSession().getSessionCookieNPSID()&'entitySmartList'&getCacheName();
+				var applicationCache = getService('HibachiCacheService').getApplicationCacheByApplicationCacheKey(cacheKey);
+				if(!isNull(applicationCache)){
+					var cacheValue = deserializeJson(applicationCache.getApplicationCacheValue());
+					if(structKeyExists(cacheValue,'recordsCount')){
+						variables.recordsCount = cacheValue.recordsCount;		
+					}
+				}
+				
 			} else {
 				if(!structKeyExists(variables,"records")) {
 					var HQL = "#getHQLSelect(countOnly=true)##getHQLFrom(allowFetch=false)##getHQLWhere()#";
 					var recordCount = ormExecuteQuery(HQL, getHQLParams(), true, {ignoreCase="true"});
 					variables.recordsCount = recordCount;
+					//write to cache
 					if(getCacheable()) {
-						application.entitySmartList[ getCacheName() ] = {};
-						application.entitySmartList[ getCacheName() ].recordsCount = variables.recordsCount;
+						var cacheKey = getHibachiScope().getSession().getSessionCookieNPSID()&'entitySmartList'&getCacheName();
+						var applicationCache = getService('HibachiCacheService').newApplicationCache();
+						applicationCache.setApplicationCacheKey(cacheKey);
+						var cacheValue = {};
+						cacheValue.recordsCount = variables.recordsCount;
+						applicationCache.setApplicationCacheValue(serializeJson(cacheValue));
+						getService('HibachiCacheService').saveApplicationCache(applicationCache);
 					}
 				} else {
 					variables.recordsCount = arrayLen(getRecords());	

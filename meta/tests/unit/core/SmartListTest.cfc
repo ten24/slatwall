@@ -53,6 +53,15 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		variables.smartList = request.slatwallScope.getSmartList("Product");
 	}
+	/**
+	* @test
+	*/
+	public void function getCacheableSmartlistTest(){
+		var smartlist = request.slatwallScope.getSmartList("Product");
+		smartlist.setCacheable(true);
+		var recordsCount = smartlist.getRecordsCount();
+	}
+	
 		
 	/**
 	* @test
