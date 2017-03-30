@@ -423,6 +423,7 @@ class CollectionConfig {
     public addDisplayProperty= (propertyIdentifier: string, title: string = '', options:any = {}):CollectionConfig =>{
         var _DividedColumns = propertyIdentifier.trim().split(',');
         var _DividedTitles = title.trim().split(',');
+        var join = propertyIdentifier.split('.').length > 1;
         _DividedColumns.forEach((column:string, index)  => {
             column = column.trim();
             if(angular.isDefined(_DividedTitles[index]) && _DividedTitles[index].trim() != '') {
@@ -430,7 +431,7 @@ class CollectionConfig {
             }else {
                 title = this.rbkeyService.getRBKey("entity."+this.$hibachi.getLastEntityNameInPropertyIdentifier(this.baseEntityName,column)+"."+this.utilityService.listLast(column, "."));
             }
-            this.addColumn(this.formatPropertyIdentifier(column),title, options);
+            this.addColumn(this.formatPropertyIdentifier(column, join),title, options);
         });
         return this;
     };
@@ -438,6 +439,10 @@ class CollectionConfig {
     public addFilter= (propertyIdentifier: string, value: any, comparisonOperator: string = '=', logicalOperator?: string, hidden:boolean=false, isKeywordFilter=true, isOnlyKeywordFilter=false):CollectionConfig =>{
         if(!this.filterGroups[0].filterGroup.length){
             logicalOperator = undefined;
+        }
+
+        if(propertyIdentifier.split('.').length > 1){
+            this.processJoin(propertyIdentifier);
         }
 
 		//create filter

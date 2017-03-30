@@ -87,7 +87,10 @@ component accessors="true" output="false" displayname="Elavon" implements="Slatw
 		requestData["ssl_merchant_id"] = setting('merchantID');
 		requestData["ssl_user_id"] = setting('userID');
 		requestData["ssl_pin"] = getPin(requestBean);
-		requestData["ssl_invoice_number"] = requestBean.getOrderID();
+		
+		if (!isNull(requestBean.getOrder())){
+			requestData["ssl_invoice_number"] = requestBean.getOrder().getShortReferenceID( true );
+ 		}
 		
 		if(len(requestBean.getCreditCardNumber())) {
 			requestData["ssl_card_number"] = requestBean.getCreditCardNumber();

@@ -48,14 +48,17 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
-	// @hint put things in here that you want to run befor EACH test
+	// @hint put things in here that you want to run befor EACH test	
 	public void function setUp() {
 		super.setup();
 		
 		variables.entityService = "contentService";
 		variables.entity = request.slatwallScope.getService( variables.entityService ).newContent();
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getSiteOptions_test(){
 		var siteOptions = variables.entity.getSiteOptions();
 		addToDebug(siteOptions);

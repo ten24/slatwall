@@ -53,16 +53,15 @@ Notes:
  
 <cfoutput>
 	<hb:HibachiPropertyRow>
-		<hb:HibachiPropertyList divClass="span12">
-			<h5>#$.slatwall.rbKey('entity.locationAddress_plural')#</h5>
+		<hb:HibachiPropertyList divClass="col-md-12">
 			<hb:HibachiListingDisplay smartList="#rc.location.getLocationAddressesSmartList()#"
 									  recordEditAction="admin:entity.editlocationaddress"
 									  recordEditQueryString="locationID=#rc.location.getLocationID()#"
 									  recordEditModal=true
 									  recordDeleteAction="admin:entity.deletelocationaddress"
 									  recordDeleteQueryString="locationID=#rc.location.getLocationID()#&redirectAction=admin:entity.detaillocation"
-									  selectFieldName="primaryAddress.locationAddressID"
-									  selectValue="#rc.location.getPrimaryAddress().getLocationAddressID()#"
+									  selectFieldName="primaryLocationAddress.locationAddressID"
+									  selectValue="#rc.location.getPrimaryLocationAddress().getLocationAddressID()#"
 									  selectTitle="#$.slatwall.rbKey('define.primary')#"
 									  edit="#rc.edit#">
 						
@@ -75,8 +74,8 @@ Notes:
 				<hb:HibachiListingColumn propertyIdentifier="address.stateCode" />
 				<hb:HibachiListingColumn propertyIdentifier="address.postalCode" />
 			</hb:HibachiListingDisplay>
-			
-			<hb:HibachiActionCaller action="admin:entity.createlocationaddress" class="btn" icon="plus" queryString="sRedirectAction=admin:entity.detaillocation&locationID=#rc.location.getLocationID()#" modal=true />
+			<cfset queryString = urlEncodedFormat("locationID=#rc.location.getLocationID()#")/>
+			<hb:HibachiActionCaller action="admin:entity.createlocationaddress" class="btn" icon="plus" queryString="sRedirectAction=admin:entity.detaillocation&sRedirectQS=#queryString#&locationID=#rc.location.getLocationID()#" modal=true />
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 	

@@ -1416,6 +1416,8 @@ component extends="HibachiService" accessors="true" output="false" {
 
 			var account = arguments.accountPaymentMethod.getAccount();
 
+			arguments.accountPaymentMethod.setOrderPayments([]);
+
 			arguments.accountPaymentMethod.removeAccount();
 
 			// If the primary payment method is this payment method then set the primary to null

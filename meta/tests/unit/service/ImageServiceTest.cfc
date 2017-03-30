@@ -47,13 +47,16 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+	
 	public void function setUp() {
 		super.setup();
 		
 		variables.service = request.slatwallScope.getBean("imageService");
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function saveImageTest(){
 		var productData = {
 			productID="",
@@ -83,21 +86,30 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(structKeyExists(image.getErrors(),'imageFile'));
 	}	
 	
-
+	
+	/**
+	* @test
+	*/
 	public void function missingImageSettingTest_imageMissingImagePath(){
 		
 		//Test default, should hit global assertion
 		var imagePath = variables.service.getResizedImagePath('falsepath');
 		assert(imagePath EQ "#variables.service.getApplicationValue('baseUrl')##variables.service.getHibachiScope().setting('imageMissingImagePath')#"	);
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function missingImageSettingTest_customMissingImageFile(){
 		//Test custom file, should hit custom assertion
 		createTestFile(expandPath(variables.service.getHibachiScope().setting('imageMissingImagePath')), '#variables.service.getApplicationValue('baseUrl')#/custom/assets/images/missingimage.jpg');
 		imagePath = variables.service.getResizedImagePath('falsepath');
 		assert(imagePath EQ "#variables.service.getApplicationValue('baseUrl')#/custom/assets/images/missingimage.jpg");
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function missingImageSettingTest_siteMissingImagePath(){
 		var siteService = request.slatwallScope.getService('siteService');
 		//Site specific setting, should hit site assertion

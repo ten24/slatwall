@@ -976,7 +976,21 @@ totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(t
  		totalDepositAmount = val(precisionEvaluate("round(totalDepositAmount * 100)/100"));
  		return totalDepositAmount;
  	}
- 	
+
+	public boolean function isAllowedToPlaceOrderWithoutPayment(){
+		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
+			//If the setting is null, or the setting is an empty string, or it has a value and the value is greater then 0...
+			if( 
+				isNull(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) 
+				|| len(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) == 0 
+				|| val(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) > 0
+			){
+				return false;
+			}
+		}
+		return true;
+	}
+
  	public boolean function hasDepositItemsOnOrder(){
  		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
  			if(getOrderItems()[i].getOrderItemType().getSystemCode() eq "oitSale" && !isNull(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) && len(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) != 0) {

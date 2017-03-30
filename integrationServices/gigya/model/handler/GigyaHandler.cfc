@@ -78,7 +78,7 @@
 				<cfif authenticationCFC.getUserSignatureValidFlag( uid=arguments.data.gigyaUID, uidSignature=arguments.data.gigyaUIDSignature, signatureTimestamp=arguments.data.gigyaSignatureTimestamp )>
 					
 					<!--- Check for a legacy UID to match up --->
-					<cfset var oldID = "" />
+					<cfset var oldUID = "" />
 					<cfif len(gigyaIntegration.setting('legacyUIDPropertyIdentifier'))>
 						<cfset oldUID = arguments.account.getValueByPropertyIdentifier( gigyaIntegration.setting('legacyUIDPropertyIdentifier') ) />
 					</cfif>

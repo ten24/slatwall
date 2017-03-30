@@ -49,7 +49,10 @@ Notes:
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	
 	
-	
+		
+	/**
+	* @test
+	*/
 	public void function allValidationsHaveRBkeys(){
 		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
 		var allFound = true;
@@ -114,7 +117,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		}
 		assert(allFound, ArrayToList(variables.debugArray, chr(13) & chr(10)));
 	}
-
+	
+	/**
+	* @test
+	*/
 	public void function all_entity_properties_have_keys() {
 		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
 		var allFound = true;
@@ -156,7 +162,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		assert(allFound, ArrayToList(variables.debugArray, chr(13) & chr(10)));
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function settingsHaveRBkeys() {
 		var settingMetaData = request.slatwallScope.getService("settingService").getAllSettingMetaData();
 		var settingNameList = structKeyList(settingMetaData);

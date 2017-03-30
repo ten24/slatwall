@@ -51,7 +51,7 @@ Notes:
 	<cffunction name="getIDByCode" access="public" returntype="string" output="false">
 		<cfargument name="code" type="string" required="true" />
 
-		<cfquery name="getGiftCardID" maxrows="1">
+		<cfquery name="local.getGiftCardID" maxrows="1">
 			SELECT giftCardID FROM SwGiftCard WHERE giftCardCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.code#">
 		</cfquery>
 		<cfif getGiftCardID.RecordCount GT 0>
@@ -63,7 +63,7 @@ Notes:
 
 	<cffunction name="activeLiability" access="public" returntype="numeric" output="false">
 
-		<cfquery name="getLiability">
+		<cfquery name="local.getLiability">
 			SELECT sum(creditAmount) AS totalCredit, sum(debitamount) AS totalDebit FROM SwGiftCardTransaction
 		</cfquery>
 

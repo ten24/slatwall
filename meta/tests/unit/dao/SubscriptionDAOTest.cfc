@@ -48,7 +48,7 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
-
+	
 	public void function setUp() {
 		super.setup();
 		
@@ -73,7 +73,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		return createPersistedTestEntity('Product', productData);
 	}
-
+	
+	/**
+	* @test
+	*/
 	public void function getUnusedProductSubscriptionTermsTest() {
 		var mockProduct = createMockProduct();
 		

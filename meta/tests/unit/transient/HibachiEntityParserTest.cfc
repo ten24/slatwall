@@ -59,14 +59,18 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.fileContentForAccountWithCustomPropeties = fileRead(filePathWithout);
 		
 	}
-	
+	/**
+	* @test
+	*/
 	public void function hasCustomPropertiesTest_WithCustomProperties(){
 		
 		variables.hibachiEntityParser.setFileContent(variables.fileContentForAccountWithCustomPropeties);
 		
 		assert(variables.hibachiEntityParser.hasCustomProperties());
 	}
-	
+	/**
+	* @test
+	*/
 	public void function hasCustomPropertiesTest_WithoutCustomProperties(){
 		
 		
@@ -74,7 +78,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		assertFalse(variables.hibachiEntityParser.hasCustomProperties());
 	}
-	
+	/**
+	* @test
+	*/
 	public void function getCustomPropertyContentTest(){
 		
 		variables.hibachiEntityParser.setFileContent(variables.fileContentForAccountWithCustomPropeties);

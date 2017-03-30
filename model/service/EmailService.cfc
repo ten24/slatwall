@@ -56,7 +56,7 @@ Notes:
 	<cffunction name="sendEmail" returntype="void" access="public">
 		<cfargument name="email" type="any" required="true" />
 
-		<cfset cfmailAttributes = structNew() />
+		<cfset var cfmailAttributes = structNew() />
 		<cfset cfmailAttributes["from"] = arguments.email.getEmailFrom() />
 		<cfset cfmailAttributes["subject"] = arguments.email.getEmailSubject() />
 		<cfset cfmailAttributes["to"] = arguments.email.getEmailTo() />
@@ -274,15 +274,15 @@ Notes:
 				arguments.email.populate( local.emailData );
 
 				// Do a second string replace for any additional keys added to emailData
-				arguments.email.setEmailTo( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailTo(), object=emailData) );
-				arguments.email.setEmailFrom( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailFrom(), object=emailData) );
-				arguments.email.setEmailCC( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailCC(), object=emailData) );
-				arguments.email.setEmailBCC( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailBCC(), object=emailData) );
-				arguments.email.setEmailReplyTo( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailReplyTo(), object=emailData) );
-				arguments.email.setEmailFailTo( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailFailTo(), object=emailData) );
-				arguments.email.setEmailSubject( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailSubject(), object=emailData, formatValues=true) );
-				arguments.email.setEmailBodyHTML( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailBodyHTML(), object=emailData, formatValues=true) );
-				arguments.email.setEmailBodyText( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailBodyText(), object=emailData, formatValues=true) );
+				arguments.email.setEmailTo( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailTo(), ""), object=emailData) );
+				arguments.email.setEmailFrom( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailFrom(), ""), object=emailData) );
+				arguments.email.setEmailCC( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailCC(), ""), object=emailData) );
+				arguments.email.setEmailBCC( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailBCC(), ""), object=emailData) );
+				arguments.email.setEmailReplyTo( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailReplyTo(), ""), object=emailData) );
+				arguments.email.setEmailFailTo( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailFailTo(), ""), object=emailData) );
+				arguments.email.setEmailSubject( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailSubject(), ""), object=emailData, formatValues=true) );
+				arguments.email.setEmailBodyHTML( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailBodyHTML(), ""), object=emailData, formatValues=true) );
+				arguments.email.setEmailBodyText( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailBodyText(), ""), object=emailData, formatValues=true) );
 
 				arguments.email.setLogEmailFlag( emailTemplate.getLogEmailFlag() );
 			}

@@ -352,68 +352,11 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
     public any function getShippingMethodOptions() {
     	if( !structKeyExists(variables, "shippingMethodOptions")) {
-
-			//update the shipping method options with the shipping service to insure qualifiers are re-evaluated    		
-			getService("shippingService").updateOrderFulfillmentShippingMethodOptions( this );
-
-    		// At this point they have either been populated just before, or there were already options
-    		var optionsArray = [];
-    		var sortType = getFulfillmentMethod().setting('fulfillmentMethodShippingOptionSortType');
-    		for(var shippingMethodOption in getFulfillmentShippingMethodOptions()) {
-
-    			var thisOption = {};
-    			thisOption['name'] = shippingMethodOption.getSimpleRepresentation();
-    			thisOption['value'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodID();
-    			thisOption['totalCharge'] = shippingMethodOption.getTotalCharge();
-    			thisOption['totalChargeAfterDiscount'] = shippingMethodOption.getTotalChargeAfterDiscount();
-    			thisOption['shippingMethodSortOrder'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getSortOrder();
-    			if( !isNull(shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodCode()) ){
-    				thisOption['shippingMethodCode'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodCode();
-    			}
-
-    			var inserted = false;
-
-    			for(var i=1; i<=arrayLen(optionsArray); i++) {
-    				var thisExistingOption = optionsArray[i];
-					
-					if( (!this.hasOption(optionsArray, thisOption)) && 
-    					(sortType eq 'price' && thisOption.totalCharge < thisExistingOption.totalCharge) ||
-    					(sortType eq 'sortOrder' && thisOption.shippingMethodSortOrder < thisExistingOption.shippingMethodSortOrder)) {
-						
-    					arrayInsertAt(optionsArray, i, thisOption);
-    					inserted = true;
-    					break;
-    				}
-    				
-    			}
-
-    			if(!inserted && !this.hasOption(optionsArray, thisOption)) {
-    				
-    				arrayAppend(optionsArray, thisOption);
-    			}
-
-    		}
-
-    		if(!arrayLen(optionsArray)) {
-    			arrayPrepend(optionsArray, {name=rbKey('define.select'), value=''});
-    		}
-
-    		variables.shippingMethodOptions = optionsArray;
+    	
+    		variables.shippingMethodOptions = getService("OrderService").getShippingMethodOptions(this);
     	}
     	return variables.shippingMethodOptions;
     }
-	
-	public any function hasOption(optionsArray, option){
-		var found = false;
-		for(var i=1; i<=arrayLen(optionsArray); i++) {
-			var thisExistingOption = optionsArray[i];
-			if (option.value == thisExistingOption.value){
-				found = true;
-				break;
-			}
-		}
-		return found;
-	}
 
 	public any function getShippingMethodRate() {
     	if(!isNull(getSelectedShippingMethodOption())) {
@@ -683,7 +626,12 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 				setShippingAddress( arguments.accountAddress.getAddress().copyAddress( true ) );
 
 			// Else if there was no accountAddress before, or the accountAddress has changed
-			} else if (!structKeyExists(variables, "accountAddress") || (structKeyExists(variables, "accountAddress") && variables.accountAddress.getAccountAddressID() != arguments.accountAddress.getAccountAddressID()) ) {
+			} else if (
+				!structKeyExists(variables, "accountAddress") 
+				|| (
+					structKeyExists(variables, "accountAddress") 
+					&& variables.accountAddress.getAccountAddressID() != arguments.accountAddress.getAccountAddressID()) 
+			) {
 				getShippingAddress().populateFromAddressValueCopy( arguments.accountAddress.getAddress() );
 
 			}
