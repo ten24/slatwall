@@ -46,12 +46,12 @@
 Notes:
 
 */
-component displayname="ApplicationCache" entityname="SlatwallApplicationCache" table="SwApplicationCache" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_auditable="false" hb_serviceName="hibachiCacheService" {
+component displayname="HibachiCache" entityname="SlatwallHibachiCache" table="SwHibachiCache" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_auditable="false" hb_serviceName="hibachiCacheService" {
 	
 	// Persistent Properties
-	property name="applicationCacheID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="applicationCacheKey" ormtype="string" unique="true" index="PI_APPCACHEKEY";
-	property name="applicationCacheValue" ormtype="string" length="8000";
+	property name="HibachiCacheID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="HibachiCacheKey" ormtype="string" unique="true" index="PI_APPCACHEKEY";
+	property name="HibachiCacheValue" ormtype="string" length="8000";
 	// Related Object Properties (many-to-one)
 		
 	// Related Object Properties (one-to-many)
