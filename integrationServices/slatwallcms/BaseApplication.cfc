@@ -88,8 +88,8 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 		}
 		if(structKeyExists(form, "slatProcess")) {
 			for(var processAction in listToArray(form.slatProcess)) {
-				var session = getSessionService().processSesion($.slatwall.getSession(), processAction, request);
-				if(session.hasError()) {
+				var sessionEntity = getSessionService().processSesion($.slatwall.getSession(), processAction, request);
+				if(sessionEntity.hasError()) {
 					break;
 				}
 			}
@@ -107,13 +107,13 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 		var templateBody = '';
 		if(!isNull(site.getResetSettingCache()) && site.getResetSettingCache()){
 			arguments.slatwallScope.getService('HibachiCacheService').resetCachedKeyByPrefix('content');
-			var cacheList = 
+			var cacheList =
 			   "globalURLKeyBrand,
 				globalURLKeyProduct,
 				globalURLKeyProductType,
 				globalURLKeyAccount,
 				globalURLKeyAddress,
-				
+
 				productDisplayTemplate,
 				productTypeDisplayTemplate,
 				brandDisplayTemplate,
@@ -134,7 +134,7 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 			var isProductTypeURLKey = arguments.slatwallScope.setting('globalURLKeyProductType') == arguments.entityURL;
 			var isAddressURLKey = arguments.slatwallScope.setting('globalURLKeyAddress') == arguments.entityURL;
 			var isAccountURLKey = arguments.slatwallScope.setting('globalURLKeyAccount') == arguments.entityURL;
-			
+
 			var entityName = '';
 
 			// First look for the Brand URL Key
@@ -184,7 +184,7 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 				arguments.slatwallScope.setRouteEntity(  "account", account );
 				entityName = 'account';
 			}
-			
+
 			var entityDisplayTemplateSetting = arguments.slatwallScope.invokeMethod('get#entityName#').setting('#entityName#DisplayTemplate', [site]);
 			var entityTemplateContent = arguments.slatwallScope.getService("contentService").getContent( entityDisplayTemplateSetting );
 			if(!isnull(entityTemplateContent)){
@@ -238,7 +238,7 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 		//overrride is intended to handle IIS redirects
 		var rewriteConfigPath = arguments.site.getSitePath() &'config/rewritemaps.json';
 		if(fileExists(rewriteConfigPath)){
-			
+
 			if ( len( getContextRoot() ) ) {
 				var cgiScriptName = replace( CGI.SCRIPT_NAME, getContextRoot(), '' );
 				var cgiPathInfo = replace( CGI.PATH_INFO, getContextRoot(), '' );
@@ -257,9 +257,9 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 	        //take path and  parse it
 	        var pathArray = listToArray(pathInfo,'/');
 	        var pathArrayLen = arrayLen(pathArray);
-	
+
 	        var urlTitlePathStartPosition = 1;
-    		
+
     		arguments.contenturlTitlePath = '';
     		for(var i = 1;i <= arraylen(pathArray);i++){
     			if(i == arrayLen(pathArray)){
@@ -268,28 +268,28 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
     				arguments.contenturlTitlePath &= pathArray[i] & '/';
     			}
     		}
-			
+
 			var rewriteFileContent = fileRead(rewriteConfigPath);
 			var redirectableList = {};
 			if(isJSON(rewriteFileContent)){
-				redirectableList = deserializeJson(rewriteFileContent);	
+				redirectableList = deserializeJson(rewriteFileContent);
 			}else{
 				throw('file must be json');
 			}
 			var key = '/'&arguments.contenturlTitlePath;
 			if(structKeyExists(redirectableList,'/'&arguments.contenturlTitlePath)){
-				
+
 				location(redirectableList[key],false,302);
-				
+
 			}
-			
+
 		}
 	}
-	
+
 	function render404(required any slatwallScope, required any site){
-		
+
 		checkForRewrite(argumentCollection=arguments);
-		
+
 		var context = getPageContext();
 		context.getOut().clearBuffer();
 		var response = context.getResponse();
