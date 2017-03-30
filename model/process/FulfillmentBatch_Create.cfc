@@ -51,13 +51,15 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Injected Entities
 	property name="fulfillmentBatch" hb_rbKey="entity.fulfillmentBatch" cfc="FulfillmentBatch";
 	property name="assignedAccount" hb_rbKey="entity.fulfillmentBatch.assignedAccount" cfc="Account";
-	property name="location" hb_rbKey="entity.fulfillmentBatch.location" cfc="Location";
-	property name="fulfillmentBatchItems" cfc="FulfillmentBatch";
+	property name="locations" hb_rbKey="entity.fulfillmentBatch.location" cfc="Location" type="array";
+	property name="fulfillmentBatchItems" cfc="FulfillmentBatch" type="array";
 	
 	// Data Properties
 	property name="assignedAccountID" hb_rbKey="entity.fulfillmentBatch.assignedAccount" cfc="Account";
 	property name="description" hb_rbKey="entity.fulfillmentBatch.description";
-	property name="locationID" hb_rbKey="entity.fulfillmentBatch.location" cfc="Location";
+	property name="locationIDList" hb_rbKey="entity.fulfillmentBatch.location" cfc="Location";
+	property name="orderFulfillmentIDList" hb_populateEnabled="public" cfc="OrderFulfillment";
+	property name="orderItemIDList" hb_populateEnabled="public" cfc="OrderItem";
 	
 	public any function getAssignedAccount(){
 		if(!structKeyExists(variables,'assignedAccount')){
@@ -70,14 +72,89 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return variables.assignedAccount;
 	}
 	
-	public any function getLocation(){
-		if(!structKeyExists(variables,'locationID')){
-			if(!isNull(getLocationID())){
-				variables.location = getService('locationService').getLocation(getLocationID());	
-			}else{
-				return;
+	public array function getLocations(){
+		if(!structKeyExists(variables,'locations')){
+			variables.locations = [];
+			if(structKeyExists(variables, "locationIDList")){
+				for (var location in locationIDList){
+					arrayAppend(variables.locations, getService('locationService').getLocation(location));	
+				}
 			}
 		}
-		return variables.location;
+		return variables.locations;
 	}
+	
+	/**
+	 * Turns a list of orderFulfillmentIDs into fulfillmentBatchItems and returns those items.
+	 * @returns an array of fulfillmentBatchItems
+	 */
+	public array function getFulfillmentBatchItemsByOrderFulfillmentIDList(){
+		//If we have a id list.
+		var fulfillmentBatchItems = [];
+		if (structKeyExists(variables, "orderFulfillmentIDList") && len(variables.orderFulfillmentIDList)){
+			for (var orderFulfillmentID in variables.orderFulfillmentIDList){
+				var orderFulfillment = getService("FulfillmentService").getOrderFulfillmentByOrderFulfillmentID(orderFulfillmentID);
+				if (isNull(orderFulfillment)){
+					continue;
+				}
+				var fulfillmentBatchItem = getService("FulfillmentService").newFulfillmentBatchItem();
+				//Sets the batch on the item
+				fulfillmentBatchItem.setFulfillmentBatch(getFulfillmentBatch());
+				//Sets the orderFulfillment on the item
+				fulfillmentBatchItem.setOrderFulfillment(orderFulfillment);
+				arrayAppend(fulfillmentBatchItems, fulfillmentBatchItem);
+			}
+		}
+		return fulfillmentBatchItems;
+	}
+	
+	/**
+	 * Turns a list of orderItemIDs into fulfillmentBatchItems and returns those items.
+	 * @returns an array of fulfillmentBatchItems
+	 */
+	public array function getFulfillmentBatchItemsByOrderItemIDList(){
+		//If we have a id list.
+		var fulfillmentBatchItems = [];
+		if (structKeyExists(variables, "orderItemIDList") && len(variables.orderItemIDList)){
+			for (var orderItemID in variables.orderItemIDList){
+				var orderItem = getService("OrderService").getOrderItemByOrderItemID(orderItemID);
+				if (isNull(orderItem)){
+					continue;
+				}
+				var fulfillmentBatchItem = getService("FulfillmentService").newFulfillmentBatchItem();
+				//Sets the batch on the item
+				fulfillmentBatchItem.setFulfillmentBatch(getFulfillmentBatch());
+				//Sets the orderFulfillment on the item
+				fulfillmentBatchItem.setOrderItem(orderItem);
+				arrayAppend(fulfillmentBatchItems, fulfillmentBatchItem);
+			}
+		}
+		return fulfillmentBatchItems;
+	}
+	
+	
+	/**
+	 * Returns either the injected fulfillmentBatchItems, or generated ones if either orderItemList or orderFulfillmentlist exists.
+	 * @returns array of fulfillmentBatchItems
+	 */
+	 public any function getFulfillmentBatchItems(){
+	 	if (!structKeyExists(variables, "fulfillmentBatchItems")){
+	 		
+	 		//Create the initial array since it doesn't exist.
+	 		variables.fulfillmentBatchItems = [];
+	 		
+	 		//Get batch items by orderFulfillment (of)
+	 		var ofFulfillmentBatchItems = getFulfillmentBatchItemsByOrderFulfillmentIDList();
+	 		if (!arrayIsEmpty(ofFulfillmentBatchItems)){
+	 			variables.fulfillmentBatchItems.addAll(ofFulfillmentBatchItems);
+	 		}
+	 		
+	 		//Get batch items by orderItem (oi)
+	 		var oiFulfillmentBatchItems = getFulfillmentBatchItemsByOrderItemIDList();
+	 		if (!arrayIsEmpty(oiFulfillmentBatchItems)){
+	 			variables.fulfillmentBatchItems.addAll(oiFulfillmentBatchItems);
+	 		}
+	 	}
+	 	return variables.fulfillmentBatchItems;
+	 }
 }
