@@ -7,7 +7,7 @@
     </address>
     <hr>
     <i class="fa fa-truck fa-lg" aria-hidden="true"></i>
-    {{slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethod.shippingMethodName}}
+    {{slatwall.cart.orderFulfillments[address.fulfillmentIndex].data.shippingMethod.shippingMethodName}}
     <a href="#" ng-click="slatwall.edit = 'fulfillment'" class="edit">Edit</a>
 </div>
 

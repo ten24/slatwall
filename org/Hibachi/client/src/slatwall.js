@@ -1864,6 +1864,8 @@
 	        this.years = [];
 	        this.shippingAddress = "";
 	        this.accountAddressEditFormIndex = [];
+	        this.showStoreSelector = [];
+	        this.showEmailSelector = [];
 	        this.imagePath = {};
 	        // public hasErrors = ()=>{
 	        //     return this.errors.length;
@@ -2234,21 +2236,24 @@
 	        };
 	        /** returns true if the shipping method option passed in is the selected shipping method
 	        */
-	        this.isSelectedShippingMethod = function (option) {
-	            return _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethod &&
+	        this.isSelectedShippingMethod = function (option, fulfillmentIndex) {
+	            return _this.cart.orderFulfillments[fulfillmentIndex].data.shippingMethod &&
 	                (_this.cart.fulfillmentTotal &&
-	                    ((option.value == _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethod.shippingMethodID) ||
-	                        (_this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethodOptions.length == 1)));
+	                    ((option.value == _this.cart.orderFulfillments[fulfillmentIndex].data.shippingMethod.shippingMethodID) ||
+	                        (_this.cart.orderFulfillments[fulfillmentIndex].data.shippingMethodOptions.length == 1)));
 	        };
 	        /** Select a shipping method - temporarily changes the selected method on the front end while awaiting official change from server
 	        */
-	        this.selectShippingMethod = function (option) {
+	        this.selectShippingMethod = function (option, fulfillmentIndex) {
 	            var data = {
 	                'shippingMethodID': option.value,
-	                'orderFulfillmentWithShippingMethodOptionsIndex': _this.cart.orderFulfillmentWithShippingMethodOptionsIndex
+	                'orderFulfillmentWithShippingMethodOptionsIndex': fulfillmentIndex
 	            };
 	            _this.doAction('addShippingMethodUsingShippingMethodID', data);
-	            _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethod.shippingMethodID = option.value;
+	            if (!_this.cart.orderFulfillments[fulfillmentIndex].data.shippingMethod) {
+	                _this.cart.orderFulfillments[fulfillmentIndex].data.shippingMethod = {};
+	            }
+	            _this.cart.orderFulfillments[fulfillmentIndex].data.shippingMethod.shippingMethodID = option.value;
 	        };
 	        /** Removes promotional code from order*/
 	        this.removePromoCode = function (code, index) {
@@ -2559,12 +2564,7 @@
 	            _this.shippingAddressErrors = undefined;
 	        };
 	        /**Hides shipping address form, clears shipping address errors*/
-	        this.hideAccountAddressForm = function (event) {
-	            console.log("FŪLFILLMENT ĮNDEX", event);
-	            var fulfillmentIndex = 'cinco';
-	            //In case method is called by an event
-	            if (typeof fulfillmentIndex != 'string' && typeof fulfillmentIndex != 'number') {
-	            }
+	        this.hideAccountAddressForm = function (fulfillmentIndex) {
 	            _this.accountAddressEditFormIndex[fulfillmentIndex] = undefined;
 	        };
 	        this.hideBillingAddressForm = function () {
@@ -2626,18 +2626,19 @@
 	            return false;
 	        };
 	        /** Returns true if order requires email fulfillment and email address has been chosen.*/
-	        this.hasEmailFulfillmentAddress = function () {
-	            return _this.cart.orderFulfillmentWithEmailTypeIndex > -1 && _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithEmailTypeIndex].emailAddress;
+	        this.hasEmailFulfillmentAddress = function (fulfillmentIndex) {
+	            return Boolean(_this.cart.orderFulfillments[fulfillmentIndex].emailAddress);
 	        };
-	        this.getPickupLocation = function () {
+	        this.getPickupLocation = function (fulfillmentIndex) {
 	            if (!_this.cart.data.orderFulfillments[_this.cart.orderFulfillmentWithPickupTypeIndex])
 	                return;
 	            return _this.cart.data.orderFulfillments[_this.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation;
 	        };
 	        this.getShippingAddresses = function () {
 	            var addresses = [];
-	            _this.cart.orderFulfillments.forEach(function (fulfillment) {
+	            _this.cart.orderFulfillments.forEach(function (fulfillment, index) {
 	                if (_this.getFulfillmentType(fulfillment) == 'shipping' && fulfillment.data.shippingAddress && fulfillment.data.shippingAddress.addressID) {
+	                    fulfillment.data.shippingAddress.fulfillmentIndex = index;
 	                    addresses.push(fulfillment.data.shippingAddress);
 	                }
 	            });
@@ -2649,16 +2650,16 @@
 	            return _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithEmailTypeIndex].emailAddress;
 	        };
 	        /** Returns true if selected pickup location has no name.*/
-	        this.namelessPickupLocation = function () {
-	            if (!_this.getPickupLocation())
+	        this.namelessPickupLocation = function (fulfillmentIndex) {
+	            if (!_this.getPickupLocation(fulfillmentIndex))
 	                return false;
-	            return _this.getPickupLocation().primaryAddress != undefined && _this.getPickupLocation().locationName == undefined;
+	            return _this.getPickupLocation(fulfillmentIndex).primaryAddress != undefined && _this.getPickupLocation(fulfillmentIndex).locationName == undefined;
 	        };
 	        /** Returns true if no pickup location has been selected.*/
-	        this.noPickupLocation = function () {
-	            if (!_this.getPickupLocation())
+	        this.noPickupLocation = function (fulfillmentIndex) {
+	            if (!_this.getPickupLocation(fulfillmentIndex))
 	                return true;
-	            return _this.getPickupLocation().primaryAddress == undefined && _this.getPickupLocation().locationName == undefined;
+	            return _this.getPickupLocation(fulfillmentIndex).primaryAddress == undefined && _this.getPickupLocation(fulfillmentIndex).locationName == undefined;
 	        };
 	        this.disableContinueToPayment = function () {
 	            return _this.cart.orderRequirementsList.indexOf('fulfillment') != -1;
@@ -2695,11 +2696,18 @@
 	        this.hasAccountAndCartItems = function () {
 	            return _this.hasAccount() && !_this.cartHasNoItems();
 	        };
-	        this.hideStoreSelector = function () {
-	            _this.showStoreSelector = false;
+	        this.hideStoreSelector = function (fulfillmentIndex) {
+	            _this.showStoreSelector[fulfillmentIndex] = false;
 	        };
-	        this.hideEmailSelector = function () {
-	            _this.showEmailSelector = false;
+	        this.hideEmailSelector = function (fulfillmentIndex) {
+	            _this.showEmailSelector[fulfillmentIndex] = false;
+	        };
+	        this.binder = function (self, fn) {
+	            var args = [];
+	            for (var _i = 2; _i < arguments.length; _i++) {
+	                args[_i - 2] = arguments[_i];
+	            }
+	            return fn.bind.apply(fn, [self].concat(args));
 	        };
 	        this.orderService = orderService;
 	        this.cartService = cartService;
@@ -2720,6 +2728,9 @@
 	        this.observerService = observerService;
 	        this.$timeout = $timeout;
 	    }
+	    PublicService.prototype.getOrderFulfillmentItemList = function (fulfillmentIndex) {
+	        return this.cart.orderFulfillments[fulfillmentIndex].orderFulfillmentItems.map(function (item) { return item.sku.skuName ? item.sku.skuName : item.sku.product.productName; }).join(', ');
+	    };
 	    return PublicService;
 	}());
 	exports.PublicService = PublicService;
@@ -20821,6 +20832,7 @@
 	        console.log("event listeners", this.eventListeners);
 	        if (this.eventListeners) {
 	            for (var key in this.eventListeners) {
+	                console.log(key, this.eventListeners[key]);
 	                observerService.attach(this.eventListeners[key], key);
 	            }
 	        }

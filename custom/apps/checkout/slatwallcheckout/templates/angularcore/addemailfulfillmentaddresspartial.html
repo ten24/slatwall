@@ -1,22 +1,29 @@
-<span ng-init="emailFulfillmentAddress = slatwall.getProcessObject('OrderFulfillment', {fullfillmentMethodType:'email'})"></span>
-<div class="row">
-	<div class="col-sm-7">
+<span ng-init="emailFulfillmentAddress = slatwall.getProcessObject('OrderFulfillment', {fullfillmentMethodType:'email'});fulfillmentIndex=SWFDirective.variables.fulfillmentIndex;emailFulfillmentAddress.fulfillmentID=slatwall.cart.orderFulfillments[fulfillmentIndex].orderFulfillmentID"></span>
+<div class="col-sm-12 panel panel-default">
+	<div class="panel-body">
 		<h4>Email Fulfillment</h4>
-			<div class="col-sm-7">
+			<div class="col-sm-12">
 			    <sw-form
 			        data-object="emailFulfillmentAddress"
 			        data-name="Email_Fulfillment"
 			        data-event-announcers="keyup"
 			        data-action="addEmailFulfillmentAddress"
-			        data-event-listeners="{addEmailFulfillmentAddressSuccess:slatwall.hideEmailSelector}"
-			        ng-show="slatwall.showEmailSelector || !slatwall.hasEmailFulfillmentAddress()">
+			        data-event-listeners="{addEmailFulfillmentAddressSuccess:slatwall.binder(null,slatwall.hideEmailSelector,fulfillmentIndex)}"
+			        ng-show="slatwall.showEmailSelector[fulfillmentIndex] || !slatwall.hasEmailFulfillmentAddress(fulfillmentIndex)">
 					<div class="form-group">
 				        <swf-property-display
 				                data-name="emailAddress"
 				                data-field-type="email"
 				                data-property-identifier="emailAddress"
-				                data-label-text="Email Address"
+				                data-label-text=""
 				                data-class="form-control">
+				        </swf-property-display>
+				        <swf-property-display
+				                data-name="fulfillmentID"
+				                data-field-type="text"
+				                data-class="hidden"
+				                data-label-text=""
+				                data-property-identifier="fulfillmentID">
 				        </swf-property-display>
 					</div>
 					<div class="form-group">
@@ -28,9 +35,9 @@
 				        </sw-action-caller>
 					</div>
 			    </sw-form>
-			    <div ng-show="slatwall.hasEmailFulfillmentAddress()">
-			    	<p>Selected Email: {{slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithEmailTypeIndex].emailAddress}}</p>
-			    	<a href="#" ng-click="slatwall.showEmailSelector = !slatwall.showEmailSelector">{{slatwall.showEmailSelector ? 'Cancel' : 'Select Email Address'}}</a>
+			    <div ng-show="slatwall.hasEmailFulfillmentAddress(fulfillmentIndex)">
+			    	<p>Selected Email: {{slatwall.cart.orderFulfillments[fulfillmentIndex].emailAddress}}</p>
+			    	<a href="#" ng-click="slatwall.showEmailSelector[fulfillmentIndex] = !slatwall.showEmailSelector[fulfillmentIndex]">{{slatwall.showEmailSelector[fulfillmentIndex] ? 'Cancel' : 'Select Email Address'}}</a>
 			    </div>
 		    </div>
     </div>

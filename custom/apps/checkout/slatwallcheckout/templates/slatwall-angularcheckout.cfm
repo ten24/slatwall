@@ -50,14 +50,14 @@
 					Fulfillment Information</h3>
 	                <div class="row" ng-show="slatwall.fulfillmentTabIsActive()">
                 		<div class="col-md-12" ng-repeat="fulfillment in slatwall.cart.orderFulfillments track by $index">
-		                    <div class="details row" ng-if="slatwall.isShippingFulfillment(fulfillment)">
+		                    <div class="details row panel-body" ng-if="slatwall.isShippingFulfillment(fulfillment)">
 		                        <swf-directive partial-name="addshippingaddresspartial" variables="{'fulfillmentIndex':$index}"></swf-directive>
 		                    </div>
-		                    <div class="details row" ng-show="slatwall.isEmailFulfillment(fulfillment)">
-		                    	<swf-directive partial-name="addemailfulfillmentaddresspartial"></swf-directive>
+		                    <div class="details row panel-body" ng-if="slatwall.isEmailFulfillment(fulfillment)">
+		                    	<swf-directive partial-name="addemailfulfillmentaddresspartial" variables="{'fulfillmentIndex':$index}"></swf-directive>
 		                    </div>
-		                    <div class="details row" ng-show="slatwall.isDeliveryFulfillment(fulfillment)">
-		                        <swf-directive partial-name="deliverystorepickup"></swf-directive>
+		                    <div class="details row panel-body" ng-if="slatwall.isPickupFulfillment(fulfillment)">
+		                        <swf-directive partial-name="deliverystorepickup" variables="{'fulfillmentIndex':$index}"></swf-directive>
 		                    </div><br>
 						</div>
 	                </div>

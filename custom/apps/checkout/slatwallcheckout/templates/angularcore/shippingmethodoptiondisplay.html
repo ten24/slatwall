@@ -1,18 +1,18 @@
 <!--- SELECT SHIPPING METHOD --->
-<div class="method col-md-12">
+<div class="method col-md-12" ng-init="fulfillmentIndex = SWFDirective.variables.fulfillmentIndex">
     <div class="row">
             <div class="col-md-12 method">
 				<h5>Select Shipping Method</h5>
 			    <!-- Add save shipping method to API and add public service method in slatwall... -->
 			    <p class="shippingMethodOption" 
-			    ng-repeat="option in slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethodOptions track by $index" 
-			    ng-click="slatwall.selectShippingMethod(option)">
-			    	<span class="loader-wrapper" ng-show="slatwall.getRequestByAction('addShippingMethodUsingShippingMethodID').loading && slatwall.isSelectedShippingMethod(option)">
+			    ng-repeat="option in slatwall.cart.orderFulfillments[fulfillmentIndex].data.shippingMethodOptions track by $index" 
+			    ng-click="slatwall.selectShippingMethod(option, fulfillmentIndex)">
+			    	<span class="loader-wrapper" ng-show="slatwall.getRequestByAction('addShippingMethodUsingShippingMethodID').loading && slatwall.isSelectedShippingMethod(option, fulfillmentIndex)">
 						<i class="fa fa-spinner fa-spin fa-fw"></i>
 					</span>
 			    	<input type="radio" name="cb{{option.shippingMethodCode}}" id="check{{optionValue}}"
-				    	ng-checked="slatwall.isSelectedShippingMethod(option)"
-				    	ng-hide="slatwall.isSelectedShippingMethod(option) && slatwall.getRequestByAction('addShippingMethodUsingShippingMethodID').loading"/>
+				    	ng-checked="slatwall.isSelectedShippingMethod(option, fulfillmentIndex)"
+				    	ng-hide="slatwall.isSelectedShippingMethod(option, fulfillmentIndex) && slatwall.getRequestByAction('addShippingMethodUsingShippingMethodID').loading"/>
 			        <label for="cb{{option.shippingMethodCode}}">{{option.name}}</label>
 				</p>
 				

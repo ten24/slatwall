@@ -86,6 +86,7 @@ class SWAddressFormController {
         console.log("event listeners", this.eventListeners);
        if(this.eventListeners){
             for(var key in this.eventListeners){
+                console.log(key, this.eventListeners[key]);
                 observerService.attach(this.eventListeners[key], key)
             }
         }

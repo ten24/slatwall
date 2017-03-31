@@ -594,7 +594,7 @@ component extends="HibachiService"  accessors="true" output="false"
       var orderFulfillments = order.getOrderFulfillments();
 
       for(fulfillment in orderFulfillments){
-        if(fulfillment.getFulfillmentMethod().getFulfillmentMethodType() == 'email'){
+        if(fulfillment.getOrderFulfillmentID() == data.fulfillmentID){
           var orderFulfillment = fulfillment;
         }
       }

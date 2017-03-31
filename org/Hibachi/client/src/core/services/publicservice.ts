@@ -53,8 +53,8 @@ class PublicService {
     public edit:String;
     public editPayment:boolean;
     public showCreateAccount:boolean;
-    public showStoreSelector:boolean;
-    public showEmailSelector:boolean;
+    public showStoreSelector = [];
+    public showEmailSelector = [];
     public lastRemovedPromoCode;
     public lastRemovedGiftCard;
     public imagePath:{[key:string]:any}={};
@@ -510,22 +510,25 @@ class PublicService {
 
      /** returns true if the shipping method option passed in is the selected shipping method
      */
-     public isSelectedShippingMethod = (option) =>{
-         return this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethod && 
+     public isSelectedShippingMethod = (option, fulfillmentIndex) =>{
+         return this.cart.orderFulfillments[fulfillmentIndex].data.shippingMethod && 
              (this.cart.fulfillmentTotal && 
-             ((option.value == this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethod.shippingMethodID) || 
-            (this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethodOptions.length == 1)));
+             ((option.value == this.cart.orderFulfillments[fulfillmentIndex].data.shippingMethod.shippingMethodID) || 
+            (this.cart.orderFulfillments[fulfillmentIndex].data.shippingMethodOptions.length == 1)));
      }
 
      /** Select a shipping method - temporarily changes the selected method on the front end while awaiting official change from server
      */
-     public selectShippingMethod = (option) =>{
+     public selectShippingMethod = (option, fulfillmentIndex) =>{
          let data = {
              'shippingMethodID': option.value,
-             'orderFulfillmentWithShippingMethodOptionsIndex':this.cart.orderFulfillmentWithShippingMethodOptionsIndex
+             'orderFulfillmentWithShippingMethodOptionsIndex':fulfillmentIndex
          };
          this.doAction('addShippingMethodUsingShippingMethodID', data);
-         this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingMethod.shippingMethodID = option.value;
+         if(!this.cart.orderFulfillments[fulfillmentIndex].data.shippingMethod){
+             this.cart.orderFulfillments[fulfillmentIndex].data.shippingMethod = {};
+         }
+         this.cart.orderFulfillments[fulfillmentIndex].data.shippingMethod.shippingMethodID = option.value;
      }
 
      /** Removes promotional code from order*/
@@ -882,13 +885,7 @@ class PublicService {
     }
 
     /**Hides shipping address form, clears shipping address errors*/
-    public hideAccountAddressForm = (event)=>{
-        console.log("FŪLFILLMENT ĮNDEX", event)
-        let fulfillmentIndex = 'cinco';
-        //In case method is called by an event
-        if(typeof fulfillmentIndex != 'string' && typeof fulfillmentIndex != 'number'){
-
-        }
+    public hideAccountAddressForm = (fulfillmentIndex)=>{
         this.accountAddressEditFormIndex[fulfillmentIndex] = undefined;
     }
 
@@ -960,20 +957,25 @@ class PublicService {
         return false;
     }
 
-    /** Returns true if order requires email fulfillment and email address has been chosen.*/
-    public hasEmailFulfillmentAddress = ()=>{
-        return this.cart.orderFulfillmentWithEmailTypeIndex > -1 && this.cart.orderFulfillments[this.cart.orderFulfillmentWithEmailTypeIndex].emailAddress
+    public getOrderFulfillmentItemList(fulfillmentIndex){
+        return this.cart.orderFulfillments[fulfillmentIndex].orderFulfillmentItems.map((item)=>item.sku.skuName ? item.sku.skuName : item.sku.product.productName).join(', ');
     }
 
-    public getPickupLocation = () => {
+    /** Returns true if order requires email fulfillment and email address has been chosen.*/
+    public hasEmailFulfillmentAddress = (fulfillmentIndex)=>{
+        return Boolean(this.cart.orderFulfillments[fulfillmentIndex].emailAddress)
+    }
+
+    public getPickupLocation = (fulfillmentIndex) => {
         if(!this.cart.data.orderFulfillments[this.cart.orderFulfillmentWithPickupTypeIndex]) return;
         return this.cart.data.orderFulfillments[this.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation;
     }
 
     public getShippingAddresses = () =>{
         let addresses = [];
-        this.cart.orderFulfillments.forEach((fulfillment)=>{
+        this.cart.orderFulfillments.forEach((fulfillment, index)=>{
             if(this.getFulfillmentType(fulfillment) == 'shipping' && fulfillment.data.shippingAddress && fulfillment.data.shippingAddress.addressID){
+                fulfillment.data.shippingAddress.fulfillmentIndex = index;
                 addresses.push(fulfillment.data.shippingAddress);
             }
         })
@@ -986,15 +988,15 @@ class PublicService {
     }
 
     /** Returns true if selected pickup location has no name.*/
-    public namelessPickupLocation = () => {
-        if(!this.getPickupLocation()) return false;
-        return this.getPickupLocation().primaryAddress != undefined && this.getPickupLocation().locationName == undefined
+    public namelessPickupLocation = (fulfillmentIndex) => {
+        if(!this.getPickupLocation(fulfillmentIndex)) return false;
+        return this.getPickupLocation(fulfillmentIndex).primaryAddress != undefined && this.getPickupLocation(fulfillmentIndex).locationName == undefined
     }
 
     /** Returns true if no pickup location has been selected.*/
-    public noPickupLocation = () => {
-        if(!this.getPickupLocation()) return true;
-        return this.getPickupLocation().primaryAddress == undefined && this.getPickupLocation().locationName == undefined
+    public noPickupLocation = (fulfillmentIndex) => {
+        if(!this.getPickupLocation(fulfillmentIndex)) return true;
+        return this.getPickupLocation(fulfillmentIndex).primaryAddress == undefined && this.getPickupLocation(fulfillmentIndex).locationName == undefined
     }
 
     public disableContinueToPayment = () =>{
@@ -1043,12 +1045,16 @@ class PublicService {
         return this.hasAccount() && !this.cartHasNoItems();
     }
 
-    public hideStoreSelector = () =>{
-        this.showStoreSelector = false;
+    public hideStoreSelector = (fulfillmentIndex) =>{
+        this.showStoreSelector[fulfillmentIndex] = false;
     }
 
-    public hideEmailSelector = () =>{
-        this.showEmailSelector = false;
+    public hideEmailSelector = (fulfillmentIndex) =>{
+        this.showEmailSelector[fulfillmentIndex] = false;
+    }
+
+    public binder = (self, fn, ...args)=>{
+        return fn.bind(self, ...args);
     }
 }
 export {PublicService};

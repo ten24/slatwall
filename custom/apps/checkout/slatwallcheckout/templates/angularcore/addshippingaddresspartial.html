@@ -1,15 +1,16 @@
 <!-- Add Shipping Address Obj just to control state -->
-<div class="col-md-12" ng-init="slatwall.OrderAddShippingObj = {};fulfillmentIndex = SWFDirective.variables.fulfillmentIndex" ng-show="!slatwall.editingDifferentAccountAddress(fulfillmentIndex)">
+<div class="col-md-12 panel panel-default" ng-init="slatwall.OrderAddShippingObj = {};fulfillmentIndex = SWFDirective.variables.fulfillmentIndex" ng-show="!slatwall.editingDifferentAccountAddress(fulfillmentIndex)">
+	<div class="panel-body">
+		<!-- Displays all addresses from the addess book and lets you select one to use as the shipping address. -->
+		<h4>Shipping</h4>
+		<h5>{{slatwall.getOrderFulfillmentItemList(fulfillmentIndex)}}</h5>
+		<swf-directive partial-name="addshippingbyaccountaddresspartial" ng-show="slatwall.accountAddressEditFormIndex[fulfillmentIndex] == undefined" variables="{fulfillmentIndex:fulfillmentIndex}"></swf-directive>
 
-	<!-- Displays all addresses from the addess book and lets you select one to use as the shipping address. -->
+		<!-- Displays available shipping methods. -->
+		<swf-directive partial-name="shippingmethodoptiondisplay" ng-if="slatwall.hasShippingAddress(fulfillmentIndex) && slatwall.accountAddressEditFormIndex[fulfillmentIndex] == undefined" variables="{fulfillmentIndex:fulfillmentIndex}"></swf-directive>
 
-	<swf-directive partial-name="addshippingbyaccountaddresspartial" ng-show="slatwall.accountAddressEditFormIndex[fulfillmentIndex] == undefined" variables="{fulfillmentIndex:fulfillmentIndex}"></swf-directive>
-
-	<!-- Displays available shipping methods. -->
-	<swf-directive partial-name="shippingmethodoptiondisplay" ng-if="slatwall.hasShippingAddress(fulfillmentIndex) && slatwall.accountAddressEditFormIndex[fulfillmentIndex] == undefined"></swf-directive>
-
-	<!-- When an address needs to be saved. -->
-	<div id="editaddress">
+		<!-- When an address needs to be saved. -->
+		<div id="editaddress">
 			<div ng-if="slatwall.showEditAccountAddressForm(fulfillmentIndex)">
 				<h4>Edit Your Address:</h4>
 				<sw-address-form
@@ -27,7 +28,7 @@
 					data-action="updateAddress,addOrderShippingAddress"
 					data-action-text="Save and Continue"
 					data-show-address-book-select="false" 
-					data-event-listeners="{updateAddressSuccess:'slatwall.hideAccountAddressForm.bind(null,fulfillmentIndex)'}"
+					data-event-listeners="{updateAddressSuccess:slatwall.binder(null,slatwall.hideAccountAddressForm,fulfillmentIndex)}"
 					data-submit-on-enter="true"
 					data-fulfillment-index="{{fulfillmentIndex}}">
 				</sw-address-form>
@@ -52,11 +53,10 @@
 					show-close-button="true"
 					close-button-text="CLOSE"
 					data-submit-on-enter="true"
-					data-event-listeners="{addShippingAddressUsingAccountAddressSuccess:'slatwall.hideAccountAddressForm.bind(null,fulfillmentIndex)'}"
+					data-event-listeners="{addShippingAddressUsingAccountAddressSuccess:slatwall.binder(null,slatwall.hideAccountAddressForm,fulfillmentIndex)}"
 					data-fulfillment-index="{{fulfillmentIndex}}">
 				</sw-address-form>
 			</div>
-
-	</sw-form>
+		</div>
 	</div>
 </div>
