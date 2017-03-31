@@ -850,6 +850,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 						cacheValue.recordsCount = variables.recordsCount;
 						DatabaseCache.setDatabaseCacheValue(serializeJson(cacheValue));
 						getService('HibachiCacheService').saveDatabaseCache(DatabaseCache);
+						getHibachiScope().flushOrmSession();
 					}
 				} else {
 					variables.recordsCount = arrayLen(getRecords());	
