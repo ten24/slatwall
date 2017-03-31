@@ -825,12 +825,12 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 			//retrieve from cache
 			if(
 				getCacheable() 
-				&& !isNull(getService('HibachiCacheService').getHibachiCacheByHibachiCacheKey('entitySmartList' & getSessionCacheName()))
+				&& !isNull(getService('HibachiCacheService').getDatabaseCacheByDatabaseCacheKey('entitySmartList' & getSessionCacheName()))
 			) {
 				var cacheKey = 'entitySmartList'&getSessionCacheName();
-				var HibachiCache = getService('HibachiCacheService').getHibachiCacheByHibachiCacheKey(cacheKey);
-				if(!isNull(HibachiCache)){
-					var cacheValue = deserializeJson(HibachiCache.getHibachiCacheValue());
+				var DatabaseCache = getService('HibachiCacheService').getDatabaseCacheByDatabaseCacheKey(cacheKey);
+				if(!isNull(DatabaseCache)){
+					var cacheValue = deserializeJson(DatabaseCache.getDatabaseCacheValue());
 					if(structKeyExists(cacheValue,'recordsCount')){
 						variables.recordsCount = cacheValue.recordsCount;		
 					}
@@ -844,12 +844,12 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 					//write to cache
 					if(getCacheable()) {
 						var cacheKey = 'entitySmartList'&getSessionCacheName();
-						var HibachiCache = getService('HibachiCacheService').newHibachiCache();
-						HibachiCache.setHibachiCacheKey(cacheKey);
+						var DatabaseCache = getService('HibachiCacheService').newDatabaseCache();
+						DatabaseCache.setDatabaseCacheKey(cacheKey);
 						var cacheValue = {};
 						cacheValue.recordsCount = variables.recordsCount;
-						HibachiCache.setHibachiCacheValue(serializeJson(cacheValue));
-						getService('HibachiCacheService').saveHibachiCache(HibachiCache);
+						DatabaseCache.setDatabaseCacheValue(serializeJson(cacheValue));
+						getService('HibachiCacheService').saveDatabaseCache(DatabaseCache);
 					}
 				} else {
 					variables.recordsCount = arrayLen(getRecords());	
@@ -1090,9 +1090,9 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	public void function loadSavedState(required string savedStateID) {
 		var savedStates = [];
 		
-		var HibachiCache = getService('HibachiCacheService').getHibachiCacheByHibachiCacheKey('smartListSavedState'&getHibachiScope().getSession().getSessionCookieNPSID());
-		if(!isNull(HibachiCache)) {
-			savedStates = deserializeJson(HibachiCache.getHibachiCacheValue());	
+		var DatabaseCache = getService('HibachiCacheService').getDatabaseCacheByDatabaseCacheKey('smartListSavedState'&getHibachiScope().getSession().getSessionCookieNPSID());
+		if(!isNull(DatabaseCache)) {
+			savedStates = deserializeJson(DatabaseCache.getDatabaseCacheValue());	
 		}
 		
 		for(var s=1; s<=arrayLen(savedStates); s++) {
@@ -1106,11 +1106,11 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	
 	private void function saveState() {
 		var states = [];
-		var HibachiCache = getService('HibachiCacheService').getHibachiCacheByHibachiCacheKey('smartListSavedState'&getHibachiScope().getSession().getSessionCookieNPSID());
-		if(!isNull(HibachiCache)){
-			states = deserializeJson(HibachiCache.getHibachiCacheValue());
+		var DatabaseCache = getService('HibachiCacheService').getDatabaseCacheByDatabaseCacheKey('smartListSavedState'&getHibachiScope().getSession().getSessionCookieNPSID());
+		if(!isNull(DatabaseCache)){
+			states = deserializeJson(DatabaseCache.getDatabaseCacheValue());
 		}else{
-			HibachiCache = getService('HibachiCacheService').newHibachiCache();
+			DatabaseCache = getService('HibachiCacheService').newDatabaseCache();
 		}
 		// Setup the state
 		var state = getStateStruct();
@@ -1130,9 +1130,9 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 			arrayDeleteAt(states, s);
 		}
 		
-		HibachiCache.setHibachiCacheKey('smartListSavedState'&getHibachiScope().getSession().getSessionCookieNPSID());
-		HibachiCache.setHibachiCacheValue(serializeJson(states));
-		getService('HibachiCacheService').saveHibachiCache(HibachiCache);
+		DatabaseCache.setDatabaseCacheKey('smartListSavedState'&getHibachiScope().getSession().getSessionCookieNPSID());
+		DatabaseCache.setDatabaseCacheValue(serializeJson(states));
+		getService('HibachiCacheService').saveDatabaseCache(DatabaseCache);
 	}
 	
 	public string function getSavedStateID() {
