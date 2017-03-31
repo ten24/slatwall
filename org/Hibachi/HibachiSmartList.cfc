@@ -1133,6 +1133,9 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		DatabaseCache.setDatabaseCacheKey('smartListSavedState'&getHibachiScope().getSession().getSessionCookieNPSID());
 		DatabaseCache.setDatabaseCacheValue(serializeJson(states));
 		getService('HibachiCacheService').saveDatabaseCache(DatabaseCache);
+		
+		getDao('HibachiDao').flushOrmSession();
+		
 	}
 	
 	public string function getSavedStateID() {
