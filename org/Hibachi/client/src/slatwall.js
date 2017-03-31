@@ -1863,6 +1863,7 @@
 	        this.months = [{ name: '01 - JAN', value: 1 }, { name: '02 - FEB', value: 2 }, { name: '03 - MAR', value: 3 }, { name: '04 - APR', value: 4 }, { name: '05 - MAY', value: 5 }, { name: '06 - JUN', value: 6 }, { name: '07 - JUL', value: 7 }, { name: '08 - AUG', value: 8 }, { name: '09 - SEP', value: 9 }, { name: '10 - OCT', value: 10 }, { name: '11 - NOV', value: 11 }, { name: '12 - DEC', value: 12 }];
 	        this.years = [];
 	        this.shippingAddress = "";
+	        this.accountAddressEditFormIndex = [];
 	        this.imagePath = {};
 	        // public hasErrors = ()=>{
 	        //     return this.errors.length;
@@ -2151,12 +2152,23 @@
 	        this.hasPickupFulfillmentMethod = function () {
 	            return _this.hasFulfillmentMethod("Pickup");
 	        };
-	        /** Returns true if the order has a shipping address selected. */
-	        this.hasShippingAddress = function () {
-	            return (_this.hasShippingFulfillmentMethod &&
-	                _this.cart.orderFulfillments &&
-	                _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingTypeIndex] &&
-	                _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingTypeIndex].data.shippingAddress);
+	        this.getFulfillmentType = function (fulfillment) {
+	            return fulfillment.fulfillmentMethod.fulfillmentMethodType;
+	        };
+	        this.isShippingFulfillment = function (fulfillment) {
+	            return _this.getFulfillmentType(fulfillment) === 'shipping';
+	        };
+	        this.isEmailFulfillment = function (fulfillment) {
+	            return _this.getFulfillmentType(fulfillment) === 'email';
+	        };
+	        this.isPickupFulfillment = function (fulfillment) {
+	            return _this.getFulfillmentType(fulfillment) === 'pickup';
+	        };
+	        /** Returns true if the order fulfillment has a shipping address selected. */
+	        this.hasShippingAddress = function (fulfillmentIndex) {
+	            return (_this.cart.orderFulfillments[fulfillmentIndex] &&
+	                _this.isShippingFulfillment(_this.cart.orderFulfillments[fulfillmentIndex]) &&
+	                _this.cart.orderFulfillments[fulfillmentIndex].data.shippingAddress);
 	        };
 	        /** Returns true if the order requires a fulfillment */
 	        this.orderRequiresFulfillment = function () {
@@ -2525,13 +2537,6 @@
 	                return _this.cart.errors.addBillingAddress;
 	            }
 	        };
-	        /** Returns errors from addPromoCode request. */
-	        this.promoCodeError = function () {
-	            if (_this.errors &&
-	                _this.errors.promotionCode) {
-	                return _this.errors.promotionCode[0];
-	            }
-	        };
 	        /** Returns errors from addGiftCard request. */
 	        this.giftCardError = function () {
 	            if (_this.cart.processObjects &&
@@ -2541,8 +2546,8 @@
 	                return _this.cart.processObjects.addOrderPayment.errors.giftCardID[0];
 	            }
 	        };
-	        this.editAccountAddress = function (key) {
-	            _this.accountAddressEditFormIndex = key;
+	        this.editAccountAddress = function (key, fulfillmentIndex) {
+	            _this.accountAddressEditFormIndex[fulfillmentIndex] = key;
 	            _this.editingAccountAddress = _this.getAddressEntity(_this.account.accountAddresses[key].address);
 	        };
 	        this.editBillingAddress = function (key) {
@@ -2550,41 +2555,34 @@
 	            _this.selectedBillingAddress = null;
 	            _this.billingAddress = _this.getAddressEntity(_this.account.accountAddresses[key].address);
 	        };
-	        /** Sets shippingAddressErrors from response errors, refreshes swAddressForm */
-	        this.addShippingAddressErrors = function () {
-	            _this.shippingAddressErrors = _this.errors;
-	            if (_this.accountAddressEditFormIndex != undefined) {
-	                var key = _this.accountAddressEditFormIndex;
-	                _this.accountAddressEditFormIndex = undefined;
-	                _this.$timeout(function () { return _this.accountAddressEditFormIndex = key; });
-	            }
-	        };
-	        /** Sets cart addBillingAddress errors from response errors, refreshes swAddressForm */
-	        this.addBillingAddressErrors = function () {
-	            _this.addBillingErrorsToCartErrors();
-	            if (_this.billingAddressEditFormIndex != undefined) {
-	                var key = _this.billingAddressEditFormIndex;
-	                _this.billingAddressEditFormIndex = undefined;
-	                _this.$timeout(function () { return _this.billingAddressEditFormIndex = key; });
-	            }
-	        };
 	        this.clearShippingAddressErrors = function () {
 	            _this.shippingAddressErrors = undefined;
 	        };
 	        /**Hides shipping address form, clears shipping address errors*/
-	        this.hideAccountAddressForm = function () {
-	            _this.accountAddressEditFormIndex = undefined;
-	            _this.clearShippingAddressErrors();
+	        this.hideAccountAddressForm = function (event) {
+	            console.log("FŪLFILLMENT ĮNDEX", event);
+	            var fulfillmentIndex = 'cinco';
+	            //In case method is called by an event
+	            if (typeof fulfillmentIndex != 'string' && typeof fulfillmentIndex != 'number') {
+	            }
+	            _this.accountAddressEditFormIndex[fulfillmentIndex] = undefined;
 	        };
 	        this.hideBillingAddressForm = function () {
 	            _this.billingAddressEditFormIndex = undefined;
 	            _this.billingAddress = {};
 	        };
-	        this.showEditAccountAddressForm = function () {
-	            return _this.accountAddressEditFormIndex != undefined && _this.accountAddressEditFormIndex != 'new';
+	        this.editingDifferentAccountAddress = function (fulfillmentIndex) {
+	            for (var index = 0; index < _this.cart.orderFulfillments.length; index++) {
+	                if (index !== fulfillmentIndex && _this.accountAddressEditFormIndex[index] != undefined) {
+	                    return true;
+	                }
+	            }
 	        };
-	        this.showNewAccountAddressForm = function () {
-	            return _this.accountAddressEditFormIndex == 'new';
+	        this.showEditAccountAddressForm = function (fulfillmentIndex) {
+	            return _this.accountAddressEditFormIndex[fulfillmentIndex] != undefined && _this.accountAddressEditFormIndex[fulfillmentIndex] != 'new';
+	        };
+	        this.showNewAccountAddressForm = function (fulfillmentIndex) {
+	            return _this.accountAddressEditFormIndex[fulfillmentIndex] == 'new';
 	        };
 	        this.showNewBillingAddressForm = function () {
 	            return !_this.useShippingAsBilling && _this.billingAddressEditFormIndex == 'new';
@@ -2609,13 +2607,11 @@
 	                _this.cart.errors.addBillingAddress = _this.cart.errors.addBillingAddress.concat(_this.errors[key]);
 	            }
 	        };
-	        this.accountAddressIsSelectedShippingAddress = function (key) {
+	        this.accountAddressIsSelectedShippingAddress = function (key, fulfillmentIndex) {
 	            if (_this.account &&
 	                _this.account.accountAddresses &&
-	                _this.cart.orderFulfillments &&
-	                _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex] &&
-	                _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress) {
-	                return _this.addressesMatch(_this.account.accountAddresses[key].address, _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress);
+	                _this.cart.orderFulfillments[fulfillmentIndex].shippingAddress) {
+	                return _this.addressesMatch(_this.account.accountAddresses[key].address, _this.cart.orderFulfillments[fulfillmentIndex].shippingAddress);
 	            }
 	            return false;
 	        };
@@ -2638,10 +2634,14 @@
 	                return;
 	            return _this.cart.data.orderFulfillments[_this.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation;
 	        };
-	        this.getShippingAddress = function () {
-	            if (!_this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex])
-	                return;
-	            return _this.cart.orderFulfillments[_this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress;
+	        this.getShippingAddresses = function () {
+	            var addresses = [];
+	            _this.cart.orderFulfillments.forEach(function (fulfillment) {
+	                if (_this.getFulfillmentType(fulfillment) == 'shipping' && fulfillment.data.shippingAddress && fulfillment.data.shippingAddress.addressID) {
+	                    addresses.push(fulfillment.data.shippingAddress);
+	                }
+	            });
+	            return addresses;
 	        };
 	        this.getEmailFulfillmentAddress = function () {
 	            if (!_this.cart.orderFulfillments[_this.cart.orderFulfillmentWithEmailTypeIndex])
@@ -6390,6 +6390,7 @@
 	            for (var i in _this.successfulActions) {
 	                var successfulAction = _this.successfulActions[i];
 	                _this.observerService.notify(successfulAction.split('.')[1] + 'Success', result.data);
+	                console.log("Successful action result:", result);
 	            }
 	            _this.failureActions = result.failureActions;
 	            for (var i in _this.failureActions) {
@@ -20846,6 +20847,7 @@
 	            fieldNamePrefix: "@",
 	            fieldList: "@",
 	            fieldClass: "@",
+	            fulfillmentIndex: "@",
 	            tabIndex: "@",
 	            addressName: "@",
 	            showAddressBookSelect: "@",
@@ -23935,7 +23937,8 @@
 	            //Developer specifies the path and name of a partial for creating a custom directive.
 	            if (attrs.partialName) {
 	                //returns the attrs.path or the default if not configured.
-	                var template = "<span ng-include = " + "'\"" + _this.path + attrs.partialName + ".html\"'" + "></span>";
+	                var template = "<span ng-include = " + "'\"" + _this.path + attrs.partialName + ".html\"'";
+	                template += "></span>";
 	                element.html('').append(_this.$compile(template)(scope));
 	            }
 	            else {
@@ -23947,7 +23950,12 @@
 	                    var template = '<span ' + attrs.directive + ' ';
 	                    if (angular.isDefined(_this.scope.variables)) {
 	                        angular.forEach(_this.scope.variables, function (value, key) {
-	                            template += ' ' + key + '=' + value + ' ';
+	                            if (!angular.isString(value) && !angular.isNumber(value)) {
+	                                template += ' ' + key + '="SWFDirective.' + 'variables.' + key + '" ';
+	                            }
+	                            else {
+	                                template += ' ' + key + '="' + value + '" ';
+	                            }
 	                        });
 	                    }
 	                    template += +'>';
@@ -23965,6 +23973,7 @@
 	                }
 	                // Render the template.
 	                element.html('').append(_this.$compile(template)(scope));
+	                debugger;
 	            }
 	        };
 	        if (!hibachiConfig) {

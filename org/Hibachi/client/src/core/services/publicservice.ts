@@ -37,7 +37,7 @@ class PublicService {
     public shippingAddress = "";
     public emailFulfillmentAddress:any;
     public billingAddress:any;
-    public accountAddressEditFormIndex:any;
+    public accountAddressEditFormIndex = [];
     public billingAddressEditFormIndex:any;
     public selectedBillingAddress:any;
     public editingAccountAddress:any;
@@ -412,13 +412,28 @@ class PublicService {
         return this.hasFulfillmentMethod("Pickup");
     }
 
-    /** Returns true if the order has a shipping address selected. */
-    public hasShippingAddress = () => {
+    public getFulfillmentType = (fulfillment)=>{
+        return fulfillment.fulfillmentMethod.fulfillmentMethodType;
+    }
+
+    public isShippingFulfillment = (fulfillment) =>{
+        return this.getFulfillmentType(fulfillment) === 'shipping';
+    }
+
+    public isEmailFulfillment = (fulfillment) =>{
+        return this.getFulfillmentType(fulfillment) === 'email';
+    }
+
+    public isPickupFulfillment = (fulfillment) =>{
+        return this.getFulfillmentType(fulfillment) === 'pickup';
+    }
+
+    /** Returns true if the order fulfillment has a shipping address selected. */
+    public hasShippingAddress = (fulfillmentIndex) => {
         return (
-            this.hasShippingFulfillmentMethod && 
-            this.cart.orderFulfillments &&
-            this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingTypeIndex] &&
-            this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingTypeIndex].data.shippingAddress
+            this.cart.orderFulfillments[fulfillmentIndex] &&
+            this.isShippingFulfillment(this.cart.orderFulfillments[fulfillmentIndex]) && 
+            this.cart.orderFulfillments[fulfillmentIndex].data.shippingAddress
         );
     }
 
@@ -841,14 +856,6 @@ class PublicService {
         }
     }
 
-    /** Returns errors from addPromoCode request. */
-    public promoCodeError = () =>{
-        if(this.errors &&
-            this.errors.promotionCode){
-            return this.errors.promotionCode[0];
-        }
-    }
-
     /** Returns errors from addGiftCard request. */
     public giftCardError = () =>{
         if(this.cart.processObjects && 
@@ -859,8 +866,8 @@ class PublicService {
         }
     }
 
-    public editAccountAddress = (key) =>{
-        this.accountAddressEditFormIndex = key;
+    public editAccountAddress = (key, fulfillmentIndex) =>{
+        this.accountAddressEditFormIndex[fulfillmentIndex] = key;
         this.editingAccountAddress = this.getAddressEntity(this.account.accountAddresses[key].address);
     }
 
@@ -870,34 +877,19 @@ class PublicService {
         this.billingAddress = this.getAddressEntity(this.account.accountAddresses[key].address);
     }
 
-    /** Sets shippingAddressErrors from response errors, refreshes swAddressForm */
-    public addShippingAddressErrors = ()=>{
-        this.shippingAddressErrors = this.errors;
-        if(this.accountAddressEditFormIndex != undefined){
-            var key = this.accountAddressEditFormIndex;
-            this.accountAddressEditFormIndex = undefined;
-            this.$timeout(()=>this.accountAddressEditFormIndex = key);
-        }
-    }
-
-    /** Sets cart addBillingAddress errors from response errors, refreshes swAddressForm */
-    public addBillingAddressErrors = ()=>{
-        this.addBillingErrorsToCartErrors();
-        if(this.billingAddressEditFormIndex != undefined){
-            var key = this.billingAddressEditFormIndex;
-            this.billingAddressEditFormIndex = undefined;
-            this.$timeout(()=>this.billingAddressEditFormIndex = key);
-        }
-    }
-
     public clearShippingAddressErrors = ()=>{
         this.shippingAddressErrors = undefined;
     }
 
     /**Hides shipping address form, clears shipping address errors*/
-    public hideAccountAddressForm = ()=>{
-        this.accountAddressEditFormIndex = undefined;
-        this.clearShippingAddressErrors();
+    public hideAccountAddressForm = (event)=>{
+        console.log("FŪLFILLMENT ĮNDEX", event)
+        let fulfillmentIndex = 'cinco';
+        //In case method is called by an event
+        if(typeof fulfillmentIndex != 'string' && typeof fulfillmentIndex != 'number'){
+
+        }
+        this.accountAddressEditFormIndex[fulfillmentIndex] = undefined;
     }
 
     public hideBillingAddressForm = ()=>{
@@ -905,12 +897,20 @@ class PublicService {
         this.billingAddress = {};
     }
 
-    public showEditAccountAddressForm = ()=>{
-        return this.accountAddressEditFormIndex != undefined && this.accountAddressEditFormIndex != 'new';
+    public editingDifferentAccountAddress = (fulfillmentIndex)=>{
+        for(let index = 0; index < this.cart.orderFulfillments.length; index++){
+            if(index !== fulfillmentIndex && this.accountAddressEditFormIndex[index] != undefined){
+                return true;
+            }
+        }
     }
 
-    public showNewAccountAddressForm = ()=>{
-        return this.accountAddressEditFormIndex == 'new';
+    public showEditAccountAddressForm = (fulfillmentIndex)=>{
+        return this.accountAddressEditFormIndex[fulfillmentIndex] != undefined && this.accountAddressEditFormIndex[fulfillmentIndex] != 'new';
+    }
+
+    public showNewAccountAddressForm = (fulfillmentIndex)=>{
+        return this.accountAddressEditFormIndex[fulfillmentIndex] == 'new';
     }
 
     public showNewBillingAddressForm = ()=>{
@@ -940,13 +940,11 @@ class PublicService {
         }
     }
 
-    public accountAddressIsSelectedShippingAddress = (key) =>{
+    public accountAddressIsSelectedShippingAddress = (key, fulfillmentIndex) =>{
         if(this.account && 
            this.account.accountAddresses &&
-           this.cart.orderFulfillments &&
-           this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex] &&
-           this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress){
-            return this.addressesMatch(this.account.accountAddresses[key].address, this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress);
+           this.cart.orderFulfillments[fulfillmentIndex].shippingAddress){
+            return this.addressesMatch(this.account.accountAddresses[key].address, this.cart.orderFulfillments[fulfillmentIndex].shippingAddress);
         }        
         return false;
     }
@@ -972,9 +970,14 @@ class PublicService {
         return this.cart.data.orderFulfillments[this.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation;
     }
 
-    public getShippingAddress = () =>{
-        if(!this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex]) return;
-        return this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress;
+    public getShippingAddresses = () =>{
+        let addresses = [];
+        this.cart.orderFulfillments.forEach((fulfillment)=>{
+            if(this.getFulfillmentType(fulfillment) == 'shipping' && fulfillment.data.shippingAddress && fulfillment.data.shippingAddress.addressID){
+                addresses.push(fulfillment.data.shippingAddress);
+            }
+        })
+        return addresses;
     }
 
     public getEmailFulfillmentAddress = () =>{

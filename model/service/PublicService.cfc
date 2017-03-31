@@ -521,7 +521,7 @@ component extends="HibachiService"  accessors="true" output="false"
                 //save the address at the order level.
                 var order = getHibachiScope().cart();
                 for(fulfillment in order.getOrderFulfillments()){
-                  if(fulfillment.getFulfillmentMethod().getFulfillmentMethodType() == 'shipping'){
+                  if(fulfillment.getOrderFulfillmentID() == data.fulfillmentID){
                     var orderFulfillment = fulfillment;
                   }
                 }
@@ -567,7 +567,7 @@ component extends="HibachiService"  accessors="true" output="false"
             //save the address at the order level.
             var order = getHibachiScope().getCart();
             for(fulfillment in order.getOrderFulfillments()){
-              if(fulfillment.getFulfillmentMethod().getFulfillmentMethodType() == 'shipping'){
+              if(fulfillment.getOrderFulfillmentID() == data.fulfillmentID){
                 var orderFulfillment = fulfillment;
               }
             }

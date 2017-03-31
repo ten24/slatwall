@@ -36,6 +36,7 @@
 			    	<div class="row" ng-cloak>
 					    <!--- hidden fields - Will contain the address id if one was provided. --->
 					    <input type="hidden" ng-model="SwAddressForm.address.addressID" name="addressID" value="{{SwAddressForm.address.addressID}}" ng-init="SwAddressForm.address.addressID = SwAddressForm.address.addressID||''"/>
+					    <input type="hidden" ng-model="slatwall.cart.orderFulfillments[SwAddressForm.fulfillmentIndex].orderFulfillmentID" name="fulfillmentID" value={{SwAddressForm.fulfillmentID}} />
 					    
 					    <!--- Country --->
 				    	<div class="col-sm-6 form-group" ng-if="(SwAddressForm.showCountrySelect == 'true'|| SwAddressForm.showCountrySelect == true) && slatwall.countries.countryCodeOptions">
@@ -203,7 +204,7 @@
 								data-text="{{(slatwall.getRequestByAction(SwAddressForm.action).loading ? 'LOADING' : SwAddressForm.actionText || 'SAVE &amp; CONTINUE')}}">
 							</sw-action-caller>
 							<button
-			                    ng-click="slatwall.accountAddressEditFormIndex=undefined; slatwall.billingAddressEditFormIndex = undefined"
+			                    ng-click="slatwall.accountAddressEditFormIndex[SwAddressForm.fulfillmentIndex]=undefined; slatwall.billingAddressEditFormIndex = undefined"
 			                    class="btn btn-white">
 			                    Close
 			                </button>

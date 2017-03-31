@@ -1,23 +1,21 @@
 <!-- Add Shipping Address Obj just to control state -->
-<div class="col-md-12" ng-init="slatwall.OrderAddShippingObj = {}">
-
-	<h4>Shipping</h4>
+<div class="col-md-12" ng-init="slatwall.OrderAddShippingObj = {};fulfillmentIndex = SWFDirective.variables.fulfillmentIndex" ng-show="!slatwall.editingDifferentAccountAddress(fulfillmentIndex)">
 
 	<!-- Displays all addresses from the addess book and lets you select one to use as the shipping address. -->
 
-	<swf-directive partial-name="addshippingbyaccountaddresspartial" ng-show="slatwall.accountAddressEditFormIndex == undefined"></swf-directive>
+	<swf-directive partial-name="addshippingbyaccountaddresspartial" ng-show="slatwall.accountAddressEditFormIndex[fulfillmentIndex] == undefined" variables="{fulfillmentIndex:fulfillmentIndex}"></swf-directive>
 
 	<!-- Displays available shipping methods. -->
-	<swf-directive partial-name="shippingmethodoptiondisplay" ng-if="slatwall.hasShippingAddress() && slatwall.accountAddressEditFormIndex == undefined"></swf-directive>
+	<swf-directive partial-name="shippingmethodoptiondisplay" ng-if="slatwall.hasShippingAddress(fulfillmentIndex) && slatwall.accountAddressEditFormIndex[fulfillmentIndex] == undefined"></swf-directive>
 
 	<!-- When an address needs to be saved. -->
 	<div id="editaddress">
-			<div ng-if="slatwall.showEditAccountAddressForm()">
+			<div ng-if="slatwall.showEditAccountAddressForm(fulfillmentIndex)">
 				<h4>Edit Your Address:</h4>
 				<sw-address-form
 					data-field-list="countryCode,name,company,streetAddress,street2Address,locality,city,stateCode,postalCode,phoneNumber"
 					data-slatwall-scope="slatwall"
-					data-id="{{slatwall.account.accountAddresses[slatwall.accountAddressEditFormIndex].address.addressID}}" 
+					data-id="{{slatwall.account.accountAddresses[slatwall.accountAddressEditFormIndex[fulfillmentIndex]].address.addressID}}" 
 					data-address="slatwall.editingAccountAddress" 
 					data-tab-index="1" 
 					data-address-name="accountAddress" 
@@ -29,12 +27,13 @@
 					data-action="updateAddress,addOrderShippingAddress"
 					data-action-text="Save and Continue"
 					data-show-address-book-select="false" 
-					data-event-listeners="{updateAddressSuccess:slatwall.hideAccountAddressForm}"
-					data-submit-on-enter="true">
+					data-event-listeners="{updateAddressSuccess:'slatwall.hideAccountAddressForm.bind(null,fulfillmentIndex)'}"
+					data-submit-on-enter="true"
+					data-fulfillment-index="{{fulfillmentIndex}}">
 				</sw-address-form>
 			</div>
 			
-			<div ng-if="slatwall.showNewAccountAddressForm()">
+			<div ng-if="slatwall.showNewAccountAddressForm(fulfillmentIndex)">
 				<h4>Create A New Address:</h4>
 				<span ng-init="slatwall.newAddress = slatwall.getAddressEntity()"></span>
 				<sw-address-form
@@ -53,7 +52,8 @@
 					show-close-button="true"
 					close-button-text="CLOSE"
 					data-submit-on-enter="true"
-					data-event-listeners="{addShippingAddressUsingAccountAddressSuccess:slatwall.hideAccountAddressForm}">
+					data-event-listeners="{addShippingAddressUsingAccountAddressSuccess:'slatwall.hideAccountAddressForm.bind(null,fulfillmentIndex)'}"
+					data-fulfillment-index="{{fulfillmentIndex}}">
 				</sw-address-form>
 			</div>
 

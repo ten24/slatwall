@@ -49,21 +49,16 @@
 					<a href="##" class="pull-right" ng-if="slatwall.fulfillmentTabIsActive()" ng-click="slatwall.edit = ''"><i class="fa fa-check-circle"></i></a>
 					Fulfillment Information</h3>
 	                <div class="row" ng-show="slatwall.fulfillmentTabIsActive()">
-                		<div class="col-md-12">
-		                    <div class="details row" ng-show="slatwall.hasShippingFulfillmentMethod()">
-		                        <swf-directive partial-name="addshippingaddresspartial"></swf-directive>
+                		<div class="col-md-12" ng-repeat="fulfillment in slatwall.cart.orderFulfillments track by $index">
+		                    <div class="details row" ng-if="slatwall.isShippingFulfillment(fulfillment)">
+		                        <swf-directive partial-name="addshippingaddresspartial" variables="{'fulfillmentIndex':$index}"></swf-directive>
 		                    </div>
-		                    <div class="details row" ng-show="slatwall.hasEmailFulfillmentMethod()">
+		                    <div class="details row" ng-show="slatwall.isEmailFulfillment(fulfillment)">
 		                    	<swf-directive partial-name="addemailfulfillmentaddresspartial"></swf-directive>
 		                    </div>
-		                    <div class="details row" ng-show="slatwall.hasPickupFulfillmentMethod()">
+		                    <div class="details row" ng-show="slatwall.isDeliveryFulfillment(fulfillment)">
 		                        <swf-directive partial-name="deliverystorepickup"></swf-directive>
 		                    </div><br>
-		                   <!---  <div class="row">
-								<span class="next-step-btn" style="padding:20px">
-							    	<input type="submit" class="btn-yellow" value="Continue to Payment" ng-click="slatwall.edit = 'payment'"/>
-								</span>
-							</div> --->
 						</div>
 	                </div>
 	            </div>

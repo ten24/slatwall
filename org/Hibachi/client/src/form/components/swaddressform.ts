@@ -137,6 +137,7 @@ class SWAddressForm implements ng.IComponentOptions {
         fieldNamePrefix: "@",
         fieldList: "@",
         fieldClass: "@",
+        fulfillmentIndex:"@",
         tabIndex: "@",
         addressName: "@",
         showAddressBookSelect: "@",
