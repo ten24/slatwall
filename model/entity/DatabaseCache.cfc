@@ -52,6 +52,7 @@ component displayname="DatabaseCache" entityname="SlatwallDatabaseCache" table="
 	property name="databaseCacheID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="databaseCacheKey" ormtype="string" unique="true" index="PI_DATACACHEKEY";
 	property name="databaseCacheValue" ormtype="string" length="8000";
+	
 	// Related Object Properties (many-to-one)
 		
 	// Related Object Properties (one-to-many)
@@ -61,6 +62,8 @@ component displayname="DatabaseCache" entityname="SlatwallDatabaseCache" table="
 	// Remote Properties
 	
 	// Audit Properties
+	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	
 	// Non-Persistent Properties
 
