@@ -1134,7 +1134,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		DatabaseCache.setDatabaseCacheValue(serializeJson(states));
 		getService('HibachiCacheService').saveDatabaseCache(DatabaseCache);
 		
-		getDao('HibachiDao').flushOrmSession();
+		getHibachiScope().flushOrmSession();
 		
 	}
 	
