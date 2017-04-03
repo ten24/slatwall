@@ -29332,6 +29332,47 @@
 	        this.collectionConfigService = collectionConfigService;
 	        this.observerService = observerService;
 	        this.utilityService = utilityService;
+	        /**
+	         * Toggle the Status Type filters on and off.
+	         */
+	        this.toggleFilter = function (filterName) {
+	            _this.filters[filterName] = !_this.filters[filterName];
+	            _this.addFilter(filterName, _this.filters[filterName]);
+	        };
+	        /**
+	         * Initialized the orderFulfillment collection so that the listingDisplay can you it to display its data.
+	         */
+	        this.refreshCollection = function () {
+	            _this.orderFulfillmentCollection.getEntity().then(function (response) {
+	                _this.orderFulfillments = response.pageRecords;
+	                _this.total = response.recordsCount;
+	            });
+	        };
+	        /**
+	         * Adds one of the status type filters into the collectionConfigService
+	         * Keys: String['Partial', 'Available', 'Unavailable']
+	         * Value: Boolean: {true|false}
+	         */
+	        this.addFilter = function (key, value) {
+	            console.log("Add Filter Called With", key, value);
+	            //Always keep the orderNumber filter.
+	            _this.orderFulfillmentCollection.addFilter("order.orderNumber", null, "!=");
+	            _this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.typeName", "fulfilled", "=");
+	            if (key == "partial") {
+	                _this.orderFulfillmentCollection.addFilter("orderFulfillmentInvStatusType.typeName", "Partial", (value == true) ? "=" : "!=", "OR", false, true, false);
+	            }
+	            if (key == "available") {
+	                _this.orderFulfillmentCollection.addFilter("orderFulfillmentInvStatusType.typeName", "Available", (value == true) ? "=" : "!=", "OR", false, true, false);
+	            }
+	            if (key == "unavailable") {
+	                _this.orderFulfillmentCollection.addFilter("orderFulfillmentInvStatusType.typeName", "Unavailable", (value == true) ? "=" : "!=", "OR", false, true, false);
+	            }
+	            if (key == "location") {
+	                _this.orderFulfillmentCollection.addFilter("orderFulfillmentItems.stock.location.locationName", value);
+	            }
+	            //Calls to auto refresh the collection since a filter was added.
+	            _this.refreshCollection();
+	        };
 	        //Some setup
 	        this.filters = { "unavailable": false, "partial": true, "available": true };
 	        this.orderFulfillmentCollection = collectionConfigService.newCollectionConfig("OrderFulfillment");
@@ -29340,60 +29381,12 @@
 	        this.orderFulfillmentCollection.addDisplayProperty("order.orderOpenDateTime");
 	        this.orderFulfillmentCollection.addDisplayProperty("shippingMethod.shippingMethodName");
 	        this.orderFulfillmentCollection.addDisplayProperty("shippingAddress.stateCode");
-	        this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentInventoryStatusType.typeName");
+	        this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentInvStatusType.typeName");
+	        this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.typeName", "fulfilled", "=");
 	        this.orderFulfillmentCollection.addFilter("order.orderNumber", null, "!=");
-	        //Toggle the filter
-	        this.toggleFilter = function (filterName) {
-	            _this.filters[filterName] = !_this.filters[filterName];
-	            if (_this.filters[filterName]) {
-	                addFilter(filterName, true);
-	            }
-	        };
-	        var addFilter = function (key, value) {
-	            console.log("Add Filter Called With", key, value);
-	            if (key == "partial") {
-	                _this.orderFulfillmentCollection.addFilterGroup([{
-	                        propertyIdentifier: "orderFulfillmentInventoryStatusType.typeID",
-	                        comparisonValue: "fefc92c1d8184017aa65cdc882bdf637",
-	                        comparisonOperator: "=",
-	                        logicalOperator: "OR",
-	                        hidden: "false"
-	                    }]);
-	            }
-	            if (key == "available") {
-	                _this.orderFulfillmentCollection.addFilterGroup([{
-	                        propertyIdentifier: "orderFulfillmentInventoryStatusType.typeID",
-	                        comparisonValue: "b718b6fadf084bdaa01e47f5cc1a8266",
-	                        comparisonOperator: "=",
-	                        logicalOperator: "OR",
-	                        hidden: "false"
-	                    }]);
-	            }
-	            if (key == "unavailable") {
-	                _this.orderFulfillmentCollection.addFilterGroup([{
-	                        propertyIdentifier: "orderFulfillmentInventoryStatusType.typeID",
-	                        comparisonValue: "159118d67de3418d9951fc629688e195",
-	                        comparisonOperator: "=",
-	                        logicalOperator: "OR",
-	                        hidden: "false"
-	                    }]);
-	            }
-	            if (key == "location") {
-	                _this.orderFulfillmentCollection.addFilter("orderFulfillmentItems.stock.location.locationName", value);
-	            }
-	            _this.refreshCollection();
-	        };
-	        /**
-	         * Initialized the orderFulfillment collection so that the listingDisplay can you it to display its data.
-	         */
-	        this.refreshCollection = function () {
-	            _this.orderFulfillmentCollection.getEntity().then(function (response) {
-	                console.log("Records", response);
-	                _this.orderFulfillments = response.pageRecords;
-	                _this.total = response.recordsCount;
-	            });
-	        };
-	        this.refreshCollection();
+	        //adds the two default filters to start.
+	        //this.addFilter('available', true);
+	        //this.addFilter('partial', true);
 	    }
 	    return SWOrderFulfillmentListController;
 	}());

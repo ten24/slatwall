@@ -151,9 +151,9 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	 * Returns Partials if some of the items have inventory.
 	 * Returns Unavailable if none of the items have inventory.
 	 */
-	public any function getorderFulfillmentInvStatusType() {
+	public any function getOrderFulfillmentInvStatusType() {
 		//If we don't have a have - figure out the initial value
-		if(!structKeyExists(variables, "orderFulfillmentStatusType")) {
+		//if(!structKeyExists(variables, "orderFulfillmentInvStatusType")) {
 			variables.orderFulfillmentInvStatusType = getService("typeService").getTypeBySystemCode('ofisAvailable');
 			
 			var canNotFulfillCount = 0;
@@ -168,7 +168,8 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 			if (canNotFulfillCount == arrayLen(getOrderFulfillmentItems())){
 				variables.orderFulfillmentInvStatusType = getService("typeService").getTypeBySystemCode('ofisUnavailable');
 			}
-		}
+			throw("#variables.orderFulfillmentInvStatusType.getTypeCode()#");
+		//}
 		return variables.orderFulfillmentInvStatusType;
 	}
 
