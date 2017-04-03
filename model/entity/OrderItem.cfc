@@ -159,7 +159,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		var maxQTY = 0;
 		if(getSku().getActiveFlag() && getSku().getProduct().getActiveFlag()) {
 			maxQTY = getSku().setting('skuOrderMaximumQuantity');
-			if(getSku().setting('skuTrackInventoryFlag') && !getSku().setting('skuAllowBackorderFlag')) {
+			if(getSku().setting('skuTrackInventoryFlag') && !getSku().setting('skuAllowBackorderFlag') && getOrderItemType().getSystemCode() neq 'oitReturn') {
 				if( !isNull(getStock()) && getStock().getQuantity('QATS') <= maxQTY ) {
 					maxQTY = getStock().getQuantity('QATS');
 					if(!isNull(getOrder()) && getOrder().getOrderStatusType().getSystemCode() neq 'ostNotPlaced') {
@@ -173,7 +173,6 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 				}
 			}
 		}
-
 		return maxQTY;
 	}
 
