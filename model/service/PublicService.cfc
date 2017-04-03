@@ -623,7 +623,11 @@ component extends="HibachiService"  accessors="true" output="false"
       var orderFulfillments = order.getOrderFulfillments();
 
       for(fulfillment in orderFulfillments){
-        if(fulfillment.getFulfillmentMethod().getFulfillmentMethodType() == 'pickup'){
+        if(!isNull(data.fulfillmentID)){
+          if(fulfillment.getOrderFulfillmentID() == data.fulfillmentID){
+            var orderFulfillment = fulfillment;
+          }
+        }else if(fulfillment.getFulfillmentMethod().getFulfillmentMethodType() == 'pickup'){
           var orderFulfillment = fulfillment;
         }
       }

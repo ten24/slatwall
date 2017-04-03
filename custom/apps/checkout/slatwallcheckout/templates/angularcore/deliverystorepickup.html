@@ -1,6 +1,7 @@
 <div class="col-sm-12 panel panel-default" ng-init="fulfillmentIndex = SWFDirective.variables.fulfillmentIndex">
 	<div class="panel-body">
 		<h4>Store Pickup</h4>
+		<h5>{{slatwall.getOrderFulfillmentItemList(fulfillmentIndex)}}</h5>
 		<i class="fa fa-map-marker fa-3x icon-left"></i>
 		<span>
 			<h5>Your selected store: <span ng-if="slatwall.getPickupLocation(fulfillmentIndex).locationName != undefined">
@@ -30,7 +31,8 @@
 					data-multiselect-mode="false"
 					data-action="addPickupFulfillmentLocation"
 					data-selected-format-string="${locationName}&nbsp;${primaryAddress_address_city}&nbsp;${primaryAddress_address_stateCode}&nbsp;${primaryAddress_address_postalCode}"
-					data-event-listeners="{addPickupFulfillmentLocationSuccess:slatwall.binder(null,slatwall.hideStoreSelector,fulfillmentIndex)}">
+					data-event-listeners="{addPickupFulfillmentLocationSuccess:slatwall.binder(null,slatwall.hideStoreSelector,fulfillmentIndex)}",
+					data-variables="{fulfillmentID:slatwall.cart.orderFulfillments[fulfillmentIndex].orderFulfillmentID}">
 					
 					<sw-collection-config
 	                      data-entity-name="Location"

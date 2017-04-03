@@ -187,13 +187,12 @@ class SWTypeaheadSearchController {
 
         this.collectionConfig.setKeywords(search);
         if(angular.isDefined(this.filterGroupsConfig)){
-            console.log("gonna filter");
             //allows for filtering on search text
             var filterConfig = this.filterGroupsConfig.replace("replaceWithSearchString", search);
             filterConfig = filterConfig.trim();
             this.collectionConfig.loadFilterGroups(JSON.parse(filterConfig));
         }
-        console.log(this.collectionConfig);
+
         this._timeoutPromise = this.$timeout(()=>{
 
             var promise = this.collectionConfig.getEntity();

@@ -967,8 +967,8 @@ class PublicService {
     }
 
     public getPickupLocation = (fulfillmentIndex) => {
-        if(!this.cart.data.orderFulfillments[this.cart.orderFulfillmentWithPickupTypeIndex]) return;
-        return this.cart.data.orderFulfillments[this.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation;
+        if(!this.cart.data.orderFulfillments[fulfillmentIndex]) return;
+        return this.cart.data.orderFulfillments[fulfillmentIndex].pickupLocation;
     }
 
     public getShippingAddresses = () =>{

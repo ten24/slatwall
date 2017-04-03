@@ -2630,9 +2630,9 @@
 	            return Boolean(_this.cart.orderFulfillments[fulfillmentIndex].emailAddress);
 	        };
 	        this.getPickupLocation = function (fulfillmentIndex) {
-	            if (!_this.cart.data.orderFulfillments[_this.cart.orderFulfillmentWithPickupTypeIndex])
+	            if (!_this.cart.data.orderFulfillments[fulfillmentIndex])
 	                return;
-	            return _this.cart.data.orderFulfillments[_this.cart.orderFulfillmentWithPickupTypeIndex].pickupLocation;
+	            return _this.cart.data.orderFulfillments[fulfillmentIndex].pickupLocation;
 	        };
 	        this.getShippingAddresses = function () {
 	            var addresses = [];
@@ -7439,13 +7439,11 @@
 	            }
 	            _this.collectionConfig.setKeywords(search);
 	            if (angular.isDefined(_this.filterGroupsConfig)) {
-	                console.log("gonna filter");
 	                //allows for filtering on search text
 	                var filterConfig = _this.filterGroupsConfig.replace("replaceWithSearchString", search);
 	                filterConfig = filterConfig.trim();
 	                _this.collectionConfig.loadFilterGroups(JSON.parse(filterConfig));
 	            }
-	            console.log(_this.collectionConfig);
 	            _this._timeoutPromise = _this.$timeout(function () {
 	                var promise = _this.collectionConfig.getEntity();
 	                promise.then(function (response) {
@@ -7727,7 +7725,12 @@
 	            _this.modelValue = value[_this.propertyToSave];
 	            console.log("modelValue", _this.modelValue);
 	            if (_this.action) {
-	                _this.$root.slatwall.doAction(_this.action, { value: _this.modelValue });
+	                var data = {};
+	                if (_this.variables) {
+	                    data = _this.variables();
+	                }
+	                data['value'] = _this.modelValue;
+	                _this.$root.slatwall.doAction(_this.action, data);
 	            }
 	        };
 	        this.$root = $rootScope;
@@ -7788,6 +7791,7 @@
 	            validateRequired: "=?",
 	            maxRecords: "@",
 	            action: "@",
+	            variables: '&?',
 	            eventListeners: '=?'
 	        };
 	        this.controller = SWTypeaheadInputFieldController;

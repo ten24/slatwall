@@ -19,6 +19,7 @@ class SWTypeaheadInputFieldController {
     public validateRequired:boolean;
     public action:string;
     public eventListeners;
+    public variables;
     private collectionConfig;
     private $root;
     
@@ -78,7 +79,12 @@ class SWTypeaheadInputFieldController {
         this.modelValue = value[this.propertyToSave];
         console.log("modelValue", this.modelValue);
         if(this.action){
-            this.$root.slatwall.doAction(this.action, {value:this.modelValue});
+            var data = {};
+            if(this.variables){
+                data = this.variables();
+            }
+            data['value'] = this.modelValue;
+            this.$root.slatwall.doAction(this.action, data);
         }
     }
 
@@ -104,6 +110,7 @@ class SWTypeaheadInputField implements ng.IDirective{
         validateRequired:"=?", 
         maxRecords:"@",
         action:"@",
+        variables:'&?',
         eventListeners:'=?'
 	};
 	public controller=SWTypeaheadInputFieldController;
