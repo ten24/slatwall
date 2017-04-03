@@ -66,7 +66,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="shippingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID";
 	property name="shippingMethod" hb_populateEnabled="public" cfc="ShippingMethod" fieldtype="many-to-one" fkcolumn="shippingMethodID";
 	property name="orderFulfillmentStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderFulfillmentStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderFulfillmentStatusType";
-	property name="orderFulfillmentInventoryStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderFulfillmentInventoryStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderFulfillmentInventoryStatusType";
+	property name="orderFulfillmentInvStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderFulfillmentInvStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderFulfillmentInvStatusType";
 
 	// Related Object Properties (one-to-many)
 	property name="orderFulfillmentItems" hb_populateEnabled="public" singularname="orderFulfillmentItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="orderFulfillmentID" cascade="all" inverse="true";
@@ -151,25 +151,25 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	 * Returns Partials if some of the items have inventory.
 	 * Returns Unavailable if none of the items have inventory.
 	 */
-	public any function getOrderFulfillmentInventoryStatusType() {
+	public any function getorderFulfillmentInvStatusType() {
 		//If we don't have a have - figure out the initial value
 		if(!structKeyExists(variables, "orderFulfillmentStatusType")) {
-			variables.orderFulfillmentInventoryStatusType = getService("typeService").getTypeBySystemCode('ofisAvailable');
+			variables.orderFulfillmentInvStatusType = getService("typeService").getTypeBySystemCode('ofisAvailable');
 			
 			var canNotFulfillCount = 0;
 			if(!isNull(getOrderFulfillmentItems())) {
 				for(var orderItem in getOrderFulfillmentItems()) {
 					if(!orderItem.hasQuantityWithinMaxOrderQuantity()) {
-						variables.orderFulfillmentInventoryStatusType = getService("typeService").getTypeBySystemCode('ofisPartial');
+						variables.orderFulfillmentInvStatusType = getService("typeService").getTypeBySystemCode('ofisPartial');
 						canNotFulfillCount++;
 					}
 				}
 			}
 			if (canNotFulfillCount == arrayLen(getOrderFulfillmentItems())){
-				variables.orderFulfillmentInventoryStatusType = getService("typeService").getTypeBySystemCode('ofisUnavailable');
+				variables.orderFulfillmentInvStatusType = getService("typeService").getTypeBySystemCode('ofisUnavailable');
 			}
 		}
-		return variables.orderFulfillmentInventoryStatusType;
+		return variables.orderFulfillmentInvStatusType;
 	}
 
     public void function checkNewAccountAddressSave() {
