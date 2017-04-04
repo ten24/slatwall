@@ -314,7 +314,9 @@ class PublicService {
 
     public runCheckoutAdjustments = (response) =>{
         this.filterErrors(response);
-        this.removeInvalidOrderPayments(response.cart);
+        if(response.cart){
+            this.removeInvalidOrderPayments(response.cart);
+        }
     }
 
     public getRequestByAction = (action:string)=>{
@@ -344,10 +346,17 @@ class PublicService {
     }
 
     public filterErrors = (response)=>{
+        if(!response || !response.cart || !response.cart.errors) return;
         let cartErrors = response.cart.errors;
         if(cartErrors.addOrderPayment){
             cartErrors.addOrderPayment = cartErrors.addOrderPayment.filter((error)=>error != 'billingAddress');
         }
+    }
+
+    /** Uses getRequestByAction() plus an identifier to distinguish between different functionality using the same route*/
+    public loadingThisRequest = (action, identifier, id, strict) =>{
+        var request = this.getRequestByAction(action);
+        return request && request.loading && ((id === true && !strict) || request.data[identifier] == id);
     }
 
     public removeInvalidOrderPayments = (cart) =>{
@@ -615,14 +624,8 @@ class PublicService {
     };
 
     /** Removes a gift card from the order and sets variable tracking which gift card is being removed.*/
-    public removeGiftCard = (payment, index) =>{
+    public removeGiftCard = (payment) =>{
         this.doAction('removeOrderPayment', {orderPaymentID:payment.orderPaymentID});
-        this.lastRemovedGiftCard = index;
-    }
-
-    /** Check if the gift card with the passed in index is currently being removed.*/
-    public removingGiftCard = (index) =>{
-        return this.getRequestByAction('removeOrderPayment') && this.getRequestByAction('removeOrderPayment').loading && this.lastRemovedGiftCard == index;
     }
 
     /** Format saved payment method info for display in list*/
@@ -971,6 +974,17 @@ class PublicService {
         return this.cart.data.orderFulfillments[fulfillmentIndex].pickupLocation;
     }
 
+    public getPickupLocations = () => {
+        let locations = [];
+        this.cart.orderFulfillments.forEach((fulfillment, index)=>{
+            if(this.getFulfillmentType(fulfillment) == 'pickup' && fulfillment.pickupLocation && fulfillment.pickupLocation.locationID){
+                fulfillment.pickupLocation.fulfillmentIndex = index;
+                locations.push(fulfillment.pickupLocation);
+            }
+        })
+        return locations;
+    }
+
     public getShippingAddresses = () =>{
         let addresses = [];
         this.cart.orderFulfillments.forEach((fulfillment, index)=>{
@@ -982,9 +996,15 @@ class PublicService {
         return addresses;
     }
 
-    public getEmailFulfillmentAddress = () =>{
-        if(!this.cart.orderFulfillments[this.cart.orderFulfillmentWithEmailTypeIndex]) return;
-        return this.cart.orderFulfillments[this.cart.orderFulfillmentWithEmailTypeIndex].emailAddress;
+    public getEmailFulfillmentAddresses = () =>{
+        let addresses = [];
+        this.cart.orderFulfillments.forEach((fulfillment, index)=>{
+            if(this.getFulfillmentType(fulfillment) == 'email' && fulfillment.emailAddress){
+                fulfillment.fulfillmentIndex = index;
+                addresses.push(fulfillment);
+            }
+        })
+        return addresses;
     }
 
     /** Returns true if selected pickup location has no name.*/

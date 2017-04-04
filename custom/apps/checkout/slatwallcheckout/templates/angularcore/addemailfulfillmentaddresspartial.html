@@ -6,9 +6,10 @@
 			<div class="col-sm-12">
 			    <sw-form
 			        data-object="emailFulfillmentAddress"
-			        data-name="Email_Fulfillment"
+			        data-name="Email_Fulfillment{{fulfillmentIndex}}"
 			        data-event-announcers="keyup"
 			        data-action="addEmailFulfillmentAddress"
+			        submit-on-enter="true"
 			        data-event-listeners="{addEmailFulfillmentAddressSuccess:slatwall.binder(null,slatwall.hideEmailSelector,fulfillmentIndex)}"
 			        ng-show="slatwall.showEmailSelector[fulfillmentIndex] || !slatwall.hasEmailFulfillmentAddress(fulfillmentIndex)">
 					<div class="form-group">
@@ -31,8 +32,7 @@
 				        <sw-action-caller
 				            data-type="button"
 				            data-class="button blue"
-				            data-text="{{(slatwall.getRequestByAction('addEmailFulfillmentAddress').loading ? 'LOADING...' : 'Add Email Address')}}"
-				            data-event-listeners="{Email_Fulfillmentkeyup:$parent.swForm.submitKeyCheck}">
+				            data-text="{{(slatwall.loadingThisRequest('addEmailFulfillmentAddress', 'fulfillmentID', emailFulfillmentAddress.fulfillmentID) ? 'LOADING...' : 'Add Email Address')}}">
 				        </sw-action-caller>
 					</div>
 			    </sw-form>

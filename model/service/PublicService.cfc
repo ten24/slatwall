@@ -609,8 +609,8 @@ component extends="HibachiService"  accessors="true" output="false"
           getHibachiScope().addActionResult('public:cart.addEmailFulfillmentAddress', order.hasErrors());
 
         }else{
-            entityReload(orderFulfillment);
             this.addErrors(arguments.data, orderFulfillment.getErrors());
+            entityReload(orderFulfillment);
             getHibachiScope().addActionResult('public:cart.addEmailFulfillmentAddress', orderFulfillment.hasErrors());
         }
       }
@@ -1134,7 +1134,7 @@ component extends="HibachiService"  accessors="true" output="false"
         param name="data.newOrderPayment.paymentMethod.paymentMethodID" default="50d8cd61009931554764385482347f3a";
         param name="data.newOrderPayment.redeemGiftCardToAccount" default=true;
         param name="data.copyFromType" default="";
-        
+        param name="data.newOrderPayment.requireBillingAddress" default="0";
         var addOrderPayment = addOrderPayment(data, true);
         if(addOrderPayment.hasErrors()){
           addErrors(data, addOrderPayment.getProcessObject('addOrderPayment').getErrors());

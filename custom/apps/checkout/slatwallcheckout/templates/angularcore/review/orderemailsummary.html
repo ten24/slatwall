@@ -1,14 +1,12 @@
-<div class="alert alert-warning" ng-if="slatwall.getEmailFulfillmentAddress()">
+<div class="alert alert-warning" ng-repeat="emailAddress in slatwall.getEmailFulfillmentAddresses()">
+	<i class="fa fa-shopping-cart fa-lg" aria-hidden="true"></i>
+    <strong>{{slatwall.getOrderFulfillmentItemList(emailAddress.fulfillmentIndex)}}</strong>
     <address>
         Recipient:
-        <span>{{slatwall.getEmailFulfillmentAddress()}}<br></span>
+        <span>{{emailAddress.emailAddress}}<br></span>&nbsp;<a href="#" ng-click="slatwall.edit = 'fulfillment'" class="edit">Edit</a><br>
     </address>
-    <hr>
-    <i class="fa fa-truck fa-lg" aria-hidden="true"></i>
-        Recipient Email Address
-    <a href="#" ng-click="slatwall.edit = 'fulfillment'" class="edit">Edit</a>
 </div>
 
-<div class="alert alert-warning" ng-if="!slatwall.getEmailFulfillmentAddress()">
+<div class="alert alert-warning" ng-if="!slatwall.getEmailFulfillmentAddresses().length">
     <i class="fa fa-info-circle"></i> Select recipient email to continue.
 </div>

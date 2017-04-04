@@ -1,19 +1,18 @@
-<div class="alert alert-warning" ng-if="slatwall.getPickupLocation().locationID">
+<div class="alert alert-warning" ng-repeat="pickupLocation in slatwall.getPickupLocations()">
+    <i class="fa fa-shopping-cart fa-lg" aria-hidden="true"></i>
+    <strong>{{slatwall.getOrderFulfillmentItemList(pickupLocation.fulfillmentIndex)}}</strong>
     <address>
-        <span ng-if="slatwall.getPickupLocation().locationName">{{slatwall.getPickupLocation().locationName}}<br></span>
-        <span ng-if="slatwall.getPickupLocation().primaryAddress.address.streetAddress">{{slatwall.getPickupLocation().primaryAddress.address.streetAddress}}<br></span>
-        <span ng-if="slatwall.getPickupLocation().primaryAddress.address.street2Address">{{slatwall.getPickupLocation().primaryAddress.address.street2Address}}<br></span>
-        <span ng-if="slatwall.getPickupLocation().primaryAddress.address.city">{{slatwall.getPickupLocation().primaryAddress.address.city}}, </span>
-        <span ng-if="slatwall.getPickupLocation().primaryAddress.address.statecode">{{slatwall.getPickupLocation().primaryAddress.address.statecode}} </span>
-        <span ng-if="slatwall.getPickupLocation().primaryAddress.address.postalCode">{{slatwall.getPickupLocation().primaryAddress.address.postalCode}}<br></span>
-        <span ng-if="slatwall.getPickupLocation().primaryAddress.address.countrycode">{{slatwall.getPickupLocation().primaryAddress.address.countrycode}}</span>
+        <span ng-if="pickupLocation.locationName">{{pickupLocation.locationName}}<br></span>
+        <span ng-if="pickupLocation.primaryAddress.address.streetAddress">{{pickupLocation.primaryAddress.address.streetAddress}}<br></span>
+        <span ng-if="pickupLocation.primaryAddress.address.street2Address">{{pickupLocation.primaryAddress.address.street2Address}}<br></span>
+        <span ng-if="pickupLocation.primaryAddress.address.city">{{pickupLocation.primaryAddress.address.city}}, </span>
+        <span ng-if="pickupLocation.primaryAddress.address.statecode">{{pickupLocation.primaryAddress.address.statecode}} </span>
+        <span ng-if="pickupLocation.primaryAddress.address.postalCode">{{pickupLocation.primaryAddress.address.postalCode}}<br></span>
+        <span ng-if="pickupLocation.primaryAddress.address.countrycode">{{pickupLocation.primaryAddress.address.countrycode}}</span>
     </address>
-    <hr>
-    <i class="fa fa-building fa-lg" aria-hidden="true"></i>
-    Pick Up Location
     <a href="#" ng-click="slatwall.edit = 'fulfillment'" class="edit">Edit</a>
 </div>
 
-<div class="alert alert-warning" ng-if="!slatwall.getPickupLocation().locationID">
+<div class="alert alert-warning" ng-if="!slatwall.getPickupLocations().length">
     <i class="fa fa-info-circle"></i> Select pickup location to continue.
 </div>

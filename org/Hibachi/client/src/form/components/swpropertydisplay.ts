@@ -54,6 +54,7 @@ class SWPropertyDisplayController {
 	public valueObject;
 	public label;
 	public name;
+    public errorName;
 	public options;
 	public valueObjectProperty;
     public valueOptions;
@@ -102,7 +103,7 @@ class SWPropertyDisplayController {
         this.edit = this.edit || this.editing;
         this.editing = this.editing || this.edit;
 
-
+        this.errorName = this.errorName || this.name;
         this.initialValue = this.object[this.property];
         this.propertyDisplayID = this.utilityService.createID(32);
         if(angular.isUndefined(this.showSave)){
@@ -306,6 +307,7 @@ class SWPropertyDisplay implements ng.IDirective{
         //swfproperty scope
 
         name: "@?",
+        errorName: "@?",
         class: "@?",
         edit: "@?",
         valueObject: "=?",

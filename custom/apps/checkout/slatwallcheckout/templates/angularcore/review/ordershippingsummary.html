@@ -1,4 +1,6 @@
 <div class="alert alert-warning" ng-repeat="address in slatwall.getShippingAddresses()">
+    <i class="fa fa-shopping-cart fa-lg" aria-hidden="true"></i>
+    <strong>{{slatwall.getOrderFulfillmentItemList(address.fulfillmentIndex)}}</strong>
     <address>
         <span ng-if="address.streetAddress">{{address.streetAddress}}<br></span>
         <span ng-if="address.street2Address">{{address.street2Address}}<br></span>

@@ -1,4 +1,4 @@
-<div class="col-sm-12 panel panel-default" ng-init="fulfillmentIndex = SWFDirective.variables.fulfillmentIndex">
+<div class="col-sm-12 panel panel-default" ng-init="fulfillmentIndex = SWFDirective.variables.fulfillmentIndex;fulfillmentID=slatwall.cart.orderFulfillments[fulfillmentIndex].orderFulfillmentID">
 	<div class="panel-body">
 		<h4>Store Pickup</h4>
 		<h5>{{slatwall.getOrderFulfillmentItemList(fulfillmentIndex)}}</h5>
@@ -6,10 +6,10 @@
 		<span>
 			<h5>Your selected store: <span ng-if="slatwall.getPickupLocation(fulfillmentIndex).locationName != undefined">
 				<span ng-if="slatwall.getPickupLocation(fulfillmentIndex).locationName != undefined">
-					{{(slatwall.getRequestByAction('addPickupFulfillmentLocation').loading) ? 'Loading...' : slatwall.getPickupLocation(fulfillmentIndex).locationName}}
+					{{(slatwall.loadingThisRequest('addPickupFulfillmentLocation','fulfillmentID', fulfillmentID)) ? 'Loading...' : slatwall.getPickupLocation(fulfillmentIndex).locationName}}
 				</span>
 				<span ng-if="slatwall.namelessPickupLocation(fulfillmentIndex)">
-					{{(slatwall.getRequestByAction('addPickupFulfillmentLocation').loading) ? 'Loading...' : slatwall.getPickupLocation(fulfillmentIndex).primaryAddress.address.streetAddress + ' ' + slatwall.getPickupLocation(fulfillmentIndex).primaryAddress.address.city}}</span>
+					{{(slatwall.loadingThisRequest('addPickupFulfillmentLocation','fulfillmentID', fulfillmentID)) ? 'Loading...' : slatwall.getPickupLocation(fulfillmentIndex).primaryAddress.address.streetAddress + ' ' + slatwall.getPickupLocation(fulfillmentIndex).primaryAddress.address.city}}</span>
 				</span>
 				<span ng-if="slatwall.noPickupLocation(fulfillmentIndex)">None</span></h5>
 			<a href="#" ng-click="slatwall.showStoreSelector[fulfillmentIndex] = !slatwall.showStoreSelector[fulfillmentIndex];" ng-if="slatwall.getPickupLocation(fulfillmentIndex).primaryAddress != undefined">Change store</a>
@@ -32,7 +32,7 @@
 					data-action="addPickupFulfillmentLocation"
 					data-selected-format-string="${locationName}&nbsp;${primaryAddress_address_city}&nbsp;${primaryAddress_address_stateCode}&nbsp;${primaryAddress_address_postalCode}"
 					data-event-listeners="{addPickupFulfillmentLocationSuccess:slatwall.binder(null,slatwall.hideStoreSelector,fulfillmentIndex)}",
-					data-variables="{fulfillmentID:slatwall.cart.orderFulfillments[fulfillmentIndex].orderFulfillmentID}">
+					data-variables="{fulfillmentID:fulfillmentID}">
 					
 					<sw-collection-config
 	                      data-entity-name="Location"

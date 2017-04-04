@@ -16,12 +16,11 @@
 	<swf-directive partial-name="orderpaymentformfull"></swf-directive>
 
 	<!--- Pleace Order / Review Order / Save Buttons --->
-	<!--- <swf-directive partial-name="orderbuttons"></swf-directive> --->
 	<div class="form-group">
 	    <sw-action-caller
 	        data-type="button"
 	        data-class="button blue"
-	        data-text="{{(slatwall.getRequestByAction('addOrderPayment').loading ? 'LOADING...' : 'Add Payment')}}">
+	        data-text="{{(slatwall.loadingThisRequest('addOrderPayment', 'newOrderPayment.nameOnCreditCard', true) ? 'LOADING...' : 'Add Payment')}}">
 	    </sw-action-caller>
 	</div>
 </swform>

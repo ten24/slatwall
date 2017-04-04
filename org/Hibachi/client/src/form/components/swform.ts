@@ -160,6 +160,7 @@ class SWFormController {
 
         let request = this.$rootScope.hibachiScope.doAction(action, this.formData)
         .then( (result) =>{
+            if(!result) return;
             this.object.forms[this.name].$setSubmitted(true);
             if (result.errors) {
                 this.parseErrors(result.errors);
