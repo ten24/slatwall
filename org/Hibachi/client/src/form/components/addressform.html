@@ -37,7 +37,20 @@
 					    <!--- hidden fields - Will contain the address id if one was provided. --->
 					    <input type="hidden" ng-model="SwAddressForm.address.addressID" name="addressID" value="{{SwAddressForm.address.addressID}}" ng-init="SwAddressForm.address.addressID = SwAddressForm.address.addressID||''"/>
 					    <input type="hidden" ng-model="slatwall.cart.orderFulfillments[SwAddressForm.fulfillmentIndex].orderFulfillmentID" name="fulfillmentID" value={{SwAddressForm.fulfillmentID}} />
-					    
+				    	<div class="col-sm-6 form-group" ng-if="SwAddressForm.hasField('accountAddressName')">
+						    <swf-property-display
+						        data-name="addressName"
+						        data-field-type="text"
+						        data-object="SwAddressForm.address"
+						        data-property-identifier="accountAddressName"
+						        data-label-text="Name this Address"
+						        data-class="form-control"
+						        data-edit="true" 
+						        >
+						    </swf-property-display>
+					    </div>
+				    </div>
+				    <div class="row" ng-cloak>
 					    <!--- Country --->
 				    	<div class="col-sm-6 form-group" ng-if="(SwAddressForm.showCountrySelect == 'true'|| SwAddressForm.showCountrySelect == true) && slatwall.countries.countryCodeOptions">
 
