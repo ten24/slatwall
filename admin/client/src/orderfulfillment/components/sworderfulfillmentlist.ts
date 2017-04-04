@@ -1,20 +1,65 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
+module FulfillmentsList {
+    export enum Views {
+        Fulfillments,
+        Items
+    }
+}
 
 class SWOrderFulfillmentListController {
     
     private orderFulfillmentCollection:any;
+    private orderItemCollection:any;
     private orderCollectionConfig:any;
     private orderFulfillments:any[];
     private filters:{};
+    private view:number;
+    private collections:Array<any>;
+    public views:any;
     public total:number;
 
-    
     // @ngInject
     constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private utilityService){
-        //Some setup
+        //Set the initial state for the filters.
         this.filters = {"unavailable": false, "partial": true, "available": true};
+        this.collections = [];
+        //Some setup for the fulfillments collection.
+        this.createOrderFulfillmentCollection(collectionConfigService);
+        this.createOrderItemCollection(collectionConfigService);
+
+        //some view setup.
+        this.views = FulfillmentsList.Views;
+        this.setView(this.views.Fulfillments);
+        
+        //add both collections into the collection object. Removed 0 elements (insert only).
+        this.collections.push(this.orderFulfillmentCollection);
+        this.collections.push(this.orderItemCollection);
+        
+        console.log(this.collections);
+        //adds the two default filters to start.
+        //this.addFilter('available', true);
+        //this.addFilter('partial', true);
+        this.refreshCollection(this.getCollectionByView(this.getView()));
+    }
+    
+    /**
+     * Each collection has a view. The view is maintained by the enum. This Returns
+     * the collection for that view.
+     */
+     public getCollectionByView = (view:number) => {
+        if (view == undefined || this.collections == undefined){
+            return;
+        }
+        
+        return this.collections[view];
+     }
+
+    /**
+     * Setup the initial orderFulfillment Collection.
+     */
+     private createOrderFulfillmentCollection = (collectionConfigService) => {
         this.orderFulfillmentCollection = collectionConfigService.newCollectionConfig("OrderFulfillment");
         this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentID");
         this.orderFulfillmentCollection.addDisplayProperty("order.orderNumber");
@@ -22,14 +67,24 @@ class SWOrderFulfillmentListController {
         this.orderFulfillmentCollection.addDisplayProperty("shippingMethod.shippingMethodName");
         this.orderFulfillmentCollection.addDisplayProperty("shippingAddress.stateCode");
         this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentInvStatusType.typeName");
-        this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.typeName", "fulfilled", "=");
+        this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.typeName", "Fulfilled", "!=");
         this.orderFulfillmentCollection.addFilter("order.orderNumber", null, "!=");
-
-        //adds the two default filters to start.
-        //this.addFilter('available', true);
-        //this.addFilter('partial', true);
+     }
+    /**
+     * Setup the initial orderItem Collection.
+     */
+    private createOrderItemCollection = (collectionConfigService) => {
+        this.orderItemCollection = collectionConfigService.newCollectionConfig("OrderItem");
+        this.orderItemCollection.addDisplayProperty("orderItemID");
+        this.orderItemCollection.addDisplayProperty("quantity");
+        this.orderItemCollection.addDisplayProperty("order.orderNumber");
+        this.orderItemCollection.addDisplayProperty("order.orderOpenDateTime");
+        this.orderItemCollection.addDisplayProperty("orderFulfillment.orderFulfillmentStatusType.typeName");
+        this.orderItemCollection.addDisplayProperty("sku.product.productName");
+        this.orderItemCollection.addFilter("orderFulfillment.orderFulfillmentStatusType.typeName", "Fulfilled", "!=");
+        this.orderItemCollection.addFilter("orderFulfillment.orderFulfillmentID", null, "!=");
+        this.orderItemCollection.addFilter("order.orderNumber", null, "!=");
     }
-    
     /**
      * Toggle the Status Type filters on and off.
      */
@@ -39,13 +94,32 @@ class SWOrderFulfillmentListController {
     }
 
     /**
-     * Initialized the orderFulfillment collection so that the listingDisplay can you it to display its data.
+     * Toggle between views. We refresh the collection everytime we set the view.
      */
-    public refreshCollection = () => {
-        this.orderFulfillmentCollection.getEntity().then((response)=>{
-            this.orderFulfillments = response.pageRecords;
-            this.total = response.recordsCount;
-        });
+    public setView = (view:number) => {
+        this.view = view;
+        if (this.getCollectionByView(this.getView())){
+            this.refreshCollection(this.getCollectionByView(this.getView()));
+        }
+    }
+
+    /**
+     * Returns the current view.
+     */
+    public getView = () => {
+        return this.view;
+    }
+
+    /**
+     * Initialized the collection so that the listingDisplay can you it to display its data.
+     */
+    public refreshCollection = (collection) => {
+        if (collection){
+            collection.getEntity().then((response)=>{
+                collection = response.pageRecords;
+                this.total = response.recordsCount;
+            });
+        }
     }
 
     /**
@@ -54,26 +128,32 @@ class SWOrderFulfillmentListController {
      * Value: Boolean: {true|false}
      */
     public addFilter = (key, value) => {
-        console.log("Add Filter Called With", key, value);
         //Always keep the orderNumber filter.
-        this.orderFulfillmentCollection.addFilter("order.orderNumber", null, "!=");
-        this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.typeName", "fulfilled", "=");
-        if (key == "partial"){
-            this.orderFulfillmentCollection.addFilter("orderFulfillmentInvStatusType.typeName","Partial",(value==true)?"=":"!=","OR",false,true,false);
-        }
-        if (key == "available"){
-            this.orderFulfillmentCollection.addFilter("orderFulfillmentInvStatusType.typeName","Available",(value==true)?"=":"!=","OR",false,true,false);
-        }
-        if (key == "unavailable"){
-            this.orderFulfillmentCollection.addFilter("orderFulfillmentInvStatusType.typeName","Unavailable",(value==true)?"=":"!=","OR",false,true,false);
-        }
-        if (key == "location"){
-            this.orderFulfillmentCollection.addFilter("orderFulfillmentItems.stock.location.locationName", value);
+        var currentCollection = this.getCollectionByView(this.getView());
+        if (currentCollection && currentCollection.baseEntityName == "OrderFulfillment"){
+            console.log(currentCollection);
+            currentCollection.addFilter("orderFulfillmentStatusType.typeName", "Fulfilled", "!=");
+            if (value == true){
+                currentCollection.addFilter("order.orderNumber", null, "!=");
+                if (key == "partial"){
+                    currentCollection.addFilter("orderFulfillmentInvStatusType.typeName","Partial",true,"OR",false,true,false);
+                }
+                if (key == "available"){
+                    currentCollection.addFilter("orderFulfillmentInvStatusType.typeName","Available",true,"OR",false,true,false);
+                }
+                if (key == "unavailable"){
+                    currentCollection.addFilter("orderFulfillmentInvStatusType.typeName","Unavailable",true,"OR",false,true,false);
+                }
+                if (key == "location"){
+                    currentCollection.addFilter("orderFulfillmentItems.stock.location.locationName", value);
+                }
+            }
+        }else if (currentCollection.baseEntityName == "OrderItem"){
+            console.log("Adding orderItem Filters", currentCollection);
         }
         //Calls to auto refresh the collection since a filter was added.
-        this.refreshCollection();
+        this.refreshCollection(this.getCollectionByView(this.getView()));
     }
-
 }
 
 class SWOrderFulfillmentList implements ng.IDirective{

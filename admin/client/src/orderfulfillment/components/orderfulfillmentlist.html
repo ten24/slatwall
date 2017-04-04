@@ -377,7 +377,12 @@
 							<a href="##" class="dropdown-toggle" id="changeThisLabel1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								<i class="fa fa-ellipsis-h" title="actions"></i>
 							</a>
-							<ul class="dropdown-menu pull-right" aria-labelledby="changeThisLabel1">
+							<ul class="dropdown-menu pull-right" aria-labelledby="switchesView" ng-if="swOrderFulfillmentListController.getView() == swOrderFulfillmentListController.views.Fulfillments" ng-click="swOrderFulfillmentListController.setView(swOrderFulfillmentListController.views.Items)">
+								<li>
+									<a href="##">Items View</a>
+								</li>
+							</ul>
+							<ul class="dropdown-menu pull-right" aria-labelledby="switchesView" ng-if="swOrderFulfillmentListController.getView() == swOrderFulfillmentListController.views.Items" ng-click="swOrderFulfillmentListController.setView(swOrderFulfillmentListController.views.Fulfillments)">
 								<li>
 									<a href="##">Fulfillments View</a>
 								</li>
@@ -388,8 +393,11 @@
 			                <i class="fa fa-dropbox"></i>
 			            </div>
 			            <div class="col-xs-11 col-sm-11 col-md-10 col-lg-9 s-content s-single-line">
-			                <div class="s-title">
+			                <div class="s-title" ng-if="swOrderFulfillmentListController.getView() == swOrderFulfillmentListController.views.Fulfillments">
 			                    Fulfillments <span class="s-number">({{swOrderFulfillmentListController.total||0}})</span>
+			                </div>
+			                <div class="s-title" ng-if="swOrderFulfillmentListController.getView() == swOrderFulfillmentListController.views.Items">
+			                    Fulfillment Items <span class="s-number">({{swOrderFulfillmentListController.total||0}})</span>
 			                </div>
 			            </div>
 
@@ -450,7 +458,7 @@
 			    </div>
 			</div>
 			
-			<div class="row s-detail-content-wrapper">	
+			<div class="row s-detail-content-wrapper" ng-if="swOrderFulfillmentListController.getView() == swOrderFulfillmentListController.views.Fulfillments">	
 				<div class="col-xs-12">
 					<div class="s-detail-body">
 						
@@ -470,6 +478,33 @@
 							<sw-listing-column data-property-identifier="shippingMethod.shippingMethodName"></sw-listing-column>
 							<sw-listing-column data-property-identifier="shippingAddress.stateCode"></sw-listing-column>
 							<sw-listing-column data-property-identifier="orderFulfillmentInvStatusType.typeName" data-title="Status"></sw-listing-column>
+						</sw-listing-display>
+				
+					</div>
+				</div>
+			</div>
+			<div class="row s-detail-content-wrapper" ng-if="swOrderFulfillmentListController.getView() == swOrderFulfillmentListController.views.Items">	
+				<div class="col-xs-12">
+					<div class="s-detail-body">
+						
+						<sw-listing-display
+							data-collection-config="swOrderFulfillmentListController.orderItemCollection"
+							data-edit="true"
+							data-has-search="true"
+							data-record-detail-action="admin:entity.detailorderfulfillment"
+							data-is-angular-route="false"
+							data-angular-links="false"
+							data-has-action-bar="true" 
+							data-persisted-collection-config="true" 
+							data-multiselect-field-name="orderItemID">
+							
+							<sw-listing-column data-property-identifier="order.orderNumber"></sw-listing-column>
+							<sw-listing-column data-property-identifier="order.orderOpenDateTime" data-title="Date"></sw-listing-column>
+							<sw-listing-column data-property-identifier="sku.product.productName" data-title="Products"></sw-listing-column>
+							<sw-listing-column data-property-identifier="quantity" data-title="QTY"></sw-listing-column>
+							<sw-listing-column data-property-identifier="orderFulfillment.shippingMethod.shippingMethodName" data-title="Shipping"></sw-listing-column>
+							<sw-listing-column data-property-identifier="orderFulfillment.shippingAddress.stateCode" data-title="State"></sw-listing-column>
+							<sw-listing-column data-property-identifier="orderFulfillment.orderFulfillmentStatusType.typeName" data-title="Status"></sw-listing-column>
 						</sw-listing-display>
 				
 					</div>
