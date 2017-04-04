@@ -60,8 +60,8 @@ Notes:
 									  recordEditModal=true
 									  recordDeleteAction="admin:entity.deletelocationaddress"
 									  recordDeleteQueryString="locationID=#rc.location.getLocationID()#&redirectAction=admin:entity.detaillocation"
-									  selectFieldName="primaryAddress.locationAddressID"
-									  selectValue="#rc.location.getPrimaryAddress().getLocationAddressID()#"
+									  selectFieldName="primaryLocationAddress.locationAddressID"
+									  selectValue="#rc.location.getPrimaryLocationAddress().getLocationAddressID()#"
 									  selectTitle="#$.slatwall.rbKey('define.primary')#"
 									  edit="#rc.edit#">
 						
@@ -74,8 +74,8 @@ Notes:
 				<hb:HibachiListingColumn propertyIdentifier="address.stateCode" />
 				<hb:HibachiListingColumn propertyIdentifier="address.postalCode" />
 			</hb:HibachiListingDisplay>
-			
-			<hb:HibachiActionCaller action="admin:entity.createlocationaddress" class="btn" icon="plus" queryString="sRedirectAction=admin:entity.detaillocation&locationID=#rc.location.getLocationID()#" modal=true />
+			<cfset queryString = urlEncodedFormat("locationID=#rc.location.getLocationID()#")/>
+			<hb:HibachiActionCaller action="admin:entity.createlocationaddress" class="btn" icon="plus" queryString="sRedirectAction=admin:entity.detaillocation&sRedirectQS=#queryString#&locationID=#rc.location.getLocationID()#" modal=true />
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 	

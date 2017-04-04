@@ -8,8 +8,8 @@ import {SWFormController} from "./swform";
 import {SWPropertyDisplayController} from "./swpropertydisplay";
 import {SWFPropertyDisplayController} from "./swfpropertydisplay";
 import {SWFormFieldController} from "./swformfield";
-import {ObserverService} from "../../core/services/observerService";
-import {MetaDataService} from "../../core/services/metadataService";
+import {ObserverService} from "../../core/services/observerservice";
+import {MetaDataService} from "../../core/services/metadataservice";
 //defines possible eventoptions
 type EventAnnouncer = "blur" |
 	"change" |

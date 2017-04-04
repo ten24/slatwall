@@ -53,6 +53,34 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		variables.smartList = request.slatwallScope.getSmartList("Product");
 	}
+	/**
+	* @test
+	*/
+	public void function getCacheableSmartlistTest(){
+		var smartlist = request.slatwallScope.getSmartList("Product");
+		smartlist.setCacheable(true);
+		var recordsCount = smartlist.getRecordsCount();
+	}
+	
+	/**
+	* @test
+	*/
+	public void function getSaveAndLoadStateSmartlistTest(){
+		var smartlist = request.slatwallScope.getSmartList("Account");
+		smartlist.setPageRecordsShow(2);
+		makePublic(smartlist,'saveState');
+		
+		smartlist.getPageRecords();
+		var newSmartList = request.slatwallScope.getSmartList("Account");
+		newSmartList.setSavedStateID(smartlist.getSavedStateID());
+		assertEquals(newSmartList.getSavedStateID(),smartlist.getSavedStateID());
+		var loaded = newSmartList.loadSavedState(smartlist.getSavedStateID());
+		
+		newSmartList.getPageRecords();
+		
+		assertEquals(newsmartlist.getPageRecordsShow(),smartlist.getPageRecordsShow());
+	}
+	
 		
 	/**
 	* @test

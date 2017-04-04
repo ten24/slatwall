@@ -40,8 +40,6 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	
 	public any function setup(required string entityName, struct data={}, numeric pageRecordsStart=1, numeric pageRecordsShow=10, string currentURL="") {
 		// Make sure that the containers for smart list saved states are in place
-		param name="session.entitySmartList" type="struct" default="#structNew()#";
-		param name="session.entitySmartList.savedStates" type="array" default="#arrayNew(1)#";
 		
 		// Set defaults for the main properties
 		setEntities({});
@@ -824,16 +822,35 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	
 	public numeric function getRecordsCount() {
 		if(!structKeyExists(variables, "recordsCount")) {
-			if(getCacheable() && structKeyExists(application.entitySmartList, getCacheName()) && structKeyExists(application.entitySmartList[getCacheName()], "recordsCount")) {
-				variables.recordsCount = application.entitySmartList[ getCacheName() ].recordsCount;
+			//retrieve from cache
+			if(
+				getCacheable() 
+				&& !isNull(getService('HibachiCacheService').getDatabaseCacheByDatabaseCacheKey('entitySmartList' & getSessionCacheName()))
+			) {
+				var cacheKey = 'entitySmartList'&getSessionCacheName();
+				var DatabaseCache = getService('HibachiCacheService').getDatabaseCacheByDatabaseCacheKey(cacheKey);
+				if(!isNull(DatabaseCache)){
+					var cacheValue = deserializeJson(DatabaseCache.getDatabaseCacheValue());
+					if(structKeyExists(cacheValue,'recordsCount')){
+						variables.recordsCount = cacheValue.recordsCount;		
+					}
+				}
+				
 			} else {
 				if(!structKeyExists(variables,"records")) {
 					var HQL = "#getHQLSelect(countOnly=true)##getHQLFrom(allowFetch=false)##getHQLWhere()#";
 					var recordCount = ormExecuteQuery(HQL, getHQLParams(), true, {ignoreCase="true"});
 					variables.recordsCount = recordCount;
+					//write to cache
 					if(getCacheable()) {
-						application.entitySmartList[ getCacheName() ] = {};
-						application.entitySmartList[ getCacheName() ].recordsCount = variables.recordsCount;
+						var cacheKey = 'entitySmartList'&getSessionCacheName();
+						var DatabaseCache = getService('HibachiCacheService').newDatabaseCache();
+						DatabaseCache.setDatabaseCacheKey(cacheKey);
+						var cacheValue = {};
+						cacheValue.recordsCount = variables.recordsCount;
+						DatabaseCache.setDatabaseCacheValue(serializeJson(cacheValue));
+						getService('HibachiCacheService').saveDatabaseCache(DatabaseCache);
+						getHibachiScope().flushOrmSession();
 					}
 				} else {
 					variables.recordsCount = arrayLen(getRecords());	
@@ -1073,9 +1090,12 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	
 	public void function loadSavedState(required string savedStateID) {
 		var savedStates = [];
-		if(getHibachiScope().hasSessionValue('smartListSavedState')) {
-			savedStates = getHibachiScope().getSessionValue('smartListSavedState');	
+		
+		var DatabaseCache = getService('HibachiCacheService').getDatabaseCacheByDatabaseCacheKey('smartListSavedState'&getHibachiScope().getSession().getSessionCookieNPSID());
+		if(!isNull(DatabaseCache)) {
+			savedStates = deserializeJson(DatabaseCache.getDatabaseCacheValue());	
 		}
+		
 		for(var s=1; s<=arrayLen(savedStates); s++) {
 			if(savedStates[s].savedStateID eq arguments.savedStateID) {
 				for(var key in savedStates[s]) {
@@ -1086,46 +1106,37 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	}
 	
 	private void function saveState() {
-		// Make sure that the saved states structure and array exists
-		if(!getHibachiScope().hasSessionValue('smartListSavedState')) {
-			getHibachiScope().setSessionValue('smartListSavedState', []);
+		var states = [];
+		var DatabaseCache = getService('HibachiCacheService').getDatabaseCacheByDatabaseCacheKey('smartListSavedState'&getHibachiScope().getSession().getSessionCookieNPSID());
+		if(!isNull(DatabaseCache)){
+			states = deserializeJson(DatabaseCache.getDatabaseCacheValue());
+		}else{
+			DatabaseCache = getService('HibachiCacheService').newDatabaseCache();
 		}
+		// Setup the state
+		var state = getStateStruct();
+		state.savedStateID = getSavedStateID();
 		
-		var sessionKey = "";
-		if(structKeyExists(COOKIE, "JSESSIONID")) {
-			sessionKey = COOKIE.JSESSIONID;
-		} else if (structKeyExists(COOKIE, "CFTOKEN")) {
-			sessionKey = COOKIE.CFTOKEN;
-		} else if (structKeyExists(COOKIE, "CFID")) {
-			sessionKey = COOKIE.CFID;
-		}
-		
-		// Lock the session so that we can manipulate based on saved state
-		lock name="#sessionKey#_#getHibachiInstanceApplicationScopeKey()#_smartListSavedStateUpdateLogic" timeout="10" {
-		
-			// Get the saved state struct
-			var states = getHibachiScope().getSessionValue('smartListSavedState');
-			
-			// Setup the state
-			var state = getStateStruct();
-			state.savedStateID = getSavedStateID();
-			
-			// If the savedState already existed, then delete it
-			for(var e=1; e<=arrayLen(states); e++) {
-				if(states[e].savedStateID eq state.savedStateID) {
-					arrayDeleteAt(states, e);
-				}
+		// If the savedState already existed, then delete it
+		for(var e=1; e<=arrayLen(states); e++) {
+			if(states[e].savedStateID eq state.savedStateID) {
+				arrayDeleteAt(states, e);
 			}
-			
-			// Add the state to the states array
-			arrayPrepend(states, state);
-				
-			for(var s=arrayLen(states); s>30; s--) {
-				arrayDeleteAt(states, s);
-			}
-			
-			getHibachiScope().setSessionValue('smartListSavedState', states);
 		}
+		
+		// Add the state to the states array
+		arrayPrepend(states, state);
+			
+		for(var s=arrayLen(states); s>30; s--) {
+			arrayDeleteAt(states, s);
+		}
+		
+		DatabaseCache.setDatabaseCacheKey('smartListSavedState'&getHibachiScope().getSession().getSessionCookieNPSID());
+		DatabaseCache.setDatabaseCacheValue(serializeJson(states));
+		getService('HibachiCacheService').saveDatabaseCache(DatabaseCache);
+		
+		getHibachiScope().flushOrmSession();
+		
 	}
 	
 	public string function getSavedStateID() {
@@ -1163,5 +1174,9 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		
 		// Turn the array back into a list, lcase, and hash for the name
 		return hash(lcase(arrayToList(valueArray,",")));
+	}
+	
+	public any function getSessionCacheName(){
+		return getHibachiScope().getSession().getSessionCookieNPSID()&getCacheName();
 	}
 }
