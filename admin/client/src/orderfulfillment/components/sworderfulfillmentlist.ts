@@ -17,6 +17,7 @@ class SWOrderFulfillmentListController {
     private filters:{};
     private view:number;
     private collections:Array<any>;
+    
     public views:any;
     public total:number;
 
@@ -37,7 +38,6 @@ class SWOrderFulfillmentListController {
         this.collections.push(this.orderFulfillmentCollection);
         this.collections.push(this.orderItemCollection);
         
-        console.log(this.collections);
         //adds the two default filters to start.
         //this.addFilter('available', true);
         //this.addFilter('partial', true);
@@ -70,6 +70,7 @@ class SWOrderFulfillmentListController {
         this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.typeName", "Fulfilled", "!=");
         this.orderFulfillmentCollection.addFilter("order.orderNumber", null, "!=");
      }
+    
     /**
      * Setup the initial orderItem Collection.
      */
@@ -85,6 +86,7 @@ class SWOrderFulfillmentListController {
         this.orderItemCollection.addFilter("orderFulfillment.orderFulfillmentID", null, "!=");
         this.orderItemCollection.addFilter("order.orderNumber", null, "!=");
     }
+
     /**
      * Toggle the Status Type filters on and off.
      */
@@ -156,6 +158,9 @@ class SWOrderFulfillmentListController {
     }
 }
 
+/**
+ * This is a view helper class that uses the collection helper class.
+ */
 class SWOrderFulfillmentList implements ng.IDirective{
 
     public templateUrl; 

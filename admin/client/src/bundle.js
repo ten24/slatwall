@@ -29457,7 +29457,6 @@
 	        //add both collections into the collection object. Removed 0 elements (insert only).
 	        this.collections.push(this.orderFulfillmentCollection);
 	        this.collections.push(this.orderItemCollection);
-	        console.log(this.collections);
 	        //adds the two default filters to start.
 	        //this.addFilter('available', true);
 	        //this.addFilter('partial', true);
@@ -29466,6 +29465,9 @@
 	    return SWOrderFulfillmentListController;
 	}());
 	exports.SWOrderFulfillmentListController = SWOrderFulfillmentListController;
+	/**
+	 * This is a view helper class that uses the collection helper class.
+	 */
 	var SWOrderFulfillmentList = (function () {
 	    // @ngInject
 	    function SWOrderFulfillmentList($hibachi, $timeout, collectionConfigService, observerService, orderFulfillmentPartialsPath, slatwallPathBuilder) {
