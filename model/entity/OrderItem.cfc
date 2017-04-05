@@ -54,7 +54,9 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
 	// Calculated Properties
 	property name="calculatedExtendedPrice" ormtype="big_decimal";
-	property name="calculatedExtendedPriceAfterDiscount" ormtype="big_decimal";
+	property name="calculatedExtendedUnitPrice" ormtype="big_decimal";
+	property name="calculatedExtendedPriceAfterDiscount" column="calcExtendedPriceAfterDiscount" ormtype="big_decimal";
+	property name="calculatedExtendedUnitPriceAfterDiscount" column="calcExtdUnitPriceAfterDiscount" ormtype="big_decimal";
 	property name="calculatedTaxAmount" ormtype="big_decimal";
 	property name="calculatedItemTotal" ormtype="big_decimal";
 	property name="calculatedDiscountAmount" ormtype="big_decimal";
@@ -104,7 +106,9 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="activeEventRegistrations" persistent="false";
 	property name="discountAmount" persistent="false" hb_formatType="currency" hint="This is the discount amount after quantity (talk to Greg if you don't understand)" ;
 	property name="extendedPrice" persistent="false" hb_formatType="currency";
+	property name="extendedUnitPrice" persistent="false" hb_formatType="currency";
 	property name="extendedPriceAfterDiscount" persistent="false" hb_formatType="currency";
+	property name="extendedUnitPriceAfterDiscount" persistent="false" hb_formatType="currency";
 	property name="orderStatusCode" persistent="false";
 	property name="quantityDelivered" persistent="false";
 	property name="quantityUndelivered" persistent="false";
@@ -413,6 +417,14 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 	public numeric function getExtendedPriceAfterDiscount() {
 		return getService('HibachiUtilityService').precisionCalculate(getExtendedPrice() - getDiscountAmount());
+	}
+
+	public numeric function getExtendedUnitPrice() {
+		return val(precisionEvaluate(getExtendedPrice() / getQuantity()));
+	}
+
+	public numeric function getExtendedUnitPriceAfterDiscount() {
+		return val(precisionEvaluate(getExtendedPriceAfterDiscount() / getQuantity()));
 	}
 
 	public any function getActiveEventRegistrations() {
