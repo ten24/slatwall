@@ -28,7 +28,7 @@
 </sw-form>
 
 <ul class="list-group" ng-if="slatwall.cart.promotionCodeList && slatwall.cart.promotionCodeList.length">
-    <li class="list-group-item" ng-repeat="code in slatwall.cart.promotionCodeList.split(',') track by $index">
-    {{code}} - <a href="#" ng-click="slatwall.removePromoCode(code, $index)">{{(slatwall.removingPromoCode($index) ? 'Removing' : 'Remove')}}</a>
+    <li class="list-group-item" ng-repeat="code in slatwall.cart.promotionCodes track by $index">
+    {{code.promotion.promotionName}} - <a href="#" ng-click="slatwall.removePromoCode(code.promotionCode)">{{slatwall.loadingThisRequest('removePromotionCode',{promotionCode:code.promotionCode}) ? 'Removing' : 'Remove'}}</a>
     </li>
 </ul>

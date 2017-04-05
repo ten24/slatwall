@@ -6,10 +6,10 @@
 		<span>
 			<h5>Your selected store: <span ng-if="slatwall.getPickupLocation(fulfillmentIndex).locationName != undefined">
 				<span ng-if="slatwall.getPickupLocation(fulfillmentIndex).locationName != undefined">
-					{{(slatwall.loadingThisRequest('addPickupFulfillmentLocation','fulfillmentID', fulfillmentID)) ? 'Loading...' : slatwall.getPickupLocation(fulfillmentIndex).locationName}}
+					{{(slatwall.loadingThisRequest('addPickupFulfillmentLocation',{fulfillmentID: fulfillmentID})) ? 'Loading...' : slatwall.getPickupLocation(fulfillmentIndex).locationName}}
 				</span>
 				<span ng-if="slatwall.namelessPickupLocation(fulfillmentIndex)">
-					{{(slatwall.loadingThisRequest('addPickupFulfillmentLocation','fulfillmentID', fulfillmentID)) ? 'Loading...' : slatwall.getPickupLocation(fulfillmentIndex).primaryAddress.address.streetAddress + ' ' + slatwall.getPickupLocation(fulfillmentIndex).primaryAddress.address.city}}</span>
+					{{(slatwall.loadingThisRequest('addPickupFulfillmentLocation',{fulfillmentID: fulfillmentID})) ? 'Loading...' : slatwall.getPickupLocation(fulfillmentIndex).primaryAddress.address.streetAddress + ' ' + slatwall.getPickupLocation(fulfillmentIndex).primaryAddress.address.city}}</span>
 				</span>
 				<span ng-if="slatwall.noPickupLocation(fulfillmentIndex)">None</span></h5>
 			<a href="#" ng-click="slatwall.showStoreSelector[fulfillmentIndex] = !slatwall.showStoreSelector[fulfillmentIndex];" ng-if="slatwall.getPickupLocation(fulfillmentIndex).primaryAddress != undefined">Change store</a>

@@ -20,7 +20,7 @@
 	    <sw-action-caller
 	        data-type="button"
 	        data-class="button blue"
-	        data-text="{{(slatwall.loadingThisRequest('addOrderPayment', 'newOrderPayment.nameOnCreditCard', true) ? 'LOADING...' : 'Add Payment')}}">
+	        data-text="{{(slatwall.loadingThisRequest('addOrderPayment',{'newOrderPayment.nameOnCreditCard': true}) ? 'LOADING...' : 'Add Payment')}}">
 	    </sw-action-caller>
 	</div>
 </swform>

@@ -310,7 +310,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			orderFulfillments.pickupLocation.primaryAddress.address.city, orderFulfillments.pickupLocation.primaryAddress.address.statecode, orderFulfillments.pickupLocation.primaryAddress.address.postalCode,
 			orderPayments.orderPaymentID,orderPayments.amount,orderPayments.currencyCode,orderPayments.creditCardType,orderPayments.expirationMonth,orderPayments.expirationYear,orderPayments.nameOnCreditCard, orderPayments.creditCardLastFour,orderPayments.purchaseOrderNumber,
 			orderPayments.billingAddress.addressID,orderPayments.billingAddress.streetAddress,orderPayments.billingAddress.street2Address,orderPayments.billingAddress.city,orderPayments.billingAddress.statecode,orderPayments.billingAddress.postalCode,orderPayments.billingAddress.countrycode,
-			orderPayments.paymentMethod.paymentMethodID,orderPayments.paymentMethod.paymentMethodName, orderPayments.giftCard.balanceAmount, orderPayments.giftCard.giftCardCode, promotionCodes.promotionCode","\s","","ALL");
+			orderPayments.paymentMethod.paymentMethodID,orderPayments.paymentMethod.paymentMethodName, orderPayments.giftCard.balanceAmount, orderPayments.giftCard.giftCardCode, promotionCodes.promotionCode,promotionCodes.promotion.promotionName","\s","","ALL");
 	}
 	
 	public any function getCartData(string propertyList) {

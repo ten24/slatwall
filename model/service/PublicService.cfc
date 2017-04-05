@@ -648,10 +648,6 @@ component extends="HibachiService"  accessors="true" output="false"
     /** Sets the shipping method to an order shippingMethodID */
     public void function addShippingMethodUsingShippingMethodID(required data){
         var shippingMethodId = data.shippingMethodID;
-        var orderFulfillmentWithShippingMethodOptionsIndex = 1;
-        if (!isNull(data.orderFulfillmentWithShippingMethodOptionsIndex)){
-        	orderFulfillmentWithShippingMethodOptionsIndex = data.orderFulfillmentWithShippingMethodOptionsIndex + 1; //from js to cf
-        }
 
         if (isNull(shippingMethodId)){
             return;
@@ -660,16 +656,22 @@ component extends="HibachiService"  accessors="true" output="false"
         
         if (!isNull(shippingMethod) && !shippingMethod.hasErrors()){
             var order = getHibachiScope().cart();
-            var orderFulfillment = order.getOrderFulfillments()[orderFulfillmentWithShippingMethodOptionsIndex];
+
+            var orderFulfillments = order.getOrderFulfillments();
+            if (!isNull(data.fulfillmentID)){
+              for(var fulfillment in orderFulfillments){
+                if(fulfillment.getOrderFulfillmentID() == data.fulfillmentID){
+                  var orderFulfillment = fulfillment;
+                }
+              }
+            }
             orderFulfillment.setShippingMethod(shippingMethod);
             getOrderService().saveOrder(order); 
             getDao('hibachiDao').flushOrmSession();;           
             getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", shippingMethod.hasErrors());          
         }else{
             this.addErrors(arguments.data, shippingMethod.getErrors()); //add the basic errors
-        }
-        if(!isNull(shippingMethod)){
-          getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", shippingMethod.hasErrors());
+            getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", shippingMethod.hasErrors());
         }
         
     }

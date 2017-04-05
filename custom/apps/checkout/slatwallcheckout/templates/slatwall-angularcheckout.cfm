@@ -58,7 +58,7 @@
 		                    </div>
 		                    <div class="details row panel-body" ng-if="slatwall.isPickupFulfillment(fulfillment)">
 		                        <swf-directive partial-name="deliverystorepickup" variables="{'fulfillmentIndex':$index}"></swf-directive>
-		                    </div><br>
+		                    </div>
 						</div>
 	                </div>
 	            </div>

@@ -7,13 +7,13 @@
         <div ng-repeat="(key, value) in slatwall.account.accountAddresses" class="col-sm-4">
             <div>
                 <div vertilize>
-                    <span>
-                        <i ng-if="slatwall.accountAddressIsSelectedBillingAddress(key)" class="fa fa-check-circle"></i>
-                    </span>
-
                     <ul class="list-unstyled address-info">
                         <!-- <li><small>Account Address</small></li>  -->
-                        <li ng-if="value.accountAddressName">{{value.accountAddressName}}&nbsp;</li>
+                        <li><span class="address-indicator">
+                                <i ng-if="slatwall.accountAddressIsSelectedBillingAddress(key)" class="fa fa-check-circle"></i>
+                            </span>
+                            <strong>{{value.accountAddressName}}&nbsp;</strong>
+                        </li>
                         <li>{{value.address.name}}&nbsp;</li>
                         <li>{{value.address.company}}</li>
                         <li>{{value.address.streetAddress}}</li>

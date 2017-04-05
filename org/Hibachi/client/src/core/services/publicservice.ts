@@ -354,9 +354,16 @@ class PublicService {
     }
 
     /** Uses getRequestByAction() plus an identifier to distinguish between different functionality using the same route*/
-    public loadingThisRequest = (action, identifier, id, strict) =>{
-        var request = this.getRequestByAction(action);
-        return request && request.loading && ((id === true && !strict) || request.data[identifier] == id);
+    public loadingThisRequest = (action, conditions, strict) =>{
+        let request = this.getRequestByAction(action);
+        if(!request || !request.loading) return false;
+
+        for(let identifier in conditions){
+            if !((conditions[identifier] === true && !strict) || request.data[identifier] == conditions[identifier]){
+                return false;
+            }
+        }
+        return true;
     }
 
     public removeInvalidOrderPayments = (cart) =>{
@@ -520,18 +527,18 @@ class PublicService {
      /** returns true if the shipping method option passed in is the selected shipping method
      */
      public isSelectedShippingMethod = (option, fulfillmentIndex) =>{
-         return this.cart.orderFulfillments[fulfillmentIndex].data.shippingMethod && 
-             (this.cart.fulfillmentTotal && 
-             ((option.value == this.cart.orderFulfillments[fulfillmentIndex].data.shippingMethod.shippingMethodID) || 
+         return (this.cart.orderFulfillments[fulfillmentIndex].data.shippingMethod && 
+             this.cart.orderFulfillments[fulfillmentIndex].data.shippingMethod.shippingMethodID == option.value) || 
             (this.cart.orderFulfillments[fulfillmentIndex].data.shippingMethodOptions.length == 1)));
      }
 
      /** Select a shipping method - temporarily changes the selected method on the front end while awaiting official change from server
      */
      public selectShippingMethod = (option, fulfillmentIndex) =>{
+         console.log('select '+fulfillmentIndex);
          let data = {
              'shippingMethodID': option.value,
-             'orderFulfillmentWithShippingMethodOptionsIndex':fulfillmentIndex
+             'fulfillmentID':this.cart.orderFulfillments[fulfillmentIndex].orderFulfillmentID
          };
          this.doAction('addShippingMethodUsingShippingMethodID', data);
          if(!this.cart.orderFulfillments[fulfillmentIndex].data.shippingMethod){
@@ -541,16 +548,9 @@ class PublicService {
      }
 
      /** Removes promotional code from order*/
-     public removePromoCode = (code, index)=>{
+     public removePromoCode = (code)=>{
          this.doAction('removePromotionCode', {promotionCode:code});
-         this.lastRemovedPromoCode = index;
      }
-
-     /** Returns boolean indicating whether or not the promotional code with the passed in index is currently being removed.*/
-     public removingPromoCode = (index) =>{
-         return this.getRequestByAction('removePromotionCode') && this.getRequestByAction('removePromotionCode').loading && this.lastRemovedPromoCode == index;
-     }
-
 
     public orderPaymentKeyCheck = (event) =>{
         if(event.event.keyCode == 13 ){
