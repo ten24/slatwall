@@ -511,6 +511,10 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		return discountTotal;
 	}
 
+	public numeric function getOrderAndItemDiscountAmountTotal(){
+		return getItemDiscountAmountTotal() + getOrderDiscountAmountTotal();
+	}
+
 	public numeric function getFulfillmentDiscountAmountTotal() {
 		var discountTotal = 0;
 		for(var i=1; i<=arrayLen(getOrderFulfillments()); i++) {
