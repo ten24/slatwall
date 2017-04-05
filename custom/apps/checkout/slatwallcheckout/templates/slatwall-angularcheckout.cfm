@@ -47,6 +47,7 @@
 	                <h3>
 	                <a href="##" class="pull-right" ng-click="slatwall.edit = 'fulfillment'"><i class="fa fa-pencil-square-o" ng-if="!slatwall.fulfillmentTabIsActive()" aria-hidden="true"></i></a>
 					<a href="##" class="pull-right" ng-if="slatwall.fulfillmentTabIsActive()" ng-click="slatwall.edit = ''"><i class="fa fa-check-circle"></i></a>
+					<swf-directive partial-name="fulfillmentbarinfo"></swf-directive>
 					Fulfillment Information</h3>
 	                <div class="row" ng-show="slatwall.fulfillmentTabIsActive()">
                 		<div class="col-md-12" ng-repeat="fulfillment in slatwall.cart.orderFulfillments track by $index">

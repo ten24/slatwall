@@ -453,6 +453,15 @@ class PublicService {
         );
     }
 
+    /** Returns true if the order fulfillment has a shipping address selected. */
+    public hasPickupLocation = (fulfillmentIndex) => {
+        return (
+            this.cart.orderFulfillments[fulfillmentIndex] &&
+            this.isPickupFulfillment(this.cart.orderFulfillments[fulfillmentIndex]) && 
+            this.cart.orderFulfillments[fulfillmentIndex].pickupLocation
+        );
+    }
+
     /** Returns true if the order requires a fulfillment */
     public orderRequiresFulfillment = ():boolean=> {
 
@@ -971,6 +980,16 @@ class PublicService {
     public getPickupLocation = (fulfillmentIndex) => {
         if(!this.cart.data.orderFulfillments[fulfillmentIndex]) return;
         return this.cart.data.orderFulfillments[fulfillmentIndex].pickupLocation;
+    }
+
+    public getShippingAddress = (fulfillmentIndex) => {
+        if(!this.cart.data.orderFulfillments[fulfillmentIndex]) return;
+        return this.cart.data.orderFulfillments[fulfillmentIndex].data.shippingAddress;
+    }
+
+    public getEmailFulfillmentAddress = (fulfillmentIndex) => {
+        if(!this.cart.data.orderFulfillments[fulfillmentIndex]) return;
+        return this.cart.data.orderFulfillments[fulfillmentIndex].emailAddress;
     }
 
     public getPickupLocations = () => {
