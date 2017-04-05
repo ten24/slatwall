@@ -52,6 +52,12 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="bundleItemQuantity" hb_populateEnabled="public" ormtype="integer";
 	property name="estimatedDeliveryDateTime" ormtype="timestamp";
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
+	// Calculated Properties
+	property name="calculatedExtendedPrice" ormtype="big_decimal";
+	property name="calculatedExtendedPriceAfterDiscount" ormtype="big_decimal";
+	property name="calculatedTaxAmount" ormtype="big_decimal";
+	property name="calculatedItemTotal" ormtype="big_decimal";
+	property name="calculatedDiscountAmount" ormtype="big_decimal";
 
 	// Related Object Properties (many-to-one)
 	property name="appliedPriceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="appliedPriceGroupID";
