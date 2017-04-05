@@ -359,7 +359,7 @@ class PublicService {
         if(!request || !request.loading) return false;
 
         for(let identifier in conditions){
-            if !((conditions[identifier] === true && !strict) || request.data[identifier] == conditions[identifier]){
+            if (!((conditions[identifier] === true && !strict) || request.data[identifier] == conditions[identifier])){
                 return false;
             }
         }
@@ -529,13 +529,12 @@ class PublicService {
      public isSelectedShippingMethod = (option, fulfillmentIndex) =>{
          return (this.cart.orderFulfillments[fulfillmentIndex].data.shippingMethod && 
              this.cart.orderFulfillments[fulfillmentIndex].data.shippingMethod.shippingMethodID == option.value) || 
-            (this.cart.orderFulfillments[fulfillmentIndex].data.shippingMethodOptions.length == 1)));
+            (this.cart.orderFulfillments[fulfillmentIndex].data.shippingMethodOptions.length == 1);
      }
 
      /** Select a shipping method - temporarily changes the selected method on the front end while awaiting official change from server
      */
      public selectShippingMethod = (option, fulfillmentIndex) =>{
-         console.log('select '+fulfillmentIndex);
          let data = {
              'shippingMethodID': option.value,
              'fulfillmentID':this.cart.orderFulfillments[fulfillmentIndex].orderFulfillmentID
