@@ -29407,10 +29407,21 @@
 	        this.refreshCollection = function (collection) {
 	            if (collection) {
 	                collection.getEntity().then(function (response) {
-	                    collection = response.pageRecords;
-	                    _this.total = response.recordsCount;
+	                    if (!response || response.pageRecords == undefined || response.pageRecords.length == 0) {
+	                        _this.redirect();
+	                    }
+	                    else {
+	                        collection = response.pageRecords;
+	                        _this.total = response.recordsCount;
+	                    }
 	                });
 	            }
+	        };
+	        /**
+	         * Redirects the current page (to go to login) if the user tries to interacts with the view while not logged in.
+	         */
+	        this.redirect = function () {
+	            location.reload();
 	        };
 	        /**
 	         * Adds one of the status type filters into the collectionConfigService
@@ -29445,6 +29456,28 @@
 	            //Calls to auto refresh the collection since a filter was added.
 	            _this.refreshCollection(_this.getCollectionByView(_this.getView()));
 	        };
+	        /**
+	         * Saved the batch using the data stored in the processObject.
+	         */
+	        this.addBatch = function () {
+	            //if we have formData, then pass that formData to the createBatch process.
+	            if (_this.getProcessObject()) {
+	                console.log("Hibachi", _this.$hibachi);
+	                console.log("Process Object", _this.getProcessObject());
+	            }
+	        };
+	        /**
+	         * Returns the processObject
+	         */
+	        this.getProcessObject = function () {
+	            return _this.processObject;
+	        };
+	        /**
+	         * Sets the processObject
+	         */
+	        this.setProcessObject = function (processObject) {
+	            _this.processObject = processObject;
+	        };
 	        //Set the initial state for the filters.
 	        this.filters = { "unavailable": false, "partial": true, "available": true };
 	        this.collections = [];
@@ -29457,10 +29490,18 @@
 	        //add both collections into the collection object. Removed 0 elements (insert only).
 	        this.collections.push(this.orderFulfillmentCollection);
 	        this.collections.push(this.orderItemCollection);
+	        //Setup the processObject
+	        this.setProcessObject(this.$hibachi.newFulfillmentBatch_Create());
 	        //adds the two default filters to start.
 	        //this.addFilter('available', true);
 	        //this.addFilter('partial', true);
 	        this.refreshCollection(this.getCollectionByView(this.getView()));
+	        //Attach observerService
+	        var handler = function () {
+	            console.log("Handler Called");
+	        };
+	        console.log(this.observerService);
+	        this.observerService.attach(handler, "swSelectionToggleSelection", "swOrderFulfillmentListener");
 	    }
 	    return SWOrderFulfillmentListController;
 	}());

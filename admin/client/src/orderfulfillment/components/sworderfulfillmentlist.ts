@@ -20,12 +20,15 @@ class SWOrderFulfillmentListController {
     
     public views:any;
     public total:number;
+    public formData:{};
+    public processObject:any;
 
     // @ngInject
     constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private utilityService){
         //Set the initial state for the filters.
-        this.filters = {"unavailable": false, "partial": true, "available": true};
+        this.filters = { "unavailable": false, "partial": true, "available": true };
         this.collections = [];
+        
         //Some setup for the fulfillments collection.
         this.createOrderFulfillmentCollection(collectionConfigService);
         this.createOrderItemCollection(collectionConfigService);
@@ -38,10 +41,20 @@ class SWOrderFulfillmentListController {
         this.collections.push(this.orderFulfillmentCollection);
         this.collections.push(this.orderItemCollection);
         
+        //Setup the processObject
+        this.setProcessObject(this.$hibachi.newFulfillmentBatch_Create());
+
         //adds the two default filters to start.
         //this.addFilter('available', true);
         //this.addFilter('partial', true);
         this.refreshCollection(this.getCollectionByView(this.getView()));
+
+        //Attach observerService
+        var handler = function(){
+            console.log("Handler Called");
+        };
+        console.log(this.observerService);
+        this.observerService.attach(handler, "swSelectionToggleSelection", "swOrderFulfillmentListener");
     }
     
     /**
@@ -118,10 +131,21 @@ class SWOrderFulfillmentListController {
     public refreshCollection = (collection) => {
         if (collection){
             collection.getEntity().then((response)=>{
-                collection = response.pageRecords;
-                this.total = response.recordsCount;
+                if (!response || response.pageRecords == undefined || response.pageRecords.length == 0){
+                   this.redirect();
+                }else{
+                    collection = response.pageRecords;
+                    this.total = response.recordsCount;
+                }
             });
         }
+    }
+
+    /**
+     * Redirects the current page (to go to login) if the user tries to interacts with the view while not logged in.
+     */
+    public redirect = () => {
+         location.reload();
     }
 
     /**
@@ -155,6 +179,32 @@ class SWOrderFulfillmentListController {
         }
         //Calls to auto refresh the collection since a filter was added.
         this.refreshCollection(this.getCollectionByView(this.getView()));
+    }
+
+    /**
+     * Saved the batch using the data stored in the processObject.
+     */
+    public addBatch = () => {
+        //if we have formData, then pass that formData to the createBatch process.
+        if (this.getProcessObject()) {
+            console.log("Hibachi", this.$hibachi);
+            console.log("Process Object", this.getProcessObject());
+
+        }
+    }
+
+    /**
+     * Returns the processObject
+     */
+    public getProcessObject = () => {
+        return this.processObject;
+    }
+
+    /**
+     * Sets the processObject
+     */
+    public setProcessObject = (processObject) => {
+        this.processObject = processObject;
     }
 }
 
