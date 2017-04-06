@@ -6,7 +6,7 @@ module FulfillmentsList {
         Fulfillments,
         Items
     }
-}
+} 
 
 class SWOrderFulfillmentListController {
     
