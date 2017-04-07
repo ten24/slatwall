@@ -9850,6 +9850,7 @@
 	        this.restrict = "EA";
 	        this.scope = {};
 	        this.bindToController = {
+	            name: "@",
 	            fieldName: "@",
 	            entityName: "@",
 	            typeaheadCollectionConfig: "=?",
@@ -29331,15 +29332,88 @@
 	    })(FulfillmentsList.Views || (FulfillmentsList.Views = {}));
 	    var Views = FulfillmentsList.Views;
 	})(FulfillmentsList || (FulfillmentsList = {}));
+	/**
+	 * Fulfillment List Controller
+	 */
 	var SWOrderFulfillmentListController = (function () {
 	    // @ngInject
-	    function SWOrderFulfillmentListController($hibachi, $timeout, collectionConfigService, observerService, utilityService) {
+	    function SWOrderFulfillmentListController($hibachi, $timeout, collectionConfigService, observerService, utilityService, $location) {
 	        var _this = this;
 	        this.$hibachi = $hibachi;
 	        this.$timeout = $timeout;
 	        this.collectionConfigService = collectionConfigService;
 	        this.observerService = observerService;
 	        this.utilityService = utilityService;
+	        this.$location = $location;
+	        /**
+	         * Implements a listener for the orderFulfillment selections
+	         */
+	        this.swSelectionToggleSelectionorderFulfillmentCollectionTableListener = function (callBackData) {
+	            var processObject = _this.getProcessObject();
+	            if (_this.isSelected(callBackData.action)) {
+	                processObject['data']['orderFulfillmentIDList'] = _this.listAppend(processObject.data['orderFulfillmentIDList'], callBackData.selection);
+	            }
+	            else {
+	                processObject['data']['orderFulfillmentIDList'] = _this.listRemove(processObject.data['orderFulfillmentIDList'], callBackData.selection);
+	            }
+	            _this.setProcessObject(processObject);
+	        };
+	        /**
+	         * Implements a listener for the orderItem selections
+	         */
+	        this.swSelectionToggleSelectionorderItemCollectionTableListener = function (callBackData) {
+	            var processObject = _this.getProcessObject();
+	            if (_this.isSelected(callBackData.action)) {
+	                processObject['data']['orderItemIDList'] = _this.listAppend(processObject['data']['orderItemIDList'], callBackData.selection);
+	            }
+	            else {
+	                processObject['data']['orderItemIDList'] = _this.listRemove(processObject['data']['orderItemIDList'], callBackData.selection);
+	            }
+	        };
+	        /**
+	         * Add Instance Of string to list
+	         */
+	        this.listAppend = function (str, subStr) {
+	            var isNew = false;
+	            if (!str) {
+	                str = "";
+	                isNew = true;
+	            }
+	            if (subStr) {
+	                str = str + ((isNew) ? "" : ",") + subStr;
+	            }
+	            return str;
+	        };
+	        /**
+	         * Removes a string from a string.
+	         */
+	        this.listRemove = function (str, subStr) {
+	            if (str.indexOf(subStr) != -1) {
+	                //remove it cause its no longer selected.
+	                str = str.replace(subStr, "");
+	                str = str.replace(",,", "");
+	                if (str == ",") {
+	                    str = "";
+	                }
+	                if (str[0] == ",") {
+	                    str[0] = "";
+	                }
+	                str = str.substring(0, str.length - 1);
+	            }
+	            return str;
+	        };
+	        /**
+	         * returns true if the action is selected
+	         */
+	        this.isSelected = function (test) {
+	            if (test == "check") {
+	                return true;
+	            }
+	            else {
+	                return false;
+	            }
+	            ;
+	        };
 	        /**
 	         * Each collection has a view. The view is maintained by the enum. This Returns
 	         * the collection for that view.
@@ -29421,7 +29495,7 @@
 	         * Redirects the current page (to go to login) if the user tries to interacts with the view while not logged in.
 	         */
 	        this.redirect = function () {
-	            location.reload();
+	            _this.$location.reload();
 	        };
 	        /**
 	         * Adds one of the status type filters into the collectionConfigService
@@ -29464,6 +29538,8 @@
 	            if (_this.getProcessObject()) {
 	                console.log("Hibachi", _this.$hibachi);
 	                console.log("Process Object", _this.getProcessObject());
+	                //this.orderFulfillmentService.addBatch(this.getBatchProcess());
+	                _this.$hibachi.saveProcess("fulfillmentBatch_Create", "", _this.getProcessObject().data, "process");
 	            }
 	        };
 	        /**
@@ -29477,6 +29553,17 @@
 	         */
 	        this.setProcessObject = function (processObject) {
 	            _this.processObject = processObject;
+	        };
+	        /**
+	         * This will recieve all the notifications from the service events.
+	         */
+	        this.recieveNotification = function (message) {
+	            console.log("Message Recieved: ", message);
+	            switch (message.type) {
+	                case "batchSaveSuccess": break;
+	                case "batchSaveFail": break;
+	                case "error": break;
+	            }
 	        };
 	        //Set the initial state for the filters.
 	        this.filters = { "unavailable": false, "partial": true, "available": true };
@@ -29496,12 +29583,14 @@
 	        //this.addFilter('available', true);
 	        //this.addFilter('partial', true);
 	        this.refreshCollection(this.getCollectionByView(this.getView()));
-	        //Attach observerService
-	        var handler = function () {
-	            console.log("Handler Called");
-	        };
+	        //Attach our listeners for selections on both listing displays.
 	        console.log(this.observerService);
-	        this.observerService.attach(handler, "swSelectionToggleSelection", "swOrderFulfillmentListener");
+	        this.observerService.attach(this.swSelectionToggleSelectionorderFulfillmentCollectionTableListener, "swSelectionToggleSelectionorderFulfillmentCollectionTable", "swSelectionToggleSelectionorderFulfillmentCollectionTableListener");
+	        this.observerService.attach(this.swSelectionToggleSelectionorderItemCollectionTableListener, "swSelectionToggleSelectionorderItemCollectionTable", "swSelectionToggleSelectionorderItemCollectionTableListener");
+	        /**
+	         * Attach to the service
+	         * this.orderFulfillmentService.registerObserver(this);
+	         */
 	    }
 	    return SWOrderFulfillmentListController;
 	}());

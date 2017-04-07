@@ -1,6 +1,8 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
+import * as Prototypes from '../prototypes/Observable';
+
 module FulfillmentsList {
     export enum Views {
         Fulfillments,
@@ -8,15 +10,17 @@ module FulfillmentsList {
     }
 } 
 
-class SWOrderFulfillmentListController {
-    
+/**
+ * Fulfillment List Controller
+ */
+class SWOrderFulfillmentListController implements Prototypes.Observable.IObserver {
     private orderFulfillmentCollection:any;
     private orderItemCollection:any;
     private orderCollectionConfig:any;
     private orderFulfillments:any[];
     private filters:{};
     private view:number;
-    private collections:Array<any>;
+    private collections:any;
     
     public views:any;
     public total:number;
@@ -24,7 +28,8 @@ class SWOrderFulfillmentListController {
     public processObject:any;
 
     // @ngInject
-    constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private utilityService){
+    constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private utilityService, private $location){
+        
         //Set the initial state for the filters.
         this.filters = { "unavailable": false, "partial": true, "available": true };
         this.collections = [];
@@ -49,14 +54,84 @@ class SWOrderFulfillmentListController {
         //this.addFilter('partial', true);
         this.refreshCollection(this.getCollectionByView(this.getView()));
 
-        //Attach observerService
-        var handler = function(){
-            console.log("Handler Called");
-        };
+        //Attach our listeners for selections on both listing displays.
         console.log(this.observerService);
-        this.observerService.attach(handler, "swSelectionToggleSelection", "swOrderFulfillmentListener");
+        this.observerService.attach(this.swSelectionToggleSelectionorderFulfillmentCollectionTableListener, "swSelectionToggleSelectionorderFulfillmentCollectionTable", "swSelectionToggleSelectionorderFulfillmentCollectionTableListener");
+        this.observerService.attach(this.swSelectionToggleSelectionorderItemCollectionTableListener, "swSelectionToggleSelectionorderItemCollectionTable", "swSelectionToggleSelectionorderItemCollectionTableListener");
+        
+        /**
+         * Attach to the service 
+         * this.orderFulfillmentService.registerObserver(this);
+         */
     }
     
+    /**
+     * Implements a listener for the orderFulfillment selections
+     */
+    public swSelectionToggleSelectionorderFulfillmentCollectionTableListener = (callBackData) => {
+        let processObject = this.getProcessObject();
+        if (this.isSelected(callBackData.action)){
+             processObject['data']['orderFulfillmentIDList'] = this.listAppend(processObject.data['orderFulfillmentIDList'], callBackData.selection);
+        }else{
+             processObject['data']['orderFulfillmentIDList'] = this.listRemove(processObject.data['orderFulfillmentIDList'], callBackData.selection);
+        }
+        this.setProcessObject(processObject);
+    };
+    
+    /**
+     * Implements a listener for the orderItem selections
+     */
+    public swSelectionToggleSelectionorderItemCollectionTableListener = (callBackData) => {
+        let processObject = this.getProcessObject();
+        if (this.isSelected(callBackData.action)){
+             processObject['data']['orderItemIDList'] = this.listAppend(processObject['data']['orderItemIDList'], callBackData.selection)
+        }else{
+             processObject['data']['orderItemIDList'] = this.listRemove(processObject['data']['orderItemIDList'], callBackData.selection);
+        }
+    };
+
+    /**
+     * Add Instance Of string to list
+     */
+    public listAppend = (str, subStr) => {
+        let isNew = false;
+        if (!str) {
+            str = "";
+            isNew = true;
+        }
+        if (subStr){
+            str = str + ((isNew)? "" : ",") + subStr;
+        }
+        return str;
+    }
+    
+    /**
+     * Removes a string from a string.
+     */
+     public listRemove = (str, subStr) => {
+        if (str.indexOf(subStr) != -1){
+            //remove it cause its no longer selected.
+            str = str.replace(subStr, "");
+            str = str.replace(",,", "");
+            if (str == ","){
+                str = "";
+            }
+            if (str[0] == ","){
+                str[0] = "";
+            }
+            str = str.substring(0, str.length-1);
+        }
+
+        return str;
+    }
+
+    /**
+     * returns true if the action is selected
+     */
+    public isSelected = (test) => {
+        if (test == "check") { return true; } else { return false };
+    }
+
     /**
      * Each collection has a view. The view is maintained by the enum. This Returns
      * the collection for that view.
@@ -145,7 +220,7 @@ class SWOrderFulfillmentListController {
      * Redirects the current page (to go to login) if the user tries to interacts with the view while not logged in.
      */
     public redirect = () => {
-         location.reload();
+         this.$location.reload();
     }
 
     /**
@@ -189,7 +264,8 @@ class SWOrderFulfillmentListController {
         if (this.getProcessObject()) {
             console.log("Hibachi", this.$hibachi);
             console.log("Process Object", this.getProcessObject());
-
+            //this.orderFulfillmentService.addBatch(this.getBatchProcess());
+            this.$hibachi.saveProcess("fulfillmentBatch_Create", "", this.getProcessObject().data, "process");
         }
     }
 
@@ -205,6 +281,18 @@ class SWOrderFulfillmentListController {
      */
     public setProcessObject = (processObject) => {
         this.processObject = processObject;
+    }
+
+    /**
+     * This will recieve all the notifications from the service events.
+     */
+    public recieveNotification = (message): void => {
+        console.log("Message Recieved: ", message);
+        switch (message.type) {
+            case "batchSaveSuccess": break;
+            case "batchSaveFail": break;
+            case "error": break;
+        }
     }
 }
 

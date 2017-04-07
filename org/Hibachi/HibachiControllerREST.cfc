@@ -156,6 +156,15 @@ component output="false" accessors="true" extends="HibachiController" {
         }
 
     }
+    
+    public void function doProcess (required struct rc) {
+    	 var entity = rc.entityName;
+    	 var processContext = rc.processContext;
+    	 var result = getService('#entityName#Service').invokeMethod("process#entityName#", {1=getService('#entityName#Service').invokeMethod("new#entityName#"), 2=rc, 3=processContext});
+    	 if (result.hasErrors()){
+    	 	arguments.rc.apiResponse.content['errors'] = result.getErrors();
+    	 }
+    }
 
     public void function noaccess(required struct rc){
         var message = {};

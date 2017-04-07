@@ -2,8 +2,9 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 
 
+
 class SWTypeaheadInputFieldController {
-    
+    public name:string;
     public fieldName:string; 
     public entityName:string;
     public typeaheadCollectionConfig; 
@@ -65,7 +66,6 @@ class SWTypeaheadInputFieldController {
     public addFunction = (value:any) => {
         this.modelValue = value[this.propertyToSave]; 
     }
-
 }
 
 class SWTypeaheadInputField implements ng.IDirective{
@@ -76,6 +76,7 @@ class SWTypeaheadInputField implements ng.IDirective{
 	public scope = {};
 
 	public bindToController = {
+        name:"@",
         fieldName:"@",
         entityName:"@",
         typeaheadCollectionConfig:"=?",
